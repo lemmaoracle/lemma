@@ -1,0 +1,17 @@
+{
+  "name": "lemma",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "sync:workers:spec": "bash ./scripts/sync-workers-spec.sh"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0",
+    "prettier-plugin-solidity": "^1.4.0"
+  }
+}

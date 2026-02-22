@@ -1,0 +1,326 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Lemma v2 API",
+    "version": "0.1.0",
+    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4)."
+  },
+  "servers": [{ "url": "http://localhost:8787" }],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "x-api-key" }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": { "error": { "type": "string" } },
+        "required": ["error"],
+        "additionalProperties": false
+      },
+      "SchemaMeta": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "required": ["id"],
+        "additionalProperties": true
+      },
+      "CircuitArtifactLocation": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["ipfs", "https"] },
+          "wasm": { "type": "string" },
+          "zkey": { "type": "string" }
+        },
+        "required": ["type", "wasm", "zkey"],
+        "additionalProperties": false
+      },
+      "CircuitMeta": {
+        "type": "object",
+        "properties": {
+          "circuitId": { "type": "string" },
+          "schema": { "type": "string" },
+          "description": { "type": "string" },
+          "publicInputs": { "type": "array", "items": { "type": "string" } },
+          "verifier": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["onchain", "offchain"] },
+              "contractAddress": { "type": "string" },
+              "chainId": { "type": "integer" }
+            },
+            "required": ["type"],
+            "additionalProperties": true
+          },
+          "artifact": {
+            "type": "object",
+            "properties": { "location": { "$ref": "#/components/schemas/CircuitArtifactLocation" } },
+            "required": ["location"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["circuitId", "schema"],
+        "additionalProperties": true
+      },
+      "GeneratorMeta": {
+        "type": "object",
+        "properties": {
+          "generatorId": { "type": "string" },
+          "schema": { "type": "string" },
+          "description": { "type": "string" },
+          "language": { "type": "string" },
+          "source": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["url"] },
+              "uri": { "type": "string" }
+            },
+            "required": ["type", "uri"],
+            "additionalProperties": false
+          },
+          "inputsSpec": { "type": "object", "additionalProperties": true },
+          "outputsSpec": { "type": "object", "additionalProperties": true }
+        },
+        "required": ["generatorId", "schema"],
+        "additionalProperties": true
+      },
+      "DocumentCommitments": {
+        "type": "object",
+        "properties": {
+          "scheme": { "type": "string" },
+          "attrCommitmentRoot": { "type": "string" }
+        },
+        "required": ["attrCommitmentRoot"],
+        "additionalProperties": true
+      },
+      "Revocation": {
+        "type": "object",
+        "properties": {
+          "scheme": { "type": "string" },
+          "revocationRoot": { "type": "string" }
+        },
+        "required": ["revocationRoot"],
+        "additionalProperties": true
+      },
+      "IssuerSignature": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "enum": ["bbs+", "opaque"] },
+          "payload": { "type": "string" },
+          "issuerId": { "type": "string" }
+        },
+        "required": ["format", "payload", "issuerId"],
+        "additionalProperties": false
+      },
+      "OnchainHook": {
+        "type": "object",
+        "properties": {
+          "chainId": { "type": "integer" },
+          "contractAddress": { "type": "string" },
+          "method": { "type": "string" },
+          "mode": { "type": "string", "enum": ["after-registry"] },
+          "payload": { "type": "string", "enum": ["registry-public-inputs"] }
+        },
+        "required": ["chainId", "contractAddress", "method"],
+        "additionalProperties": true
+      },
+      "RegisterDocumentRequest": {
+        "type": "object",
+        "properties": {
+          "schema": { "type": "string" },
+          "docHash": { "type": "string" },
+          "cid": { "type": "string" },
+          "issuerId": { "type": "string" },
+          "subjectId": { "type": "string" },
+          "commitments": { "$ref": "#/components/schemas/DocumentCommitments" },
+          "revocation": { "$ref": "#/components/schemas/Revocation" },
+          "signature": { "$ref": "#/components/schemas/IssuerSignature" },
+          "onchainHooks": { "type": "array", "items": { "$ref": "#/components/schemas/OnchainHook" } }
+        },
+        "required": ["schema", "docHash", "cid", "issuerId", "subjectId", "commitments", "revocation"],
+        "additionalProperties": false
+      },
+      "RegisterDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["registered"] },
+          "docHash": { "type": "string" }
+        },
+        "required": ["status", "docHash"],
+        "additionalProperties": true
+      },
+      "SelectiveDisclosure": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "enum": ["bbs+", "opaque"] },
+          "disclosedAttributes": { "type": "object", "additionalProperties": true },
+          "proof": { "type": "string" }
+        },
+        "required": ["format", "disclosedAttributes", "proof"],
+        "additionalProperties": false
+      },
+      "SubmitProofRequest": {
+        "type": "object",
+        "properties": {
+          "docHash": { "type": "string" },
+          "circuitId": { "type": "string" },
+          "proofBytes": { "type": "string" },
+          "publicInputs": { "type": "array", "items": { "type": "string" } },
+          "selectiveDisclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" },
+          "verifyOnchain": { "type": "boolean" }
+        },
+        "required": ["docHash", "circuitId", "proofBytes", "publicInputs"],
+        "additionalProperties": false
+      },
+      "SubmitProofResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["received", "verified", "onchain-verified", "rejected"] },
+          "verificationId": { "type": "string" }
+        },
+        "required": ["status", "verificationId"],
+        "additionalProperties": true
+      },
+      "VerifiedAttributesQueryRequest": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "mode": { "type": "string", "enum": ["natural", "structured"] },
+          "proof": {
+            "type": "object",
+            "properties": {
+              "required": { "type": "boolean" },
+              "type": { "type": "string", "enum": ["zk-snark", "opaque"] }
+            },
+            "required": ["required"],
+            "additionalProperties": true
+          },
+          "targets": {
+            "type": "object",
+            "properties": { "schemas": { "type": "array", "items": { "type": "string" } } },
+            "additionalProperties": true
+          }
+        },
+        "required": ["query", "mode"],
+        "additionalProperties": false
+      },
+      "VerifiedAttributesQueryResponseItem": {
+        "type": "object",
+        "properties": {
+          "docHash": { "type": "string" },
+          "schema": { "type": "string" },
+          "issuerId": { "type": "string" },
+          "subjectId": { "type": "string" },
+          "attributes": { "type": "object", "additionalProperties": true },
+          "proof": {
+            "type": "object",
+            "properties": { "status": { "type": "string" }, "circuitId": { "type": "string" } },
+            "additionalProperties": true
+          },
+          "selectiveDisclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" }
+        },
+        "required": ["docHash", "schema", "issuerId", "subjectId", "attributes"],
+        "additionalProperties": true
+      },
+      "VerifiedAttributesQueryResponse": {
+        "type": "object",
+        "properties": {
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem" } }
+        },
+        "required": ["results"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "security": [{ "ApiKeyAuth": [] }],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "security": [],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" } }, "required": ["ok"] } } } } }
+      }
+    },
+    "/v1/schemas": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
+        "responses": {
+          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/schemas/{id}": {
+      "get": {
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
+          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/circuits": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
+        "responses": {
+          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/circuits/{circuitId}": {
+      "get": {
+        "parameters": [{ "name": "circuitId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
+          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/doc-generators": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
+        "responses": {
+          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/doc-generators/{generatorId}": {
+      "get": {
+        "parameters": [{ "name": "generatorId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
+          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/documents": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDocumentRequest" } } } },
+        "responses": {
+          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDocumentResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/proofs": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofRequest" } } } },
+        "responses": {
+          "200": { "description": "Submitted", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/v1/verified-attributes/query": {
+      "post": {
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryRequest" } } } },
+        "responses": {
+          "200": { "description": "Results", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    }
+  }
+}
