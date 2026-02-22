@@ -9,22 +9,20 @@ import { commitNormalized, type PrepareOutput } from "./commitments";
 import { getSchemaById } from "./schema";
 
 export type PrepareInput<Raw> = Readonly<{
-schema: string;
-payload: Raw;
+  schema: string;
+  payload: Raw;
 }>;
 
 export const prepare = async <Raw, Norm extends Json>(
-_client: LemmaClient,
-input: PrepareInput<Raw>,
+  _client: LemmaClient,
+  input: PrepareInput<Raw>,
 ): Promise<PrepareOutput<Norm>> => {
-const schema = getSchemaById<Raw, Norm>(input.schema);
+  const schema = getSchemaById<Raw, Norm>(input.schema);
 
-return schema
-? Promise.resolve(schema.normalize(input.payload)).then((normalized) => ({
-normalized,
-commitments: { scheme: "poseidon", ...commitNormalized(normalized) },
-}))
-: reject(
-`Unknown schemaId: ${input.schema}. Call define() first.`,
-);
+  return schema
+    ? Promise.resolve(schema.normalize(input.payload)).then((normalized) => ({
+        normalized,
+        commitments: { scheme: "poseidon", ...commitNormalized(normalized) },
+      }))
+    : reject(`Unknown schemaId: ${input.schema}. Call define() first.`);
 };

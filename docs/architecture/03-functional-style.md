@@ -1,4 +1,3 @@
-
 # Functional Style Guide
 
 The SDK and Workers are linted with **eslint-plugin-functional (strict preset)**.
@@ -9,7 +8,6 @@ The SDK and Workers are linted with **eslint-plugin-functional (strict preset)**
 - **No statements**: Branching via expressions (`R.cond`, ternary), not `if`/`switch`.
 - **No mutation**: Use spread, `R.assoc`, `R.evolve` instead of direct assignment.
 - **Pure functions**: Side effects only at boundaries (fetch, crypto).
-
 
 ## Ramda patterns used
 
@@ -28,4 +26,3 @@ R.map / R.filter / R.reduce
 R.assoc / R.dissoc / R.mergeRight
 R.prop / R.path / R.pathOr
 ```
-

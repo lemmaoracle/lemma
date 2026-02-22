@@ -12,9 +12,10 @@ export type LemmaClientConfig = Readonly<{
   apiKey?: string;
 }>;
 
-export type LemmaClient = LemmaClientConfig & Readonly<{
-  readonly fetchFn?: typeof fetch;
-}>;
+export type LemmaClient = LemmaClientConfig &
+  Readonly<{
+    readonly fetchFn?: typeof fetch;
+  }>;
 
 /* ── Schema / Circuit / Generator metadata ─────────────────────────── */
 

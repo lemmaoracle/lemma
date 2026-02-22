@@ -2,9 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import type { LemmaClient } from "@lemma/spec";
 import { get, post } from "./http";
 
-const makeMockClient = (
-  response: { status: number; body: unknown },
-): LemmaClient => ({
+const makeMockClient = (response: { status: number; body: unknown }): LemmaClient => ({
   apiBase: "http://localhost:8787",
   apiKey: "test-key",
   fetchFn: vi.fn().mockResolvedValue({

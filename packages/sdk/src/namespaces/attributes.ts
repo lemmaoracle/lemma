@@ -12,6 +12,4 @@ export const query = (
   client: LemmaClient,
   payload: VerifiedAttributesQueryRequest,
 ): Promise<VerifiedAttributesQueryResponse> =>
-  post<VerifiedAttributesQueryResponse>(client)(
-    "/v1/verified-attributes/query",
-  )(payload);
+  post<VerifiedAttributesQueryResponse>(client)("/v1/verified-attributes/query")(payload);

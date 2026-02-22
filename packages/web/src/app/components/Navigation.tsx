@@ -6,7 +6,7 @@ export function Navigation() {
         <div className="font-mono text-[11px] tracking-wider uppercase text-black/50">
           Lemma Oracle
         </div>
-        
+
         {/* Navigation links */}
         <ul className="flex gap-6 items-center font-mono text-[11px] tracking-wide uppercase">
           <li>

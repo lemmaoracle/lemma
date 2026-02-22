@@ -30,8 +30,8 @@ describe("prepare", () => {
   });
 
   it("rejects for unknown schema", async () => {
-    await expect(
-      prepare(client, { schema: "nonexistent", payload: {} }),
-    ).rejects.toThrow("Unknown schemaId");
+    await expect(prepare(client, { schema: "nonexistent", payload: {} })).rejects.toThrow(
+      "Unknown schemaId",
+    );
   });
 });

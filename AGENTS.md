@@ -1,6 +1,7 @@
 # Lemma Monorepo — Agent Guidelines
 
 ## Repository structure
+
 - `packages/spec` — **Authoritative** shared interface types + OpenAPI spec.
 - `packages/sdk` — TypeScript SDK (functional style, `@lemma/sdk`).
 - `packages/contracts` — Solidity smart contracts (`LemmaRegistry`).
@@ -8,10 +9,12 @@
 ## Non-negotiable rules
 
 ### TypeScript
+
 - `strict: true` in every tsconfig.
 - All types must use `Readonly<>` / `ReadonlyArray<>`.
 
 ### Functional programming (SDK only)
+
 - **eslint-plugin-functional `strict` preset is active.**
 - **No `if` / `switch` statements.** Use `R.cond`, `R.ifElse`, `R.when`, `R.unless`, or ternary expressions.
 - **No `let` / `var`.** Only `const`.
@@ -21,6 +24,7 @@
 - **No mutation.** Use `R.assoc`, `R.dissoc`, spread operators, `structuredClone`, etc.
 
 ### Patterns cheat-sheet
+
 ```typescript
 // ✅ Branching
 const result = R.cond([
@@ -44,19 +48,16 @@ for (const item of items) { ... }
 throw new Error("boom");
 ```
 
-
 ### Testing
 
 - Vitest with co-located pattern: `foo.ts` → `foo.test.ts`.
 - **Test files are exempt** from eslint-plugin-functional rules.
 - Contract tests use Hardhat + Chai (not Vitest).
 
-
 ### Smart contracts
 
 - eslint-plugin-functional does **NOT** apply to `packages/contracts`.
 - Use Hardhat + `@nomicfoundation/hardhat-toolbox`.
-
 
 ### Interface sync
 
@@ -69,12 +70,11 @@ When changing SDK API payloads or Workers endpoints:
 
 ## Commands
 
-| Command | Description |
-| :-- | :-- |
-| `pnpm install` | Install all workspace dependencies |
-| `pnpm build` | Build all packages |
-| `pnpm lint` | Lint all packages |
-| `pnpm test` | Run all tests |
-| `pnpm format` | Format with Prettier |
-| `pnpm sync:workers:spec` | Copy spec to Workers repo |
-
+| Command                  | Description                        |
+| :----------------------- | :--------------------------------- |
+| `pnpm install`           | Install all workspace dependencies |
+| `pnpm build`             | Build all packages                 |
+| `pnpm lint`              | Lint all packages                  |
+| `pnpm test`              | Run all tests                      |
+| `pnpm format`            | Format with Prettier               |
+| `pnpm sync:workers:spec` | Copy spec to Workers repo          |

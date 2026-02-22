@@ -18,8 +18,10 @@ describe("define / getSchemaById", () => {
 
     const retrieved = getSchemaById<RawWeather, NormWeather>("test:weather-v1");
     expect(retrieved).toBeDefined();
-    expect(retrieved!.normalize({ weather: "rain", temperature: 5, city: "Tokyo" }))
-      .toEqual({ weather_bucket: "wet", temperature_bucket: "cold" });
+    expect(retrieved!.normalize({ weather: "rain", temperature: 5, city: "Tokyo" })).toEqual({
+      weather_bucket: "wet",
+      temperature_bucket: "cold",
+    });
   });
 
   it("returns undefined for unknown schemaId", () => {

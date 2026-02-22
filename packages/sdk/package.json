@@ -1,27 +1,29 @@
 {
-"name": "@lemma/sdk",
-"version": "0.1.0",
-"type": "module",
-"main": "./dist/index.js",
-"types": "./dist/index.d.ts",
-"files": ["dist"],
-"scripts": {
-"build": "tsc -p tsconfig.json",
-"lint": "eslint 'src/**/*.ts'",
-"test": "vitest run"
-},
-"dependencies": {
-"@lemma/spec": "workspace:*",
-"ramda": "^0.30.1"
-},
-"devDependencies": {
-"@types/ramda": "^0.30.0",
-"@typescript-eslint/eslint-plugin": "^7.18.0",
-"@typescript-eslint/parser": "^7.18.0",
-"eslint": "^8.57.0",
-"eslint-config-prettier": "^9.1.0",
-"eslint-plugin-functional": "^6.6.0",
-"typescript": "^5.5.0",
-"vitest": "^2.1.0"
-}
+  "name": "@lemma/sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lemma/spec": "workspace:*",
+    "ramda": "^0.30.1"
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.30.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-functional": "^6.6.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  }
 }

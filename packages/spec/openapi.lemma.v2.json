@@ -55,7 +55,9 @@
           },
           "artifact": {
             "type": "object",
-            "properties": { "location": { "$ref": "#/components/schemas/CircuitArtifactLocation" } },
+            "properties": {
+              "location": { "$ref": "#/components/schemas/CircuitArtifactLocation" }
+            },
             "required": ["location"],
             "additionalProperties": false
           }
@@ -136,9 +138,20 @@
           "commitments": { "$ref": "#/components/schemas/DocumentCommitments" },
           "revocation": { "$ref": "#/components/schemas/Revocation" },
           "signature": { "$ref": "#/components/schemas/IssuerSignature" },
-          "onchainHooks": { "type": "array", "items": { "$ref": "#/components/schemas/OnchainHook" } }
+          "onchainHooks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OnchainHook" }
+          }
         },
-        "required": ["schema", "docHash", "cid", "issuerId", "subjectId", "commitments", "revocation"],
+        "required": [
+          "schema",
+          "docHash",
+          "cid",
+          "issuerId",
+          "subjectId",
+          "commitments",
+          "revocation"
+        ],
         "additionalProperties": false
       },
       "RegisterDocumentResponse": {
@@ -176,7 +189,10 @@
       "SubmitProofResponse": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": ["received", "verified", "onchain-verified", "rejected"] },
+          "status": {
+            "type": "string",
+            "enum": ["received", "verified", "onchain-verified", "rejected"]
+          },
           "verificationId": { "type": "string" }
         },
         "required": ["status", "verificationId"],
@@ -226,7 +242,10 @@
       "VerifiedAttributesQueryResponse": {
         "type": "object",
         "properties": {
-          "results": { "type": "array", "items": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem" } }
+          "results": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem" }
+          }
         },
         "required": ["results"],
         "additionalProperties": false
@@ -238,87 +257,236 @@
     "/v1/health": {
       "get": {
         "security": [],
-        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" } }, "required": ["ok"] } } } } }
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "ok": { "type": "boolean" } },
+                  "required": ["ok"]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/schemas": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+          }
+        },
         "responses": {
-          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/schemas/{id}": {
       "get": {
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
-          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } } } },
-          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/circuits": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+          }
+        },
         "responses": {
-          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/circuits/{circuitId}": {
       "get": {
-        "parameters": [{ "name": "circuitId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "circuitId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
-          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } } } },
-          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/doc-generators": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+          }
+        },
         "responses": {
-          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/doc-generators/{generatorId}": {
       "get": {
-        "parameters": [{ "name": "generatorId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "generatorId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
-          "200": { "description": "Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } } } },
-          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/documents": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDocumentRequest" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterDocumentRequest" }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDocumentResponse" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RegisterDocumentResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/proofs": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofRequest" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofRequest" } }
+          }
+        },
         "responses": {
-          "200": { "description": "Submitted", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofResponse" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Submitted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SubmitProofResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     },
     "/v1/verified-attributes/query": {
       "post": {
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryRequest" } } } },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryRequest" }
+            }
+          }
+        },
         "responses": {
-          "200": { "description": "Results", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponse" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "200": {
+            "description": "Results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+            }
+          }
         }
       }
     }
