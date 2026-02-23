@@ -4,3 +4,4 @@ pnpm-lock.yaml
 **/artifacts/**
 **/cache/**
 **/typechain-types/**
+.pnpm-store/
