@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Masthead from "../components/Masthead.astro";
+import BlogList from "../components/BlogList.astro";
+import { getBlogSections } from "../data/blog";
+
+const sections = getBlogSections();
+const noiseDataUrl = "data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E";
+---
+<Layout>
+  <div class="min-h-screen bg-[#FAFAF8] relative overflow-x-hidden">
+    <div
+      class="fixed inset-0 pointer-events-none opacity-[0.03]"
+      style={`background-image: url("${noiseDataUrl}"); background-repeat: repeat;`}
+      aria-hidden="true"
+    />
+    <Navigation />
+    <main class="relative pt-14" id="overview">
+      <Masthead />
+      <BlogList sections={sections} />
+    </main>
+    <footer class="border-t border-black/5 py-8 relative">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <p class="font-mono text-[10px] text-black/30 tracking-wide">
+          © 2026 Lemma Oracle — Built for decisions that matter
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>

@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navigation from "../../components/Navigation.astro";
+import BlogList from "../../components/BlogList.astro";
+import { getBlogSections } from "../../data/blog";
+
+const sections = getBlogSections();
+const base = import.meta.env.BASE_URL;
+---
+<Layout title="Blog — Lemma Oracle" description="Essays, changelog, and field notes from Lemma Oracle.">
+  <div class="min-h-screen bg-[#FAFAF8] relative">
+    <Navigation />
+    <main class="relative pt-14 pb-16">
+      <div class="max-w-[1400px] mx-auto px-8 pt-16">
+        <h1 class="text-[11px] font-mono tracking-wider uppercase text-black/30 mb-4">Blog</h1>
+        <p class="font-mono text-[13px] text-black/60 mb-12">Essays, changelog, and field notes.</p>
+      </div>
+      <BlogList sections={sections} />
+    </main>
+    <footer class="border-t border-black/5 py-8">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <p class="font-mono text-[10px] text-black/30 tracking-wide">
+          © 2026 Lemma Oracle — Built for decisions that matter
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>

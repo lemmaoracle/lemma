@@ -1,0 +1,55 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navigation from "../../components/Navigation.astro";
+
+const base = import.meta.env.BASE_URL;
+const repo = "lemmaoracle/lemma";
+const workflowFile = "deploy-pages.yml";
+const workflowUrl = `https://github.com/${repo}/actions/workflows/${encodeURIComponent(workflowFile)}`;
+const apiUrl = `https://api.github.com/repos/${repo}/dispatches`;
+---
+<Layout title="Rebuild site — Lemma Oracle" description="Trigger GitHub Actions to rebuild and redeploy the site.">
+  <div class="min-h-screen bg-[#FAFAF8] relative">
+    <Navigation />
+    <main class="relative pt-14 pb-16">
+      <div class="max-w-[640px] mx-auto px-8 pt-16">
+        <h1 class="text-[24px] font-mono tracking-wide mb-6">Rebuild site</h1>
+        <p class="font-mono text-[13px] text-black/60 leading-relaxed mb-8">
+          This page is not linked from the site. Use it to trigger a rebuild and redeploy of the static site (e.g. after updating content in Affine).
+        </p>
+
+        <h2 class="text-[11px] font-mono tracking-wider uppercase text-black/40 mb-3">Option 1: Run workflow in GitHub</h2>
+        <p class="font-mono text-[13px] text-black/60 mb-4">
+          Open the workflow page and click <strong>Run workflow</strong>.
+        </p>
+        <a href={workflowUrl} target="_blank" rel="noopener noreferrer" class="font-mono text-[13px] text-black/70 underline hover:opacity-70">
+          {workflowUrl}
+        </a>
+
+        <h2 class="text-[11px] font-mono tracking-wider uppercase text-black/40 mt-10 mb-3">Option 2: Trigger via URL (repository_dispatch)</h2>
+        <p class="font-mono text-[13px] text-black/60 mb-4">
+          From a script or external service (e.g. after Affine updates), send a POST request with a Personal Access Token (PAT). This site is static, so a plain GET to this page cannot start the workflow without credentials.
+        </p>
+        <pre class="bg-black/5 p-4 rounded font-mono text-[11px] overflow-x-auto mb-4"><code>curl -X POST \
+  -H "Authorization: token $PAT" \
+  -H "Accept: application/vnd.github.v3+json" \
+  {apiUrl} \
+  -d '{{"event_type":"rebuild"}}'</code></pre>
+        <p class="font-mono text-[11px] text-black/50">
+          Store the PAT in your environment or a secret store; do not commit it. The workflow listens for <code>event_type: rebuild</code>.
+        </p>
+
+        <p class="font-mono text-[11px] text-black/40 mt-10">
+          <a href={base} class="underline">← Back to home</a>
+        </p>
+      </div>
+    </main>
+    <footer class="border-t border-black/5 py-8 mt-16">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <p class="font-mono text-[10px] text-black/30 tracking-wide">
+          © 2026 Lemma Oracle — Built for decisions that matter
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>

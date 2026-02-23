@@ -1,0 +1,52 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navigation from "../../components/Navigation.astro";
+import { getAllPosts } from "../../data/blog";
+
+export function getStaticPaths() {
+  const posts = getAllPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: import("../../data/blog").BlogPost;
+}
+
+const { post } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<Layout title={`${post.title} — Lemma Oracle`} description={post.abstract}>
+  <div class="min-h-screen bg-[#FAFAF8] relative">
+    <Navigation />
+    <main class="relative pt-14 pb-16">
+      <article class="max-w-[800px] mx-auto px-8 pt-16">
+        <a href={`${base}blog`} class="font-mono text-[11px] text-black/40 hover:opacity-70 mb-6 inline-block">
+          ← Blog
+        </a>
+        <p class="font-mono text-[11px] text-black/40 tracking-wide mb-2">{post.date}</p>
+        <p class="font-mono text-[10px] tracking-wider uppercase mb-4">
+          <span
+            class="px-2 py-1 rounded-sm"
+            style={post.categoryColor ? `background-color: ${post.categoryColor}15; color: ${post.categoryColor};` : undefined}
+          >
+            {post.category}
+          </span>
+        </p>
+        <h1 class="text-[40px] leading-[1.2] tracking-[-0.02em] mb-6" style="font-family: 'Instrument Serif', serif;">
+          {post.title}
+        </h1>
+        <div class="prose prose-neutral text-black/80" set:html={post.body} />
+      </article>
+    </main>
+    <footer class="border-t border-black/5 py-8 mt-16">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <p class="font-mono text-[10px] text-black/30 tracking-wide">
+          © 2026 Lemma Oracle — Built for decisions that matter
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>

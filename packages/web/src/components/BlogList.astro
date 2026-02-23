@@ -1,0 +1,31 @@
+---
+import BlogEntry from "./BlogEntry.astro";
+import type { BlogSection as BlogSectionType } from "../data/blog";
+
+interface Props {
+  sections: ReadonlyArray<BlogSectionType>;
+}
+
+const { sections } = Astro.props;
+---
+<div class="max-w-[1400px] mx-auto px-8 py-16">
+  {sections.map((section) => (
+    <section class="mb-20 last:mb-0">
+      <h2 class="text-[11px] font-mono tracking-wider uppercase text-black/30 mb-8 pb-3 border-b border-black/10">
+        {section.section}
+      </h2>
+      <div>
+        {section.posts.map((post) => (
+          <BlogEntry
+            slug={post.slug}
+            date={post.date}
+            category={post.category}
+            title={post.title}
+            abstract={post.abstract}
+            categoryColor={post.categoryColor}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+</div>

@@ -1,0 +1,34 @@
+---
+interface Props {
+  slug: string;
+  date: string;
+  category: string;
+  title: string;
+  abstract: string;
+  categoryColor?: string;
+}
+
+const { slug, date, category, title, abstract, categoryColor = "#000" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const href = `${base}blog/${slug}`;
+const bgColor = `${categoryColor}15`;
+---
+<div class="grid grid-cols-[100px_120px_1fr] gap-6 py-5 border-b border-black/5 hover:bg-black/[0.02] transition-colors cursor-pointer group">
+  <div class="font-mono text-[11px] text-black/40 tracking-wide pt-1">{date}</div>
+  <div class="pt-1">
+    <span
+      class="font-mono text-[10px] tracking-wider uppercase px-2 py-1 rounded-sm"
+      style={`background-color: ${bgColor}; color: ${categoryColor};`}
+    >
+      {category}
+    </span>
+  </div>
+  <div class="min-w-0">
+    <a href={href} class="block">
+      <h3 class="text-[20px] leading-[1.3] mb-2 group-hover:opacity-70 transition-opacity" style="font-family: 'Instrument Serif', serif;">
+        {title}
+      </h3>
+      <p class="text-[13px] text-black/60 leading-relaxed">{abstract}</p>
+    </a>
+  </div>
+</div>
