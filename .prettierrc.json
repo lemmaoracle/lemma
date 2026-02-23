@@ -4,5 +4,5 @@
   "trailingComma": "all",
   "printWidth": 100,
   "tabWidth": 2,
-  "plugins": ["prettier-plugin-solidity"]
+  "plugins": ["prettier-plugin-solidity", "prettier-plugin-astro", "prettier-plugin-tailwindcss"]
 }

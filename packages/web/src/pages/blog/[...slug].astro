@@ -18,32 +18,41 @@ interface Props {
 const { post } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
+
 <Layout title={`${post.title} — Lemma Oracle`} description={post.abstract}>
-  <div class="min-h-screen bg-[#FAFAF8] relative">
+  <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation />
     <main class="relative pt-14 pb-16">
-      <article class="max-w-[800px] mx-auto px-8 pt-16">
-        <a href={`${base}blog`} class="font-mono text-[11px] text-black/40 hover:opacity-70 mb-6 inline-block">
+      <article class="mx-auto max-w-[800px] px-8 pt-16">
+        <a
+          href={`${base}blog`}
+          class="mb-6 inline-block font-mono text-[11px] text-black/40 hover:opacity-70"
+        >
           ← Blog
         </a>
-        <p class="font-mono text-[11px] text-black/40 tracking-wide mb-2">{post.date}</p>
-        <p class="font-mono text-[10px] tracking-wider uppercase mb-4">
+        <p class="mb-2 font-mono text-[11px] tracking-wide text-black/40">{post.date}</p>
+        <p class="mb-4 font-mono text-[10px] tracking-wider uppercase">
           <span
-            class="px-2 py-1 rounded-sm"
-            style={post.categoryColor ? `background-color: ${post.categoryColor}15; color: ${post.categoryColor};` : undefined}
+            class="rounded-sm px-2 py-1"
+            style={post.categoryColor
+              ? `background-color: ${post.categoryColor}15; color: ${post.categoryColor};`
+              : undefined}
           >
             {post.category}
           </span>
         </p>
-        <h1 class="text-[40px] leading-[1.2] tracking-[-0.02em] mb-6" style="font-family: 'Instrument Serif', serif;">
+        <h1
+          class="mb-6 text-[40px] leading-[1.2] tracking-[-0.02em]"
+          style="font-family: 'Instrument Serif', serif;"
+        >
           {post.title}
         </h1>
         <div class="prose prose-neutral text-black/80" set:html={post.body} />
       </article>
     </main>
-    <footer class="border-t border-black/5 py-8 mt-16">
-      <div class="max-w-[1400px] mx-auto px-8">
-        <p class="font-mono text-[10px] text-black/30 tracking-wide">
+    <footer class="mt-16 border-t border-black/5 py-8">
+      <div class="mx-auto max-w-[1400px] px-8">
+        <p class="font-mono text-[10px] tracking-wide text-black/30">
           © 2026 Lemma Oracle — Built for decisions that matter
         </p>
       </div>

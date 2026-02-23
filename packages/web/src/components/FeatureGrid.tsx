@@ -8,17 +8,15 @@ interface FeatureItemProps {
 
 function FeatureItem({ icon, heading, body }: FeatureItemProps) {
   return (
-    <div className="border border-black/5 p-8 hover:bg-black/[0.01] transition-colors">
-      <div className="mb-4 text-black/40 h-8 flex items-start">
-        {icon}
-      </div>
+    <div className="border border-black/5 p-8 transition-colors hover:bg-black/[0.01]">
+      <div className="mb-4 flex h-8 items-start text-black/40">{icon}</div>
       <h3
-        className="text-[24px] leading-[1.2] mb-3 tracking-[-0.01em]"
+        className="mb-3 text-[24px] leading-[1.2] tracking-[-0.01em]"
         style={{ fontFamily: "'Instrument Serif', serif" }}
       >
         {heading}
       </h3>
-      <p className="text-[13px] text-black/60 leading-relaxed">{body}</p>
+      <p className="text-[13px] leading-relaxed text-black/60">{body}</p>
     </div>
   );
 }
@@ -26,7 +24,7 @@ function FeatureItem({ icon, heading, body }: FeatureItemProps) {
 export function FeatureGrid() {
   return (
     <section className="border-b border-black/5">
-      <div className="max-w-[1400px] mx-auto px-8 py-20">
+      <div className="mx-auto max-w-[1400px] px-8 py-20">
         <div className="grid grid-cols-3 gap-px bg-black/5">
           <FeatureItem
             icon={<ShieldCheck size={32} strokeWidth={1} />}

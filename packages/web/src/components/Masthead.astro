@@ -1,16 +1,22 @@
 ---
-const heroImageUrl = "https://images.unsplash.com/photo-1767477665589-3e729f5909f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHRlY2hub2xvZ3klMjBjaXJjdWl0JTIwZGF0YSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzcxNzYyOTA3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+const heroImageUrl =
+  "https://images.unsplash.com/photo-1767477665589-3e729f5909f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHRlY2hub2xvZ3klMjBjaXJjdWl0JTIwZGF0YSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzcxNzYyOTA3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
 ---
-<section class="min-h-[85vh] flex flex-col items-center justify-center px-8 py-24">
+
+<section class="flex min-h-[85vh] flex-col items-center justify-center px-8 py-24">
   <div
-    class="w-full max-w-[1100px] h-[420px] rounded-full overflow-hidden mb-16 shadow-[0_2px_40px_rgba(0,0,0,0.08)]"
+    class="mb-16 h-[420px] w-full max-w-[1100px] overflow-hidden rounded-full shadow-[0_2px_40px_rgba(0,0,0,0.08)]"
     style={`background-image: url('${heroImageUrl}'); background-size: cover; background-position: center;`}
-  />
+  >
+  </div>
   <div class="max-w-[600px] text-center">
-    <h1 class="text-[64px] leading-[1] tracking-[-0.02em] mb-5" style="font-family: 'Instrument Serif', serif;">
+    <h1
+      class="mb-5 text-[64px] leading-[1] tracking-[-0.02em]"
+      style="font-family: 'Instrument Serif', serif;"
+    >
       Lemma Oracle
     </h1>
-    <p class="font-mono text-[13px] text-black/60 tracking-wide leading-relaxed">
+    <p class="font-mono text-[13px] leading-relaxed tracking-wide text-black/60">
       A reasoning engine for long‑horizon decisions
     </p>
   </div>

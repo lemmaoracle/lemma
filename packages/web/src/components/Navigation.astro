@@ -1,17 +1,22 @@
 ---
 const base = import.meta.env.BASE_URL;
 ---
-<nav class="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF8]/95 backdrop-blur-sm border-b border-black/5">
-  <div class="max-w-[1400px] mx-auto px-8 py-3 flex items-center justify-between">
-    <a href={base} class="font-mono text-[11px] tracking-wider uppercase text-black/50">
+
+<nav
+  class="fixed top-0 right-0 left-0 z-50 border-b border-black/5 bg-[#FAFAF8]/95 backdrop-blur-sm"
+>
+  <div class="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-3">
+    <a href={base} class="font-mono text-[11px] tracking-wider text-black/50 uppercase">
       Lemma Oracle
     </a>
-    <ul class="flex gap-6 items-center font-mono text-[11px] tracking-wide uppercase">
-      <li><a href={`${base}#overview`} class="hover:opacity-50 transition-opacity">Overview</a></li>
-      <li><a href={`${base}#changelog`} class="hover:opacity-50 transition-opacity">Changelog</a></li>
-      <li><a href={`${base}#essays`} class="hover:opacity-50 transition-opacity">Essays</a></li>
-      <li><a href={`${base}#docs`} class="hover:opacity-50 transition-opacity">Docs</a></li>
-      <li><a href={`${base}blog`} class="hover:opacity-50 transition-opacity">Blog</a></li>
+    <ul class="flex items-center gap-6 font-mono text-[11px] tracking-wide uppercase">
+      <li><a href={`${base}#overview`} class="transition-opacity hover:opacity-50">Overview</a></li>
+      <li>
+        <a href={`${base}#changelog`} class="transition-opacity hover:opacity-50">Changelog</a>
+      </li>
+      <li><a href={`${base}#essays`} class="transition-opacity hover:opacity-50">Essays</a></li>
+      <li><a href={`${base}#docs`} class="transition-opacity hover:opacity-50">Docs</a></li>
+      <li><a href={`${base}blog`} class="transition-opacity hover:opacity-50">Blog</a></li>
     </ul>
   </div>
 </nav>
