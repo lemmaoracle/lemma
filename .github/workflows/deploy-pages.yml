@@ -40,7 +40,7 @@ jobs:
         run: pnpm --filter @lemma/web build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@3
+        uses: actions/upload-pages-artifact@v3
         with:
           path: packages/web/dist
 
