@@ -1,6 +1,6 @@
 ---
 slug: "lemma-oracle-specs"
-date: "2026.02.18"
+date: "2026.02.24"
 category: "Foundations"
 title: "Lemma Oracle Specs"
 abstract: "A framework for modeling decision systems that operate across extended timeframes where information asymmetry compounds with each step."
