@@ -3,7 +3,7 @@ slug: "lemma-oracle-specs"
 date: "2026.02.24"
 category: "Foundations"
 title: "Lemma Oracle Specs"
-abstract: "A framework for modeling decision systems that operate across extended timeframes where information asymmetry compounds with each step."
+abstract: "A cryptographically verified truth layer enabling AI and decentralized applications to reason over confidential data via zero‑knowledge proofs, selective disclosure, and on‑chain provenance — all while keeping raw content encrypted."
 ---
 
 ## Lemma Overview
