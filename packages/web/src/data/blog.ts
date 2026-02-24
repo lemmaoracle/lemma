@@ -3,10 +3,10 @@
  * Fetches Markdown articles from a dedicated GitHub repository at build time.
  *
  * Environment variables:
- *   GITHUB_POSTS_REPO   — "owner/repo" (e.g. "lemmaoracle/blog-posts")
- *   GITHUB_POSTS_BRANCH — branch to read from (default: "main")
- *   GITHUB_POSTS_PATH   — subdirectory inside the repo (default: root)
- *   GITHUB_TOKEN        — PAT for private repos / higher rate limits (optional)
+ *   LEMMA_POSTS_REPO   — "owner/repo" (e.g. "lemmaoracle/blog-posts")
+ *   LEMMA_POSTS_BRANCH — branch to read from (default: "main")
+ *   LEMMA_POSTS_PATH   — subdirectory inside the repo (default: root)
+ *   LEMMA_GH_TOKEN     — PAT for private repos / higher rate limits (optional)
  */
 
 import matter from "gray-matter";
@@ -30,10 +30,10 @@ export interface BlogSection {
 
 /* ── Config ─────────────────────────────────────────────────────── */
 
-const POSTS_REPO = import.meta.env.GITHUB_POSTS_REPO ?? "";
-const POSTS_BRANCH = import.meta.env.GITHUB_POSTS_BRANCH ?? "main";
-const POSTS_PATH = import.meta.env.GITHUB_POSTS_PATH ?? "";
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN ?? "";
+const POSTS_REPO = import.meta.env.LEMMA_POSTS_REPO ?? "";
+const POSTS_BRANCH = import.meta.env.LEMMA_POSTS_BRANCH ?? "main";
+const POSTS_PATH = import.meta.env.LEMMA_POSTS_PATH ?? "";
+const GH_TOKEN = import.meta.env.LEMMA_GH_TOKEN ?? "";
 
 const SECTION_ORDER: ReadonlyArray<string> = [
   "Essays",
@@ -81,8 +81,8 @@ function githubHeaders(): Record<string, string> {
     Accept: "application/vnd.github.v3+json",
     "User-Agent": "lemma-blog-builder",
   };
-  if (GITHUB_TOKEN) {
-    base.Authorization = `Bearer ${GITHUB_TOKEN}`;
+  if (GH_TOKEN) {
+    base.Authorization = `Bearer ${GH_TOKEN}`;
   }
   return base;
 }
@@ -92,7 +92,7 @@ async function fetchMarkdownEntries(): Promise<
 > {
   if (!POSTS_REPO) {
     console.warn(
-      "[blog] GITHUB_POSTS_REPO is not set — returning empty list.",
+      "[blog] LEMMA_POSTS_REPO is not set — returning empty list.",
     );
     return [];
   }

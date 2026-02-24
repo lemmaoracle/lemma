@@ -1,8 +1,8 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  readonly GITHUB_POSTS_REPO: string;
-  readonly GITHUB_POSTS_BRANCH: string;
-  readonly GITHUB_POSTS_PATH: string;
-  readonly GITHUB_TOKEN: string;
+  readonly LEMMA_POSTS_REPO: string;
+  readonly LEMMA_POSTS_BRANCH: string;
+  readonly LEMMA_POSTS_PATH: string;
+  readonly LEMMA_GH_TOKEN: string;
 }
