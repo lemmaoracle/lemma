@@ -35,6 +35,9 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@grottonetworking/bbs-signatures':
+        specifier: ^0.1.5
+        version: 0.1.5
       '@lemma/spec':
         specifier: workspace:*
         version: link:../spec
@@ -804,6 +807,10 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@grottonetworking/bbs-signatures@0.1.5':
+    resolution: {integrity: sha512-3twD/hvENm99yFCmckvmKtZe4ca+pH93BoAhN1A6SBPIpnbqhHByx3f5zTqc3g7h8ykKZwPp8vvyvYABOqWpQw==}
+    engines: {node: '>=16'}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -5468,6 +5475,11 @@ snapshots:
       '@ethersproject/strings': 5.8.0
 
   '@fastify/busboy@2.1.1': {}
+
+  '@grottonetworking/bbs-signatures@0.1.5':
+    dependencies:
+      '@noble/curves': 1.8.2
+      '@noble/hashes': 1.8.0
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:

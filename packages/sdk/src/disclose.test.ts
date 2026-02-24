@@ -1,41 +1,221 @@
 import { describe, it, expect } from "vitest";
 import { create } from "./client";
-import { sign, reveal, toSelectiveDisclosure } from "./disclose";
+import {
+  generateKeyPair,
+  sign,
+  verify,
+  reveal,
+  verifyProof,
+  toSelectiveDisclosure,
+  payloadToMessages,
+  messagesToDisclosedMap,
+} from "./disclose";
 
 describe("disclose", () => {
   const client = create({ apiBase: "http://localhost:8787" });
+  const header = new TextEncoder().encode("test-header");
 
-  it("sign returns a bbs+ signature string", async () => {
-    const result = await sign(client, {
-      payload: { age: 25 },
-      issuerKey: "issuer-priv-key",
-      issuerId: "issuer-1",
+  describe("generateKeyPair", () => {
+    it("returns a valid BBS+ key pair", async () => {
+      const kp = await generateKeyPair();
+      expect(kp.secretKey).toBeInstanceOf(Uint8Array);
+      expect(kp.publicKey).toBeInstanceOf(Uint8Array);
+      expect(kp.secretKey.length).toBe(32);
+      expect(kp.publicKey.length).toBe(96);
     });
-    expect(result.signature).toMatch(/^bbs\+:localdev:/);
   });
 
-  it("reveal returns disclosed attrs and proof", async () => {
-    const signed = await sign(client, {
-      payload: { age: 25, country: "JP" },
-      issuerKey: "key",
-      issuerId: "iss",
+  describe("payloadToMessages", () => {
+    it("converts an object to sorted key:value messages", () => {
+      const msgs = payloadToMessages({ name: "Alice", age: 25, country: "JP" });
+      expect(msgs).toEqual(["age:25", "country:JP", "name:Alice"]);
     });
-    const revealed = await reveal(client, {
-      signedPayload: signed.signature,
-      attributes: ["age"],
+
+    it("is deterministic regardless of insertion order", () => {
+      const a = payloadToMessages({ z: 1, a: 2, m: 3 });
+      const b = payloadToMessages({ m: 3, z: 1, a: 2 });
+      expect(a).toEqual(b);
     });
-    expect(revealed.disclosed).toHaveProperty("age");
-    expect(revealed.proof).toMatch(/^bbs\+-sd:localdev:/);
   });
 
-  it("toSelectiveDisclosure wraps output in spec format", async () => {
-    const revealed = await reveal(client, {
-      signedPayload: "sig",
-      attributes: ["x"],
+  describe("messagesToDisclosedMap", () => {
+    it("reconstructs attribute map from messages and indexes", () => {
+      const messages = ["age:25", "country:JP", "name:Alice"];
+      const result = messagesToDisclosedMap(messages, [0, 2]);
+      expect(result).toEqual({ age: "25", name: "Alice" });
     });
-    const sd = toSelectiveDisclosure(revealed);
-    expect(sd.format).toBe("bbs+");
-    expect(sd.disclosedAttributes).toEqual(revealed.disclosed);
-    expect(sd.proof).toBe(revealed.proof);
+  });
+
+  describe("sign + verify", () => {
+    it("creates a valid BBS+ signature", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "country:JP", "name:Alice"];
+
+      const output = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        publicKey: kp.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      expect(output.signature).toBeInstanceOf(Uint8Array);
+      expect(output.signature.length).toBeGreaterThan(0);
+      expect(output.messages).toEqual(messages);
+      expect(output.issuerId).toBe("issuer-1");
+    });
+
+    it("rejects empty messages", async () => {
+      const kp = await generateKeyPair();
+      await expect(
+        sign(client, {
+          messages: [],
+          secretKey: kp.secretKey,
+          publicKey: kp.publicKey,
+          header,
+          issuerId: "issuer-1",
+        }),
+      ).rejects.toThrow("messages must not be empty");
+    });
+
+    it("signature verifies against the issuer public key", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "country:JP"];
+
+      const output = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        publicKey: kp.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const valid = await verify(client, output);
+      expect(valid).toBe(true);
+    });
+  });
+
+  describe("reveal + verifyProof", () => {
+    it("full round-trip: sign -> reveal -> verifyProof", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "country:JP", "name:Alice"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        publicKey: kp.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const revealed = await reveal(client, {
+        signature: signed.signature,
+        messages,
+        publicKey: kp.publicKey,
+        disclosedIndexes: [0, 2],
+        header,
+      });
+
+      expect(revealed.disclosedMessages).toEqual(["age:25", "name:Alice"]);
+      expect(revealed.disclosed).toEqual({ age: "25", name: "Alice" });
+      expect(revealed.proof).toBeInstanceOf(Uint8Array);
+      expect(revealed.proof.length).toBeGreaterThan(0);
+
+      const valid = await verifyProof(client, {
+        proof: revealed.proof,
+        publicKey: kp.publicKey,
+        disclosedMessages: [...revealed.disclosedMessages],
+        disclosedIndexes: [...revealed.disclosedIndexes],
+        totalMessageCount: messages.length,
+        header,
+      });
+
+      expect(valid).toBe(true);
+    });
+
+    it("rejects empty disclosedIndexes", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        publicKey: kp.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      await expect(
+        reveal(client, {
+          signature: signed.signature,
+          messages,
+          publicKey: kp.publicKey,
+          disclosedIndexes: [],
+          header,
+        }),
+      ).rejects.toThrow("disclosedIndexes must not be empty");
+    });
+
+    it("proof verification fails with wrong public key", async () => {
+      const kp1 = await generateKeyPair();
+      const kp2 = await generateKeyPair();
+      const messages = ["age:25", "name:Alice"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp1.secretKey,
+        publicKey: kp1.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const revealed = await reveal(client, {
+        signature: signed.signature,
+        messages,
+        publicKey: kp1.publicKey,
+        disclosedIndexes: [0],
+        header,
+      });
+
+      const valid = await verifyProof(client, {
+        proof: revealed.proof,
+        publicKey: kp2.publicKey,
+        disclosedMessages: [...revealed.disclosedMessages],
+        disclosedIndexes: [...revealed.disclosedIndexes],
+        totalMessageCount: messages.length,
+        header,
+      });
+
+      expect(valid).toBe(false);
+    });
+  });
+
+  describe("toSelectiveDisclosure", () => {
+    it("wraps RevealOutput in spec-compliant format", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "name:Alice"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        publicKey: kp.publicKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const revealed = await reveal(client, {
+        signature: signed.signature,
+        messages,
+        publicKey: kp.publicKey,
+        disclosedIndexes: [0],
+        header,
+      });
+
+      const sd = toSelectiveDisclosure(revealed);
+      expect(sd.format).toBe("bbs+");
+      expect(sd.disclosedAttributes).toEqual(revealed.disclosed);
+      expect(typeof sd.proof).toBe("string");
+      expect(sd.proof.length).toBeGreaterThan(0);
+    });
   });
 });
