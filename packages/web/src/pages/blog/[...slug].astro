@@ -3,8 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 import Navigation from "../../components/Navigation.astro";
 import { getAllPosts } from "../../data/blog";
 
-export function getStaticPaths() {
-  const posts = getAllPosts();
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },

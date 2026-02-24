@@ -4,7 +4,7 @@ import Navigation from "../../components/Navigation.astro";
 import BlogList from "../../components/BlogList.astro";
 import { getBlogSections } from "../../data/blog";
 
-const sections = getBlogSections();
+const sections = await getBlogSections();
 const base = import.meta.env.BASE_URL;
 ---
 
