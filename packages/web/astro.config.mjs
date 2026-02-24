@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   site: "https://lemmaoracle.github.io",
-  base: "/lemma",
+  base: "/lemma/",
   output: "static",
   integrations: [react()],
   vite: {

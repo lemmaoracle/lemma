@@ -40,26 +40,26 @@ const dummyPosts: ReadonlyArray<BlogPost> = [
     body: lemmaOracleSpecs.compiledContent(),
     categoryColor: lemmaOracleSpecs.frontmatter.categoryColor,
   },
-  {
-    slug: "temporal-reasoning-uncertainty",
-    date: "2026.02.18",
-    category: "Research",
-    title: "Temporal reasoning and the architecture of uncertainty",
-    abstract:
-      "A framework for modeling decision systems that operate across extended timeframes where information asymmetry compounds with each step.",
-    body: "<p>Placeholder body. Replace with Affine-sourced content.</p>",
-    categoryColor: "#2563EB",
-  },
-  {
-    slug: "oracles-horizon-problems",
-    date: "2026.02.10",
-    category: "Foundations",
-    title: "Why oracles fail at horizon problems",
-    abstract:
-      "Traditional prediction systems collapse when asked to maintain coherence over multi‑stage reasoning chains. We examine the structural causes.",
-    body: "<p>Placeholder body. Replace with Affine-sourced content.</p>",
-    categoryColor: "#7C3AED",
-  },
+  // {
+  //   slug: "temporal-reasoning-uncertainty",
+  //   date: "2026.02.18",
+  //   category: "Research",
+  //   title: "Temporal reasoning and the architecture of uncertainty",
+  //   abstract:
+  //     "A framework for modeling decision systems that operate across extended timeframes where information asymmetry compounds with each step.",
+  //   body: "<p>Placeholder body. Replace with Affine-sourced content.</p>",
+  //   categoryColor: "#2563EB",
+  // },
+  // {
+  //   slug: "oracles-horizon-problems",
+  //   date: "2026.02.10",
+  //   category: "Foundations",
+  //   title: "Why oracles fail at horizon problems",
+  //   abstract:
+  //     "Traditional prediction systems collapse when asked to maintain coherence over multi‑stage reasoning chains. We examine the structural causes.",
+  //   body: "<p>Placeholder body. Replace with Affine-sourced content.</p>",
+  //   categoryColor: "#7C3AED",
+  // },
 ];
 
 function withCategoryColor(post: BlogPost): BlogPost {
@@ -71,28 +71,28 @@ function withCategoryColor(post: BlogPost): BlogPost {
 export function getBlogSections(): ReadonlyArray<BlogSection> {
   const essays = dummyPosts.slice(0, 2).map(withCategoryColor);
   const changelog: BlogPost[] = [
-    {
-      slug: "v0-8-0-recursive-proof-validation",
-      date: "2026.02.15",
-      category: "Release",
-      title: "v0.8.0 — Recursive proof validation",
-      abstract:
-        "Introduced hierarchical proof checking across nested reasoning steps. Improves reliability on complex decision trees by 47%.",
-      body: "<p>Placeholder.</p>",
-      categoryColor: "#DC2626",
-    },
+    // {
+    //   slug: "v0-8-0-recursive-proof-validation",
+    //   date: "2026.02.15",
+    //   category: "Release",
+    //   title: "v0.8.0 — Recursive proof validation",
+    //   abstract:
+    //     "Introduced hierarchical proof checking across nested reasoning steps. Improves reliability on complex decision trees by 47%.",
+    //   body: "<p>Placeholder.</p>",
+    //   categoryColor: "#DC2626",
+    // },
   ];
   const fieldNotes: BlogPost[] = [
-    {
-      slug: "supply-chain-prediction",
-      date: "2026.02.12",
-      category: "Application",
-      title: "Using Lemma Oracle for supply chain prediction",
-      abstract:
-        "A case study from a manufacturing partner: forecasting bottlenecks six quarters out with proof‑verified confidence intervals.",
-      body: "<p>Placeholder.</p>",
-      categoryColor: "#EA580C",
-    },
+    // {
+    //   slug: "supply-chain-prediction",
+    //   date: "2026.02.12",
+    //   category: "Application",
+    //   title: "Using Lemma Oracle for supply chain prediction",
+    //   abstract:
+    //     "A case study from a manufacturing partner: forecasting bottlenecks six quarters out with proof‑verified confidence intervals.",
+    //   body: "<p>Placeholder.</p>",
+    //   categoryColor: "#EA580C",
+    // },
   ];
   return [
     { section: "Essays", posts: essays },
