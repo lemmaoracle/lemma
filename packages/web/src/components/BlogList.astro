@@ -1,37 +1,44 @@
 ---
 import BlogEntry from "./BlogEntry.astro";
 import type { BlogSection as BlogSectionType } from "../data/blog";
+import type { Translations } from "../i18n/translations";
 
 interface Props {
   sections: ReadonlyArray<BlogSectionType>;
+  t: Translations["blog"];
+  base: string;
 }
 
-const { sections } = Astro.props;
+const { sections, t, base } = Astro.props;
 ---
 
 <div class="mx-auto max-w-[1400px] px-8 py-16">
   {
-    sections.map((section) => (
-      <section class="mb-20 last:mb-0">
-        <h2
-          id={section.section.toLowerCase()}
-          class="mb-8 border-b border-black/10 pb-3 font-mono text-[11px] tracking-wider text-black/30 uppercase"
-        >
-          {section.section}
-        </h2>
-        <div>
-          {section.posts.map((post) => (
-            <BlogEntry
-              slug={post.slug}
-              date={post.date}
-              category={post.category}
-              title={post.title}
-              abstract={post.abstract}
-              categoryColor={post.categoryColor}
-            />
-          ))}
-        </div>
-      </section>
-    ))
+    sections.map((section) => {
+      const sectionLabel = t.sections[section.section] ?? section.section;
+      return (
+        <section class="mb-20 last:mb-0">
+          <h2
+            id={section.section.toLowerCase().replace(/\s+/g, "-")}
+            class="mb-8 border-b border-black/10 pb-3 font-mono text-[11px] tracking-wider text-black/30 uppercase"
+          >
+            {sectionLabel}
+          </h2>
+          <div>
+            {section.posts.map((post) => (
+              <BlogEntry
+                slug={post.slug}
+                date={post.date}
+                category={post.category}
+                title={post.title}
+                abstract={post.abstract}
+                categoryColor={post.categoryColor}
+                base={base}
+              />
+            ))}
+          </div>
+        </section>
+      );
+    })
   }
 </div>

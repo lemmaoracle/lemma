@@ -1,6 +1,8 @@
 /**
  * Blog data layer.
  * Fetches Markdown articles from a dedicated GitHub repository at build time.
+ * Supports bilingual posts via filename: post-entry.en.md, post-entry.ja.md
+ * (plain .md is treated as locale "en" for backward compatibility).
  *
  * Environment variables:
  *   LEMMA_POSTS_REPO   — "owner/repo" (e.g. "lemmaoracle/blog-posts")
@@ -12,8 +14,11 @@
 import matter from "gray-matter";
 import { marked } from "marked";
 
+export type BlogLocale = "en" | "ja";
+
 export interface BlogPost {
   readonly slug: string;
+  readonly locale: BlogLocale;
   readonly date: string;
   readonly category: string;
   readonly section: string;
@@ -109,7 +114,12 @@ async function fetchMarkdownEntries(): Promise<
 
   const entries: ReadonlyArray<GitHubContentEntry> = await res.json();
   const mdEntries = entries.filter(
-    (e) => e.type === "file" && e.name.endsWith(".md") && e.download_url,
+    (e) =>
+      e.type === "file" &&
+      e.download_url &&
+      (e.name.endsWith(".en.md") ||
+        e.name.endsWith(".ja.md") ||
+        (e.name.endsWith(".md") && !/\.(en|ja)\.md$/.test(e.name))),
   );
 
   const results = await Promise.all(
@@ -128,14 +138,43 @@ async function fetchMarkdownEntries(): Promise<
   );
 }
 
+/* ── Locale from filename: *.en.md, *.ja.md, or *.md (en) ──────── */
+
+const LOCALE_SUFFIX = /\.(en|ja)\.md$/;
+
+function localeAndSlugFromFilename(
+  filename: string,
+): { locale: BlogLocale; slug: string } | undefined {
+  const match = filename.match(LOCALE_SUFFIX);
+  if (match) {
+    return {
+      locale: match[1] as BlogLocale,
+      slug: filename.replace(LOCALE_SUFFIX, ""),
+    };
+  }
+  if (filename.endsWith(".md")) {
+    return {
+      locale: "en",
+      slug: filename.replace(/\.md$/, ""),
+    };
+  }
+  return undefined;
+}
+
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
 
-function parsePost(filename: string, raw: string): BlogPost | undefined {
+function parsePost(
+  filename: string,
+  raw: string,
+): BlogPost | undefined {
+  const parsed = localeAndSlugFromFilename(filename);
+  if (!parsed) return undefined;
+
   const { data, content } = matter(raw);
   const fm = data as PostFrontmatter;
   if (!fm.title) return undefined;
 
-  const slug = fm.slug ?? filename.replace(/\.md$/, "");
+  const slug = fm.slug ?? parsed.slug;
   const category = fm.category ?? "";
   const section =
     fm.section ?? defaultSectionByCategory[category] ?? "Essays";
@@ -145,6 +184,7 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
 
   return {
     slug,
+    locale: parsed.locale,
     date: fm.date ?? "",
     category,
     section,
@@ -173,8 +213,10 @@ function loadPosts(): Promise<ReadonlyArray<BlogPost>> {
 
 /* ── Public API (async) ─────────────────────────────────────────── */
 
-export async function getBlogSections(): Promise<ReadonlyArray<BlogSection>> {
-  const posts = await loadPosts();
+export async function getBlogSections(
+  locale: BlogLocale,
+): Promise<ReadonlyArray<BlogSection>> {
+  const posts = (await loadPosts()).filter((p) => p.locale === locale);
 
   const grouped = new Map<string, BlogPost[]>(
     SECTION_ORDER.map((s) => [s, []]),
@@ -194,13 +236,17 @@ export async function getBlogSections(): Promise<ReadonlyArray<BlogSection>> {
     .filter((s) => s.posts.length > 0);
 }
 
-export async function getAllPosts(): Promise<ReadonlyArray<BlogPost>> {
-  return loadPosts();
+export async function getAllPosts(
+  locale: BlogLocale,
+): Promise<ReadonlyArray<BlogPost>> {
+  const posts = await loadPosts();
+  return posts.filter((p) => p.locale === locale);
 }
 
 export async function getPostBySlug(
   slug: string,
+  locale: BlogLocale,
 ): Promise<BlogPost | undefined> {
   const posts = await loadPosts();
-  return posts.find((p) => p.slug === slug);
+  return posts.find((p) => p.slug === slug && p.locale === locale);
 }

@@ -1,13 +1,13 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navigation from "../../components/Navigation.astro";
-import BlogList from "../../components/BlogList.astro";
-import { getBlogSections } from "../../data/blog";
-import { getTranslations } from "../../i18n/translations";
+import Layout from "../../../layouts/Layout.astro";
+import Navigation from "../../../components/Navigation.astro";
+import BlogList from "../../../components/BlogList.astro";
+import { getBlogSections } from "../../../data/blog";
+import { getTranslations } from "../../../i18n/translations";
 
-const locale = "en";
+const locale = "ja";
 const t = getTranslations(locale);
-const base = "";
+const base = "/ja";
 const sections = await getBlogSections(locale);
 ---
 

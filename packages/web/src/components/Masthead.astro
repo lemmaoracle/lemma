@@ -1,5 +1,12 @@
 ---
 import CoverImage from "../assets/cover.jpg";
+import type { Translations } from "../i18n/translations";
+
+interface Props {
+  t: Translations["masthead"];
+}
+
+const { t } = Astro.props;
 ---
 
 <section class="flex min-h-[85vh] flex-col items-center justify-center px-8 py-24">
@@ -13,10 +20,10 @@ import CoverImage from "../assets/cover.jpg";
       class="mb-5 text-[64px] leading-[1] tracking-[-0.02em]"
       style="font-family: 'Instrument Serif', serif;"
     >
-      Lemma Oracle
+      {t.title}
     </h1>
     <p class="font-mono text-[13px] leading-relaxed tracking-wide text-black/60">
-      Ground‑truth infrastructure for verifiable, private AI data.
+      {t.tagline}
     </p>
   </div>
 </section>

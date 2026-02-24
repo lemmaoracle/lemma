@@ -6,6 +6,11 @@ export default defineConfig({
   site: "https://lemma.frame00.com",
   base: "/",
   output: "static",
+  i18n: {
+    locales: ["en", "ja"],
+    defaultLocale: "en",
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],

@@ -1,4 +1,5 @@
 import { ShieldCheck, FileLock, Eye } from "lucide-react";
+import type { Translations } from "../i18n/translations";
 
 interface FeatureItemProps {
   icon: React.ReactNode;
@@ -21,25 +22,29 @@ function FeatureItem({ icon, heading, body }: FeatureItemProps) {
   );
 }
 
-export function FeatureGrid() {
+interface FeatureGridProps {
+  t: Translations["features"];
+}
+
+export function FeatureGrid({ t }: FeatureGridProps) {
   return (
     <section className="border-b border-black/5">
       <div className="mx-auto max-w-[1400px] px-8 py-20">
         <div className="grid grid-cols-3 gap-px bg-black/5">
           <FeatureItem
             icon={<ShieldCheck size={32} strokeWidth={1} />}
-            heading="Verified Data for AI"
-            body="Ground your AI in cryptographically verified facts. Lemma's verified-attributes API returns only ZK-proven data to your AI — eliminating hallucinations at the source."
+            heading={t.verifiedDataHeading}
+            body={t.verifiedDataBody}
           />
           <FeatureItem
             icon={<FileLock size={32} strokeWidth={1} />}
-            heading="Privacy by Default"
-            body="Your AI gets verified answers — never the raw data. Documents stay encrypted end-to-end; Lemma itself never sees plaintext."
+            heading={t.privacyHeading}
+            body={t.privacyBody}
           />
           <FeatureItem
             icon={<Eye size={32} strokeWidth={1} />}
-            heading="Share Only What's Needed"
-            body="Control exactly which attributes your AI can access. Prove 'age ≥ 18' without exposing the actual age, name, or address."
+            heading={t.shareHeading}
+            body={t.shareBody}
           />
         </div>
       </div>

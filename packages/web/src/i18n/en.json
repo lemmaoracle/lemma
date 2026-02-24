@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "lemmaOracle": "Lemma Oracle",
+    "overview": "Overview",
+    "changelog": "Changelog",
+    "essays": "Essays",
+    "blog": "Blog",
+    "languageJa": "日本語",
+    "languageEn": "English"
+  },
+  "masthead": {
+    "title": "Lemma Oracle",
+    "tagline": "Ground‑truth infrastructure for verifiable, private AI data."
+  },
+  "features": {
+    "verifiedDataHeading": "Verified Data for AI",
+    "verifiedDataBody": "Ground your AI in cryptographically verified facts. Lemma's verified-attributes API returns only ZK-proven data to your AI — eliminating hallucinations at the source.",
+    "privacyHeading": "Privacy by Default",
+    "privacyBody": "Your AI gets verified answers — never the raw data. Documents stay encrypted end-to-end; Lemma itself never sees plaintext.",
+    "shareHeading": "Share Only What's Needed",
+    "shareBody": "Control exactly which attributes your AI can access. Prove 'age ≥ 18' without exposing the actual age, name, or address."
+  },
+  "footer": {
+    "copyright": "© 2026 FRAME00 — Built for decisions that matter"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Essays, changelog, and field notes.",
+    "backToBlog": "← Blog",
+    "sections": {
+      "Essays": "Essays",
+      "Changelog": "Changelog",
+      "Field Notes": "Field Notes"
+    }
+  },
+  "rebuild": {
+    "title": "Rebuild site",
+    "intro": "This page is not linked from the site. Use it to trigger a rebuild and redeploy of the static site (e.g. after updating content in Affine).",
+    "option1Title": "Option 1: Run workflow in GitHub",
+    "option1Desc": "Open the workflow page and click Run workflow.",
+    "option2Title": "Option 2: Trigger via URL (repository_dispatch)",
+    "option2Desc": "From a script or external service (e.g. after Affine updates), send a POST request with a Personal Access Token (PAT). This site is static, so a plain GET to this page cannot start the workflow without credentials.",
+    "option2CurlNotePrefix": "Store the PAT in your environment or a secret store; do not commit it. The workflow listens for ",
+    "option2CurlNoteSuffix": ".",
+    "backHome": "← Back to home"
+  },
+  "layout": {
+    "defaultTitle": "Lemma Oracle",
+    "defaultDescription": "A reasoning engine for long‑horizon decisions"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "lemmaOracle": "Lemma Oracle",
+    "overview": "概要",
+    "changelog": "変更履歴",
+    "essays": "エッセイ",
+    "blog": "ブログ",
+    "languageJa": "日本語",
+    "languageEn": "English"
+  },
+  "masthead": {
+    "title": "Lemma Oracle",
+    "tagline": "検証可能でプライベートな AI データのためのグラウンドトゥルース基盤。"
+  },
+  "features": {
+    "verifiedDataHeading": "AI のための検証済みデータ",
+    "verifiedDataBody": "暗号学的に検証された事実で AI を支えます。Lemma の verified-attributes API は ZK 証明されたデータだけを AI に返し、ハルシネーションを根本から防ぎます。",
+    "privacyHeading": "デフォルトでプライバシー",
+    "privacyBody": "AI が得るのは検証済みの答えだけで、生データは渡しません。文書はエンドツーエンドで暗号化され、Lemma 自体が平文を見ることはありません。",
+    "shareHeading": "必要な分だけ共有",
+    "shareBody": "AI がアクセスできる属性を正確に制御できます。「18歳以上」を証明しながら、実際の年齢・氏名・住所は開示しません。"
+  },
+  "footer": {
+    "copyright": "© 2026 FRAME00 — Built for decisions that matter"
+  },
+  "blog": {
+    "title": "ブログ",
+    "subtitle": "エッセイ、変更履歴、フィールドノート。",
+    "backToBlog": "← ブログ",
+    "sections": {
+      "Essays": "エッセイ",
+      "Changelog": "変更履歴",
+      "Field Notes": "フィールドノート"
+    }
+  },
+  "rebuild": {
+    "title": "サイトの再ビルド",
+    "intro": "このページはサイトからはリンクされていません。静的サイトの再ビルドと再デプロイをトリガーするために使います（例: Affine でコンテンツを更新した後）。",
+    "option1Title": "方法 1: GitHub でワークフローを実行",
+    "option1Desc": "ワークフローページを開き、「Run workflow」をクリックしてください。",
+    "option2Title": "方法 2: URL でトリガー（repository_dispatch）",
+    "option2Desc": "スクリプトや外部サービス（例: Affine 更新後）から、Personal Access Token (PAT) 付きの POST リクエストを送信してください。このサイトは静的であるため、認証なしの単純な GET ではワークフローを開始できません。",
+    "option2CurlNotePrefix": "PAT は環境変数やシークレットストアに保存し、コミットしないでください。ワークフローは ",
+    "option2CurlNoteSuffix": " を監視しています。",
+    "backHome": "← ホームに戻る"
+  },
+  "layout": {
+    "defaultTitle": "Lemma Oracle",
+    "defaultDescription": "長期意思決定のための推論エンジン"
+  }
+}

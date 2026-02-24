@@ -1,11 +1,11 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navigation from "../../components/Navigation.astro";
-import { getAllPosts } from "../../data/blog";
-import { getTranslations } from "../../i18n/translations";
+import Layout from "../../../layouts/Layout.astro";
+import Navigation from "../../../components/Navigation.astro";
+import { getAllPosts } from "../../../data/blog";
+import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts("en");
+  const posts = await getAllPosts("ja");
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
@@ -13,14 +13,14 @@ export async function getStaticPaths() {
 }
 
 interface Props {
-  post: import("../../data/blog").BlogPost;
+  post: import("../../../data/blog").BlogPost;
 }
 
 const { post } = Astro.props;
-const locale = "en";
+const locale = "ja";
 const t = getTranslations(locale);
-const base = "";
-const blogPath = base ? `${base}/blog` : "blog";
+const base = "/ja";
+const blogPath = `${base}/blog`;
 ---
 
 <Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>

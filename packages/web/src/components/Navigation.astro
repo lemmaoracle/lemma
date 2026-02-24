@@ -1,21 +1,37 @@
 ---
-const base = import.meta.env.BASE_URL;
+import type { Locale } from "../i18n/translations";
+import type { Translations } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+  t: Translations["nav"];
+  base: string;
+}
+
+const { locale, t, base } = Astro.props;
+const blogPath = base ? `${base}/blog` : "blog";
+const homePath = base || "/";
 ---
 
 <nav
   class="fixed top-0 right-0 left-0 z-50 border-b border-black/5 bg-[#FAFAF8]/95 backdrop-blur-sm"
 >
   <div class="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-3">
-    <a href={base} class="font-mono text-[13px] tracking-wider text-black/50 uppercase">
-      Lemma Oracle
+    <a href={homePath} class="font-mono text-[13px] tracking-wider text-black/50 uppercase">
+      {t.lemmaOracle}
     </a>
     <ul class="flex items-center gap-6 font-mono text-[13px] tracking-wide uppercase">
-      <li><a class="opacity-50 transition-opacity">Overview</a></li>
-      <li>
-        <a class="opacity-50 transition-opacity">Changelog</a>
+      <li><a href={homePath} class="opacity-50 transition-opacity">{t.overview}</a></li>
+      <li><a href={homePath} class="opacity-50 transition-opacity">{t.changelog}</a></li>
+      <li><a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a></li>
+      <li><a href={blogPath} class="transition-opacity hover:opacity-50">{t.blog}</a></li>
+      <li class="text-black/40">
+        {locale === "ja" ? (
+          <a href="/" class="transition-opacity hover:opacity-70">{t.languageEn}</a>
+        ) : (
+          <a href="/ja/" class="transition-opacity hover:opacity-70">{t.languageJa}</a>
+        )}
       </li>
-      <li><a href={`${base}#essays`} class="transition-opacity hover:opacity-50">Essays</a></li>
-      <li><a href={`${base}blog`} class="transition-opacity hover:opacity-50">Blog</a></li>
     </ul>
   </div>
 </nav>
