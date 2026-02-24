@@ -4,6 +4,8 @@
  * See https://affine.pro/blog/using-affine-as-a-blog-technical for approach (public workspace / session token + affine-reader).
  */
 
+import * as lemmaOracleSpecs from "../../posts/lemma-oracle-specs.md";
+
 export interface BlogPost {
   readonly slug: string;
   readonly date: string;
@@ -29,6 +31,15 @@ const categoryColorByCategory: Readonly<Record<string, string>> = {
 };
 
 const dummyPosts: ReadonlyArray<BlogPost> = [
+  {
+    slug: lemmaOracleSpecs.frontmatter.slug,
+    date: lemmaOracleSpecs.frontmatter.date,
+    category: lemmaOracleSpecs.frontmatter.category,
+    title: lemmaOracleSpecs.frontmatter.title,
+    abstract: lemmaOracleSpecs.frontmatter.abstract,
+    body: lemmaOracleSpecs.compiledContent(),
+    categoryColor: lemmaOracleSpecs.frontmatter.categoryColor,
+  },
   {
     slug: "temporal-reasoning-uncertainty",
     date: "2026.02.18",

@@ -47,7 +47,10 @@ const base = import.meta.env.BASE_URL;
         >
           {post.title}
         </h1>
-        <div class="prose prose-neutral text-black/80" set:html={post.body} />
+        <div
+          class="prose prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
+          set:html={post.body}
+        />
       </article>
     </main>
     <footer class="mt-16 border-t border-black/5 py-8">
