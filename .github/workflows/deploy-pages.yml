@@ -36,7 +36,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # Blog posts are fetched from a GitHub repo at build time; set Variables (and optional LEMMA_GH_TOKEN secret) in repo Settings → Secrets and variables → Actions.
       - name: Build web (Astro)
+        env:
+          LEMMA_POSTS_REPO: ${{ vars.LEMMA_POSTS_REPO }}
+          LEMMA_POSTS_BRANCH: ${{ vars.LEMMA_POSTS_BRANCH || 'main' }}
+          LEMMA_POSTS_PATH: ${{ vars.LEMMA_POSTS_PATH || '' }}
+          LEMMA_GH_TOKEN: ${{ secrets.LEMMA_GH_TOKEN }}
         run: pnpm --filter @lemma/web build
 
       - name: Upload artifact
