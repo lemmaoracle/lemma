@@ -21,9 +21,9 @@ export type ProveOutput = Readonly<{
 
 const sha256Base64 = (s: string): string => createHash("sha256").update(s).digest("base64");
 
-export const prove = async (_client: LemmaClient, input: ProveInput): Promise<ProveOutput> => {
+export const prove = (_client: LemmaClient, input: ProveInput): Promise<ProveOutput> => {
   const proof = sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`);
   const attrRoot = R.prop("attr_commitment_root", input.witness);
   const publicInputs: ReadonlyArray<string> = typeof attrRoot === "string" ? [attrRoot] : [];
-  return { proofBytes: proof, publicInputs };
+  return Promise.resolve({ proofBytes: proof, publicInputs });
 };

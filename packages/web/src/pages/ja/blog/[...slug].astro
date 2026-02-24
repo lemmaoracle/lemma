@@ -20,7 +20,7 @@ const { post } = Astro.props;
 const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
-const blogPath = `${base}/blog`;
+const blogPath = "/ja/blog";
 ---
 
 <Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>

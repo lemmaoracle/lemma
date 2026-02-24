@@ -3,8 +3,8 @@ You are working in the Lemma monorepo (pnpm workspace).
 Rules:
 
 - TypeScript strict mode everywhere.
-- SDK code must pass eslint-plugin-functional (strict preset).
-- NEVER use `if`, `switch`, `let`, `class`, `for`, `while`, `throw` in SDK source files.
+- All TypeScript packages (except contracts) must pass eslint-plugin-functional (strict preset).
+- NEVER use `if`, `switch`, `let`, `class`, `for`, `while`, `throw` in SDK, spec, web source files.
 Use R.cond / R.ifElse / ternary for branching, R.map / R.reduce for iteration,
 Promise.reject for errors.
 - Co-locate tests: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules.

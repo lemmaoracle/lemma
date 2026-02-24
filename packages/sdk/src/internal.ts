@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import type { LemmaClient } from "@lemma/spec";
 
 export type Json =
@@ -24,11 +23,11 @@ export const withApiKey = (
   client.apiKey ? { ...headers, "x-api-key": client.apiKey } : headers;
 
 export const toErrorMessage = (e: unknown): string =>
-  R.cond<readonly [unknown], string>([
-    [R.is(Error), (x: unknown) => (x as Error).message],
-    [R.is(String), (x: unknown) => x as string],
-    [R.T, R.always("Unknown error")],
-  ])(e);
+  e instanceof Error
+    ? e.message
+    : typeof e === "string"
+      ? e
+      : "Unknown error";
 
 export const reject = <T = never>(message: string): Promise<T> =>
   Promise.reject(new Error(message));

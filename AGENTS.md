@@ -13,7 +13,7 @@
 - `strict: true` in every tsconfig.
 - All types must use `Readonly<>` / `ReadonlyArray<>`.
 
-### Functional programming (SDK only)
+### Functional programming (all packages except contracts)
 
 - **eslint-plugin-functional `strict` preset is active.**
 - **No `if` / `switch` statements.** Use `R.cond`, `R.ifElse`, `R.when`, `R.unless`, or ternary expressions.

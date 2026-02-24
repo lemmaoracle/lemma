@@ -1,6 +1,6 @@
 # Functional Style Guide
 
-The SDK and Workers are linted with **eslint-plugin-functional (strict preset)**.
+All TypeScript packages (except contracts) are linted with **eslint-plugin-functional (strict preset)**.
 
 ## Core principles
 

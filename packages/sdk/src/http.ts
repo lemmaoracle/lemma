@@ -1,10 +1,10 @@
 import type { LemmaClient } from "@lemma/spec";
-import { reject, resolveFetch, toErrorMessage, withApiKey } from "./internal";
+import { reject, resolveFetch, withApiKey } from "./internal";
 
 export type HttpMethod = "GET" | "POST";
 
 const asJson = (res: Response): Promise<unknown> =>
-  res.json().catch(() => Promise.resolve({ error: "Invalid JSON" }));
+  res.json().catch((_e: unknown) => Promise.resolve({ error: "Invalid JSON" }));
 
 export const requestJson =
   <T>(client: LemmaClient) =>

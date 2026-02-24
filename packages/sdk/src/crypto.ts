@@ -23,7 +23,7 @@ const sha256 = (buf: Buffer): Buffer => createHash("sha256").update(buf).digest(
 const sha3_256Hex = (buf: Buffer): string => createHash("sha3-256").update(buf).digest("hex");
 const utf8 = (s: string): Buffer => Buffer.from(s, "utf8");
 
-export const encrypt = async (
+export const encrypt = (
   _client: LemmaClient,
   input: EncryptInput,
 ): Promise<EncryptOutput> => {
@@ -37,5 +37,5 @@ export const encrypt = async (
   const docHash = `0x${sha3_256Hex(encrypted)}`;
   const cid = `bafy${sha256(encrypted).toString("hex").slice(0, 40)}`;
 
-  return { docHash, cid, encryptedDocBase64: encrypted.toString("base64") };
+  return Promise.resolve({ docHash, cid, encryptedDocBase64: encrypted.toString("base64") });
 };
