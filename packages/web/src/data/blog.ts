@@ -13,6 +13,8 @@
 
 import matter from "gray-matter";
 import { marked } from "marked";
+import type { Tokens } from "marked";
+import { createHighlighter } from "shiki";
 
 export type BlogLocale = "en" | "ja";
 
@@ -161,6 +163,37 @@ function localeAndSlugFromFilename(
   return undefined;
 }
 
+const BLOG_CODE_THEME = "github-dark";
+
+const BLOG_CODE_LANGS = [
+  "bash",
+  "css",
+  "diff",
+  "html",
+  "javascript",
+  "js",
+  "json",
+  "jsonc",
+  "markdown",
+  "md",
+  "plaintext",
+  "shell",
+  "sql",
+  "text",
+  "ts",
+  "typescript",
+  "yaml",
+  "yml",
+] as const;
+
+function escapeCodeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
 
 function parsePost(
@@ -201,12 +234,32 @@ let _cache: Promise<ReadonlyArray<BlogPost>> | undefined;
 
 function loadPosts(): Promise<ReadonlyArray<BlogPost>> {
   if (!_cache) {
-    _cache = fetchMarkdownEntries().then((entries) =>
-      entries
+    _cache = (async () => {
+      const highlighter = await createHighlighter({
+        themes: [BLOG_CODE_THEME],
+        langs: [...BLOG_CODE_LANGS],
+      });
+      marked.use({
+        renderer: {
+          code({ text, lang }: Tokens.Code) {
+            const safeLang = lang ?? "text";
+            try {
+              return highlighter.codeToHtml(text, {
+                lang: safeLang,
+                theme: BLOG_CODE_THEME,
+              });
+            } catch {
+              return `<pre><code>${escapeCodeHtml(text)}</code></pre>`;
+            }
+          },
+        },
+      });
+      const entries = await fetchMarkdownEntries();
+      return entries
         .map((e) => parsePost(e.name, e.content))
         .filter((p): p is BlogPost => p !== undefined)
-        .toSorted((a, b) => (a.date > b.date ? -1 : 1)),
-    );
+        .toSorted((a, b) => (a.date > b.date ? -1 : 1));
+    })();
   }
   return _cache;
 }
