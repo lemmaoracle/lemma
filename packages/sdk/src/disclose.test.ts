@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { create } from "./client";
+import { initializeWasm } from "@docknetwork/crypto-wasm";
 import {
   generateKeyPair,
   sign,
@@ -12,6 +13,11 @@ import {
 } from "./disclose";
 
 describe("disclose", () => {
+  // Initialize WASM before running any tests
+  beforeAll(async () => {
+    await initializeWasm();
+  }, 30000);
+
   const client = create({ apiBase: "http://localhost:8787" });
   const header = new TextEncoder().encode("test-header");
 
@@ -54,7 +60,6 @@ describe("disclose", () => {
       const output = await sign(client, {
         messages,
         secretKey: kp.secretKey,
-        publicKey: kp.publicKey,
         header,
         issuerId: "issuer-1",
       });
@@ -71,7 +76,6 @@ describe("disclose", () => {
         sign(client, {
           messages: [],
           secretKey: kp.secretKey,
-          publicKey: kp.publicKey,
           header,
           issuerId: "issuer-1",
         }),
@@ -85,7 +89,6 @@ describe("disclose", () => {
       const output = await sign(client, {
         messages,
         secretKey: kp.secretKey,
-        publicKey: kp.publicKey,
         header,
         issuerId: "issuer-1",
       });
@@ -103,7 +106,6 @@ describe("disclose", () => {
       const signed = await sign(client, {
         messages,
         secretKey: kp.secretKey,
-        publicKey: kp.publicKey,
         header,
         issuerId: "issuer-1",
       });
@@ -140,7 +142,6 @@ describe("disclose", () => {
       const signed = await sign(client, {
         messages,
         secretKey: kp.secretKey,
-        publicKey: kp.publicKey,
         header,
         issuerId: "issuer-1",
       });
@@ -164,7 +165,6 @@ describe("disclose", () => {
       const signed = await sign(client, {
         messages,
         secretKey: kp1.secretKey,
-        publicKey: kp1.publicKey,
         header,
         issuerId: "issuer-1",
       });
@@ -198,7 +198,6 @@ describe("disclose", () => {
       const signed = await sign(client, {
         messages,
         secretKey: kp.secretKey,
-        publicKey: kp.publicKey,
         header,
         issuerId: "issuer-1",
       });

@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@grottonetworking/bbs-signatures": "^0.1.5",
+    "@docknetwork/crypto-wasm": "^0.33.0",
     "@lemma/spec": "workspace:*",
     "ramda": "^0.30.1"
   },
