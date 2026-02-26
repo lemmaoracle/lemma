@@ -74,7 +74,8 @@ export type VerifyProofInput = Readonly<{
 /* ------------------------------------------------------------------ */
 
 // Initialize WASM once when the module loads
-initializeWasm();
+// eslint-disable-next-line functional/no-expression-statements
+void initializeWasm();
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -132,6 +133,7 @@ export type KeyGenOptions = Readonly<{
 /**
  * Generate a BBS+ key pair (secret key: 32 bytes, public key: 96 bytes).
  */
+/* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
 export const generateKeyPair = async (
   options: KeyGenOptions = {},
 ): Promise<BbsKeyPair> => {
@@ -154,6 +156,7 @@ export const generateKeyPair = async (
     publicKey,
   };
 };
+/* eslint-enable @typescript-eslint/require-await */
 
 /**
  * Issuer signs a set of attribute messages with their BBS+ secret key.
@@ -194,6 +197,7 @@ export const sign = async (
 /**
  * Verify a BBS+ signature against the issuer's public key.
  */
+/* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
 export const verify = async (
   _client: LemmaClient,
   signOutput: SignOutput,
@@ -214,6 +218,7 @@ export const verify = async (
       return result.verified;
     },
   )(signOutput.messages);
+/* eslint-enable @typescript-eslint/require-await */
 
 /**
  * Holder creates a selective disclosure proof, choosing which
@@ -257,6 +262,7 @@ export const reveal = async (
 /**
  * Verifier checks a selective-disclosure proof against the issuer's public key.
  */
+/* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
 export const verifyProof = async (
   _client: LemmaClient,
   input: VerifyProofInput,
@@ -271,9 +277,11 @@ export const verifyProof = async (
       
       // Populate revealed messages map using native forEach
       const disclosedIndexesArray = [...input.disclosedIndexes];
+      /* eslint-disable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion -- Map mutation required for BBS+ verification algorithm */
       disclosedScalars.forEach((scalar: Uint8Array, i: number) => {
         revealedMsgs.set(disclosedIndexesArray[i]!, scalar);
       });
+      /* eslint-enable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion */
       
       const result = bbsPlusVerifyProofOfKnowledgeOfSignature(
         input.proof, revealedMsgs, challenge, input.publicKey, params, false,
@@ -282,6 +290,7 @@ export const verifyProof = async (
       return result.verified;
     },
   )(input.disclosedMessages);
+/* eslint-enable @typescript-eslint/require-await */
 
 /**
  * Wrap a RevealOutput into the spec's SelectiveDisclosure envelope.
