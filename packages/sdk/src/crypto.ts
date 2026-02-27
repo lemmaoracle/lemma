@@ -23,10 +23,7 @@ const sha256 = (buf: Buffer): Buffer => createHash("sha256").update(buf).digest(
 const sha3_256Hex = (buf: Buffer): string => createHash("sha3-256").update(buf).digest("hex");
 const utf8 = (s: string): Buffer => Buffer.from(s, "utf8");
 
-export const encrypt = (
-  _client: LemmaClient,
-  input: EncryptInput,
-): Promise<EncryptOutput> => {
+export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<EncryptOutput> => {
   const nonce = randomBytes(16);
   const material = Buffer.concat([
     utf8(input.holderKey),

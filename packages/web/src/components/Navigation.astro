@@ -23,14 +23,22 @@ const homePath = base || "/";
     <ul class="flex items-center gap-6 font-mono text-[13px] tracking-wide uppercase">
       <li><a href={homePath} class="opacity-50 transition-opacity">{t.overview}</a></li>
       <li><a href={homePath} class="opacity-50 transition-opacity">{t.changelog}</a></li>
-      <li><a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a></li>
+      <li>
+        <a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a>
+      </li>
       <li><a href={blogPath} class="transition-opacity hover:opacity-50">{t.blog}</a></li>
       <li class="text-black/40">
-        {locale === "ja" ? (
-          <a href="/" class="transition-opacity hover:opacity-70">{t.languageEn}</a>
-        ) : (
-          <a href="/ja/" class="transition-opacity hover:opacity-70">{t.languageJa}</a>
-        )}
+        {
+          locale === "ja" ? (
+            <a href="/" class="transition-opacity hover:opacity-70">
+              {t.languageEn}
+            </a>
+          ) : (
+            <a href="/ja/" class="transition-opacity hover:opacity-70">
+              {t.languageJa}
+            </a>
+          )
+        }
       </li>
     </ul>
   </div>

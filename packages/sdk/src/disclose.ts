@@ -134,23 +134,21 @@ export type KeyGenOptions = Readonly<{
  * Generate a BBS+ key pair (secret key: 32 bytes, public key: 96 bytes).
  */
 /* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
-export const generateKeyPair = async (
-  options: KeyGenOptions = {},
-): Promise<BbsKeyPair> => {
+export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsKeyPair> => {
   const info = options.keyInfo ?? te.encode("lemma-bbs-key");
-  
+
   // Generate a 32-byte random seed
   const seed = randomBytes(KEY_MATERIAL_BYTES);
-  
+
   // Generate signing key from seed
   const secretKey = bbsPlusGenerateSigningKey(seed);
-  
+
   // Generate signature params for 1 message
   const params = bbsPlusGenerateSignatureParamsG1(1, info);
-  
+
   // Generate public key from secret key
   const publicKey = bbsPlusGeneratePublicKeyG2(secretKey, params);
-  
+
   return {
     secretKey,
     publicKey,
@@ -161,103 +159,90 @@ export const generateKeyPair = async (
 /**
  * Issuer signs a set of attribute messages with their BBS+ secret key.
  */
-export const sign = async (
-  _client: LemmaClient,
-  input: SignInput,
-): Promise<SignOutput> =>
+export const sign = async (_client: LemmaClient, input: SignInput): Promise<SignOutput> =>
   input.messages.length === 0
     ? reject("messages must not be empty")
-    : R.pipe(
-        encodeMessages,
-        (scalars) => {
-          // Generate signature params based on message count
-          const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
-          
-          // Sign the messages
-          const signature = bbsPlusSignG1(
-            [...scalars],
-            input.secretKey,
-            params,
-            false, // messages are already encoded
-          );
-          
-          // Generate public key from secret key
-          const publicKey = bbsPlusGeneratePublicKeyG2(input.secretKey, params);
-          
-          return {
-            signature,
-            messages: input.messages,
-            publicKey,
-            header: input.header,
-            issuerId: input.issuerId,
-          };
-        },
-      )(input.messages);
+    : R.pipe(encodeMessages, (scalars) => {
+        // Generate signature params based on message count
+        const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
+
+        // Sign the messages
+        const signature = bbsPlusSignG1(
+          [...scalars],
+          input.secretKey,
+          params,
+          false, // messages are already encoded
+        );
+
+        // Generate public key from secret key
+        const publicKey = bbsPlusGeneratePublicKeyG2(input.secretKey, params);
+
+        return {
+          signature,
+          messages: input.messages,
+          publicKey,
+          header: input.header,
+          issuerId: input.issuerId,
+        };
+      })(input.messages);
 
 /**
  * Verify a BBS+ signature against the issuer's public key.
  */
 /* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
-export const verify = async (
-  _client: LemmaClient,
-  signOutput: SignOutput,
-): Promise<boolean> =>
-  R.pipe(
-    encodeMessages,
-    (scalars) => {
-      const params = bbsPlusGenerateSignatureParamsG1(signOutput.messages.length, signOutput.header);
-      
-      const result = bbsPlusVerifyG1(
-        [...scalars],
-        signOutput.signature,
-        signOutput.publicKey,
-        params,
-        false, // messages are already encoded
-      );
-      
-      return result.verified;
-    },
-  )(signOutput.messages);
+export const verify = async (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> =>
+  R.pipe(encodeMessages, (scalars) => {
+    const params = bbsPlusGenerateSignatureParamsG1(signOutput.messages.length, signOutput.header);
+
+    const result = bbsPlusVerifyG1(
+      [...scalars],
+      signOutput.signature,
+      signOutput.publicKey,
+      params,
+      false, // messages are already encoded
+    );
+
+    return result.verified;
+  })(signOutput.messages);
 /* eslint-enable @typescript-eslint/require-await */
 
 /**
  * Holder creates a selective disclosure proof, choosing which
  * attribute indexes to reveal.
  */
-export const reveal = async (
-  _client: LemmaClient,
-  input: RevealInput,
-): Promise<RevealOutput> =>
+export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<RevealOutput> =>
   input.disclosedIndexes.length === 0
     ? reject("disclosedIndexes must not be empty")
-    : R.pipe(
-        encodeMessages,
-        (scalars) => {
-          const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
-          
-          // Initialize proof of knowledge protocol
-          const protocol = bbsPlusInitializeProofOfKnowledgeOfSignature(
-            input.signature, params, [...scalars], new Map<number, Uint8Array>(), new Set([...input.disclosedIndexes]), false,
-          );
-          
-          // Generate proof (challenge is empty for simplicity)
-          const challenge = new Uint8Array();
-          const proof = bbsPlusGenProofOfKnowledgeOfSignature(protocol, challenge);
-          
-          const disclosedMessages: ReadonlyArray<string> = R.map(
-            (i: number) => input.messages[i] ?? "",
-            [...input.disclosedIndexes],
-          );
-          const disclosed = messagesToDisclosedMap(input.messages, input.disclosedIndexes);
-          
-          return {
-            disclosed,
-            proof,
-            disclosedIndexes: input.disclosedIndexes,
-            disclosedMessages,
-          };
-        },
-      )(input.messages);
+    : R.pipe(encodeMessages, (scalars) => {
+        const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
+
+        // Initialize proof of knowledge protocol
+        const protocol = bbsPlusInitializeProofOfKnowledgeOfSignature(
+          input.signature,
+          params,
+          [...scalars],
+          new Map<number, Uint8Array>(),
+          new Set([...input.disclosedIndexes]),
+          false,
+        );
+
+        // Generate proof (challenge is empty for simplicity)
+        const challenge = new Uint8Array();
+        const proof = bbsPlusGenProofOfKnowledgeOfSignature(protocol, challenge);
+
+        const disclosedMessages: ReadonlyArray<string> = R.map(
+          (i: number) => input.messages[i] ?? "",
+          [...input.disclosedIndexes],
+        );
+        const disclosed = messagesToDisclosedMap(input.messages, input.disclosedIndexes);
+
+        return {
+          disclosed,
+          proof,
+          disclosedIndexes: input.disclosedIndexes,
+          disclosedMessages,
+        };
+      })(input.messages);
 
 /**
  * Verifier checks a selective-disclosure proof against the issuer's public key.
@@ -267,29 +252,31 @@ export const verifyProof = async (
   _client: LemmaClient,
   input: VerifyProofInput,
 ): Promise<boolean> =>
-  R.pipe(
-    encodeMessages,
-    (disclosedScalars) => {
-      const params = bbsPlusGenerateSignatureParamsG1(input.totalMessageCount, input.header);
-      
-      const challenge = new Uint8Array();
-      const revealedMsgs = new Map<number, Uint8Array>();
-      
-      // Populate revealed messages map using native forEach
-      const disclosedIndexesArray = [...input.disclosedIndexes];
-      /* eslint-disable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion -- Map mutation required for BBS+ verification algorithm */
-      disclosedScalars.forEach((scalar: Uint8Array, i: number) => {
-        revealedMsgs.set(disclosedIndexesArray[i]!, scalar);
-      });
-      /* eslint-enable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion */
-      
-      const result = bbsPlusVerifyProofOfKnowledgeOfSignature(
-        input.proof, revealedMsgs, challenge, input.publicKey, params, false,
-      );
-      
-      return result.verified;
-    },
-  )(input.disclosedMessages);
+  R.pipe(encodeMessages, (disclosedScalars) => {
+    const params = bbsPlusGenerateSignatureParamsG1(input.totalMessageCount, input.header);
+
+    const challenge = new Uint8Array();
+    const revealedMsgs = new Map<number, Uint8Array>();
+
+    // Populate revealed messages map using native forEach
+    const disclosedIndexesArray = [...input.disclosedIndexes];
+    /* eslint-disable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion -- Map mutation required for BBS+ verification algorithm */
+    disclosedScalars.forEach((scalar: Uint8Array, i: number) => {
+      revealedMsgs.set(disclosedIndexesArray[i]!, scalar);
+    });
+    /* eslint-enable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion */
+
+    const result = bbsPlusVerifyProofOfKnowledgeOfSignature(
+      input.proof,
+      revealedMsgs,
+      challenge,
+      input.publicKey,
+      params,
+      false,
+    );
+
+    return result.verified;
+  })(input.disclosedMessages);
 /* eslint-enable @typescript-eslint/require-await */
 
 /**

@@ -35,7 +35,10 @@ export default tseslint.config(
       functional,
     },
     rules: {
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
       "functional/no-expression-statements": ["error", { ignoreVoid: true }],
       "functional/no-throw-statements": ["error", { allowToRejectPromises: true }],
       "functional/no-return-void": "off",

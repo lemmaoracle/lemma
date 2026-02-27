@@ -9,7 +9,15 @@ interface Props {
   base?: string;
 }
 
-const { slug, date, category, title, abstract, categoryColor = "#000", base: baseProp } = Astro.props;
+const {
+  slug,
+  date,
+  category,
+  title,
+  abstract,
+  categoryColor = "#000",
+  base: baseProp,
+} = Astro.props;
 const base = baseProp ?? import.meta.env.BASE_URL;
 const blogPath = base ? `${base}/blog` : "blog";
 const href = `${blogPath}/${slug}`;

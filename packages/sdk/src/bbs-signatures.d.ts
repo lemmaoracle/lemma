@@ -65,10 +65,7 @@ declare module "@grottonetworking/bbs-signatures" {
     api_id?: string,
   ): Promise<ReadonlyArray<bigint>>;
 
-  export function prepareGenerators(
-    L: number,
-    api_id: string,
-  ): Promise<Generators>;
+  export function prepareGenerators(L: number, api_id: string): Promise<Generators>;
 
   export function bytesToHex(uint8a: Uint8Array): string;
   export function hexToBytes(hex: string): Uint8Array;

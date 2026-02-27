@@ -23,11 +23,7 @@ export const withApiKey = (
   client.apiKey ? { ...headers, "x-api-key": client.apiKey } : headers;
 
 export const toErrorMessage = (e: unknown): string =>
-  e instanceof Error
-    ? e.message
-    : typeof e === "string"
-      ? e
-      : "Unknown error";
+  e instanceof Error ? e.message : typeof e === "string" ? e : "Unknown error";
 
 export const reject = <T = never>(message: string): Promise<T> =>
   Promise.reject(new Error(message));
