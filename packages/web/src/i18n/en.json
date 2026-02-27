@@ -9,16 +9,25 @@
     "languageEn": "English"
   },
   "masthead": {
-    "title": "Lemma Oracle",
-    "tagline": "Ground‑truth infrastructure for verifiable, private AI data."
+    "title": "Give AI proven facts.",
+    "tagline": "Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain.",
+    "ctaGetStarted": "Get started",
+    "ctaReadDocs": "Read the docs"
   },
   "features": {
-    "verifiedDataHeading": "Verified Data for AI",
-    "verifiedDataBody": "Ground your AI in cryptographically verified facts. Lemma's verified-attributes API returns only ZK-proven data to your AI — eliminating hallucinations at the source.",
-    "privacyHeading": "Privacy by Default",
-    "privacyBody": "Your AI gets verified answers — never the raw data. Documents stay encrypted end-to-end; Lemma itself never sees plaintext.",
-    "shareHeading": "Share Only What's Needed",
-    "shareBody": "Control exactly which attributes your AI can access. Prove 'age ≥ 18' without exposing the actual age, name, or address."
+    "sectionHeading": "Build on verified attributes, end to end.",
+    "encryptHeading": "Encrypt Everything, Expose Nothing",
+    "encryptBody": "Lemma keeps every document AES-GCM encrypted — your AI never touches raw PII. Only docHash and CID are exposed as stable anchors for provenance.",
+    "proveHeading": "Prove Facts with Zero Knowledge",
+    "proveBody": "Turn business rules like 'over 18' or 'revenue above threshold' into machine-checkable facts. Each verified proof is permanently recorded with its circuit and generator, so your AI always knows how a fact was proven.",
+    "discloseHeading": "Disclose Only What AI Needs",
+    "discloseBody": "Holders selectively reveal just the attributes your model requires for retrieval or ranking. The link to the original issuer signature stays intact, so provenance holds even when the view is partial.",
+    "queryHeading": "Query Verified Attributes",
+    "queryBody": "Ask 'users over 18 in Japan' and get back attributes with full provenance — proof status, schema, issuer, generator, and verification method — ready for your RAG policy layer.",
+    "schemaHeading": "Define Your Domain as a Schema",
+    "schemaBody": "Model how your AI retrieves and clusters knowledge — bucket ages, risk scores, regions — with typed schemas and normalization. Register ZK circuits and reproducible generators so every fact traces back to its source.",
+    "provenanceHeading": "Provenance That Never Disappears",
+    "provenanceBody": "Document commitments, schemas, issuers, and ZK verification results are anchored on-chain. Your RAG index can be rebuilt, your embeddings can be re-computed — the provenance layer stays permanent."
   },
   "footer": {
     "copyright": "© 2026 FRAME00 — Built for decisions that matter"

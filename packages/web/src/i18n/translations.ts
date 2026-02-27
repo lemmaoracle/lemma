@@ -20,14 +20,23 @@ export interface Translations {
   readonly masthead: Readonly<{
     readonly title: string;
     readonly tagline: string;
+    readonly ctaGetStarted: string;
+    readonly ctaReadDocs: string;
   }>;
   readonly features: Readonly<{
-    readonly verifiedDataHeading: string;
-    readonly verifiedDataBody: string;
-    readonly privacyHeading: string;
-    readonly privacyBody: string;
-    readonly shareHeading: string;
-    readonly shareBody: string;
+    readonly sectionHeading: string;
+    readonly encryptHeading: string;
+    readonly encryptBody: string;
+    readonly proveHeading: string;
+    readonly proveBody: string;
+    readonly discloseHeading: string;
+    readonly discloseBody: string;
+    readonly queryHeading: string;
+    readonly queryBody: string;
+    readonly schemaHeading: string;
+    readonly schemaBody: string;
+    readonly provenanceHeading: string;
+    readonly provenanceBody: string;
   }>;
   readonly footer: Readonly<{
     readonly copyright: string;

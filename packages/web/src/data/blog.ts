@@ -173,6 +173,7 @@ const BLOG_CODE_LANGS = [
   "md",
   "plaintext",
   "shell",
+  "solidity",
   "sql",
   "text",
   "ts",

@@ -1,29 +1,41 @@
 ---
-import CoverImage from "../assets/cover.jpg";
 import type { Translations } from "../i18n/translations";
+import { ProvenanceChainBg } from "./ProvenanceChainBg";
 
 interface Props {
   t: Translations["masthead"];
+  locale: "en" | "ja";
 }
 
-const { t } = Astro.props;
+const { t, locale } = Astro.props;
 ---
 
-<section class="flex min-h-[85vh] flex-col items-center justify-center px-8 py-24">
-  <div
-    class="mb-16 h-[420px] w-full max-w-[1100px] overflow-hidden rounded-full shadow-[0_2px_40px_rgba(0,0,0,0.08)]"
-    style={`background-image: url('${CoverImage.src}'); background-size: cover; background-position: center;`}
-  >
-  </div>
-  <div class="max-w-[600px] text-center">
+<section class="relative flex min-h-[85vh] flex-col items-center justify-center px-8 py-24">
+  {/* Provenance Chain animated background */}
+  <ProvenanceChainBg client:load />
+
+  {/* Centered title and subtitle */}
+  <div class="relative z-10 max-w-[700px] text-center">
     <h1
-      class="mb-5 text-[64px] leading-[1] tracking-[-0.02em]"
+      class="mb-6 text-8xl leading-[1.1] tracking-[-0.02em]"
       style="font-family: 'Instrument Serif', serif;"
     >
       {t.title}
     </h1>
-    <p class="font-mono text-[13px] leading-relaxed tracking-wide text-black/60">
+    <p
+      class="mx-auto mb-8 max-w-[600px] font-mono text-[13px] leading-relaxed tracking-wide text-black/60"
+    >
       {t.tagline}
     </p>
+
+    {/* CTA button */}
+    <div class="flex items-center justify-center">
+      <a
+        href={locale === "ja" ? "/ja/blog" : "/blog"}
+        class="border border-black bg-black px-6 py-3 font-mono text-[11px] tracking-wide text-white uppercase transition-colors hover:bg-black/90"
+      >
+        {t.ctaGetStarted}
+      </a>
+    </div>
   </div>
 </section>

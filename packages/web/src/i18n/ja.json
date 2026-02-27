@@ -9,19 +9,28 @@
     "languageEn": "English"
   },
   "masthead": {
-    "title": "Lemma Oracle",
-    "tagline": "検証可能でプライベートな AI データのためのグラウンドトゥルース基盤。"
+    "title": "AI に証明された事実を。",
+    "tagline": "AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。",
+    "ctaGetStarted": "はじめる",
+    "ctaReadDocs": "ドキュメントを読む"
   },
   "features": {
-    "verifiedDataHeading": "AI のための検証済みデータ",
-    "verifiedDataBody": "暗号学的に検証された事実で AI を支えます。Lemma の verified-attributes API は ZK 証明されたデータだけを AI に返し、ハルシネーションを根本から防ぎます。",
-    "privacyHeading": "デフォルトでプライバシー",
-    "privacyBody": "AI が得るのは検証済みの答えだけで、生データは渡しません。文書はエンドツーエンドで暗号化され、Lemma 自体が平文を見ることはありません。",
-    "shareHeading": "必要な分だけ共有",
-    "shareBody": "AI がアクセスできる属性を正確に制御できます。「18歳以上」を証明しながら、実際の年齢・氏名・住所は開示しません。"
+    "sectionHeading": "検証された属性の上に、エンドツーエンドで構築する。",
+    "encryptHeading": "すべてを暗号化し、何も露呈しない",
+    "encryptBody": "Lemma はすべての文書を AES-GCM で暗号化します。AI は生の個人情報に触れることはありません。docHash と CID のみが、来歴証明のための安定したアンカーとして露出されます。",
+    "proveHeading": "ゼロ知識で事実を証明する",
+    "proveBody": "「18 歳以上」や「売上が閾値を超えている」といったビジネスルールを、機械が検証可能な事実に変換します。各検証済みの証明は、そのサーキットとジェネレーターと共に永続的に記録され、AI は事実がどのように証明されたかを常に把握できます。",
+    "discloseHeading": "AI が必要な分だけ開示する",
+    "discloseBody": "ホルダーは、モデルが検索やランキングに必要とする属性だけを選択的に開示できます。元の発行者署名へのリンクは維持されるため、部分的な表示でも来歴証明は保持されます。",
+    "queryHeading": "検証済みの属性を検索する",
+    "queryBody": "「日本在住の 18 歳以上のユーザー」と検索すると、完全な来歴証明（証明ステータス、スキーマ、発行者、ジェネレーター、検証方法）を持つ属性が返され、RAG ポリシーレイヤーの準備が整います。",
+    "schemaHeading": "ドメインをスキーマとして定義する",
+    "schemaBody": "AI が知識をどのように検索しクラスタリングするかをモデル化します。年齢のグループ化、リスクスコア、地域などを、型付けされたスキーマと正規化で定義します。ZK サーキットと再現可能なジェネレーターを登録し、すべての事実がソースに追跡できるようにします。",
+    "provenanceHeading": "決して消えない来歴証明",
+    "provenanceBody": "文書のコミットメント、スキーマ、発行者、ZK 検証結果はオンチェーンにアンカーされます。RAG インデックスは再構築でき、埋め込みは再計算できます。来歴証明レイヤーは永続的に残ります。"
   },
   "footer": {
-    "copyright": "© 2026 FRAME00 — Built for decisions that matter"
+    "copyright": "© 2026 Lemma Oracle — Built for decisions that matter"
   },
   "blog": {
     "title": "ブログ",
@@ -35,11 +44,11 @@
   },
   "rebuild": {
     "title": "サイトの再ビルド",
-    "intro": "このページはサイトからはリンクされていません。静的サイトの再ビルドと再デプロイをトリガーするために使います（例: Affine でコンテンツを更新した後）。",
+    "intro": "このページはサイトからはリンクされていません。静的サイトの再ビルドと再デプロイをトリガーするために使います（例：Affine でコンテンツを更新した後）。",
     "option1Title": "方法 1: GitHub でワークフローを実行",
     "option1Desc": "ワークフローページを開き、「Run workflow」をクリックしてください。",
     "option2Title": "方法 2: URL でトリガー（repository_dispatch）",
-    "option2Desc": "スクリプトや外部サービス（例: Affine 更新後）から、Personal Access Token (PAT) 付きの POST リクエストを送信してください。このサイトは静的であるため、認証なしの単純な GET ではワークフローを開始できません。",
+    "option2Desc": "スクリプトや外部サービス（例：Affine 更新後）から、Personal Access Token (PAT) 付きの POST リクエストを送信してください。このサイトは静的であるため、認証なしの単純な GET ではワークフローを開始できません。",
     "option2CurlNotePrefix": "PAT は環境変数やシークレットストアに保存し、コミットしないでください。ワークフローは ",
     "option2CurlNoteSuffix": " を監視しています。",
     "backHome": "← ホームに戻る"

@@ -25,8 +25,8 @@ const noiseDataUrl =
     </div>
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14" id="overview">
-      <Masthead t={t.masthead} />
-      <FeatureGrid client:load t={t.features} />
+      <Masthead t={t.masthead} locale={locale} />
+      <FeatureGrid client:load t={t.features} locale={locale} />
       <BlogList sections={sections} t={t.blog} base={base} />
     </main>
     <footer class="relative border-t border-black/5 py-8">
