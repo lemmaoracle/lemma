@@ -20,9 +20,12 @@ export const prepare = async <Raw, Norm extends Json>(
   const schema = getSchemaById<Raw, Norm>(input.schema);
 
   return schema
-    ? Promise.resolve(schema.normalize(input.payload)).then((normalized) => ({
-        normalized,
-        commitments: { scheme: "poseidon", ...commitNormalized(normalized) },
-      }))
+    ? Promise.resolve(schema.normalize(input.payload))
+        .then((normalized) =>
+          commitNormalized(normalized).then((result) => ({
+            normalized,
+            commitments: { scheme: "poseidon" as const, ...result },
+          })),
+        )
     : reject(`Unknown schemaId: ${input.schema}. Call define() first.`);
 };

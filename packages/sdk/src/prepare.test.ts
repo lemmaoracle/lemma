@@ -27,6 +27,12 @@ describe("prepare", () => {
     expect(result.commitments.attrCommitmentRoot).toMatch(/^0x/);
     expect(result.commitments.randomness).toMatch(/^0x/);
     expect(result.commitments.scheme).toBe("poseidon");
+    // Type assertion for the commitments
+    const commitments = result.commitments as { perAttributeCommitments: ReadonlyArray<string> };
+    expect(commitments.perAttributeCommitments).toBeInstanceOf(Array);
+    expect(commitments.perAttributeCommitments).toHaveLength(2); // age_bucket, country
+    expect(commitments.perAttributeCommitments[0]).toMatch(/^0x/);
+    expect(commitments.perAttributeCommitments[1]).toMatch(/^0x/);
   });
 
   it("rejects for unknown schema", async () => {

@@ -31,6 +31,7 @@ export type {
   SelectiveDisclosure,
   VerifiedAttributesQueryRequest,
   VerifiedAttributesQueryResponse,
+  CommitmentScheme,
   DocumentCommitments,
   Revocation,
   IssuerSignature,

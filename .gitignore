@@ -8,3 +8,4 @@ artifacts/
 cache/
 typechain-types/
 .pnpm-store/
+docs/whitepaper.md

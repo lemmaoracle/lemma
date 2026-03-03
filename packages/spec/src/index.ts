@@ -59,10 +59,16 @@ export type GeneratorMeta = Readonly<{
 
 /* ── Document registration ─────────────────────────────────────────── */
 
+export type CommitmentScheme =
+  | "poseidon"
+  | "poseidon2"
+  | "rescue-prime"
+  | "sha256-placeholder";
+
 export type DocumentCommitments = Readonly<{
-  scheme?: string;
+  scheme: CommitmentScheme;
   attrCommitmentRoot: string;
-  [k: string]: unknown;
+  perAttributeCommitments: ReadonlyArray<string>;
 }>;
 
 export type Revocation = Readonly<{

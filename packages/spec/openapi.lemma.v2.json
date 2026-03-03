@@ -90,11 +90,18 @@
       "DocumentCommitments": {
         "type": "object",
         "properties": {
-          "scheme": { "type": "string" },
-          "attrCommitmentRoot": { "type": "string" }
+          "scheme": { 
+            "type": "string",
+            "enum": ["poseidon", "poseidon2", "rescue-prime", "sha256-placeholder"]
+          },
+          "attrCommitmentRoot": { "type": "string" },
+          "perAttributeCommitments": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
         },
-        "required": ["attrCommitmentRoot"],
-        "additionalProperties": true
+        "required": ["scheme", "attrCommitmentRoot", "perAttributeCommitments"],
+        "additionalProperties": false
       },
       "Revocation": {
         "type": "object",
