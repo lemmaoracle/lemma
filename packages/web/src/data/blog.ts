@@ -28,6 +28,7 @@ export interface BlogPost {
   readonly abstract: string;
   readonly body: string;
   readonly categoryColor?: string;
+  readonly cover?: string;
 }
 
 export interface BlogSection {
@@ -51,6 +52,9 @@ const categoryColorByCategory: Readonly<Record<string, string>> = {
   Release: "#DC2626",
   Application: "#EA580C",
   Tutorial: "#0891B2",
+  "Tech Insight": "#3B82F6",
+  "Business Strategy": "#10B981",
+  "Human Impact": "#8B5CF6",
 };
 
 const defaultSectionByCategory: Readonly<Record<string, string>> = {
@@ -75,6 +79,7 @@ interface PostFrontmatter {
   readonly title?: string;
   readonly abstract?: string;
   readonly categoryColor?: string;
+  readonly cover?: string;
 }
 
 /* ── GitHub fetching ────────────────────────────────────────────── */
@@ -185,6 +190,34 @@ const BLOG_CODE_LANGS = [
 const escapeCodeHtml = (raw: string): string =>
   raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+/* ── Cover URL resolution ───────────────────────────────────────── */
+
+function joinPaths(...parts: string[]): string {
+  return parts
+    .filter(Boolean)
+    .map((part) => part.replace(/^\/+|\/+$/g, "")) // 前後のスラッシュを削除
+    .filter(Boolean)
+    .join("/");
+}
+
+function resolveCoverUrl(relativePath: string): string {
+  if (!relativePath || !POSTS_REPO) return relativePath;
+  
+  // 既に絶対URLの場合はそのまま返す
+  if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) {
+    return relativePath;
+  }
+  
+  const repo = POSTS_REPO;
+  const branch = POSTS_BRANCH;
+  
+  // POSTS_PATHと相対パスを組み合わせる
+  const fullPath = joinPaths(POSTS_PATH, relativePath);
+  
+  // raw.githubusercontent.com URLを構築
+  return `https://raw.githubusercontent.com/${repo}/${branch}/${fullPath}`;
+}
+
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
 
 function parsePost(filename: string, raw: string): BlogPost | undefined {
@@ -205,6 +238,7 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               body: marked.parse(content, { async: false }),
               categoryColor:
                 fm.categoryColor || categoryColorByCategory[fm.category || ""] || "#000",
+              cover: fm.cover ? resolveCoverUrl(fm.cover) : undefined,
             }
           : undefined;
       })()

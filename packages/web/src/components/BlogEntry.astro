@@ -7,6 +7,7 @@ interface Props {
   abstract: string;
   categoryColor?: string;
   base?: string;
+  cover?: string;
 }
 
 const {
@@ -16,16 +17,19 @@ const {
   title,
   abstract,
   categoryColor = "#000",
+  cover,
   base: baseProp,
 } = Astro.props;
 const base = baseProp ?? import.meta.env.BASE_URL;
-const blogPath = base ? `${base}/blog` : "blog";
+const blogPath = base ? `${base}/blog` : "/blog";
 const href = `${blogPath}/${slug}`;
 const bgColor = `${categoryColor}15`;
 ---
 
 <div
-  class="group grid cursor-pointer grid-cols-[100px_120px_1fr] gap-6 border-b border-black/5 py-5 transition-colors hover:bg-black/[0.02]"
+  class={`group grid cursor-pointer gap-6 border-b border-black/5 py-5 transition-colors hover:bg-black/[0.02] ${
+    cover ? 'grid-cols-[100px_120px_auto_1fr]' : 'grid-cols-[100px_120px_1fr]'
+  }`}
 >
   <div class="pt-1 font-mono text-[11px] tracking-wide text-black/40">{date}</div>
   <div class="pt-1">
@@ -36,6 +40,17 @@ const bgColor = `${categoryColor}15`;
       {category}
     </span>
   </div>
+  {cover && (
+    <div class="relative h-20 w-20 overflow-hidden rounded-md">
+      <img
+        src={cover}
+        alt={title}
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )}
   <div class="min-w-0">
     <a href={href} class="block">
       <h3

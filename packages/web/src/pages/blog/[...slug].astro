@@ -20,7 +20,7 @@ const { post } = Astro.props;
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
-const blogPath = "blog";
+const blogPath = "/blog";
 ---
 
 <Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>
@@ -51,6 +51,17 @@ const blogPath = "blog";
         >
           {post.title}
         </h1>
+        {post.cover && (
+          <div class="mb-12 mt-4">
+            <img
+              src={post.cover}
+              alt={post.title}
+              class="w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
         <div
           class="prose prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
           set:html={post.body}
