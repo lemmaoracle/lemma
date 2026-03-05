@@ -22,7 +22,7 @@ type MetaTagsProps = HomeMetaTagsProps | ArticleMetaTagsProps;
 export default function MetaTags(props: MetaTagsProps) {
   if (props.type === "home") {
     const { title = "Lemma Oracle", description, base } = props;
-    const ogImage = DefaultOgImage.src;
+    const ogImage = `https://lemma.frame00.com${DefaultOgImage.src}`;
     const url = `https://lemma.frame00.com${base}`;
 
     return (
