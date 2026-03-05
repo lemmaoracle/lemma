@@ -34,6 +34,7 @@ R.complement(predicate)               // Negate a predicate
 // Safe value handling
 R.defaultTo(defaultValue, value)      // Provide default if null/undefined
 R.pathOr(defaultValue, path, obj)     // Get nested value with default
+R.tryCatch(tryer, catcher)            // Execute tryer, catch errors with catcher
 
 // Data transformation
 R.pipe(fn1, fn2, fn3)                 // Left-to-right function composition
@@ -42,3 +43,5 @@ R.map(fn) / R.filter(pred) / R.reduce(fn, initial)
 R.assoc(key, value, obj) / R.dissoc(key, obj) / R.mergeRight(obj1, obj2)
 R.prop(key) / R.path(path) / R.pathOr(default, path)
 ```
+
+**Note:** Ramda APIs not listed here can also be used as needed by referring to the [official documentation](https://ramdajs.com/docs/). Ramda provides many useful utility functions.

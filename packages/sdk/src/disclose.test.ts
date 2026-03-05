@@ -23,7 +23,7 @@ describe("disclose", () => {
 
   describe("generateKeyPair", () => {
     it("returns a valid BBS+ key pair", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       expect(kp.secretKey).toBeInstanceOf(Uint8Array);
       expect(kp.publicKey).toBeInstanceOf(Uint8Array);
       expect(kp.secretKey.length).toBe(32);
@@ -54,7 +54,7 @@ describe("disclose", () => {
 
   describe("sign + verify", () => {
     it("creates a valid BBS+ signature", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25", "country:JP", "name:Alice"];
 
       const output = await sign(client, {
@@ -71,7 +71,7 @@ describe("disclose", () => {
     });
 
     it("rejects empty messages", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       await expect(
         sign(client, {
           messages: [],
@@ -83,7 +83,7 @@ describe("disclose", () => {
     });
 
     it("signature verifies against the issuer public key", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25", "country:JP"];
 
       const output = await sign(client, {
@@ -113,7 +113,7 @@ describe("disclose", () => {
       const revealed = await reveal(client, {
         signature: signed.signature,
         messages,
-        publicKey: kp.publicKey,
+        publicKey: signed.publicKey,
         disclosedIndexes: [0, 2],
         header,
       });
@@ -125,7 +125,7 @@ describe("disclose", () => {
 
       const valid = await verifyProof(client, {
         proof: revealed.proof,
-        publicKey: kp.publicKey,
+        publicKey: signed.publicKey,
         disclosedMessages: [...revealed.disclosedMessages],
         disclosedIndexes: [...revealed.disclosedIndexes],
         totalMessageCount: messages.length,
@@ -136,7 +136,7 @@ describe("disclose", () => {
     });
 
     it("rejects empty disclosedIndexes", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25"];
 
       const signed = await sign(client, {
@@ -150,7 +150,7 @@ describe("disclose", () => {
         reveal(client, {
           signature: signed.signature,
           messages,
-          publicKey: kp.publicKey,
+          publicKey: signed.publicKey,
           disclosedIndexes: [],
           header,
         }),
@@ -158,8 +158,8 @@ describe("disclose", () => {
     });
 
     it("proof verification fails with wrong public key", async () => {
-      const kp1 = await generateKeyPair();
-      const kp2 = await generateKeyPair();
+      const kp1 = await generateKeyPair({ keyInfo: header });
+      const kp2 = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25", "name:Alice"];
 
       const signed = await sign(client, {
@@ -172,7 +172,7 @@ describe("disclose", () => {
       const revealed = await reveal(client, {
         signature: signed.signature,
         messages,
-        publicKey: kp1.publicKey,
+        publicKey: signed.publicKey,
         disclosedIndexes: [0],
         header,
       });
@@ -192,7 +192,7 @@ describe("disclose", () => {
 
   describe("toSelectiveDisclosure", () => {
     it("wraps RevealOutput in spec-compliant format", async () => {
-      const kp = await generateKeyPair();
+      const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25", "name:Alice"];
 
       const signed = await sign(client, {
@@ -205,7 +205,7 @@ describe("disclose", () => {
       const revealed = await reveal(client, {
         signature: signed.signature,
         messages,
-        publicKey: kp.publicKey,
+        publicKey: signed.publicKey,
         disclosedIndexes: [0],
         header,
       });

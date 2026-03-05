@@ -16,6 +16,9 @@ import {
   bbsPlusInitializeProofOfKnowledgeOfSignature,
   bbsPlusGenProofOfKnowledgeOfSignature,
   bbsPlusVerifyProofOfKnowledgeOfSignature,
+  bbsPlusChallengeContributionFromProtocol,
+  bbsPlusChallengeContributionFromProof,
+  generateChallengeFromBytes,
 } from "@docknetwork/crypto-wasm";
 import type { LemmaClient, SelectiveDisclosure } from "@lemma/spec";
 import { reject } from "./internal";
@@ -86,7 +89,7 @@ const te = new TextEncoder();
 const KEY_MATERIAL_BYTES = 32;
 
 const encodeMessages = (msgs: ReadonlyArray<string>): ReadonlyArray<Uint8Array> =>
-  R.map((m: string) => te.encode(m), [...msgs]);
+  R.map((m: string) => Uint8Array.from(Buffer.from(m, "utf-8")), [...msgs]);
 
 /**
  * Convert an attribute object `{ age: 25, name: "John" }` to a
@@ -171,7 +174,7 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
           [...scalars],
           input.secretKey,
           params,
-          false, // messages are already encoded
+          true, // messages are already encoded as Uint8Array
         );
 
         // Generate public key from secret key
@@ -199,7 +202,7 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
       signOutput.signature,
       signOutput.publicKey,
       params,
-      false, // messages are already encoded
+      true, // messages are already encoded as Uint8Array
     );
 
     return result.verified;
@@ -216,19 +219,34 @@ export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<
     : R.pipe(encodeMessages, (scalars) => {
         const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
 
-        // Initialize proof of knowledge protocol
+        // Build revealed messages map for the challenge contribution
+        const revealedMsgs = new Map<number, Uint8Array>();
+        for (const idx of input.disclosedIndexes) {
+          revealedMsgs.set(idx, scalars[idx]!);
+        }
+
+        // Initialize proof of knowledge protocol with empty blindings
         const protocol = bbsPlusInitializeProofOfKnowledgeOfSignature(
           input.signature,
           params,
           [...scalars],
           new Map<number, Uint8Array>(),
-          new Set([...input.disclosedIndexes]),
-          false,
+          new Set(input.disclosedIndexes),
+          true, // messages are already encoded as Uint8Array
         );
 
-        // Generate proof (challenge is empty for simplicity)
-        const challenge = new Uint8Array();
-        const proof = bbsPlusGenProofOfKnowledgeOfSignature(protocol, challenge);
+        // Generate challenge from protocol
+        const challengeProver = generateChallengeFromBytes(
+          bbsPlusChallengeContributionFromProtocol(
+            protocol,
+            revealedMsgs,
+            params,
+            true,
+          ),
+        );
+
+        // Generate proof
+        const proof = bbsPlusGenProofOfKnowledgeOfSignature(protocol, challengeProver);
 
         const disclosedMessages: ReadonlyArray<string> = R.map(
           (i: number) => input.messages[i] ?? "",
@@ -255,24 +273,32 @@ export const verifyProof = async (
   R.pipe(encodeMessages, (disclosedScalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(input.totalMessageCount, input.header);
 
-    const challenge = new Uint8Array();
     const revealedMsgs = new Map<number, Uint8Array>();
 
-    // Populate revealed messages map using native forEach
-    const disclosedIndexesArray = [...input.disclosedIndexes];
-    /* eslint-disable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion -- Map mutation required for BBS+ verification algorithm */
-    disclosedScalars.forEach((scalar: Uint8Array, i: number) => {
-      revealedMsgs.set(disclosedIndexesArray[i]!, scalar);
-    });
-    /* eslint-enable functional/immutable-data, functional/no-expression-statements, @typescript-eslint/no-non-null-assertion */
+    // Populate revealed messages map
+    for (let i = 0; i < input.disclosedIndexes.length; i++) {
+      const idx = input.disclosedIndexes[i]!;
+      const scalar = disclosedScalars[i]!;
+      revealedMsgs.set(idx, scalar);
+    }
+
+    // Generate challenge from proof
+    const challengeVerifier = generateChallengeFromBytes(
+      bbsPlusChallengeContributionFromProof(
+        input.proof,
+        revealedMsgs,
+        params,
+        true,
+      ),
+    );
 
     const result = bbsPlusVerifyProofOfKnowledgeOfSignature(
       input.proof,
       revealedMsgs,
-      challenge,
+      challengeVerifier,
       input.publicKey,
       params,
-      false,
+      true, // messages are already encoded as Uint8Array
     );
 
     return result.verified;

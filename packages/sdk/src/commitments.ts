@@ -25,8 +25,7 @@ const encodeToField = (value: string): bigint => {
 };
 
 // Lazy singleton for Poseidon (same pattern as schema registry)
-/* eslint-disable functional/immutable-data, functional/no-expression-statements --
-Poseidon instance is an intentional mutable boundary for WASM module caching. */
+ 
 let poseidonInstance: Promise<any> | undefined;
 
 const getPoseidon = (): Promise<any> =>
@@ -35,7 +34,7 @@ const getPoseidon = (): Promise<any> =>
     : (poseidonInstance = import("circomlibjs").then(({ buildPoseidon }) =>
         buildPoseidon(),
       ));
-/* eslint-enable functional/immutable-data, functional/no-expression-statements */
+ 
 
 // Compute leaf commitments for each attribute
 const computeLeaves = async (
@@ -51,7 +50,7 @@ const computeLeaves = async (
       (key: string) => {
         const value = normalized[key];
         const valueStr = R.is(String, value)
-          ? value as string
+          ? value
           : JSON.stringify(value);
         const keyField = encodeToField(key);
         const valueField = encodeToField(valueStr);

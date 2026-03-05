@@ -5,7 +5,7 @@
  */
 export { create } from "./client";
 export { define } from "./schema";
-export { encrypt } from "./crypto";
+export { encrypt, decrypt } from "./crypto";
 export { prepare } from "./prepare";
 export * as disclose from "./disclose";
 export * as prover from "./prover";
