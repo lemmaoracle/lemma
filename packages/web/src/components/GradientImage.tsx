@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-// gradient-seed-generator のオプション型
+interface GradientShapesOptions {
+  blur: number;
+  alpha: number;
+  minCount: number;
+  maxCount: number;
+  baseRadiusMin: number;
+  baseRadiusMax: number;
+  radiusVariance: number;
+}
+
 interface GradientOptions {
   size?: number;
-  shapes?: boolean;
+  shapes?: boolean | GradientShapesOptions;
   theme?: "pastel" | "vibrant" | "monochrome" | "duotone";
   gradientType?: "linear" | "radial" | "conic";
   colorCount?: number;
@@ -57,10 +66,10 @@ export const GradientImage: React.FC<GradientImageProps> = ({
               gradientType: "radial",
               ...options,
             };
-            return gradient(seed, defaultOptions);
+            return gradient(seed || "", defaultOptions);
           })()
         : (() => {
-            const hash = seed.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const hash = (seed || "").split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
             const hue1 = hash % 360;
             const hue2 = (hash + 60) % 360;
 
