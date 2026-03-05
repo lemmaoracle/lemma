@@ -1,7 +1,7 @@
 /**
- * Whitepaper §2.1 — Encrypted Documents and docHash.
+ * Whitepaper §2.1 / §4.4 — Encrypted Documents and docHash.
  *
- * ECIES: ECDH (secp256k1) + HKDF-SHA256 + AES-256-GCM + SHA3-256(docHash).
+ * ECIES: ECDH (secp256k1) + HKDF-SHA256 + configurable AEAD (default: aes-256-gcm) + SHA3-256(docHash).
  * The holder's public key (secp256k1 compressed hex) and payload are used
  * to derive a shared key, encrypt the JSON payload, and produce docHash/CID.
  */
@@ -15,20 +15,26 @@ import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemma/spec";
 
+export type EncryptionAlgorithm =
+  | "aes-256-gcm"; // default; additional algorithms reserved for future use
+
 export type EncryptInput = Readonly<{
   payload: unknown;
   holderKey: string;
+  algorithm?: EncryptionAlgorithm; // optional — defaults to "aes-256-gcm"
 }>;
 
 export type EncryptOutput = Readonly<{
   docHash: string;
   cid: string;
   encryptedDocBase64: string;
+  algorithm: EncryptionAlgorithm; // encryption algorithm used (e.g., "aes-256-gcm")
 }>;
 
 export type DecryptInput = Readonly<{
   encryptedDocBase64: string;
   holderPrivateKey: string;
+  algorithm?: EncryptionAlgorithm; // optional — needed for future algorithm support
 }>;
 
 export type DecryptOutput = Readonly<{
@@ -214,6 +220,9 @@ export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<Encr
   const holderPubKeyHex = bytesToHex(validateHolderKey(input.holderKey));
   const payloadBytes = Buffer.from(JSON.stringify(input.payload), "utf8");
 
+  // Determine algorithm (default to "aes-256-gcm")
+  const algorithm = input.algorithm ?? "aes-256-gcm";
+
   // Generate ephemeral key pair
   const ephemeralPrivKey = secp256k1.utils.randomPrivateKey();
   const ephemeralPubKey = secp256k1.getPublicKey(ephemeralPrivKey, true);
@@ -226,7 +235,7 @@ export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<Encr
   // HKDF-SHA256: IKM=sharedX, info="lemma-doc-encrypt", length=32
   const keyMaterial = hkdf(sha256, sharedX, undefined, "lemma-doc-encrypt", 32);
 
-  // AES-256-GCM encryption
+  // AES-256-GCM encryption (currently the only supported algorithm)
   const iv = randomBytes(12);
   const aesGcm = gcm(keyMaterial, iv);
   const ciphertext = aesGcm.encrypt(payloadBytes);
@@ -244,11 +253,20 @@ export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<Encr
     docHash,
     cid,
     encryptedDocBase64: bytesToBase64(encryptedDoc),
+    algorithm,
   });
 };
 
 export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const encryptedDoc = base64ToBytes(input.encryptedDocBase64);
+
+  // Determine algorithm (default to "aes-256-gcm" for backward compatibility)
+  const algorithm = input.algorithm ?? "aes-256-gcm";
+
+  // Currently only "aes-256-gcm" is supported
+  if (algorithm !== "aes-256-gcm") {
+    throw new Error(`Unsupported encryption algorithm: ${algorithm}`);
+  }
 
   // Parse wire format: first 33 bytes = ephemeralPubKey, next 12 = IV, rest = ciphertext
   /* eslint-disable-next-line functional/no-conditional-statements, functional/no-throw-statements --
