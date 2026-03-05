@@ -65,6 +65,7 @@ export type DocumentCommitments = Readonly<{
   scheme: CommitmentScheme;
   attrCommitmentRoot: string;
   perAttributeCommitments: ReadonlyArray<string>;
+  randomness: string; // bytes32 hex - blinding factor for hiding property
 }>;
 
 export type Revocation = Readonly<{

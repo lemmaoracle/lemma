@@ -14,7 +14,7 @@ const BN254_PRIME = BigInt(
 
 export type PrepareOutput<Norm> = Readonly<{
   normalized: Norm;
-  commitments: DocumentCommitments & Readonly<{ randomness: string }>;
+  commitments: DocumentCommitments;
 }>;
 
 // Helper: convert string to BN254 field element via SHA-256 mod p

@@ -98,9 +98,10 @@
           "perAttributeCommitments": {
             "type": "array",
             "items": { "type": "string" }
-          }
+          },
+          "randomness": { "type": "string" }
         },
-        "required": ["scheme", "attrCommitmentRoot", "perAttributeCommitments"],
+        "required": ["scheme", "attrCommitmentRoot", "perAttributeCommitments", "randomness"],
         "additionalProperties": false
       },
       "Revocation": {
