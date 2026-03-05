@@ -4,18 +4,20 @@ import Navigation from "../../../components/Navigation.astro";
 import { getAllPosts, getPostNavigation, getRelatedPosts } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 import GradientImage from "@/components/GradientImage";
+import ArticleMetaTags from "@/components/ArticleMetaTags";
+import SchemaOrg from "@/components/SchemaOrg";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts("ja");
   const paths = await Promise.all(
     posts.map(async (post) => ({
       params: { slug: post.slug },
-      props: { 
-        post, 
+      props: {
+        post,
         navigation: await getPostNavigation(post.slug, "ja"),
-        related: await getRelatedPosts(post.slug, "ja", 5)
+        related: await getRelatedPosts(post.slug, "ja", 5),
       },
-    }))
+    })),
   );
   return paths;
 }
@@ -33,54 +35,12 @@ const base = "/ja";
 const blogPath = "/ja/blog";
 ---
 
-<Layout 
-  locale={locale} 
-  title={`${post.title} — Lemma Oracle`} 
-  description={post.abstract}
->
+<Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>
   {/* Article-specific OGP meta tags */}
-  {Astro.props.post && (
-    <div set:html={`<meta property="og:title" content="${post.title}" />
-      <meta property="og:description" content="${post.abstract}" />
-      <meta property="og:url" content="https://lemma.frame00.com${base}${blogPath}/${post.slug}" />
-      <meta property="og:type" content="article" />
-      <meta property="og:image" content="${post.cover || 'https://lemma.frame00.com/ogp-default.png'}" />
-      <meta name="twitter:title" content="${post.title}" />
-      <meta name="twitter:description" content="${post.abstract}" />
-      <meta name="twitter:image" content="${post.cover || 'https://lemma.frame00.com/ogp-default.png'}" />`} />
-  )}
+  {Astro.props.post && <ArticleMetaTags post={post} base={base} blogPath={blogPath} />}
 
   {/* Schema.org structured data for AI */}
-  {Astro.props.post && (
-    <script type="application/ld+json" is:inline>
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": post.title,
-        "description": post.abstract,
-        "url": `https://lemma.frame00.com${base}${blogPath}/${post.slug}`,
-        "datePublished": post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
-        "dateModified": post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
-        "author": {
-          "@type": "Organization",
-          "name": "Lemma Oracle"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "Lemma Oracle",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://lemma.frame00.com/favicon.svg"
-          }
-        },
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": `https://lemma.frame00.com${base}${blogPath}/${post.slug}`
-        },
-        "image": post.cover || "https://lemma.frame00.com/ogp-default.png"
-      })}
-    </script>
-  )}
+  {Astro.props.post && <SchemaOrg post={post} base={base} blogPath={blogPath} />}
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
@@ -109,85 +69,95 @@ const blogPath = "/ja/blog";
           {post.title}
         </h1>
         <GradientImage
-        client:load
-        src={post.cover}
-        seed={post.slug}
-        alt={post.title}
-        width={post.cover ? undefined : 800}
-        height={post.cover ? undefined : 450}
-        className={post.cover ? "w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]" : "w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:w-[80vw]"}
-      />
-  <div
+          client:load
+          src={post.cover}
+          seed={post.slug}
+          alt={post.title}
+          width={post.cover ? undefined : 800}
+          height={post.cover ? undefined : 450}
+          className={post.cover
+            ? "-mx-[1rem] aspect-video h-full w-auto max-w-[calc(100vw_-_2rem)] rounded-xl object-cover shadow-xl sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]"
+            : "-mx-[1rem] aspect-video h-full w-auto max-w-[calc(100vw_-_2rem)] rounded-xl object-cover shadow-xl sm:-mx-[calc((80vw_-_100%)_/_2)] sm:w-[80vw]"}
+        />
+        <div
           class="prose prose-lg prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
           set:html={post.body}
         />
-        
+
         {/* Related posts */}
-        {related.length > 0 && (
-          <section class="related-posts mt-16 pt-8 border-t border-black/5">
-            <h2 class="mb-8 font-mono text-[14px] font-medium tracking-wider uppercase text-black/60">
-              関連記事
-            </h2>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {related.map((relatedPost) => (
-                <li class="group">
-                  <a 
-                    href={`${blogPath}/${relatedPost.slug}`}
-                    class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
-                  >
-                    <div class="aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5 mb-4">
-                      <GradientImage
-                        client:load 
-                        src={relatedPost.cover}
-                        seed={relatedPost.slug}
-                        alt={relatedPost.title}
-                        width={relatedPost.cover ? undefined : 400}
-                        height={relatedPost.cover ? undefined : 300}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        {
+          related.length > 0 && (
+            <section class="related-posts mt-16 border-t border-black/5 pt-8">
+              <h2 class="mb-8 font-mono text-[14px] font-medium tracking-wider text-black/60 uppercase">
+                関連記事
+              </h2>
+              <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+                {related.map((relatedPost) => (
+                  <li class="group">
+                    <a
+                      href={`${blogPath}/${relatedPost.slug}`}
+                      class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
+                    >
+                      <div class="mb-4 aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5">
+                        <GradientImage
+                          client:load
+                          src={relatedPost.cover}
+                          seed={relatedPost.slug}
+                          alt={relatedPost.title}
+                          width={relatedPost.cover ? undefined : 400}
+                          height={relatedPost.cover ? undefined : 300}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
-                    </div>
-                    <h3 class="mb-2 text-[16px] font-medium leading-tight line-clamp-2">
-                      {relatedPost.title}
-                    </h3>
-                    <div class="flex items-center justify-between">
-                      <span class="font-mono text-[10px] text-black/40">
-                        {relatedPost.date}
-                      </span>
-                      <span class="font-mono text-[10px] font-medium uppercase text-black/60">
-                        {relatedPost.category}
-                      </span>
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-        
+                      </div>
+                      <h3 class="mb-2 line-clamp-2 text-[16px] leading-tight font-medium">
+                        {relatedPost.title}
+                      </h3>
+                      <div class="flex items-center justify-between">
+                        <span class="font-mono text-[10px] text-black/40">{relatedPost.date}</span>
+                        <span class="font-mono text-[10px] font-medium text-black/60 uppercase">
+                          {relatedPost.category}
+                        </span>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
         {/* Post navigation */}
         <nav class="post-navigation mt-16 flex justify-between gap-4">
-          {navigation.prev && (
-            <div class="prev-post min-h-[48px]">
-              <a
-                href={`${blogPath}/${navigation.prev.slug}`}
-                class="group flex items-center gap-2 font-mono  text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
-              >
-                <span class="opacity-60 group-hover:opacity-100 transition-opacity">←</span>
-                <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.prev.title}</span>
-              </a>
-            </div>
-          )}
-          {navigation.next && (
-            <div class="next-post min-h-[48px] ml-auto">
-              <a
-                href={`${blogPath}/${navigation.next.slug}`}
-                class="group flex items-center gap-2 font-mono  text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
-              >
-                <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.next.title}</span>
-                <span class="opacity-60 group-hover:opacity-100 transition-opacity">→</span>
-              </a>
-            </div>
-          )}
+          {
+            navigation.prev && (
+              <div class="prev-post min-h-[48px]">
+                <a
+                  href={`${blogPath}/${navigation.prev.slug}`}
+                  class="group -mx-4 flex min-h-[48px] items-center gap-2 rounded px-4 py-3 font-mono text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                >
+                  <span class="opacity-60 transition-opacity group-hover:opacity-100">←</span>
+                  <span class="max-w-[200px] truncate sm:max-w-[300px]">
+                    {navigation.prev.title}
+                  </span>
+                </a>
+              </div>
+            )
+          }
+          {
+            navigation.next && (
+              <div class="next-post ml-auto min-h-[48px]">
+                <a
+                  href={`${blogPath}/${navigation.next.slug}`}
+                  class="group -mx-4 flex min-h-[48px] items-center gap-2 rounded px-4 py-3 font-mono text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                >
+                  <span class="max-w-[200px] truncate sm:max-w-[300px]">
+                    {navigation.next.title}
+                  </span>
+                  <span class="opacity-60 transition-opacity group-hover:opacity-100">→</span>
+                </a>
+              </div>
+            )
+          }
         </nav>
       </article>
     </main>
