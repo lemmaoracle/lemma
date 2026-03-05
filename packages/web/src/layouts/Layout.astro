@@ -1,11 +1,17 @@
 ---
 import type { Locale } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
 import { getTranslations } from "../i18n/translations";
+import MetaTags from "@/components/MetaTags";
 
 interface Props {
   title?: string;
   description?: string;
   locale?: Locale;
+  // Meta tags configuration
+  metaType?: "home" | "article";
+  post?: BlogPost;
+  blogPath?: string;
 }
 
 const { locale = "en" } = Astro.props;
@@ -13,6 +19,9 @@ const t = getTranslations(locale);
 const title = Astro.props.title ?? t.layout.defaultTitle;
 const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
+
+// Determine if we should render meta tags
+const shouldRenderMetaTags = Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
 ---
 
 <!doctype html>
@@ -27,6 +36,13 @@ const base = locale === "ja" ? "/ja" : "";
     <meta property="og:site_name" content="Lemma Oracle" />
     <!-- Twitter/X Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    {/* Dynamic meta tags */}
+    {shouldRenderMetaTags && Astro.props.metaType === "home" && (
+      <MetaTags type="home" title={title} description={description} base={base} />
+    )}
+    {shouldRenderMetaTags && Astro.props.metaType === "article" && Astro.props.post && Astro.props.blogPath && (
+      <MetaTags type="article" post={Astro.props.post} base={base} blogPath={Astro.props.blogPath} />
+    )}
   </head>
   <body>
     <slot />

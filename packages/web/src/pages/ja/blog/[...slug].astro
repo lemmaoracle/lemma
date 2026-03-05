@@ -4,7 +4,6 @@ import Navigation from "../../../components/Navigation.astro";
 import { getAllPosts, getPostNavigation, getRelatedPosts } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 import GradientImage from "@/components/GradientImage";
-import ArticleMetaTags from "@/components/ArticleMetaTags";
 import SchemaOrg from "@/components/SchemaOrg";
 
 export async function getStaticPaths() {
@@ -35,10 +34,14 @@ const base = "/ja";
 const blogPath = "/ja/blog";
 ---
 
-<Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>
-  {/* Article-specific OGP meta tags */}
-  {Astro.props.post && <ArticleMetaTags post={post} base={base} blogPath={blogPath} />}
-
+<Layout 
+  locale={locale} 
+  title={`${post.title} — Lemma Oracle`} 
+  description={post.abstract}
+  metaType="article"
+  post={post}
+  blogPath={blogPath}
+>
   {/* Schema.org structured data for AI */}
   {Astro.props.post && <SchemaOrg post={post} base={base} blogPath={blogPath} />}
   <div class="relative min-h-screen bg-[#FAFAF8]">
