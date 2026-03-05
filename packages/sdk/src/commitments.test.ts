@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized, commitNormalizedPlaceholder } from "./commitments";
+import { commitNormalized } from "./commitments";
 import type { Json } from "./internal";
 import * as R from "ramda";
 
@@ -130,26 +130,6 @@ describe("commitments", () => {
       // But we can check structure consistency
       expect(result1.perAttributeCommitments).toHaveLength(3);
       expect(result2.perAttributeCommitments).toHaveLength(3);
-    });
-  });
-  
-  describe("commitNormalizedPlaceholder", () => {
-    it("produces SHA-256 placeholder commitments", () => {
-      const normalized = { test: "value" };
-      const result = commitNormalizedPlaceholder(normalized);
-      
-      expect(result.attrCommitmentRoot).toMatch(/^0x[0-9a-f]{64}$/);
-      expect(result.randomness).toMatch(/^0x[0-9a-f]{64}$/);
-    });
-    
-    it("produces different outputs for same input (different randomness)", () => {
-      const normalized = { same: "input" };
-      
-      const result1 = commitNormalizedPlaceholder(normalized);
-      const result2 = commitNormalizedPlaceholder(normalized);
-      
-      expect(result1.attrCommitmentRoot).not.toBe(result2.attrCommitmentRoot);
-      expect(result1.randomness).not.toBe(result2.randomness);
     });
   });
 });

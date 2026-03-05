@@ -166,14 +166,3 @@ export const commitNormalized = async (
     }],
   ])();
 };
-
-// SHA-256 placeholder for local dev (backward compatibility)
-export const commitNormalizedPlaceholder = (
-  normalized: Json,
-): Readonly<{ attrCommitmentRoot: string; randomness: string }> => {
-  const randomness = randomBytes(32).toString("hex");
-  const root = createHash("sha256")
-    .update(`${JSON.stringify(normalized)}|${randomness}`)
-    .digest("hex");
-  return { attrCommitmentRoot: `0x${root}`, randomness: `0x${randomness}` };
-};
