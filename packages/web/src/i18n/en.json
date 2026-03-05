@@ -55,6 +55,6 @@
   },
   "layout": {
     "defaultTitle": "Lemma Oracle",
-    "defaultDescription": "A reasoning engine for long‑horizon decisions"
+    "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
   }
 }

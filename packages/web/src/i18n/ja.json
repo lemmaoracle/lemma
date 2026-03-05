@@ -55,6 +55,6 @@
   },
   "layout": {
     "defaultTitle": "Lemma Oracle",
-    "defaultDescription": "長期意思決定のための推論エンジン"
+    "defaultDescription": "AI に証明された事実を。AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。"
   }
 }
