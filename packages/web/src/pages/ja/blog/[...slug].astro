@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout.astro";
 import Navigation from "../../../components/Navigation.astro";
 import { getAllPosts, getPostNavigation, getRelatedPosts } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
+import GradientImage from "@/components/GradientImage";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts("ja");
@@ -107,18 +108,16 @@ const blogPath = "/ja/blog";
         >
           {post.title}
         </h1>
-        {post.cover && (
-          <div class="mb-12 mt-4">
-            <img
-              src={post.cover}
-              alt={post.title}
-              class="w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        )}
-        <div
+        <GradientImage
+        client:load
+        src={post.cover}
+        seed={post.slug}
+        alt={post.title}
+        width={post.cover ? undefined : 800}
+        height={post.cover ? undefined : 450}
+        className={post.cover ? "w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]" : "w-auto h-full aspect-video object-cover rounded-xl shadow-xl -mx-[1rem] max-w-[calc(100vw_-_2rem)] sm:-mx-[calc((80vw_-_100%)_/_2)] sm:w-[80vw]"}
+      />
+  <div
           class="prose prose-lg prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
           set:html={post.body}
         />
@@ -137,21 +136,15 @@ const blogPath = "/ja/blog";
                     class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
                   >
                     <div class="aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5 mb-4">
-                      {relatedPost.cover ? (
-                        <img
-                          src={relatedPost.cover}
-                          alt={relatedPost.title}
-                          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                          decoding="async"
+                      <GradientImage
+                        client:load 
+                        src={relatedPost.cover}
+                        seed={relatedPost.slug}
+                        alt={relatedPost.title}
+                        width={relatedPost.cover ? undefined : 400}
+                        height={relatedPost.cover ? undefined : 300}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
-                      ) : (
-                        <div class="flex h-full w-full items-center justify-center bg-black/5">
-                          <svg class="h-12 w-12 text-black/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                          </svg>
-                        </div>
-                      )}
                     </div>
                     <h3 class="mb-2 text-[16px] font-medium leading-tight line-clamp-2">
                       {relatedPost.title}
