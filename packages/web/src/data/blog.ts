@@ -201,21 +201,16 @@ function joinPaths(...parts: string[]): string {
 }
 
 function resolveCoverUrl(relativePath: string): string {
-  if (!relativePath || !POSTS_REPO) return relativePath;
-  
-  // 既に絶対URLの場合はそのまま返す
-  if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) {
-    return relativePath;
-  }
-  
-  const repo = POSTS_REPO;
-  const branch = POSTS_BRANCH;
-  
-  // POSTS_PATHと相対パスを組み合わせる
-  const fullPath = joinPaths(POSTS_PATH, relativePath);
-  
-  // raw.githubusercontent.com URLを構築
-  return `https://raw.githubusercontent.com/${repo}/${branch}/${fullPath}`;
+  return !relativePath || !POSTS_REPO
+    ? relativePath
+    : relativePath.startsWith("http://") || relativePath.startsWith("https://")
+      ? relativePath
+      : (() => {
+          const repo = POSTS_REPO;
+          const branch = POSTS_BRANCH;
+          const fullPath = joinPaths(POSTS_PATH, relativePath);
+          return `https://raw.githubusercontent.com/${repo}/${branch}/${fullPath}`;
+        })();
 }
 
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
@@ -312,4 +307,39 @@ export async function getPostBySlug(
 ): Promise<BlogPost | undefined> {
   const posts = await loadPosts();
   return posts.find((p) => p.slug === slug && p.locale === locale);
+}
+
+export interface PostNavigation {
+  readonly prev?: BlogPost;
+  readonly next?: BlogPost;
+}
+
+export async function getPostNavigation(
+  slug: string,
+  locale: BlogLocale,
+): Promise<PostNavigation> {
+  const posts = (await loadPosts()).filter((p) => p.locale === locale);
+  const currentIndex = posts.findIndex((p) => p.slug === slug);
+  
+  return currentIndex === -1
+    ? {}
+    : {
+        prev: currentIndex < posts.length - 1 ? posts[currentIndex + 1] : undefined,
+        next: currentIndex > 0 ? posts[currentIndex - 1] : undefined,
+      };
+}
+
+export async function getRelatedPosts(
+  slug: string,
+  locale: BlogLocale,
+  limit: number = 5,
+): Promise<ReadonlyArray<BlogPost>> {
+  const posts = (await loadPosts()).filter((p) => p.locale === locale);
+  const currentPost = posts.find((p) => p.slug === slug);
+  
+  return !currentPost || !currentPost.category
+    ? []
+    : posts
+        .filter((p) => p.slug !== slug && p.category === currentPost.category)
+        .slice(0, limit);
 }

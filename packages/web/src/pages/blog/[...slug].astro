@@ -1,29 +1,85 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navigation from "../../components/Navigation.astro";
-import { getAllPosts } from "../../data/blog";
+import { getAllPosts, getPostNavigation, getRelatedPosts } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts("en");
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+  const paths = await Promise.all(
+    posts.map(async (post) => ({
+      params: { slug: post.slug },
+      props: { 
+        post, 
+        navigation: await getPostNavigation(post.slug, "en"),
+        related: await getRelatedPosts(post.slug, "en", 5)
+      },
+    }))
+  );
+  return paths;
 }
 
 interface Props {
   post: import("../../data/blog").BlogPost;
+  navigation: import("../../data/blog").PostNavigation;
+  related: import("../../data/blog").BlogPost[];
 }
 
-const { post } = Astro.props;
+const { post, navigation, related } = Astro.props;
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
 const blogPath = "/blog";
 ---
 
-<Layout locale={locale} title={`${post.title} — Lemma Oracle`} description={post.abstract}>
+<Layout 
+  locale={locale} 
+  title={`${post.title} — Lemma Oracle`} 
+  description={post.abstract}
+>
+  {/* Article-specific OGP meta tags */}
+  {Astro.props.post && (
+    <div set:html={`<meta property="og:title" content="${post.title}" />
+      <meta property="og:description" content="${post.abstract}" />
+      <meta property="og:url" content="https://lemma.frame00.com${base}${blogPath}/${post.slug}" />
+      <meta property="og:type" content="article" />
+      <meta property="og:image" content="${post.cover || 'https://lemma.frame00.com/ogp-default.png'}" />
+      <meta name="twitter:title" content="${post.title}" />
+      <meta name="twitter:description" content="${post.abstract}" />
+      <meta name="twitter:image" content="${post.cover || 'https://lemma.frame00.com/ogp-default.png'}" />`} />
+  )}
+
+  {/* Schema.org structured data for AI */}
+  {Astro.props.post && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.abstract,
+        "url": `https://lemma.frame00.com${base}${blogPath}/${post.slug}`,
+        "datePublished": post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
+        "dateModified": post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
+        "author": {
+          "@type": "Organization",
+          "name": "Lemma Oracle"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Lemma Oracle",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://lemma.frame00.com/favicon.svg"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `https://lemma.frame00.com${base}${blogPath}/${post.slug}`
+        },
+        "image": post.cover || "https://lemma.frame00.com/ogp-default.png"
+      })}
+    </script>
+  )}
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
@@ -66,6 +122,80 @@ const blogPath = "/blog";
           class="prose prose-xl prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
           set:html={post.body}
         />
+        
+        {/* Related posts */}
+        {related.length > 0 && (
+          <section class="related-posts mt-16 pt-8 border-t border-black/5">
+            <h2 class="mb-8 font-mono text-[14px] font-medium tracking-wider uppercase text-black/60">
+              Related Posts
+            </h2>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {related.map((relatedPost) => (
+                <li class="group">
+                  <a 
+                    href={`${blogPath}/${relatedPost.slug}`}
+                    class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
+                  >
+                    <div class="aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5 mb-4">
+                      {relatedPost.cover ? (
+                        <img
+                          src={relatedPost.cover}
+                          alt={relatedPost.title}
+                          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div class="flex h-full w-full items-center justify-center bg-black/5">
+                          <svg class="h-12 w-12 text-black/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <h3 class="mb-2 text-[16px] font-medium leading-tight line-clamp-2">
+                      {relatedPost.title}
+                    </h3>
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono text-[10px] text-black/40">
+                        {relatedPost.date}
+                      </span>
+                      <span class="font-mono text-[10px] font-medium uppercase text-black/60">
+                        {relatedPost.category}
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        
+        {/* Post navigation */}
+        <nav class="post-navigation mt-16 flex justify-between gap-4">
+          {navigation.prev && (
+            <div class="prev-post min-h-[48px]">
+              <a
+                href={`${blogPath}/${navigation.prev.slug}`}
+                class="group flex items-center gap-2 font-mono text-[11px] text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
+              >
+                <span class="opacity-60 group-hover:opacity-100 transition-opacity">←</span>
+                <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.prev.title}</span>
+              </a>
+            </div>
+          )}
+          {navigation.next && (
+            <div class="next-post min-h-[48px] ml-auto">
+              <a
+                href={`${blogPath}/${navigation.next.slug}`}
+                class="group flex items-center gap-2 font-mono text-[11px] text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
+              >
+                <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.next.title}</span>
+                <span class="opacity-60 group-hover:opacity-100 transition-opacity">→</span>
+              </a>
+            </div>
+          )}
+        </nav>
       </article>
     </main>
     <footer class="mt-16 border-t border-black/5 py-8">

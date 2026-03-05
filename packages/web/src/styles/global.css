@@ -2,3 +2,32 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @source "../**/*.{js,ts,jsx,tsx,astro}";
+
+/* Post navigation styles */
+.post-navigation {
+  min-height: 48px;
+}
+
+.post-navigation a {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+@media (max-width: 640px) {
+  .post-navigation {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .post-navigation .next-post {
+    margin-left: 0;
+  }
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
