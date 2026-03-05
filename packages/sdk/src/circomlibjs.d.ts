@@ -1,6 +1,6 @@
 declare module "circomlibjs" {
   type BigNumberish = string | number | bigint;
-  
+
   export interface Poseidon {
     (inputs: ReadonlyArray<BigNumberish>): Uint8Array;
     readonly F: {
@@ -19,6 +19,6 @@ declare module "circomlibjs" {
       one: any;
     };
   }
-  
+
   export function buildPoseidon(): Promise<Poseidon>;
 }

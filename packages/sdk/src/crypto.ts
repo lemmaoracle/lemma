@@ -51,17 +51,21 @@ const base32lower = (bytes: Uint8Array): string => {
     bufferBits: number;
     output: readonly string[];
   }>;
-  
+
   const processByte = (state: EncodeState, byte: number): EncodeState => {
     const newBuffer = (state.buffer << 8) | byte;
     const newBufferBits = state.bufferBits + 8;
-    
+
     // Extract as many 5-bit groups as possible using iteration
-    const extractAllGroups = (buffer: number, bufferBits: number, output: readonly string[]): readonly string[] => {
+    const extractAllGroups = (
+      buffer: number,
+      bufferBits: number,
+      output: readonly string[],
+    ): readonly string[] => {
       const groups: string[] = [];
       let currentBuffer = buffer;
       let currentBits = bufferBits;
-      
+
       while (currentBits >= 5) {
         const shift = currentBits - 5;
         const charIndex = (currentBuffer >> shift) & 0x1f;
@@ -69,36 +73,36 @@ const base32lower = (bytes: Uint8Array): string => {
         currentBuffer = currentBuffer & ((1 << shift) - 1);
         currentBits -= 5;
       }
-      
+
       return [...output, ...groups];
     };
-    
+
     const newOutput = extractAllGroups(newBuffer, newBufferBits, state.output);
     const remainingBits = newBufferBits % 5;
     const remainingBuffer = remainingBits > 0 ? newBuffer & ((1 << remainingBits) - 1) : 0;
-    
+
     return {
       buffer: remainingBuffer,
       bufferBits: remainingBits,
       output: newOutput,
     };
   };
-  
+
   const finalState = R.reduce<number, EncodeState>(
     processByte,
     { buffer: 0, bufferBits: 0, output: [] },
-    Array.from(bytes)
+    Array.from(bytes),
   );
-  
+
   // Add padding character for remaining bits
   const finalOutput = R.when(
     (state: EncodeState) => state.bufferBits > 0,
     (state: EncodeState) => ({
       ...state,
       output: [...state.output, BASE32_CHARS[(state.buffer << (5 - state.bufferBits)) & 0x1f]],
-    })
+    }),
   )(finalState);
-  
+
   return finalOutput.output.join("");
 };
 
@@ -113,90 +117,88 @@ const computeCidV1Raw = (content: Uint8Array): string => {
 
 const bytesToBase64 = (bytes: Uint8Array): string => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  
+
   const processTriplet = (tripletIndex: number): string => {
     const i = tripletIndex * 3;
     const b1 = bytes[i] ?? 0;
     const b2 = bytes[i + 1] ?? 0;
     const b3 = bytes[i + 2] ?? 0;
-    
+
     const hasB2 = i + 1 < bytes.length;
     const hasB3 = i + 2 < bytes.length;
-    
+
     const c1 = chars[(b1 >> 2) & 0x3f];
     const c2 = chars[((b1 << 4) | (b2 >> 4)) & 0x3f];
     const c3 = hasB2 ? chars[((b2 << 2) | (b3 >> 6)) & 0x3f] : "=";
     const c4 = hasB3 ? chars[b3 & 0x3f] : "=";
-    
+
     return `${c1}${c2}${c3}${c4}`;
   };
-  
+
   const triplets = R.range(0, Math.ceil(bytes.length / 3));
-  return R.pipe(
-    R.map(processTriplet),
-    R.join("")
-  )(triplets);
+  return R.pipe(R.map(processTriplet), R.join(""))(triplets);
 };
 
 const base64ToBytes = (str: string): Uint8Array => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  
+
   const processQuad = (i: number): number[] => {
     const enc1 = chars.indexOf(str[i] ?? "");
     const enc2 = i + 1 < str.length ? chars.indexOf(str[i + 1] ?? "") : 0;
     const enc3 = i + 2 < str.length ? chars.indexOf(str[i + 2] ?? "") : 0;
     const enc4 = i + 3 < str.length ? chars.indexOf(str[i + 3] ?? "") : 0;
-    
+
     const b1 = (enc1 << 2) | (enc2 >> 4);
-    
+
     const maybeB2 = str[i + 2] !== "=" ? ((enc2 << 4) | (enc3 >> 2)) & 0xff : null;
     const maybeB3 = str[i + 3] !== "=" ? ((enc3 << 6) | enc4) & 0xff : null;
-    
+
     return R.pipe(
       () => [b1],
-      (bytes: number[]) => R.when(
-        () => maybeB2 !== null,
-        (b) => [...b, maybeB2!],
-        bytes
-      ),
-      (bytes: number[]) => R.when(
-        () => maybeB3 !== null,
-        (b) => [...b, maybeB3!],
-        bytes
-      )
+      (bytes: number[]) =>
+        R.when(
+          () => maybeB2 !== null,
+          (b) => [...b, maybeB2!],
+          bytes,
+        ),
+      (bytes: number[]) =>
+        R.when(
+          () => maybeB3 !== null,
+          (b) => [...b, maybeB3!],
+          bytes,
+        ),
     )();
   };
-  
+
   const quads = R.range(0, Math.ceil(str.length / 4));
-  const byteArray = R.chain(
-    (i) => processQuad(i * 4),
-    quads
-  );
-  
+  const byteArray = R.chain((i) => processQuad(i * 4), quads);
+
   return Uint8Array.from(byteArray);
 };
 
 // Validate and normalize secp256k1 public key
 // Accepts: 66-char hex (compressed, with or without 0x prefix)
 const validateHolderKey = (holderKey: string): Uint8Array => {
-  const stripPrefix = (key: string): string => key.startsWith("0x") ? key.slice(2) : key;
-  
+  const stripPrefix = (key: string): string => (key.startsWith("0x") ? key.slice(2) : key);
+
   const isValidLength = R.either(
     (key: string) => key.length === 66,
-    (key: string) => key.length === 68
+    (key: string) => key.length === 68,
   );
-  
+
   const normalizedKey = R.pipe(
     stripPrefix,
     R.when(
       (key: string) => !isValidLength(key),
-      () => { throw new Error("Invalid secp256k1 public key"); }
-    )
+      () => {
+        throw new Error("Invalid secp256k1 public key");
+      },
+    ),
   )(holderKey);
-  
+
   // Parse as hex string (without 0x prefix) or Uint8Array
   const keyBytes = Uint8Array.from(Buffer.from(normalizedKey, "hex"));
-  
+
   // Validate the key is a valid point
   /* eslint-disable-next-line functional/no-try-statements --
    * Crypto boundary: validating cryptographic keys requires try-catch */
@@ -262,13 +264,15 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   // Validate ephemeral public key
   R.tryCatch(
     () => secp256k1.ProjectivePoint.fromHex(bytesToHex(ephemeralPubKey)),
-    () => { throw new Error("Invalid ephemeral public key in encrypted document"); }
+    () => {
+      throw new Error("Invalid ephemeral public key in encrypted document");
+    },
   )();
 
   // Parse holder private key (remove 0x prefix if present)
   const holderPrivKeyBytes = R.pipe(
-    (key: string) => key.startsWith("0x") ? key.slice(2) : key,
-    (hex: string) => Uint8Array.from(Buffer.from(hex, "hex"))
+    (key: string) => (key.startsWith("0x") ? key.slice(2) : key),
+    (hex: string) => Uint8Array.from(Buffer.from(hex, "hex")),
   )(input.holderPrivateKey);
 
   // ECDH: derive shared secret using ephemeral's public key and holder's private key

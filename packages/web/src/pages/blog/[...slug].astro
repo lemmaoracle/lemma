@@ -51,7 +51,7 @@ const blogPath = "/blog";
 
   {/* Schema.org structured data for AI */}
   {Astro.props.post && (
-    <script type="application/ld+json">
+    <script type="application/ld+json" is:inline>
       {JSON.stringify({
         "@context": "https://schema.org",
         "@type": "BlogPosting",

@@ -90,7 +90,7 @@
       "DocumentCommitments": {
         "type": "object",
         "properties": {
-          "scheme": { 
+          "scheme": {
             "type": "string",
             "enum": ["poseidon", "poseidon2", "rescue-prime", "sha256-placeholder"]
           },

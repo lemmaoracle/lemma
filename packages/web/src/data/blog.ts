@@ -314,13 +314,10 @@ export interface PostNavigation {
   readonly next?: BlogPost;
 }
 
-export async function getPostNavigation(
-  slug: string,
-  locale: BlogLocale,
-): Promise<PostNavigation> {
+export async function getPostNavigation(slug: string, locale: BlogLocale): Promise<PostNavigation> {
   const posts = (await loadPosts()).filter((p) => p.locale === locale);
   const currentIndex = posts.findIndex((p) => p.slug === slug);
-  
+
   return currentIndex === -1
     ? {}
     : {
@@ -336,10 +333,8 @@ export async function getRelatedPosts(
 ): Promise<ReadonlyArray<BlogPost>> {
   const posts = (await loadPosts()).filter((p) => p.locale === locale);
   const currentPost = posts.find((p) => p.slug === slug);
-  
+
   return !currentPost || !currentPost.category
     ? []
-    : posts
-        .filter((p) => p.slug !== slug && p.category === currentPost.category)
-        .slice(0, limit);
+    : posts.filter((p) => p.slug !== slug && p.category === currentPost.category).slice(0, limit);
 }

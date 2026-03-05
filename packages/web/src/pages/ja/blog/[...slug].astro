@@ -51,7 +51,7 @@ const blogPath = "/ja/blog";
 
   {/* Schema.org structured data for AI */}
   {Astro.props.post && (
-    <script type="application/ld+json">
+    <script type="application/ld+json" is:inline>
       {JSON.stringify({
         "@context": "https://schema.org",
         "@type": "BlogPosting",
@@ -177,7 +177,7 @@ const blogPath = "/ja/blog";
             <div class="prev-post min-h-[48px]">
               <a
                 href={`${blogPath}/${navigation.prev.slug}`}
-                class="group flex items-center gap-2 font-mono text-[11px] text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
+                class="group flex items-center gap-2 font-mono  text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
               >
                 <span class="opacity-60 group-hover:opacity-100 transition-opacity">←</span>
                 <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.prev.title}</span>
@@ -188,7 +188,7 @@ const blogPath = "/ja/blog";
             <div class="next-post min-h-[48px] ml-auto">
               <a
                 href={`${blogPath}/${navigation.next.slug}`}
-                class="group flex items-center gap-2 font-mono text-[11px] text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
+                class="group flex items-center gap-2 font-mono  text-black/40 hover:text-black/70 min-h-[48px] px-4 py-3 -mx-4 rounded hover:bg-black/5 transition-colors"
               >
                 <span class="truncate max-w-[200px] sm:max-w-[300px]">{navigation.next.title}</span>
                 <span class="opacity-60 group-hover:opacity-100 transition-opacity">→</span>

@@ -70,7 +70,14 @@ describe("prover.prove", () => {
     vi.mock("snarkjs", () => ({
       groth16: {
         fullProve: vi.fn().mockResolvedValue({
-          proof: { pi_a: ["1", "2"], pi_b: [["3", "4"], ["5", "6"]], pi_c: ["7", "8"] },
+          proof: {
+            pi_a: ["1", "2"],
+            pi_b: [
+              ["3", "4"],
+              ["5", "6"],
+            ],
+            pi_c: ["7", "8"],
+          },
           publicSignals: ["0xroot456"],
         }),
       },
@@ -96,10 +103,16 @@ describe("prover.prove", () => {
         });
       }
       if (url.includes("/ipfs/QmWasm")) {
-        return Promise.resolve({ ok: true, arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)) });
+        return Promise.resolve({
+          ok: true,
+          arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        });
       }
       if (url.includes("/ipfs/QmZkey")) {
-        return Promise.resolve({ ok: true, arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)) });
+        return Promise.resolve({
+          ok: true,
+          arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        });
       }
       return Promise.resolve({ ok: false });
     });
@@ -138,7 +151,7 @@ describe("prover.prove", () => {
       prove(client, {
         circuitId: "missing",
         witness: { some_field: "value" },
-      })
+      }),
     ).rejects.toThrow("HTTP 404");
 
     expect(mockFetch).toHaveBeenCalled();
@@ -173,7 +186,7 @@ describe("prover.prove", () => {
       prove(client, {
         circuitId: "bad-circuit",
         witness: { some_field: "value" },
-      })
+      }),
     ).rejects.toThrow("Failed to fetch circuit artifact");
   });
 });

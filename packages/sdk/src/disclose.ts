@@ -237,12 +237,7 @@ export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<
 
         // Generate challenge from protocol
         const challengeProver = generateChallengeFromBytes(
-          bbsPlusChallengeContributionFromProtocol(
-            protocol,
-            revealedMsgs,
-            params,
-            true,
-          ),
+          bbsPlusChallengeContributionFromProtocol(protocol, revealedMsgs, params, true),
         );
 
         // Generate proof
@@ -284,12 +279,7 @@ export const verifyProof = async (
 
     // Generate challenge from proof
     const challengeVerifier = generateChallengeFromBytes(
-      bbsPlusChallengeContributionFromProof(
-        input.proof,
-        revealedMsgs,
-        params,
-        true,
-      ),
+      bbsPlusChallengeContributionFromProof(input.proof, revealedMsgs, params, true),
     );
 
     const result = bbsPlusVerifyProofOfKnowledgeOfSignature(
