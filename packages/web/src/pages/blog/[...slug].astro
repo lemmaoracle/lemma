@@ -47,30 +47,15 @@ const blogPath = "/blog";
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
-      <article class="mx-auto max-w-200 px-8 pt-16">
-        <a
-          href={blogPath}
-          class="mb-6 inline-block font-mono text-xs text-black/40 hover:opacity-70"
-        >
-          {t.blog.backToBlog}
-        </a>
-        <p class="mb-2 font-mono text-xs tracking-wide text-black/40">{post.date}</p>
-        <p class="mb-4 font-mono text-xs tracking-wider uppercase">
-          <span
-            class="rounded-sm px-2 py-1"
-            style={post.categoryColor
-              ? `background-color: ${post.categoryColor}15; color: ${post.categoryColor};`
-              : undefined}
+      <article class="px-8 pt-16">
+        <div class="mx-auto max-w-200">
+          <a
+            href={blogPath}
+            class="mb-6 inline-block font-mono text-xs text-black/40 hover:opacity-70"
           >
-            {post.category}
-          </span>
-        </p>
-        <h1
-          class="mb-6 text-5xl leading-[1.2] tracking-[-0.02em]"
-          style="font-family: 'Instrument Serif', serif;"
-        >
-          {post.title}
-        </h1>
+            {t.blog.backToBlog}
+          </a>
+        </div>
         <div class="mt-4 mb-12">
           <GradientImage
             client:load
@@ -79,87 +64,106 @@ const blogPath = "/blog";
             alt={post.title}
             width={post.cover ? undefined : 800}
             height={post.cover ? undefined : 450}
-            className={post.cover
-              ? "-mx-[1rem] aspect-video h-full w-auto max-w-[calc(100vw_-_2rem)] rounded-xl object-cover shadow-xl sm:-mx-[calc((80vw_-_100%)_/_2)] sm:max-w-[80vw]"
-              : "-mx-[1rem] aspect-video h-full w-auto max-w-[calc(100vw_-_2rem)] rounded-xl object-cover shadow-xl sm:-mx-[calc((80vw_-_100%)_/_2)] sm:w-[80vw]"}
+            className="mx-auto h-full max-h-120 w-full max-w-360 rounded-xl object-cover shadow-xl"
           />
         </div>
-        <div
-          class="prose prose-xl prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
-          set:html={post.body}
-        />
+        <section class="mx-auto max-w-200">
+          <div class="flex justify-between">
+            <p class="mb-2 font-mono text-xs tracking-wide text-black/40">{post.date}</p>
+            <p class="mb-4 font-mono text-xs tracking-wider uppercase">
+              <span
+                class="rounded-sm px-2 py-1"
+                style={post.categoryColor
+                  ? `background-color: ${post.categoryColor}15; color: ${post.categoryColor};`
+                  : undefined}
+              >
+                {post.category}
+              </span>
+            </p>
+          </div>
+          <h1
+            class="mb-6 text-5xl leading-[1.2] tracking-[-0.02em]"
+            style="font-family: 'Instrument Serif', serif;"
+          >
+            {post.title}
+          </h1>
+          <div
+            class="prose prose-xl prose-h1:font-normal prose-h2:font-normal prose-h3:font-normal prose-h4:font-normal prose-h5:font-normal prose-h6:font-normal prose-neutral prose-p:font-[EB_Garamond,_serif] prose-li:font-[EB_Garamond,_serif] prose-strong:font-[EB_Garamond,_serif] max-w-none font-[Instrument_Serif] text-black/80"
+            set:html={post.body}
+          />
 
-        {/* Related posts */}
-        {
-          related.length > 0 && (
-            <section class="related-posts mt-16 border-t border-black/5 pt-8">
-              <h2 class="mb-8 font-mono text-sm font-medium tracking-wider text-black/60 uppercase">
-                Related Posts
-              </h2>
-              <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {related.map((relatedPost) => (
-                  <li class="group">
-                    <a
-                      href={`${blogPath}/${relatedPost.slug}`}
-                      class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
-                    >
-                      <div class="mb-4 aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5">
-                        <GradientImage
-                          client:load
-                          src={relatedPost.cover}
-                          seed={relatedPost.slug}
-                          alt={relatedPost.title}
-                          width={relatedPost.cover ? undefined : 400}
-                          height={relatedPost.cover ? undefined : 300}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                      <h3 class="mb-2 line-clamp-2 text-base leading-tight font-medium">
-                        {relatedPost.title}
-                      </h3>
-                      <div class="flex items-center justify-between">
-                        <span class="font-mono text-xs text-black/40">{relatedPost.date}</span>
-                        <span class="font-mono text-xs font-medium text-black/60 uppercase">
-                          {relatedPost.category}
-                        </span>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
-
-        {/* Post navigation */}
-        <nav class="post-navigation mt-16 flex justify-between gap-4">
+          {/* Related posts */}
           {
-            navigation.prev && (
-              <div class="prev-post min-h-12">
-                <a
-                  href={`${blogPath}/${navigation.prev.slug}`}
-                  class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
-                >
-                  <span class="opacity-60 transition-opacity group-hover:opacity-100">←</span>
-                  <span class="max-w-50 truncate sm:max-w-75">{navigation.prev.title}</span>
-                </a>
-              </div>
+            related.length > 0 && (
+              <section class="related-posts mt-16 border-t border-black/5 pt-8">
+                <h2 class="mb-8 font-mono text-sm font-medium tracking-wider text-black/60 uppercase">
+                  Related Posts
+                </h2>
+                <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+                  {related.map((relatedPost) => (
+                    <li class="group">
+                      <a
+                        href={`${blogPath}/${relatedPost.slug}`}
+                        class="block h-full overflow-hidden rounded-lg border border-black/5 p-4 transition-all hover:border-black/10 hover:shadow-sm"
+                      >
+                        <div class="mb-4 aspect-[4/3] w-full overflow-hidden rounded-md bg-black/5">
+                          <GradientImage
+                            client:load
+                            src={relatedPost.cover}
+                            seed={relatedPost.slug}
+                            alt={relatedPost.title}
+                            width={relatedPost.cover ? undefined : 400}
+                            height={relatedPost.cover ? undefined : 300}
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                        <h3 class="mb-2 line-clamp-2 text-base leading-tight font-medium">
+                          {relatedPost.title}
+                        </h3>
+                        <div class="flex items-center justify-between">
+                          <span class="font-mono text-xs text-black/40">{relatedPost.date}</span>
+                          <span class="font-mono text-xs font-medium text-black/60 uppercase">
+                            {relatedPost.category}
+                          </span>
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )
           }
-          {
-            navigation.next && (
-              <div class="next-post ml-auto min-h-12">
-                <a
-                  href={`${blogPath}/${navigation.next.slug}`}
-                  class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
-                >
-                  <span class="max-w-50 truncate sm:max-w-75">{navigation.next.title}</span>
-                  <span class="opacity-60 transition-opacity group-hover:opacity-100">→</span>
-                </a>
-              </div>
-            )
-          }
-        </nav>
+
+          {/* Post navigation */}
+          <nav class="post-navigation mt-16 flex justify-between gap-4">
+            {
+              navigation.prev && (
+                <div class="prev-post min-h-12">
+                  <a
+                    href={`${blogPath}/${navigation.prev.slug}`}
+                    class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                  >
+                    <span class="opacity-60 transition-opacity group-hover:opacity-100">←</span>
+                    <span class="max-w-50 truncate sm:max-w-75">{navigation.prev.title}</span>
+                  </a>
+                </div>
+              )
+            }
+            {
+              navigation.next && (
+                <div class="next-post ml-auto min-h-12">
+                  <a
+                    href={`${blogPath}/${navigation.next.slug}`}
+                    class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                  >
+                    <span class="max-w-50 truncate sm:max-w-75">{navigation.next.title}</span>
+                    <span class="opacity-60 transition-opacity group-hover:opacity-100">→</span>
+                  </a>
+                </div>
+              )
+            }
+          </nav>
+        </section>
       </article>
     </main>
     <footer class="mt-16 border-t border-black/5 py-8">
