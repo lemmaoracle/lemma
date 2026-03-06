@@ -37,12 +37,14 @@ jobs:
         run: pnpm install
 
       # Blog posts are fetched from a GitHub repo at build time; set Variables (and optional LEMMA_GH_TOKEN secret) in repo Settings → Secrets and variables → Actions.
+      # Google Analytics ID should also be set as a Variable (PUBLIC_GOOGLE_ANALYTICS_ID).
       - name: Build web (Astro)
         env:
           LEMMA_POSTS_REPO: ${{ vars.LEMMA_POSTS_REPO }}
           LEMMA_POSTS_BRANCH: ${{ vars.LEMMA_POSTS_BRANCH || 'main' }}
           LEMMA_POSTS_PATH: ${{ vars.LEMMA_POSTS_PATH || '' }}
           LEMMA_GH_TOKEN: ${{ secrets.LEMMA_GH_TOKEN }}
+          PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.PUBLIC_GOOGLE_ANALYTICS_ID }}
         run: pnpm --filter @lemma/web build
 
       - name: Upload artifact

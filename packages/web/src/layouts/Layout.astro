@@ -57,6 +57,22 @@ const shouldRenderMetaTags =
         )
     }
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* Google Analytics */}
+    {
+      import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID}`}></script>
+          <script>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID}');
+            `}
+          </script>
+        </>
+      )
+    }
   </head>
   <body>
     <slot />
