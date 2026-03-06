@@ -23,6 +23,8 @@ const base = locale === "ja" ? "/ja" : "";
 // Determine if we should render meta tags
 const shouldRenderMetaTags =
   Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
+
+const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 ---
 
 <!doctype html>
@@ -59,17 +61,21 @@ const shouldRenderMetaTags =
     <link rel="sitemap" href="/sitemap-index.xml" />
     {/* Google Analytics */}
     {
-      import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID && (
+      googleAnalyticsId && (
         <>
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID}`}></script>
-          <script>
-            {`
+          <script
+            is:inline
+            src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+          />
+          <script
+            is:inline
+            set:html={`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID}');
+              gtag('config', '${googleAnalyticsId}');
             `}
-          </script>
+          />
         </>
       )
     }
