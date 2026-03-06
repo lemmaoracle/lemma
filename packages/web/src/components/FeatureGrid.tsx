@@ -24,7 +24,7 @@ function FeatureItem({ icon, heading, body, slug, locale }: FeatureItemProps) {
       <p className="mb-4 text-sm leading-relaxed text-black/60">{body}</p>
       <a
         href={blogPath}
-        className="inline-flex items-center gap-1 font-mono text-xs tracking-wide text-black/50 transition-colors hover:text-black/80"
+        className="inline-flex items-center gap-1 font-mono text-base tracking-wide text-black/50 transition-colors hover:text-black/80"
       >
         Read the guide →
       </a>
