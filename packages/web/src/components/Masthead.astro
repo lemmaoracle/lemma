@@ -15,7 +15,7 @@ const { t, locale } = Astro.props;
   <ProvenanceChainBg client:load />
 
   {/* Centered title and subtitle */}
-  <div class="relative z-10 max-w-[700px] text-center">
+  <div class="relative z-10 max-w-175 text-center">
     <h1
       class="mb-6 text-8xl leading-[1.1] tracking-[-0.02em]"
       style="font-family: 'Instrument Serif', serif;"
@@ -23,7 +23,7 @@ const { t, locale } = Astro.props;
       {t.title}
     </h1>
     <p
-      class="mx-auto mb-8 max-w-[600px] font-mono text-[13px] leading-relaxed tracking-wide text-black/60"
+      class="mx-auto mb-8 max-w-150 font-mono text-sm leading-relaxed tracking-wide text-black/60"
     >
       {t.tagline}
     </p>
@@ -32,7 +32,7 @@ const { t, locale } = Astro.props;
     <div class="flex items-center justify-center">
       <a
         href={locale === "ja" ? "/ja/blog" : "/blog"}
-        class="border border-black bg-black px-6 py-3 font-mono text-[11px] tracking-wide text-white uppercase transition-colors hover:bg-black/90"
+        class="border border-black bg-black px-6 py-3 font-mono text-xs tracking-wide text-white uppercase transition-colors hover:bg-black/90"
       >
         {t.ctaGetStarted}
       </a>

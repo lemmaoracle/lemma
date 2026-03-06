@@ -21,53 +21,53 @@ const homeHref = "/";
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
-      <div class="mx-auto max-w-[640px] px-8 pt-16">
-        <h1 class="mb-6 font-mono text-[24px] tracking-wide">{t.rebuild.title}</h1>
-        <p class="mb-8 font-mono text-[13px] leading-relaxed text-black/60">
+      <div class="mx-auto max-w-160 px-8 pt-16">
+        <h1 class="mb-6 font-mono text-2xl tracking-wide">{t.rebuild.title}</h1>
+        <p class="mb-8 font-mono text-sm leading-relaxed text-black/60">
           {t.rebuild.intro}
         </p>
 
-        <h2 class="mb-3 font-mono text-[11px] tracking-wider text-black/40 uppercase">
+        <h2 class="mb-3 font-mono text-xs tracking-wider text-black/40 uppercase">
           {t.rebuild.option1Title}
         </h2>
-        <p class="mb-4 font-mono text-[13px] text-black/60">
+        <p class="mb-4 font-mono text-sm text-black/60">
           {t.rebuild.option1Desc}
         </p>
         <a
           href={workflowUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="font-mono text-[13px] text-black/70 underline hover:opacity-70"
+          class="font-mono text-sm text-black/70 underline hover:opacity-70"
         >
           {workflowUrl}
         </a>
 
-        <h2 class="mt-10 mb-3 font-mono text-[11px] tracking-wider text-black/40 uppercase">
+        <h2 class="mt-10 mb-3 font-mono text-xs tracking-wider text-black/40 uppercase">
           {t.rebuild.option2Title}
         </h2>
-        <p class="mb-4 font-mono text-[13px] text-black/60">
+        <p class="mb-4 font-mono text-sm text-black/60">
           {t.rebuild.option2Desc}
         </p>
         <pre
-          class="mb-4 overflow-x-auto rounded bg-black/5 p-4 font-mono text-[11px]"><code>curl -X POST \
+          class="mb-4 overflow-x-auto rounded bg-black/5 p-4 font-mono text-xs"><code>curl -X POST \
   -H "Authorization: token $PAT" \
   -H "Accept: application/vnd.github.v3+json" \
   {apiUrl} \
   -d '{{"event_type":"rebuild"}}'</code></pre>
-        <p class="font-mono text-[11px] text-black/50">
+        <p class="font-mono text-xs text-black/50">
           {t.rebuild.option2CurlNotePrefix}<code>event_type: rebuild</code>{
             t.rebuild.option2CurlNoteSuffix
           }
         </p>
 
-        <p class="mt-10 font-mono text-[11px] text-black/40">
+        <p class="mt-10 font-mono text-xs text-black/40">
           <a href={homeHref} class="underline">{t.rebuild.backHome}</a>
         </p>
       </div>
     </main>
     <footer class="mt-16 border-t border-black/5 py-8">
-      <div class="mx-auto max-w-[1400px] px-8">
-        <p class="font-mono text-[10px] tracking-wide text-black/30">
+      <div class="mx-auto max-w-350 px-8">
+        <p class="font-mono text-xs tracking-wide text-black/30">
           {t.footer.copyright}
         </p>
       </div>

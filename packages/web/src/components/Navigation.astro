@@ -1,6 +1,7 @@
 ---
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
+import LemmaOracle from "./LemmaOracle.astro";
 
 interface Props {
   locale: Locale;
@@ -16,11 +17,11 @@ const homePath = base || "/";
 <nav
   class="fixed top-0 right-0 left-0 z-50 border-b border-black/5 bg-[#FAFAF8]/95 backdrop-blur-sm"
 >
-  <div class="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-3">
-    <a href={homePath} class="font-mono text-[13px] tracking-wider text-black/50 uppercase">
-      {t.lemmaOracle}
+  <div class="mx-auto flex max-w-350 items-center justify-between px-8 py-3">
+    <a href={homePath} class="font-mono text-sm tracking-wider text-black/50 uppercase">
+      <LemmaOracle class="h-12 w-auto text-black" />
     </a>
-    <ul class="flex items-center gap-6 font-mono text-[13px] tracking-wide uppercase">
+    <ul class="flex items-center gap-6 text-sm tracking-wide uppercase">
       <li><a href={homePath} class="opacity-50 transition-opacity">{t.overview}</a></li>
       <li><a href={homePath} class="opacity-50 transition-opacity">{t.changelog}</a></li>
       <li>

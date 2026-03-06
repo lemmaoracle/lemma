@@ -12,7 +12,7 @@ interface Props {
 const { sections, t, base } = Astro.props;
 ---
 
-<div class="mx-auto max-w-[1400px] px-8 py-16">
+<div class="mx-auto max-w-350 px-8 py-16">
   {
     sections.map((section) => {
       const sectionLabel = t.sections[section.section] ?? section.section;
@@ -20,7 +20,7 @@ const { sections, t, base } = Astro.props;
         <section class="mb-20 last:mb-0">
           <h2
             id={section.section.toLowerCase().replace(/\s+/g, "-")}
-            class="mb-8 border-b border-black/10 pb-3 font-mono text-[11px] tracking-wider text-black/30 uppercase"
+            class="mb-8 border-b border-black/10 pb-3 font-mono text-xs tracking-wider text-black/30 uppercase"
           >
             {sectionLabel}
           </h2>

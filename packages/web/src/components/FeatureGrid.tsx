@@ -24,7 +24,7 @@ function FeatureItem({ icon, heading, body, slug, locale }: FeatureItemProps) {
       <p className="mb-4 text-sm leading-relaxed text-black/60">{body}</p>
       <a
         href={blogPath}
-        className="inline-flex items-center gap-1 font-mono text-[11px] tracking-wide text-black/50 transition-colors hover:text-black/80"
+        className="inline-flex items-center gap-1 font-mono text-xs tracking-wide text-black/50 transition-colors hover:text-black/80"
       >
         Read the guide →
       </a>
@@ -40,7 +40,7 @@ interface FeatureGridProps {
 export function FeatureGrid({ t, locale }: FeatureGridProps) {
   return (
     <section className="border-b border-black/5">
-      <div className="mx-auto max-w-[1400px] px-8 py-20">
+      <div className="mx-auto max-w-350 px-8 py-20">
         {/* Section heading */}
         <h2
           className="mb-12 text-center text-5xl leading-[1.2] tracking-[-0.02em]"

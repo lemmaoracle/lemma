@@ -34,9 +34,9 @@ const base = "";
 const blogPath = "/blog";
 ---
 
-<Layout 
-  locale={locale} 
-  title={`${post.title} — Lemma Oracle`} 
+<Layout
+  locale={locale}
+  title={`${post.title} — Lemma Oracle`}
   description={post.abstract}
   metaType="article"
   post={post}
@@ -47,15 +47,15 @@ const blogPath = "/blog";
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
-      <article class="mx-auto max-w-[800px] px-8 pt-16">
+      <article class="mx-auto max-w-200 px-8 pt-16">
         <a
           href={blogPath}
-          class="mb-6 inline-block font-mono text-[11px] text-black/40 hover:opacity-70"
+          class="mb-6 inline-block font-mono text-xs text-black/40 hover:opacity-70"
         >
           {t.blog.backToBlog}
         </a>
-        <p class="mb-2 font-mono text-[11px] tracking-wide text-black/40">{post.date}</p>
-        <p class="mb-4 font-mono text-[10px] tracking-wider uppercase">
+        <p class="mb-2 font-mono text-xs tracking-wide text-black/40">{post.date}</p>
+        <p class="mb-4 font-mono text-xs tracking-wider uppercase">
           <span
             class="rounded-sm px-2 py-1"
             style={post.categoryColor
@@ -66,7 +66,7 @@ const blogPath = "/blog";
           </span>
         </p>
         <h1
-          class="mb-6 text-[40px] leading-[1.2] tracking-[-0.02em]"
+          class="mb-6 text-5xl leading-[1.2] tracking-[-0.02em]"
           style="font-family: 'Instrument Serif', serif;"
         >
           {post.title}
@@ -93,7 +93,7 @@ const blogPath = "/blog";
         {
           related.length > 0 && (
             <section class="related-posts mt-16 border-t border-black/5 pt-8">
-              <h2 class="mb-8 font-mono text-[14px] font-medium tracking-wider text-black/60 uppercase">
+              <h2 class="mb-8 font-mono text-sm font-medium tracking-wider text-black/60 uppercase">
                 Related Posts
               </h2>
               <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
@@ -114,12 +114,12 @@ const blogPath = "/blog";
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       </div>
-                      <h3 class="mb-2 line-clamp-2 text-[16px] leading-tight font-medium">
+                      <h3 class="mb-2 line-clamp-2 text-base leading-tight font-medium">
                         {relatedPost.title}
                       </h3>
                       <div class="flex items-center justify-between">
-                        <span class="font-mono text-[10px] text-black/40">{relatedPost.date}</span>
-                        <span class="font-mono text-[10px] font-medium text-black/60 uppercase">
+                        <span class="font-mono text-xs text-black/40">{relatedPost.date}</span>
+                        <span class="font-mono text-xs font-medium text-black/60 uppercase">
                           {relatedPost.category}
                         </span>
                       </div>
@@ -135,29 +135,25 @@ const blogPath = "/blog";
         <nav class="post-navigation mt-16 flex justify-between gap-4">
           {
             navigation.prev && (
-              <div class="prev-post min-h-[48px]">
+              <div class="prev-post min-h-12">
                 <a
                   href={`${blogPath}/${navigation.prev.slug}`}
-                  class="group -mx-4 flex min-h-[48px] items-center gap-2 rounded px-4 py-3 font-mono text-[11px] text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                  class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
                 >
                   <span class="opacity-60 transition-opacity group-hover:opacity-100">←</span>
-                  <span class="max-w-[200px] truncate sm:max-w-[300px]">
-                    {navigation.prev.title}
-                  </span>
+                  <span class="max-w-50 truncate sm:max-w-75">{navigation.prev.title}</span>
                 </a>
               </div>
             )
           }
           {
             navigation.next && (
-              <div class="next-post ml-auto min-h-[48px]">
+              <div class="next-post ml-auto min-h-12">
                 <a
                   href={`${blogPath}/${navigation.next.slug}`}
-                  class="group -mx-4 flex min-h-[48px] items-center gap-2 rounded px-4 py-3 font-mono text-[11px] text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
+                  class="group -mx-4 flex min-h-12 items-center gap-2 rounded px-4 py-3 font-mono text-xs text-black/40 transition-colors hover:bg-black/5 hover:text-black/70"
                 >
-                  <span class="max-w-[200px] truncate sm:max-w-[300px]">
-                    {navigation.next.title}
-                  </span>
+                  <span class="max-w-50 truncate sm:max-w-75">{navigation.next.title}</span>
                   <span class="opacity-60 transition-opacity group-hover:opacity-100">→</span>
                 </a>
               </div>
@@ -167,8 +163,8 @@ const blogPath = "/blog";
       </article>
     </main>
     <footer class="mt-16 border-t border-black/5 py-8">
-      <div class="mx-auto max-w-[1400px] px-8">
-        <p class="font-mono text-[10px] tracking-wide text-black/30">
+      <div class="mx-auto max-w-350 px-8">
+        <p class="font-mono text-xs tracking-wide text-black/30">
           {t.footer.copyright}
         </p>
       </div>
