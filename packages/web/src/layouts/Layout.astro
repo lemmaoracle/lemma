@@ -21,7 +21,8 @@ const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
 
 // Determine if we should render meta tags
-const shouldRenderMetaTags = Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
+const shouldRenderMetaTags =
+  Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
 ---
 
 <!doctype html>
@@ -37,12 +38,25 @@ const shouldRenderMetaTags = Astro.props.metaType === "home" || (Astro.props.met
     <!-- Twitter/X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     {/* Dynamic meta tags */}
-    {shouldRenderMetaTags && Astro.props.metaType === "home" && (
-      <MetaTags type="home" title={title} description={description} base={base} />
-    )}
-    {shouldRenderMetaTags && Astro.props.metaType === "article" && Astro.props.post && Astro.props.blogPath && (
-      <MetaTags type="article" post={Astro.props.post} base={base} blogPath={Astro.props.blogPath} />
-    )}
+    {
+      shouldRenderMetaTags && Astro.props.metaType === "home" && (
+        <MetaTags type="home" title={title} description={description} base={base} />
+      )
+    }
+    {
+      shouldRenderMetaTags &&
+        Astro.props.metaType === "article" &&
+        Astro.props.post &&
+        Astro.props.blogPath && (
+          <MetaTags
+            type="article"
+            post={Astro.props.post}
+            base={base}
+            blogPath={Astro.props.blogPath}
+          />
+        )
+    }
+    <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <slot />
