@@ -26,5 +26,10 @@ export default function HomeSchemaOrg({ title = "Lemma Oracle", description, bas
     image: "https://lemma.frame00.com/ogp-default.png",
   };
 
-  return <script type="application/ld+json">{JSON.stringify(schemaData)}</script>;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+    />
+  );
 }

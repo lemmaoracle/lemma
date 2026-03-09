@@ -34,5 +34,10 @@ export default function SchemaOrg({ post, base, blogPath }: SchemaOrgProps) {
     image: post.cover || "https://lemma.frame00.com/ogp-default.png",
   };
 
-  return <script type="application/ld+json">{JSON.stringify(schemaData)}</script>;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+    />
+  );
 }
