@@ -1,20 +1,40 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { create } from "./client";
-import { define } from "./schema";
+import { define, getSchemaById } from "./schema";
 import { prepare } from "./prepare";
 
 type Raw = { age: number; country: string };
 type Norm = { age_bucket: string; country: string };
 
+// Mock the schema registry directly for this test
+vi.mock("./schema", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./schema")>();
+  return {
+    ...actual,
+    // Override getSchemaById to return a mock schema for testing
+    getSchemaById: vi.fn(),
+  };
+});
+
 describe("prepare", () => {
   const client = create({ apiBase: "http://localhost:8787" });
 
-  define<Raw, Norm>({
-    id: "test:prepare-kyc",
-    normalize: (raw) => ({
-      age_bucket: raw.age >= 18 ? "adult" : "minor",
-      country: raw.country,
-    }),
+  beforeEach(() => {
+    vi.clearAllMocks();
+    
+    // Mock getSchemaById to return a schema for the test
+    (getSchemaById as any).mockImplementation((schemaId: string) => {
+      if (schemaId === "test:prepare-kyc") {
+        return {
+          id: "test:prepare-kyc",
+          normalize: (raw: Raw) => ({
+            age_bucket: raw.age >= 18 ? "adult" : "minor",
+            country: raw.country,
+          }),
+        };
+      }
+      return undefined;
+    });
   });
 
   it("normalizes and produces commitments", async () => {

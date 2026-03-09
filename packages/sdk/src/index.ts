@@ -22,6 +22,7 @@ export type {
   LemmaClient,
   LemmaClientConfig,
   SchemaMeta,
+  NormalizeArtifact,
   CircuitMeta,
   GeneratorMeta,
   RegisterDocumentRequest,

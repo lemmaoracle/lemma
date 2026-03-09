@@ -22,7 +22,20 @@ export type LemmaClient = LemmaClientConfig &
 export type SchemaMeta = Readonly<{
   id: string;
   description?: string;
+  normalize: NormalizeArtifact;
   [k: string]: unknown;
+}>;
+
+export type NormalizeArtifact = Readonly<{
+  artifact: {
+    readonly type: "ipfs" | "https";
+    readonly wasm: string;
+  };
+  hash: string;
+  abi?: {
+    readonly raw: Record<string, string>;
+    readonly norm: Record<string, string>;
+  };
 }>;
 
 export type CircuitArtifactLocation = Readonly<{
