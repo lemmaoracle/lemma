@@ -192,7 +192,7 @@ const enc = await encrypt(client, {
 // enc.algorithm          → Encryption algorithm used (e.g., "aes-256-gcm")
 ```
 
-The optional `algorithm` field selects the AEAD cipher used to encrypt `rawDoc`. When omitted, `"aes-256-gcm"` is applied. The resolved algorithm is echoed back in the return value so that the Holder can record it alongside the CID for later decryption.
+The optional `algorithm` field selects the AEAD cipher used to encrypt `rawDoc`. When omitted, `"aes-256-gcm"` is applied.
 
 #### `decrypt(input: DecryptInput): Promise<DecryptOutput>`
 Decrypts a document (holder only).
@@ -236,14 +236,14 @@ The `commitments` output includes `scheme: "poseidon"` by default. If the schema
 
 ```typescript
 await documents.register(client, {
-  schema: userKycSchema.id,      // ← return value of define
-  docHash: enc.docHash,          // ← return value of encrypt
-  cid: enc.cid,                  // ← return value of encrypt
+  schema: userKycSchema.id,
+  docHash: enc.docHash,
+  cid: enc.cid,
   issuerId: "issuer-1",
   subjectId: "subject-1",
   commitments: {
-    attrCommitmentRoot: prep.commitments.attrCommitmentRoot, // ← return value of prepare
-    perAttributeCommitments: prep.commitments.perAttributeCommitments, // ← return value of prepare
+    attrCommitmentRoot: prep.commitments.attrCommitmentRoot,
+    perAttributeCommitments: prep.commitments.perAttributeCommitments,
     scheme: "poseidon",
   },
   revocation: {
@@ -278,14 +278,14 @@ The response type is `RegisterDocumentResponse` with `status: "registered"` and 
 
 ```typescript
 const proofResult = await proofs.submit(client, {
-  docHash: enc.docHash,           // ← return value of encrypt
+  docHash: enc.docHash,
   circuitId: "age-over-18",
-  proofBytes: zkResult.proofBytes,       // ← return value of prover.prove
-  publicInputs: zkResult.publicInputs,   // ← return value of prover.prove
+  proofBytes: zkResult.proofBytes,
+  publicInputs: zkResult.publicInputs,
   selectiveDisclosure: {
     format: "bbs+",
-    disclosedAttributes: revealed.disclosed,  // ← from disclose.reveal
-    proof: sd.proof,                          // ← from toSelectiveDisclosure
+    disclosedAttributes: revealed.disclosed,
+    proof: sd.proof,
   },
   verifyOnchain: true,
 });
@@ -304,7 +304,7 @@ The `SubmitProofResponse` includes a `status` field with four possible values an
 await schemas.register(client, {
   id: "user-kyc-v1",
   description: "KYC schema with age bucketing",
-  normalize: {                                      // ← required
+  normalize: {
     artifact: {
       type: "ipfs",
       wasm: "ipfs://Qm...-normalize.wasm",
@@ -319,16 +319,16 @@ await schemas.register(client, {
 ```
 
 - **`getById(client, schemaId): Promise<SchemaMeta>`**
-  Retrieve schema metadata (includes normalize artifact) to pass to `define`.
+  Retrieve schema metadata (includes normalize artifact).
 
 ```typescript
 const schemaMeta = await schemas.getById(client, "user-kyc-v1");
 // schemaMeta.id          → "user-kyc-v1"
 // schemaMeta.description → "KYC schema with age bucketing"
-// schemaMeta.normalize   → NormalizeArtifact (passed to define)
+// schemaMeta.normalize   → NormalizeArtifact
 ```
 
-The `normalize` field in `schemas.register` is **required**. Every schema must publish a WASM normalize artifact so that `define` can resolve and verify it. `schemas.getById` returns the `NormalizeArtifact` as part of `SchemaMeta`, which is passed directly to `define`.
+The `normalize` field in `schemas.register` is **required**. Every schema must publish a WASM normalize artifact so that `define` can resolve and verify it.
 
 #### `circuits`
 
@@ -497,13 +497,13 @@ ZK proof generation utilities.
 const zkResult = await prover.prove(client, {
   circuitId: "age-over-18",
   witness: {
-    age_bucket: prep.normalized.age_bucket,                  // ← return value of prepare
-    randomness: prep.commitments.randomness,                 // ← return value of prepare
-    attr_commitment_root: prep.commitments.attrCommitmentRoot, // ← return value of prepare
+    age_bucket: prep.normalized.age_bucket,
+    randomness: prep.commitments.randomness,
+    attr_commitment_root: prep.commitments.attrCommitmentRoot,
     // Merkle path for the attribute(s) referenced by this circuit
-    leaf: prep.commitments.perAttributeCommitments[0],       // ← per-attribute commitment
-    path_elements: "...",                                     // ← resolved from Merkle tree
-    path_indices: "...",                                      // ← resolved from Merkle tree
+    leaf: prep.commitments.perAttributeCommitments[0],
+    path_elements: "...",
+    path_indices: "...",
   },
 });
 // zkResult.proofBytes    → ZK proof (base64 string in dev, binary in production)
@@ -575,30 +575,30 @@ await documents.register(client, {
 
 ## 📋 API Summary
 
-| Function | Description | Output usage |
-|---|---|---|
-| `create(config)` | Generate client configuration | Returns `client`, the first argument for all APIs |
-| `define<Raw, Norm>(artifact)` | Download WASM, verify SHA-256, instantiate, register schema | `Promise<SchemaDef>` — pass `id` to `prepare` / `documents.register` |
-| `encrypt(client, input)` | Encryption + docHash/cid/encryptedDocBase64/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`) | Pass `docHash`/`cid` to `documents.register` / `proofs.submit` |
-| `prepare(client, input)` | Normalization + Poseidon Merkle commitment (auto `scheme: "poseidon"`) | Pass to `documents.register` / `prover.prove` |
-| `disclose.generateKeyPair(options?)` | BBS+ key pair generation (32B secret, 96B public) | Pass keys to `sign` / `reveal` / `verifyProof` |
-| `disclose.payloadToMessages(payload)` | Attribute object → sorted `"key:value"` messages | Pass to `sign` / `reveal` |
-| `disclose.sign(client, input)` | BBS+ signing (messages, secretKey, header, issuerId) | Pass to `reveal` / `documents.register` |
-| `disclose.verify(client, signOutput)` | Verify BBS+ signature | — (boolean) |
-| `disclose.reveal(client, input)` | Selective disclosure proof (by disclosedIndexes) | Pass to `proofs.submit` via `toSelectiveDisclosure` |
-| `disclose.verifyProof(client, input)` | Verify selective disclosure proof | — (boolean) |
-| `disclose.toSelectiveDisclosure(output)` | Wrap RevealOutput into spec SelectiveDisclosure | Pass to `proofs.submit` |
-| `disclose.messagesToDisclosedMap(msgs, idxs)` | Reconstruct disclosed attribute map | Utility |
-| `documents.register(client, payload)` | Document registration | — |
-| `prover.prove(client, payload)` | Local ZK proof generation | Pass to `proofs.submit` |
-| `proofs.submit(client, payload)` | ZK proof + SD proof submission | — |
-| `schemas.register(client, payload)` | Schema metadata registration (+ required normalize artifact) | — |
-| `schemas.getById(client, id)` | Schema retrieval (includes normalize artifact) | Pass `normalize` to `define` |
-| `circuits.register(client, payload)` | Circuit registration | — |
-| `circuits.getById(client, id)` | Circuit retrieval | — |
-| `generators.register(client, payload)` | Generator registration | — |
-| `generators.getById(client, id)` | Generator retrieval | — |
-| `attributes.query(client, payload)` | Verified attributes query | — |
+| Function | Description |
+|---|---|
+| `create(config)` | Generate client configuration |
+| `define<Raw, Norm>(artifact)` | Download WASM, verify SHA-256, instantiate, register schema |
+| `encrypt(client, input)` | Encryption + docHash/cid/encryptedDocBase64/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`) |
+| `prepare(client, input)` | Normalization + Poseidon Merkle commitment (auto `scheme: "poseidon"`) |
+| `disclose.generateKeyPair(options?)` | BBS+ key pair generation (32B secret, 96B public) |
+| `disclose.payloadToMessages(payload)` | Attribute object → sorted `"key:value"` messages |
+| `disclose.sign(client, input)` | BBS+ signing (messages, secretKey, header, issuerId) |
+| `disclose.verify(client, signOutput)` | Verify BBS+ signature |
+| `disclose.reveal(client, input)` | Selective disclosure proof (by disclosedIndexes) |
+| `disclose.verifyProof(client, input)` | Verify selective disclosure proof |
+| `disclose.toSelectiveDisclosure(output)` | Wrap RevealOutput into spec SelectiveDisclosure |
+| `disclose.messagesToDisclosedMap(msgs, idxs)` | Reconstruct disclosed attribute map |
+| `documents.register(client, payload)` | Document registration |
+| `prover.prove(client, payload)` | Local ZK proof generation |
+| `proofs.submit(client, payload)` | ZK proof + SD proof submission |
+| `schemas.register(client, payload)` | Schema metadata registration (+ required normalize artifact) |
+| `schemas.getById(client, id)` | Schema retrieval (includes normalize artifact) |
+| `circuits.register(client, payload)` | Circuit registration |
+| `circuits.getById(client, id)` | Circuit retrieval |
+| `generators.register(client, payload)` | Generator registration |
+| `generators.getById(client, id)` | Generator retrieval |
+| `attributes.query(client, payload)` | Verified attributes query |
 
 ## 🔧 Development
 
