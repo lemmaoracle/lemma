@@ -5,6 +5,7 @@
     "changelog": "Changelog",
     "essays": "Essays",
     "blog": "Blog",
+    "faq": "FAQ",
     "languageJa": "日本語",
     "languageEn": "English"
   },
@@ -52,6 +53,10 @@
     "option2CurlNotePrefix": "Store the PAT in your environment or a secret store; do not commit it. The workflow listens for ",
     "option2CurlNoteSuffix": ".",
     "backHome": "← Back to home"
+  },
+  "faq": {
+    "title": "FAQ",
+    "subtitle": "Frequently asked questions about Lemma and Verifiable AI"
   },
   "layout": {
     "defaultTitle": "Lemma Oracle",

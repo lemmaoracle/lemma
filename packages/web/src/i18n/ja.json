@@ -5,6 +5,7 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
+    "faq": "FAQ",
     "languageJa": "日本語",
     "languageEn": "English"
   },
@@ -48,10 +49,14 @@
     "option1Title": "方法 1: GitHub でワークフローを実行",
     "option1Desc": "ワークフローページを開き、「Run workflow」をクリックしてください。",
     "option2Title": "方法 2: URL でトリガー（repository_dispatch）",
-    "option2Desc": "スクリプトや外部サービス（例：Affine 更新後）から、Personal Access Token (PAT) 付きの POST リクエストを送信してください。このサイトは静的であるため、認証なしの単純な GET ではワークフローを開始できません。",
+    "option2Desc": "スクリプトや外部サービス（例：Affine 更新後）から、Personal Access Token (PAT) 付きの POST リクエストを送信してください。このサイトは静的であるため、認証なしの単純な単純な GET ではワークフローを開始できません。",
     "option2CurlNotePrefix": "PAT は環境変数やシークレットストアに保存し、コミットしないでください。ワークフローは ",
     "option2CurlNoteSuffix": " を監視しています。",
     "backHome": "← ホームに戻る"
+  },
+  "faq": {
+    "title": "FAQ",
+    "subtitle": "LemmaとVerifiable AIに関するよくある質問"
   },
   "layout": {
     "defaultTitle": "Lemma Oracle",

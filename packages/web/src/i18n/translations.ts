@@ -14,6 +14,7 @@ export interface Translations {
     readonly changelog: string;
     readonly essays: string;
     readonly blog: string;
+    readonly faq: string;
     readonly languageJa: string;
     readonly languageEn: string;
   }>;
@@ -57,6 +58,10 @@ export interface Translations {
     readonly option2CurlNotePrefix: string;
     readonly option2CurlNoteSuffix: string;
     readonly backHome: string;
+  }>;
+  readonly faq: Readonly<{
+    readonly title: string;
+    readonly subtitle: string;
   }>;
   readonly layout: Readonly<{
     readonly defaultTitle: string;

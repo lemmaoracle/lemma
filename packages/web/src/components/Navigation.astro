@@ -11,6 +11,7 @@ interface Props {
 
 const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
+const faqPath =  `${blogPath}/faq`;
 const homePath = base || "/";
 ---
 
@@ -28,6 +29,7 @@ const homePath = base || "/";
         <a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a>
       </li>
       <li><a href={blogPath} class="transition-opacity hover:opacity-50">{t.blog}</a></li>
+      <li><a href={faqPath} class="transition-opacity hover:opacity-50">{t.faq}</a></li>
       <li class="text-black/40">
         {
           locale === "ja" ? (
