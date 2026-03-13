@@ -15,38 +15,7 @@
 
 ### Functional programming (all packages except contracts)
 
-- **eslint-plugin-functional `strict` preset is active.**
-- **No `if` / `switch` statements.** Use `R.cond`, `R.ifElse`, `R.when`, `R.unless`, or ternary expressions.
-- **No `let` / `var`.** Only `const`.
-- **No `class`.** Use plain objects and functions.
-- **No `for` / `while` / `do..while`.** Use `R.map`, `R.reduce`, `R.filter`, `Array.prototype.map`, etc.
-- **No `throw` in sync code.** Return `Promise.reject(new Error(...))` for async errors. The `allowToRejectPromises` option is enabled for `no-throw-statements`.
-- **No mutation.** Use `R.assoc`, `R.dissoc`, spread operators, `structuredClone`, etc.
-
-### Patterns cheat-sheet
-
-```typescript
-// ✅ Branching
-const result = R.cond([
-  [R.equals("a"), R.always("alpha")],
-  [R.equals("b"), R.always("beta")],
-  [R.T, R.always("unknown")],
-])(input);
-
-// ✅ Conditional return
-const value = predicate ? "yes" : "no";
-
-// ✅ Error in async
-const safeDivide = (a: number, b: number): Promise<number> =>
-  b === 0 ? Promise.reject(new Error("Division by zero")) : Promise.resolve(a / b);
-
-// ❌ FORBIDDEN
-if (x) { ... }
-let y = 0;
-class Foo { }
-for (const item of items) { ... }
-throw new Error("boom");
-```
+- Follow the functional programming style guide in `.cursor/rules/lemma-functional-style.mdc` for detailed rules and patterns.
 
 ### Testing
 

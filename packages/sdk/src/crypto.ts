@@ -15,8 +15,7 @@ import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemma/spec";
 
-export type EncryptionAlgorithm =
-  | "aes-256-gcm"; // default; additional algorithms reserved for future use
+export type EncryptionAlgorithm = "aes-256-gcm"; // default; additional algorithms reserved for future use
 
 export type EncryptInput = Readonly<{
   payload: unknown;

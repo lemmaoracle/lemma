@@ -3,12 +3,7 @@ You are working in the Lemma monorepo (pnpm workspace).
 Rules:
 
 - TypeScript strict mode everywhere.
-- All TypeScript packages (except contracts) must pass eslint-plugin-functional (strict preset).
-- NEVER use `if`, `switch`, `let`, `class`, `for`, `while`, `throw` in SDK, spec, web source files.
-Use R.cond / R.ifElse / ternary for branching, R.map / R.reduce for iteration,
-Promise.reject for errors.
-- Co-locate tests: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules.
-- Smart contracts in packages/contracts are exempt from FP rules.
+- Follow the functional programming style guide (see .cursor/rules/lemma-functional-style.mdc for details).
 - SDK fetch helpers MUST call endpoints matching the Workers routes defined in
 packages/spec/openapi.lemma.v2.json.
 - After changing spec types or endpoints, run: pnpm sync:workers:spec

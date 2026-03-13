@@ -1,0 +1,100 @@
+---
+description: Lemma functional programming style guide
+alwaysApply: true
+---
+
+# Functional Style Guide
+
+All TypeScript packages (except contracts) are linted with **eslint-plugin-functional (strict preset)**.
+
+## Core principles (from docs)
+
+- **Immutability**: All data structures use `Readonly<>` / `ReadonlyArray<>`.
+- **No statements**: Branching via expressions (`R.cond`, ternary), not `if`/`switch`.
+- **No mutation**: Use spread, `R.assoc`, `R.evolve` instead of direct assignment.
+- **Pure functions**: Side effects only at boundaries (fetch, crypto).
+
+## Functional programming rules (from AGENTS.md and .cursorrules)
+
+- **eslint-plugin-functional `strict` preset is active.**
+- **TypeScript strict mode everywhere.** (from .cursorrules)
+- **No `if` / `switch` statements.** Use `R.cond`, `R.ifElse`, `R.when`, `R.unless`, or ternary expressions.
+- **No `let` / `var`.** Only `const`.
+- **No `class`.** Use plain objects and functions.
+- **No `for` / `while` / `do..while`.** Use `R.map`, `R.reduce`, `R.filter`, `Array.prototype.map`, etc.
+- **No `throw` in sync code.** Return `Promise.reject(new Error(...))` for async errors. The `allowToRejectPromises` option is enabled for `no-throw-statements`.
+- **No mutation.** Use `R.assoc`, `R.dissoc`, spread operators, `structuredClone`, etc.
+- **Co-locate tests**: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules. (from .cursorrules)
+- **Smart contracts in packages/contracts are exempt from FP rules.** (from .cursorrules)
+
+## Ramda patterns used (from docs)
+
+```typescript
+import * as R from "ramda";
+
+// Branching
+R.cond([                              // Multi-case branching
+  [predicate1, transform1],
+  [predicate2, transform2],
+  [R.T, defaultTransform]             // Default case
+])
+R.ifElse(predicate, onTrue, onFalse)  // If-then-else
+R.when(predicate, transform)          // Transform when predicate holds
+R.unless(predicate, transform)        // Transform when predicate fails
+
+// Predicate composition (for branching logic)
+R.both(pred1, pred2)                  // Logical AND of predicates
+R.either(pred1, pred2)                // Logical OR of predicates
+R.allPass([pred1, pred2, ...])        // All predicates must pass
+R.anyPass([pred1, pred2, ...])        // Any predicate must pass
+R.complement(predicate)               // Negate a predicate
+
+// Safe value handling
+R.defaultTo(defaultValue, value)      // Provide default if null/undefined
+R.pathOr(defaultValue, path, obj)     // Get nested value with default
+R.tryCatch(tryer, catcher)            // Execute tryer, catch errors with catcher
+
+// Data transformation
+R.pipe(fn1, fn2, fn3)                 // Left-to-right function composition
+R.compose(fn3, fn2, fn1)              // Right-to-left function composition
+R.map(fn) / R.filter(pred) / R.reduce(fn, initial)
+R.assoc(key, value, obj) / R.dissoc(key, obj) / R.mergeRight(obj1, obj2)
+R.prop(key) / R.path(path) / R.pathOr(default, path)
+```
+
+**Note:** Ramda APIs not listed here can also be used as needed by referring to the [official documentation](https://ramdajs.com/docs/). Ramda provides many useful utility functions.
+
+## Patterns cheat-sheet (from AGENTS.md)
+
+```typescript
+// ✅ Branching
+const result = R.cond([
+  [R.equals("a"), R.always("alpha")],
+  [R.equals("b"), R.always("beta")],
+  [R.T, R.always("unknown")],
+])(input);
+
+// ✅ Conditional return
+const value = predicate ? "yes" : "no";
+
+// ✅ Error in async
+const safeDivide = (a: number, b: number): Promise<number> =>
+  b === 0 ? Promise.reject(new Error("Division by zero")) : Promise.resolve(a / b);
+
+// ❌ FORBIDDEN
+if (x) { ... }
+let y = 0;
+class Foo { }
+for (const item of items) { ... }
+throw new Error("boom");
+```
+
+## Summary
+
+This rule aggregates all functional programming guidelines from:
+
+1. `docs/architecture/03-functional-style.md` - Core principles and Ramda patterns
+2. `AGENTS.md` - Functional programming rules and patterns cheat-sheet
+3. `.cursorrules` - TypeScript strict mode and test co-location rules
+
+All TypeScript code (except in `packages/contracts`) must follow these functional programming rules.

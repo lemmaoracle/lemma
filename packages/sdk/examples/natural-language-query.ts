@@ -1,6 +1,6 @@
 /**
  * Example: Natural Language Query Parsing with Lemma SDK
- * 
+ *
  * Demonstrates client-side natural language query parsing using @mlc-ai/web-llm
  * with grammar-constrained JSON output.
  */
@@ -38,26 +38,23 @@ async function demonstrateNaturalLanguageQuery() {
 
     const processQuery = async (query: string): Promise<void> => {
       console.log(`   Query: "${query}"`);
-      
+
       // Parse the natural language query
       const structured = await queryParser.parseNaturalQuery(query);
-      
+
       console.log(`   → Structured:`, JSON.stringify(structured, null, 2));
       console.log();
     };
 
     // Process queries sequentially using functional composition
-    await testQueries.reduce<Promise<void>>(
-      async (accPromise, query) => {
-        await accPromise;
-        return processQuery(query);
-      },
-      Promise.resolve(),
-    );
+    await testQueries.reduce<Promise<void>>(async (accPromise, query) => {
+      await accPromise;
+      return processQuery(query);
+    }, Promise.resolve());
 
     // Example 3: Using attributes.query with natural language
     console.log("3. Using attributes.query with natural language:\n");
-    
+
     console.log("   Note: In a real application, this would call the actual API");
     console.log("   const results = await attributes.query(client, {");
     console.log('     query: "users over 18 in Japan",');

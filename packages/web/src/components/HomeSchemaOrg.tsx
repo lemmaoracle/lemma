@@ -4,7 +4,11 @@ interface HomeSchemaOrgProps {
   base: string;
 }
 
-export default function HomeSchemaOrg({ title = "Lemma Oracle", description, base }: HomeSchemaOrgProps) {
+export default function HomeSchemaOrg({
+  title = "Lemma Oracle",
+  description,
+  base,
+}: HomeSchemaOrgProps) {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "WebSite",

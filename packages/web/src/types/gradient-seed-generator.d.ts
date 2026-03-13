@@ -1,4 +1,4 @@
-declare module 'gradient-seed-generator' {
+declare module "gradient-seed-generator" {
   interface GradientShapesOptions {
     blur: number;
     alpha: number;
@@ -12,8 +12,8 @@ declare module 'gradient-seed-generator' {
   interface GradientOptions {
     size?: number;
     shapes?: boolean | GradientShapesOptions;
-    theme?: 'pastel' | 'vibrant' | 'monochrome' | 'duotone';
-    gradientType?: 'linear' | 'radial' | 'conic';
+    theme?: "pastel" | "vibrant" | "monochrome" | "duotone";
+    gradientType?: "linear" | "radial" | "conic";
     colorCount?: number;
     noise?: boolean;
   }

@@ -21,7 +21,7 @@ describe("prepare", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock getSchemaById to return a schema for the test
     (getSchemaById as any).mockImplementation((schemaId: string) => {
       if (schemaId === "test:prepare-kyc") {

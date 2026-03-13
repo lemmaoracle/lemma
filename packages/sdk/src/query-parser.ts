@@ -1,10 +1,10 @@
 /**
  * Natural Language Query Parser for Lemma SDK
- * 
+ *
  * Uses @mlc-ai/web-llm with grammar-constrained JSON output to parse
  * natural language queries like "users over 18 in Japan" into structured
  * query format for the attributes.query API.
- * 
+ *
  * Whitepaper reference: §4.10 — Verified Attributes Query
  */
 
@@ -102,7 +102,11 @@ const createParserInstance = () => {
 
   const parseNaturalQuery = async (
     naturalQuery: string,
-  ): Promise<Omit<VerifiedAttributesQueryRequest, "query" | "mode"> & { attributes: Array<{ name: string; value: unknown }> }> => {
+  ): Promise<
+    Omit<VerifiedAttributesQueryRequest, "query" | "mode"> & {
+      attributes: Array<{ name: string; value: unknown }>;
+    }
+  > => {
     const engine = await getOrCreateEngine();
 
     const schema = JSON.stringify(querySchema);
@@ -123,8 +127,7 @@ Examples:
       messages: [
         {
           role: "system",
-          content:
-            "You are a query parser that outputs valid JSON matching the provided schema.",
+          content: "You are a query parser that outputs valid JSON matching the provided schema.",
         },
         { role: "user", content: prompt },
       ],
@@ -136,11 +139,13 @@ Examples:
       } as webllm.ResponseFormat,
     });
 
-    const content = R.pathOr('', ['choices', 0, 'message', 'content'], response);
-    
+    const content = R.pathOr("", ["choices", 0, "message", "content"], response);
+
     return R.when(
       R.isEmpty,
-      () => { throw new Error("LLM response content is empty"); },
+      () => {
+        throw new Error("LLM response content is empty");
+      },
       () => JSON.parse(content),
     )();
   };

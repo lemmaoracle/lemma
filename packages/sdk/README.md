@@ -37,12 +37,21 @@ The Lemma SDK provides a functional, immutable API for:
 ### Basic Usage
 
 ```typescript
-import { create, define, encrypt, prepare, schemas, documents, prover, proofs } from '@lemmaoracle/sdk';
+import {
+  create,
+  define,
+  encrypt,
+  prepare,
+  schemas,
+  documents,
+  prover,
+  proofs,
+} from "@lemmaoracle/sdk";
 
 // Create a client instance
 const client = create({
-  apiBase: 'https://api.lemma.xyz',
-  apiKey: 'your-api-key-here',
+  apiBase: "https://api.lemma.xyz",
+  apiKey: "your-api-key-here",
 });
 
 // 1. Define schema (after fetching metadata)
@@ -53,7 +62,7 @@ const weatherSchema = await define<WeatherRaw, WeatherNorm>(schemaMeta.normalize
 const rawDoc = {
   weather: "rain",
   temperature: 12,
-  city: "Tokyo"
+  city: "Tokyo",
 };
 const enc = await encrypt(client, {
   payload: rawDoc,
@@ -99,40 +108,40 @@ const zkResult = await prover.prove(client, {
 // 6. Submit proof
 const proofResult = await proofs.submit(client, {
   docHash: enc.docHash,
-  circuitId: 'temperature-threshold',
+  circuitId: "temperature-threshold",
   proofBytes: zkResult.proofBytes,
   publicInputs: zkResult.publicInputs,
   verifyOnchain: true,
 });
 
-console.log('Document registered:', enc.docHash);
-console.log('Proof status:', proofResult.status);
+console.log("Document registered:", enc.docHash);
+console.log("Proof status:", proofResult.status);
 ```
 
 ### Working with Schemas
 
 ```typescript
-import { define, schemas } from '@lemmaoracle/sdk';
+import { define, schemas } from "@lemmaoracle/sdk";
 
 // 1. Register schema metadata (with WASM normalize artifact)
 await schemas.register(client, {
-  id: 'dev:weather:v1',
-  description: 'Weather data normalization schema',
+  id: "dev:weather:v1",
+  description: "Weather data normalization schema",
   normalize: {
     artifact: {
-      type: 'ipfs',
-      wasm: 'ipfs://Qm...-normalize.wasm',
+      type: "ipfs",
+      wasm: "ipfs://Qm...-normalize.wasm",
     },
-    hash: '0xabc123...', // SHA-256 of the WASM binary
+    hash: "0xabc123...", // SHA-256 of the WASM binary
     abi: {
-      raw: { weather: 'string', temperature: 'u32', city: 'string' },
-      norm: { weather_bucket: 'string', temperature_bucket: 'string' },
+      raw: { weather: "string", temperature: "u32", city: "string" },
+      norm: { weather_bucket: "string", temperature_bucket: "string" },
     },
   },
 });
 
 // 2. Fetch schema metadata
-const schemaMeta = await schemas.getById(client, 'dev:weather:v1');
+const schemaMeta = await schemas.getById(client, "dev:weather:v1");
 
 // 3. Define schema (downloads WASM, verifies hash, instantiates)
 type WeatherRaw = { weather: string; temperature: number; city: string };
@@ -148,17 +157,19 @@ const weatherSchema = await define<WeatherRaw, WeatherNorm>(schemaMeta.normalize
 ### Core Functions
 
 #### `create(config: LemmaClientConfig): LemmaClient`
+
 Creates a Lemma client instance.
 
 ```typescript
 const client = create({
-  apiBase: 'https://api.lemma.xyz',
-  apiKey: 'your-api-key',
+  apiBase: "https://api.lemma.xyz",
+  apiKey: "your-api-key",
   fetchFn: fetch, // Optional custom fetch implementation
 });
 ```
 
 #### `define<Raw, Norm>(artifact: NormalizeArtifact): Promise<SchemaDef<Raw, Norm>>`
+
 Defines a schema by downloading and verifying WASM normalize artifact.
 
 ```typescript
@@ -166,9 +177,7 @@ Defines a schema by downloading and verifying WASM normalize artifact.
 const schemaMeta = await schemas.getById(client, "user-kyc-v1");
 
 // 2. Download WASM, verify SHA-256, instantiate, register
-const userKycSchema = await define<UserKycRaw, UserKycNorm>(
-  schemaMeta.normalize!,
-);
+const userKycSchema = await define<UserKycRaw, UserKycNorm>(schemaMeta.normalize!);
 // userKycSchema.id        → "user-kyc-v1"
 // userKycSchema.normalize → function backed by the WASM module
 ```
@@ -176,6 +185,7 @@ const userKycSchema = await define<UserKycRaw, UserKycNorm>(
 `define` downloads the WASM binary from `artifact.wasm`, verifies `SHA-256(binary) === hash`, instantiates the WASM module, wraps its exported `normalize` function, and registers the resulting `SchemaDef<Raw, Norm>` into the internal mutable schema registry keyed by `id`. Rejects if SHA-256 verification fails or the WASM module does not export a `normalize` function.
 
 #### `encrypt(client: LemmaClient, input: EncryptInput): Promise<EncryptOutput>`
+
 Encrypts a document for a specific holder and returns docHash, CID, and encrypted document.
 
 ```typescript
@@ -195,6 +205,7 @@ const enc = await encrypt(client, {
 The optional `algorithm` field selects the AEAD cipher used to encrypt `rawDoc`. When omitted, `"aes-256-gcm"` is applied.
 
 #### `decrypt(input: DecryptInput): Promise<DecryptOutput>`
+
 Decrypts a document (holder only).
 
 ```typescript
@@ -207,6 +218,7 @@ const decrypted = await decrypt({
 ```
 
 #### `prepare<Raw, Norm>(client: LemmaClient, input: PrepareInput<Raw>): Promise<PrepareOutput<Norm>>`
+
 Normalizes a document and computes Poseidon Merkle commitments.
 
 ```typescript
@@ -252,7 +264,7 @@ await documents.register(client, {
   },
   signature: {
     format: "bbs+",
-    payload: "...",              // hex-encoded BBS+ signature
+    payload: "...", // hex-encoded BBS+ signature
     issuerId: "issuer-1",
   },
   onchainHooks: [
@@ -309,8 +321,9 @@ await schemas.register(client, {
       type: "ipfs",
       wasm: "ipfs://Qm...-normalize.wasm",
     },
-    hash: "0xabc123...",                            // SHA-256 of the WASM binary
-    abi: {                                          // optional
+    hash: "0xabc123...", // SHA-256 of the WASM binary
+    abi: {
+      // optional
       raw: { age: "u32", country: "string" },
       norm: { age_bucket: "u8", country: "string" },
     },
@@ -383,7 +396,7 @@ await generators.register(client, {
 ```typescript
 const results = await attributes.query(client, {
   query: "users over 18 in Japan",
-  mode: "natural",                         // "natural" | "structured"
+  mode: "natural", // "natural" | "structured"
   proof: { required: true, type: "zk-snark" }, // type: "zk-snark" | "opaque"
   targets: {
     schemas: ["user-kyc-v1"],
@@ -433,8 +446,8 @@ const messages = disclose.payloadToMessages({ age: 25, name: "Alice", country: "
 
 ```typescript
 const signed = await disclose.sign(client, {
-  messages,                   // ReadonlyArray<string> from payloadToMessages
-  secretKey: kp.secretKey,    // Issuer's BBS+ secret key
+  messages, // ReadonlyArray<string> from payloadToMessages
+  secretKey: kp.secretKey, // Issuer's BBS+ secret key
   header: new TextEncoder().encode("my-app-header"),
   issuerId: "issuer-1",
 });
@@ -458,10 +471,10 @@ const valid = await disclose.verify(client, signed);
 
 ```typescript
 const revealed = await disclose.reveal(client, {
-  signature: signed.signature,     // from sign output
-  messages,                        // original messages
-  publicKey: signed.publicKey,     // issuer's public key
-  disclosedIndexes: [0, 2],        // indexes to reveal (not attribute names)
+  signature: signed.signature, // from sign output
+  messages, // original messages
+  publicKey: signed.publicKey, // issuer's public key
+  disclosedIndexes: [0, 2], // indexes to reveal (not attribute names)
   header: signed.header,
 });
 // revealed.disclosed          → { age: "25", name: "Alice" }
@@ -517,23 +530,23 @@ The SDK's local-dev prover generates a SHA-256 hash as a placeholder proof. Prod
 ### Custom ZK Circuits
 
 ```typescript
-import { circuits, prover } from '@lemmaoracle/sdk';
+import { circuits, prover } from "@lemmaoracle/sdk";
 
 // Register a custom circuit
 await circuits.register(client, {
-  circuitId: 'custom-threshold',
+  circuitId: "custom-threshold",
   artifact: {
-    type: 'ipfs',
-    wasm: 'Qm...', // IPFS CID of circuit WASM
-    provingKey: 'Qm...', // Proving key CID
-    verificationKey: 'Qm...', // Verification key CID
+    type: "ipfs",
+    wasm: "Qm...", // IPFS CID of circuit WASM
+    provingKey: "Qm...", // Proving key CID
+    verificationKey: "Qm...", // Verification key CID
   },
-  description: 'Custom threshold circuit',
+  description: "Custom threshold circuit",
 });
 
 // Generate proof using custom circuit
 const proof = await prover.generateProof({
-  circuitId: 'custom-threshold',
+  circuitId: "custom-threshold",
   privateInputs: { value: 42, threshold: 40 },
   publicInputs: { thresholdMet: true },
 });
@@ -542,14 +555,16 @@ const proof = await prover.generateProof({
 ### Selective Disclosure with BBS+
 
 ```typescript
-import { disclose } from '@lemmaoracle/sdk';
+import { disclose } from "@lemmaoracle/sdk";
 
 // Create a selective disclosure proof
 const sdProof = await disclose.createProof({
-  document: { /* signed document */ },
-  disclosedAttributes: ['temperature', 'city'], // Only reveal these
-  signerPubKey: 'issuer-public-key',
-  holderPrivKey: 'holder-private-key',
+  document: {
+    /* signed document */
+  },
+  disclosedAttributes: ["temperature", "city"], // Only reveal these
+  signerPubKey: "issuer-public-key",
+  holderPrivKey: "holder-private-key",
 });
 
 // Verify the disclosure proof
@@ -561,44 +576,48 @@ const isValid = await disclose.verifyProof(sdProof);
 ```typescript
 // Register document with on-chain hook
 await documents.register(client, {
-  rawDoc: { /* ... */ },
-  holderPubKey: '0x...',
-  schemaId: 'dev:weather:v1',
-  onchainHooks: [{
-    contractAddress: '0xabc...',
-    method: 'processWeatherData',
-    abi: ['function processWeatherData(bytes32, uint256)'],
-    calldata: '0x...',
-  }],
+  rawDoc: {
+    /* ... */
+  },
+  holderPubKey: "0x...",
+  schemaId: "dev:weather:v1",
+  onchainHooks: [
+    {
+      contractAddress: "0xabc...",
+      method: "processWeatherData",
+      abi: ["function processWeatherData(bytes32, uint256)"],
+      calldata: "0x...",
+    },
+  ],
 });
 ```
 
 ## 📋 API Summary
 
-| Function | Description |
-|---|---|
-| `create(config)` | Generate client configuration |
-| `define<Raw, Norm>(artifact)` | Download WASM, verify SHA-256, instantiate, register schema |
-| `encrypt(client, input)` | Encryption + docHash/cid/encryptedDocBase64/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`) |
-| `prepare(client, input)` | Normalization + Poseidon Merkle commitment (auto `scheme: "poseidon"`) |
-| `disclose.generateKeyPair(options?)` | BBS+ key pair generation (32B secret, 96B public) |
-| `disclose.payloadToMessages(payload)` | Attribute object → sorted `"key:value"` messages |
-| `disclose.sign(client, input)` | BBS+ signing (messages, secretKey, header, issuerId) |
-| `disclose.verify(client, signOutput)` | Verify BBS+ signature |
-| `disclose.reveal(client, input)` | Selective disclosure proof (by disclosedIndexes) |
-| `disclose.verifyProof(client, input)` | Verify selective disclosure proof |
-| `disclose.toSelectiveDisclosure(output)` | Wrap RevealOutput into spec SelectiveDisclosure |
-| `disclose.messagesToDisclosedMap(msgs, idxs)` | Reconstruct disclosed attribute map |
-| `documents.register(client, payload)` | Document registration |
-| `prover.prove(client, payload)` | Local ZK proof generation |
-| `proofs.submit(client, payload)` | ZK proof + SD proof submission |
-| `schemas.register(client, payload)` | Schema metadata registration (+ required normalize artifact) |
-| `schemas.getById(client, id)` | Schema retrieval (includes normalize artifact) |
-| `circuits.register(client, payload)` | Circuit registration |
-| `circuits.getById(client, id)` | Circuit retrieval |
-| `generators.register(client, payload)` | Generator registration |
-| `generators.getById(client, id)` | Generator retrieval |
-| `attributes.query(client, payload)` | Verified attributes query |
+| Function                                      | Description                                                                                                     |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `create(config)`                              | Generate client configuration                                                                                   |
+| `define<Raw, Norm>(artifact)`                 | Download WASM, verify SHA-256, instantiate, register schema                                                     |
+| `encrypt(client, input)`                      | Encryption + docHash/cid/encryptedDocBase64/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`) |
+| `prepare(client, input)`                      | Normalization + Poseidon Merkle commitment (auto `scheme: "poseidon"`)                                          |
+| `disclose.generateKeyPair(options?)`          | BBS+ key pair generation (32B secret, 96B public)                                                               |
+| `disclose.payloadToMessages(payload)`         | Attribute object → sorted `"key:value"` messages                                                                |
+| `disclose.sign(client, input)`                | BBS+ signing (messages, secretKey, header, issuerId)                                                            |
+| `disclose.verify(client, signOutput)`         | Verify BBS+ signature                                                                                           |
+| `disclose.reveal(client, input)`              | Selective disclosure proof (by disclosedIndexes)                                                                |
+| `disclose.verifyProof(client, input)`         | Verify selective disclosure proof                                                                               |
+| `disclose.toSelectiveDisclosure(output)`      | Wrap RevealOutput into spec SelectiveDisclosure                                                                 |
+| `disclose.messagesToDisclosedMap(msgs, idxs)` | Reconstruct disclosed attribute map                                                                             |
+| `documents.register(client, payload)`         | Document registration                                                                                           |
+| `prover.prove(client, payload)`               | Local ZK proof generation                                                                                       |
+| `proofs.submit(client, payload)`              | ZK proof + SD proof submission                                                                                  |
+| `schemas.register(client, payload)`           | Schema metadata registration (+ required normalize artifact)                                                    |
+| `schemas.getById(client, id)`                 | Schema retrieval (includes normalize artifact)                                                                  |
+| `circuits.register(client, payload)`          | Circuit registration                                                                                            |
+| `circuits.getById(client, id)`                | Circuit retrieval                                                                                               |
+| `generators.register(client, payload)`        | Generator registration                                                                                          |
+| `generators.getById(client, id)`              | Generator retrieval                                                                                             |
+| `attributes.query(client, payload)`           | Verified attributes query                                                                                       |
 
 ## 🔧 Development
 
@@ -636,15 +655,15 @@ Example functional pattern:
 ```typescript
 // ✅ Correct (functional style)
 const processValue = R.cond([
-  [R.lt(R.__, 0), R.always('negative')],
-  [R.equals(0), R.always('zero')],
-  [R.T, R.always('positive')],
+  [R.lt(R.__, 0), R.always("negative")],
+  [R.equals(0), R.always("zero")],
+  [R.T, R.always("positive")],
 ]);
 
 // ❌ Incorrect (imperative style)
-if (value < 0) return 'negative';
-else if (value === 0) return 'zero';
-else return 'positive';
+if (value < 0) return "negative";
+else if (value === 0) return "zero";
+else return "positive";
 ```
 
 ### TypeScript Configuration

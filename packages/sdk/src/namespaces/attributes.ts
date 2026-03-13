@@ -24,18 +24,16 @@ const processNaturalQuery = async (
     targets: R.defaultTo(structured.targets, p.targets),
   };
 
-  return post<VerifiedAttributesQueryResponse>(client)(
-    "/v1/verified-attributes/query",
-  )(enhancedPayload);
+  return post<VerifiedAttributesQueryResponse>(client)("/v1/verified-attributes/query")(
+    enhancedPayload,
+  );
 };
 
 const processStructuredQuery = (
   client: LemmaClient,
   p: VerifiedAttributesQueryRequest,
 ): Promise<VerifiedAttributesQueryResponse> => {
-  return post<VerifiedAttributesQueryResponse>(client)(
-    "/v1/verified-attributes/query",
-  )(p);
+  return post<VerifiedAttributesQueryResponse>(client)("/v1/verified-attributes/query")(p);
 };
 
 const createQueryHandler = (client: LemmaClient) => {
@@ -44,10 +42,7 @@ const createQueryHandler = (client: LemmaClient) => {
       (p: VerifiedAttributesQueryRequest) => p.mode === "natural",
       (p) => processNaturalQuery(client, p),
     ],
-    [
-      (_p: VerifiedAttributesQueryRequest) => true,
-      (p) => processStructuredQuery(client, p),
-    ],
+    [(_p: VerifiedAttributesQueryRequest) => true, (p) => processStructuredQuery(client, p)],
   ]);
 };
 
