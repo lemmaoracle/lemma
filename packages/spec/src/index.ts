@@ -1,5 +1,5 @@
 /**
- * @lemma/spec — Authoritative interface types shared by SDK and Workers.
+ * @lemmaoracle/spec — Authoritative interface types shared by SDK and Workers.
  * MUST remain identical (or semver-compatible) across both repositories.
  *
  * Whitepaper reference: §2, §3, §4.

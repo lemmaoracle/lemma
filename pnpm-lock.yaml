@@ -53,7 +53,7 @@ importers:
       '@docknetwork/crypto-wasm':
         specifier: ^0.35.0
         version: 0.35.0
-      '@lemma/spec':
+      '@lemmaoracle/spec':
         specifier: workspace:*
         version: link:../spec
       '@mlc-ai/web-llm':

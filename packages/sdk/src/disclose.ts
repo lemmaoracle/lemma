@@ -20,7 +20,7 @@ import {
   bbsPlusChallengeContributionFromProof,
   generateChallengeFromBytes,
 } from "@docknetwork/crypto-wasm";
-import type { LemmaClient, SelectiveDisclosure } from "@lemma/spec";
+import type { LemmaClient, SelectiveDisclosure } from "@lemmaoracle/spec";
 import { reject } from "./internal";
 
 /* ------------------------------------------------------------------ */

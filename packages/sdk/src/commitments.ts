@@ -3,7 +3,7 @@
  * Whitepaper §2.3 — Commitments (Poseidon Merkle tree).
  */
 import { createHash, randomBytes } from "node:crypto";
-import type { DocumentCommitments } from "@lemma/spec";
+import type { DocumentCommitments } from "@lemmaoracle/spec";
 import type { Json } from "./internal";
 import * as R from "ramda";
 

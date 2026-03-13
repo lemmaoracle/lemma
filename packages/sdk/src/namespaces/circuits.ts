@@ -1,7 +1,7 @@
 /**
  * Whitepaper §4.9 — circuits.register / circuits.getById
  */
-import type { LemmaClient, CircuitMeta } from "@lemma/spec";
+import type { LemmaClient, CircuitMeta } from "@lemmaoracle/spec";
 import { get, post } from "../http";
 
 export const register = (client: LemmaClient, payload: CircuitMeta): Promise<CircuitMeta> =>

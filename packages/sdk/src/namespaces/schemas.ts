@@ -1,7 +1,7 @@
 /**
  * Whitepaper §4.9 — schemas.register / schemas.getById
  */
-import type { LemmaClient, SchemaMeta } from "@lemma/spec";
+import type { LemmaClient, SchemaMeta } from "@lemmaoracle/spec";
 import { get, post } from "../http";
 
 export const register = (client: LemmaClient, payload: SchemaMeta): Promise<SchemaMeta> =>

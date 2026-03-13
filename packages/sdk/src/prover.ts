@@ -8,9 +8,9 @@
 import * as snarkjsModule from "snarkjs";
 import { createHash } from "node:crypto";
 import * as R from "ramda";
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { reject, resolveFetch } from "./internal";
-import type { CircuitMeta } from "@lemma/spec";
+import type { CircuitMeta } from "@lemmaoracle/spec";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */

@@ -1,5 +1,5 @@
 {
-  "name": "@lemma/contracts",
+  "name": "@lemmaoracle/contracts",
   "version": "0.1.0",
   "private": true,
   "type": "module",

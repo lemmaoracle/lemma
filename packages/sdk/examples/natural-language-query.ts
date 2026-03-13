@@ -6,7 +6,7 @@
  */
 
 import * as R from "ramda";
-import { create, attributes, queryParser } from "@lemma/sdk";
+import { create, attributes, queryParser } from "@lemmaoracle/sdk";
 
 // Example usage - in a real application, this would be in a browser environment
 async function demonstrateNaturalLanguageQuery() {

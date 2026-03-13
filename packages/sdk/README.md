@@ -20,7 +20,6 @@ yarn add @lemmaoracle/sdk @lemmaoracle/spec
 
 > **Note**: `@lemmaoracle/spec` is a required peer dependency containing shared TypeScript interfaces.
 
-> **Note**: `@lemma/spec` is a required peer dependency containing shared TypeScript interfaces.
 
 ## 🎯 Overview
 

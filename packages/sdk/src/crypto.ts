@@ -13,7 +13,7 @@ import { sha3_256 } from "@noble/hashes/sha3";
 import { gcm } from "@noble/ciphers/aes";
 import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 
 export type EncryptionAlgorithm = "aes-256-gcm"; // default; additional algorithms reserved for future use
 

@@ -13,13 +13,13 @@ pnpm install
 ## Development
 
 ```bash
-pnpm --filter @lemma/web dev
+pnpm --filter @lemmaoracle/web dev
 ```
 
 ## Build
 
 ```bash
-pnpm --filter @lemma/web build
+pnpm --filter @lemmaoracle/web build
 ```
 
 Output is in `dist/`. The site is configured for GitHub Pages with `base: "/lemma"` (repository name).

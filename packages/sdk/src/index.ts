@@ -1,5 +1,5 @@
 /**
- * @lemma/sdk — Public API surface.
+ * @lemmaoracle/sdk — Public API surface.
  *
  * Whitepaper §4.11 — API Summary.
  */
@@ -38,4 +38,4 @@ export type {
   Revocation,
   IssuerSignature,
   OnchainHook,
-} from "@lemma/spec";
+} from "@lemmaoracle/spec";

@@ -6,7 +6,7 @@ import type {
   LemmaClient,
   VerifiedAttributesQueryRequest,
   VerifiedAttributesQueryResponse,
-} from "@lemma/spec";
+} from "@lemmaoracle/spec";
 import { post } from "../http";
 import { parseNaturalQuery } from "../query-parser";
 

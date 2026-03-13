@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { get, post } from "./http";
 
 const makeMockClient = (response: { status: number; body: unknown }): LemmaClient => ({

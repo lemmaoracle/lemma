@@ -3,7 +3,7 @@
  * Whitepaper §4.3 — Schema Definition.
  */
 import * as R from "ramda";
-import type { SchemaMeta } from "@lemma/spec";
+import type { SchemaMeta } from "@lemmaoracle/spec";
 
 export type SchemaDef<Raw, Norm> = Readonly<{
   id: string;

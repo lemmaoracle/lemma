@@ -10,7 +10,7 @@
 
 import * as webllm from "@mlc-ai/web-llm";
 import * as R from "ramda";
-import type { VerifiedAttributesQueryRequest } from "@lemma/spec";
+import type { VerifiedAttributesQueryRequest } from "@lemmaoracle/spec";
 
 // JSON Schema for structured query output
 // Matches what the server expects: Array<{ name: string; value: unknown }>

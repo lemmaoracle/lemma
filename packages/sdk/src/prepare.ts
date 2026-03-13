@@ -2,7 +2,7 @@
 
 * Whitepaper §4.5 — Normalization + Commitment Preparation.
 */
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import type { Json } from "./internal";
 import { reject } from "./internal";
 import { commitNormalized, type PrepareOutput } from "./commitments";

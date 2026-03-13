@@ -45,7 +45,7 @@ jobs:
           LEMMA_POSTS_PATH: ${{ vars.LEMMA_POSTS_PATH || '' }}
           LEMMA_GH_TOKEN: ${{ secrets.LEMMA_GH_TOKEN }}
           PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.PUBLIC_GOOGLE_ANALYTICS_ID }}
-        run: pnpm --filter @lemma/web build
+        run: pnpm --filter @lemmaoracle/web build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

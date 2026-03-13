@@ -1,4 +1,4 @@
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { reject, resolveFetch, withApiKey } from "./internal";
 
 export type HttpMethod = "GET" | "POST";

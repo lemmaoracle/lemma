@@ -1,4 +1,4 @@
-import type { LemmaClient } from "@lemma/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 
 export type Json =
   | null

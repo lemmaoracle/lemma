@@ -3,7 +3,7 @@
 ## Repository structure
 
 - `packages/spec` — **Authoritative** shared interface types + OpenAPI spec.
-- `packages/sdk` — TypeScript SDK (functional style, `@lemma/sdk`).
+- `packages/sdk` — TypeScript SDK (functional style, `@lemmaoracle/sdk`).
 - `packages/contracts` — Solidity smart contracts (`LemmaRegistry`).
 
 ## Non-negotiable rules
