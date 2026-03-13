@@ -25,6 +25,7 @@ All TypeScript packages (except contracts) are linted with **eslint-plugin-funct
 - **No `throw` in sync code.** Return `Promise.reject(new Error(...))` for async errors. The `allowToRejectPromises` option is enabled for `no-throw-statements`.
 - **No mutation.** Use `R.assoc`, `R.dissoc`, spread operators, `structuredClone`, etc.
 - **Co-locate tests**: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules. (from .cursorrules)
+- **Test files are exempt from functional programming rules.** Test files (`*.test.ts`, `*.spec.ts`) are not required to follow the strict functional programming rules described in this guide. They can use `if`, `switch`, `let`, `class`, loops, and other imperative constructs as needed for testing.
 - **Smart contracts in packages/contracts are exempt from FP rules.** (from .cursorrules)
 
 ## Ramda patterns used (from docs)
