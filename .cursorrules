@@ -3,7 +3,7 @@ You are working in the Lemma monorepo (pnpm workspace).
 Rules:
 
 - TypeScript strict mode everywhere.
-- Follow the functional programming style guide (see .cursor/rules/lemma-functional-style.mdc for details).
+- Follow the functional programming style guide (see @docs/architecture/fp.md for details).
 - SDK fetch helpers MUST call endpoints matching the Workers routes defined in
 packages/spec/openapi.lemma.v2.json.
 - After changing spec types or endpoints, run: pnpm sync:workers:spec

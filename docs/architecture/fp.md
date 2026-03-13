@@ -1,8 +1,3 @@
----
-description: Lemma functional programming style guide
-alwaysApply: true
----
-
 # Functional Style Guide
 
 All TypeScript packages (except contracts) are linted with **eslint-plugin-functional (strict preset)**.

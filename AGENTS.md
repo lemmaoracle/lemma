@@ -15,7 +15,7 @@
 
 ### Functional programming (all packages except contracts)
 
-- Follow the functional programming style guide in `.cursor/rules/lemma-functional-style.mdc` for detailed rules and patterns.
+- Follow the functional programming style guide in `@docs/architecture/fp.md` for detailed rules and patterns.
 
 ### Testing
 
