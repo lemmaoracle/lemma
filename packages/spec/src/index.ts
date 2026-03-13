@@ -148,6 +148,7 @@ export type SubmitProofResponse = Readonly<{
 export type VerifiedAttributesQueryRequest = Readonly<{
   query: string;
   mode: "natural" | "structured";
+  attributes?: ReadonlyArray<Readonly<{ name: string; value: unknown }>>;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
   targets?: Readonly<{ schemas?: ReadonlyArray<string> } & Record<string, unknown>>;
 }>;

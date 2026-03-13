@@ -9,6 +9,7 @@ export { encrypt, decrypt } from "./crypto";
 export { prepare } from "./prepare";
 export * as disclose from "./disclose";
 export * as prover from "./prover";
+export * as queryParser from "./query-parser";
 
 export * as documents from "./namespaces/documents";
 export * as proofs from "./namespaces/proofs";
