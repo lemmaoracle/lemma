@@ -91,7 +91,7 @@ describe("prover.prove", () => {
             Promise.resolve({
               circuitId: "test-circuit",
               schema: "test-schema",
-              publicInputs: ["attr_commitment_root"],
+              inputs: ["attr_commitment_root"],
               artifact: {
                 location: {
                   type: "ipfs",

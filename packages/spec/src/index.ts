@@ -48,7 +48,7 @@ export type CircuitMeta = Readonly<{
   circuitId: string;
   schema: string;
   description?: string;
-  publicInputs?: ReadonlyArray<string>;
+  inputs?: ReadonlyArray<string>;
   verifier?: Readonly<{
     type: "onchain" | "offchain";
     address?: string;
