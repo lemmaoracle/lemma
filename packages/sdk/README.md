@@ -83,12 +83,12 @@ await documents.register(client, {
   issuerId: "weather-issuer",
   subjectId: "tokyo-weather",
   commitments: {
-    attrCommitmentRoot: prep.commitments.attrCommitmentRoot,
-    perAttributeCommitments: prep.commitments.perAttributeCommitments,
+    root: prep.commitments.root,
+    leaves: prep.commitments.leaves,
     scheme: "poseidon",
   },
   revocation: {
-    revocationRoot: "0x0",
+    root: "0x0",
     scheme: "bitmask-merkle-v1",
   },
 });
@@ -99,7 +99,7 @@ const zkResult = await prover.prove(client, {
   witness: {
     temperature_bucket: prep.normalized.temperature_bucket,
     randomness: prep.commitments.randomness,
-    attr_commitment_root: prep.commitments.attrCommitmentRoot,
+    attr_commitment_root: prep.commitments.root,
     // ... other witness inputs
   },
 });
@@ -108,9 +108,9 @@ const zkResult = await prover.prove(client, {
 const proofResult = await proofs.submit(client, {
   docHash: enc.docHash,
   circuitId: "temperature-threshold",
-  proofBytes: zkResult.proofBytes,
-  publicInputs: zkResult.publicInputs,
-  verifyOnchain: true,
+  proof: zkResult.proof,
+  inputs: zkResult.inputs,
+  onchain: true,
 });
 
 console.log("Document registered:", enc.docHash);
@@ -197,7 +197,7 @@ const enc = await encrypt(client, {
 });
 // enc.docHash            → Hash of the document (on-chain primary key)
 // enc.cid                → CID of the encrypted document on IPFS/Ceramic
-// enc.encryptedDocBase64 → Base64-encoded encrypted document
+// enc.ciphertext         → Base64-encoded encrypted document
 // enc.algorithm          → Encryption algorithm used (e.g., "aes-256-gcm")
 ```
 
@@ -209,7 +209,7 @@ Decrypts a document (holder only).
 
 ```typescript
 const decrypted = await decrypt({
-  encryptedDocBase64: "base64-encoded-encrypted-document",
+  ciphertext: "base64-encoded-encrypted-document",
   holderPrivateKey: "holder-private-key",
   algorithm: "aes-256-gcm", // optional — needed for future algorithm support
 });
@@ -226,7 +226,7 @@ const prep = await prepare<UserKycRaw, UserKycNorm>(client, {
   payload: rawDoc,
 });
 // prep.normalized   → Normalized attributes (e.g., { age_bucket: "adult", country: "JP" })
-// prep.commitments  → { scheme, attrCommitmentRoot, perAttributeCommitments, randomness }
+// prep.commitments  → { scheme, root, leaves, randomness }
 ```
 
 `prepare` internally resolves the schema via `getSchemaById`, runs `normalize`, and computes Poseidon-based commitments:
@@ -234,7 +234,7 @@ const prep = await prepare<UserKycRaw, UserKycNorm>(client, {
 1. Generates 32 bytes of cryptographic randomness.
 2. For each normalized field `(key_i, value_i)`, computes `leaf_i = Poseidon(key_i, value_i, randomness)`.
 3. Constructs a binary Merkle tree over all leaves using Poseidon as the internal hash.
-4. Returns `attrCommitmentRoot` (the Merkle root), `perAttributeCommitments` (the leaf array), and `randomness`.
+4. Returns `root` (the Merkle root), `leaves` (the leaf array), and `randomness`.
 
 The `commitments` output includes `scheme: "poseidon"` by default. If the schema is not found, the promise is rejected with `"Unknown schemaId: "…". Call define() first."`.
 
@@ -253,12 +253,12 @@ await documents.register(client, {
   issuerId: "issuer-1",
   subjectId: "subject-1",
   commitments: {
-    attrCommitmentRoot: prep.commitments.attrCommitmentRoot,
-    perAttributeCommitments: prep.commitments.perAttributeCommitments,
+    root: prep.commitments.root,
+    leaves: prep.commitments.leaves,
     scheme: "poseidon",
   },
   revocation: {
-    revocationRoot: "0x0",
+    root: "0x0",
     scheme: "bitmask-merkle-v1",
   },
   signature: {
@@ -266,10 +266,10 @@ await documents.register(client, {
     payload: "...", // hex-encoded BBS+ signature
     issuerId: "issuer-1",
   },
-  onchainHooks: [
+  hooks: [
     {
       chainId: 1,
-      contractAddress: "0xYourHookContract...",
+      address: "0xYourHookContract...",
       method: "onLemmaDocumentRegistered",
       mode: "after-registry",
       payload: "registry-public-inputs",
@@ -280,7 +280,7 @@ await documents.register(client, {
 
 The response type is `RegisterDocumentResponse` with `status: "registered"` and `docHash`.
 
-> **Note:** Only `attrCommitmentRoot` is written on-chain (bytes32). `perAttributeCommitments` is stored off-chain for use as ZK circuit witnesses. This keeps on-chain storage cost constant regardless of attribute count.
+> **Note:** Only `root` is written on-chain (bytes32). `leaves` is stored off-chain for use as ZK circuit witnesses. This keeps on-chain storage cost constant regardless of attribute count.
 
 #### `proofs`
 
@@ -291,14 +291,14 @@ The response type is `RegisterDocumentResponse` with `status: "registered"` and 
 const proofResult = await proofs.submit(client, {
   docHash: enc.docHash,
   circuitId: "age-over-18",
-  proofBytes: zkResult.proofBytes,
-  publicInputs: zkResult.publicInputs,
-  selectiveDisclosure: {
+  proof: zkResult.proof,
+  inputs: zkResult.inputs,
+  disclosure: {
     format: "bbs+",
-    disclosedAttributes: revealed.disclosed,
+    attributes: revealed.disclosed,
     proof: sd.proof,
   },
-  verifyOnchain: true,
+  onchain: true,
 });
 // proofResult.status         → "received" | "verified" | "onchain-verified" | "rejected"
 // proofResult.verificationId → unique verification identifier
@@ -353,7 +353,7 @@ await circuits.register(client, {
   schema: "user-kyc-v1",
   description: "age >= 18",
   publicInputs: ["attr_commitment_root"],
-  verifier: { type: "onchain", contractAddress: "0xVerifier...", chainId: 1 },
+  verifier: { type: "onchain", address: "0xVerifier...", chainId: 1 },
   artifact: {
     location: {
       type: "ipfs",
@@ -413,7 +413,7 @@ type VerifiedAttributesQueryResponseItem = Readonly<{
   subjectId: string;
   attributes: Record<string, unknown>;
   proof?: { status?: string; circuitId?: string };
-  selectiveDisclosure?: SelectiveDisclosure;
+  disclosure?: SelectiveDisclosure;
 }>;
 ```
 
@@ -466,20 +466,20 @@ const valid = await disclose.verify(client, signed);
 ```
 
 - **`reveal(client, input): Promise<RevealOutput>`**
-  Selective disclosure proof (by disclosedIndexes, not attribute names).
+  Selective disclosure proof (by indexes, not attribute names).
 
 ```typescript
 const revealed = await disclose.reveal(client, {
   signature: signed.signature, // from sign output
   messages, // original messages
   publicKey: signed.publicKey, // issuer's public key
-  disclosedIndexes: [0, 2], // indexes to reveal (not attribute names)
+  indexes: [0, 2], // indexes to reveal (not attribute names)
   header: signed.header,
 });
-// revealed.disclosed          → { age: "25", name: "Alice" }
-// revealed.proof              → Uint8Array (BBS+ derived proof)
-// revealed.disclosedIndexes   → [0, 2]
-// revealed.disclosedMessages  → ["age:25", "name:Alice"]
+// revealed.disclosed  → { age: "25", name: "Alice" }
+// revealed.proof      → Uint8Array (BBS+ derived proof)
+// revealed.indexes    → [0, 2]
+// revealed.messages   → ["age:25", "name:Alice"]
 ```
 
 - **`verifyProof(client, input): Promise<boolean>`**
@@ -490,9 +490,9 @@ const revealed = await disclose.reveal(client, {
 
 ```typescript
 const sd = disclose.toSelectiveDisclosure(revealed);
-// sd.format              → "bbs+"
-// sd.disclosedAttributes → { age: "25", name: "Alice" }
-// sd.proof               → hex-encoded string
+// sd.format     → "bbs+"
+// sd.attributes → { age: "25", name: "Alice" }
+// sd.proof      → hex-encoded string
 ```
 
 - **`messagesToDisclosedMap(msgs, idxs): Record<string, string>`**
@@ -511,15 +511,15 @@ const zkResult = await prover.prove(client, {
   witness: {
     age_bucket: prep.normalized.age_bucket,
     randomness: prep.commitments.randomness,
-    attr_commitment_root: prep.commitments.attrCommitmentRoot,
+    attr_commitment_root: prep.commitments.root,
     // Merkle path for the attribute(s) referenced by this circuit
-    leaf: prep.commitments.perAttributeCommitments[0],
+    leaf: prep.commitments.leaves[0],
     path_elements: "...",
     path_indices: "...",
   },
 });
-// zkResult.proofBytes    → ZK proof (base64 string in dev, binary in production)
-// zkResult.publicInputs  → Array of public inputs (extracted from witness.attr_commitment_root)
+// zkResult.proof   → ZK proof (base64 string in dev, binary in production)
+// zkResult.inputs  → Array of public inputs (extracted from witness.attr_commitment_root)
 ```
 
 The SDK's local-dev prover generates a SHA-256 hash as a placeholder proof. Production would use snarkjs with `wasm`/`zkey` resolved from circuit metadata `artifact.location`.
@@ -547,7 +547,7 @@ await circuits.register(client, {
 const proof = await prover.generateProof({
   circuitId: "custom-threshold",
   privateInputs: { value: 42, threshold: 40 },
-  publicInputs: { thresholdMet: true },
+  inputs: { thresholdMet: true },
 });
 ```
 
@@ -561,7 +561,7 @@ const sdProof = await disclose.createProof({
   document: {
     /* signed document */
   },
-  disclosedAttributes: ["temperature", "city"], // Only reveal these
+  attributes: ["temperature", "city"], // Only reveal these
   signerPubKey: "issuer-public-key",
   holderPrivKey: "holder-private-key",
 });
@@ -580,9 +580,9 @@ await documents.register(client, {
   },
   holderPubKey: "0x...",
   schemaId: "dev:weather:v1",
-  onchainHooks: [
+  hooks: [
     {
-      contractAddress: "0xabc...",
+      address: "0xabc...",
       method: "processWeatherData",
       abi: ["function processWeatherData(bytes32, uint256)"],
       calldata: "0x...",
@@ -597,13 +597,13 @@ await documents.register(client, {
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `create(config)`                              | Generate client configuration                                                                                   |
 | `define<Raw, Norm>(artifact)`                 | Download WASM, verify SHA-256, instantiate, register schema                                                     |
-| `encrypt(client, input)`                      | Encryption + docHash/cid/encryptedDocBase64/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`) |
+| `encrypt(client, input)`                      | Encryption + docHash/cid/ciphertext/algorithm retrieval (`algorithm` optional, default `"aes-256-gcm"`)         |
 | `prepare(client, input)`                      | Normalization + Poseidon Merkle commitment (auto `scheme: "poseidon"`)                                          |
 | `disclose.generateKeyPair(options?)`          | BBS+ key pair generation (32B secret, 96B public)                                                               |
 | `disclose.payloadToMessages(payload)`         | Attribute object → sorted `"key:value"` messages                                                                |
 | `disclose.sign(client, input)`                | BBS+ signing (messages, secretKey, header, issuerId)                                                            |
 | `disclose.verify(client, signOutput)`         | Verify BBS+ signature                                                                                           |
-| `disclose.reveal(client, input)`              | Selective disclosure proof (by disclosedIndexes)                                                                |
+| `disclose.reveal(client, input)`              | Selective disclosure proof (by indexes)                                                                         |
 | `disclose.verifyProof(client, input)`         | Verify selective disclosure proof                                                                               |
 | `disclose.toSelectiveDisclosure(output)`      | Wrap RevealOutput into spec SelectiveDisclosure                                                                 |
 | `disclose.messagesToDisclosedMap(msgs, idxs)` | Reconstruct disclosed attribute map                                                                             |

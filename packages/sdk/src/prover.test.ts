@@ -35,8 +35,8 @@ describe("prover.prove", () => {
       },
     });
 
-    expect(result.proofBytes).toBeTruthy();
-    expect(result.publicInputs).toContain("0xroot123");
+    expect(result.proof).toBeTruthy();
+    expect(result.inputs).toContain("0xroot123");
   });
 
   it("returns empty publicInputs when witness has no attr_commitment_root (fallback)", async () => {
@@ -62,7 +62,7 @@ describe("prover.prove", () => {
       witness: { some_field: "value" },
     });
 
-    expect(result.publicInputs).toEqual([]);
+    expect(result.inputs).toEqual([]);
   });
 
   it("generates snarkjs proof when circuit has artifacts", async () => {
@@ -127,8 +127,8 @@ describe("prover.prove", () => {
       },
     });
 
-    expect(result.proofBytes).toBeTruthy();
-    expect(result.publicInputs).toEqual(["0xroot456"]);
+    expect(result.proof).toBeTruthy();
+    expect(result.inputs).toEqual(["0xroot456"]);
   });
 
   it("rejects when circuit not found", async () => {

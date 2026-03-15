@@ -52,23 +52,23 @@ export type RevealInput = Readonly<{
   signature: Uint8Array;
   messages: ReadonlyArray<string>;
   publicKey: Uint8Array;
-  disclosedIndexes: ReadonlyArray<number>;
+  indexes: ReadonlyArray<number>;
   header: Uint8Array;
 }>;
 
 export type RevealOutput = Readonly<{
   disclosed: Readonly<Record<string, unknown>>;
   proof: Uint8Array;
-  disclosedIndexes: ReadonlyArray<number>;
-  disclosedMessages: ReadonlyArray<string>;
+  indexes: ReadonlyArray<number>;
+  messages: ReadonlyArray<string>;
 }>;
 
 export type VerifyProofInput = Readonly<{
   proof: Uint8Array;
   publicKey: Uint8Array;
-  disclosedMessages: ReadonlyArray<string>;
-  disclosedIndexes: ReadonlyArray<number>;
-  totalMessageCount: number;
+  messages: ReadonlyArray<string>;
+  indexes: ReadonlyArray<number>;
+  count: number;
   header: Uint8Array;
 }>;
 
@@ -214,14 +214,14 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
  * attribute indexes to reveal.
  */
 export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<RevealOutput> =>
-  input.disclosedIndexes.length === 0
-    ? reject("disclosedIndexes must not be empty")
+  input.indexes.length === 0
+    ? reject("indexes must not be empty")
     : R.pipe(encodeMessages, (scalars) => {
         const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
 
         // Build revealed messages map for the challenge contribution
         const revealedMsgs = new Map<number, Uint8Array>();
-        for (const idx of input.disclosedIndexes) {
+        for (const idx of input.indexes) {
           revealedMsgs.set(idx, scalars[idx]!);
         }
 
@@ -231,7 +231,7 @@ export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<
           params,
           [...scalars],
           new Map<number, Uint8Array>(),
-          new Set(input.disclosedIndexes),
+          new Set(input.indexes),
           true, // messages are already encoded as Uint8Array
         );
 
@@ -243,17 +243,17 @@ export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<
         // Generate proof
         const proof = bbsPlusGenProofOfKnowledgeOfSignature(protocol, challengeProver);
 
-        const disclosedMessages: ReadonlyArray<string> = R.map(
+        const revealedMessages: ReadonlyArray<string> = R.map(
           (i: number) => input.messages[i] ?? "",
-          [...input.disclosedIndexes],
+          [...input.indexes],
         );
-        const disclosed = messagesToDisclosedMap(input.messages, input.disclosedIndexes);
+        const disclosed = messagesToDisclosedMap(input.messages, input.indexes);
 
         return {
           disclosed,
           proof,
-          disclosedIndexes: input.disclosedIndexes,
-          disclosedMessages,
+          indexes: input.indexes,
+          messages: revealedMessages,
         };
       })(input.messages);
 
@@ -266,13 +266,13 @@ export const verifyProof = async (
   input: VerifyProofInput,
 ): Promise<boolean> =>
   R.pipe(encodeMessages, (disclosedScalars) => {
-    const params = bbsPlusGenerateSignatureParamsG1(input.totalMessageCount, input.header);
+    const params = bbsPlusGenerateSignatureParamsG1(input.count, input.header);
 
     const revealedMsgs = new Map<number, Uint8Array>();
 
     // Populate revealed messages map
-    for (let i = 0; i < input.disclosedIndexes.length; i++) {
-      const idx = input.disclosedIndexes[i]!;
+    for (let i = 0; i < input.indexes.length; i++) {
+      const idx = input.indexes[i]!;
       const scalar = disclosedScalars[i]!;
       revealedMsgs.set(idx, scalar);
     }
@@ -292,7 +292,7 @@ export const verifyProof = async (
     );
 
     return result.verified;
-  })(input.disclosedMessages);
+  })(input.messages);
 /* eslint-enable @typescript-eslint/require-await */
 
 /**
@@ -300,7 +300,7 @@ export const verifyProof = async (
  */
 export const toSelectiveDisclosure = (output: RevealOutput): SelectiveDisclosure => ({
   format: "bbs+",
-  disclosedAttributes: output.disclosed,
+  attributes: output.disclosed,
   proof: bytesToHex(output.proof),
 });
 

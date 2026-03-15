@@ -114,11 +114,11 @@ describe("disclose", () => {
         signature: signed.signature,
         messages,
         publicKey: signed.publicKey,
-        disclosedIndexes: [0, 2],
+        indexes: [0, 2],
         header,
       });
 
-      expect(revealed.disclosedMessages).toEqual(["age:25", "name:Alice"]);
+      expect(revealed.messages).toEqual(["age:25", "name:Alice"]);
       expect(revealed.disclosed).toEqual({ age: "25", name: "Alice" });
       expect(revealed.proof).toBeInstanceOf(Uint8Array);
       expect(revealed.proof.length).toBeGreaterThan(0);
@@ -126,16 +126,16 @@ describe("disclose", () => {
       const valid = await verifyProof(client, {
         proof: revealed.proof,
         publicKey: signed.publicKey,
-        disclosedMessages: [...revealed.disclosedMessages],
-        disclosedIndexes: [...revealed.disclosedIndexes],
-        totalMessageCount: messages.length,
+        messages: [...revealed.messages],
+        indexes: [...revealed.indexes],
+        count: messages.length,
         header,
       });
 
       expect(valid).toBe(true);
     });
 
-    it("rejects empty disclosedIndexes", async () => {
+    it("rejects empty indexes", async () => {
       const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25"];
 
@@ -151,10 +151,10 @@ describe("disclose", () => {
           signature: signed.signature,
           messages,
           publicKey: signed.publicKey,
-          disclosedIndexes: [],
+          indexes: [],
           header,
         }),
-      ).rejects.toThrow("disclosedIndexes must not be empty");
+      ).rejects.toThrow("indexes must not be empty");
     });
 
     it("proof verification fails with wrong public key", async () => {
@@ -173,16 +173,16 @@ describe("disclose", () => {
         signature: signed.signature,
         messages,
         publicKey: signed.publicKey,
-        disclosedIndexes: [0],
+        indexes: [0],
         header,
       });
 
       const valid = await verifyProof(client, {
         proof: revealed.proof,
         publicKey: kp2.publicKey,
-        disclosedMessages: [...revealed.disclosedMessages],
-        disclosedIndexes: [...revealed.disclosedIndexes],
-        totalMessageCount: messages.length,
+        messages: [...revealed.messages],
+        indexes: [...revealed.indexes],
+        count: messages.length,
         header,
       });
 
@@ -206,13 +206,13 @@ describe("disclose", () => {
         signature: signed.signature,
         messages,
         publicKey: signed.publicKey,
-        disclosedIndexes: [0],
+        indexes: [0],
         header,
       });
 
       const sd = toSelectiveDisclosure(revealed);
       expect(sd.format).toBe("bbs+");
-      expect(sd.disclosedAttributes).toEqual(revealed.disclosed);
+      expect(sd.attributes).toEqual(revealed.disclosed);
       expect(typeof sd.proof).toBe("string");
       expect(sd.proof.length).toBeGreaterThan(0);
     });
