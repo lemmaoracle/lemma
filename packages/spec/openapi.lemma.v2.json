@@ -47,10 +47,10 @@
             "type": "object",
             "properties": {
               "type": { "type": "string", "enum": ["onchain", "offchain"] },
-              "contractAddress": { "type": "string" },
-              "chainId": { "type": "integer" }
-            },
-            "required": ["type"],
+          "address": { "type": "string" },
+          "chainId": { "type": "integer" }
+        },
+        "required": ["type"],
             "additionalProperties": true
           },
           "artifact": {
@@ -94,23 +94,23 @@
             "type": "string",
             "enum": ["poseidon", "poseidon2", "rescue-prime", "sha256-placeholder"]
           },
-          "attrCommitmentRoot": { "type": "string" },
-          "perAttributeCommitments": {
+          "root": { "type": "string" },
+          "leaves": {
             "type": "array",
             "items": { "type": "string" }
           },
           "randomness": { "type": "string" }
         },
-        "required": ["scheme", "attrCommitmentRoot", "perAttributeCommitments", "randomness"],
+        "required": ["scheme", "root", "leaves", "randomness"],
         "additionalProperties": false
       },
       "Revocation": {
         "type": "object",
         "properties": {
           "scheme": { "type": "string" },
-          "revocationRoot": { "type": "string" }
+          "root": { "type": "string" }
         },
-        "required": ["revocationRoot"],
+        "required": ["root"],
         "additionalProperties": true
       },
       "IssuerSignature": {
@@ -127,12 +127,12 @@
         "type": "object",
         "properties": {
           "chainId": { "type": "integer" },
-          "contractAddress": { "type": "string" },
+          "address": { "type": "string" },
           "method": { "type": "string" },
           "mode": { "type": "string", "enum": ["after-registry"] },
           "payload": { "type": "string", "enum": ["registry-public-inputs"] }
         },
-        "required": ["chainId", "contractAddress", "method"],
+        "required": ["chainId", "address", "method"],
         "additionalProperties": true
       },
       "RegisterDocumentRequest": {
@@ -146,7 +146,7 @@
           "commitments": { "$ref": "#/components/schemas/DocumentCommitments" },
           "revocation": { "$ref": "#/components/schemas/Revocation" },
           "signature": { "$ref": "#/components/schemas/IssuerSignature" },
-          "onchainHooks": {
+          "hooks": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OnchainHook" }
           }
@@ -175,10 +175,10 @@
         "type": "object",
         "properties": {
           "format": { "type": "string", "enum": ["bbs+", "opaque"] },
-          "disclosedAttributes": { "type": "object", "additionalProperties": true },
+          "attributes": { "type": "object", "additionalProperties": true },
           "proof": { "type": "string" }
         },
-        "required": ["format", "disclosedAttributes", "proof"],
+        "required": ["format", "attributes", "proof"],
         "additionalProperties": false
       },
       "SubmitProofRequest": {
@@ -186,12 +186,12 @@
         "properties": {
           "docHash": { "type": "string" },
           "circuitId": { "type": "string" },
-          "proofBytes": { "type": "string" },
-          "publicInputs": { "type": "array", "items": { "type": "string" } },
-          "selectiveDisclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" },
-          "verifyOnchain": { "type": "boolean" }
+          "proof": { "type": "string" },
+          "inputs": { "type": "array", "items": { "type": "string" } },
+          "disclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" },
+          "onchain": { "type": "boolean" }
         },
-        "required": ["docHash", "circuitId", "proofBytes", "publicInputs"],
+        "required": ["docHash", "circuitId", "proof", "inputs"],
         "additionalProperties": false
       },
       "SubmitProofResponse": {
@@ -242,7 +242,7 @@
             "properties": { "status": { "type": "string" }, "circuitId": { "type": "string" } },
             "additionalProperties": true
           },
-          "selectiveDisclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" }
+          "disclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" }
         },
         "required": ["docHash", "schema", "issuerId", "subjectId", "attributes"],
         "additionalProperties": true

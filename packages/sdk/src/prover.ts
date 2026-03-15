@@ -32,8 +32,8 @@ export type ProveInput = Readonly<{
 }>;
 
 export type ProveOutput = Readonly<{
-  proofBytes: string;
-  publicInputs: ReadonlyArray<string>;
+  proof: string;
+  inputs: ReadonlyArray<string>;
 }>;
 
 /* ------------------------------------------------------------------ */
@@ -117,15 +117,15 @@ export const prove = async (client: LemmaClient, input: ProveInput): Promise<Pro
           zkeyBuf,
         );
 
-        const proofBytes = Buffer.from(JSON.stringify(proof)).toString("base64");
-        const publicInputs = publicSignals;
+        const proofStr = Buffer.from(JSON.stringify(proof)).toString("base64");
+        const inputs = publicSignals;
 
-        return { proofBytes, publicInputs };
+        return { proof: proofStr, inputs };
       })()
     : // Fallback path (no artifacts)
       ({
-        proofBytes: sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`),
-        publicInputs:
+        proof: sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`),
+        inputs:
           typeof input.witness.attr_commitment_root === "string"
             ? [input.witness.attr_commitment_root]
             : [],

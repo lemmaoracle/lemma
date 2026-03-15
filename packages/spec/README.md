@@ -80,7 +80,7 @@ export type CircuitMeta = Readonly<{
   publicInputs?: ReadonlyArray<string>;
   verifier?: Readonly<{
     type: "onchain" | "offchain";
-    contractAddress?: string;
+    address?: string;
     chainId?: number;
     [k: string]: unknown;
   }>;
@@ -101,7 +101,7 @@ export type RegisterDocumentRequest = Readonly<{
   commitments: DocumentCommitments;
   revocation: Revocation;
   signature?: IssuerSignature;
-  onchainHooks?: ReadonlyArray<OnchainHook>;
+  hooks?: ReadonlyArray<OnchainHook>;
 }>;
 
 export type RegisterDocumentResponse = Readonly<{
@@ -117,10 +117,10 @@ export type RegisterDocumentResponse = Readonly<{
 export type SubmitProofRequest = Readonly<{
   docHash: string;
   circuitId: string;
-  proofBytes: string;
-  publicInputs: ReadonlyArray<string>;
-  selectiveDisclosure?: SelectiveDisclosure;
-  verifyOnchain?: boolean;
+  proof: string;
+  inputs: ReadonlyArray<string>;
+  disclosure?: SelectiveDisclosure;
+  onchain?: boolean;
 }>;
 
 export type SubmitProofResponse = Readonly<{
@@ -153,8 +153,8 @@ export type CommitmentScheme = "poseidon" | "poseidon2" | "rescue-prime" | "sha2
 
 export type DocumentCommitments = Readonly<{
   scheme: CommitmentScheme;
-  attrCommitmentRoot: string;
-  perAttributeCommitments: ReadonlyArray<string>;
+  root: string;
+  leaves: ReadonlyArray<string>;
   randomness: string; // bytes32 hex - blinding factor for hiding property
 }>;
 ```
@@ -164,7 +164,7 @@ export type DocumentCommitments = Readonly<{
 ```typescript
 export type SelectiveDisclosure = Readonly<{
   format: "bbs+" | "opaque";
-  disclosedAttributes: Readonly<Record<string, unknown>>;
+  attributes: Readonly<Record<string, unknown>>;
   proof: string;
 }>;
 ```

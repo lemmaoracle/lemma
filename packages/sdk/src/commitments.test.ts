@@ -10,14 +10,14 @@ describe("commitments", () => {
       const result = await commitNormalized(normalized);
 
       // Check that all outputs are valid hex strings
-      expect(result.attrCommitmentRoot).toMatch(/^0x[0-9a-f]+$/);
+      expect(result.root).toMatch(/^0x[0-9a-f]+$/);
       expect(result.randomness).toMatch(/^0x[0-9a-f]+$/);
-      result.perAttributeCommitments.forEach((commitment) => {
+      result.leaves.forEach((commitment) => {
         expect(commitment).toMatch(/^0x[0-9a-f]+$/);
       });
 
       // Should have 2 leaves (keys a, b)
-      expect(result.perAttributeCommitments).toHaveLength(2);
+      expect(result.leaves).toHaveLength(2);
     });
   });
 
@@ -38,19 +38,19 @@ describe("commitments", () => {
       const result2 = await commitNormalized(normalized);
 
       // All fields should be present
-      expect(result1.attrCommitmentRoot).toBeDefined();
-      expect(result1.perAttributeCommitments).toBeDefined();
+      expect(result1.root).toBeDefined();
+      expect(result1.leaves).toBeDefined();
       expect(result1.randomness).toBeDefined();
-      expect(result2.attrCommitmentRoot).toBeDefined();
-      expect(result2.perAttributeCommitments).toBeDefined();
+      expect(result2.root).toBeDefined();
+      expect(result2.leaves).toBeDefined();
       expect(result2.randomness).toBeDefined();
 
       // Should have 3 leaves (x, y, z)
-      expect(result1.perAttributeCommitments).toHaveLength(3);
-      expect(result2.perAttributeCommitments).toHaveLength(3);
+      expect(result1.leaves).toHaveLength(3);
+      expect(result2.leaves).toHaveLength(3);
 
       // Leaves should be different (different randomness)
-      expect(result1.perAttributeCommitments[0]).not.toBe(result2.perAttributeCommitments[0]);
+      expect(result1.leaves[0]).not.toBe(result2.leaves[0]);
     });
 
     it("produces different roots when any field changes", async () => {
@@ -60,7 +60,7 @@ describe("commitments", () => {
       const resultBase = await commitNormalized(base);
       const resultModified = await commitNormalized(modified);
 
-      expect(resultBase.attrCommitmentRoot).not.toBe(resultModified.attrCommitmentRoot);
+      expect(resultBase.root).not.toBe(resultModified.root);
     });
 
     it("produces different roots with different randomness (hiding property)", async () => {
@@ -70,7 +70,7 @@ describe("commitments", () => {
       const results = await Promise.all(R.times(() => commitNormalized(normalized), 3));
 
       // All roots should be different (extremely low probability of collision)
-      const roots = R.map(R.prop("attrCommitmentRoot"), results);
+      const roots = R.map(R.prop("root"), results);
       const uniqueRoots = new Set(roots);
       expect(uniqueRoots.size).toBe(3);
     });
@@ -79,10 +79,10 @@ describe("commitments", () => {
       const normalized = { single: "attribute" };
       const result = await commitNormalized(normalized);
 
-      expect(result.perAttributeCommitments).toHaveLength(1);
-      expect(result.attrCommitmentRoot).toMatch(/^0x/);
+      expect(result.leaves).toHaveLength(1);
+      expect(result.root).toMatch(/^0x/);
       // For single leaf, root should equal the leaf commitment
-      expect(result.attrCommitmentRoot).toBe(result.perAttributeCommitments[0]);
+      expect(result.root).toBe(result.leaves[0]);
     });
 
     it("handles complex nested JSON values", async () => {
@@ -98,10 +98,10 @@ describe("commitments", () => {
       const result = await commitNormalized(normalized);
 
       // Should have 6 leaves (all top-level keys)
-      expect(result.perAttributeCommitments).toHaveLength(6);
+      expect(result.leaves).toHaveLength(6);
 
       // All commitments should be valid hex
-      result.perAttributeCommitments.forEach((commitment) => {
+      result.leaves.forEach((commitment) => {
         expect(commitment).toMatch(/^0x[0-9a-f]+$/);
       });
     });
@@ -116,8 +116,8 @@ describe("commitments", () => {
       // Same values, same order should produce same leaf commitments
       // (though randomness differs, so roots will differ)
       // But we can check structure consistency
-      expect(result1.perAttributeCommitments).toHaveLength(3);
-      expect(result2.perAttributeCommitments).toHaveLength(3);
+      expect(result1.leaves).toHaveLength(3);
+      expect(result2.leaves).toHaveLength(3);
     });
   });
 });

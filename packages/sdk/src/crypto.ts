@@ -26,12 +26,12 @@ export type EncryptInput = Readonly<{
 export type EncryptOutput = Readonly<{
   docHash: string;
   cid: string;
-  encryptedDocBase64: string;
+  ciphertext: string;
   algorithm: EncryptionAlgorithm; // encryption algorithm used (e.g., "aes-256-gcm")
 }>;
 
 export type DecryptInput = Readonly<{
-  encryptedDocBase64: string;
+  ciphertext: string;
   holderPrivateKey: string;
   algorithm?: EncryptionAlgorithm; // optional — needed for future algorithm support
 }>;
@@ -251,13 +251,13 @@ export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<Encr
   return Promise.resolve({
     docHash,
     cid,
-    encryptedDocBase64: bytesToBase64(encryptedDoc),
+    ciphertext: bytesToBase64(encryptedDoc),
     algorithm,
   });
 };
 
 export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
-  const encryptedDoc = base64ToBytes(input.encryptedDocBase64);
+  const encryptedDoc = base64ToBytes(input.ciphertext);
 
   // Determine algorithm (default to "aes-256-gcm" for backward compatibility)
   const algorithm = input.algorithm ?? "aes-256-gcm";

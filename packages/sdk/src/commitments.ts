@@ -121,8 +121,8 @@ export const commitNormalized = async (
   normalized: Json,
 ): Promise<
   Readonly<{
-    attrCommitmentRoot: string;
-    perAttributeCommitments: ReadonlyArray<string>;
+    root: string;
+    leaves: ReadonlyArray<string>;
     randomness: string;
   }>
 > => {
@@ -146,8 +146,8 @@ export const commitNormalized = async (
         const root = buildMerkleRoot(leaves, poseidon);
 
         return {
-          attrCommitmentRoot: `0x${root.toString(16)}`,
-          perAttributeCommitments: R.map((leaf: bigint) => `0x${leaf.toString(16)}`, leaves),
+          root: `0x${root.toString(16)}`,
+          leaves: R.map((leaf: bigint) => `0x${leaf.toString(16)}`, leaves),
           randomness: `0x${randomness}`,
         };
       },

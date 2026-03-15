@@ -9,8 +9,8 @@ describe("spec types", () => {
       cid: "bafy...",
       issuerId: "issuer-1",
       subjectId: "subject-1",
-      commitments: { attrCommitmentRoot: "0xroot", scheme: "poseidon" },
-      revocation: { revocationRoot: "0x0", scheme: "bitmask-merkle-v1" },
+      commitments: { root: "0xroot", scheme: "poseidon" },
+      revocation: { root: "0x0", scheme: "bitmask-merkle-v1" },
       signature: { format: "bbs+", payload: "sig", issuerId: "issuer-1" },
     };
     expect(req.schema).toBe("user-kyc-v1");
@@ -20,9 +20,9 @@ describe("spec types", () => {
     const req: SubmitProofRequest = {
       docHash: "0xabc",
       circuitId: "age-over-18",
-      proofBytes: "base64...",
-      publicInputs: ["0xroot"],
-      verifyOnchain: true,
+      proof: "base64...",
+      inputs: ["0xroot"],
+      onchain: true,
     };
     expect(req.circuitId).toBe("age-over-18");
   });

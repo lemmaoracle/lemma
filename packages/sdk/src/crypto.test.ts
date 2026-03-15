@@ -18,7 +18,7 @@ describe("encrypt", () => {
 
     expect(result.docHash).toMatch(/^0x[a-f0-9]{64}$/);
     expect(result.cid).toMatch(/^bafkrei/);
-    expect(result.encryptedDocBase64).toBeTruthy();
+    expect(result.ciphertext).toBeTruthy();
   });
 
   it("produces different docHash for different payloads", async () => {
@@ -42,7 +42,7 @@ describe("encrypt", () => {
     });
 
     const decrypted = await decrypt({
-      encryptedDocBase64: result.encryptedDocBase64,
+      ciphertext: result.ciphertext,
       holderPrivateKey: "0x" + bytesToHex(privKey),
     });
 
@@ -92,18 +92,18 @@ describe("decrypt", () => {
     });
 
     const decrypted = await decrypt({
-      encryptedDocBase64: result.encryptedDocBase64,
+      ciphertext: result.ciphertext,
       holderPrivateKey: "0x" + bytesToHex(privKey),
     });
 
     expect(decrypted.payload).toEqual(originalPayload);
   });
 
-  it("throws error for invalid encryptedDocBase64", async () => {
+  it("throws error for invalid ciphertext", async () => {
     let error: Error | undefined;
     try {
       await decrypt({
-        encryptedDocBase64: "invalid-base64",
+        ciphertext: "invalid-base64",
         holderPrivateKey: "0x" + bytesToHex(secp256k1.utils.randomPrivateKey()),
       });
     } catch (e) {
@@ -114,12 +114,12 @@ describe("decrypt", () => {
   });
 
   it("throws error for ciphertext that is too short", async () => {
-    const encryptedDocBase64 = "AAAAAAAA"; // Too short to contain ephemeralPubKey + nonce + ciphertext
+    const shortCiphertext = "AAAAAAAA"; // Too short to contain ephemeralPubKey + nonce + ciphertext
 
     let error: Error | undefined;
     try {
       await decrypt({
-        encryptedDocBase64,
+        ciphertext: shortCiphertext,
         holderPrivateKey: "0x" + bytesToHex(secp256k1.utils.randomPrivateKey()),
       });
     } catch (e) {
