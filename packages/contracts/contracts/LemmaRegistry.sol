@@ -16,7 +16,7 @@ contract LemmaRegistry {
 
   struct DocumentProvenance {
     bytes32 docHash;
-    bytes32 attrCommitmentRoot;
+    bytes32 commitmentRoot;
     bytes32 schemaIdHash;
     address issuer;
     address subject;
@@ -37,7 +37,7 @@ contract LemmaRegistry {
 
   event DocumentRegistered(
     bytes32 indexed docHash,
-    bytes32 attrCommitmentRoot,
+    bytes32 commitmentRoot,
     bytes32 indexed schemaIdHash,
     address indexed issuer,
     address subject,
@@ -56,7 +56,7 @@ contract LemmaRegistry {
   /**
    * @notice Register a document's provenance on-chain.
    * @param docHash            SHA3-256 hash of the encrypted document.
-   * @param attrCommitmentRoot Pedersen/Poseidon commitment root of normalized attributes.
+   * @param commitmentRoot     Pedersen/Poseidon commitment root of normalized attributes.
    * @param schemaIdHash       keccak256 of the schemaId string.
    * @param issuer             Address of the document issuer.
    * @param subject            Address of the document subject/holder.
@@ -65,7 +65,7 @@ contract LemmaRegistry {
    */
   function registerDocument(
     bytes32 docHash,
-    bytes32 attrCommitmentRoot,
+    bytes32 commitmentRoot,
     bytes32 schemaIdHash,
     address issuer,
     address subject,
@@ -81,7 +81,7 @@ contract LemmaRegistry {
 
     documents[docHash] = DocumentProvenance({
       docHash: docHash,
-      attrCommitmentRoot: attrCommitmentRoot,
+      commitmentRoot: commitmentRoot,
       schemaIdHash: schemaIdHash,
       issuer: issuer,
       subject: subject,
@@ -91,7 +91,7 @@ contract LemmaRegistry {
 
     emit DocumentRegistered(
       docHash,
-      attrCommitmentRoot,
+      commitmentRoot,
       schemaIdHash,
       issuer,
       subject,
@@ -105,7 +105,7 @@ contract LemmaRegistry {
         try
           ILemmaHook(hooks[i].target).onLemmaDocumentRegistered(
             docHash,
-            attrCommitmentRoot,
+            commitmentRoot,
             schemaIdHash,
             issuer,
             subject,

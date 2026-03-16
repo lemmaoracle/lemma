@@ -9,7 +9,7 @@ pragma solidity ^0.8.24;
 interface ILemmaHook {
   function onLemmaDocumentRegistered(
     bytes32 docHash,
-    bytes32 attrCommitmentRoot,
+    bytes32 commitmentRoot,
     bytes32 schemaIdHash,
     address issuer,
     address subject,

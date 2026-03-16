@@ -18,7 +18,7 @@ import type { CircuitMeta } from "@lemmaoracle/spec";
 
 /**
  * Default IPFS gateway for resolving ipfs:// URLs.
- * Callers can override by providing a custom fetchFn that handles IPFS.
+ * Callers can override by providing a custom fetcher that handles IPFS.
  */
 export const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 

@@ -163,8 +163,7 @@ Creates a Lemma client instance.
 const client = create({
   apiBase: "https://api.lemma.xyz",
   apiKey: "your-api-key",
-  fetchFn: fetch, // Optional custom fetch implementation
-});
+}, fetch); // Optional custom fetch implementation
 ```
 
 #### `define<Raw, Norm>(artifact: NormalizeArtifact): Promise<SchemaDef<Raw, Norm>>`

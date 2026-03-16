@@ -14,7 +14,7 @@ export type LemmaClientConfig = Readonly<{
 
 export type LemmaClient = LemmaClientConfig &
   Readonly<{
-    readonly fetchFn?: typeof fetch;
+    readonly fetcher?: typeof fetch;
   }>;
 
 /* ── Schema / Circuit / Generator metadata ─────────────────────────── */
@@ -108,6 +108,7 @@ export type RegisterDocumentRequest = Readonly<{
   cid: string;
   issuerId: string;
   subjectId: string;
+  attributes?: Readonly<Record<string, unknown>>;
   commitments: DocumentCommitments;
   revocation: Revocation;
   signature?: IssuerSignature;

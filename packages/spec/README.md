@@ -43,7 +43,7 @@ export type LemmaClientConfig = Readonly<{
 
 export type LemmaClient = LemmaClientConfig &
   Readonly<{
-    readonly fetchFn?: typeof fetch;
+    readonly fetcher?: typeof fetch;
   }>;
 ```
 

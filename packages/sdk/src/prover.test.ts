@@ -24,7 +24,7 @@ describe("prover.prove", () => {
     });
 
     const client = create({ apiBase: "http://localhost:8787" });
-    (client as any).fetchFn = mockFetch;
+    (client as any).fetcher = mockFetch;
 
     const result = await prove(client, {
       circuitId: "age-over-18",
@@ -55,7 +55,7 @@ describe("prover.prove", () => {
     });
 
     const client = create({ apiBase: "http://localhost:8787" });
-    (client as any).fetchFn = mockFetch;
+    (client as any).fetcher = mockFetch;
 
     const result = await prove(client, {
       circuitId: "custom-circuit",
@@ -118,7 +118,7 @@ describe("prover.prove", () => {
     });
 
     const client = create({ apiBase: "http://localhost:8787" });
-    (client as any).fetchFn = mockFetch;
+    (client as any).fetcher = mockFetch;
 
     const result = await prove(client, {
       circuitId: "test-circuit",
@@ -145,7 +145,7 @@ describe("prover.prove", () => {
     });
 
     const client = create({ apiBase: "http://localhost:8787" });
-    (client as any).fetchFn = mockFetch;
+    (client as any).fetcher = mockFetch;
 
     await expect(() =>
       prove(client, {
@@ -180,7 +180,7 @@ describe("prover.prove", () => {
     });
 
     const client = create({ apiBase: "http://localhost:8787" });
-    (client as any).fetchFn = mockFetch;
+    (client as any).fetcher = mockFetch;
 
     await expect(() =>
       prove(client, {

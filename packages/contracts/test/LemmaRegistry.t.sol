@@ -56,7 +56,7 @@ contract LemmaRegistryTest is Test {
 
     LemmaRegistry.DocumentProvenance memory prov = registry.getDocument(DOC_HASH);
     assertEq(prov.docHash, DOC_HASH);
-    assertEq(prov.attrCommitmentRoot, ROOT);
+    assertEq(prov.commitmentRoot, ROOT);
     assertEq(prov.schemaIdHash, SCHEMA_HASH);
     assertEq(prov.issuer, issuer);
     assertEq(prov.subject, subject);

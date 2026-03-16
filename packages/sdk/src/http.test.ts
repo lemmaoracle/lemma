@@ -5,7 +5,7 @@ import { get, post } from "./http";
 const makeMockClient = (response: { status: number; body: unknown }): LemmaClient => ({
   apiBase: "http://localhost:8787",
   apiKey: "test-key",
-  fetchFn: vi.fn().mockResolvedValue({
+  fetcher: vi.fn().mockResolvedValue({
     ok: response.status >= 200 && response.status < 300,
     status: response.status,
     json: () => Promise.resolve(response.body),
@@ -17,7 +17,7 @@ describe("http helpers", () => {
     const client = makeMockClient({ status: 200, body: { id: "s1" } });
     const result = await get<{ id: string }>(client)("/v1/schemas/s1")();
     expect(result).toEqual({ id: "s1" });
-    expect(client.fetchFn).toHaveBeenCalledWith(
+    expect(client.fetcher).toHaveBeenCalledWith(
       "http://localhost:8787/v1/schemas/s1",
       expect.objectContaining({ method: "GET" }),
     );

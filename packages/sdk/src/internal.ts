@@ -14,7 +14,7 @@ export const ok = <T>(value: T): Result<T> => ({ ok: true, value });
 export const err = (error: Error): Result<never> => ({ ok: false, error });
 
 export const resolveFetch = (client: LemmaClient): typeof fetch =>
-  client.fetchFn ?? globalThis.fetch;
+  client.fetcher ?? globalThis.fetch;
 
 export const withApiKey = (
   client: LemmaClient,
