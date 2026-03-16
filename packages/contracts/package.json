@@ -7,12 +7,24 @@
     "build": "hardhat compile",
     "test": "hardhat test",
     "lint": "echo 'Contracts: no TS lint (Solidity-only)'",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia --verify",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet --verify",
+    "deploy:monadTestnet": "hardhat run scripts/deploy.ts --network monadTestnet --verify",
+    "deploy:monadMainnet": "hardhat run scripts/deploy.ts --network monadMainnet --verify",
+    "node": "hardhat node",
+    "verify": "hardhat verify"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-verify": "^3.0.0",
+    "dotenv": "^16.4.5",
     "forge-std": "github:foundry-rs/forge-std#v1.11.0",
     "hardhat": "^3.1.10",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.6"
   }
 }
