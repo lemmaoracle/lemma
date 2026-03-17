@@ -1,0 +1,13 @@
+# Foundry
+/out/
+/cache_forge/
+/cache/
+
+# Dependencies
+/node_modules/
+
+# Environment
+.env
+
+# OS
+.DS_Store

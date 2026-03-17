@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
-import {LemmaRegistry} from "../contracts/LemmaRegistry.sol";
+import {LemmaRegistry} from "../src/LemmaRegistry.sol";
 
 contract LemmaRegistryTest is Test {
   LemmaRegistry registry;
