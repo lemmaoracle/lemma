@@ -231,22 +231,3 @@ npm publish --access public
 cd ../sdk
 npm publish --access public
 ```
-
-### Version Management
-
-Both packages use semantic versioning (`0.1.0`). When making changes:
-
-1. Update version in both `package.json` files
-2. Update SDK's dependency version to match spec version
-3. Run `pnpm install` to update lockfile
-4. Publish spec first, then SDK
-
-### Development vs Production
-
-For local development, the packages use workspace dependencies (`workspace:*`). Before publishing:
-
-1. Update SDK's `package.json` dependency from `workspace:*` to the actual version (e.g., `^0.1.0`)
-2. Ensure spec package's `private` flag is removed
-3. Build and test both packages
-
-An automated publish script is recommended to handle these steps.
