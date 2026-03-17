@@ -22,7 +22,7 @@ if [ ! -f "package.json" ]; then
 fi
 
 echo "📦 Building packages..."
-pnpm build
+pnpm -F @lemmaoracle/spec -F @lemmaoracle/sdk build
 
 echo "🔄 Bumping versions..."
 cd packages/spec
@@ -44,9 +44,6 @@ cd ../..
 
 echo "📝 Updated spec version: $SPEC_VERSION"
 echo "📝 Updated SDK dependency to: ^$SPEC_VERSION"
-
-echo "🔄 Updating lockfile..."
-pnpm install --no-frozen-lockfile
 
 echo "🚀 Publishing @lemmaoracle/spec..."
 cd packages/spec
