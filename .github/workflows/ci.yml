@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  FOUNDRY_PROFILE: ci
+  FOUNDRY_DISABLE_NIGHTLY_WARNING: 1
 
 jobs:
   test:
@@ -39,26 +39,35 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.foundry/cache
-            ~/.foundry/bin
+            ~/.foundry
             packages/contracts/lib
           key: ${{ runner.os }}-foundry-${{ hashFiles('packages/contracts/foundry.toml', 'packages/contracts/foundry.lock') }}
           restore-keys: |
             ${{ runner.os }}-foundry-
 
+      - name: Get pnpm store path
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
         with:
           path: |
-            ~/.pnpm-store
+            ${{ steps.pnpm-cache.outputs.STORE_PATH }}
             node_modules
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml', '**/package.json') }}
+            packages/*/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Build contracts dependencies
+        working-directory: ./packages/contracts
+        run: forge build
 
       - name: Run tests
         run: pnpm test
