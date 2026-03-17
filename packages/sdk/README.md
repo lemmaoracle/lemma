@@ -352,7 +352,10 @@ await circuits.register(client, {
   schema: "user-kyc-v1",
   description: "age >= 18",
   inputs: ["attr_commitment_root"],
-  verifier: { type: "onchain", address: "0xVerifier...", chainId: 1 },
+  verifiers: [
+    { type: "onchain", address: "0xVerifierMainnet", chainId: 1 },
+    { type: "onchain", address: "0xVerifierPolygon", chainId: 137 }
+  ],
   artifact: {
     location: {
       type: "ipfs",

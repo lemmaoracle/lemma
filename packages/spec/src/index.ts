@@ -10,6 +10,7 @@
 export type LemmaClientConfig = Readonly<{
   apiBase: string;
   apiKey?: string;
+  defaultChainId?: number; // Default chain ID for operations (optional)
 }>;
 
 export type LemmaClient = LemmaClientConfig &
@@ -44,17 +45,19 @@ export type CircuitArtifactLocation = Readonly<{
   zkey: string;
 }>;
 
+export type CircuitVerifier = Readonly<{
+  type: "onchain" | "offchain";
+  address?: string;
+  chainId?: number;
+  [k: string]: unknown;
+}>;
+
 export type CircuitMeta = Readonly<{
   circuitId: string;
   schema: string;
   description?: string;
   inputs?: ReadonlyArray<string>;
-  verifier?: Readonly<{
-    type: "onchain" | "offchain";
-    address?: string;
-    chainId?: number;
-    [k: string]: unknown;
-  }>;
+  verifiers?: ReadonlyArray<CircuitVerifier>;
   artifact?: Readonly<{ location: CircuitArtifactLocation }>;
   [k: string]: unknown;
 }>;
@@ -108,6 +111,7 @@ export type RegisterDocumentRequest = Readonly<{
   cid: string;
   issuerId: string;
   subjectId: string;
+  chainId?: number; // Primary chain for document registration (optional)
   attributes?: Readonly<Record<string, unknown>>;
   commitments: DocumentCommitments;
   revocation: Revocation;
@@ -134,6 +138,7 @@ export type SubmitProofRequest = Readonly<{
   circuitId: string;
   proof: string;
   inputs: ReadonlyArray<string>;
+  chainId?: number; // Target chain for on-chain verification (optional)
   disclosure?: SelectiveDisclosure;
   onchain?: boolean;
 }>;
@@ -151,7 +156,10 @@ export type VerifiedAttributesQueryRequest = Readonly<{
   mode: "natural" | "structured";
   attributes?: ReadonlyArray<Readonly<{ name: string; value: unknown }>>;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
-  targets?: Readonly<{ schemas?: ReadonlyArray<string> } & Record<string, unknown>>;
+  targets?: Readonly<{
+    schemas?: ReadonlyArray<string>;
+    chainIds?: ReadonlyArray<number>;
+  } & Record<string, unknown>>;
 }>;
 
 export type VerifiedAttributesQueryResponseItem = Readonly<{
@@ -159,8 +167,9 @@ export type VerifiedAttributesQueryResponseItem = Readonly<{
   schema: string;
   issuerId: string;
   subjectId: string;
+  chainId?: number; // Chain ID for cross-chain source identification
   attributes: Readonly<Record<string, unknown>>;
-  proof?: Readonly<{ status?: string; circuitId?: string } & Record<string, unknown>>;
+  proof?: Readonly<{ status?: string; circuitId?: string; chainId?: number } & Record<string, unknown>>;
   disclosure?: SelectiveDisclosure;
 }>;
 
