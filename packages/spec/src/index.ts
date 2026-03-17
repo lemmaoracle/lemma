@@ -156,10 +156,12 @@ export type VerifiedAttributesQueryRequest = Readonly<{
   mode: "natural" | "structured";
   attributes?: ReadonlyArray<Readonly<{ name: string; value: unknown }>>;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
-  targets?: Readonly<{
-    schemas?: ReadonlyArray<string>;
-    chainIds?: ReadonlyArray<number>;
-  } & Record<string, unknown>>;
+  targets?: Readonly<
+    {
+      schemas?: ReadonlyArray<string>;
+      chainIds?: ReadonlyArray<number>;
+    } & Record<string, unknown>
+  >;
 }>;
 
 export type VerifiedAttributesQueryResponseItem = Readonly<{
@@ -169,7 +171,9 @@ export type VerifiedAttributesQueryResponseItem = Readonly<{
   subjectId: string;
   chainId?: number; // Chain ID for cross-chain source identification
   attributes: Readonly<Record<string, unknown>>;
-  proof?: Readonly<{ status?: string; circuitId?: string; chainId?: number } & Record<string, unknown>>;
+  proof?: Readonly<
+    { status?: string; circuitId?: string; chainId?: number } & Record<string, unknown>
+  >;
   disclosure?: SelectiveDisclosure;
 }>;
 

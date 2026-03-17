@@ -10,11 +10,11 @@ describe("spec types", () => {
       issuerId: "issuer-1",
       subjectId: "subject-1",
       attributes: { age: 25, country: "US" },
-      commitments: { 
-        root: "0xroot", 
+      commitments: {
+        root: "0xroot",
         scheme: "poseidon",
         leaves: ["0xleaf1", "0xleaf2"],
-        randomness: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        randomness: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
       },
       revocation: { root: "0x0", scheme: "bitmask-merkle-v1" },
       signature: { format: "bbs+", payload: "sig", issuerId: "issuer-1" },
@@ -31,11 +31,11 @@ describe("spec types", () => {
       cid: "bafy...",
       issuerId: "issuer-1",
       subjectId: "subject-1",
-      commitments: { 
-        root: "0xroot", 
+      commitments: {
+        root: "0xroot",
         scheme: "poseidon",
         leaves: [],
-        randomness: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        randomness: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
       },
       revocation: { root: "0x0" },
     };

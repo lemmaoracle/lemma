@@ -201,6 +201,7 @@ All types use `Readonly<>` and `ReadonlyArray<>` to enforce immutability, follow
 ## 📦 Publishing
 
 ### Prerequisites
+
 1. npm account with access to `@lemmaoracle` organization
 2. Authentication configured (`npm login`)
 

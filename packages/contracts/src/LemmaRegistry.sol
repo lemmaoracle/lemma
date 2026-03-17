@@ -89,14 +89,7 @@ contract LemmaRegistry {
       registeredAt: block.timestamp
     });
 
-    emit DocumentRegistered(
-      docHash,
-      commitmentRoot,
-      schemaIdHash,
-      issuer,
-      subject,
-      revocationRoot
-    );
+    emit DocumentRegistered(docHash, commitmentRoot, schemaIdHash, issuer, subject, revocationRoot);
 
     // Execute hooks (Whitepaper §2.7)
     for (uint256 i = 0; i < hooks.length; i++) {

@@ -1,7 +1,11 @@
 /**
  * Whitepaper §4.7 — documents.register (terminal operation)
  */
-import type { LemmaClient, RegisterDocumentRequest, RegisterDocumentResponse } from "@lemmaoracle/spec";
+import type {
+  LemmaClient,
+  RegisterDocumentRequest,
+  RegisterDocumentResponse,
+} from "@lemmaoracle/spec";
 import { post } from "../http";
 
 export const register = (

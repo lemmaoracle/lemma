@@ -47,10 +47,10 @@
             "type": "object",
             "properties": {
               "type": { "type": "string", "enum": ["onchain", "offchain"] },
-          "address": { "type": "string" },
-          "chainId": { "type": "integer" }
-        },
-        "required": ["type"],
+              "address": { "type": "string" },
+              "chainId": { "type": "integer" }
+            },
+            "required": ["type"],
             "additionalProperties": true
           },
           "artifact": {
