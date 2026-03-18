@@ -59,6 +59,19 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
         )
     }
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* RSS feed auto-discovery */}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Lemma Oracle Blog (English)"
+      href={new URL("rss.xml", Astro.site)}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Lemma Oracle ブログ (日本語)"
+      href={new URL("ja/rss.xml", Astro.site)}
+    />
     {/* Google Analytics */}
     {
       googleAnalyticsId && (
