@@ -1,34 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// Mock the @mlc-ai/web-llm module at the top level
-vi.mock("@mlc-ai/web-llm", () => {
-  const mockCreateMLCEngine = vi.fn();
-  const mockChatCompletionsCreate = vi.fn();
-  const mockUnload = vi.fn();
-
-  return {
-    CreateMLCEngine: mockCreateMLCEngine.mockResolvedValue({
-      chat: {
-        completions: {
-          create: mockChatCompletionsCreate,
-        },
-      },
-      unload: mockUnload,
-    }),
-    // Expose mocks for test assertions
-    __mocks: {
-      mockCreateMLCEngine,
-      mockChatCompletionsCreate,
-      mockUnload,
-    },
-  };
+// Hoist mock variables so they're available in vi.mock factory
+const { mockGenerator, mockDispose, mockPipeline } = vi.hoisted(() => {
+  const mockDispose = vi.fn();
+  const mockGenerator = Object.assign(vi.fn(), { dispose: mockDispose });
+  const mockPipeline = vi.fn().mockResolvedValue(mockGenerator);
+  return { mockGenerator, mockDispose, mockPipeline };
 });
 
+// Mock the @huggingface/transformers module at the top level
+vi.mock("@huggingface/transformers", () => ({
+  pipeline: mockPipeline,
+}));
+
 import { initParser, parseNaturalQuery, cleanup } from "./query-parser.js";
-import * as webllm from "@mlc-ai/web-llm";
+import * as transformers from "@huggingface/transformers";
 
 // Type assertion for the mocked module
-const mockedWebllm = webllm as any;
+const mockedTransformers = transformers as any;
 
 describe("Query Parser", () => {
   beforeEach(() => {
@@ -46,9 +35,13 @@ describe("Query Parser", () => {
 
       await initParser(undefined, progressCallback);
 
-      expect(mockedWebllm.CreateMLCEngine).toHaveBeenCalledWith(
-        "Phi-3.5-mini-instruct-q4f16_1-MLC",
-        { initProgressCallback: progressCallback },
+      expect(mockedTransformers.pipeline).toHaveBeenCalledWith(
+        "text-generation",
+        "onnx-community/Qwen3-0.6B-ONNX",
+        expect.objectContaining({
+          dtype: "q4",
+          progress_callback: progressCallback,
+        }),
       );
     });
 
@@ -57,71 +50,57 @@ describe("Query Parser", () => {
 
       await initParser("custom-model-id", progressCallback);
 
-      expect(mockedWebllm.CreateMLCEngine).toHaveBeenCalledWith("custom-model-id", {
-        initProgressCallback: progressCallback,
-      });
+      expect(mockedTransformers.pipeline).toHaveBeenCalledWith(
+        "text-generation",
+        "custom-model-id",
+        expect.objectContaining({
+          dtype: "q4",
+          progress_callback: progressCallback,
+        }),
+      );
     });
 
-    it("should reuse existing engine on subsequent calls", async () => {
+    it("should reuse existing generator on subsequent calls", async () => {
       // First call
       await initParser();
-      expect(mockedWebllm.CreateMLCEngine).toHaveBeenCalledTimes(1);
+      expect(mockedTransformers.pipeline).toHaveBeenCalledTimes(1);
 
       // Reset the mock to track new calls
-      mockedWebllm.CreateMLCEngine.mockClear();
+      mockedTransformers.pipeline.mockClear();
 
-      // Second call should not create new engine
+      // Second call should not create new generator
       await initParser();
-      expect(mockedWebllm.CreateMLCEngine).not.toHaveBeenCalled();
+      expect(mockedTransformers.pipeline).not.toHaveBeenCalled();
     });
   });
 
   describe("parseNaturalQuery", () => {
     it("should parse simple natural language query", async () => {
-      // Initialize parser first
       await initParser();
 
-      // Get the mock chat completions create function
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      const mockResponse = [
+        {
+          generated_text: JSON.stringify({
+            attributes: [
+              { name: "age", operator: "gt", value: 18 },
+              { name: "country", operator: "eq", value: "Japan" },
+            ],
+          }),
+        },
+      ];
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: JSON.stringify({
-                attributes: [
-                  { name: "age", operator: "gt", value: 18 },
-                  { name: "country", operator: "eq", value: "Japan" },
-                ],
-              }),
-            },
-          },
-        ],
-      };
-
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
+      mockGenerator.mockResolvedValue(mockResponse);
 
       const result = await parseNaturalQuery("users over 18 in Japan");
 
-      expect(mockChatCompletionsCreate).toHaveBeenCalledWith({
-        messages: expect.arrayContaining([
-          expect.objectContaining({
-            role: "system",
-            content: "You are a query parser that outputs valid JSON matching the provided schema.",
-          }),
-          expect.objectContaining({
-            role: "user",
-            content: expect.stringContaining('Natural query: "users over 18 in Japan"'),
-          }),
-        ]),
-        max_tokens: 512,
-        temperature: 0,
-        response_format: expect.objectContaining({
-          type: "json_object",
-          schema: expect.any(String),
+      expect(mockGenerator).toHaveBeenCalledWith(
+        expect.stringContaining('Natural query: "users over 18 in Japan"'),
+        expect.objectContaining({
+          max_new_tokens: 512,
+          temperature: 0,
+          return_full_text: false,
         }),
-      });
+      );
 
       expect(result).toEqual({
         attributes: [
@@ -134,23 +113,18 @@ describe("Query Parser", () => {
     it("should parse query with proof requirements", async () => {
       await initParser();
 
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      const mockResponse = [
+        {
+          generated_text: JSON.stringify({
+            attributes: [
+              { name: "issuerId", operator: "eq", value: "Alice" },
+            ],
+            proof: { required: true, type: "zk-snark" },
+          }),
+        },
+      ];
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: JSON.stringify({
-                attributes: [{ name: "issuerId", operator: "eq", value: "Alice" }],
-                proof: { required: true, type: "zk-snark" },
-              }),
-            },
-          },
-        ],
-      };
-
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
+      mockGenerator.mockResolvedValue(mockResponse);
 
       const result = await parseNaturalQuery("verified documents from Alice");
 
@@ -163,27 +137,22 @@ describe("Query Parser", () => {
     it("should parse query with multiple conditions", async () => {
       await initParser();
 
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      const mockResponse = [
+        {
+          generated_text: JSON.stringify({
+            attributes: [
+              { name: "country", operator: "in", value: ["USA", "Canada"] },
+              { name: "age", operator: "gte", value: 21 },
+            ],
+          }),
+        },
+      ];
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: JSON.stringify({
-                attributes: [
-                  { name: "country", operator: "in", value: ["USA", "Canada"] },
-                  { name: "age", operator: "gte", value: 21 },
-                ],
-              }),
-            },
-          },
-        ],
-      };
+      mockGenerator.mockResolvedValue(mockResponse);
 
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
-
-      const result = await parseNaturalQuery("people in USA or Canada with age 21 or older");
+      const result = await parseNaturalQuery(
+        "people in USA or Canada with age 21 or older",
+      );
 
       expect(result).toEqual({
         attributes: [
@@ -193,84 +162,95 @@ describe("Query Parser", () => {
       });
     });
 
-    it("should throw error when LLM response is empty", async () => {
+    it("should throw error when LLM response is empty after retries", async () => {
       await initParser();
 
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      mockGenerator.mockResolvedValue([{ generated_text: "" }]);
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: "",
-            },
-          },
-        ],
-      };
-
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
-
-      // The actual error might be "Unexpected end of JSON input" or "LLM response content is empty"
-      await expect(parseNaturalQuery("test query")).rejects.toThrow();
+      await expect(parseNaturalQuery("test query")).rejects.toThrow(
+        "Failed to parse LLM response as valid query JSON after 2 attempts",
+      );
     });
 
-    it("should throw error when LLM response is invalid JSON", async () => {
+    it("should throw error when LLM response is invalid JSON after retries", async () => {
       await initParser();
 
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      mockGenerator.mockResolvedValue([{ generated_text: "invalid json" }]);
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: "invalid json",
-            },
-          },
-        ],
-      };
-
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
-
-      await expect(parseNaturalQuery("test query")).rejects.toThrow();
+      await expect(parseNaturalQuery("test query")).rejects.toThrow(
+        "Failed to parse LLM response as valid query JSON after 2 attempts",
+      );
     });
 
-    it("should initialize engine automatically if not initialized", async () => {
+    it("should initialize generator automatically if not initialized", async () => {
       // Don't call initParser first
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      const mockChatCompletionsCreate = mockEngine.chat.completions.create;
+      const mockResponse = [
+        {
+          generated_text: JSON.stringify({
+            attributes: [{ name: "test", operator: "eq", value: "value" }],
+          }),
+        },
+      ];
 
-      const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: JSON.stringify({
-                attributes: [{ name: "test", operator: "eq", value: "value" }],
-              }),
-            },
-          },
-        ],
-      };
-
-      mockChatCompletionsCreate.mockResolvedValue(mockResponse);
+      mockGenerator.mockResolvedValue(mockResponse);
 
       const result = await parseNaturalQuery("test query");
 
-      expect(mockedWebllm.CreateMLCEngine).toHaveBeenCalled();
+      expect(mockedTransformers.pipeline).toHaveBeenCalled();
       expect(result).toBeDefined();
+    });
+
+    it("should extract JSON from markdown code blocks", async () => {
+      await initParser();
+
+      const jsonContent = JSON.stringify({
+        attributes: [{ name: "age", operator: "gt", value: 25 }],
+      });
+
+      mockGenerator.mockResolvedValue([
+        {
+          generated_text: `\`\`\`json\n${jsonContent}\n\`\`\``,
+        },
+      ]);
+
+      const result = await parseNaturalQuery("users over 25");
+
+      expect(result).toEqual({
+        attributes: [{ name: "age", operator: "gt", value: 25 }],
+      });
+    });
+
+    it("should retry on first failure and succeed on second attempt", async () => {
+      await initParser();
+
+      const validResponse = [
+        {
+          generated_text: JSON.stringify({
+            attributes: [{ name: "age", operator: "gt", value: 18 }],
+          }),
+        },
+      ];
+
+      // First call returns invalid, second returns valid
+      mockGenerator
+        .mockResolvedValueOnce([{ generated_text: "not json" }])
+        .mockResolvedValueOnce(validResponse);
+
+      const result = await parseNaturalQuery("users over 18");
+
+      expect(mockGenerator).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({
+        attributes: [{ name: "age", operator: "gt", value: 18 }],
+      });
     });
   });
 
   describe("cleanup", () => {
-    it("should unload engine when cleanup is called", async () => {
+    it("should dispose generator when cleanup is called", async () => {
       await initParser();
 
-      const mockEngine = await mockedWebllm.CreateMLCEngine();
-      expect(mockEngine.unload).not.toHaveBeenCalled();
-
       await cleanup();
-      expect(mockEngine.unload).toHaveBeenCalled();
+      expect(mockDispose).toHaveBeenCalled();
     });
 
     it("should not throw when cleanup is called without initialization", async () => {
