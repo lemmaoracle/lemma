@@ -25,6 +25,8 @@ export type {
   SchemaMeta,
   NormalizeArtifact,
   CircuitMeta,
+  CircuitVerifier,
+  ProofAlgId,
   GeneratorMeta,
   RegisterDocumentRequest,
   RegisterDocumentResponse,

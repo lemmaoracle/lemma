@@ -45,10 +45,13 @@ export type CircuitArtifactLocation = Readonly<{
   zkey: string;
 }>;
 
+export type ProofAlgId = "groth16-bn254-snarkjs"; // snarkjs — pA/pB/pC + uint[N] pubSignals
+
 export type CircuitVerifier = Readonly<{
   type: "onchain" | "offchain";
   address?: string;
   chainId?: number;
+  alg?: ProofAlgId; // ← これだけ
   [k: string]: unknown;
 }>;
 
