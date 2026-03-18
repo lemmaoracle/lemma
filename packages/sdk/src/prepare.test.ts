@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { create } from "./client";
-import { define, getSchemaById } from "./schema";
-import { prepare } from "./prepare";
+import { create } from "./client.js";
+import { define, getSchemaById } from "./schema.js";
+import { prepare } from "./prepare.js";
 
 type Raw = { age: number; country: string };
 type Norm = { age_bucket: string; country: string };
 
 // Mock the schema registry directly for this test
-vi.mock("./schema", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("./schema")>();
+vi.mock("./schema.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./schema.js")>();
   return {
     ...actual,
     // Override getSchemaById to return a mock schema for testing

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { create } from "./client";
+import { create } from "./client.js";
 
 describe("create", () => {
   it("returns a LemmaClient with apiBase and apiKey", () => {

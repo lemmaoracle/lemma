@@ -2,7 +2,7 @@
  * Whitepaper §4.9 — generators.register / generators.getById
  */
 import type { LemmaClient, GeneratorMeta } from "@lemmaoracle/spec";
-import { get, post } from "../http";
+import { get, post } from "../http.js";
 
 export const register = (client: LemmaClient, payload: GeneratorMeta): Promise<GeneratorMeta> =>
   post<GeneratorMeta>(client)("/v1/doc-generators")(payload);

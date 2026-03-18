@@ -2,7 +2,7 @@
  * Whitepaper §4.8 — proofs.submit (terminal operation)
  */
 import type { LemmaClient, SubmitProofRequest, SubmitProofResponse } from "@lemmaoracle/spec";
-import { post } from "../http";
+import { post } from "../http.js";
 
 export const submit = (
   client: LemmaClient,

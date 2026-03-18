@@ -24,7 +24,7 @@ vi.mock("@mlc-ai/web-llm", () => {
   };
 });
 
-import { initParser, parseNaturalQuery, cleanup } from "./query-parser";
+import { initParser, parseNaturalQuery, cleanup } from "./query-parser.js";
 import * as webllm from "@mlc-ai/web-llm";
 
 // Type assertion for the mocked module

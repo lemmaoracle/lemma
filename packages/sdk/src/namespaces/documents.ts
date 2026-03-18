@@ -6,7 +6,7 @@ import type {
   RegisterDocumentRequest,
   RegisterDocumentResponse,
 } from "@lemmaoracle/spec";
-import { post } from "../http";
+import { post } from "../http.js";
 
 export const register = (
   client: LemmaClient,

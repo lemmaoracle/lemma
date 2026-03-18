@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { define, getSchemaById } from "./schema";
+import { define, getSchemaById } from "./schema.js";
 
 // Mock fetch and WebAssembly
 global.fetch = vi.fn();

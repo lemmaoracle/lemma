@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { create } from "./client";
+import { create } from "./client.js";
 import { initializeWasm } from "@docknetwork/crypto-wasm";
 import {
   generateKeyPair,
@@ -10,7 +10,7 @@ import {
   toSelectiveDisclosure,
   payloadToMessages,
   messagesToDisclosedMap,
-} from "./disclose";
+} from "./disclose.js";
 
 describe("disclose", () => {
   // Initialize WASM before running any tests

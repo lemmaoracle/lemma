@@ -4,7 +4,7 @@
  */
 import { createHash, randomBytes } from "node:crypto";
 import type { DocumentCommitments } from "@lemmaoracle/spec";
-import type { Json } from "./internal";
+import type { Json } from "./internal.js";
 import * as R from "ramda";
 
 // BN254 field prime from circomlib (alt_bn128)

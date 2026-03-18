@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import type { LemmaClient } from "@lemmaoracle/spec";
-import { get, post } from "./http";
+import { get, post } from "./http.js";
 
 const makeMockClient = (response: { status: number; body: unknown }): LemmaClient => ({
   apiBase: "http://localhost:8787",

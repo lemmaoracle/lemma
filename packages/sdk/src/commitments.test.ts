@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized } from "./commitments";
-import type { Json } from "./internal";
+import { commitNormalized } from "./commitments.js";
+import type { Json } from "./internal.js";
 import * as R from "ramda";
 
 describe("commitments", () => {

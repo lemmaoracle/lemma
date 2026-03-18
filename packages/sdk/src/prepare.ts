@@ -3,10 +3,10 @@
 * Whitepaper §4.5 — Normalization + Commitment Preparation.
 */
 import type { LemmaClient } from "@lemmaoracle/spec";
-import type { Json } from "./internal";
-import { reject } from "./internal";
-import { commitNormalized, type PrepareOutput } from "./commitments";
-import { getSchemaById } from "./schema";
+import type { Json } from "./internal.js";
+import { reject } from "./internal.js";
+import { commitNormalized, type PrepareOutput } from "./commitments.js";
+import { getSchemaById } from "./schema.js";
 
 export type PrepareInput<Raw> = Readonly<{
   schema: string;

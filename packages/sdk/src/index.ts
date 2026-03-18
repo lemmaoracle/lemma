@@ -3,20 +3,20 @@
  *
  * Whitepaper §4.11 — API Summary.
  */
-export { create } from "./client";
-export { define } from "./schema";
-export { encrypt, decrypt } from "./crypto";
-export { prepare } from "./prepare";
-export * as disclose from "./disclose";
-export * as prover from "./prover";
-export * as queryParser from "./query-parser";
+export { create } from "./client.js";
+export { define } from "./schema.js";
+export { encrypt, decrypt } from "./crypto.js";
+export { prepare } from "./prepare.js";
+export * as disclose from "./disclose.js";
+export * as prover from "./prover.js";
+export * as queryParser from "./query-parser.js";
 
-export * as documents from "./namespaces/documents";
-export * as proofs from "./namespaces/proofs";
-export * as schemas from "./namespaces/schemas";
-export * as circuits from "./namespaces/circuits";
-export * as generators from "./namespaces/generators";
-export * as attributes from "./namespaces/attributes";
+export * as documents from "./namespaces/documents.js";
+export * as proofs from "./namespaces/proofs.js";
+export * as schemas from "./namespaces/schemas.js";
+export * as circuits from "./namespaces/circuits.js";
+export * as generators from "./namespaces/generators.js";
+export * as attributes from "./namespaces/attributes.js";
 
 /* Re-export spec types for convenience */
 export type {

@@ -7,8 +7,8 @@ import type {
   VerifiedAttributesQueryRequest,
   VerifiedAttributesQueryResponse,
 } from "@lemmaoracle/spec";
-import { post } from "../http";
-import { parseNaturalQuery } from "../query-parser";
+import { post } from "../http.js";
+import { parseNaturalQuery } from "../query-parser.js";
 
 const processNaturalQuery = async (
   client: LemmaClient,

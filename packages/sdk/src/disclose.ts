@@ -21,7 +21,7 @@ import {
   generateChallengeFromBytes,
 } from "@docknetwork/crypto-wasm";
 import type { LemmaClient, SelectiveDisclosure } from "@lemmaoracle/spec";
-import { reject } from "./internal";
+import { reject } from "./internal.js";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */

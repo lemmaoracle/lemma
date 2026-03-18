@@ -9,7 +9,7 @@ import * as snarkjsModule from "snarkjs";
 import { createHash } from "node:crypto";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
-import { reject, resolveFetch } from "./internal";
+import { reject, resolveFetch } from "./internal.js";
 import type { CircuitMeta } from "@lemmaoracle/spec";
 
 /* ------------------------------------------------------------------ */

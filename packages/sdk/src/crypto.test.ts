@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { create } from "./client";
-import { encrypt, decrypt } from "./crypto";
+import { create } from "./client.js";
+import { encrypt, decrypt } from "./crypto.js";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { bytesToHex } from "@noble/hashes/utils";
 

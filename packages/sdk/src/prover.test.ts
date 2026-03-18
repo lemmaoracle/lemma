@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { create } from "./client";
-import { prove } from "./prover";
+import { create } from "./client.js";
+import { prove } from "./prover.js";
 
 describe("prover.prove", () => {
   beforeEach(() => {
