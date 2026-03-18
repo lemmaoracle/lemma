@@ -8,9 +8,19 @@
  * Whitepaper reference: §4.10 — Verified Attributes Query
  */
 
-import * as webllm from "@mlc-ai/web-llm";
+import type { MLCEngine, InitProgressCallback, ResponseFormat } from "@mlc-ai/web-llm";
 import * as R from "ramda";
 import type { VerifiedAttributesQueryRequest } from "@lemmaoracle/spec";
+
+type WebLLM = typeof import("@mlc-ai/web-llm");
+
+let _webllm: WebLLM | null = null;
+
+const loadWebLLM = async (): Promise<WebLLM> => {
+  if (_webllm) return _webllm;
+  _webllm = await import("@mlc-ai/web-llm");
+  return _webllm;
+};
 
 // JSON Schema for structured query output
 // Matches what the server expects: Array<{ name: string; value: unknown }>
@@ -51,7 +61,7 @@ const querySchema = {
 
 // Immutable state
 type ParserState = Readonly<{
-  engine: webllm.MLCEngine | null;
+  engine: MLCEngine | null;
 }>;
 
 const createInitialState = (): ParserState => ({
@@ -69,8 +79,9 @@ const createParserInstance = () => {
 
   const createEngine = async (
     modelId?: string,
-    progressCallback?: webllm.InitProgressCallback,
-  ): Promise<webllm.MLCEngine> => {
+    progressCallback?: InitProgressCallback,
+  ): Promise<MLCEngine> => {
+    const webllm = await loadWebLLM();
     const engine = await webllm.CreateMLCEngine(
       R.defaultTo("Phi-3.5-mini-instruct-q4f16_1-MLC", modelId),
       { initProgressCallback: progressCallback },
@@ -80,8 +91,8 @@ const createParserInstance = () => {
 
   const getOrCreateEngine = async (
     modelId?: string,
-    progressCallback?: webllm.InitProgressCallback,
-  ): Promise<webllm.MLCEngine> => {
+    progressCallback?: InitProgressCallback,
+  ): Promise<MLCEngine> => {
     return R.ifElse(
       () => R.isNil(state.engine),
       async () => {
@@ -89,13 +100,13 @@ const createParserInstance = () => {
         updateState({ ...state, engine });
         return engine;
       },
-      async () => state.engine as webllm.MLCEngine,
+      async () => state.engine as MLCEngine,
     )();
   };
 
   const initParser = async (
     modelId?: string,
-    progressCallback?: webllm.InitProgressCallback,
+    progressCallback?: InitProgressCallback,
   ): Promise<void> => {
     await getOrCreateEngine(modelId, progressCallback);
   };
@@ -136,7 +147,7 @@ Examples:
       response_format: {
         type: "json_object",
         schema,
-      } as webllm.ResponseFormat,
+      } as ResponseFormat,
     });
 
     const content = R.pathOr("", ["choices", 0, "message", "content"], response);
@@ -155,7 +166,7 @@ Examples:
       () => R.isNil(state.engine),
       async () => {},
       async () => {
-        await (state.engine as webllm.MLCEngine).unload();
+        await (state.engine as MLCEngine).unload();
         updateState(createInitialState());
       },
     )();
