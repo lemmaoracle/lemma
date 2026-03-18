@@ -1,8 +1,8 @@
 /**
  * Example: Natural Language Query Parsing with Lemma SDK
  *
- * Demonstrates client-side natural language query parsing using @mlc-ai/web-llm
- * with grammar-constrained JSON output.
+ * Demonstrates natural language query parsing using @huggingface/transformers.
+ * Works in both browser (onnxruntime-web) and Node.js (onnxruntime-node).
  */
 
 import * as R from "ramda";
@@ -21,8 +21,8 @@ async function demonstrateNaturalLanguageQuery() {
 
     // Example 1: Initialize parser with progress callback
     console.log("1. Initializing query parser...");
-    await queryParser.init("Phi-3.5-mini-instruct-q4f16_1-MLC", (progress) => {
-      console.log(`   Model loading: ${(progress.progress * 100).toFixed(1)}%`);
+    await queryParser.init("onnx-community/Qwen3-0.6B-ONNX", (progress) => {
+      console.log(`   Model loading: ${progress.status}${progress.progress ? ` ${(progress.progress * 100).toFixed(1)}%` : ""}`);
     });
     console.log("   ✓ Parser initialized\n");
 
@@ -71,8 +71,8 @@ async function demonstrateNaturalLanguageQuery() {
     console.log("=== Demo Complete ===");
     console.log("\nSummary:");
     console.log("- Natural language queries are parsed client-side");
-    console.log("- Uses @mlc-ai/web-llm with WebGPU acceleration");
-    console.log("- Grammar-constrained output guarantees valid JSON");
+    console.log("- Uses @huggingface/transformers (Transformers.js v3)");
+    console.log("- Works in both browser and Node.js environments");
     console.log("- No server-side query parsing required (privacy-preserving)");
     console.log("- Lazy loading: Model only loads on first natural query");
   } catch (error) {
@@ -80,10 +80,9 @@ async function demonstrateNaturalLanguageQuery() {
   }
 }
 
-// Note: This example requires a browser environment with WebGPU support
-// To run in Node.js, you would need a different setup
-console.log("Note: This example is designed for browser environments.");
-console.log("It uses @mlc-ai/web-llm which requires WebGPU support.\n");
+// Note: This example works in both browser and Node.js environments
+console.log("Note: This example uses @huggingface/transformers.");
+console.log("It works in both browser (onnxruntime-web) and Node.js (onnxruntime-node).\n");
 
 // Export for documentation purposes
 export { demonstrateNaturalLanguageQuery };

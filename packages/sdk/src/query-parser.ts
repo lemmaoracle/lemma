@@ -1,29 +1,17 @@
 /**
  * Natural Language Query Parser for Lemma SDK
  *
- * Uses @mlc-ai/web-llm with grammar-constrained JSON output to parse
- * natural language queries like "users over 18 in Japan" into structured
- * query format for the attributes.query API.
+ * Uses @huggingface/transformers (Transformers.js v3) to parse
+ * natural language queries into structured query format.
+ * Works in both browser (onnxruntime-web) and Node.js (onnxruntime-node).
  *
  * Whitepaper reference: §4.10 — Verified Attributes Query
  */
 
-import type { MLCEngine, InitProgressCallback, ResponseFormat } from "@mlc-ai/web-llm";
 import * as R from "ramda";
 import type { VerifiedAttributesQueryRequest } from "@lemmaoracle/spec";
 
-type WebLLM = typeof import("@mlc-ai/web-llm");
-
-let _webllm: WebLLM | null = null;
-
-const loadWebLLM = async (): Promise<WebLLM> => {
-  if (_webllm) return _webllm;
-  _webllm = await import("@mlc-ai/web-llm");
-  return _webllm;
-};
-
-// JSON Schema for structured query output
-// Matches what the server expects: Array<{ name: string; value: unknown }>
+// The query schema definition — matches what the server expects
 const querySchema = {
   type: "object",
   properties: {
@@ -59,56 +47,92 @@ const querySchema = {
   required: ["attributes"],
 } as const;
 
+// Type for the transformers module
+type TransformersModule = typeof import("@huggingface/transformers");
+
+// Type for progress callback (compatible with transformers.js progress events)
+type ProgressCallback = (progress: {
+  status: string;
+  progress?: number;
+  file?: string;
+}) => void;
+
 // Immutable state
 type ParserState = Readonly<{
-  engine: MLCEngine | null;
+  generator: any | null; // TextGenerationPipeline
 }>;
 
 const createInitialState = (): ParserState => ({
-  engine: null,
+  generator: null,
 });
+
+const DEFAULT_MODEL = "onnx-community/Qwen3-0.6B-ONNX";
 
 // State is managed within a closure for encapsulation
 const createParserInstance = () => {
   let state: ParserState = createInitialState();
+  let _transformers: TransformersModule | null = null;
+
+  const loadTransformers = async (): Promise<TransformersModule> => {
+    if (_transformers) return _transformers;
+    _transformers = await import("@huggingface/transformers");
+    return _transformers;
+  };
 
   const updateState = (newState: ParserState): ParserState => {
     state = newState;
     return state;
   };
 
-  const createEngine = async (
+  const createGenerator = async (
     modelId?: string,
-    progressCallback?: InitProgressCallback,
-  ): Promise<MLCEngine> => {
-    const webllm = await loadWebLLM();
-    const engine = await webllm.CreateMLCEngine(
-      R.defaultTo("Phi-3.5-mini-instruct-q4f16_1-MLC", modelId),
-      { initProgressCallback: progressCallback },
+    progressCallback?: ProgressCallback,
+  ) => {
+    const transformers = await loadTransformers();
+    const generator = await transformers.pipeline(
+      "text-generation",
+      R.defaultTo(DEFAULT_MODEL, modelId),
+      {
+        dtype: "q4" as any,
+        ...(progressCallback ? { progress_callback: progressCallback } : {}),
+      },
     );
-    return engine;
+    return generator;
   };
 
-  const getOrCreateEngine = async (
+  const getOrCreateGenerator = async (
     modelId?: string,
-    progressCallback?: InitProgressCallback,
-  ): Promise<MLCEngine> => {
+    progressCallback?: ProgressCallback,
+  ) => {
     return R.ifElse(
-      () => R.isNil(state.engine),
+      () => R.isNil(state.generator),
       async () => {
-        const engine = await createEngine(modelId, progressCallback);
-        updateState({ ...state, engine });
-        return engine;
+        const generator = await createGenerator(modelId, progressCallback);
+        updateState({ ...state, generator });
+        return generator;
       },
-      async () => state.engine as MLCEngine,
+      async () => state.generator,
     )();
   };
 
   const initParser = async (
     modelId?: string,
-    progressCallback?: InitProgressCallback,
+    progressCallback?: ProgressCallback,
   ): Promise<void> => {
-    await getOrCreateEngine(modelId, progressCallback);
+    await getOrCreateGenerator(modelId, progressCallback);
+  };
+
+  // Extract JSON from model output (handle markdown code blocks, etc.)
+  const extractJSON = (text: string): string => {
+    // Try to find JSON in code blocks first
+    const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (codeBlockMatch?.[1]) return codeBlockMatch[1].trim();
+
+    // Try to find raw JSON object
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return jsonMatch[0];
+
+    return text.trim();
   };
 
   const parseNaturalQuery = async (
@@ -118,56 +142,70 @@ const createParserInstance = () => {
       attributes: Array<{ name: string; value: unknown }>;
     }
   > => {
-    const engine = await getOrCreateEngine();
-
+    const generator = await getOrCreateGenerator();
     const schema = JSON.stringify(querySchema);
-    const prompt = `
-You are a query parser. Convert the natural language query into a structured query format.
+
+    const prompt = `You are a query parser. Convert the natural language query into a structured query format.
 Return ONLY valid JSON matching the schema below. Do not include any explanation.
+
+Schema: ${schema}
 
 Natural query: "${naturalQuery}"
 
 Examples:
-- "users over 18 in Japan" → { attributes: [{ name: "age", operator: "gt", value: 18 }, { name: "country", operator: "eq", value: "Japan" }] }
-- "verified documents from Alice" → { attributes: [{ name: "issuerId", operator: "eq", value: "Alice" }], proof: { required: true } }
-- "people in USA or Canada with age 21 or older" → { attributes: [{ name: "country", operator: "in", value: ["USA", "Canada"] }, { name: "age", operator: "gte", value: 21 }] }
-- "employees with salary greater than 50000" → { attributes: [{ name: "salary", operator: "gt", value: 50000 }] }
-`;
+- "users over 18 in Japan" → {"attributes":[{"name":"age","operator":"gt","value":18},{"name":"country","operator":"eq","value":"Japan"}]}
+- "verified documents from Alice" → {"attributes":[{"name":"issuerId","operator":"eq","value":"Alice"}],"proof":{"required":true}}
+- "people in USA or Canada with age 21 or older" → {"attributes":[{"name":"country","operator":"in","value":["USA","Canada"]},{"name":"age","operator":"gte","value":21}]}
 
-    const response = await engine.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are a query parser that outputs valid JSON matching the provided schema.",
-        },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 512,
-      temperature: 0,
-      response_format: {
-        type: "json_object",
-        schema,
-      } as ResponseFormat,
-    });
+JSON output:`;
 
-    const content = R.pathOr("", ["choices", 0, "message", "content"], response);
+    const MAX_ATTEMPTS = 2;
 
-    return R.when(
-      R.isEmpty,
-      () => {
-        throw new Error("LLM response content is empty");
-      },
-      () => JSON.parse(content),
-    )();
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      const output = await generator(prompt, {
+        max_new_tokens: 512,
+        temperature: 0,
+        return_full_text: false,
+      });
+
+      const content = R.pathOr("", [0, "generated_text"], output);
+
+      try {
+        const jsonStr = extractJSON(content);
+        const parsed = JSON.parse(jsonStr);
+
+        if (R.isNil(parsed.attributes) || !Array.isArray(parsed.attributes)) {
+          throw new Error("Missing or invalid 'attributes' array");
+        }
+
+        return parsed;
+      } catch (e) {
+        if (attempt === MAX_ATTEMPTS - 1) {
+          throw new Error(
+            `Failed to parse LLM response as valid query JSON after ${MAX_ATTEMPTS} attempts: ${(e as Error).message}`,
+          );
+        }
+      }
+    }
+
+    // Unreachable, but TypeScript needs it
+    throw new Error("Unexpected: exhausted all parse attempts");
   };
 
   const cleanup = async (): Promise<void> => {
     return R.ifElse(
-      () => R.isNil(state.engine),
+      () => R.isNil(state.generator),
       async () => {},
       async () => {
-        await (state.engine as MLCEngine).unload();
+        try {
+          if (state.generator?.dispose) {
+            await state.generator.dispose();
+          }
+        } catch {
+          // Ignore disposal errors
+        }
         updateState(createInitialState());
+        _transformers = null;
       },
     )();
   };
