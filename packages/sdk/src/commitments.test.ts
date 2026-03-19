@@ -31,9 +31,6 @@ describe("commitments", () => {
     it("produces deterministic leaves for same input", async () => {
       const normalized = { x: 123, y: true, z: "text" };
 
-      // Two calls with same randomness should produce identical outputs
-      // We'll mock randomBytes to control randomness, but for now test that
-      // structure is consistent
       const result1 = await commitNormalized(normalized);
       const result2 = await commitNormalized(normalized);
 
@@ -118,6 +115,74 @@ describe("commitments", () => {
       // But we can check structure consistency
       expect(result1.leaves).toHaveLength(3);
       expect(result2.leaves).toHaveLength(3);
+    });
+  });
+
+  describe("inclusionProofs", () => {
+    it("returns one proof per leaf", async () => {
+      const normalized = { a: "1", b: "2", c: "3" };
+      const result = await commitNormalized(normalized);
+
+      expect(result.inclusionProofs).toHaveLength(3);
+    });
+
+    it("returns empty siblings/indices for single-leaf tree", async () => {
+      const result = await commitNormalized({ only: "one" });
+
+      expect(result.inclusionProofs).toHaveLength(1);
+      expect(result.inclusionProofs[0]?.siblings).toEqual([]);
+      expect(result.inclusionProofs[0]?.indices).toEqual([]);
+    });
+
+    it("returns correct depth for multi-leaf tree", async () => {
+      // 3 leaves → padded to 4 → depth 2
+      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+
+      result.inclusionProofs.forEach((proof) => {
+        expect(proof.siblings).toHaveLength(2);
+        expect(proof.indices).toHaveLength(2);
+      });
+
+      // All siblings should be valid hex
+      result.inclusionProofs.forEach((proof) => {
+        proof.siblings.forEach((s) => expect(s).toMatch(/^0x[0-9a-f]+$/));
+      });
+
+      // Indices should be 0 or 1
+      result.inclusionProofs.forEach((proof) => {
+        proof.indices.forEach((i) => expect([0, 1]).toContain(i));
+      });
+    });
+  });
+
+  describe("leafPreimages", () => {
+    it("returns one preimage per leaf with correct attribute names", async () => {
+      const normalized = { task_bucket: "field_ops", area_bucket: "east" };
+      const result = await commitNormalized(normalized);
+
+      expect(result.leafPreimages).toHaveLength(2);
+
+      // Keys are sorted, so area_bucket comes first
+      expect(result.leafPreimages[0]?.name).toBe("area_bucket");
+      expect(result.leafPreimages[0]?.value).toBe("east");
+      expect(result.leafPreimages[1]?.name).toBe("task_bucket");
+      expect(result.leafPreimages[1]?.value).toBe("field_ops");
+    });
+
+    it("contains valid hex hashes", async () => {
+      const result = await commitNormalized({ key: "value" });
+      const pre = result.leafPreimages[0];
+
+      expect(pre?.nameHash).toMatch(/^0x[0-9a-f]+$/);
+      expect(pre?.valueHash).toMatch(/^0x[0-9a-f]+$/);
+      expect(pre?.blindingHash).toMatch(/^0x[0-9a-f]+$/);
+    });
+
+    it("shares the same blindingHash across all leaves", async () => {
+      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+      const blindings = result.leafPreimages.map((p) => p.blindingHash);
+
+      expect(new Set(blindings).size).toBe(1);
     });
   });
 });

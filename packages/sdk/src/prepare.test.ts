@@ -60,4 +60,33 @@ describe("prepare", () => {
       "Unknown schemaId",
     );
   });
+
+  it("returns inclusionProofs aligned with leaves", async () => {
+    const result = await prepare<Raw, Norm>(client, {
+      schema: "test:prepare-kyc",
+      payload: { age: 25, country: "JP" },
+    });
+
+    // 2 attributes → 2 leaves → 2 proofs
+    expect(result.inclusionProofs).toHaveLength(2);
+    // depth = ceil(log2(2)) = 1
+    result.inclusionProofs.forEach((proof) => {
+      expect(proof.siblings).toHaveLength(1);
+      expect(proof.indices).toHaveLength(1);
+    });
+  });
+
+  it("returns leafPreimages with correct attribute names", async () => {
+    const result = await prepare<Raw, Norm>(client, {
+      schema: "test:prepare-kyc",
+      payload: { age: 25, country: "JP" },
+    });
+
+    expect(result.leafPreimages).toHaveLength(2);
+    // Sorted: age_bucket < country
+    expect(result.leafPreimages[0]?.name).toBe("age_bucket");
+    expect(result.leafPreimages[0]?.value).toBe("adult");
+    expect(result.leafPreimages[1]?.name).toBe("country");
+    expect(result.leafPreimages[1]?.value).toBe("JP");
+  });
 });
