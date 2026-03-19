@@ -2,6 +2,8 @@
  * @lemmaoracle/sdk — Public API surface.
  *
  * Whitepaper §4.11 — API Summary.
+ *
+ * Note: Natural language query parsing has been extracted to @lemmaoracle/parser.
  */
 export { create } from "./client.js";
 export { define } from "./schema.js";
@@ -9,7 +11,6 @@ export { encrypt, decrypt } from "./crypto.js";
 export { prepare } from "./prepare.js";
 export * as disclose from "./disclose.js";
 export * as prover from "./prover.js";
-export * as queryParser from "./query-parser.js";
 
 export * as documents from "./namespaces/documents.js";
 export * as proofs from "./namespaces/proofs.js";

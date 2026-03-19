@@ -4,6 +4,7 @@
 
 - `packages/spec` — **Authoritative** shared interface types + OpenAPI spec.
 - `packages/sdk` — TypeScript SDK (functional style, `@lemmaoracle/sdk`).
+- `packages/parser` — Natural language query parser (`@lemmaoracle/parser`). Standalone package.
 - `packages/contracts` — Solidity smart contracts (`LemmaRegistry`).
 
 ## Non-negotiable rules
