@@ -220,10 +220,9 @@ export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<
         const params = bbsPlusGenerateSignatureParamsG1(input.messages.length, input.header);
 
         // Build revealed messages map for the challenge contribution
-        const revealedMsgs = new Map<number, Uint8Array>();
-        for (const idx of input.indexes) {
-          revealedMsgs.set(idx, scalars[idx]!);
-        }
+        const revealedMsgs = new Map<number, Uint8Array>(
+          R.map((idx: number) => [idx, scalars[idx] ?? new Uint8Array()] as const, [...input.indexes]),
+        );
 
         // Initialize proof of knowledge protocol with empty blindings
         const protocol = bbsPlusInitializeProofOfKnowledgeOfSignature(
@@ -268,14 +267,13 @@ export const verifyProof = async (
   R.pipe(encodeMessages, (disclosedScalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(input.count, input.header);
 
-    const revealedMsgs = new Map<number, Uint8Array>();
-
     // Populate revealed messages map
-    for (let i = 0; i < input.indexes.length; i++) {
-      const idx = input.indexes[i]!;
-      const scalar = disclosedScalars[i]!;
-      revealedMsgs.set(idx, scalar);
-    }
+    const revealedMsgs = new Map<number, Uint8Array>(
+      R.addIndex<number, readonly [number, Uint8Array]>(R.map)(
+        (idx: number, i: number) => [idx, disclosedScalars[i] ?? new Uint8Array()] as const,
+        [...input.indexes],
+      ),
+    );
 
     // Generate challenge from proof
     const challengeVerifier = generateChallengeFromBytes(

@@ -74,11 +74,11 @@ export const GradientImage: React.FC<GradientImageProps> = ({
             const hue2 = (hash + 60) % 360;
 
             // SVG グラデーションを生成
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${String(width)}" height="${String(height)}" viewBox="0 0 ${String(width)} ${String(height)}">
               <defs>
                 <radialGradient id="grad">
-                  <stop offset="0%" stop-color="hsl(${hue1}, 70%, 80%)" />
-                  <stop offset="100%" stop-color="hsl(${hue2}, 70%, 60%)" />
+                  <stop offset="0%" stop-color="hsl(${String(hue1)}, 70%, 80%)" />
+                  <stop offset="100%" stop-color="hsl(${String(hue2)}, 70%, 60%)" />
                 </radialGradient>
               </defs>
               <rect width="100%" height="100%" fill="url(#grad)" />
@@ -89,7 +89,7 @@ export const GradientImage: React.FC<GradientImageProps> = ({
       setImageSrc(result);
     };
 
-    generateGradient();
+    void generateGradient();
   }, [seed, width, height, options]);
 
   return (

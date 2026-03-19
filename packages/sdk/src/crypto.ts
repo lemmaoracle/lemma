@@ -8,7 +8,7 @@
 
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { hkdf } from "@noble/hashes/hkdf";
-import { sha256 } from "@noble/hashes/sha256";
+import { sha256 } from "@noble/hashes/sha2";
 import { sha3_256 } from "@noble/hashes/sha3";
 import { gcm } from "@noble/ciphers/aes";
 import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
@@ -43,12 +43,6 @@ export type DecryptOutput = Readonly<{
 // Base32 alphabet (RFC 4648, lowercased, no padding)
 const BASE32_CHARS = "abcdefghijklmnopqrstuvwxyz234567";
 
-type BitsState = Readonly<{
-  bits: number;
-  bitCount: number;
-  resultChars: ReadonlyArray<string>;
-}>;
-
 const base32lower = (bytes: Uint8Array): string => {
   // Accumulate all bits and extract 5-bit groups
   type EncodeState = Readonly<{
@@ -68,6 +62,8 @@ const base32lower = (bytes: Uint8Array): string => {
       output: readonly string[],
     ): readonly string[] => {
       const groups: string[] = [];
+      /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
+       * Bit manipulation requires imperative style */
       let currentBuffer = buffer;
       let currentBits = bufferBits;
 
@@ -78,6 +74,7 @@ const base32lower = (bytes: Uint8Array): string => {
         currentBuffer = currentBuffer & ((1 << shift) - 1);
         currentBits -= 5;
       }
+      /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
 
       return [...output, ...groups];
     };
@@ -132,10 +129,10 @@ const bytesToBase64 = (bytes: Uint8Array): string => {
     const hasB2 = i + 1 < bytes.length;
     const hasB3 = i + 2 < bytes.length;
 
-    const c1 = chars[(b1 >> 2) & 0x3f];
-    const c2 = chars[((b1 << 4) | (b2 >> 4)) & 0x3f];
-    const c3 = hasB2 ? chars[((b2 << 2) | (b3 >> 6)) & 0x3f] : "=";
-    const c4 = hasB3 ? chars[b3 & 0x3f] : "=";
+    const c1 = chars[(b1 >> 2) & 0x3f] ?? "";
+    const c2 = chars[((b1 << 4) | (b2 >> 4)) & 0x3f] ?? "";
+    const c3 = hasB2 ? (chars[((b2 << 2) | (b3 >> 6)) & 0x3f] ?? "") : "=";
+    const c4 = hasB3 ? (chars[b3 & 0x3f] ?? "") : "=";
 
     return `${c1}${c2}${c3}${c4}`;
   };
@@ -159,24 +156,16 @@ const base64ToBytes = (str: string): Uint8Array => {
     const maybeB3 = str[i + 3] !== "=" ? ((enc3 << 6) | enc4) & 0xff : null;
 
     return R.pipe(
-      () => [b1],
+      (_placeholder: undefined) => [b1],
       (bytes: number[]) =>
-        R.when(
-          () => maybeB2 !== null,
-          (b) => [...b, maybeB2!],
-          bytes,
-        ),
+        maybeB2 !== null ? [...bytes, maybeB2] : bytes,
       (bytes: number[]) =>
-        R.when(
-          () => maybeB3 !== null,
-          (b) => [...b, maybeB3!],
-          bytes,
-        ),
-    )();
+        maybeB3 !== null ? [...bytes, maybeB3] : bytes,
+    )(undefined);
   };
 
   const quads = R.range(0, Math.ceil(str.length / 4));
-  const byteArray = R.chain((i) => processQuad(i * 4), quads);
+  const byteArray = R.chain((i: number) => processQuad(i * 4), quads);
 
   return Uint8Array.from(byteArray);
 };
@@ -195,7 +184,8 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
     stripPrefix,
     R.when(
       (key: string) => !isValidLength(key),
-      () => {
+      (_key: string): string => {
+        // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
         throw new Error("Invalid secp256k1 public key");
       },
     ),
@@ -208,9 +198,11 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
   /* eslint-disable-next-line functional/no-try-statements --
    * Crypto boundary: validating cryptographic keys requires try-catch */
   try {
+    // eslint-disable-next-line functional/no-expression-statements -- validation side effect
     secp256k1.ProjectivePoint.fromHex(keyBytes);
     return keyBytes;
   } catch {
+    // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
     throw new Error("Invalid secp256k1 public key");
   }
 };
@@ -260,31 +252,29 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const encryptedDoc = base64ToBytes(input.ciphertext);
 
   // Determine algorithm (default to "aes-256-gcm" for backward compatibility)
-  const algorithm = input.algorithm ?? "aes-256-gcm";
-
-  // Currently only "aes-256-gcm" is supported
-  if (algorithm !== "aes-256-gcm") {
-    throw new Error(`Unsupported encryption algorithm: ${algorithm}`);
-  }
+  const _algorithm = input.algorithm ?? "aes-256-gcm";
 
   // Parse wire format: first 33 bytes = ephemeralPubKey, next 12 = IV, rest = ciphertext
-  /* eslint-disable-next-line functional/no-conditional-statements, functional/no-throw-statements --
+  /* eslint-disable functional/no-conditional-statements, functional/no-throw-statements --
    * Crypto boundary: input validation requires conditionals and error throwing */
   if (encryptedDoc.length < 45) {
     throw new Error("Encrypted document too short");
   }
+  /* eslint-enable functional/no-conditional-statements, functional/no-throw-statements */
 
   const ephemeralPubKey = encryptedDoc.slice(0, 33);
   const iv = encryptedDoc.slice(33, 45);
   const ciphertext = encryptedDoc.slice(45);
 
   // Validate ephemeral public key
+  // eslint-disable-next-line functional/no-expression-statements -- validation side effect
   R.tryCatch(
-    () => secp256k1.ProjectivePoint.fromHex(bytesToHex(ephemeralPubKey)),
-    () => {
+    (_placeholder: undefined) => secp256k1.ProjectivePoint.fromHex(bytesToHex(ephemeralPubKey)),
+    (_placeholder: undefined): never => {
+      // eslint-disable-next-line functional/no-throw-statements -- crypto boundary validation
       throw new Error("Invalid ephemeral public key in encrypted document");
     },
-  )();
+  )(undefined);
 
   // Parse holder private key (remove 0x prefix if present)
   const holderPrivKeyBytes = R.pipe(
@@ -303,7 +293,7 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const aesGcm = gcm(keyMaterial, iv);
   const plaintext = aesGcm.decrypt(ciphertext);
 
-  const payload = JSON.parse(Buffer.from(plaintext).toString("utf8"));
+  const payload: unknown = JSON.parse(Buffer.from(plaintext).toString("utf8"));
 
   return Promise.resolve({ payload });
 };

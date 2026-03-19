@@ -4,10 +4,9 @@
  * Production uses snarkjs with wasm/zkey resolved from circuit metadata
  * artifact.location. Falls back to SHA-256 hashing when artifacts are unavailable.
  */
-// @ts-ignore - snarkjs is installed but may not be found during build
+// @ts-expect-error - snarkjs is installed but may not be found during build
 import * as snarkjsModule from "snarkjs";
 import { createHash } from "node:crypto";
-import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { reject, resolveFetch } from "./internal.js";
 import type { CircuitMeta } from "@lemmaoracle/spec";
@@ -82,7 +81,7 @@ const sha256Base64 = (s: string): string => createHash("sha256").update(s).diges
  * Generate a proof using snarkjs groth16.fullProve.
  * Returns { proof, publicSignals } from snarkjs.
  */
-const generateSnarkjsProof = async (
+const generateSnarkjsProof = (
   witness: Readonly<Record<string, unknown>>,
   wasmBuf: Uint8Array,
   zkeyBuf: Uint8Array,
@@ -90,7 +89,7 @@ const generateSnarkjsProof = async (
   proof: unknown;
   publicSignals: string[];
 }> => {
-  const snarkjs = snarkjsModule;
+  const snarkjs: { groth16: { fullProve: (witness: Readonly<Record<string, unknown>>, wasm: Uint8Array, zkey: Uint8Array) => Promise<{ proof: unknown; publicSignals: string[] }> } } = snarkjsModule as never;
   return snarkjs.groth16.fullProve(witness, wasmBuf, zkeyBuf);
 };
 

@@ -78,12 +78,21 @@ export type ProgressCallback = (progress: {
   file?: string;
 }) => void;
 
+// Pipeline result type
+type TextGenerationResult = ReadonlyArray<Readonly<{ generated_text: string }>>;
+
+// Pipeline type from transformers
+interface TextGenerationPipeline {
+  (prompt: string, options: Readonly<Record<string, unknown>>): Promise<TextGenerationResult>;
+  readonly dispose?: () => Promise<void>;
+}
+
 // Immutable state
 type ParserState = Readonly<{
-  generator: any | null; // TextGenerationPipeline
+  generator: TextGenerationPipeline | null;
 }>;
 
-const createInitialState = (): ParserState => ({
+const createInitialState = (_placeholder?: undefined): ParserState => ({
   generator: null,
 });
 
@@ -91,20 +100,22 @@ const DEFAULT_MODEL = "onnx-community/Qwen3-0.6B-ONNX";
 
 /* ── Parser instance (closure-based encapsulation) ─────────────────── */
 
-const createParserInstance = () => {
+const createParserInstance = (_placeholder?: undefined) => {
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let state: ParserState = createInitialState();
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let _transformers: TransformersModule | null = null;
 
-  const loadTransformers = async (): Promise<TransformersModule> => {
+  const loadTransformers = async (_placeholder?: undefined): Promise<TransformersModule> => {
     // eslint-disable-next-line functional/no-conditional-statements -- guard clause
     if (_transformers) return _transformers;
+    // eslint-disable-next-line functional/no-expression-statements -- assignment side effect
     _transformers = await import("@huggingface/transformers");
     return _transformers;
   };
 
   const updateState = (newState: ParserState): ParserState => {
+    // eslint-disable-next-line functional/no-expression-statements -- closure mutation
     state = newState;
     return state;
   };
@@ -118,32 +129,33 @@ const createParserInstance = () => {
       "text-generation",
       R.defaultTo(DEFAULT_MODEL, modelId),
       {
-        dtype: "q4" as any,
+        dtype: "q4" as const,
         ...(progressCallback ? { progress_callback: progressCallback } : {}),
       },
     );
-    return generator;
+    return generator as unknown as TextGenerationPipeline;
   };
 
   const getOrCreateGenerator = async (
     modelId?: string,
     progressCallback?: ProgressCallback,
-  ) => {
-    return R.ifElse(
-      () => R.isNil(state.generator),
-      async () => {
+  ): Promise<TextGenerationPipeline> =>
+    R.ifElse(
+      (_placeholder: undefined) => R.isNil(state.generator),
+      async (_placeholder: undefined) => {
         const generator = await createGenerator(modelId, progressCallback);
+        // eslint-disable-next-line functional/no-expression-statements -- state update
         updateState({ ...state, generator });
         return generator;
       },
-      async () => state.generator,
-    )();
-  };
+      (_placeholder: undefined) => Promise.resolve(state.generator as TextGenerationPipeline),
+    )(undefined);
 
   const initParser = async (
     modelId?: string,
     progressCallback?: ProgressCallback,
   ): Promise<void> => {
+    // eslint-disable-next-line functional/no-expression-statements -- initialization side effect
     await getOrCreateGenerator(modelId, progressCallback);
   };
 
@@ -152,9 +164,9 @@ const createParserInstance = () => {
     // Try to find JSON in code blocks first
     const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     return R.cond<[string], string>([
-      [() => codeBlockMatch?.[1] != null, () => codeBlockMatch![1]!.trim()],
-      [() => text.match(/\{[\s\S]*\}/) != null, () => text.match(/\{[\s\S]*\}/)![0]!],
-      [R.T, () => text.trim()],
+      [(_t: string) => codeBlockMatch?.[1] != null, (_t: string) => (codeBlockMatch?.[1] ?? "").trim()],
+      [(_t: string) => text.match(/\{[\s\S]*\}/) != null, (_t: string) => (text.match(/\{[\s\S]*\}/)?.[0]) ?? ""],
+      [R.T, (_t: string) => text.trim()],
     ])(text);
   };
 
@@ -180,22 +192,24 @@ JSON output:`;
 
     const MAX_ATTEMPTS = 2;
 
-    // eslint-disable-next-line functional/no-loop-statements -- retry loop with early return
+    // eslint-disable-next-line functional/no-loop-statements, functional/no-let -- retry loop with early return
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-      const output = await generator(prompt, {
+      const output: TextGenerationResult = await generator(prompt, {
         max_new_tokens: 512,
         temperature: 0,
         return_full_text: false,
       });
 
-      const content = R.pathOr("", [0, "generated_text"], output);
+      const content: string = R.pathOr("", [0, "generated_text"], output) as string;
 
+      // eslint-disable-next-line functional/no-try-statements -- JSON.parse requires try-catch
       try {
         const jsonStr = extractJSON(content);
-        const parsed = JSON.parse(jsonStr);
+        const parsed: unknown = JSON.parse(jsonStr);
+        const parsedObj = parsed as Readonly<{ attributes?: unknown }>;
 
         // eslint-disable-next-line functional/no-conditional-statements -- validation guard
-        if (R.isNil(parsed.attributes) || !Array.isArray(parsed.attributes)) {
+        if (R.isNil(parsedObj.attributes) || !Array.isArray(parsedObj.attributes)) {
           // eslint-disable-next-line functional/no-throw-statements -- validation
           throw new Error("Missing or invalid 'attributes' array");
         }
@@ -206,7 +220,7 @@ JSON output:`;
         if (attempt === MAX_ATTEMPTS - 1) {
           return Promise.reject(
             new Error(
-              `Failed to parse LLM response as valid query JSON after ${MAX_ATTEMPTS} attempts: ${(e as Error).message}`,
+              `Failed to parse LLM response as valid query JSON after ${String(MAX_ATTEMPTS)} attempts: ${(e as Error).message}`,
             ),
           );
         }
@@ -217,24 +231,27 @@ JSON output:`;
     return Promise.reject(new Error("Unexpected: exhausted all parse attempts"));
   };
 
-  const cleanup = async (): Promise<void> => {
-    return R.ifElse(
-      () => R.isNil(state.generator),
-      async () => {},
-      async () => {
+  const cleanup = async (_placeholder?: undefined): Promise<void> =>
+    R.ifElse(
+      (_p: undefined) => R.isNil(state.generator),
+      async (_p: undefined) => {},
+      async (_p: undefined) => {
+        // eslint-disable-next-line functional/no-try-statements -- disposal may fail
         try {
           // eslint-disable-next-line functional/no-conditional-statements -- disposal guard
           if (state.generator?.dispose) {
+            // eslint-disable-next-line functional/no-expression-statements -- disposal side effect
             await state.generator.dispose();
           }
         } catch {
           // Ignore disposal errors
         }
+        // eslint-disable-next-line functional/no-expression-statements -- state reset
         updateState(createInitialState());
+        // eslint-disable-next-line functional/no-expression-statements -- cleanup
         _transformers = null;
       },
-    )();
-  };
+    )(undefined);
 
   return {
     initParser,
