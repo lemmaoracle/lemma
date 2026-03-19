@@ -10,6 +10,18 @@ export type SchemaDef<Raw, Norm> = Readonly<{
   normalize: (raw: Raw) => Norm;
 }>;
 
+/**
+ * Default IPFS gateway for resolving ipfs:// URLs.
+ * Callers can override by providing a custom fetcher that handles IPFS natively.
+ */
+export const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
+
+/**
+ * Convert an IPFS URI to an HTTP gateway URL; pass HTTPS URLs through unchanged.
+ */
+const resolveArtifactUrl = (url: string): string =>
+  url.startsWith("ipfs://") ? `${IPFS_GATEWAY}${url.slice("ipfs://".length)}` : url;
+
 /* eslint-disable functional/immutable-data, functional/no-expression-statements --
 Schema registry is an intentional mutable boundary for schemaId → normalize lookup. */
 const registry: Record<string, SchemaDef<unknown, unknown>> = {};
@@ -17,8 +29,9 @@ const registry: Record<string, SchemaDef<unknown, unknown>> = {};
 export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaDef<Raw, Norm>> => {
   const artifact = schemaMeta.normalize;
 
-  // 1. Download WASM binary
-  const response = await fetch(artifact.artifact.wasm);
+  // 1. Download WASM binary (supports both ipfs:// and https://)
+  const resolvedUrl = resolveArtifactUrl(artifact.artifact.wasm);
+  const response = await fetch(resolvedUrl);
   if (!response.ok) {
     throw new Error(`Failed to download WASM from ${artifact.artifact.wasm}: ${response.status}`);
   }

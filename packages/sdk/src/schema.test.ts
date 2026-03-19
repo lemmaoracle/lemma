@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { define, getSchemaById } from "./schema.js";
+import { define, getSchemaById, IPFS_GATEWAY } from "./schema.js";
 
 // Mock fetch and WebAssembly
 global.fetch = vi.fn();
@@ -68,7 +68,7 @@ describe("define / getSchemaById", () => {
     const schema = await define(schemaMeta);
 
     expect(schema.id).toBe("test:weather-v1");
-    expect(fetch).toHaveBeenCalledWith("ipfs://QmTestWasm");
+    expect(fetch).toHaveBeenCalledWith(`${IPFS_GATEWAY}QmTestWasm`);
     expect(crypto.subtle.digest).toHaveBeenCalledWith("SHA-256", expect.any(Uint8Array));
     expect(WebAssembly.instantiate).toHaveBeenCalledWith(mockWasmBuffer);
 
@@ -151,6 +151,41 @@ describe("define / getSchemaById", () => {
     await expect(define(schemaMeta)).rejects.toThrow(
       "WASM module does not export a 'normalize' function",
     );
+  });
+
+  it("passes HTTPS URLs through unchanged", async () => {
+    const mockWasmBuffer = new ArrayBuffer(10);
+    const mockHashHex = "aabbccdd00112233aabbccdd00112233aabbccdd00112233aabbccdd00112233";
+    const mockHash = `0x${mockHashHex}`;
+
+    (fetch as any).mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(mockWasmBuffer),
+    });
+
+    (crypto.subtle.digest as any).mockResolvedValue(
+      new Uint8Array(mockHashHex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))).buffer,
+    );
+
+    (WebAssembly.instantiate as any).mockResolvedValue({
+      instance: { exports: { normalize: vi.fn(() => "{}") } },
+    });
+
+    const schemaMeta = {
+      id: "test:https-schema",
+      normalize: {
+        artifact: {
+          type: "https" as const,
+          wasm: "https://cdn.example.com/normalize.wasm",
+        },
+        hash: mockHash,
+      },
+    };
+
+    await define(schemaMeta);
+
+    // HTTPS URL must be passed through as-is
+    expect(fetch).toHaveBeenCalledWith("https://cdn.example.com/normalize.wasm");
   });
 
   it("returns undefined for unknown schemaId", () => {
