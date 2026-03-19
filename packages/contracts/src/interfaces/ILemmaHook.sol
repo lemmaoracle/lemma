@@ -11,8 +11,8 @@ interface ILemmaHook {
     bytes32 docHash,
     bytes32 commitmentRoot,
     bytes32 schemaIdHash,
-    address issuer,
-    address subject,
+    bytes32 issuerHash,
+    bytes32 subjectHash,
     bytes32 revocationRoot
   ) external;
 }

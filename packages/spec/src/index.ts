@@ -142,7 +142,9 @@ export type RegisterDocumentRequest = Readonly<{
   schema: string;
   docHash: string;
   cid: string;
+  /** Issuer identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage. */
   issuerId: string;
+  /** Subject/holder identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage. */
   subjectId: string;
   chainId?: number; // Primary chain for document registration (optional)
   attributes?: Readonly<Record<string, unknown>>;

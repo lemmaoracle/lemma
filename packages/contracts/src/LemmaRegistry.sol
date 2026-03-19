@@ -18,8 +18,8 @@ contract LemmaRegistry {
     bytes32 docHash;
     bytes32 commitmentRoot;
     bytes32 schemaIdHash;
-    address issuer;
-    address subject;
+    bytes32 issuerHash;
+    bytes32 subjectHash;
     bytes32 revocationRoot;
     uint256 registeredAt;
   }
@@ -39,8 +39,8 @@ contract LemmaRegistry {
     bytes32 indexed docHash,
     bytes32 commitmentRoot,
     bytes32 indexed schemaIdHash,
-    address indexed issuer,
-    address subject,
+    bytes32 indexed issuerHash,
+    bytes32 subjectHash,
     bytes32 revocationRoot
   );
 
@@ -58,8 +58,8 @@ contract LemmaRegistry {
    * @param docHash            SHA3-256 hash of the encrypted document.
    * @param commitmentRoot     Pedersen/Poseidon commitment root of normalized attributes.
    * @param schemaIdHash       keccak256 of the schemaId string.
-   * @param issuer             Address of the document issuer.
-   * @param subject            Address of the document subject/holder.
+   * @param issuerHash         keccak256 of the issuer identifier (DID, address, etc.).
+   * @param subjectHash        keccak256 of the subject/holder identifier.
    * @param revocationRoot     Merkle root for revocation bitmap.
    * @param hooks              Array of hook contracts to call after registration.
    */
@@ -67,8 +67,8 @@ contract LemmaRegistry {
     bytes32 docHash,
     bytes32 commitmentRoot,
     bytes32 schemaIdHash,
-    address issuer,
-    address subject,
+    bytes32 issuerHash,
+    bytes32 subjectHash,
     bytes32 revocationRoot,
     HookCall[] calldata hooks
   ) external {
@@ -83,13 +83,13 @@ contract LemmaRegistry {
       docHash: docHash,
       commitmentRoot: commitmentRoot,
       schemaIdHash: schemaIdHash,
-      issuer: issuer,
-      subject: subject,
+      issuerHash: issuerHash,
+      subjectHash: subjectHash,
       revocationRoot: revocationRoot,
       registeredAt: block.timestamp
     });
 
-    emit DocumentRegistered(docHash, commitmentRoot, schemaIdHash, issuer, subject, revocationRoot);
+    emit DocumentRegistered(docHash, commitmentRoot, schemaIdHash, issuerHash, subjectHash, revocationRoot);
 
     // Execute hooks (Whitepaper §2.7)
     for (uint256 i = 0; i < hooks.length; i++) {
@@ -100,8 +100,8 @@ contract LemmaRegistry {
             docHash,
             commitmentRoot,
             schemaIdHash,
-            issuer,
-            subject,
+            issuerHash,
+            subjectHash,
             revocationRoot
           )
         {
