@@ -107,8 +107,8 @@ export type InclusionProof = Readonly<{
 export type LeafPreimage = Readonly<{
   /** Attribute name (original string, e.g. "task_bucket") */
   name: string;
-  /** Attribute value (original string representation) */
-  value: string;
+  /** Attribute value (original type preserved: string or number) */
+  value: string | number;
   /** name  encoded as a field element / hash input (hex) */
   nameHash: string;
   /** value encoded as a field element / hash input (hex) */

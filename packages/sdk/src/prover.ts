@@ -129,11 +129,18 @@ export const prove = async (client: LemmaClient, input: ProveInput): Promise<Pro
         return { proof: proofStr, inputs };
       })()
     : // Fallback path (no artifacts)
-      ({
-        proof: sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`),
-        inputs:
-          typeof input.witness.attr_commitment_root === "string"
-            ? [input.witness.attr_commitment_root]
-            : [],
-      } as const);
+      (()=>{
+        console.log("[Lemma SDK] Using fallback SHA-256 mode");
+        const proof = sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`);
+        const inputs = (() => {
+          const commitmentValue = 
+            input.witness.commitmentRoot || 
+            input.witness.attr_commitment_root || 
+            input.witness.commitment_root;
+          console.log("[Lemma SDK] commitment value found:", commitmentValue);
+          return typeof commitmentValue === "string" ? [commitmentValue] : [];
+        })();
+        console.log("[Lemma SDK] Fallback proof hash (first 20 chars):", proof.substring(0, 20));
+        return { proof, inputs } as const;
+      })()
 };

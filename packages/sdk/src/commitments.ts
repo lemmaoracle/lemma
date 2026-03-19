@@ -6,6 +6,7 @@ import { createHash, randomBytes } from "node:crypto";
 import type { DocumentCommitments, InclusionProof, LeafPreimage } from "@lemmaoracle/spec";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
+import { poseidon2, poseidon3 } from "poseidon-lite";
 
 // BN254 field prime from circomlib (alt_bn128)
 const BN254_PRIME = BigInt(
@@ -21,8 +22,22 @@ export type PrepareOutput<Norm> = Readonly<{
   leafPreimages: ReadonlyArray<LeafPreimage>;
 }>;
 
-// Helper: convert string to BN254 field element via SHA-256 mod p
-const encodeToField = (value: string): bigint => {
+// Helper: convert value to BN254 field element
+// Numbers and numeric strings are converted directly, other strings are hashed
+const encodeToField = (value: string | number): bigint => {
+  // Numbers are converted directly to field elements
+  if (typeof value === 'number') {
+    const num = BigInt(value);
+    return num % BN254_PRIME;
+  }
+  
+  // Numeric strings are also converted directly
+  if (/^\d+$/.test(value)) {
+    const num = BigInt(value);
+    return num % BN254_PRIME;
+  }
+  
+  // Other strings are hashed
   const hash = createHash("sha256").update(value).digest("hex");
   const hashBigInt = BigInt(`0x${hash}`);
   return hashBigInt % BN254_PRIME;
@@ -37,7 +52,14 @@ let poseidonInstance: Promise<any> | undefined;
 const getPoseidon = (): Promise<any> =>
   poseidonInstance
     ? poseidonInstance
-    : (poseidonInstance = import("circomlibjs").then(({ buildPoseidon }) => buildPoseidon()));
+    : (poseidonInstance = Promise.resolve({
+        F: {
+          toObject: (n: bigint) => n,
+          fromObject: (n: bigint) => n,
+          zero: 0n,
+          one: 1n,
+        },
+      }));
 
 // ---------------------------------------------------------------------------
 // Leaf computation
@@ -54,7 +76,10 @@ const computeLeaves = async (
   poseidon: any,
 ): Promise<LeafResult> => {
   const sortedKeys = R.keys(normalized).sort();
-  const blindingField = encodeToField(randomness);
+  // randomness is a hex string WITHOUT "0x" prefix (from commitNormalized)
+  // Convert it to field element (snarkjs will do the same with "0x" + randomness)
+  // No modulo reduction - randomness is already in the field
+  const blindingField = BigInt(`0x${randomness}`);
 
   const preimages: LeafPreimage[] = [];
   const leaves: bigint[] = [];
@@ -62,20 +87,24 @@ const computeLeaves = async (
   /* eslint-disable functional/immutable-data, functional/no-expression-statements */
   for (const key of sortedKeys) {
     const value = normalized[key];
-    const valueStr = R.is(String, value) ? value : JSON.stringify(value);
+    // Preserve original type: numbers stay numbers, others become strings
+    const valueForHash = typeof value === 'number' ? value : 
+                         R.is(String, value) ? value : JSON.stringify(value);
+    const valuePreserved = typeof value === 'number' ? value : 
+                          R.is(String, value) ? value : JSON.stringify(value);
     const nameField = encodeToField(key);
-    const valueField = encodeToField(valueStr);
+    const valueField = encodeToField(valueForHash);
 
     preimages.push({
       name: key,
-      value: valueStr,
+      value: valuePreserved as (string | number),
       nameHash: toHex(nameField),
       valueHash: toHex(valueField),
       blindingHash: toHex(blindingField),
-    });
+    } as LeafPreimage);
 
-    const leafField = poseidon([nameField, valueField, blindingField]);
-    leaves.push(poseidon.F.toObject(leafField));
+    const leafField = poseidon3([nameField, valueField, blindingField]);
+    leaves.push(leafField);
   }
   /* eslint-enable functional/immutable-data, functional/no-expression-statements */
 
@@ -99,7 +128,7 @@ const buildMerkleTree = (
 
   // Single leaf — root equals the leaf, proof is empty
   if (leafCount === 1) {
-    const leaf = leaves[0] ?? poseidon.F.toObject(poseidon.F.zero);
+    const leaf = leaves[0] ?? 0n;
     return {
       root: leaf,
       inclusionProofs: [{ siblings: [], indices: [] }],
@@ -109,7 +138,7 @@ const buildMerkleTree = (
   // Pad to next power of 2
   const depth = Math.ceil(Math.log2(leafCount));
   const size = Math.pow(2, depth);
-  const zero = poseidon.F.toObject(poseidon.F.zero);
+  const zero = 0n;
   const padded: bigint[] = [...leaves, ...R.repeat(zero, size - leafCount)];
 
   // Build layers bottom-up, storing each level for proof extraction
@@ -120,8 +149,10 @@ const buildMerkleTree = (
   while (current.length > 1) {
     const next: bigint[] = [];
     for (let i = 0; i < current.length; i += 2) {
-      const hashResult = poseidon([current[i], current[i + 1]]);
-      next.push(poseidon.F.toObject(hashResult));
+      const left = current[i] ?? 0n;
+      const right = current[i + 1] ?? 0n;
+      const hashResult = poseidon2([left, right]) as bigint;
+      next.push(hashResult);
     }
     layers.push(next);
     current = next;
