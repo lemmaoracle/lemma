@@ -37,6 +37,8 @@ export type {
   VerifiedAttributesQueryResponse,
   CommitmentScheme,
   DocumentCommitments,
+  InclusionProof,
+  LeafPreimage,
   Revocation,
   IssuerSignature,
   OnchainHook,

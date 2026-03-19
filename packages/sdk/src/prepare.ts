@@ -24,6 +24,8 @@ export const prepare = async <Raw, Norm extends Json>(
         commitNormalized(normalized).then((result) => ({
           normalized,
           commitments: { scheme: "poseidon" as const, ...result },
+          inclusionProofs: result.inclusionProofs,
+          leafPreimages: result.leafPreimages,
         })),
       )
     : reject(`Unknown schemaId: ${input.schema}. Call define() first.`);

@@ -88,6 +88,35 @@ export type DocumentCommitments = Readonly<{
   randomness: string; // bytes32 hex - blinding factor for hiding property
 }>;
 
+/**
+ * Inclusion proof for a single leaf within an accumulator.
+ *
+ * For tree-based accumulators (Poseidon Merkle, Verkle, etc.)
+ * `siblings[i]` is the co-path hash at depth i and
+ * `indices[i]` encodes position (0 = left, 1 = right for binary trees).
+ */
+export type InclusionProof = Readonly<{
+  siblings: ReadonlyArray<string>;
+  indices: ReadonlyArray<number>;
+}>;
+
+/**
+ * The pre-image components that were hashed to produce a single leaf.
+ * Scheme-agnostic: any commitment scheme produces leaves from (name, value, blinding).
+ */
+export type LeafPreimage = Readonly<{
+  /** Attribute name (original string, e.g. "task_bucket") */
+  name: string;
+  /** Attribute value (original string representation) */
+  value: string;
+  /** name  encoded as a field element / hash input (hex) */
+  nameHash: string;
+  /** value encoded as a field element / hash input (hex) */
+  valueHash: string;
+  /** Blinding / randomness encoded as a field element / hash input (hex) */
+  blindingHash: string;
+}>;
+
 export type Revocation = Readonly<{
   scheme?: string;
   root: string;
