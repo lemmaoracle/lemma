@@ -31,6 +31,7 @@ export type NormalizeArtifact = Readonly<{
   artifact: {
     readonly type: "ipfs" | "https";
     readonly wasm: string;
+    readonly js: string; // wasm-bindgen JS shim URL (required for instantiation)
   };
   hash: string;
   abi?: {
