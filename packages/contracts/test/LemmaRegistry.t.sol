@@ -12,13 +12,13 @@ contract LemmaRegistryTest is Test {
   bytes32 constant SCHEMA_HASH = bytes32(uint256(3));
   bytes32 constant REVOCATION_ROOT = bytes32(uint256(4));
 
-  address issuer;
-  address subject;
+  bytes32 issuerHash;
+  bytes32 subjectHash;
 
   function setUp() public {
     registry = new LemmaRegistry();
-    issuer = address(this);
-    subject = address(0x1);
+    issuerHash = keccak256("did:mizu:municipality");
+    subjectHash = keccak256("did:mizu:report:1234");
   }
 
   function _emptyHooks() internal pure returns (LemmaRegistry.HookCall[] memory) {
@@ -30,8 +30,8 @@ contract LemmaRegistryTest is Test {
       DOC_HASH,
       ROOT,
       SCHEMA_HASH,
-      issuer,
-      subject,
+      issuerHash,
+      subjectHash,
       REVOCATION_ROOT,
       _emptyHooks()
     );
@@ -43,8 +43,8 @@ contract LemmaRegistryTest is Test {
       DOC_HASH,
       ROOT,
       SCHEMA_HASH,
-      issuer,
-      subject,
+      issuerHash,
+      subjectHash,
       REVOCATION_ROOT
     );
 
@@ -58,8 +58,8 @@ contract LemmaRegistryTest is Test {
     assertEq(prov.docHash, DOC_HASH);
     assertEq(prov.commitmentRoot, ROOT);
     assertEq(prov.schemaIdHash, SCHEMA_HASH);
-    assertEq(prov.issuer, issuer);
-    assertEq(prov.subject, subject);
+    assertEq(prov.issuerHash, issuerHash);
+    assertEq(prov.subjectHash, subjectHash);
     assertEq(prov.revocationRoot, REVOCATION_ROOT);
     assertGt(prov.registeredAt, 0);
   }
@@ -74,8 +74,8 @@ contract LemmaRegistryTest is Test {
       DOC_HASH,
       ROOT,
       SCHEMA_HASH,
-      issuer,
-      subject,
+      issuerHash,
+      subjectHash,
       REVOCATION_ROOT,
       _emptyHooks()
     );
@@ -87,8 +87,8 @@ contract LemmaRegistryTest is Test {
       bytes32(0),
       ROOT,
       SCHEMA_HASH,
-      issuer,
-      subject,
+      issuerHash,
+      subjectHash,
       REVOCATION_ROOT,
       _emptyHooks()
     );
