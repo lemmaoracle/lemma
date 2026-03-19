@@ -29,6 +29,9 @@ The Lemma SDK provides a functional, immutable API for:
 - **Selective disclosure** - Prove or reveal only specific attributes using BBS+ signatures
 - **Schema management** - Define and work with custom document schemas
 - **Circuit integration** - Register and use custom ZK circuits for predicate verification
+- **Verified attributes query** - Query verified attributes with structured queries
+
+> **Note**: Natural language query parsing is available as a separate package: [`@lemmaoracle/parser`](../parser/README.md)
 
 ## 🚀 Quick Start
 
@@ -220,14 +223,6 @@ else return "positive";
 The SDK depends on `@lemmaoracle/spec`, which must be published first:
 
 ```bash
-# Build both packages
-pnpm build
-
-# Publish spec package first
-cd packages/spec
-npm publish --access public
-
-# Publish SDK package
-cd ../sdk
-npm publish --access public
+# Use the publish script from the repo root
+./scripts/publish-npm.sh
 ```

@@ -1,12 +1,16 @@
 /**
- * Example: Natural Language Query Parsing with Lemma SDK
+ * Example: Natural Language Query Parsing with @lemmaoracle/parser
  *
- * Demonstrates natural language query parsing using @huggingface/transformers.
- * Works in both browser (onnxruntime-web) and Node.js (onnxruntime-node).
+ * Demonstrates using the separate @lemmaoracle/parser package to
+ * convert natural language queries into structured format, then
+ * querying via @lemmaoracle/sdk's attributes.query API.
+ *
+ * Note: The parser is a separate package to keep the SDK lightweight.
+ * Install both: pnpm add @lemmaoracle/sdk @lemmaoracle/parser
  */
 
-import * as R from "ramda";
-import { create, attributes, queryParser } from "@lemmaoracle/sdk";
+import { create, attributes } from "@lemmaoracle/sdk";
+import { initParser, parseNaturalQuery, cleanup } from "@lemmaoracle/parser";
 
 // Example usage - in a real application, this would be in a browser environment
 async function demonstrateNaturalLanguageQuery() {
@@ -19,14 +23,14 @@ async function demonstrateNaturalLanguageQuery() {
       apiKey: "your-api-key-here",
     });
 
-    // Example 1: Initialize parser with progress callback
+    // Step 1: Initialize parser (from @lemmaoracle/parser)
     console.log("1. Initializing query parser...");
-    await queryParser.init("onnx-community/Qwen3-0.6B-ONNX", (progress) => {
+    await initParser("onnx-community/Qwen3-0.6B-ONNX", (progress) => {
       console.log(`   Model loading: ${progress.status}${progress.progress ? ` ${(progress.progress * 100).toFixed(1)}%` : ""}`);
     });
     console.log("   ✓ Parser initialized\n");
 
-    // Example 2: Parse natural language queries
+    // Step 2: Parse natural language → structured query
     console.log("2. Parsing natural language queries:\n");
 
     const testQueries = [
@@ -39,50 +43,52 @@ async function demonstrateNaturalLanguageQuery() {
     const processQuery = async (query: string): Promise<void> => {
       console.log(`   Query: "${query}"`);
 
-      // Parse the natural language query
-      const structured = await queryParser.parseNaturalQuery(query);
+      // Parse the natural language query (client-side, via @lemmaoracle/parser)
+      const structured = await parseNaturalQuery(query);
 
       console.log(`   → Structured:`, JSON.stringify(structured, null, 2));
       console.log();
     };
 
-    // Process queries sequentially using functional composition
+    // Process queries sequentially
     await testQueries.reduce<Promise<void>>(async (accPromise, query) => {
       await accPromise;
       return processQuery(query);
     }, Promise.resolve());
 
-    // Example 3: Using attributes.query with natural language
-    console.log("3. Using attributes.query with natural language:\n");
+    // Step 3: Send structured query to API (via @lemmaoracle/sdk)
+    console.log("3. Using attributes.query with structured data:\n");
 
     console.log("   Note: In a real application, this would call the actual API");
     console.log("   const results = await attributes.query(client, {");
-    console.log('     query: "users over 18 in Japan",');
-    console.log('     mode: "natural",');
+    console.log('     attributes: [');
+    console.log('       { name: "age", operator: "gt", value: 18 },');
+    console.log('       { name: "country", operator: "eq", value: "Japan" },');
+    console.log("     ],");
     console.log('     proof: { required: true, type: "zk-snark" },');
     console.log('     targets: { schemas: ["user-kyc-v1"] },');
     console.log("   });\n");
 
-    // Example 4: Cleanup
+    // Step 4: Cleanup
     console.log("4. Cleaning up parser resources...");
-    await queryParser.cleanup();
+    await cleanup();
     console.log("   ✓ Parser cleaned up\n");
 
     console.log("=== Demo Complete ===");
     console.log("\nSummary:");
-    console.log("- Natural language queries are parsed client-side");
-    console.log("- Uses @huggingface/transformers (Transformers.js v3)");
+    console.log("- Natural language parsing: @lemmaoracle/parser (separate package)");
+    console.log("- Structured query API: @lemmaoracle/sdk (attributes.query)");
+    console.log("- Parser uses @huggingface/transformers (Transformers.js v3)");
     console.log("- Works in both browser and Node.js environments");
     console.log("- No server-side query parsing required (privacy-preserving)");
-    console.log("- Lazy loading: Model only loads on first natural query");
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
 // Note: This example works in both browser and Node.js environments
-console.log("Note: This example uses @huggingface/transformers.");
-console.log("It works in both browser (onnxruntime-web) and Node.js (onnxruntime-node).\n");
+console.log("Note: This example requires both @lemmaoracle/sdk and @lemmaoracle/parser.");
+console.log("Install: pnpm add @lemmaoracle/sdk @lemmaoracle/parser\n");
 
 // Export for documentation purposes
 export { demonstrateNaturalLanguageQuery };

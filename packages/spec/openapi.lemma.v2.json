@@ -209,8 +209,19 @@
       "VerifiedAttributesQueryRequest": {
         "type": "object",
         "properties": {
-          "query": { "type": "string" },
-          "mode": { "type": "string", "enum": ["natural", "structured"] },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "operator": { "type": "string", "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"] },
+                "value": {}
+              },
+              "required": ["name", "value"],
+              "additionalProperties": false
+            }
+          },
           "proof": {
             "type": "object",
             "properties": {
@@ -222,11 +233,14 @@
           },
           "targets": {
             "type": "object",
-            "properties": { "schemas": { "type": "array", "items": { "type": "string" } } },
+            "properties": {
+              "schemas": { "type": "array", "items": { "type": "string" } },
+              "chainIds": { "type": "array", "items": { "type": "integer" } }
+            },
             "additionalProperties": true
           }
         },
-        "required": ["query", "mode"],
+        "required": ["attributes"],
         "additionalProperties": false
       },
       "VerifiedAttributesQueryResponseItem": {

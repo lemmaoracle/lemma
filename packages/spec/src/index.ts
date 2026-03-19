@@ -185,9 +185,7 @@ export type SubmitProofResponse = Readonly<{
 /* ── Verified attributes query ─────────────────────────────────────── */
 
 export type VerifiedAttributesQueryRequest = Readonly<{
-  query: string;
-  mode: "natural" | "structured";
-  attributes?: ReadonlyArray<Readonly<{ name: string; value: unknown }>>;
+  attributes: ReadonlyArray<Readonly<{ name: string; operator?: string; value: unknown }>>;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
   targets?: Readonly<
     {

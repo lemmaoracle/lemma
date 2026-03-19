@@ -13,7 +13,7 @@ vi.mock("@huggingface/transformers", () => ({
   pipeline: mockPipeline,
 }));
 
-import { initParser, parseNaturalQuery, cleanup } from "./query-parser.js";
+import { initParser, parseNaturalQuery, cleanup } from "./index.js";
 import * as transformers from "@huggingface/transformers";
 
 // Type assertion for the mocked module

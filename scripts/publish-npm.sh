@@ -22,12 +22,17 @@ if [ ! -f "package.json" ]; then
 fi
 
 echo "📦 Building packages..."
-pnpm -F @lemmaoracle/spec -F @lemmaoracle/sdk build
+pnpm -F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk build
 
 echo "🔄 Bumping versions..."
 cd packages/spec
 npm version $VERSION --no-git-tag-version
 SPEC_VERSION=$(node -p "require('./package.json').version")
+cd ..
+
+cd parser
+npm version $VERSION --no-git-tag-version
+PARSER_VERSION=$(node -p "require('./package.json').version")
 cd ..
 
 cd sdk
@@ -43,10 +48,16 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
 cd ../..
 
 echo "📝 Updated spec version: $SPEC_VERSION"
+echo "📝 Updated parser version: $PARSER_VERSION"
 echo "📝 Updated SDK dependency to: ^$SPEC_VERSION"
 
 echo "🚀 Publishing @lemmaoracle/spec..."
 cd packages/spec
+npm publish --access public
+cd ..
+
+echo "🚀 Publishing @lemmaoracle/parser..."
+cd parser
 npm publish --access public
 cd ..
 
@@ -65,8 +76,9 @@ cd ../..
 echo ""
 echo "📋 Summary:"
 echo "  - @lemmaoracle/spec@$SPEC_VERSION"
-echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json.backup').version")"
+echo "  - @lemmaoracle/parser@$PARSER_VERSION"
+echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json').version")"
 echo ""
 echo "⚠️  Don't forget to:"
-echo "  1. Commit the version changes in packages/spec/package.json"
+echo "  1. Commit the version changes in packages/spec/package.json and packages/parser/package.json"
 echo "  2. Update the SDK dependency manually or run the script again for next release"

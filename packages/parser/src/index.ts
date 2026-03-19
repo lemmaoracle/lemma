@@ -1,5 +1,5 @@
 /**
- * Natural Language Query Parser for Lemma SDK
+ * @lemmaoracle/parser — Natural Language Query Parser
  *
  * Uses @huggingface/transformers (Transformers.js v3) to parse
  * natural language queries into structured query format.
@@ -9,10 +9,29 @@
  */
 
 import * as R from "ramda";
-import type { VerifiedAttributesQueryRequest } from "@lemmaoracle/spec";
 
-// The query schema definition — matches what the server expects
-const querySchema = {
+/* ── Public types ──────────────────────────────────────────────────── */
+
+export type AttributeCondition = Readonly<{
+  name: string;
+  operator: "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "in" | "contains";
+  value: string | number | boolean | ReadonlyArray<string | number>;
+}>;
+
+export type ParsedQuery = Readonly<{
+  attributes: ReadonlyArray<AttributeCondition>;
+  targets?: Readonly<{
+    schemas?: ReadonlyArray<string>;
+  }>;
+  proof?: Readonly<{
+    required: boolean;
+    type?: "zk-snark" | "opaque";
+  }>;
+}>;
+
+/* ── Query schema (for LLM prompt) ─────────────────────────────────── */
+
+export const querySchema = {
   type: "object",
   properties: {
     attributes: {
@@ -47,11 +66,13 @@ const querySchema = {
   required: ["attributes"],
 } as const;
 
+/* ── Internal types ─────────────────────────────────────────────────── */
+
 // Type for the transformers module
 type TransformersModule = typeof import("@huggingface/transformers");
 
 // Type for progress callback (compatible with transformers.js progress events)
-type ProgressCallback = (progress: {
+export type ProgressCallback = (progress: {
   status: string;
   progress?: number;
   file?: string;
@@ -68,12 +89,16 @@ const createInitialState = (): ParserState => ({
 
 const DEFAULT_MODEL = "onnx-community/Qwen3-0.6B-ONNX";
 
-// State is managed within a closure for encapsulation
+/* ── Parser instance (closure-based encapsulation) ─────────────────── */
+
 const createParserInstance = () => {
+  // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let state: ParserState = createInitialState();
+  // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let _transformers: TransformersModule | null = null;
 
   const loadTransformers = async (): Promise<TransformersModule> => {
+    // eslint-disable-next-line functional/no-conditional-statements -- guard clause
     if (_transformers) return _transformers;
     _transformers = await import("@huggingface/transformers");
     return _transformers;
@@ -126,22 +151,16 @@ const createParserInstance = () => {
   const extractJSON = (text: string): string => {
     // Try to find JSON in code blocks first
     const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (codeBlockMatch?.[1]) return codeBlockMatch[1].trim();
-
-    // Try to find raw JSON object
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return jsonMatch[0];
-
-    return text.trim();
+    return R.cond<[string], string>([
+      [() => codeBlockMatch?.[1] != null, () => codeBlockMatch![1]!.trim()],
+      [() => text.match(/\{[\s\S]*\}/) != null, () => text.match(/\{[\s\S]*\}/)![0]!],
+      [R.T, () => text.trim()],
+    ])(text);
   };
 
   const parseNaturalQuery = async (
     naturalQuery: string,
-  ): Promise<
-    Omit<VerifiedAttributesQueryRequest, "query" | "mode"> & {
-      attributes: Array<{ name: string; value: unknown }>;
-    }
-  > => {
+  ): Promise<ParsedQuery> => {
     const generator = await getOrCreateGenerator();
     const schema = JSON.stringify(querySchema);
 
@@ -161,6 +180,7 @@ JSON output:`;
 
     const MAX_ATTEMPTS = 2;
 
+    // eslint-disable-next-line functional/no-loop-statements -- retry loop with early return
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       const output = await generator(prompt, {
         max_new_tokens: 512,
@@ -174,22 +194,27 @@ JSON output:`;
         const jsonStr = extractJSON(content);
         const parsed = JSON.parse(jsonStr);
 
+        // eslint-disable-next-line functional/no-conditional-statements -- validation guard
         if (R.isNil(parsed.attributes) || !Array.isArray(parsed.attributes)) {
+          // eslint-disable-next-line functional/no-throw-statements -- validation
           throw new Error("Missing or invalid 'attributes' array");
         }
 
-        return parsed;
+        return parsed as ParsedQuery;
       } catch (e) {
+        // eslint-disable-next-line functional/no-conditional-statements -- retry guard
         if (attempt === MAX_ATTEMPTS - 1) {
-          throw new Error(
-            `Failed to parse LLM response as valid query JSON after ${MAX_ATTEMPTS} attempts: ${(e as Error).message}`,
+          return Promise.reject(
+            new Error(
+              `Failed to parse LLM response as valid query JSON after ${MAX_ATTEMPTS} attempts: ${(e as Error).message}`,
+            ),
           );
         }
       }
     }
 
     // Unreachable, but TypeScript needs it
-    throw new Error("Unexpected: exhausted all parse attempts");
+    return Promise.reject(new Error("Unexpected: exhausted all parse attempts"));
   };
 
   const cleanup = async (): Promise<void> => {
@@ -198,6 +223,7 @@ JSON output:`;
       async () => {},
       async () => {
         try {
+          // eslint-disable-next-line functional/no-conditional-statements -- disposal guard
           if (state.generator?.dispose) {
             await state.generator.dispose();
           }
