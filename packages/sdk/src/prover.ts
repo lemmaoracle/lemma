@@ -48,12 +48,18 @@ const resolveIpfsUrl = (url: string): string =>
 
 /**
  * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
+ *
+ * Returns a Uint8Array because snarkjs delegates to fastfile which
+ * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
+ * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifact = (client: LemmaClient, url: string): Promise<ArrayBuffer> => {
+const fetchArtifact = (client: LemmaClient, url: string): Promise<Uint8Array> => {
   const resolvedUrl = resolveIpfsUrl(url);
   const fetchFn = resolveFetch(client);
   return fetchFn(resolvedUrl).then((res) =>
-    res.ok ? res.arrayBuffer() : reject(`Failed to fetch circuit artifact: ${url}`),
+    res.ok
+      ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+      : reject(`Failed to fetch circuit artifact: ${url}`),
   );
 };
 
@@ -78,8 +84,8 @@ const sha256Base64 = (s: string): string => createHash("sha256").update(s).diges
  */
 const generateSnarkjsProof = async (
   witness: Readonly<Record<string, unknown>>,
-  wasmBuf: ArrayBuffer,
-  zkeyBuf: ArrayBuffer,
+  wasmBuf: Uint8Array,
+  zkeyBuf: Uint8Array,
 ): Promise<{
   proof: unknown;
   publicSignals: string[];
