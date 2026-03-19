@@ -18,10 +18,15 @@ contract LemmaRelayTest is Test {
   bytes32 constant SCHEMA_HASH = bytes32(uint256(3));
   bytes32 constant REVOCATION_ROOT = bytes32(uint256(4));
 
+  bytes32 issuerHash;
+  bytes32 subjectHash;
+
   function setUp() public {
     owner = address(this);
     authorizedSender = address(0x1);
     unauthorizedSender = address(0x2);
+    issuerHash = keccak256("did:mizu:municipality");
+    subjectHash = keccak256("did:mizu:report:1234");
 
     relay = new LemmaRelay();
     registry = new LemmaRegistry();
@@ -43,7 +48,7 @@ contract LemmaRelayTest is Test {
 
     bytes memory callData = abi.encodeCall(
       registry.registerDocument,
-      (DOC_HASH, ROOT, SCHEMA_HASH, authorizedSender, authorizedSender, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
+      (DOC_HASH, ROOT, SCHEMA_HASH, issuerHash, subjectHash, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
     );
 
     relay.relayCall(address(registry), callData);
@@ -61,7 +66,7 @@ contract LemmaRelayTest is Test {
 
     bytes memory callData = abi.encodeCall(
       registry.registerDocument,
-      (DOC_HASH, ROOT, SCHEMA_HASH, authorizedSender, authorizedSender, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
+      (DOC_HASH, ROOT, SCHEMA_HASH, issuerHash, subjectHash, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
     );
 
     bytes memory result = relay.relayCall(address(registry), callData);
@@ -71,8 +76,8 @@ contract LemmaRelayTest is Test {
     assertEq(prov.docHash, DOC_HASH);
     assertEq(prov.commitmentRoot, ROOT);
     assertEq(prov.schemaIdHash, SCHEMA_HASH);
-    assertEq(prov.issuer, authorizedSender);
-    assertEq(prov.subject, authorizedSender);
+    assertEq(prov.issuerHash, issuerHash);
+    assertEq(prov.subjectHash, subjectHash);
     assertEq(prov.revocationRoot, REVOCATION_ROOT);
   }
 
@@ -81,11 +86,11 @@ contract LemmaRelayTest is Test {
 
     bytes memory callData = abi.encodeCall(
       registry.registerDocument,
-      (DOC_HASH, ROOT, SCHEMA_HASH, authorizedSender, authorizedSender, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
+      (DOC_HASH, ROOT, SCHEMA_HASH, issuerHash, subjectHash, REVOCATION_ROOT, new LemmaRegistry.HookCall[](0))
     );
 
     vm.expectEmit(true, true, false, true, address(relay));
-    emit LemmaRelay.RelayedCall(address(registry), bytes4(keccak256("registerDocument(bytes32,bytes32,bytes32,address,address,bytes32,(address,bytes)[])")), true);
+    emit LemmaRelay.RelayedCall(address(registry), bytes4(keccak256("registerDocument(bytes32,bytes32,bytes32,bytes32,bytes32,bytes32,(address)[])") ), true);
 
     relay.relayCall(address(registry), callData);
   }
