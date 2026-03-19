@@ -41,7 +41,7 @@ describe("define / getSchemaById", () => {
     const mockInit = vi.fn().mockResolvedValue(undefined);
 
     // vi.stubGlobal to mock dynamic import
-    const originalImport = globalThis[Symbol.for("importActual") as any];
+    const originalImport = (globalThis as any)[Symbol.for("importActual")];
     vi.stubGlobal("__vitest_mocker__", undefined);
 
     // We need to mock the dynamic import. Since `import()` cannot be directly
