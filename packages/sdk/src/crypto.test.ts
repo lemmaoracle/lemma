@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { create } from "./client.js";
-import { encrypt, decrypt } from "./crypto.js";
+import { encrypt, decrypt, derivePublicKey } from "./crypto.js";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { bytesToHex } from "@noble/hashes/utils";
 
@@ -75,6 +75,32 @@ describe("encrypt", () => {
 
     expect(result.docHash).toMatch(/^0x[a-f0-9]{64}$/);
     expect(result.cid).toMatch(/^bafkrei/);
+  });
+});
+
+describe("derivePublicKey", () => {
+  it("returns the compressed public key matching @noble/curves output", () => {
+    const privKey = secp256k1.utils.randomPrivateKey();
+    const privHex = bytesToHex(privKey);
+    const expected = bytesToHex(secp256k1.getPublicKey(privKey, true));
+
+    expect(derivePublicKey(privHex)).toBe(expected);
+  });
+
+  it("accepts 0x-prefixed private key", () => {
+    const privKey = secp256k1.utils.randomPrivateKey();
+    const privHex = "0x" + bytesToHex(privKey);
+    const expected = bytesToHex(secp256k1.getPublicKey(privKey, true));
+
+    expect(derivePublicKey(privHex)).toBe(expected);
+  });
+
+  it("returns a 66-char hex string (33 bytes compressed)", () => {
+    const privKey = secp256k1.utils.randomPrivateKey();
+    const pub = derivePublicKey(bytesToHex(privKey));
+
+    expect(pub).toHaveLength(66);
+    expect(pub).toMatch(/^0[23][0-9a-f]{64}$/);
   });
 });
 
