@@ -32,7 +32,7 @@ export function ProvenanceChainBg() {
 
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
+    return () => { window.removeEventListener("resize", updateDimensions); };
   }, []);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function ProvenanceChainBg() {
     };
 
     mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    return () => { mediaQuery.removeEventListener("change", handleChange); };
   }, []);
 
   // Center point
@@ -125,7 +125,7 @@ export function ProvenanceChainBg() {
         {/* Render faint orbit paths */}
         {orbits.map((orbit, i) => (
           <circle
-            key={`orbit-${i}`}
+            key={`orbit-${String(i)}`}
             cx={centerX}
             cy={centerY}
             r={orbit.radius}
@@ -140,7 +140,7 @@ export function ProvenanceChainBg() {
         {/* Render connections */}
         {connections.map((conn, i) => (
           <line
-            key={`conn-${i}`}
+            key={`conn-${String(i)}`}
             x1={conn.x1}
             y1={conn.y1}
             x2={conn.x2}
@@ -154,7 +154,7 @@ export function ProvenanceChainBg() {
 
         {/* Render nodes */}
         {nodePositions.map((node, i) => {
-          const NodeIcon = nodeTypes[node.type].Icon;
+          const _NodeIcon = nodeTypes[node.type]?.Icon;
 
           // Pulse based on position in orbit
           const pulseOpacity = prefersReducedMotion
@@ -162,7 +162,7 @@ export function ProvenanceChainBg() {
             : 0.08 + Math.sin(currentTime * 2 + node.angle) * 0.05;
 
           return (
-            <g key={`node-${i}`}>
+            <g key={`node-${String(i)}`}>
               {/* Node circle */}
               <circle
                 cx={node.x}

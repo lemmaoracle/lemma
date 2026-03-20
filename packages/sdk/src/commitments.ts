@@ -24,42 +24,14 @@ export type PrepareOutput<Norm> = Readonly<{
 
 // Helper: convert value to BN254 field element
 // Numbers and numeric strings are converted directly, other strings are hashed
-const encodeToField = (value: string | number): bigint => {
-  // Numbers are converted directly to field elements
-  if (typeof value === 'number') {
-    const num = BigInt(value);
-    return num % BN254_PRIME;
-  }
-  
-  // Numeric strings are also converted directly
-  if (/^\d+$/.test(value)) {
-    const num = BigInt(value);
-    return num % BN254_PRIME;
-  }
-  
-  // Other strings are hashed
-  const hash = createHash("sha256").update(value).digest("hex");
-  const hashBigInt = BigInt(`0x${hash}`);
-  return hashBigInt % BN254_PRIME;
-};
+const encodeToField = (value: string | number): bigint =>
+  typeof value === "number"
+    ? BigInt(value) % BN254_PRIME
+    : /^\d+$/.test(value)
+      ? BigInt(value) % BN254_PRIME
+      : BigInt(`0x${createHash("sha256").update(value).digest("hex")}`) % BN254_PRIME;
 
 const toHex = (n: bigint): string => `0x${n.toString(16)}`;
-
-// Lazy singleton for Poseidon (same pattern as schema registry)
-
-let poseidonInstance: Promise<any> | undefined;
-
-const getPoseidon = (): Promise<any> =>
-  poseidonInstance
-    ? poseidonInstance
-    : (poseidonInstance = Promise.resolve({
-        F: {
-          toObject: (n: bigint) => n,
-          fromObject: (n: bigint) => n,
-          zero: 0n,
-          one: 1n,
-        },
-      }));
 
 // ---------------------------------------------------------------------------
 // Leaf computation
@@ -70,45 +42,41 @@ type LeafResult = Readonly<{
   preimages: ReadonlyArray<LeafPreimage>;
 }>;
 
-const computeLeaves = async (
+const computeLeaves = (
   normalized: Readonly<Record<string, Json>>,
   randomness: string,
-  poseidon: any,
-): Promise<LeafResult> => {
-  const sortedKeys = R.keys(normalized).sort();
+): LeafResult => {
+  const sortedKeys = [...R.keys(normalized)].sort();
   // randomness is a hex string WITHOUT "0x" prefix (from commitNormalized)
   // Convert it to field element (snarkjs will do the same with "0x" + randomness)
   // No modulo reduction - randomness is already in the field
   const blindingField = BigInt(`0x${randomness}`);
 
-  const preimages: LeafPreimage[] = [];
-  const leaves: bigint[] = [];
-
-  /* eslint-disable functional/immutable-data, functional/no-expression-statements */
-  for (const key of sortedKeys) {
+  const computeLeaf = (key: string): Readonly<{ preimage: LeafPreimage; leaf: bigint }> => {
     const value = normalized[key];
     // Preserve original type: numbers stay numbers, others become strings
-    const valueForHash = typeof value === 'number' ? value : 
+    const valueForHash = typeof value === "number" ? value :
                          R.is(String, value) ? value : JSON.stringify(value);
-    const valuePreserved = typeof value === 'number' ? value : 
-                          R.is(String, value) ? value : JSON.stringify(value);
     const nameField = encodeToField(key);
     const valueField = encodeToField(valueForHash);
 
-    preimages.push({
+    const preimage: LeafPreimage = {
       name: key,
-      value: valuePreserved as (string | number),
+      value: valueForHash,
       nameHash: toHex(nameField),
       valueHash: toHex(valueField),
       blindingHash: toHex(blindingField),
-    } as LeafPreimage);
+    };
 
-    const leafField = poseidon3([nameField, valueField, blindingField]);
-    leaves.push(leafField);
-  }
-  /* eslint-enable functional/immutable-data, functional/no-expression-statements */
+    const leaf = poseidon3([nameField, valueField, blindingField]);
+    return { preimage, leaf };
+  };
 
-  return { leaves, preimages };
+  const results = R.map(computeLeaf, sortedKeys);
+  return {
+    leaves: R.map((r) => r.leaf, results),
+    preimages: R.map((r) => r.preimage, results),
+  };
 };
 
 // ---------------------------------------------------------------------------
@@ -122,11 +90,12 @@ type TreeResult = Readonly<{
 
 const buildMerkleTree = (
   leaves: ReadonlyArray<bigint>,
-  poseidon: any,
+  _poseidon: unknown,
 ): TreeResult => {
   const leafCount = leaves.length;
 
   // Single leaf — root equals the leaf, proof is empty
+  // eslint-disable-next-line functional/no-conditional-statements -- guard clause
   if (leafCount === 1) {
     const leaf = leaves[0] ?? 0n;
     return {
@@ -144,20 +113,21 @@ const buildMerkleTree = (
   // Build layers bottom-up, storing each level for proof extraction
   const layers: bigint[][] = [padded];
 
-  /* eslint-disable functional/immutable-data, functional/no-expression-statements */
+  /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
+   * Tree construction requires imperative mutation for perf-critical Merkle computation */
   let current = padded;
   while (current.length > 1) {
     const next: bigint[] = [];
     for (let i = 0; i < current.length; i += 2) {
       const left = current[i] ?? 0n;
       const right = current[i + 1] ?? 0n;
-      const hashResult = poseidon2([left, right]) as bigint;
+      const hashResult = poseidon2([left, right]);
       next.push(hashResult);
     }
     layers.push(next);
     current = next;
   }
-  /* eslint-enable functional/immutable-data, functional/no-expression-statements */
+  /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
 
   const root = current[0] ?? zero;
 
@@ -166,7 +136,8 @@ const buildMerkleTree = (
     const siblings: string[] = [];
     const indices: number[] = [];
 
-    /* eslint-disable functional/immutable-data, functional/no-expression-statements */
+    /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
+     * Proof extraction requires imperative index tracking */
     let idx = leafIdx;
     for (let level = 0; level < depth; level++) {
       const siblingIdx = idx ^ 1; // XOR to get sibling
@@ -175,7 +146,7 @@ const buildMerkleTree = (
       indices.push(idx & 1); // 0 = left, 1 = right
       idx = Math.floor(idx / 2);
     }
-    /* eslint-enable functional/immutable-data, functional/no-expression-statements */
+    /* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements */
 
     return { siblings, indices };
   }, leafCount);
@@ -195,36 +166,33 @@ export type CommitResult = Readonly<{
   leafPreimages: ReadonlyArray<LeafPreimage>;
 }>;
 
-export const commitNormalized = async (
+export const commitNormalized = (
   normalized: Json,
-): Promise<CommitResult> => {
-  return R.cond([
+): Promise<CommitResult> =>
+  R.cond([
     [
-      () => !R.is(Object, normalized) || R.isEmpty(normalized),
-      () => Promise.reject(new Error("Normalized data must be a non-empty object")),
+      (_placeholder: undefined) => !R.is(Object, normalized) || R.isEmpty(normalized),
+      (_placeholder: undefined) => Promise.reject(new Error("Normalized data must be a non-empty object")),
     ],
     [
       R.T,
-      async () => {
-        const poseidon = await getPoseidon();
+      (_placeholder: undefined) => {
         const randomness = randomBytes(32).toString("hex");
 
-        const leafResult = await computeLeaves(
+        const leafResult = computeLeaves(
           normalized as Readonly<Record<string, Json>>,
           randomness,
-          poseidon,
         );
 
-        const { root, inclusionProofs } = buildMerkleTree(leafResult.leaves, poseidon);
+        const { root, inclusionProofs } = buildMerkleTree(leafResult.leaves, null);
 
-        return {
+        return Promise.resolve({
           root: toHex(root),
           leaves: R.map((leaf: bigint) => toHex(leaf), leafResult.leaves),
           randomness: `0x${randomness}`,
           inclusionProofs,
           leafPreimages: leafResult.preimages,
-        };
+        });
       },
     ],
-  ])();
-};
+  ])(undefined);

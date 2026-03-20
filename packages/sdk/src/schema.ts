@@ -28,9 +28,15 @@ const resolveArtifactUrl = (url: string): string =>
 const toBase64 = (source: string): string =>
   typeof Buffer !== "undefined"
     ? Buffer.from(source).toString("base64")
-    : btoa(unescape(encodeURIComponent(source)));
+    : btoa(encodeURIComponent(source).replace(/%([0-9A-F]{2})/g, (_match, p1: string) => String.fromCharCode(parseInt(p1, 16))));
 
-/* eslint-disable functional/immutable-data, functional/no-expression-statements --
+// Dynamic import result shape for the WASM JS shim
+type WasmShim = Readonly<{
+  default: (wasm: ArrayBuffer) => Promise<void>;
+  normalize: (rawJson: string) => string;
+}>;
+
+/* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-conditional-statements --
 Schema registry is an intentional mutable boundary for schemaId → normalize lookup. */
 const registry: Record<string, SchemaDef<unknown, unknown>> = {};
 
@@ -41,7 +47,7 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
   const resolvedWasmUrl = resolveArtifactUrl(artifact.artifact.wasm);
   const response = await fetch(resolvedWasmUrl);
   if (!response.ok) {
-    throw new Error(`Failed to download WASM from ${artifact.artifact.wasm}: ${response.status}`);
+    throw new Error(`Failed to download WASM from ${artifact.artifact.wasm}: ${String(response.status)}`);
   }
 
   const wasmBuffer = await response.arrayBuffer();
@@ -69,12 +75,12 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
   const jsResponse = await fetch(resolvedJsUrl);
   if (!jsResponse.ok) {
     throw new Error(
-      `Failed to download JS shim from ${artifact.artifact.js}: ${jsResponse.status}`,
+      `Failed to download JS shim from ${artifact.artifact.js}: ${String(jsResponse.status)}`,
     );
   }
   const jsSource = await jsResponse.text();
   const dataUri = `data:text/javascript;base64,${toBase64(jsSource)}`;
-  const shim = await import(/* @vite-ignore */ dataUri);
+  const shim = (await import(/* @vite-ignore */ dataUri)) as WasmShim;
   await shim.default(wasmBuffer);
 
   if (typeof shim.normalize !== "function") {
@@ -84,7 +90,7 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
   // 5. Wrap the shim's normalize (string → string) function
   const normalize = (raw: Raw): Norm => {
     const rawJson = JSON.stringify(raw);
-    const normJson = shim.normalize(rawJson) as string;
+    const normJson = shim.normalize(rawJson);
     return JSON.parse(normJson) as Norm;
   };
 
@@ -97,7 +103,7 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
   registry[schemaMeta.id] = schemaDef as SchemaDef<unknown, unknown>;
   return schemaDef;
 };
-/* eslint-enable functional/immutable-data, functional/no-expression-statements */
+/* eslint-enable functional/immutable-data, functional/no-expression-statements, functional/no-conditional-statements */
 
 export const getSchemaById = <Raw, Norm>(schemaId: string): SchemaDef<Raw, Norm> | undefined =>
   R.prop(schemaId, registry) as SchemaDef<Raw, Norm> | undefined;

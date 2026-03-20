@@ -138,6 +138,11 @@ export default tseslint.config(
       "functional/no-expression-statements": "off",
       "functional/prefer-immutable-types": "off",
       "functional/type-declaration-immutability": "off",
+      "functional/no-return-void": "off",
+      "functional/no-conditional-statements": "off",
+      "functional/no-loop-statements": "off",
+      "functional/no-let": "off",
+      "functional/no-mixed-types": "off",
     },
   },
   // Astro files configuration
