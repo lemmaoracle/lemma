@@ -25,18 +25,18 @@ export type PrepareOutput<Norm> = Readonly<{
 }>;
 
 /**
- * Encode a value into a BN254 field element.
+ * Convert an arbitrary value to a finite-field scalar.
  *
- * - `number` → `BigInt(value) % BN254_PRIME`
- * - numeric `string` (e.g. `"42"`) → `BigInt(value) % BN254_PRIME`
- * - other `string` → `SHA-256(value) mod BN254_PRIME`
+ * - `number` → `BigInt(value) % PRIME`
+ * - numeric `string` (e.g. `"42"`) → `BigInt(value) % PRIME`
+ * - other `string` → `SHA-256(value) mod PRIME`
  *
  * Circuits that expect the raw numeric value (e.g. `task_bucket == 1`) should
  * pass the original number to the witness, **not** the output of this function.
- * Use this only when you need the same field element the SDK used internally
+ * Use this only when you need the same scalar the SDK used internally
  * (e.g. for `nameHash` / `valueHash` reconstruction).
  */
-export const encodeToField = (value: string | number): bigint =>
+export const toScalar = (value: string | number): bigint =>
   typeof value === "number"
     ? BigInt(value) % BN254_PRIME
     : /^\d+$/.test(value)
@@ -69,8 +69,8 @@ const computeLeaves = (
     // Preserve original type: numbers stay numbers, others become strings
     const valueForHash = typeof value === "number" ? value :
                          R.is(String, value) ? value : JSON.stringify(value);
-    const nameField = encodeToField(key);
-    const valueField = encodeToField(valueForHash);
+    const nameField = toScalar(key);
+    const valueField = toScalar(valueForHash);
 
     const preimage: LeafPreimage = {
       name: key,

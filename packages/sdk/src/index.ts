@@ -8,7 +8,7 @@
 export { create } from "./client.js";
 export { define } from "./schema.js";
 export { encrypt, decrypt, derivePublicKey } from "./crypto.js";
-export { encodeToField } from "./commitments.js";
+export { toScalar } from "./commitments.js";
 export { prepare } from "./prepare.js";
 export * as disclose from "./disclose.js";
 export * as prover from "./prover.js";

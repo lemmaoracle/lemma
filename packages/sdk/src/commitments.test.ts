@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized, encodeToField } from "./commitments.js";
+import { commitNormalized, toScalar } from "./commitments.js";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
 
@@ -8,28 +8,28 @@ const BN254_PRIME = BigInt(
 );
 
 describe("commitments", () => {
-  describe("encodeToField", () => {
-    it("converts a number directly to BigInt mod BN254", () => {
-      expect(encodeToField(42)).toBe(42n);
-      expect(encodeToField(0)).toBe(0n);
+  describe("toScalar", () => {
+    it("converts a number directly to BigInt mod prime", () => {
+      expect(toScalar(42)).toBe(42n);
+      expect(toScalar(0)).toBe(0n);
     });
 
-    it("converts a numeric string directly to BigInt mod BN254", () => {
-      expect(encodeToField("123")).toBe(123n);
+    it("converts a numeric string directly to BigInt mod prime", () => {
+      expect(toScalar("123")).toBe(123n);
     });
 
-    it("hashes a non-numeric string via SHA-256 mod BN254", () => {
-      const result = encodeToField("hello");
+    it("hashes a non-numeric string via SHA-256 mod prime", () => {
+      const result = toScalar("hello");
       expect(result).toBeGreaterThan(0n);
       expect(result).toBeLessThan(BN254_PRIME);
       // Deterministic
-      expect(encodeToField("hello")).toBe(result);
+      expect(toScalar("hello")).toBe(result);
     });
 
-    it("always returns a value within the BN254 field", () => {
+    it("always returns a value within the field", () => {
       const values: (string | number)[] = [0, 1, 999999, "abc", "日本語", "42"];
       values.forEach((v) => {
-        const f = encodeToField(v);
+        const f = toScalar(v);
         expect(f).toBeGreaterThanOrEqual(0n);
         expect(f).toBeLessThan(BN254_PRIME);
       });
