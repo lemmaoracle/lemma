@@ -1,23 +1,38 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized } from "./commitments.js";
+import { commitNormalized, toScalar } from "./commitments.js";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
 
+const BN254_PRIME = BigInt(
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+);
+
 describe("commitments", () => {
-  describe("encodeToField (private, tested via integration)", () => {
-    it("produces field elements within BN254 prime via commitNormalized", async () => {
-      const normalized = { a: "value1", b: "value2" };
-      const result = await commitNormalized(normalized);
+  describe("toScalar", () => {
+    it("converts a number directly to BigInt mod prime", () => {
+      expect(toScalar(42)).toBe(42n);
+      expect(toScalar(0)).toBe(0n);
+    });
 
-      // Check that all outputs are valid hex strings
-      expect(result.root).toMatch(/^0x[0-9a-f]+$/);
-      expect(result.randomness).toMatch(/^0x[0-9a-f]+$/);
-      result.leaves.forEach((commitment) => {
-        expect(commitment).toMatch(/^0x[0-9a-f]+$/);
+    it("converts a numeric string directly to BigInt mod prime", () => {
+      expect(toScalar("123")).toBe(123n);
+    });
+
+    it("hashes a non-numeric string via SHA-256 mod prime", () => {
+      const result = toScalar("hello");
+      expect(result).toBeGreaterThan(0n);
+      expect(result).toBeLessThan(BN254_PRIME);
+      // Deterministic
+      expect(toScalar("hello")).toBe(result);
+    });
+
+    it("always returns a value within the field", () => {
+      const values: (string | number)[] = [0, 1, 999999, "abc", "日本語", "42"];
+      values.forEach((v) => {
+        const f = toScalar(v);
+        expect(f).toBeGreaterThanOrEqual(0n);
+        expect(f).toBeLessThan(BN254_PRIME);
       });
-
-      // Should have 2 leaves (keys a, b)
-      expect(result.leaves).toHaveLength(2);
     });
   });
 
@@ -80,6 +95,30 @@ describe("commitments", () => {
       expect(result.root).toMatch(/^0x/);
       // For single leaf, root should equal the leaf commitment
       expect(result.root).toBe(result.leaves[0]);
+    });
+
+    it("returns depth 0 for a single-leaf tree", async () => {
+      const result = await commitNormalized({ only: "one" });
+      expect(result.depth).toBe(0);
+    });
+
+    it("returns depth 1 for a 2-leaf tree", async () => {
+      const result = await commitNormalized({ a: "1", b: "2" });
+      expect(result.depth).toBe(1);
+    });
+
+    it("returns depth 2 for a 3-leaf tree (padded to 4)", async () => {
+      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+      expect(result.depth).toBe(2);
+    });
+
+    it("returns depth matching inclusionProofs[].siblings.length", async () => {
+      const result = await commitNormalized({ a: "1", b: "2", c: "3", d: "4", e: "5" });
+      // 5 leaves → padded to 8 → depth 3
+      expect(result.depth).toBe(3);
+      result.inclusionProofs.forEach((proof) => {
+        expect(proof.siblings).toHaveLength(result.depth);
+      });
     });
 
     it("handles complex nested JSON values", async () => {

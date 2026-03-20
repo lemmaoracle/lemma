@@ -70,9 +70,10 @@ describe("prepare", () => {
     // 2 attributes → 2 leaves → 2 proofs
     expect(result.inclusionProofs).toHaveLength(2);
     // depth = ceil(log2(2)) = 1
+    expect(result.depth).toBe(1);
     result.inclusionProofs.forEach((proof) => {
-      expect(proof.siblings).toHaveLength(1);
-      expect(proof.indices).toHaveLength(1);
+      expect(proof.siblings).toHaveLength(result.depth);
+      expect(proof.indices).toHaveLength(result.depth);
     });
   });
 

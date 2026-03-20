@@ -24,6 +24,7 @@ export const prepare = async <Raw, Norm extends Json>(
         commitNormalized(normalized).then((result) => ({
           normalized,
           commitments: { scheme: "poseidon" as const, ...result },
+          depth: result.depth,
           inclusionProofs: result.inclusionProofs,
           leafPreimages: result.leafPreimages,
         })),

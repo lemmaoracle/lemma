@@ -16,15 +16,27 @@ const BN254_PRIME = BigInt(
 export type PrepareOutput<Norm> = Readonly<{
   normalized: Norm;
   commitments: DocumentCommitments;
+  /** Depth of the Merkle tree (0 for a single leaf, 1 for 2 leaves, etc.). */
+  depth: number;
   /** Inclusion proof for each leaf (same order as commitments.leaves) */
   inclusionProofs: ReadonlyArray<InclusionProof>;
   /** Pre-image components for each leaf (same order as commitments.leaves) */
   leafPreimages: ReadonlyArray<LeafPreimage>;
 }>;
 
-// Helper: convert value to BN254 field element
-// Numbers and numeric strings are converted directly, other strings are hashed
-const encodeToField = (value: string | number): bigint =>
+/**
+ * Convert an arbitrary value to a finite-field scalar.
+ *
+ * - `number` → `BigInt(value) % PRIME`
+ * - numeric `string` (e.g. `"42"`) → `BigInt(value) % PRIME`
+ * - other `string` → `SHA-256(value) mod PRIME`
+ *
+ * Circuits that expect the raw numeric value (e.g. `task_bucket == 1`) should
+ * pass the original number to the witness, **not** the output of this function.
+ * Use this only when you need the same scalar the SDK used internally
+ * (e.g. for `nameHash` / `valueHash` reconstruction).
+ */
+export const toScalar = (value: string | number): bigint =>
   typeof value === "number"
     ? BigInt(value) % BN254_PRIME
     : /^\d+$/.test(value)
@@ -57,8 +69,8 @@ const computeLeaves = (
     // Preserve original type: numbers stay numbers, others become strings
     const valueForHash = typeof value === "number" ? value :
                          R.is(String, value) ? value : JSON.stringify(value);
-    const nameField = encodeToField(key);
-    const valueField = encodeToField(valueForHash);
+    const nameField = toScalar(key);
+    const valueField = toScalar(valueForHash);
 
     const preimage: LeafPreimage = {
       name: key,
@@ -85,6 +97,7 @@ const computeLeaves = (
 
 type TreeResult = Readonly<{
   root: bigint;
+  depth: number;
   inclusionProofs: ReadonlyArray<InclusionProof>;
 }>;
 
@@ -100,6 +113,7 @@ const buildMerkleTree = (
     const leaf = leaves[0] ?? 0n;
     return {
       root: leaf,
+      depth: 0,
       inclusionProofs: [{ siblings: [], indices: [] }],
     };
   }
@@ -151,7 +165,7 @@ const buildMerkleTree = (
     return { siblings, indices };
   }, leafCount);
 
-  return { root, inclusionProofs };
+  return { root, depth, inclusionProofs };
 };
 
 // ---------------------------------------------------------------------------
@@ -162,6 +176,8 @@ export type CommitResult = Readonly<{
   root: string;
   leaves: ReadonlyArray<string>;
   randomness: string;
+  /** Depth of the Merkle tree (0 for a single leaf, 1 for 2 leaves, etc.). */
+  depth: number;
   inclusionProofs: ReadonlyArray<InclusionProof>;
   leafPreimages: ReadonlyArray<LeafPreimage>;
 }>;
@@ -184,12 +200,13 @@ export const commitNormalized = (
           randomness,
         );
 
-        const { root, inclusionProofs } = buildMerkleTree(leafResult.leaves, null);
+        const { root, depth, inclusionProofs } = buildMerkleTree(leafResult.leaves, null);
 
         return Promise.resolve({
           root: toHex(root),
           leaves: R.map((leaf: bigint) => toHex(leaf), leafResult.leaves),
           randomness: `0x${randomness}`,
+          depth,
           inclusionProofs,
           leafPreimages: leafResult.preimages,
         });

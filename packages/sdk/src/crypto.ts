@@ -15,6 +15,18 @@ import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
 
+/**
+ * Derive the compressed secp256k1 public key from a private key.
+ *
+ * Accepts a 32-byte hex string with or without `0x` prefix.
+ * Returns a 33-byte compressed public key as a hex string (no `0x` prefix).
+ */
+export const derivePublicKey = (privateKey: string): string => {
+  const stripped = privateKey.startsWith("0x") ? privateKey.slice(2) : privateKey;
+  const privBytes = Uint8Array.from(Buffer.from(stripped, "hex"));
+  return bytesToHex(secp256k1.getPublicKey(privBytes, true));
+};
+
 export type EncryptionAlgorithm = "aes-256-gcm"; // default; additional algorithms reserved for future use
 
 export type EncryptInput = Readonly<{
