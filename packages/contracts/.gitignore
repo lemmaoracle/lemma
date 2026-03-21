@@ -2,6 +2,7 @@
 /out/
 /cache_forge/
 /cache/
+/lib/
 
 # Dependencies
 /node_modules/
