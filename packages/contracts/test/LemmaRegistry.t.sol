@@ -21,11 +21,13 @@ contract LemmaRegistryTest is Test {
     subjectHash = keccak256("did:mizu:report:1234");
   }
 
-  function _emptyHooks() internal pure returns (LemmaRegistry.HookCall[] memory) {
-    return new LemmaRegistry.HookCall[](0);
+  function _emptyAttrs() internal pure returns (string[] memory names, string[] memory values) {
+    names = new string[](0);
+    values = new string[](0);
   }
 
   function _register() internal {
+    (string[] memory names, string[] memory values) = _emptyAttrs();
     registry.registerDocument(
       DOC_HASH,
       ROOT,
@@ -33,7 +35,8 @@ contract LemmaRegistryTest is Test {
       issuerHash,
       subjectHash,
       REVOCATION_ROOT,
-      _emptyHooks()
+      names,
+      values
     );
   }
 
@@ -70,6 +73,7 @@ contract LemmaRegistryTest is Test {
     vm.expectRevert(
       abi.encodeWithSelector(LemmaRegistry.DocumentAlreadyRegistered.selector, DOC_HASH)
     );
+    (string[] memory names, string[] memory values) = _emptyAttrs();
     registry.registerDocument(
       DOC_HASH,
       ROOT,
@@ -77,12 +81,14 @@ contract LemmaRegistryTest is Test {
       issuerHash,
       subjectHash,
       REVOCATION_ROOT,
-      _emptyHooks()
+      names,
+      values
     );
   }
 
   function test_registerDocument_revertsOnZeroDocHash() public {
     vm.expectRevert(LemmaRegistry.InvalidDocHash.selector);
+    (string[] memory names, string[] memory values) = _emptyAttrs();
     registry.registerDocument(
       bytes32(0),
       ROOT,
@@ -90,7 +96,8 @@ contract LemmaRegistryTest is Test {
       issuerHash,
       subjectHash,
       REVOCATION_ROOT,
-      _emptyHooks()
+      names,
+      values
     );
   }
 
@@ -100,5 +107,83 @@ contract LemmaRegistryTest is Test {
     _register();
 
     assertTrue(registry.isRegistered(DOC_HASH));
+  }
+
+  function test_registerDocument_emitsNormalizedDataPublished() public {
+    string[] memory attrNames = new string[](2);
+    attrNames[0] = "patrolType";
+    attrNames[1] = "location";
+
+    string[] memory attrValues = new string[](2);
+    attrValues[0] = "river";
+    attrValues[1] = "Tokyo";
+
+    vm.expectEmit(true, true, false, true, address(registry));
+    emit LemmaRegistry.NormalizedDataPublished(
+      DOC_HASH,
+      SCHEMA_HASH,
+      attrNames,
+      attrValues
+    );
+
+    registry.registerDocument(
+      DOC_HASH,
+      ROOT,
+      SCHEMA_HASH,
+      issuerHash,
+      subjectHash,
+      REVOCATION_ROOT,
+      attrNames,
+      attrValues
+    );
+  }
+
+  function test_registerDocument_noNormalizedDataWhenEmpty() public {
+    // Register with empty arrays - should NOT emit NormalizedDataPublished
+    vm.expectEmit(true, true, true, true, address(registry));
+    emit LemmaRegistry.DocumentRegistered(
+      DOC_HASH,
+      ROOT,
+      SCHEMA_HASH,
+      issuerHash,
+      subjectHash,
+      REVOCATION_ROOT
+    );
+
+    (string[] memory names, string[] memory values) = _emptyAttrs();
+    registry.registerDocument(
+      DOC_HASH,
+      ROOT,
+      SCHEMA_HASH,
+      issuerHash,
+      subjectHash,
+      REVOCATION_ROOT,
+      names,
+      values
+    );
+
+    // Verify document was registered
+    assertTrue(registry.isRegistered(DOC_HASH));
+  }
+
+  function test_registerDocument_revertsOnMismatchedAttributeArrays() public {
+    string[] memory attrNames = new string[](2);
+    attrNames[0] = "patrolType";
+    attrNames[1] = "location";
+
+    string[] memory attrValues = new string[](1);
+    attrValues[0] = "river";
+
+    vm.expectRevert(LemmaRegistry.MismatchedAttributeArrays.selector);
+    registry.registerDocument(
+      DOC_HASH,
+      ROOT,
+      SCHEMA_HASH,
+      issuerHash,
+      subjectHash,
+      REVOCATION_ROOT,
+      attrNames,
+      attrValues
+    );
   }
 }

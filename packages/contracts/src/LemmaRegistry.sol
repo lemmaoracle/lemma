@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "./interfaces/ILemmaHook.sol";
-
 /**
  * @title LemmaRegistry
  * @notice On-chain provenance for encrypted documents.
  *         Whitepaper §2.7, §3.1 Layer 1.
  *
  *         Stores (docHash → DocumentProvenance) and emits events.
- *         Optionally calls hook contracts after registration.
+ *         Optionally publishes normalized data (attrNames/attrValues) on-chain.
  */
 contract LemmaRegistry {
   /* ── Types ──────────────────────────────────────────────────── */
@@ -22,11 +20,6 @@ contract LemmaRegistry {
     bytes32 subjectHash;
     bytes32 revocationRoot;
     uint256 registeredAt;
-  }
-
-  struct HookCall {
-    address target;
-    // If target == address(0), the hook is skipped.
   }
 
   /* ── State ──────────────────────────────────────────────────── */
@@ -44,12 +37,18 @@ contract LemmaRegistry {
     bytes32 revocationRoot
   );
 
-  event HookExecuted(bytes32 indexed docHash, address indexed hookTarget, bool success);
+  event NormalizedDataPublished(
+    bytes32 indexed docHash,
+    bytes32 indexed schemaIdHash,
+    string[] attrNames,
+    string[] attrValues
+  );
 
   /* ── Errors ─────────────────────────────────────────────────── */
 
   error DocumentAlreadyRegistered(bytes32 docHash);
   error InvalidDocHash();
+  error MismatchedAttributeArrays();
 
   /* ── External ───────────────────────────────────────────────── */
 
@@ -61,7 +60,8 @@ contract LemmaRegistry {
    * @param issuerHash         keccak256 of the issuer identifier (DID, address, etc.).
    * @param subjectHash        keccak256 of the subject/holder identifier.
    * @param revocationRoot     Merkle root for revocation bitmap.
-   * @param hooks              Array of hook contracts to call after registration.
+   * @param attrNames          Array of normalized attribute names.
+   * @param attrValues         Array of normalized attribute values (as strings).
    */
   function registerDocument(
     bytes32 docHash,
@@ -70,13 +70,17 @@ contract LemmaRegistry {
     bytes32 issuerHash,
     bytes32 subjectHash,
     bytes32 revocationRoot,
-    HookCall[] calldata hooks
+    string[] calldata attrNames,
+    string[] calldata attrValues
   ) external {
     if (docHash == bytes32(0)) {
       revert InvalidDocHash();
     }
     if (documents[docHash].docHash != bytes32(0)) {
       revert DocumentAlreadyRegistered(docHash);
+    }
+    if (attrNames.length != attrValues.length) {
+      revert MismatchedAttributeArrays();
     }
 
     documents[docHash] = DocumentProvenance({
@@ -91,25 +95,9 @@ contract LemmaRegistry {
 
     emit DocumentRegistered(docHash, commitmentRoot, schemaIdHash, issuerHash, subjectHash, revocationRoot);
 
-    // Execute hooks (Whitepaper §2.7)
-    for (uint256 i = 0; i < hooks.length; i++) {
-      if (hooks[i].target != address(0)) {
-        // Use try/catch to prevent hook failure from reverting registration
-        try
-          ILemmaHook(hooks[i].target).onLemmaDocumentRegistered(
-            docHash,
-            commitmentRoot,
-            schemaIdHash,
-            issuerHash,
-            subjectHash,
-            revocationRoot
-          )
-        {
-          emit HookExecuted(docHash, hooks[i].target, true);
-        } catch {
-          emit HookExecuted(docHash, hooks[i].target, false);
-        }
-      }
+    // Emit normalized data if present
+    if (attrNames.length > 0) {
+      emit NormalizedDataPublished(docHash, schemaIdHash, attrNames, attrValues);
     }
   }
 
