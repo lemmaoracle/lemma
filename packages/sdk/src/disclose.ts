@@ -294,21 +294,76 @@ export const verifyProof = async (
 /* eslint-enable @typescript-eslint/require-await */
 
 /**
- * Wrap a RevealOutput into the spec's SelectiveDisclosure envelope.
+ * Context from the signing / reveal flow needed to make the
+ * SelectiveDisclosure envelope self-verifiable.
  */
-export const toSelectiveDisclosure = (output: RevealOutput): SelectiveDisclosure => ({
+export type RevealContext = Readonly<{
+  /** Issuer BLS12-381 public key (96 bytes). */
+  publicKey: Uint8Array;
+  /** Header bytes used during BBS+ signing. */
+  header: Uint8Array;
+  /** Total number of messages in the original BBS+ signature. */
+  count: number;
+}>;
+
+/**
+ * Wrap a RevealOutput into the spec's SelectiveDisclosure envelope.
+ *
+ * The RevealContext supplies the issuer public key, header, and total
+ * message count so that any third-party verifier can later call
+ * `disclose.verifyProof` using only the data inside the envelope.
+ */
+export const toSelectiveDisclosure = (
+  output: RevealOutput,
+  context: RevealContext,
+): SelectiveDisclosure => ({
   format: "bbs+",
   attributes: output.disclosed,
   proof: bytesToHex(output.proof),
+  publicKey: bytesToHex(context.publicKey),
+  indexes: output.indexes,
+  count: context.count,
+  header: bytesToHex(context.header),
+});
+
+/**
+ * Reconstruct a VerifyProofInput from a persisted SelectiveDisclosure.
+ *
+ * This is the inverse of `toSelectiveDisclosure` — it converts the
+ * hex-encoded envelope back into the binary form that `verifyProof`
+ * expects, enabling any party to verify the BBS+ proof independently.
+ */
+export const fromSelectiveDisclosure = (
+  sd: SelectiveDisclosure,
+): VerifyProofInput => ({
+  proof: hexToBytes(sd.proof),
+  publicKey: hexToBytes(sd.publicKey),
+  messages: R.pipe(
+    Object.entries,
+    R.sort<[string, unknown]>(R.comparator((a, b) => a[0] < b[0])),
+    R.map(([k, v]: [string, unknown]) => `${k}:${String(v)}`),
+  )(sd.attributes),
+  indexes: [...sd.indexes],
+  count: sd.count,
+  header: hexToBytes(sd.header),
 });
 
 /* ------------------------------------------------------------------ */
 /*  Helper functions                                                   */
 /* ------------------------------------------------------------------ */
 
-// Helper function for hex conversion
-const bytesToHex = (bytes: Uint8Array): string => {
-  return Array.from(bytes)
+const bytesToHex = (bytes: Uint8Array): string =>
+  Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
+
+const hexToBytes = (hex: string): Uint8Array => {
+  const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
+  const bytes = new Uint8Array(clean.length / 2);
+  // eslint-disable-next-line functional/no-loop-statements, functional/no-let
+  for (let i = 0; i < clean.length; i += 2) {
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
+  }
+  return bytes;
 };

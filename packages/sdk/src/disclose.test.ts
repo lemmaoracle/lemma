@@ -8,6 +8,7 @@ import {
   reveal,
   verifyProof,
   toSelectiveDisclosure,
+  fromSelectiveDisclosure,
   payloadToMessages,
   messagesToDisclosedMap,
 } from "./disclose.js";
@@ -191,7 +192,7 @@ describe("disclose", () => {
   });
 
   describe("toSelectiveDisclosure", () => {
-    it("wraps RevealOutput in spec-compliant format", async () => {
+    it("wraps RevealOutput in spec-compliant format with verification metadata", async () => {
       const kp = await generateKeyPair({ keyInfo: header });
       const messages = ["age:25", "name:Alice"];
 
@@ -210,11 +211,90 @@ describe("disclose", () => {
         header,
       });
 
-      const sd = toSelectiveDisclosure(revealed);
+      const sd = toSelectiveDisclosure(revealed, {
+        publicKey: signed.publicKey,
+        header,
+        count: messages.length,
+      });
       expect(sd.format).toBe("bbs+");
       expect(sd.attributes).toEqual(revealed.disclosed);
       expect(typeof sd.proof).toBe("string");
       expect(sd.proof.length).toBeGreaterThan(0);
+      expect(typeof sd.publicKey).toBe("string");
+      expect(sd.publicKey.length).toBe(192); // 96 bytes = 192 hex chars
+      expect(sd.indexes).toEqual([0]);
+      expect(sd.count).toBe(2);
+      expect(typeof sd.header).toBe("string");
+      expect(sd.header.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("fromSelectiveDisclosure", () => {
+    it("round-trip: toSelectiveDisclosure -> fromSelectiveDisclosure -> verifyProof", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "country:JP", "name:Alice"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const revealed = await reveal(client, {
+        signature: signed.signature,
+        messages,
+        publicKey: signed.publicKey,
+        indexes: [0, 2],
+        header,
+      });
+
+      // Serialize to SelectiveDisclosure (as stored in D1)
+      const sd = toSelectiveDisclosure(revealed, {
+        publicKey: signed.publicKey,
+        header,
+        count: messages.length,
+      });
+
+      // Deserialize back to VerifyProofInput (as a third-party verifier would)
+      const verifyInput = fromSelectiveDisclosure(sd);
+
+      // Verify the BBS+ proof using only data from the envelope
+      const valid = await verifyProof(client, verifyInput);
+      expect(valid).toBe(true);
+    });
+
+    it("verification fails when attributes are tampered with", async () => {
+      const kp = await generateKeyPair();
+      const messages = ["age:25", "name:Alice"];
+
+      const signed = await sign(client, {
+        messages,
+        secretKey: kp.secretKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const revealed = await reveal(client, {
+        signature: signed.signature,
+        messages,
+        publicKey: signed.publicKey,
+        indexes: [0],
+        header,
+      });
+
+      const sd = toSelectiveDisclosure(revealed, {
+        publicKey: signed.publicKey,
+        header,
+        count: messages.length,
+      });
+
+      // Tamper with the disclosed attribute value
+      const tampered = { ...sd, attributes: { age: "99" } };
+      const verifyInput = fromSelectiveDisclosure(tampered);
+
+      const valid = await verifyProof(client, verifyInput);
+      expect(valid).toBe(false);
     });
   });
 });

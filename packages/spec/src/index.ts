@@ -166,6 +166,14 @@ export type SelectiveDisclosure = Readonly<{
   format: "bbs+" | "opaque";
   attributes: Readonly<Record<string, unknown>>;
   proof: string;
+  /** Issuer BLS12-381 public key (hex). Required for BBS+ proof verification. */
+  publicKey: string;
+  /** Indexes of disclosed messages within the original signed message array. */
+  indexes: ReadonlyArray<number>;
+  /** Total number of messages in the original BBS+ signature. */
+  count: number;
+  /** Header bytes used during BBS+ signing (hex). */
+  header: string;
 }>;
 
 export type SubmitProofRequest = Readonly<{
