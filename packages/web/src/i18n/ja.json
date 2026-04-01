@@ -141,6 +141,8 @@
       "before4Text": "データ品質不安で活用が進まない",
       "before5Label": "対外証明",
       "before5Text": "機密情報ごと開示するか、証明を諦めるか",
+      "before6Label": "ロイヤルカスタマー認証",
+      "before6Text": "コミュニティ管理・認証を手動",
       "after1Label": "データ確認",
       "after1Text": "オラクルが自動収集・検証",
       "after2Label": "承認プロセス",
@@ -150,7 +152,9 @@
       "after4Label": "AI活用",
       "after4Text": "検証済み基盤の上でAIを安全に展開",
       "after5Label": "対外証明",
-      "after5Text": "ZKPで「事実だけ」を証明、機密は守る"
+      "after5Text": "ZKPで「事実だけ」を証明、機密は守る",
+      "after6Label": "ロイヤルカスタマー認証",
+      "after6Text": "VC自動発行・ステータス証明（ZKPで機密保護）"
     },
     "checklist": {
       "label": "自己診断",

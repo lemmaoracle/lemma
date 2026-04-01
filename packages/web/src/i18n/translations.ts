@@ -146,6 +146,8 @@ export interface Translations {
       readonly before4Text: string;
       readonly before5Label: string;
       readonly before5Text: string;
+      readonly before6Label: string;
+      readonly before6Text: string;
       readonly after1Label: string;
       readonly after1Text: string;
       readonly after2Label: string;
@@ -156,6 +158,8 @@ export interface Translations {
       readonly after4Text: string;
       readonly after5Label: string;
       readonly after5Text: string;
+      readonly after6Label: string;
+      readonly after6Text: string;
     }>;
     readonly checklist: Readonly<{
       readonly label: string;

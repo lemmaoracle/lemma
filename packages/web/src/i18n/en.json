@@ -141,6 +141,8 @@
       "before4Text": "Stalled due to data quality concerns",
       "before5Label": "External Proof",
       "before5Text": "Either disclose confidential info or give up proving",
+      "before6Label": "Loyal Customer Authentication",
+      "before6Text": "Manual community management and authentication",
       "after1Label": "Data Verification",
       "after1Text": "Oracle automatically collects and verifies",
       "after2Label": "Approval Process",
@@ -150,7 +152,9 @@
       "after4Label": "AI Utilization",
       "after4Text": "Safely deploy AI on verified foundation",
       "after5Label": "External Proof",
-      "after5Text": "Prove only 'facts' via ZKP, keep confidentiality"
+      "after5Text": "Prove only 'facts' via ZKP, keep confidentiality",
+      "after6Label": "Loyal Customer Authentication",
+      "after6Text": "VC auto-issuance and status proof (confidentiality protected via ZKP)"
     },
     "checklist": {
       "label": "Self-Assessment",

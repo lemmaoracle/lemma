@@ -66,14 +66,14 @@
   --color-surface-offset: #242220;
   --color-divider: #2a2927;
   --color-border: #333130;
-  --color-text: #d0cecc;
+  --color-text: #b8b6b3;
   --color-text-muted: #7a7876;
   --color-text-faint: #504e4c;
   --color-text-inverse: #2b2a28;
-  --color-primary: #4fa8b3;
+  --color-primary: #1c9e7a;
   --color-primary-hover: #3d8f9a;
   --color-primary-highlight: #1e3535;
-  --color-accent-deep: #7dcdd4;
+  --color-accent-deep: #263834;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45);
@@ -275,7 +275,7 @@ html[lang="ja"] {
   align-items: center;
   gap: var(--space-2);
   background: var(--color-primary-highlight);
- 25|color: var(--color-primary);
+  25|color: var(--color-primary);
   padding: var(--space-1) var(--space-4);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
@@ -460,7 +460,7 @@ html[lang="ja"] {
 }
 
 [data-theme="dark"] .stat-num {
-  color: #4fa8b3;
+  color: #e9eeee;
 }
 
 .stat-desc {
@@ -948,7 +948,7 @@ html[lang="ja"] {
 }
 
 .footer-logo svg {
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 .footer-text {
