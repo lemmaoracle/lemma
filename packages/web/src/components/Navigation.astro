@@ -23,16 +23,15 @@ const homePath = base || "/";
       <LemmaOracle class="h-12 w-auto text-black" />
     </a>
     <ul class="flex items-center gap-6 text-sm tracking-wide uppercase">
-      <li><a href={homePath} class="opacity-50 transition-opacity">{t.overview}</a></li>
+      <li>
+        <a href={`${base}/services`} class="transition-opacity hover:opacity-50">{t.services}</a>
+      </li>
       <li><a href={homePath} class="opacity-50 transition-opacity">{t.changelog}</a></li>
       <li>
         <a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a>
       </li>
       <li><a href={blogPath} class="transition-opacity hover:opacity-50">{t.blog}</a></li>
       <li><a href={faqPath} class="transition-opacity hover:opacity-50">{t.faq}</a></li>
-      <li>
-        <a href={`${base}/services`} class="transition-opacity hover:opacity-50">{t.services}</a>
-      </li>
       <li class="text-black/40">
         {
           locale === "ja" ? (

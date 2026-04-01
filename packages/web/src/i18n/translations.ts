@@ -181,6 +181,7 @@ export interface Translations {
       readonly wpContent2: string;
       readonly wpContent3: string;
       readonly wpContent4: string;
+      readonly hubspotFormUrl: string;
     }>;
     readonly nav: Readonly<{
       readonly whitepaperDownload: string;
