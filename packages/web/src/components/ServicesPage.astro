@@ -1,0 +1,472 @@
+---
+import type { Translations } from "../i18n/translations";
+import "../styles/services.css";
+
+interface Props {
+  locale: "en" | "ja";
+  t: Translations;
+}
+
+const { locale, t } = Astro.props;
+const s = t.services;
+
+// SVG icons as strings for reusability
+const downloadIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+const arrowRightIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+
+const checkIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+const shieldIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+
+const lockIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+
+const alertIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+const smallCheckIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+const logoIcon = `<svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M8 14l4 4 8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const moonIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+const sunIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
+
+const scrollIcon = `<svg width="16" height="24" viewBox="0 0 16 24" fill="none"><rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="7" r="2" fill="currentColor"/></svg>`;
+
+const baArrowIcon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+
+const resultCheckIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+
+const trustedIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+
+const smallShieldIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+---
+
+<div class="lp-services">
+  <!-- SKIP LINK -->
+  <a class="sr-only" href="#main">{s.skipLink}</a>
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-logo" aria-label="Lemma Oracle Home">
+      <Fragment set:html={logoIcon} />
+      Lemma Oracle
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" data-theme-toggle aria-label={s.nav.darkModeToggle}>
+        <Fragment set:html={moonIcon} />
+      </button>
+      <a href="#download" class="nav-cta">{s.nav.whitepaperDownload}</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-inner">
+        <h1 class="hero-title" id="hero-heading">
+          <Fragment set:html={s.hero.title.replace(/「(.+?)」/g, "<em>$1</em>")} />
+        </h1>
+        <p class="hero-sub">{s.hero.sub}</p>
+        <p class="hero-stat">
+          <strong
+            >{
+              s.hero.stat
+                .replace(/^.*?「(.+?)」.*$/, "$1")
+                .replace(/約(\d+割)/, "About $1")
+                .replace(/国内大企業の/, "")
+            }</strong
+          >
+        </p>
+        <div class="hero-actions">
+          <a href="#download" class="btn-primary">
+            <Fragment set:html={downloadIcon} />
+            {s.hero.ctaDownload}
+          </a>
+          <a href="#problem" class="btn-ghost">
+            {s.hero.linkDetails}
+            <Fragment set:html={arrowRightIcon} />
+          </a>
+        </div>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">
+        <Fragment set:html={scrollIcon} />
+        {s.hero.scroll}
+      </div>
+    </section>
+
+    <!-- STATS BAND -->
+    <div class="stats-band" role="region" aria-label="Key statistics">
+      <div class="stats-grid">
+        <div class="stat-item reveal">
+          <span class="stat-num">{s.stats.stat1Num}</span>
+          <span class="stat-desc">{s.stats.stat1Desc}</span>
+        </div>
+        <div class="stat-item reveal">
+          <span class="stat-num">{s.stats.stat2Num}</span>
+          <span class="stat-desc">{s.stats.stat2Desc}</span>
+        </div>
+        <div class="stat-item reveal">
+          <span class="stat-num">{s.stats.stat3Num}</span>
+          <span class="stat-desc">{s.stats.stat3Desc}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM -->
+    <section class="section problem-bg" id="problem" aria-labelledby="problem-heading">
+      <div class="section-inner">
+        <p class="section-label">{s.problem.label}</p>
+        <h2 class="section-title" id="problem-heading">{s.problem.title}</h2>
+        <p class="section-lead">{s.problem.lead}</p>
+        <table
+          class="issue-table"
+          role="table"
+          aria-label="AI adoption challenges and response rates"
+        >
+          <thead>
+            <tr>
+              <th scope="col">{s.problem.tableHeaderCategory}</th>
+              <th scope="col">{s.problem.tableHeaderContent}</th>
+              <th scope="col" style="text-align: right">{s.problem.tableHeaderRate}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="reveal">
+              <td><span class="issue-tag">{s.problem.issue1Tag}</span></td>
+              <td>{s.problem.issue1Content}</td>
+              <td style="text-align: right"><span class="issue-num">55%</span></td>
+            </tr>
+            <tr class="reveal">
+              <td><span class="issue-tag">{s.problem.issue2Tag}</span></td>
+              <td>{s.problem.issue2Content}</td>
+              <td style="text-align: right"><span class="issue-num">51%</span></td>
+            </tr>
+            <tr class="reveal">
+              <td><span class="issue-tag">{s.problem.issue3Tag}</span></td>
+              <td>{s.problem.issue3Content}</td>
+              <td style="text-align: right"><span class="issue-num">46%</span></td>
+            </tr>
+            <tr class="reveal">
+              <td><span class="issue-tag">{s.problem.issue4Tag}</span></td>
+              <td>{s.problem.issue4Content}</td>
+              <td style="text-align: right"><span class="issue-num">40%</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="highlight-box reveal" role="note">
+          <p set:html={s.problem.highlight} />
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 WALLS -->
+    <section class="section" aria-labelledby="walls-heading">
+      <div class="section-inner">
+        <p class="section-label">{s.walls.label}</p>
+        <h2 class="section-title" id="walls-heading">{s.walls.title}</h2>
+        <div class="walls-grid">
+          <div class="wall-card reveal">
+            <div class="wall-icon" aria-hidden="true">
+              <Fragment set:html={shieldIcon} />
+            </div>
+            <p class="wall-num">{s.walls.wall1Num}</p>
+            <h3 class="wall-title">{s.walls.wall1Title}</h3>
+            <p class="wall-body">{s.walls.wall1Body}</p>
+          </div>
+          <div class="wall-card reveal">
+            <div class="wall-icon" aria-hidden="true">
+              <Fragment set:html={lockIcon} />
+            </div>
+            <p class="wall-num">{s.walls.wall2Num}</p>
+            <h3 class="wall-title">{s.walls.wall2Title}</h3>
+            <p class="wall-body">{s.walls.wall2Body}</p>
+          </div>
+          <div class="wall-card reveal">
+            <div class="wall-icon" aria-hidden="true">
+              <Fragment set:html={alertIcon} />
+            </div>
+            <p class="wall-num">{s.walls.wall3Num}</p>
+            <h3 class="wall-title">{s.walls.wall3Title}</h3>
+            <p class="wall-body">{s.walls.wall3Body}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="section solution-bg" id="solution" aria-labelledby="solution-heading">
+      <div class="section-inner">
+        <p class="section-label">{s.solution.label}</p>
+        <h2 class="section-title" id="solution-heading">{s.solution.title}</h2>
+        <p class="section-lead">{s.solution.lead}</p>
+        <div class="functions-grid">
+          <div class="func-card reveal">
+            <p class="func-num">{s.solution.func1Num}</p>
+            <h3 class="func-name">{s.solution.func1Name}</h3>
+            <p class="func-en">Normalize</p>
+            <p class="func-desc">{s.solution.func1Desc}</p>
+          </div>
+          <div class="func-card reveal">
+            <p class="func-num">{s.solution.func2Num}</p>
+            <h3 class="func-name">{s.solution.func2Name}</h3>
+            <p class="func-en">Commit</p>
+            <p class="func-desc">{s.solution.func2Desc}</p>
+          </div>
+          <div class="func-card reveal">
+            <p class="func-num">{s.solution.func3Num}</p>
+            <h3 class="func-name">{s.solution.func3Name}</h3>
+            <p class="func-en">Prove</p>
+            <p class="func-desc">{s.solution.func3Desc}</p>
+          </div>
+        </div>
+        <div class="trusted-badge reveal" role="note">
+          <Fragment set:html={trustedIcon} />
+          <span set:html={s.solution.badge.replace(/「(.+?)」/g, '<strong>"$1"</strong>')} />
+        </div>
+      </div>
+    </section>
+
+    <!-- BEFORE / AFTER -->
+    <section class="section" aria-labelledby="ba-heading">
+      <div class="section-inner">
+        <p class="section-label">{s.beforeAfter.label}</p>
+        <h2 class="section-title" id="ba-heading">{s.beforeAfter.title}</h2>
+        <div class="ba-outer">
+          <div>
+            <div class="ba-col-label ba-before-label">{s.beforeAfter.beforeLabel}</div>
+            <div class="ba-col" style="margin-top: var(--space-2)">
+              <div class="ba-item ba-before-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.before1Label}</p>
+                <p>{s.beforeAfter.before1Text}</p>
+              </div>
+              <div class="ba-item ba-before-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.before2Label}</p>
+                <p>{s.beforeAfter.before2Text}</p>
+              </div>
+              <div class="ba-item ba-before-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.before3Label}</p>
+                <p>{s.beforeAfter.before3Text}</p>
+              </div>
+              <div class="ba-item ba-before-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.before4Label}</p>
+                <p>{s.beforeAfter.before4Text}</p>
+              </div>
+              <div class="ba-item ba-before-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.before5Label}</p>
+                <p>{s.beforeAfter.before5Text}</p>
+              </div>
+            </div>
+          </div>
+          <div class="ba-arrow" aria-hidden="true">
+            <Fragment set:html={baArrowIcon} />
+          </div>
+          <div>
+            <div class="ba-col-label ba-after-label">{s.beforeAfter.afterLabel}</div>
+            <div class="ba-col" style="margin-top: var(--space-2)">
+              <div class="ba-item ba-after-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.after1Label}</p>
+                <p>{s.beforeAfter.after1Text}</p>
+              </div>
+              <div class="ba-item ba-after-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.after2Label}</p>
+                <p>{s.beforeAfter.after2Text}</p>
+              </div>
+              <div class="ba-item ba-after-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.after3Label}</p>
+                <p>{s.beforeAfter.after3Text}</p>
+              </div>
+              <div class="ba-item ba-after-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.after4Label}</p>
+                <p>{s.beforeAfter.after4Text}</p>
+              </div>
+              <div class="ba-item ba-after-item reveal">
+                <p class="ba-item-label">{s.beforeAfter.after5Label}</p>
+                <p>{s.beforeAfter.after5Text}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section class="section check-bg" aria-labelledby="check-heading">
+      <div class="section-inner">
+        <p class="section-label">{s.checklist.label}</p>
+        <h2 class="section-title" id="check-heading">{s.checklist.title}</h2>
+        <p class="section-lead">{s.checklist.lead}</p>
+        <ul class="checklist" id="checklist" role="list" aria-label="Challenge checklist">
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item1}</span>
+          </li>
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item2}</span>
+          </li>
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item3}</span>
+          </li>
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item4}</span>
+          </li>
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item5}</span>
+          </li>
+          <li tabindex="0" role="checkbox" aria-checked="false">
+            <span class="check-box" aria-hidden="true"></span>
+            <span>{s.checklist.item6}</span>
+          </li>
+        </ul>
+        <div class="check-result" id="check-result" role="alert" aria-live="polite">
+          <Fragment set:html={resultCheckIcon} />
+          <span id="check-result-text"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA / DOWNLOAD -->
+    <section class="cta-section" id="download" aria-labelledby="cta-heading">
+      <div
+        class="cta-glow"
+        style="width: 700px; height: 700px; top: -250px; right: -200px"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="cta-glow"
+        style="width: 500px; height: 500px; bottom: -200px; left: -150px"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="cta-inner">
+        <h2 class="cta-title" id="cta-heading" set:html={s.cta.title} />
+        <p class="cta-desc">{s.cta.desc}</p>
+        <div class="wp-contents" role="list" aria-label="Whitepaper contents">
+          <div class="wp-item" role="listitem">
+            <Fragment set:html={smallShieldIcon} />
+            <span>{s.cta.wpContent1}</span>
+          </div>
+          <div class="wp-item" role="listitem">
+            <Fragment set:html={smallShieldIcon} />
+            <span>{s.cta.wpContent2}</span>
+          </div>
+          <div class="wp-item" role="listitem">
+            <Fragment set:html={smallShieldIcon} />
+            <span>{s.cta.wpContent3}</span>
+          </div>
+          <div class="wp-item" role="listitem">
+            <Fragment set:html={smallShieldIcon} />
+            <span>{s.cta.wpContent4}</span>
+          </div>
+        </div>
+        <div class="hubspot-form-wrap">
+          <iframe
+            src="https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q"
+            title="Whitepaper download form"
+            width="100%"
+            style="border: none; min-height: 420px; border-radius: var(--radius-lg); overflow: hidden;"
+            loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="services-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <Fragment set:html={logoIcon} />
+        Lemma Oracle
+      </div>
+      <p class="footer-text">{s.footer.copyright}</p>
+      <div class="footer-contact">
+        {s.footer.contact}
+        <a href="mailto:support@frame00.com" target="_blank" rel="noopener noreferrer"
+          >{s.footer.contactEmail}</a
+        >
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script is:inline>
+  // Theme toggle
+  (function () {
+    const t = document.querySelector("[data-theme-toggle]");
+    const r = document.documentElement;
+    let d = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+    r.setAttribute("data-theme", d);
+    const sun =
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+    const moon =
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    if (t) {
+      t.innerHTML = d === "dark" ? sun : moon;
+      t.addEventListener("click", () => {
+        d = d === "dark" ? "light" : "dark";
+        r.setAttribute("data-theme", d);
+        t.innerHTML = d === "dark" ? sun : moon;
+        t.setAttribute("aria-label", d === "dark" ? s.nav.lightModeToggle : s.nav.darkModeToggle);
+      });
+    }
+  })();
+
+  // Checklist
+  (function () {
+    const items = document.querySelectorAll("#checklist li");
+    const result = document.getElementById("check-result");
+    const resultText = document.getElementById("check-result-text");
+    const checkSvg =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+    function update() {
+      const n = document.querySelectorAll("#checklist li.checked").length;
+      if (n >= 1) {
+        result.classList.add("show");
+        resultText.textContent = n + (s.checklist.resultPrefix || " ") + s.checklist.resultSuffix;
+      } else {
+        result.classList.remove("show");
+      }
+    }
+    items.forEach((item) => {
+      function toggle() {
+        item.classList.toggle("checked");
+        const c = item.classList.contains("checked");
+        item.setAttribute("aria-checked", c);
+        item.querySelector(".check-box").innerHTML = c ? checkSvg : "";
+        update();
+      }
+      item.addEventListener("click", toggle);
+      item.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+
+  // Scroll reveal
+  (function () {
+    if (!("IntersectionObserver" in window)) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    document.querySelectorAll(".reveal").forEach((el, i) => {
+      el.style.transitionDelay = (i % 5) * 60 + "ms";
+      obs.observe(el);
+    });
+  })();
+</script>

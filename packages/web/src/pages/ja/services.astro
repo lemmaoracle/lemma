@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ServicesPage from "../../components/ServicesPage.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+---
+
+<Layout locale={locale} title={t.services.title} description={t.services.hero.sub}>
+  <ServicesPage locale={locale} t={t} />
+</Layout>

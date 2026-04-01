@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lemma Oracle — エージェントAIのデータ信頼基盤</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root,
+      [data-theme="light"] {
+        --color-bg: #f7f6f2;
+        --color-surface: #f9f8f5;
+        --color-surface-2: #fbfbf9;
+        --color-surface-offset: #f0ede8;
+        --color-divider: #dcd9d5;
+        --color-border: #d4d1ca;
+        --color-text: #1c1a14;
+        --color-text-muted: #6b6a66;
+        --color-text-faint: #b0afab;
+        --color-text-inverse: #f9f8f4;
+        --color-primary: #01696f;
+        --color-primary-hover: #0c4e54;
+        --color-primary-highlight: #cedcd8;
+        --color-accent-deep: #0a3d40;
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-full: 9999px;
+        --shadow-sm: 0 1px 3px rgba(30, 24, 10, 0.07);
+        --shadow-md: 0 4px 16px rgba(30, 24, 10, 0.09);
+        --shadow-lg: 0 12px 40px rgba(30, 24, 10, 0.13);
+        --font-display: "Noto Serif JP", "Georgia", serif;
+        --font-body: "Noto Sans JP", "Helvetica Neue", sans-serif;
+        --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+        --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+        --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+        --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+        --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+        --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+        --text-hero: clamp(2.2rem, 0.5rem + 5.5vw, 5.5rem);
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.25rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-10: 2.5rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        --space-20: 5rem;
+        --space-24: 6rem;
+        --content-narrow: 640px;
+        --content-default: 960px;
+        --content-wide: 1200px;
+        --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      [data-theme="dark"] {
+        --color-bg: #121110;
+        --color-surface: #181715;
+        --color-surface-2: #1e1d1b;
+        --color-surface-offset: #242220;
+        --color-divider: #2a2927;
+        --color-border: #333130;
+        --color-text: #d0cecc;
+        --color-text-muted: #7a7876;
+        --color-text-faint: #504e4c;
+        --color-text-inverse: #2b2a28;
+        --color-primary: #4fa8b3;
+        --color-primary-hover: #3d8f9a;
+        --color-primary-highlight: #1e3535;
+        --color-accent-deep: #7dcdd4;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+        --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: var(--space-16);
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        font-family: var(--font-body);
+        font-size: var(--text-base);
+        color: var(--color-text);
+        background: var(--color-bg);
+        line-height: 1.75;
+        min-height: 100dvh;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-display);
+        text-wrap: balance;
+        line-height: 1.2;
+      }
+      p {
+        text-wrap: pretty;
+      }
+      a,
+      button {
+        transition:
+          color var(--transition),
+          background var(--transition),
+          border-color var(--transition),
+          box-shadow var(--transition),
+          opacity var(--transition),
+          transform var(--transition);
+      }
+      button {
+        cursor: pointer;
+        background: none;
+        border: none;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      /* NAV */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(247, 246, 242, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(28, 26, 20, 0.08);
+        padding: var(--space-4) var(--space-6);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      [data-theme="dark"] .nav {
+        background: rgba(18, 17, 16, 0.92);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: var(--text-lg);
+        color: var(--color-text);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+      .nav-logo svg {
+        color: var(--color-primary);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+      }
+      .nav-cta {
+        background: var(--color-primary);
+        color: var(--color-text-inverse);
+        padding: var(--space-2) var(--space-5);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        font-weight: 700;
+        text-decoration: none;
+        font-family: var(--font-body);
+      }
+      .nav-cta:hover {
+        background: var(--color-primary-hover);
+      }
+      .theme-toggle {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: var(--radius-full);
+        color: var(--color-text-muted);
+        border: 1px solid rgba(28, 26, 20, 0.12);
+      }
+      .theme-toggle:hover {
+        color: var(--color-text);
+        background: var(--color-surface-offset);
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 88vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: clamp(var(--space-16), 10vw, var(--space-24)) var(--space-6);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 80% 60% at 70% 40%,
+          rgba(1, 105, 111, 0.06) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .hero-inner {
+        max-width: var(--content-default);
+        margin: 0 auto;
+        width: 100%;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        background: var(--color-primary-highlight);
+        color: var(--color-primary);
+        padding: var(--space-1) var(--space-4);
+        border-radius: var(--radius-full);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: var(--space-6);
+        border: 1px solid rgba(1, 105, 111, 0.2);
+      }
+      .hero-title {
+        font-size: var(--text-hero);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: var(--space-6);
+        max-width: 14em;
+      }
+      .hero-title em {
+        font-style: normal;
+        color: var(--color-primary);
+      }
+      .hero-sub {
+        font-size: var(--text-lg);
+        color: var(--color-text-muted);
+        max-width: 44ch;
+        line-height: 1.65;
+        margin-bottom: var(--space-3);
+      }
+      .hero-stat {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-10);
+      }
+      .hero-stat strong {
+        color: var(--color-text);
+      }
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        align-items: center;
+      }
+      .btn-primary {
+        background: var(--color-primary);
+        color: var(--color-text-inverse);
+        padding: var(--space-4) var(--space-8);
+        border-radius: var(--radius-full);
+        font-size: var(--text-base);
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        box-shadow: var(--shadow-md);
+      }
+      .btn-primary:hover {
+        background: var(--color-primary-hover);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-1px);
+      }
+      .btn-ghost {
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .btn-ghost:hover {
+        color: var(--color-text);
+        border-color: var(--color-text);
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(6px);
+        }
+      }
+      .hero-scroll {
+        position: absolute;
+        bottom: var(--space-8);
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-faint);
+        font-size: var(--text-xs);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        animation: bounce 2.4s ease-in-out infinite;
+      }
+
+      /* SECTIONS */
+      .section {
+        padding: clamp(var(--space-16), 8vw, var(--space-24)) var(--space-6);
+      }
+      .section-inner {
+        max-width: var(--content-default);
+        margin: 0 auto;
+      }
+      .section-inner-wide {
+        max-width: var(--content-wide);
+        margin: 0 auto;
+      }
+      .section-label {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-primary);
+        margin-bottom: var(--space-3);
+      }
+      .section-title {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: var(--space-4);
+      }
+      .section-lead {
+        font-size: var(--text-lg);
+        color: var(--color-text-muted);
+        max-width: 44ch;
+        line-height: 1.65;
+      }
+
+      /* STATS BAND */
+      .stats-band {
+        background: var(--color-accent-deep);
+        color: #f0f8f9;
+        padding: var(--space-10) var(--space-6);
+      }
+      .stats-grid {
+        max-width: var(--content-wide);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-8);
+      }
+      .stat-item {
+        text-align: center;
+      }
+      .stat-num {
+        font-family: var(--font-display);
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        color: #7dcdd4;
+        display: block;
+      }
+      .stat-desc {
+        font-size: var(--text-sm);
+        opacity: 0.75;
+      }
+
+      /* PROBLEM */
+      .problem-bg {
+        background: var(--color-surface);
+      }
+      .issue-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: var(--space-8);
+      }
+      .issue-table th {
+        text-align: left;
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-muted);
+        font-weight: 600;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 2px solid var(--color-border);
+      }
+      .issue-table td {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-divider);
+        vertical-align: middle;
+      }
+      .issue-table tbody tr {
+        transition: background var(--transition);
+      }
+      .issue-table tbody tr:hover td {
+        background: var(--color-surface-offset);
+      }
+      .issue-num {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        white-space: nowrap;
+      }
+      .issue-tag {
+        display: inline-block;
+        background: rgba(1, 105, 111, 0.1);
+        color: var(--color-primary);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        padding: 2px var(--space-2);
+        border-radius: var(--radius-sm);
+        margin-top: var(--space-1);
+      }
+      .highlight-box {
+        margin-top: var(--space-10);
+        background: var(--color-accent-deep);
+        color: #d4eef0;
+        border-radius: var(--radius-xl);
+        padding: var(--space-8) var(--space-10);
+      }
+      .highlight-box p {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        font-weight: 700;
+        line-height: 1.35;
+        max-width: none;
+      }
+
+      /* 3 WALLS */
+      .walls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+        gap: var(--space-6);
+        margin-top: var(--space-10);
+      }
+      .wall-card {
+        background: var(--color-surface);
+        border: 1px solid rgba(28, 26, 20, 0.08);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        box-shadow: var(--shadow-sm);
+      }
+      .wall-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+      }
+      .wall-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-lg);
+        background: var(--color-primary-highlight);
+        color: var(--color-primary);
+        display: grid;
+        place-items: center;
+        margin-bottom: var(--space-5);
+      }
+      .wall-num {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--color-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: var(--space-2);
+      }
+      .wall-title {
+        font-size: var(--text-lg);
+        font-weight: 700;
+        margin-bottom: var(--space-3);
+      }
+      .wall-body {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        line-height: 1.7;
+      }
+
+      /* SOLUTION */
+      .solution-bg {
+        background: var(--color-surface-2);
+      }
+      .functions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+        gap: var(--space-5);
+        margin-top: var(--space-10);
+      }
+      .func-card {
+        background: var(--color-surface);
+        border: 1px solid rgba(28, 26, 20, 0.08);
+        border-radius: var(--radius-xl);
+        padding: 1.75rem var(--space-8);
+        box-shadow: var(--shadow-sm);
+      }
+      .func-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .func-num {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--color-text-faint);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: var(--space-2);
+      }
+      .func-name {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-1);
+        letter-spacing: -0.02em;
+      }
+      .func-en {
+        font-size: var(--text-sm);
+        color: var(--color-primary);
+        font-weight: 500;
+        margin-bottom: var(--space-4);
+      }
+      .func-desc {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        line-height: 1.7;
+      }
+      .trusted-badge {
+        margin-top: var(--space-10);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        background: var(--color-surface);
+        border: 1px solid rgba(28, 26, 20, 0.1);
+        border-radius: var(--radius-full);
+        padding: var(--space-3) var(--space-6);
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        box-shadow: var(--shadow-sm);
+      }
+      .trusted-badge strong {
+        color: var(--color-text);
+      }
+
+      /* BEFORE/AFTER */
+      .ba-outer {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: var(--space-4);
+        margin-top: var(--space-10);
+        align-items: start;
+      }
+      .ba-col-label {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      }
+      .ba-before-label {
+        background: rgba(160, 136, 100, 0.15);
+        color: #7a5c38;
+      }
+      .ba-after-label {
+        background: var(--color-primary-highlight);
+        color: var(--color-primary);
+      }
+      .ba-col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+      .ba-item {
+        background: var(--color-surface);
+        border: 1px solid rgba(28, 26, 20, 0.08);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-5);
+      }
+      .ba-item-label {
+        font-size: var(--text-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: var(--space-1);
+      }
+      .ba-before-item .ba-item-label {
+        color: #a07050;
+      }
+      .ba-after-item .ba-item-label {
+        color: var(--color-primary);
+      }
+      .ba-item p {
+        font-size: var(--text-sm);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+      .ba-arrow {
+        display: grid;
+        place-items: center;
+        font-size: var(--text-2xl);
+        color: var(--color-text-faint);
+        padding-top: 2.5rem;
+      }
+
+      /* CHECKLIST */
+      .check-bg {
+        background: var(--color-surface);
+      }
+      .checklist {
+        list-style: none;
+        margin-top: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        max-width: 600px;
+      }
+      .checklist li {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-4);
+        background: var(--color-surface-2);
+        border: 1px solid rgba(28, 26, 20, 0.08);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-5);
+        font-size: var(--text-base);
+        cursor: pointer;
+        user-select: none;
+      }
+      .checklist li.checked {
+        background: var(--color-primary-highlight);
+        border-color: rgba(1, 105, 111, 0.3);
+      }
+      .check-box {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        border-radius: var(--radius-sm);
+        border: 2px solid var(--color-border);
+        display: grid;
+        place-items: center;
+        margin-top: 1px;
+      }
+      .checklist li.checked .check-box {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+      }
+      .check-result {
+        margin-top: var(--space-6);
+        padding: var(--space-5) var(--space-6);
+        background: var(--color-primary-highlight);
+        border-radius: var(--radius-lg);
+        font-size: var(--text-base);
+        font-weight: 600;
+        color: var(--color-primary);
+        display: none;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .check-result.show {
+        display: flex;
+      }
+
+      /* CTA */
+      .cta-section {
+        background: var(--color-accent-deep);
+        color: #f0f8f9;
+        padding: clamp(var(--space-16), 10vw, var(--space-24)) var(--space-6);
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-inner {
+        max-width: var(--content-narrow);
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .cta-title {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        margin-bottom: var(--space-5);
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+      }
+      .cta-desc {
+        font-size: var(--text-base);
+        opacity: 0.8;
+        line-height: 1.7;
+        margin-bottom: var(--space-8);
+        max-width: 40ch;
+        margin-inline: auto;
+      }
+      .wp-contents {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+        text-align: left;
+        margin-bottom: var(--space-8);
+      }
+      .wp-item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        font-size: var(--text-sm);
+        opacity: 0.85;
+      }
+      .wp-item svg {
+        min-width: 18px;
+        margin-top: 2px;
+        color: #7dcdd4;
+      }
+      .hubspot-form-wrap {
+        margin-top: var(--space-2);
+        text-align: left;
+      }
+      .hubspot-form-wrap iframe {
+        background: transparent;
+      }
+      .cta-glow {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(circle, rgba(125, 205, 212, 0.12) 0%, transparent 70%);
+      }
+
+      /* FOOTER */
+      footer {
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-divider);
+        padding: var(--space-10) var(--space-6);
+      }
+      .footer-inner {
+        max-width: var(--content-wide);
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+      }
+      .footer-logo {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: var(--text-lg);
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .footer-logo svg {
+        color: var(--color-primary);
+      }
+      .footer-text {
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+      }
+      .footer-contact {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+      .footer-contact a {
+        color: var(--color-primary);
+        text-decoration: none;
+      }
+      .footer-contact a:hover {
+        text-decoration: underline;
+      }
+
+      /* REVEAL ANIMATION */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .ba-outer {
+          grid-template-columns: 1fr;
+        }
+        .ba-arrow {
+          display: none;
+        }
+        .nav-right .nav-cta {
+          display: none;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .wp-contents {
+          grid-template-columns: 1fr;
+        }
+        .highlight-box {
+          padding: var(--space-6);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- SKIP LINK -->
+    <a class="sr-only" href="#main">メインコンテンツへスキップ</a>
+
+    <!-- NAV -->
+    <nav class="nav" role="navigation" aria-label="メインナビゲーション">
+      <a href="#" class="nav-logo" aria-label="Lemma Oracle ホーム">
+        <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2" />
+          <path
+            d="M8 14l4 4 8-8"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Lemma Oracle
+      </a>
+      <div class="nav-right">
+        <button class="theme-toggle" data-theme-toggle aria-label="ダークモードに切り替え">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+        <a href="#download" class="nav-cta">ホワイトペーパーをDL</a>
+      </div>
+    </nav>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-inner">
+          <h1 class="hero-title" id="hero-heading">
+            エージェントAIが<br /><em>"使えない"</em
+            ><br />本当の理由は、<br />モデルではなくデータにある。
+          </h1>
+          <p class="hero-sub">
+            生成AIの導入は急速に進んでいる。しかし現場の成果は追いついていない。根本的な原因は「信頼できるデータ基盤の不在」だ。
+          </p>
+          <p class="hero-stat">
+            <strong>国内大企業の約9割</strong>がAIエージェント導入に課題を感じている
+          </p>
+          <div class="hero-actions">
+            <a href="#download" class="btn-primary">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              ホワイトペーパーを無料でダウンロード
+            </a>
+            <a href="#problem" class="btn-ghost">
+              課題の詳細を見る
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero-scroll" aria-hidden="true">
+          <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
+            <rect
+              x="1"
+              y="1"
+              width="14"
+              height="22"
+              rx="7"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <circle cx="8" cy="7" r="2" fill="currentColor" />
+          </svg>
+          SCROLL
+        </div>
+      </section>
+
+      <!-- STATS BAND -->
+      <div class="stats-band" role="region" aria-label="主要統計データ">
+        <div class="stats-grid">
+          <div class="stat-item reveal">
+            <span class="stat-num">約9割</span>
+            <span class="stat-desc">国内大企業のAIエージェント導入課題感（国内調査）</span>
+          </div>
+          <div class="stat-item reveal">
+            <span class="stat-num">96%</span>
+            <span class="stat-desc">社内データのAI活用に苦労する組織（グローバル調査）</span>
+          </div>
+          <div class="stat-item reveal">
+            <span class="stat-num">約7兆円</span>
+            <span class="stat-desc">2030年エージェントAI市場規模予測（年率40%超成長）</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROBLEM -->
+      <section class="section problem-bg" id="problem" aria-labelledby="problem-heading">
+        <div class="section-inner">
+          <p class="section-label">課題の全体像</p>
+          <h2 class="section-title" id="problem-heading">なぜ、AIは現場で止まるのか</h2>
+          <p class="section-lead">
+            生成AIを導入しても成果が出ない。その課題のトップは「データ」に集中している。
+          </p>
+          <table class="issue-table" role="table" aria-label="AI導入課題と回答率">
+            <thead>
+              <tr>
+                <th scope="col">課題カテゴリ</th>
+                <th scope="col">内容</th>
+                <th scope="col" style="text-align: right">回答率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="reveal">
+                <td><span class="issue-tag">機密・プライバシー</span></td>
+                <td>機密情報・個人情報の取り扱いへの不安</td>
+                <td style="text-align: right"><span class="issue-num">55%</span></td>
+              </tr>
+              <tr class="reveal">
+                <td><span class="issue-tag">システム統合</span></td>
+                <td>既存システムとの統合の複雑さ</td>
+                <td style="text-align: right"><span class="issue-num">51%</span></td>
+              </tr>
+              <tr class="reveal">
+                <td><span class="issue-tag">データ品質</span></td>
+                <td>思ったような回答が得られない（データ品質の問題）</td>
+                <td style="text-align: right"><span class="issue-num">46%</span></td>
+              </tr>
+              <tr class="reveal">
+                <td><span class="issue-tag">説明責任</span></td>
+                <td>出力の根拠・推論過程がわからない</td>
+                <td style="text-align: right"><span class="issue-num">40%</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="highlight-box reveal" role="note">
+            <p>
+              これらは表面上バラバラな課題に見えるが、根本は一点に集約される。<br />「AIが信頼して使えるデータが、用意できていない」
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 WALLS -->
+      <section class="section" aria-labelledby="walls-heading">
+        <div class="section-inner">
+          <p class="section-label">構造的な壁</p>
+          <h2 class="section-title" id="walls-heading">
+            エージェントAIが直面する<br />3つのデータ問題
+          </h2>
+          <div class="walls-grid">
+            <div class="wall-card reveal">
+              <div class="wall-icon" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <p class="wall-num">問題 01</p>
+              <h3 class="wall-title">真正性の問題</h3>
+              <p class="wall-body">
+                センサー値・業務ログ・契約記録は複数拠点を経由する過程で欠損・改ざんリスクにさらされている。そのままAIに渡せばハルシネーションを誘発し、業務推論を歪める。
+              </p>
+            </div>
+            <div class="wall-card reveal">
+              <div class="wall-icon" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </div>
+              <p class="wall-num">問題 02</p>
+              <h3 class="wall-title">プライバシーの問題</h3>
+              <p class="wall-body">
+                業務自動化に必要なデータを丸ごと外部に渡すことは、個人情報保護法・機密管理の観点から許容されない。「証明したいが、中身は見せたくない」という矛盾がAI活用を阻む。
+              </p>
+            </div>
+            <div class="wall-card reveal">
+              <div class="wall-icon" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <p class="wall-num">問題 03</p>
+              <h3 class="wall-title">説明責任の問題</h3>
+              <p class="wall-body">
+                エージェントAIが自律実行するならば「なぜその判断をしたか」を人間が確認・説明できなければならない。処理根拠の追跡可能性が、AI導入の前提条件となる。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOLUTION -->
+      <section class="section solution-bg" id="solution" aria-labelledby="solution-heading">
+        <div class="section-inner">
+          <p class="section-label">解決策</p>
+          <h2 class="section-title" id="solution-heading">Lemmaオラクルとは</h2>
+          <p class="section-lead">
+            現実世界のデータを収集・検証し、信頼できる形でAIに届ける「データ精製インフラ」。整理・封印・証明の3機能で、AIが安全に業務を実行できる基盤を提供する。
+          </p>
+          <div class="functions-grid">
+            <div class="func-card reveal">
+              <p class="func-num">Function 01</p>
+              <h3 class="func-name">整理</h3>
+              <p class="func-en">Normalize</p>
+              <p class="func-desc">
+                暗号化文書からZKPで属性だけを抽出。AIエージェントは生データに触れずに条件推論・検索・契約・決済ができるようになる。
+              </p>
+            </div>
+            <div class="func-card reveal">
+              <p class="func-num">Function 02</p>
+              <h3 class="func-name">封印</h3>
+              <p class="func-en">Commit</p>
+              <p class="func-desc">
+                DIDで発行者を特定し、来歴情報をオンチェーンに永続記録。AIも人間もいつでも監査・再検証できる状態を維持する。
+              </p>
+            </div>
+            <div class="func-card reveal">
+              <p class="func-num">Function 03</p>
+              <h3 class="func-name">証明</h3>
+              <p class="func-en">Prove</p>
+              <p class="func-desc">
+                機密情報を一切開示せずに「条件を満たしている事実」だけをZKPで証明。取引先・監査機関・行政に安全に提示できる。
+              </p>
+            </div>
+          </div>
+          <div class="trusted-badge reveal" role="note">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span
+              >デジタル庁・内閣官房が推進する <strong>「Trusted Web」</strong> 設計思想に準拠</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- BEFORE / AFTER -->
+      <section class="section" aria-labelledby="ba-heading">
+        <div class="section-inner">
+          <p class="section-label">導入効果</p>
+          <h2 class="section-title" id="ba-heading">導入前後で、何が変わるか</h2>
+          <div class="ba-outer">
+            <div>
+              <div class="ba-col-label ba-before-label">Before — 導入前</div>
+              <div class="ba-col" style="margin-top: var(--space-2)">
+                <div class="ba-item ba-before-item reveal">
+                  <p class="ba-item-label">データ確認</p>
+                  <p>担当者が目視・手動照合</p>
+                </div>
+                <div class="ba-item ba-before-item reveal">
+                  <p class="ba-item-label">承認プロセス</p>
+                  <p>複数人の確認・押印・メール往復</p>
+                </div>
+                <div class="ba-item ba-before-item reveal">
+                  <p class="ba-item-label">監査対応</p>
+                  <p>記録を手動で掘り起こし</p>
+                </div>
+                <div class="ba-item ba-before-item reveal">
+                  <p class="ba-item-label">AI活用</p>
+                  <p>データ品質不安で活用が進まない</p>
+                </div>
+                <div class="ba-item ba-before-item reveal">
+                  <p class="ba-item-label">対外証明</p>
+                  <p>機密情報ごと開示するか、証明を諦めるか</p>
+                </div>
+              </div>
+            </div>
+            <div class="ba-arrow" aria-hidden="true">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </div>
+            <div>
+              <div class="ba-col-label ba-after-label">After — Lemma導入後</div>
+              <div class="ba-col" style="margin-top: var(--space-2)">
+                <div class="ba-item ba-after-item reveal">
+                  <p class="ba-item-label">データ確認</p>
+                  <p>オラクルが自動収集・検証</p>
+                </div>
+                <div class="ba-item ba-after-item reveal">
+                  <p class="ba-item-label">承認プロセス</p>
+                  <p>条件達成を自動記録し、人間が最終確認</p>
+                </div>
+                <div class="ba-item ba-after-item reveal">
+                  <p class="ba-item-label">監査対応</p>
+                  <p>タイムスタンプ付き来歴を即時提示</p>
+                </div>
+                <div class="ba-item ba-after-item reveal">
+                  <p class="ba-item-label">AI活用</p>
+                  <p>検証済み基盤の上でAIを安全に展開</p>
+                </div>
+                <div class="ba-item ba-after-item reveal">
+                  <p class="ba-item-label">対外証明</p>
+                  <p>ZKPで「事実だけ」を証明、機密は守る</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHECKLIST -->
+      <section class="section check-bg" aria-labelledby="check-heading">
+        <div class="section-inner">
+          <p class="section-label">自己診断</p>
+          <h2 class="section-title" id="check-heading">こんな課題はありませんか？</h2>
+          <p class="section-lead">
+            1つでも当てはまる場合、Lemmaオラクルが有効です。クリックして確認してください。
+          </p>
+          <ul class="checklist" id="checklist" role="list" aria-label="課題チェックリスト">
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>外部の事実確認に基づいて承認・支払い・次工程を進める業務がある</span>
+            </li>
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>その確認作業に人手・時間・コストがかかっている</span>
+            </li>
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>AI導入を検討しているが、社内データの品質・機密管理に不安がある</span>
+            </li>
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>サプライチェーンをまたいだトレーサビリティの証明が必要</span>
+            </li>
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>監査・コンプライアンス対応で「誰がいつ何をしたか」の証明を求められる</span>
+            </li>
+            <li tabindex="0" role="checkbox" aria-checked="false">
+              <span class="check-box" aria-hidden="true"></span
+              ><span>取引先・行政への証明で、機密情報の開示に抵抗がある</span>
+            </li>
+          </ul>
+          <div class="check-result" id="check-result" role="alert" aria-live="polite">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <span id="check-result-text"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA / DOWNLOAD -->
+      <section class="cta-section" id="download" aria-labelledby="cta-heading">
+        <div
+          class="cta-glow"
+          style="width: 700px; height: 700px; top: -250px; right: -200px"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="cta-glow"
+          style="width: 500px; height: 500px; bottom: -200px; left: -150px"
+          aria-hidden="true"
+        ></div>
+        <div class="cta-inner">
+          <h2 class="cta-title" id="cta-heading">ホワイトペーパーを<br />無料ダウンロード</h2>
+          <p class="cta-desc">
+            ZKP・DID・来歴管理の技術仕様から、最短数週間で始めるPoCの設計ステップまで。導入を検討する方の「次のアクション」をまとめています。
+          </p>
+          <div class="wp-contents" role="list" aria-label="ホワイトペーパーの内容">
+            <div class="wp-item" role="listitem">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <polyline points="20 6 9 17 4 12" /></svg
+              ><span>ZKP・DID・来歴管理の技術仕様と実装アプローチ</span>
+            </div>
+            <div class="wp-item" role="listitem">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <polyline points="20 6 9 17 4 12" /></svg
+              ><span>製造・サプライチェーン・IP管理の応用シナリオ</span>
+            </div>
+            <div class="wp-item" role="listitem">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <polyline points="20 6 9 17 4 12" /></svg
+              ><span>PoCの設計・評価指標・最短検証ステップ</span>
+            </div>
+            <div class="wp-item" role="listitem">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <polyline points="20 6 9 17 4 12" /></svg
+              ><span>導入判断チェックリストと推奨アクション</span>
+            </div>
+          </div>
+          <div class="hubspot-form-wrap">
+            <iframe
+              src="https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q"
+              title="ホワイトペーパーダウンロードフォーム"
+              width="100%"
+              style="
+                border: none;
+                min-height: 420px;
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+              "
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect
+              x="2"
+              y="2"
+              width="24"
+              height="24"
+              rx="6"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M8 14l4 4 8-8"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Lemma Oracle
+        </div>
+        <p class="footer-text">© 2026 FRAME00株式会社</p>
+        <div class="footer-contact">
+          技術・導入のご相談：
+          <a href="mailto:support@frame00.com" target="_blank" rel="noopener noreferrer"
+            >support@frame00.com</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Theme toggle
+      (function () {
+        const t = document.querySelector("[data-theme-toggle]"),
+          r = document.documentElement;
+        let d = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+        r.setAttribute("data-theme", d);
+        const sun =
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+        const moon =
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+        if (t) {
+          t.innerHTML = d === "dark" ? sun : moon;
+          t.addEventListener("click", () => {
+            d = d === "dark" ? "light" : "dark";
+            r.setAttribute("data-theme", d);
+            t.innerHTML = d === "dark" ? sun : moon;
+            t.setAttribute(
+              "aria-label",
+              d === "dark" ? "ライトモードに切り替え" : "ダークモードに切り替え",
+            );
+          });
+        }
+      })();
+
+      // Checklist
+      (function () {
+        const items = document.querySelectorAll("#checklist li");
+        const result = document.getElementById("check-result");
+        const resultText = document.getElementById("check-result-text");
+        const checkSvg =
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+        function update() {
+          const n = document.querySelectorAll("#checklist li.checked").length;
+          if (n >= 1) {
+            result.classList.add("show");
+            resultText.textContent =
+              n + "項目が該当しています。ホワイトペーパーで解決策をご確認ください。";
+          } else {
+            result.classList.remove("show");
+          }
+        }
+        items.forEach((item) => {
+          function toggle() {
+            item.classList.toggle("checked");
+            const c = item.classList.contains("checked");
+            item.setAttribute("aria-checked", c);
+            item.querySelector(".check-box").innerHTML = c ? checkSvg : "";
+            update();
+          }
+          item.addEventListener("click", toggle);
+          item.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggle();
+            }
+          });
+        });
+      })();
+
+      // Scroll reveal
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e, i) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("visible");
+                obs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        document.querySelectorAll(".reveal").forEach((el, i) => {
+          el.style.transitionDelay = (i % 5) * 60 + "ms";
+          obs.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

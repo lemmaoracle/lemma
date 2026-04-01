@@ -6,6 +6,7 @@
     "essays": "エッセイ",
     "blog": "ブログ",
     "faq": "FAQ",
+    "services": "サービス",
     "languageJa": "日本語",
     "languageEn": "English"
   },
@@ -61,5 +62,127 @@
   "layout": {
     "defaultTitle": "Lemma Oracle",
     "defaultDescription": "AI に証明された事実を。AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。"
+  },
+  "services": {
+    "title": "Lemma Oracle — エージェントAIのデータ信頼基盤",
+    "hero": {
+      "title": "エージェントAIが「使えない」本当の理由は、モデルではなくデータにある。",
+      "sub": "生成AIの導入は急速に進んでいる。しかし現場の成果は追いついていない。根本的な原因は「信頼できるデータ基盤の不在」だ。",
+      "stat": "国内大企業の約9割がAIエージェント導入に課題を感じている",
+      "ctaDownload": "ホワイトペーパーを無料でダウンロード",
+      "linkDetails": "課題の詳細を見る",
+      "scroll": "SCROLL"
+    },
+    "stats": {
+      "stat1Num": "約9割",
+      "stat1Desc": "国内大企業のAIエージェント導入課題感（国内調査）",
+      "stat2Num": "96%",
+      "stat2Desc": "社内データのAI活用に苦労する組織（グローバル調査）",
+      "stat3Num": "約7兆円",
+      "stat3Desc": "2030年エージェントAI市場規模予測（年率40%超成長）"
+    },
+    "problem": {
+      "label": "課題の全体像",
+      "title": "なぜ、AIは現場で止まるのか",
+      "lead": "生成AIを導入しても成果が出ない。その課題のトップは「データ」に集中している。",
+      "tableHeaderCategory": "課題カテゴリ",
+      "tableHeaderContent": "内容",
+      "tableHeaderRate": "回答率",
+      "issue1Tag": "機密・プライバシー",
+      "issue1Content": "機密情報・個人情報の取り扱いへの不安",
+      "issue2Tag": "システム統合",
+      "issue2Content": "既存システムとの統合の複雑さ",
+      "issue3Tag": "データ品質",
+      "issue3Content": "思ったような回答が得られない（データ品質の問題）",
+      "issue4Tag": "説明責任",
+      "issue4Content": "出力の根拠・推論過程がわからない",
+      "highlight": "これらは表面上バラバラな課題に見えるが、根本は一点に集約される。「AIが信頼して使えるデータが、用意できていない」"
+    },
+    "walls": {
+      "label": "構造的な壁",
+      "title": "エージェントAIが直面する3つのデータ問題",
+      "wall1Num": "問題 01",
+      "wall1Title": "真正性の問題",
+      "wall1Body": "センサー値・業務ログ・契約記録は複数拠点を経由する過程で欠損・改ざんリスクにさらされている。そのままAIに渡せばハルシネーションを誘発し、業務推論を歪める。",
+      "wall2Num": "問題 02",
+      "wall2Title": "プライバシーの問題",
+      "wall2Body": "業務自動化に必要なデータを丸ごと外部に渡すことは、個人情報保護法・機密管理の観点から許容されない。「証明したいが、中身は見せたくない」という矛盾がAI活用を阻む。",
+      "wall3Num": "問題 03",
+      "wall3Title": "説明責任の問題",
+      "wall3Body": "エージェントAIが自律実行するならば「なぜその判断をしたか」を人間が確認・説明できなければならない。処理根拠の追跡可能性が、AI導入の前提条件となる。"
+    },
+    "solution": {
+      "label": "解決策",
+      "title": "Lemmaオラクルとは",
+      "lead": "現実世界のデータを収集・検証し、信頼できる形でAIに届ける「データ精製インフラ」。整理・封印・証明の3機能で、AIが安全に業務を実行できる基盤を提供する。",
+      "func1Num": "Function 01",
+      "func1Name": "整理",
+      "func1Desc": "暗号化文書からZKPで属性だけを抽出。AIエージェントは生データに触れずに条件推論・検索・契約・決済ができるようになる。",
+      "func2Num": "Function 02",
+      "func2Name": "封印",
+      "func2Desc": "DIDで発行者を特定し、来歴情報をオンチェーンに永続記録。AIも人間もいつでも監査・再検証できる状態を維持する。",
+      "func3Num": "Function 03",
+      "func3Name": "証明",
+      "func3Desc": "機密情報を一切開示せずに「条件を満たしている事実」だけをZKPで証明。取引先・監査機関・行政に安全に提示できる。",
+      "badge": "デジタル庁・内閣官房が推進する「Trusted Web」設計思想に準拠"
+    },
+    "beforeAfter": {
+      "label": "導入効果",
+      "title": "導入前後で、何が変わるか",
+      "beforeLabel": "Before — 導入前",
+      "afterLabel": "After — Lemma導入後",
+      "before1Label": "データ確認",
+      "before1Text": "担当者が目視・手動照合",
+      "before2Label": "承認プロセス",
+      "before2Text": "複数人の確認・押印・メール往復",
+      "before3Label": "監査対応",
+      "before3Text": "記録を手動で掘り起こし",
+      "before4Label": "AI活用",
+      "before4Text": "データ品質不安で活用が進まない",
+      "before5Label": "対外証明",
+      "before5Text": "機密情報ごと開示するか、証明を諦めるか",
+      "after1Label": "データ確認",
+      "after1Text": "オラクルが自動収集・検証",
+      "after2Label": "承認プロセス",
+      "after2Text": "条件達成を自動記録し、人間が最終確認",
+      "after3Label": "監査対応",
+      "after3Text": "タイムスタンプ付き来歴を即時提示",
+      "after4Label": "AI活用",
+      "after4Text": "検証済み基盤の上でAIを安全に展開",
+      "after5Label": "対外証明",
+      "after5Text": "ZKPで「事実だけ」を証明、機密は守る"
+    },
+    "checklist": {
+      "label": "自己診断",
+      "title": "こんな課題はありませんか？",
+      "lead": "1つでも当てはまる場合、Lemmaオラクルが有効です。クリックして確認してください。",
+      "item1": "外部の事実確認に基づいて承認・支払い・次工程を進める業務がある",
+      "item2": "その確認作業に人手・時間・コストがかかっている",
+      "item3": "AI導入を検討しているが、社内データの品質・機密管理に不安がある",
+      "item4": "サプライチェーンをまたいだトレーサビリティの証明が必要",
+      "item5": "監査・コンプライアンス対応で「誰がいつ何をしたか」の証明を求められる",
+      "item6": "取引先・行政への証明で、機密情報の開示に抵抗がある",
+      "resultPrefix": "",
+      "resultSuffix": "項目が該当しています。ホワイトペーパーで解決策をご確認ください。"
+    },
+    "cta": {
+      "title": "ホワイトペーパーを無料ダウンロード",
+      "desc": "ZKP・DID・来歴管理の技術仕様から、最短数週間で始めるPoCの設計ステップまで。導入を検討する方の「次のアクション」をまとめています。",
+      "wpContent1": "ZKP・DID・来歴管理の技術仕様と実装アプローチ",
+      "wpContent2": "製造・サプライチェーン・IP管理の応用シナリオ",
+      "wpContent3": "PoCの設計・評価指標・最短検証ステップ",
+      "wpContent4": "導入判断チェックリストと推奨アクション"
+    },
+    "nav": {
+      "whitepaperDownload": "ホワイトペーパーをDL",
+      "darkModeToggle": "ダークモードに切り替え",
+      "lightModeToggle": "ライトモードに切り替え"
+    },
+    "footer": {
+      "copyright": "© 2026 FRAME00株式会社",
+      "contact": "技術・導入のご相談：",
+      "contactEmail": "support@frame00.com"
+    },
+    "skipLink": "メインコンテンツへスキップ"
   }
 }

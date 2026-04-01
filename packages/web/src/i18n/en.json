@@ -6,6 +6,7 @@
     "essays": "Essays",
     "blog": "Blog",
     "faq": "FAQ",
+    "services": "Services",
     "languageJa": "日本語",
     "languageEn": "English"
   },
@@ -61,5 +62,127 @@
   "layout": {
     "defaultTitle": "Lemma Oracle",
     "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
+  },
+  "services": {
+    "title": "Lemma Oracle — Data Trust Infrastructure for Agent AI",
+    "hero": {
+      "title": "The real reason agent AI can't be used isn't the model—it's the data.",
+      "sub": "Generative AI adoption is accelerating. But results on the ground aren't keeping up. The root cause is the absence of a trusted data foundation.",
+      "stat": "About 90% of large domestic companies feel challenged by AI agent adoption",
+      "ctaDownload": "Download Whitepaper for Free",
+      "linkDetails": "See Challenge Details",
+      "scroll": "SCROLL"
+    },
+    "stats": {
+      "stat1Num": "About 90%",
+      "stat1Desc": "AI agent adoption challenges in large domestic companies (Japan survey)",
+      "stat2Num": "96%",
+      "stat2Desc": "Organizations struggling to use internal data with AI (Global survey)",
+      "stat3Num": "Approx. ¥7T",
+      "stat3Desc": "Agent AI market size forecast for 2030 (40%+ annual growth)"
+    },
+    "problem": {
+      "label": "Overview of Challenges",
+      "title": "Why does AI stall on the front lines?",
+      "lead": "Generative AI is deployed but doesn't deliver results. The top challenge is concentrated on 'data.'",
+      "tableHeaderCategory": "Challenge Category",
+      "tableHeaderContent": "Content",
+      "tableHeaderRate": "Response Rate",
+      "issue1Tag": "Confidentiality & Privacy",
+      "issue1Content": "Concerns about handling confidential and personal information",
+      "issue2Tag": "System Integration",
+      "issue2Content": "Complexity of integrating with existing systems",
+      "issue3Tag": "Data Quality",
+      "issue3Content": "Not getting expected responses (data quality issues)",
+      "issue4Tag": "Accountability",
+      "issue4Content": "Unclear output basis and inference process",
+      "highlight": "These appear as separate challenges, but the root converges on one point: 'Data that AI can trust and use is not prepared.'"
+    },
+    "walls": {
+      "label": "Structural Barriers",
+      "title": "Three Data Problems Agent AI Faces",
+      "wall1Num": "Problem 01",
+      "wall1Title": "Authenticity Problem",
+      "wall1Body": "Sensor values, business logs, and contract records are exposed to loss and tampering risks as they pass through multiple points. Feeding them directly to AI induces hallucinations and distorts business reasoning.",
+      "wall2Num": "Problem 02",
+      "wall2Title": "Privacy Problem",
+      "wall2Body": "Handing over all data necessary for business automation to external parties is not permitted under personal information protection laws and confidentiality management. The contradiction of 'wanting to prove but not show contents' blocks AI utilization.",
+      "wall3Num": "Problem 03",
+      "wall3Title": "Accountability Problem",
+      "wall3Body": "If agent AI executes autonomously, humans must be able to verify and explain 'why that decision was made.' Traceability of processing grounds becomes a prerequisite for AI adoption."
+    },
+    "solution": {
+      "label": "Solution",
+      "title": "What is Lemma Oracle",
+      "lead": "A 'data refinery infrastructure' that collects, verifies, and delivers real-world data to AI in a trusted form. Three functions—Normalize, Commit, Prove—provide a foundation where AI can safely execute business operations.",
+      "func1Num": "Function 01",
+      "func1Name": "Normalize",
+      "func1Desc": "Extract only attributes from encrypted documents via ZKP. AI agents can perform conditional reasoning, search, contracts, and payments without touching raw data.",
+      "func2Num": "Function 02",
+      "func2Name": "Commit",
+      "func2Desc": "Identify issuers via DID and permanently record provenance information on-chain. Maintain a state where both AI and humans can audit and re-verify at any time.",
+      "func3Num": "Function 03",
+      "func3Name": "Prove",
+      "func3Desc": "Prove only the 'fact that conditions are met' via ZKP without disclosing any confidential information. Can be safely presented to trading partners, audit bodies, and government agencies.",
+      "badge": "Compliant with the 'Trusted Web' design philosophy promoted by Japan's Digital Agency and Cabinet Secretariat"
+    },
+    "beforeAfter": {
+      "label": "Implementation Results",
+      "title": "What changes before and after implementation",
+      "beforeLabel": "Before — Before Implementation",
+      "afterLabel": "After — After Lemma Implementation",
+      "before1Label": "Data Verification",
+      "before1Text": "Manual visual inspection and manual matching",
+      "before2Label": "Approval Process",
+      "before2Text": "Multiple confirmations, seals, email exchanges",
+      "before3Label": "Audit Response",
+      "before3Text": "Manually digging up records",
+      "before4Label": "AI Utilization",
+      "before4Text": "Stalled due to data quality concerns",
+      "before5Label": "External Proof",
+      "before5Text": "Either disclose confidential info or give up proving",
+      "after1Label": "Data Verification",
+      "after1Text": "Oracle automatically collects and verifies",
+      "after2Label": "Approval Process",
+      "after2Text": "Automatically record condition achievement, human final confirmation",
+      "after3Label": "Audit Response",
+      "after3Text": "Instantly provide timestamped provenance",
+      "after4Label": "AI Utilization",
+      "after4Text": "Safely deploy AI on verified foundation",
+      "after5Label": "External Proof",
+      "after5Text": "Prove only 'facts' via ZKP, keep confidentiality"
+    },
+    "checklist": {
+      "label": "Self-Assessment",
+      "title": "Do you have these challenges?",
+      "lead": "If even one applies, Lemma Oracle is effective. Click to confirm.",
+      "item1": "Have operations that proceed based on external fact verification for approval, payment, or next process",
+      "item2": "Spending manpower, time, and costs on that verification work",
+      "item3": "Considering AI adoption but concerned about internal data quality and confidentiality management",
+      "item4": "Need to prove traceability across supply chains",
+      "item5": "Required to prove 'who did what when' for audit and compliance",
+      "item6": "Reluctant to disclose confidential information when proving to trading partners or government",
+      "resultPrefix": "",
+      "resultSuffix": " items apply. Please check the whitepaper for solutions."
+    },
+    "cta": {
+      "title": "Download the Whitepaper for Free",
+      "desc": "From ZKP, DID, provenance management technical specifications to PoC design steps that can start in as little as a few weeks. We've compiled 'next actions' for those considering adoption.",
+      "wpContent1": "ZKP, DID, provenance management technical specifications and implementation approach",
+      "wpContent2": "Application scenarios for manufacturing, supply chain, and IP management",
+      "wpContent3": "PoC design, evaluation metrics, and shortest verification steps",
+      "wpContent4": "Adoption decision checklist and recommended actions"
+    },
+    "nav": {
+      "whitepaperDownload": "Download Whitepaper",
+      "darkModeToggle": "Switch to dark mode",
+      "lightModeToggle": "Switch to light mode"
+    },
+    "footer": {
+      "copyright": "© 2026 FRAME00 Inc.",
+      "contact": "Technical/Implementation inquiries:",
+      "contactEmail": "support@frame00.com"
+    },
+    "skipLink": "Skip to main content"
   }
 }
