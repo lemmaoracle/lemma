@@ -174,6 +174,11 @@ export type SelectiveDisclosure = Readonly<{
   count: number;
   /** Header bytes used during BBS+ signing (hex). */
   header: string;
+  /**
+   * Optional access condition. When set, callers must supply a valid ZK proof
+   * satisfying this circuit to read the selective disclosure data.
+   */
+  condition?: Readonly<{ circuitId: string }>;
 }>;
 
 export type SubmitProofRequest = Readonly<{
@@ -195,7 +200,9 @@ export type SubmitProofResponse = Readonly<{
 /* ── Verified attributes query ─────────────────────────────────────── */
 
 export type VerifiedAttributesQueryRequest = Readonly<{
-  attributes: ReadonlyArray<Readonly<{ name: string; operator?: string; value: unknown }>>;
+  attributes: ReadonlyArray<
+    Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value: unknown }>
+  >;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
   targets?: Readonly<
     {
@@ -203,6 +210,19 @@ export type VerifiedAttributesQueryRequest = Readonly<{
       chainIds?: ReadonlyArray<number>;
     } & Record<string, unknown>
   >;
+  /**
+   * Opt-in disclosure access. Provide a ZK proof satisfying any condition
+   * attached to stored disclosures. Without this field, disclosures are
+   * never returned (privacy-by-default).
+   */
+  disclosure?: Readonly<{
+    proof: string;
+    inputs: ReadonlyArray<string>;
+  }>;
+  /** Maximum number of results per page (1–200, default 50). */
+  limit?: number;
+  /** Number of results to skip for pagination (default 0). */
+  offset?: number;
 }>;
 
 export type VerifiedAttributesQueryResponseItem = Readonly<{
@@ -215,11 +235,15 @@ export type VerifiedAttributesQueryResponseItem = Readonly<{
   proof?: Readonly<
     { status?: string; circuitId?: string; chainId?: number } & Record<string, unknown>
   >;
-  disclosure?: SelectiveDisclosure;
+  disclosure?: SelectiveDisclosure | null;
+  /** Present when the caller's proof did not satisfy the stored disclosure condition. */
+  disclosureError?: "condition_not_met";
 }>;
 
 export type VerifiedAttributesQueryResponse = Readonly<{
   results: ReadonlyArray<VerifiedAttributesQueryResponseItem>;
+  /** Whether more results exist beyond the current page. */
+  hasMore: boolean;
 }>;
 
 /* ── Generic error ─────────────────────────────────────────────────── */
