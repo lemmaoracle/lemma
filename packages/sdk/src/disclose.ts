@@ -76,9 +76,25 @@ export type VerifyProofInput = Readonly<{
 /*  WASM Initialization                                                */
 /* ------------------------------------------------------------------ */
 
-// Initialize WASM once when the module loads
+// Track WASM initialization state
+// eslint-disable-next-line functional/no-let
+let wasmInitPromise: Promise<void> | null = null;
+
+/**
+ * Ensure WASM is initialized before any crypto operations.
+ * Safe to call multiple times - will only initialize once.
+ */
+export const ensureWasmInitialized = async (): Promise<void> => {
+  if (wasmInitPromise === null) {
+    // eslint-disable-next-line functional/no-expression-statements
+    wasmInitPromise = initializeWasm();
+  }
+  await wasmInitPromise;
+};
+
+// Start initialization eagerly (non-blocking)
 // eslint-disable-next-line functional/no-expression-statements
-void initializeWasm();
+void ensureWasmInitialized();
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -138,6 +154,9 @@ export type KeyGenOptions = Readonly<{
  */
 /* eslint-disable @typescript-eslint/require-await -- Async for API consistency, WASM calls are sync */
 export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsKeyPair> => {
+  // Ensure WASM is initialized before any crypto operations
+  await ensureWasmInitialized();
+
   const info = options.keyInfo ?? te.encode("lemma-bbs-key");
 
   // Generate a 32-byte random seed
