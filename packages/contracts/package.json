@@ -10,6 +10,8 @@
     "deploy:sepolia": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url sepolia --broadcast --verify",
     "deploy:mainnet": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url mainnet --broadcast --verify",
     "deploy:monadTestnet": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url monad_testnet --broadcast --verify",
+    "deploy:base": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url base --broadcast --verify",
+    "deploy:baseSepolia": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url base_sepolia --broadcast --verify",
     "deploy:monadMainnet": "forge script ${SCRIPT:-script/Deploy.s.sol} --rpc-url monad_mainnet --broadcast --verify",
     "node": "anvil"
   }
