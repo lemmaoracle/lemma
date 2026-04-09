@@ -1,0 +1,15 @@
+name: x402-facilitator
+account_id = ""
+workers_dev = true
+compatibility_date = "2024-12-30"
+main = "src/index.ts"
+
+[vars]
+LEMMA_API_BASE = "https://workers.lemma.workers.dev"
+CIRCUIT_ID = "x402-payment-v1"
+NETWORK = "eip155:84532"
+PRICE = "$0.001"
+ETHEREUM_RPC_URL = "https://sepolia.base.org"
+
+[dev]
+port = 8788
