@@ -7,42 +7,57 @@ import {LemmaProofSettlement} from "../src/LemmaProofSettlement.sol";
 /**
  * @dev Mock verifier that always returns true.
  *      Mimics the snarkjs-generated Groth16Verifier interface.
+ *      Uses a fallback to respond to any selector with `true`.
  */
 contract MockVerifierTrue {
   function verifyProof(
     uint256[2] calldata,
     uint256[2][2] calldata,
     uint256[2] calldata,
-    uint256[] calldata
+    uint256[1] calldata
   ) external pure returns (bool) {
     return true;
+  }
+
+  fallback() external {
+    assembly { mstore(0, 1) return(0, 32) }
   }
 }
 
 /**
  * @dev Mock verifier that always returns false.
+ *      Uses a fallback to respond to any selector with `false`.
  */
 contract MockVerifierFalse {
   function verifyProof(
     uint256[2] calldata,
     uint256[2][2] calldata,
     uint256[2] calldata,
-    uint256[] calldata
+    uint256[1] calldata
   ) external pure returns (bool) {
     return false;
+  }
+
+  fallback() external {
+    assembly { mstore(0, 0) return(0, 32) }
   }
 }
 
 /**
  * @dev Mock verifier that reverts.
+ *      Uses a fallback that reverts on any call.
  */
 contract MockVerifierReverts {
   function verifyProof(
     uint256[2] calldata,
     uint256[2][2] calldata,
     uint256[2] calldata,
-    uint256[] calldata
+    uint256[1] calldata
   ) external pure returns (bool) {
+    revert("boom");
+  }
+
+  fallback() external {
     revert("boom");
   }
 }
@@ -65,12 +80,7 @@ contract LemmaProofSettlementTest is Test {
   uint256[2] pA;
   uint256[2][2] pB;
   uint256[2] pC;
-
-  function _pubSignals() internal pure returns (uint256[] memory) {
-    uint256[] memory sigs = new uint256[](1);
-    sigs[0] = 42;
-    return sigs;
-  }
+  uint256[1] pubSignals1;
 
   function setUp() public {
     owner = address(this);
@@ -81,6 +91,8 @@ contract LemmaProofSettlementTest is Test {
     verifierTrue = new MockVerifierTrue();
     verifierFalse = new MockVerifierFalse();
     verifierReverts = new MockVerifierReverts();
+
+    pubSignals1 = [uint256(42)];
 
     settlement.addAuthorizedCaller(authorizedCaller);
   }
@@ -99,7 +111,7 @@ contract LemmaProofSettlementTest is Test {
     vm.prank(authorizedCaller);
     bool valid = settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierTrue), pA, pB, pC, _pubSignals()
+      address(verifierTrue), pA, pB, pC, pubSignals1
     );
     assertTrue(valid);
     assertTrue(settlement.isSettled(VERIFICATION_ID));
@@ -116,7 +128,7 @@ contract LemmaProofSettlementTest is Test {
     vm.prank(authorizedCaller);
     bool valid = settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierFalse), pA, pB, pC, _pubSignals()
+      address(verifierFalse), pA, pB, pC, pubSignals1
     );
     assertFalse(valid);
     assertTrue(settlement.isSettled(VERIFICATION_ID));
@@ -129,7 +141,7 @@ contract LemmaProofSettlementTest is Test {
     vm.prank(authorizedCaller);
     bool valid = settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierReverts), pA, pB, pC, _pubSignals()
+      address(verifierReverts), pA, pB, pC, pubSignals1
     );
     assertFalse(valid);
     assertTrue(settlement.isSettled(VERIFICATION_ID));
@@ -145,7 +157,7 @@ contract LemmaProofSettlementTest is Test {
 
     settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierTrue), pA, pB, pC, _pubSignals()
+      address(verifierTrue), pA, pB, pC, pubSignals1
     );
   }
 
@@ -156,7 +168,7 @@ contract LemmaProofSettlementTest is Test {
     vm.expectRevert(LemmaProofSettlement.Unauthorized.selector);
     settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierTrue), pA, pB, pC, _pubSignals()
+      address(verifierTrue), pA, pB, pC, pubSignals1
     );
   }
 
@@ -167,7 +179,7 @@ contract LemmaProofSettlementTest is Test {
     vm.expectRevert(LemmaProofSettlement.InvalidVerifier.selector);
     settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(0), pA, pB, pC, _pubSignals()
+      address(0), pA, pB, pC, pubSignals1
     );
   }
 
@@ -175,7 +187,7 @@ contract LemmaProofSettlementTest is Test {
     vm.prank(authorizedCaller);
     settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierTrue), pA, pB, pC, _pubSignals()
+      address(verifierTrue), pA, pB, pC, pubSignals1
     );
 
     vm.prank(authorizedCaller);
@@ -184,7 +196,7 @@ contract LemmaProofSettlementTest is Test {
     );
     settlement.settle(
       VERIFICATION_ID, DOC_HASH, CIRCUIT_ID_HASH,
-      address(verifierTrue), pA, pB, pC, _pubSignals()
+      address(verifierTrue), pA, pB, pC, pubSignals1
     );
   }
 
