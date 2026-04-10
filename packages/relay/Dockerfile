@@ -52,6 +52,9 @@ RUN pnpm --filter "@lemmaoracle/relay" run build
 # Deploy production dependencies to isolated directory
 RUN pnpm --filter "@lemmaoracle/relay" --prod deploy /prod/relay
 
+# Copy built artifacts (dist/) to the production directory
+RUN cp -r packages/relay/dist /prod/relay/dist
+
 # -----------------------------------------------------------------------------
 # Stage: production
 # Minimal runtime image with security hardening
