@@ -78,7 +78,7 @@ describe("Transaction Watcher", () => {
 
 describe("isValidPayment", () => {
   it("should validate a correct payment", () => {
-    const currentBlockNumber = 1010n; // 十分な確認数（10確認）
+    const currentBlockNumber = 1010n; // Sufficient confirmations (10 confirmations)
     const result = isValidPayment(mockTx as any, mockReceipt as any, mockConfig, currentBlockNumber);
 
     expect(result).toBe(true);
@@ -112,7 +112,7 @@ describe("isValidPayment", () => {
   });
 
   it("should reject payment with insufficient confirmations", () => {
-    const currentBlockNumber = 1002n; // 確認数2のみ（1002 - 1000 = 2）
+    const currentBlockNumber = 1002n; // Only 2 confirmations (1002 - 1000 = 2)
     const result = isValidPayment(mockTx as any, mockReceipt as any, mockConfig, currentBlockNumber);
 
     expect(result).toBe(false);
@@ -133,7 +133,7 @@ describe("extractPaymentDetails", () => {
     expect(details.from).toBe("0x1111111111111111111111111111111111111111");
     expect(details.to).toBe("0x2222222222222222222222222222222222222222");
     expect(details.amount).toBe(2000n);
-    expect(details.timestamp).toBe(1712000000); // blockTimestampから取得
+    expect(details.timestamp).toBe(1712000000); // Retrieved from blockTimestamp
     expect(details.blockNumber).toBe(1000n);
     expect(details.confirmations).toBe(10);
   });

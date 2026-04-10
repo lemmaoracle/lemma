@@ -106,7 +106,7 @@ export {
   disclosure,
   emptyDisclosure,
   defaultConfig,
-  // createLemmaClientは非公開化
+  // createLemmaClient is not exported
 };
 
 export type {

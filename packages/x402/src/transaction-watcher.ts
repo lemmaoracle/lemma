@@ -136,7 +136,7 @@ const isValidPayment = (
   const isSuccessful = receipt.status === "success";
   const hasSufficientConfirmations = currentBlockNumber > 0n 
     ? Number(currentBlockNumber - (receipt.blockNumber ?? 0n)) >= config.requiredConfirmations
-    : true; // currentBlockNumberが提供されない場合はチェックをスキップ
+    : true; // Skip check if currentBlockNumber is not provided
 
   return R.allPass([
     R.always(isToRecipient),
