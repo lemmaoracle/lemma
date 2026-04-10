@@ -11,8 +11,9 @@ COPY packages ./packages
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# すべてのパッケージをビルド（依存関係の順序で）
-RUN pnpm run build
+RUN pnpm --filter "@lemmaoracle/spec" run build
+RUN pnpm --filter "@lemmaoracle/sdk" run build
+RUN pnpm --filter "@lemmaoracle/relay" run build
 
 RUN pnpm --filter "@lemmaoracle/relay" --prod deploy /prod/relay
 
