@@ -13,7 +13,7 @@ import {
   facilitator as createFacilitator,
   defaultConfig,
   type Config,
-} from "../../src/index.js";
+} from "@lemmaoracle/x402";
 import { createPublicClient, http, type PublicClient } from "viem";
 import { baseSepolia } from "viem/chains";
 import { Hono } from "hono";
@@ -98,7 +98,7 @@ const buildClient = (rpcUrl: string, chainId: number): PublicClient =>
   }) as PublicClient;
 
 /** Build Config from env bindings. */
-const configFromEnv = (env: X402Env): Config =>
+const configFromEnv = (env: typeof X402Env): Config =>
   defaultConfig({
     payToAddress: env.PAY_TO_ADDRESS as `0x${string}`,
     ethereumRpcUrl: env.ETHEREUM_RPC_URL,
@@ -249,7 +249,7 @@ const settlePayment = async (
 // Hono App
 // ---------------------------------------------------------------------------
 
-const app = new Hono<{ Bindings: X402Env }>();
+const app = new Hono<{ Bindings: typeof X402Env }>();
 
 app.use("/*", cors({ origin: "*", credentials: true }));
 
