@@ -5,7 +5,7 @@
   "description": "Node.js relay for Lemma SDK functions that cannot run on edge runtimes",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "NODE_OPTIONS='--conditions=development' tsx src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
