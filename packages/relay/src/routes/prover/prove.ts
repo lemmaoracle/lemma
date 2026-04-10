@@ -15,6 +15,7 @@
 import * as R from "ramda";
 import { create, prover } from "@lemmaoracle/sdk";
 import type { RequestHandler } from "../../types/http.js";
+import type { ProveOutput } from "@lemmaoracle/sdk";
 
 /** Request body mirrors the arguments of `prover.prove`. */
 type RequestBody = Readonly<{
@@ -70,7 +71,7 @@ const handleProofGeneration = (body: RequestBody): Promise<Readonly<{
   const client = create({ apiBase: body.apiBase, apiKey: body.apiKey });
 
   return prover.prove(client, body.input)
-    .then((result) => ({ status: 200, body: result }))
+    .then((result: ProveOutput) => ({ status: 200, body: result }))
     .catch((err: unknown) =>
       proofGenerationError(err instanceof Error ? err.message : String(err))
     );

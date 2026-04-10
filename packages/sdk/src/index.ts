@@ -12,6 +12,7 @@ export { toScalar } from "./commitments.js";
 export { prepare } from "./prepare.js";
 export * as disclose from "./disclose.js";
 export * as prover from "./prover.js";
+export type { ProveOutput } from "./prover.js";
 
 export * as documents from "./namespaces/documents.js";
 export * as proofs from "./namespaces/proofs.js";
