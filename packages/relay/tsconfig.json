@@ -6,7 +6,7 @@
     "lib": ["ES2022"],
     "types": ["node"]
   },
-  "include": ["api/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "references": [
     { "path": "../spec" },
     { "path": "../sdk" }

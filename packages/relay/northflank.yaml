@@ -1,0 +1,42 @@
+# Northflank deployment configuration for Lemma Relay
+
+name: lemma-relay
+type: combined
+
+build:
+  type: dockerfile
+  dockerfile: Dockerfile
+  context: .
+
+ports:
+  - port: 3000
+    protocol: http
+    public: true
+
+resources:
+  cpu: 0.25
+  memory: 512Mi
+  instances: 1
+
+healthCheck:
+  path: /health
+  port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+env:
+  - name: NODE_ENV
+    value: production
+  - name: PORT
+    value: "3000"
+  - name: HOST
+    value: "0.0.0.0"
+
+# Optional: Add scaling rules
+# scaling:
+#   minInstances: 1
+#   maxInstances: 3
+#   targetCPUUtilization: 70
