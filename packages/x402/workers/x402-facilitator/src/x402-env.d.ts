@@ -14,6 +14,12 @@ declare const X402Env: {
    * Extends (and overrides) the built-in default RPC map.
    */
   RPC_URLS?: string;
+  /**
+   * Base URL of the @lemmaoracle/relay Vercel deployment.
+   * Used to delegate proof generation (snarkjs) which cannot run on Workers.
+   * Example: 'https://relay.lemma.finance'
+   */
+  RELAY_URL: string;
 };
 
 export default X402Env;

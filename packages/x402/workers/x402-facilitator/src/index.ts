@@ -10,14 +10,13 @@
  * Network, RPC URL, and price are resolved dynamically from the incoming
  * request (payload / requirements) rather than pinned via environment
  * variables, because each resource server may target a different chain.
+ *
+ * ZK proof generation is delegated to @lemmaoracle/relay (Vercel) because
+ * snarkjs/ffjavascript require APIs (URL.createObjectURL) unavailable on
+ * Cloudflare Workers.
  */
 
 import type X402Env from "./x402-env";
-import {
-  facilitator as createFacilitator,
-  defaultConfig,
-  type Config,
-} from "@lemmaoracle/x402";
 import { createPublicClient, http, type PublicClient } from "viem";
 import { base, baseSepolia } from "viem/chains";
 import { Hono } from "hono";
@@ -79,6 +78,32 @@ type SettleResponse = Readonly<{
   };
   network: string;
   error?: string;
+}>;
+
+/** Relay API response from POST /prover/prove */
+type RelayProveResponse = Readonly<{
+  proof: string;
+  inputs: ReadonlyArray<string>;
+  error?: string;
+  message?: string;
+}>;
+
+// ---------------------------------------------------------------------------
+// Facilitator config (lightweight — no SDK dependency)
+// ---------------------------------------------------------------------------
+
+type FacilitatorConfig = Readonly<{
+  payToAddress: `0x${string}`;
+  network: string;
+  price: string;
+  ethereumRpcUrl: string;
+  chainId: number;
+  lemmaApiBase: string;
+  lemmaApiKey?: string;
+  circuitId: string;
+  relayUrl: string;
+  minAmount: bigint;
+  requiredConfirmations: number;
 }>;
 
 // ---------------------------------------------------------------------------
@@ -151,7 +176,7 @@ const buildClient = (rpcUrl: string, network: string): PublicClient =>
   }) as PublicClient;
 
 /**
- * Build a per-request Config by merging static env settings with
+ * Build a per-request FacilitatorConfig by merging static env settings with
  * dynamic values from the request (network, price, RPC URL).
  */
 const configForRequest = (
@@ -159,17 +184,19 @@ const configForRequest = (
   network: string,
   price: string,
   rpcOverrides: Record<string, string>,
-): Config =>
-  defaultConfig({
-    payToAddress: env.PAY_TO_ADDRESS as `0x${string}`,
-    network,
-    price,
-    ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
-    chainId: chainIdForNetwork(network),
-    lemmaApiBase: env.LEMMA_API_BASE,
-    lemmaApiKey: env.LEMMA_API_KEY,
-    ...(env.CIRCUIT_ID ? { circuitId: env.CIRCUIT_ID } : {}),
-  });
+): FacilitatorConfig => ({
+  payToAddress: env.PAY_TO_ADDRESS as `0x${string}`,
+  network,
+  price,
+  ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
+  chainId: chainIdForNetwork(network),
+  lemmaApiBase: env.LEMMA_API_BASE,
+  lemmaApiKey: env.LEMMA_API_KEY,
+  circuitId: env.CIRCUIT_ID ?? "x402-payment-v1",
+  relayUrl: env.RELAY_URL,
+  minAmount: 1000n,
+  requiredConfirmations: 6,
+});
 
 /** Parse and validate a facilitator request body. */
 const parseFacilitatorRequest = async (
@@ -189,6 +216,43 @@ const parseFacilitatorRequest = async (
 };
 
 // ---------------------------------------------------------------------------
+// Relay API client — delegates proof generation to @lemmaoracle/relay
+// ---------------------------------------------------------------------------
+
+/**
+ * Call the relay API's POST /prover/prove endpoint.
+ *
+ * This replaces the direct `prover.prove()` call that would pull in
+ * snarkjs/ffjavascript (which use `URL.createObjectURL()` — unavailable
+ * on Cloudflare Workers).
+ */
+const relayProve = async (
+  relayUrl: string,
+  apiBase: string,
+  apiKey: string | undefined,
+  circuitId: string,
+  witness: Readonly<Record<string, unknown>>,
+): Promise<RelayProveResponse> => {
+  const res = await fetch(`${relayUrl.replace(/\/$/, "")}/prover/prove`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apiBase,
+      ...(apiKey ? { apiKey } : {}),
+      input: { circuitId, witness },
+    }),
+  });
+
+  const data = (await res.json()) as RelayProveResponse;
+
+  if (!res.ok) {
+    throw new Error(data.message ?? data.error ?? `Relay /prover/prove failed (${res.status})`);
+  }
+
+  return data;
+};
+
+// ---------------------------------------------------------------------------
 // Verification logic
 // ---------------------------------------------------------------------------
 
@@ -205,7 +269,7 @@ const verifyPayment = async (
   payload: PaymentPayload,
   requirements: PaymentRequirements,
   client: PublicClient,
-  config: Config,
+  config: FacilitatorConfig,
 ): Promise<VerifyResponse> => {
   // 1. Network match
   if (payload.network !== requirements.network) {
@@ -245,14 +309,14 @@ const verifyPayment = async (
  * Steps:
  *  1. Broadcast the signed transaction to the blockchain
  *  2. Wait for on-chain confirmation
- *  3. Generate ZK proof via X402Payment circuit
+ *  3. Generate ZK proof via relay API (delegated to @lemmaoracle/relay)
  *  4. Return txHash + proof
  */
 const settlePayment = async (
   payload: PaymentPayload,
   requirements: PaymentRequirements,
   client: PublicClient,
-  config: Config,
+  config: FacilitatorConfig,
 ): Promise<SettleResponse> => {
   const network = requirements.network;
 
@@ -294,18 +358,27 @@ const settlePayment = async (
     };
   }
 
-  // Step 3: Generate ZK proof using X402Payment circuit
-  const fac = createFacilitator(config);
-  const disclosure = await fac.generateDisclosure(txHash);
+  // Step 3: Generate ZK proof via relay API
+  const proofResult = await relayProve(
+    config.relayUrl,
+    config.lemmaApiBase,
+    config.lemmaApiKey,
+    config.circuitId,
+    {
+      txHash,
+      from: payload.from,
+      network,
+    },
+  );
 
   // Step 4: Return settlement result
   return {
     success: true,
     txHash,
     proof: {
-      proof: disclosure.proof,
-      inputs: [...disclosure.inputs],
-      circuitId: disclosure.condition?.circuitId ?? config.circuitId,
+      proof: proofResult.proof,
+      inputs: [...proofResult.inputs],
+      circuitId: config.circuitId,
       generatedAt: Date.now(),
     },
     network,
@@ -335,7 +408,7 @@ app.post("/verify", async (c) => {
   const { payload, requirements } = parsed.data;
   const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
 
-  let config: Config;
+  let config: FacilitatorConfig;
   try {
     config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
   } catch (err) {
@@ -374,7 +447,7 @@ app.post("/settle", async (c) => {
   const { payload, requirements } = parsed.data;
   const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
 
-  let config: Config;
+  let config: FacilitatorConfig;
   try {
     config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
   } catch (err) {
@@ -416,7 +489,7 @@ app.get("/", (c) => {
 
   return c.json({
     service: "lemma-x402-facilitator",
-    version: "0.3.0",
+    version: "0.4.0",
     circuitId: c.env.CIRCUIT_ID ?? "x402-payment-v1",
     supportedNetworks,
     endpoints: ["/verify", "/settle"],
