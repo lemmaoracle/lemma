@@ -9,3 +9,4 @@ cache/
 typechain-types/
 .pnpm-store/
 *.tgz
+*.tsbuildinfo
