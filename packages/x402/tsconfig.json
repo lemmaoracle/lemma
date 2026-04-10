@@ -1,18 +1,14 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2022"],
-    "moduleResolution": "bundler",
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "workers"]
+  "exclude": ["node_modules", "dist", "workers"],
+  "references": [
+    { "path": "../spec" },
+    { "path": "../sdk" }
+  ]
 }
