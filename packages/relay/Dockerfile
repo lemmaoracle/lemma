@@ -1,37 +1,31 @@
-# Multi-stage Dockerfile for Lemma Relay
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
+FROM base AS builder
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages ./packages
 
-# Copy source code
-COPY . .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm --filter "@lemmaoracle/relay" build
+RUN pnpm --filter "@lemmaoracle/relay" --prod deploy /prod/relay
 
-# Build TypeScript
-RUN npm run build
-
-RUN npm prune --omit=dev
-
-# Production stage
 FROM node:22-alpine AS production
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 WORKDIR /app
+ENV NODE_ENV=production
 
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/package-lock.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /prod/relay ./
 
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
-USER nodejs
+EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
 
-EXPOSE 3000
-
-CMD ["node", "dist/server.js"]
+CMD ["pnpm", "start"]
