@@ -6,6 +6,10 @@
  *   POST /settle  – broadcast tx, wait for confirmation, generate ZK proof
  *
  * Called by resource servers as part of the x402 payment flow.
+ *
+ * Network, RPC URL, and price are resolved dynamically from the incoming
+ * request (payload / requirements) rather than pinned via environment
+ * variables, because each resource server may target a different chain.
  */
 
 import type X402Env from "./x402-env";
@@ -15,7 +19,7 @@ import {
   type Config,
 } from "@lemmaoracle/x402";
 import { createPublicClient, http, type PublicClient } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
@@ -78,32 +82,93 @@ type SettleResponse = Readonly<{
 }>;
 
 // ---------------------------------------------------------------------------
+// Network helpers
+// ---------------------------------------------------------------------------
+
+/** Default RPC endpoints — used when no override is provided via RPC_URLS. */
+const DEFAULT_RPC_MAP: Readonly<Record<string, string>> = {
+  "eip155:8453": "https://mainnet.base.org",
+  "eip155:84532": "https://sepolia.base.org",
+  "eip155:10143": "https://testnet-rpc.monad.xyz",
+};
+
+/** Map network identifier → chain id. */
+const chainIdForNetwork = (network: string): number => {
+  const map: Record<string, number> = {
+    "eip155:8453": 8453,
+    "eip155:84532": 84532,
+    "eip155:10143": 10143,
+  };
+  const id = map[network];
+  if (id === undefined) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
+  return id;
+};
+
+/** Map network identifier → viem Chain definition. */
+const chainForNetwork = (network: string) => {
+  const map: Record<string, typeof baseSepolia> = {
+    "eip155:8453": base,
+    "eip155:84532": baseSepolia,
+  };
+  // Fall back to baseSepolia for chains without a viem definition.
+  return map[network] ?? baseSepolia;
+};
+
+/**
+ * Resolve the RPC URL for a given network.
+ *
+ * Priority: env RPC_URLS override → DEFAULT_RPC_MAP.
+ */
+const rpcForNetwork = (network: string, rpcOverrides: Record<string, string>): string => {
+  const url = rpcOverrides[network] ?? DEFAULT_RPC_MAP[network];
+  if (!url) {
+    throw new Error(`No RPC URL configured for network: ${network}`);
+  }
+  return url;
+};
+
+/** Parse RPC_URLS env var (JSON string) into a record. */
+const parseRpcUrls = (raw?: string): Record<string, string> => {
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw) as Record<string, string>;
+  } catch {
+    return {};
+  }
+};
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Map network id → chain id. */
-const chainIdForNetwork = (network: string): number => {
-  const map: Record<string, number> = {
-    "eip155:84532": 84532,
-    "eip155:8453": 8453,
-  };
-  return map[network] ?? 84532;
-};
-
-/** Build a viem PublicClient for the given RPC URL. */
-const buildClient = (rpcUrl: string, chainId: number): PublicClient =>
+/** Build a viem PublicClient for the given network. */
+const buildClient = (rpcUrl: string, network: string): PublicClient =>
   createPublicClient({
-    chain: chainId === 84532 ? baseSepolia : baseSepolia,
+    chain: chainForNetwork(network),
     transport: http(rpcUrl),
   }) as PublicClient;
 
-/** Build Config from env bindings. */
-const configFromEnv = (env: typeof X402Env): Config =>
+/**
+ * Build a per-request Config by merging static env settings with
+ * dynamic values from the request (network, price, RPC URL).
+ */
+const configForRequest = (
+  env: typeof X402Env,
+  network: string,
+  price: string,
+  rpcOverrides: Record<string, string>,
+): Config =>
   defaultConfig({
     payToAddress: env.PAY_TO_ADDRESS as `0x${string}`,
-    ethereumRpcUrl: env.ETHEREUM_RPC_URL,
+    network,
+    price,
+    ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
+    chainId: chainIdForNetwork(network),
     lemmaApiBase: env.LEMMA_API_BASE,
     lemmaApiKey: env.LEMMA_API_KEY,
+    ...(env.CIRCUIT_ID ? { circuitId: env.CIRCUIT_ID } : {}),
   });
 
 /** Parse and validate a facilitator request body. */
@@ -185,10 +250,12 @@ const verifyPayment = async (
  */
 const settlePayment = async (
   payload: PaymentPayload,
-  _requirements: PaymentRequirements,
+  requirements: PaymentRequirements,
   client: PublicClient,
   config: Config,
 ): Promise<SettleResponse> => {
+  const network = requirements.network;
+
   // Step 1: Broadcast the signed transaction
   let txHash: `0x${string}`;
   try {
@@ -204,7 +271,7 @@ const settlePayment = async (
         success: false,
         txHash: "",
         proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
-        network: config.network,
+        network,
         error: `Transaction broadcast failed: ${message}`,
       };
     }
@@ -222,7 +289,7 @@ const settlePayment = async (
       success: false,
       txHash,
       proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
-      network: config.network,
+      network,
       error: "Transaction reverted on-chain",
     };
   }
@@ -241,7 +308,7 @@ const settlePayment = async (
       circuitId: disclosure.condition?.circuitId ?? config.circuitId,
       generatedAt: Date.now(),
     },
-    network: config.network,
+    network,
   };
 };
 
@@ -266,8 +333,20 @@ app.post("/verify", async (c) => {
   }
 
   const { payload, requirements } = parsed.data;
-  const config = configFromEnv(c.env);
-  const client = buildClient(config.ethereumRpcUrl, chainIdForNetwork(payload.network));
+  const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+
+  let config: Config;
+  try {
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
+  } catch (err) {
+    return c.json<VerifyResponse>(
+      { isValid: false, invalidReason: (err as Error).message },
+      400,
+    );
+  }
+
+  const rpcUrl = rpcForNetwork(requirements.network, rpcOverrides);
+  const client = buildClient(rpcUrl, requirements.network);
 
   try {
     const result = await verifyPayment(payload, requirements, client, config);
@@ -293,8 +372,20 @@ app.post("/settle", async (c) => {
   }
 
   const { payload, requirements } = parsed.data;
-  const config = configFromEnv(c.env);
-  const client = buildClient(config.ethereumRpcUrl, chainIdForNetwork(payload.network));
+  const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+
+  let config: Config;
+  try {
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
+  } catch (err) {
+    return c.json(
+      { success: false, error: (err as Error).message },
+      400,
+    );
+  }
+
+  const rpcUrl = rpcForNetwork(requirements.network, rpcOverrides);
+  const client = buildClient(rpcUrl, requirements.network);
 
   try {
     const result = await settlePayment(payload, requirements, client, config);
@@ -305,7 +396,7 @@ app.post("/settle", async (c) => {
         success: false,
         txHash: "",
         proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
-        network: config.network,
+        network: requirements.network,
         error: `Settlement error: ${(err as Error).message}`,
       },
       500,
@@ -318,12 +409,16 @@ app.post("/settle", async (c) => {
 // ---------------------------------------------------------------------------
 
 app.get("/", (c) => {
-  const config = configFromEnv(c.env);
+  const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+  const supportedNetworks = [
+    ...new Set([...Object.keys(DEFAULT_RPC_MAP), ...Object.keys(rpcOverrides)]),
+  ];
+
   return c.json({
     service: "lemma-x402-facilitator",
-    version: "0.2.0",
-    circuitId: config.circuitId,
-    network: config.network,
+    version: "0.3.0",
+    circuitId: c.env.CIRCUIT_ID ?? "x402-payment-v1",
+    supportedNetworks,
     endpoints: ["/verify", "/settle"],
   });
 });
