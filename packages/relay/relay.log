@@ -1,0 +1,10 @@
+
+> @lemmaoracle/relay@0.1.0 dev
+> NODE_OPTIONS='--conditions=development' tsx src/server.ts
+
+Lemma Relay server running at http://0.0.0.0:3000
+Available routes:
+  GET /health
+  POST /prover/prove
+  POST /prepare
+using deprecated parameters for the initialization function; pass a single object instead
