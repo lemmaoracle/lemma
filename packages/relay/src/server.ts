@@ -18,7 +18,10 @@ import { proveHandler } from "./routes/prover/prove.js";
 import { prepareHandler } from "./routes/prepare/prepare.js";
 
 /** Server configuration. */
-const CONFIG = {
+const CONFIG: Readonly<{
+  port: number;
+  host: string;
+}> = {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || "0.0.0.0",
 } as const;
@@ -192,7 +195,7 @@ const startServer = (_: unknown): void => {
     void handleRequest(req, res);
   });
 
-  server.listen(CONFIG.port, CONFIG.host, (_evt: unknown) => {
+  server.listen({ port: CONFIG.port, host: CONFIG.host }, () => {
     // eslint-disable-next-line functional/no-expression-statements
     console.log(
       `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,

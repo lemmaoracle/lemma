@@ -82,7 +82,7 @@ const prepareWorkflow = (body: RequestBody): Promise<HttpResponse> => {
 
   return schemas
     .getById(client, body.schemaId)
-    .then((schemaMeta) => define(schemaMeta))
+    .then(define)
     .then((schema: SchemaDef<unknown, unknown>) =>
       prepare(client, {
         schema: schema.id,
