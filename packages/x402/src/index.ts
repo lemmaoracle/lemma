@@ -1,6 +1,5 @@
 import { create, type LemmaClient } from "@lemmaoracle/sdk";
 import * as R from "ramda";
-import type { HTTPFacilitatorClient } from "@x402/core/server";
 import type { Config, Disclosure, Proof, Transaction, ProofResult } from "./types.js";
 import { createProofGenerator } from "./proof-generator.js";
 
@@ -56,26 +55,24 @@ const facilitator = (config: Config) => {
     generateDisclosure: async (txHash: `0x${string}`): Promise<Disclosure> => {
       const { proof } = await proofGenerator.generateProof(txHash);
 
-      return R.pipe(
-        () => disclosure(proof),
-      )();
+      return disclosure(proof);
     },
 
     /**
      * Get an empty disclosure template with condition for the configured circuit.
      */
-    getEmptyDisclosure: (): Disclosure =>
+    getEmptyDisclosure: (_?: undefined): Disclosure =>
       emptyDisclosure(config.circuitId),
 
     /**
      * Get the configuration.
      */
-    getConfig: (): Config => config,
+    getConfig: (_?: undefined): Config => config,
 
     /**
      * Get the Lemma client.
      */
-    getLemmaClient: (): LemmaClient => lemmaClient,
+    getLemmaClient: (_?: undefined): LemmaClient => lemmaClient,
   };
 };
 

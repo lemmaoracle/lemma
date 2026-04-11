@@ -21,7 +21,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 /** Default IPFS gateway if not specified in config */
-const DEFAULT_IPFS_GATEWAY = "https://ipfs.io/ipfs/";
+const _DEFAULT_IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 
 /** Poseidon hash function for field element hashing */
 const toFieldElement = (value: string): string =>
@@ -48,7 +48,7 @@ const createProofGenerator = (
   toFieldElements: (
     payment: Transaction,
     config: Config,
-  ) => Promise<Readonly<{ witness: Record<string, string>; publicInputs: string[] }>>;
+  ) => Readonly<{ witness: Record<string, string>; publicInputs: string[] }>;
 }> => {
   /** Create public client for transaction inspection */
   const publicClient: PublicClient = createPublicClient({
@@ -72,19 +72,16 @@ const createProofGenerator = (
         config,
       );
 
-      return R.pipe(
-        () =>
-          R.always({
-            payment,
-            proof: proofResult,
-          })(),
-      )();
+      return R.always({
+        payment,
+        proof: proofResult,
+      })();
     },
 
     /**
      * Convert payment transaction details to circuit field elements.
      */
-    toFieldElements: async (
+    toFieldElements: (
       payment: Transaction,
       cfg: Config,
     ) => {
@@ -144,23 +141,20 @@ const fetchPaymentTransaction = async (
     blockPromise,
   ]);
 
-  // Verify transaction was successful
-  if (receipt.status !== "success") {
-    return Promise.reject(new Error(`Transaction ${txHash} failed`));
-  }
-
-  const blockData = receipt.blockNumber ? await client.getBlock({ blockNumber: receipt.blockNumber }) : block;
-  const currentBlock = block.number ?? 0n;
-
-  return R.always({
-    txHash,
-    from: tx.from,
-    to: tx.to ?? ("0x" as `0x${string}`),
-    amount: tx.value + (receipt.effectiveGasPrice ?? 0n) * (receipt.gasUsed ?? 0n),
-    timestamp: Number(blockData.timestamp ?? 0n),
-    blockNumber: receipt.blockNumber,
-    confirmations: Number(currentBlock - (receipt.blockNumber ?? currentBlock)),
-  })();
+  return receipt.status !== "success"
+    ? Promise.reject(new Error(`Transaction ${txHash} failed`))
+    : client.getBlock({ blockNumber: receipt.blockNumber }).then(
+        (blockData) =>
+          R.always({
+            txHash,
+            from: tx.from,
+            to: tx.to ?? ("0x" as `0x${string}`),
+            amount: tx.value + receipt.effectiveGasPrice * receipt.gasUsed,
+            timestamp: Number(blockData.timestamp),
+            blockNumber: receipt.blockNumber,
+            confirmations: Number(block.number - receipt.blockNumber),
+          })(),
+      );
 };
 
 /**
@@ -173,7 +167,7 @@ const generateZKProof = async (
 ): Promise<Proof> => {
   // Build witness from payment transaction
   const builder = createProofGenerator(config, lemmaClient);
-  const { witness, publicInputs } = await builder.toFieldElements(payment, config);
+  const { witness, publicInputs } = builder.toFieldElements(payment, config);
 
   // Generate proof using Lemma SDK
   const proofResult = await prover.prove(lemmaClient, {

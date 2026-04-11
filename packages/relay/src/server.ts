@@ -56,14 +56,15 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
     const chunks: Buffer[] = [];
 
+    // eslint-disable-next-line functional/no-expression-statements
     req.on("data", (chunk: Buffer) => {
       // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
       chunks.push(chunk);
     });
 
+    // eslint-disable-next-line functional/no-expression-statements
     req.on("end", (_: unknown) => {
       const body = Buffer.concat(chunks).toString();
-      // eslint-disable-next-line functional/no-expression-statements
       resolve(
         R.ifElse(
           (s: string) => s === "",
@@ -81,8 +82,8 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
       );
     });
 
+    // eslint-disable-next-line functional/no-expression-statements
     req.on("error", (_err: unknown) => {
-      // eslint-disable-next-line functional/no-expression-statements
       resolve(undefined);
     });
   });
@@ -139,7 +140,6 @@ const sendResponse = (
     res.setHeader(key, value);
   });
 
-  // eslint-disable-next-line functional/no-expression-statements
   R.ifElse(
     (b: unknown) => b !== undefined,
     (b: unknown) => {
@@ -167,7 +167,6 @@ const handleRequest = (
       return R.ifElse(
         (r: Route | undefined) => r === undefined,
         (_r: Route | undefined) => {
-          // eslint-disable-next-line functional/no-expression-statements
           sendResponse(res, 404, {}, { error: "Not found" });
           return Promise.resolve();
         },
@@ -182,7 +181,6 @@ const handleRequest = (
               },
             }))
             .then((result) => {
-              // eslint-disable-next-line functional/no-expression-statements
               sendResponse(res, result.status, result.headers, result.body);
             }),
       )(route);
@@ -195,32 +193,29 @@ const startServer = (_: unknown): void => {
     void handleRequest(req, res);
   });
 
-  server.listen({ port: CONFIG.port, host: CONFIG.host }, () => {
-    // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements
+  server.listen({ port: CONFIG.port, host: CONFIG.host }, (_?: undefined) => {
     console.log(
       `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,
     );
-    // eslint-disable-next-line functional/no-expression-statements
     console.log("Available routes:");
     ROUTES.forEach((route) => {
-      // eslint-disable-next-line functional/no-expression-statements
       console.log(`  ${route.method} ${route.path}`);
     });
   });
 
   const shutdown = (signal: string) => (_: unknown) => {
-    // eslint-disable-next-line functional/no-expression-statements
     console.log(`Received ${signal}, shutting down gracefully...`);
 
+    // eslint-disable-next-line functional/no-expression-statements
     server.close((_err: unknown) => {
-      // eslint-disable-next-line functional/no-expression-statements
       console.log("Server closed");
       // eslint-disable-next-line functional/no-expression-statements
       process.exit(0);
     });
 
+    // eslint-disable-next-line functional/no-expression-statements
     setTimeout((_timer: unknown) => {
-      // eslint-disable-next-line functional/no-expression-statements
       console.error("Force shutdown after timeout");
       // eslint-disable-next-line functional/no-expression-statements
       process.exit(1);
@@ -233,13 +228,9 @@ const startServer = (_: unknown): void => {
   process.on("SIGINT", shutdown("SIGINT"));
 };
 
-// Start server if this is the main module
 // eslint-disable-next-line functional/no-expression-statements
 R.ifElse(
   (url: string) => url === `file://${process.argv[1] ?? ""}`,
-  (url: string) => {
-    // eslint-disable-next-line functional/no-expression-statements
-    startServer(url);
-  },
+  startServer,
   R.always(undefined),
 )(import.meta.url);
