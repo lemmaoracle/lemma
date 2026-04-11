@@ -14,7 +14,7 @@
 
 import * as R from "ramda";
 import { create, prover } from "@lemmaoracle/sdk";
-import type { RequestHandler } from "../../types/http.js";
+import type { RequestHandler, HttpResponse } from "../../types/http.js";
 import type { ProveOutput } from "@lemmaoracle/sdk";
 
 /** Request body mirrors the arguments of `prover.prove`. */
@@ -30,19 +30,21 @@ type RequestBody = Readonly<{
   }>;
 }>;
 
-/** Validate request body. */
-const validateRequestBody = (body: unknown): body is RequestBody => {
-  const b = body as RequestBody;
-  return R.allPass([
-    R.pipe(R.prop("apiBase"), R.is(String)),
-    R.pipe(R.prop("input"), R.is(Object)),
-    R.pipe(R.path(["input", "circuitId"]), R.is(String)),
-    R.pipe(R.path(["input", "witness"]), R.is(Object)),
-  ])(b as Record<string, unknown>);
-};
+/** Type guard: validate that the request body conforms to RequestBody. */
+const isValidRequestBody = (body: unknown): body is RequestBody =>
+  R.allPass([
+    (b: Record<string, unknown>) => typeof b["apiBase"] === "string",
+    (b: Record<string, unknown>) =>
+      typeof b["input"] === "object" && b["input"] !== null,
+    (b: Record<string, unknown>) =>
+      typeof (b["input"] as Record<string, unknown>)["circuitId"] === "string",
+    (b: Record<string, unknown>) =>
+      typeof (b["input"] as Record<string, unknown>)["witness"] === "object" &&
+      (b["input"] as Record<string, unknown>)["witness"] !== null,
+  ])(body as Record<string, unknown>);
 
-/** Generate error response for invalid request. */
-const invalidRequestError = {
+/** 400 response for malformed request bodies. */
+const invalidRequestResponse: HttpResponse = {
   status: 400,
   body: {
     error: "Bad request",
@@ -54,54 +56,43 @@ const invalidRequestError = {
   },
 } as const;
 
-/** Generate error response for proof generation failure. */
-const proofGenerationError = (message: string) => ({
+/** 405 response for non-POST requests. */
+const methodNotAllowedResponse: HttpResponse = {
+  status: 405,
+  headers: { Allow: "POST" },
+  body: { error: "Method not allowed" },
+} as const;
+
+/** Build a 502 response for proof generation failures. */
+const proofGenerationErrorResponse = (message: string): HttpResponse => ({
   status: 502,
   body: {
     error: "Proof generation failed",
     message,
   },
-} as const);
+});
 
-/** Handle proof generation with error handling. */
-const handleProofGeneration = (body: RequestBody): Promise<Readonly<{
-  status: number;
-  body: unknown;
-}>> => {
-  const client = create({ apiBase: body.apiBase, apiKey: body.apiKey });
-
-  return prover.prove(client, body.input)
-    .then((result: ProveOutput) => ({ status: 200, body: result }))
-    .catch((err: unknown) =>
-      proofGenerationError(err instanceof Error ? err.message : String(err))
+/** Generate a proof and return the appropriate HTTP response. */
+const generateProof = (body: RequestBody): Promise<HttpResponse> =>
+  prover
+    .prove(create({ apiBase: body.apiBase, apiKey: body.apiKey }), body.input)
+    .then((result: ProveOutput): HttpResponse => ({ status: 200, body: result }))
+    .catch(
+      (err: unknown): HttpResponse =>
+        proofGenerationErrorResponse(
+          err instanceof Error ? err.message : String(err),
+        ),
     );
-};
-
-/** Check HTTP method. */
-const checkMethod = (method: string) =>
-  R.ifElse(
-    R.equals("POST"),
-    R.always(null),
-    R.always({
-      status: 405,
-      headers: { Allow: "POST" } as const,
-      body: { error: "Method not allowed" },
-    })
-  )(method);
-
-/** Validate request and generate proof. */
-const validateAndGenerateProof = (body: unknown) =>
-  R.ifElse(
-    validateRequestBody,
-    handleProofGeneration,
-    R.always(invalidRequestError)
-  )(body);
 
 /** Main request handler. */
-export const proveHandler: RequestHandler = async (request) => {
-  const methodCheck = checkMethod(request.method);
-
-  return methodCheck !== null
-    ? methodCheck
-    : validateAndGenerateProof(request.body);
-};
+export const proveHandler: RequestHandler = (request) =>
+  R.ifElse(
+    (req: typeof request) => req.method !== "POST",
+    R.always(methodNotAllowedResponse),
+    (req: typeof request) =>
+      R.ifElse(
+        (body: unknown) => !isValidRequestBody(body),
+        R.always(invalidRequestResponse),
+        (body: unknown) => generateProof(body as RequestBody),
+      )(req.body),
+  )(request);

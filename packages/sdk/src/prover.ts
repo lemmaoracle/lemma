@@ -35,6 +35,21 @@ export type ProveOutput = Readonly<{
   inputs: ReadonlyArray<string>;
 }>;
 
+type SnarkjsGroth16 = {
+  readonly fullProve: (
+    witness: Readonly<Record<string, unknown>>,
+    wasm: Uint8Array,
+    zkey: Uint8Array,
+  ) => Promise<{
+    readonly proof: unknown;
+    readonly publicSignals: readonly string[];
+  }>;
+};
+
+type SnarkjsModule = {
+  readonly groth16: SnarkjsGroth16;
+};
+
 /* ------------------------------------------------------------------ */
 /*  Artifact handling                                                  */
 /* ------------------------------------------------------------------ */
@@ -43,7 +58,9 @@ export type ProveOutput = Readonly<{
  * Convert an IPFS URL to an HTTP gateway URL.
  */
 const resolveIpfsUrl = (url: string): string =>
-  url.startsWith("ipfs://") ? `${IPFS_GATEWAY}${url.slice("ipfs://".length)}` : url;
+  url.startsWith("ipfs://")
+    ? `${IPFS_GATEWAY}${url.slice("ipfs://".length)}`
+    : url;
 
 /**
  * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
@@ -52,7 +69,10 @@ const resolveIpfsUrl = (url: string): string =>
  * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
  * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifact = (client: LemmaClient, url: string): Promise<Uint8Array> => {
+const fetchArtifact = (
+  client: LemmaClient,
+  url: string,
+): Promise<Uint8Array> => {
   const resolvedUrl = resolveIpfsUrl(url);
   const fetchFn = resolveFetch(client);
   return fetchFn(resolvedUrl).then((res) =>
@@ -65,8 +85,13 @@ const fetchArtifact = (client: LemmaClient, url: string): Promise<Uint8Array> =>
 /**
  * Fetch circuit metadata by circuitId.
  */
-const fetchCircuitMeta = (client: LemmaClient, circuitId: string): Promise<CircuitMeta> =>
-  import("./namespaces/circuits.js").then(({ getById }) => getById(client, circuitId));
+const fetchCircuitMeta = (
+  client: LemmaClient,
+  circuitId: string,
+): Promise<CircuitMeta> =>
+  import("./namespaces/circuits.js").then(({ getById }) =>
+    getById(client, circuitId),
+  );
 
 /* ------------------------------------------------------------------ */
 /*  Proof generation                                                   */
@@ -75,7 +100,8 @@ const fetchCircuitMeta = (client: LemmaClient, circuitId: string): Promise<Circu
 /**
  * SHA-256 hash as base64 string (fallback when artifacts unavailable).
  */
-const sha256Base64 = (s: string): string => createHash("sha256").update(s).digest("base64");
+const sha256Base64 = (s: string): string =>
+  createHash("sha256").update(s).digest("base64");
 
 /**
  * Generate a proof using snarkjs groth16.fullProve.
@@ -86,10 +112,10 @@ const generateSnarkjsProof = (
   wasmBuf: Uint8Array,
   zkeyBuf: Uint8Array,
 ): Promise<{
-  proof: unknown;
-  publicSignals: string[];
+  readonly proof: unknown;
+  readonly publicSignals: readonly string[];
 }> => {
-  const snarkjs: { groth16: { fullProve: (witness: Readonly<Record<string, unknown>>, wasm: Uint8Array, zkey: Uint8Array) => Promise<{ proof: unknown; publicSignals: string[] }> } } = snarkjsModule as never;
+  const snarkjs = snarkjsModule as unknown as SnarkjsModule;
   return snarkjs.groth16.fullProve(witness, wasmBuf, zkeyBuf);
 };
 
@@ -101,8 +127,14 @@ const generateSnarkjsProof = (
  * Generate a ZK proof using snarkjs with artifacts from circuit metadata,
  * or fall back to SHA-256 hashing when artifacts are unavailable.
  */
-export const prove = async (client: LemmaClient, input: ProveInput): Promise<ProveOutput> => {
-  const circuitMeta: CircuitMeta = await fetchCircuitMeta(client, input.circuitId);
+export const prove = async (
+  client: LemmaClient,
+  input: ProveInput,
+): Promise<ProveOutput> => {
+  const circuitMeta: CircuitMeta = await fetchCircuitMeta(
+    client,
+    input.circuitId,
+  );
 
   const { artifact } = circuitMeta;
 
@@ -122,24 +154,33 @@ export const prove = async (client: LemmaClient, input: ProveInput): Promise<Pro
           zkeyBuf,
         );
 
-        const proofStr = Buffer.from(JSON.stringify(proof)).toString("base64");
-        const inputs = publicSignals;
-
-        return { proof: proofStr, inputs };
+        return {
+          proof: Buffer.from(JSON.stringify(proof)).toString("base64"),
+          inputs: publicSignals,
+        };
       })()
     : // Fallback path (no artifacts)
-      (()=>{
+      (() => {
         console.log("[Lemma SDK] Using fallback SHA-256 mode");
-        const proof = sha256Base64(`${input.circuitId}|${JSON.stringify(input.witness)}`);
-        const inputs = (() => {
-          const commitmentValue = 
-            input.witness.commitmentRoot || 
-            input.witness.attr_commitment_root || 
-            input.witness.commitment_root;
-          console.log("[Lemma SDK] commitment value found:", commitmentValue);
-          return typeof commitmentValue === "string" ? [commitmentValue] : [];
-        })();
-        console.log("[Lemma SDK] Fallback proof hash (first 20 chars):", proof.substring(0, 20));
-        return { proof, inputs } as const;
-      })()
+
+        const proof = sha256Base64(
+          `${input.circuitId}|${JSON.stringify(input.witness)}`,
+        );
+
+        const commitmentValue =
+          input.witness.commitmentRoot ||
+          input.witness.attr_commitment_root ||
+          input.witness.commitment_root;
+
+        console.log("[Lemma SDK] commitment value found:", commitmentValue);
+        console.log(
+          "[Lemma SDK] Fallback proof hash (first 20 chars):",
+          proof.substring(0, 20),
+        );
+
+        return {
+          proof,
+          inputs: typeof commitmentValue === "string" ? [commitmentValue] : [],
+        } as const;
+      })();
 };

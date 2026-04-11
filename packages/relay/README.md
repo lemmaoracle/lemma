@@ -64,7 +64,7 @@ Generate a zero-knowledge proof.
 ```json
 {
   "proof": "...",
-  "publicSignals": [...]
+  "inputs": [...]
 }
 ```
 
