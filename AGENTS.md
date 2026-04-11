@@ -16,7 +16,11 @@
 
 ### Functional programming (all packages except contracts)
 
-- Follow the functional programming style guide in `@docs/architecture/fp.md` for detailed rules and patterns.
+**Reference file**: `docs/architecture/fp.md`
+
+- Always read this file to understand functional programming rules
+- Follow the functional programming style guide for detailed rules and patterns
+- Key principles: immutability, no statements, no mutation, pure functions, Ramda patterns
 
 ### Testing
 
