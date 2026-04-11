@@ -6,8 +6,6 @@
  */
 
 import type {
-  GetLogsReturnType,
-  Log,
   Transaction as ViemTransaction,
   TransactionReceipt,
 } from "viem";
@@ -34,77 +32,56 @@ type WatcherState = Readonly<{
 // Watcher Implementation
 // ---------------------------------------------------------------------------
 
+const initialState: WatcherState = {
+  isRunning: false,
+  lastCheckedBlock: 0n,
+  detectedPayments: [],
+};
+
 /**
  * Creates a transaction watcher that monitors for payments to the configured address.
  *
- * Usage:
- *   const watcher = createTransactionWatcher(config, publicClient);
- *   
- *   // Register callback for detected payments
- *   await watcher.onPaymentDetected(async (payment) => {
- *     console.log('Payment detected:', payment.txHash);
- *     // Generate proof and submit to Lemma
- *   });
- *   
- *   // Start watching
- *   watcher.start();
- *   
- *   // Stop when done
- *   watcher.stop();
+ * Uses an immutable state cell (single-element tuple) as a controlled mutable reference.
  */
 const createTransactionWatcher = (
   _config: Config,
   _publicClient: unknown,
 ): Readonly<{
-  start: () => Promise<void>;
-  stop: () => void;
+  start: (_?: undefined) => Promise<void>;
+  stop: (_?: undefined) => void;
   onPaymentDetected: (callback: PaymentDetectedCallback) => Promise<void>;
-  getState: () => WatcherState;
+  getState: (_?: undefined) => WatcherState;
 }> => {
-  let state: WatcherState = R.always({
-    isRunning: false,
-    lastCheckedBlock: 0n,
-    detectedPayments: [],
-  })();
+  const stateCell = { current: initialState };
 
-  /**
-   * Start watching for payments.
-   */
-  const start = async (): Promise<void> => {
-    state = {
-      ...state,
+  const start = (_?: undefined): Promise<void> => {
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    stateCell.current = {
+      ...stateCell.current,
       isRunning: true,
-      lastCheckedBlock: 0n, // Will be initialized on first poll
+      lastCheckedBlock: 0n,
     };
 
-    // In a real implementation, this would start polling
-    // For now, we set up the structure
-    void 0;
+    return Promise.resolve();
   };
 
-  /**
-   * Stop watching for payments.
-   */
-  const stop = (): void => {
-    state = R.assoc("isRunning", false, state);
+  const stop = (_?: undefined): void => {
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    stateCell.current = R.assoc("isRunning", false, stateCell.current);
   };
 
-  /**
-   * Register a callback to be invoked when a payment is detected.
-   */
-  const onPaymentDetected = async (
+  const onPaymentDetected = (
     callback: PaymentDetectedCallback,
   ): Promise<void> => {
-    state = {
-      ...state,
-      detectedPayments: R.append(callback, state.detectedPayments),
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    stateCell.current = {
+      ...stateCell.current,
+      detectedPayments: R.append(callback, stateCell.current.detectedPayments),
     };
+    return Promise.resolve();
   };
 
-  /**
-   * Return the current watcher state.
-   */
-  const getState = (): WatcherState => state;
+  const getState = (_?: undefined): WatcherState => stateCell.current;
 
   return {
     start,
@@ -130,21 +107,17 @@ const isValidPayment = (
   receipt: TransactionReceipt,
   config: Config,
   currentBlockNumber: bigint = 0n,
-): boolean => {
-  const isToRecipient = tx.to === config.payToAddress;
-  const hasSufficientAmount = tx.value >= config.minAmount;
-  const isSuccessful = receipt.status === "success";
-  const hasSufficientConfirmations = currentBlockNumber > 0n 
-    ? Number(currentBlockNumber - (receipt.blockNumber ?? 0n)) >= config.requiredConfirmations
-    : true; // Skip check if currentBlockNumber is not provided
-
-  return R.allPass([
-    R.always(isToRecipient),
-    R.always(hasSufficientAmount),
-    R.always(isSuccessful),
-    R.always(hasSufficientConfirmations),
+): boolean =>
+  R.allPass([
+    R.always(tx.to === config.payToAddress),
+    R.always(tx.value >= config.minAmount),
+    R.always(receipt.status === "success"),
+    R.always(
+      currentBlockNumber > 0n
+        ? Number(currentBlockNumber - receipt.blockNumber) >= config.requiredConfirmations
+        : true,
+    ),
   ])();
-};
 
 /**
  * Extract payment details from transaction and receipt.
@@ -153,16 +126,21 @@ const extractPaymentDetails = (
   tx: ViemTransaction,
   receipt: TransactionReceipt,
   currentBlockNumber: bigint,
-): Transaction =>
-  R.always({
+): Transaction => {
+  const txRecord = tx as unknown as Readonly<Record<string, unknown>>;
+  const rawTimestamp = txRecord["blockTimestamp"];
+  const timestamp = typeof rawTimestamp === "bigint" ? Number(rawTimestamp) : 0;
+
+  return R.always({
     txHash: tx.hash,
     from: tx.from,
     to: tx.to ?? ("0x" as `0x${string}`),
     amount: tx.value,
-    timestamp: Number((tx as any).blockTimestamp ?? 0n),
-    blockNumber: receipt.blockNumber ?? 0n,
-    confirmations: Number(currentBlockNumber - (receipt.blockNumber ?? 0n)),
+    timestamp,
+    blockNumber: receipt.blockNumber,
+    confirmations: Number(currentBlockNumber - receipt.blockNumber),
   })();
+};
 
 export type {
   PaymentDetectedCallback,

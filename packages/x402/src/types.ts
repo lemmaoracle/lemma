@@ -1,7 +1,3 @@
-import type { ExactEvmScheme } from "@x402/evm/exact/server";
-import type { createPublicClient, http as viemHttp } from "viem";
-import type { HTTPFacilitatorClient } from "@x402/core/server";
-
 /** Configuration for payment facilitator */
 type Config = Readonly<{
   /** x402 facilitator URL (for HTTPFacilitatorClient compatibility) */
