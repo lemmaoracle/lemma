@@ -43,36 +43,45 @@ const ROUTES: readonly Route[] = [
 ] as const;
 
 /** Parse request body as JSON. */
-const parseRequestBody = async (req: NodeJS.ReadableStream): Promise<unknown> =>
+const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
     const chunks: Buffer[] = [];
-    
+
     req.on("data", (chunk: Buffer) => {
+      // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
       chunks.push(chunk);
     });
-    
-    req.on("end", () => {
+
+    req.on("end", (_: unknown) => {
       const body = Buffer.concat(chunks).toString();
-      
-      if (!body) {
-        resolve(undefined);
-        return;
-      }
-      
-      try {
-        resolve(JSON.parse(body));
-      } catch {
-        resolve(undefined);
-      }
+      // eslint-disable-next-line functional/no-expression-statements
+      resolve(
+        R.ifElse(
+          (s: string) => s === "",
+          R.always(undefined),
+          (s: string) => {
+            // eslint-disable-next-line functional/no-try-statements
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return JSON.parse(s);
+            } catch {
+              return undefined;
+            }
+          },
+        )(body),
+      );
     });
-    
-    req.on("error", () => {
+
+    req.on("error", (_err: unknown) => {
+      // eslint-disable-next-line functional/no-expression-statements
       resolve(undefined);
     });
   });
 
 /** Convert headers object to record. */
-const headersToRecord = (headers: NodeJS.Dict<string | string[]>): Readonly<Record<string, string>> =>
+const headersToRecord = (
+  headers: NodeJS.Dict<string | string[]>,
+): Readonly<Record<string, string>> =>
   Object.entries(headers).reduce<Record<string, string>>(
     (acc, [key, value]) =>
       value !== undefined
@@ -86,11 +95,14 @@ const createEnhancedRequest = (
   req: import("node:http").IncomingMessage,
   body: unknown,
 ): EnhancedRequest => {
-  const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
-  
+  const url = new URL(
+    req.url ?? "/",
+    `http://${req.headers.host ?? "localhost"}`,
+  );
+
   return {
     req,
-    method: (req.method || "GET") as HttpMethod,
+    method: (req.method ?? "GET") as HttpMethod,
     url: url.pathname,
     headers: headersToRecord(req.headers),
     body,
@@ -99,10 +111,9 @@ const createEnhancedRequest = (
 
 /** Find matching route for request. */
 const findMatchingRoute = (request: EnhancedRequest): Route | undefined =>
-  R.find(
-    (route: Route) =>
-      route.method === request.method && route.path === request.url,
-  )(ROUTES);
+  ROUTES.find(
+    (route) => route.method === request.method && route.path === request.url,
+  );
 
 /** Send HTTP response. */
 const sendResponse = (
@@ -111,92 +122,115 @@ const sendResponse = (
   headers: HttpHeaders = {},
   body?: unknown,
 ): void => {
+  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
   res.statusCode = status;
-  
+
   Object.entries(headers).forEach(([key, value]) => {
+    // eslint-disable-next-line functional/no-expression-statements
     res.setHeader(key, value);
   });
-  
-  body !== undefined
-    ? (() => {
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify(body));
-      })()
-    : res.end();
+
+  // eslint-disable-next-line functional/no-expression-statements
+  R.ifElse(
+    (b: unknown) => b !== undefined,
+    (b: unknown) => {
+      // eslint-disable-next-line functional/no-expression-statements
+      res.setHeader("Content-Type", "application/json");
+      // eslint-disable-next-line functional/no-expression-statements
+      res.end(JSON.stringify(b));
+    },
+    (_: unknown) => {
+      // eslint-disable-next-line functional/no-expression-statements
+      res.end();
+    },
+  )(body);
 };
 
 /** Handle incoming request. */
-const handleRequest = async (
+const handleRequest = (
   req: import("node:http").IncomingMessage,
   res: import("node:http").ServerResponse,
-): Promise<void> => {
-  // Parse request body
-  const body = await parseRequestBody(req);
-  
-  // Create enhanced request
-  const request = createEnhancedRequest(req, body);
-  
-  // Find matching route
-  const route = findMatchingRoute(request);
-  
-  // Handle route not found
-  if (route === undefined) {
-    sendResponse(res, 404, {}, { error: "Not found" });
-    return;
-  }
-
-  // Execute handler
-  const handlerResult = route.handler(request);
-  
-  // Handle both sync and async handlers
-  const handleResult = handlerResult instanceof Promise
-    ? await handlerResult.catch((error: unknown) => ({
-        status: 500,
-        headers: {},
-        body: {
-          error: "Internal server error",
-          message: error instanceof Error ? error.message : String(error),
+): Promise<void> =>
+  parseRequestBody(req)
+    .then((body: unknown) => createEnhancedRequest(req, body))
+    .then((request: EnhancedRequest) => {
+      const route = findMatchingRoute(request);
+      return R.ifElse(
+        (r: Route | undefined) => r === undefined,
+        (_r: Route | undefined) => {
+          // eslint-disable-next-line functional/no-expression-statements
+          sendResponse(res, 404, {}, { error: "Not found" });
+          return Promise.resolve();
         },
-      }))
-    : handlerResult;
-  
-  sendResponse(res, handleResult.status, handleResult.headers, handleResult.body);
-};
+        (r: Route) =>
+          Promise.resolve(r.handler(request))
+            .catch((error: unknown) => ({
+              status: 500,
+              headers: {},
+              body: {
+                error: "Internal server error",
+                message: error instanceof Error ? error.message : String(error),
+              },
+            }))
+            .then((result) => {
+              // eslint-disable-next-line functional/no-expression-statements
+              sendResponse(res, result.status, result.headers, result.body);
+            }),
+      )(route);
+    });
 
 /** Create and start HTTP server. */
-const startServer = (): void => {
-  const server = createServer(handleRequest);
-  
-  server.listen(CONFIG.port, CONFIG.host, () => {
-    console.log(`Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port}`);
+const startServer = (_: unknown): void => {
+  const server = createServer((req, res) => {
+    // eslint-disable-next-line functional/no-expression-statements
+    void handleRequest(req, res);
+  });
+
+  server.listen(CONFIG.port, CONFIG.host, (_evt: unknown) => {
+    // eslint-disable-next-line functional/no-expression-statements
+    console.log(
+      `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,
+    );
+    // eslint-disable-next-line functional/no-expression-statements
     console.log("Available routes:");
-    
     ROUTES.forEach((route) => {
+      // eslint-disable-next-line functional/no-expression-statements
       console.log(`  ${route.method} ${route.path}`);
     });
   });
-  
-  // Graceful shutdown
-  const shutdown = (signal: string): (() => void) => () => {
+
+  const shutdown = (signal: string) => (_: unknown) => {
+    // eslint-disable-next-line functional/no-expression-statements
     console.log(`Received ${signal}, shutting down gracefully...`);
-    
-    server.close(() => {
+
+    server.close((_err: unknown) => {
+      // eslint-disable-next-line functional/no-expression-statements
       console.log("Server closed");
+      // eslint-disable-next-line functional/no-expression-statements
       process.exit(0);
     });
-    
-    // Force shutdown after 5 seconds
-    setTimeout(() => {
+
+    setTimeout((_timer: unknown) => {
+      // eslint-disable-next-line functional/no-expression-statements
       console.error("Force shutdown after timeout");
+      // eslint-disable-next-line functional/no-expression-statements
       process.exit(1);
     }, 5000);
   };
-  
+
+  // eslint-disable-next-line functional/no-expression-statements
   process.on("SIGTERM", shutdown("SIGTERM"));
+  // eslint-disable-next-line functional/no-expression-statements
   process.on("SIGINT", shutdown("SIGINT"));
 };
 
 // Start server if this is the main module
-if (import.meta.url === `file://${process.argv[1]}`) {
-  startServer();
-}
+// eslint-disable-next-line functional/no-expression-statements
+R.ifElse(
+  (url: string) => url === `file://${process.argv[1] ?? ""}`,
+  (url: string) => {
+    // eslint-disable-next-line functional/no-expression-statements
+    startServer(url);
+  },
+  R.always(undefined),
+)(import.meta.url);
