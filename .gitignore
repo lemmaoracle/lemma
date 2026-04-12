@@ -11,4 +11,8 @@ typechain-types/
 *.tgz
 *.tsbuildinfo
 
+# WASM build artifacts
+**/pkg/
+**/target/
+
 # Note: broadcast/ directories are NOT ignored - they contain important deployment history

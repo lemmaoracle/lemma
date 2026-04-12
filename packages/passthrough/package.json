@@ -9,27 +9,42 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./wasm": {
+      "import": "./pkg/lemma_passthrough.js",
+      "types": "./pkg/lemma_passthrough.d.ts"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "pkg",
+    "src/lib.rs",
+    "Cargo.toml"
   ],
   "scripts": {
     "build": "tsc",
+    "build:wasm": "./scripts/build-wasm.sh",
+    "build:all": "npm run build && npm run build:wasm",
     "test": "vitest run",
+    "test:wasm": "wasm-pack test --node",
+    "test:all": "npm run test && npm run test:wasm",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build:all"
   },
   "keywords": [
     "lemma",
     "schema",
     "passthrough",
-    "zk"
+    "zk",
+    "wasm"
   ],
   "author": "Lemma Oracle",
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@lemma/passthrough-wasm": "file:./pkg"
   }
 }
