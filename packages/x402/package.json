@@ -26,8 +26,7 @@
     "deploy": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --broadcast",
     "deploy:monadTestnet": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url monad_testnet --broadcast --verify",
     "deploy:baseSepolia": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url base_sepolia --broadcast --verify",
-    "register": "tsx scripts/register-circuit.ts",
-    "install": "forge install foundry-rs/forge-std"
+    "register": "tsx scripts/register-circuit.ts"
   },
   "dependencies": {
     "@lemmaoracle/sdk": "workspace:*",
