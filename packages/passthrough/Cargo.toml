@@ -1,0 +1,20 @@
+[package]
+name = "lemma-passthrough"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lemma Oracle"]
+description = "Passthrough schema WASM for Lemma circuits"
+license = "MIT"
+repository = "https://github.com/lemmaoracle/lemma"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
