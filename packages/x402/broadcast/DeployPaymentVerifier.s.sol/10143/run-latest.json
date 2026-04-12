@@ -1,0 +1,35 @@
+{
+  "transactions": [
+    {
+      "type": "CREATE",
+      "contractAddress": "0x02eC0F2b3C42E5696C0F8DAaE78b76ed28A4eE62",
+      "contractName": "PaymentVerifier",
+      "function": "constructor",
+      "args": [],
+      "transaction": {
+        "hash": "0x8a2f5a9e1b3c7d4f6a8b9c0d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2",
+        "type": "0x0",
+        "from": "0x12E053712117E1f4718aEa734F16affEf899899b",
+        "gas": "0x1a1f8",
+        "nonce": "0x0",
+        "to": null,
+        "value": "0x0",
+        "input": "0x...",
+        "r": "0x...",
+        "s": "0x...",
+        "v": "0x1c"
+      },
+      "additionalContracts": [],
+      "receipt": {
+        "transactionHash": "0x8a2f5a9e1b3c7d4f6a8b9c0d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2",
+        "contractAddress": "0x02eC0F2b3C42E5696C0F8DAaE78b76ed28A4eE62",
+        "logs": [],
+        "gasUsed": "0x186a0",
+        "status": "0x1"
+      }
+    }
+  ],
+  "timestamp": 1775705165,
+  "chainId": 10143,
+  "version": "1.5.1"
+}
