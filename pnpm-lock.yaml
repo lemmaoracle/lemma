@@ -11,6 +11,9 @@ importers:
       '@eslint/js':
         specifier: ^9.39.3
         version: 9.39.3
+      '@types/node':
+        specifier: ^22.10.6
+        version: 22.19.17
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.2(eslint@9.39.3(jiti@2.6.1))
@@ -73,9 +76,28 @@ importers:
         version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(lightningcss@1.30.1)
 
   packages/passthrough:
+    dependencies:
+      '@lemmaoracle/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
+      ramda:
+        specifier: 0.30.1
+        version: 0.30.1
     devDependencies:
+      '@types/ramda':
+        specifier: 0.30.1
+        version: 0.30.1
+      dotenv:
+        specifier: 16.4.7
+        version: 16.4.7
+      tsx:
+        specifier: ^4.19.0
+        version: 4.21.0
       typescript:
-        specifier: ^5.0.0
+        specifier: 5.8.3
         version: 5.8.3
 
   packages/relay:
@@ -272,6 +294,9 @@ importers:
       '@lemmaoracle/sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
       '@x402/core':
         specifier: ^2.9.0
         version: 2.9.0
@@ -289,7 +314,7 @@ importers:
         version: 0.30.1
       viem:
         specifier: ^2.21.0
-        version: 2.47.11(typescript@5.8.3)(zod@3.25.76)
+        version: 2.47.11(typescript@5.8.3)(zod@4.3.6)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241230.0
@@ -303,6 +328,9 @@ importers:
       circomlib:
         specifier: ^2.0.5
         version: 2.0.5
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       dotenv-cli:
         specifier: ^11.0.0
         version: 11.0.0
@@ -312,6 +340,9 @@ importers:
       snarkjs:
         specifier: ^0.7.5
         version: 0.7.6
+      tsx:
+        specifier: ^4.19.0
+        version: 4.21.0
       typescript:
         specifier: ^5.7.3
         version: 5.8.3
@@ -2017,6 +2048,9 @@ packages:
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
+  '@types/ramda@0.30.1':
+    resolution: {integrity: sha512-aoyF/ADPL6N+/NXXfhPWF+Qj6w1Cql59m9wX0Gi15uyF+bpzXeLd63HPdiTDE2bmLXfNcVufsDPKmbfOrOzTBA==}
+
   '@types/ramda@0.30.2':
     resolution: {integrity: sha512-PyzHvjCalm2BRYjAU6nIB3TprYwMNOUY/7P/N8bSzp9W/yM2YrtGtAnnVtaCNSeOZ8DzKyFDvaqQs7LnWwwmBA==}
 
@@ -2597,8 +2631,8 @@ packages:
     resolution: {integrity: sha512-uc47g4b+4k/M/SeaW1y4OApx+mtLWl92l5LMPP0GNXctZqELk+YGgOPIIC5elYmUH4OuoK3JLhuRUYegeySiFA==}
     engines: {node: '>=12'}
 
-  dotenv@16.6.1:
-    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
   dotenv@17.4.1:
@@ -6005,6 +6039,10 @@ snapshots:
 
   '@types/prop-types@15.7.15': {}
 
+  '@types/ramda@0.30.1':
+    dependencies:
+      types-ramda: 0.30.1
+
   '@types/ramda@0.30.2':
     dependencies:
       types-ramda: 0.30.1
@@ -6364,6 +6402,11 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.3
       zod: 3.25.76
+
+  abitype@1.2.3(typescript@5.8.3)(zod@4.3.6):
+    optionalDependencies:
+      typescript: 5.8.3
+      zod: 4.3.6
 
   acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
@@ -6813,9 +6856,9 @@ snapshots:
 
   dotenv-expand@12.0.3:
     dependencies:
-      dotenv: 16.6.1
+      dotenv: 16.4.7
 
-  dotenv@16.6.1: {}
+  dotenv@16.4.7: {}
 
   dotenv@17.4.1: {}
 
@@ -8199,6 +8242,21 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
+  ox@0.14.13(typescript@5.8.3)(zod@4.3.6):
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.1
+      '@noble/ciphers': 1.3.0
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@5.8.3)(zod@4.3.6)
+      eventemitter3: 5.0.1
+    optionalDependencies:
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - zod
+
   p-limit@2.3.0:
     dependencies:
       p-try: 2.2.0
@@ -9042,6 +9100,23 @@ snapshots:
       abitype: 1.2.3(typescript@5.8.3)(zod@3.25.76)
       isows: 1.0.7(ws@8.18.3)
       ox: 0.14.13(typescript@5.8.3)(zod@3.25.76)
+      ws: 8.18.3
+    optionalDependencies:
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
+  viem@2.47.11(typescript@5.8.3)(zod@4.3.6):
+    dependencies:
+      '@noble/curves': 1.9.1
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.2.3(typescript@5.8.3)(zod@4.3.6)
+      isows: 1.0.7(ws@8.18.3)
+      ox: 0.14.13(typescript@5.8.3)(zod@4.3.6)
       ws: 8.18.3
     optionalDependencies:
       typescript: 5.8.3

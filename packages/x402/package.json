@@ -25,10 +25,12 @@
     "deploy:worker": "wrangler deploy --config wrangler.toml",
     "deploy": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --broadcast",
     "deploy:monadTestnet": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url monad_testnet --broadcast --verify",
-    "deploy:baseSepolia": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url base_sepolia --broadcast --verify"
+    "deploy:baseSepolia": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url base_sepolia --broadcast --verify",
+    "register": "tsx scripts/register-circuit.ts"
   },
   "dependencies": {
     "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*",
     "@x402/core": "^2.9.0",
     "@x402/evm": "^2.9.0",
     "@x402/hono": "^2.9.0",
@@ -41,9 +43,11 @@
     "@types/ramda": "^0.30.0",
     "circom2": "^0.2.22",
     "circomlib": "^2.0.5",
+    "dotenv": "^16.4.7",
     "dotenv-cli": "^11.0.0",
     "poseidon-lite": "^0.3.0",
     "snarkjs": "^0.7.5",
+    "tsx": "^4.19.0",
     "typescript": "^5.7.3",
     "vitest": "^2.0.0",
     "wrangler": "^3.101.0"
