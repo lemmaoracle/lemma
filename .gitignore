@@ -10,3 +10,5 @@ typechain-types/
 .pnpm-store/
 *.tgz
 *.tsbuildinfo
+
+# Note: broadcast/ directories are NOT ignored - they contain important deployment history

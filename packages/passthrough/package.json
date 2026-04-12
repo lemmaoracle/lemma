@@ -1,0 +1,35 @@
+{
+  "name": "@lemma/passthrough",
+  "version": "0.1.0",
+  "description": "Passthrough schema for Lemma circuits - returns input unchanged",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "lemma",
+    "schema",
+    "passthrough",
+    "zk"
+  ],
+  "author": "Lemma Oracle",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
