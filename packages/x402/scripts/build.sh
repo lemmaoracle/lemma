@@ -12,8 +12,8 @@ mkdir -p "$BUILD_DIR"
 
 # circom2 (WASM) cannot follow symlinks, which breaks with pnpm's symlinked
 # node_modules. Copy circomlib into the build directory as real files.
+rm -rf "$LIBS_DIR"
 mkdir -p "$LIBS_DIR"
-rm -rf "$LIBS_DIR/circomlib"
 cp -rL node_modules/circomlib "$LIBS_DIR/circomlib"
 
 echo "1/5  Compiling x402 payment circuit..."
