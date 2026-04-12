@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { normalize, validate } from '../src/index';
 
-describe('Passthrough schema', () => {
+describe('Passthrough schema (TypeScript)', () => {
   it('should normalize input unchanged', () => {
     const input = { data: 'test data' };
     const output = normalize(input);
@@ -22,3 +22,6 @@ describe('Passthrough schema', () => {
     expect(validate({} as any)).toBe(false);
   });
 });
+
+// Note: WASM tests would require building and loading the WASM module
+// This is tested separately in the build process

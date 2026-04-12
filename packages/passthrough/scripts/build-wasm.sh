@@ -1,55 +1,35 @@
 #!/bin/bash
-# Build WASM for passthrough schema
+# Build WASM for Lemma passthrough schema
 
 set -e
 
-echo "🚀 Building passthrough schema WASM..."
+echo "🚀 Building passthrough schema WASM for Lemma..."
 
-# Check for wasm-pack
+# Check for Rust
+if ! command -v cargo &> /dev/null; then
+  echo "❌ Rust/cargo not found. Install from https://rustup.rs/"
+  exit 1
+fi
+
+# Check for wasm-pack (optional but recommended)
 if ! command -v wasm-pack &> /dev/null; then
-  echo "❌ wasm-pack not found. Installing..."
+  echo "⚠️  wasm-pack not found. Installing..."
   curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 fi
 
-# Build WASM
-echo "1. Building WASM with wasm-pack..."
+# Build optimized WASM
+echo "1. Building optimized WASM..."
 wasm-pack build \
-  --target web \
-  --out-dir pkg \
-  --release
+  --target no-modules \
+  --out-dir ../../dist/wasm \
+  --release \
+  --scope lemma
 
-echo "2. Generating TypeScript bindings..."
-# wasm-pack already generates TypeScript bindings
-
-echo "3. Creating package.json for WASM package..."
-cat > pkg/package.json << 'EOF'
-{
-  "name": "@lemma/passthrough-wasm",
-  "version": "0.1.0",
-  "description": "WASM implementation of passthrough schema",
-  "type": "module",
-  "main": "lemma_passthrough.js",
-  "types": "lemma_passthrough.d.ts",
-  "files": [
-    "*.js",
-    "*.ts",
-    "*.wasm"
-  ],
-  "scripts": {
-    "test": "echo \"Run tests from parent package\""
-  },
-  "keywords": [
-    "lemma",
-    "wasm",
-    "schema",
-    "passthrough"
-  ],
-  "author": "Lemma Oracle",
-  "license": "MIT"
-}
-EOF
+echo "2. Renaming for Lemma compatibility..."
+mv ../../dist/wasm/lemma_passthrough_bg.wasm ../../dist/wasm/passthrough.wasm
+mv ../../dist/wasm/lemma_passthrough.js ../../dist/wasm/passthrough.js
 
 echo "✅ WASM build complete!"
-echo "📁 Output directory: pkg/"
-echo "📦 Files:"
-ls -la pkg/ | grep -E "\.(wasm|js|ts|json)$"
+echo "📁 Output: dist/wasm/"
+echo "📦 Files generated:"
+ls -la ../../dist/wasm/ 2>/dev/null || echo "  (dist/wasm/ directory)"

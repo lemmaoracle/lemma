@@ -14,6 +14,7 @@
   "exclude": [
     "dist",
     "node_modules",
-    "tests"
+    "tests",
+    "src/lib.rs"
   ]
 }

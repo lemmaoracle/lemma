@@ -1,50 +1,30 @@
 {
   "name": "@lemma/passthrough",
   "version": "0.1.0",
-  "description": "Passthrough schema for Lemma circuits - returns input unchanged",
+  "description": "Passthrough schema WASM for Lemma circuits",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./wasm": {
-      "import": "./pkg/lemma_passthrough.js",
-      "types": "./pkg/lemma_passthrough.d.ts"
-    }
-  },
   "files": [
     "dist",
-    "pkg",
     "src/lib.rs",
-    "Cargo.toml"
+    "Cargo.toml",
+    "scripts/build-wasm.sh"
   ],
   "scripts": {
     "build": "tsc",
     "build:wasm": "./scripts/build-wasm.sh",
-    "build:all": "npm run build && npm run build:wasm",
-    "test": "vitest run",
-    "test:wasm": "wasm-pack test --node",
-    "test:all": "npm run test && npm run test:wasm",
-    "test:watch": "vitest",
-    "prepublishOnly": "npm run build:all"
+    "prepublishOnly": "npm run build && npm run build:wasm"
   },
   "keywords": [
     "lemma",
     "schema",
     "passthrough",
-    "zk",
     "wasm"
   ],
   "author": "Lemma Oracle",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
-  },
-  "dependencies": {
-    "@lemma/passthrough-wasm": "file:./pkg"
+    "typescript": "^5.0.0"
   }
 }
