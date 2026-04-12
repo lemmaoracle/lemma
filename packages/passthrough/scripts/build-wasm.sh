@@ -3,6 +3,10 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+OUT_DIR="$PROJECT_DIR/dist/wasm"
+
 echo "🚀 Building passthrough schema WASM for Lemma..."
 
 # Check for Rust
@@ -17,19 +21,24 @@ if ! command -v wasm-pack &> /dev/null; then
   curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 fi
 
+# Create output directory if it doesn't exist
+mkdir -p "$OUT_DIR"
+
 # Build optimized WASM
 echo "1. Building optimized WASM..."
+echo "   Building in: $PROJECT_DIR"
+echo "   Output to: $OUT_DIR"
 wasm-pack build \
   --target no-modules \
-  --out-dir ../../dist/wasm \
+  --out-dir "$OUT_DIR" \
   --release \
   --scope lemma
 
 echo "2. Renaming for Lemma compatibility..."
-mv ../../dist/wasm/lemma_passthrough_bg.wasm ../../dist/wasm/passthrough.wasm
-mv ../../dist/wasm/lemma_passthrough.js ../../dist/wasm/passthrough.js
+mv "$OUT_DIR/lemma_passthrough_bg.wasm" "$OUT_DIR/passthrough.wasm"
+mv "$OUT_DIR/lemma_passthrough.js" "$OUT_DIR/passthrough.js"
 
 echo "✅ WASM build complete!"
-echo "📁 Output: dist/wasm/"
+echo "📁 Output: $OUT_DIR"
 echo "📦 Files generated:"
-ls -la ../../dist/wasm/ 2>/dev/null || echo "  (dist/wasm/ directory)"
+ls -la "$OUT_DIR/" 2>/dev/null || echo "  ($OUT_DIR directory)"

@@ -12,9 +12,7 @@
     "scripts/build-wasm.sh"
   ],
   "scripts": {
-    "build": "tsc",
-    "build:wasm": "./scripts/build-wasm.sh",
-    "prepublishOnly": "npm run build && npm run build:wasm"
+    "build": "./scripts/build-wasm.sh"
   },
   "keywords": [
     "lemma",
@@ -23,8 +21,5 @@
     "wasm"
   ],
   "author": "Lemma Oracle",
-  "license": "MIT",
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  }
+  "license": "MIT"
 }
