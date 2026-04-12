@@ -1,17 +1,11 @@
 [profile.default]
 src = "build"
 out = "out"
-libs = ["node_modules", "build/libs"]
+libs = ["lib"]
 solc_version = "0.8.28"
 optimizer = true
 optimizer_runs = 200
 via_ir = false
-remappings = [
-  "forge-std/=build/libs/forge-std/src/"
-]
-
-[verify]
-path = "build/PaymentVerifier.sol"
 
 [rpc_endpoints]
 monad_testnet = "https://testnet-rpc.monad.xyz"
