@@ -27,18 +27,25 @@ type RequestBody = Readonly<{
   apiBase: string;
   /** Lemma API key (optional). */
   apiKey?: string;
-  /** Schema ID to fetch and define. */
-  schemaId: string;
-  /** Payload to normalize and prepare. */
-  payload: unknown;
+  /** Actual prepare arguments. */
+  input: Readonly<{
+    /** Schema ID to fetch and define. */
+    schemaId: string;
+    /** Payload to normalize and prepare. */
+    payload: unknown;
+  }>;
 }>;
 
 /** Type guard: validate that the request body conforms to RequestBody. */
 const isValidRequestBody = (body: unknown): body is RequestBody =>
   R.allPass([
     (b: Record<string, unknown>) => typeof b["apiBase"] === "string",
-    (b: Record<string, unknown>) => typeof b["schemaId"] === "string",
-    (b: Record<string, unknown>) => b["payload"] !== undefined,
+    (b: Record<string, unknown>) =>
+      typeof b["input"] === "object" && b["input"] !== null,
+    (b: Record<string, unknown>) =>
+      typeof (b["input"] as Record<string, unknown>)["schemaId"] === "string",
+    (b: Record<string, unknown>) =>
+      (b["input"] as Record<string, unknown>)["payload"] !== undefined,
   ])(body as Record<string, unknown>);
 
 /** 400 response for malformed request bodies. */
@@ -49,8 +56,7 @@ const invalidRequestResponse: HttpResponse = {
     expected: {
       apiBase: "string",
       apiKey: "string (optional)",
-      schemaId: "string",
-      payload: "unknown",
+      input: { schemaId: "string", payload: "unknown" },
     },
   },
 } as const;
@@ -81,12 +87,12 @@ const prepareWorkflow = (body: RequestBody): Promise<HttpResponse> => {
   const client = create({ apiBase: body.apiBase, apiKey: body.apiKey });
 
   return schemas
-    .getById(client, body.schemaId)
+    .getById(client, body.input.schemaId)
     .then(define)
     .then((schema: SchemaDef<unknown, unknown>) =>
       prepare(client, {
         schema: schema.id,
-        payload: body.payload,
+        payload: body.input.payload,
       }),
     )
     .then((result: PrepareOutput<unknown>): HttpResponse => ({

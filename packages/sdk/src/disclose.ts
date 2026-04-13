@@ -341,6 +341,8 @@ export type RevealContext = Readonly<{
   header: Uint8Array;
   /** Total number of messages in the original BBS+ signature. */
   count: number;
+  /** Optional access condition for the returned SelectiveDisclosure. */
+  condition?: Readonly<{ circuitId: string }>;
 }>;
 
 /**
@@ -361,6 +363,7 @@ export const toSelectiveDisclosure = (
   indexes: output.indexes,
   count: context.count,
   header: bytesToHex(context.header),
+  ...(context.condition ? { condition: context.condition } : {}),
 });
 
 /**

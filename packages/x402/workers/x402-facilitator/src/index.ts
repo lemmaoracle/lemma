@@ -1,9 +1,10 @@
 /**
  * X402 Facilitator Cloudflare Worker
  *
- * Implements the x402 facilitator spec with two endpoints:
+ * Implements the x402 facilitator spec with three endpoints:
  *   POST /verify  – lightweight pre-check (signature, amount, balance)
  *   POST /settle  – broadcast tx, wait for confirmation, generate ZK proof
+ *   POST /prepare – delegate schema preparation to Relay API
  *
  * Called by resource servers as part of the x402 payment flow.
  *
@@ -86,6 +87,24 @@ type RelayProveResponse = Readonly<{
   inputs: ReadonlyArray<string>;
   error?: string;
   message?: string;
+}>;
+
+/** Relay API response from POST /prepare */
+type RelayPrepareResponse = Readonly<{
+  normalized: Readonly<Record<string, unknown>>;
+  commitments: Readonly<{
+    root: string;
+    leaves: ReadonlyArray<string>;
+    randomness: ReadonlyArray<string>;
+  }>;
+  error?: string;
+  message?: string;
+}>;
+
+/** Body of POST /prepare */
+type PrepareRequest = Readonly<{
+  schemaId: string;
+  payload: unknown;
 }>;
 
 // ---------------------------------------------------------------------------
@@ -247,6 +266,39 @@ const relayProve = async (
 
   if (!res.ok) {
     throw new Error(data.message ?? data.error ?? `Relay /prover/prove failed (${res.status})`);
+  }
+
+  return data;
+};
+
+/**
+ * Call the relay API's POST /prepare endpoint.
+ *
+ * Fetches schema metadata, defines the schema, and prepares data.
+ * Delegated to @lemmaoracle/relay because preparation may require
+ * WASM execution and Node.js-specific APIs unavailable on Workers.
+ */
+const relayPrepare = async (
+  relayUrl: string,
+  apiBase: string,
+  apiKey: string | undefined,
+  schemaId: string,
+  payload: unknown,
+): Promise<RelayPrepareResponse> => {
+  const res = await fetch(`${relayUrl.replace(/\/$/, "")}/prepare`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apiBase,
+      ...(apiKey ? { apiKey } : {}),
+      input: { schemaId, payload },
+    }),
+  });
+
+  const data = (await res.json()) as RelayPrepareResponse;
+
+  if (!res.ok) {
+    throw new Error(data.message ?? data.error ?? `Relay /prepare failed (${res.status})`);
   }
 
   return data;
@@ -478,6 +530,37 @@ app.post("/settle", async (c) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /prepare — Delegate schema preparation to Relay API
+// ---------------------------------------------------------------------------
+
+app.post("/prepare", async (c) => {
+  const body = (await c.req.json()) as PrepareRequest | undefined;
+
+  if (!body?.schemaId || body.payload === undefined) {
+    return c.json(
+      { success: false, error: "Request must contain 'schemaId' and 'payload'" },
+      400,
+    );
+  }
+
+  try {
+    const result = await relayPrepare(
+      c.env.RELAY_URL,
+      c.env.LEMMA_API_BASE,
+      c.env.LEMMA_API_KEY,
+      body.schemaId,
+      body.payload,
+    );
+    return c.json<RelayPrepareResponse>(result);
+  } catch (err) {
+    return c.json(
+      { error: `Preparation error: ${(err as Error).message}` },
+      502,
+    );
+  }
+});
+
+// ---------------------------------------------------------------------------
 // Health Check
 // ---------------------------------------------------------------------------
 
@@ -492,7 +575,7 @@ app.get("/", (c) => {
     version: "0.4.0",
     circuitId: c.env.CIRCUIT_ID ?? "x402-payment-v1",
     supportedNetworks,
-    endpoints: ["/verify", "/settle"],
+    endpoints: ["/verify", "/settle", "/prepare"],
   });
 });
 
