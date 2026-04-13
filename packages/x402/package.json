@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/x402",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ZK-enabled x402 payment proofs for Lemma's disclosure.condition API",
   "type": "module",
   "main": "dist/index.js",
