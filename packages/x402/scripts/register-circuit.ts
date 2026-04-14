@@ -178,7 +178,8 @@ const main = async (): Promise<void> => {
     console.log("\n✅ Circuit registered successfully!");
     console.log(`📝 Circuit ID: ${registeredCircuit.circuitId}`);
     console.log(`🔗 Schema: ${registeredCircuit.schema}`);
-    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS_BASE_SEPOLIA} (Chain: ${CHAIN_ID})`);
+    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS_BASE_SEPOLIA} (Chain: ${CHAIN_ID_BASE_SEPOLIA})`);
+    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS_MONAD_TESTNET} (Chain: ${CHAIN_ID_MONAD_TESTNET})`);
     console.log(`📦 WASM IPFS: ${wasmIpfsUrl}`);
     console.log(`📦 zKey IPFS: ${zkeyIpfsUrl}`);
     console.log("\n🎉 x402 payment circuit is now ready for use!");
