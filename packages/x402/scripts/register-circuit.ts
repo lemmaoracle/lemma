@@ -24,9 +24,12 @@ const LEMMA_API_KEY = process.env.LEMMA_API_KEY;
 const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
+// Verifier contract address from deployment (Base Sepolia)
+const VERIFIER_ADDRESS_BASE_SEPOLIA = "0x291e98af209557ecFB77b477228AD3623b6989E7";
+const CHAIN_ID_BASE_SEPOLIA = 84532; // Base Sepolia
 // Verifier contract address from deployment (Monad Testnet)
-const VERIFIER_ADDRESS = "0x851b33e46fc1ded8f752d1f2f26a9c58afde8815";
-const CHAIN_ID = 10143; // Monad Testnet
+const VERIFIER_ADDRESS_MONAD_TESTNET = "0x8BA44D7F46aA1fd075b1C89399112B374A27A455";
+const CHAIN_ID_MONAD_TESTNET = 10143; // Monad Testnet
 
 /* ------------------------------------------------------------------ */
 /*  Pinata Upload Functions                                           */
@@ -126,8 +129,14 @@ const buildCircuitMeta = (wasmIpfsUrl: string, zkeyIpfsUrl: string): CircuitMeta
   verifiers: [
     {
       type: "onchain",
-      address: VERIFIER_ADDRESS,
-      chainId: CHAIN_ID,
+      address: VERIFIER_ADDRESS_BASE_SEPOLIA,
+      chainId: CHAIN_ID_BASE_SEPOLIA,
+      alg: "groth16-bn254-snarkjs",
+    },
+    {
+      type: "onchain",
+      address: VERIFIER_ADDRESS_MONAD_TESTNET,
+      chainId: CHAIN_ID_MONAD_TESTNET,
       alg: "groth16-bn254-snarkjs",
     },
   ],
@@ -137,14 +146,6 @@ const buildCircuitMeta = (wasmIpfsUrl: string, zkeyIpfsUrl: string): CircuitMeta
       wasm: wasmIpfsUrl,
       zkey: zkeyIpfsUrl,
     },
-  },
-  metadata: {
-    network: "monad-testnet",
-    chainId: CHAIN_ID,
-    version: "1.0",
-    deploymentTx: "0x365504aa2131a5e3f046dbbd3f929ebae17d3f78a21cea9d52742252bd9b33c2",
-    deploymentBlock: 0x17cf6e9,
-    circuitType: "payment",
   },
 });
 
@@ -177,7 +178,7 @@ const main = async (): Promise<void> => {
     console.log("\n✅ Circuit registered successfully!");
     console.log(`📝 Circuit ID: ${registeredCircuit.circuitId}`);
     console.log(`🔗 Schema: ${registeredCircuit.schema}`);
-    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS} (Chain: ${CHAIN_ID})`);
+    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS_BASE_SEPOLIA} (Chain: ${CHAIN_ID})`);
     console.log(`📦 WASM IPFS: ${wasmIpfsUrl}`);
     console.log(`📦 zKey IPFS: ${zkeyIpfsUrl}`);
     console.log("\n🎉 x402 payment circuit is now ready for use!");
