@@ -21,7 +21,7 @@ declare const X402Env: {
    */
   RELAY_URL: string;
   /** Private key for the facilitator wallet (pays gas for settlements). */
-  FACILITATOR_PRIVATE_KEY: string;
+  PRIVATE_KEY: string;
 };
 
 export default X402Env;

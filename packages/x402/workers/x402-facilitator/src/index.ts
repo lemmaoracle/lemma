@@ -644,7 +644,7 @@ app.post("/settle", async (c) => {
   const rpcUrl = rpcForNetwork(requirements.network, rpcOverrides);
   const client = buildClient(rpcUrl, requirements.network);
 
-  const account = privateKeyToAccount(c.env.FACILITATOR_PRIVATE_KEY as `0x${string}`);
+  const account = privateKeyToAccount(c.env.PRIVATE_KEY as `0x${string}`);
   const walletClient = createWalletClient({
     account,
     chain: chainForNetwork(requirements.network),
