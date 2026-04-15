@@ -15,6 +15,10 @@
  * ZK proof generation is delegated to @lemmaoracle/relay (Vercel) because
  * snarkjs/ffjavascript require APIs (URL.createObjectURL) unavailable on
  * Cloudflare Workers.
+ *
+ * Accepts both the standard x402 spec request format
+ * ({ x402Version, paymentHeader, paymentRequirements }) and the legacy
+ * Lemma format ({ payload, requirements }) for backward compatibility.
  */
 
 import type X402Env from "./x402-env";
@@ -55,7 +59,7 @@ type PaymentRequirements = Readonly<{
   [key: string]: unknown;
 }>;
 
-/** Body of POST /verify and POST /settle */
+/** Normalized internal request body for /verify and /settle. */
 type FacilitatorRequest = Readonly<{
   payload: PaymentPayload;
   requirements: PaymentRequirements;
@@ -217,21 +221,69 @@ const configForRequest = (
   requiredConfirmations: 6,
 });
 
-/** Parse and validate a facilitator request body. */
+/**
+ * Parse and normalize a facilitator request body.
+ *
+ * Accepts two formats:
+ *   1. Standard x402 spec: { x402Version, paymentHeader, paymentRequirements }
+ *      — paymentHeader is a Base64-encoded JSON string containing the PaymentPayload
+ *   2. Legacy Lemma format: { payload, requirements }
+ *      — direct JSON objects
+ *
+ * Both are normalized into { payload, requirements } for internal use.
+ */
 const parseFacilitatorRequest = async (
   body: unknown,
 ): Promise<{ ok: true; data: FacilitatorRequest } | { ok: false; reason: string }> => {
-  const req = body as FacilitatorRequest | undefined;
-  if (!req?.payload || !req?.requirements) {
-    return { ok: false, reason: "Request must contain 'payload' and 'requirements'" };
+  const raw = body as Record<string, unknown> | undefined;
+  if (!raw) {
+    return { ok: false, reason: "Empty request body" };
   }
-  if (!req.payload.from || !req.payload.signature) {
+
+  let payload: PaymentPayload | undefined;
+  let requirements: PaymentRequirements | undefined;
+
+  // --- Standard x402 spec format ---
+  if ("paymentHeader" in raw && "paymentRequirements" in raw) {
+    try {
+      const headerStr = typeof raw.paymentHeader === "string"
+        ? raw.paymentHeader
+        : undefined;
+      if (!headerStr) {
+        return { ok: false, reason: "paymentHeader must be a string" };
+      }
+      payload = JSON.parse(atob(headerStr)) as PaymentPayload;
+    } catch {
+      // paymentHeader may already be a decoded JSON string (not Base64)
+      try {
+        payload = JSON.parse(raw.paymentHeader as string) as PaymentPayload;
+      } catch {
+        return { ok: false, reason: "paymentHeader is not valid Base64 or JSON" };
+      }
+    }
+    requirements = raw.paymentRequirements as PaymentRequirements;
+  }
+  // --- Legacy Lemma format ---
+  else if ("payload" in raw && "requirements" in raw) {
+    payload = raw.payload as PaymentPayload;
+    requirements = raw.requirements as PaymentRequirements;
+  }
+
+  if (!payload || !requirements) {
+    return {
+      ok: false,
+      reason:
+        "Request must contain either { paymentHeader, paymentRequirements } (x402 spec) " +
+        "or { payload, requirements } (legacy)",
+    };
+  }
+  if (!payload.from || !payload.signature) {
     return { ok: false, reason: "Payload must contain 'from' and 'signature'" };
   }
-  if (!req.requirements.payTo || !req.requirements.network) {
+  if (!requirements.payTo || !requirements.network) {
     return { ok: false, reason: "Requirements must contain 'payTo' and 'network'" };
   }
-  return { ok: true, data: req };
+  return { ok: true, data: { payload, requirements } };
 };
 
 // ---------------------------------------------------------------------------
@@ -572,7 +624,7 @@ app.get("/", (c) => {
 
   return c.json({
     service: "lemma-x402-facilitator",
-    version: "0.4.0",
+    version: "0.5.0",
     circuitId: c.env.CIRCUIT_ID ?? "x402-payment-v1",
     supportedNetworks,
     endpoints: ["/verify", "/settle", "/prepare"],
