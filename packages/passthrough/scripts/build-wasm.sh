@@ -29,7 +29,7 @@ echo "1. Building optimized WASM..."
 echo "   Building in: $PROJECT_DIR"
 echo "   Output to: $OUT_DIR"
 wasm-pack build \
-  --target no-modules \
+  --target web \
   --out-dir "$OUT_DIR" \
   --release \
   --scope lemma

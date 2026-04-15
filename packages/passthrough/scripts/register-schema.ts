@@ -174,14 +174,28 @@ const main = async (): Promise<void> => {
       uploadFileToPinata(jsPath, "passthrough.js"),
     ]);
 
-    console.log("4. Registering schema with Lemma...");
-    const client = createLemmaClient();
-    const schemaMeta = buildSchemaMeta(wasmHash, wasmIpfsUrl, jsIpfsUrl);
-    const registeredSchema = await registerSchema(client, schemaMeta);
+    console.log("4. Updating DB record with new WASM/JS IPFS hashes...");
+    
+    const normalizeJson = JSON.stringify({
+      artifact: {
+        js: jsIpfsUrl,
+        type: "ipfs",
+        wasm: wasmIpfsUrl
+      },
+      hash: wasmHash,
+      abi: {
+        norm: { output: "bytes" },
+        raw: { output: "bytes" }
+      }
+    });
 
-    console.log("\n✅ Schema registered successfully!");
-    console.log(`📝 Schema ID: ${registeredSchema.id}`);
-    console.log(`🔗 WASM Hash: ${registeredSchema.normalize.hash}`);
+    const sqlPath = path.join(PROJECT_ROOT, "../workers/__update_passthrough.sql");
+    fs.writeFileSync(sqlPath, `UPDATE schemas SET normalize_json = '${normalizeJson}' WHERE id = 'passthrough-v1';`);
+
+    console.log(`\n✅ Generated SQL file: ${sqlPath}`);
+    console.log(`To update the remote database, run:`);
+    console.log(`cd ../../../../workers && npx wrangler d1 execute lemma --file=__update_passthrough.sql --remote`);
+    console.log(`\n🔗 WASM Hash: ${wasmHash}`);
     console.log(`📦 WASM IPFS: ${wasmIpfsUrl}`);
     console.log(`📦 JS IPFS: ${jsIpfsUrl}`);
     console.log("\n🎉 Passthrough schema is now ready for use!");

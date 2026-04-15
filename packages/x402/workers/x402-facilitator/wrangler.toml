@@ -9,9 +9,9 @@ LEMMA_API_BASE = "https://workers.lemma.workers.dev"
 CIRCUIT_ID = "x402-payment-v1"
 RELAY_URL = "https://p01--lemma-relay-api--svxwx5rc5jzx.code.run/"
 
-# Required secrets (set via `wrangler secret put`):
-#   PAY_TO_ADDRESS          - address to receive payments
+# Required secrets (set via `wrangler secret put` or .env file):
 #   PRIVATE_KEY             - private key for facilitator wallet (pays gas)
+#   PAY_TO_ADDRESS          - address to receive payments (alternative to secret)
 #   RELAY_URL               - base URL of @lemmaoracle/relay (Vercel)
 #   LEMMA_API_KEY           - (optional) Lemma API key
 #   RPC_URLS                - (optional) JSON override for default RPC endpoints

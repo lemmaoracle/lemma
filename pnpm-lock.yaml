@@ -353,6 +353,12 @@ importers:
         specifier: ^3.101.0
         version: 3.114.17(@cloudflare/workers-types@4.20260409.1)
 
+  packages/x402/workers/x402-facilitator:
+    dependencies:
+      poseidon-lite:
+        specifier: ^0.3.0
+        version: 0.3.0
+
 packages:
 
   '@adraffy/ens-normalize@1.10.1':

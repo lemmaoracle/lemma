@@ -32,7 +32,8 @@ const toBase64 = (source: string): string =>
 
 // Dynamic import result shape for the WASM JS shim
 type WasmShim = Readonly<{
-  default: (wasm: ArrayBuffer) => Promise<void>;
+  default?: (wasm: ArrayBuffer) => Promise<void>;
+  init?: (wasm: ArrayBuffer) => Promise<void>;
   normalize: (rawJson: string) => string;
 }>;
 
@@ -79,11 +80,21 @@ export const define = async <Raw, Norm>(schemaMeta: SchemaMeta): Promise<SchemaD
     );
   }
   const jsSource = await jsResponse.text();
+  
+  // Create a data URI for the module
   const dataUri = `data:text/javascript;base64,${toBase64(jsSource)}`;
   const shim = (await import(/* @vite-ignore */ dataUri)) as WasmShim;
-  await shim.default(wasmBuffer);
+  
+  if (typeof shim.default === "function") {
+    await shim.default(wasmBuffer);
+  } else if (typeof shim.init === "function") {
+    await shim.init(wasmBuffer);
+  } else {
+    console.warn("WASM JS shim does not export an initialization function (default or init)");
+  }
 
   if (typeof shim.normalize !== "function") {
+    console.error("Shim object:", Object.keys(shim));
     throw new Error("WASM JS shim does not export a 'normalize' function");
   }
 

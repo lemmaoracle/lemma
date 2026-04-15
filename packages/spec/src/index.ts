@@ -200,6 +200,8 @@ export type SubmitProofResponse = Readonly<{
 /* ── Verified attributes query ─────────────────────────────────────── */
 
 export type VerifiedAttributesQueryRequest = Readonly<{
+  /** Filter by specific document hash (optional). */
+  docHash?: string;
   attributes: ReadonlyArray<
     Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value: unknown }>
   >;
