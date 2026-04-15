@@ -718,4 +718,38 @@ app.get("/", (c) => {
   });
 });
 
+/** GET /supported — x402 spec endpoint for listing supported payment kinds. */
+app.get("/supported", (c) => {
+  const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+  const supportedNetworks = [
+    ...new Set([...Object.keys(DEFAULT_RPC_MAP), ...Object.keys(rpcOverrides)]),
+  ];
+
+  // Build kinds array: one entry per (version, scheme, network) combination
+  const kinds = supportedNetworks.flatMap((network) => [
+    {
+      x402Version: 1,
+      scheme: "exact",
+      network,
+      extra: {
+        description: `Exact payment on ${network}`,
+      },
+    },
+    {
+      x402Version: 2,
+      scheme: "exact",
+      network,
+      extra: {
+        description: `Exact payment on ${network}`,
+      },
+    },
+  ]);
+
+  return c.json({
+    kinds,
+    extensions: ["lemmaAttestation"],
+    signers: {},
+  });
+});
+
 export default app;
