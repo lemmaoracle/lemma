@@ -2,8 +2,8 @@
  * X402 Facilitator Cloudflare Worker
  *
  * Implements the x402 facilitator spec with three endpoints:
- *   POST /verify  – lightweight pre-check (signature, amount, balance)
- *   POST /settle  – broadcast tx, wait for confirmation, generate ZK proof
+ *   POST /verify  – lightweight pre-check (EIP-712 signature, amount, balance)
+ *   POST /settle  – call transferWithAuthorization on USDC, wait for confirmation, generate ZK proof
  *   POST /prepare – delegate schema preparation to Relay API
  *
  * Called by resource servers as part of the x402 payment flow.
@@ -22,10 +22,12 @@
  */
 
 import type X402Env from "./x402-env";
-import { createPublicClient, http, type PublicClient } from "viem";
+import { createPublicClient, createWalletClient, http, type PublicClient, type WalletClient } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 import { base, baseSepolia } from "viem/chains";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { eip3009ABI, authorizationTypes } from "@x402/evm";
 
 // ---------------------------------------------------------------------------
 // Request / Response types (aligned with x402 facilitator spec)
@@ -33,7 +35,7 @@ import { cors } from "hono/cors";
 
 /** Payment payload sent by the client (forwarded by the resource server). */
 type PaymentPayload = Readonly<{
-  /** EVM scheme: the signed authorization or raw signed tx */
+  /** EVM scheme: the EIP-712 signature for transferWithAuthorization */
   signature: `0x${string}`;
   /** Payer address */
   from: `0x${string}`;
@@ -41,6 +43,15 @@ type PaymentPayload = Readonly<{
   network: string;
   /** Scheme identifier, e.g. "exact" */
   scheme: string;
+  /** EIP-3009 authorization data (present for exact scheme) */
+  authorization?: {
+    from: `0x${string}`;
+    to: `0x${string}`;
+    value: string;
+    validAfter: string;
+    validBefore: string;
+    nonce: `0x${string}`;
+  };
   /** Additional scheme-specific data */
   [key: string]: unknown;
 }>;
@@ -132,6 +143,18 @@ type FacilitatorConfig = Readonly<{
 // ---------------------------------------------------------------------------
 // Network helpers
 // ---------------------------------------------------------------------------
+
+/** USDC contract addresses per network. */
+const USDC_ADDRESSES: Readonly<Record<string, `0x${string}`>> = {
+  "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",   // Base Mainnet
+  "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",  // Base Sepolia
+};
+
+const getUsdcAddress = (network: string): `0x${string}` => {
+  const addr = USDC_ADDRESSES[network];
+  if (!addr) throw new Error(`No USDC address for network: ${network}`);
+  return addr;
+};
 
 /** Default RPC endpoints — used when no override is provided via RPC_URLS. */
 const DEFAULT_RPC_MAP: Readonly<Record<string, string>> = {
@@ -365,9 +388,10 @@ const relayPrepare = async (
  *
  * Checks performed:
  *  1. Network / scheme match
- *  2. Signature validity (ecRecover)
- *  3. Payer has sufficient balance
- *  4. Payment amount meets the minimum requirement
+ *  2. EIP-712 signature validity (TransferWithAuthorization)
+ *  3. Authorization recipient matches payTo
+ *  4. Payer has sufficient balance
+ *  5. Recipient matches facilitator config
  */
 const verifyPayment = async (
   payload: PaymentPayload,
@@ -385,7 +409,43 @@ const verifyPayment = async (
     return { isValid: false, invalidReason: "Scheme mismatch between payload and requirements" };
   }
 
-  // 3. Verify the payer address is a valid account with a balance
+  // 3. Verify EIP-3009 authorization and EIP-712 signature
+  const auth = payload.authorization;
+  if (auth && payload.signature) {
+    const usdcAddress = getUsdcAddress(requirements.network);
+    const chainId = chainIdForNetwork(requirements.network);
+
+    const isValid = await client.verifyTypedData({
+      address: auth.from,
+      domain: {
+        name: "USD Coin",
+        version: "2",
+        chainId: BigInt(chainId),
+        verifyingContract: usdcAddress,
+      },
+      types: authorizationTypes,
+      primaryType: "TransferWithAuthorization",
+      message: {
+        from: auth.from,
+        to: auth.to,
+        value: BigInt(auth.value),
+        validAfter: BigInt(auth.validAfter),
+        validBefore: BigInt(auth.validBefore),
+        nonce: auth.nonce,
+      },
+      signature: payload.signature,
+    });
+
+    if (!isValid) {
+      return { isValid: false, invalidReason: "EIP-712 signature verification failed" };
+    }
+
+    if (auth.to.toLowerCase() !== requirements.payTo.toLowerCase()) {
+      return { isValid: false, invalidReason: "Authorization 'to' does not match payTo" };
+    }
+  }
+
+  // 4. Verify the payer address is a valid account with a balance
   try {
     const balance = await client.getBalance({ address: payload.from });
     if (balance < config.minAmount) {
@@ -395,7 +455,7 @@ const verifyPayment = async (
     return { isValid: false, invalidReason: `Balance check failed: ${(err as Error).message}` };
   }
 
-  // 4. Verify recipient matches requirements
+  // 5. Verify recipient matches requirements
   if (requirements.payTo.toLowerCase() !== config.payToAddress.toLowerCase()) {
     return { isValid: false, invalidReason: "payTo address does not match facilitator config" };
   }
@@ -408,10 +468,11 @@ const verifyPayment = async (
 // ---------------------------------------------------------------------------
 
 /**
- * Settle a payment by broadcasting the transaction and generating a ZK proof.
+ * Settle a payment by calling transferWithAuthorization on the USDC contract
+ * and generating a ZK proof.
  *
  * Steps:
- *  1. Broadcast the signed transaction to the blockchain
+ *  1. Call transferWithAuthorization on USDC (facilitator pays gas)
  *  2. Wait for on-chain confirmation
  *  3. Generate ZK proof via relay API (delegated to @lemmaoracle/relay)
  *  4. Return txHash + proof
@@ -421,26 +482,45 @@ const settlePayment = async (
   requirements: PaymentRequirements,
   client: PublicClient,
   config: FacilitatorConfig,
+  walletClient: WalletClient,
 ): Promise<SettleResponse> => {
   const network = requirements.network;
+  const auth = payload.authorization;
+  const sig = payload.signature;
 
-  // Step 1: Broadcast the signed transaction
+  if (!auth || !sig) {
+    throw new Error("Missing EIP-3009 authorization or signature in payload");
+  }
+
+  // Step 1: Call transferWithAuthorization on USDC contract
+  // The facilitator's wallet pays gas; USDC moves from client → seller
+  const usdcAddress = getUsdcAddress(network);
+
   let txHash: `0x${string}`;
   try {
-    txHash = await client.request({
-      method: "eth_sendRawTransaction",
-      params: [payload.signature],
-    }) as `0x${string}`;
+    txHash = await walletClient.writeContract({
+      address: usdcAddress,
+      abi: eip3009ABI,
+      functionName: "transferWithAuthorization",
+      args: [
+        auth.from,
+        auth.to,
+        BigInt(auth.value),
+        BigInt(auth.validAfter),
+        BigInt(auth.validBefore),
+        auth.nonce,
+        sig,
+      ],
+    });
   } catch (err) {
     const message = (err as Error).message;
-    // If the tx was already submitted (duplicate settlement), extract the hash
-    if (message.includes("already known") || message.includes("nonce too low")) {
+    if (message.includes("already known") || message.includes("AuthorizationUsed")) {
       return {
         success: false,
         txHash: "",
         proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
         network,
-        error: `Transaction broadcast failed: ${message}`,
+        error: `Settlement failed: ${message}`,
       };
     }
     throw err;
@@ -564,8 +644,15 @@ app.post("/settle", async (c) => {
   const rpcUrl = rpcForNetwork(requirements.network, rpcOverrides);
   const client = buildClient(rpcUrl, requirements.network);
 
+  const account = privateKeyToAccount(c.env.PRIVATE_KEY as `0x${string}`);
+  const walletClient = createWalletClient({
+    account,
+    chain: chainForNetwork(requirements.network),
+    transport: http(rpcUrl),
+  });
+
   try {
-    const result = await settlePayment(payload, requirements, client, config);
+    const result = await settlePayment(payload, requirements, client, config, walletClient);
     return c.json<SettleResponse>(result, result.success ? 200 : 500);
   } catch (err) {
     return c.json<SettleResponse>(

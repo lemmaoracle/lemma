@@ -20,6 +20,8 @@ declare const X402Env: {
    * Example: 'https://relay.lemma.finance'
    */
   RELAY_URL: string;
+  /** Private key for the facilitator wallet (pays gas for settlements). */
+  PRIVATE_KEY: string;
 };
 
 export default X402Env;
