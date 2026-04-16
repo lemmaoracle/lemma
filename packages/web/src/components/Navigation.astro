@@ -13,6 +13,12 @@ const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = `${blogPath}/faq`;
 const homePath = base || "/";
+
+const currentPath = Astro.url.pathname;
+const languageSwitchHref =
+  locale === "ja"
+    ? currentPath.replace(/^\/ja/, "") || "/"
+    : `/ja${currentPath}`;
 ---
 
 <nav
@@ -35,11 +41,11 @@ const homePath = base || "/";
       <li class="text-black/40">
         {
           locale === "ja" ? (
-            <a href="/" class="transition-opacity hover:opacity-70">
+            <a href={languageSwitchHref} class="transition-opacity hover:opacity-70">
               {t.languageEn}
             </a>
           ) : (
-            <a href="/ja/" class="transition-opacity hover:opacity-70">
+            <a href={languageSwitchHref} class="transition-opacity hover:opacity-70">
               {t.languageJa}
             </a>
           )
