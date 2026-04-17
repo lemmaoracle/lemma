@@ -10,19 +10,19 @@ interface Props {
 const { t, locale } = Astro.props;
 ---
 
-<section class="relative flex min-h-[85vh] flex-col items-center justify-center px-8 py-24">
+<section class="relative flex min-h-[85vh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
   {/* Provenance Chain animated background */}
   <ProvenanceChainBg client:load />
 
   {/* Centered title and subtitle */}
-  <div class="relative z-10 max-w-175 text-center">
+  <div class="relative z-10 max-w-4xl text-center px-4 sm:px-6 lg:px-8">
     <h1
-      class="mb-6 text-8xl leading-[1.1] tracking-[-0.02em]"
+      class="mb-4 text-4xl leading-[1.1] tracking-[-0.02em] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
       style="font-family: 'Instrument Serif', serif;"
     >
       {t.title}
     </h1>
-    <p class="mx-auto mb-8 max-w-150 font-mono text-sm leading-relaxed tracking-wide text-black/60">
+    <p class="mx-auto mb-6 max-w-2xl font-mono text-xs leading-relaxed tracking-wide text-black/60 sm:text-sm sm:mb-8 lg:max-w-3xl">
       {t.tagline}
     </p>
 
@@ -30,7 +30,7 @@ const { t, locale } = Astro.props;
     <div class="flex items-center justify-center">
       <a
         href={locale === "ja" ? "/ja/blog" : "/blog"}
-        class="border border-black bg-black px-6 py-3 font-mono text-xs tracking-wide text-white uppercase transition-colors hover:bg-black/90"
+        class="border border-black bg-black px-4 py-2 font-mono text-xs tracking-wide text-white uppercase transition-colors hover:bg-black/90 sm:px-5 sm:py-2.5 lg:px-6 lg:py-3"
       >
         {t.ctaGetStarted}
       </a>

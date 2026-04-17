@@ -24,11 +24,11 @@ const languageSwitchHref =
 <nav
   class="fixed top-0 right-0 left-0 z-50 border-b border-black/5 bg-[#FAFAF8]/95 backdrop-blur-sm"
 >
-  <div class="mx-auto flex max-w-350 items-center justify-between px-8 py-3">
+  <div class="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
     <a href={homePath} class="font-mono text-sm tracking-wider text-black/50 uppercase">
-      <LemmaOracle class="h-12 w-auto text-black" />
+      <LemmaOracle class="h-8 w-auto text-black sm:h-10 lg:h-12" />
     </a>
-    <ul class="flex items-center gap-6 text-sm tracking-wide uppercase">
+    <ul class="hidden items-center gap-4 text-sm tracking-wide uppercase lg:flex lg:gap-6">
       <li>
         <a href={`${base}/services`} class="transition-opacity hover:opacity-50">{t.services}</a>
       </li>
@@ -52,5 +52,12 @@ const languageSwitchHref =
         }
       </li>
     </ul>
+    <div class="flex items-center lg:hidden">
+      <button type="button" class="text-black/50 hover:text-black/80" aria-label="メニュー">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
   </div>
 </nav>
