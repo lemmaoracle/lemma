@@ -317,7 +317,7 @@ const configForRequest = (
     circuitId: env.CIRCUIT_ID ?? "x402-payment-v1",
     relayUrl: env.RELAY_URL,
     minAmount: 1000n,
-    requiredConfirmations: 6,
+    requiredConfirmations: 1,
   };
 };
 
