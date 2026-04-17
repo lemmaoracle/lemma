@@ -66,6 +66,14 @@ type PaymentRequirements = Readonly<{
   price: string;
   /** Address to receive payment */
   payTo: `0x${string}`;
+  /** Optional extensions (e.g. lemma) */
+  extensions?: {
+    lemma?: {
+      apiKey?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
   /** Additional scheme-specific requirements */
   [key: string]: unknown;
 }>;
@@ -125,7 +133,6 @@ type RelayPrepareResponse = Readonly<{
 // ---------------------------------------------------------------------------
 
 type FacilitatorConfig = Readonly<{
-  payToAddress: `0x${string}`;
   network: string;
   price: string;
   ethereumRpcUrl: string;
@@ -296,19 +303,23 @@ const configForRequest = (
   network: string,
   price: string,
   rpcOverrides: Record<string, string>,
-): FacilitatorConfig => ({
-  payToAddress: env.PAY_TO_ADDRESS as `0x${string}`,
-  network,
-  price,
-  ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
-  chainId: chainIdForNetwork(network),
-  lemmaApiBase: env.LEMMA_API_BASE,
-  lemmaApiKey: env.LEMMA_API_KEY,
-  circuitId: env.CIRCUIT_ID ?? "x402-payment-v1",
-  relayUrl: env.RELAY_URL,
-  minAmount: 1000n,
-  requiredConfirmations: 6,
-});
+  requirements: PaymentRequirements,
+): FacilitatorConfig => {
+  const reqApiKey = requirements.extensions?.lemma?.apiKey;
+
+  return {
+    network,
+    price,
+    ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
+    chainId: chainIdForNetwork(network),
+    lemmaApiBase: env.LEMMA_API_BASE,
+    lemmaApiKey: reqApiKey || env.LEMMA_API_KEY,
+    circuitId: env.CIRCUIT_ID ?? "x402-payment-v1",
+    relayUrl: env.RELAY_URL,
+    minAmount: 1000n,
+    requiredConfirmations: 6,
+  };
+};
 
 /**
  * Parse and normalize a facilitator request body.
@@ -582,10 +593,8 @@ const verifyPayment = async (
     return { isValid: false, invalidReason: `Balance check failed: ${(err as Error).message}` };
   }
 
-  // 5. Verify recipient matches requirements
-  if (requirements.payTo.toLowerCase() !== config.payToAddress.toLowerCase()) {
-    return { isValid: false, invalidReason: "payTo address does not match facilitator config" };
-  }
+  // 5. (Removed) Verification of recipient against facilitator config
+  // The facilitator now allows the resource server to specify any payTo address.
 
   return { isValid: true, invalidReason: null };
 };
@@ -778,7 +787,7 @@ app.post("/verify", async (c) => {
 
   let config: FacilitatorConfig;
   try {
-    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements);
   } catch (err) {
     return c.json<VerifyResponse>(
       { isValid: false, invalidReason: (err as Error).message },
@@ -817,7 +826,7 @@ app.post("/settle", async (c) => {
 
   let config: FacilitatorConfig;
   try {
-    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides);
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements);
   } catch (err) {
     return c.json(
       { success: false, error: (err as Error).message },
@@ -935,7 +944,7 @@ app.get("/supported", (c) => {
 
   return c.json({
     kinds,
-    extensions: ["lemmaAttestation"],
+    extensions: ["lemma"],
     signers: {},
   });
 });
