@@ -49,7 +49,7 @@ export function FeatureGrid({ t, locale }: FeatureGridProps) {
           {t.sectionHeading}
         </h2>
 
-        <div className="grid grid-cols-1 gap-px bg-black/5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
           <FeatureItem
             icon={<ShieldCheck size={32} strokeWidth={1} />}
             heading={t.encryptHeading}
