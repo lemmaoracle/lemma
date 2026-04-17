@@ -998,6 +998,30 @@ html[lang="ja"] {
   .nav-right .nav-cta {
     display: none;
   }
+  .nav-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    transition: color var(--transition), background var(--transition);
+  }
+  .nav-hamburger:hover {
+    color: var(--color-text);
+    background: var(--color-surface-offset);
+  }
+  .mobile-menu a {
+    font-family: var(--font-body);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+  }
+  .mobile-menu a:hover {
+    color: var(--color-primary);
+  }
   .wp-contents {
     grid-template-columns: 1fr;
   }
