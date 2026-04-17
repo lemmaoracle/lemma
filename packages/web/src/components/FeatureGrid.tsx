@@ -13,18 +13,18 @@ function FeatureItem({ icon, heading, body, slug, locale }: FeatureItemProps) {
   const blogPath = locale === "ja" ? `/ja/blog/${slug}` : `/blog/${slug}`;
 
   return (
-    <div className="border border-black/5 p-8 transition-colors hover:bg-black/[0.01]">
-      <div className="mb-4 flex h-8 items-start text-black/40">{icon}</div>
+    <div className="border border-black/5 p-4 transition-colors hover:bg-black/[0.01] sm:p-6 lg:p-8">
+      <div className="mb-3 flex h-6 items-start text-black/40 sm:h-7 sm:mb-4 lg:h-8">{icon}</div>
       <h3
-        className="mb-3 text-3xl leading-[1.2] tracking-[-0.02em]"
+        className="mb-2 text-xl leading-[1.2] tracking-[-0.02em] sm:text-2xl lg:text-3xl lg:mb-3"
         style={{ fontFamily: "'Instrument Serif', serif" }}
       >
         {heading}
       </h3>
-      <p className="mb-4 text-sm leading-relaxed text-black/60">{body}</p>
+      <p className="mb-3 text-xs leading-relaxed text-black/60 sm:text-sm sm:mb-4">{body}</p>
       <a
         href={blogPath}
-        className="inline-flex items-center gap-1 font-mono text-base tracking-wide text-black/50 transition-colors hover:text-black/80"
+        className="inline-flex items-center gap-1 font-mono text-sm tracking-wide text-black/50 transition-colors hover:text-black/80 sm:text-base"
       >
         Read the guide →
       </a>
@@ -40,16 +40,16 @@ interface FeatureGridProps {
 export function FeatureGrid({ t, locale }: FeatureGridProps) {
   return (
     <section className="border-b border-black/5">
-      <div className="mx-auto max-w-350 px-8 py-20">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         {/* Section heading */}
         <h2
-          className="mb-12 text-center text-5xl leading-[1.2] tracking-[-0.02em]"
+          className="mb-8 text-center text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl sm:mb-10 lg:text-5xl lg:mb-12"
           style={{ fontFamily: "'Instrument Serif', serif" }}
         >
           {t.sectionHeading}
         </h2>
 
-        <div className="grid grid-cols-3 gap-px bg-black/5">
+        <div className="grid grid-cols-1 gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
           <FeatureItem
             icon={<ShieldCheck size={32} strokeWidth={1} />}
             heading={t.encryptHeading}
