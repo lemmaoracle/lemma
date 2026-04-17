@@ -1004,6 +1004,68 @@ html[lang="ja"] {
   .highlight-box {
     padding: var(--space-6);
   }
+  /* Table: horizontal scroll on mobile */
+  .issue-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .issue-table thead {
+    display: none;
+  }
+  .issue-table tbody,
+  .issue-table tr,
+  .issue-table td {
+    display: block;
+    width: 100%;
+  }
+  .issue-table tr {
+    border-bottom: 1px solid var(--color-divider);
+    padding: var(--space-4) 0;
+  }
+  .issue-table td {
+    border-bottom: none;
+    padding: var(--space-1) var(--space-4);
+    text-align: left !important;
+  }
+  .issue-table td:first-child {
+    padding-top: var(--space-2);
+  }
+  .issue-table td:last-child {
+    padding-bottom: var(--space-2);
+  }
+  /* Hero: tighter padding */
+  .hero {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .section {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .nav {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .cta-section {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .services-footer {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  /* Footer stacks vertically on mobile */
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  /* Trusted badge wraps on small screens */
+  .trusted-badge {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

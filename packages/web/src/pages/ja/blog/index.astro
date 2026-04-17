@@ -15,7 +15,7 @@ const sections = await getBlogSections(locale);
   <div class="relative min-h-screen bg-[#FAFAF8]">
     <Navigation locale={locale} t={t.nav} base={base} />
     <main class="relative pt-14 pb-16">
-      <div class="mx-auto max-w-350 px-8 pt-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16">
         <h1 class="mb-4 font-mono text-xs tracking-wider text-black/30 uppercase">
           {t.blog.title}
         </h1>
@@ -24,7 +24,7 @@ const sections = await getBlogSections(locale);
       <BlogList sections={sections} t={t.blog} base={base} />
     </main>
     <footer class="border-t border-black/5 py-8">
-      <div class="mx-auto max-w-350 px-8">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p class="font-mono text-xs tracking-wide text-black/30">
           {t.footer.copyright}
         </p>
