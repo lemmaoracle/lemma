@@ -48,17 +48,34 @@ const smallShieldIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="n
   <a class="sr-only" href="#main">{s.skipLink}</a>
 
   <!-- NAV -->
-  <nav class="nav" role="navigation" aria-label="Main navigation">
+  <nav class="nav" role="navigation" aria-label="Main navigation" id="services-nav">
     <a href="/" class="nav-logo" aria-label="Lemma Oracle Home">
-      <LemmaOracle class="h-12 w-auto text-black" />
+      <LemmaOracle class="h-10 w-auto text-black sm:h-12" />
     </a>
     <div class="nav-right">
       <button class="theme-toggle" data-theme-toggle aria-label={s.nav.darkModeToggle}>
         <Fragment set:html={moonIcon} />
       </button>
-      <a href="#download" class="nav-cta">{s.nav.whitepaperDownload}</a>
+      <a href="#download" class="nav-cta hidden sm:inline-flex">{s.nav.whitepaperDownload}</a>
+      <button class="nav-hamburger lg:hidden" id="mobile-menu-button" aria-label="メニュー" aria-expanded="false">
+        <svg id="menu-icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="menu-icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile menu panel -->
+  <div id="mobile-menu" class="mobile-menu hidden border-b border-black/5 bg-[#FAFAF8]/98 backdrop-blur-md lg:hidden">
+    <div class="px-4 py-4 sm:px-6">
+      <a href="#problem" class="block rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-black/5">{s.nav.linkProblem || '課題の詳細'}</a>
+      <a href="#solution" class="block rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-black/5">{s.nav.linkSolution || '解決策'}</a>
+      <a href="#download" class="block rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-black/5">{s.nav.whitepaperDownload}</a>
+    </div>
+  </div>
 
   <main id="main">
     <!-- HERO -->
@@ -412,6 +429,32 @@ const smallShieldIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="n
         t.setAttribute("aria-label", d === "dark" ? s.nav.lightModeToggle : s.nav.darkModeToggle);
       });
     }
+  })();
+
+  // Mobile menu toggle
+  (function () {
+    const btn = document.getElementById("mobile-menu-button");
+    const menu = document.getElementById("mobile-menu");
+    const iconOpen = document.getElementById("menu-icon-open");
+    const iconClose = document.getElementById("menu-icon-close");
+    if (!btn || !menu || !iconOpen || !iconClose) return;
+
+    btn.addEventListener("click", function () {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      iconOpen.classList.toggle("hidden");
+      iconClose.classList.toggle("hidden");
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        menu.classList.add("hidden");
+        iconOpen.classList.remove("hidden");
+        iconClose.classList.add("hidden");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    });
   })();
 
   // Checklist
