@@ -295,8 +295,20 @@ const buildClient = (rpcUrl: string, network: string): PublicClient =>
   }) as PublicClient;
 
 /**
+ * Extract Bearer token from Authorization header.
+ */
+const extractBearerToken = (authHeader: string | undefined | null): string | undefined => {
+  if (!authHeader) return undefined;
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  return match?.[1];
+};
+
+/**
  * Build a per-request FacilitatorConfig by merging static env settings with
  * dynamic values from the request (network, price, RPC URL).
+ *
+ * apiKey is extracted from Authorization header (Bearer token), falling back
+ * to requirements.extensions.lemma.apiKey for backward compatibility.
  */
 const configForRequest = (
   env: typeof X402Env,
@@ -304,8 +316,12 @@ const configForRequest = (
   price: string,
   rpcOverrides: Record<string, string>,
   requirements: PaymentRequirements,
+  authHeader: string | undefined | null,
 ): FacilitatorConfig => {
+  // Priority: Authorization header → requirements.extensions.lemma.apiKey → env
+  const headerApiKey = extractBearerToken(authHeader);
   const reqApiKey = requirements.extensions?.lemma?.apiKey;
+  const apiKey = headerApiKey || reqApiKey || env.LEMMA_API_KEY;
 
   return {
     network,
@@ -313,7 +329,7 @@ const configForRequest = (
     ethereumRpcUrl: rpcForNetwork(network, rpcOverrides),
     chainId: chainIdForNetwork(network),
     lemmaApiBase: env.LEMMA_API_BASE,
-    lemmaApiKey: reqApiKey || env.LEMMA_API_KEY,
+    lemmaApiKey: apiKey,
     circuitId: env.CIRCUIT_ID ?? "x402-payment-v1",
     relayUrl: env.RELAY_URL,
     minAmount: 1000n,
@@ -784,10 +800,11 @@ app.post("/verify", async (c) => {
 
   const { payload, requirements } = parsed.data;
   const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+  const authHeader = c.req.header("Authorization");
 
   let config: FacilitatorConfig;
   try {
-    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements);
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements, authHeader);
   } catch (err) {
     return c.json<VerifyResponse>(
       { isValid: false, invalidReason: (err as Error).message },
@@ -823,10 +840,11 @@ app.post("/settle", async (c) => {
 
   const { payload, requirements } = parsed.data;
   const rpcOverrides = parseRpcUrls(c.env.RPC_URLS);
+  const authHeader = c.req.header("Authorization");
 
   let config: FacilitatorConfig;
   try {
-    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements);
+    config = configForRequest(c.env, requirements.network, requirements.price, rpcOverrides, requirements, authHeader);
   } catch (err) {
     return c.json(
       { success: false, error: (err as Error).message },
@@ -879,11 +897,16 @@ app.post("/prepare", async (c) => {
     );
   }
 
+  // Extract apiKey from Authorization header, fallback to env
+  const authHeader = c.req.header("Authorization");
+  const headerApiKey = extractBearerToken(authHeader);
+  const apiKey = headerApiKey || c.env.LEMMA_API_KEY;
+
   try {
     const result = await relayPrepare(
       c.env.RELAY_URL,
       c.env.LEMMA_API_BASE,
-      c.env.LEMMA_API_KEY,
+      apiKey,
       body.schemaId,
       body.payload,
     );
