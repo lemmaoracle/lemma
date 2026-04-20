@@ -95,17 +95,20 @@ type SettleResponse = Readonly<{
   success: boolean;
   transaction: string; // Required by x402 library
   txHash?: string; // Legacy field
-  proof?: {
-    proof: string;
-    inputs: ReadonlyArray<string>;
-    circuitId: string;
-    generatedAt: number;
-  };
   network: string;
   error?: string;
   errorReason?: string;
   errorMessage?: string;
   payer?: string;
+  /** Extension data - only fields here survive x402 library's Zod parsing */
+  extensions?: {
+    lemma?: {
+      proof: string;
+      inputs: ReadonlyArray<string>;
+      circuitId: string;
+      generatedAt: number;
+    };
+  };
 }>;
 
 /** Relay API response from POST /prover/prove */
@@ -671,7 +674,6 @@ const settlePayment = async (
         success: false,
         transaction: "",
         txHash: "",
-        proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
         network,
         error: `Settlement failed: ${message}`,
         errorReason: "nonce_already_used",
@@ -692,7 +694,6 @@ const settlePayment = async (
       success: false,
       transaction: txHash,
       txHash,
-      proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
       network,
       error: "Transaction reverted on-chain",
       errorReason: "transaction_reverted",
@@ -763,18 +764,22 @@ const settlePayment = async (
   }
 
   // Step 4: Return settlement result
+  // Note: proof is placed in extensions.lemma because x402 library's
+  // settleResponseSchema strips unknown fields (proof, txHash).
+  // Only extensions survive the Zod parsing.
   return {
     success: true,
     transaction: txHash, // Required by x402 library
-    txHash, // Legacy field
-    proof: {
-      proof: proofResult.proof,
-      inputs: [...proofResult.inputs],
-      circuitId: config.circuitId,
-      generatedAt: Date.now(),
-    },
     network,
     payer: auth.from,
+    extensions: {
+      lemma: {
+        proof: proofResult.proof,
+        inputs: [...proofResult.inputs],
+        circuitId: config.circuitId,
+        generatedAt: Date.now(),
+      },
+    },
   };
 };
 
@@ -871,8 +876,6 @@ app.post("/settle", async (c) => {
       {
         success: false,
         transaction: "",
-        txHash: "",
-        proof: { proof: "", inputs: [], circuitId: config.circuitId, generatedAt: Date.now() },
         network: requirements.network,
         error: `Settlement error: ${(err as Error).message}`,
         errorReason: "settlement_error",
