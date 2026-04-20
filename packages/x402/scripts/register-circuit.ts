@@ -25,10 +25,10 @@ const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
 // Verifier contract address from deployment (Base Sepolia)
-const VERIFIER_ADDRESS_BASE_SEPOLIA = "0x291e98af209557ecFB77b477228AD3623b6989E7";
+const VERIFIER_ADDRESS_BASE_SEPOLIA = "0xB47Ab282AAc1d0e5EFE79a2De9a251EEae602D6B";
 const CHAIN_ID_BASE_SEPOLIA = 84532; // Base Sepolia
 // Verifier contract address from deployment (Monad Testnet)
-const VERIFIER_ADDRESS_MONAD_TESTNET = "0x8BA44D7F46aA1fd075b1C89399112B374A27A455";
+const VERIFIER_ADDRESS_MONAD_TESTNET = "0x8FB8A3cfc9107Ff526bcC1789Bf3eb334D3eE39d";
 const CHAIN_ID_MONAD_TESTNET = 10143; // Monad Testnet
 
 /* ------------------------------------------------------------------ */
@@ -124,8 +124,8 @@ const registerCircuit = (client: LemmaClient, circuitMeta: CircuitMeta): Promise
 const buildCircuitMeta = (wasmIpfsUrl: string, zkeyIpfsUrl: string): CircuitMeta => ({
   circuitId: "x402-payment-v1",
   schema: "passthrough-v1",
-  description: "x402 payment circuit for Monad Testnet",
-  inputs: ["amount", "recipient", "nonce"],
+  description: "x402 payment circuit for Base Sepolia (v2)",
+  inputs: ["commitment", "minAmountPublic", "timestampMax"],
   verifiers: [
     {
       type: "onchain",
