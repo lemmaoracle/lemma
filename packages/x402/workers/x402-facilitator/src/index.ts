@@ -651,6 +651,34 @@ const settlePayment = async (
   // The facilitator's wallet pays gas; USDC moves from client → seller
   const usdcAddress = getUsdcAddress(network);
 
+  // Estimate gas with a reasonable cap to avoid "intrinsic gas too high" errors
+  // transferWithAuthorization typically uses ~50k-100k gas
+  const GAS_CAP = 150_000n; // Conservative cap for EIP-3009 transfers
+  let estimatedGas: bigint;
+  try {
+    estimatedGas = await client.estimateContractGas({
+      address: usdcAddress,
+      abi: eip3009ABI,
+      functionName: "transferWithAuthorization",
+      args: [
+        auth.from,
+        auth.to,
+        BigInt(auth.value),
+        BigInt(auth.validAfter),
+        BigInt(auth.validBefore),
+        auth.nonce,
+        sig,
+      ],
+      account: walletClient.account,
+    });
+  } catch (estimateErr) {
+    // If estimation fails, use the cap
+    console.warn("Gas estimation failed, using cap:", (estimateErr as Error).message);
+    estimatedGas = GAS_CAP;
+  }
+  const gasLimit = estimatedGas > GAS_CAP ? GAS_CAP : estimatedGas;
+  console.log(`Gas: estimated=${estimatedGas}, cap=${GAS_CAP}, using=${gasLimit}`);
+
   let txHash: `0x${string}`;
   try {
     txHash = await walletClient.writeContract({
@@ -666,6 +694,7 @@ const settlePayment = async (
         auth.nonce,
         sig,
       ],
+      gas: gasLimit,
     });
   } catch (err) {
     const message = (err as Error).message;
