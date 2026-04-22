@@ -1,0 +1,16 @@
+---
+import FaqTemplate from "../../templates/FaqTemplate.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+---
+
+<FaqTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  title="FAQ — Lemma Oracle"
+  description="LemmaおよびVerifiable AIに関するよくある質問です。"
+/>
