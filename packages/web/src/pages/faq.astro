@@ -1,0 +1,605 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { getTranslations } from "../i18n/translations";
+import FaqBg from "../assets/faq-cover.jpg";
+import CtaBg from "../assets/rag.jpg";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+
+const faqSections = [
+  {
+    title: "Section 1: What is Lemma?",
+    items: [
+      {
+        q: "What is Lemma, in one sentence?",
+        a: "Lemma is infrastructure that attaches cryptographically proven provenance to every piece of data an AI reads. For every attribute an AI references — age, revenue, location, etc. — Lemma permanently guarantees: who issued it, which schema defined it, how it was proven, and where that proof is recorded.",
+      },
+      {
+        q: 'What does "AI Trust" mean?',
+        a: "AI Trust means that the data an AI system references and reasons over can be verified as coming from a trusted source and has not been tampered with. Traditional AI systems rely on the assumption that 'the data is correct.' Lemma makes that assumption itself cryptographically provable — a critical requirement in Retrieval-Augmented Generation (RAG) systems.",
+      },
+      {
+        q: "What is Verifiable AI, and how is it different from traditional AI?",
+        a: "Verifiable AI is an AI system where the basis for every decision — 'who proved it, when, and how' — can be verified after the fact. Traditional AI outputs results, but the origin and accuracy of the data used in reasoning remain a black box. With Lemma, the provenance of every attribute used in inference becomes cryptographically traceable.",
+      },
+      {
+        q: "What is wrong with existing RAG and AI systems?",
+        a: "Existing RAG systems have no mechanism to verify whether retrieved data is accurate, who issued it, or whether it meets required conditions — before feeding it to the AI. Lemma adds a provenance and compliance verification layer before data ingestion, ensuring the integrity of the entire AI agent pipeline.",
+      },
+      {
+        q: "How does Lemma relate to AI agents? Can it work with chat AI?",
+        a: "Lemma operates at the RAG layer and is independent of any specific AI model or framework. It can be integrated into chat AI, AI agents, and automated workflows — any AI system that retrieves and reasons over data.",
+      },
+      {
+        q: "What industries and use cases is Lemma best suited for?",
+        a: "Lemma is relevant to any operation where AI references personal information or sensitive data to make decisions. Key domains include Finance & payments, Healthcare, Legal & compliance, Government & public sector, E-commerce & retail, HR & recruitment, Marketing, and Education.",
+      },
+      {
+        q: "How is Lemma different from AI Gateways and data masking tools?",
+        a: "AI Gateways manage API access but don't prove data origin. Data masking protects data but can't prove 'who issued it.' Lemma provides cryptographic proof of data origin with permanent recording — end-to-end proof, traceability, and auditability.",
+      },
+    ],
+  },
+  {
+    title: "Section 2: Security & Privacy",
+    items: [
+      {
+        q: "How is personally identifiable information (PII) protected?",
+        a: "Lemma never passes raw PII to the AI. What the AI handles is only an AES-GCM encrypted docHash and CID. The shared encryption key is generated via ECDH and derived securely using HKDF. The key itself never travels over the network.",
+      },
+      {
+        q: "What is Zero-Knowledge Proof (ZKP) and why is it necessary?",
+        a: "A zero-knowledge proof proves a condition is satisfied — without revealing the underlying data. For example, 'is the user 18 or older?' can be conveyed to the AI without exposing actual values. Each proof is permanently recorded alongside its circuit and generator.",
+      },
+      {
+        q: "What is Selective Disclosure?",
+        a: "Selective Disclosure means presenting only the attributes the AI needs — and nothing more. Even after partial disclosure, the linkage to the issuer's signature is preserved. Narrowing what is shared does not break the chain of provenance.",
+      },
+    ],
+  },
+  {
+    title: "Section 3: On-Chain Provenance",
+    items: [
+      {
+        q: 'What does "recording on-chain" mean, and why does it matter?',
+        a: "Document commitments, schemas, issuer information, and ZK verification results are recorded on a blockchain. Even if the RAG index is rebuilt or embeddings are recalculated, provenance persists permanently. The evidence of what data was used never disappears.",
+      },
+      {
+        q: 'What are the business benefits of "permanent" provenance?',
+        a: "In audit responses, compliance reporting, and incident investigations, you can prove after the fact exactly which data an AI used as the basis for its decision. This directly supports compliance with the EU AI Act, ISO 42001, and other AI governance frameworks.",
+      },
+    ],
+  },
+  {
+    title: "Section 4: Developer Implementation",
+    items: [
+      {
+        q: "What is a schema and how is it used?",
+        a: "A schema models how AI retrieves and clusters knowledge — expressing attributes like age group, risk score, or region using typed definitions and normalization. By registering ZK circuits and reproducible generators, every fact becomes traceable back to its original source.",
+      },
+      {
+        q: "How does querying verified attributes work?",
+        a: "Querying 'users in Japan aged 18 or older' returns attribute data with full provenance attached — including proof status, schema, issuer, generator, and verification method. The response is in a format ready to be used directly in a RAG policy layer.",
+      },
+    ],
+  },
+  {
+    title: "Section 5: Trust & Adoption",
+    items: [
+      {
+        q: 'What exactly becomes "provable" with Lemma?',
+        a: "Four elements become cryptographically provable: (1) Who issued it — issuer identity. (2) Which schema defined it — data structure integrity. (3) How the fact was proven — ZK proof circuit and generation method. (4) Where that proof is recorded — permanent on-chain record.",
+      },
+      {
+        q: "Do I need blockchain expertise to use Lemma?",
+        a: "No. Lemma uses blockchain as a backend recording infrastructure, but developers do not need to interact with smart contracts directly. Integration with existing AI systems and RAG pipelines is done via API.",
+      },
+      {
+        q: "What deployment options are available?",
+        a: "Please contact us for details. We work with enterprise requirements around data residency, compliance constraints, and integration with existing infrastructure to determine the right configuration.",
+      },
+      {
+        q: "What should a security team check first?",
+        a: "Start with three areas: (1) Encryption & key management — AES-GCM encryption + ECDH/HKDF key derivation. (2) ZKP auditability — each ZK proof is recorded alongside its circuit and generator. (3) Provenance permanence — verification results are immutably recorded on-chain.",
+      },
+    ],
+  },
+];
+---
+
+<Layout
+  locale={locale}
+  title="FAQ — Lemma Oracle | AI Trust & Verifiability, Explained"
+  description="Frequently asked questions about Verifiable AI — ZK proofs, selective disclosure, on-chain provenance, and how Lemma Oracle works."
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="faq-header">
+    <div class="faq-header-bg"></div>
+    <div class="faq-header-overlay"></div>
+    <div class="faq-header-content">
+      <div class="section-tag" style="color:var(--accent)">FAQ</div>
+      <h1>Lemma FAQ —<br /><em>AI Trust &<br />Verifiability.</em></h1>
+      <p>
+        A comprehensive Q&A covering how Lemma enables trustworthy AI — from technical foundations
+        to practical implementation questions.
+      </p>
+    </div>
+  </header>
+
+  <div class="faq-layout">
+    <aside class="faq-sidebar">
+      <div class="faq-sidebar-title">Contents</div>
+      <ul class="faq-nav-list">
+        <li class="faq-nav-item"><a href="#s1">What is Lemma?</a></li>
+        <li class="faq-nav-item"><a href="#s2">Security & Privacy</a></li>
+        <li class="faq-nav-item"><a href="#s3">On-Chain Provenance</a></li>
+        <li class="faq-nav-item"><a href="#s4">Developer Implementation</a></li>
+        <li class="faq-nav-item"><a href="#s5">Trust & Adoption</a></li>
+      </ul>
+    </aside>
+    <main class="faq-content">
+      {
+        faqSections.map((section, si) => (
+          <div class="faq-section reveal" id={`s${si + 1}`}>
+            <div class="faq-section-title">{section.title}</div>
+            {section.items.map((item) => (
+              <div class="faq-item reveal">
+                <button class="faq-q">
+                  <span>{item.q}</span>
+                  <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-a">
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </main>
+  </div>
+
+  <section class="comparison-section reveal">
+    <h2>How Lemma compares to<br />existing solutions.</h2>
+    <table class="comp-table">
+      <thead><tr><th>Solution</th><th>Primary Role</th><th>Difference from Lemma</th></tr></thead>
+      <tbody>
+        <tr
+          ><td><strong>AI Gateway</strong></td><td>API access control & filtering</td><td
+            >Manages inputs. Does not prove data origin</td
+          ></tr
+        >
+        <tr
+          ><td><strong>Data masking</strong></td><td>Obfuscation of sensitive data</td><td
+            >Protects data. Cannot prove "who issued it"</td
+          ></tr
+        >
+        <tr class="highlight"
+          ><td><strong>Lemma Oracle</strong></td><td
+            >Cryptographic proof of data origin + permanent record</td
+          ><td>End-to-end proof, traceability, and auditability</td></tr
+        >
+      </tbody>
+    </table>
+  </section>
+
+  <section class="partner-section">
+    <div class="partner-bg"></div>
+    <div class="partner-overlay"></div>
+    <div class="partner-inner reveal">
+      <div class="section-tag" style="color:var(--accent);justify-content:center">
+        Partner Program
+      </div>
+      <h2>Partnering and<br /><em>PoC opportunities.</em></h2>
+      <div class="partner-rule"></div>
+      <p>
+        If you are interested in partnering with Lemma Oracle or exploring PoC and co-development
+        opportunities, register as a partner candidate.
+      </p>
+      <div class="partner-links">
+        <a href="#" class="btn-white">Register as a partner candidate</a>
+        <a href="/blog/lemma-oracle-specs" class="btn-ghost">Read Lemma Oracle Specs →</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} base={base} />
+</Layout>
+
+<style define:vars={{ faqBg: `url(${FaqBg.src})`, ctaBg: `url(${CtaBg.src})` }}>
+  .faq-header {
+    margin-top: 64px;
+    padding: 100px 10% 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+  .faq-header-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--faqBg);
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.3) brightness(0.5);
+    opacity: 0.4;
+  }
+  .faq-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.4) 100%);
+  }
+  .faq-header-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+  }
+  .faq-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 5.5vw, 72px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin-bottom: 20px;
+  }
+  .faq-header h1 em {
+    font-style: italic;
+  }
+  .faq-header p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.78;
+    max-width: 440px;
+  }
+
+  .faq-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 10%;
+  }
+  .faq-sidebar {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    padding-right: 48px;
+  }
+  .faq-sidebar-title {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .faq-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .faq-nav-item a {
+    display: block;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--gray-500);
+    border-left: 2px solid var(--gray-200);
+    letter-spacing: 0.04em;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .faq-nav-item a:hover {
+    color: var(--black);
+    border-left-color: var(--accent);
+  }
+
+  .faq-content {
+    border-left: 1px solid var(--gray-200);
+    padding-left: 64px;
+  }
+  .faq-section {
+    margin-bottom: 64px;
+  }
+  .faq-section-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--gray-200);
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+  .faq-item.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    text-align: left;
+  }
+  .faq-icon {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--gray-500);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      max-height 0.4s ease,
+      padding 0.4s ease;
+  }
+  .faq-a p {
+    font-size: 14px;
+    line-height: 1.82;
+    color: #4a4a4a;
+  }
+  .faq-item.open .faq-icon {
+    transform: rotate(45deg);
+  }
+  .faq-item.open .faq-a {
+    max-height: 600px;
+    padding-bottom: 24px;
+  }
+
+  .comparison-section {
+    background: var(--gray-50);
+    padding: 80px 10%;
+  }
+  .comparison-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 40px;
+  }
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .comp-table thead tr {
+    background: var(--black);
+  }
+  .comp-table th {
+    padding: 14px 20px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-align: left;
+  }
+  .comp-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .comp-table tr:nth-child(odd) td {
+    background: var(--white);
+  }
+  .comp-table tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+  .comp-table .highlight td {
+    background: var(--accent-bg) !important;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .comp-table .highlight td:first-child {
+    border-left: 2px solid var(--accent);
+  }
+
+  .partner-section {
+    position: relative;
+    padding: 120px 10%;
+    text-align: center;
+    overflow: hidden;
+  }
+  .partner-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--ctaBg);
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.6) brightness(0.6);
+  }
+  .partner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+  }
+  .partner-inner {
+    position: relative;
+    z-index: 2;
+  }
+  .partner-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .partner-inner h2 em {
+    font-style: italic;
+  }
+  .partner-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 28px auto;
+  }
+  .partner-inner p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    max-width: 400px;
+    margin: 0 auto 40px;
+    line-height: 1.78;
+  }
+  .partner-links {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 32px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .btn-white:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 13px 30px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: var(--white);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    .faq-layout {
+      grid-template-columns: 1fr;
+      padding: 60px 6%;
+    }
+    .faq-sidebar {
+      display: none;
+    }
+    .faq-content {
+      border-left: none;
+      padding-left: 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .faq-header,
+    .comparison-section,
+    .partner-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .faq-header {
+      padding-top: 80px;
+      padding-bottom: 60px;
+    }
+    .comparison-section,
+    .partner-section {
+      padding-top: 70px;
+      padding-bottom: 70px;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal, .faq-item").forEach(function (el) {
+    io.observe(el);
+  });
+
+  document.querySelectorAll(".faq-q").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var item = btn.closest(".faq-item");
+      var isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach(function (i) {
+        i.classList.remove("open");
+      });
+      if (!isOpen) item.classList.add("open");
+    });
+  });
+</script>

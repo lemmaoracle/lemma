@@ -1,7 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navigation from "../../components/Navigation.astro";
-import BlogList from "../../components/BlogList.astro";
+import Footer from "../../components/Footer.astro";
+import HubSpotDrawer from "../../components/HubSpotDrawer.astro";
 import { getBlogSections } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
@@ -9,26 +10,167 @@ const locale = "en";
 const t = getTranslations(locale);
 const base = "";
 const sections = await getBlogSections(locale);
+const essays = sections.find(s => s.section === "Essays")?.posts?.filter(p => p.category !== "Guides") ?? [];
+const guides = sections.flatMap(s => s.posts).filter(p => p.category === "Guides");
 ---
 
 <Layout locale={locale} title={`${t.blog.title} — Lemma Oracle`} description={t.blog.subtitle}>
-  <div class="relative min-h-screen bg-[#FAFAF8]">
-    <Navigation locale={locale} t={t.nav} base={base} />
-    <main class="relative pt-14 pb-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16">
-        <h1 class="mb-4 font-mono text-xs tracking-wider text-black/30 uppercase">
-          {t.blog.title}
-        </h1>
-        <p class="mb-12 font-mono text-sm text-black/60">{t.blog.subtitle}</p>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="blog-header">
+    <div class="section-tag" style="color:var(--accent)">Blog</div>
+    <h1>Essays, changelog,<br>and field notes.</h1>
+    <p>ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.</p>
+  </header>
+
+  <section class="essays-section">
+    <div class="section-tag">Essays</div>
+    <div class="essays-grid">
+      {essays.map((post, i) => (
+        <a href={`/blog/${post.slug}`} class="essay-article reveal" style={`transition-delay:${i * 0.07}s`}>
+          <div class="essay-thumb" style={`background-image:url('${post.cover ?? ""}')`}></div>
+          <div class="essay-body">
+            <div class="essay-meta"><span class="essay-cat">{post.category}</span><span class="essay-date">{post.date}</span></div>
+            <h2>{post.title}</h2>
+            <p>{post.abstract}</p>
+            <span class="essay-read">Read essay →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="guides-section">
+    <div class="section-tag">Guides</div>
+    <div style="font-family:var(--font-display);font-size:clamp(28px,3vw,40px);font-weight:400;color:var(--black);margin-bottom:8px">Technical documentation.</div>
+    <p style="font-size:14px;color:var(--gray-500);max-width:440px;line-height:1.78;margin-bottom:0">Implementation guides for each layer of the Lemma architecture.</p>
+    <div class="guides-grid">
+      {guides.map((post, i) => (
+        <a href={`/blog/${post.slug}`} class="guide-card reveal" style={`transition-delay:${i * 0.07}s`}>
+          <div class="guide-meta"><span class="guide-cat">{post.category}</span><span class="guide-date">{post.date}</span></div>
+          <h3>{post.title}</h3>
+          <p>{post.abstract}</p>
+          <span class="guide-link">Read →</span>
+        </a>
+      ))}
+      <div class="specs-card reveal">
+        <div class="specs-text">
+          <h3>Lemma Oracle Specs</h3>
+          <p>A cryptographically verified truth layer enabling AI to reason over confidential data via zero-knowledge proofs, selective disclosure, and on-chain provenance.</p>
+        </div>
+        <a href="/blog/lemma-oracle-specs" class="btn-white" style="white-space:nowrap">Read Specs →</a>
       </div>
-      <BlogList sections={sections} t={t.blog} base={base} />
-    </main>
-    <footer class="border-t border-black/5 py-8">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p class="font-mono text-xs tracking-wide text-black/30">
-          {t.footer.copyright}
-        </p>
-      </div>
-    </footer>
-  </div>
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
+
+<style>
+  .blog-header {
+    margin-top: 64px; background: var(--black); padding: 100px 10% 80px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+  }
+  .blog-header h1 {
+    font-family: var(--font-display); font-size: clamp(48px,6vw,80px);
+    font-weight: 300; color: var(--white); line-height: 1.08; margin-bottom: 16px;
+  }
+  .blog-header p { font-size: 15px; color: rgba(255,255,255,.4); line-height: 1.75; max-width: 440px; }
+
+  a { text-decoration: none; color: inherit; }
+
+  .essays-section { background: var(--white); padding: 100px 10%; }
+  .essays-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--gray-200); }
+
+  .essay-article {
+    background: var(--white); display: grid; grid-template-rows: 220px 1fr;
+    border-top: 2px solid transparent; transition: border-color .2s;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s ease, transform .6s ease, border-color .2s;
+  }
+  .essay-article.on { opacity: 1; transform: translateY(0); }
+  .essay-article:hover { border-top-color: var(--accent); }
+  .essay-article:nth-child(2) { transition-delay: .07s; }
+  .essay-article:nth-child(3) { transition-delay: .14s; }
+  .essay-article:nth-child(4) { transition-delay: .21s; }
+  .essay-article:nth-child(5) { transition-delay: .28s; }
+  .essay-article:nth-child(6) { transition-delay: .35s; }
+  .essay-article:nth-child(7) { transition-delay: .42s; }
+  .essay-thumb {
+    width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    filter: saturate(.4) brightness(.85);
+  }
+  .essay-body { padding: 28px 32px 36px; display: flex; flex-direction: column; gap: 10px; }
+  .essay-meta { display: flex; align-items: center; gap: 12px; }
+  .essay-cat { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .essay-date { font-size: 10px; color: var(--gray-500); letter-spacing: .05em; }
+  .essay-article h2 { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--black); }
+  .essay-article p { font-size: 13px; line-height: 1.75; color: var(--gray-500); flex: 1; }
+  .essay-read { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); display: inline-block; margin-top: 8px; }
+
+  .guides-section { background: var(--gray-50); padding: 100px 10%; }
+  .guides-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--gray-200); margin-top: 56px; }
+  .guide-card {
+    background: var(--white); padding: 36px 32px;
+    border-top: 2px solid transparent; transition: border-color .2s;
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity .55s ease, transform .55s ease, border-color .2s;
+  }
+  .guide-card.on { opacity: 1; transform: translateY(0); }
+  .guide-card:hover { border-top-color: var(--accent); }
+  .guide-card:nth-child(2) { transition-delay: .07s; }
+  .guide-card:nth-child(3) { transition-delay: .14s; }
+  .guide-card:nth-child(4) { transition-delay: .21s; }
+  .guide-card:nth-child(5) { transition-delay: .28s; }
+  .guide-card:nth-child(6) { transition-delay: .35s; }
+  .guide-meta { display: flex; align-items: center; gap: 10px; }
+  .guide-cat { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .guide-date { font-size: 10px; color: var(--gray-500); }
+  .guide-card h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; line-height: 1.3; color: var(--black); }
+  .guide-card p { font-size: 13px; line-height: 1.7; color: var(--gray-500); flex: 1; }
+  .guide-link { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+
+  .specs-card {
+    background: var(--black); margin: 2px; padding: 48px 40px;
+    display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+  }
+  .specs-text h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+  .specs-text p { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.7; max-width: 480px; }
+  .btn-white {
+    background: var(--white); color: var(--black); padding: 14px 32px; font-size: 12px;
+    font-weight: 500; letter-spacing: .14em; text-transform: uppercase; border: none;
+    cursor: pointer; display: inline-block; transition: background .2s, color .2s;
+  }
+  .btn-white:hover { background: var(--accent); color: var(--white); }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.on { opacity: 1; transform: translateY(0); }
+  .section-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
+    color: #8B4513; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::before { content: ''; width: 18px; height: 1px; background: #8B4513; display: block; }
+
+  @media(max-width:1024px) {
+    .essays-grid { grid-template-columns: 1fr; }
+    .guides-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media(max-width:768px) {
+    .blog-header, .essays-section, .guides-section { padding-left: 6%; padding-right: 6%; }
+    .blog-header { padding-top: 80px; padding-bottom: 60px; }
+    .essays-section, .guides-section { padding-top: 70px; padding-bottom: 70px; }
+    .guides-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+</script>

@@ -1,0 +1,1114 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { getTranslations } from "../i18n/translations";
+import PricingBg from "../assets/pricing-hero.jpg";
+import Trust402Bg from "../assets/trust402-cover.jpg";
+import Cover from "../assets/cover.jpg";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<Layout
+  locale={locale}
+  title="Pricing — Lemma Oracle"
+  description="Enterprise and developer pricing for Lemma Oracle. Three segments, one trust layer."
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-inner reveal">
+      <div class="eyebrow">Pricing</div>
+      <h1>Built for decisions<br /><em>that matter.</em></h1>
+      <p>
+        Three enterprise segments, one developer layer. Every plan built on the same cryptographic
+        foundation — ZK-proven provenance, AES-GCM encryption, permanent on-chain anchoring.
+      </p>
+    </div>
+  </section>
+
+  <div class="notice">
+    <div class="notice-dot"></div>
+    <p>
+      Pricing details are tailored to your use case. Contact us to discuss the right tier for your
+      organization.
+    </p>
+  </div>
+
+  <section class="enterprise-section">
+    <div class="section-intro reveal">
+      <div>
+        <div class="section-tag">Enterprise</div>
+        <h2>Three segments.<br />One trust layer.</h2>
+      </div>
+      <p>
+        Lemma's enterprise tier is structured around three verticals — public infrastructure,
+        critical systems, and financial compliance. Each segment carries its own schema library,
+        SLA, and pricing structure. All are built on Lemma's shared cryptographic core.
+      </p>
+    </div>
+
+    <div class="plan-grid">
+      <div class="plan-card reveal">
+        <div class="plan-tag">Public Sector</div>
+        <div class="plan-name">Lemma<br />Civic</div>
+        <div class="plan-sub">For public infrastructure operators</div>
+        <div class="plan-rule"></div>
+        <div class="plan-target">
+          <strong>Best for</strong> Municipal service operators, water utilities, waste management, and
+          B2B2G operators delivering citizen-facing services across multiple jurisdictions.
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            ZK-proven attribute verification for public service eligibility
+          </div>
+          <div class="plan-feature">Multi-site tiering — scales with number of operating sites</div>
+          <div class="plan-feature">On-chain provenance for audit and public accountability</div>
+          <div class="plan-feature">Standard schema library for public infrastructure</div>
+        </div>
+        <div class="plan-tiers">
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 1</span><span class="plan-tier-desc">1–3 sites</span>
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 2</span><span class="plan-tier-desc">4–10 sites</span
+            >
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 3</span><span class="plan-tier-desc"
+              >11+ sites · custom</span
+            >
+          </div>
+        </div>
+        <div class="plan-price-note">
+          Monthly subscription + verification call volume. Custom schema registration billed
+          separately.
+        </div>
+        <a href="#" class="btn-plan">Talk to us</a>
+        <a
+          href="https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+          class="btn-plan-wp"
+          target="_blank">Download Whitepaper →</a
+        >
+      </div>
+
+      <div class="plan-card reveal">
+        <div class="plan-tag">Critical Infrastructure</div>
+        <div class="plan-name">Lemma<br />Critical</div>
+        <div class="plan-sub">For mission-critical systems</div>
+        <div class="plan-rule"></div>
+        <div class="plan-target">
+          <strong>Best for</strong> Power, water, and transportation infrastructure operators running
+          AI on control and monitoring systems where regulatory compliance and 24/7 availability are non-negotiable.
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature">Custom ZK circuits for domain-specific business rules</div>
+          <div class="plan-feature">
+            Compliance-grade audit trail (electricity act, safety regulations)
+          </div>
+          <div class="plan-feature">SLA-backed uptime · on-premise deployment option</div>
+          <div class="plan-feature">Tiered by facility count and integration scope</div>
+        </div>
+        <div class="plan-tiers">
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 1</span><span class="plan-tier-desc"
+              >Single facility</span
+            >
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 2</span><span class="plan-tier-desc"
+              >2–10 facilities</span
+            >
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 3</span><span class="plan-tier-desc"
+              >Core integration · enterprise</span
+            >
+          </div>
+        </div>
+        <div class="plan-price-note">
+          Priced by facility scope, SLA requirements, and ZK circuit complexity. Contact us for a
+          tailored quote.
+        </div>
+        <a href="#" class="btn-plan">Talk to us</a>
+        <a
+          href="https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+          class="btn-plan-wp"
+          target="_blank">Download Whitepaper →</a
+        >
+      </div>
+
+      <div class="plan-card reveal">
+        <div class="plan-tag">Financial & Regulated</div>
+        <div class="plan-name">Lemma<br />Compliance</div>
+        <div class="plan-sub">For financial institutions & FinTech</div>
+        <div class="plan-rule"></div>
+        <div class="plan-target">
+          <strong>Best for</strong> Banks, FinTech companies, and regulated institutions that need verifiable
+          KYC/AML attributes, explainability for AI decisions, and permanent audit trails that satisfy
+          GDPR, EU AI Act, and domestic financial regulations.
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature">KYC/AML attribute verification without data disclosure</div>
+          <div class="plan-feature">EU AI Act and ISO 42001 aligned audit trail</div>
+          <div class="plan-feature">Selective disclosure — prove facts, protect PII</div>
+          <div class="plan-feature">RAG policy layer with full provenance per query</div>
+        </div>
+        <div class="plan-tiers">
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 1</span><span class="plan-tier-desc"
+              >Small–mid FinTech</span
+            >
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 2</span><span class="plan-tier-desc"
+              >Regional banks · mid-size</span
+            >
+          </div>
+          <div class="plan-tier-row">
+            <span class="plan-tier-label">Tier 3</span><span class="plan-tier-desc"
+              >Global banks · central banks</span
+            >
+          </div>
+        </div>
+        <div class="plan-price-note">
+          USD pricing. Monthly subscription + call volume. Compliant with global financial
+          regulations.
+        </div>
+        <a href="#" class="btn-plan">Talk to us</a>
+        <a
+          href="https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+          class="btn-plan-wp"
+          target="_blank">Download Whitepaper →</a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section class="dev-section">
+    <div class="dev-bg"></div>
+    <div class="dev-overlay"></div>
+    <div class="dev-inner">
+      <div class="dev-header reveal">
+        <div>
+          <div class="section-tag" style="color:var(--accent)">Developer</div>
+          <h2>Trust402</h2>
+        </div>
+        <p>
+          The developer-facing product. Built for the x402 and MCP ecosystem — attach ZK-proven
+          provenance to every agent payment. Launching soon.
+        </p>
+      </div>
+      <div class="dev-plans">
+        <div class="dev-plan reveal">
+          <div class="dev-plan-name">Explorer</div>
+          <div class="dev-plan-rule"></div>
+          <div class="dev-plan-desc">
+            Sandbox access. Evaluate ZK attribute verification before committing. Limited to testnet
+            — no mainnet writes.
+          </div>
+          <div class="dev-plan-badge">Coming soon</div>
+        </div>
+        <div class="dev-plan reveal">
+          <div class="dev-plan-name">Builder</div>
+          <div class="dev-plan-rule"></div>
+          <div class="dev-plan-desc">
+            Production access. For individual developers shipping apps on x402 and MCP. Standard
+            call volume included.
+          </div>
+          <div class="dev-plan-badge">Coming soon</div>
+        </div>
+        <div class="dev-plan reveal">
+          <div class="dev-plan-name">Studio</div>
+          <div class="dev-plan-rule"></div>
+          <div class="dev-plan-desc">
+            Team plan. Multiple API keys, priority support, expanded call volume. For startups and
+            small teams.
+          </div>
+          <div class="dev-plan-badge">Coming soon</div>
+        </div>
+        <div class="dev-plan reveal">
+          <div class="dev-plan-name">Pro</div>
+          <div class="dev-plan-rule"></div>
+          <div class="dev-plan-desc">
+            High-volume production. SLA-backed, dedicated support channel. For scale-stage products
+            in the agent economy.
+          </div>
+          <div class="dev-plan-badge">Coming soon</div>
+        </div>
+      </div>
+      <div class="dev-cta-row reveal">
+        <a href="#" class="btn-dev">Join the waitlist</a>
+        <p class="dev-note">
+          Detailed pricing and docs will be available at launch.<br />Trust402 LP — coming soon.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="compare-section reveal">
+    <div class="section-tag">At a glance</div>
+    <h2
+      style="font-family:var(--font-display);font-size:clamp(28px,3.2vw,42px);font-weight:400;color:#000;line-height:1.15;margin-bottom:48px"
+    >
+      Which plan fits<br />your organization?
+    </h2>
+    <table class="compare-table">
+      <thead
+        ><tr><th>Feature</th><th>Civic</th><th>Critical</th><th>Compliance</th><th>Trust402</th></tr
+        ></thead
+      >
+      <tbody>
+        <tr
+          ><td>AES-GCM encryption · docHash/CID</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td><span class="check">◆</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>ZK proof — standard circuits</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td><span class="check">◆</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>On-chain provenance anchoring</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td><span class="check">◆</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>Selective disclosure</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td><span class="check">◆</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>Custom ZK circuit development</td><td><span class="dash">—</span></td><td
+            ><span class="check">◆</span></td
+          ><td>Tier 2/3</td><td><span class="dash">—</span></td></tr
+        >
+        <tr
+          ><td>On-premise deployment</td><td><span class="dash">—</span></td><td>Tier 2/3</td><td
+            >Tier 3</td
+          ><td><span class="dash">—</span></td></tr
+        >
+        <tr
+          ><td>SLA-backed uptime</td><td>Tier 2/3</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td>Pro</td></tr
+        >
+        <tr
+          ><td>RAG policy layer integration</td><td><span class="check">◆</span></td><td
+            ><span class="check">◆</span></td
+          ><td><span class="check">◆</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>EU AI Act / ISO 42001 alignment</td><td><span class="dash">—</span></td><td
+            >Tier 2/3</td
+          ><td><span class="check">◆</span></td><td><span class="dash">—</span></td></tr
+        >
+        <tr
+          ><td>x402 payment header integration</td><td><span class="dash">—</span></td><td
+            ><span class="dash">—</span></td
+          ><td><span class="dash">—</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>Signup</td><td><span class="dash">—</span></td><td><span class="dash">—</span></td
+          ><td><span class="dash">—</span></td><td><span class="check">◆</span></td></tr
+        >
+        <tr
+          ><td>Contract type</td><td>B2B annual</td><td>B2B annual</td><td>B2B annual</td><td
+            >Monthly / Annual</td
+          ></tr
+        >
+      </tbody>
+    </table>
+  </section>
+
+  <section class="faq-section">
+    <div class="section-tag">Common questions</div>
+    <div
+      style="font-family:var(--font-display);font-size:clamp(28px,3.2vw,42px);font-weight:400;color:#000;line-height:1.15;margin-bottom:0"
+    >
+      Pricing FAQ.
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item reveal">
+        <h3>Why no public pricing?</h3><p>
+          Enterprise pricing depends on tier, site count, SLA requirements, and ZK circuit
+          complexity. A number without context misleads. We price to your actual use case — not a
+          generic bracket.
+        </p>
+      </div>
+      <div class="faq-item reveal">
+        <h3>Which segment fits my industry?</h3><p>
+          Public utilities and B2B2G → Civic. Power, water, rail, and critical AI → Critical. Banks,
+          FinTech, KYC/AML → Compliance. Building on x402 or MCP → Trust402.
+        </p>
+      </div>
+      <div class="faq-item reveal">
+        <h3>How is pricing structured?</h3><p>
+          All enterprise plans combine a monthly base fee with verification call volume and optional
+          custom schema registration. Higher tiers include larger included call quotas and lower
+          overage rates.
+        </p>
+      </div>
+      <div class="faq-item reveal">
+        <h3>Is there a free trial?</h3><p>
+          Trust402 will include an Explorer tier for sandbox evaluation. Enterprise evaluation is
+          handled through a scoped PoC — contact us to discuss terms.
+        </p>
+      </div>
+      <div class="faq-item reveal">
+        <h3>When does Trust402 launch?</h3><p>
+          Detailed pricing will be announced at the x402 integration demo. Join the waitlist to be
+          notified first.
+        </p>
+      </div>
+      <div class="faq-item reveal">
+        <h3>Can I start on a lower tier and upgrade?</h3><p>
+          Yes. All enterprise tiers are designed for upward migration as your deployment grows. PoC
+          engagements include a defined path to production tier pricing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-bg"></div>
+    <div class="cta-overlay"></div>
+    <div class="cta-inner reveal">
+      <div class="eyebrow" style="justify-content:center">Get started</div>
+      <h2>The proof layer<br /><em>your AI needs.</em></h2>
+      <div class="cta-rule"></div>
+      <p>Enterprise inquiry or developer waitlist. One minute to register.</p>
+      <div class="cta-btns">
+        <a href="#" class="btn-cta-white">Talk to us — Enterprise</a>
+        <a href="#" class="btn-cta-ghost">Join the waitlist — x402</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} base={base} />
+</Layout>
+
+<style
+  define:vars={{
+    pricingBg: `url(${PricingBg.src})`,
+    trust402Bg: `url(${Trust402Bg.src})`,
+    cover: `url(${Cover.src})`,
+  }}
+>
+  .hero {
+    position: relative;
+    margin-top: 64px;
+    height: 56vh;
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 10% 72px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--pricingBg) center/cover no-repeat;
+    filter: saturate(0.3) brightness(0.45);
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.82) 100%);
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+  }
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+  .hero-inner h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5.5vw, 68px);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.08;
+  }
+  .hero-inner h1 em {
+    font-style: italic;
+  }
+  .hero-inner p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.78;
+    max-width: 520px;
+    margin-top: 20px;
+  }
+
+  .notice {
+    background: var(--accent-bg);
+    border-top: 1px solid #e8d5c4;
+    border-bottom: 1px solid #e8d5c4;
+    padding: 14px 10%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .notice-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .notice p {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .enterprise-section {
+    background: #fff;
+    padding: 120px 10%;
+  }
+  .section-intro {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 72px;
+  }
+  .section-intro h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 3.8vw, 48px);
+    font-weight: 400;
+    line-height: 1.14;
+    color: #000;
+  }
+  .section-intro p {
+    font-size: 14px;
+    line-height: 1.82;
+    color: var(--gray-500);
+    max-width: 480px;
+  }
+  .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .plan-card {
+    background: #fff;
+    padding: 52px 40px 48px;
+    border-top: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease,
+      border-color 0.25s;
+  }
+  .plan-card.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .plan-card:nth-child(2) {
+    transition-delay: 0.08s;
+  }
+  .plan-card:nth-child(3) {
+    transition-delay: 0.16s;
+  }
+  .plan-card:hover {
+    border-top-color: var(--accent);
+  }
+  .plan-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
+    color: #000;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .plan-sub {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--gray-500);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+  .plan-rule {
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: 28px;
+  }
+  .plan-target {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--gray-800);
+    margin-bottom: 32px;
+    flex: 1;
+  }
+  .plan-target strong {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 8px;
+  }
+  .plan-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .plan-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--gray-800);
+    line-height: 1.55;
+  }
+  .plan-feature::before {
+    content: "◆";
+    color: var(--accent);
+    font-size: 7px;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .plan-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 36px;
+    padding: 20px;
+    background: var(--gray-50);
+    border-left: 2px solid var(--gray-200);
+  }
+  .plan-tier-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .plan-tier-label {
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.08em;
+  }
+  .plan-tier-desc {
+    font-size: 11px;
+    color: var(--gray-800);
+    font-weight: 500;
+    text-align: right;
+  }
+  .plan-price-note {
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.04em;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+    margin-bottom: 28px;
+  }
+  .btn-plan {
+    background: #000;
+    color: #fff;
+    padding: 14px 0;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    width: 100%;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-plan:hover {
+    background: var(--accent);
+  }
+  .btn-plan-wp {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: var(--black);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 13px 0;
+    border: 1px solid var(--black);
+    border-radius: 0;
+    cursor: pointer;
+    width: 100%;
+    background: transparent;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .btn-plan-wp:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .dev-section {
+    position: relative;
+    padding: 120px 10%;
+    overflow: hidden;
+  }
+  .dev-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--trust402Bg) center/cover no-repeat;
+    filter: saturate(0.55) brightness(0.6);
+  }
+  .dev-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+  }
+  .dev-inner {
+    position: relative;
+    z-index: 2;
+  }
+  .dev-header {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 72px;
+  }
+  .dev-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 3.8vw, 48px);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .dev-header p {
+    font-size: 14px;
+    line-height: 1.82;
+    color: rgba(255, 255, 255, 0.45);
+    max-width: 480px;
+  }
+  .dev-plans {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    margin-bottom: 48px;
+  }
+  .dev-plan {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 40px 32px 36px;
+    border-top: 2px solid transparent;
+    transition:
+      border-color 0.25s,
+      background 0.25s,
+      opacity 0.55s ease,
+      transform 0.55s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .dev-plan.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .dev-plan:nth-child(2) {
+    transition-delay: 0.07s;
+  }
+  .dev-plan:nth-child(3) {
+    transition-delay: 0.14s;
+  }
+  .dev-plan:nth-child(4) {
+    transition-delay: 0.21s;
+  }
+  .dev-plan:hover {
+    border-top-color: var(--accent);
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .dev-plan-name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .dev-plan-rule {
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: 16px;
+  }
+  .dev-plan-desc {
+    font-size: 13px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 24px;
+    flex: 1;
+  }
+  .dev-plan-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(139, 69, 19, 0.2);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .dev-cta-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .btn-dev {
+    background: #fff;
+    color: #000;
+    padding: 14px 36px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .btn-dev:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .dev-note {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+
+  .compare-section {
+    padding: 120px 10%;
+    background: var(--gray-50);
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 56px;
+  }
+  .compare-table thead tr {
+    background: #000;
+  }
+  .compare-table th {
+    padding: 14px 20px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: left;
+  }
+  .compare-table td {
+    padding: 16px 20px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--gray-800);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .compare-table tr:nth-child(odd) td {
+    background: #fff;
+  }
+  .compare-table tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+  .compare-table .check {
+    color: var(--accent);
+    font-size: 14px;
+  }
+  .compare-table .dash {
+    color: var(--gray-200);
+  }
+
+  .faq-section {
+    padding: 100px 10%;
+    background: #fff;
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--gray-200);
+    margin-top: 56px;
+  }
+  .faq-item {
+    background: #fff;
+    padding: 32px 36px;
+    border-top: 2px solid transparent;
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      border-color 0.2s;
+  }
+  .faq-item.on {
+    opacity: 1;
+    transform: translateY(0);
+    border-top-color: var(--accent);
+  }
+  .faq-item h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .faq-item p {
+    font-size: 13px;
+    line-height: 1.78;
+    color: var(--gray-500);
+  }
+
+  .cta-section {
+    position: relative;
+    padding: 140px 10%;
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--cover) center/cover no-repeat;
+    filter: saturate(0.35) brightness(0.55);
+  }
+  .cta-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.76);
+  }
+  .cta-inner {
+    position: relative;
+    z-index: 2;
+  }
+  .cta-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 58px);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .cta-inner h2 em {
+    font-style: italic;
+  }
+  .cta-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 28px auto;
+  }
+  .cta-inner > p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    max-width: 380px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-cta-white {
+    background: #fff;
+    color: #000;
+    padding: 16px 44px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .btn-cta-white:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-cta-ghost {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 15px 42px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .btn-cta-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #8b4513;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: #8b4513;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .section-intro {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .plan-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .dev-header {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .dev-plans {
+      grid-template-columns: 1fr 1fr;
+    }
+    .compare-section {
+      overflow-x: auto;
+    }
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .hero,
+    .enterprise-section,
+    .dev-section,
+    .compare-section,
+    .faq-section,
+    .cta-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .enterprise-section,
+    .compare-section,
+    .faq-section {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .dev-section,
+    .cta-section {
+      padding-top: 90px;
+      padding-bottom: 90px;
+    }
+    .plan-grid {
+      grid-template-columns: 1fr;
+    }
+    .dev-plans {
+      grid-template-columns: 1fr;
+    }
+    .cta-btns {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("on");
+        e.target.querySelectorAll(".plan-card, .dev-plan, .faq-item").forEach(function (c, i) {
+          setTimeout(function () {
+            c.classList.add("on");
+          }, i * 80);
+        });
+        io.unobserve(e.target);
+      });
+    },
+    { threshold: 0.06, rootMargin: "0px 0px -24px 0px" },
+  );
+  document.querySelectorAll(".reveal, .plan-card, .dev-plan, .faq-item").forEach(function (el) {
+    io.observe(el);
+  });
+</script>

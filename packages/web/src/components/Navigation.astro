@@ -11,7 +11,9 @@ interface Props {
 
 const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
-const faqPath = `${blogPath}/faq`;
+const faqPath = "/faq";
+const pricingPath = "/pricing";
+const servicesPath = "/services";
 const homePath = base || "/";
 
 const currentPath = Astro.url.pathname;
@@ -19,121 +21,404 @@ const languageSwitchHref =
   locale === "ja"
     ? currentPath.replace(/^\/ja/, "") || "/"
     : `/ja${currentPath}`;
+
+const isActive = (path: string) => {
+  if (path === "/" && currentPath === "/") return true;
+  if (path !== "/" && currentPath.startsWith(path)) return true;
+  return false;
+};
 ---
 
-<nav
-  class="fixed top-0 right-0 left-0 z-50 border-b border-black/5 bg-[#FAFAF8]/95 backdrop-blur-sm"
-  id="main-nav"
->
-  <div class="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-    <a href={homePath} class="font-mono text-sm tracking-wider text-black/50 uppercase">
-      <LemmaOracle class="h-8 w-auto text-black sm:h-10 lg:h-12" />
-    </a>
-    <ul class="hidden items-center gap-4 text-sm tracking-wide uppercase lg:flex lg:gap-6">
-      <li>
-        <a href={`${base}/services`} class="transition-opacity hover:opacity-50">{t.services}</a>
-      </li>
-      <li><a href={homePath} class="opacity-50 transition-opacity">{t.changelog}</a></li>
-      <li>
-        <a href={`${homePath}#essays`} class="transition-opacity hover:opacity-50">{t.essays}</a>
-      </li>
-      <li><a href={blogPath} class="transition-opacity hover:opacity-50">{t.blog}</a></li>
-      <li><a href={faqPath} class="transition-opacity hover:opacity-50">{t.faq}</a></li>
-      <li class="text-black/40">
-        {
-          locale === "ja" ? (
-            <a href={languageSwitchHref} class="transition-opacity hover:opacity-70">
-              {t.languageEn}
-            </a>
-          ) : (
-            <a href={languageSwitchHref} class="transition-opacity hover:opacity-70">
-              {t.languageJa}
-            </a>
-          )
-        }
-      </li>
-    </ul>
-    <div class="flex items-center lg:hidden">
-      <button
-        type="button"
-        class="text-black/50 hover:text-black/80"
-        aria-label="メニュー"
-        aria-expanded="false"
-        id="mobile-menu-button"
-      >
-        <!-- Hamburger icon -->
-        <svg id="menu-icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <!-- Close icon (hidden by default) -->
-        <svg id="menu-icon-close" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  </div>
+<nav class="mega-nav" id="mainNav">
+  <a href={homePath} class="mega-nav-logo">
+    <LemmaOracle class="h-[26px] w-auto text-white" />
+  </a>
 
-  <!-- Mobile menu panel -->
-  <div
-    id="mobile-menu"
-    class="hidden border-t border-black/5 bg-[#FAFAF8]/98 backdrop-blur-md lg:hidden"
-  >
-    <ul class="flex flex-col gap-1 px-4 py-4 text-sm tracking-wide uppercase sm:px-6">
-      <li>
-        <a href={`${base}/services`} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">{t.services}</a>
-      </li>
-      <li>
-        <a href={homePath} class="block rounded-md px-3 py-2.5 text-black/50 transition-colors hover:bg-black/5">{t.changelog}</a>
-      </li>
-      <li>
-        <a href={`${homePath}#essays`} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">{t.essays}</a>
-      </li>
-      <li>
-        <a href={blogPath} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">{t.blog}</a>
-      </li>
-      <li>
-        <a href={faqPath} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">{t.faq}</a>
-      </li>
-      <li class="mt-2 border-t border-black/5 pt-2 text-black/40">
-        {
-          locale === "ja" ? (
-            <a href={languageSwitchHref} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">
-              {t.languageEn}
+  <!-- DESKTOP LINKS -->
+  <ul class="mega-nav-links">
+    <li class="mega-nav-item">
+      <button class="mega-nav-link has-mega" data-key="services">{t.services}</button>
+      <div class="mega-panel">
+        <div class="mega-section mega-two-col">
+          <div class="mega-section-label">Enterprise</div>
+          <div class="mega-links">
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">Lemma Civic</span>
+              <span class="mega-link-sub">Public infrastructure · B2B2G</span>
             </a>
-          ) : (
-            <a href={languageSwitchHref} class="block rounded-md px-3 py-2.5 transition-colors hover:bg-black/5">
-              {t.languageJa}
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">Lemma Critical</span>
+              <span class="mega-link-sub">Mission-critical systems</span>
             </a>
-          )
-        }
-      </li>
-    </ul>
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">Lemma Compliance</span>
+              <span class="mega-link-sub">Finance · KYC/AML · FinTech</span>
+            </a>
+            <a href={`${servicesPath}#solution`} class="mega-link">
+              <span class="mega-link-title">How it works</span>
+              <span class="mega-link-sub">Normalize · Commit · Prove</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-x402">
+          <div class="mega-x402-label">x402 Integration · Developer</div>
+          <div class="mega-x402-title">Try the demo — launching soon</div>
+          <div class="mega-x402-sub">ZK-proven attributes for the agent economy.</div>
+          <div class="mega-x402-links">
+            <a href="#" class="mega-x402-link">Try the demo →</a>
+            <a href="#" class="mega-x402-link">Join waitlist</a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="mega-nav-item">
+      <button class="mega-nav-link has-mega" data-key="pricing">{t.pricing}</button>
+      <div class="mega-panel">
+        <div class="mega-section">
+          <div class="mega-section-label">Enterprise</div>
+          <div class="mega-links">
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">Lemma Civic</span>
+              <span class="mega-link-sub">Public infrastructure · B2B2G</span>
+            </a>
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">Lemma Critical</span>
+              <span class="mega-link-sub">Mission-critical systems</span>
+            </a>
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">Lemma Compliance</span>
+              <span class="mega-link-sub">Finance · KYC/AML · FinTech</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-section">
+          <div class="mega-section-label">Developer</div>
+          <div class="mega-links">
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">Trust402</span>
+              <span class="mega-link-sub">Explorer · Builder · Studio · Pro</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="mega-nav-item">
+      <button class="mega-nav-link has-mega" data-key="developers">Developers</button>
+      <div class="mega-panel right">
+        <div class="mega-section">
+          <div class="mega-section-label">Architecture</div>
+          <div class="mega-links">
+            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Lemma Oracle Specs</span>
+              <span class="mega-link-sub">Full technical specification</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-section">
+          <div class="mega-section-label">Guides</div>
+          <div class="mega-links">
+            <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Encrypt Everything, Expose Nothing</span>
+              <span class="mega-link-sub">AES-GCM · docHash · CID</span>
+            </a>
+            <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Prove Facts with Zero Knowledge</span>
+              <span class="mega-link-sub">ZK circuits · generators · permanent record</span>
+            </a>
+            <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Disclose Only What AI Needs</span>
+              <span class="mega-link-sub">Selective disclosure · issuer signature</span>
+            </a>
+            <a href={`${blogPath}/query-verified-attributes`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Query Verified Attributes</span>
+              <span class="mega-link-sub">RAG policy layer · full provenance</span>
+            </a>
+            <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Define Your Domain as a Schema</span>
+              <span class="mega-link-sub">ZK circuits · typed schemas</span>
+            </a>
+            <a href={`${blogPath}/provenance-that-never-disappears`} class="mega-link" target="_blank">
+              <span class="mega-link-title">Provenance That Never Disappears</span>
+              <span class="mega-link-sub">On-chain anchoring · permanent record</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-x402">
+          <div class="mega-x402-label">x402 Integration</div>
+          <div class="mega-x402-title">Demo launching soon</div>
+          <div class="mega-x402-sub">ZK-proven attributes for the agent economy</div>
+          <div class="mega-x402-links">
+            <a href="#" class="mega-x402-link">Join waitlist →</a>
+            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-x402-link" target="_blank">Read specs</a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="mega-nav-item">
+      <a href={blogPath} class:list={["mega-nav-link", { active: isActive(blogPath) }]}>{t.blog}</a>
+    </li>
+    <li class="mega-nav-item">
+      <a href={faqPath} class:list={["mega-nav-link", { active: isActive(faqPath) }]}>{t.faq}</a>
+    </li>
+    <li class="mega-nav-item">
+      <a href={languageSwitchHref} class="mega-nav-link nav-lang">
+        {locale === "ja" ? t.languageEn : t.languageJa}
+      </a>
+    </li>
+  </ul>
+
+  <!-- HAMBURGER -->
+  <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- MOBILE DRAWER -->
+  <div class="nav-mobile-drawer" id="navMobileDrawer">
+    <div class="mob-section">
+      <div class="mob-section-header">
+        {t.services} <span class="mob-arrow"></span>
+      </div>
+      <div class="mob-section-body">
+        <a href={servicesPath} class="mob-link">Lemma Civic<small>Public infrastructure · B2B2G</small></a>
+        <a href={servicesPath} class="mob-link">Lemma Critical<small>Mission-critical systems</small></a>
+        <a href={servicesPath} class="mob-link">Lemma Compliance<small>Finance · KYC/AML · FinTech</small></a>
+        <a href={`${servicesPath}#solution`} class="mob-link">How it works<small>Normalize · Commit · Prove</small></a>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <div class="mob-section-header">
+        Pricing <span class="mob-arrow"></span>
+      </div>
+      <div class="mob-section-body">
+        <a href={pricingPath} class="mob-link">Lemma Civic</a>
+        <a href={pricingPath} class="mob-link">Lemma Critical</a>
+        <a href={pricingPath} class="mob-link">Lemma Compliance</a>
+        <a href={pricingPath} class="mob-link">Trust402<small>Explorer · Builder · Studio · Pro</small></a>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <div class="mob-section-header">
+        Developers <span class="mob-arrow"></span>
+      </div>
+      <div class="mob-section-body">
+        <a href={`${blogPath}/lemma-oracle-specs`} class="mob-link" target="_blank">Lemma Oracle Specs</a>
+        <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mob-link" target="_blank">Encrypt Everything, Expose Nothing</a>
+        <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mob-link" target="_blank">Prove Facts with Zero Knowledge</a>
+        <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mob-link" target="_blank">Disclose Only What AI Needs</a>
+        <a href={`${blogPath}/query-verified-attributes`} class="mob-link" target="_blank">Query Verified Attributes</a>
+        <a href={`${blogPath}/provenance-that-never-disappears`} class="mob-link" target="_blank">Provenance That Never Disappears</a>
+      </div>
+    </div>
+
+    <a href={blogPath} class="mob-direct">{t.blog}</a>
+    <a href={faqPath} class="mob-direct">{t.faq}</a>
+
+    <div class="mob-cta">
+      <a href="#" class="mob-cta-btn">Talk to us</a>
+    </div>
+
+    <div class="mob-lang">
+      <a href={languageSwitchHref}>{locale === "ja" ? t.languageEn : t.languageJa}</a>
+    </div>
   </div>
 </nav>
 
-<script is:inline>
-  (function () {
-    const btn = document.getElementById("mobile-menu-button");
-    const menu = document.getElementById("mobile-menu");
-    const iconOpen = document.getElementById("menu-icon-open");
-    const iconClose = document.getElementById("menu-icon-close");
-    if (!btn || !menu || !iconOpen || !iconClose) return;
+<style>
+  .mega-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: #000; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    transition: border-color .3s;
+  }
+  .mega-nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
 
-    btn.addEventListener("click", function () {
-      const isOpen = !menu.classList.contains("hidden");
-      menu.classList.toggle("hidden");
-      iconOpen.classList.toggle("hidden");
-      iconClose.classList.toggle("hidden");
-      btn.setAttribute("aria-expanded", String(!isOpen));
+  .mega-nav-links {
+    display: flex; align-items: stretch; height: 64px;
+    list-style: none; gap: 0; margin: 0; padding: 0;
+  }
+  .mega-nav-item { position: relative; display: flex; align-items: center; }
+
+  .mega-nav-link {
+    color: rgba(255,255,255,.5); font-size: 11px; font-weight: 400;
+    letter-spacing: .1em; text-decoration: none; text-transform: uppercase;
+    padding: 0 16px; height: 64px; display: flex; align-items: center; gap: 5px;
+    transition: color .2s; white-space: nowrap;
+    background: none; border: none; cursor: pointer; font-family: inherit;
+  }
+  .mega-nav-link:hover, .mega-nav-link.active { color: #fff; }
+  .mega-nav-link.has-mega::after {
+    content: ''; width: 4px; height: 4px;
+    border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translateY(-2px); display: inline-block;
+    opacity: .5; transition: transform .2s;
+  }
+  .mega-nav-item:hover .mega-nav-link.has-mega::after {
+    transform: rotate(-135deg) translateY(-2px); opacity: 1;
+  }
+  .mega-nav-link.nav-lang {
+    color: rgba(255,255,255,.28);
+    border-left: 1px solid rgba(255,255,255,.1); margin-left: 8px;
+  }
+
+  .mega-panel {
+    display: none; position: absolute; top: 64px; left: 0;
+    background: #0D0D0D;
+    border: 1px solid rgba(255,255,255,.08); border-top: none;
+    min-width: 320px; z-index: 999;
+  }
+  .mega-panel.right { left: auto; right: 0; }
+  .mega-nav-item:hover .mega-panel { display: block; }
+
+  .mega-section { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .mega-section:last-child { border-bottom: none; }
+  .mega-section-label {
+    font-size: 9px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+    color: #8B4513; margin-bottom: 14px;
+  }
+  .mega-links { display: flex; flex-direction: column; gap: 2px; }
+  .mega-two-col .mega-links { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .mega-link {
+    display: flex; flex-direction: column; padding: 10px 12px;
+    text-decoration: none; border-left: 2px solid transparent;
+    transition: border-color .15s, background .15s;
+  }
+  .mega-link:hover { border-left-color: #8B4513; background: rgba(255,255,255,.03); }
+  .mega-link-title { font-size: 13px; color: rgba(255,255,255,.7); font-weight: 400; line-height: 1; margin-bottom: 3px; }
+  .mega-link:hover .mega-link-title { color: #fff; }
+  .mega-link-sub { font-size: 11px; color: rgba(255,255,255,.28); line-height: 1.3; }
+
+  .mega-x402 {
+    padding: 18px 24px; background: rgba(139,69,19,.07);
+    border-top: 1px solid rgba(139,69,19,.15);
+  }
+  .mega-x402-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: #8B4513; margin-bottom: 8px; }
+  .mega-x402-title { font-size: 13px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
+  .mega-x402-sub { font-size: 11px; color: rgba(255,255,255,.28); margin-bottom: 12px; }
+  .mega-x402-links { display: flex; gap: 8px; }
+  .mega-x402-link {
+    font-size: 10px; color: #8B4513; border: 1px solid rgba(139,69,19,.4);
+    padding: 4px 12px; text-decoration: none; letter-spacing: .08em; text-transform: uppercase;
+    transition: background .2s, color .2s;
+  }
+  .mega-x402-link:hover { background: #8B4513; color: #fff; }
+
+  .nav-hamburger {
+    display: none; background: none; border: none; cursor: pointer;
+    padding: 8px; flex-direction: column; gap: 5px;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,.7);
+    transition: transform .25s, opacity .25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-mobile-drawer {
+    display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+    background: #000; z-index: 999; overflow-y: auto;
+    transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .nav-mobile-drawer.open { transform: translateX(0); }
+
+  .mob-section { border-bottom: 1px solid rgba(255,255,255,.06); }
+  .mob-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 6%; cursor: pointer;
+    font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+  }
+  .mob-section-header .mob-arrow {
+    width: 8px; height: 8px;
+    border-right: 1px solid rgba(255,255,255,.4); border-bottom: 1px solid rgba(255,255,255,.4);
+    transform: rotate(45deg); transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .mob-section.open .mob-section-header .mob-arrow { transform: rotate(-135deg); }
+  .mob-section-body { display: none; padding: 0 6% 16px; }
+  .mob-section.open .mob-section-body { display: block; }
+
+  .mob-link {
+    display: block; padding: 12px 0; text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    color: rgba(255,255,255,.55); font-size: 14px; line-height: 1.3;
+    transition: color .15s;
+  }
+  .mob-link:last-child { border-bottom: none; }
+  .mob-link:hover { color: #fff; }
+  .mob-link small { display: block; font-size: 11px; color: rgba(255,255,255,.28); margin-top: 2px; }
+
+  .mob-direct {
+    display: block; padding: 18px 6%;
+    font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(255,255,255,.7); text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    transition: color .15s;
+  }
+  .mob-direct:hover { color: #fff; }
+
+  .mob-cta { padding: 24px 6%; }
+  .mob-cta-btn {
+    display: block; width: 100%; padding: 16px;
+    background: #fff; color: #000; text-align: center;
+    font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+    border: none; cursor: pointer; text-decoration: none;
+    transition: background .2s;
+  }
+  .mob-cta-btn:hover { background: #8B4513; color: #fff; }
+
+  .mob-lang {
+    padding: 16px 6%;
+    font-size: 11px; color: rgba(255,255,255,.25); letter-spacing: .08em;
+  }
+  .mob-lang a { color: rgba(255,255,255,.35); text-decoration: none; }
+
+  @media(max-width:900px) {
+    .mega-nav { padding: 0 6%; }
+    .mega-nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-mobile-drawer { display: block; }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    window.addEventListener('scroll', function() {
+      var nav = document.getElementById('mainNav');
+      if (nav) nav.style.borderBottomColor =
+        scrollY > 60 ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.06)';
+    }, { passive: true });
+
+    document.querySelectorAll('.mega-nav-link[data-key]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var map = { services: '/services', pricing: '/pricing' };
+        if (map[btn.dataset.key]) location.href = map[btn.dataset.key];
+      });
     });
 
-    // Close menu when a link is clicked
-    menu.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
-        menu.classList.add("hidden");
-        iconOpen.classList.remove("hidden");
-        iconClose.classList.add("hidden");
-        btn.setAttribute("aria-expanded", "false");
+    var ham = document.getElementById('navHamburger');
+    var mob = document.getElementById('navMobileDrawer');
+    if (ham && mob) {
+      ham.addEventListener('click', function() {
+        var open = mob.classList.toggle('open');
+        ham.classList.toggle('open', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+    }
+
+    document.querySelectorAll('.mob-section-header').forEach(function(hdr) {
+      hdr.addEventListener('click', function() {
+        var section = hdr.closest('.mob-section');
+        var wasOpen = section.classList.contains('open');
+        document.querySelectorAll('.mob-section.open').forEach(function(s) { s.classList.remove('open'); });
+        if (!wasOpen) section.classList.add('open');
       });
     });
   })();

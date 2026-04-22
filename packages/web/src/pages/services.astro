@@ -1,12 +1,866 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ServicesPage from "../components/ServicesPage.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { getTranslations } from "../i18n/translations";
+import HeroCover from "../assets/rag.jpg";
+import SolutionBg from "../assets/cover.jpg";
 
 const locale = "en";
 const t = getTranslations(locale);
+const base = "";
 ---
 
 <Layout locale={locale} title={t.services.title} description={t.services.hero.sub}>
-  <ServicesPage locale={locale} t={t} />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content reveal">
+      <div class="section-tag">{t.services.nav.whitepaperDownload}</div>
+      <h1>{t.services.hero.title}</h1>
+      <p style="margin-top:20px">{t.services.hero.sub}</p>
+    </div>
+  </section>
+
+  <div class="stats-strip">
+    <div class="stat-block reveal">
+      <div class="stat-label">AI Agent Adoption Challenge</div>
+      <div class="stat-num">
+        {t.services.stats.stat1Num.replace("About ", "~").replace("約", "~")}
+      </div>
+      <div class="stat-desc">{t.services.stats.stat1Desc}</div>
+    </div>
+    <div class="stat-block reveal">
+      <div class="stat-label">Internal Data with AI</div>
+      <div class="stat-num">{t.services.stats.stat2Num}</div>
+      <div class="stat-desc">{t.services.stats.stat2Desc}</div>
+    </div>
+    <div class="stat-block reveal">
+      <div class="stat-label">Agent AI Market 2030</div>
+      <div class="stat-num">
+        {t.services.stats.stat3Num.replace("Approx. ¥", "¥").replace("約", "¥")}
+      </div>
+      <div class="stat-desc">{t.services.stats.stat3Desc}</div>
+    </div>
+  </div>
+
+  <section class="problem-section reveal" id="problem">
+    <div class="section-header">
+      <div class="section-tag">{t.services.problem.label}</div>
+      <h2>{t.services.problem.title}</h2>
+      <p>{t.services.problem.lead}</p>
+    </div>
+    <table class="challenge-table">
+      <thead
+        ><tr>
+          <th>{t.services.problem.tableHeaderCategory}</th>
+          <th>{t.services.problem.tableHeaderContent}</th>
+          <th>{t.services.problem.tableHeaderRate}</th>
+        </tr></thead
+      >
+      <tbody>
+        <tr
+          ><td><strong>{t.services.problem.issue1Tag}</strong></td><td
+            >{t.services.problem.issue1Content}</td
+          ><td><span class="rate-badge">55%</span></td></tr
+        >
+        <tr
+          ><td><strong>{t.services.problem.issue2Tag}</strong></td><td
+            >{t.services.problem.issue2Content}</td
+          ><td><span class="rate-badge">51%</span></td></tr
+        >
+        <tr
+          ><td><strong>{t.services.problem.issue3Tag}</strong></td><td
+            >{t.services.problem.issue3Content}</td
+          ><td><span class="rate-badge">46%</span></td></tr
+        >
+        <tr
+          ><td><strong>{t.services.problem.issue4Tag}</strong></td><td
+            >{t.services.problem.issue4Content}</td
+          ><td><span class="rate-badge">40%</span></td></tr
+        >
+      </tbody>
+    </table>
+  </section>
+
+  <section class="problems-section" id="structural-barriers">
+    <div class="section-header reveal">
+      <div class="section-tag">{t.services.walls.label}</div>
+      <h2>{t.services.walls.title}</h2>
+    </div>
+    <div class="problems-grid">
+      <div class="problem-card reveal">
+        <div class="problem-num">{t.services.walls.wall1Num}</div>
+        <h3>{t.services.walls.wall1Title}</h3>
+        <p>{t.services.walls.wall1Body}</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-num">{t.services.walls.wall2Num}</div>
+        <h3>{t.services.walls.wall2Title}</h3>
+        <p>{t.services.walls.wall2Body}</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-num">{t.services.walls.wall3Num}</div>
+        <h3>{t.services.walls.wall3Title}</h3>
+        <p>{t.services.walls.wall3Body}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="solution-section" id="solution">
+    <div class="solution-bg"></div>
+    <div class="solution-overlay"></div>
+    <div class="solution-inner">
+      <div class="section-tag" style="color:var(--accent)">{t.services.solution.label}</div>
+      <h2>{t.services.solution.title}</h2>
+      <p>{t.services.solution.lead}</p>
+      <div class="functions-grid">
+        <div class="fn-card reveal">
+          <div class="fn-num">{t.services.solution.func1Num}</div>
+          <h3>{t.services.solution.func1Name}</h3>
+          <p>{t.services.solution.func1Desc}</p>
+        </div>
+        <div class="fn-card reveal">
+          <div class="fn-num">{t.services.solution.func2Num}</div>
+          <h3>{t.services.solution.func2Name}</h3>
+          <p>{t.services.solution.func2Desc}</p>
+        </div>
+        <div class="fn-card reveal">
+          <div class="fn-num">{t.services.solution.func3Num}</div>
+          <h3>{t.services.solution.func3Name}</h3>
+          <p>{t.services.solution.func3Desc}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ba-section reveal">
+    <div class="section-header">
+      <div class="section-tag">{t.services.beforeAfter.label}</div>
+      <h2>{t.services.beforeAfter.title}</h2>
+      <p>{t.services.beforeAfter.lead}</p>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-col">
+        <div class="ba-label">{t.services.beforeAfter.beforeLabel}</div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.before1Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before1Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.before2Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before2Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.before3Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before3Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.before4Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before4Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.before5Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before5Text}
+          </div>
+        </div>
+        <div class="ba-item" style="border-bottom:none">
+          <div class="ba-item-label">{t.services.beforeAfter.before6Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.before6Text}
+          </div>
+        </div>
+      </div>
+      <div class="ba-col ba-col-after">
+        <div class="ba-label">{t.services.beforeAfter.afterLabel}</div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.after1Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after1Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.after2Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after2Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.after3Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after3Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.after4Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after4Text}
+          </div>
+        </div>
+        <div class="ba-item">
+          <div class="ba-item-label">{t.services.beforeAfter.after5Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after5Text}
+          </div>
+        </div>
+        <div class="ba-item" style="border-bottom:none">
+          <div class="ba-item-label">{t.services.beforeAfter.after6Label}</div><div
+            class="ba-item-text"
+          >
+            {t.services.beforeAfter.after6Text}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="check-section">
+    <div class="section-header reveal">
+      <div class="section-tag">{t.services.checklist.label}</div>
+      <h2>{t.services.checklist.title}</h2>
+      <p>{t.services.checklist.lead}</p>
+    </div>
+    <div class="check-grid">
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item1}</p>
+      </div>
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item2}</p>
+      </div>
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item3}</p>
+      </div>
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item4}</p>
+      </div>
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item5}</p>
+      </div>
+      <div class="check-item reveal">
+        <span class="check-mark">◆</span><p>{t.services.checklist.item6}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dl-section reveal" id="download">
+    <div class="section-tag" style="color:var(--accent);justify-content:center">Whitepaper</div>
+    <h2>Download the Whitepaper<br /><em>for Free.</em></h2>
+    <div class="dl-rule"></div>
+    <p>{t.services.cta.desc}</p>
+    <div class="dl-list">
+      <div class="dl-list-item"><p>{t.services.cta.wpContent1}</p></div>
+      <div class="dl-list-item"><p>{t.services.cta.wpContent2}</p></div>
+      <div class="dl-list-item"><p>{t.services.cta.wpContent3}</p></div>
+      <div class="dl-list-item"><p>{t.services.cta.wpContent4}</p></div>
+    </div>
+    <a href={t.services.cta.hubspotFormUrl} class="btn-white" target="_blank">Download Whitepaper</a
+    >
+  </section>
+
+  <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
+
+<style define:vars={{ heroBg: `url(${HeroCover.src})`, solutionBg: `url(${SolutionBg.src})` }}>
+  .page-hero {
+    position: relative;
+    height: 72vh;
+    min-height: 520px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 10% 80px;
+    overflow: hidden;
+    margin-top: 64px;
+  }
+  .page-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--heroBg) center/cover no-repeat;
+    filter: saturate(0.6) brightness(0.7);
+  }
+  .page-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.72) 100%);
+  }
+  .page-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
+  .page-hero-content h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 62px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .page-hero-content h1 strong {
+    font-weight: 600;
+    display: block;
+  }
+  .page-hero-content p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.78;
+    max-width: 560px;
+  }
+
+  .stats-strip {
+    background: var(--black);
+    padding: 48px 10%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .stat-block {
+    padding: 36px 40px;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+  .stat-block:first-child {
+    border-left: none;
+  }
+  .stat-block.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 16px;
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-num span {
+    font-size: 24px;
+    font-weight: 400;
+  }
+  .stat-desc {
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.65;
+    margin-top: 12px;
+    max-width: 280px;
+  }
+
+  .problem-section {
+    background: var(--gray-50);
+    padding: 120px 10%;
+  }
+  .section-header {
+    margin-bottom: 64px;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 3.8vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+  .section-header p {
+    font-size: 15px;
+    line-height: 1.78;
+    color: var(--gray-500);
+    max-width: 560px;
+  }
+  .challenge-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .challenge-table thead tr {
+    background: var(--black);
+    color: var(--white);
+  }
+  .challenge-table th {
+    padding: 16px 20px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .challenge-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-800);
+    line-height: 1.65;
+  }
+  .challenge-table tr:nth-child(odd) td {
+    background: var(--white);
+  }
+  .challenge-table tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+  .rate-badge {
+    background: var(--accent);
+    color: var(--white);
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .problems-section {
+    background: var(--white);
+    padding: 120px 10%;
+  }
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .problem-card {
+    background: var(--white);
+    padding: 48px 40px;
+    border-top: 2px solid transparent;
+    transition: border-color 0.2s;
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease,
+      border-color 0.2s;
+  }
+  .problem-card.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .problem-card:nth-child(2) {
+    transition-delay: 0.1s;
+  }
+  .problem-card:nth-child(3) {
+    transition-delay: 0.2s;
+  }
+  .problem-card:hover {
+    border-top-color: var(--accent);
+  }
+  .problem-num {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .problem-card h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .problem-card p {
+    font-size: 14px;
+    line-height: 1.78;
+    color: var(--gray-500);
+  }
+
+  .solution-section {
+    position: relative;
+    padding: 140px 10%;
+    overflow: hidden;
+  }
+  .solution-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--solutionBg) center/cover no-repeat;
+    filter: saturate(0.35) brightness(0.6);
+  }
+  .solution-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+  }
+  .solution-inner {
+    position: relative;
+    z-index: 2;
+  }
+  .solution-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 50px);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .solution-inner > p {
+    font-size: 15px;
+    line-height: 1.78;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 64px;
+    max-width: 560px;
+  }
+  .functions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .fn-card {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 40px 36px;
+    border-top: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .fn-card:hover {
+    border-top-color: var(--accent);
+  }
+  .fn-num {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .fn-card h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .fn-card p {
+    font-size: 14px;
+    line-height: 1.78;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .ba-section {
+    background: var(--gray-50);
+    padding: 120px 10%;
+  }
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--gray-200);
+    margin-top: 64px;
+  }
+  .ba-col {
+    background: var(--white);
+    padding: 48px 40px;
+  }
+  .ba-col-after {
+    background: var(--black);
+  }
+  .ba-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid;
+  }
+  .ba-col .ba-label {
+    color: var(--gray-500);
+    border-color: var(--gray-200);
+  }
+  .ba-col-after .ba-label {
+    color: var(--accent);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .ba-item {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid;
+  }
+  .ba-col .ba-item {
+    border-color: var(--gray-200);
+  }
+  .ba-col-after .ba-item {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+  .ba-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .ba-item-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .ba-col .ba-item-label {
+    color: var(--gray-500);
+  }
+  .ba-col-after .ba-item-label {
+    color: var(--accent);
+  }
+  .ba-item-text {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .ba-col .ba-item-text {
+    color: var(--gray-800);
+  }
+  .ba-col-after .ba-item-text {
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .check-section {
+    background: var(--white);
+    padding: 120px 10%;
+  }
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: var(--gray-200);
+    margin-top: 64px;
+  }
+  .check-item {
+    background: var(--white);
+    padding: 28px 36px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid var(--gray-200);
+    opacity: 0;
+    transform: translateX(-16px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+  .check-item.on {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .check-item:nth-child(2) {
+    transition-delay: 0.06s;
+  }
+  .check-item:nth-child(3) {
+    transition-delay: 0.12s;
+  }
+  .check-item:nth-child(4) {
+    transition-delay: 0.18s;
+  }
+  .check-item:nth-child(5) {
+    transition-delay: 0.24s;
+  }
+  .check-item:nth-child(6) {
+    transition-delay: 0.3s;
+  }
+  .check-mark {
+    color: var(--accent);
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-item p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-800);
+  }
+
+  .dl-section {
+    background: var(--black);
+    padding: 120px 10%;
+    text-align: center;
+  }
+  .dl-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .dl-section h2 em {
+    font-style: italic;
+  }
+  .dl-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 28px auto;
+  }
+  .dl-section > p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.8;
+    max-width: 400px;
+    margin: 0 auto 48px;
+  }
+  .dl-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    max-width: 720px;
+    margin: 0 auto 48px;
+    text-align: left;
+  }
+  .dl-list-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .dl-list-item::before {
+    content: "→";
+    color: var(--accent);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .dl-list-item p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.65;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 32px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    transition:
+      background 0.2s,
+      color 0.2s;
+    text-decoration: none;
+  }
+  .btn-white:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .stats-strip {
+      grid-template-columns: 1fr;
+    }
+    .problems-grid {
+      grid-template-columns: 1fr;
+    }
+    .functions-grid {
+      grid-template-columns: 1fr;
+    }
+    .ba-grid {
+      grid-template-columns: 1fr;
+    }
+    .check-grid {
+      grid-template-columns: 1fr;
+    }
+    .dl-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .page-hero,
+    .problem-section,
+    .problems-section,
+    .solution-section,
+    .ba-section,
+    .check-section,
+    .dl-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .problem-section,
+    .problems-section,
+    .ba-section,
+    .check-section {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .solution-section,
+    .dl-section {
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal, .check-item").forEach(function (el) {
+    io.observe(el);
+  });
+</script>
