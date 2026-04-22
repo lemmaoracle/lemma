@@ -1,3 +1,4 @@
+
 ---
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
@@ -89,7 +90,7 @@ const fq = t.faq;
       <div class="partner-rule"></div>
       <p>{fq.partner.p}</p>
       <div class="partner-links">
-        <a href="#" class="btn-white">{fq.partner.cta}</a>
+        <a href="${base}/services/" class="btn-white">{fq.partner.cta}</a>
         <a href={`${base}/blog/lemma-oracle-specs`} class="btn-ghost">{fq.partner.link}</a>
       </div>
     </div>
