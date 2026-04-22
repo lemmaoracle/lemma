@@ -1,0 +1,51 @@
+---
+import type { Locale } from "../i18n/translations";
+import type { Translations } from "../i18n/translations";
+import LemmaOracle from "./LemmaOracle.astro";
+
+interface Props {
+  locale: Locale;
+  t: Translations["nav"];
+  base: string;
+}
+
+const { locale, t, base } = Astro.props;
+const blogPath = base ? `${base}/blog` : "/blog";
+const faqPath = "/faq";
+const homePath = base || "/";
+---
+
+<footer>
+  <div class="footer-logo">
+    <LemmaOracle class="h-[22px] w-auto text-white/28" />
+  </div>
+  <div class="footer-tagline">© 2026 FRAME00 — Built for decisions that matter</div>
+  <ul class="footer-links">
+    <li><a href="https://corp.frame00.com" target="_blank">About us</a></li>
+    <li><a href={faqPath}>FAQ</a></li>
+    <li><a href={blogPath}>Blog</a></li>
+    <li><a href={locale === "ja" ? homePath : "/ja/"}>{locale === "ja" ? "English" : "日本語"}</a></li>
+  </ul>
+</footer>
+
+<style>
+  footer {
+    background: #000;
+    border-top: 1px solid rgba(255,255,255,.07);
+    padding: 36px 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-logo :global(svg) { height: 22px; width: auto; }
+  .footer-tagline { font-size: 11px; color: rgba(255,255,255,.18); letter-spacing: .08em; }
+  .footer-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  .footer-links a { font-size: 11px; color: rgba(255,255,255,.22); transition: color .2s; letter-spacing: .08em; text-decoration: none; }
+  .footer-links a:hover { color: rgba(255,255,255,.55); }
+
+  @media(max-width:768px) {
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 36px 6%; }
+  }
+</style>

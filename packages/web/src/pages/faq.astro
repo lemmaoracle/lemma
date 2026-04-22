@@ -1,0 +1,16 @@
+---
+import FaqTemplate from "../templates/FaqTemplate.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<FaqTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  title="FAQ — Lemma Oracle | AI Trust & Verifiability, Explained"
+  description="Frequently asked questions about Verifiable AI — ZK proofs, selective disclosure, on-chain provenance, and how Lemma Oracle works."
+/>

@@ -1,0 +1,463 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import FaqBg from "../assets/faq-cover.jpg";
+import CtaBg from "../assets/rag.jpg";
+
+export interface FaqTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  title: string;
+  description: string;
+}
+
+const { locale, t, base, title, description } = Astro.props as FaqTemplateProps;
+const fq = t.faq;
+---
+
+<Layout locale={locale} title={title} description={description}>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="faq-header">
+    <div class="faq-header-bg"></div>
+    <div class="faq-header-overlay"></div>
+    <div class="faq-header-content">
+      <div class="section-tag" style="color:var(--accent)">{fq.hero.tag}</div>
+      <h1 set:html={fq.hero.h1.replace(/(.+?) — (.+)/, "$1—<br />$2")} />
+      <p>{fq.hero.p}</p>
+    </div>
+  </header>
+
+  <div class="faq-layout">
+    <aside class="faq-sidebar">
+      <div class="faq-sidebar-title">{fq.sidebar.title}</div>
+      <ul class="faq-nav-list">
+        {fq.sidebar.links.map((link, i) => (
+          <li class="faq-nav-item"><a href={`#s${i + 1}`}>{link}</a></li>
+        ))}
+      </ul>
+    </aside>
+    <main class="faq-content">
+      {fq.sections.map((section, si) => (
+        <div class="faq-section reveal" id={`s${si + 1}`}>
+          <div class="faq-section-title">{section.title}</div>
+          {section.items.map((item) => (
+            <div class="faq-item reveal">
+              <button class="faq-q">
+                <span>{item.q}</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-a">
+                <p>{item.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </main>
+  </div>
+
+  <section class="comparison-section reveal">
+    <h2>{fq.comparison.h2}</h2>
+    <table class="comp-table">
+      <thead><tr>
+        {fq.comparison.headers.map(h => <th>{h}</th>)}
+      </tr></thead>
+      <tbody>
+        {fq.comparison.rows.map((row, i) => (
+          <tr class={i === fq.comparison.rows.length - 2 ? "highlight" : ""}>
+            {row.map(cell => <td><strong>{cell}</strong></td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="partner-section">
+    <div class="partner-bg"></div>
+    <div class="partner-overlay"></div>
+    <div class="partner-inner reveal">
+      <div class="section-tag" style="color:var(--accent);justify-content:center">
+        {fq.partner.tag}
+      </div>
+      <h2 set:html={fq.partner.h2.replace(/(.+?)\./, "$1.")} />
+      <div class="partner-rule"></div>
+      <p>{fq.partner.p}</p>
+      <div class="partner-links">
+        <a href="#" class="btn-white">{fq.partner.cta}</a>
+        <a href={`${base}/blog/lemma-oracle-specs`} class="btn-ghost">{fq.partner.link}</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} base={base} />
+</Layout>
+
+<style define:vars={{ faqBg: `url(${FaqBg.src})`, ctaBg: `url(${CtaBg.src})` }}>
+  .faq-header {
+    margin-top: 64px;
+    padding: 100px 10% 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+  .faq-header-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--faqBg);
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.3) brightness(0.5);
+    opacity: 0.4;
+  }
+  .faq-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.4) 100%);
+  }
+  .faq-header-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+  }
+  .faq-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 5.5vw, 72px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin-bottom: 20px;
+  }
+  .faq-header h1 em {
+    font-style: italic;
+  }
+  .faq-header p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.78;
+    max-width: 440px;
+  }
+
+  .faq-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 10%;
+  }
+  .faq-sidebar {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    padding-right: 48px;
+  }
+  .faq-sidebar-title {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .faq-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .faq-nav-item a {
+    display: block;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--gray-500);
+    border-left: 2px solid var(--gray-200);
+    letter-spacing: 0.04em;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .faq-nav-item a:hover {
+    color: var(--black);
+    border-left-color: var(--accent);
+  }
+
+  .faq-content {
+    border-left: 1px solid var(--gray-200);
+    padding-left: 64px;
+  }
+  .faq-section {
+    margin-bottom: 64px;
+  }
+  .faq-section-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--gray-200);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .faq-item.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    text-align: left;
+  }
+  .faq-icon {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--gray-500);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+  }
+  .faq-a p {
+    font-size: 14px;
+    line-height: 1.82;
+    color: #4a4a4a;
+  }
+  .faq-item.open .faq-icon {
+    transform: rotate(45deg);
+  }
+  .faq-item.open .faq-a {
+    max-height: 600px;
+    padding-bottom: 24px;
+  }
+
+  .comparison-section {
+    background: var(--gray-50);
+    padding: 80px 10%;
+  }
+  .comparison-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 40px;
+  }
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .comp-table thead tr {
+    background: var(--black);
+  }
+  .comp-table th {
+    padding: 14px 20px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-align: left;
+  }
+  .comp-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .comp-table tr:nth-child(odd) td {
+    background: var(--white);
+  }
+  .comp-table tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+  .comp-table .highlight td {
+    background: var(--accent-bg) !important;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .comp-table .highlight td:first-child {
+    border-left: 2px solid var(--accent);
+  }
+
+  .partner-section {
+    position: relative;
+    padding: 120px 10%;
+    text-align: center;
+    overflow: hidden;
+  }
+  .partner-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--ctaBg);
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.6) brightness(0.6);
+  }
+  .partner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+  }
+  .partner-inner {
+    position: relative;
+    z-index: 2;
+  }
+  .partner-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .partner-inner h2 em {
+    font-style: italic;
+  }
+  .partner-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 28px auto;
+  }
+  .partner-inner p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    max-width: 400px;
+    margin: 0 auto 40px;
+    line-height: 1.78;
+  }
+  .partner-links {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 32px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-white:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 13px 30px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: var(--white);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    .faq-layout {
+      grid-template-columns: 1fr;
+      padding: 60px 6%;
+    }
+    .faq-sidebar { display: none; }
+    .faq-content { border-left: none; padding-left: 0; }
+  }
+  @media (max-width: 768px) {
+    .faq-header, .comparison-section, .partner-section {
+      padding-left: 6%; padding-right: 6%;
+    }
+    .faq-header { padding-top: 80px; padding-bottom: 60px; }
+    .comparison-section, .partner-section { padding-top: 70px; padding-bottom: 70px; }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal, .faq-item").forEach(function (el) {
+    io.observe(el);
+  });
+
+  document.querySelectorAll(".faq-q").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var item = btn.closest(".faq-item");
+      var isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach(function (i) {
+        i.classList.remove("open");
+      });
+      if (!isOpen) item.classList.add("open");
+    });
+  });
+</script>

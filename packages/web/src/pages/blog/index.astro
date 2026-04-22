@@ -1,34 +1,22 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navigation from "../../components/Navigation.astro";
-import BlogList from "../../components/BlogList.astro";
+import BlogIndexTemplate from "../../templates/BlogIndexTemplate.astro";
 import { getBlogSections } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
+const blogPath = "/blog";
 const sections = await getBlogSections(locale);
+const essays = sections.find(s => s.section === "Essays")?.posts?.filter(p => p.category !== "Guides") ?? [];
+const guides = sections.flatMap(s => s.posts).filter(p => p.category === "Guides");
 ---
 
-<Layout locale={locale} title={`${t.blog.title} — Lemma Oracle`} description={t.blog.subtitle}>
-  <div class="relative min-h-screen bg-[#FAFAF8]">
-    <Navigation locale={locale} t={t.nav} base={base} />
-    <main class="relative pt-14 pb-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16">
-        <h1 class="mb-4 font-mono text-xs tracking-wider text-black/30 uppercase">
-          {t.blog.title}
-        </h1>
-        <p class="mb-12 font-mono text-sm text-black/60">{t.blog.subtitle}</p>
-      </div>
-      <BlogList sections={sections} t={t.blog} base={base} />
-    </main>
-    <footer class="border-t border-black/5 py-8">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p class="font-mono text-xs tracking-wide text-black/30">
-          {t.footer.copyright}
-        </p>
-      </div>
-    </footer>
-  </div>
-</Layout>
+<BlogIndexTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  blogPath={blogPath}
+  essays={essays}
+  guides={guides}
+/>

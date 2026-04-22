@@ -1,10 +1,5 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navigation from "../../components/Navigation.astro";
-import Masthead from "../../components/Masthead.astro";
-import { FeatureGrid } from "../../components/FeatureGrid";
-import BlogList from "../../components/BlogList.astro";
-import HomeSchemaOrg from "@/components/HomeSchemaOrg";
+import IndexTemplate from "../../templates/IndexTemplate.astro";
 import { getBlogSections } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
@@ -12,33 +7,28 @@ const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
 const sections = await getBlogSections(locale);
-const noiseDataUrl =
-  "data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E";
+const essays = sections.find((s) => s.section === "エッセイ")?.posts ?? [];
+const featured = essays.slice(0, 3);
+const mini = essays.slice(3, 7);
+
+const featureGuideLinks = [
+  "#",
+  "#",
+  "#",
+  "#",
+  "#",
+  "#",
+];
 ---
 
-<Layout locale={locale} metaType="home" description={t.layout.defaultDescription}>
-  {/* Schema.org structured data for AI */}
-  <HomeSchemaOrg description={t.layout.defaultDescription} base={base} />
-
-  <div class="relative min-h-screen overflow-x-hidden bg-[#FAFAF8]">
-    <div
-      class="pointer-events-none fixed inset-0 opacity-[0.03]"
-      style={`background-image: url("${noiseDataUrl}"); background-repeat: repeat;`}
-      aria-hidden="true"
-    >
-    </div>
-    <Navigation locale={locale} t={t.nav} base={base} />
-    <main class="relative pt-14" id="overview">
-      <Masthead t={t.masthead} locale={locale} />
-      <FeatureGrid client:load t={t.features} locale={locale} />
-      <BlogList sections={sections} t={t.blog} base={base} />
-    </main>
-    <footer class="relative border-t border-black/5 py-8">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p class="font-mono text-xs tracking-wide text-black/30">
-          {t.footer.copyright}
-        </p>
-      </div>
-    </footer>
-  </div>
-</Layout>
+<IndexTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  description={t.layout.defaultDescription}
+  featured={featured}
+  mini={mini}
+  blogSectionTitle={t.index.essays.h2}
+  blogSectionDesc={t.index.essays.p}
+  featureGuideLinks={featureGuideLinks}
+/>

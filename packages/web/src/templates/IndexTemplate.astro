@@ -1,0 +1,703 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import HomeSchemaOrg from "@/components/HomeSchemaOrg";
+import HeroCover from "../assets/cover.jpg";
+import ProofBg from "../assets/rag.jpg";
+
+export interface IndexTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  description: string;
+  featured: Array<{
+    cover?: string;
+    category: string;
+    date: string;
+    title: string;
+    abstract: string;
+    slug: string;
+  }>;
+  mini: Array<{
+    category: string;
+    date: string;
+    title: string;
+    slug: string;
+  }>;
+  blogSectionTitle: string;
+  blogSectionDesc: string;
+  featureGuideLinks: string[];
+}
+
+const { locale, t, base, description, featured, mini, blogSectionTitle, blogSectionDesc, featureGuideLinks } = Astro.props as IndexTemplateProps;
+const ix = t.index;
+---
+
+<Layout locale={locale} metaType="home" description={description}>
+  <HomeSchemaOrg description={description} base={base} />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content" id="heroContent">
+        <div class="hero-eyebrow">{ix.hero.eyebrow}</div>
+        <h1 class="hero-h1">
+          {ix.hero.h1}
+          <strong>{ix.hero.h1Strong}</strong>
+        </h1>
+        <div class="hero-rule"></div>
+        <p class="hero-sub">{ix.hero.sub}</p>
+        <div class="hero-cta">
+          <a href="#" class="btn-primary">{ix.hero.cta}</a>
+          <a
+            href="https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+            target="_blank"
+            class="btn-ghost"
+            id="heroWpBtn">{ix.hero.wp}</a
+          >
+        </div>
+      </div>
+      <div class="hero-scroll">{ix.hero.scroll}</div>
+    </section>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <div class="marquee-item">{ix.marquee}</div>
+        <div class="marquee-item">{ix.marquee}</div>
+      </div>
+    </div>
+
+    <section class="build-section reveal" id="features">
+      <div class="build-header">
+        <div>
+          <div class="section-tag">{ix.features.tag}</div>
+          <h2>{ix.features.h2}</h2>
+        </div>
+        <p>{ix.features.lead}</p>
+      </div>
+      <div class="features-wrap">
+        <div class="features-rock-bg"></div>
+        <div class="features-grid">
+          {ix.features.cards.map((card, i) => (
+            <div class="feature-card">
+              <div class="feature-num">{card.num}</div>
+              <h3>{card.h3}</h3>
+              <p>{card.p}</p>
+              <a href={featureGuideLinks[i] ?? "#"} class="feature-link">{card.link}</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-section reveal">
+      <div class="proof-bg"></div>
+      <div class="proof-overlay"></div>
+      <div class="proof-inner">
+        <div class="section-tag" style="color:var(--accent)">{ix.proof.tag}</div>
+        <h2>
+          {ix.proof.h2}
+          <strong>{ix.proof.h2Strong}</strong>
+        </h2>
+        <div class="proof-rule"></div>
+        <p>{ix.proof.p}</p>
+        <a href="https://lemma.frame00.com/blog/lemma-oracle-specs" class="btn-primary">{ix.proof.cta}</a>
+        <div class="proof-stats">
+          {ix.proof.stats.map((stat) => (
+            <div class="stat">
+              <div class="stat-n">{stat.n} {stat.nUnit ? <span style="font-size:18px">{stat.nUnit}</span> : null}</div>
+              <div class="stat-l">{stat.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="essays-section reveal" id="essays">
+      <div class="essays-header">
+        <div>
+          <div class="section-tag">{ix.essays.tag}</div>
+          <h2>{ix.essays.h2}</h2>
+        </div>
+        <p>{ix.essays.p}</p>
+      </div>
+
+      <div class="essays-featured">
+        {featured.length > 0 ? (
+          <a href={`https://lemma.frame00.com/blog/${featured[0].slug}`} class="essay-card-lg">
+            <div class="essay-thumb-ph" style={`background-image:url('${featured[0].cover ?? ""}')`}></div>
+            <div class="essay-body-lg">
+              <div class="essay-meta">
+                <span class="essay-cat">{featured[0].category}</span>
+                <span class="essay-date-txt">{featured[0].date}</span>
+              </div>
+              <h3>{featured[0].title}</h3>
+              <p>{featured[0].abstract}</p>
+            </div>
+          </a>
+        ) : null}
+        <div class="essay-aside">
+          {featured.slice(1, 3).map((post) => (
+            <a href={`https://lemma.frame00.com/blog/${post.slug}`} class="essay-card-sm">
+              <div class="essay-meta"><span class="essay-cat">{post.category}</span><span class="essay-date-txt">{post.date}</span></div>
+              <h3 style="font-family:var(--font-display);font-size:17px;font-weight:600;line-height:1.3;color:var(--black)">{post.title}</h3>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="essays-list" style="margin-top:2px">
+        {mini.map((post) => (
+          <a href={`/blog/${post.slug}`} class="essay-card-mini">
+            <div class="essay-meta">
+              <span class="essay-cat">{post.category}</span>
+              <span class="essay-date-txt">{post.date}</span>
+            </div>
+            <h3>{post.title}</h3>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="cta-section reveal">
+      <div class="cta-eyebrow">{ix.cta.eyebrow}</div>
+      <h2>{ix.cta.h2}<br /><em>{ix.cta.h2Em}</em></h2>
+      <div class="cta-rule"></div>
+      <p>{ix.cta.p}</p>
+      <a href="#" class="btn-cta">{ix.cta.cta}</a>
+      <a href="https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw" class="btn-cta-outline" id="indexWpBtn" target="_blank" style="display:inline-block;margin-top:14px;background:transparent;color:rgba(255,255,255,.65);padding:15px 44px;font-size:12px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(255,255,255,.28);cursor:pointer;transition:border-color .2s,color .2s;">{ix.cta.wp}</a>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} base={base} />
+</Layout>
+
+<style define:vars={{ heroBg: `url(${HeroCover.src})`, proofBg: `url(${ProofBg.src})` }}>
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 680px;
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--heroBg) center/cover no-repeat;
+    background-position: center 40%;
+    filter: saturate(0.42) brightness(0.8);
+    transform: scale(1.04);
+    transition: transform 10s ease-out;
+  }
+  .hero-bg.ready {
+    transform: scale(1);
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(108deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.55) 52%, rgba(0,0,0,0.15) 100%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.95s ease, transform 0.95s ease;
+  }
+  .hero-content.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .hero-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(54px, 6.8vw, 86px);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+  }
+  .hero-h1 strong {
+    font-weight: 600;
+    display: block;
+  }
+  .hero-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: 28px;
+  }
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.82;
+    max-width: 500px;
+    margin-bottom: 48px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 14px 32px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255,255,255,0.65);
+    padding: 13px 30px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 0;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.6);
+    color: #fff;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 36px;
+    right: 5%;
+    z-index: 2;
+    color: rgba(255,255,255,0.28);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 52px;
+    background: rgba(255,255,255,0.15);
+    animation: lineAnim 2.4s ease-in-out infinite;
+  }
+  @keyframes lineAnim {
+    0%, 100% { opacity: 0.35; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
+
+  .marquee-wrap {
+    background: #000;
+    padding: 16px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: scrollLeft 32s linear infinite;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 0 36px;
+    color: rgba(255, 255, 255, 0.26);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .marquee-item .dot {
+    color: var(--accent);
+    font-size: 7px;
+  }
+  @keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .build-section {
+    background: #fff;
+    padding: 140px 10%;
+  }
+  .build-header {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 80px;
+  }
+  .build-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4vw, 50px);
+    font-weight: 400;
+    line-height: 1.14;
+    color: #000;
+  }
+  .build-header p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-500);
+    max-width: 480px;
+  }
+
+  .features-wrap { position: relative; }
+  .features-rock-bg {
+    position: absolute;
+    inset: 0;
+    background: url("https://images.unsplash.com/photo-1504699439244-a032f59b5cbc?auto=format&fit=crop&w=800&q=80")
+      center/cover no-repeat;
+    filter: saturate(0.25) brightness(0.4);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .features-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .feature-card {
+    background: #fff;
+    padding: 48px 40px;
+    border-top: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.25s;
+  }
+  .feature-card.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .feature-card:nth-child(2) { transition-delay: 0.07s; }
+  .feature-card:nth-child(3) { transition-delay: 0.14s; }
+  .feature-card:nth-child(4) { transition-delay: 0.21s; }
+  .feature-card:nth-child(5) { transition-delay: 0.28s; }
+  .feature-card:nth-child(6) { transition-delay: 0.35s; }
+  .feature-card:hover { border-top-color: var(--accent); }
+  .feature-num {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.28;
+    color: #000;
+    margin-bottom: 14px;
+  }
+  .feature-card p {
+    font-size: 14px;
+    line-height: 1.78;
+    color: #4a4a4a;
+    flex: 1;
+    margin-bottom: 26px;
+  }
+  .feature-link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+  .feature-link:hover { gap: 10px; }
+
+  .proof-section {
+    position: relative;
+    padding: 160px 10%;
+    overflow: hidden;
+  }
+  .proof-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--proofBg) center/cover no-repeat;
+    filter: saturate(0.7) brightness(0.65);
+  }
+  .proof-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+  }
+  .proof-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 580px;
+  }
+  .proof-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 5vw, 60px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .proof-inner h2 strong {
+    font-weight: 600;
+    display: block;
+  }
+  .proof-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 28px 0;
+  }
+  .proof-inner p {
+    font-size: 15px;
+    line-height: 1.78;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 48px;
+  }
+  .proof-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 56px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 18px;
+    min-width: 100px;
+  }
+  .stat-n {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 300;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-l {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .essays-section { background: var(--gray-50); padding: 140px 10%; }
+  .essays-header { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: end; margin-bottom: 64px; }
+  .essays-header h2 { font-family: var(--font-display); font-size: clamp(32px, 3.5vw, 46px); font-weight: 400; line-height: 1.2; color: var(--black); }
+  .essays-header p { font-size: 14px; line-height: 1.8; color: var(--gray-500); max-width: 480px; }
+
+  .essays-featured { display: grid; grid-template-columns: 1.6fr 1fr; gap: 2px; background: var(--gray-200); margin-bottom: 2px; }
+  .essay-card-lg { background: var(--white); overflow: hidden; display: grid; grid-template-rows: 260px 1fr; }
+  .essay-thumb-ph { width: 100%; height: 100%; background-size: cover; background-position: center; filter: saturate(0.4) brightness(0.85); }
+  .essay-body-lg { padding: 32px 36px 36px; border-top: 2px solid var(--accent); }
+  .essay-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .essay-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+  .essay-date-txt { font-size: 10px; color: var(--gray-500); letter-spacing: 0.05em; }
+  .essay-card-lg h3 { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--black); margin-bottom: 12px; }
+  .essay-card-lg p { font-size: 13px; line-height: 1.75; color: var(--gray-500); }
+  .essay-aside { display: flex; flex-direction: column; gap: 2px; background: var(--gray-200); }
+  .essay-card-sm { background: var(--white); padding: 28px 32px; border-top: 2px solid transparent; flex: 1; transition: border-color 0.2s; display: flex; flex-direction: column; gap: 10px; text-decoration: none; }
+  .essay-card-sm:hover { border-top-color: var(--accent); }
+  .essay-card-sm h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.3; color: var(--black); }
+  .essays-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--gray-200); }
+  .essay-card-mini { background: var(--white); padding: 28px 28px 32px; border-top: 2px solid transparent; transition: border-color 0.2s; display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+  .essay-card-mini:hover { border-top-color: var(--accent); }
+  .essay-card-mini h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--black); }
+  a { text-decoration: none; color: inherit; }
+
+  .cta-section {
+    background: #000;
+    padding: 160px 10%;
+    text-align: center;
+  }
+  .cta-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8b4513;
+    margin-bottom: 24px;
+  }
+  .cta-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 5.5vw, 66px);
+    font-weight: 300;
+    line-height: 1.08;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .cta-section h2 em { font-style: italic; }
+  .cta-rule {
+    width: 40px;
+    height: 1px;
+    background: #8b4513;
+    margin: 32px auto;
+  }
+  .cta-section p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.4);
+    max-width: 360px;
+    margin: 0 auto 48px;
+  }
+  .btn-cta {
+    background: #fff;
+    color: #000;
+    padding: 18px 52px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-cta:hover { background: #8b4513; color: #fff; }
+  .btn-cta-outline {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 15px 44px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-cta-outline:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #8b4513;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: #8b4513;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .build-header { grid-template-columns: 1fr; gap: 24px; }
+    .essays-header { grid-template-columns: 1fr; gap: 24px; }
+    .essays-featured { grid-template-columns: 1fr; }
+    .essays-list { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .hero, .build-section, .essays-section, .proof-section, .cta-section {
+      padding-left: 6%; padding-right: 6%;
+    }
+    .build-section, .essays-section { padding-top: 80px; padding-bottom: 80px; }
+    .proof-section, .cta-section { padding-top: 100px; padding-bottom: 100px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .essays-list { grid-template-columns: 1fr; }
+    .proof-stats { gap: 28px; }
+  }
+</style>
+
+<script is:inline>
+  window.addEventListener("load", function () {
+    document.getElementById("heroBg").classList.add("ready");
+    setTimeout(function () {
+      document.getElementById("heroContent").classList.add("visible");
+    }, 150);
+  });
+
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("on");
+        entry.target.querySelectorAll(".feature-card").forEach(function (c, i) {
+          setTimeout(function () {
+            c.classList.add("on");
+          }, i * 75);
+        });
+        io.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+
+  document.querySelectorAll(".reveal, .feature-card").forEach(function (el) {
+    io.observe(el);
+  });
+</script>

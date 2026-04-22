@@ -1,0 +1,16 @@
+---
+import PricingTemplate from "../templates/PricingTemplate.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<PricingTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  title="Pricing — Lemma Oracle"
+  description="Enterprise and developer pricing for Lemma Oracle. Three segments, one trust layer."
+/>
