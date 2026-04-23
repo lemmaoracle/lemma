@@ -7,7 +7,7 @@ const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
 const sections = await getBlogSections(locale);
-const essays = sections.find((s) => s.section === "エッセイ")?.posts ?? [];
+const essays = sections.find((s) => s.section === "Essays")?.posts ?? [];
 const featured = essays.slice(0, 3);
 const mini = essays.slice(3, 7);
 
