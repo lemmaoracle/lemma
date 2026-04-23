@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { create } from "./client.js";
 
+const DEFAULT_API_BASE = "https://workers.lemma.workers.dev";
+
 describe("create", () => {
   it("returns a LemmaClient with apiBase and apiKey", () => {
     const client = create({
@@ -13,6 +15,12 @@ describe("create", () => {
 
   it("allows omitting apiKey", () => {
     const client = create({ apiBase: "http://localhost:8787" });
+    expect(client.apiKey).toBeUndefined();
+  });
+
+  it("uses default apiBase when not provided", () => {
+    const client = create({});
+    expect(client.apiBase).toBe(DEFAULT_API_BASE);
     expect(client.apiKey).toBeUndefined();
   });
 

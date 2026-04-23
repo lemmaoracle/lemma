@@ -8,7 +8,7 @@
 /* ── Client ────────────────────────────────────────────────────────── */
 
 export type LemmaClientConfig = Readonly<{
-  apiBase: string;
+  apiBase?: string;
   apiKey?: string;
   defaultChainId?: number; // Default chain ID for operations (optional)
 }>;
