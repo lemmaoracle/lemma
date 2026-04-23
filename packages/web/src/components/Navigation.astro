@@ -11,9 +11,9 @@ interface Props {
 
 const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
-const faqPath = "/faq";
-const pricingPath = "/pricing";
-const servicesPath = "/services";
+const faqPath = base ? `${base}/faq` : "/faq";
+const pricingPath = base ? `${base}/pricing` : "/pricing";
+const servicesPath = base ? `${base}/services` : "/services";
 const homePath = base || "/";
 
 const currentPath = Astro.url.pathname;
@@ -37,7 +37,7 @@ const isActive = (path: string) => {
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
     <li class="mega-nav-item">
-      <button class="mega-nav-link has-mega" data-key="services">{t.services}</button>
+      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isActive(servicesPath) }]}>{t.services}</a>
       <div class="mega-panel">
         <div class="mega-section mega-two-col">
           <div class="mega-section-label">{t.mega.services.enterprise}</div>
@@ -86,7 +86,7 @@ const isActive = (path: string) => {
     </li>
 
     <li class="mega-nav-item">
-      <button class="mega-nav-link has-mega" data-key="pricing">{t.pricing}</button>
+      <a href={pricingPath} class:list={["mega-nav-link has-mega", { active: isActive(pricingPath) }]}>{t.pricing}</a>
       <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.pricing.enterprise}</div>
@@ -118,7 +118,7 @@ const isActive = (path: string) => {
     </li>
 
     <li class="mega-nav-item">
-      <button class="mega-nav-link has-mega" data-key="developers">{t.developers}</button>
+      <div class="mega-nav-link has-mega">{t.developers}</div>
       <div class="mega-panel right">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.developers.architecture}</div>
@@ -417,13 +417,6 @@ const isActive = (path: string) => {
       if (nav) nav.style.borderBottomColor =
         scrollY > 60 ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.06)';
     }, { passive: true });
-
-    document.querySelectorAll('.mega-nav-link[data-key]').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var map = { services: '/services', pricing: '/pricing' };
-        if (map[btn.dataset.key]) location.href = map[btn.dataset.key];
-      });
-    });
 
     var ham = document.getElementById('navHamburger');
     var mob = document.getElementById('navMobileDrawer');
