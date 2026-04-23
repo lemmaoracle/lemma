@@ -11,9 +11,11 @@ interface Props {
   metaType?: "home" | "article";
   post?: BlogPost;
   blogPath?: string;
+  bodyClass?: string;
+  noindex?: boolean;
 }
 
-const { locale = "en" } = Astro.props;
+const { locale = "en", bodyClass, noindex } = Astro.props;
 const t = getTranslations(locale);
 const title = Astro.props.title ?? t.layout.defaultTitle;
 const description = Astro.props.description ?? t.layout.defaultDescription;
@@ -31,6 +33,7 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href={base ? `${base}/favicon.svg` : "/favicon.svg"} />
     <meta property="og:site_name" content="Lemma Oracle" />
@@ -90,7 +93,7 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
       )
     }
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
   </body>
 </html>

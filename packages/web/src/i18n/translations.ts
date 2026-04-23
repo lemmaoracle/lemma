@@ -421,6 +421,23 @@ export interface Translations {
       readonly cta2: string;
     }>;
   }>;
+  readonly thankYou: Readonly<{
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly titleEm: string;
+    readonly sub: string;
+    readonly dlCard: Readonly<{
+      readonly label: string;
+      readonly title: string;
+      readonly desc: string;
+      readonly button: string;
+    }>;
+    readonly next: Readonly<{
+      readonly label: string;
+      readonly title: string;
+      readonly desc: string;
+    }>;
+  }>;
 }
 
 const translations: Readonly<Record<Locale, Translations>> = {

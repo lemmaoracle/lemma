@@ -1,0 +1,380 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
+
+export interface ThankYouTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as ThankYouTemplateProps;
+const ty = t.thankYou;
+
+const homePath = base || "/";
+const langSwitchHref =
+  locale === "ja" ? "/thank-you/" : "/ja/thank-you/";
+const langSwitchLabel = locale === "ja" ? "English" : "日本語";
+const pdfUrl =
+  locale === "ja"
+    ? "https://drive.google.com/file/d/10cNprvJe75QuSAaXgiIpaggy70gUG4P9/view?usp=sharing"
+    : "https://drive.google.com/file/d/1TxcMr2t3NociJeZmBQs1UsCmHZsPJ5Qf/view?usp=sharing";
+const tallyUrl =
+  locale === "ja"
+    ? "https://tally.so/r/EkBqDX"
+    : "https://tally.so/r/Pd2Rl5";
+---
+
+<Layout locale={locale} title={`Download — Lemma Oracle Whitepaper`} description={ty.sub} bodyClass="page-thank-you" noindex>
+  <nav class="nav">
+    <a href={homePath} class="nav-logo">
+      <LemmaOracle class="h-[65px] w-auto text-white" />
+    </a>
+    <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>
+  </nav>
+
+  <main class="main">
+    <div class="ty-eyebrow">{ty.eyebrow}</div>
+
+    <h1 class="ty-title">
+      <Fragment set:html={ty.title} /><em>{ty.titleEm}</em>
+    </h1>
+
+    <div class="ty-rule"></div>
+
+    <p class="ty-sub">{ty.sub}</p>
+
+    <!-- DOWNLOAD CARD -->
+    <div class="dl-card">
+      <div class="dl-card-label">{ty.dlCard.label}</div>
+      <div class="dl-card-title"><Fragment set:html={ty.dlCard.title} /></div>
+      <div class="dl-card-desc">{ty.dlCard.desc}</div>
+      <a href={pdfUrl} class="btn-download" download>
+        {ty.dlCard.button}
+      </a>
+    </div>
+
+    <!-- NEXT STEP -->
+    <div class="next-block">
+      <div class="next-label">{ty.next.label}</div>
+      <a href={tallyUrl} class="next-card" target="_blank">
+        <div class="next-card-text">
+          <h3>{ty.next.title}</h3>
+          <p>{ty.next.desc}</p>
+        </div>
+        <div class="next-arrow">→</div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="ty-footer">
+    <span class="footer-copy">© 2026 FRAME00, Inc.</span>
+    <a href={homePath} class="footer-site">lemma.frame00.com</a>
+  </footer>
+</Layout>
+
+<style>
+  :global(body.page-thank-you) {
+    background: #0D0905;
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  .nav {
+    padding: 28px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    flex-shrink: 0;
+  }
+
+  .nav-logo :global(svg) {
+    width: auto;
+    display: block;
+  }
+
+  .nav-lang {
+    font-size: 11px;
+    color: rgba(255,255,255,.3);
+    letter-spacing: .08em;
+    text-decoration: none;
+    transition: color .2s;
+  }
+
+  .nav-lang:hover {
+    color: rgba(255,255,255,.6);
+  }
+
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 5% 100px;
+    text-align: center;
+    position: relative;
+    background: #0D0905;
+  }
+
+  .main::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,69,19,.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ty-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeUp .7s ease .1s forwards;
+  }
+
+  .ty-eyebrow::before,
+  .ty-eyebrow::after {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+
+  .ty-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5.5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp .7s ease .2s forwards;
+  }
+
+  .ty-title em {
+    font-style: italic;
+    color: rgba(255,255,255,.7);
+  }
+
+  .ty-rule {
+    width: 36px;
+    height: 1px;
+    background: var(--accent);
+    margin: 24px auto;
+    opacity: 0;
+    animation: fadeUp .7s ease .3s forwards;
+  }
+
+  .ty-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,.42);
+    line-height: 1.8;
+    max-width: 400px;
+    margin: 0 auto 52px;
+    opacity: 0;
+    animation: fadeUp .7s ease .35s forwards;
+  }
+
+  .dl-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-top: 2px solid var(--accent);
+    padding: 40px 48px;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto 56px;
+    text-align: left;
+    opacity: 0;
+    animation: fadeUp .7s ease .45s forwards;
+  }
+
+  .dl-card-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .dl-card-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .dl-card-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,.35);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .btn-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+
+  .btn-download:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .btn-download::after {
+    content: '↓';
+    font-size: 16px;
+    font-weight: 300;
+    transition: transform .25s ease;
+  }
+
+  .btn-download:hover::after {
+    transform: translateY(3px);
+  }
+
+  .next-block {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp .7s ease .55s forwards;
+  }
+
+  .next-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.22);
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  .next-card {
+    background: rgba(255,255,255,.02);
+    border: 1px solid rgba(255,255,255,.06);
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+    text-align: left;
+  }
+
+  .next-card:hover {
+    border-color: rgba(139,69,19,.4);
+    background: rgba(139,69,19,.04);
+  }
+
+  .next-card-text h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .next-card-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,.32);
+    line-height: 1.6;
+  }
+
+  .next-arrow {
+    font-size: 20px;
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: transform .2s;
+  }
+
+  .next-card:hover .next-arrow {
+    transform: translateX(4px);
+  }
+
+  .ty-footer {
+    padding: 24px 5%;
+    border-top: 1px solid rgba(255,255,255,.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: rgba(255,255,255,.15);
+    letter-spacing: .06em;
+  }
+
+  .footer-site {
+    font-size: 11px;
+    color: rgba(255,255,255,.2);
+    letter-spacing: .06em;
+    text-decoration: none;
+    transition: color .2s;
+  }
+
+  .footer-site:hover {
+    color: rgba(255,255,255,.45);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media(max-width: 640px) {
+    .main {
+      padding: 60px 6% 80px;
+    }
+    .dl-card {
+      padding: 28px 24px;
+    }
+    .ty-footer {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

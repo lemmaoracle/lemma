@@ -265,7 +265,7 @@
       "wpContent2": "製造・サプライチェーン・IP管理の応用シナリオ",
       "wpContent3": "PoCの設計・評価指標・最短検証ステップ",
       "wpContent4": "導入判断チェックリストと推奨アクション",
-      "hubspotFormUrl": "https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q"
+      "hubspotFormUrl": "https://tally.so/r/xX0VYv"
     },
     "nav": {
       "whitepaperDownload": "ホワイトペーパーをDL",
@@ -500,6 +500,23 @@
     },
     "nav": {
       "wp": "ホワイトペーパーをダウンロード →"
+    }
+  },
+  "thankYou": {
+    "eyebrow": "ありがとうございます",
+    "title": "ホワイトペーパーの<br>準備ができました",
+    "titleEm": "。",
+    "sub": "以下のボタンからすぐにダウンロードできます。",
+    "dlCard": {
+      "label": "ホワイトペーパー",
+      "title": "Lemma Oracle —<br>検証可能AIインフラの技術と実装",
+      "desc": "ZK証明アーキテクチャ・選択的開示・オンチェーン来歴証明・PoC設計チェックリスト",
+      "button": "PDFをダウンロード"
+    },
+    "next": {
+      "label": "次のステップ",
+      "title": "パートナー候補として登録する",
+      "desc": "1営業日以内にご連絡いたします。"
     }
   }
 }

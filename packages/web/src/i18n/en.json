@@ -265,7 +265,7 @@
       "wpContent2": "Application scenarios for manufacturing, supply chain, and IP management",
       "wpContent3": "PoC design, evaluation metrics, and shortest verification steps",
       "wpContent4": "Adoption decision checklist and recommended actions",
-      "hubspotFormUrl": "https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+      "hubspotFormUrl": "https://tally.so/r/7RJXdR"
     },
     "nav": {
       "whitepaperDownload": "Download Whitepaper",
@@ -500,6 +500,23 @@
     },
     "nav": {
       "wp": "Download Whitepaper →"
+    }
+  },
+  "thankYou": {
+    "eyebrow": "Thank you",
+    "title": "Your whitepaper is<br>ready",
+    "titleEm": ".",
+    "sub": "You can download it immediately using the button below.",
+    "dlCard": {
+      "label": "Whitepaper",
+      "title": "Lemma Oracle —<br>Architecture and Implementation",
+      "desc": "ZK Proof Architecture · Selective Disclosure · On-chain Provenance · PoC Design Checklist",
+      "button": "Download PDF"
+    },
+    "next": {
+      "label": "Next Step",
+      "title": "Register as a Partner",
+      "desc": "We will contact you within 1 business day."
     }
   }
 }
