@@ -38,11 +38,11 @@ const { locale, t, base, blogPath, essays, guides } = Astro.props as BlogIndexTe
   <header class="blog-header">
     <div class="section-tag" style="color:var(--accent)">{t.blog.title}</div>
     <h1>{t.blog.subtitle}</h1>
-    <p>ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.</p>
+    <p>{t.blog.index.headerDesc}</p>
   </header>
 
   <section class="essays-section">
-    <div class="section-tag">Essays</div>
+    <div class="section-tag">{t.blog.index.essaysTag}</div>
     <div class="essays-grid">
       {essays.map((post, i) => (
         <a href={`${blogPath}/${post.slug}`} class="essay-article reveal" style={`transition-delay:${i * 0.07}s`}>
@@ -51,7 +51,7 @@ const { locale, t, base, blogPath, essays, guides } = Astro.props as BlogIndexTe
             <div class="essay-meta"><span class="essay-cat">{post.category}</span><span class="essay-date">{post.date}</span></div>
             <h2>{post.title}</h2>
             <p>{post.abstract}</p>
-            <span class="essay-read">Read essay →</span>
+            <span class="essay-read">{t.blog.index.readEssay}</span>
           </div>
         </a>
       ))}
@@ -59,24 +59,24 @@ const { locale, t, base, blogPath, essays, guides } = Astro.props as BlogIndexTe
   </section>
 
   <section class="guides-section">
-    <div class="section-tag">Guides</div>
-    <div style="font-family:var(--font-display);font-size:clamp(28px,3vw,40px);font-weight:400;color:var(--black);margin-bottom:8px">Technical documentation.</div>
-    <p style="font-size:14px;color:var(--gray-500);max-width:440px;line-height:1.78;margin-bottom:0">Implementation guides for each layer of the Lemma architecture.</p>
+    <div class="section-tag">{t.blog.index.guidesTag}</div>
+    <div style="font-family:var(--font-display);font-size:clamp(28px,3vw,40px);font-weight:400;color:var(--black);margin-bottom:8px">{t.blog.index.guidesTitle}</div>
+    <p style="font-size:14px;color:var(--gray-500);max-width:440px;line-height:1.78;margin-bottom:0">{t.blog.index.guidesDesc}</p>
     <div class="guides-grid">
       {guides.map((post, i) => (
         <a href={`${blogPath}/${post.slug}`} class="guide-card reveal" style={`transition-delay:${i * 0.07}s`}>
           <div class="guide-meta"><span class="guide-cat">{post.category}</span><span class="guide-date">{post.date}</span></div>
           <h3>{post.title}</h3>
           <p>{post.abstract}</p>
-          <span class="guide-link">Read →</span>
+          <span class="guide-link">{t.blog.index.readGuide}</span>
         </a>
       ))}
       <div class="specs-card reveal">
         <div class="specs-text">
-          <h3>Lemma Oracle Specs</h3>
-          <p>A cryptographically verified truth layer enabling AI to reason over confidential data via zero-knowledge proofs, selective disclosure, and on-chain provenance.</p>
+          <h3>{t.blog.index.specsTitle}</h3>
+          <p>{t.blog.index.specsDesc}</p>
         </div>
-        <a href={`${blogPath}/lemma-oracle-specs`} class="btn-white" style="white-space:nowrap">Read Specs →</a>
+        <a href={`${blogPath}/lemma-oracle-specs`} class="btn-white" style="white-space:nowrap">{t.blog.index.readSpecs}</a>
       </div>
     </div>
   </section>

@@ -112,6 +112,18 @@ export interface Translations {
     readonly title: string;
     readonly subtitle: string;
     readonly backToBlog: string;
+    readonly index: Readonly<{
+      readonly headerDesc: string;
+      readonly essaysTag: string;
+      readonly readEssay: string;
+      readonly guidesTag: string;
+      readonly guidesTitle: string;
+      readonly guidesDesc: string;
+      readonly readGuide: string;
+      readonly specsTitle: string;
+      readonly specsDesc: string;
+      readonly readSpecs: string;
+    }>;
     readonly sections: Readonly<Record<string, string>>;
   }>;
   readonly rebuild: Readonly<{

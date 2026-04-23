@@ -103,6 +103,18 @@
     "title": "ブログ",
     "subtitle": "エッセイ、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
+    "index": {
+      "headerDesc": "ZK証明、暗号的来歴証明、選択的開示。技術と意思決定の交点を探る。",
+      "essaysTag": "エッセイ",
+      "readEssay": "エッセイを読む →",
+      "guidesTag": "ガイド",
+      "guidesTitle": "技術ドキュメント。",
+      "guidesDesc": "Lemmaアーキテクチャの各レイヤーに対応する実装ガイド。",
+      "readGuide": "読む →",
+      "specsTitle": "Lemma Oracle 仕様書",
+      "specsDesc": "ZK証明・選択的開示・オンチェーン来歴証明を介してAIが機密データを推論できるようにする、暗号的に検証された真実レイヤー。",
+      "readSpecs": "仕様書を読む →"
+    },
     "sections": {
       "Essays": "エッセイ",
       "Changelog": "変更履歴",

@@ -103,6 +103,18 @@
     "title": "Blog",
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
+    "index": {
+      "headerDesc": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
+      "essaysTag": "Essays",
+      "readEssay": "Read essay →",
+      "guidesTag": "Guides",
+      "guidesTitle": "Technical documentation.",
+      "guidesDesc": "Implementation guides for each layer of the Lemma architecture.",
+      "readGuide": "Read →",
+      "specsTitle": "Lemma Oracle Specs",
+      "specsDesc": "A cryptographically verified truth layer enabling AI to reason over confidential data via zero-knowledge proofs, selective disclosure, and on-chain provenance.",
+      "readSpecs": "Read Specs →"
+    },
     "sections": {
       "Essays": "Essays",
       "Changelog": "Changelog",
