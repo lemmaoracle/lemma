@@ -94,7 +94,10 @@
     "provenanceBody": "Document commitments, schemas, issuers, and ZK verification results are anchored on-chain. Your RAG index can be rebuilt, your embeddings can be re-computed — the provenance layer stays permanent."
   },
   "footer": {
-    "copyright": "© 2026 FRAME00 — Built for decisions that matter"
+    "copyright": "© 2026 FRAME00 — Built for decisions that matter",
+    "aboutUs": "About us",
+    "faq": "FAQ",
+    "blog": "Blog"
   },
   "blog": {
     "title": "Blog",

@@ -104,6 +104,9 @@ export interface Translations {
   }>;
   readonly footer: Readonly<{
     readonly copyright: string;
+    readonly aboutUs: string;
+    readonly faq: string;
+    readonly blog: string;
   }>;
   readonly blog: Readonly<{
     readonly title: string;

@@ -6,10 +6,11 @@ import LemmaOracle from "./LemmaOracle.astro";
 interface Props {
   locale: Locale;
   t: Translations["nav"];
+  footerT: Translations["footer"];
   base: string;
 }
 
-const { locale, t, base } = Astro.props;
+const { locale, t, footerT, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = "/faq";
 const currentPath = Astro.url.pathname;
@@ -21,11 +22,11 @@ const languageSwitchHref =
   <div class="footer-logo">
     <LemmaOracle class="h-[22px] w-auto text-white/28" />
   </div>
-  <div class="footer-tagline">© 2026 FRAME00 — Built for decisions that matter</div>
+  <div class="footer-tagline">{footerT.copyright}</div>
   <ul class="footer-links">
-    <li><a href="https://corp.frame00.com" target="_blank">About us</a></li>
-    <li><a href={faqPath}>FAQ</a></li>
-    <li><a href={blogPath}>Blog</a></li>
+    <li><a href="https://corp.frame00.com" target="_blank">{footerT.aboutUs}</a></li>
+    <li><a href={faqPath}>{footerT.faq}</a></li>
+    <li><a href={blogPath}>{footerT.blog}</a></li>
     <li><a href={languageSwitchHref}>{locale === "ja" ? "English" : "日本語"}</a></li>
   </ul>
 </footer>
