@@ -16,8 +16,70 @@ export interface Translations {
     readonly blog: string;
     readonly faq: string;
     readonly services: string;
+    readonly pricing: string;
+    readonly developers: string;
     readonly languageJa: string;
     readonly languageEn: string;
+    readonly mega: Readonly<{
+      readonly services: Readonly<{
+        readonly enterprise: string;
+        readonly civic: string;
+        readonly civicSub: string;
+        readonly critical: string;
+        readonly criticalSub: string;
+        readonly compliance: string;
+        readonly complianceSub: string;
+        readonly howItWorks: string;
+        readonly howItWorksSub: string;
+        readonly materials: string;
+        readonly whitepaper: string;
+        readonly whitepaperSub: string;
+        readonly developer: string;
+        readonly trust402Demo: string;
+        readonly trust402Sub: string;
+        readonly tryDemo: string;
+        readonly joinWaitlist: string;
+      }>;
+      readonly pricing: Readonly<{
+        readonly enterprise: string;
+        readonly civic: string;
+        readonly civicSub: string;
+        readonly critical: string;
+        readonly criticalSub: string;
+        readonly compliance: string;
+        readonly complianceSub: string;
+        readonly developer: string;
+        readonly trust402: string;
+        readonly trust402Sub: string;
+      }>;
+      readonly developers: Readonly<{
+        readonly architecture: string;
+        readonly specs: string;
+        readonly specsSub: string;
+        readonly guides: string;
+        readonly encrypt: string;
+        readonly encryptSub: string;
+        readonly prove: string;
+        readonly proveSub: string;
+        readonly disclose: string;
+        readonly discloseSub: string;
+        readonly query: string;
+        readonly querySub: string;
+        readonly define: string;
+        readonly defineSub: string;
+        readonly provenance: string;
+        readonly provenanceSub: string;
+        readonly x402: string;
+        readonly demoSoon: string;
+        readonly demoSub: string;
+        readonly joinWaitlist: string;
+        readonly tryDemo: string;
+        readonly readSpecs: string;
+      }>;
+      readonly mobile: Readonly<{
+        readonly talkToUs: string;
+      }>;
+    }>;
   }>;
   readonly masthead: Readonly<{
     readonly title: string;

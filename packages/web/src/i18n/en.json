@@ -8,8 +8,69 @@
     "faq": "FAQ",
     "services": "Services",
     "pricing": "Pricing",
+    "developers": "Developers",
     "languageJa": "日本語",
-    "languageEn": "English"
+    "languageEn": "English",
+    "mega": {
+      "services": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "Public infrastructure · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "Mission-critical systems",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "Finance · KYC/AML · FinTech",
+        "howItWorks": "How it works",
+        "howItWorksSub": "Normalize · Commit · Prove",
+        "materials": "Materials",
+        "whitepaper": "Whitepaper",
+        "whitepaperSub": "Specs, PoC design, checklists",
+        "developer": "x402 Integration · Developer",
+        "trust402Demo": "Try the demo — launching soon",
+        "trust402Sub": "ZK-proven attributes for the agent economy.",
+        "tryDemo": "Try the demo →",
+        "joinWaitlist": "Join waitlist"
+      },
+      "pricing": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "Public infrastructure · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "Mission-critical systems",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "Finance · KYC/AML · FinTech",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro"
+      },
+      "developers": {
+        "architecture": "Architecture",
+        "specs": "Lemma Oracle Specs",
+        "specsSub": "Full technical specification",
+        "guides": "Guides",
+        "encrypt": "Encrypt Everything, Expose Nothing",
+        "encryptSub": "AES-GCM · docHash · CID",
+        "prove": "Prove Facts with Zero Knowledge",
+        "proveSub": "ZK circuits · generators · permanent record",
+        "disclose": "Disclose Only What AI Needs",
+        "discloseSub": "Selective disclosure · issuer signature",
+        "query": "Query Verified Attributes",
+        "querySub": "RAG policy layer · full provenance",
+        "define": "Define Your Domain as a Schema",
+        "defineSub": "ZK circuits · typed schemas",
+        "provenance": "Provenance That Never Disappears",
+        "provenanceSub": "On-chain anchoring · permanent record",
+        "x402": "x402 Integration",
+        "demoSoon": "Demo launching soon",
+        "demoSub": "ZK-proven attributes for the agent economy",
+        "joinWaitlist": "Join waitlist →",
+        "tryDemo": "Try the demo →",
+        "readSpecs": "Read specs"
+      },
+      "mobile": {
+        "talkToUs": "Talk to us"
+      }
+    }
   },
   "masthead": {
     "title": "Give AI proven facts.",

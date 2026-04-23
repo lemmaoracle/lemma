@@ -40,33 +40,46 @@ const isActive = (path: string) => {
       <button class="mega-nav-link has-mega" data-key="services">{t.services}</button>
       <div class="mega-panel">
         <div class="mega-section mega-two-col">
-          <div class="mega-section-label">Enterprise</div>
+          <div class="mega-section-label">{t.mega.services.enterprise}</div>
           <div class="mega-links">
             <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">Lemma Civic</span>
-              <span class="mega-link-sub">Public infrastructure · B2B2G</span>
+              <span class="mega-link-title">{t.mega.services.civic}</span>
+              <span class="mega-link-sub">{t.mega.services.civicSub}</span>
             </a>
             <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">Lemma Critical</span>
-              <span class="mega-link-sub">Mission-critical systems</span>
+              <span class="mega-link-title">{t.mega.services.critical}</span>
+              <span class="mega-link-sub">{t.mega.services.criticalSub}</span>
             </a>
             <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">Lemma Compliance</span>
-              <span class="mega-link-sub">Finance · KYC/AML · FinTech</span>
+              <span class="mega-link-title">{t.mega.services.compliance}</span>
+              <span class="mega-link-sub">{t.mega.services.complianceSub}</span>
             </a>
             <a href={`${servicesPath}#solution`} class="mega-link">
-              <span class="mega-link-title">How it works</span>
-              <span class="mega-link-sub">Normalize · Commit · Prove</span>
+              <span class="mega-link-title">{t.mega.services.howItWorks}</span>
+              <span class="mega-link-sub">{t.mega.services.howItWorksSub}</span>
             </a>
           </div>
         </div>
+        
+        {locale === 'ja' && (
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.services.materials}</div>
+          <div class="mega-links">
+            <a href="https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q" class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.services.whitepaper}</span>
+              <span class="mega-link-sub">{t.mega.services.whitepaperSub}</span>
+            </a>
+          </div>
+        </div>
+        )}
+
         <div class="mega-x402">
-          <div class="mega-x402-label">x402 Integration · Developer</div>
-          <div class="mega-x402-title">Try the demo — launching soon</div>
-          <div class="mega-x402-sub">ZK-proven attributes for the agent economy.</div>
+          <div class="mega-x402-label">{t.mega.services.developer}</div>
+          <div class="mega-x402-title">{t.mega.services.trust402Demo}</div>
+          {t.mega.services.trust402Sub && <div class="mega-x402-sub">{t.mega.services.trust402Sub}</div>}
           <div class="mega-x402-links">
-            <a href="#" class="mega-x402-link">Try the demo →</a>
-            <a href="#" class="mega-x402-link">Join waitlist</a>
+            <a href="#" class="mega-x402-link">{t.mega.services.tryDemo}</a>
+            {locale === 'en' && <a href="#" class="mega-x402-link">{t.mega.services.joinWaitlist}</a>}
           </div>
         </div>
       </div>
@@ -76,28 +89,28 @@ const isActive = (path: string) => {
       <button class="mega-nav-link has-mega" data-key="pricing">{t.pricing}</button>
       <div class="mega-panel">
         <div class="mega-section">
-          <div class="mega-section-label">Enterprise</div>
+          <div class="mega-section-label">{t.mega.pricing.enterprise}</div>
           <div class="mega-links">
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">Lemma Civic</span>
-              <span class="mega-link-sub">Public infrastructure · B2B2G</span>
+              <span class="mega-link-title">{t.mega.pricing.civic}</span>
+              <span class="mega-link-sub">{t.mega.pricing.civicSub}</span>
             </a>
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">Lemma Critical</span>
-              <span class="mega-link-sub">Mission-critical systems</span>
+              <span class="mega-link-title">{t.mega.pricing.critical}</span>
+              <span class="mega-link-sub">{t.mega.pricing.criticalSub}</span>
             </a>
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">Lemma Compliance</span>
-              <span class="mega-link-sub">Finance · KYC/AML · FinTech</span>
+              <span class="mega-link-title">{t.mega.pricing.compliance}</span>
+              <span class="mega-link-sub">{t.mega.pricing.complianceSub}</span>
             </a>
           </div>
         </div>
         <div class="mega-section">
-          <div class="mega-section-label">Developer</div>
+          <div class="mega-section-label">{t.mega.pricing.developer}</div>
           <div class="mega-links">
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">Trust402</span>
-              <span class="mega-link-sub">Explorer · Builder · Studio · Pro</span>
+              <span class="mega-link-title">{t.mega.pricing.trust402}</span>
+              <span class="mega-link-sub">{t.mega.pricing.trust402Sub}</span>
             </a>
           </div>
         </div>
@@ -105,53 +118,57 @@ const isActive = (path: string) => {
     </li>
 
     <li class="mega-nav-item">
-      <button class="mega-nav-link has-mega" data-key="developers">Developers</button>
+      <button class="mega-nav-link has-mega" data-key="developers">{t.developers}</button>
       <div class="mega-panel right">
         <div class="mega-section">
-          <div class="mega-section-label">Architecture</div>
+          <div class="mega-section-label">{t.mega.developers.architecture}</div>
           <div class="mega-links">
             <a href={`${blogPath}/lemma-oracle-specs`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Lemma Oracle Specs</span>
-              <span class="mega-link-sub">Full technical specification</span>
+              <span class="mega-link-title">{t.mega.developers.specs}</span>
+              <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
             </a>
           </div>
         </div>
         <div class="mega-section">
-          <div class="mega-section-label">Guides</div>
+          <div class="mega-section-label">{t.mega.developers.guides}</div>
           <div class="mega-links">
             <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Encrypt Everything, Expose Nothing</span>
-              <span class="mega-link-sub">AES-GCM · docHash · CID</span>
+              <span class="mega-link-title">{t.mega.developers.encrypt}</span>
+              <span class="mega-link-sub">{t.mega.developers.encryptSub}</span>
             </a>
             <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Prove Facts with Zero Knowledge</span>
-              <span class="mega-link-sub">ZK circuits · generators · permanent record</span>
+              <span class="mega-link-title">{t.mega.developers.prove}</span>
+              <span class="mega-link-sub">{t.mega.developers.proveSub}</span>
             </a>
             <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Disclose Only What AI Needs</span>
-              <span class="mega-link-sub">Selective disclosure · issuer signature</span>
+              <span class="mega-link-title">{t.mega.developers.disclose}</span>
+              <span class="mega-link-sub">{t.mega.developers.discloseSub}</span>
             </a>
-            <a href={`${blogPath}/query-verified-attributes`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Query Verified Attributes</span>
-              <span class="mega-link-sub">RAG policy layer · full provenance</span>
-            </a>
-            <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Define Your Domain as a Schema</span>
-              <span class="mega-link-sub">ZK circuits · typed schemas</span>
-            </a>
+            {locale === 'en' && (
+            <>
+              <a href={`${blogPath}/query-verified-attributes`} class="mega-link" target="_blank">
+                <span class="mega-link-title">{t.mega.developers.query}</span>
+                <span class="mega-link-sub">{t.mega.developers.querySub}</span>
+              </a>
+              <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mega-link" target="_blank">
+                <span class="mega-link-title">{t.mega.developers.define}</span>
+                <span class="mega-link-sub">{t.mega.developers.defineSub}</span>
+              </a>
+            </>
+            )}
             <a href={`${blogPath}/provenance-that-never-disappears`} class="mega-link" target="_blank">
-              <span class="mega-link-title">Provenance That Never Disappears</span>
-              <span class="mega-link-sub">On-chain anchoring · permanent record</span>
+              <span class="mega-link-title">{t.mega.developers.provenance}</span>
+              <span class="mega-link-sub">{t.mega.developers.provenanceSub}</span>
             </a>
           </div>
         </div>
         <div class="mega-x402">
-          <div class="mega-x402-label">x402 Integration</div>
-          <div class="mega-x402-title">Demo launching soon</div>
-          <div class="mega-x402-sub">ZK-proven attributes for the agent economy</div>
+          <div class="mega-x402-label">{t.mega.developers.x402}</div>
+          <div class="mega-x402-title">{t.mega.developers.demoSoon}</div>
+          {t.mega.developers.demoSub && <div class="mega-x402-sub">{t.mega.developers.demoSub}</div>}
           <div class="mega-x402-links">
-            <a href="#" class="mega-x402-link">Join waitlist →</a>
-            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-x402-link" target="_blank">Read specs</a>
+            <a href="#" class="mega-x402-link">{locale === 'en' ? t.mega.developers.joinWaitlist : t.mega.developers.tryDemo}</a>
+            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-x402-link" target="_blank">{t.mega.developers.readSpecs}</a>
           </div>
         </div>
       </div>
@@ -182,36 +199,41 @@ const isActive = (path: string) => {
         {t.services} <span class="mob-arrow"></span>
       </div>
       <div class="mob-section-body">
-        <a href={servicesPath} class="mob-link">Lemma Civic<small>Public infrastructure · B2B2G</small></a>
-        <a href={servicesPath} class="mob-link">Lemma Critical<small>Mission-critical systems</small></a>
-        <a href={servicesPath} class="mob-link">Lemma Compliance<small>Finance · KYC/AML · FinTech</small></a>
-        <a href={`${servicesPath}#solution`} class="mob-link">How it works<small>Normalize · Commit · Prove</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.services.civic}<small>{t.mega.services.civicSub}</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.services.critical}<small>{t.mega.services.criticalSub}</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.services.compliance}<small>{t.mega.services.complianceSub}</small></a>
+        <a href={`${servicesPath}#solution`} class="mob-link">{t.mega.services.howItWorks}<small>{t.mega.services.howItWorksSub}</small></a>
       </div>
     </div>
 
     <div class="mob-section">
       <div class="mob-section-header">
-        Pricing <span class="mob-arrow"></span>
+        {t.pricing} <span class="mob-arrow"></span>
       </div>
       <div class="mob-section-body">
-        <a href={pricingPath} class="mob-link">Lemma Civic</a>
-        <a href={pricingPath} class="mob-link">Lemma Critical</a>
-        <a href={pricingPath} class="mob-link">Lemma Compliance</a>
-        <a href={pricingPath} class="mob-link">Trust402<small>Explorer · Builder · Studio · Pro</small></a>
+        <a href={pricingPath} class="mob-link">{t.mega.pricing.civic}</a>
+        <a href={pricingPath} class="mob-link">{t.mega.pricing.critical}</a>
+        <a href={pricingPath} class="mob-link">{t.mega.pricing.compliance}</a>
+        <a href={pricingPath} class="mob-link">{t.mega.pricing.trust402}<small>{t.mega.pricing.trust402Sub}</small></a>
       </div>
     </div>
 
     <div class="mob-section">
       <div class="mob-section-header">
-        Developers <span class="mob-arrow"></span>
+        {t.developers} <span class="mob-arrow"></span>
       </div>
       <div class="mob-section-body">
-        <a href={`${blogPath}/lemma-oracle-specs`} class="mob-link" target="_blank">Lemma Oracle Specs</a>
-        <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mob-link" target="_blank">Encrypt Everything, Expose Nothing</a>
-        <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mob-link" target="_blank">Prove Facts with Zero Knowledge</a>
-        <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mob-link" target="_blank">Disclose Only What AI Needs</a>
-        <a href={`${blogPath}/query-verified-attributes`} class="mob-link" target="_blank">Query Verified Attributes</a>
-        <a href={`${blogPath}/provenance-that-never-disappears`} class="mob-link" target="_blank">Provenance That Never Disappears</a>
+        <a href={`${blogPath}/lemma-oracle-specs`} class="mob-link" target="_blank">{t.mega.developers.specs}</a>
+        <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mob-link" target="_blank">{t.mega.developers.encrypt}</a>
+        <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mob-link" target="_blank">{t.mega.developers.prove}</a>
+        <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mob-link" target="_blank">{t.mega.developers.disclose}</a>
+        {locale === 'en' && (
+        <>
+          <a href={`${blogPath}/query-verified-attributes`} class="mob-link" target="_blank">{t.mega.developers.query}</a>
+          <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mob-link" target="_blank">{t.mega.developers.define}</a>
+        </>
+        )}
+        <a href={`${blogPath}/provenance-that-never-disappears`} class="mob-link" target="_blank">{t.mega.developers.provenance}</a>
       </div>
     </div>
 
@@ -219,7 +241,7 @@ const isActive = (path: string) => {
     <a href={faqPath} class="mob-direct">{t.faq}</a>
 
     <div class="mob-cta">
-      <a href="#" class="mob-cta-btn">Talk to us</a>
+      <a href={locale === 'ja' ? 'https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q' : '#'} class="mob-cta-btn" target={locale === 'ja' ? '_blank' : '_self'}>{t.mega.mobile.talkToUs}</a>
     </div>
 
     <div class="mob-lang">

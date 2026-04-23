@@ -8,8 +8,69 @@
     "faq": "FAQ",
     "services": "サービス",
     "pricing": "料金",
+    "developers": "開発者",
     "languageJa": "日本語",
-    "languageEn": "English"
+    "languageEn": "English",
+    "mega": {
+      "services": {
+        "enterprise": "エンタープライズ",
+        "civic": "Lemma Civic",
+        "civicSub": "公共インフラ・B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "基幹インフラシステム",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "金融・KYC/AML",
+        "howItWorks": "仕組み",
+        "howItWorksSub": "Normalize · Commit · Prove",
+        "materials": "資料",
+        "whitepaper": "ホワイトペーパー",
+        "whitepaperSub": "技術仕様・PoC設計・チェックリスト",
+        "developer": "Developer",
+        "trust402Demo": "Trust402 デモ — 近日公開",
+        "trust402Sub": "",
+        "tryDemo": "デモを試す →",
+        "joinWaitlist": "ウェイトリストに登録"
+      },
+      "pricing": {
+        "enterprise": "エンタープライズ",
+        "civic": "Lemma Civic",
+        "civicSub": "公共インフラ",
+        "critical": "Lemma Critical",
+        "criticalSub": "基幹インフラ",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "金融・規制対応",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro"
+      },
+      "developers": {
+        "architecture": "アーキテクチャ",
+        "specs": "Lemma Oracle 仕様書",
+        "specsSub": "技術仕様・フルドキュメント",
+        "guides": "ガイド",
+        "encrypt": "すべてを暗号化し、何も露呈しない",
+        "encryptSub": "AES-GCM · docHash · CID",
+        "prove": "ゼロ知識で事実を証明する",
+        "proveSub": "ZKサーキット · 永続記録",
+        "disclose": "AIが必要な分だけ開示する",
+        "discloseSub": "選択的開示 · 発行者署名",
+        "query": "検証済み属性を検索する",
+        "querySub": "RAGポリシーレイヤー · 完全な来歴証明",
+        "define": "ドメインをスキーマとして定義する",
+        "defineSub": "ZKサーキット · 型付きスキーマ",
+        "provenance": "決して消えない来歴証明",
+        "provenanceSub": "オンチェーン永続記録",
+        "x402": "x402 統合 · Developer",
+        "demoSoon": "Trust402 デモ — 近日公開",
+        "demoSub": "",
+        "joinWaitlist": "ウェイトリストに登録 →",
+        "tryDemo": "デモを試す →",
+        "readSpecs": "仕様書を読む"
+      },
+      "mobile": {
+        "talkToUs": "お問い合わせ"
+      }
+    }
   },
   "masthead": {
     "title": "AI に証明された事実を。",
