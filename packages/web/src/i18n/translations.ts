@@ -108,6 +108,14 @@ export interface Translations {
     readonly faq: string;
     readonly blog: string;
   }>;
+  readonly ctaSection: Readonly<{
+    readonly finalTag: string;
+    readonly finalH2: string;
+    readonly finalH2Em: string;
+    readonly finalP: string;
+    readonly finalCtaText: string;
+    readonly finalWpText: string;
+  }>;
   readonly blog: Readonly<{
     readonly title: string;
     readonly subtitle: string;

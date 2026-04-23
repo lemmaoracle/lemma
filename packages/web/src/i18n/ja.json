@@ -99,6 +99,14 @@
     "faq": "FAQ",
     "blog": "ブログ"
   },
+  "ctaSection": {
+    "finalTag": "パートナープログラム",
+    "finalH2": "AIは変わっても、",
+    "finalH2Em": "証明は残る。",
+    "finalP": "1分で登録できます。",
+    "finalCtaText": "はじめる",
+    "finalWpText": "ホワイトペーパーをダウンロード"
+  },
   "blog": {
     "title": "ブログ",
     "subtitle": "エッセイ、変更履歴、フィールドノート。",

@@ -99,6 +99,14 @@
     "faq": "FAQ",
     "blog": "Blog"
   },
+  "ctaSection": {
+    "finalTag": "Partner Program",
+    "finalH2": "Models change.",
+    "finalH2Em": "Proofs remain.",
+    "finalP": "Register in under a minute.",
+    "finalCtaText": "Get Started",
+    "finalWpText": "Download Whitepaper"
+  },
   "blog": {
     "title": "Blog",
     "subtitle": "Essays, changelog, and field notes.",
