@@ -22,7 +22,7 @@ const s = t.services;
   <HubSpotDrawer />
 
   <section class="page-hero">
-    <div class="page-hero-bg"></div>
+    <div class="page-hero-bg" style={`background-image: url(${HeroCover.src})`}></div>
     <div class="page-hero-overlay"></div>
     <div class="page-hero-content reveal">
       <div class="section-tag">{s.nav.whitepaperDownload}</div>
@@ -95,7 +95,7 @@ const s = t.services;
   </section>
 
   <section class="solution-section" id="solution">
-    <div class="solution-bg"></div>
+    <div class="solution-bg" style={`background-image: url(${SolutionBg.src})`}></div>
     <div class="solution-overlay"></div>
     <div class="solution-inner">
       <div class="section-tag" style="color:var(--accent)">{s.solution.label}</div>
@@ -218,7 +218,7 @@ const s = t.services;
   <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
 
-<style define:vars={{ heroBg: `url(${HeroCover.src})`, solutionBg: `url(${SolutionBg.src})` }}>
+<style>
   .page-hero {
     position: relative;
     height: 72vh;
@@ -232,7 +232,7 @@ const s = t.services;
   .page-hero-bg {
     position: absolute;
     inset: 0;
-    background: var(--heroBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     filter: saturate(0.6) brightness(0.7);
   }
   .page-hero-overlay {
@@ -396,7 +396,7 @@ const s = t.services;
   .solution-bg {
     position: absolute;
     inset: 0;
-    background: var(--solutionBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     filter: saturate(0.35) brightness(0.6);
   }
   .solution-overlay {

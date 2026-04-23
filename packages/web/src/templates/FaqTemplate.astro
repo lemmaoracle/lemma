@@ -25,7 +25,7 @@ const fq = t.faq;
   <HubSpotDrawer />
 
   <header class="faq-header">
-    <div class="faq-header-bg"></div>
+    <div class="faq-header-bg" style={`background-image: url(${FaqBg.src})`}></div>
     <div class="faq-header-overlay"></div>
     <div class="faq-header-content">
       <div class="section-tag" style="color:var(--accent)">{fq.hero.tag}</div>
@@ -80,7 +80,7 @@ const fq = t.faq;
   </section>
 
   <section class="partner-section">
-    <div class="partner-bg"></div>
+    <div class="partner-bg" style={`background-image: url(${CtaBg.src})`}></div>
     <div class="partner-overlay"></div>
     <div class="partner-inner reveal">
       <div class="section-tag" style="color:var(--accent);justify-content:center">
@@ -99,7 +99,7 @@ const fq = t.faq;
   <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
 
-<style define:vars={{ faqBg: `url(${FaqBg.src})`, ctaBg: `url(${CtaBg.src})` }}>
+<style>
   .faq-header {
     margin-top: 64px;
     padding: 100px 10% 80px;
@@ -110,7 +110,6 @@ const fq = t.faq;
   .faq-header-bg {
     position: absolute;
     inset: 0;
-    background-image: var(--faqBg);
     background-size: cover;
     background-position: center;
     filter: saturate(0.3) brightness(0.5);
@@ -309,7 +308,6 @@ const fq = t.faq;
   .partner-bg {
     position: absolute;
     inset: 0;
-    background-image: var(--ctaBg);
     background-size: cover;
     background-position: center;
     filter: saturate(0.6) brightness(0.6);

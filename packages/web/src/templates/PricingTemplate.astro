@@ -25,7 +25,7 @@ const px = t.pricing;
   <HubSpotDrawer />
 
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg" style={`background-image: url(${PricingBg.src})`}></div>
     <div class="hero-overlay"></div>
     <div class="hero-inner reveal">
       <div class="eyebrow">{px.hero.eyebrow}</div>
@@ -82,7 +82,7 @@ const px = t.pricing;
   </section>
 
   <section class="dev-section">
-    <div class="dev-bg"></div>
+    <div class="dev-bg" style={`background-image: url(${Trust402Bg.src})`}></div>
     <div class="dev-overlay"></div>
     <div class="dev-inner">
       <div class="dev-header reveal">
@@ -141,7 +141,7 @@ const px = t.pricing;
   </section>
 
   <section class="cta-section">
-    <div class="cta-bg"></div>
+    <div class="cta-bg" style={`background-image: url(${Cover.src})`}></div>
     <div class="cta-overlay"></div>
     <div class="cta-inner reveal">
       <div class="eyebrow" style="justify-content:center">{px.cta.eyebrow}</div>
@@ -158,13 +158,13 @@ const px = t.pricing;
   <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
 
-<style define:vars={{ pricingBg: `url(${PricingBg.src})`, trust402Bg: `url(${Trust402Bg.src})`, cover: `url(${Cover.src})` }}>
+<style>
   .hero {
     position: relative; margin-top: 64px; height: 56vh; min-height: 420px;
     display: flex; align-items: flex-end; padding: 0 10% 72px; overflow: hidden;
   }
   .hero-bg {
-    position: absolute; inset: 0; background: var(--pricingBg) center/cover no-repeat;
+    position: absolute; inset: 0; background: center/cover no-repeat;
     filter: saturate(0.3) brightness(0.45);
   }
   .hero-overlay {
@@ -233,7 +233,7 @@ const px = t.pricing;
   .dev-section {
     position: relative; padding: 120px 10%; overflow: hidden;
   }
-  .dev-bg { position: absolute; inset: 0; background: var(--trust402Bg) center/cover no-repeat; filter: saturate(0.55) brightness(0.6); }
+  .dev-bg { position: absolute; inset: 0; background: center/cover no-repeat; filter: saturate(0.55) brightness(0.6); }
   .dev-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.78); }
   .dev-inner { position: relative; z-index: 2; }
   .dev-header { display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; align-items: end; margin-bottom: 72px; }
@@ -290,7 +290,7 @@ const px = t.pricing;
   .cta-section {
     position: relative; padding: 140px 10%; text-align: center; overflow: hidden;
   }
-  .cta-bg { position: absolute; inset: 0; background: var(--cover) center/cover no-repeat; filter: saturate(0.35) brightness(0.55); }
+  .cta-bg { position: absolute; inset: 0; background: center/cover no-repeat; filter: saturate(0.35) brightness(0.55); }
   .cta-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.76); }
   .cta-inner { position: relative; z-index: 2; }
   .cta-inner h2 { font-family: var(--font-display); font-size: clamp(36px,4.5vw,58px); font-weight: 300; color: #fff; line-height: 1.1; margin-bottom: 8px; }

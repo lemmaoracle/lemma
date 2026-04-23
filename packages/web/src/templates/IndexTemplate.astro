@@ -43,7 +43,7 @@ const ix = t.index;
 
   <main>
     <section class="hero">
-      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-bg" id="heroBg" style={`background-image: url(${HeroCover.src})`}></div>
       <div class="hero-overlay"></div>
       <div class="hero-content" id="heroContent">
         <div class="hero-eyebrow">{ix.hero.eyebrow}</div>
@@ -97,7 +97,7 @@ const ix = t.index;
     </section>
 
     <section class="proof-section reveal">
-      <div class="proof-bg"></div>
+      <div class="proof-bg" style={`background-image: url(${ProofBg.src})`}></div>
       <div class="proof-overlay"></div>
       <div class="proof-inner">
         <div class="section-tag" style="color:var(--accent)">{ix.proof.tag}</div>
@@ -178,7 +178,7 @@ const ix = t.index;
   <Footer locale={locale} t={t.nav} base={base} />
 </Layout>
 
-<style define:vars={{ heroBg: `url(${HeroCover.src})`, proofBg: `url(${ProofBg.src})` }}>
+<style>
   .hero {
     position: relative;
     height: 100vh;
@@ -191,7 +191,7 @@ const ix = t.index;
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: var(--heroBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     background-position: center 40%;
     filter: saturate(0.42) brightness(0.8);
     transform: scale(1.04);
@@ -471,7 +471,7 @@ const ix = t.index;
   .proof-bg {
     position: absolute;
     inset: 0;
-    background: var(--proofBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     filter: saturate(0.7) brightness(0.65);
   }
   .proof-overlay {
