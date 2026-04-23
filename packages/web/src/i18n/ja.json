@@ -133,8 +133,9 @@
     "beforeAfter": {
       "label": "導入効果",
       "title": "導入前後で、何が変わるか",
-      "beforeLabel": "Before — 導入前",
-      "afterLabel": "After — Lemma導入後",
+      "lead": "6つのクリティカルな業務プロセス——手作業から暗号学的検証へ。",
+      "beforeLabel": "Before — 手動",
+      "afterLabel": "After — Lemma",
       "before1Label": "データ確認",
       "before1Text": "担当者が目視・手動照合",
       "before2Label": "承認プロセス",

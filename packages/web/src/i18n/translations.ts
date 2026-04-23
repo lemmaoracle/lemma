@@ -61,8 +61,36 @@ export interface Translations {
     readonly backHome: string;
   }>;
   readonly faq: Readonly<{
-    readonly title: string;
-    readonly subtitle: string;
+    readonly title?: string;
+    readonly subtitle?: string;
+    readonly hero: Readonly<{
+      readonly tag: string;
+      readonly h1: string;
+      readonly p: string;
+    }>;
+    readonly sections: ReadonlyArray<{
+      readonly title: string;
+      readonly items: ReadonlyArray<{
+        readonly q: string;
+        readonly a: string;
+      }>;
+    }>;
+    readonly sidebar: Readonly<{
+      readonly title: string;
+      readonly links: ReadonlyArray<string>;
+    }>;
+    readonly comparison: Readonly<{
+      readonly h2: string;
+      readonly headers: ReadonlyArray<string>;
+      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
+    }>;
+    readonly partner: Readonly<{
+      readonly tag: string;
+      readonly h2: string;
+      readonly p: string;
+      readonly cta: string;
+      readonly link: string;
+    }>;
   }>;
   readonly layout: Readonly<{
     readonly defaultTitle: string;
@@ -137,6 +165,7 @@ export interface Translations {
     readonly beforeAfter: Readonly<{
       readonly label: string;
       readonly title: string;
+      readonly lead: string;
       readonly beforeLabel: string;
       readonly afterLabel: string;
       readonly before1Label: string;
@@ -246,36 +275,6 @@ export interface Translations {
       readonly wp: string;
     }>;
   }>;
-  readonly faq: Readonly<{
-    readonly hero: Readonly<{
-      readonly tag: string;
-      readonly h1: string;
-      readonly p: string;
-    }>;
-    readonly sections: ReadonlyArray<{
-      readonly title: string;
-      readonly items: ReadonlyArray<{
-        readonly q: string;
-        readonly a: string;
-      }>;
-    }>;
-    readonly sidebar: Readonly<{
-      readonly title: string;
-      readonly links: ReadonlyArray<string>;
-    }>;
-    readonly comparison: Readonly<{
-      readonly h2: string;
-      readonly headers: ReadonlyArray<string>;
-      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
-    }>;
-    readonly partner: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly cta: string;
-      readonly link: string;
-    }>;
-  }>;
   readonly pricing: Readonly<{
     readonly hero: Readonly<{
       readonly eyebrow: string;
@@ -297,7 +296,7 @@ export interface Translations {
         readonly sub: string;
         readonly bestFor: string;
         readonly features: ReadonlyArray<string>;
-        readonly tiers: ReadonlyArray<readonly [string, string]>;
+        readonly tiers: ReadonlyArray<ReadonlyArray<string>>;
         readonly priceNote: string;
         readonly cta: string;
       }>;

@@ -1,5 +1,6 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
@@ -11,17 +12,7 @@ export interface BlogArticleTemplateProps {
   t: Translations;
   base: string;
   blogPath: string;
-  post: {
-    cover?: string;
-    category: string;
-    date: string;
-    title: string;
-    abstract: string;
-    slug: string;
-    body: string;
-    coverColor?: string;
-    categoryColor?: string;
-  };
+  post: BlogPost;
   navigation: {
     prev?: { slug: string; title: string; date: string; category: string };
     next?: { slug: string; title: string; date: string; category: string };

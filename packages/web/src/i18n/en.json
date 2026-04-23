@@ -133,8 +133,9 @@
     "beforeAfter": {
       "label": "Implementation Results",
       "title": "What changes before and after implementation",
-      "beforeLabel": "Before — Before Implementation",
-      "afterLabel": "After — After Lemma Implementation",
+      "lead": "Six critical operations — transformed from manual to cryptographically verified.",
+      "beforeLabel": "Before — Manual",
+      "afterLabel": "After — Lemma",
       "before1Label": "Data Verification",
       "before1Text": "Manual visual inspection and manual matching",
       "before2Label": "Approval Process",
