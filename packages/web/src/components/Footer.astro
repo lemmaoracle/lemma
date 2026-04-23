@@ -12,7 +12,7 @@ interface Props {
 
 const { locale, t, footerT, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
-const faqPath = "/faq";
+const faqPath = base ? `${base}/faq` : "/faq";
 const currentPath = Astro.url.pathname;
 const languageSwitchHref =
   locale === "ja" ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
