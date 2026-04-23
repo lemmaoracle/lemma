@@ -1,8 +1,10 @@
 import type { BlogPost } from "../data/blog";
-import DefaultOgImage from "../assets/ogp-default.png";
+import OgImageEn from "../assets/ogp_en.png";
+import OgImageJa from "../assets/ogp_ja.png";
 
 interface BaseMetaTagsProps {
   base: string;
+  locale?: string;
 }
 
 interface HomeMetaTagsProps extends BaseMetaTagsProps {
@@ -19,10 +21,15 @@ interface ArticleMetaTagsProps extends BaseMetaTagsProps {
 
 type MetaTagsProps = HomeMetaTagsProps | ArticleMetaTagsProps;
 
+function getDefaultOgImage(locale?: string): string {
+  const image = locale === "ja" ? OgImageJa : OgImageEn;
+  return `https://lemma.frame00.com${image.src}`;
+}
+
 export default function MetaTags(props: MetaTagsProps) {
   if (props.type === "home") {
-    const { title = "Lemma Oracle", description, base } = props;
-    const ogImage = `https://lemma.frame00.com${DefaultOgImage.src}`;
+    const { title = "Lemma Oracle", description, base, locale } = props;
+    const ogImage = getDefaultOgImage(locale);
     const url = `https://lemma.frame00.com${base}`;
 
     return (
@@ -38,8 +45,8 @@ export default function MetaTags(props: MetaTagsProps) {
       </>
     );
   } else {
-    const { post, base, blogPath } = props;
-    const ogImage = post.cover || "https://lemma.frame00.com/ogp-default.png";
+    const { post, base, blogPath, locale } = props;
+    const ogImage = post.cover || getDefaultOgImage(locale);
     const url = `https://lemma.frame00.com${base}${blogPath}/${post.slug}`;
 
     return (

@@ -37,7 +37,7 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
     <meta name="twitter:card" content="summary_large_image" />
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (
-        <MetaTags type="home" title={title} description={description} base={base} />
+        <MetaTags type="home" title={title} description={description} base={base} locale={locale} />
       )
     }
     {
@@ -50,6 +50,7 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
             post={Astro.props.post}
             base={base}
             blogPath={Astro.props.blogPath}
+            locale={locale}
           />
         )
     }
