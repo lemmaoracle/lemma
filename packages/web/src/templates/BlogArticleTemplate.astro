@@ -6,6 +6,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SchemaOrg from "@/components/SchemaOrg";
+import defaultCover from "../assets/default-blog-cover.png";
 
 export interface BlogArticleTemplateProps {
   locale: Locale;
@@ -46,7 +47,7 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   <HubSpotDrawer />
 
   <section class="article-hero">
-    <img src={post.cover} alt="" />
+    <img src={post.cover ?? defaultCover.src} alt="" />
     <div class="article-hero-overlay"></div>
     <div class="article-hero-meta">
       <div class="eyebrow">{post.category} <span class="eyebrow-date">{post.date}</span></div>
