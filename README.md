@@ -25,3 +25,5 @@ https://lemma.frame00.com/services
 ---
 
 © 2026 FRAME00 Inc.
+
+🇯🇵 [日本語版はこちら / Japanese README](./README.ja.md)
