@@ -18,6 +18,12 @@ export interface Translations {
     readonly services: string;
     readonly languageJa: string;
     readonly languageEn: string;
+    readonly developers: string;
+  readonly enterprise: string;
+  readonly architecture: string;
+  readonly guides: string;
+  readonly howItWorks: string;
+  readonly talkToUs: string;
   }>;
   readonly masthead: Readonly<{
     readonly title: string;
