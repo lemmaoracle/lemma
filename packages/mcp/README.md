@@ -33,3 +33,40 @@ Note: `LEMMA_API_BASE` can be omitted (defaults to production endpoint).
 | `lemma_submit_proof` | Phase 2 | Submit a ZK proof for verification |
 
 Note that write tools (`register_document`, `submit_proof`) are Phase 2.
+
+## Local development
+
+Until this package is published to npm, run it from a local build of this
+monorepo.
+
+```bash
+git clone https://github.com/lemmaoracle/lemma.git
+cd lemma
+pnpm install
+pnpm -F @lemmaoracle/mcp build
+```
+
+The `bin` entry produces `packages/mcp/dist/index.js`. Point Claude Desktop
+at the absolute path:
+
+```json
+{
+  "mcpServers": {
+    "lemma": {
+      "command": "node",
+      "args": ["/absolute/path/to/lemma/packages/mcp/dist/index.js"],
+      "env": {
+        "LEMMA_API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+Rebuild after changes with `pnpm -F @lemmaoracle/mcp build` and restart
+Claude Desktop to reconnect. To point at a non-production API, add
+`"LEMMA_API_BASE": "https://..."` to `env`.
+
+---
+
+🇯🇵 [日本語版はこちら / Japanese README](./README.ja.md)
