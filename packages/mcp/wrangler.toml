@@ -7,6 +7,8 @@ main = "src/worker/index.ts"
 [vars]
 LEMMA_API_BASE = "https://workers.lemma.workers.dev"
 
-# Required secrets (set via `wrangler secret put`):
-#   LEMMA_API_KEY           - Lemma API key
-#   LEMMA_DEFAULT_CHAIN_ID  - (optional) Default chain ID
+# Optional vars / secrets (set via `wrangler secret put` or [vars]):
+#   LEMMA_DEFAULT_CHAIN_ID  - Default chain ID
+#
+# API key is passed by the caller via Authorization: Bearer <token> header.
+# No server-side secret is required for key storage.
