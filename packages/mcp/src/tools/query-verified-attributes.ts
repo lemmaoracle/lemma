@@ -4,9 +4,7 @@ import type {
   LemmaClient,
   VerifiedAttributesQueryRequest,
 } from "@lemmaoracle/sdk";
-
-const isVerified = (status?: string): boolean =>
-  status === "verified" || status === "onchain-verified";
+import { isVerified } from "../isVerified.js";
 
 const enrichItem = (item: Readonly<{
   docHash: string;
