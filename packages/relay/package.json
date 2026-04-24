@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_OPTIONS='--conditions=development' tsx src/server.ts",
-    "build": "tsc",
-    "type-check": "tsc --noEmit",
+    "build": "tsc --build",
+    "type-check": "tsc --build --noEmit",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
     "test": "vitest run"
