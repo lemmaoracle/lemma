@@ -1,4 +1,4 @@
-import { create } from "@lemmaoracle/sdk";
+import { create } from "@lemmaoracle/sdk/client";
 
 export const buildClient = (_void?: undefined) =>
   create({

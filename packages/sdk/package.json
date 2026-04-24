@@ -10,6 +10,41 @@
       "development": "./src/index.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
+    },
+    "./schemas": {
+      "types": "./dist/namespaces/schemas.d.ts",
+      "import": "./dist/namespaces/schemas.js",
+      "default": "./dist/namespaces/schemas.js"
+    },
+    "./circuits": {
+      "types": "./dist/namespaces/circuits.d.ts",
+      "import": "./dist/namespaces/circuits.js",
+      "default": "./dist/namespaces/circuits.js"
+    },
+    "./generators": {
+      "types": "./dist/namespaces/generators.d.ts",
+      "import": "./dist/namespaces/generators.js",
+      "default": "./dist/namespaces/generators.js"
+    },
+    "./attributes": {
+      "types": "./dist/namespaces/attributes.d.ts",
+      "import": "./dist/namespaces/attributes.js",
+      "default": "./dist/namespaces/attributes.js"
+    },
+    "./documents": {
+      "types": "./dist/namespaces/documents.d.ts",
+      "import": "./dist/namespaces/documents.js",
+      "default": "./dist/namespaces/documents.js"
+    },
+    "./proofs": {
+      "types": "./dist/namespaces/proofs.d.ts",
+      "import": "./dist/namespaces/proofs.js",
+      "default": "./dist/namespaces/proofs.js"
     }
   },
   "files": [

@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { create } from "@lemmaoracle/sdk";
-import type { LemmaClient } from "@lemmaoracle/sdk";
+import { create } from "@lemmaoracle/sdk/client";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { queryVerifiedAttributesTool } from "./tools/query-verified-attributes.js";
 import { getSchemaTool } from "./tools/get-schema.js";
 import { getCircuitTool } from "./tools/get-circuit.js";

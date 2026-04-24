@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { schemas } from "@lemmaoracle/sdk";
-import type { LemmaClient, SchemaMeta } from "@lemmaoracle/sdk";
+import * as schemas from "@lemmaoracle/sdk/schemas";
+import type { LemmaClient, SchemaMeta } from "@lemmaoracle/spec";
 import { runTool } from "../errors.js";
 
 export type GetSchemaInput = Readonly<{ id: string }>;

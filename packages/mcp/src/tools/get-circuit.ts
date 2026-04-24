@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { circuits } from "@lemmaoracle/sdk";
-import type { LemmaClient, CircuitMeta } from "@lemmaoracle/sdk";
+import * as circuits from "@lemmaoracle/sdk/circuits";
+import type { LemmaClient, CircuitMeta } from "@lemmaoracle/spec";
 import { runTool } from "../errors.js";
 
 export type GetCircuitInput = Readonly<{ id: string }>;

@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { attributes } from "@lemmaoracle/sdk";
-import type { LemmaClient } from "@lemmaoracle/sdk";
+import * as attributes from "@lemmaoracle/sdk/attributes";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { runTool } from "../errors.js";
 
 export type GetProofStatusInput = Readonly<{ verificationId: string }>;

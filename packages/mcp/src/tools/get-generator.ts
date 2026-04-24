@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { generators } from "@lemmaoracle/sdk";
-import type { LemmaClient, GeneratorMeta } from "@lemmaoracle/sdk";
+import * as generators from "@lemmaoracle/sdk/generators";
+import type { LemmaClient, GeneratorMeta } from "@lemmaoracle/spec";
 import { runTool } from "../errors.js";
 
 export type GetGeneratorInput = Readonly<{ id: string }>;

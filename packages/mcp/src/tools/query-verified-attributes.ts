@@ -2,11 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import * as R from "ramda";
-import { attributes } from "@lemmaoracle/sdk";
+import * as attributes from "@lemmaoracle/sdk/attributes";
 import type {
   LemmaClient,
   VerifiedAttributesQueryRequest,
-} from "@lemmaoracle/sdk";
+} from "@lemmaoracle/spec";
 import { isVerified } from "../isVerified.js";
 import { runTool } from "../errors.js";
 

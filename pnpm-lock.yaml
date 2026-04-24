@@ -43,6 +43,9 @@ importers:
       '@lemmaoracle/sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(@cfworker/json-schema@4.1.1)(zod@3.25.76)
