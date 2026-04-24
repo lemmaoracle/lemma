@@ -1,4 +1,4 @@
-name = "lemma-mcp"
+name = "mcp"
 workers_dev = true
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
