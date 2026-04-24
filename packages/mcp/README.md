@@ -66,3 +66,7 @@ at the absolute path:
 Rebuild after changes with `pnpm -F @lemmaoracle/mcp build` and restart
 Claude Desktop to reconnect. To point at a non-production API, add
 `"LEMMA_API_BASE": "https://..."` to `env`.
+
+---
+
+🇯🇵 [日本語版はこちら / Japanese README](./README.ja.md)
