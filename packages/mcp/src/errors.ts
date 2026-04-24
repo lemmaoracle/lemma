@@ -25,3 +25,9 @@ export const normalizeError = (error: unknown): LemmaMcpError => {
 
   return { code, message };
 };
+
+export const runTool = <T>(promise: Promise<T>): Promise<{ content: Array<{ type: "text"; text: string }> }> =>
+  promise.then(
+    (result) => ({ content: [{ type: "text", text: JSON.stringify(result ?? null, null, 2) }] }),
+    (error: unknown) => ({ content: [{ type: "text", text: JSON.stringify({ error: normalizeError(error) }, null, 2) }] }),
+  );
