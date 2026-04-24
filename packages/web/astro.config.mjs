@@ -15,6 +15,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
+      i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },
       filter: (page) => !page.url.pathname.includes("/thank-you/"),
     }),
   ],
