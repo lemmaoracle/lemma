@@ -200,7 +200,7 @@ JSON output:`;
         return_full_text: false,
       });
 
-      const content: string = R.pathOr("", [0, "generated_text"], output) as string;
+      const content: string = R.pathOr("", [0, "generated_text"], output);
 
       // eslint-disable-next-line functional/no-try-statements -- JSON.parse requires try-catch
       try {

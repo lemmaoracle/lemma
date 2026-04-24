@@ -441,8 +441,8 @@ export interface Translations {
 }
 
 const translations: Readonly<Record<Locale, Translations>> = {
-  en: en as Translations,
-  ja: ja as Translations,
+  en: en,
+  ja: ja,
 };
 
 export function getTranslations(locale: Locale): Translations {

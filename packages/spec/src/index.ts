@@ -13,9 +13,11 @@ export type LemmaClientConfig = Readonly<{
   defaultChainId?: number; // Default chain ID for operations (optional)
 }>;
 
-export type LemmaClient = LemmaClientConfig &
-  Readonly<{
-    readonly fetcher?: typeof fetch;
+export type LemmaClient = Readonly<{
+    apiBase: string;
+    apiKey?: string;
+    defaultChainId?: number;
+    fetcher?: typeof fetch;
   }>;
 
 /* ── Schema / Circuit / Generator metadata ─────────────────────────── */
