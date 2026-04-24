@@ -17,10 +17,10 @@
     "@types/node": "^22.10.6",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-functional": "^9.0.4",
-    "prettier": "^3.3.0",
+    "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-solidity": "^1.4.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.59.0"
   }
 }
