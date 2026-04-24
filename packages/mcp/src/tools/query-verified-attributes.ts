@@ -1,3 +1,6 @@
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 import * as R from "ramda";
 import { attributes } from "@lemmaoracle/sdk";
 import type {
@@ -5,6 +8,7 @@ import type {
   VerifiedAttributesQueryRequest,
 } from "@lemmaoracle/sdk";
 import { isVerified } from "../isVerified.js";
+import { runTool } from "../errors.js";
 
 const enrichItem = (item: Readonly<{
   docHash: string;
@@ -34,7 +38,7 @@ const enrichItem = (item: Readonly<{
   });
 
 export type QueryVerifiedAttributesInput = Readonly<{
-  attributes?: ReadonlyArray<Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value: unknown }>>;
+  attributes?: ReadonlyArray<Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value?: unknown }>>;
   schemas?: ReadonlyArray<string>;
   chainIds?: ReadonlyArray<number>;
   limit?: number;
@@ -43,7 +47,11 @@ export type QueryVerifiedAttributesInput = Readonly<{
 
 const buildRequest = (input: QueryVerifiedAttributesInput): VerifiedAttributesQueryRequest =>
   ({
-    attributes: input.attributes ?? [],
+    attributes: (input.attributes ?? []).map((attr) => ({
+      name: attr.name,
+      operator: attr.operator,
+      value: attr.value ?? null,
+    })),
     ...(R.isEmpty(input.schemas ?? []) ? {} : { targets: { schemas: input.schemas, chainIds: input.chainIds } }),
     ...(input.limit !== undefined ? { limit: Math.min(Math.max(input.limit, 1), 200) } : {}),
     ...(input.offset !== undefined ? { offset: Math.max(input.offset, 0) } : {}),
@@ -74,3 +82,23 @@ export const queryVerifiedAttributes = async (
     hasMore: response.hasMore,
   };
 };
+
+export const queryVerifiedAttributesTool = (server: McpServer, client: LemmaClient): RegisteredTool =>
+  server.registerTool(
+    "lemma_query_verified_attributes",
+    {
+      description: "Query cryptographically verified attributes from Lemma Oracle. Returns verified attributes with proof status and selective disclosure info.",
+      inputSchema: {
+        attributes: z.array(z.object({
+          name: z.string(),
+          operator: z.enum(["eq", "neq", "gt", "lt"]).optional(),
+          value: z.unknown(),
+        })).optional(),
+        schemas: z.array(z.string()).optional(),
+        chainIds: z.array(z.number()).optional(),
+        limit: z.number().min(1).max(200).optional(),
+        offset: z.number().min(0).optional(),
+      },
+    },
+    (input) => runTool(queryVerifiedAttributes(client, input)),
+  );

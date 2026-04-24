@@ -1,0 +1,14 @@
+name = "lemma-mcp"
+workers_dev = true
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+main = "src/worker/index.ts"
+
+[vars]
+LEMMA_API_BASE = "https://workers.lemma.workers.dev"
+
+# Optional vars / secrets (set via `wrangler secret put` or [vars]):
+#   LEMMA_DEFAULT_CHAIN_ID  - Default chain ID
+#
+# API key is passed by the caller via Authorization: Bearer <token> header.
+# No server-side secret is required for key storage.
