@@ -19,10 +19,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc --build",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "type-check": "tsc -p tsconfig.json --noEmit",
+    "type-check": "tsc --build --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run"
   },
