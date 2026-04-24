@@ -22,7 +22,7 @@
     "build": "tsc --build",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "type-check": "tsc --build --noEmit",
+    "type-check": "tsc --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run"
   },

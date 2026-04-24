@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--conditions=development' tsx src/server.ts",
     "build": "tsc --build",
-    "type-check": "tsc --build --noEmit",
+    "type-check": "tsc --noEmit",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
     "test": "vitest run"
