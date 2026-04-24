@@ -1,0 +1,39 @@
+import { attributes } from "@lemmaoracle/sdk";
+import type { LemmaClient } from "@lemmaoracle/sdk";
+
+export type GetProofStatusInput = Readonly<{ verificationId: string }>;
+
+export type ProofStatusResult = Readonly<{
+  status?: string;
+  circuitId?: string;
+  chainId?: number;
+  docHash?: string;
+}>;
+
+/**
+ * Get the verification status of a proof by its verificationId.
+ *
+ * The SDK `proofs` namespace only exposes `submit`; there is no dedicated status endpoint.
+ * Fallback: query `attributes.query` filtered by docHash and extract `proof.status`.
+ * Since the verificationId is returned by proofs.submit, we treat it as a docHash filter.
+ */
+export const getProofStatus = async (
+  client: LemmaClient,
+  input: GetProofStatusInput,
+): Promise<ProofStatusResult | undefined> => {
+  const response = await attributes.query(client, {
+    attributes: [],
+    docHash: input.verificationId,
+  });
+
+  const first = response.results[0];
+
+  return first
+    ? {
+        status: first.proof?.status,
+        circuitId: first.proof?.circuitId,
+        chainId: first.proof?.chainId ?? first.chainId,
+        docHash: first.docHash,
+      }
+    : undefined;
+};

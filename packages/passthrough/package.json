@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "./scripts/build-wasm.sh",
+    "type-check": "tsc --noEmit",
     "register": "tsx scripts/register-schema.ts"
   },
   "keywords": [
