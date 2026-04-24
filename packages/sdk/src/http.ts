@@ -3,8 +3,6 @@ import { reject, resolveFetch, withApiKey } from "./internal.js";
 
 export type HttpMethod = "GET" | "POST";
 
-const DEFAULT_API_BASE = "https://workers.lemma.workers.dev";
-
 const asJson = (res: Response): Promise<unknown> =>
   res.json().catch((_e: unknown) => Promise.resolve({ error: "Invalid JSON" }));
 
@@ -13,7 +11,7 @@ export const requestJson =
   (method: HttpMethod) =>
   (path: string) =>
   (body?: unknown): Promise<T> => {
-    const url = `${client.apiBase ?? DEFAULT_API_BASE}${path}`;
+    const url = `${client.apiBase}${path}`;
     const headers = withApiKey(client, { "content-type": "application/json" });
     const init: RequestInit = {
       method,
