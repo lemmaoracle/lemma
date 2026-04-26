@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/x402",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
   "type": "module",
   "main": "dist/index.js",
@@ -24,7 +24,7 @@
     "build:circuit": "bash scripts/build.sh",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
-    "test": "vitest run && bash -c 'if [ ! -f \"build/payment_js/payment.wasm\" ]; then echo \"\ud83d\udd27 Circuit not built. Building circuit first...\" && npm run build:circuit; fi && node circuits/payment.test.mjs'",
+    "test": "vitest run && bash -c 'if [ ! -f \"build/payment_js/payment.wasm\" ]; then echo \"🔧 Circuit not built. Building circuit first...\" && npm run build:circuit; fi && node circuits/payment.test.mjs'",
     "test:vitest": "vitest run",
     "test:watch": "vitest",
     "test:circuit": "node circuits/payment.test.mjs",
