@@ -55,7 +55,9 @@ cp package.json package.json.backup
 # Update x402's dependency on sdk to match new version
 node -e "
 const pkg = require('./package.json');
-pkg.dependencies['@lemmaoracle/sdk'] = '^${SDK_VERSION}';
+if (pkg.peerDependencies && pkg.peerDependencies['@lemmaoracle/sdk']) {
+  pkg.peerDependencies['@lemmaoracle/sdk'] = '^${SDK_VERSION}';
+}
 require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
 "
 X402_VERSION=$(node -p "require('./package.json').version")
