@@ -29,20 +29,27 @@ type LemmaDiscoveryConfig = Readonly<{
 
 /** Configuration for Lemma-x402 integration. */
 type LemmaConfig = Readonly<{
-  /** Lemma API base URL (e.g. "https://workers.lemma.workers.dev") */
-  apiBase: string;
+  /** Lemma API base URL (defaults to "https://workers.lemma.workers.dev" via @lemmaoracle/sdk) */
+  apiBase?: string;
   /** Lemma API key (optional) */
   apiKey?: string;
-  /** Circuit ID used for proof generation */
-  circuitId: string;
+  /** Circuit ID used for proof generation (defaults to "x402-payment-v1") */
+  circuitId?: string;
   /** Relay URL for prover.prove (runs on Node.js, not Workers) */
   relayUrl?: string;
   /** Discovery configuration for auto-enriching x402 routes */
   discovery?: LemmaDiscoveryConfig;
 }>;
 
+/** LemmaConfig with defaults applied — all fields required. */
+type ResolvedLemmaConfig = Readonly<
+  & Omit<LemmaConfig, "apiBase" | "circuitId">
+  & { readonly apiBase: string; readonly circuitId: string }
+>;
+
 export type {
   LemmaConfig,
   LemmaDiscoveryConfig,
   LemmaRouteDiscovery,
+  ResolvedLemmaConfig,
 };

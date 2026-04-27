@@ -19,7 +19,7 @@ import type {
   FacilitatorClient,
   SettleResultContext,
 } from "@x402/core/server";
-import type { LemmaConfig } from "./lemma-config.js";
+import type { LemmaConfig, ResolvedLemmaConfig } from "./lemma-config.js";
 import { createLemmaSubmissionHandler } from "./lemma-submission.js";
 import { poseidon6 } from "poseidon-lite";
 
@@ -28,16 +28,27 @@ import { poseidon6 } from "poseidon-lite";
  *
  * Priority: explicit config -> LEMMA_CONFIG env JSON -> individual env vars.
  */
+const DEFAULT_API_BASE = "https://workers.lemma.workers.dev";
+const DEFAULT_CIRCUIT_ID = "x402-payment-v1";
+
 const resolveLemmaConfig = (
   explicit?: LemmaConfig,
-): LemmaConfig | undefined => {
-  const fromExplicit = explicit;
+): ResolvedLemmaConfig | undefined => {
+  const fromExplicit = explicit
+    ? {
+        apiBase: explicit.apiBase ?? DEFAULT_API_BASE,
+        apiKey: explicit.apiKey,
+        circuitId: explicit.circuitId ?? DEFAULT_CIRCUIT_ID,
+        relayUrl: explicit.relayUrl,
+        discovery: explicit.discovery,
+      }
+    : undefined;
   const fromEnv = resolveFromEnv();
   return fromExplicit ?? fromEnv;
 };
 
 /** Read LEMMA_CONFIG env var as JSON and parse it. */
-const resolveFromEnv = (): LemmaConfig | undefined => {
+const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
   const raw =
     typeof process !== "undefined"
       ? process.env.LEMMA_CONFIG
@@ -56,7 +67,7 @@ const resolveFromEnv = (): LemmaConfig | undefined => {
                 apiBase,
                 apiKey: parsed.apiKey as string | undefined,
                 circuitId:
-                  (parsed.circuitId as string) ?? "x402-payment-v1",
+                  (parsed.circuitId as string) ?? DEFAULT_CIRCUIT_ID,
                 relayUrl: parsed.relayUrl as string | undefined,
                 discovery:
                   parsed.discovery as LemmaConfig["discovery"] | undefined,
@@ -69,14 +80,14 @@ const resolveFromEnv = (): LemmaConfig | undefined => {
 };
 
 /** Fallback to individual env vars. */
-const resolveFromIndividualEnvVars = (): LemmaConfig | undefined => {
+const resolveFromIndividualEnvVars = (): ResolvedLemmaConfig | undefined => {
   const env = typeof process !== "undefined" ? process.env : {};
   const apiBase = env.LEMMA_API_BASE;
   return apiBase
     ? {
         apiBase,
         apiKey: env.LEMMA_API_KEY,
-        circuitId: env.LEMMA_CIRCUIT_ID ?? "x402-payment-v1",
+        circuitId: env.LEMMA_CIRCUIT_ID ?? DEFAULT_CIRCUIT_ID,
         relayUrl: env.LEMMA_RELAY_URL,
       }
     : undefined;

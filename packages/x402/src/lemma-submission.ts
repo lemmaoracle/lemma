@@ -14,7 +14,7 @@ import { register } from "@lemmaoracle/sdk/documents";
 import { submit } from "@lemmaoracle/sdk/proofs";
 import { create as createLemmaClient } from "@lemmaoracle/sdk/client";
 import type { LemmaClient } from "@lemmaoracle/sdk";
-import type { LemmaConfig } from "./lemma-config.js";
+import type { ResolvedLemmaConfig } from "./lemma-config.js";
 
 /** Context passed to the submission handler from onAfterSettle. */
 type SubmissionContext = Readonly<{
@@ -69,7 +69,7 @@ const proveViaRelay = (
  * prover.prove is delegated to the Relay (Node.js server).
  */
 const createLemmaSubmissionHandler = (
-  config: LemmaConfig,
+  config: ResolvedLemmaConfig,
   lemmaClientOverride?: LemmaClient,
 ): ((ctx: SubmissionContext) => Promise<{ proof: string; inputs: ReadonlyArray<string> }>) => {
   const client: LemmaClient =
