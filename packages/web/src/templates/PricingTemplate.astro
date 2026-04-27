@@ -105,6 +105,7 @@ const px = t.pricing;
       </div>
       <div class="dev-cta-row reveal">
         <a href="https://tally.so/r/kd0bZR" class="btn-dev" target="_blank">{px.dev.cta}</a>
+        <a href="/x402/" class="btn-dev btn-dev-outline" target="_blank">{px.dev.demoCta}</a>
         <p class="dev-note" set:html={px.dev.note.replace(/<br \/>/, "<br />")} />
       </div>
     </div>
@@ -252,6 +253,10 @@ const px = t.pricing;
     cursor: pointer; display: inline-block; text-decoration: none; transition: background 0.2s, color 0.2s;
   }
   .btn-dev:hover { background: var(--accent); color: #fff; }
+  .btn-dev-outline {
+    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4);
+  }
+  .btn-dev-outline:hover { background: #fff; color: #000; border-color: #fff; }
   .dev-note { font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; line-height: 1.6; }
 
   .compare-section { padding: 120px 10%; background: var(--gray-50); }
