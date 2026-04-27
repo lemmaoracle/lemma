@@ -2,6 +2,7 @@
   "name": "@lemmaoracle/contracts",
   "version": "0.1.0",
   "private": true,
+  "license": "BUSL-1.1",
   "scripts": {
     "build": "forge build",
     "test": "forge test",

@@ -1,6 +1,7 @@
 {
   "name": "@lemmaoracle/parser",
-  "version": "0.0.18",
+  "version": "0.0.20",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

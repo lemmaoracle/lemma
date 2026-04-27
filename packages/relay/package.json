@@ -4,6 +4,7 @@
   "private": true,
   "description": "Node.js relay for Lemma SDK functions that cannot run on edge runtimes",
   "type": "module",
+  "license": "BUSL-1.1",
   "scripts": {
     "dev": "NODE_OPTIONS='--conditions=development' tsx src/server.ts",
     "build": "tsc --build",

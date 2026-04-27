@@ -14,7 +14,7 @@ import { register } from "@lemmaoracle/sdk/documents";
 import { submit } from "@lemmaoracle/sdk/proofs";
 import { create as createLemmaClient } from "@lemmaoracle/sdk/client";
 import type { LemmaClient } from "@lemmaoracle/sdk";
-import type { LemmaConfig } from "./lemma-config.js";
+import type { ResolvedLemmaConfig } from "./lemma-config.js";
 
 /** Context passed to the submission handler from onAfterSettle. */
 type SubmissionContext = Readonly<{
@@ -69,9 +69,9 @@ const proveViaRelay = (
  * prover.prove is delegated to the Relay (Node.js server).
  */
 const createLemmaSubmissionHandler = (
-  config: LemmaConfig,
+  config: ResolvedLemmaConfig,
   lemmaClientOverride?: LemmaClient,
-): ((ctx: SubmissionContext) => Promise<void>) => {
+): ((ctx: SubmissionContext) => Promise<{ proof: string; inputs: ReadonlyArray<string> }>) => {
   const client: LemmaClient =
     lemmaClientOverride ??
     createLemmaClient({
@@ -79,9 +79,9 @@ const createLemmaSubmissionHandler = (
       apiKey: config.apiKey,
     });
 
-  const relayUrl = config.relayUrl ?? "https://p01--lemma-relay-api--svxwx5rc5jzx.code.run/";
+  const relayUrl = config.relayUrl ?? "https://p01--lemma-relay-api--svxwx5jzx.code.run/";
 
-  return async (ctx: SubmissionContext): Promise<void> => {
+  return async (ctx: SubmissionContext): Promise<{ proof: string; inputs: ReadonlyArray<string> }> => {
     // Step 1: Register document (pure HTTP — Workers-safe via sub-path import)
     const _docResult = await register(client, {
       schema: ctx.schema,
@@ -117,6 +117,8 @@ const createLemmaSubmissionHandler = (
       proof: proofOutput.proof,
       inputs: proofOutput.inputs,
     });
+
+    return proofOutput;
   };
 };
 

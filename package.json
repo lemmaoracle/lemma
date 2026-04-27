@@ -1,6 +1,7 @@
 {
   "name": "lemma",
   "private": true,
+  "license": "BUSL-1.1",
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {

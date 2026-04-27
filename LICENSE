@@ -1,0 +1,80 @@
+Business Source License 1.1
+
+License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
+"Business Source License" is a trademark of MariaDB Corporation Ab.
+
+Parameters
+
+Licensor:             FRAME00 Inc.
+Additional Use Grant: You may use the Licensed Work for non-production
+                      purposes, including but not limited to evaluation,
+                      testing, research, and learning, including in
+                      hackathons, academic settings, and personal projects,
+                      provided that such use does not constitute a
+                      competing commercial service.
+Licensed Work:        lemmaoracle/lemma
+                     (the software in this repository, excluding packages
+                      that contain their own LICENSE file)
+Change Date:          2030-05-01
+
+Change License:       Apache License, Version 2.0
+
+Notice:
+
+The Licensed Work is provided under the Business Source License 1.1
+(BSL 1.1). You may not use the Licensed Work except in compliance with
+the BSL 1.1.
+
+You may produce and distribute the Licensed Work, in whole or in part,
+in Source or Object form, subject to the following conditions:
+
+1. You must give any other recipients of the Licensed Work a copy of
+   this License; and
+
+2. You must cause any modified files to carry prominent notices stating
+   that You changed the files; and
+
+3. You must retain, in the Source form of any Licensed Work that You
+   distribute, all copyright, patent, trademark, and attribution
+   notices from the Source form of the Licensed Work, excluding those
+   notices that do not pertain to any part of the Licensed Work; and
+
+4. You may not use the Licensed Work to create a competing commercial
+   service. A "competing commercial service" is a product or service
+   that provides substantially the same functionality as the Licensed
+   Work to third parties for commercial gain.
+
+5. After the Change Date, the Licensed Work will be licensed under the
+   Change License indicated above, and You may exercise the rights
+   granted under the Change License without restriction.
+
+THE LICENSED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
+
+---
+
+This repository contains multiple packages under the `packages/` directory.
+Each package may have its own LICENSE file. If a package contains its own
+LICENSE file, that license takes precedence over this root LICENSE for the
+contents of that package directory.
+
+Package-specific licenses:
+
+  BUSL-1.1 (this license, with the same Change Date and Change License):
+    - packages/contracts
+    - packages/relay
+    - packages/passthrough
+
+  Apache-2.0:
+    - packages/sdk
+    - packages/spec
+    - packages/mcp
+    - packages/parser
+    - packages/x402
+
+  (packages/web is private and not distributed; all rights reserved.)
