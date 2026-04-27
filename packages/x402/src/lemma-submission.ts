@@ -71,7 +71,7 @@ const proveViaRelay = (
 const createLemmaSubmissionHandler = (
   config: LemmaConfig,
   lemmaClientOverride?: LemmaClient,
-): ((ctx: SubmissionContext) => Promise<void>) => {
+): ((ctx: SubmissionContext) => Promise<{ proof: string; inputs: ReadonlyArray<string> }>) => {
   const client: LemmaClient =
     lemmaClientOverride ??
     createLemmaClient({
@@ -81,7 +81,7 @@ const createLemmaSubmissionHandler = (
 
   const relayUrl = config.relayUrl ?? "https://p01--lemma-relay-api--svxwx5rc5jzx.code.run/";
 
-  return async (ctx: SubmissionContext): Promise<void> => {
+  return async (ctx: SubmissionContext): Promise<{ proof: string; inputs: ReadonlyArray<string> }> => {
     // Step 1: Register document (pure HTTP — Workers-safe via sub-path import)
     const _docResult = await register(client, {
       schema: ctx.schema,
@@ -117,6 +117,8 @@ const createLemmaSubmissionHandler = (
       proof: proofOutput.proof,
       inputs: proofOutput.inputs,
     });
+
+    return proofOutput;
   };
 };
 

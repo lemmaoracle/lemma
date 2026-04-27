@@ -35,14 +35,14 @@
     "@x402/core": "^2.9.0",
     "@x402/evm": "^2.9.0",
     "@x402/hono": "^2.9.0",
-    "hono": "^4.6.14"
+    "hono": "^4.6.14",
+    "poseidon-lite": "^0.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",
     "circom2": "^0.2.22",
     "circomlib": "^2.0.5",
     "dotenv": "^16.4.7",
-    "poseidon-lite": "^0.3.0",
     "snarkjs": "^0.7.5",
     "tsx": "^4.19.0",
     "typescript": "^5.7.3",

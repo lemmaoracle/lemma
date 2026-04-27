@@ -17,11 +17,11 @@ import {
 } from "@x402/core/server";
 import type {
   FacilitatorClient,
-  AfterSettleHook,
   SettleResultContext,
 } from "@x402/core/server";
 import type { LemmaConfig } from "./lemma-config.js";
 import { createLemmaSubmissionHandler } from "./lemma-submission.js";
+import { poseidon6 } from "poseidon-lite";
 
 /**
  * Resolve LemmaConfig from available sources.
@@ -104,48 +104,104 @@ class LemmaResourceServer extends BaseResourceServer {
 
     const submissionHandler = createLemmaSubmissionHandler(config);
 
-    // Auto-attach the Lemma submission hook via onAfterSettle
-    const lemmaAfterSettle: AfterSettleHook = async (
-      context: SettleResultContext,
-    ): Promise<void> => {
-      try {
-        const settlementResult = context.result;
+    // Register Lemma extension to enrich settlement response with proof data.
+    // enrichSettlementResponse runs BEFORE createSettlementHeaders, so
+    // extensions.lemma is included in the PAYMENT-RESPONSE header.
+    this.registerExtension({
+      key: "lemma",
+      enrichSettlementResponse: async (
+        _declaration: unknown,
+        context: SettleResultContext,
+      ): Promise<unknown> => {
+        try {
+          const settlementResult = context.result;
 
-        // Build submission context from settlement data
-        const docHash =
-          (context.requirements.extra?.docHash as string) ??
-          settlementResult.transaction ??
-          "unknown";
+          // Build submission context from settlement data
+          const docHash =
+            (context.requirements.extra?.docHash as string) ??
+            settlementResult.transaction ??
+            "unknown";
 
-        const schema =
-          (context.requirements.extra?.schema as string) ??
-          "default";
+          const schema =
+            (context.requirements.extra?.schema as string) ??
+            "default";
 
-        // Extract payment details for proof witness
-        const witness = {
-          amount: context.requirements.amount ?? "1000",
-          docHash,
-          transaction: settlementResult.transaction,
-        };
+          // Extract payment details for proof witness
+          // The circuit expects specific inputs matching X402Payment circuit
+          const txHash = (settlementResult.transaction ?? "").replace(/^0x/, "");
+          const bn128Prime = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+          
+          // Split 256-bit tx hash into 2 field elements (128-bit each)
+          const txHashLow = txHash.length >= 32 
+            ? (BigInt(`0x${txHash.slice(-32)}`) % bn128Prime).toString()
+            : "0";
+          const txHashHigh = txHash.length >= 64 
+            ? (BigInt(`0x${txHash.slice(0, -32)}`) % bn128Prime).toString()
+            : (BigInt(`0x${txHash}`) % bn128Prime).toString();
+          
+          // Recipient address (payTo) - split into low/high
+          const payTo = (context.requirements.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
+          const recipientLow = (BigInt(`0x${payTo.slice(-16)}`) % bn128Prime).toString();
+          const recipientHigh = (BigInt(`0x${payTo.slice(0, -16) || "0"}`) % bn128Prime).toString();
+          
+          // Amount (USDC has 6 decimals, x402 uses smallest unit)
+          const amount = context.requirements.amount ?? "1000";
+          
+          // Timestamp - use current time for freshness
+          const timestamp = Math.floor(Date.now() / 1000).toString();
+          const timestampMax = (parseInt(timestamp) + 3600).toString();
+          
+          // Min amount
+          const minAmount = amount;
+          
+          // Commitment = Poseidon6(txHashPacked[0], txHashPacked[1], recipientLow, amount, timestamp, minAmount)
+          const commitment = poseidon6([
+            BigInt(txHashLow),
+            BigInt(txHashHigh),
+            BigInt(recipientLow),
+            BigInt(amount),
+            BigInt(timestamp),
+            BigInt(minAmount),
+          ]).toString();
+          
+          const witness = {
+            txHashPacked: [txHashLow, txHashHigh],
+            recipientLow,
+            recipientHigh,
+            amount,
+            timestamp,
+            minAmount,
+            commitment,
+            minAmountPublic: minAmount,
+            timestampMax,
+          };
 
-        await submissionHandler({
-          docHash,
-          schema: String(schema),
-          issuerId: "lemma-x402",
-          witness,
-          metadata: {
-            payer: settlementResult.payer,
-            transaction: settlementResult.transaction,
-            network: settlementResult.network,
-          },
-        });
-      } catch (err) {
-        // Submission errors are non-fatal -- the settlement succeeded.
-        console.error("[Lemma] Submission handler error:", err);
-      }
-    };
+          const proofOutput = await submissionHandler({
+            docHash: txHash,
+            schema: String(schema),
+            issuerId: "lemma-x402",
+            witness,
+            metadata: {
+              payer: settlementResult.payer,
+              transaction: settlementResult.transaction,
+              network: settlementResult.network,
+            },
+          });
 
-    this.onAfterSettle(lemmaAfterSettle);
+          const extData = {
+            proof: proofOutput.proof,
+            inputs: proofOutput.inputs,
+            circuitId: config.circuitId,
+            generatedAt: Date.now(),
+          };
+          return extData;
+        } catch (err) {
+          // Non-fatal -- settlement succeeded even if proof submission fails.
+          console.error("[Lemma] enrichSettlementResponse error:", err);
+          return undefined;
+        }
+      },
+    });
   }
 }
 
