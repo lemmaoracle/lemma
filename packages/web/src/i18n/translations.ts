@@ -69,7 +69,7 @@ export interface Translations {
         readonly defineSub: string;
         readonly provenance: string;
         readonly provenanceSub: string;
-        readonly x402: string;
+        readonly trust402: string;
         readonly demoSoon: string;
         readonly demoSub: string;
         readonly joinWaitlist: string;
