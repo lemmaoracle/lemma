@@ -26,7 +26,7 @@
         "whitepaper": "Whitepaper",
         "whitepaperSub": "Specs, PoC design, checklists",
         "developer": "x402 Integration · Developer",
-        "trust402Demo": "Try the demo — launching soon",
+        "trust402Demo": "Demo now live",
         "trust402Sub": "ZK-proven attributes for the agent economy.",
         "tryDemo": "Try the demo →",
         "joinWaitlist": "Join waitlist"
@@ -61,7 +61,7 @@
         "provenance": "Provenance That Never Disappears",
         "provenanceSub": "On-chain anchoring · permanent record",
         "trust402": "x402 Integration",
-        "demoSoon": "Demo launching soon",
+        "demoSoon": "Demo now live",
         "demoSub": "ZK-proven attributes for the agent economy",
         "joinWaitlist": "Join waitlist →",
         "tryDemo": "Try the demo →",
@@ -457,6 +457,7 @@
         { "name": "Pro", "desc": "High-volume production. SLA-backed, dedicated support channel. For scale-stage products in the agent economy.", "badge": "Coming soon" }
       ],
       "cta": "Join the waitlist",
+      "demoCta": "Try the demo →",
       "note": "Detailed pricing and docs will be available at launch. Trust402 LP — coming soon."
     },
     "compare": {

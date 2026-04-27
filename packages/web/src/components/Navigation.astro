@@ -78,7 +78,7 @@ const isActive = (path: string) => {
           <div class="mega-trust402-title">{t.mega.services.trust402Demo}</div>
           {t.mega.services.trust402Sub && <div class="mega-trust402-sub">{t.mega.services.trust402Sub}</div>}
           <div class="mega-trust402-links">
-            <a href="/trust402" class="mega-trust402-link">{t.mega.services.tryDemo}</a>
+            <a href="/trust402" class="mega-trust402-link" target="_blank">{t.mega.services.tryDemo}</a>
             {locale === 'en' && <a href="https://tally.so/r/kd0bZR" class="mega-trust402-link" target="_blank">{t.mega.services.joinWaitlist}</a>}
           </div>
         </div>
@@ -108,7 +108,7 @@ const isActive = (path: string) => {
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.pricing.developer}</div>
           <div class="mega-links">
-            <a href={pricingPath} class="mega-link">
+            <a href="/trust402" class="mega-link" target="_blank">
               <span class="mega-link-title">{t.mega.pricing.trust402}</span>
               <span class="mega-link-sub">{t.mega.pricing.trust402Sub}</span>
             </a>
@@ -167,7 +167,8 @@ const isActive = (path: string) => {
           <div class="mega-trust402-title">{t.mega.developers.demoSoon}</div>
           {t.mega.developers.demoSub && <div class="mega-trust402-sub">{t.mega.developers.demoSub}</div>}
           <div class="mega-trust402-links">
-            <a href="https://tally.so/r/kd0bZR" class="mega-trust402-link" target="_blank">{locale === 'en' ? t.mega.developers.joinWaitlist : t.mega.developers.tryDemo}</a>
+            <a href="/trust402" class="mega-trust402-link" target="_blank">{t.mega.developers.tryDemo}</a>
+            {locale === 'en' && <a href="https://tally.so/r/kd0bZR" class="mega-trust402-link" target="_blank">{t.mega.developers.joinWaitlist}</a>}
             <a href={`${blogPath}/lemma-oracle-specs`} class="mega-trust402-link" target="_blank">{t.mega.developers.readSpecs}</a>
           </div>
         </div>
@@ -203,6 +204,7 @@ const isActive = (path: string) => {
         <a href={servicesPath} class="mob-link">{t.mega.services.critical}<small>{t.mega.services.criticalSub}</small></a>
         <a href={servicesPath} class="mob-link">{t.mega.services.compliance}<small>{t.mega.services.complianceSub}</small></a>
         <a href={`${servicesPath}#solution`} class="mob-link">{t.mega.services.howItWorks}<small>{t.mega.services.howItWorksSub}</small></a>
+        <a href="/trust402" class="mob-link" target="_blank">{t.mega.services.trust402Demo}<small>{t.mega.services.tryDemo}</small></a>
       </div>
     </div>
 
@@ -214,7 +216,7 @@ const isActive = (path: string) => {
         <a href={pricingPath} class="mob-link">{t.mega.pricing.civic}</a>
         <a href={pricingPath} class="mob-link">{t.mega.pricing.critical}</a>
         <a href={pricingPath} class="mob-link">{t.mega.pricing.compliance}</a>
-        <a href={pricingPath} class="mob-link">{t.mega.pricing.trust402}<small>{t.mega.pricing.trust402Sub}</small></a>
+        <a href="/trust402" class="mob-link" target="_blank">{t.mega.pricing.trust402}<small>{t.mega.pricing.trust402Sub}</small></a>
       </div>
     </div>
 
@@ -234,6 +236,7 @@ const isActive = (path: string) => {
         </>
         )}
         <a href={`${blogPath}/provenance-that-never-disappears`} class="mob-link" target="_blank">{t.mega.developers.provenance}</a>
+        <a href="/trust402" class="mob-link" target="_blank">{t.mega.developers.demoSoon}<small>{t.mega.developers.tryDemo}</small></a>
       </div>
     </div>
 

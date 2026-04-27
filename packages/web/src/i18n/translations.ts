@@ -396,6 +396,7 @@ export interface Translations {
         readonly badge: string;
       }>;
       readonly cta: string;
+      readonly demoCta: string;
       readonly note: string;
     }>;
     readonly compare: Readonly<{
