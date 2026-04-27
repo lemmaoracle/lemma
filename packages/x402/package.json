@@ -2,6 +2,7 @@
   "name": "@lemmaoracle/x402",
   "version": "0.1.3",
   "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
