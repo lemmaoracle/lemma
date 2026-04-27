@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/x402",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
   "type": "module",
   "main": "dist/index.js",

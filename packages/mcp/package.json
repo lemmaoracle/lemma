@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/mcp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MCP server for Lemma Oracle API",
   "type": "module",
   "main": "./dist/index.js",
