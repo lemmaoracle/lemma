@@ -3,6 +3,12 @@
   "version": "0.1.5",
   "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/x402"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/x402#readme",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
