@@ -72,7 +72,7 @@ After each x402 settlement, the augmented `x402ResourceServer` automatically tri
 
 ## ZK Circuit
 
-This package includes a [Circom circuit](./circuits/README.md) (`circuits/payment.circom`) that generates a Groth16 proof of a valid x402 payment. Commitment: `Poseidon6(txHashLow, txHashHigh, recipientLow, amount, timestamp, minAmount)`.
+This package includes a [Circom circuit](https://github.com/lemmaoracle/lemma/blob/main/packages/x402/circuits/README.md) (`circuits/payment.circom`) that generates a Groth16 proof of a valid x402 payment. Commitment: `Poseidon6(txHashLow, txHashHigh, recipientLow, amount, timestamp, minAmount)`.
 
 ## Development
 
