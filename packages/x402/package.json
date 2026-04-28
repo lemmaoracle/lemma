@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/x402",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
   "license": "Apache-2.0",
   "repository": {
