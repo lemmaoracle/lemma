@@ -1,0 +1,42 @@
+{
+  "name": "@lemma/agent",
+  "version": "0.1.0",
+  "description": "Agent Identity + Authority Credential schema WASM for Lemma circuits",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src/lib.rs",
+    "Cargo.toml",
+    "scripts/build-wasm.sh"
+  ],
+  "scripts": {
+    "build": "./scripts/build-wasm.sh",
+    "type-check": "tsc --noEmit",
+    "register": "tsx scripts/register-schema.ts",
+    "test": "cargo test"
+  },
+  "keywords": [
+    "lemma",
+    "agent",
+    "identity",
+    "credential",
+    "authority",
+    "schema",
+    "wasm"
+  ],
+  "dependencies": {
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*",
+    "ramda": "0.30.1"
+  },
+  "devDependencies": {
+    "@types/ramda": "0.30.1",
+    "dotenv": "16.4.7",
+    "tsx": "^4.19.0",
+    "typescript": "5.8.3"
+  },
+  "author": "Lemma Oracle",
+  "license": "MIT"
+}
