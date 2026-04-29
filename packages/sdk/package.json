@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/sdk",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -14,7 +14,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "development": "./src/index.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
