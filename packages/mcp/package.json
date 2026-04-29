@@ -1,7 +1,14 @@
 {
   "name": "@lemmaoracle/mcp",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "MCP server for Lemma Oracle API",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/mcp#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

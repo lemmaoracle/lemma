@@ -22,6 +22,18 @@ proof lives on-chain.
 For partnership and implementation inquiries, please use the contact form:
 https://lemma.frame00.com/services
 
+## License
+
+This repository uses different licenses for different packages:
+
+| Package | License |
+|---|---|
+| `packages/contracts`, `packages/relay`, `packages/passthrough` | **BUSL-1.1** (changes to Apache-2.0 on 2030-05-01) |
+| `packages/sdk`, `packages/spec`, `packages/mcp`, `packages/parser`, `packages/x402` | **Apache-2.0** |
+| `packages/web` | Private (not distributed) |
+
+The root `LICENSE` file applies as the default. Each package may contain its own `LICENSE` file that takes precedence.
+
 ---
 
 © 2026 FRAME00 Inc.

@@ -1,15 +1,29 @@
 {
   "name": "@lemmaoracle/x402",
-  "version": "0.1.1",
-  "description": "ZK-enabled x402 payment proofs for Lemma's disclosure.condition API",
+  "version": "0.1.7",
+  "description": "Drop-in replacement for @x402/* with automatic Lemma discovery and proof submission",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/x402"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/x402#readme",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./advanced": {
+      "types": "./dist/advanced/index.d.ts",
+      "import": "./dist/advanced/index.js"
     }
   },
   "scripts": {
@@ -17,39 +31,32 @@
     "build:circuit": "bash scripts/build.sh",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
-    "test": "vitest run && bash -c 'if [ ! -f \"build/payment_js/payment.wasm\" ]; then echo \"🔧 Circuit not built. Building circuit first...\" && npm run build:circuit; fi && node circuits/payment.test.mjs'",
+    "test": "bash -c 'if [ ! -f \"build/payment_js/payment.wasm\" ]; then echo \"🔧 Circuit not built. Building circuit first...\" && npm run build:circuit; fi && node circuits/payment.test.mjs'",
     "test:vitest": "vitest run",
     "test:watch": "vitest",
     "test:circuit": "node circuits/payment.test.mjs",
     "test:circuit:comprehensive": "node circuits/payment-comprehensive.test.mjs",
-    "deploy:worker": "wrangler deploy --config wrangler.toml",
-    "deploy": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --broadcast",
-    "deploy:monadTestnet": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url monad_testnet --broadcast --verify",
-    "deploy:baseSepolia": "dotenv -e ../../.env -- forge script ${SCRIPT:-scripts/DeployPaymentVerifier.s.sol} --rpc-url base_sepolia --broadcast --verify",
     "register": "tsx scripts/register-circuit.ts"
   },
   "dependencies": {
-    "@lemmaoracle/sdk": "workspace:*",
-    "@lemmaoracle/spec": "workspace:*",
     "@x402/core": "^2.9.0",
     "@x402/evm": "^2.9.0",
     "@x402/hono": "^2.9.0",
     "hono": "^4.6.14",
-    "ramda": "^0.30.0",
-    "viem": "^2.21.0"
+    "poseidon-lite": "^0.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",
-    "@types/ramda": "^0.30.0",
     "circom2": "^0.2.22",
     "circomlib": "^2.0.5",
     "dotenv": "^16.4.7",
-    "dotenv-cli": "^11.0.0",
-    "poseidon-lite": "^0.3.0",
     "snarkjs": "^0.7.5",
     "tsx": "^4.19.0",
     "typescript": "^5.7.3",
     "vitest": "^2.0.0",
     "wrangler": "^3.101.0"
+  },
+  "peerDependencies": {
+    "@lemmaoracle/sdk": "workspace:*"
   }
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized, toScalar } from "./commitments.js";
+import { commitNormalized, toScalar, poseidon } from "./commitments.js";
+import { poseidon2, poseidon3 } from "poseidon-lite";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
 
@@ -8,6 +9,62 @@ const BN254_PRIME = BigInt(
 );
 
 describe("commitments", () => {
+  describe("poseidon", () => {
+    it("delegates 2-input call to poseidon2", () => {
+      const inputs: readonly [bigint, bigint] = [1n, 2n];
+      expect(poseidon(inputs)).toBe(poseidon2([1n, 2n]));
+    });
+
+    it("delegates 3-input call to poseidon3", () => {
+      const inputs: readonly [bigint, bigint, bigint] = [1n, 2n, 3n];
+      expect(poseidon(inputs)).toBe(poseidon3([1n, 2n, 3n]));
+    });
+
+    it("folds 4+ inputs via iterative poseidon2", () => {
+      const inputs = [1n, 2n, 3n, 4n] as const;
+      const expected = poseidon2([poseidon2([poseidon2([1n, 2n]), 3n]), 4n]);
+      expect(poseidon(inputs)).toBe(expected);
+    });
+
+    it("returns a field element (0 <= result < BN254_PRIME)", () => {
+      const result = poseidon([42n, 100n]);
+      expect(result).toBeGreaterThanOrEqual(0n);
+      expect(result).toBeLessThan(BN254_PRIME);
+    });
+
+    it("is deterministic", () => {
+      const inputs = [toScalar("hello"), toScalar("world"), 7n];
+      expect(poseidon(inputs)).toBe(poseidon(inputs));
+    });
+
+    it("produces different outputs for different inputs", () => {
+      expect(poseidon([1n, 2n])).not.toBe(poseidon([2n, 1n]));
+    });
+
+    it("composes with toScalar for string-keyed commitments", () => {
+      const commitment = poseidon([
+        toScalar("approvalId"),
+        toScalar("signerSet"),
+        BigInt(42161),
+        BigInt(1000000000),
+        BigInt(5),
+        BigInt(1714069800),
+        BigInt(1234567890),
+      ]);
+      expect(commitment).toBeGreaterThanOrEqual(0n);
+      expect(commitment).toBeLessThan(BN254_PRIME);
+      expect(poseidon([
+        toScalar("approvalId"),
+        toScalar("signerSet"),
+        BigInt(42161),
+        BigInt(1000000000),
+        BigInt(5),
+        BigInt(1714069800),
+        BigInt(1234567890),
+      ])).toBe(commitment);
+    });
+  });
+
   describe("toScalar", () => {
     it("converts a number directly to BigInt mod prime", () => {
       expect(toScalar(42)).toBe(42n);

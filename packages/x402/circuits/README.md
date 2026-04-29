@@ -1,5 +1,8 @@
 # X402 Payment Circuit
 
+> **Version:** v1  
+> This implementation is the initial version of the X402 payment circuit. Future extensions, protocol upgrades, or patches may modify the circuit constraints, public inputs, or verification key format. Always verify the circuit version against the deployed verifier contract before generating proofs in production.
+
 This directory contains the ZK-SNARK circuit for x402 payment verification.
 
 ## Files

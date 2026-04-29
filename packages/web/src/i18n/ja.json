@@ -26,9 +26,9 @@
         "whitepaper": "ホワイトペーパー",
         "whitepaperSub": "技術仕様・PoC設計・チェックリスト",
         "developer": "Developer",
-        "trust402Demo": "Trust402 デモ — 近日公開",
+        "trust402Demo": "デモ公開中",
         "trust402Sub": "",
-        "tryDemo": "デモを試す →",
+        "tryDemo": "デモを試す →（英語のみ）",
         "joinWaitlist": "ウェイトリストに登録"
       },
       "pricing": {
@@ -60,11 +60,11 @@
         "defineSub": "ZKサーキット · 型付きスキーマ",
         "provenance": "決して消えない来歴証明",
         "provenanceSub": "オンチェーン永続記録",
-        "x402": "x402 統合 · Developer",
-        "demoSoon": "Trust402 デモ — 近日公開",
+        "trust402": "x402 統合 · Developer",
+        "demoSoon": "デモ公開中",
         "demoSub": "",
         "joinWaitlist": "ウェイトリストに登録 →",
-        "tryDemo": "デモを試す →",
+        "tryDemo": "デモを試す →（英語のみ）",
         "readSpecs": "仕様書を読む"
       },
       "mobile": {
@@ -457,6 +457,7 @@
         { "name": "Pro", "desc": "高ボリュームプロダクション。SLA 保証の専用サポートチャンネル。エージェントエコシステムで規模の段階にあるプロダクト向け。", "badge": "近日公開" }
       ],
       "cta": "ウェイトリストに登録",
+      "demoCta": "デモを試す →（英語のみ）",
       "note": "詳細な料金とドキュメントはリリース時に提供されます。Trust402 LP — 近日公開。"
     },
     "compare": {

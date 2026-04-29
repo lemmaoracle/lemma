@@ -1,6 +1,13 @@
 {
   "name": "@lemmaoracle/spec",
-  "version": "0.0.17",
+  "version": "0.0.22",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/spec"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/spec#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
