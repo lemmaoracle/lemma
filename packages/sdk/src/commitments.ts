@@ -172,6 +172,31 @@ const buildMerkleTree = (
 // Public API
 // ---------------------------------------------------------------------------
 
+/**
+ * SNARK-friendly hash over field elements using Poseidon (BN254).
+ *
+ * - 2 inputs → Poseidon2 (binary node hash)
+ * - 3 inputs → Poseidon3 (leaf: nameHash ‖ valueHash ‖ blinding)
+ * - other    → Poseidon2 applied iteratively (left-fold)
+ *
+ * Compose with `toScalar` for the same field-element pipeline the SDK
+ * uses internally:
+ *
+ * ```ts
+ * const commitment = poseidon([
+ *   toScalar("approvalId"), toScalar("signerSet"),
+ *   BigInt(42161), BigInt(amount),
+ * ]);
+ * ```
+ */
+export const poseidon = (inputs: ReadonlyArray<bigint>): bigint =>
+  R.cond([
+    [(ins: ReadonlyArray<bigint>) => ins.length === 2, (ins: ReadonlyArray<bigint>) => poseidon2([...ins])],
+    [(ins: ReadonlyArray<bigint>) => ins.length === 3, (ins: ReadonlyArray<bigint>) => poseidon3([...ins])],
+    [R.T, (ins: ReadonlyArray<bigint>) =>
+      R.reduce((acc: bigint, x: bigint) => poseidon2([acc, x]), ins[0] ?? 0n, ins.slice(1))],
+  ])(inputs);
+
 export type CommitResult = Readonly<{
   root: string;
   leaves: ReadonlyArray<string>;
