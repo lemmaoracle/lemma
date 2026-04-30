@@ -13,6 +13,20 @@ export type LemmaMcpServerConfig = Readonly<{
   defaultChainId?: number;
 }>;
 
+/** Tool registration functions */
+type ToolRegister = (server: McpServer, client: LemmaClient) => void;
+
+/** Register all tools on the server (side effects encapsulated at boundary). */
+const registerTools = (
+  server: McpServer,
+  client: LemmaClient,
+  tools: readonly ToolRegister[],
+): McpServer =>
+  tools.reduce(
+    (srv, register) => (register(srv, client), srv),
+    server,
+  );
+
 export const createLemmaMcpServer = (config: LemmaMcpServerConfig): McpServer => {
   const client: LemmaClient = create({
     ...(config.apiBase !== undefined ? { apiBase: config.apiBase } : {}),
@@ -25,17 +39,13 @@ export const createLemmaMcpServer = (config: LemmaMcpServerConfig): McpServer =>
     version: "0.0.1",
   });
 
-  // Tool registration is inherently side-effecting; disable FP lint for this boundary.
-  // eslint-disable-next-line functional/no-expression-statements
-  queryVerifiedAttributesTool(server, client);
-  // eslint-disable-next-line functional/no-expression-statements
-  getSchemaTool(server, client);
-  // eslint-disable-next-line functional/no-expression-statements
-  getCircuitTool(server, client);
-  // eslint-disable-next-line functional/no-expression-statements
-  getGeneratorTool(server, client);
-  // eslint-disable-next-line functional/no-expression-statements
-  getProofStatusTool(server, client);
+  const tools: readonly ToolRegister[] = [
+    queryVerifiedAttributesTool,
+    getSchemaTool,
+    getCircuitTool,
+    getGeneratorTool,
+    getProofStatusTool,
+  ];
 
-  return server;
+  return registerTools(server, client, tools);
 };

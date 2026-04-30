@@ -245,19 +245,18 @@ function cleanHeadingText(text: string): string {
   return text.replace(/^\s*[▸◇◆●○★☆◀▶]\s*/, "").trim();
 }
 
+const isHeadingToken = (token: Tokens.Generic): token is Tokens.Heading =>
+  token.type === "heading" && (token.depth === 2 || token.depth === 3);
+
 function extractHeadings(content: string): Heading[] {
-  const tokens = marked.lexer(content);
-  const out: Heading[] = [];
-  for (const token of tokens) {
-    if (token.type === "heading" && (token.depth === 2 || token.depth === 3)) {
-      out.push({
-        id: slugifyHeading(token.text),
-        text: cleanHeadingText(token.text),
-        level: token.depth,
-      });
-    }
-  }
-  return out;
+  const tokens = marked.lexer(content) as readonly Tokens.Generic[];
+  return tokens
+    .filter(isHeadingToken)
+    .map((token) => ({
+      id: slugifyHeading(token.text),
+      text: cleanHeadingText(token.text),
+      level: token.depth,
+    }));
 }
 
 function calculateReadingTime(content: string, locale: BlogLocale): number {
@@ -314,18 +313,20 @@ const loadPosts = (() => {
           marked.use({
             renderer: {
               code({ text, lang }: Tokens.Code) {
-                const safeLang = lang ?? "text";
+                const safeText: string = text;
+                const safeLang: string = lang ?? "text";
                 const tryHighlight = (): string =>
-                  highlighter.codeToHtml(text, {
+                  highlighter.codeToHtml(safeText, {
                     lang: safeLang,
                     theme: BLOG_CODE_THEME,
                   });
-                return tryHighlight() || `<pre><code>${escapeCodeHtml(text)}</code></pre>`;
+                return tryHighlight() || `<pre><code>${escapeCodeHtml(safeText)}</code></pre>`;
               },
               heading({ tokens, depth, text }: Tokens.Heading) {
-                const inner = this.parser.parseInline(tokens);
+                const inner = marked.parseInline(tokens.map((t) => t.raw).join("")) as string;
                 const id = slugifyHeading(text);
-                return `<h${depth} id="${id}">${inner}</h${depth}>\n`;
+                const depthStr = String(depth);
+                return `<h${depthStr} id="${id}">${inner}</h${depthStr}>\n`;
               },
             },
           });
