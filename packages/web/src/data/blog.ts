@@ -23,6 +23,12 @@ export interface RelatedLink {
   readonly href: string;
 }
 
+export interface Heading {
+  readonly id: string;
+  readonly text: string;
+  readonly level: number;
+}
+
 export interface BlogPost {
   readonly slug: string;
   readonly locale: BlogLocale;
@@ -36,6 +42,8 @@ export interface BlogPost {
   readonly cover?: string;
   readonly tags?: ReadonlyArray<string>;
   readonly relatedLinks?: ReadonlyArray<RelatedLink>;
+  readonly headings: ReadonlyArray<Heading>;
+  readonly readingTime: number;
 }
 
 export interface BlogSection {
@@ -224,6 +232,43 @@ function resolveCoverUrl(relativePath: string): string {
 
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
 
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[▸◇◆●○★☆◀▶]/g, " ")
+    .replace(/[^\p{Letter}\p{Number}\s-]/gu, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function cleanHeadingText(text: string): string {
+  return text.replace(/^\s*[▸◇◆●○★☆◀▶]\s*/, "").trim();
+}
+
+function extractHeadings(content: string): Heading[] {
+  const tokens = marked.lexer(content);
+  const out: Heading[] = [];
+  for (const token of tokens) {
+    if (token.type === "heading" && (token.depth === 2 || token.depth === 3)) {
+      out.push({
+        id: slugifyHeading(token.text),
+        text: cleanHeadingText(token.text),
+        level: token.depth,
+      });
+    }
+  }
+  return out;
+}
+
+function calculateReadingTime(content: string, locale: BlogLocale): number {
+  if (locale === "ja") {
+    const chars = content.replace(/\s/g, "").length;
+    return Math.max(1, Math.round(chars / 500));
+  }
+  const words = content.split(/\s+/).filter((w) => w.length > 0).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 function parsePost(filename: string, raw: string): BlogPost | undefined {
   const parsed = localeAndSlugFromFilename(filename);
   return parsed
@@ -246,6 +291,8 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
               relatedLinks:
                 fm.relatedLinks && fm.relatedLinks.length > 0 ? fm.relatedLinks : undefined,
+              headings: extractHeadings(content),
+              readingTime: calculateReadingTime(content, parsed.locale),
             }
           : undefined;
       })()
@@ -274,6 +321,11 @@ const loadPosts = (() => {
                     theme: BLOG_CODE_THEME,
                   });
                 return tryHighlight() || `<pre><code>${escapeCodeHtml(text)}</code></pre>`;
+              },
+              heading({ tokens, depth, text }: Tokens.Heading) {
+                const inner = this.parser.parseInline(tokens);
+                const id = slugifyHeading(text);
+                return `<h${depth} id="${id}">${inner}</h${depth}>\n`;
               },
             },
           });

@@ -30,9 +30,11 @@ export interface BlogArticleTemplateProps {
   partnerCtaButton: string;
   relatedLabel: string;
   relatedLinksLabel: string;
+  tocLabel: string;
+  readingTimeLabel: string;
 }
 
-const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, partnerCtaDesc, partnerCtaButton, relatedLabel, relatedLinksLabel } = Astro.props as BlogArticleTemplateProps;
+const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, partnerCtaDesc, partnerCtaButton, relatedLabel, relatedLinksLabel, tocLabel, readingTimeLabel } = Astro.props as BlogArticleTemplateProps;
 ---
 
 <Layout
@@ -51,7 +53,11 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
     <img src={post.cover ?? defaultCover.src} alt="" />
     <div class="article-hero-overlay"></div>
     <div class="article-hero-meta">
-      <div class="eyebrow">{post.category} <span class="eyebrow-date">{post.date}</span></div>
+      <div class="eyebrow">
+        {post.category}
+        <span class="eyebrow-date">{post.date}</span>
+        <span class="eyebrow-reading-time">{readingTimeLabel}</span>
+      </div>
       <h1 class="article-hero-title">{post.title}</h1>
     </div>
   </section>
@@ -69,6 +75,22 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
           <span class="tag-chip">#{tag}</span>
         ))}
       </div>
+    )}
+
+    {post.headings.length > 1 && (
+      <nav class="article-toc" aria-label={tocLabel}>
+        <div class="toc-label">{tocLabel}</div>
+        <ol class="toc-list">
+          {post.headings.map((h, i) => (
+            <li class={`toc-item toc-level-${h.level}`}>
+              <a href={`#${h.id}`}>
+                <span class="toc-num">{String(i + 1).padStart(2, "0")}</span>
+                <span class="toc-text">{h.text}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
     )}
 
     <div class="article-body" set:html={post.body} />
@@ -143,6 +165,7 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #8B4513; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
   .eyebrow::before { content: ''; width: 20px; height: 1px; background: #8B4513; display: block; }
   .eyebrow-date { font-size: 11px; color: rgba(255,255,255,.4); margin-left: 12px; }
+  .eyebrow-reading-time { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .12em; text-transform: none; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.18); }
   .article-hero-title { font-family: var(--font-display); font-size: clamp(30px,4.5vw,54px); font-weight: 300; color: #fff; line-height: 1.1; max-width: 720px; }
 
   .prose-wrap { max-width: 920px; margin: 0 auto; padding: 64px 24px 0; }
@@ -152,8 +175,24 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   .breadcrumb a:hover { color: #000; }
   .breadcrumb-sep { color: var(--gray-200); }
 
-  .tag-strip { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 52px; }
+  .tag-strip { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 36px; }
   .tag-chip { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--gray-500); letter-spacing: .02em; }
+
+  .article-toc { margin: 0 0 56px; padding: 24px 28px; border: 1px solid var(--gray-200); border-radius: 2px; background: #fafafa; }
+  .toc-label { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: #8B4513; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .toc-label::before { content: ''; width: 18px; height: 1px; background: #8B4513; display: block; }
+  .toc-list { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc-item { padding: 0; }
+  .toc-item a { display: flex; align-items: baseline; gap: 14px; padding: 7px 0; color: var(--gray-700, #444); text-decoration: none; transition: color .2s; line-height: 1.45; }
+  .toc-item a:hover { color: #000; }
+  .toc-item.toc-level-3 { padding-left: 0; }
+  .toc-num { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--gray-500); letter-spacing: .04em; flex-shrink: 0; min-width: 22px; }
+  .toc-text { font-size: 14px; }
+  .article-body :global(h2[id]), .article-body :global(h3[id]) { scroll-margin-top: 96px; }
+  @media (max-width: 640px) {
+    .article-toc { padding: 18px 20px; margin-bottom: 40px; }
+    .toc-text { font-size: 13px; }
+  }
 
   .article-body :global(h2) { font-family: var(--font-display); font-size: clamp(24px,3vw,34px); font-weight: 400; color: #000; line-height: 1.2; margin: 72px 0 24px; }
   .article-body :global(h2:first-child) { margin-top: 0; }
