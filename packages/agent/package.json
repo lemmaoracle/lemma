@@ -18,9 +18,10 @@
     "scripts/build-wasm.sh"
   ],
   "scripts": {
-    "build": "./scripts/build-wasm.sh",
+    "build": "tsc -p tsconfig.json",
+    "build:wasm": "./scripts/build-wasm.sh",
     "build:circuit": "cd circuits && npm run build",
-    "build:all": "./scripts/build-wasm.sh && cd circuits && npm run build",
+    "build:all": "tsc -p tsconfig.json && ./scripts/build-wasm.sh && cd circuits && npm run build",
     "type-check": "tsc --noEmit",
     "test": "cargo test --manifest-path normalize/Cargo.toml",
     "test:ts": "vitest run",
