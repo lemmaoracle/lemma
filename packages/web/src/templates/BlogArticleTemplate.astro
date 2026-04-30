@@ -29,9 +29,10 @@ export interface BlogArticleTemplateProps {
   partnerCtaDesc: string;
   partnerCtaButton: string;
   relatedLabel: string;
+  relatedLinksLabel: string;
 }
 
-const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, partnerCtaDesc, partnerCtaButton, relatedLabel } = Astro.props as BlogArticleTemplateProps;
+const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, partnerCtaDesc, partnerCtaButton, relatedLabel, relatedLinksLabel } = Astro.props as BlogArticleTemplateProps;
 ---
 
 <Layout
@@ -64,7 +65,31 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
       <span>{post.title}</span>
     </div>
 
+    {post.tags && post.tags.length > 0 && (
+      <div class="tag-strip">
+        {post.tags.map((tag) => (
+          <span class="tag-chip">#{tag}</span>
+        ))}
+      </div>
+    )}
+
     <div class="article-body" set:html={post.body} />
+
+    {post.relatedLinks && post.relatedLinks.length > 0 && (
+      <div class="resources-section">
+        <div class="resources-label">{relatedLinksLabel}</div>
+        <ul class="resources-list">
+          {post.relatedLinks.map((link) => (
+            <li class="resources-item">
+              <a href={link.href} class="resources-link" rel="noopener" target="_blank">
+                <span class="resources-link-label">{link.label}</span>
+                <span class="resources-link-href">{link.href}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
 
     <div class="article-cta">
       <div class="article-cta-eyebrow">{partnerCtaTitle}</div>
@@ -124,10 +149,13 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
 
   .prose-wrap { max-width: 920px; margin: 0 auto; padding: 64px 24px 0; }
 
-  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 52px; font-size: 11px; color: var(--gray-500); flex-wrap: wrap; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 11px; color: var(--gray-500); flex-wrap: wrap; }
   .breadcrumb a { color: var(--gray-500); transition: color .2s; text-decoration: none; }
   .breadcrumb a:hover { color: #000; }
   .breadcrumb-sep { color: var(--gray-200); }
+
+  .tag-strip { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 52px; }
+  .tag-chip { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--gray-500); letter-spacing: .02em; }
 
   .article-body :global(h2) { font-family: var(--font-display); font-size: clamp(24px,3vw,34px); font-weight: 400; color: #000; line-height: 1.2; margin: 72px 0 24px; }
   .article-body :global(h2:first-child) { margin-top: 0; }
@@ -146,6 +174,17 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   .article-body :global(pre) { margin: 32px 0; padding: 24px; background: #1a1a1a; border-radius: 4px; overflow-x: auto; }
   .article-body :global(pre code) { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #e1e4e8; }
   .article-body :global(code) { font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace); font-size: 0.8em; border-radius: 0.3em; padding: 0.1em 0.3em; background-color: #f5f5f5; }
+
+  .resources-section { margin: 64px 0 0; padding-top: 32px; border-top: 1px solid var(--gray-200); }
+  .resources-label { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: #8B4513; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .resources-label::before { content: ''; width: 18px; height: 1px; background: #8B4513; display: block; }
+  .resources-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
+  .resources-item { padding: 0; }
+  .resources-link { display: flex; flex-direction: column; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--gray-200); text-decoration: none; color: inherit; transition: opacity .2s; }
+  .resources-list .resources-item:first-child .resources-link { border-top: 1px solid var(--gray-200); }
+  .resources-link:hover { opacity: .65; }
+  .resources-link-label { font-family: var(--font-body); font-size: 16px; font-weight: 400; color: #000; }
+  .resources-link-href { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; color: var(--gray-500); word-break: break-all; }
 
   .article-cta { margin: 80px -24px 0; background: #000; padding: 64px 48px; text-align: center; border-top: 3px solid #8B4513; }
   .article-cta-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; color: #8B4513; margin-bottom: 20px; }
