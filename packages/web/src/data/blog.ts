@@ -18,6 +18,11 @@ import { createHighlighter } from "shiki";
 
 export type BlogLocale = "en" | "ja";
 
+export interface RelatedLink {
+  readonly label: string;
+  readonly href: string;
+}
+
 export interface BlogPost {
   readonly slug: string;
   readonly locale: BlogLocale;
@@ -29,6 +34,8 @@ export interface BlogPost {
   readonly body: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  readonly tags?: ReadonlyArray<string>;
+  readonly relatedLinks?: ReadonlyArray<RelatedLink>;
 }
 
 export interface BlogSection {
@@ -80,6 +87,8 @@ interface PostFrontmatter {
   readonly abstract?: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  readonly tags?: ReadonlyArray<string>;
+  readonly relatedLinks?: ReadonlyArray<RelatedLink>;
 }
 
 /* ── GitHub fetching ────────────────────────────────────────────── */
@@ -234,6 +243,9 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               categoryColor:
                 fm.categoryColor || categoryColorByCategory[fm.category || ""] || "#000",
               cover: fm.cover ? resolveCoverUrl(fm.cover) : undefined,
+              tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
+              relatedLinks:
+                fm.relatedLinks && fm.relatedLinks.length > 0 ? fm.relatedLinks : undefined,
             }
           : undefined;
       })()
