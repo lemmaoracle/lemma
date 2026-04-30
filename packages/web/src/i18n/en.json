@@ -145,7 +145,7 @@
     "subtitle": "Frequently asked questions about Lemma and Verifiable AI"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle",
+    "defaultTitle": "Lemma Oracle — Verifiable AI Trust Infrastructure",
     "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
   },
   "services": {
