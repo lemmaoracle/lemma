@@ -5,6 +5,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+NORMALIZE_DIR="$PROJECT_DIR/normalize"
 OUT_DIR="$PROJECT_DIR/dist/wasm"
 
 echo "🚀 Building agent schema WASM for Lemma..."
@@ -26,9 +27,10 @@ mkdir -p "$OUT_DIR"
 
 # Build optimized WASM
 echo "1. Building optimized WASM..."
-echo "   Building in: $PROJECT_DIR"
+echo "   Building in: $NORMALIZE_DIR"
 echo "   Output to: $OUT_DIR"
 wasm-pack build \
+  "$NORMALIZE_DIR" \
   --target web \
   --out-dir "$OUT_DIR" \
   --release \
