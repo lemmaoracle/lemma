@@ -3,226 +3,151 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { poseidon1, poseidon2, poseidon6 } from "poseidon-lite";
 
-// ── Field hash: SHA-256 → BN254-safe field element ─────────────────
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BUILD_DIR = path.resolve(__dirname, "../build");
 
-const fieldHash = (s: string): string => {
-  const digest = Buffer.from(createHash("sha256").update(s, "utf8").digest());
-  const masked = Buffer.concat([Buffer.from([digest[0] & 0x0f]), digest.subarray(1)]);
-  return BigInt("0x" + masked.toString("hex")).toString();
+// ── BN254 field prime ───────────────────────────────────────────────
+
+const BN254_PRIME = BigInt(
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+);
+
+// ── toScalar: same as @lemmaoracle/sdk commitments.toScalar ─────────
+
+const toScalar = (value: string | number): bigint =>
+  typeof value === "number"
+    ? BigInt(value) % BN254_PRIME
+    : /^\d+$/.test(value)
+      ? BigInt(value) % BN254_PRIME
+      : BigInt(`0x${createHash("sha256").update(value).digest("hex")}`) % BN254_PRIME;
+
+// ── Witness computation via snarkjs ─────────────────────────────────
+
+type CircuitSignals = Readonly<Record<string, string>>;
+
+const calculateWitness = async (input: CircuitSignals): Promise<string[]> => {
+  const { wtns } = await import("snarkjs");
+  const wasmPath = path.join(BUILD_DIR, "agent-identity_js", "agent-identity.wasm");
+  const wtnsPath = path.join(BUILD_DIR, "test-witness.wtns");
+
+  const bigIntInput = Object.fromEntries(
+    Object.entries(input).map(([k, v]) => [k, BigInt(v)]),
+  );
+
+  await wtns.calculate(bigIntInput, wasmPath, wtnsPath);
+
+  const wtnsJson = await wtns.exportJson(wtnsPath);
+  fs.unlinkSync(wtnsPath);
+  return wtnsJson.map((v: bigint) => v.toString());
 };
 
-// ── Normalized credential type (matches lemma-agent WASM output) ────
+// ── Witness builder using real Poseidon hashes ──────────────────────
 
-type NormalizedCredential = Readonly<{
-  identity: Readonly<{
-    agentId: string;
-    subjectId: string;
-    controllerId: string;
-    orgId: string;
-  }>;
-  authority: Readonly<{
-    roles: string;
-    scopes: string;
-    permissions: string;
-  }>;
-  financial: Readonly<{
-    spendLimit: string;
-    currency: string;
-    paymentPolicy: string;
-  }>;
-  lifecycle: Readonly<{
-    issuedAt: string;
-    expiresAt: string;
-    revoked: string;
-    revocationRef: string;
-  }>;
-  provenance: Readonly<{
-    issuerId: string;
-    sourceSystem: string;
-    generatorId: string;
-    chainId: string;
-    network: string;
-  }>;
-}>;
+const buildValidInput = (nowSec = 1746000000): CircuitSignals => {
+  // Section hashes (same method as SDK: toScalar on JSON string)
+  const identityHash = toScalar(JSON.stringify({ agentId: "agent-1", subjectId: "subject-1", controllerId: "", orgId: "" }));
+  const authorityHash = toScalar(JSON.stringify({ roles: "admin", scopes: "", permissions: "" }));
+  const financialHash = toScalar(JSON.stringify({ spendLimit: "50000", currency: "USD", paymentPolicy: "" }));
+  const lifecycleHash = toScalar(JSON.stringify({ issuedAt: "2025-04-29T00:00:00.000Z", expiresAt: "2026-04-29T00:00:00.000Z", revoked: "false", revocationRef: "" }));
+  const provenanceHash = toScalar(JSON.stringify({ issuerId: "issuer-1", sourceSystem: "", generatorId: "", chainId: "1", network: "ethereum" }));
+  const salt = toScalar("agent-identity-test-salt");
 
-const sampleNormalizedCred: NormalizedCredential = {
-  identity: {
-    agentId: "agent-0xabc123",
-    subjectId: "did:lemma:agent:0xabc123",
-    controllerId: "did:lemma:org:acme",
-    orgId: "acme",
-  },
-  authority: {
-    roles: "purchaser,viewer",
-    scopes: "procurement,reporting",
-    permissions: "payments:create,reports:read",
-  },
-  financial: {
-    spendLimit: "50000",
-    currency: "USD",
-    paymentPolicy: "auto-approve-below-limit",
-  },
-  lifecycle: {
-    issuedAt: "2025-04-29T00:00:00.000Z",
-    expiresAt: "2026-04-29T00:00:00.000Z",
-    revoked: "false",
-    revocationRef: "",
-  },
-  provenance: {
-    issuerId: "did:lemma:org:trust-anchor",
-    sourceSystem: "",
-    generatorId: "",
-    chainId: "1",
-    network: "ethereum",
-  },
-};
+  // credentialCommitment = Poseidon6(identityHash, authorityHash, financialHash, lifecycleHash, provenanceHash, salt)
+  const credentialCommitment = poseidon6([identityHash, authorityHash, financialHash, lifecycleHash, provenanceHash, salt]);
 
-// ── Witness builder ─────────────────────────────────────────────────
+  // Issuer key pair
+  const issuerSecretKey = toScalar("issuer-secret-key-test");
+  const issuerPublicKey = poseidon1([issuerSecretKey]);
 
-type AgentIdentityWitness = Readonly<{
-  identityHash: string;
-  authorityHash: string;
-  financialHash: string;
-  lifecycleHash: string;
-  provenanceHash: string;
-  salt: string;
-  issuerSecretKey: string;
-  mac: string;
-  issuedAt: string;
-  expiresAt: string;
-  revoked: string;
-  credentialCommitment: string;
-  issuerPublicKey: string;
-  nowSec: string;
-}>;
-
-const buildWitness = (
-  cred: NormalizedCredential,
-  nowSec: number,
-): AgentIdentityWitness => {
-  const identityHash = fieldHash(JSON.stringify(cred.identity));
-  const authorityHash = fieldHash(JSON.stringify(cred.authority));
-  const financialHash = fieldHash(JSON.stringify(cred.financial));
-  const lifecycleHash = fieldHash(JSON.stringify(cred.lifecycle));
-  const provenanceHash = fieldHash(JSON.stringify(cred.provenance));
-  const salt = fieldHash("agent-identity-test-salt");
-
-  const issuerSecretKey = fieldHash("issuer-secret-key-test");
-
-  const commitmentInput = [
-    identityHash, authorityHash, financialHash,
-    lifecycleHash, provenanceHash, salt,
-  ].join(":");
-  const credentialCommitment = fieldHash(commitmentInput);
-
-  const issuerPublicKey = fieldHash(`pk:${issuerSecretKey}`);
-  const mac = fieldHash(`mac:${credentialCommitment}:${issuerSecretKey}`);
+  // MAC = Poseidon2(credentialCommitment, issuerSecretKey)
+  const mac = poseidon2([credentialCommitment, issuerSecretKey]);
 
   return {
-    identityHash,
-    authorityHash,
-    financialHash,
-    lifecycleHash,
-    provenanceHash,
-    salt,
-    issuerSecretKey,
-    mac,
+    identityHash: identityHash.toString(),
+    authorityHash: authorityHash.toString(),
+    financialHash: financialHash.toString(),
+    lifecycleHash: lifecycleHash.toString(),
+    provenanceHash: provenanceHash.toString(),
+    salt: salt.toString(),
+    issuerSecretKey: issuerSecretKey.toString(),
+    mac: mac.toString(),
     issuedAt: "1745900000",
     expiresAt: "1777436000",
     revoked: "0",
-    credentialCommitment,
-    issuerPublicKey,
+    credentialCommitment: credentialCommitment.toString(),
+    issuerPublicKey: issuerPublicKey.toString(),
     nowSec: nowSec.toString(),
   };
 };
 
 // ── Tests ───────────────────────────────────────────────────────────
 
-describe("agent-identity-v1 circuit witness", () => {
-  it("produces all required witness fields", () => {
-    const w = buildWitness(sampleNormalizedCred, 1746000000);
-    expect(w.credentialCommitment).toBeTruthy();
-    expect(w.issuerPublicKey).toBeTruthy();
-    expect(w.identityHash).toBeTruthy();
-    expect(w.authorityHash).toBeTruthy();
-    expect(w.financialHash).toBeTruthy();
-    expect(w.lifecycleHash).toBeTruthy();
-    expect(w.provenanceHash).toBeTruthy();
-    expect(w.salt).toBeTruthy();
-    expect(w.mac).toBeTruthy();
-    expect(w.issuedAt).toBeTruthy();
-    expect(w.nowSec).toBeTruthy();
-  });
-
-  it("produces deterministic commitment for same credential and salt", () => {
-    const w1 = buildWitness(sampleNormalizedCred, 1746000000);
-    const w2 = buildWitness(sampleNormalizedCred, 1746000000);
-    expect(w1.credentialCommitment).toBe(w2.credentialCommitment);
-  });
-
-  it("produces different commitment for different credentials", () => {
-    const modifiedCred = {
-      ...sampleNormalizedCred,
-      identity: { ...sampleNormalizedCred.identity, agentId: "agent-different" },
-    };
-    const w1 = buildWitness(sampleNormalizedCred, 1746000000);
-    const w2 = buildWitness(modifiedCred, 1746000000);
-    expect(w1.credentialCommitment).not.toBe(w2.credentialCommitment);
-  });
-
-  it("issuer public key is derived from secret key", () => {
-    const w = buildWitness(sampleNormalizedCred, 1746000000);
-    const expectedPk = fieldHash(`pk:${w.issuerSecretKey}`);
-    expect(w.issuerPublicKey).toBe(expectedPk);
-  });
-
-  it("MAC binds credential commitment to issuer secret key", () => {
-    const w = buildWitness(sampleNormalizedCred, 1746000000);
-    const expectedMac = fieldHash(`mac:${w.credentialCommitment}:${w.issuerSecretKey}`);
-    expect(w.mac).toBe(expectedMac);
-  });
-});
-
 describe("circuit build artifacts", () => {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const buildDir = path.resolve(__dirname, "../build");
-
   it("R1CS file exists", () => {
-    expect(fs.existsSync(path.join(buildDir, "agent-identity.r1cs"))).toBe(true);
+    expect(fs.existsSync(path.join(BUILD_DIR, "agent-identity.r1cs"))).toBe(true);
   });
 
   it("WASM file exists", () => {
-    expect(fs.existsSync(path.join(buildDir, "agent-identity_js", "agent-identity.wasm"))).toBe(true);
+    expect(fs.existsSync(path.join(BUILD_DIR, "agent-identity_js", "agent-identity.wasm"))).toBe(true);
   });
 
   it("zkey file exists", () => {
-    expect(fs.existsSync(path.join(buildDir, "agent-identity_final.zkey"))).toBe(true);
+    expect(fs.existsSync(path.join(BUILD_DIR, "agent-identity_final.zkey"))).toBe(true);
   });
 
-  it("verification key exists and has correct structure", () => {
-    const vkeyPath = path.join(buildDir, "agent-identity_vkey.json");
-    expect(fs.existsSync(vkeyPath)).toBe(true);
+  it("verification key has correct structure", () => {
+    const vkeyPath = path.join(BUILD_DIR, "agent-identity_vkey.json");
     const vkey = JSON.parse(fs.readFileSync(vkeyPath, "utf8"));
     expect(vkey.protocol).toBe("groth16");
     expect(vkey.curve).toBe("bn128");
+    // IC: 1 constant + 3 public inputs = 4
     expect(vkey.IC.length).toBe(4);
   });
 });
 
-describe("credentialCommitment downstream compatibility", () => {
-  const BN254_ORDER = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+describe("agent-identity-v1 circuit constraints", () => {
+  it("accepts a valid credential within lifecycle window", async () => {
+    const input = buildValidInput(1746000000);
+    const witness = await calculateWitness(input);
+    expect(witness).toBeDefined();
+    expect(witness.length).toBeGreaterThan(0);
+  }, 30000);
 
-  it("is a valid BN254 field element string", () => {
-    const w = buildWitness(sampleNormalizedCred, 1746000000);
-    const commitment = BigInt(w.credentialCommitment);
-    expect(commitment >= BigInt(0)).toBe(true);
-    expect(commitment < BN254_ORDER).toBe(true);
-  });
+  it("rejects a revoked credential", async () => {
+    const input = { ...buildValidInput(), revoked: "1" };
+    await expect(calculateWitness(input)).rejects.toThrow();
+  }, 30000);
 
-  it("fits in 253 bits for role-spend-limit circuit compatibility", () => {
-    const w = buildWitness(sampleNormalizedCred, 1746000000);
-    const commitment = BigInt(w.credentialCommitment);
-    expect(commitment.toString(2).length <= 253).toBe(true);
-  });
+  it("rejects a credential where issuedAt > nowSec", async () => {
+    const input = buildValidInput(1000000000);
+    await expect(calculateWitness(input)).rejects.toThrow();
+  }, 30000);
+
+  it("accepts a credential with expiresAt = 0 (no expiration)", async () => {
+    const input = { ...buildValidInput(), expiresAt: "0" };
+    const witness = await calculateWitness(input);
+    expect(witness).toBeDefined();
+    expect(witness.length).toBeGreaterThan(0);
+  }, 30000);
+
+  it("rejects an expired credential (nowSec > expiresAt)", async () => {
+    const input = buildValidInput(1800000000);
+    await expect(calculateWitness(input)).rejects.toThrow();
+  }, 30000);
+
+  it("produces correct credentialCommitment in witness output", async () => {
+    const input = buildValidInput(1746000000);
+    const witness = await calculateWitness(input);
+    // Public output index 1 = credentialCommitment
+    // (index 0 = constant 1, index 1 = credentialCommitment, 2 = issuerPublicKey, 3 = nowSec)
+    expect(witness[1]).toBe(input.credentialCommitment);
+  }, 30000);
+
+  it("produces correct issuerPublicKey in witness output", async () => {
+    const input = buildValidInput(1746000000);
+    const witness = await calculateWitness(input);
+    expect(witness[2]).toBe(input.issuerPublicKey);
+  }, 30000);
 });
