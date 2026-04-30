@@ -145,7 +145,7 @@
     "subtitle": "LemmaとVerifiable AIに関するよくある質問"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle",
+    "defaultTitle": "Lemma Oracle — 検証可能AIの信頼基盤",
     "defaultDescription": "AI に証明された事実を。AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。"
   },
   "services": {
