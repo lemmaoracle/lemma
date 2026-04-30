@@ -12,6 +12,21 @@ set -e
 # All available packages
 ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp")
 
+# Track backup files for cleanup on exit
+_BACKUP_FILES=()
+
+cleanup_backups() {
+    for f in "${_BACKUP_FILES[@]}"; do
+        if [[ -f "$f" ]]; then
+            local dir=$(dirname "$f")
+            local base=$(basename "$f" .backup)
+            mv "$f" "$dir/$base"
+            echo "🔄 Restored $dir/$base from backup (cleanup)"
+        fi
+    done
+}
+trap cleanup_backups EXIT
+
 # Parse arguments
 if [[ $# -eq 0 ]]; then
     TARGET="all"
@@ -89,6 +104,7 @@ publish_sdk() {
 
     npm version $VERSION --no-git-tag-version
     cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
 
     local spec_version=$(node -p "require('../spec/package.json').version")
     node -e "
@@ -107,6 +123,8 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
 
     # Restore
     cd packages/sdk && mv package.json.backup package.json && cd ../..
+    # Remove from backup tracking
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/sdk/package.json.backup}")
     echo "🔄 Restored SDK package.json for development"
 }
 
@@ -116,6 +134,7 @@ publish_x402() {
 
     npm version $VERSION --no-git-tag-version
     cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
 
     local sdk_version=$(node -p "require('../sdk/package.json').version")
     node -e "
@@ -136,6 +155,7 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
 
     # Restore
     cd packages/x402 && mv package.json.backup package.json && cd ../..
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/x402/package.json.backup}")
     echo "🔄 Restored x402 package.json for development"
 }
 
@@ -145,6 +165,7 @@ publish_mcp() {
 
     npm version $VERSION --no-git-tag-version
     cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
 
     local sdk_version=$(node -p "require('../sdk/package.json').version")
     node -e "
@@ -163,7 +184,39 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
 
     # Restore
     cd packages/mcp && mv package.json.backup package.json && cd ../..
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/mcp/package.json.backup}")
     echo "🔄 Restored MCP package.json for development"
+}
+
+# Publish agent with SDK and spec dependency update
+publish_agent() {
+    cd packages/agent
+
+    npm version $VERSION --no-git-tag-version
+    cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
+
+    local sdk_version=$(node -p "require('../sdk/package.json').version")
+    local spec_version=$(node -p "require('../spec/package.json').version")
+    node -e "
+const pkg = require('./package.json');
+pkg.dependencies['@lemmaoracle/sdk'] = '^${sdk_version}';
+pkg.dependencies['@lemmaoracle/spec'] = '^${spec_version}';
+require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+"
+
+    local agent_version=$(node -p "require('./package.json').version")
+    echo "📝 Updated @lemmaoracle/agent version: $agent_version"
+    echo "🚀 Publishing @lemmaoracle/agent..."
+    npm publish --access public
+
+    cd ../..
+    echo "✅ Published @lemmaoracle/agent@$agent_version"
+
+    # Restore
+    cd packages/agent && mv package.json.backup package.json && cd ../..
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/agent/package.json.backup}")
+    echo "🔄 Restored agent package.json for development"
 }
 
 if [[ "$TARGET" == "all" ]]; then
@@ -171,7 +224,7 @@ if [[ "$TARGET" == "all" ]]; then
     publish_simple "@lemmaoracle/spec" "spec"
     publish_simple "@lemmaoracle/parser" "parser"
     publish_sdk
-    publish_simple "@lemmaoracle/agent" "agent"
+    publish_agent
     publish_x402
     publish_mcp
 
@@ -191,7 +244,7 @@ else
         "@lemmaoracle/spec")    publish_simple "$TARGET" "spec" ;;
         "@lemmaoracle/parser")  publish_simple "$TARGET" "parser" ;;
         "@lemmaoracle/sdk")     publish_sdk ;;
-        "@lemmaoracle/agent")   publish_simple "$TARGET" "agent" ;;
+        "@lemmaoracle/agent")   publish_agent ;;
         "@lemmaoracle/x402")    publish_x402 ;;
         "@lemmaoracle/mcp")     publish_mcp ;;
     esac
