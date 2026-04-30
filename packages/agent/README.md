@@ -1,6 +1,6 @@
-# @lemma/agent
+# @lemmaoracle/agent
 
-Agent Identity + Authority Credential schema for Lemma — implemented as a Rust WASM module.
+Agent Identity + Authority Credential schema for Lemma — implemented as a Rust WASM module with ZK identity-proof circuit.
 
 ## Schema: `agent-identity-authority-v1`
 
@@ -16,9 +16,11 @@ Represents a verifiable credential with these field groups:
 
 ```bash
 cd packages/agent
-pnpm build          # Build WASM via wasm-pack
-pnpm type-check     # Type-check registration scripts
-pnpm test           # Run Rust tests
+pnpm build              # Build WASM via wasm-pack
+pnpm type-check         # Type-check registration scripts
+pnpm test               # Run Rust tests
+pnpm register           # Register schema with Lemma
+pnpm register:circuit   # Register circuit with Lemma
 ```
 
 ## Registration
@@ -145,20 +147,43 @@ The `normalize` function canonicalizes all fields:
 }
 ```
 
-## Future: ZK Circuit Integration
+## ZK Circuit: `agent-identity-v1`
 
-Designed for future circuit integration. Planned predicates:
+The `circuits/` directory contains the `agent-identity-v1` Groth16 circuit that proves an agent credential was issued by a trusted authority and is currently valid.
 
-| Predicate | Description |
-| :--- | :--- |
-| `hasScope(normalized, scopeName)` | Prove agent holds a scope |
-| `belongsToOrg(normalized, orgId)` | Prove agent belongs to an org |
-| `spendLimitAbove(normalized, threshold)` | Prove spend limit > threshold |
-| `spendLimitBelow(normalized, threshold)` | Prove spend limit < threshold |
-| `isValidAt(normalized, timestamp)` | Prove validity at a time |
-| `isNotRevoked(normalized, root)` | Prove non-revocation |
+**Circuit signals:**
 
-All normalized fields are flat strings — easy to encode as circuit field elements.
+| Signal | Visibility | Description |
+| :--- | :--- | :--- |
+| `identityHash` | private | Poseidon hash of normalized identity fields |
+| `authorityHash` | private | Poseidon hash of normalized authority fields |
+| `financialHash` | private | Poseidon hash of normalized financial fields |
+| `lifecycleHash` | private | Poseidon hash of normalized lifecycle fields |
+| `provenanceHash` | private | Poseidon hash of normalized provenance fields |
+| `salt` | private | Binding randomness |
+| `issuerSecretKey` | private | Issuer's secret key for MAC verification |
+| `mac` | private | Issuer's MAC over the credentialCommitment |
+| `issuedAt` | private | Credential issuance timestamp |
+| `expiresAt` | private | Credential expiration (0 = none) |
+| `revoked` | private | Revocation flag (must be 0) |
+| `credentialCommitment` | **public** | Poseidon commitment binding all credential fields |
+| `issuerPublicKey` | **public** | Issuer's public key |
+| `nowSec` | **public** | Current unix timestamp |
+
+**Constraints:**
+1. `credentialCommitment = Poseidon6(identityHash, authorityHash, financialHash, lifecycleHash, provenanceHash, salt)`
+2. `issuerPublicKey = Poseidon1(issuerSecretKey)` — key derivation
+3. `mac = Poseidon2(credentialCommitment, issuerSecretKey)` — issuer signature
+4. `issuedAt <= nowSec` — credential has been issued
+5. `revoked === 0` — not revoked
+6. If `expiresAt != 0`: `nowSec < expiresAt` — not expired
+
+Build the circuit:
+
+```bash
+cd packages/agent/circuits
+npm run build
+```
 
 ## License
 

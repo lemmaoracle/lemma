@@ -32,6 +32,17 @@ The `packages/agent/DESIGN.md` file SHALL be deleted.
 - **WHEN** the package restructure is complete
 - **THEN** `packages/agent/DESIGN.md` does not exist
 
+### Requirement: Build artifacts excluded from version control
+The `packages/agent/` directory SHALL include a `.gitignore` file that excludes build artifacts: `circuits/build/`, `circuits/node_modules/`, `target/`, `dist/`, `pkg/`, and `node_modules/`.
+
+#### Scenario: Circuit build directory is ignored
+- **WHEN** the circom circuit is compiled and produces files under `circuits/build/`
+- **THEN** `git status` does not list any files under `circuits/build/`
+
+#### Scenario: Cargo target directory is ignored
+- **WHEN** `cargo build` produces files under `normalize/target/`
+- **THEN** `git status` does not list any files under `target/`
+
 ## MODIFIED Requirements
 
 ### Requirement: Deterministic spend limit string output

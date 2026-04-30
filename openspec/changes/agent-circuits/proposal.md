@@ -23,6 +23,6 @@
 - **File layout**: `packages/agent/src/` → `packages/agent/normalize/src/`; new `packages/agent/circuit/` directory added.
 - **Build pipeline**: The WASM build script (`scripts/build-wasm.sh`) must be updated to target the new crate path. A new build step is needed for the circom circuit compilation.
 - **Cargo workspace**: `packages/agent/Cargo.toml` becomes a workspace or the crate root moves to `packages/agent/normalize/Cargo.toml`. A second crate at `packages/agent/circuit/` is not a Rust crate (circom outputs JS/WASM), so Cargo workspace changes are limited to the normalization crate path.
-- **SDK consumers**: The `@lemma/agent` npm package continues to export `normalize`, `validate`, `process` from the same WASM module — no API break. The circuit artifact is a separate registration step, not a WASM export.
+- **SDK consumers**: The `@lemmaoracle/agent` npm package continues to export `normalize`, `validate`, `process` from the same WASM module — no API break. The circuit artifact is a separate registration step, not a WASM export.
 - **trust402 dependency**: trust402 can now reference the `agent-identity-v1` circuit's public outputs as a precondition for its own `role-spend-limit-v1` proofs, closing the identity-authentication gap.
 - **Removed**: `packages/agent/DESIGN.md` deleted.
