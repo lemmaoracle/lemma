@@ -5,12 +5,12 @@
 #   ./scripts/publish-npm.sh <package> [version]    # Publish single package
 #
 #   version: patch (default) | minor | major | specific version
-#   package: @lemmaoracle/spec | @lemmaoracle/parser | @lemmaoracle/sdk | @lemmaoracle/x402 | @lemmaoracle/mcp
+#   package: @lemmaoracle/spec | @lemmaoracle/parser | @lemmaoracle/sdk | @lemmaoracle/agent | @lemmaoracle/x402 | @lemmaoracle/mcp
 
 set -e
 
 # All available packages
-ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/x402" "@lemmaoracle/mcp")
+ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp")
 
 # Parse arguments
 if [[ $# -eq 0 ]]; then
@@ -57,7 +57,7 @@ fi
 
 # Build filter
 if [[ "$TARGET" == "all" ]]; then
-    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/x402 -F @lemmaoracle/mcp"
+    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/agent -F @lemmaoracle/x402 -F @lemmaoracle/mcp"
 else
     BUILD_FILTER="-F ${TARGET}"
 fi
@@ -171,6 +171,7 @@ if [[ "$TARGET" == "all" ]]; then
     publish_simple "@lemmaoracle/spec" "spec"
     publish_simple "@lemmaoracle/parser" "parser"
     publish_sdk
+    publish_simple "@lemmaoracle/agent" "agent"
     publish_x402
     publish_mcp
 
@@ -179,6 +180,7 @@ if [[ "$TARGET" == "all" ]]; then
     echo "  - @lemmaoracle/spec@$(node -p "require('./packages/spec/package.json').version")"
     echo "  - @lemmaoracle/parser@$(node -p "require('./packages/parser/package.json').version")"
     echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json').version")"
+    echo "  - @lemmaoracle/agent@$(node -p "require('./packages/agent/package.json').version")"
     echo "  - @lemmaoracle/x402@$(node -p "require('./packages/x402/package.json').version")"
     echo "  - @lemmaoracle/mcp@$(node -p "require('./packages/mcp/package.json').version")"
     echo ""
@@ -189,6 +191,7 @@ else
         "@lemmaoracle/spec")    publish_simple "$TARGET" "spec" ;;
         "@lemmaoracle/parser")  publish_simple "$TARGET" "parser" ;;
         "@lemmaoracle/sdk")     publish_sdk ;;
+        "@lemmaoracle/agent")   publish_simple "$TARGET" "agent" ;;
         "@lemmaoracle/x402")    publish_x402 ;;
         "@lemmaoracle/mcp")     publish_mcp ;;
     esac
