@@ -121,6 +121,11 @@ export interface Translations {
     readonly subtitle: string;
     readonly backToBlog: string;
     readonly index: Readonly<{
+      readonly featuredTag: string;
+      readonly featuredCta: string;
+      readonly recentTag: string;
+      readonly archiveTag: string;
+      readonly foundationsTag: string;
       readonly headerDesc: string;
       readonly essaysTag: string;
       readonly readEssay: string;

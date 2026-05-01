@@ -5,30 +5,29 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 
+interface Post {
+  cover?: string;
+  category: string;
+  date: string;
+  title: string;
+  abstract: string;
+  slug: string;
+}
+
 export interface BlogIndexTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
   blogPath: string;
-  essays: Array<{
-    cover?: string;
-    category: string;
-    date: string;
-    title: string;
-    abstract: string;
-    slug: string;
-  }>;
-  guides: Array<{
-    cover?: string;
-    category: string;
-    date: string;
-    title: string;
-    abstract: string;
-    slug: string;
-  }>;
+  featured?: Post;
+  recent: ReadonlyArray<Post>;
+  archive: ReadonlyArray<Post>;
+  guides: ReadonlyArray<Post>;
+  foundations: ReadonlyArray<Post>;
 }
 
-const { locale, t, base, blogPath, essays, guides } = Astro.props as BlogIndexTemplateProps;
+const { locale, t, base, blogPath, featured, recent, archive, guides, foundations } =
+  Astro.props as BlogIndexTemplateProps;
 ---
 
 <Layout locale={locale} title={`${t.blog.title} — Lemma Oracle`} description={t.blog.subtitle}>
@@ -41,153 +40,581 @@ const { locale, t, base, blogPath, essays, guides } = Astro.props as BlogIndexTe
     <p>{t.blog.index.headerDesc}</p>
   </header>
 
-  <section class="essays-section">
-    <div class="section-tag">{t.blog.index.essaysTag}</div>
-    <div class="essays-grid">
-      {essays.map((post, i) => (
-        <a href={`${blogPath}/${post.slug}`} class="essay-article reveal" style={`transition-delay:${i * 0.07}s`}>
-          <div class="essay-thumb" style={`background-image:url('${post.cover ?? ""}')`}></div>
-          <div class="essay-body">
-            <div class="essay-meta"><span class="essay-cat">{post.category}</span><span class="essay-date">{post.date}</span></div>
-            <h2>{post.title}</h2>
-            <p>{post.abstract}</p>
-            <span class="essay-read">{t.blog.index.readEssay}</span>
+  {featured && (
+    <section class="featured-section">
+      <div class="section-tag">{t.blog.index.featuredTag}</div>
+      <a href={`${blogPath}/${featured.slug}`} class="featured-card reveal">
+        <div class="featured-thumb" style={`background-image:url('${featured.cover ?? ""}')`}></div>
+        <div class="featured-body">
+          <div class="featured-meta">
+            <span class="essay-cat">{featured.category}</span>
+            <span class="essay-date">{featured.date}</span>
           </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <section class="guides-section">
-    <div class="section-tag">{t.blog.index.guidesTag}</div>
-    <div style="font-family:var(--font-display);font-size:clamp(28px,3vw,40px);font-weight:400;color:var(--black);margin-bottom:8px">{t.blog.index.guidesTitle}</div>
-    <p style="font-size:14px;color:var(--gray-500);max-width:440px;line-height:1.78;margin-bottom:0">{t.blog.index.guidesDesc}</p>
-    <div class="guides-grid">
-      {guides.map((post, i) => (
-        <a href={`${blogPath}/${post.slug}`} class="guide-card reveal" style={`transition-delay:${i * 0.07}s`}>
-          <div class="guide-meta"><span class="guide-cat">{post.category}</span><span class="guide-date">{post.date}</span></div>
-          <h3>{post.title}</h3>
-          <p>{post.abstract}</p>
-          <span class="guide-link">{t.blog.index.readGuide}</span>
-        </a>
-      ))}
-      <div class="specs-card reveal">
-        <div class="specs-text">
-          <h3>{t.blog.index.specsTitle}</h3>
-          <p>{t.blog.index.specsDesc}</p>
+          <h2>{featured.title}</h2>
+          <p>{featured.abstract}</p>
+          <span class="featured-cta">{t.blog.index.featuredCta}</span>
         </div>
-        <a href={`${blogPath}/lemma-oracle-specs`} class="btn-white" style="white-space:nowrap">{t.blog.index.readSpecs}</a>
+      </a>
+    </section>
+  )}
+
+  {recent.length > 0 && (
+    <section class="recent-section">
+      <div class="section-tag">{t.blog.index.recentTag}</div>
+      <div class="recent-grid">
+        {recent.map((post, i) => (
+          <a
+            href={`${blogPath}/${post.slug}`}
+            class="recent-card reveal"
+            style={`transition-delay:${i * 0.05}s`}
+          >
+            <div class="recent-thumb" style={`background-image:url('${post.cover ?? ""}')`}></div>
+            <div class="recent-body">
+              <div class="essay-meta">
+                <span class="essay-cat">{post.category}</span>
+                <span class="essay-date">{post.date}</span>
+              </div>
+              <h3>{post.title}</h3>
+              <p>{post.abstract}</p>
+            </div>
+          </a>
+        ))}
       </div>
-    </div>
-  </section>
+    </section>
+  )}
+
+  {archive.length > 0 && (
+    <section class="archive-section">
+      <div class="section-tag">{t.blog.index.archiveTag}</div>
+      <ul class="archive-list">
+        {archive.map((post) => (
+          <li class="archive-row reveal">
+            <a href={`${blogPath}/${post.slug}`} class="archive-link">
+              <span class="archive-cat">{post.category}</span>
+              <span class="archive-title">{post.title}</span>
+              <span class="archive-date">{post.date}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {guides.length > 0 && (
+    <section class="guides-section">
+      <div class="section-tag">{t.blog.index.guidesTag}</div>
+      <div class="guides-head">
+        <div class="guides-title">{t.blog.index.guidesTitle}</div>
+        <p class="guides-desc">{t.blog.index.guidesDesc}</p>
+      </div>
+      <div class="guides-grid">
+        {guides.map((post, i) => (
+          <a
+            href={`${blogPath}/${post.slug}`}
+            class="guide-card reveal"
+            style={`transition-delay:${i * 0.05}s`}
+          >
+            <div class="guide-meta">
+              <span class="guide-cat">{post.category}</span>
+              <span class="guide-date">{post.date}</span>
+            </div>
+            <h3>{post.title}</h3>
+            <p>{post.abstract}</p>
+            <span class="guide-link">{t.blog.index.readGuide}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {foundations.length > 0 && (
+    <section class="foundations-section">
+      <div class="section-tag" style="color:rgba(255,255,255,0.5)">{t.blog.index.foundationsTag}</div>
+      <div class="foundations-grid">
+        {foundations.map((post) => (
+          <a href={`${blogPath}/${post.slug}`} class="foundations-card reveal">
+            <div class="foundations-text">
+              <h3>{post.title}</h3>
+              <p>{post.abstract}</p>
+            </div>
+            <span class="btn-white">{t.blog.index.readSpecs}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
+  /* ─── HEADER ─── */
   .blog-header {
-    margin-top: 64px; background: var(--black); padding: 100px 10% 80px;
-    border-bottom: 1px solid rgba(255,255,255,.07);
+    margin-top: 64px;
+    background: var(--black);
+    padding: 100px 10% 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   .blog-header h1 {
-    font-family: var(--font-display); font-size: clamp(48px,6vw,80px);
-    font-weight: 300; color: var(--white); line-height: 1.08; margin-bottom: 16px;
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin-bottom: 16px;
   }
-  .blog-header p { font-size: 15px; color: rgba(255,255,255,.4); line-height: 1.75; max-width: 440px; }
-
-  a { text-decoration: none; color: inherit; }
-
-  .essays-section { background: var(--white); padding: 100px 10%; }
-  .essays-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--gray-200); }
-
-  .essay-article {
-    background: var(--white); display: grid; grid-template-rows: 220px 1fr;
-    border-top: 2px solid transparent; transition: border-color .2s;
-    opacity: 0; transform: translateY(20px);
-    transition: opacity .6s ease, transform .6s ease, border-color .2s;
+  .blog-header p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.75;
+    max-width: 440px;
   }
-  .essay-article.on { opacity: 1; transform: translateY(0); }
-  .essay-article:hover { border-top-color: var(--accent); }
-  .essay-article:nth-child(2) { transition-delay: .07s; }
-  .essay-article:nth-child(3) { transition-delay: .14s; }
-  .essay-article:nth-child(4) { transition-delay: .21s; }
-  .essay-article:nth-child(5) { transition-delay: .28s; }
-  .essay-article:nth-child(6) { transition-delay: .35s; }
-  .essay-article:nth-child(7) { transition-delay: .42s; }
-  .essay-thumb {
-    width: 100%; height: 100%;
-    background-size: cover; background-position: center;
-    filter: saturate(.4) brightness(.85);
-  }
-  .essay-body { padding: 28px 32px 36px; display: flex; flex-direction: column; gap: 10px; }
-  .essay-meta { display: flex; align-items: center; gap: 12px; }
-  .essay-cat { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
-  .essay-date { font-size: 10px; color: var(--gray-500); letter-spacing: .05em; }
-  .essay-article h2 { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--black); }
-  .essay-article p { font-size: 13px; line-height: 1.75; color: var(--gray-500); flex: 1; }
-  .essay-read { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); display: inline-block; margin-top: 8px; }
 
-  .guides-section { background: var(--gray-50); padding: 100px 10%; }
-  .guides-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--gray-200); margin-top: 56px; }
-  .guide-card {
-    background: var(--white); padding: 36px 32px;
-    border-top: 2px solid transparent; transition: border-color .2s;
-    display: flex; flex-direction: column; gap: 8px;
-    opacity: 0; transform: translateY(16px);
-    transition: opacity .55s ease, transform .55s ease, border-color .2s;
+  a {
+    text-decoration: none;
+    color: inherit;
   }
-  .guide-card.on { opacity: 1; transform: translateY(0); }
-  .guide-card:hover { border-top-color: var(--accent); }
-  .guide-card:nth-child(2) { transition-delay: .07s; }
-  .guide-card:nth-child(3) { transition-delay: .14s; }
-  .guide-card:nth-child(4) { transition-delay: .21s; }
-  .guide-card:nth-child(5) { transition-delay: .28s; }
-  .guide-card:nth-child(6) { transition-delay: .35s; }
-  .guide-meta { display: flex; align-items: center; gap: 10px; }
-  .guide-cat { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
-  .guide-date { font-size: 10px; color: var(--gray-500); }
-  .guide-card h3 { font-family: var(--font-display); font-size: 18px; font-weight: 600; line-height: 1.3; color: var(--black); }
-  .guide-card p { font-size: 13px; line-height: 1.7; color: var(--gray-500); flex: 1; }
-  .guide-link { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-top: 8px; }
 
-  .specs-card {
-    background: var(--black); margin: 2px; padding: 48px 40px;
-    display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
-  }
-  .specs-text h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
-  .specs-text p { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.7; max-width: 480px; }
-  .btn-white {
-    background: var(--white); color: var(--black); padding: 14px 32px; font-size: 12px;
-    font-weight: 500; letter-spacing: .14em; text-transform: uppercase; border: none;
-    cursor: pointer; display: inline-block; transition: background .2s, color .2s;
-  }
-  .btn-white:hover { background: var(--accent); color: var(--white); }
-
-  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
-  .reveal.on { opacity: 1; transform: translateY(0); }
+  /* ─── SECTION TAG ─── */
   .section-tag {
-    font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
-    color: #8B4513; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .section-tag::before { content: ''; width: 18px; height: 1px; background: #8B4513; display: block; }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
 
-  @media(max-width:1024px) {
-    .essays-grid { grid-template-columns: 1fr; }
-    .guides-grid { grid-template-columns: 1fr 1fr; }
+  /* ─── FEATURED ─── */
+  .featured-section {
+    background: var(--white);
+    padding: 100px 10% 60px;
   }
-  @media(max-width:768px) {
-    .blog-header, .essays-section, .guides-section { padding-left: 6%; padding-right: 6%; }
-    .blog-header { padding-top: 80px; padding-bottom: 60px; }
-    .essays-section, .guides-section { padding-top: 70px; padding-bottom: 70px; }
-    .guides-grid { grid-template-columns: 1fr; }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    background: var(--white);
+    border-top: 2px solid var(--accent);
+    transition: background 0.2s, border-top-color 0.2s;
+  }
+  .featured-card:hover {
+    background: var(--accent-bg);
+    border-top-color: var(--accent-lt, #a0522d);
+  }
+  .featured-thumb {
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray-200);
+    filter: saturate(0.55) brightness(0.9);
+    min-height: 360px;
+  }
+  .featured-body {
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+  .featured-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .featured-card h2 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+  .featured-card p {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--gray-800, #1a1a1a);
+  }
+  .featured-cta {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ─── RECENT ─── */
+  .recent-section {
+    background: var(--white);
+    padding: 60px 10% 100px;
+  }
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .recent-card {
+    background: var(--white);
+    display: grid;
+    grid-template-rows: 180px 1fr;
+    border-top: 2px solid transparent;
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
+    color: inherit;
+  }
+  .recent-card:hover {
+    border-top-color: var(--accent);
+    background: var(--gray-50);
+  }
+  .recent-thumb {
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray-200);
+    filter: saturate(0.45) brightness(0.88);
+  }
+  .recent-body {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .recent-card h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+  }
+  .recent-card p {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--gray-500);
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .essay-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .essay-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .essay-date {
+    font-size: 10px;
+    color: var(--gray-500);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── ARCHIVE ─── */
+  .archive-section {
+    background: var(--gray-50);
+    padding: 80px 10% 80px;
+  }
+  .archive-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--gray-200);
+  }
+  .archive-row {
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .archive-link {
+    display: grid;
+    grid-template-columns: 200px 1fr 100px;
+    gap: 24px;
+    align-items: baseline;
+    padding: 18px 4px;
+    color: inherit;
+    transition: background 0.2s, padding 0.2s;
+  }
+  .archive-link:hover {
+    background: var(--white);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .archive-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .archive-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--black);
+  }
+  .archive-date {
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* ─── GUIDES ─── */
+  .guides-section {
+    background: var(--white);
+    padding: 100px 10%;
+    border-top: 1px solid var(--gray-200);
+  }
+  .guides-head {
+    margin-bottom: 56px;
+    max-width: 720px;
+  }
+  .guides-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+  .guides-desc {
+    font-size: 14px;
+    color: var(--gray-500);
+    line-height: 1.78;
+    margin: 0;
+  }
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .guide-card {
+    background: var(--white);
+    padding: 36px 32px;
+    border-top: 2px solid transparent;
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .guide-card:hover {
+    border-top-color: var(--accent);
+  }
+  .guide-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .guide-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .guide-date {
+    font-size: 10px;
+    color: var(--gray-500);
+  }
+  .guide-card h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+  }
+  .guide-card p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-500);
+    flex: 1;
+  }
+  .guide-link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ─── FOUNDATIONS ─── */
+  .foundations-section {
+    background: var(--black);
+    padding: 80px 10%;
+  }
+  .foundations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .foundations-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 2px solid var(--accent);
+    padding: 40px 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .foundations-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-top-color: var(--accent-lt, #a0522d);
+  }
+  .foundations-text {
+    flex: 1;
+    min-width: 280px;
+  }
+  .foundations-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .foundations-card p {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 30px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+  .foundations-card:hover .btn-white {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  /* ─── REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .featured-card.reveal,
+  .recent-card.reveal,
+  .guide-card.reveal,
+  .foundations-card.reveal {
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s, background 0.2s;
+  }
+  .archive-row.reveal {
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-thumb {
+      min-height: 240px;
+    }
+    .featured-body {
+      padding: 36px 32px 40px;
+    }
+    .recent-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .archive-link {
+      grid-template-columns: 140px 1fr 80px;
+      gap: 16px;
+    }
+    .guides-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 768px) {
+    .blog-header,
+    .featured-section,
+    .recent-section,
+    .archive-section,
+    .guides-section,
+    .foundations-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .blog-header {
+      padding-top: 80px;
+      padding-bottom: 60px;
+    }
+    .featured-section {
+      padding-top: 70px;
+      padding-bottom: 36px;
+    }
+    .recent-section {
+      padding-top: 36px;
+      padding-bottom: 70px;
+    }
+    .archive-section,
+    .guides-section,
+    .foundations-section {
+      padding-top: 56px;
+      padding-bottom: 56px;
+    }
+    .recent-grid {
+      grid-template-columns: 1fr;
+    }
+    .guides-grid {
+      grid-template-columns: 1fr;
+    }
+    .archive-link {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding: 14px 4px;
+    }
+    .archive-date {
+      text-align: left;
+    }
+    .foundations-card {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 32px 28px;
+    }
   }
 </style>
 
 <script is:inline>
-  var io = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    io.observe(el);
+  });
 </script>

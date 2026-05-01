@@ -8,15 +8,28 @@ const t = getTranslations(locale);
 const base = "/ja";
 const blogPath = "/ja/blog";
 const sections = await getBlogSections(locale);
+
 const filterSection = sections.find(
-  (s) => s.section === "エッセイ" || s.section === "Essays"
+  (s) => s.section === "エッセイ" || s.section === "Essays",
 );
-const essays = filterSection?.posts?.filter(
-  (p) => p.category !== "ガイド" && p.category !== "Guides"
-) ?? [];
+const allEssays = filterSection?.posts ?? [];
+const essays = allEssays.filter(
+  (p) =>
+    p.category !== "ガイド" &&
+    p.category !== "Guides" &&
+    p.category !== "基盤" &&
+    p.category !== "Foundations",
+);
 const guides = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "ガイド" || p.category === "Guides");
+const foundations = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "基盤" || p.category === "Foundations");
+
+const featured = essays[0];
+const recent = essays.slice(1, 7);
+const archive = essays.slice(7);
 ---
 
 <BlogIndexTemplate
@@ -24,6 +37,9 @@ const guides = sections
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={essays}
+  featured={featured}
+  recent={recent}
+  archive={archive}
   guides={guides}
+  foundations={foundations}
 />
