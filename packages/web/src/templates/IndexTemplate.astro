@@ -4,10 +4,11 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CtaSection from "../components/CtaSection.astro";
 import HomeSchemaOrg from "@/components/HomeSchemaOrg";
 import HeroCover from "../assets/cover.jpg";
-import ProofBg from "../assets/rag.jpg";
+import WhyBg from "../assets/rag.jpg";
+import Trust402Bg from "../assets/trust402-canyon.jpg";
+import FinanceBg from "../assets/finance-iceberg.jpg";
 
 export interface IndexTemplateProps {
   locale: Locale;
@@ -28,13 +29,24 @@ export interface IndexTemplateProps {
     title: string;
     slug: string;
   }>;
-  blogSectionTitle: string;
-  blogSectionDesc: string;
-  featureGuideLinks: string[];
+  layerGuideLinks: ReadonlyArray<string>;
 }
 
-const { locale, t, base, description, featured, mini, blogSectionTitle, blogSectionDesc, featureGuideLinks } = Astro.props as IndexTemplateProps;
+const { locale, t, base, description, featured, mini, layerGuideLinks } = Astro.props as IndexTemplateProps;
 const ix = t.index;
+
+const heroCta = "#demos";
+const wpLink = locale === "ja"
+  ? `${base}/blog/whitepaper-v1-prove-ai-decisions/`
+  : "/blog/whitepaper-v1-prove-ai-decisions/";
+const trust402Href = "/trust402/";
+const trust402ProductHref = "/trust402/";
+const financeHref = `${base}/blog/verifiable-origin-bridge-exploits-2026/`;
+const financeAnalysisHref = `${base}/blog/verifiable-origin-bridge-exploits-2026/`;
+const specsHref = `${base}/blog/lemma-oracle-specs/`;
+const partnerHref = `${base}/services/`;
+const featuredLg = featured[0];
+const featuredAside = featured.slice(1, 3);
 ---
 
 <Layout locale={locale} metaType="home" description={description}>
@@ -43,143 +55,273 @@ const ix = t.index;
   <HubSpotDrawer />
 
   <main>
+    <!-- ─── HERO ─── -->
     <section class="hero">
       <div class="hero-bg" id="heroBg" style={`background-image: url(${HeroCover.src})`}></div>
       <div class="hero-overlay"></div>
       <div class="hero-content" id="heroContent">
-        <div class="hero-eyebrow">{ix.hero.eyebrow}</div>
+        <div class="hero-eyebrow">
+          <span class="hero-live-dot"></span>
+          {ix.hero.liveBadge}
+        </div>
         <h1 class="hero-h1">
-          {ix.hero.h1}
-          <strong>{ix.hero.h1Strong}</strong>
+          {ix.hero.h1Line1}<br/>{ix.hero.h1Line2}
         </h1>
-        <div class="hero-rule"></div>
         <p class="hero-sub">{ix.hero.sub}</p>
+
+        <div class="hero-marks">
+          {ix.hero.marks.map((mark) => (
+            <span class="mark"><span class="mark-dot"></span>{mark}</span>
+          ))}
+        </div>
+
+        <div class="hero-divider"></div>
+
+        <p class="hero-status">
+          <span>{ix.hero.statusLicense}</span>
+          <span class="hero-status-sep">·</span>
+          <span class="hero-status-mono">{ix.hero.statusNpm}</span>
+        </p>
+
         <div class="hero-cta">
-          <a href={`${base}/services`} class="btn-primary">{ix.hero.cta}</a>
-          <a
-            href="https://tally.so/r/7RJXdR"
-            target="_blank"
-            class="btn-ghost"
-            id="heroWpBtn">{ix.hero.wp}</a
-          >
+          <a href={heroCta} class="btn btn-primary">{ix.hero.primaryCta}</a>
+          <a href={wpLink} class="btn btn-ghost-light">{ix.hero.secondaryCta}</a>
         </div>
       </div>
       <div class="hero-scroll">{ix.hero.scroll}</div>
     </section>
 
-    <div class="marquee-wrap">
-      <div class="marquee-track">
-        <div class="marquee-item">{ix.marquee}</div>
-        <div class="marquee-item">{ix.marquee}</div>
+    <!-- ─── DEMO SPOTLIGHT ─── -->
+    <section id="demos" class="demos">
+      <div class="demos-intro reveal">
+        <div class="section-label">{ix.demos.label}</div>
+        <h2 class="section-h2">{ix.demos.h2Line1}<br/>{ix.demos.h2Line2}</h2>
+        <p class="section-lede">{ix.demos.lede}</p>
       </div>
-    </div>
 
-    <section class="build-section reveal" id="features">
-      <div class="build-header">
-        <div>
-          <div class="section-tag">{ix.features.tag}</div>
-          <h2>{ix.features.h2}</h2>
-        </div>
-        <p>{ix.features.lead}</p>
+      <div class="demos-grid">
+        <a href={trust402Href} class="demo demo-trust402">
+          <div class="demo-bg" style={`background-image: url(${Trust402Bg.src})`}></div>
+          <div class="demo-overlay"></div>
+          <div class="demo-content">
+            <div class="demo-tag">{ix.demos.trust402.tag}</div>
+            <h3 class="demo-title">{ix.demos.trust402.titleLine1}<br/>{ix.demos.trust402.titleLine2}</h3>
+            <p class="demo-claim">{ix.demos.trust402.claim}</p>
+            <div class="demo-meta">
+              {ix.demos.trust402.metaPills.map((pill, i) => (
+                <span class={`meta-pill${i === 2 ? " mono" : ""}`}>{pill}</span>
+              ))}
+            </div>
+            <div class="demo-cta">
+              <span class="btn btn-primary">{ix.demos.trust402.primaryCta}</span>
+              <span class="btn btn-ghost-light">{ix.demos.trust402.secondaryCta}</span>
+            </div>
+          </div>
+        </a>
+
+        <a href={financeHref} class="demo demo-finance">
+          <div class="demo-bg" style={`background-image: url(${FinanceBg.src})`}></div>
+          <div class="demo-overlay"></div>
+          <div class="demo-content">
+            <div class="demo-tag">{ix.demos.finance.tag}</div>
+            <h3 class="demo-title">{ix.demos.finance.titleLine1}<br/>{ix.demos.finance.titleLine2}</h3>
+            <p class="demo-claim">{ix.demos.finance.claim}</p>
+            <div class="demo-meta">
+              {ix.demos.finance.metaPills.map((pill) => (
+                <span class="meta-pill">{pill}</span>
+              ))}
+            </div>
+            <div class="demo-cta">
+              <span class="btn btn-primary">{ix.demos.finance.primaryCta}</span>
+              <span class="btn btn-ghost-light">{ix.demos.finance.secondaryCta}</span>
+            </div>
+          </div>
+        </a>
       </div>
-      <div class="features-wrap">
-        <div class="features-rock-bg"></div>
-        <div class="features-grid">
-          {ix.features.cards.map((card, i) => (
-            <div class="feature-card">
-              <div class="feature-num">{card.num}</div>
-              <h3>{card.h3}</h3>
-              <p>{card.p}</p>
-              <a href={featureGuideLinks[i] ?? "#"} class="feature-link">{card.link}</a>
+    </section>
+
+    <!-- ─── HOW IT WORKS / ARCHITECTURE ─── -->
+    <section id="how" class="how reveal">
+      <div class="how-head">
+        <div class="section-label">{ix.architecture.label}</div>
+        <h2 class="section-h2 how-h2">{ix.architecture.h2}</h2>
+        <p class="section-lede how-lede">{ix.architecture.lede}</p>
+      </div>
+
+      <div class="how-layers">
+        {ix.architecture.layers.map((layer, i) => (
+          <div class="layer">
+            <div class="layer-num">{layer.num}</div>
+            <div class="layer-title" set:html={layer.title.replace(/、/, "、<br/>")}></div>
+            <div class="layer-body">
+              {layer.body}
+              {layerGuideLinks[i] && (
+                <a href={layerGuideLinks[i]} class="layer-link">{ix.architecture.guideCta}</a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── WHY IT MATTERS ─── -->
+    <section id="why" class="why reveal">
+      <div class="why-bg" style={`background-image: url(${WhyBg.src})`}></div>
+      <div class="why-overlay"></div>
+      <div class="why-inner">
+        <div class="why-label">{ix.why.label}</div>
+        <h2 class="why-h2">{ix.why.h2Line1}<br/>{ix.why.h2Line2}</h2>
+        <div class="why-rule"></div>
+        <p class="why-body">{ix.why.body}</p>
+        <a href={specsHref} class="why-btn">{ix.why.ctaText}</a>
+
+        <div class="why-metrics">
+          {ix.why.metrics.map((metric) => (
+            <div class="why-metric">
+              <div class="why-metric-num">
+                {metric.num}
+                {metric.unit && <span class="why-metric-unit">{metric.unit}</span>}
+              </div>
+              <div class="why-metric-sub">{metric.sub}</div>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="proof-section reveal">
-      <div class="proof-bg" style={`background-image: url(${ProofBg.src})`}></div>
-      <div class="proof-overlay"></div>
-      <div class="proof-inner">
-        <div class="section-tag" style="color:var(--accent)">{ix.proof.tag}</div>
-        <h2>
-          {ix.proof.h2}
-          <strong>{ix.proof.h2Strong}</strong>
-        </h2>
-        <div class="proof-rule"></div>
-        <p>{ix.proof.p}</p>
-        <a href={`${base}/blog/lemma-oracle-specs`} class="btn-primary">{ix.proof.cta}</a>
-        <div class="proof-stats">
-          {ix.proof.stats.map((stat) => (
-            <div class="stat">
-              <div class="stat-n">{stat.n} {stat.nUnit ? <span style="font-size:18px">{stat.nUnit}</span> : null}</div>
-              <div class="stat-l">{stat.l}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="essays-section reveal" id="essays">
-      <div class="essays-header">
-        <div>
-          <div class="section-tag">{ix.essays.tag}</div>
-          <h2>{ix.essays.h2}</h2>
-        </div>
-        <p>{ix.essays.p}</p>
+    <!-- ─── ESSAYS ─── -->
+    <section id="essays" class="essays reveal">
+      <div class="essays-intro">
+        <div class="section-label">{ix.essays.tag}</div>
+        <h2 class="section-h2">{ix.essays.h2}</h2>
+        <p class="section-lede">{ix.essays.p}</p>
       </div>
 
-      <div class="essays-featured">
-        {featured.length > 0 ? (
-          <a href={`${base}/blog/${featured[0].slug}`} class="essay-card-lg">
-            <div class="essay-thumb-ph" style={`background-image:url('${featured[0].cover ?? ""}')`}></div>
+      {featuredLg && (
+        <div class="essays-featured">
+          <a href={`${base}/blog/${featuredLg.slug}/`} class="essay-card essay-card-lg">
+            <div
+              class="essay-thumb"
+              style={`background-image: url('${featuredLg.cover ?? ""}')`}
+            ></div>
             <div class="essay-body-lg">
               <div class="essay-meta">
-                <span class="essay-cat">{featured[0].category}</span>
-                <span class="essay-date-txt">{featured[0].date}</span>
+                <span class="essay-cat">{featuredLg.category}</span>
+                <span class="essay-date">{featuredLg.date}</span>
               </div>
-              <h3>{featured[0].title}</h3>
-              <p>{featured[0].abstract}</p>
+              <h3 class="essay-title essay-title-lg">{featuredLg.title}</h3>
+              <p class="essay-excerpt">{featuredLg.abstract}</p>
             </div>
           </a>
-        ) : null}
-        <div class="essay-aside">
-          {featured.slice(1, 3).map((post) => (
-            <a href={`${base}/blog/${post.slug}`} class="essay-card-sm">
-              <div class="essay-meta"><span class="essay-cat">{post.category}</span><span class="essay-date-txt">{post.date}</span></div>
-              <h3 style="font-family:var(--font-display);font-size:17px;font-weight:600;line-height:1.3;color:var(--black)">{post.title}</h3>
-            </a>
-          ))}
-        </div>
-      </div>
 
-      <div class="essays-list" style="margin-top:2px">
+          <div class="essays-aside">
+            {featuredAside.map((post) => (
+              <a href={`${base}/blog/${post.slug}/`} class="essay-card essay-card-sm">
+                <div class="essay-meta">
+                  <span class="essay-cat">{post.category}</span>
+                  <span class="essay-date">{post.date}</span>
+                </div>
+                <h3 class="essay-title essay-title-sm">{post.title}</h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="essays-list">
         {mini.map((post) => (
-          <a href={`${base}/blog/${post.slug}`} class="essay-card-mini">
+          <a href={`${base}/blog/${post.slug}/`} class="essay-card essay-card-mini">
             <div class="essay-meta">
               <span class="essay-cat">{post.category}</span>
-              <span class="essay-date-txt">{post.date}</span>
+              <span class="essay-date">{post.date}</span>
             </div>
-            <h3>{post.title}</h3>
+            <h3 class="essay-title essay-title-mini">{post.title}</h3>
           </a>
         ))}
       </div>
     </section>
 
-    <CtaSection base={base} locale={locale} />
+    <!-- ─── PARTNER PROGRAM ─── -->
+    <section class="partner reveal">
+      <div class="partner-inner">
+        <div class="section-label partner-label">{ix.partner.label}</div>
+        <h2 class="partner-h2">{ix.partner.h2Line1}<br/>{ix.partner.h2Line2}</h2>
+        <div class="partner-rule"></div>
+        <p class="partner-body">{ix.partner.body}</p>
+        <div class="partner-cta">
+          <a href={partnerHref} class="btn btn-primary">{ix.partner.primaryCta}</a>
+          <a href={wpLink} class="btn btn-ghost-light">{ix.partner.secondaryCta}</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
+  /* ─── SHARED TOKENS (extends global :root) ─── */
+  :global(:root) { --accent-lt: #A0522D; }
+
+  main { color: var(--gray-800, #1A1A1A); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 0;
+    border: 1px solid transparent;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-primary { background: #fff; color: #000; }
+  .btn-primary:hover { background: var(--accent); color: #fff; }
+  .btn-ghost-light {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255,255,255,0.5);
+  }
+  .btn-ghost-light:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* ─── SECTION LABELS / TYPOGRAPHY ─── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .section-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    max-width: 760px;
+  }
+  .section-lede {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--gray-500);
+    margin-top: 24px;
+    max-width: 620px;
+  }
+
+  /* ─── HERO ─── */
   .hero {
     position: relative;
-    height: 100vh;
-    min-height: 680px;
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 0 10%;
+    padding: 96px 10% 80px;
     overflow: hidden;
   }
   .hero-bg {
@@ -187,396 +329,583 @@ const ix = t.index;
     inset: 0;
     background: center/cover no-repeat;
     background-position: center 40%;
-    filter: saturate(0.42) brightness(0.8);
+    filter: saturate(0.7) brightness(0.9);
     transform: scale(1.04);
     transition: transform 10s ease-out;
   }
-  .hero-bg.ready {
-    transform: scale(1);
-  }
+  .hero-bg.ready { transform: scale(1); }
   .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(108deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.55) 52%, rgba(0,0,0,0.15) 100%);
+    background: rgba(0,0,0,0.55);
   }
   .hero-content {
     position: relative;
     z-index: 2;
-    max-width: 620px;
+    max-width: 800px;
     opacity: 0;
     transform: translateY(22px);
     transition: opacity 0.95s ease, transform 0.95s ease;
   }
-  .hero-content.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .hero-content.visible { opacity: 1; transform: translateY(0); }
+
   .hero-eyebrow {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 28px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 32px;
+    padding: 9px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.22);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 11.5px;
+    backdrop-filter: blur(4px);
   }
-  .hero-eyebrow::before {
-    content: '';
-    display: block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
+  .hero-live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-lt);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(160, 82, 45, 0.25);
   }
   .hero-h1 {
     font-family: var(--font-display);
-    font-size: clamp(54px, 6.8vw, 86px);
-    font-weight: 300;
+    font-size: clamp(48px, 6vw, 72px);
+    font-weight: 500;
     color: #fff;
-    line-height: 1.06;
+    line-height: 1.1;
     letter-spacing: -0.01em;
-    margin-bottom: 28px;
   }
-  .hero-h1 strong {
-    font-weight: 600;
-    display: block;
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.7;
+    margin-top: 28px;
+    max-width: 560px;
   }
-  .hero-rule {
+  .hero-marks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 32px;
+    max-width: 640px;
+  }
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 11px;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .mark-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--accent-lt);
+    flex-shrink: 0;
+  }
+  .hero-divider {
     width: 40px;
     height: 1px;
     background: var(--accent);
+    margin: 36px 0 28px;
+  }
+  .hero-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.65);
     margin-bottom: 28px;
   }
-  .hero-sub {
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.62);
-    line-height: 1.82;
-    max-width: 500px;
-    margin-bottom: 48px;
+  .hero-status-sep { color: rgba(255,255,255,0.35); }
+  .hero-status-mono {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    color: rgba(255,255,255,0.85);
   }
   .hero-cta {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: #fff;
-    color: #000;
-    padding: 14px 32px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s, color 0.2s;
-  }
-  .btn-primary:hover {
-    background: var(--accent);
-    color: #fff;
-  }
-  .btn-ghost {
-    background: transparent;
-    color: rgba(255,255,255,0.65);
-    padding: 13px 30px;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.28);
-    border-radius: 0;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-ghost:hover {
-    border-color: rgba(255,255,255,0.6);
-    color: #fff;
   }
   .hero-scroll {
     position: absolute;
-    bottom: 36px;
     right: 5%;
+    bottom: 32px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
     z-index: 2;
-    color: rgba(255,255,255,0.28);
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    writing-mode: vertical-rl;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .hero-scroll::after {
-    content: '';
-    width: 1px;
-    height: 52px;
-    background: rgba(255,255,255,0.15);
-    animation: lineAnim 2.4s ease-in-out infinite;
-  }
-  @keyframes lineAnim {
-    0%, 100% { opacity: 0.35; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(0.6); }
   }
 
-  .marquee-wrap {
-    background: #000;
-    padding: 16px 0;
-    overflow: hidden;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    animation: scrollLeft 32s linear infinite;
-  }
-  .marquee-item {
-    display: flex;
-    align-items: center;
-    gap: 36px;
-    padding: 0 36px;
-    color: rgba(255, 255, 255, 0.26);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .marquee-item .dot {
-    color: var(--accent);
-    font-size: 7px;
-  }
-  @keyframes scrollLeft {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  .build-section {
-    background: #fff;
-    padding: 140px 10%;
-  }
-  .build-header {
+  /* ─── DEMO SPOTLIGHT ─── */
+  .demos { background: var(--white); }
+  .demos-intro { padding: 120px 10% 80px; }
+  .demos-grid {
     display: grid;
-    grid-template-columns: 1fr 1.8fr;
-    gap: 80px;
-    align-items: end;
-    margin-bottom: 80px;
+    grid-template-columns: 1fr 1fr;
+    min-height: 620px;
   }
-  .build-header h2 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4vw, 50px);
-    font-weight: 400;
-    line-height: 1.14;
-    color: #000;
-  }
-  .build-header p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--gray-500);
-    max-width: 480px;
-  }
-
-  .features-wrap { position: relative; }
-  .features-rock-bg {
-    position: absolute;
-    inset: 0;
-    background: url("https://images.unsplash.com/photo-1504699439244-a032f59b5cbc?auto=format&fit=crop&w=800&q=80")
-      center/cover no-repeat;
-    filter: saturate(0.25) brightness(0.4);
-    opacity: 0.12;
-    pointer-events: none;
-  }
-  .features-grid {
+  .demo {
     position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
-  }
-  .feature-card {
-    background: #fff;
-    padding: 48px 40px;
-    border-top: 2px solid transparent;
+    padding: 80px 8%;
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.25s;
+    justify-content: flex-end;
+    color: #fff;
+    overflow: hidden;
+    text-decoration: none;
   }
-  .feature-card.on {
-    opacity: 1;
-    transform: translateY(0);
+  .demo-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: saturate(0.65) brightness(0.85);
+    transition: filter 0.6s ease;
   }
-  .feature-card:nth-child(2) { transition-delay: 0.07s; }
-  .feature-card:nth-child(3) { transition-delay: 0.14s; }
-  .feature-card:nth-child(4) { transition-delay: 0.21s; }
-  .feature-card:nth-child(5) { transition-delay: 0.28s; }
-  .feature-card:nth-child(6) { transition-delay: 0.35s; }
-  .feature-card:hover { border-top-color: var(--accent); }
-  .feature-num {
-    font-family: var(--font-display);
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--accent);
-    letter-spacing: 0.12em;
+  .demo-trust402 .demo-bg { background-position: 60% 50%; }
+  .demo-finance .demo-bg { background-position: 30% 60%; }
+  .demo:hover .demo-bg { filter: saturate(0.75) brightness(0.9); }
+  .demo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+  }
+  .demo-trust402 .demo-overlay { background: rgba(0,0,0,0.40); }
+  .demo-content { position: relative; z-index: 2; max-width: 480px; }
+  .demo-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-lt);
     margin-bottom: 20px;
   }
-  .feature-card h3 {
+  .demo-title {
     font-family: var(--font-display);
-    font-size: 21px;
-    font-weight: 600;
-    line-height: 1.28;
-    color: #000;
-    margin-bottom: 14px;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    color: #fff;
   }
-  .feature-card p {
-    font-size: 14px;
-    line-height: 1.78;
-    color: #4a4a4a;
-    flex: 1;
-    margin-bottom: 26px;
+  .demo-claim {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: 24px;
   }
-  .feature-link {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    text-decoration: none;
+  .demo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 24px;
+  }
+  .meta-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    transition: gap 0.2s;
+    padding: 4px 10px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.78);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
   }
-  .feature-link:hover { gap: 10px; }
+  .meta-pill.mono {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 10.5px;
+  }
+  .demo-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .demo-cta .btn {
+    padding: 10px 20px;
+    font-size: 11.5px;
+  }
 
-  .proof-section {
-    position: relative;
-    padding: 160px 10%;
-    overflow: hidden;
+  /* ─── HOW IT WORKS ─── */
+  .how {
+    background: var(--gray-50);
+    padding: 96px 10%;
   }
-  .proof-bg {
+  .how-head { max-width: 720px; margin-bottom: 48px; }
+  .how-h2 { font-size: clamp(28px, 3.4vw, 36px); line-height: 1.3; }
+  .how-lede { font-size: 14.5px; line-height: 1.7; }
+  .how-layers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 1px solid var(--gray-200);
+  }
+  .layer {
+    display: grid;
+    grid-template-columns: 56px 240px 1fr;
+    align-items: start;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .layer-num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .layer-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+    padding-right: 20px;
+  }
+  .layer-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-800, #1A1A1A);
+    max-width: 580px;
+  }
+  .layer-link {
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 8px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+  .layer-link:hover { color: var(--accent-lt); }
+
+  /* ─── WHY IT MATTERS ─── */
+  .why {
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+    color: #fff;
+  }
+  .why-bg {
     position: absolute;
     inset: 0;
     background: center/cover no-repeat;
-    filter: saturate(0.7) brightness(0.65);
+    background-position: center 40%;
+    filter: saturate(0.65) brightness(0.85);
   }
-  .proof-overlay {
+  .why-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.62);
+    background: linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.50) 55%, rgba(0,0,0,0.35) 100%);
   }
-  .proof-inner {
+  .why-inner {
     position: relative;
     z-index: 2;
-    max-width: 580px;
+    padding: 96px 10%;
+    max-width: 1200px;
   }
-  .proof-inner h2 {
+  .why-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent-lt);
+    margin-bottom: 24px;
+  }
+  .why-h2 {
     font-family: var(--font-display);
-    font-size: clamp(38px, 5vw, 60px);
-    font-weight: 300;
-    line-height: 1.1;
+    font-size: clamp(32px, 4.5vw, 56px);
+    font-weight: 500;
+    line-height: 1.3;
     color: #fff;
-    margin-bottom: 8px;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+    max-width: 640px;
   }
-  .proof-inner h2 strong {
+  .why-rule {
+    width: 48px;
+    height: 1px;
+    background: var(--accent-lt);
+    margin-bottom: 24px;
+  }
+  .why-body {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.78);
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+  .why-btn {
+    display: inline-block;
+    background: #fff;
+    color: #000;
+    padding: 12px 28px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    margin-bottom: 56px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .why-btn:hover { background: var(--accent-lt); color: #fff; }
+  .why-metrics {
+    display: flex;
+    gap: 64px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 28px;
+    max-width: 720px;
+  }
+  .why-metric-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .why-metric-unit {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.78);
+    margin-left: 4px;
+    font-family: var(--font-body);
+  }
+  .why-metric-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── ESSAYS ─── */
+  .essays {
+    background: var(--gray-50);
+    padding: 120px 10%;
+  }
+  .essays-intro { max-width: 720px; margin-bottom: 56px; }
+  .essays-featured {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: stretch;
+  }
+  .essay-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border-top: 2px solid var(--accent);
+    text-decoration: none;
+    transition: background 0.2s, border-top-color 0.2s;
+    color: inherit;
+  }
+  .essay-card:hover {
+    background: var(--accent-bg);
+    border-top-color: var(--accent-lt);
+  }
+  .essay-thumb {
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray-200);
+    filter: saturate(0.7) brightness(0.92);
+  }
+  .essay-body-lg { padding: 28px 32px 32px; }
+  .essay-meta {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 12px;
+    align-items: baseline;
+  }
+  .essay-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .essay-date {
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .essay-title {
+    font-family: var(--font-display);
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+  .essay-title-lg {
+    font-size: 22px;
     font-weight: 600;
-    display: block;
+    line-height: 1.3;
+    margin-bottom: 14px;
   }
-  .proof-rule {
+  .essay-excerpt {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-800, #1A1A1A);
+  }
+  .essays-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .essay-card-sm {
+    padding: 24px 28px;
+    flex: 1;
+    justify-content: space-between;
+  }
+  .essay-title-sm {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-top: auto;
+  }
+  .essays-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .essay-card-mini { padding: 24px 24px 28px; }
+  .essay-title-mini {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 8px;
+  }
+
+  /* ─── PARTNER PROGRAM ─── */
+  .partner {
+    background: var(--accent-bg);
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 120px 10%;
+    text-align: center;
+  }
+  .partner-inner { max-width: 760px; margin: 0 auto; }
+  .partner-label { display: inline-block; color: var(--accent); }
+  .partner-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin: 0 auto;
+    max-width: 720px;
+  }
+  .partner-rule {
     width: 40px;
     height: 1px;
     background: var(--accent);
-    margin: 28px 0;
+    margin: 32px auto;
   }
-  .proof-inner p {
+  .partner-body {
     font-size: 15px;
-    line-height: 1.78;
-    color: rgba(255, 255, 255, 0.55);
-    margin-bottom: 48px;
+    line-height: 1.75;
+    color: var(--gray-800, #1A1A1A);
+    max-width: 560px;
+    margin: 0 auto 40px;
   }
-  .proof-stats {
+  .partner-cta {
     display: flex;
-    gap: 48px;
-    margin-top: 56px;
+    justify-content: center;
+    gap: 16px;
     flex-wrap: wrap;
   }
-  .stat {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 18px;
-    min-width: 100px;
+  .partner-cta .btn-primary { background: var(--black); color: #fff; }
+  .partner-cta .btn-primary:hover { background: var(--accent); color: #fff; }
+  .partner-cta .btn-ghost-light {
+    background: transparent;
+    color: var(--black);
+    border-color: var(--black);
   }
-  .stat-n {
-    font-family: var(--font-display);
-    font-size: 34px;
-    font-weight: 300;
+  .partner-cta .btn-ghost-light:hover {
+    background: var(--accent);
     color: #fff;
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .stat-l {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    border-color: var(--accent);
   }
 
-  .essays-section { background: var(--gray-50); padding: 140px 10%; }
-  .essays-header { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; align-items: end; margin-bottom: 64px; }
-  .essays-header h2 { font-family: var(--font-display); font-size: clamp(32px, 3.5vw, 46px); font-weight: 400; line-height: 1.2; color: var(--black); }
-  .essays-header p { font-size: 14px; line-height: 1.8; color: var(--gray-500); max-width: 480px; }
+  /* ─── REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.on { opacity: 1; transform: translateY(0); }
 
-  .essays-featured { display: grid; grid-template-columns: 1.6fr 1fr; gap: 2px; background: var(--gray-200); margin-bottom: 2px; }
-  .essay-card-lg { background: var(--white); overflow: hidden; display: grid; grid-template-rows: 260px 1fr; }
-  .essay-thumb-ph { width: 100%; height: 100%; background-size: cover; background-position: center; filter: saturate(0.4) brightness(0.85); }
-  .essay-body-lg { padding: 32px 36px 36px; border-top: 2px solid var(--accent); }
-  .essay-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .essay-cat { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
-  .essay-date-txt { font-size: 10px; color: var(--gray-500); letter-spacing: 0.05em; }
-  .essay-card-lg h3 { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--black); margin-bottom: 12px; }
-  .essay-card-lg p { font-size: 13px; line-height: 1.75; color: var(--gray-500); }
-  .essay-aside { display: flex; flex-direction: column; gap: 2px; background: var(--gray-200); }
-  .essay-card-sm { background: var(--white); padding: 28px 32px; border-top: 2px solid transparent; flex: 1; transition: border-color 0.2s; display: flex; flex-direction: column; gap: 10px; text-decoration: none; }
-  .essay-card-sm:hover { border-top-color: var(--accent); }
-  .essay-card-sm h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.3; color: var(--black); }
-  .essays-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--gray-200); }
-  .essay-card-mini { background: var(--white); padding: 28px 28px 32px; border-top: 2px solid transparent; transition: border-color 0.2s; display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
-  .essay-card-mini:hover { border-top-color: var(--accent); }
-  .essay-card-mini h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--black); }
-  a { text-decoration: none; color: inherit; }
-
+  /* ─── RESPONSIVE ─── */
   @media (max-width: 1024px) {
-    .features-grid { grid-template-columns: repeat(2, 1fr); }
-    .build-header { grid-template-columns: 1fr; gap: 24px; }
-    .essays-header { grid-template-columns: 1fr; gap: 24px; }
+    .demos-grid { grid-template-columns: 1fr; }
     .essays-featured { grid-template-columns: 1fr; }
-    .essays-list { grid-template-columns: repeat(2, 1fr); }
+    .essays-list { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .layer { grid-template-columns: 56px 1fr; }
+    .layer-body { grid-column: 2; margin-top: 12px; }
+    .why-inner { padding: 80px 8%; }
+    .why-metrics { gap: 40px; }
+    .demos-intro { padding: 96px 8% 64px; }
   }
-  @media (max-width: 768px) {
-    .hero, .build-section, .essays-section, .proof-section {
-      padding-left: 6%; padding-right: 6%;
-    }
-    .build-section, .essays-section { padding-top: 80px; padding-bottom: 80px; }
-    .proof-section { padding-top: 100px; padding-bottom: 100px; }
-    .features-grid { grid-template-columns: 1fr; }
+  @media (max-width: 640px) {
+    .hero { padding: 96px 6% 64px; min-height: 640px; }
+    .hero-h1 { font-size: clamp(40px, 11vw, 56px); line-height: 1.15; }
+    .hero-sub { font-size: 15px; line-height: 1.7; }
+    .hero-eyebrow { font-size: 10.5px; padding: 7px 12px; gap: 8px; letter-spacing: 0.10em; }
+    .mark { font-size: 10.5px; padding: 5px 10px; }
+
+    .demos-intro { padding: 72px 6% 48px; }
+    .demo { padding: 56px 8%; }
+    .demo-title { font-size: 28px; line-height: 1.2; }
+    .demo-claim { font-size: 14.5px; line-height: 1.7; }
+    .demo-cta { flex-direction: column; align-items: stretch; }
+    .demo-cta .btn { justify-content: center; text-align: center; }
+
+    .how { padding: 72px 6%; }
+    .layer-title { font-size: 19px; }
+    .layer-body { font-size: 14.5px; }
+
+    .why-inner { padding: 64px 6%; }
+    .why-h2 { font-size: 28px; line-height: 1.35; }
+    .why-body { font-size: 13.5px; line-height: 1.75; }
+    .why-metrics { gap: 28px 36px; padding-top: 24px; }
+    .why-metric-num { font-size: 22px; }
+    .why-btn { padding: 11px 24px; font-size: 12px; margin-bottom: 48px; }
+
+    .essays { padding: 72px 6%; }
     .essays-list { grid-template-columns: 1fr; }
-    .proof-stats { gap: 28px; }
+    .essay-title-lg { font-size: 18px; }
+    .essay-excerpt { font-size: 13.5px; line-height: 1.7; }
+
+    .partner { padding: 80px 6%; }
+    .partner-h2 { font-size: clamp(30px, 8vw, 40px); }
+    .partner-body { font-size: 14px; }
+    .partner-cta { flex-direction: column; align-items: stretch; }
+    .partner-cta .btn { text-align: center; }
   }
 </style>
 
 <script is:inline>
   window.addEventListener("load", function () {
-    document.getElementById("heroBg").classList.add("ready");
-    setTimeout(function () {
-      document.getElementById("heroContent").classList.add("visible");
-    }, 150);
+    var bg = document.getElementById("heroBg");
+    var content = document.getElementById("heroContent");
+    if (bg) bg.classList.add("ready");
+    setTimeout(function () { if (content) content.classList.add("visible"); }, 150);
   });
 
   var io = new IntersectionObserver(
@@ -584,18 +913,11 @@ const ix = t.index;
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         entry.target.classList.add("on");
-        entry.target.querySelectorAll(".feature-card").forEach(function (c, i) {
-          setTimeout(function () {
-            c.classList.add("on");
-          }, i * 75);
-        });
         io.unobserve(entry.target);
       });
     },
     { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
   );
 
-  document.querySelectorAll(".reveal, .feature-card").forEach(function (el) {
-    io.observe(el);
-  });
+  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
 </script>
