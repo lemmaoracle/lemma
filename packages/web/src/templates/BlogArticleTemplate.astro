@@ -208,17 +208,20 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
     margin-bottom: 14px;
   }
   .article-body :global(h3) { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: #000; margin: 48px 0 16px; line-height: 1.35; }
-  .article-body :global(> p:first-of-type) { font-size: 19px; line-height: 1.7; color: #2a2a2a; margin-bottom: 32px; }
-  .article-body :global(p) { font-family: var(--font-body); font-size: 18px; font-weight: 400; line-height: 1.85; color: var(--gray-800); margin-bottom: 32px; }
+  .article-body :global(> p:first-of-type) { font-size: 18px; line-height: 1.7; color: #2a2a2a; margin-bottom: 32px; }
+  .article-body :global(p) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.85; color: var(--gray-800); margin-bottom: 32px; }
   .article-body :global(ul) { list-style: none; margin: 0 0 32px; padding: 0; }
-  .article-body :global(ul li) { font-family: var(--font-body); font-size: 18px; font-weight: 400; line-height: 1.8; color: var(--gray-800); padding: 6px 0 6px 24px; position: relative; }
+  .article-body :global(ul li) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.8; color: var(--gray-800); padding: 6px 0 6px 24px; position: relative; }
   .article-body :global(ul li::before) { content: '◆'; position: absolute; left: 0; color: var(--accent); font-size: 8px; top: 13px; }
+  .article-body :global(ol) { list-style: none; margin: 0 0 32px; padding: 0; counter-reset: item; }
+  .article-body :global(ol li) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.8; color: var(--gray-800); padding: 6px 0 6px 36px; position: relative; counter-increment: item; }
+  .article-body :global(ol li::before) { content: counter(item) "."; position: absolute; left: 0; top: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; font-weight: 500; letter-spacing: .04em; color: var(--accent); }
   .article-body :global(a) { color: var(--accent); border-bottom: 1px solid rgba(139,69,19,.28); text-decoration: none; transition: border-color .2s, color .2s; }
   .article-body :global(a:hover) { border-bottom-color: var(--accent); color: #6e3610; }
   .article-body :global(strong) { font-weight: 600; color: #000; }
   .article-body :global(em) { font-style: italic; color: #444; }
   .article-body :global(p:has(> em:only-child)) {
-    font-size: 20px;
+    font-size: 19px;
     line-height: 1.55;
     color: #2a2a2a;
     margin: 56px 0;
