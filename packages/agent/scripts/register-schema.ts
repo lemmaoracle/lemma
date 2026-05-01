@@ -120,7 +120,6 @@ const calculateWasmHash = (wasmPath: string): Promise<string> =>
 
 const createLemmaClient = (): LemmaClient =>
   create({
-    apiBase: "https://workers.lemma.workers.dev",
     apiKey: LEMMA_API_KEY!,
   });
 
@@ -213,60 +212,14 @@ const main = async (): Promise<void> => {
       uploadFileToPinata(jsPath, "agent.js"),
     ]);
 
-    console.log("4. Updating DB record with new WASM/JS IPFS hashes...");
+    console.log("4. Registering schema via Lemma SDK...");
 
-    const normalizeJson = JSON.stringify({
-      artifact: {
-        js: jsIpfsUrl,
-        type: "ipfs",
-        wasm: wasmIpfsUrl,
-      },
-      hash: wasmHash,
-      abi: {
-        norm: {
-          "identity.agentId": "string",
-          "identity.subjectId": "string",
-          "identity.controllerId": "string",
-          "identity.orgId": "string",
-          "authority.roles": "string",
-          "authority.scopes": "string",
-          "authority.permissions": "string",
-          "financial.spendLimit": "string",
-          "financial.currency": "string",
-          "financial.paymentPolicy": "string",
-          "lifecycle.issuedAt": "string",
-          "lifecycle.expiresAt": "string",
-          "lifecycle.revoked": "string",
-          "lifecycle.revocationRef": "string",
-          "provenance.issuerId": "string",
-          "provenance.sourceSystem": "string",
-          "provenance.generatorId": "string",
-          "provenance.chainId": "string",
-          "provenance.network": "string",
-        },
-        raw: {
-          identity: "object",
-          authority: "object",
-          lifecycle: "object",
-          provenance: "object",
-        },
-      },
-    });
+    const client = createLemmaClient();
+    const schemaMeta = buildSchemaMeta(wasmHash, wasmIpfsUrl, jsIpfsUrl);
+    const registered = await registerSchema(client, schemaMeta);
 
-    const sqlPath = path.join(PROJECT_ROOT, "../workers/__update_agent.sql");
-    fs.writeFileSync(
-      sqlPath,
-      `UPDATE schemas SET normalize_json = '${normalizeJson}' WHERE id = 'agent-identity-authority-v1';`,
-    );
-
-    console.log(`\n✅ Generated SQL file: ${sqlPath}`);
-    console.log(
-      "To update the remote database, run:",
-    );
-    console.log(
-      "cd ../../../../workers && npx wrangler d1 execute lemma --file=__update_agent.sql --remote",
-    );
-    console.log(`\n🔗 WASM Hash: ${wasmHash}`);
+    console.log(`\n✅ Schema registered: ${registered.id}`);
+    console.log(`🔗 WASM Hash: ${wasmHash}`);
     console.log(`📦 WASM IPFS: ${wasmIpfsUrl}`);
     console.log(`📦 JS IPFS: ${jsIpfsUrl}`);
     console.log("\n🎉 Agent schema is now ready for use!");

@@ -168,7 +168,6 @@ const CIRCUIT_ID = "agent-identity-v1";
 
 const createLemmaClient = (): LemmaClient =>
   create({
-    apiBase: "https://workers.lemma.workers.dev",
     apiKey: LEMMA_API_KEY!,
   });
 

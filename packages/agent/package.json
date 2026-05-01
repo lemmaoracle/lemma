@@ -26,7 +26,7 @@
     "test": "cargo test --manifest-path normalize/Cargo.toml",
     "test:ts": "vitest run",
     "test:circuit": "cd circuits && npx vitest run",
-    "register": "tsx scripts/register-schema.ts",
+    "register:schema": "tsx scripts/register-schema.ts",
     "register:circuit": "tsx scripts/register-circuit.ts"
   },
   "keywords": [
