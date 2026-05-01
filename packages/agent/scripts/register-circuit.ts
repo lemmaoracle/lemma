@@ -30,6 +30,15 @@ const CHAIN_ID = Number(process.env.CHAIN_ID ?? 84532);
 
 /* ------------------------------------------------------------------ */
 /*  Multi-Network Verifier Configuration                              */
+/*                                                                     */
+/*  VERIFIER_NETWORKS env var format (JSON array):                     */
+/*    [                                                                */
+/*      {"chainId": 84532, "address": "0x1234..."},                    */
+/*      {"chainId": 10143, "address": "0x5678..."}                     */
+/*    ]                                                                */
+/*                                                                     */
+/*  When VERIFIER_NETWORKS is unset, falls back to VERIFIER_ADDRESS    */
+/*  + CHAIN_ID for single-network backward compatibility.             */
 /* ------------------------------------------------------------------ */
 
 type VerifierNetworkEntry = Readonly<{
