@@ -112,7 +112,12 @@
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
-      "headerDesc": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
+      "featuredTag": "Featured",
+      "featuredCta": "Read featured →",
+      "recentTag": "Recent",
+      "archiveTag": "Archive",
+      "foundationsTag": "Foundations",
+      "headerDesc":"ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
       "essaysTag": "Essays",
       "readEssay": "Read essay →",
       "guidesTag": "Guides",
