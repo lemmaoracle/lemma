@@ -197,8 +197,8 @@ const main = async (): Promise<void> => {
     console.log("🚀 Starting agent-identity-authority-v1 schema registration...");
     await validateEnvironment();
 
-    const wasmPath = path.join(PROJECT_ROOT, "packages/agent/dist/wasm/agent.wasm");
-    const jsPath = path.join(PROJECT_ROOT, "packages/agent/dist/wasm/agent.js");
+    const wasmPath = path.join(PROJECT_ROOT, "packages/agent/dist/wasm/lemma_agent_bg.wasm");
+    const jsPath = path.join(PROJECT_ROOT, "packages/agent/dist/wasm/lemma_agent.js");
 
     console.log("1. Checking artifact files...");
     await Promise.all([checkFileExists(wasmPath), checkFileExists(jsPath)]);
@@ -208,8 +208,8 @@ const main = async (): Promise<void> => {
 
     console.log("3. Uploading artifacts to Pinata...");
     const [wasmIpfsUrl, jsIpfsUrl] = await Promise.all([
-      uploadFileToPinata(wasmPath, "agent.wasm"),
-      uploadFileToPinata(jsPath, "agent.js"),
+      uploadFileToPinata(wasmPath, "lemma_agent_bg.wasm"),
+      uploadFileToPinata(jsPath, "lemma_agent.js"),
     ]);
 
     console.log("4. Registering schema via Lemma SDK...");

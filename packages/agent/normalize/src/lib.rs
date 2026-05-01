@@ -283,7 +283,6 @@ fn normalize_bool(b: &Option<bool>) -> String {
 #[derive(Serialize)]
 #[serde(tag = "error")]
 enum NormalizeError {
-    StringifyFailed,
     ParseFailed(String),
     SerializeFailed(String),
 }
@@ -291,7 +290,6 @@ enum NormalizeError {
 #[derive(Serialize)]
 #[serde(tag = "error")]
 enum ValidationError {
-    StringifyFailed,
     ParseFailed(String),
     InvalidSchema(String),
     EmptyAgentId,
@@ -303,47 +301,17 @@ enum ValidationError {
     EmptyIssuerId,
 }
 
-impl ValidationError {
-    fn to_js_value(&self) -> JsValue {
-        let json = serde_json::to_string(self).unwrap_or_else(|_| {
-            r#"{"error":"SerializeFailed"}"#.to_string()
-        });
-        let obj = js_sys::Object::new();
-        js_sys::Reflect::set(&obj, &"valid".into(), &false.into()).unwrap();
-        let parsed = js_sys::JSON::parse(&json).unwrap_or_else(|_| {
-            js_sys::Object::new().into()
-        });
-        if let Ok(err_obj) = parsed.dyn_into::<js_sys::Object>() {
-            js_sys::Reflect::set(&obj, &"error".into(), &js_sys::Reflect::get(&err_obj, &"error".into()).unwrap_or_else(|_| "unknown".into())).unwrap();
-        }
-        obj.into()
-    }
-}
-
-impl NormalizeError {
-    fn to_js_value(&self) -> JsValue {
-        let json = serde_json::to_string(self).unwrap_or_else(|_| {
-            r#"{"error":"SerializeFailed"}"#.to_string()
-        });
-        JsValue::from_str(&json)
-    }
-}
-
 // ── Core functions ───────────────────────────────────────────────────
 
+/// Entry point called by Lemma SDK's `define()`.
+/// Must be exported as `normalize` and accept/return JSON strings.
 #[wasm_bindgen]
-pub fn normalize(input: JsValue) -> JsValue {
-    let input_str = match js_sys::JSON::stringify(&input) {
-        Ok(s) => s.as_string().unwrap_or_else(|| String::from("{}")),
-        Err(_) => {
-            return NormalizeError::StringifyFailed.to_js_value();
-        }
-    };
-
-    let cred: AgentCredentialInput = match serde_json::from_str(&input_str) {
+pub fn normalize(raw_json: &str) -> String {
+    let cred: AgentCredentialInput = match serde_json::from_str(raw_json) {
         Ok(c) => c,
         Err(e) => {
-            return NormalizeError::ParseFailed(e.to_string()).to_js_value();
+            let err = NormalizeError::ParseFailed(e.to_string());
+            return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
         }
     };
 
@@ -405,97 +373,83 @@ pub fn normalize(input: JsValue) -> JsValue {
         provenance,
     };
 
-    let output_json = match serde_json::to_string(&output) {
+    match serde_json::to_string(&output) {
         Ok(s) => s,
         Err(e) => {
-            return NormalizeError::SerializeFailed(e.to_string()).to_js_value();
+            let err = NormalizeError::SerializeFailed(e.to_string());
+            serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string())
         }
-    };
-
-    // Return the normalized JSON as a string; Lemma SDK's define() handles JSON.parse
-    JsValue::from_str(&output_json)
+    }
 }
 
 #[wasm_bindgen]
-pub fn validate(input: JsValue) -> JsValue {
-    let input_str = match js_sys::JSON::stringify(&input) {
-        Ok(s) => s.as_string().unwrap_or_else(|| String::from("{}")),
-        Err(_) => {
-            return ValidationError::StringifyFailed.to_js_value();
-        }
-    };
-
-    let cred: AgentCredentialInput = match serde_json::from_str(&input_str) {
+pub fn validate(raw_json: &str) -> String {
+    let cred: AgentCredentialInput = match serde_json::from_str(raw_json) {
         Ok(c) => c,
         Err(e) => {
-            return ValidationError::ParseFailed(e.to_string()).to_js_value();
+            let err = ValidationError::ParseFailed(e.to_string());
+            return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
         }
     };
 
     // Validate schema field
     if cred.schema != "agent-identity-authority-v1" {
-        return ValidationError::InvalidSchema(cred.schema).to_js_value();
+        let err = ValidationError::InvalidSchema(cred.schema);
+        return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
     }
 
     // Validate identity
     if cred.identity.agent_id.is_empty() {
-        return ValidationError::EmptyAgentId.to_js_value();
+        let err = ValidationError::EmptyAgentId;
+        return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
     }
     if cred.identity.subject_id.is_empty() {
-        return ValidationError::EmptySubjectId.to_js_value();
+        let err = ValidationError::EmptySubjectId;
+        return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
     }
 
-    // Validate lifecycle (fract/negative checks removed — enforced by u64 deserializer)
+    // Validate lifecycle
     if let Some(ref exp) = cred.lifecycle.expires_at {
         if *exp > 4102444800u64 {
-            return ValidationError::InvalidTimestamp("lifecycle.expiresAt must be ≤ 4102444800".to_string()).to_js_value();
+            let err = ValidationError::InvalidTimestamp("lifecycle.expiresAt must be ≤ 4102444800".to_string());
+            return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
         }
         if *exp <= cred.lifecycle.issued_at {
-            return ValidationError::InvalidTimestamp("lifecycle.expiresAt must be > lifecycle.issuedAt".to_string()).to_js_value();
+            let err = ValidationError::InvalidTimestamp("lifecycle.expiresAt must be > lifecycle.issuedAt".to_string());
+            return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
         }
     }
 
     // Validate authority
     if cred.authority.roles.is_empty() {
-        return ValidationError::EmptyRoles.to_js_value();
+        let err = ValidationError::EmptyRoles;
+        return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
     }
 
     // Validate financial
     if let Some(ref fin) = cred.financial {
         if let Some(limit) = fin.spend_limit {
             if limit > 1_000_000_000_000u64 {
-                return ValidationError::SpendLimitExceeded.to_js_value();
+                let err = ValidationError::SpendLimitExceeded;
+                return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
             }
         }
         if let Some(ref currency) = fin.currency {
             if currency.len() != 3 || !currency.chars().all(|c| c.is_ascii_uppercase()) {
-                return ValidationError::InvalidCurrency.to_js_value();
+                let err = ValidationError::InvalidCurrency;
+                return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
             }
         }
     }
 
     // Validate provenance
     if cred.provenance.issuer_id.is_empty() {
-        return ValidationError::EmptyIssuerId.to_js_value();
+        let err = ValidationError::EmptyIssuerId;
+        return serde_json::to_string(&err).unwrap_or_else(|_| r#"{"error":"SerializeFailed"}"#.to_string());
     }
 
     // All validations passed
-    let ok = serde_json::json!({"valid": true});
-    JsValue::from_str(&ok.to_string())
-}
-
-/// Lemma schema entry point
-/// Format: { result: normalized_json_string, valid: bool }
-#[wasm_bindgen]
-pub fn process(input: JsValue) -> JsValue {
-    let normalized = normalize(input.clone());
-    let is_valid = validate(input);
-
-    let obj = js_sys::Object::new();
-    js_sys::Reflect::set(&obj, &"result".into(), &normalized).unwrap();
-    js_sys::Reflect::set(&obj, &"valid".into(), &is_valid).unwrap();
-
-    obj.into()
+    r#"{"valid":true}"#.to_string()
 }
 
 #[cfg(test)]

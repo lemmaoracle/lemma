@@ -36,10 +36,6 @@ wasm-pack build \
   --release \
   --scope lemma
 
-echo "2. Renaming for Lemma compatibility..."
-mv "$OUT_DIR/lemma_agent_bg.wasm" "$OUT_DIR/agent.wasm"
-mv "$OUT_DIR/lemma_agent.js" "$OUT_DIR/agent.js"
-
 echo "✅ WASM build complete!"
 echo "📁 Output: $OUT_DIR"
 echo "📦 Files generated:"

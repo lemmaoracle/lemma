@@ -34,10 +34,6 @@ wasm-pack build \
   --release \
   --scope lemma
 
-echo "2. Renaming for Lemma compatibility..."
-mv "$OUT_DIR/lemma_passthrough_bg.wasm" "$OUT_DIR/passthrough.wasm"
-mv "$OUT_DIR/lemma_passthrough.js" "$OUT_DIR/passthrough.js"
-
 echo "✅ WASM build complete!"
 echo "📁 Output: $OUT_DIR"
 echo "📦 Files generated:"
