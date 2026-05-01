@@ -1,0 +1,63 @@
+name: "lemmaoracle/lemma"
+displayName: "Lemma Oracle"
+description: |
+  Verifiable provenance layer for AI agents. Query cryptographically verified
+  attributes from confidential documents — zero-knowledge proofs, selective
+  disclosure, on-chain provenance. Models change. Proofs remain.
+
+categories:
+  - "AI Agents"
+  - "Verification"
+  - "Provenance"
+  - "Compliance"
+  - "Zero-Knowledge"
+  - "Trust Layer"
+
+tags:
+  - mcp
+  - x402
+  - zero-knowledge
+  - provenance
+  - verifiable-ai
+  - on-chain
+  - selective-disclosure
+
+repository:
+  type: git
+  url: https://github.com/lemmaoracle/lemma
+  directory: packages/mcp
+
+homepage: https://lemma.frame00.com
+license: Apache-2.0
+
+remote:
+  url: "https://mcp.lemma.workers.dev"
+  transport: "http"
+  auth:
+    type: "bearer"
+    header: "Authorization"
+    description: "Lemma API key (Bearer token)"
+local:
+  command: "npx"
+  args:
+    - "-y"
+    - "@lemmaoracle/mcp"
+  env:
+    LEMMA_API_KEY:
+      description: "Lemma API key. Get one at https://lemma.frame00.com/services"
+      required: true
+    LEMMA_API_BASE:
+      description: "Optional API base URL. Defaults to production."
+      required: false
+
+tools:
+  - name: lemma_query_verified_attributes
+    description: "Query cryptographically verified attributes from Lemma Oracle."
+  - name: lemma_get_schema
+    description: "Retrieve schema metadata by ID."
+  - name: lemma_get_circuit
+    description: "Retrieve ZK circuit metadata by ID."
+  - name: lemma_get_generator
+    description: "Retrieve document generator metadata by ID."
+  - name: lemma_get_proof_status
+    description: "Get the verification status of a proof by its verificationId."
