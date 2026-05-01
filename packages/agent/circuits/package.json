@@ -5,10 +5,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bash scripts/build.sh",
+    "build": "bash scripts/build.sh && npm run generate-solidity",
     "generate-solidity": "npx snarkjs zkey export solidityverifier build/agent-identity_final.zkey build/AgentIdentityVerifier.sol",
-    "deploy:base-sepolia": "forge script DeployAgentIdentityVerifier --rpc-url base_sepolia --broadcast",
-    "deploy:monad-testnet": "forge script DeployAgentIdentityVerifier --rpc-url monad_testnet --broadcast",
+    "deploy:base-sepolia": "forge script ./scripts/DeployAgentIdentityVerifier.s.sol --rpc-url base_sepolia --broadcast",
+    "deploy:monad-testnet": "forge script ./scripts/DeployAgentIdentityVerifier.s.sol --rpc-url monad_testnet --broadcast",
     "test": "vitest run"
   },
   "dependencies": {
