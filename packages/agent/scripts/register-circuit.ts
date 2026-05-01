@@ -4,11 +4,12 @@
  *
  * This script:
  * 1. Uploads agent-identity circuit WASM and zkey to Pinata
- * 2. Registers the circuit with Lemma SDK
+ * 2. Registers the circuit with Lemma SDK (supports multiple networks)
  */
 
 import { create, circuits } from "@lemmaoracle/sdk";
-import type { LemmaClient, CircuitMeta } from "@lemmaoracle/spec";
+import type { LemmaClient, CircuitMeta, CircuitVerifier } from "@lemmaoracle/spec";
+import * as R from "ramda";
 import dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
@@ -26,6 +27,52 @@ const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 const VERIFIER_ADDRESS =
   process.env.VERIFIER_ADDRESS ?? "0x0000000000000000000000000000000000000000";
 const CHAIN_ID = Number(process.env.CHAIN_ID ?? 84532);
+
+/* ------------------------------------------------------------------ */
+/*  Multi-Network Verifier Configuration                              */
+/* ------------------------------------------------------------------ */
+
+type VerifierNetworkEntry = Readonly<{
+  readonly chainId: number;
+  readonly address: string;
+}>;
+
+const isValidEntry = (entry: unknown): entry is VerifierNetworkEntry =>
+  R.and(
+    R.has("chainId", entry as Record<string, unknown>),
+    R.has("address", entry as Record<string, unknown>),
+  ) &&
+  typeof (entry as Record<string, unknown>).chainId === "number" &&
+  typeof (entry as Record<string, unknown>).address === "string" &&
+  ((entry as Record<string, unknown>).address as string).startsWith("0x");
+
+const validateEntries = (entries: ReadonlyArray<unknown>): Promise<ReadonlyArray<VerifierNetworkEntry>> =>
+  R.all(isValidEntry, entries)
+    ? Promise.resolve(entries as ReadonlyArray<VerifierNetworkEntry>)
+    : Promise.reject(
+        new Error(
+          "Each entry in VERIFIER_NETWORKS must have chainId (number) and address (string starting with 0x)",
+        ),
+      );
+
+const parseVerifierNetworks = (envValue: string): Promise<ReadonlyArray<VerifierNetworkEntry>> => {
+  const parsed: unknown = R.tryCatch(
+    () => JSON.parse(envValue),
+    () => null,
+  )();
+  return R.isNil(parsed)
+    ? Promise.reject(new Error("VERIFIER_NETWORKS contains invalid JSON"))
+    : Array.isArray(parsed)
+      ? validateEntries(parsed as ReadonlyArray<unknown>)
+      : Promise.reject(new Error("VERIFIER_NETWORKS must be a JSON array"));
+};
+
+const resolveVerifierNetworks = (): Promise<ReadonlyArray<VerifierNetworkEntry>> => {
+  const envValue = process.env.VERIFIER_NETWORKS;
+  return R.isNil(envValue)
+    ? Promise.resolve([{ chainId: CHAIN_ID, address: VERIFIER_ADDRESS }])
+    : parseVerifierNetworks(envValue!);
+};
 
 /* ------------------------------------------------------------------ */
 /*  Pinata Upload Functions                                           */
@@ -119,19 +166,30 @@ const createLemmaClient = (): LemmaClient =>
 const registerCircuit = (client: LemmaClient, circuitMeta: CircuitMeta): Promise<CircuitMeta> =>
   circuits.register(client, circuitMeta);
 
-const buildCircuitMeta = (wasmIpfsUrl: string, zkeyIpfsUrl: string): CircuitMeta => ({
+const buildVerifiers = (
+  networks: ReadonlyArray<VerifierNetworkEntry>,
+): ReadonlyArray<CircuitVerifier> =>
+  R.map(
+    (entry: VerifierNetworkEntry): CircuitVerifier => ({
+      type: "onchain",
+      address: entry.address,
+      chainId: entry.chainId,
+      alg: "groth16-bn254-snarkjs",
+    }),
+    networks,
+  );
+
+const buildCircuitMeta = (
+  wasmIpfsUrl: string,
+  zkeyIpfsUrl: string,
+  networks: ReadonlyArray<VerifierNetworkEntry>,
+): CircuitMeta => ({
   circuitId: CIRCUIT_ID,
   schema: "agent-identity-authority-v1",
-  description: "Agent identity verification circuit — proves a credential was issued by a trusted authority and is currently valid",
+  description:
+    "Agent identity verification circuit — proves a credential was issued by a trusted authority and is currently valid",
   inputs: ["credentialCommitment", "issuerPublicKey", "nowSec"],
-  verifiers: [
-    {
-      type: "onchain",
-      address: VERIFIER_ADDRESS,
-      chainId: CHAIN_ID,
-      alg: "groth16-bn254-snarkjs",
-    },
-  ],
+  verifiers: buildVerifiers(networks),
   artifact: {
     location: {
       type: "ipfs",
@@ -141,6 +199,11 @@ const buildCircuitMeta = (wasmIpfsUrl: string, zkeyIpfsUrl: string): CircuitMeta
   },
 });
 
+const formatVerifierLog = (networks: ReadonlyArray<VerifierNetworkEntry>): string =>
+  networks
+    .map((entry: VerifierNetworkEntry) => `  🏢 ${entry.address} (Chain: ${entry.chainId})`)
+    .join("\n");
+
 /* ------------------------------------------------------------------ */
 /*  Main Execution Pipeline                                           */
 /* ------------------------------------------------------------------ */
@@ -149,6 +212,11 @@ const main = async (): Promise<void> => {
   try {
     console.log("🚀 Starting agent-identity circuit registration...");
     await validateEnvironment();
+
+    const networks = await resolveVerifierNetworks();
+    console.log(
+      `📡 Target networks: ${networks.map((n) => n.chainId).join(", ")}`,
+    );
 
     const wasmPath = path.join(
       PKG_ROOT,
@@ -170,13 +238,14 @@ const main = async (): Promise<void> => {
 
     console.log("3. Registering circuit with Lemma...");
     const client = createLemmaClient();
-    const circuitMeta = buildCircuitMeta(wasmIpfsUrl, zkeyIpfsUrl);
+    const circuitMeta = buildCircuitMeta(wasmIpfsUrl, zkeyIpfsUrl, networks);
     const registeredCircuit = await registerCircuit(client, circuitMeta);
 
     console.log("\n✅ Circuit registered successfully!");
     console.log(`📝 Circuit ID: ${registeredCircuit.circuitId}`);
     console.log(`🔗 Schema: ${registeredCircuit.schema}`);
-    console.log(`🏢 Verifier: ${VERIFIER_ADDRESS} (Chain: ${CHAIN_ID})`);
+    console.log("🔐 Verifiers:");
+    console.log(formatVerifierLog(networks));
     console.log(`📦 WASM IPFS: ${wasmIpfsUrl}`);
     console.log(`📦 zKey IPFS: ${zkeyIpfsUrl}`);
     console.log("\n🎉 agent-identity circuit is now ready for use!");
