@@ -175,6 +175,18 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
 "
 
     local mcp_version=$(node -p "require('./package.json').version")
+
+    # Sync version to server.json (top-level + packages[].version)
+    node -e "
+const fs = require('fs');
+const server = JSON.parse(fs.readFileSync('./server.json', 'utf8'));
+server.version = '${mcp_version}';
+if (server.packages && server.packages[0]) {
+  server.packages[0].version = '${mcp_version}';
+}
+fs.writeFileSync('./server.json', JSON.stringify(server, null, 2) + '\n');
+"
+
     echo "📝 Updated @lemmaoracle/mcp version: $mcp_version"
     echo "🚀 Publishing @lemmaoracle/mcp..."
     npm publish --access public
