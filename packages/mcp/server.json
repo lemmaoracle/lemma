@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.lemmaoracle/mcp",
-  "description": "Verifiable provenance layer for AI agents. Query cryptographically verified attributes (zero-knowledge proofs, selective disclosure, on-chain provenance) from Lemma Oracle.",
+  "description": "Query ZK-verified attributes, selective disclosure, and on-chain provenance from Lemma Oracle.",
   "repository": {
     "url": "https://github.com/lemmaoracle/lemma",
     "source": "github",
