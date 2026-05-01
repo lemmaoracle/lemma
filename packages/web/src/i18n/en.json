@@ -112,7 +112,12 @@
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
-      "headerDesc": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
+      "featuredTag": "Featured",
+      "featuredCta": "Read featured →",
+      "recentTag": "Recent",
+      "archiveTag": "Archive",
+      "foundationsTag": "Foundations",
+      "headerDesc":"ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
       "essaysTag": "Essays",
       "readEssay": "Read essay →",
       "guidesTag": "Guides",
@@ -505,8 +510,8 @@
         { "name": "Pro", "desc": "High-volume production. SLA-backed, dedicated support channel. For scale-stage products in the agent economy.", "badge": "Coming soon" }
       ],
       "cta": "Join the waitlist",
-      "demoCta": "Try the demo →",
-      "note": "Detailed pricing and docs will be available at launch. Trust402 LP — coming soon."
+      "demoCta": "View product page →",
+      "note": "Detailed pricing and docs will be available at launch."
     },
     "compare": {
       "tag": "At a glance",
