@@ -11,14 +11,12 @@ const essays = sections.find((s) => s.section === "Essays")?.posts ?? [];
 const featured = essays.slice(0, 3);
 const mini = essays.slice(3, 7);
 
-const featureGuideLinks = [
-  "/blog/encrypt-everything-expose-nothing",
-  "/blog/prove-facts-with-zero-knowledge",
-  "/blog/disclose-only-what-ai-needs",
-  "/blog/query-verified-attributes",
-  "/blog/define-your-domain-as-a-schema",
-  "/blog/provenance-that-never-disappears",
-];
+const layerGuideLinks = [
+  "/blog/encrypt-everything-expose-nothing/",
+  "/blog/prove-facts-with-zero-knowledge/",
+  "/blog/disclose-only-what-ai-needs/",
+  "/blog/provenance-that-never-disappears/",
+] as const;
 ---
 
 <IndexTemplate
@@ -28,7 +26,5 @@ const featureGuideLinks = [
   description={t.layout.defaultDescription}
   featured={featured}
   mini={mini}
-  blogSectionTitle={t.index.essays.h2}
-  blogSectionDesc={t.index.essays.p}
-  featureGuideLinks={featureGuideLinks}
+  layerGuideLinks={layerGuideLinks}
 />
