@@ -30,8 +30,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.3(prettier@3.8.3)
       prettier-plugin-tailwindcss:
-        specifier: ^0.7.4
-        version: 0.7.4(prettier-plugin-astro@0.14.1)(prettier@3.8.3)
+        specifier: ^0.8.0
+        version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3)
       typescript-eslint:
         specifier: ^8.59.1
         version: 8.59.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
@@ -82,7 +82,7 @@ importers:
         version: 1.29.0(@cfworker/json-schema@4.1.1)(zod@3.25.76)
       agents:
         specifier: ^0.11.4
-        version: 0.11.5(@babel/core@7.29.0)(@babel/runtime@7.29.2)(@cloudflare/workers-types@4.20260409.1)(@x402/core@2.9.0)(@x402/evm@2.9.0(typescript@5.8.3))(ai@6.0.168(zod@3.25.76))(react@18.3.1)(rolldown@1.0.0-rc.17)(vite@5.4.21(@types/node@25.3.0)(lightningcss@1.30.1))(zod@3.25.76)
+        version: 0.11.5(@babel/core@7.29.0)(@babel/runtime@7.29.2)(@cloudflare/workers-types@4.20260409.1)(@x402/core@2.9.0)(@x402/evm@2.9.0(typescript@5.8.3))(ai@6.0.168(zod@3.25.76))(react@18.3.1)(rolldown@1.0.0-rc.17)(zod@3.25.76)
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -4491,8 +4491,8 @@ packages:
     peerDependencies:
       prettier: '>=2.3.0'
 
-  prettier-plugin-tailwindcss@0.7.4:
-    resolution: {integrity: sha512-UKii4RjY05SNt/WQi6/NcOn/LsT0/ILLXsxygjbRg5/YZelsSu5jTqorYHPDGq4nZy5q5hpCu+XdGZ1xaJEQgw==}
+  prettier-plugin-tailwindcss@0.8.0:
+    resolution: {integrity: sha512-V8ITGH87yuBDF6JpEZTOVlUz/saAwqb8f3HRgUj8Lh+tGCcrmorhsLpYqzygwFwK0PE2Ib6Mv3M7T/uE2tZV1g==}
     engines: {node: '>=20.19'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
@@ -6818,14 +6818,13 @@ snapshots:
   '@rolldown/binding-win32-x64-msvc@1.0.0-rc.17':
     optional: true
 
-  '@rolldown/plugin-babel@0.2.3(@babel/core@7.29.0)(@babel/runtime@7.29.2)(rolldown@1.0.0-rc.17)(vite@5.4.21(@types/node@25.3.0)(lightningcss@1.30.1))':
+  '@rolldown/plugin-babel@0.2.3(@babel/core@7.29.0)(@babel/runtime@7.29.2)(rolldown@1.0.0-rc.17)':
     dependencies:
       '@babel/core': 7.29.0
       picomatch: 4.0.4
       rolldown: 1.0.0-rc.17
     optionalDependencies:
       '@babel/runtime': 7.29.2
-      vite: 5.4.21(@types/node@25.3.0)(lightningcss@1.30.1)
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
@@ -7689,12 +7688,12 @@ snapshots:
 
   aes-js@4.0.0-beta.5: {}
 
-  agents@0.11.5(@babel/core@7.29.0)(@babel/runtime@7.29.2)(@cloudflare/workers-types@4.20260409.1)(@x402/core@2.9.0)(@x402/evm@2.9.0(typescript@5.8.3))(ai@6.0.168(zod@3.25.76))(react@18.3.1)(rolldown@1.0.0-rc.17)(vite@5.4.21(@types/node@25.3.0)(lightningcss@1.30.1))(zod@3.25.76):
+  agents@0.11.5(@babel/core@7.29.0)(@babel/runtime@7.29.2)(@cloudflare/workers-types@4.20260409.1)(@x402/core@2.9.0)(@x402/evm@2.9.0(typescript@5.8.3))(ai@6.0.168(zod@3.25.76))(react@18.3.1)(rolldown@1.0.0-rc.17)(zod@3.25.76):
     dependencies:
       '@babel/plugin-proposal-decorators': 7.29.0(@babel/core@7.29.0)
       '@cfworker/json-schema': 4.1.1
       '@modelcontextprotocol/sdk': 1.29.0(@cfworker/json-schema@4.1.1)(zod@3.25.76)
-      '@rolldown/plugin-babel': 0.2.3(@babel/core@7.29.0)(@babel/runtime@7.29.2)(rolldown@1.0.0-rc.17)(vite@5.4.21(@types/node@25.3.0)(lightningcss@1.30.1))
+      '@rolldown/plugin-babel': 0.2.3(@babel/core@7.29.0)(@babel/runtime@7.29.2)(rolldown@1.0.0-rc.17)
       ai: 6.0.168(zod@3.25.76)
       cron-schedule: 6.0.0
       mimetext: 3.0.28
@@ -7707,7 +7706,6 @@ snapshots:
     optionalDependencies:
       '@x402/core': 2.9.0
       '@x402/evm': 2.9.0(typescript@5.8.3)
-      vite: 5.4.21(@types/node@25.3.0)(lightningcss@1.30.1)
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/plugin-transform-runtime'
@@ -9881,7 +9879,7 @@ snapshots:
       prettier: 3.8.3
       semver: 7.7.4
 
-  prettier-plugin-tailwindcss@0.7.4(prettier-plugin-astro@0.14.1)(prettier@3.8.3):
+  prettier-plugin-tailwindcss@0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3):
     dependencies:
       prettier: 3.8.3
     optionalDependencies:
