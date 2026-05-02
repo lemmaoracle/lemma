@@ -107,6 +107,8 @@ export interface Translations {
     readonly aboutUs: string;
     readonly faq: string;
     readonly blog: string;
+    readonly privacy: string;
+    readonly terms: string;
   }>;
   readonly ctaSection: Readonly<{
     readonly finalTag: string;

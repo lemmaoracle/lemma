@@ -1,0 +1,80 @@
+---
+import LegalTemplate, { type LegalSection } from "../../templates/LegalTemplate.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+
+const sections: LegalSection[] = [
+  {
+    heading: "サービスの内容",
+    body: `<p>本サービスは、AI エージェントおよび AI 駆動アプリケーションに対し、暗号学的に検証可能な来歴証明（Verifiable Provenance）レイヤーを提供します。具体的な機能は、本サービスのドキュメント（<a href="https://github.com/lemmaoracle/lemma/tree/main/packages/mcp">github.com/lemmaoracle/lemma/tree/main/packages/mcp</a>）に記載されています。</p>`,
+  },
+  {
+    heading: "プラン体系",
+    body: `<p>本サービスは、以下の 4 つのプラン構造で提供されます：</p>
+<ul>
+<li>Civic</li>
+<li>Critical</li>
+<li>Compliance</li>
+<li>Trust402</li>
+</ul>
+<p>各プランの詳細・利用料金は、本サービスのウェブサイト（<a href="https://lemma.frame00.com/ja/services">lemma.frame00.com/ja/services</a>）に記載されています。</p>`,
+  },
+  {
+    heading: "利用範囲・制限",
+    body: `<p>利用者は、以下の行為を行ってはなりません：</p>
+<ul>
+<li>本サービスを違法な目的で使用すること</li>
+<li>本サービスの認証・レート制限を回避する行為</li>
+<li>第三者の権利を侵害する形で本サービスを利用すること</li>
+<li>本サービスのリバースエンジニアリング、デコンパイル、または同等の行為（本サービスのソースコードは Apache-2.0 ライセンスで公開されているため、ライセンスの範囲内での解析・改変は許諾されます）</li>
+</ul>`,
+  },
+  {
+    heading: "API キーと認証",
+    body: `<p>利用者は、自己の API キー（<code>LEMMA_API_KEY</code>）を機密情報として管理する責任を負います。API キーの漏洩により生じた損害について、当社は責任を負いません。</p>`,
+  },
+  {
+    heading: "知的財産権",
+    body: `<p>本サービスのソースコードは Apache License 2.0 のもとで公開されています。当社は、本サービスのブランド、ロゴ、ドキュメントの表現等に関する権利を保有します。</p>`,
+  },
+  {
+    heading: "免責事項",
+    body: `<p>本サービスは、現状有姿で提供されます。当社は、本サービスの完全性、正確性、特定目的への適合性等について、明示または黙示の保証を行いません。</p>
+<p>本サービスは暗号技術に基づきますが、利用者が独自に法令遵守・業務適合性を判断する責任を負います。本サービスの利用により生じたいかなる損害（直接損害、間接損害、特別損害、結果的損害を含むがこれに限定されない）についても、当社は責任を負いません。ただし、当社の故意または重過失による場合はこの限りではありません。</p>`,
+  },
+  {
+    heading: "プレビュー期間中の取り扱い",
+    body: `<p>本サービスは現在プレビュー段階（v0.0.x）にあり、API 仕様、機能、料金体系は予告なく変更されることがあります。</p>`,
+  },
+  {
+    heading: "規約の変更",
+    body: `<p>当社は、本規約を必要に応じて変更することがあります。重要な変更は、本サービスのウェブサイトを通じて事前に告知します。</p>`,
+  },
+  {
+    heading: "準拠法・管轄",
+    body: `<p>本規約は日本法に準拠し、本規約に関する一切の紛争については、東京地方裁判所を第一審の専属的合意管轄裁判所とします。</p>`,
+  },
+  {
+    heading: "お問い合わせ窓口",
+    body: `<p>株式会社FRAME00<br>連絡先メール：<a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
+  },
+];
+
+const description =
+  "Lemma Oracle 利用規約。サービス内容、プラン体系、利用範囲、知的財産権、免責事項、準拠法・管轄等を定めます。";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="利用規約"
+  title="利用規約"
+  lastUpdated="最終更新日：2026年5月2日"
+  intro="本利用規約（以下「本規約」）は、株式会社FRAME00（以下「当社」）が提供する Lemma Oracle（以下「本サービス」）の利用条件を定めるものです。利用者は、本サービスを利用することにより、本規約に同意したものとみなされます。"
+  sections={sections}
+  description={description}
+/>

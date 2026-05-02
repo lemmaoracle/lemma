@@ -1,0 +1,80 @@
+---
+import LegalTemplate, { type LegalSection } from "../templates/LegalTemplate.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+
+const sections: LegalSection[] = [
+  {
+    heading: "The Service",
+    body: `<p>The Service provides a cryptographically verifiable provenance layer for AI agents and AI-driven applications. Specific functionality is documented at <a href="https://github.com/lemmaoracle/lemma/tree/main/packages/mcp">github.com/lemmaoracle/lemma/tree/main/packages/mcp</a>.</p>`,
+  },
+  {
+    heading: "Plans",
+    body: `<p>The Service is offered under four plan tiers:</p>
+<ul>
+<li>Civic</li>
+<li>Critical</li>
+<li>Compliance</li>
+<li>Trust402</li>
+</ul>
+<p>Plan details and pricing are at <a href="https://lemma.frame00.com/services">lemma.frame00.com/services</a>.</p>`,
+  },
+  {
+    heading: "Acceptable Use",
+    body: `<p>You may not:</p>
+<ul>
+<li>Use the Service for any unlawful purpose</li>
+<li>Circumvent the Service's authentication or rate limits</li>
+<li>Use the Service in a way that infringes a third party's rights</li>
+<li>Reverse engineer or decompile the Service (the Service's source is published under Apache-2.0; analysis and modification permitted by that license are allowed)</li>
+</ul>`,
+  },
+  {
+    heading: "API Keys",
+    body: `<p>You are responsible for keeping your API key (<code>LEMMA_API_KEY</code>) confidential. We are not liable for damages arising from disclosure of your API key.</p>`,
+  },
+  {
+    heading: "Intellectual Property",
+    body: `<p>The Service's source is published under Apache License 2.0. We retain rights to the Service's brand, logo, and the expression of its documentation.</p>`,
+  },
+  {
+    heading: "Disclaimer",
+    body: `<p>The Service is provided &ldquo;as is&rdquo;. We disclaim any and all warranties, express or implied, including merchantability and fitness for a particular purpose.</p>
+<p>The Service relies on cryptography, but you are responsible for independently determining legal compliance and operational fitness. We are not liable for any damages (including direct, indirect, special, or consequential damages) arising from use of the Service, except in cases of our intentional misconduct or gross negligence.</p>`,
+  },
+  {
+    heading: "Preview Status",
+    body: `<p>The Service is currently in preview (v0.0.x). API specification, features, and pricing may change without prior notice.</p>`,
+  },
+  {
+    heading: "Changes to Terms",
+    body: `<p>We may update these Terms as necessary. Material changes will be announced on the Service's website in advance.</p>`,
+  },
+  {
+    heading: "Governing Law",
+    body: `<p>These Terms are governed by the laws of Japan. Any dispute shall be resolved in the Tokyo District Court as the court of first instance and exclusive jurisdiction.</p>`,
+  },
+  {
+    heading: "Contact",
+    body: `<p>FRAME00 Inc.<br>Email: <a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
+  },
+];
+
+const description =
+  "Lemma Oracle Terms of Service. Defines the Service, plans, acceptable use, API keys, intellectual property, disclaimers, and governing law.";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="Terms of Service"
+  title="Terms of Service"
+  lastUpdated="Last updated: May 2, 2026"
+  intro={`These Terms of Service (&ldquo;Terms&rdquo;) govern access to and use of Lemma Oracle (the &ldquo;Service&rdquo;) provided by FRAME00 Inc. (&ldquo;we&rdquo;). By using the Service, you agree to these Terms.`}
+  sections={sections}
+  description={description}
+/>
