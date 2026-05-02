@@ -1,0 +1,93 @@
+---
+import LegalTemplate, { type LegalSection } from "../../templates/LegalTemplate.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+
+const sections: LegalSection[] = [
+  {
+    heading: "データ最小化の原則",
+    body: `<p>本サービスは、API 利用に必要な最小限のメタデータのみを受領します。ドキュメント原本（平文）は当社サーバーに到達せず、利用者の環境内で暗号学的に正規化された後、コミットメントとハッシュのみが当社に送信されます。</p>`,
+  },
+  {
+    heading: "当社が受領するデータ",
+    body: `<p>本サービスの仕様（OpenAPI v2）に基づき、当社が受領するデータは以下に限定されます：</p>
+<ul>
+<li>スキーマ ID（schema）</li>
+<li>ドキュメントハッシュ（docHash）</li>
+<li>IPFS コンテンツ識別子（cid）</li>
+<li>発行者識別子（issuerId）— DID、アドレス等の任意文字列を keccak256 でバイト配列に変換した値</li>
+<li>主体識別子（subjectId）— 同上</li>
+<li>コミットメント（commitments）— Poseidon、Poseidon2、Rescue-Prime、SHA-256 のいずれかのハッシュ方式に基づくマークル根、葉、ブラインディング因子</li>
+<li>失効情報（revocation）— 失効ルートとスキーム名</li>
+<li>発行者署名（signature、任意）</li>
+<li>ゼロ知識証明（proof）と公開入力（inputs）</li>
+</ul>
+<p>これらのデータは、ドキュメント原本の復元を不可能にする形式です。当社は平文ドキュメントを保有せず、参照・分析・複製を行うことはできません。</p>`,
+  },
+  {
+    heading: "暗号化と保管",
+    body: `<ul>
+<li><strong>通信経路</strong>：すべての通信は HTTPS（TLS 1.2 以上）で暗号化されます。</li>
+<li><strong>保管</strong>：当社が保管するのは前項のメタデータのみであり、原本に該当するデータは保持しません。</li>
+<li><strong>ホスティング</strong>：本サービスは Cloudflare Workers 上で稼働します。Cloudflare のセキュリティポリシーが適用されます。</li>
+</ul>`,
+  },
+  {
+    heading: "第三者連携（オンチェーン書込）",
+    body: `<p>利用者が <code>onchain: true</code> を明示的に指定した場合、本サービスは検証結果を指定されたチェーン（EVM 互換ブロックチェーン）の検証コントラクトに記録します。チェーン ID とコントラクトアドレスは、利用するサーキット（CircuitMeta.verifier）の設定に従います。</p>
+<p>オンチェーン書込みを行わない場合（既定）、検証結果は当社内部にのみ保管されます。</p>`,
+  },
+  {
+    heading: "選択的開示（Selective Disclosure）",
+    body: `<p>利用者は、ZK 証明と組み合わせて選択的開示を行うことができます。開示形式は BBS+ または opaque 形式から選択可能です。当社は、開示された属性のみを受領し、未開示の属性は処理しません。</p>`,
+  },
+  {
+    heading: "データ保管期間",
+    body: `<ul>
+<li><strong>メタデータ</strong>：本サービスの提供に必要な期間、保管されます。</li>
+<li><strong>ログ</strong>：運用上必要な期間（最大 90 日間）保管され、その後削除されます。</li>
+</ul>`,
+  },
+  {
+    heading: "利用者の権利",
+    body: `<p>利用者は、当社が保有する自己に関するメタデータについて、以下の権利を有します：</p>
+<ul>
+<li>開示請求</li>
+<li>訂正・削除請求</li>
+<li>利用停止請求</li>
+</ul>
+<p>これらの請求は、本ポリシー末尾の連絡先までお問い合わせください。</p>`,
+  },
+  {
+    heading: "第三者への開示",
+    body: `<p>当社は、法令に基づく場合を除き、利用者の同意なく第三者にデータを開示しません。技術仕様上、ドキュメント原本そのものを開示することは不可能です。</p>`,
+  },
+  {
+    heading: "ポリシーの変更",
+    body: `<p>本ポリシーは、技術仕様の変更や法令改正に応じて更新されることがあります。重要な変更は、本サービスのウェブサイトおよび利用者への通知により周知されます。</p>`,
+  },
+  {
+    heading: "お問い合わせ窓口",
+    body: `<p>本ポリシーに関する質問・請求は、以下までご連絡ください：</p>
+<p>株式会社FRAME00<br>連絡先メール：<a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
+  },
+];
+
+const description =
+  "Lemma Oracle のプライバシーポリシー。ドキュメント原本（平文）は当社サーバーに到達せず、暗号学的なコミットメントとハッシュのみを受領します。";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="プライバシーポリシー"
+  title="プライバシーポリシー"
+  lastUpdated="最終更新日：2026年5月2日"
+  intro="株式会社FRAME00（以下「当社」）は、Lemma Oracle（以下「本サービス」）の提供にあたり、利用者の個人情報および技術データを適切に取り扱います。本ポリシーは、本サービスの設計上の特性と、当社が取得・保有・処理するデータの範囲を明示するものです。"
+  sections={sections}
+  description={description}
+/>
