@@ -29,9 +29,11 @@ export interface LegalTemplateProps {
 
 const { locale, t, base, tag, title, lastUpdated, intro, sections, description } =
   Astro.props as LegalTemplateProps;
+
+const brandSuffix = locale === "ja" ? "Lemma — 検証可能AI" : "Lemma — Verifiable AI";
 ---
 
-<Layout locale={locale} title={`${title} — Lemma Oracle`} description={description}>
+<Layout locale={locale} title={`${title} — ${brandSuffix}`} description={description}>
   <Navigation locale={locale} t={t.nav} base={base} />
 
   <header class="legal-header">
