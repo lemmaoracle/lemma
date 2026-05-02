@@ -13,6 +13,8 @@ interface Props {
 const { locale, t, footerT, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
+const privacyPath = base ? `${base}/privacy` : "/privacy";
+const termsPath = base ? `${base}/terms` : "/terms";
 const aboutUsHref =
   locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
 const currentPath = Astro.url.pathname;
@@ -29,6 +31,8 @@ const languageSwitchHref =
     <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
     <li><a href={faqPath}>{footerT.faq}</a></li>
     <li><a href={blogPath}>{footerT.blog}</a></li>
+    <li><a href={privacyPath}>{footerT.privacy}</a></li>
+    <li><a href={termsPath}>{footerT.terms}</a></li>
     <li><a href={languageSwitchHref}>{locale === "ja" ? "English" : "日本語"}</a></li>
   </ul>
 </footer>
