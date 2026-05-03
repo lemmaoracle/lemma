@@ -4,11 +4,12 @@
 
 Lemma is a cryptographically verified truth layer for agent AI. It lets AI
 reason over confidential data via zero-knowledge proofs, selective
-disclosure, and on-chain provenance — while raw content stays encrypted.
+disclosure, and tamper-evident provenance — while raw content stays
+encrypted.
 
 Every attribute an AI reads through Lemma carries permanent provenance:
-who issued it, which schema defined it, how it was proven, and where the
-proof lives on-chain.
+who issued it, which schema defined it, how it was proven, and where its
+verification record is anchored.
 
 ## Learn more
 
