@@ -205,7 +205,11 @@ export type VerifiedAttributesQueryRequest = Readonly<{
   /** Filter by specific document hash (optional). */
   docHash?: string;
   attributes: ReadonlyArray<
-    Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value: unknown }>
+    Readonly<{
+      name: string;
+      operator?: "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "in" | "contains";
+      value: unknown;
+    }>
   >;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
   targets?: Readonly<
