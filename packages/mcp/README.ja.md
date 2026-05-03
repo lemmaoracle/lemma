@@ -34,9 +34,10 @@
 
 書き込み系ツール（`register_document`, `submit_proof`）は Phase 2 です。
 
-## ローカル開発
+## ローカル開発（コントリビュータ向け）
 
-npm に公開されるまでは、このモノレポからローカルビルドで動かしてください。
+MCP サーバー自体に手を入れる場合は、このモノレポからローカルビルドで
+動かしてください。利用するだけなら上記の `npx` 設定をお使いください。
 
 ```bash
 git clone https://github.com/lemmaoracle/lemma.git

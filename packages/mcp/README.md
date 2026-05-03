@@ -34,10 +34,10 @@ Note: `LEMMA_API_BASE` can be omitted (defaults to production endpoint).
 
 Note that write tools (`register_document`, `submit_proof`) are Phase 2.
 
-## Local development
+## Local development (contributors)
 
-Until this package is published to npm, run it from a local build of this
-monorepo.
+For contributors hacking on the MCP server itself, run it from a local
+build of this monorepo. End users should use the `npx` config above.
 
 ```bash
 git clone https://github.com/lemmaoracle/lemma.git

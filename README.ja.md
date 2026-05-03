@@ -18,6 +18,24 @@ Lemma を通して AI が読み取るすべての属性には、恒久的なプ�
 - ✍️ **ブログ・エッセイ**: https://lemma.frame00.com/ja/blog
 - ❓ **FAQ**: https://lemma.frame00.com/ja/blog/faq
 
+## MCP サーバー
+
+`@lemmaoracle/mcp` を npm で公開しています。Claude Desktop など MCP 対応エージェントから利用できます:
+
+```json
+{
+  "mcpServers": {
+    "lemma": {
+      "command": "npx",
+      "args": ["-y", "@lemmaoracle/mcp"],
+      "env": { "LEMMA_API_KEY": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+ツール一覧・環境変数・コントリビュータ向けビルド: [packages/mcp/README.ja.md](./packages/mcp/README.ja.md) · [npm](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
 ## お問い合わせ
 
 パートナーシップ・導入に関するお問い合わせは、以下のフォームからお願いします:

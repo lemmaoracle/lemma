@@ -17,6 +17,24 @@ proof lives on-chain.
 - ✍️ **Blog & essays**: https://lemma.frame00.com/blog
 - ❓ **FAQ**: https://lemma.frame00.com/blog/faq
 
+## MCP server
+
+`@lemmaoracle/mcp` is published on npm — point Claude Desktop or any MCP-compatible agent at it:
+
+```json
+{
+  "mcpServers": {
+    "lemma": {
+      "command": "npx",
+      "args": ["-y", "@lemmaoracle/mcp"],
+      "env": { "LEMMA_API_KEY": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+Tool list, env vars, and contributor build: [packages/mcp/README.md](./packages/mcp/README.md) · [npm](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
 ## Contact
 
 For partnership and implementation inquiries, please use the contact form:
