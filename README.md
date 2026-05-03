@@ -19,7 +19,10 @@ proof lives on-chain.
 
 ## MCP server
 
-`@lemmaoracle/mcp` is published on npm — point Claude Desktop or any MCP-compatible agent at it:
+`@lemmaoracle/mcp` is the **Model Context Protocol (MCP) server** for Lemma,
+published on npm and built with the official **MCP SDK**
+(`@modelcontextprotocol/sdk`). Point Claude Desktop or any MCP-compatible
+agent at it:
 
 ```json
 {
@@ -34,6 +37,15 @@ proof lives on-chain.
 ```
 
 Tool list, env vars, and contributor build: [packages/mcp/README.md](./packages/mcp/README.md) · [npm](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
+## Packages
+
+Public packages in this monorepo:
+
+- **[`packages/mcp/`](./packages/mcp)** — `@lemmaoracle/mcp`, the **Model Context Protocol (MCP) server** for AI agents (this is the package above).
+- **[`packages/sdk/`](./packages/sdk)** — `@lemmaoracle/sdk`, TypeScript SDK for the Lemma API.
+- **[`packages/spec/`](./packages/spec)** — `@lemmaoracle/spec`, OpenAPI spec + shared TypeScript types.
+- **[`packages/x402/`](./packages/x402)** — `@lemmaoracle/x402`, x402 payment middleware drop-in.
 
 ## Contact
 
