@@ -1,0 +1,54 @@
+name: Deploy demo to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/demo/**"
+      - ".github/workflows/deploy-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "demo-pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build demo (Astro)
+        run: pnpm --filter @lemmaoracle/demo build
+
+      # Requires repo secrets:
+      #   CLOUDFLARE_API_TOKEN — token with "Cloudflare Pages: Edit"
+      #   CLOUDFLARE_ACCOUNT_ID — the FRAME00 account id
+      # And a Cloudflare Pages project named `lemma-demo` (created once via dashboard).
+      # Custom domain `demo.lemma.frame00.com` is attached on the Cloudflare side.
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy packages/demo/dist --project-name=lemma-demo --branch=main
