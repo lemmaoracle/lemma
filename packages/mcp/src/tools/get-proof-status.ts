@@ -46,8 +46,19 @@ export const getProofStatusTool = (server: McpServer, client: LemmaClient): Regi
   server.registerTool(
     "lemma_get_proof_status",
     {
-      description: "Get the verification status of a proof by its verificationId. Proof states: received → verifying → verified → onchain-verifying → onchain-verified | rejected",
-      inputSchema: { verificationId: z.string() },
+      description:
+        "Get the verification status of a proof. " +
+        "NOTE: the v2 API does not yet expose a dedicated GET /v1/proofs/{id} endpoint, so this tool internally calls POST /v1/verified-attributes/query filtered by docHash (treating the verificationId returned from lemma_submit_proof as a docHash filter). " +
+        "Returns { status, circuitId, chainId, docHash } extracted from the matched item, or undefined if the verificationId is unknown. " +
+        "Status enum: received | verified | onchain-verified | rejected. " +
+        "Use the SDK's isVerified() helper (or check status === 'verified' || status === 'onchain-verified') to determine cryptographic validity.",
+      inputSchema: {
+        verificationId: z
+          .string()
+          .describe(
+            "verificationId returned by lemma_submit_proof. Internally treated as a docHash filter on POST /v1/verified-attributes/query (no dedicated GET /v1/proofs/{id} endpoint in v2 API).",
+          ),
+      },
     },
     (input) => runTool(getProofStatus(client, input)),
   );
