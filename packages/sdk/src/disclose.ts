@@ -84,8 +84,7 @@ let wasmInitPromise: Promise<void> | null = null;
  * Ensure WASM is initialized before any crypto operations.
  * Safe to call multiple times - will only initialize once.
  */
-// eslint-disable-next-line functional/functional-parameters
-export const ensureWasmInitialized: () => Promise<void> = async () => {
+export const ensureWasmInitialized = async (_init?: symbol): Promise<void> => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (wasmInitPromise === null) {
     // eslint-disable-next-line functional/no-expression-statements
