@@ -8,7 +8,6 @@
  */
 
 declare global {
-  // eslint-disable-next-line no-var
   var plausible:
     | ((event: string, options?: { props?: Record<string, unknown> }) => void)
     | undefined;
