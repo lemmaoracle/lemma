@@ -37,6 +37,15 @@ pnpm --filter @lemmaoracle/demo test         # vitest
 
 ## Deploy
 
-Cloudflare Pages — see `.github/workflows/deploy-demo.yml` at the repo root.
-Project name on Cloudflare: `lemma-demo`. Custom domain:
-`demo.lemma.frame00.com`. DNS is managed outside this repo.
+Cloudflare Pages via **Git integration** (no GitHub Actions, no secrets).
+
+**One-time setup (CF dashboard):**
+1. Workers & Pages → Create → Pages → Connect to Git
+2. Select `lemmaoracle/lemma` repository
+3. Build settings:
+   - Framework preset: **Astro**
+   - Build command: `pnpm --filter @lemmaoracle/demo build`
+   - Output directory: `packages/demo/dist`
+4. Custom domain: `demo.lemma.frame00.com`
+
+After setup, every push to `main` triggers an automatic deploy.
