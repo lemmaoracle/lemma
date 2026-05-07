@@ -5,7 +5,7 @@ import { getPillarBySlug } from "../../../data/pillars";
 import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
-  const useCases = await getAllUseCases();
+  const useCases = await getAllUseCases("ja");
 
   const paths = useCases.map((useCase) => {
     const pillar = getPillarBySlug(useCase.pillar);
@@ -34,12 +34,12 @@ const useCaseT = t.useCases;
 // Fallback pillar if not found
 const fallbackPillar = {
   slug: "verifiable-origin" as const,
-  title: "Verifiable Origin",
-  slogan: "Cryptographically valid ≠ semantically right",
-  subtitle: "Incident-grade Data Trust",
-  problemStatement: "",
-  whyNow: "",
-  howLemmaFits: [],
+  title: { en: "Verifiable Origin", ja: "来歴証明" },
+  slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
+  subtitle: { en: "Incident-grade Data Trust", ja: "インシデント級のデータ信頼" },
+  problemStatement: { en: "", ja: "" },
+  whyNow: { en: "", ja: "" },
+  howLemmaFits: { en: [], ja: [] },
   useCaseSlugs: [],
   primaryCTA: { label: "お問い合わせ", href: "/ja/services", type: "talk-to-us" as const },
   order: 1,

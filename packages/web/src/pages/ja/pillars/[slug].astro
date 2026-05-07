@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 
   const paths = await Promise.all(
     pillars.map(async (pillar) => {
-      const useCases = await getUseCasesBySlugs(pillar.useCaseSlugs);
+      const useCases = await getUseCasesBySlugs(pillar.useCaseSlugs, "ja");
 
       // Filter recent posts by pillar tags
       const recentPosts = allPosts

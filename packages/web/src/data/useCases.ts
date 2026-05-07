@@ -189,22 +189,43 @@ function extractTitleFromContent(content: string): string | undefined {
   return match ? match[1].trim() : undefined;
 }
 
-function parseUseCase(dir: UseCaseDir): UseCase | undefined {
-  // Find README.md or index.md
-  const readmeFile = dir.files.find((f) => f.name === "README.md" || f.name === "index.md");
+const LOCALE_SUFFIX = /\.(en|ja)\.md$/;
+
+function localeAndBaseFromFilename(
+  filename: string,
+): { locale: BlogLocale; base: string } | undefined {
+  const match = filename.match(LOCALE_SUFFIX);
+  return match
+    ? { locale: match[1] as BlogLocale, base: filename.replace(LOCALE_SUFFIX, "") }
+    : filename.endsWith(".md")
+      ? { locale: "en", base: filename.replace(/\.md$/, "") }
+      : undefined;
+}
+
+function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | undefined {
+  const readmeSuffix = locale === "ja" ? ".ja.md" : locale === "en" ? ".en.md" : ".md";
+  const readmeFile =
+    dir.files.find((f) => f.name === `README${readmeSuffix}`) ??
+    dir.files.find((f) => f.name === `index${readmeSuffix}`) ??
+    (locale === "en" ? dir.files.find((f) => f.name === "README.md" || f.name === "index.md") : undefined);
   if (!readmeFile) return undefined;
 
   const { data, content } = matter(readmeFile.content);
   const fm = data as UseCaseFrontmatter;
 
-  // Fallback: extract title from first h1 if no frontmatter title
   const title = fm.title ?? extractTitleFromContent(readmeFile.content);
   if (!title) return undefined;
 
-  // Parse sections
-  const sectionFiles = dir.files.filter(
-    (f) => f.name !== "README.md" && f.name !== "index.md" && f.name.endsWith(".md"),
-  );
+  // Parse sections for this locale
+  const sectionSuffix = locale === "ja" ? ".ja.md" : locale === "en" ? ".en.md" : ".md";
+  const sectionFiles = dir.files.filter((f) => {
+    if (f.name === "README.md" || f.name === "index.md") return false;
+    if (f.name === "README.ja.md" || f.name === "README.en.md") return false;
+    if (f.name === "index.ja.md" || f.name === "index.en.md") return false;
+    if (locale === "ja") return f.name.endsWith(".ja.md");
+    if (locale === "en") return f.name.endsWith(".en.md") || (!f.name.endsWith(".ja.md") && f.name.endsWith(".md"));
+    return false;
+  });
 
   const sections: UseCaseSection[] = sectionFiles
     .map((file): UseCaseSection | undefined => {
@@ -236,7 +257,7 @@ function parseUseCase(dir: UseCaseDir): UseCase | undefined {
 
   return {
     slug: dir.name,
-    locale: "en" as BlogLocale,
+    locale,
     title,
     abstract: fm.abstract ?? "",
     pillar: fm.pillar ?? "verifiable-origin",
@@ -245,7 +266,7 @@ function parseUseCase(dir: UseCaseDir): UseCase | undefined {
     cover: fm.cover,
     tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
     sections,
-    readingTime: calculateReadingTime(totalContent, "en"),
+    readingTime: calculateReadingTime(totalContent, locale),
   };
 }
 
@@ -258,27 +279,33 @@ const loadUseCases = (() => {
       ? cache.current
       : (cache.current = (async () => {
           const dirs = await fetchUseCaseDirectories();
-          return dirs.map(parseUseCase).filter((u): u is UseCase => u !== undefined);
+          const locales: ReadonlyArray<BlogLocale> = ["en", "ja"];
+          return dirs.flatMap((dir) =>
+            locales
+              .map((locale) => parseUseCaseForLocale(dir, locale))
+              .filter((u): u is UseCase => u !== undefined),
+          );
         })());
 })();
 
 /* ── Public API ─────────────────────────────────────────────────── */
 
-export async function getAllUseCases(): Promise<ReadonlyArray<UseCase>> {
-  return loadUseCases();
+export async function getAllUseCases(locale?: BlogLocale): Promise<ReadonlyArray<UseCase>> {
+  const all = await loadUseCases();
+  return locale ? all.filter((u) => u.locale === locale) : all;
 }
 
-export async function getUseCaseBySlug(slug: string): Promise<UseCase | undefined> {
+export async function getUseCaseBySlug(slug: string, locale: BlogLocale = "en"): Promise<UseCase | undefined> {
   const useCases = await loadUseCases();
-  return useCases.find((u) => u.slug === slug);
+  return useCases.find((u) => u.slug === slug && u.locale === locale);
 }
 
-export async function getUseCasesByPillar(pillarSlug: string): Promise<ReadonlyArray<UseCase>> {
+export async function getUseCasesByPillar(pillarSlug: string, locale: BlogLocale = "en"): Promise<ReadonlyArray<UseCase>> {
   const useCases = await loadUseCases();
-  return useCases.filter((u) => u.pillar === pillarSlug);
+  return useCases.filter((u) => u.pillar === pillarSlug && u.locale === locale);
 }
 
-export async function getUseCasesBySlugs(slugs: ReadonlyArray<string>): Promise<ReadonlyArray<UseCase>> {
+export async function getUseCasesBySlugs(slugs: ReadonlyArray<string>, locale: BlogLocale = "en"): Promise<ReadonlyArray<UseCase>> {
   const useCases = await loadUseCases();
-  return useCases.filter((u) => slugs.includes(u.slug));
+  return useCases.filter((u) => slugs.includes(u.slug) && u.locale === locale);
 }

@@ -5,7 +5,7 @@ import { getPillarBySlug } from "../../data/pillars";
 import { getTranslations } from "../../i18n/translations";
 
 export async function getStaticPaths() {
-  const useCases = await getAllUseCases();
+  const useCases = await getAllUseCases("en");
 
   const paths = useCases.map((useCase) => {
     const pillar = getPillarBySlug(useCase.pillar);
