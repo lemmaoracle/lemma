@@ -209,21 +209,8 @@ function extractTitleFromContent(content: string): string | undefined {
   return match ? match[1].trim() : undefined;
 }
 
-const LOCALE_SUFFIX = /\.(en|ja)\.md$/;
-
-function localeAndBaseFromFilename(
-  filename: string,
-): { locale: BlogLocale; base: string } | undefined {
-  const match = filename.match(LOCALE_SUFFIX);
-  return match
-    ? { locale: match[1] as BlogLocale, base: filename.replace(LOCALE_SUFFIX, "") }
-    : filename.endsWith(".md")
-      ? { locale: "en", base: filename.replace(/\.md$/, "") }
-      : undefined;
-}
-
 function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | undefined {
-  const readmeSuffix = locale === "ja" ? ".ja.md" : locale === "en" ? ".en.md" : ".md";
+  const readmeSuffix = locale === "ja" ? ".ja.md" : ".en.md";
   const readmeFile =
     dir.files.find((f) => f.name === `README${readmeSuffix}`) ??
     dir.files.find((f) => f.name === `index${readmeSuffix}`) ??
@@ -237,7 +224,6 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
   if (!title) return undefined;
 
   // Parse sections for this locale
-  const sectionSuffix = locale === "ja" ? ".ja.md" : locale === "en" ? ".en.md" : ".md";
   const sectionFiles = dir.files.filter((f) => {
     if (f.name === "README.md" || f.name === "index.md") return false;
     if (f.name === "README.ja.md" || f.name === "README.en.md") return false;
@@ -245,9 +231,9 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     // Exclude pitch-deck (moved to CTA)
     const baseName = f.name.replace(/\.(en|ja)\.md$/, "").replace(/\.md$/, "").replace(NUMERIC_PREFIX, "");
     if (EXCLUDED_SECTIONS.has(baseName)) return false;
-    if (locale === "ja") return f.name.endsWith(".ja.md");
-    if (locale === "en") return f.name.endsWith(".en.md") || (!f.name.endsWith(".ja.md") && f.name.endsWith(".md"));
-    return false;
+    return locale === "ja"
+      ? f.name.endsWith(".ja.md")
+      : f.name.endsWith(".en.md") || (!f.name.endsWith(".ja.md") && f.name.endsWith(".md"));
   });
 
   const sections: UseCaseSection[] = sectionFiles
