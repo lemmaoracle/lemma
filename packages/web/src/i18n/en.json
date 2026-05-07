@@ -5,7 +5,7 @@
     "changelog": "Changelog",
     "essays": "Essays",
     "blog": "Blog",
-    "pillars": "Pillars",
+    "pillars": "Why Lemma",
     "faq": "FAQ",
     "services": "Services",
     "pricing": "Pricing",
@@ -584,7 +584,7 @@
     }
   },
   "pillars": {
-    "title": "Pillars",
+    "title": "Why Lemma",
     "heroTitle": "Four pillars of verifiable trust.",
     "subtitle": "ZK-proven provenance for AI agents, cross-chain verification, and regulatory compliance.",
     "viewPillar": "View pillar →",

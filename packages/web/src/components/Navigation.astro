@@ -14,6 +14,7 @@ const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
 const pricingPath = base ? `${base}/pricing` : "/pricing";
 const servicesPath = base ? `${base}/services` : "/services";
+const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const homePath = base || "/";
 
 const currentPath = Astro.url.pathname;
@@ -36,6 +37,9 @@ const isActive = (path: string) => {
 
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
+    <li class="mega-nav-item">
+      <a href={`${pillarsPath}`} class:list={["mega-nav-link", { active: currentPath.startsWith(`${base}/pillars`) || currentPath.startsWith(`${base}/use-cases`) }]}>{t.pillars}</a>
+    </li>
     <li class="mega-nav-item">
       <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isActive(servicesPath) }]}>{t.services}</a>
       <div class="mega-panel">
@@ -179,9 +183,6 @@ const isActive = (path: string) => {
       <a href={blogPath} class:list={["mega-nav-link", { active: isActive(blogPath) }]}>{t.blog}</a>
     </li>
     <li class="mega-nav-item">
-      <a href={`${base}/pillars`} class:list={["mega-nav-link", { active: currentPath.startsWith(`${base}/pillars`) || currentPath.startsWith(`${base}/use-cases`) }]}>{t.pillars}</a>
-    </li>
-    <li class="mega-nav-item">
       <a href={faqPath} class:list={["mega-nav-link", { active: isActive(faqPath) }]}>{t.faq}</a>
     </li>
     <li class="mega-nav-item">
@@ -198,6 +199,7 @@ const isActive = (path: string) => {
 
   <!-- MOBILE DRAWER -->
   <div class="nav-mobile-drawer" id="navMobileDrawer">
+    <a href={`${pillarsPath}`} class="mob-direct">{t.pillars}</a>
     <div class="mob-section">
       <div class="mob-section-header">
         {t.services} <span class="mob-arrow"></span>
@@ -243,8 +245,8 @@ const isActive = (path: string) => {
       </div>
     </div>
 
+    <a href={`${pillarsPath}`} class="mob-direct">{t.pillars}</a>
     <a href={blogPath} class="mob-direct">{t.blog}</a>
-    <a href={`${base}/pillars`} class="mob-direct">{t.pillars}</a>
     <a href={faqPath} class="mob-direct">{t.faq}</a>
 
     <div class="mob-cta">
