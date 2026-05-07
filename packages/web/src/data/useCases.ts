@@ -51,12 +51,28 @@ const POSTS_PATH = import.meta.env.LEMMA_POSTS_PATH || "";
 const GH_TOKEN = import.meta.env.LEMMA_GH_TOKEN || "";
 
 const SECTION_ORDER: ReadonlyArray<string> = [
+  "01-problem",
+  "02-scenario",
+  "03-architecture",
+  "04-proof",
+  "05-related",
   "scenario",
   "architecture",
   "proof-points",
-  "pitch-deck",
   "cross-case",
 ];
+
+const EXCLUDED_SECTIONS: ReadonlySet<string> = new Set(["pitch-deck"]);
+
+const NUMERIC_PREFIX = /^(\d+)-/;
+
+function sectionSortKey(filename: string): { order: number; rest: string } {
+  const base = filename.replace(/\.(en|ja)\.md$/, "").replace(/\.md$/, "");
+  const match = base.match(NUMERIC_PREFIX);
+  return match
+    ? { order: parseInt(match[1], 10), rest: base.replace(NUMERIC_PREFIX, "") }
+    : { order: SECTION_ORDER.indexOf(base) >= 0 ? SECTION_ORDER.indexOf(base) + 100 : 200, rest: base };
+}
 
 /* ── Internal types ─────────────────────────────────────────────── */
 
@@ -226,6 +242,9 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     if (f.name === "README.md" || f.name === "index.md") return false;
     if (f.name === "README.ja.md" || f.name === "README.en.md") return false;
     if (f.name === "index.ja.md" || f.name === "index.en.md") return false;
+    // Exclude pitch-deck (moved to CTA)
+    const baseName = f.name.replace(/\.(en|ja)\.md$/, "").replace(/\.md$/, "").replace(NUMERIC_PREFIX, "");
+    if (EXCLUDED_SECTIONS.has(baseName)) return false;
     if (locale === "ja") return f.name.endsWith(".ja.md");
     if (locale === "en") return f.name.endsWith(".en.md") || (!f.name.endsWith(".ja.md") && f.name.endsWith(".md"));
     return false;
@@ -233,9 +252,13 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
 
   const sections: UseCaseSection[] = sectionFiles
     .map((file): UseCaseSection | undefined => {
-      const { content: sectionContent } = matter(file.content);
-      const key = file.name.replace(/\.md$/, "");
-      const title = key
+      const { data: sectionData, content: sectionContent } = matter(file.content);
+      const rawKey = file.name.replace(/\.(en|ja)\.md$/, "").replace(/\.md$/, "");
+      // Strip numeric prefix for key (01-problem → problem)
+      const key = rawKey.replace(NUMERIC_PREFIX, "");
+      // Use frontmatter title if present, otherwise derive from key
+      const fmTitle = (sectionData as { readonly title?: string }).title;
+      const title = fmTitle ?? key
         .split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ");
@@ -249,12 +272,11 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     })
     .filter((s): s is UseCaseSection => s !== undefined)
     .sort((a, b) => {
-      const aIdx = SECTION_ORDER.indexOf(a.key);
-      const bIdx = SECTION_ORDER.indexOf(b.key);
-      if (aIdx === -1 && bIdx === -1) return 0;
-      if (aIdx === -1) return 1;
-      if (bIdx === -1) return -1;
-      return aIdx - bIdx;
+      const aSort = sectionSortKey(a.key);
+      const bSort = sectionSortKey(b.key);
+      return aSort.order !== bSort.order
+        ? aSort.order - bSort.order
+        : aSort.rest.localeCompare(bSort.rest);
     });
 
   const totalContent = content + sectionFiles.map((f) => matter(f.content).content).join("\n");
@@ -311,5 +333,9 @@ export async function getUseCasesByPillar(pillarSlug: string, locale: BlogLocale
 
 export async function getUseCasesBySlugs(slugs: ReadonlyArray<string>, locale: BlogLocale = "en"): Promise<ReadonlyArray<UseCase>> {
   const useCases = await loadUseCases();
-  return useCases.filter((u) => slugs.includes(u.slug) && u.locale === locale);
+  const filtered = useCases.filter((u) => slugs.includes(u.slug) && u.locale === locale);
+  // Preserve the order of the input slugs array
+  return slugs
+    .map((slug) => filtered.find((u) => u.slug === slug))
+    .filter((u): u is UseCase => u !== undefined);
 }
