@@ -30,7 +30,13 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   Astro.props as BlogIndexTemplateProps;
 ---
 
-<Layout locale={locale} title={`${t.blog.title} — Lemma Oracle`} description={t.blog.subtitle}>
+<Layout
+  locale={locale}
+  title={t.blog.metaTitle}
+  description={t.blog.metaDescription}
+  metaType="page"
+  pagePath="/blog/"
+>
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

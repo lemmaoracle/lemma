@@ -111,6 +111,8 @@
   },
   "blog": {
     "title": "Blog",
+    "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma Oracle",
+    "metaDescription": "Essays on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance. Technical guides, business strategy, and implementation field notes.",
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
@@ -152,8 +154,8 @@
     "subtitle": "Frequently asked questions about Lemma and Verifiable AI"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — Verifiable AI Trust Infrastructure",
-    "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
+    "defaultTitle": "Lemma Oracle — ZK-Proof Verifiable AI Trust Infrastructure",
+    "defaultDescription": "Give AI cryptographically proven facts. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
   },
   "services": {
     "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
@@ -386,6 +388,8 @@
     }
   },
   "faq": {
+    "metaTitle": "FAQ — ZK Proofs, Verifiable AI & On-Chain Provenance | Lemma Oracle",
+    "metaDescription": "Common questions about ZK-proof verification, selective disclosure, and on-chain provenance for AI. How Lemma makes AI decisions provable, auditable, and privacy-preserving.",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — AI Trust & Verifiability.",
@@ -458,6 +462,8 @@
     }
   },
   "pricing": {
+    "metaTitle": "Pricing — Enterprise & Developer Plans | Lemma Oracle Verifiable AI",
+    "metaDescription": "Enterprise pricing for ZK-proof verifiable AI. Three segments — Civic, Critical, Compliance — plus developer plans for x402 and MCP. On-chain provenance, selective disclosure, audit-ready.",
     "hero": {
       "eyebrow": "Pricing",
       "h1": "Built for decisions",

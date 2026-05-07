@@ -120,6 +120,8 @@ export interface Translations {
   }>;
   readonly blog: Readonly<{
     readonly title: string;
+    readonly metaTitle: string;
+    readonly metaDescription: string;
     readonly subtitle: string;
     readonly backToBlog: string;
     readonly index: Readonly<{
@@ -155,6 +157,8 @@ export interface Translations {
   readonly faq: Readonly<{
     readonly title?: string;
     readonly subtitle?: string;
+    readonly metaTitle: string;
+    readonly metaDescription: string;
     readonly hero: Readonly<{
       readonly tag: string;
       readonly h1: string;
@@ -395,6 +399,8 @@ export interface Translations {
     }>;
   }>;
   readonly pricing: Readonly<{
+    readonly metaTitle: string;
+    readonly metaDescription: string;
     readonly hero: Readonly<{
       readonly eyebrow: string;
       readonly h1: string;

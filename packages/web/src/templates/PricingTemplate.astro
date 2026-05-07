@@ -13,15 +13,19 @@ export interface PricingTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
-  title: string;
-  description: string;
 }
 
-const { locale, t, base, title, description } = Astro.props as PricingTemplateProps;
+const { locale, t, base } = Astro.props as PricingTemplateProps;
 const px = t.pricing;
 ---
 
-<Layout locale={locale} title={title} description={description}>
+<Layout
+  locale={locale}
+  title={px.metaTitle}
+  description={px.metaDescription}
+  metaType="page"
+  pagePath="/pricing/"
+>
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
