@@ -5,7 +5,7 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
-    "pillars": "4つの柱",
+    "pillars": "Why Lemma",
     "faq": "FAQ",
     "services": "サービス",
     "pricing": "料金",
@@ -584,7 +584,7 @@
     }
   },
   "pillars": {
-    "title": "4つの柱",
+    "title": "Why Lemma",
     "heroTitle": "検証可能な信頼の4つの柱。",
     "subtitle": "AIエージェント、クロスチェーン検証、規制コンプライアンスのためのZK証明付き来歴証明。",
     "viewPillar": "詳細を見る →",
