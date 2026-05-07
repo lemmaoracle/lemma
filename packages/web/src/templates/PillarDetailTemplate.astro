@@ -115,9 +115,9 @@ const useCasesPath = `${base}/use-cases`;
     <!-- Block 6: CTA -->
     <section class="block block-cta">
       <div class="cta-content">
-        <div class="cta-eyebrow">{pillarT.ctaEyebrow}</div>
-        <h2 class="cta-title">{pillarT.ctaTitle}</h2>
-        <p class="cta-desc">{pillarT.ctaDesc}</p>
+        <div class="cta-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
+        <h2 class="cta-title">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
+        <p class="cta-desc">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
         <div class="cta-buttons">
           <a href={pillar.primaryCTA.href} class="cta-btn cta-btn-primary" target={pillar.primaryCTA.href.startsWith("http") ? "_blank" : undefined}>
             {pillar.primaryCTA.label}
