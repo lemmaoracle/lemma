@@ -15,14 +15,24 @@ export interface CTA {
   readonly type: "talk-to-us" | "waitlist" | "download" | "whitepaper" | "github" | "demo";
 }
 
+export interface LocalizedStrings {
+  readonly en: string;
+  readonly ja: string;
+}
+
+export interface LocalizedArray {
+  readonly en: ReadonlyArray<string>;
+  readonly ja: ReadonlyArray<string>;
+}
+
 export interface Pillar {
   readonly slug: PillarSlug;
   readonly title: string;
   readonly slogan: string;
-  readonly subtitle: string;
-  readonly problemStatement: string;
-  readonly whyNow: string;
-  readonly howLemmaFits: ReadonlyArray<string>;
+  readonly subtitle: LocalizedStrings;
+  readonly problemStatement: LocalizedStrings;
+  readonly whyNow: LocalizedStrings;
+  readonly howLemmaFits: LocalizedArray;
   readonly useCaseSlugs: ReadonlyArray<string>;
   readonly primaryCTA: CTA;
   readonly secondaryCTA?: CTA;
@@ -38,15 +48,27 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "verifiable-origin",
     title: "Verifiable Origin",
     slogan: "Cryptographically valid ≠ semantically right",
-    subtitle: "Incident-grade Data Trust",
-    problemStatement:
-      "Bridge・クロスチェーン移転において、資産の「出所」は暗号論理的に証明されていない",
-    whyNow: "2024年 Ronin bridge $625M事件、2025年 FSA暗号資産ガイドライン施行",
-    howLemmaFits: [
-      "Poseidon hash for on-chain commitment",
-      "BBS+ signatures for selective disclosure",
-      "Groth16 proofs for cross-chain verification",
-    ],
+    subtitle: { en: "Incident-grade Data Trust", ja: "インシデント級のデータ信頼" },
+    problemStatement: {
+      en: "In bridge and cross-chain transfers, asset origin is not cryptographically proven",
+      ja: "Bridge・クロスチェーン移転において、資産の「出所」は暗号論理的に証明されていない",
+    },
+    whyNow: {
+      en: "2024 Ronin bridge $625M exploit; 2025 FSA crypto-asset guidelines enforcement",
+      ja: "2024年 Ronin bridge $625M事件、2025年 FSA暗号資産ガイドライン施行",
+    },
+    howLemmaFits: {
+      en: [
+        "Poseidon hash for on-chain commitment",
+        "BBS+ signatures for selective disclosure",
+        "Groth16 proofs for cross-chain verification",
+      ],
+      ja: [
+        "オンチェーンコミットメントにPoseidonハッシュ",
+        "選択的開示にBBS+署名",
+        "クロスチェーン検証にGroth16証明",
+      ],
+    },
     useCaseSlugs: ["financial-data-exfiltration", "defi-bridge-verification"],
     primaryCTA: {
       label: "Talk to us",
@@ -65,15 +87,27 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "verifiable-ai",
     title: "Verifiable AI",
     slogan: "Finds bugs ≠ proves decisions",
-    subtitle: "Models change. Proofs remain.",
-    problemStatement:
-      "AIの判断根拠を後から検証できる仕組みが欠如している。説明責任と監査対応で根本的な問いに直面する",
-    whyNow: "EU AI Act 2026年施行、ISO 42001認証需要の高まり",
-    howLemmaFits: [
-      "ZK proofs for AI decision attribution",
-      "Permanent provenance for RAG sources",
-      "Selective disclosure for compliance reports",
-    ],
+    subtitle: { en: "Models change. Proofs remain.", ja: "モデルは変わる。証明は残る。" },
+    problemStatement: {
+      en: "No mechanism exists to retrospectively verify AI decision rationale. Accountability and audit requirements pose fundamental challenges",
+      ja: "AIの判断根拠を後から検証できる仕組みが欠如している。説明責任と監査対応で根本的な問いに直面する",
+    },
+    whyNow: {
+      en: "EU AI Act enforcement in 2026; rising ISO 42001 certification demand",
+      ja: "EU AI Act 2026年施行、ISO 42001認証需要の高まり",
+    },
+    howLemmaFits: {
+      en: [
+        "ZK proofs for AI decision attribution",
+        "Permanent provenance for RAG sources",
+        "Selective disclosure for compliance reports",
+      ],
+      ja: [
+        "AI判断の帰属にZK証明",
+        "RAG情報源の永続的来歴",
+        "コンプラインス報告のための選択的開示",
+      ],
+    },
     useCaseSlugs: ["financial-data-exfiltration"],
     primaryCTA: {
       label: "Talk to us",
@@ -92,15 +126,27 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "agent-trust-chain",
     title: "Agent Trust Chain",
     slogan: "Pays ≠ trustworthy",
-    subtitle: "Agent Trust Chain",
-    problemStatement:
-      "エージェント同士の取引において、誰が何の権限でどのデータに基づく支払いかを検証する手段がない",
-    whyNow: "x402プロトコルの普及、MCPエコシステムの拡大、エージェント経済の急速な成長",
-    howLemmaFits: [
-      "ZK-proven agent identity and role",
-      "On-chain spend control attestation",
-      "Cross-agent trust chain verification",
-    ],
+    subtitle: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
+    problemStatement: {
+      en: "In agent-to-agent transactions, there is no way to verify who has what authority and what data underlies a payment",
+      ja: "エージェント同士の取引において、誰が何の権限でどのデータに基づく支払いかを検証する手段がない",
+    },
+    whyNow: {
+      en: "x402 protocol adoption, expanding MCP ecosystem, rapid growth of agent economy",
+      ja: "x402プロトコルの普及、MCPエコシステムの拡大、エージェント経済の急速な成長",
+    },
+    howLemmaFits: {
+      en: [
+        "ZK-proven agent identity and role",
+        "On-chain spend control attestation",
+        "Cross-agent trust chain verification",
+      ],
+      ja: [
+        "ZK証明によるエージェント身元と権限",
+        "オンチェーン支払制限アテステーション",
+        "エージェント間信頼チェーン検証",
+      ],
+    },
     useCaseSlugs: [],
     primaryCTA: {
       label: "Join Trust402 waitlist",
@@ -114,15 +160,27 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "regulatory-attribute-proof",
     title: "Regulatory Attribute Proof",
     slogan: "Compliance promised ≠ compliance proven",
-    subtitle: "",
-    problemStatement:
-      "規制要件（KYC/AML/データレジデンシー/DPP/ESG）を満たしているという主張を、プログラムで検証できる証明に変える",
-    whyNow: "GDPR強化、EU AI Act、暗号資産ガイドライン、サプライチェーンDDP義務化の動き",
-    howLemmaFits: [
-      "Attribute-level compliance proofs",
-      "Schema-bound regulatory requirements",
-      "Auditable proof trail without data exposure",
-    ],
+    subtitle: { en: "", ja: "" },
+    problemStatement: {
+      en: "Claims of regulatory compliance (KYC/AML/data residency/DPP/ESG) must be transformed into programmatically verifiable proofs",
+      ja: "規制要件（KYC/AML/データレジデンシー/DPP/ESG）を満たしているという主張を、プログラムで検証できる証明に変える",
+    },
+    whyNow: {
+      en: "GDPR strengthening, EU AI Act, crypto-asset guidelines, supply chain DDP mandates",
+      ja: "GDPR強化、EU AI Act、暗号資産ガイドライン、サプライチェーンDDP義務化の動き",
+    },
+    howLemmaFits: {
+      en: [
+        "Attribute-level compliance proofs",
+        "Schema-bound regulatory requirements",
+        "Auditable proof trail without data exposure",
+      ],
+      ja: [
+        "属性レベルのコンプライアンス証明",
+        "スキーマバインド規制要件",
+        "データ開示なしの監査可能な証明トレイル",
+      ],
+    },
     useCaseSlugs: ["defi-bridge-verification"],
     primaryCTA: {
       label: "Download regulatory whitepaper",

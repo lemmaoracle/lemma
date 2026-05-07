@@ -26,7 +26,7 @@ const useCasesPath = `${base}/use-cases`;
 <Layout
   locale={locale}
   title={`${pillar.title} — ${pillar.slogan} | Lemma Oracle`}
-  description={pillar.problemStatement}
+  description={pillar.problemStatement[locale]}
   metaType="page"
   pagePath={`${base}/pillars/${pillar.slug}`}
 >
@@ -41,7 +41,7 @@ const useCasesPath = `${base}/use-cases`;
         <span class="pillar-slogan">{pillar.slogan}</span>
       </div>
       <h1>{pillar.title}</h1>
-      {pillar.subtitle && <div class="pillar-subtitle">{pillar.subtitle}</div>}
+      {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
     </div>
   </header>
 
@@ -49,20 +49,20 @@ const useCasesPath = `${base}/use-cases`;
     <!-- Block 1: Problem Statement -->
     <section class="block block-problem">
       <div class="block-label">{pillarT.blockProblem}</div>
-      <p class="problem-text">{pillar.problemStatement}</p>
+      <p class="problem-text">{pillar.problemStatement[locale]}</p>
     </section>
 
     <!-- Block 2: Why Now -->
     <section class="block block-why-now">
       <div class="block-label">{pillarT.blockWhyNow}</div>
-      <p class="why-now-text">{pillar.whyNow}</p>
+      <p class="why-now-text">{pillar.whyNow[locale]}</p>
     </section>
 
     <!-- Block 3: How Lemma Fits -->
     <section class="block block-how">
       <div class="block-label">{pillarT.blockHowLemmaFits}</div>
       <ul class="how-list">
-        {pillar.howLemmaFits.map((item) => (
+        {pillar.howLemmaFits[locale].map((item) => (
           <li class="how-item">{item}</li>
         ))}
       </ul>

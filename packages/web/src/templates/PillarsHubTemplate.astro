@@ -41,7 +41,7 @@ const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateP
           <div class="pillar-content">
             <h2 class="pillar-title">{pillar.title}</h2>
             <div class="pillar-slogan">{pillar.slogan}</div>
-            {pillar.subtitle && <div class="pillar-subtitle">{pillar.subtitle}</div>}
+            {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
           </div>
           <div class="pillar-cta">
             <span>{pillarT.viewPillar}</span>
