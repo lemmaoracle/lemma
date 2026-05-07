@@ -311,5 +311,9 @@ export async function getUseCasesByPillar(pillarSlug: string, locale: BlogLocale
 
 export async function getUseCasesBySlugs(slugs: ReadonlyArray<string>, locale: BlogLocale = "en"): Promise<ReadonlyArray<UseCase>> {
   const useCases = await loadUseCases();
-  return useCases.filter((u) => slugs.includes(u.slug) && u.locale === locale);
+  const filtered = useCases.filter((u) => slugs.includes(u.slug) && u.locale === locale);
+  // Preserve the order of the input slugs array
+  return slugs
+    .map((slug) => filtered.find((u) => u.slug === slug))
+    .filter((u): u is UseCase => u !== undefined);
 }
