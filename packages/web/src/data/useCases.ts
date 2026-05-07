@@ -34,6 +34,7 @@ export interface UseCase {
   readonly slug: string;
   readonly locale: BlogLocale;
   readonly title: string;
+  readonly thesis: string;
   readonly abstract: string;
   readonly pillar: string;
   readonly targetVerticals: ReadonlyArray<string>;
@@ -89,6 +90,7 @@ interface GitHubContentEntry {
 
 interface UseCaseFrontmatter {
   readonly title?: string;
+  readonly thesis?: string;
   readonly abstract?: string;
   readonly pillar?: string;
   readonly targetVerticals?: ReadonlyArray<string>;
@@ -276,6 +278,7 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     slug: dir.name,
     locale,
     title,
+    thesis: fm.thesis ?? "",
     abstract: fm.abstract ?? "",
     pillar: fm.pillar ?? "verifiable-origin",
     targetVerticals: fm.targetVerticals ?? [],
