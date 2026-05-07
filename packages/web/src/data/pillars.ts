@@ -69,7 +69,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン検証にGroth16証明",
       ],
     },
-    useCaseSlugs: ["financial-data-exfiltration", "defi-bridge-verification"],
+    useCaseSlugs: ["defi-bridge-verification"],
     primaryCTA: {
       label: "Talk to us",
       href: "/services",
@@ -108,7 +108,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "コンプラインス報告のための選択的開示",
       ],
     },
-    useCaseSlugs: ["financial-data-exfiltration"],
+    useCaseSlugs: ["ai-audit-log-proof", "rag-source-attestation"],
     primaryCTA: {
       label: "Talk to us",
       href: "/services",
@@ -181,7 +181,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "データ開示なしの監査可能な証明トレイル",
       ],
     },
-    useCaseSlugs: ["defi-bridge-verification"],
+    useCaseSlugs: ["financial-data-exfiltration", "kyc-aml-selective-disclosure", "supply-chain-esg"],
     primaryCTA: {
       label: "Download regulatory whitepaper",
       href: "https://tally.so/r/xX0VYv",
