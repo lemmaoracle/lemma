@@ -107,8 +107,9 @@ const fetchUseCaseDirectories = async (): Promise<ReadonlyArray<UseCaseDir>> => 
 
   const res = await fetch(contentsUrl, { headers: githubHeaders() });
   if (!res.ok) {
-    console.warn(`[useCases] GitHub API ${String(res.status)}: ${await res.text()}`);
-    return [];
+    const body = await res.text();
+    console.error(`[useCases] GitHub API ${String(res.status)}: ${body}`);
+    throw new Error(`[useCases] GitHub API ${String(res.status)} fetching ${useCasesPath}: ${body}`);
   }
 
   const entries: unknown = await res.json();
@@ -119,7 +120,10 @@ const fetchUseCaseDirectories = async (): Promise<ReadonlyArray<UseCaseDir>> => 
       const dirContentsUrl = `https://api.github.com/repos/${POSTS_REPO}/contents/${dir.path}?ref=${POSTS_BRANCH}`;
       const dirRes = await fetch(dirContentsUrl, { headers: githubHeaders() });
 
-      if (!dirRes.ok) return undefined;
+      if (!dirRes.ok) {
+        console.error(`[useCases] GitHub API ${String(dirRes.status)} fetching ${dir.path}`);
+        throw new Error(`[useCases] GitHub API ${String(dirRes.status)} fetching ${dir.path}`);
+      }
 
       const dirEntries: unknown = await dirRes.json();
       const mdFiles = (dirEntries as readonly GitHubContentEntry[]).filter(

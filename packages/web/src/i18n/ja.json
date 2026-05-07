@@ -588,14 +588,16 @@
     "blockUseCases": "ユースケース",
     "blockRecentThinking": "最新の考察",
     "viewUseCase": "ユースケースを見る →",
+    "comingSoon": "ユースケースは順次追加予定です。",
     "ctaEyebrow": "はじめる",
     "ctaTitle": "証明する準備はできましたか？",
     "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。"
   },
   "useCases": {
     "title": "ユースケース",
+    "subtitle": "検証可能な信頼の実世界応用",
     "sections": "セクション",
     "overview": "概要",
-    "backToPillar": "← 柱に戻る"
+    "backToPillar": "← Pillarに戻る"
   }
 }

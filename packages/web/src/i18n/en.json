@@ -588,12 +588,14 @@
     "blockUseCases": "Use Cases",
     "blockRecentThinking": "Recent Thinking",
     "viewUseCase": "View use case →",
+    "comingSoon": "Use cases coming soon — stay tuned.",
     "ctaEyebrow": "Get Started",
     "ctaTitle": "Ready to prove?",
     "ctaDesc": "Talk to us about your use case. We respond within one business day."
   },
   "useCases": {
     "title": "Use Cases",
+    "subtitle": "Real-world applications of verifiable trust",
     "sections": "Sections",
     "overview": "Overview",
     "backToPillar": "← Back to pillar"

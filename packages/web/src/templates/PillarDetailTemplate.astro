@@ -69,7 +69,7 @@ const useCasesPath = `${base}/use-cases`;
     </section>
 
     <!-- Block 4: Use Cases -->
-    {useCases.length > 0 && (
+    {useCases.length > 0 ? (
       <section class="block block-use-cases">
         <div class="block-label">{pillarT.blockUseCases}</div>
         <div class="use-cases-grid">
@@ -85,6 +85,13 @@ const useCasesPath = `${base}/use-cases`;
               </div>
             </a>
           ))}
+        </div>
+      </section>
+    ) : (
+      <section class="block block-use-cases">
+        <div class="block-label">{pillarT.blockUseCases}</div>
+        <div class="coming-soon-placeholder">
+          <p class="coming-soon-text">{pillarT.comingSoon}</p>
         </div>
       </section>
     )}
@@ -297,6 +304,18 @@ const useCasesPath = `${base}/use-cases`;
   }
   .use-case-card:hover .uc-arrow {
     transform: translateX(4px);
+  }
+
+  .coming-soon-placeholder {
+    padding: 40px 24px;
+    text-align: center;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+  .coming-soon-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.06em;
   }
 
   .recent-posts-list {

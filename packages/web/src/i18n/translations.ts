@@ -485,12 +485,14 @@ export interface Translations {
     readonly blockUseCases: string;
     readonly blockRecentThinking: string;
     readonly viewUseCase: string;
+    readonly comingSoon: string;
     readonly ctaEyebrow: string;
     readonly ctaTitle: string;
     readonly ctaDesc: string;
   }>;
   readonly useCases: Readonly<{
     readonly title: string;
+    readonly subtitle: string;
     readonly sections: string;
     readonly overview: string;
     readonly backToPillar: string;
