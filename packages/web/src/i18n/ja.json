@@ -5,6 +5,7 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
+    "pillars": "4つの柱",
     "faq": "FAQ",
     "services": "サービス",
     "pricing": "料金",
@@ -581,5 +582,28 @@
       "title": "パートナー候補として登録する",
       "desc": "1営業日以内にご連絡いたします。"
     }
+  },
+  "pillars": {
+    "title": "4つの柱",
+    "heroTitle": "検証可能な信頼の4つの柱。",
+    "subtitle": "AIエージェント、クロスチェーン検証、規制コンプライアンスのためのZK証明付き来歴証明。",
+    "viewPillar": "詳細を見る →",
+    "blockProblem": "問題提起",
+    "blockWhyNow": "なぜ今か",
+    "blockHowLemmaFits": "Lemmaの役割",
+    "blockUseCases": "ユースケース",
+    "blockRecentThinking": "最新の考察",
+    "viewUseCase": "ユースケースを見る →",
+    "comingSoon": "ユースケースは順次追加予定です。",
+    "ctaEyebrow": "はじめる",
+    "ctaTitle": "証明する準備はできましたか？",
+    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。"
+  },
+  "useCases": {
+    "title": "ユースケース",
+    "subtitle": "検証可能な信頼の実世界応用",
+    "sections": "セクション",
+    "overview": "概要",
+    "backToPillar": "← Pillarに戻る"
   }
 }

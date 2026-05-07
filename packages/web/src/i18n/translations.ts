@@ -14,6 +14,7 @@ export interface Translations {
     readonly changelog: string;
     readonly essays: string;
     readonly blog: string;
+    readonly pillars: string;
     readonly faq: string;
     readonly services: string;
     readonly pricing: string;
@@ -478,6 +479,29 @@ export interface Translations {
       readonly title: string;
       readonly desc: string;
     }>;
+  }>;
+  readonly pillars: Readonly<{
+    readonly title: string;
+    readonly heroTitle: string;
+    readonly subtitle: string;
+    readonly viewPillar: string;
+    readonly blockProblem: string;
+    readonly blockWhyNow: string;
+    readonly blockHowLemmaFits: string;
+    readonly blockUseCases: string;
+    readonly blockRecentThinking: string;
+    readonly viewUseCase: string;
+    readonly comingSoon: string;
+    readonly ctaEyebrow: string;
+    readonly ctaTitle: string;
+    readonly ctaDesc: string;
+  }>;
+  readonly useCases: Readonly<{
+    readonly title: string;
+    readonly subtitle: string;
+    readonly sections: string;
+    readonly overview: string;
+    readonly backToPillar: string;
   }>;
 }
 

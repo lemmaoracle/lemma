@@ -1,0 +1,481 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { UseCase } from "../data/useCases";
+import type { Pillar } from "../data/pillars";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+
+export interface UseCaseDetailTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  useCase: UseCase;
+  pillar: Pillar;
+  pillarT: Translations["pillars"];
+  useCaseT: Translations["useCases"];
+}
+
+const { locale, t, base, useCase, pillar, pillarT, useCaseT } = Astro.props as UseCaseDetailTemplateProps;
+const useCasesPath = `${base}/use-cases`;
+const pillarsPath = `${base}/pillars`;
+
+// Combine all headings for TOC
+const allHeadings = useCase.sections.flatMap((s) => s.headings);
+---
+
+<Layout
+  locale={locale}
+  title={`${useCase.title} — Use Case | Lemma Oracle`}
+  description={useCase.abstract}
+  metaType="page"
+  pagePath={`${base}/use-cases/${useCase.slug}`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="uc-hero">
+    <div class="uc-hero-inner">
+      <div class="breadcrumb">
+        <a href={pillarsPath}>{pillarT.title}</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href={`${pillarsPath}/${pillar.slug}`}>{pillar.title[locale]}</a>
+      </div>
+      <h1>{useCase.title}</h1>
+      <p class="uc-abstract">{useCase.abstract}</p>
+      <div class="uc-meta">
+        <span class="uc-pillar-tag">P{pillar.order} {pillar.title[locale]}</span>
+        {useCase.targetVerticals.length > 0 && (
+          <span class="uc-verticals">{useCase.targetVerticals.join(" · ")}</span>
+        )}
+        <span class="uc-reading-time">{useCase.readingTime} min read</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="uc-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="uc-sidebar" aria-label="Use case sections">
+      <div class="sidebar-label">{useCaseT.sections}</div>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="#overview" class="sidebar-link">{useCaseT.overview}</a>
+        </li>
+        {useCase.sections.map((section) => (
+          <li>
+            <a href={`#${section.key}`} class="sidebar-link">{section.title}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="uc-main">
+      <!-- Overview Section -->
+      <section id="overview" class="uc-section">
+        <h2 class="section-title">{useCaseT.overview}</h2>
+        <div class="section-body">
+          {useCase.tags && useCase.tags.length > 0 && (
+            <div class="tag-strip">
+              {useCase.tags.map((tag) => (
+                <span class="tag-chip">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- Dynamic Sections -->
+      {useCase.sections.map((section) => (
+        <section id={section.key} class="uc-section">
+          <h2 class="section-title">{section.title}</h2>
+          <div class="section-body" set:html={section.body} />
+        </section>
+      ))}
+
+      <!-- CTA Section -->
+      <section class="uc-cta-section">
+        <div class="uc-cta-inner">
+          <div class="cta-eyebrow">{pillarT.ctaEyebrow}</div>
+          <h3 class="cta-title">{pillarT.ctaTitle}</h3>
+          <p class="cta-desc">{pillarT.ctaDesc}</p>
+          <div class="cta-buttons">
+            <a href={pillar.primaryCTA.href} class="cta-btn cta-btn-primary" target={pillar.primaryCTA.href.startsWith("http") ? "_blank" : undefined}>
+              {pillar.primaryCTA.label}
+            </a>
+            {pillar.secondaryCTA && (
+              <a href={pillar.secondaryCTA.href} class="cta-btn cta-btn-secondary" target={pillar.secondaryCTA.href.startsWith("http") ? "_blank" : undefined}>
+                {pillar.secondaryCTA.label}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .uc-hero {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 80px 10% 60px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .uc-hero-inner {
+    max-width: 800px;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .breadcrumb a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumb a:hover {
+    color: var(--white);
+  }
+  .breadcrumb-sep {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .uc-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.15;
+    margin: 0 0 16px 0;
+  }
+
+  .uc-abstract {
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.7;
+    margin: 0 0 20px 0;
+    max-width: 640px;
+  }
+
+  .uc-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .uc-pillar-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 4px 10px;
+    border: 1px solid rgba(139, 69, 19, 0.4);
+  }
+
+  .uc-verticals {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .uc-reading-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.3);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    padding-left: 16px;
+  }
+
+  .uc-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 60px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .uc-sidebar {
+    position: sticky;
+    top: 96px;
+    height: fit-content;
+    align-self: start;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-label::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--gray-200);
+    display: block;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--gray-600);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .sidebar-link:hover {
+    color: var(--black);
+    border-left-color: var(--gray-300);
+    background: var(--gray-50);
+  }
+
+  .uc-main {
+    min-width: 0;
+  }
+
+  .uc-section {
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 48px;
+  }
+  .uc-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.25;
+    margin: 0 0 24px 0;
+  }
+
+  .section-body {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--gray-800);
+  }
+
+  .section-body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 48px 0 16px;
+    line-height: 1.35;
+  }
+  .section-body :global(h3) {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 36px 0 12px;
+    line-height: 1.35;
+  }
+  .section-body :global(p) {
+    margin: 0 0 24px;
+  }
+  .section-body :global(ul) {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+  .section-body :global(ul li) {
+    padding: 6px 0 6px 24px;
+    position: relative;
+  }
+  .section-body :global(ul li::before) {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 8px;
+    top: 12px;
+  }
+  .section-body :global(a) {
+    color: var(--accent);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .section-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .section-body :global(table) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 24px 0;
+  }
+  .section-body :global(thead tr) {
+    background: var(--black);
+    color: var(--white);
+  }
+  .section-body :global(th) {
+    padding: 12px 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .section-body :global(td) {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+  .section-body :global(tr:nth-child(odd) td) {
+    background: var(--gray-50);
+  }
+  .section-body :global(pre) {
+    margin: 24px 0;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+  .section-body :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: #e1e4e8;
+  }
+
+  .tag-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-bottom: 24px;
+  }
+  .tag-chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.02em;
+  }
+
+  .uc-cta-section {
+    background: var(--black);
+    padding: 64px 48px;
+    margin: 60px 0 0;
+    text-align: center;
+  }
+
+  .uc-cta-inner {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .cta-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin: 0 0 12px 0;
+  }
+
+  .cta-desc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.7;
+    margin: 0 0 28px 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .cta-btn-primary {
+    background: var(--white);
+    color: var(--black);
+  }
+  .cta-btn-primary:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .cta-btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .cta-btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 900px) {
+    .uc-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .uc-sidebar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .uc-hero {
+      padding: 60px 6% 48px;
+    }
+    .uc-layout {
+      padding: 40px 16px 60px;
+    }
+    .uc-cta-section {
+      padding: 48px 24px;
+      margin: 40px -16px 0;
+    }
+  }
+</style>

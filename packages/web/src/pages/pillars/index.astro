@@ -1,0 +1,19 @@
+---
+import PillarsHubTemplate from "../../templates/PillarsHubTemplate.astro";
+import { getAllPillars } from "../../data/pillars";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+const pillars = getAllPillars();
+const pillarT = t.pillars;
+---
+
+<PillarsHubTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  pillars={pillars}
+  pillarT={pillarT}
+/>

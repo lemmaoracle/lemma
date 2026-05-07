@@ -1,0 +1,220 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { UseCase } from "../data/useCases";
+import type { Pillar } from "../data/pillars";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+
+export interface UseCasesIndexTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  useCases: ReadonlyArray<UseCase>;
+  pillars: ReadonlyArray<Pillar>;
+  useCaseT: Translations["useCases"];
+  pillarT: Translations["pillars"];
+}
+
+const { locale, t, base, useCases, pillars, useCaseT, pillarT } = Astro.props as UseCasesIndexTemplateProps;
+const pillarsPath = `${base}/pillars`;
+const useCasesPath = `${base}/use-cases`;
+
+function getPillarForUseCase(uc: UseCase): Pillar | undefined {
+  return pillars.find((p) => p.slug === uc.pillar);
+}
+---
+
+<Layout
+  locale={locale}
+  title={`${useCaseT.title} — Lemma Oracle`}
+  description={useCaseT.subtitle}
+  metaType="page"
+  pagePath={`${base}/use-cases`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="uc-index-hero">
+    <div class="section-tag" style="color:var(--accent)">{useCaseT.title}</div>
+    <h1>{useCaseT.subtitle}</h1>
+  </header>
+
+  <section class="uc-index-grid">
+    {useCases.map((uc, i) => {
+      const pillar = getPillarForUseCase(uc);
+      return (
+        <a href={`${useCasesPath}/${uc.slug}`} class="uc-index-card reveal" style={`transition-delay:${i * 0.06}s`}>
+          <div class="uc-card-pillar">
+            {pillar && <span class="pillar-tag">P{pillar.order} {pillar.title[locale]}</span>}
+          </div>
+          <h2 class="uc-card-title">{uc.title}</h2>
+          <p class="uc-card-abstract">{uc.abstract}</p>
+          <div class="uc-card-footer">
+            <span class="uc-card-cta">{useCaseT.title} →</span>
+            {uc.readingTime > 0 && <span class="uc-card-time">{uc.readingTime} min</span>}
+          </div>
+        </a>
+      );
+    })}
+  </section>
+
+  <section class="uc-index-pillars-cta">
+    <div class="cta-inner">
+      <div class="cta-eyebrow">{pillarT.title}</div>
+      <h3 class="cta-title">{pillarT.subtitle}</h3>
+      <a href={pillarsPath} class="cta-btn">{pillarT.title} →</a>
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .uc-index-hero {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 80px 10% 60px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .uc-index-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .uc-index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .uc-index-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--black);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .uc-index-card:hover {
+    border-color: var(--accent);
+    background: rgba(139, 69, 19, 0.04);
+  }
+
+  .uc-card-pillar {
+    margin-bottom: 16px;
+  }
+  .pillar-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 3px 8px;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+  }
+
+  .uc-card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.3;
+    margin: 0 0 12px 0;
+  }
+
+  .uc-card-abstract {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    margin: 0 0 24px 0;
+    flex: 1;
+  }
+
+  .uc-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .uc-card-cta {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .uc-card-time {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .uc-index-pillars-cta {
+    background: var(--black);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 64px 24px;
+    text-align: center;
+  }
+  .cta-inner {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .cta-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin: 0 0 28px 0;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--white);
+    color: var(--black);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .cta-btn:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  @media (max-width: 768px) {
+    .uc-index-hero {
+      padding: 60px 6% 48px;
+    }
+    .uc-index-grid {
+      grid-template-columns: 1fr;
+      padding: 40px 16px 60px;
+    }
+  }
+</style>

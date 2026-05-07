@@ -1,0 +1,484 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { Pillar } from "../data/pillars";
+import type { UseCase } from "../data/useCases";
+import type { BlogPost } from "../data/blog";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+
+export interface PillarDetailTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  pillar: Pillar;
+  useCases: ReadonlyArray<UseCase>;
+  recentPosts: ReadonlyArray<BlogPost>;
+  pillarT: Translations["pillars"];
+}
+
+const { locale, t, base, pillar, useCases, recentPosts, pillarT } = Astro.props as PillarDetailTemplateProps;
+const pillarsPath = `${base}/pillars`;
+const useCasesPath = `${base}/use-cases`;
+---
+
+<Layout
+  locale={locale}
+  title={`${pillar.title[locale]} — ${pillar.slogan[locale]} | Lemma Oracle`}
+  description={pillar.problemStatement[locale]}
+  metaType="page"
+  pagePath={`${base}/pillars/${pillar.slug}`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <!-- Block 1: Problem Statement -->
+  <header class="pillar-hero">
+    <div class="pillar-hero-inner">
+      <div class="pillar-meta">
+        <span class="pillar-order">P{pillar.order}</span>
+        <span class="pillar-slogan">{pillar.slogan[locale]}</span>
+      </div>
+      <h1>{pillar.title[locale]}</h1>
+      {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
+    </div>
+  </header>
+
+  <main class="pillar-content">
+    <!-- Block 1: Problem Statement -->
+    <section class="block block-problem">
+      <div class="block-label">{pillarT.blockProblem}</div>
+      <p class="problem-text">{pillar.problemStatement[locale]}</p>
+    </section>
+
+    <!-- Block 2: Why Now -->
+    <section class="block block-why-now">
+      <div class="block-label">{pillarT.blockWhyNow}</div>
+      <p class="why-now-text">{pillar.whyNow[locale]}</p>
+    </section>
+
+    <!-- Block 3: How Lemma Fits -->
+    <section class="block block-how">
+      <div class="block-label">{pillarT.blockHowLemmaFits}</div>
+      <ul class="how-list">
+        {pillar.howLemmaFits[locale].map((item) => (
+          <li class="how-item">{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Block 4: Use Cases -->
+    {useCases.length > 0 ? (
+      <section class="block block-use-cases">
+        <div class="block-label">{pillarT.blockUseCases}</div>
+        <div class="use-cases-grid">
+          {useCases.map((uc, i) => (
+            <a href={`${useCasesPath}/${uc.slug}`} class="use-case-card reveal" style={`transition-delay:${i * 0.06}s`}>
+              <div class="uc-content">
+                <h3 class="uc-title">{uc.title}</h3>
+                <p class="uc-abstract">{uc.abstract}</p>
+              </div>
+              <div class="uc-cta">
+                <span>{pillarT.viewUseCase}</span>
+                <span class="uc-arrow">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    ) : (
+      <section class="block block-use-cases">
+        <div class="block-label">{pillarT.blockUseCases}</div>
+        <div class="coming-soon-placeholder">
+          <p class="coming-soon-text">{pillarT.comingSoon}</p>
+        </div>
+      </section>
+    )}
+
+    <!-- Block 5: Recent Thinking (Blog Posts) -->
+    {recentPosts.length > 0 && (
+      <section class="block block-recent">
+        <div class="block-label">{pillarT.blockRecentThinking}</div>
+        <div class="recent-posts-list">
+          {recentPosts.map((post) => (
+            <a href={`${base}/blog/${post.slug}`} class="recent-post-row">
+              <div class="rp-cat">{post.category}</div>
+              <div class="rp-title">{post.title}</div>
+              <div class="rp-date">{post.date}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Block 6: CTA -->
+    <section class="block block-cta">
+      <div class="cta-content">
+        <div class="cta-eyebrow">{pillarT.ctaEyebrow}</div>
+        <h2 class="cta-title">{pillarT.ctaTitle}</h2>
+        <p class="cta-desc">{pillarT.ctaDesc}</p>
+        <div class="cta-buttons">
+          <a href={pillar.primaryCTA.href} class="cta-btn cta-btn-primary" target={pillar.primaryCTA.href.startsWith("http") ? "_blank" : undefined}>
+            {pillar.primaryCTA.label}
+          </a>
+          {pillar.secondaryCTA && (
+            <a href={pillar.secondaryCTA.href} class="cta-btn cta-btn-secondary" target={pillar.secondaryCTA.href.startsWith("http") ? "_blank" : undefined}>
+              {pillar.secondaryCTA.label}
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .pillar-hero {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 100px 10% 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .pillar-hero-inner {
+    max-width: 800px;
+  }
+  .pillar-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .pillar-order {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pillar-slogan {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.02em;
+  }
+  .pillar-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin: 0 0 12px 0;
+  }
+  .pillar-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+  }
+
+  .pillar-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .block {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .block:last-child {
+    border-bottom: none;
+  }
+
+  .block-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .block-label::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+
+  .problem-text,
+  .why-now-text {
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--gray-800);
+    margin: 0;
+    max-width: 720px;
+  }
+
+  .how-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .how-item {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--gray-800);
+    padding-left: 24px;
+    position: relative;
+  }
+  .how-item::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 8px;
+    top: 8px;
+  }
+
+  .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    background: var(--gray-200);
+  }
+
+  .use-case-card {
+    background: var(--white);
+    padding: 32px 28px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-top: 2px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .use-case-card:hover {
+    border-top-color: var(--accent);
+    background: var(--gray-50);
+  }
+
+  .uc-content {
+    flex: 1;
+  }
+  .uc-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0 0 8px 0;
+  }
+  .uc-abstract {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--gray-500);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .uc-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .uc-arrow {
+    transition: transform 0.2s;
+  }
+  .use-case-card:hover .uc-arrow {
+    transform: translateX(4px);
+  }
+
+  .coming-soon-placeholder {
+    padding: 40px 24px;
+    text-align: center;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+  .coming-soon-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.06em;
+  }
+
+  .recent-posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .recent-post-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-200);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+  }
+  .recent-post-row:first-child {
+    border-top: 1px solid var(--gray-200);
+  }
+  .recent-post-row:hover {
+    background: var(--gray-50);
+  }
+
+  .rp-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rp-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--black);
+    line-height: 1.35;
+  }
+  .rp-date {
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .block-cta {
+    background: var(--black);
+    padding: 64px 48px;
+    margin: 60px -24px 0;
+    text-align: center;
+  }
+
+  .cta-content {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .cta-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin: 0 0 16px 0;
+  }
+
+  .cta-desc {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.75;
+    margin: 0 0 32px 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 16px 36px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .cta-btn-primary {
+    background: var(--white);
+    color: var(--black);
+  }
+  .cta-btn-primary:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .cta-btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .cta-btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .pillar-hero {
+      padding: 80px 6% 60px;
+    }
+    .pillar-content {
+      padding: 40px 16px 60px;
+    }
+    .block-cta {
+      padding: 48px 24px;
+      margin: 40px -16px 0;
+    }
+    .recent-post-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .rp-date {
+      text-align: left;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    io.observe(el);
+  });
+</script>

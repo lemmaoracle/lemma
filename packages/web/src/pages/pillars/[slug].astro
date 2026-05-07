@@ -1,0 +1,57 @@
+---
+import PillarDetailTemplate from "../../templates/PillarDetailTemplate.astro";
+import { getAllPillars, getPillarBySlug } from "../../data/pillars";
+import { getUseCasesBySlugs } from "../../data/useCases";
+import { getAllPosts } from "../../data/blog";
+import { getTranslations } from "../../i18n/translations";
+
+export async function getStaticPaths() {
+  const pillars = getAllPillars();
+  const allPosts = await getAllPosts("en");
+
+  const paths = await Promise.all(
+    pillars.map(async (pillar) => {
+      const useCases = await getUseCasesBySlugs(pillar.useCaseSlugs, "en");
+
+      // Filter recent posts by pillar tags
+      const recentPosts = allPosts
+        .filter((post) => {
+          if (!post.tags || post.tags.length === 0) return false;
+          return pillar.tags.some((tag) =>
+            post.tags?.some((postTag) => postTag.toLowerCase().includes(tag.toLowerCase())),
+          );
+        })
+        .slice(0, 3);
+
+      return {
+        params: { slug: pillar.slug },
+        props: { pillar, useCases, recentPosts },
+      };
+    }),
+  );
+
+  return paths;
+}
+
+interface Props {
+  pillar: import("../../data/pillars").Pillar;
+  useCases: readonly import("../../data/useCases").UseCase[];
+  recentPosts: readonly import("../../data/blog").BlogPost[];
+}
+
+const { pillar, useCases, recentPosts } = Astro.props;
+const locale = "en" as const;
+const t = getTranslations(locale);
+const base = "";
+const pillarT = t.pillars;
+---
+
+<PillarDetailTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  pillar={pillar}
+  useCases={useCases}
+  recentPosts={recentPosts}
+  pillarT={pillarT}
+/>

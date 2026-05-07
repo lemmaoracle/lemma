@@ -179,6 +179,9 @@ const isActive = (path: string) => {
       <a href={blogPath} class:list={["mega-nav-link", { active: isActive(blogPath) }]}>{t.blog}</a>
     </li>
     <li class="mega-nav-item">
+      <a href={`${base}/pillars`} class:list={["mega-nav-link", { active: currentPath.startsWith(`${base}/pillars`) || currentPath.startsWith(`${base}/use-cases`) }]}>{t.pillars}</a>
+    </li>
+    <li class="mega-nav-item">
       <a href={faqPath} class:list={["mega-nav-link", { active: isActive(faqPath) }]}>{t.faq}</a>
     </li>
     <li class="mega-nav-item">
@@ -241,6 +244,7 @@ const isActive = (path: string) => {
     </div>
 
     <a href={blogPath} class="mob-direct">{t.blog}</a>
+    <a href={`${base}/pillars`} class="mob-direct">{t.pillars}</a>
     <a href={faqPath} class="mob-direct">{t.faq}</a>
 
     <div class="mob-cta">
