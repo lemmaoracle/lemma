@@ -24,6 +24,7 @@ export interface Heading {
 
 export interface UseCaseSection {
   readonly key: string;
+  readonly rawKey: string;
   readonly title: string;
   readonly body: string;
   readonly headings: ReadonlyArray<Heading>;
@@ -66,12 +67,15 @@ const EXCLUDED_SECTIONS: ReadonlySet<string> = new Set(["pitch-deck"]);
 
 const NUMERIC_PREFIX = /^(\d+)-/;
 
-function sectionSortKey(filename: string): { order: number; rest: string } {
-  const base = filename.replace(/\.(en|ja)\.md$/, "").replace(/\.md$/, "");
-  const match = base.match(NUMERIC_PREFIX);
-  return match
-    ? { order: parseInt(match[1], 10), rest: base.replace(NUMERIC_PREFIX, "") }
-    : { order: SECTION_ORDER.indexOf(base) >= 0 ? SECTION_ORDER.indexOf(base) + 100 : 200, rest: base };
+function sectionSortKey(key: string, rawKey: string): { order: number; rest: string } {
+  // Try raw key first (with numeric prefix like "01-problem")
+  const rawMatch = rawKey.match(NUMERIC_PREFIX);
+  if (rawMatch) {
+    return { order: parseInt(rawMatch[1], 10), rest: rawKey.replace(NUMERIC_PREFIX, "") };
+  }
+  // Fallback: legacy keys without numeric prefix
+  const idx = SECTION_ORDER.indexOf(key);
+  return { order: idx >= 0 ? idx + 100 : 200, rest: key };
 }
 
 /* ── Internal types ─────────────────────────────────────────────── */
@@ -251,6 +255,7 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
 
       return {
         key,
+        rawKey,
         title,
         body: marked.parse(sectionContent, { async: false }),
         headings: extractHeadings(sectionContent),
@@ -258,8 +263,8 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     })
     .filter((s): s is UseCaseSection => s !== undefined)
     .sort((a, b) => {
-      const aSort = sectionSortKey(a.key);
-      const bSort = sectionSortKey(b.key);
+      const aSort = sectionSortKey(a.key, a.rawKey);
+      const bSort = sectionSortKey(b.key, b.rawKey);
       return aSort.order !== bSort.order
         ? aSort.order - bSort.order
         : aSort.rest.localeCompare(bSort.rest);
