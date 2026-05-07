@@ -39,8 +39,8 @@ const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateP
         <a href={`${base}/pillars/${pillar.slug}`} class="pillar-card reveal" style={`transition-delay:${i * 0.08}s`}>
           <div class="pillar-order">P{pillar.order}</div>
           <div class="pillar-content">
-            <h2 class="pillar-title">{pillar.title}</h2>
-            <div class="pillar-slogan">{pillar.slogan}</div>
+            <h2 class="pillar-title">{pillar.title[locale]}</h2>
+            <div class="pillar-slogan">{pillar.slogan[locale]}</div>
             {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
           </div>
           <div class="pillar-cta">

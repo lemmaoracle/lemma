@@ -25,7 +25,7 @@ const useCasesPath = `${base}/use-cases`;
 
 <Layout
   locale={locale}
-  title={`${pillar.title} — ${pillar.slogan} | Lemma Oracle`}
+  title={`${pillar.title[locale]} — ${pillar.slogan[locale]} | Lemma Oracle`}
   description={pillar.problemStatement[locale]}
   metaType="page"
   pagePath={`${base}/pillars/${pillar.slug}`}
@@ -38,9 +38,9 @@ const useCasesPath = `${base}/use-cases`;
     <div class="pillar-hero-inner">
       <div class="pillar-meta">
         <span class="pillar-order">P{pillar.order}</span>
-        <span class="pillar-slogan">{pillar.slogan}</span>
+        <span class="pillar-slogan">{pillar.slogan[locale]}</span>
       </div>
-      <h1>{pillar.title}</h1>
+      <h1>{pillar.title[locale]}</h1>
       {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
     </div>
   </header>

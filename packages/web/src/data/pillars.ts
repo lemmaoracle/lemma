@@ -27,8 +27,8 @@ export interface LocalizedArray {
 
 export interface Pillar {
   readonly slug: PillarSlug;
-  readonly title: string;
-  readonly slogan: string;
+  readonly title: LocalizedStrings;
+  readonly slogan: LocalizedStrings;
   readonly subtitle: LocalizedStrings;
   readonly problemStatement: LocalizedStrings;
   readonly whyNow: LocalizedStrings;
@@ -46,8 +46,8 @@ export interface Pillar {
 const PILLARS: ReadonlyArray<Pillar> = [
   {
     slug: "verifiable-origin",
-    title: "Verifiable Origin",
-    slogan: "Cryptographically valid ≠ semantically right",
+    title: { en: "Verifiable Origin", ja: "来歴証明" },
+    slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
     subtitle: { en: "Incident-grade Data Trust", ja: "インシデント級のデータ信頼" },
     problemStatement: {
       en: "In bridge and cross-chain transfers, asset origin is not cryptographically proven",
@@ -85,8 +85,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
   },
   {
     slug: "verifiable-ai",
-    title: "Verifiable AI",
-    slogan: "Finds bugs ≠ proves decisions",
+    title: { en: "Verifiable AI", ja: "AI出力の検証可能性" },
+    slogan: { en: "Finds bugs ≠ proves decisions", ja: "バグを見つける ≠ 決定を証明する" },
     subtitle: { en: "Models change. Proofs remain.", ja: "モデルは変わる。証明は残る。" },
     problemStatement: {
       en: "No mechanism exists to retrospectively verify AI decision rationale. Accountability and audit requirements pose fundamental challenges",
@@ -124,8 +124,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
   },
   {
     slug: "agent-trust-chain",
-    title: "Agent Trust Chain",
-    slogan: "Pays ≠ trustworthy",
+    title: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
+    slogan: { en: "Pays ≠ trustworthy", ja: "支払う ≠ 信頼できる" },
     subtitle: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
     problemStatement: {
       en: "In agent-to-agent transactions, there is no way to verify who has what authority and what data underlies a payment",
@@ -158,8 +158,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
   },
   {
     slug: "regulatory-attribute-proof",
-    title: "Regulatory Attribute Proof",
-    slogan: "Compliance promised ≠ compliance proven",
+    title: { en: "Regulatory Attribute Proof", ja: "規制属性証明" },
+    slogan: { en: "Compliance promised ≠ compliance proven", ja: "コンプライアンスの約束 ≠ コンプライアンスの証明" },
     subtitle: { en: "", ja: "" },
     problemStatement: {
       en: "Claims of regulatory compliance (KYC/AML/data residency/DPP/ESG) must be transformed into programmatically verifiable proofs",

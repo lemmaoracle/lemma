@@ -40,12 +40,12 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
       <div class="breadcrumb">
         <a href={pillarsPath}>{pillarT.title}</a>
         <span class="breadcrumb-sep">/</span>
-        <a href={`${pillarsPath}/${pillar.slug}`}>{pillar.title}</a>
+        <a href={`${pillarsPath}/${pillar.slug}`}>{pillar.title[locale]}</a>
       </div>
       <h1>{useCase.title}</h1>
       <p class="uc-abstract">{useCase.abstract}</p>
       <div class="uc-meta">
-        <span class="uc-pillar-tag">P{pillar.order} {pillar.title}</span>
+        <span class="uc-pillar-tag">P{pillar.order} {pillar.title[locale]}</span>
         {useCase.targetVerticals.length > 0 && (
           <span class="uc-verticals">{useCase.targetVerticals.join(" · ")}</span>
         )}
