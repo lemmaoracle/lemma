@@ -48,7 +48,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "verifiable-origin",
     title: { en: "Verifiable Origin", ja: "来歴証明" },
     slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
-    subtitle: { en: "Incident-grade Data Trust", ja: "インシデント級のデータ信頼" },
+    subtitle: { en: "Data is copied. Provenance is carved.", ja: "データは複製される。来歴は刻まれる。" },
     problemStatement: {
       en: "In bridge and cross-chain transfers, asset origin is not cryptographically proven",
       ja: "Bridge・クロスチェーン移転において、資産の「出所」は暗号論理的に証明されていない",
@@ -126,7 +126,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "agent-trust-chain",
     title: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
     slogan: { en: "Pays ≠ trustworthy", ja: "支払う ≠ 信頼できる" },
-    subtitle: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
+    subtitle: { en: "Authority can be delegated. Only provable authority should be.", ja: "権限は渡せる。証明できる権限だけが。" },
     problemStatement: {
       en: "In agent-to-agent transactions, there is no way to verify who has what authority and what data underlies a payment",
       ja: "エージェント同士の取引において、誰が何の権限でどのデータに基づく支払いかを検証する手段がない",
@@ -160,7 +160,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     slug: "regulatory-attribute-proof",
     title: { en: "Regulatory Attribute Proof", ja: "規制属性証明" },
     slogan: { en: "Compliance promised ≠ compliance proven", ja: "コンプライアンスの約束 ≠ コンプライアンスの証明" },
-    subtitle: { en: "", ja: "" },
+    subtitle: { en: "Data stays. Proofs travel.", ja: "データは渡さない。証明は渡る。" },
     problemStatement: {
       en: "Claims of regulatory compliance (KYC/AML/data residency/DPP/ESG) must be transformed into programmatically verifiable proofs",
       ja: "規制要件（KYC/AML/データレジデンシー/DPP/ESG）を満たしているという主張を、プログラムで検証できる証明に変える",
