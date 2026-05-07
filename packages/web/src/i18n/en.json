@@ -5,6 +5,7 @@
     "changelog": "Changelog",
     "essays": "Essays",
     "blog": "Blog",
+    "pillars": "Pillars",
     "faq": "FAQ",
     "services": "Services",
     "pricing": "Pricing",
@@ -575,5 +576,26 @@
       "title": "Register as a Partner",
       "desc": "We will contact you within 1 business day."
     }
+  },
+  "pillars": {
+    "title": "Pillars",
+    "heroTitle": "Four pillars of verifiable trust.",
+    "subtitle": "ZK-proven provenance for AI agents, cross-chain verification, and regulatory compliance.",
+    "viewPillar": "View pillar →",
+    "blockProblem": "Problem Statement",
+    "blockWhyNow": "Why Now",
+    "blockHowLemmaFits": "How Lemma Fits",
+    "blockUseCases": "Use Cases",
+    "blockRecentThinking": "Recent Thinking",
+    "viewUseCase": "View use case →",
+    "ctaEyebrow": "Get Started",
+    "ctaTitle": "Ready to prove?",
+    "ctaDesc": "Talk to us about your use case. We respond within one business day."
+  },
+  "useCases": {
+    "title": "Use Cases",
+    "sections": "Sections",
+    "overview": "Overview",
+    "backToPillar": "← Back to pillar"
   }
 }

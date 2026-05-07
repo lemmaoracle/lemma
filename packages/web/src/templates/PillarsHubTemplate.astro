@@ -1,0 +1,234 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { Pillar } from "../data/pillars";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+
+export interface PillarsHubTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  pillars: ReadonlyArray<Pillar>;
+  pillarT: Translations["pillars"];
+}
+
+const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateProps;
+---
+
+<Layout
+  locale={locale}
+  title={`${pillarT.title} — Lemma Oracle`}
+  description={pillarT.subtitle}
+  metaType="page"
+  pagePath={`${base}/pillars`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="pillars-header">
+    <div class="section-tag" style="color:var(--accent)">{pillarT.title}</div>
+    <h1>{pillarT.heroTitle}</h1>
+    <p>{pillarT.subtitle}</p>
+  </header>
+
+  <section class="pillars-grid-section">
+    <div class="pillars-grid">
+      {pillars.map((pillar, i) => (
+        <a href={`${base}/pillars/${pillar.slug}`} class="pillar-card reveal" style={`transition-delay:${i * 0.08}s`}>
+          <div class="pillar-order">P{pillar.order}</div>
+          <div class="pillar-content">
+            <h2 class="pillar-title">{pillar.title}</h2>
+            <div class="pillar-slogan">{pillar.slogan}</div>
+            {pillar.subtitle && <div class="pillar-subtitle">{pillar.subtitle}</div>}
+          </div>
+          <div class="pillar-cta">
+            <span>{pillarT.viewPillar}</span>
+            <span class="pillar-arrow">→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .pillars-header {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 100px 10% 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .pillars-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin-bottom: 16px;
+  }
+  .pillars-header p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.75;
+    max-width: 440px;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+
+  .pillars-grid-section {
+    background: var(--white);
+    padding: 80px 10% 120px;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+
+  .pillar-card {
+    background: var(--white);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-decoration: none;
+    color: inherit;
+    border-top: 2px solid transparent;
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
+  }
+  .pillar-card:hover {
+    border-top-color: var(--accent);
+    background: var(--gray-50);
+  }
+
+  .pillar-order {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .pillar-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pillar-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .pillar-slogan {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--gray-800);
+  }
+
+  .pillar-subtitle {
+    font-size: 13px;
+    color: var(--gray-500);
+    font-style: italic;
+  }
+
+  .pillar-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  .pillar-arrow {
+    transition: transform 0.2s;
+  }
+  .pillar-card:hover .pillar-arrow {
+    transform: translateX(4px);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1024px) {
+    .pillars-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pillars-header,
+    .pillars-grid-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .pillars-header {
+      padding-top: 80px;
+      padding-bottom: 60px;
+    }
+    .pillars-grid-section {
+      padding-top: 56px;
+      padding-bottom: 80px;
+    }
+    .pillar-card {
+      padding: 36px 28px;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    io.observe(el);
+  });
+</script>
