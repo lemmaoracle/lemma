@@ -69,7 +69,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン検証にGroth16証明",
       ],
     },
-    useCaseSlugs: ["defi-bridge-verification"],
+    useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
     primaryCTA: {
       label: "Talk to us",
       href: "/services",
