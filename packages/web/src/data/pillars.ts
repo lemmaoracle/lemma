@@ -25,6 +25,12 @@ export interface LocalizedArray {
   readonly ja: ReadonlyArray<string>;
 }
 
+export interface CtaCopy {
+  readonly eyebrow: LocalizedStrings;
+  readonly title: LocalizedStrings;
+  readonly desc: LocalizedStrings;
+}
+
 export interface Pillar {
   readonly slug: PillarSlug;
   readonly title: LocalizedStrings;
@@ -36,6 +42,7 @@ export interface Pillar {
   readonly useCaseSlugs: ReadonlyArray<string>;
   readonly primaryCTA: CTA;
   readonly secondaryCTA?: CTA;
+  readonly ctaCopy?: CtaCopy;
   readonly cover?: string;
   readonly order: number;
   readonly tags: ReadonlyArray<string>;
@@ -149,9 +156,25 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     useCaseSlugs: ["delegated-treasury", "multi-agent-workflows", "x402-commerce"],
     primaryCTA: {
+      label: "Talk to us",
+      href: "https://tally.so/r/EkBqDX",
+      type: "talk-to-us",
+    },
+    secondaryCTA: {
       label: "Join Trust402 waitlist",
       href: "https://tally.so/r/kd0bZR",
       type: "waitlist",
+    },
+    ctaCopy: {
+      eyebrow: { en: "Get Started", ja: "はじめる" },
+      title: {
+        en: "Ready to issue agent authority as cryptographic attestations — not soft prompts?",
+        ja: "エージェントへの権限委譲を、ソフトプロンプトではなく暗号的アテステーションとして発行する準備はできましたか。",
+      },
+      desc: {
+        en: "Talk to us about your use case. We respond within one business day.",
+        ja: "ユースケースについてお聞かせください。1 営業日以内にご返信いたします。",
+      },
     },
     order: 3,
     tags: ["agent", "x402", "mcp", "trust-chain"],
