@@ -12,15 +12,35 @@ export interface FaqTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
-  title: string;
-  description: string;
 }
 
-const { locale, t, base, title, description } = Astro.props as FaqTemplateProps;
+const { locale, t, base } = Astro.props as FaqTemplateProps;
 const fq = t.faq;
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: fq.sections.flatMap((section) =>
+    section.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  ),
+};
 ---
 
-<Layout locale={locale} title={title} description={description}>
+<Layout
+  locale={locale}
+  title={fq.metaTitle}
+  description={fq.metaDescription}
+  metaType="page"
+  pagePath="/faq/"
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} />
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

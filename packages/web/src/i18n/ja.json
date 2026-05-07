@@ -111,6 +111,8 @@
   },
   "blog": {
     "title": "ブログ",
+    "metaTitle": "ブログ — Lemma Oracle",
+    "metaDescription": "Lemma Oracle のエッセイ・変更履歴・フィールドノート。",
     "subtitle": "エッセイ、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
@@ -152,8 +154,8 @@
     "subtitle": "LemmaとVerifiable AIに関するよくある質問"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — 検証可能AIの信頼基盤",
-    "defaultDescription": "AI に証明された事実を。AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。"
+    "defaultTitle": "Lemma Oracle — ZK証明による検証可能AIの信頼基盤",
+    "defaultDescription": "AIに暗号学的に証明された事実を。ZK証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズAI・エージェント決済・コンプライアンス対応。"
   },
   "services": {
     "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma Oracle",
@@ -386,6 +388,8 @@
     }
   },
   "faq": {
+    "metaTitle": "FAQ — Lemma Oracle",
+    "metaDescription": "LemmaおよびVerifiable AIに関するよくある質問です。",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — AI 信頼性と検証可能性.",
@@ -458,6 +462,8 @@
     }
   },
   "pricing": {
+    "metaTitle": "料金 — Lemma Oracle",
+    "metaDescription": "Lemma Oracle のエンタープライズおよび開発者向け料金。3つのセグメント、1つの信頼レイヤー。",
     "hero": {
       "eyebrow": "料金",
       "h1": "重要な意思決定のために",

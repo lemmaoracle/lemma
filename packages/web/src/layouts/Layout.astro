@@ -27,6 +27,31 @@ const shouldRenderMetaTags =
   (Astro.props.metaType === "page" && Astro.props.pagePath !== undefined) ||
   (Astro.props.metaType === "article" && Astro.props.post);
 
+const SITE_ORIGIN = "https://lemma.frame00.com";
+
+function buildLocalePath(targetLocale: Locale): string | null {
+  const prefix = targetLocale === "ja" ? "/ja" : "";
+  if (Astro.props.metaType === "home") {
+    return `${prefix}/`;
+  }
+  if (Astro.props.metaType === "page" && Astro.props.pagePath) {
+    return `${prefix}${Astro.props.pagePath}`;
+  }
+  if (
+    Astro.props.metaType === "article" &&
+    Astro.props.post &&
+    Astro.props.blogPath
+  ) {
+    const blogPathBase = Astro.props.blogPath.replace(/^\/ja/, "");
+    return `${prefix}${blogPathBase}/${Astro.props.post.slug}`;
+  }
+  return null;
+}
+
+const canonicalPath = buildLocalePath(locale);
+const enHref = buildLocalePath("en");
+const jaHref = buildLocalePath("ja");
+
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 ---
 
@@ -72,6 +97,10 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
           />
         )
     }
+    {canonicalPath && <link rel="canonical" href={`${SITE_ORIGIN}${canonicalPath}`} />}
+    {enHref && <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />}
+    {jaHref && <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />}
+    {enHref && <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
