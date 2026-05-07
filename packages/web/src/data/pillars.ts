@@ -147,7 +147,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "エージェント間信頼チェーン検証",
       ],
     },
-    useCaseSlugs: [],
+    useCaseSlugs: ["x402-commerce", "delegated-treasury", "multi-agent-workflows"],
     primaryCTA: {
       label: "Join Trust402 waitlist",
       href: "https://tally.so/r/kd0bZR",
