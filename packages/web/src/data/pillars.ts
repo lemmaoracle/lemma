@@ -70,6 +70,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ],
     },
     useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
+    // Card order per Mayumi: RAGコンテンツ来歴 → サプライチェーン部品来歴 → DeFiブリッジ検証
     primaryCTA: {
       label: "Talk to us",
       href: "/services",
@@ -147,7 +148,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "エージェント間信頼チェーン検証",
       ],
     },
-    useCaseSlugs: ["x402-commerce", "delegated-treasury", "multi-agent-workflows"],
+    useCaseSlugs: ["delegated-treasury", "multi-agent-workflows", "x402-commerce"],
     primaryCTA: {
       label: "Join Trust402 waitlist",
       href: "https://tally.so/r/kd0bZR",
