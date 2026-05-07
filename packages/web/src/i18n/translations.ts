@@ -190,6 +190,7 @@ export interface Translations {
   }>;
   readonly services: Readonly<{
     readonly title: string;
+    readonly metaDescription: string;
     readonly hero: Readonly<{
       readonly title: string;
       readonly sub: string;

@@ -156,7 +156,8 @@
     "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
   },
   "services": {
-    "title": "Lemma Oracle — Verifiable AI / Data Trust Infrastructure for Agent AI",
+    "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
+    "metaDescription": "Prove data authenticity without exposing contents. ZK-proof infrastructure for verifiable AI agents, supply chain traceability, and audit-ready compliance. Enterprise & developer plans.",
     "hero": {
       "title": "The real reason agent AI can't be used isn't the model—it's the data.",
       "sub": "Generative AI adoption is accelerating. But results on the ground aren't keeping up. The root cause is the absence of a trusted data foundation. Lemma's Verifiable AI provides that foundation.",

@@ -8,9 +8,10 @@ interface Props {
   title?: string;
   description?: string;
   locale?: Locale;
-  metaType?: "home" | "article";
+  metaType?: "home" | "page" | "article";
   post?: BlogPost;
   blogPath?: string;
+  pagePath?: string;
   bodyClass?: string;
   noindex?: boolean;
 }
@@ -22,7 +23,9 @@ const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
 
 const shouldRenderMetaTags =
-  Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
+  Astro.props.metaType === "home" ||
+  (Astro.props.metaType === "page" && Astro.props.pagePath !== undefined) ||
+  (Astro.props.metaType === "article" && Astro.props.post);
 
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 ---
@@ -41,6 +44,18 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (
         <MetaTags type="home" title={title} description={description} base={base} locale={locale} />
+      )
+    }
+    {
+      shouldRenderMetaTags && Astro.props.metaType === "page" && Astro.props.pagePath && (
+        <MetaTags
+          type="page"
+          title={title}
+          description={description}
+          base={base}
+          pagePath={Astro.props.pagePath}
+          locale={locale}
+        />
       )
     }
     {
