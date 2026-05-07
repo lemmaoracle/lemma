@@ -184,6 +184,11 @@ function calculateReadingTime(content: string, locale: BlogLocale): number {
 
 /* ── Parse Use Case ─────────────────────────────────────────────── */
 
+function extractTitleFromContent(content: string): string | undefined {
+  const match = content.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : undefined;
+}
+
 function parseUseCase(dir: UseCaseDir): UseCase | undefined {
   // Find README.md or index.md
   const readmeFile = dir.files.find((f) => f.name === "README.md" || f.name === "index.md");
@@ -192,7 +197,9 @@ function parseUseCase(dir: UseCaseDir): UseCase | undefined {
   const { data, content } = matter(readmeFile.content);
   const fm = data as UseCaseFrontmatter;
 
-  if (!fm.title) return undefined;
+  // Fallback: extract title from first h1 if no frontmatter title
+  const title = fm.title ?? extractTitleFromContent(readmeFile.content);
+  if (!title) return undefined;
 
   // Parse sections
   const sectionFiles = dir.files.filter(
@@ -230,7 +237,7 @@ function parseUseCase(dir: UseCaseDir): UseCase | undefined {
   return {
     slug: dir.name,
     locale: "en" as BlogLocale,
-    title: fm.title,
+    title,
     abstract: fm.abstract ?? "",
     pillar: fm.pillar ?? "verifiable-origin",
     targetVerticals: fm.targetVerticals ?? [],
