@@ -146,9 +146,11 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
           {pillars.map((pillar) => (
             <a href={`${pillarsHref}${pillar.slug}/`} class="pillar-card">
               <div class="pillar-card-num">{ix.whyLemma.pillarLabel} 0{pillar.order} / {pillar.title[locale]}</div>
-              <h3 class="pillar-card-title" set:html={pillar.subtitle[locale].replace(/(。|\.)\s*/, "$1<br/>")} />
+              <h3 class="pillar-card-title">
+                {pillar.homepageCardTitle[locale].line1}<br/>{pillar.homepageCardTitle[locale].line2}
+              </h3>
               <div class="pillar-card-thesis">{pillar.slogan[locale]}</div>
-              <p class="pillar-card-sub">{pillar.homepageBlurb?.[locale] ?? pillar.subtitle[locale]}</p>
+              <p class="pillar-card-sub">{pillar.homepageBlurb[locale]}</p>
               <div class="pillar-card-footer">
                 <span class="pillar-card-more">{ix.whyLemma.cardCta}</span>
                 <span class="pillar-card-arrow">→</span>
@@ -646,7 +648,13 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   }
-  .pillar-card:hover .pillar-card-arrow {
+  .pillar-card:active {
+    background: var(--accent-bg);
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  .pillar-card:hover .pillar-card-arrow,
+  .pillar-card:active .pillar-card-arrow {
     color: var(--accent);
     transform: translateX(4px);
   }
@@ -929,7 +937,13 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     .pillar-card { padding: 28px 22px 22px; }
     .pillar-card-title { font-size: 19px; }
 
-    .arch-stats { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; margin-top: 48px; }
+    .arch-stats {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      padding-top: 32px;
+      margin-top: 48px;
+      text-align: left;
+    }
     .arch-stat-num { font-size: 32px; }
 
     .essays { padding: 72px 6%; }
