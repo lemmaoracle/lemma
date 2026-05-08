@@ -173,26 +173,29 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
         <p class="section-lede how-lede">{ix.architecture.lede}</p>
       </div>
 
-      <div class="how-layers">
-        {ix.architecture.layers.map((layer, i) => (
-          <div class="layer">
-            <div class="layer-num">{layer.num}</div>
-            <div class="layer-title" set:html={layer.title.replace(/、/, "、<br/>")}></div>
-            <div class="layer-body">
-              {layer.body}
-              {layerGuideLinks[i] && (
-                <a href={layerGuideLinks[i]} class="layer-link">{ix.architecture.guideCta}</a>
+      <div class="arch-grid">
+        {ix.architecture.layers.map((layer, i) => {
+          const labels = ["ENCRYPT", "PROVE", "DISCLOSE", "PROVENANCE"];
+          const guideHref = layerGuideLinks[i];
+          const Tag = guideHref ? "a" : "div";
+          return (
+            <Tag class="arch-card" {...(guideHref ? { href: guideHref } : {})}>
+              <div class="arch-card-num">{layer.num} / {labels[i]}</div>
+              <h3 class="arch-card-title">{layer.title}</h3>
+              <p class="arch-card-body">{layer.body}</p>
+              {guideHref && (
+                <span class="arch-card-link">{ix.architecture.guideCta}</span>
               )}
-            </div>
-          </div>
-        ))}
+            </Tag>
+          );
+        })}
       </div>
 
       <div class="arch-stats">
         {ix.architecture.stats.map((metric) => (
           <div class="arch-stat">
             <div class="arch-stat-num">
-              {metric.num}
+              <span class="arch-stat-num-accent">{metric.num}</span>
               {metric.unit && <span class="arch-stat-unit">{metric.unit}</span>}
             </div>
             <div class="arch-stat-sub">{metric.sub}</div>
@@ -509,63 +512,68 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     font-size: 11.5px;
   }
 
-  /* ─── HOW IT WORKS ─── */
+  /* ─── HOW IT WORKS / ARCHITECTURE ─── */
   .how {
-    background: var(--gray-50);
-    padding: 96px 10%;
+    background: var(--white);
+    padding: 120px 10%;
   }
-  .how-head { max-width: 720px; margin-bottom: 48px; }
-  .how-h2 { font-size: clamp(28px, 3.4vw, 36px); line-height: 1.3; }
-  .how-lede { font-size: 14.5px; line-height: 1.7; }
-  .how-layers {
+  .how-head { max-width: 720px; margin-bottom: 64px; }
+  .how-h2 { font-size: clamp(32px, 4vw, 44px); line-height: 1.2; }
+  .how-lede { font-size: 16px; line-height: 1.8; }
+  .arch-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-    border-top: 1px solid var(--gray-200);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
   }
-  .layer {
-    display: grid;
-    grid-template-columns: 56px 240px 1fr;
-    align-items: start;
-    padding: 26px 0;
-    border-bottom: 1px solid var(--gray-200);
+  .arch-card {
+    border-top: 2px solid var(--accent);
+    padding: 36px 24px;
+    background: var(--white);
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
   }
-  .layer-num {
+  a.arch-card:hover {
+    background: var(--accent-bg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  a.arch-card:active {
+    background: var(--accent-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+  }
+  .arch-card-num {
+    color: var(--gray-500);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .arch-card-title {
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 600;
-    color: var(--accent);
-    letter-spacing: -0.01em;
-    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+    color: var(--black);
+    margin-bottom: 16px;
+    letter-spacing: -0.005em;
   }
-  .layer-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.35;
-    padding-right: 20px;
-  }
-  .layer-body {
+  .arch-card-body {
     font-size: 14px;
     line-height: 1.7;
     color: var(--gray-800, #1A1A1A);
-    max-width: 580px;
+    margin-bottom: 24px;
+    flex-grow: 1;
   }
-  .layer-link {
-    display: inline-block;
-    margin-top: 10px;
-    margin-left: 8px;
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .arch-card-link {
     color: var(--accent);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 1px;
-    transition: color 0.2s;
-    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-top: auto;
   }
-  .layer-link:hover { color: var(--accent-lt); }
+  a.arch-card:hover .arch-card-link { color: var(--accent-lt); }
 
   /* ─── WHY LEMMA (4 PILLAR CARDS) ─── */
   .why-lemma {
@@ -715,25 +723,26 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
-    margin-top: 64px;
+    margin-top: 80px;
     padding-top: 48px;
     border-top: 1px solid var(--gray-200);
     text-align: center;
   }
   .arch-stat-num {
     font-family: var(--font-display);
-    font-size: 40px;
-    font-weight: 500;
+    font-size: 48px;
+    font-weight: 600;
     color: var(--black);
     line-height: 1;
     margin-bottom: 10px;
     letter-spacing: -0.02em;
   }
+  .arch-stat-num-accent { color: var(--accent); }
   .arch-stat-unit {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
     color: var(--gray-500);
-    margin-left: 6px;
+    margin-left: 8px;
     font-family: var(--font-body);
   }
   .arch-stat-sub {
@@ -906,8 +915,7 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     .demos-grid { grid-template-columns: 1fr; }
     .essays-featured { grid-template-columns: 1fr; }
     .essays-list { grid-template-columns: 1fr 1fr; gap: 16px; }
-    .layer { grid-template-columns: 56px 1fr; }
-    .layer-body { grid-column: 2; margin-top: 12px; }
+    .arch-grid { grid-template-columns: 1fr 1fr; }
     .why-lemma-inner { padding: 96px 8%; }
     .why-lemma-grid { gap: 20px; }
     .arch-stats { grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -926,9 +934,10 @@ const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
     .demo-cta { flex-direction: column; align-items: stretch; }
     .demo-cta .btn { justify-content: center; text-align: center; }
 
-    .how { padding: 72px 6%; }
-    .layer-title { font-size: 19px; }
-    .layer-body { font-size: 14.5px; }
+    .how { padding: 80px 6%; }
+    .arch-grid { grid-template-columns: 1fr; gap: 16px; }
+    .arch-card { padding: 28px 22px; }
+    .arch-card-title { font-size: 18px; }
 
     .why-lemma-inner { padding: 72px 6%; }
     .why-lemma-grid { grid-template-columns: 1fr; gap: 16px; }
