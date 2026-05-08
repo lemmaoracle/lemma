@@ -328,15 +328,21 @@ export interface Translations {
   readonly index: Readonly<{
     readonly hero: Readonly<{
       readonly liveBadge: string;
-      readonly h1Line1: string;
-      readonly h1Line2: string;
-      readonly sub: string;
-      readonly marks: ReadonlyArray<string>;
-      readonly statusLicense: string;
-      readonly statusNpm: string;
+      readonly h1: string;
+      readonly subLine1: string;
+      readonly subLine2: string;
       readonly primaryCta: string;
       readonly secondaryCta: string;
       readonly scroll: string;
+    }>;
+    readonly whyLemma: Readonly<{
+      readonly label: string;
+      readonly h2: string;
+      readonly leadStrong: string;
+      readonly leadBody: string;
+      readonly pillarLabel: string;
+      readonly cardCta: string;
+      readonly sectionCta: string;
     }>;
     readonly demos: Readonly<{
       readonly label: string;
@@ -372,14 +378,7 @@ export interface Translations {
         readonly title: string;
         readonly body: string;
       }>;
-    }>;
-    readonly why: Readonly<{
-      readonly label: string;
-      readonly h2Line1: string;
-      readonly h2Line2: string;
-      readonly body: string;
-      readonly ctaText: string;
-      readonly metrics: ReadonlyArray<{
+      readonly stats: ReadonlyArray<{
         readonly num: string;
         readonly unit?: string;
         readonly sub: string;

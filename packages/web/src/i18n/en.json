@@ -293,21 +293,11 @@
   "index": {
     "hero": {
       "liveBadge": "Live on Base Sepolia",
-      "h1Line1": "Give AI",
-      "h1Line2": "proven facts.",
-      "sub": "Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain.",
-      "marks": [
-        "AES-GCM Encrypted",
-        "ZK-Proven Facts",
-        "docHash / CID",
-        "On-chain Anchored",
-        "Selective Disclosure",
-        "Permanent Provenance"
-      ],
-      "statusLicense": "MIT License",
-      "statusNpm": "npm i @lemmaoracle/sdk",
+      "h1": "Give AI proven facts.",
+      "subLine1": "Every attribute your AI reads carries cryptographic provenance.",
+      "subLine2": "Data stays sealed; only the facts travel.",
       "primaryCta": "Try Demo →",
-      "secondaryCta": "Download Whitepaper",
+      "secondaryCta": "Whitepaper →",
       "scroll": "↓ SCROLL"
     },
     "demos": {
@@ -334,10 +324,19 @@
         "secondaryCta": "Read Analysis →"
       }
     },
+    "whyLemma": {
+      "label": "Why Lemma",
+      "h2": "Four questions, one cryptographic answer.",
+      "leadStrong": "Four pillars of verifiable trust.",
+      "leadBody": "Data provenance, AI decisions, agent transactions, and regulatory compliance — all bound by ZK proof.",
+      "pillarLabel": "Pillar",
+      "cardCta": "Read more",
+      "sectionCta": "See all four pillars →"
+    },
     "architecture": {
       "label": "ARCHITECTURE",
-      "h2": "Two demos, one foundation.",
-      "lede": "Both Trust402 and the financial reference run on the same four cryptographic layers. The vertical changes — the proof mechanism does not.",
+      "h2": "One foundation supports all four pillars.",
+      "lede": "Every use case runs on the same four cryptographic layers. The vertical changes — the proof mechanism does not.",
       "guideCta": "Read the guide →",
       "layers": [
         {
@@ -360,15 +359,8 @@
           "title": "Provenance that never disappears.",
           "body": "AI infrastructure changes, provenance remains. Rebuilding the RAG index doesn't erase the proof."
         }
-      ]
-    },
-    "why": {
-      "label": "Why it matters",
-      "h2Line1": "Prove without",
-      "h2Line2": "disclosing.",
-      "body": "You don't need to hand PII or confidential data to AI. Vendor data, contract details, revenue figures — keep them inside your organization while still proving the facts that matter, like \"age ≥ 18\" or \"above threshold.\" The basis for judgment lives on-chain.",
-      "ctaText": "Read the specs",
-      "metrics": [
+      ],
+      "stats": [
         { "num": "0", "unit": "bytes", "sub": "Raw PII to AI" },
         { "num": "∞", "unit": "permanent", "sub": "Provenance persistence" },
         { "num": "ZK", "unit": "proven", "sub": "No data exposure" }
