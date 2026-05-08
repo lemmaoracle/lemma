@@ -5,6 +5,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import HomeSchemaOrg from "@/components/HomeSchemaOrg";
+import { getAllPillars } from "../data/pillars";
 import HeroCover from "../assets/cover.jpg";
 import WhyBg from "../assets/rag.jpg";
 import Trust402Bg from "../assets/trust402-canyon.jpg";
@@ -40,13 +41,13 @@ const wpLink = locale === "ja"
   ? `${base}/blog/whitepaper-v1-prove-ai-decisions/`
   : "/blog/whitepaper-v1-prove-ai-decisions/";
 const trust402Href = "/trust402/";
-const trust402ProductHref = "/trust402/";
 const financeHref = `${base}/blog/verifiable-origin-bridge-exploits-2026/`;
-const financeAnalysisHref = `${base}/blog/verifiable-origin-bridge-exploits-2026/`;
-const specsHref = `${base}/blog/lemma-oracle-specs/`;
 const partnerHref = `${base}/services/`;
+const pillarsHref = `${base}/pillars/`;
 const featuredLg = featured[0];
 const featuredAside = featured.slice(1, 3);
+
+const pillars = [...getAllPillars()].sort((a, b) => a.order - b.order);
 ---
 
 <Layout locale={locale} metaType="home" description={description}>
@@ -64,23 +65,9 @@ const featuredAside = featured.slice(1, 3);
           <span class="hero-live-dot"></span>
           {ix.hero.liveBadge}
         </div>
-        <h1 class="hero-h1">
-          {ix.hero.h1Line1}<br/>{ix.hero.h1Line2}
-        </h1>
-        <p class="hero-sub">{ix.hero.sub}</p>
-
-        <div class="hero-marks">
-          {ix.hero.marks.map((mark) => (
-            <span class="mark"><span class="mark-dot"></span>{mark}</span>
-          ))}
-        </div>
-
-        <div class="hero-divider"></div>
-
-        <p class="hero-status">
-          <span>{ix.hero.statusLicense}</span>
-          <span class="hero-status-sep">·</span>
-          <span class="hero-status-mono">{ix.hero.statusNpm}</span>
+        <h1 class="hero-h1">{ix.hero.h1}</h1>
+        <p class="hero-sub">
+          <strong>{ix.hero.subLine1}</strong><br/>{ix.hero.subLine2}
         </p>
 
         <div class="hero-cta">
@@ -140,6 +127,42 @@ const featuredAside = featured.slice(1, 3);
       </div>
     </section>
 
+    <!-- ─── WHY LEMMA (4 PILLAR CARDS) ─── -->
+    <section id="why-lemma" class="why-lemma reveal">
+      <div class="why-lemma-bg" style={`background-image: url(${WhyBg.src})`}></div>
+      <div class="why-lemma-overlay"></div>
+      <div class="why-lemma-inner">
+        <div class="why-lemma-header">
+          <div class="section-label why-lemma-label">{ix.whyLemma.label}</div>
+          <h2 class="why-lemma-h2">{ix.whyLemma.h2}</h2>
+          <div class="why-lemma-divider"></div>
+          <p class="why-lemma-lead">
+            <strong>{ix.whyLemma.leadStrong}</strong>
+            {ix.whyLemma.leadBody}
+          </p>
+        </div>
+
+        <div class="why-lemma-grid">
+          {pillars.map((pillar) => (
+            <a href={`${pillarsHref}${pillar.slug}/`} class="pillar-card">
+              <div class="pillar-card-num">{ix.whyLemma.pillarLabel} 0{pillar.order} / {pillar.title[locale]}</div>
+              <h3 class="pillar-card-title" set:html={pillar.subtitle[locale].replace(/(。|\.)\s*/, "$1<br/>")} />
+              <div class="pillar-card-thesis">{pillar.slogan[locale]}</div>
+              <p class="pillar-card-sub">{pillar.homepageBlurb?.[locale] ?? pillar.subtitle[locale]}</p>
+              <div class="pillar-card-footer">
+                <span class="pillar-card-more">{ix.whyLemma.cardCta}</span>
+                <span class="pillar-card-arrow">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="why-lemma-cta-wrap">
+          <a href={pillarsHref} class="btn btn-ghost-light why-lemma-cta">{ix.whyLemma.sectionCta}</a>
+        </div>
+      </div>
+    </section>
+
     <!-- ─── HOW IT WORKS / ARCHITECTURE ─── -->
     <section id="how" class="how reveal">
       <div class="how-head">
@@ -162,30 +185,17 @@ const featuredAside = featured.slice(1, 3);
           </div>
         ))}
       </div>
-    </section>
 
-    <!-- ─── WHY IT MATTERS ─── -->
-    <section id="why" class="why reveal">
-      <div class="why-bg" style={`background-image: url(${WhyBg.src})`}></div>
-      <div class="why-overlay"></div>
-      <div class="why-inner">
-        <div class="why-label">{ix.why.label}</div>
-        <h2 class="why-h2">{ix.why.h2Line1}<br/>{ix.why.h2Line2}</h2>
-        <div class="why-rule"></div>
-        <p class="why-body">{ix.why.body}</p>
-        <a href={specsHref} class="why-btn">{ix.why.ctaText}</a>
-
-        <div class="why-metrics">
-          {ix.why.metrics.map((metric) => (
-            <div class="why-metric">
-              <div class="why-metric-num">
-                {metric.num}
-                {metric.unit && <span class="why-metric-unit">{metric.unit}</span>}
-              </div>
-              <div class="why-metric-sub">{metric.sub}</div>
+      <div class="arch-stats">
+        {ix.architecture.stats.map((metric) => (
+          <div class="arch-stat">
+            <div class="arch-stat-num">
+              {metric.num}
+              {metric.unit && <span class="arch-stat-unit">{metric.unit}</span>}
             </div>
-          ))}
-        </div>
+            <div class="arch-stat-sub">{metric.sub}</div>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -384,53 +394,12 @@ const featuredAside = featured.slice(1, 3);
     color: rgba(255,255,255,0.78);
     line-height: 1.7;
     margin-top: 28px;
+    margin-bottom: 40px;
     max-width: 560px;
   }
-  .hero-marks {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 32px;
-    max-width: 640px;
-  }
-  .mark {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 11px;
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: rgba(255,255,255,0.75);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.18);
-  }
-  .mark-dot {
-    width: 4px;
-    height: 4px;
-    background: var(--accent-lt);
-    flex-shrink: 0;
-  }
-  .hero-divider {
-    width: 40px;
-    height: 1px;
-    background: var(--accent);
-    margin: 36px 0 28px;
-  }
-  .hero-status {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 28px;
-  }
-  .hero-status-sep { color: rgba(255,255,255,0.35); }
-  .hero-status-mono {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
-    color: rgba(255,255,255,0.85);
+  .hero-sub strong {
+    color: #fff;
+    font-weight: 400;
   }
   .hero-cta {
     display: flex;
@@ -596,101 +565,174 @@ const featuredAside = featured.slice(1, 3);
   }
   .layer-link:hover { color: var(--accent-lt); }
 
-  /* ─── WHY IT MATTERS ─── */
-  .why {
+  /* ─── WHY LEMMA (4 PILLAR CARDS) ─── */
+  .why-lemma {
     position: relative;
     overflow: hidden;
     background: var(--black);
     color: #fff;
   }
-  .why-bg {
+  .why-lemma-bg {
     position: absolute;
     inset: 0;
     background: center/cover no-repeat;
     background-position: center 40%;
-    filter: saturate(0.65) brightness(0.85);
+    filter: saturate(0.6) brightness(0.7);
   }
-  .why-overlay {
+  .why-lemma-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.50) 55%, rgba(0,0,0,0.35) 100%);
+    background: rgba(0, 0, 0, 0.55);
   }
-  .why-inner {
+  .why-lemma-inner {
     position: relative;
     z-index: 2;
-    padding: 96px 10%;
+    padding: 120px 10%;
     max-width: 1200px;
+    margin: 0 auto;
   }
-  .why-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
+  .why-lemma-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 64px;
+  }
+  .why-lemma-label {
     color: var(--accent-lt);
     margin-bottom: 24px;
   }
-  .why-h2 {
+  .why-lemma-h2 {
     font-family: var(--font-display);
-    font-size: clamp(32px, 4.5vw, 56px);
+    font-size: clamp(32px, 4.5vw, 52px);
     font-weight: 500;
-    line-height: 1.3;
-    color: #fff;
-    margin-bottom: 28px;
+    line-height: 1.2;
     letter-spacing: -0.01em;
-    max-width: 640px;
-  }
-  .why-rule {
-    width: 48px;
-    height: 1px;
-    background: var(--accent-lt);
+    color: #fff;
     margin-bottom: 24px;
   }
-  .why-body {
-    font-size: 14.5px;
+  .why-lemma-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--accent-lt);
+    margin: 0 auto 24px;
+  }
+  .why-lemma-lead {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 16px;
     line-height: 1.8;
-    color: rgba(255,255,255,0.78);
-    max-width: 520px;
-    margin-bottom: 32px;
   }
-  .why-btn {
-    display: inline-block;
-    background: #fff;
-    color: #000;
-    padding: 12px 28px;
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    margin-bottom: 56px;
-    transition: background 0.2s, color 0.2s;
-  }
-  .why-btn:hover { background: var(--accent-lt); color: #fff; }
-  .why-metrics {
-    display: flex;
-    gap: 64px;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(255,255,255,0.18);
-    padding-top: 28px;
-    max-width: 720px;
-  }
-  .why-metric-num {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 500;
+  .why-lemma-lead strong {
     color: #fff;
-    margin-bottom: 6px;
-    line-height: 1;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
   }
-  .why-metric-unit {
+  .why-lemma-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .pillar-card {
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 2px solid var(--accent);
+    padding: 32px 28px 28px;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+  .pillar-card:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  }
+  .pillar-card:hover .pillar-card-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+  .pillar-card-num {
+    color: var(--gray-500);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .pillar-card-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin-bottom: 12px;
+    letter-spacing: -0.005em;
+  }
+  .pillar-card-thesis {
+    color: var(--accent);
     font-size: 13px;
+    font-style: italic;
+    font-weight: 500;
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+  }
+  .pillar-card-sub {
+    color: var(--gray-800);
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+  .pillar-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .pillar-card-more {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .pillar-card-arrow {
+    color: var(--gray-500);
+    font-size: 18px;
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+  .why-lemma-cta-wrap { text-align: center; }
+  .why-lemma-cta { padding: 14px 36px; }
+
+  /* ─── ARCHITECTURE STATS ─── */
+  .arch-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
+  }
+  .arch-stat-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .arch-stat-unit {
+    font-size: 14px;
     font-weight: 400;
-    color: rgba(255,255,255,0.78);
-    margin-left: 4px;
+    color: var(--gray-500);
+    margin-left: 6px;
     font-family: var(--font-body);
   }
-  .why-metric-sub {
+  .arch-stat-sub {
+    color: var(--gray-500);
     font-size: 11px;
-    color: rgba(255,255,255,0.55);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
   }
 
   /* ─── ESSAYS ─── */
@@ -858,8 +900,9 @@ const featuredAside = featured.slice(1, 3);
     .essays-list { grid-template-columns: 1fr 1fr; gap: 16px; }
     .layer { grid-template-columns: 56px 1fr; }
     .layer-body { grid-column: 2; margin-top: 12px; }
-    .why-inner { padding: 80px 8%; }
-    .why-metrics { gap: 40px; }
+    .why-lemma-inner { padding: 96px 8%; }
+    .why-lemma-grid { gap: 20px; }
+    .arch-stats { grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .demos-intro { padding: 96px 8% 64px; }
   }
   @media (max-width: 640px) {
@@ -867,7 +910,6 @@ const featuredAside = featured.slice(1, 3);
     .hero-h1 { font-size: clamp(40px, 11vw, 56px); line-height: 1.15; }
     .hero-sub { font-size: 15px; line-height: 1.7; }
     .hero-eyebrow { font-size: 10.5px; padding: 7px 12px; gap: 8px; letter-spacing: 0.10em; }
-    .mark { font-size: 10.5px; padding: 5px 10px; }
 
     .demos-intro { padding: 72px 6% 48px; }
     .demo { padding: 56px 8%; }
@@ -880,12 +922,15 @@ const featuredAside = featured.slice(1, 3);
     .layer-title { font-size: 19px; }
     .layer-body { font-size: 14.5px; }
 
-    .why-inner { padding: 64px 6%; }
-    .why-h2 { font-size: 28px; line-height: 1.35; }
-    .why-body { font-size: 13.5px; line-height: 1.75; }
-    .why-metrics { gap: 28px 36px; padding-top: 24px; }
-    .why-metric-num { font-size: 22px; }
-    .why-btn { padding: 11px 24px; font-size: 12px; margin-bottom: 48px; }
+    .why-lemma-inner { padding: 72px 6%; }
+    .why-lemma-grid { grid-template-columns: 1fr; gap: 16px; }
+    .why-lemma-h2 { font-size: 28px; line-height: 1.3; }
+    .why-lemma-lead { font-size: 14.5px; }
+    .pillar-card { padding: 28px 22px 22px; }
+    .pillar-card-title { font-size: 19px; }
+
+    .arch-stats { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; margin-top: 48px; }
+    .arch-stat-num { font-size: 32px; }
 
     .essays { padding: 72px 6%; }
     .essays-list { grid-template-columns: 1fr; }

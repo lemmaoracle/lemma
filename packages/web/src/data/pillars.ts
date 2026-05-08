@@ -36,6 +36,7 @@ export interface Pillar {
   readonly title: LocalizedStrings;
   readonly slogan: LocalizedStrings;
   readonly subtitle: LocalizedStrings;
+  readonly homepageBlurb?: LocalizedStrings;
   readonly problemStatement: LocalizedStrings;
   readonly whyNow: LocalizedStrings;
   readonly howLemmaFits: LocalizedArray;
@@ -56,6 +57,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Verifiable Origin", ja: "来歴証明" },
     slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
     subtitle: { en: "Data is copied. Provenance is carved.", ja: "データは複製される。来歴は刻まれる。" },
+    homepageBlurb: {
+      en: "Lock the origin of assets, documents, and parts to a tamper-proof crypto layer.",
+      ja: "資産、文書、部品の出所を、改ざん不能な暗号レイヤで固定する。",
+    },
     problemStatement: {
       en: "In bridge and cross-chain transfers, asset origin is not cryptographically proven",
       ja: "Bridge・クロスチェーン移転において、資産の「出所」は暗号論理的に証明されていない",
@@ -95,6 +100,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Verifiable AI", ja: "AI出力の検証可能性" },
     slogan: { en: "Finds bugs ≠ proves decisions", ja: "バグを見つける ≠ 決定を証明する" },
     subtitle: { en: "Models change. Proofs remain.", ja: "モデルは変わる。証明は残る。" },
+    homepageBlurb: {
+      en: "Record AI decisions and citations so you can trace them back even after model upgrades.",
+      ja: "AIの判断と引用を、モデル更新後も遡れる構造で記録する。",
+    },
     problemStatement: {
       en: "No mechanism exists to retrospectively verify AI decision rationale. Accountability and audit requirements pose fundamental challenges",
       ja: "AIの判断根拠を後から検証できる仕組みが欠如している。説明責任と監査対応で根本的な問いに直面する",
@@ -134,6 +143,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Agent Trust Chain", ja: "エージェント信頼チェーン" },
     slogan: { en: "Pays ≠ trustworthy", ja: "支払う ≠ 信頼できる" },
     subtitle: { en: "Authority can be delegated. Only provable authority should be.", ja: "権限は渡せる。証明できる権限だけが。" },
+    homepageBlurb: {
+      en: "Make autonomous agents' authority and transactions cryptographically verifiable.",
+      ja: "自律エージェントの権限と取引を、暗号的に検証可能にする。",
+    },
     problemStatement: {
       en: "In agent-to-agent transactions, there is no way to verify who has what authority and what data underlies a payment",
       ja: "エージェント同士の取引において、誰が何の権限でどのデータに基づく支払いかを検証する手段がない",
@@ -184,6 +197,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Regulatory Attribute Proof", ja: "規制属性証明" },
     slogan: { en: "Compliance promised ≠ compliance proven", ja: "コンプライアンスの約束 ≠ コンプライアンスの証明" },
     subtitle: { en: "Data stays. Proofs travel.", ja: "データは渡さない。証明は渡る。" },
+    homepageBlurb: {
+      en: "Satisfy KYC/AML, ESG, and data-leakage compliance without sharing originals.",
+      ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
+    },
     problemStatement: {
       en: "Claims of regulatory compliance (KYC/AML/data residency/DPP/ESG) must be transformed into programmatically verifiable proofs",
       ja: "規制要件（KYC/AML/データレジデンシー/DPP/ESG）を満たしているという主張を、プログラムで検証できる証明に変える",
