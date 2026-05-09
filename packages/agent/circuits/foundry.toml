@@ -1,0 +1,16 @@
+[profile.default]
+src = "build"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.28"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+
+[rpc_endpoints]
+monad_testnet = "https://testnet-rpc.monad.xyz"
+base_sepolia = "https://sepolia.base.org"
+
+[etherscan]
+monad_testnet = { key = "${ETHERSCAN_API_KEY}", chain = 10143 }
+base_sepolia = { key = "${ETHERSCAN_API_KEY}", chain = 84532 }

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+target/
+pkg/
+
+# Circuit build artifacts
+circuits/build/
+circuits/node_modules/

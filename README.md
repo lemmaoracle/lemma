@@ -4,11 +4,12 @@
 
 Lemma is a cryptographically verified truth layer for agent AI. It lets AI
 reason over confidential data via zero-knowledge proofs, selective
-disclosure, and on-chain provenance — while raw content stays encrypted.
+disclosure, and tamper-evident provenance — while raw content stays
+encrypted.
 
 Every attribute an AI reads through Lemma carries permanent provenance:
-who issued it, which schema defined it, how it was proven, and where the
-proof lives on-chain.
+who issued it, which schema defined it, how it was proven, and where its
+verification record is anchored.
 
 ## Learn more
 
@@ -16,6 +17,36 @@ proof lives on-chain.
 - 📄 **Services**: https://lemma.frame00.com/services
 - ✍️ **Blog & essays**: https://lemma.frame00.com/blog
 - ❓ **FAQ**: https://lemma.frame00.com/blog/faq
+
+## MCP server
+
+`@lemmaoracle/mcp` is the **Model Context Protocol (MCP) server** for Lemma,
+published on npm and built with the official **MCP SDK**
+(`@modelcontextprotocol/sdk`). Point Claude Desktop or any MCP-compatible
+agent at it:
+
+```json
+{
+  "mcpServers": {
+    "lemma": {
+      "command": "npx",
+      "args": ["-y", "@lemmaoracle/mcp"],
+      "env": { "LEMMA_API_KEY": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+Tool list, env vars, and contributor build: [packages/mcp/README.md](./packages/mcp/README.md) · [npm](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
+## Packages
+
+Public packages in this monorepo:
+
+- **[`packages/mcp/`](./packages/mcp)** — `@lemmaoracle/mcp`, the **Model Context Protocol (MCP) server** for AI agents (this is the package above).
+- **[`packages/sdk/`](./packages/sdk)** — `@lemmaoracle/sdk`, TypeScript SDK for the Lemma API.
+- **[`packages/spec/`](./packages/spec)** — `@lemmaoracle/spec`, OpenAPI spec + shared TypeScript types.
+- **[`packages/x402/`](./packages/x402)** — `@lemmaoracle/x402`, x402 payment middleware drop-in.
 
 ## Contact
 

@@ -18,6 +18,17 @@ import { createHighlighter } from "shiki";
 
 export type BlogLocale = "en" | "ja";
 
+export interface RelatedLink {
+  readonly label: string;
+  readonly href: string;
+}
+
+export interface Heading {
+  readonly id: string;
+  readonly text: string;
+  readonly level: number;
+}
+
 export interface BlogPost {
   readonly slug: string;
   readonly locale: BlogLocale;
@@ -29,6 +40,10 @@ export interface BlogPost {
   readonly body: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  readonly tags?: ReadonlyArray<string>;
+  readonly relatedLinks?: ReadonlyArray<RelatedLink>;
+  readonly headings: ReadonlyArray<Heading>;
+  readonly readingTime: number;
 }
 
 export interface BlogSection {
@@ -80,6 +95,8 @@ interface PostFrontmatter {
   readonly abstract?: string;
   readonly categoryColor?: string;
   readonly cover?: string;
+  readonly tags?: ReadonlyArray<string>;
+  readonly relatedLinks?: ReadonlyArray<RelatedLink>;
 }
 
 /* ── GitHub fetching ────────────────────────────────────────────── */
@@ -215,6 +232,42 @@ function resolveCoverUrl(relativePath: string): string {
 
 /* ── Markdown → BlogPost ────────────────────────────────────────── */
 
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[▸◇◆●○★☆◀▶]/g, " ")
+    .replace(/[^\p{Letter}\p{Number}\s-]/gu, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function cleanHeadingText(text: string): string {
+  return text.replace(/^\s*[▸◇◆●○★☆◀▶]\s*/, "").trim();
+}
+
+const isHeadingToken = (token: Tokens.Generic): token is Tokens.Heading =>
+  token.type === "heading" && (token.depth === 2 || token.depth === 3);
+
+function extractHeadings(content: string): Heading[] {
+  const tokens = marked.lexer(content) as readonly Tokens.Generic[];
+  return tokens
+    .filter(isHeadingToken)
+    .map((token) => ({
+      id: slugifyHeading(token.text),
+      text: cleanHeadingText(token.text),
+      level: token.depth,
+    }));
+}
+
+function calculateReadingTime(content: string, locale: BlogLocale): number {
+  if (locale === "ja") {
+    const chars = content.replace(/\s/g, "").length;
+    return Math.max(1, Math.round(chars / 500));
+  }
+  const words = content.split(/\s+/).filter((w) => w.length > 0).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 function parsePost(filename: string, raw: string): BlogPost | undefined {
   const parsed = localeAndSlugFromFilename(filename);
   return parsed
@@ -234,6 +287,11 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               categoryColor:
                 fm.categoryColor || categoryColorByCategory[fm.category || ""] || "#000",
               cover: fm.cover ? resolveCoverUrl(fm.cover) : undefined,
+              tags: fm.tags && fm.tags.length > 0 ? fm.tags : undefined,
+              relatedLinks:
+                fm.relatedLinks && fm.relatedLinks.length > 0 ? fm.relatedLinks : undefined,
+              headings: extractHeadings(content),
+              readingTime: calculateReadingTime(content, parsed.locale),
             }
           : undefined;
       })()
@@ -255,13 +313,20 @@ const loadPosts = (() => {
           marked.use({
             renderer: {
               code({ text, lang }: Tokens.Code) {
-                const safeLang = lang ?? "text";
+                const safeText: string = text;
+                const safeLang: string = lang ?? "text";
                 const tryHighlight = (): string =>
-                  highlighter.codeToHtml(text, {
+                  highlighter.codeToHtml(safeText, {
                     lang: safeLang,
                     theme: BLOG_CODE_THEME,
                   });
-                return tryHighlight() || `<pre><code>${escapeCodeHtml(text)}</code></pre>`;
+                return tryHighlight() || `<pre><code>${escapeCodeHtml(safeText)}</code></pre>`;
+              },
+              heading({ tokens, depth, text }: Tokens.Heading) {
+                const inner = marked.parseInline(tokens.map((t) => t.raw).join("")) as string;
+                const id = slugifyHeading(text);
+                const depthStr = String(depth);
+                return `<h${depthStr} id="${id}">${inner}</h${depthStr}>\n`;
               },
             },
           });

@@ -8,8 +8,9 @@
 export { create } from "./client.js";
 export { define } from "./schema.js";
 export { encrypt, decrypt, derivePublicKey } from "./crypto.js";
-export { toScalar } from "./commitments.js";
-export { prepare } from "./prepare.js";
+export { poseidon, toScalar } from "./commitments.js";
+export { prepare, normalize } from "./prepare.js";
+export type { PrepareInput } from "./prepare.js";
 export type { PrepareOutput } from "./commitments.js";
 export type { SchemaDef } from "./schema.js";
 export * as disclose from "./disclose.js";

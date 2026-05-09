@@ -38,7 +38,13 @@ const enrichItem = (item: Readonly<{
   });
 
 export type QueryVerifiedAttributesInput = Readonly<{
-  attributes?: ReadonlyArray<Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value?: unknown }>>;
+  attributes?: ReadonlyArray<
+    Readonly<{
+      name: string;
+      operator?: "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "in" | "contains";
+      value?: unknown;
+    }>
+  >;
   schemas?: ReadonlyArray<string>;
   chainIds?: ReadonlyArray<number>;
   limit?: number;
@@ -87,17 +93,51 @@ export const queryVerifiedAttributesTool = (server: McpServer, client: LemmaClie
   server.registerTool(
     "lemma_query_verified_attributes",
     {
-      description: "Query cryptographically verified attributes from Lemma Oracle. Returns verified attributes with proof status and selective disclosure info.",
+      description:
+        "Query cryptographically verified attributes from Lemma. " +
+        "Use this as the primary tool for finding documents whose attributes match given conditions (e.g., \"subject's birthYear lt 2008\"). " +
+        "Returns { results: Array<{ docHash, schema, issuerId, subjectId, attributes, isVerified, proof?: { status, circuitId, chainId }, disclosure? }>, hasMore }. " +
+        "The MCP layer enriches each item with an `isVerified` flag derived from `proof.status` (true when status is 'verified' or 'onchain-verified'). " +
+        "Use lemma_get_proof_status to monitor a specific proof; use lemma_get_schema to interpret the keys returned in `attributes`.",
       inputSchema: {
-        attributes: z.array(z.object({
-          name: z.string(),
-          operator: z.enum(["eq", "neq", "gt", "lt"]).optional(),
-          value: z.unknown(),
-        })).optional(),
-        schemas: z.array(z.string()).optional(),
-        chainIds: z.array(z.number()).optional(),
-        limit: z.number().min(1).max(200).optional(),
-        offset: z.number().min(0).optional(),
+        attributes: z
+          .array(
+            z.object({
+              name: z.string().describe("Attribute key as defined by the schema."),
+              operator: z
+                .enum(["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"])
+                .optional()
+                .describe(
+                  "Comparison operator. Defaults to eq when omitted. 'in' takes an array value; 'contains' is substring/array-element match.",
+                ),
+              value: z
+                .unknown()
+                .describe(
+                  "Comparison target value. Type depends on the schema's attribute definition. For 'in', pass an array.",
+                ),
+            }),
+          )
+          .optional()
+          .describe("Attribute predicates to AND-combine."),
+        schemas: z
+          .array(z.string())
+          .optional()
+          .describe("Restrict results to documents conforming to these schema IDs."),
+        chainIds: z
+          .array(z.number())
+          .optional()
+          .describe("Restrict results to attributes verified on these chain IDs (EVM)."),
+        limit: z
+          .number()
+          .min(1)
+          .max(200)
+          .optional()
+          .describe("Max results per page (1–200). Defaults to API server default (50)."),
+        offset: z
+          .number()
+          .min(0)
+          .optional()
+          .describe("Pagination offset. Pair with `hasMore` in the response to walk pages."),
       },
     },
     (input) => runTool(queryVerifiedAttributes(client, input)),
