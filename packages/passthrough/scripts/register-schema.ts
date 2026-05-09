@@ -159,8 +159,8 @@ const main = async (): Promise<void> => {
     console.log("🚀 Starting passthrough schema registration...");
     await validateEnvironment();
 
-    const wasmPath = path.join(PROJECT_ROOT, "packages/passthrough/dist/wasm/passthrough.wasm");
-    const jsPath = path.join(PROJECT_ROOT, "packages/passthrough/dist/wasm/passthrough.js");
+    const wasmPath = path.join(PROJECT_ROOT, "packages/passthrough/dist/wasm/lemma_passthrough_bg.wasm");
+    const jsPath = path.join(PROJECT_ROOT, "packages/passthrough/dist/wasm/lemma_passthrough.js");
 
     console.log("1. Checking artifact files...");
     await Promise.all([checkFileExists(wasmPath), checkFileExists(jsPath)]);
@@ -170,8 +170,8 @@ const main = async (): Promise<void> => {
 
     console.log("3. Uploading artifacts to Pinata...");
     const [wasmIpfsUrl, jsIpfsUrl] = await Promise.all([
-      uploadFileToPinata(wasmPath, "passthrough.wasm"),
-      uploadFileToPinata(jsPath, "passthrough.js"),
+      uploadFileToPinata(wasmPath, "lemma_passthrough_bg.wasm"),
+      uploadFileToPinata(jsPath, "lemma_passthrough.js"),
     ]);
 
     console.log("4. Updating DB record with new WASM/JS IPFS hashes...");

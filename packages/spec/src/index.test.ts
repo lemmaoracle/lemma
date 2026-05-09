@@ -63,6 +63,16 @@ describe("spec types", () => {
     expect(client.fetcher).toBe(fetch);
   });
 
+  it("accepts LemmaClient without apiBase field", () => {
+    const client: LemmaClient = {
+      apiKey: "test-key",
+      fetcher: fetch,
+    };
+    expect(client.apiBase).toBeUndefined();
+    expect(client.apiKey).toBe("test-key");
+    expect(client.fetcher).toBe(fetch);
+  });
+
   it("accepts SchemaMeta without attribute_metadata", () => {
     const schema: SchemaMeta = {
       id: "test-schema",

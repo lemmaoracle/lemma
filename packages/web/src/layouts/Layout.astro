@@ -8,19 +8,49 @@ interface Props {
   title?: string;
   description?: string;
   locale?: Locale;
-  metaType?: "home" | "article";
+  metaType?: "home" | "page" | "article";
   post?: BlogPost;
   blogPath?: string;
+  pagePath?: string;
+  bodyClass?: string;
+  noindex?: boolean;
 }
 
-const { locale = "en" } = Astro.props;
+const { locale = "en", bodyClass, noindex } = Astro.props;
 const t = getTranslations(locale);
 const title = Astro.props.title ?? t.layout.defaultTitle;
 const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
 
 const shouldRenderMetaTags =
-  Astro.props.metaType === "home" || (Astro.props.metaType === "article" && Astro.props.post);
+  Astro.props.metaType === "home" ||
+  (Astro.props.metaType === "page" && Astro.props.pagePath !== undefined) ||
+  (Astro.props.metaType === "article" && Astro.props.post);
+
+const SITE_ORIGIN = "https://lemma.frame00.com";
+
+function buildLocalePath(targetLocale: Locale): string | null {
+  const prefix = targetLocale === "ja" ? "/ja" : "";
+  if (Astro.props.metaType === "home") {
+    return `${prefix}/`;
+  }
+  if (Astro.props.metaType === "page" && Astro.props.pagePath) {
+    return `${prefix}${Astro.props.pagePath}`;
+  }
+  if (
+    Astro.props.metaType === "article" &&
+    Astro.props.post &&
+    Astro.props.blogPath
+  ) {
+    const blogPathBase = Astro.props.blogPath.replace(/^\/ja/, "");
+    return `${prefix}${blogPathBase}/${Astro.props.post.slug}`;
+  }
+  return null;
+}
+
+const canonicalPath = buildLocalePath(locale);
+const enHref = buildLocalePath("en");
+const jaHref = buildLocalePath("ja");
 
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 ---
@@ -31,13 +61,26 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href={base ? `${base}/favicon.svg` : "/favicon.svg"} />
     <meta property="og:site_name" content="Lemma Oracle" />
     <meta name="twitter:card" content="summary_large_image" />
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (
-        <MetaTags type="home" title={title} description={description} base={base} />
+        <MetaTags type="home" title={title} description={description} base={base} locale={locale} />
+      )
+    }
+    {
+      shouldRenderMetaTags && Astro.props.metaType === "page" && Astro.props.pagePath && (
+        <MetaTags
+          type="page"
+          title={title}
+          description={description}
+          base={base}
+          pagePath={Astro.props.pagePath}
+          locale={locale}
+        />
       )
     }
     {
@@ -50,9 +93,14 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
             post={Astro.props.post}
             base={base}
             blogPath={Astro.props.blogPath}
+            locale={locale}
           />
         )
     }
+    {canonicalPath && <link rel="canonical" href={`${SITE_ORIGIN}${canonicalPath}`} />}
+    {enHref && <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />}
+    {jaHref && <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />}
+    {enHref && <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -89,7 +137,7 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
       )
     }
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
   </body>
 </html>

@@ -84,8 +84,7 @@ let wasmInitPromise: Promise<void> | null = null;
  * Ensure WASM is initialized before any crypto operations.
  * Safe to call multiple times - will only initialize once.
  */
-// eslint-disable-next-line functional/functional-parameters
-export const ensureWasmInitialized: () => Promise<void> = async () => {
+export const ensureWasmInitialized = async (_init?: symbol): Promise<void> => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (wasmInitPromise === null) {
     // eslint-disable-next-line functional/no-expression-statements
@@ -399,11 +398,11 @@ const bytesToHex = (bytes: Uint8Array): string =>
 
 const hexToBytes = (hex: string): Uint8Array => {
   const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
-  const bytes = new Uint8Array(clean.length / 2);
-  // eslint-disable-next-line functional/no-loop-statements, functional/no-let
-  for (let i = 0; i < clean.length; i += 2) {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-    bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
-  }
-  return bytes;
+  return Uint8Array.from(
+    R.pipe(
+      R.range(0),
+      R.filter((i: number) => i % 2 === 0),
+      R.map((i: number) => parseInt(clean.slice(i, i + 2), 16)),
+    )(clean.length),
+  );
 };

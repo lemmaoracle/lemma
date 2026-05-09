@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "./scripts/build-wasm.sh",
+    "type-check": "tsc --noEmit",
     "register": "tsx scripts/register-schema.ts"
   },
   "keywords": [
@@ -33,5 +34,5 @@
     "typescript": "5.8.3"
   },
   "author": "Lemma Oracle",
-  "license": "MIT"
+  "license": "BUSL-1.1"
 }

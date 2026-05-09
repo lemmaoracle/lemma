@@ -118,6 +118,75 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  // Demo package specific configuration (browser-side code with DOM manipulation)
+  {
+    files: ["packages/demo/**/*.{ts,tsx}"],
+    ignores: ["packages/demo/**/*.test.ts"],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      eslintConfigPrettier,
+    ],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      functional,
+    },
+    rules: {
+      "functional/functional-parameters": "off",
+      "functional/immutable-data": "off",
+      "functional/no-expression-statements": "off",
+      "functional/prefer-immutable-types": "off",
+      "functional/type-declaration-immutability": "off",
+      "functional/no-return-void": "off",
+      "functional/no-conditional-statements": "off",
+      "functional/no-loop-statements": "off",
+      "functional/no-let": "off",
+      "functional/no-mixed-types": "off",
+      "functional/no-throw-statements": "off",
+      "functional/no-try-statements": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
+    },
+  },
+  // Demo Astro files configuration
+  {
+    files: ["packages/demo/**/*.astro"],
+    languageOptions: {
+      parser: astroParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: [".astro"],
+      },
+    },
+    plugins: {
+      astro: astroPlugin,
+    },
+    rules: {
+      ...astroPlugin.configs.recommended.rules,
+      "functional/no-expression-statements": "off",
+      "functional/no-conditional-statements": "off",
+      "functional/no-let": "off",
+      "functional/no-loop-statements": "off",
+      "functional/functional-parameters": "off",
+      "functional/immutable-data": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-invalid-void-type": "off",
+      "@typescript-eslint/no-unnecessary-condition": "off",
+    },
+  },
   // Web package specific configuration
   {
     files: ["packages/web/**/*.{ts,tsx}"],

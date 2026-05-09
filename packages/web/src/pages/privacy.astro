@@ -1,0 +1,93 @@
+---
+import LegalTemplate, { type LegalSection } from "../templates/LegalTemplate.astro";
+import { getTranslations } from "../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+
+const sections: LegalSection[] = [
+  {
+    heading: "Data Minimization",
+    body: `<p>The Service receives only the minimum metadata required for API operation. Original documents (plaintext) never reach our servers. Documents are normalized cryptographically inside the user's environment, and only commitments and hashes are transmitted to us.</p>`,
+  },
+  {
+    heading: "Data We Receive",
+    body: `<p>Per our OpenAPI v2 specification, we receive only the following:</p>
+<ul>
+<li>Schema ID (schema)</li>
+<li>Document hash (docHash)</li>
+<li>IPFS content identifier (cid)</li>
+<li>Issuer identifier (issuerId) — an arbitrary string (DID, address, etc.) hashed via keccak256 to bytes32</li>
+<li>Subject identifier (subjectId) — same hashing approach</li>
+<li>Commitments — a Merkle root, leaves, and randomness based on Poseidon, Poseidon2, Rescue-Prime, or SHA-256</li>
+<li>Revocation root and scheme</li>
+<li>Issuer signature (optional)</li>
+<li>Zero-knowledge proof and public inputs</li>
+</ul>
+<p>These structures make it cryptographically infeasible to reconstruct the original document. We do not hold plaintext documents and cannot read, analyze, or copy them.</p>`,
+  },
+  {
+    heading: "Encryption and Storage",
+    body: `<ul>
+<li><strong>Transit</strong>: all communication is encrypted via HTTPS (TLS 1.2+).</li>
+<li><strong>Storage</strong>: we store only the metadata above. We do not retain original document content.</li>
+<li><strong>Hosting</strong>: the Service runs on Cloudflare Workers. Cloudflare's security policies apply.</li>
+</ul>`,
+  },
+  {
+    heading: "Third-Party Disclosure (On-Chain Writes)",
+    body: `<p>When users explicitly set <code>onchain: true</code> on a proof submission, we record the verification result to the verification contract on the chain (EVM-compatible) configured by the targeted circuit (CircuitMeta.verifier). Chain ID and contract address come from the circuit's metadata.</p>
+<p>When <code>onchain</code> is not set (default), verification results are stored only within our internal systems.</p>`,
+  },
+  {
+    heading: "Selective Disclosure",
+    body: `<p>Users may combine ZK proofs with selective disclosure (<code>bbs+</code> or <code>opaque</code> format). We receive only the disclosed attributes; undisclosed attributes are not processed.</p>`,
+  },
+  {
+    heading: "Retention",
+    body: `<ul>
+<li><strong>Metadata</strong>: retained for the period necessary to provide the Service.</li>
+<li><strong>Logs</strong>: retained for operational needs (up to 90 days), then deleted.</li>
+</ul>`,
+  },
+  {
+    heading: "User Rights",
+    body: `<p>Users may exercise the following rights regarding their metadata held by us:</p>
+<ul>
+<li>Right to access</li>
+<li>Right to correction and deletion</li>
+<li>Right to restrict processing</li>
+</ul>
+<p>To exercise these rights, contact us at the address below.</p>`,
+  },
+  {
+    heading: "Third-Party Sharing",
+    body: `<p>We do not share data with third parties without user consent, except as required by law. By design, it is technically impossible for us to share the original document content.</p>`,
+  },
+  {
+    heading: "Changes to This Policy",
+    body: `<p>This policy may be updated to reflect changes in the technical specification or applicable law. Material changes will be announced on the Service's website and notified to users.</p>`,
+  },
+  {
+    heading: "Contact",
+    body: `<p>For questions about this policy or to exercise any of the rights above:</p>
+<p>FRAME00 Inc.<br>Email: <a href="mailto:contact@frame00.com">contact@frame00.com</a></p>`,
+  },
+];
+
+const description =
+  "Lemma Oracle privacy policy. Original documents never reach our servers — only cryptographic commitments and hashes are received.";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="Privacy Policy"
+  title="Privacy Policy"
+  lastUpdated="Last updated: May 2, 2026"
+  intro={`FRAME00 Inc. (&ldquo;we&rdquo;) provides Lemma Oracle (the &ldquo;Service&rdquo;). This policy describes the data we receive, store, and process, given the cryptographic design of the Service.`}
+  sections={sections}
+  description={description}
+/>

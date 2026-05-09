@@ -8,14 +8,16 @@
 /* ── Client ────────────────────────────────────────────────────────── */
 
 export type LemmaClientConfig = Readonly<{
-  apiBase: string;
+  apiBase?: string;
   apiKey?: string;
   defaultChainId?: number; // Default chain ID for operations (optional)
 }>;
 
-export type LemmaClient = LemmaClientConfig &
-  Readonly<{
-    readonly fetcher?: typeof fetch;
+export type LemmaClient = Readonly<{
+    apiBase: string;
+    apiKey?: string;
+    defaultChainId?: number;
+    fetcher?: typeof fetch;
   }>;
 
 /* ── Schema / Circuit / Generator metadata ─────────────────────────── */
@@ -203,7 +205,11 @@ export type VerifiedAttributesQueryRequest = Readonly<{
   /** Filter by specific document hash (optional). */
   docHash?: string;
   attributes: ReadonlyArray<
-    Readonly<{ name: string; operator?: "eq" | "neq" | "gt" | "lt"; value: unknown }>
+    Readonly<{
+      name: string;
+      operator?: "eq" | "neq" | "gt" | "gte" | "lt" | "lte" | "in" | "contains";
+      value: unknown;
+    }>
   >;
   proof?: Readonly<{ required: boolean; type?: "zk-snark" | "opaque" }>;
   targets?: Readonly<

@@ -6,32 +6,41 @@ import LemmaOracle from "./LemmaOracle.astro";
 interface Props {
   locale: Locale;
   t: Translations["nav"];
+  footerT: Translations["footer"];
   base: string;
 }
 
-const { locale, t, base } = Astro.props;
+const { locale, t, footerT, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
-const faqPath = "/faq";
-const homePath = base || "/";
+const faqPath = base ? `${base}/faq` : "/faq";
+const privacyPath = base ? `${base}/privacy` : "/privacy";
+const termsPath = base ? `${base}/terms` : "/terms";
+const aboutUsHref =
+  locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
+const currentPath = Astro.url.pathname;
+const languageSwitchHref =
+  locale === "ja" ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
 ---
 
 <footer>
   <div class="footer-logo">
     <LemmaOracle class="h-[22px] w-auto text-white/28" />
   </div>
-  <div class="footer-tagline">© 2026 FRAME00 — Built for decisions that matter</div>
+  <div class="footer-tagline">{footerT.copyright}</div>
   <ul class="footer-links">
-    <li><a href="https://corp.frame00.com" target="_blank">About us</a></li>
-    <li><a href={faqPath}>FAQ</a></li>
-    <li><a href={blogPath}>Blog</a></li>
-    <li><a href={locale === "ja" ? homePath : "/ja/"}>{locale === "ja" ? "English" : "日本語"}</a></li>
+    <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
+    <li><a href={faqPath}>{footerT.faq}</a></li>
+    <li><a href={blogPath}>{footerT.blog}</a></li>
+    <li><a href={privacyPath}>{footerT.privacy}</a></li>
+    <li><a href={termsPath}>{footerT.terms}</a></li>
+    <li><a href={languageSwitchHref}>{locale === "ja" ? "English" : "日本語"}</a></li>
   </ul>
 </footer>
 
 <style>
   footer {
     background: #000;
-    border-top: 1px solid rgba(255,255,255,.07);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     padding: 36px 10%;
     display: flex;
     align-items: center;
@@ -39,13 +48,39 @@ const homePath = base || "/";
     flex-wrap: wrap;
     gap: 16px;
   }
-  .footer-logo :global(svg) { height: 22px; width: auto; }
-  .footer-tagline { font-size: 11px; color: rgba(255,255,255,.18); letter-spacing: .08em; }
-  .footer-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
-  .footer-links a { font-size: 11px; color: rgba(255,255,255,.22); transition: color .2s; letter-spacing: .08em; text-decoration: none; }
-  .footer-links a:hover { color: rgba(255,255,255,.55); }
+  .footer-logo :global(svg) {
+    height: 22px;
+    width: auto;
+  }
+  .footer-tagline {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.18);
+    letter-spacing: 0.08em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-links a {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.22);
+    transition: color 0.2s;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .footer-links a:hover {
+    color: rgba(255, 255, 255, 0.55);
+  }
 
-  @media(max-width:768px) {
-    footer { flex-direction: column; gap: 12px; text-align: center; padding: 36px 6%; }
+  @media (max-width: 768px) {
+    footer {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+      padding: 36px 6%;
+    }
   }
 </style>

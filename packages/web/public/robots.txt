@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /thank-you/
+
+Sitemap: https://lemma.frame00.com/sitemap-index.xml

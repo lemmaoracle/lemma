@@ -5,27 +5,47 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import CtaSection from "../components/CtaSection.astro";
 import FaqBg from "../assets/faq-cover.jpg";
-import CtaBg from "../assets/rag.jpg";
 
 export interface FaqTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
-  title: string;
-  description: string;
 }
 
-const { locale, t, base, title, description } = Astro.props as FaqTemplateProps;
+const { locale, t, base } = Astro.props as FaqTemplateProps;
 const fq = t.faq;
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: fq.sections.flatMap((section) =>
+    section.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  ),
+};
 ---
 
-<Layout locale={locale} title={title} description={description}>
+<Layout
+  locale={locale}
+  title={fq.metaTitle}
+  description={fq.metaDescription}
+  metaType="page"
+  pagePath="/faq/"
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} />
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
   <header class="faq-header">
-    <div class="faq-header-bg"></div>
+    <div class="faq-header-bg" style={`background-image: url(${FaqBg.src})`}></div>
     <div class="faq-header-overlay"></div>
     <div class="faq-header-content">
       <div class="section-tag" style="color:var(--accent)">{fq.hero.tag}</div>
@@ -79,27 +99,12 @@ const fq = t.faq;
     </table>
   </section>
 
-  <section class="partner-section">
-    <div class="partner-bg"></div>
-    <div class="partner-overlay"></div>
-    <div class="partner-inner reveal">
-      <div class="section-tag" style="color:var(--accent);justify-content:center">
-        {fq.partner.tag}
-      </div>
-      <h2 set:html={fq.partner.h2.replace(/(.+?)\./, "$1.")} />
-      <div class="partner-rule"></div>
-      <p>{fq.partner.p}</p>
-      <div class="partner-links">
-        <a href={`${base}/services/`} class="btn-white">{fq.partner.cta}</a>
-        <a href={`${base}/blog/lemma-oracle-specs`} class="btn-ghost">{fq.partner.link}</a>
-      </div>
-    </div>
-  </section>
+  <CtaSection base={base} locale={locale} />
 
-  <Footer locale={locale} t={t.nav} base={base} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
-<style define:vars={{ faqBg: `url(${FaqBg.src})`, ctaBg: `url(${CtaBg.src})` }}>
+<style>
   .faq-header {
     margin-top: 64px;
     padding: 100px 10% 80px;
@@ -110,7 +115,6 @@ const fq = t.faq;
   .faq-header-bg {
     position: absolute;
     inset: 0;
-    background-image: var(--faqBg);
     background-size: cover;
     background-position: center;
     filter: saturate(0.3) brightness(0.5);
@@ -300,124 +304,6 @@ const fq = t.faq;
     border-left: 2px solid var(--accent);
   }
 
-  .partner-section {
-    position: relative;
-    padding: 120px 10%;
-    text-align: center;
-    overflow: hidden;
-  }
-  .partner-bg {
-    position: absolute;
-    inset: 0;
-    background-image: var(--ctaBg);
-    background-size: cover;
-    background-position: center;
-    filter: saturate(0.6) brightness(0.6);
-  }
-  .partner-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-  }
-  .partner-inner {
-    position: relative;
-    z-index: 2;
-  }
-  .partner-inner h2 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4.5vw, 56px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
-  .partner-inner h2 em {
-    font-style: italic;
-  }
-  .partner-rule {
-    width: 40px;
-    height: 1px;
-    background: var(--accent);
-    margin: 28px auto;
-  }
-  .partner-inner p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.45);
-    max-width: 400px;
-    margin: 0 auto 40px;
-    line-height: 1.78;
-  }
-  .partner-links {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .btn-white {
-    background: var(--white);
-    color: var(--black);
-    padding: 14px 32px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
-    display: inline-block;
-    transition: background 0.2s, color 0.2s;
-  }
-  .btn-white:hover {
-    background: var(--accent);
-    color: var(--white);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.65);
-    padding: 13px 30px;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 0;
-    cursor: pointer;
-    display: inline-block;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-ghost:hover {
-    border-color: rgba(255, 255, 255, 0.6);
-    color: var(--white);
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.on {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .section-tag {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-tag::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: var(--accent);
-    display: block;
-  }
-
   @media (max-width: 900px) {
     .faq-layout {
       grid-template-columns: 1fr;
@@ -427,11 +313,11 @@ const fq = t.faq;
     .faq-content { border-left: none; padding-left: 0; }
   }
   @media (max-width: 768px) {
-    .faq-header, .comparison-section, .partner-section {
+    .faq-header, .comparison-section {
       padding-left: 6%; padding-right: 6%;
     }
     .faq-header { padding-top: 80px; padding-bottom: 60px; }
-    .comparison-section, .partner-section { padding-top: 70px; padding-bottom: 70px; }
+    .comparison-section { padding-top: 70px; padding-bottom: 70px; }
   }
 </style>
 

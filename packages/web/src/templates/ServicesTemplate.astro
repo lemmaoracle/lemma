@@ -15,14 +15,48 @@ export interface ServicesTemplateProps {
 
 const { locale, t, base } = Astro.props as ServicesTemplateProps;
 const s = t.services;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Lemma Oracle",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Cloud / API",
+  description:
+    locale === "ja"
+      ? "ZK証明による検証可能AI・データ認証インフラ"
+      : "ZK-proof infrastructure for verifiable AI and data authentication",
+  offers: {
+    "@type": "Offer",
+    category: "SaaS",
+  },
+  provider: {
+    "@type": "Organization",
+    name: "FRAME00",
+    url: "https://corp.frame00.com",
+  },
+  featureList: [
+    "Zero-knowledge proof data verification",
+    "DID-based provenance tracking",
+    "Verifiable attribute extraction",
+    "Agent AI trust layer",
+  ],
+};
 ---
 
-<Layout locale={locale} title={s.title} description={s.hero.sub}>
+<Layout
+  locale={locale}
+  title={s.title}
+  description={s.metaDescription}
+  metaType="page"
+  pagePath="/services/"
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
   <section class="page-hero">
-    <div class="page-hero-bg"></div>
+    <div class="page-hero-bg" style={`background-image: url(${HeroCover.src})`}></div>
     <div class="page-hero-overlay"></div>
     <div class="page-hero-content reveal">
       <div class="section-tag">{s.nav.whitepaperDownload}</div>
@@ -95,7 +129,7 @@ const s = t.services;
   </section>
 
   <section class="solution-section" id="solution">
-    <div class="solution-bg"></div>
+    <div class="solution-bg" style={`background-image: url(${SolutionBg.src})`}></div>
     <div class="solution-overlay"></div>
     <div class="solution-inner">
       <div class="section-tag" style="color:var(--accent)">{s.solution.label}</div>
@@ -215,10 +249,10 @@ const s = t.services;
     <a href={s.cta.hubspotFormUrl} class="btn-white" target="_blank">{s.nav.whitepaperDownload}</a>
   </section>
 
-  <Footer locale={locale} t={t.nav} base={base} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
-<style define:vars={{ heroBg: `url(${HeroCover.src})`, solutionBg: `url(${SolutionBg.src})` }}>
+<style>
   .page-hero {
     position: relative;
     height: 72vh;
@@ -232,7 +266,7 @@ const s = t.services;
   .page-hero-bg {
     position: absolute;
     inset: 0;
-    background: var(--heroBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     filter: saturate(0.6) brightness(0.7);
   }
   .page-hero-overlay {
@@ -396,7 +430,7 @@ const s = t.services;
   .solution-bg {
     position: absolute;
     inset: 0;
-    background: var(--solutionBg) center/cover no-repeat;
+    background: center/cover no-repeat;
     filter: saturate(0.35) brightness(0.6);
   }
   .solution-overlay {

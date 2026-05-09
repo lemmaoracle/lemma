@@ -14,16 +14,73 @@ export interface Translations {
     readonly changelog: string;
     readonly essays: string;
     readonly blog: string;
+    readonly pillars: string;
     readonly faq: string;
     readonly services: string;
+    readonly pricing: string;
+    readonly developers: string;
     readonly languageJa: string;
     readonly languageEn: string;
-    readonly developers: string;
-  readonly enterprise: string;
-  readonly architecture: string;
-  readonly guides: string;
-  readonly howItWorks: string;
-  readonly talkToUs: string;
+    readonly mega: Readonly<{
+      readonly services: Readonly<{
+        readonly enterprise: string;
+        readonly civic: string;
+        readonly civicSub: string;
+        readonly critical: string;
+        readonly criticalSub: string;
+        readonly compliance: string;
+        readonly complianceSub: string;
+        readonly howItWorks: string;
+        readonly howItWorksSub: string;
+        readonly materials: string;
+        readonly whitepaper: string;
+        readonly whitepaperSub: string;
+        readonly developer: string;
+        readonly trust402Demo: string;
+        readonly trust402Sub: string;
+        readonly tryDemo: string;
+        readonly joinWaitlist: string;
+      }>;
+      readonly pricing: Readonly<{
+        readonly enterprise: string;
+        readonly civic: string;
+        readonly civicSub: string;
+        readonly critical: string;
+        readonly criticalSub: string;
+        readonly compliance: string;
+        readonly complianceSub: string;
+        readonly developer: string;
+        readonly trust402: string;
+        readonly trust402Sub: string;
+      }>;
+      readonly developers: Readonly<{
+        readonly architecture: string;
+        readonly specs: string;
+        readonly specsSub: string;
+        readonly guides: string;
+        readonly encrypt: string;
+        readonly encryptSub: string;
+        readonly prove: string;
+        readonly proveSub: string;
+        readonly disclose: string;
+        readonly discloseSub: string;
+        readonly query: string;
+        readonly querySub: string;
+        readonly define: string;
+        readonly defineSub: string;
+        readonly provenance: string;
+        readonly provenanceSub: string;
+        readonly trust402: string;
+        readonly demoSoon: string;
+        readonly demoSub: string;
+        readonly joinWaitlist: string;
+        readonly tryDemo: string;
+        readonly readSpecs: string;
+      }>;
+      readonly mobile: Readonly<{
+        readonly talkToUs: string;
+      }>;
+    }>;
   }>;
   readonly masthead: Readonly<{
     readonly title: string;
@@ -48,11 +105,43 @@ export interface Translations {
   }>;
   readonly footer: Readonly<{
     readonly copyright: string;
+    readonly aboutUs: string;
+    readonly faq: string;
+    readonly blog: string;
+    readonly privacy: string;
+    readonly terms: string;
+  }>;
+  readonly ctaSection: Readonly<{
+    readonly finalTag: string;
+    readonly finalH2: string;
+    readonly finalH2Em: string;
+    readonly finalP: string;
+    readonly finalCtaText: string;
+    readonly finalWpText: string;
   }>;
   readonly blog: Readonly<{
     readonly title: string;
+    readonly metaTitle: string;
+    readonly metaDescription: string;
     readonly subtitle: string;
     readonly backToBlog: string;
+    readonly index: Readonly<{
+      readonly featuredTag: string;
+      readonly featuredCta: string;
+      readonly recentTag: string;
+      readonly archiveTag: string;
+      readonly foundationsTag: string;
+      readonly headerDesc: string;
+      readonly essaysTag: string;
+      readonly readEssay: string;
+      readonly guidesTag: string;
+      readonly guidesTitle: string;
+      readonly guidesDesc: string;
+      readonly readGuide: string;
+      readonly specsTitle: string;
+      readonly specsDesc: string;
+      readonly readSpecs: string;
+    }>;
     readonly sections: Readonly<Record<string, string>>;
   }>;
   readonly rebuild: Readonly<{
@@ -67,8 +156,38 @@ export interface Translations {
     readonly backHome: string;
   }>;
   readonly faq: Readonly<{
-    readonly title: string;
-    readonly subtitle: string;
+    readonly title?: string;
+    readonly subtitle?: string;
+    readonly metaTitle: string;
+    readonly metaDescription: string;
+    readonly hero: Readonly<{
+      readonly tag: string;
+      readonly h1: string;
+      readonly p: string;
+    }>;
+    readonly sections: ReadonlyArray<{
+      readonly title: string;
+      readonly items: ReadonlyArray<{
+        readonly q: string;
+        readonly a: string;
+      }>;
+    }>;
+    readonly sidebar: Readonly<{
+      readonly title: string;
+      readonly links: ReadonlyArray<string>;
+    }>;
+    readonly comparison: Readonly<{
+      readonly h2: string;
+      readonly headers: ReadonlyArray<string>;
+      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
+    }>;
+    readonly partner: Readonly<{
+      readonly tag: string;
+      readonly h2: string;
+      readonly p: string;
+      readonly cta: string;
+      readonly link: string;
+    }>;
   }>;
   readonly layout: Readonly<{
     readonly defaultTitle: string;
@@ -76,6 +195,7 @@ export interface Translations {
   }>;
   readonly services: Readonly<{
     readonly title: string;
+    readonly metaDescription: string;
     readonly hero: Readonly<{
       readonly title: string;
       readonly sub: string;
@@ -143,6 +263,7 @@ export interface Translations {
     readonly beforeAfter: Readonly<{
       readonly label: string;
       readonly title: string;
+      readonly lead: string;
       readonly beforeLabel: string;
       readonly afterLabel: string;
       readonly before1Label: string;
@@ -206,36 +327,61 @@ export interface Translations {
   }>;
   readonly index: Readonly<{
     readonly hero: Readonly<{
-      readonly eyebrow: string;
+      readonly liveBadge: string;
       readonly h1: string;
-      readonly h1Strong: string;
-      readonly sub: string;
-      readonly cta: string;
-      readonly wp: string;
+      readonly subLine1: string;
+      readonly subLine2: string;
+      readonly primaryCta: string;
+      readonly secondaryCta: string;
       readonly scroll: string;
     }>;
-    readonly marquee: string;
-    readonly features: Readonly<{
-      readonly tag: string;
+    readonly whyLemma: Readonly<{
+      readonly label: string;
       readonly h2: string;
-      readonly lead: string;
-      readonly cards: ReadonlyArray<{
-        readonly num: string;
-        readonly h3: string;
-        readonly p: string;
-        readonly link: string;
+      readonly leadStrong: string;
+      readonly leadBody: string;
+      readonly pillarLabel: string;
+      readonly cardCta: string;
+      readonly sectionCta: string;
+    }>;
+    readonly demos: Readonly<{
+      readonly label: string;
+      readonly h2Line1: string;
+      readonly h2Line2: string;
+      readonly lede: string;
+      readonly trust402: Readonly<{
+        readonly tag: string;
+        readonly titleLine1: string;
+        readonly titleLine2: string;
+        readonly claim: string;
+        readonly metaPills: ReadonlyArray<string>;
+        readonly primaryCta: string;
+        readonly secondaryCta: string;
+      }>;
+      readonly finance: Readonly<{
+        readonly tag: string;
+        readonly titleLine1: string;
+        readonly titleLine2: string;
+        readonly claim: string;
+        readonly metaPills: ReadonlyArray<string>;
+        readonly primaryCta: string;
+        readonly secondaryCta: string;
       }>;
     }>;
-    readonly proof: Readonly<{
-      readonly tag: string;
+    readonly architecture: Readonly<{
+      readonly label: string;
       readonly h2: string;
-      readonly h2Strong: string;
-      readonly p: string;
-      readonly cta: string;
+      readonly lede: string;
+      readonly guideCta: string;
+      readonly layers: ReadonlyArray<{
+        readonly num: string;
+        readonly title: string;
+        readonly body: string;
+      }>;
       readonly stats: ReadonlyArray<{
-        readonly n: string;
-        readonly nUnit?: string;
-        readonly l: string;
+        readonly num: string;
+        readonly unit?: string;
+        readonly sub: string;
       }>;
     }>;
     readonly essays: Readonly<{
@@ -243,46 +389,18 @@ export interface Translations {
       readonly h2: string;
       readonly p: string;
     }>;
-    readonly cta: Readonly<{
-      readonly eyebrow: string;
-      readonly h2: string;
-      readonly h2Em: string;
-      readonly p: string;
-      readonly cta: string;
-      readonly wp: string;
-    }>;
-  }>;
-  readonly faq: Readonly<{
-    readonly hero: Readonly<{
-      readonly tag: string;
-      readonly h1: string;
-      readonly p: string;
-    }>;
-    readonly sections: ReadonlyArray<{
-      readonly title: string;
-      readonly items: ReadonlyArray<{
-        readonly q: string;
-        readonly a: string;
-      }>;
-    }>;
-    readonly sidebar: Readonly<{
-      readonly title: string;
-      readonly links: ReadonlyArray<string>;
-    }>;
-    readonly comparison: Readonly<{
-      readonly h2: string;
-      readonly headers: ReadonlyArray<string>;
-      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
-    }>;
     readonly partner: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly cta: string;
-      readonly link: string;
+      readonly label: string;
+      readonly h2Line1: string;
+      readonly h2Line2: string;
+      readonly body: string;
+      readonly primaryCta: string;
+      readonly secondaryCta: string;
     }>;
   }>;
   readonly pricing: Readonly<{
+    readonly metaTitle: string;
+    readonly metaDescription: string;
     readonly hero: Readonly<{
       readonly eyebrow: string;
       readonly h1: string;
@@ -303,7 +421,7 @@ export interface Translations {
         readonly sub: string;
         readonly bestFor: string;
         readonly features: ReadonlyArray<string>;
-        readonly tiers: ReadonlyArray<readonly [string, string]>;
+        readonly tiers: ReadonlyArray<ReadonlyArray<string>>;
         readonly priceNote: string;
         readonly cta: string;
       }>;
@@ -318,6 +436,7 @@ export interface Translations {
         readonly badge: string;
       }>;
       readonly cta: string;
+      readonly demoCta: string;
       readonly note: string;
     }>;
     readonly compare: Readonly<{
@@ -343,11 +462,51 @@ export interface Translations {
       readonly cta2: string;
     }>;
   }>;
+  readonly thankYou: Readonly<{
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly titleEm: string;
+    readonly sub: string;
+    readonly dlCard: Readonly<{
+      readonly label: string;
+      readonly title: string;
+      readonly desc: string;
+      readonly button: string;
+    }>;
+    readonly next: Readonly<{
+      readonly label: string;
+      readonly title: string;
+      readonly desc: string;
+    }>;
+  }>;
+  readonly pillars: Readonly<{
+    readonly title: string;
+    readonly heroTitle: string;
+    readonly subtitle: string;
+    readonly viewPillar: string;
+    readonly blockProblem: string;
+    readonly blockWhyNow: string;
+    readonly blockHowLemmaFits: string;
+    readonly blockUseCases: string;
+    readonly blockRecentThinking: string;
+    readonly viewUseCase: string;
+    readonly comingSoon: string;
+    readonly ctaEyebrow: string;
+    readonly ctaTitle: string;
+    readonly ctaDesc: string;
+  }>;
+  readonly useCases: Readonly<{
+    readonly title: string;
+    readonly subtitle: string;
+    readonly sections: string;
+    readonly overview: string;
+    readonly backToPillar: string;
+  }>;
 }
 
 const translations: Readonly<Record<Locale, Translations>> = {
-  en: en as Translations,
-  ja: ja as Translations,
+  en: en,
+  ja: ja,
 };
 
 export function getTranslations(locale: Locale): Translations {

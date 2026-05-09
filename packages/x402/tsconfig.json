@@ -6,9 +6,8 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "workers"],
+  "exclude": ["node_modules", "dist"],
   "references": [
-    { "path": "../spec" },
     { "path": "../sdk" }
   ]
 }

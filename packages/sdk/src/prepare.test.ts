@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { create } from "./client.js";
 import { define, getSchemaById } from "./schema.js";
-import { prepare } from "./prepare.js";
+import { prepare, normalize } from "./prepare.js";
 
 type Raw = { age: number; country: string };
 type Norm = { age_bucket: string; country: string };
@@ -89,5 +89,54 @@ describe("prepare", () => {
     expect(result.leafPreimages[0]?.value).toBe("adult");
     expect(result.leafPreimages[1]?.name).toBe("country");
     expect(result.leafPreimages[1]?.value).toBe("JP");
+  });
+});
+
+describe("normalize", () => {
+  const client = create({ apiBase: "http://localhost:8787" });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    (getSchemaById as any).mockImplementation((schemaId: string) => {
+      if (schemaId === "test:prepare-kyc") {
+        return {
+          id: "test:prepare-kyc",
+          normalize: (raw: Raw) => ({
+            age_bucket: raw.age >= 18 ? "adult" : "minor",
+            country: raw.country,
+          }),
+        };
+      }
+      return undefined;
+    });
+  });
+
+  it("returns normalized data without commitment fields", async () => {
+    const result = await normalize<Raw, Norm>(client, {
+      schema: "test:prepare-kyc",
+      payload: { age: 25, country: "JP" },
+    });
+
+    expect(result).toEqual({ age_bucket: "adult", country: "JP" });
+    // Should NOT have commitment-related fields
+    expect((result as Record<string, unknown>).commitments).toBeUndefined();
+    expect((result as Record<string, unknown>).depth).toBeUndefined();
+    expect((result as Record<string, unknown>).inclusionProofs).toBeUndefined();
+  });
+
+  it("rejects for unknown schema", async () => {
+    await expect(normalize(client, { schema: "nonexistent", payload: {} })).rejects.toThrow(
+      "Unknown schemaId",
+    );
+  });
+
+  it("produces same normalized data as prepare", async () => {
+    const input = { schema: "test:prepare-kyc", payload: { age: 25, country: "JP" } } as const;
+
+    const normalizedOnly = await normalize<Raw, Norm>(client, input);
+    const prepared = await prepare<Raw, Norm>(client, input);
+
+    expect(prepared.normalized).toEqual(normalizedOnly);
   });
 });

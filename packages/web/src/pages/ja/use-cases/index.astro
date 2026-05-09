@@ -1,0 +1,22 @@
+---
+import UseCasesIndexTemplate from "../../../templates/UseCasesIndexTemplate.astro";
+import { getAllUseCases } from "../../../data/useCases";
+import { getAllPillars } from "../../../data/pillars";
+import { getTranslations } from "../../../i18n/translations";
+
+const locale = "ja" as const;
+const t = getTranslations(locale);
+const base = "/ja";
+const useCases = await getAllUseCases(locale);
+const pillars = getAllPillars();
+---
+
+<UseCasesIndexTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  useCases={useCases}
+  pillars={pillars}
+  useCaseT={t.useCases}
+  pillarT={t.pillars}
+/>

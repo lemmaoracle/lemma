@@ -8,8 +8,21 @@ const t = getTranslations(locale);
 const base = "";
 const blogPath = "/blog";
 const sections = await getBlogSections(locale);
-const essays = sections.find(s => s.section === "Essays")?.posts?.filter(p => p.category !== "Guides") ?? [];
-const guides = sections.flatMap(s => s.posts).filter(p => p.category === "Guides");
+
+const allEssays = sections.find((s) => s.section === "Essays")?.posts ?? [];
+const essays = allEssays.filter(
+  (p) => p.category !== "Guides" && p.category !== "Foundations",
+);
+const guides = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "Guides");
+const foundations = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "Foundations");
+
+const featured = essays[0];
+const recent = essays.slice(1, 7);
+const archive = essays.slice(7);
 ---
 
 <BlogIndexTemplate
@@ -17,6 +30,9 @@ const guides = sections.flatMap(s => s.posts).filter(p => p.category === "Guides
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={essays}
+  featured={featured}
+  recent={recent}
+  archive={archive}
   guides={guides}
+  foundations={foundations}
 />

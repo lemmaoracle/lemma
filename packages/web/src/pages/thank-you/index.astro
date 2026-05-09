@@ -1,0 +1,10 @@
+---
+import ThankYouTemplate from "../../templates/ThankYouTemplate.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<ThankYouTemplate locale={locale} t={t} base={base} />

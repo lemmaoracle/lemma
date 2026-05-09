@@ -5,11 +5,73 @@
     "changelog": "Changelog",
     "essays": "Essays",
     "blog": "Blog",
+    "pillars": "Why Lemma",
     "faq": "FAQ",
     "services": "Services",
     "pricing": "Pricing",
+    "developers": "Developers",
     "languageJa": "日本語",
-    "languageEn": "English"
+    "languageEn": "English",
+    "mega": {
+      "services": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "Public infrastructure · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "Mission-critical systems",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "Finance · KYC/AML · FinTech",
+        "howItWorks": "How it works",
+        "howItWorksSub": "Normalize · Commit · Prove",
+        "materials": "Materials",
+        "whitepaper": "Whitepaper",
+        "whitepaperSub": "Specs, PoC design, checklists",
+        "developer": "x402 Integration · Developer",
+        "trust402Demo": "Demo now live",
+        "trust402Sub": "ZK-proven attributes for the agent economy.",
+        "tryDemo": "Try the demo →",
+        "joinWaitlist": "Join waitlist"
+      },
+      "pricing": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "Public infrastructure · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "Mission-critical systems",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "Finance · KYC/AML · FinTech",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro"
+      },
+      "developers": {
+        "architecture": "Architecture",
+        "specs": "Lemma Oracle Specs",
+        "specsSub": "Full technical specification",
+        "guides": "Guides",
+        "encrypt": "Encrypt Everything, Expose Nothing",
+        "encryptSub": "AES-GCM · docHash · CID",
+        "prove": "Prove Facts with Zero Knowledge",
+        "proveSub": "ZK circuits · generators · permanent record",
+        "disclose": "Disclose Only What AI Needs",
+        "discloseSub": "Selective disclosure · issuer signature",
+        "query": "Query Verified Attributes",
+        "querySub": "RAG policy layer · full provenance",
+        "define": "Define Your Domain as a Schema",
+        "defineSub": "ZK circuits · typed schemas",
+        "provenance": "Provenance That Never Disappears",
+        "provenanceSub": "On-chain anchoring · permanent record",
+        "trust402": "x402 Integration",
+        "demoSoon": "Demo now live",
+        "demoSub": "ZK-proven attributes for the agent economy",
+        "joinWaitlist": "Join waitlist →",
+        "tryDemo": "Try the demo →",
+        "readSpecs": "Read specs"
+      },
+      "mobile": {
+        "talkToUs": "Talk to us"
+      }
+    }
   },
   "masthead": {
     "title": "Give AI proven facts.",
@@ -33,12 +95,44 @@
     "provenanceBody": "Document commitments, schemas, issuers, and ZK verification results are anchored on-chain. Your RAG index can be rebuilt, your embeddings can be re-computed — the provenance layer stays permanent."
   },
   "footer": {
-    "copyright": "© 2026 FRAME00 — Built for decisions that matter"
+    "copyright": "© 2026 FRAME00 — Built for decisions that matter",
+    "aboutUs": "About us",
+    "faq": "FAQ",
+    "blog": "Blog",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "ctaSection": {
+    "finalTag": "Partner Program",
+    "finalH2": "Models change.",
+    "finalH2Em": "Proofs remain.",
+    "finalP": "Register in under a minute.",
+    "finalCtaText": "Get Started",
+    "finalWpText": "Download Whitepaper"
   },
   "blog": {
     "title": "Blog",
+    "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma Oracle",
+    "metaDescription": "Essays on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance. Technical guides, business strategy, and implementation field notes.",
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
+    "index": {
+      "featuredTag": "Featured",
+      "featuredCta": "Read featured →",
+      "recentTag": "Recent",
+      "archiveTag": "Archive",
+      "foundationsTag": "Foundations",
+      "headerDesc":"ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
+      "essaysTag": "Essays",
+      "readEssay": "Read essay →",
+      "guidesTag": "Guides",
+      "guidesTitle": "Technical documentation.",
+      "guidesDesc": "Implementation guides for each layer of the Lemma architecture.",
+      "readGuide": "Read →",
+      "specsTitle": "Lemma Oracle Specs",
+      "specsDesc": "A cryptographically verified truth layer enabling AI to reason over confidential data via zero-knowledge proofs, selective disclosure, and on-chain provenance.",
+      "readSpecs": "Read Specs →"
+    },
     "sections": {
       "Essays": "Essays",
       "Changelog": "Changelog",
@@ -61,14 +155,15 @@
     "subtitle": "Frequently asked questions about Lemma and Verifiable AI"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle",
-    "defaultDescription": "Give AI proven facts. Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain."
+    "defaultTitle": "Lemma Oracle — ZK-Proof Verifiable AI Trust Infrastructure",
+    "defaultDescription": "Give AI cryptographically proven facts. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
   },
   "services": {
-    "title": "Lemma Oracle — Data Trust Infrastructure for Agent AI",
+    "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
+    "metaDescription": "Prove data authenticity without exposing contents. ZK-proof infrastructure for verifiable AI agents, supply chain traceability, and audit-ready compliance. Enterprise & developer plans.",
     "hero": {
       "title": "The real reason agent AI can't be used isn't the model—it's the data.",
-      "sub": "Generative AI adoption is accelerating. But results on the ground aren't keeping up. The root cause is the absence of a trusted data foundation.",
+      "sub": "Generative AI adoption is accelerating. But results on the ground aren't keeping up. The root cause is the absence of a trusted data foundation. Lemma's Verifiable AI provides that foundation.",
       "stat": "About 90% of large domestic companies feel challenged by AI agent adoption",
       "ctaDownload": "Download Whitepaper for Free",
       "linkDetails": "See Challenge Details",
@@ -133,8 +228,9 @@
     "beforeAfter": {
       "label": "Implementation Results",
       "title": "What changes before and after implementation",
-      "beforeLabel": "Before — Before Implementation",
-      "afterLabel": "After — After Lemma Implementation",
+      "lead": "Six critical operations — transformed from manual to cryptographically verified.",
+      "beforeLabel": "Before — Manual",
+      "afterLabel": "After — Lemma",
       "before1Label": "Data Verification",
       "before1Text": "Manual visual inspection and manual matching",
       "before2Label": "Approval Process",
@@ -148,7 +244,7 @@
       "before6Label": "Loyal Customer Authentication",
       "before6Text": "Manual community management and authentication",
       "after1Label": "Data Verification",
-      "after1Text": "Oracle automatically collects and verifies",
+      "after1Text": "Lemma automatically collects and verifies",
       "after2Label": "Approval Process",
       "after2Text": "Automatically record condition achievement, human final confirmation",
       "after3Label": "Audit Response",
@@ -163,7 +259,7 @@
     "checklist": {
       "label": "Self-Assessment",
       "title": "Do you have these challenges?",
-      "lead": "If even one applies, Lemma Oracle is effective. Click to confirm.",
+      "lead": "If even one applies, Lemma is effective. Click to confirm.",
       "item1": "Have operations that proceed based on external fact verification for approval, payment, or next process",
       "item2": "Spending manpower, time, and costs on that verification work",
       "item3": "Considering AI adoption but concerned about internal data quality and confidentiality management",
@@ -180,7 +276,7 @@
       "wpContent2": "Application scenarios for manufacturing, supply chain, and IP management",
       "wpContent3": "PoC design, evaluation metrics, and shortest verification steps",
       "wpContent4": "Adoption decision checklist and recommended actions",
-      "hubspotFormUrl": "https://429bpd.share-na2.hsforms.com/2E6_TsCd2RUSdP4fKsuhxzw"
+      "hubspotFormUrl": "https://tally.so/r/7RJXdR"
     },
     "nav": {
       "whitepaperDownload": "Download Whitepaper",
@@ -196,38 +292,78 @@
   },
   "index": {
     "hero": {
-      "eyebrow": "Verifiable AI",
-      "h1": "Give AI",
-      "h1Strong": "proven facts.",
-      "sub": "Every attribute your AI reads carries permanent provenance — who issued it, which schema defined it, how it was proven, and where the proof lives on-chain.",
-      "cta": "Get started",
-      "wp": "Download Whitepaper",
-      "scroll": "Scroll"
+      "liveBadge": "Live on Base Sepolia",
+      "h1": "Give AI proven facts.",
+      "subLine1": "Every attribute your AI reads carries cryptographic provenance.",
+      "subLine2": "Data stays sealed; only the facts travel.",
+      "primaryCta": "Try Demo →",
+      "secondaryCta": "Whitepaper →",
+      "scroll": "↓ SCROLL"
     },
-    "marquee": "Verifiable AI ◆ ZK-Proven Facts ◆ AES-GCM Encrypted ◆ Selective Disclosure ◆ Cryptographic Provenance ◆ docHash / CID ◆ On-chain Anchored ◆ RAG Policy Layer ◆ Zero Knowledge ◆ Permanent Provenance ◆",
-    "features": {
-      "tag": "How it works",
-      "h2": "Build on verified attributes, end to end.",
-      "lead": "Your AI never touches raw PII. Documents stay encrypted end-to-end — Lemma itself never sees plaintext. Control exactly which attributes your AI can access, with full cryptographic provenance at every step.",
-      "cards": [
-        { "num": "01", "h3": "Encrypt Everything, Expose Nothing", "p": "Lemma keeps every document AES-GCM encrypted — your AI never touches raw PII. Only docHash and CID are exposed as stable anchors for provenance.", "link": "Read the guide →" },
-        { "num": "02", "h3": "Prove Facts with Zero Knowledge", "p": "Turn business rules like 'over 18' or 'revenue above threshold' into machine-checkable facts. Each verified proof is permanently recorded with its circuit and generator.", "link": "Read the guide →" },
-        { "num": "03", "h3": "Disclose Only What AI Needs", "p": "Holders selectively reveal just the attributes your model requires for retrieval or ranking. The link to the original issuer signature stays intact.", "link": "Read the guide →" },
-        { "num": "04", "h3": "Query Verified Attributes", "p": "Ask 'users over 18 in Japan' and get back attributes with full provenance — proof status, schema, issuer, generator, and verification method — ready for your RAG policy layer.", "link": "Read the guide →" },
-        { "num": "05", "h3": "Define Your Domain as a Schema", "p": "Model how your AI retrieves and clusters knowledge — bucket ages, risk scores, regions — with typed schemas and normalization. Register ZK circuits and reproducible generators.", "link": "Read the guide →" },
-        { "num": "06", "h3": "Provenance That Never Disappears", "p": "Document commitments, schemas, issuers, and ZK verification results are anchored on-chain. Your RAG index can be rebuilt — the provenance layer stays permanent.", "link": "Read the guide →" }
-      ]
+    "demos": {
+      "label": "DEMO SPOTLIGHT",
+      "h2Line1": "Verifiable AI",
+      "h2Line2": "you can run today.",
+      "lede": "Two reference implementations live on Base Sepolia. With npm install and a few lines of code, you can verify Verifiable AI in your own environment.",
+      "trust402": {
+        "tag": "FOR DEVELOPERS · TRUST402",
+        "titleLine1": "ZK-prove",
+        "titleLine2": "agent payments.",
+        "claim": "Transactions between AIs settle without human audit. Prove who paid, under what authority, and on what data — without exposing the data itself. The Lemma × x402 reference implementation.",
+        "metaPills": ["Base Sepolia", "x402 × Lemma", "npm i @lemmaoracle/sdk"],
+        "primaryCta": "Try Trust402 Demo →",
+        "secondaryCta": "Product page →"
+      },
+      "finance": {
+        "tag": "FOR FINANCE · CROSS-CHAIN ORIGIN",
+        "titleLine1": "Assets move.",
+        "titleLine2": "Origin remains.",
+        "claim": "Most bridge exploits pass as cryptographically valid transactions. With pre-execution origin attestation on the receiving side, they can be stopped before settlement. The reference implementation that turns post-hoc forensics into pre-execution verification.",
+        "metaPills": ["Pre-execution Attestation", "On-chain Proof", "Cross-Chain"],
+        "primaryCta": "See Demo →",
+        "secondaryCta": "Read Analysis →"
+      }
     },
-    "proof": {
-      "tag": "Why it matters",
-      "h2": "Your RAG index can be rebuilt.",
-      "h2Strong": "The provenance layer stays permanent.",
-      "p": "Prove 'age ≥ 18' without exposing the actual age, name, or address. Your AI gets verified answers — never the raw data. The proof lives on-chain. The decision holds.",
-      "cta": "Read the specs",
+    "whyLemma": {
+      "label": "Why Lemma",
+      "h2": "Four questions, one cryptographic answer.",
+      "leadStrong": "Four pillars of verifiable trust.",
+      "leadBody": "Data provenance, AI decisions, agent transactions, and regulatory compliance — all bound by ZK proof.",
+      "pillarLabel": "Pillar",
+      "cardCta": "Read more",
+      "sectionCta": "See all four pillars →"
+    },
+    "architecture": {
+      "label": "ARCHITECTURE",
+      "h2": "One foundation supports all four pillars.",
+      "lede": "Every use case runs on the same four cryptographic layers. The vertical changes — the proof mechanism does not.",
+      "guideCta": "Read the guide →",
+      "layers": [
+        {
+          "num": "01",
+          "title": "Encrypt everything, expose nothing.",
+          "body": "Everything encrypted with AES-GCM. AI never touches raw data. Only docHash and CID are exposed as stable anchors."
+        },
+        {
+          "num": "02",
+          "title": "Prove facts with zero knowledge.",
+          "body": "ZK circuits and generators are permanently recorded. Prove attribute authenticity without revealing data."
+        },
+        {
+          "num": "03",
+          "title": "Disclose only what AI needs.",
+          "body": "Selectively disclose only the attributes needed. Links to original issuer signatures are preserved."
+        },
+        {
+          "num": "04",
+          "title": "Provenance that never disappears.",
+          "body": "AI infrastructure changes, provenance remains. Rebuilding the RAG index doesn't erase the proof."
+        }
+      ],
       "stats": [
-        { "n": "0", "nUnit": "bytes", "l": "Raw PII to AI" },
-        { "n": "∞", "l": "Provenance persistence" },
-        { "n": "ZK", "l": "Proof without disclosure" }
+        { "num": "0", "unit": "bytes", "sub": "Raw PII to AI" },
+        { "num": "∞", "unit": "permanent", "sub": "Provenance persistence" },
+        { "num": "ZK", "unit": "proven", "sub": "No data exposure" }
       ]
     },
     "essays": {
@@ -235,16 +371,18 @@
       "h2": "Thought and implementation of Verifiable AI.",
       "p": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect."
     },
-    "cta": {
-      "eyebrow": "A reasoning engine for long-horizon decisions",
-      "h2": "Built for decisions",
-      "h2Em": "that matter.",
-      "p": "Closed partner program. Register in under a minute.",
-      "cta": "Get started",
-      "wp": "Download Whitepaper"
+    "partner": {
+      "label": "Partner Program",
+      "h2Line1": "Models change.",
+      "h2Line2": "Proofs remain.",
+      "body": "Bring Lemma's Verifiable AI into your organization. We're currently running early PoCs with selected partners. Share your use case, and we'll work alongside you from design to implementation. We respond within one business day.",
+      "primaryCta": "Register as a partner candidate",
+      "secondaryCta": "Download Whitepaper"
     }
   },
   "faq": {
+    "metaTitle": "FAQ — ZK Proofs, Verifiable AI & On-Chain Provenance | Lemma Oracle",
+    "metaDescription": "Common questions about ZK-proof verification, selective disclosure, and on-chain provenance for AI. How Lemma makes AI decisions provable, auditable, and privacy-preserving.",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — AI Trust & Verifiability.",
@@ -317,6 +455,8 @@
     }
   },
   "pricing": {
+    "metaTitle": "Pricing — Enterprise & Developer Plans | Lemma Oracle Verifiable AI",
+    "metaDescription": "Enterprise pricing for ZK-proof verifiable AI. Three segments — Civic, Critical, Compliance — plus developer plans for x402 and MCP. On-chain provenance, selective disclosure, audit-ready.",
     "hero": {
       "eyebrow": "Pricing",
       "h1": "Built for decisions",
@@ -372,7 +512,8 @@
         { "name": "Pro", "desc": "High-volume production. SLA-backed, dedicated support channel. For scale-stage products in the agent economy.", "badge": "Coming soon" }
       ],
       "cta": "Join the waitlist",
-      "note": "Detailed pricing and docs will be available at launch. Trust402 LP — coming soon."
+      "demoCta": "View product page →",
+      "note": "Detailed pricing and docs will be available at launch."
     },
     "compare": {
       "tag": "At a glance",
@@ -416,5 +557,45 @@
     "nav": {
       "wp": "Download Whitepaper →"
     }
+  },
+  "thankYou": {
+    "eyebrow": "Thank you",
+    "title": "Your whitepaper is<br>ready",
+    "titleEm": ".",
+    "sub": "You can download it immediately using the button below.",
+    "dlCard": {
+      "label": "Whitepaper",
+      "title": "Lemma Oracle —<br>Architecture and Implementation",
+      "desc": "ZK Proof Architecture · Selective Disclosure · On-chain Provenance · PoC Design Checklist",
+      "button": "Download PDF"
+    },
+    "next": {
+      "label": "Next Step",
+      "title": "Register as a Partner",
+      "desc": "We will contact you within 1 business day."
+    }
+  },
+  "pillars": {
+    "title": "Why Lemma",
+    "heroTitle": "Four pillars of verifiable trust.",
+    "subtitle": "Data provenance, AI decisions, agent transactions, regulatory compliance — bound by ZK proofs.",
+    "viewPillar": "View pillar →",
+    "blockProblem": "Problem Statement",
+    "blockWhyNow": "Why Now",
+    "blockHowLemmaFits": "How Lemma Fits",
+    "blockUseCases": "Use Cases",
+    "blockRecentThinking": "Recent Thinking",
+    "viewUseCase": "View use case →",
+    "comingSoon": "Use cases coming soon — stay tuned.",
+    "ctaEyebrow": "Get Started",
+    "ctaTitle": "Ready to prove?",
+    "ctaDesc": "Talk to us about your use case. We respond within one business day."
+  },
+  "useCases": {
+    "title": "Use Cases",
+    "subtitle": "Real-world applications of verifiable trust",
+    "sections": "Sections",
+    "overview": "Overview",
+    "backToPillar": "← Back to pillar"
   }
 }

@@ -12,7 +12,13 @@ export default defineConfig({
     defaultLocale: "en",
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },
+      filter: (page) => !page.includes("/thank-you/"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

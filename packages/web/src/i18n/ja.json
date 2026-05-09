@@ -5,11 +5,73 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
+    "pillars": "Why Lemma",
     "faq": "FAQ",
     "services": "サービス",
     "pricing": "料金",
+    "developers": "開発者",
     "languageJa": "日本語",
-    "languageEn": "English"
+    "languageEn": "English",
+    "mega": {
+      "services": {
+        "enterprise": "エンタープライズ",
+        "civic": "Lemma Civic",
+        "civicSub": "公共インフラ・B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "基幹インフラシステム",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "金融・KYC/AML",
+        "howItWorks": "仕組み",
+        "howItWorksSub": "Normalize · Commit · Prove",
+        "materials": "資料",
+        "whitepaper": "ホワイトペーパー",
+        "whitepaperSub": "技術仕様・PoC設計・チェックリスト",
+        "developer": "Developer",
+        "trust402Demo": "デモ公開中",
+        "trust402Sub": "",
+        "tryDemo": "デモを試す →（英語のみ）",
+        "joinWaitlist": "ウェイトリストに登録"
+      },
+      "pricing": {
+        "enterprise": "エンタープライズ",
+        "civic": "Lemma Civic",
+        "civicSub": "公共インフラ",
+        "critical": "Lemma Critical",
+        "criticalSub": "基幹インフラ",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "金融・規制対応",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro"
+      },
+      "developers": {
+        "architecture": "アーキテクチャ",
+        "specs": "Lemma Oracle 仕様書",
+        "specsSub": "技術仕様・フルドキュメント",
+        "guides": "ガイド",
+        "encrypt": "すべてを暗号化し、何も露呈しない",
+        "encryptSub": "AES-GCM · docHash · CID",
+        "prove": "ゼロ知識で事実を証明する",
+        "proveSub": "ZKサーキット · 永続記録",
+        "disclose": "AIが必要な分だけ開示する",
+        "discloseSub": "選択的開示 · 発行者署名",
+        "query": "検証済み属性を検索する",
+        "querySub": "RAGポリシーレイヤー · 完全な来歴証明",
+        "define": "ドメインをスキーマとして定義する",
+        "defineSub": "ZKサーキット · 型付きスキーマ",
+        "provenance": "決して消えない来歴証明",
+        "provenanceSub": "オンチェーン永続記録",
+        "trust402": "x402 統合 · Developer",
+        "demoSoon": "デモ公開中",
+        "demoSub": "",
+        "joinWaitlist": "ウェイトリストに登録 →",
+        "tryDemo": "デモを試す →（英語のみ）",
+        "readSpecs": "仕様書を読む"
+      },
+      "mobile": {
+        "talkToUs": "お問い合わせ"
+      }
+    }
   },
   "masthead": {
     "title": "AI に証明された事実を。",
@@ -33,12 +95,44 @@
     "provenanceBody": "文書のコミットメント、スキーマ、発行者、ZK 検証結果はオンチェーンにアンカーされます。RAG インデックスは再構築でき、埋め込みは再計算できます。来歴証明レイヤーは永続的に残ります。"
   },
   "footer": {
-    "copyright": "© 2026 Lemma Oracle — Built for decisions that matter"
+    "copyright": "© 2026 FRAME00 — Built for decisions that matter",
+    "aboutUs": "運営会社",
+    "faq": "FAQ",
+    "blog": "ブログ",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約"
+  },
+  "ctaSection": {
+    "finalTag": "パートナープログラム",
+    "finalH2": "AIは変わっても、",
+    "finalH2Em": "証明は残る。",
+    "finalP": "1分で登録できます。",
+    "finalCtaText": "はじめる",
+    "finalWpText": "ホワイトペーパーをダウンロード"
   },
   "blog": {
     "title": "ブログ",
+    "metaTitle": "ブログ — Lemma Oracle",
+    "metaDescription": "Lemma Oracle のエッセイ・変更履歴・フィールドノート。",
     "subtitle": "エッセイ、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
+    "index": {
+      "featuredTag": "注目の記事",
+      "featuredCta": "記事を読む →",
+      "recentTag": "最近の記事",
+      "archiveTag": "アーカイブ",
+      "foundationsTag": "基盤",
+      "headerDesc":"ZK証明、暗号的来歴証明、選択的開示。技術と意思決定の交点を探る。",
+      "essaysTag": "エッセイ",
+      "readEssay": "エッセイを読む →",
+      "guidesTag": "ガイド",
+      "guidesTitle": "技術ドキュメント。",
+      "guidesDesc": "Lemmaアーキテクチャの各レイヤーに対応する実装ガイド。",
+      "readGuide": "読む →",
+      "specsTitle": "Lemma Oracle 仕様書",
+      "specsDesc": "ZK証明・選択的開示・オンチェーン来歴証明を介してAIが機密データを推論できるようにする、暗号的に検証された真実レイヤー。",
+      "readSpecs": "仕様書を読む →"
+    },
     "sections": {
       "Essays": "エッセイ",
       "Changelog": "変更履歴",
@@ -61,14 +155,15 @@
     "subtitle": "LemmaとVerifiable AIに関するよくある質問"
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle",
-    "defaultDescription": "AI に証明された事実を。AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。"
+    "defaultTitle": "Lemma Oracle — ZK証明による検証可能AIの信頼基盤",
+    "defaultDescription": "AIに暗号学的に証明された事実を。ZK証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズAI・エージェント決済・コンプライアンス対応。"
   },
   "services": {
-    "title": "Lemma Oracle — エージェントAIのデータ信頼基盤",
+    "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma Oracle",
+    "metaDescription": "データの中身を開示せずに真正性を証明。ZK証明による検証可能AI基盤で、AIエージェント・サプライチェーン追跡・監査対応を実現。エンタープライズ・開発者向けプラン提供中。",
     "hero": {
       "title": "エージェントAIが「使えない」本当の理由は、モデルではなくデータにある。",
-      "sub": "生成AIの導入は急速に進んでいる。しかし現場の成果は追いついていない。根本的な原因は「信頼できるデータ基盤の不在」だ。",
+      "sub": "生成AIの導入は急速に進んでいる。しかし現場の成果は追いついていない。根本的な原因は「信頼できるデータ基盤の不在」だ。Lemmaの検証可能AI（Verifiable AI）が、その基盤を担う。",
       "stat": "国内大企業の約9割がAIエージェント導入に課題を感じている",
       "ctaDownload": "ホワイトペーパーを無料でダウンロード",
       "linkDetails": "課題の詳細を見る",
@@ -133,8 +228,9 @@
     "beforeAfter": {
       "label": "導入効果",
       "title": "導入前後で、何が変わるか",
-      "beforeLabel": "Before — 導入前",
-      "afterLabel": "After — Lemma導入後",
+      "lead": "6つのクリティカルな業務プロセス——手作業から暗号学的検証へ。",
+      "beforeLabel": "Before — 手動",
+      "afterLabel": "After — Lemma",
       "before1Label": "データ確認",
       "before1Text": "担当者が目視・手動照合",
       "before2Label": "承認プロセス",
@@ -148,7 +244,7 @@
       "before6Label": "ロイヤルカスタマー認証",
       "before6Text": "コミュニティ管理・認証を手動",
       "after1Label": "データ確認",
-      "after1Text": "オラクルが自動収集・検証",
+      "after1Text": "Lemmaが自動収集・検証",
       "after2Label": "承認プロセス",
       "after2Text": "条件達成を自動記録し、人間が最終確認",
       "after3Label": "監査対応",
@@ -163,7 +259,7 @@
     "checklist": {
       "label": "自己診断",
       "title": "こんな課題はありませんか？",
-      "lead": "1つでも当てはまる場合、Lemmaオラクルが有効です。クリックして確認してください。",
+      "lead": "1つでも当てはまる場合、Lemmaが有効です。クリックして確認してください。",
       "item1": "外部の事実確認に基づいて承認・支払い・次工程を進める業務がある",
       "item2": "その確認作業に人手・時間・コストがかかっている",
       "item3": "AI導入を検討しているが、社内データの品質・機密管理に不安がある",
@@ -180,7 +276,7 @@
       "wpContent2": "製造・サプライチェーン・IP管理の応用シナリオ",
       "wpContent3": "PoCの設計・評価指標・最短検証ステップ",
       "wpContent4": "導入判断チェックリストと推奨アクション",
-      "hubspotFormUrl": "https://429bpd.share-na2.hsforms.com/2RxuIcA8OSYyAcsEKpxTM9Q"
+      "hubspotFormUrl": "https://tally.so/r/xX0VYv"
     },
     "nav": {
       "whitepaperDownload": "ホワイトペーパーをDL",
@@ -196,55 +292,97 @@
   },
   "index": {
     "hero": {
-      "eyebrow": "Verifiable AI",
-      "h1": "AI に",
-      "h1Strong": "証明された事実を。",
-      "sub": "AI が読み取るすべてのデータには、誰が発行し、どのスキーマで定義され、どのように証明されたか、そしてその証明がオンチェーンのどこにあるかという永続的な来歴証明が付随します。",
-      "cta": "はじめる",
-      "wp": "ホワイトペーパーをダウンロード",
-      "scroll": "Scroll"
+      "liveBadge": "Live on Base Sepolia",
+      "h1": "AIに証明された事実を。",
+      "subLine1": "AIが読み取るすべての属性に、暗号的な来歴を。",
+      "subLine2": "データは開示せず、事実だけが渡る構造。",
+      "primaryCta": "デモを試す →",
+      "secondaryCta": "ホワイトペーパー →",
+      "scroll": "↓ SCROLL"
     },
-    "marquee": "Verifiable AI ◆ ZK来歴証明 ◆ AES-GCM 暗号化 ◆ 選択的開示 ◆ 暗号的来歴 ◆ docHash / CID ◆ オンチェーン記録 ◆ RAG ポリシーレイヤー ◆ ゼロ知識 ◆ 永続的来歴証明 ◆",
-    "features": {
-      "tag": "仕組み",
-      "h2": "検証済み属性の上に、エンドツーエンドで構築する。",
-      "lead": "あなたの AI が生 PII に触れることはありません。文書はエンドツーエンドで暗号化されたまま — Lemma 自体も平文を見ることはありません。どの属性に AI がアクセスできるかを完全に制御でき、すべての段階で暗号学的来歴証明が付きます。",
-      "cards": [
-        { "num": "01", "h3": "すべてを暗号化し、何も露呈しない", "p": "Lemma はすべての文書を AES-GCM で暗号化します。AI は生の個人情報に触れることはありません。docHash と CID のみが来歴証明のための安定したアンカーとして露出されます。", "link": "ガイドを読む →" },
-        { "num": "02", "h3": "ゼロ知識で事実を証明する", "p": "「18 歳以上」や「売上が閾値を超えている」といったビジネスルールを、機械が検証可能な事実に変換します。各検証済み証明は、そのサーキットとジェネレーターと共に永続的に記録されます。", "link": "ガイドを読む →" },
-        { "num": "03", "h3": "AI が必要な分だけ開示する", "p": "ホルダーは、モデルが検索やランキングに必要とする属性だけを選択的に開示できます。元の発行者署名へのリンクは維持されます。", "link": "ガイドを読む →" },
-        { "num": "04", "h3": "検証済み属性を検索する", "p": "「日本在住の 18 歳以上のユーザー」と検索すると、完全な来歴証明を持つ属性が返され、RAG ポリシーレイヤーの準備が整います。", "link": "ガイドを読む →" },
-        { "num": "05", "h3": "ドメインをスキーマとして定義する", "p": "AI が知識をどのように検索しクラスタリングするかをモデル化します。年齢のグループ化、リスクスコア、地域などを型付けされたスキーマと正規化で定義します。", "link": "ガイドを読む →" },
-        { "num": "06", "h3": "決して消えない来歴証明", "p": "文書のコミットメント、スキーマ、発行者、ZK 検証結果はオンチェーンにアンカーされます。RAG インデックスは再構築できますが、来歴証明レイヤーは永続的に残ります。", "link": "ガイドを読む →" }
-      ]
+    "demos": {
+      "label": "DEMO SPOTLIGHT",
+      "h2Line1": "今すぐ手元で動かせる、",
+      "h2Line2": "検証可能AI。",
+      "lede": "2つのリファレンス実装が、Base Sepolia 上で動作中。npm install と数行のコードで、検証可能AI を自分の環境で確かめられる。",
+      "trust402": {
+        "tag": "FOR DEVELOPERS · TRUST402",
+        "titleLine1": "エージェントの決済を、",
+        "titleLine2": "ZK証明する。",
+        "claim": "AI 同士の取引が、人間の監査なしに成立する。誰の権限で、どのデータに基づく支払いかを、機密を出さずに証明する。Lemma × x402 のリファレンス実装。",
+        "metaPills": ["Base Sepolia", "x402 × Lemma", "npm i @lemmaoracle/sdk"],
+        "primaryCta": "Trust402 デモを試す →",
+        "secondaryCta": "製品ページ →"
+      },
+      "finance": {
+        "tag": "FOR FINANCE · CROSS-CHAIN ORIGIN",
+        "titleLine1": "資産は動く。",
+        "titleLine2": "出所は、残る。",
+        "claim": "ブリッジ攻撃の多くは、暗号的には有効な取引として通る。受取側に事前の出所検証を加えれば、決済前に止められる。事後フォレンジックを、事前検証に変えるリファレンス実装。",
+        "metaPills": ["事前出所検証", "オンチェーン証明", "クロスチェーン"],
+        "primaryCta": "デモを見る →",
+        "secondaryCta": "解説を読む →"
+      }
     },
-    "proof": {
-      "tag": "重要な理由",
-      "h2": "RAG インデックスは再構築できます。",
-      "h2Strong": "来歴証明レイヤーは永続的に残ります。",
-      "p": "実際の年齢、名前、住所を明かさずに「年齢 ≧ 18」を証明します。AI は検証済みの回答を受け取り、生データではありません。証明はオンチェーン上に存在します。判断は保たれます。",
-      "cta": "仕様を読む",
+    "whyLemma": {
+      "label": "Why Lemma",
+      "h2": "4つの問いに、暗号で答える。",
+      "leadStrong": "検証可能な信頼の、4つの柱。",
+      "leadBody": "データ来歴・AI判断・エージェント取引・規制適合を、ZK証明で結ぶ。",
+      "pillarLabel": "Pillar",
+      "cardCta": "詳細を読む",
+      "sectionCta": "4つの柱の概要ページへ →"
+    },
+    "architecture": {
+      "label": "ARCHITECTURE",
+      "h2": "4つの柱を、1つの基盤で支える。",
+      "lede": "どのユースケースも、同じ4つの暗号レイヤで動いている。垂直領域は変わっても、証明の仕組みは変わらない。",
+      "guideCta": "ガイドを読む →",
+      "layers": [
+        {
+          "num": "01",
+          "title": "すべてを暗号化し、何も露呈しない。",
+          "body": "AES-GCMで暗号化。AIは生データに触れない。露出するのは docHash と CID のみ。"
+        },
+        {
+          "num": "02",
+          "title": "ゼロ知識で、事実を証明する。",
+          "body": "ZK回路とジェネレーターは永続記録される。属性の真正性を、データを出さずに証明する。"
+        },
+        {
+          "num": "03",
+          "title": "AI が必要な分だけ、開示する。",
+          "body": "必要な属性だけを、選択的に開示する。元の発行者署名へのリンクは保持される。"
+        },
+        {
+          "num": "04",
+          "title": "決して消えない、来歴証明。",
+          "body": "AIのインフラは変わっても、来歴は残る。RAGインデックスの再構築は、証明を消さない。"
+        }
+      ],
       "stats": [
-        { "n": "0", "nUnit": "バイト", "l": "AI への生 PII" },
-        { "n": "∞", "l": "来歴証明の永続性" },
-        { "n": "ZK", "l": "開示なしの証明" }
+        { "num": "0", "unit": "バイト", "sub": "AI への生 PII" },
+        { "num": "∞", "unit": "永続", "sub": "来歴証明の永続性" },
+        { "num": "ZK", "unit": "証明", "sub": "開示なしの証明" }
       ]
     },
     "essays": {
       "tag": "エッセイ",
-      "h2": "Verifiable AI の思想と実装。",
-      "p": "ZK 証明、暗号的来歴証明、選択的開示。テクノロジーと意思決定が交差する場所。"
+      "h2": "検証可能なAIの、思想と実装。",
+      "p": "ゼロ知識証明、暗号的プロヴナンス、選択的開示——技術と意思決定が交わる場所から。"
     },
-    "cta": {
-      "eyebrow": "長期の意思決定のための推論エンジン",
-      "h2": "重要な意思決定のために",
-      "h2Em": "作られた。",
-      "p": "クローズドなパートナープログラム。1 分以内で登録できます。",
-      "cta": "はじめる",
-      "wp": "ホワイトペーパーをダウンロード"
+    "partner": {
+      "label": "パートナープログラム",
+      "h2Line1": "AIは変わっても、",
+      "h2Line2": "証明は残る。",
+      "body": "Lemma の検証可能AIを、組織に導入しませんか？いま、選定したパートナーと先行 PoC を進行中。ユースケースをお聞かせいただければ、設計から実装までご一緒します。原則 1 営業日以内にご返信。",
+      "primaryCta": "パートナー候補として登録",
+      "secondaryCta": "ホワイトペーパーをダウンロード"
     }
   },
   "faq": {
+    "metaTitle": "FAQ — Lemma Oracle",
+    "metaDescription": "LemmaおよびVerifiable AIに関するよくある質問です。",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — AI 信頼性と検証可能性.",
@@ -317,6 +455,8 @@
     }
   },
   "pricing": {
+    "metaTitle": "料金 — Lemma Oracle",
+    "metaDescription": "Lemma Oracle のエンタープライズおよび開発者向け料金。3つのセグメント、1つの信頼レイヤー。",
     "hero": {
       "eyebrow": "料金",
       "h1": "重要な意思決定のために",
@@ -372,7 +512,8 @@
         { "name": "Pro", "desc": "高ボリュームプロダクション。SLA 保証の専用サポートチャンネル。エージェントエコシステムで規模の段階にあるプロダクト向け。", "badge": "近日公開" }
       ],
       "cta": "ウェイトリストに登録",
-      "note": "詳細な料金とドキュメントはリリース時に提供されます。Trust402 LP — 近日公開。"
+      "demoCta": "製品ページを見る →（英語のみ）",
+      "note": "詳細な料金とドキュメントはリリース時に提供されます。"
     },
     "compare": {
       "tag": "一覧",
@@ -397,12 +538,12 @@
       "tag": "よくある質問",
       "title": "料金 FAQ.",
       "items": [
-        { "q": "なぜ公開価格がないのか？", "a": "エンタープライズの料金はティア、サイト数、SLA要件、ZKサーキットの複雑さに依存します。文脈のない数字は誤解を招きます。実際のユースケースに応じて価格設定します。" },
-        { "q": "どのセグメントが業界に合っているか？", "a": "公共インフラ・B2B2G → Civic。電力・水道・鉄道・重要 AI → Critical。銀行・FinTech・KYC/AML → Compliance。x402・MCP 上に構築 → Trust402。" },
-        { "q": "料金はどのように設定されているか？", "a": "すべてのエンタープライズプランは月額基本料金に検証通話量とオプションのカスタムスキーマ登録を組み合わせています。" },
-        { "q": "無料トライアルはあるか？", "a": "Trust402 にはサンドボックス評価用の Explorer ティアが含まれます。エンタープライズ評価はスコープ付き PoC で対応します。" },
-        { "q": "Trust402 はいつリリースされるか？", "a": "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。" },
-        { "q": "低いティアから始めてアップグレードできるか？", "a": "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。" }
+        { "q": "なぜ公開価格がないのですか？", "a": "エンタープライズの料金はティア、サイト数、SLA要件、ZKサーキットの複雑さに依存します。文脈のない数字は誤解を招きます。実際のユースケースに応じて価格設定します。" },
+        { "q": "どのセグメントが業界に合っていますか？", "a": "公共インフラ・B2B2G → Civic。電力・水道・鉄道・重要 AI → Critical。銀行・FinTech・KYC/AML → Compliance。x402・MCP 上に構築 → Trust402。" },
+        { "q": "料金はどのように設定されていますか？", "a": "すべてのエンタープライズプランは月額基本料金に検証通話量とオプションのカスタムスキーマ登録を組み合わせています。" },
+        { "q": "無料トライアルはありますか？", "a": "Trust402 にはサンドボックス評価用の Explorer ティアが含まれます。エンタープライズ評価はスコープ付き PoC で対応します。" },
+        { "q": "Trust402 はいつリリースされますか？", "a": "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。" },
+        { "q": "低いティアから始めてアップグレードできますか？", "a": "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。" }
       ]
     },
     "cta": {
@@ -416,5 +557,45 @@
     "nav": {
       "wp": "ホワイトペーパーをダウンロード →"
     }
+  },
+  "thankYou": {
+    "eyebrow": "ありがとうございます",
+    "title": "ホワイトペーパーの<br>準備ができました",
+    "titleEm": "。",
+    "sub": "以下のボタンからすぐにダウンロードできます。",
+    "dlCard": {
+      "label": "ホワイトペーパー",
+      "title": "Lemma Oracle —<br>検証可能AIインフラの技術と実装",
+      "desc": "ZK証明アーキテクチャ・選択的開示・オンチェーン来歴証明・PoC設計チェックリスト",
+      "button": "PDFをダウンロード"
+    },
+    "next": {
+      "label": "次のステップ",
+      "title": "パートナー候補として登録する",
+      "desc": "1営業日以内にご連絡いたします。"
+    }
+  },
+  "pillars": {
+    "title": "Why Lemma",
+    "heroTitle": "検証可能な信頼の、4つの柱。",
+    "subtitle": "データ来歴・AI判断・エージェント取引・規制適合を、ZK証明で結ぶ。",
+    "viewPillar": "詳細を見る →",
+    "blockProblem": "問題提起",
+    "blockWhyNow": "なぜ今か",
+    "blockHowLemmaFits": "Lemmaの役割",
+    "blockUseCases": "ユースケース",
+    "blockRecentThinking": "最新の考察",
+    "viewUseCase": "ユースケースを見る →",
+    "comingSoon": "ユースケースは順次追加予定です。",
+    "ctaEyebrow": "はじめる",
+    "ctaTitle": "証明する準備はできましたか？",
+    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。"
+  },
+  "useCases": {
+    "title": "ユースケース",
+    "subtitle": "検証可能な信頼の実世界応用",
+    "sections": "セクション",
+    "overview": "概要",
+    "backToPillar": "← Pillarに戻る"
   }
 }

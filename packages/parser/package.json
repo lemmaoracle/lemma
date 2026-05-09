@@ -1,6 +1,7 @@
 {
   "name": "@lemmaoracle/parser",
-  "version": "0.0.17",
+  "version": "0.0.23",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,6 +10,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "type-check": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run"
   },
