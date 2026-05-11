@@ -17,6 +17,7 @@ const servicesPath = base ? `${base}/services` : "/services";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
+const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = locale === "ja"
   ? "https://tally.so/r/xX0VYv"
   : "https://tally.so/r/7RJXdR";
@@ -37,6 +38,7 @@ const isPillarsActive = startsWith(pillarsPath);
 const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
+const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
   startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
 ---
@@ -140,26 +142,9 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 4. 開発者 -->
+    <!-- 4. 開発者 (flat link → /guides/) -->
     <li class="mega-nav-item">
-      <div class="mega-nav-link has-mega">{t.developers}</div>
-      <div class="mega-panel">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.developers.architecture}</div>
-          <div class="mega-links">
-            <a href="/trust402/" class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.products.trust402}</span>
-              <span class="mega-link-sub">{t.mega.developers.trust402}</span>
-            </a>
-            <a href={whitepaperPath} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.whitepaper}</span>
-            </a>
-            <a href={githubPath} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.github}</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
     </li>
 
     <!-- 5. リソース -->
@@ -234,14 +219,7 @@ const isResourcesActive =
       </div>
     </div>
 
-    <div class="mob-section">
-      <div class="mob-section-header">{t.developers} <span class="mob-arrow"></span></div>
-      <div class="mob-section-body">
-        <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.developers.trust402}</small></a>
-        <a href={whitepaperPath} class="mob-link" target="_blank">{t.mega.developers.whitepaper}</a>
-        <a href={githubPath} class="mob-link" target="_blank">{t.mega.developers.github}</a>
-      </div>
-    </div>
+    <a href={guidesPath} class="mob-direct">{t.developers}</a>
 
     <div class="mob-section">
       <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
@@ -399,6 +377,17 @@ const isResourcesActive =
   .mob-section.open .mob-section-header .mob-arrow { transform: rotate(-135deg); }
   .mob-section-body { display: none; padding: 0 6% 16px; }
   .mob-section.open .mob-section-body { display: block; }
+
+  .mob-direct {
+    display: block;
+    padding: 18px 6%;
+    border-bottom: 1px solid var(--gray-200);
+    font-size: 14px; font-weight: 500;
+    color: var(--gray-800);
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .mob-direct:hover { color: var(--accent); }
 
   .mob-link {
     display: block; padding: 12px 0; text-decoration: none;

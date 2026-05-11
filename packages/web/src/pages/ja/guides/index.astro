@@ -1,0 +1,25 @@
+---
+import GuidesIndexTemplate from "../../../templates/GuidesIndexTemplate.astro";
+import { getBlogSections } from "../../../data/blog";
+import { getTranslations } from "../../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+
+const sections = await getBlogSections(locale);
+const guides = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "ガイド" || p.category === "Guides");
+const foundations = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "基盤" || p.category === "Foundations");
+---
+
+<GuidesIndexTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  guides={guides}
+  foundations={foundations}
+/>

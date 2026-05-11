@@ -1,0 +1,308 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+
+export interface GuidesIndexTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  guides: ReadonlyArray<BlogPost>;
+  foundations: ReadonlyArray<BlogPost>;
+}
+
+const { locale, t, base, guides, foundations } =
+  Astro.props as GuidesIndexTemplateProps;
+const blogPath = base ? `${base}/blog` : "/blog";
+const title = locale === "ja"
+  ? `技術ドキュメント — Lemma Oracle`
+  : `Technical Documentation — Lemma Oracle`;
+const description = t.blog.index.guidesDesc;
+---
+
+<Layout
+  locale={locale}
+  title={title}
+  description={description}
+  metaType="page"
+  pagePath="/guides/"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="guides-header">
+    <div class="section-tag" style="color:var(--accent)">{t.blog.index.guidesTag}</div>
+    <h1>{t.blog.index.guidesTitle}</h1>
+    <p>{t.blog.index.guidesDesc}</p>
+  </header>
+
+  {guides.length > 0 && (
+    <section class="guides-section">
+      <div class="guides-grid">
+        {guides.map((post, i) => (
+          <a
+            href={`${blogPath}/${post.slug}`}
+            class="guide-card reveal"
+            style={`transition-delay:${i * 0.05}s`}
+          >
+            <div class="guide-meta">
+              <span class="guide-cat">{post.category}</span>
+              <span class="guide-date">{post.date}</span>
+            </div>
+            <h3>{post.title}</h3>
+            <p>{post.abstract}</p>
+            <span class="guide-link">{t.blog.index.readGuide}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {foundations.length > 0 && (
+    <section class="foundations-section">
+      <div class="section-tag" style="color:rgba(255,255,255,0.5)">{t.blog.index.foundationsTag}</div>
+      <div class="foundations-grid">
+        {foundations.map((post) => (
+          <a href={`${blogPath}/${post.slug}`} class="foundations-card reveal">
+            <div class="foundations-text">
+              <h3>{post.title}</h3>
+              <p>{post.abstract}</p>
+            </div>
+            <span class="btn-white">{t.blog.index.readSpecs}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* ─── HEADER ─── */
+  .guides-header {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 100px 10% 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .guides-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.08;
+    margin: 0 0 16px;
+  }
+  .guides-header p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.75;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+
+  /* ─── GUIDES GRID ─── */
+  .guides-section {
+    background: var(--white);
+    padding: 100px 10%;
+  }
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .guide-card {
+    background: var(--white);
+    padding: 36px 32px;
+    border-top: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .guide-card:hover {
+    border-top-color: var(--accent);
+  }
+  .guide-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .guide-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .guide-date {
+    font-size: 10px;
+    color: var(--gray-500);
+  }
+  .guide-card h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0;
+  }
+  .guide-card p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-500);
+    flex: 1;
+    margin: 0;
+  }
+  .guide-link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ─── FOUNDATIONS ─── */
+  .foundations-section {
+    background: var(--black);
+    padding: 80px 10%;
+  }
+  .foundations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .foundations-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 2px solid var(--accent);
+    padding: 40px 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    text-decoration: none;
+    color: inherit;
+  }
+  .foundations-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-top-color: var(--accent-lt);
+  }
+  .foundations-text {
+    flex: 1;
+    min-width: 280px;
+  }
+  .foundations-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    margin: 0 0 8px;
+  }
+  .foundations-card p {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 30px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+  .foundations-card:hover .btn-white {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  /* ─── REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal.on {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .guide-card.reveal,
+  .foundations-card.reveal {
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s, background 0.2s;
+  }
+
+  @media (max-width: 1024px) {
+    .guides-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .guides-header,
+    .guides-section,
+    .foundations-section {
+      padding-left: 6%;
+      padding-right: 6%;
+    }
+    .guides-header {
+      padding-top: 80px;
+      padding-bottom: 60px;
+    }
+    .guides-section,
+    .foundations-section {
+      padding-top: 56px;
+      padding-bottom: 56px;
+    }
+    .guides-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script is:inline>
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
+  );
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    io.observe(el);
+  });
+</script>
