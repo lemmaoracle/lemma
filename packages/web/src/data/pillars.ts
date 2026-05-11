@@ -177,7 +177,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["ai", "explainability", "audit", "compliance"],
     orientation: {
       en: "AI is now making decisions across enterprise and public services every day.\nThe EU AI Act, effective 2026, mandates automated logging and data governance for high-risk AI.\nISO 42001 requires AI management systems to be auditable.\nModels update, logs decay — but the obligation to explain each decision remains.",
-      ja: "AI は、企業と公共の判断を、日常的に下し始めています。\nEU AI Act は 2026 年に高リスク AI への自動ログとデータガバナンスを義務化し、\nISO 42001 は AI マネジメントシステムの監査可能性を求めています。\nモデルは更新され、ログは散逸する。それでも「なぜそう判断したか」を説明する責務は残ります。",
+      ja: "AI は、企業と公共の判断を、日常的に下しています。\nEU AI Act は 2026 年に高リスク AI への自動ログとデータガバナンスを義務化し、\nISO 42001 は AI マネジメントシステムの監査可能性を求めています。\nモデルは更新され、ログは散逸する。それでも「なぜそう判断したか」を説明する責務は残ります。",
     },
   },
   {
@@ -239,7 +239,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["agent", "x402", "mcp", "trust-chain", "agentic-payments"],
     orientation: {
       en: "AI agents are now buying, contracting, and transacting on behalf of humans.\nIn Q1 2026, Coinbase captured over 90% of on-chain agentic stablecoin volume.\nx402 settled more than 100 million payments. The rails are in.\nThe unresolved question is who proves these transactions were authorized — and on what data.",
-      ja: "AI エージェントが、人の代わりに買い物・契約・取引を執行する時代が始まっています。\nCoinbase は 2026 年 Q1、オンチェーンのエージェント決済の 90% 超を独占し、\nx402 は 1 億件を超えました。レールは出揃いました。\n残された問いは、その上に走る取引の「正当性」を誰がどう証明するか、です。",
+      ja: "AI エージェントが、人の代わりに買い物・契約・取引を執行する時代に入りました。\nCoinbase は 2026 年 Q1、オンチェーンのエージェント決済の 90% 超を独占し、\nx402 は 1 億件を超えました。レールは出揃いました。\n残された問いは、その上に走る取引の「正当性」を誰がどう証明するか、です。",
     },
     seo: {
       title: {
@@ -359,7 +359,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["regulatory", "kyc", "aml", "compliance", "esg"],
     orientation: {
       en: "GDPR. EU AI Act. Crypto-asset guidelines. CBAM. EUDR. DPP.\nRegulation is converging on a single demand: not \"disclose your data,\"\nbut \"prove your compliance.\"\nYet most enterprises still respond with self-declaration and paper trails.\nWhat's required now is proof — not promise.",
-      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——\n規制の重心は、データを開示することから、コンプライアンスを証明できる状態へと、ゆっくり移ってきています。\nしかし現場の多くは、いまも自己申告や紙のサプライヤ書類で対応しているのが実情です。\nこれからは、約束よりも、証明できることが問われるようになります。",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——\n規制の重心は、データを開示することから、コンプライアンスを証明できる状態へと、移ってきています。\nしかし現場の多くは、いまも自己申告や紙のサプライヤ書類で対応しているのが実情です。\nこれからは、約束よりも、証明できることが問われるようになります。",
     },
   },
 ];
