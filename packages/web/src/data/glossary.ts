@@ -287,7 +287,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     ],
     implementation: [
       'Lemma は検証可能 AI を、汎用の暗号インフラとして提供する。入力データは <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> に直接食わせるのではなく、まず <code>docHash</code> でバイト列を固定し、属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> 可能な構造に変換する。これにより、コンテンツや個人情報を相手に渡さず、必要な属性だけを証明できる。',
-      '推論側ではモデルハッシュを <a href="/ja/glossary/commitment/">コミットメント</a> として固定し、入力・出力・モデルを結ぶ証明を生成する。RAG パイプラインの場合は、引用文書の <a href="/ja/glossary/provenance/">プロヴナンス</a> と引用文・本文の一致を同時に証明する設計を採る。",
+      '推論側ではモデルハッシュを <a href="/ja/glossary/commitment/">コミットメント</a> として固定し、入力・出力・モデルを結ぶ証明を生成する。RAG パイプラインの場合は、引用文書の <a href="/ja/glossary/provenance/">プロヴナンス</a> と引用文・本文の一致を同時に証明する設計を採る。',
       "結果として、Lemma の検証可能 AI は規制対応 (EU AI Act の自動ログ・人間監督要件) と機密性 (GDPR・営業秘密) を同時に満たす経路となる。AI 判断を組織横断で監査するための、最も具体的なインフラ層がここにあたる。",
     ],
     related: [
