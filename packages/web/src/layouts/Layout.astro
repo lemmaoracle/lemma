@@ -29,7 +29,20 @@ const shouldRenderMetaTags =
 
 const SITE_ORIGIN = "https://lemma.frame00.com";
 
-function buildLocalePath(targetLocale: Locale): string | null {
+/**
+ * Resolve the canonical path for a given locale.
+ *
+ * Priority:
+ *   1. Explicit metaType info passed by the page (home / page / article).
+ *   2. Fallback: derive from the current Astro.url.pathname by stripping
+ *      the JA prefix and re-applying the target locale's prefix.
+ *
+ * The fallback guarantees every page gets canonical + hreflang even when
+ * the calling template forgets to pass metaType (e.g. LegalTemplate before
+ * this commit). OG / Twitter meta is still gated by `shouldRenderMetaTags`
+ * separately so it does not start emitting partial metadata.
+ */
+function buildLocalePath(targetLocale: Locale): string {
   const prefix = targetLocale === "ja" ? "/ja" : "";
   if (Astro.props.metaType === "home") {
     return `${prefix}/`;
@@ -45,7 +58,10 @@ function buildLocalePath(targetLocale: Locale): string | null {
     const blogPathBase = Astro.props.blogPath.replace(/^\/ja/, "");
     return `${prefix}${blogPathBase}/${Astro.props.post.slug}`;
   }
-  return null;
+  // Fallback: derive from current URL. Strip the JA prefix so the path
+  // is locale-neutral, then re-apply the target locale's prefix.
+  const neutral = Astro.url.pathname.replace(/^\/ja(\/|$)/, "/");
+  return `${prefix}${neutral}`;
 }
 
 const canonicalPath = buildLocalePath(locale);
@@ -97,10 +113,10 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
           />
         )
     }
-    {canonicalPath && <link rel="canonical" href={`${SITE_ORIGIN}${canonicalPath}`} />}
-    {enHref && <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />}
-    {jaHref && <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />}
-    {enHref && <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />}
+    <link rel="canonical" href={`${SITE_ORIGIN}${canonicalPath}`} />
+    <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />
+    <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />
+    <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
