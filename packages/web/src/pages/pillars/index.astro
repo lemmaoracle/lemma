@@ -1,6 +1,7 @@
 ---
 import PillarsHubTemplate from "../../templates/PillarsHubTemplate.astro";
 import { getAllPillars } from "../../data/pillars";
+import { getBlogSections } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "en";
@@ -8,6 +9,14 @@ const t = getTranslations(locale);
 const base = "";
 const pillars = getAllPillars();
 const pillarT = t.pillars;
+
+const sections = await getBlogSections(locale);
+const guides = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "ガイド" || p.category === "Guides");
+const foundations = sections
+  .flatMap((s) => s.posts)
+  .filter((p) => p.category === "基盤" || p.category === "Foundations");
 ---
 
 <PillarsHubTemplate
@@ -16,4 +25,6 @@ const pillarT = t.pillars;
   base={base}
   pillars={pillars}
   pillarT={pillarT}
+  guides={guides}
+  foundations={foundations}
 />
