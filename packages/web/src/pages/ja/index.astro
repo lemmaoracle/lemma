@@ -8,15 +8,12 @@ const t = getTranslations(locale);
 const base = "/ja";
 const sections = await getBlogSections(locale);
 const essays = sections.find((s) => s.section === "Essays")?.posts ?? [];
-const featured = essays.slice(0, 3);
-const mini = essays.slice(3, 7);
-
-const layerGuideLinks = [
-  "/ja/blog/encrypt-everything-expose-nothing/",
-  "/ja/blog/prove-facts-with-zero-knowledge/",
-  "/ja/blog/disclose-only-what-ai-needs/",
-  "/ja/blog/provenance-that-never-disappears/",
-] as const;
+const recentPosts = essays.slice(0, 3).map((p) => ({
+  category: p.category,
+  date: p.date,
+  title: p.title,
+  slug: p.slug,
+}));
 ---
 
 <IndexTemplate
@@ -24,7 +21,5 @@ const layerGuideLinks = [
   t={t}
   base={base}
   description={t.layout.defaultDescription}
-  featured={featured}
-  mini={mini}
-  layerGuideLinks={layerGuideLinks}
+  recentPosts={recentPosts}
 />

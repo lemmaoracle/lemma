@@ -7,12 +7,53 @@
     "blog": "Blog",
     "pillars": "Why Lemma",
     "faq": "FAQ",
-    "services": "Services",
+    "services": "Products",
     "pricing": "Pricing",
+    "solutions": "Solutions",
+    "resources": "Resources",
     "developers": "Developers",
+    "contact": "Contact",
     "languageJa": "日本語",
     "languageEn": "English",
     "mega": {
+      "pillars": {
+        "label": "Four Pillars",
+        "overview": "Four Pillars Overview",
+        "overviewSub": "The full architecture of verifiable-AI infrastructure",
+        "pillar01": "Pillar 01 — Verifiable Origin",
+        "pillar02": "Pillar 02 — Verifiable AI",
+        "pillar03": "Pillar 03 — Agent Trust Chain",
+        "pillar04": "Pillar 04 — Regulatory Attribute Proof"
+      },
+      "products": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "Public infrastructure · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "Mission-critical & manufacturing",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "Finance · KYC/AML · FinTech",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro",
+        "pricing": "Pricing",
+        "pricingSub": "Contact-based"
+      },
+      "solutions": {
+        "label": "Use Cases",
+        "overview": "All use cases",
+        "aiAudit": "AI Audit Log Proof",
+        "kycAml": "KYC/AML Selective Disclosure",
+        "supplyChain": "Supply Chain ESG",
+        "defiBridge": "DeFi Bridge Verification"
+      },
+      "resources": {
+        "label": "Content",
+        "blog": "Blog",
+        "whitepaper": "Whitepaper",
+        "glossary": "Glossary",
+        "faq": "FAQ"
+      },
       "services": {
         "enterprise": "Enterprise",
         "civic": "Lemma Civic",
@@ -66,7 +107,10 @@
         "demoSub": "ZK-proven attributes for the agent economy",
         "joinWaitlist": "Join waitlist →",
         "tryDemo": "Try the demo →",
-        "readSpecs": "Read specs"
+        "readSpecs": "Read specs",
+        "whitepaper": "Specification / Whitepaper",
+        "whitepaperSub": "",
+        "github": "GitHub →"
       },
       "mobile": {
         "talkToUs": "Talk to us"
@@ -292,91 +336,82 @@
   },
   "index": {
     "hero": {
-      "liveBadge": "Live on Base Sepolia",
       "h1": "Give AI proven facts.",
-      "subLine1": "Every attribute your AI reads carries cryptographic provenance.",
-      "subLine2": "Data stays sealed; only the facts travel.",
-      "primaryCta": "Try Demo →",
-      "secondaryCta": "Whitepaper →",
-      "scroll": "↓ SCROLL"
+      "subLine1": "The trust infrastructure for verifiable AI.",
+      "subLine2": "Cryptographic provenance for AI decisions, agent transactions, regulatory compliance, and data lineage.",
+      "primaryCta": "Try the demo"
     },
-    "demos": {
-      "label": "DEMO SPOTLIGHT",
-      "h2Line1": "Verifiable AI",
-      "h2Line2": "you can run today.",
-      "lede": "Two reference implementations live on Base Sepolia. With npm install and a few lines of code, you can verify Verifiable AI in your own environment.",
-      "trust402": {
-        "tag": "FOR DEVELOPERS · TRUST402",
-        "titleLine1": "ZK-prove",
-        "titleLine2": "agent payments.",
-        "claim": "Transactions between AIs settle without human audit. Prove who paid, under what authority, and on what data — without exposing the data itself. The Lemma × x402 reference implementation.",
-        "metaPills": ["Base Sepolia", "x402 × Lemma", "npm i @lemmaoracle/sdk"],
-        "primaryCta": "Try Trust402 Demo →",
-        "secondaryCta": "Product page →"
-      },
-      "finance": {
-        "tag": "FOR FINANCE · CROSS-CHAIN ORIGIN",
-        "titleLine1": "Assets move.",
-        "titleLine2": "Origin remains.",
-        "claim": "Most bridge exploits pass as cryptographically valid transactions. With pre-execution origin attestation on the receiving side, they can be stopped before settlement. The reference implementation that turns post-hoc forensics into pre-execution verification.",
-        "metaPills": ["Pre-execution Attestation", "On-chain Proof", "Cross-Chain"],
-        "primaryCta": "See Demo →",
-        "secondaryCta": "Read Analysis →"
-      }
+    "featured": {
+      "eyebrow": "For Developers · Reference Implementation",
+      "title": "Trust402",
+      "subtitle": "A trust layer on top of x402. Autonomous agent payments, verifiable by ZK proof.",
+      "cta": "Try the demo"
     },
-    "whyLemma": {
-      "label": "Why Lemma",
-      "h2": "Four questions, one cryptographic answer.",
-      "leadStrong": "Four pillars of verifiable trust.",
-      "leadBody": "Data provenance, AI decisions, agent transactions, and regulatory compliance — all bound by ZK proof.",
-      "pillarLabel": "Pillar",
-      "cardCta": "Read more",
-      "sectionCta": "See all four pillars →"
-    },
-    "architecture": {
-      "label": "ARCHITECTURE",
-      "h2": "One foundation supports all four pillars.",
-      "lede": "Every use case runs on the same four cryptographic layers. The vertical changes — the proof mechanism does not.",
-      "guideCta": "Read the guide →",
-      "layers": [
-        {
-          "num": "01",
-          "title": "Encrypt everything, expose nothing.",
-          "body": "Everything encrypted with AES-GCM. AI never touches raw data. Only docHash and CID are exposed as stable anchors."
-        },
-        {
-          "num": "02",
-          "title": "Prove facts with zero knowledge.",
-          "body": "ZK circuits and generators are permanently recorded. Prove attribute authenticity without revealing data."
-        },
-        {
-          "num": "03",
-          "title": "Disclose only what AI needs.",
-          "body": "Selectively disclose only the attributes needed. Links to original issuer signatures are preserved."
-        },
-        {
-          "num": "04",
-          "title": "Provenance that never disappears.",
-          "body": "AI infrastructure changes, provenance remains. Rebuilding the RAG index doesn't erase the proof."
-        }
-      ],
-      "stats": [
-        { "num": "0", "unit": "bytes", "sub": "Raw PII to AI" },
-        { "num": "∞", "unit": "permanent", "sub": "Provenance persistence" },
-        { "num": "ZK", "unit": "proven", "sub": "No data exposure" }
+    "trustedBy": {
+      "label": "Early Partners",
+      "items": [
+        "Financial Institutions",
+        "Manufacturing",
+        "Public Infrastructure",
+        "AI Development Orgs",
+        "Agent Ecosystem"
       ]
     },
-    "essays": {
-      "tag": "Essays",
-      "h2": "Thought and implementation of Verifiable AI.",
-      "p": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect."
+    "lemmaFor": {
+      "h2Line1": "Cryptographic proof,",
+      "h2Line2": "for every workflow.",
+      "lead": "On a single cryptographic foundation, Lemma serves four work domains with use-case-tuned products.",
+      "cards": [
+        {
+          "tag": "For Finance",
+          "titleLine1": "AI audit, KYC,",
+          "titleLine2": "and AML for finance.",
+          "body": "Make AI decision evidence tamper-proof. Prove customer attributes without sharing the underlying data.",
+          "cases": "AI audit log proof · KYC/AML selective disclosure · Financial data leak prevention",
+          "href": "/use-cases/kyc-aml-selective-disclosure/"
+        },
+        {
+          "tag": "For Industry",
+          "titleLine1": "Supply chain &",
+          "titleLine2": "ESG for manufacturing.",
+          "body": "Tamper-proof provenance across multi-tier suppliers. Support for CBAM, EUDR, and DPP compliance.",
+          "cases": "Supply chain part provenance · Supply chain ESG",
+          "href": "/use-cases/supply-chain-esg/"
+        },
+        {
+          "tag": "For Agent Economy",
+          "titleLine1": "Transactions and",
+          "titleLine2": "delegation for agents.",
+          "body": "Cryptographically verify the authority, payments, and delegation of agents running on x402 or MCP.",
+          "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
+          "href": "/products/trust402/"
+        },
+        {
+          "tag": "For AI Builders",
+          "titleLine1": "Provenance and citation",
+          "titleLine2": "for RAG and LLM stacks.",
+          "body": "Pin the provenance of source documents at ingest. Guarantee citation authenticity at response time.",
+          "cases": "RAG content provenance · RAG citation proof",
+          "href": "/use-cases/ai-audit-log-proof/"
+        }
+      ]
+    },
+    "how": {
+      "text": "Every workflow runs on four cryptographic layers.",
+      "link": "Read how it works",
+      "href": "/pillars/"
+    },
+    "thinking": {
+      "title": "Recent thinking.",
+      "lead": "Verifiable AI, cryptographic provenance, selective disclosure — where technology and decision-making intersect.",
+      "seeAll": "All articles →"
     },
     "partner": {
-      "label": "Partner Program",
+      "label": "PARTNER PROGRAM",
       "h2Line1": "Models change.",
       "h2Line2": "Proofs remain.",
-      "body": "Bring Lemma's Verifiable AI into your organization. We're currently running early PoCs with selected partners. Share your use case, and we'll work alongside you from design to implementation. We respond within one business day.",
-      "primaryCta": "Register as a partner candidate",
+      "body": "We respond within one business day.",
+      "primaryCta": "Get Started",
       "secondaryCta": "Download Whitepaper"
     }
   },

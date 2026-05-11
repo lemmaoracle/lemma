@@ -5,14 +5,55 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
-    "pillars": "Why Lemma",
+    "pillars": "なぜLemmaか",
     "faq": "FAQ",
-    "services": "サービス",
-    "pricing": "料金",
+    "services": "製品",
+    "pricing": "料金プラン",
+    "solutions": "ソリューション",
+    "resources": "リソース",
     "developers": "開発者",
+    "contact": "お問い合わせ",
     "languageJa": "日本語",
     "languageEn": "English",
     "mega": {
+      "pillars": {
+        "label": "4つの柱",
+        "overview": "4つの柱 概要",
+        "overviewSub": "検証可能AIインフラの全体像",
+        "pillar01": "Pillar 01 — 来歴証明",
+        "pillar02": "Pillar 02 — 検証可能AI",
+        "pillar03": "Pillar 03 — エージェント信頼チェーン",
+        "pillar04": "Pillar 04 — 規制属性証明"
+      },
+      "products": {
+        "enterprise": "Enterprise",
+        "civic": "Lemma Civic",
+        "civicSub": "公共インフラ · B2B2G",
+        "critical": "Lemma Critical",
+        "criticalSub": "基幹インフラ・製造業",
+        "compliance": "Lemma Compliance",
+        "complianceSub": "金融 · KYC/AML · FinTech",
+        "developer": "Developer",
+        "trust402": "Trust402",
+        "trust402Sub": "Explorer · Builder · Studio · Pro",
+        "pricing": "料金プラン",
+        "pricingSub": "お問い合わせベース"
+      },
+      "solutions": {
+        "label": "ユースケース",
+        "overview": "Use Cases 一覧",
+        "aiAudit": "AI 監査ログ証明",
+        "kycAml": "KYC/AML 選択的開示",
+        "supplyChain": "サプライチェーン ESG",
+        "defiBridge": "DeFi ブリッジ検証"
+      },
+      "resources": {
+        "label": "コンテンツ",
+        "blog": "ブログ",
+        "whitepaper": "ホワイトペーパー",
+        "glossary": "用語集",
+        "faq": "FAQ"
+      },
       "services": {
         "enterprise": "エンタープライズ",
         "civic": "Lemma Civic",
@@ -66,7 +107,10 @@
         "demoSub": "",
         "joinWaitlist": "ウェイトリストに登録 →",
         "tryDemo": "デモを試す →（英語のみ）",
-        "readSpecs": "仕様書を読む"
+        "readSpecs": "仕様書を読む",
+        "whitepaper": "仕様書 / ホワイトペーパー",
+        "whitepaperSub": "",
+        "github": "GitHub →"
       },
       "mobile": {
         "talkToUs": "お問い合わせ"
@@ -292,92 +336,83 @@
   },
   "index": {
     "hero": {
-      "liveBadge": "Live on Base Sepolia",
       "h1": "AIに証明された事実を。",
-      "subLine1": "AIが読み取るすべての属性に、暗号的な来歴を。",
-      "subLine2": "データは開示せず、事実だけが渡る構造。",
-      "primaryCta": "デモを試す →",
-      "secondaryCta": "ホワイトペーパー →",
-      "scroll": "↓ SCROLL"
+      "subLine1": "検証可能AIの、信頼インフラ。",
+      "subLine2": "AI判断・エージェント取引・規制適合・データ来歴に、暗号的な来歴を加える。",
+      "primaryCta": "デモを試す"
     },
-    "demos": {
-      "label": "DEMO SPOTLIGHT",
-      "h2Line1": "今すぐ手元で動かせる、",
-      "h2Line2": "検証可能AI。",
-      "lede": "2つのリファレンス実装が、Base Sepolia 上で動作中。npm install と数行のコードで、検証可能AI を自分の環境で確かめられる。",
-      "trust402": {
-        "tag": "FOR DEVELOPERS · TRUST402",
-        "titleLine1": "エージェントの決済を、",
-        "titleLine2": "ZK証明する。",
-        "claim": "AI 同士の取引が、人間の監査なしに成立する。誰の権限で、どのデータに基づく支払いかを、機密を出さずに証明する。Lemma × x402 のリファレンス実装。",
-        "metaPills": ["Base Sepolia", "x402 × Lemma", "npm i @lemmaoracle/sdk"],
-        "primaryCta": "Trust402 デモを試す →",
-        "secondaryCta": "製品ページ →"
-      },
-      "finance": {
-        "tag": "FOR FINANCE · CROSS-CHAIN ORIGIN",
-        "titleLine1": "資産は動く。",
-        "titleLine2": "出所は、残る。",
-        "claim": "ブリッジ攻撃の多くは、暗号的には有効な取引として通る。受取側に事前の出所検証を加えれば、決済前に止められる。事後フォレンジックを、事前検証に変えるリファレンス実装。",
-        "metaPills": ["事前出所検証", "オンチェーン証明", "クロスチェーン"],
-        "primaryCta": "デモを見る →",
-        "secondaryCta": "解説を読む →"
-      }
+    "featured": {
+      "eyebrow": "For Developers · リファレンス実装",
+      "title": "Trust402",
+      "subtitle": "x402 に信頼レイヤを足す。エージェントの自律決済を、ZK 証明で検証可能にする。",
+      "cta": "デモを試す"
     },
-    "whyLemma": {
-      "label": "Why Lemma",
-      "h2": "4つの問いに、暗号で答える。",
-      "leadStrong": "検証可能な信頼の、4つの柱。",
-      "leadBody": "データ来歴・AI判断・エージェント取引・規制適合を、ZK証明で結ぶ。",
-      "pillarLabel": "Pillar",
-      "cardCta": "詳細を読む",
-      "sectionCta": "4つの柱の概要ページへ →"
-    },
-    "architecture": {
-      "label": "ARCHITECTURE",
-      "h2": "4つの柱を、1つの基盤で支える。",
-      "lede": "どのユースケースも、同じ4つの暗号レイヤで動いている。垂直領域は変わっても、証明の仕組みは変わらない。",
-      "guideCta": "ガイドを読む →",
-      "layers": [
-        {
-          "num": "01",
-          "title": "すべてを暗号化し、何も露呈しない。",
-          "body": "AES-GCMで暗号化。AIは生データに触れない。露出するのは docHash と CID のみ。"
-        },
-        {
-          "num": "02",
-          "title": "ゼロ知識で、事実を証明する。",
-          "body": "ZK回路とジェネレーターは永続記録される。属性の真正性を、データを出さずに証明する。"
-        },
-        {
-          "num": "03",
-          "title": "AI が必要な分だけ、開示する。",
-          "body": "必要な属性だけを、選択的に開示する。元の発行者署名へのリンクは保持される。"
-        },
-        {
-          "num": "04",
-          "title": "決して消えない、来歴証明。",
-          "body": "AIのインフラは変わっても、来歴は残る。RAGインデックスの再構築は、証明を消さない。"
-        }
-      ],
-      "stats": [
-        { "num": "0", "unit": "バイト", "sub": "AI への生 PII" },
-        { "num": "∞", "unit": "永続", "sub": "来歴証明の永続性" },
-        { "num": "ZK", "unit": "証明", "sub": "開示なしの証明" }
+    "trustedBy": {
+      "label": "先行パートナー",
+      "items": [
+        "金融機関",
+        "製造業",
+        "公共インフラ",
+        "AI 開発組織",
+        "Agent エコシステム"
       ]
     },
-    "essays": {
-      "tag": "エッセイ",
-      "h2": "検証可能なAIの、思想と実装。",
-      "p": "ゼロ知識証明、暗号的プロヴナンス、選択的開示——技術と意思決定が交わる場所から。"
+    "lemmaFor": {
+      "h2Line1": "業務場面ごとに、",
+      "h2Line2": "暗号で証明する。",
+      "lead": "Lemma は単一の暗号インフラの上に、4 つの業務領域それぞれに最適化されたユースケースを提供する。",
+      "cards": [
+        {
+          "tag": "For Finance",
+          "titleLine1": "金融機関の",
+          "titleLine2": "AI 監査・KYC・AML。",
+          "body": "AI 判断の根拠を改ざん不能に残し、顧客属性をデータ共有なしに証明する。",
+          "cases": "AI 監査ログ証明 · KYC/AML 選択的開示 · 金融データ流出防止",
+          "href": "/ja/use-cases/kyc-aml-selective-disclosure/"
+        },
+        {
+          "tag": "For Industry",
+          "titleLine1": "製造業のサプライ",
+          "titleLine2": "チェーンとESG適合。",
+          "body": "多階層サプライヤの来歴を改ざん不能にし、CBAM/EUDR/DPP の規制適合を支える。",
+          "cases": "サプライチェーン部品来歴 · サプライチェーン ESG",
+          "href": "/ja/use-cases/supply-chain-esg/"
+        },
+        {
+          "tag": "For Agent Economy",
+          "titleLine1": "自律エージェントの",
+          "titleLine2": "取引と権限委譲。",
+          "body": "x402 や MCP 上で動くエージェントの権限・支払い・委任を、暗号的に検証可能にする。",
+          "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
+          "href": "/ja/products/trust402/"
+        },
+        {
+          "tag": "For AI Builders",
+          "titleLine1": "RAG・LLM 統合の",
+          "titleLine2": "来歴と引用検証。",
+          "body": "AI が参照する文書の来歴を取り込み時点で固定し、応答時の引用真正性を保証する。",
+          "cases": "RAG コンテンツ来歴 · RAG 出典証明",
+          "href": "/ja/use-cases/ai-audit-log-proof/"
+        }
+      ]
+    },
+    "how": {
+      "text": "すべては、4 つの暗号レイヤから動いている。",
+      "link": "仕組みを読む",
+      "href": "/ja/pillars/"
+    },
+    "thinking": {
+      "title": "Recent thinking.",
+      "lead": "検証可能 AI、暗号的プロヴナンス、選択的開示──技術と意思決定が交わる場所から。",
+      "seeAll": "すべての記事 →"
     },
     "partner": {
-      "label": "パートナープログラム",
-      "h2Line1": "AIは変わっても、",
+      "label": "PARTNER PROGRAM",
+      "h2Line1": "モデルは変わる。",
       "h2Line2": "証明は残る。",
-      "body": "Lemma の検証可能AIを、組織に導入しませんか？いま、選定したパートナーと先行 PoC を進行中。ユースケースをお聞かせいただければ、設計から実装までご一緒します。原則 1 営業日以内にご返信。",
-      "primaryCta": "パートナー候補として登録",
-      "secondaryCta": "ホワイトペーパーをダウンロード"
+      "body": "1 営業日以内にご返信いたします。",
+      "primaryCta": "Get Started",
+      "secondaryCta": "Download Whitepaper"
     }
   },
   "faq": {
