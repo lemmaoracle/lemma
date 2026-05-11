@@ -117,6 +117,35 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
     <link rel="alternate" hreflang="en" href={`${SITE_ORIGIN}${enHref}`} />
     <link rel="alternate" hreflang="ja" href={`${SITE_ORIGIN}${jaHref}`} />
     <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}${enHref}`} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": `${SITE_ORIGIN}/#organization`,
+            name: "Lemma Oracle by FRAME00",
+            url: SITE_ORIGIN,
+            logo: {
+              "@type": "ImageObject",
+              url: `${SITE_ORIGIN}/favicon.svg`,
+            },
+            sameAs: ["https://x.com/lemmaoracle", "https://github.com/lemmaoracle"],
+          },
+          {
+            "@type": "WebSite",
+            "@id": `${SITE_ORIGIN}/#website`,
+            url: `${SITE_ORIGIN}/`,
+            name: "Lemma Oracle",
+            description: "Verifiable AI trust infrastructure — cryptographic provenance for AI decisions, agent transactions, regulatory compliance, and data lineage.",
+            publisher: { "@id": `${SITE_ORIGIN}/#organization` },
+            inLanguage: ["en", "ja"],
+          },
+        ],
+      })}
+    />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

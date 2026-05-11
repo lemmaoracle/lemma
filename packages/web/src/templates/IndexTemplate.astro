@@ -4,7 +4,6 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import HomeSchemaOrg from "@/components/HomeSchemaOrg";
 import HeroCover from "../assets/cover.jpg";
 
 export interface IndexTemplateProps {
@@ -34,7 +33,6 @@ const thinking = recentPosts.slice(0, 6);
 ---
 
 <Layout locale={locale} metaType="home" description={description}>
-  <HomeSchemaOrg description={description} base={base} />
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

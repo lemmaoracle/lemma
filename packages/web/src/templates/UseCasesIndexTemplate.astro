@@ -24,6 +24,26 @@ const useCasesPath = `${base}/use-cases`;
 function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
 }
+
+const SITE = "https://lemma.frame00.com";
+const collectionJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: useCaseT.title,
+  description: useCaseT.subtitle,
+  url: `${SITE}${useCasesPath}/`,
+  inLanguage: locale,
+  isPartOf: { "@id": `${SITE}/#website` },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: useCases.map((uc, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: uc.title,
+      url: `${SITE}${useCasesPath}/${uc.slug}/`,
+    })),
+  },
+};
 ---
 
 <Layout
@@ -33,6 +53,8 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   metaType="page"
   pagePath={`${base}/use-cases`}
 >
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(collectionJsonLd)} />
+
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

@@ -27,6 +27,27 @@ const {
   foundations = [],
 } = Astro.props as PillarsHubTemplateProps;
 const blogPath = base ? `${base}/blog` : "/blog";
+const pillarsPath = base ? `${base}/pillars` : "/pillars";
+
+const SITE = "https://lemma.frame00.com";
+const collectionJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: pillarT.title,
+  description: pillarT.subtitle,
+  url: `${SITE}${pillarsPath}/`,
+  inLanguage: locale,
+  isPartOf: { "@id": `${SITE}/#website` },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: pillars.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.title[locale],
+      url: `${SITE}${pillarsPath}/${p.slug}/`,
+    })),
+  },
+};
 ---
 
 <Layout
@@ -36,6 +57,8 @@ const blogPath = base ? `${base}/blog` : "/blog";
   metaType="page"
   pagePath={`${base}/pillars`}
 >
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(collectionJsonLd)} />
+
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
