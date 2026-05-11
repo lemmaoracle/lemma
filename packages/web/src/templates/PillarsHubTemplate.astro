@@ -6,15 +6,35 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 
+interface Post {
+  readonly cover?: string;
+  readonly category: string;
+  readonly date: string;
+  readonly title: string;
+  readonly abstract: string;
+  readonly slug: string;
+}
+
 export interface PillarsHubTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
   pillars: ReadonlyArray<Pillar>;
   pillarT: Translations["pillars"];
+  guides?: ReadonlyArray<Post>;
+  foundations?: ReadonlyArray<Post>;
 }
 
-const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateProps;
+const {
+  locale,
+  t,
+  base,
+  pillars,
+  pillarT,
+  guides = [],
+  foundations = [],
+} = Astro.props as PillarsHubTemplateProps;
+const blogPath = base ? `${base}/blog` : "/blog";
 ---
 
 <Layout
@@ -51,6 +71,50 @@ const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateP
       ))}
     </div>
   </section>
+
+  {guides.length > 0 && (
+    <section class="guides-section">
+      <div class="section-tag">{t.blog.index.guidesTag}</div>
+      <div class="guides-head">
+        <div class="guides-title">{t.blog.index.guidesTitle}</div>
+        <p class="guides-desc">{t.blog.index.guidesDesc}</p>
+      </div>
+      <div class="guides-grid">
+        {guides.map((post, i) => (
+          <a
+            href={`${blogPath}/${post.slug}`}
+            class="guide-card reveal"
+            style={`transition-delay:${i * 0.05}s`}
+          >
+            <div class="guide-meta">
+              <span class="guide-cat">{post.category}</span>
+              <span class="guide-date">{post.date}</span>
+            </div>
+            <h3>{post.title}</h3>
+            <p>{post.abstract}</p>
+            <span class="guide-link">{t.blog.index.readGuide}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {foundations.length > 0 && (
+    <section class="foundations-section">
+      <div class="section-tag" style="color:rgba(255,255,255,0.5)">{t.blog.index.foundationsTag}</div>
+      <div class="foundations-grid">
+        {foundations.map((post) => (
+          <a href={`${blogPath}/${post.slug}`} class="foundations-card reveal">
+            <div class="foundations-text">
+              <h3>{post.title}</h3>
+              <p>{post.abstract}</p>
+            </div>
+            <span class="btn-white">{t.blog.index.readSpecs}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
@@ -189,16 +253,169 @@ const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateP
     opacity: 1;
     transform: translateY(0);
   }
+  .pillar-card.reveal,
+  .guide-card.reveal,
+  .foundations-card.reveal {
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s, background 0.2s;
+  }
+
+  /* ─── GUIDES ─── */
+  .guides-section {
+    background: var(--white);
+    padding: 100px 10%;
+    border-top: 1px solid var(--gray-200);
+  }
+  .guides-head {
+    margin-bottom: 56px;
+    max-width: 720px;
+  }
+  .guides-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+  .guides-desc {
+    font-size: 14px;
+    color: var(--gray-500);
+    line-height: 1.78;
+    margin: 0;
+  }
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--gray-200);
+  }
+  .guide-card {
+    background: var(--white);
+    padding: 36px 32px;
+    border-top: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .guide-card:hover {
+    border-top-color: var(--accent);
+  }
+  .guide-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .guide-cat {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .guide-date {
+    font-size: 10px;
+    color: var(--gray-500);
+  }
+  .guide-card h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0;
+  }
+  .guide-card p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-500);
+    flex: 1;
+    margin: 0;
+  }
+  .guide-link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ─── FOUNDATIONS ─── */
+  .foundations-section {
+    background: var(--black);
+    padding: 80px 10%;
+  }
+  .foundations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .foundations-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 2px solid var(--accent);
+    padding: 40px 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    text-decoration: none;
+    color: inherit;
+  }
+  .foundations-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-top-color: var(--accent-lt, #a0522d);
+  }
+  .foundations-text {
+    flex: 1;
+    min-width: 280px;
+  }
+  .foundations-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    margin: 0 0 8px;
+  }
+  .foundations-card p {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0;
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 30px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+  .foundations-card:hover .btn-white {
+    background: var(--accent);
+    color: var(--white);
+  }
 
   @media (max-width: 1024px) {
     .pillars-grid {
       grid-template-columns: 1fr;
     }
+    .guides-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
     .pillars-header,
-    .pillars-grid-section {
+    .pillars-grid-section,
+    .guides-section,
+    .foundations-section {
       padding-left: 6%;
       padding-right: 6%;
     }
@@ -212,6 +429,14 @@ const { locale, t, base, pillars, pillarT } = Astro.props as PillarsHubTemplateP
     }
     .pillar-card {
       padding: 36px 28px;
+    }
+    .guides-section,
+    .foundations-section {
+      padding-top: 56px;
+      padding-bottom: 56px;
+    }
+    .guides-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
