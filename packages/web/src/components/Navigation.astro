@@ -18,9 +18,7 @@ const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const guidesPath = base ? `${base}/guides` : "/guides";
-const whitepaperPath = locale === "ja"
-  ? "https://tally.so/r/xX0VYv"
-  : "https://tally.so/r/7RJXdR";
+const whitepaperPath = servicesPath;
 const githubPath = "https://github.com/lemmaoracle";
 const contactPath = base ? `${base}/#contact` : "/#contact";
 const homePath = base || "/";
@@ -157,7 +155,7 @@ const isResourcesActive =
             <a href={blogPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.blog}</span>
             </a>
-            <a href={whitepaperPath} class="mega-link" target="_blank">
+            <a href={whitepaperPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
             </a>
             <a href={glossaryPath} class="mega-link">
@@ -225,7 +223,7 @@ const isResourcesActive =
       <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
         <a href={blogPath} class="mob-link">{t.mega.resources.blog}</a>
-        <a href={whitepaperPath} class="mob-link" target="_blank">{t.mega.resources.whitepaper}</a>
+        <a href={whitepaperPath} class="mob-link">{t.mega.resources.whitepaper}</a>
         <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
         <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
       </div>

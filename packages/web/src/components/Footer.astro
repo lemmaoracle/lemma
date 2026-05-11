@@ -23,9 +23,7 @@ const termsPath = base ? `${base}/terms` : "/terms";
 const homePath = base || "/";
 const contactPath = `${base}/#contact`;
 const trust402Href = "/trust402/";
-const whitepaperHref = locale === "ja"
-  ? "https://tally.so/r/xX0VYv"
-  : "https://tally.so/r/7RJXdR";
+const whitepaperHref = servicesPath;
 const aboutUsHref =
   locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
 const githubHref = "https://github.com/lemmaoracle";
@@ -78,7 +76,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         <h4>{t.developers}</h4>
         <ul>
           <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
-          <li><a href={whitepaperHref} target="_blank">{footerT.specs}</a></li>
+          <li><a href={whitepaperHref}>{footerT.specs}</a></li>
           <li><a href={githubHref} target="_blank">{footerT.github}</a></li>
         </ul>
       </div>
@@ -88,7 +86,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         <h4>{t.resources}</h4>
         <ul>
           <li><a href={blogPath}>{t.mega.resources.blog}</a></li>
-          <li><a href={whitepaperHref} target="_blank">{t.mega.resources.whitepaper}</a></li>
+          <li><a href={whitepaperHref}>{t.mega.resources.whitepaper}</a></li>
           <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
           <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
         </ul>
