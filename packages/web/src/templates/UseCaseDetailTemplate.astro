@@ -54,7 +54,7 @@ const breadcrumbJsonLd = {
   title={`${useCase.title} — Use Case | Lemma Oracle`}
   description={useCase.abstract}
   metaType="page"
-  pagePath={`${base}/use-cases/${useCase.slug}`}
+  pagePath={`/use-cases/${useCase.slug}/`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
