@@ -39,9 +39,8 @@ export type GlossarySlug =
   // 規制・コンプライアンス
   | "kyc-aml"
   | "eu-ai-act"
-  | "cbam"
-  | "eudr"
-  | "dpp";
+  | "ai-business-guidelines"
+  | "ai-promotion-act";
 
 export type GlossaryCategory =
   | "暗号レイヤ"
@@ -231,7 +230,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     ],
     implementation: [
       'Lemma は属性ごとの開示を <a href="/ja/glossary/commitment/">コミットメント</a> と <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で構成する。例えば KYC 情報のうち「居住国は EU 域内」のみを証明し、氏名・住所・生年月日は提示しない。',
-      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> の高リスク AI 監査、<a href="/ja/glossary/kyc-aml/">KYC/AML</a> の本人確認、<a href="/ja/glossary/cbam/">CBAM</a> の炭素属性証明、<a href="/ja/glossary/eudr/">EUDR</a> の土地利用属性証明──いずれも「属性は確認したい、データは渡したくない」場面で適用できる。',
+      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> の高リスク AI 監査、<a href="/ja/glossary/ai-business-guidelines/">AI 事業者ガイドライン</a> のガバナンス報告、<a href="/ja/glossary/kyc-aml/">KYC/AML</a> の本人確認──いずれも「属性は確認したい、データは渡したくない」場面で適用できる。',
       "属性の発行者・開示者・検証者がそれぞれ独立し、データの集中保管を回避できる。データ漏洩リスクを構造的に下げる点も実運用上の利点。",
     ],
     related: [
@@ -628,87 +627,59 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     implementationHeading: "Lemma Oracle での適合経路",
   },
   {
-    slug: "cbam",
-    nameJa: "CBAM",
-    nameEn: "Carbon Border Adjustment Mechanism",
+    slug: "ai-business-guidelines",
+    nameJa: "AI事業者ガイドライン",
+    nameEn: "AI Business Operator Guidelines (METI / MIC)",
     category: "規制・コンプライアンス",
     description:
-      "EU 域外で生産された炭素集約的製品の輸入に、EU 域内生産と同等の炭素価格を課す国境調整制度。2023-2025 が移行期、2026 年 1 月 1 日から確定期。",
+      "経済産業省・総務省が 2024 年 4 月に共同公開した、AI 開発者・提供者・利用者の責務を整理したソフトロー型ガイドライン。",
     lead:
-      "EU 域外で生産された炭素集約的製品の輸入に対し、EU 域内生産と同等の炭素価格を課す国境調整制度。2023-2025 が移行期、2026 年 1 月 1 日から確定期に入った。",
+      "経済産業省・総務省が 2024 年 4 月に共同公開した、AI 事業者向けの包括ガイドライン。AI 開発者・提供者・利用者の各立場における責務を整理する。",
     definition: [
-      "対象は当面、セメント・鉄鋼・アルミニウム・肥料・電力・水素の 6 セクターと、その主要前駆体。2028 年からは 180+ 品目の下流製品 (アルミ・鉄鋼の加工品) への拡大が法案化されている。",
-      "確定期では、EU 輸入者は (1) 輸入時に CBAM 申告者として承認を受ける、(2) 輸入製品の埋め込み排出量を年次申告、(3) CBAM 証書を購入して提出、という義務を負う。50 トンの単一閾値以下は免除。",
-      "重要日付: 2026 年 3 月 31 日が CBAM 申告者承認の最終申請期限、2027 年 2 月 1 日から 2026 年分の CBAM 証書購入開始、2027 年 9 月 30 日が初回年次申告期限。",
+      "AI 事業者ガイドラインは、既存の「AI 倫理ガイドライン」「人間中心の AI 社会原則」を統合・更新したソフトロー型の指針。経済産業省・総務省合同で策定し、随時改訂される (Version 1.x)。",
+      "10 原則: (1) 人間中心、(2) 安全性、(3) 公平性、(4) プライバシー、(5) セキュリティ確保、(6) 透明性、(7) アカウンタビリティ、(8) 教育・リテラシー、(9) 公正競争、(10) イノベーション。立場ごと (開発者・提供者・利用者) に各原則の実装が示される。",
+      "法的拘束力はないが、政府調達基準・業界自主規制の事実上の参照点。EU AI Act の高リスク要件と類似領域をカバーしつつ、技術中立・リスクベースのアプローチを採る。",
     ],
     implementation: [
-      "CBAM の運用上の最難題は、海外サプライヤから埋め込み排出量データを正確かつ検証可能に取得すること。サプライヤ側は自社秘密に直結する製造データを EU 輸入者に開示することに強い抵抗を持つ。",
-      'Lemma は炭素属性 (生産単位あたりの埋め込み排出量) を <a href="/ja/glossary/provenance/">プロヴナンス</a> 付きの <a href="/ja/glossary/commitment/">コミットメント</a> として発行可能にし、<a href="/ja/glossary/selective-disclosure/">選択的開示</a> で必要な属性のみを EU 申告者へ渡す経路を提供する。',
-      '<a href="/ja/glossary/eudr/">EUDR</a> や <a href="/ja/glossary/dpp/">DPP</a> と組み合わせると、サプライチェーンの炭素・土地利用・素材構成を一本の検証可能な来歴チェーンに乗せられる。',
+      'Lemma は本ガイドラインが求める「透明性」「説明可能性」「監査可能性」の技術的裏付けを提供する。<code>docHash</code> + <a href="/ja/glossary/commitment/">コミットメント</a> + <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で、AI ガバナンス報告書の根拠を具体化できる。',
+      'AI 判断の入力・モデル・出力を <a href="/ja/glossary/audit-trail/">監査トレイル</a> として残し、説明責任の発生時に <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で必要な属性のみ提示する設計。',
+      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 適合と並行運用すれば、グローバル展開する日本企業の AI ガバナンスを一本化できる。',
     ],
     related: [
-      { slug: "provenance", desc: "炭素属性の来歴を担保する仕組み。" },
-      { slug: "selective-disclosure", desc: "サプライヤが必要な属性のみ開示する手法。" },
-      { slug: "eudr", desc: "土地利用の検証可能性を扱う隣接規制。" },
-      { slug: "dpp", desc: "製品単位で属性を集約する EU 制度。" },
+      { slug: "eu-ai-act", desc: "並行参照される EU の AI 規制。技術的要件はほぼ同型。" },
+      { slug: "ai-promotion-act", desc: "日本の AI 関連基本法。ガイドラインの上位枠組み。" },
+      { slug: "verifiable-ai", desc: "透明性・説明可能性を暗号で構成する領域。" },
+      { slug: "audit-trail", desc: "ガバナンス報告の根拠を改ざん不能に残す仕組み。" },
     ],
-    ctaH2: "炭素属性を、検証可能に流通させる。",
+    ctaH2: "AI 事業者ガイドラインの適合を、暗号で。",
     implementationHeading: "Lemma Oracle での適合経路",
   },
   {
-    slug: "eudr",
-    nameJa: "EUDR",
-    nameEn: "EU Deforestation Regulation — Regulation (EU) 2023/1115",
+    slug: "ai-promotion-act",
+    nameJa: "AI推進法",
+    nameEn: "AI Promotion Act (Japan, 2025)",
     category: "規制・コンプライアンス",
     description:
-      "EU 市場に流通する特定産品が、2020 年 12 月 31 日以降に森林破壊された土地由来でないことを義務付ける規則。大企業は 2026 年 12 月 30 日、零細企業は 2027 年 6 月 30 日から適用。",
+      "2025 年 6 月成立、正式名称「人工知能関連技術の研究開発及び活用の推進に関する法律」。日本初の AI 関連ハードロー。",
     lead:
-      "EU 市場に流通する特定産品が、2020 年 12 月 31 日以降に森林破壊された土地由来でないことを義務付ける規則。大企業は 2026 年 12 月 30 日、零細企業は 2027 年 6 月 30 日から適用。",
+      "日本初の AI に関する基本法。2025 年 6 月 4 日成立。AI 戦略本部の設置、国家 AI 基本計画の策定、関連事業者への協力依頼権限などを規定。",
     definition: [
-      "対象産品は牛・カカオ・コーヒー・パーム油・ゴム・大豆・木材と、その派生加工品 (チョコレート、家具、皮革、印刷紙の一部など)。各事業者はデュー・ディリジェンスを実施し、原産地の地理座標 (geo-location) を含む情報を欧州委員会のシステムに提出する義務を負う。",
-      "適用日は当初 2024 年 12 月 30 日 → 2025 年 12 月 30 日 → 2026 年 12 月 30 日へと二度延期された (Regulation (EU) 2025/2650、2025 年 12 月 23 日 OJ 公布)。零細・小規模事業者は簡素化された一回限りの申告で足りる。",
-      "違反は域内売上 4% 以上の制裁金、輸入禁止、刑事責任の対象。証拠水準は「ゼロまたは無視できる」(<em>negligible</em>) リスクであり、座標と現地情報の真正性が決定的に重要。",
+      "正式名称「人工知能関連技術の研究開発及び活用の推進に関する法律」。内閣総理大臣を本部長とする「AI 戦略本部」を設置し、政府の AI 基本計画を策定する義務を定める。",
+      "中身は研究開発推進・人材育成・国際協調・リスク管理が中心。EU AI Act のような禁止行為や制裁金規定は含まず、推進と一部リスク対応が両輪。違反者への直接的制裁は限定的。",
+      "枠組み法 (Skeleton Law) の性質を持ち、具体的義務は省令・政府策定の計画・各種ガイドライン (AI 事業者ガイドラインを含む) に委任される。今後の運用次第で実質的影響度が変動する。",
     ],
     implementation: [
-      'Lemma は地理座標と土地用途属性を <a href="/ja/glossary/provenance/">プロヴナンス</a> 連鎖に組み込み、サプライヤから EU 輸入者まで改ざん不能に伝播させる経路を提供する。原産農地の位置情報は <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で粗粒度化可能。',
-      '<a href="/ja/glossary/cbam/">CBAM</a> や <a href="/ja/glossary/dpp/">DPP</a> と組み合わせると、サプライチェーンの炭素・土地利用・労働慣行を一本の検証可能な来歴チェーンに乗せられる。',
-      'サプライヤ側は機密の農地情報を公開せずとも、検証者には「2020 年 12 月 31 日以降の森林破壊地ではない」という属性のみを <a href="/ja/glossary/zk-proof/">ZK</a> で示せる。',
+      "Lemma の検証可能 AI は本法の「責任ある研究開発・活用の推進」に技術的に応える経路となる。政府調達・公共領域 AI で検証可能性が要件化されていく流れに事前対応できる。",
+      '<a href="/ja/glossary/ai-business-guidelines/">AI 事業者ガイドライン</a> と組み合わせると、ハードロー (推進法) + ソフトロー (ガイドライン) の両面で AI ガバナンスを揃えられる。',
+      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 適合済みのインフラを日本側にも展開する形で、グローバルな AI 規制対応コストを最小化する。',
     ],
     related: [
-      { slug: "provenance", desc: "地理座標と土地用途を伝播させる仕組み。" },
-      { slug: "cbam", desc: "並走する炭素属性規制。一本の来歴チェーンに統合可能。" },
-      { slug: "dpp", desc: "製品単位で属性を集約する関連制度。" },
-      { slug: "selective-disclosure", desc: "農地座標を粗粒度化して開示する手法。" },
+      { slug: "ai-business-guidelines", desc: "推進法が委任する具体的ガイドライン。実装は事業者ガイドラインに準拠。" },
+      { slug: "eu-ai-act", desc: "対応する EU 側の規制。並行参照対象。" },
+      { slug: "verifiable-ai", desc: "推進法が要請する責任ある AI の技術的実装基盤。" },
+      { slug: "audit-trail", desc: "事後検証可能性を担う仕組み。" },
     ],
-    ctaH2: "森林由来でない事実を、暗号で。",
-    implementationHeading: "Lemma Oracle での適合経路",
-  },
-  {
-    slug: "dpp",
-    nameJa: "DPP",
-    nameEn: "Digital Product Passport",
-    category: "規制・コンプライアンス",
-    description:
-      "製品のライフサイクル全体 (素材・製造・輸送・修理・廃棄) の情報を、製品単位の電子パスポートとして添付する EU 制度。ESPR を骨格にセクター順次展開。",
-    lead:
-      "製品のライフサイクル全体 (素材・製造・輸送・修理・廃棄) の情報を、製品単位の電子パスポートとして添付する EU 制度。ESPR (Ecodesign for Sustainable Products Regulation) を骨格に、セクターごとに段階展開される。",
-    definition: [
-      "ESPR は 2024 年 7 月発効、本格運用は 2026 年 7 月 19 日に EU 中央 DPP レジストリの稼働とともに開始。鉄鋼・繊維・タイヤ・電子製品・建材・電池などのセクターから順次拡大される。",
-      "バッテリー規則 (Regulation (EU) 2023/1542) は ESPR と並走する先行制度。2027 年 2 月 18 日から、EU 市場に投入される 2 kWh 超の EV・産業用バッテリーには QR コード経由で参照可能な Battery Passport が義務化される。",
-      "DPP に含まれる情報は (1) 製造者・型番・素材構成、(2) サプライチェーンの来歴、(3) 修理可能性スコア・分解手順、(4) 環境負荷指標 (LCA)、(5) 適用法令の適合証明、など多岐に渡る。製品ごとに一意の識別子を持つ。",
-    ],
-    implementation: [
-      'Lemma は DPP の構成要素を <a href="/ja/glossary/cid/">CID</a> ベースのコンテンツアドレッシングと <a href="/ja/glossary/provenance/">プロヴナンス</a> 連鎖で実装する。素材属性・LCA データ・法令適合フラグそれぞれを独立した <a href="/ja/glossary/commitment/">コミットメント</a> として持ち、必要な開示粒度を選べる。',
-      '<a href="/ja/glossary/cbam/">CBAM</a> の炭素属性、<a href="/ja/glossary/eudr/">EUDR</a> の土地利用属性、Battery Passport の素材構成すべてが同じ来歴インフラに乗る。重複申告・データ転送の摩擦を、技術側でなくす設計。',
-      'サプライヤは原データを公開せずに済む。検証者 (EU 規制当局・小売事業者・消費者) には属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> を提供する。',
-    ],
-    related: [
-      { slug: "provenance", desc: "DPP の中核データ構造を担う仕組み。" },
-      { slug: "cbam", desc: "炭素属性を DPP に組み込む関連規制。" },
-      { slug: "eudr", desc: "土地利用属性を DPP に組み込む関連規制。" },
-      { slug: "selective-disclosure", desc: "DPP 内属性の開示粒度を制御する手法。" },
-    ],
-    ctaH2: "製品の生涯を、検証可能な属性で残す。",
+    ctaH2: "日本の AI 規制対応を、技術で先取りする。",
     implementationHeading: "Lemma Oracle での適合経路",
   },
 ];
@@ -747,7 +718,7 @@ const CATEGORY_DESCRIPTIONS: Readonly<Record<GlossaryCategory, string>> = {
   "プロトコル・エージェント":
     "自律エージェント取引と機械間決済のプロトコル群。x402、Trust402、MCP、A2A の周辺仕様。",
   "規制・コンプライアンス":
-    "Lemma の証明が直接接続する規制フレームワーク。AI 規制、ESG、本人確認、製品パスポートの主要法令。",
+    "Lemma の証明が直接接続する規制フレームワーク。EU・日本の AI 規制と本人確認 (KYC/AML) の主要法令。",
 };
 
 export function getGlossaryByCategory(): ReadonlyArray<GlossaryCategoryGroup> {
