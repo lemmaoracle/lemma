@@ -359,7 +359,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["regulatory", "kyc", "aml", "compliance", "esg"],
     orientation: {
       en: "GDPR. EU AI Act. Crypto-asset guidelines. CBAM. EUDR. DPP.\nRegulation is converging on a single demand: not \"disclose your data,\"\nbut \"prove your compliance.\"\nYet most enterprises still respond with self-declaration and paper trails.\nWhat's required now is proof — not promise.",
-      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——\n規制は「データを開示しろ」ではなく「コンプライアンスを証明しろ」を求める方向に揃いつつあります。\nしかし現場の多くは、いまも自己申告と紙のサプライヤ書類で対応しています。\n求められているのは「約束」ではなく「証明」です。",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——\n規制の重心は、データを開示することから、コンプライアンスを証明できる状態へと、ゆっくり移ってきています。\nしかし現場の多くは、いまも自己申告や紙のサプライヤ書類で対応しているのが実情です。\nこれからは、約束よりも、証明できることが問われるようになります。",
     },
   },
 ];
