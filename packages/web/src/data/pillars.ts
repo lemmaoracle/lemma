@@ -36,6 +36,22 @@ export interface HomepageCardTitle {
   readonly ja: { readonly line1: string; readonly line2: string };
 }
 
+export interface PillarSEO {
+  readonly title?: LocalizedStrings;
+  readonly description?: LocalizedStrings;
+}
+
+export interface PillarExtraSection {
+  readonly label: LocalizedStrings;
+  readonly heading: LocalizedStrings;
+  readonly paragraphs: LocalizedArray;
+}
+
+export interface PillarFAQ {
+  readonly q: LocalizedStrings;
+  readonly a: LocalizedStrings;
+}
+
 export interface Pillar {
   readonly slug: PillarSlug;
   readonly title: LocalizedStrings;
@@ -53,6 +69,9 @@ export interface Pillar {
   readonly cover?: string;
   readonly order: number;
   readonly tags: ReadonlyArray<string>;
+  readonly seo?: PillarSEO;
+  readonly extraSection?: PillarExtraSection;
+  readonly faq?: ReadonlyArray<PillarFAQ>;
 }
 
 /* ── Pillar Data (hardcoded) ───────────────────────────────────── */
@@ -208,7 +227,81 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
     },
     order: 3,
-    tags: ["agent", "x402", "mcp", "trust-chain"],
+    tags: ["agent", "x402", "mcp", "trust-chain", "agentic-payments"],
+    seo: {
+      title: {
+        en: "Agent Trust Chain — Agentic Payments Trust Layer | Lemma Oracle",
+        ja: "エージェント信頼チェーン — エージェント決済の信頼レイヤー | Lemma Oracle",
+      },
+      description: {
+        en: "Agentic payments need more than a payment rail. Lemma's Agent Trust Chain makes autonomous agent authority, spend limits, and provenance cryptographically verifiable across x402 and MCP.",
+        ja: "エージェント決済 (agentic payments) には決済レール以上のものが必要です。Lemma のエージェント信頼チェーンは、自律エージェントの権限・支払い限度・来歴を x402 や MCP を横断して暗号的に検証可能にします。",
+      },
+    },
+    extraSection: {
+      label: {
+        en: "Agentic payments",
+        ja: "エージェント決済",
+      },
+      heading: {
+        en: "Agentic payments and Trust Chain — the trust layer for autonomous transactions",
+        ja: "Agentic payments と Trust Chain — エージェント決済の信頼レイヤー",
+      },
+      paragraphs: {
+        en: [
+          'Agentic payments — transactions executed autonomously by AI agents — became a real category in 2024–2025 with x402, the Stripe Agent SDK, and MCP-driven tool use. The payment rail problem is largely solved. The remaining problem is trust: who is the agent acting for, how much can it spend, and is the data underlying the payment authentic.',
+          "Agent Trust Chain is the trust layer that sits in front of the payment step. Rather than handing agents API keys and hoping prompt-engineered guardrails hold, Lemma issues authority, spending limits, and provenance as cryptographic attestations — verifiable on-chain or by any counterparty.",
+          'The Trust402 product is the protocol-level realization of this layer for x402-style agent payments. The delegated-treasury, multi-agent-workflows, and x402-commerce use cases linked above show how the pieces compose. For the conceptual scope of agentic payments itself, see the <a href="/glossary/agentic-payments/">glossary entry</a>.',
+        ],
+        ja: [
+          "エージェント決済 (agentic payments) — AI エージェントが自律的に実行する取引 — は、2024〜2025 年の x402・Stripe Agent SDK・MCP 駆動のツール使用によって現実のカテゴリになった。決済レールの問題はほぼ解けている。残るのは信頼の問題: そのエージェントは誰の代理か、いくらまで使えるか、支払いの根拠データは真正か。",
+          "エージェント信頼チェーン (Agent Trust Chain) は、決済の前段に置かれる信頼レイヤー。エージェントに API キーを渡してプロンプトのガードレールに頼るのではなく、Lemma は権限・支払い限度・来歴を暗号的アテステーションとして発行する。オンチェーン、または任意の取引相手側で検証可能。",
+          "Trust402 はこのレイヤーを x402 型エージェント決済向けにプロトコルレベルで実装したもの。上記の delegated-treasury / multi-agent-workflows / x402-commerce ユースケースが、各部品の組み合わせ方を示す。エージェント決済そのものの概念整理は <a href=\"/ja/glossary/agentic-payments/\">用語集</a> を参照。",
+        ],
+      },
+    },
+    faq: [
+      {
+        q: {
+          en: "What is agentic payments?",
+          ja: "Agentic payments (エージェント決済) とは何か?",
+        },
+        a: {
+          en: 'A transaction pattern where autonomous AI agents — not humans — are the transacting party. The technical stack centers on x402 (Coinbase\'s revival of HTTP 402 Payment Required), the Stripe Agent SDK, MCP for tool use, and a Facilitator for settlement. The unresolved problem is trust: authority delegation, spend limits, and provenance. See <a href="/glossary/agentic-payments/">the glossary entry</a> for the full definition.',
+          ja: '自律 AI エージェントが — 人間ではなく — 取引主体となる決済形態。技術スタックは x402 (Coinbase が HTTP 402 を実用化したもの)、Stripe Agent SDK、ツール使用の MCP、決済仲介の Facilitator が中心。残されているのは信頼の問題: 権限委譲・支払い限度・来歴。完全な定義は <a href="/ja/glossary/agentic-payments/">用語集</a> を参照。',
+        },
+      },
+      {
+        q: {
+          en: "What is the relationship between x402 and Trust402?",
+          ja: "x402 と Trust402 の関係は?",
+        },
+        a: {
+          en: 'x402 is a payment protocol; Trust402 is the verification layer that sits in front of it. x402 answers "how does the agent pay" — Trust402 answers "should the agent be allowed to pay, and is the underlying data real." They are complementary, not competing. Trust402 emits ZK attestations of authority, spend limits, and provenance that any x402 facilitator can verify before settlement.',
+          ja: "x402 が決済プロトコル、Trust402 はその前段に置かれる検証層。x402 が「エージェントがどう支払うか」に答えるのに対し、Trust402 は「そのエージェントに支払いを許可してよいか、根拠データは真正か」に答える。両者は競合せず相補。Trust402 が権限・限度額・来歴の ZK アテステーションを発行し、x402 の任意の Facilitator が決済前に検証できる。",
+        },
+      },
+      {
+        q: {
+          en: "How is the Delegated Treasury use case different from other solutions?",
+          ja: "Delegated Treasury は他のソリューションと何が違うか?",
+        },
+        a: {
+          en: "Existing agent-payments approaches grant an API key or wallet to the agent and rely on prompt-engineered guardrails to prevent over-spending. Delegated Treasury issues the spending authority itself as a cryptographic attestation — limit, allow-list of counterparties, time window, and the data conditions that justify the transaction. The treasury never grants raw access; the agent earns the right to spend, per transaction, by proving the attestation in zero knowledge.",
+          ja: "既存のエージェント決済は、API キーやウォレットをエージェントに渡し、超過支出をプロンプトのガードレールで防ぐ設計が主流。Delegated Treasury では、支払い権限そのものを暗号的アテステーションとして発行する — 限度額・取引相手のホワイトリスト・有効期間・取引を正当化するデータ条件まで。生の権限は渡さない。エージェントは取引ごとにそのアテステーションを ZK で証明することで、支払う権利を得る。",
+        },
+      },
+      {
+        q: {
+          en: "Where does provenance fit into agentic payments?",
+          ja: "Agentic payments のなかで来歴 (provenance) はどこに位置するか?",
+        },
+        a: {
+          en: 'Provenance answers the third trust question: "is the data underlying this payment authentic." Without it, an agent can be tricked — by retrieved documents, by upstream tool outputs, by another agent — into authorizing the wrong transaction. Lemma\'s provenance stack is fed into the same Trust Chain so that the attestation an agent shows at payment time includes a proof that the input data is real. See the <a href="/pillars/verifiable-origin/">Verifiable Origin pillar</a> for the input side.',
+          ja: 'プロヴナンス (来歴) は三つ目の信頼問題 — 「この支払いの根拠データは真正か」 — に答える要素。これがないと、検索文書・上流ツール出力・別エージェントを通じてエージェントが誤った取引を承認させられる経路が残る。Lemma の来歴インフラは同じ Trust Chain に流し込まれ、支払い時にエージェントが提示するアテステーションに「入力データが真正であること」の証明が含まれる。入力側は <a href="/ja/pillars/verifiable-origin/">Verifiable Origin ピラー</a> を参照。',
+        },
+      },
+    ],
   },
   {
     slug: "regulatory-attribute-proof",
