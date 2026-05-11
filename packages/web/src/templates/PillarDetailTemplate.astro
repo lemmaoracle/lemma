@@ -51,7 +51,7 @@ const breadcrumbJsonLd = {
   title={`${pillar.title[locale]} — ${pillar.slogan[locale]} | Lemma Oracle`}
   description={pillar.problemStatement[locale]}
   metaType="page"
-  pagePath={`${base}/pillars/${pillar.slug}`}
+  pagePath={`/pillars/${pillar.slug}/`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
