@@ -8,6 +8,7 @@ import CtaSection from "../components/CtaSection.astro";
 import PricingBg from "../assets/pricing-hero.jpg";
 import Trust402Bg from "../assets/trust402-cover.jpg";
 import Cover from "../assets/cover.jpg";
+import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface PricingTemplateProps {
   locale: Locale;
@@ -17,6 +18,8 @@ export interface PricingTemplateProps {
 
 const { locale, t, base } = Astro.props as PricingTemplateProps;
 const px = t.pricing;
+const discoveryHref = DISCOVERY_CALL_URL[locale];
+const discoveryLabel = DISCOVERY_CALL[locale].buttonLabel;
 ---
 
 <Layout
@@ -76,7 +79,7 @@ const px = t.pricing;
             ))}
           </div>
           <div class="plan-price-note">{plan.priceNote}</div>
-          <a href={locale === "ja" ? "https://tally.so/r/EkBqDX" : "https://tally.so/r/Pd2Rl5"} class="btn-plan" target="_blank">{plan.cta}</a>
+          <a href={discoveryHref} class="btn-plan" target="_blank" rel="noopener">{discoveryLabel}</a>
           <a
             href="https://tally.so/r/7RJXdR"
             class="btn-plan-wp"

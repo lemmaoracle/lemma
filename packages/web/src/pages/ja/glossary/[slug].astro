@@ -8,6 +8,7 @@ import {
   getGlossaryTerm,
   type GlossaryTerm,
 } from "../../../data/glossary";
+import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../../../config/cta";
 
 export function getStaticPaths() {
   return GLOSSARY_TERMS.map((term) => ({
@@ -122,7 +123,7 @@ const breadcrumbJsonLd = {
         <span class="term-cta-eyebrow">始める</span>
         <h2 class="term-cta-h2">{term.ctaH2}</h2>
         <div class="term-cta-row">
-          <a class="term-cta-primary" href="/ja/#contact">お問い合わせ</a>
+          <a class="term-cta-primary" href={DISCOVERY_CALL_URL.ja} target="_blank" rel="noopener">{DISCOVERY_CALL.ja.buttonLabel}</a>
           <a
             class="term-cta-secondary"
             href="https://tally.so/r/xX0VYv"

@@ -1,12 +1,18 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
-import type { Pillar } from "../data/pillars";
+import type { Pillar, CTA } from "../data/pillars";
 import type { UseCase } from "../data/useCases";
 import type { BlogPost } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
+
+const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
+  cta.type === "talk-to-us"
+    ? { label: DISCOVERY_CALL[lc].buttonLabel, href: DISCOVERY_CALL_URL[lc] }
+    : { label: cta.label, href: cta.href };
 
 export interface PillarDetailTemplateProps {
   locale: Locale;
@@ -182,16 +188,22 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
         <div class="cta-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
         <h2 class="cta-title">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
         <p class="cta-desc">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
-        <div class="cta-buttons">
-          <a href={pillar.primaryCTA.href} class="cta-btn cta-btn-primary" target={pillar.primaryCTA.href.startsWith("http") ? "_blank" : undefined}>
-            {pillar.primaryCTA.label}
-          </a>
-          {pillar.secondaryCTA && (
-            <a href={pillar.secondaryCTA.href} class="cta-btn cta-btn-secondary" target={pillar.secondaryCTA.href.startsWith("http") ? "_blank" : undefined}>
-              {pillar.secondaryCTA.label}
-            </a>
-          )}
-        </div>
+        {(() => {
+          const primary = resolveCTA(pillar.primaryCTA, locale);
+          const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
+          return (
+            <div class="cta-buttons">
+              <a href={primary.href} class="cta-btn cta-btn-primary" target={primary.href.startsWith("http") ? "_blank" : undefined} rel={primary.href.startsWith("http") ? "noopener" : undefined}>
+                {primary.label}
+              </a>
+              {secondary && (
+                <a href={secondary.href} class="cta-btn cta-btn-secondary" target={secondary.href.startsWith("http") ? "_blank" : undefined} rel={secondary.href.startsWith("http") ? "noopener" : undefined}>
+                  {secondary.label}
+                </a>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </section>
   </main>

@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -21,9 +22,7 @@ const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
 const homePath = base || "/";
-const contactPath = locale === "ja"
-  ? "https://tally.so/r/EkBqDX"
-  : "https://tally.so/r/Pd2Rl5";
+const contactPath = DISCOVERY_CALL_URL[locale];
 const trust402Href = "/trust402/";
 const whitepaperHref = servicesPath;
 const aboutUsHref =
