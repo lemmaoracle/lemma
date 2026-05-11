@@ -62,7 +62,7 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
               <span>{pillarT.viewUseCase ?? useCaseT.title}</span>
               <span class="uc-arrow">→</span>
               {uc.readingTime > 0 && (
-                <span class="uc-time">· {uc.readingTime} min</span>
+                <span class="uc-time">· {uc.readingTime} {locale === "ja" ? "分" : "min"}</span>
               )}
             </div>
           </a>
