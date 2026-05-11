@@ -24,11 +24,13 @@ const useCasesPath = `${base}/use-cases`;
 
 const SITE = "https://lemma.frame00.com";
 const pillarUrl = `${SITE}${pillarsPath}/${pillar.slug}/`;
+const pageTitle = pillar.seo?.title?.[locale] ?? `${pillar.title[locale]} — ${pillar.slogan[locale]} | Lemma Oracle`;
+const pageDescription = pillar.seo?.description?.[locale] ?? pillar.problemStatement[locale];
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: pillar.title[locale],
-  description: pillar.problemStatement[locale] || pillar.slogan[locale],
+  description: pageDescription || pillar.slogan[locale],
   url: pillarUrl,
   inLanguage: locale,
   author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma Oracle" },
@@ -44,17 +46,27 @@ const breadcrumbJsonLd = {
     { "@type": "ListItem", position: 3, name: pillar.title[locale], item: pillarUrl },
   ],
 };
+const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: pillar.faq.map((item) => ({
+    "@type": "Question",
+    name: item.q[locale],
+    acceptedAnswer: { "@type": "Answer", text: item.a[locale] },
+  })),
+} : null;
 ---
 
 <Layout
   locale={locale}
-  title={`${pillar.title[locale]} — ${pillar.slogan[locale]} | Lemma Oracle`}
-  description={pillar.problemStatement[locale]}
+  title={pageTitle}
+  description={pageDescription}
   metaType="page"
   pagePath={`/pillars/${pillar.slug}/`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
+  {faqJsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} />}
 
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
@@ -93,6 +105,18 @@ const breadcrumbJsonLd = {
         ))}
       </ul>
     </section>
+
+    {pillar.extraSection && (
+      <section class="block block-extra">
+        <div class="block-label">{pillar.extraSection.label[locale]}</div>
+        <h2 class="extra-heading">{pillar.extraSection.heading[locale]}</h2>
+        <div class="extra-body">
+          {pillar.extraSection.paragraphs[locale].map((p) => (
+            <p class="extra-paragraph" set:html={p} />
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- Block 4: Use Cases -->
     {useCases.length > 0 ? (
@@ -135,6 +159,20 @@ const breadcrumbJsonLd = {
             </a>
           ))}
         </div>
+      </section>
+    )}
+
+    {pillar.faq && pillar.faq.length > 0 && (
+      <section class="block block-faq">
+        <div class="block-label">FAQ</div>
+        <dl class="faq-list">
+          {pillar.faq.map((item) => (
+            <div class="faq-item">
+              <dt class="faq-q">{item.q[locale]}</dt>
+              <dd class="faq-a" set:html={item.a[locale]} />
+            </div>
+          ))}
+        </dl>
       </section>
     )}
 
@@ -386,6 +424,75 @@ const breadcrumbJsonLd = {
     color: var(--gray-500);
     text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+
+  .extra-heading {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.2vw, 32px);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--black);
+    margin: 0 0 24px 0;
+    max-width: 720px;
+  }
+  .extra-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 720px;
+  }
+  .extra-paragraph {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--gray-800);
+    margin: 0;
+  }
+  .extra-paragraph :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .extra-paragraph :global(a:hover) {
+    color: var(--accent-lt);
+  }
+
+  .faq-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .faq-item {
+    border-top: 1px solid var(--gray-200);
+    padding: 24px 0;
+  }
+  .faq-item:last-child {
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .faq-q {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--black);
+    margin: 0 0 10px 0;
+  }
+  .faq-a {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--gray-800);
+    margin: 0;
+    max-width: 720px;
+  }
+  .faq-a :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .faq-a :global(a:hover) {
+    color: var(--accent-lt);
   }
 
   .block-cta {
