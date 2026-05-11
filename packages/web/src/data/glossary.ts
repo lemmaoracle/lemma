@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (JA).
  *
- * Source of truth for /ja/glossary/* pages. 23 terms across 4 categories.
+ * Source of truth for /ja/glossary/* pages. 26 terms across 4 categories.
  *
  * SAFETY BOUNDARY — inline HTML and `set:html`:
  *   `lead`, `definition[]`, `implementation[]` may contain inline HTML
@@ -26,6 +26,10 @@ export type GlossarySlug =
   // 検証可能AI
   | "verifiable-ai"
   | "provenance"
+  | "provenance-proof"
+  | "c2pa"
+  | "did"
+  | "verifiable-credential"
   | "rag"
   | "citation-proof"
   | "audit-trail"
@@ -308,7 +312,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       "データ・モデル・判断がいつ・誰によって・何を入力として生成されたかを、改ざん不能に追跡・検証する仕組み。検証可能 AI の入力層であり、Lemma の中核柱の一つ。",
     definition: [
       "プロヴナンス (来歴) は、あるオブジェクトが「どこから来て」「どのような変換を経たか」を示す関係グラフを指す。概念モデルとしては W3C PROV (PROV-DM / PROV-O) が標準化されており、entity (対象) / activity (操作) / agent (実行者) の三項を時間順に結ぶ。",
-      "ドメインごとに具体化された標準が並走する。メディア領域では C2PA がコンテンツ来歴 (撮影・編集・AI 生成) の署名チェーンを定義する。ソフトウェア領域では SLSA がビルド来歴を、SCITT が透明性ログを規定する。AI 領域では学習データ・モデル・推論履歴の来歴を一貫して扱う標準がまだ確立しておらず、ここに検証可能 AI が入る。",
+      'ドメインごとに具体化された標準が並走する。メディア領域では <a href="/ja/glossary/c2pa/">C2PA</a> がコンテンツ来歴 (撮影・編集・AI 生成) の署名チェーンを定義する。ソフトウェア領域では SLSA がビルド来歴を、SCITT が透明性ログを規定する。AI 領域では学習データ・モデル・推論履歴の来歴を一貫して扱う標準がまだ確立しておらず、ここに検証可能 AI が入る。',
       '重要なのは、プロヴナンスが「記録」ではなく「証明可能な来歴」であることだ。単なるログは事後に書き換え可能であり、規制上・法的に意味を持たない。来歴の各段階を <a href="/ja/glossary/commitment/">コミットメント</a> と署名で固定し、暗号的に一意に紐づけることで、はじめて第三者検証に耐える。',
     ],
     implementation: [
@@ -323,6 +327,114 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "eu-ai-act", desc: "高リスク AI にデータガバナンスを義務付ける EU 法。来歴インフラが直接対応する。" },
     ],
     ctaH2: "来歴を、組織横断の事実にする。",
+  },
+  {
+    slug: "provenance-proof",
+    nameJa: "プロヴナンス・プルーフ",
+    nameEn: "Provenance Proof",
+    category: "検証可能AI",
+    description:
+      "データの来歴を暗号的に証明する手法。生成 AI 戦略において、AI が参照したデータの真正性と出力の根拠を、データ自体を開示せず検証可能にする中核要素。",
+    lead:
+      "あるデータが宣言された来歴チェーン由来であることを、第三者が機械的に検証できる暗号的な「証明」そのもの。来歴を「記録」ではなく「証明」として扱うために必要な技術。",
+    definition: [
+      'プロヴナンス・プルーフは <a href="/ja/glossary/provenance/">プロヴナンス</a> と <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> の合成概念である。来歴情報を ZK 証明としてパッケージ化し、原データを開示せず属性のみを検証可能にする。Lemma 文脈では <code>docHash</code> + 来歴コミットメント + ZK 証明の三層構造で実装される。',
+      '記録系標準 (<a href="/ja/glossary/c2pa/">C2PA</a>、SCITT、SLSA) と並走するが、プロヴナンス・プルーフは「検証可能性」に振り切った設計。標準仕様が「誰が・いつ・何をしたか」を記録するのに対し、プロヴナンス・プルーフは「その記録が真正であることを暗号で示す」層を担う。',
+      "生成 AI 戦略の文脈で意味が増している。生成 AI が企業の中核業務に入り込むにつれ、(1) 学習データ来歴、(2) RAG 引用真正性、(3) モデル同一性の三軸を一括で扱える証明が要件化されつつある。プロヴナンス・プルーフは、これらすべてを単一の暗号インフラで扱える方式として注目される。",
+    ],
+    implementation: [
+      'Lemma の中核プロダクト価値は「あらゆる属性・データに対してプロヴナンス・プルーフを発行・検証できる暗号インフラ」である。製品ごとに発行ロジック (Civic / Critical / Compliance) と検証ロジック (<a href="/ja/glossary/trust402/">Trust402</a>) を提供する。',
+      '生成 AI 戦略上の具体的ユースケース: <a href="/ja/glossary/rag/">RAG</a> パイプラインのハルシネーション抑制、学習データセットの監査トレイル、<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 適合の自動ログ。いずれも「データの来歴を、データそのものを渡さずに証明する」要件で共通する。',
+      "2026 年以降、規制と契約の両面からプロヴナンス・プルーフが AI システムの前提技術として要求される流れが始まる。「プロヴナンス・プルーフを持たない AI」は監査・調達・コンプライアンスの低信頼帯に押し出される。",
+    ],
+    related: [
+      { slug: "provenance", desc: "来歴を改ざん不能に追跡する仕組み。プロヴナンス・プルーフの基底概念。" },
+      { slug: "zk-proof", desc: "プロヴナンス・プルーフを成立させる暗号プリミティブ。" },
+      { slug: "verifiable-ai", desc: "プロヴナンス・プルーフが組み込まれた AI システム全体の領域。" },
+      { slug: "c2pa", desc: "メディア領域に特化した来歴記録標準。Lemma の provenance proof と相補関係。" },
+    ],
+    ctaH2: "Provenance Proof を、生成 AI 戦略の前提に。",
+  },
+  {
+    slug: "c2pa",
+    nameJa: "C2PA",
+    nameEn: "C2PA — Coalition for Content Provenance and Authenticity",
+    category: "検証可能AI",
+    description:
+      "メディアコンテンツの来歴を記述・署名する業界標準。Adobe・Microsoft・BBC・Intel・Sony 等が主導し、AI 生成画像の識別と編集履歴の検証で広く採用される。",
+    lead:
+      "コンテンツ (画像・映像・音声・PDF) の来歴情報を Content Credentials (C2PA Manifest) として埋め込み、撮影・編集・AI 生成の各段階を暗号署名で固定する業界標準。",
+    definition: [
+      "C2PA は Coalition for Content Provenance and Authenticity の略。2021 年に Adobe・Microsoft・BBC・Truepic・Intel・Sony・Arm などが共同設立。技術仕様は Content Credentials として実装される。",
+      "仕組みは三層構造: (1) コンテンツに Manifest (CBOR エンコード) を埋め込む、(2) Capture / Edit / AI Generation の各イベントを Assertion として記録、(3) チェーン末端を X.509 証明書で署名。検証側は Manifest を解読して各 Assertion の真正性を機械的に確認できる。",
+      'AI 生成コンテンツへの応用が急速に進んでいる。生成モデルが画像を出力する際に C2PA Manifest を同時発行すれば「これは AI 生成である」事実が暗号的にラベリングされる。ジャーナリズム、<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 第 50 条 (透明性義務)、SNS の AI コンテンツ表示等で採用が拡大している。',
+    ],
+    implementation: [
+      'Lemma の <a href="/ja/glossary/provenance/">プロヴナンス</a> 基盤は C2PA と相補関係にある。C2PA がメディア領域に特化した「コンテンツ来歴の業界標準」であるのに対し、Lemma は AI 推論履歴・属性証明・規制適合など領域横断の <a href="/ja/glossary/provenance-proof/">プロヴナンス・プルーフ</a> 基盤を提供する。',
+      "連携の典型パターン: C2PA Manifest 内の Assertion を <code>docHash</code> として Lemma の来歴チェーンに食わせ、ZK 証明で属性レベルの選択的開示を可能にする。メディア由来の情報が AI パイプラインに入っても来歴連鎖が切れない。",
+      "Lemma を導入する組織が C2PA も併用することで、メディア領域 (C2PA) と AI / データ領域 (Lemma) の両方を一貫した来歴インフラでカバーできる。",
+    ],
+    related: [
+      { slug: "provenance", desc: "Lemma 側の来歴基盤。C2PA と相補関係にある。" },
+      { slug: "provenance-proof", desc: "C2PA Manifest を取り込んで属性レベル開示する経路。" },
+      { slug: "verifiable-ai", desc: "C2PA が AI 生成コンテンツの識別で組み込まれる上位領域。" },
+      { slug: "audit-trail", desc: "C2PA の Assertion チェーンと類似する記録モデル。" },
+    ],
+    ctaH2: "メディアと AI、両方の来歴を一本化する。",
+  },
+  {
+    slug: "did",
+    nameJa: "分散型識別子 (DID)",
+    nameEn: "Decentralized Identifier — DID",
+    category: "検証可能AI",
+    description:
+      "W3C が標準化した識別子仕様。発行者・主体・検証者が独立に運用できる識別子で、属性証明や来歴チェーンの主体識別に用いられる。",
+    lead:
+      "W3C が 2022 年に勧告した識別子仕様。中央発行者を必要とせず、識別子そのものに公開鍵と検証方式を紐づけて運用できる。<a href=\"/ja/glossary/verifiable-credential/\">Verifiable Credentials</a> と組み合わせて、属性証明の主体を一意に指す役割を担う。",
+    definition: [
+      "DID は <code>did:method:identifier</code> 形式の URI として表現される。method ごとに解決方式 (DID Method) が定義され、解決結果として DID Document (公開鍵・サービスエンドポイント・認証方式) が返る。発行と検証は仕様レベルで分離されている。",
+      'W3C DID Core 1.0 は 2022 年に勧告化された。主要 method として did:web (HTTPS でホスティング)、did:key (公開鍵そのものを識別子化)、did:jwk、did:pkh などがある。Lemma のような企業利用では「組織が自前で運用するエンドポイント」を起点にできる did:web の採用例が多い。',
+      'DID は単独で何かを証明するわけではない。主体を一意に指す識別子であり、属性を主張するのは <a href="/ja/glossary/verifiable-credential/">Verifiable Credentials (VC)</a> 側の責任。両者を組み合わせて初めて「誰が何を主張したか」を第三者検証可能な形で表現できる。',
+    ],
+    implementation: [
+      'Lemma の属性証明と <a href="/ja/glossary/provenance/">プロヴナンス</a> チェーンでは、Issuer (発行者) と Subject (対象) を DID で識別する。組織が did:web を運用する場合、自社ドメイン配下の <code>/.well-known/did.json</code> がそのまま信頼起点になる。',
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> と組み合わせると、DID で識別された主体の属性 (例: 「この事業者は EU 域内」「この AI モデルは特定組織が学習」) を、属性値そのものを開示せずに証明できる。',
+      "DID は web3 系プロジェクトでの言及が目立つが、W3C 標準としてはチェーン非依存。Lemma は did:web を主要 method と位置づけ、既存の DNS と HTTPS 信頼インフラに自然に乗る形で運用する。",
+    ],
+    related: [
+      { slug: "verifiable-credential", desc: "DID が指す主体について属性を主張する標準。" },
+      { slug: "provenance", desc: "DID で識別される主体が来歴チェーンの起点となる。" },
+      { slug: "selective-disclosure", desc: "DID 主体の属性を、値を開示せず証明する経路。" },
+      { slug: "verifiable-ai", desc: "AI 推論履歴の発行者・モデル提供者を DID で識別する。" },
+    ],
+    ctaH2: "主体識別と属性証明を、独立した標準で組み立てる。",
+  },
+  {
+    slug: "verifiable-credential",
+    nameJa: "検証可能クレデンシャル (VC)",
+    nameEn: "Verifiable Credentials — VC",
+    category: "検証可能AI",
+    description:
+      "W3C が標準化した、第三者検証可能な属性表現フォーマット。発行者・保有者・検証者の三者モデルで属性証明を流通させる。",
+    lead:
+      "W3C Verifiable Credentials Data Model が標準化する、第三者検証可能な属性表現フォーマット。発行者 (Issuer) が主体 (Holder) に対して属性を発行し、検証者 (Verifier) がそれを暗号的に検証する三者モデル。",
+    definition: [
+      "VC は属性 (claims) の集合に発行者の署名を付した、移送可能な属性証明。JSON-LD / JWT / CBOR-LD などのシリアライズ形式があり、発行者・主体・有効期限・撤回方式がすべてフォーマットに組み込まれている。W3C VC Data Model 2.0 が 2025 年に勧告化された。",
+      '主体は <a href="/ja/glossary/did/">DID</a> で識別されることが多く、VC と DID は W3C の "Verifiable Data Model" としてセットで設計されている。EU の eIDAS 2.0 / EUDI Wallet も同枠組みを採用しており、規制側からの後押しが進む。',
+      'VC は単純な属性記録ではなく、第三者検証性を仕様レベルで担保する。発行者の署名検証、撤回状態の確認、有効期限の検証が、検証者側で独立に実行できる。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> や ZK-SD-VC を組み合わせると、属性値を開示せず満たすことだけを示せる。',
+    ],
+    implementation: [
+      "Lemma Compliance では、顧客属性 (KYC 結果・地域・業種・取引可否) を VC として発行する。発行者は自社ドメインで運用する did:web エンティティ、検証者は取引先や監査機関。証明書ファイルを渡さずに、VC とその ZK 派生で属性適合を示せる。",
+      'Lemma Civic では、住民票・各種証明書を VC 形式で発行することで、自治体 DX における「証明書を渡さず属性だけ示す」運用が成立する。検証者は VC を <a href="/ja/glossary/trust402/">Trust402</a> 経由で機械検証する。',
+      "VC は EU AI Act 第 12 条 (記録保持) や ISO/IEC 23894 (AI リスクマネジメント) の証跡として組み込み可能。Lemma は VC + ZK + プロヴナンスチェーンを一括で提供することで、規制適合を自動化する。",
+    ],
+    related: [
+      { slug: "did", desc: "VC が指す発行者・主体を識別する標準。" },
+      { slug: "selective-disclosure", desc: "VC 内の属性を、値を開示せず満たすだけ示す。" },
+      { slug: "kyc-aml", desc: "顧客属性証明を VC 形式で流通させる典型ユースケース。" },
+      { slug: "eu-ai-act", desc: "AI システムの記録保持義務に VC を充てる経路。" },
+    ],
+    ctaH2: "属性証明を、規制と整合する標準で運用する。",
   },
   {
     slug: "rag",

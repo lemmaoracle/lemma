@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (EN).
  *
- * Source of truth for /glossary/* pages. 23 terms across 4 categories,
+ * Source of truth for /glossary/* pages. 26 terms across 4 categories,
  * mirroring src/data/glossary.ts (JA). Authored under code review — see
  * the SAFETY BOUNDARY note in glossary.ts before extending this set to
  * any external authoring surface (CMS, user content).
@@ -248,7 +248,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       "A tamper-evident mechanism for tracking and verifying when, by whom, and from what inputs a data point, model, or decision was produced. The input layer of verifiable AI and one of Lemma's foundational pillars.",
     definition: [
       "Provenance captures the relationship graph of \"where did this object come from\" and \"what transformations did it undergo.\" The conceptual model is W3C PROV (PROV-DM / PROV-O), pairing entities, activities, and agents in time order.",
-      "Domain-specific standards extend this. C2PA defines content provenance signatures (capture, edit, AI generation). SLSA defines build provenance for software; SCITT defines transparency logs. AI lacks a unified standard for training data, model, and inference history — which is exactly where verifiable AI enters.",
+      'Domain-specific standards extend this. <a href="/glossary/c2pa/">C2PA</a> defines content provenance signatures (capture, edit, AI generation). SLSA defines build provenance for software; SCITT defines transparency logs. AI lacks a unified standard for training data, model, and inference history — which is exactly where verifiable AI enters.',
       'The key distinction is that provenance is a <strong>provable history</strong>, not merely a log. Log files are mutable after the fact and carry weak evidentiary value. Pinning each stage with a <a href="/glossary/commitment/">commitment</a> plus a signature is what makes a lineage hold up to third-party scrutiny.',
     ],
     implementation: [
@@ -263,6 +263,114 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "eu-ai-act", desc: "Mandates data governance for high-risk AI. Provenance is the direct technical response." },
     ],
     ctaH2: "Turn lineage into a shared, cross-org fact.",
+  },
+  {
+    slug: "provenance-proof",
+    nameJa: "プロヴナンス・プルーフ",
+    nameEn: "Provenance Proof",
+    category: "検証可能AI",
+    description:
+      "Cryptographic proof that a piece of data originates from a declared lineage. The technical core of any generative AI strategy that needs to prove input authenticity and output provenance without exposing the underlying data.",
+    lead:
+      "The cryptographic artifact that proves a piece of data really originates from a declared lineage chain — third-party-machine-verifiable. The mechanism that promotes provenance from \"record\" to \"proof.\"",
+    definition: [
+      'Provenance proof is the composition of <a href="/glossary/provenance/">provenance</a> and a <a href="/glossary/zk-proof/">zero-knowledge proof</a>. It packages lineage information as a ZK proof so the verifier can confirm attributes without seeing the underlying data. In Lemma\'s architecture this is realized as <code>docHash</code> + a lineage commitment + a ZK proof.',
+      'Sits alongside record-style standards (<a href="/glossary/c2pa/">C2PA</a>, SCITT, SLSA) but specialized for verifiability. Where those standards capture who did what when, provenance proof is the layer that cryptographically attests that the captured record is authentic.',
+      "The concept has gained weight as generative AI moves into core enterprise workflows. Three axes converge on the same primitive: (1) training-data lineage, (2) RAG citation authenticity, (3) model identity. Provenance proof is the single-substrate answer to all three.",
+    ],
+    implementation: [
+      'Lemma\'s core product value is "cryptographic infrastructure that issues and verifies provenance proofs over any attribute or document." Per-product issuance (Civic / Critical / Compliance) plus <a href="/glossary/trust402/">Trust402</a> for verification.',
+      'Concrete generative AI strategy use cases: hallucination suppression in <a href="/glossary/rag/">RAG</a> pipelines, audit trails over training datasets, automated logs that satisfy the <a href="/glossary/eu-ai-act/">EU AI Act</a>. All three reduce to the same requirement — prove data lineage without shipping the data.',
+      "From 2026 onward the regulatory and contractual pressure makes provenance proof a baseline requirement for enterprise AI systems. Systems without it get relegated to the low-trust tier of audit, procurement, and compliance.",
+    ],
+    related: [
+      { slug: "provenance", desc: "The tamper-evident lineage mechanism that provenance proof is built on." },
+      { slug: "zk-proof", desc: "The cryptographic primitive that makes provenance proof verifiable." },
+      { slug: "verifiable-ai", desc: "The AI-system surface where provenance proof is embedded." },
+      { slug: "c2pa", desc: "Media-domain industry standard for content provenance. Complementary." },
+    ],
+    ctaH2: "Make provenance proof the foundation of your generative AI strategy.",
+  },
+  {
+    slug: "c2pa",
+    nameJa: "C2PA",
+    nameEn: "C2PA — Coalition for Content Provenance and Authenticity",
+    category: "検証可能AI",
+    description:
+      "An industry standard for describing and signing media-content provenance. Led by Adobe, Microsoft, BBC, Intel, Sony, and others; widely adopted for AI-generated content identification and edit-trail verification.",
+    lead:
+      "An industry standard that embeds provenance information for content (images, video, audio, PDF) as Content Credentials (the C2PA Manifest), with each capture / edit / AI-generation step pinned by a cryptographic signature.",
+    definition: [
+      "C2PA stands for the Coalition for Content Provenance and Authenticity. Co-founded in 2021 by Adobe, Microsoft, BBC, Truepic, Intel, Sony, Arm, and others. The technical spec ships as Content Credentials.",
+      "Three-layer mechanism: (1) embed a Manifest (CBOR-encoded) into the content, (2) record Capture / Edit / AI Generation events as Assertions, (3) sign the chain endpoint with an X.509 certificate. Verifiers decode the Manifest and machine-confirm each Assertion's authenticity.",
+      'Adoption is accelerating in the AI-content space. When a generative model emits a C2PA Manifest alongside the image, "this is AI-generated" becomes a cryptographically-bound label. Journalism, the <a href="/glossary/eu-ai-act/">EU AI Act</a> Article 50 transparency obligations, and AI-content labeling on social platforms are all driving uptake.',
+    ],
+    implementation: [
+      'Lemma\'s <a href="/glossary/provenance/">provenance</a> stack is complementary to C2PA. C2PA is the industry standard for media content provenance specifically; Lemma provides a cross-domain <a href="/glossary/provenance-proof/">provenance proof</a> substrate — AI inference traces, attribute attestations, regulatory adherence.',
+      "Typical integration: feed Assertions from a C2PA Manifest into the Lemma lineage chain as <code>docHash</code> entries, then use ZK proofs for attribute-level selective disclosure. Media-origin data entering an AI pipeline never breaks the lineage chain.",
+      "Organizations that adopt Lemma alongside C2PA cover both the media surface (C2PA) and the AI / data surface (Lemma) on a unified provenance infrastructure.",
+    ],
+    related: [
+      { slug: "provenance", desc: "Lemma's lineage substrate. Complementary to C2PA." },
+      { slug: "provenance-proof", desc: "The Lemma mechanism for ingesting C2PA Manifests into attribute-level disclosure." },
+      { slug: "verifiable-ai", desc: "The umbrella where C2PA is wired into AI-content identification." },
+      { slug: "audit-trail", desc: "Structurally similar to C2PA's Assertion chain." },
+    ],
+    ctaH2: "Unify provenance across media and AI.",
+  },
+  {
+    slug: "did",
+    nameJa: "分散型識別子 (DID)",
+    nameEn: "Decentralized Identifier — DID",
+    category: "検証可能AI",
+    description:
+      "A W3C-standardized identifier specification. An identifier whose issuer, subject, and verifier each operate independently — used for subject identification in attribute attestation and lineage chains.",
+    lead:
+      "A W3C recommendation finalized in 2022. Identifiers carry their own public keys and verification methods, so no central issuer is required. Paired with <a href=\"/glossary/verifiable-credential/\">Verifiable Credentials</a>, DIDs name the subject of attribute attestation in a verifiable way.",
+    definition: [
+      "A DID is expressed as a URI of the form <code>did:method:identifier</code>. Each method defines its own resolution mechanism; the resolution result is a DID Document carrying public keys, service endpoints, and authentication methods. Issuance and verification are separated at the spec level.",
+      'W3C DID Core 1.0 reached Recommendation status in 2022. Common methods include did:web (HTTPS-hosted), did:key (the public key as the identifier itself), did:jwk, and did:pkh. For enterprise use cases like Lemma, did:web — anchored at an organization\'s own endpoint — is the most natural choice.',
+      'A DID does not prove anything by itself. It uniquely identifies a subject; <a href="/glossary/verifiable-credential/">Verifiable Credentials</a> are responsible for the actual attribute claims. The two together let the system express, in a third-party-verifiable form, "who claimed what."',
+    ],
+    implementation: [
+      "Lemma's attribute attestations and <a href=\"/glossary/provenance/\">provenance</a> chains identify both Issuer and Subject by DID. When an organization runs did:web, its own domain — via <code>/.well-known/did.json</code> — becomes the trust anchor directly.",
+      'Combined with <a href="/glossary/selective-disclosure/">selective disclosure</a>, the attributes of a DID-identified subject (e.g., "this operator is EU-based," "this AI model was trained by a specific organization") can be proven without revealing the values themselves.',
+      "DIDs get most of their visibility in web3 projects, but as a W3C standard they are chain-agnostic. Lemma positions did:web as its primary method so the system rides on the existing DNS + HTTPS trust infrastructure.",
+    ],
+    related: [
+      { slug: "verifiable-credential", desc: "The standard that asserts attributes about a DID-identified subject." },
+      { slug: "provenance", desc: "A DID-identified subject serves as the origin of a lineage chain." },
+      { slug: "selective-disclosure", desc: "Prove DID-subject attributes without revealing the underlying values." },
+      { slug: "verifiable-ai", desc: "Identify the issuer or model provider of AI inference history by DID." },
+    ],
+    ctaH2: "Compose subject identification and attribute attestation from independent standards.",
+  },
+  {
+    slug: "verifiable-credential",
+    nameJa: "検証可能クレデンシャル (VC)",
+    nameEn: "Verifiable Credentials — VC",
+    category: "検証可能AI",
+    description:
+      "A W3C-standardized format for third-party-verifiable attribute statements. Attestations flow under a three-party model of Issuer, Holder, and Verifier.",
+    lead:
+      "The format standardized by the W3C Verifiable Credentials Data Model — a third-party-verifiable representation of attribute claims. A three-party model: an Issuer issues attributes to a Holder (the subject), and a Verifier cryptographically validates them.",
+    definition: [
+      "A VC is a set of claims signed by an Issuer, packaged in a portable format. Serializations include JSON-LD, JWT, and CBOR-LD; issuer identity, subject identity, expiration, and revocation method are all built into the format. W3C VC Data Model 2.0 reached Recommendation status in 2025.",
+      'The subject is most often identified by a <a href="/glossary/did/">DID</a>. VCs and DIDs are designed as a pair under the W3C "Verifiable Data Model." The EU\'s eIDAS 2.0 / EUDI Wallet stack adopts the same framework, adding regulatory momentum.',
+      'A VC is not just an attribute record; third-party verifiability is guaranteed at the spec level. Signature verification, revocation checking, and expiration validation all execute independently on the verifier side. Combine with <a href="/glossary/selective-disclosure/">selective disclosure</a> or ZK-SD-VC, and a VC can prove "this attribute is satisfied" without revealing the value.',
+    ],
+    implementation: [
+      "Lemma Compliance issues customer attributes (KYC outcome, region, industry, transaction eligibility) as VCs. The Issuer is a did:web entity under the organization's domain; the Verifier is a counterparty or auditor. Attribute conformance is shown via the VC and its ZK derivatives — without ever shipping certificate files.",
+      'In Lemma Civic, residence records and public certificates are issued as VCs, so the "show only the attribute, never the certificate" pattern of municipal DX works out of the box. Verifiers consume the VC through <a href="/glossary/trust402/">Trust402</a> for machine verification.',
+      "VCs slot directly into the recordkeeping obligation of EU AI Act Article 12 and the audit-trail requirements of ISO/IEC 23894 (AI risk management). Lemma supplies VC + ZK + provenance chains as one package, automating regulatory conformance.",
+    ],
+    related: [
+      { slug: "did", desc: "Standard for identifying both the Issuer and Subject of a VC." },
+      { slug: "selective-disclosure", desc: "Show only that the VC's attribute is satisfied — never the value." },
+      { slug: "kyc-aml", desc: "The canonical use case for distributing customer attribute attestations as VCs." },
+      { slug: "eu-ai-act", desc: "VCs slot directly into the AI system recordkeeping obligation." },
+    ],
+    ctaH2: "Run attribute attestation on a standard aligned with regulation.",
   },
   {
     slug: "rag",
