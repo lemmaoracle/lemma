@@ -1,19 +1,11 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
 import type { Pillar } from "../data/pillars";
+import type { BlogPost } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-
-interface Post {
-  readonly cover?: string;
-  readonly category: string;
-  readonly date: string;
-  readonly title: string;
-  readonly abstract: string;
-  readonly slug: string;
-}
 
 export interface PillarsHubTemplateProps {
   locale: Locale;
@@ -21,8 +13,8 @@ export interface PillarsHubTemplateProps {
   base: string;
   pillars: ReadonlyArray<Pillar>;
   pillarT: Translations["pillars"];
-  guides?: ReadonlyArray<Post>;
-  foundations?: ReadonlyArray<Post>;
+  guides?: ReadonlyArray<BlogPost>;
+  foundations?: ReadonlyArray<BlogPost>;
 }
 
 const {
@@ -365,7 +357,7 @@ const blogPath = base ? `${base}/blog` : "/blog";
   }
   .foundations-card:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-top-color: var(--accent-lt, #a0522d);
+    border-top-color: var(--accent-lt);
   }
   .foundations-text {
     flex: 1;

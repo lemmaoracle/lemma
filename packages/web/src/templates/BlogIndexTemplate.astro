@@ -1,29 +1,21 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-
-interface Post {
-  cover?: string;
-  category: string;
-  date: string;
-  title: string;
-  abstract: string;
-  slug: string;
-}
 
 export interface BlogIndexTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
   blogPath: string;
-  featured?: Post;
-  recent: ReadonlyArray<Post>;
-  archive: ReadonlyArray<Post>;
-  guides: ReadonlyArray<Post>;
-  foundations: ReadonlyArray<Post>;
+  featured?: BlogPost;
+  recent: ReadonlyArray<BlogPost>;
+  archive: ReadonlyArray<BlogPost>;
+  guides: ReadonlyArray<BlogPost>;
+  foundations: ReadonlyArray<BlogPost>;
 }
 
 const { locale, t, base, blogPath, featured, recent, archive, guides, foundations } =
@@ -215,7 +207,7 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   }
   .featured-card:hover {
     background: var(--accent-bg);
-    border-top-color: var(--accent-lt, #a0522d);
+    border-top-color: var(--accent-lt);
   }
   .featured-thumb {
     background-size: cover;
@@ -481,7 +473,7 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   }
   .foundations-card:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-top-color: var(--accent-lt, #a0522d);
+    border-top-color: var(--accent-lt);
   }
   .foundations-text {
     flex: 1;
