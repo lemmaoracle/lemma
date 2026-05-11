@@ -231,21 +231,21 @@ const PILLARS: ReadonlyArray<Pillar> = [
     seo: {
       title: {
         en: "Agent Trust Chain — Agentic Payments Trust Layer | Lemma Oracle",
-        ja: "エージェント信頼チェーン — エージェンティック決済の信頼レイヤー | Lemma Oracle",
+        ja: "エージェント信頼チェーン — エージェント決済の信頼レイヤー | Lemma Oracle",
       },
       description: {
         en: "Agentic payments need more than a payment rail. Lemma's Agent Trust Chain makes autonomous agent authority, spend limits, and provenance cryptographically verifiable across x402 and MCP.",
-        ja: "エージェンティック決済 (agentic payments) には決済レール以上のものが必要です。Lemma のエージェント信頼チェーンは、自律エージェントの権限・支払い限度・来歴を x402 や MCP を横断して暗号的に検証可能にします。",
+        ja: "エージェント決済 (agentic payments) には決済レール以上のものが必要です。Lemma のエージェント信頼チェーンは、自律エージェントの権限・支払い限度・来歴を x402 や MCP を横断して暗号的に検証可能にします。",
       },
     },
     extraSection: {
       label: {
         en: "Agentic payments",
-        ja: "エージェンティック決済",
+        ja: "エージェント決済",
       },
       heading: {
         en: "Agentic payments and Trust Chain — the trust layer for autonomous transactions",
-        ja: "Agentic payments と Trust Chain — エージェンティック決済の信頼レイヤー",
+        ja: "Agentic payments と Trust Chain — エージェント決済の信頼レイヤー",
       },
       paragraphs: {
         en: [
@@ -254,9 +254,9 @@ const PILLARS: ReadonlyArray<Pillar> = [
           'The Trust402 product is the protocol-level realization of this layer for x402-style agent payments. The delegated-treasury, multi-agent-workflows, and x402-commerce use cases linked above show how the pieces compose. For the conceptual scope of agentic payments itself, see the <a href="/glossary/agentic-payments/">glossary entry</a>.',
         ],
         ja: [
-          "エージェンティック決済 (agentic payments) — AI エージェントが自律的に実行する取引 — は、2024〜2025 年の x402・Stripe Agent SDK・MCP 駆動のツール使用によって現実のカテゴリになった。決済レールの問題はほぼ解けている。残るのは信頼の問題: そのエージェントは誰の代理か、いくらまで使えるか、支払いの根拠データは真正か。",
+          "エージェント決済 (agentic payments) — AI エージェントが自律的に実行する取引 — は、2024〜2025 年の x402・Stripe Agent SDK・MCP 駆動のツール使用によって現実のカテゴリになった。決済レールの問題はほぼ解けている。残るのは信頼の問題: そのエージェントは誰の代理か、いくらまで使えるか、支払いの根拠データは真正か。",
           "エージェント信頼チェーン (Agent Trust Chain) は、決済の前段に置かれる信頼レイヤー。エージェントに API キーを渡してプロンプトのガードレールに頼るのではなく、Lemma は権限・支払い限度・来歴を暗号的アテステーションとして発行する。オンチェーン、または任意の取引相手側で検証可能。",
-          "Trust402 はこのレイヤーを x402 型エージェント決済向けにプロトコルレベルで実装したもの。上記の delegated-treasury / multi-agent-workflows / x402-commerce ユースケースが、各部品の組み合わせ方を示す。エージェンティック決済そのものの概念整理は <a href=\"/ja/glossary/agentic-payments/\">用語集</a> を参照。",
+          "Trust402 はこのレイヤーを x402 型エージェント決済向けにプロトコルレベルで実装したもの。上記の delegated-treasury / multi-agent-workflows / x402-commerce ユースケースが、各部品の組み合わせ方を示す。エージェント決済そのものの概念整理は <a href=\"/ja/glossary/agentic-payments/\">用語集</a> を参照。",
         ],
       },
     },
@@ -264,7 +264,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       {
         q: {
           en: "What is agentic payments?",
-          ja: "Agentic payments (エージェンティック決済) とは何か?",
+          ja: "Agentic payments (エージェント決済) とは何か?",
         },
         a: {
           en: 'A transaction pattern where autonomous AI agents — not humans — are the transacting party. The technical stack centers on x402 (Coinbase\'s revival of HTTP 402 Payment Required), the Stripe Agent SDK, MCP for tool use, and a Facilitator for settlement. The unresolved problem is trust: authority delegation, spend limits, and provenance. See <a href="/glossary/agentic-payments/">the glossary entry</a> for the full definition.',

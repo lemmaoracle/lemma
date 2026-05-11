@@ -457,7 +457,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
   // ============ Protocols & Agents ============
   {
     slug: "agentic-payments",
-    nameJa: "エージェンティック・ペイメンツ",
+    nameJa: "エージェント決済",
     nameEn: "Agentic Payments",
     category: "プロトコル・エージェント",
     description:
