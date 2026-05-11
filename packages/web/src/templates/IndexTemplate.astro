@@ -45,7 +45,7 @@ const thinking = recentPosts.slice(0, 3);
       <div class="hero-bg" id="heroBg" style={`background-image: url(${HeroCover.src})`}></div>
       <div class="hero-overlay"></div>
       <div class="hero-content" id="heroContent">
-        <h1 class="hero-h1" set:html={ix.hero.h1.replace(/。$/, "。")}></h1>
+        <h1 class="hero-h1">{ix.hero.h1}</h1>
         <p class="hero-sub">
           <strong>{ix.hero.subLine1}</strong><br/>{ix.hero.subLine2}
         </p>
@@ -128,7 +128,7 @@ const thinking = recentPosts.slice(0, 3);
     </section>
 
     <!-- ─── PARTNER PROGRAM ─── -->
-    <section class="partner">
+    <section id="contact" class="partner">
       <div class="partner-inner reveal">
         <span class="partner-label">{ix.partner.label}</span>
         <h2 class="partner-h2">{ix.partner.h2Line1}<em>{ix.partner.h2Line2}</em></h2>

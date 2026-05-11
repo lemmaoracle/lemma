@@ -54,37 +54,6 @@
         "glossary": "Glossary",
         "faq": "FAQ"
       },
-      "services": {
-        "enterprise": "Enterprise",
-        "civic": "Lemma Civic",
-        "civicSub": "Public infrastructure · B2B2G",
-        "critical": "Lemma Critical",
-        "criticalSub": "Mission-critical systems",
-        "compliance": "Lemma Compliance",
-        "complianceSub": "Finance · KYC/AML · FinTech",
-        "howItWorks": "How it works",
-        "howItWorksSub": "Normalize · Commit · Prove",
-        "materials": "Materials",
-        "whitepaper": "Whitepaper",
-        "whitepaperSub": "Specs, PoC design, checklists",
-        "developer": "x402 Integration · Developer",
-        "trust402Demo": "Demo now live",
-        "trust402Sub": "ZK-proven attributes for the agent economy.",
-        "tryDemo": "Try the demo →",
-        "joinWaitlist": "Join waitlist"
-      },
-      "pricing": {
-        "enterprise": "Enterprise",
-        "civic": "Lemma Civic",
-        "civicSub": "Public infrastructure · B2B2G",
-        "critical": "Lemma Critical",
-        "criticalSub": "Mission-critical systems",
-        "compliance": "Lemma Compliance",
-        "complianceSub": "Finance · KYC/AML · FinTech",
-        "developer": "Developer",
-        "trust402": "Trust402",
-        "trust402Sub": "Explorer · Builder · Studio · Pro"
-      },
       "developers": {
         "architecture": "Architecture",
         "specs": "Lemma Oracle Specs",
@@ -166,7 +135,7 @@
       "recentTag": "Recent",
       "archiveTag": "Archive",
       "foundationsTag": "Foundations",
-      "headerDesc":"ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
+      "headerDesc": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
       "essaysTag": "Essays",
       "readEssay": "Read essay →",
       "guidesTag": "Guides",
@@ -195,8 +164,154 @@
     "backHome": "← Back to home"
   },
   "faq": {
-    "title": "FAQ",
-    "subtitle": "Frequently asked questions about Lemma and Verifiable AI"
+    "metaTitle": "FAQ — ZK Proofs, Verifiable AI & On-Chain Provenance | Lemma Oracle",
+    "metaDescription": "Common questions about ZK-proof verification, selective disclosure, and on-chain provenance for AI. How Lemma makes AI decisions provable, auditable, and privacy-preserving.",
+    "hero": {
+      "tag": "FAQ",
+      "h1": "Lemma FAQ — AI Trust & Verifiability.",
+      "p": "A comprehensive Q&A covering how Lemma enables trustworthy AI — from technical foundations to practical implementation questions."
+    },
+    "sections": [
+      {
+        "title": "Section 1: What is Lemma?",
+        "items": [
+          {
+            "q": "What is Lemma, in one sentence?",
+            "a": "Lemma is infrastructure that attaches cryptographically proven provenance to every piece of data an AI reads."
+          },
+          {
+            "q": "What does \"AI Trust\" mean?",
+            "a": "AI Trust means that the data an AI system references and reasons over can be verified as coming from a trusted source and has not been tampered with."
+          },
+          {
+            "q": "What is Verifiable AI?",
+            "a": "Verifiable AI is an AI system where the basis for every decision can be verified after the fact."
+          },
+          {
+            "q": "What is wrong with existing RAG and AI systems?",
+            "a": "Existing RAG systems have no mechanism to verify whether retrieved data is accurate, who issued it, or whether it meets required conditions."
+          },
+          {
+            "q": "How does Lemma relate to AI agents?",
+            "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework."
+          },
+          {
+            "q": "What industries is Lemma suited for?",
+            "a": "Lemma is relevant to any operation where AI references personal information or sensitive data to make decisions."
+          },
+          {
+            "q": "How is Lemma different from AI Gateways?",
+            "a": "AI Gateways manage API access but don't prove data origin. Lemma provides cryptographic proof of data origin with permanent recording."
+          }
+        ]
+      },
+      {
+        "title": "Section 2: Security & Privacy",
+        "items": [
+          {
+            "q": "How is PII protected?",
+            "a": "Lemma never passes raw PII to the AI. What the AI handles is only an AES-GCM encrypted docHash and CID."
+          },
+          {
+            "q": "What is Zero-Knowledge Proof?",
+            "a": "A zero-knowledge proof proves a condition is satisfied — without revealing the underlying data."
+          },
+          {
+            "q": "What is Selective Disclosure?",
+            "a": "Selective Disclosure means presenting only the attributes the AI needs — and nothing more."
+          }
+        ]
+      },
+      {
+        "title": "Section 3: On-Chain Provenance",
+        "items": [
+          {
+            "q": "What does recording on-chain mean?",
+            "a": "Document commitments, schemas, issuer information, and ZK verification results are recorded on a blockchain."
+          },
+          {
+            "q": "What are the business benefits of permanent provenance?",
+            "a": "In audit responses, compliance reporting, and incident investigations, you can prove after the fact exactly which data an AI used."
+          }
+        ]
+      },
+      {
+        "title": "Section 4: Developer Implementation",
+        "items": [
+          {
+            "q": "What is a schema and how is it used?",
+            "a": "A schema models how AI retrieves and clusters knowledge — expressing attributes using typed definitions and normalization."
+          },
+          {
+            "q": "How does querying verified attributes work?",
+            "a": "Querying returns attribute data with full provenance attached — including proof status, schema, issuer, generator, and verification method."
+          }
+        ]
+      },
+      {
+        "title": "Section 5: Trust & Adoption",
+        "items": [
+          {
+            "q": "What exactly becomes provable with Lemma?",
+            "a": "Four elements become cryptographically provable: issuer identity, data structure integrity, ZK proof circuit and generation method, and permanent on-chain record."
+          },
+          {
+            "q": "Do I need blockchain expertise?",
+            "a": "No. Lemma uses blockchain as a backend recording infrastructure, but developers do not need to interact with smart contracts directly."
+          },
+          {
+            "q": "What deployment options are available?",
+            "a": "Please contact us for details. We work with enterprise requirements around data residency, compliance constraints, and integration."
+          },
+          {
+            "q": "What should a security team check first?",
+            "a": "Start with three areas: encryption & key management, ZKP auditability, and provenance permanence."
+          }
+        ]
+      }
+    ],
+    "sidebar": {
+      "title": "Contents",
+      "links": [
+        "What is Lemma?",
+        "Security & Privacy",
+        "On-Chain Provenance",
+        "Developer Implementation",
+        "Trust & Adoption"
+      ]
+    },
+    "comparison": {
+      "h2": "How Lemma compares to existing solutions.",
+      "headers": [
+        "Solution",
+        "Primary Role",
+        "Difference from Lemma"
+      ],
+      "rows": [
+        [
+          "AI Gateway",
+          "API access control & filtering",
+          "Manages inputs. Does not prove data origin"
+        ],
+        [
+          "Data masking",
+          "Obfuscation of sensitive data",
+          "Protects data. Cannot prove \"who issued it\""
+        ],
+        [
+          "Lemma Oracle",
+          "Cryptographic proof of data origin + permanent record",
+          "End-to-end proof, traceability, and auditability"
+        ]
+      ]
+    },
+    "partner": {
+      "tag": "Partner Program",
+      "h2": "Partnering and PoC opportunities.",
+      "p": "If you are interested in partnering with Lemma Oracle or exploring PoC and co-development opportunities, register as a partner candidate.",
+      "cta": "Register as a partner candidate",
+      "link": "Read Lemma Oracle Specs →"
+    }
   },
   "layout": {
     "defaultTitle": "Lemma Oracle — ZK-Proof Verifiable AI Trust Infrastructure",
@@ -348,7 +463,7 @@
       "cta": "Try the demo"
     },
     "trustedBy": {
-      "label": "Early Partners",
+      "label": "Sectors we serve",
       "items": [
         "Financial Institutions",
         "Manufacturing",
@@ -415,80 +530,6 @@
       "secondaryCta": "Download Whitepaper"
     }
   },
-  "faq": {
-    "metaTitle": "FAQ — ZK Proofs, Verifiable AI & On-Chain Provenance | Lemma Oracle",
-    "metaDescription": "Common questions about ZK-proof verification, selective disclosure, and on-chain provenance for AI. How Lemma makes AI decisions provable, auditable, and privacy-preserving.",
-    "hero": {
-      "tag": "FAQ",
-      "h1": "Lemma FAQ — AI Trust & Verifiability.",
-      "p": "A comprehensive Q&A covering how Lemma enables trustworthy AI — from technical foundations to practical implementation questions."
-    },
-    "sections": [
-      {
-        "title": "Section 1: What is Lemma?",
-        "items": [
-          { "q": "What is Lemma, in one sentence?", "a": "Lemma is infrastructure that attaches cryptographically proven provenance to every piece of data an AI reads." },
-          { "q": "What does \"AI Trust\" mean?", "a": "AI Trust means that the data an AI system references and reasons over can be verified as coming from a trusted source and has not been tampered with." },
-          { "q": "What is Verifiable AI?", "a": "Verifiable AI is an AI system where the basis for every decision can be verified after the fact." },
-          { "q": "What is wrong with existing RAG and AI systems?", "a": "Existing RAG systems have no mechanism to verify whether retrieved data is accurate, who issued it, or whether it meets required conditions." },
-          { "q": "How does Lemma relate to AI agents?", "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework." },
-          { "q": "What industries is Lemma suited for?", "a": "Lemma is relevant to any operation where AI references personal information or sensitive data to make decisions." },
-          { "q": "How is Lemma different from AI Gateways?", "a": "AI Gateways manage API access but don't prove data origin. Lemma provides cryptographic proof of data origin with permanent recording." }
-        ]
-      },
-      {
-        "title": "Section 2: Security & Privacy",
-        "items": [
-          { "q": "How is PII protected?", "a": "Lemma never passes raw PII to the AI. What the AI handles is only an AES-GCM encrypted docHash and CID." },
-          { "q": "What is Zero-Knowledge Proof?", "a": "A zero-knowledge proof proves a condition is satisfied — without revealing the underlying data." },
-          { "q": "What is Selective Disclosure?", "a": "Selective Disclosure means presenting only the attributes the AI needs — and nothing more." }
-        ]
-      },
-      {
-        "title": "Section 3: On-Chain Provenance",
-        "items": [
-          { "q": "What does recording on-chain mean?", "a": "Document commitments, schemas, issuer information, and ZK verification results are recorded on a blockchain." },
-          { "q": "What are the business benefits of permanent provenance?", "a": "In audit responses, compliance reporting, and incident investigations, you can prove after the fact exactly which data an AI used." }
-        ]
-      },
-      {
-        "title": "Section 4: Developer Implementation",
-        "items": [
-          { "q": "What is a schema and how is it used?", "a": "A schema models how AI retrieves and clusters knowledge — expressing attributes using typed definitions and normalization." },
-          { "q": "How does querying verified attributes work?", "a": "Querying returns attribute data with full provenance attached — including proof status, schema, issuer, generator, and verification method." }
-        ]
-      },
-      {
-        "title": "Section 5: Trust & Adoption",
-        "items": [
-          { "q": "What exactly becomes provable with Lemma?", "a": "Four elements become cryptographically provable: issuer identity, data structure integrity, ZK proof circuit and generation method, and permanent on-chain record." },
-          { "q": "Do I need blockchain expertise?", "a": "No. Lemma uses blockchain as a backend recording infrastructure, but developers do not need to interact with smart contracts directly." },
-          { "q": "What deployment options are available?", "a": "Please contact us for details. We work with enterprise requirements around data residency, compliance constraints, and integration." },
-          { "q": "What should a security team check first?", "a": "Start with three areas: encryption & key management, ZKP auditability, and provenance permanence." }
-        ]
-      }
-    ],
-    "sidebar": {
-      "title": "Contents",
-      "links": ["What is Lemma?", "Security & Privacy", "On-Chain Provenance", "Developer Implementation", "Trust & Adoption"]
-    },
-    "comparison": {
-      "h2": "How Lemma compares to existing solutions.",
-      "headers": ["Solution", "Primary Role", "Difference from Lemma"],
-      "rows": [
-        ["AI Gateway", "API access control & filtering", "Manages inputs. Does not prove data origin"],
-        ["Data masking", "Obfuscation of sensitive data", "Protects data. Cannot prove \"who issued it\""],
-        ["Lemma Oracle", "Cryptographic proof of data origin + permanent record", "End-to-end proof, traceability, and auditability"]
-      ]
-    },
-    "partner": {
-      "tag": "Partner Program",
-      "h2": "Partnering and PoC opportunities.",
-      "p": "If you are interested in partnering with Lemma Oracle or exploring PoC and co-development opportunities, register as a partner candidate.",
-      "cta": "Register as a partner candidate",
-      "link": "Read Lemma Oracle Specs →"
-    }
-  },
   "pricing": {
     "metaTitle": "Pricing — Enterprise & Developer Plans | Lemma Oracle Verifiable AI",
     "metaDescription": "Enterprise pricing for ZK-proof verifiable AI. Three segments — Civic, Critical, Compliance — plus developer plans for x402 and MCP. On-chain provenance, selective disclosure, audit-ready.",
@@ -509,8 +550,26 @@
           "name": "Lemma Civic",
           "sub": "For public infrastructure operators",
           "bestFor": "Municipal service operators, water utilities, waste management, and B2B2G operators delivering citizen-facing services across multiple jurisdictions.",
-          "features": ["ZK-proven attribute verification for public service eligibility", "Multi-site tiering — scales with number of operating sites", "On-chain provenance for audit and public accountability", "Standard schema library for public infrastructure"],
-          "tiers": [["Tier 1", "1–3 sites"], ["Tier 2", "4–10 sites"], ["Tier 3", "11+ sites · custom"]],
+          "features": [
+            "ZK-proven attribute verification for public service eligibility",
+            "Multi-site tiering — scales with number of operating sites",
+            "On-chain provenance for audit and public accountability",
+            "Standard schema library for public infrastructure"
+          ],
+          "tiers": [
+            [
+              "Tier 1",
+              "1–3 sites"
+            ],
+            [
+              "Tier 2",
+              "4–10 sites"
+            ],
+            [
+              "Tier 3",
+              "11+ sites · custom"
+            ]
+          ],
           "priceNote": "Monthly subscription + verification call volume. Custom schema registration billed separately.",
           "cta": "Talk to us"
         },
@@ -519,8 +578,26 @@
           "name": "Lemma Critical",
           "sub": "For mission-critical systems",
           "bestFor": "Power, water, and transportation infrastructure operators running AI on control and monitoring systems where regulatory compliance and 24/7 availability are non-negotiable.",
-          "features": ["Custom ZK circuits for domain-specific business rules", "Compliance-grade audit trail", "SLA-backed uptime · on-premise deployment option", "Tiered by facility count and integration scope"],
-          "tiers": [["Tier 1", "Single facility"], ["Tier 2", "2–10 facilities"], ["Tier 3", "Core integration · enterprise"]],
+          "features": [
+            "Custom ZK circuits for domain-specific business rules",
+            "Compliance-grade audit trail",
+            "SLA-backed uptime · on-premise deployment option",
+            "Tiered by facility count and integration scope"
+          ],
+          "tiers": [
+            [
+              "Tier 1",
+              "Single facility"
+            ],
+            [
+              "Tier 2",
+              "2–10 facilities"
+            ],
+            [
+              "Tier 3",
+              "Core integration · enterprise"
+            ]
+          ],
           "priceNote": "Priced by facility scope, SLA requirements, and ZK circuit complexity. Contact us for a tailored quote.",
           "cta": "Talk to us"
         },
@@ -529,8 +606,26 @@
           "name": "Lemma Compliance",
           "sub": "For financial institutions & FinTech",
           "bestFor": "Banks, FinTech companies, and regulated institutions that need verifiable KYC/AML attributes, explainability for AI decisions, and permanent audit trails.",
-          "features": ["KYC/AML attribute verification without data disclosure", "EU AI Act and ISO 42001 aligned audit trail", "Selective disclosure — prove facts, protect PII", "RAG policy layer with full provenance per query"],
-          "tiers": [["Tier 1", "Small–mid FinTech"], ["Tier 2", "Regional banks · mid-size"], ["Tier 3", "Global banks · central banks"]],
+          "features": [
+            "KYC/AML attribute verification without data disclosure",
+            "EU AI Act and ISO 42001 aligned audit trail",
+            "Selective disclosure — prove facts, protect PII",
+            "RAG policy layer with full provenance per query"
+          ],
+          "tiers": [
+            [
+              "Tier 1",
+              "Small–mid FinTech"
+            ],
+            [
+              "Tier 2",
+              "Regional banks · mid-size"
+            ],
+            [
+              "Tier 3",
+              "Global banks · central banks"
+            ]
+          ],
           "priceNote": "USD pricing. Monthly subscription + call volume. Compliant with global financial regulations.",
           "cta": "Talk to us"
         }
@@ -541,10 +636,26 @@
       "h2": "Trust402",
       "p": "The developer-facing product. Built for the x402 and MCP ecosystem — attach ZK-proven provenance to every agent payment. Launching soon.",
       "plans": [
-        { "name": "Explorer", "desc": "Sandbox access. Evaluate ZK attribute verification before committing. Limited to testnet — no mainnet writes.", "badge": "Coming soon" },
-        { "name": "Builder", "desc": "Production access. For individual developers shipping apps on x402 and MCP. Standard call volume included.", "badge": "Coming soon" },
-        { "name": "Studio", "desc": "Team plan. Multiple API keys, priority support, expanded call volume. For startups and small teams.", "badge": "Coming soon" },
-        { "name": "Pro", "desc": "High-volume production. SLA-backed, dedicated support channel. For scale-stage products in the agent economy.", "badge": "Coming soon" }
+        {
+          "name": "Explorer",
+          "desc": "Sandbox access. Evaluate ZK attribute verification before committing. Limited to testnet — no mainnet writes.",
+          "badge": "Coming soon"
+        },
+        {
+          "name": "Builder",
+          "desc": "Production access. For individual developers shipping apps on x402 and MCP. Standard call volume included.",
+          "badge": "Coming soon"
+        },
+        {
+          "name": "Studio",
+          "desc": "Team plan. Multiple API keys, priority support, expanded call volume. For startups and small teams.",
+          "badge": "Coming soon"
+        },
+        {
+          "name": "Pro",
+          "desc": "High-volume production. SLA-backed, dedicated support channel. For scale-stage products in the agent economy.",
+          "badge": "Coming soon"
+        }
       ],
       "cta": "Join the waitlist",
       "demoCta": "View product page →",
@@ -553,32 +664,128 @@
     "compare": {
       "tag": "At a glance",
       "h2": "Which plan fits your organization?",
-      "headers": ["Feature", "Civic", "Critical", "Compliance", "Trust402"],
+      "headers": [
+        "Feature",
+        "Civic",
+        "Critical",
+        "Compliance",
+        "Trust402"
+      ],
       "rows": [
-        ["AES-GCM encryption · docHash/CID", "◆", "◆", "◆", "◆"],
-        ["ZK proof — standard circuits", "◆", "◆", "◆", "◆"],
-        ["On-chain provenance anchoring", "◆", "◆", "◆", "◆"],
-        ["Selective disclosure", "◆", "◆", "◆", "◆"],
-        ["Custom ZK circuit development", "—", "◆", "Tier 2/3", "—"],
-        ["On-premise deployment", "—", "Tier 2/3", "Tier 3", "—"],
-        ["SLA-backed uptime", "Tier 2/3", "◆", "◆", "Pro"],
-        ["RAG policy layer integration", "◆", "◆", "◆", "◆"],
-        ["EU AI Act / ISO 42001 alignment", "—", "Tier 2/3", "◆", "—"],
-        ["x402 payment header integration", "—", "—", "—", "◆"],
-        ["Signup", "—", "—", "—", "◆"],
-        ["Contract type", "B2B annual", "B2B annual", "B2B annual", "Monthly / Annual"]
+        [
+          "AES-GCM encryption · docHash/CID",
+          "◆",
+          "◆",
+          "◆",
+          "◆"
+        ],
+        [
+          "ZK proof — standard circuits",
+          "◆",
+          "◆",
+          "◆",
+          "◆"
+        ],
+        [
+          "On-chain provenance anchoring",
+          "◆",
+          "◆",
+          "◆",
+          "◆"
+        ],
+        [
+          "Selective disclosure",
+          "◆",
+          "◆",
+          "◆",
+          "◆"
+        ],
+        [
+          "Custom ZK circuit development",
+          "—",
+          "◆",
+          "Tier 2/3",
+          "—"
+        ],
+        [
+          "On-premise deployment",
+          "—",
+          "Tier 2/3",
+          "Tier 3",
+          "—"
+        ],
+        [
+          "SLA-backed uptime",
+          "Tier 2/3",
+          "◆",
+          "◆",
+          "Pro"
+        ],
+        [
+          "RAG policy layer integration",
+          "◆",
+          "◆",
+          "◆",
+          "◆"
+        ],
+        [
+          "EU AI Act / ISO 42001 alignment",
+          "—",
+          "Tier 2/3",
+          "◆",
+          "—"
+        ],
+        [
+          "x402 payment header integration",
+          "—",
+          "—",
+          "—",
+          "◆"
+        ],
+        [
+          "Signup",
+          "—",
+          "—",
+          "—",
+          "◆"
+        ],
+        [
+          "Contract type",
+          "B2B annual",
+          "B2B annual",
+          "B2B annual",
+          "Monthly / Annual"
+        ]
       ]
     },
     "faqSection": {
       "tag": "Common questions",
       "title": "Pricing FAQ.",
       "items": [
-        { "q": "Why no public pricing?", "a": "Enterprise pricing depends on tier, site count, SLA requirements, and ZK circuit complexity. A number without context misleads." },
-        { "q": "Which segment fits my industry?", "a": "Public utilities and B2B2G → Civic. Power, water, rail, and critical AI → Critical. Banks, FinTech, KYC/AML → Compliance. Building on x402 or MCP → Trust402." },
-        { "q": "How is pricing structured?", "a": "All enterprise plans combine a monthly base fee with verification call volume and optional custom schema registration." },
-        { "q": "Is there a free trial?", "a": "Trust402 will include an Explorer tier for sandbox evaluation. Enterprise evaluation is handled through a scoped PoC." },
-        { "q": "When does Trust402 launch?", "a": "Detailed pricing will be announced at the x402 integration demo. Join the waitlist to be notified first." },
-        { "q": "Can I start on a lower tier and upgrade?", "a": "Yes. All enterprise tiers are designed for upward migration as your deployment grows." }
+        {
+          "q": "Why no public pricing?",
+          "a": "Enterprise pricing depends on tier, site count, SLA requirements, and ZK circuit complexity. A number without context misleads."
+        },
+        {
+          "q": "Which segment fits my industry?",
+          "a": "Public utilities and B2B2G → Civic. Power, water, rail, and critical AI → Critical. Banks, FinTech, KYC/AML → Compliance. Building on x402 or MCP → Trust402."
+        },
+        {
+          "q": "How is pricing structured?",
+          "a": "All enterprise plans combine a monthly base fee with verification call volume and optional custom schema registration."
+        },
+        {
+          "q": "Is there a free trial?",
+          "a": "Trust402 will include an Explorer tier for sandbox evaluation. Enterprise evaluation is handled through a scoped PoC."
+        },
+        {
+          "q": "When does Trust402 launch?",
+          "a": "Detailed pricing will be announced at the x402 integration demo. Join the waitlist to be notified first."
+        },
+        {
+          "q": "Can I start on a lower tier and upgrade?",
+          "a": "Yes. All enterprise tiers are designed for upward migration as your deployment grows."
+        }
       ]
     },
     "cta": {

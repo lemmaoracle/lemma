@@ -56,37 +56,6 @@ export interface Translations {
         readonly supplyChain: string;
         readonly defiBridge: string;
       }>;
-      readonly services: Readonly<{
-        readonly enterprise: string;
-        readonly civic: string;
-        readonly civicSub: string;
-        readonly critical: string;
-        readonly criticalSub: string;
-        readonly compliance: string;
-        readonly complianceSub: string;
-        readonly howItWorks: string;
-        readonly howItWorksSub: string;
-        readonly materials: string;
-        readonly whitepaper: string;
-        readonly whitepaperSub: string;
-        readonly developer: string;
-        readonly trust402Demo: string;
-        readonly trust402Sub: string;
-        readonly tryDemo: string;
-        readonly joinWaitlist: string;
-      }>;
-      readonly pricing: Readonly<{
-        readonly enterprise: string;
-        readonly civic: string;
-        readonly civicSub: string;
-        readonly critical: string;
-        readonly criticalSub: string;
-        readonly compliance: string;
-        readonly complianceSub: string;
-        readonly developer: string;
-        readonly trust402: string;
-        readonly trust402Sub: string;
-      }>;
       readonly developers: Readonly<{
         readonly architecture: string;
         readonly specs: string;

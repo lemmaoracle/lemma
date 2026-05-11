@@ -29,6 +29,16 @@ const languageSwitchHref =
   locale === "ja"
     ? currentPath.replace(/^\/ja/, "") || "/"
     : `/ja${currentPath}`;
+
+const startsWith = (prefix: string): boolean =>
+  prefix !== "" && currentPath.startsWith(prefix);
+
+const isPillarsActive = startsWith(pillarsPath);
+const isProductsActive =
+  startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
+const isSolutionsActive = startsWith(useCasesPath);
+const isResourcesActive =
+  startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
 ---
 
 <nav class="mega-nav" id="mainNav">
@@ -40,7 +50,7 @@ const languageSwitchHref =
   <ul class="mega-nav-links">
     <!-- 1. なぜLemmaか -->
     <li class="mega-nav-item">
-      <a href={pillarsPath} class="mega-nav-link has-mega">{t.pillars}</a>
+      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
       <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.pillars.label}</div>
@@ -68,7 +78,7 @@ const languageSwitchHref =
 
     <!-- 2. 製品 -->
     <li class="mega-nav-item">
-      <a href={servicesPath} class="mega-nav-link has-mega">{t.services}</a>
+      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
       <div class="mega-panel mega-panel-wide">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
@@ -105,7 +115,7 @@ const languageSwitchHref =
 
     <!-- 3. ソリューション -->
     <li class="mega-nav-item">
-      <a href={useCasesPath} class="mega-nav-link has-mega">{t.solutions}</a>
+      <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.solutions.label}</div>
@@ -154,7 +164,7 @@ const languageSwitchHref =
 
     <!-- 5. リソース -->
     <li class="mega-nav-item">
-      <a href={blogPath} class="mega-nav-link has-mega">{t.resources}</a>
+      <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
       <div class="mega-panel mega-panel-right">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.resources.label}</div>
@@ -323,7 +333,6 @@ const languageSwitchHref =
   .mega-panel-wide .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
   .mega-nav-item:hover .mega-panel { display: block; }
-  .mega-panel-wide.mega-panel { /* override display block with grid on hover */ }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
 
   .mega-section { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,.06); }
