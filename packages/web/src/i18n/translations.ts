@@ -123,6 +123,11 @@ export interface Translations {
     readonly blog: string;
     readonly privacy: string;
     readonly terms: string;
+    readonly tagline: string;
+    readonly colCompany: string;
+    readonly specs: string;
+    readonly github: string;
+    readonly contact: string;
   }>;
   readonly ctaSection: Readonly<{
     readonly finalTag: string;

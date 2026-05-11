@@ -108,12 +108,17 @@
     "provenanceBody": "文書のコミットメント、スキーマ、発行者、ZK 検証結果はオンチェーンにアンカーされます。RAG インデックスは再構築でき、埋め込みは再計算できます。来歴証明レイヤーは永続的に残ります。"
   },
   "footer": {
-    "copyright": "© 2026 FRAME00 — Built for decisions that matter",
+    "copyright": "© 2026 FRAME00, INC. — Built for decisions that matter.",
     "aboutUs": "運営会社",
     "faq": "FAQ",
     "blog": "ブログ",
     "privacy": "プライバシーポリシー",
-    "terms": "利用規約"
+    "terms": "利用規約",
+    "tagline": "検証可能AIの、信頼インフラ。",
+    "colCompany": "会社",
+    "specs": "仕様書",
+    "github": "GitHub →",
+    "contact": "お問い合わせ"
   },
   "ctaSection": {
     "finalTag": "パートナープログラム",
