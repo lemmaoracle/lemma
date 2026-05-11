@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (JA).
  *
- * Source of truth for /ja/glossary/* pages. 23 terms across 4 categories.
+ * Source of truth for /ja/glossary/* pages. 26 terms across 4 categories.
  *
  * SAFETY BOUNDARY — inline HTML and `set:html`:
  *   `lead`, `definition[]`, `implementation[]` may contain inline HTML
@@ -28,6 +28,8 @@ export type GlossarySlug =
   | "provenance"
   | "provenance-proof"
   | "c2pa"
+  | "did"
+  | "verifiable-credential"
   | "rag"
   | "citation-proof"
   | "audit-trail"
@@ -379,6 +381,60 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "C2PA の Assertion チェーンと類似する記録モデル。" },
     ],
     ctaH2: "メディアと AI、両方の来歴を一本化する。",
+  },
+  {
+    slug: "did",
+    nameJa: "分散型識別子 (DID)",
+    nameEn: "Decentralized Identifier — DID",
+    category: "検証可能AI",
+    description:
+      "W3C が標準化した識別子仕様。発行者・主体・検証者が独立に運用できる識別子で、属性証明や来歴チェーンの主体識別に用いられる。",
+    lead:
+      "W3C が 2022 年に勧告した識別子仕様。中央発行者を必要とせず、識別子そのものに公開鍵と検証方式を紐づけて運用できる。<a href=\"/ja/glossary/verifiable-credential/\">Verifiable Credentials</a> と組み合わせて、属性証明の主体を一意に指す役割を担う。",
+    definition: [
+      "DID は <code>did:method:identifier</code> 形式の URI として表現される。method ごとに解決方式 (DID Method) が定義され、解決結果として DID Document (公開鍵・サービスエンドポイント・認証方式) が返る。発行と検証は仕様レベルで分離されている。",
+      'W3C DID Core 1.0 は 2022 年に勧告化された。主要 method として did:web (HTTPS でホスティング)、did:key (公開鍵そのものを識別子化)、did:jwk、did:pkh などがある。Lemma のような企業利用では「組織が自前で運用するエンドポイント」を起点にできる did:web の採用例が多い。',
+      'DID は単独で何かを証明するわけではない。主体を一意に指す識別子であり、属性を主張するのは <a href="/ja/glossary/verifiable-credential/">Verifiable Credentials (VC)</a> 側の責任。両者を組み合わせて初めて「誰が何を主張したか」を第三者検証可能な形で表現できる。',
+    ],
+    implementation: [
+      'Lemma の属性証明と <a href="/ja/glossary/provenance/">プロヴナンス</a> チェーンでは、Issuer (発行者) と Subject (対象) を DID で識別する。組織が did:web を運用する場合、自社ドメイン配下の <code>/.well-known/did.json</code> がそのまま信頼起点になる。',
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> と組み合わせると、DID で識別された主体の属性 (例: 「この事業者は EU 域内」「この AI モデルは特定組織が学習」) を、属性値そのものを開示せずに証明できる。',
+      "DID は web3 系プロジェクトでの言及が目立つが、W3C 標準としてはチェーン非依存。Lemma は did:web を主要 method と位置づけ、既存の DNS と HTTPS 信頼インフラに自然に乗る形で運用する。",
+    ],
+    related: [
+      { slug: "verifiable-credential", desc: "DID が指す主体について属性を主張する標準。" },
+      { slug: "provenance", desc: "DID で識別される主体が来歴チェーンの起点となる。" },
+      { slug: "selective-disclosure", desc: "DID 主体の属性を、値を開示せず証明する経路。" },
+      { slug: "verifiable-ai", desc: "AI 推論履歴の発行者・モデル提供者を DID で識別する。" },
+    ],
+    ctaH2: "主体識別と属性証明を、独立した標準で組み立てる。",
+  },
+  {
+    slug: "verifiable-credential",
+    nameJa: "検証可能クレデンシャル (VC)",
+    nameEn: "Verifiable Credentials — VC",
+    category: "検証可能AI",
+    description:
+      "W3C が標準化した、第三者検証可能な属性表現フォーマット。発行者・保有者・検証者の三者モデルで属性証明を流通させる。",
+    lead:
+      "W3C Verifiable Credentials Data Model が標準化する、第三者検証可能な属性表現フォーマット。発行者 (Issuer) が主体 (Holder) に対して属性を発行し、検証者 (Verifier) がそれを暗号的に検証する三者モデル。",
+    definition: [
+      "VC は属性 (claims) の集合に発行者の署名を付した、移送可能な属性証明。JSON-LD / JWT / CBOR-LD などのシリアライズ形式があり、発行者・主体・有効期限・撤回方式がすべてフォーマットに組み込まれている。W3C VC Data Model 2.0 が 2025 年に勧告化された。",
+      '主体は <a href="/ja/glossary/did/">DID</a> で識別されることが多く、VC と DID は W3C の "Verifiable Data Model" としてセットで設計されている。EU の eIDAS 2.0 / EUDI Wallet も同枠組みを採用しており、規制側からの後押しが進む。',
+      'VC は単純な属性記録ではなく、第三者検証性を仕様レベルで担保する。発行者の署名検証、撤回状態の確認、有効期限の検証が、検証者側で独立に実行できる。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> や ZK-SD-VC を組み合わせると、属性値を開示せず満たすことだけを示せる。',
+    ],
+    implementation: [
+      "Lemma Compliance では、顧客属性 (KYC 結果・地域・業種・取引可否) を VC として発行する。発行者は自社ドメインで運用する did:web エンティティ、検証者は取引先や監査機関。証明書ファイルを渡さずに、VC とその ZK 派生で属性適合を示せる。",
+      'Lemma Civic では、住民票・各種証明書を VC 形式で発行することで、自治体 DX における「証明書を渡さず属性だけ示す」運用が成立する。検証者は VC を <a href="/ja/glossary/trust402/">Trust402</a> 経由で機械検証する。',
+      "VC は EU AI Act 第 12 条 (記録保持) や ISO/IEC 23894 (AI リスクマネジメント) の証跡として組み込み可能。Lemma は VC + ZK + プロヴナンスチェーンを一括で提供することで、規制適合を自動化する。",
+    ],
+    related: [
+      { slug: "did", desc: "VC が指す発行者・主体を識別する標準。" },
+      { slug: "selective-disclosure", desc: "VC 内の属性を、値を開示せず満たすだけ示す。" },
+      { slug: "kyc-aml", desc: "顧客属性証明を VC 形式で流通させる典型ユースケース。" },
+      { slug: "eu-ai-act", desc: "AI システムの記録保持義務に VC を充てる経路。" },
+    ],
+    ctaH2: "属性証明を、規制と整合する標準で運用する。",
   },
   {
     slug: "rag",

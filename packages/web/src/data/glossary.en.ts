@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (EN).
  *
- * Source of truth for /glossary/* pages. 23 terms across 4 categories,
+ * Source of truth for /glossary/* pages. 26 terms across 4 categories,
  * mirroring src/data/glossary.ts (JA). Authored under code review — see
  * the SAFETY BOUNDARY note in glossary.ts before extending this set to
  * any external authoring surface (CMS, user content).
@@ -317,6 +317,60 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "Structurally similar to C2PA's Assertion chain." },
     ],
     ctaH2: "Unify provenance across media and AI.",
+  },
+  {
+    slug: "did",
+    nameJa: "分散型識別子 (DID)",
+    nameEn: "Decentralized Identifier — DID",
+    category: "検証可能AI",
+    description:
+      "A W3C-standardized identifier specification. An identifier whose issuer, subject, and verifier each operate independently — used for subject identification in attribute attestation and lineage chains.",
+    lead:
+      "A W3C recommendation finalized in 2022. Identifiers carry their own public keys and verification methods, so no central issuer is required. Paired with <a href=\"/glossary/verifiable-credential/\">Verifiable Credentials</a>, DIDs name the subject of attribute attestation in a verifiable way.",
+    definition: [
+      "A DID is expressed as a URI of the form <code>did:method:identifier</code>. Each method defines its own resolution mechanism; the resolution result is a DID Document carrying public keys, service endpoints, and authentication methods. Issuance and verification are separated at the spec level.",
+      'W3C DID Core 1.0 reached Recommendation status in 2022. Common methods include did:web (HTTPS-hosted), did:key (the public key as the identifier itself), did:jwk, and did:pkh. For enterprise use cases like Lemma, did:web — anchored at an organization\'s own endpoint — is the most natural choice.',
+      'A DID does not prove anything by itself. It uniquely identifies a subject; <a href="/glossary/verifiable-credential/">Verifiable Credentials</a> are responsible for the actual attribute claims. The two together let the system express, in a third-party-verifiable form, "who claimed what."',
+    ],
+    implementation: [
+      "Lemma's attribute attestations and <a href=\"/glossary/provenance/\">provenance</a> chains identify both Issuer and Subject by DID. When an organization runs did:web, its own domain — via <code>/.well-known/did.json</code> — becomes the trust anchor directly.",
+      'Combined with <a href="/glossary/selective-disclosure/">selective disclosure</a>, the attributes of a DID-identified subject (e.g., "this operator is EU-based," "this AI model was trained by a specific organization") can be proven without revealing the values themselves.',
+      "DIDs get most of their visibility in web3 projects, but as a W3C standard they are chain-agnostic. Lemma positions did:web as its primary method so the system rides on the existing DNS + HTTPS trust infrastructure.",
+    ],
+    related: [
+      { slug: "verifiable-credential", desc: "The standard that asserts attributes about a DID-identified subject." },
+      { slug: "provenance", desc: "A DID-identified subject serves as the origin of a lineage chain." },
+      { slug: "selective-disclosure", desc: "Prove DID-subject attributes without revealing the underlying values." },
+      { slug: "verifiable-ai", desc: "Identify the issuer or model provider of AI inference history by DID." },
+    ],
+    ctaH2: "Compose subject identification and attribute attestation from independent standards.",
+  },
+  {
+    slug: "verifiable-credential",
+    nameJa: "検証可能クレデンシャル (VC)",
+    nameEn: "Verifiable Credentials — VC",
+    category: "検証可能AI",
+    description:
+      "A W3C-standardized format for third-party-verifiable attribute statements. Attestations flow under a three-party model of Issuer, Holder, and Verifier.",
+    lead:
+      "The format standardized by the W3C Verifiable Credentials Data Model — a third-party-verifiable representation of attribute claims. A three-party model: an Issuer issues attributes to a Holder (the subject), and a Verifier cryptographically validates them.",
+    definition: [
+      "A VC is a set of claims signed by an Issuer, packaged in a portable format. Serializations include JSON-LD, JWT, and CBOR-LD; issuer identity, subject identity, expiration, and revocation method are all built into the format. W3C VC Data Model 2.0 reached Recommendation status in 2025.",
+      'The subject is most often identified by a <a href="/glossary/did/">DID</a>. VCs and DIDs are designed as a pair under the W3C "Verifiable Data Model." The EU\'s eIDAS 2.0 / EUDI Wallet stack adopts the same framework, adding regulatory momentum.',
+      'A VC is not just an attribute record; third-party verifiability is guaranteed at the spec level. Signature verification, revocation checking, and expiration validation all execute independently on the verifier side. Combine with <a href="/glossary/selective-disclosure/">selective disclosure</a> or ZK-SD-VC, and a VC can prove "this attribute is satisfied" without revealing the value.',
+    ],
+    implementation: [
+      "Lemma Compliance issues customer attributes (KYC outcome, region, industry, transaction eligibility) as VCs. The Issuer is a did:web entity under the organization's domain; the Verifier is a counterparty or auditor. Attribute conformance is shown via the VC and its ZK derivatives — without ever shipping certificate files.",
+      'In Lemma Civic, residence records and public certificates are issued as VCs, so the "show only the attribute, never the certificate" pattern of municipal DX works out of the box. Verifiers consume the VC through <a href="/glossary/trust402/">Trust402</a> for machine verification.',
+      "VCs slot directly into the recordkeeping obligation of EU AI Act Article 12 and the audit-trail requirements of ISO/IEC 23894 (AI risk management). Lemma supplies VC + ZK + provenance chains as one package, automating regulatory conformance.",
+    ],
+    related: [
+      { slug: "did", desc: "Standard for identifying both the Issuer and Subject of a VC." },
+      { slug: "selective-disclosure", desc: "Show only that the VC's attribute is satisfied — never the value." },
+      { slug: "kyc-aml", desc: "The canonical use case for distributing customer attribute attestations as VCs." },
+      { slug: "eu-ai-act", desc: "VCs slot directly into the AI system recordkeeping obligation." },
+    ],
+    ctaH2: "Run attribute attestation on a standard aligned with regulation.",
   },
   {
     slug: "rag",
