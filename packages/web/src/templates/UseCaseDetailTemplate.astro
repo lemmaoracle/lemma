@@ -37,22 +37,28 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
 
   <header class="uc-hero">
     <div class="uc-hero-inner">
-      <div class="breadcrumb">
-        <a href={pillarsPath}>{pillarT.title}</a>
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href={base || "/"}>{locale === "ja" ? "ホーム" : "Home"}</a>
         <span class="breadcrumb-sep">/</span>
-        <a href={`${pillarsPath}/${pillar.slug}`}>{pillar.title[locale]}</a>
-      </div>
+        <a href={useCasesPath}>{useCaseT.title}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{useCase.title}</span>
+      </nav>
       <h1>{useCase.title}</h1>
       {useCase.thesis && (
         <p class="uc-thesis">{useCase.thesis}</p>
       )}
       <p class="uc-abstract">{useCase.abstract}</p>
       <div class="uc-meta">
-        <span class="uc-pillar-tag">P{pillar.order} {pillar.title[locale]}</span>
+        <a href={`${pillarsPath}/${pillar.slug}`} class="uc-pillar-tag">
+          P{pillar.order} · {pillar.title[locale]}
+        </a>
         {useCase.targetVerticals.length > 0 && (
           <span class="uc-verticals">{useCase.targetVerticals.join(" · ")}</span>
         )}
-        <span class="uc-reading-time">{useCase.readingTime} min read</span>
+        <span class="uc-reading-time">
+          {useCase.readingTime} {locale === "ja" ? "分" : "min read"}
+        </span>
       </div>
     </div>
   </header>
@@ -169,13 +175,17 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
   }
 
   .uc-pillar-tag {
-    font-size: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
-    padding: 4px 10px;
-    border: 1px solid rgba(139, 69, 19, 0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .uc-pillar-tag:hover {
+    color: var(--accent-lt);
   }
 
   .uc-verticals {
@@ -238,14 +248,14 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
     display: block;
     padding: 8px 12px;
     font-size: 13px;
-    color: var(--gray-600);
+    color: var(--gray-700);
     text-decoration: none;
     border-left: 2px solid transparent;
     transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
   .sidebar-link:hover {
     color: var(--black);
-    border-left-color: var(--gray-300);
+    border-left-color: var(--accent);
     background: var(--gray-50);
   }
 
@@ -321,7 +331,22 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
   }
   .section-body :global(a:hover) {
     border-bottom-color: var(--accent);
-    color: #6e3610;
+    color: var(--accent-lt);
+  }
+  .section-body :global(code) {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
+    font-size: 0.92em;
+    color: var(--accent);
+  }
+  .section-body :global(pre code) {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: #e1e4e8;
   }
   .section-body :global(table) {
     display: block;
@@ -358,11 +383,6 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
     background: #1a1a1a;
     border-radius: 4px;
     overflow-x: auto;
-  }
-  .section-body :global(code) {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 13px;
-    color: #e1e4e8;
   }
 
   .tag-strip {
