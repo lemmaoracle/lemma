@@ -15,6 +15,13 @@ const faqPath = base ? `${base}/faq` : "/faq";
 const pricingPath = base ? `${base}/pricing` : "/pricing";
 const servicesPath = base ? `${base}/services` : "/services";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
+const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
+const glossaryPath = base ? `${base}/glossary` : "/glossary";
+const whitepaperPath = locale === "ja"
+  ? "https://tally.so/r/xX0VYv"
+  : "https://tally.so/r/7RJXdR";
+const githubPath = "https://github.com/lemmaoracle";
+const contactPath = base ? `${base}/#contact` : "/#contact";
 const homePath = base || "/";
 
 const currentPath = Astro.url.pathname;
@@ -23,11 +30,15 @@ const languageSwitchHref =
     ? currentPath.replace(/^\/ja/, "") || "/"
     : `/ja${currentPath}`;
 
-const isActive = (path: string) => {
-  if (path === "/" && currentPath === "/") return true;
-  if (path !== "/" && currentPath.startsWith(path)) return true;
-  return false;
-};
+const startsWith = (prefix: string): boolean =>
+  prefix !== "" && currentPath.startsWith(prefix);
+
+const isPillarsActive = startsWith(pillarsPath);
+const isProductsActive =
+  startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
+const isSolutionsActive = startsWith(useCasesPath);
+const isResourcesActive =
+  startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
 ---
 
 <nav class="mega-nav" id="mainNav">
@@ -37,160 +48,151 @@ const isActive = (path: string) => {
 
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
+    <!-- 1. なぜLemmaか -->
     <li class="mega-nav-item">
-      <a href={`${pillarsPath}`} class:list={["mega-nav-link", { active: currentPath.startsWith(`${base}/pillars`) || currentPath.startsWith(`${base}/use-cases`) }]}>{t.pillars}</a>
-    </li>
-    <li class="mega-nav-item">
-      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isActive(servicesPath) }]}>{t.services}</a>
-      <div class="mega-panel">
-        <div class="mega-section mega-two-col">
-          <div class="mega-section-label">{t.mega.services.enterprise}</div>
-          <div class="mega-links">
-            <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.services.civic}</span>
-              <span class="mega-link-sub">{t.mega.services.civicSub}</span>
-            </a>
-            <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.services.critical}</span>
-              <span class="mega-link-sub">{t.mega.services.criticalSub}</span>
-            </a>
-            <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.services.compliance}</span>
-              <span class="mega-link-sub">{t.mega.services.complianceSub}</span>
-            </a>
-            <a href={`${servicesPath}#solution`} class="mega-link">
-              <span class="mega-link-title">{t.mega.services.howItWorks}</span>
-              <span class="mega-link-sub">{t.mega.services.howItWorksSub}</span>
-            </a>
-          </div>
-        </div>
-        
-        {locale === 'ja' && (
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.services.materials}</div>
-          <div class="mega-links">
-            <a href="https://tally.so/r/xX0VYv" class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.services.whitepaper}</span>
-              <span class="mega-link-sub">{t.mega.services.whitepaperSub}</span>
-            </a>
-          </div>
-        </div>
-        )}
-
-        <div class="mega-trust402">
-          <div class="mega-trust402-label">{t.mega.services.developer}</div>
-          <div class="mega-trust402-title">{t.mega.services.trust402Demo}</div>
-          {t.mega.services.trust402Sub && <div class="mega-trust402-sub">{t.mega.services.trust402Sub}</div>}
-          <div class="mega-trust402-links">
-            <a href="/trust402" class="mega-trust402-link" target="_blank">{t.mega.services.tryDemo}</a>
-            {locale === 'en' && <a href="https://tally.so/r/kd0bZR" class="mega-trust402-link" target="_blank">{t.mega.services.joinWaitlist}</a>}
-          </div>
-        </div>
-      </div>
-    </li>
-
-    <li class="mega-nav-item">
-      <a href={pricingPath} class:list={["mega-nav-link has-mega", { active: isActive(pricingPath) }]}>{t.pricing}</a>
+      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
       <div class="mega-panel">
         <div class="mega-section">
-          <div class="mega-section-label">{t.mega.pricing.enterprise}</div>
+          <div class="mega-section-label">{t.mega.pillars.label}</div>
           <div class="mega-links">
-            <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.pricing.civic}</span>
-              <span class="mega-link-sub">{t.mega.pricing.civicSub}</span>
+            <a href={pillarsPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.overview}</span>
+              <span class="mega-link-sub">{t.mega.pillars.overviewSub}</span>
             </a>
-            <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.pricing.critical}</span>
-              <span class="mega-link-sub">{t.mega.pricing.criticalSub}</span>
+            <a href={`${pillarsPath}/verifiable-origin/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar01}</span>
             </a>
-            <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.pricing.compliance}</span>
-              <span class="mega-link-sub">{t.mega.pricing.complianceSub}</span>
+            <a href={`${pillarsPath}/verifiable-ai/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar02}</span>
             </a>
-          </div>
-        </div>
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.pricing.developer}</div>
-          <div class="mega-links">
-            <a href="/trust402" class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.pricing.trust402}</span>
-              <span class="mega-link-sub">{t.mega.pricing.trust402Sub}</span>
+            <a href={`${pillarsPath}/agent-trust-chain/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar03}</span>
+            </a>
+            <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar04}</span>
             </a>
           </div>
         </div>
       </div>
     </li>
 
+    <!-- 2. 製品 -->
+    <li class="mega-nav-item">
+      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
+      <div class="mega-panel mega-panel-wide">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.enterprise}</div>
+          <div class="mega-links">
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.civic}</span>
+              <span class="mega-link-sub">{t.mega.products.civicSub}</span>
+            </a>
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.critical}</span>
+              <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
+            </a>
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.compliance}</span>
+              <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.developer}</div>
+          <div class="mega-links">
+            <a href="/trust402/" class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.products.trust402}</span>
+              <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
+            </a>
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.pricing}</span>
+              <span class="mega-link-sub">{t.mega.products.pricingSub}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <!-- 3. ソリューション -->
+    <li class="mega-nav-item">
+      <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
+      <div class="mega-panel">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.solutions.label}</div>
+          <div class="mega-links">
+            <a href={useCasesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.solutions.overview}</span>
+            </a>
+            <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.solutions.aiAudit}</span>
+            </a>
+            <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.solutions.kycAml}</span>
+            </a>
+            <a href={`${useCasesPath}/supply-chain-esg/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.solutions.supplyChain}</span>
+            </a>
+            <a href={`${useCasesPath}/defi-bridge-verification/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.solutions.defiBridge}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <!-- 4. 開発者 -->
     <li class="mega-nav-item">
       <div class="mega-nav-link has-mega">{t.developers}</div>
-      <div class="mega-panel right">
+      <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.developers.architecture}</div>
           <div class="mega-links">
-            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.specs}</span>
-              <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
+            <a href="/trust402/" class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.products.trust402}</span>
+              <span class="mega-link-sub">{t.mega.developers.trust402}</span>
             </a>
-          </div>
-        </div>
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.developers.guides}</div>
-          <div class="mega-links">
-            <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.encrypt}</span>
-              <span class="mega-link-sub">{t.mega.developers.encryptSub}</span>
+            <a href={whitepaperPath} class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.developers.whitepaper}</span>
             </a>
-            <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.prove}</span>
-              <span class="mega-link-sub">{t.mega.developers.proveSub}</span>
+            <a href={githubPath} class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.developers.github}</span>
             </a>
-            <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.disclose}</span>
-              <span class="mega-link-sub">{t.mega.developers.discloseSub}</span>
-            </a>
-            {locale === 'en' && (
-            <>
-              <a href={`${blogPath}/query-verified-attributes`} class="mega-link" target="_blank">
-                <span class="mega-link-title">{t.mega.developers.query}</span>
-                <span class="mega-link-sub">{t.mega.developers.querySub}</span>
-              </a>
-              <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mega-link" target="_blank">
-                <span class="mega-link-title">{t.mega.developers.define}</span>
-                <span class="mega-link-sub">{t.mega.developers.defineSub}</span>
-              </a>
-            </>
-            )}
-            <a href={`${blogPath}/provenance-that-never-disappears`} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.developers.provenance}</span>
-              <span class="mega-link-sub">{t.mega.developers.provenanceSub}</span>
-            </a>
-          </div>
-        </div>
-        <div class="mega-trust402">
-          <div class="mega-trust402-label">{t.mega.developers.trust402}</div>
-          <div class="mega-trust402-title">{t.mega.developers.demoSoon}</div>
-          {t.mega.developers.demoSub && <div class="mega-trust402-sub">{t.mega.developers.demoSub}</div>}
-          <div class="mega-trust402-links">
-            <a href="/trust402" class="mega-trust402-link" target="_blank">{t.mega.developers.tryDemo}</a>
-            {locale === 'en' && <a href="https://tally.so/r/kd0bZR" class="mega-trust402-link" target="_blank">{t.mega.developers.joinWaitlist}</a>}
-            <a href={`${blogPath}/lemma-oracle-specs`} class="mega-trust402-link" target="_blank">{t.mega.developers.readSpecs}</a>
           </div>
         </div>
       </div>
     </li>
 
+    <!-- 5. リソース -->
     <li class="mega-nav-item">
-      <a href={blogPath} class:list={["mega-nav-link", { active: isActive(blogPath) }]}>{t.blog}</a>
-    </li>
-    <li class="mega-nav-item">
-      <a href={faqPath} class:list={["mega-nav-link", { active: isActive(faqPath) }]}>{t.faq}</a>
-    </li>
-    <li class="mega-nav-item">
-      <a href={languageSwitchHref} class="mega-nav-link nav-lang">
-        {locale === "ja" ? t.languageEn : t.languageJa}
-      </a>
+      <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
+      <div class="mega-panel mega-panel-right">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.resources.label}</div>
+          <div class="mega-links">
+            <a href={blogPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.blog}</span>
+            </a>
+            <a href={whitepaperPath} class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
+            </a>
+            <a href={glossaryPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.glossary}</span>
+            </a>
+            <a href={faqPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.faq}</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </li>
   </ul>
+
+  <div class="mega-nav-right">
+    <a href={languageSwitchHref} class="nav-lang">
+      {locale === "ja" ? t.languageEn : t.languageJa}
+    </a>
+    <a href={contactPath} class="nav-cta">{t.contact}</a>
+  </div>
 
   <!-- HAMBURGER -->
   <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
@@ -199,57 +201,60 @@ const isActive = (path: string) => {
 
   <!-- MOBILE DRAWER -->
   <div class="nav-mobile-drawer" id="navMobileDrawer">
-    <a href={`${pillarsPath}`} class="mob-direct">{t.pillars}</a>
     <div class="mob-section">
-      <div class="mob-section-header">
-        {t.services} <span class="mob-arrow"></span>
-      </div>
+      <div class="mob-section-header">{t.pillars} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={servicesPath} class="mob-link">{t.mega.services.civic}<small>{t.mega.services.civicSub}</small></a>
-        <a href={servicesPath} class="mob-link">{t.mega.services.critical}<small>{t.mega.services.criticalSub}</small></a>
-        <a href={servicesPath} class="mob-link">{t.mega.services.compliance}<small>{t.mega.services.complianceSub}</small></a>
-        <a href={`${servicesPath}#solution`} class="mob-link">{t.mega.services.howItWorks}<small>{t.mega.services.howItWorksSub}</small></a>
-        <a href="/trust402" class="mob-link" target="_blank">{t.mega.services.trust402Demo}<small>{t.mega.services.tryDemo}</small></a>
+        <a href={pillarsPath} class="mob-link">{t.mega.pillars.overview}</a>
+        <a href={`${pillarsPath}/verifiable-origin/`} class="mob-link">{t.mega.pillars.pillar01}</a>
+        <a href={`${pillarsPath}/verifiable-ai/`} class="mob-link">{t.mega.pillars.pillar02}</a>
+        <a href={`${pillarsPath}/agent-trust-chain/`} class="mob-link">{t.mega.pillars.pillar03}</a>
+        <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mob-link">{t.mega.pillars.pillar04}</a>
       </div>
     </div>
 
     <div class="mob-section">
-      <div class="mob-section-header">
-        {t.pricing} <span class="mob-arrow"></span>
-      </div>
+      <div class="mob-section-header">{t.services} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={pricingPath} class="mob-link">{t.mega.pricing.civic}</a>
-        <a href={pricingPath} class="mob-link">{t.mega.pricing.critical}</a>
-        <a href={pricingPath} class="mob-link">{t.mega.pricing.compliance}</a>
-        <a href="/trust402" class="mob-link" target="_blank">{t.mega.pricing.trust402}<small>{t.mega.pricing.trust402Sub}</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
+        <a href={servicesPath} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
+        <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
+        <a href={pricingPath} class="mob-link">{t.mega.products.pricing}<small>{t.mega.products.pricingSub}</small></a>
       </div>
     </div>
 
     <div class="mob-section">
-      <div class="mob-section-header">
-        {t.developers} <span class="mob-arrow"></span>
-      </div>
+      <div class="mob-section-header">{t.solutions} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={`${blogPath}/lemma-oracle-specs`} class="mob-link" target="_blank">{t.mega.developers.specs}</a>
-        <a href={`${blogPath}/encrypt-everything-expose-nothing`} class="mob-link" target="_blank">{t.mega.developers.encrypt}</a>
-        <a href={`${blogPath}/prove-facts-with-zero-knowledge`} class="mob-link" target="_blank">{t.mega.developers.prove}</a>
-        <a href={`${blogPath}/disclose-only-what-ai-needs`} class="mob-link" target="_blank">{t.mega.developers.disclose}</a>
-        {locale === 'en' && (
-        <>
-          <a href={`${blogPath}/query-verified-attributes`} class="mob-link" target="_blank">{t.mega.developers.query}</a>
-          <a href={`${blogPath}/define-your-domain-as-a-schema`} class="mob-link" target="_blank">{t.mega.developers.define}</a>
-        </>
-        )}
-        <a href={`${blogPath}/provenance-that-never-disappears`} class="mob-link" target="_blank">{t.mega.developers.provenance}</a>
-        <a href="/trust402" class="mob-link" target="_blank">{t.mega.developers.demoSoon}<small>{t.mega.developers.tryDemo}</small></a>
+        <a href={useCasesPath} class="mob-link">{t.mega.solutions.overview}</a>
+        <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mob-link">{t.mega.solutions.aiAudit}</a>
+        <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mob-link">{t.mega.solutions.kycAml}</a>
+        <a href={`${useCasesPath}/supply-chain-esg/`} class="mob-link">{t.mega.solutions.supplyChain}</a>
+        <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
       </div>
     </div>
 
-    <a href={blogPath} class="mob-direct">{t.blog}</a>
-    <a href={faqPath} class="mob-direct">{t.faq}</a>
+    <div class="mob-section">
+      <div class="mob-section-header">{t.developers} <span class="mob-arrow"></span></div>
+      <div class="mob-section-body">
+        <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.developers.trust402}</small></a>
+        <a href={whitepaperPath} class="mob-link" target="_blank">{t.mega.developers.whitepaper}</a>
+        <a href={githubPath} class="mob-link" target="_blank">{t.mega.developers.github}</a>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
+      <div class="mob-section-body">
+        <a href={blogPath} class="mob-link">{t.mega.resources.blog}</a>
+        <a href={whitepaperPath} class="mob-link" target="_blank">{t.mega.resources.whitepaper}</a>
+        <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
+        <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
+      </div>
+    </div>
 
     <div class="mob-cta">
-      <a href={locale === 'ja' ? 'https://tally.so/r/xX0VYv' : 'https://tally.so/r/7RJXdR'} class="mob-cta-btn" target="_blank">{t.mega.mobile.talkToUs}</a>
+      <a href={contactPath} class="mob-cta-btn">{t.mega.mobile.talkToUs}</a>
     </div>
 
     <div class="mob-lang">
@@ -292,19 +297,43 @@ const isActive = (path: string) => {
   .mega-nav-item:hover .mega-nav-link.has-mega::after {
     transform: rotate(-135deg) translateY(-2px); opacity: 1;
   }
-  .mega-nav-link.nav-lang {
-    color: rgba(255,255,255,.28);
-    border-left: 1px solid rgba(255,255,255,.1); margin-left: 8px;
+
+  .mega-nav-right {
+    display: flex; align-items: center; gap: 18px;
   }
+  .nav-lang {
+    color: rgba(255,255,255,.5);
+    font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    text-decoration: none; transition: color .2s;
+  }
+  .nav-lang:hover { color: #fff; }
+  .nav-cta {
+    background: #fff; color: #000;
+    padding: 9px 20px;
+    font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    text-decoration: none;
+    transition: background .2s, color .2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: #fff; }
 
   .mega-panel {
     display: none; position: absolute; top: 64px; left: 0;
     background: #0D0D0D;
     border: 1px solid rgba(255,255,255,.08); border-top: none;
-    min-width: 320px; z-index: 999;
+    min-width: 280px; z-index: 999;
   }
-  .mega-panel.right { left: auto; right: 0; }
+  .mega-panel-wide {
+    min-width: 520px;
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .mega-panel-wide .mega-section {
+    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,.06);
+  }
+  .mega-panel-wide .mega-section:last-child { border-right: none; }
+  .mega-panel-right { left: auto; right: 0; }
   .mega-nav-item:hover .mega-panel { display: block; }
+  .mega-nav-item:hover .mega-panel-wide { display: grid; }
 
   .mega-section { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,.06); }
   .mega-section:last-child { border-bottom: none; }
@@ -313,31 +342,15 @@ const isActive = (path: string) => {
     color: #8B4513; margin-bottom: 14px;
   }
   .mega-links { display: flex; flex-direction: column; gap: 2px; }
-  .mega-two-col .mega-links { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
   .mega-link {
     display: flex; flex-direction: column; padding: 10px 12px;
     text-decoration: none; border-left: 2px solid transparent;
     transition: border-color .15s, background .15s;
   }
   .mega-link:hover { border-left-color: #8B4513; background: rgba(255,255,255,.03); }
-  .mega-link-title { font-size: 13px; color: rgba(255,255,255,.7); font-weight: 400; line-height: 1; margin-bottom: 3px; }
+  .mega-link-title { font-size: 13px; color: rgba(255,255,255,.7); font-weight: 400; line-height: 1.4; margin-bottom: 2px; }
   .mega-link:hover .mega-link-title { color: #fff; }
   .mega-link-sub { font-size: 11px; color: rgba(255,255,255,.28); line-height: 1.3; }
-
-  .mega-trust402 {
-    padding: 18px 24px; background: rgba(139,69,19,.07);
-    border-top: 1px solid rgba(139,69,19,.15);
-  }
-  .mega-trust402-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: #8B4513; margin-bottom: 8px; }
-  .mega-trust402-title { font-size: 13px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
-  .mega-trust402-sub { font-size: 11px; color: rgba(255,255,255,.28); margin-bottom: 12px; }
-  .mega-trust402-links { display: flex; gap: 8px; }
-  .mega-trust402-link {
-    font-size: 10px; color: #8B4513; border: 1px solid rgba(139,69,19,.4);
-    padding: 4px 12px; text-decoration: none; letter-spacing: .08em; text-transform: uppercase;
-    transition: background .2s, color .2s;
-  }
-  .mega-trust402-link:hover { background: #8B4513; color: #fff; }
 
   .nav-hamburger {
     display: none; background: none; border: none; cursor: pointer;
@@ -385,15 +398,6 @@ const isActive = (path: string) => {
   .mob-link:hover { color: #fff; }
   .mob-link small { display: block; font-size: 11px; color: rgba(255,255,255,.28); margin-top: 2px; }
 
-  .mob-direct {
-    display: block; padding: 18px 6%;
-    font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
-    color: rgba(255,255,255,.7); text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,.06);
-    transition: color .15s;
-  }
-  .mob-direct:hover { color: #fff; }
-
   .mob-cta { padding: 24px 6%; }
   .mob-cta-btn {
     display: block; width: 100%; padding: 16px;
@@ -410,9 +414,10 @@ const isActive = (path: string) => {
   }
   .mob-lang a { color: rgba(255,255,255,.35); text-decoration: none; }
 
-  @media(max-width:900px) {
+  @media(max-width:1024px) {
     .mega-nav { padding: 0 6%; }
     .mega-nav-links { display: none; }
+    .mega-nav-right { display: none; }
     .nav-hamburger { display: flex; }
     .nav-mobile-drawer { display: block; }
   }
