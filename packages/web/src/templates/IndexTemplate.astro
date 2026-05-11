@@ -23,11 +23,11 @@ const { locale, t, base, description, recentPosts } = Astro.props as IndexTempla
 const ix = t.index;
 
 const heroCta = "#featured";
-const wpLink = locale === "ja"
-  ? "https://tally.so/r/xX0VYv"
-  : "https://tally.so/r/7RJXdR";
 const trust402Href = "/trust402/";
-const partnerHref = `${base}/services/`;
+const partnerContactHref = locale === "ja"
+  ? "https://tally.so/r/Pd2Rl5"
+  : "https://tally.so/r/EkBqDX";
+const partnerWhitepaperHref = `${base}/services/`;
 const blogIndexHref = `${base}/blog/`;
 const thinking = recentPosts.slice(0, 6);
 ---
@@ -141,8 +141,8 @@ const thinking = recentPosts.slice(0, 6);
         <span class="partner-divider"></span>
         <p class="partner-lead">{ix.partner.body}</p>
         <div class="partner-cta-row">
-          <a class="partner-cta-primary" href={partnerHref}>{ix.partner.primaryCta}</a>
-          <a class="partner-cta-secondary" href={wpLink} target="_blank">{ix.partner.secondaryCta}</a>
+          <a class="partner-cta-primary" href={partnerContactHref} target="_blank" rel="noopener">{ix.partner.primaryCta}</a>
+          <a class="partner-cta-secondary" href={partnerWhitepaperHref}>{ix.partner.secondaryCta}</a>
         </div>
       </div>
     </section>
