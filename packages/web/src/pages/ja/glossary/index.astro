@@ -83,10 +83,7 @@ const definedTermSetJsonLd = {
             <div class="glossary-grid">
               {group.terms.map((term) => (
                 <a class="glossary-card" href={`/ja/glossary/${term.slug}/`}>
-                  <div class="glossary-card-term">
-                    {term.nameJa}
-                    <div class="glossary-card-term-en">{term.nameEn}</div>
-                  </div>
+                  <div class="glossary-card-term">{term.nameJa}</div>
                   <p class="glossary-card-desc">{term.description}</p>
                 </a>
               ))}
@@ -195,14 +192,6 @@ const definedTermSetJsonLd = {
     color: var(--gray-800);
     letter-spacing: -0.005em;
     line-height: 1.4;
-  }
-  .glossary-card-term-en {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--gray-500);
-    letter-spacing: 0.02em;
-    margin-top: 2px;
   }
   .glossary-card-desc {
     font-family: var(--font-body);
