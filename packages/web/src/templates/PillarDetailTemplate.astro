@@ -21,6 +21,29 @@ export interface PillarDetailTemplateProps {
 const { locale, t, base, pillar, useCases, recentPosts, pillarT } = Astro.props as PillarDetailTemplateProps;
 const pillarsPath = `${base}/pillars`;
 const useCasesPath = `${base}/use-cases`;
+
+const SITE = "https://lemma.frame00.com";
+const pillarUrl = `${SITE}${pillarsPath}/${pillar.slug}/`;
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: pillar.title[locale],
+  description: pillar.problemStatement[locale] || pillar.slogan[locale],
+  url: pillarUrl,
+  inLanguage: locale,
+  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma Oracle" },
+  publisher: { "@id": `${SITE}/#organization` },
+  mainEntityOfPage: { "@type": "WebPage", "@id": pillarUrl },
+};
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}${base || ""}/` },
+    { "@type": "ListItem", position: 2, name: pillarT.title, item: `${SITE}${pillarsPath}/` },
+    { "@type": "ListItem", position: 3, name: pillar.title[locale], item: pillarUrl },
+  ],
+};
 ---
 
 <Layout
@@ -30,6 +53,9 @@ const useCasesPath = `${base}/use-cases`;
   metaType="page"
   pagePath={`${base}/pillars/${pillar.slug}`}
 >
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
+
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

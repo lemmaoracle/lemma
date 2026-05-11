@@ -23,6 +23,30 @@ const pillarsPath = `${base}/pillars`;
 
 // Combine all headings for TOC
 const allHeadings = useCase.sections.flatMap((s) => s.headings);
+
+const SITE = "https://lemma.frame00.com";
+const useCaseUrl = `${SITE}${useCasesPath}/${useCase.slug}/`;
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: useCase.title,
+  description: useCase.abstract,
+  url: useCaseUrl,
+  inLanguage: locale,
+  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma Oracle" },
+  publisher: { "@id": `${SITE}/#organization` },
+  mainEntityOfPage: { "@type": "WebPage", "@id": useCaseUrl },
+  about: pillar ? { "@type": "Thing", name: pillar.title[locale] } : undefined,
+};
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}${base || ""}/` },
+    { "@type": "ListItem", position: 2, name: useCaseT.title, item: `${SITE}${useCasesPath}/` },
+    { "@type": "ListItem", position: 3, name: useCase.title, item: useCaseUrl },
+  ],
+};
 ---
 
 <Layout
@@ -32,6 +56,9 @@ const allHeadings = useCase.sections.flatMap((s) => s.headings);
   metaType="page"
   pagePath={`${base}/use-cases/${useCase.slug}`}
 >
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
+
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

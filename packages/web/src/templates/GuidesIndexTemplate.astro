@@ -17,10 +17,31 @@ export interface GuidesIndexTemplateProps {
 const { locale, t, base, guides, foundations } =
   Astro.props as GuidesIndexTemplateProps;
 const blogPath = base ? `${base}/blog` : "/blog";
+const guidesPath = base ? `${base}/guides` : "/guides";
 const title = locale === "ja"
   ? `技術ドキュメント — Lemma Oracle`
   : `Technical Documentation — Lemma Oracle`;
 const description = t.blog.index.guidesDesc;
+
+const SITE = "https://lemma.frame00.com";
+const collectionJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: t.blog.index.guidesTitle,
+  description,
+  url: `${SITE}${guidesPath}/`,
+  inLanguage: locale,
+  isPartOf: { "@id": `${SITE}/#website` },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: guides.map((post, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: post.title,
+      url: `${SITE}${blogPath}/${post.slug}/`,
+    })),
+  },
+};
 ---
 
 <Layout
@@ -30,6 +51,8 @@ const description = t.blog.index.guidesDesc;
   metaType="page"
   pagePath="/guides/"
 >
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(collectionJsonLd)} />
+
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
