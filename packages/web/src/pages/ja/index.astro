@@ -8,7 +8,7 @@ const t = getTranslations(locale);
 const base = "/ja";
 const sections = await getBlogSections(locale);
 const essays = sections.find((s) => s.section === "Essays")?.posts ?? [];
-const recentPosts = essays.slice(0, 3).map((p) => ({
+const recentPosts = essays.slice(0, 6).map((p) => ({
   category: p.category,
   date: p.date,
   title: p.title,

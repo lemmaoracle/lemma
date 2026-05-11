@@ -30,7 +30,7 @@ const wpLink = locale === "ja"
 const trust402Href = "/trust402/";
 const partnerHref = `${base}/services/`;
 const blogIndexHref = `${base}/blog/`;
-const thinking = recentPosts.slice(0, 3);
+const thinking = recentPosts.slice(0, 6);
 ---
 
 <Layout locale={locale} metaType="home" description={description}>
@@ -556,9 +556,9 @@ const thinking = recentPosts.slice(0, 3);
   .thinking-item:last-child { border-bottom: none; }
   .thinking-item-title {
     font-family: var(--font-display);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
-    line-height: 1.35;
+    line-height: 1.4;
     color: var(--gray-800);
     letter-spacing: -0.005em;
   }
