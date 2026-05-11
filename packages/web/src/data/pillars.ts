@@ -69,6 +69,7 @@ export interface Pillar {
   readonly cover?: string;
   readonly order: number;
   readonly tags: ReadonlyArray<string>;
+  readonly orientation?: LocalizedStrings;
   readonly seo?: PillarSEO;
   readonly extraSection?: PillarExtraSection;
   readonly faq?: ReadonlyArray<PillarFAQ>;
@@ -123,6 +124,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     order: 1,
     tags: ["origin", "bridge", "cross-chain", "forensics"],
+    orientation: {
+      en: "Data crosses organizations, systems, and AIs — and loses its origin at every hop.\nThe $625M moved in the 2024 Ronin bridge incident was cryptographically valid at every step.\nDocuments indexed into a 2026 RAG pipeline lose their identity the moment they're touched.\nValidity of form and validity of meaning are not the same thing.",
+      ja: "データは、組織を越え、システムを越え、AI に読まれるたびに「出所」を失っていきます。\n2024 年の Ronin bridge 事案で動いた 6 億 2,500 万ドルは、暗号的にはすべて有効でした。\n2026 年の RAG インデックスに取り込まれた文書も、AI に読まれた瞬間、原本との同一性を失います。\n形式の正しさと、意味の正しさは別物です。",
+    },
   },
   {
     slug: "verifiable-ai",
@@ -170,6 +175,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     order: 2,
     tags: ["ai", "explainability", "audit", "compliance"],
+    orientation: {
+      en: "AI is now making decisions across enterprise and public services every day.\nThe EU AI Act, effective 2026, mandates automated logging and data governance for high-risk AI.\nISO 42001 requires AI management systems to be auditable.\nModels update, logs decay — but the obligation to explain each decision remains.",
+      ja: "AI は、企業と公共の判断を、日常的に下し始めています。\nEU AI Act は 2026 年に高リスク AI への自動ログとデータガバナンスを義務化し、\nISO 42001 は AI マネジメントシステムの監査可能性を求めています。\nモデルは更新され、ログは散逸する。それでも「なぜそう判断したか」を説明する責務は残ります。",
+    },
   },
   {
     slug: "agent-trust-chain",
@@ -228,6 +237,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     order: 3,
     tags: ["agent", "x402", "mcp", "trust-chain", "agentic-payments"],
+    orientation: {
+      en: "AI agents are now buying, contracting, and transacting on behalf of humans.\nIn Q1 2026, Coinbase captured over 90% of on-chain agentic stablecoin volume.\nx402 settled more than 100 million payments. The rails are in.\nThe unresolved question is who proves these transactions were authorized — and on what data.",
+      ja: "AI エージェントが、人の代わりに買い物・契約・取引を執行する時代が始まっています。\nCoinbase は 2026 年 Q1、オンチェーンのエージェント決済の 90% 超を独占し、\nx402 は 1 億件を超えました。レールは出揃いました。\n残された問いは、その上に走る取引の「正当性」を誰がどう証明するか、です。",
+    },
     seo: {
       title: {
         en: "Agent Trust Chain — Agentic Payments Trust Layer | Lemma Oracle",
@@ -317,8 +330,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
     },
     problemStatement: {
-      en: "Claims of regulatory compliance (KYC/AML/data residency/DPP/ESG) must be transformed into programmatically verifiable proofs",
-      ja: "規制要件（KYC/AML/データレジデンシー/DPP/ESG）を満たしているという主張を、プログラムで検証できる証明に変える",
+      en: "Regulatory compliance (KYC/AML, data residency, DPP, ESG) still relies on self-declaration and paper documentation — not on programmatically verifiable proofs",
+      ja: "規制要件 (KYC/AML・データレジデンシー・DPP・ESG) への適合は、いまも自己申告と紙のドキュメントに依存しており、プログラムで検証できる証明には変換されていない",
     },
     whyNow: {
       en: "GDPR strengthening, EU AI Act, crypto-asset guidelines, supply chain DDP mandates",
@@ -344,6 +357,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     order: 4,
     tags: ["regulatory", "kyc", "aml", "compliance", "esg"],
+    orientation: {
+      en: "GDPR. EU AI Act. Crypto-asset guidelines. CBAM. EUDR. DPP.\nRegulation is converging on a single demand: not \"disclose your data,\"\nbut \"prove your compliance.\"\nYet most enterprises still respond with self-declaration and paper trails.\nWhat's required now is proof — not promise.",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——\n規制は「データを開示しろ」ではなく「コンプライアンスを証明しろ」を求める方向に揃いつつあります。\nしかし現場の多くは、いまも自己申告と紙のサプライヤ書類で対応しています。\n求められているのは「約束」ではなく「証明」です。",
+    },
   },
 ];
 
