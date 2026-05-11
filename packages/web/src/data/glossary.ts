@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (JA).
  *
- * Source of truth for /ja/glossary/* pages. 26 terms across 4 categories.
+ * Source of truth for /ja/glossary/* pages. 27 terms across 4 categories.
  *
  * SAFETY BOUNDARY — inline HTML and `set:html`:
  *   `lead`, `definition[]`, `implementation[]` may contain inline HTML
@@ -34,6 +34,7 @@ export type GlossarySlug =
   | "citation-proof"
   | "audit-trail"
   // プロトコル・エージェント
+  | "agentic-payments"
   | "x402"
   | "trust402"
   | "eip-3009"
@@ -519,6 +520,33 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
   },
 
   // ============ プロトコル・エージェント ============
+  {
+    slug: "agentic-payments",
+    nameJa: "エージェンティック・ペイメンツ",
+    nameEn: "Agentic Payments",
+    category: "プロトコル・エージェント",
+    description:
+      "AI エージェントが自律的に取引・決済を実行する形態。x402 や MCP を含む新世代の支払いプロトコル群が前提となり、権限と来歴の検証が中核課題になる。",
+    lead:
+      "AI エージェントが人間の都度承認なしに、自律的に決済・取引を完了させる形態。LLM ベースのエージェントが計算資源・API・サービスを購入し、別のエージェントと契約を交わし、それを履行する世界の前提となる支払いモデルを指す。",
+    definition: [
+      "エージェンティック・ペイメンツは、自律 AI エージェントが取引主体となる支払い形態。背景には LLM の推論能力向上、ツール使用 (function calling)、長期記憶 (context window 拡大)、エージェント間通信プロトコル (<a href=\"/ja/glossary/mcp/\">MCP</a> / <a href=\"/ja/glossary/a2a/\">A2A</a>) の標準化がある。2024–2025 年に Claude や Google エージェントの能力向上と並走して概念が定着した。",
+      "技術スタックとしては、HTTP 402 Payment Required を実用化した <a href=\"/ja/glossary/x402/\">x402</a> (Coinbase 提案)、エージェント間取引の Stripe Agent SDK、決済仲介を担う <a href=\"/ja/glossary/facilitator/\">Facilitator</a> が中心。従来の決済基盤 (Stripe・PayPal) は人間ユーザを前提に設計されており、エージェントが主体となる場合の権限・認証・限度額管理が構造的に不足する。",
+      "自律エージェントが取引を行うとき、三つの信頼問題が不可避になる。(1) このエージェントは誰の代理で動くのか (権限委譲)、(2) いくらまで使えるのか (支払い限度)、(3) 支払いの根拠データは真正か (来歴)。従来の API キー認証ではこの三つを同時に解決できない。",
+    ],
+    implementation: [
+      "Lemma の <a href=\"/ja/glossary/trust402/\">Trust402</a> はエージェント決済の前段に置かれる検証層。エージェントは「自分が誰のために、何の限度で、どの来歴データに基づいて」決済するかを ZK で証明してから支払いに進む。権限と取引根拠が暗号的に固定されるため、後段の決済処理は安全にエージェントへ委譲できる。",
+      "個別技術との連動はモジュラー。<a href=\"/ja/glossary/x402/\">x402</a> がエージェント間支払いの HTTP 層を、<a href=\"/ja/glossary/a2a/\">A2A</a> がエージェント発見と契約交渉を、<a href=\"/ja/glossary/mcp/\">MCP</a> がツール使用を担い、Lemma がそれらの上に「権限と来歴の検証」を一段挟む構成になる。",
+      "エージェンティック・ペイメンツの具体的な実装方針と Lemma がどう解くかは <a href=\"/ja/pillars/agent-trust-chain/\">Agent Trust Chain</a> ピラーに整理されている。本ページが「概念とエコシステム」を扱うのに対し、ピラーは「権限・支払い限度・来歴の三軸を Lemma がどう束ねるか」を扱う。",
+    ],
+    related: [
+      { slug: "trust402", desc: "エージェント決済の前段検証層。権限と来歴を ZK で固定する。" },
+      { slug: "x402", desc: "エージェント間決済の HTTP 層。Coinbase 提案のプロトコル。" },
+      { slug: "a2a", desc: "エージェント発見と契約交渉の標準。" },
+      { slug: "mcp", desc: "エージェントのツール使用プロトコル。Anthropic 主導。" },
+    ],
+    ctaH2: "エージェントの権限と取引を、検証可能にする。",
+  },
   {
     slug: "x402",
     nameJa: "x402",

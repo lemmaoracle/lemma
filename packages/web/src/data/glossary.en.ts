@@ -1,7 +1,7 @@
 /**
  * Lemma Oracle glossary terms (EN).
  *
- * Source of truth for /glossary/* pages. 26 terms across 4 categories,
+ * Source of truth for /glossary/* pages. 27 terms across 4 categories,
  * mirroring src/data/glossary.ts (JA). Authored under code review — see
  * the SAFETY BOUNDARY note in glossary.ts before extending this set to
  * any external authoring surface (CMS, user content).
@@ -455,6 +455,33 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
   },
 
   // ============ Protocols & Agents ============
+  {
+    slug: "agentic-payments",
+    nameJa: "エージェンティック・ペイメンツ",
+    nameEn: "Agentic Payments",
+    category: "プロトコル・エージェント",
+    description:
+      "Transactions and settlements executed autonomously by AI agents. The new-generation payment stack (x402, MCP, A2A) is the substrate; authority and provenance verification are the core problems.",
+    lead:
+      "A payment model where AI agents complete transactions and settlements autonomously, without per-call human approval. The prerequisite for a world in which LLM-based agents buy compute, APIs, and services, negotiate contracts with other agents, and execute them end-to-end.",
+    definition: [
+      "Agentic payments are a transaction pattern where autonomous AI agents are the transacting party. The enablers are LLM reasoning improvements, tool use (function calling), longer context windows, and the standardization of agent-to-agent protocols (<a href=\"/glossary/mcp/\">MCP</a>, <a href=\"/glossary/a2a/\">A2A</a>). The concept solidified through 2024–2025 alongside the rapid capability gains in Claude and Google's agent stacks.",
+      "The technical stack centers on <a href=\"/glossary/x402/\">x402</a> (Coinbase's revival of HTTP 402 Payment Required), the Stripe Agent SDK for agent-to-agent commerce, and the <a href=\"/glossary/facilitator/\">Facilitator</a> as the settlement intermediary. Traditional payments infrastructure (Stripe, PayPal) is designed around human users; when an agent becomes the transacting party, authority, authentication, and spend-limit controls are structurally missing.",
+      "When autonomous agents transact, three trust questions become unavoidable. (1) Who is this agent acting for (delegation)? (2) How much can it spend (spending limit)? (3) Is the data underlying the payment authentic (provenance)? API-key authentication cannot solve the three together.",
+    ],
+    implementation: [
+      "Lemma's <a href=\"/glossary/trust402/\">Trust402</a> sits in front of agent settlement as a verification layer. Before payment proceeds, the agent proves in ZK \"who I'm acting for, what limits I'm under, and what provenance data underlies this transaction.\" With authority and transaction grounding fixed cryptographically, the downstream settlement step can be safely delegated to the agent.",
+      "Integration with adjacent technologies is modular. <a href=\"/glossary/x402/\">x402</a> handles the HTTP layer of agent-to-agent payments; <a href=\"/glossary/a2a/\">A2A</a> covers agent discovery and contract negotiation; <a href=\"/glossary/mcp/\">MCP</a> handles tool use. Lemma adds a verification stage on top — \"authority and provenance\" — that the other layers do not own.",
+      "The concrete implementation plan and Lemma's role in agentic payments is laid out in the <a href=\"/pillars/agent-trust-chain/\">Agent Trust Chain</a> pillar. This page covers the concept and ecosystem; the pillar covers how Lemma binds the three axes (authority, spend control, provenance) into one chain.",
+    ],
+    related: [
+      { slug: "trust402", desc: "The pre-settlement verification layer for agent transactions." },
+      { slug: "x402", desc: "The HTTP-level protocol for agent-to-agent payments. Proposed by Coinbase." },
+      { slug: "a2a", desc: "Standard for agent discovery and contract negotiation." },
+      { slug: "mcp", desc: "Tool-use protocol for agents. Led by Anthropic." },
+    ],
+    ctaH2: "Make agent authority and transactions verifiable.",
+  },
   {
     slug: "x402",
     nameJa: "x402",
