@@ -2,9 +2,16 @@
  * Lemma Oracle glossary terms (JA).
  *
  * Source of truth for /ja/glossary/* pages. 23 terms across 4 categories.
- * Paragraphs may contain inline HTML (<a>, <code>, <strong>) and are rendered
- * with `set:html` in the consuming Astro template — the HTML is authored here,
- * not extracted from a CMS, so review changes carefully.
+ *
+ * SAFETY BOUNDARY — inline HTML and `set:html`:
+ *   `lead`, `definition[]`, `implementation[]` may contain inline HTML
+ *   (<a>, <code>, <strong>, <em>) and are rendered with `set:html` in the
+ *   consuming Astro template. This is intentional: the content originates
+ *   in this file under code review, never from user input or a CMS.
+ *   If this ever migrates to a CMS / external authoring surface, this
+ *   string-to-DOM pipe MUST sanitize (e.g. DOMPurify on the server or
+ *   restrict the allowed tag list) before the data leaves this module.
+ *   Reviewers: treat changes to these fields as code, not content.
  */
 
 export type GlossarySlug =
