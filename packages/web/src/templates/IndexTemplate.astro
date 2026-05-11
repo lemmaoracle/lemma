@@ -6,7 +6,6 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import HomeSchemaOrg from "@/components/HomeSchemaOrg";
 import HeroCover from "../assets/cover.jpg";
-import Trust402Bg from "../assets/trust402-canyon.jpg";
 
 export interface IndexTemplateProps {
   locale: Locale;
@@ -62,7 +61,7 @@ const thinking = recentPosts.slice(0, 3);
           <p class="featured-subtitle">{ix.featured.subtitle}</p>
           <span class="featured-cta">{ix.featured.cta} <span aria-hidden="true">→</span></span>
         </div>
-        <div class="featured-visual" style={`background-image: url(${Trust402Bg.src})`}></div>
+        <div class="featured-visual" aria-hidden="true"></div>
       </a>
     </section>
 
@@ -297,15 +296,38 @@ const thinking = recentPosts.slice(0, 3);
     color: #fff;
   }
   .featured-visual {
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
+    background: #000;
     border-left: 1px solid rgba(255, 255, 255, 0.06);
-    filter: saturate(0.7) brightness(0.85);
+  }
+  .featured-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px, 48px 48px;
+  }
+  .featured-visual::after {
+    content: "x402";
+    position: absolute;
+    right: 48px;
+    bottom: 36px;
+    font-family: var(--font-body);
+    font-size: clamp(72px, 12vw, 160px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.07);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    pointer-events: none;
   }
   @media (max-width: 900px) {
     .featured-panel { grid-template-columns: 1fr; min-height: auto; }
     .featured-content { padding: 56px 40px 40px; }
     .featured-visual { height: 280px; }
+    .featured-visual::after { right: 28px; bottom: 24px; }
   }
 
   /* ─── TRUSTED BY ─── */
