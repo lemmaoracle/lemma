@@ -504,7 +504,7 @@
           "titleLine2": "delegation for agents.",
           "body": "Cryptographically verify the authority, payments, and delegation of agents running on x402 or MCP.",
           "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
-          "href": "/products/trust402/"
+          "href": "/use-cases/x402-commerce/"
         },
         {
           "tag": "For AI Builders",
