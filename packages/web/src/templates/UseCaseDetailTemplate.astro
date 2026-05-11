@@ -360,6 +360,46 @@ const breadcrumbJsonLd = {
     border-bottom-color: var(--accent);
     color: var(--accent-lt);
   }
+  /* Inline CTA buttons — applies to the last paragraph of a section
+     whose id is "cta" (e.g. authored as 03-cta.md). Two markdown links
+     in one paragraph render as a primary + secondary button row. */
+  :global(.uc-section#cta .section-body > p:last-child) {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  :global(.uc-section#cta .section-body > p:last-child a) {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  :global(.uc-section#cta .section-body > p:last-child a:first-child) {
+    background: var(--accent);
+    color: var(--white);
+    border-color: var(--accent);
+  }
+  :global(.uc-section#cta .section-body > p:last-child a:first-child:hover) {
+    background: var(--accent-lt);
+    border-color: var(--accent-lt);
+    color: var(--white);
+  }
+  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child)) {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child):hover) {
+    background: var(--accent);
+    color: var(--white);
+  }
   .section-body :global(code) {
     background: var(--gray-50);
     border: 1px solid var(--gray-200);
