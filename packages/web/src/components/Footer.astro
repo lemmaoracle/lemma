@@ -21,7 +21,9 @@ const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
 const homePath = base || "/";
-const contactPath = `${base}/#contact`;
+const contactPath = locale === "ja"
+  ? "https://tally.so/r/Pd2Rl5"
+  : "https://tally.so/r/EkBqDX";
 const trust402Href = "/trust402/";
 const whitepaperHref = servicesPath;
 const aboutUsHref =
@@ -93,7 +95,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         <h5>{footerT.colCompany}</h5>
         <ul>
           <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
-          <li><a href={contactPath}>{footerT.contact}</a></li>
+          <li><a href={contactPath} target="_blank" rel="noopener">{footerT.contact}</a></li>
           <li><a href={languageSwitchHref}>{languageSwitchLabel}</a></li>
         </ul>
       </div>
