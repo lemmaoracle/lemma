@@ -504,7 +504,7 @@
           "titleLine2": "取引と権限委譲。",
           "body": "x402 や MCP 上で動くエージェントの権限・支払い・委任を、暗号的に検証可能にする。",
           "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
-          "href": "/ja/products/trust402/"
+          "href": "/ja/use-cases/x402-commerce/"
         },
         {
           "tag": "For AI Builders",
