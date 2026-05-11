@@ -84,6 +84,12 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   </header>
 
   <main class="pillar-content">
+    {pillar.orientation && (
+      <section class="block block-orientation">
+        <p class="orientation-text">{pillar.orientation[locale]}</p>
+      </section>
+    )}
+
     <!-- Block 1: Problem Statement -->
     <section class="block block-problem">
       <div class="block-label">{pillarT.blockProblem}</div>
@@ -273,6 +279,21 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     height: 1px;
     background: currentColor;
     display: block;
+  }
+
+  .block-orientation {
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .orientation-text {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--gray-800);
+    margin: 0;
+    max-width: 760px;
+    white-space: pre-line;
+    font-style: italic;
   }
 
   .problem-text,
