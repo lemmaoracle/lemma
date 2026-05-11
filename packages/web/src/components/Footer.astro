@@ -13,74 +13,238 @@ interface Props {
 const { locale, t, footerT, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
+const pricingPath = base ? `${base}/pricing` : "/pricing";
+const servicesPath = base ? `${base}/services` : "/services";
+const pillarsPath = base ? `${base}/pillars` : "/pillars";
+const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
+const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
+const homePath = base || "/";
+const contactPath = `${base}/#contact`;
+const trust402Href = "/trust402/";
+const whitepaperHref = locale === "ja"
+  ? "https://tally.so/r/xX0VYv"
+  : "https://tally.so/r/7RJXdR";
 const aboutUsHref =
   locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
+const githubHref = "https://github.com/lemmaoracle";
 const currentPath = Astro.url.pathname;
 const languageSwitchHref =
   locale === "ja" ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
+const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
 ---
 
-<footer>
-  <div class="footer-logo">
-    <LemmaOracle class="h-[22px] w-auto text-white/28" />
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-top">
+
+      <!-- BRAND COLUMN -->
+      <div class="site-footer-brand">
+        <a class="site-footer-logo" href={homePath} aria-label="Lemma Oracle">
+          <LemmaOracle class="h-[22px] w-auto text-white" />
+        </a>
+        <p class="site-footer-tagline">{footerT.tagline}</p>
+        <div class="site-footer-social">
+          <a href="https://x.com/lemmaoracle" target="_blank" rel="noopener" aria-label="X">X</a>
+          <a href={githubHref} target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+          <a href="https://www.linkedin.com/company/lemmaoracle/" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+
+      <!-- COL: なぜLemmaか -->
+      <div class="site-footer-col">
+        <h4>{t.pillars}</h4>
+        <ul>
+          <li><a href={pillarsPath}>{t.mega.pillars.label}</a></li>
+          <li><a href={useCasesPath}>{t.mega.solutions.label}</a></li>
+        </ul>
+      </div>
+
+      <!-- COL: 製品 -->
+      <div class="site-footer-col">
+        <h4>{t.services}</h4>
+        <ul>
+          <li><a href={servicesPath}>{t.mega.products.civic}</a></li>
+          <li><a href={servicesPath}>{t.mega.products.critical}</a></li>
+          <li><a href={servicesPath}>{t.mega.products.compliance}</a></li>
+          <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
+          <li><a href={pricingPath}>{t.mega.products.pricing}</a></li>
+        </ul>
+      </div>
+
+      <!-- COL: 開発者 -->
+      <div class="site-footer-col">
+        <h4>{t.developers}</h4>
+        <ul>
+          <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
+          <li><a href={whitepaperHref} target="_blank">{footerT.specs}</a></li>
+          <li><a href={githubHref} target="_blank">{footerT.github}</a></li>
+        </ul>
+      </div>
+
+      <!-- COL: リソース & 会社 -->
+      <div class="site-footer-col">
+        <h4>{t.resources}</h4>
+        <ul>
+          <li><a href={blogPath}>{t.mega.resources.blog}</a></li>
+          <li><a href={whitepaperHref} target="_blank">{t.mega.resources.whitepaper}</a></li>
+          <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
+          <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
+        </ul>
+        <h5>{footerT.colCompany}</h5>
+        <ul>
+          <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
+          <li><a href={contactPath}>{footerT.contact}</a></li>
+          <li><a href={languageSwitchHref}>{languageSwitchLabel}</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="site-footer-bottom">
+      <div>{footerT.copyright}</div>
+      <div class="site-footer-bottom-links">
+        <a href={privacyPath}>{footerT.privacy}</a>
+        <a href={termsPath}>{footerT.terms}</a>
+      </div>
+    </div>
   </div>
-  <div class="footer-tagline">{footerT.copyright}</div>
-  <ul class="footer-links">
-    <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
-    <li><a href={faqPath}>{footerT.faq}</a></li>
-    <li><a href={blogPath}>{footerT.blog}</a></li>
-    <li><a href={privacyPath}>{footerT.privacy}</a></li>
-    <li><a href={termsPath}>{footerT.terms}</a></li>
-    <li><a href={languageSwitchHref}>{locale === "ja" ? "English" : "日本語"}</a></li>
-  </ul>
 </footer>
 
 <style>
-  footer {
-    background: #000;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    padding: 36px 10%;
+  .site-footer {
+    background: var(--black);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 80px 5% 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .site-footer-inner { max-width: 1400px; margin: 0 auto; }
+
+  .site-footer-top {
+    display: grid;
+    grid-template-columns: 220px repeat(4, 1fr);
+    gap: 48px;
+    margin-bottom: 64px;
+  }
+
+  .site-footer-brand .site-footer-logo {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 16px;
+    text-decoration: none;
+  }
+  .site-footer-tagline {
+    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .site-footer-social {
+    display: flex;
+    gap: 12px;
+  }
+  .site-footer-social a {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: var(--font-body);
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .footer-logo :global(svg) {
-    height: 22px;
-    width: auto;
+  .site-footer-social a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
   }
-  .footer-tagline {
+
+  .site-footer-col h4 {
+    font-family: var(--font-body);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin: 0 0 20px;
+  }
+  .site-footer-col h5 {
+    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.18);
-    letter-spacing: 0.08em;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 28px 0 14px;
   }
-  .footer-links {
-    display: flex;
-    gap: 28px;
+  .site-footer-col ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .footer-links a {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.22);
-    transition: color 0.2s;
-    letter-spacing: 0.08em;
-    text-decoration: none;
+  .site-footer-col li {
+    margin-bottom: 10px;
   }
-  .footer-links a:hover {
-    color: rgba(255, 255, 255, 0.55);
+  .site-footer-col a {
+    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .site-footer-col a:hover {
+    color: #fff;
   }
 
-  @media (max-width: 768px) {
-    footer {
+  .site-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+  }
+  .site-footer-bottom-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .site-footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .site-footer-bottom-links a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 1100px) {
+    .site-footer-top {
+      grid-template-columns: 200px repeat(2, 1fr);
+      gap: 40px 32px;
+    }
+  }
+  @media (max-width: 700px) {
+    .site-footer {
+      padding: 64px 6% 28px;
+    }
+    .site-footer-top {
+      grid-template-columns: 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+    .site-footer-bottom {
       flex-direction: column;
-      gap: 12px;
-      text-align: center;
-      padding: 36px 6%;
+      align-items: flex-start;
     }
   }
 </style>
