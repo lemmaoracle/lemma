@@ -1,0 +1,760 @@
+/**
+ * Lemma Oracle glossary terms (JA).
+ *
+ * Source of truth for /ja/glossary/* pages. 23 terms across 4 categories.
+ *
+ * SAFETY BOUNDARY — inline HTML and `set:html`:
+ *   `lead`, `definition[]`, `implementation[]` may contain inline HTML
+ *   (<a>, <code>, <strong>, <em>) and are rendered with `set:html` in the
+ *   consuming Astro template. This is intentional: the content originates
+ *   in this file under code review, never from user input or a CMS.
+ *   If this ever migrates to a CMS / external authoring surface, this
+ *   string-to-DOM pipe MUST sanitize (e.g. DOMPurify on the server or
+ *   restrict the allowed tag list) before the data leaves this module.
+ *   Reviewers: treat changes to these fields as code, not content.
+ */
+
+export type GlossarySlug =
+  // 暗号レイヤ
+  | "zk-proof"
+  | "aes-gcm"
+  | "poseidon-hash"
+  | "doc-hash"
+  | "cid"
+  | "selective-disclosure"
+  | "commitment"
+  // 検証可能AI
+  | "verifiable-ai"
+  | "provenance"
+  | "rag"
+  | "citation-proof"
+  | "audit-trail"
+  // プロトコル・エージェント
+  | "x402"
+  | "trust402"
+  | "eip-3009"
+  | "facilitator"
+  | "a2a"
+  | "mcp"
+  // 規制・コンプライアンス
+  | "kyc-aml"
+  | "eu-ai-act"
+  | "cbam"
+  | "eudr"
+  | "dpp";
+
+export type GlossaryCategory =
+  | "暗号レイヤ"
+  | "検証可能AI"
+  | "プロトコル・エージェント"
+  | "規制・コンプライアンス";
+
+export interface GlossaryRelated {
+  readonly slug: GlossarySlug;
+  readonly desc: string;
+}
+
+export interface GlossaryTerm {
+  readonly slug: GlossarySlug;
+  readonly nameJa: string;
+  readonly nameEn: string;
+  readonly category: GlossaryCategory;
+  /** Short meta description (~80–160 chars). */
+  readonly description: string;
+  /** Hero lead paragraph rendered with set:html (may contain inline <a>). */
+  readonly lead: string;
+  /** "定義" section paragraphs (HTML strings). */
+  readonly definition: ReadonlyArray<string>;
+  /** "Lemma Oracle での実装" / "適合経路" section paragraphs (HTML strings). */
+  readonly implementation: ReadonlyArray<string>;
+  /** 4 related terms with one-line descriptions. */
+  readonly related: ReadonlyArray<GlossaryRelated>;
+  /** CTA H2 for the bottom Get-Started panel. */
+  readonly ctaH2: string;
+  /**
+   * Optional implementation section heading (defaults to
+   * "Lemma Oracle での実装"). Regulatory pages use "Lemma Oracle での適合経路".
+   */
+  readonly implementationHeading?: string;
+}
+
+export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
+  // ============ 暗号レイヤ ============
+  {
+    slug: "zk-proof",
+    nameJa: "ゼロ知識証明",
+    nameEn: "Zero-Knowledge Proof — ZKP",
+    category: "暗号レイヤ",
+    description:
+      "ゼロ知識証明 (ZK Proof) の定義と Lemma Oracle における実装。命題を秘匿したまま正当性のみを検証可能にする暗号プリミティブ。",
+    lead:
+      "命題が真であることを、命題の中身や前提となる秘密値を一切開示せず、第三者が機械的に検証できる暗号プリミティブ。",
+    definition: [
+      "ゼロ知識証明 (ZKP) は、証明者 (prover) が検証者 (verifier) に対し、ある命題が真である事実だけを納得させ、命題の根拠となる秘密値については一切の情報を漏らさない対話・非対話プロトコルを指す。Goldwasser, Micali, Rackoff が 1985 年に概念を導入し、現代では「完全性」「健全性」「ゼロ知識性」の三性質で形式化される。",
+      "実装上は非対話型 (NIZK) が主流であり、SNARK 系 (Groth16, PLONK, Halo2) と STARK 系が代表的な構成。証明サイズ・検証時間・信頼セットアップの有無でトレードオフを持つ。回路 (制約系) として表現された計算であれば、入力を秘匿したまま結果の正当性を証明できる。",
+      "ZKP の有用性は二点に集約される。第一に、秘密を開示せずに性質を証明できる点 (プライバシー)。第二に、計算量の重い検証を短い証明で代替できる点 (スケーラビリティ)。Lemma Oracle は前者を主軸に用いる。",
+    ],
+    implementation: [
+      "Lemma の中核アーキテクチャは、来歴・属性・AI 推論履歴を <code>docHash</code> として固定し、ZK 回路上で「ある来歴チェーンが存在する」「ある属性が範囲内にある」事実だけを取り出して証明する。コンテンツや個人情報を相手側へ渡す必要がない。",
+      '実装系は <a href="/ja/glossary/poseidon-hash/">Poseidonハッシュ</a> による回路内部のメモリ効率化、<a href="/ja/glossary/commitment/">コミットメント</a> による段階的開示、<a href="/ja/glossary/selective-disclosure/">選択的開示</a> による属性レベルの粒度制御を組み合わせる。最終的な証明は EVM 互換チェーン上でも安価に検証可能なサイズに収まる。',
+      "ZKP は Lemma のすべてのプロダクト (Civic / Critical / Compliance / Trust402) に共通する基盤である。判断根拠は秘匿しつつ、検証だけを公開できるという性質が、規制適合と機密性を同時に満たす唯一の経路となる。",
+    ],
+    related: [
+      { slug: "provenance", desc: "来歴を改ざん不能に追跡する仕組み。ZKP と組み合わせて秘匿しつつ証明する。" },
+      { slug: "verifiable-ai", desc: "AI の判断根拠を暗号で検証可能にする領域。ZKP はその主要構成要素。" },
+      { slug: "selective-disclosure", desc: "属性の一部のみを暗号証明とともに開示する手法。" },
+      { slug: "commitment", desc: "値を伏せて固定し、後で開示可能にする暗号構成。" },
+    ],
+    ctaH2: "ゼロ知識証明を、検証可能 AI の土台に。",
+  },
+  {
+    slug: "aes-gcm",
+    nameJa: "AES-GCM",
+    nameEn: "AES-GCM (Galois/Counter Mode)",
+    category: "暗号レイヤ",
+    description:
+      "AES ブロック暗号と Galois/Counter Mode を組み合わせた認証付き対称暗号 (AEAD)。機密性と完全性を単一構成で同時に保証する。",
+    lead:
+      "認証付き対称暗号 (AEAD) の代表的構成。AES ブロック暗号と GCM (Galois/Counter Mode) を組み合わせ、機密性と完全性を同時に保証する。",
+    definition: [
+      "AES-GCM は NIST SP 800-38D で標準化された AEAD 構成。AES-128 / 192 / 256 のいずれかをカウンタモードで動かして暗号化と同時に Galois Field 上の MAC を生成する。出力は ciphertext と認証タグ (通常 128bit) の組。",
+      "設計上の特長は並列化可能性とハードウェア加速。Intel AES-NI、ARMv8 Crypto Extensions などのハードウェア命令により、ソフトウェア実装より一桁以上速く動く。TLS 1.3、SSH、IPsec、Signal、QUIC でデフォルトの一つ。",
+      "機密性 (ciphertext から平文を逆算不可) と完全性 (タグ検証により改竄を検出) を単一の構成で達成する点が、AES-CBC + HMAC のような複合構成より安全かつ高速。ただし IV (ノンス) の一意性は厳格に守る必要がある。",
+    ],
+    implementation: [
+      "Lemma は機微データ (顧客属性・AI 入力・判断ログ) を保管・転送する経路で AES-GCM を用いる。鍵管理は HSM/KMS と連携し、ノンス管理はカウンタ + コンテキスト識別子で一意性を担保する。",
+      'ZK 証明側に渡るのは <a href="/ja/glossary/doc-hash/">docHash</a> のみで、平文は AES-GCM 下で保管される。検証可能性 (ZK) と機密性 (AES-GCM) を二層構造で分離することが、Lemma の暗号設計の基本パターン。',
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> で属性証明を返す場合も、原文書は AES-GCM で暗号化された状態のまま動かない。属性のコミットメントと証明だけが回路に乗る。',
+    ],
+    related: [
+      { slug: "zk-proof", desc: "検証可能性を担う対の暗号プリミティブ。" },
+      { slug: "doc-hash", desc: "AES-GCM 下の暗号化対象を、回路側で参照するための識別子。" },
+      { slug: "commitment", desc: "属性をハッシュで固定し、復号せずに証明可能にする手法。" },
+      { slug: "selective-disclosure", desc: "原文を復号せず、属性のみを開示する設計。" },
+    ],
+    ctaH2: "機密と検証可能性を、同じ設計で。",
+  },
+  {
+    slug: "poseidon-hash",
+    nameJa: "Poseidonハッシュ",
+    nameEn: "Poseidon Hash",
+    category: "暗号レイヤ",
+    description:
+      "ZK 回路上での計算量を最小化するために設計された代数的ハッシュ関数。StarkWare らが 2019 年に提案、StarkNet/Cairo・Filecoin・Aztec などで採用。",
+    lead:
+      "ZK 回路上での計算量が極めて軽い代数的ハッシュ関数。StarkWare らが 2019 年に提案、StarkNet/Cairo の主要ハッシュとして採用される。",
+    definition: [
+      "Poseidon は HADES 設計戦略 (置換-置換ネットワーク + 部分 S-box 層) に基づく。完全ラウンド (R_F) と部分ラウンド (R_P) の組み合わせで衝突耐性を維持しつつ、ZK 回路上の制約数を SHA-256 比で 1〜2 桁削減する。",
+      "標準パラメータは素体 <code>p = 2^251 + 17·2^192 + 1</code> 上で定義される (StarkWare 公式仕様)。Filecoin・Aztec・Penumbra など主要 ZK プロジェクトが採用済み。Ethereum でも Poseidon precompile (EIP-5988) が提案されている。",
+      "設計上、Keccak / SHA-2 のようなビット演算ベースのハッシュは ZK 回路上で扱うと制約数が爆発する。Poseidon は乗算と加算のみで構成されるため、回路コストが入力長に対して線形に近い。",
+    ],
+    implementation: [
+      'Lemma は <a href="/ja/glossary/doc-hash/">docHash</a> の内部表現を Poseidon でハッシュ化する。回路内で docHash を吸い込み、属性・来歴・コミットメントを 1 つの ZK 友好的なハッシュチェーンに収束させる設計。',
+      '後段の <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> 生成において、Poseidon の選択が証明時間を桁単位で削減する。エンドユーザー視点では「証明が即時に生成される」体験の前提条件となる。',
+      '外部互換のための SHA-256 系識別子 (<a href="/ja/glossary/cid/">CID</a> など) と、回路内部の Poseidon 表現は二層で持つ。互換性と効率性のどちらも妥協しない構成。',
+    ],
+    related: [
+      { slug: "zk-proof", desc: "Poseidon の最大の用途。回路制約を線形オーダーに保つ。" },
+      { slug: "doc-hash", desc: "回路内部では Poseidon、外部互換では SHA-256 の二層構造。" },
+      { slug: "commitment", desc: "Pedersen/KZG コミットメントを Poseidon ベースで実装可能。" },
+      { slug: "cid", desc: "外部識別子としての CID と内部識別子としての Poseidon の対比。" },
+    ],
+    ctaH2: "ZK 回路の制約を、設計から最適化する。",
+  },
+  {
+    slug: "doc-hash",
+    nameJa: "docHash",
+    nameEn: "docHash — document content digest",
+    category: "暗号レイヤ",
+    description:
+      "文書のバイト列を入力とする暗号学的ダイジェスト。Lemma が来歴・属性・引用などすべての検証単位の同一性を固定するために用いる基本識別子。",
+    lead:
+      "文書のバイト列を入力とする暗号学的ダイジェスト。Lemma が来歴・属性・引用などすべての検証単位の同一性を固定するために用いる基本識別子。",
+    definition: [
+      "docHash は SHA-256 や BLAKE3 のような衝突困難なハッシュ関数を、文書の正規化バイト列に適用した固定長出力。同一バイト列なら必ず同一の docHash となり、1 ビットの改変でも全く異なる値となる。",
+      "単独では「中身を知る」手がかりにはならない。逆方向計算 (preimage) が計算量的に不可能なため、docHash を共有しても文書の内容は漏れない。これにより、内容を秘匿したまま「ある文書が存在する事実」だけを共有できる。",
+      'Lemma 文脈の docHash は、ZK 回路に直接食わせるため <a href="/ja/glossary/poseidon-hash/">Poseidonハッシュ</a> 表現も併用する。SHA-256 のような従来表現は外部互換用、Poseidon 表現は回路内部用、という二層構造をとる。',
+    ],
+    implementation: [
+      "来歴・属性・AI 推論履歴のすべては最終的に docHash として固定される。文書・データセット・モデル重み・ログいずれも、バイト列レベルで一意化することで監査と証明の単位が揃う。",
+      'docHash と <a href="/ja/glossary/commitment/">コミットメント</a> を組み合わせると、文書を見せずに「ある属性を持つ文書が存在する」事実を <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で示せる。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> の出発点。',
+      '<a href="/ja/glossary/provenance/">プロヴナンス</a> チェーンは、各段階の docHash を時系列リンクとして連結することで形成される。docHash は Lemma 暗号インフラ全体の最小単位。',
+    ],
+    related: [
+      { slug: "zk-proof", desc: "docHash を入力とし、開示せずに事実だけを取り出す暗号プリミティブ。" },
+      { slug: "poseidon-hash", desc: "docHash の回路内表現を担う ZK 友好的ハッシュ。" },
+      { slug: "commitment", desc: "docHash と乱数を組み合わせて値を伏せて固定する構成。" },
+      { slug: "cid", desc: "docHash と並ぶ外部互換のコンテンツ識別子。" },
+    ],
+    ctaH2: "検証の単位を、バイト列で固定する。",
+  },
+  {
+    slug: "cid",
+    nameJa: "CID",
+    nameEn: "Content Identifier — multiformats",
+    category: "暗号レイヤ",
+    description:
+      "コンテンツ自身から導出される自己記述的な識別子。multihash・multicodec・multibase の組み合わせで、ハッシュアルゴリズム・符号化形式・データ型を識別子に直接埋め込む。",
+    lead:
+      "コンテンツ自身から導出される自己記述的な識別子。multihash・multicodec・multibase の組み合わせで、ハッシュアルゴリズム・符号化形式・データ型を識別子に直接埋め込む。",
+    definition: [
+      "CID は IPFS / IPLD エコシステムを起点に multiformats プロジェクトで標準化された。CIDv0 は <code>Qm...</code> 形式 (base58btc + SHA-256 multihash) の単純形式、CIDv1 は <code>multibase prefix + version + multicodec + multihash</code> の柔軟構造。",
+      "自己記述性により、識別子から逆引きでハッシュアルゴリズム・データ形式が判明する。プロトコル進化 (SHA-256 → SHA-3、JSON → CBOR) に対して識別子のフォーマット側を変えずに移行できる。",
+      "内容アドレッシング (content-addressing) のため、同じバイト列は誰がアップロードしても必ず同じ CID になる。逆に CID が一致すれば内容は一致しているという強い保証が得られる。",
+    ],
+    implementation: [
+      'Lemma は分散ストレージ上のオブジェクト (RAG 文書・来歴メタデータ・ライセンスファイル) を CID で参照する。<a href="/ja/glossary/doc-hash/">docHash</a> が内部ハッシュ表現であるのに対し、CID は外部互換のためのコンテンツ識別子。',
+      '<a href="/ja/glossary/provenance/">プロヴナンス</a> グラフの各ノードは CID で前段にリンクされる。来歴の永続性と検証可能性を、分散ストレージレベルでも担保する設計。',
+      'ZK 回路内では CID 文字列ではなく <a href="/ja/glossary/poseidon-hash/">Poseidonハッシュ</a> 化された短い値で扱う。外部識別子と内部識別子を分離することで、両方の利便性を取る。',
+    ],
+    related: [
+      { slug: "doc-hash", desc: "CID と並ぶハッシュ識別子。内部表現と外部表現の対。" },
+      { slug: "provenance", desc: "CID で結ばれる来歴グラフのノード設計。" },
+      { slug: "poseidon-hash", desc: "CID を ZK 回路内で扱うための表現変換。" },
+      { slug: "zk-proof", desc: "CID 参照を秘匿したまま整合性を証明する手法。" },
+    ],
+    ctaH2: "コンテンツに、内容由来の名前を。",
+  },
+  {
+    slug: "selective-disclosure",
+    nameJa: "選択的開示",
+    nameEn: "Selective Disclosure",
+    category: "暗号レイヤ",
+    description:
+      "文書や認証情報の全体を開示せず、必要な属性のみを選んで暗号証明とともに開示する手法。プライバシーと規制適合を両立させる中核技術。",
+    lead:
+      "文書や認証情報の全体を開示せず、必要な属性のみを選んで暗号証明とともに開示する手法。プライバシーと適合性 (compliance) を両立させる中核技術。",
+    definition: [
+      "古典的には Camenisch-Lysyanskaya 署名や匿名認証情報 (Anonymous Credentials) として研究されてきた。近年は SD-JWT (Selective Disclosure JWT)、BBS+ 署名、AnonCreds などの実装規格が整備されている。",
+      "仕組みは「全属性を含む文書にコミットメントを取り、そのコミットメントへ発行者が署名」「開示時には特定属性とそれが元文書由来である ZK 証明のみを提示」という構造。検証者は宣言された属性が真正かつ未改ざんであることを、他の属性に触れずに確認できる。",
+      "GDPR の「データ最小化原則」、KYC/AML の身元検証要件、医療情報の最小開示原則と整合する設計。データを「全開示」or「全非開示」の二択から「属性レベル」に分解する。",
+    ],
+    implementation: [
+      'Lemma は属性ごとの開示を <a href="/ja/glossary/commitment/">コミットメント</a> と <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で構成する。例えば KYC 情報のうち「居住国は EU 域内」のみを証明し、氏名・住所・生年月日は提示しない。',
+      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> の高リスク AI 監査、<a href="/ja/glossary/kyc-aml/">KYC/AML</a> の本人確認、<a href="/ja/glossary/cbam/">CBAM</a> の炭素属性証明、<a href="/ja/glossary/eudr/">EUDR</a> の土地利用属性証明──いずれも「属性は確認したい、データは渡したくない」場面で適用できる。',
+      "属性の発行者・開示者・検証者がそれぞれ独立し、データの集中保管を回避できる。データ漏洩リスクを構造的に下げる点も実運用上の利点。",
+    ],
+    related: [
+      { slug: "zk-proof", desc: "属性開示を支える暗号プリミティブ。" },
+      { slug: "commitment", desc: "属性を伏せて固定し、必要分だけ開示する構成。" },
+      { slug: "kyc-aml", desc: "選択的開示が最も具体的な解になる規制領域。" },
+      { slug: "provenance", desc: "来歴の各段階を属性単位で開示する設計。" },
+    ],
+    ctaH2: "属性だけを、ピンポイントで証明する。",
+  },
+  {
+    slug: "commitment",
+    nameJa: "コミットメント",
+    nameEn: "Commitment Scheme",
+    category: "暗号レイヤ",
+    description:
+      "値を一旦伏せて固定し、後で開示できる暗号構成。固定後は値を変更できない (binding) かつ、開示前は値が漏れない (hiding) を満たす。",
+    lead:
+      "値を一旦伏せて固定し (commit)、後で開示できる (reveal) 暗号構成。固定後は値を変更できない (binding) かつ、開示前は値が漏れない (hiding) という二性質を満たす。",
+    definition: [
+      '古典的なコミットメント方式は三系統に大別される。(1) ハッシュベース: <code>H(m, r)</code> で値 m とランダムソルト r をハッシュ化、(2) Pedersen コミットメント: <code>g^m · h^r</code> (群論的)、(3) Kate/KZG コミットメント: 多項式コミットメント。',
+      'ZK 証明系では、回路に値を直接渡すのではなくコミットメントを渡し、必要な部分だけを <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で開示する設計が一般的。コミットメントが ZK の入力プライバシーの土台になる。',
+      "<strong>binding</strong> は事後の改竄を防ぎ、<strong>hiding</strong> は事前の漏洩を防ぐ。両方を満たすことで「言質を取った上で、後で必要な分だけ見せる」という運用が可能になる。",
+    ],
+    implementation: [
+      "Lemma の属性コミットメント・モデルコミットメント・来歴コミットメントすべては Pedersen 系または KZG 系を採る。属性レベルで開示できるよう、属性ごとに独立したコミットメントを束ねるベクトル/多項式コミットメントを使用する。",
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> はコミットメントの開示制御として実装され、<a href="/ja/glossary/provenance/">プロヴナンス</a> の各段階はコミットメントのチェーンとして固定される。',
+      '<a href="/ja/glossary/poseidon-hash/">Poseidonハッシュ</a> ベースのコミットメントを採用することで、ZK 回路上での開示証明コストを最小化する。',
+    ],
+    related: [
+      { slug: "zk-proof", desc: "コミットメントの開示証明を担う暗号プリミティブ。" },
+      { slug: "selective-disclosure", desc: "コミットメントの開示制御として実装される。" },
+      { slug: "doc-hash", desc: "コミットメント値の元となる文書識別子。" },
+      { slug: "poseidon-hash", desc: "ZK 回路上のコミットメント実装に最適。" },
+    ],
+    ctaH2: "値を、開示の前に固定する。",
+  },
+
+  // ============ 検証可能AI ============
+  {
+    slug: "verifiable-ai",
+    nameJa: "検証可能AI",
+    nameEn: "Verifiable AI",
+    category: "検証可能AI",
+    description:
+      "検証可能AI (Verifiable AI) の定義と Lemma Oracle における実装。入力・モデル・推論過程の真正性を暗号で第三者検証できるようにする領域。",
+    lead:
+      "AI システムの判断・推論・引用を暗号で検証可能にする実装領域。出力だけでなく、入力データの来歴・モデルの同一性・推論経路の真正性を第三者が機械的に確認できる状態を指す。",
+    definition: [
+      "検証可能 AI は、AI の出力を「信じる」ことを前提にせず、「検証する」ことを前提にするための技術領域である。学術的には zkML (Zero-Knowledge Machine Learning) や cryptographic inference の総称的な位置づけにあたり、重みや入力を秘匿したまま「指定モデルが指定入力に対して指定出力を返した」事実を暗号で証明する系全体を指す。",
+      "技術的には三つの層で成立する。第一に <strong>入力来歴</strong>: モデルが参照した文書・データの出所と完全性を固定する層。第二に <strong>モデル同一性</strong>: 推論に使われたモデルが宣言された重みハッシュと一致することを保証する層。第三に <strong>推論一貫性</strong>: 入力と出力が指定モデルによる正規の計算結果であることを ZK 回路で示す層。",
+      "2025〜2026 年にかけて Lagrange DeepProve や JOLT、zkPyTorch などにより大規模モデルでの ZK 推論証明が実用化フェーズに入った。今後は「検証可能でない推論」が低信頼の市場区分に押し出され、規制適合や監査要件のあるドメインから先に検証可能 AI への移行が進む。",
+    ],
+    implementation: [
+      'Lemma は検証可能 AI を、汎用の暗号インフラとして提供する。入力データは <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> に直接食わせるのではなく、まず <code>docHash</code> でバイト列を固定し、属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> 可能な構造に変換する。これにより、コンテンツや個人情報を相手に渡さず、必要な属性だけを証明できる。',
+      '推論側ではモデルハッシュを <a href="/ja/glossary/commitment/">コミットメント</a> として固定し、入力・出力・モデルを結ぶ証明を生成する。RAG パイプラインの場合は、引用文書の <a href="/ja/glossary/provenance/">プロヴナンス</a> と引用文・本文の一致を同時に証明する設計を採る。",
+      "結果として、Lemma の検証可能 AI は規制対応 (EU AI Act の自動ログ・人間監督要件) と機密性 (GDPR・営業秘密) を同時に満たす経路となる。AI 判断を組織横断で監査するための、最も具体的なインフラ層がここにあたる。",
+    ],
+    related: [
+      { slug: "zk-proof", desc: "命題を秘匿したまま正当性のみを証明する暗号プリミティブ。検証可能 AI の中核構成要素。" },
+      { slug: "provenance", desc: "データ・判断の来歴を改ざん不能に追跡する仕組み。検証可能 AI の入力層。" },
+      { slug: "x402", desc: "HTTP 402 を再活用したマシン間決済プロトコル。エージェント取引と検証可能性の接点。" },
+      { slug: "eu-ai-act", desc: "高リスク AI に自動ログ・人間監督・データガバナンスを義務付ける EU 法。" },
+    ],
+    ctaH2: "検証可能 AI を、組織の判断基盤に。",
+  },
+  {
+    slug: "provenance",
+    nameJa: "プロヴナンス",
+    nameEn: "Provenance — 来歴証明",
+    category: "検証可能AI",
+    description:
+      "プロヴナンス (Provenance) の定義と Lemma Oracle における実装。データ・モデル・判断の来歴を改ざん不能に追跡する仕組み。W3C PROV・C2PA・SLSA との接続。",
+    lead:
+      "データ・モデル・判断がいつ・誰によって・何を入力として生成されたかを、改ざん不能に追跡・検証する仕組み。検証可能 AI の入力層であり、Lemma の中核柱の一つ。",
+    definition: [
+      "プロヴナンス (来歴) は、あるオブジェクトが「どこから来て」「どのような変換を経たか」を示す関係グラフを指す。概念モデルとしては W3C PROV (PROV-DM / PROV-O) が標準化されており、entity (対象) / activity (操作) / agent (実行者) の三項を時間順に結ぶ。",
+      "ドメインごとに具体化された標準が並走する。メディア領域では C2PA がコンテンツ来歴 (撮影・編集・AI 生成) の署名チェーンを定義する。ソフトウェア領域では SLSA がビルド来歴を、SCITT が透明性ログを規定する。AI 領域では学習データ・モデル・推論履歴の来歴を一貫して扱う標準がまだ確立しておらず、ここに検証可能 AI が入る。",
+      '重要なのは、プロヴナンスが「記録」ではなく「証明可能な来歴」であることだ。単なるログは事後に書き換え可能であり、規制上・法的に意味を持たない。来歴の各段階を <a href="/ja/glossary/commitment/">コミットメント</a> と署名で固定し、暗号的に一意に紐づけることで、はじめて第三者検証に耐える。',
+    ],
+    implementation: [
+      'Lemma は来歴を <code>docHash</code> + メタデータ・コミットメントの組として固定する。<code>docHash</code> は文書のバイト列ダイジェスト、メタデータは時刻・著作者・直前来歴へのリンクを含む。チェーン全体が単一のハッシュに収束し、後段の <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> でその存在のみを公開できる。',
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> を組み合わせることで、来歴の全段階を相手に渡さず、必要な属性 (例: 「製造業者は EU 域内」「データ取得日が規制発効後」) だけを取り出して証明できる。GDPR・営業秘密・国家機密を保ったまま規制適合を成立させる経路はここから生まれる。',
+      "Lemma Civic では行政データ、Lemma Critical では製造業のサプライチェーン部品、Lemma Compliance では顧客属性、検証可能 AI 領域では RAG が参照する文書群に対して、同一の来歴インフラを適用する。",
+    ],
+    related: [
+      { slug: "zk-proof", desc: "来歴を秘匿しつつ存在のみを証明する暗号プリミティブ。" },
+      { slug: "verifiable-ai", desc: "来歴を入力層として、推論まで一貫して検証可能にする領域。" },
+      { slug: "selective-disclosure", desc: "来歴の一部属性のみを暗号証明とともに開示する手法。" },
+      { slug: "eu-ai-act", desc: "高リスク AI にデータガバナンスを義務付ける EU 法。来歴インフラが直接対応する。" },
+    ],
+    ctaH2: "来歴を、組織横断の事実にする。",
+  },
+  {
+    slug: "rag",
+    nameJa: "RAG",
+    nameEn: "Retrieval-Augmented Generation",
+    category: "検証可能AI",
+    description:
+      "言語モデルの生成時に外部文書を検索し、その内容を回答に組み込む手法。最新情報や組織固有情報をモデル再学習なしで扱える反面、引用の真正性が新しい論点となる。",
+    lead:
+      "言語モデルの生成時に外部文書を検索し、その内容を回答に組み込む手法。モデル本体の重みを更新せずに最新情報・社内情報を扱える反面、引用の真正性が新しい論点となる。",
+    definition: [
+      "標準的な RAG パイプラインは四段で構成される。(1) クエリを embedding に変換、(2) ベクトル検索で関連文書を取得、(3) 文書をプロンプトに連結してモデルに入力、(4) モデルが文書を踏まえて応答。Meta が 2020 年に体系化、以降は産業実装の中心アーキテクチャ。",
+      "利点はモデルを再学習せずに最新情報・組織固有情報を扱える点、回答に「出典」を付与できる点。欠点は、検索された文書が改竄されている場合や引用が捏造される場合に検出が困難な点。",
+      "規制対応文脈で RAG を運用するには、検索対象文書の来歴と、回答中の引用が実際にその文書由来であることの両方を証明する仕組みが必要となる。ここに検証可能 AI の課題が顕在化する。",
+    ],
+    implementation: [
+      'Lemma は RAG パイプラインに対し、(1) 検索対象文書群を <a href="/ja/glossary/cid/">CID</a> と <a href="/ja/glossary/doc-hash/">docHash</a> で来歴固定、(2) 検索結果に <a href="/ja/glossary/provenance/">プロヴナンス</a> メタデータを付与、(3) 引用部分と本文の一致を <a href="/ja/glossary/citation-proof/">引用証明</a> で立証、という三層を提供する。',
+      "結果として、AI 回答に対する「この内容はこの文書から来た」「その文書は信頼できる発行元から来た」「文書は改竄されていない」を、コンテンツ自体を再提示することなく検証できる。",
+      "金融機関のリサーチ補助、医療情報の意思決定支援、法務 AI の判例引用など、引用の真正性が業務遂行責任に直結する領域で具体的な解として機能する。",
+    ],
+    related: [
+      { slug: "verifiable-ai", desc: "RAG を検証可能にする上位概念。" },
+      { slug: "citation-proof", desc: "RAG 応答中の引用真正性を担う暗号証明。" },
+      { slug: "provenance", desc: "検索対象文書群の来歴管理。" },
+      { slug: "audit-trail", desc: "RAG 実行履歴を改ざん不能に残す仕組み。" },
+    ],
+    ctaH2: "検索を、検証可能にする。",
+  },
+  {
+    slug: "citation-proof",
+    nameJa: "引用証明",
+    nameEn: "Citation Proof",
+    category: "検証可能AI",
+    description:
+      "AI 応答に含めた引用が、実際に主張した出典文書から来たもので、改竄も捏造もないことを暗号で証明する仕組み。RAG パイプラインにおける真正性保証の核。",
+    lead:
+      "AI が応答に含めた引用が、実際に主張した出典文書から来たものであり、改竄も捏造もないことを暗号的に証明する仕組み。RAG パイプラインにおける真正性保証の核。",
+    definition: [
+      '引用証明は二段階で構成される。(1) 引用元文書の同一性: 出典文書のバイト列が宣言された <a href="/ja/glossary/doc-hash/">docHash</a> と一致する。(2) 引用文の出典適合性: 応答内の引用文字列が、その文書の指定された範囲に文字列として存在する。',
+      '後者の証明は、文書を相手に渡さず <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> 回路上で「文書のある位置に引用文字列が存在する」事実のみを証明する。文書が機密でも、引用部分の真正性だけを開示できる。',
+      "単純な「URL を添えるだけ」の出典付与とは性質が異なる。URL は事後改竄や差し替えが可能だが、引用証明は暗号的にバインドされるため、検証時点でハッシュ一致を確認するかぎり後から改竄できない。",
+    ],
+    implementation: [
+      'Lemma は <a href="/ja/glossary/rag/">RAG</a> 応答に対し、引用箇所ごとに ZK 証明を付与する。応答を受け取った側は、文書本体にアクセスせずとも引用の真正性を機械検証できる。',
+      '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> の透明性義務、ジャーナリズム・法務領域でのファクトチェック、医療文書の引用検証──いずれも引用証明が直接の解として機能する場面。',
+      '<a href="/ja/glossary/selective-disclosure/">選択的開示</a> と組み合わせると、文書の特定段落・特定文だけを開示しつつ、それが正規の出典であることを証明できる。著作権の引用要件 (主従関係・出所明示) と暗号的真正性の同時成立。',
+    ],
+    related: [
+      { slug: "rag", desc: "引用証明が最も直接的に適用されるパイプライン。" },
+      { slug: "verifiable-ai", desc: "引用証明が成立させる上位概念。" },
+      { slug: "provenance", desc: "出典文書の来歴を担保する仕組み。" },
+      { slug: "zk-proof", desc: "引用文の存在を秘匿しつつ証明する暗号プリミティブ。" },
+    ],
+    ctaH2: "引用の真正性を、暗号で。",
+  },
+  {
+    slug: "audit-trail",
+    nameJa: "監査トレイル",
+    nameEn: "Audit Trail",
+    category: "検証可能AI",
+    description:
+      "システムの実行履歴を、事後の改ざんが不可能な形で残す仕組み。AI 判断ログ、決済経路、データアクセス履歴など、後から検証が求められるすべての領域で必須。",
+    lead:
+      "システムの実行履歴を、事後の改ざんが不可能な形で残す仕組み。AI システムの判断ログ、決済の経路、データアクセスの履歴など、後から検証が求められるすべての領域で必須となる。",
+    definition: [
+      "古典的な監査ログはアプリケーション側のテキストログとして実装されるが、ファイルベースのログは管理者権限で書き換え可能なため、強い証拠能力を持たない。暗号的に改ざん不能な監査トレイルは、Merkle 木・透明性ログ (Certificate Transparency / SCITT)・ブロックチェーン anchoring といった構成で実現される。",
+      '構造的には、各イベントを <a href="/ja/glossary/doc-hash/">docHash</a> 化し、直前のエントリへのハッシュリンクを含めてチェーン化する。チェーンの末端を定期的に外部に固定 (anchoring) することで、内部からの遡及改ざんを検出可能にする。',
+      'AI 領域での要件は、最低限 (1) 入力データのハッシュ、(2) モデルバージョン、(3) 推論時刻、(4) 出力ハッシュ、(5) 人間承認の有無、を含むこと。<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 第 12 条 (高リスク AI の自動ログ) と直接対応する。',
+    ],
+    implementation: [
+      'Lemma は監査トレイルを <a href="/ja/glossary/commitment/">コミットメント</a> チェーンとして実装する。各エントリは前段にハッシュリンクされ、末端は分散台帳に固定。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> によって、監査人にだけ必要な属性 (推論時刻・モデルバージョン) を見せる。',
+      'データ本体は秘匿しつつ、「ある時刻にあるモデルがある入力に対し推論を実行した」事実だけを <a href="/ja/glossary/zk-proof/">ZK</a> で証明できる。GDPR と監査義務の両立を、技術側で成立させる経路。',
+      '<a href="/ja/glossary/a2a/">A2A</a> プロトコル上のエージェント協調や <a href="/ja/glossary/mcp/">MCP</a> ツール呼び出しも、同じ監査トレイル設計に乗せられる。',
+    ],
+    related: [
+      { slug: "eu-ai-act", desc: "高リスク AI に自動ログを義務付ける法令。直接対応。" },
+      { slug: "verifiable-ai", desc: "監査トレイルを必須要素として含む上位概念。" },
+      { slug: "provenance", desc: "イベントの来歴チェーンとして表現される構造。" },
+      { slug: "commitment", desc: "監査トレイルの各エントリを固定する暗号構成。" },
+    ],
+    ctaH2: "改ざん不能な実行履歴を、AI に。",
+  },
+
+  // ============ プロトコル・エージェント ============
+  {
+    slug: "x402",
+    nameJa: "x402",
+    nameEn: "HTTP 402-native payment protocol",
+    category: "プロトコル・エージェント",
+    description:
+      "x402 の定義と Lemma Oracle における検証層 (Trust402)。HTTP 402 Payment Required を再活用し、ステーブルコイン決済を HTTP に直接統合する Coinbase 主導のオープンプロトコル。",
+    lead:
+      "HTTP 402 Payment Required を再活用し、API・コンテンツへのアクセスにステーブルコイン決済を直接組み込む Coinbase 主導のオープンプロトコル。AI エージェントによる自律決済を主要ユースケースに据える。",
+    definition: [
+      "x402 は、HTTP ステータスコード <code>402 Payment Required</code> を実運用に転用する決済プロトコルである。クライアントが保護リソースへ GET を投げると、サーバが 402 とともに支払い要件 (金額・通貨・受取アドレス・facilitator 情報) を返す。クライアントは要件に応じた支払いペイロードを生成し、<code>X-PAYMENT</code> ヘッダに乗せて再リクエストを送る。サーバは facilitator を介して検証・決済を確定し、200 とともにリソースを返す。",
+      "技術特性として、(1) アカウント・セッション・OAuth フローが不要、(2) EVM チェーン (Base, Polygon, Arbitrum など) と Solana を含む複数ネットワーク対応、(3) ERC-20 ベースでステーブルコイン以外も扱える、(4) 拡張機構によりサービス発見・認証を取り込める、という点が挙げられる。Coinbase Developer Platform はホスト型 facilitator を提供する。",
+      "x402 が解こうとしているのは「人間用 UI を介さない経済活動の決済層」である。AI エージェントが API を有償呼び出しする、エージェント同士が成果物を交換する、コンテンツが従量課金で消費される──こうした用途で、人間の都度承認を介さずに完結する仕組みを HTTP の最小拡張で実現する。",
+    ],
+    implementation: [
+      'Lemma は x402 に検証可能性を加える層を <a href="/ja/glossary/trust402/">Trust402</a> として実装している。x402 単体は「決済が成立したかどうか」を解決するが、Trust402 はそれに加えて「<strong>正当な権限を持つエージェントが、許可された範囲内で、宣言された目的のために支払った</strong>」事実を <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で残す。',
+      '具体的には、(1) エージェントへの権限委譲を <a href="/ja/glossary/commitment/">コミットメント</a> として固定し、(2) 支払い時刻・金額・宛先・目的を <a href="/ja/glossary/provenance/">プロヴナンス</a> チェーンに紐付け、(3) その存在を ZK で公開する。委任元・委任先・支払い詳細は <a href="/ja/glossary/selective-disclosure/">選択的開示</a> により監査者だけが必要な層まで開示できる。',
+      "結果として x402 + Trust402 は、エージェント経済における「決済の事実」と「決済の正当性」を分離して扱える唯一の経路となる。決済が成立しただけでは規制適合や監査要件を満たさない領域 (金融機関の AI、企業の調達、自治体の支出) に、x402 を持ち込むための前提条件をここで揃える。",
+    ],
+    related: [
+      { slug: "trust402", desc: "x402 に検証可能性を加える Lemma のリファレンス実装。" },
+      { slug: "zk-proof", desc: "権限委譲と支払い目的を秘匿したまま証明する暗号プリミティブ。" },
+      { slug: "eip-3009", desc: "署名による事前承認型 ERC-20 送金規格。x402 の決済機構の基礎の一つ。" },
+      { slug: "facilitator", desc: "x402 決済の検証・実行を仲介する役割。" },
+    ],
+    ctaH2: "x402 の決済に、検証可能性を。",
+  },
+  {
+    slug: "trust402",
+    nameJa: "Trust402",
+    nameEn: "Trust402 — Lemma's verifiable x402 layer",
+    category: "プロトコル・エージェント",
+    description:
+      "x402 決済プロトコルに検証可能性を加える Lemma のリファレンス実装。決済の事実だけでなく、決済の正当性 (権限・目的・範囲) を暗号で証明する。",
+    lead:
+      '<a href="/ja/glossary/x402/">x402</a> 決済プロトコルに検証可能性を加える Lemma のリファレンス実装。決済の事実だけでなく、決済の正当性 (権限・目的・範囲) を暗号で証明する。',
+    definition: [
+      "x402 単体は「支払いが成立したか」を解決するが、エージェント経済では「正当な権限を持つエージェントが、許可された範囲内で、宣言された目的のために支払ったか」が追加で問われる。Trust402 はこの第二の問いに答える層。",
+      '構造は三段で構成される。(1) 委任側 (人間または上位エージェント) が支払い権限を <a href="/ja/glossary/commitment/">コミットメント</a> として発行、(2) 委任先エージェントが x402 経由で決済を実行する際、権限の有効性を <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で示す、(3) Facilitator が決済の検証時に証明も同時検証する。',
+      '開発者は Explorer (試行)・Builder (統合)・Studio (運用)・Pro (本番) の四段階で導入できる構成。<a href="/ja/glossary/eip-3009/">EIP-3009</a> のメタトランザクション、<a href="/ja/glossary/facilitator/">Facilitator</a> サービスの両方と互換性を保つ。',
+    ],
+    implementation: [
+      "Trust402 は Lemma の暗号インフラ (docHash + commitment + ZK 証明) の上に、x402 仕様への変換層を実装する。既存の x402 クライアント・サーバから見ると、追加の HTTP ヘッダ <code>X-PROOF</code> を扱えるかどうかの差にしか見えない設計。",
+      "金融機関の自律エージェント、組織の調達自動化、自治体の支出 API──いずれも「支払いの事実」だけでは規制が満たせず、「支払いの正当性」が要る領域。Trust402 はその橋渡し役。",
+      '<a href="/ja/glossary/audit-trail/">監査トレイル</a> に決済 + 証明を残すことで、事後監査と規制適合の両方が成立する。',
+    ],
+    related: [
+      { slug: "x402", desc: "Trust402 のベースとなる決済プロトコル。" },
+      { slug: "eip-3009", desc: "EVM スキームでの決済機構。" },
+      { slug: "facilitator", desc: "x402 決済の仲介サービス。Trust402 はこれに透過対応。" },
+      { slug: "zk-proof", desc: "Trust402 の正当性証明を担う暗号プリミティブ。" },
+    ],
+    ctaH2: "x402 に、検証可能性を実装する。",
+  },
+  {
+    slug: "eip-3009",
+    nameJa: "EIP-3009",
+    nameEn: "EIP-3009 — Transfer With Authorization",
+    category: "プロトコル・エージェント",
+    description:
+      "ERC-20 トークンの送金を、ガス代を払わずに署名だけで承認する Ethereum 拡張規格。署名者・宛先・金額・有効期間・ノンスを EIP-712 で署名し、第三者が送信する。",
+    lead:
+      "ERC-20 トークンの送金を、ガス代を払わずに署名だけで承認する Ethereum 拡張規格。署名者・宛先・金額・有効期間・ノンスを EIP-712 で署名し、第三者が送信する。",
+    definition: [
+      "署名対象は <code>TransferWithAuthorization(address from, address to, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce)</code> の構造化メッセージ。EIP-712 typed-data 形式で署名されるため、リプレイ攻撃やネットワーク間混同が防がれる。",
+      "ノンスはユーザが選ぶ 32 バイト値で、トークンコントラクトが「使用済みノンス」を bitmap で管理する。これにより EIP-2612 のような連番ノンスと異なり、並行する承認を順不同で処理できる。",
+      "<code>validAfter</code> / <code>validBefore</code> による時間窓制御が可能で、「今署名・2 週間後に有効化・3 週間後に失効」のようなスケジュール決済を扱える。USDC をはじめ主要ステーブルコインが採用。",
+    ],
+    implementation: [
+      '<a href="/ja/glossary/x402/">x402</a> の EVM スキーム (<code>scheme_exact_evm</code>) は EIP-3009 の <code>transferWithAuthorization</code> を決済機構として直接採用する。クライアントは支払いペイロードに EIP-3009 署名を含め、<a href="/ja/glossary/facilitator/">Facilitator</a> がそれを on-chain に提出する。',
+      'Lemma の <a href="/ja/glossary/trust402/">Trust402</a> は、EIP-3009 署名に加えて権限委譲証明を要求することで、署名の「機械的な有効性」と「組織的な正当性」を分離して検証する。',
+      "宛先がメッセージに直接埋め込まれるため、フィッシング被害下の署名でも被害範囲が限定される (送金先が固定)。EIP-2612 (permit) より安全側に倒れた設計。",
+    ],
+    related: [
+      { slug: "x402", desc: "EIP-3009 を決済機構として採用する HTTP プロトコル。" },
+      { slug: "trust402", desc: "EIP-3009 署名に権限証明を重ねる Lemma 実装。" },
+      { slug: "facilitator", desc: "EIP-3009 署名を on-chain に提出する仲介役。" },
+      { slug: "a2a", desc: "エージェント協調の上で EIP-3009 決済を実行する場面。" },
+    ],
+    ctaH2: "署名一発の決済を、検証可能に拡張する。",
+  },
+  {
+    slug: "facilitator",
+    nameJa: "Facilitator",
+    nameEn: "Facilitator — x402 settlement intermediary",
+    category: "プロトコル・エージェント",
+    description:
+      "x402 決済の検証と実行を仲介するサービス。クライアントの支払いペイロードを on-chain に提出し、決済の成立をリソースサーバへ返す役割を担う。",
+    lead:
+      "x402 決済の検証と実行を仲介するサービス。クライアントの支払いペイロードを on-chain に提出し、決済の成立をサーバへ返す役割を担う。",
+    definition: [
+      "x402 の純粋な P2P 構成では、リソースサーバ自身が on-chain 状態を確認する必要があり、サーバ側の運用負荷が大きい。Facilitator はこの層を切り出し、決済の検証・送信・確認の各ステップを集約する。",
+      "Coinbase Developer Platform は Coinbase ホスト型の Facilitator を提供しており、Base / Polygon / Arbitrum / World / Solana に対応する。月 1,000 トランザクションまでの無料枠を持つ。",
+      "Facilitator はクライアントの秘密情報を持たない (秘匿性ではなく可用性のための仲介)。決済署名はクライアント側で完結しており、Facilitator は提出と検証のみを行う。複数 Facilitator を選択可能な設計。",
+    ],
+    implementation: [
+      'Lemma の <a href="/ja/glossary/trust402/">Trust402</a> は、既存 Facilitator に対して透過的に動作する。<code>X-PAYMENT</code> ヘッダ (<a href="/ja/glossary/x402/">x402</a> 標準) と <code>X-PROOF</code> ヘッダ (Trust402 拡張) を分離することで、検証可能性ヘッダを理解しない Facilitator でも基本決済は通る。',
+      '検証可能性が必須となる用途 (金融機関・公共調達) では、Trust402 対応 Facilitator が <code>X-PROOF</code> を <a href="/ja/glossary/zk-proof/">ZK</a> 検証し、両方の検証通過後に決済を確定する設計。',
+      '<a href="/ja/glossary/eip-3009/">EIP-3009</a> 署名を on-chain に提出するガス費用は Facilitator が立替・回収する。クライアント側はガス管理から完全に解放される。',
+    ],
+    related: [
+      { slug: "x402", desc: "Facilitator が仲介する基本プロトコル。" },
+      { slug: "trust402", desc: "X-PROOF を理解する拡張版 Facilitator。" },
+      { slug: "eip-3009", desc: "Facilitator が on-chain に提出する署名規格。" },
+      { slug: "a2a", desc: "エージェント協調から Facilitator を呼び出す経路。" },
+    ],
+    ctaH2: "決済仲介に、検証層を組み込む。",
+  },
+  {
+    slug: "a2a",
+    nameJa: "A2A",
+    nameEn: "Agent2Agent — A2A",
+    category: "プロトコル・エージェント",
+    description:
+      "AI エージェント同士の通信・連携を標準化するオープンプロトコル。Google が 2025 年に提唱し、2026 年に Linux Foundation 配下の独立プロジェクトへ移管。",
+    lead:
+      "AI エージェント同士の通信・連携を標準化するオープンプロトコル。Google が 2025 年に提唱し、2026 年に Linux Foundation 配下の独立プロジェクトへ移管された。",
+    definition: [
+      "A2A は三つの基本要素で構成される。(1) Agent Card: エージェントが自身の能力を JSON で宣言、(2) Task: エージェント間でやり取りする作業単位 (ライフサイクルを持つ)、(3) Transport: JSON-RPC 2.0 over HTTPS + Server-Sent Events で実装。",
+      "2026 年時点で 150+ 組織が支持を表明 (Microsoft, AWS, Salesforce, SAP, ServiceNow, Workday, IBM など)。v1.0 安定版でマルチプロトコル対応・エンタープライズ向けマルチテナント・近代化されたセキュリティフローを搭載。",
+      '<a href="/ja/glossary/mcp/">MCP</a> がエージェントとツールの接続を扱うのに対し、A2A はエージェント同士の対等な協調を扱う。両者は補完関係にあり、現実のシステムでは併用される。',
+    ],
+    implementation: [
+      'Lemma は A2A プロトコル上で動くエージェントに対し、(1) エージェント自身の同一性と能力宣言を <a href="/ja/glossary/commitment/">コミットメント</a> で固定、(2) Task の実行履歴を <a href="/ja/glossary/audit-trail/">監査トレイル</a> として残す、(3) エージェント間の権限委譲を <a href="/ja/glossary/zk-proof/">ZK 証明</a> で検証する、という構成を提供する。',
+      "金融・公共・規制業務では「どのエージェントが」「どの権限で」「何を実行したか」が事後に検証可能でなければならない。A2A の Agent Card / Task 構造に、Lemma の検証層を直接バインドする設計。",
+      'A2A 経由の決済が発生する場合は <a href="/ja/glossary/x402/">x402</a> + <a href="/ja/glossary/trust402/">Trust402</a> と組み合わせ、協調・決済・監査の一貫した検証可能チェーンを作る。',
+    ],
+    related: [
+      { slug: "mcp", desc: "A2A と相互補完の関係にある接続規格。" },
+      { slug: "x402", desc: "A2A 上で発生する経済活動の決済層。" },
+      { slug: "trust402", desc: "A2A 決済に検証可能性を加える Lemma 実装。" },
+      { slug: "audit-trail", desc: "A2A 上の Task 実行履歴を残す仕組み。" },
+    ],
+    ctaH2: "エージェント協調に、検証層を。",
+  },
+  {
+    slug: "mcp",
+    nameJa: "MCP",
+    nameEn: "Model Context Protocol — MCP",
+    category: "プロトコル・エージェント",
+    description:
+      "AI モデルが外部ツール・データソース・サービスに統一規格で接続するためのオープンプロトコル。Anthropic が 2024 年 11 月公開、2025 年 12 月に Linux Foundation 配下の AAIF へ寄贈。",
+    lead:
+      "AI モデルが外部ツール・データソース・サービスに統一規格で接続するためのオープンプロトコル。Anthropic が 2024 年 11 月に公開、2025 年 12 月に Linux Foundation 配下の AAIF に寄贈された。",
+    definition: [
+      "MCP はクライアント (モデル側) とサーバ (ツール側) の通信を JSON-RPC ベースで標準化する。サーバ側は <code>tools</code> / <code>resources</code> / <code>prompts</code> を能力として公開し、クライアントは必要に応じて呼び出す。",
+      "最新仕様は 2025-11-25 版が authoritative。2026 年には MCP Apps (SEP-1865) として、テキスト・構造化データに加えて React ベースの対話的 UI をホスト側に配信する拡張が標準化された。",
+      "MCP は Anthropic・Block・OpenAI 共同創設の Agentic AI Foundation (AAIF) に移管され、ベンダー中立な標準となった。Claude・ChatGPT・主要 IDE での実装が並行して進む。",
+    ],
+    implementation: [
+      'Lemma 自身が MCP サーバを提供し、AI エージェントが <a href="/ja/glossary/zk-proof/">ZK 証明</a> 生成・<a href="/ja/glossary/provenance/">プロヴナンス</a> 検証・<a href="/ja/glossary/selective-disclosure/">選択的開示</a> を MCP ツールとして呼び出せる。',
+      'MCP 接続の各 Tool 呼び出しは <a href="/ja/glossary/audit-trail/">監査トレイル</a> に記録され、後から「どのモデルがどのツールをどの権限で呼び出したか」が検証可能。<a href="/ja/glossary/a2a/">A2A</a> と組み合わせると、エージェント協調全体が監査対象になる。',
+      '<a href="/ja/glossary/verifiable-ai/">検証可能 AI</a> パイプラインに MCP を組み込むことで、モデル・ツール・データの三者間の境界も暗号的に検証可能となる。',
+    ],
+    related: [
+      { slug: "a2a", desc: "MCP と相互補完のエージェント協調プロトコル。" },
+      { slug: "x402", desc: "MCP ツール呼び出しに従量課金を組み込む経路。" },
+      { slug: "audit-trail", desc: "MCP 呼び出し履歴を改ざん不能に残す仕組み。" },
+      { slug: "verifiable-ai", desc: "MCP を組み込んだ検証可能 AI パイプライン。" },
+    ],
+    ctaH2: "AI とツールの接続を、検証可能に。",
+  },
+
+  // ============ 規制・コンプライアンス ============
+  {
+    slug: "kyc-aml",
+    nameJa: "KYC / AML",
+    nameEn: "Know Your Customer / Anti-Money Laundering",
+    category: "規制・コンプライアンス",
+    description:
+      "金融機関や暗号資産事業者が顧客の身元を確認 (KYC) し、資金洗浄やテロ資金供与の経路を遮断 (AML) するための国際的な法規制群。",
+    lead:
+      "金融機関・暗号資産事業者が顧客の身元を確認 (KYC) し、資金洗浄・テロ資金供与の経路を遮断 (AML) するための国際的な法規制群。",
+    definition: [
+      "KYC は金融機関が顧客の本人性・実在性・実質的支配者・取引目的を確認する義務。AML は不審取引のモニタリング・報告・凍結を含む。国際枠組みは FATF (金融活動作業部会) の勧告で、各国法 (米 BSA、EU AMLD、日本犯収法) に転写される。",
+      "2026 年時点で EU は AMLR (Anti-Money Laundering Regulation) + AMLD6 + AMLA (新規制機関) で枠組みを刷新し、暗号資産取引業者にも拡大適用が進む。違反は業務停止・巨額制裁金に直結する。",
+      "KYC/AML の中核課題はプライバシーとの両立。顧客から大量の機微情報を収集する必要があるが、データ漏洩・横流し・営業利用のリスクが大きい。属性ベースの最小開示が技術的解の方向。",
+    ],
+    implementation: [
+      'Lemma は KYC 属性 (国籍・年齢・本人確認済みフラグ・制裁リスト非該当) を <a href="/ja/glossary/commitment/">コミットメント</a> として発行者が署名し、顧客が金融機関ごとに必要な属性のみ <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で提示できる構成を提供する。',
+      "金融機関側は本人確認の責任を満たしつつ、原データを保管する必要が消える。GDPR の最小化原則・データ越境制限と、KYC/AML 要件を同時に満たす経路がここで成立する。",
+      '<a href="/ja/glossary/audit-trail/">監査トレイル</a> として、誰がいつどの属性を確認したかを <a href="/ja/glossary/zk-proof/">ZK</a> 付きで残せば、規制当局の事後検証にも耐える。',
+    ],
+    related: [
+      { slug: "selective-disclosure", desc: "KYC で「属性のみ開示」を実現する手法。" },
+      { slug: "eu-ai-act", desc: "AI を用いた KYC スコアリングへ適用される規制。" },
+      { slug: "audit-trail", desc: "KYC 確認履歴を改ざん不能に残す仕組み。" },
+      { slug: "zk-proof", desc: "属性開示の真正性を担う暗号プリミティブ。" },
+    ],
+    ctaH2: "本人確認を、データ共有なしに。",
+  },
+  {
+    slug: "eu-ai-act",
+    nameJa: "EU AI Act",
+    nameEn: "EU Artificial Intelligence Act — Regulation (EU) 2024/1689",
+    category: "規制・コンプライアンス",
+    description:
+      "EU AI Act の定義と Lemma Oracle での適合経路。4 つのリスク階層、2025-2027 年の施行スケジュール、高リスク AI への自動ログ・データガバナンス義務を解説。",
+    lead:
+      "AI システムをリスク階層で分類し、提供者および利用者に段階的義務を課す EU の規則。違反は最大 3,500 万ユーロまたは全世界年商の 7% の制裁金。",
+    definition: [
+      "EU AI Act は、AI システムを 4 つのリスク階層に分類する。<strong>unacceptable</strong> (禁止): 社会的スコアリングや無差別な生体監視など、基本的人権を侵害する用途。<strong>high</strong> (高リスク): 医療機器・採用・与信・教育評価・重要インフラ・法執行など、人の権利や安全に強く影響する用途。<strong>limited</strong> (限定): チャットボットやディープフェイクなど、透明性義務 (利用者への明示) が課される用途。<strong>minimal</strong> (最小): その他、追加義務なし。",
+      "施行は段階的に進む。禁止行為と AI リテラシー義務は 2025 年 2 月、汎用 AI (GPAI) モデル提供者の義務は 2025 年 8 月、高リスクシステムへの本格義務と透明性ルールは 2026 年 8 月から適用される。高リスク AI に関しては、(1) ライフサイクル全体を通じたリスク管理、(2) 学習・検証データのガバナンス、(3) 監査に耐える技術文書、(4) 自動ログ取得、(5) 人間監督メカニズム、(6) 正確性・堅牢性・サイバーセキュリティが要件となる。",
+      "GPAI 提供者には技術文書・利用説明・著作権遵守・学習データ要約の公開が課される。さらに「システミック・リスク」と判定された GPAI には、モデル評価・敵対的テスト・重大インシデント報告・サイバーセキュリティ対策が追加で求められる。",
+    ],
+    implementation: [
+      'EU AI Act の高リスク要件は、「監査可能な状態を残し続けること」に集約される。Lemma は監査ログ・データガバナンス・人間監督の根拠を、<code>docHash</code> + 属性 <a href="/ja/glossary/commitment/">コミットメント</a> + <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で構成する。実データの開示は GDPR や営業秘密と衝突するが、属性のみを暗号で証明する設計なら、機密と適合が両立する。',
+      '具体的には、(1) 学習・検証データの取得日・出所・分類を <a href="/ja/glossary/provenance/">プロヴナンス</a> として固定、(2) 推論ごとの入力・モデル・出力ハッシュを監査トレイルに残す、(3) 人間が承認した時刻と承認者属性を <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で証明、という設計を採る。Lemma Compliance は金融機関の高リスク AI 用途、Lemma Civic は公共領域の AI 利用に対し、同一の検証層を提供する。',
+      "EU AI Act が要請しているのは「AI が信頼できるかどうかを、後から検証できる状態にすること」である。Lemma の検証可能 AI は、その状態を技術として実装するための具体的な経路となる。",
+    ],
+    related: [
+      { slug: "verifiable-ai", desc: "高リスク AI 要件の自動ログ・データガバナンスを暗号で構成する領域。" },
+      { slug: "provenance", desc: "学習データの来歴を改ざん不能に固定する仕組み。データガバナンス要件に直結。" },
+      { slug: "selective-disclosure", desc: "監査者にだけ必要な属性を開示し、機密と適合を両立させる手法。" },
+      { slug: "audit-trail", desc: "改ざん不能な実行履歴。高リスク AI の自動ログ義務に対応する技術構成。" },
+    ],
+    ctaH2: "EU AI Act の適合を、暗号で。",
+    implementationHeading: "Lemma Oracle での適合経路",
+  },
+  {
+    slug: "cbam",
+    nameJa: "CBAM",
+    nameEn: "Carbon Border Adjustment Mechanism",
+    category: "規制・コンプライアンス",
+    description:
+      "EU 域外で生産された炭素集約的製品の輸入に、EU 域内生産と同等の炭素価格を課す国境調整制度。2023-2025 が移行期、2026 年 1 月 1 日から確定期。",
+    lead:
+      "EU 域外で生産された炭素集約的製品の輸入に対し、EU 域内生産と同等の炭素価格を課す国境調整制度。2023-2025 が移行期、2026 年 1 月 1 日から確定期に入った。",
+    definition: [
+      "対象は当面、セメント・鉄鋼・アルミニウム・肥料・電力・水素の 6 セクターと、その主要前駆体。2028 年からは 180+ 品目の下流製品 (アルミ・鉄鋼の加工品) への拡大が法案化されている。",
+      "確定期では、EU 輸入者は (1) 輸入時に CBAM 申告者として承認を受ける、(2) 輸入製品の埋め込み排出量を年次申告、(3) CBAM 証書を購入して提出、という義務を負う。50 トンの単一閾値以下は免除。",
+      "重要日付: 2026 年 3 月 31 日が CBAM 申告者承認の最終申請期限、2027 年 2 月 1 日から 2026 年分の CBAM 証書購入開始、2027 年 9 月 30 日が初回年次申告期限。",
+    ],
+    implementation: [
+      "CBAM の運用上の最難題は、海外サプライヤから埋め込み排出量データを正確かつ検証可能に取得すること。サプライヤ側は自社秘密に直結する製造データを EU 輸入者に開示することに強い抵抗を持つ。",
+      'Lemma は炭素属性 (生産単位あたりの埋め込み排出量) を <a href="/ja/glossary/provenance/">プロヴナンス</a> 付きの <a href="/ja/glossary/commitment/">コミットメント</a> として発行可能にし、<a href="/ja/glossary/selective-disclosure/">選択的開示</a> で必要な属性のみを EU 申告者へ渡す経路を提供する。',
+      '<a href="/ja/glossary/eudr/">EUDR</a> や <a href="/ja/glossary/dpp/">DPP</a> と組み合わせると、サプライチェーンの炭素・土地利用・素材構成を一本の検証可能な来歴チェーンに乗せられる。',
+    ],
+    related: [
+      { slug: "provenance", desc: "炭素属性の来歴を担保する仕組み。" },
+      { slug: "selective-disclosure", desc: "サプライヤが必要な属性のみ開示する手法。" },
+      { slug: "eudr", desc: "土地利用の検証可能性を扱う隣接規制。" },
+      { slug: "dpp", desc: "製品単位で属性を集約する EU 制度。" },
+    ],
+    ctaH2: "炭素属性を、検証可能に流通させる。",
+    implementationHeading: "Lemma Oracle での適合経路",
+  },
+  {
+    slug: "eudr",
+    nameJa: "EUDR",
+    nameEn: "EU Deforestation Regulation — Regulation (EU) 2023/1115",
+    category: "規制・コンプライアンス",
+    description:
+      "EU 市場に流通する特定産品が、2020 年 12 月 31 日以降に森林破壊された土地由来でないことを義務付ける規則。大企業は 2026 年 12 月 30 日、零細企業は 2027 年 6 月 30 日から適用。",
+    lead:
+      "EU 市場に流通する特定産品が、2020 年 12 月 31 日以降に森林破壊された土地由来でないことを義務付ける規則。大企業は 2026 年 12 月 30 日、零細企業は 2027 年 6 月 30 日から適用。",
+    definition: [
+      "対象産品は牛・カカオ・コーヒー・パーム油・ゴム・大豆・木材と、その派生加工品 (チョコレート、家具、皮革、印刷紙の一部など)。各事業者はデュー・ディリジェンスを実施し、原産地の地理座標 (geo-location) を含む情報を欧州委員会のシステムに提出する義務を負う。",
+      "適用日は当初 2024 年 12 月 30 日 → 2025 年 12 月 30 日 → 2026 年 12 月 30 日へと二度延期された (Regulation (EU) 2025/2650、2025 年 12 月 23 日 OJ 公布)。零細・小規模事業者は簡素化された一回限りの申告で足りる。",
+      "違反は域内売上 4% 以上の制裁金、輸入禁止、刑事責任の対象。証拠水準は「ゼロまたは無視できる」(<em>negligible</em>) リスクであり、座標と現地情報の真正性が決定的に重要。",
+    ],
+    implementation: [
+      'Lemma は地理座標と土地用途属性を <a href="/ja/glossary/provenance/">プロヴナンス</a> 連鎖に組み込み、サプライヤから EU 輸入者まで改ざん不能に伝播させる経路を提供する。原産農地の位置情報は <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で粗粒度化可能。',
+      '<a href="/ja/glossary/cbam/">CBAM</a> や <a href="/ja/glossary/dpp/">DPP</a> と組み合わせると、サプライチェーンの炭素・土地利用・労働慣行を一本の検証可能な来歴チェーンに乗せられる。',
+      'サプライヤ側は機密の農地情報を公開せずとも、検証者には「2020 年 12 月 31 日以降の森林破壊地ではない」という属性のみを <a href="/ja/glossary/zk-proof/">ZK</a> で示せる。',
+    ],
+    related: [
+      { slug: "provenance", desc: "地理座標と土地用途を伝播させる仕組み。" },
+      { slug: "cbam", desc: "並走する炭素属性規制。一本の来歴チェーンに統合可能。" },
+      { slug: "dpp", desc: "製品単位で属性を集約する関連制度。" },
+      { slug: "selective-disclosure", desc: "農地座標を粗粒度化して開示する手法。" },
+    ],
+    ctaH2: "森林由来でない事実を、暗号で。",
+    implementationHeading: "Lemma Oracle での適合経路",
+  },
+  {
+    slug: "dpp",
+    nameJa: "DPP",
+    nameEn: "Digital Product Passport",
+    category: "規制・コンプライアンス",
+    description:
+      "製品のライフサイクル全体 (素材・製造・輸送・修理・廃棄) の情報を、製品単位の電子パスポートとして添付する EU 制度。ESPR を骨格にセクター順次展開。",
+    lead:
+      "製品のライフサイクル全体 (素材・製造・輸送・修理・廃棄) の情報を、製品単位の電子パスポートとして添付する EU 制度。ESPR (Ecodesign for Sustainable Products Regulation) を骨格に、セクターごとに段階展開される。",
+    definition: [
+      "ESPR は 2024 年 7 月発効、本格運用は 2026 年 7 月 19 日に EU 中央 DPP レジストリの稼働とともに開始。鉄鋼・繊維・タイヤ・電子製品・建材・電池などのセクターから順次拡大される。",
+      "バッテリー規則 (Regulation (EU) 2023/1542) は ESPR と並走する先行制度。2027 年 2 月 18 日から、EU 市場に投入される 2 kWh 超の EV・産業用バッテリーには QR コード経由で参照可能な Battery Passport が義務化される。",
+      "DPP に含まれる情報は (1) 製造者・型番・素材構成、(2) サプライチェーンの来歴、(3) 修理可能性スコア・分解手順、(4) 環境負荷指標 (LCA)、(5) 適用法令の適合証明、など多岐に渡る。製品ごとに一意の識別子を持つ。",
+    ],
+    implementation: [
+      'Lemma は DPP の構成要素を <a href="/ja/glossary/cid/">CID</a> ベースのコンテンツアドレッシングと <a href="/ja/glossary/provenance/">プロヴナンス</a> 連鎖で実装する。素材属性・LCA データ・法令適合フラグそれぞれを独立した <a href="/ja/glossary/commitment/">コミットメント</a> として持ち、必要な開示粒度を選べる。',
+      '<a href="/ja/glossary/cbam/">CBAM</a> の炭素属性、<a href="/ja/glossary/eudr/">EUDR</a> の土地利用属性、Battery Passport の素材構成すべてが同じ来歴インフラに乗る。重複申告・データ転送の摩擦を、技術側でなくす設計。',
+      'サプライヤは原データを公開せずに済む。検証者 (EU 規制当局・小売事業者・消費者) には属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> を提供する。',
+    ],
+    related: [
+      { slug: "provenance", desc: "DPP の中核データ構造を担う仕組み。" },
+      { slug: "cbam", desc: "炭素属性を DPP に組み込む関連規制。" },
+      { slug: "eudr", desc: "土地利用属性を DPP に組み込む関連規制。" },
+      { slug: "selective-disclosure", desc: "DPP 内属性の開示粒度を制御する手法。" },
+    ],
+    ctaH2: "製品の生涯を、検証可能な属性で残す。",
+    implementationHeading: "Lemma Oracle での適合経路",
+  },
+];
+
+const TERMS_BY_SLUG: ReadonlyMap<GlossarySlug, GlossaryTerm> = new Map(
+  GLOSSARY_TERMS.map((t) => [t.slug, t]),
+);
+
+export function getGlossaryTerm(slug: string): GlossaryTerm | undefined {
+  return TERMS_BY_SLUG.get(slug as GlossarySlug);
+}
+
+export function getAllGlossarySlugs(): ReadonlyArray<GlossarySlug> {
+  return GLOSSARY_TERMS.map((t) => t.slug);
+}
+
+export const GLOSSARY_CATEGORIES: ReadonlyArray<GlossaryCategory> = [
+  "暗号レイヤ",
+  "検証可能AI",
+  "プロトコル・エージェント",
+  "規制・コンプライアンス",
+];
+
+export interface GlossaryCategoryGroup {
+  readonly category: GlossaryCategory;
+  readonly label: string;
+  readonly description: string;
+  readonly terms: ReadonlyArray<GlossaryTerm>;
+}
+
+const CATEGORY_DESCRIPTIONS: Readonly<Record<GlossaryCategory, string>> = {
+  暗号レイヤ:
+    "Lemma が証明・開示・改ざん検知に用いる暗号プリミティブ。ZK 証明、対称暗号、ハッシュ、コミットメントの基礎用語。",
+  検証可能AI:
+    "AI の判断・引用・推論履歴を暗号で検証可能にするための用語群。来歴、引用、監査の基本概念。",
+  "プロトコル・エージェント":
+    "自律エージェント取引と機械間決済のプロトコル群。x402、Trust402、MCP、A2A の周辺仕様。",
+  "規制・コンプライアンス":
+    "Lemma の証明が直接接続する規制フレームワーク。AI 規制、ESG、本人確認、製品パスポートの主要法令。",
+};
+
+export function getGlossaryByCategory(): ReadonlyArray<GlossaryCategoryGroup> {
+  return GLOSSARY_CATEGORIES.map((category, i) => ({
+    category,
+    label: `${String(i + 1).padStart(2, "0")} · ${category}`,
+    description: CATEGORY_DESCRIPTIONS[category],
+    terms: GLOSSARY_TERMS.filter((t) => t.category === category),
+  }));
+}

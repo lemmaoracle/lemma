@@ -1,0 +1,223 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navigation from "../../../components/Navigation.astro";
+import Footer from "../../../components/Footer.astro";
+import { getTranslations } from "../../../i18n/translations";
+import {
+  GLOSSARY_TERMS,
+  getGlossaryByCategory,
+} from "../../../data/glossary";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+const pagePath = "/glossary/";
+const groups = getGlossaryByCategory();
+
+const title = "用語集 — Lemma Oracle";
+const description =
+  "Lemma Oracle が扱う暗号レイヤ、検証可能AI、エージェントプロトコル、規制適合の中核用語。23 用語を製品文脈と一次ソースで解説。";
+
+const SITE = "https://lemma.frame00.com";
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}/ja/` },
+    { "@type": "ListItem", position: 2, name: "用語集", item: `${SITE}/ja/glossary/` },
+  ],
+};
+const definedTermSetJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  name: "Lemma Oracle 用語集",
+  inLanguage: "ja",
+  url: `${SITE}/ja/glossary/`,
+  hasDefinedTerm: GLOSSARY_TERMS.map((term) => ({
+    "@type": "DefinedTerm",
+    name: term.nameJa,
+    alternateName: term.nameEn,
+    url: `${SITE}/ja/glossary/${term.slug}/`,
+  })),
+};
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  title={title}
+  description={description}
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(definedTermSetJsonLd)}
+  />
+
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="glossary">
+    <section class="glossary-hero">
+      <div class="glossary-hero-inner">
+        <div class="glossary-hero-eyebrow">Glossary · 用語集</div>
+        <h1 class="glossary-hero-h1">用語集</h1>
+        <p class="glossary-hero-lead">
+          Lemma Oracle が扱う暗号レイヤ、検証可能AI、エージェントプロトコル、規制適合の中核用語。製品文脈に直結する定義のみを掲載する。
+        </p>
+      </div>
+    </section>
+
+    <section class="glossary-body">
+      <div class="glossary-body-inner">
+        {groups.map((group) => (
+          <div class="glossary-category" id={`cat-${group.category}`}>
+            <div class="glossary-category-label">{group.label}</div>
+            <h2 class="glossary-category-h2">{group.category}</h2>
+            <p class="glossary-category-desc">{group.description}</p>
+            <div class="glossary-grid">
+              {group.terms.map((term) => (
+                <a class="glossary-card" href={`/ja/glossary/${term.slug}/`}>
+                  <div class="glossary-card-term">
+                    {term.nameJa}
+                    <div class="glossary-card-term-en">{term.nameEn}</div>
+                  </div>
+                  <p class="glossary-card-desc">{term.description}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .glossary { background: var(--white); color: var(--gray-800); }
+
+  /* HERO */
+  .glossary-hero {
+    padding: 144px 8% 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .glossary-hero-inner { max-width: 980px; margin: 0 auto; }
+  .glossary-hero-eyebrow {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .glossary-hero-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 6vw, 72px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--gray-800);
+    margin: 0 0 24px;
+  }
+  .glossary-hero-lead {
+    font-family: var(--font-body);
+    color: var(--gray-700, #5F5F5F);
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 640px;
+  }
+
+  /* BODY */
+  .glossary-body { padding: 80px 8% 120px; }
+  .glossary-body-inner { max-width: 1100px; margin: 0 auto; }
+  .glossary-category { margin-bottom: 88px; }
+  .glossary-category:last-child { margin-bottom: 0; }
+  .glossary-category-label {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .glossary-category-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--gray-800);
+    margin: 0 0 12px;
+  }
+  .glossary-category-desc {
+    font-family: var(--font-body);
+    color: var(--gray-700, #5F5F5F);
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0 0 40px;
+    max-width: 680px;
+  }
+
+  /* GRID + CARDS */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+  }
+  .glossary-card {
+    background: var(--white);
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 132px;
+    transition: background 0.2s ease;
+  }
+  .glossary-card:hover { background: var(--accent-bg); }
+  .glossary-card-term {
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gray-800);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+  }
+  .glossary-card-term-en {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--gray-500);
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+  .glossary-card-desc {
+    font-family: var(--font-body);
+    color: var(--gray-700, #5F5F5F);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: auto 0 0;
+  }
+
+  @media (max-width: 900px) {
+    .glossary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .glossary-hero { padding: 120px 6% 48px; }
+    .glossary-body { padding: 64px 6% 96px; }
+    .glossary-grid { grid-template-columns: 1fr; }
+  }
+</style>
