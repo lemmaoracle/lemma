@@ -1,6 +1,7 @@
 ---
 import type { Locale } from "../i18n/translations";
 import { getTranslations } from "../i18n/translations";
+import { DISCOVERY_CALL } from "../config/cta";
 
 export interface CtaSectionProps {
   tag?: string;
@@ -36,7 +37,7 @@ const finalTag = tag ?? t.ctaSection.finalTag;
 const finalH2 = h2 ?? t.ctaSection.finalH2;
 const finalH2Em = h2Em ?? t.ctaSection.finalH2Em;
 const finalP = p ?? t.ctaSection.finalP;
-const finalCtaText = ctaText ?? t.ctaSection.finalCtaText;
+const finalCtaText = ctaText ?? DISCOVERY_CALL[locale].buttonLabel;
 const finalWpText = wpText ?? t.ctaSection.finalWpText;
 ---
 

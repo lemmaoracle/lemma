@@ -2,6 +2,7 @@
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import LemmaOracle from "../components/LemmaOracle.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface ThankYouTemplateProps {
   locale: Locale;
@@ -20,10 +21,7 @@ const pdfUrl =
   locale === "ja"
     ? "https://drive.google.com/file/d/10cNprvJe75QuSAaXgiIpaggy70gUG4P9/view?usp=sharing"
     : "https://drive.google.com/file/d/1TxcMr2t3NociJeZmBQs1UsCmHZsPJ5Qf/view?usp=sharing";
-const tallyUrl =
-  locale === "ja"
-    ? "https://tally.so/r/EkBqDX"
-    : "https://tally.so/r/Pd2Rl5";
+const tallyUrl = DISCOVERY_CALL_URL[locale];
 ---
 
 <Layout locale={locale} title={`Download — Lemma Oracle Whitepaper`} description={ty.sub} bodyClass="page-thank-you" noindex>
