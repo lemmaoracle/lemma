@@ -943,6 +943,22 @@
 
   /* FAQ */
   .faq-a { color: var(--gray-700); }
+
+  /* ── Match homepage Trust402 featured panel tone (pure black) ── */
+  /* Phase 1 used warm dark (#14110E / #181410 / #1A1612) on the dark
+     sections. The homepage's featured Trust402 panel uses pure #000
+     — the warm-dark on this page reads as tonally off next to it.
+     Revert the dark backgrounds to pure black; keep Phase 1's text
+     opacity bumps, image-filter softening, and hero ambient tuning
+     intact (those are about readability / atmosphere, not tone). */
+  body { background: #000; }
+  nav {
+    background: rgba(0,0,0,0.9);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .hero-prove-item { background: #060402; }
+  .hero-gif-wrap { background: #0a0806; }
+  .cta-card { background: var(--black); }
 </style>
 </head>
 <body>
