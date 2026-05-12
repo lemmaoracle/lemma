@@ -744,6 +744,176 @@
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
 </style>
+<style>
+  /* ── PHASE 2: middle sections flip to light (hero / CTA / closing stay dark) ── */
+
+  /* Sections */
+  .flow, .why, .faq { background: var(--white); color: var(--gray-800); }
+  .guarantees { background: var(--gray-50); color: var(--gray-800); position: relative; }
+  /* Drop the dark background image on guarantees — it was carrying half the dark weight */
+  .guarantees-bg { display: none; }
+
+  /* Section eyebrow / heading colors */
+  .flow .section-tag,
+  .why .section-tag,
+  .guarantees .section-tag,
+  .faq .section-tag { color: var(--accent); }
+  .flow-header h2,
+  .why-header h2,
+  .guarantees-header h2,
+  .faq-header h2 { color: var(--black); }
+  .flow-header h2 em,
+  .why-header h2 em,
+  .guarantees-header h2 em { color: var(--gray-500); }
+  .flow-header p { color: var(--gray-500); }
+  .flow-header strong { color: var(--gray-800); }
+
+  /* Flow step cards — gray-50 base, accent-bg cream for Lemma rows */
+  .flow-steps-vertical::before {
+    background: linear-gradient(180deg,
+      rgba(139,69,19,0.18) 0%,
+      rgba(139,69,19,0.55) 30%,
+      rgba(139,69,19,0.55) 70%,
+      rgba(139,69,19,0.18) 100%);
+  }
+  .flow-step-card {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .flow-step-card:hover { background: var(--white); }
+  .flow-step-card.lemma-card {
+    background: var(--accent-bg);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  .flow-step-card.lemma-card:hover { background: #F0E6D8; }
+  .flow-step-num { color: var(--gray-500); }
+  .lemma-card .flow-step-num { color: var(--accent); }
+  .flow-step-body { border-left: 1px solid var(--gray-200); }
+  .flow-step-title { color: var(--gray-800); }
+  .lemma-card .flow-step-title { color: var(--accent); }
+  .flow-step-desc { color: var(--gray-500); }
+  .lemma-card .flow-step-desc { color: var(--accent-lt); }
+  .flow-step-badge-wrap { border-left: 1px solid var(--gray-200); }
+  .flow-step-card:not(.lemma-card) .flow-step-badge {
+    background: var(--gray-100);
+    color: var(--gray-500);
+  }
+  .lemma-card .flow-step-badge {
+    background: rgba(139,69,19,0.12);
+    color: var(--accent);
+  }
+
+  /* Verdict block — accent-bg fill */
+  .flow-verdict {
+    background: var(--accent-bg);
+    border: 1px solid rgba(139,69,19,0.28);
+  }
+  .flow-verdict p { color: var(--gray-800); }
+  .flow-verdict p em { color: var(--gray-500); }
+  .flow-verdict-cta {
+    color: var(--accent);
+    border-bottom-color: rgba(139,69,19,0.4);
+  }
+  .flow-verdict-cta:hover { border-bottom-color: var(--accent); }
+
+  /* Why — same accent palette, gray-700/500 body */
+  .why-divider { background: var(--gray-200); }
+  .why-col-without .why-col-label { color: var(--gray-500); }
+  .why-col-with .why-col-label { color: var(--accent); }
+  .why-col-without .why-icon { color: var(--gray-500); }
+  .why-col-with .why-icon { color: var(--accent); }
+  .why-col-without .why-item-title { color: var(--gray-500); }
+  .why-col-with .why-item-title { color: var(--gray-800); }
+  .why-col-without .why-item-desc { color: var(--gray-500); opacity: 0.7; }
+  .why-col-with .why-item-desc { color: var(--gray-500); }
+
+  /* Layer diagram (lives inside .why) */
+  .layer-agent {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+  }
+  .layer-lemma {
+    background: var(--accent-bg);
+    border: 1px solid rgba(139,69,19,0.35);
+  }
+  .layer-trust402 {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+  }
+  .layer-label { color: var(--gray-800); }
+  .layer-lemma .layer-label { color: var(--accent); }
+  .layer-desc { color: var(--gray-500); }
+  .layer-lemma .layer-desc { color: var(--accent-lt); }
+  .layer-arrow { color: var(--accent); }
+
+  /* Guarantees — white cards on gray-50 section, gap-divider trick */
+  .cards { background: var(--gray-200); }
+  .card {
+    background: var(--white);
+    border-top: 2px solid var(--accent);
+  }
+  .card-num { color: var(--gray-500); }
+  .card-title { color: var(--gray-800); }
+  .card-desc { color: var(--gray-500); }
+  .card-tech { color: var(--accent); }
+  .divider { background: var(--accent); }
+
+  /* FAQ — clean gray-200 borders, accent on hover */
+  .faq-header h2 { color: var(--gray-800); }
+  .faq-list { border-top: 1px solid var(--gray-200); }
+  .faq-item { border-bottom: 1px solid var(--gray-200); }
+  .faq-q { color: var(--gray-800); }
+  .faq-q:hover { color: var(--accent); }
+  .faq-q-icon::before,
+  .faq-q-icon::after { background: var(--gray-500); }
+  .faq-item.open .faq-q { color: var(--accent); }
+  .faq-a { color: var(--gray-500); }
+
+  /* Responsive: dividers / borders inside light sections */
+  @media (max-width: 900px) {
+    .phase-time, .phase-body { border-bottom: 1px solid var(--gray-200); }
+    .qs-left { border-bottom: 1px solid var(--gray-200); }
+  }
+
+  /* ── PHASE 2 follow-up: legibility + .why impact ── */
+
+  /* Flow step labels: bump to gray-700 so "01" / "02" / badges read clearly */
+  .flow-step-num {
+    color: var(--gray-700);
+    font-weight: 500;
+  }
+  .lemma-card .flow-step-num { color: var(--accent); }
+  .flow-step-card:not(.lemma-card) .flow-step-badge {
+    background: var(--gray-100);
+    color: var(--gray-700);
+  }
+  .flow-new-tag { opacity: 0.85; }
+
+  /* Hero meta bar (dark section) — Chain / x402 / proof / install values
+     were reading too faint at 0.48 */
+  .hero-meta-label { color: rgba(255,255,255,0.42); }
+  .hero-meta-value { color: rgba(255,255,255,0.72); }
+
+  /* .why ("The Missing Layer") gets the accent-bg cream wash so the
+     section reads as Lemma's territory, with stronger visual weight
+     than the neighboring white sections */
+  .why { background: var(--accent-bg); }
+  .why-divider { background: rgba(139,69,19,0.18); }
+
+  /* On cream, the layer-lemma card needs to swap so it still pops */
+  .layer-agent {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+  }
+  .layer-lemma {
+    background: var(--white);
+    border: 1px solid var(--accent);
+  }
+  .layer-trust402 {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+  }
+</style>
 </head>
 <body>
 
