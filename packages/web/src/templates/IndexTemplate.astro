@@ -4,8 +4,8 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import CtaSection from "../components/CtaSection.astro";
 import HeroCover from "../assets/cover.jpg";
-import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface IndexTemplateProps {
   locale: Locale;
@@ -25,9 +25,6 @@ const ix = t.index;
 
 const heroCta = "#featured";
 const trust402Href = "/trust402/";
-const partnerContactHref = DISCOVERY_CALL_URL[locale];
-const partnerContactLabel = DISCOVERY_CALL[locale].buttonLabel;
-const partnerWhitepaperHref = `${base}/services/`;
 const blogIndexHref = `${base}/blog/`;
 const thinking = recentPosts.slice(0, 6);
 ---
@@ -133,19 +130,10 @@ const thinking = recentPosts.slice(0, 6);
       </div>
     </section>
 
-    <!-- ─── PARTNER PROGRAM ─── -->
-    <section id="contact" class="partner">
-      <div class="partner-inner reveal">
-        <span class="partner-label">{ix.partner.label}</span>
-        <h2 class="partner-h2">{ix.partner.h2Line1}<em>{ix.partner.h2Line2}</em></h2>
-        <span class="partner-divider"></span>
-        <p class="partner-lead">{ix.partner.body}</p>
-        <div class="partner-cta-row">
-          <a class="partner-cta-primary" href={partnerContactHref} target="_blank" rel="noopener">{partnerContactLabel}</a>
-          <a class="partner-cta-secondary" href={partnerWhitepaperHref}>{ix.partner.secondaryCta}</a>
-        </div>
-      </div>
-    </section>
+    <!-- ─── PARTNER PROGRAM / DISCOVERY CALL CTA ─── -->
+    <div id="contact">
+      <CtaSection bgImageSrc={HeroCover.src} base={base} locale={locale} />
+    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -583,99 +571,6 @@ const thinking = recentPosts.slice(0, 6);
     .thinking-inner { grid-template-columns: 1fr; gap: 40px; }
   }
 
-  /* ─── PARTNER PROGRAM ─── */
-  .partner {
-    position: relative;
-    padding: 120px 8% 110px;
-    text-align: center;
-    overflow: hidden;
-    background: var(--black);
-    color: #fff;
-  }
-  .partner-inner {
-    position: relative;
-    z-index: 2;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  .partner-label {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    display: block;
-  }
-  .partner-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4.8vw, 56px);
-    font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin: 0 0 8px;
-    color: #fff;
-  }
-  .partner-h2 em {
-    font-style: normal;
-    font-weight: 500;
-    display: block;
-  }
-  .partner-divider {
-    display: block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-    margin: 28px auto 22px;
-  }
-  .partner-lead {
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.68);
-    font-size: 15px;
-    line-height: 1.7;
-    margin-bottom: 40px;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .partner-cta-row {
-    display: inline-flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .partner-cta-primary,
-  .partner-cta-secondary {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.25s ease;
-  }
-  .partner-cta-primary {
-    background: #fff;
-    color: var(--gray-800);
-    padding: 16px 36px;
-    border: none;
-  }
-  .partner-cta-primary:hover { background: var(--accent); color: #fff; }
-  .partner-cta-secondary {
-    background: transparent;
-    color: #fff;
-    padding: 15px 35px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-  }
-  .partner-cta-secondary:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-  }
-
   /* ─── REVEAL ─── */
   .reveal {
     opacity: 0;
@@ -693,7 +588,6 @@ const thinking = recentPosts.slice(0, 6);
     .for-x { padding: 100px 6%; }
     .how { padding: 80px 6%; }
     .thinking { padding: 100px 6%; }
-    .partner { padding: 80px 6%; }
   }
 </style>
 
