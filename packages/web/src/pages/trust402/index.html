@@ -34,6 +34,7 @@
     --gray-100: #EFEFEF;
     --gray-200: #E0E0E0;
     --gray-500: #9E9E9E;
+    --gray-700: #5F5F5F;
     --gray-800: #1A1A1A;
     --accent: #8B4513;
     --accent-lt: #A0522D;
@@ -913,6 +914,51 @@
     background: var(--white);
     border: 1px solid var(--gray-200);
   }
+
+  /* ── Readability pass: bump body-copy floor from gray-500 to gray-700 ── */
+  /* gray-500 (#9E9E9E) was washing out on white + cream bg. gray-700
+     (#5F5F5F) is the site's standard body-secondary token. gray-500
+     is preserved only for tertiary labels and decorative text. */
+
+  /* Flow */
+  .flow-header p { color: var(--gray-700); }
+  .flow-step-desc { color: var(--gray-700); }
+  .flow-step-card:not(.lemma-card) .flow-step-badge { color: var(--gray-700); }
+  .flow-verdict p em { color: var(--gray-700); }
+
+  /* Why — including the "x402 alone" (.why-col-without) column. Keep
+     the visual subordination via icon + accent color, not by washing
+     out the text itself. */
+  .why-col-without .why-col-label { color: var(--gray-700); }
+  .why-col-without .why-icon { color: var(--gray-700); }
+  .why-col-without .why-item-title { color: var(--gray-700); }
+  .why-col-without .why-item-desc { color: var(--gray-700); opacity: 1; }
+  .why-col-with .why-item-desc { color: var(--gray-700); }
+  .layer-desc { color: var(--gray-700); }
+  .layer-lemma .layer-desc { color: var(--accent); }
+
+  /* Guarantees */
+  .guarantees-header h2 em { color: var(--gray-700); }
+  .card-desc { color: var(--gray-700); }
+
+  /* FAQ */
+  .faq-a { color: var(--gray-700); }
+
+  /* ── Match homepage Trust402 featured panel tone (pure black) ── */
+  /* Phase 1 used warm dark (#14110E / #181410 / #1A1612) on the dark
+     sections. The homepage's featured Trust402 panel uses pure #000
+     — the warm-dark on this page reads as tonally off next to it.
+     Revert the dark backgrounds to pure black; keep Phase 1's text
+     opacity bumps, image-filter softening, and hero ambient tuning
+     intact (those are about readability / atmosphere, not tone). */
+  body { background: #000; }
+  nav {
+    background: rgba(0,0,0,0.9);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .hero-prove-item { background: #060402; }
+  .hero-gif-wrap { background: #0a0806; }
+  .cta-card { background: var(--black); }
 </style>
 </head>
 <body>
