@@ -150,22 +150,23 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   .blog-header {
     margin-top: 64px;
     background: var(--black);
-    padding: 100px 10% 80px;
+    padding: 56px 10% 40px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   .blog-header h1 {
     font-family: var(--font-display);
-    font-size: clamp(48px, 6vw, 80px);
+    font-size: clamp(32px, 4.4vw, 48px);
     font-weight: 300;
     color: var(--white);
-    line-height: 1.08;
-    margin-bottom: 16px;
+    line-height: 1.15;
+    margin: 0 0 12px 0;
   }
   .blog-header p {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.75;
-    max-width: 440px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.65;
+    max-width: 480px;
+    margin: 0;
   }
 
   a {
@@ -561,8 +562,8 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
       padding-right: 6%;
     }
     .blog-header {
-      padding-top: 80px;
-      padding-bottom: 60px;
+      padding-top: 44px;
+      padding-bottom: 32px;
     }
     .featured-section {
       padding-top: 70px;
@@ -595,7 +596,14 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     .foundations-card {
       flex-direction: column;
       align-items: flex-start;
-      padding: 32px 28px;
+      padding: 32px 24px;
+      gap: 20px;
+    }
+    .foundations-text {
+      min-width: 0;
+    }
+    .btn-white {
+      align-self: flex-start;
     }
   }
 </style>
