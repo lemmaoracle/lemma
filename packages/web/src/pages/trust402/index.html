@@ -874,6 +874,45 @@
     .phase-time, .phase-body { border-bottom: 1px solid var(--gray-200); }
     .qs-left { border-bottom: 1px solid var(--gray-200); }
   }
+
+  /* ── PHASE 2 follow-up: legibility + .why impact ── */
+
+  /* Flow step labels: bump to gray-700 so "01" / "02" / badges read clearly */
+  .flow-step-num {
+    color: var(--gray-700);
+    font-weight: 500;
+  }
+  .lemma-card .flow-step-num { color: var(--accent); }
+  .flow-step-card:not(.lemma-card) .flow-step-badge {
+    background: var(--gray-100);
+    color: var(--gray-700);
+  }
+  .flow-new-tag { opacity: 0.85; }
+
+  /* Hero meta bar (dark section) — Chain / x402 / proof / install values
+     were reading too faint at 0.48 */
+  .hero-meta-label { color: rgba(255,255,255,0.42); }
+  .hero-meta-value { color: rgba(255,255,255,0.72); }
+
+  /* .why ("The Missing Layer") gets the accent-bg cream wash so the
+     section reads as Lemma's territory, with stronger visual weight
+     than the neighboring white sections */
+  .why { background: var(--accent-bg); }
+  .why-divider { background: rgba(139,69,19,0.18); }
+
+  /* On cream, the layer-lemma card needs to swap so it still pops */
+  .layer-agent {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+  }
+  .layer-lemma {
+    background: var(--white);
+    border: 1px solid var(--accent);
+  }
+  .layer-trust402 {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+  }
 </style>
 </head>
 <body>
