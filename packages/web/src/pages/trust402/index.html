@@ -689,6 +689,61 @@
     color: #ffffff !important;
   }
 </style>
+<style>
+  /* ── TONAL LIGHTENING (keeps dark theme, reduces heaviness) ── */
+  /* Warmer base instead of pitch black */
+  body { background: #14110E; }
+
+  /* Section bgs: lift from near-black to warm dark */
+  .flow { background: #181410; }
+  .why { background: #181410; }
+  .guarantees { background: #181410; }
+  .faq { background: #181410; }
+
+  /* Cards: lift card bgs together with sections so they still stand out */
+  .flow-step-card { background: #211B16; }
+  .flow-step-card:hover { background: #2B231C; }
+  .flow-step-card.lemma-card { background: #2A1C0E; }
+  .flow-step-card.lemma-card:hover { background: #321F0E; }
+  .card { background: #211B16; }
+  .cta-card { background: #181410; }
+  .hero-prove-item { background: #1A1612; }
+  .hero-gif-wrap { background: #1A1612; }
+
+  /* Body copy gets a small contrast boost — was reading as "faded ink" */
+  .hero-sub { color: rgba(255,255,255,0.62); }
+  .flow-header p { color: rgba(255,255,255,0.58); }
+  .flow-step-desc { color: rgba(255,255,255,0.62); }
+  .why-col-with .why-item-desc { color: rgba(255,255,255,0.6); }
+  .why-col-without .why-item-desc { color: rgba(255,255,255,0.42); }
+  .card-desc { color: rgba(255,255,255,0.58); }
+  .hero-prove-desc { color: rgba(255,255,255,0.5); }
+  .faq-q { color: rgba(255,255,255,0.85); }
+  .faq-a { color: rgba(255,255,255,0.58); }
+  .cta-card p { color: rgba(255,255,255,0.55); }
+
+  /* Background imagery — let the photos show through a bit more */
+  .guarantees-bg img { filter: saturate(0.6) brightness(0.4); }
+  .closing-bg img { filter: saturate(0.75) brightness(0.72); }
+  .closing-overlay { background: rgba(0,0,0,0.38); }
+
+  /* Hero ambient: soften the noise + grid so they don't feel so dense */
+  .hero-noise {
+    background:
+      radial-gradient(ellipse 50% 60% at 85% 45%, rgba(139,69,19,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 30% 40% at 10% 65%, rgba(139,69,19,0.05) 0%, transparent 60%);
+  }
+  .hero-grid {
+    background-image: linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  }
+
+  /* Nav — soften the bottom border so it doesn't look like a hard cut */
+  nav {
+    background: rgba(20,17,14,0.9);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+</style>
 </head>
 <body>
 
