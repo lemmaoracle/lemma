@@ -353,11 +353,23 @@ const isResourcesActive =
   .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
   .nav-mobile-drawer {
-    display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
-    background: #fff; z-index: 999; overflow-y: auto;
-    transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 1100;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
   }
-  .nav-mobile-drawer.open { transform: translateX(0); }
+  .nav-mobile-drawer.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   .mob-section { border-bottom: 1px solid var(--gray-200); }
   .mob-section-header {
