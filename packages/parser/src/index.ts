@@ -101,6 +101,11 @@ const DEFAULT_MODEL = "onnx-community/Qwen3-0.6B-ONNX";
 /* ── Parser instance (closure-based encapsulation) ─────────────────── */
 
 const createParserInstance = (_placeholder?: undefined) => {
+  // Mutable state intentionally scoped within closure for singleton pattern.
+  // This pattern is used because:
+  // 1. The parser instance must be shared across calls
+  // 2. WASM/transformers initialization should happen only once
+  // 3. The closure encapsulates mutation, exposing only pure-ish functions
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
   let state: ParserState = createInitialState();
   // eslint-disable-next-line functional/no-let -- closure-scoped mutable state for singleton
