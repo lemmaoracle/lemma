@@ -3,6 +3,7 @@ import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { SEGMENT_URLS } from "../config/navigation";
 
 interface Props {
   locale: Locale;
@@ -64,9 +65,9 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
       <div class="site-footer-col">
         <h4>{t.services}</h4>
         <ul>
-          <li><a href={servicesPath}>{t.mega.products.civic}</a></li>
-          <li><a href={servicesPath}>{t.mega.products.critical}</a></li>
-          <li><a href={servicesPath}>{t.mega.products.compliance}</a></li>
+          <li><a href={SEGMENT_URLS.civic[locale]}>{t.mega.products.civic}</a></li>
+          <li><a href={SEGMENT_URLS.critical[locale]}>{t.mega.products.critical}</a></li>
+          <li><a href={SEGMENT_URLS.compliance[locale]}>{t.mega.products.compliance}</a></li>
           <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
           <li><a href={pricingPath}>{t.mega.products.pricing}</a></li>
         </ul>

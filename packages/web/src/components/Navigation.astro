@@ -2,6 +2,7 @@
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
+import { SEGMENT_URLS } from "../config/navigation";
 
 interface Props {
   locale: Locale;
@@ -83,15 +84,15 @@ const isResourcesActive =
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
           <div class="mega-links">
-            <a href={servicesPath} class="mega-link">
+            <a href={SEGMENT_URLS.civic[locale]} class="mega-link">
               <span class="mega-link-title">{t.mega.products.civic}</span>
               <span class="mega-link-sub">{t.mega.products.civicSub}</span>
             </a>
-            <a href={servicesPath} class="mega-link">
+            <a href={SEGMENT_URLS.critical[locale]} class="mega-link">
               <span class="mega-link-title">{t.mega.products.critical}</span>
               <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
             </a>
-            <a href={servicesPath} class="mega-link">
+            <a href={SEGMENT_URLS.compliance[locale]} class="mega-link">
               <span class="mega-link-title">{t.mega.products.compliance}</span>
               <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
             </a>
@@ -198,9 +199,9 @@ const isResourcesActive =
     <div class="mob-section">
       <div class="mob-section-header">{t.services} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={servicesPath} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
-        <a href={servicesPath} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
-        <a href={servicesPath} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
+        <a href={SEGMENT_URLS.civic[locale]} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
+        <a href={SEGMENT_URLS.critical[locale]} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
+        <a href={SEGMENT_URLS.compliance[locale]} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
         <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
         <a href={pricingPath} class="mob-link">{t.mega.products.pricing}<small>{t.mega.products.pricingSub}</small></a>
       </div>
