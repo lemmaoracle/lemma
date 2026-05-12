@@ -95,8 +95,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "データは組織やシステムを越え、AI に読まれるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されていません。",
     },
     whyNow: {
-      en: "2024 Ronin bridge $625M exploit; 2025 FSA crypto-asset guidelines enforcement",
-      ja: "2024年 Ronin bridge $625M事件、2025年 FSA暗号資産ガイドライン施行",
+      en: "EU AI Act 2026 — data governance and training / RAG source-provenance requirements for high-risk AI; ISO 42001 audit-trail expectations; supply-chain DPP and CBAM provenance mandates; 2022 Ronin bridge $625M exploit as a cross-domain reference case",
+      ja: "EU AI Act 2026 年施行（高リスク AI への学習データ・RAG 来歴義務）、ISO 42001 監査トレイル要件、サプライチェーン DPP / CBAM の来歴義務化、領域横断の参照事案として 2022 年 Ronin bridge $625M 事件",
     },
     howLemmaFits: {
       en: [
@@ -122,7 +122,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       type: "github",
     },
     order: 1,
-    tags: ["origin", "bridge", "cross-chain", "forensics"],
+    tags: ["origin", "rag", "ai-data-governance", "supply-chain", "forensics"],
   },
   {
     slug: "verifiable-ai",
