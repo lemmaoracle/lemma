@@ -69,6 +69,7 @@ const enHref = buildLocalePath("en");
 const jaHref = buildLocalePath("ja");
 
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
+const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
 ---
 
 <!doctype html>
@@ -182,6 +183,20 @@ const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
             `}
           />
         </>
+      )
+    }
+    {
+      msClarityId && (
+        <script
+          is:inline
+          set:html={`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${msClarityId}");
+          `}
+        />
       )
     }
   </head>
