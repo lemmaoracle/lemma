@@ -360,6 +360,12 @@ export interface Translations {
       readonly label: string;
       readonly items: ReadonlyArray<string>;
     }>;
+    readonly nowBanner: Readonly<{
+      readonly eyebrow: string;
+      readonly text: string;
+      readonly cta: string;
+      readonly href: string;
+    }>;
     readonly lemmaFor: Readonly<{
       readonly h2Line1: string;
       readonly h2Line2: string;
