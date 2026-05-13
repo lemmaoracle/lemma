@@ -537,7 +537,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     implementation: [
       "Lemma の <a href=\"/ja/glossary/trust402/\">Trust402</a> はエージェント決済の前段に置かれる検証層。エージェントは「自分が誰のために、何の限度で、どの来歴データに基づいて」決済するかを ZK で証明してから支払いに進む。権限と取引根拠が暗号的に固定されるため、後段の決済処理は安全にエージェントへ委譲できる。",
       "個別技術との連動はモジュラー。<a href=\"/ja/glossary/x402/\">x402</a> がエージェント間支払いの HTTP 層を、<a href=\"/ja/glossary/a2a/\">A2A</a> がエージェント発見と契約交渉を、<a href=\"/ja/glossary/mcp/\">MCP</a> がツール使用を担い、Lemma がそれらの上に「権限と来歴の検証」を一段挟む構成になる。",
-      "エージェント決済の具体的な実装方針と Lemma がどう解くかは <a href=\"/ja/pillars/agent-trust-chain/\">Agent Trust Chain</a> ピラーに整理されている。本ページが「概念とエコシステム」を扱うのに対し、ピラーは「権限・支払い限度・来歴の三軸を Lemma がどう束ねるか」を扱う。",
+      "エージェント決済の具体的な実装方針と Lemma がどう解くかは <a href=\"/ja/pillars/agent-trust-chain/\">エージェント信頼チェーンの柱</a> に整理されている。本ページが「概念とエコシステム」を扱うのに対し、柱では「権限・支払い限度・来歴の三軸を Lemma がどう束ねるか」を扱う。",
     ],
     related: [
       { slug: "trust402", desc: "エージェント決済の前段検証層。権限と来歴を ZK で固定する。" },
