@@ -290,9 +290,9 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       "2025〜2026 年にかけて Lagrange DeepProve や JOLT、zkPyTorch などにより大規模モデルでの ZK 推論証明が実用化フェーズに入った。今後は「検証可能でない推論」が低信頼の市場区分に押し出され、規制適合や監査要件のあるドメインから先に検証可能 AI への移行が進む。",
     ],
     implementation: [
-      'Lemma は検証可能 AI を、汎用の暗号インフラとして提供する。入力データは <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> に直接食わせるのではなく、まず <code>docHash</code> でバイト列を固定し、属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> 可能な構造に変換する。これにより、コンテンツや個人情報を相手に渡さず、必要な属性だけを証明できる。',
+      'Lemma は、検証可能 AI のための汎用の暗号インフラを提供する。入力データは <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> に直接食わせるのではなく、まず <code>docHash</code> でバイト列を固定し、属性レベルで <a href="/ja/glossary/selective-disclosure/">選択的開示</a> 可能な構造に変換する。これにより、コンテンツや個人情報を相手に渡さず、必要な属性だけを証明できる。',
       '推論側ではモデルハッシュを <a href="/ja/glossary/commitment/">コミットメント</a> として固定し、入力・出力・モデルを結ぶ証明を生成する。RAG パイプラインの場合は、引用文書の <a href="/ja/glossary/provenance/">プロヴナンス</a> と引用文・本文の一致を同時に証明する設計を採る。',
-      "結果として、Lemma の検証可能 AI は規制対応 (EU AI Act の自動ログ・人間監督要件) と機密性 (GDPR・営業秘密) を同時に満たす経路となる。AI 判断を組織横断で監査するための、最も具体的なインフラ層がここにあたる。",
+      "結果として、Lemma が提供する検証可能 AI 向け信頼インフラは、規制対応 (EU AI Act の自動ログ・人間監督要件) と機密性 (GDPR・営業秘密) を同時に満たす経路となる。AI 判断を組織横断で監査するための、最も具体的なインフラ層がここにあたる。",
     ],
     related: [
       { slug: "zk-proof", desc: "命題を秘匿したまま正当性のみを証明する暗号プリミティブ。検証可能 AI の中核構成要素。" },
@@ -755,7 +755,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     implementation: [
       'EU AI Act の高リスク要件は、「監査可能な状態を残し続けること」に集約される。Lemma は監査ログ・データガバナンス・人間監督の根拠を、<code>docHash</code> + 属性 <a href="/ja/glossary/commitment/">コミットメント</a> + <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で構成する。実データの開示は GDPR や営業秘密と衝突するが、属性のみを暗号で証明する設計なら、機密と適合が両立する。',
       '具体的には、(1) 学習・検証データの取得日・出所・分類を <a href="/ja/glossary/provenance/">プロヴナンス</a> として固定、(2) 推論ごとの入力・モデル・出力ハッシュを監査トレイルに残す、(3) 人間が承認した時刻と承認者属性を <a href="/ja/glossary/selective-disclosure/">選択的開示</a> で証明、という設計を採る。Lemma Compliance は金融機関の高リスク AI 用途、Lemma Civic は公共領域の AI 利用に対し、同一の検証層を提供する。',
-      "EU AI Act が要請しているのは「AI が信頼できるかどうかを、後から検証できる状態にすること」である。Lemma の検証可能 AI は、その状態を技術として実装するための具体的な経路となる。",
+      "EU AI Act が要請しているのは「AI が信頼できるかどうかを、後から検証できる状態にすること」である。Lemma の検証可能 AI 向け信頼インフラは、その状態を技術として実装するための具体的な経路となる。",
     ],
     related: [
       { slug: "verifiable-ai", desc: "高リスク AI 要件の自動ログ・データガバナンスを暗号で構成する領域。" },
@@ -809,7 +809,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       "枠組み法 (Skeleton Law) の性質を持ち、具体的義務は省令・政府策定の計画・各種ガイドライン (AI 事業者ガイドラインを含む) に委任される。今後の運用次第で実質的影響度が変動する。",
     ],
     implementation: [
-      "Lemma の検証可能 AI は本法の「責任ある研究開発・活用の推進」に技術的に応える経路となる。政府調達・公共領域 AI で検証可能性が要件化されていく流れに事前対応できる。",
+      "Lemma の検証可能 AI 向け信頼インフラは本法の「責任ある研究開発・活用の推進」に技術的に応える経路となる。政府調達・公共領域 AI で検証可能性が要件化されていく流れに事前対応できる。",
       '<a href="/ja/glossary/ai-business-guidelines/">AI 事業者ガイドライン</a> と組み合わせると、ハードロー (推進法) + ソフトロー (ガイドライン) の両面で AI ガバナンスを揃えられる。',
       '<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 適合済みのインフラを日本側にも展開する形で、グローバルな AI 規制対応コストを最小化する。',
     ],

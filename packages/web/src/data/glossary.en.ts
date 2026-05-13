@@ -744,7 +744,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       "Functions as a skeleton law: concrete obligations are delegated to ordinances, the government plan, and various guidelines (the AI Business Operator Guidelines included). Effective enforcement depends on subsequent rulemaking.",
     ],
     implementation: [
-      "Lemma's verifiable AI is positioned as the technical answer to the Act's call for \"responsible R&D and use.\" Public procurement and public-sector AI uses are increasingly likely to require verifiability — Lemma's infrastructure is positioned to meet that requirement ahead of the regulatory cycle.",
+      "Lemma's verifiable-AI infrastructure is positioned as the technical answer to the Act's call for \"responsible R&D and use.\" Public procurement and public-sector AI uses are increasingly likely to require verifiability — Lemma's infrastructure is positioned to meet that requirement ahead of the regulatory cycle.",
       'Combined with the <a href="/glossary/ai-business-guidelines/">AI Business Operator Guidelines</a>, hard-law (Promotion Act) plus soft-law (Guidelines) governance lines up across both surfaces.',
       'Companies that have already deployed Lemma against <a href="/glossary/eu-ai-act/">EU AI Act</a> can extend the same infrastructure to the Japanese regulatory perimeter — minimizing the global cost of AI compliance.',
     ],
