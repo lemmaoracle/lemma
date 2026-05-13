@@ -21,10 +21,11 @@ export interface PillarDetailTemplateProps {
   pillar: Pillar;
   useCases: ReadonlyArray<UseCase>;
   recentPosts: ReadonlyArray<BlogPost>;
+  otherPillars: ReadonlyArray<Pillar>;
   pillarT: Translations["pillars"];
 }
 
-const { locale, t, base, pillar, useCases, recentPosts, pillarT } = Astro.props as PillarDetailTemplateProps;
+const { locale, t, base, pillar, useCases, recentPosts, otherPillars, pillarT } = Astro.props as PillarDetailTemplateProps;
 const pillarsPath = `${base}/pillars`;
 const useCasesPath = `${base}/use-cases`;
 
@@ -179,6 +180,22 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
             </div>
           ))}
         </dl>
+      </section>
+    )}
+
+    {otherPillars.length > 0 && (
+      <section class="block block-other-pillars">
+        <div class="block-label">{pillarT.blockOtherPillars}</div>
+        <div class="other-pillars-list">
+          {otherPillars.map((p) => (
+            <a href={`${pillarsPath}/${p.slug}`} class="other-pillar-row">
+              <div class="op-order">P{p.order}</div>
+              <div class="op-title">{p.title[locale]}</div>
+              <div class="op-slogan">{p.subtitle[locale]}</div>
+              <div class="op-arrow">→</div>
+            </a>
+          ))}
+        </div>
       </section>
     )}
 
@@ -507,6 +524,60 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     color: var(--accent-lt);
   }
 
+  .other-pillars-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .other-pillar-row {
+    display: grid;
+    grid-template-columns: 56px 220px 1fr 24px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--gray-200);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s, padding 0.2s;
+  }
+  .other-pillar-row:first-child {
+    border-top: 1px solid var(--gray-200);
+  }
+  .other-pillar-row:hover {
+    background: var(--gray-50);
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .op-order {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .op-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--black);
+  }
+  .op-slogan {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--gray-500);
+  }
+  .op-arrow {
+    color: var(--gray-500);
+    font-size: 14px;
+    text-align: right;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .other-pillar-row:hover .op-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
   .block-cta {
     background: var(--black);
     padding: 64px 48px;
@@ -606,6 +677,18 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
       gap: 4px;
     }
     .rp-date {
+      text-align: left;
+    }
+    .other-pillar-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding: 16px 0;
+    }
+    .other-pillar-row:hover {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .op-arrow {
       text-align: left;
     }
   }

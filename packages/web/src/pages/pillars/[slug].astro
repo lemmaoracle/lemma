@@ -23,9 +23,11 @@ export async function getStaticPaths() {
         })
         .slice(0, 3);
 
+      const otherPillars = pillars.filter((p) => p.slug !== pillar.slug);
+
       return {
         params: { slug: pillar.slug },
-        props: { pillar, useCases, recentPosts },
+        props: { pillar, useCases, recentPosts, otherPillars },
       };
     }),
   );
@@ -37,9 +39,10 @@ interface Props {
   pillar: import("../../data/pillars").Pillar;
   useCases: readonly import("../../data/useCases").UseCase[];
   recentPosts: readonly import("../../data/blog").BlogPost[];
+  otherPillars: readonly import("../../data/pillars").Pillar[];
 }
 
-const { pillar, useCases, recentPosts } = Astro.props;
+const { pillar, useCases, recentPosts, otherPillars } = Astro.props;
 const locale = "en" as const;
 const t = getTranslations(locale);
 const base = "";
@@ -53,5 +56,6 @@ const pillarT = t.pillars;
   pillar={pillar}
   useCases={useCases}
   recentPosts={recentPosts}
+  otherPillars={otherPillars}
   pillarT={pillarT}
 />
