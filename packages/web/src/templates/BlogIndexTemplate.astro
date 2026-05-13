@@ -66,15 +66,13 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
             class="recent-card reveal"
             style={`transition-delay:${i * 0.05}s`}
           >
-            <div class="recent-thumb" style={`background-image:url('${post.cover ?? ""}')`}></div>
-            <div class="recent-body">
-              <div class="essay-meta">
-                <span class="essay-cat">{post.category}</span>
-                <span class="essay-date">{post.date}</span>
-              </div>
-              <h3>{post.title}</h3>
-              <p>{post.abstract}</p>
+            <div class="essay-meta">
+              <span class="essay-cat">{post.category}</span>
+              <span class="essay-date">{post.date}</span>
             </div>
+            <h3>{post.title}</h3>
+            <p>{post.abstract}</p>
+            <span class="recent-cta">{t.blog.index.readEssay}</span>
           </a>
         ))}
       </div>
@@ -150,22 +148,22 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   .blog-header {
     margin-top: 64px;
     background: var(--black);
-    padding: 56px 10% 40px;
+    padding: 100px 10% 80px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
   .blog-header h1 {
     font-family: var(--font-display);
-    font-size: clamp(32px, 4.4vw, 48px);
+    font-size: clamp(48px, 6vw, 80px);
     font-weight: 300;
     color: var(--white);
-    line-height: 1.15;
-    margin: 0 0 12px 0;
+    line-height: 1.08;
+    margin: 0 0 16px 0;
   }
   .blog-header p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.65;
-    max-width: 480px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.75;
+    max-width: 640px;
     margin: 0;
   }
 
@@ -197,7 +195,7 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   /* ─── FEATURED ─── */
   .featured-section {
     background: var(--white);
-    padding: 100px 10% 60px;
+    padding: 80px 10% 40px;
   }
   .featured-card {
     display: grid;
@@ -253,7 +251,7 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   /* ─── RECENT ─── */
   .recent-section {
     background: var(--white);
-    padding: 60px 10% 100px;
+    padding: 40px 10% 80px;
   }
   .recent-grid {
     display: grid;
@@ -263,8 +261,10 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   }
   .recent-card {
     background: var(--white);
-    display: grid;
-    grid-template-rows: 180px 1fr;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     border-top: 2px solid transparent;
     transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
     color: inherit;
@@ -273,34 +273,31 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     border-top-color: var(--accent);
     background: var(--gray-50);
   }
-  .recent-thumb {
-    background-size: cover;
-    background-position: center;
-    background-color: var(--gray-200);
-    filter: saturate(0.45) brightness(0.88);
-  }
-  .recent-body {
-    padding: 24px 28px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
   .recent-card h3 {
     font-family: var(--font-display);
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     line-height: 1.3;
     color: var(--black);
+    margin: 0;
   }
   .recent-card p {
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.7;
     color: var(--gray-500);
     flex: 1;
+    margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .recent-cta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
   }
 
   .essay-meta {
@@ -562,16 +559,19 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
       padding-right: 6%;
     }
     .blog-header {
-      padding-top: 44px;
-      padding-bottom: 32px;
+      padding-top: 80px;
+      padding-bottom: 60px;
     }
     .featured-section {
-      padding-top: 70px;
-      padding-bottom: 36px;
+      padding-top: 56px;
+      padding-bottom: 28px;
     }
     .recent-section {
-      padding-top: 36px;
-      padding-bottom: 70px;
+      padding-top: 28px;
+      padding-bottom: 56px;
+    }
+    .recent-card {
+      padding: 28px 24px;
     }
     .archive-section,
     .guides-section,
