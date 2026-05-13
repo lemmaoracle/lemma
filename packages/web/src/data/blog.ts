@@ -269,7 +269,7 @@ function extractHeadings(content: string): Heading[] {
     .filter(isHeadingToken)
     .map((token) => {
       const plain =
-        inlineText(token.tokens as ReadonlyArray<Tokens.Generic> | undefined) ||
+        inlineText(token.tokens) ||
         token.text;
       return {
         id: slugifyHeading(plain),
