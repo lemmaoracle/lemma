@@ -285,15 +285,18 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     font-size: 13px;
     line-height: 1.7;
     color: var(--gray-500);
-    flex: 1;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .recent-cta {
     font-size: 11px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-top: 8px;
+    margin-top: auto;
   }
 
   .essay-meta {
