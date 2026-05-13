@@ -172,14 +172,14 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     {pillar.faq && pillar.faq.length > 0 && (
       <section class="block block-faq">
         <div class="block-label">FAQ</div>
-        <dl class="faq-list">
+        <div class="faq-list">
           {pillar.faq.map((item) => (
-            <div class="faq-item">
-              <dt class="faq-q">{item.q[locale]}</dt>
-              <dd class="faq-a" set:html={item.a[locale]} />
-            </div>
+            <details class="faq-item">
+              <summary class="faq-q">{item.q[locale]}</summary>
+              <div class="faq-a" set:html={item.a[locale]} />
+            </details>
           ))}
-        </dl>
+        </div>
       </section>
     )}
 
@@ -489,12 +489,9 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   .faq-list {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
   .faq-item {
     border-top: 1px solid var(--gray-200);
-    padding: 24px 0;
   }
   .faq-item:last-child {
     border-bottom: 1px solid var(--gray-200);
@@ -505,13 +502,44 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     font-weight: 500;
     line-height: 1.35;
     color: var(--black);
-    margin: 0 0 10px 0;
+    margin: 0;
+    padding: 22px 36px 22px 0;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-q::marker {
+    content: "";
+  }
+  .faq-q:hover {
+    color: var(--accent);
+  }
+  .faq-q::after {
+    content: "";
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid var(--gray-500);
+    border-bottom: 1.5px solid var(--gray-500);
+    transform: translateY(-75%) rotate(45deg);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .faq-item[open] .faq-q::after {
+    transform: translateY(-25%) rotate(-135deg);
+    border-color: var(--accent);
   }
   .faq-a {
     font-size: 15px;
     line-height: 1.75;
     color: var(--gray-800);
     margin: 0;
+    padding: 0 0 24px 0;
     max-width: 720px;
   }
   .faq-a :global(a) {
