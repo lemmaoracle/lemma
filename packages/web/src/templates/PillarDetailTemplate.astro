@@ -94,7 +94,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     <!-- Block 1: Problem Statement -->
     <section class="block block-problem">
       <div class="block-label">{pillarT.blockProblem}</div>
-      <p class="problem-text">{pillar.problemStatement[locale]}</p>
+      <p class="problem-text" set:html={pillar.problemStatement[locale]} />
     </section>
 
     <!-- Block 2: Why Now -->
@@ -311,6 +311,11 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     color: var(--gray-800);
     margin: 0;
     max-width: 720px;
+  }
+  .problem-text :global(strong),
+  .extra-paragraph :global(strong) {
+    font-weight: 600;
+    color: var(--black);
   }
 
   .how-list {
