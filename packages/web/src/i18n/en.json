@@ -468,13 +468,13 @@
       "cta": "Try the demo"
     },
     "trustedBy": {
-      "label": "Sectors we serve",
+      "label": "Focus partnership sectors",
       "items": [
         "Financial Institutions",
         "Manufacturing",
         "Public Infrastructure",
-        "AI Development Orgs",
-        "Agent Ecosystem"
+        "RAG / LLM Product Companies",
+        "AI Agent Operators"
       ]
     },
     "nowBanner": {
