@@ -483,6 +483,7 @@ export interface Translations {
     readonly blockHowLemmaFits: string;
     readonly blockUseCases: string;
     readonly blockRecentThinking: string;
+    readonly blockOtherPillars: string;
     readonly viewUseCase: string;
     readonly comingSoon: string;
     readonly ctaEyebrow: string;
