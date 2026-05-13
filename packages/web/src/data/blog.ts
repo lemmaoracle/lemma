@@ -245,6 +245,21 @@ function cleanHeadingText(text: string): string {
   return text.replace(/^\s*[▸◇◆●○★☆◀▶]\s*/, "").trim();
 }
 
+function inlineText(tokens: ReadonlyArray<Tokens.Generic> | undefined): string {
+  return !tokens
+    ? ""
+    : tokens
+        .map((t) => {
+          const nested = t.tokens as ReadonlyArray<Tokens.Generic> | undefined;
+          return nested && nested.length > 0
+            ? inlineText(nested)
+            : typeof t.text === "string"
+              ? t.text
+              : "";
+        })
+        .join("");
+}
+
 const isHeadingToken = (token: Tokens.Generic): token is Tokens.Heading =>
   token.type === "heading" && (token.depth === 2 || token.depth === 3);
 
@@ -252,11 +267,16 @@ function extractHeadings(content: string): Heading[] {
   const tokens = marked.lexer(content) as readonly Tokens.Generic[];
   return tokens
     .filter(isHeadingToken)
-    .map((token) => ({
-      id: slugifyHeading(token.text),
-      text: cleanHeadingText(token.text),
-      level: token.depth,
-    }));
+    .map((token) => {
+      const plain =
+        inlineText(token.tokens as ReadonlyArray<Tokens.Generic> | undefined) ||
+        token.text;
+      return {
+        id: slugifyHeading(plain),
+        text: cleanHeadingText(plain),
+        level: token.depth,
+      };
+    });
 }
 
 function calculateReadingTime(content: string, locale: BlogLocale): number {
