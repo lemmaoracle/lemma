@@ -91,8 +91,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "資産、文書、部品の出所を、改ざん不能な暗号レイヤで固定する。",
     },
     problemStatement: {
-      en: "Data crosses organizations and systems, and loses its origin at every hop. Where assets, documents, and parts came from is not yet cryptographically proven.",
-      ja: "データは組織やシステムを越え、AI に読まれるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されていません。",
+      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher.",
+      ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。",
     },
     whyNow: {
       en: "EU AI Act 2026 — data governance and training / RAG source-provenance requirements for high-risk AI; ISO 42001 audit-trail expectations; supply-chain DPP and CBAM provenance mandates; 2022 Ronin bridge $625M exploit as a cross-domain reference case",
@@ -100,14 +100,14 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     howLemmaFits: {
       en: [
-        "Poseidon hash for on-chain commitment",
-        "BBS+ signatures for selective disclosure",
-        "Groth16 proofs for cross-chain verification",
+        "On-chain origin commitments (Poseidon) — every downstream system verifies without contacting the publisher",
+        "Selective disclosure (BBS+) — receivers see only the attribute they need, not the full document",
+        "Cross-chain portability (Groth16 ZK) — the same proof travels across chains and tools without reissue",
       ],
       ja: [
-        "オンチェーンコミットメントにPoseidonハッシュ",
-        "選択的開示にBBS+署名",
-        "クロスチェーン検証にGroth16証明",
+        "オンチェーンの出所コミットメント (Poseidon) — 下流のシステムは発行元に問い合わせずに検証できる",
+        "選択的開示 (BBS+) — 受信側は必要な属性だけを受け取る。文書全体は渡さない",
+        "クロスチェーン移植性 (Groth16 ZK) — 同じ証明を再発行せずにチェーンやツールを越えて持ち運べる",
       ],
     },
     useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
@@ -138,8 +138,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "AIの判断と引用を、モデル更新後も遡れる構造で記録する。",
     },
     problemStatement: {
-      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. Yet there is still no mechanism to verify, after the fact, why a model decided what it decided.",
-      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。",
+      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on.",
+      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。",
     },
     whyNow: {
       en: "EU AI Act enforcement in 2026; rising ISO 42001 certification demand",
@@ -147,14 +147,14 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     howLemmaFits: {
       en: [
-        "ZK proofs for AI decision attribution",
-        "Permanent provenance for RAG sources",
-        "Selective disclosure for compliance reports",
+        "ZK attribution — prove which model generation made a decision, on which data, verifiable years later",
+        "RAG provenance anchoring — retrieved citations can't drift or be silently reissued",
+        "Selective disclosure for compliance reports — reveal only what the auditor needs, not the full input",
       ],
       ja: [
-        "AI判断の帰属にZK証明",
-        "RAG情報源の永続的来歴",
-        "コンプラインス報告のための選択的開示",
+        "ZK 帰属証明 — どのモデル世代がどのデータで判断を下したかを、何年経っても検証できる",
+        "RAG 来歴アンカリング — 参照ソースが差し替えられたり消えたりするのを防ぐ",
+        "コンプライアンス報告の選択的開示 — 入力全体ではなく、監査人が必要とする部分だけを開示できる",
       ],
     },
     useCaseSlugs: ["ai-audit-log-proof", "rag-source-attestation"],
@@ -317,8 +317,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
     },
     problemStatement: {
-      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Yet most enterprises still respond with self-declaration and paper trails, not with programmatically verifiable proofs.",
-      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しており、プログラムで検証できる証明には変換されていません。",
+      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise.",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。",
     },
     whyNow: {
       en: "GDPR strengthening, EU AI Act, crypto-asset guidelines, supply chain DDP mandates",
@@ -326,14 +326,14 @@ const PILLARS: ReadonlyArray<Pillar> = [
     },
     howLemmaFits: {
       en: [
-        "Attribute-level compliance proofs",
-        "Schema-bound regulatory requirements",
-        "Auditable proof trail without data exposure",
+        "Attribute-level proofs — \"KYC passed\", \"CBAM compliant\", \"AI Act met\" — verifiable without disclosing the underlying records",
+        "Schema-bound proofs — each proof is bound to the regulatory schema it satisfies, so auditors verify against the rule text",
+        "Auditable proof trail — regulators can independently replay verification without ever receiving the raw data",
       ],
       ja: [
-        "属性レベルのコンプライアンス証明",
-        "スキーマバインド規制要件",
-        "データ開示なしの監査可能な証明トレイル",
+        "属性レベルの証明 — 「KYC 通過」「CBAM 適合」「AI Act 要件達成」を、根拠データを開示せずに検証可能にする",
+        "スキーマバインド証明 — 各証明を、それが満たす規制スキーマと紐付け、監査人は規制条文に対して直接検証できる",
+        "監査可能な証明トレイル — 原本データを渡さず、規制当局が独立に再検証できる形で残せる",
       ],
     },
     useCaseSlugs: ["financial-data-exfiltration", "kyc-aml-selective-disclosure", "supply-chain-esg"],
