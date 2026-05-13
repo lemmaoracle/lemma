@@ -82,6 +82,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <!-- Bing Webmaster Tools site verification. Required on the home page; site-wide for robustness. Do not remove. -->
     <meta name="msvalidate.01" content="D005FBC3192939CC3D77FEE8C4E06C09" />
     <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={base ? `${base}/favicon.svg` : "/favicon.svg"} />
     <link rel="icon" type="image/png" sizes="32x32" href={base ? `${base}/favicon-32.png` : "/favicon-32.png"} />
     <meta property="og:site_name" content="Lemma Oracle" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -133,7 +134,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
             url: SITE_ORIGIN,
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_ORIGIN}/favicon-32.png`,
+              url: `${SITE_ORIGIN}/favicon.svg`,
             },
             sameAs: ["https://x.com/lemmaoracle", "https://github.com/lemmaoracle"],
           },

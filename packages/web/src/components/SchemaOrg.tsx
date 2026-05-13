@@ -24,7 +24,7 @@ export default function SchemaOrg({ post, base, blogPath }: SchemaOrgProps) {
       name: "Lemma Oracle",
       logo: {
         "@type": "ImageObject",
-        url: "https://lemma.frame00.com/favicon-32.png",
+        url: "https://lemma.frame00.com/favicon.svg",
       },
     },
     mainEntityOfPage: {
