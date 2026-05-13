@@ -477,10 +477,16 @@
         "Agent Ecosystem"
       ]
     },
+    "nowBanner": {
+      "eyebrow": "Now · The Mythos-class threat era",
+      "text": "The trust layer across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
+      "cta": "Read the pre-execution attestation thesis",
+      "href": "/blog/verifiable-ai-financial-agents-2026/"
+    },
     "lemmaFor": {
       "h2Line1": "Cryptographic proof,",
       "h2Line2": "for every workflow.",
-      "lead": "On a single cryptographic foundation, Lemma serves four work domains with use-case-tuned products.",
+      "lead": "On a single cryptographic foundation, Lemma serves each work domain with use-case-tuned products.",
       "cards": [
         {
           "tag": "For Finance",
@@ -514,7 +520,9 @@
           "cases": "RAG content provenance · RAG citation proof",
           "href": "/use-cases/ai-audit-log-proof/"
         }
-      ]
+      ],
+      "seeAll": "View all use cases →",
+      "seeAllHref": "/use-cases/"
     },
     "how": {
       "text": "Every workflow runs on four cryptographic layers.",

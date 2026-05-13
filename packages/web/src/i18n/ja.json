@@ -477,10 +477,16 @@
         "Agent エコシステム"
       ]
     },
+    "nowBanner": {
+      "eyebrow": "今 · Mythos 級 AI 攻撃時代",
+      "text": "業界横断のトラスト層。「暗号的に有効 ≠ 意味的に正しい」を、コミットの前に独立検証する pre-execution attestation。",
+      "cta": "コミット前検証の構想を読む",
+      "href": "/ja/blog/verifiable-ai-financial-agents-2026/"
+    },
     "lemmaFor": {
       "h2Line1": "業務場面ごとに、",
       "h2Line2": "暗号で証明する。",
-      "lead": "Lemma は単一の暗号インフラの上に、4 つの業務領域それぞれに最適化されたユースケースを提供する。",
+      "lead": "Lemma は単一の暗号インフラの上に、業務領域ごとに最適化されたユースケースを提供する。",
       "cards": [
         {
           "tag": "For Finance",
@@ -514,7 +520,9 @@
           "cases": "RAG コンテンツ来歴 · RAG 出典証明",
           "href": "/ja/use-cases/ai-audit-log-proof/"
         }
-      ]
+      ],
+      "seeAll": "すべてのユースケースを見る →",
+      "seeAllHref": "/ja/use-cases/"
     },
     "how": {
       "text": "すべては、4 つの暗号レイヤから動いている。",

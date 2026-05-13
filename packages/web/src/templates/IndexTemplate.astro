@@ -69,6 +69,15 @@ const thinking = recentPosts.slice(0, 6);
       </a>
     </section>
 
+    <!-- ─── NOW BANNER (Mythos / pre-execution attestation context) ─── -->
+    <section class="now-banner">
+      <div class="now-banner-inner reveal">
+        <div class="now-banner-eyebrow">{ix.nowBanner.eyebrow}</div>
+        <p class="now-banner-text">{ix.nowBanner.text}</p>
+        <a class="now-banner-link" href={ix.nowBanner.href}>{ix.nowBanner.cta} <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
     <!-- ─── TRUSTED BY ─── -->
     <section class="trusted">
       <div class="trusted-inner">
@@ -90,7 +99,7 @@ const thinking = recentPosts.slice(0, 6);
         <div class="for-x-grid">
           {ix.lemmaFor.cards.map((card) => (
             <a class="for-x-card" href={card.href}>
-              <div>
+              <div class="for-x-card-content">
                 <div class="for-x-card-tag">{card.tag}</div>
                 <h3 class="for-x-card-title">{card.titleLine1}<br/>{card.titleLine2}</h3>
                 <p class="for-x-card-body">{card.body}</p>
@@ -99,6 +108,10 @@ const thinking = recentPosts.slice(0, 6);
               <span class="for-x-card-arrow" aria-hidden="true">→</span>
             </a>
           ))}
+        </div>
+
+        <div class="for-x-see-all">
+          <a class="for-x-see-all-link" href={ix.lemmaFor.seeAllHref}>{ix.lemmaFor.seeAll}</a>
         </div>
       </div>
     </section>
@@ -328,6 +341,58 @@ const thinking = recentPosts.slice(0, 6);
     .featured-visual::after { right: 28px; bottom: 24px; }
   }
 
+  /* ─── NOW BANNER ─── */
+  .now-banner {
+    background: var(--gray-50);
+    padding: 48px 8%;
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .now-banner-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .now-banner-eyebrow {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .now-banner-eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+  .now-banner-text {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--gray-800);
+    margin: 0 0 18px;
+    max-width: 760px;
+  }
+  .now-banner-link {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.25s;
+  }
+  .now-banner-link:hover { gap: 12px; }
+
   /* ─── TRUSTED BY ─── */
   .trusted {
     background: var(--white);
@@ -463,8 +528,25 @@ const thinking = recentPosts.slice(0, 6);
     color: var(--accent);
     transform: translateX(4px);
   }
+  .for-x-see-all {
+    margin-top: 40px;
+    text-align: right;
+  }
+  .for-x-see-all-link {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.25s;
+  }
+  .for-x-see-all-link:hover { gap: 12px; }
   @media (max-width: 1024px) {
     .for-x-grid { grid-template-columns: 1fr; }
+    .for-x-see-all { text-align: left; }
   }
 
   /* ─── HOW (one-liner) ─── */
@@ -584,6 +666,7 @@ const thinking = recentPosts.slice(0, 6);
     .hero { padding: 140px 6% 80px; }
     .featured { padding: 40px 6%; }
     .featured-content { padding: 48px 28px 32px; }
+    .now-banner { padding: 32px 6%; }
     .trusted { padding: 64px 6% 80px; }
     .for-x { padding: 100px 6%; }
     .how { padding: 80px 6%; }
