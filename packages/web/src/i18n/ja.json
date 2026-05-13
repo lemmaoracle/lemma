@@ -480,8 +480,16 @@
     "lemmaFor": {
       "h2Line1": "業務場面ごとに、",
       "h2Line2": "暗号で証明する。",
-      "lead": "Lemma は単一の暗号インフラの上に、4 つの業務領域それぞれに最適化されたユースケースを提供する。",
+      "lead": "Lemma は単一の暗号インフラの上に、業務領域ごとに最適化されたユースケースを提供する。",
       "cards": [
+        {
+          "tag": "For Security",
+          "titleLine1": "AI 駆動攻撃と内部脅威に",
+          "titleLine2": "耐えるトラスト層。",
+          "body": "「暗号的に有効 ≠ 意味的に正しい」を、コミットの前に独立検証する pre-execution attestation。Mythos 級の AI 駆動攻撃、組織横断の内部脅威、システム境界をまたぐ意味的偽造に対する防御層を提供する。",
+          "cases": "金融データ流出防止 · DeFi ブリッジ検証 · AI 監査ログ証明",
+          "href": "/ja/use-cases/financial-data-exfiltration/"
+        },
         {
           "tag": "For Finance",
           "titleLine1": "金融機関の",
@@ -514,7 +522,9 @@
           "cases": "RAG コンテンツ来歴 · RAG 出典証明",
           "href": "/ja/use-cases/ai-audit-log-proof/"
         }
-      ]
+      ],
+      "seeAll": "すべてのユースケースを見る →",
+      "seeAllHref": "/ja/use-cases/"
     },
     "how": {
       "text": "すべては、4 つの暗号レイヤから動いている。",

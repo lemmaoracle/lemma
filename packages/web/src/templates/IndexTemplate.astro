@@ -90,7 +90,7 @@ const thinking = recentPosts.slice(0, 6);
         <div class="for-x-grid">
           {ix.lemmaFor.cards.map((card) => (
             <a class="for-x-card" href={card.href}>
-              <div>
+              <div class="for-x-card-content">
                 <div class="for-x-card-tag">{card.tag}</div>
                 <h3 class="for-x-card-title">{card.titleLine1}<br/>{card.titleLine2}</h3>
                 <p class="for-x-card-body">{card.body}</p>
@@ -99,6 +99,10 @@ const thinking = recentPosts.slice(0, 6);
               <span class="for-x-card-arrow" aria-hidden="true">→</span>
             </a>
           ))}
+        </div>
+
+        <div class="for-x-see-all">
+          <a class="for-x-see-all-link" href={ix.lemmaFor.seeAllHref}>{ix.lemmaFor.seeAll}</a>
         </div>
       </div>
     </section>
@@ -402,6 +406,16 @@ const thinking = recentPosts.slice(0, 6);
     grid-template-columns: 1fr 1fr;
     gap: 24px;
   }
+  .for-x-grid > .for-x-card:first-child {
+    grid-column: 1 / -1;
+    border-top-width: 3px;
+  }
+  .for-x-grid > .for-x-card:first-child .for-x-card-content {
+    max-width: 760px;
+  }
+  .for-x-grid > .for-x-card:first-child .for-x-card-title {
+    font-size: clamp(28px, 3vw, 32px);
+  }
   .for-x-card {
     background: #fff;
     border-top: 2px solid var(--accent);
@@ -463,8 +477,26 @@ const thinking = recentPosts.slice(0, 6);
     color: var(--accent);
     transform: translateX(4px);
   }
+  .for-x-see-all {
+    margin-top: 40px;
+    text-align: right;
+  }
+  .for-x-see-all-link {
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.25s;
+  }
+  .for-x-see-all-link:hover { gap: 12px; }
   @media (max-width: 1024px) {
     .for-x-grid { grid-template-columns: 1fr; }
+    .for-x-grid > .for-x-card:first-child { grid-column: auto; }
+    .for-x-see-all { text-align: left; }
   }
 
   /* ─── HOW (one-liner) ─── */

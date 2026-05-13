@@ -480,8 +480,16 @@
     "lemmaFor": {
       "h2Line1": "Cryptographic proof,",
       "h2Line2": "for every workflow.",
-      "lead": "On a single cryptographic foundation, Lemma serves four work domains with use-case-tuned products.",
+      "lead": "On a single cryptographic foundation, Lemma serves each work domain with use-case-tuned products.",
       "cards": [
+        {
+          "tag": "For Security",
+          "titleLine1": "Resist AI-driven attacks",
+          "titleLine2": "and cross-org insider threats.",
+          "body": "Pre-execution attestation that independently verifies \"cryptographically valid ≠ semantically right\" before commit. A defense layer for Mythos-class AI-driven attacks, cross-org insider threats, and semantic forgery across system boundaries.",
+          "cases": "Financial data exfiltration · DeFi bridge verification · AI audit log proof",
+          "href": "/use-cases/financial-data-exfiltration/"
+        },
         {
           "tag": "For Finance",
           "titleLine1": "AI audit, KYC,",
@@ -514,7 +522,9 @@
           "cases": "RAG content provenance · RAG citation proof",
           "href": "/use-cases/ai-audit-log-proof/"
         }
-      ]
+      ],
+      "seeAll": "View all use cases →",
+      "seeAllHref": "/use-cases/"
     },
     "how": {
       "text": "Every workflow runs on four cryptographic layers.",

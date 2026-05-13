@@ -372,6 +372,8 @@ export interface Translations {
         readonly cases: string;
         readonly href: string;
       }>;
+      readonly seeAll: string;
+      readonly seeAllHref: string;
     }>;
     readonly how: Readonly<{
       readonly text: string;
