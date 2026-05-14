@@ -1,71 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" preserveAspectRatio="xMidYMid meet">
   <defs>
     <style>
-      .bg { fill: #FFFFFF; }
-      .wordmark { font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; font-size: 28px; font-weight: 500; fill: #1A1A1A; letter-spacing: 0.04em; }
-      .eyebrow { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Helvetica Neue", sans-serif; font-size: 14px; font-weight: 500; fill: #B8723A; letter-spacing: 0.22em; }
-      .headline { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Cormorant Garamond", Georgia, serif; font-size: 52px; font-weight: 500; fill: #1A1A1A; letter-spacing: 0.01em; }
-      .card-stroke { stroke: rgba(0,0,0,0.12); stroke-width: 1; fill: #FFFFFF; }
-      .card-accent { fill: #8B4513; }
-      .card-title { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Helvetica Neue", sans-serif; font-size: 17px; font-weight: 500; fill: #1A1A1A; }
-      .card-tech { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", ui-monospace, sans-serif; font-size: 11px; fill: rgba(0,0,0,0.45); letter-spacing: 0.02em; }
-      .bar { fill: #000000; }
-      .bar-label { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Helvetica Neue", sans-serif; font-size: 16px; font-weight: 500; fill: #FFFFFF; letter-spacing: 0.4em; }
-      .footnote { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Helvetica Neue", sans-serif; font-size: 12px; fill: rgba(0,0,0,0.45); letter-spacing: 0.04em; }
-      .footnote-en { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 11px; fill: rgba(0,0,0,0.45); letter-spacing: 0.04em; }
+      .bg { fill: #0A0A0A; }
+      .wordmark { font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; font-style: italic; font-weight: 500; fill: #FFFFFF; }
+      .wordmark-l { font-size: 56px; }
+      .wordmark-sup { font-size: 22px; }
+      .wordmark-mma { font-size: 36px; }
+      .headline { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Cormorant Garamond", Georgia, serif; font-style: italic; font-size: 88px; font-weight: 500; fill: #FFFFFF; letter-spacing: 0.01em; }
+      .headline-accent { font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; fill: #B8723A; }
+      .accent-rule { fill: #B8723A; }
+      .subtitle { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Helvetica Neue", sans-serif; font-size: 22px; font-weight: 400; fill: rgba(255,255,255,0.78); letter-spacing: 0.03em; }
+      .url { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; fill: rgba(255,255,255,0.45); letter-spacing: 0.04em; }
     </style>
   </defs>
 
   <rect class="bg" width="1200" height="630"/>
 
-  <!-- Wordmark top-left -->
-  <text class="wordmark" x="60" y="86">Lemma Oracle</text>
+  <!-- Wordmark: L^emma stylized -->
+  <text class="wordmark wordmark-l" x="80" y="115">L</text>
+  <text class="wordmark wordmark-sup" x="118" y="92">e</text>
+  <text class="wordmark wordmark-mma" x="132" y="115">mma</text>
 
-  <!-- Eyebrow + Headline -->
-  <text class="eyebrow" x="60" y="148">AI のための信頼レイヤー</text>
-  <text class="headline" x="60" y="208">4 つの暗号能力。</text>
-  <text class="headline" x="60" y="260">1 つの信頼レイヤー。</text>
+  <!-- Headline JP (2 lines) -->
+  <text class="headline" x="80" y="280"><tspan class="headline-accent">AI</tspan> に証明された</text>
+  <text class="headline" x="80" y="390">事実を。</text>
 
-  <!-- 4 module cards: y=320, height=120, width=255, gap=20, left=60 -->
-  <!-- Card 1: 来歴証明 -->
-  <g transform="translate(60, 320)">
-    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
-    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
-    <text class="card-title" x="20" y="40">来歴証明</text>
-    <text class="card-tech" x="20" y="100">docHash + CID</text>
-    <text class="card-tech" x="20" y="115">オンチェーンアンカー</text>
-  </g>
-  <!-- Card 2: 検証可能 AI -->
-  <g transform="translate(335, 320)">
-    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
-    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
-    <text class="card-title" x="20" y="40">検証可能 AI</text>
-    <text class="card-tech" x="20" y="100">推論の ZK 証明</text>
-  </g>
-  <!-- Card 3: エージェント権限証明 -->
-  <g transform="translate(610, 320)">
-    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
-    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
-    <text class="card-title" x="20" y="40">エージェント</text>
-    <text class="card-title" x="20" y="62">権限証明</text>
-    <text class="card-tech" x="20" y="100">権限の連鎖</text>
-    <text class="card-tech" x="20" y="115">+ 決済権限</text>
-  </g>
-  <!-- Card 4: 規制属性証明 -->
-  <g transform="translate(885, 320)">
-    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
-    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
-    <text class="card-title" x="20" y="40">規制属性証明</text>
-    <text class="card-tech" x="20" y="100">選択的開示</text>
-  </g>
+  <!-- Small accent underline -->
+  <rect class="accent-rule" x="80" y="430" width="56" height="2"/>
 
-  <!-- Black Trust Layer bar -->
-  <rect class="bar" x="60" y="460" width="1080" height="56"/>
-  <text class="bar-label" x="600" y="495" text-anchor="middle">信頼レイヤー</text>
-
-  <!-- Footnote tech label -->
-  <text class="footnote" x="600" y="554" text-anchor="middle">ZK 証明 · AES-GCM · docHash · CID · オンチェーン記録</text>
+  <!-- Subtitle JP -->
+  <text class="subtitle" x="80" y="495">AI のための信頼レイヤー。</text>
 
   <!-- URL bottom-right -->
-  <text class="footnote-en" x="1140" y="600" text-anchor="end">lemma.frame00.com</text>
+  <text class="url" x="1120" y="590" text-anchor="end">lemma.frame00.com</text>
 </svg>
