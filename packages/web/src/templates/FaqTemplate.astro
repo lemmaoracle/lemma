@@ -118,6 +118,10 @@ const fq = t.faq;
     line-height: 1.08;
     margin-bottom: 20px;
   }
+  /* Issue #150: Japanese needs more leading than Latin display type. */
+  :root[lang="ja"] .faq-header h1 {
+    line-height: 1.3;
+  }
   .faq-header h1 em {
     font-style: italic;
   }
