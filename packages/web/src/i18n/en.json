@@ -467,16 +467,6 @@
       "subtitle": "A trust layer on top of x402. Autonomous agent payments, verifiable by ZK proof.",
       "cta": "Try the demo"
     },
-    "trustedBy": {
-      "label": "Focus partnership sectors",
-      "items": [
-        "Financial Institutions",
-        "Manufacturing",
-        "Public Infrastructure",
-        "RAG / LLM Product Companies",
-        "AI Agent Operators"
-      ]
-    },
     "nowBanner": {
       "eyebrow": "Now · The Mythos-class threat era",
       "text": "The trust layer across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
@@ -484,6 +474,7 @@
       "href": "/blog/verifiable-ai-financial-agents-2026/"
     },
     "lemmaFor": {
+      "eyebrow": "INDUSTRY APPLICATIONS",
       "h2Line1": "Cryptographic proof,",
       "h2Line2": "for every workflow.",
       "lead": "On a single cryptographic foundation, Lemma serves each work domain with use-case-tuned products.",
@@ -523,11 +514,6 @@
       ],
       "seeAll": "View all use cases →",
       "seeAllHref": "/use-cases/"
-    },
-    "how": {
-      "text": "Every workflow runs on four cryptographic layers.",
-      "link": "Read how it works",
-      "href": "/pillars/"
     },
     "thinking": {
       "title": "Recent thinking.",
