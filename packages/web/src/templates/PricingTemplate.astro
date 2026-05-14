@@ -315,6 +315,17 @@ const discoveryLabel = DISCOVERY_CALL[locale].buttonLabel;
     .dev-section { padding-top: 90px; padding-bottom: 90px; }
     .plan-grid { grid-template-columns: 1fr; }
     .dev-plans { grid-template-columns: 1fr; }
+    /* Issue #151: bump uppercase CTA buttons for mobile readability.
+       Desktop keeps 11px brand sizing; mobile gets 13px + slightly looser
+       tracking so uppercase glyphs don't compress. Padding bumped to keep
+       tap target comfortably above the 44px WCAG/HIG minimum. */
+    .btn-plan, .btn-plan-wp, .btn-dev, .btn-dev-outline {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+    }
+    .btn-plan { padding: 16px 0; }
+    .btn-plan-wp { padding: 15px 0; }
+    .btn-dev { padding: 16px 32px; }
   }
 </style>
 
