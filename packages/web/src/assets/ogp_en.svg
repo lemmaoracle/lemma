@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <style>
+      .bg { fill: #FFFFFF; }
+      .wordmark { font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; font-size: 28px; font-weight: 500; fill: #1A1A1A; letter-spacing: 0.04em; }
+      .eyebrow { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #B8723A; letter-spacing: 0.22em; text-transform: uppercase; }
+      .headline { font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; font-size: 52px; font-weight: 500; fill: #1A1A1A; letter-spacing: -0.01em; }
+      .card-stroke { stroke: rgba(0,0,0,0.12); stroke-width: 1; fill: #FFFFFF; }
+      .card-accent { fill: #8B4513; }
+      .card-title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 500; fill: #1A1A1A; }
+      .card-tech { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 10px; fill: rgba(0,0,0,0.45); letter-spacing: 0.02em; }
+      .bar { fill: #000000; }
+      .bar-label { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 500; fill: #FFFFFF; letter-spacing: 0.32em; text-transform: uppercase; }
+      .footnote { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 11px; fill: rgba(0,0,0,0.45); letter-spacing: 0.04em; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1200" height="630"/>
+
+  <!-- Wordmark top-left -->
+  <text class="wordmark" x="60" y="86">Lemma Oracle</text>
+
+  <!-- Eyebrow + Headline -->
+  <text class="eyebrow" x="60" y="148">TRUST LAYER FOR AI</text>
+  <text class="headline" x="60" y="208">Four cryptographic capabilities.</text>
+  <text class="headline" x="60" y="260">One Trust Layer.</text>
+
+  <!-- 4 module cards: y=320, height=120, width=255, gap=20, left=60 -->
+  <!-- Card 1: Verifiable Origin -->
+  <g transform="translate(60, 320)">
+    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
+    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
+    <text class="card-title" x="20" y="38">Verifiable Origin</text>
+    <text class="card-tech" x="20" y="100">docHash · CID</text>
+    <text class="card-tech" x="20" y="115">on-chain anchor</text>
+  </g>
+  <!-- Card 2: Verifiable AI -->
+  <g transform="translate(335, 320)">
+    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
+    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
+    <text class="card-title" x="20" y="38">Verifiable AI</text>
+    <text class="card-tech" x="20" y="100">ZK proof</text>
+    <text class="card-tech" x="20" y="115">of inference</text>
+  </g>
+  <!-- Card 3: Agent Authority Proof -->
+  <g transform="translate(610, 320)">
+    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
+    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
+    <text class="card-title" x="20" y="38">Agent Authority</text>
+    <text class="card-title" x="20" y="58">Proof</text>
+    <text class="card-tech" x="20" y="100">delegation chain</text>
+    <text class="card-tech" x="20" y="115">+ payment auth</text>
+  </g>
+  <!-- Card 4: Regulatory Attribute Proof -->
+  <g transform="translate(885, 320)">
+    <rect class="card-stroke" x="0" y="0" width="255" height="120" rx="0"/>
+    <rect class="card-accent" x="0" y="0" width="255" height="2"/>
+    <text class="card-title" x="20" y="38">Regulatory Attribute</text>
+    <text class="card-title" x="20" y="58">Proof</text>
+    <text class="card-tech" x="20" y="100">selective</text>
+    <text class="card-tech" x="20" y="115">disclosure</text>
+  </g>
+
+  <!-- Black Trust Layer bar -->
+  <rect class="bar" x="60" y="460" width="1080" height="56"/>
+  <text class="bar-label" x="600" y="495" text-anchor="middle">TRUST LAYER</text>
+
+  <!-- Footnote tech label -->
+  <text class="footnote" x="600" y="554" text-anchor="middle">ZK proofs · AES-GCM · docHash · CID · on-chain anchoring</text>
+
+  <!-- URL bottom-right -->
+  <text class="footnote" x="1140" y="600" text-anchor="end">lemma.frame00.com</text>
+</svg>
