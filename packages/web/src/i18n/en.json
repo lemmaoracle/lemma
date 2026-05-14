@@ -853,6 +853,8 @@
     "title": "Trust Layer",
     "heroTitle": "The Trust Layer for AI.",
     "subtitle": "Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one Trust Layer.",
+    "categoryEyebrow": "TRUST LAYER",
+    "categoryAttribution": "One of four cryptographic capabilities.",
     "viewPillar": "View pillar →",
     "blockProblem": "The unresolved question",
     "blockWhyNow": "Why Now",

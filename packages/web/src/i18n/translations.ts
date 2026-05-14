@@ -490,6 +490,8 @@ export interface Translations {
     readonly title: string;
     readonly heroTitle: string;
     readonly subtitle: string;
+    readonly categoryEyebrow: string;
+    readonly categoryAttribution: string;
     readonly viewPillar: string;
     readonly blockProblem: string;
     readonly blockWhyNow: string;
