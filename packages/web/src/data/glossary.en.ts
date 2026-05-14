@@ -472,7 +472,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     implementation: [
       "Lemma's <a href=\"/glossary/trust402/\">Trust402</a> sits in front of agent settlement as a verification layer. Before payment proceeds, the agent proves in ZK \"who I'm acting for, what limits I'm under, and what provenance data underlies this transaction.\" With authority and transaction grounding fixed cryptographically, the downstream settlement step can be safely delegated to the agent.",
       "Integration with adjacent technologies is modular. <a href=\"/glossary/x402/\">x402</a> handles the HTTP layer of agent-to-agent payments; <a href=\"/glossary/a2a/\">A2A</a> covers agent discovery and contract negotiation; <a href=\"/glossary/mcp/\">MCP</a> handles tool use. Lemma adds a verification stage on top — \"authority and provenance\" — that the other layers do not own.",
-      "The concrete implementation plan and Lemma's role in agentic payments is laid out in the <a href=\"/pillars/agent-trust-chain/\">Agent Trust Chain</a> pillar. This page covers the concept and ecosystem; the pillar covers how Lemma binds the three axes (authority, spend control, provenance) into one chain.",
+      "The concrete implementation plan and Lemma's role in agentic payments is laid out in the <a href=\"/pillars/agent-authority-proof/\">Agent Authority Proof</a> pillar. This page covers the concept and ecosystem; the pillar covers how Lemma binds the three axes (authority, spend control, provenance) into a single attestation chain.",
     ],
     related: [
       { slug: "trust402", desc: "The pre-settlement verification layer for agent transactions." },

@@ -16,7 +16,7 @@ export default defineConfig({
     react(),
     sitemap({
       i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },
-      filter: (page) => !page.includes("/thank-you/"),
+      filter: (page) => !page.includes("/thank-you/") && !page.includes("/pillars/agent-trust-chain/"),
     }),
   ],
   vite: {
