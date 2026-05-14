@@ -114,7 +114,7 @@
     "blog": "Blog",
     "privacy": "Privacy",
     "terms": "Terms",
-    "tagline": "The trust infrastructure for verifiable AI.",
+    "tagline": "Trust Layer for AI. Built for decisions that matter.",
     "colCompany": "Company",
     "specs": "Specs",
     "github": "GitHub →",
@@ -319,8 +319,8 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — ZK-Proof Verifiable AI Trust Infrastructure",
-    "defaultDescription": "Give AI cryptographically proven facts. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
+    "defaultTitle": "Lemma Oracle — The Trust Layer for AI",
+    "defaultDescription": "Lemma is the Trust Layer for AI. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
   },
   "services": {
     "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
@@ -464,7 +464,7 @@
     "featured": {
       "eyebrow": "For Developers · Reference Implementation",
       "title": "Trust402",
-      "subtitle": "A trust layer on top of x402. Autonomous agent payments, verifiable by ZK proof.",
+      "subtitle": "A Trust Layer on top of x402. Autonomous agent payments, verifiable by ZK proof.",
       "cta": "Try the demo"
     },
     "trustedBy": {
@@ -479,7 +479,7 @@
     },
     "nowBanner": {
       "eyebrow": "Now · The Mythos-class threat era",
-      "text": "The trust layer across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
+      "text": "The Trust Layer across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
       "cta": "Read the pre-execution attestation thesis",
       "href": "/blog/verifiable-ai-financial-agents-2026/"
     },
@@ -555,7 +555,7 @@
     "notice": "Pricing details are tailored to your use case. Contact us to discuss the right tier for your organization.",
     "enterprise": {
       "tag": "Enterprise",
-      "h2": "Three segments. One trust layer.",
+      "h2": "Three segments. One Trust Layer.",
       "p": "Lemma's enterprise tier is structured around three verticals — public infrastructure, critical systems, and financial compliance.",
       "plans": [
         {
