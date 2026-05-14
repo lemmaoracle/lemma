@@ -2,17 +2,20 @@ import type { BlogPost } from "../data/blog";
 
 interface SchemaOrgProps {
   post: BlogPost;
-  base: string;
+  // blogPath already contains the locale prefix (e.g. "/ja/blog"), so it is
+  // sufficient on its own. Combining it with a separate `base` would produce
+  // "/ja/ja/blog/<slug>".
   blogPath: string;
 }
 
-export default function SchemaOrg({ post, base, blogPath }: SchemaOrgProps) {
+export default function SchemaOrg({ post, blogPath }: SchemaOrgProps) {
+  const articleUrl = `https://lemma.frame00.com${blogPath}/${post.slug}`;
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.abstract,
-    url: `https://lemma.frame00.com${base}${blogPath}/${post.slug}`,
+    url: articleUrl,
     datePublished: post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
     dateModified: post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
     author: {
@@ -29,7 +32,7 @@ export default function SchemaOrg({ post, base, blogPath }: SchemaOrgProps) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://lemma.frame00.com${base}${blogPath}/${post.slug}`,
+      "@id": articleUrl,
     },
     image: post.cover || "https://lemma.frame00.com/ogp-default.png",
   };

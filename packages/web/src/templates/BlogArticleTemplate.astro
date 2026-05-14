@@ -46,7 +46,7 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   post={post}
   blogPath={blogPath}
 >
-  {post && <SchemaOrg post={post} base={base} blogPath={blogPath} />}
+  {post && <SchemaOrg post={post} blogPath={blogPath} />}
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
