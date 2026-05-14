@@ -13,6 +13,8 @@
     "resources": "Resources",
     "developers": "Developers",
     "contact": "Contact",
+    "contactCta": "Contact",
+    "whitepaperCta": "Whitepaper",
     "languageJa": "日本語",
     "languageEn": "English",
     "mega": {
@@ -504,8 +506,10 @@
       "eyebrow": "TRUST LAYER FOR AI",
       "h1": "Give AI proven facts.",
       "sub": "ZK-proof infrastructure makes every AI decision verifiable.",
-      "primaryCta": "Read the Trust Layer overview",
-      "secondaryCta": "Read docs"
+      "primaryCta": "Download the Whitepaper",
+      "primaryCtaHref": "https://tally.so/r/xX0VYv",
+      "secondaryCta": "Read the Trust Layer overview →",
+      "secondaryCtaHref": "/pillars/"
     },
     "trustLayer": {
       "eyebrow": "TRUST LAYER",

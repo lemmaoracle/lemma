@@ -23,8 +23,8 @@ export interface IndexTemplateProps {
 const { locale, t, base, description, recentPosts } = Astro.props as IndexTemplateProps;
 const ix = t.index;
 
-const pillarsOverviewHref = base ? `${base}/pillars/` : "/pillars/";
-const docsHref = base ? `${base}/guides/` : "/guides/";
+const heroPrimaryHref = ix.hero.primaryCtaHref;
+const heroSecondaryHref = ix.hero.secondaryCtaHref;
 const trust402Href = "/trust402/";
 const blogIndexHref = `${base}/blog/`;
 const thinking = recentPosts.slice(0, 6);
@@ -53,8 +53,8 @@ const thinking = recentPosts.slice(0, 6);
         <h1 class="hero-h1">{ix.hero.h1}</h1>
         <p class="hero-sub">{ix.hero.sub}</p>
         <div class="hero-cta-row">
-          <a href={pillarsOverviewHref} class="btn btn-primary">{ix.hero.primaryCta} <span aria-hidden="true">→</span></a>
-          <a href={docsHref} class="btn btn-ghost">{ix.hero.secondaryCta}</a>
+          <a href={heroPrimaryHref} class="btn btn-primary" target="_blank" rel="noopener">{ix.hero.primaryCta}</a>
+          <a href={heroSecondaryHref} class="btn btn-ghost">{ix.hero.secondaryCta}</a>
         </div>
       </div>
     </section>

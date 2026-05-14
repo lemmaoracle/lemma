@@ -22,6 +22,8 @@ export interface Translations {
     readonly resources: string;
     readonly developers: string;
     readonly contact: string;
+    readonly contactCta: string;
+    readonly whitepaperCta: string;
     readonly languageJa: string;
     readonly languageEn: string;
     readonly mega: Readonly<{
@@ -350,7 +352,9 @@ export interface Translations {
       readonly h1: string;
       readonly sub: string;
       readonly primaryCta: string;
+      readonly primaryCtaHref: string;
       readonly secondaryCta: string;
+      readonly secondaryCtaHref: string;
     }>;
     readonly trustLayer: Readonly<{
       readonly eyebrow: string;

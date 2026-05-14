@@ -20,6 +20,7 @@ const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = servicesPath;
+const whitepaperFormUrl = "https://tally.so/r/xX0VYv";
 const githubPath = "https://github.com/lemmaoracle";
 const contactPath = base ? `${base}/#contact` : "/#contact";
 const homePath = base || "/";
@@ -175,7 +176,8 @@ const isResourcesActive =
     <a href={languageSwitchHref} class="nav-lang">
       {locale === "ja" ? t.languageEn : t.languageJa}
     </a>
-    <a href={contactPath} class="nav-cta">{t.contact}</a>
+    <a href={contactPath} class="nav-contact">{t.contactCta}</a>
+    <a href={whitepaperFormUrl} class="nav-cta" target="_blank" rel="noopener">{t.whitepaperCta}</a>
   </div>
 
   <!-- HAMBURGER -->
@@ -293,12 +295,23 @@ const isResourcesActive =
     transition: color .2s;
   }
   .nav-lang:hover { color: var(--gray-800); }
+  .nav-contact {
+    color: var(--gray-700, #5F5F5F);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-decoration: none;
+    transition: color .2s;
+    white-space: nowrap;
+  }
+  .nav-contact:hover { color: var(--gray-800); }
   .nav-cta {
     background: #000; color: #fff;
     padding: 9px 20px;
     font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
     text-decoration: none;
     transition: background .2s, color .2s;
+    white-space: nowrap;
   }
   .nav-cta:hover { background: var(--accent); color: #fff; }
 
@@ -428,11 +441,17 @@ const isResourcesActive =
   .mob-lang a { color: var(--gray-700, #5F5F5F); text-decoration: none; }
 
   @media(max-width:1024px) {
-    .mega-nav { padding: 0 6%; }
+    .mega-nav { padding: 0 5%; gap: 8px; }
+    .mega-nav-logo { margin-right: auto; }
     .mega-nav-links { display: none; }
-    .mega-nav-right { display: none; }
+    .mega-nav-right { gap: 10px; }
+    .nav-lang, .nav-contact { display: none; }
+    .nav-cta { padding: 8px 14px; font-size: 10px; letter-spacing: .06em; }
     .nav-hamburger { display: flex; }
     .nav-mobile-drawer { display: block; }
+  }
+  @media(max-width:480px) {
+    .nav-cta { padding: 7px 12px; font-size: 10px; }
   }
 </style>
 
