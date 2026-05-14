@@ -13,6 +13,8 @@
     "resources": "リソース",
     "developers": "開発者",
     "contact": "お問い合わせ",
+    "contactCta": "お問い合わせ",
+    "whitepaperCta": "ホワイトペーパー",
     "languageJa": "日本語",
     "languageEn": "English",
     "mega": {
@@ -504,8 +506,10 @@
       "eyebrow": "AI のための信頼レイヤー",
       "h1": "AI に証明された事実を。",
       "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
-      "primaryCta": "信頼レイヤーの仕組みを読む",
-      "secondaryCta": "ドキュメントを読む"
+      "primaryCta": "ホワイトペーパーを無料ダウンロード",
+      "primaryCtaHref": "https://tally.so/r/xX0VYv",
+      "secondaryCta": "信頼レイヤーの仕組みを読む →",
+      "secondaryCtaHref": "/ja/pillars/"
     },
     "trustLayer": {
       "eyebrow": "信頼レイヤー",
