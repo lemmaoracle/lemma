@@ -74,10 +74,9 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
       <nav class="article-toc" aria-label={tocLabel}>
         <div class="toc-label">{tocLabel}</div>
         <ol class="toc-list">
-          {post.headings.map((h, i) => (
+          {post.headings.map((h) => (
             <li class={`toc-item toc-level-${h.level}`}>
               <a href={`#${h.id}`}>
-                <span class="toc-num">{String(i + 1).padStart(2, "0")}</span>
                 <span class="toc-text">{h.text}</span>
               </a>
             </li>
@@ -193,7 +192,6 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   .toc-item a { display: flex; align-items: baseline; gap: 14px; padding: 7px 0; color: var(--gray-700, #444); text-decoration: none; transition: color .2s; line-height: 1.45; }
   .toc-item a:hover { color: #000; }
   .toc-item.toc-level-3 { padding-left: 0; }
-  .toc-num { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: var(--gray-500); letter-spacing: .04em; flex-shrink: 0; min-width: 22px; }
   .toc-text { font-size: 14px; }
   .article-body :global(h2[id]), .article-body :global(h3[id]) { scroll-margin-top: 96px; }
   @media (max-width: 640px) {
