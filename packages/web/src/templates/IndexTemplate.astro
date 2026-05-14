@@ -151,9 +151,15 @@ const thinking = recentPosts.slice(0, 6);
       </div>
     </section>
 
-    <!-- ─── PARTNER PROGRAM / DISCOVERY CALL CTA ─── -->
+    <!-- ─── PARTNER PROGRAM CTA ─── -->
     <div id="contact">
-      <CtaSection bgImageSrc={HeroCover.src} base={base} locale={locale} />
+      <CtaSection
+        bgImageSrc={HeroCover.src}
+        base={base}
+        locale={locale}
+        ctaText={t.faq.partner.cta}
+        ctaLink={base ? `${base}/services/` : "/services/"}
+      />
     </div>
   </main>
 

@@ -121,7 +121,15 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
       <h2>Built for decisions<br><em>that matter.</em></h2>
       <div class="article-cta-rule"></div>
       <p>{partnerCtaDesc}</p>
-      <a href={`${base}/services`} class="btn-cta-main">{partnerCtaButton}</a>
+      <div class="article-cta-btns">
+        <a href={`${base}/services`} class="btn-cta-main">{partnerCtaButton}</a>
+        <a
+          href={locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR"}
+          class="btn-cta-outline"
+          target="_blank"
+          rel="noopener"
+        >{t.ctaSection.finalWpText}</a>
+      </div>
     </div>
   </div>
 
@@ -255,12 +263,27 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
   .article-cta h2 em { font-style: italic; }
   .article-cta-rule { width: 40px; height: 1px; background: #8B4513; margin: 24px auto; }
   .article-cta p { font-size: 15px; color: rgba(255,255,255,.45); line-height: 1.75; max-width: 400px; margin: 0 auto 40px; }
+  .article-cta-btns {
+    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  }
   .btn-cta-main {
     background: #fff; color: #000; padding: 18px 52px; font-size: 12px; font-weight: 500;
     letter-spacing: .16em; text-transform: uppercase; border: none; cursor: pointer; display: inline-block;
+    text-decoration: none;
     transition: background .2s, color .2s;
   }
   .btn-cta-main:hover { background: #8B4513; color: #fff; }
+  .btn-cta-outline {
+    background: transparent; color: rgba(255,255,255,0.65); padding: 17px 44px;
+    font-size: 12px; font-weight: 400; letter-spacing: .16em; text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.28); cursor: pointer; display: inline-block;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-cta-outline:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  @media (max-width: 640px) {
+    .article-cta-btns { flex-direction: column; align-items: center; }
+  }
 
   .prevnext { max-width: 680px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gray-200); margin-top: 2px; }
   .prevnext-item { background: #fff; padding: 28px 32px; border-top: 2px solid transparent; transition: border-color .2s; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
