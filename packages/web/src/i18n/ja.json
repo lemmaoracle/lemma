@@ -468,16 +468,6 @@
       "subtitle": "x402 に信頼レイヤを足す。エージェントの自律決済を、ZK 証明で検証可能にする。",
       "cta": "デモを試す"
     },
-    "trustedBy": {
-      "label": "重点パートナー領域",
-      "items": [
-        "金融機関",
-        "製造業",
-        "公共インフラ",
-        "RAG / LLM 製品企業",
-        "AI エージェント事業者"
-      ]
-    },
     "nowBanner": {
       "eyebrow": "今 · Mythos 級 AI 攻撃時代",
       "text": "業界横断のトラスト層。「暗号的に有効 ≠ 意味的に正しい」を、コミットの前に独立検証する pre-execution attestation。",
@@ -485,6 +475,7 @@
       "href": "/ja/blog/verifiable-ai-financial-agents-2026/"
     },
     "lemmaFor": {
+      "eyebrow": "業界別の適用",
       "h2Line1": "業務場面ごとに、",
       "h2Line2": "暗号で証明する。",
       "lead": "Lemma は単一の暗号インフラの上に、業務領域ごとに最適化されたユースケースを提供する。",
@@ -524,11 +515,6 @@
       ],
       "seeAll": "すべてのユースケースを見る →",
       "seeAllHref": "/ja/use-cases/"
-    },
-    "how": {
-      "text": "すべては、4 つの暗号レイヤから動いている。",
-      "link": "仕組みを読む",
-      "href": "/ja/pillars/"
     },
     "thinking": {
       "title": "最新の考察。",

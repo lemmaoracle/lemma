@@ -72,30 +72,10 @@ const thinking = recentPosts.slice(0, 6);
       </a>
     </section>
 
-    <!-- ─── NOW BANNER (Mythos / pre-execution attestation context) ─── -->
-    <section class="now-banner">
-      <div class="now-banner-inner reveal">
-        <div class="now-banner-eyebrow">{ix.nowBanner.eyebrow}</div>
-        <p class="now-banner-text">{ix.nowBanner.text}</p>
-        <a class="now-banner-link" href={ix.nowBanner.href}>{ix.nowBanner.cta} <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
-
-    <!-- ─── TRUSTED BY ─── -->
-    <section class="trusted">
-      <div class="trusted-inner">
-        <div class="trusted-label">{ix.trustedBy.label}</div>
-        <div class="trusted-list reveal">
-          {ix.trustedBy.items.map((item) => (
-            <span class="trusted-item">{item}</span>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── LEMMA FOR (Audience cards) ─── -->
+    <!-- ─── INDUSTRY APPLICATIONS (Section 3 — audience use-case cards) ─── -->
     <section class="for-x">
       <div class="for-x-inner reveal">
+        <div class="for-x-eyebrow">{ix.lemmaFor.eyebrow}</div>
         <h2 class="for-x-h2">{ix.lemmaFor.h2Line1}<br/>{ix.lemmaFor.h2Line2}</h2>
         <p class="for-x-lead">{ix.lemmaFor.lead}</p>
 
@@ -119,11 +99,12 @@ const thinking = recentPosts.slice(0, 6);
       </div>
     </section>
 
-    <!-- ─── HOW IT WORKS (one-liner) ─── -->
-    <section class="how">
-      <div class="how-inner reveal">
-        <p class="how-text">{ix.how.text}</p>
-        <a class="how-link" href={ix.how.href}>{ix.how.link} <span aria-hidden="true">→</span></a>
+    <!-- ─── NOW BANNER (Mythos / pre-execution attestation context) ─── -->
+    <section class="now-banner">
+      <div class="now-banner-inner reveal">
+        <div class="now-banner-eyebrow">{ix.nowBanner.eyebrow}</div>
+        <p class="now-banner-text">{ix.nowBanner.text}</p>
+        <a class="now-banner-link" href={ix.nowBanner.href}>{ix.nowBanner.cta} <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -418,57 +399,21 @@ const thinking = recentPosts.slice(0, 6);
   }
   .now-banner-link:hover { gap: 12px; }
 
-  /* ─── TRUSTED BY ─── */
-  .trusted {
-    background: var(--white);
-    padding: 80px 8% 100px;
-  }
-  .trusted-inner { max-width: 1200px; margin: 0 auto; }
-  .trusted-label {
-    color: var(--gray-500);
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    text-align: center;
-  }
-  .trusted-list {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    border-top: 1px solid var(--gray-200);
-    border-bottom: 1px solid var(--gray-200);
-  }
-  .trusted-item {
-    text-align: center;
-    color: var(--gray-700, #5F5F5F);
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 32px 16px;
-    border-right: 1px solid var(--gray-200);
-    transition: color 0.2s, background 0.2s;
-  }
-  .trusted-item:last-child { border-right: none; }
-  .trusted-item:hover {
-    color: var(--gray-800);
-    background: rgba(0,0,0,0.02);
-  }
-  @media (max-width: 768px) {
-    .trusted-list { grid-template-columns: 1fr 1fr; }
-    .trusted-item { border-right: none; border-bottom: 1px solid var(--gray-200); }
-    .trusted-item:nth-child(odd) { border-right: 1px solid var(--gray-200); }
-    .trusted-item:nth-last-child(-n+2) { border-bottom: none; }
-  }
-
-  /* ─── LEMMA FOR (audience cards) ─── */
+  /* ─── INDUSTRY APPLICATIONS (audience cards) ─── */
   .for-x {
     background: var(--gray-50);
     padding: 140px 8%;
   }
   .for-x-inner { max-width: 1200px; margin: 0 auto; }
+  .for-x-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent, #8B4513);
+    margin-bottom: 18px;
+  }
   .for-x-h2 {
     font-family: var(--font-display);
     font-size: clamp(36px, 4.5vw, 56px);
@@ -573,36 +518,6 @@ const thinking = recentPosts.slice(0, 6);
     .for-x-grid { grid-template-columns: 1fr; }
   }
 
-  /* ─── HOW (one-liner) ─── */
-  .how {
-    background: var(--white);
-    padding: 120px 8%;
-    text-align: center;
-  }
-  .how-inner { max-width: 700px; margin: 0 auto; }
-  .how-text {
-    font-family: var(--font-display);
-    font-size: clamp(26px, 2.6vw, 34px);
-    font-weight: 500;
-    color: var(--gray-800);
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    margin-bottom: 24px;
-  }
-  .how-link {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: gap 0.25s;
-  }
-  .how-link:hover { gap: 12px; }
-
   /* ─── RECENT THINKING ─── */
   .thinking {
     background: var(--gray-50);
@@ -694,9 +609,7 @@ const thinking = recentPosts.slice(0, 6);
     .featured-subtitle { margin-bottom: 28px; }
     .featured-visual { height: 160px; }
     .now-banner { padding: 32px 6%; }
-    .trusted { padding: 64px 6% 80px; }
     .for-x { padding: 100px 6%; }
-    .how { padding: 80px 6%; }
     .thinking { padding: 100px 6%; }
   }
 </style>

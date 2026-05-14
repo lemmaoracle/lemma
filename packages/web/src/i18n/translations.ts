@@ -357,10 +357,6 @@ export interface Translations {
       readonly subtitle: string;
       readonly cta: string;
     }>;
-    readonly trustedBy: Readonly<{
-      readonly label: string;
-      readonly items: ReadonlyArray<string>;
-    }>;
     readonly nowBanner: Readonly<{
       readonly eyebrow: string;
       readonly text: string;
@@ -368,6 +364,7 @@ export interface Translations {
       readonly href: string;
     }>;
     readonly lemmaFor: Readonly<{
+      readonly eyebrow: string;
       readonly h2Line1: string;
       readonly h2Line2: string;
       readonly lead: string;
@@ -381,11 +378,6 @@ export interface Translations {
       }>;
       readonly seeAll: string;
       readonly seeAllHref: string;
-    }>;
-    readonly how: Readonly<{
-      readonly text: string;
-      readonly link: string;
-      readonly href: string;
     }>;
     readonly thinking: Readonly<{
       readonly title: string;
