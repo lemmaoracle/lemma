@@ -93,6 +93,10 @@ const brandSuffix = locale === "ja" ? "Lemma — 検証可能AI" : "Lemma — Ve
     letter-spacing: -0.01em;
     margin-bottom: 20px;
   }
+  /* Issue #150: Japanese needs more leading than Latin display type. */
+  :root[lang="ja"] .legal-title {
+    line-height: 1.3;
+  }
   .legal-updated {
     font-size: 12px;
     letter-spacing: 0.08em;
