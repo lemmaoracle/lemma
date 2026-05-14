@@ -5,7 +5,7 @@
     "changelog": "変更履歴",
     "essays": "エッセイ",
     "blog": "ブログ",
-    "pillars": "なぜLemmaか",
+    "pillars": "信頼レイヤー",
     "faq": "FAQ",
     "services": "製品",
     "pricing": "料金プラン",
@@ -114,7 +114,7 @@
     "blog": "ブログ",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",
-    "tagline": "検証可能AIの、信頼インフラ。",
+    "tagline": "AI のための信頼レイヤー。",
     "colCompany": "会社",
     "specs": "仕様書",
     "github": "GitHub →",
@@ -319,8 +319,8 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — ZK証明による検証可能AIの信頼基盤",
-    "defaultDescription": "AIに暗号学的に証明された事実を。ZK証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズAI・エージェント決済・コンプライアンス対応。"
+    "defaultTitle": "Lemma Oracle — AI のための信頼レイヤー",
+    "defaultDescription": "Lemma は AI のための信頼レイヤー。ZK 証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズ AI・エージェント決済・コンプライアンス対応。"
   },
   "services": {
     "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma Oracle",
@@ -831,7 +831,7 @@
     }
   },
   "pillars": {
-    "title": "Why Lemma",
+    "title": "信頼レイヤー",
     "heroTitle": "検証可能な信頼の、4つの柱。",
     "subtitle": "データ来歴・AI判断・エージェント取引・規制適合を、ZK証明で結ぶ。",
     "viewPillar": "詳細を見る →",
