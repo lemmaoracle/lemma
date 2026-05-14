@@ -1,0 +1,24 @@
+---
+const target = "/ja/pillars/agent-authority-proof/";
+const canonical = `https://lemma.frame00.com${target}`;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>エージェント権限証明にリダイレクト中 — Lemma Oracle</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 2rem; color: #333; }
+      a { color: #8B4513; }
+    </style>
+  </head>
+  <body>
+    <p>このページは移動しました。<a href={target}>エージェント権限証明</a> にリダイレクトしています…</p>
+  </body>
+</html>
