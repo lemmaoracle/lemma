@@ -438,7 +438,7 @@
     "checklist": {
       "label": "Self-Assessment",
       "title": "Do you have these challenges?",
-      "lead": "If even one applies, Lemma is effective. Click to confirm.",
+      "lead": "If even one applies, Lemma is effective.",
       "item1": "Have operations that proceed based on external fact verification for approval, payment, or next process",
       "item2": "Spending manpower, time, and costs on that verification work",
       "item3": "Considering AI adoption but concerned about internal data quality and confidentiality management",
