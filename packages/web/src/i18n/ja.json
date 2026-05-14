@@ -462,6 +462,38 @@
       "primaryCta": "信頼レイヤーの仕組みを読む",
       "secondaryCta": "ドキュメントを読む"
     },
+    "trustLayer": {
+      "eyebrow": "信頼レイヤー",
+      "h2": "4 つの暗号能力。1 つの信頼レイヤー。",
+      "barLabel": "信頼レイヤー",
+      "barFoot": "ZK 証明 · AES-GCM · docHash · CID · オンチェーン記録",
+      "modules": {
+        "origin": {
+          "title": "来歴証明",
+          "desc": "データ来歴を暗号的に証明。",
+          "tech": "docHash + CID / オンチェーンアンカー",
+          "href": "/pillars/verifiable-origin/"
+        },
+        "ai": {
+          "title": "検証可能 AI",
+          "desc": "AI 判断の根拠を検証。",
+          "tech": "推論の ZK 証明",
+          "href": "/pillars/verifiable-ai/"
+        },
+        "authority": {
+          "title": "エージェント権限証明",
+          "desc": "権限・委譲・取引を検証。",
+          "tech": "権限の連鎖 + 決済権限",
+          "href": "/pillars/agent-authority-proof/"
+        },
+        "regulatory": {
+          "title": "規制属性証明",
+          "desc": "必要な属性のみを選択的に開示。",
+          "tech": "選択的開示",
+          "href": "/pillars/regulatory-attribute-proof/"
+        }
+      }
+    },
     "featured": {
       "eyebrow": "For Developers · リファレンス実装",
       "title": "Trust402",
@@ -819,8 +851,8 @@
   },
   "pillars": {
     "title": "信頼レイヤー",
-    "heroTitle": "検証可能な信頼の、4つの柱。",
-    "subtitle": "データ来歴・AI判断・エージェント取引・規制適合を、ZK証明で結ぶ。",
+    "heroTitle": "AI のための信頼レイヤー。",
+    "subtitle": "4 つの暗号能力 — 来歴・AI 判断・エージェント権限・規制属性 — を 1 つの信頼レイヤーに束ねる。",
     "viewPillar": "詳細を見る →",
     "blockProblem": "解かれていない問い",
     "blockWhyNow": "なぜ今か",

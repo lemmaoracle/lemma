@@ -351,6 +351,18 @@ export interface Translations {
       readonly primaryCta: string;
       readonly secondaryCta: string;
     }>;
+    readonly trustLayer: Readonly<{
+      readonly eyebrow: string;
+      readonly h2: string;
+      readonly barLabel: string;
+      readonly barFoot: string;
+      readonly modules: Readonly<{
+        readonly origin: Readonly<{ readonly title: string; readonly desc: string; readonly tech: string; readonly href: string }>;
+        readonly ai: Readonly<{ readonly title: string; readonly desc: string; readonly tech: string; readonly href: string }>;
+        readonly authority: Readonly<{ readonly title: string; readonly desc: string; readonly tech: string; readonly href: string }>;
+        readonly regulatory: Readonly<{ readonly title: string; readonly desc: string; readonly tech: string; readonly href: string }>;
+      }>;
+    }>;
     readonly featured: Readonly<{
       readonly eyebrow: string;
       readonly title: string;

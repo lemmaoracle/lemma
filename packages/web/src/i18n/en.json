@@ -462,6 +462,38 @@
       "primaryCta": "Read the Trust Layer overview",
       "secondaryCta": "Read docs"
     },
+    "trustLayer": {
+      "eyebrow": "TRUST LAYER",
+      "h2": "Four cryptographic capabilities. One Trust Layer.",
+      "barLabel": "TRUST LAYER",
+      "barFoot": "ZK proofs · AES-GCM · docHash · CID · on-chain anchoring",
+      "modules": {
+        "origin": {
+          "title": "Verifiable Origin",
+          "desc": "Prove data lineage cryptographically.",
+          "tech": "docHash + CID · on-chain anchor",
+          "href": "/pillars/verifiable-origin/"
+        },
+        "ai": {
+          "title": "Verifiable AI",
+          "desc": "Verify the basis of every AI decision.",
+          "tech": "ZK proof of inference",
+          "href": "/pillars/verifiable-ai/"
+        },
+        "authority": {
+          "title": "Agent Authority Proof",
+          "desc": "Verify authority, delegation, and transactions.",
+          "tech": "delegation chain + payment auth",
+          "href": "/pillars/agent-authority-proof/"
+        },
+        "regulatory": {
+          "title": "Regulatory Attribute Proof",
+          "desc": "Selectively disclose only the required attributes.",
+          "tech": "selective disclosure",
+          "href": "/pillars/regulatory-attribute-proof/"
+        }
+      }
+    },
     "featured": {
       "eyebrow": "For Developers · Reference Implementation",
       "title": "Trust402",
@@ -818,9 +850,9 @@
     }
   },
   "pillars": {
-    "title": "Why Lemma",
-    "heroTitle": "Four pillars of verifiable trust.",
-    "subtitle": "Data provenance, AI decisions, agent transactions, regulatory compliance — bound by ZK proofs.",
+    "title": "Trust Layer",
+    "heroTitle": "The Trust Layer for AI.",
+    "subtitle": "Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one Trust Layer.",
     "viewPillar": "View pillar →",
     "blockProblem": "The unresolved question",
     "blockWhyNow": "Why Now",
