@@ -326,31 +326,19 @@
     "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
     "metaDescription": "Prove data authenticity without exposing contents. ZK-proof infrastructure for verifiable AI agents, supply chain traceability, and audit-ready compliance. Enterprise & developer plans.",
     "hero": {
+      "eyebrow": "TRUST LAYER FOR AI",
       "title": "The real reason agent AI can't be used isn't the model—it's the data.",
-      "sub": "Generative AI adoption is accelerating. But results on the ground aren't keeping up. The root cause is the absence of a trusted data foundation. Lemma's trust infrastructure for Verifiable AI fills that gap.",
-      "stat": "About 90% of large domestic companies feel challenged by AI agent adoption",
+      "sub": "Lemma is the Trust Layer for AI — making every data point, every decision, and every agent action verifiable by cryptographic proof. Today, that gap is the real bottleneck for enterprise AI.",
       "ctaDownload": "Download Whitepaper for Free",
-      "linkDetails": "See Challenge Details",
+      "ctaDemo": "Try the verification demo →",
       "scroll": "SCROLL"
-    },
-    "stats": {
-      "stat1Label": "AI Agent Adoption Challenge",
-      "stat1Num": "About 90%",
-      "stat1Desc": "AI agent adoption challenges in large domestic companies (Japan survey)",
-      "stat2Label": "Internal Data with AI",
-      "stat2Num": "96%",
-      "stat2Desc": "Organizations struggling to use internal data with AI (Global survey)",
-      "stat3Label": "Agent AI Market 2030",
-      "stat3Num": "Approx. ¥7T",
-      "stat3Desc": "Agent AI market size forecast for 2030 (40%+ annual growth)"
     },
     "problem": {
       "label": "Overview of Challenges",
       "title": "Why does AI stall on the front lines?",
-      "lead": "Generative AI is deployed but doesn't deliver results. The top challenge is concentrated on 'data.'",
+      "lead": "Generative AI is deployed but doesn't deliver results. The top challenges all converge on one thing — data.",
       "tableHeaderCategory": "Challenge Category",
       "tableHeaderContent": "Content",
-      "tableHeaderRate": "Response Rate",
       "issue1Tag": "Confidentiality & Privacy",
       "issue1Content": "Concerns about handling confidential and personal information",
       "issue2Tag": "System Integration",
@@ -359,7 +347,7 @@
       "issue3Content": "Not getting expected responses (data quality issues)",
       "issue4Tag": "Accountability",
       "issue4Content": "Unclear output basis and inference process",
-      "highlight": "These appear as separate challenges, but the root converges on one point: 'Data that AI can trust and use is not prepared.'"
+      "highlight": "These appear as separate challenges, but the root converges on one point: data that AI can trust and use is not prepared."
     },
     "walls": {
       "label": "Structural Barriers",
@@ -367,26 +355,53 @@
       "wall1Num": "Problem 01",
       "wall1Title": "Authenticity Problem",
       "wall1Body": "Sensor values, business logs, and contract records are exposed to loss and tampering risks as they pass through multiple points. Feeding them directly to AI induces hallucinations and distorts business reasoning.",
+      "wall1Links": [
+        { "text": "Solved by Pillar 01 — Verifiable Origin", "href": "/pillars/verifiable-origin/" }
+      ],
       "wall2Num": "Problem 02",
       "wall2Title": "Privacy Problem",
       "wall2Body": "Handing over all data necessary for business automation to external parties is not permitted under personal information protection laws and confidentiality management. The contradiction of 'wanting to prove but not show contents' blocks AI utilization.",
+      "wall2Links": [
+        { "text": "Solved by Pillar 04 — Regulatory Attribute Proof", "href": "/pillars/regulatory-attribute-proof/" }
+      ],
       "wall3Num": "Problem 03",
       "wall3Title": "Accountability Problem",
-      "wall3Body": "If agent AI executes autonomously, humans must be able to verify and explain 'why that decision was made.' Traceability of processing grounds becomes a prerequisite for AI adoption."
+      "wall3Body": "If agent AI executes autonomously, humans must be able to verify and explain 'why that decision was made.' Traceability of processing grounds becomes a prerequisite for AI adoption.",
+      "wall3Links": [
+        { "text": "Solved by Pillar 02 — Verifiable AI", "href": "/pillars/verifiable-ai/" },
+        { "text": "Pillar 03 — Agent Authority Proof", "href": "/pillars/agent-authority-proof/" }
+      ]
     },
     "solution": {
       "label": "Solution",
-      "title": "What is Lemma Oracle",
-      "lead": "A 'data refinery infrastructure' that collects, verifies, and delivers real-world data to AI in a trusted form. Three functions—Normalize, Commit, Prove—provide a foundation where AI can safely execute business operations.",
-      "func1Num": "Function 01",
-      "func1Name": "Normalize",
-      "func1Desc": "Extract only attributes from encrypted documents via ZKP. AI agents can perform conditional reasoning, search, contracts, and payments without touching raw data.",
-      "func2Num": "Function 02",
-      "func2Name": "Commit",
-      "func2Desc": "Identify issuers via DID and permanently record provenance information on-chain. Maintain a state where both AI and humans can audit and re-verify at any time.",
-      "func3Num": "Function 03",
-      "func3Name": "Prove",
-      "func3Desc": "Prove only the 'fact that conditions are met' via ZKP without disclosing any confidential information. Can be safely presented to trading partners, audit bodies, and government agencies.",
+      "title": "Four cryptographic capabilities, in plain language.",
+      "lead": "Lemma's Trust Layer is built on four cryptographic capabilities. Each one addresses one of the data problems above.",
+      "pillars": [
+        {
+          "num": "Pillar 01",
+          "title": "Verifiable Origin",
+          "desc": "Prove where data came from, without revealing what it is.",
+          "href": "/pillars/verifiable-origin/"
+        },
+        {
+          "num": "Pillar 02",
+          "title": "Verifiable AI",
+          "desc": "Prove what an AI saw, and what it decided.",
+          "href": "/pillars/verifiable-ai/"
+        },
+        {
+          "num": "Pillar 03",
+          "title": "Agent Authority Proof",
+          "desc": "Prove that an agent was authorized to act.",
+          "href": "/pillars/agent-authority-proof/"
+        },
+        {
+          "num": "Pillar 04",
+          "title": "Regulatory Attribute Proof",
+          "desc": "Prove compliance, without disclosing the underlying data.",
+          "href": "/pillars/regulatory-attribute-proof/"
+        }
+      ],
       "badge": "Compliant with the 'Trusted Web' design philosophy promoted by Japan's Digital Agency and Cabinet Secretariat"
     },
     "beforeAfter": {
@@ -405,8 +420,8 @@
       "before4Text": "Stalled due to data quality concerns",
       "before5Label": "External Proof",
       "before5Text": "Either disclose confidential info or give up proving",
-      "before6Label": "Loyal Customer Authentication",
-      "before6Text": "Manual community management and authentication",
+      "before6Label": "Agent Action Authority",
+      "before6Text": "No way to verify whether an AI agent had authority to act",
       "after1Label": "Data Verification",
       "after1Text": "Lemma automatically collects and verifies",
       "after2Label": "Approval Process",
@@ -417,8 +432,8 @@
       "after4Text": "Safely deploy AI on verified foundation",
       "after5Label": "External Proof",
       "after5Text": "Prove only 'facts' via ZKP, keep confidentiality",
-      "after6Label": "Loyal Customer Authentication",
-      "after6Text": "VC auto-issuance and status proof (confidentiality protected via ZKP)"
+      "after6Label": "Agent Action Authority",
+      "after6Text": "Delegation chain + payment auth proof, verifiable on-chain"
     },
     "checklist": {
       "label": "Self-Assessment",
@@ -433,6 +448,40 @@
       "resultPrefix": "",
       "resultSuffix": " items apply. Please check the whitepaper for solutions."
     },
+    "plans": {
+      "label": "Plans",
+      "title": "Which Lemma plan fits?",
+      "lead": "Four entry points, one cryptographic foundation. Pick the segment that matches your domain.",
+      "items": [
+        {
+          "name": "Lemma Civic",
+          "desc": "Public infrastructure · B2B2G",
+          "href": "/pricing/#civic"
+        },
+        {
+          "name": "Lemma Critical",
+          "desc": "Mission-critical & manufacturing",
+          "href": "/pricing/#critical"
+        },
+        {
+          "name": "Lemma Compliance",
+          "desc": "Finance · KYC/AML · FinTech",
+          "href": "/pricing/#compliance"
+        },
+        {
+          "name": "Trust402",
+          "desc": "Builders on x402 / MCP",
+          "href": "/trust402/"
+        }
+      ]
+    },
+    "demo": {
+      "eyebrow": "30 SECONDS",
+      "title": "See provenance verification in your browser.",
+      "lead": "Pick one of six bundled samples — financial, manufacturing, or agent — and hit Verify. Real cryptographic primitives, fully client-side. No data leaves your browser.",
+      "cta": "Open the demo →",
+      "href": "https://demo.lemma.frame00.com/"
+    },
     "cta": {
       "title": "Download the Whitepaper for Free",
       "desc": "From ZKP, DID, provenance management technical specifications to PoC design steps that can start in as little as a few weeks. We've compiled 'next actions' for those considering adoption.",
@@ -440,17 +489,13 @@
       "wpContent2": "Application scenarios for manufacturing, supply chain, and IP management",
       "wpContent3": "PoC design, evaluation metrics, and shortest verification steps",
       "wpContent4": "Adoption decision checklist and recommended actions",
-      "hubspotFormUrl": "https://tally.so/r/7RJXdR"
+      "hubspotFormUrl": "https://tally.so/r/7RJXdR",
+      "partnerCta": "Continue as a partner candidate →"
     },
     "nav": {
       "whitepaperDownload": "Download Whitepaper",
       "darkModeToggle": "Switch to dark mode",
       "lightModeToggle": "Switch to light mode"
-    },
-    "footer": {
-      "copyright": "© 2026 FRAME00 Inc.",
-      "contact": "Technical/Implementation inquiries:",
-      "contactEmail": "support@frame00.com"
     },
     "skipLink": "Skip to main content"
   },

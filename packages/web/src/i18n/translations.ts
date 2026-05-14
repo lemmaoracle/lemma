@@ -215,23 +215,12 @@ export interface Translations {
     readonly title: string;
     readonly metaDescription: string;
     readonly hero: Readonly<{
+      readonly eyebrow: string;
       readonly title: string;
       readonly sub: string;
-      readonly stat: string;
       readonly ctaDownload: string;
-      readonly linkDetails: string;
+      readonly ctaDemo: string;
       readonly scroll: string;
-    }>;
-    readonly stats: Readonly<{
-      readonly stat1Label: string;
-      readonly stat1Num: string;
-      readonly stat1Desc: string;
-      readonly stat2Label: string;
-      readonly stat2Num: string;
-      readonly stat2Desc: string;
-      readonly stat3Label: string;
-      readonly stat3Num: string;
-      readonly stat3Desc: string;
     }>;
     readonly problem: Readonly<{
       readonly label: string;
@@ -239,7 +228,6 @@ export interface Translations {
       readonly lead: string;
       readonly tableHeaderCategory: string;
       readonly tableHeaderContent: string;
-      readonly tableHeaderRate: string;
       readonly issue1Tag: string;
       readonly issue1Content: string;
       readonly issue2Tag: string;
@@ -256,26 +244,26 @@ export interface Translations {
       readonly wall1Num: string;
       readonly wall1Title: string;
       readonly wall1Body: string;
+      readonly wall1Links: ReadonlyArray<Readonly<{ text: string; href: string }>>;
       readonly wall2Num: string;
       readonly wall2Title: string;
       readonly wall2Body: string;
+      readonly wall2Links: ReadonlyArray<Readonly<{ text: string; href: string }>>;
       readonly wall3Num: string;
       readonly wall3Title: string;
       readonly wall3Body: string;
+      readonly wall3Links: ReadonlyArray<Readonly<{ text: string; href: string }>>;
     }>;
     readonly solution: Readonly<{
       readonly label: string;
       readonly title: string;
       readonly lead: string;
-      readonly func1Num: string;
-      readonly func1Name: string;
-      readonly func1Desc: string;
-      readonly func2Num: string;
-      readonly func2Name: string;
-      readonly func2Desc: string;
-      readonly func3Num: string;
-      readonly func3Name: string;
-      readonly func3Desc: string;
+      readonly pillars: ReadonlyArray<Readonly<{
+        readonly num: string;
+        readonly title: string;
+        readonly desc: string;
+        readonly href: string;
+      }>>;
       readonly badge: string;
     }>;
     readonly beforeAfter: Readonly<{
@@ -322,6 +310,23 @@ export interface Translations {
       readonly resultPrefix: string;
       readonly resultSuffix: string;
     }>;
+    readonly plans: Readonly<{
+      readonly label: string;
+      readonly title: string;
+      readonly lead: string;
+      readonly items: ReadonlyArray<Readonly<{
+        readonly name: string;
+        readonly desc: string;
+        readonly href: string;
+      }>>;
+    }>;
+    readonly demo: Readonly<{
+      readonly eyebrow: string;
+      readonly title: string;
+      readonly lead: string;
+      readonly cta: string;
+      readonly href: string;
+    }>;
     readonly cta: Readonly<{
       readonly title: string;
       readonly desc: string;
@@ -330,16 +335,12 @@ export interface Translations {
       readonly wpContent3: string;
       readonly wpContent4: string;
       readonly hubspotFormUrl: string;
+      readonly partnerCta: string;
     }>;
     readonly nav: Readonly<{
       readonly whitepaperDownload: string;
       readonly darkModeToggle: string;
       readonly lightModeToggle: string;
-    }>;
-    readonly footer: Readonly<{
-      readonly copyright: string;
-      readonly contact: string;
-      readonly contactEmail: string;
     }>;
     readonly skipLink: string;
   }>;
