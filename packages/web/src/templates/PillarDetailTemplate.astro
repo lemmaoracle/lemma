@@ -81,12 +81,14 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   <!-- Block 1: Problem Statement -->
   <header class="pillar-hero">
     <div class="pillar-hero-inner">
+      <a href={`${base}/pillars/`} class="pillar-category-eyebrow">{pillarT.categoryEyebrow}</a>
       <div class="pillar-meta">
         <span class="pillar-order">P{pillar.order}</span>
         <span class="pillar-slogan">{pillar.slogan[locale]}</span>
       </div>
       <h1>{pillar.title[locale]}</h1>
       {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
+      <p class="pillar-category-attribution">{pillarT.categoryAttribution}</p>
     </div>
   </header>
 
@@ -237,6 +239,26 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   }
   .pillar-hero-inner {
     max-width: 800px;
+  }
+  .pillar-category-eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #B8723A;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+  }
+  .pillar-category-eyebrow:hover { color: #D69551; }
+  .pillar-category-attribution {
+    margin: 20px 0 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.02em;
+    font-style: normal;
   }
   .pillar-meta {
     display: flex;
