@@ -15,4 +15,10 @@ typechain-types/
 **/pkg/
 **/target/
 
+# Claude Code / subagent caches
+.claude/
+
+# Sandbox tmp directories (Cowork etc — show up at repo root and inside packages/)
+_tmp_*
+
 # Note: broadcast/ directories are NOT ignored - they contain important deployment history
