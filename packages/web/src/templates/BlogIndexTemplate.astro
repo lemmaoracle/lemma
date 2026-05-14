@@ -159,6 +159,10 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     line-height: 1.08;
     margin: 0 0 16px 0;
   }
+  /* Issue #150: Japanese needs more leading than Latin display type. */
+  :root[lang="ja"] .blog-header h1 {
+    line-height: 1.3;
+  }
   .blog-header p {
     font-size: 15px;
     color: rgba(255, 255, 255, 0.4);
@@ -603,6 +607,19 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     }
     .btn-white {
       align-self: flex-start;
+    }
+    /* Issue #151: 11px uppercase CTAs are too compressed on mobile.
+       Bump foundations CTA + inline link CTAs to a comfortable size while
+       preserving desktop brand sizing. */
+    .btn-white {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      padding: 16px 28px;
+    }
+    .featured-cta,
+    .guide-link {
+      font-size: 12px;
+      letter-spacing: 0.12em;
     }
   }
 </style>
