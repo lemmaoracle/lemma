@@ -42,6 +42,40 @@ const jsonLd = {
     "Agent AI trust layer",
   ],
 };
+
+const walls: ReadonlyArray<
+  Readonly<{ num: string; title: string; body: string; links: ReadonlyArray<Readonly<{ text: string; href: string }>> }>
+> = [
+  { num: s.walls.wall1Num, title: s.walls.wall1Title, body: s.walls.wall1Body, links: s.walls.wall1Links },
+  { num: s.walls.wall2Num, title: s.walls.wall2Title, body: s.walls.wall2Body, links: s.walls.wall2Links },
+  { num: s.walls.wall3Num, title: s.walls.wall3Title, body: s.walls.wall3Body, links: s.walls.wall3Links },
+];
+
+const beforeRows: ReadonlyArray<readonly [string, string]> = [
+  [s.beforeAfter.before1Label, s.beforeAfter.before1Text],
+  [s.beforeAfter.before2Label, s.beforeAfter.before2Text],
+  [s.beforeAfter.before3Label, s.beforeAfter.before3Text],
+  [s.beforeAfter.before4Label, s.beforeAfter.before4Text],
+  [s.beforeAfter.before5Label, s.beforeAfter.before5Text],
+  [s.beforeAfter.before6Label, s.beforeAfter.before6Text],
+];
+const afterRows: ReadonlyArray<readonly [string, string]> = [
+  [s.beforeAfter.after1Label, s.beforeAfter.after1Text],
+  [s.beforeAfter.after2Label, s.beforeAfter.after2Text],
+  [s.beforeAfter.after3Label, s.beforeAfter.after3Text],
+  [s.beforeAfter.after4Label, s.beforeAfter.after4Text],
+  [s.beforeAfter.after5Label, s.beforeAfter.after5Text],
+  [s.beforeAfter.after6Label, s.beforeAfter.after6Text],
+];
+
+const checklistItems: ReadonlyArray<string> = [
+  s.checklist.item1,
+  s.checklist.item2,
+  s.checklist.item3,
+  s.checklist.item4,
+  s.checklist.item5,
+  s.checklist.item6,
+];
 ---
 
 <Layout
@@ -59,31 +93,17 @@ const jsonLd = {
     <div class="page-hero-bg" style={`background-image: url(${HeroCover.src})`}></div>
     <div class="page-hero-overlay"></div>
     <div class="page-hero-content reveal">
-      <div class="section-tag">{s.nav.whitepaperDownload}</div>
+      <div class="section-tag">{s.hero.eyebrow}</div>
       <h1>{s.hero.title}</h1>
-      <p style="margin-top:20px">{s.hero.sub}</p>
+      <p class="page-hero-sub">{s.hero.sub}</p>
+      <div class="hero-cta-btns">
+        <a href={s.cta.hubspotFormUrl} class="btn-hero-primary" target="_blank" rel="noopener">{s.hero.ctaDownload}</a>
+        <a href={s.demo.href} class="btn-hero-outline" target="_blank" rel="noopener">{s.hero.ctaDemo}</a>
+      </div>
     </div>
   </section>
 
-  <div class="stats-strip">
-    <div class="stat-block reveal">
-      <div class="stat-label">{s.stats.stat1Label}</div>
-      <div class="stat-num">{s.stats.stat1Num}</div>
-      <div class="stat-desc">{s.stats.stat1Desc}</div>
-    </div>
-    <div class="stat-block reveal">
-      <div class="stat-label">{s.stats.stat2Label}</div>
-      <div class="stat-num">{s.stats.stat2Num}</div>
-      <div class="stat-desc">{s.stats.stat2Desc}</div>
-    </div>
-    <div class="stat-block reveal">
-      <div class="stat-label">{s.stats.stat3Label}</div>
-      <div class="stat-num">{s.stats.stat3Num}</div>
-      <div class="stat-desc">{s.stats.stat3Desc}</div>
-    </div>
-  </div>
-
-  <section class="problem-section reveal" id="problem">
+  <section class="problem-section reveal" id="problems">
     <div class="section-header">
       <div class="section-tag">{s.problem.label}</div>
       <h2>{s.problem.title}</h2>
@@ -93,15 +113,15 @@ const jsonLd = {
       <thead><tr>
         <th>{s.problem.tableHeaderCategory}</th>
         <th>{s.problem.tableHeaderContent}</th>
-        <th>{s.problem.tableHeaderRate}</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>{s.problem.issue1Tag}</strong></td><td>{s.problem.issue1Content}</td><td><span class="rate-badge">55%</span></td></tr>
-        <tr><td><strong>{s.problem.issue2Tag}</strong></td><td>{s.problem.issue2Content}</td><td><span class="rate-badge">51%</span></td></tr>
-        <tr><td><strong>{s.problem.issue3Tag}</strong></td><td>{s.problem.issue3Content}</td><td><span class="rate-badge">46%</span></td></tr>
-        <tr><td><strong>{s.problem.issue4Tag}</strong></td><td>{s.problem.issue4Content}</td><td><span class="rate-badge">40%</span></td></tr>
+        <tr><td><strong>{s.problem.issue1Tag}</strong></td><td>{s.problem.issue1Content}</td></tr>
+        <tr><td><strong>{s.problem.issue2Tag}</strong></td><td>{s.problem.issue2Content}</td></tr>
+        <tr><td><strong>{s.problem.issue3Tag}</strong></td><td>{s.problem.issue3Content}</td></tr>
+        <tr><td><strong>{s.problem.issue4Tag}</strong></td><td>{s.problem.issue4Content}</td></tr>
       </tbody>
     </table>
+    <p class="problem-highlight">{s.problem.highlight}</p>
   </section>
 
   <section class="problems-section" id="structural-barriers">
@@ -110,48 +130,42 @@ const jsonLd = {
       <h2>{s.walls.title}</h2>
     </div>
     <div class="problems-grid">
-      <div class="problem-card reveal">
-        <div class="problem-num">{s.walls.wall1Num}</div>
-        <h3>{s.walls.wall1Title}</h3>
-        <p>{s.walls.wall1Body}</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-num">{s.walls.wall2Num}</div>
-        <h3>{s.walls.wall2Title}</h3>
-        <p>{s.walls.wall2Body}</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-num">{s.walls.wall3Num}</div>
-        <h3>{s.walls.wall3Title}</h3>
-        <p>{s.walls.wall3Body}</p>
-      </div>
+      {walls.map((w) => (
+        <div class="problem-card reveal">
+          <div class="problem-num">{w.num}</div>
+          <h3>{w.title}</h3>
+          <p>{w.body}</p>
+          <div class="wall-pillar-links">
+            {w.links.map((link, i) => (
+              <>
+                {i > 0 ? <span class="wall-pillar-sep"> / </span> : <span aria-hidden="true">→ </span>}
+                <a href={link.href}>{link.text}</a>
+              </>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 
-  <section class="solution-section" id="solution">
+  <section class="solution-section" id="pillars">
     <div class="solution-bg" style={`background-image: url(${SolutionBg.src})`}></div>
     <div class="solution-overlay"></div>
     <div class="solution-inner">
       <div class="section-tag" style="color:var(--accent)">{s.solution.label}</div>
       <h2>{s.solution.title}</h2>
-      <p>{s.solution.lead}</p>
-      <div class="functions-grid">
-        <div class="fn-card reveal">
-          <div class="fn-num">{s.solution.func1Num}</div>
-          <h3>{s.solution.func1Name}</h3>
-          <p>{s.solution.func1Desc}</p>
-        </div>
-        <div class="fn-card reveal">
-          <div class="fn-num">{s.solution.func2Num}</div>
-          <h3>{s.solution.func2Name}</h3>
-          <p>{s.solution.func2Desc}</p>
-        </div>
-        <div class="fn-card reveal">
-          <div class="fn-num">{s.solution.func3Num}</div>
-          <h3>{s.solution.func3Name}</h3>
-          <p>{s.solution.func3Desc}</p>
-        </div>
+      <p class="solution-lead">{s.solution.lead}</p>
+      <div class="pillars-grid">
+        {s.solution.pillars.map((p) => (
+          <a href={p.href} class="pillar-card reveal">
+            <div class="pillar-num">{p.num}</div>
+            <h3>{p.title}</h3>
+            <p>{p.desc}</p>
+            <span class="pillar-arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
       </div>
+      <div class="solution-badge">{s.solution.badge}</div>
     </div>
   </section>
 
@@ -164,57 +178,21 @@ const jsonLd = {
     <div class="ba-grid">
       <div class="ba-col">
         <div class="ba-label">{s.beforeAfter.beforeLabel}</div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.before1Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before1Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.before2Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before2Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.before3Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before3Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.before4Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before4Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.before5Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before5Text}</div>
-        </div>
-        <div class="ba-item" style="border-bottom:none">
-          <div class="ba-item-label">{s.beforeAfter.before6Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.before6Text}</div>
-        </div>
+        {beforeRows.map(([label, text], i) => (
+          <div class="ba-item" style={i === beforeRows.length - 1 ? "border-bottom:none" : undefined}>
+            <div class="ba-item-label">{label}</div>
+            <div class="ba-item-text">{text}</div>
+          </div>
+        ))}
       </div>
       <div class="ba-col ba-col-after">
         <div class="ba-label">{s.beforeAfter.afterLabel}</div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.after1Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after1Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.after2Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after2Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.after3Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after3Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.after4Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after4Text}</div>
-        </div>
-        <div class="ba-item">
-          <div class="ba-item-label">{s.beforeAfter.after5Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after5Text}</div>
-        </div>
-        <div class="ba-item" style="border-bottom:none">
-          <div class="ba-item-label">{s.beforeAfter.after6Label}</div>
-          <div class="ba-item-text">{s.beforeAfter.after6Text}</div>
-        </div>
+        {afterRows.map(([label, text], i) => (
+          <div class="ba-item" style={i === afterRows.length - 1 ? "border-bottom:none" : undefined}>
+            <div class="ba-item-label">{label}</div>
+            <div class="ba-item-text">{text}</div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -226,13 +204,35 @@ const jsonLd = {
       <p>{s.checklist.lead}</p>
     </div>
     <div class="check-grid">
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item1}</p></div>
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item2}</p></div>
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item3}</p></div>
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item4}</p></div>
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item5}</p></div>
-      <div class="check-item reveal"><span class="check-mark">◆</span><p>{s.checklist.item6}</p></div>
+      {checklistItems.map((item) => (
+        <div class="check-item reveal"><span class="check-mark">◆</span><p>{item}</p></div>
+      ))}
     </div>
+  </section>
+
+  <section class="plans-section" id="plans">
+    <div class="section-header reveal">
+      <div class="section-tag">{s.plans.label}</div>
+      <h2>{s.plans.title}</h2>
+      <p>{s.plans.lead}</p>
+    </div>
+    <div class="plans-grid">
+      {s.plans.items.map((p) => (
+        <a href={p.href} class="plan-card reveal">
+          <div class="plan-name">{p.name}</div>
+          <div class="plan-desc">{p.desc}</div>
+          <span class="plan-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="demo-section reveal" id="demo">
+    <div class="section-tag" style="color:var(--accent);justify-content:center">{s.demo.eyebrow}</div>
+    <h2>{s.demo.title}</h2>
+    <div class="demo-rule"></div>
+    <p>{s.demo.lead}</p>
+    <a href={s.demo.href} class="btn-white" target="_blank" rel="noopener">{s.demo.cta}</a>
   </section>
 
   <section class="dl-section reveal" id="download">
@@ -246,7 +246,10 @@ const jsonLd = {
       <div class="dl-list-item"><p>{s.cta.wpContent3}</p></div>
       <div class="dl-list-item"><p>{s.cta.wpContent4}</p></div>
     </div>
-    <a href={s.cta.hubspotFormUrl} class="btn-white" target="_blank">{s.nav.whitepaperDownload}</a>
+    <div class="dl-cta-btns">
+      <a href={s.cta.hubspotFormUrl} class="btn-white" target="_blank" rel="noopener">{s.nav.whitepaperDownload}</a>
+      <a href={s.cta.hubspotFormUrl} class="btn-outline-white" target="_blank" rel="noopener">{s.cta.partnerCta}</a>
+    </div>
   </section>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -255,8 +258,7 @@ const jsonLd = {
 <style>
   .page-hero {
     position: relative;
-    height: 72vh;
-    min-height: 520px;
+    min-height: 580px;
     display: flex;
     align-items: flex-end;
     padding: 0 10% 80px;
@@ -277,7 +279,8 @@ const jsonLd = {
   .page-hero-content {
     position: relative;
     z-index: 2;
-    max-width: 700px;
+    max-width: 720px;
+    padding-top: 60px;
   }
   .page-hero-content h1 {
     font-family: var(--font-display);
@@ -287,55 +290,46 @@ const jsonLd = {
     line-height: 1.1;
     margin-bottom: 20px;
   }
-  .page-hero-content h1 strong {
-    font-weight: 600;
-    display: block;
-  }
-  .page-hero-content p {
+  .page-hero-content h1 strong { font-weight: 600; display: block; }
+  .page-hero-sub {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.72);
     line-height: 1.78;
-    max-width: 560px;
+    max-width: 600px;
   }
-
-  .stats-strip {
-    background: var(--black);
-    padding: 48px 10%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
+  .hero-cta-btns {
+    display: flex;
+    gap: 14px;
+    margin-top: 32px;
+    flex-wrap: wrap;
   }
-  .stat-block {
-    padding: 36px 40px;
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .stat-block:first-child { border-left: none; }
-  .stat-block.on { opacity: 1; transform: translateY(0); }
-  .stat-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 16px;
-  }
-  .stat-num {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4vw, 56px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1;
-  }
-  .stat-num span { font-size: 24px; font-weight: 400; }
-  .stat-desc {
+  .btn-hero-primary {
+    background: var(--white);
+    color: var(--black);
+    padding: 14px 32px;
     font-size: 12px;
-    color: var(--gray-500);
-    line-height: 1.65;
-    margin-top: 12px;
-    max-width: 280px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-hero-primary:hover { background: var(--accent); color: var(--white); }
+  .btn-hero-outline {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.82);
+    padding: 13px 32px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-hero-outline:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
   }
 
   .problem-section { background: var(--gray-50); padding: 120px 10%; }
@@ -372,13 +366,14 @@ const jsonLd = {
   }
   .challenge-table tr:nth-child(odd) td { background: var(--white); }
   .challenge-table tr:nth-child(even) td { background: var(--gray-50); }
-  .rate-badge {
-    background: var(--accent);
-    color: var(--white);
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+  .problem-highlight {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: var(--white);
+    border-left: 2px solid var(--accent);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-800);
   }
 
   .problems-section { background: var(--white); padding: 120px 10%; }
@@ -395,6 +390,8 @@ const jsonLd = {
     transition: border-color 0.2s, opacity 0.6s ease, transform 0.6s ease;
     opacity: 0;
     transform: translateY(18px);
+    display: flex;
+    flex-direction: column;
   }
   .problem-card.on { opacity: 1; transform: translateY(0); }
   .problem-card:nth-child(2) { transition-delay: 0.1s; }
@@ -420,7 +417,23 @@ const jsonLd = {
     font-size: 14px;
     line-height: 1.78;
     color: var(--gray-500);
+    margin-bottom: 20px;
   }
+  .wall-pillar-links {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .wall-pillar-links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .wall-pillar-links a:hover { text-decoration: underline; }
+  .wall-pillar-sep { color: var(--gray-500); }
 
   .solution-section {
     position: relative;
@@ -436,7 +449,7 @@ const jsonLd = {
   .solution-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.78);
   }
   .solution-inner { position: relative; z-index: 2; }
   .solution-inner h2 {
@@ -446,27 +459,39 @@ const jsonLd = {
     color: var(--white);
     margin-bottom: 16px;
   }
-  .solution-inner > p {
+  .solution-lead {
     font-size: 15px;
     line-height: 1.78;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.62);
     margin-bottom: 64px;
-    max-width: 560px;
+    max-width: 640px;
   }
-  .functions-grid {
+  .pillars-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2px;
     background: rgba(255, 255, 255, 0.06);
   }
-  .fn-card {
+  .pillar-card {
+    position: relative;
     background: rgba(255, 255, 255, 0.03);
     padding: 40px 36px;
     border-top: 2px solid transparent;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s, opacity 0.6s ease, transform 0.6s ease;
+    text-decoration: none;
+    display: block;
+    opacity: 0;
+    transform: translateY(18px);
   }
-  .fn-card:hover { border-top-color: var(--accent); }
-  .fn-num {
+  .pillar-card.on { opacity: 1; transform: translateY(0); }
+  .pillar-card:nth-child(2) { transition-delay: 0.08s; }
+  .pillar-card:nth-child(3) { transition-delay: 0.16s; }
+  .pillar-card:nth-child(4) { transition-delay: 0.24s; }
+  .pillar-card:hover {
+    border-top-color: var(--accent);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .pillar-num {
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.2em;
@@ -474,17 +499,35 @@ const jsonLd = {
     color: var(--accent);
     margin-bottom: 16px;
   }
-  .fn-card h3 {
+  .pillar-card h3 {
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     color: var(--white);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    line-height: 1.3;
   }
-  .fn-card p {
+  .pillar-card p {
     font-size: 14px;
-    line-height: 1.78;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+  }
+  .pillar-arrow {
+    position: absolute;
+    right: 36px;
+    bottom: 32px;
+    color: var(--accent);
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  .pillar-card:hover .pillar-arrow { transform: translateX(4px); }
+  .solution-badge {
+    margin-top: 48px;
+    font-size: 11px;
+    line-height: 1.7;
     color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.04em;
   }
 
   .ba-section { background: var(--gray-50); padding: 120px 10%; }
@@ -556,7 +599,74 @@ const jsonLd = {
   .check-mark { color: var(--accent); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
   .check-item p { font-size: 14px; line-height: 1.7; color: var(--gray-800); }
 
-  .dl-section { background: var(--black); padding: 120px 10%; text-align: center; }
+  .plans-section { background: var(--gray-50); padding: 120px 10%; }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--gray-200);
+    margin-top: 16px;
+  }
+  .plan-card {
+    position: relative;
+    background: var(--white);
+    padding: 36px 36px 44px;
+    text-decoration: none;
+    display: block;
+    border-top: 2px solid transparent;
+    transition: border-color 0.2s, background 0.2s, opacity 0.6s ease, transform 0.6s ease;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .plan-card.on { opacity: 1; transform: translateY(0); }
+  .plan-card:nth-child(2) { transition-delay: 0.08s; }
+  .plan-card:nth-child(3) { transition-delay: 0.16s; }
+  .plan-card:nth-child(4) { transition-delay: 0.24s; }
+  .plan-card:hover {
+    border-top-color: var(--accent);
+    background: #fff;
+  }
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+  .plan-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--gray-500);
+  }
+  .plan-arrow {
+    position: absolute;
+    right: 32px;
+    bottom: 28px;
+    color: var(--accent);
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  .plan-card:hover .plan-arrow { transform: translateX(4px); }
+
+  .demo-section { background: var(--black); padding: 100px 10%; text-align: center; }
+  .demo-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .demo-rule { width: 40px; height: 1px; background: var(--accent); margin: 24px auto; }
+  .demo-section > p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.8;
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+
+  .dl-section { background: var(--gray-900, #0d0d0d); padding: 120px 10%; text-align: center; }
   .dl-section h2 {
     font-family: var(--font-display);
     font-size: clamp(36px, 4.5vw, 56px);
@@ -601,6 +711,12 @@ const jsonLd = {
     color: rgba(255, 255, 255, 0.45);
     line-height: 1.65;
   }
+  .dl-cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
   .btn-white {
     background: var(--white);
     color: var(--black);
@@ -617,6 +733,21 @@ const jsonLd = {
     text-decoration: none;
   }
   .btn-white:hover { background: var(--accent); color: var(--white); }
+  .btn-outline-white {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.82);
+    padding: 13px 32px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline-white:hover { border-color: rgba(255, 255, 255, 0.6); color: #fff; }
 
   .reveal {
     opacity: 0;
@@ -644,22 +775,55 @@ const jsonLd = {
   }
 
   @media (max-width: 1024px) {
-    .stats-strip { grid-template-columns: 1fr; }
     .problems-grid { grid-template-columns: 1fr; }
-    .functions-grid { grid-template-columns: 1fr; }
+    .pillars-grid { grid-template-columns: 1fr; }
     .ba-grid { grid-template-columns: 1fr; }
     .check-grid { grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; }
     .dl-list { grid-template-columns: 1fr; }
   }
   @media (max-width: 768px) {
-    .page-hero, .problem-section, .problems-section, .solution-section, .ba-section, .check-section, .dl-section {
-      padding-left: 6%; padding-right: 6%;
+    .page-hero,
+    .problem-section,
+    .problems-section,
+    .solution-section,
+    .ba-section,
+    .check-section,
+    .plans-section,
+    .demo-section,
+    .dl-section {
+      padding-left: 6%;
+      padding-right: 6%;
     }
-    .problem-section, .problems-section, .ba-section, .check-section {
-      padding-top: 80px; padding-bottom: 80px;
+    .problem-section,
+    .problems-section,
+    .ba-section,
+    .check-section,
+    .plans-section {
+      padding-top: 80px;
+      padding-bottom: 80px;
     }
-    .solution-section, .dl-section {
-      padding-top: 100px; padding-bottom: 100px;
+    .solution-section,
+    .demo-section,
+    .dl-section {
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+    .hero-cta-btns { flex-direction: column; align-items: flex-start; }
+    .btn-hero-primary,
+    .btn-hero-outline {
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      font-size: 13.5px;
+    }
+    .dl-cta-btns { flex-direction: column; align-items: center; }
+    .btn-white,
+    .btn-outline-white {
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      font-size: 13.5px;
     }
   }
 </style>
