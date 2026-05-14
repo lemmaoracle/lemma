@@ -23,7 +23,8 @@ export interface IndexTemplateProps {
 const { locale, t, base, description, recentPosts } = Astro.props as IndexTemplateProps;
 const ix = t.index;
 
-const heroCta = "#featured";
+const pillarsOverviewHref = base ? `${base}/pillars/` : "/pillars/";
+const docsHref = base ? `${base}/services/` : "/services/";
 const trust402Href = "/trust402/";
 const blogIndexHref = `${base}/blog/`;
 const thinking = recentPosts.slice(0, 6);
@@ -48,11 +49,13 @@ const thinking = recentPosts.slice(0, 6);
       />
       <div class="hero-overlay"></div>
       <div class="hero-content" id="heroContent">
+        <div class="hero-eyebrow">{ix.hero.eyebrow}</div>
         <h1 class="hero-h1">{ix.hero.h1}</h1>
-        <p class="hero-sub">
-          <strong>{ix.hero.subLine1}</strong><br/>{ix.hero.subLine2}
-        </p>
-        <a href={heroCta} class="btn btn-primary">{ix.hero.primaryCta} <span aria-hidden="true">→</span></a>
+        <p class="hero-sub">{ix.hero.sub}</p>
+        <div class="hero-cta-row">
+          <a href={pillarsOverviewHref} class="btn btn-primary">{ix.hero.primaryCta} <span aria-hidden="true">→</span></a>
+          <a href={docsHref} class="btn btn-ghost">{ix.hero.secondaryCta}</a>
+        </div>
       </div>
     </section>
 
@@ -174,6 +177,15 @@ const thinking = recentPosts.slice(0, 6);
   }
   .btn-primary { background: #fff; color: #000; }
   .btn-primary:hover { background: var(--accent); color: #fff; }
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .btn-ghost:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
 
   /* ─── HERO ─── */
   .hero {
@@ -213,6 +225,15 @@ const thinking = recentPosts.slice(0, 6);
     transition: opacity 0.95s ease, transform 0.95s ease;
   }
   .hero-content.visible { opacity: 1; transform: translateY(0); }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #B8723A;
+    margin-bottom: 22px;
+  }
   .hero-h1 {
     font-family: var(--font-display);
     font-size: clamp(44px, 6.5vw, 72px);
@@ -220,17 +241,21 @@ const thinking = recentPosts.slice(0, 6);
     color: #fff;
     line-height: 1.08;
     letter-spacing: -0.01em;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .hero-sub {
     font-family: var(--font-body);
-    font-size: clamp(15px, 1.2vw, 18px);
-    color: rgba(255,255,255,0.72);
-    line-height: 1.7;
+    font-size: clamp(15px, 1.25vw, 18px);
+    color: rgba(255,255,255,0.78);
+    line-height: 1.6;
     margin-bottom: 40px;
-    max-width: 580px;
+    max-width: 640px;
   }
-  .hero-sub strong { color: #fff; font-weight: 500; }
+  .hero-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
 
   /* ─── FEATURED PANEL ─── */
   .featured {

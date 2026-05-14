@@ -345,10 +345,11 @@ export interface Translations {
   }>;
   readonly index: Readonly<{
     readonly hero: Readonly<{
+      readonly eyebrow: string;
       readonly h1: string;
-      readonly subLine1: string;
-      readonly subLine2: string;
+      readonly sub: string;
       readonly primaryCta: string;
+      readonly secondaryCta: string;
     }>;
     readonly featured: Readonly<{
       readonly eyebrow: string;

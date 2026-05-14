@@ -456,10 +456,11 @@
   },
   "index": {
     "hero": {
+      "eyebrow": "TRUST LAYER FOR AI",
       "h1": "Give AI proven facts.",
-      "subLine1": "The trust infrastructure for verifiable AI.",
-      "subLine2": "Cryptographic provenance for AI decisions, agent transactions, regulatory compliance, and data lineage.",
-      "primaryCta": "Try the demo"
+      "sub": "ZK-proof infrastructure makes every AI decision verifiable.",
+      "primaryCta": "Read the Trust Layer overview",
+      "secondaryCta": "Read docs"
     },
     "featured": {
       "eyebrow": "For Developers · Reference Implementation",
