@@ -3,7 +3,6 @@ import OgImageEn from "../assets/ogp_en.png";
 import OgImageJa from "../assets/ogp_ja.png";
 
 interface BaseMetaTagsProps {
-  base: string;
   locale?: string;
 }
 
@@ -11,6 +10,7 @@ interface HomeMetaTagsProps extends BaseMetaTagsProps {
   type: "home";
   title?: string;
   description?: string;
+  base: string;
 }
 
 interface PageMetaTagsProps extends BaseMetaTagsProps {
@@ -23,6 +23,8 @@ interface PageMetaTagsProps extends BaseMetaTagsProps {
 interface ArticleMetaTagsProps extends BaseMetaTagsProps {
   type: "article";
   post: BlogPost;
+  // blogPath already contains the locale prefix (e.g. "/ja/blog"), so we do
+  // NOT need a separate `base` here — using both would double-prefix the URL.
   blogPath: string;
 }
 
@@ -71,9 +73,11 @@ export default function MetaTags(props: MetaTagsProps) {
       </>
     );
   } else {
-    const { post, base, blogPath, locale } = props;
+    const { post, blogPath, locale } = props;
     const ogImage = post.cover || getDefaultOgImage(locale);
-    const url = `https://lemma.frame00.com${base}${blogPath}/${post.slug}`;
+    // blogPath already includes the locale prefix (e.g. "/ja/blog"); do NOT
+    // re-prefix with `base`, that would yield "/ja/ja/blog/<slug>".
+    const url = `https://lemma.frame00.com${blogPath}/${post.slug}`;
 
     return (
       <>
