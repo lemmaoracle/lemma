@@ -456,10 +456,11 @@
   },
   "index": {
     "hero": {
-      "h1": "AIに証明された事実を。",
-      "subLine1": "検証可能AIの、信頼インフラ。",
-      "subLine2": "AI判断・エージェント取引・規制適合・データ来歴に、暗号的な来歴を加える。",
-      "primaryCta": "デモを試す"
+      "eyebrow": "AI のための信頼レイヤー",
+      "h1": "AI に証明された事実を。",
+      "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
+      "primaryCta": "信頼レイヤーの仕組みを読む",
+      "secondaryCta": "ドキュメントを読む"
     },
     "featured": {
       "eyebrow": "For Developers · リファレンス実装",
