@@ -197,5 +197,17 @@ const finalWpText = wpText ?? t.ctaSection.finalWpText;
       flex-direction: column;
       align-items: center;
     }
+    /* Issue #151: keep uppercase CTAs readable on mobile.
+       Bump from 12px to 13.5px and stretch buttons to full width so the
+       tap target stays comfortably above the 44px minimum. */
+    .btn-cta,
+    .btn-cta-outline {
+      font-size: 13.5px;
+      letter-spacing: 0.14em;
+      padding: 16px 32px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+    }
   }
 </style>

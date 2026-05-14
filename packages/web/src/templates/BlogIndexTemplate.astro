@@ -603,6 +603,19 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
       align-items: flex-start;
       padding: 32px 28px;
     }
+    /* Issue #151: 11px uppercase CTAs are too compressed on mobile.
+       Bump foundations CTA + inline link CTAs to a comfortable size while
+       preserving desktop brand sizing. */
+    .btn-white {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      padding: 16px 28px;
+    }
+    .featured-cta,
+    .guide-link {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+    }
   }
 </style>
 
