@@ -77,6 +77,40 @@ const defaultSectionByCategory: Readonly<Record<string, string>> = {
   Application: "Field Notes",
 };
 
+/* ── Tag → destination mapping ──────────────────────────────────────
+ * Used by BlogArticleTemplate to render end-of-article tag chips as
+ * navigation back into Pillar / UseCase / glossary pages. Tags without
+ * a destination here render as plain (non-link) chips.
+ *
+ * Locale-aware: getTagDestination prepends the page base so /ja/ posts
+ * link to /ja/pillars/... / /ja/use-cases/... / /ja/glossary/...
+ */
+const TAG_DESTINATIONS: Readonly<Record<string, string>> = {
+  // Pillars
+  "verifiable-origin": "/pillars/verifiable-origin/",
+  "verifiable-ai": "/pillars/verifiable-ai/",
+  "agent-security": "/pillars/agent-authority-proof/",
+  "agent-authority": "/pillars/agent-authority-proof/",
+  compliance: "/pillars/regulatory-attribute-proof/",
+  // Use cases
+  "financial-services": "/use-cases/kyc-aml-selective-disclosure/",
+  // Glossary
+  provenance: "/glossary/provenance/",
+  "zk-proof": "/glossary/zk-proof/",
+  "selective-disclosure": "/glossary/selective-disclosure/",
+  "agentic-payments": "/glossary/agentic-payments/",
+  "ai-agents": "/glossary/agentic-payments/",
+  // Trust Layer overview fallback for concepts that span multiple pillars
+  "pre-execution-attestation": "/pillars/",
+  "trust-layer": "/pillars/",
+};
+
+export function getTagDestination(tag: string, base: string): string | undefined {
+  const path = TAG_DESTINATIONS[tag];
+  if (!path) return undefined;
+  return `${base}${path}`;
+}
+
 /* ── Internal types ─────────────────────────────────────────────── */
 
 interface GitHubContentEntry {
