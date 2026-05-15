@@ -1,0 +1,163 @@
+{
+  "meta": {
+    "title": "Provenance verification — Lemma",
+    "description": "Models change. Proofs remain. Verify AI-output provenance with cryptographic primitives."
+  },
+  "header": {
+    "eyebrow": "Provenance verification",
+    "h1Line1": "Models change.",
+    "h1Line2": "Proofs remain.",
+    "lead": "Verify that an AI output came from a specific model, with a specific input, under a specific policy.",
+    "equation": "Finds bugs ≠ proves decisions.",
+    "langToggleLabel": "Switch language",
+    "otherLocaleLabel": "日本語"
+  },
+  "sampleChooser": {
+    "title": "Pick a sample",
+    "sub": "Six bundled samples cover three industries with one valid and one invalid pair each. Or upload your own proof bundle — verification runs entirely in your browser.",
+    "industry": {
+      "financial": "Banking & Finance",
+      "manufacturing": "Manufacturing",
+      "agent": "Agent Economy"
+    },
+    "badgeValid": "Valid",
+    "badgeInvalid": "Invalid",
+    "stakesLabel": "Stakes",
+    "regulatoryLabel": "Regulatory",
+    "primitivesLabel": "Primitives"
+  },
+  "customUpload": {
+    "cta": "Upload a custom proof JSON",
+    "note": "Stays in your browser. We never receive the file.",
+    "readyPrefix": "stays in your browser."
+  },
+  "verify": {
+    "button": "Verify",
+    "buttonInFlight": "Verifying…",
+    "hintPick": "Pick a sample to begin.",
+    "hintReadySample": "Ready to verify",
+    "hintReadyCustom": "Ready to verify uploaded file"
+  },
+  "result": {
+    "passOverall": "✓ Verified",
+    "failOverall": "✗ Verification failed",
+    "sessionLabel": "session",
+    "browserOnlyBadge": "🔒 0 bytes sent · browser-only",
+    "provenHeading": "What was cryptographically proven",
+    "impactHeading": "What this means in production",
+    "failHeading": "What went wrong"
+  },
+  "pillars": {
+    "verifiableOrigin": {
+      "title": "Pillar 01 — Verifiable Origin",
+      "proofLabel": "source registered",
+      "href": "https://lemma.frame00.com/pillars/verifiable-origin/"
+    },
+    "verifiableAi": {
+      "title": "Pillar 02 — Verifiable AI",
+      "proofLabel": "model registered",
+      "href": "https://lemma.frame00.com/pillars/verifiable-ai/"
+    },
+    "agentAuthorityProof": {
+      "title": "Pillar 03 — Agent Authority",
+      "proofLabel": "within authority",
+      "href": "https://lemma.frame00.com/pillars/agent-authority-proof/"
+    },
+    "regulatoryAttributeProof": {
+      "title": "Pillar 04 — Regulatory Attribute",
+      "proofLabel": "proven without disclosure",
+      "href": "https://lemma.frame00.com/pillars/regulatory-attribute-proof/"
+    }
+  },
+  "cta": {
+    "salesLabel": "Enterprise",
+    "salesTitle": "Talk to us about your use case",
+    "salesHref": "https://lemma.frame00.com/#contact",
+    "waitlistLabel": "Builders",
+    "waitlistTitle": "Join Trust402 waitlist",
+    "waitlistHref": "https://tally.so/r/kd0bZR"
+  },
+  "footer": {
+    "tagline": "Built for decisions that matter.",
+    "microsite": "Lemma microsite",
+    "micrositeHref": "https://lemma.frame00.com/",
+    "github": "GitHub",
+    "privacy": "Privacy",
+    "privacyHref": "https://lemma.frame00.com/privacy",
+    "note": "Verification runs entirely in your browser. Files you upload never reach our servers."
+  },
+  "samples": {
+    "financial_valid_approval": {
+      "label": "Loan approval (valid)",
+      "scenario": "A regional bank approves a ¥5,000,000 small-business loan. The applicant's exact income is never disclosed to the bank's AI; Lemma proves only that income exceeds the policy threshold and that the applicant is not on any AML watchlist.",
+      "stakes": [
+        "Borrower privacy preserved",
+        "Regulatory audit trail produced"
+      ],
+      "businessImpact": [
+        "Audit response in under a second vs ~3 days of manual review",
+        "Borrower's income never disclosed to bank or regulator",
+        "Regulator can verify the proof directly, no trust required"
+      ],
+      "failReason": ""
+    },
+    "financial_tampered_output": {
+      "label": "Loan approval (tampered output)",
+      "scenario": "The same loan approval, but the approval document was edited after the AI signed it. Lemma detects the tampering before the document is presented to compliance.",
+      "stakes": [
+        "Audit integrity",
+        "Bank liability"
+      ],
+      "businessImpact": [],
+      "failReason": "The approval output was modified after the AI signed it. The output commitment no longer matches the value bound at issuance, so verification stops here."
+    },
+    "manufacturing_valid_process": {
+      "label": "Process compliance (valid)",
+      "scenario": "A parts manufacturer ships a batch to an EU buyer. Lemma proves the production process conformed to the registered ESG/CBAM-compliant specification.",
+      "stakes": [
+        "Supply-chain trust",
+        "EU import compliance"
+      ],
+      "businessImpact": [
+        "CBAM proof generated at ship time vs ~2 weeks of compliance documentation",
+        "Process spec changes are tracked cryptographically, not by emails",
+        "Buyer verifies compliance independently, no auditor required"
+      ],
+      "failReason": ""
+    },
+    "manufacturing_model_swap": {
+      "label": "Process compliance (model swap)",
+      "scenario": "The same shipment, but a different AI inspection model was substituted between certification and shipment. Lemma detects the substitution via envelope signature mismatch.",
+      "stakes": [
+        "Process trust",
+        "Recall liability"
+      ],
+      "businessImpact": [],
+      "failReason": "The envelope was signed under a different model than the one declared. Verification stops at the envelope step."
+    },
+    "agent_valid_chain_with_x402": {
+      "label": "Agent chain + x402 payment (valid)",
+      "scenario": "An autonomous agent purchases an API service via x402 payment. Lemma proves the agent had delegation authority and that the payment receipt is genuine.",
+      "stakes": [
+        "Delegation integrity",
+        "Payment receipt non-repudiation"
+      ],
+      "businessImpact": [
+        "Multi-agent transaction verified in under a second; no manual equivalent exists",
+        "Delegation chain provable post-hoc, no agent-log scraping needed",
+        "x402 payment cryptographically linked to authorized action"
+      ],
+      "failReason": ""
+    },
+    "agent_replay_duplicate": {
+      "label": "Agent chain (duplicate)",
+      "scenario": "The same proof is submitted twice across two settlement steps — for example, a stuck retry loop in an agent pipeline. Lemma detects the duplicate proof_id and rejects the second submission.",
+      "stakes": [
+        "Settlement integrity",
+        "Double-spend prevention"
+      ],
+      "businessImpact": [],
+      "failReason": "The same proof_id was already seen in a prior settlement step. The duplicate submission is rejected before any second debit can occur."
+    }
+  }
+}

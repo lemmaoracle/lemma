@@ -9,6 +9,10 @@
  * The mock verifier in `src/lib/verify.ts` reads `expectedResult` and
  * `failureMode` to produce a deterministic breakdown that mirrors the
  * shape real verification will return.
+ *
+ * v0.3 — sample id `agent_replay_attack` was renamed to
+ * `agent_replay_duplicate` to match the operational-error framing in
+ * spec §10.
  */
 
 export type Industry = "Financial" | "Manufacturing" | "Agent";
@@ -18,6 +22,25 @@ export type FailureMode =
   | "output_hash_mismatch"
   | "model_hash_mismatch"
   | "proof_id_replay";
+
+export type PillarSlug =
+  | "verifiable-origin"
+  | "verifiable-ai"
+  | "agent-authority-proof"
+  | "regulatory-attribute-proof";
+
+export type PrimitiveTag =
+  | "BBS+"
+  | "Groth16"
+  | "Poseidon";
+
+export type RegulatoryTag =
+  | "PPSI"
+  | "KYC/AML"
+  | "GDPR"
+  | "APPI"
+  | "EUDR"
+  | "CBAM";
 
 export interface ProofBundle {
   readonly proof_id: string;
@@ -43,21 +66,28 @@ export interface ProofBundle {
 
 export interface Sample {
   readonly id: string;
-  readonly label: string;
   readonly industry: Industry;
   readonly expectedResult: ExpectedResult;
   readonly failureMode?: FailureMode;
-  readonly summary: string;
+  /** Pillars exercised by this sample's verification (pass samples). */
+  readonly pillars: ReadonlyArray<PillarSlug>;
+  readonly primitiveTags: ReadonlyArray<PrimitiveTag>;
+  readonly regulatoryTags: ReadonlyArray<RegulatoryTag>;
   readonly bundle: ProofBundle;
 }
 
 export const SAMPLES: ReadonlyArray<Sample> = [
   {
     id: "financial_valid_approval",
-    label: "Loan approval (valid)",
     industry: "Financial",
     expectedResult: "pass",
-    summary: "Selective-disclosure approval. All checks pass.",
+    pillars: [
+      "verifiable-origin",
+      "verifiable-ai",
+      "regulatory-attribute-proof",
+    ],
+    primitiveTags: ["BBS+", "Groth16"],
+    regulatoryTags: ["PPSI", "KYC/AML", "GDPR"],
     bundle: {
       proof_id: "fp-7a2c91d4-0001",
       issued_at: "2026-04-30T07:14:22Z",
@@ -81,11 +111,12 @@ export const SAMPLES: ReadonlyArray<Sample> = [
   },
   {
     id: "financial_tampered_output",
-    label: "Loan approval (tampered output)",
     industry: "Financial",
     expectedResult: "fail",
     failureMode: "output_hash_mismatch",
-    summary: "Output altered after signing. Hash check rejects.",
+    pillars: [],
+    primitiveTags: ["Poseidon"],
+    regulatoryTags: ["PPSI", "KYC/AML"],
     bundle: {
       proof_id: "fp-7a2c91d4-0002",
       issued_at: "2026-04-30T07:14:22Z",
@@ -104,10 +135,11 @@ export const SAMPLES: ReadonlyArray<Sample> = [
   },
   {
     id: "manufacturing_valid_process",
-    label: "Process compliance (valid)",
     industry: "Manufacturing",
     expectedResult: "pass",
-    summary: "Groth16 policy proof against the registered process spec.",
+    pillars: ["verifiable-origin", "verifiable-ai"],
+    primitiveTags: ["Groth16"],
+    regulatoryTags: ["EUDR", "CBAM"],
     bundle: {
       proof_id: "fp-91b3c4d5-0010",
       issued_at: "2026-04-30T09:42:55Z",
@@ -131,11 +163,12 @@ export const SAMPLES: ReadonlyArray<Sample> = [
   },
   {
     id: "manufacturing_model_swap",
-    label: "Process compliance (model swap)",
     industry: "Manufacturing",
     expectedResult: "fail",
     failureMode: "model_hash_mismatch",
-    summary: "Different model substituted post-issuance. Envelope rejects.",
+    pillars: [],
+    primitiveTags: ["BBS+", "Poseidon"],
+    regulatoryTags: ["EUDR", "CBAM"],
     bundle: {
       proof_id: "fp-91b3c4d5-0011",
       issued_at: "2026-04-30T09:42:55Z",
@@ -159,10 +192,11 @@ export const SAMPLES: ReadonlyArray<Sample> = [
   },
   {
     id: "agent_valid_chain_with_x402",
-    label: "Agent chain + x402 payment (valid)",
     industry: "Agent",
     expectedResult: "pass",
-    summary: "Multi-agent chain with x402 payment_proof attached.",
+    pillars: ["agent-authority-proof", "verifiable-ai"],
+    primitiveTags: ["BBS+", "Groth16"],
+    regulatoryTags: [],
     bundle: {
       proof_id: "fp-c7e8f9a0-0100",
       issued_at: "2026-04-30T11:08:01Z",
@@ -184,12 +218,13 @@ export const SAMPLES: ReadonlyArray<Sample> = [
     },
   },
   {
-    id: "agent_replay_attack",
-    label: "Agent chain (replay)",
+    id: "agent_replay_duplicate",
     industry: "Agent",
     expectedResult: "fail",
     failureMode: "proof_id_replay",
-    summary: "Same proof_id replayed across two settlement steps.",
+    pillars: [],
+    primitiveTags: ["Poseidon"],
+    regulatoryTags: [],
     bundle: {
       // Same proof_id as #5 to demonstrate de-dup at receive time.
       proof_id: "fp-c7e8f9a0-0100",
