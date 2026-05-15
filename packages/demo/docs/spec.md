@@ -2,6 +2,7 @@
 
 > Source: CTO design review 2026-05-15. Supersedes v0.2 (2026-05-03).
 > Status: Signed off by Mayumi 2026-05-15. UTM campaign decision: rename to `ppsi_provenance` from v0.3.1 onward (no continuity period).
+> Sign-off review fixes (2026-05-15): all §4 JA placeholders resolved; "987ms" replaced with "in under a second" / 「1秒以内」 in per-sample bullets (§3c result-panel illustration keeps 987ms / 423ms as example output); on-chain row visibility note added to §3e; sample id `agent_replay_attack` renamed to `agent_replay_duplicate` to match the operational-error framing required by §10.
 > Changes from v0.2: business-scenario sample cards; stepped verification animation; liveness signals (real-time counters, jitter, session nonce, "0 bytes sent" badge, sub-progress, trace log); business-impact translation in result panel; counter-factual block for failure samples; trust badges section; JA locale; analytics events for the new interactions.
 
 ---
@@ -200,6 +201,8 @@ On-chain anchoring
   → Open spec on GitHub
 ```
 
+> **On-chain row visibility**: build-time check against actual deployment state per §12 Q4. If zero chains are live at build time, the on-chain row is hidden entirely — do not render greyed-out badges. Base / Polygon / Monad above is the **target** set; real chip rendering depends on what the build-time check finds.
+
 **Locked vocabulary**:
 - Primitives: only the 3 above. Adding a primitive requires spec amendment.
 - Regulatory: PPSI / EUDR / CBAM / KYC/AML / GDPR. Adding requires legal review (frame00).
@@ -247,10 +250,13 @@ For each sample, the following content is required in **both EN and JA**. Author
 - **Regulatory**: PPSI / KYC/AML / GDPR (EN); PPSI / KYC/AML / 個人情報保護法 (JA — local name first)
 - **Primitives**: BBS+ / Groth16
 - **Business impact (EN)**:
-  - Audit response time: 987ms vs ~3 days of manual review
+  - Audit response in under a second vs ~3 days of manual review
   - Borrower's income never disclosed to bank or regulator
   - Regulator can verify the proof directly, no trust required
-- **Business impact (JA)**: 同上を日本語で
+- **Business impact (JA)**:
+  - 監査対応は1秒以内、~3日の手作業レビューと比較
+  - 借り手の所得は銀行にも規制当局にも非開示のまま
+  - 規制当局が証明を直接検証可能、信頼前提が不要
 
 ### 4.2 `financial_tampered_output` (✗ Invalid)
 
@@ -263,8 +269,10 @@ For each sample, the following content is required in **both EN and JA**. Author
 - **Primitives**: Poseidon
 - **Counter-factual (EN)**:
   - Without: Tampered approval passes silently · Compliance discovers it weeks later · Bank faces regulatory penalty for non-compliant decision
-  - With: Tampering detected in 423ms · Cryptographic audit trail preserved · Regulator verifies the original AI-signed document
-- **Counter-factual (JA)**: 同上を日本語で
+  - With: Tampering detected in under a second · Cryptographic audit trail preserved · Regulator verifies the original AI-signed document
+- **Counter-factual (JA)**:
+  - Without: 改ざんされた承認が黙って通過 · コンプライアンスチームが数週間後に発見 · 銀行が不適合判断による規制ペナルティを負う
+  - With: 1秒以内に改ざんを検出 · 暗号学的な監査トレースが保全 · 規制当局が AI 署名済みの原本を検証
 
 ### 4.3 `manufacturing_valid_process` (✓ Valid)
 
@@ -279,6 +287,10 @@ For each sample, the following content is required in **both EN and JA**. Author
   - CBAM proof generated at ship time vs ~2 weeks of compliance documentation
   - Process spec changes are tracked cryptographically, not by emails
   - Buyer verifies compliance independently, no auditor required
+- **Business impact (JA)**:
+  - CBAM 証明を出荷時に生成、コンプライアンス書類の ~2 週間と比較
+  - 工程仕様の変更は暗号学的に追跡、メール往復ではない
+  - バイヤーが独立して適合性を検証、監査人不要
 
 ### 4.4 `manufacturing_model_swap` (✗ Invalid)
 
@@ -292,6 +304,9 @@ For each sample, the following content is required in **both EN and JA**. Author
 - **Counter-factual (EN)**:
   - Without: Shipment proceeds with unverified model · Defect discovered after EU import · Recall cost + import-ban risk
   - With: Substitution detected before shipment · Original certified model required for re-issue · Recall avoided
+- **Counter-factual (JA)**:
+  - Without: 未検証モデルのまま出荷が進行 · 欠陥が EU 輸入後に発覚 · リコール費用＋輸入禁止リスク
+  - With: 出荷前に置換を検出 · 再発行には認証済み原本モデルが必須 · リコールを回避
 
 ### 4.5 `agent_valid_chain_with_x402` (✓ Valid)
 
@@ -303,11 +318,15 @@ For each sample, the following content is required in **both EN and JA**. Author
 - **Regulatory**: (none — emerging space)
 - **Primitives**: BBS+ / Groth16
 - **Business impact (EN)**:
-  - Multi-agent transaction verified in 987ms vs no manual equivalent exists
+  - Multi-agent transaction verified in under a second; no manual equivalent exists
   - Delegation chain provable post-hoc, no agent-log scraping needed
   - x402 payment cryptographically linked to authorized action
+- **Business impact (JA)**:
+  - マルチエージェント取引を1秒以内に検証、手作業の代替手段はない
+  - 委任チェーンを事後証明可能、エージェントログの走査が不要
+  - x402 支払いを承認済み行動と暗号学的に紐付け
 
-### 4.6 `agent_replay_attack` (✗ Invalid)
+### 4.6 `agent_replay_duplicate` (✗ Invalid)
 
 - **Industry tag**: Agent Economy / エージェント経済
 - **Scenario (EN)**: The same proof is submitted twice across two settlement steps. Lemma detects the duplicate `proof_id` and rejects the second submission.
@@ -316,9 +335,12 @@ For each sample, the following content is required in **both EN and JA**. Author
 - **Stakes (JA)**: 決済の完全性 / 二重支払い防止
 - **Regulatory**: (none)
 - **Primitives**: Poseidon
-- **Counter-factual (EN)**: Replace "attack" framing with "operational error" framing per §10 (a stuck retry loop, not a malicious actor).
+- **Counter-factual (EN)**: An "operational error" framing per §10 (a stuck retry loop, not a malicious actor). Sample id `agent_replay_duplicate` renamed from `agent_replay_attack` in sign-off review to match this framing — coordinate `samples.*` i18n keys and `utm_content=` values in the v0.3.1 implementation.
   - Without: Duplicate settlement passes · Funds double-deducted · Manual reconciliation required
   - With: Duplicate proof_id detected · Second settlement rejected · No reconciliation needed
+- **Counter-factual (JA)**:
+  - Without: 重複決済が通過 · 資金が二重控除 · 手作業による照合が必要
+  - With: 重複した proof_id を検出 · 2 回目の決済を拒否 · 照合作業が不要
 
 ---
 
@@ -486,7 +508,7 @@ v0.2 (Bazaar listing + JP) is **superseded by v0.3**.
 
 1. **Voluntary email auto-send**: Re-evaluate in v0.3.2 (still deferred).
 2. **WASM library final selection**: Phase 2 dev call.
-3. **Counter-factual "operational error" framing for `agent_replay_attack`**: confirm the wording reads natural (not euphemistic). Test with 2 internal readers before public.
+3. **Counter-factual "operational error" framing for `agent_replay_duplicate`** (formerly `agent_replay_attack`): confirm the wording reads natural (not euphemistic). Test with 2 internal readers before public.
 4. **Trust badges — on-chain anchoring badges**: build-time check needed against actual deployment state. If no chains deployed, hide the row entirely (don't show greyed-out badges).
 5. **Bilingual SEO**: hreflang setup and Cloudflare Pages routing nuance — verify on staging.
 6. ~~**PPSI campaign UTM rename**~~ — Resolved at sign-off (2026-05-15): adopt `ppsi_provenance` from v0.3.1; no continuity period for `cyberlabs_response`.
