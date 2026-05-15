@@ -16,7 +16,7 @@
  *     → render result panel + CTAs
  */
 
-import { getSample, PILLAR_I18N_KEY, type Sample } from "../data/fixtures";
+import { FAILURE_STEP, getSample, PILLAR_I18N_KEY, type Sample } from "../data/fixtures";
 import { track } from "../lib/analytics";
 import {
   verifyCustom,
@@ -36,6 +36,16 @@ interface SampleCopy {
   readonly stakes: ReadonlyArray<string>;
   readonly businessImpact: ReadonlyArray<string>;
   readonly failReason: string;
+  readonly counterFactual?: {
+    readonly without: ReadonlyArray<string>;
+    readonly with: ReadonlyArray<string>;
+  };
+}
+
+interface StepCopy {
+  readonly label: string;
+  readonly primitive: string;
+  readonly subStages: ReadonlyArray<string>;
 }
 
 interface I18nPayload {
@@ -63,7 +73,43 @@ interface I18nPayload {
     readonly hintReadySample: string;
     readonly hintReadyCustom: string;
   }>;
+  readonly verifyAnimStrings: Readonly<{
+    readonly steps: ReadonlyArray<StepCopy>;
+    readonly failedStepSuffix: string;
+    readonly failSubStageLabel: string;
+  }>;
+  readonly counterFactualStrings: Readonly<{
+    readonly withoutLabel: string;
+    readonly withLabel: string;
+  }>;
 }
+
+/**
+ * §3b stepped animation timing. revealAt = ms after click when the step
+ * becomes "verifying"; verifyMs = how long that step stays in the
+ * verifying state before resolving. Spec target totals: ~1000ms for a
+ * full valid run; failures truncate the sequence at their failing step.
+ *
+ * Spec §3b's headline "~400ms for fail" matches the model_hash_mismatch
+ * sample (fail at Step 2). Later-step failures (Step 4 output, Step 5
+ * policy/replay) intentionally take longer because the user sees the
+ * earlier passes complete — this is the honest reading of the spec.
+ */
+interface StepTiming {
+  readonly revealAt: number;
+  readonly verifyMs: number;
+  readonly traceOp: string;
+}
+
+const STEP_TIMINGS: ReadonlyArray<StepTiming> = [
+  { revealAt: 100, verifyMs: 180, traceOp: "schema" },
+  { revealAt: 300, verifyMs: 180, traceOp: "envelope.bbs" },
+  { revealAt: 500, verifyMs: 180, traceOp: "input.poseidon" },
+  { revealAt: 700, verifyMs: 230, traceOp: "output.poseidon" },
+  { revealAt: 950, verifyMs: 150, traceOp: "policy.groth16" },
+];
+
+const STEP_JITTER_MS = 22;
 
 declare global {
   interface Window {
@@ -147,6 +193,152 @@ function normaliseDeepLinkUrl(validSampleId: string | null): void {
   history.replaceState(null, "", url.toString());
 }
 
+const sleep = (ms: number): Promise<void> =>
+  new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, ms)));
+
+interface TraceLogger {
+  reset(startedAt: number): void;
+  emit(op: string, result: "pass" | "fail" | null): void;
+}
+
+function createTraceLogger(container: HTMLElement): TraceLogger {
+  let startedAt = performance.now();
+  return {
+    reset(t: number): void {
+      startedAt = t;
+      container.innerHTML = "";
+    },
+    emit(op: string, result: "pass" | "fail" | null): void {
+      const t = Math.round(performance.now() - startedAt);
+      const arrow = result === null ? "…" : result === "pass" ? "ok" : "fail";
+      const cls =
+        result === "fail"
+          ? "trace-line trace-line-fail"
+          : result === "pass"
+          ? "trace-line trace-line-pass"
+          : "trace-line";
+      const line = document.createElement("span");
+      line.className = cls;
+      line.textContent = `[t=${t.toString().padStart(4, "0")}ms] verifier.${op} → ${arrow}`;
+      container.appendChild(line);
+      container.scrollTop = container.scrollHeight;
+    },
+  };
+}
+
+interface SteppedAnimationArgs {
+  readonly verifyClickedAt: number;
+  /** Step number (1-5) that should fail, or null for full-pass. */
+  readonly failStep: number | null;
+  readonly stepCopies: ReadonlyArray<StepCopy>;
+  /** Localised sub-stage line shown on the failing step (spec §3b sub-label). */
+  readonly failSubStageLabel: string;
+  readonly animSteps: ReadonlyArray<HTMLElement>;
+  readonly animProgressFill: HTMLElement;
+  readonly trace: TraceLogger;
+  readonly onStepCompleted: (
+    stepNumber: number,
+    stepName: string,
+    result: "pass" | "fail",
+    durationMs: number,
+  ) => void;
+}
+
+/**
+ * Drives the §3b stepped reveal. Awaits each step's reveal time
+ * (jittered ±22ms per §3f), cycles its sub-stages with trace-log
+ * emissions, then resolves the step pass/fail. Halts at failStep when
+ * supplied. Returns the final step number reached (1-5).
+ */
+async function runSteppedAnimation(args: SteppedAnimationArgs): Promise<number> {
+  args.animProgressFill.classList.remove("fail");
+  args.animProgressFill.style.width = "0%";
+  let lastStepReached = 0;
+  for (let i = 0; i < STEP_TIMINGS.length; i++) {
+    const cfg = STEP_TIMINGS[i];
+    const stepNum = i + 1;
+    const stepEl = args.animSteps[i];
+    if (!stepEl) continue;
+    lastStepReached = stepNum;
+    const copy = args.stepCopies[i];
+    const subEl = stepEl.querySelector<HTMLElement>(".anim-step-substage");
+    const iconEl = stepEl.querySelector<HTMLElement>(".anim-step-icon");
+    const msEl = stepEl.querySelector<HTMLElement>(".anim-step-ms");
+
+    const revealTarget =
+      args.verifyClickedAt + cfg.revealAt + (Math.random() * 2 - 1) * STEP_JITTER_MS;
+    await sleep(revealTarget - performance.now());
+
+    stepEl.dataset["state"] = "verifying";
+    if (iconEl) iconEl.textContent = "◐";
+    args.trace.emit(`${cfg.traceOp}.start`, null);
+
+    const stepStartedAt = performance.now();
+    const subDuration = cfg.verifyMs / Math.max(1, copy.subStages.length);
+    for (let s = 0; s < copy.subStages.length; s++) {
+      if (subEl) subEl.textContent = copy.subStages[s];
+      args.trace.emit(`${cfg.traceOp}.${s + 1}/${copy.subStages.length}`, null);
+      await sleep(subDuration);
+    }
+
+    const isFail = args.failStep !== null && stepNum === args.failStep;
+    const result: "pass" | "fail" = isFail ? "fail" : "pass";
+    const durationMs = Math.round(performance.now() - stepStartedAt);
+    stepEl.dataset["state"] = result;
+    if (iconEl) iconEl.textContent = result === "pass" ? "✓" : "✗";
+    if (msEl) msEl.textContent = `${durationMs} ms`;
+    if (subEl && isFail) subEl.textContent = args.failSubStageLabel;
+
+    const progress = (stepNum / STEP_TIMINGS.length) * 100;
+    args.animProgressFill.style.width = `${progress}%`;
+    if (isFail) args.animProgressFill.classList.add("fail");
+
+    args.trace.emit(cfg.traceOp, result);
+    args.onStepCompleted(stepNum, copy.label, result, durationMs);
+
+    if (isFail) break;
+  }
+  return lastStepReached;
+}
+
+function resetAnimationPanel(
+  animSteps: ReadonlyArray<HTMLElement>,
+  animProgressFill: HTMLElement,
+): void {
+  animProgressFill.classList.remove("fail");
+  animProgressFill.style.width = "0%";
+  for (const step of animSteps) {
+    delete step.dataset["state"];
+    const icon = step.querySelector<HTMLElement>(".anim-step-icon");
+    const ms = step.querySelector<HTMLElement>(".anim-step-ms");
+    const sub = step.querySelector<HTMLElement>(".anim-step-substage");
+    if (icon) icon.textContent = "○";
+    if (ms) ms.textContent = "";
+    if (sub) sub.textContent = "";
+  }
+}
+
+function renderCounterFactual(
+  cfBlock: HTMLElement,
+  withoutList: HTMLElement,
+  withList: HTMLElement,
+  copy: { without: ReadonlyArray<string>; with: ReadonlyArray<string> },
+): void {
+  withoutList.innerHTML = "";
+  withList.innerHTML = "";
+  for (const line of copy.without) {
+    const li = document.createElement("li");
+    li.textContent = line;
+    withoutList.appendChild(li);
+  }
+  for (const line of copy.with) {
+    const li = document.createElement("li");
+    li.textContent = line;
+    withList.appendChild(li);
+  }
+  cfBlock.hidden = false;
+}
+
 export function mount(): void {
   const i18n = getI18n();
 
@@ -191,6 +383,17 @@ export function mount(): void {
   const ctaSales = document.getElementById("cta-sales") as HTMLAnchorElement | null;
   const ctaWaitlist = document.getElementById("cta-waitlist") as HTMLAnchorElement | null;
   const langToggle = document.querySelector<HTMLAnchorElement>(".lang-toggle");
+  // v0.3.2 stepped animation + counter-factual + trust badges + trace log
+  const resultAnimation = document.getElementById("result-animation");
+  const animProgressFill = document.getElementById("anim-progress");
+  const animSteps = Array.from(document.querySelectorAll<HTMLElement>(".anim-step"));
+  const counterFactualBlock = document.getElementById("counterfactual-block");
+  const cfWithoutList = document.getElementById("cf-without");
+  const cfWithList = document.getElementById("cf-with");
+  const traceSection = document.getElementById("trace-section");
+  const traceToggle = document.getElementById("trace-toggle") as HTMLButtonElement | null;
+  const traceLog = document.getElementById("trace-log");
+  const trustBadgesSection = document.getElementById("trust-badges");
 
   if (
     !verifyBtn ||
@@ -204,7 +407,16 @@ export function mount(): void {
     !resultProvenList ||
     !resultImpactList ||
     !resultFailReason ||
-    !ctaRow
+    !ctaRow ||
+    !resultAnimation ||
+    !animProgressFill ||
+    !counterFactualBlock ||
+    !cfWithoutList ||
+    !cfWithList ||
+    !traceSection ||
+    !traceToggle ||
+    !traceLog ||
+    !trustBadgesSection
   ) {
     return;
   }
@@ -321,6 +533,37 @@ export function mount(): void {
     }
   }
 
+  // ── Trace log toggle (closure-scoped state, not localStorage) ─────
+  let traceOpen = false;
+  const trace = createTraceLogger(traceLog);
+  const setTraceOpen = (open: boolean): void => {
+    traceOpen = open;
+    traceToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    traceToggle.textContent =
+      open
+        ? traceToggle.dataset["labelHide"] ?? i18n.verifyAnimStrings.steps.length.toString()
+        : traceToggle.dataset["labelShow"] ?? "Show trace ▾";
+    traceLog.hidden = !open;
+  };
+  traceToggle.addEventListener("click", () => setTraceOpen(!traceOpen));
+
+  // ── Trust badges IntersectionObserver (fires once) ─────────────────
+  if (typeof IntersectionObserver !== "undefined") {
+    const trustObs = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            track("trust_badges_viewport_entered", { locale: i18n.locale });
+            trustObs.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+    trustObs.observe(trustBadgesSection);
+  }
+
   verifyBtn.addEventListener("click", async () => {
     if (selection.kind === "none") return;
     const sampleId = selection.kind === "sample" ? selection.sample.id : "custom";
@@ -342,6 +585,13 @@ export function mount(): void {
       resultFailReason,
       ctaRow,
     });
+    counterFactualBlock.hidden = true;
+    cfWithoutList.innerHTML = "";
+    cfWithList.innerHTML = "";
+    resetAnimationPanel(animSteps, animProgressFill);
+    resultAnimation.hidden = false;
+    trace.reset(verifyClickedAt);
+
     resultSession.textContent = `${i18n.resultStrings.sessionLabel}: ${sessionNonce}`;
     resultSession.hidden = false;
     result.classList.remove("hidden");
@@ -351,22 +601,44 @@ export function mount(): void {
     const labelInFlight = verifyBtn.dataset["labelInflight"] ?? "Verifying…";
     verifyBtn.textContent = labelInFlight;
 
-    // Start live ms counter via RAF. `stopLiveCounter()` cancels the
-    // pending frame so no extra tick fires after verification completes.
     const stopLiveCounter = startLiveCounter(resultTime, verifyClickedAt);
+
+    // Determine which step (if any) should fail so the animation can halt
+    // at the right point. For custom uploads, run a quick JSON parse —
+    // invalid JSON → schema-step (Step 1) fails in the animation; the
+    // verifier will still produce the canonical body content.
+    let failStep: number | null = null;
+    if (selection.kind === "sample" && selection.sample.failureMode) {
+      failStep = FAILURE_STEP[selection.sample.failureMode];
+    } else if (selection.kind === "custom") {
+      try {
+        JSON.parse(selection.raw);
+      } catch {
+        failStep = 1;
+      }
+    }
 
     let resultData: VerificationResult;
     try {
-      const baseDelay =
-        selection.kind === "custom"
-          ? VERIFY_CUSTOM_BASE_DELAY_MS
-          : VERIFY_BASE_DELAY_MS;
-      // Replace the verifier's internal delay with a jittered one so each
-      // run produces a visibly different total. The verifier still measures
-      // its own duration; the jitter affects perceived liveness.
-      await new Promise<void>((resolve) =>
-        setTimeout(resolve, jitter(baseDelay)),
-      );
+      await runSteppedAnimation({
+        verifyClickedAt,
+        failStep,
+        stepCopies: i18n.verifyAnimStrings.steps,
+        failSubStageLabel: i18n.verifyAnimStrings.failSubStageLabel,
+        animSteps,
+        animProgressFill,
+        trace,
+        onStepCompleted: (stepNumber, stepName, stepResult, durationMs) => {
+          track("verification_step_completed", {
+            sample_id: sampleId,
+            step_number: stepNumber,
+            step_name: stepName,
+            result: stepResult,
+            duration_ms: durationMs,
+            locale: i18n.locale,
+          });
+        },
+      });
       resultData =
         selection.kind === "sample"
           ? await verifySample(selection.sample)
@@ -379,6 +651,7 @@ export function mount(): void {
 
     const totalMs = Math.round(performance.now() - verifyClickedAt);
     resultTime.textContent = `${totalMs} ms`;
+    resultAnimation.hidden = true;
 
     renderResult({
       data: resultData,
@@ -393,6 +666,24 @@ export function mount(): void {
       resultFailReason,
       ctaRow,
     });
+
+    // Counter-factual block for fail samples that ship the §3d copy.
+    if (
+      resultData.overall === "fail" &&
+      selection.kind === "sample" &&
+      i18n.samplesCopy[selection.sample.id]?.counterFactual
+    ) {
+      const cf = i18n.samplesCopy[selection.sample.id].counterFactual!;
+      renderCounterFactual(counterFactualBlock, cfWithoutList, cfWithList, cf);
+      track("counterfactual_shown", {
+        sample_id: selection.sample.id,
+        locale: i18n.locale,
+      });
+    }
+
+    // Trust badges + trace section become visible after first verify.
+    trustBadgesSection.hidden = false;
+    traceSection.hidden = false;
 
     track("verify_completed", {
       sample_id: sampleId,

@@ -23,6 +23,18 @@ export type FailureMode =
   | "model_hash_mismatch"
   | "proof_id_replay";
 
+/**
+ * Maps a FailureMode to the step (1–5) in the §3b verification animation
+ * where the reveal halts. Spec §3b only enumerates 5 steps; replay
+ * protection is folded into Step 5 (Policy compliance) because the
+ * "no-replay" predicate is itself a policy assertion.
+ */
+export const FAILURE_STEP: Readonly<Record<FailureMode, 1 | 2 | 3 | 4 | 5>> = {
+  output_hash_mismatch: 4,
+  model_hash_mismatch: 2,
+  proof_id_replay: 5,
+} as const;
+
 export type PillarSlug =
   | "verifiable-origin"
   | "verifiable-ai"

@@ -17,6 +17,17 @@ export interface SampleCopy {
   readonly businessImpact: ReadonlyArray<string>;
   /** Plain-language fail reason for fail samples; empty for pass samples. */
   readonly failReason: string;
+  /** Counter-factual pairs for fail samples (3 entries each); absent on pass samples. */
+  readonly counterFactual?: Readonly<{
+    readonly without: ReadonlyArray<string>;
+    readonly with: ReadonlyArray<string>;
+  }>;
+}
+
+export interface StepCopy {
+  readonly label: string;
+  readonly primitive: string;
+  readonly subStages: ReadonlyArray<string>;
 }
 
 export interface PillarCopy {
@@ -73,6 +84,29 @@ export interface Translations {
     readonly provenHeading: string;
     readonly impactHeading: string;
     readonly failHeading: string;
+  }>;
+  readonly verifyAnim: Readonly<{
+    readonly steps: ReadonlyArray<StepCopy>;
+    readonly statusPending: string;
+    readonly statusVerifying: string;
+    readonly statusPass: string;
+    readonly statusFail: string;
+    readonly failedStepSuffix: string;
+    readonly failSubStageLabel: string;
+    readonly traceToggleShow: string;
+    readonly traceToggleHide: string;
+    readonly traceAriaLabel: string;
+  }>;
+  readonly trustBadges: Readonly<{
+    readonly primitivesLabel: string;
+    readonly regulatoryLabel: string;
+    readonly onChainLabel: string;
+    readonly openSpecLabel: string;
+    readonly openSpecHref: string;
+  }>;
+  readonly counterFactual: Readonly<{
+    readonly withoutLabel: string;
+    readonly withLabel: string;
   }>;
   readonly pillars: Readonly<{
     readonly verifiableOrigin: PillarCopy;
