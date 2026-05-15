@@ -76,6 +76,7 @@ interface I18nPayload {
   readonly verifyAnimStrings: Readonly<{
     readonly steps: ReadonlyArray<StepCopy>;
     readonly failedStepSuffix: string;
+    readonly failSubStageLabel: string;
   }>;
   readonly counterFactualStrings: Readonly<{
     readonly withoutLabel: string;
@@ -230,6 +231,8 @@ interface SteppedAnimationArgs {
   /** Step number (1-5) that should fail, or null for full-pass. */
   readonly failStep: number | null;
   readonly stepCopies: ReadonlyArray<StepCopy>;
+  /** Localised sub-stage line shown on the failing step (spec §3b sub-label). */
+  readonly failSubStageLabel: string;
   readonly animSteps: ReadonlyArray<HTMLElement>;
   readonly animProgressFill: HTMLElement;
   readonly trace: TraceLogger;
@@ -284,9 +287,9 @@ async function runSteppedAnimation(args: SteppedAnimationArgs): Promise<number> 
     stepEl.dataset["state"] = result;
     if (iconEl) iconEl.textContent = result === "pass" ? "✓" : "✗";
     if (msEl) msEl.textContent = `${durationMs} ms`;
-    if (subEl && isFail) subEl.textContent = "✗ verification rejected";
+    if (subEl && isFail) subEl.textContent = args.failSubStageLabel;
 
-    const progress = isFail ? (stepNum / STEP_TIMINGS.length) * 100 : (stepNum / STEP_TIMINGS.length) * 100;
+    const progress = (stepNum / STEP_TIMINGS.length) * 100;
     args.animProgressFill.style.width = `${progress}%`;
     if (isFail) args.animProgressFill.classList.add("fail");
 
@@ -621,6 +624,7 @@ export function mount(): void {
         verifyClickedAt,
         failStep,
         stepCopies: i18n.verifyAnimStrings.steps,
+        failSubStageLabel: i18n.verifyAnimStrings.failSubStageLabel,
         animSteps,
         animProgressFill,
         trace,

@@ -60,6 +60,7 @@
     "statusPass": "成功",
     "statusFail": "失敗",
     "failedStepSuffix": "ステップ {n} で失敗",
+    "failSubStageLabel": "✗ 検証が拒否されました",
     "traceToggleShow": "トレースを表示 ▾",
     "traceToggleHide": "トレースを隠す ▴",
     "traceAriaLabel": "検証トレースログ"
@@ -73,7 +74,7 @@
   },
   "counterFactual": {
     "withoutLabel": "来歴検証なしの場合",
-    "withLabel": "Lemma 適用後"
+    "withLabel": "Lemma あり"
   },
   "pillars": {
     "verifiableOrigin": {

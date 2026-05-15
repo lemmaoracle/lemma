@@ -92,6 +92,7 @@ export interface Translations {
     readonly statusPass: string;
     readonly statusFail: string;
     readonly failedStepSuffix: string;
+    readonly failSubStageLabel: string;
     readonly traceToggleShow: string;
     readonly traceToggleHide: string;
     readonly traceAriaLabel: string;
