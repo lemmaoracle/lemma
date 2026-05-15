@@ -106,13 +106,60 @@ function sessionShortNonce(): string {
   return `${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
 }
 
+interface DeepLinkResolution {
+  /** Valid sample id, or null if absent / invalid. Used for `deep_link_sample`. */
+  readonly valid: string | null;
+  /** True if the URL had a `?sample=` query (regardless of validity). */
+  readonly hadQuery: boolean;
+}
+
+function resolveDeepLinkSample(): DeepLinkResolution {
+  if (typeof window === "undefined") return { valid: null, hadQuery: false };
+  const url = new URL(window.location.href);
+  const querySample = url.searchParams.get("sample");
+  const hashMatch = url.hash.match(/^#sample=(.+)$/);
+  const hashSample = hashMatch ? decodeURIComponent(hashMatch[1]) : null;
+  // Query parameter (inbound deep-link) takes precedence over the hash
+  // (in-app round-trip across the language toggle). Spec §2a.
+  const candidate = querySample ?? hashSample;
+  if (!candidate) return { valid: null, hadQuery: false };
+  const sample = getSample(candidate);
+  return {
+    valid: sample ? sample.id : null,
+    hadQuery: querySample !== null,
+  };
+}
+
+/**
+ * Normalise the URL so `?sample=` is consumed on first load and the in-app
+ * form `#sample=<id>` is what subsequent navigation (e.g. language toggle)
+ * round-trips. Invalid sample ids are dropped entirely. Called only when
+ * the inbound URL had a `?sample=` query.
+ */
+function normaliseDeepLinkUrl(validSampleId: string | null): void {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("sample");
+  url.hash = validSampleId ? `sample=${validSampleId}` : "";
+  history.replaceState(null, "", url.toString());
+}
+
 export function mount(): void {
   const i18n = getI18n();
+
+  const deepLink = resolveDeepLinkSample();
+  // Normalise URL — drop `?sample=` query (consumed on load); keep
+  // `#sample=<id>` for in-app round-trip. Only rewrite when a query was
+  // present so plain reloads of an already-normalised URL don't churn
+  // history.
+  if (deepLink.hadQuery) {
+    normaliseDeepLinkUrl(deepLink.valid);
+  }
 
   track("demo_loaded", {
     referrer: document.referrer || "(direct)",
     viewport: `${window.innerWidth}x${window.innerHeight}`,
     locale: i18n.locale,
+    deep_link_sample: deepLink.valid,
   });
 
   const radios = document.querySelectorAll<HTMLInputElement>(
@@ -158,6 +205,23 @@ export function mount(): void {
     return;
   }
 
+  // Capture the lang toggle's bare locale href before we layer the sample
+  // hash on top of it; we need the bare value when the selection clears.
+  const langToggleBaseHref = langToggle?.getAttribute("href") ?? "";
+
+  const setHashSample = (sampleId: string | null): void => {
+    const url = new URL(window.location.href);
+    url.hash = sampleId ? `sample=${sampleId}` : "";
+    history.replaceState(null, "", url.toString());
+  };
+
+  const updateLangToggleHref = (sampleId: string | null): void => {
+    if (!langToggle) return;
+    langToggle.href = sampleId
+      ? `${langToggleBaseHref}#sample=${sampleId}`
+      : langToggleBaseHref;
+  };
+
   const updateVerifyState = (): void => {
     if (selection.kind === "none") {
       verifyBtn.disabled = true;
@@ -173,20 +237,38 @@ export function mount(): void {
     }
   };
 
+  const selectSampleById = (
+    id: string,
+    source: "deep_link" | "user_click",
+  ): boolean => {
+    const sample = getSample(id);
+    if (!sample) return false;
+    selection = { kind: "sample", sample };
+    // Sync radio state (no-op on user_click path; meaningful for deep_link).
+    radios.forEach((r) => {
+      r.checked = r.dataset["sampleId"] === id;
+    });
+    if (fileInput) fileInput.value = "";
+    if (fileNameLabel) {
+      const def = fileNameLabel.dataset["defaultNote"];
+      if (def) fileNameLabel.textContent = def;
+    }
+    setHashSample(id);
+    updateLangToggleHref(id);
+    track("sample_selected", {
+      sample_id: id,
+      locale: i18n.locale,
+      source,
+    });
+    updateVerifyState();
+    return true;
+  };
+
   radios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const id = radio.dataset["sampleId"];
       if (!id) return;
-      const sample = getSample(id);
-      if (!sample) return;
-      selection = { kind: "sample", sample };
-      if (fileInput) fileInput.value = "";
-      if (fileNameLabel) {
-        const def = fileNameLabel.dataset["defaultNote"];
-        if (def) fileNameLabel.textContent = def;
-      }
-      track("sample_selected", { sample_id: id, locale: i18n.locale });
-      updateVerifyState();
+      selectSampleById(id, "user_click");
     });
   });
 
@@ -204,9 +286,35 @@ export function mount(): void {
         const prefix = fileNameLabel.dataset["readyPrefix"] ?? "";
         fileNameLabel.textContent = `${file.name} — ${prefix}`;
       }
+      // Custom uploads aren't deep-linkable — drop the sample hash and
+      // strip it from the lang toggle so a locale switch doesn't re-select
+      // an unrelated sample.
+      setHashSample(null);
+      updateLangToggleHref(null);
       track("custom_uploaded", { file_size_bytes: file.size });
       updateVerifyState();
     });
+  }
+
+  // Apply deep-link selection now that the radios + handlers are wired.
+  if (deepLink.valid) {
+    if (selectSampleById(deepLink.valid, "deep_link")) {
+      const matchingRadio = Array.from(radios).find(
+        (r) => r.dataset["sampleId"] === deepLink.valid,
+      );
+      if (matchingRadio) {
+        const label = matchingRadio.closest("label.sample") as HTMLElement | null;
+        if (label) {
+          const reduceMotion =
+            window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ??
+            false;
+          label.scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+            block: "center",
+          });
+        }
+      }
+    }
   }
 
   verifyBtn.addEventListener("click", async () => {
