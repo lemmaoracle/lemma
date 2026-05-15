@@ -1,7 +1,7 @@
 ---
 import type { Locale } from "../i18n/translations";
 import { getTranslations } from "../i18n/translations";
-import { DISCOVERY_CALL } from "../config/cta";
+import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface CtaSectionProps {
   tag?: string;
@@ -15,6 +15,15 @@ export interface CtaSectionProps {
   bgImageSrc?: string;
   locale?: Locale;
   base?: string;
+  /**
+   * When true, render Whitepaper as the filled primary CTA and the
+   * Discovery Call link as the outline secondary. Default false so
+   * Pricing / FAQ keep Discovery Call as the filled primary (Discovery
+   * Call is the real conversion event there). Home passes true so the
+   * site-wide WP-primary funnel (nav + home hero + /services) stays
+   * consistent.
+   */
+  wpPrimary?: boolean;
 }
 
 const {
@@ -24,11 +33,19 @@ const {
   h2Em,
   p,
   ctaText,
-  base = "",
-  ctaLink = `${base}/services/`,
+  // `base` is accepted for caller-shape parity (Index/Pricing/FAQ pass
+  // it through their own template plumbing) but isn't needed here — the
+  // default ctaLink below is an absolute Tally URL, not a base-relative
+  // path.
+  base: _base = "",
+  // Default `ctaLink` points to the Discovery Call Tally form directly
+  // so the CTA's label and destination agree. Pricing / FAQ rely on
+  // this default; home does too once it drops its old override.
+  ctaLink = DISCOVERY_CALL_URL[locale],
   wpText,
   wpLink = locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR",
   bgImageSrc,
+  wpPrimary = false,
 } = Astro.props as CtaSectionProps;
 
 const t = getTranslations(locale);
@@ -60,8 +77,17 @@ const finalWpText = wpText ?? t.ctaSection.finalWpText;
     <div class="cta-rule"></div>
     <p set:html={finalP}></p>
     <div class="cta-btns">
-      <a href={ctaLink} class="btn-cta">{finalCtaText}</a>
-      <a href={wpLink} class="btn-cta-outline" target="_blank">{finalWpText}</a>
+      {wpPrimary ? (
+        <>
+          <a href={wpLink} class="btn-cta" target="_blank" rel="noopener">{finalWpText}</a>
+          <a href={ctaLink} class="btn-cta-outline" target={ctaLink.startsWith("http") ? "_blank" : undefined} rel={ctaLink.startsWith("http") ? "noopener" : undefined}>{finalCtaText}</a>
+        </>
+      ) : (
+        <>
+          <a href={ctaLink} class="btn-cta" target={ctaLink.startsWith("http") ? "_blank" : undefined} rel={ctaLink.startsWith("http") ? "noopener" : undefined}>{finalCtaText}</a>
+          <a href={wpLink} class="btn-cta-outline" target="_blank" rel="noopener">{finalWpText}</a>
+        </>
+      )}
     </div>
   </div>
 </section>

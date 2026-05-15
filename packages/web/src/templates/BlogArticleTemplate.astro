@@ -8,6 +8,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import defaultCover from "../assets/default-blog-cover.png";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
   locale: Locale;
@@ -128,7 +129,7 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
           target="_blank"
           rel="noopener"
         >{t.ctaSection.finalWpText}</a>
-        <a href={`${base}/services`} class="btn-cta-outline">{partnerCtaButton}</a>
+        <a href={DISCOVERY_CALL_URL[locale]} class="btn-cta-outline" target="_blank" rel="noopener">{partnerCtaButton}</a>
       </div>
     </div>
   </div>
