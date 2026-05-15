@@ -5,6 +5,7 @@
 > Sign-off review fixes (2026-05-15): all §4 JA placeholders resolved; "987ms" replaced with "in under a second" / 「1秒以内」 in per-sample bullets (§3c result-panel illustration keeps 987ms / 423ms as example output); on-chain row visibility note added to §3e; sample id `agent_replay_attack` renamed to `agent_replay_duplicate` to match the operational-error framing required by §10.
 > Amendment 2026-05-15 (post-v0.3.1 ship): §2a `?sample=` deep-link contract and §3g reciprocal entry points from Pillars / Use Cases / Trust402 added. New analytics props (`deep_link_sample` on `demo_loaded`, `source` on `sample_selected`). Roadmap row v0.3.1.1 introduced for the deep-link receiver + microsite companion PR. Review fixes above are preserved (sample id `agent_replay_duplicate`, populated JA copy, "in under a second" / 「1秒以内」, on-chain row visibility note).
 > Amendment review fixes (2026-05-15): §2a clarifies the `?sample=` query vs `#sample=` hash two-layer design and the invalid-sample → null coercion rule; `utm_medium=web` added to the deep-link URL pattern + param table; v0.3.1.1 utm_source vocabulary scoped explicitly to `pillars` / `use-cases` / `trust402`; §3g supply-chain-esg pair-link clarified as a secondary inline page-body link (not a second CTA component); §7 `deep_link_sample` description aligned with the §2a coercion rule.
+> **Implementation status (2026-05-15)**: v0.3.1 (PR #188), v0.3.1.1 demo-side (PR #190), v0.3.1.1 microsite-side (PR #191), v0.3.2 (PR #192), v0.3.3 scenario icons (PR #194) — all merged. v0.3.3 Performance/cost panel deferred (no verifiable stats source yet). v0.4 / v0.5 not started. Detailed per-row status in §11.
 > Changes from v0.2: business-scenario sample cards; stepped verification animation; liveness signals (real-time counters, jitter, session nonce, "0 bytes sent" badge, sub-progress, trace log); business-impact translation in result panel; counter-factual block for failure samples; trust badges section; JA locale; `?sample=` deep-link contract and reciprocal entry points from Pillars / Use Cases / Trust402; analytics events for the new interactions.
 
 ---
@@ -544,28 +545,30 @@ Each counter-factual entry (in §4 fail samples) must pass this checklist:
 
 ## 11. Roadmap (revised)
 
-| Version | When | Adds |
-|---|---|---|
-| v0.1 | shipped 2026-05-22 | Mock verifier, 6 samples, basic UI |
-| **v0.3.1** | **2026-06 early** | Business scenario sample cards · JA simultaneous launch · Result panel business impact translation · Liveness signals tier 1 (real-time ms counter · timing jitter · session nonce · "0 bytes sent" indicator) |
-| **v0.3.1.1** | **2026-06 early–mid** | §2a `?sample=` deep-link receiver (demo side) · §3g microsite companion PR (Pillars × 3, Use Cases × 3, Trust402 — "Try this in the demo →" CTAs) · Analytics props: `deep_link_sample` on `demo_loaded`, `source` on `sample_selected` |
-| **v0.3.2** | **2026-06 mid** | Stepped verification animation · Counter-factual blocks · Trust badges section · Liveness signals tier 2 (step-internal sub-progress · trace log) |
-| v0.3.3 | 2026-07 early | Scenario icons · Performance/cost panel (subject to verifiable stats) |
-| v0.4 | 2026-09+ | Industry subdomain spin-offs · Bazaar listing CTA |
-| v0.5 | post Phase 2 | Real cryptographic verifier swap-in · `$0.001/proof` mainnet CTA · WASM-load indicator |
+| Version | Target | Adds | Status |
+|---|---|---|---|
+| v0.1 | 2026-05-22 | Mock verifier, 6 samples, basic UI | ✅ shipped 2026-05-22 |
+| v0.3.1 | 2026-06 early | Business scenario sample cards · JA simultaneous launch · Result panel business impact translation · Liveness signals tier 1 (real-time ms counter · timing jitter · session nonce · "0 bytes sent" indicator) | ✅ shipped 2026-05-15 (PR #188) |
+| v0.3.1.1 | 2026-06 early–mid | §2a `?sample=` deep-link receiver (demo side) · §3g microsite companion PR (Pillars × 3, Use Cases × 3, Trust402 — "Try this in the demo →" CTAs) · Analytics props: `deep_link_sample` on `demo_loaded`, `source` on `sample_selected` | ✅ shipped 2026-05-15 (demo PR #190 + microsite PR #191) |
+| v0.3.2 | 2026-06 mid | Stepped verification animation · Counter-factual blocks · Trust badges section · Liveness signals tier 2 (step-internal sub-progress · trace log) | ✅ shipped 2026-05-15 (PR #192) |
+| v0.3.3 | 2026-07 early | Scenario icons · Performance/cost panel (subject to verifiable stats) | 🟡 partial — scenario icons shipped 2026-05-15 (PR #194); Performance/cost panel deferred (no verifiable stats source) |
+| v0.4 | 2026-09+ | Industry subdomain spin-offs · Bazaar listing CTA | ⏸ not started |
+| v0.5 | post Phase 2 | Real cryptographic verifier swap-in · `$0.001/proof` mainnet CTA · WASM-load indicator | ⏸ pending Phase 2 (cryptographic primitive swap-in workstream) |
 
 v0.2 (Bazaar listing + JP) is **superseded by v0.3**.
+
+**Note on the v0.3.x cadence**: the v0.3.1 / v0.3.1.1 / v0.3.2 / v0.3.3 scenario-icons rows were originally planned across June–July 2026 but were compressed into a single 2026-05-15 working session as companion to the PPSI NPRM blog launch (GTM #1). Target dates above reflect the original plan; ship dates in the Status column reflect what actually happened.
 
 ---
 
 ## 12. Open questions
 
-1. **Voluntary email auto-send**: Re-evaluate in v0.3.2 (still deferred).
-2. **WASM library final selection**: Phase 2 dev call.
-3. **Counter-factual "operational error" framing for `agent_replay_duplicate`** (formerly `agent_replay_attack`): confirm the wording reads natural (not euphemistic). Test with 2 internal readers before public.
-4. **Trust badges — on-chain anchoring badges**: build-time check needed against actual deployment state. If no chains deployed, hide the row entirely (don't show greyed-out badges).
-5. **Bilingual SEO**: hreflang setup and Cloudflare Pages routing nuance — verify on staging.
-6. ~~**PPSI campaign UTM rename**~~ — Resolved at sign-off (2026-05-15): adopt `ppsi_provenance` from v0.3.1; no continuity period for `cyberlabs_response`.
+1. **Voluntary email auto-send**: Re-evaluate in v0.3.2 (still deferred — not shipped in v0.3.1 / v0.3.2; revisit when there is a concrete report-format and delivery pipeline).
+2. **WASM library final selection**: Phase 2 dev call (Phase 1 mock verifier still in use).
+3. **Counter-factual "operational error" framing for `agent_replay_duplicate`** (formerly `agent_replay_attack`): confirm the wording reads natural (not euphemistic). Test with 2 internal readers before public — pending; copy is live as of v0.3.2.
+4. ~~**Trust badges — on-chain anchoring badges**~~ — **Pattern resolved in v0.3.2 (PR #192).** `DemoTemplate.astro` exposes a build-time `DEPLOYED_CHAINS: ReadonlyArray<string>` constant; the on-chain row only renders when the array is non-empty (no greyed-out badges). Current value is `[]`, so the row is hidden today. Updating the constant once contracts go live is the only edit needed.
+5. **Bilingual SEO**: hreflang setup and Cloudflare Pages routing nuance — verification on production still pending (PR #188 shipped the `<link rel="alternate" hreflang>` tags; needs a post-deploy crawl check).
+6. ~~**PPSI campaign UTM rename**~~ — Resolved at sign-off (2026-05-15): adopt `ppsi_provenance` from v0.3.1; no continuity period for `cyberlabs_response`. **Implemented in v0.3.1 (PR #188).**
 
 ---
 
@@ -635,21 +638,26 @@ spec v0.3 sign-off
        │           └──→ Claude Code session in lemma/packages/demo/
        │                       │
        │                       └──→ v0.3.1 deploy (target: PPSI blog launch day)
-       │                       │   [shipped — PR #188 merged]
+       │                           [✅ shipped 2026-05-15 — PR #188 merged]
        │
        ├──→ v0.3.1.1 implementation brief (deep-link receiver + microsite reciprocal CTAs)
        │           │
        │           ├──→ demo-side PR in lemma/packages/demo/ (§2a)
+       │           │       [✅ shipped 2026-05-15 — PR #190 merged]
        │           └──→ microsite companion PR in lemma/packages/web/ (§3g)
-       │                       │
-       │                       └──→ Coordinated deploy: demo PR ships first,
-       │                            microsite PR ships after demo is on production
+       │                   [✅ shipped 2026-05-15 — PR #191 merged, after demo PR]
        │
        ├──→ v0.3.2 implementation brief (animation + counter-factual + trust badges)
        │           │
-       │           └──→ separate session, 2 weeks after v0.3.1
+       │           └──→ originally planned 2 weeks after v0.3.1; compressed
+       │               into the same working session as v0.3.1 / v0.3.1.1
+       │               [✅ shipped 2026-05-15 — PR #192 merged]
        │
        └──→ v0.3.3 (optional, art/copy polish)
+                   ├──→ Scenario icons
+                   │       [✅ shipped 2026-05-15 — PR #194 merged]
+                   └──→ Performance/cost panel
+                           [⏸ deferred — no verifiable stats source yet]
 ```
 
 Each v0.3.x is a separate PR. spec.md commits to lemma submodule once v0.3 is signed off; further versions amend in place.
