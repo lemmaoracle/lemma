@@ -138,6 +138,10 @@ function resolveDeepLinkSample(): DeepLinkResolution {
  */
 function normaliseDeepLinkUrl(validSampleId: string | null): void {
   const url = new URL(window.location.href);
+  // Drop only the `sample` query — other params (utm_source, utm_content,
+  // utm_medium, utm_campaign, utm_term) are owned by the analytics layer
+  // and stay on the URL so a subsequent share or reload retains the
+  // referral attribution.
   url.searchParams.delete("sample");
   url.hash = validSampleId ? `sample=${validSampleId}` : "";
   history.replaceState(null, "", url.toString());
