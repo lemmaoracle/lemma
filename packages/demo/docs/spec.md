@@ -3,7 +3,8 @@
 > Source: CTO design review 2026-05-15. Supersedes v0.2 (2026-05-03).
 > Status: Signed off by Mayumi 2026-05-15. UTM campaign decision: rename to `ppsi_provenance` from v0.3.1 onward (no continuity period).
 > Sign-off review fixes (2026-05-15): all §4 JA placeholders resolved; "987ms" replaced with "in under a second" / 「1秒以内」 in per-sample bullets (§3c result-panel illustration keeps 987ms / 423ms as example output); on-chain row visibility note added to §3e; sample id `agent_replay_attack` renamed to `agent_replay_duplicate` to match the operational-error framing required by §10.
-> Changes from v0.2: business-scenario sample cards; stepped verification animation; liveness signals (real-time counters, jitter, session nonce, "0 bytes sent" badge, sub-progress, trace log); business-impact translation in result panel; counter-factual block for failure samples; trust badges section; JA locale; analytics events for the new interactions.
+> Amendment 2026-05-15 (post-v0.3.1 ship): §2a `?sample=` deep-link contract and §3g reciprocal entry points from Pillars / Use Cases / Trust402 added. New analytics props (`deep_link_sample` on `demo_loaded`, `source` on `sample_selected`). Roadmap row v0.3.1.1 introduced for the deep-link receiver + microsite companion PR. Review fixes above are preserved (sample id `agent_replay_duplicate`, populated JA copy, "in under a second" / 「1秒以内」, on-chain row visibility note).
+> Changes from v0.2: business-scenario sample cards; stepped verification animation; liveness signals (real-time counters, jitter, session nonce, "0 bytes sent" badge, sub-progress, trace log); business-impact translation in result panel; counter-factual block for failure samples; trust badges section; JA locale; `?sample=` deep-link contract and reciprocal entry points from Pillars / Use Cases / Trust402; analytics events for the new interactions.
 
 ---
 
@@ -35,6 +36,25 @@ Phase 2 (real cryptographic verification) is parallel work; this spec does not b
 - Architecture: static SPA (Astro), client-side verification, no server roundtrip
 - Hosting: Cloudflare Pages
 - Wildcard SSL: `*.demo.lemma.frame00.com` (still recommended for future subdomain demos)
+
+### 2a. Deep-link contract (new in v0.3, target v0.3.1.1)
+
+The demo accepts the following URL parameters to support reciprocal entry from microsite pages (see §3g):
+
+```
+demo.lemma.frame00.com/{locale}/?sample={sample_id}&utm_source={source}&utm_content={sample_id}
+```
+
+| Parameter | Required | Values |
+|---|---|---|
+| `sample` | optional | One of the six `sample_id` values (§4). If present, auto-selects that sample on page load and scrolls the chooser into view. Invalid value falls back to no selection. |
+| `utm_source` | optional | `services` \| `pillars` \| `use-cases` \| `trust402` \| `home` \| `external` |
+| `utm_content` | optional | Echoes the `sample_id` for analytics granularity |
+| `utm_campaign` | optional | Defaults to `ppsi_provenance` for v0.3.1 (see §6) |
+
+Behavior:
+- Deep-linked samples do **not** auto-verify. User must still click Verify. (Avoids surprise verification on page load; preserves the "click-to-prove" interaction.)
+- Locale is part of the path (`/ja/`), not a query parameter. Language toggle (§6a) preserves `?sample` across switches.
 
 Future subdomains (unchanged from v0.2):
 
@@ -234,6 +254,36 @@ The stepped animation (§3b) defines the visual contract. To prevent it from fee
 - Trace log: keyboard-toggleable (`Show trace ▾`). Each new log line emitted to the same ARIA live region as the step reveal — no second polite region.
 - Timing jitter: never widen the total beyond §3b's stated budget by more than ±10%.
 
+### 3g. Reciprocal entry points (new in v0.3, target v0.3.1.1)
+
+The demo is a **cross-cutting product showcase**, not a `/services`-only artifact. Forcing all visitors through the business-narrative path on `/services` blocks technical and use-case-driven traffic. Reciprocal entry from every relevant microsite surface is required.
+
+**Demo side (this repo)**: implement §2a deep-link contract.
+
+**Microsite side (`lemma/packages/web`, separate but coordinated PR)**: add a "Try this in the demo" CTA to each Pillar page, each Use Case page, and the Trust402 page. Target sample per page:
+
+| Source page | Target `sample` | Notes |
+|---|---|---|
+| `/{locale}/pillars/verifiable-origin/` | (none in v0.3.1.1) | Pillar 01 sample deferred — bridge sample lands later (see v0.3.x roadmap) |
+| `/{locale}/pillars/verifiable-ai/` | `financial_valid_approval` | Primary illustration of Pillar 02 |
+| `/{locale}/pillars/agent-authority-proof/` | `agent_valid_chain_with_x402` | Primary illustration of Pillar 03 |
+| `/{locale}/pillars/regulatory-attribute-proof/` | `financial_valid_approval` | BBS+ selective disclosure exercised here |
+| `/{locale}/use-cases/kyc-aml-selective-disclosure/` | `financial_valid_approval` | Direct PPSI / KYC scenario |
+| `/{locale}/use-cases/ai-audit-log-proof/` | `financial_tampered_output` | Tampering detection narrative |
+| `/{locale}/use-cases/supply-chain-esg/` | `manufacturing_valid_process` | Pair-link to `manufacturing_model_swap` from the page body |
+| `/{locale}/use-cases/defi-bridge-verification/` | (none in v0.3.1.1) | Bridge sample deferred (Kelp-focused PoC in `example-origin` is the upstream blocker) |
+| `/{locale}/use-cases/x402-commerce/` | `agent_valid_chain_with_x402` | Agent payment narrative |
+| `/{locale}/trust402/` | `agent_valid_chain_with_x402` | Builder audience entry |
+| `/{locale}/services/` | (root — no `?sample`) | Already shipped; general-audience entry, intentionally non-pre-selected |
+| `/` and `/{locale}/` (home) | (root) | Existing Trust402 card CTA. No change in v0.3.1.1; deep-linking from home reconsidered v0.3.x |
+
+**CTA copy**:
+- EN: "Try this in the demo →"
+- JA: 「デモで試す →」
+- All CTAs UTM-tagged per §6: `utm_source={pillars|use-cases|trust402|services}`, `utm_content={sample_id}`
+
+**Deploy synchronization**: microsite-side CTAs must not ship before demo-side `?sample=` handling. Coordinate via PR labeling — block the microsite PR's merge until the demo PR is on production. Otherwise CTAs become dead-links (still functional, but the parameter is ignored, which silently degrades the user experience).
+
 ---
 
 ## 4. Six samples — required business-scenario data
@@ -407,9 +457,9 @@ Events (additions marked `[new]`):
 
 | Event | Properties |
 |---|---|
-| `demo_loaded` | referrer, utm_*, viewport, **`locale` [new]** |
+| `demo_loaded` | referrer, utm_*, viewport, **`locale` [new]**, **`deep_link_sample` [new in v0.3.1.1]** (sample_id if `?sample=` present, else null) |
 | `language_toggled` `[new]` | from_locale, to_locale, time_since_load_ms |
-| `sample_selected` | sample_id, **`locale` [new]** |
+| `sample_selected` | sample_id, **`locale` [new]**, **`source` [new in v0.3.1.1]** (`deep_link` if auto-selected from `?sample=`, else `user_click`) |
 | `custom_uploaded` | file_size_bytes |
 | `verify_clicked` | sample_id or "custom", locale |
 | `verification_step_completed` `[new]` | sample_id, step_number, step_name, result, duration_ms |
@@ -495,6 +545,7 @@ Each counter-factual entry (in §4 fail samples) must pass this checklist:
 |---|---|---|
 | v0.1 | shipped 2026-05-22 | Mock verifier, 6 samples, basic UI |
 | **v0.3.1** | **2026-06 early** | Business scenario sample cards · JA simultaneous launch · Result panel business impact translation · Liveness signals tier 1 (real-time ms counter · timing jitter · session nonce · "0 bytes sent" indicator) |
+| **v0.3.1.1** | **2026-06 early–mid** | §2a `?sample=` deep-link receiver (demo side) · §3g microsite companion PR (Pillars × 3, Use Cases × 3, Trust402 — "Try this in the demo →" CTAs) · Analytics props: `deep_link_sample` on `demo_loaded`, `source` on `sample_selected` |
 | **v0.3.2** | **2026-06 mid** | Stepped verification animation · Counter-factual blocks · Trust badges section · Liveness signals tier 2 (step-internal sub-progress · trace log) |
 | v0.3.3 | 2026-07 early | Scenario icons · Performance/cost panel (subject to verifiable stats) |
 | v0.4 | 2026-09+ | Industry subdomain spin-offs · Bazaar listing CTA |
@@ -559,6 +610,8 @@ v0.2 (Bazaar listing + JP) is **superseded by v0.3**.
 | 3d Counter-factual | none | 2-col fail block | Stakes visible |
 | 3e Trust badges | none | 3 groups, locked vocab | Credibility |
 | 3f Liveness signals | none | Real-time counters · jitter · nonce · "0 bytes sent" · sub-progress · trace log | Convey real computation, not scripted animation |
+| 2a Deep-link contract | none | `?sample=` accepted, auto-selects but does not auto-verify | Enable reciprocal entry from microsite |
+| 3g Reciprocal entry points | demo reachable only from `/services` | Pillars × 3, Use Cases × 3, Trust402 page link to specific samples via deep-link | Cross-cutting product showcase; avoids `/services` 3-hop bottleneck |
 | 4 Samples | tech descriptions | Full business scenario data EN+JA | Decision-maker fit |
 | 6a Language toggle | none | Top-right, hash-preserved | JA reach |
 | 6b JA rules | none | Currency / regulator / tone | Localization quality |
@@ -579,6 +632,15 @@ spec v0.3 sign-off
        │           └──→ Claude Code session in lemma/packages/demo/
        │                       │
        │                       └──→ v0.3.1 deploy (target: PPSI blog launch day)
+       │                       │   [shipped — PR #188 merged]
+       │
+       ├──→ v0.3.1.1 implementation brief (deep-link receiver + microsite reciprocal CTAs)
+       │           │
+       │           ├──→ demo-side PR in lemma/packages/demo/ (§2a)
+       │           └──→ microsite companion PR in lemma/packages/web/ (§3g)
+       │                       │
+       │                       └──→ Coordinated deploy: demo PR ships first,
+       │                            microsite PR ships after demo is on production
        │
        ├──→ v0.3.2 implementation brief (animation + counter-factual + trust badges)
        │           │
