@@ -15,6 +15,14 @@ export interface CtaSectionProps {
   bgImageSrc?: string;
   locale?: Locale;
   base?: string;
+  /**
+   * When true, render Whitepaper as the filled primary CTA and the
+   * partner / discovery-call link as the outline secondary. Default is
+   * false so existing callers (Pricing, FAQ) keep their Discovery Call
+   * as primary. Set to true on the home partner section so the site-wide
+   * WP-primary funnel (nav + home hero + /services) stays consistent.
+   */
+  wpPrimary?: boolean;
 }
 
 const {
@@ -29,6 +37,7 @@ const {
   wpText,
   wpLink = locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR",
   bgImageSrc,
+  wpPrimary = false,
 } = Astro.props as CtaSectionProps;
 
 const t = getTranslations(locale);
@@ -60,8 +69,17 @@ const finalWpText = wpText ?? t.ctaSection.finalWpText;
     <div class="cta-rule"></div>
     <p set:html={finalP}></p>
     <div class="cta-btns">
-      <a href={ctaLink} class="btn-cta">{finalCtaText}</a>
-      <a href={wpLink} class="btn-cta-outline" target="_blank">{finalWpText}</a>
+      {wpPrimary ? (
+        <>
+          <a href={wpLink} class="btn-cta" target="_blank" rel="noopener">{finalWpText}</a>
+          <a href={ctaLink} class="btn-cta-outline">{finalCtaText}</a>
+        </>
+      ) : (
+        <>
+          <a href={ctaLink} class="btn-cta">{finalCtaText}</a>
+          <a href={wpLink} class="btn-cta-outline" target="_blank" rel="noopener">{finalWpText}</a>
+        </>
+      )}
     </div>
   </div>
 </section>
