@@ -48,6 +48,13 @@ function withInitialUtm(baseUrl: string): string {
 }
 const ctaSalesInitialHref = withInitialUtm(t.cta.salesHref);
 const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
+
+/**
+ * On-chain badge row visibility (§3e + §12 Q4 amendment): only render
+ * the row when Lemma contracts are actually deployed somewhere. Empty
+ * list → row is hidden entirely (no greyed-out placeholders).
+ */
+const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
 ---
 
 <Layout locale={locale} title={t.meta.title} description={t.meta.description}>
@@ -193,6 +200,27 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
           </div>
         </div>
 
+        <!-- Stepped 5-step verification animation (§3b). Shown during verify; hidden after transition to pass/fail body. -->
+        <div id="result-animation" hidden>
+          <div class="anim-progressbar"><div class="anim-progressbar-fill" id="anim-progress"></div></div>
+          <ol class="anim-steps">
+            {t.verifyAnim.steps.map((step, i) => (
+              <li class="anim-step" data-step-index={i + 1} data-sub-stages={JSON.stringify(step.subStages)}>
+                <span class="anim-step-num">{(i + 1).toString().padStart(2, "0")}</span>
+                <div class="anim-step-main">
+                  <div class="anim-step-row">
+                    <span class="anim-step-label">{step.label}</span>
+                    <span class="anim-step-primitive">{step.primitive}</span>
+                  </div>
+                  <div class="anim-step-substage"></div>
+                </div>
+                <span class="anim-step-icon" aria-hidden="true">○</span>
+                <span class="anim-step-ms"></span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <!-- PASS body -->
         <div id="result-pass-body" hidden>
           <h3 class="result-section-h3">{t.result.provenHeading}</h3>
@@ -206,8 +234,63 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
         <div id="result-fail-body" hidden>
           <h3 class="result-section-h3">{t.result.failHeading}</h3>
           <p class="result-fail-reason" id="result-fail-reason"></p>
+
+          <!-- Counter-factual block (§3d): 3 consequence/outcome pairs for fail samples. -->
+          <div class="counterfactual-block" id="counterfactual-block" hidden>
+            <div class="cf-col cf-col-without">
+              <div class="cf-label">{t.counterFactual.withoutLabel}</div>
+              <ul class="cf-list" id="cf-without"></ul>
+            </div>
+            <div class="cf-col cf-col-with">
+              <div class="cf-label">{t.counterFactual.withLabel}</div>
+              <ul class="cf-list" id="cf-with"></ul>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Trace log toggle (§3f tier 2). Below the result panel, above trust badges. -->
+      <div class="trace-section" id="trace-section" hidden>
+        <button class="trace-toggle" id="trace-toggle" type="button" aria-expanded="false" aria-controls="trace-log"
+                data-label-show={t.verifyAnim.traceToggleShow}
+                data-label-hide={t.verifyAnim.traceToggleHide}>
+          {t.verifyAnim.traceToggleShow}
+        </button>
+        <div class="trace-log" id="trace-log" role="region" aria-label={t.verifyAnim.traceAriaLabel} hidden></div>
+      </div>
+
+      <!-- Trust badges (§3e). Shown after first verify. On-chain row hidden until DEPLOYED_CHAINS is non-empty. -->
+      <section class="trust-badges-section" id="trust-badges" hidden>
+        <div class="trust-badges-group">
+          <div class="trust-badges-label">{t.trustBadges.primitivesLabel}</div>
+          <div class="trust-badges-chips">
+            <span class="trust-chip trust-chip-mono">Poseidon over BN254</span>
+            <span class="trust-chip trust-chip-mono">BBS+ over BLS12-381</span>
+            <span class="trust-chip trust-chip-mono">Groth16</span>
+          </div>
+        </div>
+        <div class="trust-badges-group">
+          <div class="trust-badges-label">{t.trustBadges.regulatoryLabel}</div>
+          <div class="trust-badges-chips">
+            <span class="trust-chip">PPSI</span>
+            <span class="trust-chip">EUDR</span>
+            <span class="trust-chip">CBAM</span>
+            <span class="trust-chip">KYC/AML</span>
+            <span class="trust-chip">GDPR</span>
+          </div>
+        </div>
+        {DEPLOYED_CHAINS.length > 0 && (
+          <div class="trust-badges-group">
+            <div class="trust-badges-label">{t.trustBadges.onChainLabel}</div>
+            <div class="trust-badges-chips">
+              {DEPLOYED_CHAINS.map((chain) => (
+                <span class="trust-chip">{chain}</span>
+              ))}
+            </div>
+          </div>
+        )}
+        <a class="trust-badges-spec-link" href={t.trustBadges.openSpecHref} target="_blank" rel="noopener">{t.trustBadges.openSpecLabel}</a>
+      </section>
 
       <div class="cta-row hidden" id="cta-row">
         <a
@@ -266,6 +349,8 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
       samplesCopy: t.samples,
       resultStrings: t.result,
       verifyStrings: t.verify,
+      verifyAnimStrings: t.verifyAnim,
+      counterFactualStrings: t.counterFactual,
     }}
   >
     window.__LEMMA_DEMO_I18N__ = {
@@ -274,6 +359,8 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
       samplesCopy,
       resultStrings,
       verifyStrings,
+      verifyAnimStrings,
+      counterFactualStrings,
     };
   </script>
   <script>
@@ -799,6 +886,252 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
     line-height: 1.6;
   }
 
+  /* ─── Stepped animation (§3b) ─── */
+  .anim-progressbar {
+    height: 2px;
+    background: var(--gray-200);
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .anim-progressbar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.18s ease-out;
+  }
+  .anim-progressbar-fill.fail { background: var(--red); }
+  .anim-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .anim-step {
+    display: grid;
+    grid-template-columns: 32px 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--gray-200);
+    opacity: 0.45;
+    transition: opacity 0.18s ease;
+  }
+  .anim-step:last-child { border-bottom: none; }
+  .anim-step[data-state="verifying"] { opacity: 1; }
+  .anim-step[data-state="pass"] { opacity: 1; }
+  .anim-step[data-state="fail"] { opacity: 1; }
+  .anim-step-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--gray-500);
+  }
+  .anim-step-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .anim-step-label {
+    font-size: 14px;
+    color: var(--gray-800);
+    font-weight: 500;
+  }
+  .anim-step-primitive {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.02em;
+  }
+  .anim-step-substage {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 4px;
+    min-height: 1em;
+    letter-spacing: 0.02em;
+  }
+  .anim-step[data-state="fail"] .anim-step-substage {
+    color: var(--red);
+  }
+  .anim-step-icon {
+    font-size: 14px;
+    font-family: var(--font-mono);
+    color: var(--gray-500);
+    font-weight: 700;
+    min-width: 1em;
+    text-align: center;
+  }
+  .anim-step[data-state="verifying"] .anim-step-icon {
+    color: var(--accent);
+    animation: anim-spin 0.9s linear infinite;
+  }
+  .anim-step[data-state="pass"] .anim-step-icon { color: var(--green); }
+  .anim-step[data-state="fail"] .anim-step-icon { color: var(--red); }
+  @keyframes anim-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .anim-step[data-state="verifying"] .anim-step-icon {
+      animation: none;
+    }
+    .anim-progressbar-fill {
+      transition: none;
+    }
+  }
+  .anim-step-ms {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    min-width: 4.5em;
+    text-align: right;
+  }
+
+  /* ─── Counter-factual block (§3d) ─── */
+  .counterfactual-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .cf-col {
+    padding: 18px 20px;
+    border: 1px solid var(--gray-200);
+  }
+  .cf-col-without { background: var(--gray-50); }
+  .cf-col-with { background: var(--white); border-color: var(--accent-lt); }
+  .cf-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cf-col-without .cf-label { color: var(--red); }
+  .cf-col-with .cf-label { color: var(--accent); }
+  .cf-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .cf-list li {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--gray-800);
+  }
+  .cf-col-without .cf-list li::before {
+    content: "✗";
+    color: var(--red);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .cf-col-with .cf-list li::before {
+    content: "✓";
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
+  /* ─── Trace log toggle (§3f tier 2) ─── */
+  .trace-section {
+    margin-bottom: 24px;
+  }
+  .trace-toggle {
+    background: transparent;
+    border: none;
+    padding: 6px 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .trace-toggle:hover { color: var(--accent); }
+  .trace-log {
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: var(--black);
+    color: rgba(255, 255, 255, 0.78);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.65;
+    max-height: 220px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .trace-log .trace-line {
+    display: block;
+  }
+  .trace-log .trace-line-fail {
+    color: rgba(184, 50, 59, 0.95);
+  }
+  .trace-log .trace-line-pass {
+    color: rgba(94, 152, 85, 0.95);
+  }
+
+  /* ─── Trust badges (§3e) ─── */
+  .trust-badges-section {
+    margin-bottom: 32px;
+    padding: 24px 28px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+  }
+  .trust-badges-group {
+    margin-bottom: 16px;
+  }
+  .trust-badges-group:last-of-type {
+    margin-bottom: 12px;
+  }
+  .trust-badges-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 8px;
+  }
+  .trust-badges-chips {
+    display: flex;
+    gap: 6px 10px;
+    flex-wrap: wrap;
+  }
+  .trust-chip {
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--gray-800);
+  }
+  .trust-chip-mono {
+    font-family: var(--font-mono);
+  }
+  .trust-badges-spec-link {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--gray-500);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .trust-badges-spec-link:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
   /* ─── Responsive ─── */
   @media (max-width: 640px) {
     .hero {
@@ -821,6 +1154,18 @@ const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
       grid-column: 2;
       text-align: left;
       margin-top: 2px;
+    }
+    .anim-step {
+      grid-template-columns: 28px 1fr;
+    }
+    .anim-step-icon,
+    .anim-step-ms {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 4px;
+    }
+    .counterfactual-block {
+      grid-template-columns: 1fr;
     }
   }
 </style>

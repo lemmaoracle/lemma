@@ -47,6 +47,34 @@
     "impactHeading": "実運用での意味",
     "failHeading": "失敗した理由"
   },
+  "verifyAnim": {
+    "steps": [
+      { "label": "スキーマ検証", "primitive": "JSON Schema", "subStages": ["パース", "フィールド確認"] },
+      { "label": "暗号エンベロープ検証", "primitive": "BBS+ over BLS12-381", "subStages": ["ペアリング 1/3", "ペアリング 2/3", "ペアリング 3/3"] },
+      { "label": "入力コミットメント", "primitive": "Poseidon over BN254", "subStages": ["ハッシュラウンド 1/3", "ハッシュラウンド 2/3", "ハッシュラウンド 3/3"] },
+      { "label": "出力コミットメント", "primitive": "Poseidon over BN254", "subStages": ["ハッシュラウンド 1/3", "ハッシュラウンド 2/3", "ハッシュラウンド 3/3"] },
+      { "label": "ポリシー証明", "primitive": "Groth16", "subStages": ["ウィットネス 1/2", "ウィットネス 2/2", "検証"] }
+    ],
+    "statusPending": "待機",
+    "statusVerifying": "検証中",
+    "statusPass": "成功",
+    "statusFail": "失敗",
+    "failedStepSuffix": "ステップ {n} で失敗",
+    "traceToggleShow": "トレースを表示 ▾",
+    "traceToggleHide": "トレースを隠す ▴",
+    "traceAriaLabel": "検証トレースログ"
+  },
+  "trustBadges": {
+    "primitivesLabel": "暗号プリミティブ",
+    "regulatoryLabel": "規制との整合",
+    "onChainLabel": "オンチェーンアンカリング",
+    "openSpecLabel": "GitHub で仕様を確認 →",
+    "openSpecHref": "https://github.com/lemmaoracle/lemma/blob/main/packages/demo/docs/spec.md"
+  },
+  "counterFactual": {
+    "withoutLabel": "来歴検証なしの場合",
+    "withLabel": "Lemma 適用後"
+  },
   "pillars": {
     "verifiableOrigin": {
       "title": "Pillar 01 — 来歴証明",
@@ -109,7 +137,19 @@
         "銀行の責任"
       ],
       "businessImpact": [],
-      "failReason": "AI 署名後に承認の出力が変更されています。出力コミットメントが発行時に紐付けられた値と一致しないため、検証はここで停止します。"
+      "failReason": "AI 署名後に承認の出力が変更されています。出力コミットメントが発行時に紐付けられた値と一致しないため、検証はここで停止します。",
+      "counterFactual": {
+        "without": [
+          "改ざん済みの承認が黙ってローンポートフォリオに混入",
+          "コンプライアンスチームが数週間後の監査で齟齬を発見",
+          "不適合判断として銀行が規制ペナルティを負担"
+        ],
+        "with": [
+          "提示前、1秒以内に改ざんを検出",
+          "AI 署名済み原本の暗号学的監査トレースが保全",
+          "規制当局が原本コミットメントを直接検証、信頼前提が不要"
+        ]
+      }
     },
     "manufacturing_valid_process": {
       "label": "工程適合性 (Valid)",
@@ -133,7 +173,19 @@
         "リコール責任"
       ],
       "businessImpact": [],
-      "failReason": "エンベロープが宣言済みとは異なるモデルで署名されています。検証はエンベロープのステップで停止します。"
+      "failReason": "エンベロープが宣言済みとは異なるモデルで署名されています。検証はエンベロープのステップで停止します。",
+      "counterFactual": {
+        "without": [
+          "未検証のモデルのまま出荷が進行",
+          "欠陥が EU 輸入後に発覚しリコール発動",
+          "リコール費用と輸入禁止リスクをメーカーが負担"
+        ],
+        "with": [
+          "出荷前に置換を検出、工場から出さない",
+          "再発行には認証済みの原本モデルが必須",
+          "リコール回避、CBAM 申告は検証済みエンベロープを参照"
+        ]
+      }
     },
     "agent_valid_chain_with_x402": {
       "label": "エージェントチェーン + x402 (Valid)",
@@ -157,7 +209,19 @@
         "二重支払い防止"
       ],
       "businessImpact": [],
-      "failReason": "同一の proof_id が先行する決済ステップで既に観測されています。2 回目の提出は二重控除が発生する前に拒否されます。"
+      "failReason": "同一の proof_id が先行する決済ステップで既に観測されています。2 回目の提出は二重控除が発生する前に拒否されます。",
+      "counterFactual": {
+        "without": [
+          "重複決済が両方の台帳エントリを通過",
+          "エージェントの支払い枠から二重に控除",
+          "2 つの決済システムをまたぐ手作業の照合が必要"
+        ],
+        "with": [
+          "2 回目の決済が確定する前に重複 proof_id を検出",
+          "検証境界で 2 回目の提出を拒否",
+          "照合不要、台帳エントリの整合性が保たれる"
+        ]
+      }
     }
   }
 }
