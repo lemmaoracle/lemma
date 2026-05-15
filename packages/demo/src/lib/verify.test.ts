@@ -35,8 +35,8 @@ describe("verifySample", () => {
     );
   });
 
-  it("marks replay_protection as failed for replay attack", async () => {
-    const sample = SAMPLES.find((s) => s.id === "agent_replay_attack")!;
+  it("marks replay_protection as failed for replay duplicate", async () => {
+    const sample = SAMPLES.find((s) => s.id === "agent_replay_duplicate")!;
     const result = await verifySample(sample);
     expect(
       result.checks.find((c) => c.id === "replay_protection")?.status,

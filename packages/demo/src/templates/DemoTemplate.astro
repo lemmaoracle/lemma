@@ -1,0 +1,826 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SAMPLES, type Sample } from "../data/fixtures";
+import { getTranslations, type Locale } from "../i18n/translations";
+
+export interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getTranslations(locale);
+const otherLocale: Locale = locale === "ja" ? "en" : "ja";
+const otherLocaleHref = otherLocale === "ja" ? "/ja/" : "/";
+
+// Group samples by industry, preserving fixture order.
+const industryOrder: ReadonlyArray<Sample["industry"]> = [
+  "Financial",
+  "Manufacturing",
+  "Agent",
+];
+const grouped: ReadonlyArray<readonly [Sample["industry"], ReadonlyArray<Sample>]> =
+  industryOrder.map((industry) => [
+    industry,
+    SAMPLES.filter((s) => s.industry === industry),
+  ]);
+
+const industryLabel = (industry: Sample["industry"]): string => {
+  if (industry === "Financial") return t.sampleChooser.industry.financial;
+  if (industry === "Manufacturing") return t.sampleChooser.industry.manufacturing;
+  return t.sampleChooser.industry.agent;
+};
+
+// Initial CTA href carries the v0.3 UTM convention even before a sample
+// is selected, so any click that escapes the verify-first flow (e.g.,
+// `.cta-row.hidden` defeated by assistive tech) still reports a campaign.
+function withInitialUtm(baseUrl: string): string {
+  try {
+    const url = new URL(baseUrl);
+    url.searchParams.set("utm_source", "demo");
+    url.searchParams.set("utm_medium", "web");
+    url.searchParams.set("utm_campaign", "ppsi_provenance");
+    url.searchParams.set("utm_content", "none");
+    url.searchParams.set("utm_term", locale);
+    return url.toString();
+  } catch {
+    return baseUrl;
+  }
+}
+const ctaSalesInitialHref = withInitialUtm(t.cta.salesHref);
+const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
+---
+
+<Layout locale={locale} title={t.meta.title} description={t.meta.description}>
+  <header class="hero">
+    <a
+      href={otherLocaleHref}
+      class="lang-toggle"
+      aria-label={t.header.langToggleLabel}
+      data-other-locale={otherLocale}
+    >
+      {t.header.otherLocaleLabel}
+    </a>
+    <div class="hero-inner">
+      <div class="eyebrow">{t.header.eyebrow}</div>
+      <h1 class="hero-h1">{t.header.h1Line1}<br />{t.header.h1Line2}</h1>
+      <p class="lead">{t.header.lead}</p>
+      <p class="equation">{t.header.equation}</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="section">
+      <h2 class="section-h2">{t.sampleChooser.title}</h2>
+      <p class="section-sub">{t.sampleChooser.sub}</p>
+
+      <div class="samples" role="radiogroup" aria-label={t.sampleChooser.title}>
+        {grouped.map(([industry, items]) => (
+          <div class="industry-group">
+            <div class="industry-label">{industryLabel(industry)}</div>
+            {items.map((sample) => {
+              const copy = t.samples[sample.id];
+              return (
+                <label class="sample" data-sample-id={sample.id}>
+                  <input
+                    type="radio"
+                    name="sample"
+                    value={sample.id}
+                    data-sample-id={sample.id}
+                  />
+                  <div class="sample-content">
+                    <div class="sample-head">
+                      <div class="sample-title">{copy.label}</div>
+                      <div
+                        class={`sample-tag sample-tag-${sample.expectedResult}`}
+                        aria-hidden="true"
+                      >
+                        {sample.expectedResult === "pass"
+                          ? t.sampleChooser.badgeValid
+                          : t.sampleChooser.badgeInvalid}
+                      </div>
+                    </div>
+                    <div class="sample-scenario">{copy.scenario}</div>
+                    <div class="sample-stakes">
+                      <span class="sample-stakes-label">
+                        {t.sampleChooser.stakesLabel}:
+                      </span>
+                      <ul class="sample-stakes-list">
+                        {copy.stakes.map((s) => (
+                          <li>{s}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div class="sample-meta">
+                      {sample.regulatoryTags.length > 0 && (
+                        <div class="sample-meta-row">
+                          <span class="sample-meta-label">
+                            {t.sampleChooser.regulatoryLabel}:
+                          </span>
+                          {sample.regulatoryTags.map((tag) => (
+                            <span class="sample-chip">{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                      <div class="sample-meta-row">
+                        <span class="sample-meta-label">
+                          {t.sampleChooser.primitivesLabel}:
+                        </span>
+                        {sample.primitiveTags.map((tag) => (
+                          <span class="sample-chip sample-chip-mono">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      <div class="custom-upload">
+        <label class="custom-upload-label">
+          <input
+            type="file"
+            id="custom-file"
+            accept="application/json,.json"
+          />
+          <span class="custom-upload-cta">{t.customUpload.cta}</span>
+          <span
+            class="custom-upload-note"
+            id="custom-file-name"
+            data-default-note={t.customUpload.note}
+            data-ready-prefix={t.customUpload.readyPrefix}
+          >
+            {t.customUpload.note}
+          </span>
+        </label>
+      </div>
+
+      <div class="verify-row">
+        <button
+          id="verify-btn"
+          class="btn-primary"
+          type="button"
+          disabled
+          data-label={t.verify.button}
+          data-label-inflight={t.verify.buttonInFlight}
+        >
+          {t.verify.button}
+        </button>
+        <span
+          class="verify-hint"
+          id="verify-hint"
+          data-hint-pick={t.verify.hintPick}
+          data-hint-ready-sample={t.verify.hintReadySample}
+          data-hint-ready-custom={t.verify.hintReadyCustom}
+        >
+          {t.verify.hintPick}
+        </span>
+      </div>
+    </section>
+
+    <section class="section result-section" aria-live="polite">
+      <div id="result" class="result hidden">
+        <div class="result-header">
+          <div class="result-overall" id="result-overall"></div>
+          <div class="result-header-meta">
+            <span class="result-session" id="result-session" hidden></span>
+            <span class="result-time" id="result-time"></span>
+            <span class="result-browser-only" id="result-browser-only">
+              {t.result.browserOnlyBadge}
+            </span>
+          </div>
+        </div>
+
+        <!-- PASS body -->
+        <div id="result-pass-body" hidden>
+          <h3 class="result-section-h3">{t.result.provenHeading}</h3>
+          <ul class="proven-list" id="result-proven-list"></ul>
+
+          <h3 class="result-section-h3">{t.result.impactHeading}</h3>
+          <ul class="impact-list" id="result-impact-list"></ul>
+        </div>
+
+        <!-- FAIL body -->
+        <div id="result-fail-body" hidden>
+          <h3 class="result-section-h3">{t.result.failHeading}</h3>
+          <p class="result-fail-reason" id="result-fail-reason"></p>
+        </div>
+      </div>
+
+      <div class="cta-row hidden" id="cta-row">
+        <a
+          class="cta cta-sales"
+          id="cta-sales"
+          href={ctaSalesInitialHref}
+          target="_blank"
+          rel="noopener"
+          data-cta-base={t.cta.salesHref}
+        >
+          <div class="cta-label">{t.cta.salesLabel}</div>
+          <div class="cta-title">{t.cta.salesTitle}</div>
+        </a>
+        <a
+          class="cta cta-waitlist"
+          id="cta-waitlist"
+          href={ctaWaitlistInitialHref}
+          target="_blank"
+          rel="noopener"
+          data-cta-base={t.cta.waitlistHref}
+        >
+          <div class="cta-label">{t.cta.waitlistLabel}</div>
+          <div class="cta-title">{t.cta.waitlistTitle}</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-tagline">{t.footer.tagline}</div>
+    <ul class="footer-links">
+      <li>
+        <a href={t.footer.micrositeHref} rel="noopener">{t.footer.microsite}</a>
+      </li>
+      <li>
+        <a
+          href="https://github.com/lemmaoracle/lemma"
+          target="_blank"
+          rel="noopener">{t.footer.github}</a
+        >
+      </li>
+      <li>
+        <a href={t.footer.privacyHref} rel="noopener">{t.footer.privacy}</a>
+      </li>
+      <li>
+        <a href={otherLocaleHref}>{t.header.otherLocaleLabel}</a>
+      </li>
+    </ul>
+    <div class="footer-note">{t.footer.note}</div>
+  </footer>
+
+  <script
+    define:vars={{
+      locale,
+      pillarsCopy: t.pillars,
+      samplesCopy: t.samples,
+      resultStrings: t.result,
+      verifyStrings: t.verify,
+    }}
+  >
+    window.__LEMMA_DEMO_I18N__ = {
+      locale,
+      pillarsCopy,
+      samplesCopy,
+      resultStrings,
+      verifyStrings,
+    };
+  </script>
+  <script>
+    import { mount } from "../scripts/main";
+    mount();
+  </script>
+</Layout>
+
+<style>
+  .hero {
+    background: var(--black);
+    color: var(--white);
+    padding: 96px 8% 80px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    position: relative;
+  }
+  .hero-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .lang-toggle {
+    position: absolute;
+    top: 24px;
+    right: 8%;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .lang-toggle:hover {
+    border-color: var(--white);
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent-lt);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--accent-lt);
+    display: block;
+  }
+  .hero-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6.5vw, 80px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 32px;
+    color: var(--white);
+  }
+  :root[lang="ja"] .hero-h1 {
+    line-height: 1.2;
+  }
+  .lead {
+    font-size: 19px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.78);
+    max-width: 640px;
+    margin: 0 0 24px;
+  }
+  .equation {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--accent-lt);
+    margin: 0;
+  }
+
+  .main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 80px 8% 40px;
+  }
+
+  .section {
+    margin-bottom: 64px;
+  }
+  .section-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.4vw, 36px);
+    font-weight: 500;
+    color: var(--black);
+    margin: 0 0 12px;
+  }
+  .section-sub {
+    font-size: 15px;
+    color: var(--gray-500);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 0 36px;
+  }
+
+  /* ─── Sample chooser ─── */
+  .samples {
+    display: grid;
+    gap: 28px;
+  }
+  .industry-group {
+    display: grid;
+    gap: 10px;
+  }
+  .industry-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sample {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    align-items: start;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .sample:hover {
+    border-color: var(--accent-lt);
+    background: var(--accent-bg);
+  }
+  .sample input[type="radio"] {
+    margin: 4px 0 0 0;
+    accent-color: var(--accent);
+  }
+  .sample:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .sample-content {
+    min-width: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .sample-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sample-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.3;
+  }
+  .sample-scenario {
+    font-size: 14px;
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+  .sample-stakes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    font-size: 12px;
+  }
+  .sample-stakes-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    flex-shrink: 0;
+  }
+  .sample-stakes-list {
+    display: flex;
+    gap: 6px 14px;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--gray-800);
+  }
+  .sample-stakes-list li::before {
+    content: "·";
+    margin-right: 6px;
+    color: var(--accent);
+  }
+  .sample-stakes-list li:first-child::before {
+    content: "";
+    margin: 0;
+  }
+  .sample-meta {
+    display: grid;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .sample-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sample-meta-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    flex-shrink: 0;
+  }
+  .sample-chip {
+    border: 1px solid var(--gray-200);
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--gray-800);
+    background: var(--white);
+  }
+  .sample-chip-mono {
+    font-family: var(--font-mono);
+  }
+  .sample-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+  }
+  .sample-tag-pass {
+    color: var(--green);
+  }
+  .sample-tag-fail {
+    color: var(--red);
+  }
+
+  .custom-upload {
+    margin-top: 28px;
+    padding: 20px;
+    border: 1px dashed var(--gray-200);
+  }
+  .custom-upload-label {
+    display: grid;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .custom-upload-label input {
+    display: none;
+  }
+  .custom-upload-cta {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
+    padding-bottom: 1px;
+    width: fit-content;
+  }
+  .custom-upload-label:hover .custom-upload-cta {
+    border-bottom-color: var(--accent);
+  }
+  .custom-upload-note {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+
+  /* ─── Verify ─── */
+  .verify-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--black);
+    color: var(--white);
+    padding: 14px 32px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent);
+  }
+  .btn-primary:disabled {
+    background: var(--gray-200);
+    color: var(--gray-500);
+    cursor: not-allowed;
+  }
+  .verify-hint {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+
+  /* ─── Result ─── */
+  .result {
+    border: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .result.hidden,
+  .cta-row.hidden {
+    display: none;
+  }
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .result-overall {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .result-overall.pass {
+    color: var(--green);
+  }
+  .result-overall.fail {
+    color: var(--red);
+  }
+  .result-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .result-session {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    letter-spacing: 0.04em;
+  }
+  .result-time {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .result-browser-only {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    border: 1px solid var(--accent-lt);
+    padding: 3px 8px;
+    background: var(--accent-bg);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+  .result-browser-only.pulse {
+    background: rgba(94, 152, 85, 0.18);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .result-section-h3 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    margin: 24px 0 12px;
+  }
+  .result-section-h3:first-child {
+    margin-top: 0;
+  }
+  .proven-list,
+  .impact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .proven-item {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .proven-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .proven-item-icon {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--green);
+  }
+  .proven-item-title {
+    font-size: 14px;
+    color: var(--gray-800);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .proven-item-title:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .proven-item-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: right;
+  }
+  .impact-item {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+  .impact-item::before {
+    content: "→";
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+  .result-fail-reason {
+    margin: 0;
+    padding: 16px;
+    border-left: 2px solid var(--red);
+    background: rgba(184, 50, 59, 0.06);
+    font-size: 14px;
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  /* ─── CTAs ─── */
+  .cta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .cta {
+    border: 1px solid var(--gray-200);
+    padding: 24px 28px;
+    background: var(--white);
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .cta:hover {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .cta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  /* ─── Footer ─── */
+  .footer {
+    border-top: 1px solid var(--gray-200);
+    padding: 48px 8% 56px;
+    text-align: center;
+  }
+  .footer-tagline {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+  .footer-links {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--gray-500);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .footer-links a:hover {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+  .footer-note {
+    font-size: 11px;
+    color: var(--gray-500);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 640px) {
+    .hero {
+      padding: 88px 6% 56px;
+    }
+    .lang-toggle {
+      top: 16px;
+      right: 6%;
+    }
+    .main {
+      padding: 56px 6% 32px;
+    }
+    .cta-row {
+      grid-template-columns: 1fr;
+    }
+    .proven-item {
+      grid-template-columns: 22px 1fr;
+    }
+    .proven-item-status {
+      grid-column: 2;
+      text-align: left;
+      margin-top: 2px;
+    }
+  }
+</style>

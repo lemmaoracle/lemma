@@ -1,0 +1,163 @@
+{
+  "meta": {
+    "title": "来歴検証 — Lemma",
+    "description": "モデルは変わる。証明は残る。暗号プリミティブによる AI 出力の来歴検証。"
+  },
+  "header": {
+    "eyebrow": "来歴検証",
+    "h1Line1": "モデルは変わる。",
+    "h1Line2": "証明は残る。",
+    "lead": "AI の出力が、特定のモデルで、特定の入力により、特定のポリシーのもとで生成されたことを検証します。",
+    "equation": "バグ検出 ≠ 判断の証明",
+    "langToggleLabel": "言語を切り替え",
+    "otherLocaleLabel": "EN"
+  },
+  "sampleChooser": {
+    "title": "サンプルを選択",
+    "sub": "3 業種 × Valid / Invalid の計 6 サンプルを用意しています。独自の証明バンドルをアップロードすることも可能です。検証はすべてブラウザ内で実行されます。",
+    "industry": {
+      "financial": "銀行・金融",
+      "manufacturing": "製造業",
+      "agent": "エージェント経済"
+    },
+    "badgeValid": "Valid",
+    "badgeInvalid": "Invalid",
+    "stakesLabel": "守るもの",
+    "regulatoryLabel": "規制",
+    "primitivesLabel": "プリミティブ"
+  },
+  "customUpload": {
+    "cta": "独自の証明 JSON をアップロード",
+    "note": "ファイルはブラウザ内に留まります。当社サーバーには送信されません。",
+    "readyPrefix": "ブラウザ内に留まります。"
+  },
+  "verify": {
+    "button": "検証",
+    "buttonInFlight": "検証中…",
+    "hintPick": "サンプルを選択してください。",
+    "hintReadySample": "検証準備完了:",
+    "hintReadyCustom": "アップロード済みファイルの検証準備完了:"
+  },
+  "result": {
+    "passOverall": "✓ 検証成功",
+    "failOverall": "✗ 検証失敗",
+    "sessionLabel": "session",
+    "browserOnlyBadge": "🔒 通信ゼロ・ブラウザ内のみ",
+    "provenHeading": "暗号学的に証明されたこと",
+    "impactHeading": "実運用での意味",
+    "failHeading": "失敗した理由"
+  },
+  "pillars": {
+    "verifiableOrigin": {
+      "title": "Pillar 01 — 来歴証明",
+      "proofLabel": "発行元を登録済み",
+      "href": "https://lemma.frame00.com/ja/pillars/verifiable-origin/"
+    },
+    "verifiableAi": {
+      "title": "Pillar 02 — 検証可能 AI",
+      "proofLabel": "モデルを登録済み",
+      "href": "https://lemma.frame00.com/ja/pillars/verifiable-ai/"
+    },
+    "agentAuthorityProof": {
+      "title": "Pillar 03 — エージェント権限",
+      "proofLabel": "権限の範囲内",
+      "href": "https://lemma.frame00.com/ja/pillars/agent-authority-proof/"
+    },
+    "regulatoryAttributeProof": {
+      "title": "Pillar 04 — 規制属性",
+      "proofLabel": "原データを開示せずに証明",
+      "href": "https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/"
+    }
+  },
+  "cta": {
+    "salesLabel": "エンタープライズ",
+    "salesTitle": "導入相談に進む",
+    "salesHref": "https://lemma.frame00.com/ja/#contact",
+    "waitlistLabel": "Builders",
+    "waitlistTitle": "Trust402 waitlist に登録",
+    "waitlistHref": "https://tally.so/r/kd0bZR"
+  },
+  "footer": {
+    "tagline": "決断が、決断であり続けるために。",
+    "microsite": "Lemma サイト",
+    "micrositeHref": "https://lemma.frame00.com/ja/",
+    "github": "GitHub",
+    "privacy": "プライバシー",
+    "privacyHref": "https://lemma.frame00.com/ja/privacy",
+    "note": "検証はすべてブラウザ内で実行されます。アップロードしたファイルが当社サーバーに送信されることはありません。"
+  },
+  "samples": {
+    "financial_valid_approval": {
+      "label": "融資承認 (Valid)",
+      "scenario": "地方銀行が中小企業向けに ¥5,000,000 の融資を承認するシナリオ。借り手の正確な所得は AI に開示されません。Lemma は「所得が方針の閾値を上回ること」「AML 該当者でないこと」だけを証明します。",
+      "stakes": [
+        "借り手のプライバシー保護",
+        "監査トレースの生成"
+      ],
+      "businessImpact": [
+        "監査対応は1秒以内、~3日の手作業レビューと比較",
+        "借り手の所得は銀行にも規制当局にも非開示のまま",
+        "規制当局が証明を直接検証可能、信頼前提が不要"
+      ],
+      "failReason": ""
+    },
+    "financial_tampered_output": {
+      "label": "融資承認 (出力改ざん)",
+      "scenario": "同じ融資承認ですが、AI が署名した後で承認書類が編集されています。Lemma はコンプライアンスチームに提示される前に改ざんを検出します。",
+      "stakes": [
+        "監査の完全性",
+        "銀行の責任"
+      ],
+      "businessImpact": [],
+      "failReason": "AI 署名後に承認の出力が変更されています。出力コミットメントが発行時に紐付けられた値と一致しないため、検証はここで停止します。"
+    },
+    "manufacturing_valid_process": {
+      "label": "工程適合性 (Valid)",
+      "scenario": "部品メーカーが EU バイヤーにバッチを出荷するシナリオ。Lemma は生産工程が登録済みの ESG / CBAM 適合仕様に従ったことを証明します。",
+      "stakes": [
+        "サプライチェーンの信頼",
+        "EU 輸入適合"
+      ],
+      "businessImpact": [
+        "CBAM 証明を出荷時に生成、コンプライアンス書類の ~2 週間と比較",
+        "工程仕様の変更は暗号学的に追跡、メール往復ではない",
+        "バイヤーが独立して適合性を検証、監査人不要"
+      ],
+      "failReason": ""
+    },
+    "manufacturing_model_swap": {
+      "label": "工程適合性 (モデル置換)",
+      "scenario": "同じ出荷ですが、認証から出荷までの間に別の AI 検査モデルが置換されています。Lemma はエンベロープ署名の不一致で置換を検出します。",
+      "stakes": [
+        "工程の信頼",
+        "リコール責任"
+      ],
+      "businessImpact": [],
+      "failReason": "エンベロープが宣言済みとは異なるモデルで署名されています。検証はエンベロープのステップで停止します。"
+    },
+    "agent_valid_chain_with_x402": {
+      "label": "エージェントチェーン + x402 (Valid)",
+      "scenario": "自律エージェントが x402 決済を通じて API サービスを購入するシナリオ。Lemma はエージェントに委任権限があったこと、および支払い証明が正規であることを証明します。",
+      "stakes": [
+        "委任の完全性",
+        "支払い証明の非否認性"
+      ],
+      "businessImpact": [
+        "マルチエージェント取引を1秒以内に検証、手作業の代替手段はない",
+        "委任チェーンを事後証明可能、エージェントログの走査が不要",
+        "x402 支払いを承認済み行動と暗号学的に紐付け"
+      ],
+      "failReason": ""
+    },
+    "agent_replay_duplicate": {
+      "label": "エージェントチェーン (重複)",
+      "scenario": "同じ証明が 2 つの決済ステップで提出されるシナリオ — 例えばエージェント連携でリトライループが詰まったケースです。Lemma は重複した proof_id を検出し、2 回目の提出を拒否します。",
+      "stakes": [
+        "決済の完全性",
+        "二重支払い防止"
+      ],
+      "businessImpact": [],
+      "failReason": "同一の proof_id が先行する決済ステップで既に観測されています。2 回目の提出は二重控除が発生する前に拒否されます。"
+    }
+  }
+}

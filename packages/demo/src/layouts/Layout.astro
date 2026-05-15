@@ -1,31 +1,37 @@
 ---
 import "../styles/global.css";
+import type { Locale } from "../i18n/translations";
 
 export interface Props {
-  title?: string;
-  description?: string;
+  locale: Locale;
+  title: string;
+  description: string;
 }
 
-const {
-  title = "Provenance verification — Lemma",
-  description = "Models change. Proofs remain. Verify AI-output provenance with cryptographic primitives.",
-} = Astro.props;
+const { locale, title, description } = Astro.props;
 
-const canonical = "https://demo.lemma.frame00.com/";
+const canonicalRoot = "https://demo.lemma.frame00.com";
+const canonical = locale === "ja" ? `${canonicalRoot}/ja/` : `${canonicalRoot}/`;
+const enHref = `${canonicalRoot}/`;
+const jaHref = `${canonicalRoot}/ja/`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale === "ja" ? "ja" : "en"}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="ja" href={jaHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === "ja" ? "ja_JP" : "en_US"} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
