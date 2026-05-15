@@ -122,13 +122,13 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
       <div class="article-cta-rule"></div>
       <p>{partnerCtaDesc}</p>
       <div class="article-cta-btns">
-        <a href={`${base}/services`} class="btn-cta-main">{partnerCtaButton}</a>
         <a
           href={locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR"}
-          class="btn-cta-outline"
+          class="btn-cta-main"
           target="_blank"
           rel="noopener"
         >{t.ctaSection.finalWpText}</a>
+        <a href={`${base}/services`} class="btn-cta-outline">{partnerCtaButton}</a>
       </div>
     </div>
   </div>
