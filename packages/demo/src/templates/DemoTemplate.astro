@@ -1,11 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SAMPLES, type Sample, type PillarSlug } from "../data/fixtures";
-import {
-  getTranslations,
-  type Locale,
-  type Translations,
-} from "../i18n/translations";
+import { SAMPLES, type Sample } from "../data/fixtures";
+import { getTranslations, type Locale } from "../i18n/translations";
 
 export interface Props {
   locale: Locale;
@@ -34,12 +30,24 @@ const industryLabel = (industry: Sample["industry"]): string => {
   return t.sampleChooser.industry.agent;
 };
 
-const pillarKey = (slug: PillarSlug): keyof Translations["pillars"] => {
-  if (slug === "verifiable-origin") return "verifiableOrigin";
-  if (slug === "verifiable-ai") return "verifiableAi";
-  if (slug === "agent-authority-proof") return "agentAuthorityProof";
-  return "regulatoryAttributeProof";
-};
+// Initial CTA href carries the v0.3 UTM convention even before a sample
+// is selected, so any click that escapes the verify-first flow (e.g.,
+// `.cta-row.hidden` defeated by assistive tech) still reports a campaign.
+function withInitialUtm(baseUrl: string): string {
+  try {
+    const url = new URL(baseUrl);
+    url.searchParams.set("utm_source", "demo");
+    url.searchParams.set("utm_medium", "web");
+    url.searchParams.set("utm_campaign", "ppsi_provenance");
+    url.searchParams.set("utm_content", "none");
+    url.searchParams.set("utm_term", locale);
+    return url.toString();
+  } catch {
+    return baseUrl;
+  }
+}
+const ctaSalesInitialHref = withInitialUtm(t.cta.salesHref);
+const ctaWaitlistInitialHref = withInitialUtm(t.cta.waitlistHref);
 ---
 
 <Layout locale={locale} title={t.meta.title} description={t.meta.description}>
@@ -205,7 +213,7 @@ const pillarKey = (slug: PillarSlug): keyof Translations["pillars"] => {
         <a
           class="cta cta-sales"
           id="cta-sales"
-          href={t.cta.salesHref}
+          href={ctaSalesInitialHref}
           target="_blank"
           rel="noopener"
           data-cta-base={t.cta.salesHref}
@@ -216,7 +224,7 @@ const pillarKey = (slug: PillarSlug): keyof Translations["pillars"] => {
         <a
           class="cta cta-waitlist"
           id="cta-waitlist"
-          href={t.cta.waitlistHref}
+          href={ctaWaitlistInitialHref}
           target="_blank"
           rel="noopener"
           data-cta-base={t.cta.waitlistHref}

@@ -29,6 +29,17 @@ export type PillarSlug =
   | "agent-authority-proof"
   | "regulatory-attribute-proof";
 
+/** Locked map: PillarSlug → i18n key under `translations.pillars`. */
+export const PILLAR_I18N_KEY: Readonly<Record<
+  PillarSlug,
+  "verifiableOrigin" | "verifiableAi" | "agentAuthorityProof" | "regulatoryAttributeProof"
+>> = {
+  "verifiable-origin": "verifiableOrigin",
+  "verifiable-ai": "verifiableAi",
+  "agent-authority-proof": "agentAuthorityProof",
+  "regulatory-attribute-proof": "regulatoryAttributeProof",
+} as const;
+
 export type PrimitiveTag =
   | "BBS+"
   | "Groth16"

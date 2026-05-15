@@ -16,7 +16,7 @@
  *     → render result panel + CTAs
  */
 
-import { getSample, type PillarSlug, type Sample } from "../data/fixtures";
+import { getSample, PILLAR_I18N_KEY, type Sample } from "../data/fixtures";
 import { track } from "../lib/analytics";
 import {
   verifyCustom,
@@ -81,13 +81,6 @@ const VERIFY_BASE_DELAY_MS = 180;
 const VERIFY_CUSTOM_BASE_DELAY_MS = 220;
 
 let selection: Selection = { kind: "none" };
-
-const PILLAR_KEY: Readonly<Record<PillarSlug, keyof I18nPayload["pillarsCopy"]>> = {
-  "verifiable-origin": "verifiableOrigin",
-  "verifiable-ai": "verifiableAi",
-  "agent-authority-proof": "agentAuthorityProof",
-  "regulatory-attribute-proof": "regulatoryAttributeProof",
-};
 
 function getI18n(): I18nPayload {
   const payload = window.__LEMMA_DEMO_I18N__;
@@ -246,9 +239,9 @@ export function mount(): void {
     const labelInFlight = verifyBtn.dataset["labelInflight"] ?? "Verifying…";
     verifyBtn.textContent = labelInFlight;
 
-    // Start live ms counter via RAF. `runActive.value = false` stops it.
-    const runActive = { value: true };
-    startLiveCounter(resultTime, verifyClickedAt, runActive);
+    // Start live ms counter via RAF. `stopLiveCounter()` cancels the
+    // pending frame so no extra tick fires after verification completes.
+    const stopLiveCounter = startLiveCounter(resultTime, verifyClickedAt);
 
     let resultData: VerificationResult;
     try {
@@ -267,7 +260,7 @@ export function mount(): void {
           ? await verifySample(selection.sample)
           : await verifyCustom(selection.raw);
     } finally {
-      runActive.value = false;
+      stopLiveCounter();
       verifyBtn.textContent = labelBase;
       verifyBtn.disabled = false;
     }
@@ -381,20 +374,25 @@ function resetResultPanel(els: ResultPanelEls): void {
 function startLiveCounter(
   resultTime: HTMLElement,
   startedAt: number,
-  active: { value: boolean },
-): void {
-  const tick = (): void => {
-    if (!active.value) return;
-    const ms = Math.round(performance.now() - startedAt);
-    resultTime.textContent = `${ms} ms`;
-    requestAnimationFrame(tick);
-  };
+): () => void {
   // Respect prefers-reduced-motion: don't run the per-frame counter; the
   // final value is set by the verify click handler when verification ends.
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-    return;
+    return () => {};
   }
-  requestAnimationFrame(tick);
+  let rafId = 0;
+  const tick = (): void => {
+    const ms = Math.round(performance.now() - startedAt);
+    resultTime.textContent = `${ms} ms`;
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+  return () => {
+    if (rafId !== 0) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+  };
 }
 
 interface RenderResultArgs {
@@ -430,7 +428,7 @@ function renderResult(args: RenderResultArgs): void {
     // per-sample pillar mapping available).
     if (sample) {
       for (const slug of sample.pillars) {
-        const copy = i18n.pillarsCopy[PILLAR_KEY[slug]];
+        const copy = i18n.pillarsCopy[PILLAR_I18N_KEY[slug]];
         args.resultProvenList.appendChild(buildProvenRow(copy));
       }
       // Business impact bullets.
