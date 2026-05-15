@@ -7,7 +7,9 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
+import { getDemoSampleForPillar } from "../config/demoSamples";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -28,6 +30,7 @@ export interface PillarDetailTemplateProps {
 const { locale, t, base, pillar, useCases, recentPosts, otherPillars, pillarT } = Astro.props as PillarDetailTemplateProps;
 const pillarsPath = `${base}/pillars`;
 const useCasesPath = `${base}/use-cases`;
+const demoSampleId = getDemoSampleForPillar(pillar.slug);
 
 const SITE = "https://lemma.frame00.com";
 const pillarUrl = `${SITE}${pillarsPath}/${pillar.slug}/`;
@@ -199,6 +202,15 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
           ))}
         </div>
       </section>
+    )}
+
+    {demoSampleId && (
+      <DemoCtaBanner
+        locale={locale}
+        t={t.demoCta}
+        sampleId={demoSampleId}
+        source="pillars"
+      />
     )}
 
     <!-- Block 6: CTA -->

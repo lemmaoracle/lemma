@@ -501,6 +501,13 @@
     },
     "skipLink": "Skip to main content"
   },
+  "demoCta": {
+    "tag": "Browser-only demo",
+    "title": "Try this in the demo",
+    "lead": "Open the provenance verifier and run this scenario in your browser. Cryptographic primitives execute client-side; no data leaves the page.",
+    "ctaLabel": "Try this in the demo →",
+    "pairLinkLabel": "Compare with the invalid variant →"
+  },
   "index": {
     "hero": {
       "eyebrow": "TRUST LAYER FOR AI",

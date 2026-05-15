@@ -6,7 +6,9 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
+import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -26,6 +28,8 @@ export interface UseCaseDetailTemplateProps {
 const { locale, t, base, useCase, pillar, pillarT, useCaseT } = Astro.props as UseCaseDetailTemplateProps;
 const useCasesPath = `${base}/use-cases`;
 const pillarsPath = `${base}/pillars`;
+const demoSampleId = getDemoSampleForUseCase(useCase.slug);
+const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
 // Combine all headings for TOC
 const allHeadings = useCase.sections.flatMap((s) => s.headings);
@@ -118,6 +122,16 @@ const breadcrumbJsonLd = {
           <div class="section-body" set:html={section.body} />
         </section>
       ))}
+
+      {demoSampleId && (
+        <DemoCtaBanner
+          locale={locale}
+          t={t.demoCta}
+          sampleId={demoSampleId}
+          source="use-cases"
+          pairSampleId={demoPairSampleId ?? undefined}
+        />
+      )}
 
       <!-- CTA Section -->
       <section class="uc-cta-section">

@@ -346,6 +346,13 @@ export interface Translations {
     }>;
     readonly skipLink: string;
   }>;
+  readonly demoCta: Readonly<{
+    readonly tag: string;
+    readonly title: string;
+    readonly lead: string;
+    readonly ctaLabel: string;
+    readonly pairLinkLabel: string;
+  }>;
   readonly index: Readonly<{
     readonly hero: Readonly<{
       readonly eyebrow: string;
