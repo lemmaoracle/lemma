@@ -12,6 +12,24 @@
     "langToggleLabel": "Switch language",
     "otherLocaleLabel": "日本語"
   },
+  "howItWorks": {
+    "eyebrow": "3 STEPS",
+    "title": "What this demo shows",
+    "steps": [
+      {
+        "title": "Pick a sample",
+        "body": "3 industries × Valid (legitimate) / Invalid (tampered, model-swap, duplicate) — 6 cases in all."
+      },
+      {
+        "title": "Press Verify",
+        "body": "A 5-step cryptographic verification runs: schema → envelope → input commitment → output commitment → policy."
+      },
+      {
+        "title": "Read the result",
+        "body": "Valid shows what was cryptographically proven and what it changes in production. Invalid shows what Lemma rejected and why."
+      }
+    ]
+  },
   "sampleChooser": {
     "title": "Pick a sample",
     "sub": "Six bundled samples cover three industries with one valid and one invalid pair each. Or upload your own proof bundle — verification runs entirely in your browser.",
