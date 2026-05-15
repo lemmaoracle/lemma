@@ -4,6 +4,7 @@
 > Status: Signed off by Mayumi 2026-05-15. UTM campaign decision: rename to `ppsi_provenance` from v0.3.1 onward (no continuity period).
 > Sign-off review fixes (2026-05-15): all §4 JA placeholders resolved; "987ms" replaced with "in under a second" / 「1秒以内」 in per-sample bullets (§3c result-panel illustration keeps 987ms / 423ms as example output); on-chain row visibility note added to §3e; sample id `agent_replay_attack` renamed to `agent_replay_duplicate` to match the operational-error framing required by §10.
 > Amendment 2026-05-15 (post-v0.3.1 ship): §2a `?sample=` deep-link contract and §3g reciprocal entry points from Pillars / Use Cases / Trust402 added. New analytics props (`deep_link_sample` on `demo_loaded`, `source` on `sample_selected`). Roadmap row v0.3.1.1 introduced for the deep-link receiver + microsite companion PR. Review fixes above are preserved (sample id `agent_replay_duplicate`, populated JA copy, "in under a second" / 「1秒以内」, on-chain row visibility note).
+> Amendment review fixes (2026-05-15): §2a clarifies the `?sample=` query vs `#sample=` hash two-layer design and the invalid-sample → null coercion rule; `utm_medium=web` added to the deep-link URL pattern + param table; v0.3.1.1 utm_source vocabulary scoped explicitly to `pillars` / `use-cases` / `trust402`; §3g supply-chain-esg pair-link clarified as a secondary inline page-body link (not a second CTA component); §7 `deep_link_sample` description aligned with the §2a coercion rule.
 > Changes from v0.2: business-scenario sample cards; stepped verification animation; liveness signals (real-time counters, jitter, session nonce, "0 bytes sent" badge, sub-progress, trace log); business-impact translation in result panel; counter-factual block for failure samples; trust badges section; JA locale; `?sample=` deep-link contract and reciprocal entry points from Pillars / Use Cases / Trust402; analytics events for the new interactions.
 
 ---
@@ -42,19 +43,21 @@ Phase 2 (real cryptographic verification) is parallel work; this spec does not b
 The demo accepts the following URL parameters to support reciprocal entry from microsite pages (see §3g):
 
 ```
-demo.lemma.frame00.com/{locale}/?sample={sample_id}&utm_source={source}&utm_content={sample_id}
+demo.lemma.frame00.com/{locale}/?sample={sample_id}&utm_source={source}&utm_medium=web&utm_content={sample_id}
 ```
 
 | Parameter | Required | Values |
 |---|---|---|
 | `sample` | optional | One of the six `sample_id` values (§4). If present, auto-selects that sample on page load and scrolls the chooser into view. Invalid value falls back to no selection. |
-| `utm_source` | optional | `services` \| `pillars` \| `use-cases` \| `trust402` \| `home` \| `external` |
+| `utm_source` | optional | `services` \| `pillars` \| `use-cases` \| `trust402` \| `home` \| `external` (v0.3.1.1 microsite CTAs only emit `pillars` / `use-cases` / `trust402`; `services` / `home` / `external` are reserved for future entry points) |
+| `utm_medium` | optional | `web` (mirrors §6 outbound UTM convention; inbound traffic follows the same scheme) |
 | `utm_content` | optional | Echoes the `sample_id` for analytics granularity |
 | `utm_campaign` | optional | Defaults to `ppsi_provenance` for v0.3.1 (see §6) |
 
 Behavior:
 - Deep-linked samples do **not** auto-verify. User must still click Verify. (Avoids surprise verification on page load; preserves the "click-to-prove" interaction.)
-- Locale is part of the path (`/ja/`), not a query parameter. Language toggle (§6a) preserves `?sample` across switches.
+- Locale is part of the path (`/ja/`), not a query parameter. The initial `?sample=` query parameter is consumed on page load; in-app preservation across the language toggle uses the `#sample=` hash form per §6a (so once the user lands, `?sample=` is no longer present in the URL bar but `#sample=` continues to round-trip through locale switches).
+- Invalid `sample` value: falls back to no selection AND analytics `deep_link_sample` is recorded as `null` rather than the invalid string (keeps the prop a clean enum of known sample ids; debugging the malformed link is the linking page's responsibility).
 
 Future subdomains (unchanged from v0.2):
 
@@ -270,7 +273,7 @@ The demo is a **cross-cutting product showcase**, not a `/services`-only artifac
 | `/{locale}/pillars/regulatory-attribute-proof/` | `financial_valid_approval` | BBS+ selective disclosure exercised here |
 | `/{locale}/use-cases/kyc-aml-selective-disclosure/` | `financial_valid_approval` | Direct PPSI / KYC scenario |
 | `/{locale}/use-cases/ai-audit-log-proof/` | `financial_tampered_output` | Tampering detection narrative |
-| `/{locale}/use-cases/supply-chain-esg/` | `manufacturing_valid_process` | Pair-link to `manufacturing_model_swap` from the page body |
+| `/{locale}/use-cases/supply-chain-esg/` | `manufacturing_valid_process` | Primary CTA targets the valid sample. Pair-link to `manufacturing_model_swap` is a secondary **inline link within the page body** (not a second CTA component), letting readers compare valid vs invalid without inflating the CTA region |
 | `/{locale}/use-cases/defi-bridge-verification/` | (none in v0.3.1.1) | Bridge sample deferred (Kelp-focused PoC in `example-origin` is the upstream blocker) |
 | `/{locale}/use-cases/x402-commerce/` | `agent_valid_chain_with_x402` | Agent payment narrative |
 | `/{locale}/trust402/` | `agent_valid_chain_with_x402` | Builder audience entry |
@@ -457,7 +460,7 @@ Events (additions marked `[new]`):
 
 | Event | Properties |
 |---|---|
-| `demo_loaded` | referrer, utm_*, viewport, **`locale` [new]**, **`deep_link_sample` [new in v0.3.1.1]** (sample_id if `?sample=` present, else null) |
+| `demo_loaded` | referrer, utm_*, viewport, **`locale` [new]**, **`deep_link_sample` [new in v0.3.1.1]** (valid sample_id if `?sample=` present and recognized, else null; invalid sample_ids are coerced to null per §2a) |
 | `language_toggled` `[new]` | from_locale, to_locale, time_since_load_ms |
 | `sample_selected` | sample_id, **`locale` [new]**, **`source` [new in v0.3.1.1]** (`deep_link` if auto-selected from `?sample=`, else `user_click`) |
 | `custom_uploaded` | file_size_bytes |
