@@ -73,5 +73,10 @@ export function buildDemoUrl(
   url.searchParams.set("utm_medium", "web");
   url.searchParams.set("utm_campaign", "ppsi_provenance");
   url.searchParams.set("utm_content", sampleId);
+  // utm_term carries locale so inbound and outbound UTM vocabularies are
+  // symmetric — the demo's outbound CTAs also stamp utm_term=<locale>
+  // (`packages/demo/src/scripts/main.ts::withUtm`), so this avoids a
+  // gap in locale attribution on Plausible dashboards.
+  url.searchParams.set("utm_term", locale);
   return url.toString();
 }
