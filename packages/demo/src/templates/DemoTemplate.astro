@@ -77,6 +77,22 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   </header>
 
   <main class="main">
+    <section class="how-section">
+      <div class="how-eyebrow">{t.howItWorks.eyebrow}</div>
+      <h2 class="how-h2">{t.howItWorks.title}</h2>
+      <ol class="how-steps">
+        {t.howItWorks.steps.map((step, i) => (
+          <li class="how-step">
+            <div class="how-step-num">{String(i + 1).padStart(2, "0")}</div>
+            <div class="how-step-content">
+              <div class="how-step-title">{step.title}</div>
+              <p class="how-step-body">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
     <section class="section">
       <h2 class="section-h2">{t.sampleChooser.title}</h2>
       <p class="section-sub">{t.sampleChooser.sub}</p>
@@ -453,6 +469,71 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     max-width: 880px;
     margin: 0 auto;
     padding: 80px 8% 40px;
+  }
+
+  /* ─── "What this demo shows" bridge section (between Hero and Sample chooser) ─── */
+  .how-section {
+    margin-bottom: 56px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .how-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .how-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.6vw, 28px);
+    font-weight: 500;
+    color: var(--black);
+    margin: 0 0 28px;
+    letter-spacing: -0.005em;
+  }
+  .how-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .how-step {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .how-step-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .how-step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .how-step-body {
+    margin: 0;
+    font-size: 13px;
+    color: var(--gray-700, #5f5f5f);
+    line-height: 1.65;
+  }
+  @media (max-width: 768px) {
+    .how-steps {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
   }
 
   .section {

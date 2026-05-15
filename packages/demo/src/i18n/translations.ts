@@ -50,6 +50,14 @@ export interface Translations {
     readonly langToggleLabel: string;
     readonly otherLocaleLabel: string;
   }>;
+  readonly howItWorks: Readonly<{
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly steps: ReadonlyArray<Readonly<{
+      readonly title: string;
+      readonly body: string;
+    }>>;
+  }>;
   readonly sampleChooser: Readonly<{
     readonly title: string;
     readonly sub: string;
