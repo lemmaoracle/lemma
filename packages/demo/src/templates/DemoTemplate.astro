@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import IndustryIcon from "../components/IndustryIcon.astro";
 import { SAMPLES, type Sample } from "../data/fixtures";
 import { getTranslations, type Locale } from "../i18n/translations";
 
@@ -83,7 +84,10 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
       <div class="samples" role="radiogroup" aria-label={t.sampleChooser.title}>
         {grouped.map(([industry, items]) => (
           <div class="industry-group">
-            <div class="industry-label">{industryLabel(industry)}</div>
+            <div class="industry-label">
+              <IndustryIcon industry={industry} />
+              <span>{industryLabel(industry)}</span>
+            </div>
             {items.map((sample) => {
               const copy = t.samples[sample.id];
               return (
@@ -486,6 +490,9 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .sample {
