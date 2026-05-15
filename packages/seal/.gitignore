@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+
+# Circuit build artifacts
+circuits/build/
+circuits/node_modules/

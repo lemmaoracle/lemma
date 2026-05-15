@@ -1,0 +1,50 @@
+{
+  "name": "@lemmaoracle/seal",
+  "version": "0.1.0",
+  "description": "Seal — ZK auth circuit for Lemma dashboard Proof-based sign-in. Proves knowledge of an API key pre-image without revealing the key.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "circuits/src/seal-identity.circom",
+    "circuits/scripts/build.sh",
+    "scripts/setup-toolchain.sh"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:circuit": "cd circuits && npm run build",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:circuit": "cd circuits && npx vitest run",
+    "register:circuit": "tsx scripts/register-circuit.ts"
+  },
+  "keywords": [
+    "lemma",
+    "seal",
+    "auth",
+    "zk",
+    "circuit",
+    "sign-in"
+  ],
+  "dependencies": {
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*",
+    "snarkjs": "^0.7.6"
+  },
+  "devDependencies": {
+    "@types/snarkjs": "^0.7.9",
+    "dotenv": "16.4.7",
+    "tsx": "^4.19.0",
+    "typescript": "5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "author": "Lemma Oracle",
+  "license": "MIT"
+}
