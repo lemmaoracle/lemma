@@ -5,6 +5,9 @@
   },
   "header": {
     "eyebrow": "来歴検証",
+    "demoLabel": "デモ",
+    "browserLabel": "ブラウザ内検証",
+    "browserNote": "検証はすべてブラウザ内で実行されます。本番環境でのテストには契約が必要です。",
     "h1Line1": "モデルは変わる。",
     "h1Line2": "証明は残る。",
     "lead": "AI の出力が、特定のモデルで、特定の入力により、特定のポリシーのもとで生成されたことを検証します。",
@@ -26,7 +29,11 @@
       },
       {
         "title": "結果を読む",
-        "body": "Valid では何が暗号学的に証明されたか、実運用で何が変わるかを表示します。Invalid では Lemma が何を拒否し、なぜ拒否したかを表示します。"
+        "body": "Valid では何が暗号学的に証明されたか、実運用で何が変わるかを表示します。Invalid では Lemma が何を拒否し、なぜ拒否したかを表示します。",
+        "cases": {
+          "valid": "何が暗号学的に証明され、実運用で何が変わるか。",
+          "invalid": "Lemma が何を、なぜ拒否したか。"
+        }
       }
     ]
   },
@@ -125,7 +132,7 @@
     "waitlistHref": "https://tally.so/r/kd0bZR"
   },
   "footer": {
-    "tagline": "決断が、決断であり続けるために。",
+    "tagline": "Built for decisions that matter.",
     "microsite": "Lemma サイト",
     "micrositeHref": "https://lemma.frame00.com/ja/",
     "github": "GitHub",

@@ -1,18 +1,26 @@
+/* PREVIEW: demo restyled to the developer-dashboard design language —
+   cool slate palette, system sans-serif, functional/utilitarian tone
+   (no warm brown accent, no Garamond display serif). */
 :root {
-  --black: #000000;
+  --black: #0f172a;
   --white: #ffffff;
-  --gray-50: #f5f5f5;
-  --gray-200: #e0e0e0;
-  --gray-500: #9e9e9e;
-  --gray-800: #1a1a1a;
-  --accent: #8b4513;
-  --accent-lt: #a0522d;
-  --accent-bg: #f5efe6;
-  --green: #2f7a3f;
-  --red: #b8323b;
+  --gray-50: #f8fafc;
+  --gray-200: #e2e8f0;
+  --gray-500: #64748b;
+  --gray-800: #1e293b;
+  --accent: #0f172a;
+  --accent-lt: #334155;
+  --accent-bg: #f1f5f9;
+  --green: #059669;
+  --green-bg: #ecfdf5;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
   --font-display:
-    "Cormorant Garamond", "Noto Serif JP", Georgia, serif;
-  --font-body: "DM Sans", "Hiragino Sans", "Yu Gothic", sans-serif;
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Hiragino Sans", "Yu Gothic", sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
@@ -31,7 +39,7 @@ html {
 body {
   margin: 0;
   font-family: var(--font-body);
-  background: var(--white);
+  background: var(--gray-50);
   color: var(--gray-800);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;

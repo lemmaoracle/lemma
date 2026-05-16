@@ -111,6 +111,19 @@ const STEP_TIMINGS: ReadonlyArray<StepTiming> = [
 
 const STEP_JITTER_MS = 22;
 
+/**
+ * The §3b animation is intentionally *watchable*: each sub-stage holds
+ * long enough to read, with a short gap between steps. Previously the
+ * per-sub-stage time was verifyMs / subStages.length ≈ 60-90ms, which
+ * flashed past before the result panel info could be seen.
+ */
+const SUB_STAGE_MS = 300;
+const STEP_GAP_MS = 200;
+// On a failing step, hold on the ✗ state (and its fail sub-stage label)
+// before the result body replaces it — otherwise the failure flashes
+// past too fast to register.
+const FAIL_HOLD_MS = 1200;
+
 declare global {
   interface Window {
     __LEMMA_DEMO_I18N__?: I18nPayload;
@@ -274,7 +287,7 @@ async function runSteppedAnimation(args: SteppedAnimationArgs): Promise<number> 
     args.trace.emit(`${cfg.traceOp}.start`, null);
 
     const stepStartedAt = performance.now();
-    const subDuration = cfg.verifyMs / Math.max(1, copy.subStages.length);
+    const subDuration = SUB_STAGE_MS;
     for (let s = 0; s < copy.subStages.length; s++) {
       if (subEl) subEl.textContent = copy.subStages[s];
       args.trace.emit(`${cfg.traceOp}.${s + 1}/${copy.subStages.length}`, null);
@@ -296,7 +309,11 @@ async function runSteppedAnimation(args: SteppedAnimationArgs): Promise<number> 
     args.trace.emit(cfg.traceOp, result);
     args.onStepCompleted(stepNum, copy.label, result, durationMs);
 
-    if (isFail) break;
+    if (isFail) {
+      await sleep(FAIL_HOLD_MS);
+      break;
+    }
+    await sleep(STEP_GAP_MS);
   }
   return lastStepReached;
 }
@@ -595,6 +612,9 @@ export function mount(): void {
     resultSession.textContent = `${i18n.resultStrings.sessionLabel}: ${sessionNonce}`;
     resultSession.hidden = false;
     result.classList.remove("hidden");
+    // Bring the result panel into view *now* so the verification
+    // animation plays where the user can see it — not below the fold.
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
 
     verifyBtn.disabled = true;
     const labelBase = verifyBtn.dataset["label"] ?? "Verify";
@@ -708,8 +728,6 @@ export function mount(): void {
       ctaWaitlist.href = withUtm(ctaWaitlist.dataset["ctaBase"] ?? ctaWaitlist.href, sampleId, i18n.locale);
     }
 
-    // Scroll to the result so it's visible without manual scroll.
-    result.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   const onCtaClick = (ctaType: "sales" | "waitlist") => () => {
@@ -868,7 +886,7 @@ function buildProvenRow(copy: PillarCopy): HTMLLIElement {
   title.textContent = copy.title;
   const status = document.createElement("span");
   status.className = "proven-item-status";
-  status.textContent = `[ ${copy.proofLabel} ]`;
+  status.textContent = copy.proofLabel;
   li.append(icon, title, status);
   return li;
 }
