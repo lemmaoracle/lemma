@@ -76,23 +76,17 @@ export type VerifyProofInput = Readonly<{
 /*  WASM Initialization                                                */
 /* ------------------------------------------------------------------ */
 
-// Track WASM initialization state
-// eslint-disable-next-line functional/no-let
-let wasmInitPromise: Promise<void> | null = null;
+/**
+ * Lazy WASM initialization promise.
+ * Created once and reused for all crypto operations.
+ */
+const wasmInitPromise: Promise<void> = initializeWasm();
 
 /**
  * Ensure WASM is initialized before any crypto operations.
- * Safe to call multiple times - will only initialize once.
+ * Safe to use multiple times - will only initialize once.
  */
-export const ensureWasmInitialized = async (_init?: symbol): Promise<void> => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (wasmInitPromise === null) {
-    // eslint-disable-next-line functional/no-expression-statements
-    wasmInitPromise = initializeWasm();
-  }
-  // eslint-disable-next-line functional/no-expression-statements
-  await wasmInitPromise;
-};
+export const ensureWasmInitialized: Promise<void> = wasmInitPromise;
 
 // WASM is initialized lazily on first use (e.g. generateKeyPair, sign, etc.)
 // to avoid triggering @docknetwork/crypto-wasm at module-load time,
@@ -157,7 +151,7 @@ export type KeyGenOptions = Readonly<{
 export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsKeyPair> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
-  await ensureWasmInitialized();
+  await ensureWasmInitialized;
 
   const info = options.keyInfo ?? te.encode("lemma-bbs-key");
 
@@ -185,7 +179,7 @@ export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsK
 export const sign = async (_client: LemmaClient, input: SignInput): Promise<SignOutput> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
-  await ensureWasmInitialized();
+  await ensureWasmInitialized;
 
   return input.messages.length === 0
     ? reject("messages must not be empty")
@@ -220,7 +214,7 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
 export const verify = async (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
-  await ensureWasmInitialized();
+  await ensureWasmInitialized;
 
   return R.pipe(encodeMessages, (scalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(signOutput.messages.length, signOutput.header);
@@ -244,7 +238,7 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
 export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<RevealOutput> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
-  await ensureWasmInitialized();
+  await ensureWasmInitialized;
 
   return input.indexes.length === 0
     ? reject("indexes must not be empty")
@@ -298,7 +292,7 @@ export const verifyProof = async (
 ): Promise<boolean> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
-  await ensureWasmInitialized();
+  await ensureWasmInitialized;
 
   return R.pipe(encodeMessages, (disclosedScalars) => {
     const params = bbsPlusGenerateSignatureParamsG1(input.count, input.header);
