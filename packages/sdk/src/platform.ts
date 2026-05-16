@@ -4,13 +4,41 @@
  * Replaces Node-only APIs:
  *   - `node:crypto` → Web Crypto API + @noble/hashes
  *   - `Buffer`      → TextEncoder / TextDecoder / Uint8Array helpers
+ *
+ * Also provides a Buffer polyfill injection for third-party packages
+ * (e.g. @docknetwork/crypto-wasm) that unconditionally reference `Buffer`.
  */
 
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes as nobleRandomBytes } from "@noble/hashes/utils";
+import { Buffer as BufferPolyfill } from "buffer/";
 
 const te = new TextEncoder();
 const td = new TextDecoder();
+
+/* ------------------------------------------------------------------ */
+/*  Buffer polyfill injection                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Ensure `globalThis.Buffer` exists for third-party packages that
+ * reference it at module-load time (e.g. @docknetwork/crypto-wasm).
+ *
+ * In Node.js `Buffer` is already a global; in browsers it is not.
+ * Call this before any code that depends on `@docknetwork/crypto-wasm`
+ * or other Node-oriented packages.
+ */
+export const ensureBufferPolyfill = (): void => {
+  // eslint-disable-next-line functional/no-conditional-statements
+  if (typeof globalThis.Buffer === "undefined") {
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    (globalThis as Record<string, unknown>).Buffer = BufferPolyfill;
+  }
+};
+
+// Auto-inject on import so that any consumer gets the polyfill
+// before third-party modules evaluate their top-level code.
+ensureBufferPolyfill();
 
 /* ------------------------------------------------------------------ */
 /*  Encoding helpers (replace Buffer)                                  */

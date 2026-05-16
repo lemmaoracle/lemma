@@ -94,9 +94,9 @@ export const ensureWasmInitialized = async (_init?: symbol): Promise<void> => {
   await wasmInitPromise;
 };
 
-// Start initialization eagerly (non-blocking)
-// eslint-disable-next-line functional/no-expression-statements
-void ensureWasmInitialized();
+// WASM is initialized lazily on first use (e.g. generateKeyPair, sign, etc.)
+// to avoid triggering @docknetwork/crypto-wasm at module-load time,
+// which would fail in browsers where Buffer is not yet polyfilled.
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
