@@ -78,6 +78,7 @@ WORKDIR /home/node/app
 ENV NODE_ENV=production
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV CI=true
 
 # Enable corepack for pnpm
 RUN corepack enable
