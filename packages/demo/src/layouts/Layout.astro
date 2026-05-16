@@ -17,7 +17,7 @@ const jaHref = `${canonicalRoot}/ja/`;
 ---
 
 <!doctype html>
-<html lang={locale === "ja" ? "ja" : "en"}>
+<html lang={locale === "ja" ? "ja" : "en"} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,12 +33,28 @@ const jaHref = `${canonicalRoot}/ja/`;
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={locale === "ja" ? "ja_JP" : "en_US"} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <script is:inline>
+      // Theme preference: read persisted choice, otherwise honour
+      // prefers-color-scheme. Falls back to "dark" since the dashboard
+      // demo reads better against a dark canvas.
+      (function () {
+        try {
+          var saved = window.localStorage.getItem("lemma-demo-theme");
+          if (saved === "light" || saved === "dark") {
+            document.documentElement.dataset.theme = saved;
+            return;
+          }
+        } catch (_) {
+          /* localStorage may throw in private modes */
+        }
+        var prefersLight =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.dataset.theme = prefersLight
+          ? "light"
+          : "dark";
+      })();
+    </script>
   </head>
   <body>
     <slot />

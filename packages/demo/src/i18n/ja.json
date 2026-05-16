@@ -1,253 +1,124 @@
 {
   "meta": {
-    "title": "来歴検証 — Lemma",
-    "description": "モデルは変わる。証明は残る。暗号プリミティブによる AI 出力の来歴検証。"
+    "title": "Oracle Pipeline — Lemma デモ",
+    "description": "Lemma Oracle ダッシュボードのブラウザ完結デモ。ドキュメントが検証パイプラインを流れる様子を眺めるか、同梱サンプルでインラインに検証を試せます。"
   },
-  "header": {
-    "eyebrow": "来歴検証",
-    "demoLabel": "デモ",
-    "browserLabel": "ブラウザ内検証",
-    "browserNote": "検証はすべてブラウザ内で実行されます。本番環境でのテストには契約が必要です。",
-    "h1Line1": "モデルは変わる。",
-    "h1Line2": "証明は残る。",
-    "lead": "AI の出力が、特定のモデルで、特定の入力により、特定のポリシーのもとで生成されたことを検証します。",
-    "equation": "バグ検出 ≠ 判断の証明",
-    "langToggleLabel": "言語を切り替え",
-    "otherLocaleLabel": "EN"
+  "brand": {
+    "name": "Lemma",
+    "demoBadge": "Demo",
+    "versionPrefix": "v"
   },
-  "howItWorks": {
-    "eyebrow": "3 ステップ",
-    "title": "このデモで分かること",
-    "steps": [
-      {
-        "title": "サンプルを選ぶ",
-        "body": "3 業種 × Valid (正規) / Invalid (改ざん・モデル置換・重複) の 6 ケースを用意しています。"
-      },
-      {
-        "title": "Verify を押す",
-        "body": "5 ステップの暗号検証 (スキーマ → エンベロープ → 入力コミットメント → 出力コミットメント → ポリシー) が順に実行されます。"
-      },
-      {
-        "title": "結果を読む",
-        "body": "Valid では何が暗号学的に証明されたか、実運用で何が変わるかを表示します。Invalid では Lemma が何を拒否し、なぜ拒否したかを表示します。",
-        "cases": {
-          "valid": "何が暗号学的に証明され、実運用で何が変わるか。",
-          "invalid": "Lemma が何を、なぜ拒否したか。"
-        }
-      }
-    ]
+  "nav": {
+    "overview": "Overview"
   },
-  "sampleChooser": {
-    "title": "サンプルを選択",
-    "sub": "3 業種 × Valid / Invalid の計 6 サンプルを用意しています。独自の証明バンドルをアップロードすることも可能です。検証はすべてブラウザ内で実行されます。",
-    "industry": {
-      "financial": "銀行・金融",
-      "manufacturing": "製造業",
-      "agent": "エージェント経済"
+  "topbar": {
+    "title": "Oracle Pipeline",
+    "subtitle": "ドキュメント検証のリアルタイム進捗",
+    "searchPlaceholder": "docHash, schema で検索…",
+    "themeToggleLabel": "テーマ切り替え",
+    "langToggleLabel": "言語切り替え",
+    "otherLocaleLabel": "English"
+  },
+  "demoBanner": {
+    "pill": "ブラウザ完結デモ",
+    "title": "Lemma ダッシュボードの読み取り専用スライス",
+    "body": "下のパイプライン行はブラウザ内で検証フローを進めます。右のサンプルを選ぶとパイプライン最上段に追加され、詳細パネルで4段階の検証タイムラインが開きます。",
+    "walkthrough": "使い方 → サンプルを選び、追加された行をクリック"
+  },
+  "sampleStrip": {
+    "label": "サンプルで試す",
+    "hint": "パイプライン最上段にドキュメントを追加し、その詳細を開きます。",
+    "industryFinancial": "金融",
+    "industryManufacturing": "製造",
+    "industryAgent": "エージェント"
+  },
+  "tabs": {
+    "all": "すべて",
+    "received": "Received",
+    "verifying": "Verifying",
+    "verified": "Verified",
+    "onchain": "On-chain",
+    "rejected": "Rejected"
+  },
+  "table": {
+    "document": "ドキュメント",
+    "schema": "スキーマ",
+    "status": "ステータス",
+    "chain": "チェーン",
+    "updated": "更新",
+    "empty": "このフィルタに該当するドキュメントはありません。",
+    "showing": "{n} 件を表示中"
+  },
+  "detail": {
+    "titleSuffix": " ドキュメント",
+    "closeLabel": "詳細を閉じる",
+    "verificationPipeline": "検証パイプライン",
+    "documentInfo": "ドキュメント情報",
+    "cryptographic": "暗号要素",
+    "hookExecutions": "フック実行",
+    "onchain": "オンチェーン",
+    "steps": {
+      "registered": "Document Registered",
+      "verifying": "Proof Verifying",
+      "offchain": "Off-chain Verified",
+      "onchain": "On-chain Verified"
     },
-    "badgeValid": "Valid",
-    "badgeInvalid": "Invalid",
-    "stakesLabel": "守るもの",
-    "regulatoryLabel": "規制",
-    "primitivesLabel": "プリミティブ"
-  },
-  "customUpload": {
-    "cta": "独自の証明 JSON をアップロード",
-    "note": "ファイルはブラウザ内に留まります。当社サーバーには送信されません。",
-    "readyPrefix": "ブラウザ内に留まります。"
-  },
-  "verify": {
-    "button": "検証",
-    "buttonInFlight": "検証中…",
-    "hintPick": "サンプルを選択してください。",
-    "hintReadySample": "検証準備完了:",
-    "hintReadyCustom": "アップロード済みファイルの検証準備完了:"
-  },
-  "result": {
-    "passOverall": "✓ 検証成功",
-    "failOverall": "✗ 検証失敗",
-    "sessionLabel": "session",
-    "browserOnlyBadge": "🔒 通信ゼロ・ブラウザ内のみ",
-    "provenHeading": "暗号学的に証明されたこと",
-    "impactHeading": "実運用での意味",
-    "failHeading": "失敗した理由"
-  },
-  "verifyAnim": {
-    "steps": [
-      { "label": "スキーマ検証", "primitive": "JSON Schema", "subStages": ["パース", "フィールド確認"] },
-      { "label": "暗号エンベロープ検証", "primitive": "BBS+ over BLS12-381", "subStages": ["ペアリング 1/3", "ペアリング 2/3", "ペアリング 3/3"] },
-      { "label": "入力コミットメント", "primitive": "Poseidon over BN254", "subStages": ["ハッシュラウンド 1/3", "ハッシュラウンド 2/3", "ハッシュラウンド 3/3"] },
-      { "label": "出力コミットメント", "primitive": "Poseidon over BN254", "subStages": ["ハッシュラウンド 1/3", "ハッシュラウンド 2/3", "ハッシュラウンド 3/3"] },
-      { "label": "ポリシー証明", "primitive": "Groth16", "subStages": ["ウィットネス 1/2", "ウィットネス 2/2", "検証"] }
-    ],
-    "statusPending": "待機",
-    "statusVerifying": "検証中",
-    "statusPass": "成功",
-    "statusFail": "失敗",
-    "failedStepSuffix": "ステップ {n} で失敗",
-    "failSubStageLabel": "✗ 検証が拒否されました",
-    "traceToggleShow": "トレースを表示 ▾",
-    "traceToggleHide": "トレースを隠す ▴",
-    "traceAriaLabel": "検証トレースログ"
-  },
-  "trustBadges": {
-    "primitivesLabel": "暗号プリミティブ",
-    "regulatoryLabel": "規制との整合",
-    "onChainLabel": "オンチェーンアンカリング",
-    "openSpecLabel": "GitHub で仕様を確認 →",
-    "openSpecHref": "https://github.com/lemmaoracle/lemma/blob/main/packages/demo/docs/spec.md"
-  },
-  "counterFactual": {
-    "withoutLabel": "来歴検証なしの場合",
-    "withLabel": "Lemma あり"
-  },
-  "pillars": {
-    "verifiableOrigin": {
-      "title": "Pillar 01 — 来歴証明",
-      "proofLabel": "発行元を登録済み",
-      "href": "https://lemma.frame00.com/ja/pillars/verifiable-origin/"
+    "fields": {
+      "docHash": "Doc Hash",
+      "schema": "Schema",
+      "ipfsCid": "IPFS CID",
+      "issuer": "Issuer",
+      "subject": "Subject",
+      "commitmentScheme": "Commitment Scheme",
+      "commitmentRoot": "Commitment Root",
+      "revocationRoot": "Revocation Root",
+      "signatureFormat": "Signature Format",
+      "chain": "Chain"
     },
-    "verifiableAi": {
-      "title": "Pillar 02 — 検証可能 AI",
-      "proofLabel": "モデルを登録済み",
-      "href": "https://lemma.frame00.com/ja/pillars/verifiable-ai/"
-    },
-    "agentAuthorityProof": {
-      "title": "Pillar 03 — エージェント権限",
-      "proofLabel": "権限の範囲内",
-      "href": "https://lemma.frame00.com/ja/pillars/agent-authority-proof/"
-    },
-    "regulatoryAttributeProof": {
-      "title": "Pillar 04 — 規制属性",
-      "proofLabel": "原データを開示せずに証明",
-      "href": "https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/"
-    }
+    "hookStatusSucceeded": "succeeded",
+    "hookStatusFailed": "failed"
   },
-  "cta": {
-    "salesLabel": "エンタープライズ",
-    "salesTitle": "導入相談に進む",
-    "salesHref": "https://lemma.frame00.com/ja/#contact",
-    "waitlistLabel": "Builders",
-    "waitlistTitle": "Trust402 waitlist に登録",
-    "waitlistHref": "https://tally.so/r/kd0bZR"
-  },
-  "footer": {
-    "tagline": "Built for decisions that matter.",
-    "microsite": "Lemma サイト",
-    "micrositeHref": "https://lemma.frame00.com/ja/",
+  "footbar": {
+    "network": "Monad Testnet",
+    "apiHealthy": "API Healthy",
+    "browserOnly": "ブラウザ完結デモ・データは端末外に出ません",
     "github": "GitHub",
+    "githubHref": "https://github.com/lemmaoracle/lemma",
     "privacy": "プライバシー",
-    "privacyHref": "https://lemma.frame00.com/ja/privacy",
-    "note": "検証はすべてブラウザ内で実行されます。アップロードしたファイルが当社サーバーに送信されることはありません。"
+    "privacyHref": "https://lemma.frame00.com/privacy",
+    "microsite": "Lemma マイクロサイト",
+    "micrositeHref": "https://lemma.frame00.com/"
   },
   "samples": {
     "financial_valid_approval": {
-      "label": "融資承認 (Valid)",
-      "scenario": "地方銀行が中小企業向けに ¥5,000,000 の融資を承認するシナリオ。借り手の正確な所得は AI に開示されません。Lemma は「所得が方針の閾値を上回ること」「AML 該当者でないこと」だけを証明します。",
-      "stakes": [
-        "借り手のプライバシー保護",
-        "監査トレースの生成"
-      ],
-      "businessImpact": [
-        "監査対応は1秒以内、~3日の手作業レビューと比較",
-        "借り手の所得は銀行にも規制当局にも非開示のまま",
-        "規制当局が証明を直接検証可能、信頼前提が不要"
-      ],
-      "failReason": ""
+      "chip": "融資承認（valid）",
+      "scenario": "地方銀行が小規模事業者向けの融資を承認。申込者の正確な所得は開示されず、ポリシー閾値を超えていることだけが証明される。",
+      "outcome": "4ステップすべて検証完了。KYC/AML属性証明がオンチェーンに記録された。"
     },
     "financial_tampered_output": {
-      "label": "融資承認 (出力改ざん)",
-      "scenario": "同じ融資承認ですが、AI が署名した後で承認書類が編集されています。Lemma はコンプライアンスチームに提示される前に改ざんを検出します。",
-      "stakes": [
-        "監査の完全性",
-        "銀行の責任"
-      ],
-      "businessImpact": [],
-      "failReason": "AI 署名後に承認の出力が変更されています。出力コミットメントが発行時に紐付けられた値と一致しないため、検証はここで停止します。",
-      "counterFactual": {
-        "without": [
-          "改ざん済みの承認が黙ってローンポートフォリオに混入",
-          "コンプライアンスチームが数週間後の監査で齟齬を発見",
-          "不適合判断として銀行が規制ペナルティを負担"
-        ],
-        "with": [
-          "提示前、1秒以内に改ざんを検出",
-          "AI 署名済み原本の暗号学的監査トレースが保全",
-          "規制当局が原本コミットメントを直接検証、信頼前提が不要"
-        ]
-      }
+      "chip": "融資承認（改ざん）",
+      "scenario": "同じ融資承認だが、AIが署名した後に文書が編集されている。",
+      "outcome": "出力コミットメントが発行時にバインドされた値と一致しなかった。"
     },
     "manufacturing_valid_process": {
-      "label": "工程適合性 (Valid)",
-      "scenario": "部品メーカーが EU バイヤーにバッチを出荷するシナリオ。Lemma は生産工程が登録済みの ESG / CBAM 適合仕様に従ったことを証明します。",
-      "stakes": [
-        "サプライチェーンの信頼",
-        "EU 輸入適合"
-      ],
-      "businessImpact": [
-        "CBAM 証明を出荷時に生成、コンプライアンス書類の ~2 週間と比較",
-        "工程仕様の変更は暗号学的に追跡、メール往復ではない",
-        "バイヤーが独立して適合性を検証、監査人不要"
-      ],
-      "failReason": ""
+      "chip": "CBAM適合（valid）",
+      "scenario": "EU向け出荷の製造工程が登録済みESG/CBAM仕様に適合していることを証明。",
+      "outcome": "工程仕様の証明がオンチェーンに記録。CBAM申告は検証済みエンベロープを参照可能。"
     },
     "manufacturing_model_swap": {
-      "label": "工程適合性 (モデル置換)",
-      "scenario": "同じ出荷ですが、認証から出荷までの間に別の AI 検査モデルが置換されています。Lemma はエンベロープ署名の不一致で置換を検出します。",
-      "stakes": [
-        "工程の信頼",
-        "リコール責任"
-      ],
-      "businessImpact": [],
-      "failReason": "エンベロープが宣言済みとは異なるモデルで署名されています。検証はエンベロープのステップで停止します。",
-      "counterFactual": {
-        "without": [
-          "未検証のモデルのまま出荷が進行",
-          "欠陥が EU 輸入後に発覚しリコール発動",
-          "リコール費用と輸入禁止リスクをメーカーが負担"
-        ],
-        "with": [
-          "出荷前に置換を検出、工場から出さない",
-          "再発行には認証済みの原本モデルが必須",
-          "リコール回避、CBAM 申告は検証済みエンベロープを参照"
-        ]
-      }
+      "chip": "CBAM適合（モデル差し替え）",
+      "scenario": "同じ出荷だが、認証から出荷の間に別のAI検査モデルへ差し替えられた。",
+      "outcome": "エンベロープが宣言と異なるモデルハッシュで署名されていた。"
     },
     "agent_valid_chain_with_x402": {
-      "label": "エージェントチェーン + x402 (Valid)",
-      "scenario": "自律エージェントが x402 決済を通じて API サービスを購入するシナリオ。Lemma はエージェントに委任権限があったこと、および支払い証明が正規であることを証明します。",
-      "stakes": [
-        "委任の完全性",
-        "支払い証明の非否認性"
-      ],
-      "businessImpact": [
-        "マルチエージェント取引を1秒以内に検証、手作業の代替手段はない",
-        "委任チェーンを事後証明可能、エージェントログの走査が不要",
-        "x402 支払いを承認済み行動と暗号学的に紐付け"
-      ],
-      "failReason": ""
+      "chip": "Agent + x402（valid）",
+      "scenario": "自律エージェントがx402経由でAPIサービスを購入。Lemmaが委任権限と決済の真正性を証明。",
+      "outcome": "エージェントの委任チェーンとx402決済の証明がともに検証された。"
     },
     "agent_replay_duplicate": {
-      "label": "エージェントチェーン (重複)",
-      "scenario": "同じ証明が 2 つの決済ステップで提出されるシナリオ — 例えばエージェント連携でリトライループが詰まったケースです。Lemma は重複した proof_id を検出し、2 回目の提出を拒否します。",
-      "stakes": [
-        "決済の完全性",
-        "二重支払い防止"
-      ],
-      "businessImpact": [],
-      "failReason": "同一の proof_id が先行する決済ステップで既に観測されています。2 回目の提出は二重控除が発生する前に拒否されます。",
-      "counterFactual": {
-        "without": [
-          "重複決済が両方の台帳エントリを通過",
-          "エージェントの支払い枠から二重に控除",
-          "2 つの決済システムをまたぐ手作業の照合が必要"
-        ],
-        "with": [
-          "2 回目の決済が確定する前に重複 proof_id を検出",
-          "検証境界で 2 回目の提出を拒否",
-          "照合不要、台帳エントリの整合性が保たれる"
-        ]
-      }
+      "chip": "Agentチェーン（リプレイ）",
+      "scenario": "同じproof_idが2回送信される（停滞したリトライループ）。",
+      "outcome": "リプレイを拒否 — proof_idは先行する決済ステップで既に観測済み。"
     }
   }
 }

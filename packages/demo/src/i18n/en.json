@@ -1,253 +1,124 @@
 {
   "meta": {
-    "title": "Provenance verification — Lemma",
-    "description": "Models change. Proofs remain. Verify AI-output provenance with cryptographic primitives."
+    "title": "Oracle Pipeline — Lemma Demo",
+    "description": "Browser-only demo of the Lemma Oracle dashboard. Watch documents move through verification or run an inline verification of a bundled sample."
   },
-  "header": {
-    "eyebrow": "Provenance verification",
-    "demoLabel": "Demo",
-    "browserLabel": "Browser-only",
-    "browserNote": "Verification runs entirely in your browser. Production testing requires an agreement.",
-    "h1Line1": "Models change.",
-    "h1Line2": "Proofs remain.",
-    "lead": "Verify that an AI output came from a specific model, with a specific input, under a specific policy.",
-    "equation": "Finds bugs ≠ proves decisions.",
+  "brand": {
+    "name": "Lemma",
+    "demoBadge": "Demo",
+    "versionPrefix": "v"
+  },
+  "nav": {
+    "overview": "Overview"
+  },
+  "topbar": {
+    "title": "Oracle Pipeline",
+    "subtitle": "Real-time document verification progress",
+    "searchPlaceholder": "Search by docHash, schema…",
+    "themeToggleLabel": "Toggle colour theme",
     "langToggleLabel": "Switch language",
     "otherLocaleLabel": "日本語"
   },
-  "howItWorks": {
-    "eyebrow": "3 STEPS",
-    "title": "What this demo shows",
-    "steps": [
-      {
-        "title": "Pick a sample",
-        "body": "3 industries × Valid (legitimate) / Invalid (tampered, model-swap, duplicate) — 6 cases in all."
-      },
-      {
-        "title": "Press Verify",
-        "body": "A 5-step cryptographic verification runs: schema → envelope → input commitment → output commitment → policy."
-      },
-      {
-        "title": "Read the result",
-        "body": "Valid shows what was cryptographically proven and what it changes in production. Invalid shows what Lemma rejected and why.",
-        "cases": {
-          "valid": "What was cryptographically proven, and what it changes in production.",
-          "invalid": "What Lemma rejected, and why."
-        }
-      }
-    ]
+  "demoBanner": {
+    "pill": "Browser-only demo",
+    "title": "A read-only slice of the Lemma dashboard.",
+    "body": "Pipeline rows below progress through verification in your browser. Pick a sample on the right to add it to the pipeline and watch the four-stage verification timeline open in the detail panel.",
+    "walkthrough": "Walkthrough → pick a sample, then click the new row"
   },
-  "sampleChooser": {
-    "title": "Pick a sample",
-    "sub": "Six bundled samples cover three industries with one valid and one invalid pair each. Or upload your own proof bundle — verification runs entirely in your browser.",
-    "industry": {
-      "financial": "Banking & Finance",
-      "manufacturing": "Manufacturing",
-      "agent": "Agent Economy"
+  "sampleStrip": {
+    "label": "Try a sample",
+    "hint": "Adds a document at the top of the pipeline and opens its detail.",
+    "industryFinancial": "Finance",
+    "industryManufacturing": "Manufacturing",
+    "industryAgent": "Agent"
+  },
+  "tabs": {
+    "all": "All",
+    "received": "Received",
+    "verifying": "Verifying",
+    "verified": "Verified",
+    "onchain": "On-chain",
+    "rejected": "Rejected"
+  },
+  "table": {
+    "document": "Document",
+    "schema": "Schema",
+    "status": "Status",
+    "chain": "Chain",
+    "updated": "Updated",
+    "empty": "No documents match this filter.",
+    "showing": "Showing {n} items"
+  },
+  "detail": {
+    "titleSuffix": " Document",
+    "closeLabel": "Close detail",
+    "verificationPipeline": "Verification Pipeline",
+    "documentInfo": "Document Info",
+    "cryptographic": "Cryptographic Details",
+    "hookExecutions": "Hook Executions",
+    "onchain": "On-chain",
+    "steps": {
+      "registered": "Document Registered",
+      "verifying": "Proof Verifying",
+      "offchain": "Off-chain Verified",
+      "onchain": "On-chain Verified"
     },
-    "badgeValid": "Valid",
-    "badgeInvalid": "Invalid",
-    "stakesLabel": "Stakes",
-    "regulatoryLabel": "Regulatory",
-    "primitivesLabel": "Primitives"
-  },
-  "customUpload": {
-    "cta": "Upload a custom proof JSON",
-    "note": "Stays in your browser. We never receive the file.",
-    "readyPrefix": "stays in your browser."
-  },
-  "verify": {
-    "button": "Verify",
-    "buttonInFlight": "Verifying…",
-    "hintPick": "Pick a sample to begin.",
-    "hintReadySample": "Ready to verify",
-    "hintReadyCustom": "Ready to verify uploaded file"
-  },
-  "result": {
-    "passOverall": "✓ Verified",
-    "failOverall": "✗ Verification failed",
-    "sessionLabel": "session",
-    "browserOnlyBadge": "🔒 0 bytes sent · browser-only",
-    "provenHeading": "What was cryptographically proven",
-    "impactHeading": "What this means in production",
-    "failHeading": "What went wrong"
-  },
-  "verifyAnim": {
-    "steps": [
-      { "label": "Schema validation", "primitive": "JSON Schema", "subStages": ["Parsing", "Field check"] },
-      { "label": "Cryptographic envelope", "primitive": "BBS+ over BLS12-381", "subStages": ["Pairing 1/3", "Pairing 2/3", "Pairing 3/3"] },
-      { "label": "Input commitment", "primitive": "Poseidon over BN254", "subStages": ["Hash round 1/3", "Hash round 2/3", "Hash round 3/3"] },
-      { "label": "Output commitment", "primitive": "Poseidon over BN254", "subStages": ["Hash round 1/3", "Hash round 2/3", "Hash round 3/3"] },
-      { "label": "Policy compliance", "primitive": "Groth16", "subStages": ["Witness 1/2", "Witness 2/2", "Verify"] }
-    ],
-    "statusPending": "pending",
-    "statusVerifying": "verifying",
-    "statusPass": "pass",
-    "statusFail": "fail",
-    "failedStepSuffix": "Step {n} failed",
-    "failSubStageLabel": "✗ verification rejected",
-    "traceToggleShow": "Show trace ▾",
-    "traceToggleHide": "Hide trace ▴",
-    "traceAriaLabel": "Verification trace log"
-  },
-  "trustBadges": {
-    "primitivesLabel": "Cryptographic primitives",
-    "regulatoryLabel": "Regulatory alignment",
-    "onChainLabel": "On-chain anchoring",
-    "openSpecLabel": "Open spec on GitHub →",
-    "openSpecHref": "https://github.com/lemmaoracle/lemma/blob/main/packages/demo/docs/spec.md"
-  },
-  "counterFactual": {
-    "withoutLabel": "Without provenance verification",
-    "withLabel": "With Lemma"
-  },
-  "pillars": {
-    "verifiableOrigin": {
-      "title": "Pillar 01 — Verifiable Origin",
-      "proofLabel": "source registered",
-      "href": "https://lemma.frame00.com/pillars/verifiable-origin/"
+    "fields": {
+      "docHash": "Doc Hash",
+      "schema": "Schema",
+      "ipfsCid": "IPFS CID",
+      "issuer": "Issuer",
+      "subject": "Subject",
+      "commitmentScheme": "Commitment Scheme",
+      "commitmentRoot": "Commitment Root",
+      "revocationRoot": "Revocation Root",
+      "signatureFormat": "Signature Format",
+      "chain": "Chain"
     },
-    "verifiableAi": {
-      "title": "Pillar 02 — Verifiable AI",
-      "proofLabel": "model registered",
-      "href": "https://lemma.frame00.com/pillars/verifiable-ai/"
-    },
-    "agentAuthorityProof": {
-      "title": "Pillar 03 — Agent Authority",
-      "proofLabel": "within authority",
-      "href": "https://lemma.frame00.com/pillars/agent-authority-proof/"
-    },
-    "regulatoryAttributeProof": {
-      "title": "Pillar 04 — Regulatory Attribute",
-      "proofLabel": "proven without disclosure",
-      "href": "https://lemma.frame00.com/pillars/regulatory-attribute-proof/"
-    }
+    "hookStatusSucceeded": "succeeded",
+    "hookStatusFailed": "failed"
   },
-  "cta": {
-    "salesLabel": "Enterprise",
-    "salesTitle": "Talk to us about your use case",
-    "salesHref": "https://lemma.frame00.com/#contact",
-    "waitlistLabel": "Builders",
-    "waitlistTitle": "Join Trust402 waitlist",
-    "waitlistHref": "https://tally.so/r/kd0bZR"
-  },
-  "footer": {
-    "tagline": "Built for decisions that matter.",
-    "microsite": "Lemma microsite",
-    "micrositeHref": "https://lemma.frame00.com/",
+  "footbar": {
+    "network": "Monad Testnet",
+    "apiHealthy": "API Healthy",
+    "browserOnly": "Browser-only demo · no data leaves your machine",
     "github": "GitHub",
+    "githubHref": "https://github.com/lemmaoracle/lemma",
     "privacy": "Privacy",
     "privacyHref": "https://lemma.frame00.com/privacy",
-    "note": "Verification runs entirely in your browser. Files you upload never reach our servers."
+    "microsite": "Lemma microsite",
+    "micrositeHref": "https://lemma.frame00.com/"
   },
   "samples": {
     "financial_valid_approval": {
-      "label": "Loan approval (valid)",
-      "scenario": "A regional bank approves a ¥5,000,000 small-business loan. The applicant's exact income is never disclosed to the bank's AI; Lemma proves only that income exceeds the policy threshold and that the applicant is not on any AML watchlist.",
-      "stakes": [
-        "Borrower privacy preserved",
-        "Regulatory audit trail produced"
-      ],
-      "businessImpact": [
-        "Audit response in under a second vs ~3 days of manual review",
-        "Borrower's income never disclosed to bank or regulator",
-        "Regulator can verify the proof directly, no trust required"
-      ],
-      "failReason": ""
+      "chip": "Loan approval (valid)",
+      "scenario": "A regional bank approves a small-business loan; the applicant's exact income is never disclosed, only that it exceeds the policy threshold.",
+      "outcome": "All four stages verified. KYC/AML attribute proof anchored on-chain."
     },
     "financial_tampered_output": {
-      "label": "Loan approval (tampered output)",
-      "scenario": "The same loan approval, but the approval document was edited after the AI signed it. Lemma detects the tampering before the document is presented to compliance.",
-      "stakes": [
-        "Audit integrity",
-        "Bank liability"
-      ],
-      "businessImpact": [],
-      "failReason": "The approval output was modified after the AI signed it. The output commitment no longer matches the value bound at issuance, so verification stops here.",
-      "counterFactual": {
-        "without": [
-          "Tampered approval passes silently into the loan portfolio",
-          "Compliance discovers the mismatch weeks later, during audit",
-          "Bank faces regulatory penalty for a non-compliant decision"
-        ],
-        "with": [
-          "Tampering detected in under a second, before document is presented",
-          "Cryptographic audit trail of the original AI-signed output is preserved",
-          "Regulator verifies the original commitment directly, no trust required"
-        ]
-      }
+      "chip": "Loan approval (tampered)",
+      "scenario": "Same loan, but the approval document was edited after the AI signed it.",
+      "outcome": "Output commitment did not match the value bound at issuance."
     },
     "manufacturing_valid_process": {
-      "label": "Process compliance (valid)",
-      "scenario": "A parts manufacturer ships a batch to an EU buyer. Lemma proves the production process conformed to the registered ESG/CBAM-compliant specification.",
-      "stakes": [
-        "Supply-chain trust",
-        "EU import compliance"
-      ],
-      "businessImpact": [
-        "CBAM proof generated at ship time vs ~2 weeks of compliance documentation",
-        "Process spec changes are tracked cryptographically, not by emails",
-        "Buyer verifies compliance independently, no auditor required"
-      ],
-      "failReason": ""
+      "chip": "CBAM compliance (valid)",
+      "scenario": "An EU shipment's production process conformed to the registered ESG/CBAM specification.",
+      "outcome": "Process spec proof anchored on-chain; CBAM filing references the verified envelope."
     },
     "manufacturing_model_swap": {
-      "label": "Process compliance (model swap)",
-      "scenario": "The same shipment, but a different AI inspection model was substituted between certification and shipment. Lemma detects the substitution via envelope signature mismatch.",
-      "stakes": [
-        "Process trust",
-        "Recall liability"
-      ],
-      "businessImpact": [],
-      "failReason": "The envelope was signed under a different model than the one declared. Verification stops at the envelope step.",
-      "counterFactual": {
-        "without": [
-          "Shipment proceeds with the unverified inspection model",
-          "Defect surfaces only after the EU import, triggering recall",
-          "Recall cost plus import-ban risk fall on the manufacturer"
-        ],
-        "with": [
-          "Substitution detected before the shipment leaves the plant",
-          "Re-issue requires the originally certified model, not a swap",
-          "Recall avoided; CBAM filing references the verified envelope"
-        ]
-      }
+      "chip": "CBAM compliance (model swap)",
+      "scenario": "Same shipment, but a different AI inspection model was substituted between certification and shipment.",
+      "outcome": "Envelope signed under a different model hash than the one declared."
     },
     "agent_valid_chain_with_x402": {
-      "label": "Agent chain + x402 payment (valid)",
-      "scenario": "An autonomous agent purchases an API service via x402 payment. Lemma proves the agent had delegation authority and that the payment receipt is genuine.",
-      "stakes": [
-        "Delegation integrity",
-        "Payment receipt non-repudiation"
-      ],
-      "businessImpact": [
-        "Multi-agent transaction verified in under a second; no manual equivalent exists",
-        "Delegation chain provable post-hoc, no agent-log scraping needed",
-        "x402 payment cryptographically linked to authorized action"
-      ],
-      "failReason": ""
+      "chip": "Agent + x402 (valid)",
+      "scenario": "An autonomous agent purchases an API service via x402; Lemma proves delegation authority and payment authenticity.",
+      "outcome": "Agent delegation chain + x402 payment proof verified."
     },
     "agent_replay_duplicate": {
-      "label": "Agent chain (duplicate)",
-      "scenario": "The same proof is submitted twice across two settlement steps — for example, a stuck retry loop in an agent pipeline. Lemma detects the duplicate proof_id and rejects the second submission.",
-      "stakes": [
-        "Settlement integrity",
-        "Double-spend prevention"
-      ],
-      "businessImpact": [],
-      "failReason": "The same proof_id was already seen in a prior settlement step. The duplicate submission is rejected before any second debit can occur.",
-      "counterFactual": {
-        "without": [
-          "Duplicate settlement passes through both ledger entries",
-          "Funds debited twice from the agent's spending allowance",
-          "Manual reconciliation across two settlement systems required"
-        ],
-        "with": [
-          "Duplicate proof_id detected before the second settlement commits",
-          "Second submission rejected at the verification boundary",
-          "No reconciliation needed; ledger entries stay consistent"
-        ]
-      }
+      "chip": "Agent chain (replay)",
+      "scenario": "The same proof_id is submitted twice across two settlement steps (stuck retry loop).",
+      "outcome": "Replay rejected — proof_id already seen in a prior settlement."
     }
   }
 }
