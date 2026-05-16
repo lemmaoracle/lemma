@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./vkey": {
+      "types": "./dist/vkey.d.ts",
+      "import": "./dist/vkey.js"
     }
   },
   "files": [
