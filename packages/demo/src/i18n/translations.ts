@@ -43,6 +43,9 @@ export interface Translations {
   }>;
   readonly header: Readonly<{
     readonly eyebrow: string;
+    readonly demoLabel: string;
+    readonly browserLabel: string;
+    readonly browserNote: string;
     readonly h1Line1: string;
     readonly h1Line2: string;
     readonly lead: string;
@@ -56,6 +59,12 @@ export interface Translations {
     readonly steps: ReadonlyArray<Readonly<{
       readonly title: string;
       readonly body: string;
+      /** When present, the step renders as a minimal Valid/Invalid pair
+          instead of a prose body. */
+      readonly cases?: Readonly<{
+        readonly valid: string;
+        readonly invalid: string;
+      }>;
     }>>;
   }>;
   readonly sampleChooser: Readonly<{

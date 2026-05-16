@@ -5,6 +5,9 @@
   },
   "header": {
     "eyebrow": "Provenance verification",
+    "demoLabel": "Demo",
+    "browserLabel": "Browser-only",
+    "browserNote": "Verification runs entirely in your browser. Production testing requires an agreement.",
     "h1Line1": "Models change.",
     "h1Line2": "Proofs remain.",
     "lead": "Verify that an AI output came from a specific model, with a specific input, under a specific policy.",
@@ -26,7 +29,11 @@
       },
       {
         "title": "Read the result",
-        "body": "Valid shows what was cryptographically proven and what it changes in production. Invalid shows what Lemma rejected and why."
+        "body": "Valid shows what was cryptographically proven and what it changes in production. Invalid shows what Lemma rejected and why.",
+        "cases": {
+          "valid": "What was cryptographically proven, and what it changes in production.",
+          "invalid": "What Lemma rejected, and why."
+        }
       }
     ]
   },

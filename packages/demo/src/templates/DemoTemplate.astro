@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import IndustryIcon from "../components/IndustryIcon.astro";
 import { SAMPLES, type Sample } from "../data/fixtures";
 import { getTranslations, type Locale } from "../i18n/translations";
+import pkg from "../../package.json";
 
 export interface Props {
   locale: Locale;
@@ -59,24 +60,36 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
 ---
 
 <Layout locale={locale} title={t.meta.title} description={t.meta.description}>
-  <header class="hero">
-    <a
-      href={otherLocaleHref}
-      class="lang-toggle"
-      aria-label={t.header.langToggleLabel}
-      data-other-locale={otherLocale}
-    >
-      {t.header.otherLocaleLabel}
-    </a>
-    <div class="hero-inner">
-      <div class="eyebrow">{t.header.eyebrow}</div>
-      <h1 class="hero-h1">{t.header.h1Line1}<br />{t.header.h1Line2}</h1>
-      <p class="lead">{t.header.lead}</p>
-      <p class="equation">{t.header.equation}</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <img src="/lemma-logo.svg" alt="Lemma" class="topbar-logo" />
+        <span class="topbar-divider" aria-hidden="true"></span>
+        <h1 class="topbar-title">{t.header.eyebrow}</h1>
+        <span class="topbar-demo">{t.header.demoLabel}</span>
+        <span class="topbar-version">v{pkg.version}</span>
+      </div>
+      <div class="topbar-meta">
+        <span class="topbar-browser" title={t.header.browserNote}>
+          {t.header.browserLabel}
+        </span>
+        <a
+          href={otherLocaleHref}
+          class="lang-toggle"
+          aria-label={t.header.langToggleLabel}
+          data-other-locale={otherLocale}
+        >
+          {t.header.otherLocaleLabel}
+        </a>
+      </div>
     </div>
   </header>
 
   <main class="main">
+    <div class="intro">
+      <p class="lead">{t.header.lead}</p>
+      <p class="equation">{t.header.equation}</p>
+    </div>
     <section class="how-section">
       <div class="how-eyebrow">{t.howItWorks.eyebrow}</div>
       <h2 class="how-h2">{t.howItWorks.title}</h2>
@@ -86,7 +99,20 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
             <div class="how-step-num">{String(i + 1).padStart(2, "0")}</div>
             <div class="how-step-content">
               <div class="how-step-title">{step.title}</div>
-              <p class="how-step-body">{step.body}</p>
+              {step.cases ? (
+                <ul class="how-step-cases">
+                  <li class="how-case how-case-valid">
+                    <span class="how-case-label">{t.sampleChooser.badgeValid}</span>
+                    <span class="how-case-text">{step.cases.valid}</span>
+                  </li>
+                  <li class="how-case how-case-invalid">
+                    <span class="how-case-label">{t.sampleChooser.badgeInvalid}</span>
+                    <span class="how-case-text">{step.cases.invalid}</span>
+                  </li>
+                </ul>
+              ) : (
+                <p class="how-step-body">{step.body}</p>
+              )}
             </div>
           </li>
         ))}
@@ -390,91 +416,125 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
 </Layout>
 
 <style>
-  .hero {
-    background: var(--black);
-    color: var(--white);
-    padding: 96px 8% 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    position: relative;
+  /* Compact tool header — logo, demo name, version. Light bar, matching
+     the developer dashboard's header chrome. */
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
   }
-  .hero-inner {
+  .topbar-inner {
     max-width: 880px;
     margin: 0 auto;
+    padding: 12px 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
   }
-  .lang-toggle {
-    position: absolute;
-    top: 24px;
-    right: 8%;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    padding: 6px 14px;
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s, background 0.2s;
-  }
-  .lang-toggle:hover {
-    border-color: var(--white);
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .eyebrow {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--accent-lt);
-    margin-bottom: 24px;
+  .topbar-brand {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
   }
-  .eyebrow::before {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: var(--accent-lt);
+  .topbar-logo {
+    height: 18px;
+    width: auto;
     display: block;
   }
-  .hero-h1 {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 6.5vw, 80px);
-    font-weight: 500;
-    line-height: 1.05;
-    letter-spacing: -0.01em;
-    margin: 0 0 32px;
-    color: var(--white);
+  .topbar-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--gray-200);
+    flex-shrink: 0;
   }
-  :root[lang="ja"] .hero-h1 {
-    line-height: 1.2;
+  .topbar-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin: 0;
+    color: var(--black);
+    white-space: nowrap;
+  }
+  .topbar-version {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    border: 1px solid var(--gray-200);
+    padding: 1px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  /* "Demo" tag + browser-only badge — make it explicit this is a
+     browser-side demo, not a production test (which needs an agreement). */
+  .topbar-demo {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .topbar-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .topbar-browser {
+    font-size: 11px;
+    color: var(--gray-500);
+    border: 1px solid var(--gray-200);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    cursor: help;
+  }
+  .lang-toggle {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-500);
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    padding: 5px 12px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .lang-toggle:hover {
+    border-color: var(--gray-500);
+    color: var(--black);
+    background: var(--gray-50);
+  }
+  .intro {
+    margin-bottom: 32px;
   }
   .lead {
-    font-size: 19px;
+    font-size: 15px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--gray-800);
     max-width: 640px;
-    margin: 0 0 24px;
+    margin: 0 0 10px;
   }
   .equation {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 0.02em;
-    color: var(--accent-lt);
+    color: var(--gray-500);
     margin: 0;
   }
 
   .main {
     max-width: 880px;
     margin: 0 auto;
-    padding: 80px 8% 40px;
+    padding: 36px 8% 40px;
   }
 
   /* ─── "What this demo shows" bridge section (between Hero and Sample chooser) ─── */
   .how-section {
-    margin-bottom: 56px;
-    padding-bottom: 48px;
+    margin-bottom: 36px;
+    padding-bottom: 32px;
     border-bottom: 1px solid var(--gray-200);
   }
   .how-eyebrow {
@@ -488,46 +548,90 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
   .how-h2 {
     font-family: var(--font-display);
-    font-size: clamp(22px, 2.6vw, 28px);
-    font-weight: 500;
+    font-size: 19px;
+    font-weight: 600;
     color: var(--black);
-    margin: 0 0 28px;
+    margin: 0 0 20px;
     letter-spacing: -0.005em;
   }
+  /* Step cards — number badge + title + de-emphasised body, so the
+     explainer reads as 3 discrete chunks rather than a wall of text. */
   .how-steps {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 12px;
   }
   .how-step {
-    display: grid;
-    grid-template-columns: 36px 1fr;
-    gap: 14px;
-    align-items: start;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
   }
   .how-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 24px;
+    padding: 0 6px;
+    background: var(--black);
+    color: var(--white);
     font-family: var(--font-mono);
     font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    padding-top: 2px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
   }
   .how-step-title {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--black);
     margin-bottom: 4px;
-    line-height: 1.4;
+    line-height: 1.35;
   }
   .how-step-body {
     margin: 0;
-    font-size: 13px;
-    color: var(--gray-700, #5f5f5f);
-    line-height: 1.65;
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.6;
+  }
+  /* Minimal Valid/Invalid pair — replaces a long parallel sentence. */
+  .how-step-cases {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+  .how-case {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+  .how-case-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .how-case-valid .how-case-label {
+    color: var(--green);
+  }
+  .how-case-invalid .how-case-label {
+    color: var(--red);
+  }
+  .how-case-text {
+    font-size: 12px;
+    color: var(--gray-800);
+    line-height: 1.5;
   }
   @media (max-width: 768px) {
     .how-steps {
@@ -537,40 +641,42 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
 
   .section {
-    margin-bottom: 64px;
+    margin-bottom: 44px;
   }
   .section-h2 {
     font-family: var(--font-display);
-    font-size: clamp(28px, 3.4vw, 36px);
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 600;
     color: var(--black);
-    margin: 0 0 12px;
+    margin: 0 0 8px;
+    letter-spacing: -0.005em;
   }
   .section-sub {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--gray-500);
-    line-height: 1.7;
+    line-height: 1.6;
     max-width: 600px;
-    margin: 0 0 36px;
+    margin: 0 0 24px;
   }
 
   /* ─── Sample chooser ─── */
   .samples {
     display: grid;
-    gap: 28px;
+    gap: 20px;
   }
   .industry-group {
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .industry-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 4px;
+    grid-column: 1 / -1;
+  }
+  .industry-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 2px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -578,18 +684,18 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
 
   .sample {
     display: grid;
-    grid-template-columns: 22px 1fr;
+    grid-template-columns: 18px 1fr;
     align-items: start;
-    gap: 16px;
-    padding: 20px 24px;
+    gap: 12px;
+    padding: 16px;
     border: 1px solid var(--gray-200);
+    border-radius: 8px;
     background: var(--white);
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
   }
   .sample:hover {
     border-color: var(--accent-lt);
-    background: var(--accent-bg);
   }
   .sample input[type="radio"] {
     margin: 4px 0 0 0;
@@ -602,7 +708,7 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   .sample-content {
     min-width: 0;
     display: grid;
-    gap: 10px;
+    gap: 6px;
   }
   .sample-head {
     display: flex;
@@ -612,15 +718,15 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     flex-wrap: wrap;
   }
   .sample-title {
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--black);
     line-height: 1.3;
   }
   .sample-scenario {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--gray-800);
-    line-height: 1.6;
+    line-height: 1.55;
   }
   .sample-stakes {
     display: flex;
@@ -630,9 +736,8 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     font-size: 12px;
   }
   .sample-stakes-label {
-    font-family: var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--gray-500);
     flex-shrink: 0;
   }
@@ -666,43 +771,67 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     flex-wrap: wrap;
   }
   .sample-meta-label {
-    font-family: var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--gray-500);
     flex-shrink: 0;
   }
   .sample-chip {
     border: 1px solid var(--gray-200);
+    border-radius: 4px;
     padding: 2px 8px;
     font-size: 11px;
     color: var(--gray-800);
-    background: var(--white);
+    background: var(--gray-50);
   }
   .sample-chip-mono {
     font-family: var(--font-mono);
   }
   .sample-tag {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border: 1px solid currentColor;
+    padding: 2px 8px;
+    border-radius: 4px;
     flex-shrink: 0;
   }
   .sample-tag-pass {
     color: var(--green);
+    background: var(--green-bg);
   }
   .sample-tag-fail {
     color: var(--red);
+    background: var(--red-bg);
+  }
+
+  /* Progressive disclosure — a collapsed card shows only its title,
+     badge and a 3-line scenario; selecting it reveals the full detail
+     (stakes, regulatory, primitives). Keeps the 6-card chooser scannable
+     instead of a wall of text. */
+  .sample-scenario {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  .sample-stakes,
+  .sample-meta {
+    display: none;
+  }
+  .sample:has(input:checked) .sample-scenario {
+    -webkit-line-clamp: unset;
+  }
+  .sample:has(input:checked) .sample-stakes {
+    display: flex;
+  }
+  .sample:has(input:checked) .sample-meta {
+    display: grid;
   }
 
   .custom-upload {
     margin-top: 28px;
     padding: 20px;
     border: 1px dashed var(--gray-200);
+    border-radius: 8px;
   }
   .custom-upload-label {
     display: grid;
@@ -716,7 +845,7 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     font-size: 14px;
     font-weight: 500;
     color: var(--accent);
-    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
+    border-bottom: 1px solid var(--gray-200);
     padding-bottom: 1px;
     width: fit-content;
   }
@@ -729,27 +858,34 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
 
   /* ─── Verify ─── */
+  /* Sticky action bar — the Verify button stays reachable at the
+     viewport bottom no matter how far the sample list is scrolled. */
   .verify-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-top: 32px;
+    margin-top: 24px;
+    padding: 14px 0;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
     flex-wrap: wrap;
   }
   .btn-primary {
-    background: var(--black);
+    background: var(--accent);
     color: var(--white);
-    padding: 14px 32px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
   }
   .btn-primary:hover:not(:disabled) {
-    background: var(--accent);
+    background: var(--accent-lt);
   }
   .btn-primary:disabled {
     background: var(--gray-200);
@@ -764,8 +900,9 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   /* ─── Result ─── */
   .result {
     border: 1px solid var(--gray-200);
-    background: var(--gray-50);
-    padding: 32px;
+    border-radius: 8px;
+    background: var(--white);
+    padding: 28px;
     margin-bottom: 32px;
   }
   .result.hidden,
@@ -810,15 +947,14 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     color: var(--gray-500);
   }
   .result-browser-only {
-    font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--accent);
-    border: 1px solid var(--accent-lt);
+    color: var(--gray-500);
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
     padding: 3px 8px;
-    background: var(--accent-bg);
-    transition: background 0.4s ease, border-color 0.4s ease;
+    background: var(--white);
+    transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
   }
   .result-browser-only.pulse {
     background: rgba(94, 152, 85, 0.18);
@@ -826,10 +962,8 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     color: var(--green);
   }
   .result-section-h3 {
-    font-family: var(--font-display);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.02em;
     color: var(--black);
     margin: 24px 0 12px;
   }
@@ -846,15 +980,9 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
   .proven-item {
     display: grid;
-    grid-template-columns: 22px 1fr auto;
-    align-items: baseline;
-    gap: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--gray-200);
-  }
-  .proven-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+    grid-template-columns: 20px 1fr auto;
+    align-items: center;
+    gap: 10px;
   }
   .proven-item-icon {
     font-family: var(--font-mono);
@@ -873,18 +1001,21 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     border-bottom-color: var(--accent);
   }
   .proven-item-status {
-    font-family: var(--font-mono);
     font-size: 11px;
     color: var(--gray-500);
-    text-align: right;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    padding: 2px 8px;
+    white-space: nowrap;
   }
   .impact-item {
     display: grid;
     grid-template-columns: 16px 1fr;
-    gap: 12px;
-    font-size: 14px;
-    color: var(--gray-800);
-    line-height: 1.6;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--gray-500);
+    line-height: 1.55;
   }
   .impact-item::before {
     content: "→";
@@ -893,9 +1024,10 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
   .result-fail-reason {
     margin: 0;
-    padding: 16px;
-    border-left: 2px solid var(--red);
-    background: rgba(184, 50, 59, 0.06);
+    padding: 14px 16px;
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    background: var(--red-bg);
     font-size: 14px;
     color: var(--gray-800);
     line-height: 1.6;
@@ -909,7 +1041,8 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
   .cta {
     border: 1px solid var(--gray-200);
-    padding: 24px 28px;
+    border-radius: 8px;
+    padding: 20px 24px;
     background: var(--white);
     color: inherit;
     transition: border-color 0.2s, background 0.2s;
@@ -919,13 +1052,10 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     background: var(--accent-bg);
   }
   .cta-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
+    color: var(--gray-500);
+    margin-bottom: 6px;
   }
   .cta-title {
     font-family: var(--font-display);
@@ -1086,18 +1216,16 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     margin-top: 24px;
   }
   .cf-col {
-    padding: 18px 20px;
+    padding: 16px 18px;
     border: 1px solid var(--gray-200);
+    border-radius: 8px;
   }
   .cf-col-without { background: var(--gray-50); }
   .cf-col-with { background: var(--white); border-color: var(--accent-lt); }
   .cf-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
   }
   .cf-col-without .cf-label { color: var(--red); }
   .cf-col-with .cf-label { color: var(--accent); }
@@ -1173,8 +1301,9 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   .trust-badges-section {
     margin-bottom: 32px;
     padding: 24px 28px;
-    background: var(--gray-50);
+    background: var(--white);
     border: 1px solid var(--gray-200);
+    border-radius: 8px;
   }
   .trust-badges-group {
     margin-bottom: 16px;
@@ -1183,11 +1312,8 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
     margin-bottom: 12px;
   }
   .trust-badges-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
     color: var(--gray-500);
     margin-bottom: 8px;
   }
@@ -1198,7 +1324,8 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
   }
   .trust-chip {
     border: 1px solid var(--gray-200);
-    background: var(--white);
+    border-radius: 4px;
+    background: var(--gray-50);
     padding: 3px 10px;
     font-size: 11px;
     color: var(--gray-800);
@@ -1222,15 +1349,14 @@ const DEPLOYED_CHAINS: ReadonlyArray<string> = [];
 
   /* ─── Responsive ─── */
   @media (max-width: 640px) {
-    .hero {
-      padding: 88px 6% 56px;
-    }
-    .lang-toggle {
-      top: 16px;
-      right: 6%;
+    .topbar-inner {
+      padding: 12px 6%;
     }
     .main {
-      padding: 56px 6% 32px;
+      padding: 28px 6% 32px;
+    }
+    .industry-group {
+      grid-template-columns: 1fr;
     }
     .cta-row {
       grid-template-columns: 1fr;
