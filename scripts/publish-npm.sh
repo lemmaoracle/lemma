@@ -5,12 +5,12 @@
 #   ./scripts/publish-npm.sh <package> [version]    # Publish single package
 #
 #   version: patch (default) | minor | major | specific version
-#   package: @lemmaoracle/spec | @lemmaoracle/parser | @lemmaoracle/sdk | @lemmaoracle/agent | @lemmaoracle/x402 | @lemmaoracle/mcp
+#   package: @lemmaoracle/spec | @lemmaoracle/parser | @lemmaoracle/sdk | @lemmaoracle/seal | @lemmaoracle/agent | @lemmaoracle/x402 | @lemmaoracle/mcp
 
 set -e
 
 # All available packages
-ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp")
+ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/seal" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp")
 
 # Track backup files for cleanup on exit
 _BACKUP_FILES=()
@@ -72,7 +72,7 @@ fi
 
 # Build filter
 if [[ "$TARGET" == "all" ]]; then
-    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/agent -F @lemmaoracle/x402 -F @lemmaoracle/mcp"
+    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/seal -F @lemmaoracle/agent -F @lemmaoracle/x402 -F @lemmaoracle/mcp"
 else
     BUILD_FILTER="-F ${TARGET}"
 fi
@@ -231,11 +231,43 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
     echo "🔄 Restored agent package.json for development"
 }
 
+# Publish seal with SDK and spec dependency update
+publish_seal() {
+    cd packages/seal
+
+    npm version $VERSION --no-git-tag-version
+    cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
+
+    local sdk_version=$(node -p "require('../sdk/package.json').version")
+    local spec_version=$(node -p "require('../spec/package.json').version")
+    node -e "
+const pkg = require('./package.json');
+pkg.dependencies['@lemmaoracle/sdk'] = '^${sdk_version}';
+pkg.dependencies['@lemmaoracle/spec'] = '^${spec_version}';
+require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+"
+
+    local seal_version=$(node -p "require('./package.json').version")
+    echo "📝 Updated @lemmaoracle/seal version: $seal_version"
+    echo "🚀 Publishing @lemmaoracle/seal..."
+    npm publish --access public
+
+    cd ../..
+    echo "✅ Published @lemmaoracle/seal@$seal_version"
+
+    # Restore
+    cd packages/seal && mv package.json.backup package.json && cd ../..
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/seal/package.json.backup}")
+    echo "🔄 Restored seal package.json for development"
+}
+
 if [[ "$TARGET" == "all" ]]; then
     # Publish all packages in dependency order
     publish_simple "@lemmaoracle/spec" "spec"
     publish_simple "@lemmaoracle/parser" "parser"
     publish_sdk
+    publish_seal
     publish_agent
     publish_x402
     publish_mcp
@@ -245,6 +277,7 @@ if [[ "$TARGET" == "all" ]]; then
     echo "  - @lemmaoracle/spec@$(node -p "require('./packages/spec/package.json').version")"
     echo "  - @lemmaoracle/parser@$(node -p "require('./packages/parser/package.json').version")"
     echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json').version")"
+    echo "  - @lemmaoracle/seal@$(node -p "require('./packages/seal/package.json').version")"
     echo "  - @lemmaoracle/agent@$(node -p "require('./packages/agent/package.json').version")"
     echo "  - @lemmaoracle/x402@$(node -p "require('./packages/x402/package.json').version")"
     echo "  - @lemmaoracle/mcp@$(node -p "require('./packages/mcp/package.json').version")"
@@ -256,6 +289,7 @@ else
         "@lemmaoracle/spec")    publish_simple "$TARGET" "spec" ;;
         "@lemmaoracle/parser")  publish_simple "$TARGET" "parser" ;;
         "@lemmaoracle/sdk")     publish_sdk ;;
+        "@lemmaoracle/seal")    publish_seal ;;
         "@lemmaoracle/agent")   publish_agent ;;
         "@lemmaoracle/x402")    publish_x402 ;;
         "@lemmaoracle/mcp")     publish_mcp ;;
