@@ -20,12 +20,31 @@ import { verifier } from "@lemmaoracle/sdk";
 import type { RequestHandler, HttpResponse } from "../../types/http.js";
 import type { VerifyOutput, VerifyInput } from "@lemmaoracle/sdk";
 
+/** Request body mirrors the arguments of `verifier.verify`. */
+type RequestBody = Readonly<{
+  /** `verifier.verify` input. */
+  input: VerifyInput;
+}>;
+
 /** Type guard: validate that the request body is a VerifyInput. */
 const isValidVerifyInput = (body: unknown): body is VerifyInput =>
+  typeof body === "object" &&
+  body !== null &&
   R.allPass([
     (b: Record<string, unknown>) => typeof b["alg"] === "string",
     (b: Record<string, unknown>) =>
       typeof b["inputs"] === "object" && b["inputs"] !== null,
+  ])(body as Record<string, unknown>);
+
+/** Type guard: validate that the request body conforms to RequestBody. */
+const isValidRequestBody = (body: unknown): body is RequestBody =>
+  typeof body === "object" &&
+  body !== null &&
+  R.allPass([
+    (b: Record<string, unknown>) =>
+      typeof b["input"] === "object" && b["input"] !== null,
+    (b: Record<string, unknown>) =>
+      isValidVerifyInput(b["input"]),
   ])(body as Record<string, unknown>);
 
 /** 400 response for malformed request bodies. */
@@ -34,8 +53,10 @@ const invalidRequestResponse: HttpResponse = {
   body: {
     error: "Bad request",
     expected: {
-      alg: "ProofAlgId",
-      inputs: "Record<string, unknown>",
+      input: {
+        alg: "ProofAlgId",
+        inputs: "Record<string, unknown>",
+      },
     },
   },
 } as const;
@@ -75,8 +96,8 @@ export const verifyHandler: RequestHandler = (request) =>
     R.always(methodNotAllowedResponse),
     (req: typeof request) =>
       R.ifElse(
-        (body: unknown) => !isValidVerifyInput(body),
+        (body: unknown) => !isValidRequestBody(body),
         R.always(invalidRequestResponse),
-        (body: unknown) => verifyProof(body as VerifyInput),
+        (body: unknown) => verifyProof((body as RequestBody).input),
       )(req.body),
   )(request);
