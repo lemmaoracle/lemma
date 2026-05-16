@@ -1,915 +1,691 @@
 /**
- * Demo page interactivity. Loaded as a module from DemoTemplate.astro.
+ * Oracle Pipeline demo — interactivity.
  *
- * v0.3.1 — locale-aware (reads i18n payload from window.__LEMMA_DEMO_I18N__
- * injected by DemoTemplate). Adds liveness signals tier 1: session nonce,
- * real-time ms counter, timing jitter, "0 bytes sent" pulse. Result panel
- * now renders Pillar mapping + business-impact bullets for pass samples,
- * plain-language fail reason for fail samples.
+ * Loaded as a module from DemoTemplate.astro. Handles:
+ *   - theme toggle (persisted to localStorage)
+ *   - filter tabs (All / Received / Verifying / Verified / On-chain / Rejected)
+ *   - search by docHash / schema substring
+ *   - row click → opens the detail panel for that row
+ *   - sample chip click → prepends a synthetic sample row to the pipeline,
+ *     opens its detail, and advances its status over a few seconds so the
+ *     four-stage timeline animates
+ *   - ambient sim that nudges a few of the seeded fixture rows from
+ *     received → verifying → verified / onchain over time so the table
+ *     visibly moves
  *
- * State machine:
- *   - sample selected (radio) OR custom file uploaded
- *     → Verify button enabled
- *   - Verify clicked
- *     → track verify_clicked (with locale + session nonce)
- *     → run verifier (mock in v0.1; jittered delay)
- *     → render result panel + CTAs
+ * Functional style throughout (we read DOM, but operate on plain data
+ * objects via small pure helpers; no class state). The module exposes a
+ * single `mount()` entry point.
  */
 
-import { FAILURE_STEP, getSample, PILLAR_I18N_KEY, type Sample } from "../data/fixtures";
-import { track } from "../lib/analytics";
+import { getSample, type Sample } from "../data/fixtures";
 import {
-  verifyCustom,
-  verifySample,
-  type VerificationResult,
-} from "../lib/verify";
+  PIPELINE_FIXTURES,
+  SCHEMA_FAMILY,
+  SCHEMA_LABEL,
+  formatRelative,
+  truncateHash,
+  type PipelineEntry,
+  type PipelineSchema,
+  type PipelineStatus,
+} from "../data/pipelineFixtures";
+import {
+  getTranslations,
+  type Locale,
+  type Translations,
+} from "../i18n/translations";
 
-interface PillarCopy {
-  readonly title: string;
-  readonly proofLabel: string;
-  readonly href: string;
+type Filter = "all" | PipelineStatus;
+
+type Row = PipelineEntry & {
+  /** Stable DOM id used to find/update the row. */
+  readonly id: string;
+  /** Schema title shown in the detail header, e.g. "Identity". */
+  readonly schemaTitle: string;
+  /**
+   * Optional human description for sample-spawned rows; surfaces in the
+   * detail body as the row's scenario line.
+   */
+  readonly scenario?: string;
+  /** Optional final outcome blurb for sample-spawned rows. */
+  readonly outcome?: string;
+};
+
+interface Globals {
+  readonly locale: Locale;
+  readonly i18n: Translations;
 }
-
-interface SampleCopy {
-  readonly label: string;
-  readonly scenario: string;
-  readonly stakes: ReadonlyArray<string>;
-  readonly businessImpact: ReadonlyArray<string>;
-  readonly failReason: string;
-  readonly counterFactual?: {
-    readonly without: ReadonlyArray<string>;
-    readonly with: ReadonlyArray<string>;
-  };
-}
-
-interface StepCopy {
-  readonly label: string;
-  readonly primitive: string;
-  readonly subStages: ReadonlyArray<string>;
-}
-
-interface I18nPayload {
-  readonly locale: "en" | "ja";
-  readonly pillarsCopy: Readonly<{
-    readonly verifiableOrigin: PillarCopy;
-    readonly verifiableAi: PillarCopy;
-    readonly agentAuthorityProof: PillarCopy;
-    readonly regulatoryAttributeProof: PillarCopy;
-  }>;
-  readonly samplesCopy: Readonly<Record<string, SampleCopy>>;
-  readonly resultStrings: Readonly<{
-    readonly passOverall: string;
-    readonly failOverall: string;
-    readonly sessionLabel: string;
-    readonly browserOnlyBadge: string;
-    readonly provenHeading: string;
-    readonly impactHeading: string;
-    readonly failHeading: string;
-  }>;
-  readonly verifyStrings: Readonly<{
-    readonly button: string;
-    readonly buttonInFlight: string;
-    readonly hintPick: string;
-    readonly hintReadySample: string;
-    readonly hintReadyCustom: string;
-  }>;
-  readonly verifyAnimStrings: Readonly<{
-    readonly steps: ReadonlyArray<StepCopy>;
-    readonly failedStepSuffix: string;
-    readonly failSubStageLabel: string;
-  }>;
-  readonly counterFactualStrings: Readonly<{
-    readonly withoutLabel: string;
-    readonly withLabel: string;
-  }>;
-}
-
-/**
- * §3b stepped animation timing. revealAt = ms after click when the step
- * becomes "verifying"; verifyMs = how long that step stays in the
- * verifying state before resolving. Spec target totals: ~1000ms for a
- * full valid run; failures truncate the sequence at their failing step.
- *
- * Spec §3b's headline "~400ms for fail" matches the model_hash_mismatch
- * sample (fail at Step 2). Later-step failures (Step 4 output, Step 5
- * policy/replay) intentionally take longer because the user sees the
- * earlier passes complete — this is the honest reading of the spec.
- */
-interface StepTiming {
-  readonly revealAt: number;
-  readonly verifyMs: number;
-  readonly traceOp: string;
-}
-
-const STEP_TIMINGS: ReadonlyArray<StepTiming> = [
-  { revealAt: 100, verifyMs: 180, traceOp: "schema" },
-  { revealAt: 300, verifyMs: 180, traceOp: "envelope.bbs" },
-  { revealAt: 500, verifyMs: 180, traceOp: "input.poseidon" },
-  { revealAt: 700, verifyMs: 230, traceOp: "output.poseidon" },
-  { revealAt: 950, verifyMs: 150, traceOp: "policy.groth16" },
-];
-
-const STEP_JITTER_MS = 22;
-
-/**
- * The §3b animation is intentionally *watchable*: each sub-stage holds
- * long enough to read, with a short gap between steps. Previously the
- * per-sub-stage time was verifyMs / subStages.length ≈ 60-90ms, which
- * flashed past before the result panel info could be seen.
- */
-const SUB_STAGE_MS = 300;
-const STEP_GAP_MS = 200;
-// On a failing step, hold on the ✗ state (and its fail sub-stage label)
-// before the result body replaces it — otherwise the failure flashes
-// past too fast to register.
-const FAIL_HOLD_MS = 1200;
 
 declare global {
   interface Window {
-    __LEMMA_DEMO_I18N__?: I18nPayload;
+    __LEMMA_DEMO_I18N__?: Globals;
   }
 }
 
-type Selection =
-  | { readonly kind: "sample"; readonly sample: Sample }
-  | { readonly kind: "custom"; readonly raw: string; readonly fileName: string }
-  | { readonly kind: "none" };
-
-const VERIFY_JITTER_MS = 25;
-const VERIFY_BASE_DELAY_MS = 180;
-const VERIFY_CUSTOM_BASE_DELAY_MS = 220;
-
-let selection: Selection = { kind: "none" };
-
-function getI18n(): I18nPayload {
-  const payload = window.__LEMMA_DEMO_I18N__;
-  if (!payload) {
-    throw new Error("i18n payload missing — DemoTemplate did not inject window.__LEMMA_DEMO_I18N__");
-  }
-  return payload;
-}
-
-function jitter(base: number): number {
-  const offset = (Math.random() * 2 - 1) * VERIFY_JITTER_MS;
-  return Math.max(50, base + offset);
-}
-
-function sessionShortNonce(): string {
-  // Take first 8 chars (two groups of 4) of a UUID v4. `crypto.randomUUID`
-  // is widely supported in all browsers we target.
-  const uuid =
-    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-      ? crypto.randomUUID()
-      : Math.random().toString(16).slice(2, 10).padEnd(8, "0");
-  const hex = uuid.replace(/-/g, "");
-  return `${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
-}
-
-interface DeepLinkResolution {
-  /** Valid sample id, or null if absent / invalid. Used for `deep_link_sample`. */
-  readonly valid: string | null;
-  /** True if the URL had a `?sample=` query (regardless of validity). */
-  readonly hadQuery: boolean;
-}
-
-function resolveDeepLinkSample(): DeepLinkResolution {
-  if (typeof window === "undefined") return { valid: null, hadQuery: false };
-  const url = new URL(window.location.href);
-  const querySample = url.searchParams.get("sample");
-  const hashMatch = url.hash.match(/^#sample=(.+)$/);
-  const hashSample = hashMatch ? decodeURIComponent(hashMatch[1]) : null;
-  // Query parameter (inbound deep-link) takes precedence over the hash
-  // (in-app round-trip across the language toggle). Spec §2a.
-  const candidate = querySample ?? hashSample;
-  if (!candidate) return { valid: null, hadQuery: false };
-  const sample = getSample(candidate);
-  return {
-    valid: sample ? sample.id : null,
-    hadQuery: querySample !== null,
-  };
-}
+const THEME_KEY = "lemma-demo-theme";
 
 /**
- * Normalise the URL so `?sample=` is consumed on first load and the in-app
- * form `#sample=<id>` is what subsequent navigation (e.g. language toggle)
- * round-trips. Invalid sample ids are dropped entirely. Called only when
- * the inbound URL had a `?sample=` query.
+ * Application state. We keep it in a single object because the
+ * interactions all read the same handful of fields; passing it as a
+ * parameter into the small pure helpers below keeps `mount()` itself
+ * readable.
  */
-function normaliseDeepLinkUrl(validSampleId: string | null): void {
-  const url = new URL(window.location.href);
-  // Drop only the `sample` query — other params (utm_source, utm_content,
-  // utm_medium, utm_campaign, utm_term) are owned by the analytics layer
-  // and stay on the URL so a subsequent share or reload retains the
-  // referral attribution.
-  url.searchParams.delete("sample");
-  url.hash = validSampleId ? `sample=${validSampleId}` : "";
-  history.replaceState(null, "", url.toString());
+interface State {
+  rows: Row[];
+  filter: Filter;
+  query: string;
+  selectedId: string | null;
+  /** Map of rowId → timer handle for in-flight sample animations. */
+  animTimers: Map<string, ReturnType<typeof setTimeout>[]>;
+  /** Per-row stage timestamps, mirroring what a real API would return. */
+  stageTimes: Map<string, Partial<Record<TimelineStage, string>>>;
+  /**
+   * Element that had focus immediately before the detail panel opened.
+   * Restored on close so keyboard users return to where they were
+   * instead of dropping to <body>.
+   */
+  lastFocus: HTMLElement | null;
 }
 
-const sleep = (ms: number): Promise<void> =>
-  new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, ms)));
+type TimelineStage = "registered" | "verifying" | "offchain" | "onchain";
 
-interface TraceLogger {
-  reset(startedAt: number): void;
-  emit(op: string, result: "pass" | "fail" | null): void;
-}
-
-function createTraceLogger(container: HTMLElement): TraceLogger {
-  let startedAt = performance.now();
-  return {
-    reset(t: number): void {
-      startedAt = t;
-      container.innerHTML = "";
-    },
-    emit(op: string, result: "pass" | "fail" | null): void {
-      const t = Math.round(performance.now() - startedAt);
-      const arrow = result === null ? "…" : result === "pass" ? "ok" : "fail";
-      const cls =
-        result === "fail"
-          ? "trace-line trace-line-fail"
-          : result === "pass"
-          ? "trace-line trace-line-pass"
-          : "trace-line";
-      const line = document.createElement("span");
-      line.className = cls;
-      line.textContent = `[t=${t.toString().padStart(4, "0")}ms] verifier.${op} → ${arrow}`;
-      container.appendChild(line);
-      container.scrollTop = container.scrollHeight;
-    },
-  };
-}
-
-interface SteppedAnimationArgs {
-  readonly verifyClickedAt: number;
-  /** Step number (1-5) that should fail, or null for full-pass. */
-  readonly failStep: number | null;
-  readonly stepCopies: ReadonlyArray<StepCopy>;
-  /** Localised sub-stage line shown on the failing step (spec §3b sub-label). */
-  readonly failSubStageLabel: string;
-  readonly animSteps: ReadonlyArray<HTMLElement>;
-  readonly animProgressFill: HTMLElement;
-  readonly trace: TraceLogger;
-  readonly onStepCompleted: (
-    stepNumber: number,
-    stepName: string,
-    result: "pass" | "fail",
-    durationMs: number,
-  ) => void;
-}
-
-/**
- * Drives the §3b stepped reveal. Awaits each step's reveal time
- * (jittered ±22ms per §3f), cycles its sub-stages with trace-log
- * emissions, then resolves the step pass/fail. Halts at failStep when
- * supplied. Returns the final step number reached (1-5).
- */
-async function runSteppedAnimation(args: SteppedAnimationArgs): Promise<number> {
-  args.animProgressFill.classList.remove("fail");
-  args.animProgressFill.style.width = "0%";
-  let lastStepReached = 0;
-  for (let i = 0; i < STEP_TIMINGS.length; i++) {
-    const cfg = STEP_TIMINGS[i];
-    const stepNum = i + 1;
-    const stepEl = args.animSteps[i];
-    if (!stepEl) continue;
-    lastStepReached = stepNum;
-    const copy = args.stepCopies[i];
-    const subEl = stepEl.querySelector<HTMLElement>(".anim-step-substage");
-    const iconEl = stepEl.querySelector<HTMLElement>(".anim-step-icon");
-    const msEl = stepEl.querySelector<HTMLElement>(".anim-step-ms");
-
-    const revealTarget =
-      args.verifyClickedAt + cfg.revealAt + (Math.random() * 2 - 1) * STEP_JITTER_MS;
-    await sleep(revealTarget - performance.now());
-
-    stepEl.dataset["state"] = "verifying";
-    if (iconEl) iconEl.textContent = "◐";
-    args.trace.emit(`${cfg.traceOp}.start`, null);
-
-    const stepStartedAt = performance.now();
-    const subDuration = SUB_STAGE_MS;
-    for (let s = 0; s < copy.subStages.length; s++) {
-      if (subEl) subEl.textContent = copy.subStages[s];
-      args.trace.emit(`${cfg.traceOp}.${s + 1}/${copy.subStages.length}`, null);
-      await sleep(subDuration);
-    }
-
-    const isFail = args.failStep !== null && stepNum === args.failStep;
-    const result: "pass" | "fail" = isFail ? "fail" : "pass";
-    const durationMs = Math.round(performance.now() - stepStartedAt);
-    stepEl.dataset["state"] = result;
-    if (iconEl) iconEl.textContent = result === "pass" ? "✓" : "✗";
-    if (msEl) msEl.textContent = `${durationMs} ms`;
-    if (subEl && isFail) subEl.textContent = args.failSubStageLabel;
-
-    const progress = (stepNum / STEP_TIMINGS.length) * 100;
-    args.animProgressFill.style.width = `${progress}%`;
-    if (isFail) args.animProgressFill.classList.add("fail");
-
-    args.trace.emit(cfg.traceOp, result);
-    args.onStepCompleted(stepNum, copy.label, result, durationMs);
-
-    if (isFail) {
-      await sleep(FAIL_HOLD_MS);
-      break;
-    }
-    await sleep(STEP_GAP_MS);
-  }
-  return lastStepReached;
-}
-
-function resetAnimationPanel(
-  animSteps: ReadonlyArray<HTMLElement>,
-  animProgressFill: HTMLElement,
-): void {
-  animProgressFill.classList.remove("fail");
-  animProgressFill.style.width = "0%";
-  for (const step of animSteps) {
-    delete step.dataset["state"];
-    const icon = step.querySelector<HTMLElement>(".anim-step-icon");
-    const ms = step.querySelector<HTMLElement>(".anim-step-ms");
-    const sub = step.querySelector<HTMLElement>(".anim-step-substage");
-    if (icon) icon.textContent = "○";
-    if (ms) ms.textContent = "";
-    if (sub) sub.textContent = "";
-  }
-}
-
-function renderCounterFactual(
-  cfBlock: HTMLElement,
-  withoutList: HTMLElement,
-  withList: HTMLElement,
-  copy: { without: ReadonlyArray<string>; with: ReadonlyArray<string> },
-): void {
-  withoutList.innerHTML = "";
-  withList.innerHTML = "";
-  for (const line of copy.without) {
-    const li = document.createElement("li");
-    li.textContent = line;
-    withoutList.appendChild(li);
-  }
-  for (const line of copy.with) {
-    const li = document.createElement("li");
-    li.textContent = line;
-    withList.appendChild(li);
-  }
-  cfBlock.hidden = false;
-}
+const STAGE_ORDER: ReadonlyArray<TimelineStage> = [
+  "registered",
+  "verifying",
+  "offchain",
+  "onchain",
+];
 
 export function mount(): void {
-  const i18n = getI18n();
+  const globals = window.__LEMMA_DEMO_I18N__;
+  const t = globals?.i18n ?? getTranslations("en");
+  const locale = globals?.locale ?? "en";
+  const state: State = {
+    rows: PIPELINE_FIXTURES.map(toRow),
+    filter: "all",
+    query: "",
+    selectedId: null,
+    animTimers: new Map(),
+    stageTimes: new Map(),
+    lastFocus: null,
+  };
 
-  const deepLink = resolveDeepLinkSample();
-  // Normalise URL — drop `?sample=` query (consumed on load); keep
-  // `#sample=<id>` for in-app round-trip. Only rewrite when a query was
-  // present so plain reloads of an already-normalised URL don't churn
-  // history.
-  if (deepLink.hadQuery) {
-    normaliseDeepLinkUrl(deepLink.valid);
-  }
+  // Seed stage times for the existing fixtures so the timeline doesn't
+  // open with empty timestamps when the user inspects them.
+  state.rows.forEach((row) => seedStageTimes(state, row));
 
-  track("demo_loaded", {
-    referrer: document.referrer || "(direct)",
-    viewport: `${window.innerWidth}x${window.innerHeight}`,
-    locale: i18n.locale,
-    deep_link_sample: deepLink.valid,
+  wireTheme();
+  wireFilters(state, t);
+  wireSearch(state, t);
+  wireRowClicks(state, t);
+  wireSampleChips(state, t, locale);
+  wireDetailClose(state);
+  startUpdatedAtTick();
+  startAmbientSim(state, t);
+}
+
+/* ─── Row helpers ─── */
+
+function toRow(entry: PipelineEntry): Row {
+  return {
+    ...entry,
+    id: entry.docHash,
+    schemaTitle: SCHEMA_LABEL[entry.schema],
+  };
+}
+
+function seedStageTimes(state: State, row: Row): void {
+  const reached = stagesReachedAt(row.status);
+  const map: Partial<Record<TimelineStage, string>> = {};
+  const baseTs = Date.parse(row.updatedAt);
+  // Spread the seeded stages over a 30-second window leading up to the
+  // row's "updated" timestamp.
+  reached.forEach((stage, i) => {
+    map[stage] = new Date(baseTs - (reached.length - 1 - i) * 5000).toISOString();
   });
+  state.stageTimes.set(row.id, map);
+}
 
-  const radios = document.querySelectorAll<HTMLInputElement>(
-    'input[type="radio"][name="sample"]',
-  );
-  const fileInput = document.getElementById(
-    "custom-file",
-  ) as HTMLInputElement | null;
-  const fileNameLabel = document.getElementById("custom-file-name");
-  const verifyBtn = document.getElementById(
-    "verify-btn",
-  ) as HTMLButtonElement | null;
-  const verifyHint = document.getElementById("verify-hint");
-  const result = document.getElementById("result");
-  const resultOverall = document.getElementById("result-overall");
-  const resultTime = document.getElementById("result-time");
-  const resultSession = document.getElementById("result-session");
-  const resultBrowserOnly = document.getElementById("result-browser-only");
-  const resultPassBody = document.getElementById("result-pass-body");
-  const resultFailBody = document.getElementById("result-fail-body");
-  const resultProvenList = document.getElementById("result-proven-list");
-  const resultImpactList = document.getElementById("result-impact-list");
-  const resultFailReason = document.getElementById("result-fail-reason");
-  const ctaRow = document.getElementById("cta-row");
-  const ctaSales = document.getElementById("cta-sales") as HTMLAnchorElement | null;
-  const ctaWaitlist = document.getElementById("cta-waitlist") as HTMLAnchorElement | null;
-  const langToggle = document.querySelector<HTMLAnchorElement>(".lang-toggle");
-  // v0.3.2 stepped animation + counter-factual + trust badges + trace log
-  const resultAnimation = document.getElementById("result-animation");
-  const animProgressFill = document.getElementById("anim-progress");
-  const animSteps = Array.from(document.querySelectorAll<HTMLElement>(".anim-step"));
-  const counterFactualBlock = document.getElementById("counterfactual-block");
-  const cfWithoutList = document.getElementById("cf-without");
-  const cfWithList = document.getElementById("cf-with");
-  const traceSection = document.getElementById("trace-section");
-  const traceToggle = document.getElementById("trace-toggle") as HTMLButtonElement | null;
-  const traceLog = document.getElementById("trace-log");
-  const trustBadgesSection = document.getElementById("trust-badges");
-
-  if (
-    !verifyBtn ||
-    !result ||
-    !resultOverall ||
-    !resultTime ||
-    !resultSession ||
-    !resultBrowserOnly ||
-    !resultPassBody ||
-    !resultFailBody ||
-    !resultProvenList ||
-    !resultImpactList ||
-    !resultFailReason ||
-    !ctaRow ||
-    !resultAnimation ||
-    !animProgressFill ||
-    !counterFactualBlock ||
-    !cfWithoutList ||
-    !cfWithList ||
-    !traceSection ||
-    !traceToggle ||
-    !traceLog ||
-    !trustBadgesSection
-  ) {
-    return;
+function stagesReachedAt(status: PipelineStatus): ReadonlyArray<TimelineStage> {
+  switch (status) {
+    case "received": return ["registered"];
+    case "verifying": return ["registered", "verifying"];
+    case "verified": return ["registered", "verifying", "offchain"];
+    case "onchain":
+      return ["registered", "verifying", "offchain", "onchain"];
+    case "rejected": return ["registered", "verifying"];
   }
+}
 
-  // Capture the lang toggle's bare locale href before we layer the sample
-  // hash on top of it; we need the bare value when the selection clears.
-  const langToggleBaseHref = langToggle?.getAttribute("href") ?? "";
+/* ─── Theme toggle ─── */
 
-  const setHashSample = (sampleId: string | null): void => {
-    const url = new URL(window.location.href);
-    url.hash = sampleId ? `sample=${sampleId}` : "";
-    history.replaceState(null, "", url.toString());
-  };
-
-  const updateLangToggleHref = (sampleId: string | null): void => {
-    if (!langToggle) return;
-    langToggle.href = sampleId
-      ? `${langToggleBaseHref}#sample=${sampleId}`
-      : langToggleBaseHref;
-  };
-
-  const updateVerifyState = (): void => {
-    if (selection.kind === "none") {
-      verifyBtn.disabled = true;
-      if (verifyHint) verifyHint.textContent = i18n.verifyStrings.hintPick;
-      return;
-    }
-    verifyBtn.disabled = false;
-    if (verifyHint) {
-      verifyHint.textContent =
-        selection.kind === "custom"
-          ? `${i18n.verifyStrings.hintReadyCustom} ${selection.fileName}`
-          : `${i18n.verifyStrings.hintReadySample} ${i18n.samplesCopy[selection.sample.id]?.label ?? selection.sample.id}.`;
-    }
-  };
-
-  const selectSampleById = (
-    id: string,
-    source: "deep_link" | "user_click",
-  ): boolean => {
-    const sample = getSample(id);
-    if (!sample) return false;
-    selection = { kind: "sample", sample };
-    // Sync radio state (no-op on user_click path; meaningful for deep_link).
-    radios.forEach((r) => {
-      r.checked = r.dataset["sampleId"] === id;
-    });
-    if (fileInput) fileInput.value = "";
-    if (fileNameLabel) {
-      const def = fileNameLabel.dataset["defaultNote"];
-      if (def) fileNameLabel.textContent = def;
-    }
-    setHashSample(id);
-    updateLangToggleHref(id);
-    track("sample_selected", {
-      sample_id: id,
-      locale: i18n.locale,
-      source,
-    });
-    updateVerifyState();
-    return true;
-  };
-
-  radios.forEach((radio) => {
-    radio.addEventListener("change", () => {
-      const id = radio.dataset["sampleId"];
-      if (!id) return;
-      selectSampleById(id, "user_click");
-    });
-  });
-
-  if (fileInput) {
-    fileInput.addEventListener("change", async () => {
-      const file = fileInput.files?.[0];
-      if (!file) return;
-      const raw = await file.text();
-      selection = { kind: "custom", raw, fileName: file.name };
-      // Clear any radio selection.
-      radios.forEach((r) => {
-        r.checked = false;
-      });
-      if (fileNameLabel) {
-        const prefix = fileNameLabel.dataset["readyPrefix"] ?? "";
-        fileNameLabel.textContent = `${file.name} — ${prefix}`;
-      }
-      // Custom uploads aren't deep-linkable — drop the sample hash and
-      // strip it from the lang toggle so a locale switch doesn't re-select
-      // an unrelated sample.
-      setHashSample(null);
-      updateLangToggleHref(null);
-      track("custom_uploaded", { file_size_bytes: file.size });
-      updateVerifyState();
-    });
-  }
-
-  // Apply deep-link selection now that the radios + handlers are wired.
-  if (deepLink.valid) {
-    if (selectSampleById(deepLink.valid, "deep_link")) {
-      const matchingRadio = Array.from(radios).find(
-        (r) => r.dataset["sampleId"] === deepLink.valid,
-      );
-      if (matchingRadio) {
-        const label = matchingRadio.closest("label.sample") as HTMLElement | null;
-        if (label) {
-          const reduceMotion =
-            window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ??
-            false;
-          label.scrollIntoView({
-            behavior: reduceMotion ? "auto" : "smooth",
-            block: "center",
-          });
-        }
-      }
-    }
-  }
-
-  // ── Trace log toggle (closure-scoped state, not localStorage) ─────
-  let traceOpen = false;
-  const trace = createTraceLogger(traceLog);
-  const setTraceOpen = (open: boolean): void => {
-    traceOpen = open;
-    traceToggle.setAttribute("aria-expanded", open ? "true" : "false");
-    traceToggle.textContent =
-      open
-        ? traceToggle.dataset["labelHide"] ?? i18n.verifyAnimStrings.steps.length.toString()
-        : traceToggle.dataset["labelShow"] ?? "Show trace ▾";
-    traceLog.hidden = !open;
-  };
-  traceToggle.addEventListener("click", () => setTraceOpen(!traceOpen));
-
-  // ── Trust badges IntersectionObserver (fires once) ─────────────────
-  if (typeof IntersectionObserver !== "undefined") {
-    const trustObs = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            track("trust_badges_viewport_entered", { locale: i18n.locale });
-            trustObs.disconnect();
-            break;
-          }
-        }
-      },
-      { threshold: 0.25 },
-    );
-    trustObs.observe(trustBadgesSection);
-  }
-
-  verifyBtn.addEventListener("click", async () => {
-    if (selection.kind === "none") return;
-    const sampleId = selection.kind === "sample" ? selection.sample.id : "custom";
-    const sessionNonce = sessionShortNonce();
-    const verifyClickedAt = performance.now();
-    track("verify_clicked", { sample_id: sampleId, locale: i18n.locale });
-
-    // Reset UI for new run.
-    resetResultPanel({
-      result,
-      resultOverall,
-      resultTime,
-      resultSession,
-      resultBrowserOnly,
-      resultPassBody,
-      resultFailBody,
-      resultProvenList,
-      resultImpactList,
-      resultFailReason,
-      ctaRow,
-    });
-    counterFactualBlock.hidden = true;
-    cfWithoutList.innerHTML = "";
-    cfWithList.innerHTML = "";
-    resetAnimationPanel(animSteps, animProgressFill);
-    resultAnimation.hidden = false;
-    trace.reset(verifyClickedAt);
-
-    resultSession.textContent = `${i18n.resultStrings.sessionLabel}: ${sessionNonce}`;
-    resultSession.hidden = false;
-    result.classList.remove("hidden");
-    // Bring the result panel into view *now* so the verification
-    // animation plays where the user can see it — not below the fold.
-    result.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    verifyBtn.disabled = true;
-    const labelBase = verifyBtn.dataset["label"] ?? "Verify";
-    const labelInFlight = verifyBtn.dataset["labelInflight"] ?? "Verifying…";
-    verifyBtn.textContent = labelInFlight;
-
-    const stopLiveCounter = startLiveCounter(resultTime, verifyClickedAt);
-
-    // Determine which step (if any) should fail so the animation can halt
-    // at the right point. For custom uploads, run a quick JSON parse —
-    // invalid JSON → schema-step (Step 1) fails in the animation; the
-    // verifier will still produce the canonical body content.
-    let failStep: number | null = null;
-    if (selection.kind === "sample" && selection.sample.failureMode) {
-      failStep = FAILURE_STEP[selection.sample.failureMode];
-    } else if (selection.kind === "custom") {
-      try {
-        JSON.parse(selection.raw);
-      } catch {
-        failStep = 1;
-      }
-    }
-
-    let resultData: VerificationResult;
+function wireTheme(): void {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const current = document.documentElement.dataset.theme === "light"
+      ? "light"
+      : "dark";
+    const next = current === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
     try {
-      await runSteppedAnimation({
-        verifyClickedAt,
-        failStep,
-        stepCopies: i18n.verifyAnimStrings.steps,
-        failSubStageLabel: i18n.verifyAnimStrings.failSubStageLabel,
-        animSteps,
-        animProgressFill,
-        trace,
-        onStepCompleted: (stepNumber, stepName, stepResult, durationMs) => {
-          track("verification_step_completed", {
-            sample_id: sampleId,
-            step_number: stepNumber,
-            step_name: stepName,
-            result: stepResult,
-            duration_ms: durationMs,
-            locale: i18n.locale,
-          });
-        },
+      window.localStorage.setItem(THEME_KEY, next);
+    } catch (_) {
+      /* private mode */
+    }
+  });
+}
+
+/* ─── Filter tabs ─── */
+
+function wireFilters(state: State, t: Translations): void {
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".tab[data-filter]");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((other) => {
+        other.classList.remove("is-active");
+        other.setAttribute("aria-selected", "false");
       });
-      resultData =
-        selection.kind === "sample"
-          ? await verifySample(selection.sample)
-          : await verifyCustom(selection.raw);
-    } finally {
-      stopLiveCounter();
-      verifyBtn.textContent = labelBase;
-      verifyBtn.disabled = false;
+      tab.classList.add("is-active");
+      tab.setAttribute("aria-selected", "true");
+      const filter = (tab.dataset.filter as Filter) ?? "all";
+      state.filter = filter;
+      applyFilterAndSearch(state, t);
+    });
+  });
+}
+
+/* ─── Search ─── */
+
+function wireSearch(state: State, t: Translations): void {
+  const input = document.getElementById("pipeline-search");
+  if (!(input instanceof HTMLInputElement)) return;
+  input.addEventListener("input", () => {
+    state.query = input.value.trim().toLowerCase();
+    applyFilterAndSearch(state, t);
+  });
+}
+
+function applyFilterAndSearch(state: State, t: Translations): void {
+  const tbody = document.getElementById("pipeline-tbody");
+  if (!tbody) return;
+  const trs = tbody.querySelectorAll<HTMLTableRowElement>("tr[data-doc-hash]");
+  let shown = 0;
+  trs.forEach((tr) => {
+    const status = tr.dataset.status ?? "";
+    const hash = (tr.dataset.docHash ?? "").toLowerCase();
+    const schema = (tr.dataset.schema ?? "").toLowerCase();
+    const matchesFilter = state.filter === "all" || state.filter === status;
+    const matchesQuery =
+      state.query === "" ||
+      hash.includes(state.query) ||
+      schema.includes(state.query);
+    const visible = matchesFilter && matchesQuery;
+    tr.style.display = visible ? "" : "none";
+    if (visible) shown += 1;
+  });
+  const count = document.getElementById("pipeline-count");
+  if (count) {
+    count.textContent = t.table.showing.replace("{n}", String(shown));
+  }
+  // Empty state row
+  let emptyRow = tbody.querySelector<HTMLTableRowElement>("tr.empty-state-row");
+  if (shown === 0) {
+    if (!emptyRow) {
+      emptyRow = document.createElement("tr");
+      emptyRow.className = "empty-state-row";
+      const td = document.createElement("td");
+      td.colSpan = 5;
+      td.className = "empty-row";
+      td.textContent = t.table.empty;
+      emptyRow.appendChild(td);
+      tbody.appendChild(emptyRow);
     }
+  } else if (emptyRow) {
+    emptyRow.remove();
+  }
+}
 
-    const totalMs = Math.round(performance.now() - verifyClickedAt);
-    resultTime.textContent = `${totalMs} ms`;
-    resultAnimation.hidden = true;
+/* ─── Row clicks → detail ─── */
 
-    renderResult({
-      data: resultData,
-      sample: selection.kind === "sample" ? selection.sample : null,
-      i18n,
-      resultOverall,
-      resultBrowserOnly,
-      resultPassBody,
-      resultFailBody,
-      resultProvenList,
-      resultImpactList,
-      resultFailReason,
-      ctaRow,
+function wireRowClicks(state: State, t: Translations): void {
+  const tbody = document.getElementById("pipeline-tbody");
+  if (!tbody) return;
+  tbody.addEventListener("click", (e) => {
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    const tr = target.closest<HTMLTableRowElement>("tr[data-doc-hash]");
+    if (!tr) return;
+    const id = tr.dataset.docHash ?? "";
+    openDetail(state, t, id);
+  });
+}
+
+function openDetail(state: State, t: Translations, id: string): void {
+  const row = state.rows.find((r) => r.id === id);
+  if (!row) return;
+
+  // Capture focus before opening so we can restore on close. Skip if
+  // the panel is already open (re-opening with a new row should leave
+  // the original lastFocus intact so close returns to the true origin).
+  if (!state.selectedId) {
+    const active = document.activeElement;
+    state.lastFocus = active instanceof HTMLElement ? active : null;
+  }
+  state.selectedId = id;
+
+  // Visual selection
+  document
+    .querySelectorAll<HTMLTableRowElement>("#pipeline-tbody tr[data-doc-hash]")
+    .forEach((tr) => {
+      tr.classList.toggle("is-selected", tr.dataset.docHash === id);
     });
 
-    // Counter-factual block for fail samples that ship the §3d copy.
-    if (
-      resultData.overall === "fail" &&
-      selection.kind === "sample" &&
-      i18n.samplesCopy[selection.sample.id]?.counterFactual
-    ) {
-      const cf = i18n.samplesCopy[selection.sample.id].counterFactual!;
-      renderCounterFactual(counterFactualBlock, cfWithoutList, cfWithList, cf);
-      track("counterfactual_shown", {
-        sample_id: selection.sample.id,
-        locale: i18n.locale,
-      });
-    }
+  renderDetail(state, t, row);
 
-    // Trust badges + trace section become visible after first verify.
-    trustBadgesSection.hidden = false;
-    traceSection.hidden = false;
+  const panel = document.getElementById("detail");
+  const overlay = document.getElementById("detail-overlay");
+  panel?.classList.add("is-open");
+  overlay?.classList.add("is-open");
+  panel?.setAttribute("aria-hidden", "false");
+  overlay?.setAttribute("aria-hidden", "false");
 
-    track("verify_completed", {
-      sample_id: sampleId,
-      result: resultData.overall,
-      total_duration_ms: totalMs,
-      primitives_verified: resultData.checks
-        .filter((c) => c.status !== "skip")
-        .map((c) => c.id),
-      locale: i18n.locale,
-    });
-    track("result_shown", {
-      result: resultData.overall,
-      time_to_result_ms: totalMs,
-      locale: i18n.locale,
-    });
+  // Move focus into the dialog so keyboard users land on something
+  // actionable. The close button is the only focusable element in the
+  // panel chrome; renderDetailBody is read-only content.
+  const closeBtn = document.getElementById("detail-close");
+  closeBtn?.focus();
+}
 
-    // Update CTA hrefs with sample-specific UTM (v0.3 convention).
-    if (ctaSales) {
-      ctaSales.href = withUtm(ctaSales.dataset["ctaBase"] ?? ctaSales.href, sampleId, i18n.locale);
-    }
-    if (ctaWaitlist) {
-      ctaWaitlist.href = withUtm(ctaWaitlist.dataset["ctaBase"] ?? ctaWaitlist.href, sampleId, i18n.locale);
-    }
+function renderDetail(state: State, t: Translations, row: Row): void {
+  const title = document.getElementById("detail-title");
+  const body = document.getElementById("detail-body");
+  if (!title || !body) return;
+  title.textContent = `${row.schemaTitle}${t.detail.titleSuffix}`;
+  body.innerHTML = renderDetailBody(state, t, row);
+}
 
+function renderDetailBody(state: State, t: Translations, row: Row): string {
+  const reached = new Set(stagesReachedAt(row.status));
+  const failed = row.status === "rejected";
+  const failStage: TimelineStage = "verifying"; // current rejection model fails at proof verify
+  const times = state.stageTimes.get(row.id) ?? {};
+
+  const stepHtml = STAGE_ORDER.map((stage) => {
+    const isReached = reached.has(stage);
+    const isCurrent = !failed && row.status === "verifying" && stage === "verifying";
+    const isFail = failed && stage === failStage;
+    const state_ =
+      isFail ? "fail" : isReached && !isCurrent ? "done"
+      : isCurrent ? "active" : "pending";
+    const label = stepLabel(t, stage);
+    const ts = times[stage];
+    const timeText = ts ? formatTime(ts) : "";
+    const note =
+      isFail && row.rejectionReason
+        ? `<div class="timeline-note">${escape(row.rejectionReason)}</div>`
+        : "";
+    return `
+      <li class="timeline-step" data-state="${state_}" data-stage="${stage}">
+        <span class="timeline-marker" aria-hidden="true"></span>
+        <div class="timeline-text">
+          <span class="timeline-label">${escape(label)}</span>
+          ${timeText ? `<span class="timeline-time">${escape(timeText)}</span>` : ""}
+          ${note}
+        </div>
+      </li>
+    `;
+  }).join("");
+
+  const scenario = row.scenario
+    ? `
+        <div class="detail-section">
+          <div class="detail-section-label">${escape(t.detail.scenario)}</div>
+          <div class="field-value is-plain">${escape(row.scenario)}</div>
+        </div>
+      `
+    : "";
+
+  const hookHtml = row.hooks && row.hooks.length > 0
+    ? `
+        <div class="detail-section">
+          <div class="detail-section-label">${escape(t.detail.hookExecutions)}</div>
+          ${row.hooks.map((h) => `
+            <div class="hook-row">
+              <span class="hook-name">${escape(h.name)}</span>
+              <span class="hook-badge">${escape(
+                h.status === "succeeded"
+                  ? t.detail.hookStatusSucceeded
+                  : t.detail.hookStatusFailed,
+              )}</span>
+            </div>
+          `).join("")}
+        </div>
+      `
+    : "";
+
+  return `
+    ${scenario}
+    <div class="detail-section">
+      <div class="detail-section-label">${escape(t.detail.verificationPipeline)}</div>
+      <ol class="timeline">${stepHtml}</ol>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">${escape(t.detail.documentInfo)}</div>
+      <div class="field-grid">
+        ${field(t.detail.fields.docHash, row.docHash)}
+        ${field(t.detail.fields.schema, row.schema, true)}
+        ${field(t.detail.fields.ipfsCid, row.ipfsCid)}
+        ${field(t.detail.fields.issuer, row.issuer)}
+        ${field(t.detail.fields.subject, row.subject)}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">${escape(t.detail.cryptographic)}</div>
+      <div class="field-grid">
+        ${field(t.detail.fields.commitmentScheme, row.commitmentScheme, true)}
+        ${field(t.detail.fields.commitmentRoot, row.commitmentRoot)}
+        ${field(t.detail.fields.revocationRoot, row.revocationRoot)}
+        ${field(t.detail.fields.signatureFormat, row.signatureFormat, true)}
+      </div>
+    </div>
+
+    ${hookHtml}
+
+    <div class="detail-section">
+      <div class="detail-section-label">${escape(t.detail.onchain)}</div>
+      <div class="field-grid">
+        ${field(t.detail.fields.chain, row.chain, true)}
+      </div>
+    </div>
+  `;
+}
+
+function field(label: string, value: string, plain = false): string {
+  return `
+    <div class="field">
+      <span class="field-label">${escape(label)}</span>
+      <span class="field-value ${plain ? "is-plain" : ""}">${escape(value)}</span>
+    </div>
+  `;
+}
+
+function stepLabel(t: Translations, stage: TimelineStage): string {
+  return t.detail.steps[stage];
+}
+
+function formatTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+  return `${hh}:${mm}:${ss}`;
+}
+
+function escape(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* ─── Detail close ─── */
+
+function wireDetailClose(state: State): void {
+  const close = (): void => {
+    if (!state.selectedId) return;
+    document.getElementById("detail")?.classList.remove("is-open");
+    document.getElementById("detail-overlay")?.classList.remove("is-open");
+    document.getElementById("detail")?.setAttribute("aria-hidden", "true");
+    document.getElementById("detail-overlay")?.setAttribute("aria-hidden", "true");
+    state.selectedId = null;
+    document
+      .querySelectorAll<HTMLTableRowElement>("#pipeline-tbody tr[data-doc-hash]")
+      .forEach((tr) => tr.classList.remove("is-selected"));
+    // Restore focus to whatever was focused before the panel opened.
+    state.lastFocus?.focus();
+    state.lastFocus = null;
+  };
+  document.getElementById("detail-close")?.addEventListener("click", close);
+  document.getElementById("detail-overlay")?.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && state.selectedId) close();
   });
 
-  const onCtaClick = (ctaType: "sales" | "waitlist") => () => {
-    const sampleId =
-      selection.kind === "sample" ? selection.sample.id : selection.kind === "custom" ? "custom" : "none";
-    track("cta_clicked", {
-      cta_type: ctaType,
-      result_at_click: resultOverall.textContent ?? "",
-      locale: i18n.locale,
-      sample_id: sampleId,
+  // Focus trap — the panel only owns one focusable (the close button),
+  // so Tab/Shift+Tab cycles back to it. This keeps keyboard focus
+  // inside the dialog while it's open, per WAI-ARIA dialog pattern.
+  document.getElementById("detail")?.addEventListener("keydown", (e) => {
+    if (!state.selectedId) return;
+    if (e.key !== "Tab") return;
+    e.preventDefault();
+    document.getElementById("detail-close")?.focus();
+  });
+}
+
+/* ─── Sample chip → spawn pipeline row + animate ─── */
+
+function wireSampleChips(state: State, t: Translations, locale: Locale): void {
+  const chips = document.querySelectorAll<HTMLButtonElement>(".sample-chip[data-sample-id]");
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const sampleId = chip.dataset.sampleId ?? "";
+      const sample = getSample(sampleId);
+      if (!sample) return;
+      spawnSampleRow(state, t, sample, locale);
     });
-    track("cta_outbound", {
-      cta_type: ctaType,
-      outbound_url:
-        ctaType === "sales"
-          ? ctaSales?.href
-          : ctaWaitlist?.href,
-      locale: i18n.locale,
-    });
+  });
+}
+
+function spawnSampleRow(
+  state: State,
+  t: Translations,
+  sample: Sample,
+  locale: Locale,
+): void {
+  const copy = t.samples[sample.id];
+  const docHash = synthHash(sample.id);
+  const row: Row = {
+    id: docHash,
+    docHash,
+    schema: pickSchemaForSample(sample),
+    status: "received",
+    chain: "Monad Testnet",
+    updatedAt: new Date().toISOString(),
+    ipfsCid: `bafy${randSegment(20)}`,
+    issuer: `0x${randSegment(20)}`,
+    subject: `0x${randSegment(20)}`,
+    commitmentScheme: "poseidon",
+    commitmentRoot: `0x${randSegment(32)}`,
+    revocationRoot: `0x${randSegment(32)}`,
+    signatureFormat: sample.bundle.envelope.scheme.startsWith("BBS+")
+      ? "bbs+"
+      : "opaque",
+    schemaTitle: SCHEMA_LABEL[pickSchemaForSample(sample)],
+    scenario: copy?.scenario,
+    outcome: copy?.outcome,
+    rejectionReason:
+      sample.expectedResult === "fail" ? copy?.outcome : undefined,
   };
-  ctaSales?.addEventListener("click", onCtaClick("sales"));
-  ctaWaitlist?.addEventListener("click", onCtaClick("waitlist"));
 
-  if (langToggle) {
-    const toLocale = langToggle.dataset["otherLocale"] === "ja" ? "ja" : "en";
-    langToggle.addEventListener("click", () => {
-      track("language_toggled", {
-        from_locale: i18n.locale,
-        to_locale: toLocale,
-        time_since_load_ms: Math.round(performance.now()),
-      });
-    });
-  }
+  state.rows = [row, ...state.rows];
+  state.stageTimes.set(row.id, { registered: row.updatedAt });
 
-  updateVerifyState();
-}
+  prependRow(t, row);
+  openDetail(state, t, row.id);
+  applyFilterAndSearch(state, t);
 
-interface ResultPanelEls {
-  readonly result: HTMLElement;
-  readonly resultOverall: HTMLElement;
-  readonly resultTime: HTMLElement;
-  readonly resultSession: HTMLElement;
-  readonly resultBrowserOnly: HTMLElement;
-  readonly resultPassBody: HTMLElement;
-  readonly resultFailBody: HTMLElement;
-  readonly resultProvenList: HTMLElement;
-  readonly resultImpactList: HTMLElement;
-  readonly resultFailReason: HTMLElement;
-  readonly ctaRow: HTMLElement;
-}
-
-function resetResultPanel(els: ResultPanelEls): void {
-  els.resultOverall.textContent = "";
-  els.resultOverall.className = "result-overall";
-  els.resultTime.textContent = "";
-  els.resultProvenList.innerHTML = "";
-  els.resultImpactList.innerHTML = "";
-  els.resultFailReason.textContent = "";
-  els.resultPassBody.hidden = true;
-  els.resultFailBody.hidden = true;
-  els.ctaRow.classList.add("hidden");
-  els.resultBrowserOnly.classList.remove("pulse");
-}
-
-function startLiveCounter(
-  resultTime: HTMLElement,
-  startedAt: number,
-): () => void {
-  // Respect prefers-reduced-motion: don't run the per-frame counter; the
-  // final value is set by the verify click handler when verification ends.
-  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-    return () => {};
-  }
-  let rafId = 0;
-  const tick = (): void => {
-    const ms = Math.round(performance.now() - startedAt);
-    resultTime.textContent = `${ms} ms`;
-    rafId = requestAnimationFrame(tick);
-  };
-  rafId = requestAnimationFrame(tick);
-  return () => {
-    if (rafId !== 0) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-  };
-}
-
-interface RenderResultArgs {
-  readonly data: VerificationResult;
-  readonly sample: Sample | null;
-  readonly i18n: I18nPayload;
-  readonly resultOverall: HTMLElement;
-  readonly resultBrowserOnly: HTMLElement;
-  readonly resultPassBody: HTMLElement;
-  readonly resultFailBody: HTMLElement;
-  readonly resultProvenList: HTMLElement;
-  readonly resultImpactList: HTMLElement;
-  readonly resultFailReason: HTMLElement;
-  readonly ctaRow: HTMLElement;
-}
-
-function renderResult(args: RenderResultArgs): void {
-  const { data, sample, i18n } = args;
-  const isPass = data.overall === "pass";
-  args.resultOverall.textContent = isPass
-    ? i18n.resultStrings.passOverall
-    : i18n.resultStrings.failOverall;
-  args.resultOverall.className = `result-overall ${data.overall}`;
-
-  // Pulse the "0 bytes sent" badge briefly on completion.
-  args.resultBrowserOnly.classList.add("pulse");
-  setTimeout(() => args.resultBrowserOnly.classList.remove("pulse"), 1200);
-
-  if (isPass) {
-    args.resultPassBody.hidden = false;
-    args.resultFailBody.hidden = true;
-    // Proven pillars list — sample-driven; for custom uploads we omit (no
-    // per-sample pillar mapping available).
-    if (sample) {
-      for (const slug of sample.pillars) {
-        const copy = i18n.pillarsCopy[PILLAR_I18N_KEY[slug]];
-        args.resultProvenList.appendChild(buildProvenRow(copy));
-      }
-      // Business impact bullets.
-      const sampleCopy = i18n.samplesCopy[sample.id];
-      if (sampleCopy) {
-        for (const bullet of sampleCopy.businessImpact) {
-          args.resultImpactList.appendChild(buildImpactRow(bullet));
-        }
-      }
-    }
+  // Animate Received → Verifying → (Verified → On-chain) or Rejected.
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  timers.push(
+    setTimeout(() => transitionRow(state, t, row.id, "verifying"), 900),
+  );
+  if (sample.expectedResult === "pass") {
+    timers.push(setTimeout(() => transitionRow(state, t, row.id, "verified"), 2700));
+    timers.push(setTimeout(() => transitionRow(state, t, row.id, "onchain"), 4500));
   } else {
-    args.resultFailBody.hidden = false;
-    args.resultPassBody.hidden = true;
-    const sampleCopy = sample ? i18n.samplesCopy[sample.id] : null;
-    args.resultFailReason.textContent =
-      sampleCopy?.failReason || data.failureReason || "";
+    timers.push(setTimeout(() => transitionRow(state, t, row.id, "rejected"), 2700));
+  }
+  state.animTimers.set(row.id, timers);
+}
+
+function pickSchemaForSample(sample: Sample): PipelineSchema {
+  if (sample.industry === "Financial") return "kyc-aml-v2";
+  if (sample.industry === "Manufacturing") return "asset-proof-v1";
+  return "identity-v1";
+}
+
+function randSegment(len: number): string {
+  const chars = "0123456789abcdef";
+  let out = "";
+  for (let i = 0; i < len; i += 1) {
+    out += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return out;
+}
+
+function synthHash(seed: string): string {
+  // Stable-looking but unique-per-click hash so the row id is unique.
+  const nonce = Math.random().toString(16).slice(2, 8);
+  return `0x${hashSeed(seed)}${nonce}${randSegment(6)}`;
+}
+
+function hashSeed(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
+
+function prependRow(t: Translations, row: Row): void {
+  const tbody = document.getElementById("pipeline-tbody");
+  if (!tbody) return;
+  const tr = document.createElement("tr");
+  tr.dataset.docHash = row.docHash;
+  tr.dataset.status = row.status;
+  tr.dataset.schema = row.schema;
+  tr.classList.add("is-fresh");
+  tr.innerHTML = `
+    <td><span class="cell-hash">${escape(truncateHash(row.docHash))}</span></td>
+    <td><span class="cell-schema"><span class="schema-dot ${SCHEMA_FAMILY[row.schema]}"></span>${escape(SCHEMA_LABEL[row.schema])}</span></td>
+    <td><span class="status-pill ${row.status}">${escape(t.tabs[statusToTabKey(row.status)])}</span></td>
+    <td class="col-chain cell-chain">${escape(row.chain)}</td>
+    <td class="cell-updated" data-iso="${row.updatedAt}">${escape(formatRelative(row.updatedAt))}</td>
+  `;
+  // Insert before existing rows (but after the empty-state row if one exists)
+  const empty = tbody.querySelector(".empty-state-row");
+  if (empty) {
+    tbody.insertBefore(tr, empty);
+  } else {
+    tbody.insertBefore(tr, tbody.firstChild);
+  }
+}
+
+function statusToTabKey(
+  status: PipelineStatus,
+): "received" | "verifying" | "verified" | "onchain" | "rejected" {
+  return status;
+}
+
+function transitionRow(
+  state: State,
+  t: Translations,
+  id: string,
+  next: PipelineStatus,
+): void {
+  const row = state.rows.find((r) => r.id === id);
+  if (!row) return;
+  const newRow: Row = { ...row, status: next, updatedAt: new Date().toISOString() };
+  state.rows = state.rows.map((r) => (r.id === id ? newRow : r));
+
+  // Update stage times
+  const times = state.stageTimes.get(id) ?? {};
+  const stamp = new Date().toISOString();
+  const nextTimes: Partial<Record<TimelineStage, string>> = { ...times };
+  if (next === "verifying") nextTimes.verifying = stamp;
+  if (next === "verified") nextTimes.offchain = stamp;
+  if (next === "onchain") nextTimes.onchain = stamp;
+  if (next === "rejected") nextTimes.verifying = times.verifying ?? stamp;
+  state.stageTimes.set(id, nextTimes);
+
+  // Update the DOM
+  const tr = document.querySelector<HTMLTableRowElement>(
+    `#pipeline-tbody tr[data-doc-hash="${cssEscape(id)}"]`,
+  );
+  if (tr) {
+    tr.dataset.status = next;
+    const pill = tr.querySelector<HTMLSpanElement>(".status-pill");
+    if (pill) {
+      pill.className = `status-pill ${next}`;
+      pill.textContent = t.tabs[statusToTabKey(next)];
+    }
+    const updated = tr.querySelector<HTMLSpanElement>(".cell-updated");
+    if (updated) {
+      updated.dataset.iso = stamp;
+      updated.textContent = formatRelative(stamp);
+    }
   }
 
-  args.ctaRow.classList.remove("hidden");
-}
+  applyFilterAndSearch(state, t);
 
-function buildProvenRow(copy: PillarCopy): HTMLLIElement {
-  const li = document.createElement("li");
-  li.className = "proven-item";
-  const icon = document.createElement("span");
-  icon.className = "proven-item-icon";
-  icon.textContent = "✓";
-  icon.setAttribute("aria-hidden", "true");
-  const title = document.createElement("a");
-  title.className = "proven-item-title";
-  title.href = copy.href;
-  title.target = "_blank";
-  title.rel = "noopener";
-  title.textContent = copy.title;
-  const status = document.createElement("span");
-  status.className = "proven-item-status";
-  status.textContent = copy.proofLabel;
-  li.append(icon, title, status);
-  return li;
-}
-
-function buildImpactRow(text: string): HTMLLIElement {
-  const li = document.createElement("li");
-  li.className = "impact-item";
-  const span = document.createElement("span");
-  span.textContent = text;
-  li.append(span);
-  return li;
-}
-
-function withUtm(baseUrl: string, sampleId: string, locale: "en" | "ja"): string {
-  try {
-    const url = new URL(baseUrl);
-    url.searchParams.set("utm_source", "demo");
-    url.searchParams.set("utm_medium", "web");
-    url.searchParams.set("utm_campaign", "ppsi_provenance");
-    url.searchParams.set("utm_content", sampleId);
-    url.searchParams.set("utm_term", locale);
-    return url.toString();
-  } catch {
-    return baseUrl;
+  // Re-render the detail panel if it's the open one
+  if (state.selectedId === id) {
+    renderDetail(state, t, newRow);
   }
+}
+
+function cssEscape(value: string): string {
+  if (typeof (window.CSS as { escape?: (s: string) => string })?.escape === "function") {
+    return (window.CSS as { escape: (s: string) => string }).escape(value);
+  }
+  return value.replace(/(["\\])/g, "\\$1");
+}
+
+/* ─── Ambient sim: nudge a couple of seeded rows forward over time ─── */
+
+function startAmbientSim(state: State, t: Translations): void {
+  const advance = (): void => {
+    // Find a random non-terminal row and advance it one stage.
+    const candidates = state.rows.filter(
+      (r) => r.status === "received" || r.status === "verifying" || r.status === "verified",
+    );
+    if (candidates.length === 0) return;
+    const target = candidates[Math.floor(Math.random() * candidates.length)];
+    const next: PipelineStatus =
+      target.status === "received"
+        ? "verifying"
+        : target.status === "verifying"
+        ? Math.random() < 0.9 ? "verified" : "rejected"
+        : "onchain";
+    transitionRow(state, t, target.id, next);
+  };
+  // Advance every 4-7 seconds.
+  const tick = (): void => {
+    const delay = 4000 + Math.random() * 3000;
+    window.setTimeout(() => {
+      advance();
+      tick();
+    }, delay);
+  };
+  tick();
+}
+
+/* ─── Updated-at tick (refresh "Nh ago" labels every 30s) ─── */
+
+function startUpdatedAtTick(): void {
+  window.setInterval(() => {
+    document
+      .querySelectorAll<HTMLSpanElement>(".cell-updated[data-iso]")
+      .forEach((el) => {
+        const iso = el.dataset.iso;
+        if (!iso) return;
+        el.textContent = formatRelative(iso);
+      });
+  }, 30_000);
 }
