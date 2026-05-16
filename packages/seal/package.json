@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/seal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Seal — ZK auth circuit for Lemma dashboard Proof-based sign-in. Proves knowledge of an API key pre-image without revealing the key.",
   "type": "module",
   "main": "dist/index.js",
