@@ -612,6 +612,9 @@ export function mount(): void {
     resultSession.textContent = `${i18n.resultStrings.sessionLabel}: ${sessionNonce}`;
     resultSession.hidden = false;
     result.classList.remove("hidden");
+    // Bring the result panel into view *now* so the verification
+    // animation plays where the user can see it — not below the fold.
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
 
     verifyBtn.disabled = true;
     const labelBase = verifyBtn.dataset["label"] ?? "Verify";
@@ -725,8 +728,6 @@ export function mount(): void {
       ctaWaitlist.href = withUtm(ctaWaitlist.dataset["ctaBase"] ?? ctaWaitlist.href, sampleId, i18n.locale);
     }
 
-    // Scroll to the result so it's visible without manual scroll.
-    result.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   const onCtaClick = (ctaType: "sales" | "waitlist") => () => {
