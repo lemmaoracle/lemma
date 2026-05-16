@@ -22,6 +22,11 @@
       "import": "./dist/client.js",
       "default": "./dist/client.js"
     },
+    "./prover": {
+      "types": "./dist/prover.d.ts",
+      "import": "./dist/prover.js",
+      "default": "./dist/prover.js"
+    },
     "./schemas": {
       "types": "./dist/namespaces/schemas.d.ts",
       "import": "./dist/namespaces/schemas.js",
