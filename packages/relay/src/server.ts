@@ -16,6 +16,7 @@ import type {
 } from "./types/http.js";
 import { proveHandler } from "./routes/prover/prove.js";
 import { prepareHandler } from "./routes/prepare/prepare.js";
+import { verifyHandler } from "./routes/verifier/verify.js";
 
 /** Server configuration. */
 const CONFIG: Readonly<{
@@ -48,6 +49,11 @@ const ROUTES: readonly Route[] = [
     method: "POST",
     path: "/prepare",
     handler: prepareHandler,
+  },
+  {
+    method: "POST",
+    path: "/verifier/verify",
+    handler: verifyHandler,
   },
 ] as const;
 

@@ -16,6 +16,8 @@ export type { SchemaDef } from "./schema.js";
 export * as disclose from "./disclose.js";
 export * as prover from "./prover.js";
 export type { ProveOutput } from "./prover.js";
+export * as verifier from "./verifier.js";
+export type { VerifyInput, VerifyOutput } from "./verifier.js";
 
 export * as documents from "./namespaces/documents.js";
 export * as proofs from "./namespaces/proofs.js";
