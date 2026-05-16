@@ -2,11 +2,11 @@
  *
  * Whitepaper §2.3 — Commitments (Poseidon Merkle tree).
  */
-import { createHash, randomBytes } from "node:crypto";
 import type { DocumentCommitments, InclusionProof, LeafPreimage } from "@lemmaoracle/spec";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
 import { poseidon2, poseidon3 } from "poseidon-lite";
+import { sha256Hex, randomHex, utf8ToBytes } from "./platform.js";
 
 // BN254 field prime from circomlib (alt_bn128)
 const BN254_PRIME = BigInt(
@@ -41,7 +41,7 @@ export const toScalar = (value: string | number): bigint =>
     ? BigInt(value) % BN254_PRIME
     : /^\d+$/.test(value)
       ? BigInt(value) % BN254_PRIME
-      : BigInt(`0x${createHash("sha256").update(value).digest("hex")}`) % BN254_PRIME;
+      : BigInt(`0x${sha256Hex(utf8ToBytes(value))}`) % BN254_PRIME;
 
 const toHex = (n: bigint): string => `0x${n.toString(16)}`;
 
@@ -216,7 +216,7 @@ export const commitNormalized = (
     [
       R.T,
       (_placeholder: undefined) => {
-        const randomness = randomBytes(32).toString("hex");
+        const randomness = randomHex(32);
 
         const leafResult = computeLeaves(
           normalized as Readonly<Record<string, Json>>,

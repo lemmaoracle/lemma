@@ -3,13 +3,14 @@
  *
  * Production uses snarkjs with wasm/zkey resolved from circuit metadata
  * artifact.location. Falls back to SHA-256 hashing when artifacts are unavailable.
+ *
+ * All Node-only APIs (node:crypto, Buffer, static snarkjs import) are avoided
+ * so the module works in both Node.js and browser runtimes.
  */
-// @ts-expect-error - snarkjs is installed but may not be found during build
-import * as snarkjsModule from "snarkjs";
-import { createHash } from "node:crypto";
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { reject, resolveFetch } from "./internal.js";
 import type { CircuitMeta } from "@lemmaoracle/spec";
+import { sha256Base64, toBase64 } from "./platform.js";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -99,13 +100,15 @@ const fetchCircuitMeta = (
 
 /**
  * SHA-256 hash as base64 string (fallback when artifacts unavailable).
+ * Delegates to platform.ts which uses @noble/hashes (browser + Node).
  */
-const sha256Base64 = (s: string): string =>
-  createHash("sha256").update(s).digest("base64");
 
 /**
  * Generate a proof using snarkjs groth16.fullProve.
  * Returns { proof, publicSignals } from snarkjs.
+ *
+ * snarkjs is imported dynamically so it is only loaded when actually needed
+ * and the module remains importable in browsers that lack its Node deps.
  */
 const generateSnarkjsProof = (
   witness: Readonly<Record<string, unknown>>,
@@ -114,10 +117,14 @@ const generateSnarkjsProof = (
 ): Promise<{
   readonly proof: unknown;
   readonly publicSignals: readonly string[];
-}> => {
-  const snarkjs = snarkjsModule as unknown as SnarkjsModule;
-  return snarkjs.groth16.fullProve(witness, wasmBuf, zkeyBuf);
-};
+}> =>
+  import("snarkjs").then((mod) =>
+    (mod as unknown as SnarkjsModule).groth16.fullProve(
+      witness,
+      wasmBuf,
+      zkeyBuf,
+    ),
+  );
 
 /* ------------------------------------------------------------------ */
 /*  Main prove function                                                */
@@ -155,7 +162,7 @@ export const prove = async (
         );
 
         return {
-          proof: Buffer.from(JSON.stringify(proof)).toString("base64"),
+          proof: toBase64(JSON.stringify(proof)),
           inputs: publicSignals,
         };
       })()

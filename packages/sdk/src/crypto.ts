@@ -14,6 +14,7 @@ import { gcm } from "@noble/ciphers/aes";
 import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
+import { hexToBytes as platformHexToBytes, utf8ToBytes, bytesToUtf8, bytesToHex as platformBytesToHex } from "./platform.js";
 
 /**
  * Derive the compressed secp256k1 public key from a private key.
@@ -23,7 +24,7 @@ import type { LemmaClient } from "@lemmaoracle/spec";
  */
 export const derivePublicKey = (privateKey: string): string => {
   const stripped = privateKey.startsWith("0x") ? privateKey.slice(2) : privateKey;
-  const privBytes = Uint8Array.from(Buffer.from(stripped, "hex"));
+  const privBytes = platformHexToBytes(stripped);
   return bytesToHex(secp256k1.getPublicKey(privBytes, true));
 };
 
@@ -203,8 +204,8 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
     ),
   )(holderKey);
 
-  // Parse as hex string (without 0x prefix) or Uint8Array
-  const keyBytes = Uint8Array.from(Buffer.from(normalizedKey, "hex"));
+  // Parse as hex string (without 0x prefix)
+  const keyBytes = platformHexToBytes(normalizedKey);
 
   // Validate the key is a valid point
   /* eslint-disable-next-line functional/no-try-statements --
@@ -221,7 +222,7 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
 
 export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<EncryptOutput> => {
   const holderPubKeyHex = bytesToHex(validateHolderKey(input.holderKey));
-  const payloadBytes = Buffer.from(JSON.stringify(input.payload), "utf8");
+  const payloadBytes = utf8ToBytes(JSON.stringify(input.payload));
 
   // Determine algorithm (default to "aes-256-gcm")
   const algorithm = input.algorithm ?? "aes-256-gcm";
@@ -291,7 +292,7 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   // Parse holder private key (remove 0x prefix if present)
   const holderPrivKeyBytes = R.pipe(
     (key: string) => (key.startsWith("0x") ? key.slice(2) : key),
-    (hex: string) => Uint8Array.from(Buffer.from(hex, "hex")),
+    platformHexToBytes,
   )(input.holderPrivateKey);
 
   // ECDH: derive shared secret using ephemeral's public key and holder's private key
@@ -305,7 +306,7 @@ export const decrypt = (input: DecryptInput): Promise<DecryptOutput> => {
   const aesGcm = gcm(keyMaterial, iv);
   const plaintext = aesGcm.decrypt(ciphertext);
 
-  const payload: unknown = JSON.parse(Buffer.from(plaintext).toString("utf8"));
+  const payload: unknown = JSON.parse(bytesToUtf8(plaintext));
 
   return Promise.resolve({ payload });
 };

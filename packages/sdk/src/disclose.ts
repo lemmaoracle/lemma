@@ -4,7 +4,6 @@
  * Real BBS+ implementation using @docknetwork/crypto-wasm WASM library
  * (IETF draft-irtf-cfrg-bbs-signatures).
  */
-import { randomBytes } from "node:crypto";
 import * as R from "ramda";
 import {
   initializeWasm,
@@ -22,6 +21,7 @@ import {
 } from "@docknetwork/crypto-wasm";
 import type { LemmaClient, SelectiveDisclosure } from "@lemmaoracle/spec";
 import { reject } from "./internal.js";
+import { randomBytes, utf8ToBytes, hexToBytes, bytesToHex as platformBytesToHex } from "./platform.js";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -107,7 +107,7 @@ const te = new TextEncoder();
 const KEY_MATERIAL_BYTES = 32;
 
 const encodeMessages = (msgs: ReadonlyArray<string>): ReadonlyArray<Uint8Array> =>
-  R.map((m: string) => Uint8Array.from(Buffer.from(m, "utf-8")), [...msgs]);
+  R.map((m: string) => utf8ToBytes(m), [...msgs]);
 
 /**
  * Convert an attribute object `{ age: 25, name: "John" }` to a
@@ -391,18 +391,4 @@ export const fromSelectiveDisclosure = (
 /*  Helper functions                                                   */
 /* ------------------------------------------------------------------ */
 
-const bytesToHex = (bytes: Uint8Array): string =>
-  Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-
-const hexToBytes = (hex: string): Uint8Array => {
-  const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
-  return Uint8Array.from(
-    R.pipe(
-      R.range(0),
-      R.filter((i: number) => i % 2 === 0),
-      R.map((i: number) => parseInt(clean.slice(i, i + 2), 16)),
-    )(clean.length),
-  );
-};
+const bytesToHex = platformBytesToHex;
