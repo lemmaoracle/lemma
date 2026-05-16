@@ -11,7 +11,7 @@
 
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes as nobleRandomBytes } from "@noble/hashes/utils";
-import { Buffer as BufferPolyfill } from "buffer/";
+import { Buffer as BufferPolyfill } from "buffer/index.js";
 
 const te = new TextEncoder();
 const td = new TextDecoder();
