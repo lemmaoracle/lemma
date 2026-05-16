@@ -85,6 +85,7 @@ export interface Translations {
   readonly detail: Readonly<{
     readonly titleSuffix: string;
     readonly closeLabel: string;
+    readonly scenario: string;
     readonly verificationPipeline: string;
     readonly documentInfo: string;
     readonly cryptographic: string;

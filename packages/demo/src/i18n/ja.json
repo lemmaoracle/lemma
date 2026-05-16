@@ -52,6 +52,7 @@
   "detail": {
     "titleSuffix": " ドキュメント",
     "closeLabel": "詳細を閉じる",
+    "scenario": "シナリオ",
     "verificationPipeline": "検証パイプライン",
     "documentInfo": "ドキュメント情報",
     "cryptographic": "暗号要素",

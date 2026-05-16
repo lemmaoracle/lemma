@@ -52,6 +52,7 @@
   "detail": {
     "titleSuffix": " Document",
     "closeLabel": "Close detail",
+    "scenario": "Scenario",
     "verificationPipeline": "Verification Pipeline",
     "documentInfo": "Document Info",
     "cryptographic": "Cryptographic Details",

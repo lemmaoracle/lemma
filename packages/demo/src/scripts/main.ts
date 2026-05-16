@@ -79,6 +79,12 @@ interface State {
   animTimers: Map<string, ReturnType<typeof setTimeout>[]>;
   /** Per-row stage timestamps, mirroring what a real API would return. */
   stageTimes: Map<string, Partial<Record<TimelineStage, string>>>;
+  /**
+   * Element that had focus immediately before the detail panel opened.
+   * Restored on close so keyboard users return to where they were
+   * instead of dropping to <body>.
+   */
+  lastFocus: HTMLElement | null;
 }
 
 type TimelineStage = "registered" | "verifying" | "offchain" | "onchain";
@@ -101,6 +107,7 @@ export function mount(): void {
     selectedId: null,
     animTimers: new Map(),
     stageTimes: new Map(),
+    lastFocus: null,
   };
 
   // Seed stage times for the existing fixtures so the timeline doesn't
@@ -175,8 +182,12 @@ function wireFilters(state: State, t: Translations): void {
   const tabs = document.querySelectorAll<HTMLButtonElement>(".tab[data-filter]");
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tabs.forEach((other) => other.classList.remove("is-active"));
+      tabs.forEach((other) => {
+        other.classList.remove("is-active");
+        other.setAttribute("aria-selected", "false");
+      });
       tab.classList.add("is-active");
+      tab.setAttribute("aria-selected", "true");
       const filter = (tab.dataset.filter as Filter) ?? "all";
       state.filter = filter;
       applyFilterAndSearch(state, t);
@@ -253,6 +264,14 @@ function wireRowClicks(state: State, t: Translations): void {
 function openDetail(state: State, t: Translations, id: string): void {
   const row = state.rows.find((r) => r.id === id);
   if (!row) return;
+
+  // Capture focus before opening so we can restore on close. Skip if
+  // the panel is already open (re-opening with a new row should leave
+  // the original lastFocus intact so close returns to the true origin).
+  if (!state.selectedId) {
+    const active = document.activeElement;
+    state.lastFocus = active instanceof HTMLElement ? active : null;
+  }
   state.selectedId = id;
 
   // Visual selection
@@ -270,6 +289,12 @@ function openDetail(state: State, t: Translations, id: string): void {
   overlay?.classList.add("is-open");
   panel?.setAttribute("aria-hidden", "false");
   overlay?.setAttribute("aria-hidden", "false");
+
+  // Move focus into the dialog so keyboard users land on something
+  // actionable. The close button is the only focusable element in the
+  // panel chrome; renderDetailBody is read-only content.
+  const closeBtn = document.getElementById("detail-close");
+  closeBtn?.focus();
 }
 
 function renderDetail(state: State, t: Translations, row: Row): void {
@@ -315,7 +340,7 @@ function renderDetailBody(state: State, t: Translations, row: Row): string {
   const scenario = row.scenario
     ? `
         <div class="detail-section">
-          <div class="detail-section-label">Scenario</div>
+          <div class="detail-section-label">${escape(t.detail.scenario)}</div>
           <div class="field-value is-plain">${escape(row.scenario)}</div>
         </div>
       `
@@ -412,7 +437,8 @@ function escape(input: string): string {
 /* ─── Detail close ─── */
 
 function wireDetailClose(state: State): void {
-  const close = () => {
+  const close = (): void => {
+    if (!state.selectedId) return;
     document.getElementById("detail")?.classList.remove("is-open");
     document.getElementById("detail-overlay")?.classList.remove("is-open");
     document.getElementById("detail")?.setAttribute("aria-hidden", "true");
@@ -421,11 +447,24 @@ function wireDetailClose(state: State): void {
     document
       .querySelectorAll<HTMLTableRowElement>("#pipeline-tbody tr[data-doc-hash]")
       .forEach((tr) => tr.classList.remove("is-selected"));
+    // Restore focus to whatever was focused before the panel opened.
+    state.lastFocus?.focus();
+    state.lastFocus = null;
   };
   document.getElementById("detail-close")?.addEventListener("click", close);
   document.getElementById("detail-overlay")?.addEventListener("click", close);
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
+    if (e.key === "Escape" && state.selectedId) close();
+  });
+
+  // Focus trap — the panel only owns one focusable (the close button),
+  // so Tab/Shift+Tab cycles back to it. This keeps keyboard focus
+  // inside the dialog while it's open, per WAI-ARIA dialog pattern.
+  document.getElementById("detail")?.addEventListener("keydown", (e) => {
+    if (!state.selectedId) return;
+    if (e.key !== "Tab") return;
+    e.preventDefault();
+    document.getElementById("detail-close")?.focus();
   });
 }
 

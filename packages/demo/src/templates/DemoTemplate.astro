@@ -197,29 +197,76 @@ const showingLabel = t.table.showing.replace("{n}", String(totalCount));
       <section class="pipeline" id="overview">
         <div class="pipeline-headrow">
           <div class="tabs" role="tablist" aria-label="Pipeline filter">
-            <button class="tab is-active" data-filter="all" type="button">
+            <button
+              class="tab is-active"
+              data-filter="all"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.all}
             </button>
-            <button class="tab" data-filter="received" type="button">
+            <button
+              class="tab"
+              data-filter="received"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.received}
             </button>
-            <button class="tab" data-filter="verifying" type="button">
+            <button
+              class="tab"
+              data-filter="verifying"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.verifying}
             </button>
-            <button class="tab" data-filter="verified" type="button">
+            <button
+              class="tab"
+              data-filter="verified"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.verified}
             </button>
-            <button class="tab" data-filter="onchain" type="button">
+            <button
+              class="tab"
+              data-filter="onchain"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.onchain}
             </button>
-            <button class="tab" data-filter="rejected" type="button">
+            <button
+              class="tab"
+              data-filter="rejected"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="pipeline-tabpanel"
+            >
               {t.tabs.rejected}
             </button>
           </div>
           <span class="pipeline-count" id="pipeline-count">{showingLabel}</span>
         </div>
 
-        <div class="table-wrap">
+        <div
+          class="table-wrap"
+          id="pipeline-tabpanel"
+          role="tabpanel"
+          aria-label={t.topbar.title}
+        >
           <div class="table-scroll">
             <table class="pipeline-table">
               <thead>
