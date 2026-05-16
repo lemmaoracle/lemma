@@ -14,7 +14,7 @@ import { gcm } from "@noble/ciphers/aes";
 import { randomBytes, bytesToHex, concatBytes } from "@noble/hashes/utils";
 import * as R from "ramda";
 import type { LemmaClient } from "@lemmaoracle/spec";
-import { hexToBytes as platformHexToBytes, utf8ToBytes, bytesToUtf8, bytesToHex as platformBytesToHex } from "./platform.js";
+import { hexToBytes as platformHexToBytes, utf8ToBytes, bytesToUtf8 } from "./platform.js";
 
 /**
  * Derive the compressed secp256k1 public key from a private key.

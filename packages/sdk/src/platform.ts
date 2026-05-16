@@ -8,6 +8,7 @@
 
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes as nobleRandomBytes } from "@noble/hashes/utils";
+import * as R from "ramda";
 
 const te = new TextEncoder();
 const td = new TextDecoder();
@@ -26,21 +27,23 @@ export const bytesToUtf8 = (bytes: Uint8Array | ArrayBuffer): string =>
 /** Encode a hex string (with or without `0x` prefix) to Uint8Array. */
 export const hexToBytes = (hex: string): Uint8Array => {
   const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
-  const bytes = new Uint8Array(clean.length / 2);
-  for (let i = 0; i < clean.length; i += 2) {
-    bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
-  }
-  return bytes;
+  return Uint8Array.from(
+    R.map(
+      (i: number) => parseInt(clean.slice(i, i + 2), 16),
+      R.map((i: number) => i * 2, R.range(0, clean.length / 2)),
+    ),
+  );
 };
 
 /** Encode Uint8Array to hex string (no `0x` prefix). */
-export const bytesToHex = (bytes: Uint8Array): string => {
-  const parts: string[] = [];
-  for (let i = 0; i < bytes.length; i += 1) {
-    parts.push(bytes[i]!.toString(16).padStart(2, "0"));
-  }
-  return parts.join("");
-};
+export const bytesToHex = (bytes: Uint8Array): string =>
+  R.join(
+    "",
+    R.map(
+      (b: number) => b.toString(16).padStart(2, "0"),
+      Array.from(bytes),
+    ),
+  );
 
 /** Encode a string to base64 (UTF-8 safe, works in browser and Node). */
 export const toBase64 = (source: string): string =>
