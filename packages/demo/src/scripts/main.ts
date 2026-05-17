@@ -29,9 +29,11 @@ import {
   type PipelineSchema,
   type PipelineStatus,
 } from "../data/pipelineFixtures";
+import { verifyCustom } from "../lib/verify";
 import {
   getTranslations,
   type Locale,
+  type SampleCopy,
   type Translations,
 } from "../i18n/translations";
 
@@ -49,6 +51,20 @@ type Row = PipelineEntry & {
   readonly scenario?: string;
   /** Optional final outcome blurb for sample-spawned rows. */
   readonly outcome?: string;
+  /**
+   * Tutorial content for sample-driven rows — these turn the detail
+   * panel into a business-value explainer for the demo. Absent on
+   * the seeded fixture rows and on custom uploads.
+   */
+  readonly stakes?: ReadonlyArray<string>;
+  readonly businessImpact?: ReadonlyArray<string>;
+  readonly failReason?: string;
+  readonly counterFactual?: Readonly<{
+    readonly without: ReadonlyArray<string>;
+    readonly with: ReadonlyArray<string>;
+  }>;
+  /** Source of this row, used to gate tutorial vs upload rendering. */
+  readonly source?: "fixture" | "sample" | "upload";
 };
 
 interface Globals {
@@ -119,6 +135,7 @@ export function mount(): void {
   wireSearch(state, t);
   wireRowClicks(state, t);
   wireSampleChips(state, t, locale);
+  wireCustomUpload(state, t);
   wireDetailClose(state);
   startUpdatedAtTick();
   startAmbientSim(state, t);
@@ -131,6 +148,7 @@ function toRow(entry: PipelineEntry): Row {
     ...entry,
     id: entry.docHash,
     schemaTitle: SCHEMA_LABEL[entry.schema],
+    source: "fixture",
   };
 }
 
@@ -346,6 +364,14 @@ function renderDetailBody(state: State, t: Translations, row: Row): string {
       `
     : "";
 
+  // Tutorial sections — only render when the row was spawned from a
+  // sample chip (and therefore has the populated business context
+  // fields from i18n.samples.{id}). Empty for fixture rows and custom
+  // uploads, which don't have a designed business narrative.
+  const tutorialHtml = row.source === "sample"
+    ? renderTutorial(t, row)
+    : "";
+
   const hookHtml = row.hooks && row.hooks.length > 0
     ? `
         <div class="detail-section">
@@ -366,6 +392,7 @@ function renderDetailBody(state: State, t: Translations, row: Row): string {
 
   return `
     ${scenario}
+    ${tutorialHtml}
     <div class="detail-section">
       <div class="detail-section-label">${escape(t.detail.verificationPipeline)}</div>
       <ol class="timeline">${stepHtml}</ol>
@@ -432,6 +459,160 @@ function escape(input: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+/* ─── Tutorial content (rendered for sample-driven rows) ─── */
+
+/**
+ * Build the "what's at stake / business impact / counter-factual"
+ * sections for the detail panel. These restore the original demo's
+ * business-value framing — the Oracle Pipeline redesign trimmed them,
+ * and they were brought back so sample chips lead the user through
+ * the same teaching arc as before (scenario → stakes → outcome).
+ */
+function renderTutorial(t: Translations, row: Row): string {
+  const parts: string[] = [];
+
+  if (row.stakes && row.stakes.length > 0) {
+    parts.push(`
+      <div class="detail-section">
+        <div class="detail-section-label">${escape(t.detail.whatAtStake)}</div>
+        <ul class="stakes-list">
+          ${row.stakes.map((s) => `<li>${escape(s)}</li>`).join("")}
+        </ul>
+      </div>
+    `);
+  }
+
+  if (row.businessImpact && row.businessImpact.length > 0) {
+    parts.push(`
+      <div class="detail-section">
+        <div class="detail-section-label">${escape(t.detail.businessImpact)}</div>
+        <ul class="impact-list">
+          ${row.businessImpact.map((s) => `<li>${escape(s)}</li>`).join("")}
+        </ul>
+      </div>
+    `);
+  }
+
+  if (row.failReason) {
+    parts.push(`
+      <div class="detail-section">
+        <div class="detail-section-label">${escape(t.detail.whatWentWrong)}</div>
+        <p class="fail-reason">${escape(row.failReason)}</p>
+      </div>
+    `);
+  }
+
+  if (row.counterFactual) {
+    const cf = row.counterFactual;
+    parts.push(`
+      <div class="detail-section">
+        <div class="cf-grid">
+          <div class="cf-col cf-col-without">
+            <div class="cf-col-label">${escape(t.detail.counterFactualWithout)}</div>
+            <ul class="cf-list">
+              ${cf.without.map((s) => `<li>${escape(s)}</li>`).join("")}
+            </ul>
+          </div>
+          <div class="cf-col cf-col-with">
+            <div class="cf-col-label">${escape(t.detail.counterFactualWith)}</div>
+            <ul class="cf-list">
+              ${cf.with.map((s) => `<li>${escape(s)}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  return parts.join("");
+}
+
+/* ─── Custom JSON upload ─── */
+
+/**
+ * Wire the "upload your own proof JSON" file input. On change: read the
+ * file, call verifyCustom (re-uses the mock verifier from #206's
+ * preserved lib/verify.ts), spawn a pipeline row, and animate it
+ * Received → Verifying → Verified / Rejected based on the verify
+ * outcome. All in-browser; the file never leaves the device.
+ */
+function wireCustomUpload(state: State, t: Translations): void {
+  const input = document.getElementById("custom-upload-input");
+  const status = document.getElementById("custom-upload-status");
+  if (!(input instanceof HTMLInputElement) || !status) return;
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    status.className = "sample-upload-status";
+    status.textContent = "";
+
+    try {
+      const text = await file.text();
+      const result = await verifyCustom(text);
+
+      const docHash = `0x${randSegment(40)}`;
+      const row: Row = {
+        id: docHash,
+        docHash,
+        schema: "identity-v1",
+        status: "received",
+        chain: "Browser-only",
+        updatedAt: new Date().toISOString(),
+        ipfsCid: "",
+        issuer: "",
+        subject: "",
+        commitmentScheme: "poseidon",
+        commitmentRoot: "",
+        revocationRoot: "",
+        signatureFormat: "bbs+",
+        schemaTitle: t.sampleStrip.customChip,
+        source: "upload",
+        failReason: result.overall === "fail" ? result.failureReason : undefined,
+        rejectionReason:
+          result.overall === "fail" ? result.failureReason : undefined,
+      };
+
+      state.rows = [row, ...state.rows];
+      state.stageTimes.set(row.id, { registered: row.updatedAt });
+      prependRow(t, row);
+      openDetail(state, t, row.id);
+      applyFilterAndSearch(state, t);
+
+      status.classList.add("is-success");
+      status.textContent = t.sampleStrip.uploadSuccess;
+
+      window.setTimeout(
+        () => transitionRow(state, t, row.id, "verifying"),
+        700,
+      );
+      if (result.overall === "pass") {
+        window.setTimeout(
+          () => transitionRow(state, t, row.id, "verified"),
+          2000,
+        );
+      } else {
+        window.setTimeout(
+          () => transitionRow(state, t, row.id, "rejected"),
+          2000,
+        );
+      }
+
+      // Reset so picking the same file again re-fires change.
+      input.value = "";
+      window.setTimeout(() => {
+        status.className = "sample-upload-status";
+        status.textContent = "";
+      }, 3500);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      status.classList.add("is-error");
+      status.textContent = `${t.sampleStrip.uploadErrorPrefix}${msg}`;
+    }
+  });
 }
 
 /* ─── Detail close ─── */
@@ -509,6 +690,12 @@ function spawnSampleRow(
     schemaTitle: SCHEMA_LABEL[pickSchemaForSample(sample)],
     scenario: copy?.scenario,
     outcome: copy?.outcome,
+    // Tutorial content surfaced in the detail panel.
+    stakes: copy?.stakes,
+    businessImpact: copy?.businessImpact,
+    failReason: copy?.failReason || undefined,
+    counterFactual: copy?.counterFactual,
+    source: "sample",
     rejectionReason:
       sample.expectedResult === "fail" ? copy?.outcome : undefined,
   };

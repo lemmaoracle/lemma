@@ -1,15 +1,11 @@
 /**
  * i18n: locale type and translation loader for ja/en.
  *
- * Restructured for the Oracle Pipeline demo view: the previous editorial
- * surface (hero, "how it works", trust badges, CTA, counter-factual) is
- * gone, replaced by a dashboard-like shell with a compact demo banner +
- * sample-chip walkthrough. Strings shrink accordingly.
- *
- * `samples` keeps a per-sample chip label + outcome line for the inline
- * verification flow that runs when the user picks a chip; the long-form
- * scenario / business-impact bullets that lived in the old design are
- * dropped.
+ * Tutorial fields (stakes / businessImpact / failReason / counterFactual)
+ * are populated for sample-driven rows so the Oracle Pipeline demo's
+ * detail panel doubles as a "why this matters in your business"
+ * explainer — restoring the original demo's purpose after the
+ * Oracle Pipeline redesign trimmed them.
  */
 
 import en from "./en.json";
@@ -20,7 +16,7 @@ export type Locale = "en" | "ja";
 export interface SampleCopy {
   /** Short label shown on the sample chip. */
   readonly chip: string;
-  /** One-line scenario shown when the row is opened in the detail panel. */
+  /** Paragraph scenario shown at the top of the detail panel. */
   readonly scenario: string;
   /**
    * Outcome note rendered on the timeline. For pass samples this is the
@@ -28,6 +24,31 @@ export interface SampleCopy {
    * error line under whichever step rejects the document.
    */
   readonly outcome: string;
+  /**
+   * 2–3 bullets: what the verifier is checking for in this scenario
+   * (privacy preserved, audit trail produced, settlement integrity, …).
+   * Surfaced in the detail panel under "What's at stake".
+   */
+  readonly stakes: ReadonlyArray<string>;
+  /**
+   * 3 bullets for pass samples: what changes operationally once the
+   * proof is verified (audit response in under a second vs ~3 days of
+   * manual review, …). Empty for fail samples.
+   */
+  readonly businessImpact: ReadonlyArray<string>;
+  /**
+   * Plain-language explanation of why this sample fails. Empty for
+   * pass samples.
+   */
+  readonly failReason: string;
+  /**
+   * For fail samples only: a 3 × 3 comparison of what happens without
+   * Lemma vs with Lemma. Surfaced as the "Counter-factual" section.
+   */
+  readonly counterFactual?: Readonly<{
+    readonly without: ReadonlyArray<string>;
+    readonly with: ReadonlyArray<string>;
+  }>;
 }
 
 export interface Translations {
@@ -63,6 +84,18 @@ export interface Translations {
     readonly industryFinancial: string;
     readonly industryManufacturing: string;
     readonly industryAgent: string;
+    /** "Or upload your own proof JSON" heading. */
+    readonly uploadLabel: string;
+    /** File picker button label. */
+    readonly uploadCta: string;
+    /** Helper text under the upload control. */
+    readonly uploadNote: string;
+    /** Shown briefly when a custom JSON parses successfully. */
+    readonly uploadSuccess: string;
+    /** Prefix for parse-error messages: "Could not parse JSON: …". */
+    readonly uploadErrorPrefix: string;
+    /** Default chip label for a row spawned from a custom upload. */
+    readonly customChip: string;
   }>;
   readonly tabs: Readonly<{
     readonly all: string;
@@ -86,6 +119,15 @@ export interface Translations {
     readonly titleSuffix: string;
     readonly closeLabel: string;
     readonly scenario: string;
+    /** "What's at stake" section heading. */
+    readonly whatAtStake: string;
+    /** "What changes with Lemma" section heading (pass samples). */
+    readonly businessImpact: string;
+    /** "What went wrong" section heading (fail samples). */
+    readonly whatWentWrong: string;
+    /** Counter-factual sub-headings. */
+    readonly counterFactualWithout: string;
+    readonly counterFactualWith: string;
     readonly verificationPipeline: string;
     readonly documentInfo: string;
     readonly cryptographic: string;

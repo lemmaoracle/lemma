@@ -30,7 +30,10 @@ export type PipelineChain =
   | "Ethereum"
   | "Base"
   | "Polygon"
-  | "Arbitrum";
+  | "Arbitrum"
+  /** Synthetic label for rows spawned from a custom JSON upload — the
+      verification ran in the browser and isn't anchored to any chain. */
+  | "Browser-only";
 
 export type CommitmentScheme =
   | "rescue-prime"
