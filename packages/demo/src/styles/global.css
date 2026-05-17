@@ -1057,6 +1057,32 @@ table.pipeline-table {
   .pipeline-table tbody .col-chain {
     display: none;
   }
+
+  /* Topbar: stop trying to cram title + sub + 280px search + 2 toggles
+     into one flex row. Title sits on row 1 with the theme/lang toggles
+     pinned right; the subtitle (decorative — repeats what the demo
+     banner already explains) hides; the search drops to row 2 and
+     stretches full-width so it stops getting truncated to "Se". */
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 14px 16px;
+  }
+  .topbar-title {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .topbar-sub {
+    display: none;
+  }
+  .topbar-spacer {
+    display: none;
+  }
+  .search {
+    order: 99;
+    flex: 1 1 100%;
+    width: auto;
+  }
 }
 
 /* ─── Custom JSON upload (in sample strip) ─── */
