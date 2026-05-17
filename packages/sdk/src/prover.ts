@@ -85,6 +85,10 @@ const fetchArtifact = (
 
 /**
  * Fetch circuit metadata by circuitId.
+ *
+ * The GET /v1/circuits/{circuitId} endpoint is public (no API key required),
+ * so callers may use a client created with `create({})` to pre-fetch metadata
+ * before the user has entered their API key.
  */
 const fetchCircuitMeta = (
   client: LemmaClient,
