@@ -86,11 +86,11 @@ const fetchArtifact = (
 /**
  * Fetch circuit metadata by circuitId.
  *
- * This endpoint is public (no API key required), so callers may use a
- * client created with `create({})` to pre-fetch metadata before the user
- * has entered their API key.
+ * The GET /v1/circuits/{circuitId} endpoint is public (no API key required),
+ * so callers may use a client created with `create({})` to pre-fetch metadata
+ * before the user has entered their API key.
  */
-export const fetchCircuitMeta = (
+const fetchCircuitMeta = (
   client: LemmaClient,
   circuitId: string,
 ): Promise<CircuitMeta> =>
