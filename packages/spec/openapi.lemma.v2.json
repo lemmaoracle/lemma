@@ -334,6 +334,7 @@
     },
     "/v1/schemas/{id}": {
       "get": {
+        "security": [],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
@@ -379,6 +380,7 @@
     },
     "/v1/circuits/{circuitId}": {
       "get": {
+        "security": [],
         "parameters": [
           { "name": "circuitId", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
@@ -424,6 +426,7 @@
     },
     "/v1/doc-generators/{generatorId}": {
       "get": {
+        "security": [],
         "parameters": [
           { "name": "generatorId", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
