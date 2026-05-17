@@ -1259,3 +1259,48 @@ table.pipeline-table {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Phone (≤480px) ─── */
+@media (max-width: 480px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 14px 14px;
+  }
+  .topbar-title {
+    font-size: 15px;
+  }
+  .topbar-sub {
+    display: none;
+  }
+  .topbar-spacer {
+    display: none;
+  }
+  .search {
+    order: 10;
+    width: 100%;
+    max-width: 100%;
+  }
+  .demo-banner {
+    margin-left: 12px;
+    margin-right: 12px;
+    padding: 12px 14px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .demo-banner-walkthrough {
+    grid-column: 1;
+  }
+  .sample-strip {
+    margin-left: 12px;
+    margin-right: 12px;
+    padding: 10px 12px;
+  }
+  .pipeline {
+    padding: 14px 12px 20px;
+  }
+  .footbar {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+}
