@@ -188,8 +188,9 @@ input {
 }
 
 .brand-logo {
-  height: 16px;
+  height: 20px;
   width: auto;
+  display: block;
   color: var(--logo-fill);
 }
 
@@ -1055,5 +1056,206 @@ table.pipeline-table {
   .pipeline-table thead .col-chain,
   .pipeline-table tbody .col-chain {
     display: none;
+  }
+}
+
+/* ─── Custom JSON upload (in sample strip) ─── */
+.sample-upload {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--divider);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sample-upload-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.sample-upload-input {
+  display: none;
+}
+
+.sample-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: 1px dashed var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.sample-upload-btn:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.sample-upload-note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sample-upload-status {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sample-upload-status.is-error {
+  color: var(--status-rejected-fg);
+}
+
+.sample-upload-status.is-success {
+  color: var(--status-verified-fg);
+}
+
+/* ─── Tutorial sections (in sample-driven detail panel) ─── */
+
+/* "What's at stake" — bulleted list of stakeholder concerns. */
+.stakes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.stakes-list li {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.stakes-list li::before {
+  content: "●";
+  color: var(--accent);
+  font-size: 8px;
+  line-height: 1.6;
+  font-family: var(--font-mono);
+}
+
+/* "What changes with Lemma" — outcome bullets. */
+.impact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.impact-list li {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.impact-list li::before {
+  content: "→";
+  color: var(--status-verified-fg);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* "What went wrong" — plain-language failure block. */
+.fail-reason {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--status-rejected-fg);
+  border-radius: 0 6px 6px 0;
+  background: var(--status-rejected-bg);
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Counter-factual: Without Lemma vs With Lemma side by side. */
+.cf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.cf-col {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-elev-2);
+}
+
+.cf-col-without {
+  border-color: rgba(248, 113, 113, 0.18);
+}
+
+.cf-col-with {
+  border-color: rgba(74, 222, 128, 0.22);
+}
+
+.cf-col-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.cf-col-without .cf-col-label {
+  color: var(--status-rejected-fg);
+}
+
+.cf-col-with .cf-col-label {
+  color: var(--status-verified-fg);
+}
+
+.cf-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.cf-list li {
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.cf-col-without .cf-list li::before {
+  content: "✗";
+  color: var(--status-rejected-fg);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.cf-col-with .cf-list li::before {
+  content: "✓";
+  color: var(--status-verified-fg);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .cf-grid {
+    grid-template-columns: 1fr;
   }
 }

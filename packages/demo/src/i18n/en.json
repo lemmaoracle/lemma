@@ -22,15 +22,21 @@
   "demoBanner": {
     "pill": "Browser-only demo",
     "title": "A read-only slice of the Lemma dashboard.",
-    "body": "Pipeline rows below progress through verification in your browser. Pick a sample on the right to add it to the pipeline and watch the four-stage verification timeline open in the detail panel.",
+    "body": "Pipeline rows below progress through verification in your browser. Pick a sample on the right to add it to the pipeline and watch the four-stage verification timeline open in the detail panel — with the business stakes and impact of that scenario.",
     "walkthrough": "Walkthrough → pick a sample, then click the new row"
   },
   "sampleStrip": {
     "label": "Try a sample",
-    "hint": "Adds a document at the top of the pipeline and opens its detail.",
+    "hint": "Adds a document at the top of the pipeline and opens its detail with the business context.",
     "industryFinancial": "Finance",
     "industryManufacturing": "Manufacturing",
-    "industryAgent": "Agent"
+    "industryAgent": "Agent",
+    "uploadLabel": "Or upload your own proof JSON",
+    "uploadCta": "Choose file…",
+    "uploadNote": "Verifies in your browser. The file never leaves your device.",
+    "uploadSuccess": "Parsed successfully — added to the pipeline.",
+    "uploadErrorPrefix": "Could not parse JSON: ",
+    "customChip": "Custom upload"
   },
   "tabs": {
     "all": "All",
@@ -53,6 +59,11 @@
     "titleSuffix": " Document",
     "closeLabel": "Close detail",
     "scenario": "Scenario",
+    "whatAtStake": "What's at stake",
+    "businessImpact": "What changes with Lemma",
+    "whatWentWrong": "What went wrong",
+    "counterFactualWithout": "Without Lemma",
+    "counterFactualWith": "With Lemma",
     "verificationPipeline": "Verification Pipeline",
     "documentInfo": "Document Info",
     "cryptographic": "Cryptographic Details",
@@ -93,33 +104,117 @@
   "samples": {
     "financial_valid_approval": {
       "chip": "Loan approval (valid)",
-      "scenario": "A regional bank approves a small-business loan; the applicant's exact income is never disclosed, only that it exceeds the policy threshold.",
-      "outcome": "All four stages verified. KYC/AML attribute proof anchored on-chain."
+      "scenario": "A regional bank approves a ¥5,000,000 small-business loan. The applicant's exact income is never disclosed to the bank's AI; Lemma proves only that income exceeds the policy threshold and that the applicant is not on any AML watchlist.",
+      "outcome": "All four stages verified. KYC/AML attribute proof anchored on-chain.",
+      "stakes": [
+        "Borrower privacy preserved",
+        "Regulatory audit trail produced"
+      ],
+      "businessImpact": [
+        "Audit response in under a second vs ~3 days of manual review",
+        "Borrower's income never disclosed to bank or regulator",
+        "Regulator can verify the proof directly, no trust required"
+      ],
+      "failReason": ""
     },
     "financial_tampered_output": {
       "chip": "Loan approval (tampered)",
-      "scenario": "Same loan, but the approval document was edited after the AI signed it.",
-      "outcome": "Output commitment did not match the value bound at issuance."
+      "scenario": "The same loan approval, but the approval document was edited after the AI signed it. Lemma detects the tampering before the document is presented to compliance.",
+      "outcome": "Output commitment did not match the value bound at issuance.",
+      "stakes": [
+        "Audit integrity",
+        "Bank liability"
+      ],
+      "businessImpact": [],
+      "failReason": "The approval output was modified after the AI signed it. The output commitment no longer matches the value bound at issuance, so verification stops here.",
+      "counterFactual": {
+        "without": [
+          "Tampered approval passes silently into the loan portfolio",
+          "Compliance discovers the mismatch weeks later, during audit",
+          "Bank faces regulatory penalty for a non-compliant decision"
+        ],
+        "with": [
+          "Tampering detected in under a second, before document is presented",
+          "Cryptographic audit trail of the original AI-signed output is preserved",
+          "Regulator verifies the original commitment directly, no trust required"
+        ]
+      }
     },
     "manufacturing_valid_process": {
       "chip": "CBAM compliance (valid)",
-      "scenario": "An EU shipment's production process conformed to the registered ESG/CBAM specification.",
-      "outcome": "Process spec proof anchored on-chain; CBAM filing references the verified envelope."
+      "scenario": "A parts manufacturer ships a batch to an EU buyer. Lemma proves the production process conformed to the registered ESG/CBAM-compliant specification.",
+      "outcome": "Process spec proof anchored on-chain; CBAM filing references the verified envelope.",
+      "stakes": [
+        "Supply-chain trust",
+        "EU import compliance"
+      ],
+      "businessImpact": [
+        "CBAM proof generated at ship time vs ~2 weeks of compliance documentation",
+        "Process spec changes are tracked cryptographically, not by emails",
+        "Buyer verifies compliance independently, no auditor required"
+      ],
+      "failReason": ""
     },
     "manufacturing_model_swap": {
       "chip": "CBAM compliance (model swap)",
-      "scenario": "Same shipment, but a different AI inspection model was substituted between certification and shipment.",
-      "outcome": "Envelope signed under a different model hash than the one declared."
+      "scenario": "The same shipment, but a different AI inspection model was substituted between certification and shipment. Lemma detects the substitution via envelope signature mismatch.",
+      "outcome": "Envelope signed under a different model hash than the one declared.",
+      "stakes": [
+        "Process trust",
+        "Recall liability"
+      ],
+      "businessImpact": [],
+      "failReason": "The envelope was signed under a different model than the one declared. Verification stops at the envelope step.",
+      "counterFactual": {
+        "without": [
+          "Shipment proceeds with the unverified inspection model",
+          "Defect surfaces only after the EU import, triggering recall",
+          "Recall cost plus import-ban risk fall on the manufacturer"
+        ],
+        "with": [
+          "Substitution detected before the shipment leaves the plant",
+          "Re-issue requires the originally certified model, not a swap",
+          "Recall avoided; CBAM filing references the verified envelope"
+        ]
+      }
     },
     "agent_valid_chain_with_x402": {
       "chip": "Agent + x402 (valid)",
-      "scenario": "An autonomous agent purchases an API service via x402; Lemma proves delegation authority and payment authenticity.",
-      "outcome": "Agent delegation chain + x402 payment proof verified."
+      "scenario": "An autonomous agent purchases an API service via x402 payment. Lemma proves the agent had delegation authority and that the payment receipt is genuine.",
+      "outcome": "Agent delegation chain + x402 payment proof verified.",
+      "stakes": [
+        "Delegation integrity",
+        "Payment receipt non-repudiation"
+      ],
+      "businessImpact": [
+        "Multi-agent transaction verified in under a second; no manual equivalent exists",
+        "Delegation chain provable post-hoc, no agent-log scraping needed",
+        "x402 payment cryptographically linked to authorized action"
+      ],
+      "failReason": ""
     },
     "agent_replay_duplicate": {
       "chip": "Agent chain (replay)",
-      "scenario": "The same proof_id is submitted twice across two settlement steps (stuck retry loop).",
-      "outcome": "Replay rejected — proof_id already seen in a prior settlement."
+      "scenario": "The same proof is submitted twice across two settlement steps — for example, a stuck retry loop in an agent pipeline. Lemma detects the duplicate proof_id and rejects the second submission.",
+      "outcome": "Replay rejected — proof_id already seen in a prior settlement.",
+      "stakes": [
+        "Settlement integrity",
+        "Double-spend prevention"
+      ],
+      "businessImpact": [],
+      "failReason": "The same proof_id was already seen in a prior settlement step. The duplicate submission is rejected before any second debit can occur.",
+      "counterFactual": {
+        "without": [
+          "Duplicate settlement passes through both ledger entries",
+          "Funds debited twice from the agent's spending allowance",
+          "Manual reconciliation across two settlement systems required"
+        ],
+        "with": [
+          "Duplicate proof_id detected before the second settlement commits",
+          "Second submission rejected at the verification boundary",
+          "No reconciliation needed; ledger entries stay consistent"
+        ]
+      }
     }
   }
 }
