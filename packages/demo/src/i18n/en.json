@@ -98,8 +98,8 @@
     "githubHref": "https://github.com/lemmaoracle/lemma",
     "privacy": "Privacy",
     "privacyHref": "https://lemma.frame00.com/privacy",
-    "microsite": "Lemma microsite",
-    "micrositeHref": "https://lemma.frame00.com/"
+    "website": "Lemma website",
+    "websiteHref": "https://lemma.frame00.com/"
   },
   "samples": {
     "financial_valid_approval": {

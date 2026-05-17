@@ -97,9 +97,9 @@
     "github": "GitHub",
     "githubHref": "https://github.com/lemmaoracle/lemma",
     "privacy": "プライバシー",
-    "privacyHref": "https://lemma.frame00.com/privacy",
-    "microsite": "Lemma マイクロサイト",
-    "micrositeHref": "https://lemma.frame00.com/"
+    "privacyHref": "https://lemma.frame00.com/ja/privacy",
+    "website": "Lemma ウェブサイト",
+    "websiteHref": "https://lemma.frame00.com/ja/"
   },
   "samples": {
     "financial_valid_approval": {
