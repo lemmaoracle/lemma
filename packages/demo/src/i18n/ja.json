@@ -59,7 +59,7 @@
     "titleSuffix": " ドキュメント",
     "closeLabel": "詳細を閉じる",
     "scenario": "シナリオ",
-    "whatAtStake": "争点となること",
+    "whatAtStake": "この検証で保護されるもの",
     "businessImpact": "Lemma 導入で変わること",
     "whatWentWrong": "何が起こったか",
     "counterFactualWithout": "Lemma なし",
