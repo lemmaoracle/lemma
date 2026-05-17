@@ -464,15 +464,25 @@ function escape(input: string): string {
 /* ─── Tutorial content (rendered for sample-driven rows) ─── */
 
 /**
- * Build the "what's at stake / business impact / counter-factual"
+ * Build the "what this protects / business impact / counter-factual"
  * sections for the detail panel. These restore the original demo's
  * business-value framing — the Oracle Pipeline redesign trimmed them,
  * and they were brought back so sample chips lead the user through
  * the same teaching arc as before (scenario → stakes → outcome).
+ *
+ * Timing: only the "context" sections (stakes) render before the
+ * verification pipeline animates. Outcome sections — businessImpact
+ * for pass, failReason + counterFactual for fail — render after the
+ * pipeline reaches its terminal state, so the user sees the result
+ * appear once verification has actually run. The detail panel is
+ * re-rendered by transitionRow as the row's status changes, so these
+ * gates fire automatically as the animation completes.
  */
 function renderTutorial(t: Translations, row: Row): string {
   const parts: string[] = [];
 
+  // Context: always shown so the user reads the scenario + stakes
+  // before the pipeline starts.
   if (row.stakes && row.stakes.length > 0) {
     parts.push(`
       <div class="detail-section">
@@ -484,7 +494,11 @@ function renderTutorial(t: Translations, row: Row): string {
     `);
   }
 
-  if (row.businessImpact && row.businessImpact.length > 0) {
+  // Outcome (pass side): only after verification completes off-chain
+  // or anchors on-chain. Mirrors the timeline reaching "Off-chain
+  // Verified" / "On-chain Verified".
+  const passComplete = row.status === "verified" || row.status === "onchain";
+  if (passComplete && row.businessImpact && row.businessImpact.length > 0) {
     parts.push(`
       <div class="detail-section">
         <div class="detail-section-label">${escape(t.detail.businessImpact)}</div>
@@ -495,7 +509,11 @@ function renderTutorial(t: Translations, row: Row): string {
     `);
   }
 
-  if (row.failReason) {
+  // Outcome (fail side): only after verification rejects. Mirrors the
+  // timeline reaching the rejection step, so the failure narrative
+  // appears alongside the red marker rather than pre-spoiling it.
+  const failComplete = row.status === "rejected";
+  if (failComplete && row.failReason) {
     parts.push(`
       <div class="detail-section">
         <div class="detail-section-label">${escape(t.detail.whatWentWrong)}</div>
@@ -504,7 +522,7 @@ function renderTutorial(t: Translations, row: Row): string {
     `);
   }
 
-  if (row.counterFactual) {
+  if (failComplete && row.counterFactual) {
     const cf = row.counterFactual;
     parts.push(`
       <div class="detail-section">

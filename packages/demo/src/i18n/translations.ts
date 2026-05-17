@@ -119,7 +119,7 @@ export interface Translations {
     readonly titleSuffix: string;
     readonly closeLabel: string;
     readonly scenario: string;
-    /** "What's at stake" section heading. */
+    /** "What this protects" section heading (was "What's at stake"). */
     readonly whatAtStake: string;
     /** "What changes with Lemma" section heading (pass samples). */
     readonly businessImpact: string;
