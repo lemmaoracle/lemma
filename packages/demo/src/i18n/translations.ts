@@ -162,8 +162,8 @@ export interface Translations {
     readonly githubHref: string;
     readonly privacy: string;
     readonly privacyHref: string;
-    readonly microsite: string;
-    readonly micrositeHref: string;
+    readonly website: string;
+    readonly websiteHref: string;
   }>;
   /**
    * Per-sample chip copy. Keys are Sample.id from `data/fixtures.ts`.
