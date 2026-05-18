@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.lemmaoracle/mcp",
-  "description": "Query ZK-verified attributes, selective disclosure, and on-chain provenance from Lemma Oracle.",
+  "description": "Verifiable provenance for AI agents — ZK proofs over confidential documents, no plaintext exposure.",
   "repository": {
     "url": "https://github.com/lemmaoracle/lemma",
     "source": "github",
@@ -21,7 +21,7 @@
       "environmentVariables": [
         {
           "name": "LEMMA_API_KEY",
-          "description": "Lemma API key (Bearer token).",
+          "description": "Lemma API key (Bearer token). Get one at https://lemma.frame00.com/services",
           "isRequired": true,
           "isSecret": true
         },
@@ -29,6 +29,20 @@
           "name": "LEMMA_API_BASE",
           "description": "Optional API base URL. Defaults to production endpoint.",
           "isRequired": false
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.lemma.workers.dev/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Lemma API key as Bearer token. Format: 'Bearer <LEMMA_API_KEY>'. Get a key at https://lemma.frame00.com/services",
+          "isRequired": true,
+          "isSecret": true
         }
       ]
     }
