@@ -26,8 +26,39 @@ export const normalizeError = (error: unknown): LemmaMcpError => {
   return { code, message };
 };
 
-export const runTool = <T>(promise: Promise<T>): Promise<{ content: Array<{ type: "text"; text: string }> }> =>
+/**
+ * MCP SDK boundary type. `content` and `structuredContent` are kept mutable to
+ * satisfy the SDK's `CallToolResult` signature; internal Lemma types remain
+ * `Readonly<>` per repo FP conventions.
+ */
+export type ToolResult = {
+  content: Array<{ type: "text"; text: string }>;
+  structuredContent?: Record<string, unknown>;
+  isError?: boolean;
+};
+
+/**
+ * Wrap a Lemma SDK promise into an MCP tool result.
+ *
+ * Success path returns both `content` (stringified JSON for legacy MCP clients
+ * and visibility in inspectors) and `structuredContent` (a typed object that
+ * the SDK validates against the registered tool's `outputSchema`). `undefined`
+ * and non-object results are coerced to `{}` so that all-optional output
+ * schemas validate cleanly.
+ *
+ * Error path returns `isError: true` so the SDK skips outputSchema validation.
+ */
+export const runTool = <T>(promise: Promise<T>): Promise<ToolResult> =>
   promise.then(
-    (result) => ({ content: [{ type: "text", text: JSON.stringify(result ?? null, null, 2) }] }),
-    (error: unknown) => ({ content: [{ type: "text", text: JSON.stringify({ error: normalizeError(error) }, null, 2) }] }),
+    (result): ToolResult => {
+      const isObject = typeof result === "object" && result !== null;
+      return {
+        content: [{ type: "text", text: JSON.stringify(result ?? null, null, 2) }],
+        structuredContent: isObject ? (result as Record<string, unknown>) : {},
+      };
+    },
+    (error: unknown): ToolResult => ({
+      content: [{ type: "text", text: JSON.stringify({ error: normalizeError(error) }, null, 2) }],
+      isError: true,
+    }),
   );

@@ -139,6 +139,46 @@ export const queryVerifiedAttributesTool = (server: McpServer, client: LemmaClie
           .optional()
           .describe("Pagination offset. Pair with `hasMore` in the response to walk pages."),
       },
+      outputSchema: {
+        results: z
+          .array(
+            z.object({
+              docHash: z.string().describe("Document hash (commitment root)."),
+              schema: z.string().describe("Schema ID this document conforms to."),
+              issuerId: z.string().describe("Issuer DID/identifier."),
+              subjectId: z.string().describe("Subject DID/identifier."),
+              chainId: z.number().optional().describe("EVM chain ID, if anchored on-chain."),
+              attributes: z
+                .record(z.unknown())
+                .describe("Attribute key/value pairs as defined by the schema."),
+              isVerified: z
+                .boolean()
+                .describe(
+                  "MCP-layer flag — true when proof.status is 'verified' or 'onchain-verified'. Prefer this over raw status for boolean checks.",
+                ),
+              proof: z
+                .object({
+                  status: z.string().optional(),
+                  circuitId: z.string().optional(),
+                  chainId: z.number().optional(),
+                })
+                .optional()
+                .describe("Proof envelope (status, circuit, chain)."),
+              disclosure: z.unknown().optional().describe("Selective-disclosure payload, if present."),
+            }),
+          )
+          .describe("Result set; each item has been MCP-enriched with `isVerified`."),
+        hasMore: z
+          .boolean()
+          .describe("True when more results exist beyond this page; pair with `offset` to walk pages."),
+      },
+      annotations: {
+        title: "Lemma — query verified attributes",
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
     },
     (input) => runTool(queryVerifiedAttributes(client, input)),
   );

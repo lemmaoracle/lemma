@@ -27,6 +27,46 @@ export const getCircuitTool = (server: McpServer, client: LemmaClient): Register
             "Circuit ID. Returned in the `proof.circuitId` field of VerifiedAttributesQueryResponseItem from lemma_query_verified_attributes, or registered via POST /v1/circuits. NOTE: this matches the OpenAPI field name `circuitId`, not a generic `id`.",
           ),
       },
+      outputSchema: {
+        circuitId: z.string().describe("Circuit ID, echoing the request."),
+        schema: z.string().describe("Schema ID this circuit is bound to."),
+        description: z.string().optional(),
+        inputs: z
+          .array(z.string())
+          .optional()
+          .describe("Ordered names of the circuit's public/private inputs."),
+        verifiers: z
+          .array(
+            z.object({
+              type: z.enum(["onchain", "offchain"]).describe("Verifier location."),
+              address: z.string().optional().describe("Verifier contract address (onchain only)."),
+              chainId: z.number().optional().describe("EVM chain ID (onchain only)."),
+              alg: z
+                .string()
+                .optional()
+                .describe("Proof algorithm identifier (e.g. 'groth16-bn254-snarkjs')."),
+            }),
+          )
+          .optional()
+          .describe("Available verifier configurations for this circuit."),
+        artifact: z
+          .object({
+            location: z.object({
+              type: z.enum(["ipfs", "https"]),
+              wasm: z.string().describe("Circuit WASM artifact URL/CID."),
+              zkey: z.string().describe("Circuit proving key URL/CID."),
+            }),
+          })
+          .optional()
+          .describe("Circuit artifact location (WASM + zkey)."),
+      },
+      annotations: {
+        title: "Lemma — get circuit",
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
     },
     (input) => runTool(getCircuit(client, input)),
   );
