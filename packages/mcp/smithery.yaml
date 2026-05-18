@@ -1,9 +1,11 @@
 name: "lemmaoracle/lemma"
 displayName: "Lemma Oracle"
 description: |
-  Verifiable provenance layer for AI agents. Query cryptographically verified
-  attributes from confidential documents — zero-knowledge proofs, selective
-  disclosure, on-chain provenance. Models change. Proofs remain.
+  AI agents make decisions you can't audit. Lemma fixes that with
+  zero-knowledge proofs over confidential documents — selective disclosure,
+  on-chain provenance, no plaintext exposure. Query cryptographically verified
+  attributes from agents in production. Built for regulated industries and
+  x402/MCP-native developers. Models change. Proofs remain.
 
 categories:
   - "AI Agents"
