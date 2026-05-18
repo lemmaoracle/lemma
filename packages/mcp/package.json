@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/mcp",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "MCP server for Lemma Oracle API",
   "license": "Apache-2.0",
   "mcpName": "io.github.lemmaoracle/mcp",
@@ -35,8 +35,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@lemmaoracle/sdk": "workspace:*",
-    "@lemmaoracle/spec": "workspace:*",
+    "@lemmaoracle/sdk": "^0.0.31",
+    "@lemmaoracle/spec": "^0.0.30",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "agents": "^0.11.4",
     "ramda": "^0.30.1",
