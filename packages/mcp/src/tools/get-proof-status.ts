@@ -59,6 +59,33 @@ export const getProofStatusTool = (server: McpServer, client: LemmaClient): Regi
             "verificationId returned by lemma_submit_proof. Internally treated as a docHash filter on POST /v1/verified-attributes/query (no dedicated GET /v1/proofs/{id} endpoint in v2 API).",
           ),
       },
+      outputSchema: {
+        status: z
+          .string()
+          .optional()
+          .describe(
+            "Verification status enum: 'received' | 'verified' | 'onchain-verified' | 'rejected'. Use the SDK's isVerified() helper (or check status === 'verified' || status === 'onchain-verified') for cryptographic validity.",
+          ),
+        circuitId: z
+          .string()
+          .optional()
+          .describe("Circuit ID this proof was generated against."),
+        chainId: z
+          .number()
+          .optional()
+          .describe("EVM chain ID where the proof was verified, if applicable."),
+        docHash: z
+          .string()
+          .optional()
+          .describe("Document hash this proof attests to."),
+      },
+      annotations: {
+        title: "Lemma — get proof status",
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
     },
     (input) => runTool(getProofStatus(client, input)),
   );

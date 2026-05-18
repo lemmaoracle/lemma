@@ -28,10 +28,11 @@ repository:
   directory: packages/mcp
 
 homepage: https://lemma.frame00.com
+icon: https://lemma.frame00.com/favicon.svg
 license: Apache-2.0
 
 remote:
-  url: "https://mcp.lemma.workers.dev"
+  url: "https://mcp.lemma.workers.dev/mcp"
   transport: "http"
   auth:
     type: "bearer"

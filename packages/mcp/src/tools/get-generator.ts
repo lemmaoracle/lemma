@@ -26,6 +26,34 @@ export const getGeneratorTool = (server: McpServer, client: LemmaClient): Regist
             "Generator ID. Each generator is bound to a single schema and describes how source documents are produced. Registered via POST /v1/doc-generators. NOTE: this matches the OpenAPI field name `generatorId`, not a generic `id`.",
           ),
       },
+      outputSchema: {
+        generatorId: z.string().describe("Generator ID, echoing the request."),
+        schema: z.string().describe("Schema ID this generator is bound to (1:1 binding)."),
+        description: z.string().optional(),
+        language: z.string().optional().describe("Implementation language (e.g. 'rust', 'typescript')."),
+        source: z
+          .object({
+            type: z.literal("url"),
+            uri: z.string().describe("Source URL (git, IPFS, etc.)."),
+          })
+          .optional()
+          .describe("Reference to the generator's source code."),
+        inputsSpec: z
+          .record(z.unknown())
+          .optional()
+          .describe("Specification of fields the issuer must populate."),
+        outputsSpec: z
+          .record(z.unknown())
+          .optional()
+          .describe("Specification of fields the generator produces."),
+      },
+      annotations: {
+        title: "Lemma — get generator",
+        readOnlyHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
     },
     (input) => runTool(getGenerator(client, input)),
   );
