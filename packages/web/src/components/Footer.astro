@@ -29,6 +29,7 @@ const whitepaperHref = servicesPath;
 const aboutUsHref =
   locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
 const githubHref = "https://github.com/lemmaoracle";
+const smitheryHref = "https://smithery.ai/server/lemmaoracle/lemma";
 const currentPath = Astro.url.pathname;
 const languageSwitchHref =
   locale === "ja" ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
@@ -80,6 +81,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
           <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
           <li><a href={whitepaperHref}>{footerT.specs}</a></li>
           <li><a href={githubHref} target="_blank">{footerT.github}</a></li>
+          <li><a href={smitheryHref} target="_blank" rel="noopener">{footerT.smithery}</a></li>
         </ul>
       </div>
 

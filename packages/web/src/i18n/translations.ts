@@ -129,6 +129,7 @@ export interface Translations {
     readonly colCompany: string;
     readonly specs: string;
     readonly github: string;
+    readonly smithery: string;
     readonly contact: string;
   }>;
   readonly ctaSection: Readonly<{

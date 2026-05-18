@@ -1,5 +1,8 @@
 # `@lemmaoracle/mcp`
 
+[![smithery badge](https://smithery.ai/badge/@lemmaoracle/lemma)](https://smithery.ai/servers/lemmaoracle/lemma)
+[![npm version](https://img.shields.io/npm/v/@lemmaoracle/mcp.svg)](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
 `@lemmaoracle/mcp` is the **Model Context Protocol (MCP) server** that gives
 AI agents access to Lemma's verifiable provenance layer — query
 cryptographically verified attributes (zero-knowledge proofs, selective
@@ -21,7 +24,22 @@ The current MVP exposes **5 read tools**. **Resources** and **prompts** are
 not exposed in v0.0.x; write tools (`register_document`, `submit_proof`)
 are planned for Phase 2.
 
-## Quick start (Claude Desktop)
+## Quick start
+
+Two ways to connect — pick whichever matches your agent setup.
+
+### Option 1 — Smithery (hosted gateway, zero install)
+
+```bash
+npx -y smithery mcp add lemmaoracle/lemma
+```
+
+Smithery proxies to the Lemma MCP endpoint at `https://lemma--lemmaoracle.run.tools`
+and prompts for your Lemma API key. Best for trying the server quickly or for
+agents that already speak Smithery. Server page:
+[smithery.ai/servers/lemmaoracle/lemma](https://smithery.ai/servers/lemmaoracle/lemma).
+
+### Option 2 — Claude Desktop with npx (stdio)
 
 Add this to your Claude Desktop MCP config:
 

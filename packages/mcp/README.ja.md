@@ -1,5 +1,8 @@
 # `@lemmaoracle/mcp`
 
+[![smithery badge](https://smithery.ai/badge/@lemmaoracle/lemma)](https://smithery.ai/servers/lemmaoracle/lemma)
+[![npm version](https://img.shields.io/npm/v/@lemmaoracle/mcp.svg)](https://www.npmjs.com/package/@lemmaoracle/mcp)
+
 `@lemmaoracle/mcp` は、AI エージェントが Lemma の検証可能なプロベナンス層に
 アクセスするための **Model Context Protocol (MCP) サーバー**です。
 機密ドキュメントから暗号学的に検証された属性（ゼロ知識証明・選択的開示・
@@ -19,7 +22,22 @@ Lemma の検証済み属性 API に対するリードオンリーの **tools** �
 は v0.0.x では公開しません。書き込み系 tools（`register_document` /
 `submit_proof`）は Phase 2 で対応予定です。
 
-## クイックスタート（Claude Desktop）
+## クイックスタート
+
+エージェントのセットアップに合わせて、2 通りから選んでください。
+
+### 方法 1 — Smithery（ホスト型ゲートウェイ、インストール不要）
+
+```bash
+npx -y smithery mcp add lemmaoracle/lemma
+```
+
+Smithery が `https://lemma--lemmaoracle.run.tools` へプロキシし、
+Lemma API キーを尋ねます。手早く試したいとき、または既に Smithery を使っている
+エージェントから接続するときに便利です。サーバーページ:
+[smithery.ai/servers/lemmaoracle/lemma](https://smithery.ai/servers/lemmaoracle/lemma)。
+
+### 方法 2 — Claude Desktop + npx（stdio）
 
 Claude Desktop の MCP 設定に以下を追加してください：
 
