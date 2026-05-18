@@ -187,6 +187,9 @@ if (server.packages && server.packages[0]) {
 fs.writeFileSync('./server.json', JSON.stringify(server, null, 2) + '\n');
 "
 
+    # Sync PACKAGE_VERSION in server.ts
+    sed -i "s/^const PACKAGE_VERSION = \".*\";/const PACKAGE_VERSION = \"${mcp_version}\";/" src/server.ts
+
     echo "📝 Updated @lemmaoracle/mcp version: $mcp_version"
     echo "🚀 Publishing @lemmaoracle/mcp..."
     npm publish --access public
