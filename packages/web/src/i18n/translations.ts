@@ -24,6 +24,7 @@ export interface Translations {
     readonly contact: string;
     readonly contactCta: string;
     readonly whitepaperCta: string;
+    readonly dashboardCta: string;
     readonly languageJa: string;
     readonly languageEn: string;
     readonly mega: Readonly<{
