@@ -32,7 +32,16 @@ export { paymentMiddleware } from "./lemma-discovery.js";
 export { ExactEvmScheme } from "@x402/evm/exact/server";
 export { x402Client } from "@x402/core/client";
 
+// Bazaar discoverability extension (x402 Bazaar Discovery Layer)
+export {
+  bazaarPaymentMiddleware,
+  registerBazaarRouteOnFirstSettle,
+} from "./bazaar-middleware.js";
+export { isLemmaRouteConfig } from "./routeConfig.js";
+
 // Types
 export type { Network, PaymentRequirements, PaymentPayload } from "@x402/core/types";
 export type { FacilitatorConfig } from "@x402/core/server";
 export type { LemmaConfig } from "./lemma-config.js";
+export type { LemmaRouteConfig } from "./routeConfig.js";
+export type { BazaarContextVariables } from "./bazaar-middleware.js";

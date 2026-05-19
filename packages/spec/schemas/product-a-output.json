@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-a-output.json",
+  "title": "Agent Identity Issuance Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["credentialId", "credential", "proof", "verifyUrl", "issuedAt", "expiresAt", "settlement", "requestId"],
+  "properties": {
+    "credentialId": {
+      "type": "string",
+      "format": "uri",
+      "description": "Permanent identifier of the issued credential (URN form: urn:lemma:cred:<uuid>)."
+    },
+    "credential": {
+      "type": "object",
+      "required": ["@context", "type", "issuer", "validFrom", "validUntil", "credentialSubject"],
+      "description": "W3C Verifiable Credentials v2 envelope. Subject = agentId, claims = roles+scopes+permissions+spendLimit.",
+      "properties": {
+        "@context": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" },
+          "description": "JSON-LD contexts. Always includes 'https://www.w3.org/ns/credentials/v2' + Lemma schema context."
+        },
+        "type": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "VC types. Always ['VerifiableCredential', 'AgentIdentityCredential']."
+        },
+        "issuer": { "type": "string", "format": "uri", "description": "DID of Lemma's issuer (e.g. did:web:lemma.frame00.com)." },
+        "validFrom": { "type": "string", "format": "date-time" },
+        "validUntil": { "type": "string", "format": "date-time" },
+        "credentialSubject": {
+          "type": "object",
+          "required": ["id", "roles", "spendLimit"],
+          "properties": {
+            "id": { "type": "string", "format": "uri", "description": "Subject DID (= agentId in request)." },
+            "controller": { "type": "string", "format": "uri" },
+            "orgId": { "type": "string" },
+            "roles": { "type": "array", "items": { "type": "string" } },
+            "scopes": { "type": "array", "items": { "type": "string" } },
+            "permissions": { "type": "object" },
+            "spendLimit": { "type": "object" }
+          }
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "merkle", "circuitId"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "LemmaAgentIdentityProof2026" },
+        "merkle": {
+          "type": "object",
+          "required": ["commitmentRoot", "leafIndex", "subjectIdHash"],
+          "additionalProperties": false,
+          "properties": {
+            "commitmentRoot": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{64}$",
+              "description": "Public Poseidon Merkle root after inserting this credential's leaves (5 attributes)."
+            },
+            "leafIndex": {
+              "type": "integer",
+              "description": "Index of this credential's leaves in the Merkle tree (nLevels=20)."
+            },
+            "subjectIdHash": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{64}$",
+              "description": "Poseidon hash of the subject DID."
+            }
+          }
+        },
+        "merkleProofUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "One-time holder-only URL to retrieve the full Merkle inclusion proof."
+        },
+        "circuitId": { "type": "string", "const": "agent-identity-v1" },
+        "verifierContract": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$",
+          "description": "Address of the Solidity Groth16 verifier on Base mainnet."
+        }
+      }
+    },
+    "verifyUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public verification URL: https://verify.lemma.frame00.com/credential/<uuid>."
+    },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "settlement": {
+      "type": "object",
+      "required": ["txHash", "amount", "currency", "facilitator"],
+      "additionalProperties": false,
+      "properties": {
+        "txHash": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "amount": { "type": "string", "const": "0.05" },
+        "currency": { "type": "string", "const": "USDC" },
+        "facilitator": { "type": "string", "format": "uri" }
+      }
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[0-9a-z]+$",
+      "description": "Server-assigned request identifier for log correlation."
+    }
+  }
+}

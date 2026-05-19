@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-a-input.json",
+  "title": "Agent Identity Issuance Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agentId", "controllerId", "roles", "spendLimit", "expiresAt"],
+  "properties": {
+    "agentId": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "DID of the agent being credentialed (subject). Example: did:key:z6Mk...",
+      "examples": ["did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSrUaYS9XVjqJzgRfBjK"]
+    },
+    "subjectId": {
+      "type": "string",
+      "format": "uri",
+      "description": "DID of the underlying real-world subject (organization, user) the agent acts on behalf of. Optional but recommended for KYA traceability."
+    },
+    "controllerId": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^did:[a-z0-9]+:.+$",
+      "description": "DID of the controller who can revoke this credential. Typically the issuer's operations key."
+    },
+    "orgId": {
+      "type": "string",
+      "description": "Organization identifier (free-form, e.g. company registration number, LEI). Used in cross-credential reconciliation."
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "enum": [
+          "trader",
+          "buyer",
+          "publisher",
+          "auditor",
+          "reader",
+          "writer",
+          "custodian",
+          "validator",
+          "compliance-officer",
+          "developer",
+          "operator",
+          "support"
+        ]
+      },
+      "description": "Roles assigned to this agent. Each role implies a baseline scope set; explicit scopes below override."
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_:.-]+$"
+      },
+      "description": "Fine-grained capability scopes (e.g. 'payments:send', 'data:read:financial'). Optional override over roles."
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Boolean permission map for binary capabilities. MVP supports a fixed set; custom permissions are V2.",
+      "properties": {
+        "can_settle_x402": { "type": "boolean", "description": "Authorize the agent to settle x402 micropayments." },
+        "can_request_attestation": { "type": "boolean", "description": "Authorize the agent to request a Lemma attestation bundle (product C)." },
+        "can_issue_subordinate": { "type": "boolean", "description": "Authorize the agent to issue subordinate agent credentials." },
+        "can_sign_in": { "type": "boolean", "description": "Authorize the agent to perform ZK Proof Sign-in (product D)." },
+        "can_invoke_inference": { "type": "boolean", "description": "Authorize the agent to invoke proof-anchored inference (product B)." }
+      }
+    },
+    "spendLimit": {
+      "type": "object",
+      "required": ["amount", "currency", "window"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Maximum spend within window. String to preserve precision (USDC has 6 decimals)."
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USDC"],
+          "description": "Settlement currency. MVP supports USDC only on Base mainnet. USDT/EURC are planned for V2 — passing them returns INVALID_CURRENCY in MVP."
+        },
+        "window": {
+          "type": "string",
+          "enum": ["per-call", "daily", "weekly", "monthly"],
+          "description": "Spend limit window."
+        }
+      },
+      "description": "Financial guard rail enforced at attestation-verification time by consuming services."
+    },
+    "paymentPolicy": {
+      "type": "string",
+      "enum": ["prepaid"],
+      "default": "prepaid",
+      "description": "How the agent's payments are funded. MVP supports prepaid only. 'postpaid' and 'subscription' are V2 — passing them returns POLICY_NOT_SUPPORTED in MVP."
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Issuance timestamp. If omitted, Lemma uses server time."
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Expiration timestamp. Maximum 1 year from issuance per MVP policy."
+    },
+    "sourceSystem": {
+      "type": "string",
+      "description": "Free-form identifier of the system that originated the issuance (e.g. 'aws-bedrock-agentcore', 'custom-pipeline-v2'). Stored for provenance only."
+    },
+    "chainContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chainId": { "type": "integer", "enum": [8453], "description": "Base mainnet only in MVP." },
+        "rpcUrl": { "type": "string", "format": "uri", "description": "Optional RPC endpoint reference for verifier reconciliation." }
+      }
+    }
+  }
+}

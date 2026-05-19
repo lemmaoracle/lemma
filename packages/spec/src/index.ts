@@ -257,3 +257,44 @@ export type VerifiedAttributesQueryResponse = Readonly<{
 /* ── Generic error ─────────────────────────────────────────────────── */
 
 export type ErrorResponse = Readonly<{ error: string }>;
+
+/* ── Bazaar product schemas ────────────────────────────────────────── */
+
+/**
+ * The four Lemma × x402 Bazaar products. Each ships an input and an output
+ * JSON Schema (Draft 2020-12) under `packages/spec/schemas/`.
+ *
+ *  - product-a — Agent Identity Issuance
+ *  - product-b — Inference Attestation API
+ *  - product-c — Compliance Bundle (Basic)
+ *  - product-d — ZK Proof Sign-in (Proof-as-Auth)
+ */
+export type BazaarProduct = "product-a" | "product-b" | "product-c" | "product-d";
+
+/** Input/output JSON Schema file pair for a Bazaar product. */
+export type BazaarSchemaPair = Readonly<{
+  /** Schema file describing the request body. */
+  input: string;
+  /** Schema file describing the response body. */
+  output: string;
+}>;
+
+/**
+ * Maps each Bazaar product to its input/output JSON Schema file name
+ * (relative to `packages/spec/schemas/`). Load a schema with an import
+ * attribute, e.g.
+ *
+ * ```ts
+ * import schema from "@lemmaoracle/spec/schemas/product-a-input.json" with { type: "json" };
+ * ```
+ *
+ * TODO(W1): the canonical Bazaar discovery identifier surfaced via
+ * `LemmaRouteConfig.schema` (e.g. "inference-attestation-v1") is finalised
+ * alongside the 5/20 RouteConfig decision.
+ */
+export const BAZAAR_SCHEMA_FILES = {
+  "product-a": { input: "product-a-input.json", output: "product-a-output.json" },
+  "product-b": { input: "product-b-input.json", output: "product-b-output.json" },
+  "product-c": { input: "product-c-input.json", output: "product-c-output.json" },
+  "product-d": { input: "product-d-input.json", output: "product-d-output.json" },
+} as const satisfies Readonly<Record<BazaarProduct, BazaarSchemaPair>>;

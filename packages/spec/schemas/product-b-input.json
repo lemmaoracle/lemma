@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-b-input.json",
+  "title": "Inference Attestation Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model_digest", "input_hash", "output_hash", "timestamp"],
+  "properties": {
+    "model_digest": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "SHA-256 hash of a canonical model identifier (e.g. provider:model_name:version)."
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "SHA-256 hash of the canonicalised inference input. Raw input is NEVER sent to Lemma."
+    },
+    "output_hash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "SHA-256 hash of the canonicalised inference output. Raw output is NEVER sent to Lemma."
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "Unix epoch seconds. Must be within ±300s of Lemma's server time (replay protection)."
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{32}$",
+      "description": "Optional 16-byte client nonce (hex) for additional replay protection."
+    },
+    "claim_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional metadata bound into the proof commitment as a hash; never stored in the clear.",
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "format": "uri",
+          "description": "Calling agent's DID. Recommended for full audit trail; combine with product A credential."
+        },
+        "purpose": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Human-readable purpose label. Hashed before commitment."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z0-9_:-]+$" },
+          "maxItems": 16,
+          "description": "Free-form tags for downstream filtering (hashed)."
+        },
+        "provider": {
+          "type": "string",
+          "description": "Free-form provider identifier. Hashed before commitment."
+        }
+      }
+    }
+  }
+}

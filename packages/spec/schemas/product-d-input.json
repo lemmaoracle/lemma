@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-input.json",
+  "title": "ZK Proof Sign-in Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["api_key_commitment", "zk_proof", "nonce"],
+  "properties": {
+    "api_key_commitment": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "Poseidon hash of the API key, computed client-side. The API key itself is never transmitted."
+    },
+    "zk_proof": {
+      "type": "object",
+      "required": ["pi_a", "pi_b", "pi_c", "publicSignals"],
+      "additionalProperties": false,
+      "properties": {
+        "pi_a": { "type": "array", "items": { "type": "string" } },
+        "pi_b": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+        "pi_c": { "type": "array", "items": { "type": "string" } },
+        "publicSignals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Public signals: [api_key_commitment, nonce_hash, timestamp]."
+        }
+      },
+      "description": "Groth16 proof generated with seal-identity-v1 circuit."
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 64,
+      "description": "Server-issued nonce from GET /v1/bazaar/auth/challenge. Single-use, expires in 60 seconds."
+    },
+    "client_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional client identification (binds to JWT for audit).",
+      "properties": {
+        "client_id": { "type": "string" },
+        "platform": { "type": "string", "enum": ["web", "ios", "android", "cli", "server"] },
+        "subject_type": {
+          "type": "string",
+          "enum": ["human", "agent"],
+          "default": "agent",
+          "description": "Whether the sign-in is performed by a human user or an autonomous agent."
+        }
+      }
+    }
+  }
+}

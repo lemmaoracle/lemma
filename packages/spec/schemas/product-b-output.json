@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-b-output.json",
+  "title": "Inference Attestation Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["attestationId", "proof", "verifyUrl", "anchoredAt", "settlement", "requestId"],
+  "properties": {
+    "attestationId": {
+      "type": "string",
+      "format": "uri",
+      "description": "URN of the attestation record (urn:lemma:attestation:<uuid>)."
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "status", "circuitId"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "LemmaInferenceAttestation2026" },
+        "status": {
+          "type": "string",
+          "enum": ["anchored", "deferred"],
+          "description": "'anchored' = proof generated and submitted synchronously. 'deferred' = settled but queued; use pollUrl."
+        },
+        "commitment": {
+          "type": ["string", "null"],
+          "pattern": "^0x[0-9a-fA-F]{64}$",
+          "description": "Poseidon5 commitment. null when status=deferred."
+        },
+        "groth16": {
+          "type": ["object", "null"],
+          "description": "Groth16 proof tuple. null when status=deferred."
+        },
+        "circuitId": { "type": "string", "const": "claimCheckCommitmentV1" },
+        "verifierContract": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+        "pollUrl": { "type": "string", "format": "uri", "description": "Polling URL when status=deferred." }
+      }
+    },
+    "verifyUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public verification URL: https://verify.lemma.frame00.com/attestation/<uuid>."
+    },
+    "anchoredAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Time the attestation was anchored on-chain. null when status=deferred."
+    },
+    "settlement": {
+      "type": "object",
+      "required": ["txHash", "amount", "currency", "facilitator"],
+      "additionalProperties": false,
+      "properties": {
+        "txHash": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "amount": { "type": "string", "const": "0.07" },
+        "currency": { "type": "string", "const": "USDC" },
+        "facilitator": { "type": "string", "format": "uri" }
+      }
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[0-9a-z]+$",
+      "description": "Server-assigned request identifier for log correlation."
+    }
+  }
+}
