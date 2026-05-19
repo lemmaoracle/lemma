@@ -32,6 +32,7 @@
         "credentialSubject": {
           "type": "object",
           "required": ["id", "roles", "spendLimit"],
+          "additionalProperties": false,
           "properties": {
             "id": { "type": "string", "format": "uri", "description": "Subject DID (= agentId in request)." },
             "controller": { "type": "string", "format": "uri" },
