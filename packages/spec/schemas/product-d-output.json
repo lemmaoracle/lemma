@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-output.json",
+  "title": "ZK Proof Sign-in Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["access_token", "token_type", "expires_in", "session_id", "proof_record", "settlement", "requestId"],
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "description": "Short-lived JWT (default TTL 15 minutes)."
+    },
+    "token_type": { "type": "string", "const": "Bearer" },
+    "expires_in": {
+      "type": "integer",
+      "default": 900,
+      "description": "Seconds until access_token expiry. Default 900 (15 minutes)."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Server-assigned session identifier for log correlation."
+    },
+    "proof_record": {
+      "type": "object",
+      "required": ["proofId", "verifyUrl", "anchoredAt"],
+      "additionalProperties": false,
+      "properties": {
+        "proofId": { "type": "string", "format": "uri", "description": "URN of the proof record (urn:lemma:auth:<uuid>)." },
+        "verifyUrl": { "type": "string", "format": "uri", "description": "Public verification URL: https://verify.lemma.frame00.com/auth/<uuid>." },
+        "anchoredAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "settlement": {
+      "type": "object",
+      "required": ["txHash", "amount", "currency", "facilitator"],
+      "additionalProperties": false,
+      "properties": {
+        "txHash": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "amount": { "type": "string", "const": "0.02" },
+        "currency": { "type": "string", "const": "USDC" },
+        "facilitator": { "type": "string", "format": "uri" }
+      }
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[0-9a-z]+$",
+      "description": "Server-assigned request identifier."
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/product-c-output.json",
+  "title": "Compliance Attestation Bundle Response (Basic MVP)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundleId", "bbs_proof", "revealed_claims", "verifyUrl", "issuedAt", "expiresAt", "settlement", "requestId"],
+  "properties": {
+    "bundleId": {
+      "type": "string",
+      "format": "uri",
+      "description": "URN of the bundle (urn:lemma:bundle:<uuid>)."
+    },
+    "bbs_proof": {
+      "type": "object",
+      "required": ["type", "proof", "publicKey", "issuerDid"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "BbsBlsSignatureProof2025" },
+        "proof": { "type": "string", "description": "Base64url-encoded BBS+ selective disclosure proof." },
+        "publicKey": { "type": "string", "description": "BLS12-381 G2 public key (base64url)." },
+        "issuerDid": { "type": "string", "format": "uri", "description": "DID of Lemma's attestation issuer." }
+      }
+    },
+    "revealed_claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Claims actually revealed per disclosure_policy (mode='full' or 'selective'). MVP Basic supports only 3 keys. Hidden claims appear as null. Empty when mode='range_only'.",
+      "properties": {
+        "kyc_status": { "type": ["string", "null"], "enum": ["verified", "pending", "rejected", null] },
+        "jurisdiction": { "type": ["string", "null"], "description": "ISO 3166-1 alpha-2 country code." },
+        "sanctions_check": { "type": ["string", "null"], "enum": ["clear", "flagged", "pending", null] }
+      }
+    },
+    "range_results": {
+      "type": "array",
+      "description": "Range predicate verification results. Present only when mode='range_only'.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "predicate", "value", "result"],
+        "properties": {
+          "field": { "type": "string" },
+          "predicate": { "type": "string", "enum": [">=", "<=", "=="] },
+          "value": { "type": ["string", "number"] },
+          "result": { "type": "boolean" }
+        }
+      }
+    },
+    "verifyUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Public verification URL: https://verify.lemma.frame00.com/bundle/<uuid>."
+    },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "settlement": {
+      "type": "object",
+      "required": ["txHash", "amount", "currency", "facilitator"],
+      "additionalProperties": false,
+      "properties": {
+        "txHash": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "amount": { "type": "string", "const": "0.08" },
+        "currency": { "type": "string", "const": "USDC" },
+        "facilitator": { "type": "string", "format": "uri" }
+      }
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[0-9a-z]+$",
+      "description": "Server-assigned request identifier for log correlation."
+    }
+  }
+}
