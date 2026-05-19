@@ -22,6 +22,7 @@ const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = servicesPath;
 const whitepaperFormUrl = "https://tally.so/r/xX0VYv";
 const githubPath = "https://github.com/lemmaoracle";
+const dashboardUrl = "https://dashboard.lemma.workers.dev";
 const contactPath = base ? `${base}/#contact` : "/#contact";
 const homePath = base || "/";
 
@@ -177,6 +178,7 @@ const isResourcesActive =
       {locale === "ja" ? t.languageEn : t.languageJa}
     </a>
     <a href={contactPath} class="nav-contact">{t.contactCta}</a>
+    <a href={dashboardUrl} class="nav-dashboard" target="_blank" rel="noopener">{t.dashboardCta}</a>
     <a href={whitepaperFormUrl} class="nav-cta" target="_blank" rel="noopener">{t.whitepaperCta}</a>
   </div>
 
@@ -221,6 +223,8 @@ const isResourcesActive =
     </div>
 
     <a href={guidesPath} class="mob-direct">{t.developers}</a>
+
+    <a href={dashboardUrl} class="mob-direct" target="_blank" rel="noopener">{t.dashboardCta}</a>
 
     <div class="mob-section">
       <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
@@ -305,6 +309,16 @@ const isResourcesActive =
     white-space: nowrap;
   }
   .nav-contact:hover { color: var(--gray-800); }
+  .nav-dashboard {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-decoration: none;
+    transition: color .2s;
+    white-space: nowrap;
+  }
+  .nav-dashboard:hover { color: var(--gray-800); }
   .nav-cta {
     background: #000; color: #fff;
     padding: 9px 20px;
@@ -445,7 +459,7 @@ const isResourcesActive =
     .mega-nav-logo { margin-right: auto; }
     .mega-nav-links { display: none; }
     .mega-nav-right { gap: 10px; }
-    .nav-lang, .nav-contact { display: none; }
+    .nav-lang, .nav-contact, .nav-dashboard { display: none; }
     .nav-cta { padding: 8px 14px; font-size: 10px; letter-spacing: .06em; }
     .nav-hamburger { display: flex; }
     .nav-mobile-drawer { display: block; }

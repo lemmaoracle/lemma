@@ -25,6 +25,7 @@ const termsPath = base ? `${base}/terms` : "/terms";
 const homePath = base || "/";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const trust402Href = "/trust402/";
+const dashboardUrl = "https://dashboard.lemma.workers.dev";
 const whitepaperHref = servicesPath;
 const aboutUsHref =
   locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
@@ -79,6 +80,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         <h4>{t.developers}</h4>
         <ul>
           <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
+          <li><a href={dashboardUrl} target="_blank" rel="noopener">{t.dashboardCta}</a></li>
           <li><a href={whitepaperHref}>{footerT.specs}</a></li>
           <li><a href={githubHref} target="_blank">{footerT.github}</a></li>
           <li><a href={smitheryHref} target="_blank" rel="noopener">{footerT.smithery}</a></li>
