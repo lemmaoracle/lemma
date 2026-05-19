@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/bazaar-extension-metadata.json",
+  "title": "Lemma x-bazaar extension metadata",
+  "description": "Schema for the `x-bazaar` extension attached to OpenAPI operations exposed via x402 Bazaar. Used by the openapi sync CI step to validate that paths.[].post.x-bazaar entries are well-formed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["discoverable", "schema", "category"],
+  "properties": {
+    "discoverable": {
+      "type": "boolean",
+      "description": "Whether the route is registered in the CDP Bazaar Discovery Layer on first settle."
+    },
+    "schema": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+v[0-9]+$",
+      "description": "Schema identifier (kebab-case + version suffix), e.g. 'agent-identity-authority-v1'."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Inference",
+        "Data",
+        "Media",
+        "Search",
+        "Social",
+        "Infrastructure",
+        "Trading"
+      ],
+      "description": "One of the 7 official Bazaar categories."
+    },
+    "subTags": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "maxItems": 16,
+      "description": "Free-form sub-tags surfaced as semantic-search hints."
+    },
+    "price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency", "network"],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal string to preserve precision."
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USDC"],
+          "description": "MVP supports USDC only."
+        },
+        "network": {
+          "type": "string",
+          "enum": ["base", "base-sepolia"],
+          "description": "Settlement network."
+        }
+      }
+    }
+  }
+}
