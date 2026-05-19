@@ -22,16 +22,20 @@
   "files": [
     "dist",
     "schemas",
-    "openapi.lemma.v2.json"
+    "openapi.lemma.v2.json",
+    "openapi.lemma.v2.bundled.json"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run",
-    "validate:schemas": "node scripts/validate-schemas.mjs"
+    "validate:schemas": "node scripts/validate-schemas.mjs",
+    "validate:openapi": "node scripts/validate-openapi.mjs",
+    "bundle:openapi": "node scripts/bundle-openapi.mjs"
   },
   "devDependencies": {
+    "@redocly/cli": "^1.20.0",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
     "ajv": "^8.20.0",

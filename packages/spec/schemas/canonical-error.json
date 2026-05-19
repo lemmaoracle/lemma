@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemma.frame00.com/bazaar/canonical-error.json",
+  "title": "Lemma canonical error envelope",
+  "description": "Shared error envelope returned by all Bazaar product endpoints (A/B/C/D) and all internal Lemma APIs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error", "requestId"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]+$",
+          "description": "Machine-readable upper-snake-case error code, e.g. VALIDATION_ERROR, NONCE_EXPIRED_OR_REUSED."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable, action-oriented message. Should suggest the next step the caller can take."
+        },
+        "field": {
+          "type": "string",
+          "description": "Optional JSON Pointer (e.g. '/disclosure_policy/range_predicates/0/predicate') or field name pointing at the offending input."
+        },
+        "docs": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional deep link to the Lemma docs section for this error."
+        }
+      }
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^req_[0-9a-z]+$",
+      "description": "Server-assigned request identifier for log correlation."
+    }
+  }
+}

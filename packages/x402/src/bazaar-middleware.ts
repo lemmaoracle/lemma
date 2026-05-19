@@ -1,29 +1,34 @@
 /**
- * Lemma wrapper around the upstream x402 payment middleware.
+ * Lemma wrapper around the upstream x402 paymentMiddleware — v0.2
  *
- * Forwards the call to the upstream middleware while:
- *   1. Attaching Bazaar discoverability metadata to the Hono context so the
- *      settle hook can register the route in the Discovery Layer on first call.
- *   2. Emitting Lemma-canonical response headers (e.g. X-Lemma-Bazaar-Schema)
- *      for downstream auditing.
+ * v0.2 changes (vs v0.1 in lemma/#222):
+ *   1. Inject Bazaar extension input into the 402 challenge's accepts[].extra
+ *      so the CDP facilitator auto-indexes the route on first settle.
+ *   2. Parse the settle response's EXTENSION-RESPONSES header and emit a
+ *      structured BazaarStatusEvent for observability (independent of settle
+ *      outcome — discovery failures never break payment).
+ *   3. Validate the "discoverable implies metadata" contract at construction
+ *      time (assertDiscoverableConfigured).
  *
- * Implementation note: this wraps `paymentMiddlewareFromConfig` from
- * `@x402/hono`, which accepts a single `RouteConfig` (a valid `RoutesConfig`)
- * and builds the resource server from facilitator config. The upstream library
- * ignores unknown keys, so the extra Bazaar fields on `LemmaRouteConfig` are
- * passed through harmlessly; future versions may consume them.
- *
- * TODO(W1): wire the actual "register-on-first-settle" hook into Lemma's
- *           settle handler. See `onSettleSuccess` callback below.
+ * Rationale:
+ *   - outputs/bazaar-listings/handoff-2026-05-20-register-on-first-settle.md
+ *   - lemma/#222 residual TODO 1/3
  */
 import type { Context, MiddlewareHandler, Next } from "hono";
 import { paymentMiddlewareFromConfig as upstreamPaymentMiddleware } from "@x402/hono";
 
-import type { LemmaRouteConfig } from "./routeConfig.js";
+import {
+  assertDiscoverableConfigured,
+  type LemmaRouteConfig,
+} from "./routeConfig.js";
+import {
+  getBazaarStatusEmitter,
+  parseBazaarStatus,
+} from "./bazaar-status-emitter.js";
 
 /**
- * Context variables set by the Bazaar middleware so downstream handlers
- * and settle hooks can read them without re-deriving from config.
+ * Context variables set by the Bazaar middleware so downstream handlers and
+ * settle hooks can read them without re-deriving from config.
  */
 export interface BazaarContextVariables {
   "lemma:bazaar:discoverable": boolean;
@@ -31,6 +36,67 @@ export interface BazaarContextVariables {
   "lemma:bazaar:category": LemmaRouteConfig["bazaarCategory"] | undefined;
   "lemma:bazaar:subTags": readonly string[] | undefined;
 }
+
+interface BazaarExtensionInput {
+  /** Schema identifier, e.g. "agent-identity-authority-v1". */
+  name: string;
+  /** Human-readable 1-sentence description (semantic search hit). */
+  description: string;
+  /** One of the 7 Bazaar categories. */
+  category: string;
+  /** Free-form sub-tags. */
+  tags: readonly string[];
+  /** Absolute URL of input JSON Schema. */
+  inputSchema?: string;
+  /** Absolute URL of output JSON Schema. */
+  outputSchema?: string;
+}
+
+const buildBazaarExtensionInput = (
+  config: LemmaRouteConfig
+): BazaarExtensionInput => {
+  // assertDiscoverableConfigured has already guaranteed these are present
+  // when discoverable: true; non-null assertions are safe here.
+  return {
+    name: config.schema!,
+    description: config.bazaarDescription!,
+    category: config.bazaarCategory!,
+    tags: config.bazaarSubTags ?? [],
+    inputSchema: config.bazaarInputSchemaRef,
+    outputSchema: config.bazaarOutputSchemaRef,
+  };
+};
+
+/**
+ * Merge the Bazaar extension input into the upstream config's accepts[].extra.
+ * Preserves any other extension already present (forward-compat with future
+ * extensions like KYT, sanctions, etc.).
+ */
+const injectBazaarExtensionInput = (
+  config: LemmaRouteConfig
+): LemmaRouteConfig => {
+  const bazaar = buildBazaarExtensionInput(config);
+
+  // `accepts` may be undefined or an array per upstream type; we merge into
+  // the first element (the active payment scheme).
+  const acceptsRaw = (config as { accepts?: unknown }).accepts;
+  const accepts: ReadonlyArray<{ extra?: Record<string, unknown> }> =
+    Array.isArray(acceptsRaw) && acceptsRaw.length > 0
+      ? (acceptsRaw as ReadonlyArray<{ extra?: Record<string, unknown> }>)
+      : [{}];
+
+  const head = accepts[0] ?? {};
+  return {
+    ...config,
+    accepts: [
+      {
+        ...head,
+        extra: { ...head.extra, bazaar },
+      },
+      ...accepts.slice(1),
+    ],
+  } as LemmaRouteConfig;
+};
 
 /**
  * Drop-in payment middleware for Bazaar-discoverable routes.
@@ -40,13 +106,17 @@ export interface BazaarContextVariables {
  * app.use(
  *   "/v1/bazaar/inference/attest",
  *   bazaarPaymentMiddleware({
- *     accepts: {
+ *     accepts: [
  *       // standard x402 PaymentOption (recipient, amount, network, ...)
- *     },
+ *     ],
  *     discoverable: true,
  *     schema: "inference-attestation-v1",
  *     bazaarCategory: "Inference",
+ *     bazaarDescription:
+ *       "For AI agents running their own inference, generate a Groth16 attestation proving which model produced which output, anchored on Base mainnet. Lemma never sees raw data.",
  *     bazaarSubTags: ["verifiable-ai", "audit-trail", "claim-check"],
+ *     bazaarInputSchemaRef: "https://schemas.lemma.frame00.com/bazaar/product-b-input.json",
+ *     bazaarOutputSchemaRef: "https://schemas.lemma.frame00.com/bazaar/product-b-output.json",
  *   })
  * );
  * ```
@@ -54,9 +124,15 @@ export interface BazaarContextVariables {
 export const bazaarPaymentMiddleware = (
   config: LemmaRouteConfig
 ): MiddlewareHandler => {
-  // Forward the full config (including Bazaar fields the upstream ignores)
-  // to the upstream middleware. A single RouteConfig is a valid RoutesConfig.
-  const upstream = upstreamPaymentMiddleware(config);
+  // Construction-time validation: fail fast if discoverable: true is missing
+  // any of its required companion fields. Throws synchronously.
+  assertDiscoverableConfigured(config);
+
+  const enrichedConfig = config.discoverable
+    ? injectBazaarExtensionInput(config)
+    : config;
+
+  const upstream = upstreamPaymentMiddleware(enrichedConfig);
 
   return async (c: Context, next: Next) => {
     if (config.discoverable) {
@@ -78,40 +154,30 @@ export const bazaarPaymentMiddleware = (
       );
     }
 
-    // Run upstream middleware (payment verification, settle, error handling).
     await upstream(c, next);
 
-    // After the handler completes, surface Bazaar metadata as response headers
-    // for transparent downstream consumption (e.g. `agentic.market` curated tooling).
     if (config.discoverable && c.res) {
+      // CDP returns Bazaar metadata processing status in EXTENSION-RESPONSES.
+      // The header is absent for non-CDP facilitators (e.g. x402.org), in
+      // which case we skip emission silently.
+      const headerValue = c.res.headers.get("EXTENSION-RESPONSES");
+      if (headerValue) {
+        getBazaarStatusEmitter().emit({
+          routePath: c.req.path,
+          schema: config.schema,
+          category: config.bazaarCategory,
+          status: parseBazaarStatus(headerValue),
+          rawHeader: headerValue,
+          observedAt: new Date().toISOString(),
+        });
+      }
+
+      // Always surface Bazaar metadata to clients via response headers for
+      // transparent downstream consumption (`agentic.market` curated tooling).
       if (config.schema) c.header("X-Lemma-Bazaar-Schema", config.schema);
-      if (config.bazaarCategory)
+      if (config.bazaarCategory) {
         c.header("X-Lemma-Bazaar-Category", config.bazaarCategory);
+      }
     }
   };
-};
-
-/**
- * Hook called by Lemma's settle pipeline on first successful settle of a
- * discoverable route. Registers the route with the CDP Bazaar Discovery
- * Layer if not already registered.
- *
- * TODO(W1): wire this into the settle path in Lemma Workers. The current
- *           upstream payment middleware calls a configurable callback after
- *           settle; pass this function in via `config.onSettleSuccess` once
- *           the exact callback name is confirmed.
- */
-export const registerBazaarRouteOnFirstSettle = async (
-  c: Context,
-  ctx: {
-    routePath: string;
-    schema?: string;
-    category?: string;
-    subTags?: readonly string[];
-  }
-): Promise<void> => {
-  // TODO(W1): replace with the actual CDP discovery push call. The CDP
-  // facilitator currently auto-indexes any route that settles with
-  // `discoverable: true`, so this hook may become a no-op + analytics emit only.
-  console.info("[lemma:bazaar] would register route", ctx.routePath, ctx);
 };

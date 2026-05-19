@@ -32,12 +32,22 @@ export { paymentMiddleware } from "./lemma-discovery.js";
 export { ExactEvmScheme } from "@x402/evm/exact/server";
 export { x402Client } from "@x402/core/client";
 
-// Bazaar discoverability extension (x402 Bazaar Discovery Layer)
+// Bazaar discoverability extension (x402 Bazaar Discovery Layer) — v0.2
+//
+// v0.2 surface changes vs lemma/#222:
+//   + assertDiscoverableConfigured  (runtime contract check, throws on misconfig)
+//   + BazaarStatusEvent / Emitter   (observability for CDP EXTENSION-RESPONSES)
+//   - registerBazaarRouteOnFirstSettle (removed — superseded by emitter pipeline;
+//     see packages/x402/src/README.md "Bazaar Discovery" section)
+//
+// See also: outputs/bazaar-listings/handoff-2026-05-20-register-on-first-settle.md
+export { bazaarPaymentMiddleware } from "./bazaar-middleware.js";
+export { isLemmaRouteConfig, assertDiscoverableConfigured } from "./routeConfig.js";
 export {
-  bazaarPaymentMiddleware,
-  registerBazaarRouteOnFirstSettle,
-} from "./bazaar-middleware.js";
-export { isLemmaRouteConfig } from "./routeConfig.js";
+  getBazaarStatusEmitter,
+  parseBazaarStatus,
+  setBazaarStatusEmitterForTesting,
+} from "./bazaar-status-emitter.js";
 
 // Types
 export type { Network, PaymentRequirements, PaymentPayload } from "@x402/core/types";
@@ -45,3 +55,7 @@ export type { FacilitatorConfig } from "@x402/core/server";
 export type { LemmaConfig } from "./lemma-config.js";
 export type { LemmaRouteConfig } from "./routeConfig.js";
 export type { BazaarContextVariables } from "./bazaar-middleware.js";
+export type {
+  BazaarStatusEvent,
+  BazaarStatusEmitter,
+} from "./bazaar-status-emitter.js";

@@ -1,44 +1,55 @@
 /**
- * Lemma extension of the x402 RouteConfig.
+ * Lemma extension of @x402/core/server RouteConfig — v0.2
  *
- * Adds Bazaar-specific fields that are not present in the upstream type as of 2026-05.
- * Long-term we should upstream this via PR, but for MVP we extend locally.
+ * v0.2 additions:
+ *  - bazaarDescription         (1-sentence semantic-search-friendly description)
+ *  - bazaarInputSchemaRef      (absolute URL of input JSON Schema)
+ *  - bazaarOutputSchemaRef     (absolute URL of output JSON Schema)
  *
- * The upstream `RouteConfig` is exported from `@x402/core/server` (re-exported
- * by `@x402/hono`). If a future upstream PR adds `discoverable`, this extension
- * becomes a no-op.
+ * These three feed into the 402 challenge response's accepts[].extra.bazaar
+ * payload that the CDP facilitator consumes for Discovery Layer indexing.
+ *
+ * Rationale:
+ *   - CDP auto-indexes routes that settle with discoverable: true. The
+ *     metadata it needs (description / category / tags / inputSchema /
+ *     outputSchema) all travel through the 402 challenge extension input.
+ *   - See outputs/bazaar-listings/handoff-2026-05-20-register-on-first-settle.md
+ *     §1.2 for the primary-source derivation.
  */
 import type { RouteConfig as BaseRouteConfig } from "@x402/core/server";
 
-/**
- * Lemma route configuration extending the upstream x402 RouteConfig with
- * Bazaar discoverability metadata and a schema identifier surfaced in the
- * Bazaar Discovery Layer.
- */
 export interface LemmaRouteConfig extends BaseRouteConfig {
   /**
    * When true, the route is auto-registered in x402 Bazaar after the first
-   * successful settle. See https://docs.cdp.coinbase.com/x402/bazaar.
+   * successful settle via the CDP facilitator.
    *
-   * Defaults to false to preserve existing behaviour for routes that are
-   * priced but not intended for the public discovery layer.
+   * Important: only the CDP facilitator (api.cdp.coinbase.com/platform/v2/x402)
+   * triggers indexing. The x402.org community facilitator does NOT index to
+   * the CDP Discovery Layer. See packages/x402/src/README.md.
+   *
+   * When set true, `schema`, `bazaarCategory`, and `bazaarDescription` are
+   * all required at runtime; the middleware throws at construction time if
+   * any is missing. (Compile-time strict union enforcement is deferred to
+   * v0.3.)
+   *
+   * Setting `discoverable: false` (or omitting it) leaves the route priced
+   * but invisible to the public Discovery Layer — no Bazaar metadata is
+   * injected into the 402 challenge.
    */
   discoverable?: boolean;
 
   /**
-   * Optional schema identifier for Bazaar metadata, e.g.
-   * "agent-identity-authority-v1", "inference-attestation-v1",
-   * "compliance-bundle-v1", "seal-identity-v1".
-   *
-   * Used by downstream tooling (`agentic.market` curated listings,
-   * Lemma's own SDK clients) to bind the route to a known data shape.
+   * Schema identifier surfaced as Bazaar extension input `name`.
+   * Convention: kebab-case + version suffix, e.g.
+   *   "agent-identity-authority-v1"
+   *   "inference-attestation-v1"
+   *   "compliance-bundle-v1"
+   *   "seal-identity-v1"
    */
   schema?: string;
 
   /**
-   * Optional Bazaar category override. Defaults inferred from the schema
-   * when omitted. One of the 7 Bazaar categories:
-   * "Inference" | "Data" | "Media" | "Search" | "Social" | "Infrastructure" | "Trading".
+   * Bazaar category. One of the 7 official categories.
    */
   bazaarCategory?:
     | "Inference"
@@ -50,10 +61,41 @@ export interface LemmaRouteConfig extends BaseRouteConfig {
     | "Trading";
 
   /**
-   * Optional free-form sub-tags surfaced as semantic-search hints on Bazaar.
+   * Free-form sub-tags surfaced as semantic-search hints on Bazaar.
    * Each tag must match /^[a-z0-9-]+$/.
    */
   bazaarSubTags?: readonly string[];
+
+  // ── v0.2 additions ────────────────────────────────────────────────
+
+  /**
+   * 1-sentence human-readable description injected into the 402 challenge
+   * extension input. Surfaced verbatim on Bazaar Discovery Layer search.
+   *
+   * Best practices (lemma-internal):
+   *  - Start with "For AI agents that need to {verb} {noun}, ..." for
+   *    semantic-search alignment.
+   *  - <= 256 chars.
+   *  - Mention the value prop (zero-knowledge, no raw data, etc.) in the
+   *    first 80 chars where possible.
+   *
+   * Required when discoverable: true.
+   */
+  bazaarDescription?: string;
+
+  /**
+   * Absolute URL of the input JSON Schema (Draft 2020-12). Referenced from
+   * the 402 extension input so callers can validate before paying.
+   *
+   * Production convention:
+   *   https://schemas.lemma.frame00.com/bazaar/product-<a|b|c|d>-input.json
+   */
+  bazaarInputSchemaRef?: string;
+
+  /**
+   * Absolute URL of the output JSON Schema (Draft 2020-12).
+   */
+  bazaarOutputSchemaRef?: string;
 }
 
 /**
@@ -61,11 +103,41 @@ export interface LemmaRouteConfig extends BaseRouteConfig {
  */
 export const isLemmaRouteConfig = (
   config: BaseRouteConfig
-): config is LemmaRouteConfig => {
-  return (
-    "discoverable" in config ||
-    "schema" in config ||
-    "bazaarCategory" in config ||
-    "bazaarSubTags" in config
-  );
+): config is LemmaRouteConfig =>
+  "discoverable" in config ||
+  "schema" in config ||
+  "bazaarCategory" in config ||
+  "bazaarSubTags" in config ||
+  "bazaarDescription" in config ||
+  "bazaarInputSchemaRef" in config ||
+  "bazaarOutputSchemaRef" in config;
+
+/**
+ * Runtime validation for v0.2's "discoverable implies metadata" contract.
+ *
+ * Called by bazaarPaymentMiddleware at construction time. Throws synchronously
+ * on misconfiguration so the failure surfaces at deploy time, not on first
+ * incoming request.
+ */
+export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void => {
+  if (!config.discoverable) return;
+
+  const missing: string[] = [];
+  if (!config.schema) missing.push("schema");
+  if (!config.bazaarCategory) missing.push("bazaarCategory");
+  if (!config.bazaarDescription) missing.push("bazaarDescription");
+
+  if (missing.length > 0) {
+    throw new Error(
+      `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
+        `See packages/x402/src/README.md for the discoverable contract.`
+    );
+  }
+
+  if (config.bazaarDescription && config.bazaarDescription.length > 256) {
+    throw new Error(
+      `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${config.bazaarDescription.length}). ` +
+        `Bazaar search hits favour concise descriptions; trim before deploy.`
+    );
+  }
 };

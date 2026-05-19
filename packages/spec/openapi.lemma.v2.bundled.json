@@ -1,0 +1,2660 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Lemma v2 API",
+    "version": "0.2.0",
+    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4). v0.2 adds the 4 Bazaar Discovery Layer products under /v1/bazaar/* (see x-bazaar extension)."
+  },
+  "servers": [
+    {
+      "url": "https://api.lemma.frame00.com",
+      "description": "Production (Base mainnet)"
+    },
+    {
+      "url": "http://localhost:8787",
+      "description": "Local development"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/schemas": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaMeta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaMeta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/schemas/{id}": {
+      "get": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/circuits": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CircuitMeta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CircuitMeta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/circuits/{circuitId}": {
+      "get": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "circuitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CircuitMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doc-generators": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneratorMeta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratorMeta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doc-generators/{generatorId}": {
+      "get": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "generatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratorMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDocumentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterDocumentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proofs": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitProofRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitProofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/verified-attributes/query": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifiedAttributesQueryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifiedAttributesQueryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bazaar/identity/issue": {
+      "post": {
+        "operationId": "issueAgentIdentity",
+        "summary": "Agent Identity Issuance — issue a W3C VC v2 credential with Poseidon Merkle inclusion proof",
+        "description": "For AI agents that need to issue verifiable identity credentials to other agents or services, this endpoint mints a W3C VC v2 credential with Poseidon Merkle inclusion proof and Groth16 zero-knowledge verification.",
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "agent-identity"
+        ],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "agent-identity-authority-v1",
+          "category": "Infrastructure",
+          "subTags": [
+            "agent-identity",
+            "zk-proof",
+            "did",
+            "kya",
+            "verifiable-credentials"
+          ],
+          "price": {
+            "amount": "0.05",
+            "currency": "USDC",
+            "network": "base"
+          }
+        },
+        "x-lemma-circuit": {
+          "id": "agent-identity-v1",
+          "location": "packages/agent/circuits/agent-identity-valid.circom",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/product-a-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Credential issued, anchored, and ready for downstream verification",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "agent-identity-authority-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status (status=accepted|processing|rejected). Returned only when settled via the CDP facilitator with discoverable: true."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/product-a-output"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "x402 payment challenge envelope."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "description": "x402 challenge body. See @x402/core spec for shape."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Subject prerequisite missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bazaar/inference/attest": {
+      "post": {
+        "operationId": "attestInference",
+        "summary": "Inference Attestation API — Groth16 attestation that a given model produced a given output",
+        "description": "For AI agents and companies running their own inference (Bedrock, OpenAI, Anthropic, Ollama), this endpoint generates a Groth16 zero-knowledge attestation that proves which model produced which output, anchored on Base mainnet. Lemma never sees raw data.",
+        "tags": [
+          "bazaar",
+          "inference"
+        ],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "inference-attestation-v1",
+          "category": "Inference",
+          "subTags": [
+            "verifiable-ai",
+            "audit-trail",
+            "zk-proof",
+            "provenance",
+            "inference-attestation",
+            "claim-check",
+            "model-tampering-detection"
+          ],
+          "price": {
+            "amount": "0.07",
+            "currency": "USDC",
+            "network": "base"
+          }
+        },
+        "x-lemma-circuit": {
+          "id": "claimCheckCommitmentV1",
+          "location": "packages/example-claim-check/circuits/",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/product-b-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attestation generated, anchored, and ready for downstream verification",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "inference-attestation-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Inference"
+                }
+              },
+              "X-Lemma-Attestation": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Compact attestation reference (id;verify=URL;circuit=name)."
+              },
+              "X-Lemma-Attestation-Status": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "anchored",
+                    "deferred"
+                  ]
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/product-b-output"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error / timestamp skew",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bazaar/compliance/bundle": {
+      "post": {
+        "operationId": "issueComplianceBundle",
+        "summary": "Compliance Attestation Bundle (Basic) — BBS+ selective-disclosure proof for 2-3 standard attributes",
+        "description": "For AI agents that need to present compliance claims (KYC status, jurisdiction, sanctions clearance) to gated endpoints without revealing underlying data, this Basic bundle returns a BBS+ selective-disclosure proof for 2-3 standard attributes per call.",
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "compliance"
+        ],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "compliance-bundle-v1",
+          "category": "Infrastructure",
+          "subTags": [
+            "compliance",
+            "mica",
+            "kyc",
+            "bbs",
+            "selective-disclosure",
+            "regulatory"
+          ],
+          "price": {
+            "amount": "0.08",
+            "currency": "USDC",
+            "network": "base"
+          }
+        },
+        "x-lemma-circuit": {
+          "id": "bbs-bls12-381",
+          "proofSystem": "BBS+",
+          "library": "@lemmaoracle/sdk (noble-curves backend)"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/product-c-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bundle generated with the requested disclosure mode",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "compliance-bundle-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/product-c-output"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / unsupported attribute (Basic plan)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Subject onboarding missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bazaar/auth/challenge": {
+      "get": {
+        "operationId": "issueAuthChallenge",
+        "summary": "ZK Proof Sign-in challenge — issue a single-use nonce (free, no x402)",
+        "description": "Companion to /v1/bazaar/auth/proof. Returns a fresh 60-second single-use nonce that the client uses when generating the Groth16 sign-in proof. Free — payment is only required for the proof submission itself.",
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Nonce issued",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "nonce",
+                    "expires_at"
+                  ],
+                  "properties": {
+                    "nonce": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{32}$"
+                    },
+                    "expires_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bazaar/auth/proof": {
+      "post": {
+        "operationId": "verifyAuthProof",
+        "summary": "ZK Proof-as-Auth (Sign-in) — verify Groth16 proof of API key possession, mint short-lived JWT",
+        "description": "For AI agents that need to call authenticated APIs without ever holding the API key — beyond the reach of prompt injection or context leaks — this endpoint accepts a Groth16 zero-knowledge proof of API key possession and returns a short-lived JWT.",
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "auth"
+        ],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "seal-identity-v1",
+          "category": "Infrastructure",
+          "subTags": [
+            "auth",
+            "zk-proof",
+            "sign-in",
+            "proof-as-auth",
+            "credential-free",
+            "passwordless",
+            "api-key",
+            "prompt-injection-defense"
+          ],
+          "price": {
+            "amount": "0.02",
+            "currency": "USDC",
+            "network": "base"
+          }
+        },
+        "x-lemma-circuit": {
+          "id": "seal-identity-v1",
+          "location": "packages/seal/circuits/",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/product-d-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proof verified, JWT minted",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "seal-identity-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/product-d-output"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Nonce expired / proof verification failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/canonical-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "SchemaMeta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true
+      },
+      "CircuitArtifactLocation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ipfs",
+              "https"
+            ]
+          },
+          "wasm": {
+            "type": "string"
+          },
+          "zkey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "wasm",
+          "zkey"
+        ],
+        "additionalProperties": false
+      },
+      "CircuitMeta": {
+        "type": "object",
+        "properties": {
+          "circuitId": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verifier": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "onchain",
+                  "offchain"
+                ]
+              },
+              "address": {
+                "type": "string"
+              },
+              "chainId": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true
+          },
+          "artifact": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "$ref": "#/components/schemas/CircuitArtifactLocation"
+              }
+            },
+            "required": [
+              "location"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "circuitId",
+          "schema"
+        ],
+        "additionalProperties": true
+      },
+      "GeneratorMeta": {
+        "type": "object",
+        "properties": {
+          "generatorId": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "url"
+                ]
+              },
+              "uri": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "uri"
+            ],
+            "additionalProperties": false
+          },
+          "inputsSpec": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputsSpec": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "generatorId",
+          "schema"
+        ],
+        "additionalProperties": true
+      },
+      "DocumentCommitments": {
+        "type": "object",
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "enum": [
+              "poseidon",
+              "poseidon2",
+              "rescue-prime",
+              "sha256-placeholder"
+            ]
+          },
+          "root": {
+            "type": "string"
+          },
+          "leaves": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "randomness": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scheme",
+          "root",
+          "leaves",
+          "randomness"
+        ],
+        "additionalProperties": false
+      },
+      "Revocation": {
+        "type": "object",
+        "properties": {
+          "scheme": {
+            "type": "string"
+          },
+          "root": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "root"
+        ],
+        "additionalProperties": true
+      },
+      "IssuerSignature": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "bbs+",
+              "opaque"
+            ]
+          },
+          "payload": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "payload",
+          "issuerId"
+        ],
+        "additionalProperties": false
+      },
+      "OnchainHook": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "integer"
+          },
+          "address": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "after-registry"
+            ]
+          },
+          "payload": {
+            "type": "string",
+            "enum": [
+              "registry-public-inputs"
+            ]
+          }
+        },
+        "required": [
+          "chainId",
+          "address",
+          "method"
+        ],
+        "additionalProperties": true
+      },
+      "RegisterDocumentRequest": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string"
+          },
+          "docHash": {
+            "type": "string"
+          },
+          "cid": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string",
+            "description": "Issuer identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage."
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "Subject/holder identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage."
+          },
+          "commitments": {
+            "$ref": "#/components/schemas/DocumentCommitments"
+          },
+          "revocation": {
+            "$ref": "#/components/schemas/Revocation"
+          },
+          "signature": {
+            "$ref": "#/components/schemas/IssuerSignature"
+          },
+          "hooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnchainHook"
+            }
+          }
+        },
+        "required": [
+          "schema",
+          "docHash",
+          "cid",
+          "issuerId",
+          "subjectId",
+          "commitments",
+          "revocation"
+        ],
+        "additionalProperties": false
+      },
+      "RegisterDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered"
+            ]
+          },
+          "docHash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "docHash"
+        ],
+        "additionalProperties": true
+      },
+      "SelectiveDisclosure": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "bbs+",
+              "opaque"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "proof": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "attributes",
+          "proof"
+        ],
+        "additionalProperties": false
+      },
+      "SubmitProofRequest": {
+        "type": "object",
+        "properties": {
+          "docHash": {
+            "type": "string"
+          },
+          "circuitId": {
+            "type": "string"
+          },
+          "proof": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "disclosure": {
+            "$ref": "#/components/schemas/SelectiveDisclosure"
+          },
+          "onchain": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "docHash",
+          "circuitId",
+          "proof",
+          "inputs"
+        ],
+        "additionalProperties": false
+      },
+      "SubmitProofResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "received",
+              "verified",
+              "onchain-verified",
+              "rejected"
+            ]
+          },
+          "verificationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "verificationId"
+        ],
+        "additionalProperties": true
+      },
+      "VerifiedAttributesQueryRequest": {
+        "type": "object",
+        "properties": {
+          "docHash": {
+            "type": "string",
+            "description": "Filter by specific document hash (optional)."
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "in",
+                    "contains"
+                  ]
+                },
+                "value": {}
+              },
+              "required": [
+                "name",
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "proof": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "type": "boolean"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "zk-snark",
+                  "opaque"
+                ]
+              }
+            },
+            "required": [
+              "required"
+            ],
+            "additionalProperties": true
+          },
+          "targets": {
+            "type": "object",
+            "properties": {
+              "schemas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "chainIds": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "additionalProperties": true
+          },
+          "disclosure": {
+            "type": "object",
+            "description": "Opt-in disclosure access. Provide a ZK proof satisfying any condition attached to stored disclosures. Without this field, disclosures are never returned (privacy-by-default).",
+            "properties": {
+              "proof": {
+                "type": "string"
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "proof",
+              "inputs"
+            ],
+            "additionalProperties": false
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Maximum number of results per page (1–200, default 50)."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of results to skip for pagination (default 0)."
+          }
+        },
+        "required": [
+          "attributes"
+        ],
+        "additionalProperties": false
+      },
+      "VerifiedAttributesQueryResponseItem": {
+        "type": "object",
+        "properties": {
+          "docHash": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "proof": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "circuitId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "disclosure": {
+            "$ref": "#/components/schemas/SelectiveDisclosure"
+          }
+        },
+        "required": [
+          "docHash",
+          "schema",
+          "issuerId",
+          "subjectId",
+          "attributes"
+        ],
+        "additionalProperties": true
+      },
+      "VerifiedAttributesQueryResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem"
+            }
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "product-a-input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-a-input.json",
+        "title": "Agent Identity Issuance Request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "agentId",
+          "controllerId",
+          "roles",
+          "spendLimit",
+          "expiresAt"
+        ],
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^did:[a-z0-9]+:.+$",
+            "description": "DID of the agent being credentialed (subject). Example: did:key:z6Mk...",
+            "examples": [
+              "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSrUaYS9XVjqJzgRfBjK"
+            ]
+          },
+          "subjectId": {
+            "type": "string",
+            "format": "uri",
+            "description": "DID of the underlying real-world subject (organization, user) the agent acts on behalf of. Optional but recommended for KYA traceability."
+          },
+          "controllerId": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^did:[a-z0-9]+:.+$",
+            "description": "DID of the controller who can revoke this credential. Typically the issuer's operations key."
+          },
+          "orgId": {
+            "type": "string",
+            "description": "Organization identifier (free-form, e.g. company registration number, LEI). Used in cross-credential reconciliation."
+          },
+          "roles": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "enum": [
+                "trader",
+                "buyer",
+                "publisher",
+                "auditor",
+                "reader",
+                "writer",
+                "custodian",
+                "validator",
+                "compliance-officer",
+                "developer",
+                "operator",
+                "support"
+              ]
+            },
+            "description": "Roles assigned to this agent. Each role implies a baseline scope set; explicit scopes below override."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_:.-]+$"
+            },
+            "description": "Fine-grained capability scopes (e.g. 'payments:send', 'data:read:financial'). Optional override over roles."
+          },
+          "permissions": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Boolean permission map for binary capabilities. MVP supports a fixed set; custom permissions are V2.",
+            "properties": {
+              "can_settle_x402": {
+                "type": "boolean",
+                "description": "Authorize the agent to settle x402 micropayments."
+              },
+              "can_request_attestation": {
+                "type": "boolean",
+                "description": "Authorize the agent to request a Lemma attestation bundle (product C)."
+              },
+              "can_issue_subordinate": {
+                "type": "boolean",
+                "description": "Authorize the agent to issue subordinate agent credentials."
+              },
+              "can_sign_in": {
+                "type": "boolean",
+                "description": "Authorize the agent to perform ZK Proof Sign-in (product D)."
+              },
+              "can_invoke_inference": {
+                "type": "boolean",
+                "description": "Authorize the agent to invoke proof-anchored inference (product B)."
+              }
+            }
+          },
+          "spendLimit": {
+            "type": "object",
+            "required": [
+              "amount",
+              "currency",
+              "window"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "amount": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)?$",
+                "description": "Maximum spend within window. String to preserve precision (USDC has 6 decimals)."
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USDC"
+                ],
+                "description": "Settlement currency. MVP supports USDC only on Base mainnet. USDT/EURC are planned for V2 — passing them returns INVALID_CURRENCY in MVP."
+              },
+              "window": {
+                "type": "string",
+                "enum": [
+                  "per-call",
+                  "daily",
+                  "weekly",
+                  "monthly"
+                ],
+                "description": "Spend limit window."
+              }
+            },
+            "description": "Financial guard rail enforced at attestation-verification time by consuming services."
+          },
+          "paymentPolicy": {
+            "type": "string",
+            "enum": [
+              "prepaid"
+            ],
+            "default": "prepaid",
+            "description": "How the agent's payments are funded. MVP supports prepaid only. 'postpaid' and 'subscription' are V2 — passing them returns POLICY_NOT_SUPPORTED in MVP."
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Issuance timestamp. If omitted, Lemma uses server time."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiration timestamp. Maximum 1 year from issuance per MVP policy."
+          },
+          "sourceSystem": {
+            "type": "string",
+            "description": "Free-form identifier of the system that originated the issuance (e.g. 'aws-bedrock-agentcore', 'custom-pipeline-v2'). Stored for provenance only."
+          },
+          "chainContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "chainId": {
+                "type": "integer",
+                "enum": [
+                  8453
+                ],
+                "description": "Base mainnet only in MVP."
+              },
+              "rpcUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional RPC endpoint reference for verifier reconciliation."
+              }
+            }
+          }
+        }
+      },
+      "product-a-output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-a-output.json",
+        "title": "Agent Identity Issuance Response",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "credentialId",
+          "credential",
+          "proof",
+          "verifyUrl",
+          "issuedAt",
+          "expiresAt",
+          "settlement",
+          "requestId"
+        ],
+        "properties": {
+          "credentialId": {
+            "type": "string",
+            "format": "uri",
+            "description": "Permanent identifier of the issued credential (URN form: urn:lemma:cred:<uuid>)."
+          },
+          "credential": {
+            "type": "object",
+            "required": [
+              "@context",
+              "type",
+              "issuer",
+              "validFrom",
+              "validUntil",
+              "credentialSubject"
+            ],
+            "description": "W3C Verifiable Credentials v2 envelope. Subject = agentId, claims = roles+scopes+permissions+spendLimit.",
+            "properties": {
+              "@context": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "JSON-LD contexts. Always includes 'https://www.w3.org/ns/credentials/v2' + Lemma schema context."
+              },
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "VC types. Always ['VerifiableCredential', 'AgentIdentityCredential']."
+              },
+              "issuer": {
+                "type": "string",
+                "format": "uri",
+                "description": "DID of Lemma's issuer (e.g. did:web:lemma.frame00.com)."
+              },
+              "validFrom": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "validUntil": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "credentialSubject": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "roles",
+                  "spendLimit"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Subject DID (= agentId in request)."
+                  },
+                  "controller": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "orgId": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "permissions": {
+                    "type": "object"
+                  },
+                  "spendLimit": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "proof": {
+            "type": "object",
+            "required": [
+              "type",
+              "merkle",
+              "circuitId"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "LemmaAgentIdentityProof2026"
+              },
+              "merkle": {
+                "type": "object",
+                "required": [
+                  "commitmentRoot",
+                  "leafIndex",
+                  "subjectIdHash"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "commitmentRoot": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{64}$",
+                    "description": "Public Poseidon Merkle root after inserting this credential's leaves (5 attributes)."
+                  },
+                  "leafIndex": {
+                    "type": "integer",
+                    "description": "Index of this credential's leaves in the Merkle tree (nLevels=20)."
+                  },
+                  "subjectIdHash": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]{64}$",
+                    "description": "Poseidon hash of the subject DID."
+                  }
+                }
+              },
+              "merkleProofUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "One-time holder-only URL to retrieve the full Merkle inclusion proof."
+              },
+              "circuitId": {
+                "type": "string",
+                "const": "agent-identity-v1"
+              },
+              "verifierContract": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{40}$",
+                "description": "Address of the Solidity Groth16 verifier on Base mainnet."
+              }
+            }
+          },
+          "verifyUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public verification URL: https://verify.lemma.frame00.com/credential/<uuid>."
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "settlement": {
+            "type": "object",
+            "required": [
+              "txHash",
+              "amount",
+              "currency",
+              "facilitator"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "txHash": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{64}$"
+              },
+              "amount": {
+                "type": "string",
+                "const": "0.05"
+              },
+              "currency": {
+                "type": "string",
+                "const": "USDC"
+              },
+              "facilitator": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^req_[0-9a-z]+$",
+            "description": "Server-assigned request identifier for log correlation."
+          }
+        }
+      },
+      "canonical-error": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/canonical-error.json",
+        "title": "Lemma canonical error envelope",
+        "description": "Shared error envelope returned by all Bazaar product endpoints (A/B/C/D) and all internal Lemma APIs.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error",
+          "requestId"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]+$",
+                "description": "Machine-readable upper-snake-case error code, e.g. VALIDATION_ERROR, NONCE_EXPIRED_OR_REUSED."
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable, action-oriented message. Should suggest the next step the caller can take."
+              },
+              "field": {
+                "type": "string",
+                "description": "Optional JSON Pointer (e.g. '/disclosure_policy/range_predicates/0/predicate') or field name pointing at the offending input."
+              },
+              "docs": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional deep link to the Lemma docs section for this error."
+              }
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^req_[0-9a-z]+$",
+            "description": "Server-assigned request identifier for log correlation."
+          }
+        }
+      },
+      "product-b-input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-b-input.json",
+        "title": "Inference Attestation Request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model_digest",
+          "input_hash",
+          "output_hash",
+          "timestamp"
+        ],
+        "properties": {
+          "model_digest": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "SHA-256 hash of a canonical model identifier (e.g. provider:model_name:version)."
+          },
+          "input_hash": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "SHA-256 hash of the canonicalised inference input. Raw input is NEVER sent to Lemma."
+          },
+          "output_hash": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "SHA-256 hash of the canonicalised inference output. Raw output is NEVER sent to Lemma."
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "Unix epoch seconds. Must be within ±300s of Lemma's server time (replay protection)."
+          },
+          "nonce": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{32}$",
+            "description": "Optional 16-byte client nonce (hex) for additional replay protection."
+          },
+          "claim_metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional metadata bound into the proof commitment as a hash; never stored in the clear.",
+            "properties": {
+              "agentId": {
+                "type": "string",
+                "format": "uri",
+                "description": "Calling agent's DID. Recommended for full audit trail; combine with product A credential."
+              },
+              "purpose": {
+                "type": "string",
+                "maxLength": 256,
+                "description": "Human-readable purpose label. Hashed before commitment."
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_:-]+$"
+                },
+                "maxItems": 16,
+                "description": "Free-form tags for downstream filtering (hashed)."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Free-form provider identifier. Hashed before commitment."
+              }
+            }
+          }
+        }
+      },
+      "product-b-output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-b-output.json",
+        "title": "Inference Attestation Response",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "attestationId",
+          "proof",
+          "verifyUrl",
+          "anchoredAt",
+          "settlement",
+          "requestId"
+        ],
+        "properties": {
+          "attestationId": {
+            "type": "string",
+            "format": "uri",
+            "description": "URN of the attestation record (urn:lemma:attestation:<uuid>)."
+          },
+          "proof": {
+            "type": "object",
+            "required": [
+              "type",
+              "status",
+              "circuitId"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "LemmaInferenceAttestation2026"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "anchored",
+                  "deferred"
+                ],
+                "description": "'anchored' = proof generated and submitted synchronously. 'deferred' = settled but queued; use pollUrl."
+              },
+              "commitment": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^0x[0-9a-fA-F]{64}$",
+                "description": "Poseidon5 commitment. null when status=deferred."
+              },
+              "groth16": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "Groth16 proof tuple. null when status=deferred."
+              },
+              "circuitId": {
+                "type": "string",
+                "const": "claimCheckCommitmentV1"
+              },
+              "verifierContract": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{40}$"
+              },
+              "pollUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Polling URL when status=deferred."
+              }
+            }
+          },
+          "verifyUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public verification URL: https://verify.lemma.frame00.com/attestation/<uuid>."
+          },
+          "anchoredAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Time the attestation was anchored on-chain. null when status=deferred."
+          },
+          "settlement": {
+            "type": "object",
+            "required": [
+              "txHash",
+              "amount",
+              "currency",
+              "facilitator"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "txHash": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{64}$"
+              },
+              "amount": {
+                "type": "string",
+                "const": "0.07"
+              },
+              "currency": {
+                "type": "string",
+                "const": "USDC"
+              },
+              "facilitator": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^req_[0-9a-z]+$",
+            "description": "Server-assigned request identifier for log correlation."
+          }
+        }
+      },
+      "product-c-input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-c-input.json",
+        "title": "Compliance Attestation Bundle Request (Basic MVP)",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject_did",
+          "requested_attributes",
+          "disclosure_policy"
+        ],
+        "properties": {
+          "subject_did": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^did:[a-z0-9]+:.+$",
+            "description": "DID of the subject. Must have a prior Lemma attestation set; otherwise INSUFFICIENT_ATTRIBUTES error."
+          },
+          "requested_attributes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "enum": [
+                "kyc_status",
+                "jurisdiction",
+                "sanctions_check"
+              ]
+            },
+            "description": "MVP Basic supports up to 3 attributes. The full 8-attribute Pro set ships in V2 at $0.20/bundle. Requesting unsupported attributes returns ATTRIBUTE_NOT_IN_BASIC_PLAN."
+          },
+          "disclosure_policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "selective",
+                  "range_only"
+                ],
+                "description": "full = reveal all values; selective = reveal only fields in reveal_fields; range_only = prove range without revealing values."
+              },
+              "reveal_fields": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Required when mode='selective'. Subset of requested_attributes."
+              },
+              "range_predicates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "field",
+                    "predicate",
+                    "value"
+                  ],
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "predicate": {
+                      "type": "string",
+                      "enum": [
+                        ">=",
+                        "<=",
+                        "=="
+                      ],
+                      "description": "BBS+ range proof supports only inclusive bounds and equality. Strict inequalities (>, <) are not supported."
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    }
+                  }
+                },
+                "description": "Required when mode='range_only'."
+              }
+            }
+          },
+          "verifier_context": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional metadata about the verifying party. Bound into the proof for replay protection.",
+            "properties": {
+              "verifier_did": {
+                "type": "string",
+                "format": "uri"
+              },
+              "nonce": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 64
+              },
+              "purpose": {
+                "type": "string",
+                "maxLength": 256
+              }
+            }
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 86400,
+            "default": 3600,
+            "description": "How long the issued bundle remains valid. Default 1 hour; max 24 hours in MVP."
+          }
+        }
+      },
+      "product-c-output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-c-output.json",
+        "title": "Compliance Attestation Bundle Response (Basic MVP)",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "bundleId",
+          "bbs_proof",
+          "revealed_claims",
+          "verifyUrl",
+          "issuedAt",
+          "expiresAt",
+          "settlement",
+          "requestId"
+        ],
+        "properties": {
+          "bundleId": {
+            "type": "string",
+            "format": "uri",
+            "description": "URN of the bundle (urn:lemma:bundle:<uuid>)."
+          },
+          "bbs_proof": {
+            "type": "object",
+            "required": [
+              "type",
+              "proof",
+              "publicKey",
+              "issuerDid"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "BbsBlsSignatureProof2025"
+              },
+              "proof": {
+                "type": "string",
+                "description": "Base64url-encoded BBS+ selective disclosure proof."
+              },
+              "publicKey": {
+                "type": "string",
+                "description": "BLS12-381 G2 public key (base64url)."
+              },
+              "issuerDid": {
+                "type": "string",
+                "format": "uri",
+                "description": "DID of Lemma's attestation issuer."
+              }
+            }
+          },
+          "revealed_claims": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Claims actually revealed per disclosure_policy (mode='full' or 'selective'). MVP Basic supports only 3 keys. Hidden claims appear as null. Empty when mode='range_only'.",
+            "properties": {
+              "kyc_status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "verified",
+                  "pending",
+                  "rejected",
+                  null
+                ]
+              },
+              "jurisdiction": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "ISO 3166-1 alpha-2 country code."
+              },
+              "sanctions_check": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "clear",
+                  "flagged",
+                  "pending",
+                  null
+                ]
+              }
+            }
+          },
+          "range_results": {
+            "type": "array",
+            "description": "Range predicate verification results. Present only when mode='range_only'.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "field",
+                "predicate",
+                "value",
+                "result"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "predicate": {
+                  "type": "string",
+                  "enum": [
+                    ">=",
+                    "<=",
+                    "=="
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                },
+                "result": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "verifyUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public verification URL: https://verify.lemma.frame00.com/bundle/<uuid>."
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "settlement": {
+            "type": "object",
+            "required": [
+              "txHash",
+              "amount",
+              "currency",
+              "facilitator"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "txHash": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{64}$"
+              },
+              "amount": {
+                "type": "string",
+                "const": "0.08"
+              },
+              "currency": {
+                "type": "string",
+                "const": "USDC"
+              },
+              "facilitator": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^req_[0-9a-z]+$",
+            "description": "Server-assigned request identifier for log correlation."
+          }
+        }
+      },
+      "product-d-input": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-input.json",
+        "title": "ZK Proof Sign-in Request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "api_key_commitment",
+          "zk_proof",
+          "nonce"
+        ],
+        "properties": {
+          "api_key_commitment": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "Poseidon hash of the API key, computed client-side. The API key itself is never transmitted."
+          },
+          "zk_proof": {
+            "type": "object",
+            "required": [
+              "pi_a",
+              "pi_b",
+              "pi_c",
+              "publicSignals"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "pi_a": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "pi_b": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "pi_c": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "publicSignals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Public signals: [api_key_commitment, nonce_hash, timestamp]."
+              }
+            },
+            "description": "Groth16 proof generated with seal-identity-v1 circuit."
+          },
+          "nonce": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 64,
+            "description": "Server-issued nonce from GET /v1/bazaar/auth/challenge. Single-use, expires in 60 seconds."
+          },
+          "client_metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Optional client identification (binds to JWT for audit).",
+            "properties": {
+              "client_id": {
+                "type": "string"
+              },
+              "platform": {
+                "type": "string",
+                "enum": [
+                  "web",
+                  "ios",
+                  "android",
+                  "cli",
+                  "server"
+                ]
+              },
+              "subject_type": {
+                "type": "string",
+                "enum": [
+                  "human",
+                  "agent"
+                ],
+                "default": "agent",
+                "description": "Whether the sign-in is performed by a human user or an autonomous agent."
+              }
+            }
+          }
+        }
+      },
+      "product-d-output": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-output.json",
+        "title": "ZK Proof Sign-in Response",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "session_id",
+          "proof_record",
+          "settlement",
+          "requestId"
+        ],
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Short-lived JWT (default TTL 15 minutes)."
+          },
+          "token_type": {
+            "type": "string",
+            "const": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "default": 900,
+            "description": "Seconds until access_token expiry. Default 900 (15 minutes)."
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Server-assigned session identifier for log correlation."
+          },
+          "proof_record": {
+            "type": "object",
+            "required": [
+              "proofId",
+              "verifyUrl",
+              "anchoredAt"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "proofId": {
+                "type": "string",
+                "format": "uri",
+                "description": "URN of the proof record (urn:lemma:auth:<uuid>)."
+              },
+              "verifyUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Public verification URL: https://verify.lemma.frame00.com/auth/<uuid>."
+              },
+              "anchoredAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "settlement": {
+            "type": "object",
+            "required": [
+              "txHash",
+              "amount",
+              "currency",
+              "facilitator"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "txHash": {
+                "type": "string",
+                "pattern": "^0x[0-9a-fA-F]{64}$"
+              },
+              "amount": {
+                "type": "string",
+                "const": "0.02"
+              },
+              "currency": {
+                "type": "string",
+                "const": "USDC"
+              },
+              "facilitator": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^req_[0-9a-z]+$",
+            "description": "Server-assigned request identifier."
+          }
+        }
+      }
+    }
+  }
+}

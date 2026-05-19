@@ -75,6 +75,29 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      # Bazaar middleware unit tests. packages/x402's `test` script runs
+      # the circuit test (needs WASM build); the vitest suite has to be
+      # run via the dedicated `test:vitest` script.
+      - name: Run x402 vitest suite (bazaar middleware)
+        run: pnpm --filter @lemmaoracle/x402 test:vitest
+
+      # Bazaar schemas + OpenAPI sync (spec v0.2+). Validates the 10 JSON
+      # Schemas, lints openapi.lemma.v2.json + checks $ref existence + the
+      # x-bazaar extension shape, regenerates the bundled openapi, then
+      # fails if the bundle has drifted from the source. See AGENTS.md
+      # "Bazaar schemas + OpenAPI sync".
+      - name: Validate Bazaar schemas
+        run: pnpm --filter @lemmaoracle/spec validate:schemas
+
+      - name: Validate OpenAPI
+        run: pnpm --filter @lemmaoracle/spec validate:openapi
+
+      - name: Rebuild bundled OpenAPI
+        run: pnpm --filter @lemmaoracle/spec bundle:openapi
+
+      - name: Fail if bundled OpenAPI is stale
+        run: git diff --exit-code packages/spec/openapi.lemma.v2.bundled.json
+
       - name: Display test summary
         if: always()
         run: |

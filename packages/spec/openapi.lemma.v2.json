@@ -1,11 +1,14 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Lemma v2 API",
-    "version": "0.1.0",
-    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4)."
+    "version": "0.2.0",
+    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4). v0.2 adds the 4 Bazaar Discovery Layer products under /v1/bazaar/* (see x-bazaar extension)."
   },
-  "servers": [{ "url": "http://localhost:8787" }],
+  "servers": [
+    { "url": "https://api.lemma.frame00.com", "description": "Production (Base mainnet)" },
+    { "url": "http://localhost:8787", "description": "Local development" }
+  ],
   "components": {
     "securitySchemes": {
       "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "x-api-key" }
@@ -525,6 +528,242 @@
               "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
             }
           }
+        }
+      }
+    },
+
+    "/v1/bazaar/identity/issue": {
+      "post": {
+        "operationId": "issueAgentIdentity",
+        "summary": "Agent Identity Issuance — issue a W3C VC v2 credential with Poseidon Merkle inclusion proof",
+        "description": "For AI agents that need to issue verifiable identity credentials to other agents or services, this endpoint mints a W3C VC v2 credential with Poseidon Merkle inclusion proof and Groth16 zero-knowledge verification.",
+        "tags": ["bazaar", "infrastructure", "agent-identity"],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "agent-identity-authority-v1",
+          "category": "Infrastructure",
+          "subTags": ["agent-identity", "zk-proof", "did", "kya", "verifiable-credentials"],
+          "price": { "amount": "0.05", "currency": "USDC", "network": "base" }
+        },
+        "x-lemma-circuit": {
+          "id": "agent-identity-v1",
+          "location": "packages/agent/circuits/agent-identity-valid.circom",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "./schemas/product-a-input.json" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Credential issued, anchored, and ready for downstream verification",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "agent-identity-authority-v1" } },
+              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
+              "EXTENSION-RESPONSES": {
+                "schema": { "type": "string" },
+                "description": "CDP facilitator processing status (status=accepted|processing|rejected). Returned only when settled via the CDP facilitator with discoverable: true."
+              }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "./schemas/product-a-output.json" } }
+            }
+          },
+          "400": { "description": "Validation error",          "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",    "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": { "schema": { "type": "string" }, "description": "x402 payment challenge envelope." }
+            },
+            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true, "description": "x402 challenge body. See @x402/core spec for shape." } } }
+          },
+          "404": { "description": "Subject prerequisite missing", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+        }
+      }
+    },
+
+    "/v1/bazaar/inference/attest": {
+      "post": {
+        "operationId": "attestInference",
+        "summary": "Inference Attestation API — Groth16 attestation that a given model produced a given output",
+        "description": "For AI agents and companies running their own inference (Bedrock, OpenAI, Anthropic, Ollama), this endpoint generates a Groth16 zero-knowledge attestation that proves which model produced which output, anchored on Base mainnet. Lemma never sees raw data.",
+        "tags": ["bazaar", "inference"],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "inference-attestation-v1",
+          "category": "Inference",
+          "subTags": ["verifiable-ai", "audit-trail", "zk-proof", "provenance", "inference-attestation", "claim-check", "model-tampering-detection"],
+          "price": { "amount": "0.07", "currency": "USDC", "network": "base" }
+        },
+        "x-lemma-circuit": {
+          "id": "claimCheckCommitmentV1",
+          "location": "packages/example-claim-check/circuits/",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "./schemas/product-b-input.json" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attestation generated, anchored, and ready for downstream verification",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "inference-attestation-v1" } },
+              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Inference" } },
+              "X-Lemma-Attestation": { "schema": { "type": "string" }, "description": "Compact attestation reference (id;verify=URL;circuit=name)." },
+              "X-Lemma-Attestation-Status": { "schema": { "type": "string", "enum": ["anchored", "deferred"] } },
+              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "./schemas/product-b-output.json" } }
+            }
+          },
+          "400": { "description": "Validation error / timestamp skew", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",            "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
+            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+          },
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+        }
+      }
+    },
+
+    "/v1/bazaar/compliance/bundle": {
+      "post": {
+        "operationId": "issueComplianceBundle",
+        "summary": "Compliance Attestation Bundle (Basic) — BBS+ selective-disclosure proof for 2-3 standard attributes",
+        "description": "For AI agents that need to present compliance claims (KYC status, jurisdiction, sanctions clearance) to gated endpoints without revealing underlying data, this Basic bundle returns a BBS+ selective-disclosure proof for 2-3 standard attributes per call.",
+        "tags": ["bazaar", "infrastructure", "compliance"],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "compliance-bundle-v1",
+          "category": "Infrastructure",
+          "subTags": ["compliance", "mica", "kyc", "bbs", "selective-disclosure", "regulatory"],
+          "price": { "amount": "0.08", "currency": "USDC", "network": "base" }
+        },
+        "x-lemma-circuit": {
+          "id": "bbs-bls12-381",
+          "proofSystem": "BBS+",
+          "library": "@lemmaoracle/sdk (noble-curves backend)"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "./schemas/product-c-input.json" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bundle generated with the requested disclosure mode",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "compliance-bundle-v1" } },
+              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
+              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "./schemas/product-c-output.json" } }
+            }
+          },
+          "400": { "description": "Validation / unsupported attribute (Basic plan)", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",                          "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
+            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+          },
+          "404": { "description": "Subject onboarding missing", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+        }
+      }
+    },
+
+    "/v1/bazaar/auth/challenge": {
+      "get": {
+        "operationId": "issueAuthChallenge",
+        "summary": "ZK Proof Sign-in challenge — issue a single-use nonce (free, no x402)",
+        "description": "Companion to /v1/bazaar/auth/proof. Returns a fresh 60-second single-use nonce that the client uses when generating the Groth16 sign-in proof. Free — payment is only required for the proof submission itself.",
+        "tags": ["bazaar", "infrastructure", "auth"],
+        "responses": {
+          "200": {
+            "description": "Nonce issued",
+            "headers": {
+              "Cache-Control": { "schema": { "type": "string", "const": "no-store" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["nonce", "expires_at"],
+                  "properties": {
+                    "nonce": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+                    "expires_at": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+        }
+      }
+    },
+
+    "/v1/bazaar/auth/proof": {
+      "post": {
+        "operationId": "verifyAuthProof",
+        "summary": "ZK Proof-as-Auth (Sign-in) — verify Groth16 proof of API key possession, mint short-lived JWT",
+        "description": "For AI agents that need to call authenticated APIs without ever holding the API key — beyond the reach of prompt injection or context leaks — this endpoint accepts a Groth16 zero-knowledge proof of API key possession and returns a short-lived JWT.",
+        "tags": ["bazaar", "infrastructure", "auth"],
+        "x-bazaar": {
+          "discoverable": true,
+          "schema": "seal-identity-v1",
+          "category": "Infrastructure",
+          "subTags": ["auth", "zk-proof", "sign-in", "proof-as-auth", "credential-free", "passwordless", "api-key", "prompt-injection-defense"],
+          "price": { "amount": "0.02", "currency": "USDC", "network": "base" }
+        },
+        "x-lemma-circuit": {
+          "id": "seal-identity-v1",
+          "location": "packages/seal/circuits/",
+          "proofSystem": "Groth16"
+        },
+        "x-lemma-facilitator-requirement": "CDP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "./schemas/product-d-input.json" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proof verified, JWT minted",
+            "headers": {
+              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "seal-identity-v1" } },
+              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
+              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "./schemas/product-d-output.json" } }
+            }
+          },
+          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "401": { "description": "Nonce expired / proof verification failed", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "402": {
+            "description": "Payment required (x402 challenge)",
+            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
+            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+          },
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
         }
       }
     }
