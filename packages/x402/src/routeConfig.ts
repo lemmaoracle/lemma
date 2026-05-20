@@ -88,7 +88,7 @@ export interface LemmaRouteConfig extends BaseRouteConfig {
    * the 402 extension input so callers can validate before paying.
    *
    * Production convention:
-   *   https://schemas.lemma.frame00.com/bazaar/product-<a|b|c|d>-input.json
+   *   https://schemas.lemma.frame00.com/suites/product-<a|b|c|d>-input.json
    */
   bazaarInputSchemaRef?: string;
 

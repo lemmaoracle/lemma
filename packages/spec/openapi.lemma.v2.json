@@ -3,7 +3,7 @@
   "info": {
     "title": "Lemma v2 API",
     "version": "0.2.0",
-    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4). v0.2 adds the 4 Bazaar Discovery Layer products under /v1/bazaar/* (see x-bazaar extension)."
+    "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4). v0.2 adds the 4 Bazaar Discovery Layer products under /v1/suites/* (see x-bazaar extension)."
   },
   "servers": [
     { "url": "https://api.lemma.frame00.com", "description": "Production (Base mainnet)" },
@@ -532,7 +532,7 @@
       }
     },
 
-    "/v1/bazaar/identity/issue": {
+    "/v1/suites/identity/issue": {
       "post": {
         "operationId": "issueAgentIdentity",
         "summary": "Agent Identity Issuance — issue a W3C VC v2 credential with Poseidon Merkle inclusion proof",
@@ -587,7 +587,7 @@
       }
     },
 
-    "/v1/bazaar/inference/attest": {
+    "/v1/suites/inference/attest": {
       "post": {
         "operationId": "attestInference",
         "summary": "Inference Attestation API — Groth16 attestation that a given model produced a given output",
@@ -638,7 +638,7 @@
       }
     },
 
-    "/v1/bazaar/compliance/bundle": {
+    "/v1/suites/compliance/bundle": {
       "post": {
         "operationId": "issueComplianceBundle",
         "summary": "Compliance Attestation Bundle (Basic) — BBS+ selective-disclosure proof for 2-3 standard attributes",
@@ -688,11 +688,11 @@
       }
     },
 
-    "/v1/bazaar/auth/challenge": {
+    "/v1/suites/auth/challenge": {
       "get": {
         "operationId": "issueAuthChallenge",
         "summary": "ZK Proof Sign-in challenge — issue a single-use nonce (free, no x402)",
-        "description": "Companion to /v1/bazaar/auth/proof. Returns a fresh 60-second single-use nonce that the client uses when generating the Groth16 sign-in proof. Free — payment is only required for the proof submission itself.",
+        "description": "Companion to /v1/suites/auth/proof. Returns a fresh 60-second single-use nonce that the client uses when generating the Groth16 sign-in proof. Free — payment is only required for the proof submission itself.",
         "tags": ["bazaar", "infrastructure", "auth"],
         "responses": {
           "200": {
@@ -719,7 +719,7 @@
       }
     },
 
-    "/v1/bazaar/auth/proof": {
+    "/v1/suites/auth/proof": {
       "post": {
         "operationId": "verifyAuthProof",
         "summary": "ZK Proof-as-Auth (Sign-in) — verify Groth16 proof of API key possession, mint short-lived JWT",

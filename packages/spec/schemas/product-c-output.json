@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/product-c-output.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/product-c-output.json",
   "title": "Compliance Attestation Bundle Response (Basic MVP)",
   "type": "object",
   "additionalProperties": false,

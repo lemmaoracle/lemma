@@ -92,7 +92,7 @@ import { bazaarPaymentMiddleware } from "@lemmaoracle/x402";
 const app = new Hono();
 
 app.use(
-  "/v1/bazaar/inference/attest",
+  "/v1/suites/inference/attest",
   bazaarPaymentMiddleware({
     accepts: [
       {

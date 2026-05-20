@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/product-a-input.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/product-a-input.json",
   "title": "Agent Identity Issuance Request",
   "type": "object",
   "additionalProperties": false,

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/product-b-output.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/product-b-output.json",
   "title": "Inference Attestation Response",
   "type": "object",
   "additionalProperties": false,
