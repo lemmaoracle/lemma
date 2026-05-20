@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-output.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/product-d-output.json",
   "title": "ZK Proof Sign-in Response",
   "type": "object",
   "additionalProperties": false,

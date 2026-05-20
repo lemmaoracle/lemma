@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/bazaar-extension-metadata.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/bazaar-extension-metadata.json",
   "title": "Lemma x-bazaar extension metadata",
   "description": "Schema for the `x-bazaar` extension attached to OpenAPI operations exposed via x402 Bazaar. Used by the openapi sync CI step to validate that paths.[].post.x-bazaar entries are well-formed.",
   "type": "object",

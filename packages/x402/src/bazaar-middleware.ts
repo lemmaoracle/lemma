@@ -104,7 +104,7 @@ const injectBazaarExtensionInput = (
  * @example
  * ```ts
  * app.use(
- *   "/v1/bazaar/inference/attest",
+ *   "/v1/suites/inference/attest",
  *   bazaarPaymentMiddleware({
  *     accepts: [
  *       // standard x402 PaymentOption (recipient, amount, network, ...)

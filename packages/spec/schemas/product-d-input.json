@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lemma.frame00.com/bazaar/product-d-input.json",
+  "$id": "https://schemas.lemma.frame00.com/suites/product-d-input.json",
   "title": "ZK Proof Sign-in Request",
   "type": "object",
   "additionalProperties": false,
@@ -31,7 +31,7 @@
       "type": "string",
       "minLength": 16,
       "maxLength": 64,
-      "description": "Server-issued nonce from GET /v1/bazaar/auth/challenge. Single-use, expires in 60 seconds."
+      "description": "Server-issued nonce from GET /v1/suites/auth/challenge. Single-use, expires in 60 seconds."
     },
     "client_metadata": {
       "type": "object",
