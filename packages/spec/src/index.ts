@@ -262,7 +262,7 @@ export type ErrorResponse = Readonly<{ error: string }>;
 
 /**
  * The four Lemma × x402 Bazaar products. Each ships an input and an output
- * JSON Schema (Draft 2020-12) under `packages/spec/schemas/`.
+ * JSON Schema (Draft 2020-12) under `packages/spec/schemas/suites/`.
  *
  *  - product-a — Agent Identity Issuance
  *  - product-b — Inference Attestation API
@@ -281,11 +281,11 @@ export type BazaarSchemaPair = Readonly<{
 
 /**
  * Maps each Bazaar product to its input/output JSON Schema file name
- * (relative to `packages/spec/schemas/`). Load a schema with an import
+ * (relative to `packages/spec/schemas/suites/`). Load a schema with an import
  * attribute, e.g.
  *
  * ```ts
- * import schema from "@lemmaoracle/spec/schemas/product-a-input.json" with { type: "json" };
+ * import schema from "@lemmaoracle/spec/schemas/suites/product-a-input.json" with { type: "json" };
  * ```
  *
  * TODO(W1): the canonical Bazaar discovery identifier surfaced via

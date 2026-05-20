@@ -554,7 +554,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/product-a-input.json" } }
+            "application/json": { "schema": { "$ref": "./schemas/suites/product-a-input.json" } }
           }
         },
         "responses": {
@@ -569,11 +569,11 @@
               }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/product-a-output.json" } }
+              "application/json": { "schema": { "$ref": "./schemas/suites/product-a-output.json" } }
             }
           },
-          "400": { "description": "Validation error",          "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",    "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "400": { "description": "Validation error",          "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",    "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
           "402": {
             "description": "Payment required (x402 challenge)",
             "headers": {
@@ -581,8 +581,8 @@
             },
             "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true, "description": "x402 challenge body. See @x402/core spec for shape." } } }
           },
-          "404": { "description": "Subject prerequisite missing", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+          "404": { "description": "Subject prerequisite missing", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
         }
       }
     },
@@ -609,7 +609,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/product-b-input.json" } }
+            "application/json": { "schema": { "$ref": "./schemas/suites/product-b-input.json" } }
           }
         },
         "responses": {
@@ -623,17 +623,17 @@
               "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/product-b-output.json" } }
+              "application/json": { "schema": { "$ref": "./schemas/suites/product-b-output.json" } }
             }
           },
-          "400": { "description": "Validation error / timestamp skew", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",            "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "400": { "description": "Validation error / timestamp skew", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",            "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
           "402": {
             "description": "Payment required (x402 challenge)",
             "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
             "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
         }
       }
     },
@@ -660,7 +660,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/product-c-input.json" } }
+            "application/json": { "schema": { "$ref": "./schemas/suites/product-c-input.json" } }
           }
         },
         "responses": {
@@ -672,18 +672,18 @@
               "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/product-c-output.json" } }
+              "application/json": { "schema": { "$ref": "./schemas/suites/product-c-output.json" } }
             }
           },
-          "400": { "description": "Validation / unsupported attribute (Basic plan)", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",                          "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "400": { "description": "Validation / unsupported attribute (Basic plan)", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "401": { "description": "Authentication failure",                          "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
           "402": {
             "description": "Payment required (x402 challenge)",
             "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
             "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
           },
-          "404": { "description": "Subject onboarding missing", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+          "404": { "description": "Subject onboarding missing", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
         }
       }
     },
@@ -714,7 +714,7 @@
               }
             }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
         }
       }
     },
@@ -741,7 +741,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/product-d-input.json" } }
+            "application/json": { "schema": { "$ref": "./schemas/suites/product-d-input.json" } }
           }
         },
         "responses": {
@@ -753,17 +753,17 @@
               "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/product-d-output.json" } }
+              "application/json": { "schema": { "$ref": "./schemas/suites/product-d-output.json" } }
             }
           },
-          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
-          "401": { "description": "Nonce expired / proof verification failed", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "401": { "description": "Nonce expired / proof verification failed", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
           "402": {
             "description": "Payment required (x402 challenge)",
             "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
             "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/canonical-error.json" } } } }
+          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
         }
       }
     }

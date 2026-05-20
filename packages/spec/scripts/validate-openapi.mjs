@@ -72,7 +72,7 @@ addFormats(ajv);
 
 const bazaarMetadataSchemaPath = resolve(
   schemasDir,
-  "bazaar-extension-metadata.json"
+  "suites/bazaar-extension-metadata.json"
 );
 if (!existsSync(bazaarMetadataSchemaPath)) {
   fail("schemas/bazaar-extension-metadata.json is missing — add it before merging");
