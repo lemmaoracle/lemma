@@ -454,6 +454,87 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     ctaH2: "Tamper-evident execution history for AI.",
   },
 
+  {
+    slug: "scope",
+    nameJa: "スコープ",
+    nameEn: "Scope — tenant boundary",
+    category: "検証可能AI",
+    description:
+      "Lemma's tenant boundary. Every key, schema, circuit, document, and proof you register is bound to one scope ID, and scopes are isolated from each other even when they share an issuer DID.",
+    lead:
+      'In Lemma, a <strong>scope</strong> is the unit of tenancy. Every API key, schema, circuit, document, and proof you register belongs to exactly one scope. Two scopes never see each other\'s data — even when they share an issuer <a href="/glossary/did/">DID</a>.',
+    definition: [
+      "A scope is created when a developer signs in for the first time. Each subsequent registration — API keys, schemas, circuits, generators, documents, proofs — carries that scope as a foreign key. The dashboard, the workers API, and on-chain hooks all filter by scope before returning data.",
+      "Scope is distinct from issuer identity. A single legal entity can run multiple scopes (production / staging / partner-x). Conversely, a single scope can sign documents under multiple issuer DIDs as the operational context shifts.",
+      "Tenant isolation is enforced at the workers API layer, not just the UI. A request that authenticates against scope A cannot read or mutate resources under scope B even by constructing a direct API call — the bearer-token check resolves to a scope_id before any route handler runs.",
+    ],
+    implementation: [
+      'The scope is the join key on every D1 table. <a href="/glossary/x402/">x402</a> service routes, <a href="/glossary/mcp/">MCP</a> tool access, and the dashboard\'s "my-resources" view all narrow by scope_id. The first key minted at sign-in carries the scope; rotating keys never changes the scope.',
+      "Scope-level controls — rate limits, billing aggregation, marketplace listings — are designed so a developer can move between scopes the way a workspace user switches teams: same identity, different boundary. The boundary, not the identity, is what bounds what the AI sees.",
+      'For multi-tenant deployments, the scope is also the privacy unit. <a href="/glossary/selective-disclosure/">Selective disclosure</a> and BBS+ presentations are evaluated within a single scope before they cross outward.',
+    ],
+    related: [
+      { slug: "schema", desc: "The first thing you register under a scope — the typed shape of every document below it." },
+      { slug: "x402", desc: "Per-scope API key authorization is the bearer-token side of x402 service access." },
+      { slug: "trust402", desc: "Trust402 role enforcement evaluates a proof inside the scope that owns the circuit." },
+      { slug: "mcp", desc: "The MCP server scopes every read to the requesting key's scope_id." },
+    ],
+    ctaH2: "Start a Lemma scope and register your first attribute.",
+  },
+  {
+    slug: "schema",
+    nameJa: "スキーマ",
+    nameEn: "Schema — typed attribute declaration",
+    category: "検証可能AI",
+    description:
+      "Lemma's typed declaration of the attributes a document carries, anchored to a normalize artifact — a WASM module that hashes raw fields into the canonical form a circuit checks.",
+    lead:
+      'A <strong>schema</strong> pins the typed shape of an attribute set and anchors it to a <em>normalize artifact</em> — a WASM module that hashes raw fields into the canonical form a <a href="/glossary/zk-proof/">ZK circuit</a> can verify against. Schemas are immutable once registered; you version them by id.',
+    definition: [
+      "The schema declares names and types only — it does not carry values. The same schema is referenced by every document that conforms to it and every circuit that proves against it. This is the contract layer between issuer, verifier, and AI consumer.",
+      "Because a circuit's constraint system depends on the exact hash representation of the inputs, the schema must pin not just the typed fields but the normalization pipeline (the WASM module hash) that produces those inputs. Changing the normalization changes the constraint, which changes the verifying key — so a new normalize artifact is a new schema id.",
+      'Versioning is by id (for example "age-over-eighteen.v2"), not by mutation. Old schemas remain queryable so existing documents and proofs stay verifiable forever; new schemas are independent ids that can coexist.',
+    ],
+    implementation: [
+      'A schema is registered against a <a href="/glossary/scope/">scope</a> via <code>schemas.register</code> in the SDK. The payload is a <code>SchemaMeta</code> with <code>id</code>, optional <code>description</code>, and a required <code>NormalizeArtifact</code> (WASM URL + hash + ABI).',
+      'Downstream artifacts — <a href="/glossary/generator/">generators</a>, circuits, and documents — reference the schema by id. AI agents querying through <a href="/glossary/mcp/">MCP</a> or x402 use the schema id to know what attributes a verified document exposes.',
+      "For verifiable AI workflows such as provenance-tracked RAG, the schema serves as the contract between issuer and retriever: the issuer signs documents to fit the schema, and the retriever validates that the returned document's docHash binds to the same normalize artifact the schema declares.",
+    ],
+    related: [
+      { slug: "scope", desc: "The tenant boundary the schema is registered under." },
+      { slug: "generator", desc: "Schemas are referenced by generator artifacts that build proofs against them." },
+      { slug: "doc-hash", desc: "The hash a document binds to — produced by the schema's normalize artifact." },
+      { slug: "rag", desc: "Schemas shape the typed attribute contract a verifiable RAG pipeline expects." },
+    ],
+    ctaH2: "Pin your attribute contract with a typed schema.",
+  },
+  {
+    slug: "generator",
+    nameJa: "ジェネレータ",
+    nameEn: "Generator — circuit prover artifact",
+    category: "検証可能AI",
+    description:
+      "The client-side artifact — witness builder plus proving key location — that lets an external party produce a ZK proof against a registered circuit without re-implementing the circuit logic.",
+    lead:
+      'A <strong>generator</strong> is the client-side companion to a ZK circuit: the witness builder plus the location of the proving key. It exists so a third party — a developer, an agent, a customer\'s app — can produce a valid <a href="/glossary/zk-proof/">ZK proof</a> against the circuit without ever needing to re-author the circuit itself.',
+    definition: [
+      "A ZK proof system has three artifacts in play: the circuit (the constraint system), the proving key (the large secret-derived data the prover needs), and the verifying key (used downstream). The circuit registration on Lemma publishes the verifying side. The generator publishes the prover side, so the work of proving can be done off-platform.",
+      "The witness builder is typically a small program — JavaScript, Rust, or a WASM bundle — that takes raw inputs, runs the same normalization as the schema's normalize artifact, and feeds the circuit's expected witness layout. The proving key location is a URL (IPFS or HTTPS) where the binary blob lives.",
+      "Because the proving step is expensive (Groth16 keys are large; PLONK keys less so), making the generator a separately addressable artifact lets clients cache, version, and federate proof production across users without contacting Lemma's servers for the bulk data.",
+    ],
+    implementation: [
+      'A generator is registered against a <a href="/glossary/scope/">scope</a> and tied to a <a href="/glossary/schema/">schema</a>. The dashboard\'s Overview tab lists generators alongside other registered artifacts; the workers API exposes <code>generators.register</code> and <code>generators.getById</code>.',
+      'For the agent payment use case (<a href="/glossary/trust402/">Trust402</a>), the generator is what an autonomous agent\'s runtime loads to produce a "proof-before-payment" against the role circuit. The generator URL is part of the contract a delegating principal hands down to the agent.',
+      "For verifiable selective disclosure on a credential, the generator builds BBS+ presentations alongside the Groth16 instance — the holder's app loads the generator, picks the attributes to reveal, and produces a single combined artifact.",
+    ],
+    related: [
+      { slug: "schema", desc: "The schema a generator is bound to — its normalize artifact feeds the witness." },
+      { slug: "zk-proof", desc: "The proof system the generator targets — Groth16 on BN254 in production today." },
+      { slug: "commitment", desc: "Many circuits open commitments inside the proof; the generator builds those openings." },
+      { slug: "selective-disclosure", desc: "BBS+ presentations are produced by the same generator artifact." },
+    ],
+    ctaH2: "Ship a generator so anyone can prove against your circuit.",
+  },
   // ============ Protocols & Agents ============
   {
     slug: "agentic-payments",

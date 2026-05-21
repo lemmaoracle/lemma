@@ -33,6 +33,9 @@ export type GlossarySlug =
   | "rag"
   | "citation-proof"
   | "audit-trail"
+  | "scope"
+  | "schema"
+  | "generator"
   // プロトコル・エージェント
   | "agentic-payments"
   | "x402"
@@ -519,6 +522,87 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     ctaH2: "改ざん不能な実行履歴を、AI に。",
   },
 
+  {
+    slug: "scope",
+    nameJa: "スコープ",
+    nameEn: "Scope — tenant boundary",
+    category: "検証可能AI",
+    description:
+      "Lemma のテナント境界です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つの scope ID にひもづき、発行者 DID を共有していても scope をまたいでデータが見えることはありません。",
+    lead:
+      '<strong>スコープ</strong> は Lemma におけるテナンシーの単位です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つのスコープに所属します。発行者 <a href="/ja/glossary/did/">DID</a> を共有していても、スコープをまたいでデータが見えることはありません。',
+    definition: [
+      "スコープは開発者が初回サインインしたタイミングで作成されます。それ以降に登録される API キー・スキーマ・回路・ジェネレータ・ドキュメント・証明には、外部キーとしてそのスコープ ID が刻まれます。Dashboard・workers API・オンチェーンフックいずれも、データを返す前にスコープでフィルタを通します。",
+      "スコープは発行者の身元とは別の概念です。1 つの法人が production / staging / partner-x のように複数のスコープを運用することもできますし、逆に 1 つのスコープから、運用文脈に応じて複数の発行者 DID で署名することも可能です。",
+      "テナント分離は UI 層ではなく workers API 層で強制されます。スコープ A で認証されたリクエストは、たとえ直接 API を組み立ててもスコープ B のリソースを読み書きできません。bearer token のチェックがルートハンドラに入る前に scope_id へ解決される設計になっています。",
+    ],
+    implementation: [
+      'スコープは D1 上のすべてのテーブルに対する join key です。<a href="/ja/glossary/x402/">x402</a> のサービスルート、<a href="/ja/glossary/mcp/">MCP</a> のツールアクセス、Dashboard の "my-resources" ビューはいずれも scope_id で絞り込みます。サインイン時に発行される最初のキーはスコープを保持し、キーをローテーションしてもスコープは変わりません。',
+      "スコープ単位の制御（レートリミット、課金集計、Marketplace 公開）は、ワークスペースのチーム切替に近い感覚で開発者がスコープ間を移動できるよう設計されています。AI が見る範囲を縛るのは、身元ではなく境界です。",
+      'マルチテナント運用において、スコープはプライバシーの単位でもあります。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> や BBS+ プレゼンテーションは、外部に出る前にスコープ内で評価されます。',
+    ],
+    related: [
+      { slug: "schema", desc: "スコープ配下に最初に登録されるもの。配下のドキュメントすべての型を決めます。" },
+      { slug: "x402", desc: "スコープごとの API キー認可が x402 サービスアクセスの bearer 側を担います。" },
+      { slug: "trust402", desc: "Trust402 のロール強制は、回路を所有するスコープの中で証明を評価します。" },
+      { slug: "mcp", desc: "MCP サーバはリクエスト元のキーの scope_id に読み取りを絞ります。" },
+    ],
+    ctaH2: "Lemma のスコープを作って、最初の属性を登録する。",
+  },
+  {
+    slug: "schema",
+    nameJa: "スキーマ",
+    nameEn: "Schema — typed attribute declaration",
+    category: "検証可能AI",
+    description:
+      "Lemma に登録するドキュメントの属性形状の型宣言で、normalize artifact（生のフィールドを回路が検証する正規形にハッシュする WASM モジュール）にひもづきます。",
+    lead:
+      '<strong>スキーマ</strong> は属性集合の型形状を固定し、<em>normalize artifact</em>（生のフィールドを <a href="/ja/glossary/zk-proof/">ZK 回路</a> が検証できる正規形にハッシュする WASM モジュール）にひもづけるものです。登録後はイミュータブルなので、変更したい場合は id でバージョンを切ります。',
+    definition: [
+      "スキーマは名前と型だけを宣言し、値そのものは持ちません。同じスキーマを、それに準拠する全ドキュメントと、その上で証明を行う全回路が参照します。発行者・検証者・AI 利用者の間の契約レイヤがここに置かれます。",
+      "回路の制約系は入力のハッシュ表現に依存するため、スキーマは型付きフィールドだけでなく、その入力を生成する正規化パイプライン（WASM モジュールのハッシュ）も固定する必要があります。正規化を変えると制約が変わり、verifying key も変わるため、新しい normalize artifact は新しいスキーマ id になります。",
+      'バージョン管理は変更ではなく id（たとえば "age-over-eighteen.v2"）で行います。古いスキーマも参照可能なまま残るので、既存のドキュメントや証明は永続的に検証可能です。新しいスキーマは独立した id として共存します。',
+    ],
+    implementation: [
+      '<a href="/ja/glossary/scope/">スコープ</a> 配下に SDK の <code>schemas.register</code> 経由で登録します。ペイロードは <code>SchemaMeta</code> で、<code>id</code>、任意の <code>description</code>、必須の <code>NormalizeArtifact</code>（WASM URL + ハッシュ + ABI）を持ちます。',
+      '下流のアーティファクト — <a href="/ja/glossary/generator/">ジェネレータ</a>、回路、ドキュメント — はスキーマを id で参照します。<a href="/ja/glossary/mcp/">MCP</a> や x402 を通じて問い合わせる AI エージェントは、スキーマ id をもとに「どの属性が公開されうるか」を知ります。',
+      "プロヴナンス付き RAG のような検証可能 AI ワークフローでは、スキーマは発行者と検索側の契約として働きます。発行者はスキーマに合うドキュメントに署名し、検索側は返ってきたドキュメントの docHash が、スキーマが宣言する normalize artifact に bind しているかを検証します。",
+    ],
+    related: [
+      { slug: "scope", desc: "スキーマが登録されるテナント境界。" },
+      { slug: "generator", desc: "スキーマは、その上で証明を作るジェネレータアーティファクトから参照されます。" },
+      { slug: "doc-hash", desc: "ドキュメントが bind するハッシュ。スキーマの normalize artifact が生み出します。" },
+      { slug: "rag", desc: "スキーマは、検証可能な RAG パイプラインが期待する属性契約の形を決めます。" },
+    ],
+    ctaH2: "型付きスキーマで属性契約を固定する。",
+  },
+  {
+    slug: "generator",
+    nameJa: "ジェネレータ",
+    nameEn: "Generator — circuit prover artifact",
+    category: "検証可能AI",
+    description:
+      "登録された ZK 回路に対して、外部の主体が回路自体を再実装せずに証明を生成できるようにするためのクライアント側アーティファクト（witness builder + proving key の所在）です。",
+    lead:
+      '<strong>ジェネレータ</strong> は ZK 回路のクライアント側相方です。witness builder と proving key の所在を持ちます。これがあるおかげで、第三者 — 開発者、エージェント、顧客のアプリ — は回路そのものを再実装することなく、回路に対して有効な <a href="/ja/glossary/zk-proof/">ZK 証明</a> を生成できます。',
+    definition: [
+      "ZK 証明系は 3 つのアーティファクトを伴います。回路（制約系本体）、proving key（証明者が必要とする大きな秘密由来データ）、verifying key（下流で使う検証鍵）です。Lemma 上の回路登録は verifying 側を公開します。ジェネレータが prover 側を公開することで、証明作成自体をプラットフォームの外で行えるようになります。",
+      "witness builder は典型的には小さなプログラム（JavaScript、Rust、WASM バンドル）で、生の入力を受け取り、スキーマの normalize artifact と同じ正規化を実行し、回路が期待する witness レイアウトに整えます。proving key の所在は URL（IPFS、HTTPS）で、バイナリ本体はそちらに置きます。",
+      "証明生成は重い処理（Groth16 の proving key は大きいです。PLONK は比較的小さいです）なので、ジェネレータを別アドレスのアーティファクトとして切り出しておけば、クライアントがキャッシュ・バージョン管理・連邦化を行いやすくなり、ユーザーごとに Lemma のサーバへ巨大なバイナリを取りに行く必要がなくなります。",
+    ],
+    implementation: [
+      '<a href="/ja/glossary/scope/">スコープ</a> 配下に登録され、<a href="/ja/glossary/schema/">スキーマ</a> にひもづきます。Dashboard の Overview タブには他の登録物と並んで表示されます。workers API は <code>generators.register</code> / <code>generators.getById</code> を提供します。',
+      'エージェント決済ユースケース（<a href="/ja/glossary/trust402/">Trust402</a>）では、自律エージェントのランタイムがジェネレータを読み込んで、ロール回路に対する "proof-before-payment" を生成します。ジェネレータの URL は、委譲側の主体がエージェントに渡す契約の一部となります。',
+      "クレデンシャル上の検証可能な選択的開示では、ジェネレータが Groth16 instance と並行して BBS+ プレゼンテーションも組み立てます。ホルダーのアプリはジェネレータを読み込み、開示する属性を選び、1 つの結合アーティファクトを生成します。",
+    ],
+    related: [
+      { slug: "schema", desc: "ジェネレータがひもづくスキーマ。その normalize artifact が witness を作ります。" },
+      { slug: "zk-proof", desc: "ジェネレータが対象とする証明系。現状の本番は BN254 上の Groth16 です。" },
+      { slug: "commitment", desc: "多くの回路は証明内でコミットメントを open します。ジェネレータがその open を組み立てます。" },
+      { slug: "selective-disclosure", desc: "BBS+ プレゼンテーションも同じジェネレータアーティファクトが生成します。" },
+    ],
+    ctaH2: "ジェネレータを公開して、誰でも回路に対して証明できる状態にする。",
+  },
   // ============ プロトコル・エージェント ============
   {
     slug: "agentic-payments",
