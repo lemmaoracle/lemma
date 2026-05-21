@@ -99,7 +99,9 @@
     "privacy": "Privacy",
     "privacyHref": "https://lemma.frame00.com/privacy",
     "website": "Lemma website",
-    "websiteHref": "https://lemma.frame00.com/"
+    "websiteHref": "https://lemma.frame00.com/",
+    "dashboard": "Dashboard →",
+    "dashboardHref": "https://dashboard.lemma.workers.dev/"
   },
   "samples": {
     "financial_valid_approval": {

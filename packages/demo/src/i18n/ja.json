@@ -99,7 +99,9 @@
     "privacy": "プライバシー",
     "privacyHref": "https://lemma.frame00.com/ja/privacy",
     "website": "Lemma ウェブサイト",
-    "websiteHref": "https://lemma.frame00.com/ja/"
+    "websiteHref": "https://lemma.frame00.com/ja/",
+    "dashboard": "ダッシュボード →",
+    "dashboardHref": "https://dashboard.lemma.workers.dev/"
   },
   "samples": {
     "financial_valid_approval": {

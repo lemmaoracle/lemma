@@ -164,6 +164,8 @@ export interface Translations {
     readonly privacyHref: string;
     readonly website: string;
     readonly websiteHref: string;
+    readonly dashboard: string;
+    readonly dashboardHref: string;
   }>;
   /**
    * Per-sample chip copy. Keys are Sample.id from `data/fixtures.ts`.
