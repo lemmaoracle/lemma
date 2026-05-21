@@ -254,6 +254,22 @@
           {
             "q": "検証済み属性の検索はどのように動作する？",
             "a": "検索すると属性データに完全な来歴証明が付いて返されます。"
+          },
+          {
+            "q": "デプロイを止めずに API キーをローテーションする方法は？",
+            "a": "Dashboard の API keys タブで新しいキーを作成し、旧キーと並行してデプロイしてください。トラフィックが新キーに切り替わったら旧キーを revoke します。revoke は即時かつグローバルに反映されるので、切り替えの重なり時間を確保してから revoke するのが安全です。"
+          },
+          {
+            "q": "Seal Proof のサインインが 503 を返すのはなぜ？",
+            "a": "Seal Proof はサーバ側に seal の verification key が登録されている必要があります。503 はまだ未登録の状態を意味します。GitHub OAuth にフォールバックしてください。seal の設定なしで動作し、スコープと最初の API キーを発行します。"
+          },
+          {
+            "q": "Dashboard の Marketplace と x402 のルートディスカバリーはどう違う？",
+            "a": "Marketplace は自分のスコープに登録した Lemma リソース（スキーマ・回路・ジェネレータ）を公開するための Dashboard 上の listing UI です。x402 のルートディスカバリーは x402 facilitator が広告するルートごとのメタデータで、別レイヤの機能です。Marketplace は Lemma のアーティファクトを、x402 ディスカバリーは決済保護つきルートを露出します。"
+          },
+          {
+            "q": "スキーマ・回路・ドキュメントはどこで登録する？",
+            "a": "workers API（workers.lemma.workers.dev）に対して、@lemmaoracle/sdk 経由または直接 HTTP でプログラマティックに登録します。Dashboard はスコープから読み取って表示するだけで、作成用 UI フォームはありません。Dashboard Quickstart ガイドが SDK 経由の流れを最後まで通します。"
           }
         ]
       },
@@ -360,20 +376,32 @@
       "wall1Title": "真正性の問題",
       "wall1Body": "センサー値・業務ログ・契約記録は複数拠点を経由する過程で欠損・改ざんリスクにさらされている。そのままAIに渡せばハルシネーションを誘発し、業務推論を歪める。",
       "wall1Links": [
-        { "text": "Pillar 01 — 来歴証明 で解決", "href": "/ja/pillars/verifiable-origin/" }
+        {
+          "text": "Pillar 01 — 来歴証明 で解決",
+          "href": "/ja/pillars/verifiable-origin/"
+        }
       ],
       "wall2Num": "問題 02",
       "wall2Title": "プライバシーの問題",
       "wall2Body": "業務自動化に必要なデータを丸ごと外部に渡すことは、個人情報保護法・機密管理の観点から許容されない。「証明したいが、中身は見せたくない」という矛盾がAI活用を阻む。",
       "wall2Links": [
-        { "text": "Pillar 04 — 規制属性証明 で解決", "href": "/ja/pillars/regulatory-attribute-proof/" }
+        {
+          "text": "Pillar 04 — 規制属性証明 で解決",
+          "href": "/ja/pillars/regulatory-attribute-proof/"
+        }
       ],
       "wall3Num": "問題 03",
       "wall3Title": "説明責任の問題",
       "wall3Body": "エージェントAIが自律実行するならば「なぜその判断をしたか」を人間が確認・説明できなければならない。処理根拠の追跡可能性が、AI導入の前提条件となる。",
       "wall3Links": [
-        { "text": "Pillar 02 — 検証可能AI で解決", "href": "/ja/pillars/verifiable-ai/" },
-        { "text": "Pillar 03 — エージェント権限証明", "href": "/ja/pillars/agent-authority-proof/" }
+        {
+          "text": "Pillar 02 — 検証可能AI で解決",
+          "href": "/ja/pillars/verifiable-ai/"
+        },
+        {
+          "text": "Pillar 03 — エージェント権限証明",
+          "href": "/ja/pillars/agent-authority-proof/"
+        }
       ]
     },
     "solution": {
