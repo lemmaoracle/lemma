@@ -254,6 +254,22 @@
           {
             "q": "How does querying verified attributes work?",
             "a": "Querying returns attribute data with full provenance attached — including proof status, schema, issuer, generator, and verification method."
+          },
+          {
+            "q": "How do I rotate an API key without breaking my deployment?",
+            "a": "Create the new key first via the Dashboard's API keys tab, deploy it alongside the old one, then revoke the old key once traffic has shifted — revocation is immediate and global, so plan the overlap window before revoking."
+          },
+          {
+            "q": "Why does Seal Proof sign-in return 503?",
+            "a": "Seal Proof requires the seal verification key to be registered server-side. The 503 means it has not been registered yet — fall back to GitHub OAuth, which works without seal setup and creates the scope plus the first API key."
+          },
+          {
+            "q": "How is the Dashboard Marketplace different from x402 route discovery?",
+            "a": "The Marketplace is the Dashboard's listing UI for resources you have registered under your scope — schemas, circuits, generators. x402 route discovery is the per-route metadata an x402 facilitator advertises. Different layers: the Marketplace exposes Lemma artifacts, x402 discovery exposes payment-protected routes."
+          },
+          {
+            "q": "Where do I register schemas, circuits, and documents?",
+            "a": "Programmatically against the workers API at workers.lemma.workers.dev — via the @lemmaoracle/sdk or direct HTTP. The Dashboard reads from your scope and renders the result; it does not have a creation form. The Dashboard Quickstart guide walks through the SDK path end-to-end."
           }
         ]
       },
@@ -360,20 +376,32 @@
       "wall1Title": "Authenticity Problem",
       "wall1Body": "Sensor values, business logs, and contract records are exposed to loss and tampering risks as they pass through multiple points. Feeding them directly to AI induces hallucinations and distorts business reasoning.",
       "wall1Links": [
-        { "text": "Solved by Pillar 01 — Verifiable Origin", "href": "/pillars/verifiable-origin/" }
+        {
+          "text": "Solved by Pillar 01 — Verifiable Origin",
+          "href": "/pillars/verifiable-origin/"
+        }
       ],
       "wall2Num": "Problem 02",
       "wall2Title": "Privacy Problem",
       "wall2Body": "Handing over all data necessary for business automation to external parties is not permitted under personal information protection laws and confidentiality management. The contradiction of 'wanting to prove but not show contents' blocks AI utilization.",
       "wall2Links": [
-        { "text": "Solved by Pillar 04 — Regulatory Attribute Proof", "href": "/pillars/regulatory-attribute-proof/" }
+        {
+          "text": "Solved by Pillar 04 — Regulatory Attribute Proof",
+          "href": "/pillars/regulatory-attribute-proof/"
+        }
       ],
       "wall3Num": "Problem 03",
       "wall3Title": "Accountability Problem",
       "wall3Body": "If agent AI executes autonomously, humans must be able to verify and explain 'why that decision was made.' Traceability of processing grounds becomes a prerequisite for AI adoption.",
       "wall3Links": [
-        { "text": "Solved by Pillar 02 — Verifiable AI", "href": "/pillars/verifiable-ai/" },
-        { "text": "Pillar 03 — Agent Authority Proof", "href": "/pillars/agent-authority-proof/" }
+        {
+          "text": "Solved by Pillar 02 — Verifiable AI",
+          "href": "/pillars/verifiable-ai/"
+        },
+        {
+          "text": "Pillar 03 — Agent Authority Proof",
+          "href": "/pillars/agent-authority-proof/"
+        }
       ]
     },
     "solution": {
