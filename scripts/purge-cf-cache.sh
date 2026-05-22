@@ -19,7 +19,7 @@ PREFIX="${1:-}"
 if [[ -n "$PREFIX" ]]; then
   # Prefix-based purge: only invalidate URLs containing the prefix
   # e.g. /blog/ → https://lemma.frame00.com/blog/
-  BODY="{\"prefixes\":[\"https://lemma.frame00.com${PREFIX}\"]}"
+  BODY="{\"prefixes\":[\"lemma.frame00.com${PREFIX}\"]}"
   echo "Purging CF cache for prefix: ${PREFIX}"
 else
   # Full zone purge
