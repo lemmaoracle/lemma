@@ -530,17 +530,17 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Scope — tenant boundary",
     category: "検証可能AI",
     description:
-      "Lemma のテナント境界です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つの scope ID にひもづき、発行者 DID を共有していても scope をまたいでデータが見えることはありません。",
+      "Lemma のテナント境界です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つの scope ID にひもづきます。リソースの CRUD は scope で分離されますが、attributes.query は設計上 scope を横断して検証済み属性を読み取れます。",
     lead:
-      '<strong>スコープ</strong> は Lemma におけるテナンシーの単位です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つのスコープに所属します。発行者 <a href="/ja/glossary/did/">DID</a> を共有していても、スコープをまたいでデータが見えることはありません。',
+      '<strong>スコープ</strong> は Lemma におけるテナンシーの単位です。登録される API キー、スキーマ、回路、ドキュメント、証明はすべて 1 つのスコープに所属します。リソースの CRUD は、発行者 <a href="/ja/glossary/did/">DID</a> を共有していてもスコープごとに分離されます。唯一の意図的な例外が <code>attributes.query</code> で、設計上スコープを横断して検証済み属性を読み取れます。',
     definition: [
       "スコープは開発者が初回サインインしたタイミングで作成されます。それ以降に登録される API キー・スキーマ・回路・ジェネレータ・ドキュメント・証明には、外部キーとしてそのスコープ ID が刻まれます。Dashboard・workers API・オンチェーンフックいずれも、データを返す前にスコープでフィルタを通します。",
       "スコープは発行者の身元とは別の概念です。1 つの法人が production / staging / partner-x のように複数のスコープを運用することもできますし、逆に 1 つのスコープから、運用文脈に応じて複数の発行者 DID で署名することも可能です。",
-      "テナント分離は UI 層ではなく workers API 層で強制されます。スコープ A で認証されたリクエストは、たとえ直接 API を組み立ててもスコープ B のリソースを読み書きできません。bearer token のチェックがルートハンドラに入る前に scope_id へ解決される設計になっています。",
+      "リソースの CRUD 分離は UI 層ではなく workers API 層で強制されます。スコープ A で認証されたリクエストは、たとえ直接 API を組み立ててもスコープ B のリソースを読み書きできません。bearer token のチェックがルートハンドラに入る前に scope_id へ解決される設計になっています。唯一の意図的な横断経路が <code>attributes.query</code> で、これは設計上スコープを横断して検証済み属性を読み取る読み取り専用のクエリ面です（CRUD 経路ではありません）。",
     ],
     implementation: [
       'スコープは D1 上のすべてのテーブルに対する join key です。<a href="/ja/glossary/x402/">x402</a> のサービスルート、<a href="/ja/glossary/mcp/">MCP</a> のツールアクセス、Dashboard の "my-resources" ビューはいずれも scope_id で絞り込みます。サインイン時に発行される最初のキーはスコープを保持し、キーをローテーションしてもスコープは変わりません。',
-      "スコープ単位の制御（レートリミット、課金集計、Marketplace 公開）は、ワークスペースのチーム切替に近い感覚で開発者がスコープ間を移動できるよう設計されています。AI が見る範囲を縛るのは、身元ではなく境界です。",
+      "スコープ単位の制御（レートリミット、課金集計）は、ワークスペースのチーム切替に近い感覚で開発者がスコープ間を移動できるよう設計されています。境界が縛るのはリソースの CRUD であり、検証済み属性のクエリは意図的な scope 横断の読み取り経路です。",
       'マルチテナント運用において、スコープはプライバシーの単位でもあります。<a href="/ja/glossary/selective-disclosure/">選択的開示</a> や BBS+ プレゼンテーションは、外部に出る前にスコープ内で評価されます。',
     ],
     related: [
@@ -581,29 +581,29 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
   {
     slug: "generator",
     nameJa: "ジェネレータ",
-    nameEn: "Generator — circuit prover artifact",
+    nameEn: "Generator — document-generation script metadata",
     category: "検証可能AI",
     description:
-      "登録された ZK 回路に対して、外部の主体が回路自体を再実装せずに証明を生成できるようにするためのクライアント側アーティファクト（witness builder + proving key の所在）です。",
+      "ドキュメント（rawDoc）を生成するスクリプトのメタデータです。入力仕様・出力仕様・ソースの所在を記述し、実行は開発者のインフラで行われます（Lemma 上では実行されません）。generatorId とそのハッシュは検証の ZK パブリックインプットになります。",
     lead:
-      '<strong>ジェネレータ</strong> は ZK 回路のクライアント側相方です。witness builder と proving key の所在を持ちます。これがあるおかげで、第三者 — 開発者、エージェント、顧客のアプリ — は回路そのものを再実装することなく、回路に対して有効な <a href="/ja/glossary/zk-proof/">ZK 証明</a> を生成できます。',
+      '<strong>ジェネレータ</strong> は、rawDoc — <a href="/ja/glossary/schema/">スキーマ</a> が後で正規化する生ドキュメント — を生成するスクリプトの、登録済みメタデータです。入力仕様・出力仕様・スクリプトの所在を記録します。実行はあなた自身のインフラに留まり、Lemma は記述子だけを保持し、あるドキュメントをどのジェネレータが生成したかを証明する際にそのハッシュをパブリックインプットとして用います。',
     definition: [
-      "ZK 証明系は 3 つのアーティファクトを伴います。回路（制約系本体）、proving key（証明者が必要とする大きな秘密由来データ）、verifying key（下流で使う検証鍵）です。Lemma 上の回路登録は verifying 側を公開します。ジェネレータが prover 側を公開することで、証明作成自体をプラットフォームの外で行えるようになります。",
-      "witness builder は典型的には小さなプログラム（JavaScript、Rust、WASM バンドル）で、生の入力を受け取り、スキーマの normalize artifact と同じ正規化を実行し、回路が期待する witness レイアウトに整えます。proving key の所在は URL（IPFS、HTTPS）で、バイナリ本体はそちらに置きます。",
-      "証明生成は重い処理（Groth16 の proving key は大きいです。PLONK は比較的小さいです）なので、ジェネレータを別アドレスのアーティファクトとして切り出しておけば、クライアントがキャッシュ・バージョン管理・連邦化を行いやすくなり、ユーザーごとに Lemma のサーバへ巨大なバイナリを取りに行く必要がなくなります。",
+      "ジェネレータは Lemma 上で実行されません。これは記述子です。<code>inputsSpec</code>（スクリプトが受け取る入力）、<code>outputsSpec</code>（返す rawDoc の形と対象スキーマ）、<code>source</code>（スクリプト本体の所在を指す URL など）から成ります。登録すると、この記述子がスコープ配下に保存されます。",
+      "生成ロジックをプラットフォーム外に置くことで、ドキュメント生成は開発者が管理するインフラに留まります。外部 API・非公開データソース・独自の組み立て処理が Lemma のサーバに触れることはありません。Lemma は、後からジェネレータを参照・検証するために必要な情報だけを保持します。",
+      "<code>generatorId</code> と記述子のハッシュは ZK パブリックインプットとして扱われます。これにより、ある rawDoc が特定の登録済みジェネレータによって生成されたことを証明でき、生成ロジック自体を開示せずにドキュメントの出所を検証可能な記録へ束ねられます。",
     ],
     implementation: [
-      '<a href="/ja/glossary/scope/">スコープ</a> 配下に登録され、<a href="/ja/glossary/schema/">スキーマ</a> にひもづきます。Dashboard の Overview タブには他の登録物と並んで表示されます。workers API は <code>generators.register</code> / <code>generators.getById</code> を提供します。',
-      'エージェント決済ユースケース（<a href="/ja/glossary/trust402/">Trust402</a>）では、自律エージェントのランタイムがジェネレータを読み込んで、ロール回路に対する "proof-before-payment" を生成します。ジェネレータの URL は、委譲側の主体がエージェントに渡す契約の一部となります。',
-      "クレデンシャル上の検証可能な選択的開示では、ジェネレータが Groth16 instance と並行して BBS+ プレゼンテーションも組み立てます。ホルダーのアプリはジェネレータを読み込み、開示する属性を選び、1 つの結合アーティファクトを生成します。",
+      '<a href="/ja/glossary/scope/">スコープ</a> 配下に登録され、<code>outputsSpec</code> を通じて <a href="/ja/glossary/schema/">スキーマ</a> にひもづきます。Dashboard の Overview タブには他の登録物と並んで表示されます。workers API は <code>generators.register</code> / <code>generators.getById</code> を提供します。',
+      'ジェネレータのハッシュがパブリックインプットなので、同じ記述子がドキュメントの <a href="/ja/glossary/provenance/">来歴</a> と、生成方法を参照する下流の <a href="/ja/glossary/zk-proof/">ZK 証明</a> の両方を、スクリプトや非公開入力を晒さずにアンカーします。',
+      "生成されたドキュメントが後で選択的に開示される場合も、それを作ったジェネレータはドキュメントの出所として参照可能なままなので、開示とその来歴は同一の登録済み記述子へ解決されます。",
     ],
     related: [
-      { slug: "schema", desc: "ジェネレータがひもづくスキーマ。その normalize artifact が witness を作ります。" },
-      { slug: "zk-proof", desc: "ジェネレータが対象とする証明系。現状の本番は BN254 上の Groth16 です。" },
-      { slug: "commitment", desc: "多くの回路は証明内でコミットメントを open します。ジェネレータがその open を組み立てます。" },
-      { slug: "selective-disclosure", desc: "BBS+ プレゼンテーションも同じジェネレータアーティファクトが生成します。" },
+      { slug: "schema", desc: "ジェネレータが対象とするスキーマ。outputsSpec が、生成される rawDoc が準拠するスキーマを指定します。" },
+      { slug: "zk-proof", desc: "generatorId のハッシュがパブリックインプットなので、どのジェネレータが生成したかを証明できます。" },
+      { slug: "commitment", desc: "ジェネレータ記述子のハッシュはコミットされ、ドキュメントの出所を証明する際に参照されます。" },
+      { slug: "selective-disclosure", desc: "生成されたドキュメントの開示も、それを作ったジェネレータへ解決されます。" },
     ],
-    ctaH2: "ジェネレータを公開して、誰でも回路に対して証明できる状態にする。",
+    ctaH2: "ジェネレータを登録して、ドキュメントの生成方法を記述する。",
   },
   {
     slug: "human-in-the-loop",
