@@ -460,17 +460,17 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Scope — tenant boundary",
     category: "検証可能AI",
     description:
-      "Lemma's tenant boundary. Every key, schema, circuit, document, and proof you register is bound to one scope ID, and scopes are isolated from each other even when they share an issuer DID.",
+      "Lemma's tenant boundary. Every key, schema, circuit, document, and proof you register is bound to one scope ID. Resource CRUD is scope-isolated; attributes.query can read verified attributes across scopes by design.",
     lead:
-      'In Lemma, a <strong>scope</strong> is the unit of tenancy. Every API key, schema, circuit, document, and proof you register belongs to exactly one scope. Two scopes never see each other\'s data — even when they share an issuer <a href="/glossary/did/">DID</a>.',
+      'In Lemma, a <strong>scope</strong> is the unit of tenancy. Every API key, schema, circuit, document, and proof you register belongs to exactly one scope. Resource CRUD is isolated per scope — even when two scopes share an issuer <a href="/glossary/did/">DID</a>. The one deliberate exception is <code>attributes.query</code>, which can read verified attributes across scopes by design.',
     definition: [
       "A scope is created when a developer signs in for the first time. Each subsequent registration — API keys, schemas, circuits, generators, documents, proofs — carries that scope as a foreign key. The dashboard, the workers API, and on-chain hooks all filter by scope before returning data.",
       "Scope is distinct from issuer identity. A single legal entity can run multiple scopes (production / staging / partner-x). Conversely, a single scope can sign documents under multiple issuer DIDs as the operational context shifts.",
-      "Tenant isolation is enforced at the workers API layer, not just the UI. A request that authenticates against scope A cannot read or mutate resources under scope B even by constructing a direct API call — the bearer-token check resolves to a scope_id before any route handler runs.",
+      "Resource CRUD isolation is enforced at the workers API layer, not just the UI. A request that authenticates against scope A cannot read or mutate resources under scope B even by constructing a direct API call — the bearer-token check resolves to a scope_id before any route handler runs. The one intentional cross-scope path is <code>attributes.query</code>, a read-only query surface that resolves verified attributes across scopes by design.",
     ],
     implementation: [
       'The scope is the join key on every D1 table. <a href="/glossary/x402/">x402</a> service routes, <a href="/glossary/mcp/">MCP</a> tool access, and the dashboard\'s "my-resources" view all narrow by scope_id. The first key minted at sign-in carries the scope; rotating keys never changes the scope.',
-      "Scope-level controls — rate limits, billing aggregation, marketplace listings — are designed so a developer can move between scopes the way a workspace user switches teams: same identity, different boundary. The boundary, not the identity, is what bounds what the AI sees.",
+      "Scope-level controls — rate limits, billing aggregation — are designed so a developer can move between scopes the way a workspace user switches teams: same identity, different boundary. The boundary bounds resource CRUD; verified-attribute queries are the deliberate cross-scope read path.",
       'For multi-tenant deployments, the scope is also the privacy unit. <a href="/glossary/selective-disclosure/">Selective disclosure</a> and BBS+ presentations are evaluated within a single scope before they cross outward.',
     ],
     related: [
@@ -511,29 +511,29 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
   {
     slug: "generator",
     nameJa: "ジェネレータ",
-    nameEn: "Generator — circuit prover artifact",
+    nameEn: "Generator — document-generation script metadata",
     category: "検証可能AI",
     description:
-      "The client-side artifact — witness builder plus proving key location — that lets an external party produce a ZK proof against a registered circuit without re-implementing the circuit logic.",
+      "Metadata for a document-generation script. It declares how a rawDoc is produced — input spec, output spec, and source location — and runs on developer infrastructure, not Lemma. The generatorId and its hash become ZK public inputs for verification.",
     lead:
-      'A <strong>generator</strong> is the client-side companion to a ZK circuit: the witness builder plus the location of the proving key. It exists so a third party — a developer, an agent, a customer\'s app — can produce a valid <a href="/glossary/zk-proof/">ZK proof</a> against the circuit without ever needing to re-author the circuit itself.',
+      'A <strong>generator</strong> is the registered metadata for a script that produces a rawDoc — the raw document a <a href="/glossary/schema/">schema</a> later normalizes. It records the input spec, the output spec, and where the script lives. Execution stays on your own infrastructure; Lemma holds only the descriptor and uses the generator\'s hash as a public input when a proof needs to attest which generator produced a document.',
     definition: [
-      "A ZK proof system has three artifacts in play: the circuit (the constraint system), the proving key (the large secret-derived data the prover needs), and the verifying key (used downstream). The circuit registration on Lemma publishes the verifying side. The generator publishes the prover side, so the work of proving can be done off-platform.",
-      "The witness builder is typically a small program — JavaScript, Rust, or a WASM bundle — that takes raw inputs, runs the same normalization as the schema's normalize artifact, and feeds the circuit's expected witness layout. The proving key location is a URL (IPFS or HTTPS) where the binary blob lives.",
-      "Because the proving step is expensive (Groth16 keys are large; PLONK keys less so), making the generator a separately addressable artifact lets clients cache, version, and federate proof production across users without contacting Lemma's servers for the bulk data.",
+      "A generator does not run on Lemma. It is a descriptor: <code>inputsSpec</code> (the inputs the script expects), <code>outputsSpec</code> (the rawDoc shape it returns and the schema it targets), and <code>source</code> (a URL or other location where the script itself lives). Registration stores this descriptor under your scope.",
+      "Keeping the generation logic off-platform means document production stays on developer-controlled infrastructure — external APIs, private data sources, and proprietary assembly steps never touch Lemma's servers. Lemma records only what is needed to reference and verify the generator later.",
+      "The <code>generatorId</code> and the hash of its descriptor are treated as ZK public inputs. A proof can therefore attest that a given rawDoc was produced by a specific, registered generator — binding the document's origin into the verifiable record without revealing the generation logic itself.",
     ],
     implementation: [
-      'A generator is registered against a <a href="/glossary/scope/">scope</a> and tied to a <a href="/glossary/schema/">schema</a>. The dashboard\'s Overview tab lists generators alongside other registered artifacts; the workers API exposes <code>generators.register</code> and <code>generators.getById</code>.',
-      'For the agent payment use case (<a href="/glossary/trust402/">Trust402</a>), the generator is what an autonomous agent\'s runtime loads to produce a "proof-before-payment" against the role circuit. The generator URL is part of the contract a delegating principal hands down to the agent.',
-      "For verifiable selective disclosure on a credential, the generator builds BBS+ presentations alongside the Groth16 instance — the holder's app loads the generator, picks the attributes to reveal, and produces a single combined artifact.",
+      'A generator is registered against a <a href="/glossary/scope/">scope</a> and tied to a <a href="/glossary/schema/">schema</a> through its <code>outputsSpec</code>. The dashboard\'s Overview tab lists generators alongside other registered artifacts; the workers API exposes <code>generators.register</code> and <code>generators.getById</code>.',
+      'Because the generator hash is a public input, the same descriptor anchors both the document\'s <a href="/glossary/provenance/">provenance</a> and any downstream <a href="/glossary/zk-proof/">ZK proof</a> that references how the document was produced — without exposing the script or its private inputs.',
+      'When a produced document is later disclosed selectively, the generator that built it remains referenceable as the document\'s origin, so the disclosure and its provenance resolve to the same registered descriptor.',
     ],
     related: [
-      { slug: "schema", desc: "The schema a generator is bound to — its normalize artifact feeds the witness." },
-      { slug: "zk-proof", desc: "The proof system the generator targets — Groth16 on BN254 in production today." },
-      { slug: "commitment", desc: "Many circuits open commitments inside the proof; the generator builds those openings." },
-      { slug: "selective-disclosure", desc: "BBS+ presentations are produced by the same generator artifact." },
+      { slug: "schema", desc: "The schema a generator targets — its outputsSpec names the schema the produced rawDoc conforms to." },
+      { slug: "zk-proof", desc: "The generatorId hash is a public input, so a proof can attest which generator produced a document." },
+      { slug: "commitment", desc: "The generator descriptor's hash is committed and referenced when proving a document's origin." },
+      { slug: "selective-disclosure", desc: "Disclosure over a produced document still resolves to the generator that built it." },
     ],
-    ctaH2: "Ship a generator so anyone can prove against your circuit.",
+    ctaH2: "Register a generator to describe how your documents are produced.",
   },
   {
     slug: "human-in-the-loop",

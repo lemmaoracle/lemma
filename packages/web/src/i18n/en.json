@@ -260,14 +260,6 @@
             "a": "Create the new key first via the Dashboard's API keys tab, deploy it alongside the old one, then revoke the old key once traffic has shifted — revocation is immediate and global, so plan the overlap window before revoking."
           },
           {
-            "q": "Why does Seal Proof sign-in return 503?",
-            "a": "Seal Proof requires the seal verification key to be registered server-side. The 503 means it has not been registered yet — fall back to GitHub OAuth, which works without seal setup and creates the scope plus the first API key."
-          },
-          {
-            "q": "How is the Dashboard Marketplace different from x402 route discovery?",
-            "a": "The Marketplace is the Dashboard's listing UI for resources you have registered under your scope — schemas, circuits, generators. x402 route discovery is the per-route metadata an x402 facilitator advertises. Different layers: the Marketplace exposes Lemma artifacts, x402 discovery exposes payment-protected routes."
-          },
-          {
             "q": "Where do I register schemas, circuits, and documents?",
             "a": "Programmatically against the workers API at workers.lemma.workers.dev — via the @lemmaoracle/sdk or direct HTTP. The Dashboard reads from your scope and renders the result; it does not have a creation form. The Dashboard Quickstart guide walks through the SDK path end-to-end."
           }

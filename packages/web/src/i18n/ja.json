@@ -260,14 +260,6 @@
             "a": "Dashboard の API keys タブで新しいキーを作成し、旧キーと並行してデプロイしてください。トラフィックが新キーに切り替わったら旧キーを revoke します。revoke は即時かつグローバルに反映されるので、切り替えの重なり時間を確保してから revoke するのが安全です。"
           },
           {
-            "q": "Seal Proof のサインインが 503 を返すのはなぜ？",
-            "a": "Seal Proof はサーバ側に seal の verification key が登録されている必要があります。503 はまだ未登録の状態を意味します。GitHub OAuth にフォールバックしてください。seal の設定なしで動作し、スコープと最初の API キーを発行します。"
-          },
-          {
-            "q": "Dashboard の Marketplace と x402 のルートディスカバリーはどう違う？",
-            "a": "Marketplace は自分のスコープに登録した Lemma リソース（スキーマ・回路・ジェネレータ）を公開するための Dashboard 上の listing UI です。x402 のルートディスカバリーは x402 facilitator が広告するルートごとのメタデータで、別レイヤの機能です。Marketplace は Lemma のアーティファクトを、x402 ディスカバリーは決済保護つきルートを露出します。"
-          },
-          {
             "q": "スキーマ・回路・ドキュメントはどこで登録する？",
             "a": "workers API（workers.lemma.workers.dev）に対して、@lemmaoracle/sdk 経由または直接 HTTP でプログラマティックに登録します。Dashboard はスコープから読み取って表示するだけで、作成用 UI フォームはありません。Dashboard Quickstart ガイドが SDK 経由の流れを最後まで通します。"
           }
