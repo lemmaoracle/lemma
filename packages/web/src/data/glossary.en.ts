@@ -535,6 +535,60 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     ],
     ctaH2: "Ship a generator so anyone can prove against your circuit.",
   },
+  {
+    slug: "human-in-the-loop",
+    nameJa: "ヒューマン・イン・ザ・ループ",
+    nameEn: "Human-in-the-Loop — HITL",
+    category: "検証可能AI",
+    description:
+      "An operating model where a human reviews and approves each AI decision before it executes. The standard control in high-stakes domains — but a throughput ceiling as agent autonomy rises.",
+    lead:
+      "An operating model where a human reviews and approves an AI system's decision before it takes effect. A human can catch errors and deviations before they execute — but inserting a person into every decision sets the throughput ceiling.",
+    definition: [
+      "Human-in-the-loop (HITL) describes designs that never execute AI output directly: a human review-and-approval step gates every decision before it is committed. It has long been the standard control in domains where the cost of error is high — lending, medical diagnosis, credit decisions.",
+      '<a href="/glossary/eu-ai-act/">EU AI Act</a> Article 14 mandates "human oversight" for high-risk AI; HITL is its most conservative implementation. A human in each decision blocks automation bias and malfunction before execution.',
+      "But HITL does not scale by nature. Once decision volume exceeds human review capacity, the approval queue becomes the rate limit. For use cases where an agent decides continuously, gating every decision on a human stops being realistic.",
+    ],
+    implementation: [
+      'Lemma records the fact that a human approved as an element of the <a href="/glossary/audit-trail/">audit trail</a>. The approver, the approval timestamp, and the target docHash are committed, so "this decision passed human approval" becomes provable tamper-evidently after the fact.',
+      'This moves HITL from "a claim in an operational log" to "a cryptographically verifiable fact." An auditor can confirm approval via <a href="/glossary/zk-proof/">zero-knowledge proof</a> without seeing the underlying data.',
+      'Rather than removing HITL outright, Lemma provides — on the same audit-trail substrate — a path to record the approval as evidence and then migrate progressively toward <a href="/glossary/human-off-the-loop/">human-off-the-loop</a>.',
+    ],
+    related: [
+      { slug: "human-off-the-loop", desc: "Autonomy with human approval removed and substituted by evidence. The opposite pole." },
+      { slug: "audit-trail", desc: "The tamper-evident log that records human-approval status." },
+      { slug: "eu-ai-act", desc: "Article 14, which mandates human oversight for high-risk AI." },
+      { slug: "verifiable-ai", desc: "The umbrella concept that treats the oversight fact as verifiable." },
+    ],
+    ctaH2: "Make human approval a verifiable fact.",
+  },
+  {
+    slug: "human-off-the-loop",
+    nameJa: "ヒューマン・オフ・ザ・ループ",
+    nameEn: "Human-off-the-Loop — HOTL",
+    category: "検証可能AI",
+    description:
+      "An operating model where AI executes each decision autonomously without waiting for human approval. Throughput rises, but it presupposes an accountability mechanism standing in for the human eye.",
+    lead:
+      "An operating model where AI executes decisions without waiting for per-item human approval. A human monitors and intervenes as needed, but does not gate each decision. Throughput rises sharply — and the accountability the human eye used to provide must be filled by another mechanism.",
+    definition: [
+      "Human-off-the-loop (HOTL) describes designs that commit AI decisions without human approval, with the human moved to exception monitoring and after-the-fact review. For agents executing payments, procurement, or data access continuously, throughput is unattainable without HOTL.",
+      "The problem is the accountability gap. A human not being in each decision means that unless 'who decided what, when, and on what basis' can be reconstructed afterward, neither regulatory response nor incident analysis holds. Raising autonomy and losing control are, properly, separate problems.",
+      '<a href="/glossary/eu-ai-act/">EU AI Act</a> oversight requirements do not forbid HOTL. What they require is a state that can be supervised — not that a human attend every decision. With after-the-fact verifiable evidence, the oversight requirement can be met on the technical layer.',
+    ],
+    implementation: [
+      'Lemma\'s position is explicit: the further a decision moves off the loop, the more the <a href="/glossary/audit-trail/">audit trail</a> carries the accountability that human approval used to. Each decision\'s input hash, model version, inference timestamp, and output hash are pinned to a commitment chain, so even without a human signature "when, which model, on what input it decided" is preserved tamper-evidently.',
+      'In domains like <a href="/glossary/agentic-payments/">agentic payments</a>, where a human cannot approve each item, proving <a href="/glossary/provenance/">provenance</a> via <a href="/glossary/zk-proof/">zero-knowledge proof</a> becomes the functional substitute for human approval — the validity of a decision is verifiable without disclosing the data.',
+      "The result: HOTL is not 'autonomy that discarded control' but 'autonomy governed by evidence.' What Lemma provides is the verification layer for raising autonomy without lowering auditability.",
+    ],
+    related: [
+      { slug: "human-in-the-loop", desc: "The control model that gates each decision on human approval. The opposite pole." },
+      { slug: "audit-trail", desc: "The tamper-evident evidence that carries accountability once human approval is removed." },
+      { slug: "agentic-payments", desc: "The archetypal HOTL domain, where a human cannot approve each item." },
+      { slug: "provenance", desc: "The lineage chain for reconstructing the basis of a decision after the fact." },
+    ],
+    ctaH2: "Leave the loop without giving up auditability.",
+  },
   // ============ Protocols & Agents ============
   {
     slug: "agentic-payments",
