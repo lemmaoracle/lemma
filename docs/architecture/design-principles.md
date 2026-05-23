@@ -21,17 +21,24 @@
 
 When building features, use the [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow (`openspec/` directory) to define the interface before implementation. OpenSpec adds a lightweight spec layer so you agree on what to build before any code is written.
 
-If the `openspec/` directory is absent, install OpenSpec first:
+If the `openspec/` directory is absent, install and initialize:
 
 ```bash
 npm install -g @fission-ai/openspec
 openspec init
 ```
 
-Then create a change (proposal → design → specs → tasks) under `openspec/changes/`:
+Create a change (proposal → design → specs → tasks) under `openspec/changes/`, then validate:
 
 ```bash
-/opsx:propose <what-you-want-to-build>
+openspec show <change-name>          # review artifacts
+openspec validate --all --json       # check for issues
+```
+
+Archive when done:
+
+```bash
+openspec archive <change-name>
 ```
 
 - Run `pnpm --filter @lemmaoracle/spec validate:openapi` early and often.
