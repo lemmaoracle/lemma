@@ -12,7 +12,7 @@ Make the smallest change that achieves the goal. Every addition is a liability.
 
 ## Naming for longevity
 
-Names should survive 10 years without renaming. Prefer domain terms over implementation details. Avoid trendy abbreviations or framework-specific jargon that ages poorly. Aim for single-word names; two words are acceptable; three only with strong justification.
+**Public names** (exported types, functions, modules, return types) should survive 10 years without renaming. Prefer domain terms over implementation details. Avoid trendy abbreviations or framework-specific jargon that ages poorly. Aim for single-word names; two words are acceptable; three only with strong justification. Internal names have no such constraint — use whatever makes the code readable locally.
 
 ## Structural invariants
 
