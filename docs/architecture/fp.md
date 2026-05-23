@@ -85,12 +85,4 @@ for (const item of items) { ... }
 throw new Error("boom");
 ```
 
-## Summary
-
-This rule aggregates all functional programming guidelines from:
-
-1. `docs/architecture/03-functional-style.md` - Core principles and Ramda patterns
-2. `AGENTS.md` - Functional programming rules and patterns cheat-sheet
-3. `.cursorrules` - TypeScript strict mode and test co-location rules
-
 All TypeScript code (except in `packages/contracts`) must follow these functional programming rules.
