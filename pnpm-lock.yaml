@@ -14,9 +14,15 @@ importers:
       '@types/node':
         specifier: ^22.19.19
         version: 22.19.19
+      astro-eslint-parser:
+        specifier: ^1.4.0
+        version: 1.4.0
       eslint-config-prettier:
         specifier: ^9.1.2
         version: 9.1.2(eslint@9.39.3(jiti@2.6.1))
+      eslint-plugin-astro:
+        specifier: ^1.7.0
+        version: 1.7.0(eslint@9.39.3(jiti@2.6.1))
       eslint-plugin-functional:
         specifier: ^9.0.5
         version: 9.0.5(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
@@ -523,6 +529,9 @@ packages:
 
   '@astrojs/compiler@2.13.1':
     resolution: {integrity: sha512-f3FN83d2G/v32ipNClRKgYv30onQlMZX1vCeZMjPsMMPl1mDpmbl0+N5BYo4S/ofzqJyS5hvwacEo0CCVDn/Qg==}
+
+  '@astrojs/compiler@3.0.1':
+    resolution: {integrity: sha512-z97oYbdebO5aoWzuJ/8q5hLK232+17KcLZ7cJ8BCWk6+qNzVxn/gftC0KzMBUTD8WAaBkPpNSQK6PXLnNrZ0CA==}
 
   '@astrojs/internal-helpers@0.5.1':
     resolution: {integrity: sha512-M7rAge1n2+aOSxNvKUFa0u/KFn0W+sZy7EW91KOSERotm2Ti8qs+1K0xx3zbOxtAVrmJb5/J98eohVvvEqtNkw==}
@@ -3133,6 +3142,10 @@ packages:
     resolution: {integrity: sha512-aOLc/aDR7lTWAHlytEefwn4Y6qs6uMr69DZvUx2A1AOAZsWhGB/paiRWPtVchh9wzMvLeqr+DkbENhVreVr9AQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  astro-eslint-parser@1.4.0:
+    resolution: {integrity: sha512-+QDcgc7e+au6EZ0YjMmRRjNoQo5bDMlaR45aWDoFsuxQTCM9qmCHRoiKJPELgckJ8Wmr7vcfpa9eCDHBFh6G4w==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   astro@5.2.6:
     resolution: {integrity: sha512-CrTuJMwpWF9kmOhX+cl6uPqNbTRrHO7eXggFP9SK7+Bsen/7FpJtA6k1p/ALleuV5ndJLqn/9tpmP3qACHPjYA==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
@@ -3613,6 +3626,10 @@ packages:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
+    engines: {node: '>=0.12'}
+
   error-stack-parser-es@1.0.5:
     resolution: {integrity: sha512-5qucVt2XcuGMcEGgWI7i+yZpmpByQ8J1lHhcL7PwqCwu9FPP3VUXzT4ltHe5i2z9dePwEHcDVOAfSnHsOlCXRA==}
 
@@ -3700,6 +3717,12 @@ packages:
 
   eslint-plugin-astro@1.6.0:
     resolution: {integrity: sha512-yGIbLHuj5MOUXa0s4sZ6cVhv6ehb+WLF80tsrGaxMk6VTUExruMzubQDzhOYt8fbR1c9vILCCRSCsKI7M1whig==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: '>=8.57.0'
+
+  eslint-plugin-astro@1.7.0:
+    resolution: {integrity: sha512-89xpAn528UKCdmyysbg0AHHqi6sqcK89wXnJIpu4F0mFBN03zATEBNK7pRtMfl6gwtMOm5ECXs+Wz5qDHhwTFw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.57.0'
@@ -4795,6 +4818,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.12:
+    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@5.1.9:
     resolution: {integrity: sha512-ZUvP7KeBLe3OZ1ypw6dI/TzYJuvHP77IM4Ry73waSQTLn8/g8rpdjfyVAh7t1/+FjBtG4lCP42MEbDxOsRpBMw==}
     engines: {node: ^18 || >=20}
@@ -5114,6 +5142,10 @@ packages:
 
   postcss@8.4.49:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.15:
+    resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.6:
@@ -6454,6 +6486,8 @@ snapshots:
       json-schema: 0.4.0
 
   '@astrojs/compiler@2.13.1': {}
+
+  '@astrojs/compiler@3.0.1': {}
 
   '@astrojs/internal-helpers@0.5.1': {}
 
@@ -8334,7 +8368,7 @@ snapshots:
   '@typescript-eslint/project-service@8.56.1(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.59.1(typescript@5.8.3)
-      '@typescript-eslint/types': 8.59.1
+      '@typescript-eslint/types': 8.56.1
       debug: 4.4.3
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -8343,7 +8377,7 @@ snapshots:
   '@typescript-eslint/project-service@8.56.1(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.59.1(typescript@5.9.3)
-      '@typescript-eslint/types': 8.59.1
+      '@typescript-eslint/types': 8.56.1
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -8993,6 +9027,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  astro-eslint-parser@1.4.0:
+    dependencies:
+      '@astrojs/compiler': 3.0.1
+      '@typescript-eslint/scope-manager': 8.59.4
+      '@typescript-eslint/types': 8.59.4
+      astrojs-compiler-sync: 1.1.1(@astrojs/compiler@3.0.1)
+      debug: 4.4.3
+      entities: 7.0.1
+      eslint-scope: 8.4.0
+      eslint-visitor-keys: 4.2.1
+      espree: 10.4.0
+      fast-glob: 3.3.3
+      is-glob: 4.0.3
+      semver: 7.8.1
+    transitivePeerDependencies:
+      - supports-color
+
   astro@5.2.6(@types/node@20.19.39)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.8.3)(yaml@2.8.2):
     dependencies:
       '@astrojs/compiler': 2.13.1
@@ -9192,6 +9243,11 @@ snapshots:
   astrojs-compiler-sync@1.1.1(@astrojs/compiler@2.13.1):
     dependencies:
       '@astrojs/compiler': 2.13.1
+      synckit: 0.11.12
+
+  astrojs-compiler-sync@1.1.1(@astrojs/compiler@3.0.1):
+    dependencies:
+      '@astrojs/compiler': 3.0.1
       synckit: 0.11.12
 
   async@3.2.6: {}
@@ -9616,6 +9672,8 @@ snapshots:
 
   entities@6.0.1: {}
 
+  entities@7.0.1: {}
+
   error-stack-parser-es@1.0.5: {}
 
   es-define-property@1.0.1: {}
@@ -9795,7 +9853,7 @@ snapshots:
   eslint-compat-utils@0.6.5(eslint@9.39.3(jiti@2.6.1)):
     dependencies:
       eslint: 9.39.3(jiti@2.6.1)
-      semver: 7.7.4
+      semver: 7.8.1
 
   eslint-config-prettier@9.1.2(eslint@9.39.3(jiti@2.6.1)):
     dependencies:
@@ -9811,6 +9869,20 @@ snapshots:
       eslint-compat-utils: 0.6.5(eslint@9.39.3(jiti@2.6.1))
       globals: 16.5.0
       postcss: 8.5.6
+      postcss-selector-parser: 7.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-astro@1.7.0(eslint@9.39.3(jiti@2.6.1)):
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.3(jiti@2.6.1))
+      '@jridgewell/sourcemap-codec': 1.5.5
+      '@typescript-eslint/types': 8.59.4
+      astro-eslint-parser: 1.4.0
+      eslint: 9.39.3(jiti@2.6.1)
+      eslint-compat-utils: 0.6.5(eslint@9.39.3(jiti@2.6.1))
+      globals: 16.5.0
+      postcss: 8.5.15
       postcss-selector-parser: 7.1.1
     transitivePeerDependencies:
       - supports-color
@@ -11184,6 +11256,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  nanoid@3.3.12: {}
+
   nanoid@5.1.9: {}
 
   natural-compare@1.4.0: {}
@@ -11491,6 +11565,12 @@ snapshots:
   postcss@8.4.49:
     dependencies:
       nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.15:
+    dependencies:
+      nanoid: 3.3.12
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
