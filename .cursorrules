@@ -1,5 +1,1 @@
-You are working in the Lemma monorepo (pnpm workspace).
-
-Rules:
-- Follow the guides linked from AGENTS.md (fp, design-principles, spec-sync).
-- TypeScript strict mode everywhere.
+All monorepo rules live in [AGENTS.md](./AGENTS.md). Read it before making any change.

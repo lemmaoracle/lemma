@@ -2,28 +2,28 @@
 
 All TypeScript packages (except contracts) are linted with **eslint-plugin-functional (strict preset)**.
 
-## Core principles (from docs)
+## Core principles
 
 - **Immutability**: All data structures use `Readonly<>` / `ReadonlyArray<>`.
 - **No statements**: Branching via expressions (`R.cond`, ternary), not `if`/`switch`.
 - **No mutation**: Use spread, `R.assoc`, `R.evolve` instead of direct assignment.
 - **Pure functions**: Side effects only at boundaries (fetch, crypto).
 
-## Functional programming rules (from AGENTS.md and .cursorrules)
+## Functional programming rules
 
 - **eslint-plugin-functional `strict` preset is active.**
-- **TypeScript strict mode everywhere.** (from .cursorrules)
+- **TypeScript strict mode everywhere.**
 - **No `if` / `switch` statements.** Use `R.cond`, `R.ifElse`, `R.when`, `R.unless`, or ternary expressions.
 - **No `let` / `var`.** Only `const`.
 - **No `class`.** Use plain objects and functions.
 - **No `for` / `while` / `do..while`.** Use `R.map`, `R.reduce`, `R.filter`, `Array.prototype.map`, etc.
 - **No `throw` in sync code.** Return `Promise.reject(new Error(...))` for async errors. The `allowToRejectPromises` option is enabled for `no-throw-statements`.
 - **No mutation.** Use `R.assoc`, `R.dissoc`, spread operators, `structuredClone`, etc.
-- **Co-locate tests**: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules. (from .cursorrules)
+- **Co-locate tests**: `foo.ts` → `foo.test.ts`. Test files are exempt from FP rules.
 - **Test files are exempt from functional programming rules.** Test files (`*.test.ts`, `*.spec.ts`) are not required to follow the strict functional programming rules described in this guide. They can use `if`, `switch`, `let`, `class`, loops, and other imperative constructs as needed for testing.
-- **Smart contracts in packages/contracts are exempt from FP rules.** (from .cursorrules)
+- **Smart contracts in packages/contracts are exempt from FP rules.**
 
-## Ramda patterns used (from docs)
+## Ramda patterns
 
 ```typescript
 import * as R from "ramda";
@@ -60,7 +60,7 @@ R.prop(key) / R.path(path) / R.pathOr(default, path)
 
 **Note:** Ramda APIs not listed here can also be used as needed by referring to the [official documentation](https://ramdajs.com/docs/). Ramda provides many useful utility functions.
 
-## Patterns cheat-sheet (from AGENTS.md)
+## Patterns cheat-sheet
 
 ```typescript
 // ✅ Branching

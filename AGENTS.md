@@ -2,9 +2,16 @@
 
 pnpm workspace. TypeScript strict mode everywhere.
 
+## How to work
+
+- Read `docs/architecture/design-principles.md` before touching code.
+- Before any non-trivial change, check `openspec list` or create a change.
+- Do not expand scope beyond what was requested.
+- When confused or blocked, surface it — do not silently pick an interpretation.
+
 ## Packages
 
-- `packages/spec` — **Authoritative** shared types + OpenAPI spec.
+- `packages/spec` — **Authoritative** shared types + OpenAPI spec. spec は docs を兼ねる: README と `openapi.lemma.v2.json` は人間と OpenAPI の両方を読む
 - `packages/sdk` — TypeScript SDK (`@lemmaoracle/sdk`).
 - `packages/parser` — Query parser (`@lemmaoracle/parser`).
 - `packages/contracts` — Solidity contracts (Hardhat + toolbox).
