@@ -1,15 +1,16 @@
 # Design Principles
 
-## Public surface minimization
+## Minimal change
 
-- **Do not increase the public API surface.** If a change can be an internal implementation detail, keep it internal.
-- Do not propose widening function visibility (e.g. `private` → `public`, un-exporting → exporting) unless explicitly requested.
-- New exports require justification: "does the consumer need this, or can it be composed from existing exports?"
+Make the smallest change that achieves the goal. Every addition is a liability.
+
+- If a change can be an internal implementation detail, keep it internal.
+- Do not widen visibility (e.g. `private` → `public`, un-exported → exported) unless explicitly requested.
+- **Public interfaces demand extra caution.** Every addition or modification to a public interface risks creating future breaking changes. "Convenient" is not sufficient reason to add or change one. Ask: does a consumer need this, or can it be composed from what already exists?
 
 ## Naming for longevity
 
-- Names should survive 10 years without renaming. Prefer domain terms over implementation details.
-- Avoid trendy abbreviations or framework-specific jargon that ages poorly.
+Names should survive 10 years without renaming. Prefer domain terms over implementation details. Avoid trendy abbreviations or framework-specific jargon that ages poorly.
 
 ## Structural invariants
 
@@ -17,9 +18,9 @@
 - Changes flow spec → SDK → Workers. Never the reverse.
 - Side effects only at boundaries. Pure functions everywhere else.
 
-## OpenSpec-driven development
+## Spec-driven development
 
-When building features, use the [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow (`openspec/` directory) to define the interface before implementation. OpenSpec adds a lightweight spec layer so you agree on what to build before any code is written.
+When building features, define the interface before implementation. Use the [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow (`openspec/` directory) to manage changes.
 
 Follow the propose → apply → archive cycle:
 
@@ -28,6 +29,7 @@ Follow the propose → apply → archive cycle:
 3. **Validate**: `openspec validate --all --json`.
 4. **Archive**: `openspec archive <name>`.
 
-- Run `pnpm --filter @lemmaoracle/spec validate:openapi` early and often.
+For propose and apply steps, read the skill files under `.cursor/skills/openspec-*/` (or the equivalent for your tool) for detailed instructions.
+
 - If the spec does not express the goal, update the spec, then fix the code.
-- **Lightweight path**: for spikes and small changes (single-route tweak, bug fix), you may skip the full OpenSpec change and work directly against `packages/spec`. Backfill or update the OpenSpec change before merging.
+- **Lightweight path**: for spikes and small changes, you may skip the full OpenSpec change and work directly against `packages/spec`. Backfill or update the OpenSpec change before merging.
