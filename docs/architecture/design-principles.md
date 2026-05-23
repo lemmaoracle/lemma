@@ -19,9 +19,21 @@
 
 ## OpenSpec-driven development
 
-When building features, derive the interface from the OpenAPI spec first, then implement.
-This naturally enforces goal-oriented development and prevents scope creep.
+When building features, use the [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow (`openspec/` directory) to define the interface before implementation. OpenSpec adds a lightweight spec layer so you agree on what to build before any code is written.
 
-- Define the route/schema in `packages/spec` before writing handler code.
+If the `openspec/` directory is absent, install OpenSpec first:
+
+```bash
+npm install -g @fission-ai/openspec
+openspec init
+```
+
+Then create a change (proposal → design → specs → tasks) under `openspec/changes/`:
+
+```bash
+/opsx:propose <what-you-want-to-build>
+```
+
 - Run `pnpm --filter @lemmaoracle/spec validate:openapi` early and often.
-- If the spec does not express the goal, update the spec, not the implementation.
+- If the spec does not express the goal, update the spec, then fix the code.
+- **Lightweight path**: for spikes and small changes (single-route tweak, bug fix), you may skip the full OpenSpec change and work directly against `packages/spec`. Backfill or update the OpenSpec change before merging.
