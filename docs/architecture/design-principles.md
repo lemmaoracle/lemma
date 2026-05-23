@@ -12,13 +12,11 @@ Make the smallest change that achieves the goal. Every addition is a liability.
 
 ## Naming for longevity
 
-Names should survive 10 years without renaming. Prefer domain terms over implementation details. Avoid trendy abbreviations or framework-specific jargon that ages poorly.
+Names should survive 10 years without renaming. Prefer domain terms over implementation details. Avoid trendy abbreviations or framework-specific jargon that ages poorly. Aim for single-word names; two words are acceptable; three only with strong justification.
 
 ## Structural invariants
 
-- `packages/spec` is the **single source of truth** for shared types and OpenAPI spec. No type duplication across packages.
-- Changes flow spec → SDK → Workers. Never the reverse.
-- Side effects only at boundaries. Pure functions everywhere else.
+- `packages/spec` is the **single source of truth** for core SDK types and OpenAPI spec. Packages that depend on `@lemmaoracle/spec` must not duplicate those types; packages that do not are free to define their own.
 
 ## Spec-driven development
 
@@ -31,5 +29,5 @@ Follow the **propose → apply → archive** cycle:
 3. **Archive** — `openspec archive "<name>"`.
 
 - If the spec does not express the goal, update the spec, then fix the code.
-- **Lightweight path**: skip the full cycle for spikes and small changes — edit `packages/spec` directly and backfill the change record before merging.
+- **Lightweight path**: skip the full cycle for spikes and small changes — edit `packages/spec` directly and backfill the change record before merging. `packages/web` is exempt from this workflow entirely (no spec dependency).
 - **Fallback**: if the `openspec` CLI is not available, manage the `openspec/` directory manually or edit `packages/spec` directly; still backfill a change record before merging.
