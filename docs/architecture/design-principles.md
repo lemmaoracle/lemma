@@ -29,7 +29,7 @@ Follow the propose → apply → archive cycle:
 3. **Validate**: `openspec validate --all --json`.
 4. **Archive**: `openspec archive <name>`.
 
-For propose and apply steps, read the skill files under `.cursor/skills/openspec-*/` (or the equivalent for your tool) for detailed instructions.
+Use `openspec instructions <artifact> --change <name> --json` to get per-artifact templates and rules. For implementation guidance, `openspec instructions apply --change <name> --json`.
 
 - If the spec does not express the goal, update the spec, then fix the code.
 - **Lightweight path**: for spikes and small changes, you may skip the full OpenSpec change and work directly against `packages/spec`. Backfill or update the OpenSpec change before merging.
