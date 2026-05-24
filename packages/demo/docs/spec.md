@@ -12,7 +12,7 @@
 
 ## 0. Honest status
 
-v0.1 product is live at `demo.lemma.frame00.com` with mock verifier (Phase 1). v0.2 spec was drafted but not all items shipped — JP language deferred, Bazaar listing deferred.
+v0.1 product is live at `demo-lemma.frame00.com` with mock verifier (Phase 1). v0.2 spec was drafted but not all items shipped — JP language deferred, Bazaar listing deferred.
 
 This v0.3 spec covers the **storytelling redesign + JA simultaneous public release**, intended to ship with PPSI NPRM blog launch (GTM priority #1). The redesign converts the demo from "tech-correct, business-thin" to "30-second proof of commercial value".
 
@@ -32,19 +32,19 @@ Phase 2 (real cryptographic verification) is parallel work; this spec does not b
 
 ## 2. Hosting / URL
 
-- Parent: `demo.lemma.frame00.com`
-- EN: `demo.lemma.frame00.com/` (root)
-- **JA: `demo.lemma.frame00.com/ja/` (new in v0.3)**
+- Parent: `demo-lemma.frame00.com`
+- EN: `demo-lemma.frame00.com/` (root)
+- **JA: `demo-lemma.frame00.com/ja/` (new in v0.3)**
 - Architecture: static SPA (Astro), client-side verification, no server roundtrip
 - Hosting: Cloudflare Pages
-- Wildcard SSL: `*.demo.lemma.frame00.com` (still recommended for future subdomain demos)
+- ⚠ Host moved 2026-05 from the subdomain `demo.lemma.frame00.com` to the flat label `demo-lemma.frame00.com`. The earlier `*.demo.lemma.frame00.com` wildcard-SSL / subdomain-demo plan (see Future subdomains below) no longer applies as-is and needs re-planning under the flat-label scheme.
 
 ### 2a. Deep-link contract (new in v0.3, target v0.3.1.1)
 
 The demo accepts the following URL parameters to support reciprocal entry from microsite pages (see §3g):
 
 ```
-demo.lemma.frame00.com/{locale}/?sample={sample_id}&utm_source={source}&utm_medium=web&utm_content={sample_id}
+demo-lemma.frame00.com/{locale}/?sample={sample_id}&utm_source={source}&utm_medium=web&utm_content={sample_id}
 ```
 
 | Parameter | Required | Values |
@@ -60,9 +60,9 @@ Behavior:
 - Locale is part of the path (`/ja/`), not a query parameter. The initial `?sample=` query parameter is consumed on page load; in-app preservation across the language toggle uses the `#sample=` hash form per §6a (so once the user lands, `?sample=` is no longer present in the URL bar but `#sample=` continues to round-trip through locale switches).
 - Invalid `sample` value: falls back to no selection AND analytics `deep_link_sample` is recorded as `null` rather than the invalid string (keeps the prop a clean enum of known sample ids; debugging the malformed link is the linking page's responsibility).
 
-Future subdomains (unchanged from v0.2):
+Future subdomains (⚠ host scheme TBD — these assume the old `*.demo.lemma.frame00.com` subdomain model, which the 2026-05 move to the flat label `demo-lemma.frame00.com` invalidates; the URLs below are placeholders pending a re-planned scheme):
 
-| URL | Content | Phase |
+| URL (old scheme, to re-plan) | Content | Phase |
 |---|---|---|
 | `issue.demo.lemma.frame00.com` | Bazaar issuance demo | post v0.3 |
 | `agent.demo.lemma.frame00.com` | Agent-chain demo | post Trust402 public |

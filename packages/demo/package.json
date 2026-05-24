@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Provenance verification mini demo (demo.lemma.frame00.com).",
+  "description": "Provenance verification mini demo (demo-lemma.frame00.com).",
   "scripts": {
     "build": "astro build",
     "type-check": "tsc --noEmit",
