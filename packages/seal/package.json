@@ -1,7 +1,7 @@
 {
   "name": "@lemmaoracle/seal",
-  "version": "0.1.7",
-  "description": "Seal — ZK auth circuit for Lemma dashboard Proof-based sign-in. Proves knowledge of an API key pre-image without revealing the key.",
+  "version": "0.2.0",
+  "description": "Seal — ZK auth circuit for Lemma dashboard Proof-based sign-in. Proves knowledge of an API key pre-image without revealing the key or its hash (v2: Poseidon nullifier).",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/snarkjs": "^0.7.9",
     "dotenv": "16.4.7",
+    "poseidon-lite": "0.3.0",
     "tsx": "^4.19.0",
     "typescript": "5.8.3",
     "vitest": "^3.1.1"

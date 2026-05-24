@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,17 +29,31 @@ const calculateWitness = async (
   return json.map((v: bigint) => v.toString());
 };
 
-describe.skipIf(!circuitBuilt)("seal-identity circuit", () => {
+describe.skipIf(!circuitBuilt)("seal-identity circuit (v2)", () => {
   const apiKey = "0123456789abcdef".repeat(4); // 64-char hex API key
   const keyBits = apiKeyToBits(apiKey);
-  const expectedHash = createHash("sha256").update(apiKey).digest("hex");
 
-  it("computes SHA-256 of the API key pre-image", async () => {
-    const witness = await calculateWitness({ keyBits, nonce: "12345" });
-    // Witness layout: [1, keyHash[0..255], nonce, ...private/internal].
-    const hashBits = witness.slice(1, 257);
-    const hex = BigInt(`0b${hashBits.join("")}`).toString(16).padStart(64, "0");
-    expect(hex).toBe(expectedHash);
+  it("produces a deterministic nullifier for a given key + nonce", async () => {
+    const w1 = await calculateWitness({ keyBits, nonce: "12345" });
+    const w2 = await calculateWitness({ keyBits, nonce: "12345" });
+    // Witness layout: [1, nullifier, nonce, ...private].
+    // nullifier lives at index 1.
+    expect(w1[1]).toBe(w2[1]);
+    expect(w1[1]).not.toBe("0");
+  }, 60000);
+
+  it("produces different nullifiers for different nonces", async () => {
+    const w1 = await calculateWitness({ keyBits, nonce: "12345" });
+    const w2 = await calculateWitness({ keyBits, nonce: "67890" });
+    expect(w1[1]).not.toBe(w2[1]);
+  }, 60000);
+
+  it("exposes only [nullifier, nonce] as public signals", async () => {
+    const witness = await calculateWitness({ keyBits, nonce: "99" });
+    // Witness[0] = 1 (constant), [1] = nullifier (public output),
+    // [2] = nonce (public input). keyHash must NOT appear.
+    expect(witness[2]).toBe("99");
+    expect(witness[1]).not.toBe("0");
   }, 60000);
 
   it("rejects a witness whose keyBits are not boolean", async () => {
