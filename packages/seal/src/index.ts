@@ -35,7 +35,7 @@ export {
 export { generateSealProof, verifySealProof } from "./proof.js";
 
 /** The circuit id under which seal v2 is registered with the Lemma API. */
-export const SEAL_CIRCUIT_ID = "seal-identity-v2";
+export const SEAL_CIRCUIT_ID = "seal-identity-v1";
 
 /** The schema the seal circuit is registered against. */
 export const SEAL_SCHEMA = "passthrough-v1";
