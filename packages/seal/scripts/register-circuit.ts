@@ -35,7 +35,7 @@ const LEMMA_API_BASE = process.env.LEMMA_API_BASE;
 const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
-const CIRCUIT_ID = "seal-identity-v1";
+const CIRCUIT_ID = "seal-identity-v2";
 const SCHEMA = "passthrough-v1";
 
 const WASM_PATH = path.join(

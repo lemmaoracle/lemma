@@ -27,8 +27,13 @@ export type SealArtifacts = Readonly<{
 export type SealProof = Readonly<{
   /** The groth16 proof object (snarkjs shape). */
   proof: Groth16Proof;
-  /** Public signals: the 256 `keyHash` bits followed by `nonce`. */
+  /** Public signals: `[nullifier, nonce]` as decimal strings. */
   publicSignals: ReadonlyArray<string>;
-  /** The SHA-256 `key_hash` (64-char hex) this proof attests to. */
-  keyHash: string;
+  /**
+   * Per-session Poseidon nullifier (decimal string). Unique to the
+   * (api key, nonce) pair; reveals neither the key nor its hash.
+   * The server resolves identity by matching this against expected
+   * nullifiers computed from registered key hashes.
+   */
+  nullifier: string;
 }>;
