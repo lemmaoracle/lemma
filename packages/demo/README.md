@@ -1,6 +1,6 @@
 # @lemmaoracle/demo
 
-Provenance verification mini demo. Static SPA hosted at `demo.lemma.frame00.com`.
+Provenance verification mini demo. Static SPA hosted at `demo-lemma.frame00.com`.
 
 ## What this is
 
@@ -46,6 +46,6 @@ Cloudflare Pages via **Git integration** (no GitHub Actions, no secrets).
    - Framework preset: **Astro**
    - Build command: `pnpm --filter @lemmaoracle/demo build`
    - Output directory: `packages/demo/dist`
-4. Custom domain: `demo.lemma.frame00.com`
+4. Custom domain: `demo-lemma.frame00.com`
 
 After setup, every push to `main` triggers an automatic deploy.

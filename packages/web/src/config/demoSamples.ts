@@ -67,7 +67,7 @@ export function buildDemoUrl(
   source: DemoSource,
 ): string {
   const localePath = locale === "ja" ? "ja/" : "";
-  const url = new URL(`https://demo.lemma.frame00.com/${localePath}`);
+  const url = new URL(`https://demo-lemma.frame00.com/${localePath}`);
   url.searchParams.set("sample", sampleId);
   url.searchParams.set("utm_source", source);
   url.searchParams.set("utm_medium", "web");
