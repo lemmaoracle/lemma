@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.lemma.frame00.com/suites/product-a-input.json",
   "title": "Agent Identity Issuance Request",
+  "description": "⚠️ OUTDATED: This spec's proof model (Merkle tree) diverges from the current agent-identity.circom circuit (flat Poseidon6 commitment + issuer MAC). The circuit is the source of truth.",
   "type": "object",
   "additionalProperties": false,
   "required": ["agentId", "controllerId", "roles", "spendLimit", "expiresAt"],
