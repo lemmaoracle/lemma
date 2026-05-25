@@ -73,6 +73,31 @@ importers:
         specifier: ^3.1.1
         version: 3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@25.8.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.21.0)(yaml@2.8.2)
 
+  packages/attestation:
+    dependencies:
+      '@lemmaoracle/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
+      snarkjs:
+        specifier: ^0.7.6
+        version: 0.7.6
+    devDependencies:
+      '@types/snarkjs':
+        specifier: ^0.7.9
+        version: 0.7.9
+      poseidon-lite:
+        specifier: ^0.3.0
+        version: 0.3.0
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@25.8.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.21.0)(yaml@2.8.2)
+
   packages/contracts: {}
 
   packages/demo:
@@ -255,6 +280,31 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@22.19.17)(lightningcss@1.30.1)
+
+  packages/roles:
+    dependencies:
+      '@lemmaoracle/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@lemmaoracle/spec':
+        specifier: workspace:*
+        version: link:../spec
+      snarkjs:
+        specifier: ^0.7.6
+        version: 0.7.6
+    devDependencies:
+      '@types/snarkjs':
+        specifier: ^0.7.9
+        version: 0.7.9
+      poseidon-lite:
+        specifier: ^0.3.0
+        version: 0.3.0
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@25.8.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/sdk:
     dependencies:
