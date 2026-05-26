@@ -5,23 +5,24 @@ import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts("en");
-  return BLOG_CATEGORIES.map((category) => ({
+  const groups = BLOG_CATEGORIES.map((category) => ({
     category,
     items: posts.filter((p) => p.category === category),
-  }))
-    .filter((g) => g.items.length > 0)
-    .map((g) => ({
-      params: { category: categorySlug(g.category) },
-      props: { category: g.category, posts: g.items },
-    }));
+  })).filter((g) => g.items.length > 0);
+  const available = groups.map((g) => g.category);
+  return groups.map((g) => ({
+    params: { category: categorySlug(g.category) },
+    props: { category: g.category, posts: g.items, categories: available },
+  }));
 }
 
 interface Props {
   category: string;
   posts: import("../../../data/blog").BlogPost[];
+  categories: string[];
 }
 
-const { category, posts } = Astro.props as Props;
+const { category, posts, categories } = Astro.props as Props;
 const locale = "en" as const;
 const t = getTranslations(locale);
 const base = "";
@@ -34,5 +35,6 @@ const blogPath = "/blog";
   base={base}
   blogPath={blogPath}
   category={category}
+  categories={categories}
   posts={posts}
 />

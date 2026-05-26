@@ -1,6 +1,6 @@
 ---
 import BlogIndexTemplate from "../../templates/BlogIndexTemplate.astro";
-import { getBlogSections } from "../../data/blog";
+import { getBlogSections, isDocCategory } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "en";
@@ -9,14 +9,11 @@ const base = "";
 const blogPath = "/blog";
 const sections = await getBlogSections(locale);
 
-const isDoc = (p: { category: string }) =>
-  p.category === "Guides" || p.category === "Foundations";
-
 const essays = (sections.find((s) => s.section === "Essays")?.posts ?? []).filter(
-  (p) => !isDoc(p),
+  (p) => !isDocCategory(p.category),
 );
 const changelog = (sections.find((s) => s.section === "Changelog")?.posts ?? []).filter(
-  (p) => !isDoc(p),
+  (p) => !isDocCategory(p.category),
 );
 // All category-filterable entries (essays + changelog), newest first.
 // Feeds the category pills + the filtered card grid.
@@ -39,7 +36,7 @@ const archive = essays.slice(7);
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={entries}
+  entries={entries}
   featured={featured}
   recent={recent}
   archive={archive}

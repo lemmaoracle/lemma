@@ -12,7 +12,7 @@ export interface BlogIndexTemplateProps {
   t: Translations;
   base: string;
   blogPath: string;
-  essays: ReadonlyArray<BlogPost>;
+  entries: ReadonlyArray<BlogPost>;
   featured?: BlogPost;
   recent: ReadonlyArray<BlogPost>;
   archive: ReadonlyArray<BlogPost>;
@@ -26,7 +26,7 @@ const {
   t,
   base,
   blogPath,
-  essays,
+  entries,
   featured,
   recent,
   archive,
@@ -37,7 +37,7 @@ const {
 
 // Canonical taxonomy order; only categories present become pills.
 const categoryCounts: Record<string, number> = {};
-for (const p of essays) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+for (const p of entries) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
 const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
 ---
 
@@ -60,7 +60,7 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
   {categories.length > 0 && (
     <nav class="filter-bar" aria-label={t.blog.index.categoriesLabel}>
       <button class="pill is-active" data-filter="all" type="button">
-        {t.blog.index.allTag}<span class="pill-count">{essays.length}</span>
+        {t.blog.index.allTag}<span class="pill-count">{entries.length}</span>
       </button>
       {categories.map((c) => (
         <button class="pill" data-filter={c} type="button">
@@ -196,7 +196,7 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
   <section class="filtered-section" hidden>
     <div class="section-tag filtered-tag" data-filtered-label></div>
     <div class="recent-grid filtered-grid">
-      {essays.map((post) => (
+      {entries.map((post) => (
         <a
           href={`${blogPath}/${post.slug}`}
           class="recent-card filtered-card"
@@ -453,6 +453,11 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
   .archive-section {
     background: var(--gray-50);
     padding: 80px 10% 80px;
+  }
+  /* Changelog reuses the archive list styling; a top rule separates the
+     two adjacent gray sections. */
+  .changelog-section {
+    border-top: 1px solid var(--gray-200);
   }
   .archive-list {
     list-style: none;

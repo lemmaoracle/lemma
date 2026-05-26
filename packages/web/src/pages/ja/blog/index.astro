@@ -1,6 +1,6 @@
 ---
 import BlogIndexTemplate from "../../../templates/BlogIndexTemplate.astro";
-import { getBlogSections } from "../../../data/blog";
+import { getBlogSections, isDocCategory } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 
 const locale = "ja";
@@ -9,18 +9,12 @@ const base = "/ja";
 const blogPath = "/ja/blog";
 const sections = await getBlogSections(locale);
 
-const isDoc = (p: { category: string }) =>
-  p.category === "ガイド" ||
-  p.category === "Guides" ||
-  p.category === "基盤" ||
-  p.category === "Foundations";
-
 const essays = (
   sections.find((s) => s.section === "エッセイ" || s.section === "Essays")?.posts ?? []
-).filter((p) => !isDoc(p));
+).filter((p) => !isDocCategory(p.category));
 const changelog = (
   sections.find((s) => s.section === "変更履歴" || s.section === "Changelog")?.posts ?? []
-).filter((p) => !isDoc(p));
+).filter((p) => !isDocCategory(p.category));
 // All category-filterable entries (essays + changelog), newest first.
 const entries = [...essays, ...changelog].sort((a, b) => (a.date > b.date ? -1 : 1));
 
@@ -41,7 +35,7 @@ const archive = essays.slice(7);
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={entries}
+  entries={entries}
   featured={featured}
   recent={recent}
   archive={archive}

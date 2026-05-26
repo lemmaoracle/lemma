@@ -1,10 +1,11 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
-import { BLOG_CATEGORIES, categorySlug } from "../data/blog";
+import { categorySlug } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import defaultCover from "../assets/default-blog-cover.png";
 
 export interface BlogCategoryTemplateProps {
@@ -13,13 +14,15 @@ export interface BlogCategoryTemplateProps {
   base: string;
   blogPath: string;
   category: string;
+  /** Categories that have an archive page (those with posts), for the nav. */
+  categories: ReadonlyArray<string>;
   posts: ReadonlyArray<BlogPost>;
 }
 
-const { locale, t, base, blogPath, category, posts } =
+const { locale, t, base, blogPath, category, categories, posts } =
   Astro.props as BlogCategoryTemplateProps;
 
-const siblings = BLOG_CATEGORIES;
+const siblings = categories;
 ---
 
 <Layout
@@ -30,6 +33,7 @@ const siblings = BLOG_CATEGORIES;
   pagePath={`/blog/category/${categorySlug(category)}/`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
 
   <header class="cat-header">
     <nav class="crumb">

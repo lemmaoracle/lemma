@@ -93,6 +93,14 @@ export const isBlogCategory = (c: string): c is BlogCategory =>
 /** URL slug for a category archive page, e.g. "Solutions" → "solutions". */
 export const categorySlug = (category: string): string => category.toLowerCase();
 
+/* Doc/guide categories (EN + JA labels) — these render in their own
+ * sections on the blog index and are excluded from the essay feed and
+ * the category pills. */
+const DOC_CATEGORIES: ReadonlyArray<string> = ["Guides", "Foundations", "ガイド", "基盤"];
+
+/** True for guide/foundation posts (either locale's label). */
+export const isDocCategory = (category: string): boolean => DOC_CATEGORIES.includes(category);
+
 /* ── Tag → destination mapping ──────────────────────────────────────
  * Used by BlogArticleTemplate to render end-of-article tag chips as
  * navigation back into Pillar / UseCase / glossary pages. Tags without
