@@ -135,7 +135,7 @@
   "blog": {
     "title": "Blog",
     "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma Oracle",
-    "metaDescription": "Essays on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance. Technical guides, business strategy, and implementation field notes.",
+    "metaDescription": "Essays on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance — spanning industry analysis, solution deep-dives, technical design, and announcements.",
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
