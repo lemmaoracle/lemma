@@ -1,0 +1,52 @@
+{
+  "name": "@lemmaoracle/roles",
+  "version": "0.1.0",
+  "description": "Roles — ZK circuit for agent role-spend-limit governance (Trust402).",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vkey": {
+      "types": "./dist/vkey.d.ts",
+      "import": "./dist/vkey.js"
+    }
+  },
+  "files": [
+    "dist",
+    "circuits/src/role-spend-limit.circom",
+    "circuits/scripts/build.sh"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:circuit": "cd circuits && npm run build",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:circuit": "cd circuits && npx vitest run"
+  },
+  "keywords": [
+    "lemma",
+    "roles",
+    "governance",
+    "trust402",
+    "zk",
+    "circuit",
+    "spend-limit"
+  ],
+  "dependencies": {
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*",
+    "snarkjs": "^0.7.6"
+  },
+  "devDependencies": {
+    "@types/snarkjs": "^0.7.9",
+    "poseidon-lite": "^0.3.0",
+    "typescript": "5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "author": "Lemma Oracle",
+  "license": "MIT"
+}

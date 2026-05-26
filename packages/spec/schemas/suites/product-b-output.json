@@ -31,7 +31,7 @@
           "type": ["object", "null"],
           "description": "Groth16 proof tuple. null when status=deferred."
         },
-        "circuitId": { "type": "string", "const": "claimCheckCommitmentV1" },
+        "circuitId": { "type": "string", "const": "attestation-commitment-v1" },
         "verifierContract": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
         "pollUrl": { "type": "string", "format": "uri", "description": "Polling URL when status=deferred." }
       }

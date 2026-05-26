@@ -1,0 +1,19 @@
+{
+  "name": "attestation-circuits",
+  "version": "1.0.0",
+  "description": "ZK circuit for Lemma attestation — inference commitment proof",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.6"
+  },
+  "devDependencies": {
+    "@types/snarkjs": "^0.7.9",
+    "vitest": "^3.0.0"
+  }
+}

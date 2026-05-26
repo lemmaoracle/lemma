@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.lemma.frame00.com/suites/product-a-output.json",
   "title": "Agent Identity Issuance Response",
+  "description": "⚠️ OUTDATED: This spec does not reflect the current agent-identity.circom circuit, which uses a flat Poseidon6 commitment (5 sub-hashes + salt) with issuer MAC verification instead of the Merkle-tree model described here. The circuit is the source of truth; this schema is retained for API-compatibility reference only and should not be used to derive circuit inputs.",
   "type": "object",
   "additionalProperties": false,
   "required": ["credentialId", "credential", "proof", "verifyUrl", "issuedAt", "expiresAt", "settlement", "requestId"],
