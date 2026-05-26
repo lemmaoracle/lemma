@@ -5,7 +5,7 @@ import { BLOG_CATEGORIES, categorySlug } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
-import BlogEntry from "../components/BlogEntry.astro";
+import defaultCover from "../assets/default-blog-cover.png";
 
 export interface BlogCategoryTemplateProps {
   locale: Locale;
@@ -19,8 +19,6 @@ export interface BlogCategoryTemplateProps {
 const { locale, t, base, blogPath, category, posts } =
   Astro.props as BlogCategoryTemplateProps;
 
-// Sibling categories for the in-page nav (only those with posts are linked
-// from the index, but all canonical categories are offered here).
 const siblings = BLOG_CATEGORIES;
 ---
 
@@ -53,18 +51,26 @@ const siblings = BLOG_CATEGORIES;
   </header>
 
   <section class="cat-list">
-    {posts.map((post) => (
-      <BlogEntry
-        slug={post.slug}
-        date={post.date}
-        category={post.category}
-        title={post.title}
-        abstract={post.abstract}
-        categoryColor={post.categoryColor}
-        cover={post.cover}
-        base={base}
-      />
-    ))}
+    <div class="card-grid">
+      {posts.map((post) => (
+        <a href={`${blogPath}/${post.slug}`} class="card">
+          <div
+            class="card-thumb"
+            style={`background-image:url('${post.cover ?? defaultCover.src}')`}
+          />
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-cat" style={`color:${post.categoryColor ?? "var(--accent)"}`}>
+                {post.category}
+              </span>
+              <span class="card-date">{post.date}</span>
+            </div>
+            <h3 class="card-title">{post.title}</h3>
+            <p class="card-abstract">{post.abstract}</p>
+          </div>
+        </a>
+      ))}
+    </div>
     <a href={blogPath} class="back-link">{t.blog.backToBlog}</a>
   </section>
 
@@ -137,15 +143,93 @@ const siblings = BLOG_CATEGORIES;
     background: var(--white);
     border-color: var(--white);
   }
+
+  /* ─── CARD GRID ─── */
   .cat-list {
     background: var(--white);
-    padding: 48px 10% 80px;
-    max-width: 1280px;
+    padding: 56px 10% 80px;
+    max-width: 1320px;
     margin: 0 auto;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 28px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    border-color: var(--gray-500);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  .card-thumb {
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray-200);
+    filter: saturate(0.6) brightness(0.95);
+    transition: filter 0.2s;
+  }
+  .card:hover .card-thumb {
+    filter: saturate(0.85) brightness(1);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 24px 26px;
+    flex: 1;
+  }
+  .card-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .card-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .card-date {
+    font-size: 10px;
+    color: var(--gray-500);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-abstract {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--gray-500);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .back-link {
     display: inline-block;
-    margin-top: 40px;
+    margin-top: 48px;
     font-size: 12px;
     letter-spacing: 0.08em;
     color: var(--gray-500);
@@ -154,12 +238,22 @@ const siblings = BLOG_CATEGORIES;
   .back-link:hover {
     color: var(--black);
   }
+
+  @media (max-width: 1024px) {
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
   @media (max-width: 768px) {
     .cat-header {
       padding: 64px 6% 48px;
     }
     .cat-list {
-      padding: 40px 6% 64px;
+      padding: 44px 6% 64px;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
     }
   }
 </style>
