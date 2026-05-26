@@ -1,6 +1,7 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
+import { BLOG_CATEGORIES } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
@@ -11,22 +12,33 @@ export interface BlogIndexTemplateProps {
   t: Translations;
   base: string;
   blogPath: string;
-  essays: ReadonlyArray<BlogPost>;
+  entries: ReadonlyArray<BlogPost>;
   featured?: BlogPost;
   recent: ReadonlyArray<BlogPost>;
   archive: ReadonlyArray<BlogPost>;
+  changelog?: ReadonlyArray<BlogPost>;
   guides: ReadonlyArray<BlogPost>;
   foundations: ReadonlyArray<BlogPost>;
 }
 
-const { locale, t, base, blogPath, essays, featured, recent, archive, guides, foundations } =
-  Astro.props as BlogIndexTemplateProps;
+const {
+  locale,
+  t,
+  base,
+  blogPath,
+  entries,
+  featured,
+  recent,
+  archive,
+  changelog = [],
+  guides,
+  foundations,
+} = Astro.props as BlogIndexTemplateProps;
 
-// Canonical taxonomy order; only categories present in essays become pills.
-const TAXONOMY_ORDER = ["Industry", "Solutions", "Technical", "Announcements"] as const;
+// Canonical taxonomy order; only categories present become pills.
 const categoryCounts: Record<string, number> = {};
-for (const p of essays) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
-const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
+for (const p of entries) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
 ---
 
 <Layout
@@ -48,7 +60,7 @@ const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
   {categories.length > 0 && (
     <nav class="filter-bar" aria-label={t.blog.index.categoriesLabel}>
       <button class="pill is-active" data-filter="all" type="button">
-        {t.blog.index.allTag}<span class="pill-count">{essays.length}</span>
+        {t.blog.index.allTag}<span class="pill-count">{entries.length}</span>
       </button>
       {categories.map((c) => (
         <button class="pill" data-filter={c} type="button">
@@ -118,6 +130,23 @@ const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
     </section>
   )}
 
+  {changelog.length > 0 && (
+    <section class="archive-section changelog-section">
+      <div class="section-tag">{t.blog.sections["Changelog"] ?? "Changelog"}</div>
+      <ul class="archive-list">
+        {changelog.map((post) => (
+          <li class="archive-row reveal">
+            <a href={`${blogPath}/${post.slug}`} class="archive-link">
+              <span class="archive-cat">{post.category}</span>
+              <span class="archive-title">{post.title}</span>
+              <span class="archive-date">{post.date}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   {guides.length > 0 && (
     <section class="guides-section">
       <div class="section-tag">{t.blog.index.guidesTag}</div>
@@ -167,7 +196,7 @@ const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
   <section class="filtered-section" hidden>
     <div class="section-tag filtered-tag" data-filtered-label></div>
     <div class="recent-grid filtered-grid">
-      {essays.map((post) => (
+      {entries.map((post) => (
         <a
           href={`${blogPath}/${post.slug}`}
           class="recent-card filtered-card"
@@ -424,6 +453,11 @@ const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
   .archive-section {
     background: var(--gray-50);
     padding: 80px 10% 80px;
+  }
+  /* Changelog reuses the archive list styling; a top rule separates the
+     two adjacent gray sections. */
+  .changelog-section {
+    border-top: 1px solid var(--gray-200);
   }
   .archive-list {
     list-style: none;

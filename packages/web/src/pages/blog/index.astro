@@ -1,6 +1,6 @@
 ---
 import BlogIndexTemplate from "../../templates/BlogIndexTemplate.astro";
-import { getBlogSections } from "../../data/blog";
+import { getBlogSections, isDocCategory } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "en";
@@ -9,10 +9,16 @@ const base = "";
 const blogPath = "/blog";
 const sections = await getBlogSections(locale);
 
-const allEssays = sections.find((s) => s.section === "Essays")?.posts ?? [];
-const essays = allEssays.filter(
-  (p) => p.category !== "Guides" && p.category !== "Foundations",
+const essays = (sections.find((s) => s.section === "Essays")?.posts ?? []).filter(
+  (p) => !isDocCategory(p.category),
 );
+const changelog = (sections.find((s) => s.section === "Changelog")?.posts ?? []).filter(
+  (p) => !isDocCategory(p.category),
+);
+// All category-filterable entries (essays + changelog), newest first.
+// Feeds the category pills + the filtered card grid.
+const entries = [...essays, ...changelog].sort((a, b) => (a.date > b.date ? -1 : 1));
+
 const guides = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "Guides");
@@ -30,10 +36,11 @@ const archive = essays.slice(7);
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={essays}
+  entries={entries}
   featured={featured}
   recent={recent}
   archive={archive}
+  changelog={changelog}
   guides={guides}
   foundations={foundations}
 />

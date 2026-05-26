@@ -1,7 +1,7 @@
 ---
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
-import { getTagDestination } from "../data/blog";
+import { getTagDestination, isBlogCategory, categorySlug } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
@@ -68,7 +68,11 @@ const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, p
     <div class="breadcrumb">
       <a href={blogPath}>Blog</a>
       <span class="breadcrumb-sep">/</span>
-      <a href={blogPath}>{post.category}</a>
+      {isBlogCategory(post.category) ? (
+        <a href={`${blogPath}/category/${categorySlug(post.category)}`}>{post.category}</a>
+      ) : (
+        <a href={blogPath}>{post.category}</a>
+      )}
     </div>
 
     {post.headings.length > 1 && (

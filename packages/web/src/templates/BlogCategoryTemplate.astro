@@ -1,0 +1,263 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
+import { categorySlug } from "../data/blog";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import defaultCover from "../assets/default-blog-cover.png";
+
+export interface BlogCategoryTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  blogPath: string;
+  category: string;
+  /** Categories that have an archive page (those with posts), for the nav. */
+  categories: ReadonlyArray<string>;
+  posts: ReadonlyArray<BlogPost>;
+}
+
+const { locale, t, base, blogPath, category, categories, posts } =
+  Astro.props as BlogCategoryTemplateProps;
+
+const siblings = categories;
+---
+
+<Layout
+  locale={locale}
+  title={`${category} — ${t.blog.title}`}
+  description={`${category}: ${t.blog.metaDescription}`}
+  metaType="page"
+  pagePath={`/blog/category/${categorySlug(category)}/`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <header class="cat-header">
+    <nav class="crumb">
+      <a href={blogPath}>{t.blog.title}</a>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-current">{category}</span>
+    </nav>
+    <h1>{category}</h1>
+    <div class="cat-nav">
+      {siblings.map((c) => (
+        <a
+          href={`${blogPath}/category/${categorySlug(c)}`}
+          class={c === category ? "cat-pill is-active" : "cat-pill"}
+        >
+          {c}
+        </a>
+      ))}
+    </div>
+  </header>
+
+  <section class="cat-list">
+    <div class="card-grid">
+      {posts.map((post) => (
+        <a href={`${blogPath}/${post.slug}`} class="card">
+          <div
+            class="card-thumb"
+            style={`background-image:url('${post.cover ?? defaultCover.src}')`}
+          />
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-cat" style={`color:${post.categoryColor ?? "var(--accent)"}`}>
+                {post.category}
+              </span>
+              <span class="card-date">{post.date}</span>
+            </div>
+            <h3 class="card-title">{post.title}</h3>
+            <p class="card-abstract">{post.abstract}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+    <a href={blogPath} class="back-link">{t.blog.backToBlog}</a>
+  </section>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .cat-header {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 72px 10% 56px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .crumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 20px;
+  }
+  .crumb a {
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.2s;
+  }
+  .crumb a:hover {
+    color: var(--white);
+  }
+  .crumb-sep {
+    color: rgba(255, 255, 255, 0.2);
+  }
+  .crumb-current {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .cat-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin: 0 0 28px 0;
+  }
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cat-pill {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 8px 16px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .cat-pill:hover {
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  .cat-pill.is-active {
+    color: var(--black);
+    background: var(--white);
+    border-color: var(--white);
+  }
+
+  /* ─── CARD GRID ─── */
+  .cat-list {
+    background: var(--white);
+    padding: 56px 10% 80px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 28px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    border-color: var(--gray-500);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  .card-thumb {
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--gray-200);
+    filter: saturate(0.6) brightness(0.95);
+    transition: filter 0.2s;
+  }
+  .card:hover .card-thumb {
+    filter: saturate(0.85) brightness(1);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 24px 26px;
+    flex: 1;
+  }
+  .card-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .card-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .card-date {
+    font-size: 10px;
+    color: var(--gray-500);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-abstract {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--gray-500);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 48px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--gray-500);
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--black);
+  }
+
+  @media (max-width: 1024px) {
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 768px) {
+    .cat-header {
+      padding: 64px 6% 48px;
+    }
+    .cat-list {
+      padding: 44px 6% 64px;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+</style>

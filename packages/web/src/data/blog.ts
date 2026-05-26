@@ -76,7 +76,30 @@ const categoryColorByCategory: Readonly<Record<string, string>> = {
 const defaultSectionByCategory: Readonly<Record<string, string>> = {
   Release: "Changelog",
   Application: "Field Notes",
+  Announcements: "Changelog",
 };
+
+/* ── Blog post taxonomy ─────────────────────────────────────────────
+ * The canonical essay categories, in display order. Single source of
+ * truth for category filter pills, category archive pages
+ * (/blog/category/<slug>), and the article breadcrumb link.
+ */
+export const BLOG_CATEGORIES = ["Industry", "Solutions", "Technical", "Announcements"] as const;
+export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
+
+export const isBlogCategory = (c: string): c is BlogCategory =>
+  (BLOG_CATEGORIES as ReadonlyArray<string>).includes(c);
+
+/** URL slug for a category archive page, e.g. "Solutions" → "solutions". */
+export const categorySlug = (category: string): string => category.toLowerCase();
+
+/* Doc/guide categories (EN + JA labels) — these render in their own
+ * sections on the blog index and are excluded from the essay feed and
+ * the category pills. */
+const DOC_CATEGORIES: ReadonlyArray<string> = ["Guides", "Foundations", "ガイド", "基盤"];
+
+/** True for guide/foundation posts (either locale's label). */
+export const isDocCategory = (category: string): boolean => DOC_CATEGORIES.includes(category);
 
 /* ── Tag → destination mapping ──────────────────────────────────────
  * Used by BlogArticleTemplate to render end-of-article tag chips as

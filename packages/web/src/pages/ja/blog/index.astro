@@ -1,6 +1,6 @@
 ---
 import BlogIndexTemplate from "../../../templates/BlogIndexTemplate.astro";
-import { getBlogSections } from "../../../data/blog";
+import { getBlogSections, isDocCategory } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 
 const locale = "ja";
@@ -9,17 +9,15 @@ const base = "/ja";
 const blogPath = "/ja/blog";
 const sections = await getBlogSections(locale);
 
-const filterSection = sections.find(
-  (s) => s.section === "エッセイ" || s.section === "Essays",
-);
-const allEssays = filterSection?.posts ?? [];
-const essays = allEssays.filter(
-  (p) =>
-    p.category !== "ガイド" &&
-    p.category !== "Guides" &&
-    p.category !== "基盤" &&
-    p.category !== "Foundations",
-);
+const essays = (
+  sections.find((s) => s.section === "エッセイ" || s.section === "Essays")?.posts ?? []
+).filter((p) => !isDocCategory(p.category));
+const changelog = (
+  sections.find((s) => s.section === "変更履歴" || s.section === "Changelog")?.posts ?? []
+).filter((p) => !isDocCategory(p.category));
+// All category-filterable entries (essays + changelog), newest first.
+const entries = [...essays, ...changelog].sort((a, b) => (a.date > b.date ? -1 : 1));
+
 const guides = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "ガイド" || p.category === "Guides");
@@ -37,10 +35,11 @@ const archive = essays.slice(7);
   t={t}
   base={base}
   blogPath={blogPath}
-  essays={essays}
+  entries={entries}
   featured={featured}
   recent={recent}
   archive={archive}
+  changelog={changelog}
   guides={guides}
   foundations={foundations}
 />
