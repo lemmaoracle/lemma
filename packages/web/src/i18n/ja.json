@@ -139,6 +139,8 @@
     "subtitle": "エッセイ、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
+      "categoriesLabel": "カテゴリ",
+      "allTag": "すべて",
       "featuredTag": "注目の記事",
       "featuredCta": "記事を読む →",
       "recentTag": "最近の記事",
