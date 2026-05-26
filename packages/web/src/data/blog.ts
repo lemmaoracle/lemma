@@ -67,9 +67,10 @@ const categoryColorByCategory: Readonly<Record<string, string>> = {
   Release: "#DC2626",
   Application: "#EA580C",
   Tutorial: "#0891B2",
-  "Tech Insight": "#3B82F6",
-  "Business Strategy": "#10B981",
-  "Human Impact": "#8B5CF6",
+  Industry: "#10B981",
+  Solutions: "#8B5CF6",
+  Technical: "#3B82F6",
+  Announcements: "#F59E0B",
 };
 
 const defaultSectionByCategory: Readonly<Record<string, string>> = {
