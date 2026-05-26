@@ -1,0 +1,38 @@
+---
+import BlogCategoryTemplate from "../../../../templates/BlogCategoryTemplate.astro";
+import { getAllPosts, BLOG_CATEGORIES, categorySlug } from "../../../../data/blog";
+import { getTranslations } from "../../../../i18n/translations";
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts("ja");
+  return BLOG_CATEGORIES.map((category) => ({
+    category,
+    items: posts.filter((p) => p.category === category),
+  }))
+    .filter((g) => g.items.length > 0)
+    .map((g) => ({
+      params: { category: categorySlug(g.category) },
+      props: { category: g.category, posts: g.items },
+    }));
+}
+
+interface Props {
+  category: string;
+  posts: import("../../../../data/blog").BlogPost[];
+}
+
+const { category, posts } = Astro.props as Props;
+const locale = "ja" as const;
+const t = getTranslations(locale);
+const base = "/ja";
+const blogPath = "/ja/blog";
+---
+
+<BlogCategoryTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  blogPath={blogPath}
+  category={category}
+  posts={posts}
+/>

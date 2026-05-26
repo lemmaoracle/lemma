@@ -1,0 +1,165 @@
+---
+import type { Locale, Translations } from "../i18n/translations";
+import type { BlogPost } from "../data/blog";
+import { BLOG_CATEGORIES, categorySlug } from "../data/blog";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import BlogEntry from "../components/BlogEntry.astro";
+
+export interface BlogCategoryTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  blogPath: string;
+  category: string;
+  posts: ReadonlyArray<BlogPost>;
+}
+
+const { locale, t, base, blogPath, category, posts } =
+  Astro.props as BlogCategoryTemplateProps;
+
+// Sibling categories for the in-page nav (only those with posts are linked
+// from the index, but all canonical categories are offered here).
+const siblings = BLOG_CATEGORIES;
+---
+
+<Layout
+  locale={locale}
+  title={`${category} — ${t.blog.title}`}
+  description={`${category}: ${t.blog.metaDescription}`}
+  metaType="page"
+  pagePath={`/blog/category/${categorySlug(category)}/`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <header class="cat-header">
+    <nav class="crumb">
+      <a href={blogPath}>{t.blog.title}</a>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-current">{category}</span>
+    </nav>
+    <h1>{category}</h1>
+    <div class="cat-nav">
+      {siblings.map((c) => (
+        <a
+          href={`${blogPath}/category/${categorySlug(c)}`}
+          class={c === category ? "cat-pill is-active" : "cat-pill"}
+        >
+          {c}
+        </a>
+      ))}
+    </div>
+  </header>
+
+  <section class="cat-list">
+    {posts.map((post) => (
+      <BlogEntry
+        slug={post.slug}
+        date={post.date}
+        category={post.category}
+        title={post.title}
+        abstract={post.abstract}
+        categoryColor={post.categoryColor}
+        cover={post.cover}
+        base={base}
+      />
+    ))}
+    <a href={blogPath} class="back-link">{t.blog.backToBlog}</a>
+  </section>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .cat-header {
+    margin-top: 64px;
+    background: var(--black);
+    padding: 72px 10% 56px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .crumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 20px;
+  }
+  .crumb a {
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.2s;
+  }
+  .crumb a:hover {
+    color: var(--white);
+  }
+  .crumb-sep {
+    color: rgba(255, 255, 255, 0.2);
+  }
+  .crumb-current {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .cat-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin: 0 0 28px 0;
+  }
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cat-pill {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 8px 16px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .cat-pill:hover {
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  .cat-pill.is-active {
+    color: var(--black);
+    background: var(--white);
+    border-color: var(--white);
+  }
+  .cat-list {
+    background: var(--white);
+    padding: 48px 10% 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 40px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--gray-500);
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--black);
+  }
+  @media (max-width: 768px) {
+    .cat-header {
+      padding: 64px 6% 48px;
+    }
+    .cat-list {
+      padding: 40px 6% 64px;
+    }
+  }
+</style>

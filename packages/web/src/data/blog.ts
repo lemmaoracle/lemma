@@ -76,7 +76,22 @@ const categoryColorByCategory: Readonly<Record<string, string>> = {
 const defaultSectionByCategory: Readonly<Record<string, string>> = {
   Release: "Changelog",
   Application: "Field Notes",
+  Announcements: "Changelog",
 };
+
+/* ── Blog post taxonomy ─────────────────────────────────────────────
+ * The canonical essay categories, in display order. Single source of
+ * truth for category filter pills, category archive pages
+ * (/blog/category/<slug>), and the article breadcrumb link.
+ */
+export const BLOG_CATEGORIES = ["Industry", "Solutions", "Technical", "Announcements"] as const;
+export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
+
+export const isBlogCategory = (c: string): c is BlogCategory =>
+  (BLOG_CATEGORIES as ReadonlyArray<string>).includes(c);
+
+/** URL slug for a category archive page, e.g. "Solutions" → "solutions". */
+export const categorySlug = (category: string): string => category.toLowerCase();
 
 /* ── Tag → destination mapping ──────────────────────────────────────
  * Used by BlogArticleTemplate to render end-of-article tag chips as
