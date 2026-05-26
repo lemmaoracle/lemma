@@ -11,6 +11,7 @@ export interface BlogIndexTemplateProps {
   t: Translations;
   base: string;
   blogPath: string;
+  essays: ReadonlyArray<BlogPost>;
   featured?: BlogPost;
   recent: ReadonlyArray<BlogPost>;
   archive: ReadonlyArray<BlogPost>;
@@ -18,8 +19,14 @@ export interface BlogIndexTemplateProps {
   foundations: ReadonlyArray<BlogPost>;
 }
 
-const { locale, t, base, blogPath, featured, recent, archive, guides, foundations } =
+const { locale, t, base, blogPath, essays, featured, recent, archive, guides, foundations } =
   Astro.props as BlogIndexTemplateProps;
+
+// Canonical taxonomy order; only categories present in essays become pills.
+const TAXONOMY_ORDER = ["Industry", "Solutions", "Technical", "Announcements"] as const;
+const categoryCounts: Record<string, number> = {};
+for (const p of essays) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+const categories = TAXONOMY_ORDER.filter((c) => (categoryCounts[c] ?? 0) > 0);
 ---
 
 <Layout
@@ -37,6 +44,21 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     <h1>{t.blog.subtitle}</h1>
     <p>{t.blog.index.headerDesc}</p>
   </header>
+
+  {categories.length > 0 && (
+    <nav class="filter-bar" aria-label={t.blog.index.categoriesLabel}>
+      <button class="pill is-active" data-filter="all" type="button">
+        {t.blog.index.allTag}<span class="pill-count">{essays.length}</span>
+      </button>
+      {categories.map((c) => (
+        <button class="pill" data-filter={c} type="button">
+          {c}<span class="pill-count">{categoryCounts[c]}</span>
+        </button>
+      ))}
+    </nav>
+  )}
+
+  <div class="view-all">
 
   {featured && (
     <section class="featured-section">
@@ -140,6 +162,29 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     </section>
   )}
 
+  </div>
+
+  <section class="filtered-section" hidden>
+    <div class="section-tag filtered-tag" data-filtered-label></div>
+    <div class="recent-grid filtered-grid">
+      {essays.map((post) => (
+        <a
+          href={`${blogPath}/${post.slug}`}
+          class="recent-card filtered-card"
+          data-category={post.category}
+        >
+          <div class="essay-meta">
+            <span class="essay-cat">{post.category}</span>
+            <span class="essay-date">{post.date}</span>
+          </div>
+          <h3>{post.title}</h3>
+          <p>{post.abstract}</p>
+          <span class="recent-cta">{t.blog.index.readEssay}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
@@ -194,6 +239,59 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
     height: 1px;
     background: currentColor;
     display: block;
+  }
+
+  /* ─── FILTER BAR ─── */
+  .filter-bar {
+    background: var(--white);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 40px 10% 0;
+  }
+  .pill {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    background: transparent;
+    border: 1px solid var(--gray-200);
+    border-radius: 999px;
+    padding: 9px 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .pill:hover {
+    color: var(--black);
+    border-color: var(--gray-500);
+  }
+  .pill.is-active {
+    color: var(--white);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .pill-count {
+    font-size: 10px;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── FILTERED VIEW ─── */
+  .filtered-section {
+    background: var(--white);
+    padding: 40px 10% 80px;
+  }
+  .view-all[hidden],
+  .filtered-section[hidden] {
+    display: none;
+  }
+  .filtered-card[hidden] {
+    display: none;
   }
 
   /* ─── FEATURED ─── */
@@ -553,13 +651,18 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   }
   @media (max-width: 768px) {
     .blog-header,
+    .filter-bar,
     .featured-section,
+    .filtered-section,
     .recent-section,
     .archive-section,
     .guides-section,
     .foundations-section {
       padding-left: 6%;
       padding-right: 6%;
+    }
+    .filter-bar {
+      padding-top: 28px;
     }
     .blog-header {
       padding-top: 80px;
@@ -639,4 +742,59 @@ const { locale, t, base, blogPath, featured, recent, archive, guides, foundation
   document.querySelectorAll(".reveal").forEach(function (el) {
     io.observe(el);
   });
+
+  // ─── Category filter ───
+  (function () {
+    var pills = document.querySelectorAll(".pill");
+    if (!pills.length) return;
+    var viewAll = document.querySelector(".view-all");
+    var filtered = document.querySelector(".filtered-section");
+    var label = document.querySelector("[data-filtered-label]");
+    var cards = filtered ? filtered.querySelectorAll(".filtered-card") : [];
+
+    function apply(filter) {
+      var isAll = !filter || filter.toLowerCase() === "all";
+      pills.forEach(function (p) {
+        var pf = (p.getAttribute("data-filter") || "").toLowerCase();
+        p.classList.toggle("is-active", isAll ? pf === "all" : pf === filter.toLowerCase());
+      });
+      if (viewAll) viewAll.hidden = !isAll;
+      if (filtered) filtered.hidden = isAll;
+      if (!isAll && label) {
+        var labelText = filter;
+        cards.forEach(function (c) {
+          var cat = c.getAttribute("data-category") || "";
+          var match = cat.toLowerCase() === filter.toLowerCase();
+          c.hidden = !match;
+          if (match) labelText = cat;
+        });
+        label.textContent = labelText;
+      }
+    }
+
+    pills.forEach(function (p) {
+      p.addEventListener("click", function () {
+        var f = p.getAttribute("data-filter") || "all";
+        apply(f);
+        if (history.replaceState) {
+          history.replaceState(
+            null,
+            "",
+            f.toLowerCase() === "all"
+              ? location.pathname + location.search
+              : "#" + f.toLowerCase(),
+          );
+        }
+      });
+    });
+
+    var initial = (location.hash || "").replace(/^#/, "").toLowerCase();
+    if (initial) {
+      pills.forEach(function (p) {
+        if ((p.getAttribute("data-filter") || "").toLowerCase() === initial) {
+          apply(p.getAttribute("data-filter"));
+        }
+      });
+    }
+  })();
 </script>

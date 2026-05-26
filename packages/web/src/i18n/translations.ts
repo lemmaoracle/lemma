@@ -148,6 +148,8 @@ export interface Translations {
     readonly subtitle: string;
     readonly backToBlog: string;
     readonly index: Readonly<{
+      readonly categoriesLabel: string;
+      readonly allTag: string;
       readonly featuredTag: string;
       readonly featuredCta: string;
       readonly recentTag: string;

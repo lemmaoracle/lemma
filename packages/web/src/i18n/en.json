@@ -139,6 +139,8 @@
     "subtitle": "Essays, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
+      "categoriesLabel": "Categories",
+      "allTag": "All",
       "featuredTag": "Featured",
       "featuredCta": "Read featured →",
       "recentTag": "Recent",
