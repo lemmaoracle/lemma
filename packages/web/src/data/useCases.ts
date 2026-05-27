@@ -127,7 +127,7 @@ const fetchUseCaseDirectories = async (): Promise<ReadonlyArray<UseCaseDir>> => 
   const useCasesPath = POSTS_PATH ? `${POSTS_PATH}/use-cases` : "use-cases";
   const contentsUrl = `https://api.github.com/repos/${POSTS_REPO}/contents/${useCasesPath}?ref=${POSTS_BRANCH}`;
 
-  const res = await fetch(contentsUrl, { headers: githubHeaders() });
+  const res = await fetch(contentsUrl, { headers: githubHeaders(), cache: "no-store" });
   if (!res.ok) {
     const body = await res.text();
     console.error(`[useCases] GitHub API ${String(res.status)}: ${body}`);
@@ -140,7 +140,7 @@ const fetchUseCaseDirectories = async (): Promise<ReadonlyArray<UseCaseDir>> => 
   const results = await Promise.all(
     dirs.map(async (dir): Promise<UseCaseDir | undefined> => {
       const dirContentsUrl = `https://api.github.com/repos/${POSTS_REPO}/contents/${dir.path}?ref=${POSTS_BRANCH}`;
-      const dirRes = await fetch(dirContentsUrl, { headers: githubHeaders() });
+      const dirRes = await fetch(dirContentsUrl, { headers: githubHeaders(), cache: "no-store" });
 
       if (!dirRes.ok) {
         console.error(`[useCases] GitHub API ${String(dirRes.status)} fetching ${dir.path}`);
@@ -157,6 +157,7 @@ const fetchUseCaseDirectories = async (): Promise<ReadonlyArray<UseCaseDir>> => 
           if (!file.download_url) return undefined;
           const raw = await fetch(file.download_url, {
             headers: { "User-Agent": "lemma-usecases-builder" },
+            cache: "no-store",
           });
           return raw.ok ? { name: file.name, content: await raw.text() } : undefined;
         }),

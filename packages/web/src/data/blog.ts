@@ -180,7 +180,7 @@ const fetchMarkdownEntries = (): Promise<
           ? `https://api.github.com/repos/${POSTS_REPO}/contents/${POSTS_PATH}?ref=${POSTS_BRANCH}`
           : `https://api.github.com/repos/${POSTS_REPO}/contents?ref=${POSTS_BRANCH}`;
 
-        const res = await fetch(contentsUrl, { headers: githubHeaders() });
+        const res = await fetch(contentsUrl, { headers: githubHeaders(), cache: "no-store" });
         return res.ok
           ? (async () => {
               const entries: unknown = await res.json();
@@ -200,6 +200,7 @@ const fetchMarkdownEntries = (): Promise<
                     ? (async () => {
                         const raw = await fetch(url, {
                           headers: { "User-Agent": "lemma-blog-builder" },
+                          cache: "no-store",
                         });
                         return raw.ok
                           ? ({ name: entry.name, content: await raw.text() } as const)
