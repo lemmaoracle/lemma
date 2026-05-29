@@ -15,6 +15,8 @@
  */
 
 export type GlossarySlug =
+  // 脅威モデル・AI攻撃
+  | "mythos"
   // 暗号レイヤ
   | "zk-proof"
   | "aes-gcm"
@@ -55,6 +57,7 @@ export type GlossarySlug =
 export type GlossaryCategory =
   | "暗号レイヤ"
   | "検証可能AI"
+  | "脅威モデル・AI攻撃"
   | "プロトコル・エージェント"
   | "規制・コンプライアンス";
 
@@ -659,6 +662,34 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     ],
     ctaH2: "loop を離れても、監査可能性は手放さない。",
   },
+  // ============ 脅威モデル・AI攻撃 ============
+  {
+    slug: "mythos",
+    nameJa: "ミュトス",
+    nameEn: "Mythos",
+    category: "脅威モデル・AI攻撃",
+    description:
+      "ミュトス (Mythos) の定義と Lemma Oracle における対応経路。Anthropic のフロンティアモデルが示すゼロデイ自動発見と攻撃経路自動化の能力、および Lemma Critical の事前検証層。",
+    lead:
+      "Anthropic が 2026 年 4 月 7 日に開始した <strong>Project Glasswing</strong> で限定提供されたフロンティアモデル <strong>Claude Mythos Preview</strong>。ゼロデイ脆弱性の自動発見から攻撃経路構築までを単一エージェント内で完結させる能力を持つ。「Mythos 級」とは、この能力カテゴリそのものを指す。",
+    definition: [
+      "ミュトスは、Anthropic が <strong>Project Glasswing</strong> (2026 年 4 月 7 日開始) で AWS・Apple・Cisco・Google・Microsoft・Cloudflare などに防御目的で限定提供しているフロンティアモデルの名称である。ゼロデイ脆弱性の自動発見、exploit chain の構築、標的環境への適応までを、人間オペレータを介さずに同一エージェント内で完結させる能力を持つ点で、従来の AI 支援ツールとは質的に異なる。",
+      "デュアルユース性が中心問題となる。防御目的で構成された能力は、構造的に攻撃側にも等価である。2026 年 4 月、米財務省と FRB は大手銀行 CEO を緊急招集。日本では 4 月 24 日に金融庁が同様の会合を開き、5 月 12〜21 日には首相指示・関係省庁会議・総務相による電気通信事業者横断会合と、十日間で AI サイバー対策が階段を一気に下りた (詳細: <a href=\"/ja/blog/verifiable-ai-financial-agents-2026/\">検証可能 AI と金融エージェント</a>)。「Mythos 級攻撃」は、これら一連の対応を駆動した能力カテゴリを指す呼称として定着した。",
+      "重要なのは、自動化された攻撃には帰属痕跡 (attribution residue) が薄いことである。検出ツールの信頼度スコア — 例えば「99.7 % の確率で異常」— は規制報告や行政手続き、訴訟で「許可されていない権限行使があった」と立証する材料にはならない (詳細: <a href=\"/ja/blog/detection-is-not-proof/\">検出は証明ではない</a>)。事前に証明可能な来歴と判断検証層を持つことが、事後の判断再現と説明責任を担保する唯一の経路となる。",
+    ],
+    implementation: [
+      '<a href="/ja/pricing/#critical">Lemma Critical</a> は、電力・水道・交通・製造業など重要インフラ事業者を対象に、AI が下した判断を SCADA/ICS 制御層に届く前に独立検証する pre-execution attestation を提供する。AI の判断結果ではなく判断過程そのものを、commit 前に <a href="/ja/glossary/zk-proof/">ゼロ知識証明</a> で「暗号的に有効 ≠ 意味的に正しい」を遮断する設計を採る。',
+      "ドメイン固有のビジネスルール — 設備の安全上限、規制要件、運用 SLA — をカスタム ZK サーキットとして固定し、AI 判断がこれを満たすかを実行前に証明する。Mythos 級攻撃に内在するプロンプトインジェクションやデータポイズニング、敵対的入力は、commit 前の検証段階で fail する。判断が制御層に到達する前に止まる点が、検出型防御との構造的な違いである。",
+      '委任グラフ — 誰が・何を・どこまで AI に許可したか — も <a href="/ja/glossary/commitment/">コミットメント</a> として固定される。事故後の事後検証や規制報告で、AI 判断と委任関係を 6 ヶ月後でも再現できる。コンプライアンスグレードの <a href="/ja/glossary/audit-trail/">監査証跡</a> として、Mythos 級時代の防御線が成立する。',
+    ],
+    related: [
+      { slug: "verifiable-ai", desc: "Mythos 級攻撃に対する Lemma の対応領域。判断過程そのものを暗号で検証可能にする。" },
+      { slug: "provenance-proof", desc: "AI 判断と入力の来歴を改ざん不能に結びつける証明。事後の再現性を担保する。" },
+      { slug: "audit-trail", desc: "Mythos 級時代に唯一通用する事後検証手段。コンプライアンスグレードの監査証跡。" },
+      { slug: "human-off-the-loop", desc: "人間オペレータを介さない AI エージェント運用形態。Mythos 級攻撃の成立前提でもある。" },
+    ],
+    ctaH2: "Mythos 級攻撃の前に、AI 判断を遮断する。",
+  },
   // ============ プロトコル・エージェント ============
   {
     slug: "agentic-payments",
@@ -979,6 +1010,7 @@ export function getAllGlossarySlugs(): ReadonlyArray<GlossarySlug> {
 export const GLOSSARY_CATEGORIES: ReadonlyArray<GlossaryCategory> = [
   "暗号レイヤ",
   "検証可能AI",
+  "脅威モデル・AI攻撃",
   "プロトコル・エージェント",
   "規制・コンプライアンス",
 ];
@@ -995,6 +1027,8 @@ const CATEGORY_DESCRIPTIONS: Readonly<Record<GlossaryCategory, string>> = {
     "Lemma が証明・開示・改ざん検知に用いる暗号プリミティブ。ZK 証明、対称暗号、ハッシュ、コミットメントの基礎用語。",
   検証可能AI:
     "AI の判断・引用・推論履歴を暗号で検証可能にするための用語群。来歴、引用、監査の基本概念。",
+  "脅威モデル・AI攻撃":
+    "Lemma が事前検証層で対応する脅威カテゴリ。フロンティアモデルによるゼロデイ自動発見と攻撃経路自動化、その「Mythos 級」攻撃の能力範囲。",
   "プロトコル・エージェント":
     "自律エージェント取引と機械間決済のプロトコル群。x402、Trust402、MCP、A2A の周辺仕様。",
   "規制・コンプライアンス":

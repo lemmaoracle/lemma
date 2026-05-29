@@ -589,6 +589,34 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     ],
     ctaH2: "Leave the loop without giving up auditability.",
   },
+  // ============ Threat Model & AI Attack ============
+  {
+    slug: "mythos",
+    nameJa: "ミュトス",
+    nameEn: "Mythos",
+    category: "脅威モデル・AI攻撃",
+    description:
+      "Definition and Lemma Oracle response path for Mythos — the Anthropic frontier model whose automated zero-day discovery and exploit-chain construction define the contemporary AI threat class.",
+    lead:
+      "<strong>Claude Mythos Preview</strong>, the Anthropic frontier model offered for defensive use through <strong>Project Glasswing</strong> (launched April 7, 2026). It compresses zero-day discovery, exploit-chain construction, and target adaptation into a single agent. \"Mythos-grade\" names that capability class.",
+    definition: [
+      "Mythos is the name of the Anthropic frontier model offered through <strong>Project Glasswing</strong> (launched April 7, 2026) for defensive use to a limited set of organizations including AWS, Apple, Cisco, Google, Microsoft, and Cloudflare. What distinguishes it qualitatively from prior AI-assisted tooling: zero-day vulnerability discovery, exploit-chain construction, and target adaptation are completed end-to-end inside a single agent — without a human operator in the middle.",
+      "Dual-use sits at the center. A capability assembled for defense is structurally equivalent to the same capability turned outward. In April 2026, the US Treasury and Federal Reserve summoned major bank CEOs; on April 24, Japan's FSA convened a parallel emergency session; over May 12–21, a Prime Ministerial directive, a multi-ministry council, and a Ministry of Internal Affairs cross-industry meeting walked AI cyber defense down the staircase in ten days (full context: <a href=\"/blog/verifiable-ai-financial-agents-2026/\">verifiable AI and financial agents</a>). \"Mythos-grade attack\" became the shorthand for the capability class that drove that response.",
+      "What matters operationally: automated attacks leave thin attribution residue. A detection tool's confidence score — say, \"99.7% probability of anomaly\" — is not admissible evidence in regulatory filings, administrative proceedings, or court that an unauthorized authority was exercised (full argument: <a href=\"/blog/detection-is-not-proof/\">detection is not proof</a>). Cryptographically provable provenance and a pre-execution judgment-verification layer are the only path that preserves reproducibility and accountability after the fact.",
+    ],
+    implementation: [
+      '<a href="/pricing/#critical">Lemma Critical</a> targets critical-infrastructure operators — power, water, transport, manufacturing — with a pre-execution attestation layer that independently verifies AI judgments before they reach SCADA/ICS control. Not the AI\'s output but its judgment process is verified: <a href="/glossary/zk-proof/">zero-knowledge proofs</a> gate the principle that "cryptographically valid ≠ semantically right" at commit time.',
+      "Domain-specific business rules — equipment safety limits, regulatory requirements, operating SLAs — are pinned as custom ZK circuits, and AI judgments are proven to satisfy them before execution. Prompt injection, data poisoning, and adversarial inputs intrinsic to Mythos-grade attacks fail at the pre-commit verification step. The judgment stops before reaching the control plane — that's the structural break from detection-style defense.",
+      'The delegation graph — who authorized what, to whom, to what limit — is pinned as a <a href="/glossary/commitment/">commitment</a> too. AI judgments and the authority behind them remain reproducible six months later for post-incident review and regulatory reporting. Compliance-grade <a href="/glossary/audit-trail/">audit trails</a> become the defensive line of the Mythos era.',
+    ],
+    related: [
+      { slug: "verifiable-ai", desc: "Lemma's response domain to Mythos-grade attack. Verifies the judgment process itself, not its output." },
+      { slug: "provenance-proof", desc: "Tamper-evidently binds AI judgments to their inputs. Preserves post-incident reproducibility." },
+      { slug: "audit-trail", desc: "The only after-the-fact verification surface that holds in the Mythos era. Compliance-grade." },
+      { slug: "human-off-the-loop", desc: "The operating mode where humans no longer approve each AI action — and the precondition for Mythos-grade attack." },
+    ],
+    ctaH2: "Stop the AI judgment before Mythos-grade attack reaches commit.",
+  },
   // ============ Protocols & Agents ============
   {
     slug: "agentic-payments",
@@ -905,6 +933,7 @@ export function getGlossaryTermEn(slug: string): GlossaryTerm | undefined {
 export const GLOSSARY_CATEGORIES_EN: ReadonlyArray<GlossaryCategory> = [
   "暗号レイヤ",
   "検証可能AI",
+  "脅威モデル・AI攻撃",
   "プロトコル・エージェント",
   "規制・コンプライアンス",
 ];
@@ -912,6 +941,7 @@ export const GLOSSARY_CATEGORIES_EN: ReadonlyArray<GlossaryCategory> = [
 const CATEGORY_LABELS_EN: Readonly<Record<GlossaryCategory, string>> = {
   暗号レイヤ: "Cryptography Layer",
   検証可能AI: "Verifiable AI",
+  "脅威モデル・AI攻撃": "Threat Model & AI Attack",
   "プロトコル・エージェント": "Protocols & Agents",
   "規制・コンプライアンス": "Regulatory & Compliance",
 };
@@ -921,6 +951,8 @@ const CATEGORY_DESCRIPTIONS_EN: Readonly<Record<GlossaryCategory, string>> = {
     "The cryptographic primitives Lemma uses for proving, disclosing, and tamper-evidence: ZK proofs, symmetric encryption, hashes, and commitments.",
   検証可能AI:
     "The terminology that makes AI judgments, citations, and inference traces cryptographically verifiable. Lineage, citation, and audit basics.",
+  "脅威モデル・AI攻撃":
+    "The threat class Lemma's pre-execution attestation layer responds to. Frontier-model zero-day discovery and automated exploit-chain construction — the capability range named \"Mythos-grade.\"",
   "プロトコル・エージェント":
     "Protocols for autonomous agent transactions and machine-to-machine settlement: x402, Trust402, MCP, A2A, and their adjacent specs.",
   "規制・コンプライアンス":
