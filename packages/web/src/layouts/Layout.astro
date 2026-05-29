@@ -84,6 +84,8 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href={base ? `${base}/favicon.svg` : "/favicon.svg"} />
     <link rel="icon" type="image/png" sizes="32x32" href={base ? `${base}/favicon-32.png` : "/favicon-32.png"} />
+    <link rel="apple-touch-icon" sizes="256x256" href={base ? `${base}/apple-touch-icon.png` : "/apple-touch-icon.png"} />
+    <meta name="theme-color" content="#8B4513" />
     <meta property="og:site_name" content="Lemma Oracle" />
     <meta name="twitter:card" content="summary_large_image" />
     {
@@ -202,6 +204,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     }
   </head>
   <body class={bodyClass}>
+    <div class="lemma-brand-bar" aria-hidden="true"></div>
     <slot />
   </body>
 </html>
@@ -220,6 +223,10 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     --accent: #8B4513;
     --accent-lt: #A0522D;
     --accent-bg: #F5EFE6;
+    --lemma-cream: #FCFAF5;
+    --lemma-cream-deep: #F2EEDF;
+    --lemma-brown-light: #F5EBDC;
+    --lemma-line: #E5E5E5;
     --font-display: 'Cormorant Garamond', 'Noto Serif JP', Georgia, serif;
     --font-body: 'DM Sans', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   }
@@ -230,5 +237,22 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     background: var(--white);
     color: var(--black);
     overflow-x: hidden;
+  }
+
+  /* Lemma brand bar — 240×4px saddle brown stripe pinned just below the
+     fixed Navigation (height 64px). Sits at z-index just under the nav so
+     mega-panel dropdowns still overlay it correctly. */
+  .lemma-brand-bar {
+    position: fixed;
+    top: 64px;
+    left: 32px;
+    width: 240px;
+    height: 4px;
+    background: var(--accent);
+    z-index: 999;
+    pointer-events: none;
+  }
+  @media (max-width: 640px) {
+    .lemma-brand-bar { left: 16px; width: 180px; }
   }
 </style>

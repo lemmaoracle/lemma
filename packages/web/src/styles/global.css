@@ -3,6 +3,15 @@
 @plugin "@tailwindcss/typography";
 @source "../**/*.{js,ts,jsx,tsx,astro}";
 
+/* Lemma brand tokens. Saddle brown lives as --accent in Layout.astro;
+   these are the new cream / hairline tokens introduced in Week 1. */
+@theme {
+  --color-lemma-cream: #fcfaf5;
+  --color-lemma-cream-deep: #f2eedf;
+  --color-lemma-brown-light: #f5ebdc;
+  --color-lemma-line: #e5e5e5;
+}
+
 /* Post navigation styles */
 .post-navigation {
   min-height: 48px;
