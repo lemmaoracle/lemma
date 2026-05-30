@@ -1,0 +1,657 @@
+---
+/**
+ * Lemma Critical Brief page template — used by both
+ * /critical/briefs/[slug].astro (EN) and /ja/critical/briefs/[slug].astro (JA).
+ *
+ * Renders, in order:
+ *   1. Hero: brief no + Pillar/category badges, title + subtitle, dates, authors
+ *   2. Body: rendered markdown (TL;DR + §1–§9; §10 + Revision History live in the template)
+ *   3. Related Briefs cards (from frontmatter `related_briefs`)
+ *   4. Cite this Brief box (3 tabs, vanilla JS)
+ *   5. Revision History (only when frontmatter `version` !== "1.0")
+ *   6. Distribution note (§10, template-owned boilerplate)
+ *
+ * Typography:
+ *   - Body uses EB Garamond + Noto Serif JP (both already loaded by Layout)
+ *   - Hero / metadata / UI keep --font-body (sans-serif)
+ */
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import CiteBriefBox from "../components/CiteBriefBox.astro";
+import { getTranslations, type Locale } from "../i18n/translations";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+
+export interface BriefTemplateProps {
+  locale: Locale;
+  brief: CollectionEntry<"critical-briefs">;
+}
+
+const { locale, brief } = Astro.props as BriefTemplateProps;
+const t = getTranslations(locale);
+const isJa = locale === "ja";
+const base = isJa ? "/ja" : "";
+
+const briefNoPad = String(brief.data.brief_no).padStart(3, "0");
+const localizedTitle = isJa ? brief.data.title : brief.data.title_en;
+
+// Title may end with " — <subtitle>". Split for visual hierarchy in the hero.
+const titleParts = localizedTitle.split(" — ");
+const mainTitle = titleParts[0];
+const subtitle = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
+
+const briefPath = `/critical/briefs/${brief.id}/`;
+const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
+
+const { Content } = await render(brief);
+
+const showRevisionHistory = brief.data.version !== "1.0";
+
+const PILLAR_LABELS: Record<
+  CollectionEntry<"critical-briefs">["data"]["pillar"],
+  { ja: string; en: string }
+> = {
+  "01-verifiable-origin": {
+    ja: "Pillar 01 来歴証明",
+    en: "Pillar 01 Verifiable Origin",
+  },
+  "02-verifiable-ai": {
+    ja: "Pillar 02 検証可能 AI",
+    en: "Pillar 02 Verifiable AI",
+  },
+  "03-agent-authority": {
+    ja: "Pillar 03 エージェント権限証明",
+    en: "Pillar 03 Agent Authority Proof",
+  },
+  "04-regulatory-attribute": {
+    ja: "Pillar 04 規制属性証明",
+    en: "Pillar 04 Regulatory Attribute Proof",
+  },
+};
+
+const pillarLabel = PILLAR_LABELS[brief.data.pillar][isJa ? "ja" : "en"];
+
+const PACK_LABELS: Record<string, { ja: string; en: string }> = {
+  "A-incident-response": {
+    ja: "Pack A · Incident Response",
+    en: "Pack A · Incident Response",
+  },
+  "B-regulatory": { ja: "Pack B · Regulatory", en: "Pack B · Regulatory" },
+  "C-agent-governance": {
+    ja: "Pack C · Agent Governance",
+    en: "Pack C · Agent Governance",
+  },
+};
+
+const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
+const publishedStr = brief.data.published.toISOString().slice(0, 10);
+
+const pageTitle = isJa
+  ? `${mainTitle} — Lemma Critical Brief No.${briefNoPad}`
+  : `${mainTitle} — Lemma Critical Brief No.${briefNoPad}`;
+
+const description = subtitle
+  ? `${mainTitle} — ${subtitle}`
+  : mainTitle;
+
+const labels = isJa
+  ? {
+      briefSeries: "Lemma Critical Brief",
+      briefNo: `No.${briefNoPad}`,
+      incidentDate: "事案日",
+      published: "公開日",
+      authors: "発行",
+      pack: "関連 Pack",
+      relatedHeading: "関連 Brief",
+      revisionHeading: "改訂履歴",
+      distributionHeading: "Brief 配布について",
+      distributionBody:
+        "Lemma Critical Brief は Lemma Oracle が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。",
+      discoveryCallLabel: "Discovery Call",
+      home: "ホーム",
+      breadcrumbBriefs: "Critical Brief",
+    }
+  : {
+      briefSeries: "Lemma Critical Brief",
+      briefNo: `No.${briefNoPad}`,
+      incidentDate: "Incident date",
+      published: "Published",
+      authors: "Authors",
+      pack: "Related Pack",
+      relatedHeading: "Related Briefs",
+      revisionHeading: "Revision History",
+      distributionHeading: "About distribution",
+      distributionBody:
+        "Lemma Critical Brief is a threat intelligence brief published by Lemma Oracle. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.",
+      discoveryCallLabel: "Discovery Call",
+      home: "Home",
+      breadcrumbBriefs: "Critical Brief",
+    };
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={briefPath}
+  title={pageTitle}
+  description={description}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <header class="brief-header">
+    <div class="brief-header-inner">
+      <div class="brief-breadcrumb">
+        <a href={base || "/"}>{labels.home}</a>
+        <span class="brief-breadcrumb-sep">/</span>
+        <span>{labels.breadcrumbBriefs}</span>
+      </div>
+      <div class="brief-eyebrow">
+        <span class="brief-series">{labels.briefSeries}</span>
+        <span class="brief-no">{labels.briefNo}</span>
+      </div>
+      <h1 class="brief-title">{mainTitle}</h1>
+      {subtitle && <p class="brief-subtitle">{subtitle}</p>}
+      <div class="brief-badges">
+        <span class="brief-pillar">{pillarLabel}</span>
+        <span class="brief-cat">{brief.data.primary_category}</span>
+        {brief.data.secondary_categories.map((c) => (
+          <span class="brief-cat brief-cat-secondary">{c}</span>
+        ))}
+      </div>
+      <dl class="brief-dates">
+        <div class="brief-dates-row">
+          <dt>{labels.incidentDate}</dt>
+          <dd>{incidentDateStr}</dd>
+        </div>
+        <div class="brief-dates-row">
+          <dt>{labels.published}</dt>
+          <dd>{publishedStr}</dd>
+        </div>
+        <div class="brief-dates-row">
+          <dt>{labels.authors}</dt>
+          <dd>{brief.data.authors.join(", ")}</dd>
+        </div>
+        {brief.data.related_pack.length > 0 && (
+          <div class="brief-dates-row">
+            <dt>{labels.pack}</dt>
+            <dd>
+              {brief.data.related_pack
+                .map((p) => PACK_LABELS[p]?.[isJa ? "ja" : "en"] ?? p)
+                .join(" · ")}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  </header>
+
+  <main class="brief-main">
+    <article class="brief-body">
+      <Content />
+    </article>
+
+    {brief.data.related_briefs.length > 0 && (
+      <section class="brief-related" aria-labelledby="related-heading">
+        <h2 id="related-heading" class="brief-section-heading">
+          {labels.relatedHeading}
+        </h2>
+        <ul class="brief-related-list">
+          {brief.data.related_briefs.map((slug) => (
+            <li class="brief-related-item">
+              <a href={`${base}/critical/briefs/${slug}/`}>
+                <span class="brief-related-slug">{slug}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <CiteBriefBox
+      locale={locale}
+      briefNo={briefNoPad}
+      titleForCitation={localizedTitle}
+      year={brief.data.published.getFullYear()}
+      briefUrl={briefUrl}
+      briefSlug={brief.id}
+    />
+
+    {showRevisionHistory && (
+      <section class="brief-revision" aria-labelledby="revision-heading">
+        <h2 id="revision-heading" class="brief-section-heading">
+          {labels.revisionHeading}
+        </h2>
+        <p class="brief-revision-note">
+          {isJa
+            ? `現在の版: ${brief.data.version}`
+            : `Current version: ${brief.data.version}`}
+        </p>
+      </section>
+    )}
+
+    <section class="brief-distribution" aria-labelledby="distribution-heading">
+      <h2 id="distribution-heading" class="brief-section-heading">
+        {labels.distributionHeading}
+      </h2>
+      <p class="brief-distribution-body">{labels.distributionBody}</p>
+      <p class="brief-distribution-link">
+        {labels.discoveryCallLabel}:
+        <a href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">
+          {DISCOVERY_CALL_URL[locale].replace("https://", "")}
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* ─── HEADER ─── */
+  .brief-header {
+    margin-top: 64px;
+    background: var(--black);
+    color: var(--white);
+    padding: 96px 10% 64px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .brief-header-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .brief-breadcrumb {
+    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+  .brief-breadcrumb a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .brief-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .brief-breadcrumb-sep {
+    margin: 0 8px;
+    color: rgba(255, 255, 255, 0.25);
+  }
+  .brief-eyebrow {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brief-eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+  .brief-series {
+    color: var(--accent);
+  }
+  .brief-no {
+    color: rgba(255, 255, 255, 0.55);
+    font-variant-numeric: tabular-nums;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    padding-left: 14px;
+  }
+  .brief-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.8vw, 56px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    margin: 0 0 16px;
+  }
+  :root[lang="ja"] .brief-title {
+    line-height: 1.35;
+  }
+  .brief-subtitle {
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 32px;
+    max-width: 640px;
+  }
+  .brief-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 36px;
+  }
+  .brief-pillar,
+  .brief-cat {
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .brief-pillar {
+    background: rgba(139, 69, 19, 0.18);
+    border-color: rgba(139, 69, 19, 0.45);
+    color: #d8b69a;
+  }
+  .brief-cat-secondary {
+    opacity: 0.7;
+  }
+  .brief-dates {
+    margin: 0;
+    padding: 24px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 32px;
+  }
+  .brief-dates-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .brief-dates dt {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .brief-dates dd {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── MAIN ─── */
+  .brief-main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 72px 24px 96px;
+  }
+
+  /* ─── BODY (serif reading column) ─── */
+  .brief-body {
+    font-family: "EB Garamond", "Noto Serif JP", Georgia, serif;
+    color: var(--gray-800, #1a1a1a);
+    font-feature-settings: "palt" 1;
+  }
+  .brief-body :global(h2) {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.8vw, 32px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin: 64px 0 24px;
+  }
+  .brief-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .brief-body :global(h3) {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.35;
+    margin: 40px 0 16px;
+  }
+  .brief-body :global(p) {
+    font-size: 18px;
+    line-height: 1.8;
+    margin: 0 0 24px;
+  }
+  .brief-body :global(strong) {
+    font-weight: 600;
+    color: var(--black);
+  }
+  .brief-body :global(em) {
+    font-style: italic;
+  }
+  .brief-body :global(a) {
+    color: var(--accent);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+    overflow-wrap: anywhere;
+  }
+  .brief-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .brief-body :global(ul),
+  .brief-body :global(ol) {
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+  }
+  .brief-body :global(ul li) {
+    font-size: 17px;
+    line-height: 1.75;
+    padding: 4px 0 4px 24px;
+    position: relative;
+  }
+  .brief-body :global(ul li::before) {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    color: var(--accent);
+    font-size: 7px;
+  }
+  .brief-body :global(ol) {
+    counter-reset: ol-counter;
+  }
+  .brief-body :global(ol li) {
+    font-size: 17px;
+    line-height: 1.75;
+    padding: 4px 0 4px 36px;
+    position: relative;
+    counter-increment: ol-counter;
+  }
+  .brief-body :global(ol li::before) {
+    content: counter(ol-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .brief-body :global(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+    font-size: 14px;
+    margin: 32px 0;
+  }
+  .brief-body :global(thead tr) {
+    background: var(--black);
+    color: var(--white);
+  }
+  .brief-body :global(th) {
+    padding: 12px 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .brief-body :global(td) {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-800);
+    line-height: 1.6;
+    vertical-align: top;
+  }
+  .brief-body :global(tr:nth-child(odd) td) {
+    background: var(--gray-50);
+  }
+  .brief-body :global(blockquote) {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    margin: 32px 0;
+    color: var(--gray-700, #5f5f5f);
+    font-style: italic;
+  }
+  .brief-body :global(hr) {
+    border: none;
+    border-top: 1px solid var(--gray-200);
+    margin: 48px 0;
+  }
+  .brief-body :global(code:not(pre code)) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 0.85em;
+    background: var(--gray-50);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+  .brief-body :global(pre) {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: var(--gray-50);
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+  .brief-body :global(pre code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background: transparent;
+    padding: 0;
+  }
+
+  /* ─── SECTION HEADING (related / revision / distribution) ─── */
+  .brief-section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.4vw, 28px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    color: var(--black);
+    margin: 0 0 24px;
+  }
+
+  /* ─── RELATED ─── */
+  .brief-related {
+    margin: 80px 0 0;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .brief-related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+  }
+  .brief-related-item {
+    background: var(--white);
+    transition: background 0.2s;
+  }
+  .brief-related-item:hover {
+    background: var(--accent-bg);
+  }
+  .brief-related-item a {
+    display: block;
+    padding: 18px 22px;
+    text-decoration: none;
+    color: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+  }
+  .brief-related-slug {
+    font-size: 13px;
+    color: var(--gray-800);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 560px) {
+    .brief-related-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ─── REVISION ─── */
+  .brief-revision {
+    margin: 80px 0 0;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .brief-revision-note {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--gray-700, #5f5f5f);
+    margin: 0;
+  }
+
+  /* ─── DISTRIBUTION ─── */
+  .brief-distribution {
+    margin: 80px 0 0;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .brief-distribution-body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-700, #5f5f5f);
+    margin: 0 0 16px;
+  }
+  .brief-distribution-link {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--gray-700, #5f5f5f);
+    margin: 0;
+  }
+  .brief-distribution-link a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    margin-left: 6px;
+  }
+  .brief-distribution-link a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .brief-header {
+      padding: 80px 6% 48px;
+    }
+    .brief-main {
+      padding: 48px 6% 80px;
+    }
+    .brief-dates {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+</style>
