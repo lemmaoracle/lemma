@@ -60,6 +60,26 @@ Markdown body follows the 10-section template (TL;DR + §1–§10). Section
 numbering is part of the prose, not auto-generated. See the template doc
 outside this repo for the section list and style guide.
 
+### Author / template boundary
+
+To avoid duplication, two sections are owned by the page template, not
+the markdown body:
+
+- **§10 Distribution** — rendered as boilerplate at the foot of every
+  Brief page. Do not include §10 prose in the markdown body.
+- **Revision History** — rendered automatically when `version` is not
+  `"1.0"`. Authors do not need to add a "Revision History" section by
+  hand; the page derives it from frontmatter on the next major bump
+  (see #8 in the Methodology page for the policy).
+
+`related_briefs` (frontmatter) drives an auto-generated "Related Briefs"
+cards grid. Authors are still free to write a narrative §8 inside the
+body for context — the two surfaces coexist (cards = navigation,
+narrative = analysis).
+
+All other sections (TL;DR, §1 Incident Outline through §9 Sources) are
+written in the markdown body and rendered as-is.
+
 ## URLs
 
 Each `<NN>-<slug>.md` surfaces at:

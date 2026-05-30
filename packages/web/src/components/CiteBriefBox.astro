@@ -1,0 +1,308 @@
+---
+/**
+ * "Cite this Brief" box — three citation formats (Plain text / BibTeX / APA)
+ * selectable via tabs, with a one-click copy button per tab.
+ *
+ * Vanilla JS:
+ *   - Tab click swaps the active panel via [hidden] toggle
+ *   - Copy button uses navigator.clipboard.writeText on the active panel
+ *     and shows a short "Copied" affordance for ~1.5s
+ *
+ * One <CiteBriefBox /> per page is the expected usage; the script uses
+ * the closest [data-cite-box] container so multiple instances would
+ * still work.
+ */
+import type { Locale } from "../i18n/translations";
+
+export interface CiteBriefBoxProps {
+  locale: Locale;
+  briefNo: string; // already zero-padded, e.g. "001"
+  titleForCitation: string;
+  year: number;
+  briefUrl: string;
+  briefSlug: string; // e.g. "001-kelpdao-rseth"
+}
+
+const { locale, briefNo, titleForCitation, year, briefUrl, briefSlug } =
+  Astro.props as CiteBriefBoxProps;
+
+const isJa = locale === "ja";
+
+const plainText =
+  `Lemma Critical Team. (${year}).\n` +
+  `"${titleForCitation}".\n` +
+  `Lemma Critical Brief No.${briefNo}. Lemma Oracle / FRAME00, Inc.\n` +
+  `${briefUrl}`;
+
+const bibtex =
+  `@techreport{lemma_critical_${briefNo},\n` +
+  `  author      = {{Lemma Critical Team}},\n` +
+  `  title       = {${titleForCitation}},\n` +
+  `  number      = {${briefNo}},\n` +
+  `  year        = {${year}},\n` +
+  `  institution = {Lemma Oracle / FRAME00, Inc.},\n` +
+  `  url         = {${briefUrl}}\n` +
+  `}`;
+
+const apa =
+  `Lemma Critical Team. (${year}).\n` +
+  `${titleForCitation} (Lemma Critical Brief No.${briefNo}). ` +
+  `Lemma Oracle / FRAME00, Inc.\n` +
+  `${briefUrl}`;
+
+const labels = isJa
+  ? {
+      heading: "この Brief を引用する",
+      eyebrow: "Cite this Brief",
+      copy: "コピー",
+      copied: "コピーしました",
+      copyAria: "選択中の引用形式をコピー",
+    }
+  : {
+      heading: "Cite this Brief",
+      eyebrow: "Citation",
+      copy: "Copy",
+      copied: "Copied",
+      copyAria: "Copy the active citation format",
+    };
+
+const id = `cite-${briefSlug}`;
+---
+
+<section class="cite-box" data-cite-box aria-labelledby={`${id}-heading`}>
+  <div class="cite-eyebrow">{labels.eyebrow}</div>
+  <h2 id={`${id}-heading`} class="cite-heading">{labels.heading}</h2>
+
+  <div class="cite-tabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      aria-selected="true"
+      data-cite-tab="plain"
+      class="cite-tab cite-tab-active"
+    >
+      Plain text
+    </button>
+    <button
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-cite-tab="bibtex"
+      class="cite-tab"
+    >
+      BibTeX
+    </button>
+    <button
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-cite-tab="apa"
+      class="cite-tab"
+    >
+      APA
+    </button>
+  </div>
+
+  <div class="cite-panels">
+    <pre class="cite-panel" data-cite-panel="plain" aria-live="polite"><code>{plainText}</code></pre>
+    <pre class="cite-panel" data-cite-panel="bibtex" hidden><code>{bibtex}</code></pre>
+    <pre class="cite-panel" data-cite-panel="apa" hidden><code>{apa}</code></pre>
+  </div>
+
+  <button
+    type="button"
+    class="cite-copy"
+    data-cite-copy
+    aria-label={labels.copyAria}
+    data-copy-label={labels.copy}
+    data-copied-label={labels.copied}
+  >
+    <span class="cite-copy-text">{labels.copy}</span>
+  </button>
+</section>
+
+<script>
+  type CiteBox = HTMLElement & { dataset: { citeBox?: string } };
+
+  function setupCiteBoxes() {
+    const boxes = document.querySelectorAll<CiteBox>("[data-cite-box]");
+    boxes.forEach((box) => {
+      const tabs = box.querySelectorAll<HTMLButtonElement>("[data-cite-tab]");
+      const panels = box.querySelectorAll<HTMLElement>("[data-cite-panel]");
+      const copyBtn = box.querySelector<HTMLButtonElement>("[data-cite-copy]");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const targetKey = tab.dataset.citeTab;
+          tabs.forEach((t) => {
+            const isActive = t.dataset.citeTab === targetKey;
+            t.classList.toggle("cite-tab-active", isActive);
+            t.setAttribute("aria-selected", isActive ? "true" : "false");
+          });
+          panels.forEach((p) => {
+            const isActive = p.dataset.citePanel === targetKey;
+            if (isActive) {
+              p.removeAttribute("hidden");
+            } else {
+              p.setAttribute("hidden", "");
+            }
+          });
+        });
+      });
+
+      if (copyBtn) {
+        copyBtn.addEventListener("click", async () => {
+          const active = box.querySelector<HTMLElement>(
+            "[data-cite-panel]:not([hidden])",
+          );
+          if (!active) return;
+          const text = active.textContent ?? "";
+          try {
+            await navigator.clipboard.writeText(text);
+            const span = copyBtn.querySelector<HTMLElement>(".cite-copy-text");
+            if (!span) return;
+            const original = copyBtn.dataset.copyLabel ?? "Copy";
+            const copied = copyBtn.dataset.copiedLabel ?? "Copied";
+            span.textContent = copied;
+            copyBtn.classList.add("cite-copy-active");
+            setTimeout(() => {
+              span.textContent = original;
+              copyBtn.classList.remove("cite-copy-active");
+            }, 1500);
+          } catch (_err) {
+            // Clipboard API can fail in non-HTTPS contexts (local file://,
+            // some embedded views). Surface silently — no fallback selection.
+          }
+        });
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCiteBoxes, { once: true });
+  } else {
+    setupCiteBoxes();
+  }
+</script>
+
+<style>
+  .cite-box {
+    margin: 80px 0 0;
+    padding: 32px;
+    background: var(--lemma-cream, #fcfaf5);
+    border: 1px solid var(--gray-200);
+  }
+  .cite-eyebrow {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cite-eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+  .cite-heading {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.2vw, 24px);
+    font-weight: 500;
+    color: var(--black);
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .cite-heading {
+    line-height: 1.4;
+  }
+  .cite-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 16px;
+  }
+  .cite-tab {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-700, #5f5f5f);
+    background: transparent;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .cite-tab:hover {
+    color: var(--accent);
+  }
+  .cite-tab-active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .cite-panels {
+    margin-bottom: 16px;
+  }
+  .cite-panel {
+    margin: 0;
+    padding: 16px 18px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .cite-panel code {
+    background: transparent;
+    color: var(--gray-800, #1a1a1a);
+    font-family: inherit;
+    font-size: inherit;
+  }
+  .cite-copy {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--black);
+    border: none;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .cite-copy:hover {
+    background: var(--accent);
+  }
+  .cite-copy-active {
+    background: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .cite-box {
+      padding: 24px 20px;
+    }
+    .cite-tab {
+      padding: 10px 14px;
+      font-size: 11px;
+    }
+    .cite-panel {
+      font-size: 12px;
+      padding: 14px;
+    }
+  }
+</style>

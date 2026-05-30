@@ -1,0 +1,20 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BriefTemplate from "../../../templates/BriefTemplate.astro";
+
+export async function getStaticPaths() {
+  const briefs = await getCollection("critical-briefs");
+  return briefs.map((brief) => ({
+    params: { slug: brief.id },
+    props: { brief },
+  }));
+}
+
+interface Props {
+  brief: CollectionEntry<"critical-briefs">;
+}
+
+const { brief } = Astro.props as Props;
+---
+
+<BriefTemplate locale="en" brief={brief} />
