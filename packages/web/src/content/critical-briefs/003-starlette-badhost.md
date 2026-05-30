@@ -128,7 +128,7 @@ https://github.com/lemmaoracle/example-origin
 
 - **CVE-2026-48710 公式記録**(MITRE CVE)— BadHost の脆弱性記述と CVSS 評価を含む。https://www.cve.org/CVERecord?id=CVE-2026-48710
 - **X41 D-Sec advisory and MCP scanner**(X41 D-Sec 公式)— mcp-scan.nemesis.services の公開 scanner と technical advisory。https://mcp-scan.nemesis.services/
-- **Starlette 1.0.1 release notes**(フレームワーク公式、GitHub release)— BadHost への patch 反映。URL: [Mayumi 確認待ち / Starlette 公式 release 投稿先]
+- **Starlette 1.0.1 release**(2026-05-21、Starlette 公式 GitHub release)— BadHost 修正の release tag。`request.url.path` と実 HTTP path の整合性回復、Host header validation の追加を含む。https://github.com/encode/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package"(2026-05-27、独立報道)— https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
 - **Lemma Oracle essay**: 「Proof-as-Auth: 鍵を一度も送らずにサインインする」(2026-05-24、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/
 - **Lemma Oracle essay**: 「AI 時代のサイバー防衛に残された、最後の層」(2026-05-22、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/detection-is-not-proof/

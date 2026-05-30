@@ -135,9 +135,10 @@ https://github.com/lemmaoracle/example-origin
 
 ## 9. Sources
 
-- **Stake DAO official statement and follow-up**(2026-05、公式 blog / forum announcement)— vsdCRV ブリッジ停止、メインネット側裏付資産保護、影響範囲 Arbitrum 限定化を含む。URL: [Mayumi 確認待ち / 公式 blog 投稿先]
-- **Blockaid threat intelligence**: vsdCRV exploit real-time detection report(2026-05-27、Blockaid 公式 blog)— URL: [Mayumi 確認待ち / 公式 blog 投稿先]
-- **PeckShield post-mortem analysis**(2026-05-27、PeckShield 公式 blog / Medium)— swap および bridge 経路の独立解析を含む。URL: [Mayumi 確認待ち / 公式 blog 投稿先]
+- **Stake DAO official statement (initial)**(2026-05-27、Stake DAO 公式 X 投稿)— 「We are aware of the ongoing situation. Please do not interact with vsdCRV.」最初の認知声明。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/StakeDAOHQ/status/2059586800255910039
+- **Stake DAO official statement (follow-up)**(2026-05-28、Stake DAO 公式 X 投稿)— preliminary investigation、デプロイヤー秘密鍵侵害の公表、メインネット側裏付資産保護、vsdCRV ブリッジ停止、影響範囲 Arbitrum 限定化、Boosted Yields / Liquid Lockers / Votemarket / Morpho 上 Stake DAO レンディングが影響外であることを含む。https://x.com/StakeDAOHQ/status/2059938235724320959
+- **Blockaid threat intelligence (real-time detection)**(2026-05-27、Blockaid 公式 X 投稿)— ongoing exploit としての real-time 検出、5.4 兆 vsdCRV mint と ETH への swap、malicious peer deployment・setPeer call・mint transaction の onchain evidence を公開。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/blockaid_/status/2059573118927049152
+- **PeckShield analysis**(2026-05-27、PeckShield Alert 公式 X 投稿)— 5.4 兆 vsdCRV mint と 43.781 ETH(約 $91K)swap の独立確認、Curve / KyberSwap 経由の swap と Ethereum への bridge 経路の解析を含む。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/PeckShieldAlert/status/2059578749352640679
 - **Lemma Oracle essay**: 「2026 年のブリッジ事象が示しているもの — 来歴証明(verifiable origin proof)というカテゴリについて」(2026-04-30、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/
 - **Lemma Oracle essay**: 「AI 時代のサイバー防衛に残された、最後の層」(2026-05-22、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/detection-is-not-proof/
 - **Lemma Oracle reference implementation**: verifiable-origin proof sample(Lemma 公開 GitHub)— https://github.com/lemmaoracle/example-origin
