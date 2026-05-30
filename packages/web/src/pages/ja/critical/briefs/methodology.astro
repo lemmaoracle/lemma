@@ -1,0 +1,142 @@
+---
+import LegalTemplate, { type LegalSection } from "../../../../templates/LegalTemplate.astro";
+import { getTranslations } from "../../../../i18n/translations";
+import { DISCOVERY_CALL_URL } from "../../../../config/cta";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+
+const discoveryCall = DISCOVERY_CALL_URL.ja;
+const whitepaperUrl = "https://tally.so/r/xX0VYv";
+
+const codeBlockStyle =
+  "background: var(--gray-50); padding: 16px; border-radius: 4px; " +
+  "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; " +
+  "font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; " +
+  "margin: 0 0 16px;";
+
+const sections: LegalSection[] = [
+  {
+    heading: "Lemma Critical Brief とは",
+    body: `<p>Lemma Critical Brief は、Lemma Oracle が発行する<strong>構造的事案分析の reference 集</strong>である。AI・暗号インフラ・supply chain・規制属性領域で起きた個別インシデントを 1 件 = 1 Brief の形式で archive し、各事案の <strong>failure primitive</strong> と <strong>検出側強化では埋まらない gap</strong> を構造的に解析する。</p>
+<p>既存の事故事例 database が「何が起きたか」の網羅的記録を提供するのに対し、Brief は「<strong>なぜ検出で防げなかったか → 証明ベースでどう防げるか</strong>」の thesis-driven な分析文書である。CSO・analyst・規制実務者が citation 元として参照することを想定して書かれている。</p>`,
+  },
+  {
+    heading: "Detection ≠ Proof thesis",
+    body: `<p>Lemma の核思想は <strong>検出は証明ではない (Detection ≠ Proof)</strong> という認識にある。</p>
+<p>検出ツールが返す信頼度スコア — 例えば「99.7% の確率で異常」— は、規制報告や行政手続き、訴訟で「許可されていない権限行使があった」と立証する材料にはならない。検出は damage が flight 中になってからの blast window を狭める層であって、bridge / system / agent が「何を accept するか」自体を変えない。</p>
+<p>事前証明 (pre-execution attestation) はこの構造的 gap を埋める。取引前に「何が・誰に・どこまで許可されたか」を暗号で証跡化することで、検出に頼らず、検証に頼る防御線が成立する。検出と事前証明は競合ではなく相補的:検出は事象後の blast window を狭める、事前証明は事象前の trust boundary を独立検証する。</p>
+<p>各 Brief は §5「検出 vs 事前証明」のセクションで、対象事案の文脈にこの thesis を適用する。</p>`,
+  },
+  {
+    heading: "Brief 構造",
+    body: `<p>各 Brief は以下の 10 セクションから構成される:</p>
+<ul>
+<li><strong>TL;DR</strong> — 対象事案・損害規模・失敗 primitive・Lemma の応答を 1 段落で</li>
+<li><strong>§1 事案概要</strong> — 事案名 / 日付 / 損害規模 / 主要関係者</li>
+<li><strong>§2 タイムライン</strong> — ISO 日付による時系列、技術的事実のみ</li>
+<li><strong>§3 攻撃ベクター</strong> — initial compromise → lateral movement → impact realization</li>
+<li><strong>§4 カテゴリと位置</strong> — 失敗 primitive のカテゴリ命名、同カテゴリの他事案との共通点と差異</li>
+<li><strong>§5 検出 vs 事前証明</strong> — Detection ≠ Proof thesis の本事案への適用</li>
+<li><strong>§6 業界の対応</strong> — 公式 post-mortem、規制側指導、業界横断 response</li>
+<li><strong>§7 Lemma の応答層</strong> — 4 Pillar / 製品 (Critical / Compliance / Civic / Trust402) / Pack (A/B/C) / 実装サンプルの位置付け</li>
+<li><strong>§8 関連 Brief</strong> — 同カテゴリの他事案、隣接カテゴリの関連事案への横リンク</li>
+<li><strong>§9 引用元</strong> — 一次情報・二次情報・自社一次情報、各 URL + 日付 + 出典区別</li>
+<li><strong>§10 配布について</strong> — 公開分析である旨と Discovery Call 連絡先</li>
+</ul>
+<p>文体は sober、業界用語は注釈なく使用、検出ツール・既存ベンダー (Blockaid・PeckShield・Mandiant 等) を否定せず役割分担として描く。</p>`,
+  },
+  {
+    heading: "Pillar / Category framework",
+    body: `<p>Brief は Lemma の <strong>4 Pillar</strong> に従って分類される:</p>
+<ul>
+<li><strong>Pillar 01 — 来歴証明 (verifiable-origin)</strong>:message・data・code の origin を独立検証する層</li>
+<li><strong>Pillar 02 — 検証可能 AI (verifiable-ai)</strong>:AI 判断の過程を ZK で commit する層</li>
+<li><strong>Pillar 03 — エージェント権限証明 (agent-authority)</strong>:エージェントの委任関係を証跡化する層</li>
+<li><strong>Pillar 04 — 規制属性証明 (regulatory-attribute)</strong>:KYC / AML / 規制属性を選択的開示で証明する層</li>
+</ul>
+<p>各 Brief は primary_category (主カテゴリ) と secondary_categories (横断カテゴリ) を持ち、Pillar archive と Category archive の両方からアクセス可能となる。</p>
+<p>カテゴリ命名は Lemma が独自に定義する。AIID / OECD AIID 等の外部分類との交差は secondary_categories を介して表現する。</p>`,
+  },
+  {
+    heading: "Editorial process",
+    body: `<p>各 Brief は以下のプロセスを経て公開される:</p>
+<ol>
+<li><strong>Sourcing</strong> — 一次情報 (関係企業の公式 post-mortem、検出企業の analysis、規制側公表) を中心に収集、二次情報 (業界報道) は補助</li>
+<li><strong>ドラフト作成</strong> — Markdown でテンプレ準拠の 1,500-3,000 字</li>
+<li><strong>Fact-checking</strong> — 技術的詳細 (攻撃ベクター、設定構造、暗号方式) を技術リードが確認</li>
+<li><strong>法務 review</strong> — 他社名表記、責任所在の表現、配布ポリシー整合</li>
+<li><strong>編集確認</strong> — 文体・トーン・citation 一貫性</li>
+<li><strong>承認</strong> — CEO + 共同創業者</li>
+<li><strong>公開</strong> — <code>/critical/briefs/</code> 配下、PDF 同時生成、RSS 自動更新</li>
+</ol>`,
+  },
+  {
+    heading: "Citation conventions",
+    body: `<p>各 Brief は Permanent URL (slug 不変、archive 内番号は再利用しない) を持つ。</p>
+<p>引用は以下の形式で行うことが推奨される。</p>
+<p><strong>Plain text</strong></p>
+<pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
+"&lt;Brief タイトル&gt;".
+Lemma Critical Brief No.&lt;番号&gt;. Lemma Oracle / FRAME00, Inc.
+https://lemma.frame00.com/critical/briefs/&lt;NN&gt;-&lt;slug&gt;/</code></pre>
+<p><strong>BibTeX</strong></p>
+<pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
+  author      = {{Lemma Critical Team}},
+  title       = {&lt;タイトル&gt;},
+  number      = {&lt;NN&gt;},
+  year        = {2026},
+  institution = {Lemma Oracle / FRAME00, Inc.},
+  url         = {&lt;Brief URL&gt;}
+}</code></pre>
+<p><strong>APA</strong></p>
+<pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
+&lt;タイトル&gt; (Lemma Critical Brief No.&lt;番号&gt;). Lemma Oracle / FRAME00, Inc.
+&lt;Brief URL&gt;</code></pre>
+<p>各 Brief ページに「Cite this Brief」box があり、3 形式を tab 切替で表示する。PDF 版も同時提供される。</p>`,
+  },
+  {
+    heading: "Distribution and licensing",
+    body: `<p>Lemma Critical Brief は公開情報の構造化分析である。本シリーズは:</p>
+<ul>
+<li><strong>公開分析であり、特定の組織への監査・診断・推奨ではない</strong></li>
+<li>意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に <a href="${discoveryCall}" target="_blank" rel="noopener">Discovery Call</a> を通じて直接相談することが望ましい</li>
+<li>商用利用や translation の問い合わせは Lemma Oracle 編集部門までご連絡を</li>
+</ul>`,
+  },
+  {
+    heading: "Updates and corrections policy",
+    body: `<p>Brief は公開後、以下の方針で維持される:</p>
+<ul>
+<li><strong>Typo / 軽微修正</strong> (誤字、URL リンク切れ、表記揺れ等):上書き、版番号変更なし</li>
+<li><strong>内容改訂</strong> (事実追加、解釈変更、新事実の反映):版番号付与で履歴保持。frontmatter の <code>version</code> が 1.0 → 1.1 (軽微) / 2.0 (大規模) で incrementing し、Brief 末尾に「改訂履歴」セクションを設けて各版の変更点を簡潔に記録する</li>
+<li><strong>撤回</strong> (誤情報・誤分類が判明した場合):元 URL に retraction notice を残し、内容を撤回。Permanent URL ポリシーのため URL は削除しない</li>
+</ul>`,
+  },
+  {
+    heading: "Contact for tips / corrections",
+    body: `<p>Brief に関する情報提供、訂正、商用利用の問い合わせ:</p>
+<ul>
+<li><strong>Discovery Call</strong>:<a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a></li>
+<li><strong>ホワイトペーパー請求</strong>:<a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
+<li><strong>編集部門への直接問い合わせ</strong>:[後日 contact form を別途設置]</li>
+</ul>`,
+  },
+];
+
+const description =
+  "Lemma Critical Brief シリーズの方法論・thesis・編集プロセス・citation 規約。各 Brief の制作と公開、読者による引用は本ページの方針に従う。";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="Lemma Critical Brief"
+  title="Methodology"
+  lastUpdated="最終更新日:2026年5月30日"
+  intro="Lemma Critical Brief シリーズの方法論、thesis、編集プロセス、citation 規約をまとめる。各 Brief の制作と公開、読者による引用は、以下の方針に従う。"
+  sections={sections}
+  description={description}
+/>
