@@ -1,0 +1,141 @@
+---
+import LegalTemplate, { type LegalSection } from "../../../templates/LegalTemplate.astro";
+import { getTranslations } from "../../../i18n/translations";
+import { DISCOVERY_CALL_URL } from "../../../config/cta";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+
+const discoveryCall = DISCOVERY_CALL_URL.en;
+const whitepaperUrl = "https://tally.so/r/7RJXdR";
+
+const codeBlockStyle =
+  "background: var(--gray-50); padding: 16px; border-radius: 4px; " +
+  "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; " +
+  "font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; " +
+  "margin: 0 0 16px;";
+
+const sections: LegalSection[] = [
+  {
+    heading: "What Lemma Critical Brief Is",
+    body: `<p>Lemma Critical Brief is a <strong>structured reference collection of incident analyses</strong> published by Lemma Oracle. We archive individual incidents across AI, cryptographic infrastructure, supply chain, and regulatory attribute domains as one Brief per case, dissecting each case's <strong>failure primitive</strong> and the <strong>gap that detection-side reinforcement cannot close</strong>.</p>
+<p>Where existing incident databases provide comprehensive records of "what happened," each Brief is a thesis-driven analytic document on "<strong>why detection didn't prevent it → how proof-based defense would</strong>." It is written to be cited by CSOs, analysts, and regulatory practitioners.</p>`,
+  },
+  {
+    heading: "Detection ≠ Proof thesis",
+    body: `<p>Lemma's core thesis is the recognition that <strong>detection is not proof (Detection ≠ Proof)</strong>.</p>
+<p>A detection tool's confidence score — say, "99.7% probability of anomaly" — is not admissible evidence in regulatory filings, administrative proceedings, or court that an unauthorized authority was exercised. Detection narrows the blast window after damage is in flight; it does not change what a bridge, system, or agent will accept.</p>
+<p>Pre-execution attestation closes this structural gap. By cryptographically committing "who was authorized to do what, and to what limit" before a transaction, the defensive line shifts from detection to verification. Detection and pre-execution attestation are not competitors but complements: detection narrows the post-event blast window; pre-execution attestation independently verifies the pre-event trust boundary.</p>
+<p>Each Brief applies this thesis to its specific case in §5, "Detection vs Pre-Execution Attestation."</p>`,
+  },
+  {
+    heading: "Brief Structure",
+    body: `<p>Each Brief consists of the following 10 sections:</p>
+<ul>
+<li><strong>TL;DR</strong> — One paragraph covering the case, loss scale, failure primitive, and Lemma's response</li>
+<li><strong>§1 Case overview</strong> — Name / date / loss scale / key parties</li>
+<li><strong>§2 Timeline</strong> — ISO dates, technical facts only</li>
+<li><strong>§3 Attack vector</strong> — Initial compromise → lateral movement → impact realization</li>
+<li><strong>§4 Category and position</strong> — Naming the failure primitive's category; commonalities and differences with neighbouring cases</li>
+<li><strong>§5 Detection vs Pre-Execution Attestation</strong> — Applying the Detection ≠ Proof thesis to the case</li>
+<li><strong>§6 Industry response</strong> — Official post-mortems, regulatory guidance, cross-industry response</li>
+<li><strong>§7 Lemma's response layer</strong> — Mapping to the 4 Pillars, products (Critical / Compliance / Civic / Trust402), Packs (A/B/C), and reference implementations</li>
+<li><strong>§8 Related Briefs</strong> — Cross-links to neighbouring cases in the same category and adjacent categories</li>
+<li><strong>§9 Sources</strong> — Primary, secondary, and Lemma first-party sources, each with URL, date, and provenance label</li>
+<li><strong>§10 About distribution</strong> — Notes that this is public analysis, with the Discovery Call contact</li>
+</ul>
+<p>The tone is sober. Industry vocabulary is used without footnotes. Detection vendors and existing analysts (Blockaid, PeckShield, Mandiant, etc.) are depicted as collaborators with a distinct role — not as competitors to be repudiated.</p>`,
+  },
+  {
+    heading: "Pillar / Category Framework",
+    body: `<p>Each Brief is classified under one of Lemma's <strong>4 Pillars</strong>:</p>
+<ul>
+<li><strong>Pillar 01 — Verifiable Origin (verifiable-origin)</strong>: independently verifies the origin of messages, data, and code</li>
+<li><strong>Pillar 02 — Verifiable AI (verifiable-ai)</strong>: commits AI inference processes via ZK</li>
+<li><strong>Pillar 03 — Agent Authority (agent-authority)</strong>: pins agent delegation graphs as evidence</li>
+<li><strong>Pillar 04 — Regulatory Attribute (regulatory-attribute)</strong>: proves KYC / AML / regulatory attributes via selective disclosure</li>
+</ul>
+<p>Each Brief carries a primary_category (its principal category) and secondary_categories (its cross-cutting categories), making it accessible from both the Pillar archive and the Category archive.</p>
+<p>Category naming is defined by Lemma. Intersections with external taxonomies (AIID, OECD AIID, etc.) are expressed through secondary_categories.</p>`,
+  },
+  {
+    heading: "Editorial Process",
+    body: `<p>Each Brief goes through the following process before publication:</p>
+<ol>
+<li><strong>Sourcing</strong> — Primary information (affected parties' official post-mortems, detection vendors' analyses, regulatory publications) is collected first; secondary information (industry reporting) supports</li>
+<li><strong>Drafting</strong> — Template-conformant Markdown, 1,500–3,000 characters (or equivalent English length)</li>
+<li><strong>Fact-checking</strong> — Technical details (attack vector, configuration structure, cryptographic primitives) are reviewed by the technical lead</li>
+<li><strong>Legal review</strong> — Third-party naming, attribution phrasing, distribution-policy consistency</li>
+<li><strong>Editorial pass</strong> — Voice, tone, and citation consistency</li>
+<li><strong>Approval</strong> — CEO and co-founder sign-off</li>
+<li><strong>Publication</strong> — Posted under <code>/critical/briefs/</code>, with simultaneous PDF generation and RSS auto-update</li>
+</ol>`,
+  },
+  {
+    heading: "Citation Conventions",
+    body: `<p>Each Brief has a Permanent URL — the slug is immutable, and archive numbers are never reused.</p>
+<p>We recommend the following citation formats. <strong>Plain text</strong> is shown with Brief 001 as a concrete example; <strong>BibTeX</strong> and <strong>APA</strong> are shown as templates.</p>
+<p><strong>Plain text</strong></p>
+<pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
+"KelpDAO rsETH Unauthorized Mint".
+Lemma Critical Brief No.001. Lemma Oracle / FRAME00, Inc.
+https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
+<p><strong>BibTeX</strong></p>
+<pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
+  author      = {{Lemma Critical Team}},
+  title       = {&lt;Title&gt;},
+  number      = {&lt;NN&gt;},
+  year        = {2026},
+  institution = {Lemma Oracle / FRAME00, Inc.},
+  url         = {&lt;Brief URL&gt;}
+}</code></pre>
+<p><strong>APA</strong></p>
+<pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
+&lt;Title&gt; (Lemma Critical Brief No.&lt;NN&gt;). Lemma Oracle / FRAME00, Inc.
+&lt;Brief URL&gt;</code></pre>
+<p>Each Brief page provides a "Cite this Brief" box that displays the three formats via tabs. A PDF version is provided alongside.</p>`,
+  },
+  {
+    heading: "Distribution and Licensing",
+    body: `<p>Lemma Critical Brief is structured analysis of public information. This series is:</p>
+<ul>
+<li><strong>Public analysis — not an audit, diagnostic, or recommendation directed at any specific organization</strong></li>
+<li>For decision-support use, we recommend consulting your Lemma Critical contact directly via <a href="${discoveryCall}" target="_blank" rel="noopener">Discovery Call</a></li>
+<li>Commercial use and translation requests should be directed to the Lemma Oracle editorial team</li>
+</ul>`,
+  },
+  {
+    heading: "Updates and Corrections Policy",
+    body: `<p>Briefs are maintained post-publication under the following policy:</p>
+<ul>
+<li><strong>Typo and minor fixes</strong> (misspellings, broken URLs, notation drift, etc.): overwritten in place, no version bump</li>
+<li><strong>Substantive revisions</strong> (new facts, interpretive changes, updated findings): tracked with a version bump. The frontmatter <code>version</code> increments 1.0 → 1.1 (minor) / 2.0 (major), and a "Revision history" section at the end of each Brief logs the changes per version</li>
+<li><strong>Retraction</strong> (when misinformation or miscategorization is found): a retraction notice is posted at the original URL and the content is withdrawn. Per the Permanent URL policy, the URL itself is never deleted</li>
+</ul>`,
+  },
+  {
+    heading: "Contact for Tips / Corrections",
+    body: `<p>For tips, corrections, and commercial-use inquiries about Briefs:</p>
+<ul>
+<li><strong>Discovery Call</strong>: <a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a></li>
+<li><strong>Whitepaper request</strong>: <a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
+</ul>`,
+  },
+];
+
+const description =
+  "Methodology, thesis, editorial process, and citation conventions of the Lemma Critical Brief series. Brief production, publication, and citation follow the policies set out on this page.";
+---
+
+<LegalTemplate
+  locale={locale}
+  t={t}
+  base={base}
+  tag="Lemma Critical Brief"
+  title="Methodology"
+  lastUpdated="Last updated: May 30, 2026"
+  intro="This page documents the methodology, thesis, editorial process, and citation conventions of the Lemma Critical Brief series. Brief production, publication, and reader citation follow the policies set out below."
+  sections={sections}
+  description={description}
+/>
