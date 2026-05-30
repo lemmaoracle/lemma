@@ -1,0 +1,51 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BriefArchiveTemplate, {
+  type ArchiveCard,
+} from "../../../../../templates/BriefArchiveTemplate.astro";
+import {
+  PILLAR_SLUGS,
+  pillarLabel,
+  pillarDescription,
+  type PillarSlug,
+} from "../../../../../data/criticalBriefs";
+
+export async function getStaticPaths() {
+  const all = await getCollection("critical-briefs");
+  return PILLAR_SLUGS.map((pillar) => ({
+    params: { pillar },
+    props: {
+      pillar,
+      briefs: all
+        .filter((b) => b.data.pillar === pillar)
+        .sort(
+          (a, b) =>
+            b.data.published.getTime() - a.data.published.getTime(),
+        ),
+    },
+  }));
+}
+
+interface Props {
+  pillar: PillarSlug;
+  briefs: ReadonlyArray<CollectionEntry<"critical-briefs">>;
+}
+
+const { pillar, briefs } = Astro.props as Props;
+const locale = "ja";
+
+const cards: ReadonlyArray<ArchiveCard> = briefs.map((brief) => ({
+  brief,
+  source: "general",
+}));
+---
+
+<BriefArchiveTemplate
+  locale={locale}
+  kind="pillar"
+  slug={pillar}
+  eyebrow="Lemma Critical Brief / Pillar archive"
+  heading={pillarLabel(pillar, locale)}
+  description={pillarDescription(pillar, locale)}
+  cards={cards}
+/>
