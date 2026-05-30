@@ -31,7 +31,7 @@ const isJa = locale === "ja";
 const plainText =
   `Lemma Critical Team. (${year}).\n` +
   `"${titleForCitation}".\n` +
-  `Lemma Critical Brief No.${briefNo}. Lemma Oracle / FRAME00, Inc.\n` +
+  `Lemma Critical Brief No.${briefNo}. Lemma / FRAME00, Inc.\n` +
   `${briefUrl}`;
 
 const bibtex =
@@ -40,14 +40,14 @@ const bibtex =
   `  title       = {${titleForCitation}},\n` +
   `  number      = {${briefNo}},\n` +
   `  year        = {${year}},\n` +
-  `  institution = {Lemma Oracle / FRAME00, Inc.},\n` +
+  `  institution = {Lemma / FRAME00, Inc.},\n` +
   `  url         = {${briefUrl}}\n` +
   `}`;
 
 const apa =
   `Lemma Critical Team. (${year}).\n` +
   `${titleForCitation} (Lemma Critical Brief No.${briefNo}). ` +
-  `Lemma Oracle / FRAME00, Inc.\n` +
+  `Lemma / FRAME00, Inc.\n` +
   `${briefUrl}`;
 
 const labels = isJa

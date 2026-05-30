@@ -54,27 +54,25 @@ status: published
 
 ---
 
-## 4. カテゴリと位置
+## 4. 構造的論点
 
-本事案は Pillar 03(エージェント権限証明)の `agent-infrastructure` カテゴリに属する。AI エージェントを動かす土台の HTTP layer(Starlette)に「ルーティング解決パス ≠ ミドルウェアが見るパス」という構造的乖離があり、認証層が trust boundary を独立に検証しない状態が放置されていた。
+本事案は、AI エージェントを動かす土台の HTTP layer(Starlette)において **「ルーティング解決パス ≠ ミドルウェアが見るパス」という構造的乖離が認証層と切り離されたまま放置されていた** という構造の代表事例である。フレームワーク内部で trust boundary を独立に検証しない設計が、HTTP Host ヘッダーへの 1 文字挿入という最小限の入力操作で破壊される構造になっていた。
 
-secondary_categories には `identity-auth` を併記する。本事案の直接的被害は MCP server の認証情報窃取であり、credential lifecycle / identity-auth と直接接続する。
-
-Brief 001(KelpDAO/rsETH)や Brief 002(Stake DAO)の `bridge-config-trust` カテゴリとは異なる primitive(対象が cross-chain message ではなく HTTP request)だが、両者に通底する構造は同じ:**信頼の assertion(本事案ではパスベース認証)が、それを検証する layer と切り離されている**。前者は cross-chain message の trust source、本事案は HTTP path の trust source。Trust boundary の独立検証不在という meta-primitive で同根の category(Pillar 別の枝)に位置する。
+Brief 001(KelpDAO/rsETH)や Brief 002(Stake DAO)とは異なる primitive(対象が cross-chain message ではなく HTTP request)だが、両者に通底する構造は同じ:**信頼の assertion(本事案ではパスベース認証)が、それを検証する layer と切り離されている**。前者は cross-chain message の trust source、本事案は HTTP path の trust source。Trust boundary の独立検証不在という構造で同根。
 
 ---
 
-## 5. 検出 vs 事前証明
+## 5. Detection 層では届かない構造的 gap
 
-X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサーバーを脆弱バージョン特定で検知する。これは「脆弱性が存在するか」の検出であり、運用上有用である。
+X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサーバーを脆弱バージョン特定で検知する。これは「脆弱性が存在するか」の検出であり、運用上有用である。検出企業の役割が本 Brief で否定されるものではない。
 
 一方、本脆弱性の根本は「パスベース認証という仕組み自体が trust boundary を独立検証していない」点にある。Starlette 1.0.1 の patch は当該乖離を修正するが、AI エージェントが外部リソースに HTTP 経由でアクセスする世界では、フレームワーク側のバグ修正に依存しない、より上位の trust boundary 検証が不可欠となる。
 
-事前証明(pre-execution attestation)の文脈でこれを再構成すると、「エージェント / 認証主体 / 委任スコープ」を HTTP request 自体に独立検証可能な暗号証明として埋め込む設計が要求される。フレームワークが何を accept するかではなく、accept されるべきものが何かを別系統で証明する層が必要となる。X41 D-Sec が「CVSS 7 では過小評価」と表現した深刻度は、本質的にはこの構造的欠落の規模に由来する。
+事前証明(pre-execution attestation)の文脈でこれを再構成すると、「エージェント / 認証主体 / 委任スコープ」を HTTP request 自体に独立検証可能な暗号証明として埋め込む設計が要求される。フレームワークが何を accept するかではなく、accept されるべきものが何かを別系統で証明する層が必要となる。X41 D-Sec が「CVSS 7 では過小評価」と表現した深刻度は、本質的にはこの構造的欠落の規模に由来する(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
 
 ---
 
-## 6. 業界の対応
+## 6. 対応経緯と業界動向
 
 - **Starlette**: バージョン 1.0.1 で BadHost 修正をリリース。`request.url.path` と実 HTTP path の整合性を回復
 - **X41 D-Sec**: mcp-scan.nemesis.services を公開、AI エージェントエコシステム横断のスキャン経路を提供
@@ -85,51 +83,15 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 
 ---
 
-## 7. Lemma の応答層
+## 7. Lemma による分析
 
-本事案の primitive(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対する Lemma の応答は、4 柱のうち **Pillar 03: エージェント権限証明(agent-authority-proof)** に位置する。
-
-設計の中核は、エージェントが外部リソースへ HTTP アクセスする時点で、「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込むことにある。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を受信側に告げる。
-
-**Reference architecture(参考実装方針):**
-
-- HTTP request header に Trust402 拡張として委任証明を載せる
-- 委任の各階層(オーナー → エージェント → サブエージェント)を ZK 証明として固定
-- Receiver(MCP server や API)は config / path ではなく、proof を見て accept 判定する
-
-本 reference architecture は Lemma の設計方針を示すものであり、現時点で各要素の実装状況および roadmap については別途プロダクトドキュメント / Whitepaper を参照のこと。
-
-製品ライン上の位置付け:
-
-- **Lemma Critical**(基幹インフラ・製造業対象): 本事案の波及範囲(産業機器、IoT、cloud monitoring)に直接対応
-- **Trust402**: x402 経済圏での自律エージェント決済における HTTP header 拡張としての権限証明埋込。Starlette / FastAPI / MCP server を採用するスタック全体に乗る
-- **Pack C: Agent Governance**: AI エージェント経済対応として、本事案で露出した「MCP server を中継点とする credential 集中」リスクへの組織的応答
-- **Pack A: Incident Response**: 本事案で必要となる「どの request が認証を経たか」「どの credentials が漏れたか」の事後調査自動化
-
-実装サンプル(verifiable-origin の最小例):
-https://github.com/lemmaoracle/example-origin
-
-関連エッセイ:
-
-- [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(2026-05-24)— 認証における key-less proof の Lemma 設計
-- [AI 時代のサイバー防衛に残された、最後の層](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(2026-05-22)
+本事案で露呈した構造的 gap(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
-## 8. 関連 Brief
-
-- Lemma Critical Brief No.004: Megalodon GitHub supply chain — 同じく credential 集中と CI/CD 経由の侵入経路を扱う(Pillar 01 code-provenance)
-- Lemma Critical Brief No.001 / 002: Pillar が異なる(01 来歴証明)が、信頼の assertion が独立検証されないという meta-primitive を共有
-- 今後の Pillar 03 ライン候補: Microsoft 365 Copilot Cowork による情報流出事案、GitHub VS Code 拡張機能経由 3800 リポジトリ侵入事案
-
----
-
-## 9. Sources
+## 8. Sources
 
 - **CVE-2026-48710 公式記録**(MITRE CVE)— BadHost の脆弱性記述と CVSS 評価を含む。https://www.cve.org/CVERecord?id=CVE-2026-48710
 - **X41 D-Sec advisory and MCP scanner**(X41 D-Sec 公式)— mcp-scan.nemesis.services の公開 scanner と technical advisory。https://mcp-scan.nemesis.services/
-- **Starlette 1.0.1 release**(2026-05-21、Starlette 公式 GitHub release)— BadHost 修正の release tag。`request.url.path` と実 HTTP path の整合性回復、Host header validation の追加を含む。https://github.com/encode/starlette/releases/tag/1.0.1
+- **Starlette 1.0.1 release notes**(フレームワーク公式、GitHub release)— BadHost への patch 反映。https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package"(2026-05-27、独立報道)— https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
-- **Lemma Oracle essay**: 「Proof-as-Auth: 鍵を一度も送らずにサインインする」(2026-05-24、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/
-- **Lemma Oracle essay**: 「AI 時代のサイバー防衛に残された、最後の層」(2026-05-22、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/detection-is-not-proof/
-- **Lemma Oracle reference implementation**: verifiable-origin proof sample(Lemma 公開 GitHub)— https://github.com/lemmaoracle/example-origin
