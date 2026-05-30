@@ -137,8 +137,9 @@ https://github.com/lemmaoracle/example-origin
 
 ## 9. Sources
 
-- **LayerZero Labs incident statement and update**(2026-05、公式 blog / official announcement)— 1-of-1 構成での署名拒否ポリシー、3-of-3 default 化、observation layer の独立カテゴリ化を含む。URL: [Mayumi 確認待ち / 公式 blog 投稿先]
-- **KelpDAO Foundation official statement**(2026-04、公式 blog / forum announcement)— 被害範囲、rsETH への影響、復旧プロセスを含む。URL: [Mayumi 確認待ち / 公式 blog 投稿先]
+- **LayerZero Labs incident statement**(2026-04-19、LayerZero 公式 blog)— 初期 incident statement。1-of-1 DVN 構成での署名拒否ポリシー、RPC infrastructure poisoning の概要、TraderTraitor 帰属を含む。https://layerzero.network/blog/kelpdao-incident-statement
+- **LayerZero Labs KelpDAO Incident Report**(2026-05-18、LayerZero 公式 PDF レポート)— 詳細 post-mortem。Mandiant・CrowdStrike・zeroShadow 協働の forensic 解析、social engineering(2026-03-06)を起点とする経路、RPC node 改ざんと DoS による quorum 強制、3/3 以上の DVN default 化方針を含む。https://layerzero.network/publications/kelpdao-incident-report.pdf
+- **KelpDAO Foundation official acknowledgment**(2026-04、KelpDAO 公式 X 投稿)— Arbitrum Security Council・SEAL 911・エコシステム関係者への謝辞、rsETH 保有者支援方針、forged cross-chain message であった旨を含む。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/KelpDAO/status/2046332070277091807
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights"(独立解析)— https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
 - **Lemma Oracle essay**: 「2026 年のブリッジ事象が示しているもの — 来歴証明(verifiable origin proof)というカテゴリについて」(2026-04-30、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/
 - **Lemma Oracle essay**: 「AI 時代のサイバー防衛に残された、最後の層」(2026-05-22、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/detection-is-not-proof/
