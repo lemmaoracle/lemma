@@ -1,0 +1,64 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BriefArchiveTemplate, {
+  type ArchiveCard,
+} from "../../../../../templates/BriefArchiveTemplate.astro";
+import {
+  categoryLabel,
+  categoryDescription,
+  type CategorySlug,
+} from "../../../../../data/criticalBriefs";
+
+export async function getStaticPaths() {
+  const all = await getCollection("critical-briefs");
+  const used = new Set<CategorySlug>();
+  for (const b of all) {
+    used.add(b.data.primary_category as CategorySlug);
+    for (const sc of b.data.secondary_categories) {
+      used.add(sc as CategorySlug);
+    }
+  }
+  return Array.from(used).map((category) => {
+    const cards: ArchiveCard[] = all
+      .filter(
+        (b) =>
+          b.data.primary_category === category ||
+          (b.data.secondary_categories as ReadonlyArray<string>).includes(
+            category,
+          ),
+      )
+      .sort(
+        (a, b) => b.data.published.getTime() - a.data.published.getTime(),
+      )
+      .map((brief) => ({
+        brief,
+        source:
+          brief.data.primary_category === category
+            ? ("primary" as const)
+            : ("secondary" as const),
+      }));
+    return {
+      params: { category },
+      props: { category, cards },
+    };
+  });
+}
+
+interface Props {
+  category: CategorySlug;
+  cards: ReadonlyArray<ArchiveCard>;
+}
+
+const { category, cards } = Astro.props as Props;
+const locale = "ja";
+---
+
+<BriefArchiveTemplate
+  locale={locale}
+  kind="category"
+  slug={category}
+  eyebrow="Lemma Critical Brief / Category archive"
+  heading={categoryLabel(category, locale)}
+  description={categoryDescription(category, locale)}
+  cards={cards}
+/>
