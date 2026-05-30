@@ -110,6 +110,7 @@ const labels = isJa
       distributionBody:
         "Lemma Critical Brief は Lemma Oracle が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。",
       discoveryCallLabel: "Discovery Call",
+      whitepaperLabel: "ホワイトペーパー",
       home: "ホーム",
       breadcrumbBriefs: "Critical Brief",
     }
@@ -126,9 +127,14 @@ const labels = isJa
       distributionBody:
         "Lemma Critical Brief is a threat intelligence brief published by Lemma Oracle. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.",
       discoveryCallLabel: "Discovery Call",
+      whitepaperLabel: "Whitepaper",
       home: "Home",
       breadcrumbBriefs: "Critical Brief",
     };
+
+// Canonical Tally form for the whitepaper (single-form per Mayumi confirmation
+// in PR #256 — same form ID across locales).
+const whitepaperUrl = "https://tally.so/r/xX0VYv";
 ---
 
 <Layout
@@ -240,6 +246,12 @@ const labels = isJa
         {labels.discoveryCallLabel}:
         <a href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">
           {DISCOVERY_CALL_URL[locale].replace("https://", "")}
+        </a>
+      </p>
+      <p class="brief-distribution-link">
+        {labels.whitepaperLabel}:
+        <a href={whitepaperUrl} target="_blank" rel="noopener">
+          {whitepaperUrl.replace("https://", "")}
         </a>
       </p>
     </section>
