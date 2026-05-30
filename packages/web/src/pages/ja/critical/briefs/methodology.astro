@@ -75,12 +75,12 @@ const sections: LegalSection[] = [
   {
     heading: "Citation conventions",
     body: `<p>各 Brief は Permanent URL (slug 不変、archive 内番号は再利用しない) を持つ。</p>
-<p>引用は以下の形式で行うことが推奨される。</p>
+<p>引用は以下の形式で行うことが推奨される。<strong>Plain text</strong> は Brief 001 を具体例として示し、<strong>BibTeX</strong> と <strong>APA</strong> はテンプレ形式で示す。</p>
 <p><strong>Plain text</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-"&lt;Brief タイトル&gt;".
-Lemma Critical Brief No.&lt;番号&gt;. Lemma Oracle / FRAME00, Inc.
-https://lemma.frame00.com/critical/briefs/&lt;NN&gt;-&lt;slug&gt;/</code></pre>
+"KelpDAO rsETH 不正ミント".
+Lemma Critical Brief No.001. Lemma Oracle / FRAME00, Inc.
+https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 <p><strong>BibTeX</strong></p>
 <pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
   author      = {{Lemma Critical Team}},
@@ -120,7 +120,6 @@ https://lemma.frame00.com/critical/briefs/&lt;NN&gt;-&lt;slug&gt;/</code></pre>
 <ul>
 <li><strong>Discovery Call</strong>:<a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a></li>
 <li><strong>ホワイトペーパー請求</strong>:<a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
-<li><strong>編集部門への直接問い合わせ</strong>:[後日 contact form を別途設置]</li>
 </ul>`,
   },
 ];
