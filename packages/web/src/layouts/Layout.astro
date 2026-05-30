@@ -168,6 +168,18 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
       title="Lemma Oracle ブログ (日本語)"
       href={new URL("ja/rss.xml", Astro.site)}
     />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Lemma Critical Brief (English)"
+      href={new URL("critical/briefs/feed.xml", Astro.site)}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Lemma Critical Brief (日本語)"
+      href={new URL("ja/critical/briefs/feed.xml", Astro.site)}
+    />
     {
       googleAnalyticsId && (
         <>
