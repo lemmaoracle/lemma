@@ -25,6 +25,7 @@ import {
   type CategorySlug,
   type PillarSlug,
 } from "../data/criticalBriefs";
+import { extractTldr } from "../data/extractTldr";
 
 export interface BriefCardProps {
   locale: Locale;
@@ -54,26 +55,7 @@ const subtitle = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
 const briefHref = `${base}/critical/briefs/${brief.id}/`;
 
-/** TL;DR snippet extracted from the markdown body. ~200 chars. */
-function extractTldr(body: string | undefined): string {
-  if (!body) return "";
-  // Match "## TL;DR" through the next "## " (or end of file).
-  const match = body.match(/##\s*TL;DR\s*\n+([\s\S]+?)(?:\n+##\s|$)/);
-  if (!match) return "";
-  const raw = match[1].trim();
-  // Strip inline markdown noise (link syntax, bold/italic markers, code ticks).
-  const stripped = raw
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/\*([^*]+)\*/g, "$1")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (stripped.length <= 200) return stripped;
-  return stripped.slice(0, 200) + "…";
-}
-
-const tldr = extractTldr(brief.body);
+const tldr = extractTldr(brief.body, 200);
 
 const pillarBadge = showPillarBadge
   ? pillarLabel(brief.data.pillar as PillarSlug, locale)
