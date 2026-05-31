@@ -1,0 +1,175 @@
+---
+/**
+ * §1 — Why this is its own category.
+ *
+ * Real-incident grid (date, title, 1-line desc, optional Brief link) +
+ * regulatory landscape rendered as cream-deep mono pills. No diagrams,
+ * no how-it-works — the surface here is "this category exists because
+ * these things happened."
+ */
+import type { Locale, Translations } from "../../i18n/translations";
+import type { Pillar } from "../../data/pillars";
+
+interface Props {
+  locale: Locale;
+  base: string;
+  pillar: Pillar;
+  pillarT: Translations["pillars"];
+}
+
+const { locale, base, pillar, pillarT } = Astro.props as Props;
+const hub = pillar.conceptHub;
+if (!hub) return null;
+const briefBase = base ? `${base}/critical/briefs` : "/critical/briefs";
+---
+
+<section class="pd-section pci-section" id="why-category" aria-label={pillarT.conceptSec1Label}>
+  <div class="pd-section-label">{pillarT.conceptSec1Label}</div>
+
+  <h2 class="pci-sub">{pillarT.conceptIncidentsHeading}</h2>
+  <ul class="pci-grid">
+    {hub.incidents.map((incident) => (
+      <li>
+        <article class="pci-card">
+          <div class="pci-date">{incident.date}</div>
+          <h3 class="pci-title">{incident.title[locale]}</h3>
+          <p class="pci-desc">{incident.desc[locale]}</p>
+          {incident.briefSlug && (
+            <a href={`${briefBase}/${incident.briefSlug}/`} class="pci-link">
+              {pillarT.conceptReadBrief}
+            </a>
+          )}
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  <h2 class="pci-sub pci-sub--reg">{pillarT.conceptRegulatoryHeading}</h2>
+  <ul class="pci-pills">
+    {hub.regulatory[locale].map((item) => (
+      <li class="pci-pill">{item}</li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .pci-section {
+    /* uses .pd-section §N badge styling from PillarDetailTemplate */
+  }
+  .pci-sub {
+    font-family: var(--pd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--pd-text-3);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pci-sub::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--lemma-line);
+  }
+  .pci-sub--reg {
+    margin-top: 32px;
+  }
+
+  .pci-grid {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .pci-grid > li {
+    margin: 0;
+  }
+  .pci-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pci-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 32px;
+    background: var(--accent);
+  }
+  .pci-date {
+    font-family: var(--pd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+  .pci-title {
+    font-family: var(--pd-display);
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .pci-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--pd-text-3);
+    margin: 0;
+    flex: 1;
+  }
+  .pci-link {
+    font-family: var(--pd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: 6px;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
+    align-self: flex-start;
+    padding-bottom: 1px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .pci-link:hover {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+
+  .pci-pills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pci-pill {
+    background: var(--lemma-cream-deep);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-family: var(--pd-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--pd-text-2);
+  }
+
+  @media (max-width: 720px) {
+    .pci-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

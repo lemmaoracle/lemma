@@ -695,7 +695,7 @@
       "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
       "primaryCta": "ホワイトペーパーを無料ダウンロード",
       "primaryCtaHref": "https://tally.so/r/xX0VYv",
-      "secondaryCta": "信頼レイヤーの仕組みを読む →",
+      "secondaryCta": "4 つの問いを読む →",
       "secondaryCtaHref": "/ja/pillars/"
     },
     "trustLayer": {
@@ -1117,7 +1117,16 @@
     "compositionCenterLabel": "AI の判断",
     "compositionCaption": "単一 API · 4 軸同時証明 · Lemma Oracle",
     "technicalDocsLabel": "技術ドキュメント",
-    "technicalDocsH2": "実装ガイドと仕様。"
+    "technicalDocsH2": "実装ガイドと仕様。",
+    "conceptSec1Label": "なぜ単独カテゴリなのか",
+    "conceptSec2Label": "Lemma の関わり",
+    "conceptSec3Label": "業務でどこに現れるか",
+    "conceptSec4Label": "さらに読む",
+    "conceptIncidentsHeading": "実事案",
+    "conceptRegulatoryHeading": "規制動向",
+    "conceptReadBrief": "Brief →",
+    "conceptViewUseCase": "ユースケース →",
+    "conceptApproachLinksLabel": "関連リンク"
   },
   "useCases": {
     "title": "ユースケース",

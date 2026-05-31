@@ -1,0 +1,131 @@
+---
+/**
+ * §4 — Further reading.
+ *
+ * 4-column navigation hub. Per the brief, this surface is the
+ * "next destination" — no "Try" CTA, no partner CTA closer. Each card
+ * points to a category top (Brief, Use Case, Product, Specs).
+ */
+import type { Locale, Translations } from "../../i18n/translations";
+import type { Pillar } from "../../data/pillars";
+
+interface Props {
+  locale: Locale;
+  base: string;
+  pillar: Pillar;
+  pillarT: Translations["pillars"];
+}
+
+const { locale, base, pillar, pillarT } = Astro.props as Props;
+const hub = pillar.conceptHub;
+if (!hub) return null;
+---
+
+<section class="pd-section pcf-section" id="further" aria-label={pillarT.conceptSec4Label}>
+  <div class="pd-section-label">{pillarT.conceptSec4Label}</div>
+
+  <ul class="pcf-grid">
+    {hub.further.map((item) => (
+      <li>
+        <a href={`${base}${item.href}`} class="pcf-card">
+          <div class="pcf-label">{item.label[locale]}</div>
+          <h3 class="pcf-title">{item.title[locale]}</h3>
+          <p class="pcf-desc">{item.desc[locale]}</p>
+          <span class="pcf-arrow">→</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .pcf-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .pcf-grid > li {
+    margin: 0;
+  }
+  .pcf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 22px 20px 18px;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pcf-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 28px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .pcf-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 24px rgba(139, 69, 19, 0.05);
+    transform: translateY(-2px);
+  }
+  .pcf-card:hover::before {
+    width: 100%;
+  }
+  .pcf-label {
+    font-family: var(--pd-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pcf-title {
+    font-family: var(--pd-display);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+    margin: 2px 0 0;
+  }
+  .pcf-desc {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--pd-text-3);
+    margin: 0;
+    flex: 1;
+  }
+  .pcf-arrow {
+    font-family: var(--pd-mono);
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: 8px;
+    align-self: flex-start;
+    transition: transform 0.2s;
+  }
+  .pcf-card:hover .pcf-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 960px) {
+    .pcf-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 540px) {
+    .pcf-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

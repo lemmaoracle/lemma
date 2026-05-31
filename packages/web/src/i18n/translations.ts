@@ -578,6 +578,16 @@ export interface Translations {
     /** v2 redesign — Technical docs section (demoted). */
     readonly technicalDocsLabel: string;
     readonly technicalDocsH2: string;
+    /** v2 detail concept-hub — §1-§4 section labels and sub-headings. */
+    readonly conceptSec1Label: string;
+    readonly conceptSec2Label: string;
+    readonly conceptSec3Label: string;
+    readonly conceptSec4Label: string;
+    readonly conceptIncidentsHeading: string;
+    readonly conceptRegulatoryHeading: string;
+    readonly conceptReadBrief: string;
+    readonly conceptViewUseCase: string;
+    readonly conceptApproachLinksLabel: string;
   }>;
   readonly useCases: Readonly<{
     readonly title: string;

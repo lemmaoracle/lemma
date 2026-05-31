@@ -1,0 +1,142 @@
+---
+/**
+ * §2 — Lemma's role.
+ *
+ * White card with a 1-paragraph lead, three labelled bullets (role,
+ * distinction from adjacent layers, what's available today), and a row
+ * of links to onward technical surfaces. Per the brief: NO diagram.
+ */
+import type { Locale, Translations } from "../../i18n/translations";
+import type { Pillar } from "../../data/pillars";
+
+interface Props {
+  locale: Locale;
+  base: string;
+  pillar: Pillar;
+  pillarT: Translations["pillars"];
+}
+
+const { locale, base, pillar, pillarT } = Astro.props as Props;
+const hub = pillar.conceptHub;
+if (!hub) return null;
+---
+
+<section class="pd-section pca-section" id="lemma-role" aria-label={pillarT.conceptSec2Label}>
+  <div class="pd-section-label">{pillarT.conceptSec2Label}</div>
+
+  <article class="pca-card">
+    <p class="pca-lead">{hub.approach.lead[locale]}</p>
+
+    <ul class="pca-bullets">
+      {hub.approach.bullets.map((b) => (
+        <li>
+          <div class="pca-bullet-label">{b.label[locale]}</div>
+          <p class="pca-bullet-text">{b.text[locale]}</p>
+        </li>
+      ))}
+    </ul>
+
+    {hub.approach.links.length > 0 && (
+      <div class="pca-links">
+        <span class="pca-links-label">{pillarT.conceptApproachLinksLabel}</span>
+        {hub.approach.links.map((link) => (
+          <a class="pca-link" href={`${base}${link.href}`}>
+            {link.label[locale]} →
+          </a>
+        ))}
+      </div>
+    )}
+  </article>
+</section>
+
+<style>
+  .pca-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    padding: 36px 36px 32px;
+  }
+  .pca-lead {
+    font-family: var(--pd-display);
+    font-size: 16.5px;
+    font-weight: 500;
+    line-height: 1.75;
+    color: var(--pd-text-1);
+    letter-spacing: -0.005em;
+    margin: 0 0 28px;
+    max-width: 760px;
+  }
+  :root[lang="ja"] .pca-lead {
+    line-height: 1.85;
+  }
+  .pca-bullets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    border-top: 0.5px solid var(--lemma-line);
+    padding-top: 26px;
+  }
+  .pca-bullets > li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 168px 1fr;
+    gap: 20px;
+  }
+  .pca-bullet-label {
+    font-family: var(--pd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .pca-bullet-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--pd-text-2);
+    margin: 0;
+  }
+  .pca-links {
+    margin: 28px 0 0;
+    padding: 22px 0 0;
+    border-top: 0.5px dashed rgba(139, 69, 19, 0.28);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+  }
+  .pca-links-label {
+    font-family: var(--pd-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--pd-text-4);
+  }
+  .pca-link {
+    font-family: var(--pd-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
+    padding-bottom: 1px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .pca-link:hover {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+
+  @media (max-width: 720px) {
+    .pca-card {
+      padding: 28px 22px 24px;
+    }
+    .pca-bullets > li {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>
