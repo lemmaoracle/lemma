@@ -63,9 +63,6 @@ const categories = BLOG_CATEGORIES.filter(
 
 const readCta = isJa ? "読む →" : "Read →";
 const categoriesLabel = isJa ? "カテゴリ" : "Categories";
-const categoriesDesc = isJa
-  ? "カテゴリ別の全 archive はそれぞれの page で。"
-  : "Browse the full archive of each category.";
 ---
 
 <Layout
@@ -172,7 +169,6 @@ const categoriesDesc = isJa
         {categories.length > 0 && (
           <section class="bx-categories-section">
             <div class="bx-section-label">{categoriesLabel}</div>
-            <p class="bx-categories-desc">{categoriesDesc}</p>
             <div class="bx-categories-grid">
               {categories.map((c) => (
                 <a
@@ -567,13 +563,6 @@ const categoriesDesc = isJa
   /* ─── CATEGORIES nav strip ─── */
   .bx-categories-section {
     margin: 0;
-  }
-  .bx-categories-desc {
-    font-size: 13.5px;
-    color: var(--bx-text-3);
-    margin: 0 0 20px;
-    max-width: 580px;
-    line-height: 1.6;
   }
   .bx-categories-grid {
     display: flex;
