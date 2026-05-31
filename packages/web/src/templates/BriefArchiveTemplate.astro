@@ -24,7 +24,9 @@ import BriefCard from "../components/BriefCard.astro";
 import { getTranslations } from "../i18n/translations";
 
 export interface ArchiveCard {
-  readonly brief: CollectionEntry<"critical-briefs">;
+  readonly brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
   readonly source: "primary" | "secondary" | "general";
 }
 

@@ -16,9 +16,13 @@ import { extractTldr } from "../../../data/extractTldr.ts";
  */
 export async function GET(context) {
   const all = await getCollection("critical-briefs");
+  const enBriefs = await getCollection("critical-briefs-en");
+  const enById = new Map(enBriefs.map((b) => [b.id, b]));
   const items = [...all]
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
-    .map((brief) => {
+    .map((jaBrief) => {
+      // Prefer EN body for item description when an EN translation exists.
+      const brief = enById.get(jaBrief.id) ?? jaBrief;
       const titleParts = brief.data.title_en.split(" — ");
       const subtitle =
         titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
