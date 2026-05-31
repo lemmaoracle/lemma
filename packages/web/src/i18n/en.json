@@ -175,20 +175,44 @@
     "backHome": "← Back to home"
   },
   "faq": {
-    "metaTitle": "FAQ — ZK Proofs, Verifiable AI & On-Chain Provenance | Lemma Oracle",
-    "metaDescription": "Common questions about ZK-proof verification, selective disclosure, and on-chain provenance for AI. How Lemma makes AI decisions provable, auditable, and privacy-preserving.",
+    "metaTitle": "FAQ — Lemma",
+    "metaDescription": "Common questions about Lemma — the trust infrastructure for AI. Four trust layers, technical implementation, and Critical Brief.",
     "hero": {
       "tag": "FAQ",
-      "h1": "Lemma FAQ — AI Trust & Verifiability.",
-      "p": "A comprehensive Q&A covering how Lemma enables trustworthy AI — from technical foundations to practical implementation questions."
+      "h1": "Lemma FAQ — Trust Infrastructure for AI.",
+      "p": "How Lemma provides a trust foundation for AI — four trust layers, technical implementation, the detection-vs-proof gap, and real incidents (Critical Brief)."
     },
+    "intentRouter": {
+      "label": "Find by intent",
+      "upperTierBadge": "Upper tier",
+      "items": [
+        { "title": "What is Lemma", "desc": "The overall picture of trust infrastructure for AI", "href": "#what-is-lemma" },
+        { "title": "Four trust layers", "desc": "The four pillars that compose the foundation (P1–P4)", "href": "#trust-layers" },
+        { "title": "Where it fits in your industry", "desc": "Use cases and products (Civic / Critical / Compliance)", "href": "/use-cases" },
+        { "title": "Technical implementation", "desc": "Developer guides and Trust402", "href": "/guides" },
+        { "title": "Why detection alone is not enough", "desc": "The Detection ≠ Proof thesis", "href": "/blog/detection-is-not-proof/" },
+        { "title": "Real incidents", "desc": "Critical Brief structured incident analysis (for CSOs, analysts, regulatory practitioners)", "href": "/critical/briefs/", "isUpperTier": true }
+      ]
+    },
+    "pillarLegend": {
+      "label": "Pillar color legend",
+      "items": [
+        { "pillar": "p1", "label": "P1 Verifiable Origin" },
+        { "pillar": "p2", "label": "P2 Verifiable AI" },
+        { "pillar": "p3", "label": "P3 Agent Authority" },
+        { "pillar": "p4", "label": "P4 Regulatory Attribute" }
+      ]
+    },
+    "searchPlaceholder": "Search questions…",
+    "noResultsText": "No matching questions found.",
     "sections": [
       {
-        "title": "Section 1: What is Lemma?",
+        "id": "what-is-lemma",
+        "title": "1. What is Lemma?",
         "items": [
           {
             "q": "What is Lemma, in one sentence?",
-            "a": "Lemma is infrastructure that attaches cryptographically proven provenance to every piece of data an AI reads."
+            "a": "Lemma is the trust infrastructure for AI — a single layer that makes the data an AI reads, the AI's judgments, the authority of AI agents, and regulatory attributes cryptographically provable. Concretely, it is composed of four trust layers (origin / verifiable AI / agent authority / regulatory attribute)."
           },
           {
             "q": "What does \"AI Trust\" mean?",
@@ -204,20 +228,31 @@
           },
           {
             "q": "How does Lemma relate to AI agents?",
-            "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework."
-          },
-          {
-            "q": "What industries is Lemma suited for?",
-            "a": "Lemma is relevant to any operation where AI references personal information or sensitive data to make decisions."
+            "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework. It also extends to proving the authority and origin of operations when an agent acts on external systems (→ Section 5)."
           },
           {
             "q": "How is Lemma different from AI Gateways?",
-            "a": "AI Gateways manage API access but don't prove data origin. Lemma provides cryptographic proof of data origin with permanent recording."
+            "a": "AI Gateways manage API access but don't prove data origin. Lemma provides cryptographic proof of data origin with a permanent record."
           }
         ]
       },
       {
-        "title": "Section 2: Security & Privacy",
+        "id": "trust-layers",
+        "title": "2. Four trust layers",
+        "items": [
+          {
+            "q": "What are Lemma's \"four pillars\"?",
+            "a": "The four cryptographic capabilities that compose Lemma as a trust infrastructure: Verifiable Origin (P1), Verifiable AI (P2), Agent Authority Proof (P3), and Regulatory Attribute Proof (P4). Not separate products — a single foundation explained through four capabilities."
+          },
+          {
+            "q": "Which pillar should I start with?",
+            "a": "Choose by problem. Want to prove where data comes from → P1. Want to prove the basis of an AI judgment after the fact → P2. Want to prove the operational authority of an AI agent → P3. Want to prove regulatory attributes without handing over raw data → P4. Each pillar has corresponding real incidents in Critical Brief."
+          }
+        ]
+      },
+      {
+        "id": "security",
+        "title": "3. Security & Privacy",
         "items": [
           {
             "q": "How is PII protected?",
@@ -230,24 +265,88 @@
           {
             "q": "What is Selective Disclosure?",
             "a": "Selective Disclosure means presenting only the attributes the AI needs — and nothing more."
+          },
+          {
+            "q": "Why \"do not hand over data\" rather than \"protect data\"?",
+            "a": "When regulation requires operators to collect and store raw PII, the stored data itself becomes the breach surface. The KYC insider breach cases (Critical Brief, Coinbase KYC etc.) illustrate this structure. Lemma hands over attributes as proofs and structurally reduces the accumulation of raw PII.",
+            "pillar": "p4"
           }
         ]
       },
       {
-        "title": "Section 3: On-Chain Provenance",
+        "id": "provenance",
+        "title": "4. On-Chain Provenance",
         "items": [
           {
             "q": "What does recording on-chain mean?",
-            "a": "Document commitments, schemas, issuer information, and ZK verification results are recorded on a blockchain."
+            "a": "Document commitments, schemas, issuer information, and ZK verification results are recorded on a blockchain.",
+            "pillar": "p1"
           },
           {
             "q": "What are the business benefits of permanent provenance?",
-            "a": "In audit responses, compliance reporting, and incident investigations, you can prove after the fact exactly which data an AI used."
+            "a": "In audit responses, compliance reporting, and incident investigations, you can prove after the fact exactly which data an AI used.",
+            "pillar": "p1"
+          },
+          {
+            "q": "How is this different from \"watermarks\" on AI-generated content?",
+            "a": "Watermarks are a detection-style approach that embeds a mark inside the artifact, and the mark can be statistically stripped or forged (demonstrated in Critical Brief, SynthID reverse-engineering etc.). Cryptographic provenance sits outside the artifact's signal space and leaves no extractable \"key\" inside the artifact.",
+            "pillar": "p1"
           }
         ]
       },
       {
-        "title": "Section 4: Developer Implementation",
+        "id": "agent-authority",
+        "title": "5. AI Agents and Authority (P3)",
+        "items": [
+          {
+            "q": "In the era of autonomous AI agents, what can be proven?",
+            "a": "For each operation an agent performs against an external system, the answer to \"who, with what authority, requested which operation\" can be fixed as an independently verifiable proof. A nation-scale autonomous AI attack campaign has been reported (Critical Brief, GTG-1002).",
+            "pillar": "p3"
+          },
+          {
+            "q": "How are MCP and agent-harness permissions handled?",
+            "a": "Cases concerning the authentication / authority verification layer of agent infrastructure are documented in Critical Brief (Starlette/BadHost, PocketOS etc.). For the implementation direction see the P3 page (Agent Authority Proof).",
+            "pillar": "p3"
+          }
+        ]
+      },
+      {
+        "id": "regulatory",
+        "title": "6. Regulatory & Compliance (P4)",
+        "items": [
+          {
+            "q": "What is \"compliance as a proof\"?",
+            "a": "A design where regulatory attributes (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) are received by the verifying party as cryptographic proofs (ZK attribute proofs) without retaining raw data. See P4 (Regulatory Attribute Proof) for the design and the KYC/AML Selective Disclosure use case for an application.",
+            "pillar": "p4"
+          },
+          {
+            "q": "Government and public-sector use?",
+            "a": "Cases concerning verification and authorization records for AI decisions in the public sector are documented in Critical Brief (Williams FRT wrongful arrest etc.). Delivered as Lemma Civic, typically through SI integrators.",
+            "pillar": "p4"
+          }
+        ]
+      },
+      {
+        "id": "critical-brief",
+        "title": "7. Critical Brief and case studies",
+        "items": [
+          {
+            "q": "What is Lemma Critical Brief?",
+            "a": "A threat intelligence brief published by Lemma. Each Brief structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents plus trust-layer risk events that are not attacks) and identifies the structural gap that detection alone cannot close and Lemma's response layer. Written for CSOs, analysts, and regulatory practitioners."
+          },
+          {
+            "q": "Which pillars do the incidents span?",
+            "a": "Across provenance (bridges / supply chain / AI-generated artifacts), verifiable AI (misjudgment / watermarking), agent authority (autonomous attack / MCP), and regulatory attribute (KYC breach). Accessible from both the Pillar and Category archives."
+          },
+          {
+            "q": "Is Critical Brief sales material?",
+            "a": "No. It is structured analysis of public information, not an audit, assessment, or recommendation directed at any specific organization (see \"About distribution\" at the bottom of each Brief)."
+          }
+        ]
+      },
+      {
+        "id": "developer",
+        "title": "8. Developer Implementation",
         "items": [
           {
             "q": "What is a schema and how is it used?",
@@ -268,7 +367,8 @@
         ]
       },
       {
-        "title": "Section 5: Trust & Adoption",
+        "id": "adoption",
+        "title": "9. Trust & Adoption",
         "items": [
           {
             "q": "What exactly becomes provable with Lemma?",
@@ -277,6 +377,10 @@
           {
             "q": "Do I need blockchain expertise?",
             "a": "No. Lemma uses blockchain as a backend recording infrastructure, but developers do not need to interact with smart contracts directly."
+          },
+          {
+            "q": "How is this different from detection / monitoring tools?",
+            "a": "Detection does not change what a receiver will accept. Detection (anomaly detection / monitoring) and pre-execution attestation are complementary, not substitutive. See the detection-is-not-proof essay for the thesis and §5 of each Critical Brief for the demonstration. Existing detection vendors are framed as complementary, not adversarial."
           },
           {
             "q": "What deployment options are available?",
@@ -293,8 +397,12 @@
       "title": "Contents",
       "links": [
         "What is Lemma?",
+        "Four trust layers",
         "Security & Privacy",
         "On-Chain Provenance",
+        "AI Agents and Authority",
+        "Regulatory & Compliance",
+        "Critical Brief",
         "Developer Implementation",
         "Trust & Adoption"
       ]
@@ -318,18 +426,34 @@
           "Protects data. Cannot prove \"who issued it\""
         ],
         [
-          "Lemma Oracle",
+          "Detection / Monitoring",
+          "Detects and surfaces anomalies and threats",
+          "Detects events. Does not change what the receiver will accept (complementary)"
+        ],
+        [
+          "Lemma",
           "Cryptographic proof of data origin + permanent record",
           "End-to-end proof, traceability, and auditability"
         ]
+      ],
+      "highlightRows": [3]
+    },
+    "criticalBriefBlock": {
+      "badge": "Upper-tier option pack",
+      "label": "Critical Brief — structured analysis of real incidents",
+      "h2": "Understand Lemma through real incidents",
+      "body": "Lemma Critical Brief is a threat-intelligence brief that structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents and trust-layer risk events that are not attacks), identifying the structural gap detection alone cannot close and Lemma's response layer. An upper-tier reference written for CSOs, analysts, and regulatory practitioners.",
+      "cta": [
+        { "label": "Critical Brief library →", "href": "/critical/briefs/" },
+        { "label": "Methodology", "href": "/critical/briefs/methodology/" }
       ]
     },
     "partner": {
       "tag": "Partner Program",
       "h2": "Partnering and PoC opportunities.",
-      "p": "If you are interested in partnering with Lemma Oracle or exploring PoC and co-development opportunities, register as a partner candidate.",
+      "p": "If you are interested in partnering with Lemma or exploring PoC and co-development opportunities, register as a partner candidate.",
       "cta": "Register as a partner candidate",
-      "link": "Read Lemma Oracle Specs →"
+      "link": "Read Lemma Specs →"
     }
   },
   "layout": {
