@@ -508,11 +508,12 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     color: #6e3610;
   }
 
-  /* H2 — used by every section heading from the markdown (TL;DR + §1–§8).
-     The mockup proposes a separate §N eyebrow above each H2; that needs the
-     section-heading split which is a Step 3 (component decomposition)
-     deliverable. For Step 1 we keep the markdown text verbatim and apply
-     v24 typography. */
+  /* H2 — section headings from the markdown.
+     The `rehype-brief-section-number` plugin tags each numbered h2 with
+     `data-section-num="N"` and strips the "N. " prefix from the text,
+     enabling the mockup's two-line "§ N" eyebrow + Sora title rendering.
+     The first h2 (TL;DR) has no data-section-num and falls into the
+     TL;DR card treatment block below instead. */
   .brief-body :global(h2) {
     font-family: var(--brief-display);
     font-size: 30px;
@@ -524,6 +525,25 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   }
   :root[lang="ja"] .brief-body :global(h2) {
     line-height: 1.35;
+  }
+  /* Numbered section eyebrow: "§ N" mono brown rendered above the h2 via
+     the data-section-num attribute the rehype plugin sets. */
+  .brief-body :global(h2[data-section-num])::before {
+    content: "§ " attr(data-section-num);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--brief-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .brief-body :global(h2[data-section-num])::before::before {
+    /* (unused) — placeholder for an optional horizontal accent line.
+       The flex layout above keeps the eyebrow tight to the h2. */
   }
   .brief-body :global(h2:first-child) {
     margin-top: 0;

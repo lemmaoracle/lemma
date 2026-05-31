@@ -1,18 +1,24 @@
 ---
 /**
- * Shared archive page template for both Pillar and Category views.
+ * Shared archive page template for Pillar and Category views, v24-aligned.
  *
  * Per the spec confirmation:
  *   - Pillar archives are generated for all 4 Pillars even when the
- *     Brief count is 0 (Pillar 02 / 04 today); empty state shows the
- *     "準備中 / Coming soon" placeholder rather than 404
+ *     Brief count is 0 (empty layers show the "準備中 / Coming soon"
+ *     placeholder rather than 404)
  *   - Category archives are generated only for categories that have at
  *     least one Brief — Pillar archives carry the "all 4 layers exist"
  *     framework signal, Category archives are reactive
  *
+ * Visual chrome aligns with the v24 mockup (Brief Index v1): cream page,
+ * Sora display + Noto Sans JP body, saddle brown accent, mockup-spec
+ * brief-card grid. Cards are inlined here so the archive template stays
+ * a single source of truth.
+ *
  * Each Brief surfaces in a Category archive via either `primary_category`
- * (solid badge) or `secondary_categories` (outline badge). The route
- * passes the source label per Brief in `cards`.
+ * or `secondary_categories`. The route passes the source label per Brief
+ * in `cards` — for now both are rendered with the same card chrome (the
+ * mockup does not specify a separate visual for secondary surfacing).
  */
 
 import type { CollectionEntry } from "astro:content";
@@ -20,7 +26,13 @@ import type { Locale } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
-import BriefCard from "../components/BriefCard.astro";
+import {
+  categoryLabel,
+  pillarLabel,
+  type CategorySlug,
+  type PillarSlug,
+} from "../data/criticalBriefs";
+import { extractTldr } from "../data/extractTldr";
 import { getTranslations } from "../i18n/translations";
 
 export interface ArchiveCard {
@@ -49,26 +61,67 @@ const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 
 const pagePath = `/critical/briefs/${kind}/${slug}/`;
-const pageTitle = isJa
-  ? `${heading} — Lemma Critical Brief`
-  : `${heading} — Lemma Critical Brief`;
+const pageTitle = `${heading} — Lemma Critical Brief`;
 
 const emptyState = isJa
   ? {
       heading: "Brief は準備中です",
       body: "本カテゴリに該当する Brief は現在編成中です。Brief シリーズの方針は Methodology ページを参照してください。",
-      methodologyLabel: "Methodology を読む",
+      methodologyLabel: "Methodology を読む →",
     }
   : {
       heading: "Briefs coming soon",
       body: "Briefs in this category are currently being compiled. See the Methodology page for the editorial framework.",
-      methodologyLabel: "Read the Methodology",
+      methodologyLabel: "Read the Methodology →",
     };
 
 const methodologyHref = `${base}/critical/briefs/methodology/`;
+const indexHref = `${base}/critical/briefs/`;
 
 const homeLabel = isJa ? "ホーム" : "Home";
-const briefsLabel = isJa ? "Critical Brief" : "Critical Brief";
+const briefsLabel = "Critical Brief";
+const readCta = isJa ? "Brief →" : "Brief →";
+const countLabel = (n: number) =>
+  isJa ? `${n} 件の Brief` : `${n} Brief${n === 1 ? "" : "s"}`;
+
+// Eyebrow for the hero — split out the "Lemma Critical Brief / Pillar archive"
+// prefix into a mono eyebrow and a leading subtitle.
+const eyebrowParts = eyebrow.split(" / ");
+const eyebrowMain = eyebrowParts[0] ?? eyebrow;
+const eyebrowSuffix = eyebrowParts.slice(1).join(" / ");
+
+function cardData(card: ArchiveCard) {
+  const b = card.brief;
+  const titleLoc = isJa ? b.data.title : b.data.title_en;
+  const titleParts = titleLoc.split(" — ");
+  const mainTitle = titleParts[0];
+  const subFromTitle =
+    titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
+  const tldr = extractTldr(b.body, 140);
+  const publishedStr = b.data.published.toISOString().slice(0, 10);
+  const briefNoPad = String(b.data.brief_no).padStart(3, "0");
+  const primaryCatLabel = categoryLabel(
+    b.data.primary_category as CategorySlug,
+    locale,
+  );
+  const secondaryCatLabels = b.data.secondary_categories.map((c) =>
+    categoryLabel(c as CategorySlug, locale),
+  );
+  const showPillarBadge = kind !== "pillar";
+  const pillarBadge = showPillarBadge
+    ? pillarLabel(b.data.pillar as PillarSlug, locale)
+    : null;
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    briefNoPad,
+    publishedStr,
+    mainTitle,
+    subText: subFromTitle || tldr,
+    primaryCatLabel,
+    secondaryCatLabels,
+    pillarBadge,
+  };
+}
 ---
 
 <Layout
@@ -80,199 +133,350 @@ const briefsLabel = isJa ? "Critical Brief" : "Critical Brief";
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <header class="archive-header">
-    <div class="archive-header-inner">
-      <div class="archive-breadcrumb">
+  <main class="ar-page">
+    <div class="ar-container">
+      <div class="ar-breadcrumb">
         <a href={base || "/"}>{homeLabel}</a>
-        <span class="archive-breadcrumb-sep">/</span>
-        <span>{briefsLabel}</span>
+        <span class="ar-breadcrumb-sep">/</span>
+        <a href={indexHref}>{briefsLabel}</a>
+        <span class="ar-breadcrumb-sep">/</span>
+        <span>{eyebrowSuffix || kind}</span>
       </div>
-      <div class="archive-eyebrow">{eyebrow}</div>
-      <h1 class="archive-title">{heading}</h1>
-      <p class="archive-description">{description}</p>
-      {cards.length > 0 && (
-        <p class="archive-count">
-          {isJa
-            ? `${cards.length} 件の Brief`
-            : `${cards.length} Brief${cards.length === 1 ? "" : "s"}`}
-        </p>
+
+      <section class="ar-hero">
+        <div class="ar-eyebrow">
+          {eyebrowMain}
+          {eyebrowSuffix && (
+            <span class="ar-eyebrow-suffix">· {eyebrowSuffix}</span>
+          )}
+        </div>
+        <h1 class="ar-h1">{heading}</h1>
+        <p class="ar-description">{description}</p>
+        {cards.length > 0 && (
+          <div class="ar-count">{countLabel(cards.length)}</div>
+        )}
+      </section>
+
+      {cards.length === 0 ? (
+        <section class="ar-empty">
+          <div class="ar-empty-label">{emptyState.heading}</div>
+          <p class="ar-empty-body">{emptyState.body}</p>
+          <a class="ar-empty-cta" href={methodologyHref}>
+            {emptyState.methodologyLabel}
+          </a>
+        </section>
+      ) : (
+        <section class="ar-grid" aria-label={heading}>
+          {cards.map((c) => {
+            const d = cardData(c);
+            return (
+              <a href={d.href} class="ar-card">
+                <div class="ar-card-meta">
+                  <span class="ar-card-no">No. {d.briefNoPad}</span>
+                  <span class="ar-card-sep">·</span>
+                  <span>{d.publishedStr}</span>
+                </div>
+                <h2 class="ar-card-title">{d.mainTitle}</h2>
+                {d.subText && <p class="ar-card-sub">{d.subText}</p>}
+                <div class="ar-card-tags">
+                  {d.pillarBadge && (
+                    <span class="ar-card-tag pillar">{d.pillarBadge}</span>
+                  )}
+                  <span class="ar-card-tag primary">{d.primaryCatLabel}</span>
+                  {d.secondaryCatLabels.map((lab) => (
+                    <span class="ar-card-tag">{lab}</span>
+                  ))}
+                  <span class="ar-card-read">{readCta}</span>
+                </div>
+              </a>
+            );
+          })}
+        </section>
       )}
     </div>
-  </header>
-
-  <main class="archive-main">
-    {cards.length === 0 ? (
-      <section class="archive-empty">
-        <h2 class="archive-empty-heading">{emptyState.heading}</h2>
-        <p class="archive-empty-body">{emptyState.body}</p>
-        <a class="archive-empty-cta" href={methodologyHref}>
-          {emptyState.methodologyLabel} →
-        </a>
-      </section>
-    ) : (
-      <section class="archive-grid" aria-label={heading}>
-        {cards.map((c) => (
-          <BriefCard
-            locale={locale}
-            brief={c.brief}
-            source={c.source}
-            showPillarBadge={kind !== "pillar"}
-          />
-        ))}
-      </section>
-    )}
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  /* ─── HEADER ─── */
-  .archive-header {
+  /* v24 type scope, mirroring Brief detail / index templates */
+  .ar-page {
+    --ar-display: "Sora", system-ui, -apple-system, sans-serif;
+    --ar-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ar-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ar-text-1: #1a1a1a;
+    --ar-text-2: #3a3a3a;
+    --ar-text-3: #5a5a5a;
+    --ar-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--ar-text-2);
+    font-family: var(--ar-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
     margin-top: 64px;
-    background: var(--black);
-    color: var(--white);
-    padding: 96px 10% 72px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
-  .archive-header-inner {
-    max-width: 920px;
+  :root[lang="en"] .ar-page {
+    --ar-body: "Sora", system-ui, sans-serif;
+  }
+
+  .ar-container {
+    max-width: 1100px;
     margin: 0 auto;
+    padding: 0 40px;
   }
-  .archive-breadcrumb {
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    margin-bottom: 28px;
-  }
-  .archive-breadcrumb a {
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .archive-breadcrumb a:hover {
-    color: var(--accent);
-  }
-  .archive-breadcrumb-sep {
-    margin: 0 8px;
-    color: rgba(255, 255, 255, 0.25);
-  }
-  .archive-eyebrow {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .archive-eyebrow::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: var(--accent);
-    display: block;
-  }
-  .archive-title {
-    font-family: var(--font-display);
-    font-size: clamp(40px, 5.4vw, 64px);
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -0.015em;
-    color: var(--white);
-    margin: 0 0 20px;
-  }
-  :root[lang="ja"] .archive-title {
-    line-height: 1.35;
-  }
-  .archive-description {
-    font-family: var(--font-body);
-    font-size: 17px;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.78);
-    margin: 0 0 28px;
-    max-width: 640px;
-  }
-  .archive-count {
-    font-family: var(--font-body);
-    font-size: 11px;
+
+  /* ─── BREADCRUMB ─── */
+  .ar-breadcrumb {
+    font-family: var(--ar-mono);
+    font-size: 10.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-    margin: 0;
+    color: var(--ar-text-4);
+    padding: 36px 0 0;
+  }
+  .ar-breadcrumb a {
+    color: var(--ar-text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .ar-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .ar-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
+  }
+
+  /* ─── HERO ─── */
+  .ar-hero {
+    padding: 32px 0 56px;
+    max-width: 880px;
+  }
+  .ar-eyebrow {
+    font-family: var(--ar-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ar-text-3);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ar-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .ar-eyebrow-suffix {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .ar-h1 {
+    font-family: var(--ar-display);
+    font-size: clamp(40px, 5.4vw, 56px);
+    font-weight: 700;
+    line-height: 1.06;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+  }
+  :root[lang="ja"] .ar-h1 {
+    font-size: clamp(34px, 4.6vw, 46px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .ar-description {
+    font-family: var(--ar-body);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ar-text-2);
+    margin: 0 0 24px;
+    max-width: 680px;
+  }
+  .ar-count {
+    font-family: var(--ar-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding-top: 22px;
+    border-top: 0.5px solid var(--lemma-line);
+    display: inline-block;
+    padding-right: 24px;
     font-variant-numeric: tabular-nums;
   }
 
-  /* ─── MAIN ─── */
-  .archive-main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 72px 24px 120px;
-  }
-
   /* ─── EMPTY STATE ─── */
-  .archive-empty {
-    max-width: 640px;
-    margin: 24px auto 0;
-    padding: 56px 32px;
+  .ar-empty {
+    margin: 24px 0 0;
+    padding: 56px 40px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
     text-align: center;
-    border: 1px solid var(--gray-200);
-    background: var(--lemma-cream, #fcfaf5);
+    max-width: 640px;
   }
-  .archive-empty-heading {
-    font-family: var(--font-display);
-    font-size: clamp(22px, 2.6vw, 28px);
-    font-weight: 500;
-    color: var(--black);
-    margin: 0 0 18px;
-  }
-  :root[lang="ja"] .archive-empty-heading {
-    line-height: 1.5;
-  }
-  .archive-empty-body {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--gray-700, #5f5f5f);
-    margin: 0 0 24px;
-  }
-  .archive-empty-cta {
-    font-family: var(--font-body);
+  .ar-empty-label {
+    font-family: var(--ar-mono);
     font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent);
+    margin: 0 0 14px;
+  }
+  .ar-empty-body {
+    font-family: var(--ar-body);
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ar-text-2);
+    margin: 0 0 22px;
+  }
+  .ar-empty-cta {
+    font-family: var(--ar-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px solid var(--accent);
-    padding-bottom: 2px;
+    transition: transform 0.2s, color 0.2s;
+    display: inline-block;
+  }
+  .ar-empty-cta:hover {
+    transform: translateX(3px);
   }
 
-  /* ─── GRID ─── */
-  .archive-grid {
+  /* ─── CARD GRID ─── */
+  .ar-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
   }
+  .ar-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 26px 22px;
+    text-decoration: none;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ar-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ar-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .ar-card:hover::before {
+    width: 100%;
+  }
+  .ar-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--ar-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--ar-text-3);
+  }
+  .ar-card-no {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .ar-card-sep {
+    color: var(--lemma-line);
+  }
+  .ar-card-title {
+    font-family: var(--ar-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  :root[lang="ja"] .ar-card-title {
+    line-height: 1.5;
+  }
+  .ar-card-sub {
+    font-family: var(--ar-body);
+    font-size: 13px;
+    color: var(--ar-text-3);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .ar-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .ar-card-tag {
+    font-family: var(--ar-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ar-text-3);
+    background: var(--lemma-cream-deep);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .ar-card-tag.primary {
+    color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+  .ar-card-tag.pillar {
+    color: var(--lemma-cream);
+    background: var(--accent);
+    font-weight: 500;
+  }
+  .ar-card-read {
+    font-family: var(--ar-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-left: auto;
+    align-self: center;
+    transition: transform 0.2s;
+  }
+  .ar-card:hover .ar-card-read {
+    transform: translateX(3px);
+  }
+
+  /* ─── RESPONSIVE ─── */
   @media (max-width: 720px) {
-    .archive-grid {
+    .ar-container {
+      padding: 0 24px;
+    }
+    .ar-hero {
+      padding: 24px 0 40px;
+    }
+    .ar-grid {
       grid-template-columns: 1fr;
     }
-  }
-
-  @media (max-width: 768px) {
-    .archive-header {
-      padding: 80px 6% 56px;
-    }
-    .archive-main {
-      padding: 48px 6% 80px;
-    }
-    .archive-empty {
-      padding: 40px 22px;
+    .ar-empty {
+      padding: 40px 26px;
     }
   }
 </style>
