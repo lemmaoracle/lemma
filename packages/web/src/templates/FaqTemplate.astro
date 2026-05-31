@@ -1,15 +1,32 @@
 ---
 /**
- * Lemma FAQ page — v24 chrome.
+ * Lemma FAQ — v24 chrome + content refresh per the Mayumi proposal.
  *
- * Cream page, container 1100px, Sora display + Noto Sans JP body +
- * Space Mono labels, saddle brown accent. Replaces the v22 dark hero
- * with cream container + Sora H1, restyles the accordion items as
- * white cards with brown +/- icon, and recolours the comparison table
- * to cream-deep thead + mono uppercase header cells.
+ * New surface elements beyond the v24 token migration:
  *
- * Layout, sticky sidebar, accordion JS, reveal observer, and JSON-LD
- * structured data are preserved.
+ *   - Intent router: 6 cards above the FAQ proper that route by reader
+ *     intent. The last card (Critical Brief) carries an "upper tier"
+ *     badge + brown rule accent and is rendered last so it does not
+ *     compete with foundational links above it
+ *
+ *   - Pillar color legend + per-Q pillar chips (P1 teal / P2 purple /
+ *     P3 amber / P4 blue). One-line legend rendered once at the top of
+ *     the FAQ section
+ *
+ *   - Sticky jump nav (mono pill row, horizontal scroll on mobile),
+ *     with scroll-spy that highlights the current section
+ *
+ *   - Client-side search box that filters the Q text of each item
+ *     (case-insensitive substring), and toggles empty-state messaging
+ *
+ *   - Critical Brief surface block at the bottom — isolated from the
+ *     accordion Q&A, with the "upper tier" badge and routing to the
+ *     /critical/briefs/ list + methodology
+ *
+ * Accordion behavior: first item in each section is open by default;
+ * others closed. Items use `<button aria-expanded>` for a11y. JSON-LD
+ * FAQPage structured data is preserved and now built from the new
+ * sections shape.
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
@@ -66,39 +83,119 @@ const faqJsonLd = {
         <p class="fq-hero-sub">{fq.hero.p}</p>
       </section>
 
-      <div class="fq-layout">
-        <aside class="fq-sidebar">
-          <div class="fq-sidebar-title">{fq.sidebar.title}</div>
-          <ul class="fq-nav-list">
-            {fq.sidebar.links.map((link, i) => (
-              <li class="fq-nav-item">
-                <a href={`#s${i + 1}`}>{link}</a>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
-        <div class="fq-content">
-          {fq.sections.map((section, si) => (
-            <section class="fq-section reveal" id={`s${si + 1}`}>
-              <div class="fq-section-label">{section.title}</div>
-              {section.items.map((item) => (
-                <div class="fq-item reveal">
-                  <button class="fq-q" type="button">
-                    <span class="fq-q-text">{item.q}</span>
-                    <span class="fq-icon">+</span>
-                  </button>
-                  <div class="fq-a">
-                    <p>{item.a}</p>
-                  </div>
-                </div>
-              ))}
-            </section>
+      <!-- Intent router -->
+      <section class="fq-router" aria-label={fq.intentRouter.label}>
+        <div class="fq-router-label">{fq.intentRouter.label}</div>
+        <div class="fq-router-grid">
+          {fq.intentRouter.items.map((item) => (
+            <a
+              href={item.href}
+              class={`fq-router-card${item.isUpperTier ? " fq-router-card-upper" : ""}`}
+            >
+              {item.isUpperTier && (
+                <span class="fq-router-badge">
+                  {fq.intentRouter.upperTierBadge}
+                </span>
+              )}
+              <div class="fq-router-title">{item.title}</div>
+              <div class="fq-router-desc">{item.desc}</div>
+              <span class="fq-router-arrow">→</span>
+            </a>
           ))}
+        </div>
+      </section>
+
+      <!-- Sticky jump nav -->
+      <nav class="fq-jump" aria-label={fq.sidebar.title}>
+        <div class="fq-jump-inner">
+          {fq.sections.map((section, i) => (
+            <a
+              href={`#${section.id}`}
+              class={`fq-jump-pill${i === 0 ? " is-active" : ""}`}
+              data-jump-target={section.id}
+            >
+              {fq.sidebar.links[i] ?? section.title}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <!-- Pillar legend + search -->
+      <div class="fq-controls">
+        <div class="fq-legend" aria-label={fq.pillarLegend.label}>
+          <span class="fq-legend-label">{fq.pillarLegend.label}</span>
+          {fq.pillarLegend.items.map((p) => (
+            <span class={`fq-chip fq-chip-${p.pillar}`}>{p.label}</span>
+          ))}
+        </div>
+        <div class="fq-search">
+          <label class="fq-search-label" for="fq-search-input">
+            {fq.searchPlaceholder}
+          </label>
+          <input
+            id="fq-search-input"
+            class="fq-search-input"
+            type="search"
+            placeholder={fq.searchPlaceholder}
+            autocomplete="off"
+            data-faq-search
+          />
         </div>
       </div>
 
-      <section class="fq-comparison reveal">
+      <!-- FAQ content -->
+      <div class="fq-content">
+        {fq.sections.map((section) => (
+          <section class="fq-section" id={section.id} data-section>
+            <div class="fq-section-label">{section.title}</div>
+            {section.items.map((item, ii) => (
+              <div
+                class="fq-item"
+                data-faq-item
+                data-faq-q={item.q.toLowerCase()}
+                data-faq-open={ii === 0 ? "true" : "false"}
+              >
+                <button
+                  class="fq-q"
+                  type="button"
+                  aria-expanded={ii === 0 ? "true" : "false"}
+                >
+                  <span class="fq-q-row">
+                    {item.pillar && (
+                      <span class={`fq-q-chip fq-chip-${item.pillar}`} aria-hidden="true"></span>
+                    )}
+                    <span class="fq-q-text">{item.q}</span>
+                  </span>
+                  <span class="fq-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="fq-a">
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+        ))}
+
+        <div class="fq-no-results" data-faq-empty hidden>
+          {fq.noResultsText}
+        </div>
+      </div>
+
+      <!-- Critical Brief surface block (isolated) -->
+      <section class="fq-brief-block" aria-label={fq.criticalBriefBlock.label}>
+        <div class="fq-brief-badge">{fq.criticalBriefBlock.badge}</div>
+        <div class="fq-brief-label">{fq.criticalBriefBlock.label}</div>
+        <h2 class="fq-brief-h2">{fq.criticalBriefBlock.h2}</h2>
+        <p class="fq-brief-body">{fq.criticalBriefBlock.body}</p>
+        <div class="fq-brief-cta">
+          {fq.criticalBriefBlock.cta.map((c) => (
+            <a class="fq-brief-link" href={c.href}>{c.label}</a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Comparison table -->
+      <section class="fq-comparison">
         <h2 class="fq-comparison-h2">{fq.comparison.h2}</h2>
         <div class="fq-table-wrap">
           <table class="fq-table">
@@ -109,12 +206,8 @@ const faqJsonLd = {
             </thead>
             <tbody>
               {fq.comparison.rows.map((row, i) => (
-                <tr class={i === fq.comparison.rows.length - 2 ? "fq-highlight" : ""}>
-                  {row.map((cell) => (
-                    <td>
-                      <strong>{cell}</strong>
-                    </td>
-                  ))}
+                <tr class={fq.comparison.highlightRows?.includes(i) ? "fq-highlight" : ""}>
+                  {row.map((cell) => <td><strong>{cell}</strong></td>)}
                 </tr>
               ))}
             </tbody>
@@ -138,6 +231,16 @@ const faqJsonLd = {
     --fq-text-3: #5a5a5a;
     --fq-text-4: #9a9a9a;
 
+    /* Pillar colors per Mayumi spec */
+    --fq-p1: #14b8a6; /* teal */
+    --fq-p1-soft: #ccfbf1;
+    --fq-p2: #8b5cf6; /* purple */
+    --fq-p2-soft: #ede9fe;
+    --fq-p3: #f59e0b; /* amber */
+    --fq-p3-soft: #fef3c7;
+    --fq-p4: #3b82f6; /* blue */
+    --fq-p4-soft: #dbeafe;
+
     background: var(--lemma-cream);
     color: var(--fq-text-2);
     font-family: var(--fq-body);
@@ -158,7 +261,7 @@ const faqJsonLd = {
 
   /* ─── HERO ─── */
   .fq-hero {
-    padding: 60px 0 48px;
+    padding: 60px 0 40px;
   }
   .fq-eyebrow {
     font-family: var(--fq-mono);
@@ -180,95 +283,278 @@ const faqJsonLd = {
   }
   .fq-h1 {
     font-family: var(--fq-display);
-    font-size: 64px;
+    font-size: 56px;
     font-weight: 700;
-    line-height: 1.04;
+    line-height: 1.06;
     color: var(--black);
     letter-spacing: -0.04em;
-    margin: 0 0 24px;
+    margin: 0 0 22px;
     max-width: 920px;
   }
   :root[lang="ja"] .fq-h1 {
-    font-size: 52px;
+    font-size: 44px;
     line-height: 1.2;
     letter-spacing: -0.03em;
   }
   .fq-hero-sub {
-    font-size: 16px;
+    font-size: 15.5px;
     color: var(--fq-text-2);
     line-height: 1.75;
     margin: 0;
-    max-width: 680px;
+    max-width: 720px;
   }
 
-  /* ─── LAYOUT ─── */
-  .fq-layout {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 48px;
-    margin: 32px 0 80px;
-    padding: 32px 0 0;
+  /* ─── INTENT ROUTER ─── */
+  .fq-router {
+    margin: 0 0 56px;
+    padding: 28px 0 0;
     border-top: 0.5px solid var(--lemma-line);
   }
-
-  /* ─── SIDEBAR ─── */
-  .fq-sidebar {
-    position: sticky;
-    top: 96px;
-    align-self: start;
-  }
-  .fq-sidebar-title {
+  .fq-router-label {
     font-family: var(--fq-mono);
-    font-size: 10.5px;
+    font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent);
     margin: 0 0 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .fq-sidebar-title::before {
+  .fq-router-label::before {
     content: "";
     display: inline-block;
-    width: 18px;
+    width: 28px;
     height: 1px;
     background: var(--accent);
   }
-  .fq-nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .fq-router-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .fq-router-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 20px 22px 18px;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .fq-nav-item a {
-    display: block;
-    padding: 8px 14px;
+  .fq-router-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 32px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .fq-router-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+  }
+  .fq-router-card:hover::before {
+    width: 100%;
+  }
+  .fq-router-card-upper {
+    border-width: 1px;
+    border-color: rgba(139, 69, 19, 0.32);
+    background: var(--lemma-cream-deep);
+  }
+  .fq-router-card-upper::before {
+    height: 3px;
+    width: 48px;
+    background: var(--accent);
+  }
+  .fq-router-badge {
+    align-self: flex-start;
+    font-family: var(--fq-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lemma-cream);
+    background: var(--accent);
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin: 0 0 4px;
+  }
+  .fq-router-title {
     font-family: var(--fq-display);
-    font-size: 13px;
-    color: var(--fq-text-3);
-    border-left: 2px solid var(--lemma-line);
-    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
     letter-spacing: -0.005em;
-    line-height: 1.4;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    line-height: 1.35;
   }
-  .fq-nav-item a:hover {
+  :root[lang="ja"] .fq-router-title {
+    line-height: 1.5;
+  }
+  .fq-router-desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--fq-text-3);
+  }
+  .fq-router-arrow {
+    font-family: var(--fq-mono);
+    font-size: 14px;
     color: var(--accent);
-    border-color: var(--accent);
-    background: var(--lemma-brown-light);
+    margin-top: auto;
+    padding-top: 10px;
+    transition: transform 0.2s;
+  }
+  .fq-router-card:hover .fq-router-arrow {
+    transform: translateX(4px);
   }
 
-  /* ─── CONTENT ─── */
-  .fq-content {
-    min-width: 0;
+  /* ─── STICKY JUMP NAV ─── */
+  .fq-jump {
+    position: sticky;
+    top: 80px;
+    margin: 0 0 28px;
+    z-index: 5;
+    background: var(--lemma-cream);
+    padding: 8px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
   }
-  .fq-section {
+  .fq-jump-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 0;
+  }
+  .fq-jump-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .fq-jump-pill {
+    flex-shrink: 0;
+    font-family: var(--fq-display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--fq-text-3);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 7px 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .fq-jump-pill:hover {
+    color: var(--accent);
+    border-color: rgba(139, 69, 19, 0.4);
+  }
+  .fq-jump-pill.is-active {
+    color: var(--lemma-cream);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ─── CONTROLS (legend + search) ─── */
+  .fq-controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 0 28px;
+    flex-wrap: wrap;
+  }
+  .fq-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .fq-legend-label {
+    font-family: var(--fq-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fq-text-4);
+    margin-right: 4px;
+  }
+  .fq-chip {
+    font-family: var(--fq-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+  .fq-chip-p1 {
+    background: var(--fq-p1-soft);
+    color: var(--fq-p1);
+  }
+  .fq-chip-p2 {
+    background: var(--fq-p2-soft);
+    color: var(--fq-p2);
+  }
+  .fq-chip-p3 {
+    background: var(--fq-p3-soft);
+    color: var(--fq-p3);
+  }
+  .fq-chip-p4 {
+    background: var(--fq-p4-soft);
+    color: var(--fq-p4);
+  }
+  .fq-search {
+    position: relative;
+    min-width: 220px;
+    flex: 0 1 280px;
+  }
+  .fq-search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .fq-search-input {
+    width: 100%;
+    font-family: var(--fq-display);
+    font-size: 13.5px;
+    color: var(--fq-text-2);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    line-height: 1.4;
+    transition: border-color 0.15s;
+  }
+  .fq-search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .fq-search-input::placeholder {
+    color: var(--fq-text-4);
+  }
+
+  /* ─── FAQ CONTENT ─── */
+  .fq-content {
     margin: 0 0 56px;
   }
-  .fq-section:last-child {
+  .fq-section {
+    margin: 0 0 48px;
+    scroll-margin-top: 140px;
+  }
+  .fq-section:last-of-type {
     margin-bottom: 0;
   }
   .fq-section-label {
@@ -278,7 +564,7 @@ const faqJsonLd = {
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 20px;
+    margin: 0 0 18px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -300,10 +586,13 @@ const faqJsonLd = {
     overflow: hidden;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
+  .fq-item[hidden] {
+    display: none;
+  }
   .fq-item:hover {
     border-color: rgba(139, 69, 19, 0.4);
   }
-  .fq-item.open {
+  .fq-item[data-faq-open="true"] {
     border-color: var(--accent);
     box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
   }
@@ -311,7 +600,7 @@ const faqJsonLd = {
     width: 100%;
     background: transparent;
     border: none;
-    padding: 20px 24px;
+    padding: 18px 22px;
     text-align: left;
     cursor: pointer;
     display: flex;
@@ -319,7 +608,7 @@ const faqJsonLd = {
     justify-content: space-between;
     gap: 16px;
     font-family: var(--fq-display);
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 500;
     color: var(--black);
     letter-spacing: -0.005em;
@@ -327,6 +616,32 @@ const faqJsonLd = {
   }
   :root[lang="ja"] .fq-q {
     line-height: 1.6;
+  }
+  .fq-q-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+  .fq-q-chip {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    padding: 0;
+  }
+  .fq-q-chip.fq-chip-p1 {
+    background: var(--fq-p1);
+  }
+  .fq-q-chip.fq-chip-p2 {
+    background: var(--fq-p2);
+  }
+  .fq-q-chip.fq-chip-p3 {
+    background: var(--fq-p3);
+  }
+  .fq-q-chip.fq-chip-p4 {
+    background: var(--fq-p4);
   }
   .fq-q-text {
     flex: 1;
@@ -340,7 +655,7 @@ const faqJsonLd = {
     line-height: 1;
     transition: transform 0.25s ease;
   }
-  .fq-item.open .fq-icon {
+  .fq-item[data-faq-open="true"] .fq-icon {
     transform: rotate(45deg);
   }
   .fq-a {
@@ -348,16 +663,106 @@ const faqJsonLd = {
     overflow: hidden;
     transition: max-height 0.3s ease;
   }
-  .fq-item.open .fq-a {
+  .fq-item[data-faq-open="true"] .fq-a {
     max-height: 1200px;
   }
   .fq-a p {
     font-family: var(--fq-body);
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 13.5px;
+    line-height: 1.85;
     color: var(--fq-text-2);
     margin: 0;
-    padding: 0 24px 22px;
+    padding: 0 22px 20px;
+  }
+  .fq-no-results {
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--fq-text-3);
+    background: var(--white);
+    border: 0.5px dashed var(--lemma-line);
+    border-radius: 14px;
+  }
+
+  /* ─── CRITICAL BRIEF BLOCK ─── */
+  .fq-brief-block {
+    margin: 56px 0 56px;
+    padding: 36px 32px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fq-brief-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .fq-brief-badge {
+    display: inline-flex;
+    font-family: var(--fq-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lemma-cream);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+  .fq-brief-label {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  .fq-brief-h2 {
+    font-family: var(--fq-display);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .fq-brief-h2 {
+    line-height: 1.4;
+  }
+  .fq-brief-body {
+    font-size: 14px;
+    color: var(--fq-text-2);
+    line-height: 1.85;
+    margin: 0 0 22px;
+    max-width: 720px;
+  }
+  .fq-brief-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .fq-brief-link {
+    font-family: var(--fq-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .fq-brief-link:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
   }
 
   /* ─── COMPARISON TABLE ─── */
@@ -426,102 +831,132 @@ const faqJsonLd = {
     color: inherit;
   }
 
-  /* ─── REVEAL ─── */
-  .reveal,
-  .fq-item {
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.35s ease, transform 0.35s ease,
-      border-color 0.2s, box-shadow 0.2s;
-  }
-  .reveal.on,
-  .fq-item.on {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
   /* ─── RESPONSIVE ─── */
   @media (max-width: 960px) {
     .fq-h1 {
-      font-size: 52px;
+      font-size: 44px;
     }
     :root[lang="ja"] .fq-h1 {
-      font-size: 42px;
+      font-size: 36px;
     }
-    .fq-layout {
+    .fq-router-grid {
       grid-template-columns: 1fr;
-      gap: 24px;
     }
-    .fq-sidebar {
-      position: static;
-      padding-bottom: 16px;
-      border-bottom: 0.5px solid var(--lemma-line);
+    .fq-controls {
+      gap: 16px;
     }
-    .fq-nav-list {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .fq-nav-item a {
-      border-left: 0;
-      border: 0.5px solid var(--lemma-line);
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 12px;
-    }
-    .fq-nav-item a:hover {
-      border-color: var(--accent);
+    .fq-search {
+      flex: 1 1 100%;
+      max-width: none;
     }
   }
   @media (max-width: 720px) {
     .fq-container {
-      padding: 0 24px;
+      padding: 0 20px;
     }
     .fq-h1 {
-      font-size: 40px;
+      font-size: 34px;
     }
     :root[lang="ja"] .fq-h1 {
-      font-size: 32px;
+      font-size: 28px;
     }
     .fq-hero {
-      padding: 40px 0 36px;
+      padding: 40px 0 28px;
     }
     .fq-q {
-      padding: 16px 20px;
-      font-size: 14.5px;
+      padding: 14px 18px;
+      font-size: 14px;
     }
     .fq-a p {
-      padding: 0 20px 18px;
-      font-size: 13.5px;
+      padding: 0 18px 16px;
+      font-size: 13px;
+    }
+    .fq-brief-block {
+      padding: 28px 22px;
     }
   }
 </style>
 
 <script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("on");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-  document.querySelectorAll(".reveal, .fq-item").forEach(function (el) {
-    io.observe(el);
-  });
-
-  document.querySelectorAll(".fq-q").forEach(function (btn) {
+  // ─── Accordion toggle ───
+  document.querySelectorAll("[data-faq-item]").forEach(function (item) {
+    var btn = item.querySelector(".fq-q");
+    if (!btn) return;
     btn.addEventListener("click", function () {
-      var item = btn.closest(".fq-item");
-      if (!item) return;
-      var isOpen = item.classList.contains("open");
-      document.querySelectorAll(".fq-item.open").forEach(function (i) {
-        i.classList.remove("open");
-      });
-      if (!isOpen) item.classList.add("open");
+      var isOpen = item.getAttribute("data-faq-open") === "true";
+      // Close siblings in the same section
+      var section = item.closest("[data-section]");
+      if (section) {
+        section.querySelectorAll("[data-faq-item]").forEach(function (sib) {
+          if (sib !== item) {
+            sib.setAttribute("data-faq-open", "false");
+            var sibBtn = sib.querySelector(".fq-q");
+            if (sibBtn) sibBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+      item.setAttribute("data-faq-open", String(!isOpen));
+      btn.setAttribute("aria-expanded", String(!isOpen));
     });
   });
+
+  // ─── Sticky jump-nav scroll spy ───
+  (function () {
+    var pills = document.querySelectorAll(".fq-jump-pill");
+    var sections = document.querySelectorAll("[data-section]");
+    if (!pills.length || !sections.length) return;
+
+    var spy = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var id = e.target.getAttribute("id");
+          pills.forEach(function (p) {
+            p.classList.toggle(
+              "is-active",
+              p.getAttribute("data-jump-target") === id,
+            );
+          });
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
+    );
+    sections.forEach(function (s) {
+      spy.observe(s);
+    });
+  })();
+
+  // ─── Client-side search ───
+  (function () {
+    var input = document.querySelector("[data-faq-search]");
+    if (!input) return;
+    var items = document.querySelectorAll("[data-faq-item]");
+    var sections = document.querySelectorAll("[data-section]");
+    var empty = document.querySelector("[data-faq-empty]");
+
+    input.addEventListener("input", function () {
+      var q = input.value.trim().toLowerCase();
+      var anyVisible = false;
+      items.forEach(function (it) {
+        var qText = it.getAttribute("data-faq-q") || "";
+        var match = !q || qText.indexOf(q) !== -1;
+        if (match) {
+          it.removeAttribute("hidden");
+          anyVisible = true;
+        } else {
+          it.setAttribute("hidden", "");
+        }
+      });
+      sections.forEach(function (sec) {
+        var visibleItems = sec.querySelectorAll(
+          "[data-faq-item]:not([hidden])",
+        );
+        sec.style.display = visibleItems.length ? "" : "none";
+      });
+      if (empty) {
+        if (q && !anyVisible) empty.removeAttribute("hidden");
+        else empty.setAttribute("hidden", "");
+      }
+    });
+  })();
 </script>

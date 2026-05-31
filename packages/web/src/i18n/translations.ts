@@ -189,11 +189,36 @@ export interface Translations {
       readonly h1: string;
       readonly p: string;
     }>;
+    /** "Find by intent" router cards above the FAQ proper. */
+    readonly intentRouter: Readonly<{
+      readonly label: string;
+      readonly upperTierBadge: string;
+      readonly items: ReadonlyArray<{
+        readonly title: string;
+        readonly desc: string;
+        readonly href: string;
+        readonly isUpperTier?: boolean;
+      }>;
+    }>;
+    /** Pillar color chip legend. */
+    readonly pillarLegend: Readonly<{
+      readonly label: string;
+      readonly items: ReadonlyArray<{
+        readonly pillar: "p1" | "p2" | "p3" | "p4";
+        readonly label: string;
+      }>;
+    }>;
+    readonly searchPlaceholder: string;
+    readonly noResultsText: string;
     readonly sections: ReadonlyArray<{
+      /** Used as the anchor id (e.g. "trust-layers"). */
+      readonly id: string;
       readonly title: string;
       readonly items: ReadonlyArray<{
         readonly q: string;
         readonly a: string;
+        /** Optional pillar tag for chip coloring. */
+        readonly pillar?: "p1" | "p2" | "p3" | "p4";
       }>;
     }>;
     readonly sidebar: Readonly<{
@@ -204,6 +229,19 @@ export interface Translations {
       readonly h2: string;
       readonly headers: ReadonlyArray<string>;
       readonly rows: ReadonlyArray<ReadonlyArray<string>>;
+      /** 0-based row indices to highlight. The Lemma row gets the brown emphasis. */
+      readonly highlightRows?: ReadonlyArray<number>;
+    }>;
+    /** Bottom Critical Brief surface block (isolated from Q&A). */
+    readonly criticalBriefBlock: Readonly<{
+      readonly badge: string;
+      readonly label: string;
+      readonly h2: string;
+      readonly body: string;
+      readonly cta: ReadonlyArray<{
+        readonly label: string;
+        readonly href: string;
+      }>;
     }>;
     readonly partner: Readonly<{
       readonly tag: string;
