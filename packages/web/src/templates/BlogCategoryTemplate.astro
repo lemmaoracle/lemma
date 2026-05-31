@@ -110,7 +110,6 @@ const countLabel = isJa
                   <span class="bc-card-date">{post.date}</span>
                 </div>
                 <h2 class="bc-card-title">{post.title}</h2>
-                <p class="bc-card-abstract">{post.abstract}</p>
                 <span class="bc-card-cta">
                   {isJa ? "読む →" : "Read →"}
                 </span>
@@ -376,16 +375,6 @@ const countLabel = isJa
   }
   :root[lang="ja"] .bc-card-title {
     line-height: 1.5;
-  }
-  .bc-card-abstract {
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--bc-text-3);
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
   .bc-card-cta {
     font-family: var(--bc-mono);

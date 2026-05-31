@@ -81,9 +81,7 @@ const categoriesDesc = isJa
   <main class="bx-page">
     <div class="bx-container">
       <section class="bx-hero">
-        <div class="bx-eyebrow">{t.blog.title}</div>
-        <h1 class="bx-h1">{t.blog.subtitle}</h1>
-        <p class="bx-hero-sub">{t.blog.index.headerDesc}</p>
+        <h1 class="bx-h1">{t.blog.title}</h1>
       </section>
 
       {categories.length > 0 && (
@@ -120,7 +118,6 @@ const categoriesDesc = isJa
                   <span class="bx-essay-date">{featured.date}</span>
                 </div>
                 <h2 class="bx-featured-title">{featured.title}</h2>
-                <p class="bx-featured-abstract">{featured.abstract}</p>
                 <span class="bx-featured-cta">{t.blog.index.featuredCta}</span>
               </div>
             </a>
@@ -143,7 +140,6 @@ const categoriesDesc = isJa
                     <span class="bx-essay-date">{post.date}</span>
                   </div>
                   <h3 class="bx-card-title">{post.title}</h3>
-                  <p class="bx-card-abstract">{post.abstract}</p>
                   <span class="bx-card-cta">{readCta}</span>
                 </a>
               ))}
@@ -210,7 +206,6 @@ const categoriesDesc = isJa
                 <span class="bx-essay-date">{post.date}</span>
               </div>
               <h3 class="bx-card-title">{post.title}</h3>
-              <p class="bx-card-abstract">{post.abstract}</p>
               <span class="bx-card-cta">{readCta}</span>
             </a>
           ))}
@@ -291,13 +286,6 @@ const categoriesDesc = isJa
     font-size: 52px;
     line-height: 1.15;
     letter-spacing: -0.03em;
-  }
-  .bx-hero-sub {
-    font-size: 15.5px;
-    color: var(--bx-text-2);
-    margin: 0;
-    line-height: 1.75;
-    max-width: 680px;
   }
 
   /* ─── FILTER BAR ─── */
@@ -420,16 +408,6 @@ const categoriesDesc = isJa
   :root[lang="ja"] .bx-featured-title {
     line-height: 1.4;
   }
-  .bx-featured-abstract {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--bx-text-2);
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
   .bx-featured-cta {
     font-family: var(--bx-mono);
     font-size: 11px;
@@ -516,16 +494,6 @@ const categoriesDesc = isJa
   }
   :root[lang="ja"] .bx-card-title {
     line-height: 1.5;
-  }
-  .bx-card-abstract {
-    font-size: 12.5px;
-    line-height: 1.65;
-    color: var(--bx-text-3);
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
   .bx-card-cta {
     font-family: var(--bx-mono);
