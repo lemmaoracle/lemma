@@ -19,8 +19,10 @@ const codeBlockStyle =
 const sections: LegalSection[] = [
   {
     heading: "Lemma Critical Brief とは",
-    body: `<p>Lemma Critical Brief は、Lemma Oracle が発行する<strong>構造的事案分析の reference 集</strong>である。AI・暗号インフラ・supply chain・規制属性領域で起きた個別インシデントを 1 件 = 1 Brief の形式で archive し、各事案の <strong>failure primitive</strong> と <strong>検出側強化では埋まらない gap</strong> を構造的に解析する。</p>
-<p>既存の事故事例 database が「何が起きたか」の網羅的記録を提供するのに対し、Brief は「<strong>なぜ検出で防げなかったか → 証明ベースでどう防げるか</strong>」の thesis-driven な分析文書である。CSO・analyst・規制実務者が citation 元として参照することを想定して書かれている。</p>`,
+    body: `<p>Lemma Critical Brief は、Lemma が発行する<strong>構造的事案分析の reference 集</strong>である。AI・暗号インフラ・supply chain・規制属性領域で起きた個別インシデントを 1 件 = 1 Brief の形式で archive し、各事案の <strong>failure primitive</strong> と <strong>検出側強化では埋まらない gap</strong> を構造的に解析する。</p>
+<p>既存の事故事例 database が「何が起きたか」の網羅的記録を提供するのに対し、Brief は「<strong>なぜ検出で防げなかったか → 証明ベースでどう防げるか</strong>」の thesis-driven な分析文書である。CSO・analyst・規制実務者が citation 元として参照することを想定して書かれている。</p>
+<p>Lemma Critical Brief の射程は、cybersecurity attack incident(攻撃事象)に加え、AI 時代の信頼層に関わるリスク事象を含む。本シリーズが扱うのは「信頼の assertion がそれを検証する layer と切り離されている」という構造であり、その射程はサイバー攻撃の被害事案だけにとどまらない。</p>
+<p>具体的には、(a) 攻撃 incident(例: 来歴改ざん、credential 不正使用、フレームワーク認証回避)、(b) AI 時代の信頼層リスク事象(例: training data provenance、AI 判断の入力 integrity、credential lifecycle 属性、エージェント権限の独立検証)を含む。両者は表面的な事案類型は異なるが、独立検証層の不在という共通構造を持つ。</p>`,
   },
   {
     heading: "Detection ≠ Proof thesis",
@@ -79,7 +81,7 @@ const sections: LegalSection[] = [
 <p><strong>Plain text</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
 "KelpDAO rsETH 不正ミント".
-Lemma Critical Brief No.001. Lemma Oracle / FRAME00, Inc.
+Lemma Critical Brief No.001. Lemma / FRAME00, Inc.
 https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 <p><strong>BibTeX</strong></p>
 <pre style="${codeBlockStyle}"><code>@techreport{lemma_critical_&lt;NN&gt;,
@@ -87,12 +89,12 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
   title       = {&lt;タイトル&gt;},
   number      = {&lt;NN&gt;},
   year        = {2026},
-  institution = {Lemma Oracle / FRAME00, Inc.},
+  institution = {Lemma / FRAME00, Inc.},
   url         = {&lt;Brief URL&gt;}
 }</code></pre>
 <p><strong>APA</strong></p>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
-&lt;タイトル&gt; (Lemma Critical Brief No.&lt;番号&gt;). Lemma Oracle / FRAME00, Inc.
+&lt;タイトル&gt; (Lemma Critical Brief No.&lt;番号&gt;). Lemma / FRAME00, Inc.
 &lt;Brief URL&gt;</code></pre>
 <p>各 Brief ページに「Cite this Brief」box があり、3 形式を tab 切替で表示する。PDF 版も同時提供される。</p>`,
   },
@@ -102,7 +104,7 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 <ul>
 <li><strong>公開分析であり、特定の組織への監査・診断・推奨ではない</strong></li>
 <li>意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に <a href="${discoveryCall}" target="_blank" rel="noopener">Discovery Call</a> を通じて直接相談することが望ましい</li>
-<li>商用利用や translation の問い合わせは Lemma Oracle 編集部門までご連絡を</li>
+<li>商用利用や translation の問い合わせは Lemma 編集部門までご連絡を</li>
 </ul>`,
   },
   {
