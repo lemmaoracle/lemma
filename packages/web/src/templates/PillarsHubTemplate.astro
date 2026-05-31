@@ -1,4 +1,13 @@
 ---
+/**
+ * Pillars hub — v24 chrome.
+ *
+ * Cream page, 1100px container, Sora display + Noto Sans JP body + Space
+ * Mono labels, saddle brown accent. Pillar cards reuse the use-case index
+ * card vocabulary (white surface + 0.5px lemma-line + 14px radius + brown
+ * top-bar accent that animates on hover). Optional guides + foundations
+ * sections sit below the pillar grid.
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { Pillar } from "../data/pillars";
 import type { BlogPost } from "../data/blog";
@@ -52,7 +61,7 @@ const collectionJsonLd = {
 
 <Layout
   locale={locale}
-  title={`${pillarT.title} — Lemma Oracle`}
+  title={`${pillarT.title} — Lemma`}
   description={pillarT.subtitle}
   metaType="page"
   pagePath="/pillars/"
@@ -62,413 +71,465 @@ const collectionJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="pillars-header">
-    <div class="section-tag" style="color:var(--accent)">{pillarT.title}</div>
-    <h1>{pillarT.heroTitle}</h1>
-    <p>{pillarT.subtitle}</p>
-  </header>
+  <main class="ph-page">
+    <div class="ph-container">
+      <section class="ph-hero">
+        <h1 class="ph-h1">{pillarT.heroTitle}</h1>
+        <p class="ph-hero-sub">{pillarT.subtitle}</p>
+      </section>
 
-  <section class="pillars-grid-section">
-    <div class="pillars-grid">
-      {pillars.map((pillar, i) => (
-        <a href={`${base}/pillars/${pillar.slug}`} class="pillar-card reveal" style={`transition-delay:${i * 0.08}s`}>
-          <div class="pillar-order">P{pillar.order}</div>
-          <div class="pillar-content">
-            <h2 class="pillar-title">{pillar.title[locale]}</h2>
-            <div class="pillar-slogan">{pillar.slogan[locale]}</div>
-            {pillar.subtitle[locale] && <div class="pillar-subtitle">{pillar.subtitle[locale]}</div>}
-          </div>
-          <div class="pillar-cta">
-            <span>{pillarT.viewPillar}</span>
-            <span class="pillar-arrow">→</span>
-          </div>
-        </a>
-      ))}
+      <section class="ph-grid" aria-label={pillarT.title}>
+        {pillars.map((pillar) => (
+          <a href={`${base}/pillars/${pillar.slug}`} class="ph-card">
+            <span class="ph-card-order">P{pillar.order}</span>
+            <h2 class="ph-card-title">{pillar.title[locale]}</h2>
+            <p class="ph-card-slogan">{pillar.slogan[locale]}</p>
+            {pillar.subtitle[locale] && (
+              <p class="ph-card-subtitle">{pillar.subtitle[locale]}</p>
+            )}
+            <span class="ph-card-cta">
+              <span class="ph-card-cta-label">{pillarT.viewPillar}</span>
+            </span>
+          </a>
+        ))}
+      </section>
+
+      {guides.length > 0 && (
+        <section class="ph-block" aria-label={t.blog.index.guidesTag}>
+          <div class="ph-block-eyebrow">{t.blog.index.guidesTag}</div>
+          <h2 class="ph-block-h2">{t.blog.index.guidesTitle}</h2>
+          <p class="ph-block-sub">{t.blog.index.guidesDesc}</p>
+          <ul class="ph-list">
+            {guides.map((post) => (
+              <li>
+                <a href={`${blogPath}/${post.slug}`} class="ph-list-card">
+                  <div class="ph-list-meta">
+                    <span class="ph-list-cat">{post.category}</span>
+                    <span class="ph-list-date">{post.date}</span>
+                  </div>
+                  <h3 class="ph-list-title">{post.title}</h3>
+                  <p class="ph-list-abstract">{post.abstract}</p>
+                  <span class="ph-list-cta">{t.blog.index.readGuide}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {foundations.length > 0 && (
+        <section class="ph-block" aria-label={t.blog.index.foundationsTag}>
+          <div class="ph-block-eyebrow">{t.blog.index.foundationsTag}</div>
+          <ul class="ph-foundations">
+            {foundations.map((post) => (
+              <li>
+                <a href={`${blogPath}/${post.slug}`} class="ph-foundations-card">
+                  <div class="ph-foundations-text">
+                    <h3 class="ph-foundations-title">{post.title}</h3>
+                    <p class="ph-foundations-abstract">{post.abstract}</p>
+                  </div>
+                  <span class="ph-foundations-cta">{t.blog.index.readSpecs}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
-  </section>
-
-  {guides.length > 0 && (
-    <section class="guides-section">
-      <div class="section-tag">{t.blog.index.guidesTag}</div>
-      <div class="guides-head">
-        <div class="guides-title">{t.blog.index.guidesTitle}</div>
-        <p class="guides-desc">{t.blog.index.guidesDesc}</p>
-      </div>
-      <div class="guides-grid">
-        {guides.map((post, i) => (
-          <a
-            href={`${blogPath}/${post.slug}`}
-            class="guide-card reveal"
-            style={`transition-delay:${i * 0.05}s`}
-          >
-            <div class="guide-meta">
-              <span class="guide-cat">{post.category}</span>
-              <span class="guide-date">{post.date}</span>
-            </div>
-            <h3>{post.title}</h3>
-            <p>{post.abstract}</p>
-            <span class="guide-link">{t.blog.index.readGuide}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  {foundations.length > 0 && (
-    <section class="foundations-section">
-      <div class="section-tag" style="color:rgba(255,255,255,0.5)">{t.blog.index.foundationsTag}</div>
-      <div class="foundations-grid">
-        {foundations.map((post) => (
-          <a href={`${blogPath}/${post.slug}`} class="foundations-card reveal">
-            <div class="foundations-text">
-              <h3>{post.title}</h3>
-              <p>{post.abstract}</p>
-            </div>
-            <span class="btn-white">{t.blog.index.readSpecs}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .pillars-header {
+  .ph-page {
+    /* Sora carries Latin; Noto Sans JP backs JA so they don't fall through
+       to the Layout-level Cormorant / Noto Serif JP stack. */
+    --ph-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --ph-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ph-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ph-text-1: #1a1a1a;
+    --ph-text-2: #3a3a3a;
+    --ph-text-3: #5a5a5a;
+    --ph-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--ph-text-2);
+    font-family: var(--ph-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
     margin-top: 64px;
-    background: var(--black);
-    padding: 100px 10% 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
-  .pillars-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 6vw, 80px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.08;
-    margin-bottom: 16px;
-  }
-  .pillars-header p {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.75;
-    max-width: 440px;
+  :root[lang="en"] .ph-page {
+    --ph-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
   }
 
-  .section-tag {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-tag::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: currentColor;
-    display: block;
+  .ph-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
 
-  .pillars-grid-section {
-    background: var(--white);
-    padding: 80px 10% 120px;
-  }
-
-  .pillars-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
-  }
-
-  .pillar-card {
-    background: var(--white);
-    padding: 48px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  a {
     text-decoration: none;
     color: inherit;
-    border-top: 2px solid transparent;
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
-  }
-  .pillar-card:hover {
-    border-top-color: var(--accent);
-    background: var(--gray-50);
   }
 
-  .pillar-order {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
+  /* ─── HERO ─── */
+  .ph-hero {
+    padding: 60px 0 56px;
   }
-
-  .pillar-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .pillar-title {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3vw, 36px);
-    font-weight: 600;
-    line-height: 1.2;
+  .ph-h1 {
+    font-family: var(--ph-display);
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 22px;
     color: var(--black);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
+    max-width: 920px;
+  }
+  :root[lang="ja"] .ph-h1 {
+    line-height: 1.25;
+  }
+  .ph-hero-sub {
+    font-size: 16px;
+    color: var(--ph-text-2);
     margin: 0;
-  }
-
-  .pillar-slogan {
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--gray-800);
-  }
-
-  .pillar-subtitle {
-    font-size: 13px;
-    color: var(--gray-500);
-    font-style: italic;
-  }
-
-  .pillar-cta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-top: 8px;
-  }
-
-  .pillar-arrow {
-    transition: transform 0.2s;
-  }
-  .pillar-card:hover .pillar-arrow {
-    transform: translateX(4px);
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .reveal.on {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .pillar-card.reveal,
-  .guide-card.reveal,
-  .foundations-card.reveal {
-    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s, background 0.2s;
-  }
-
-  /* ─── GUIDES ─── */
-  .guides-section {
-    background: var(--white);
-    padding: 100px 10%;
-    border-top: 1px solid var(--gray-200);
-  }
-  .guides-head {
-    margin-bottom: 56px;
+    line-height: 1.8;
     max-width: 720px;
   }
-  .guides-title {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 400;
-    color: var(--black);
-    margin-bottom: 8px;
+
+  /* ─── PILLAR CARD GRID ─── */
+  .ph-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 8px 0 56px;
   }
-  .guides-desc {
-    font-size: 14px;
-    color: var(--gray-500);
-    line-height: 1.78;
+  .ph-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 32px 32px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ph-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 48px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ph-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .ph-card:hover::before {
+    width: 100%;
+  }
+  .ph-card-order {
+    font-family: var(--ph-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ph-card-title {
+    font-family: var(--ph-display);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--black);
+    letter-spacing: -0.015em;
     margin: 0;
   }
-  .guides-grid {
+  .ph-card-slogan {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ph-text-2);
+    margin: 0;
+  }
+  /* Subtitle: small grey label, no italic (faked italics on JA glyphs
+     read as serif-y noise). */
+  .ph-card-subtitle {
+    font-size: 12px;
+    color: var(--ph-text-4);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .ph-card-cta {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .ph-card-cta-label {
+    font-family: var(--ph-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .ph-card:hover .ph-card-cta-label {
+    transform: translateX(3px);
+  }
+
+  /* ─── BLOCK (guides / foundations) ─── */
+  .ph-block {
+    margin: 56px 0 0;
+    padding: 40px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ph-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 64px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .ph-block-eyebrow {
+    font-family: var(--ph-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  .ph-block-h2 {
+    font-family: var(--ph-display);
+    font-size: clamp(22px, 2.6vw, 28px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  :root[lang="ja"] .ph-block-h2 {
+    line-height: 1.35;
+  }
+  .ph-block-sub {
+    font-size: 14px;
+    color: var(--ph-text-3);
+    line-height: 1.75;
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+
+  /* ─── GUIDES LIST (3-up) ─── */
+  .ph-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
+    gap: 14px;
   }
-  .guide-card {
-    background: var(--white);
-    padding: 36px 32px;
-    border-top: 2px solid transparent;
+  .ph-list > li {
+    margin: 0;
+  }
+  .ph-list-card {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    text-decoration: none;
-    color: inherit;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 24px 24px 20px;
+    height: 100%;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
   }
-  .guide-card:hover {
-    border-top-color: var(--accent);
+  .ph-list-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 36px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .guide-meta {
+  .ph-list-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 24px rgba(139, 69, 19, 0.05);
+    transform: translateY(-2px);
+  }
+  .ph-list-card:hover::before {
+    width: 100%;
+  }
+  .ph-list-meta {
     display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .guide-cat {
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--ph-mono);
     font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
+  }
+  .ph-list-cat {
     color: var(--accent);
   }
-  .guide-date {
-    font-size: 10px;
-    color: var(--gray-500);
+  .ph-list-date {
+    color: var(--ph-text-4);
   }
-  .guide-card h3 {
-    font-family: var(--font-display);
-    font-size: 18px;
+  .ph-list-title {
+    font-family: var(--ph-display);
+    font-size: 16px;
     font-weight: 600;
-    line-height: 1.3;
     color: var(--black);
-    margin: 0;
+    line-height: 1.4;
+    margin: 6px 0 0;
   }
-  .guide-card p {
-    font-size: 13px;
+  .ph-list-abstract {
+    font-size: 12.5px;
+    color: var(--ph-text-3);
     line-height: 1.7;
-    color: var(--gray-500);
-    flex: 1;
     margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .guide-link {
-    font-size: 11px;
+  .ph-list-cta {
+    font-family: var(--ph-mono);
+    font-size: 10.5px;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
     color: var(--accent);
-    margin-top: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .ph-list-card:hover .ph-list-cta {
+    transform: translateX(3px);
   }
 
-  /* ─── FOUNDATIONS ─── */
-  .foundations-section {
-    background: var(--black);
-    padding: 80px 10%;
-  }
-  .foundations-grid {
+  /* ─── FOUNDATIONS (1-up, horizontal card) ─── */
+  .ph-foundations {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 14px;
   }
-  .foundations-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 2px solid var(--accent);
-    padding: 40px 44px;
+  .ph-foundations > li {
+    margin: 0;
+  }
+  .ph-foundations-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px;
+    gap: 28px;
     flex-wrap: wrap;
-    text-decoration: none;
-    color: inherit;
-  }
-  .foundations-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-top-color: var(--accent-lt);
-  }
-  .foundations-text {
-    flex: 1;
-    min-width: 280px;
-  }
-  .foundations-card h3 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--white);
-    margin: 0 0 8px;
-  }
-  .foundations-card p {
-    font-size: 13.5px;
-    color: rgba(255, 255, 255, 0.5);
-    line-height: 1.7;
-    max-width: 560px;
-    margin: 0;
-  }
-  .btn-white {
     background: var(--white);
-    color: var(--black);
-    padding: 14px 30px;
-    font-size: 11.5px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    display: inline-block;
-    white-space: nowrap;
-    transition: background 0.2s, color 0.2s;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
   }
-  .foundations-card:hover .btn-white {
+  .ph-foundations-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 64px;
     background: var(--accent);
-    color: var(--white);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ph-foundations-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 24px rgba(139, 69, 19, 0.05);
+  }
+  .ph-foundations-card:hover::before {
+    width: 100%;
+  }
+  .ph-foundations-text {
+    flex: 1;
+    min-width: 260px;
+  }
+  .ph-foundations-title {
+    font-family: var(--ph-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.3;
+    margin: 0 0 6px;
+  }
+  .ph-foundations-abstract {
+    font-size: 13.5px;
+    color: var(--ph-text-3);
+    line-height: 1.7;
+    margin: 0;
+    max-width: 540px;
+  }
+  .ph-foundations-cta {
+    font-family: var(--ph-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 12px 26px;
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border-radius: 999px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .ph-foundations-card:hover .ph-foundations-cta {
+    background: #6e3610;
   }
 
-  @media (max-width: 1024px) {
-    .pillars-grid {
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .ph-grid {
       grid-template-columns: 1fr;
     }
-    .guides-grid {
+    .ph-list {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-
-  @media (max-width: 768px) {
-    .pillars-header,
-    .pillars-grid-section,
-    .guides-section,
-    .foundations-section {
-      padding-left: 6%;
-      padding-right: 6%;
+  @media (max-width: 720px) {
+    .ph-container {
+      padding: 0 24px;
     }
-    .pillars-header {
-      padding-top: 80px;
-      padding-bottom: 60px;
+    .ph-hero {
+      padding: 40px 0 36px;
     }
-    .pillars-grid-section {
-      padding-top: 56px;
-      padding-bottom: 80px;
+    .ph-block {
+      padding: 32px 22px;
     }
-    .pillar-card {
-      padding: 36px 28px;
-    }
-    .guides-section,
-    .foundations-section {
-      padding-top: 56px;
-      padding-bottom: 56px;
-    }
-    .guides-grid {
+    .ph-list {
       grid-template-columns: 1fr;
+    }
+    .ph-card {
+      padding: 28px 24px 22px;
+    }
+    .ph-foundations-card {
+      padding: 24px 22px;
     }
   }
 </style>
-
-<script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("on");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-  document.querySelectorAll(".reveal").forEach(function (el) {
-    io.observe(el);
-  });
-</script>
