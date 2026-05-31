@@ -56,6 +56,14 @@ export interface PillarFAQ {
  * §1 → incidents + regulatory landscape; §2 → Lemma's role narrative;
  * §3 → business scenarios mapped to use cases; §4 → onward navigation. */
 export interface PillarConceptHub {
+  /** §1 lead narrative — 1 short paragraph that frames why this is its
+   * own category, sitting above the incidents list. */
+  readonly intro: LocalizedStrings;
+  /** Section H2s (§1–§4). Each renders as `{head}<br><span class="accent">{accent}</span>`. */
+  readonly sectionH2s: ReadonlyArray<Readonly<{
+    readonly head: LocalizedStrings;
+    readonly accent: LocalizedStrings;
+  }>>;
   readonly incidents: ReadonlyArray<Readonly<{
     readonly date: string;
     readonly title: LocalizedStrings;
@@ -186,6 +194,28 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
     },
     conceptHub: {
+      intro: {
+        ja: "直近 1 年で、AI が読み・書き・参照する事実の来歴喪失起因の構造的事案が連続している。検出層の強化では届かない問題群として、来歴は単独の運用カテゴリとして扱われ始めている。",
+        en: "Structural incidents driven by provenance loss have been mounting over the past year in the facts AI reads, writes, and references. The class of problems that detection-layer hardening cannot reach is now being treated as its own operational category.",
+      },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、来歴は", en: "In 2026, provenance has become" },
+          accent: { ja: "単独の運用カテゴリになった。", en: "its own operational category." },
+        },
+        {
+          head: { ja: "受信側が原本を持たずに、", en: "Receivers verify the origin" },
+          accent: { ja: "発行元を独立検証する。", en: "without holding the original." },
+        },
+        {
+          head: { ja: "来歴が問われる、", en: "Where provenance gets asked —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
       incidents: [
         {
           date: "2026-05",
@@ -400,6 +430,28 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
     },
     conceptHub: {
+      intro: {
+        ja: "直近 1 年で、採用 AI の差別判定、医療 AI の説明不能、自律 coding agent の暴走など、判断過程が事後検証できない事案が連続している。XAI による「説明」は監査要件を満たさず、判断の事実そのものを暗号証跡として残す層が求められている。",
+        en: "Over the past year, cases where the decision process cannot be verified after the fact — hiring AI discrimination, medical AI accountability gaps, runaway autonomous coding agents — have piled up. XAI \"explanations\" do not satisfy audit requirements; a layer that preserves the facts of the decision itself as cryptographic evidence is being demanded.",
+      },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、AI 判断の", en: "In 2026, independent verification of AI decisions" },
+          accent: { ja: "独立検証は監査要件になった。", en: "became an audit requirement." },
+        },
+        {
+          head: { ja: "判断の事実を、", en: "Make the facts of a decision" },
+          accent: { ja: "モデル更新後も独立検証できる。", en: "independently verifiable beyond model updates." },
+        },
+        {
+          head: { ja: "AI 判断が問われる、", en: "Where AI decisions get scrutinized —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
       incidents: [
         {
           date: "2026-05",
@@ -680,6 +732,28 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
     ],
     conceptHub: {
+      intro: {
+        ja: "直近 1 年で、AI エージェントが攻撃の大半を自律実行する事案、credential 失効遅延、MCP 認証回避など、エージェント権限の独立検証が機能しない事案が連続している。IAM の静的権限管理では追いつかない問題群として、行為ごとの権限立証が独立カテゴリとして扱われ始めている。",
+        en: "Over the past year, AI agents autonomously executing the bulk of an attack, credential revocation lag, MCP auth bypass — cases where independent verification of agent authority simply doesn't work — have piled up. The class of problems that static IAM permission management cannot keep up with is now being treated as its own category: proof of authority at each action.",
+      },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、エージェント権限は", en: "In 2026, agent authority" },
+          accent: { ja: "独立検証の対象になった。", en: "became a target for independent verification." },
+        },
+        {
+          head: { ja: "鍵を渡さずに、", en: "Don't hand over the keys —" },
+          accent: { ja: "行為ごとに権限を立証する。", en: "prove authority at each action." },
+        },
+        {
+          head: { ja: "権限境界が問われる、", en: "Where authority boundaries get tested —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
       incidents: [
         {
           date: "2026-05",
@@ -889,6 +963,28 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
     },
     conceptHub: {
+      intro: {
+        ja: "直近 6 ヶ月で、KYC 通過の「証明」のために収集された原本(パスポート画像、住所証明、自撮り)が漏洩する事案が複数の取引所で連続している。データ最小化を満たすには、原本を渡す構造そのものを解体する必要があり、選択的開示は単独の運用カテゴリとして扱われ始めている。",
+        en: "In the past six months, originals (passport scans, address proofs, selfies) collected to \"prove\" KYC clearance have leaked across multiple exchange incidents. Meeting data minimization requires dismantling the structure of handing over originals altogether — selective disclosure is now being treated as its own operational category.",
+      },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、属性証明の", en: "In 2026, the dependence of attribute proof" },
+          accent: { ja: "原本依存は構造的に終わる。", en: "on originals is ending structurally." },
+        },
+        {
+          head: { ja: "原本を渡さずに、", en: "Without handing over the original," },
+          accent: { ja: "述語だけを開示する。", en: "disclose only the predicate." },
+        },
+        {
+          head: { ja: "規制属性が問われる、", en: "Where regulatory attributes get demanded —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
       incidents: [
         {
           date: "2026-05",

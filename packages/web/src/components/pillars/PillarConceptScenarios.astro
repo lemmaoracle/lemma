@@ -2,9 +2,11 @@
 /**
  * §3 — Where this shows up in operations.
  *
- * 2x2 scenario cards. Each carries a mono label (vertical/role),
- * a Sora title, a one-line description, and an optional link to the
- * matching use case slug.
+ * Aligns with the v1 concept-hub mockup:
+ *   - section eyebrow + 2-line H2
+ *   - 2x2 grid of scenario cards (label · title · desc · UC link)
+ *
+ * Each card links to the matching use case slug when one is provided.
  */
 import type { Locale, Translations } from "../../i18n/translations";
 import type { Pillar } from "../../data/pillars";
@@ -20,30 +22,42 @@ const { locale, base, pillar, pillarT } = Astro.props as Props;
 const hub = pillar.conceptHub;
 if (!hub) return null;
 const useCasesBase = base ? `${base}/use-cases` : "/use-cases";
+const h2 = hub.sectionH2s[2];
 ---
 
 <section class="pd-section pcs-section" id="scenarios" aria-label={pillarT.conceptSec3Label}>
   <div class="pd-section-label">{pillarT.conceptSec3Label}</div>
+  {h2 && (
+    <h2 class="pd-section-h2">
+      {h2.head[locale]}<br />
+      <span class="accent">{h2.accent[locale]}</span>
+    </h2>
+  )}
 
   <ul class="pcs-grid">
-    {hub.scenarios.map((sc) => (
-      <li>
-        {sc.useCaseSlug ? (
-          <a href={`${useCasesBase}/${sc.useCaseSlug}/`} class="pcs-card pcs-card--link">
-            <div class="pcs-label">{sc.label[locale]}</div>
-            <h3 class="pcs-title">{sc.title[locale]}</h3>
-            <p class="pcs-desc">{sc.desc[locale]}</p>
-            <span class="pcs-cta">{pillarT.conceptViewUseCase}</span>
-          </a>
-        ) : (
-          <article class="pcs-card">
-            <div class="pcs-label">{sc.label[locale]}</div>
-            <h3 class="pcs-title">{sc.title[locale]}</h3>
-            <p class="pcs-desc">{sc.desc[locale]}</p>
-          </article>
-        )}
-      </li>
-    ))}
+    {hub.scenarios.map((sc) => {
+      const inner = (
+        <Fragment>
+          <div class="pcs-label">{sc.label[locale]}</div>
+          <h3 class="pcs-title">{sc.title[locale]}</h3>
+          <p class="pcs-desc">{sc.desc[locale]}</p>
+          {sc.useCaseSlug && (
+            <div class="pcs-link">{pillarT.conceptViewUseCase}</div>
+          )}
+        </Fragment>
+      );
+      return (
+        <li>
+          {sc.useCaseSlug ? (
+            <a href={`${useCasesBase}/${sc.useCaseSlug}/`} class="pcs-item pcs-item--link">
+              {inner}
+            </a>
+          ) : (
+            <article class="pcs-item">{inner}</article>
+          )}
+        </li>
+      );
+    })}
   </ul>
 </section>
 
@@ -53,80 +67,58 @@ const useCasesBase = base ? `${base}/use-cases` : "/use-cases";
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 14px;
   }
   .pcs-grid > li {
     margin: 0;
   }
-  .pcs-card {
+  .pcs-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     background: var(--white);
     border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    padding: 24px 24px 20px;
+    border-radius: 12px;
+    padding: 22px 26px;
     height: 100%;
-    position: relative;
-    overflow: hidden;
     color: inherit;
     text-decoration: none;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    transition: border-color 0.2s;
   }
-  .pcs-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 40px;
-    background: var(--accent);
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .pcs-card--link:hover {
+  .pcs-item--link:hover {
     border-color: rgba(139, 69, 19, 0.4);
-    box-shadow: 0 10px 24px rgba(139, 69, 19, 0.05);
-    transform: translateY(-2px);
-  }
-  .pcs-card--link:hover::before {
-    width: 100%;
   }
   .pcs-label {
     font-family: var(--pd-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .pcs-title {
     font-family: var(--pd-display);
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--black);
     letter-spacing: -0.005em;
     line-height: 1.4;
-    margin: 4px 0 0;
+    margin: 0;
   }
   .pcs-desc {
-    font-size: 13.5px;
-    line-height: 1.75;
+    font-size: 13px;
+    line-height: 1.7;
     color: var(--pd-text-3);
     margin: 0;
     flex: 1;
   }
-  .pcs-cta {
+  .pcs-link {
     font-family: var(--pd-mono);
     font-size: 10.5px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--accent);
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 0.5px solid var(--lemma-line);
-    transition: transform 0.2s;
-  }
-  .pcs-card--link:hover .pcs-cta {
-    transform: translateX(3px);
+    margin-top: 6px;
   }
 
   @media (max-width: 720px) {

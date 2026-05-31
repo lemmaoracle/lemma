@@ -2,9 +2,13 @@
 /**
  * §2 — Lemma's role.
  *
- * White card with a 1-paragraph lead, three labelled bullets (role,
- * distinction from adjacent layers, what's available today), and a row
- * of links to onward technical surfaces. Per the brief: NO diagram.
+ * Aligns with the v1 concept-hub mockup:
+ *   - section eyebrow + 2-line H2
+ *   - white-card block carrying a 1-paragraph lead, a 3-col bullets row,
+ *     and an inline `approach-foot` link line at the bottom.
+ *
+ * No diagram. The 3-col bullets keep each role / distinction / availability
+ * concept scannable in one row.
  */
 import type { Locale, Translations } from "../../i18n/translations";
 import type { Pillar } from "../../data/pillars";
@@ -19,30 +23,38 @@ interface Props {
 const { locale, base, pillar, pillarT } = Astro.props as Props;
 const hub = pillar.conceptHub;
 if (!hub) return null;
+const h2 = hub.sectionH2s[1];
 ---
 
 <section class="pd-section pca-section" id="lemma-role" aria-label={pillarT.conceptSec2Label}>
   <div class="pd-section-label">{pillarT.conceptSec2Label}</div>
+  {h2 && (
+    <h2 class="pd-section-h2">
+      {h2.head[locale]}<br />
+      <span class="accent">{h2.accent[locale]}</span>
+    </h2>
+  )}
 
-  <article class="pca-card">
+  <article class="pca-block">
     <p class="pca-lead">{hub.approach.lead[locale]}</p>
 
-    <ul class="pca-bullets">
+    <div class="pca-bullets">
       {hub.approach.bullets.map((b) => (
-        <li>
+        <div class="pca-bullet">
           <div class="pca-bullet-label">{b.label[locale]}</div>
           <p class="pca-bullet-text">{b.text[locale]}</p>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
 
     {hub.approach.links.length > 0 && (
-      <div class="pca-links">
-        <span class="pca-links-label">{pillarT.conceptApproachLinksLabel}</span>
-        {hub.approach.links.map((link) => (
-          <a class="pca-link" href={`${base}${link.href}`}>
-            {link.label[locale]} →
-          </a>
+      <div class="pca-foot">
+        →{" "}
+        {hub.approach.links.map((link, i) => (
+          <Fragment>
+            {i > 0 && " / "}
+            <a href={`${base}${link.href}`}>{link.label[locale]}</a>
+          </Fragment>
         ))}
       </div>
     )}
@@ -50,93 +62,75 @@ if (!hub) return null;
 </section>
 
 <style>
-  .pca-card {
+  .pca-block {
     background: var(--white);
     border: 0.5px solid var(--lemma-line);
     border-radius: 16px;
-    padding: 36px 36px 32px;
+    padding: 32px 36px;
   }
   .pca-lead {
-    font-family: var(--pd-display);
-    font-size: 16.5px;
-    font-weight: 500;
-    line-height: 1.75;
+    font-size: 15px;
+    line-height: 1.85;
     color: var(--pd-text-1);
-    letter-spacing: -0.005em;
-    margin: 0 0 28px;
+    margin: 0 0 20px;
     max-width: 760px;
   }
-  :root[lang="ja"] .pca-lead {
-    line-height: 1.85;
-  }
   .pca-bullets {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin: 0 0 18px;
+    padding: 22px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .pca-bullet {
     display: flex;
     flex-direction: column;
-    gap: 22px;
-    border-top: 0.5px solid var(--lemma-line);
-    padding-top: 26px;
-  }
-  .pca-bullets > li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: 168px 1fr;
-    gap: 20px;
+    gap: 6px;
   }
   .pca-bullet-label {
     font-family: var(--pd-mono);
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent);
-    padding-top: 2px;
   }
   .pca-bullet-text {
-    font-size: 14.5px;
-    line-height: 1.85;
+    font-size: 13.5px;
+    line-height: 1.65;
     color: var(--pd-text-2);
     margin: 0;
   }
-  .pca-links {
-    margin: 28px 0 0;
-    padding: 22px 0 0;
-    border-top: 0.5px dashed rgba(139, 69, 19, 0.28);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 18px;
+  .pca-bullet-text :global(strong) {
+    color: var(--black);
+    font-weight: 500;
   }
-  .pca-links-label {
-    font-family: var(--pd-mono);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--pd-text-4);
-  }
-  .pca-link {
+  .pca-foot {
     font-family: var(--pd-mono);
     font-size: 11px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     color: var(--accent);
-    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
-    padding-bottom: 1px;
-    transition: border-color 0.15s, color 0.15s;
+    margin: 18px 0 0;
+    padding-top: 18px;
+    border-top: 0.5px solid var(--lemma-line);
   }
-  .pca-link:hover {
-    border-bottom-color: var(--accent);
-    color: #6e3610;
+  .pca-foot a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: text-decoration 0.15s;
+  }
+  .pca-foot a:hover {
+    text-decoration: underline;
   }
 
   @media (max-width: 720px) {
-    .pca-card {
-      padding: 28px 22px 24px;
+    .pca-block {
+      padding: 26px 22px;
     }
-    .pca-bullets > li {
+    .pca-bullets {
       grid-template-columns: 1fr;
-      gap: 6px;
+      gap: 14px;
     }
   }
 </style>
