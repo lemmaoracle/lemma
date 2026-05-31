@@ -26,7 +26,9 @@ import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BriefTemplateProps {
   locale: Locale;
-  brief: CollectionEntry<"critical-briefs">;
+  brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
 }
 
 const { locale, brief } = Astro.props as BriefTemplateProps;
@@ -50,7 +52,7 @@ const { Content } = await render(brief);
 const showRevisionHistory = brief.data.version !== "1.0";
 
 const PILLAR_LABELS: Record<
-  CollectionEntry<"critical-briefs">["data"]["pillar"],
+  BriefTemplateProps["brief"]["data"]["pillar"],
   { ja: string; en: string }
 > = {
   "01-verifiable-origin": {

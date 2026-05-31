@@ -118,6 +118,18 @@ const criticalBriefs = defineCollection({
   schema: briefSchema,
 });
 
+// English bodies. Same schema, separate folder. EN routes prefer entries here
+// when an EN translation exists; otherwise they fall back to the JA body so
+// the EN site never 404s for an untranslated Brief.
+const criticalBriefsEn = defineCollection({
+  loader: glob({
+    pattern: "[0-9][0-9][0-9]-*.md",
+    base: "./src/content/critical-briefs-en",
+  }),
+  schema: briefSchema,
+});
+
 export const collections = {
   "critical-briefs": criticalBriefs,
+  "critical-briefs-en": criticalBriefsEn,
 };

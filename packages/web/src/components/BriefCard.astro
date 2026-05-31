@@ -29,7 +29,9 @@ import { extractTldr } from "../data/extractTldr";
 
 export interface BriefCardProps {
   locale: Locale;
-  brief: CollectionEntry<"critical-briefs">;
+  brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
   /** Pillar archives suppress this badge to avoid redundancy. */
   showPillarBadge?: boolean;
   /** How this Brief surfaced in the listing — controls primary/secondary badge styling. */

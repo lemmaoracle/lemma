@@ -2,16 +2,24 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import BriefTemplate from "../../../templates/BriefTemplate.astro";
 
+// EN routes pull from the `critical-briefs-en` collection when an English
+// translation exists, otherwise fall back to the JA body so the EN site
+// never 404s for an untranslated Brief. Slug enumeration is driven by the
+// JA collection (the source of truth for which Brief numbers exist).
 export async function getStaticPaths() {
-  const briefs = await getCollection("critical-briefs");
-  return briefs.map((brief) => ({
-    params: { slug: brief.id },
-    props: { brief },
+  const jaBriefs = await getCollection("critical-briefs");
+  const enBriefs = await getCollection("critical-briefs-en");
+  const enById = new Map(enBriefs.map((b) => [b.id, b]));
+  return jaBriefs.map((ja) => ({
+    params: { slug: ja.id },
+    props: { brief: enById.get(ja.id) ?? ja },
   }));
 }
 
 interface Props {
-  brief: CollectionEntry<"critical-briefs">;
+  brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
 }
 
 const { brief } = Astro.props as Props;
