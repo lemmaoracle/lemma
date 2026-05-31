@@ -17,6 +17,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
+import PillarElevator from "../components/pillars/PillarElevator.astro";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForPillar } from "../config/demoSamples";
 
@@ -118,24 +119,18 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
         <p class="pd-attribution">{pillarT.categoryAttribution}</p>
       </header>
 
-      <article class="pd-main">
-        <section class="pd-section">
-          <div class="pd-section-label">{pillarT.blockProblem}</div>
-          <p class="pd-prose pd-prose-lead" set:html={pillar.problemStatement[locale]} />
-        </section>
+      <PillarElevator locale={locale} pillar={pillar} />
 
+      <article class="pd-main">
+        {/*
+          §Problem and §How Lemma Fits intentionally suppressed in v2:
+          - Problem is absorbed into the elevator block above (lead + context).
+          - How Lemma Fits names crypto primitives (Poseidon/BBS+/Groth16);
+            that depth belongs on the post-API-launch service page.
+        */}
         <section class="pd-section">
           <div class="pd-section-label">{pillarT.blockWhyNow}</div>
           <p class="pd-prose pd-prose-lead">{pillar.whyNow[locale]}</p>
-        </section>
-
-        <section class="pd-section">
-          <div class="pd-section-label">{pillarT.blockHowLemmaFits}</div>
-          <ul class="pd-how-list">
-            {pillar.howLemmaFits[locale].map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
         </section>
 
         {pillar.extraSection && (
