@@ -162,8 +162,6 @@ const labels = isJa
       pillarCountSuffix: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
       briefReadCta: "Brief →",
       archiveHeading: "カテゴリ別 archive",
-      archiveSub:
-        "primary_category と secondary_categories の両方からカウントし、出現件数の多い順に並べる。",
       pageTitle: "Lemma Critical Brief — threat intelligence × proof layer",
       description:
         "Lemma が発行する構造的事案分析の reference 集。AI・暗号インフラ・supply chain・規制属性領域の incident を、Detection ≠ Proof thesis のもとで構造的に解析する。",
@@ -195,8 +193,6 @@ const labels = isJa
       pillarCountSuffix: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
       briefReadCta: "Brief →",
       archiveHeading: "Categories archive",
-      archiveSub:
-        "Counted across both primary_category and secondary_categories; sorted by occurrence count, descending.",
       pageTitle: "Lemma Critical Brief — threat intelligence × proof layer",
       description:
         "A structured-incident-analysis reference collection from Lemma. Incidents across AI, cryptographic infrastructure, supply chain, and regulatory attributes — read through the Detection ≠ Proof thesis.",
@@ -347,7 +343,6 @@ const featuredLede = featured ? extractTldr(featured.body, 240) : "";
         <div class="bi-archive-head">
           <h2 class="bi-archive-h2">{labels.archiveHeading}</h2>
         </div>
-        <p class="bi-archive-sub">{labels.archiveSub}</p>
         <div class="bi-archive-grid">
           {sortedCategories.map(([cat, count]) => (
             <a
@@ -855,14 +850,8 @@ const featuredLede = featured ? extractTldr(featured.body, 240) : "";
   :root[lang="ja"] .bi-archive-h2 {
     line-height: 1.35;
   }
-  .bi-archive-sub {
-    font-size: 14px;
-    color: var(--bi-text-3);
-    margin: 0 0 28px;
-    max-width: 580px;
-    line-height: 1.6;
-  }
   .bi-archive-grid {
+    margin-top: 28px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
