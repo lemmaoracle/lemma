@@ -3,7 +3,7 @@
     "lemmaOracle": "Lemma Oracle",
     "overview": "概要",
     "changelog": "変更履歴",
-    "essays": "エッセイ",
+    "essays": "記事",
     "blog": "ブログ",
     "pillars": "信頼レイヤー",
     "faq": "FAQ",
@@ -135,8 +135,8 @@
   "blog": {
     "title": "ブログ",
     "metaTitle": "ブログ — Lemma Oracle",
-    "metaDescription": "Lemma Oracle のエッセイ・変更履歴・フィールドノート。",
-    "subtitle": "エッセイ、変更履歴、フィールドノート。",
+    "metaDescription": "Lemma Oracle の記事・変更履歴・フィールドノート。",
+    "subtitle": "記事、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
       "categoriesLabel": "カテゴリ",
@@ -147,8 +147,8 @@
       "archiveTag": "アーカイブ",
       "foundationsTag": "基盤",
       "headerDesc": "ZK証明、暗号的来歴証明、選択的開示。技術と意思決定の交点を探る。",
-      "essaysTag": "エッセイ",
-      "readEssay": "エッセイを読む →",
+      "essaysTag": "記事",
+      "readEssay": "読む →",
       "guidesTag": "ガイド",
       "guidesTitle": "技術ドキュメント。",
       "guidesDesc": "Lemmaアーキテクチャの各レイヤーに対応する実装ガイド。",
@@ -158,7 +158,7 @@
       "readSpecs": "仕様書を読む →"
     },
     "sections": {
-      "Essays": "エッセイ",
+      "Essays": "記事",
       "Changelog": "変更履歴",
       "Field Notes": "フィールドノート"
     }

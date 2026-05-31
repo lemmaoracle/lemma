@@ -3,7 +3,7 @@
     "lemmaOracle": "Lemma Oracle",
     "overview": "Overview",
     "changelog": "Changelog",
-    "essays": "Essays",
+    "essays": "Articles",
     "blog": "Blog",
     "pillars": "Why Lemma",
     "faq": "FAQ",
@@ -135,8 +135,8 @@
   "blog": {
     "title": "Blog",
     "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma Oracle",
-    "metaDescription": "Essays on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance — spanning industry analysis, solution deep-dives, technical design, and announcements.",
-    "subtitle": "Essays, changelog, and field notes.",
+    "metaDescription": "Articles on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance — spanning industry analysis, solution deep-dives, technical design, and announcements.",
+    "subtitle": "Articles, changelog, and field notes.",
     "backToBlog": "← Blog",
     "index": {
       "categoriesLabel": "Categories",
@@ -147,8 +147,8 @@
       "archiveTag": "Archive",
       "foundationsTag": "Foundations",
       "headerDesc": "ZK proofs, cryptographic provenance, selective disclosure. Where technology and decision-making intersect.",
-      "essaysTag": "Essays",
-      "readEssay": "Read essay →",
+      "essaysTag": "Articles",
+      "readEssay": "Read →",
       "guidesTag": "Guides",
       "guidesTitle": "Technical documentation.",
       "guidesDesc": "Implementation guides for each layer of the Lemma architecture.",
@@ -158,7 +158,7 @@
       "readSpecs": "Read Specs →"
     },
     "sections": {
-      "Essays": "Essays",
+      "Essays": "Articles",
       "Changelog": "Changelog",
       "Field Notes": "Field Notes"
     }

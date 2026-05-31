@@ -39,7 +39,7 @@ const isJa = locale === "ja";
 const homeLabel = isJa ? "ホーム" : "Home";
 const countLabel = isJa
   ? `${posts.length} 件の記事`
-  : `${posts.length} ${posts.length === 1 ? "essay" : "essays"}`;
+  : `${posts.length} ${posts.length === 1 ? "article" : "articles"}`;
 ---
 
 <Layout
@@ -89,7 +89,7 @@ const countLabel = isJa
           <p class="bc-empty-body">
             {isJa
               ? "このカテゴリの記事は現在編成中です。"
-              : "Essays in this category are currently being compiled."}
+              : "Articles in this category are currently being compiled."}
           </p>
           <a class="bc-empty-cta" href={blogPath}>
             {t.blog.backToBlog} →
@@ -112,7 +112,7 @@ const countLabel = isJa
                 <h2 class="bc-card-title">{post.title}</h2>
                 <p class="bc-card-abstract">{post.abstract}</p>
                 <span class="bc-card-cta">
-                  {isJa ? "記事を読む →" : "Read essay →"}
+                  {isJa ? "読む →" : "Read →"}
                 </span>
               </div>
             </a>
