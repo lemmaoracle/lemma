@@ -1,4 +1,11 @@
 ---
+/**
+ * Use Cases index — v24 chrome.
+ *
+ * Cream page, 1100px container, Sora display + Noto body + Space Mono labels,
+ * saddle brown accent. Card grid with white surface + 0.5px line + brown top
+ * accent that animates on hover (same vocabulary as Glossary / Blog index).
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { UseCase } from "../data/useCases";
 import type { Pillar } from "../data/pillars";
@@ -25,6 +32,8 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
 }
 
+const minLabel = locale === "ja" ? "分" : "min";
+
 const SITE = "https://lemma.frame00.com";
 const collectionJsonLd = {
   "@context": "https://schema.org",
@@ -48,7 +57,7 @@ const collectionJsonLd = {
 
 <Layout
   locale={locale}
-  title={`${useCaseT.title} — Lemma Oracle`}
+  title={`${useCaseT.title} — Lemma`}
   description={useCaseT.subtitle}
   metaType="page"
   pagePath="/use-cases/"
@@ -58,203 +67,230 @@ const collectionJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="uc-header">
-    <div class="section-tag" style="color:var(--accent)">{useCaseT.title}</div>
-    <h1>{useCaseT.subtitle}</h1>
-  </header>
+  <main class="uc-page">
+    <div class="uc-container">
+      <section class="uc-hero">
+        <div class="uc-eyebrow">{useCaseT.title}</div>
+        <h1 class="uc-h1">{useCaseT.title}</h1>
+        <p class="uc-hero-sub">{useCaseT.subtitle}</p>
+      </section>
 
-  <section class="uc-grid-section">
-    <div class="uc-grid">
-      {useCases.map((uc, i) => {
-        const pillar = getPillarForUseCase(uc);
-        return (
-          <a
-            href={`${useCasesPath}/${uc.slug}`}
-            class="uc-card reveal"
-            style={`transition-delay:${i * 0.06}s`}
-          >
-            <div class="uc-order">
-              {pillar ? `P${pillar.order} · ${pillar.title[locale]}` : useCaseT.title}
-            </div>
-            <div class="uc-content">
-              <h2 class="uc-title">{uc.title}</h2>
-              <p class="uc-abstract">{uc.abstract}</p>
-            </div>
-            <div class="uc-cta">
-              <span>{pillarT.viewUseCase ?? useCaseT.title}</span>
-              <span class="uc-arrow">→</span>
-              {uc.readingTime > 0 && (
-                <span class="uc-time">· {uc.readingTime} {locale === "ja" ? "分" : "min"}</span>
-              )}
-            </div>
-          </a>
-        );
-      })}
+      <section class="uc-grid">
+        {useCases.map((uc) => {
+          const pillar = getPillarForUseCase(uc);
+          return (
+            <a href={`${useCasesPath}/${uc.slug}`} class="uc-card">
+              <div class="uc-card-head">
+                {pillar && (
+                  <span class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</span>
+                )}
+              </div>
+              <h2 class="uc-card-title">{uc.title}</h2>
+              <p class="uc-card-abstract">{uc.abstract}</p>
+              <div class="uc-card-cta">
+                <span class="uc-card-cta-label">{pillarT.viewUseCase ?? useCaseT.title}</span>
+                {uc.readingTime > 0 && (
+                  <span class="uc-card-time">{uc.readingTime} {minLabel}</span>
+                )}
+              </div>
+            </a>
+          );
+        })}
+      </section>
     </div>
-  </section>
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .uc-header {
+  .uc-page {
+    --uc-display: "Sora", system-ui, sans-serif;
+    --uc-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --uc-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --uc-text-1: #1a1a1a;
+    --uc-text-2: #3a3a3a;
+    --uc-text-3: #5a5a5a;
+    --uc-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--uc-text-2);
+    font-family: var(--uc-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
     margin-top: 64px;
-    background: var(--black);
-    padding: 100px 10% 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-  .uc-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 6vw, 80px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.08;
-    margin: 0 0 16px;
   }
 
-  .section-tag {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
+  .uc-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ─── HERO ─── */
+  .uc-hero {
+    padding: 60px 0 56px;
+  }
+  .uc-eyebrow {
+    font-family: var(--uc-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    color: var(--uc-text-3);
+    margin: 0 0 24px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .section-tag::before {
+  .uc-eyebrow::before {
     content: "";
-    width: 18px;
+    display: inline-block;
+    width: 28px;
     height: 1px;
-    background: currentColor;
-    display: block;
+    background: var(--accent);
+  }
+  .uc-h1 {
+    font-family: var(--uc-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+    max-width: 920px;
+  }
+  .uc-hero-sub {
+    font-size: 16px;
+    color: var(--uc-text-2);
+    margin: 0;
+    line-height: 1.75;
+    max-width: 680px;
   }
 
-  .uc-grid-section {
-    background: var(--white);
-    padding: 80px 10% 120px;
-  }
-
+  /* ─── CARD GRID ─── */
   .uc-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
+    gap: 14px;
+    margin-top: 8px;
   }
-
   .uc-card {
     background: var(--white);
-    padding: 48px 40px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 32px 32px 28px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    text-decoration: none;
-    color: inherit;
-    border-top: 2px solid transparent;
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
+    gap: 14px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .uc-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 48px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .uc-card:hover {
-    border-top-color: var(--accent);
-    background: var(--gray-50);
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .uc-card:hover::before {
+    width: 100%;
   }
 
-  .uc-order {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+  .uc-card-head {
+    min-height: 16px;
+  }
+  .uc-card-pillar {
+    font-family: var(--uc-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
   }
 
-  .uc-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .uc-title {
-    font-family: var(--font-display);
-    font-size: clamp(26px, 3vw, 34px);
+  .uc-card-title {
+    font-family: var(--uc-display);
+    font-size: 22px;
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.35;
     color: var(--black);
     letter-spacing: -0.01em;
     margin: 0;
   }
 
-  .uc-abstract {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--gray-800);
+  .uc-card-abstract {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--uc-text-3);
     margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .uc-cta {
+  .uc-card-cta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-top: 8px;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 0.5px solid var(--lemma-line);
   }
-  .uc-arrow {
+  .uc-card-cta-label {
+    font-family: var(--uc-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
     transition: transform 0.2s;
   }
-  .uc-card:hover .uc-arrow {
-    transform: translateX(4px);
+  .uc-card:hover .uc-card-cta-label {
+    transform: translateX(3px);
   }
-  .uc-time {
-    color: var(--gray-500);
-    letter-spacing: 0.06em;
-    text-transform: none;
-    font-weight: 400;
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .reveal.on {
-    opacity: 1;
-    transform: translateY(0);
+  .uc-card-time {
+    font-family: var(--uc-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--uc-text-4);
   }
 
-  @media (max-width: 1024px) {
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .uc-h1 {
+      font-size: 42px;
+    }
     .uc-grid {
       grid-template-columns: 1fr;
     }
   }
-  @media (max-width: 768px) {
-    .uc-header {
-      padding: 80px 6% 60px;
+  @media (max-width: 720px) {
+    .uc-container {
+      padding: 0 24px;
     }
-    .uc-grid-section {
-      padding: 56px 6% 80px;
+    .uc-hero {
+      padding: 40px 0 36px;
+    }
+    .uc-h1 {
+      font-size: 32px;
     }
     .uc-card {
-      padding: 36px 28px;
+      padding: 28px 24px 24px;
     }
   }
 </style>
-
-<script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("on");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-  document.querySelectorAll(".reveal").forEach(function (el) {
-    io.observe(el);
-  });
-</script>
