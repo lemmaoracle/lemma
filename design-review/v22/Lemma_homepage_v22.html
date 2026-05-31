@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lemma — Trust Layer for AI</title>
+<meta name="description" content="Give AI proven facts. The cryptographic trust infrastructure that lets AI act with full agency.">
+<meta name="theme-color" content="#8B4513">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lemma-black: #000000;
+  --lemma-text-1: #1A1A1A;
+  --lemma-text-2: #3A3A3A;
+  --lemma-text-3: #5A5A5A;
+  --lemma-text-4: #9A9A9A;
+  --lemma-brown: #8B4513;
+  --lemma-brown-light: #F5EBDC;
+  --lemma-cream: #FCFAF5;
+  --lemma-cream-deep: #F2EEDF;
+  --lemma-line: #E5E5E5;
+  --legacy-bg: #ECEBE5;
+  --legacy-border: #B5AFA0;
+  --legacy-text: #6E6957;
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Tiempos Headline', 'Garamond', 'Times New Roman', Georgia, serif;
+  --font-body: 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(--lemma-text-2); font-family: var(--font-body); font-weight: 400; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+header { padding: 22px 0 0; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: inline-flex; text-decoration: none; }
+.brand-wordmark { width: 110px; height: auto; display: block; }
+.nav { display: flex; align-items: center; gap: 26px; }
+.nav a { color: var(--lemma-text-3); text-decoration: none; font-size: 13px; }
+.nav a:hover { color: var(--lemma-black); }
+.nav-cta { background: var(--lemma-black) !important; color: var(--lemma-cream) !important; padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.brand-bar { width: 240px; height: 4px; background: var(--lemma-brown); margin: 14px 0 0 40px; }
+
+/* Hero · split, with terminal/dashboard visual */
+.hero { padding: 80px 0 96px; max-width: 1100px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 28px; display: flex; align-items: center; gap: 14px; }
+.eyebrow::before { content: ""; display: inline-block; width: 36px; height: 1.5px; background: var(--lemma-brown); }
+.h1 { font-family: var(--font-display); font-size: 72px; font-weight: 700; line-height: 0.96; margin: 0 0 30px; color: var(--lemma-black); letter-spacing: -0.04em; }
+.h1 .accent { color: var(--lemma-brown); }
+.sub { font-size: 16px; color: var(--lemma-text-2); margin: 0 0 32px; line-height: 1.6; max-width: 440px; }
+.sub .k { color: var(--lemma-black); font-weight: 500; }
+.hero-cta { display: flex; gap: 12px; margin: 0 0 28px; flex-wrap: wrap; }
+.hero-cta-primary { background: var(--lemma-black); color: var(--lemma-cream); padding: 13px 26px; border-radius: 999px; font-size: 13px; font-weight: 500; text-decoration: none; }
+.hero-cta-secondary { background: transparent; color: var(--lemma-black); padding: 13px 26px; border-radius: 999px; border: 0.5px solid var(--lemma-black); font-size: 13px; font-weight: 500; text-decoration: none; }
+.trust-line { font-size: 12px; color: var(--lemma-text-3); line-height: 1.85; padding-top: 20px; border-top: 0.5px solid var(--lemma-line); font-family: var(--font-mono); letter-spacing: 0.05em; }
+.trust-line .strong { color: var(--lemma-black); font-weight: 500; }
+
+/* === Terminal / Dashboard preview === */
+.hero-visual { position: relative; }
+.terminal { background: #131313; border-radius: 14px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08); position: relative; }
+.terminal-chrome { background: #0B0B0B; padding: 11px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.term-dots { display: flex; gap: 6px; }
+.term-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+.term-path { flex: 1; font-family: var(--font-mono); font-size: 11px; color: rgba(252,250,245,0.4); }
+.term-live { font-family: var(--font-mono); font-size: 9px; color: var(--lemma-brown); letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.term-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lemma-brown); animation: dot-pulse 1.6s ease-in-out infinite; }
+
+@keyframes dot-pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(139, 69, 19, 0.5); } 50% { opacity: 0.55; box-shadow: 0 0 0 4px rgba(139, 69, 19, 0); } }
+
+.term-code { padding: 20px 22px 18px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.85; color: #E8E2D4; }
+.term-code .kw { color: #D4A574; }
+.term-code .str { color: #E5C9A1; }
+.term-code .fn { color: #F0DCB5; }
+.term-code .var { color: #C5BDA8; }
+.term-code .com { color: #6E695A; }
+
+.term-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+.term-stream { padding: 14px 22px 18px; font-family: var(--font-mono); font-size: 11px; color: rgba(252,250,245,0.78); }
+.stream-label { font-size: 9px; color: rgba(252,250,245,0.35); letter-spacing: 0.22em; text-transform: uppercase; margin: 0 0 12px; display: flex; align-items: center; justify-content: space-between; }
+.stream-counter { color: var(--lemma-brown); font-weight: 500; letter-spacing: 0.15em; }
+.stream-line { display: grid; grid-template-columns: 14px auto 1fr auto; gap: 10px; align-items: center; padding: 3px 0; }
+.stream-line .ldot { width: 6px; height: 6px; border-radius: 50%; background: var(--lemma-brown); }
+.stream-line .ltime { color: rgba(252,250,245,0.4); font-size: 10px; }
+.stream-line .ltext { color: rgba(252,250,245,0.85); }
+.stream-line .lhash { color: rgba(252,250,245,0.4); font-size: 10px; text-align: right; }
+.stream-line:nth-child(3) .ldot { animation: dot-pulse 1.6s ease-in-out 0s infinite; }
+.stream-line:nth-child(4) .ldot { animation: dot-pulse 1.6s ease-in-out 0.4s infinite; }
+.stream-line:nth-child(5) .ldot { animation: dot-pulse 1.6s ease-in-out 0.8s infinite; }
+.stream-line:nth-child(6) { opacity: 0.55; }
+.stream-line:nth-child(7) { opacity: 0.3; }
+.stream-line:nth-child(8) { opacity: 0.15; }
+
+@media (prefers-reduced-motion: reduce) {
+  .term-live::before, .stream-line .ldot { animation: none; }
+}
+
+/* Subtle depth back panel */
+.terminal-back { position: absolute; top: 10px; left: 10px; right: -10px; bottom: -10px; background: var(--lemma-brown-light); border-radius: 14px; z-index: -1; opacity: 0.55; }
+
+/* Generic section */
+.section { padding: 88px 0; max-width: 1020px; }
+.section-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 22px; display: flex; align-items: center; gap: 12px; }
+.section-eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.section-h2 { font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1.02; margin: 0 0 16px; color: var(--lemma-black); letter-spacing: -0.035em; max-width: 720px; }
+.section-h2 .accent { color: var(--lemma-brown); }
+.section-sub { font-size: 16px; color: var(--lemma-text-2); margin: 0 0 48px; line-height: 1.6; max-width: 540px; }
+
+/* === Ecosystem strip · v19 hero-adjacent logo bar (compact, single row) === */
+.ecosystem-strip { padding: 28px 0 32px; border-top: 0.5px solid var(--lemma-line); border-bottom: 0.5px solid var(--lemma-line); margin-top: 8px; }
+.es-bar { display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+.es-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--lemma-text-3); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.es-label::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.es-logos { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; flex: 1; }
+.es-logo { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--lemma-text-3); letter-spacing: -0.015em; transition: color 0.2s; cursor: default; display: inline-flex; align-items: baseline; gap: 4px; line-height: 1; }
+.es-logo:hover { color: var(--lemma-brown); }
+.es-logo .ver { font-family: var(--font-display); font-size: 11px; font-weight: 500; color: var(--lemma-text-4); letter-spacing: -0.01em; }
+@media (max-width: 720px) {
+  .ecosystem-strip { padding: 22px 0; }
+  .es-bar { gap: 20px; }
+  .es-logos { gap: 22px; }
+  .es-logo { font-size: 15px; }
+}
+
+/* === Section divider · brand bar style (v5) === */
+.section-divider { padding: 56px 0; }
+.section-divider .bar { display: block; width: 160px; height: 3px; background: var(--lemma-brown); margin-left: 0; position: relative; }
+.section-divider .bar::after { content: ""; position: absolute; left: 168px; top: 1px; height: 1px; width: calc(100% - 168px + 200px); background: var(--lemma-line); max-width: 800px; }
+
+/* === Capabilities · dynamic cards === */
+.capabilities { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; position: relative; }
+.cap-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 28px 26px 24px; position: relative; overflow: hidden; transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s, box-shadow 0.28s; }
+.cap-card::before { content: ""; position: absolute; top: 0; right: 0; width: 64px; height: 64px; background: linear-gradient(135deg, transparent 50%, rgba(139, 69, 19, 0.06) 50%); pointer-events: none; transition: opacity 0.25s; }
+.cap-card::after { content: ""; position: absolute; top: 14px; right: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--lemma-brown); opacity: 0; transition: opacity 0.25s; box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.18); }
+.cap-card:hover { transform: translateY(-4px); border-color: var(--lemma-brown); box-shadow: 0 16px 36px rgba(139, 69, 19, 0.08); }
+.cap-card:hover::after { opacity: 1; animation: dot-pulse 1.6s ease-in-out infinite; }
+.cap-tag { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 14px; display: flex; align-items: center; gap: 6px; }
+.cap-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lemma-brown); }
+.cap-vis { margin: 0 0 16px; }
+.cap-vis svg { display: block; }
+.cap-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--lemma-black); margin: 0 0 10px; line-height: 1.3; letter-spacing: -0.015em; }
+.cap-title .accent { color: var(--lemma-brown); }
+.cap-desc { font-size: 13.5px; color: var(--lemma-text-3); line-height: 1.65; }
+.cap-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lemma-text-4); margin: 16px 0 0; padding-top: 14px; border-top: 0.5px solid var(--lemma-line); }
+
+/* === SUBSTANTIVE ANIMATIONS (v5) === */
+
+/* HP arrow · stroke drawing flow (line itself moves, not just dots) */
+@keyframes draw-flow {
+  0%   { stroke-dashoffset: 60; }
+  50%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -60; }
+}
+.hp-arrow-line {
+  stroke-dasharray: 30 20;
+  animation: draw-flow 2s linear infinite;
+}
+
+/* HP row · sweep glow (whole row gets transformation light pass) */
+@keyframes row-sweep {
+  0%   { transform: translateX(-30%); opacity: 0; }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+.hp-row { position: relative; overflow: hidden; }
+.hp-row::after { content: ""; position: absolute; top: 0; left: 0; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, rgba(139, 69, 19, 0.10), transparent); animation: row-sweep 3.6s ease-in-out infinite; pointer-events: none; }
+.hp-row:nth-of-type(2)::after { animation-delay: 0.4s; }
+.hp-row:nth-of-type(3)::after { animation-delay: 0.8s; }
+.hp-row:nth-of-type(4)::after { animation-delay: 1.2s; }
+
+/* Capability card SVG nodes · sequential activation (network coming alive) */
+@keyframes node-activate {
+  0%, 100% { opacity: 0.55; r: 5; }
+  50%      { opacity: 1; r: 6; }
+}
+.cap-vis circle[data-node] {
+  animation: node-activate 2.4s ease-in-out infinite;
+}
+.cap-vis circle[data-node="2"] { animation-delay: 0.3s; }
+.cap-vis circle[data-node="3"] { animation-delay: 0.6s; }
+.cap-vis circle[data-node="4"] { animation-delay: 0.9s; }
+.cap-vis circle[data-node="5"] { animation-delay: 1.2s; }
+.cap-vis circle[data-node="6"] { animation-delay: 1.5s; }
+
+/* Capability card SVG connection lines · subtle pulse */
+@keyframes line-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
+.cap-vis line[data-pulse] {
+  animation: line-pulse 3s ease-in-out infinite;
+}
+
+/* Trust card top border · continuous draw across all 4, staggered */
+@keyframes trust-draw {
+  0%   { width: 0; }
+  35%  { width: 100%; }
+  65%  { width: 100%; }
+  100% { width: 0; }
+}
+.trust-card::before {
+  animation: trust-draw 5s ease-in-out infinite;
+  transition: none;
+}
+.trust-card:nth-of-type(2)::before { animation-delay: 0.8s; }
+.trust-card:nth-of-type(3)::before { animation-delay: 1.6s; }
+.trust-card:nth-of-type(4)::before { animation-delay: 2.4s; }
+
+/* Brand-bar section divider · draw-in pulse */
+@keyframes bar-fill {
+  0%   { width: 0; }
+  40%  { width: 160px; }
+  100% { width: 160px; }
+}
+.section-divider .bar { animation: bar-fill 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-arrow-line, .hp-row::after, .cap-vis circle[data-node], .cap-vis line[data-pulse], .trust-card::before, .section-divider .bar { animation: none; }
+  .section-divider .bar { width: 160px; }
+}
+
+/* === Mechanism diagram (v14 · warm dark · modern infrastructure) === */
+.mechanism { margin: 0 0 56px; padding: 48px 44px; background: #2C2620; border-radius: 18px; position: relative; box-shadow: 0 18px 56px rgba(44, 38, 32, 0.18); }
+.mechanism svg { width: 100%; height: auto; display: block; }
+.mech-caption { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(252, 250, 245, 0.55); text-align: center; margin: 32px 0 0; padding-top: 22px; border-top: 0.5px solid rgba(252, 250, 245, 0.12); display: flex; align-items: center; justify-content: center; gap: 12px; }
+.mech-caption .accent { color: var(--lemma-brown); font-weight: 500; }
+.mech-divider { display: flex; align-items: center; gap: 14px; margin: 36px 0 32px; }
+.mech-divider .dline { flex: 1; height: 1px; background: var(--lemma-line); }
+.mech-divider .dlabel { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--lemma-text-3); }
+
+@keyframes mech-flow {
+  0%   { transform: translateX(-15px); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateX(95px); opacity: 0; }
+}
+.mech-flow-dot { animation: mech-flow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; will-change: transform, opacity; }
+.mech-flow-dot:nth-of-type(2) { animation-delay: 1s; }
+.mech-flow-dot:nth-of-type(3) { animation-delay: 2s; }
+.oracle-shield { transform-origin: center; transform-box: fill-box; animation: dot-pulse 2.4s ease-in-out infinite; }
+.mech-ai-node { animation: dot-pulse 2.2s ease-in-out infinite; }
+.mech-ai-node:nth-of-type(2) { animation-delay: 0.3s; }
+.mech-ai-node:nth-of-type(3) { animation-delay: 0.6s; }
+.mech-ai-node:nth-of-type(4) { animation-delay: 0.9s; }
+.mech-ai-node:nth-of-type(5) { animation-delay: 1.2s; }
+.mech-ai-node:nth-of-type(6) { animation-delay: 1.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mech-flow-dot, .oracle-shield, .mech-ai-node { animation: none; opacity: 1; }
+}
+
+/* === HIDE → PROVE · individual transformation cards (v11) === */
+/* === Examples · v22 flat industry clusters (no tabs) === */
+.examples-flat { display: flex; flex-direction: column; gap: 28px; }
+.examples-cluster { display: flex; flex-direction: column; gap: 14px; }
+.examples-cluster-label { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: -0.005em; color: var(--lemma-brown); display: flex; align-items: center; gap: 10px; }
+.examples-cluster-label::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--lemma-brown); }
+.examples-closing { margin: 40px 0 0; padding: 24px 0 4px; font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--lemma-black); letter-spacing: -0.015em; line-height: 1.4; text-align: center; border-top: 0.5px solid var(--lemma-line); }
+.examples-closing::before { content: ""; display: block; width: 32px; height: 1.5px; background: var(--lemma-brown); margin: 0 auto 18px; }
+.hp-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.hp-card { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: center; gap: 0; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 22px 24px; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; }
+.hp-card:hover { border-color: var(--lemma-brown); box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06); transform: translateY(-2px); }
+.hp-side { display: flex; flex-direction: column; gap: 4px; }
+.hp-tag { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase; }
+.hp-tag.hide { color: var(--legacy-text); }
+.hp-tag.prove { color: var(--lemma-brown); display: flex; align-items: center; gap: 5px; }
+.hp-tag.prove::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--lemma-brown); }
+.hp-text { font-family: var(--font-mono); font-size: 14px; line-height: 1.3; letter-spacing: 0.01em; }
+.hp-text.hide { color: var(--legacy-text); }
+.hp-text.prove { color: var(--lemma-black); font-weight: 500; }
+.hp-arrow-cell { display: flex; align-items: center; justify-content: center; }
+.hp-arrow-cell svg { display: block; overflow: visible; }
+.hp-arrow { display: flex; align-items: center; justify-content: center; }
+.hp-arrow svg { display: block; overflow: visible; }
+
+/* === Audience cards · dynamic === */
+
+/* === Product cards (v12 · visual product previews, not blog-like) === */
+.audience-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+.aud-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 16px; padding: 0; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; overflow: hidden; }
+.aud-card:hover { border-color: var(--lemma-brown); box-shadow: 0 16px 36px rgba(139, 69, 19, 0.08); transform: translateY(-4px); }
+.aud-card:hover .aud-link { color: var(--lemma-brown); transform: translateX(4px); }
+.aud-preview { background: var(--lemma-cream-deep); padding: 36px 24px 28px; border-bottom: 0.5px solid var(--lemma-line); position: relative; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; overflow: hidden; }
+.aud-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+.aud-card:hover .aud-icon { transform: scale(1.06) rotate(-1.5deg); }
+.aud-icon svg { display: block; }
+.aud-wordmark { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.025em; line-height: 1; text-align: center; }
+.aud-wordmark .accent { color: var(--lemma-brown); }
+.aud-content { padding: 24px 24px 24px; }
+.aud-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+.aud-eyebrow::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--lemma-brown); }
+.aud-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--lemma-black); margin: 0 0 10px; line-height: 1.3; letter-spacing: -0.015em; }
+.aud-copy { font-size: 13px; color: var(--lemma-text-3); margin: 0 0 18px; line-height: 1.6; }
+.aud-link { font-family: var(--font-mono); font-size: 11px; color: var(--lemma-black); letter-spacing: 0.1em; transition: color 0.2s, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; padding-top: 14px; border-top: 0.5px solid var(--lemma-line); }
+
+/* === Resources (v15 · 3 large category cards) === */
+.resources { padding: 96px 0 72px; max-width: 1020px; border-top: 0.5px solid var(--lemma-line); margin-top: 24px; }
+.res-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; margin: 0; }
+.res-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 18px; padding: 40px 34px 32px; display: flex; flex-direction: column; min-height: 280px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; }
+.res-card::before { content: ""; position: absolute; top: 0; left: 0; height: 2px; width: 48px; background: var(--lemma-brown); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+.res-card:hover { transform: translateY(-3px); border-color: rgba(139,69,19,0.4); box-shadow: 0 14px 36px rgba(139,69,19,0.08); }
+.res-card:hover::before { width: 100%; }
+.res-card-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--lemma-brown); display: flex; align-items: center; gap: 8px; margin: 0 0 14px; }
+.res-card-eyebrow::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--lemma-brown); }
+.res-card-title { font-family: var(--font-display); font-size: 30px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.025em; line-height: 1.1; margin: 0 0 12px; }
+.res-card-desc { font-size: 13.5px; color: var(--lemma-text-3); line-height: 1.6; margin: 0 0 20px; }
+.res-card-links { display: flex; flex-direction: column; gap: 12px; margin-top: auto; padding-top: 18px; border-top: 0.5px solid var(--lemma-line); }
+.res-card-links a { font-family: var(--font-body); font-size: 14px; color: var(--lemma-black); text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: color 0.15s, transform 0.2s; }
+.res-card-links a:hover { color: var(--lemma-brown); transform: translateX(3px); }
+.res-card-links a .arr { font-family: var(--font-mono); font-size: 10px; color: var(--lemma-text-4); letter-spacing: 0.1em; transition: color 0.15s; }
+.res-card-links a:hover .arr { color: var(--lemma-brown); }
+@media (max-width: 880px) {
+  .res-grid { grid-template-columns: 1fr; }
+}
+
+/* === Trust signals · compact mono cards === */
+.trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.trust-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 24px 24px 22px; position: relative; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; overflow: hidden; }
+.trust-card::before { content: ""; position: absolute; top: 0; left: 0; height: 2px; width: 32px; background: var(--lemma-brown); transition: width 0.3s; }
+.trust-card:hover { transform: translateY(-2px); border-color: rgba(139,69,19,0.5); box-shadow: 0 10px 24px rgba(139,69,19,0.06); }
+.trust-card:hover::before { width: 100%; }
+.trust-card-status { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 14px; display: flex; align-items: center; gap: 6px; }
+.trust-card-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lemma-brown); animation: dot-pulse 2.2s ease-in-out infinite; }
+.trust-card:nth-of-type(2) .trust-card-status::before { animation-delay: 0.5s; }
+.trust-card:nth-of-type(3) .trust-card-status::before { animation-delay: 1s; }
+.trust-card:nth-of-type(4) .trust-card-status::before { animation-delay: 1.5s; }
+.trust-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--lemma-black); margin: 0 0 8px; letter-spacing: -0.01em; line-height: 1.35; }
+.trust-desc { font-size: 12.5px; color: var(--lemma-text-3); line-height: 1.65; }
+
+/* === Vision === */
+/* === Vision · slim CTA banner (v21) === */
+.vision { background: #0F0F0F; color: var(--lemma-cream); padding: 88px 0 80px; margin-top: 64px; text-align: center; }
+.vision .container { max-width: 880px; }
+.vision-h2 { font-family: var(--font-serif); font-size: 56px; font-weight: 500; line-height: 1.05; margin: 0 0 36px; letter-spacing: -0.02em; color: var(--lemma-cream); }
+.vision-h2 .accent { color: var(--lemma-brown); font-style: italic; }
+.vision-cta { display: flex; gap: 22px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.vision-cta-primary { background: var(--lemma-brown); color: var(--lemma-cream); padding: 15px 32px; border-radius: 999px; font-size: 14px; font-weight: 500; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+.vision-cta-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3); }
+.vision-cta-secondary { color: rgba(252,250,245,0.7); font-size: 14px; text-decoration: none; transition: color 0.2s; }
+.vision-cta-secondary:hover { color: var(--lemma-cream); }
+
+/* === Footer · v21 rich 5-col nav + brand block === */
+.site-footer { background: #0A0A0A; color: rgba(252,250,245,0.65); padding: 88px 0 36px; }
+.site-footer .container { max-width: 1200px; padding: 0 40px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; gap: 56px; padding: 0 0 64px; }
+.footer-brand { display: flex; flex-direction: column; gap: 22px; }
+.footer-logo { display: inline-flex; align-items: baseline; gap: 1px; font-family: var(--font-serif); font-style: italic; color: var(--lemma-cream); text-decoration: none; line-height: 1; }
+.footer-logo .ll { font-size: 36px; font-weight: 500; }
+.footer-logo .le { font-size: 18px; font-weight: 500; transform: translateY(-12px); }
+.footer-logo .lrest { font-size: 36px; font-weight: 500; }
+.footer-tagline { font-size: 13.5px; line-height: 1.55; color: rgba(252,250,245,0.55); margin: 0; max-width: 280px; }
+.footer-social { display: flex; gap: 10px; margin-top: 4px; }
+.footer-social a { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 0.5px solid rgba(252,250,245,0.2); border-radius: 8px; color: rgba(252,250,245,0.75); text-decoration: none; font-family: var(--font-display); font-size: 13px; font-weight: 500; letter-spacing: -0.01em; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.footer-social a:hover { background: rgba(252,250,245,0.05); border-color: rgba(252,250,245,0.4); color: var(--lemma-cream); }
+.footer-col { display: flex; flex-direction: column; gap: 14px; }
+.footer-col-title { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--lemma-cream); margin: 0 0 4px; letter-spacing: -0.01em; }
+.footer-col a { font-family: var(--font-display); font-size: 14px; color: rgba(252,250,245,0.6); text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.footer-col a:hover { color: var(--lemma-cream); }
+.footer-col a .arr { font-size: 12px; color: rgba(252,250,245,0.35); transition: transform 0.2s; }
+.footer-col a:hover .arr { color: var(--lemma-brown); transform: translateX(2px); }
+.footer-subtitle { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(252,250,245,0.4); margin: 22px 0 4px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 28px 0 0; border-top: 0.5px solid rgba(252,250,245,0.12); font-size: 12.5px; color: rgba(252,250,245,0.45); }
+.footer-legal { display: flex; gap: 28px; }
+.footer-legal a { color: rgba(252,250,245,0.55); text-decoration: none; font-size: 12.5px; transition: color 0.15s; }
+.footer-legal a:hover { color: var(--lemma-cream); }
+@media (max-width: 960px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 40px; }
+  .h1 { font-size: 50px; }
+  .capabilities { grid-template-columns: 1fr; }
+  .audience-grid { grid-template-columns: 1fr; }
+  .aud-card { border-right: none; border-bottom: 0.5px solid var(--lemma-line); }
+  .aud-card:last-child { border-bottom: none; }
+  .trust-grid { grid-template-columns: 1fr; }
+  .hp-grid-header, .hp-row { grid-template-columns: 1fr; }
+  .hp-arrow { transform: rotate(90deg); padding: 4px 0; }
+}
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+  .brand-bar { margin-left: 20px; width: 180px; }
+  .brand-wordmark { width: 92px; }
+  .nav { gap: 14px; font-size: 12px; }
+  .hero { padding: 48px 0 56px; }
+  .h1 { font-size: 38px; }
+  .sub { font-size: 14.5px; }
+  .section { padding: 56px 0; }
+  .section-h2 { font-size: 32px; }
+  .hide-prove-block { padding: 32px 22px; }
+  .vision { padding: 72px 0 56px; margin-top: 32px; }
+  .vision-h2 { font-size: 36px; margin-bottom: 32px; }
+  .footer-row { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a href="/" class="brand" aria-label="Lemma home">
+        <svg class="brand-wordmark" viewBox="0 0 142 65" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="#000"/>
+          <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="#000"/>
+          <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="#000"/>
+          <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="#000"/>
+          <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="#000"/>
+        </svg>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/why">Why</a>
+        <a href="/products">Products</a>
+        <a href="/solutions">Solutions</a>
+        <a href="/developers">Developers</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#contact" class="nav-cta">Talk to us</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="brand-bar" aria-hidden="true"></div>
+
+<main>
+  <div class="container">
+
+    <!-- HERO with code + live stream -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1 class="h1">The Trust Layer<br>for <span class="accent">AI.</span></h1>
+        <p class="sub"><span class="k">Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one trust layer.</span> Decisions you can prove. Data you never hold.</p>
+        <div class="hero-cta">
+          <a href="https://dashboard.lemma.workers.dev" class="hero-cta-primary">Try the demo →</a>
+          <a href="/#contact" class="hero-cta-secondary">Talk to us</a>
+        </div>
+        <p class="trust-line">
+          <span class="strong">● live in production since 2025</span> &nbsp;·&nbsp; built on <span class="strong">MCP · x402 · C2PA · W3C VC</span>
+        </p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="terminal-back" aria-hidden="true"></div>
+        <div class="terminal">
+          <div class="terminal-chrome">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <div class="term-path">@lemmaoracle/sdk</div>
+            <div class="term-live">live</div>
+          </div>
+          <div class="term-code">
+<span class="kw">import</span> <span class="var">{ Lemma }</span> <span class="kw">from</span> <span class="str">'@lemmaoracle/sdk'</span><br><br><span class="kw">const</span> <span class="var">{ proof }</span> = <span class="kw">await</span> <span class="fn">Lemma</span>.<span class="fn">verify</span>(claim)<br><span class="com">// Private data → proof. AI gets verified truth.</span>
+          </div>
+          <div class="term-divider"></div>
+          <div class="term-stream">
+            <div class="stream-label">
+              <span>Live across the network</span>
+              <span class="stream-counter">1,847,392</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:01</span>
+              <span class="ltext">PROOF VERIFIED · 0.42s</span>
+              <span class="lhash">#12,847,392</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:01</span>
+              <span class="ltext">PROOF VERIFIED · 0.38s</span>
+              <span class="lhash">#12,847,393</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:02</span>
+              <span class="ltext">PROOF VERIFIED · 0.41s</span>
+              <span class="lhash">#12,847,394</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:02</span>
+              <span class="ltext">PROOF VERIFIED · 0.39s</span>
+              <span class="lhash">#12,847,395</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:02</span>
+              <span class="ltext">PROOF VERIFIED · 0.44s</span>
+              <span class="lhash">#12,847,396</span>
+            </div>
+            <div class="stream-line">
+              <span class="ldot"></span>
+              <span class="ltime">14:32:03</span>
+              <span class="ltext">PROOF VERIFIED · 0.37s</span>
+              <span class="lhash">#12,847,397</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS · 3 doors in (Stripe-style) -->
+    <section class="section">
+      <div class="section-eyebrow">Products</div>
+      <h2 class="section-h2">One foundation.<br><span class="accent">Three doors in.</span></h2>
+
+      <div class="audience-grid">
+        <a href="/seal" class="aud-card">
+          <div class="aud-preview">
+            <div class="aud-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <!-- circle = seal stamp: closure, proof completion -->
+                <circle cx="30" cy="30" r="22" stroke="#8B4513" stroke-width="2.4" fill="rgba(139,69,19,0.10)" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="30" cy="30" r="3.2" fill="#8B4513"/>
+              </svg>
+            </div>
+            <div class="aud-wordmark">Seal</div>
+          </div>
+          <div class="aud-content">
+            <div class="aud-eyebrow">For developers</div>
+            <div class="aud-title">Send a proof, not the key.</div>
+            <div class="aud-copy">ZK sign-in SDK. Drop into any app or AI agent stack.</div>
+            <div class="aud-link">/seal →</div>
+          </div>
+        </a>
+
+        <a href="/trust402" class="aud-card">
+          <div class="aud-preview">
+            <div class="aud-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <!-- right-pointing triangle: delegated forward action, x402 request -->
+                <polygon points="12,9 50,30 12,51" stroke="#8B4513" stroke-width="2.4" fill="rgba(139,69,19,0.10)" stroke-linejoin="round"/>
+                <line x1="22" y1="22" x2="22" y2="38" stroke="#8B4513" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="aud-wordmark">Trust<span class="accent">402</span></div>
+          </div>
+          <div class="aud-content">
+            <div class="aud-eyebrow">For agent builders</div>
+            <div class="aud-title">Let AI act without holding keys.</div>
+            <div class="aud-copy">Keyless authentication. Per-call delegation. x402-ready.</div>
+            <div class="aud-link">/trust402 →</div>
+          </div>
+        </a>
+
+        <a href="/industries" class="aud-card">
+          <div class="aud-preview">
+            <div class="aud-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <!-- axis-aligned square: foundation block, infrastructure stability -->
+                <rect x="9" y="9" width="42" height="42" rx="2" stroke="#8B4513" stroke-width="2.4" fill="rgba(139,69,19,0.10)" stroke-linejoin="round"/>
+                <!-- 3 pillars inside: civic / critical / compliance -->
+                <line x1="19" y1="22" x2="19" y2="38" stroke="#8B4513" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="30" y1="22" x2="30" y2="38" stroke="#8B4513" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="41" y1="22" x2="41" y2="38" stroke="#8B4513" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="aud-wordmark">Industries</div>
+          </div>
+          <div class="aud-content">
+            <div class="aud-eyebrow">For enterprise</div>
+            <div class="aud-title">Civic · Critical · Compliance.</div>
+            <div class="aud-copy">Tuned for public infrastructure, manufacturing, regulated finance.</div>
+            <div class="aud-link">/industries →</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS · mechanism + examples -->
+    <section class="section">
+      <div class="section-eyebrow">How it works</div>
+      <h2 class="section-h2">Private data becomes<br><span class="accent">verified truth.</span></h2>
+      <p class="section-sub">Lemma never touches the original. It transforms it into a cryptographic proof. The secret stays. Only the proof travels.</p>
+
+      <!-- MECHANISM diagram · architecture -->
+      <div class="mechanism">
+        <svg viewBox="0 0 940 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mechanism: private data flows into Lemma Oracle as zero-knowledge proof, becomes verified truth, and powers the AI model">
+          <!-- Private Data box -->
+          <g transform="translate(10, 60)">
+            <rect x="0" y="0" width="220" height="240" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="110" y="44" text-anchor="middle" font-family="Sora, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A" letter-spacing="-0.01em">Private Data</text>
+            <!-- Database stack · narrower & taller (less squashed cylinder) -->
+            <g transform="translate(82, 80)">
+              <ellipse cx="28" cy="6" rx="26" ry="7" stroke="#8B4513" stroke-width="1.5" fill="none"/>
+              <ellipse cx="28" cy="28" rx="26" ry="7" stroke="#8B4513" stroke-width="1.5" fill="none"/>
+              <ellipse cx="28" cy="50" rx="26" ry="7" stroke="#8B4513" stroke-width="1.5" fill="none"/>
+              <path d="M 2 6 L 2 50 M 54 6 L 54 50" stroke="#8B4513" stroke-width="1.5"/>
+              <!-- Lock -->
+              <path d="M 22 80 Q 22 74 28 74 Q 34 74 34 80 L 34 84" stroke="#8B4513" stroke-width="1.5" fill="none"/>
+              <rect x="18" y="84" width="20" height="14" rx="2" stroke="#8B4513" stroke-width="1.5" fill="#fff"/>
+              <circle cx="28" cy="91" r="2" fill="#8B4513"/>
+            </g>
+          </g>
+
+          <!-- Arrow + flowing dots · Private → Lemma -->
+          <g transform="translate(242, 180)">
+            <line x1="0" y1="0" x2="86" y2="0" stroke="#8B4513" stroke-width="1.5"/>
+            <path d="M 86 0 L 78 -5 L 78 5 Z" fill="#8B4513"/>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+          </g>
+
+          <!-- Lemma Oracle box -->
+          <g transform="translate(340, 60)">
+            <rect x="0" y="0" width="260" height="240" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="130" y="44" text-anchor="middle" font-family="Sora, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A" letter-spacing="-0.01em">Lemma Oracle</text>
+            <!-- Dashed inner zone -->
+            <rect x="26" y="68" width="208" height="148" rx="10" stroke="#8B4513" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+            <!-- Shield with checkmark -->
+            <g class="oracle-shield" transform="translate(100, 96)">
+              <path d="M 30 0 L 60 10 L 60 28 Q 60 44 30 58 Q 0 44 0 28 L 0 10 Z" fill="#8B4513"/>
+              <path d="M 16 29 L 24 36 L 42 18" stroke="#FCFAF5" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <text x="130" y="196" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" fill="#8B4513" letter-spacing="0.08em">Zero-Knowledge Proof</text>
+          </g>
+
+          <!-- Arrow + Verified Truth + flowing dots · Lemma → AI -->
+          <g transform="translate(612, 180)">
+            <line x1="0" y1="0" x2="86" y2="0" stroke="#8B4513" stroke-width="1.5"/>
+            <path d="M 86 0 L 78 -5 L 78 5 Z" fill="#8B4513"/>
+            <!-- Verified Truth circle -->
+            <circle cx="43" cy="-32" r="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <path d="M 37 -32 L 41 -28 L 49 -36" stroke="#8B4513" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="43" y="-58" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8B4513" letter-spacing="0.08em">Verified Truth</text>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+            <circle class="mech-flow-dot" cx="-5" cy="0" r="3.5" fill="#8B4513"/>
+          </g>
+
+          <!-- AI Model box -->
+          <g transform="translate(710, 60)">
+            <rect x="0" y="0" width="220" height="240" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="110" y="44" text-anchor="middle" font-family="Sora, sans-serif" font-size="15" font-weight="600" fill="#1A1A1A" letter-spacing="-0.01em">AI Model</text>
+            <!-- Neural network · horizontally compressed (was 92w now 72w, closer to 1:1) -->
+            <g transform="translate(72, 84)">
+              <line x1="14" y1="20" x2="50" y2="40" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="20" x2="50" y2="74" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="56" x2="50" y2="40" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="56" x2="50" y2="74" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="92" x2="50" y2="40" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="14" y1="92" x2="50" y2="74" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="50" y1="40" x2="86" y2="57" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <line x1="50" y1="74" x2="86" y2="57" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+              <circle class="mech-ai-node" cx="14" cy="20" r="6" fill="#8B4513"/>
+              <circle class="mech-ai-node" cx="14" cy="56" r="6" fill="#8B4513"/>
+              <circle class="mech-ai-node" cx="14" cy="92" r="6" fill="#8B4513"/>
+              <circle class="mech-ai-node" cx="50" cy="40" r="6" fill="#8B4513"/>
+              <circle class="mech-ai-node" cx="50" cy="74" r="6" fill="#8B4513"/>
+              <circle class="mech-ai-node" cx="86" cy="57" r="6" fill="#8B4513"/>
+            </g>
+          </g>
+        </svg>
+
+        <div class="mech-caption">
+          <span>● Architecture</span>
+          <span class="accent">Private data stays at the edge · Only the proof travels</span>
+        </div>
+      </div>
+
+      <div class="mech-divider">
+        <span class="dline"></span>
+        <span class="dlabel">examples by industry</span>
+        <span class="dline"></span>
+      </div>
+
+      <div class="examples-flat">
+        <!-- FINANCE -->
+        <div class="examples-cluster">
+          <div class="examples-cluster-label">Finance &amp; Risk</div>
+          <div class="hp-cards">
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">your income statement</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">loan eligibility</div>
+              </div>
+            </div>
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">your transaction trail</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">AML compliance</div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- HEALTHCARE -->
+        <div class="examples-cluster">
+          <div class="examples-cluster-label">Healthcare</div>
+          <div class="hp-cards">
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">patient medical records</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">insurance eligibility</div>
+              </div>
+            </div>
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">individual cohort data</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">clinical trial inclusion</div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- AI & AGENTS -->
+        <div class="examples-cluster">
+          <div class="examples-cluster-label">AI &amp; Agents</div>
+          <div class="hp-cards">
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">your training dataset</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">model decision integrity</div>
+              </div>
+            </div>
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">user's private keys</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">agent acts on your behalf</div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- IDENTITY & CIVIC -->
+        <div class="examples-cluster">
+          <div class="examples-cluster-label">Identity &amp; Civic</div>
+          <div class="hp-cards">
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">your full personal ID</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">age &amp; residency</div>
+              </div>
+            </div>
+            <div class="hp-card">
+              <div class="hp-side">
+                <div class="hp-tag hide">Hide</div>
+                <div class="hp-text hide">voter eligibility records</div>
+              </div>
+              <div class="hp-arrow-cell">
+                <svg width="40" height="20" viewBox="0 0 40 20" fill="none">
+                  <line class="hp-arrow-line" x1="4" y1="10" x2="30" y2="10" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M 30 10 L 24 5 L 24 15 Z" fill="#8B4513"/>
+                </svg>
+              </div>
+              <div class="hp-side">
+                <div class="hp-tag prove">Prove</div>
+                <div class="hp-text prove">vote validity</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Examples closing message · the through-line of all 8 examples -->
+      <p class="examples-closing">
+        In every case — the AI sees the proof, never the original.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<!-- VISION · slim CTA banner · emotional close before nav footer -->
+<section class="vision">
+  <div class="container">
+    <h2 class="vision-h2">The Trust Layer<br>for <span class="accent">the agent era.</span></h2>
+    <div class="vision-cta">
+      <a href="https://dashboard.lemma.workers.dev" class="vision-cta-primary">Try the demo →</a>
+      <a href="/#contact" class="vision-cta-secondary">Or talk to the team →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand block -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Lemma">
+          <span class="ll">L</span><span class="le">e</span><span class="lrest">mma</span>
+        </a>
+        <p class="footer-tagline">Trust Layer for AI.<br>Built for decisions that matter.</p>
+        <div class="footer-social">
+          <a href="https://x.com/lemmaoracle" aria-label="X / Twitter">X</a>
+          <a href="https://github.com/lemmaoracle" aria-label="GitHub">GH</a>
+          <a href="https://www.linkedin.com/company/lemmaoracle" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+
+      <!-- Why Lemma -->
+      <nav class="footer-col" aria-label="Why Lemma">
+        <h4 class="footer-col-title">Why Lemma</h4>
+        <a href="/pillars">Four Pillars</a>
+        <a href="/use-cases">Use Cases</a>
+      </nav>
+
+      <!-- Products -->
+      <nav class="footer-col" aria-label="Products">
+        <h4 class="footer-col-title">Products</h4>
+        <a href="/civic">Lemma Civic</a>
+        <a href="/critical">Lemma Critical</a>
+        <a href="/compliance">Lemma Compliance</a>
+        <a href="/trust402">Trust402</a>
+        <a href="/pricing">Pricing</a>
+      </nav>
+
+      <!-- Developers -->
+      <nav class="footer-col" aria-label="Developers">
+        <h4 class="footer-col-title">Developers</h4>
+        <a href="/trust402">Trust402</a>
+        <a href="https://dashboard.lemma.workers.dev">Dashboard</a>
+        <a href="/specs">Specs</a>
+        <a href="https://github.com/lemmaoracle">GitHub <span class="arr">→</span></a>
+        <a href="https://smithery.ai/servers/lemmaoracle/lemma">Smithery <span class="arr">→</span></a>
+      </nav>
+
+      <!-- Resources + Company -->
+      <nav class="footer-col" aria-label="Resources">
+        <h4 class="footer-col-title">Resources</h4>
+        <a href="/blog">Blog</a>
+        <a href="https://tally.so/r/xX0VYv">Whitepaper</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/faq">FAQ</a>
+        <div class="footer-subtitle">Company</div>
+        <a href="https://corp.frame00.com/">About us</a>
+        <a href="/#contact">Contact</a>
+        <a href="/ja">日本語</a>
+      </nav>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 FRAME00, INC. — Built for decisions that matter.</span>
+      <div class="footer-legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
