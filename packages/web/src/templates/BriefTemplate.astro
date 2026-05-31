@@ -561,8 +561,11 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
      The markdown body's first h2 is "TL;DR"; we wrap it visually as the
      mockup's tldr-block (cream-deep card, brown accent bar, mono label
      style on the heading). The next siblings until the next h2 inherit
-     the card via adjacent-sibling tricks. Full structural extraction
-     (proper enclosing div) lands in Step 3. */
+     the card via adjacent-sibling tricks. The h2 has 0 bottom margin
+     and 16px bottom padding so the cream-deep background flows
+     continuously into the paragraph (no gap between label and body).
+     Full structural extraction (proper enclosing div) lands when
+     component decomposition ships. */
   .brief-body :global(h2:first-child) {
     font-family: var(--brief-mono);
     font-size: 11px;
@@ -570,9 +573,9 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 16px;
+    margin: 0;
     background: var(--lemma-cream-deep);
-    padding: 36px 40px 0;
+    padding: 36px 40px 16px;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     position: relative;
@@ -587,7 +590,9 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     background: var(--accent);
     border-radius: 0 0 3px 0;
   }
-  /* TL;DR paragraph (first h2 + p) — extend the card */
+  /* TL;DR paragraph (first h2 + p) — extends the card downward.
+     Top padding 0 keeps the cream-deep background continuous with the
+     h2 above (the h2's 16px padding-bottom provides the inner spacing). */
   .brief-body :global(h2:first-child + p) {
     background: var(--lemma-cream-deep);
     padding: 0 40px 32px;
