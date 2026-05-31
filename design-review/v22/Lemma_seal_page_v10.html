@@ -247,7 +247,7 @@ footer { padding: 50px 0 36px; border-top: 0.5px solid var(--lemma-line); }
         Don't hand your keys to AI — built for the agent era.
       </p>
       <div class="code-block" aria-label="Seal SDK example">
-<span class="kw">import</span> { Seal } <span class="kw">from</span> <span class="str">'@lemmaoracle/seal'</span><br><br><span class="kw">const</span> { proof } = <span class="kw">await</span> <span class="fn">Seal</span>.<span class="fn">signIn</span>(apiKey, challenge)<br><span class="com">// Key stays on your device. Server receives only the proof.</span>
+<span class="kw">import</span> { generateSealProof } <span class="kw">from</span> <span class="str">'@lemmaoracle/seal'</span><br><br><span class="kw">const</span> { proof } = <span class="kw">await</span> <span class="fn">generateSealProof</span>({apiKey, nonce})<br><span class="com">// Key stays on your device. Server receives only the proof.</span>
       </div>
       <div class="cards">
         <article class="card">

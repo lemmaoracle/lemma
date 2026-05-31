@@ -486,7 +486,7 @@ header { padding: 22px 0 0; }
             <div class="term-live">live</div>
           </div>
           <div class="term-code">
-<span class="kw">import</span> <span class="var">{ Lemma }</span> <span class="kw">from</span> <span class="str">'@lemmaoracle/sdk'</span><br><br><span class="kw">const</span> <span class="var">{ proof }</span> = <span class="kw">await</span> <span class="fn">Lemma</span>.<span class="fn">verify</span>(claim)<br><span class="com">// Private data → proof. AI gets verified truth.</span>
+<span class="kw">import</span> <span class="var">{ prover }</span> <span class="kw">from</span> <span class="str">'@lemmaoracle/sdk'</span><br><br><span class="kw">const</span> <span class="var">{ proof }</span> = <span class="kw">await</span> <span class="fn">prover</span>.<span class="fn">prove</span>(claim)<br><span class="com">// Private data → proof. AI gets verified truth.</span>
           </div>
           <div class="term-divider"></div>
           <div class="term-stream">
