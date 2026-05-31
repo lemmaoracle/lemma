@@ -1,0 +1,167 @@
+---
+/**
+ * Brief detail page — Hero section (id eyebrow + h1 + subtitle + tag pills
+ * + 4-cell meta strip).
+ *
+ * The meta strip is delegated to BriefMetaStrip; everything above the strip
+ * (eyebrow / h1 / subtitle / tags) lives here. Tags render friendly category
+ * labels (not raw slugs) via the registry's categoryLabel().
+ */
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "../i18n/translations";
+import {
+  categoryLabel,
+  type CategorySlug,
+} from "../data/criticalBriefs";
+import BriefMetaStrip, {
+  type BriefMetaStripLabels,
+} from "./BriefMetaStrip.astro";
+
+export interface BriefHeroLabels extends BriefMetaStripLabels {
+  briefId: string;
+}
+
+export interface BriefHeroProps {
+  locale: Locale;
+  brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
+  labels: BriefHeroLabels;
+  mainTitle: string;
+  subtitle: string;
+  pillarLabel: string;
+  incidentDateStr: string;
+  publishedStr: string;
+}
+
+const {
+  locale,
+  brief,
+  labels,
+  mainTitle,
+  subtitle,
+  pillarLabel,
+  incidentDateStr,
+  publishedStr,
+} = Astro.props as BriefHeroProps;
+
+const primaryCatLabel = categoryLabel(
+  brief.data.primary_category as CategorySlug,
+  locale,
+);
+const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
+  categoryLabel(c as CategorySlug, locale),
+);
+---
+
+<section class="hero">
+  <div class="hero-id">{labels.briefId}</div>
+  <h1 class="hero-h1">{mainTitle}</h1>
+  {subtitle && <p class="hero-subtitle">{subtitle}</p>}
+
+  <div class="hero-tags">
+    <span class="hero-tag pillar">{pillarLabel}</span>
+    <span class="hero-tag category">{primaryCatLabel}</span>
+    {secondaryCatLabels.map((lab) => (
+      <span class="hero-tag cat-secondary">{lab}</span>
+    ))}
+  </div>
+
+  <BriefMetaStrip
+    locale={locale}
+    labels={labels}
+    incidentDateStr={incidentDateStr}
+    publishedStr={publishedStr}
+    authors={brief.data.authors}
+    relatedPack={brief.data.related_pack}
+  />
+</section>
+
+<style>
+  .hero {
+    --bh-display: "Sora", system-ui, sans-serif;
+    --bh-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+    padding: 32px 0 56px;
+  }
+  .hero-id {
+    font-family: var(--bh-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-id::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .hero-h1 {
+    font-family: var(--bh-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.06;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+    max-width: 880px;
+  }
+  :root[lang="ja"] .hero-h1 {
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .hero-subtitle {
+    font-family: var(--bh-display);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #3a3a3a;
+    margin: 0 0 32px;
+    letter-spacing: -0.015em;
+    max-width: 760px;
+  }
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 36px;
+  }
+  .hero-tag {
+    font-family: var(--bh-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  .hero-tag.pillar {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    font-weight: 500;
+  }
+  .hero-tag.category {
+    background: var(--lemma-brown-light);
+    color: var(--accent);
+  }
+  .hero-tag.cat-secondary {
+    background: var(--lemma-cream-deep);
+    color: #5a5a5a;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding: 24px 0 40px;
+    }
+    .hero-h1 {
+      font-size: 36px;
+    }
+    .hero-subtitle {
+      font-size: 17px;
+    }
+  }
+</style>

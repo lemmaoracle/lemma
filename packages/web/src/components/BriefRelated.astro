@@ -1,0 +1,119 @@
+---
+/**
+ * Brief detail page — Related Briefs cards block. Resolves frontmatter
+ * `related_briefs` slugs against whichever collection matches the
+ * rendering locale (EN entry if available, JA fallback).
+ *
+ * Renders nothing when the props list is empty (callers can pass an
+ * empty list unconditionally).
+ */
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "../i18n/translations";
+
+type RelatedBriefEntry =
+  | CollectionEntry<"critical-briefs">
+  | CollectionEntry<"critical-briefs-en">;
+
+export interface BriefRelatedProps {
+  locale: Locale;
+  base: string;
+  heading: string;
+  briefs: ReadonlyArray<RelatedBriefEntry>;
+}
+
+const { locale, base, heading, briefs } = Astro.props as BriefRelatedProps;
+const isJa = locale === "ja";
+---
+
+{briefs.length > 0 && (
+  <div class="related">
+    <div class="related-label">{heading}</div>
+    <div class="related-grid">
+      {briefs.map((r) => {
+        const rNo = String(r.data.brief_no).padStart(3, "0");
+        const rTitle = isJa ? r.data.title : r.data.title_en;
+        return (
+          <a
+            href={`${base}/critical/briefs/${r.id}/`}
+            class="related-card"
+          >
+            <div class="related-no">No. {rNo}</div>
+            <div class="related-title">{rTitle}</div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+<style>
+  .related {
+    --br-display: "Sora", system-ui, sans-serif;
+    --br-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+    margin: 80px 0 0;
+    padding: 56px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .related-label {
+    font-family: var(--br-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #5a5a5a;
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .related-label::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 22px 24px;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .related-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
+  }
+  .related-no {
+    font-family: var(--br-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .related-title {
+    font-family: var(--br-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+    margin: 0;
+  }
+  :root[lang="ja"] .related-title {
+    line-height: 1.5;
+  }
+
+  @media (max-width: 760px) {
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

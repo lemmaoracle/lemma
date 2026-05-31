@@ -9,14 +9,20 @@
  *   - Saddle brown accent (--accent) for tags, links, list markers, eyebrow
  *
  * Page composition, in order:
- *   1. Brand bar (240×4px brown stripe under nav)
- *   2. Breadcrumb (mono uppercase)
- *   3. Brief Hero (id eyebrow + h1 + subtitle + tag pills + 4-cell meta strip)
- *   4. Body: rendered markdown (TL;DR + §1–§8)
- *   5. Related Briefs cards (from frontmatter `related_briefs`)
- *   6. Cite this Brief box (3 tabs + copy)
- *   7. Revision History (only when frontmatter `version` !== "1.0")
- *   8. Distribution note (template-owned boilerplate, cream-deep card)
+ *   1. Breadcrumb (mono uppercase)
+ *   2. BriefHero (id eyebrow + h1 + subtitle + tag pills + meta strip)
+ *   3. Body: rendered markdown (TL;DR + §1–§8; §N badges injected by the
+ *      `rehype-brief-section-number` plugin and styled via the .brief-body
+ *      block below)
+ *   4. BriefRelated (cards from frontmatter `related_briefs`)
+ *   5. CiteBriefBox (3 tabs + copy)
+ *   6. BriefRevisionNote (only when frontmatter `version` !== "1.0")
+ *   7. BriefDistNote (template-owned boilerplate, cream-deep card)
+ *
+ * Composition uses Brief* components in src/components for the chrome.
+ * Markdown body styling — TL;DR card, §N badges, lists, tables, sources —
+ * is encoded as CSS in this template against the rendered `<Content />`
+ * tree; the markdown stays the single source of truth.
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import { render } from "astro:content";
@@ -24,8 +30,11 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
+import BriefHero from "../components/BriefHero.astro";
+import BriefRelated from "../components/BriefRelated.astro";
+import BriefDistNote from "../components/BriefDistNote.astro";
+import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
-import { DISCOVERY_CALL_URL } from "../config/cta";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 
 export interface BriefTemplateProps {
@@ -79,24 +88,8 @@ const PILLAR_LABELS: Record<
 
 const pillarLabel = PILLAR_LABELS[brief.data.pillar][isJa ? "ja" : "en"];
 
-// Mockup meta strip splits Pack into "Pack A" main + "Incident Response" sub.
-const PACK_LABELS: Record<string, { main: string; sub: { ja: string; en: string } }> = {
-  "A-incident-response": {
-    main: "Pack A",
-    sub: { ja: "Incident Response", en: "Incident Response" },
-  },
-  "B-regulatory": {
-    main: "Pack B",
-    sub: { ja: "Regulatory", en: "Regulatory" },
-  },
-  "C-agent-governance": {
-    main: "Pack C",
-    sub: { ja: "Agent Governance", en: "Agent Governance" },
-  },
-};
-
-// Related Briefs — resolve `related_briefs` slugs against whichever collection
-// matches the rendering locale (EN entry if available, JA fallback).
+// Related Briefs — resolve frontmatter slugs against the locale collection,
+// EN entry preferred, JA fallback for untranslated.
 const allJaBriefs = await getCollection("critical-briefs");
 const enById = isJa ? null : await getEnBriefMap();
 const relatedBriefs = brief.data.related_briefs
@@ -112,12 +105,10 @@ const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
 
 const pageTitle = `${mainTitle} — Lemma Critical Brief No.${briefNoPad}`;
-
 const description = subtitle ? `${mainTitle} — ${subtitle}` : mainTitle;
 
 const labels = isJa
   ? {
-      briefSeries: "Lemma Critical Brief",
       briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
       incidentDate: "事案日",
       published: "公開日",
@@ -135,7 +126,6 @@ const labels = isJa
       briefNoPrefix: "No.",
     }
   : {
-      briefSeries: "Lemma Critical Brief",
       briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
       incidentDate: "Incident date",
       published: "Published",
@@ -152,10 +142,6 @@ const labels = isJa
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
     };
-
-// Canonical Tally form for the whitepaper (single-form per Mayumi confirmation
-// in PR #256 — same form ID across locales).
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
 ---
 
 <Layout
@@ -179,78 +165,27 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     </div>
 
     <div class="container-narrow">
-      <section class="brief-hero">
-        <div class="brief-id">{labels.briefId}</div>
-        <h1 class="brief-h1">{mainTitle}</h1>
-        {subtitle && <p class="brief-subtitle">{subtitle}</p>}
-
-        <div class="brief-tags">
-          <span class="brief-tag pillar">{pillarLabel}</span>
-          <span class="brief-tag category">{brief.data.primary_category}</span>
-          {brief.data.secondary_categories.map((c) => (
-            <span class="brief-tag cat-secondary">{c}</span>
-          ))}
-        </div>
-
-        <div class="brief-meta-strip">
-          <div class="meta-cell">
-            <div class="meta-label">{labels.incidentDate}</div>
-            <div class="meta-value">{incidentDateStr}</div>
-          </div>
-          <div class="meta-cell">
-            <div class="meta-label">{labels.published}</div>
-            <div class="meta-value">{publishedStr}</div>
-          </div>
-          <div class="meta-cell">
-            <div class="meta-label">{labels.authors}</div>
-            <div class="meta-value">{brief.data.authors.join(", ")}</div>
-          </div>
-          {brief.data.related_pack.length > 0 && (
-            <div class="meta-cell">
-              <div class="meta-label">{labels.pack}</div>
-              <div class="meta-value">
-                {(() => {
-                  const first = brief.data.related_pack[0];
-                  const lab = PACK_LABELS[first];
-                  return lab ? (
-                    <>
-                      {lab.main}
-                      <span class="meta-sub">{lab.sub[isJa ? "ja" : "en"]}</span>
-                    </>
-                  ) : (
-                    first
-                  );
-                })()}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
+      <BriefHero
+        locale={locale}
+        brief={brief}
+        labels={labels}
+        mainTitle={mainTitle}
+        subtitle={subtitle}
+        pillarLabel={pillarLabel}
+        incidentDateStr={incidentDateStr}
+        publishedStr={publishedStr}
+      />
 
       <article class="brief-body">
         <Content />
       </article>
 
-      {relatedBriefs.length > 0 && (
-        <div class="related-block">
-          <div class="related-label">{labels.relatedHeading}</div>
-          <div class="related-grid">
-            {relatedBriefs.map((r) => {
-              const rNo = String(r.data.brief_no).padStart(3, "0");
-              const rTitle = isJa ? r.data.title : r.data.title_en;
-              return (
-                <a
-                  href={`${base}/critical/briefs/${r.id}/`}
-                  class="related-card"
-                >
-                  <div class="related-no">No. {rNo}</div>
-                  <div class="related-title">{rTitle}</div>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <BriefRelated
+        locale={locale}
+        base={base}
+        heading={labels.relatedHeading}
+        briefs={relatedBriefs}
+      />
 
       <CiteBriefBox
         locale={locale}
@@ -262,30 +197,22 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
       />
 
       {showRevisionHistory && (
-        <section class="brief-revision" aria-labelledby="revision-heading">
-          <div class="revision-label">{labels.revisionHeading}</div>
-          <p class="revision-note">
-            {isJa
-              ? `現在の版: ${brief.data.version}`
-              : `Current version: ${brief.data.version}`}
-          </p>
-        </section>
+        <BriefRevisionNote
+          locale={locale}
+          heading={labels.revisionHeading}
+          version={brief.data.version}
+        />
       )}
 
-      <section class="dist-note" aria-labelledby="distribution-heading">
-        <h2 id="distribution-heading" class="dist-h3">
-          {labels.distributionHeading}
-        </h2>
-        <p class="dist-text">{labels.distributionBody}</p>
-        <div class="dist-links">
-          <a href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">
-            {labels.discoveryCallLabel} ↗
-          </a>
-          <a href={whitepaperUrl} target="_blank" rel="noopener">
-            {labels.whitepaperLabel} ↗
-          </a>
-        </div>
-      </section>
+      <BriefDistNote
+        locale={locale}
+        labels={{
+          heading: labels.distributionHeading,
+          body: labels.distributionBody,
+          discoveryCallLabel: labels.discoveryCallLabel,
+          whitepaperLabel: labels.whitepaperLabel,
+        }}
+      />
     </div>
   </main>
 
@@ -293,15 +220,13 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
 </Layout>
 
 <style>
-  /* v24 typography palette — scoped to Brief detail pages so the rest of
-     the site keeps its existing Cormorant / DM Sans / Noto Serif JP setup
-     while the Brief surface migrates to Sora / Noto Sans JP / Space Mono.
-     Variables here override the :root display/body fonts within this
-     component's tree only. */
+  /* v24 typography palette — scoped to Brief detail pages. The rest of the
+     site keeps its existing fonts (Cormorant / DM Sans / Noto Serif JP)
+     while the Brief surface uses Sora / Noto Sans JP / Space Mono. */
   .brief-page {
-    --brief-display: "Sora", system-ui, -apple-system, sans-serif;
     --brief-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
     --brief-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --brief-display: "Sora", system-ui, sans-serif;
     --brief-text-1: #1a1a1a;
     --brief-text-2: #3a3a3a;
     --brief-text-3: #5a5a5a;
@@ -313,10 +238,8 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     font-weight: 400;
     line-height: 1.75;
     padding: 0 0 96px;
-    margin-top: 64px; /* clear the fixed Navigation height */
+    margin-top: 64px;
   }
-
-  /* /en/ locale — Sora is OK as a body font per mockup spec */
   :root[lang="en"] .brief-page {
     --brief-body: "Sora", system-ui, sans-serif;
   }
@@ -347,133 +270,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   .brief-breadcrumb-sep {
     color: var(--lemma-line);
     margin: 0 8px;
-  }
-
-  /* ─── BRIEF HERO ─── */
-  .brief-hero {
-    padding: 32px 0 56px;
-  }
-  .brief-id {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 22px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .brief-id::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .brief-h1 {
-    font-family: var(--brief-display);
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.06;
-    margin: 0 0 22px;
-    color: var(--black);
-    letter-spacing: -0.03em;
-    max-width: 880px;
-  }
-  :root[lang="ja"] .brief-h1 {
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-  }
-  .brief-subtitle {
-    font-family: var(--brief-display);
-    font-size: 22px;
-    font-weight: 500;
-    line-height: 1.45;
-    color: var(--brief-text-2);
-    margin: 0 0 32px;
-    letter-spacing: -0.015em;
-    max-width: 760px;
-  }
-  .brief-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0 0 36px;
-  }
-  .brief-tag {
-    font-family: var(--brief-mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: 999px;
-  }
-  .brief-tag.pillar {
-    background: var(--accent);
-    color: var(--lemma-cream);
-    font-weight: 500;
-  }
-  .brief-tag.category {
-    background: var(--lemma-brown-light);
-    color: var(--accent);
-  }
-  .brief-tag.cat-secondary {
-    background: var(--lemma-cream-deep);
-    color: var(--brief-text-3);
-  }
-
-  /* ─── META STRIP ─── */
-  .brief-meta-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  .meta-cell {
-    padding: 22px 24px;
-    border-right: 0.5px solid var(--lemma-line);
-  }
-  .meta-cell:last-child {
-    border-right: 0;
-  }
-  .meta-label {
-    font-family: var(--brief-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--brief-text-4);
-    margin: 0 0 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .meta-label::before {
-    content: "";
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent);
-    display: inline-block;
-  }
-  .meta-value {
-    font-family: var(--brief-display);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--black);
-    line-height: 1.4;
-    letter-spacing: -0.005em;
-    font-variant-numeric: tabular-nums;
-  }
-  .meta-sub {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    color: var(--brief-text-3);
-    display: block;
-    margin-top: 4px;
-    letter-spacing: 0.02em;
   }
 
   /* ─── BODY (rendered markdown) ─── */
@@ -508,12 +304,11 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     color: #6e3610;
   }
 
-  /* H2 — section headings from the markdown.
-     The `rehype-brief-section-number` plugin tags each numbered h2 with
-     `data-section-num="N"` and strips the "N. " prefix from the text,
-     enabling the mockup's two-line "§ N" eyebrow + Sora title rendering.
-     The first h2 (TL;DR) has no data-section-num and falls into the
-     TL;DR card treatment block below instead. */
+  /* H2 — section headings. The rehype-brief-section-number plugin tags each
+     numbered h2 with data-section-num="N" and strips the "N. " prefix; the
+     CSS below renders the "§ N" mono brown eyebrow via attr(). The first
+     h2 (TL;DR) has no data-section-num and falls into the TL;DR card
+     treatment below. */
   .brief-body :global(h2) {
     font-family: var(--brief-display);
     font-size: 30px;
@@ -526,8 +321,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
   :root[lang="ja"] .brief-body :global(h2) {
     line-height: 1.35;
   }
-  /* Numbered section eyebrow: "§ N" mono brown rendered above the h2 via
-     the data-section-num attribute the rehype plugin sets. */
   .brief-body :global(h2[data-section-num])::before {
     content: "§ " attr(data-section-num);
     display: flex;
@@ -541,10 +334,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     color: var(--accent);
     margin: 0 0 12px;
   }
-  .brief-body :global(h2[data-section-num])::before::before {
-    /* (unused) — placeholder for an optional horizontal accent line.
-       The flex layout above keeps the eyebrow tight to the h2. */
-  }
   .brief-body :global(h2:first-child) {
     margin-top: 0;
   }
@@ -557,15 +346,7 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     margin: 32px 0 14px;
   }
 
-  /* ─── TL;DR special treatment via :first-of-type targeting.
-     The markdown body's first h2 is "TL;DR"; we wrap it visually as the
-     mockup's tldr-block (cream-deep card, brown accent bar, mono label
-     style on the heading). The next siblings until the next h2 inherit
-     the card via adjacent-sibling tricks. The h2 has 0 bottom margin
-     and 16px bottom padding so the cream-deep background flows
-     continuously into the paragraph (no gap between label and body).
-     Full structural extraction (proper enclosing div) lands when
-     component decomposition ships. */
+  /* ─── TL;DR card via first-child targeting ─── */
   .brief-body :global(h2:first-child) {
     font-family: var(--brief-mono);
     font-size: 11px;
@@ -590,9 +371,6 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     background: var(--accent);
     border-radius: 0 0 3px 0;
   }
-  /* TL;DR paragraph (first h2 + p) — extends the card downward.
-     Top padding 0 keeps the cream-deep background continuous with the
-     h2 above (the h2's 16px padding-bottom provides the inner spacing). */
   .brief-body :global(h2:first-child + p) {
     background: var(--lemma-cream-deep);
     padding: 0 40px 32px;
@@ -651,7 +429,7 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     font-weight: 500;
   }
 
-  /* ─── HR (markdown section separators) — subtle line ─── */
+  /* ─── HR (markdown section separators) ─── */
   .brief-body :global(hr) {
     border: none;
     border-top: 0.5px solid var(--lemma-line);
@@ -713,165 +491,19 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     color: inherit;
   }
 
-  /* ─── RELATED BRIEFS ─── */
-  .related-block {
-    margin: 80px 0 0;
-    padding: 56px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
-  }
-  .related-label {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--brief-text-3);
-    margin: 0 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .related-label::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .related-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-  .related-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 12px;
-    padding: 22px 24px;
-    text-decoration: none;
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  }
-  .related-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
-  }
-  .related-no {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-  }
-  .related-title {
-    font-family: var(--brief-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.4;
-    margin: 0;
-  }
-
-  /* ─── REVISION ─── */
-  .brief-revision {
-    margin: 64px 0 0;
-    padding: 32px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
-  }
-  .revision-label {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--brief-text-3);
-    margin: 0 0 10px;
-  }
-  .revision-note {
-    font-family: var(--brief-body);
-    font-size: 13.5px;
-    color: var(--brief-text-3);
-    margin: 0;
-  }
-
-  /* ─── DISTRIBUTION NOTE ─── */
-  .dist-note {
-    background: var(--lemma-cream-deep);
-    border-radius: 14px;
-    padding: 28px 32px;
-    margin: 64px 0 0;
-  }
-  .dist-h3 {
-    font-family: var(--brief-display);
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--black);
-    margin: 0 0 12px;
-    letter-spacing: -0.01em;
-  }
-  .dist-text {
-    font-size: 13.5px;
-    color: var(--brief-text-2);
-    line-height: 1.7;
-    margin: 0 0 14px;
-  }
-  .dist-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    font-family: var(--brief-mono);
-    font-size: 11px;
-  }
-  .dist-links a {
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-  }
-  .dist-links a:hover {
-    text-decoration: underline;
-  }
-
   /* ─── RESPONSIVE ─── */
   @media (max-width: 760px) {
     .container-narrow {
       padding: 0 24px;
     }
-    .brief-hero {
-      padding: 24px 0 40px;
-    }
-    .brief-h1 {
-      font-size: 36px;
-    }
-    .brief-subtitle {
-      font-size: 17px;
-    }
-    .brief-meta-strip {
-      grid-template-columns: 1fr 1fr;
-    }
-    .meta-cell {
-      border-right: 0;
-      border-bottom: 0.5px solid var(--lemma-line);
-    }
-    .meta-cell:nth-child(odd) {
-      border-right: 0.5px solid var(--lemma-line);
-    }
-    .meta-cell:nth-last-child(-n + 2) {
-      border-bottom: 0;
-    }
-    .related-grid {
-      grid-template-columns: 1fr;
-    }
     .brief-body :global(h2) {
       font-size: 24px;
     }
     .brief-body :global(h2:first-child) {
-      padding: 28px 24px 0;
+      padding: 28px 24px 16px;
     }
     .brief-body :global(h2:first-child + p) {
       padding: 0 24px 24px;
-    }
-    .dist-note {
-      padding: 24px 22px;
     }
   }
 </style>

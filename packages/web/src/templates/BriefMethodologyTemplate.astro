@@ -1,0 +1,346 @@
+---
+/**
+ * Lemma Critical Brief — Methodology page template, v24-aligned.
+ *
+ * Used by /critical/briefs/methodology.astro (EN) and
+ * /ja/critical/briefs/methodology.astro (JA). The two routes pass
+ * locale-specific intro / lastUpdated / description / sections; the
+ * template owns the v24 chrome.
+ *
+ * Section headings are NOT auto-numbered with §N — Methodology has
+ * conceptual section names ("What Lemma Critical Brief is",
+ * "Detection ≠ Proof thesis", etc.) rather than the canonical Brief
+ * heading map. We render a mono eyebrow + Sora h2 per section using
+ * an incrementing counter for the eyebrow only.
+ */
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { getTranslations, type Locale } from "../i18n/translations";
+
+export interface MethodologySection {
+  readonly heading: string;
+  /** Rendered HTML for the body (paragraphs, lists, inline code blocks). */
+  readonly body: string;
+}
+
+export interface BriefMethodologyTemplateProps {
+  locale: Locale;
+  title: string;
+  tag: string;
+  intro: string;
+  lastUpdated: string;
+  sections: ReadonlyArray<MethodologySection>;
+  description: string;
+}
+
+const {
+  locale,
+  title,
+  tag,
+  intro,
+  lastUpdated,
+  sections,
+  description,
+} = Astro.props as BriefMethodologyTemplateProps;
+
+const t = getTranslations(locale);
+const isJa = locale === "ja";
+const base = isJa ? "/ja" : "";
+
+const pagePath = "/critical/briefs/methodology/";
+const pageTitle = `${title} — ${tag}`;
+
+const homeLabel = isJa ? "ホーム" : "Home";
+const briefsLabel = "Critical Brief";
+const methodologyCrumb = isJa ? "メソドロジー" : "Methodology";
+const indexHref = `${base}/critical/briefs/`;
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  title={pageTitle}
+  description={description}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="mth-page">
+    <div class="mth-container">
+      <div class="mth-breadcrumb">
+        <a href={base || "/"}>{homeLabel}</a>
+        <span class="mth-breadcrumb-sep">/</span>
+        <a href={indexHref}>{briefsLabel}</a>
+        <span class="mth-breadcrumb-sep">/</span>
+        <span>{methodologyCrumb}</span>
+      </div>
+
+      <section class="mth-hero">
+        <div class="mth-eyebrow">{tag}</div>
+        <h1 class="mth-h1">{title}</h1>
+        <p class="mth-intro">{intro}</p>
+        <div class="mth-last-updated">{lastUpdated}</div>
+      </section>
+
+      {sections.map((section, idx) => {
+        const num = String(idx + 1).padStart(2, "0");
+        return (
+          <section class="mth-section">
+            <div class="mth-section-num">§ {num}</div>
+            <h2 class="mth-section-heading">{section.heading}</h2>
+            <div class="mth-section-body" set:html={section.body} />
+          </section>
+        );
+      })}
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .mth-page {
+    --mth-display: "Sora", system-ui, sans-serif;
+    --mth-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --mth-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --mth-text-1: #1a1a1a;
+    --mth-text-2: #3a3a3a;
+    --mth-text-3: #5a5a5a;
+    --mth-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--mth-text-2);
+    font-family: var(--mth-body);
+    font-weight: 400;
+    line-height: 1.75;
+    padding: 0 0 96px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .mth-page {
+    --mth-body: "Sora", system-ui, sans-serif;
+  }
+
+  .mth-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .mth-breadcrumb {
+    font-family: var(--mth-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mth-text-4);
+    padding: 36px 0 0;
+  }
+  .mth-breadcrumb a {
+    color: var(--mth-text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .mth-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .mth-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
+  }
+
+  /* ─── HERO ─── */
+  .mth-hero {
+    padding: 32px 0 56px;
+  }
+  .mth-eyebrow {
+    font-family: var(--mth-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mth-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .mth-h1 {
+    font-family: var(--mth-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.06;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+  }
+  :root[lang="ja"] .mth-h1 {
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .mth-intro {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--mth-text-2);
+    margin: 0 0 24px;
+    max-width: 680px;
+  }
+  .mth-last-updated {
+    font-family: var(--mth-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mth-text-4);
+    padding-top: 22px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+
+  /* ─── SECTIONS ─── */
+  .mth-section {
+    margin: 0 0 56px;
+  }
+  .mth-section-num {
+    font-family: var(--mth-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .mth-section-heading {
+    font-family: var(--mth-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .mth-section-heading {
+    line-height: 1.35;
+  }
+  .mth-section-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--mth-text-2);
+  }
+  .mth-section-body :global(p) {
+    margin: 0 0 18px;
+  }
+  .mth-section-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .mth-section-body :global(strong) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .mth-section-body :global(em) {
+    font-style: italic;
+  }
+  .mth-section-body :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+    overflow-wrap: anywhere;
+  }
+  .mth-section-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .mth-section-body :global(ul) {
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+  }
+  .mth-section-body :global(ul li) {
+    position: relative;
+    padding-left: 22px;
+    margin: 0 0 10px;
+    line-height: 1.7;
+  }
+  .mth-section-body :global(ul li::before) {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 12px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 1px;
+    transform: rotate(45deg);
+  }
+  .mth-section-body :global(ol) {
+    margin: 0 0 18px;
+    padding: 0 0 0 4px;
+    counter-reset: mthlist;
+    list-style: none;
+  }
+  .mth-section-body :global(ol li) {
+    counter-increment: mthlist;
+    position: relative;
+    padding-left: 32px;
+    margin: 0 0 14px;
+    line-height: 1.7;
+  }
+  .mth-section-body :global(ol li::before) {
+    content: counter(mthlist);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--mth-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .mth-section-body :global(code:not(pre code)) {
+    font-family: var(--mth-mono);
+    font-size: 0.86em;
+    background: var(--lemma-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--mth-text-1);
+  }
+  .mth-section-body :global(pre) {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: #1a1a1a;
+    color: #e8e2d4;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--mth-mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .mth-section-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 760px) {
+    .mth-container {
+      padding: 0 24px;
+    }
+    .mth-hero {
+      padding: 24px 0 40px;
+    }
+    .mth-h1 {
+      font-size: 36px;
+    }
+    :root[lang="ja"] .mth-h1 {
+      font-size: 30px;
+    }
+    .mth-section-heading {
+      font-size: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+/**
+ * Brief detail page — Revision History note. The parent template only
+ * mounts this when `version !== "1.0"` so callers don't need to gate
+ * the render themselves.
+ */
+import type { Locale } from "../i18n/translations";
+
+export interface BriefRevisionNoteProps {
+  locale: Locale;
+  heading: string;
+  version: string;
+}
+
+const { locale, heading, version } = Astro.props as BriefRevisionNoteProps;
+const isJa = locale === "ja";
+const noteText = isJa
+  ? `現在の版: ${version}`
+  : `Current version: ${version}`;
+---
+
+<section class="revision" aria-labelledby="revision-heading">
+  <div id="revision-heading" class="revision-label">{heading}</div>
+  <p class="revision-note">{noteText}</p>
+</section>
+
+<style>
+  .revision {
+    --brv-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --brv-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+    margin: 64px 0 0;
+    padding: 32px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+    font-family: var(--brv-body);
+  }
+  :root[lang="en"] .revision {
+    --brv-body: "Sora", system-ui, sans-serif;
+  }
+  .revision-label {
+    font-family: var(--brv-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #5a5a5a;
+    margin: 0 0 10px;
+  }
+  .revision-note {
+    font-size: 13.5px;
+    color: #5a5a5a;
+    margin: 0;
+  }
+</style>

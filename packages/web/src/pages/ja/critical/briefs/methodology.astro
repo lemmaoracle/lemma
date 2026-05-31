@@ -1,22 +1,21 @@
 ---
-import LegalTemplate, { type LegalSection } from "../../../../templates/LegalTemplate.astro";
-import { getTranslations } from "../../../../i18n/translations";
+import BriefMethodologyTemplate, {
+  type MethodologySection,
+} from "../../../../templates/BriefMethodologyTemplate.astro";
 import { DISCOVERY_CALL_URL } from "../../../../config/cta";
-
-const locale = "ja";
-const t = getTranslations(locale);
-const base = "/ja";
 
 const discoveryCall = DISCOVERY_CALL_URL.ja;
 const whitepaperUrl = "https://tally.so/r/xX0VYv";
 
+// Inline-style fragment for citation code samples. v24 cream page so the
+// code block uses cream-deep bg rather than gray-50.
 const codeBlockStyle =
-  "background: var(--gray-50); padding: 16px; border-radius: 4px; " +
-  "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; " +
-  "font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; " +
-  "margin: 0 0 16px;";
+  "background: #F2EEDF; padding: 16px; border-radius: 8px; " +
+  "font-family: 'Space Mono', ui-monospace, SFMono-Regular, monospace; " +
+  "font-size: 12.5px; line-height: 1.7; overflow-x: auto; white-space: pre; " +
+  "margin: 0 0 16px; color: #1a1a1a;";
 
-const sections: LegalSection[] = [
+const sections: MethodologySection[] = [
   {
     heading: "Lemma Critical Brief とは",
     body: `<p>Lemma Critical Brief は、Lemma が発行する<strong>構造的事案分析の reference 集</strong>である。AI・暗号インフラ・supply chain・規制属性領域で起きた個別インシデントを 1 件 = 1 Brief の形式で archive し、各事案の <strong>failure primitive</strong> と <strong>検出側強化では埋まらない gap</strong> を構造的に解析する。</p>
@@ -130,13 +129,11 @@ const description =
   "Lemma Critical Brief シリーズの方法論・thesis・編集プロセス・citation 規約。各 Brief の制作と公開、読者による引用は本ページの方針に従う。";
 ---
 
-<LegalTemplate
-  locale={locale}
-  t={t}
-  base={base}
+<BriefMethodologyTemplate
+  locale="ja"
   tag="Lemma Critical Brief"
   title="Methodology"
-  lastUpdated="最終更新日:2026年5月30日"
+  lastUpdated="最終更新日:2026 年 5 月 30 日"
   intro="Lemma Critical Brief シリーズの方法論、thesis、編集プロセス、citation 規約をまとめる。各 Brief の制作と公開、読者による引用は、以下の方針に従う。"
   sections={sections}
   description={description}

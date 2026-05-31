@@ -1,22 +1,21 @@
 ---
-import LegalTemplate, { type LegalSection } from "../../../templates/LegalTemplate.astro";
-import { getTranslations } from "../../../i18n/translations";
+import BriefMethodologyTemplate, {
+  type MethodologySection,
+} from "../../../templates/BriefMethodologyTemplate.astro";
 import { DISCOVERY_CALL_URL } from "../../../config/cta";
-
-const locale = "en";
-const t = getTranslations(locale);
-const base = "";
 
 const discoveryCall = DISCOVERY_CALL_URL.en;
 const whitepaperUrl = "https://tally.so/r/xX0VYv";
 
+// Inline-style fragment for citation code samples. v24 cream page so the
+// code block uses cream-deep bg rather than gray-50.
 const codeBlockStyle =
-  "background: var(--gray-50); padding: 16px; border-radius: 4px; " +
-  "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; " +
-  "font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; " +
-  "margin: 0 0 16px;";
+  "background: #F2EEDF; padding: 16px; border-radius: 8px; " +
+  "font-family: 'Space Mono', ui-monospace, SFMono-Regular, monospace; " +
+  "font-size: 12.5px; line-height: 1.7; overflow-x: auto; white-space: pre; " +
+  "margin: 0 0 16px; color: #1a1a1a;";
 
-const sections: LegalSection[] = [
+const sections: MethodologySection[] = [
   {
     heading: "What Lemma Critical Brief is",
     body: `<p>Lemma Critical Brief is a <strong>structured incident-analysis reference collection</strong> published by Lemma. It archives individual incidents in the AI, cryptographic infrastructure, supply chain, and regulatory-attribute domains in a one-incident-per-Brief format, structurally analyzing each event's <strong>failure primitive</strong> and <strong>the gap that strengthening detection alone cannot close</strong>.</p>
@@ -130,10 +129,8 @@ const description =
   "Methodology, thesis, editorial process, and citation conventions of the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles on this page.";
 ---
 
-<LegalTemplate
-  locale={locale}
-  t={t}
-  base={base}
+<BriefMethodologyTemplate
+  locale="en"
   tag="Lemma Critical Brief"
   title="Methodology"
   lastUpdated="Last updated: 2026-05-30"
