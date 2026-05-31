@@ -227,7 +227,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     useCaseSlugs: ["delegated-treasury", "multi-agent-workflows", "x402-commerce"],
     primaryCTA: {
       label: "Talk to us",
-      href: "https://tally.so/r/EkBqDX",
+      href: "https://tally.so/r/Pd2Rl5",
       type: "talk-to-us",
     },
     secondaryCTA: {
