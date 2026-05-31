@@ -1,20 +1,23 @@
 ---
 import UseCaseDetailTemplate from "../../../templates/UseCaseDetailTemplate.astro";
-import { getAllUseCases, getUseCaseBySlug } from "../../../data/useCases";
+import { getAllUseCases, getUseCasesBySlugs } from "../../../data/useCases";
 import { getPillarBySlug } from "../../../data/pillars";
 import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
   const useCases = await getAllUseCases("ja");
 
-  const paths = useCases.map((useCase) => {
-    const pillar = getPillarBySlug(useCase.pillar);
+  const paths = await Promise.all(
+    useCases.map(async (useCase) => {
+      const pillar = getPillarBySlug(useCase.pillar);
+      const relatedUseCases = await getUseCasesBySlugs(useCase.relatedUseCases, "ja");
 
-    return {
-      params: { slug: useCase.slug },
-      props: { useCase, pillar },
-    };
-  });
+      return {
+        params: { slug: useCase.slug },
+        props: { useCase, pillar, relatedUseCases },
+      };
+    }),
+  );
 
   return paths;
 }
@@ -22,9 +25,10 @@ export async function getStaticPaths() {
 interface Props {
   useCase: import("../../../data/useCases").UseCase;
   pillar: import("../../../data/pillars").Pillar | undefined;
+  relatedUseCases: ReadonlyArray<import("../../../data/useCases").UseCase>;
 }
 
-const { useCase, pillar } = Astro.props;
+const { useCase, pillar, relatedUseCases } = Astro.props;
 const locale = "ja" as const;
 const t = getTranslations(locale);
 const base = "/ja";
@@ -57,4 +61,5 @@ const actualPillar = pillar ?? fallbackPillar;
   pillar={actualPillar}
   pillarT={pillarT}
   useCaseT={useCaseT}
+  relatedUseCases={relatedUseCases}
 />

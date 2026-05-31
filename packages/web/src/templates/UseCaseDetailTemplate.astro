@@ -39,9 +39,14 @@ export interface UseCaseDetailTemplateProps {
   pillar: Pillar;
   pillarT: Translations["pillars"];
   useCaseT: Translations["useCases"];
+  /** Resolved related use cases (from useCase.relatedUseCases slug list).
+   * When non-empty, the "related" section's markdown body is replaced
+   * with a card grid built from this data. */
+  relatedUseCases?: ReadonlyArray<UseCase>;
 }
 
-const { locale, t, base, useCase, pillar, pillarT, useCaseT } = Astro.props as UseCaseDetailTemplateProps;
+const { locale, t, base, useCase, pillar, pillarT, useCaseT, relatedUseCases = [] } =
+  Astro.props as UseCaseDetailTemplateProps;
 const useCasesPath = `${base}/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
@@ -147,12 +152,39 @@ const breadcrumbJsonLd = {
         </nav>
 
         <article class="ucd-main">
-          {useCase.sections.map((section) => (
-            <section id={section.key} class="ucd-section">
-              <h2 class="ucd-section-title">{section.title}</h2>
-              <div class="ucd-section-body" set:html={section.body} />
-            </section>
-          ))}
+          {useCase.sections.map((section) => {
+            // For the "related" section: when we have resolved related use
+            // cases, render a card grid using the frontmatter slug data and
+            // suppress the markdown body. Falls back to the body if the slug
+            // list is empty so the page never goes blank.
+            const isRelatedCards =
+              section.key === "related" && relatedUseCases.length > 0;
+            return (
+              <section id={section.key} class={`ucd-section${isRelatedCards ? " ucd-section--related" : ""}`}>
+                <h2 class="ucd-section-title">{section.title}</h2>
+                {isRelatedCards ? (
+                  <ul class="ucd-related-grid">
+                    {relatedUseCases.map((r) => (
+                      <li class="ucd-related-item">
+                        <a href={`${useCasesPath}/${r.slug}`} class="ucd-related-card">
+                          {r.thesis && (
+                            <div class="ucd-related-thesis">{r.thesis}</div>
+                          )}
+                          <h3 class="ucd-related-title">{r.title}</h3>
+                          <p class="ucd-related-abstract">{r.abstract}</p>
+                          <span class="ucd-related-cta">
+                            {pillarT.viewUseCase ?? useCaseT.title} →
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div class="ucd-section-body" set:html={section.body} />
+                )}
+              </section>
+            );
+          })}
 
           {demoSampleId && (
             <DemoCtaBanner
@@ -771,6 +803,99 @@ const breadcrumbJsonLd = {
     background: var(--lemma-brown-light);
   }
 
+  /* ─── RELATED USE CASES (card grid replaces long-form related text) ─── */
+  .ucd-section--related {
+    /* Drop the lead-paragraph treatment that would otherwise hit the
+       cards container instead of a real paragraph. */
+  }
+  .ucd-related-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .ucd-related-item {
+    margin: 0;
+    padding: 0;
+  }
+  .ucd-related-item::before {
+    content: none;
+  }
+  .ucd-related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    height: 100%;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ucd-related-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ucd-related-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .ucd-related-card:hover::before {
+    width: 100%;
+  }
+  .ucd-related-thesis {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  .ucd-related-title {
+    font-family: var(--ucd-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .ucd-related-abstract {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ucd-text-3);
+    margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ucd-related-cta {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .ucd-related-card:hover .ucd-related-cta {
+    transform: translateX(3px);
+  }
+
   /* ─── PARTNER CTA (v24 inline) ─── */
   .ucd-partner {
     margin: 32px 0 0;
@@ -886,6 +1011,9 @@ const breadcrumbJsonLd = {
     .ucd-section {
       padding-bottom: 36px;
       margin-bottom: 36px;
+    }
+    .ucd-related-grid {
+      grid-template-columns: 1fr;
     }
     .ucd-partner {
       padding: 36px 24px;
