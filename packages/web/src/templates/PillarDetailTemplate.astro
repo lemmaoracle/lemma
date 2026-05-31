@@ -253,10 +253,14 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   .pd-main {
     padding: 0;
   }
-  .pd-section {
+  /* These rules need :global because the .pd-section / .pd-section-label
+     / .pd-section-h2 elements live inside the PillarConcept* child
+     components. Astro's default scoped style hash would otherwise miss
+     them and §1-§4 render unstyled. */
+  :global(.pd-section) {
     margin: 72px 0 0;
   }
-  .pd-section-label {
+  :global(.pd-section-label) {
     font-family: var(--pd-mono);
     font-size: 11px;
     font-weight: 500;
@@ -268,7 +272,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     align-items: center;
     gap: 12px;
   }
-  .pd-section-label::before {
+  :global(.pd-section-label::before) {
     content: "";
     display: inline-block;
     width: 28px;
@@ -276,7 +280,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     background: var(--accent);
   }
   /* Section H2 — head line + brown accent span on line 2. */
-  .pd-section-h2 {
+  :global(.pd-section-h2) {
     font-family: var(--pd-display);
     font-size: clamp(24px, 3vw, 32px);
     font-weight: 700;
@@ -285,10 +289,10 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     line-height: 1.15;
     margin: 0 0 28px;
   }
-  :root[lang="ja"] .pd-section-h2 {
+  :global(:root[lang="ja"] .pd-section-h2) {
     line-height: 1.35;
   }
-  .pd-section-h2 :global(.accent) {
+  :global(.pd-section-h2 .accent) {
     color: var(--accent);
   }
 
@@ -632,7 +636,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     .pd-card-grid--3 {
       grid-template-columns: repeat(2, 1fr);
     }
-    .pd-section-h2 {
+    :global(.pd-section-h2) {
       font-size: 22px;
     }
   }
@@ -646,7 +650,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     .pd-main {
       padding: 32px 0 0;
     }
-    .pd-section {
+    :global(.pd-section) {
       padding-bottom: 40px;
       margin-bottom: 40px;
     }
