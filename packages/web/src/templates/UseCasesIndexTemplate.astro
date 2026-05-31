@@ -70,7 +70,6 @@ const collectionJsonLd = {
   <main class="uc-page">
     <div class="uc-container">
       <section class="uc-hero">
-        <div class="uc-eyebrow">{useCaseT.title}</div>
         <h1 class="uc-h1">{useCaseT.title}</h1>
         <p class="uc-hero-sub">{useCaseT.subtitle}</p>
       </section>
@@ -136,24 +135,6 @@ const collectionJsonLd = {
   /* ─── HERO ─── */
   .uc-hero {
     padding: 60px 0 56px;
-  }
-  .uc-eyebrow {
-    font-family: var(--uc-mono);
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--uc-text-3);
-    margin: 0 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .uc-eyebrow::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
   }
   .uc-h1 {
     font-family: var(--uc-display);
