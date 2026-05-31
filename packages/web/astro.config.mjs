@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
+import { rehypeBriefSectionNumber } from "./src/lib/rehype-brief-section-number.mjs";
 
 export default defineConfig({
   site: "https://lemma.frame00.com",
@@ -23,6 +24,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   markdown: {
+    rehypePlugins: [rehypeBriefSectionNumber],
     shikiConfig: {
       theme: "github-dark",
     },
