@@ -117,6 +117,23 @@ const breadcrumbJsonLd = {
         </div>
       </header>
 
+      <!-- Section index card — visual TOC under the hero. Complements the
+           sticky sidebar (which is desktop-only) and gives the page a
+           designed anchor surface before the long-form sections begin. -->
+      <section class="ucd-toc-card" aria-label={useCaseT.sections}>
+        <div class="ucd-toc-label">{useCaseT.sections}</div>
+        <ol class="ucd-toc-grid">
+          {useCase.sections.map((section, i) => (
+            <li class="ucd-toc-item">
+              <a href={`#${section.key}`} class="ucd-toc-link">
+                <span class="ucd-toc-num">§ {String(i + 1).padStart(2, "0")}</span>
+                <span class="ucd-toc-title">{section.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <div class="ucd-layout">
         <nav class="ucd-sidebar" aria-label="Use case sections">
           <div class="ucd-sidebar-label">{useCaseT.sections}</div>
@@ -353,6 +370,78 @@ const breadcrumbJsonLd = {
   }
   .ucd-meta > :first-child::before {
     content: none;
+  }
+
+  /* ─── TOC CARD (visual section index under hero) ─── */
+  .ucd-toc-card {
+    background: var(--lemma-cream-deep);
+    border-radius: 14px;
+    padding: 32px 32px 26px;
+    margin: 40px 0 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ucd-toc-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .ucd-toc-label {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .ucd-toc-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 32px;
+    row-gap: 0;
+  }
+  .ucd-toc-item {
+    padding: 0;
+    margin: 0;
+  }
+  .ucd-toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.18);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .ucd-toc-link:hover {
+    border-bottom-color: var(--accent);
+  }
+  .ucd-toc-num {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 36px;
+  }
+  .ucd-toc-title {
+    font-family: var(--ucd-body);
+    font-size: 13.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.5;
+    transition: color 0.15s;
+  }
+  .ucd-toc-link:hover .ucd-toc-title {
+    color: var(--accent);
   }
 
   /* ─── LAYOUT ─── */
@@ -784,6 +873,12 @@ const breadcrumbJsonLd = {
     }
     .ucd-hero {
       padding: 28px 0 36px;
+    }
+    .ucd-toc-card {
+      padding: 26px 22px 22px;
+    }
+    .ucd-toc-grid {
+      grid-template-columns: 1fr;
     }
     .ucd-layout {
       padding: 40px 0 0;
