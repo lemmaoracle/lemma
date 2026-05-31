@@ -47,6 +47,14 @@ export interface UseCaseDetailTemplateProps {
 
 const { locale, t, base, useCase, pillar, pillarT, useCaseT, relatedUseCases = [] } =
   Astro.props as UseCaseDetailTemplateProps;
+
+/** Trim an abstract down to its first sentence so related-use-case cards
+ * stay one-line tight. Splits on Japanese or Latin sentence terminators.
+ * Falls back to the full abstract if no terminator is found. */
+function firstSentence(text: string): string {
+  const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
+  return (m?.[1] ?? text).trim();
+}
 const useCasesPath = `${base}/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
@@ -140,17 +148,6 @@ const breadcrumbJsonLd = {
       </section>
 
       <div class="ucd-layout">
-        <nav class="ucd-sidebar" aria-label="Use case sections">
-          <div class="ucd-sidebar-label">{useCaseT.sections}</div>
-          <ul class="ucd-sidebar-nav">
-            {useCase.sections.map((section) => (
-              <li>
-                <a href={`#${section.key}`} class="ucd-sidebar-link">{section.title}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
         <article class="ucd-main">
           {useCase.sections.map((section) => {
             // For the "related" section: when we have resolved related use
@@ -171,7 +168,7 @@ const breadcrumbJsonLd = {
                             <div class="ucd-related-thesis">{r.thesis}</div>
                           )}
                           <h3 class="ucd-related-title">{r.title}</h3>
-                          <p class="ucd-related-abstract">{r.abstract}</p>
+                          <p class="ucd-related-abstract">{firstSentence(r.abstract)}</p>
                           <span class="ucd-related-cta">
                             {pillarT.viewUseCase ?? useCaseT.title} →
                           </span>
@@ -233,32 +230,6 @@ const breadcrumbJsonLd = {
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
-
-  <script is:inline>
-    (function () {
-      var links = document.querySelectorAll(".ucd-sidebar-link");
-      var sections = Array.from(document.querySelectorAll(".ucd-section"));
-      if (!links.length || !sections.length) return;
-      var bySection = new Map();
-      links.forEach(function (link) {
-        var id = (link.getAttribute("href") || "").slice(1);
-        if (id) bySection.set(id, link);
-      });
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            var link = bySection.get(entry.target.id);
-            if (!link) return;
-            links.forEach(function (l) { l.classList.remove("is-active"); });
-            link.classList.add("is-active");
-          });
-        },
-        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
-      );
-      sections.forEach(function (s) { io.observe(s); });
-    })();
-  </script>
 </Layout>
 
 <style>
@@ -477,65 +448,13 @@ const breadcrumbJsonLd = {
   }
 
   /* ─── LAYOUT ─── */
+  /* Single-column reading flow. The hero TOC card replaces the previous
+     sticky sidebar (the two duplicated each other on desktop and the
+     sidebar was hidden on mobile anyway). Constrain reading width so
+     long-form sections stay scannable. */
   .ucd-layout {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 60px;
-    padding: 56px 0 0;
-  }
-
-  /* ─── SIDEBAR ─── */
-  .ucd-sidebar {
-    position: sticky;
-    top: 96px;
-    height: fit-content;
-    align-self: start;
-  }
-  .ucd-sidebar-label {
-    font-family: var(--ucd-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ucd-text-4);
-    margin: 0 0 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .ucd-sidebar-label::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: var(--accent);
-    display: block;
-  }
-  .ucd-sidebar-nav {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .ucd-sidebar-link {
-    display: block;
-    padding: 8px 12px;
-    font-family: var(--ucd-body);
-    font-size: 13px;
-    color: var(--ucd-text-3);
-    border-left: 1.5px solid transparent;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-  }
-  .ucd-sidebar-link:hover {
-    color: var(--black);
-    border-left-color: var(--accent);
-    background: var(--lemma-cream-deep);
-  }
-  .ucd-sidebar-link.is-active {
-    color: var(--accent);
-    font-weight: 500;
-    border-left-color: var(--accent);
-    background: var(--lemma-cream-deep);
+    padding: 40px 0 0;
+    max-width: 760px;
   }
 
   /* ─── MAIN ─── */
@@ -981,13 +900,6 @@ const breadcrumbJsonLd = {
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 960px) {
-    .ucd-layout {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-    .ucd-sidebar {
-      display: none;
-    }
     .ucd-section-title {
       font-size: 24px;
     }
@@ -1004,9 +916,6 @@ const breadcrumbJsonLd = {
     }
     .ucd-toc-grid {
       grid-template-columns: 1fr;
-    }
-    .ucd-layout {
-      padding: 40px 0 0;
     }
     .ucd-section {
       padding-bottom: 36px;
