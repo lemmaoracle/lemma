@@ -1102,7 +1102,22 @@
     "comingSoon": "ユースケースは順次追加予定です。",
     "ctaEyebrow": "はじめる",
     "ctaTitle": "証明する準備はできましたか？",
-    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。"
+    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。",
+    "heroH1Lines": ["AI の判断に、", "4 つの問いが立つ。"],
+    "heroSub": "AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われる。Lemma は、各問いに独立検証可能な暗号証明を返す 4 軸の信頼レイヤー。",
+    "questionsLabel": "4 つの問い",
+    "questions": [
+      { "tag": "P1 · 来歴", "stem": "そのデータは、", "answer": "本当に正規の発行元から来たか？" },
+      { "tag": "P2 · AI 判断", "stem": "そのモデルは、", "answer": "本当にその入力で判断したか？" },
+      { "tag": "P3 · エージェント権限", "stem": "そのエージェントは、", "answer": "本当に代理する権限を持つか？" },
+      { "tag": "P4 · 規制属性", "stem": "その属性は、", "answer": "本当に規制要件を満たすか？" }
+    ],
+    "compositionLabel": "信頼レイヤー",
+    "compositionH2": "4 つの問いが、1 つの信頼レイヤーになる。",
+    "compositionCenterLabel": "AI の判断",
+    "compositionCaption": "単一 API · 4 軸同時証明 · Lemma Oracle",
+    "technicalDocsLabel": "技術ドキュメント",
+    "technicalDocsH2": "実装ガイドと仕様。"
   },
   "useCases": {
     "title": "ユースケース",

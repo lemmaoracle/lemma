@@ -558,6 +558,26 @@ export interface Translations {
     readonly ctaEyebrow: string;
     readonly ctaTitle: string;
     readonly ctaDesc: string;
+    /** v2 redesign — Index hero (replaces single heroTitle). Lines render
+     * stacked with a hard break between them. */
+    readonly heroH1Lines: ReadonlyArray<string>;
+    /** v2 redesign — Hero sub paragraph (4-question setup). */
+    readonly heroSub: string;
+    /** v2 redesign — Four-questions block under the hero. */
+    readonly questionsLabel: string;
+    readonly questions: ReadonlyArray<Readonly<{
+      readonly tag: string;
+      readonly stem: string;
+      readonly answer: string;
+    }>>;
+    /** v2 redesign — Composition diagram section. */
+    readonly compositionLabel: string;
+    readonly compositionH2: string;
+    readonly compositionCenterLabel: string;
+    readonly compositionCaption: string;
+    /** v2 redesign — Technical docs section (demoted). */
+    readonly technicalDocsLabel: string;
+    readonly technicalDocsH2: string;
   }>;
   readonly useCases: Readonly<{
     readonly title: string;
