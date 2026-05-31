@@ -1,4 +1,19 @@
 ---
+/**
+ * Lemma blog — index page, v24-aligned.
+ *
+ * Migrated from the prior v22 chrome (dark hero + multi-section
+ * white/gray/black backgrounds) to v24: cream page throughout,
+ * container 1100px (Brief Index parity), Sora display + Noto Sans JP
+ * body + Space Mono labels, saddle brown accent on eyebrows / links /
+ * pills / hover bars.
+ *
+ * Section order is preserved (header → filter pills → featured →
+ * recent → archive → changelog → guides → foundations → filtered).
+ * The category-filter JS and the reveal IntersectionObserver are
+ * preserved verbatim at the bottom of the file. Post fetching and
+ * props shape (data/blog.ts) are untouched.
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
 import { BLOG_CATEGORIES } from "../data/blog";
@@ -35,10 +50,14 @@ const {
   foundations,
 } = Astro.props as BlogIndexTemplateProps;
 
-// Canonical taxonomy order; only categories present become pills.
+// Canonical taxonomy order; only categories with posts become pills.
 const categoryCounts: Record<string, number> = {};
-for (const p of entries) categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
-const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
+for (const p of entries) {
+  categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+}
+const categories = BLOG_CATEGORIES.filter(
+  (c) => (categoryCounts[c] ?? 0) > 0,
+);
 ---
 
 <Layout
@@ -51,198 +70,228 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="blog-header">
-    <div class="section-tag" style="color:var(--accent)">{t.blog.title}</div>
-    <h1>{t.blog.subtitle}</h1>
-    <p>{t.blog.index.headerDesc}</p>
-  </header>
+  <main class="bx-page">
+    <div class="bx-container">
+      <section class="bx-hero">
+        <div class="bx-eyebrow">{t.blog.title}</div>
+        <h1 class="bx-h1">{t.blog.subtitle}</h1>
+        <p class="bx-hero-sub">{t.blog.index.headerDesc}</p>
+      </section>
 
-  {categories.length > 0 && (
-    <nav class="filter-bar" aria-label={t.blog.index.categoriesLabel}>
-      <button class="pill is-active" data-filter="all" type="button">
-        {t.blog.index.allTag}<span class="pill-count">{entries.length}</span>
-      </button>
-      {categories.map((c) => (
-        <button class="pill" data-filter={c} type="button">
-          {c}<span class="pill-count">{categoryCounts[c]}</span>
-        </button>
-      ))}
-    </nav>
-  )}
+      {categories.length > 0 && (
+        <nav class="bx-filter" aria-label={t.blog.index.categoriesLabel}>
+          <button class="bx-pill is-active" data-filter="all" type="button">
+            {t.blog.index.allTag}
+            <span class="bx-pill-count">{entries.length}</span>
+          </button>
+          {categories.map((c) => (
+            <button class="bx-pill" data-filter={c} type="button">
+              {c}
+              <span class="bx-pill-count">{categoryCounts[c]}</span>
+            </button>
+          ))}
+        </nav>
+      )}
 
-  <div class="view-all">
+      <div class="bx-view-all">
+        {featured && (
+          <section class="bx-featured-section">
+            <div class="bx-section-label">{t.blog.index.featuredTag}</div>
+            <a
+              href={`${blogPath}/${featured.slug}`}
+              class="bx-featured-card reveal"
+            >
+              <div
+                class="bx-featured-thumb"
+                style={`background-image:url('${featured.cover ?? ""}')`}
+              ></div>
+              <div class="bx-featured-body">
+                <div class="bx-essay-meta">
+                  <span class="bx-essay-cat">{featured.category}</span>
+                  <span class="bx-essay-sep">·</span>
+                  <span class="bx-essay-date">{featured.date}</span>
+                </div>
+                <h2 class="bx-featured-title">{featured.title}</h2>
+                <p class="bx-featured-abstract">{featured.abstract}</p>
+                <span class="bx-featured-cta">{t.blog.index.featuredCta}</span>
+              </div>
+            </a>
+          </section>
+        )}
 
-  {featured && (
-    <section class="featured-section">
-      <div class="section-tag">{t.blog.index.featuredTag}</div>
-      <a href={`${blogPath}/${featured.slug}`} class="featured-card reveal">
-        <div class="featured-thumb" style={`background-image:url('${featured.cover ?? ""}')`}></div>
-        <div class="featured-body">
-          <div class="featured-meta">
-            <span class="essay-cat">{featured.category}</span>
-            <span class="essay-date">{featured.date}</span>
-          </div>
-          <h2>{featured.title}</h2>
-          <p>{featured.abstract}</p>
-          <span class="featured-cta">{t.blog.index.featuredCta}</span>
+        {recent.length > 0 && (
+          <section class="bx-recent-section">
+            <div class="bx-section-label">{t.blog.index.recentTag}</div>
+            <div class="bx-card-grid">
+              {recent.map((post, i) => (
+                <a
+                  href={`${blogPath}/${post.slug}`}
+                  class="bx-card reveal"
+                  style={`transition-delay:${i * 0.05}s`}
+                >
+                  <div class="bx-essay-meta">
+                    <span class="bx-essay-cat">{post.category}</span>
+                    <span class="bx-essay-sep">·</span>
+                    <span class="bx-essay-date">{post.date}</span>
+                  </div>
+                  <h3 class="bx-card-title">{post.title}</h3>
+                  <p class="bx-card-abstract">{post.abstract}</p>
+                  <span class="bx-card-cta">{t.blog.index.readEssay}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {archive.length > 0 && (
+          <section class="bx-archive-section">
+            <div class="bx-section-label">{t.blog.index.archiveTag}</div>
+            <ul class="bx-archive-list">
+              {archive.map((post) => (
+                <li class="bx-archive-row reveal">
+                  <a
+                    href={`${blogPath}/${post.slug}`}
+                    class="bx-archive-link"
+                  >
+                    <span class="bx-archive-cat">{post.category}</span>
+                    <span class="bx-archive-title">{post.title}</span>
+                    <span class="bx-archive-date">{post.date}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {changelog.length > 0 && (
+          <section class="bx-archive-section">
+            <div class="bx-section-label">
+              {t.blog.sections["Changelog"] ?? "Changelog"}
+            </div>
+            <ul class="bx-archive-list">
+              {changelog.map((post) => (
+                <li class="bx-archive-row reveal">
+                  <a
+                    href={`${blogPath}/${post.slug}`}
+                    class="bx-archive-link"
+                  >
+                    <span class="bx-archive-cat">{post.category}</span>
+                    <span class="bx-archive-title">{post.title}</span>
+                    <span class="bx-archive-date">{post.date}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {guides.length > 0 && (
+          <section class="bx-guides-section">
+            <div class="bx-section-label">{t.blog.index.guidesTag}</div>
+            <div class="bx-guides-head">
+              <div class="bx-guides-title">{t.blog.index.guidesTitle}</div>
+              <p class="bx-guides-desc">{t.blog.index.guidesDesc}</p>
+            </div>
+            <div class="bx-card-grid">
+              {guides.map((post, i) => (
+                <a
+                  href={`${blogPath}/${post.slug}`}
+                  class="bx-card reveal"
+                  style={`transition-delay:${i * 0.05}s`}
+                >
+                  <div class="bx-essay-meta">
+                    <span class="bx-essay-cat">{post.category}</span>
+                    <span class="bx-essay-sep">·</span>
+                    <span class="bx-essay-date">{post.date}</span>
+                  </div>
+                  <h3 class="bx-card-title">{post.title}</h3>
+                  <p class="bx-card-abstract">{post.abstract}</p>
+                  <span class="bx-card-cta">{t.blog.index.readGuide}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {foundations.length > 0 && (
+          <section class="bx-foundations-section">
+            <div class="bx-section-label">{t.blog.index.foundationsTag}</div>
+            <div class="bx-foundations-grid">
+              {foundations.map((post) => (
+                <a
+                  href={`${blogPath}/${post.slug}`}
+                  class="bx-foundations-card reveal"
+                >
+                  <div class="bx-foundations-text">
+                    <h3 class="bx-foundations-title">{post.title}</h3>
+                    <p class="bx-foundations-abstract">{post.abstract}</p>
+                  </div>
+                  <span class="bx-foundations-cta">
+                    {t.blog.index.readSpecs} →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <section class="bx-filtered-section" hidden>
+        <div
+          class="bx-section-label bx-filtered-label"
+          data-filtered-label
+        ></div>
+        <div class="bx-card-grid bx-filtered-grid">
+          {entries.map((post) => (
+            <a
+              href={`${blogPath}/${post.slug}`}
+              class="bx-card bx-filtered-card"
+              data-category={post.category}
+            >
+              <div class="bx-essay-meta">
+                <span class="bx-essay-cat">{post.category}</span>
+                <span class="bx-essay-sep">·</span>
+                <span class="bx-essay-date">{post.date}</span>
+              </div>
+              <h3 class="bx-card-title">{post.title}</h3>
+              <p class="bx-card-abstract">{post.abstract}</p>
+              <span class="bx-card-cta">{t.blog.index.readEssay}</span>
+            </a>
+          ))}
         </div>
-      </a>
-    </section>
-  )}
-
-  {recent.length > 0 && (
-    <section class="recent-section">
-      <div class="section-tag">{t.blog.index.recentTag}</div>
-      <div class="recent-grid">
-        {recent.map((post, i) => (
-          <a
-            href={`${blogPath}/${post.slug}`}
-            class="recent-card reveal"
-            style={`transition-delay:${i * 0.05}s`}
-          >
-            <div class="essay-meta">
-              <span class="essay-cat">{post.category}</span>
-              <span class="essay-date">{post.date}</span>
-            </div>
-            <h3>{post.title}</h3>
-            <p>{post.abstract}</p>
-            <span class="recent-cta">{t.blog.index.readEssay}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  {archive.length > 0 && (
-    <section class="archive-section">
-      <div class="section-tag">{t.blog.index.archiveTag}</div>
-      <ul class="archive-list">
-        {archive.map((post) => (
-          <li class="archive-row reveal">
-            <a href={`${blogPath}/${post.slug}`} class="archive-link">
-              <span class="archive-cat">{post.category}</span>
-              <span class="archive-title">{post.title}</span>
-              <span class="archive-date">{post.date}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
-
-  {changelog.length > 0 && (
-    <section class="archive-section changelog-section">
-      <div class="section-tag">{t.blog.sections["Changelog"] ?? "Changelog"}</div>
-      <ul class="archive-list">
-        {changelog.map((post) => (
-          <li class="archive-row reveal">
-            <a href={`${blogPath}/${post.slug}`} class="archive-link">
-              <span class="archive-cat">{post.category}</span>
-              <span class="archive-title">{post.title}</span>
-              <span class="archive-date">{post.date}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
-
-  {guides.length > 0 && (
-    <section class="guides-section">
-      <div class="section-tag">{t.blog.index.guidesTag}</div>
-      <div class="guides-head">
-        <div class="guides-title">{t.blog.index.guidesTitle}</div>
-        <p class="guides-desc">{t.blog.index.guidesDesc}</p>
-      </div>
-      <div class="guides-grid">
-        {guides.map((post, i) => (
-          <a
-            href={`${blogPath}/${post.slug}`}
-            class="guide-card reveal"
-            style={`transition-delay:${i * 0.05}s`}
-          >
-            <div class="guide-meta">
-              <span class="guide-cat">{post.category}</span>
-              <span class="guide-date">{post.date}</span>
-            </div>
-            <h3>{post.title}</h3>
-            <p>{post.abstract}</p>
-            <span class="guide-link">{t.blog.index.readGuide}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  {foundations.length > 0 && (
-    <section class="foundations-section">
-      <div class="section-tag" style="color:rgba(255,255,255,0.5)">{t.blog.index.foundationsTag}</div>
-      <div class="foundations-grid">
-        {foundations.map((post) => (
-          <a href={`${blogPath}/${post.slug}`} class="foundations-card reveal">
-            <div class="foundations-text">
-              <h3>{post.title}</h3>
-              <p>{post.abstract}</p>
-            </div>
-            <span class="btn-white">{t.blog.index.readSpecs}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  </div>
-
-  <section class="filtered-section" hidden>
-    <div class="section-tag filtered-tag" data-filtered-label></div>
-    <div class="recent-grid filtered-grid">
-      {entries.map((post) => (
-        <a
-          href={`${blogPath}/${post.slug}`}
-          class="recent-card filtered-card"
-          data-category={post.category}
-        >
-          <div class="essay-meta">
-            <span class="essay-cat">{post.category}</span>
-            <span class="essay-date">{post.date}</span>
-          </div>
-          <h3>{post.title}</h3>
-          <p>{post.abstract}</p>
-          <span class="recent-cta">{t.blog.index.readEssay}</span>
-        </a>
-      ))}
+      </section>
     </div>
-  </section>
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  /* ─── HEADER ─── */
-  .blog-header {
+  .bx-page {
+    --bx-display: "Sora", system-ui, sans-serif;
+    --bx-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bx-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --bx-text-1: #1a1a1a;
+    --bx-text-2: #3a3a3a;
+    --bx-text-3: #5a5a5a;
+    --bx-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--bx-text-2);
+    font-family: var(--bx-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
     margin-top: 64px;
-    background: var(--black);
-    padding: 100px 10% 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
-  .blog-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 6vw, 80px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.08;
-    margin: 0 0 16px 0;
+  :root[lang="en"] .bx-page {
+    --bx-body: "Sora", system-ui, sans-serif;
   }
-  /* Issue #150: Japanese needs more leading than Latin display type. */
-  :root[lang="ja"] .blog-header h1 {
-    line-height: 1.3;
-  }
-  .blog-header p {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.75;
-    max-width: 640px;
-    margin: 0;
+
+  .bx-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
 
   a {
@@ -250,43 +299,68 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
     color: inherit;
   }
 
-  /* ─── SECTION TAG ─── */
-  .section-tag {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.24em;
+  /* ─── HERO ─── */
+  .bx-hero {
+    padding: 60px 0 56px;
+  }
+  .bx-eyebrow {
+    font-family: var(--bx-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
+    color: var(--bx-text-3);
+    margin: 0 0 28px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .section-tag::before {
+  .bx-eyebrow::before {
     content: "";
-    width: 18px;
+    display: inline-block;
+    width: 28px;
     height: 1px;
-    background: currentColor;
-    display: block;
+    background: var(--accent);
+  }
+  .bx-h1 {
+    font-family: var(--bx-display);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 0.96;
+    margin: 0 0 24px;
+    color: var(--black);
+    letter-spacing: -0.04em;
+    max-width: 920px;
+  }
+  :root[lang="ja"] .bx-h1 {
+    font-size: 56px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+  .bx-hero-sub {
+    font-size: 16px;
+    color: var(--bx-text-2);
+    margin: 0;
+    line-height: 1.75;
+    max-width: 680px;
   }
 
   /* ─── FILTER BAR ─── */
-  .filter-bar {
-    background: var(--white);
+  .bx-filter {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 40px 10% 0;
+    margin: 0 0 56px;
+    padding: 22px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
   }
-  .pill {
-    font-family: inherit;
-    font-size: 11px;
+  .bx-pill {
+    font-family: var(--bx-display);
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    background: transparent;
-    border: 1px solid var(--gray-200);
+    letter-spacing: 0.06em;
+    color: var(--bx-text-3);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
     border-radius: 999px;
     padding: 9px 16px;
     cursor: pointer;
@@ -295,351 +369,379 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
     gap: 8px;
     transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
-  .pill:hover {
-    color: var(--black);
-    border-color: var(--gray-500);
+  .bx-pill:hover {
+    color: var(--accent);
+    border-color: rgba(139, 69, 19, 0.4);
   }
-  .pill.is-active {
-    color: var(--white);
+  .bx-pill.is-active {
+    color: var(--lemma-cream);
     background: var(--accent);
     border-color: var(--accent);
   }
-  .pill-count {
+  .bx-pill-count {
+    font-family: var(--bx-mono);
     font-size: 10px;
-    opacity: 0.6;
+    opacity: 0.7;
     font-variant-numeric: tabular-nums;
   }
 
-  /* ─── FILTERED VIEW ─── */
-  .filtered-section {
-    background: var(--white);
-    padding: 40px 10% 80px;
+  /* ─── SECTION LABEL (mono brown eyebrow) ─── */
+  .bx-section-label {
+    font-family: var(--bx-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .view-all[hidden],
-  .filtered-section[hidden] {
-    display: none;
-  }
-  .filtered-card[hidden] {
-    display: none;
+  .bx-section-label::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
   }
 
   /* ─── FEATURED ─── */
-  .featured-section {
-    background: var(--white);
-    padding: 80px 10% 40px;
+  .bx-featured-section {
+    margin: 0 0 80px;
   }
-  .featured-card {
+  .bx-featured-card {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: 1fr 1fr;
     background: var(--white);
-    border-top: 2px solid var(--accent);
-    transition: background 0.2s, border-top-color 0.2s;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
   }
-  .featured-card:hover {
-    background: var(--accent-bg);
-    border-top-color: var(--accent-lt);
+  .bx-featured-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 64px;
+    background: var(--accent);
+    z-index: 1;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .featured-thumb {
+  .bx-featured-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 16px 40px rgba(139, 69, 19, 0.08);
+    transform: translateY(-2px);
+  }
+  .bx-featured-card:hover::before {
+    width: 100%;
+  }
+  .bx-featured-thumb {
     background-size: cover;
     background-position: center;
-    background-color: var(--gray-200);
-    filter: saturate(0.55) brightness(0.9);
-    min-height: 360px;
+    background-color: var(--lemma-cream-deep);
+    min-height: 320px;
   }
-  .featured-body {
-    padding: 48px 56px;
+  .bx-featured-body {
+    padding: 40px 44px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 16px;
   }
-  .featured-meta {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-  }
-  .featured-card h2 {
-    font-family: var(--font-display);
-    font-size: clamp(26px, 3vw, 34px);
-    font-weight: 600;
+  .bx-featured-title {
+    font-family: var(--bx-display);
+    font-size: clamp(24px, 2.8vw, 30px);
+    font-weight: 700;
     line-height: 1.2;
     color: var(--black);
-    letter-spacing: -0.01em;
-  }
-  .featured-card p {
-    font-size: 14.5px;
-    line-height: 1.75;
-    color: var(--gray-800, #1a1a1a);
-  }
-  .featured-cta {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-top: 8px;
-  }
-
-  /* ─── RECENT ─── */
-  .recent-section {
-    background: var(--white);
-    padding: 40px 10% 80px;
-  }
-  .recent-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
-  }
-  .recent-card {
-    background: var(--white);
-    padding: 36px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-top: 2px solid transparent;
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s, background 0.2s;
-    color: inherit;
-  }
-  .recent-card:hover {
-    border-top-color: var(--accent);
-    background: var(--gray-50);
-  }
-  .recent-card h3 {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--black);
+    letter-spacing: -0.02em;
     margin: 0;
   }
-  .recent-card p {
+  :root[lang="ja"] .bx-featured-title {
+    line-height: 1.35;
+  }
+  .bx-featured-abstract {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--bx-text-2);
+    margin: 0;
+  }
+  .bx-featured-cta {
+    font-family: var(--bx-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: 4px;
+    transition: transform 0.2s;
+  }
+  .bx-featured-card:hover .bx-featured-cta {
+    transform: translateX(4px);
+  }
+
+  /* ─── ESSAY META (shared across cards) ─── */
+  .bx-essay-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--bx-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--bx-text-3);
+  }
+  .bx-essay-cat {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .bx-essay-sep {
+    color: var(--lemma-line);
+  }
+  .bx-essay-date {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─── RECENT / GUIDES / FILTERED — shared card grid ─── */
+  .bx-recent-section,
+  .bx-guides-section,
+  .bx-filtered-section {
+    margin: 0 0 72px;
+  }
+  .bx-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .bx-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 26px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .bx-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bx-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .bx-card:hover::before {
+    width: 100%;
+  }
+  .bx-card-title {
+    font-family: var(--bx-display);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--black);
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  :root[lang="ja"] .bx-card-title {
+    line-height: 1.5;
+  }
+  .bx-card-abstract {
     font-size: 13px;
-    line-height: 1.7;
-    color: var(--gray-500);
+    line-height: 1.65;
+    color: var(--bx-text-3);
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .recent-cta {
-    font-size: 11px;
+  .bx-card-cta {
+    font-family: var(--bx-mono);
+    font-size: 10.5px;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
     color: var(--accent);
     margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .bx-card:hover .bx-card-cta {
+    transform: translateX(3px);
   }
 
-  .essay-meta {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
+  /* ─── ARCHIVE (list) ─── */
+  .bx-archive-section {
+    margin: 0 0 72px;
   }
-  .essay-cat {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .essay-date {
-    font-size: 10px;
-    color: var(--gray-500);
-    letter-spacing: 0.05em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ─── ARCHIVE ─── */
-  .archive-section {
-    background: var(--gray-50);
-    padding: 80px 10% 80px;
-  }
-  /* Changelog reuses the archive list styling; a top rule separates the
-     two adjacent gray sections. */
-  .changelog-section {
-    border-top: 1px solid var(--gray-200);
-  }
-  .archive-list {
+  .bx-archive-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: 1px solid var(--gray-200);
-  }
-  .archive-row {
-    border-bottom: 1px solid var(--gray-200);
-  }
-  .archive-link {
-    display: grid;
-    grid-template-columns: 200px 1fr 100px;
-    gap: 24px;
-    align-items: baseline;
-    padding: 18px 4px;
-    color: inherit;
-    transition: background 0.2s, padding 0.2s;
-  }
-  .archive-link:hover {
     background: var(--white);
-    padding-left: 16px;
-    padding-right: 16px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
   }
-  .archive-cat {
+  .bx-archive-row {
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .bx-archive-row:last-child {
+    border-bottom: 0;
+  }
+  .bx-archive-link {
+    display: grid;
+    grid-template-columns: 180px 1fr 110px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 18px 24px;
+    transition: background 0.2s;
+  }
+  .bx-archive-link:hover {
+    background: var(--lemma-cream-deep);
+  }
+  .bx-archive-cat {
+    font-family: var(--bx-mono);
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
   }
-  .archive-title {
-    font-family: var(--font-display);
-    font-size: 16px;
+  .bx-archive-title {
+    font-family: var(--bx-display);
+    font-size: 15px;
     font-weight: 500;
     line-height: 1.4;
     color: var(--black);
+    letter-spacing: -0.005em;
   }
-  .archive-date {
+  .bx-archive-date {
+    font-family: var(--bx-mono);
     font-size: 11px;
-    color: var(--gray-500);
+    color: var(--bx-text-3);
     letter-spacing: 0.05em;
     font-variant-numeric: tabular-nums;
     text-align: right;
   }
 
-  /* ─── GUIDES ─── */
-  .guides-section {
-    background: var(--white);
-    padding: 100px 10%;
-    border-top: 1px solid var(--gray-200);
-  }
-  .guides-head {
-    margin-bottom: 56px;
+  /* ─── GUIDES head ─── */
+  .bx-guides-head {
+    margin: 0 0 32px;
     max-width: 720px;
   }
-  .guides-title {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 400;
+  .bx-guides-title {
+    font-family: var(--bx-display);
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 700;
     color: var(--black);
-    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin: 0 0 10px;
   }
-  .guides-desc {
-    font-size: 14px;
-    color: var(--gray-500);
-    line-height: 1.78;
+  :root[lang="ja"] .bx-guides-title {
+    line-height: 1.35;
+  }
+  .bx-guides-desc {
+    font-size: 14.5px;
+    color: var(--bx-text-3);
+    line-height: 1.7;
     margin: 0;
   }
-  .guides-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--gray-200);
-  }
-  .guide-card {
-    background: var(--white);
-    padding: 36px 32px;
-    border-top: 2px solid transparent;
-    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.2s;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .guide-card:hover {
-    border-top-color: var(--accent);
-  }
-  .guide-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .guide-cat {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .guide-date {
-    font-size: 10px;
-    color: var(--gray-500);
-  }
-  .guide-card h3 {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--black);
-  }
-  .guide-card p {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--gray-500);
-    flex: 1;
-  }
-  .guide-link {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-top: 8px;
-  }
 
-  /* ─── FOUNDATIONS ─── */
-  .foundations-section {
-    background: var(--black);
-    padding: 80px 10%;
+  /* ─── FOUNDATIONS — cream-deep card (was black) ─── */
+  .bx-foundations-section {
+    margin: 0 0 0;
   }
-  .foundations-grid {
+  .bx-foundations-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 14px;
   }
-  .foundations-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 2px solid var(--accent);
-    padding: 40px 44px;
+  .bx-foundations-card {
+    background: var(--lemma-cream-deep);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    padding: 36px 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
     flex-wrap: wrap;
-    transition: background 0.2s, border-color 0.2s;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
   }
-  .foundations-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-top-color: var(--accent-lt);
+  .bx-foundations-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 64px;
+    background: var(--accent);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .foundations-text {
+  .bx-foundations-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+  }
+  .bx-foundations-card:hover::before {
+    width: 100%;
+  }
+  .bx-foundations-text {
     flex: 1;
     min-width: 280px;
   }
-  .foundations-card h3 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 8px;
+  .bx-foundations-title {
+    font-family: var(--bx-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
   }
-  .foundations-card p {
+  .bx-foundations-abstract {
     font-size: 13.5px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--bx-text-2);
     line-height: 1.7;
     max-width: 560px;
+    margin: 0;
   }
-  .btn-white {
-    background: var(--white);
-    color: var(--black);
-    padding: 14px 30px;
-    font-size: 11.5px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    display: inline-block;
+  .bx-foundations-cta {
+    font-family: var(--bx-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    transition: transform 0.2s;
     white-space: nowrap;
-    transition: background 0.2s, color 0.2s;
   }
-  .foundations-card:hover .btn-white {
+  .bx-foundations-card:hover .bx-foundations-cta {
+    transform: translateX(4px);
+  }
+
+  /* ─── FILTERED VIEW ─── */
+  .bx-view-all[hidden],
+  .bx-filtered-section[hidden] {
+    display: none;
+  }
+  .bx-filtered-card[hidden] {
+    display: none;
+  }
+  .bx-filtered-label::before {
     background: var(--accent);
-    color: var(--white);
   }
 
   /* ─── REVEAL ─── */
@@ -651,112 +753,75 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
     opacity: 1;
     transform: translateY(0);
   }
-  .featured-card.reveal,
-  .recent-card.reveal,
-  .guide-card.reveal,
-  .foundations-card.reveal {
-    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.2s, background 0.2s;
+  .bx-featured-card.reveal,
+  .bx-card.reveal,
+  .bx-foundations-card.reveal {
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease,
+      border-color 0.2s,
+      background 0.2s,
+      box-shadow 0.2s;
   }
-  .archive-row.reveal {
-    transition: opacity 0.45s ease, transform 0.45s ease;
+  .bx-archive-row.reveal {
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease;
   }
 
   /* ─── RESPONSIVE ─── */
-  @media (max-width: 1024px) {
-    .featured-card {
+  @media (max-width: 960px) {
+    .bx-h1 {
+      font-size: 56px;
+    }
+    :root[lang="ja"] .bx-h1 {
+      font-size: 44px;
+    }
+    .bx-featured-card {
       grid-template-columns: 1fr;
     }
-    .featured-thumb {
-      min-height: 240px;
+    .bx-featured-thumb {
+      min-height: 200px;
     }
-    .featured-body {
-      padding: 36px 32px 40px;
+    .bx-featured-body {
+      padding: 28px 30px 32px;
     }
-    .recent-grid {
+    .bx-card-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    .archive-link {
-      grid-template-columns: 140px 1fr 80px;
+    .bx-archive-link {
+      grid-template-columns: 140px 1fr 90px;
       gap: 16px;
     }
-    .guides-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
-  @media (max-width: 768px) {
-    .blog-header,
-    .filter-bar,
-    .featured-section,
-    .filtered-section,
-    .recent-section,
-    .archive-section,
-    .guides-section,
-    .foundations-section {
-      padding-left: 6%;
-      padding-right: 6%;
+  @media (max-width: 720px) {
+    .bx-container {
+      padding: 0 24px;
     }
-    .filter-bar {
-      padding-top: 28px;
+    .bx-h1 {
+      font-size: 44px;
     }
-    .blog-header {
-      padding-top: 80px;
-      padding-bottom: 60px;
+    :root[lang="ja"] .bx-h1 {
+      font-size: 36px;
     }
-    .featured-section {
-      padding-top: 56px;
-      padding-bottom: 28px;
+    .bx-hero {
+      padding: 40px 0 36px;
     }
-    .recent-section {
-      padding-top: 28px;
-      padding-bottom: 56px;
-    }
-    .recent-card {
-      padding: 28px 24px;
-    }
-    .archive-section,
-    .guides-section,
-    .foundations-section {
-      padding-top: 56px;
-      padding-bottom: 56px;
-    }
-    .recent-grid {
+    .bx-card-grid {
       grid-template-columns: 1fr;
     }
-    .guides-grid {
-      grid-template-columns: 1fr;
-    }
-    .archive-link {
+    .bx-archive-link {
       grid-template-columns: 1fr;
       gap: 4px;
-      padding: 14px 4px;
+      padding: 14px 18px;
     }
-    .archive-date {
+    .bx-archive-date {
       text-align: left;
     }
-    .foundations-card {
+    .bx-foundations-card {
       flex-direction: column;
       align-items: flex-start;
-      padding: 32px 24px;
-      gap: 20px;
-    }
-    .foundations-text {
-      min-width: 0;
-    }
-    .btn-white {
-      align-self: flex-start;
-    }
-    /* Issue #151: 11px uppercase CTAs are too compressed on mobile.
-       Bump foundations CTA + inline link CTAs to a comfortable size while
-       preserving desktop brand sizing. */
-    .btn-white {
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      padding: 16px 28px;
-    }
-    .featured-cta,
-    .guide-link {
-      font-size: 12px;
-      letter-spacing: 0.12em;
+      padding: 28px 26px;
     }
   }
 </style>
@@ -779,18 +844,21 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
 
   // ─── Category filter ───
   (function () {
-    var pills = document.querySelectorAll(".pill");
+    var pills = document.querySelectorAll(".bx-pill");
     if (!pills.length) return;
-    var viewAll = document.querySelector(".view-all");
-    var filtered = document.querySelector(".filtered-section");
+    var viewAll = document.querySelector(".bx-view-all");
+    var filtered = document.querySelector(".bx-filtered-section");
     var label = document.querySelector("[data-filtered-label]");
-    var cards = filtered ? filtered.querySelectorAll(".filtered-card") : [];
+    var cards = filtered ? filtered.querySelectorAll(".bx-filtered-card") : [];
 
     function apply(filter) {
       var isAll = !filter || filter.toLowerCase() === "all";
       pills.forEach(function (p) {
         var pf = (p.getAttribute("data-filter") || "").toLowerCase();
-        p.classList.toggle("is-active", isAll ? pf === "all" : pf === filter.toLowerCase());
+        p.classList.toggle(
+          "is-active",
+          isAll ? pf === "all" : pf === filter.toLowerCase(),
+        );
       });
       if (viewAll) viewAll.hidden = !isAll;
       if (filtered) filtered.hidden = isAll;
@@ -825,7 +893,9 @@ const categories = BLOG_CATEGORIES.filter((c) => (categoryCounts[c] ?? 0) > 0);
     var initial = (location.hash || "").replace(/^#/, "").toLowerCase();
     if (initial) {
       pills.forEach(function (p) {
-        if ((p.getAttribute("data-filter") || "").toLowerCase() === initial) {
+        if (
+          (p.getAttribute("data-filter") || "").toLowerCase() === initial
+        ) {
           apply(p.getAttribute("data-filter"));
         }
       });
