@@ -1,4 +1,20 @@
 ---
+/**
+ * Use Case detail — v24 chrome.
+ *
+ * Long-form template matching the Brief v24 vocabulary (cream page, Sora
+ * display + Noto body + Space Mono labels, saddle brown accent) while
+ * retaining the two-column layout (sticky sidebar TOC + main content) that
+ * the use case surface needs.
+ *
+ * Page composition:
+ *   1. Breadcrumb (mono uppercase)
+ *   2. Hero: eyebrow + h1 + thesis + abstract + meta strip
+ *   3. Layout: sticky sidebar (sections nav) + main content
+ *   4. Each section: rendered HTML body (markdown -> HTML)
+ *   5. DemoCtaBanner (when configured for the slug)
+ *   6. Inline v24 partner CTA card replacing the v22 black band
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { UseCase } from "../data/useCases";
 import type { Pillar, CTA } from "../data/pillars";
@@ -31,8 +47,8 @@ const pillarsPath = `${base}/pillars`;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
-// Combine all headings for TOC
-const allHeadings = useCase.sections.flatMap((s) => s.headings);
+const homeLabel = locale === "ja" ? "ホーム" : "Home";
+const minLabel = locale === "ja" ? "分" : "min read";
 
 const SITE = "https://lemma.frame00.com";
 const useCaseUrl = `${SITE}${useCasesPath}/${useCase.slug}/`;
@@ -61,7 +77,7 @@ const breadcrumbJsonLd = {
 
 <Layout
   locale={locale}
-  title={`${useCase.title} — Use Case | Lemma Oracle`}
+  title={`${useCase.title} — ${useCaseT.title} | Lemma`}
   description={useCase.abstract}
   metaType="page"
   pagePath={`/use-cases/${useCase.slug}/`}
@@ -72,519 +88,626 @@ const breadcrumbJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="uc-hero">
-    <div class="uc-hero-inner">
-      <nav class="breadcrumb" aria-label="breadcrumb">
-        <a href={base || "/"}>{locale === "ja" ? "ホーム" : "Home"}</a>
-        <span class="breadcrumb-sep">/</span>
+  <main class="ucd-page">
+    <div class="ucd-container">
+      <nav class="ucd-breadcrumb" aria-label="breadcrumb">
+        <a href={base || "/"}>{homeLabel}</a>
+        <span class="ucd-breadcrumb-sep">/</span>
         <a href={useCasesPath}>{useCaseT.title}</a>
-        <span class="breadcrumb-sep">/</span>
+        <span class="ucd-breadcrumb-sep">/</span>
         <span>{useCase.title}</span>
       </nav>
-      <h1>{useCase.title}</h1>
-      {useCase.thesis && (
-        <p class="uc-thesis">{useCase.thesis}</p>
-      )}
-      <p class="uc-abstract">{useCase.abstract}</p>
-      <div class="uc-meta">
-        <a href={`${pillarsPath}/${pillar.slug}`} class="uc-pillar-tag">
+
+      <header class="ucd-hero">
+        <a href={`${pillarsPath}/${pillar.slug}`} class="ucd-eyebrow">
           P{pillar.order} · {pillar.title[locale]}
         </a>
-        {useCase.targetVerticals.length > 0 && (
-          <span class="uc-verticals">{useCase.targetVerticals.join(" · ")}</span>
+        <h1 class="ucd-h1">{useCase.title}</h1>
+        {useCase.thesis && (
+          <p class="ucd-thesis">{useCase.thesis}</p>
         )}
-        <span class="uc-reading-time">
-          {useCase.readingTime} {locale === "ja" ? "分" : "min read"}
-        </span>
+        <p class="ucd-abstract">{useCase.abstract}</p>
+        <div class="ucd-meta">
+          {useCase.targetVerticals.length > 0 && (
+            <span class="ucd-verticals">{useCase.targetVerticals.join(" · ")}</span>
+          )}
+          <span class="ucd-reading-time">
+            {useCase.readingTime} {minLabel}
+          </span>
+        </div>
+      </header>
+
+      <div class="ucd-layout">
+        <nav class="ucd-sidebar" aria-label="Use case sections">
+          <div class="ucd-sidebar-label">{useCaseT.sections}</div>
+          <ul class="ucd-sidebar-nav">
+            {useCase.sections.map((section) => (
+              <li>
+                <a href={`#${section.key}`} class="ucd-sidebar-link">{section.title}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <article class="ucd-main">
+          {useCase.sections.map((section) => (
+            <section id={section.key} class="ucd-section">
+              <h2 class="ucd-section-title">{section.title}</h2>
+              <div class="ucd-section-body" set:html={section.body} />
+            </section>
+          ))}
+
+          {demoSampleId && (
+            <DemoCtaBanner
+              locale={locale}
+              t={t.demoCta}
+              sampleId={demoSampleId}
+              source="use-cases"
+              pairSampleId={demoPairSampleId ?? undefined}
+            />
+          )}
+
+          <section class="ucd-partner" aria-label={pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}>
+            <div class="ucd-partner-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
+            <h2 class="ucd-partner-h2">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
+            <p class="ucd-partner-body">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
+            {(() => {
+              const primary = resolveCTA(pillar.primaryCTA, locale);
+              const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
+              return (
+                <div class="ucd-partner-cta">
+                  <a
+                    href={primary.href}
+                    class="ucd-partner-primary"
+                    target={primary.href.startsWith("http") ? "_blank" : undefined}
+                    rel={primary.href.startsWith("http") ? "noopener" : undefined}
+                  >
+                    {primary.label}
+                  </a>
+                  {secondary && (
+                    <a
+                      href={secondary.href}
+                      class="ucd-partner-secondary"
+                      target={secondary.href.startsWith("http") ? "_blank" : undefined}
+                      rel={secondary.href.startsWith("http") ? "noopener" : undefined}
+                    >
+                      {secondary.label}
+                    </a>
+                  )}
+                </div>
+              );
+            })()}
+          </section>
+        </article>
       </div>
     </div>
-  </header>
-
-  <div class="uc-layout">
-    <!-- Sidebar Navigation -->
-    <nav class="uc-sidebar" aria-label="Use case sections">
-      <div class="sidebar-label">{useCaseT.sections}</div>
-      <ul class="sidebar-nav">
-        {useCase.sections.map((section) => (
-          <li>
-            <a href={`#${section.key}`} class="sidebar-link">{section.title}</a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="uc-main">
-      <!-- Dynamic Sections -->
-      {useCase.sections.map((section) => (
-        <section id={section.key} class="uc-section">
-          <h2 class="section-title">{section.title}</h2>
-          <div class="section-body" set:html={section.body} />
-        </section>
-      ))}
-
-      {demoSampleId && (
-        <DemoCtaBanner
-          locale={locale}
-          t={t.demoCta}
-          sampleId={demoSampleId}
-          source="use-cases"
-          pairSampleId={demoPairSampleId ?? undefined}
-        />
-      )}
-
-      <!-- CTA Section -->
-      <section class="uc-cta-section">
-        <div class="uc-cta-inner">
-          <div class="cta-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
-          <h3 class="cta-title">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h3>
-          <p class="cta-desc">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
-          {(() => {
-            const primary = resolveCTA(pillar.primaryCTA, locale);
-            const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
-            return (
-              <div class="cta-buttons">
-                <a href={primary.href} class="cta-btn cta-btn-primary" target={primary.href.startsWith("http") ? "_blank" : undefined} rel={primary.href.startsWith("http") ? "noopener" : undefined}>
-                  {primary.label}
-                </a>
-                {secondary && (
-                  <a href={secondary.href} class="cta-btn cta-btn-secondary" target={secondary.href.startsWith("http") ? "_blank" : undefined} rel={secondary.href.startsWith("http") ? "noopener" : undefined}>
-                    {secondary.label}
-                  </a>
-                )}
-              </div>
-            );
-          })()}
-        </div>
-      </section>
-    </main>
-  </div>
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .uc-hero {
-    margin-top: 64px;
-    background: var(--black);
-    padding: 56px 10% 40px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-  .uc-hero-inner {
-    max-width: 800px;
-  }
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
-  }
-  .breadcrumb a {
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .breadcrumb a:hover {
-    color: var(--white);
-  }
-  .breadcrumb-sep {
-    color: rgba(255, 255, 255, 0.2);
-  }
+  .ucd-page {
+    --ucd-display: "Sora", system-ui, sans-serif;
+    --ucd-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ucd-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ucd-text-1: #1a1a1a;
+    --ucd-text-2: #3a3a3a;
+    --ucd-text-3: #5a5a5a;
+    --ucd-text-4: #9a9a9a;
 
-  .uc-hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4.4vw, 48px);
+    background: var(--lemma-cream);
+    color: var(--ucd-text-2);
+    font-family: var(--ucd-body);
     font-weight: 400;
-    color: var(--white);
-    line-height: 1.15;
-    margin: 0 0 12px 0;
+    line-height: 1.75;
+    padding: 0 0 24px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .ucd-page {
+    --ucd-body: "Sora", system-ui, sans-serif;
   }
 
-  .uc-thesis {
-    font-family: var(--font-display);
-    font-size: clamp(18px, 2.2vw, 24px);
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.3;
-    margin: 0 0 12px 0;
-    max-width: 640px;
+  .ucd-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
 
-  .uc-abstract {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.65;
-    margin: 0 0 14px 0;
-    max-width: 640px;
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 
-  .uc-meta {
+  /* ─── BREADCRUMB ─── */
+  .ucd-breadcrumb {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ucd-text-4);
+    padding: 36px 0 0;
     display: flex;
     align-items: center;
-    gap: 16px;
     flex-wrap: wrap;
+    gap: 0;
+  }
+  .ucd-breadcrumb a {
+    color: var(--ucd-text-3);
+    transition: color 0.15s;
+  }
+  .ucd-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .ucd-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
   }
 
-  .uc-pillar-tag {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  /* ─── HERO ─── */
+  .ucd-hero {
+    padding: 36px 0 48px;
+    max-width: 820px;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucd-eyebrow {
+    font-family: var(--ucd-mono);
     font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--accent);
-    text-decoration: none;
-    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    transition: color 0.15s;
   }
-  .uc-pillar-tag:hover {
-    color: var(--accent-lt);
+  .ucd-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .ucd-eyebrow:hover {
+    color: #6e3610;
+  }
+  .ucd-h1 {
+    font-family: var(--ucd-display);
+    font-size: clamp(34px, 4.4vw, 52px);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .ucd-h1 {
+    line-height: 1.25;
+  }
+  .ucd-thesis {
+    font-family: var(--ucd-display);
+    font-size: clamp(18px, 2.2vw, 22px);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.4;
+    margin: 0 0 18px;
+    max-width: 720px;
+  }
+  .ucd-abstract {
+    font-size: 15.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.8;
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+  .ucd-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ucd-text-4);
+  }
+  .ucd-verticals {
+    color: var(--ucd-text-3);
+  }
+  .ucd-reading-time::before {
+    content: "·";
+    margin-right: 12px;
+    color: var(--lemma-line);
+  }
+  .ucd-meta > :first-child::before {
+    content: none;
   }
 
-  .uc-verticals {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  .uc-reading-time {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.3);
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
-    padding-left: 16px;
-  }
-
-  .uc-layout {
+  /* ─── LAYOUT ─── */
+  .ucd-layout {
     display: grid;
     grid-template-columns: 220px 1fr;
     gap: 60px;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 60px 24px 80px;
+    padding: 56px 0 0;
   }
 
-  .uc-sidebar {
+  /* ─── SIDEBAR ─── */
+  .ucd-sidebar {
     position: sticky;
     top: 96px;
     height: fit-content;
     align-self: start;
   }
-
-  .sidebar-label {
-    font-size: 10px;
-    font-weight: 500;
+  .ucd-sidebar-label {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 16px;
+    color: var(--ucd-text-4);
+    margin: 0 0 16px;
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  .sidebar-label::before {
+  .ucd-sidebar-label::before {
     content: "";
     width: 18px;
     height: 1px;
-    background: var(--gray-200);
+    background: var(--accent);
     display: block;
   }
-
-  .sidebar-nav {
+  .ucd-sidebar-nav {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
-
-  .sidebar-link {
+  .ucd-sidebar-link {
     display: block;
     padding: 8px 12px;
+    font-family: var(--ucd-body);
     font-size: 13px;
-    color: var(--gray-700);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    color: var(--ucd-text-3);
+    border-left: 1.5px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
-  .sidebar-link:hover {
+  .ucd-sidebar-link:hover {
     color: var(--black);
     border-left-color: var(--accent);
-    background: var(--gray-50);
+    background: var(--lemma-cream-deep);
   }
 
-  .uc-main {
+  /* ─── MAIN ─── */
+  .ucd-main {
     min-width: 0;
   }
-
-  .uc-section {
-    padding-bottom: 48px;
-    border-bottom: 1px solid var(--gray-200);
-    margin-bottom: 48px;
+  .ucd-section {
+    padding: 0 0 48px;
+    margin: 0 0 48px;
+    border-bottom: 0.5px solid var(--lemma-line);
   }
-  .uc-section:last-of-type {
+  .ucd-section:last-of-type {
     border-bottom: none;
   }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3vw, 32px);
-    font-weight: 500;
+  .ucd-section-title {
+    font-family: var(--ucd-display);
+    font-size: 30px;
+    font-weight: 700;
     color: var(--black);
-    line-height: 1.25;
-    margin: 0 0 24px 0;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 24px;
   }
-
-  .section-body {
-    font-size: 16px;
-    line-height: 1.8;
-    color: var(--gray-800);
-  }
-
-  .section-body :global(h2) {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--black);
-    margin: 48px 0 16px;
+  :root[lang="ja"] .ucd-section-title {
     line-height: 1.35;
   }
-  .section-body :global(h3) {
-    font-family: var(--font-display);
+
+  /* ─── BODY (markdown HTML) ─── */
+  .ucd-section-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--ucd-text-2);
+  }
+  .ucd-section-body :global(p) {
+    margin: 0 0 18px;
+  }
+  .ucd-section-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .ucd-section-body :global(strong) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .ucd-section-body :global(em) {
+    font-style: italic;
+  }
+  .ucd-section-body :global(a) {
+    color: var(--accent);
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+    overflow-wrap: anywhere;
+  }
+  .ucd-section-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .ucd-section-body :global(h2) {
+    font-family: var(--ucd-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 40px 0 14px;
+    line-height: 1.35;
+  }
+  .ucd-section-body :global(h3) {
+    font-family: var(--ucd-display);
     font-size: 18px;
     font-weight: 600;
     color: var(--black);
-    margin: 36px 0 12px;
+    margin: 32px 0 12px;
     line-height: 1.35;
   }
-  .section-body :global(p) {
-    margin: 0 0 24px;
-  }
-  .section-body :global(ul) {
-    list-style: none;
-    margin: 0 0 24px;
+  .ucd-section-body :global(ul) {
+    margin: 0 0 18px;
     padding: 0;
+    list-style: none;
   }
-  .section-body :global(ul li) {
-    padding: 6px 0 6px 24px;
+  .ucd-section-body :global(ul li) {
     position: relative;
+    padding-left: 22px;
+    margin: 0 0 10px;
+    line-height: 1.7;
   }
-  .section-body :global(ul li::before) {
-    content: "◆";
+  .ucd-section-body :global(ul li::before) {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 12px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 1px;
+    transform: rotate(45deg);
+  }
+  .ucd-section-body :global(ol) {
+    margin: 0 0 18px;
+    padding: 0 0 0 4px;
+    counter-reset: ucdlist;
+    list-style: none;
+  }
+  .ucd-section-body :global(ol li) {
+    counter-increment: ucdlist;
+    position: relative;
+    padding-left: 32px;
+    margin: 0 0 14px;
+    line-height: 1.7;
+  }
+  .ucd-section-body :global(ol li::before) {
+    content: counter(ucdlist);
     position: absolute;
     left: 0;
+    top: 0;
+    font-family: var(--ucd-mono);
+    font-size: 12px;
     color: var(--accent);
-    font-size: 8px;
-    top: 12px;
+    font-weight: 500;
   }
-  .section-body :global(a) {
-    color: var(--accent);
-    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
+  .ucd-section-body :global(hr) {
+    border: none;
+    border-top: 0.5px solid var(--lemma-line);
+    margin: 36px 0;
   }
-  .section-body :global(a:hover) {
-    border-bottom-color: var(--accent);
-    color: var(--accent-lt);
+  .ucd-section-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--ucd-body);
+    font-size: 13.5px;
+    margin: 24px 0;
+    display: block;
+    overflow-x: auto;
   }
-  /* Inline CTA buttons — applies to the last paragraph of a section
-     whose id is "cta" (e.g. authored as 03-cta.md). Two markdown links
-     in one paragraph render as a primary + secondary button row. */
-  :global(.uc-section#cta .section-body > p:last-child) {
+  .ucd-section-body :global(thead tr) {
+    background: var(--lemma-cream-deep);
+  }
+  .ucd-section-body :global(th) {
+    padding: 12px 14px;
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ucd-text-3);
+    text-align: left;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucd-section-body :global(td) {
+    padding: 12px 14px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    color: var(--ucd-text-2);
+    line-height: 1.6;
+    vertical-align: top;
+  }
+  .ucd-section-body :global(code:not(pre code)) {
+    font-family: var(--ucd-mono);
+    font-size: 0.86em;
+    background: var(--lemma-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(pre) {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: #1a1a1a;
+    color: #e8e2d4;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--ucd-mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .ucd-section-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Inline CTA links inside markdown sections with id "cta" — render the
+     last paragraph's links as a primary + secondary button row. Kept from
+     v22 since some use cases author CTAs as markdown. */
+  :global(.ucd-section#cta .ucd-section-body > p:last-child) {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-top: 32px;
+    margin-top: 24px;
   }
-  :global(.uc-section#cta .section-body > p:last-child a) {
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a) {
     display: inline-flex;
     align-items: center;
-    padding: 14px 28px;
-    font-size: 13px;
+    padding: 13px 28px;
+    font-family: var(--ucd-display);
+    font-size: 12.5px;
     font-weight: 500;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    border: 1px solid transparent;
-    border-radius: 0;
+    letter-spacing: 0.06em;
+    border: 0.5px solid transparent;
+    border-radius: 999px;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  :global(.uc-section#cta .section-body > p:last-child a:first-child) {
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:first-child) {
     background: var(--accent);
-    color: var(--white);
+    color: var(--lemma-cream);
     border-color: var(--accent);
   }
-  :global(.uc-section#cta .section-body > p:last-child a:first-child:hover) {
-    background: var(--accent-lt);
-    border-color: var(--accent-lt);
-    color: var(--white);
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:first-child:hover) {
+    background: #6e3610;
+    border-color: #6e3610;
+    color: var(--lemma-cream);
   }
-  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child)) {
-    background: transparent;
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child):hover) {
-    background: var(--accent);
-    color: var(--white);
-  }
-  .section-body :global(code) {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
-    font-size: 0.92em;
-    color: var(--accent);
-  }
-  .section-body :global(pre code) {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: #e1e4e8;
-  }
-  .section-body :global(table) {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    border-collapse: collapse;
-    font-size: 14px;
-    margin: 24px 0;
-  }
-  .section-body :global(thead tr) {
-    background: var(--black);
-    color: var(--white);
-  }
-  .section-body :global(th) {
-    padding: 12px 16px;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-align: left;
-  }
-  .section-body :global(td) {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--gray-200);
-    vertical-align: top;
-  }
-  .section-body :global(tr:nth-child(odd) td) {
-    background: var(--gray-50);
-  }
-  .section-body :global(pre) {
-    margin: 24px 0;
-    padding: 20px;
-    background: #1a1a1a;
-    border-radius: 4px;
-    overflow-x: auto;
-  }
-
-  .tag-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-    margin-bottom: 24px;
-  }
-  .tag-chip {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    color: var(--gray-500);
-    letter-spacing: 0.02em;
-  }
-
-  .uc-cta-section {
-    background: var(--black);
-    padding: 64px 48px;
-    margin: 60px 0 0;
-    text-align: center;
-  }
-
-  .uc-cta-inner {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .cta-eyebrow {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .cta-title {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3.5vw, 36px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.15;
-    margin: 0 0 12px 0;
-  }
-
-  .cta-desc {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.45);
-    line-height: 1.7;
-    margin: 0 0 28px 0;
-  }
-
-  .cta-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .cta-btn {
-    display: inline-block;
-    padding: 14px 32px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .cta-btn-primary {
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:not(:first-child)) {
     background: var(--white);
-    color: var(--black);
-  }
-  .cta-btn-primary:hover {
-    background: var(--accent);
-    color: var(--white);
-  }
-
-  .cta-btn-secondary {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  .cta-btn-secondary:hover {
-    border-color: var(--accent);
     color: var(--accent);
+    border-color: var(--lemma-line);
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:not(:first-child):hover) {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
   }
 
-  @media (max-width: 900px) {
-    .uc-layout {
+  /* ─── PARTNER CTA (v24 inline) ─── */
+  .ucd-partner {
+    margin: 32px 0 0;
+    padding: 48px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ucd-partner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
+  }
+  .ucd-partner-eyebrow {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .ucd-partner-h2 {
+    font-family: var(--ucd-display);
+    font-size: clamp(26px, 3.4vw, 36px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin: 0 0 16px;
+  }
+  :root[lang="ja"] .ucd-partner-h2 {
+    line-height: 1.35;
+  }
+  .ucd-partner-body {
+    font-size: 14.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.8;
+    margin: 0 auto 28px;
+    max-width: 540px;
+  }
+  .ucd-partner-cta {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ucd-partner-primary,
+  .ucd-partner-secondary {
+    font-family: var(--ucd-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 13px 30px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .ucd-partner-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border: 0;
+  }
+  .ucd-partner-primary:hover {
+    background: #6e3610;
+  }
+  .ucd-partner-secondary {
+    background: var(--white);
+    color: var(--accent);
+    border: 0.5px solid var(--lemma-line);
+  }
+  .ucd-partner-secondary:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .ucd-layout {
       grid-template-columns: 1fr;
       gap: 0;
     }
-    .uc-sidebar {
+    .ucd-sidebar {
       display: none;
     }
+    .ucd-section-title {
+      font-size: 24px;
+    }
   }
-
-  @media (max-width: 768px) {
-    .uc-hero {
-      padding: 44px 6% 32px;
+  @media (max-width: 720px) {
+    .ucd-container {
+      padding: 0 24px;
     }
-    .uc-layout {
-      padding: 40px 16px 60px;
+    .ucd-hero {
+      padding: 28px 0 36px;
     }
-    .uc-cta-section {
-      padding: 48px 24px;
-      margin: 40px -16px 0;
+    .ucd-layout {
+      padding: 40px 0 0;
+    }
+    .ucd-section {
+      padding-bottom: 36px;
+      margin-bottom: 36px;
+    }
+    .ucd-partner {
+      padding: 36px 24px;
     }
   }
 </style>
