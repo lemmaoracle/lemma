@@ -1,0 +1,160 @@
+---
+/**
+ * Brief detail page — 4-cell meta strip (incident date / published /
+ * authors / related pack). Used inside BriefHero.
+ *
+ * Pack labels split "Pack A" main and "Incident Response" sub per the
+ * mockup; only the first pack is rendered in the strip (the underlying
+ * frontmatter allows multiple, but the strip surfaces only one).
+ */
+import type { Locale } from "../i18n/translations";
+
+export interface BriefMetaStripLabels {
+  incidentDate: string;
+  published: string;
+  authors: string;
+  pack: string;
+}
+
+export interface BriefMetaStripProps {
+  locale: Locale;
+  labels: BriefMetaStripLabels;
+  incidentDateStr: string;
+  publishedStr: string;
+  authors: ReadonlyArray<string>;
+  relatedPack: ReadonlyArray<string>;
+}
+
+const PACK_LABELS: Record<
+  string,
+  { main: string; sub: { ja: string; en: string } }
+> = {
+  "A-incident-response": {
+    main: "Pack A",
+    sub: { ja: "Incident Response", en: "Incident Response" },
+  },
+  "B-regulatory": {
+    main: "Pack B",
+    sub: { ja: "Regulatory", en: "Regulatory" },
+  },
+  "C-agent-governance": {
+    main: "Pack C",
+    sub: { ja: "Agent Governance", en: "Agent Governance" },
+  },
+};
+
+const {
+  locale,
+  labels,
+  incidentDateStr,
+  publishedStr,
+  authors,
+  relatedPack,
+} = Astro.props as BriefMetaStripProps;
+
+const isJa = locale === "ja";
+const firstPack = relatedPack[0];
+const packEntry = firstPack ? PACK_LABELS[firstPack] : null;
+---
+
+<div class="meta-strip">
+  <div class="meta-cell">
+    <div class="meta-label">{labels.incidentDate}</div>
+    <div class="meta-value">{incidentDateStr}</div>
+  </div>
+  <div class="meta-cell">
+    <div class="meta-label">{labels.published}</div>
+    <div class="meta-value">{publishedStr}</div>
+  </div>
+  <div class="meta-cell">
+    <div class="meta-label">{labels.authors}</div>
+    <div class="meta-value">{authors.join(", ")}</div>
+  </div>
+  {relatedPack.length > 0 && (
+    <div class="meta-cell">
+      <div class="meta-label">{labels.pack}</div>
+      <div class="meta-value">
+        {packEntry ? (
+          <>
+            {packEntry.main}
+            <span class="meta-sub">{packEntry.sub[isJa ? "ja" : "en"]}</span>
+          </>
+        ) : (
+          firstPack
+        )}
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .meta-strip {
+    --bms-display: "Sora", system-ui, sans-serif;
+    --bms-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .meta-cell {
+    padding: 22px 24px;
+    border-right: 0.5px solid var(--lemma-line);
+  }
+  .meta-cell:last-child {
+    border-right: 0;
+  }
+  .meta-label {
+    font-family: var(--bms-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-label::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .meta-value {
+    font-family: var(--bms-display);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta-sub {
+    font-family: var(--bms-mono);
+    font-size: 11px;
+    color: #5a5a5a;
+    display: block;
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 760px) {
+    .meta-strip {
+      grid-template-columns: 1fr 1fr;
+    }
+    .meta-cell {
+      border-right: 0;
+      border-bottom: 0.5px solid var(--lemma-line);
+    }
+    .meta-cell:nth-child(odd) {
+      border-right: 0.5px solid var(--lemma-line);
+    }
+    .meta-cell:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+  }
+</style>
