@@ -5,6 +5,7 @@ import {
   categoryLabel,
 } from "../../../data/criticalBriefs.ts";
 import { extractTldr } from "../../../data/extractTldr.ts";
+import { getEnBriefMap } from "../../../data/getEnBriefMap.ts";
 
 /**
  * Lemma Critical Brief RSS feed (English).
@@ -16,8 +17,7 @@ import { extractTldr } from "../../../data/extractTldr.ts";
  */
 export async function GET(context) {
   const all = await getCollection("critical-briefs");
-  const enBriefs = await getCollection("critical-briefs-en");
-  const enById = new Map(enBriefs.map((b) => [b.id, b]));
+  const enById = await getEnBriefMap();
   const items = [...all]
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
     .map((jaBrief) => {
