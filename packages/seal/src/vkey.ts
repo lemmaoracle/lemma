@@ -9,3 +9,6 @@
 import vkey from "./vkeys/seal-identity-v1.json" with { type: "json" };
 
 export default vkey as Readonly<Record<string, unknown>>;
+
+/** The bundled verification key for seal-identity-v1. */
+export const sealVkey: Readonly<Record<string, unknown>> = vkey;

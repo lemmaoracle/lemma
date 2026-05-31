@@ -3,66 +3,72 @@
  *
  * Dashboard sign-in flow:
  *   1. The BFF issues a challenge `nonce`.
- *   2. The developer runs {@link generateSealProof} with their API key.
+ *   2. The developer runs {@link prove} with their secret.
  *   3. The BFF verifies the proof, reads the `nullifier`, and resolves
  *      the caller's scope by matching it against registered key hashes.
  *
- * snarkjs is imported lazily so that consumers who only need the pure
- * bit helpers ({@link apiKeyToBits} etc.) do not pay for it.
+ * Both prove and verify delegate to `@lemmaoracle/sdk`, which handles
+ * circuit artifact resolution and snarkjs orchestration. The vkey for
+ * verification is resolved internally from the bundled JSON.
  */
 
-import type { CircuitSignals } from "snarkjs";
-import { apiKeyToBits } from "./bits.js";
-import type { SealArtifacts, SealProof, SealProofInput } from "./types.js";
+import { create, prover, verifier } from "@lemmaoracle/sdk";
+import { secretToBits } from "./bits.js";
+import vkey from "./vkey.js";
+import type { SealProof, SealProofInput } from "./types.js";
+
+/** The circuit id under which seal v2 is registered with the Lemma API. */
+export const SEAL_CIRCUIT_ID = "seal-identity-v1";
+
+type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
 
 /**
- * Generate a groth16 proof that the caller holds the API key behind a
+ * Generate a groth16 proof that the caller holds the secret behind a
  * registered `key_hash`, bound to the given challenge `nonce`.
  *
  * The returned `nullifier` is a per-session Poseidon fingerprint that
- * reveals neither the key nor its SHA-256 hash. The server resolves
+ * reveals neither the secret nor its SHA-256 hash. The server resolves
  * identity by iterating registered key hashes and computing the
  * expected nullifier until a match is found.
  *
- * Requires the compiled circuit artifacts — build them with
- * `npm run build` in `packages/seal/circuits` (see the package README).
+ * Circuit artifacts (wasm, zkey) are resolved automatically via the
+ * Lemma SDK from `circuitId: "seal-identity-v1"`. No local artifact
+ * paths are required.
  */
-export const generateSealProof = async (
-  input: SealProofInput,
-  artifacts: SealArtifacts,
-): Promise<SealProof> => {
-  const { groth16 } = await import("snarkjs");
-  const witness: CircuitSignals = {
-    keyBits: apiKeyToBits(input.apiKey).map(Number),
+export const prove = async (input: SealProofInput): Promise<SealProof> => {
+  const client = create({});
+  const witness = {
+    keyBits: secretToBits(input.secret).map(Number),
     nonce: input.nonce,
   };
-  const { proof, publicSignals } = await groth16.fullProve(
+  const { proof, inputs } = await prover.prove(client, {
+    circuitId: SEAL_CIRCUIT_ID,
     witness,
-    artifacts.wasm,
-    artifacts.zkey,
-  );
+  });
   return {
-    proof,
-    publicSignals,
-    // Public signals: [nullifier, nonce]
-    nullifier: publicSignals[0] ?? "",
+    proof: JSON.parse(atob(proof)),
+    publicSignals: inputs,
+    nullifier: inputs[0] ?? "",
   };
 };
 
 /**
- * Verify a seal proof against the circuit verification key. Resolves to
- * the attested `nullifier` and `nonce` on success, or `null` if invalid.
+ * Verify a seal proof against the bundled circuit verification key.
+ *
+ * Resolves to the attested `nullifier` and `nonce` on success, or
+ * `null` if invalid. Delegates to `@lemmaoracle/sdk` verifier.
  */
-export const verifySealProof = async (
+export const verify = async (
   proof: SealProof,
-  verificationKey: Readonly<Record<string, unknown>>,
-): Promise<Readonly<{ nullifier: string; nonce: string }> | null> => {
-  const { groth16 } = await import("snarkjs");
-  const ok = await groth16.verify(
-    verificationKey,
-    [...proof.publicSignals],
-    proof.proof,
-  );
+): Promise<VerifyResult | null> => {
+  const { ok } = await verifier.verify({
+    alg: "groth16-bn254-snarkjs",
+    inputs: {
+      vkey,
+      proof: proof.proof,
+      publicSignals: proof.publicSignals,
+    },
+  });
   return ok
     ? {
         nullifier: proof.publicSignals[0] ?? "",

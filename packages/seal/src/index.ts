@@ -5,8 +5,8 @@
  * without revealing it — or even *which* key. The dashboard BFF issues
  * a challenge nonce; the developer generates a proof whose public
  * output is a per-session Poseidon nullifier. The nullifier is unique
- * to the (key, nonce) pair but reveals nothing about the key or its
- * SHA-256 hash, so proofs cannot be correlated across sessions.
+ * to the (secret, nonce) pair but reveals nothing about the secret or
+ * its SHA-256 hash, so proofs cannot be correlated across sessions.
  *
  * The dashboard resolves identity by iterating registered `key_hash`
  * values and computing the expected nullifier until a match is found.
@@ -18,24 +18,18 @@
  * at runtime.
  */
 
-export type {
-  Bit,
-  SealArtifacts,
-  SealProof,
-  SealProofInput,
-} from "./types.js";
+export type { Bit, SealProof, SealProofInput } from "./types.js";
 
 export {
-  SEAL_KEY_BYTES,
-  SEAL_KEY_BITS,
-  apiKeyToBits,
+  SEAL_SECRET_BYTES,
+  SEAL_SECRET_BITS,
+  secretToBits,
   hashBitsToHex,
 } from "./bits.js";
 
-export { generateSealProof, verifySealProof } from "./proof.js";
+export { prove, verify, SEAL_CIRCUIT_ID } from "./proof.js";
 
-/** The circuit id under which seal v2 is registered with the Lemma API. */
-export const SEAL_CIRCUIT_ID = "seal-identity-v1";
+export { sealVkey } from "./vkey.js";
 
 /** The schema the seal circuit is registered against. */
 export const SEAL_SCHEMA = "passthrough-v1";

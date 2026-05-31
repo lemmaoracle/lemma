@@ -5,7 +5,7 @@ import { writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { groth16 } from 'snarkjs';
-import { apiKeyToBits } from './dist/bits.js';
+import { secretToBits } from './dist/bits.js';
 import { poseidon3 } from 'poseidon-lite/poseidon3';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,7 +19,7 @@ console.log("=== Seal v2 End-to-End Test ===\n");
 
 // 1. Convert API key to bits
 console.log("1. Converting API key to bits...");
-const keyBits = apiKeyToBits(API_KEY).map(Number);
+const keyBits = secretToBits(API_KEY).map(Number);
 console.log("   ✓ keyBits length:", keyBits.length);
 console.log("   ✓ First 8 bits:", keyBits.slice(0, 8));
 

@@ -4,16 +4,16 @@ ZK auth circuit for **Proof-based sign-in** to the Lemma developer dashboard.
 
 `seal` lets a developer prove they hold a valid Lemma API key **without
 revealing the key or even which key it is**. It produces a per-session
-Poseidon nullifier that is unique to the (key, nonce) pair but reveals
-nothing about the underlying key or its SHA-256 hash.
+Poseidon nullifier that is unique to the (secret, nonce) pair but reveals
+nothing about the underlying secret or its SHA-256 hash.
 
 ## How it works
 
 The dashboard's sign-in flow:
 
 1. The dashboard BFF issues a challenge `nonce`.
-2. The developer generates a `seal` proof: it proves knowledge of *an*
-   API key whose SHA-256 hash is registered in the workers `api_keys`
+2. The developer generates a `seal` proof: it proves knowledge of *a*
+   secret whose SHA-256 hash is registered in the workers `api_keys`
    table, bound to that `nonce`. The public output is a **nullifier** —
    `Poseidon(keyHash_hi, keyHash_lo, nonce)` — not the key hash itself.
 3. The BFF verifies the proof, then iterates registered `key_hash`
@@ -21,9 +21,9 @@ The dashboard's sign-in flow:
    finds a match (O(N), sub-millisecond per check).
 4. The BFF issues a session token tied to the resolved scope.
 
-The proof reveals neither the API key nor its hash — only the nullifier
+The proof reveals neither the secret nor its hash — only the nullifier
 and the nonce. Because `nonce` changes every session, nullifiers cannot
-be correlated across sign-ins, even for the same API key.
+be correlated across sign-ins, even for the same secret.
 
 > Proof-based sign-in requires an existing API key. First-time users
 > onboard via GitHub OAuth, which issues their first key.
@@ -40,8 +40,9 @@ seal/
 │   ├── register-circuit.ts        Pin artifacts to IPFS, register via SDK
 │   └── setup-toolchain.sh         Install Rust + circom
 ├── src/                           TypeScript proof helpers (published)
-│   ├── bits.ts                    API key ↔ circuit signal conversions
-│   ├── proof.ts                   generateSealProof / verifySealProof
+│   ├── bits.ts                    Secret ↔ circuit signal conversions
+│   ├── proof.ts                   prove / verify (delegates to @lemmaoracle/sdk)
+│   ├── vkey.ts                    Bundled verification key + named export
 │   └── index.ts                   Public API
 └── .env.example                   Credentials for register-circuit.ts
 ```
@@ -53,20 +54,20 @@ Lemma circuit-registration path.
 
 ## The circuit
 
-`seal-identity.circom` (v2) proves knowledge of a registered API key and
+`seal-identity.circom` (v2) proves knowledge of a registered secret and
 outputs a per-session nullifier:
 
-- **Private input** — `keyBits[512]`: the 64-byte ASCII API key as bits.
+- **Private input** — `keyBits[512]`: the 64-byte ASCII secret as bits.
   Lemma keys are 32 random bytes rendered as 64 hex characters (see the
   workers `generate_api_key.js`).
 - **Public input** — `nonce`: the dashboard challenge, bound into the
   constraint system for replay protection.
 - **Public output** — `nullifier`: `Poseidon(keyHash_hi, keyHash_lo, nonce)`.
-  A single BN254 field element; unique per (key, nonce) pair. Add ~300
+  A single BN254 field element; unique per (secret, nonce) pair. Add ~300
   constraints on top of the SHA-256 (~60k total).
 
 The SHA-256 hashing matches the workers `middleware/auth.ts`
-(`SHA-256(utf8_bytes(apiKey))`), but `keyHash` is now an intermediate
+(`SHA-256(utf8_bytes(secret))`), but `keyHash` is now an intermediate
 signal — it never appears in public signals.
 
 ## Build the circuit
@@ -94,21 +95,45 @@ npm run register:circuit
 ```
 
 This pins the `.wasm` / `.zkey` to IPFS via Pinata and registers a
-`CircuitMeta` (`circuitId: seal-identity-v2`, `schema: passthrough-v1`,
+`CircuitMeta` (`circuitId: seal-identity-v1`, `schema: passthrough-v1`,
 off-chain `groth16-bn254-snarkjs` verifier) with the workers API. The
 dashboard BFF then fetches verification params at runtime via
-`GET /v1/circuits/seal-identity-v2`.
+`GET /v1/circuits/seal-identity-v1`.
 
 ## Generate a proof (developer usage)
 
 ```ts
-import { generateSealProof } from "@lemmaoracle/seal";
+import * as seal from "@lemmaoracle/seal";
 
-const { proof, publicSignals, nullifier } = await generateSealProof(
-  { apiKey: process.env.LEMMA_API_KEY!, nonce: challengeNonce },
-  { wasm: "seal-identity.wasm", zkey: "seal-identity_final.zkey" },
-);
+const { proof, publicSignals, nullifier } = await seal.prove({
+  secret: process.env.LEMMA_API_KEY!,
+  nonce: challengeNonce,
+});
 // POST { proof, publicSignals, token } to the dashboard sign-in endpoint.
+```
+
+Circuit artifacts (wasm, zkey) are resolved automatically via the
+`@lemmaoracle/sdk` from the registered circuit metadata — no local
+artifact paths are required.
+
+## Verify a proof
+
+```ts
+import * as seal from "@lemmaoracle/seal";
+
+const result = await seal.verify({ proof, publicSignals, nullifier });
+// result: { nullifier, nonce } | null
+```
+
+The verification key is bundled internally — no additional arguments are
+needed. Verification delegates to `@lemmaoracle/sdk` verifier.
+
+## Access the verification key
+
+```ts
+import { sealVkey } from "@lemmaoracle/seal";
+// Or via the dedicated sub-export:
+import vkey from "@lemmaoracle/seal/vkey";
 ```
 
 ## v2 migration notes
@@ -118,11 +143,25 @@ readable by any observer of the proof transcript. v2 replaces this with
 a Poseidon nullifier that is uncorrelatable across sessions.
 
 Breaking changes:
-- `SEAL_CIRCUIT_ID` is now `"seal-identity-v2"` (requires re-registration).
+- `SEAL_CIRCUIT_ID` is now `"seal-identity-v1"` (requires re-registration).
 - `SealProof.keyHash` removed; replaced by `SealProof.nullifier`.
 - Server-side: `scopeIdForKeyHash()` replaced by `scopeIdForNullifier()`
   (full D1 scan + `poseidon-lite` computation).
 - Circuit artifacts (wasm, zkey, vkey) must be regenerated.
+
+v3 migration notes:
+- `generateSealProof` renamed to `prove`; `verifySealProof` renamed to `verify`.
+- `SealProofInput.apiKey` renamed to `SealProofInput.secret`.
+- `apiKeyToBits` renamed to `secretToBits`; `SEAL_KEY_BYTES`/`SEAL_KEY_BITS`
+  renamed to `SEAL_SECRET_BYTES`/`SEAL_SECRET_BITS`.
+- `SealArtifacts` type removed — circuit artifacts are resolved
+  automatically via `@lemmaoracle/sdk`.
+- `prove` no longer requires a second `artifacts` argument.
+- `verify` no longer requires a `verificationKey` argument — the vkey is
+  bundled internally.
+- `sealVkey` named export added for direct vkey access.
+- `snarkjs` is no longer a direct dependency — it is used via
+  `@lemmaoracle/sdk`.
 
 ## Scripts
 
