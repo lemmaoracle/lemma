@@ -8,6 +8,7 @@ import {
   categoryDescription,
   type CategorySlug,
 } from "../../../../data/criticalBriefs";
+import { getEnBriefMap } from "../../../../data/getEnBriefMap";
 
 /**
  * Category archives are generated only for categories that have at
@@ -18,8 +19,7 @@ import {
  */
 export async function getStaticPaths() {
   const all = await getCollection("critical-briefs");
-  const enBriefs = await getCollection("critical-briefs-en");
-  const enById = new Map(enBriefs.map((b) => [b.id, b]));
+  const enById = await getEnBriefMap();
   const used = new Set<CategorySlug>();
   for (const b of all) {
     used.add(b.data.primary_category as CategorySlug);
