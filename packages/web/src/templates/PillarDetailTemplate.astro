@@ -9,44 +9,37 @@
  * surface family.
  */
 import type { Locale, Translations } from "../i18n/translations";
-import type { Pillar, CTA } from "../data/pillars";
+import type { Pillar } from "../data/pillars";
 import type { UseCase } from "../data/useCases";
 import type { BlogPost } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import PillarElevator from "../components/pillars/PillarElevator.astro";
-import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
-import { getDemoSampleForPillar } from "../config/demoSamples";
-
-const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
-  cta.type === "talk-to-us"
-    ? { label: DISCOVERY_CALL[lc].buttonLabel, href: DISCOVERY_CALL_URL[lc] }
-    : { label: cta.label, href: cta.href };
-
-/** Trim a use case abstract to the first sentence for the card grid. */
-function firstSentence(text: string): string {
-  const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
-  return (m?.[1] ?? text).trim();
-}
+import PillarConceptIncidents from "../components/pillars/PillarConceptIncidents.astro";
+import PillarConceptApproach from "../components/pillars/PillarConceptApproach.astro";
+import PillarConceptScenarios from "../components/pillars/PillarConceptScenarios.astro";
+import PillarConceptFurther from "../components/pillars/PillarConceptFurther.astro";
 
 export interface PillarDetailTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
   pillar: Pillar;
-  useCases: ReadonlyArray<UseCase>;
-  recentPosts: ReadonlyArray<BlogPost>;
-  otherPillars: ReadonlyArray<Pillar>;
+  /** v1 props kept on the interface so existing [slug] pages keep
+   * compiling; the concept-hub render path no longer reads them.
+   * They will fall off once the v1 callers are cleaned up. */
+  useCases?: ReadonlyArray<UseCase>;
+  recentPosts?: ReadonlyArray<BlogPost>;
+  otherPillars?: ReadonlyArray<Pillar>;
   pillarT: Translations["pillars"];
 }
 
-const { locale, t, base, pillar, useCases, recentPosts, otherPillars, pillarT } = Astro.props as PillarDetailTemplateProps;
+const { locale, t, base, pillar, pillarT } = Astro.props as PillarDetailTemplateProps;
 const pillarsPath = `${base}/pillars`;
-const useCasesPath = `${base}/use-cases`;
-const demoSampleId = getDemoSampleForPillar(pillar.slug);
+const numLabel = `Pillar ${String(pillar.order).padStart(2, "0")}`;
+const heroSubLabel = locale === "ja" ? pillar.title.en : pillar.title.ja;
 
 const homeLabel = locale === "ja" ? "ホーム" : "Home";
 
@@ -110,157 +103,23 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
       </nav>
 
       <header class="pd-hero">
-        <a href={pillarsPath} class="pd-eyebrow">P{pillar.order} · {pillarT.title}</a>
+        <div class="pd-eyebrow">
+          <a class="pd-eyebrow-num" href={pillarsPath}>{numLabel}</a>
+          <span class="pd-eyebrow-tag">{pillar.slogan[locale]}</span>
+        </div>
         <h1 class="pd-h1">{pillar.title[locale]}</h1>
-        <p class="pd-slogan">{pillar.slogan[locale]}</p>
-        {pillar.subtitle[locale] && (
-          <p class="pd-subtitle">{pillar.subtitle[locale]}</p>
-        )}
-        <p class="pd-attribution">{pillarT.categoryAttribution}</p>
+        <p class="pd-h1-sub">{heroSubLabel}</p>
       </header>
 
       <PillarElevator locale={locale} pillar={pillar} />
 
       <article class="pd-main">
-        {/*
-          §Problem and §How Lemma Fits intentionally suppressed in v2:
-          - Problem is absorbed into the elevator block above (lead + context).
-          - How Lemma Fits names crypto primitives (Poseidon/BBS+/Groth16);
-            that depth belongs on the post-API-launch service page.
-        */}
-        <section class="pd-section">
-          <div class="pd-section-label">{pillarT.blockWhyNow}</div>
-          <p class="pd-prose pd-prose-lead">{pillar.whyNow[locale]}</p>
-        </section>
-
-        {pillar.extraSection && (
-          <section class="pd-section">
-            <div class="pd-section-label">{pillar.extraSection.label[locale]}</div>
-            <h2 class="pd-section-h2">{pillar.extraSection.heading[locale]}</h2>
-            <div class="pd-prose-stack">
-              {pillar.extraSection.paragraphs[locale].map((p) => (
-                <p class="pd-prose" set:html={p} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section class="pd-section">
-          <div class="pd-section-label">{pillarT.blockUseCases}</div>
-          {useCases.length > 0 ? (
-            <ul class="pd-card-grid">
-              {useCases.map((uc) => (
-                <li>
-                  <a href={`${useCasesPath}/${uc.slug}`} class="pd-card">
-                    {uc.thesis && <div class="pd-card-thesis">{uc.thesis}</div>}
-                    <h3 class="pd-card-title">{uc.title}</h3>
-                    <p class="pd-card-abstract">{firstSentence(uc.abstract)}</p>
-                    <span class="pd-card-cta">{pillarT.viewUseCase}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="pd-empty">{pillarT.comingSoon}</p>
-          )}
-        </section>
-
-        {recentPosts.length > 0 && (
-          <section class="pd-section">
-            <div class="pd-section-label">{pillarT.blockRecentThinking}</div>
-            <ul class="pd-card-grid pd-card-grid--3">
-              {recentPosts.map((post) => (
-                <li>
-                  <a href={`${base}/blog/${post.slug}`} class="pd-card pd-card--compact">
-                    <div class="pd-card-meta">
-                      <span class="pd-card-meta-cat">{post.category}</span>
-                      <span class="pd-card-meta-date">{post.date}</span>
-                    </div>
-                    <h3 class="pd-card-title pd-card-title--sm">{post.title}</h3>
-                    <p class="pd-card-abstract pd-card-abstract--sm">{post.abstract}</p>
-                    <span class="pd-card-cta">{t.blog.index.readGuide}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {pillar.faq && pillar.faq.length > 0 && (
-          <section class="pd-section">
-            <div class="pd-section-label">FAQ</div>
-            <div class="pd-faq-list">
-              {pillar.faq.map((item) => (
-                <details class="pd-faq-item">
-                  <summary class="pd-faq-q">{item.q[locale]}</summary>
-                  <div class="pd-faq-a" set:html={item.a[locale]} />
-                </details>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {otherPillars.length > 0 && (
-          <section class="pd-section">
-            <div class="pd-section-label">{pillarT.blockOtherPillars}</div>
-            <ul class="pd-card-grid pd-card-grid--3">
-              {otherPillars.map((p) => (
-                <li>
-                  <a href={`${pillarsPath}/${p.slug}`} class="pd-card pd-card--compact">
-                    <span class="pd-card-thesis">P{p.order}</span>
-                    <h3 class="pd-card-title pd-card-title--sm">{p.title[locale]}</h3>
-                    {p.subtitle[locale] && (
-                      <p class="pd-card-abstract pd-card-abstract--sm">{p.subtitle[locale]}</p>
-                    )}
-                    <span class="pd-card-cta">{pillarT.viewPillar}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {demoSampleId && (
-          <DemoCtaBanner
-            locale={locale}
-            t={t.demoCta}
-            sampleId={demoSampleId}
-            source="pillars"
-          />
-        )}
-
-        <section class="pd-partner" aria-label={pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}>
-          <div class="pd-partner-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
-          <h2 class="pd-partner-h2">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
-          <p class="pd-partner-body">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
-          {(() => {
-            const primary = resolveCTA(pillar.primaryCTA, locale);
-            const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
-            return (
-              <div class="pd-partner-cta">
-                <a
-                  href={primary.href}
-                  class="pd-partner-primary"
-                  target={primary.href.startsWith("http") ? "_blank" : undefined}
-                  rel={primary.href.startsWith("http") ? "noopener" : undefined}
-                >
-                  {primary.label}
-                </a>
-                {secondary && (
-                  <a
-                    href={secondary.href}
-                    class="pd-partner-secondary"
-                    target={secondary.href.startsWith("http") ? "_blank" : undefined}
-                    rel={secondary.href.startsWith("http") ? "noopener" : undefined}
-                  >
-                    {secondary.label}
-                  </a>
-                )}
-              </div>
-            );
-          })()}
-        </section>
+        <PillarConceptIncidents locale={locale} base={base} pillar={pillar} pillarT={pillarT} />
+        <PillarConceptApproach locale={locale} base={base} pillar={pillar} pillarT={pillarT} />
+        <PillarConceptScenarios locale={locale} base={base} pillar={pillar} pillarT={pillarT} />
+        <PillarConceptFurther locale={locale} base={base} pillar={pillar} pillarT={pillarT} />
       </article>
+
     </div>
   </main>
 
@@ -332,67 +191,57 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     max-width: 820px;
     border-bottom: 0.5px solid var(--lemma-line);
   }
+  /* v2 hero eyebrow: Pillar number (mono brown link) + poetic X ≠ Y tag
+     (italic grey, dashed-left separator). Replaces the v1 single-link
+     eyebrow + standalone slogan + attribution. */
   .pd-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 0 0 22px;
+  }
+  .pd-eyebrow-num {
     font-family: var(--pd-mono);
     font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin: 0 0 20px;
     transition: color 0.15s;
   }
-  .pd-eyebrow::before {
-    content: "";
-    display: inline-block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .pd-eyebrow:hover {
+  .pd-eyebrow-num:hover {
     color: #6e3610;
+  }
+  .pd-eyebrow-tag {
+    font-family: var(--pd-mono);
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    color: var(--pd-text-4);
+    padding-left: 14px;
+    border-left: 0.5px dashed rgba(139, 69, 19, 0.35);
   }
   .pd-h1 {
     font-family: var(--pd-display);
     font-size: clamp(36px, 5vw, 56px);
     font-weight: 700;
     color: var(--black);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.035em;
     line-height: 1.15;
-    margin: 0 0 18px;
+    margin: 0 0 10px;
   }
   :root[lang="ja"] .pd-h1 {
     line-height: 1.25;
   }
-  /* Slogan: the conceptual hook ("X ≠ Y"). Saddle brown, weight 500, not
-     italic — faked italics on JA glyphs read serif-y. Brown left rule
-     anchors it like the use-case thesis. */
-  .pd-slogan {
+  /* Cross-language title (EN under JA H1, JA under EN H1). Saddle brown
+     mono-display sub-title — the "Verifiable Origin" callout. */
+  .pd-h1-sub {
     font-family: var(--pd-display);
-    font-size: clamp(18px, 2.2vw, 22px);
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 500;
     color: var(--accent);
-    line-height: 1.5;
-    margin: 0 0 22px;
-    max-width: 720px;
-    padding: 4px 0 4px 16px;
-    border-left: 2px solid var(--accent);
-  }
-  .pd-subtitle {
-    font-size: 15.5px;
-    color: var(--pd-text-2);
-    line-height: 1.8;
-    margin: 0 0 18px;
-    max-width: 720px;
-  }
-  .pd-attribution {
-    font-family: var(--pd-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--pd-text-4);
+    letter-spacing: 0;
     margin: 0;
   }
 
