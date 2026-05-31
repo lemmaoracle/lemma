@@ -49,29 +49,25 @@ status: published
 
 ---
 
-## 4. カテゴリと位置
+## 4. 構造的論点
 
-本事案は Pillar 02(検証可能 AI)の `ai-decision-integrity` カテゴリに属する。AI 判断の入力データそのものが、人間目視と AI 解釈で乖離する構造的 vulnerability が露呈した。AI の推論能力(モデル性能)に問題はなく、AI が「何を見ているか」「人間が見ているものと同じか」を独立検証する層が存在しないことが gap である。
+本事案は、AI 判断において **「文書ファイルが画面に表示する内容と AI に渡される内容は同一である」という暗黙の前提が独立検証されないまま放置されていた** という構造の代表事例である。AI の推論能力(モデル性能)に問題はなく、AI が「何を見ているか」「人間が見ているものと同じか」を独立検証する層が存在しないことが本事案の構造的 gap である。
 
-secondary_categories には `data-provenance`(Pillar 01)を併記する。入力データの origin / integrity の論点であり、Brief 001 / 002 / 004 が扱う「メッセージ origin の独立検証」「commit origin の独立検証」と隣接する構造を持つ。
-
-Brief 003(Starlette/BadHost)とは別 Pillar(03 エージェント権限証明)だが、共通する meta-primitive を持つ:**信頼の assertion(本事案では「文書ファイルが画面に表示する内容と AI に渡される内容は同一である」)が、それを検証する layer と切り離されている**。前者は HTTP path の trust、本事案は文書テキストの trust。両者とも検証 layer の独立性が欠落している点で同根。
+Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の trust ではなく文書テキストの trust)だが、共通する構造は同じ:**信頼の assertion が、それを検証する layer と切り離されている**。Brief 001 / 002 / 004 が扱う「メッセージ origin の独立検証」「commit origin の独立検証」と隣接する構造を持ち、本事案では入力データの origin / integrity が独立検証されないことが gap として露呈している。
 
 ---
 
-## 5. 検出 vs 事前証明
+## 5. Detection 層では届かない構造的 gap
 
 従来の検出側 AI 安全対策は、AI の出力フィルタリング(ハルシネーション検出、根拠不在の判断検出、有害コンテンツ検出など)に集中している。本事案ではこれらが機能しにくい。AI は与えられた入力(「Delaware」と書かれたテキスト)に対して正常に推論しており、出力レベルでは異常が検知されにくいためである。
 
 検出層は AI 判断品質の事後評価には引き続き重要であり、その役割を本 Brief が否定するものではない。一方で、入力の integrity が侵害された状態での AI 判断の正確性は、検出層の射程外にある層として独立して存在する。
 
-事前証明(pre-execution attestation)は、AI が判断を生成する前に、AI が見ている入力データと「人間目視で見えるべき」入力データの同一性を独立に commit する構造を採る。文書を AI に渡す前のテキスト抽出 layer に、フォント解釈の独立検証(ミラー氏が提案する OCR ベースの再検証、または Unicode と表示字形の対応 audit)を組み込むことで、入力の integrity を AI 判断の前段で保証する。
-
-判断後の検出と判断前の入力 attestation は **代替ではなく補完** の関係にあり、Lemma の thesis は前者を否定せず後者を補完層として追加する設計を提示する。両層の組み合わせで、AI 文書レビューの trust boundary が確立される。
+事前証明(pre-execution attestation)は、AI が判断を生成する前に、AI が見ている入力データと「人間目視で見えるべき」入力データの同一性を独立に commit する構造を採る。文書を AI に渡す前のテキスト抽出 layer に、フォント解釈の独立検証(ミラー氏が提案する OCR ベースの再検証、または Unicode と表示字形の対応 audit)を組み込むことで、入力の integrity を AI 判断の前段で保証する。判断後の検出と判断前の入力 attestation は **代替ではなく補完** の関係にあり、両層の組み合わせで AI 文書レビューの trust boundary が確立される(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
 
 ---
 
-## 6. 業界の対応
+## 6. 対応経緯と業界動向
 
 - **Tritium Legal Technologies**(ミラー氏): Rust 実装の Mitigation コードを公式 blog で公開。具体的な対策として「埋め込みフォントを無条件に信用しない」「フォントで英数字を描画して OCR で読み取り期待文字列との一致確認」「人間目視で見える文章・文書ファイル内 Unicode 文字列・AI が実際に処理する文章の 3 つの事前一致検証」を提案
 - **AI 文書レビュープラットフォーム各社**: 本事案に対する個別 mitigation は公開時点で限定的(攻撃公開直後)。今後、契約書レビュー / 請求書処理 / 監査ツール各社の対応が業界横断で進む見込み
@@ -79,43 +75,12 @@ Brief 003(Starlette/BadHost)とは別 Pillar(03 エージェント権限証明)�
 
 ---
 
-## 7. Lemma の応答層
+## 7. Lemma による分析
 
-本事案の primitive(AI 判断の入力 integrity が独立検証されない)に対する Lemma の応答は、4 柱のうち **Pillar 02: 検証可能 AI(verifiable-ai)** に位置する。
-
-設計の中核は、AI が判断に使用する入力データを ZK 証明として commit することで、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる構造にある。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる。
-
-**Reference architecture(参考実装方針)** は Brief 001 §7 と共通の枠(Groth16 over BN254 + Poseidon ハッシュ + Circom サーキット + 第三者検証可能)に立つ。Pillar 02 固有の追加要素として、AI 判断の入力(プロンプト、文書、コンテキスト)を ZK で commit する circuit と、人間目視ベースの canonical 表現との一致検証 protocol が組み込まれる。本 reference architecture の各要素について、現時点の Lemma 実装状況と roadmap 段階の要素については別途プロダクトドキュメント / Whitepaper を参照のこと。
-
-製品ライン上の位置付け:
-
-- **Lemma Critical**(基幹インフラ・製造業対象): 契約書 / 請求書 / 監査文書を AI で処理する産業 IT のための pre-execution attestation 層
-- **Lemma Compliance**(金融・FinTech 対象): KYC / 規制報告における AI 文書レビューの入力 integrity 担保
-- **Pack C: Agent Governance**: AI エージェントが文書を読んで判断する経路全体に対する委任関係と入力 integrity の証跡化
-- **Pack A: Incident Response**: 本事案で必要となる「どの判断がどの入力に基づいたか」「その入力が改ざんを受けていたか」の事後再現
-
-実装サンプル(verifiable-origin の最小例、Pillar 02 専用サンプルは別途整備予定):
-https://github.com/lemmaoracle/example-origin
-
-関連エッセイ:
-
-- [AI 時代のサイバー防衛に残された、最後の層](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(2026-05-22)
-- [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(2026-05-24)
+本事案で露呈した構造的 gap(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
-## 8. 関連 Brief
-
-- Lemma Critical Brief No.003: Starlette/BadHost。別 Pillar(03 agent-authority)だが、信頼の assertion が独立検証されない meta-primitive を共有
-- Lemma Critical Brief No.001 / 002 / 004: Pillar 01 来歴証明系。本 Brief の secondary_categories に `data-provenance` を持つことで隣接
-- 今後の Pillar 02 ライン候補: データポイズニング攻撃(訓練データ汚染)、画像 scaling 経由の prompt injection、AI スプレッドシート式挿入による機密データ送信脆弱性
-
----
-
-## 9. Sources
+## 8. Sources
 
 - **Tritium Legal Technologies official blog**: "Noroboto: Lying Fonts and Mitigation in Rust" by Drew Miller(2026-05、公式 blog、Rust 実装 mitigation コード公開を含む)— https://tritium.legal/blog/noroboto
-- **Lemma Oracle essay**: 「AI 時代のサイバー防衛に残された、最後の層」(2026-05-22、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/detection-is-not-proof/
-- **Lemma Oracle essay**: 「Proof-as-Auth: 鍵を一度も送らずにサインインする」(2026-05-24、Lemma 自社一次情報)— https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/
-- **Lemma Oracle essay**: 「2026 年のブリッジ事象が示しているもの — 来歴証明(verifiable origin proof)というカテゴリについて」(2026-04-30、Lemma 自社一次情報、data-provenance secondary との接続点)— https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/
-- **Lemma Oracle reference implementation**: verifiable-origin proof sample(Lemma 公開 GitHub)— https://github.com/lemmaoracle/example-origin
