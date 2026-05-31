@@ -2,10 +2,14 @@
 /**
  * §1 — Why this is its own category.
  *
- * Real-incident grid (date, title, 1-line desc, optional Brief link) +
- * regulatory landscape rendered as cream-deep mono pills. No diagrams,
- * no how-it-works — the surface here is "this category exists because
- * these things happened."
+ * Aligns with the v1 concept-hub mockup:
+ *   - section eyebrow + 2-line H2 (head + brown accent span)
+ *   - intro narrative paragraph
+ *   - vertical list of horizontal incident cards (date | title+desc | link)
+ *   - single cream-deep regulatory row (mono label + dashed-separated items)
+ *
+ * No diagrams, no 2x2 grid, no chips — the surface here is
+ * "this category exists because these things happened."
  */
 import type { Locale, Translations } from "../../i18n/translations";
 import type { Pillar } from "../../data/pillars";
@@ -21,155 +25,147 @@ const { locale, base, pillar, pillarT } = Astro.props as Props;
 const hub = pillar.conceptHub;
 if (!hub) return null;
 const briefBase = base ? `${base}/critical/briefs` : "/critical/briefs";
+const h2 = hub.sectionH2s[0];
 ---
 
 <section class="pd-section pci-section" id="why-category" aria-label={pillarT.conceptSec1Label}>
   <div class="pd-section-label">{pillarT.conceptSec1Label}</div>
+  {h2 && (
+    <h2 class="pd-section-h2">
+      {h2.head[locale]}<br />
+      <span class="accent">{h2.accent[locale]}</span>
+    </h2>
+  )}
+  <p class="pci-intro">{hub.intro[locale]}</p>
 
-  <h2 class="pci-sub">{pillarT.conceptIncidentsHeading}</h2>
-  <ul class="pci-grid">
-    {hub.incidents.map((incident) => (
-      <li>
-        <article class="pci-card">
+  <div class="pci-list">
+    {hub.incidents.map((incident) => {
+      const inner = (
+        <Fragment>
           <div class="pci-date">{incident.date}</div>
-          <h3 class="pci-title">{incident.title[locale]}</h3>
-          <p class="pci-desc">{incident.desc[locale]}</p>
-          {incident.briefSlug && (
-            <a href={`${briefBase}/${incident.briefSlug}/`} class="pci-link">
-              {pillarT.conceptReadBrief}
-            </a>
-          )}
-        </article>
-      </li>
-    ))}
-  </ul>
+          <div class="pci-title">
+            <strong>{incident.title[locale]}</strong>
+            <span class="pci-desc"> — {incident.desc[locale]}</span>
+          </div>
+          {incident.briefSlug && <div class="pci-link">{pillarT.conceptReadBrief}</div>}
+        </Fragment>
+      );
+      return incident.briefSlug ? (
+        <a class="pci-item pci-item--link" href={`${briefBase}/${incident.briefSlug}/`}>
+          {inner}
+        </a>
+      ) : (
+        <article class="pci-item">{inner}</article>
+      );
+    })}
+  </div>
 
-  <h2 class="pci-sub pci-sub--reg">{pillarT.conceptRegulatoryHeading}</h2>
-  <ul class="pci-pills">
+  <div class="pci-reg">
+    <span class="pci-reg-label">{pillarT.conceptRegulatoryHeading}</span>
     {hub.regulatory[locale].map((item) => (
-      <li class="pci-pill">{item}</li>
+      <span class="pci-reg-item">{item}</span>
     ))}
-  </ul>
+  </div>
 </section>
 
 <style>
-  .pci-section {
-    /* uses .pd-section §N badge styling from PillarDetailTemplate */
+  .pci-intro {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--pd-text-2);
+    margin: 0 0 28px;
+    max-width: 720px;
   }
-  .pci-sub {
-    font-family: var(--pd-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--pd-text-3);
-    margin: 0 0 18px;
+  .pci-list {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
+    margin: 0 0 24px;
   }
-  .pci-sub::before {
-    content: "";
-    display: inline-block;
-    width: 18px;
-    height: 1px;
-    background: var(--lemma-line);
-  }
-  .pci-sub--reg {
-    margin-top: 32px;
-  }
-
-  .pci-grid {
-    list-style: none;
-    margin: 0 0 8px;
-    padding: 0;
+  .pci-item {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-  .pci-grid > li {
-    margin: 0;
-  }
-  .pci-card {
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 24px;
     background: var(--white);
     border: 0.5px solid var(--lemma-line);
     border-radius: 14px;
-    padding: 22px 22px 18px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    position: relative;
-    overflow: hidden;
+    padding: 22px 26px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
   }
-  .pci-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 32px;
-    background: var(--accent);
+  .pci-item--link:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateX(2px);
   }
   .pci-date {
     font-family: var(--pd-mono);
     font-size: 10.5px;
-    letter-spacing: 0.14em;
+    font-weight: 500;
+    letter-spacing: 0.05em;
     color: var(--accent);
   }
   .pci-title {
     font-family: var(--pd-display);
-    font-size: 15.5px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.4;
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.55;
     letter-spacing: -0.005em;
+    color: var(--black);
     margin: 0;
   }
+  .pci-title :global(strong) {
+    font-weight: 600;
+  }
   .pci-desc {
-    font-size: 13px;
-    line-height: 1.7;
     color: var(--pd-text-3);
-    margin: 0;
-    flex: 1;
+    font-weight: 400;
   }
   .pci-link {
     font-family: var(--pd-mono);
     font-size: 10.5px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--accent);
-    margin-top: 6px;
-    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
-    align-self: flex-start;
-    padding-bottom: 1px;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .pci-link:hover {
-    border-bottom-color: var(--accent);
-    color: #6e3610;
+    white-space: nowrap;
   }
 
-  .pci-pills {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  /* Regulatory row — single cream-deep band, mono label + items separated
+     by hairline left borders. */
+  .pci-reg {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-  }
-  .pci-pill {
+    align-items: center;
+    gap: 10px 14px;
     background: var(--lemma-cream-deep);
-    border-radius: 999px;
-    padding: 8px 16px;
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .pci-reg-label {
     font-family: var(--pd-mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: var(--pd-text-2);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--pd-text-4);
+  }
+  .pci-reg-item {
+    font-family: var(--pd-display);
+    font-size: 13px;
+    color: var(--pd-text-1);
+    padding-left: 14px;
+    border-left: 1px solid var(--lemma-line);
   }
 
   @media (max-width: 720px) {
-    .pci-grid {
+    .pci-item {
       grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 18px 22px;
+    }
+    .pci-link {
+      padding-top: 8px;
+      border-top: 0.5px solid var(--lemma-line);
     }
   }
 </style>

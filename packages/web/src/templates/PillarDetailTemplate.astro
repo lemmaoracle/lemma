@@ -150,8 +150,9 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
     --pd-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
   }
 
+  /* Concept-hub mockup uses container-narrow (820px) end-to-end. */
   .pd-container {
-    max-width: 1100px;
+    max-width: 820px;
     margin: 0 auto;
     padding: 0 40px;
   }
@@ -238,63 +239,57 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
      mono-display sub-title — the "Verifiable Origin" callout. */
   .pd-h1-sub {
     font-family: var(--pd-display);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     color: var(--accent);
-    letter-spacing: 0;
-    margin: 0;
+    letter-spacing: 0.01em;
+    margin: 0 0 32px;
   }
 
   /* ─── MAIN / SECTIONS ─── */
+  /* Concept-hub mockup uses plain section eyebrows (no §N counter) —
+     the eyebrow + 28px brown hairline + H2 with brown accent span do
+     the visual sectioning. */
   .pd-main {
-    padding: 40px 0 0;
-    counter-reset: pdsec;
+    padding: 0;
   }
-  /* Each section increments a CSS counter; the §N badge is surfaced via
-     the section label below. No bottom rule between sections — the §N
-     badge becomes the visual break. */
   .pd-section {
-    counter-increment: pdsec;
-    padding: 0 0 56px;
-    margin: 0 0 56px;
-  }
-  .pd-section:last-of-type {
-    padding-bottom: 0;
-    margin-bottom: 0;
+    margin: 72px 0 0;
   }
   .pd-section-label {
     font-family: var(--pd-mono);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 22px;
+    color: var(--pd-text-3);
+    margin: 0 0 18px;
     display: flex;
     align-items: center;
     gap: 12px;
   }
   .pd-section-label::before {
-    content: "§ " counter(pdsec, decimal-leading-zero);
-    color: var(--accent);
-    font-family: var(--pd-mono);
-    letter-spacing: 0.18em;
-    flex-shrink: 0;
-    border-right: 0.5px solid rgba(139, 69, 19, 0.3);
-    padding-right: 12px;
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
   }
+  /* Section H2 — head line + brown accent span on line 2. */
   .pd-section-h2 {
     font-family: var(--pd-display);
-    font-size: clamp(22px, 2.6vw, 28px);
+    font-size: clamp(24px, 3vw, 32px);
     font-weight: 700;
     color: var(--black);
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    margin: 0 0 18px;
-    max-width: 820px;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin: 0 0 28px;
   }
   :root[lang="ja"] .pd-section-h2 {
     line-height: 1.35;
+  }
+  .pd-section-h2 :global(.accent) {
+    color: var(--accent);
   }
 
   /* ─── PROSE ─── */
