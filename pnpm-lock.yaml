@@ -369,9 +369,6 @@ importers:
       '@lemmaoracle/spec':
         specifier: workspace:*
         version: link:../spec
-      snarkjs:
-        specifier: ^0.7.6
-        version: 0.7.6
     devDependencies:
       '@types/snarkjs':
         specifier: ^0.7.9
