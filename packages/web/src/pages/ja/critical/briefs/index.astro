@@ -1,0 +1,626 @@
+---
+/**
+ * Lemma Critical Brief — JA Index page (Library mode).
+ *
+ * Per the design brief §3 wireframe and Mayumi's task spec:
+ *   - Hero with title, tagline, sub-nav (RSS / Methodology / About)
+ *   - About-this-collection anchor section
+ *   - Featured Brief (latest by published desc)
+ *   - Pillar grouping (4 Pillars in 01→02→03→04 order, count badges,
+ *     cards inside each Pillar sorted new→old)
+ *   - Category archive list at the bottom (primary + secondary
+ *     categories, sorted by usage count)
+ *
+ * EN counterpart at /critical/briefs/ ships in a separate PR after
+ * the EN Methodology bilingual handoff.
+ */
+import Layout from "../../../../layouts/Layout.astro";
+import Navigation from "../../../../components/Navigation.astro";
+import Footer from "../../../../components/Footer.astro";
+import BriefCard from "../../../../components/BriefCard.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getTranslations } from "../../../../i18n/translations";
+import {
+  PILLAR_SLUGS,
+  pillarLabel,
+  pillarDescription,
+  categoryLabel,
+  type PillarSlug,
+  type CategorySlug,
+} from "../../../../data/criticalBriefs";
+import { extractTldr } from "../../../../data/extractTldr";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+const pagePath = "/critical/briefs/";
+
+const allBriefs = await getCollection("critical-briefs");
+// Sort by published desc, breaking same-day ties on brief_no desc so the
+// newest Brief by sequence number wins (matches the editorial convention
+// of Brief No. as the canonical recency order).
+const briefsByPublishedDesc = [...allBriefs].sort((a, b) => {
+  const diff = b.data.published.getTime() - a.data.published.getTime();
+  if (diff !== 0) return diff;
+  return b.data.brief_no - a.data.brief_no;
+});
+const featured: CollectionEntry<"critical-briefs"> | undefined =
+  briefsByPublishedDesc[0];
+
+// Group by pillar (preserve published-desc order within each)
+const briefsByPillar: Record<
+  PillarSlug,
+  ReadonlyArray<CollectionEntry<"critical-briefs">>
+> = {
+  "01-verifiable-origin": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "01-verifiable-origin",
+  ),
+  "02-verifiable-ai": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "02-verifiable-ai",
+  ),
+  "03-agent-authority": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "03-agent-authority",
+  ),
+  "04-regulatory-attribute": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "04-regulatory-attribute",
+  ),
+};
+
+// Category usage: count primary + secondary occurrences across all Briefs.
+const categoryUsage = new Map<CategorySlug, number>();
+for (const b of allBriefs) {
+  const prim = b.data.primary_category as CategorySlug;
+  categoryUsage.set(prim, (categoryUsage.get(prim) ?? 0) + 1);
+  for (const sc of b.data.secondary_categories) {
+    const cat = sc as CategorySlug;
+    categoryUsage.set(cat, (categoryUsage.get(cat) ?? 0) + 1);
+  }
+}
+const sortedCategories = Array.from(categoryUsage.entries()).sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+// Featured card data
+const featuredTldr = featured ? extractTldr(featured.body, 200) : "";
+const featuredTitleParts = featured ? featured.data.title.split(" — ") : [];
+const featuredMain = featuredTitleParts[0] ?? "";
+const featuredSubtitle =
+  featuredTitleParts.length > 1
+    ? featuredTitleParts.slice(1).join(" — ")
+    : "";
+const featuredPublishedStr = featured
+  ? featured.data.published.toISOString().slice(0, 10)
+  : "";
+const featuredBriefNo = featured
+  ? String(featured.data.brief_no).padStart(3, "0")
+  : "";
+const featuredPillarLabel = featured
+  ? pillarLabel(featured.data.pillar as PillarSlug, locale)
+  : "";
+const featuredPrimaryCatLabel = featured
+  ? categoryLabel(featured.data.primary_category as CategorySlug, locale)
+  : "";
+const featuredHref = featured
+  ? `${base}/critical/briefs/${featured.id}/`
+  : "";
+
+const pageTitle =
+  "Lemma Critical Brief — threat intelligence × proof layer";
+const description =
+  "Lemma が発行する構造的事案分析の reference 集。AI・暗号インフラ・supply chain・規制属性領域の incident を、Detection ≠ Proof thesis のもとで構造的に解析する。";
+
+const rssHref = `${base}/critical/briefs/feed.xml`;
+const methodologyHref = `${base}/critical/briefs/methodology/`;
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  title={pageTitle}
+  description={description}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <header class="index-hero">
+    <div class="index-hero-inner">
+      <div class="index-eyebrow">Lemma Critical Brief</div>
+      <h1 class="index-title">threat intelligence × proof layer</h1>
+      <p class="index-lead">
+        AI・暗号インフラ・supply chain・規制属性領域の incident を、Detection ≠ Proof thesis のもとで構造的に解析する reference 集。各 Brief は failure primitive と検出側強化では届かない構造的 gap を明示し、事前証明 (pre-execution attestation) の設計に接続する。
+      </p>
+      <nav class="index-subnav" aria-label="Brief コレクションのサブナビ">
+        <a class="index-subnav-link" href={rssHref}>RSS feed</a>
+        <span class="index-subnav-sep" aria-hidden="true">·</span>
+        <a class="index-subnav-link" href={methodologyHref}>Methodology</a>
+        <span class="index-subnav-sep" aria-hidden="true">·</span>
+        <a class="index-subnav-link" href="#about">About this collection</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="index-main">
+    <section
+      class="index-about"
+      id="about"
+      aria-labelledby="about-heading"
+    >
+      <h2 id="about-heading" class="index-section-heading">
+        このコレクションについて
+      </h2>
+      <p class="index-about-body">
+        Lemma Critical Brief は、Lemma が発行する構造的事案分析の reference 集。各 Brief は 1 件の事案を 9 セクション (TL;DR + §1–§8) で扱い、failure primitive と「検出層では届かない構造的 gap」を構造化する。事前証明 (pre-execution attestation) の設計に接続することで、検出と立証の間に位置する独立層を素描する。シリーズの方針、citation 規約、編集プロセスは <a href={methodologyHref}>Methodology</a> ページに集約。
+      </p>
+    </section>
+
+    {featured && (
+      <section
+        class="index-featured"
+        aria-labelledby="featured-heading"
+      >
+        <div class="index-featured-eyebrow">Featured · 最新の Brief</div>
+        <h2 id="featured-heading" class="visually-hidden">
+          Featured Brief
+        </h2>
+        <a class="featured-card" href={featuredHref}>
+          <div class="featured-card-meta">
+            <span class="featured-card-no">No.{featuredBriefNo}</span>
+            <span class="featured-card-date">{featuredPublishedStr}</span>
+          </div>
+          <h3 class="featured-card-title">{featuredMain}</h3>
+          {featuredSubtitle && (
+            <p class="featured-card-subtitle">{featuredSubtitle}</p>
+          )}
+          <div class="featured-card-badges">
+            <span class="featured-card-pillar">{featuredPillarLabel}</span>
+            <span class="featured-card-cat">{featuredPrimaryCatLabel}</span>
+          </div>
+          {featuredTldr && (
+            <p class="featured-card-tldr">{featuredTldr}</p>
+          )}
+          <span class="featured-card-cta">Brief を読む →</span>
+        </a>
+      </section>
+    )}
+
+    <section class="index-pillars" aria-labelledby="pillars-heading">
+      <h2 id="pillars-heading" class="index-section-heading">
+        Pillar 別
+      </h2>
+      {PILLAR_SLUGS.map((pillar) => {
+        const briefs = briefsByPillar[pillar];
+        return (
+          <div class="pillar-group" id={`pillar-${pillar}`}>
+            <div class="pillar-group-header">
+              <h3 class="pillar-group-heading">
+                {pillarLabel(pillar, locale)}
+                <span class="pillar-group-count">[{briefs.length}]</span>
+              </h3>
+              <p class="pillar-group-description">
+                {pillarDescription(pillar, locale)}
+              </p>
+            </div>
+            {briefs.length > 0 ? (
+              <div class="brief-grid">
+                {briefs.map((b) => (
+                  <BriefCard
+                    locale={locale}
+                    brief={b}
+                    showPillarBadge={false}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div class="pillar-group-empty">
+                <span>準備中</span>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </section>
+
+    <section class="index-categories" aria-labelledby="categories-heading">
+      <h2 id="categories-heading" class="index-section-heading">
+        カテゴリ別 archive
+      </h2>
+      <p class="index-categories-lead">
+        primary_category と secondary_categories の両方からカウントし、出現件数の多い順に並べる。
+      </p>
+      <ul class="category-list">
+        {sortedCategories.map(([cat, count]) => (
+          <li class="category-list-item">
+            <a
+              class="category-list-link"
+              href={`${base}/critical/briefs/category/${cat}/`}
+            >
+              <span class="category-list-label">
+                {categoryLabel(cat, locale)}
+              </span>
+              <span class="category-list-count">[{count}]</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* ─── HERO ─── */
+  .index-hero {
+    margin-top: 64px;
+    background: var(--black);
+    color: var(--white);
+    padding: 96px 10% 64px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .index-hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .index-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .index-eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+  .index-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .index-title {
+    line-height: 1.3;
+  }
+  .index-lead {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0 0 28px;
+    max-width: 640px;
+  }
+  .index-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .index-subnav-link {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .index-subnav-link:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .index-subnav-sep {
+    opacity: 0.4;
+  }
+
+  /* ─── MAIN ─── */
+  .index-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 24px 120px;
+  }
+
+  .index-section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.8vw, 30px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    color: var(--black);
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .index-section-heading {
+    line-height: 1.45;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  /* ─── ABOUT ─── */
+  .index-about {
+    max-width: 760px;
+    margin: 0 auto 72px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--gray-200);
+    scroll-margin-top: 96px;
+  }
+  .index-about-body {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--gray-800, #1a1a1a);
+    margin: 0;
+  }
+  .index-about-body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    transition: border-color 0.2s;
+  }
+  .index-about-body a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── FEATURED ─── */
+  .index-featured {
+    margin: 0 auto 80px;
+    max-width: 880px;
+  }
+  .index-featured-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .index-featured-eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    display: block;
+  }
+  .featured-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 40px 44px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--accent);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .featured-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+  }
+  .featured-card-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-500, #9e9e9e);
+  }
+  .featured-card-no {
+    color: var(--accent);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .featured-card-date {
+    font-variant-numeric: tabular-nums;
+  }
+  .featured-card-title {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.25;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  :root[lang="ja"] .featured-card-title {
+    line-height: 1.4;
+  }
+  .featured-card-subtitle {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--gray-700, #5f5f5f);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .featured-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .featured-card-pillar,
+  .featured-card-cat {
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+  }
+  .featured-card-pillar {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .featured-card-cat {
+    background: var(--black);
+    color: var(--white);
+  }
+  .featured-card-tldr {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-800, #1a1a1a);
+    margin: 4px 0 0;
+  }
+  .featured-card-cta {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* ─── PILLAR GROUPS ─── */
+  .index-pillars {
+    margin: 0 0 80px;
+  }
+  .pillar-group {
+    margin-bottom: 64px;
+    scroll-margin-top: 96px;
+  }
+  .pillar-group:last-child {
+    margin-bottom: 0;
+  }
+  .pillar-group-header {
+    max-width: 760px;
+    margin: 0 auto 28px;
+  }
+  .pillar-group-heading {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.4vw, 26px);
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--black);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .pillar-group-count {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .pillar-group-description {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gray-700, #5f5f5f);
+    margin: 0;
+  }
+  .brief-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .pillar-group-empty {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 36px 28px;
+    text-align: center;
+    border: 1px dashed var(--gray-200);
+    background: var(--lemma-cream, #fcfaf5);
+    color: var(--gray-500, #9e9e9e);
+    font-family: var(--font-body);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 1000px) {
+    .brief-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .brief-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ─── CATEGORIES ─── */
+  .index-categories {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-top: 56px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .index-categories-lead {
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-700, #5f5f5f);
+    margin: 0 0 24px;
+  }
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+  .category-list-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--gray-200);
+    text-decoration: none;
+    color: var(--gray-800, #1a1a1a);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+  .category-list-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--lemma-cream, #fcfaf5);
+  }
+  .category-list-count {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 768px) {
+    .index-hero {
+      padding: 80px 6% 48px;
+    }
+    .index-main {
+      padding: 48px 6% 80px;
+    }
+    .featured-card {
+      padding: 32px 28px;
+    }
+  }
+</style>
