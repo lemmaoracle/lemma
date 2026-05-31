@@ -1,0 +1,966 @@
+---
+/**
+ * Lemma Critical Brief — shared Index template for /ja/ and /en/.
+ *
+ * v24 visual system (PR #274 mockup index v1 baseline):
+ *   - Cream page, container 1100px, Sora display + Noto Sans JP body
+ *   - Hero with H1 accent word in saddle brown
+ *   - About bar 2-col card (label + text)
+ *   - Featured card 200px side + 1fr body, hover brown bar expansion
+ *   - Pillar sections × 4 with 2-col brief grid
+ *   - Categories chips with brown-light count badges, descending count
+ *
+ * Sourced from the JA Library Index (`/ja/critical/briefs/index.astro`)
+ * that shipped earlier; that route now just calls this template, and a
+ * mirror /en/ route is added.
+ *
+ * Note: This Index uses an inline brief-card markup (not the existing
+ * BriefCard.astro component, which still serves archive pages). The
+ * card spec differs from BriefCard (v24 brown-bar hover, primary-tag
+ * brown-light styling, mono "Brief →" affordance).
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { getTranslations, type Locale } from "../i18n/translations";
+import {
+  PILLAR_SLUGS,
+  pillarLabel,
+  pillarDescription,
+  categoryLabel,
+  type PillarSlug,
+  type CategorySlug,
+} from "../data/criticalBriefs";
+import { extractTldr } from "../data/extractTldr";
+import { getEnBriefMap } from "../data/getEnBriefMap";
+
+export interface BriefIndexTemplateProps {
+  locale: Locale;
+}
+
+const { locale } = Astro.props as BriefIndexTemplateProps;
+const t = getTranslations(locale);
+const isJa = locale === "ja";
+const base = isJa ? "/ja" : "";
+const pagePath = "/critical/briefs/";
+
+// Source the JA collection (slug enumeration & metadata) and pick the EN
+// entry for body extraction whenever an EN translation exists. JA Index
+// renders JA bodies directly.
+type AnyBrief =
+  | CollectionEntry<"critical-briefs">
+  | CollectionEntry<"critical-briefs-en">;
+
+const allJaBriefs = await getCollection("critical-briefs");
+const enById = isJa ? null : await getEnBriefMap();
+
+const allBriefs: ReadonlyArray<AnyBrief> = allJaBriefs.map((ja) =>
+  enById?.get(ja.id) ?? ja,
+);
+
+// Sort by published desc, breaking same-day ties on brief_no desc so the
+// newest Brief by sequence number wins (matches the editorial convention
+// of Brief No. as the canonical recency order).
+const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
+  (a, b) => {
+    const diff = b.data.published.getTime() - a.data.published.getTime();
+    if (diff !== 0) return diff;
+    return b.data.brief_no - a.data.brief_no;
+  },
+);
+const featured = briefsByPublishedDesc[0];
+
+// Group by pillar (preserve published-desc order within each)
+const briefsByPillar: Record<PillarSlug, ReadonlyArray<AnyBrief>> = {
+  "01-verifiable-origin": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "01-verifiable-origin",
+  ),
+  "02-verifiable-ai": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "02-verifiable-ai",
+  ),
+  "03-agent-authority": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "03-agent-authority",
+  ),
+  "04-regulatory-attribute": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "04-regulatory-attribute",
+  ),
+};
+
+// Category usage: count primary + secondary occurrences across all Briefs.
+const categoryUsage = new Map<CategorySlug, number>();
+for (const b of allBriefs) {
+  const prim = b.data.primary_category as CategorySlug;
+  categoryUsage.set(prim, (categoryUsage.get(prim) ?? 0) + 1);
+  for (const sc of b.data.secondary_categories) {
+    const cat = sc as CategorySlug;
+    categoryUsage.set(cat, (categoryUsage.get(cat) ?? 0) + 1);
+  }
+}
+const sortedCategories = Array.from(categoryUsage.entries()).sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+// Brief-count meta line: "● 13 briefs published since YYYY-MM-DD"
+const briefsCount = allBriefs.length;
+const oldestPublished = [...allBriefs]
+  .sort((a, b) => a.data.published.getTime() - b.data.published.getTime())[0]
+  ?.data.published.toISOString()
+  .slice(0, 10);
+
+// Helpers for a single card (inline below; one source of truth here)
+function briefCardData(b: AnyBrief) {
+  const titleLoc = isJa ? b.data.title : b.data.title_en;
+  const titleParts = titleLoc.split(" — ");
+  const mainTitle = titleParts[0];
+  const subFromTitle =
+    titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
+  const tldr = extractTldr(b.body, 140);
+  const publishedStr = b.data.published.toISOString().slice(0, 10);
+  const briefNoPad = String(b.data.brief_no).padStart(3, "0");
+  const primaryCatLabel = categoryLabel(
+    b.data.primary_category as CategorySlug,
+    locale,
+  );
+  const secondaryCatLabels = b.data.secondary_categories.map((c) =>
+    categoryLabel(c as CategorySlug, locale),
+  );
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    briefNoPad,
+    publishedStr,
+    mainTitle,
+    subText: subFromTitle || tldr,
+    primaryCatLabel,
+    secondaryCatLabels,
+  };
+}
+
+const labels = isJa
+  ? {
+      eyebrow: "Lemma Critical Brief",
+      h1Lead: "threat intelligence",
+      h1Accent: "× proof layer.",
+      heroSub1: "AI・暗号インフラ・supply chain・規制属性領域の incident を、",
+      heroSubThesis: "Detection ≠ Proof thesis",
+      heroSub2:
+        " のもとで構造的に解析する reference 集。各 Brief は failure primitive と検出側強化では届かない構造的 gap を明示し、事前証明 (pre-execution attestation) の設計に接続する。",
+      briefsPublished: `${briefsCount} briefs published`,
+      sinceLabel: `since ${oldestPublished ?? ""}`,
+      rssLabel: "RSS feed",
+      methodologyLabel: "Methodology",
+      aboutLabel: "このコレクションについて",
+      aboutTextLead: "Lemma Critical Brief は、Lemma が発行する構造的事案分析の reference 集。各 Brief は 1 件の事案を ",
+      aboutTextHighlight: "9 セクション (TL;DR + §1–§8)",
+      aboutTextRest:
+        " で扱い、failure primitive と「検出層では届かない構造的 gap」を構造化する。事前証明 (pre-execution attestation) の設計に接続することで、検出と立証の間に位置する独立層を素描する。シリーズの方針、citation 規約、編集プロセスは ",
+      aboutMethodologyLink: "Methodology",
+      aboutTextEnd: " ページに集約。",
+      featuredLabel: "Featured",
+      featuredAccent: "· 最新の Brief",
+      featuredReadCta: "Brief を読む →",
+      pillarCountSuffix: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
+      briefReadCta: "Brief →",
+      archiveHeading: "カテゴリ別 archive",
+      archiveSub:
+        "primary_category と secondary_categories の両方からカウントし、出現件数の多い順に並べる。",
+      pageTitle: "Lemma Critical Brief — threat intelligence × proof layer",
+      description:
+        "Lemma が発行する構造的事案分析の reference 集。AI・暗号インフラ・supply chain・規制属性領域の incident を、Detection ≠ Proof thesis のもとで構造的に解析する。",
+    }
+  : {
+      eyebrow: "Lemma Critical Brief",
+      h1Lead: "threat intelligence",
+      h1Accent: "× proof layer.",
+      heroSub1:
+        "Structured analysis of incidents across AI, cryptographic infrastructure, supply chain, and regulatory attributes — read through the ",
+      heroSubThesis: "Detection ≠ Proof thesis",
+      heroSub2:
+        ". Each Brief makes the failure primitive explicit and identifies the structural gap that hardening detection alone cannot close, then connects it to the pre-execution attestation design.",
+      briefsPublished: `${briefsCount} briefs published`,
+      sinceLabel: `since ${oldestPublished ?? ""}`,
+      rssLabel: "RSS feed",
+      methodologyLabel: "Methodology",
+      aboutLabel: "About this collection",
+      aboutTextLead:
+        "Lemma Critical Brief is a structured-incident-analysis reference collection from Lemma. Each Brief covers one incident across ",
+      aboutTextHighlight: "nine sections (TL;DR + §1–§8)",
+      aboutTextRest:
+        ", structuring the failure primitive and the structural gap that detection alone cannot close, and connecting them to the pre-execution attestation design. Series scope, citation conventions, and editorial process are consolidated on the ",
+      aboutMethodologyLink: "Methodology",
+      aboutTextEnd: " page.",
+      featuredLabel: "Featured",
+      featuredAccent: "· Latest Brief",
+      featuredReadCta: "Read Brief →",
+      pillarCountSuffix: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
+      briefReadCta: "Brief →",
+      archiveHeading: "Categories archive",
+      archiveSub:
+        "Counted across both primary_category and secondary_categories; sorted by occurrence count, descending.",
+      pageTitle: "Lemma Critical Brief — threat intelligence × proof layer",
+      description:
+        "A structured-incident-analysis reference collection from Lemma. Incidents across AI, cryptographic infrastructure, supply chain, and regulatory attributes — read through the Detection ≠ Proof thesis.",
+    };
+
+const rssHref = `${base}/critical/briefs/feed.xml`;
+const methodologyHref = `${base}/critical/briefs/methodology/`;
+
+const featuredData = featured ? briefCardData(featured) : null;
+// Featured pillar label split — uses the same "Pillar NN <title>" parse
+// so the eyebrow renders as the mockup's lower-key pillar eyebrow.
+const featuredPillarFullLabel = featured
+  ? pillarLabel(featured.data.pillar as PillarSlug, locale)
+  : "";
+const featuredPillarMatch = featuredPillarFullLabel.match(
+  /^(Pillar \d+)\s+(.+)$/,
+);
+const featuredPillarLabel = featuredPillarMatch
+  ? `${featuredPillarMatch[1]} · ${featuredPillarMatch[2]}`
+  : featuredPillarFullLabel;
+const featuredLede = featured ? extractTldr(featured.body, 240) : "";
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  title={labels.pageTitle}
+  description={labels.description}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="bi-page">
+    <div class="bi-container">
+      <!-- Hero -->
+      <section class="bi-hero">
+        <div class="bi-eyebrow">{labels.eyebrow}</div>
+        <h1 class="bi-h1">
+          {labels.h1Lead}<br />
+          <span class="bi-h1-accent">{labels.h1Accent}</span>
+        </h1>
+        <p class="bi-hero-sub">
+          {labels.heroSub1}
+          <span class="bi-k">{labels.heroSubThesis}</span>
+          {labels.heroSub2}
+        </p>
+        <div class="bi-hero-meta">
+          <span class="bi-dot">●</span>
+          <span class="bi-strong">{labels.briefsPublished}</span>
+          <span>{labels.sinceLabel}</span>
+          <span class="bi-dot">·</span>
+          <a href={rssHref}>{labels.rssLabel}</a>
+          <span class="bi-dot">·</span>
+          <a href={methodologyHref}>{labels.methodologyLabel}</a>
+        </div>
+      </section>
+
+      <!-- About this collection -->
+      <div class="bi-about-bar">
+        <div class="bi-about-label">{labels.aboutLabel}</div>
+        <p class="bi-about-text">
+          {labels.aboutTextLead}
+          <span class="bi-k">{labels.aboutTextHighlight}</span>
+          {labels.aboutTextRest}
+          <a href={methodologyHref}>{labels.aboutMethodologyLink}</a>
+          {labels.aboutTextEnd}
+        </p>
+      </div>
+
+      {featured && featuredData && (
+        <>
+          <div class="bi-featured-eyebrow">
+            {labels.featuredLabel}
+            <span class="bi-featured-accent">{labels.featuredAccent}</span>
+          </div>
+          <a href={featuredData.href} class="bi-featured-card">
+            <div class="bi-featured-side">
+              <div class="bi-featured-no">No. {featuredData.briefNoPad}</div>
+              <div class="bi-featured-date">{featuredData.publishedStr}</div>
+              <div class="bi-featured-pillar">{featuredPillarLabel}</div>
+            </div>
+            <div class="bi-featured-body">
+              <h2 class="bi-featured-title">{featuredData.mainTitle}</h2>
+              {featuredLede && <p class="bi-featured-lede">{featuredLede}</p>}
+              <div class="bi-featured-read">{labels.featuredReadCta}</div>
+            </div>
+          </a>
+        </>
+      )}
+
+      <!-- Pillar sections -->
+      {PILLAR_SLUGS.map((pillar) => {
+        const briefs = briefsByPillar[pillar];
+        const fullLabel = pillarLabel(pillar, locale);
+        // Registry label is "Pillar NN <title>" (no separator). Split the
+        // numeric prefix off so the mockup's mono "Pillar 01" eyebrow and
+        // Sora h2 title render distinctly.
+        const m = fullLabel.match(/^(Pillar \d+)\s+(.+)$/);
+        const pillarNo = m ? m[1] : fullLabel;
+        const pillarTitle = m ? m[2] : "";
+        return (
+          <section class="bi-pillar-section">
+            <div class="bi-pillar-head">
+              <div class="bi-pillar-no">{pillarNo}</div>
+              <h2 class="bi-pillar-title">{pillarTitle}</h2>
+              <div class="bi-pillar-count">
+                {labels.pillarCountSuffix(briefs.length)}
+              </div>
+            </div>
+            <p class="bi-pillar-sub">{pillarDescription(pillar, locale)}</p>
+            {briefs.length > 0 ? (
+              <div class="bi-brief-grid">
+                {briefs.map((b) => {
+                  const c = briefCardData(b);
+                  return (
+                    <a href={c.href} class="bi-brief-card">
+                      <div class="bi-brief-meta">
+                        <span class="bi-brief-no">No. {c.briefNoPad}</span>
+                        <span class="bi-brief-sep">·</span>
+                        <span>{c.publishedStr}</span>
+                      </div>
+                      <h3 class="bi-brief-title">{c.mainTitle}</h3>
+                      {c.subText && <p class="bi-brief-sub">{c.subText}</p>}
+                      <div class="bi-brief-tags">
+                        <span class="bi-brief-tag primary">
+                          {c.primaryCatLabel}
+                        </span>
+                        {c.secondaryCatLabels.map((lab) => (
+                          <span class="bi-brief-tag">{lab}</span>
+                        ))}
+                        <span class="bi-brief-read">{labels.briefReadCta}</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            ) : (
+              <div class="bi-pillar-empty">
+                {isJa ? "Brief は準備中" : "Briefs coming soon"}
+              </div>
+            )}
+          </section>
+        );
+      })}
+
+      <!-- Categories archive -->
+      <section class="bi-archive-section">
+        <div class="bi-archive-head">
+          <h2 class="bi-archive-h2">{labels.archiveHeading}</h2>
+        </div>
+        <p class="bi-archive-sub">{labels.archiveSub}</p>
+        <div class="bi-archive-grid">
+          {sortedCategories.map(([cat, count]) => (
+            <a
+              href={`${base}/critical/briefs/category/${cat}/`}
+              class="bi-archive-chip"
+            >
+              <span class="bi-archive-chip-label">
+                {categoryLabel(cat, locale)}
+              </span>
+              <span class="bi-archive-chip-count">{count}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* v24 type scope — same shape as Brief detail template. The Brief Index
+     stays on Sora / Noto Sans JP / Space Mono while the rest of the site
+     keeps the existing fonts until those surfaces migrate independently. */
+  .bi-page {
+    --bi-display: "Sora", system-ui, -apple-system, sans-serif;
+    --bi-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bi-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --bi-text-1: #1a1a1a;
+    --bi-text-2: #3a3a3a;
+    --bi-text-3: #5a5a5a;
+    --bi-text-4: #9a9a9a;
+
+    background: var(--lemma-cream);
+    color: var(--bi-text-2);
+    font-family: var(--bi-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .bi-page {
+    --bi-body: "Sora", system-ui, sans-serif;
+  }
+
+  .bi-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── HERO ─── */
+  .bi-hero {
+    padding: 60px 0 56px;
+  }
+  .bi-eyebrow {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--bi-text-3);
+    margin: 0 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bi-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .bi-h1 {
+    font-family: var(--bi-display);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 0.96;
+    margin: 0 0 30px;
+    color: var(--black);
+    letter-spacing: -0.04em;
+    max-width: 920px;
+  }
+  :root[lang="ja"] .bi-h1 {
+    font-size: 60px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .bi-h1-accent {
+    color: var(--accent);
+  }
+  .bi-hero-sub {
+    font-size: 16px;
+    color: var(--bi-text-2);
+    margin: 0 0 32px;
+    line-height: 1.75;
+    max-width: 680px;
+  }
+  .bi-k {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .bi-hero-meta {
+    font-family: var(--bi-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: var(--bi-text-3);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding-top: 22px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .bi-hero-meta .bi-strong {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .bi-hero-meta .bi-dot {
+    color: var(--accent);
+  }
+  .bi-hero-meta a {
+    color: var(--bi-text-2);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .bi-hero-meta a:hover {
+    color: var(--accent);
+  }
+
+  /* ─── ABOUT BAR ─── */
+  .bi-about-bar {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 0 0 56px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .bi-about-label {
+    font-family: var(--bi-mono);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 4px;
+  }
+  .bi-about-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .bi-about-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--bi-text-2);
+    margin: 0;
+  }
+  .bi-about-text a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s;
+  }
+  .bi-about-text a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── FEATURED ─── */
+  .bi-featured-eyebrow {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--bi-text-3);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bi-featured-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .bi-featured-accent {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .bi-featured-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 36px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    padding: 36px 36px 32px;
+    margin: 0 0 80px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .bi-featured-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 64px;
+    background: var(--accent);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bi-featured-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 16px 40px rgba(139, 69, 19, 0.08);
+    transform: translateY(-2px);
+  }
+  .bi-featured-card:hover::before {
+    width: 100%;
+  }
+  .bi-featured-side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-right: 0.5px solid var(--lemma-line);
+    padding-right: 32px;
+  }
+  .bi-featured-no {
+    font-family: var(--bi-mono);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .bi-featured-date {
+    font-family: var(--bi-mono);
+    font-size: 11.5px;
+    color: var(--bi-text-3);
+  }
+  .bi-featured-pillar {
+    font-family: var(--bi-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bi-text-3);
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bi-featured-pillar::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .bi-featured-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bi-featured-title {
+    font-family: var(--bi-display);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    line-height: 1.22;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-featured-title {
+    line-height: 1.4;
+  }
+  .bi-featured-lede {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--bi-text-2);
+    margin: 0;
+  }
+  .bi-featured-read {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: 4px;
+    align-self: start;
+    transition: transform 0.2s;
+  }
+  .bi-featured-card:hover .bi-featured-read {
+    transform: translateX(4px);
+  }
+
+  /* ─── PILLAR SECTIONS ─── */
+  .bi-pillar-section {
+    margin: 0 0 72px;
+  }
+  .bi-pillar-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    padding-bottom: 22px;
+    margin: 0 0 16px;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .bi-pillar-no {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .bi-pillar-no::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .bi-pillar-title {
+    font-family: var(--bi-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-pillar-title {
+    line-height: 1.25;
+  }
+  .bi-pillar-count {
+    font-family: var(--bi-mono);
+    font-size: 12px;
+    color: var(--bi-text-4);
+    margin-left: auto;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+  }
+  .bi-pillar-sub {
+    font-size: 14.5px;
+    color: var(--bi-text-3);
+    line-height: 1.65;
+    margin: 0 0 32px;
+    max-width: 580px;
+  }
+
+  /* ─── BRIEF CARD GRID ─── */
+  .bi-brief-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .bi-brief-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 26px 22px;
+    text-decoration: none;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .bi-brief-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bi-brief-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .bi-brief-card:hover::before {
+    width: 100%;
+  }
+  .bi-brief-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--bi-text-3);
+  }
+  .bi-brief-no {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .bi-brief-sep {
+    color: var(--lemma-line);
+  }
+  .bi-brief-title {
+    font-family: var(--bi-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-brief-title {
+    line-height: 1.5;
+  }
+  .bi-brief-sub {
+    font-size: 13px;
+    color: var(--bi-text-3);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .bi-brief-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .bi-brief-tag {
+    font-family: var(--bi-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bi-text-3);
+    background: var(--lemma-cream-deep);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .bi-brief-tag.primary {
+    color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+  .bi-brief-read {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-left: auto;
+    align-self: center;
+    transition: transform 0.2s;
+  }
+  .bi-brief-card:hover .bi-brief-read {
+    transform: translateX(3px);
+  }
+  .bi-pillar-empty {
+    background: var(--white);
+    border: 0.5px dashed var(--lemma-line);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bi-text-4);
+  }
+
+  /* ─── CATEGORIES ─── */
+  .bi-archive-section {
+    margin: 80px 0 0;
+    padding: 56px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .bi-archive-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin: 0 0 16px;
+  }
+  .bi-archive-h2 {
+    font-family: var(--bi-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-archive-h2 {
+    line-height: 1.35;
+  }
+  .bi-archive-sub {
+    font-size: 14px;
+    color: var(--bi-text-3);
+    margin: 0 0 28px;
+    max-width: 580px;
+    line-height: 1.6;
+  }
+  .bi-archive-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .bi-archive-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .bi-archive-chip:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+  .bi-archive-chip-label {
+    font-family: var(--bi-display);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--bi-text-2);
+    letter-spacing: -0.005em;
+  }
+  .bi-archive-chip:hover .bi-archive-chip-label {
+    color: var(--accent);
+  }
+  .bi-archive-chip-count {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    font-weight: 500;
+    padding: 2px 8px;
+    background: var(--lemma-brown-light);
+    border-radius: 999px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .bi-h1 {
+      font-size: 56px;
+    }
+    :root[lang="ja"] .bi-h1 {
+      font-size: 44px;
+    }
+    .bi-about-bar {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .bi-featured-card {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 28px 26px;
+    }
+    .bi-featured-side {
+      border-right: 0;
+      border-bottom: 0.5px solid var(--lemma-line);
+      padding-right: 0;
+      padding-bottom: 18px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .bi-featured-pillar {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+    .bi-featured-title {
+      font-size: 22px;
+    }
+    .bi-pillar-title {
+      font-size: 24px;
+    }
+    .bi-pillar-head {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+  @media (max-width: 720px) {
+    .bi-container {
+      padding: 0 24px;
+    }
+    .bi-h1 {
+      font-size: 44px;
+    }
+    :root[lang="ja"] .bi-h1 {
+      font-size: 36px;
+    }
+    .bi-brief-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .bi-h1 {
+      font-size: 36px;
+    }
+  }
+</style>
