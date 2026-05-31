@@ -18,9 +18,8 @@ const codeBlockStyle =
 const sections: MethodologySection[] = [
   {
     heading: "What Lemma Critical Brief is",
-    body: `<p>Lemma Critical Brief is a <strong>structured incident-analysis reference collection</strong> published by Lemma. It archives individual incidents in the AI, cryptographic infrastructure, supply chain, and regulatory-attribute domains in a one-incident-per-Brief format, structurally analyzing each event's <strong>failure primitive</strong> and <strong>the gap that strengthening detection alone cannot close</strong>.</p>
-<p>Where existing incident databases provide a comprehensive record of "what happened," each Brief is a thesis-driven analytical document on "<strong>why detection alone did not prevent it, and how proof-based design would have</strong>." Briefs are written for CSOs, analysts, and regulatory practitioners to reference as citation sources.</p>
-<p>The scope of Lemma Critical Brief encompasses both cybersecurity attack incidents and the broader category of trust-layer risk events in the age of AI. The structure this series examines — assertions of trust decoupled from the layer that verifies them — extends beyond cyber-attack damage cases.</p>
+    body: `<p>Lemma Critical Brief is a <strong>structured incident-analysis reference collection</strong> published by Lemma. It archives individual incidents in the AI, cryptographic infrastructure, supply chain, and regulatory-attribute domains in a one-incident-per-Brief format, structurally analyzing each event's <strong>failure primitive</strong> and <strong>the gap that strengthening detection alone cannot close</strong>. Briefs are written for CSOs, analysts, and regulatory practitioners to reference as citation sources.</p>
+<p>The structure this series examines — assertions of trust decoupled from the layer that verifies them — extends beyond cyber-attack damage cases to the broader category of trust-layer risk events in the age of AI.</p>
 <p>Concretely, this includes (a) attack incidents (e.g., provenance manipulation, credential misuse, framework authentication bypass), and (b) trust-layer risk events in the age of AI (e.g., training data provenance, AI input integrity, credential lifecycle attributes, independent verification of agent authority). The surface taxonomy differs, but the common structural failure — absence of an independent verification layer — runs through both.</p>`,
   },
   {
@@ -35,12 +34,12 @@ const sections: MethodologySection[] = [
     body: `<p>Each Brief consists of the following 9 sections:</p>
 <ul>
 <li><strong>TL;DR</strong> — target incident, damage scale, failure primitive, and Lemma's response, in one paragraph</li>
-<li><strong>§1 Incident Outline</strong> — name / date / damage scale / principal parties</li>
+<li><strong>§1 Incident Overview</strong> — name / date / damage scale / principal parties</li>
 <li><strong>§2 Timeline</strong> — chronology in ISO dates, technical facts only</li>
-<li><strong>§3 Attack Vector</strong> — initial compromise → lateral movement → impact realization</li>
-<li><strong>§4 Structural Pattern</strong> — naming the structural pattern of the failure primitive, with shared structure and differences from neighbouring incidents</li>
-<li><strong>§5 Structural gap that detection alone cannot close</strong> — applying the Detection ≠ Proof thesis to the case at hand</li>
-<li><strong>§6 Response and Industry Movements</strong> — official post-mortems, individual responses, and cross-industry movements</li>
+<li><strong>§3 Attack Vector / Event Chain</strong> — initial compromise → lateral movement → impact realization (for attack incidents), or failure decomposition (for trust-layer risk events that are not attacks)</li>
+<li><strong>§4 Structural Analysis</strong> — naming the structural pattern of the failure primitive, with shared structure and differences from neighbouring incidents</li>
+<li><strong>§5 The Structural Gap Detection Alone Cannot Close</strong> — applying the Detection ≠ Proof thesis to the case at hand</li>
+<li><strong>§6 Response and Industry Developments</strong> — official post-mortems, individual responses, and cross-industry movements</li>
 <li><strong>§7 Lemma's Analysis</strong> — Lemma's design response to the structural gap exposed by the case, in one paragraph, with inline links to the relevant essay and reference implementation</li>
 <li><strong>§8 Sources</strong> — external primary and secondary sources, each with URL, date, and provenance label</li>
 <li><strong>§9 Distribution</strong> — note that the Brief is public analysis, with Discovery Call contact</li>
@@ -59,19 +58,6 @@ const sections: MethodologySection[] = [
 </ul>
 <p>Each Brief carries a <code>primary_category</code> (main category) and <code>secondary_categories</code> (cross-cutting categories), making it accessible from both the Pillar archive and the Category archive.</p>
 <p>Category names are defined independently by Lemma. Crossover with external classifications (AIID, OECD AIID, etc.) is expressed through <code>secondary_categories</code>.</p>`,
-  },
-  {
-    heading: "Editorial process",
-    body: `<p>Each Brief is published through the following process:</p>
-<ol>
-<li><strong>Sourcing</strong> — primary information (official post-mortems from involved organizations, analyses by detection firms, regulatory disclosures) is the main collection target; secondary information (industry reporting) supplements</li>
-<li><strong>Drafting</strong> — Markdown following the template, 1,500–3,000 words</li>
-<li><strong>Fact-checking</strong> — technical details (attack vector, configuration structure, cryptographic primitives) confirmed by the technical lead</li>
-<li><strong>Legal review</strong> — third-party names, liability framing, distribution policy alignment</li>
-<li><strong>Editorial confirmation</strong> — voice, tone, and citation consistency</li>
-<li><strong>Approval</strong> — CEO + co-founders</li>
-<li><strong>Publication</strong> — under <code>/critical/briefs/</code>, with simultaneous PDF generation and automatic RSS update</li>
-</ol>`,
   },
   {
     heading: "Citation conventions",
@@ -95,16 +81,7 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 <pre style="${codeBlockStyle}"><code>Lemma Critical Team. (2026).
 &lt;Title&gt; (Lemma Critical Brief No.&lt;Number&gt;). Lemma / FRAME00, Inc.
 &lt;Brief URL&gt;</code></pre>
-<p>Each Brief page provides a "Cite this Brief" box with the three formats selectable via tabs. A PDF version is provided alongside.</p>`,
-  },
-  {
-    heading: "Distribution and licensing",
-    body: `<p>Lemma Critical Brief is a structured analysis of public information. The series is:</p>
-<ul>
-<li><strong>Public analysis, not an audit, assessment, or recommendation for any specific organization</strong></li>
-<li>For use in decision-making, direct consultation with your organization's Lemma Critical contact via <a href="${discoveryCall}" target="_blank" rel="noopener">Discovery Call</a> is recommended</li>
-<li>For commercial use or translation inquiries, please contact the Lemma editorial team</li>
-</ul>`,
+<p>Each Brief page provides a "Cite this Brief" box with the three formats selectable via tabs.</p>`,
   },
   {
     heading: "Updates and corrections policy",
@@ -116,25 +93,31 @@ https://lemma.frame00.com/critical/briefs/001-kelpdao-rseth/</code></pre>
 </ul>`,
   },
   {
-    heading: "Contact for tips / corrections",
-    body: `<p>For information, corrections, or commercial use inquiries regarding a Brief:</p>
+    heading: "Distribution and contact",
+    body: `<p>Lemma Critical Brief is a structured analysis of public information. The series is:</p>
 <ul>
-<li><strong>Discovery Call</strong>: <a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a></li>
+<li><strong>Public analysis, not an audit, assessment, or recommendation for any specific organization</strong></li>
+<li>For use in decision-making, direct consultation with your organization's Lemma Critical contact is recommended</li>
+<li>For commercial use or translation inquiries, please contact the Lemma editorial team</li>
+</ul>
+<p>Contact:</p>
+<ul>
+<li><strong>Discovery Call</strong>: <a href="${discoveryCall}" target="_blank" rel="noopener">${discoveryCall.replace("https://", "")}</a> — for tips, corrections, or commercial-use inquiries</li>
 <li><strong>Whitepaper request</strong>: <a href="${whitepaperUrl}" target="_blank" rel="noopener">${whitepaperUrl.replace("https://", "")}</a></li>
 </ul>`,
   },
 ];
 
 const description =
-  "Methodology, thesis, editorial process, and citation conventions of the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles on this page.";
+  "Methodology, thesis, and citation conventions of the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles on this page.";
 ---
 
 <BriefMethodologyTemplate
   locale="en"
   tag="Lemma Critical Brief"
   title="Methodology"
-  lastUpdated="Last updated: 2026-05-30"
-  intro="This page documents the methodology, thesis, editorial process, and citation conventions for the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles below."
+  lastUpdated="Last updated: 2026-05-31"
+  intro="This page documents the methodology, thesis, and citation conventions for the Lemma Critical Brief series. The production and publication of each Brief, as well as citations by readers, follow the principles below."
   sections={sections}
   description={description}
 />
