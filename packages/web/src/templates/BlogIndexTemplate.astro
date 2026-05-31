@@ -52,10 +52,17 @@ const { locale, t, base, blogPath, entries, featured, recent, changelog = [] } =
 const isJa = locale === "ja";
 
 // Category counts — both for filter pills and the categories nav strip.
-// Includes primary categories with posts; preserves canonical order.
+// Includes the primary category plus any secondary_categories so a post
+// with `secondary_categories: ["Announcements"]` is counted toward
+// Announcements as well.
 const categoryCounts: Record<string, number> = {};
 for (const p of entries) {
   categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+  if (p.secondaryCategories) {
+    for (const sc of p.secondaryCategories) {
+      categoryCounts[sc] = (categoryCounts[sc] ?? 0) + 1;
+    }
+  }
 }
 const categories = BLOG_CATEGORIES.filter(
   (c) => (categoryCounts[c] ?? 0) > 0,
@@ -194,7 +201,7 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
             <a
               href={`${blogPath}/${post.slug}`}
               class="bx-card bx-filtered-card"
-              data-category={post.category}
+              data-category={[post.category, ...(post.secondaryCategories ?? [])].join("|")}
             >
               <div class="bx-essay-meta">
                 <span class="bx-essay-cat">{post.category}</span>
@@ -730,10 +737,15 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
       if (!isAll && label) {
         var labelText = filter;
         cards.forEach(function (c) {
-          var cat = c.getAttribute("data-category") || "";
-          var match = cat.toLowerCase() === filter.toLowerCase();
+          // data-category is "Primary|Secondary1|Secondary2" — match if the
+          // filter equals the primary category or any secondary category.
+          var raw = c.getAttribute("data-category") || "";
+          var cats = raw.split("|");
+          var match = cats.some(function (cat) {
+            return cat.toLowerCase() === filter.toLowerCase();
+          });
           c.hidden = !match;
-          if (match) labelText = cat;
+          if (match) labelText = cats[0] || filter;
         });
         label.textContent = labelText;
       }

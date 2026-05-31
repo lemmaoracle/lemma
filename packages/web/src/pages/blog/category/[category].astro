@@ -1,13 +1,20 @@
 ---
 import BlogCategoryTemplate from "../../../templates/BlogCategoryTemplate.astro";
-import { getAllPosts, BLOG_CATEGORIES, categorySlug } from "../../../data/blog";
+import {
+  getAllPosts,
+  BLOG_CATEGORIES,
+  categorySlug,
+  postInCategory,
+} from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts("en");
+  // A post surfaces here under either its primary category or any of
+  // its secondary_categories.
   const groups = BLOG_CATEGORIES.map((category) => ({
     category,
-    items: posts.filter((p) => p.category === category),
+    items: posts.filter((p) => postInCategory(p, category)),
   })).filter((g) => g.items.length > 0);
   const available = groups.map((g) => g.category);
   return groups.map((g) => ({
