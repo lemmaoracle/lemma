@@ -17,7 +17,7 @@
 import type { Locale } from "../i18n/translations";
 
 export const DISCOVERY_CALL_URL: Readonly<Record<Locale, string>> = {
-  ja: "https://tally.so/r/EkBqDX",
+  ja: "https://tally.so/r/Pd2Rl5",
   en: "https://tally.so/r/Pd2Rl5",
 } as const;
 

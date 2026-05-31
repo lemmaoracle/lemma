@@ -95,4 +95,3 @@ API 種別による失効速度の差が示すこと:
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon(2026-05、Aikido 公式 blog、10 回試験 × 2 日の計測データと技術詳細、Google への報告経緯を含む)— https://www.aikido.dev/blog/google-api-keys-deletion
-- **The Register**: "Threat hunters find Google API keys still usable 23 minutes after deletion"(2026-05-21、独立報道)— https://www.theregister.com/devops/2026/05/21/threat-hunters-find-google-api-keys-still-usable-23-minutes-after-deletion/
