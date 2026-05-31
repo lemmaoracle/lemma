@@ -194,15 +194,6 @@
         { "title": "Real incidents", "desc": "Critical Brief structured incident analysis (for CSOs, analysts, regulatory practitioners)", "href": "/critical/briefs/", "isUpperTier": true }
       ]
     },
-    "pillarLegend": {
-      "label": "Pillar color legend",
-      "items": [
-        { "pillar": "p1", "label": "P1 Verifiable Origin" },
-        { "pillar": "p2", "label": "P2 Verifiable AI" },
-        { "pillar": "p3", "label": "P3 Agent Authority" },
-        { "pillar": "p4", "label": "P4 Regulatory Attribute" }
-      ]
-    },
     "searchPlaceholder": "Search questions…",
     "noResultsText": "No matching questions found.",
     "sections": [

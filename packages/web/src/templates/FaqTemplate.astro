@@ -9,9 +9,8 @@
  *     badge + brown rule accent and is rendered last so it does not
  *     compete with foundational links above it
  *
- *   - Pillar color legend + per-Q pillar chips (P1 teal / P2 purple /
- *     P3 amber / P4 blue). One-line legend rendered once at the top of
- *     the FAQ section
+ *   - Per-Q pillar chip dots (P1 teal / P2 purple / P3 amber / P4 blue)
+ *     as a silent visual hint next to the question text
  *
  *   - Sticky jump nav (mono pill row, horizontal scroll on mobile),
  *     with scroll-spy that highlights the current section
@@ -125,14 +124,8 @@ const faqJsonLd = {
         </div>
       </nav>
 
-      <!-- Pillar legend + search -->
+      <!-- Search -->
       <div class="fq-controls">
-        <div class="fq-legend" aria-label={fq.pillarLegend.label}>
-          <span class="fq-legend-label">{fq.pillarLegend.label}</span>
-          {fq.pillarLegend.items.map((p) => (
-            <span class={`fq-chip fq-chip-${p.pillar}`}>{p.label}</span>
-          ))}
-        </div>
         <div class="fq-search">
           <label class="fq-search-label" for="fq-search-input">
             {fq.searchPlaceholder}
@@ -510,28 +503,11 @@ const faqJsonLd = {
     border-color: var(--accent);
   }
 
-  /* ─── CONTROLS (legend + search) ─── */
+  /* ─── CONTROLS (search) ─── */
   .fq-controls {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-end;
     margin: 0 0 28px;
-    flex-wrap: wrap;
-  }
-  .fq-legend {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .fq-legend-label {
-    font-family: var(--fq-mono);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--fq-text-4);
-    margin-right: 4px;
   }
   .fq-chip {
     font-family: var(--fq-mono);

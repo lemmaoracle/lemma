@@ -200,14 +200,6 @@ export interface Translations {
         readonly isUpperTier?: boolean;
       }>;
     }>;
-    /** Pillar color chip legend. */
-    readonly pillarLegend: Readonly<{
-      readonly label: string;
-      readonly items: ReadonlyArray<{
-        readonly pillar: "p1" | "p2" | "p3" | "p4";
-        readonly label: string;
-      }>;
-    }>;
     readonly searchPlaceholder: string;
     readonly noResultsText: string;
     readonly sections: ReadonlyArray<{

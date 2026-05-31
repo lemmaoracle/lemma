@@ -194,15 +194,6 @@
         { "title": "実際の事案", "desc": "Critical Brief 事案分析の reference (CSO・アナリスト・規制実務者向け)", "href": "/ja/critical/briefs/", "isUpperTier": true }
       ]
     },
-    "pillarLegend": {
-      "label": "Pillar 色凡例",
-      "items": [
-        { "pillar": "p1", "label": "P1 来歴" },
-        { "pillar": "p2", "label": "P2 検証可能 AI" },
-        { "pillar": "p3", "label": "P3 エージェント権限" },
-        { "pillar": "p4", "label": "P4 規制属性" }
-      ]
-    },
     "searchPlaceholder": "質問を検索…",
     "noResultsText": "該当する質問は見つかりませんでした。",
     "sections": [
