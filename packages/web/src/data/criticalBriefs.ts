@@ -24,6 +24,7 @@ export type CategorySlug =
   | "bridge-config-trust"
   | "code-provenance"
   | "data-provenance"
+  | "training-data-provenance"
   // Pillar 02
   | "ai-decision-integrity"
   | "ai-bias-harm"
@@ -52,6 +53,7 @@ export const CATEGORIES_BY_PILLAR: Readonly<
     "bridge-config-trust",
     "code-provenance",
     "data-provenance",
+    "training-data-provenance",
   ],
   "02-verifiable-ai": [
     "ai-decision-integrity",
@@ -125,6 +127,10 @@ export const CATEGORY_LABELS: Readonly<Record<CategorySlug, LocalizedCopy>> = {
   },
   "code-provenance": { ja: "Code Provenance", en: "Code Provenance" },
   "data-provenance": { ja: "Data Provenance", en: "Data Provenance" },
+  "training-data-provenance": {
+    ja: "Training Data Provenance",
+    en: "Training Data Provenance",
+  },
   "ai-decision-integrity": {
     ja: "AI Decision Integrity",
     en: "AI Decision Integrity",
@@ -167,6 +173,10 @@ export const CATEGORY_DESCRIPTIONS: Readonly<Record<CategorySlug, LocalizedCopy>
   "data-provenance": {
     ja: "RAG poisoning、訓練データ汚染、document chain の改ざん。",
     en: "RAG poisoning, training-data contamination, tampered document chains.",
+  },
+  "training-data-provenance": {
+    ja: "AI training data の収集元・利用 scope 属性が独立検証されないまま下流に流通する構造を扱う。chat プラットフォームの公開 API 経由 scraping、規約違反 scope での dataset 配布、AI training audit 層の不在等。",
+    en: "Structures where the origin and use-scope attributes of AI training data flow downstream without independent verification — public-API scraping of chat platforms, dataset distribution outside the licensed scope, gaps in AI training-data audit layers.",
   },
   "ai-decision-integrity": {
     ja: "ハルシネーション訴訟、誤判断による業務損害、出力の根拠不在。",

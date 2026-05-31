@@ -34,6 +34,7 @@ const CATEGORIES_BY_PILLAR = {
     "bridge-config-trust",
     "code-provenance",
     "data-provenance",
+    "training-data-provenance",
   ],
   "02-verifiable-ai": [
     "ai-decision-integrity",
