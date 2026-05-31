@@ -55,8 +55,16 @@ export interface PillarFAQ {
 export interface Pillar {
   readonly slug: PillarSlug;
   readonly title: LocalizedStrings;
+  /** Poetic "X ≠ Y" tag, used in the v2 hub as auxiliary text next to the
+   * Pillar number eyebrow (was the v1 main slogan). */
   readonly slogan: LocalizedStrings;
+  /** Poetic subline ("Data is copied. Provenance is carved."). In the v2
+   * hub it is rendered below the plain elevator with a dashed separator. */
   readonly subtitle: LocalizedStrings;
+  /** v2 — Plain-language elevator describing what the pillar actually does.
+   * Required for the new hub card. Set as the lead text under the card
+   * title. */
+  readonly plainElevator: LocalizedStrings;
   readonly homepageCardTitle: HomepageCardTitle;
   readonly homepageBlurb: LocalizedStrings;
   readonly problemStatement: LocalizedStrings;
@@ -82,6 +90,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Verifiable Origin", ja: "来歴証明" },
     slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
     subtitle: { en: "Data is copied. Provenance is carved.", ja: "データは複製される。来歴は刻まれる。" },
+    plainElevator: {
+      en: "A cryptographic layer that lets receivers verify where a fact originated, without exposing the original.",
+      ja: "流通する事実が「どこから来たか」を、原本を渡さずに検証可能にする暗号レイヤー。",
+    },
     homepageCardTitle: {
       en: { line1: "Data is copied.", line2: "Provenance is carved." },
       ja: { line1: "データは複製される。", line2: "来歴は刻まれる。" },
@@ -136,9 +148,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
   },
   {
     slug: "verifiable-ai",
-    title: { en: "Verifiable AI", ja: "AI出力の検証可能性" },
+    title: { en: "Verifiable AI", ja: "検証可能 AI" },
     slogan: { en: "Finds bugs ≠ proves decisions", ja: "バグを見つける ≠ 決定を証明する" },
     subtitle: { en: "Models change. Proofs remain.", ja: "モデルは変わる。証明は残る。" },
+    plainElevator: {
+      en: "A way to record an AI's decision process as a reproducible cryptographic proof — what was the input, which model, what was decided.",
+      ja: "AI の判断過程を、再現可能な暗号証明として記録する仕組み。何を入力に、どのモデルで、どう決定したかを後から独立検証できる。",
+    },
     homepageCardTitle: {
       en: { line1: "Models change.", line2: "Proofs remain." },
       ja: { line1: "モデルは変わる。", line2: "証明は残る。" },
@@ -196,6 +212,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Agent Authority Proof", ja: "エージェント権限証明" },
     slogan: { en: "Pays ≠ trustworthy", ja: "支払う ≠ 信頼できる" },
     subtitle: { en: "Authority can be delegated. Only provable authority should be.", ja: "権限は渡せる。証明できる権限だけが。" },
+    plainElevator: {
+      en: "A way to prove \"for whom\" and \"how far\" an AI agent is authorized to act, without giving it signing keys.",
+      ja: "AI エージェントが「誰の代理で」「どの範囲まで」動けるかを、署名鍵を持たせずに暗号証明する仕組み。",
+    },
     homepageCardTitle: {
       en: { line1: "Authority can be delegated.", line2: "Only provable authority should be." },
       ja: { line1: "権限は渡せる。", line2: "証明できる権限だけが。" },
@@ -328,6 +348,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Regulatory Attribute Proof", ja: "規制属性証明" },
     slogan: { en: "Compliance promised ≠ compliance proven", ja: "コンプライアンスの約束 ≠ コンプライアンスの証明" },
     subtitle: { en: "Data stays. Proofs travel.", ja: "データは渡さない。証明は渡る。" },
+    plainElevator: {
+      en: "Prove regulatory attributes (KYC, AML, age, residency, credit score) without disclosing the underlying personal data.",
+      ja: "KYC、AML、年齢、所在、信用スコアなど規制要件に紐づく属性を、原本の個人情報を渡さずに証明する。",
+    },
     homepageCardTitle: {
       en: { line1: "Data stays.", line2: "Proofs travel." },
       ja: { line1: "データは渡さない。", line2: "証明は渡る。" },

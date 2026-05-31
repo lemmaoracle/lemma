@@ -1102,7 +1102,22 @@
     "comingSoon": "Use cases coming soon — stay tuned.",
     "ctaEyebrow": "Get Started",
     "ctaTitle": "Ready to prove?",
-    "ctaDesc": "Talk to us about your use case. We respond within one business day."
+    "ctaDesc": "Talk to us about your use case. We respond within one business day.",
+    "heroH1Lines": ["Four questions follow", "every AI decision."],
+    "heroSub": "Every time AI uses data, the same four questions surface afterwards: where did it come from, what did the model see, who authorized the agent, does it satisfy the regulation. Lemma is the four-axis trust layer that answers each with an independently verifiable cryptographic proof.",
+    "questionsLabel": "Four questions",
+    "questions": [
+      { "tag": "P1 · Origin", "stem": "That data —", "answer": "did it really come from an authorized issuer?" },
+      { "tag": "P2 · AI Decision", "stem": "That model —", "answer": "did it really decide based on that input?" },
+      { "tag": "P3 · Agent Authority", "stem": "That agent —", "answer": "does it really have authority to act on someone's behalf?" },
+      { "tag": "P4 · Regulatory Attribute", "stem": "That attribute —", "answer": "does it really satisfy the regulation?" }
+    ],
+    "compositionLabel": "Trust Layer",
+    "compositionH2": "Four questions, one trust layer.",
+    "compositionCenterLabel": "AI Decision",
+    "compositionCaption": "One API · four-axis simultaneous proof · Lemma Oracle",
+    "technicalDocsLabel": "Technical docs",
+    "technicalDocsH2": "Implementation guides & specs."
   },
   "useCases": {
     "title": "Use Cases",
