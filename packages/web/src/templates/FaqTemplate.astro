@@ -33,7 +33,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CtaSection from "../components/CtaSection.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface FaqTemplateProps {
   locale: Locale;
@@ -43,6 +43,11 @@ export interface FaqTemplateProps {
 
 const { locale, t, base } = Astro.props as FaqTemplateProps;
 const fq = t.faq;
+const cta = t.ctaSection;
+const whitepaperUrl =
+  locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR";
+const discoveryCallUrl = DISCOVERY_CALL_URL[locale];
+const relatedLabel = locale === "ja" ? "関連" : "Related";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -170,6 +175,21 @@ const faqJsonLd = {
                 </button>
                 <div class="fq-a">
                   <p>{item.a}</p>
+                  {item.links && item.links.length > 0 && (
+                    <div class="fq-a-links">
+                      <span class="fq-a-links-label">{relatedLabel}</span>
+                      {item.links.map((link) => (
+                        <a
+                          href={link.href}
+                          class="fq-a-link"
+                          target={link.href.startsWith("http") ? "_blank" : undefined}
+                          rel={link.href.startsWith("http") ? "noopener" : undefined}
+                        >
+                          {link.label} →
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -180,19 +200,6 @@ const faqJsonLd = {
           {fq.noResultsText}
         </div>
       </div>
-
-      <!-- Critical Brief surface block (isolated) -->
-      <section class="fq-brief-block" aria-label={fq.criticalBriefBlock.label}>
-        <div class="fq-brief-badge">{fq.criticalBriefBlock.badge}</div>
-        <div class="fq-brief-label">{fq.criticalBriefBlock.label}</div>
-        <h2 class="fq-brief-h2">{fq.criticalBriefBlock.h2}</h2>
-        <p class="fq-brief-body">{fq.criticalBriefBlock.body}</p>
-        <div class="fq-brief-cta">
-          {fq.criticalBriefBlock.cta.map((c) => (
-            <a class="fq-brief-link" href={c.href}>{c.label}</a>
-          ))}
-        </div>
-      </section>
 
       <!-- Comparison table -->
       <section class="fq-comparison">
@@ -214,10 +221,50 @@ const faqJsonLd = {
           </table>
         </div>
       </section>
+
+      <!-- Critical Brief surface block (isolated, upper-tier) -->
+      <section class="fq-brief-block" aria-label={fq.criticalBriefBlock.label}>
+        <div class="fq-brief-badge">{fq.criticalBriefBlock.badge}</div>
+        <div class="fq-brief-label">{fq.criticalBriefBlock.label}</div>
+        <h2 class="fq-brief-h2">{fq.criticalBriefBlock.h2}</h2>
+        <p class="fq-brief-body">{fq.criticalBriefBlock.body}</p>
+        <div class="fq-brief-cta">
+          {fq.criticalBriefBlock.cta.map((c) => (
+            <a class="fq-brief-link" href={c.href}>{c.label}</a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Partner CTA — inline v24 card (replaces the v22 CtaSection) -->
+      <section class="fq-partner" aria-label={cta.finalTag}>
+        <div class="fq-partner-eyebrow">{cta.finalTag}</div>
+        <h2 class="fq-partner-h2">
+          <span set:html={cta.finalH2}></span>
+          <em>{cta.finalH2Em}</em>
+        </h2>
+        <p class="fq-partner-body" set:html={cta.finalP}></p>
+        <div class="fq-partner-cta">
+          <a
+            class="fq-partner-primary"
+            href={discoveryCallUrl}
+            target={discoveryCallUrl.startsWith("http") ? "_blank" : undefined}
+            rel={discoveryCallUrl.startsWith("http") ? "noopener" : undefined}
+          >
+            {cta.finalCtaText}
+          </a>
+          <a
+            class="fq-partner-secondary"
+            href={whitepaperUrl}
+            target="_blank"
+            rel="noopener"
+          >
+            {cta.finalWpText}
+          </a>
+        </div>
+      </section>
     </div>
   </main>
 
-  <CtaSection base={base} locale={locale} />
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
@@ -246,7 +293,7 @@ const faqJsonLd = {
     font-family: var(--fq-body);
     font-weight: 400;
     line-height: 1.65;
-    padding: 0 0 96px;
+    padding: 0 0 24px;
     margin-top: 64px;
   }
   :root[lang="en"] .fq-page {
@@ -672,7 +719,37 @@ const faqJsonLd = {
     line-height: 1.85;
     color: var(--fq-text-2);
     margin: 0;
-    padding: 0 22px 20px;
+    padding: 0 22px 12px;
+  }
+  /* Related links rendered below the answer when item.links is set. */
+  .fq-a-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 8px 22px 20px;
+    border-top: 0.5px dashed var(--lemma-line);
+    margin: 4px 16px 0;
+  }
+  .fq-a-links-label {
+    font-family: var(--fq-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fq-text-4);
+  }
+  .fq-a-link {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .fq-a-link:hover {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
   }
   .fq-no-results {
     padding: 24px;
@@ -761,6 +838,94 @@ const faqJsonLd = {
     transition: border-color 0.18s, background 0.18s;
   }
   .fq-brief-link:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── PARTNER CTA (v24 inline, replaces v22 CtaSection) ─── */
+  .fq-partner {
+    margin: 32px 0 0;
+    padding: 48px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .fq-partner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
+  }
+  .fq-partner-eyebrow {
+    font-family: var(--fq-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .fq-partner-h2 {
+    font-family: var(--fq-display);
+    font-size: clamp(28px, 3.6vw, 40px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .fq-partner-h2 {
+    line-height: 1.3;
+  }
+  .fq-partner-h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .fq-partner-body {
+    font-size: 14.5px;
+    color: var(--fq-text-2);
+    line-height: 1.8;
+    margin: 0 auto 28px;
+    max-width: 540px;
+  }
+  .fq-partner-cta {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .fq-partner-primary,
+  .fq-partner-secondary {
+    font-family: var(--fq-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 13px 30px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .fq-partner-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border: 0;
+  }
+  .fq-partner-primary:hover {
+    background: #6e3610;
+  }
+  .fq-partner-secondary {
+    background: var(--white);
+    color: var(--accent);
+    border: 0.5px solid var(--lemma-line);
+  }
+  .fq-partner-secondary:hover {
     border-color: var(--accent);
     background: var(--lemma-brown-light);
   }

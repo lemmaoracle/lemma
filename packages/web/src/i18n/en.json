@@ -228,7 +228,10 @@
           },
           {
             "q": "How does Lemma relate to AI agents?",
-            "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework. It also extends to proving the authority and origin of operations when an agent acts on external systems (→ Section 5)."
+            "a": "Lemma operates at the RAG layer and is independent of any specific AI model or framework. It also extends to proving the authority and origin of operations when an agent acts on external systems (→ Section 5).",
+            "links": [
+              { "label": "Agent Authority Proof (P3)", "href": "/pillars/agent-authority-proof/" }
+            ]
           },
           {
             "q": "How is Lemma different from AI Gateways?",
@@ -246,7 +249,11 @@
           },
           {
             "q": "Which pillar should I start with?",
-            "a": "Choose by problem. Want to prove where data comes from → P1. Want to prove the basis of an AI judgment after the fact → P2. Want to prove the operational authority of an AI agent → P3. Want to prove regulatory attributes without handing over raw data → P4. Each pillar has corresponding real incidents in Critical Brief."
+            "a": "Choose by problem. Want to prove where data comes from → P1. Want to prove the basis of an AI judgment after the fact → P2. Want to prove the operational authority of an AI agent → P3. Want to prove regulatory attributes without handing over raw data → P4. Each pillar has corresponding real incidents in Critical Brief.",
+            "links": [
+              { "label": "Four Pillars", "href": "/pillars" },
+              { "label": "Critical Brief library", "href": "/critical/briefs/" }
+            ]
           }
         ]
       },
@@ -269,7 +276,11 @@
           {
             "q": "Why \"do not hand over data\" rather than \"protect data\"?",
             "a": "When regulation requires operators to collect and store raw PII, the stored data itself becomes the breach surface. The KYC insider breach cases (Critical Brief, Coinbase KYC etc.) illustrate this structure. Lemma hands over attributes as proofs and structurally reduces the accumulation of raw PII.",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" },
+              { "label": "Regulatory Attribute Proof (P4)", "href": "/pillars/regulatory-attribute-proof/" }
+            ]
           }
         ]
       },
@@ -290,7 +301,10 @@
           {
             "q": "How is this different from \"watermarks\" on AI-generated content?",
             "a": "Watermarks are a detection-style approach that embeds a mark inside the artifact, and the mark can be statistically stripped or forged (demonstrated in Critical Brief, SynthID reverse-engineering etc.). Cryptographic provenance sits outside the artifact's signal space and leaves no extractable \"key\" inside the artifact.",
-            "pillar": "p1"
+            "pillar": "p1",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" }
+            ]
           }
         ]
       },
@@ -301,12 +315,20 @@
           {
             "q": "In the era of autonomous AI agents, what can be proven?",
             "a": "For each operation an agent performs against an external system, the answer to \"who, with what authority, requested which operation\" can be fixed as an independently verifiable proof. A nation-scale autonomous AI attack campaign has been reported (Critical Brief, GTG-1002).",
-            "pillar": "p3"
+            "pillar": "p3",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" },
+              { "label": "Agent Authority Proof (P3)", "href": "/pillars/agent-authority-proof/" }
+            ]
           },
           {
             "q": "How are MCP and agent-harness permissions handled?",
             "a": "Cases concerning the authentication / authority verification layer of agent infrastructure are documented in Critical Brief (Starlette/BadHost, PocketOS etc.). For the implementation direction see the P3 page (Agent Authority Proof).",
-            "pillar": "p3"
+            "pillar": "p3",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" },
+              { "label": "Agent Authority Proof (P3)", "href": "/pillars/agent-authority-proof/" }
+            ]
           }
         ]
       },
@@ -317,12 +339,20 @@
           {
             "q": "What is \"compliance as a proof\"?",
             "a": "A design where regulatory attributes (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) are received by the verifying party as cryptographic proofs (ZK attribute proofs) without retaining raw data. See P4 (Regulatory Attribute Proof) for the design and the KYC/AML Selective Disclosure use case for an application.",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "Regulatory Attribute Proof (P4)", "href": "/pillars/regulatory-attribute-proof/" },
+              { "label": "KYC/AML Selective Disclosure", "href": "/use-cases/kyc-aml-selective-disclosure/" }
+            ]
           },
           {
             "q": "Government and public-sector use?",
             "a": "Cases concerning verification and authorization records for AI decisions in the public sector are documented in Critical Brief (Williams FRT wrongful arrest etc.). Delivered as Lemma Civic, typically through SI integrators.",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" },
+              { "label": "Lemma Civic", "href": "/pricing#civic" }
+            ]
           }
         ]
       },
@@ -332,11 +362,18 @@
         "items": [
           {
             "q": "What is Lemma Critical Brief?",
-            "a": "A threat intelligence brief published by Lemma. Each Brief structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents plus trust-layer risk events that are not attacks) and identifies the structural gap that detection alone cannot close and Lemma's response layer. Written for CSOs, analysts, and regulatory practitioners."
+            "a": "A threat intelligence brief published by Lemma. Each Brief structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents plus trust-layer risk events that are not attacks) and identifies the structural gap that detection alone cannot close and Lemma's response layer. Written for CSOs, analysts, and regulatory practitioners.",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" },
+              { "label": "Methodology", "href": "/critical/briefs/methodology/" }
+            ]
           },
           {
             "q": "Which pillars do the incidents span?",
-            "a": "Across provenance (bridges / supply chain / AI-generated artifacts), verifiable AI (misjudgment / watermarking), agent authority (autonomous attack / MCP), and regulatory attribute (KYC breach). Accessible from both the Pillar and Category archives."
+            "a": "Across provenance (bridges / supply chain / AI-generated artifacts), verifiable AI (misjudgment / watermarking), agent authority (autonomous attack / MCP), and regulatory attribute (KYC breach). Accessible from both the Pillar and Category archives.",
+            "links": [
+              { "label": "Critical Brief library", "href": "/critical/briefs/" }
+            ]
           },
           {
             "q": "Is Critical Brief sales material?",
@@ -380,7 +417,11 @@
           },
           {
             "q": "How is this different from detection / monitoring tools?",
-            "a": "Detection does not change what a receiver will accept. Detection (anomaly detection / monitoring) and pre-execution attestation are complementary, not substitutive. See the detection-is-not-proof essay for the thesis and §5 of each Critical Brief for the demonstration. Existing detection vendors are framed as complementary, not adversarial."
+            "a": "Detection does not change what a receiver will accept. Detection (anomaly detection / monitoring) and pre-execution attestation are complementary, not substitutive. See the detection-is-not-proof essay for the thesis and §5 of each Critical Brief for the demonstration. Existing detection vendors are framed as complementary, not adversarial.",
+            "links": [
+              { "label": "detection-is-not-proof", "href": "/blog/detection-is-not-proof/" },
+              { "label": "Critical Brief library", "href": "/critical/briefs/" }
+            ]
           },
           {
             "q": "What deployment options are available?",

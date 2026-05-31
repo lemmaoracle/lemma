@@ -228,7 +228,10 @@
           },
           {
             "q": "Lemma と AI エージェントの関係は？",
-            "a": "Lemma は RAG レイヤーで動作しモデル非依存で、加えてエージェントが外部システムへ作用する際の権限・来歴の証明にも及びます (→ セクション 5)。"
+            "a": "Lemma は RAG レイヤーで動作しモデル非依存で、加えてエージェントが外部システムへ作用する際の権限・来歴の証明にも及びます (→ セクション 5)。",
+            "links": [
+              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+            ]
           },
           {
             "q": "AI ゲートウェイとの違いは？",
@@ -246,7 +249,11 @@
           },
           {
             "q": "どの柱から検討すべき？",
-            "a": "課題ベースで選びます。データの出所を証明したい → P1、AI の判断根拠を後から証明したい → P2、AI エージェントの操作権限を証明したい → P3、規制属性を生データを渡さず証明したい → P4。各柱に対応する実事案は Critical Brief で扱っています。"
+            "a": "課題ベースで選びます。データの出所を証明したい → P1、AI の判断根拠を後から証明したい → P2、AI エージェントの操作権限を証明したい → P3、規制属性を生データを渡さず証明したい → P4。各柱に対応する実事案は Critical Brief で扱っています。",
+            "links": [
+              { "label": "4 つの柱", "href": "/ja/pillars" },
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+            ]
           }
         ]
       },
@@ -269,7 +276,11 @@
           {
             "q": "なぜ「データを守る」より「データを渡さない」なのか？",
             "a": "規制が生 PII の収集・保管を要求する設計では、保管データそのものが漏洩面になります。実例として KYC データの内部漏洩事案 (Critical Brief、Coinbase KYC 等) がこの構造を示しています。Lemma は属性を証明として渡し、生 PII の蓄積を構造的に縮小します。",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
+              { "label": "規制属性証明 (P4)", "href": "/ja/pillars/regulatory-attribute-proof/" }
+            ]
           }
         ]
       },
@@ -290,7 +301,10 @@
           {
             "q": "AI 生成コンテンツの「透かし」とは何が違う？",
             "a": "透かしは標識を成果物に埋め込む detection 的手法で、統計的に剥離・偽造され得ます (Critical Brief、SynthID reverse-engineering 等で実証)。暗号的来歴は成果物の外側に証明を置き、信号空間の中に「鍵」を残さない点で異なります。",
-            "pillar": "p1"
+            "pillar": "p1",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+            ]
           }
         ]
       },
@@ -301,12 +315,20 @@
           {
             "q": "AI エージェントが自律的に動く時代に、何を証明できる？",
             "a": "エージェントが外部システムへ作用する各操作について、「誰が」「どの権限で」「どの操作を」要求したかを独立検証可能な証明として固定できます。背景として、AI エージェントが攻撃工程の大半を自律実行した事案も報告されています (Critical Brief、GTG-1002 等)。",
-            "pillar": "p3"
+            "pillar": "p3",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
+              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+            ]
           },
           {
             "q": "MCP やエージェントハーネスの権限はどう扱う？",
             "a": "エージェント基盤の認証・権限の検証層に関わる事案を Critical Brief で扱っています (Starlette/BadHost、PocketOS 等)。技術的な実装方針は P3 ページ「エージェント権限証明」を参照してください。",
-            "pillar": "p3"
+            "pillar": "p3",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
+              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+            ]
           }
         ]
       },
@@ -317,12 +339,20 @@
           {
             "q": "「コンプライアンスの証明」とは？",
             "a": "規制属性 (KYC 通過、許可された jurisdiction、サンクション非該当、年齢等) を、検証側が生データを保管しないまま暗号証明 (ZK 属性証明) として受領する設計です。詳細は P4 ページ「規制属性証明」、適用例は KYC/AML 選択的開示ユースケース。",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "規制属性証明 (P4)", "href": "/ja/pillars/regulatory-attribute-proof/" },
+              { "label": "KYC/AML 選択的開示", "href": "/ja/use-cases/kyc-aml-selective-disclosure/" }
+            ]
           },
           {
             "q": "行政・公共部門での利用は？",
             "a": "公共部門の AI 判断の検証・認可の証跡に関わる事案を Critical Brief で扱っています (Williams FRT 誤認逮捕等)。提供形態は Lemma Civic。SIer 経由の導入を想定しています。",
-            "pillar": "p4"
+            "pillar": "p4",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
+              { "label": "Lemma Civic", "href": "/ja/pricing#civic" }
+            ]
           }
         ]
       },
@@ -332,11 +362,18 @@
         "items": [
           {
             "q": "Lemma Critical Brief とは？",
-            "a": "Lemma が発行する threat intelligence brief。AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す reference 集です。CSO・アナリスト・規制実務者向け。"
+            "a": "Lemma が発行する threat intelligence brief。AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す reference 集です。CSO・アナリスト・規制実務者向け。",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
+              { "label": "Methodology", "href": "/ja/critical/briefs/methodology/" }
+            ]
           },
           {
             "q": "どの柱の事案がある？",
-            "a": "来歴 (ブリッジ / サプライチェーン / AI 生成物)、検証可能 AI (誤判定 / 透かし)、エージェント権限 (自律攻撃 / MCP)、規制属性 (KYC 漏洩) を横断。Pillar 別・Category 別アーカイブから辿れます。"
+            "a": "来歴 (ブリッジ / サプライチェーン / AI 生成物)、検証可能 AI (誤判定 / 透かし)、エージェント権限 (自律攻撃 / MCP)、規制属性 (KYC 漏洩) を横断。Pillar 別・Category 別アーカイブから辿れます。",
+            "links": [
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+            ]
           },
           {
             "q": "Brief は営業資料か？",
@@ -380,7 +417,11 @@
           },
           {
             "q": "検出 / 監視ツールとの違いは？",
-            "a": "検出は受信側が「何を accept するか」自体を変えません。検出 (異常検知・監視) と事前証明 (attestation) は代替ではなく補完関係にあります。詳細は detection-is-not-proof essay、実証は Critical Brief 各号の §5。既存検出ベンダーを否定せず役割分担として描きます。"
+            "a": "検出は受信側が「何を accept するか」自体を変えません。検出 (異常検知・監視) と事前証明 (attestation) は代替ではなく補完関係にあります。詳細は detection-is-not-proof essay、実証は Critical Brief 各号の §5。既存検出ベンダーを否定せず役割分担として描きます。",
+            "links": [
+              { "label": "detection-is-not-proof", "href": "/ja/blog/detection-is-not-proof/" },
+              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+            ]
           },
           {
             "q": "どのようなデプロイメントオプションが利用可能か？",

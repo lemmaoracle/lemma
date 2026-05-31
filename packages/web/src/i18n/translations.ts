@@ -219,6 +219,14 @@ export interface Translations {
         readonly a: string;
         /** Optional pillar tag for chip coloring. */
         readonly pillar?: "p1" | "p2" | "p3" | "p4";
+        /**
+         * Optional "Related" links shown below the answer.
+         * Used when the answer text references other pages.
+         */
+        readonly links?: ReadonlyArray<{
+          readonly label: string;
+          readonly href: string;
+        }>;
       }>;
     }>;
     readonly sidebar: Readonly<{
