@@ -27,24 +27,24 @@ const sections: LegalSection[] = [
     body: `<p>Lemma's core thesis is the recognition that <strong>detection is not proof (Detection ≠ Proof)</strong>.</p>
 <p>Confidence scores returned by detection tools — for example, "99.7% probability of anomaly" — do not constitute evidence in regulatory reporting, administrative procedures, or litigation that "an unauthorized exercise of authority occurred." Detection is a layer that narrows the blast window once damage is already in flight; it does not change what a bridge / system / agent will accept in the first place.</p>
 <p>Pre-execution attestation closes this structural gap. By cryptographically committing "what / to whom / up to where authority was granted" before a transaction, the defense line shifts from reliance on detection to reliance on verification. Detection and pre-execution attestation are not competing approaches but complementary ones: detection narrows the blast window after an event; pre-execution attestation independently verifies the trust boundary before the event.</p>
-<p>Each Brief applies this thesis to the context of its target incident in §5 "Detection vs Pre-execution Proof."</p>`,
+<p>Each Brief applies this thesis to the context of its target incident in §5 "Structural gap that detection alone cannot close."</p>`,
   },
   {
     heading: "Brief structure",
-    body: `<p>Each Brief consists of the following 10 sections:</p>
+    body: `<p>Each Brief consists of the following 9 sections:</p>
 <ul>
 <li><strong>TL;DR</strong> — target incident, damage scale, failure primitive, and Lemma's response, in one paragraph</li>
 <li><strong>§1 Incident Outline</strong> — name / date / damage scale / principal parties</li>
 <li><strong>§2 Timeline</strong> — chronology in ISO dates, technical facts only</li>
 <li><strong>§3 Attack Vector</strong> — initial compromise → lateral movement → impact realization</li>
-<li><strong>§4 Category and Position</strong> — naming the failure primitive's category, with shared structure and differences from other incidents in the same category</li>
-<li><strong>§5 Detection vs Pre-execution Proof</strong> — applying the Detection ≠ Proof thesis to the case at hand</li>
-<li><strong>§6 Mitigations and Industry Response</strong> — official post-mortems, regulatory guidance, cross-industry response</li>
-<li><strong>§7 Lemma's Response Layer</strong> — positioning across the 4 Pillars / products (Critical / Compliance / Civic / Trust402) / Packs (A/B/C) / reference implementations</li>
-<li><strong>§8 Related Briefs</strong> — cross-links to other incidents in the same category and adjacent categories</li>
-<li><strong>§9 Sources</strong> — primary, secondary, and Lemma's own primary sources, each with URL, date, and provenance distinction</li>
-<li><strong>§10 Distribution</strong> — note that the Brief is public analysis, with Discovery Call contact</li>
+<li><strong>§4 Structural Pattern</strong> — naming the structural pattern of the failure primitive, with shared structure and differences from neighbouring incidents</li>
+<li><strong>§5 Structural gap that detection alone cannot close</strong> — applying the Detection ≠ Proof thesis to the case at hand</li>
+<li><strong>§6 Response and Industry Movements</strong> — official post-mortems, individual responses, and cross-industry movements</li>
+<li><strong>§7 Lemma's Analysis</strong> — Lemma's design response to the structural gap exposed by the case, in one paragraph, with inline links to the relevant essay and reference implementation</li>
+<li><strong>§8 Sources</strong> — external primary and secondary sources, each with URL, date, and provenance label</li>
+<li><strong>§9 Distribution</strong> — note that the Brief is public analysis, with Discovery Call contact</li>
 </ul>
+<p>Cross-links to neighbouring Briefs in the same or adjacent categories are auto-generated from the frontmatter <code>related_briefs</code> field as navigation cards rendered below the body, alongside discovery via the Category and Pillar archives.</p>
 <p>The voice is sober. Industry terminology is used without annotation. Detection tools and existing vendors (Blockaid, PeckShield, Mandiant, etc.) are not framed as adversaries but as complementary roles.</p>`,
   },
   {
