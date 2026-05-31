@@ -1,4 +1,12 @@
 ---
+/**
+ * Glossary index — v24 chrome.
+ *
+ * Cream page, container 1100px, Sora display + Noto Sans JP body +
+ * Space Mono labels, saddle brown accent. Replaces the v22 white
+ * hero + bordered grid with a v24 hero + brown-top-bar card grid
+ * matching Brief Index / Blog Index.
+ */
 import Layout from "../../layouts/Layout.astro";
 import Navigation from "../../components/Navigation.astro";
 import Footer from "../../components/Footer.astro";
@@ -62,151 +70,282 @@ const definedTermSetJsonLd = {
 
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="glossary">
-    <section class="glossary-hero">
-      <div class="glossary-hero-inner">
-        <div class="glossary-hero-eyebrow">Glossary</div>
-        <h1 class="glossary-hero-h1">Glossary</h1>
-        <p class="glossary-hero-lead">
+  <main class="gl-page">
+    <div class="gl-container">
+      <section class="gl-hero">
+        <div class="gl-eyebrow">Glossary</div>
+        <h1 class="gl-h1">Glossary</h1>
+        <p class="gl-hero-sub">
           Core terminology in cryptography, verifiable AI, agent protocols, and AI regulation as Lemma Oracle uses them. Only definitions that map back to the product.
         </p>
-      </div>
-    </section>
+      </section>
 
-    <section class="glossary-body">
-      <div class="glossary-body-inner">
-        {groups.map((group) => (
-          <div class="glossary-category" id={`cat-${group.category}`}>
-            <div class="glossary-category-label">{group.label}</div>
-            <h2 class="glossary-category-h2">{group.label.split(" · ")[1]}</h2>
-            <p class="glossary-category-desc">{group.description}</p>
-            <div class="glossary-grid">
+      {groups.map((group) => {
+        const labelParts = group.label.split(" · ");
+        const numberPart = labelParts[0] ?? group.label;
+        const titlePart = labelParts.slice(1).join(" · ") || group.label;
+        return (
+          <section class="gl-category" id={`cat-${group.category}`}>
+            <div class="gl-category-head">
+              <div class="gl-category-no">{numberPart}</div>
+              <h2 class="gl-category-h2">{titlePart}</h2>
+              <div class="gl-category-count">
+                {group.terms.length} {group.terms.length === 1 ? "term" : "terms"}
+              </div>
+            </div>
+            <p class="gl-category-sub">{group.description}</p>
+            <div class="gl-grid">
               {group.terms.map((term) => (
-                <a class="glossary-card" href={`/glossary/${term.slug}/`}>
-                  <div class="glossary-card-term">{term.nameEn}</div>
-                  <p class="glossary-card-desc">{term.description}</p>
+                <a class="gl-card" href={`/glossary/${term.slug}/`}>
+                  <h3 class="gl-card-term">{term.nameEn}</h3>
+                  <p class="gl-card-desc">{term.description}</p>
+                  <span class="gl-card-cta">Open →</span>
                 </a>
               ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+          </section>
+        );
+      })}
+    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .glossary { background: var(--white); color: var(--gray-800); }
+  .gl-page {
+    --gl-display: "Sora", system-ui, sans-serif;
+    --gl-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --gl-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --gl-text-1: #1a1a1a;
+    --gl-text-2: #3a3a3a;
+    --gl-text-3: #5a5a5a;
+    --gl-text-4: #9a9a9a;
 
-  /* HERO */
-  .glossary-hero {
-    padding: 144px 8% 64px;
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
+    background: var(--lemma-cream);
+    color: var(--gl-text-2);
+    font-family: var(--gl-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 96px;
+    margin-top: 64px;
   }
-  .glossary-hero-inner { max-width: 980px; margin: 0 auto; }
-  .glossary-hero-eyebrow {
-    font-family: var(--font-body);
-    color: var(--accent);
+  :root[lang="en"] .gl-page {
+    --gl-body: "Sora", system-ui, sans-serif;
+  }
+
+  .gl-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ─── HERO ─── */
+  .gl-hero {
+    padding: 60px 0 56px;
+  }
+  .gl-eyebrow {
+    font-family: var(--gl-mono);
     font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .glossary-hero-h1 {
-    font-family: var(--font-display);
-    font-size: clamp(44px, 6vw, 72px);
-    font-weight: 500;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    color: var(--gray-800);
+    color: var(--gl-text-3);
     margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .glossary-hero-lead {
-    font-family: var(--font-body);
-    color: var(--gray-700);
-    font-size: 17px;
-    line-height: 1.7;
-    max-width: 720px;
+  .gl-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
   }
-
-  /* BODY */
-  .glossary-body { padding: 80px 8% 120px; }
-  .glossary-body-inner { max-width: 1100px; margin: 0 auto; }
-  .glossary-category { margin-bottom: 88px; }
-  .glossary-category:last-child { margin-bottom: 0; }
-  .glossary-category-label {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
+  .gl-h1 {
+    font-family: var(--gl-display);
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.04em;
+    max-width: 920px;
   }
-  .glossary-category-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3vw, 36px);
-    font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: -0.015em;
-    color: var(--gray-800);
-    margin: 0 0 12px;
-  }
-  .glossary-category-desc {
-    font-family: var(--font-body);
-    color: var(--gray-700);
-    font-size: 15px;
-    line-height: 1.7;
-    margin: 0 0 40px;
+  .gl-hero-sub {
+    font-size: 16px;
+    color: var(--gl-text-2);
+    margin: 0;
+    line-height: 1.75;
     max-width: 680px;
   }
 
-  /* GRID + CARDS */
-  .glossary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--gray-200);
-    border: 1px solid var(--gray-200);
+  /* ─── CATEGORY ─── */
+  .gl-category {
+    margin: 0 0 64px;
   }
-  .glossary-card {
-    background: var(--white);
-    padding: 28px;
-    text-decoration: none;
-    color: inherit;
+  .gl-category:last-child {
+    margin-bottom: 0;
+  }
+  .gl-category-head {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 132px;
-    transition: background 0.2s ease;
+    align-items: baseline;
+    gap: 18px;
+    padding-bottom: 16px;
+    margin: 0 0 12px;
+    border-bottom: 0.5px solid var(--lemma-line);
   }
-  .glossary-card:hover { background: var(--accent-bg); }
-  .glossary-card-term {
-    font-family: var(--font-body);
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--gray-800);
-    letter-spacing: -0.005em;
-    line-height: 1.4;
+  .gl-category-no {
+    font-family: var(--gl-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
   }
-  .glossary-card-desc {
-    font-family: var(--font-body);
-    color: var(--gray-700);
-    font-size: 13px;
-    line-height: 1.6;
-    margin: auto 0 0;
+  .gl-category-no::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .gl-category-h2 {
+    font-family: var(--gl-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  :root[lang="ja"] .gl-category-h2 {
+    line-height: 1.3;
+  }
+  .gl-category-count {
+    font-family: var(--gl-mono);
+    font-size: 12px;
+    color: var(--gl-text-4);
+    margin-left: auto;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+  }
+  .gl-category-sub {
+    font-size: 14.5px;
+    color: var(--gl-text-3);
+    line-height: 1.7;
+    margin: 0 0 28px;
+    max-width: 720px;
   }
 
-  @media (max-width: 900px) {
-    .glossary-grid { grid-template-columns: repeat(2, 1fr); }
+  /* ─── CARD GRID ─── */
+  .gl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
   }
-  @media (max-width: 560px) {
-    .glossary-hero { padding: 120px 6% 48px; }
-    .glossary-body { padding: 64px 6% 96px; }
-    .glossary-grid { grid-template-columns: 1fr; }
+  .gl-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 22px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .gl-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .gl-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .gl-card:hover::before {
+    width: 100%;
+  }
+  .gl-card-term {
+    font-family: var(--gl-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.35;
+    margin: 0;
+  }
+  :root[lang="ja"] .gl-card-term {
+    line-height: 1.45;
+  }
+  .gl-card-desc {
+    font-size: 12.5px;
+    color: var(--gl-text-3);
+    line-height: 1.65;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .gl-card-cta {
+    font-family: var(--gl-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .gl-card:hover .gl-card-cta {
+    transform: translateX(3px);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .gl-h1 {
+      font-size: 52px;
+    }
+    .gl-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .gl-category-h2 {
+      font-size: 24px;
+    }
+    .gl-category-head {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+  @media (max-width: 720px) {
+    .gl-container {
+      padding: 0 24px;
+    }
+    .gl-hero {
+      padding: 40px 0 36px;
+    }
+    .gl-h1 {
+      font-size: 40px;
+    }
+    .gl-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

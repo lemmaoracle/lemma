@@ -1,4 +1,9 @@
 ---
+/**
+ * Glossary per-term page (JA) — v24 chrome.
+ *
+ * Mirror of /glossary/[slug].astro for JA locale.
+ */
 import Layout from "../../../layouts/Layout.astro";
 import Navigation from "../../../components/Navigation.astro";
 import Footer from "../../../components/Footer.astro";
@@ -75,294 +80,369 @@ const breadcrumbJsonLd = {
 
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="term">
-    <section class="term-header">
-      <div class="term-header-inner">
-        <nav class="term-breadcrumb" aria-label="breadcrumb">
-          <a href="/ja/">ホーム</a><span class="term-breadcrumb-sep">/</span>
-          <a href="/ja/glossary/">用語集</a><span class="term-breadcrumb-sep">/</span>
-          <span>{term.nameJa}</span>
-        </nav>
-        <div class="term-header-category">{term.category}</div>
-        <h1 class="term-header-h1">{term.nameJa}</h1>
-        <div class="term-header-en">{term.nameEn}</div>
-        <p class="term-header-lead" set:html={term.lead}></p>
-      </div>
-    </section>
+  <main class="gt-page">
+    <div class="gt-container">
+      <nav class="gt-breadcrumb" aria-label="breadcrumb">
+        <a href="/ja/">ホーム</a>
+        <span class="gt-breadcrumb-sep">/</span>
+        <a href="/ja/glossary/">用語集</a>
+        <span class="gt-breadcrumb-sep">/</span>
+        <span>{term.nameJa}</span>
+      </nav>
 
-    <section class="term-body">
-      <div class="term-body-inner">
+      <section class="gt-hero">
+        <div class="gt-eyebrow">用語集 · {term.category}</div>
+        <h1 class="gt-h1">{term.nameJa}</h1>
+        <div class="gt-name-alt">{term.nameEn}</div>
+        <p class="gt-lead" set:html={term.lead}></p>
+      </section>
+
+      <article class="gt-body">
         <h2>定義</h2>
         {term.definition.map((p) => <p set:html={p}></p>)}
         <h2>{implementationHeading}</h2>
         {term.implementation.map((p) => <p set:html={p}></p>)}
-      </div>
-    </section>
+      </article>
 
-    <section class="term-related">
-      <div class="term-related-inner">
-        <div class="term-related-label">関連用語</div>
-        <h2>関連する用語</h2>
-        <div class="term-related-list">
+      <section class="gt-related">
+        <div class="gt-related-label">関連する用語</div>
+        <div class="gt-related-grid">
           {term.related.map((rel) => {
             const target = getGlossaryTerm(rel.slug);
             const name = target?.nameJa ?? rel.slug;
             return (
-              <a class="term-related-item" href={`/ja/glossary/${rel.slug}/`}>
-                <div class="term-related-item-term">{name}</div>
-                <div class="term-related-item-desc">{rel.desc}</div>
+              <a class="gt-related-card" href={`/ja/glossary/${rel.slug}/`}>
+                <div class="gt-related-name">{name}</div>
+                <div class="gt-related-desc">{rel.desc}</div>
               </a>
             );
           })}
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="term-cta">
-      <div class="term-cta-inner">
-        <span class="term-cta-eyebrow">始める</span>
-        <h2 class="term-cta-h2">{term.ctaH2}</h2>
-        <div class="term-cta-row">
-          <a class="term-cta-primary" href={DISCOVERY_CALL_URL.ja} target="_blank" rel="noopener">{DISCOVERY_CALL.ja.buttonLabel}</a>
+      <section class="gt-cta">
+        <div class="gt-cta-eyebrow">はじめる</div>
+        <h2 class="gt-cta-h2">{term.ctaH2}</h2>
+        <div class="gt-cta-row">
           <a
-            class="term-cta-secondary"
+            class="gt-cta-primary"
+            href={DISCOVERY_CALL_URL.ja}
+            target="_blank"
+            rel="noopener"
+          >{DISCOVERY_CALL.ja.buttonLabel}</a>
+          <a
+            class="gt-cta-secondary"
             href="https://tally.so/r/xX0VYv"
             target="_blank"
             rel="noopener"
           >ホワイトペーパーをダウンロード</a>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .term { background: var(--white); color: var(--gray-800); }
+  .gt-page {
+    --gt-display: "Sora", system-ui, sans-serif;
+    --gt-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --gt-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --gt-text-1: #1a1a1a;
+    --gt-text-2: #3a3a3a;
+    --gt-text-3: #5a5a5a;
+    --gt-text-4: #9a9a9a;
 
-  /* HEADER */
-  .term-header { padding: 128px 8% 48px; }
-  .term-header-inner { max-width: 820px; margin: 0 auto; }
-  .term-breadcrumb {
-    font-family: var(--font-body);
-    color: var(--gray-500);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    margin-bottom: 28px;
+    background: var(--lemma-cream);
+    color: var(--gt-text-2);
+    font-family: var(--gt-body);
+    font-weight: 400;
+    line-height: 1.85;
+    padding: 0 0 96px;
+    margin-top: 64px;
   }
-  .term-breadcrumb a {
-    color: var(--gray-700, #5F5F5F);
-    text-decoration: none;
-    transition: color 0.2s;
+
+  .gt-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
-  .term-breadcrumb a:hover { color: var(--accent); }
-  .term-breadcrumb-sep { margin: 0 8px; color: var(--gray-500); }
-  .term-header-category {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 500;
+
+  /* ─── BREADCRUMB ─── */
+  .gt-breadcrumb {
+    font-family: var(--gt-mono);
+    font-size: 10.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 16px;
+    color: var(--gt-text-4);
+    padding: 36px 0 0;
   }
-  .term-header-h1 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 500;
-    line-height: 1.12;
-    letter-spacing: -0.02em;
-    color: var(--gray-800);
-    margin: 0 0 12px;
-  }
-  .term-header-en {
-    font-family: var(--font-body);
-    color: var(--gray-700, #5F5F5F);
-    font-size: 17px;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    margin-bottom: 24px;
-  }
-  .term-header-lead {
-    font-family: var(--font-body);
-    color: var(--gray-800);
-    font-size: 18px;
-    line-height: 1.75;
-    font-weight: 400;
-    max-width: 720px;
-    border-left: 2px solid var(--accent);
-    padding-left: 20px;
-    margin: 0;
-  }
-  .term-header-lead :global(a) {
-    color: var(--accent);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
+  .gt-breadcrumb a {
+    color: var(--gt-text-3);
     text-decoration: none;
+    transition: color 0.15s;
   }
-  .term-header-lead :global(a:hover) { border-bottom-color: var(--accent); }
+  .gt-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .gt-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
+  }
 
-  /* BODY */
-  .term-body { padding: 24px 8% 96px; }
-  .term-body-inner { max-width: 820px; margin: 0 auto; }
-  .term-body h2 {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 2.6vw, 32px);
-    font-weight: 500;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    color: var(--gray-800);
-    margin: 56px 0 20px;
+  /* ─── HERO ─── */
+  .gt-hero {
+    padding: 32px 0 48px;
   }
-  .term-body h2:first-child { margin-top: 16px; }
-  .term-body p {
-    font-family: var(--font-body);
-    color: var(--gray-800);
+  .gt-eyebrow {
+    font-family: var(--gt-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .gt-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .gt-h1 {
+    font-family: var(--gt-display);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    margin: 0 0 10px;
+  }
+  .gt-name-alt {
+    font-family: var(--gt-body);
+    font-size: 14.5px;
+    color: var(--gt-text-3);
+    margin: 0 0 28px;
+    letter-spacing: 0.01em;
+  }
+  .gt-lead {
     font-size: 16px;
     line-height: 1.85;
-    margin: 0 0 18px;
+    color: var(--gt-text-1);
+    margin: 0;
+    padding: 0 0 0 20px;
+    border-left: 2px solid var(--accent);
+    max-width: 720px;
   }
-  .term-body :global(code) {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
-    font-size: 0.92em;
+  .gt-lead :global(a) {
     color: var(--accent);
-  }
-  .term-body :global(a) {
-    color: var(--accent);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
     text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s;
   }
-  .term-body :global(a:hover) { border-bottom-color: var(--accent); }
-  .term-body :global(strong) {
-    font-weight: 500;
-    color: var(--gray-800);
+  .gt-lead :global(a:hover) {
+    border-bottom-color: var(--accent);
   }
 
-  /* RELATED */
-  .term-related {
-    background: var(--gray-50);
-    padding: 64px 8%;
-    border-top: 1px solid var(--gray-200);
+  /* ─── BODY ─── */
+  .gt-body h2 {
+    font-family: var(--gt-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    margin: 56px 0 24px;
   }
-  .term-related-inner { max-width: 820px; margin: 0 auto; }
-  .term-related-label {
-    font-family: var(--font-body);
+  .gt-body p {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--gt-text-2);
+    margin: 0 0 20px;
+  }
+  .gt-body :global(strong) {
+    font-weight: 500;
+    color: var(--black);
+  }
+  .gt-body :global(em) {
+    font-style: italic;
+  }
+  .gt-body :global(a) {
     color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+    overflow-wrap: anywhere;
+  }
+  .gt-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .gt-body :global(code) {
+    font-family: var(--gt-mono);
+    font-size: 0.86em;
+    background: var(--lemma-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--gt-text-1);
+  }
+
+  /* ─── RELATED ─── */
+  .gt-related {
+    margin: 64px 0 0;
+    padding: 32px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .gt-related-label {
+    font-family: var(--gt-mono);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    color: var(--gt-text-3);
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .term-related h2 {
-    font-family: var(--font-display);
-    font-size: clamp(22px, 2.4vw, 28px);
-    font-weight: 500;
-    color: var(--gray-800);
-    margin: 0 0 28px;
+  .gt-related-label::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
   }
-  .term-related-list {
+  .gt-related-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--gray-200);
-    border: 1px solid var(--gray-200);
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
-  .term-related-item {
+  .gt-related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     background: var(--white);
-    padding: 22px 24px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 18px 22px;
     text-decoration: none;
     color: inherit;
-    transition: background 0.2s ease;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .term-related-item:hover { background: var(--accent-bg); }
-  .term-related-item-term {
-    font-family: var(--font-body);
-    font-size: 15px;
+  .gt-related-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
+  }
+  .gt-related-name {
+    font-family: var(--gt-display);
+    font-size: 14.5px;
     font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 4px;
+    color: var(--black);
+    letter-spacing: -0.005em;
   }
-  .term-related-item-desc {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--gray-700, #5F5F5F);
-    line-height: 1.6;
-  }
-  @media (max-width: 640px) {
-    .term-related-list { grid-template-columns: 1fr; }
+  .gt-related-desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--gt-text-3);
   }
 
-  /* CTA */
-  .term-cta {
-    background: var(--black);
-    color: #fff;
-    padding: 96px 8%;
+  /* ─── CTA ─── */
+  .gt-cta {
+    margin: 64px 0 0;
+    padding: 36px 32px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
   }
-  .term-cta-inner { max-width: 640px; margin: 0 auto; }
-  .term-cta-eyebrow {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 11px;
+  .gt-cta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .gt-cta-eyebrow {
+    font-family: var(--gt-mono);
+    font-size: 10.5px;
     font-weight: 500;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin-bottom: 24px;
-    display: block;
+    color: var(--accent);
+    margin: 0 0 14px;
   }
-  .term-cta-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3.6vw, 40px);
-    font-weight: 500;
-    color: #fff;
-    line-height: 1.25;
+  .gt-cta-h2 {
+    font-family: var(--gt-display);
+    font-size: clamp(22px, 2.8vw, 28px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.4;
     letter-spacing: -0.015em;
-    margin: 0 0 32px;
+    margin: 0 0 24px;
   }
-  .term-cta-row {
+  .gt-cta-row {
     display: inline-flex;
-    gap: 16px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
   }
-  .term-cta-primary,
-  .term-cta-secondary {
-    font-family: var(--font-body);
-    font-size: 12px;
+  .gt-cta-primary,
+  .gt-cta-secondary {
+    font-family: var(--gt-display);
+    font-size: 12.5px;
     font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 12px 26px;
+    border-radius: 999px;
     text-decoration: none;
-    transition: all 0.25s ease;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .term-cta-primary {
-    background: #fff;
-    color: var(--gray-800);
-    padding: 16px 36px;
+  .gt-cta-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border: 0;
   }
-  .term-cta-primary:hover { background: var(--accent); color: #fff; }
-  .term-cta-secondary {
-    background: transparent;
-    color: #fff;
-    padding: 15px 35px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+  .gt-cta-primary:hover {
+    background: #6e3610;
   }
-  .term-cta-secondary:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+  .gt-cta-secondary {
+    background: var(--white);
+    color: var(--accent);
+    border: 0.5px solid var(--lemma-line);
+  }
+  .gt-cta-secondary:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
   }
 
-  @media (max-width: 640px) {
-    .term-header { padding: 112px 6% 32px; }
-    .term-body { padding: 16px 6% 64px; }
-    .term-related { padding: 48px 6%; }
-    .term-cta { padding: 72px 6%; }
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 720px) {
+    .gt-container {
+      padding: 0 24px;
+    }
+    .gt-hero {
+      padding: 24px 0 36px;
+    }
+    .gt-h1 {
+      font-size: 32px;
+    }
+    .gt-body h2 {
+      font-size: 22px;
+    }
+    .gt-related-grid {
+      grid-template-columns: 1fr;
+    }
+    .gt-cta {
+      padding: 28px 22px;
+    }
   }
 </style>
