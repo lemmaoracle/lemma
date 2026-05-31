@@ -184,11 +184,39 @@ const breadcrumbJsonLd = {
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+
+  <script is:inline>
+    (function () {
+      var links = document.querySelectorAll(".ucd-sidebar-link");
+      var sections = Array.from(document.querySelectorAll(".ucd-section"));
+      if (!links.length || !sections.length) return;
+      var bySection = new Map();
+      links.forEach(function (link) {
+        var id = (link.getAttribute("href") || "").slice(1);
+        if (id) bySection.set(id, link);
+      });
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var link = bySection.get(entry.target.id);
+            if (!link) return;
+            links.forEach(function (l) { l.classList.remove("is-active"); });
+            link.classList.add("is-active");
+          });
+        },
+        { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+      );
+      sections.forEach(function (s) { io.observe(s); });
+    })();
+  </script>
 </Layout>
 
 <style>
   .ucd-page {
-    --ucd-display: "Sora", system-ui, sans-serif;
+    /* Sora carries Latin; Noto Sans JP backs JA characters so they don't
+       cascade into the Layout-level Cormorant / Noto Serif JP stack. */
+    --ucd-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
     --ucd-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
     --ucd-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --ucd-text-1: #1a1a1a;
@@ -205,7 +233,7 @@ const breadcrumbJsonLd = {
     margin-top: 64px;
   }
   :root[lang="en"] .ucd-page {
-    --ucd-body: "Sora", system-ui, sans-serif;
+    --ucd-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
   }
 
   .ucd-container {
@@ -284,15 +312,18 @@ const breadcrumbJsonLd = {
   :root[lang="ja"] .ucd-h1 {
     line-height: 1.25;
   }
+  /* Thesis: bold mono-styled accent block, set off by a brown left rule.
+     Italics removed — faked italics on JA glyphs read as serif-y noise. */
   .ucd-thesis {
     font-family: var(--ucd-display);
-    font-size: clamp(18px, 2.2vw, 22px);
-    font-weight: 500;
-    font-style: italic;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 600;
     color: var(--accent);
-    line-height: 1.4;
-    margin: 0 0 18px;
+    line-height: 1.5;
+    margin: 0 0 22px;
     max-width: 720px;
+    padding: 4px 0 4px 16px;
+    border-left: 2px solid var(--accent);
   }
   .ucd-abstract {
     font-size: 15.5px;
@@ -379,18 +410,30 @@ const breadcrumbJsonLd = {
     border-left-color: var(--accent);
     background: var(--lemma-cream-deep);
   }
+  .ucd-sidebar-link.is-active {
+    color: var(--accent);
+    font-weight: 500;
+    border-left-color: var(--accent);
+    background: var(--lemma-cream-deep);
+  }
 
   /* ─── MAIN ─── */
   .ucd-main {
     min-width: 0;
+    counter-reset: ucdsec;
   }
+  /* Each section increments a CSS counter that surfaces as a "§ N" mono
+     brown eyebrow above its title. The eyebrow itself becomes the visual
+     section break, so the bottom rule is dropped — long use case pages
+     now read as a numbered cadence instead of stacked dividers. */
   .ucd-section {
-    padding: 0 0 48px;
-    margin: 0 0 48px;
-    border-bottom: 0.5px solid var(--lemma-line);
+    counter-increment: ucdsec;
+    padding: 0 0 64px;
+    margin: 0 0 64px;
   }
   .ucd-section:last-of-type {
-    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
   .ucd-section-title {
     font-family: var(--ucd-display);
@@ -400,6 +443,19 @@ const breadcrumbJsonLd = {
     letter-spacing: -0.025em;
     line-height: 1.2;
     margin: 0 0 24px;
+  }
+  .ucd-section-title::before {
+    content: "§ " counter(ucdsec);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
   }
   :root[lang="ja"] .ucd-section-title {
     line-height: 1.35;
@@ -421,8 +477,38 @@ const breadcrumbJsonLd = {
     color: var(--black);
     font-weight: 500;
   }
+  /* Em is repurposed as a "key term" accent — saddle brown, weight 500,
+     not italic. Faked italics on JA glyphs read poorly. */
   .ucd-section-body :global(em) {
-    font-style: italic;
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  /* Lead paragraph — first paragraph in each section gets a slightly
+     larger size and a brown left rule, anchoring the section visually
+     without changing the markdown. */
+  .ucd-section-body :global(> p:first-child) {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--ucd-text-1);
+    padding: 2px 0 2px 16px;
+    border-left: 2px solid var(--accent);
+    margin: 0 0 28px;
+  }
+  /* Blockquote — cream-deep card with brown left rule. Markdown
+     blockquotes become surfaced callouts instead of plain indented text. */
+  .ucd-section-body :global(blockquote) {
+    margin: 24px 0;
+    padding: 20px 24px;
+    background: var(--lemma-cream-deep);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(blockquote p:last-child) {
+    margin-bottom: 0;
   }
   .ucd-section-body :global(a) {
     color: var(--accent);
