@@ -186,12 +186,37 @@
       "label": "目的から探す",
       "upperTierBadge": "上位",
       "items": [
-        { "title": "Lemma とは", "desc": "AI のための信頼インフラの全体像", "href": "#what-is-lemma" },
-        { "title": "4 つの信頼レイヤー", "desc": "基盤を構成する 4 本柱 (P1〜P4)", "href": "#trust-layers" },
-        { "title": "業界での使いどころ", "desc": "ユースケースと製品 (Civic / Critical / Compliance)", "href": "/ja/solutions/use-cases" },
-        { "title": "技術実装", "desc": "開発者ガイドと Trust402", "href": "/ja/guides" },
-        { "title": "検出で足りない理由", "desc": "Detection ≠ Proof の thesis", "href": "/ja/blog/detection-is-not-proof/" },
-        { "title": "実際の事案", "desc": "Critical Brief 事案分析の reference (CSO・アナリスト・規制実務者向け)", "href": "/ja/critical/briefs/", "isUpperTier": true }
+        {
+          "title": "Lemma とは",
+          "desc": "AI のための信頼インフラの全体像",
+          "href": "#what-is-lemma"
+        },
+        {
+          "title": "4 つの信頼レイヤー",
+          "desc": "基盤を構成する 4 本柱 (P1〜P4)",
+          "href": "#trust-layers"
+        },
+        {
+          "title": "業界での使いどころ",
+          "desc": "ユースケースと製品 (Civic / Critical / Compliance)",
+          "href": "/ja/solutions/use-cases"
+        },
+        {
+          "title": "技術実装",
+          "desc": "開発者ガイドと Trust402",
+          "href": "/ja/guides"
+        },
+        {
+          "title": "検出で足りない理由",
+          "desc": "Detection ≠ Proof の thesis",
+          "href": "/ja/blog/detection-is-not-proof/"
+        },
+        {
+          "title": "実際の事案",
+          "desc": "Critical Brief 事案分析の reference (CSO・アナリスト・規制実務者向け)",
+          "href": "/ja/critical/briefs/",
+          "isUpperTier": true
+        }
       ]
     },
     "searchPlaceholder": "質問を検索…",
@@ -221,7 +246,10 @@
             "q": "Lemma と AI エージェントの関係は？",
             "a": "Lemma は RAG レイヤーで動作しモデル非依存で、加えてエージェントが外部システムへ作用する際の権限・来歴の証明にも及びます (→ セクション 5)。",
             "links": [
-              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
             ]
           },
           {
@@ -242,8 +270,14 @@
             "q": "どの柱から検討すべき？",
             "a": "課題ベースで選びます。データの出所を証明したい → P1、AI の判断根拠を後から証明したい → P2、AI エージェントの操作権限を証明したい → P3、規制属性を生データを渡さず証明したい → P4。各柱に対応する実事案は Critical Brief で扱っています。",
             "links": [
-              { "label": "4 つの柱", "href": "/ja/pillars" },
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+              {
+                "label": "4 つの柱",
+                "href": "/ja/pillars"
+              },
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
             ]
           }
         ]
@@ -269,8 +303,14 @@
             "a": "規制が生 PII の収集・保管を要求する設計では、保管データそのものが漏洩面になります。実例として KYC データの内部漏洩事案 (Critical Brief、Coinbase KYC 等) がこの構造を示しています。Lemma は属性を証明として渡し、生 PII の蓄積を構造的に縮小します。",
             "pillar": "p4",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
-              { "label": "規制属性証明 (P4)", "href": "/ja/pillars/regulatory-attribute-proof/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "規制属性証明 (P4)",
+                "href": "/ja/pillars/regulatory-attribute-proof/"
+              }
             ]
           }
         ]
@@ -294,7 +334,10 @@
             "a": "透かしは標識を成果物に埋め込む detection 的手法で、統計的に剥離・偽造され得ます (Critical Brief、SynthID reverse-engineering 等で実証)。暗号的来歴は成果物の外側に証明を置き、信号空間の中に「鍵」を残さない点で異なります。",
             "pillar": "p1",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
             ]
           }
         ]
@@ -308,8 +351,14 @@
             "a": "エージェントが外部システムへ作用する各操作について、「誰が」「どの権限で」「どの操作を」要求したかを独立検証可能な証明として固定できます。背景として、AI エージェントが攻撃工程の大半を自律実行した事案も報告されています (Critical Brief、GTG-1002 等)。",
             "pillar": "p3",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
-              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
             ]
           },
           {
@@ -317,8 +366,14 @@
             "a": "エージェント基盤の認証・権限の検証層に関わる事案を Critical Brief で扱っています (Starlette/BadHost、PocketOS 等)。技術的な実装方針は P3 ページ「エージェント権限証明」を参照してください。",
             "pillar": "p3",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
-              { "label": "エージェント権限証明 (P3)", "href": "/ja/pillars/agent-authority-proof/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
             ]
           }
         ]
@@ -332,8 +387,14 @@
             "a": "規制属性 (KYC 通過、許可された jurisdiction、サンクション非該当、年齢等) を、検証側が生データを保管しないまま暗号証明 (ZK 属性証明) として受領する設計です。詳細は P4 ページ「規制属性証明」、適用例は KYC/AML 選択的開示ユースケース。",
             "pillar": "p4",
             "links": [
-              { "label": "規制属性証明 (P4)", "href": "/ja/pillars/regulatory-attribute-proof/" },
-              { "label": "KYC/AML 選択的開示", "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/" }
+              {
+                "label": "規制属性証明 (P4)",
+                "href": "/ja/pillars/regulatory-attribute-proof/"
+              },
+              {
+                "label": "KYC/AML 選択的開示",
+                "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/"
+              }
             ]
           },
           {
@@ -341,8 +402,14 @@
             "a": "公共部門の AI 判断の検証・認可の証跡に関わる事案を Critical Brief で扱っています (Williams FRT 誤認逮捕等)。提供形態は Lemma Civic。SIer 経由の導入を想定しています。",
             "pillar": "p4",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
-              { "label": "Lemma Civic", "href": "/ja/pricing#civic" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "Lemma Civic",
+                "href": "/ja/pricing#civic"
+              }
             ]
           }
         ]
@@ -355,15 +422,24 @@
             "q": "Lemma Critical Brief とは？",
             "a": "Lemma が発行する threat intelligence brief。AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す reference 集です。CSO・アナリスト・規制実務者向け。",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" },
-              { "label": "Methodology", "href": "/ja/critical/briefs/methodology/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "Methodology",
+                "href": "/ja/critical/briefs/methodology/"
+              }
             ]
           },
           {
             "q": "どの柱の事案がある？",
             "a": "来歴 (ブリッジ / サプライチェーン / AI 生成物)、検証可能 AI (誤判定 / 透かし)、エージェント権限 (自律攻撃 / MCP)、規制属性 (KYC 漏洩) を横断。Pillar 別・Category 別アーカイブから辿れます。",
             "links": [
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
             ]
           },
           {
@@ -410,8 +486,14 @@
             "q": "検出 / 監視ツールとの違いは？",
             "a": "検出は受信側が「何を accept するか」自体を変えません。検出 (異常検知・監視) と事前証明 (attestation) は代替ではなく補完関係にあります。詳細は detection-is-not-proof essay、実証は Critical Brief 各号の §5。既存検出ベンダーを否定せず役割分担として描きます。",
             "links": [
-              { "label": "detection-is-not-proof", "href": "/ja/blog/detection-is-not-proof/" },
-              { "label": "Critical Brief 一覧", "href": "/ja/critical/briefs/" }
+              {
+                "label": "detection-is-not-proof",
+                "href": "/ja/blog/detection-is-not-proof/"
+              },
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
             ]
           },
           {
@@ -468,7 +550,9 @@
           "エンドツーエンドの証明、追跡可能性、監査可能性"
         ]
       ],
-      "highlightRows": [3]
+      "highlightRows": [
+        3
+      ]
     },
     "criticalBriefBlock": {
       "badge": "上位オプションパック向け",
@@ -476,8 +560,14 @@
       "h2": "事案ベースで Lemma を理解する",
       "body": "Lemma Critical Brief は、AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す threat intelligence brief。CSO・アナリスト・規制実務者を想定読者とする上位 reference。",
       "cta": [
-        { "label": "Critical Brief 一覧 →", "href": "/ja/critical/briefs/" },
-        { "label": "Methodology", "href": "/ja/critical/briefs/methodology/" }
+        {
+          "label": "Critical Brief 一覧 →",
+          "href": "/ja/critical/briefs/"
+        },
+        {
+          "label": "Methodology",
+          "href": "/ja/critical/briefs/methodology/"
+        }
       ]
     },
     "partner": {
@@ -798,276 +888,6 @@
       "secondaryCta": "ホワイトペーパーをダウンロード"
     }
   },
-  "pricing": {
-    "metaTitle": "料金 — Lemma Oracle",
-    "metaDescription": "Lemma Oracle のエンタープライズおよび開発者向け料金。3つのセグメント、1つの信頼レイヤー。",
-    "hero": {
-      "eyebrow": "料金",
-      "h1": "重要な意思決定のために",
-      "h1Em": "作られた。",
-      "p": "3 つのエンタープライズセグメント、1 つの開発者レイヤー。すべてのプランは ZK 証明による来歴証明、AES-GCM 暗号化、オンチェーンへの永続的記録という共通の暗号基盤の上に構築されています。"
-    },
-    "notice": "料金はユースケースに合わせて調整されます。お客様の組織に適したティアについてお問い合わせください。",
-    "enterprise": {
-      "tag": "エンタープライズ",
-      "h2": "3 つのセグメント。1 つの信頼レイヤー。",
-      "p": "Lemma のエンタープライズ層は、公共インフラ、重要システム、金融コンプライアンスの 3 つの垂直領域に構造化されています。",
-      "plans": [
-        {
-          "tag": "公共セクター",
-          "name": "Lemma Civic",
-          "sub": "公共インフラ事業者向け",
-          "bestFor": "自治体サービス事業者、水道事業者、廃棄物管理事業者、複合司法管轄にわたる市民向けサービスを提供するB2B2G事業者。",
-          "features": [
-            "公共サービス適格性の ZK 証明済み属性検証",
-            "マルチサイトティアリング — 運用サイト数に応じたスケーリング",
-            "監査および公共の説明責任のためのオンチェーン来歴証明",
-            "公共インフラ向け標準スキーマライブラリ"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "1〜3サイト"
-            ],
-            [
-              "Tier 2",
-              "4〜10サイト"
-            ],
-            [
-              "Tier 3",
-              "11サイト以上 · カスタム"
-            ]
-          ],
-          "priceNote": "月額サブスクリプション + 検証通話量。カスタムスキーマ登録は別料金。",
-          "cta": "お問い合わせ"
-        },
-        {
-          "tag": "重要インフラ",
-          "name": "Lemma Critical",
-          "sub": "ミッションクリティカルシステム向け",
-          "bestFor": "電力・水道・交通インフラ事業者で、規制遵守と 24/365 の可用性が不可欠な監視・制御システムで AI を運用している事業者。",
-          "features": [
-            "ドメイン固有のビジネスルール向けカスタム ZK サーキット",
-            "コンプライアンスグレードの監査証跡",
-            "SLA 保証稼働率 · オンプレミスデプロイメントオプション",
-            "施設数と統合範囲に応じたティアリング"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "単一施設"
-            ],
-            [
-              "Tier 2",
-              "2〜10施設"
-            ],
-            [
-              "Tier 3",
-              "コア統合 · エンタープライズ"
-            ]
-          ],
-          "priceNote": "施設規模、SLA要件、ZKサーキットの複雑さに応じて価格設定。カスタム見積りについてはお問い合わせください。",
-          "cta": "お問い合わせ"
-        },
-        {
-          "tag": "金融・規制対象",
-          "name": "Lemma Compliance",
-          "sub": "金融機関・FinTech向け",
-          "bestFor": "検証可能な KYC/AML 属性、AI 判断の説明可能性、GDPR や EU AI Act、国内金融規制を満たす永続的な監査証跡を必要とする銀行・FinTech・規制対象機関。",
-          "features": [
-            "データ開示のない KYC/AML 属性検証",
-            "EU AI Act および ISO 42001 準拠の監査証跡",
-            "選択的开示 — 事実を証明し PII を保護",
-            "クエリごとに完全な来歴証明付きの RAG ポリシーレイヤー"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "中小 FinTech"
-            ],
-            [
-              "Tier 2",
-              "地方銀行・中規模"
-            ],
-            [
-              "Tier 3",
-              "メガバンク・中央銀行"
-            ]
-          ],
-          "priceNote": "USD 価格。月額サブスクリプション + 通話量。グローバル金融規制に準拠。",
-          "cta": "お問い合わせ"
-        }
-      ]
-    },
-    "dev": {
-      "tag": "開発者",
-      "h2": "Trust402",
-      "p": "開発者向けのプロダクト。x402 と MCP エコシステム向け — すべてのエージェント決済に ZK 証明済みの来歴証明を付与します。まもなく提供開始。",
-      "plans": [
-        {
-          "name": "Explorer",
-          "desc": "サンドボックスアクセス。コミット前に ZK 属性検証を評価できます。テストネット限定 — メインネットへの書き込みはありません。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Builder",
-          "desc": "プロダクションアクセス。x402 と MCP でアプリを出荷する個人開発者向け。標準の通話量が含まれます。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Studio",
-          "desc": "チームプラン。複数の API キー、優先サポート、拡張された通話量。スタートアップや小規模チーム向け。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Pro",
-          "desc": "高ボリュームプロダクション。SLA 保証の専用サポートチャンネル。エージェントエコシステムで規模の段階にあるプロダクト向け。",
-          "badge": "近日公開"
-        }
-      ],
-      "cta": "ウェイトリストに登録",
-      "demoCta": "製品ページを見る →（英語のみ）",
-      "note": "詳細な料金とドキュメントはリリース時に提供されます。"
-    },
-    "compare": {
-      "tag": "一覧",
-      "h2": "どのプランが組織に合っているか？",
-      "headers": [
-        "機能",
-        "Civic",
-        "Critical",
-        "Compliance",
-        "Trust402"
-      ],
-      "rows": [
-        [
-          "AES-GCM 暗号化 · docHash/CID",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "ZK 証明 — 標準サーキット",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "オンチェーン来歴証明のアンカー",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "選択的開示",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "カスタム ZK サーキット開発",
-          "—",
-          "◆",
-          "Tier 2/3",
-          "—"
-        ],
-        [
-          "オンプレミスデプロイメント",
-          "—",
-          "Tier 2/3",
-          "Tier 3",
-          "—"
-        ],
-        [
-          "SLA 保証稼働率",
-          "Tier 2/3",
-          "◆",
-          "◆",
-          "Pro"
-        ],
-        [
-          "RAG ポリシーレイヤー統合",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "EU AI Act / ISO 42001 準拠",
-          "—",
-          "Tier 2/3",
-          "◆",
-          "—"
-        ],
-        [
-          "x402 決済ヘッダー統合",
-          "—",
-          "—",
-          "—",
-          "◆"
-        ],
-        [
-          "サインアップ",
-          "—",
-          "—",
-          "—",
-          "◆"
-        ],
-        [
-          "契約タイプ",
-          "B2B年契約",
-          "B2B年契約",
-          "B2B年契約",
-          "月額/年額"
-        ]
-      ]
-    },
-    "faqSection": {
-      "tag": "よくある質問",
-      "title": "料金 FAQ.",
-      "items": [
-        {
-          "q": "なぜ公開価格がないのですか？",
-          "a": "エンタープライズの料金はティア、サイト数、SLA要件、ZKサーキットの複雑さに依存します。文脈のない数字は誤解を招きます。実際のユースケースに応じて価格設定します。"
-        },
-        {
-          "q": "どのセグメントが業界に合っていますか？",
-          "a": "公共インフラ・B2B2G → Civic。電力・水道・鉄道・重要 AI → Critical。銀行・FinTech・KYC/AML → Compliance。x402・MCP 上に構築 → Trust402。"
-        },
-        {
-          "q": "料金はどのように設定されていますか？",
-          "a": "すべてのエンタープライズプランは月額基本料金に検証通話量とオプションのカスタムスキーマ登録を組み合わせています。"
-        },
-        {
-          "q": "無料トライアルはありますか？",
-          "a": "Trust402 にはサンドボックス評価用の Explorer ティアが含まれます。エンタープライズ評価はスコープ付き PoC で対応します。"
-        },
-        {
-          "q": "Trust402 はいつリリースされますか？",
-          "a": "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。"
-        },
-        {
-          "q": "低いティアから始めてアップグレードできますか？",
-          "a": "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。"
-        }
-      ]
-    },
-    "cta": {
-      "eyebrow": "はじめる",
-      "h2": "あなたの AI が必要とする",
-      "h2Em": "証明レイヤー。",
-      "p": "エンタープライズお問い合わせまたは開発者ウェイトリスト。1分で登録できます。",
-      "cta1": "お問い合わせ — エンタープライズ",
-      "cta2": "ウェイトリストに登録 — x402"
-    },
-    "nav": {
-      "wp": "ホワイトペーパーをダウンロード →"
-    }
-  },
   "thankYou": {
     "eyebrow": "ありがとうございます",
     "title": "ホワイトペーパーの<br>準備ができました",
@@ -1103,14 +923,33 @@
     "ctaEyebrow": "はじめる",
     "ctaTitle": "証明する準備はできましたか？",
     "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。",
-    "heroH1Lines": ["AI の判断に、", "4 つの問いが立つ。"],
+    "heroH1Lines": [
+      "AI の判断に、",
+      "4 つの問いが立つ。"
+    ],
     "heroSub": "AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われる。Lemma は、各問いに独立検証可能な暗号証明を返す 4 軸の信頼レイヤー。",
     "questionsLabel": "4 つの問い",
     "questions": [
-      { "tag": "P1 · 来歴", "stem": "そのデータは、", "answer": "本当に正規の発行元から来たか？" },
-      { "tag": "P2 · AI 判断", "stem": "そのモデルは、", "answer": "本当にその入力で判断したか？" },
-      { "tag": "P3 · エージェント権限", "stem": "そのエージェントは、", "answer": "本当に代理する権限を持つか？" },
-      { "tag": "P4 · 規制属性", "stem": "その属性は、", "answer": "本当に規制要件を満たすか？" }
+      {
+        "tag": "P1 · 来歴",
+        "stem": "そのデータは、",
+        "answer": "本当に正規の発行元から来たか？"
+      },
+      {
+        "tag": "P2 · AI 判断",
+        "stem": "そのモデルは、",
+        "answer": "本当にその入力で判断したか？"
+      },
+      {
+        "tag": "P3 · エージェント権限",
+        "stem": "そのエージェントは、",
+        "answer": "本当に代理する権限を持つか？"
+      },
+      {
+        "tag": "P4 · 規制属性",
+        "stem": "その属性は、",
+        "answer": "本当に規制要件を満たすか？"
+      }
     ],
     "compositionLabel": "信頼レイヤー",
     "compositionH2": "4 つの問いが、1 つの信頼レイヤーになる。",

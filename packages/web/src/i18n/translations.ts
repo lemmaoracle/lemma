@@ -459,70 +459,10 @@ export interface Translations {
       readonly secondaryCta: string;
     }>;
   }>;
-  readonly pricing: Readonly<{
-    readonly metaTitle: string;
-    readonly metaDescription: string;
-    readonly hero: Readonly<{
-      readonly eyebrow: string;
-      readonly h1: string;
-      readonly h1Em: string;
-      readonly p: string;
-    }>;
-    readonly notice: string;
-    readonly nav: Readonly<{
-      readonly wp: string;
-    }>;
-    readonly enterprise: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly plans: ReadonlyArray<{
-        readonly tag: string;
-        readonly name: string;
-        readonly sub: string;
-        readonly bestFor: string;
-        readonly features: ReadonlyArray<string>;
-        readonly tiers: ReadonlyArray<ReadonlyArray<string>>;
-        readonly priceNote: string;
-        readonly cta: string;
-      }>;
-    }>;
-    readonly dev: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly plans: ReadonlyArray<{
-        readonly name: string;
-        readonly desc: string;
-        readonly badge: string;
-      }>;
-      readonly cta: string;
-      readonly demoCta: string;
-      readonly note: string;
-    }>;
-    readonly compare: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly headers: ReadonlyArray<string>;
-      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
-    }>;
-    readonly faqSection: Readonly<{
-      readonly tag: string;
-      readonly title: string;
-      readonly items: ReadonlyArray<{
-        readonly q: string;
-        readonly a: string;
-      }>;
-    }>;
-    readonly cta: Readonly<{
-      readonly eyebrow: string;
-      readonly h2: string;
-      readonly h2Em: string;
-      readonly p: string;
-      readonly cta1: string;
-      readonly cta2: string;
-    }>;
-  }>;
+  /** Pricing page content is now sourced from src/data/pricing.ts as a
+   * single typed const (the old i18n-based shape would have ballooned
+   * the JSON files). The Translations interface no longer carries a
+   * pricing block. */
   readonly thankYou: Readonly<{
     readonly eyebrow: string;
     readonly title: string;

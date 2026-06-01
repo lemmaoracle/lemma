@@ -1,347 +1,154 @@
 ---
+/**
+ * /ja/pricing/ + /pricing/ — v24 redesign + product hub.
+ *
+ * Composition (cream, 1100px container, Sora + Noto Sans JP + Space
+ * Mono): Hero + §1 Enterprise + §2 Trust402 + §3 Option Packs +
+ * §4 Compare matrix + §5 Adoption flow + §6 FAQ + Vision close.
+ *
+ * Per the v4 mockup brief, "Lemma Oracle" is the internal tech name and
+ * does NOT appear in surfaced copy here — the brand surface is "Lemma".
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CtaSection from "../components/CtaSection.astro";
-import PricingBg from "../assets/pricing-hero.jpg";
-import Trust402Bg from "../assets/trust402-cover.jpg";
-import Cover from "../assets/cover.jpg";
-import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
-import { PRICING_PLAN_ANCHORS } from "../config/navigation";
+import PricingHero from "../components/pricing/PricingHero.astro";
+import PricingEnterprise from "../components/pricing/PricingEnterprise.astro";
+import PricingTrust402 from "../components/pricing/PricingTrust402.astro";
+import PricingPacks from "../components/pricing/PricingPacks.astro";
+import PricingCompare from "../components/pricing/PricingCompare.astro";
+import PricingAdoption from "../components/pricing/PricingAdoption.astro";
+import PricingFAQ from "../components/pricing/PricingFAQ.astro";
+import PricingVisionClose from "../components/pricing/PricingVisionClose.astro";
+import { PRICING } from "../data/pricing";
 
-export interface PricingTemplateProps {
+interface Props {
   locale: Locale;
   t: Translations;
   base: string;
 }
 
-const { locale, t, base } = Astro.props as PricingTemplateProps;
-const px = t.pricing;
-const discoveryHref = DISCOVERY_CALL_URL[locale];
-const discoveryLabel = DISCOVERY_CALL[locale].buttonLabel;
+const { locale, t, base } = Astro.props as Props;
 ---
 
 <Layout
   locale={locale}
-  title={px.metaTitle}
-  description={px.metaDescription}
   metaType="page"
   pagePath="/pricing/"
+  title={PRICING.meta.title[locale]}
+  description={PRICING.meta.description[locale]}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <section class="hero">
-    <div class="hero-bg" style={`background-image: url(${PricingBg.src})`}></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-inner reveal">
-      <div class="eyebrow">{px.hero.eyebrow}</div>
-      <h1>{px.hero.h1}<br /><em>{px.hero.h1Em}</em></h1>
-      <p>{px.hero.p}</p>
+  <main class="pr-page">
+    <div class="pr-container">
+      <PricingHero locale={locale} />
+      <PricingEnterprise locale={locale} />
+      <PricingTrust402 locale={locale} base={base} />
+      <PricingPacks locale={locale} />
+      <PricingCompare locale={locale} />
+      <PricingAdoption locale={locale} />
+      <PricingFAQ locale={locale} />
     </div>
-  </section>
+  </main>
 
-  <div class="notice">
-    <div class="notice-dot"></div>
-    <p>{px.notice}</p>
-  </div>
-
-  <section class="enterprise-section">
-    <div class="section-intro reveal">
-      <div>
-        <div class="section-tag">{px.enterprise.tag}</div>
-        <h2>{px.enterprise.h2}</h2>
-      </div>
-      <p>{px.enterprise.p}</p>
-    </div>
-
-    <div class="plan-grid">
-      {px.enterprise.plans.map((plan, i) => (
-        <div id={PRICING_PLAN_ANCHORS[i]} class="plan-card reveal">
-          <div class="plan-tag">{plan.tag}</div>
-          <div class="plan-name" set:html={plan.name.replace(/(\w+)<br \/>(\w+)/, "$1<br />$2")} />
-          <div class="plan-sub">{plan.sub}</div>
-          <div class="plan-rule"></div>
-          <div class="plan-target">
-            <strong>Best for</strong> {plan.bestFor}
-          </div>
-          <div class="plan-features">
-            {plan.features.map((f) => (
-              <div class="plan-feature">{f}</div>
-            ))}
-          </div>
-          <div class="plan-tiers">
-            {plan.tiers.map(([label, desc]) => (
-              <div class="plan-tier-row">
-                <span class="plan-tier-label">{label}</span><span class="plan-tier-desc">{desc}</span>
-              </div>
-            ))}
-          </div>
-          <div class="plan-price-note">{plan.priceNote}</div>
-          <a href={discoveryHref} class="btn-plan" target="_blank" rel="noopener">{discoveryLabel}</a>
-          <a
-            href="https://tally.so/r/7RJXdR"
-            class="btn-plan-wp"
-            target="_blank">{px.nav.wp}</a>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <section class="dev-section">
-    <div class="dev-bg" style={`background-image: url(${Trust402Bg.src})`}></div>
-    <div class="dev-overlay"></div>
-    <div class="dev-inner">
-      <div class="dev-header reveal">
-        <div>
-          <div class="section-tag" style="color:var(--accent)">{px.dev.tag}</div>
-          <h2>{px.dev.h2}</h2>
-        </div>
-        <p>{px.dev.p}</p>
-      </div>
-      <div class="dev-plans">
-        {px.dev.plans.map((plan) => (
-          <div class="dev-plan reveal">
-            <div class="dev-plan-name">{plan.name}</div>
-            <div class="dev-plan-rule"></div>
-            <div class="dev-plan-desc">{plan.desc}</div>
-            <div class="dev-plan-badge">{plan.badge}</div>
-          </div>
-        ))}
-      </div>
-      <div class="dev-cta-row reveal">
-        <a href="https://tally.so/r/kd0bZR" class="btn-dev" target="_blank">{px.dev.cta}</a>
-        <a href="/trust402" class="btn-dev btn-dev-outline" target="_blank">{px.dev.demoCta}</a>
-        <p class="dev-note" set:html={px.dev.note.replace(/<br \/>/, "<br />")} />
-      </div>
-    </div>
-  </section>
-
-  <section class="compare-section reveal">
-    <div class="section-tag">{px.compare.tag}</div>
-    <h2 style="font-family:var(--font-display);font-size:clamp(28px,3.2vw,42px);font-weight:400;color:#000;line-height:1.15;margin-bottom:48px">{px.compare.h2}</h2>
-    <table class="compare-table">
-      <thead><tr>{px.compare.headers.map(h => <th>{h}</th>)}</tr></thead>
-      <tbody>
-        {px.compare.rows.map((row) => (
-          <tr>{row.map(cell => (
-            <td>
-              {cell === "◆" ? <span class="check">◆</span> :
-               cell === "—" ? <span class="dash">—</span> :
-               cell}
-            </td>
-          ))}</tr>
-        ))}
-      </tbody>
-    </table>
-  </section>
-
-  <section class="faq-section">
-    <div class="section-tag">{px.faqSection.tag}</div>
-    <div style="font-family:var(--font-display);font-size:clamp(28px,3.2vw,42px);font-weight:400;color:#000;line-height:1.15;margin-bottom:0">{px.faqSection.title}</div>
-    <div class="faq-grid">
-      {px.faqSection.items.map((item) => (
-        <div class="faq-item reveal">
-          <h3>{item.q}</h3><p>{item.a}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <CtaSection bgImageSrc={Cover.src} base={base} locale={locale} />
+  <PricingVisionClose locale={locale} />
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .hero {
-    position: relative; margin-top: 64px; height: 56vh; min-height: 420px;
-    display: flex; align-items: flex-end; padding: 0 10% 72px; overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0; background: center/cover no-repeat;
-    filter: saturate(0.3) brightness(0.45);
-  }
-  .hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(160deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.82) 100%);
-  }
-  .hero-inner { position: relative; z-index: 2; max-width: 680px; }
-  .eyebrow {
-    font-size: 10px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-  }
-  .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--accent); display: block; }
-  .hero-inner h1 { font-family: var(--font-display); font-size: clamp(40px,5.5vw,68px); font-weight: 300; color: #fff; line-height: 1.08; }
-  /* Issue #150: Japanese needs more leading than Latin display type. */
-  :root[lang="ja"] .hero-inner h1 { line-height: 1.3; }
-  .hero-inner h1 em { font-style: italic; }
-  .hero-inner p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.78; max-width: 520px; margin-top: 20px; }
+  .pr-page {
+    /* Sora carries Latin; Noto Sans JP backs JA so they don't fall
+       through to the Layout-level Cormorant / Noto Serif JP stack.
+       Exposed as --pr-* variables for child pricing components. */
+    --pr-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --pr-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --pr-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --pr-text-1: #1a1a1a;
+    --pr-text-2: #3a3a3a;
+    --pr-text-3: #5a5a5a;
+    --pr-text-4: #9a9a9a;
 
-  .notice {
-    background: var(--accent-bg); border-top: 1px solid #e8d5c4; border-bottom: 1px solid #e8d5c4;
-    padding: 14px 10%; display: flex; align-items: center; gap: 12px;
+    background: var(--lemma-cream);
+    color: var(--pr-text-2);
+    font-family: var(--pr-body);
+    font-weight: 400;
+    line-height: 1.7;
+    margin-top: 64px;
   }
-  .notice-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
-  .notice p { font-size: 12px; color: var(--accent); letter-spacing: 0.04em; line-height: 1.6; margin: 0; }
+  :root[lang="en"] .pr-page {
+    --pr-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+  }
 
-  .enterprise-section { background: #fff; padding: 120px 10%; }
-  .section-intro { display: grid; grid-template-columns: 1fr 1.8fr; gap: 80px; align-items: end; margin-bottom: 72px; }
-  .section-intro h2 { font-family: var(--font-display); font-size: clamp(32px,3.8vw,48px); font-weight: 400; line-height: 1.14; color: #000; }
-  .section-intro p { font-size: 14px; line-height: 1.82; color: var(--gray-500); max-width: 480px; }
-  .plan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--gray-200); }
-  .plan-card {
-    background: #fff; padding: 52px 40px 48px; border-top: 2px solid transparent;
-    display: flex; flex-direction: column; gap: 0; opacity: 0; transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.25s;
-    scroll-margin-top: 80px;
+  .pr-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
-  .plan-card.on { opacity: 1; transform: translateY(0); }
-  .plan-card:nth-child(2) { transition-delay: 0.08s; }
-  .plan-card:nth-child(3) { transition-delay: 0.16s; }
-  .plan-card:hover { border-top-color: var(--accent); }
-  .plan-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
-  .plan-name { font-family: var(--font-display); font-size: 32px; font-weight: 600; color: #000; line-height: 1; margin-bottom: 6px; }
-  .plan-sub { font-family: var(--font-display); font-size: 16px; font-weight: 300; color: var(--gray-500); font-style: italic; margin-bottom: 28px; }
-  .plan-rule { width: 32px; height: 1px; background: var(--accent); margin-bottom: 28px; }
-  .plan-target { font-size: 13px; line-height: 1.75; color: var(--gray-800); margin-bottom: 32px; flex: 1; }
-  .plan-target strong { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 8px; }
-  .plan-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
-  .plan-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--gray-800); line-height: 1.55; }
-  .plan-feature::before { content: "◆"; color: var(--accent); font-size: 7px; flex-shrink: 0; margin-top: 5px; }
-  .plan-tiers { display: flex; flex-direction: column; gap: 6px; margin-bottom: 36px; padding: 20px; background: var(--gray-50); border-left: 2px solid var(--gray-200); }
-  .plan-tier-row { display: flex; justify-content: space-between; align-items: center; }
-  .plan-tier-label { font-size: 11px; color: var(--gray-500); letter-spacing: 0.08em; }
-  .plan-tier-desc { font-size: 11px; color: var(--gray-800); font-weight: 500; text-align: right; }
-  .plan-price-note { font-size: 11px; color: var(--gray-500); letter-spacing: 0.04em; padding-top: 16px; border-top: 1px solid var(--gray-200); margin-bottom: 28px; }
-  .btn-plan {
-    background: #000; color: #fff; padding: 14px 0; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.14em; text-transform: uppercase; border: none; border-radius: 0;
-    cursor: pointer; display: block; text-align: center; width: 100%; text-decoration: none; transition: background 0.2s;
-  }
-  .btn-plan:hover { background: var(--accent); }
-  .btn-plan-wp {
-    display: block; text-align: center; font-size: 11px; color: var(--black);
-    letter-spacing: 0.14em; text-transform: uppercase; padding: 13px 0;
-    border: 1px solid var(--black); border-radius: 0; cursor: pointer; width: 100%;
-    background: transparent; text-decoration: none; transition: background 0.2s, color 0.2s;
-  }
-  .btn-plan-wp:hover { background: var(--black); color: var(--white); }
 
-  .dev-section {
-    position: relative; padding: 120px 10%; overflow: hidden;
+  a {
+    text-decoration: none;
+    color: inherit;
   }
-  .dev-bg { position: absolute; inset: 0; background: center/cover no-repeat; filter: saturate(0.55) brightness(0.6); }
-  .dev-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.78); }
-  .dev-inner { position: relative; z-index: 2; }
-  .dev-header { display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; align-items: end; margin-bottom: 72px; }
-  .dev-header h2 { font-family: var(--font-display); font-size: clamp(32px,3.8vw,48px); font-weight: 300; color: #fff; line-height: 1.1; }
-  .dev-header p { font-size: 14px; line-height: 1.82; color: rgba(255,255,255,0.45); max-width: 480px; }
-  .dev-plans { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; background: rgba(255,255,255,0.08); margin-bottom: 48px; }
-  .dev-plan {
-    background: rgba(255,255,255,0.04); padding: 40px 32px 36px; border-top: 2px solid transparent;
-    transition: border-color 0.25s, background 0.25s, opacity 0.55s ease, transform 0.55s ease;
-    display: flex; flex-direction: column;
-  }
-  .dev-plan.on { opacity: 1; transform: translateY(0); }
-  .dev-plan:nth-child(2) { transition-delay: 0.07s; }
-  .dev-plan:nth-child(3) { transition-delay: 0.14s; }
-  .dev-plan:nth-child(4) { transition-delay: 0.21s; }
-  .dev-plan:hover { border-top-color: var(--accent); background: rgba(255,255,255,0.07); }
-  .dev-plan-name { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: #fff; line-height: 1; margin-bottom: 16px; }
-  .dev-plan-rule { width: 24px; height: 1px; background: var(--accent); margin-bottom: 16px; }
-  .dev-plan-desc { font-size: 13px; line-height: 1.75; color: rgba(255,255,255,0.45); margin-bottom: 24px; flex: 1; }
-  .dev-plan-badge {
-    display: inline-block; padding: 4px 12px; background: rgba(139,69,19,0.2); color: var(--accent);
-    font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
-  }
-  .dev-cta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-  .btn-dev {
-    background: #fff; color: #000; padding: 14px 36px; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.14em; text-transform: uppercase; border: none; border-radius: 0;
-    cursor: pointer; display: inline-block; text-decoration: none; transition: background 0.2s, color 0.2s;
-  }
-  .btn-dev:hover { background: var(--accent); color: #fff; }
-  .btn-dev-outline {
-    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4);
-  }
-  .btn-dev-outline:hover { background: #fff; color: #000; border-color: #fff; }
-  .dev-note { font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; line-height: 1.6; }
 
-  .compare-section { padding: 120px 10%; background: var(--gray-50); }
-  .compare-table { width: 100%; border-collapse: collapse; margin-top: 56px; }
-  .compare-table thead tr { background: #000; }
-  .compare-table th { padding: 14px 20px; font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #fff; text-align: left; }
-  .compare-table td { padding: 16px 20px; font-size: 13px; line-height: 1.65; color: var(--gray-800); border-bottom: 1px solid var(--gray-200); }
-  .compare-table tr:nth-child(odd) td { background: #fff; }
-  .compare-table tr:nth-child(even) td { background: var(--gray-50); }
-  .compare-table .check { color: var(--accent); font-size: 14px; }
-  .compare-table .dash { color: var(--gray-200); }
-
-  .faq-section { padding: 100px 10%; background: #fff; }
-  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gray-200); margin-top: 56px; }
-  .faq-item {
-    background: #fff; padding: 32px 36px; border-top: 2px solid transparent;
-    opacity: 0; transform: translateY(12px);
-    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s;
+  /* Section chrome shared across §1-§6. Wrapped in :global() so child
+     pricing components inherit through the cascade. */
+  :global(.pr-section-eyebrow) {
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--pr-text-3);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .faq-item.on { opacity: 1; transform: translateY(0); border-top-color: var(--accent); }
-  .faq-item h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: #000; margin-bottom: 10px; line-height: 1.35; }
-  .faq-item p { font-size: 13px; line-height: 1.78; color: var(--gray-500); }
-
-  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
-  .reveal.on { opacity: 1; transform: translateY(0); }
-  .section-tag {
-    font-size: 10px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase;
-    color: #8b4513; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  :global(.pr-section-eyebrow::before) {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
   }
-  .section-tag::before { content: ""; width: 18px; height: 1px; background: #8b4513; display: block; }
-
-  @media (max-width: 1024px) {
-    .section-intro { grid-template-columns: 1fr; gap: 24px; }
-    .plan-grid { grid-template-columns: 1fr 1fr; }
-    .dev-header { grid-template-columns: 1fr; gap: 24px; }
-    .dev-plans { grid-template-columns: 1fr 1fr; }
-    .compare-section { overflow-x: auto; }
-    .faq-grid { grid-template-columns: 1fr; }
+  :global(.pr-section-h2) {
+    font-family: var(--pr-display);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 0 0 22px;
   }
-  @media (max-width: 768px) {
-    .hero, .enterprise-section, .dev-section, .compare-section, .faq-section {
-      padding-left: 6%; padding-right: 6%;
-    }
-    .enterprise-section, .compare-section, .faq-section { padding-top: 80px; padding-bottom: 80px; }
-    .dev-section { padding-top: 90px; padding-bottom: 90px; }
-    .plan-grid { grid-template-columns: 1fr; }
-    .dev-plans { grid-template-columns: 1fr; }
-    /* Issue #151: bump uppercase CTA buttons for mobile readability.
-       Desktop keeps 11px brand sizing; mobile gets 13px + slightly looser
-       tracking so uppercase glyphs don't compress. Padding bumped to keep
-       tap target comfortably above the 44px WCAG/HIG minimum. */
-    .btn-plan, .btn-plan-wp, .btn-dev, .btn-dev-outline {
-      font-size: 13px;
-      letter-spacing: 0.12em;
-    }
-    .btn-plan { padding: 16px 0; }
-    .btn-plan-wp { padding: 15px 0; }
-    .btn-dev { padding: 16px 32px; }
+  :global(:root[lang="ja"] .pr-section-h2) {
+    line-height: 1.3;
+  }
+  :global(.pr-section-h2 .accent) {
+    color: var(--accent);
+  }
+  :global(.pr-section-sub) {
+    font-size: 15.5px;
+    line-height: 1.85;
+    color: var(--pr-text-2);
+    margin: 0 0 36px;
+    max-width: 720px;
+  }
+  :global(.pr-section-sub .k) {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  /* Section spacing — every section after the hero gets the same gap. */
+  .pr-container > :global(section + section) {
+    margin-top: 88px;
+  }
+
+  @media (max-width: 720px) {
+    .pr-container { padding: 0 24px; }
+    :global(.pr-section-h2) { font-size: 28px; }
   }
 </style>
-
-<script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("on");
-        e.target.querySelectorAll(".plan-card, .dev-plan, .faq-item").forEach(function (c, i) {
-          setTimeout(function () { c.classList.add("on"); }, i * 80);
-        });
-        io.unobserve(e.target);
-      });
-    },
-    { threshold: 0.06, rootMargin: "0px 0px -24px 0px" },
-  );
-  document.querySelectorAll(".reveal, .plan-card, .dev-plan, .faq-item").forEach(function (el) { io.observe(el); });
-</script>

@@ -1,0 +1,230 @@
+---
+/**
+ * §3 — Option Packs. 3 cards (variant a/b/c) with goal-axis H3 + meta,
+ * followed by a single availability note.
+ */
+import type { Locale } from "../../i18n/translations";
+import { PRICING } from "../../data/pricing";
+import PricingIcon from "./PricingIcon.astro";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const p = PRICING.packs;
+
+function emphasizeNote(s: string): string {
+  // Surface a handful of brand-aligned terms in black + 500 inside the
+  // otherwise grey note body.
+  const terms = [
+    "Critical / Compliance",
+    "Civic は対象外",
+    "Tier 1 も対象外",
+    "Civic",
+    "Tier 1",
+  ];
+  let out = s;
+  for (const t of terms) {
+    if (!out.includes(`<span class="k">${t}</span>`)) {
+      out = out.split(t).join(`<span class="k">${t}</span>`);
+    }
+  }
+  return out;
+}
+---
+
+<section class="pk-section">
+  <div class="pr-section-eyebrow">{p.eyebrow[locale]}</div>
+  <h2 class="pr-section-h2">
+    {p.h2Head[locale]}<br />
+    <span class="accent">{p.h2Accent[locale]}</span>
+  </h2>
+  <p class="pr-section-sub">{p.sub[locale]}</p>
+
+  <div class="pk-grid">
+    {p.items.map((pack) => (
+      <article class={`pk-card pk-card--${pack.variant}`}>
+        <div class="pk-top"></div>
+        <div class="pk-body">
+          <div class="pk-head">
+            <div class="pk-icon-circle">
+              <PricingIcon name={pack.icon} size={22} />
+            </div>
+            <div class="pk-letter-meta">
+              <div class="pk-letter">{pack.letter}</div>
+              <h4 class="pk-name">{pack.name}</h4>
+            </div>
+          </div>
+          <h3 class="pk-goal">
+            {pack.goalLines[locale][0]}<br />
+            {pack.goalLines[locale][1]}
+          </h3>
+          <p class="pk-desc">{pack.desc[locale]}</p>
+          <div class="pk-meta">
+            <div class="pk-meta-row">
+              <span class="pk-meta-label">{p.metaTierLabel[locale]}</span>
+              <span class="pk-meta-value">{pack.tier[locale]}</span>
+            </div>
+            <div class="pk-meta-row">
+              <span class="pk-meta-label">
+                {pack.entryKind === "entry" ? p.metaEntryLabel[locale] : p.metaScopeLabel[locale]}
+              </span>
+              <span class="pk-meta-value">{pack.entryOrScope[locale]}</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <p class="pk-note" set:html={emphasizeNote(p.note[locale])} />
+</section>
+
+<style>
+  .pk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin: 0 0 24px;
+  }
+
+  .pk-card {
+    border-radius: 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+    border: 0.5px solid var(--lemma-line);
+  }
+  .pk-card:hover {
+    box-shadow: 0 14px 36px rgba(139, 69, 19, 0.08);
+    transform: translateY(-2px);
+  }
+
+  /* 3 colour variants (white / cream-deep / brown-light) with matching
+     bar + icon-circle tone. */
+  .pk-card--a { background: var(--white); }
+  .pk-card--a .pk-top         { background: var(--accent); }
+  .pk-card--a .pk-icon-circle { background: var(--accent); color: var(--lemma-cream); }
+
+  .pk-card--b { background: var(--lemma-cream-deep); border-color: #D4C5A8; }
+  .pk-card--b .pk-top         { background: #6B4220; }
+  .pk-card--b .pk-icon-circle { background: #6B4220; color: var(--lemma-cream); }
+
+  .pk-card--c { background: var(--lemma-brown-light); border-color: #D4B89E; }
+  .pk-card--c .pk-top         { background: #B26B3E; }
+  .pk-card--c .pk-icon-circle { background: #B26B3E; color: var(--lemma-cream); }
+
+  .pk-top { height: 4px; width: 100%; }
+  .pk-body {
+    padding: 26px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+  .pk-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .pk-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pk-letter-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pk-letter {
+    font-family: var(--pr-mono);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--pr-text-3);
+    font-weight: 500;
+  }
+  .pk-name {
+    font-family: var(--pr-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pr-text-3);
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .pk-goal {
+    font-family: var(--pr-display);
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 4px 0 0;
+  }
+  :root[lang="ja"] .pk-goal { line-height: 1.4; }
+  .pk-desc {
+    font-size: 13.5px;
+    color: var(--pr-text-2);
+    line-height: 1.75;
+    margin: 0;
+    padding: 14px 0;
+    border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+  }
+  .pk-desc :global(.k) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .pk-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .pk-meta-row {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 12.5px;
+  }
+  .pk-meta-label {
+    font-family: var(--pr-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--pr-text-3);
+    font-weight: 500;
+    min-width: 80px;
+  }
+  .pk-meta-value {
+    color: var(--pr-text-1);
+    flex: 1;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+
+  .pk-note {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 18px 24px;
+    font-size: 13px;
+    color: var(--pr-text-2);
+    line-height: 1.7;
+    margin: 24px 0 0;
+  }
+  .pk-note :global(.k) {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  @media (max-width: 880px) {
+    .pk-grid { grid-template-columns: 1fr; }
+  }
+</style>
