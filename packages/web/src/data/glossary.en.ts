@@ -920,6 +920,33 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     ctaH2: "Stay ahead of Japan's AI regulation curve.",
     implementationHeading: "Lemma Oracle compliance path",
   },
+  {
+    slug: "pii",
+    nameJa: "PII / 個人を特定可能な情報",
+    nameEn: "PII (Personally Identifiable Information)",
+    category: "規制・コンプライアンス",
+    description:
+      "Information that identifies, or can be used to identify, a specific person — name, address, ID numbers, biometrics. GDPR, CCPA, and Japan's APPI all push operators toward collection minimization and breach-surface reduction.",
+    lead:
+      "Information that identifies, or can be used to identify, a specific individual — name, contact, ID number, biometrics, device identifiers, location. GDPR, CCPA, and Japan's APPI all require operators to minimize collection and to reduce the breach surface around stored data at the same time.",
+    definition: [
+      "Scope varies by jurisdiction. GDPR uses <strong>personal data</strong>, CCPA <strong>personal information</strong>, Japan's APPI 「個人情報」; the definitions don't line up exactly. The common floor includes name, address, contact, identifier numbers (national ID, PPID, PAN, ...), biometrics, device identifiers, location, communication records, transaction history. The EU draws an additional perimeter around <strong>special-category</strong> data (sensitive PII — health, race, religion, biometric, sexual orientation, and so on) and demands additional protection.",
+      "Regulators put two loads on the operator at once: <strong>collection minimization</strong> and <strong>storage-time protection</strong>. The two are in tension — strengthening the latter doesn't erase the breach surface as long as the original data is held. The structural risk is that stored original PII remains both attack surface and regulatory exposure indefinitely.",
+      "Adjacent vocabulary: PHI (Protected Health Information, HIPAA) for healthcare, PAN (Primary Account Number, PCI DSS) for payments. This entry treats PII as the parent concept; the adjacent regulations carry their own surface and live in their own entries.",
+    ],
+    implementation: [
+      'Reframe the operator out of holding original PII, and let only the required attribute travel as a proof. The issuer signs the original; the holder discloses predicates ("over 18", "KYC passed", "Japan resident", ...) via <a href="/glossary/selective-disclosure/">selective disclosure</a>; the verifier sees only the attribute. Three layers; no original in motion.',
+      'The original stays under the issuer; it never reaches the verifier, the recipient, or the AI inference path. It sits encrypted under <a href="/glossary/aes-gcm/">AES-GCM</a>; what touches the circuit is the <a href="/glossary/doc-hash/">docHash</a> and the attribute <a href="/glossary/commitment/">commitment</a>. When a breach happens, the surface that can leak is structurally smaller.',
+      'The pattern fits anywhere a regulation simultaneously demands attribute verification and data minimization — <a href="/glossary/kyc-aml/">KYC/AML</a>, age checks, residency proofs — and shows up as an alternative path for <a href="/glossary/eu-ai-act/">EU AI Act</a> high-risk inputs, GDPR Article 8, and Japan\'s "anonymized information" pattern under APPI.',
+    ],
+    related: [
+      { slug: "kyc-aml", desc: "The canonical regulated domain where attributes can be proven without the underlying PII." },
+      { slug: "selective-disclosure", desc: "Prove the attribute, keep the PII out of motion." },
+      { slug: "audit-trail", desc: "Tamper-evident record of who confirmed which attribute and when." },
+      { slug: "provenance", desc: "Keep the processing history of PII-handling steps independently verifiable." },
+    ],
+    ctaH2: "Prove the attribute. Don't ship the PII.",
+  },
 ];
 
 const TERMS_BY_SLUG_EN: ReadonlyMap<GlossarySlug, GlossaryTerm> = new Map(

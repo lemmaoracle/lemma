@@ -52,7 +52,8 @@ export type GlossarySlug =
   | "kyc-aml"
   | "eu-ai-act"
   | "ai-business-guidelines"
-  | "ai-promotion-act";
+  | "ai-promotion-act"
+  | "pii";
 
 export type GlossaryCategory =
   | "暗号レイヤ"
@@ -992,6 +993,33 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     ],
     ctaH2: "日本の AI 規制対応を、技術で先取りする。",
     implementationHeading: "Lemma Oracle での適合経路",
+  },
+  {
+    slug: "pii",
+    nameJa: "PII / 個人を特定可能な情報",
+    nameEn: "PII (Personally Identifiable Information)",
+    category: "規制・コンプライアンス",
+    description:
+      "個人を特定できる、または特定可能な情報の総称。氏名・連絡先・ID 番号・生体情報など。GDPR・改正個人情報保護法・CCPA は「収集の最小化」と「保管漏洩リスクの削減」を事業者に要請する。",
+    lead:
+      "個人を特定できる、または特定可能な情報の総称。氏名・連絡先・ID 番号・生体情報・端末識別子・位置情報など。GDPR・改正個人情報保護法・CCPA は事業者に「収集の最小化」と「保管中の漏洩リスクの削減」を同時に要請する。",
+    definition: [
+      "包含範囲は法域ごとに異なる。GDPR の <strong>personal data</strong>、CCPA の <strong>personal information</strong>、日本の改正個人情報保護法の「個人情報」など、定義は微妙に揃わない。共通して扱われるのは、氏名・住所・連絡先・ID 番号(マイナンバー・PPID・PAN 等)・生体情報・端末識別子・位置情報・通信履歴・購買履歴。EU では特別カテゴリ(sensitive PII。医療情報・人種・宗教・生体・性的指向等)に追加保護が要求される。",
+      "規制が事業者に課す負荷は二重構造になっている。<strong>収集の必要最小限</strong> と <strong>保管中の保護</strong> を同時に求めるが、両者は本来トレードオフ。後者を強化しても、原データを保管している以上、漏洩面そのものは消えない。事業者にとっての構造的リスクは、保管中の原 PII が永久に攻撃面・規制リスクであり続けること。",
+      "派生語: 医療領域では PHI(Protected Health Information、HIPAA)、決済領域では PAN(Primary Account Number、PCI DSS)が独立した規制下で扱われる。本エントリは PII を親概念として扱い、派生語は関連規制ごとに個別運用される。",
+    ],
+    implementation: [
+      '事業者が原 PII を保管せずに、必要な属性だけを証明として渡せる構造に組み替える。発行者が原 PII に署名 → ホルダーが述語(「18 歳以上」「KYC 通過」「日本居住」など)のみを <a href="/ja/glossary/selective-disclosure/">選択的開示</a> → 検証者は属性のみ確認、という三層で構成される。',
+      '原 PII は発行者の管理下に残り、検証者・受信者・AI 推論側のいずれにも触れない。<a href="/ja/glossary/aes-gcm/">AES-GCM</a> 下で暗号化された状態のまま保管され、回路に乗るのは <a href="/ja/glossary/doc-hash/">docHash</a> と属性 <a href="/ja/glossary/commitment/">コミットメント</a> のみ。漏洩した場合の被害面は構造的に縮小される。',
+      'この構造は <a href="/ja/glossary/kyc-aml/">KYC/AML</a>・年齢確認・国籍検証など、規制が「属性確認」と「データ最小化」を同時に要請する領域で最も効く。<a href="/ja/glossary/eu-ai-act/">EU AI Act</a> 高リスク AI の入力データ、GDPR 8 条(子供への情報サービス)、改正個人情報保護法の「仮名加工情報」の代替設計としても応用される。',
+    ],
+    related: [
+      { slug: "kyc-aml", desc: "原 PII を渡さずに規制属性を満たす代表領域。" },
+      { slug: "selective-disclosure", desc: "PII を秘匿したまま、必要な属性のみ証明する手法。" },
+      { slug: "audit-trail", desc: "「誰が・どの属性を・いつ確認したか」を改ざん不能に残す経路。" },
+      { slug: "provenance", desc: "PII を扱う処理の来歴を独立検証可能に保つ手法。" },
+    ],
+    ctaH2: "原 PII を渡さずに、規制属性を満たす。",
   },
 ];
 
