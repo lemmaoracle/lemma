@@ -37,7 +37,7 @@ function getDefaultOgImage(locale?: string): string {
 
 export default function MetaTags(props: MetaTagsProps) {
   if (props.type === "home") {
-    const { title = "Lemma Oracle", description, base, locale } = props;
+    const { title = "Lemma", description, base, locale } = props;
     const ogImage = getDefaultOgImage(locale);
     const url = `https://lemma.frame00.com${base}`;
 

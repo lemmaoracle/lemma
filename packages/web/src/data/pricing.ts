@@ -383,7 +383,7 @@ export const PRICING: PricingContent = {
         name: "Incident Response",
         icon: "shield-alert",
         goalLines: {
-          ja: ["インシデントから、", "復旧と立証へ。"],
+          ja: ["インシデントから、", "復旧と証明へ。"],
           en: ["From incident,", "to recovery and proof."],
         },
         desc: {
