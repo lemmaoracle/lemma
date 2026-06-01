@@ -26,7 +26,7 @@ export interface UseCasesIndexTemplateProps {
 
 const { locale, t, base, useCases, pillars, useCaseT, pillarT } =
   Astro.props as UseCasesIndexTemplateProps;
-const useCasesPath = `${base}/use-cases`;
+const useCasesPath = `${base}/solutions/use-cases`;
 
 function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
@@ -60,7 +60,7 @@ const collectionJsonLd = {
   title={`${useCaseT.title} — Lemma`}
   description={useCaseT.subtitle}
   metaType="page"
-  pagePath="/use-cases/"
+  pagePath="/solutions/use-cases/"
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(collectionJsonLd)} />
 

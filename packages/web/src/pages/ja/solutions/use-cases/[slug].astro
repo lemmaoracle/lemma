@@ -1,16 +1,16 @@
 ---
-import UseCaseDetailTemplate from "../../templates/UseCaseDetailTemplate.astro";
-import { getAllUseCases, getUseCasesBySlugs } from "../../data/useCases";
-import { getPillarBySlug } from "../../data/pillars";
-import { getTranslations } from "../../i18n/translations";
+import UseCaseDetailTemplate from "../../../../templates/UseCaseDetailTemplate.astro";
+import { getAllUseCases, getUseCasesBySlugs } from "../../../../data/useCases";
+import { getPillarBySlug } from "../../../../data/pillars";
+import { getTranslations } from "../../../../i18n/translations";
 
 export async function getStaticPaths() {
-  const useCases = await getAllUseCases("en");
+  const useCases = await getAllUseCases("ja");
 
   const paths = await Promise.all(
     useCases.map(async (useCase) => {
       const pillar = getPillarBySlug(useCase.pillar);
-      const relatedUseCases = await getUseCasesBySlugs(useCase.relatedUseCases, "en");
+      const relatedUseCases = await getUseCasesBySlugs(useCase.relatedUseCases, "ja");
 
       return {
         params: { slug: useCase.slug },
@@ -23,15 +23,15 @@ export async function getStaticPaths() {
 }
 
 interface Props {
-  useCase: import("../../data/useCases").UseCase;
-  pillar: import("../../data/pillars").Pillar | undefined;
-  relatedUseCases: ReadonlyArray<import("../../data/useCases").UseCase>;
+  useCase: import("../../../../data/useCases").UseCase;
+  pillar: import("../../../../data/pillars").Pillar | undefined;
+  relatedUseCases: ReadonlyArray<import("../../../../data/useCases").UseCase>;
 }
 
 const { useCase, pillar, relatedUseCases } = Astro.props;
-const locale = "en" as const;
+const locale = "ja" as const;
 const t = getTranslations(locale);
-const base = "";
+const base = "/ja";
 const pillarT = t.pillars;
 const useCaseT = t.useCases;
 
@@ -45,7 +45,7 @@ const fallbackPillar = {
   whyNow: { en: "", ja: "" },
   howLemmaFits: { en: [], ja: [] },
   useCaseSlugs: [],
-  primaryCTA: { label: "Talk to us", href: "/services", type: "talk-to-us" as const },
+  primaryCTA: { label: "お問い合わせ", href: "/ja/services", type: "talk-to-us" as const },
   order: 1,
   tags: [],
 };

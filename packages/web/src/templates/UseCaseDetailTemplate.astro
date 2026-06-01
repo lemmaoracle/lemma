@@ -55,7 +55,7 @@ function firstSentence(text: string): string {
   const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
   return (m?.[1] ?? text).trim();
 }
-const useCasesPath = `${base}/use-cases`;
+const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
@@ -93,7 +93,7 @@ const breadcrumbJsonLd = {
   title={`${useCase.title} — ${useCaseT.title} | Lemma`}
   description={useCase.abstract}
   metaType="page"
-  pagePath={`/use-cases/${useCase.slug}/`}
+  pagePath={`/solutions/use-cases/${useCase.slug}/`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />

@@ -21,7 +21,7 @@ interface Props {
 const { locale, base, pillar, pillarT } = Astro.props as Props;
 const hub = pillar.conceptHub;
 if (!hub) return null;
-const useCasesBase = base ? `${base}/use-cases` : "/use-cases";
+const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const h2 = hub.sectionH2s[2];
 ---
 

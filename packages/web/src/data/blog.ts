@@ -137,7 +137,7 @@ const TAG_DESTINATIONS: Readonly<Record<string, string>> = {
   "agent-authority": "/pillars/agent-authority-proof/",
   compliance: "/pillars/regulatory-attribute-proof/",
   // Use cases
-  "financial-services": "/use-cases/kyc-aml-selective-disclosure/",
+  "financial-services": "/solutions/use-cases/kyc-aml-selective-disclosure/",
   // Glossary
   provenance: "/glossary/provenance/",
   "zk-proof": "/glossary/zk-proof/",
