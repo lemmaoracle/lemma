@@ -1,0 +1,113 @@
+---
+/**
+ * §5 — Adoption flow. 5 step cards laid out horizontally with brown
+ * arrow SVGs between them (rotated 90° on mobile).
+ */
+import type { Locale } from "../../i18n/translations";
+import { PRICING } from "../../data/pricing";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const a = PRICING.adoption;
+---
+
+<section class="pa-section">
+  <div class="pr-section-eyebrow">{a.eyebrow[locale]}</div>
+  <h2 class="pr-section-h2">
+    {a.h2Head[locale]}<br />
+    <span class="accent">{a.h2Accent[locale]}</span>
+  </h2>
+  <p class="pr-section-sub">{a.sub[locale]}</p>
+
+  <div class="pa-block">
+    <div class="pa-steps">
+      {a.steps.map((step, i) => (
+        <>
+          {i > 0 && (
+            <div class="pa-arrow" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                <path d="M 4 11 L 18 11 M 13 6 L 18 11 L 13 16" stroke="#8B4513" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              </svg>
+            </div>
+          )}
+          <div class="pa-step">
+            <div class="pa-step-label">{step.no}</div>
+            <div class="pa-step-title">{step.title[locale]}</div>
+            <div class="pa-step-meta">{step.meta[locale]}</div>
+          </div>
+        </>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pa-block {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    padding: 36px 40px;
+  }
+  .pa-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .pa-step {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 12px;
+  }
+  .pa-step-label {
+    font-family: var(--pr-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .pa-step-title {
+    font-family: var(--pr-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+  }
+  .pa-step-meta {
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    color: var(--pr-text-3);
+    letter-spacing: 0.02em;
+  }
+  .pa-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pa-arrow { opacity: 0.4; }
+  }
+
+  @media (max-width: 720px) {
+    .pa-block { padding: 26px 22px; }
+    .pa-steps {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .pa-arrow {
+      width: 100%;
+      padding: 6px 0;
+    }
+    .pa-arrow svg {
+      transform: rotate(90deg);
+    }
+  }
+</style>

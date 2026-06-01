@@ -1,0 +1,125 @@
+---
+/**
+ * §4 — Compare matrix (4 plan × 12 standard features). Option Packs
+ * are intentionally NOT here — they live as their own axis in §3.
+ */
+import type { Locale } from "../../i18n/translations";
+import { PRICING } from "../../data/pricing";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const c = PRICING.compare;
+
+type Cell = (typeof c.rows)[number]["civic"];
+
+function cellText(cell: Cell, lc: Locale): string {
+  if (cell.kind === "yes") return "◆";
+  if (cell.kind === "no") return "—";
+  return cell.label[lc];
+}
+---
+
+<section class="pc-section">
+  <div class="pr-section-eyebrow">{c.eyebrow[locale]}</div>
+  <h2 class="pr-section-h2">
+    {c.h2Head[locale]}<br />
+    <span class="accent">{c.h2Accent[locale]}</span>
+  </h2>
+  <p class="pr-section-sub">{c.sub[locale]}</p>
+
+  <div class="pc-wrap">
+    <table class="pc-table">
+      <thead>
+        <tr>
+          <th class="pc-feature-col">{c.featureColLabel[locale]}</th>
+          {c.planColLabels.map((label) => (
+            <th class="pc-plan-col">{label}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {c.rows.map((row) => (
+          <tr>
+            <td class="pc-feature">{row.feature[locale]}</td>
+            {([row.civic, row.critical, row.compliance, row.trust402] as const).map((cell) => (
+              <td class={`pc-plan${cell.kind === "no" ? " pc-none" : ""}${cell.kind === "tier" ? " pc-tier" : ""}`}>
+                {cellText(cell, locale)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .pc-wrap {
+    overflow-x: auto;
+    border-radius: 16px;
+  }
+  .pc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .pc-table th,
+  .pc-table td {
+    padding: 16px 18px;
+    text-align: left;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .pc-table th {
+    font-family: var(--pr-display);
+    font-weight: 600;
+    color: var(--black);
+    font-size: 13px;
+    background: var(--lemma-cream-deep);
+    letter-spacing: -0.005em;
+  }
+  .pc-feature-col {
+    color: var(--pr-text-3) !important;
+    font-weight: 500 !important;
+  }
+  .pc-plan-col {
+    text-align: center;
+    color: var(--accent) !important;
+  }
+  .pc-feature {
+    color: var(--pr-text-1);
+  }
+  .pc-plan {
+    text-align: center;
+    color: var(--accent);
+    font-family: var(--pr-mono);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .pc-none {
+    color: var(--pr-text-4);
+    font-size: 13px;
+  }
+  .pc-tier {
+    font-family: var(--pr-display);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--pr-text-2);
+  }
+  .pc-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .pc-table tr:hover td {
+    background: var(--lemma-cream);
+  }
+  @media (max-width: 720px) {
+    .pc-table th,
+    .pc-table td {
+      padding: 12px;
+      font-size: 12.5px;
+    }
+  }
+</style>
