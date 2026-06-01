@@ -5,7 +5,7 @@ export async function GET(context) {
   const posts = await getAllPosts('ja');
   
   return rss({
-    title: 'Lemma Oracle ブログ',
+    title: 'Lemma ブログ',
     description: '分散ロジックと自動推論の研究、理論、応用',
     site: context.site,
     trailingSlash: false,
@@ -18,7 +18,7 @@ export async function GET(context) {
     })),
     customData: `
       <language>ja-jp</language>
-      <copyright>${new Date().getFullYear()} Lemma Oracle</copyright>
+      <copyright>${new Date().getFullYear()} FRAME00, INC.</copyright>
       <atom:link href="${new URL('ja/rss.xml', context.site)}" rel="self" type="application/rss+xml" />
     `,
     stylesheet: '/rss/styles.xsl',

@@ -733,7 +733,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     ],
     conceptHub: {
       intro: {
-        ja: "直近 1 年で、AI エージェントが攻撃の大半を自律実行する事案、credential 失効遅延、MCP 認証回避など、エージェント権限の独立検証が機能しない事案が連続している。IAM の静的権限管理では追いつかない問題群として、行為ごとの権限立証が独立カテゴリとして扱われ始めている。",
+        ja: "直近 1 年で、AI エージェントが攻撃の大半を自律実行する事案、credential 失効遅延、MCP 認証回避など、エージェント権限の独立検証が機能しない事案が連続している。IAM の静的権限管理では追いつかない問題群として、行為ごとの権限証明が独立カテゴリとして扱われ始めている。",
         en: "Over the past year, AI agents autonomously executing the bulk of an attack, credential revocation lag, MCP auth bypass — cases where independent verification of agent authority simply doesn't work — have piled up. The class of problems that static IAM permission management cannot keep up with is now being treated as its own category: proof of authority at each action.",
       },
       sectionH2s: [
@@ -743,7 +743,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           head: { ja: "鍵を渡さずに、", en: "Don't hand over the keys —" },
-          accent: { ja: "行為ごとに権限を立証する。", en: "prove authority at each action." },
+          accent: { ja: "行為ごとに権限を証明する。", en: "prove authority at each action." },
         },
         {
           head: { ja: "権限境界が問われる、", en: "Where authority boundaries get tested —" },
@@ -798,7 +798,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
       approach: {
         lead: {
-          ja: "エージェント権限証明は、AI エージェントに署名鍵を持たせる代わりに、行為ごとに「委任された範囲内である」ことを暗号で立証する仕組み。鍵漏洩のリスクを構造的に排除しながら、エージェントの行為を独立検証可能にする。",
+          ja: "エージェント権限証明は、AI エージェントに署名鍵を持たせる代わりに、行為ごとに「委任された範囲内である」ことを暗号で証明する仕組み。鍵漏洩のリスクを構造的に排除しながら、エージェントの行為を独立検証可能にする。",
           en: "Agent Authority Proof avoids handing signing keys to an AI agent and instead proves at each action that the agent is operating within delegated scope. Key-leak risk is structurally removed while every action stays independently verifiable.",
         },
         bullets: [
@@ -812,7 +812,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "隣接領域との違い", en: "Distinct from adjacent layers" },
             text: {
-              ja: "IAM / OAuth は静的な権限を管理する。Lemma は各行為時の動的な権限行使を proof で立証する(補完関係)。",
+              ja: "IAM / OAuth は静的な権限を管理する。Lemma は各行為時の動的な権限行使を proof で示す(補完関係)。",
               en: "IAM / OAuth manage static permissions. Lemma proves the dynamic exercise of authority at each action — complementary, not competing.",
             },
           },
