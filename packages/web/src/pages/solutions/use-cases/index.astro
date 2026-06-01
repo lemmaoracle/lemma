@@ -4,9 +4,9 @@ import { getAllUseCases } from "../../../data/useCases";
 import { getAllPillars } from "../../../data/pillars";
 import { getTranslations } from "../../../i18n/translations";
 
-const locale = "ja" as const;
+const locale = "en" as const;
 const t = getTranslations(locale);
-const base = "/ja";
+const base = "";
 const useCases = await getAllUseCases(locale);
 const pillars = getAllPillars();
 ---

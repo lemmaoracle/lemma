@@ -5,12 +5,12 @@ import { getPillarBySlug } from "../../../data/pillars";
 import { getTranslations } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
-  const useCases = await getAllUseCases("ja");
+  const useCases = await getAllUseCases("en");
 
   const paths = await Promise.all(
     useCases.map(async (useCase) => {
       const pillar = getPillarBySlug(useCase.pillar);
-      const relatedUseCases = await getUseCasesBySlugs(useCase.relatedUseCases, "ja");
+      const relatedUseCases = await getUseCasesBySlugs(useCase.relatedUseCases, "en");
 
       return {
         params: { slug: useCase.slug },
@@ -29,9 +29,9 @@ interface Props {
 }
 
 const { useCase, pillar, relatedUseCases } = Astro.props;
-const locale = "ja" as const;
+const locale = "en" as const;
 const t = getTranslations(locale);
-const base = "/ja";
+const base = "";
 const pillarT = t.pillars;
 const useCaseT = t.useCases;
 
@@ -45,7 +45,7 @@ const fallbackPillar = {
   whyNow: { en: "", ja: "" },
   howLemmaFits: { en: [], ja: [] },
   useCaseSlugs: [],
-  primaryCTA: { label: "お問い合わせ", href: "/ja/services", type: "talk-to-us" as const },
+  primaryCTA: { label: "Talk to us", href: "/solutions", type: "talk-to-us" as const },
   order: 1,
   tags: [],
 };

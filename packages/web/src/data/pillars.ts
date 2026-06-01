@@ -173,7 +173,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/services",
+      href: "/solutions",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -346,7 +346,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "来歴証明を業務に組み込むパターン。",
             en: "Patterns for putting Verifiable Origin into operation.",
           },
-          href: "/use-cases/",
+          href: "/solutions/use-cases/",
         },
         {
           label: { ja: "Product", en: "Product" },
@@ -409,7 +409,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
     useCaseSlugs: ["ai-audit-log-proof", "rag-source-attestation"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/services",
+      href: "/solutions",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -573,7 +573,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "検証可能 AI を業務に組み込むパターン。",
             en: "Patterns for putting Verifiable AI into operation.",
           },
-          href: "/use-cases/",
+          href: "/solutions/use-cases/",
         },
         {
           label: { ja: "Product", en: "Product" },
@@ -884,7 +884,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "エージェント権限証明を業務に組み込むパターン。",
             en: "Patterns for putting Agent Authority Proof into operation.",
           },
-          href: "/use-cases/",
+          href: "/solutions/use-cases/",
         },
         {
           label: { ja: "Product", en: "Product" },
@@ -1105,7 +1105,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
             ja: "規制属性証明を業務に組み込むパターン。",
             en: "Patterns for putting Regulatory Attribute Proof into operation.",
           },
-          href: "/use-cases/",
+          href: "/solutions/use-cases/",
         },
         {
           label: { ja: "Product", en: "Product" },

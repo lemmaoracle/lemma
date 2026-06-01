@@ -1,0 +1,18 @@
+# Cloudflare Pages redirect rules.
+# Stage B of the Solutions redesign — services -> solutions and
+# the use-cases relocation under /solutions/. Order matters: the
+# splat rules go after the bare ones so the exact paths match first.
+
+# Services hub -> Solutions hub
+/ja/services            /ja/solutions            301
+/ja/services/           /ja/solutions/           301
+/services               /solutions               301
+/services/              /solutions/              301
+
+# Use Cases relocation under Solutions
+/ja/use-cases           /ja/solutions/use-cases  301
+/ja/use-cases/          /ja/solutions/use-cases/ 301
+/ja/use-cases/*         /ja/solutions/use-cases/:splat  301
+/use-cases              /solutions/use-cases     301
+/use-cases/             /solutions/use-cases/    301
+/use-cases/*            /solutions/use-cases/:splat     301

@@ -9,7 +9,7 @@ import { SOLUTIONS } from "../../data/solutions";
 interface Props { locale: Locale; base: string }
 const { locale, base } = Astro.props as Props;
 const h = SOLUTIONS.useCasesHub;
-const useCasesBase = base ? `${base}/use-cases` : "/use-cases";
+const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const pillarsBase = base ? `${base}/pillars` : "/pillars";
 ---
 

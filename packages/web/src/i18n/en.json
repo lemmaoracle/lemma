@@ -188,7 +188,7 @@
       "items": [
         { "title": "What is Lemma", "desc": "The overall picture of trust infrastructure for AI", "href": "#what-is-lemma" },
         { "title": "Four trust layers", "desc": "The four pillars that compose the foundation (P1–P4)", "href": "#trust-layers" },
-        { "title": "Where it fits in your industry", "desc": "Use cases and products (Civic / Critical / Compliance)", "href": "/use-cases" },
+        { "title": "Where it fits in your industry", "desc": "Use cases and products (Civic / Critical / Compliance)", "href": "/solutions/use-cases" },
         { "title": "Technical implementation", "desc": "Developer guides and Trust402", "href": "/guides" },
         { "title": "Why detection alone is not enough", "desc": "The Detection ≠ Proof thesis", "href": "/blog/detection-is-not-proof/" },
         { "title": "Real incidents", "desc": "Critical Brief structured incident analysis (for CSOs, analysts, regulatory practitioners)", "href": "/critical/briefs/", "isUpperTier": true }
@@ -333,7 +333,7 @@
             "pillar": "p4",
             "links": [
               { "label": "Regulatory Attribute Proof (P4)", "href": "/pillars/regulatory-attribute-proof/" },
-              { "label": "KYC/AML Selective Disclosure", "href": "/use-cases/kyc-aml-selective-disclosure/" }
+              { "label": "KYC/AML Selective Disclosure", "href": "/solutions/use-cases/kyc-aml-selective-disclosure/" }
             ]
           },
           {
@@ -754,7 +754,7 @@
           "titleLine2": "and AML for finance.",
           "body": "Make AI decision evidence tamper-proof. Prove customer attributes without sharing the underlying data.",
           "cases": "AI audit log proof · KYC/AML selective disclosure · Financial data leak prevention",
-          "href": "/use-cases/kyc-aml-selective-disclosure/"
+          "href": "/solutions/use-cases/kyc-aml-selective-disclosure/"
         },
         {
           "tag": "For Industry",
@@ -762,7 +762,7 @@
           "titleLine2": "ESG for manufacturing.",
           "body": "Tamper-proof provenance across multi-tier suppliers. Support for CBAM, EUDR, and DPP compliance.",
           "cases": "Supply chain part provenance · Supply chain ESG",
-          "href": "/use-cases/supply-chain-esg/"
+          "href": "/solutions/use-cases/supply-chain-esg/"
         },
         {
           "tag": "For Agent Economy",
@@ -770,7 +770,7 @@
           "titleLine2": "delegation for agents.",
           "body": "Cryptographically verify the authority, payments, and delegation of agents running on x402 or MCP.",
           "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
-          "href": "/use-cases/x402-commerce/"
+          "href": "/solutions/use-cases/x402-commerce/"
         },
         {
           "tag": "For AI Builders",
@@ -778,11 +778,11 @@
           "titleLine2": "for RAG and LLM stacks.",
           "body": "Pin the provenance of source documents at ingest. Guarantee citation authenticity at response time.",
           "cases": "RAG content provenance · RAG citation proof",
-          "href": "/use-cases/ai-audit-log-proof/"
+          "href": "/solutions/use-cases/ai-audit-log-proof/"
         }
       ],
       "seeAll": "View all use cases →",
-      "seeAllHref": "/use-cases/"
+      "seeAllHref": "/solutions/use-cases/"
     },
     "thinking": {
       "title": "Recent thinking.",

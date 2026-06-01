@@ -188,7 +188,7 @@
       "items": [
         { "title": "Lemma とは", "desc": "AI のための信頼インフラの全体像", "href": "#what-is-lemma" },
         { "title": "4 つの信頼レイヤー", "desc": "基盤を構成する 4 本柱 (P1〜P4)", "href": "#trust-layers" },
-        { "title": "業界での使いどころ", "desc": "ユースケースと製品 (Civic / Critical / Compliance)", "href": "/ja/use-cases" },
+        { "title": "業界での使いどころ", "desc": "ユースケースと製品 (Civic / Critical / Compliance)", "href": "/ja/solutions/use-cases" },
         { "title": "技術実装", "desc": "開発者ガイドと Trust402", "href": "/ja/guides" },
         { "title": "検出で足りない理由", "desc": "Detection ≠ Proof の thesis", "href": "/ja/blog/detection-is-not-proof/" },
         { "title": "実際の事案", "desc": "Critical Brief 事案分析の reference (CSO・アナリスト・規制実務者向け)", "href": "/ja/critical/briefs/", "isUpperTier": true }
@@ -333,7 +333,7 @@
             "pillar": "p4",
             "links": [
               { "label": "規制属性証明 (P4)", "href": "/ja/pillars/regulatory-attribute-proof/" },
-              { "label": "KYC/AML 選択的開示", "href": "/ja/use-cases/kyc-aml-selective-disclosure/" }
+              { "label": "KYC/AML 選択的開示", "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/" }
             ]
           },
           {
@@ -754,7 +754,7 @@
           "titleLine2": "AI 監査・KYC・AML。",
           "body": "AI 判断の根拠を改ざん不能に残し、顧客属性をデータ共有なしに証明する。",
           "cases": "AI 監査ログ証明 · KYC/AML 選択的開示 · 金融データ流出防止",
-          "href": "/ja/use-cases/kyc-aml-selective-disclosure/"
+          "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/"
         },
         {
           "tag": "For Industry",
@@ -762,7 +762,7 @@
           "titleLine2": "チェーンとESG適合。",
           "body": "多階層サプライヤの来歴を改ざん不能にし、CBAM/EUDR/DPP の規制適合を支える。",
           "cases": "サプライチェーン部品来歴 · サプライチェーン ESG",
-          "href": "/ja/use-cases/supply-chain-esg/"
+          "href": "/ja/solutions/use-cases/supply-chain-esg/"
         },
         {
           "tag": "For Agent Economy",
@@ -770,7 +770,7 @@
           "titleLine2": "取引と権限委譲。",
           "body": "x402 や MCP 上で動くエージェントの権限・支払い・委任を、暗号的に検証可能にする。",
           "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
-          "href": "/ja/use-cases/x402-commerce/"
+          "href": "/ja/solutions/use-cases/x402-commerce/"
         },
         {
           "tag": "For AI Builders",
@@ -778,11 +778,11 @@
           "titleLine2": "来歴と引用検証。",
           "body": "AI が参照する文書の来歴を取り込み時点で固定し、応答時の引用真正性を保証する。",
           "cases": "RAG コンテンツ来歴 · RAG 出典証明",
-          "href": "/ja/use-cases/ai-audit-log-proof/"
+          "href": "/ja/solutions/use-cases/ai-audit-log-proof/"
         }
       ],
       "seeAll": "すべてのユースケースを見る →",
-      "seeAllHref": "/ja/use-cases/"
+      "seeAllHref": "/ja/solutions/use-cases/"
     },
     "thinking": {
       "title": "最新の考察。",
