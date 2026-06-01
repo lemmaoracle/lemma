@@ -1,0 +1,207 @@
+---
+/**
+ * §2 — HIDE → PROVE scenarios. 2x2 grid of role-icon scenario cards
+ * with a 3-col HIDE → PROVE strip.
+ */
+import type { Locale } from "../../i18n/translations";
+import { SOLUTIONS } from "../../data/solutions";
+import SolutionsIcon from "./SolutionsIcon.astro";
+
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const s = SOLUTIONS.scenarios;
+const useCasesBase = base ? `${base}/use-cases` : "/use-cases";
+---
+
+<section class="ss-section">
+  <div class="so-section-eyebrow">{s.eyebrow[locale]}</div>
+  <h2 class="so-section-h2">
+    {s.h2Head[locale]}<br />
+    <span class="accent">{s.h2Accent[locale]}</span>
+  </h2>
+  <p class="so-section-sub">{s.sub[locale]}</p>
+
+  <div class="ss-grid">
+    {s.items.map((item) => (
+      <a href={`${useCasesBase}/${item.useCaseSlug}/`} class="ss-card">
+        <div class="ss-head">
+          <div class="ss-icon">
+            <SolutionsIcon name={item.icon} size={32} />
+          </div>
+          <div class="ss-role">
+            <div class="ss-role-label">{item.roleLabel[locale]}</div>
+            <div class="ss-role-title">{item.roleTitle[locale]}</div>
+          </div>
+        </div>
+        <div class="ss-hp">
+          <div class="ss-hp-side">
+            <div class="ss-hp-tag ss-hp-hide">HIDE</div>
+            <div class="ss-hp-text ss-hp-hide-text">
+              {item.hide[locale].split("\n").map((line, i) => (
+                <>{i > 0 && <br />}{line}</>
+              ))}
+            </div>
+          </div>
+          <div class="ss-hp-arrow" aria-hidden="true">
+            <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+              <line x1="2" y1="7" x2="22" y2="7" stroke="#8B4513" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M 22 7 L 17 3 L 17 11 Z" fill="#8B4513"/>
+            </svg>
+          </div>
+          <div class="ss-hp-side">
+            <div class="ss-hp-tag ss-hp-prove">PROVE</div>
+            <div class="ss-hp-text ss-hp-prove-text">
+              {item.prove[locale].split("\n").map((line, i) => (
+                <>{i > 0 && <br />}{line}</>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p class="ss-desc">{item.desc[locale]}</p>
+        <div class="ss-link">{item.linkLabel[locale]}</div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .ss-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .ss-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 16px;
+    padding: 28px 30px 26px;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ss-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 48px;
+    background: var(--accent);
+    transition: width 0.35s;
+  }
+  .ss-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 12px 32px rgba(139, 69, 19, 0.08);
+    transform: translateY(-2px);
+  }
+  .ss-card:hover::before {
+    width: 100%;
+  }
+  .ss-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ss-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .ss-role {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .ss-role-label {
+    font-family: var(--so-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .ss-role-title {
+    font-family: var(--so-display);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+  }
+  .ss-hp {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 16px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ss-hp-side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ss-hp-tag {
+    font-family: var(--so-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .ss-hp-hide {
+    color: var(--so-legacy-text);
+  }
+  .ss-hp-prove {
+    color: var(--accent);
+  }
+  .ss-hp-text {
+    font-family: var(--so-display);
+    font-size: 15.5px;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    font-weight: 500;
+  }
+  .ss-hp-hide-text {
+    color: var(--so-legacy-text);
+  }
+  .ss-hp-prove-text {
+    color: var(--black);
+  }
+  .ss-hp-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 18px;
+  }
+  .ss-desc {
+    font-size: 13px;
+    color: var(--so-text-3);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .ss-link {
+    font-family: var(--so-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 4px;
+    transition: transform 0.2s;
+  }
+  .ss-card:hover .ss-link {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 720px) {
+    .ss-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

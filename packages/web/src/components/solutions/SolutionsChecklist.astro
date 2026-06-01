@@ -1,0 +1,188 @@
+---
+/**
+ * §5 — Self-diagnostic checklist. 8 styled checkboxes + live counter
+ * + result card. Tiny client-side script keeps the counter in sync.
+ */
+import type { Locale } from "../../i18n/translations";
+import { SOLUTIONS } from "../../data/solutions";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const c = SOLUTIONS.checklist;
+const items = c.items[locale];
+---
+
+<section class="sc-section">
+  <div class="so-section-eyebrow">{c.eyebrow[locale]}</div>
+  <h2 class="so-section-h2">
+    {c.h2Head[locale]}<br />
+    <span class="accent">{c.h2Accent[locale]}</span>
+  </h2>
+
+  <div class="sc-block">
+    <p class="sc-intro">{c.intro[locale]}</p>
+    <ul class="sc-list">
+      {items.map((text, i) => (
+        <li>
+          <label class="sc-item">
+            <input type="checkbox" class="sc-input" data-diag-input data-idx={i} />
+            <span class="sc-check"></span>
+            <span class="sc-text">{text}</span>
+          </label>
+        </li>
+      ))}
+    </ul>
+    <div class="sc-result">
+      <div class="sc-count" data-diag-count>{`0 / ${items.length}`}</div>
+      <div class="sc-result-text">{c.resultText[locale]}</div>
+      <a href={c.resultCta.href} class="sc-result-cta" target="_blank" rel="noopener">
+        {c.resultCta.label[locale]}
+      </a>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var inputs = document.querySelectorAll("[data-diag-input]");
+    var counter = document.querySelector("[data-diag-count]");
+    if (!inputs.length || !counter) return;
+    var total = inputs.length;
+    function update() {
+      var checked = 0;
+      inputs.forEach(function (i) { if (i.checked) checked++; });
+      counter.textContent = checked + " / " + total;
+    }
+    inputs.forEach(function (i) { i.addEventListener("change", update); });
+  })();
+</script>
+
+<style>
+  .sc-block {
+    background: var(--lemma-cream-deep);
+    border-radius: 18px;
+    padding: 40px 44px;
+  }
+  .sc-intro {
+    font-size: 15px;
+    color: var(--so-text-2);
+    margin: 0 0 28px;
+    line-height: 1.75;
+    max-width: 580px;
+  }
+  .sc-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sc-list li {
+    margin: 0;
+    padding: 0;
+  }
+  .sc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: 10px;
+    border: 0.5px solid var(--lemma-line);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .sc-item:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+  }
+  .sc-check {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--so-text-4);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    margin-top: 1px;
+    position: relative;
+  }
+  .sc-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sc-input:checked + .sc-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .sc-input:checked + .sc-check::after {
+    content: "";
+    width: 10px;
+    height: 5px;
+    border-left: 2px solid var(--lemma-cream);
+    border-bottom: 2px solid var(--lemma-cream);
+    transform: rotate(-45deg) translate(1px, -1px);
+    position: absolute;
+    top: 4px;
+    left: 3px;
+  }
+  .sc-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--so-text-1);
+    flex: 1;
+    user-select: none;
+  }
+  .sc-input:checked ~ .sc-text {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .sc-result {
+    margin: 28px 0 0;
+    padding: 22px 26px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .sc-count {
+    font-family: var(--so-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .sc-result-text {
+    font-size: 13.5px;
+    color: var(--so-text-2);
+    flex: 1;
+    min-width: 200px;
+  }
+  .sc-result-cta {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-family: var(--so-display);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sc-check,
+    .sc-item {
+      transition: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .sc-list { grid-template-columns: 1fr; }
+    .sc-block { padding: 28px 24px; }
+  }
+</style>
