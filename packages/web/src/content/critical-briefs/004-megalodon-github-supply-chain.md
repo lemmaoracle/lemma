@@ -9,7 +9,7 @@ incident_date: 2026-05-22
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["003-starlette-badhost"]
+related_briefs: ["014-tanstack-oidc-trusted-publisher", "003-starlette-badhost"]
 version: "1.0"
 status: published
 ---
