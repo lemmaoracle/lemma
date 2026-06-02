@@ -91,6 +91,7 @@ export interface Translations {
       }>;
       readonly resources: Readonly<{
         readonly label: string;
+        readonly criticalBrief: string;
         readonly blog: string;
         readonly whitepaper: string;
         readonly glossary: string;
