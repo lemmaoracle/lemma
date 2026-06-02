@@ -79,34 +79,35 @@ const isResourcesActive =
     <!-- 2. 製品 -->
     <li class="mega-nav-item">
       <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
-      <div class="mega-panel mega-panel-wide">
+      <div class="mega-panel">
+        <!-- Seal — for developers -->
         <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.enterprise}</div>
+          <div class="mega-section-label">{t.mega.products.developer}</div>
           <div class="mega-links">
-            <a href={SEGMENT_URLS.civic[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.civic}</span>
-              <span class="mega-link-sub">{t.mega.products.civicSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.critical[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.critical}</span>
-              <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.compliance[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.compliance}</span>
-              <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
+            <a href={base ? `${base}/seal/` : "/seal/"} class="mega-link">
+              <span class="mega-link-title">Seal</span>
+              <span class="mega-link-sub">{t.mega.products.sealSub}</span>
             </a>
           </div>
         </div>
+        <!-- Trust402 — for agent developers -->
         <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.developer}</div>
+          <div class="mega-section-label">{t.mega.products.agentDeveloper}</div>
           <div class="mega-links">
             <a href="/trust402/" class="mega-link" target="_blank">
               <span class="mega-link-title">{t.mega.products.trust402}</span>
               <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
             </a>
+          </div>
+        </div>
+        <!-- Industries — for enterprises (consulting-driven; deep links surface in the
+             body of /industries/ rather than in the nav) -->
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.enterprise}</div>
+          <div class="mega-links">
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.pricing}</span>
-              <span class="mega-link-sub">{t.mega.products.pricingSub}</span>
+              <span class="mega-link-title">Industries</span>
+              <span class="mega-link-sub">{t.mega.products.industriesSub}</span>
             </a>
           </div>
         </div>

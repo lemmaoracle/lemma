@@ -29,16 +29,19 @@
         "pillar04": "Pillar 04 — Regulatory Attribute Proof"
       },
       "products": {
-        "enterprise": "Enterprise",
+        "enterprise": "For enterprises",
         "civic": "Lemma Civic",
         "civicSub": "Public infrastructure · B2B2G",
         "critical": "Lemma Critical",
         "criticalSub": "Mission-critical & manufacturing",
         "compliance": "Lemma Compliance",
         "complianceSub": "Finance · KYC/AML · FinTech",
-        "developer": "Developer",
+        "developer": "For developers",
+        "agentDeveloper": "For agent developers",
+        "sealSub": "Send a proof, not the key",
+        "industriesSub": "Civic · Critical · Compliance",
         "trust402": "Trust402",
-        "trust402Sub": "Explorer · Builder · Studio · Pro",
+        "trust402Sub": "Run AI without holding keys",
         "pricing": "Pricing",
         "pricingSub": "Contact-based"
       },
