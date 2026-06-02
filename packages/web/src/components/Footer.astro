@@ -1,6 +1,22 @@
 ---
-import type { Locale } from "../i18n/translations";
-import type { Translations } from "../i18n/translations";
+/**
+ * Global Footer — v28 redesign.
+ *
+ * Dark slim footer with 5-column grid:
+ *   1. Brand: logo + tagline + Dashboard CTA button + social icons
+ *   2. "Lemma について" — trust layers + use cases
+ *   3. "製品" — Seal / Lemma Civic / Critical / Compliance / Trust402 / pricing
+ *   4. "開発者向け" — Trust402 / Dashboard / specs / GitHub / Smithery
+ *   5. "リソース" — Critical Brief (●) / blog / whitepaper / glossary / FAQ
+ *      + "会社" — about / contact / language switch
+ *
+ * Bottom row: copyright + privacy + terms.
+ *
+ * Column headings ("Lemma について" etc.) are inlined per locale rather than
+ * pulling from t.nav.* because the footer column intent ("about Lemma") is
+ * distinct from the nav label intent ("trust infrastructure" page).
+ */
+import type { Locale, Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { SEGMENT_URLS } from "../config/navigation";
@@ -13,6 +29,8 @@ interface Props {
 }
 
 const { locale, t, footerT, base } = Astro.props;
+const isJa = locale === "ja";
+
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
 const pricingPath = base ? `${base}/pricing` : "/pricing";
@@ -22,19 +40,44 @@ const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-case
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
+const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
+const guidesPath = base ? `${base}/guides` : "/guides";
+const sealHref = "#";  // Seal product page TBD
 const homePath = base || "/";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const trust402Href = "/trust402/";
 const dashboardUrl = "https://dashboard.lemma.workers.dev";
-const whitepaperHref = servicesPath;
+const whitepaperHref = "https://tally.so/r/xX0VYv";
 const aboutUsHref =
-  locale === "ja" ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
+  isJa ? "https://corp.frame00.com" : "https://corp.frame00.com/index-en";
 const githubHref = "https://github.com/lemmaoracle";
 const smitheryHref = "https://smithery.ai/servers/lemmaoracle/lemma";
 const currentPath = Astro.url.pathname;
 const languageSwitchHref =
-  locale === "ja" ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
-const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
+  isJa ? currentPath.replace(/^\/ja/, "") || "/" : `/ja${currentPath}`;
+const languageSwitchLabel = isJa ? t.languageEn : t.languageJa;
+
+const C = isJa ? {
+  aboutLemma: "Lemma について",
+  trustLayers: "4 つの信頼レイヤー",
+  useCases: "ユースケース",
+  products: "製品",
+  developers: "開発者向け",
+  resources: "リソース",
+  company: "会社",
+  dashboardCta: "ダッシュボード",
+  criticalBrief: "Critical Brief",
+} : {
+  aboutLemma: "About Lemma",
+  trustLayers: "4 trust layers",
+  useCases: "Use cases",
+  products: "Products",
+  developers: "For developers",
+  resources: "Resources",
+  company: "Company",
+  dashboardCta: "Dashboard",
+  criticalBrief: "Critical Brief",
+};
 ---
 
 <footer class="site-footer">
@@ -44,9 +87,12 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
       <!-- BRAND COLUMN -->
       <div class="site-footer-brand">
         <a class="site-footer-logo" href={homePath} aria-label="Lemma">
-          <LemmaOracle class="h-[22px] w-auto text-white" />
+          <LemmaOracle class="h-[42px] w-auto" />
         </a>
         <p class="site-footer-tagline">{footerT.tagline}</p>
+        <a href={dashboardUrl} class="site-footer-dashboard-btn" target="_blank" rel="noopener">
+          {C.dashboardCta} <span class="site-footer-dashboard-arr">↗</span>
+        </a>
         <div class="site-footer-social">
           <a href="https://x.com/lemmaoracle" target="_blank" rel="noopener" aria-label="X">X</a>
           <a href={githubHref} target="_blank" rel="noopener" aria-label="GitHub">GH</a>
@@ -54,19 +100,20 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         </div>
       </div>
 
-      <!-- COL: Trust Layer / 信頼レイヤー -->
+      <!-- COL: Lemma について -->
       <div class="site-footer-col">
-        <h4>{t.pillars}</h4>
+        <h4>{C.aboutLemma}</h4>
         <ul>
-          <li><a href={pillarsPath}>{t.mega.pillars.label}</a></li>
-          <li><a href={useCasesPath}>{t.mega.solutions.label}</a></li>
+          <li><a href={pillarsPath}>{C.trustLayers}</a></li>
+          <li><a href={useCasesPath}>{C.useCases}</a></li>
         </ul>
       </div>
 
       <!-- COL: 製品 -->
       <div class="site-footer-col">
-        <h4>{t.services}</h4>
+        <h4>{C.products}</h4>
         <ul>
+          <li><a href={sealHref}>Seal</a></li>
           <li><a href={SEGMENT_URLS.civic[locale]}>{t.mega.products.civic}</a></li>
           <li><a href={SEGMENT_URLS.critical[locale]}>{t.mega.products.critical}</a></li>
           <li><a href={SEGMENT_URLS.compliance[locale]}>{t.mega.products.compliance}</a></li>
@@ -75,30 +122,31 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
         </ul>
       </div>
 
-      <!-- COL: 開発者 -->
+      <!-- COL: 開発者向け -->
       <div class="site-footer-col">
-        <h4>{t.developers}</h4>
+        <h4>{C.developers}</h4>
         <ul>
           <li><a href={trust402Href} target="_blank">{t.mega.products.trust402}</a></li>
-          <li><a href={dashboardUrl} target="_blank" rel="noopener">{t.dashboardCta}</a></li>
-          <li><a href={whitepaperHref}>{footerT.specs}</a></li>
-          <li><a href={githubHref} target="_blank">{footerT.github}</a></li>
-          <li><a href={smitheryHref} target="_blank" rel="noopener">{footerT.smithery}</a></li>
+          <li><a href={dashboardUrl} target="_blank" rel="noopener">{C.dashboardCta}</a></li>
+          <li><a href={guidesPath}>{footerT.specs}</a></li>
+          <li><a href={githubHref} target="_blank" rel="noopener">GitHub <span class="site-footer-ext">↗</span></a></li>
+          <li><a href={smitheryHref} target="_blank" rel="noopener">Smithery <span class="site-footer-ext">↗</span></a></li>
         </ul>
       </div>
 
-      <!-- COL: リソース & 会社 -->
+      <!-- COL: リソース + 会社 -->
       <div class="site-footer-col">
-        <h4>{t.resources}</h4>
+        <h4>{C.resources}</h4>
         <ul>
+          <li><a href={briefsPath}><span class="site-footer-dot">●</span> {C.criticalBrief}</a></li>
           <li><a href={blogPath}>{t.mega.resources.blog}</a></li>
-          <li><a href={whitepaperHref}>{t.mega.resources.whitepaper}</a></li>
+          <li><a href={whitepaperHref} target="_blank" rel="noopener">{t.mega.resources.whitepaper}</a></li>
           <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
           <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
         </ul>
-        <h5>{footerT.colCompany}</h5>
+        <h5>{C.company}</h5>
         <ul>
-          <li><a href={aboutUsHref} target="_blank">{footerT.aboutUs}</a></li>
+          <li><a href={aboutUsHref} target="_blank" rel="noopener">{footerT.aboutUs}</a></li>
           <li><a href={contactPath} target="_blank" rel="noopener">{footerT.contact}</a></li>
           <li><a href={languageSwitchHref}>{languageSwitchLabel}</a></li>
         </ul>
@@ -107,7 +155,7 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
     </div>
 
     <div class="site-footer-bottom">
-      <div>{footerT.copyright}</div>
+      <div class="site-footer-copy">{footerT.copyright}</div>
       <div class="site-footer-bottom-links">
         <a href={privacyPath}>{footerT.privacy}</a>
         <a href={termsPath}>{footerT.terms}</a>
@@ -118,133 +166,190 @@ const languageSwitchLabel = locale === "ja" ? t.languageEn : t.languageJa;
 
 <style>
   .site-footer {
-    background: var(--black);
-    color: rgba(255, 255, 255, 0.6);
-    padding: 80px 5% 32px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0A0807;
+    color: #8a857d;
+    padding: 96px 0 40px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+    font-family: "Sora", system-ui, sans-serif;
   }
-  .site-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .site-footer-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
 
   .site-footer-top {
     display: grid;
-    grid-template-columns: 220px repeat(4, 1fr);
+    grid-template-columns: 1.3fr 1fr 1.1fr 1.1fr 1.2fr;
     gap: 48px;
-    margin-bottom: 64px;
+    padding-bottom: 64px;
   }
 
+  /* BRAND COLUMN */
+  .site-footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
   .site-footer-brand .site-footer-logo {
     display: inline-flex;
     align-items: center;
-    margin-bottom: 16px;
     text-decoration: none;
+    color: #FCFAF5;
   }
   .site-footer-tagline {
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    color: #6a655d;
+    font-size: 13px;
+    line-height: 1.75;
+    max-width: 240px;
+    margin: 0;
   }
-  .site-footer-social {
-    display: flex;
-    gap: 12px;
-  }
-  .site-footer-social a {
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-family: var(--font-body);
-    font-size: 12px;
+  .site-footer-dashboard-btn {
+    background: var(--accent, #8B4513);
+    color: #FCFAF5;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
     text-decoration: none;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+    width: fit-content;
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.4);
   }
-  .site-footer-social a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.4);
-    color: #fff;
+  .site-footer-dashboard-btn:hover {
+    background: #6B340E;
+  }
+  .site-footer-dashboard-arr {
+    font-size: 12px;
+    opacity: 0.85;
   }
 
-  .site-footer-col h4 {
-    font-family: var(--font-body);
-    color: #fff;
-    font-size: 13px;
+  .site-footer-social {
+    display: flex;
+    gap: 8px;
+  }
+  .site-footer-social a {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.5px solid #2a2520;
+    border-radius: 8px;
+    color: #8a857d;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11.5px;
     font-weight: 500;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .site-footer-social a:hover {
+    color: #FCFAF5;
+    border-color: #4a4540;
+  }
+
+  /* COLUMNS */
+  .site-footer-col h4 {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 14.5px;
+    color: #FCFAF5;
     margin: 0 0 20px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
   }
   .site-footer-col h5 {
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: #4a4540;
+    margin: 32px 0 16px;
+    font-weight: 400;
     text-transform: uppercase;
-    margin: 28px 0 14px;
   }
   .site-footer-col ul {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
   }
-  .site-footer-col li {
-    margin-bottom: 10px;
-  }
-  .site-footer-col a {
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
-    line-height: 1.5;
+  .site-footer-col li a {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 13.5px;
+    color: #8a857d;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
-  .site-footer-col a:hover {
-    color: #fff;
+  .site-footer-col li a:hover {
+    color: #FCFAF5;
+  }
+  .site-footer-dot {
+    color: #F5EBDC;
+    font-size: 8px;
+  }
+  .site-footer-ext {
+    font-size: 10.5px;
+    opacity: 0.6;
   }
 
+  /* BOTTOM */
   .site-footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 24px;
+    padding-top: 36px;
+    border-top: 0.5px solid #1a1714;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
-    font-family: var(--font-body);
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 12px;
+    gap: 20px;
+  }
+  .site-footer-copy {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 12.5px;
+    color: #4a4540;
   }
   .site-footer-bottom-links {
     display: flex;
-    gap: 24px;
+    gap: 28px;
     flex-wrap: wrap;
   }
   .site-footer-bottom-links a {
-    color: rgba(255, 255, 255, 0.5);
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 12.5px;
+    color: #8a857d;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.15s;
   }
   .site-footer-bottom-links a:hover {
-    color: #fff;
+    color: #FCFAF5;
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 980px) {
     .site-footer-top {
-      grid-template-columns: 200px repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 40px 32px;
     }
   }
   @media (max-width: 700px) {
     .site-footer {
-      padding: 64px 6% 28px;
+      padding: 72px 0 32px;
+    }
+    .site-footer-inner {
+      padding: 0 24px;
     }
     .site-footer-top {
       grid-template-columns: 1fr;
       gap: 36px;
-      margin-bottom: 48px;
+      padding-bottom: 48px;
     }
     .site-footer-bottom {
       flex-direction: column;
