@@ -743,7 +743,7 @@ const panes = [
     line-height: 1.75;
     font-size: 14.5px;
   }
-  .hp a { color: inherit; text-decoration: none; }
+  .hp a { text-decoration: none; }
   .hp-accent { color: var(--hp-brown); }
   .hp-accent-light { color: var(--hp-brown-light); }
 
@@ -895,8 +895,9 @@ const panes = [
 
   /* RESPONSIVE */
   @media (max-width: 980px) {
-    .hp-hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 24px 72px; }
-    .hp-hero h1 { font-size: 52px; }
+    .hp-hero { grid-template-columns: 1fr; gap: 48px; padding: 56px 24px 72px; }
+    .hp-hero h1 { font-size: 52px; margin: 0 0 22px; }
+    .hp-hero-sub { font-size: 16px; margin: 0 0 32px; }
     .hp-h2 { font-size: 40px; }
     .hp-closing-h { font-size: 40px; }
     .hp-block { padding: 80px 24px; }
@@ -907,6 +908,8 @@ const panes = [
     .hp-brief-feat { grid-template-columns: 1fr; padding: 36px; }
   }
   @media (max-width: 560px) {
-    .hp-hero h1 { font-size: 30px; }
+    .hp-hero { padding: 40px 22px 56px; gap: 36px; }
+    .hp-hero h1 { font-size: 34px; line-height: 1.1; }
+    .hp-hero-sub { font-size: 15px; line-height: 1.75; margin: 0 0 28px; }
   }
 </style>
