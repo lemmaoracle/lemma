@@ -714,7 +714,7 @@ const panes = [
           <!-- LEFT: featured use case (cream card) -->
           {spotlightUseCase && (
             <div class="hp-spotlight-col">
-              <p class="hp-spotlight-label">{C.spotlightUcLabel}</p>
+              <a href={useCasesHref} class="hp-spotlight-heading">{C.spotlightUcHeading} <span class="hp-spotlight-heading-arr">→</span></a>
               <a href={spotlightUseCaseHref} class="hp-spotlight-uc">
                 {spotlightUseCasePillar && (
                   <span class="hp-spotlight-uc-pillar">P{spotlightUseCasePillar.order} · {spotlightUseCasePillar.title[locale]}</span>
@@ -723,21 +723,19 @@ const panes = [
                 <p class="hp-spotlight-uc-summary">{spotlightUseCase.cardSummary || spotlightUseCase.thesis}</p>
                 <span class="hp-spotlight-uc-cta">{C.briefFeatCta} →</span>
               </a>
-              <a href={useCasesHref} class="hp-spotlight-all">{C.spotlightUcAll}</a>
             </div>
           )}
 
           <!-- RIGHT: featured brief (dark card) -->
           {featured && (
             <div class="hp-spotlight-col">
-              <p class="hp-spotlight-label">{C.spotlightBriefLabel}</p>
+              <a href={briefIndexHref} class="hp-spotlight-heading">{C.spotlightBriefHeading} <span class="hp-spotlight-heading-arr">→</span></a>
               <a href={featuredHref} class="hp-spotlight-brief">
                 <p class="hp-brief-feat-meta">{C.briefFeatMetaPrefix} {featuredDate}</p>
                 <h3 class="hp-brief-feat-h">{featuredTitle}</h3>
                 <p class="hp-brief-feat-tldr">{featuredTldr}</p>
                 <span class="hp-brief-feat-cta">{C.briefFeatCta} →</span>
               </a>
-              <a href={briefIndexHref} class="hp-spotlight-all">{C.briefList} →</a>
             </div>
           )}
         </div>
@@ -987,18 +985,24 @@ const panes = [
 
   /* SPOTLIGHT — 2-col grid pairing the operational lens (left) with the incident lens (right) */
   .hp-spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
-  .hp-spotlight-col { display: flex; flex-direction: column; gap: 16px; }
-  .hp-spotlight-label {
-    font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--hp-brown); margin: 0;
-    display: flex; align-items: center; gap: 10px;
+  .hp-spotlight-col { display: flex; flex-direction: column; gap: 20px; }
+  /* Column heading doubles as the section's primary CTA — large display
+     type, brown accent, with a trailing arrow that tilts on hover. */
+  .hp-spotlight-heading {
+    font-family: var(--hp-display);
+    font-size: 26px; font-weight: 600; line-height: 1.32; letter-spacing: -0.012em;
+    color: #000;
+    display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    transition: color 0.2s;
   }
-  .hp-spotlight-label::before { content: ""; display: inline-block; width: 24px; height: 1px; background: var(--hp-brown); }
-  .hp-spotlight-all {
-    font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500;
-    align-self: flex-start;
+  .hp-spotlight-heading-arr {
+    font-family: var(--hp-display);
+    font-size: 22px; color: var(--hp-brown);
+    transition: transform 0.2s;
+    display: inline-block;
   }
-  .hp-spotlight-all:hover { color: var(--hp-brown-deep); }
+  .hp-spotlight-heading:hover { color: var(--hp-brown); }
+  .hp-spotlight-heading:hover .hp-spotlight-heading-arr { transform: translateX(4px); }
 
   /* Use-case card (cream surface) */
   .hp-spotlight-uc {
