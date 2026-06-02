@@ -19,7 +19,6 @@ const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
-const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = servicesPath;
 const dashboardUrl = "https://dashboard.lemma.workers.dev";
 const contactPath = DISCOVERY_CALL_URL[locale];
@@ -38,7 +37,6 @@ const isPillarsActive = startsWith(pillarsPath);
 const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
-const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
   startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
 ---
@@ -142,12 +140,9 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 4. 開発者 (flat link → /guides/) -->
-    <li class="mega-nav-item">
-      <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
-    </li>
-
-    <!-- 5. リソース -->
+    <!-- 4. Resources — Pricing access lives inside the Products mega-panel
+         per CTO direction, so this slot returns to its blog/whitepaper/
+         glossary/FAQ dropdown. -->
     <li class="mega-nav-item">
       <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
       <div class="mega-panel mega-panel-right">
@@ -219,8 +214,6 @@ const isResourcesActive =
       </div>
     </div>
 
-    <a href={guidesPath} class="mob-direct">{t.developers}</a>
-
     <a href={dashboardUrl} class="mob-direct" target="_blank" rel="noopener">{t.dashboardCta}</a>
 
     <div class="mob-section">
@@ -273,10 +266,10 @@ const isResourcesActive =
   }
   .mega-nav-logo:hover { color: var(--accent); }
 
-  /* ─── v28: nav items pushed toward the right, generous gap, light weight ─── */
+  /* ─── v28: compact nav — items right-aligned, smaller font, tighter gap ─── */
   .mega-nav-links {
     display: flex; align-items: stretch; height: 64px;
-    list-style: none; gap: 40px; margin: 0; padding: 0; flex: 1;
+    list-style: none; gap: 32px; margin: 0; padding: 0; flex: 1;
     justify-content: flex-end;
   }
   .mega-nav-item { position: relative; display: flex; align-items: center; }
@@ -284,7 +277,7 @@ const isResourcesActive =
   .mega-nav-link {
     font-family: "Sora", system-ui, sans-serif;
     color: #2A2622;
-    font-size: 15px; font-weight: 400;
+    font-size: 14px; font-weight: 400;
     letter-spacing: 0;
     text-decoration: none;
     text-transform: none;
@@ -324,43 +317,58 @@ const isResourcesActive =
   .nav-cta-pill:hover { background: var(--accent); }
   .nav-cta-arr { margin-left: 2px; }
 
+  /* ─── v28: mega-panel as a cream blur card with brown-accent typography ─── */
   .mega-panel {
     display: none; position: absolute; top: 64px; left: 0;
-    background: #fff;
-    border: 1px solid var(--gray-200);
-    border-top: none;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
-    min-width: 280px; z-index: 999;
+    background: rgba(252, 250, 245, 0.98);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid var(--lemma-line, #E5E0D5);
+    border-radius: 14px;
+    box-shadow: 0 24px 56px rgba(43, 30, 18, 0.10);
+    min-width: 300px; z-index: 999;
+    padding: 8px;
+    margin-top: 4px;
   }
   .mega-panel-wide {
-    min-width: 520px;
+    min-width: 540px;
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
   .mega-panel-wide .mega-section {
     border-bottom: none;
-    border-right: 1px solid var(--gray-200);
+    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
   }
   .mega-panel-wide .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
   .mega-nav-item:hover .mega-panel { display: block; }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
 
-  .mega-section { padding: 20px 24px; border-bottom: 1px solid var(--gray-200); }
+  .mega-section { padding: 18px 20px 16px; border-bottom: 0.5px solid var(--lemma-line, #E5E0D5); }
   .mega-section:last-child { border-bottom: none; }
   .mega-section-label {
-    font-size: 9px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
     color: var(--accent); margin-bottom: 14px;
   }
   .mega-links { display: flex; flex-direction: column; gap: 2px; }
   .mega-link {
-    display: flex; flex-direction: column; padding: 10px 12px;
-    text-decoration: none; border-left: 2px solid transparent;
-    transition: border-color .15s, background .15s, color .15s;
+    display: flex; flex-direction: column;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background .15s, color .15s;
   }
-  .mega-link:hover { border-left-color: var(--accent); background: var(--gray-50); }
-  .mega-link-title { font-size: 14px; color: var(--gray-800); font-weight: 400; line-height: 1.4; margin-bottom: 2px; }
+  .mega-link:hover { background: var(--lemma-cream-deep, #F2EEDF); }
+  .mega-link-title {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 14px; color: #1A1A1A; font-weight: 500; line-height: 1.4;
+  }
+  .mega-link-sub {
+    font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    font-size: 12px; color: #5A544D; line-height: 1.4; margin-top: 2px;
+  }
   .mega-link:hover .mega-link-title { color: var(--accent); }
-  .mega-link-sub { font-size: 12px; color: var(--gray-500); line-height: 1.3; }
 
   .nav-hamburger {
     display: none; background: none; border: none; cursor: pointer;
