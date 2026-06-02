@@ -544,6 +544,7 @@ export interface Translations {
       readonly pub: string;
       readonly sc: string;
       readonly ai: string;
+      readonly edu: string;
       readonly dev: string;
     }>;
     /** Index — counts (use {n} for the number). */

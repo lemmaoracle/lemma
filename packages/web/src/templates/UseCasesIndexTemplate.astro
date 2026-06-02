@@ -31,7 +31,9 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
 }
 
-type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "ai" | "dev";
+type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "ai" | "edu" | "dev";
+// Visible filter chips. `edu` is a defined taxonomy key (card-level label only) but is
+// not yet a filter chip — discipline: add a chip once ≥2 use cases carry the key.
 const INDUSTRY_ORDER: ReadonlyArray<IndustryKey> = ["mfg", "fin", "pub", "sc", "ai", "dev"];
 
 const SITE = "https://lemma.frame00.com";

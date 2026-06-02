@@ -981,6 +981,7 @@
       "pub": "Public Sector",
       "sc": "Procurement & Supply Chain",
       "ai": "AI Adoption (cross-industry)",
+      "edu": "Education & HR",
       "dev": "Developers"
     },
     "countAll": "{n} total",
