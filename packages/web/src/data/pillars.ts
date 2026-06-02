@@ -170,7 +170,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン移植性 (Groth16 ZK) — 同じ証明を再発行せずにチェーンやツールを越えて持ち運べる",
       ],
     },
-    useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
+    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance"],
     primaryCTA: {
       label: "Talk to us",
       href: "/solutions",
@@ -293,22 +293,22 @@ const PILLARS: ReadonlyArray<Pillar> = [
       },
       scenarios: [
         {
-          label: { ja: "RAG · エンタープライズ", en: "RAG · Enterprise" },
-          title: { ja: "社内 RAG の文書来歴", en: "Document provenance in internal RAG" },
+          label: { ja: "製造 · 公共 · インフラ", en: "Manufacturing · Public · Infra" },
+          title: { ja: "長期契約・台帳の記録の証明", en: "Provable long-term contract & ledger records" },
           desc: {
-            ja: "日々索引化される社内文書が、来歴を失わずに AI 引用に乗ること。",
-            en: "Internal docs indexed each day carry provenance into AI citations instead of losing it on the way.",
+            ja: "15〜20 年の保守契約や台帳を、後年に問われても中身を出さず改ざんなく証明できる形で残す。",
+            en: "Make 15–20 year maintenance contracts and ledgers provable years later — without revealing contents.",
           },
-          useCaseSlug: "rag-content-provenance",
+          useCaseSlug: "long-term-contract-record",
         },
         {
-          label: { ja: "AI 監査 · コンプライアンス", en: "AI audit · Compliance" },
-          title: { ja: "AI 文書処理の入力 integrity", en: "Input integrity for AI document processing" },
+          label: { ja: "調達 · サプライチェーン", en: "Procurement · Supply chain" },
+          title: { ja: "仕入先の証書・許認可確認", en: "Verifying supplier certificates and licenses" },
           desc: {
-            ja: "AI が読む契約書・申請書が改ざんされていないことを、判断前に確認できる。",
-            en: "Before judgment, AI document reviewers can confirm contracts and applications haven't been modified.",
+            ja: "サプライヤーの ISO・許認可・保険証書が「有効に保有されている」ことだけを、原本を渡さずに確認する。",
+            en: "Confirm that ISO, licenses, and insurance are validly held — without receiving the original certificate.",
           },
-          useCaseSlug: "ai-audit-log-proof",
+          useCaseSlug: "supplier-credential-verification",
         },
         {
           label: { ja: "サプライチェーン · 製造", en: "Supply chain · Manufacturing" },
@@ -320,13 +320,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
           useCaseSlug: "supply-chain-component-provenance",
         },
         {
-          label: { ja: "広告 · メディア · 出版", en: "Advertising · Media · Publishing" },
-          title: { ja: "AI 生成コンテンツの来歴", en: "Provenance of AI-generated content" },
+          label: { ja: "RAG · エンタープライズ", en: "RAG · Enterprise" },
+          title: { ja: "RAG 取り込みの文書来歴", en: "Document provenance at RAG ingestion" },
           desc: {
-            ja: "AI が生成したコンテンツの出所を、後段の配信先で改ざんされずに検証できる。",
-            en: "Downstream distribution can verify the origin of AI-generated content without it being modified along the way.",
+            ja: "日々索引化される社内文書が、来歴を失わずに AI 引用に乗ること。",
+            en: "Internal docs indexed each day carry provenance into AI citations instead of losing it on the way.",
           },
-          useCaseSlug: "rag-source-attestation",
+          useCaseSlug: "rag-content-provenance",
         },
       ],
       further: [
@@ -406,7 +406,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "コンプライアンス報告の選択的開示 — 入力全体ではなく、監査人が必要とする部分だけを開示できる",
       ],
     },
-    useCaseSlugs: ["ai-audit-log-proof", "rag-source-attestation"],
+    useCaseSlugs: ["ai-audit-log-proof", "ai-document-isolation", "rag-source-attestation"],
     primaryCTA: {
       label: "Talk to us",
       href: "/solutions",
@@ -538,22 +538,22 @@ const PILLARS: ReadonlyArray<Pillar> = [
           useCaseSlug: "ai-audit-log-proof",
         },
         {
-          label: { ja: "ヘルスケア · 医療機器", en: "Healthcare · Medical devices" },
-          title: { ja: "AI 医療判定の証跡保持", en: "Trace records for AI clinical decisions" },
+          label: { ja: "エンタープライズ · データガバナンス", en: "Enterprise · Data governance" },
+          title: { ja: "社内文書を使う AI の漏洩対策", en: "Protecting raw data from the AI" },
           desc: {
-            ja: "診断 AI の判断過程を、医療機器規制への適合証跡として保持する。",
-            en: "Preserve clinical AI decision processes as evidence of compliance with medical device regulation.",
+            ja: "機密文書を暗号化したまま、AI には必要な事実だけを証明付きで渡す。原本に触れさせない。",
+            en: "Keep documents encrypted while passing the AI only the needed facts with proof — never the original.",
           },
-          useCaseSlug: "ai-audit-log-proof",
+          useCaseSlug: "ai-document-isolation",
         },
         {
-          label: { ja: "法務 · 契約管理", en: "Legal · Contracts" },
-          title: { ja: "AI 文書レビューの判断根拠", en: "Decision basis for AI document review" },
+          label: { ja: "RAG · 引用整合性", en: "RAG · Citation integrity" },
+          title: { ja: "AI 回答の引用先検証", en: "Verifying AI citation sources" },
           desc: {
-            ja: "契約レビュー AI が「何を見て」「どう判断したか」を、後から再現可能な形で残す。",
-            en: "Preserve what a contract-review AI saw and how it decided, in a reproducible form.",
+            ja: "AI 回答の引用ごとに参照元の版を紐付け、引用の真正性を暗号的に保つ。",
+            en: "Bind each AI citation to the source version, preserving citation integrity cryptographically.",
           },
-          useCaseSlug: "ai-audit-log-proof",
+          useCaseSlug: "rag-source-attestation",
         },
       ],
       further: [
@@ -633,7 +633,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "エージェントが多段で連鎖する場面でも、上流の権限を末端まで証明できる",
       ],
     },
-    useCaseSlugs: ["delegated-treasury", "multi-agent-workflows", "x402-commerce"],
+    useCaseSlugs: ["multi-agent-workflows", "delegated-treasury"],
     primaryCTA: {
       label: "Talk to us",
       href: "https://tally.so/r/Pd2Rl5",
@@ -944,7 +944,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "監査可能な証明トレイル — 原本データを渡さず、規制当局が独立に再検証できる形で残せる",
       ],
     },
-    useCaseSlugs: ["financial-data-exfiltration", "kyc-aml-selective-disclosure", "supply-chain-esg"],
+    useCaseSlugs: ["counterparty-screening", "kyc-aml-selective-disclosure", "financial-data-exfiltration", "supply-chain-esg", "supplier-credential-verification"],
     primaryCTA: {
       label: "Download regulatory whitepaper",
       href: "https://tally.so/r/xX0VYv",
@@ -1061,31 +1061,31 @@ const PILLARS: ReadonlyArray<Pillar> = [
           useCaseSlug: "kyc-aml-selective-disclosure",
         },
         {
-          label: { ja: "オンラインゲーム · 酒類販売 · 規制コンテンツ", en: "Online gaming · Alcohol · Regulated content" },
-          title: { ja: "年齢・居住地証明", en: "Age and residency proof" },
+          label: { ja: "金融 · 与信 · リスク", en: "Finance · Credit · Risk" },
+          title: { ja: "取引先の与信・反社チェック", en: "Counterparty credit & sanctions screening" },
           desc: {
-            ja: "「18 歳以上」「規制対象国の居住者ではない」などの述語だけを開示する。",
-            en: "Disclose only predicates like \"over 18\" or \"not resident of a restricted jurisdiction\".",
+            ja: "与信・反社の判定結果だけを渡し、根拠は出さずに確認できる。",
+            en: "Share only the credit / sanctions decision result — reasons and scores stay private.",
           },
-          useCaseSlug: "kyc-aml-selective-disclosure",
+          useCaseSlug: "counterparty-screening",
         },
         {
-          label: { ja: "保険 · 医療機関 · 治験参加", en: "Insurance · Healthcare · Clinical trials" },
-          title: { ja: "医療要件の属性証明", en: "Attribute proof for clinical requirements" },
+          label: { ja: "規制対応 · データガバナンス", en: "Regulatory · Data governance" },
+          title: { ja: "金融データ流出防止", en: "Financial-data exfiltration prevention" },
           desc: {
-            ja: "診療記録を渡さずに、保険適用条件や治験参加要件の充足を証明する。",
-            en: "Prove eligibility for insurance coverage or trial participation without handing over the medical record.",
+            ja: "組織を跨いだデータアクセスを、改ざん不能な証跡で証明可能にする。",
+            en: "Make cross-org data access tamper-proof and verify who accessed what.",
           },
-          useCaseSlug: "kyc-aml-selective-disclosure",
+          useCaseSlug: "financial-data-exfiltration",
         },
         {
-          label: { ja: "EEO · 人事 · 学位検証", en: "EEO · HR · Credential verification" },
-          title: { ja: "雇用適格性証明", en: "Employment eligibility proof" },
+          label: { ja: "製造 · 規制適合", en: "Manufacturing · Regulatory conformity" },
+          title: { ja: "サプライチェーン ESG 適合", en: "Supply chain ESG conformity" },
           desc: {
-            ja: "学位や職務経歴を渡さずに、ポジション要件への適合だけを証明する。",
-            en: "Prove fitness for a position without handing over diplomas or employment history.",
+            ja: "CBAM・EUDR・DPP への適合を、営業秘密を守りながらサプライヤ属性の連鎖で証明する。",
+            en: "Prove CBAM / EUDR / DPP conformance via a chain of supplier attributes while protecting trade secrets.",
           },
-          useCaseSlug: "kyc-aml-selective-disclosure",
+          useCaseSlug: "supply-chain-esg",
         },
       ],
       further: [

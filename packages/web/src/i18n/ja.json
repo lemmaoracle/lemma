@@ -986,6 +986,7 @@
     "countAll": "全件 {n} 件",
     "countMatch": "該当 {n} 件",
     "emptyState": "この業界の事例は準備中です。すべて表示に戻すか、お問い合わせください。",
-    "cardCta": "見る →"
+    "cardCta": "見る →",
+    "briefLinkLabel": "実事案の構造化分析 — Critical Brief"
   }
 }

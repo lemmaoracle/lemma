@@ -551,6 +551,8 @@ export interface Translations {
     readonly countMatch: string;
     readonly emptyState: string;
     readonly cardCta: string;
+    /** Index — soft footer link to Critical Briefs (altitude reader path). */
+    readonly briefLinkLabel: string;
   }>;
 }
 
