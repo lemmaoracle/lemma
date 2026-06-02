@@ -1,0 +1,247 @@
+---
+/**
+ * /thanks/contact/ — Discovery Call (Tally) confirmation page.
+ *
+ * Tally forms (EkBqDX in JA, Pd2Rl5 in EN) are configured to redirect here
+ * on submit. The page fires `contact_submit` to GA4 once, then offers a few
+ * forward links so the visitor doesn't dead-end.
+ *
+ * Visual chrome is borrowed from ThankYouTemplate to keep the same dark
+ * landing aesthetic — but simpler (no PDF card; this is post-conversation,
+ * not post-download).
+ */
+import type { Locale } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
+
+export interface ThanksContactTemplateProps {
+  locale: Locale;
+  /** Tally form id this thanks page corresponds to. */
+  formId: string;
+}
+
+const { locale, formId } = Astro.props as ThanksContactTemplateProps;
+const isJa = locale === "ja";
+
+const homePath = isJa ? "/ja/" : "/";
+const briefsPath = isJa ? "/ja/critical/briefs/" : "/critical/briefs/";
+const langSwitchHref = isJa ? "/thanks/contact/" : "/ja/thanks/contact/";
+const langSwitchLabel = isJa ? "English" : "日本語";
+
+const C = isJa ? {
+  metaTitle: "お問い合わせありがとうございます — Lemma",
+  eyebrow: "Lemma",
+  title: "お問い合わせを",
+  titleEm: "受け付けました",
+  sub: "弊チームより 1〜2 営業日以内に、Discovery Call の日程についてご連絡いたします。",
+  nextLabel: "送信完了までのあいだに",
+  next1Title: "Critical Brief を読む",
+  next1Desc: "AI 時代のサイバー防衛に残された、最後の層 — 実事案の構造分析。",
+  next2Title: "ホームに戻る",
+  next2Desc: "Lemma の信頼インフラとプロダクトの全体像。",
+  copy: "© 2026 FRAME00, Inc.",
+} : {
+  metaTitle: "Thanks for reaching out — Lemma",
+  eyebrow: "Lemma",
+  title: "Thanks — we've",
+  titleEm: "got your note",
+  sub: "Our team will follow up within one to two business days to schedule your Discovery Call.",
+  nextLabel: "While you wait",
+  next1Title: "Read the Critical Briefs",
+  next1Desc: "Structural analyses of the real incidents Detection ≠ Proof speaks to.",
+  next2Title: "Back to home",
+  next2Desc: "The Lemma trust infrastructure and product overview.",
+  copy: "© 2026 FRAME00, Inc.",
+};
+---
+
+<Layout
+  locale={locale}
+  title={C.metaTitle}
+  description={C.sub}
+  bodyClass="page-thank-you"
+  noindex
+>
+  <nav class="nav">
+    <a href={homePath} class="nav-logo">
+      <LemmaOracle class="h-[65px] w-auto text-white" />
+    </a>
+    <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>
+  </nav>
+
+  <main class="main">
+    <div class="ty-eyebrow">{C.eyebrow}</div>
+
+    <h1 class="ty-title">{C.title} <em>{C.titleEm}</em></h1>
+
+    <div class="ty-rule"></div>
+
+    <p class="ty-sub">{C.sub}</p>
+
+    <div class="next-block">
+      <div class="next-label">{C.nextLabel}</div>
+      <a href={briefsPath} class="next-card">
+        <div class="next-card-text">
+          <h3>{C.next1Title}</h3>
+          <p>{C.next1Desc}</p>
+        </div>
+        <div class="next-arrow">→</div>
+      </a>
+      <a href={homePath} class="next-card">
+        <div class="next-card-text">
+          <h3>{C.next2Title}</h3>
+          <p>{C.next2Desc}</p>
+        </div>
+        <div class="next-arrow">→</div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="ty-footer">
+    <span class="footer-copy">{C.copy}</span>
+    <a href={homePath} class="footer-site">lemma.frame00.com</a>
+  </footer>
+</Layout>
+
+<script is:inline define:vars={{ formId }}>
+  // GA4: discovery-call conversion. Tally redirects here on submit, so one
+  // page load == one contact submission. No-ops cleanly when gtag is not
+  // loaded (e.g. local dev without GOOGLE_ANALYTICS_ID).
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "contact_submit", { form: formId });
+  }
+</script>
+
+<style>
+  :global(body.page-thank-you) {
+    background: #0D0905;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Sora", system-ui, -apple-system, sans-serif;
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 6%;
+  }
+  .nav-logo { display: inline-flex; color: #fff; text-decoration: none; }
+  .nav-lang {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color .2s;
+  }
+  .nav-lang:hover { color: #fff; }
+
+  .main {
+    flex: 1;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+  .ty-eyebrow {
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+  }
+  .ty-title {
+    font-size: 44px;
+    line-height: 1.15;
+    font-weight: 300;
+    margin: 18px 0 24px;
+    letter-spacing: -0.01em;
+  }
+  .ty-title em {
+    font-style: normal;
+    color: #c98a4b;
+    font-weight: 400;
+  }
+  .ty-rule {
+    width: 64px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 12px 0 28px;
+  }
+  .ty-sub {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0 0 48px;
+    font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
+  }
+
+  .next-block { margin-top: 40px; }
+  .next-label {
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .next-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: background .15s, border-color .15s;
+    margin-bottom: 12px;
+  }
+  .next-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(201, 138, 75, 0.45);
+  }
+  .next-card-text h3 {
+    font-size: 16px; font-weight: 500;
+    margin: 0 0 4px; color: #fff;
+  }
+  .next-card-text p {
+    font-size: 13px; margin: 0;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    line-height: 1.55;
+  }
+  .next-arrow {
+    margin-left: auto;
+    color: #c98a4b;
+    font-size: 18px;
+  }
+
+  .ty-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 6% 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: "Space Mono", monospace;
+  }
+  .footer-copy {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.06em;
+  }
+  .footer-site {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .footer-site:hover { color: rgba(255, 255, 255, 0.6); }
+
+  @media (max-width: 640px) {
+    .main { padding: 60px 6% 80px; }
+    .ty-title { font-size: 32px; }
+    .ty-footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
