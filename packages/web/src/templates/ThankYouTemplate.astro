@@ -376,3 +376,12 @@ const tallyUrl = DISCOVERY_CALL_URL[locale];
     }
   }
 </style>
+
+<script is:inline>
+  // GA4: whitepaper conversion. Tally is configured to redirect to /thank-you/
+  // on submit, so one page load == one whitepaper submission. No-ops cleanly
+  // when gtag is not loaded (e.g. local dev without GOOGLE_ANALYTICS_ID).
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "whitepaper_submit", { form: "xX0VYv" });
+  }
+</script>
