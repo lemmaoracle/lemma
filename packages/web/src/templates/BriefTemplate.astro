@@ -31,6 +31,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefHero from "../components/BriefHero.astro";
+import BriefNextSteps from "../components/BriefNextSteps.astro";
 import BriefRelated from "../components/BriefRelated.astro";
 import BriefDistNote from "../components/BriefDistNote.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
@@ -179,6 +180,14 @@ const labels = isJa
       <article class="brief-body">
         <Content />
       </article>
+
+      {isJa && (
+        <BriefNextSteps
+          pillar={brief.data.pillar}
+          briefId={brief.id}
+          base={base}
+        />
+      )}
 
       <BriefRelated
         locale={locale}
