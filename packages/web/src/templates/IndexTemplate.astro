@@ -1,779 +1,912 @@
 ---
+/**
+ * Home page — v28 redesign.
+ *
+ * Sections (per Lemma_homepage_v28 mockup):
+ *   1. Hero (title + sub + 2 CTAs + verify-terminal animation)
+ *   2. Ecosystem strip (MCP / A2A / x402 / C2PA / W3C VC)
+ *   3. Three product doors (Seal / Trust402 / Industries)
+ *   4. Mechanism (dark; source → attestation → selective disclosure → verifier + 3-phase row)
+ *   5. Schema tabs (4 trust layers as your.*.v1 examples — P1 / P2 / P3 / P4)
+ *   6. Critical Brief feature (latest brief)
+ *   7. Closing CTA (dark slim)
+ *
+ * Copy is locale-resolved via a single C object below (rather than expanding
+ * the t.index translations namespace) — homepage copy is tightly bound to
+ * the v28 layout and not reused elsewhere.
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CtaSection from "../components/CtaSection.astro";
-import HeroCover from "../assets/cover.jpg";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+import { getCollection } from "astro:content";
+import { extractTldr } from "../data/extractTldr";
 
 export interface IndexTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
   description: string;
-  recentPosts: ReadonlyArray<{
-    readonly category: string;
-    readonly date: string;
-    readonly title: string;
-    readonly slug: string;
-  }>;
 }
 
-const { locale, t, base, description, recentPosts } = Astro.props as IndexTemplateProps;
-const ix = t.index;
+const { locale, t, base, description } = Astro.props as IndexTemplateProps;
+const isJa = locale === "ja";
 
-const heroPrimaryHref = ix.hero.primaryCtaHref;
-const heroSecondaryHref = ix.hero.secondaryCtaHref;
+// ── Routes ────────────────────────────────────────────────────────
+const contactHref = DISCOVERY_CALL_URL[locale];
+const developersHref = `${base}/guides/`;
+const guidesHref = `${base}/guides/`;
 const trust402Href = "/trust402/";
-const blogIndexHref = `${base}/blog/`;
-const thinking = recentPosts.slice(0, 6);
+const industriesHref = `${base}/pricing/`;
+const sealHref = "#";  // Seal product page TBD; rendered as placeholder.
+const briefIndexHref = `${base}/critical/briefs/`;
+const whitepaperHref = "https://tally.so/r/xX0VYv";
+
+// ── Latest Critical Brief (featured row) ──────────────────────────
+const allBriefs = await getCollection("critical-briefs");
+const briefsByDate = [...allBriefs].sort((a, b) => {
+  const diff = b.data.published.getTime() - a.data.published.getTime();
+  return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
+});
+const featured = briefsByDate[0];
+const featuredTldr = featured ? extractTldr(featured.body ?? "", 180) : "";
+const featuredHref = featured ? `${base}/critical/briefs/${featured.id}/` : briefIndexHref;
+const featuredTitle = featured
+  ? (isJa ? featured.data.title : (featured.data.title_en ?? featured.data.title))
+  : "";
+const featuredDate = featured ? featured.data.published.toISOString().slice(0, 10) : "";
+
+// ── Copy (locale-resolved) ────────────────────────────────────────
+const C = isJa ? {
+  heroH1Line1: "AI のための、",
+  heroH1Accent: "信頼インフラ",
+  heroH1Tail: "。",
+  heroSubPre: "AI とエージェントが、組織のデータと判断を扱う時代。",
+  heroSubStrong: "「誰が・何の権限で・どのデータを・どう処理したか」",
+  heroSubPost: "を ZK 証明で示します。データを集めず、ログを開かず、規制と運用を同時に満たす — 信頼の標準層。",
+  heroPrimaryCta: "導入相談へ",
+  heroSecondaryCta: "開発者向けに見る",
+  termLabel: "lemma",
+  termComm1: "1. 来歴証明",
+  termComm2: "2. 検証可能 AI",
+  termComm3: "3. エージェント権限証明",
+  termComm4: "4. 規制属性証明",
+  termFinal: "trust verified",
+  termFinalSub: "data never left source",
+  ecoLabel: "対応標準",
+  doorsEyebrow: "製品",
+  doorsH2Line1: "ひとつの基盤、",
+  doorsH2Accent: "3 つの入口",
+  doorsH2Tail: "。",
+  sealAud: "開発者向け",
+  sealTagline: "鍵ではなく、証明を送る。",
+  sealDesc: "ZK サインイン SDK。あらゆるアプリ・AI エージェントスタックに組み込めます。",
+  trust402Aud: "エージェント開発者向け",
+  trust402Tagline: "鍵を持たずに、AI を動かす。",
+  trust402Desc: "鍵不要の認証。コールごとの権限委任。x402 / MCP に対応。",
+  industriesAud: "大企業向け",
+  industriesTagline: "Civic · Critical · Compliance。",
+  industriesDesc: "公共インフラ・製造業・規制金融に最適化した 3 つの製品ライン。",
+  mechEyebrow: "仕組み",
+  mechH2Line1: "データは出ない。",
+  mechH2Accent: "証明だけが流通する",
+  mechH2Tail: "。",
+  mechSub: "ソース側で証明を作り、必要な分だけ選択的に開示し、検証者が公開鍵で確かめる。3 フェーズの間、生データは一度も移動しません。",
+  diagSource: "機密記録",
+  diagSourceSub: "データは外に出ない",
+  diagAttestHeader: "属性証明",
+  diagAttestLabel: "完全な属性証明",
+  diagAttestSub: "3 件の属性すべて",
+  diagDiscloseHeader: "選択開示",
+  diagDiscloseLabel: "選択開示",
+  diagDiscloseSub: "1 件だけを公開",
+  diagVerified: "検証済",
+  diagTruth: "真実",
+  diagVerifier: "検証完了",
+  diagVerifierSub: "漏洩ゼロ",
+  phase1Step: "フェーズ 01 · 発行",
+  phase1Title: "ソースで証明を作る",
+  phase1Desc: "ソース側に Lemma SDK を組み込み、データ・モデル・権限の属性証明を発行。元データは一切外に出ない。",
+  phase2Step: "フェーズ 02 · 証明",
+  phase2Title: "必要な分だけを示す",
+  phase2Desc: "検証者が必要とする最小限の事実(権限・属性・整合性)だけを ZK で選択的に開示。生データは触らない。",
+  phase3Step: "フェーズ 03 · 検証",
+  phase3Title: "誰でも確かめられる",
+  phase3Desc: "公開検証鍵で誰でも・いつでも証明の真正性を確認。必要なら on-chain attestation で監査ログ化。",
+  mechCta: "技術仕様書を読む",
+  stack1Label: "ZK",
+  stack2Label: "署名",
+  stack3Label: "ハッシュ",
+  stack4Label: "識別子",
+  stack5Label: "オンチェーン",
+  schemaEyebrow: "4 つの信頼レイヤー",
+  schemaH2Line1: "4 つの信頼レイヤー、",
+  schemaH2Accent: "あなた",
+  schemaH2Tail: "のスキーマ。",
+  schemaSub1: "信頼インフラは 4 つの軸でできています — 来歴証明・検証可能 AI・エージェント権限証明・規制属性証明。スキーマは Lemma が縛らず、御社のドメインに合わせて自由に定義できます。SDK で発行・検証。以下は ",
+  schemaSubCode: "your.*.v1",
+  schemaSub2: " として組んだ例。",
+  tabP1: "来歴証明",
+  tabP2: "検証可能 AI",
+  tabP3: "エージェント権限",
+  tabP4: "規制属性",
+  p1Title: "Provenance schema",
+  p1Desc: "センサー → SCADA → Oracle と多段で伝搬するデータの来歴を、改ざん検知可能な形で記録。データ本体は開示せず、ハッシュチェーンと BBS+ 署名で「同じものだ」を証明。",
+  p1Row1: "署名", p1Row1Val: "BBS+",
+  p1Row2: "ハッシュ", p1Row2Val: "Poseidon-Merkle",
+  p1Row3: "識別子", p1Row3Val: "W3C DID",
+  p2Title: "Model schema",
+  p2Desc: "モデル ID と適用ポリシーのハッシュ、入力・出力のコミットメントを記録。実際の入出力は開示せず、ポリシー充足だけを Groth16 で証明。LLM 監査の盲点を埋めます。",
+  p2Row1: "証明", p2Row1Val: "Groth16 / BN254",
+  p2Row2: "回路", p2Row2Val: "Circom 2.x",
+  p2Row3: "コミット", p2Row3Val: "Pedersen / Poseidon",
+  p2Row4: "連携", p2Row4Val: "MCP / Anthropic",
+  p3Title: "Agent schema",
+  p3Desc: "delegatedBy で「誰が委任したか」、role・spendLimit・scope で「何をどこまでできるか」を記録。Trust402 で x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。",
+  p3Row1: "証明", p3Row1Val: "Groth16 + EIP-3009",
+  p3Row2: "決済", p3Row2Val: "USDC / x402",
+  p3Row3: "委任", p3Row3Val: "DID-based VC",
+  p3Row4: "製品", p3Row4Val: "Trust402",
+  p4Title: "Attribute schema",
+  p4Desc: "権威機関が発行する属性証明。disclosed / hidden で「何を開示し、何を隠すか」を BBS+ Selective Disclosure で制御。KYC・許認可確認の生データ集約を不要に。",
+  p4Row1: "証明", p4Row1Val: "BBS+ Selective",
+  p4Row2: "識別子", p4Row2Val: "W3C DID / VC",
+  p4Row3: "標準", p4Row3Val: "eIDAS / DID-Auth",
+  p4Row4: "製品", p4Row4Val: "Lemma Compliance",
+  briefEyebrow: "Critical Brief",
+  briefH2Line1: "AI 時代の、",
+  briefH2Line2Pre: "新しい",
+  briefH2Accent: "コンプライアンス",
+  briefH2Tail: "。",
+  briefSub: "規制・運用・暗号の交差点で起きた事案を、Lemma が読み解きます。自社の信頼インフラづくりに、ぜひお役立てください。",
+  briefFeatMetaPrefix: "注目の Brief ·",
+  briefFeatCta: "読む",
+  briefList: "Brief 一覧を見る",
+  briefWpHintBefore: "深く知りたい方は ",
+  briefWpHintLink: "ホワイトペーパー DL",
+  briefWpHintAfter: " も。",
+  closingH1Line1: "エージェント時代の、",
+  closingH1Accent: "信頼インフラ",
+  closingH1Tail: "。",
+  closingPrimary: "導入相談へ",
+  closingSecondary: "ホワイトペーパー",
+} : {
+  heroH1Line1: "Trust infrastructure",
+  heroH1Accent: "for AI",
+  heroH1Tail: ".",
+  heroSubPre: "An era where AI and agents handle organizational data and decisions.",
+  heroSubStrong: "who, with what authority, processed which data, and how",
+  heroSubPost: " — Lemma proves it as ZK proofs. No data collection, no log exposure; regulation and operations met at once — the standard trust layer.",
+  heroPrimaryCta: "Talk to us",
+  heroSecondaryCta: "Developer view",
+  termLabel: "lemma",
+  termComm1: "1. Verifiable Origin",
+  termComm2: "2. Verifiable AI",
+  termComm3: "3. Agent Authority Proof",
+  termComm4: "4. Regulatory Attribute Proof",
+  termFinal: "trust verified",
+  termFinalSub: "data never left source",
+  ecoLabel: "Compatible standards",
+  doorsEyebrow: "Products",
+  doorsH2Line1: "One foundation,",
+  doorsH2Accent: "three doors in",
+  doorsH2Tail: ".",
+  sealAud: "For developers",
+  sealTagline: "Send proofs, not keys.",
+  sealDesc: "A ZK sign-in SDK that drops into any app or AI agent stack.",
+  trust402Aud: "For agent developers",
+  trust402Tagline: "Run AI without holding keys.",
+  trust402Desc: "Keyless auth. Per-call authority delegation. Works with x402 / MCP.",
+  industriesAud: "For enterprises",
+  industriesTagline: "Civic · Critical · Compliance.",
+  industriesDesc: "Three product lines tuned for public infrastructure, manufacturing, and regulated finance.",
+  mechEyebrow: "How it works",
+  mechH2Line1: "Data stays in place.",
+  mechH2Accent: "Only proofs travel",
+  mechH2Tail: ".",
+  mechSub: "The source mints a proof, only the necessary parts are selectively disclosed, and a verifier checks them with a public key. Through all three phases, raw data never moves.",
+  diagSource: "Confidential record",
+  diagSourceSub: "Data never leaves",
+  diagAttestHeader: "Attribute proof",
+  diagAttestLabel: "Full attribute proof",
+  diagAttestSub: "All 3 attributes",
+  diagDiscloseHeader: "Selective disclosure",
+  diagDiscloseLabel: "Selective disclosure",
+  diagDiscloseSub: "Just 1 disclosed",
+  diagVerified: "Verified",
+  diagTruth: "Truthful",
+  diagVerifier: "Verified",
+  diagVerifierSub: "Zero disclosure",
+  phase1Step: "Phase 01 · Issue",
+  phase1Title: "Mint the proof at the source",
+  phase1Desc: "Embed the Lemma SDK at the source. Issue attribute proofs for data, models, and authority. Raw data never leaves.",
+  phase2Step: "Phase 02 · Prove",
+  phase2Title: "Reveal just enough",
+  phase2Desc: "Selectively disclose only the facts a verifier needs — authority, attribute, integrity. Raw data is never touched.",
+  phase3Step: "Phase 03 · Verify",
+  phase3Title: "Anyone can confirm",
+  phase3Desc: "Anyone, anytime, verifies authenticity with a public key. Optionally anchor as on-chain audit attestations.",
+  mechCta: "Read the technical spec",
+  stack1Label: "ZK",
+  stack2Label: "Signing",
+  stack3Label: "Hash",
+  stack4Label: "Identifier",
+  stack5Label: "On-chain",
+  schemaEyebrow: "The 4 trust layers",
+  schemaH2Line1: "4 trust layers,",
+  schemaH2Accent: "your",
+  schemaH2Tail: " schema.",
+  schemaSub1: "Trust infrastructure has four axes — verifiable origin, verifiable AI, agent authority proof, regulatory attribute proof. Schemas aren't dictated by Lemma; define them to fit your domain and issue/verify them via the SDK. The examples below are framed as ",
+  schemaSubCode: "your.*.v1",
+  schemaSub2: ".",
+  tabP1: "Verifiable Origin",
+  tabP2: "Verifiable AI",
+  tabP3: "Agent Authority",
+  tabP4: "Regulatory Attribute",
+  p1Title: "Provenance schema",
+  p1Desc: "Record the multi-tier provenance of data as it propagates sensor → SCADA → Oracle, in tamper-evident form. The body never leaks; a hash chain + BBS+ signature proves \"this is the same thing.\"",
+  p1Row1: "Signing", p1Row1Val: "BBS+",
+  p1Row2: "Hash", p1Row2Val: "Poseidon-Merkle",
+  p1Row3: "Identifier", p1Row3Val: "W3C DID",
+  p2Title: "Model schema",
+  p2Desc: "Record the model ID, applied-policy hash, and commitments over inputs and outputs. The actual I/O is never revealed; only policy satisfaction is proven via Groth16. Closes the LLM audit blind spot.",
+  p2Row1: "Proof", p2Row1Val: "Groth16 / BN254",
+  p2Row2: "Circuit", p2Row2Val: "Circom 2.x",
+  p2Row3: "Commit", p2Row3Val: "Pedersen / Poseidon",
+  p2Row4: "Bridges", p2Row4Val: "MCP / Anthropic",
+  p3Title: "Agent schema",
+  p3Desc: "delegatedBy says who delegated; role / spendLimit / scope say what and how far. Attached per x402 payment via Trust402, proving an autonomous agent's actions with authority bound.",
+  p3Row1: "Proof", p3Row1Val: "Groth16 + EIP-3009",
+  p3Row2: "Payment", p3Row2Val: "USDC / x402",
+  p3Row3: "Delegation", p3Row3Val: "DID-based VC",
+  p3Row4: "Product", p3Row4Val: "Trust402",
+  p4Title: "Attribute schema",
+  p4Desc: "Attribute credentials issued by authorities. disclosed / hidden control what is shown and what stays hidden, via BBS+ selective disclosure. Eliminates the need to centralize KYC / license raw data.",
+  p4Row1: "Proof", p4Row1Val: "BBS+ Selective",
+  p4Row2: "Identifier", p4Row2Val: "W3C DID / VC",
+  p4Row3: "Standard", p4Row3Val: "eIDAS / DID-Auth",
+  p4Row4: "Product", p4Row4Val: "Lemma Compliance",
+  briefEyebrow: "Critical Brief",
+  briefH2Line1: "Compliance",
+  briefH2Line2Pre: "for the AI era,",
+  briefH2Accent: "redefined",
+  briefH2Tail: ".",
+  briefSub: "Structured analyses of incidents at the intersection of regulation, operations, and cryptography — read by Lemma. Use them as you build your own trust infrastructure.",
+  briefFeatMetaPrefix: "Featured Brief ·",
+  briefFeatCta: "Read",
+  briefList: "View all Briefs",
+  briefWpHintBefore: "Want to go deeper? ",
+  briefWpHintLink: "Download the whitepaper",
+  briefWpHintAfter: ".",
+  closingH1Line1: "Trust infrastructure",
+  closingH1Accent: "for the agent era",
+  closingH1Tail: ".",
+  closingPrimary: "Talk to us",
+  closingSecondary: "Whitepaper",
+};
+
+const phases = [
+  { step: C.phase1Step, title: C.phase1Title, desc: C.phase1Desc, prims: ["BBS+ Signature", "Poseidon Hash", "DID / VC (W3C)"] },
+  { step: C.phase2Step, title: C.phase2Title, desc: C.phase2Desc, prims: ["Groth16 / BN254", "Circom 2.x Circuit", "Selective Disclosure"] },
+  { step: C.phase3Step, title: C.phase3Title, desc: C.phase3Desc, prims: ["Public verify (no trust)", "EIP-712 attestation", "on-chain optional"] },
+];
+const stack = [
+  { label: C.stack1Label, meta: "Groth16 / BN254" },
+  { label: C.stack2Label, meta: "BBS+ / EdDSA" },
+  { label: C.stack3Label, meta: "Poseidon / Keccak" },
+  { label: C.stack4Label, meta: "W3C DID/VC" },
+  { label: C.stack5Label, meta: "EIP-712 / x402" },
+];
+const ecoItems = [
+  { name: "MCP", meta: "Model Context Protocol" },
+  { name: "A2A", meta: "Agent2Agent · Google" },
+  { name: "x402", meta: "HTTP 402 · Coinbase", accent: "402" },
+  { name: "C2PA", meta: "Content Provenance" },
+  { name: "W3C VC", meta: "Verifiable Credentials" },
+];
+const tabs = [
+  { id: "p1", pill: "P1", label: C.tabP1 },
+  { id: "p2", pill: "P2", label: C.tabP2 },
+  { id: "p3", pill: "P3", label: C.tabP3 },
+  { id: "p4", pill: "P4", label: C.tabP4 },
+];
+const panes = [
+  { id: "p1", pill: "P1 · " + C.tabP1, h4: C.p1Title, desc: C.p1Desc,
+    rows: [{ l: C.p1Row1, v: C.p1Row1Val }, { l: C.p1Row2, v: C.p1Row2Val }, { l: C.p1Row3, v: C.p1Row3Val }] },
+  { id: "p2", pill: "P2 · " + C.tabP2, h4: C.p2Title, desc: C.p2Desc,
+    rows: [{ l: C.p2Row1, v: C.p2Row1Val }, { l: C.p2Row2, v: C.p2Row2Val }, { l: C.p2Row3, v: C.p2Row3Val }, { l: C.p2Row4, v: C.p2Row4Val }] },
+  { id: "p3", pill: "P3 · " + C.tabP3, h4: C.p3Title, desc: C.p3Desc,
+    rows: [{ l: C.p3Row1, v: C.p3Row1Val }, { l: C.p3Row2, v: C.p3Row2Val }, { l: C.p3Row3, v: C.p3Row3Val }, { l: C.p3Row4, v: C.p3Row4Val }] },
+  { id: "p4", pill: "P4 · " + C.tabP4, h4: C.p4Title, desc: C.p4Desc,
+    rows: [{ l: C.p4Row1, v: C.p4Row1Val }, { l: C.p4Row2, v: C.p4Row2Val }, { l: C.p4Row3, v: C.p4Row3Val }, { l: C.p4Row4, v: C.p4Row4Val }] },
+];
 ---
 
 <Layout locale={locale} metaType="home" description={description}>
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <main>
-    <!-- ─── HERO ─── -->
-    <section class="hero">
-      <img
-        class="hero-bg"
-        id="heroBg"
-        src={HeroCover.src}
-        alt=""
-        width={HeroCover.width}
-        height={HeroCover.height}
-        fetchpriority="high"
-        decoding="async"
-      />
-      <div class="hero-overlay"></div>
-      <div class="hero-content" id="heroContent">
-        <div class="hero-eyebrow">{ix.hero.eyebrow}</div>
-        <h1 class="hero-h1">{ix.hero.h1}</h1>
-        <p class="hero-sub">{ix.hero.sub}</p>
-        <div class="hero-cta-row">
-          <a href={heroPrimaryHref} class="btn btn-primary" target="_blank" rel="noopener">{ix.hero.primaryCta}</a>
-          <a href={heroSecondaryHref} class="btn btn-ghost">{ix.hero.secondaryCta}</a>
+  <main class="hp">
+
+    <!-- HERO -->
+    <section class="hp-hero">
+      <div class="hp-hero-text">
+        <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
+        <p class="hp-hero-sub">
+          {C.heroSubPre}<br />
+          Lemma <strong>{C.heroSubStrong}</strong>{C.heroSubPost}
+        </p>
+        <div class="hp-hero-ctas">
+          <a href={contactHref} class="hp-btn-primary">{C.heroPrimaryCta} →</a>
+          <a href={developersHref} class="hp-btn-secondary">{C.heroSecondaryCta}</a>
+        </div>
+      </div>
+
+      <div class="hp-hero-visual" aria-hidden="true">
+        <div class="hp-term-chrome">
+          <span></span><span></span><span></span>
+          <span class="hp-term-label">{C.termLabel}</span>
+        </div>
+        <div class="hp-term-body">
+          <span class="hp-term-line"><span class="hp-prompt">$</span> <span class="hp-cmd">lemma verify --target agent-payment</span></span>
+          <span class="hp-term-line"><span class="hp-comm"># {C.termComm1}</span></span>
+          <span class="hp-term-line">✓ <span class="hp-key">provenance</span>: <span class="hp-str">"raw_source"</span> — <span class="hp-ok">verified</span></span>
+          <span class="hp-term-line"><span class="hp-comm"># {C.termComm2}</span></span>
+          <span class="hp-term-line">✓ <span class="hp-key">model_attestation</span>: <span class="hp-str">"claude-3.7-sonnet"</span> — <span class="hp-ok">verified</span></span>
+          <span class="hp-term-line"><span class="hp-comm"># {C.termComm3}</span></span>
+          <span class="hp-term-line">✓ <span class="hp-key">role</span>: <span class="hp-str">"treasury_agent"</span> · <span class="hp-key">spend_limit</span>: <span class="hp-str">"$500/day"</span> — <span class="hp-ok">in policy</span></span>
+          <span class="hp-term-line"><span class="hp-comm"># {C.termComm4}</span></span>
+          <span class="hp-term-line">✓ <span class="hp-key">jurisdiction</span>: <span class="hp-str">"JP-fin"</span> · <span class="hp-key">attribute</span>: <span class="hp-str">"licensed"</span> — <span class="hp-ok">satisfied</span></span>
+          <span class="hp-term-line"><span class="hp-prompt">→</span> <span class="hp-ok">{C.termFinal}</span> · <span class="hp-comm">{C.termFinalSub}</span></span>
         </div>
       </div>
     </section>
 
-    <!-- ─── TRUST LAYER (Section 2: D-diagram, 4 modules over the trust-layer bar) ─── -->
-    <section class="trust-layer-section">
-      <div class="trust-layer-inner reveal">
-        <div class="trust-layer-eyebrow">{ix.trustLayer.eyebrow}</div>
-        <h2 class="trust-layer-h2">{ix.trustLayer.h2}</h2>
+    <!-- ECOSYSTEM STRIP -->
+    <div class="hp-eco">
+      <div class="hp-eco-inner">
+        <div class="hp-eco-label">{C.ecoLabel}</div>
+        <div class="hp-eco-items">
+          {ecoItems.map((e) => (
+            <div class="hp-eco-item">
+              <div class="hp-eco-name">{e.accent
+                ? <>x<span class="hp-accent">{e.accent}</span></>
+                : e.name}</div>
+              <div class="hp-eco-meta">{e.meta}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
 
-        <div class="tl-diagram">
-          <div class="tl-modules">
-            {[ix.trustLayer.modules.origin, ix.trustLayer.modules.ai, ix.trustLayer.modules.authority, ix.trustLayer.modules.regulatory].map((m) => (
-              <a href={`${base}${m.href}`} class="tl-module">
-                <div class="tl-module-title">{m.title}</div>
-                <p class="tl-module-desc">{m.desc}</p>
-                <div class="tl-module-tech">{m.tech}</div>
-              </a>
+    <!-- THREE DOORS -->
+    <section class="hp-block">
+      <p class="hp-eyebrow">{C.doorsEyebrow}</p>
+      <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
+
+      <div class="hp-doors">
+        <a href={sealHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="28" cy="28" r="23" stroke="currentColor" stroke-width="2.5" />
+                <circle cx="28" cy="28" r="4" fill="currentColor" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Seal</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.sealAud}</span>
+            <h3 class="hp-door-tag">{C.sealTagline}</h3>
+            <p class="hp-door-desc">{C.sealDesc}</p>
+            <span class="hp-door-url">/seal →</span>
+          </div>
+        </a>
+
+        <a href={trust402Href} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M14 12 L46 28 L14 44 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none" />
+                <line x1="25" y1="21" x2="25" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Trust<span class="hp-accent">402</span></div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.trust402Aud}</span>
+            <h3 class="hp-door-tag">{C.trust402Tagline}</h3>
+            <p class="hp-door-desc">{C.trust402Desc}</p>
+            <span class="hp-door-url">/trust402 →</span>
+          </div>
+        </a>
+
+        <a href={industriesHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
+                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Industries</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.industriesAud}</span>
+            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
+            <p class="hp-door-desc">{C.industriesDesc}</p>
+            <span class="hp-door-url">/pricing →</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- MECHANISM -->
+    <section class="hp-mech">
+      <div class="hp-mech-inner">
+        <p class="hp-eyebrow hp-on-dark">{C.mechEyebrow}</p>
+        <h2 class="hp-h2 hp-on-dark">{C.mechH2Line1}<br /><span class="hp-accent-light">{C.mechH2Accent}</span>{C.mechH2Tail}</h2>
+        <p class="hp-sub hp-on-dark">{C.mechSub}</p>
+
+        <div class="hp-mech-diagram">
+          <svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g>
+              <ellipse cx="110" cy="100" rx="56" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <path d="M 54 100 L 54 230" stroke="#d4a574" stroke-width="1.6" />
+              <path d="M 166 100 L 166 230" stroke="#d4a574" stroke-width="1.6" />
+              <path d="M 54 230 Q 110 248 166 230" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <path d="M 54 100 Q 110 114 166 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none" />
+              <path d="M 54 138 Q 110 152 166 138" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none" />
+              <path d="M 54 176 Q 110 190 166 176" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none" />
+              <rect x="134" y="195" width="22" height="16" rx="2" fill="#d4a574" />
+              <path d="M 138 195 L 138 189 Q 138 181 145 181 Q 152 181 152 189 L 152 195" stroke="#d4a574" stroke-width="1.5" fill="none" />
+              <text x="110" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagSource}</text>
+              <text x="110" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagSourceSub}</text>
+            </g>
+            <g>
+              <path class="hp-dashflow" d="M 200 165 L 360 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
+              <path d="M 354 161 L 360 165 L 354 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="220" cy="165" r="10" fill="#8B4513" />
+              <path d="M 215 165 L 218 168 L 225 161" stroke="#FCFAF5" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g>
+              <rect x="385" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <rect x="385" y="115" width="100" height="22" fill="#d4a574" />
+              <text x="435" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">{C.diagAttestHeader}</text>
+              <circle cx="403" cy="158" r="4" fill="#d4a574" />
+              <line x1="413" y1="158" x2="475" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
+              <circle cx="403" cy="183" r="4" fill="#d4a574" />
+              <line x1="413" y1="183" x2="475" y2="183" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
+              <circle cx="403" cy="208" r="4" fill="#d4a574" />
+              <line x1="413" y1="208" x2="475" y2="208" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
+              <text x="435" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagAttestLabel}</text>
+              <text x="435" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagAttestSub}</text>
+            </g>
+            <g>
+              <path class="hp-dashflow" d="M 500 165 L 640 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
+              <path d="M 634 161 L 640 165 L 634 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g>
+              <rect x="660" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <rect x="660" y="115" width="100" height="22" fill="#d4a574" />
+              <text x="710" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">{C.diagDiscloseHeader}</text>
+              <circle cx="678" cy="158" r="4" fill="#d4a574" />
+              <line x1="688" y1="158" x2="750" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.55" />
+              <circle cx="678" cy="183" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3" />
+              <line x1="688" y1="183" x2="750" y2="183" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25" />
+              <circle cx="678" cy="208" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3" />
+              <line x1="688" y1="208" x2="750" y2="208" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25" />
+              <text x="710" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagDiscloseLabel}</text>
+              <text x="710" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagDiscloseSub}</text>
+            </g>
+            <g>
+              <path class="hp-dashflow" d="M 775 165 L 910 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
+              <path d="M 904 161 L 910 165 L 904 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g>
+              <ellipse cx="1020" cy="100" rx="60" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <path d="M 960 100 L 960 230" stroke="#d4a574" stroke-width="1.6" />
+              <path d="M 1080 100 L 1080 230" stroke="#d4a574" stroke-width="1.6" />
+              <path d="M 960 230 Q 1020 248 1080 230" stroke="#d4a574" stroke-width="1.6" fill="none" />
+              <path d="M 960 100 Q 1020 114 1080 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none" />
+              <circle class="hp-check-glow" cx="970" cy="100" r="14" fill="#6ec27a" />
+              <path d="M 962 100 L 968 106 L 980 92" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              <text x="1020" y="160" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">{C.diagVerified}</text>
+              <text x="1020" y="182" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">{C.diagTruth}</text>
+              <text x="1020" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagVerifier}</text>
+              <text x="1020" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#6ec27a">{C.diagVerifierSub}</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="hp-phases">
+          {phases.map((p) => (
+            <div class="hp-phase">
+              <div class="hp-phase-step">{p.step}</div>
+              <h3 class="hp-phase-title">{p.title}</h3>
+              <p class="hp-phase-desc">{p.desc}</p>
+              <div class="hp-phase-prims">
+                {p.prims.map((pr) => <div class="hp-phase-prim">{pr}</div>)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="hp-mech-bottom">
+          <div class="hp-mech-stack">
+            {stack.map((s) => (
+              <div class="hp-mech-stack-item">{s.label} <span class="hp-mech-stack-meta">{s.meta}</span></div>
             ))}
           </div>
-          <div class="tl-bar" aria-hidden="true">
-            <span class="tl-bar-label">{ix.trustLayer.barLabel}</span>
+          <a href={guidesHref} class="hp-mech-cta">{C.mechCta} →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEMA TABS -->
+    <section class="hp-block">
+      <p class="hp-eyebrow">{C.schemaEyebrow}</p>
+      <h2 class="hp-h2">{C.schemaH2Line1}<br /><span class="hp-accent">{C.schemaH2Accent}</span>{C.schemaH2Tail}</h2>
+      <p class="hp-sub">
+        {C.schemaSub1}<code class="hp-inline-code">{C.schemaSubCode}</code>{C.schemaSub2}
+      </p>
+
+      <div class="hp-schema-tabs" role="tablist">
+        {tabs.map((t, i) => (
+          <button
+            type="button"
+            class:list={["hp-schema-tab", { "is-active": i === 0 }]}
+            data-tab={t.id}
+            role="tab"
+            aria-selected={i === 0 ? "true" : "false"}
+          ><span class="hp-tab-pill">{t.pill}</span>{t.label}</button>
+        ))}
+      </div>
+
+      {panes.map((p, i) => (
+        <div
+          class:list={["hp-schema-pane", { "is-active": i === 0 }]}
+          data-pane={p.id}
+          role="tabpanel"
+        >
+          <div class="hp-schema-code">
+            {p.id === "p1" && (
+              <Fragment>
+                <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"schema"</span><span class="hp-jp">:</span> <span class="hp-js">"your.provenance.v1"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"subject"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:utility-meter-001"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"issuer"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:org-metawater"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"sourceHash"</span><span class="hp-jp">:</span> <span class="hp-js">"0x9f3a...c4e8"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"lineageChain"</span><span class="hp-jp">:</span> <span class="hp-jp">[</span><span class="hp-js">"sensor"</span><span class="hp-jp">,</span> <span class="hp-js">"scada"</span><span class="hp-jp">,</span> <span class="hp-js">"oracle"</span><span class="hp-jp">],</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"recordedAt"</span><span class="hp-jp">:</span> <span class="hp-js">"2026-06-02T14:30:00Z"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"integrity"</span><span class="hp-jp">:</span> <span class="hp-js">"poseidon-merkle"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"proof"</span><span class="hp-jp">:</span> <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"type"</span><span class="hp-jp">:</span> <span class="hp-js">"BBS+Signature2020"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"value"</span><span class="hp-jp">:</span> <span class="hp-js">"0x4a2b...e1d3"</span><br />
+                &nbsp;&nbsp;<span class="hp-jp">{"}"}</span><br />
+                <span class="hp-jp">{"}"}</span>
+              </Fragment>
+            )}
+            {p.id === "p2" && (
+              <Fragment>
+                <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"schema"</span><span class="hp-jp">:</span> <span class="hp-js">"your.model.v1"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"agent"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:agent-fin-bot-007"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"modelId"</span><span class="hp-jp">:</span> <span class="hp-js">"claude-3.7-sonnet"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"policyHash"</span><span class="hp-jp">:</span> <span class="hp-js">"0x71c5...8b9a"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"inputCommitment"</span><span class="hp-jp">:</span> <span class="hp-js">"0xb4e2...3f10"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"outputCommitment"</span><span class="hp-jp">:</span> <span class="hp-js">"0xc8f1...a2d5"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"satisfiesPolicy"</span><span class="hp-jp">:</span> <span class="hp-jn">true</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"proof"</span><span class="hp-jp">:</span> <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"type"</span><span class="hp-jp">:</span> <span class="hp-js">"Groth16"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"circuit"</span><span class="hp-jp">:</span> <span class="hp-js">"lemma/model-attest@1.0"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"value"</span><span class="hp-jp">:</span> <span class="hp-js">"0x9d7e...c4f2"</span><br />
+                &nbsp;&nbsp;<span class="hp-jp">{"}"}</span><br />
+                <span class="hp-jp">{"}"}</span>
+              </Fragment>
+            )}
+            {p.id === "p3" && (
+              <Fragment>
+                <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"schema"</span><span class="hp-jp">:</span> <span class="hp-js">"your.agent.v1"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"agent"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:agent-treasury-042"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"delegatedBy"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:org-acme-fin"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"role"</span><span class="hp-jp">:</span> <span class="hp-js">"treasury_agent"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"spendLimitUSDC"</span><span class="hp-jp">:</span> <span class="hp-jn">500</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"scope"</span><span class="hp-jp">:</span> <span class="hp-js">"x402://api.partner.jp/*"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"validUntil"</span><span class="hp-jp">:</span> <span class="hp-js">"2026-06-30T23:59:59Z"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"proof"</span><span class="hp-jp">:</span> <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"type"</span><span class="hp-jp">:</span> <span class="hp-js">"Groth16+EIP3009"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"x402PaymentId"</span><span class="hp-jp">:</span> <span class="hp-js">"0xa1f3...7d8e"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"value"</span><span class="hp-jp">:</span> <span class="hp-js">"0x6b2c...e4a9"</span><br />
+                &nbsp;&nbsp;<span class="hp-jp">{"}"}</span><br />
+                <span class="hp-jp">{"}"}</span>
+              </Fragment>
+            )}
+            {p.id === "p4" && (
+              <Fragment>
+                <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"schema"</span><span class="hp-jp">:</span> <span class="hp-js">"your.attribute.v1"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"holder"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:org-fsa-licensed"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"issuer"</span><span class="hp-jp">:</span> <span class="hp-js">"did:lemma:authority-jp-fsa"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"jurisdiction"</span><span class="hp-jp">:</span> <span class="hp-js">"JP-FSA"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"licenseType"</span><span class="hp-jp">:</span> <span class="hp-js">"type-1-financial"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"disclosed"</span><span class="hp-jp">:</span> <span class="hp-jp">[</span><span class="hp-js">"isLicensed"</span><span class="hp-jp">,</span> <span class="hp-js">"validUntilYear"</span><span class="hp-jp">],</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"hidden"</span><span class="hp-jp">:</span> <span class="hp-jp">[</span><span class="hp-js">"licenseNo"</span><span class="hp-jp">,</span> <span class="hp-js">"address"</span><span class="hp-jp">,</span> <span class="hp-js">"executives"</span><span class="hp-jp">],</span><br />
+                &nbsp;&nbsp;<span class="hp-jk">"proof"</span><span class="hp-jp">:</span> <span class="hp-jp">{"{"}</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"type"</span><span class="hp-jp">:</span> <span class="hp-js">"BBS+SelectiveDisclosure"</span><span class="hp-jp">,</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="hp-jk">"value"</span><span class="hp-jp">:</span> <span class="hp-js">"0x3c8d...f7a2"</span><br />
+                &nbsp;&nbsp;<span class="hp-jp">{"}"}</span><br />
+                <span class="hp-jp">{"}"}</span>
+              </Fragment>
+            )}
           </div>
-          <div class="tl-bar-foot">{ix.trustLayer.barFoot}</div>
+          <div class="hp-schema-side">
+            <p class="hp-schema-pill">{p.pill}</p>
+            <h4>{p.h4}</h4>
+            <p>{p.desc}</p>
+            <div class="hp-schema-rows">
+              {p.rows.map((r) => (
+                <div class="hp-schema-row"><span>{r.l}</span><span class="hp-schema-row-val">{r.v}</span></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- CRITICAL BRIEF -->
+    <section class="hp-brief">
+      <div class="hp-brief-inner">
+        <p class="hp-eyebrow">{C.briefEyebrow}</p>
+        <h2 class="hp-h2">{C.briefH2Line1}<br />{C.briefH2Line2Pre}<span class="hp-accent">{C.briefH2Accent}</span>{C.briefH2Tail}</h2>
+        <p class="hp-sub">{C.briefSub}</p>
+
+        {featured && (
+          <a href={featuredHref} class="hp-brief-feat">
+            <div>
+              <p class="hp-brief-feat-meta">{C.briefFeatMetaPrefix} {featuredDate}</p>
+              <h3 class="hp-brief-feat-h">{featuredTitle}</h3>
+              <p class="hp-brief-feat-tldr">{featuredTldr}</p>
+            </div>
+            <span class="hp-brief-feat-cta">{C.briefFeatCta} →</span>
+          </a>
+        )}
+
+        <div class="hp-brief-bottom">
+          <a href={briefIndexHref} class="hp-brief-list">{C.briefList} →</a>
+          <span class="hp-brief-wp">{C.briefWpHintBefore}<a href={whitepaperHref} target="_blank" rel="noopener">{C.briefWpHintLink}</a>{C.briefWpHintAfter}</span>
         </div>
       </div>
     </section>
 
-    <!-- ─── FEATURED PANEL (Trust402) ─── -->
-    <section id="featured" class="featured">
-      <a class="featured-panel reveal" href={trust402Href}>
-        <div class="featured-content">
-          <div class="featured-eyebrow">{ix.featured.eyebrow}</div>
-          <h2 class="featured-title">{ix.featured.title}</h2>
-          <p class="featured-subtitle">{ix.featured.subtitle}</p>
-          <span class="featured-cta">{ix.featured.cta} <span aria-hidden="true">→</span></span>
-        </div>
-        <div class="featured-visual" aria-hidden="true"></div>
-      </a>
-    </section>
-
-    <!-- ─── INDUSTRY APPLICATIONS (Section 3 — audience use-case cards) ─── -->
-    <section class="for-x">
-      <div class="for-x-inner reveal">
-        <div class="for-x-eyebrow">{ix.lemmaFor.eyebrow}</div>
-        <h2 class="for-x-h2">{ix.lemmaFor.h2Line1}<br/>{ix.lemmaFor.h2Line2}</h2>
-        <p class="for-x-lead">{ix.lemmaFor.lead}</p>
-
-        <div class="for-x-grid">
-          {ix.lemmaFor.cards.map((card) => (
-            <a class="for-x-card" href={card.href}>
-              <div class="for-x-card-content">
-                <div class="for-x-card-tag">{card.tag}</div>
-                <h3 class="for-x-card-title">{card.titleLine1}<br/>{card.titleLine2}</h3>
-                <p class="for-x-card-body">{card.body}</p>
-                <div class="for-x-card-cases">{card.cases}</div>
-              </div>
-              <span class="for-x-card-arrow" aria-hidden="true">→</span>
-            </a>
-          ))}
-        </div>
-
-        <div class="for-x-see-all">
-          <a class="for-x-see-all-link" href={ix.lemmaFor.seeAllHref}>{ix.lemmaFor.seeAll}</a>
+    <!-- CLOSING -->
+    <section class="hp-closing">
+      <div class="hp-closing-inner">
+        <h2 class="hp-closing-h">{C.closingH1Line1}<br /><span class="hp-accent-light">{C.closingH1Accent}</span>{C.closingH1Tail}</h2>
+        <div class="hp-closing-ctas">
+          <a href={contactHref} class="hp-btn-brown-pill">{C.closingPrimary} →</a>
+          <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-closing-link">{C.closingSecondary} →</a>
         </div>
       </div>
     </section>
 
-    <!-- ─── NOW BANNER (Mythos / pre-execution attestation context) ─── -->
-    <section class="now-banner">
-      <div class="now-banner-inner reveal">
-        <div class="now-banner-eyebrow">{ix.nowBanner.eyebrow}</div>
-        <p class="now-banner-text">{ix.nowBanner.text}</p>
-        <a class="now-banner-link" href={ix.nowBanner.href}>{ix.nowBanner.cta} <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
-
-    <!-- ─── RECENT THINKING ─── -->
-    <section class="thinking">
-      <div class="thinking-inner reveal">
-        <div>
-          <h2 class="thinking-title">{ix.thinking.title}</h2>
-          <p class="thinking-lead">{ix.thinking.lead}</p>
-          <a class="thinking-see-all" href={blogIndexHref}>{ix.thinking.seeAll}</a>
-        </div>
-        <div class="thinking-list">
-          {thinking.map((post) => (
-            <a class="thinking-item" href={`${base}/blog/${post.slug}/`}>
-              <span class="thinking-item-title">{post.title}</span>
-              <span class="thinking-item-meta">{post.date}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── PARTNER PROGRAM CTA ─── -->
-    <div id="contact">
-      <CtaSection
-        bgImageSrc={HeroCover.src}
-        base={base}
-        locale={locale}
-        wpPrimary={true}
-      />
-    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>(".hp-schema-tab"));
+  const panes = Array.from(document.querySelectorAll<HTMLDivElement>(".hp-schema-pane"));
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.tab;
+      tabs.forEach((x) => {
+        x.classList.remove("is-active");
+        x.setAttribute("aria-selected", "false");
+      });
+      panes.forEach((p) => p.classList.remove("is-active"));
+      tab.classList.add("is-active");
+      tab.setAttribute("aria-selected", "true");
+      const pane = document.querySelector(`.hp-schema-pane[data-pane="${target}"]`);
+      pane?.classList.add("is-active");
+    });
+  });
+</script>
+
 <style>
-  /* Cormorant Garamond (display) is kept; h1/h2/h3 use --font-display. */
-  main { color: var(--gray-800, #1A1A1A); }
+  .hp {
+    --hp-cream: #fcfaf5;
+    --hp-cream-d: #f2eedf;
+    --hp-line: #e5e0d5;
+    --hp-text-1: #1a1a1a;
+    --hp-text-2: #2a2622;
+    --hp-text-3: #5a544d;
+    --hp-text-4: #9a938a;
+    --hp-brown: #8b4513;
+    --hp-brown-deep: #6b340e;
+    --hp-brown-light: #f5ebdc;
+    --hp-code-bg: #1a1612;
+    --hp-code-text: #d4cfc4;
+    --hp-display: "Sora", system-ui, sans-serif;
+    --hp-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --hp-mono: "Space Mono", ui-monospace, monospace;
 
-  /* ─── BUTTONS ─── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 32px;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    border: 1px solid transparent;
-    transition: background 0.25s ease, color 0.25s ease;
-    cursor: pointer;
-    text-decoration: none;
+    background: var(--hp-cream);
+    color: var(--hp-text-2);
+    font-family: var(--hp-body);
+    line-height: 1.75;
+    font-size: 14.5px;
   }
-  .btn-primary { background: #fff; color: #000; }
-  .btn-primary:hover { background: var(--accent); color: #fff; }
-  .btn-ghost {
-    background: transparent;
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.4);
-  }
-  .btn-ghost:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-  }
+  .hp a { color: inherit; text-decoration: none; }
+  .hp-accent { color: var(--hp-brown); }
+  .hp-accent-light { color: var(--hp-brown-light); }
 
-  /* ─── HERO ─── */
-  .hero {
-    position: relative;
-    min-height: 520px;
-    display: flex;
-    align-items: center;
-    padding: 160px 8% 100px;
-    overflow: hidden;
-    background: var(--black);
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 40%;
-    filter: saturate(0.7) brightness(0.9);
-    transform: scale(1.04);
-    transition: transform 10s ease-out;
-  }
-  .hero-bg.ready { transform: scale(1); }
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-  }
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 980px;
-    margin: 0 auto;
-    width: 100%;
-    opacity: 0;
-    transform: translateY(22px);
-    transition: opacity 0.95s ease, transform 0.95s ease;
-  }
-  .hero-content.visible { opacity: 1; transform: translateY(0); }
-  .hero-eyebrow {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #B8723A;
-    margin-bottom: 22px;
-  }
-  .hero-h1 {
-    font-family: var(--font-display);
-    font-size: clamp(44px, 6.5vw, 72px);
-    font-weight: 500;
-    color: #fff;
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-    margin-bottom: 24px;
-  }
-  .hero-sub {
-    font-family: var(--font-body);
-    font-size: clamp(15px, 1.25vw, 18px);
-    color: rgba(255,255,255,0.78);
-    line-height: 1.6;
-    margin-bottom: 40px;
-    max-width: 640px;
-  }
-  .hero-cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
+  /* HERO */
+  .hp-hero { max-width: 1320px; margin: 0 auto; padding: 96px 40px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 80px; align-items: center; }
+  .hp-hero h1 { font-family: var(--hp-display); font-size: 76px; line-height: 1.04; letter-spacing: -0.035em; color: #000; margin: 0 0 28px; font-weight: 600; }
+  .hp-hero-sub { font-size: 17px; line-height: 1.8; color: var(--hp-text-2); margin: 0 0 40px; max-width: 520px; }
+  .hp-hero-sub strong { font-weight: 500; color: var(--hp-text-1); }
+  .hp-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hp-btn-primary { background: #000; color: var(--hp-cream); padding: 14px 26px; border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: background 0.15s; }
+  .hp-btn-primary:hover { background: var(--hp-brown); }
+  .hp-btn-secondary { background: transparent; color: var(--hp-text-1); padding: 14px 26px; border: 0.5px solid var(--hp-text-1); border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: all 0.15s; }
+  .hp-btn-secondary:hover { background: var(--hp-cream-d); border-color: var(--hp-brown); color: var(--hp-brown); }
 
-  /* ─── TRUST LAYER SECTION (D-diagram) ─── */
-  .trust-layer-section {
-    background: #fff;
-    border-top: 8px solid #000;
-    padding: 72px 5% 80px;
-  }
-  .trust-layer-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .trust-layer-eyebrow {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent, #8B4513);
-    margin-bottom: 18px;
-  }
-  .trust-layer-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3.4vw, 44px);
-    font-weight: 500;
-    color: #1A1A1A;
-    line-height: 1.18;
-    letter-spacing: -0.01em;
-    margin: 0 0 44px;
-    max-width: 880px;
-  }
-  .tl-diagram {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .tl-modules {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 14px;
-  }
-  .tl-module {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,0.12);
-    border-top: 2px solid var(--accent, #8B4513);
-    padding: 22px 20px 24px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-  }
-  .tl-module:hover {
-    border-color: rgba(0,0,0,0.32);
-    border-top-color: var(--accent, #8B4513);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
-    transform: translateY(-2px);
-  }
-  .tl-module-title {
-    font-family: var(--font-body);
-    font-size: 16px;
-    font-weight: 500;
-    color: #1A1A1A;
-    line-height: 1.3;
-    margin-bottom: 10px;
-  }
-  .tl-module-desc {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: rgba(0,0,0,0.65);
-    line-height: 1.5;
-    margin: 0 0 16px;
-    flex: 1;
-  }
-  .tl-module-tech {
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 11px;
-    color: rgba(0,0,0,0.45);
-    letter-spacing: 0.02em;
-    line-height: 1.4;
-  }
-  .tl-bar {
-    background: #000;
-    color: #fff;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .tl-bar-label {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: #fff;
-  }
-  .tl-bar-foot {
-    margin-top: 10px;
-    font-family: var(--font-body);
-    font-size: 11px;
-    color: rgba(0,0,0,0.45);
-    letter-spacing: 0.02em;
-    text-align: center;
-  }
-  @media (max-width: 900px) {
-    .tl-modules { grid-template-columns: repeat(2, 1fr); }
+  .hp-hero-visual { background: var(--hp-code-bg); border-radius: 16px; padding: 24px; box-shadow: 0 30px 70px rgba(43, 30, 18, 0.18); overflow: hidden; min-width: 0; }
+  .hp-term-chrome { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+  .hp-term-chrome span:not(.hp-term-label) { width: 11px; height: 11px; border-radius: 50%; background: #3a3530; flex-shrink: 0; display: inline-block; }
+  .hp-term-label { margin-left: 12px; font-family: var(--hp-mono); font-size: 10.5px; color: #6a655d; letter-spacing: 0.08em; }
+  .hp-term-body { font-family: var(--hp-mono); font-size: 12.5px; line-height: 1.95; color: var(--hp-code-text); }
+  .hp-term-line { display: block; opacity: 0; animation: hp-term 0.45s ease forwards; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hp-term-line .hp-prompt { color: var(--hp-brown-light); }
+  .hp-term-line .hp-cmd { color: #f5ebdc; }
+  .hp-term-line .hp-ok { color: #6ec27a; }
+  .hp-term-line .hp-key { color: #d4a574; }
+  .hp-term-line .hp-str { color: #9ec5e8; }
+  .hp-term-line .hp-comm { color: #6a655d; }
+  .hp-term-line:nth-child(1)  { animation-delay: 0.2s; }
+  .hp-term-line:nth-child(2)  { animation-delay: 0.5s; }
+  .hp-term-line:nth-child(3)  { animation-delay: 0.8s; }
+  .hp-term-line:nth-child(4)  { animation-delay: 1.1s; }
+  .hp-term-line:nth-child(5)  { animation-delay: 1.4s; }
+  .hp-term-line:nth-child(6)  { animation-delay: 1.7s; }
+  .hp-term-line:nth-child(7)  { animation-delay: 2.0s; }
+  .hp-term-line:nth-child(8)  { animation-delay: 2.3s; }
+  .hp-term-line:nth-child(9)  { animation-delay: 2.6s; }
+  .hp-term-line:nth-child(10) { animation-delay: 2.9s; }
+  @keyframes hp-term { from { opacity: 0; transform: translateX(-3px); } to { opacity: 1; transform: translateX(0); } }
+  @media (prefers-reduced-motion: reduce) { .hp-term-line { opacity: 1; animation: none; } }
+
+  /* ECO STRIP */
+  .hp-eco { border-top: 0.5px solid var(--hp-line); border-bottom: 0.5px solid var(--hp-line); background: var(--hp-cream-d); padding: 56px 0; }
+  .hp-eco-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; gap: 56px; flex-wrap: wrap; }
+  .hp-eco-label { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--hp-brown); display: flex; align-items: center; gap: 12px; }
+  .hp-eco-label::before { content: ""; width: 28px; height: 1px; background: var(--hp-brown); }
+  .hp-eco-items { display: flex; gap: 44px; flex-wrap: wrap; flex: 1; }
+  .hp-eco-item { display: flex; flex-direction: column; gap: 4px; }
+  .hp-eco-name { font-family: var(--hp-display); font-size: 28px; font-weight: 700; color: #000; letter-spacing: -0.025em; line-height: 1; }
+  .hp-eco-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--hp-text-3); }
+
+  /* SECTION COMMON */
+  .hp-block { max-width: 1320px; margin: 0 auto; padding: 120px 40px; }
+  .hp-eyebrow { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--hp-brown); margin: 0 0 20px; display: flex; align-items: center; gap: 12px; }
+  .hp-eyebrow::before { content: ""; width: 32px; height: 1px; background: var(--hp-brown); }
+  .hp-eyebrow.hp-on-dark { color: var(--hp-brown-light); }
+  .hp-eyebrow.hp-on-dark::before { background: var(--hp-brown-light); }
+  .hp-h2 { font-family: var(--hp-display); font-size: 56px; line-height: 1.08; letter-spacing: -0.03em; color: #000; margin: 0 0 24px; font-weight: 700; }
+  .hp-h2.hp-on-dark { color: var(--hp-cream); }
+  .hp-sub { font-size: 16px; line-height: 1.85; color: var(--hp-text-2); max-width: 720px; margin: 0 0 56px; }
+  .hp-sub.hp-on-dark { color: #b8b3a9; }
+  .hp-inline-code { font-family: var(--hp-mono); font-size: 12.5px; color: var(--hp-brown); }
+
+  /* DOORS */
+  .hp-doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+  .hp-door { background: #fff; border: 0.5px solid var(--hp-line); border-radius: 22px; transition: all 0.2s; display: flex; flex-direction: column; overflow: hidden; }
+  .hp-door:hover { border-color: var(--hp-brown); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(139, 69, 19, 0.10); }
+  .hp-door-top { background: var(--hp-cream-d); padding: 60px 36px 52px; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+  .hp-door-icon { color: var(--hp-brown); }
+  .hp-door-icon svg { width: 56px; height: 56px; display: block; }
+  .hp-door-name { font-family: var(--hp-display); font-size: 48px; font-weight: 700; color: #000; letter-spacing: -0.03em; line-height: 1; }
+  .hp-door-bottom { padding: 36px; display: flex; flex-direction: column; gap: 14px; flex-grow: 1; background: #fff; }
+  .hp-door-aud { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--hp-brown); display: inline-flex; align-items: center; gap: 8px; }
+  .hp-door-aud::before { content: "●"; font-size: 8px; }
+  .hp-door-tag { font-family: var(--hp-display); font-size: 22px; font-weight: 700; color: #000; letter-spacing: -0.02em; line-height: 1.45; margin: 4px 0 0; }
+  .hp-door-desc { font-size: 13.5px; color: var(--hp-text-3); line-height: 1.75; margin: 0; }
+  .hp-door-url { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-text-2); margin-top: auto; padding-top: 20px; border-top: 0.5px solid var(--hp-line); display: inline-flex; align-items: center; gap: 6px; }
+
+  /* MECHANISM */
+  .hp-mech { background: var(--hp-code-bg); color: var(--hp-code-text); padding: 120px 0; }
+  .hp-mech-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+  .hp-mech-diagram { margin: 64px auto 80px; max-width: 1080px; padding: 36px 24px; background: radial-gradient(ellipse 80% 100% at center 60%, rgba(212, 165, 116, 0.045) 0%, transparent 70%); border-radius: 20px; }
+  .hp-mech-diagram svg { width: 100%; height: auto; display: block; max-height: 360px; }
+  .hp-mech-diagram .hp-dashflow { stroke-dasharray: 6 4; animation: hp-dashflow 1.6s linear infinite; }
+  @keyframes hp-dashflow { to { stroke-dashoffset: -20; } }
+  .hp-mech-diagram .hp-check-glow { animation: hp-check-glow 2.8s ease-in-out infinite; }
+  @keyframes hp-check-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.78; } }
+  @media (prefers-reduced-motion: reduce) { .hp-mech-diagram .hp-dashflow, .hp-mech-diagram .hp-check-glow { animation: none; } }
+
+  .hp-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+  .hp-phase { display: flex; flex-direction: column; gap: 12px; padding-top: 28px; border-top: 0.5px solid #3a3025; }
+  .hp-phase-step { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--hp-brown-light); }
+  .hp-phase-title { font-family: var(--hp-display); font-size: 22px; font-weight: 600; color: var(--hp-cream); letter-spacing: -0.015em; line-height: 1.35; margin: 0; }
+  .hp-phase-desc { font-size: 13.5px; line-height: 1.8; color: #c8c2b6; margin: 0; }
+  .hp-phase-prims { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; margin-top: 6px; border-top: 0.5px dashed #3a3025; }
+  .hp-phase-prim { font-family: var(--hp-mono); font-size: 10.5px; color: var(--hp-brown-light); display: flex; align-items: center; gap: 8px; }
+  .hp-phase-prim::before { content: "›"; font-size: 12px; color: var(--hp-brown); }
+
+  .hp-mech-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 72px; padding-top: 36px; border-top: 0.5px solid #3a3025; flex-wrap: wrap; gap: 20px; }
+  .hp-mech-stack { display: flex; gap: 28px; flex-wrap: wrap; }
+  .hp-mech-stack-item { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-brown-light); letter-spacing: 0.06em; }
+  .hp-mech-stack-meta { color: var(--hp-text-4); margin-left: 4px; }
+  .hp-mech-cta { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown-light); }
+  .hp-mech-cta:hover { color: var(--hp-cream); }
+
+  /* SCHEMA TABS */
+  .hp-schema-tabs { display: flex; gap: 6px; padding: 6px; background: #fff; border: 0.5px solid var(--hp-line); border-radius: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .hp-schema-tab { font-family: var(--hp-display); font-size: 11px; letter-spacing: 0.1em; color: var(--hp-text-3); background: transparent; border: 0; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .hp-schema-tab:hover { background: var(--hp-cream-d); color: var(--hp-brown); }
+  .hp-schema-tab.is-active { background: var(--hp-brown); color: var(--hp-cream); }
+  .hp-tab-pill { opacity: 0.7; margin-right: 6px; font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.1em; }
+  .hp-schema-pane { display: none; grid-template-columns: 1fr 0.9fr; gap: 24px; align-items: stretch; margin-top: 24px; }
+  .hp-schema-pane.is-active { display: grid; }
+  .hp-schema-code { background: var(--hp-code-bg); border-radius: 16px; padding: 28px 30px; font-family: var(--hp-mono); font-size: 12.5px; line-height: 1.85; color: var(--hp-code-text); overflow-x: auto; }
+  .hp-schema-code .hp-jk { color: #d4a574; }
+  .hp-schema-code .hp-js { color: #9ec5e8; }
+  .hp-schema-code .hp-jn { color: #ddc788; }
+  .hp-schema-code .hp-jp { color: #8a857d; }
+  .hp-schema-side { background: #fff; border: 0.5px solid var(--hp-line); border-radius: 16px; padding: 32px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .hp-schema-pill { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.2em; color: var(--hp-brown); margin: 0; }
+  .hp-schema-side h4 { font-family: var(--hp-display); font-size: 18px; font-weight: 600; color: #000; margin: 0; letter-spacing: -0.015em; }
+  .hp-schema-side p { font-size: 13.5px; line-height: 1.8; color: var(--hp-text-2); margin: 0; }
+  .hp-schema-rows { display: flex; flex-direction: column; gap: 8px; padding-top: 18px; border-top: 0.5px solid var(--hp-line); margin-top: auto; }
+  .hp-schema-row { display: flex; justify-content: space-between; align-items: center; font-family: var(--hp-mono); font-size: 11px; color: var(--hp-text-3); }
+  .hp-schema-row-val { color: var(--hp-brown); font-weight: 500; }
+
+  /* BRIEF */
+  .hp-brief { background: var(--hp-cream-d); padding: 120px 0; }
+  .hp-brief-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+  .hp-brief-feat { background: var(--hp-code-bg); border-radius: 18px; padding: 48px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; transition: all 0.2s; margin-top: 40px; }
+  .hp-brief-feat:hover { transform: translateY(-2px); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18); }
+  .hp-brief-feat-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hp-brown-light); margin: 0 0 14px; }
+  .hp-brief-feat-h { font-family: var(--hp-display); font-size: 26px; font-weight: 600; line-height: 1.35; letter-spacing: -0.018em; color: var(--hp-cream); margin: 0 0 12px; }
+  .hp-brief-feat-tldr { font-size: 14px; line-height: 1.8; color: #b8b3a9; margin: 0; max-width: 720px; }
+  .hp-brief-feat-cta { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown-light); white-space: nowrap; }
+  .hp-brief-bottom { margin-top: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .hp-brief-list { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500; }
+  .hp-brief-list:hover { color: var(--hp-brown-deep); }
+  .hp-brief-wp { font-size: 13px; color: var(--hp-text-3); }
+  .hp-brief-wp a { color: var(--hp-brown); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* CLOSING */
+  .hp-closing { background: #0a0807; padding: 140px 40px; text-align: center; }
+  .hp-closing-inner { max-width: 920px; margin: 0 auto; }
+  .hp-closing-h { font-family: var(--hp-display); font-size: 60px; font-weight: 700; line-height: 1.12; letter-spacing: -0.028em; color: var(--hp-cream); margin: 0 0 48px; }
+  .hp-closing-ctas { display: flex; gap: 28px; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .hp-btn-brown-pill { background: var(--hp-brown); color: var(--hp-cream); padding: 16px 32px; border-radius: 999px; font-family: var(--hp-display); font-size: 15px; font-weight: 500; box-shadow: 0 8px 28px rgba(139, 69, 19, 0.4); transition: background 0.15s; }
+  .hp-btn-brown-pill:hover { background: var(--hp-brown-deep); }
+  .hp-closing-link { font-family: var(--hp-display); font-size: 15px; color: var(--hp-brown-light); transition: color 0.15s; }
+  .hp-closing-link:hover { color: var(--hp-cream); }
+
+  /* RESPONSIVE */
+  @media (max-width: 980px) {
+    .hp-hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 24px 72px; }
+    .hp-hero h1 { font-size: 52px; }
+    .hp-h2 { font-size: 40px; }
+    .hp-closing-h { font-size: 40px; }
+    .hp-block { padding: 80px 24px; }
+    .hp-closing { padding: 100px 24px; }
+    .hp-doors { grid-template-columns: 1fr; }
+    .hp-phases { grid-template-columns: 1fr; gap: 32px; }
+    .hp-schema-pane.is-active { grid-template-columns: 1fr; }
+    .hp-brief-feat { grid-template-columns: 1fr; padding: 36px; }
   }
   @media (max-width: 560px) {
-    .trust-layer-section { padding: 56px 6% 64px; }
-    .tl-modules { grid-template-columns: 1fr; gap: 12px; }
-    .tl-bar-label { letter-spacing: 0.2em; font-size: 11px; }
-  }
-
-  /* ─── FEATURED PANEL ─── */
-  .featured {
-    background: var(--white);
-    padding: 60px 8% 60px;
-  }
-  .featured-panel {
-    max-width: 1280px;
-    margin: 0 auto;
-    background: #000;
-    color: #fff;
-    overflow: hidden;
-    position: relative;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    min-height: 480px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-decoration: none;
-  }
-  .featured-panel:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
-  }
-  .featured-content {
-    padding: 72px 64px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .featured-eyebrow {
-    color: var(--accent);
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .featured-title {
-    font-family: var(--font-display);
-    font-size: clamp(44px, 6vw, 72px);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: -0.025em;
-    color: #fff;
-    margin-bottom: 22px;
-  }
-  .featured-subtitle {
-    font-family: var(--font-body);
-    font-size: clamp(15px, 1.1vw, 16px);
-    color: rgba(255, 255, 255, 0.72);
-    line-height: 1.65;
-    margin-bottom: 40px;
-    max-width: 420px;
-  }
-  .featured-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: #fff;
-    color: #000;
-    padding: 12px 28px;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    align-self: flex-start;
-    transition: all 0.25s ease;
-  }
-  .featured-panel:hover .featured-cta {
-    background: var(--accent);
-    color: #fff;
-  }
-  .featured-visual {
-    position: relative;
-    overflow: hidden;
-    background: #000;
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
-  }
-  .featured-visual::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 48px 48px, 48px 48px;
-    pointer-events: none;
-  }
-  .featured-visual::after {
-    content: "x402";
-    position: absolute;
-    right: 48px;
-    bottom: 36px;
-    font-family: var(--font-body);
-    font-size: clamp(72px, 12vw, 160px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.07);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    pointer-events: none;
-  }
-  @media (max-width: 900px) {
-    .featured-panel { grid-template-columns: 1fr; min-height: auto; }
-    .featured-content { padding: 56px 40px 40px; }
-    .featured-visual { height: 280px; }
-    .featured-visual::after { right: 28px; bottom: 24px; }
-  }
-
-  /* ─── NOW BANNER ─── */
-  .now-banner {
-    background: var(--gray-50);
-    padding: 48px 8%;
-    border-top: 1px solid var(--gray-200);
-    border-bottom: 1px solid var(--gray-200);
-  }
-  .now-banner-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .now-banner-eyebrow {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .now-banner-eyebrow::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: currentColor;
-    display: block;
-  }
-  .now-banner-text {
-    font-family: var(--font-display);
-    font-size: clamp(20px, 2.2vw, 26px);
-    font-weight: 400;
-    line-height: 1.4;
-    color: var(--gray-800);
-    margin: 0 0 18px;
-    max-width: 760px;
-  }
-  .now-banner-link {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: gap 0.25s;
-  }
-  .now-banner-link:hover { gap: 12px; }
-
-  /* ─── INDUSTRY APPLICATIONS (audience cards) ─── */
-  .for-x {
-    background: var(--gray-50);
-    padding: 140px 8%;
-  }
-  .for-x-inner { max-width: 1200px; margin: 0 auto; }
-  .for-x-eyebrow {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent, #8B4513);
-    margin-bottom: 18px;
-  }
-  .for-x-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4.5vw, 56px);
-    font-weight: 500;
-    color: var(--gray-800);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-    margin-bottom: 24px;
-    max-width: 700px;
-  }
-  .for-x-lead {
-    font-family: var(--font-body);
-    color: var(--gray-700, #5F5F5F);
-    font-size: 17px;
-    line-height: 1.7;
-    margin-bottom: 80px;
-    max-width: 620px;
-  }
-  .for-x-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-  .for-x-card {
-    background: #fff;
-    border-top: 2px solid var(--accent);
-    padding: 48px 40px 40px;
-    transition: background 0.25s ease, transform 0.25s ease;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 280px;
-    text-decoration: none;
-    color: inherit;
-  }
-  .for-x-card:hover {
-    background: var(--accent-bg);
-    transform: translateY(-2px);
-  }
-  .for-x-card-tag {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .for-x-card-title {
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 500;
-    line-height: 1.25;
-    color: var(--gray-800);
-    margin-bottom: 16px;
-    letter-spacing: -0.01em;
-  }
-  .for-x-card-body {
-    font-family: var(--font-body);
-    color: var(--gray-700, #5F5F5F);
-    font-size: 15px;
-    line-height: 1.65;
-    margin-bottom: 32px;
-  }
-  .for-x-card-cases {
-    font-family: var(--font-body);
-    color: var(--gray-700, #5F5F5F);
-    font-size: 13px;
-    line-height: 1.85;
-    margin-bottom: 28px;
-    border-top: 1px solid var(--gray-200);
-    padding-top: 20px;
-  }
-  .for-x-card-arrow {
-    color: var(--gray-500);
-    font-size: 18px;
-    align-self: flex-end;
-    transition: color 0.25s, transform 0.25s;
-  }
-  .for-x-card:hover .for-x-card-arrow {
-    color: var(--accent);
-    transform: translateX(4px);
-  }
-  .for-x-see-all {
-    margin-top: 40px;
-    text-align: center;
-  }
-  .for-x-see-all-link {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: gap 0.25s;
-  }
-  .for-x-see-all-link:hover { gap: 12px; }
-  @media (max-width: 1024px) {
-    .for-x-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ─── RECENT THINKING ─── */
-  .thinking {
-    background: var(--gray-50);
-    padding: 140px 8%;
-  }
-  .thinking-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-  .thinking-title {
-    font-family: var(--font-display);
-    font-size: clamp(30px, 3vw, 38px);
-    font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    color: var(--gray-800);
-    margin-bottom: 16px;
-  }
-  .thinking-lead {
-    font-family: var(--font-body);
-    color: var(--gray-700, #5F5F5F);
-    font-size: 15px;
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .thinking-see-all {
-    font-family: var(--font-body);
-    color: var(--accent);
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-  }
-  .thinking-list {
-    display: flex;
-    flex-direction: column;
-  }
-  .thinking-item {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--gray-200);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 24px;
-    align-items: baseline;
-    text-decoration: none;
-    color: inherit;
-    transition: padding-left 0.25s;
-  }
-  .thinking-item:hover { padding-left: 12px; }
-  .thinking-item:first-child { padding-top: 0; }
-  .thinking-item:last-child { border-bottom: none; }
-  .thinking-item-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--gray-800);
-    letter-spacing: -0.005em;
-  }
-  .thinking-item-meta {
-    font-family: var(--font-body);
-    color: var(--gray-500);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  @media (max-width: 900px) {
-    .thinking-inner { grid-template-columns: 1fr; gap: 40px; }
-  }
-
-  /* ─── REVEAL ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.on { opacity: 1; transform: translateY(0); }
-
-  /* ─── MOBILE ─── */
-  @media (max-width: 640px) {
-    .hero { padding: 140px 6% 80px; }
-    .featured { padding: 32px 6%; }
-    .featured-content { padding: 36px 24px 28px; }
-    .featured-title { font-size: clamp(34px, 9vw, 44px); margin-bottom: 14px; }
-    .featured-subtitle { margin-bottom: 28px; }
-    .featured-visual { height: 160px; }
-    .now-banner { padding: 32px 6%; }
-    .for-x { padding: 100px 6%; }
-    .thinking { padding: 100px 6%; }
+    .hp-hero h1 { font-size: 30px; }
   }
 </style>
-
-<script is:inline>
-  window.addEventListener("load", function () {
-    var bg = document.getElementById("heroBg");
-    var content = document.getElementById("heroContent");
-    if (bg) bg.classList.add("ready");
-    setTimeout(function () { if (content) content.classList.add("visible"); }, 150);
-  });
-
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("on");
-        io.unobserve(entry.target);
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-
-  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
-</script>
