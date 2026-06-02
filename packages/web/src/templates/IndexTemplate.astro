@@ -907,6 +907,13 @@ const panes = [
     .hp-schema-pane.is-active { grid-template-columns: 1fr; }
     .hp-brief-feat { grid-template-columns: 1fr; padding: 36px; }
   }
+  @media (max-width: 720px) {
+    /* Hide the horizontal mechanism diagram on phones — it scales below
+       legibility (≤6px labels). The 3-phase row below conveys the same
+       source→prove→verify flow in fully readable text. */
+    .hp-mech-diagram { display: none; }
+    .hp-mech-inner .hp-sub { margin-bottom: 40px; }
+  }
   @media (max-width: 560px) {
     .hp-hero { padding: 40px 22px 56px; gap: 36px; }
     .hp-hero h1 { font-size: 34px; line-height: 1.1; }
