@@ -535,6 +535,22 @@ export interface Translations {
     readonly sections: string;
     readonly overview: string;
     readonly backToPillar: string;
+    /** Index — industry chip filter labels. */
+    readonly finderLabel: string;
+    readonly industryAll: string;
+    readonly industryLabels: Readonly<{
+      readonly mfg: string;
+      readonly fin: string;
+      readonly pub: string;
+      readonly sc: string;
+      readonly ai: string;
+      readonly dev: string;
+    }>;
+    /** Index — counts (use {n} for the number). */
+    readonly countAll: string;
+    readonly countMatch: string;
+    readonly emptyState: string;
+    readonly cardCta: string;
   }>;
 }
 

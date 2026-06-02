@@ -969,9 +969,23 @@
   },
   "useCases": {
     "title": "Use Cases",
-    "subtitle": "Patterns for business deployments.",
+    "subtitle": "Patterns for business deployments. Filter by industry.",
     "sections": "Sections",
     "overview": "Overview",
-    "backToPillar": "← Back to pillar"
+    "backToPillar": "← Back to pillar",
+    "finderLabel": "Browse by industry",
+    "industryAll": "All",
+    "industryLabels": {
+      "mfg": "Manufacturing & Critical Infra",
+      "fin": "Finance & FinTech",
+      "pub": "Public Sector",
+      "sc": "Procurement & Supply Chain",
+      "ai": "AI Adoption (cross-industry)",
+      "dev": "Developers"
+    },
+    "countAll": "{n} total",
+    "countMatch": "{n} matching",
+    "emptyState": "No use cases for this industry yet. Switch back to All, or get in touch.",
+    "cardCta": "View →"
   }
 }
