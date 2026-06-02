@@ -16,3 +16,13 @@
 /use-cases              /solutions/use-cases     301
 /use-cases/             /solutions/use-cases/    301
 /use-cases/*            /solutions/use-cases/:splat     301
+
+# Operating company (運営会社) lives on the external corp.frame00.com
+# site — there is no in-site /company/ page. Without a redirect,
+# /ja/company/ falls through to the Astro SPA fallback (the EN homepage),
+# which surprises anyone who types or follows an old link to that path.
+# Send both locales out to the matching corp site.
+/ja/company             https://corp.frame00.com/         301
+/ja/company/            https://corp.frame00.com/         301
+/company                https://corp.frame00.com/index-en 301
+/company/               https://corp.frame00.com/index-en 301
