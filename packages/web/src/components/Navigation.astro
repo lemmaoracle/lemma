@@ -256,61 +256,46 @@ const isResourcesActive =
     border-bottom: 0.5px solid var(--lemma-line, #E5E0D5);
     transition: border-color .3s;
   }
+  /* ─── v28: brand-signature logo (always-on brown underline) ─── */
   .mega-nav-logo {
     display: inline-flex; align-items: center;
     text-decoration: none; flex-shrink: 0;
     color: #000;
     transition: color .15s;
+    position: relative;
+    height: 64px;
+    padding-top: 4px;
+  }
+  .mega-nav-logo::after {
+    content: ""; position: absolute; left: 0; bottom: 16px;
+    width: 100%; max-width: 220px;
+    height: 3px; background: var(--accent);
   }
   .mega-nav-logo:hover { color: var(--accent); }
 
+  /* ─── v28: nav items pushed toward the right, generous gap, light weight ─── */
   .mega-nav-links {
     display: flex; align-items: stretch; height: 64px;
-    list-style: none; gap: 26px; margin: 0; padding: 0 0 0 24px; flex: 1;
+    list-style: none; gap: 40px; margin: 0; padding: 0; flex: 1;
+    justify-content: flex-end;
   }
   .mega-nav-item { position: relative; display: flex; align-items: center; }
 
   .mega-nav-link {
     font-family: "Sora", system-ui, sans-serif;
     color: #2A2622;
-    font-size: 13.5px; font-weight: 500;
-    letter-spacing: -0.005em;
+    font-size: 15px; font-weight: 400;
+    letter-spacing: 0;
     text-decoration: none;
     text-transform: none;
     padding: 8px 0; height: 64px;
-    display: inline-flex; align-items: center; gap: 4px;
+    display: inline-flex; align-items: center;
     transition: color .15s; white-space: nowrap;
     background: none; border: none; cursor: pointer;
     position: relative;
   }
   .mega-nav-link:hover { color: var(--accent); }
-  .mega-nav-link.active { color: #000; }
-  .mega-nav-link.active::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: 0;
-    height: 3px; background: var(--accent);
-  }
-  .mega-nav-link.has-mega::after {
-    content: '▾'; font-size: 9px; opacity: 0.6;
-    margin-left: 2px; display: inline-block;
-    width: auto; height: auto;
-    border: none; transform: none; position: static;
-    background: transparent;
-    transition: transform .15s, opacity .15s;
-  }
-  .mega-nav-link.has-mega.active::after {
-    /* Active mega-link still shows the caret but ALSO the bottom underline:
-       inject the underline via the link itself, not the ::after. */
-    content: '▾'; opacity: 1; color: var(--accent);
-    position: static; height: auto; background: transparent;
-  }
-  .mega-nav-link.has-mega.active {
-    box-shadow: inset 0 -3px 0 var(--accent);
-  }
-  .mega-nav-link.has-mega.active::after { display: inline-block; }
-  .mega-nav-item:hover .mega-nav-link.has-mega::after {
-    opacity: 1;
-    transform: translateY(1px);
-  }
+  .mega-nav-link.active { color: #000; font-weight: 500; }
 
   /* ─── v28: nav-right (lang + black pill) ─── */
   .mega-nav-right {
