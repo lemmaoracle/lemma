@@ -9,7 +9,7 @@ incident_date: 2025-11-13
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost"]
+related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost", "017-mckinsey-lilli-system-prompts"]
 version: "1.0"
 status: published
 ---

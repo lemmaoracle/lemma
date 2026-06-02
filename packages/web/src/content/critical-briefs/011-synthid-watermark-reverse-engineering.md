@@ -1,6 +1,6 @@
 ---
 brief_no: 11
-title: "SynthID 透かし reverse-engineering — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
+title: "SynthID 透かしのリバースエンジニアリング — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
 title_en: "SynthID Watermark Reverse-Engineering — How a Statistical Attack Strips the Provenance Mark from AI-Generated Content"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"

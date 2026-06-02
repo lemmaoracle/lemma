@@ -1,6 +1,6 @@
 ---
 brief_no: 5
-title: "Noroboto 攻撃 — フォント偽装による AI 文書レビューの入力 integrity 偽装"
+title: "Noroboto 攻撃 — フォント偽装による AI 文書レビューの入力完全性の偽装"
 title_en: "Noroboto Attack — AI Document Review Input-Integrity Forgery via Embedded Lying Fonts"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
@@ -9,7 +9,7 @@ incident_date: 2026-05-25
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["003-starlette-badhost"]
+related_briefs: ["003-starlette-badhost", "017-mckinsey-lilli-system-prompts"]
 version: "1.0"
 status: published
 ---

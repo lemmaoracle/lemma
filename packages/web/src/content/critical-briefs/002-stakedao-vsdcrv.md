@@ -9,7 +9,7 @@ incident_date: 2026-05-27
 published: 2026-05-29
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["001-kelpdao-rseth"]
+related_briefs: ["001-kelpdao-rseth", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
 ---

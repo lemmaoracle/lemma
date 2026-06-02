@@ -1,6 +1,6 @@
 ---
 brief_no: 8
-title: "公開 API 経由の Discord 20.5 億メッセージ scraping — 公開チャンネルデータが AI training dataset として再配布される構造"
+title: "公開 API 経由の Discord 20.5 億メッセージのスクレイピング — 公開チャンネルデータが AI 学習データセットとして再配布される構造"
 title_en: "Discord 2.05 Billion Message Scraping via Public API — How Public Channel Data Gets Redistributed as AI Training Datasets"
 pillar: "01-verifiable-origin"
 primary_category: "training-data-provenance"

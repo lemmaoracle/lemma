@@ -1,6 +1,6 @@
 ---
 brief_no: 6
-title: "Google API キー削除後 23 分有効 — credential 失効属性の独立検証不在"
+title: "Google API キー削除後 23 分有効 — 認証情報の失効属性の独立検証不在"
 title_en: "Google API Keys Remain Usable for 23 Minutes After Deletion — Independent Verification Gap in Credential Revocation Attributes"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"

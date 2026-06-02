@@ -1,6 +1,6 @@
 ---
 brief_no: 7
-title: "Cursor + Claude Opus 4.6 が PocketOS 本番 DB を 9 秒で削除 — AI coding agent の destructive 権限が独立検証されない構造"
+title: "Cursor + Claude Opus 4.6 が PocketOS 本番 DB を 9 秒で削除 — AI コーディングエージェントの破壊的権限が独立検証されない構造"
 title_en: "Cursor + Claude Opus 4.6 Wiped PocketOS Production DB in 9 Seconds — The Unverified Destructive Authority of AI Coding Agents"
 pillar: "03-agent-authority"
 primary_category: "agent-runaway"

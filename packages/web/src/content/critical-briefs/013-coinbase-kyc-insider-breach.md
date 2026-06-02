@@ -1,6 +1,6 @@
 ---
 brief_no: 13
-title: "Coinbase KYC データ内部漏洩 — 規制が要求する生 PII の保管が、内部買収で漏洩面に転化した構造"
+title: "Coinbase KYC データ内部漏洩 — 規制が要求する生の個人情報の保管が、内部買収で漏洩面に転化した構造"
 title_en: "The Coinbase KYC Insider Breach — When Regulation-Mandated Storage of Raw PII Becomes the Breach Surface"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
