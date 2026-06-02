@@ -100,10 +100,10 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
 
-Discovery Call: https://tally.so/r/Pd2Rl5
-ホワイトペーパー: https://tally.so/r/xX0VYv
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
 
 ---
 
