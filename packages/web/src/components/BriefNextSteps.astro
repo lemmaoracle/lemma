@@ -146,7 +146,12 @@ const jsonLd = {
   <div class="lm-next__wrap">
     <div class="lm-next__card">
       <div class="lm-next__top">
-        <span class="lm-next__badge">{variant.badge}</span>
+        <a
+          class="lm-next__badge"
+          href={variant.pillarHref}
+          data-ev="pillar_link_click"
+          data-cta={variant.badge}
+        >{variant.badge}</a>
         <span class="lm-next__eyebrow">この事案から、次へ</span>
       </div>
       <p class="lm-next__thesis">{variant.thesis}</p>
@@ -160,6 +165,7 @@ const jsonLd = {
             data-cta={uc.label}
           >{uc.label}</a>
         ))}
+        <a class="lm-next__uc lm-next__uc--ghost" href={`${ucBase}/`}>ユースケース一覧 →</a>
       </nav>
       <div class="lm-next__cta">
         <a
@@ -255,7 +261,10 @@ const jsonLd = {
     font-size: 12px; font-weight: 500; color: #fff;
     background: var(--lemma-accent-color);
     padding: 4px 11px; border-radius: 8px;
+    text-decoration: none;
+    transition: opacity .15s;
   }
+  .lm-next__badge:hover { opacity: 0.88; }
   .lm-next__eyebrow {
     font-size: 12px; color: var(--lemma-muted); letter-spacing: .02em;
   }
@@ -279,6 +288,15 @@ const jsonLd = {
     background: var(--lemma-tintbg);
     border-color: var(--lemma-accent-color);
     color: var(--lemma-accent-color);
+  }
+  .lm-next__uc--ghost {
+    border-color: transparent;
+    color: var(--lemma-muted);
+  }
+  .lm-next__uc--ghost:hover {
+    background: transparent;
+    color: var(--lemma-accent-color);
+    border-color: transparent;
   }
   .lm-next__cta {
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
