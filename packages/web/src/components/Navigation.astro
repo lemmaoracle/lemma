@@ -79,7 +79,7 @@ const isResourcesActive =
     <!-- 2. 製品 -->
     <li class="mega-nav-item">
       <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
-      <div class="mega-panel mega-panel-3col">
+      <div class="mega-panel">
         <!-- Seal — for developers -->
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.developer}</div>
@@ -339,21 +339,9 @@ const isResourcesActive =
     border-right: 0.5px solid var(--lemma-line, #E5E0D5);
   }
   .mega-panel-wide .mega-section:last-child { border-right: none; }
-  /* Products panel: 3-col layout for Seal / Trust402 / Industries */
-  .mega-panel-3col {
-    min-width: 580px;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
-  }
-  .mega-panel-3col .mega-section {
-    border-bottom: none;
-    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
-  }
-  .mega-panel-3col .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
   .mega-nav-item:hover .mega-panel { display: block; }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
-  .mega-nav-item:hover .mega-panel-3col { display: grid; }
 
   .mega-section { padding: 18px 20px 16px; border-bottom: 0.5px solid var(--lemma-line, #E5E0D5); }
   .mega-section:last-child { border-bottom: none; }
