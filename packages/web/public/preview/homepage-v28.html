@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lemma — AI のための、信頼インフラ。</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lemma-black: #000000; --lemma-text-1: #1A1A1A; --lemma-text-2: #2A2622;
+  --lemma-text-3: #5A544D; --lemma-text-4: #9A938A;
+  --lemma-brown: #8B4513; --lemma-brown-deep: #6B340E; --lemma-brown-light: #F5EBDC;
+  --lemma-cream: #FCFAF5; --lemma-cream-deep: #F2EEDF;
+  --lemma-line: #E5E0D5;
+  --code-bg: #1A1612; --code-text: #d4cfc4;
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(--lemma-text-2); font-family: var(--font-body); font-weight: 400; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+
+/* HEADER */
+header.site { position: sticky; top: 0; z-index: 100; background: rgba(252, 250, 245, 0.94); backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--lemma-line); }
+.nav-bar { max-width: 1320px; margin: 0 auto; display: flex; align-items: center; padding: 18px 40px; gap: 28px; }
+.nav-brand { color: var(--lemma-black); text-decoration: none; flex-shrink: 0; display: inline-flex; align-items: center; transition: color 0.15s; }
+.nav-brand:hover { color: var(--lemma-brown); }
+.nav-brand svg { height: 26px; width: auto; display: block; }
+.nav-main { display: flex; align-items: center; gap: 26px; flex: 1; padding-left: 24px; }
+.nav-main a { font-family: var(--font-display); color: var(--lemma-text-2); text-decoration: none; font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em; display: inline-flex; align-items: center; gap: 4px; padding: 8px 0; position: relative; transition: color 0.15s; }
+.nav-main a .caret { font-size: 9px; opacity: 0.6; }
+.nav-main a:hover { color: var(--lemma-brown); }
+.nav-main a.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -19px; height: 3px; background: var(--lemma-brown); }
+.nav-right { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+.nav-right .lang { font-family: var(--font-display); font-size: 12.5px; color: var(--lemma-text-3); text-decoration: none; letter-spacing: 0.05em; }
+.nav-right .lang:hover { color: var(--lemma-brown); }
+.nav-cta-pill { background: var(--lemma-black); color: var(--lemma-cream); padding: 9px 20px; border-radius: 999px; font-family: var(--font-display); font-size: 13px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
+.nav-cta-pill:hover { background: var(--lemma-brown); }
+.nav-cta-pill .arr { margin-left: 4px; }
+
+/* HERO */
+.hero { max-width: 1320px; margin: 0 auto; padding: 96px 40px 96px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 80px; align-items: center; }
+.hero h1 { font-family: var(--font-display); font-size: 76px; line-height: 1.04; letter-spacing: -0.035em; color: var(--lemma-black); margin: 0 0 28px; font-weight: 600; }
+.hero h1 .accent { color: var(--lemma-brown); }
+.hero-sub { font-size: 17px; line-height: 1.8; color: var(--lemma-text-2); margin: 0 0 40px; max-width: 520px; }
+.hero-sub strong { font-weight: 500; color: var(--lemma-text-1); }
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary { background: var(--lemma-black); color: var(--lemma-cream); padding: 14px 26px; border-radius: 999px; font-family: var(--font-display); font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
+.btn-primary:hover { background: var(--lemma-brown); }
+.btn-secondary { background: transparent; color: var(--lemma-text-1); padding: 14px 26px; border: 0.5px solid var(--lemma-text-1); border-radius: 999px; font-family: var(--font-display); font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.15s; }
+.btn-secondary:hover { background: var(--lemma-cream-deep); border-color: var(--lemma-brown); color: var(--lemma-brown); }
+
+.hero-visual { background: var(--code-bg); border-radius: 16px; padding: 24px; box-shadow: 0 30px 70px rgba(43, 30, 18, 0.18); position: relative; overflow: hidden; min-width: 0; }
+.term-chrome { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+.term-chrome span { width: 11px; height: 11px; border-radius: 50%; background: #3a3530; flex-shrink: 0; }
+.term-chrome .label { margin-left: 12px; font-family: var(--font-mono); font-size: 10.5px; color: #6a655d; letter-spacing: 0.08em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.term-body { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.95; color: var(--code-text); overflow-x: hidden; }
+.term-line { display: block; opacity: 0; animation: term-line-in 0.45s ease forwards; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.term-line .prompt { color: var(--lemma-brown-light); }
+.term-line .cmd { color: #f5ebdc; }
+.term-line .ok { color: #6ec27a; }
+.term-line .key { color: #d4a574; }
+.term-line .str { color: #9ec5e8; }
+.term-line .comm { color: #6a655d; }
+.term-line:nth-child(1) { animation-delay: 0.2s; }
+.term-line:nth-child(2) { animation-delay: 0.5s; }
+.term-line:nth-child(3) { animation-delay: 0.8s; }
+.term-line:nth-child(4) { animation-delay: 1.1s; }
+.term-line:nth-child(5) { animation-delay: 1.4s; }
+.term-line:nth-child(6) { animation-delay: 1.7s; }
+.term-line:nth-child(7) { animation-delay: 2.0s; }
+.term-line:nth-child(8) { animation-delay: 2.3s; }
+.term-line:nth-child(9) { animation-delay: 2.6s; }
+.term-line:nth-child(10) { animation-delay: 2.9s; }
+@keyframes term-line-in { from { opacity: 0; transform: translateX(-3px); } to { opacity: 1; transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .term-line { opacity: 1; animation: none; } }
+
+/* ECOSYSTEM STRIP */
+.eco-strip { border-top: 0.5px solid var(--lemma-line); border-bottom: 0.5px solid var(--lemma-line); background: var(--lemma-cream-deep); padding: 56px 0; }
+.eco-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; gap: 56px; flex-wrap: wrap; }
+.eco-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-brown); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.eco-label::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.eco-items { display: flex; gap: 44px; flex-wrap: wrap; flex: 1; }
+.eco-item { display: flex; flex-direction: column; gap: 4px; }
+.eco-name { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.025em; line-height: 1; }
+.eco-name .accent { color: var(--lemma-brown); }
+.eco-meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--lemma-text-3); }
+
+/* SECTION COMMON */
+section.block { max-width: 1320px; margin: 0 auto; padding: 120px 40px; }
+.sec-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 20px; display: flex; align-items: center; gap: 12px; }
+.sec-eyebrow::before { content: ""; display: inline-block; width: 32px; height: 1px; background: var(--lemma-brown); }
+.sec-h2 { font-family: var(--font-display); font-size: 56px; line-height: 1.08; letter-spacing: -0.03em; color: var(--lemma-black); margin: 0 0 24px; font-weight: 700; }
+.sec-h2 .accent { color: var(--lemma-brown); }
+.sec-sub { font-size: 16px; line-height: 1.85; color: var(--lemma-text-2); max-width: 720px; margin: 0 0 56px; }
+
+/* THREE DOORS IN — section bg = cream (default), card top = cream-deep, contrast OK */
+.doors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+.door-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 22px; text-decoration: none; color: inherit; transition: all 0.2s; display: flex; flex-direction: column; overflow: hidden; }
+.door-card:hover { border-color: var(--lemma-brown); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(139, 69, 19, 0.10); }
+.door-top { background: var(--lemma-cream-deep); padding: 60px 36px 52px; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.door-icon { color: var(--lemma-brown); }
+.door-icon svg { width: 56px; height: 56px; display: block; }
+.door-name { font-family: var(--font-display); font-size: 48px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.03em; line-height: 1; }
+.door-name .accent { color: var(--lemma-brown); }
+.door-bottom { padding: 36px 36px 36px; display: flex; flex-direction: column; gap: 14px; flex-grow: 1; background: #fff; }
+.door-audience { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--lemma-brown); display: inline-flex; align-items: center; gap: 8px; }
+.door-audience::before { content: "●"; font-size: 8px; }
+.door-tagline { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.02em; line-height: 1.45; margin: 4px 0 0; }
+.door-desc { font-size: 13.5px; color: var(--lemma-text-3); line-height: 1.75; margin: 0; }
+.door-url { font-family: var(--font-mono); font-size: 11.5px; color: var(--lemma-text-2); margin-top: auto; padding-top: 20px; border-top: 0.5px solid var(--lemma-line); display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 980px) { .doors-grid { grid-template-columns: 1fr; } }
+
+/* MECHANISM — big horizontal diagram + simple 3-col phase row */
+.mech-section { background: var(--code-bg); color: var(--code-text); max-width: none; padding: 120px 0; }
+.mech-section .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+.mech-section .sec-eyebrow { color: var(--lemma-brown-light); }
+.mech-section .sec-eyebrow::before { background: var(--lemma-brown-light); }
+.mech-section .sec-h2 { color: var(--lemma-cream); }
+.mech-section .sec-h2 .accent { color: var(--lemma-brown-light); }
+.mech-section .sec-sub { color: #b8b3a9; }
+
+.mech-diagram { margin: 64px auto 80px; max-width: 1080px; padding: 36px 24px; background: radial-gradient(ellipse 80% 100% at center 60%, rgba(212, 165, 116, 0.045) 0%, transparent 70%); border-radius: 20px; }
+.mech-diagram svg { width: 100%; height: auto; display: block; max-height: 360px; }
+.mech-diagram .dashflow { stroke-dasharray: 6 4; animation: dashflow 1.6s linear infinite; }
+@keyframes dashflow { to { stroke-dashoffset: -20; } }
+.mech-diagram .check-glow { animation: check-glow 2.8s ease-in-out infinite; }
+@keyframes check-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.78; } }
+@media (prefers-reduced-motion: reduce) {
+  .mech-diagram .dashflow, .mech-diagram .check-glow { animation: none; }
+}
+
+.mech-phases-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 0; }
+.mech-phase-col { display: flex; flex-direction: column; gap: 12px; padding-top: 28px; border-top: 0.5px solid #3a3025; }
+.mech-step { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--lemma-brown-light); }
+.mech-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--lemma-cream); letter-spacing: -0.015em; line-height: 1.35; margin: 0; }
+.mech-desc { font-size: 13.5px; line-height: 1.8; color: #c8c2b6; margin: 0; }
+.mech-prims { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; margin-top: 6px; border-top: 0.5px dashed #3a3025; }
+.mech-prim { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--lemma-brown-light); display: flex; align-items: center; gap: 8px; }
+.mech-prim::before { content: "›"; font-size: 12px; color: var(--lemma-brown); }
+
+.mech-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 72px; padding-top: 36px; border-top: 0.5px solid #3a3025; flex-wrap: wrap; gap: 20px; }
+.mech-stack { display: flex; gap: 28px; flex-wrap: wrap; }
+.mech-stack-item { font-family: var(--font-mono); font-size: 11.5px; color: var(--lemma-brown-light); letter-spacing: 0.06em; }
+.mech-stack-item .meta { color: var(--lemma-text-4); margin-left: 4px; }
+.mech-cta { font-family: var(--font-display); font-size: 13.5px; color: var(--lemma-brown-light); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.mech-cta:hover { color: var(--lemma-cream); }
+
+@media (max-width: 980px) { .mech-phases-row { grid-template-columns: 1fr; gap: 32px; } }
+
+/* SCHEMA EXAMPLES */
+.schema-tabs { display: flex; gap: 6px; padding: 6px; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 12px; flex-wrap: wrap; margin-top: 16px; }
+.schema-tab { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--lemma-text-3); background: transparent; border: 0; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-weight: 500; font-family: var(--font-display); }
+.schema-tab:hover { background: var(--lemma-cream-deep); color: var(--lemma-brown); }
+.schema-tab.active { background: var(--lemma-brown); color: var(--lemma-cream); }
+.schema-tab .pill-id { opacity: 0.7; margin-right: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; }
+
+.schema-pane { display: none; grid-template-columns: 1fr 0.9fr; gap: 24px; align-items: stretch; }
+.schema-pane.active { display: grid; }
+.schema-code { background: var(--code-bg); border-radius: 16px; padding: 28px 30px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.85; color: var(--code-text); overflow-x: auto; }
+.schema-code .key { color: #d4a574; }
+.schema-code .str { color: #9ec5e8; }
+.schema-code .num { color: #ddc788; }
+.schema-code .comm { color: #6a655d; }
+.schema-code .punct { color: #8a857d; }
+.schema-side { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 16px; padding: 32px 30px; display: flex; flex-direction: column; gap: 14px; }
+.schema-side .schema-pill-id { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.2em; color: var(--lemma-brown); margin: 0; }
+.schema-side h4 { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--lemma-black); margin: 0; letter-spacing: -0.015em; }
+.schema-side p { font-size: 13.5px; line-height: 1.8; color: var(--lemma-text-2); margin: 0; }
+.schema-side .schema-stack { display: flex; flex-direction: column; gap: 8px; padding-top: 18px; border-top: 0.5px solid var(--lemma-line); margin-top: auto; }
+.schema-side .schema-stack-row { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--lemma-text-3); }
+.schema-side .schema-stack-row .val { color: var(--lemma-brown); font-weight: 500; }
+@media (max-width: 980px) { .schema-pane.active { grid-template-columns: 1fr; } }
+
+/* BRIEF */
+.brief-section { background: var(--lemma-cream-deep); max-width: none; padding: 120px 0; }
+.brief-section .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+.brief-feat { background: var(--code-bg); border-radius: 18px; padding: 48px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; text-decoration: none; color: inherit; transition: all 0.2s; margin-top: 40px; }
+.brief-feat:hover { transform: translateY(-2px); box-shadow: 0 20px 50px rgba(0,0,0,0.18); }
+.brief-feat-meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-brown-light); margin: 0 0 14px; }
+.brief-feat-h { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.35; letter-spacing: -0.018em; color: var(--lemma-cream); margin: 0 0 12px; }
+.brief-feat-tldr { font-size: 14px; line-height: 1.8; color: #b8b3a9; margin: 0; max-width: 720px; }
+.brief-feat-cta { font-family: var(--font-display); font-size: 13.5px; color: var(--lemma-brown-light); white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
+.brief-bottom-row { margin-top: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.brief-list-link { font-family: var(--font-display); font-size: 13.5px; color: var(--lemma-brown); text-decoration: none; font-weight: 500; }
+.brief-list-link:hover { color: var(--lemma-brown-deep); }
+.brief-wp-hint { font-size: 13px; color: var(--lemma-text-3); }
+.brief-wp-hint a { color: var(--lemma-brown); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 880px) { .brief-feat { grid-template-columns: 1fr; padding: 36px; } }
+
+/* CLOSING (replaces Vision) — dark, slim */
+.closing { background: #0A0807; padding: 140px 40px; text-align: center; }
+.closing-inner { max-width: 920px; margin: 0 auto; }
+.closing-h { font-family: var(--font-display); font-size: 60px; font-weight: 700; line-height: 1.12; letter-spacing: -0.028em; color: var(--lemma-cream); margin: 0 0 48px; }
+.closing-h .accent { color: var(--lemma-brown-light); }
+.closing-ctas { display: flex; gap: 28px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.btn-brown-pill { background: var(--lemma-brown); color: var(--lemma-cream); padding: 16px 32px; border-radius: 999px; font-family: var(--font-display); font-size: 15px; font-weight: 500; text-decoration: none; transition: background 0.15s; box-shadow: 0 8px 28px rgba(139,69,19,0.4); }
+.btn-brown-pill:hover { background: var(--lemma-brown-deep); }
+.closing-link { font-family: var(--font-display); font-size: 15px; color: var(--lemma-brown-light); text-decoration: none; transition: color 0.15s; }
+.closing-link:hover { color: var(--lemma-cream); }
+
+/* FOOTER — v24 流 + Dashboard 大ボタン */
+footer.site { background: #0A0807; color: #8a857d; padding: 96px 0 40px; }
+footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
+.footer-top { display: grid; grid-template-columns: 1.3fr 1fr 1.1fr 1.1fr 1.2fr; gap: 48px; padding-bottom: 64px; }
+.footer-brand-col { display: flex; flex-direction: column; gap: 22px; }
+.footer-brand { color: var(--lemma-cream); display: inline-flex; align-items: center; }
+.footer-brand svg { height: 42px; width: auto; display: block; }
+.footer-tag { font-size: 13px; line-height: 1.75; color: #6a655d; max-width: 240px; margin: 0; }
+.footer-dashboard-btn { background: var(--lemma-brown); color: var(--lemma-cream); padding: 16px 24px; border-radius: 12px; font-family: var(--font-display); font-size: 14.5px; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: background 0.15s; width: fit-content; box-shadow: 0 10px 28px rgba(139,69,19,0.4); }
+.footer-dashboard-btn:hover { background: var(--lemma-brown-deep); }
+.footer-dashboard-btn .ic { font-size: 12px; opacity: 0.85; }
+.footer-socials { display: flex; gap: 8px; }
+.footer-social { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 0.5px solid #2a2520; border-radius: 8px; color: #8a857d; text-decoration: none; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.04em; transition: all 0.15s; }
+.footer-social:hover { color: var(--lemma-cream); border-color: #4a4540; }
+.footer-col h4 { font-family: var(--font-display); font-size: 14.5px; color: var(--lemma-cream); margin: 0 0 20px; font-weight: 600; letter-spacing: -0.005em; }
+.footer-col h5 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.28em; color: #4a4540; margin: 32px 0 16px; font-weight: 400; }
+.footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
+.footer-col ul li a { font-family: var(--font-display); font-size: 13.5px; color: #8a857d; text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.footer-col ul li a:hover { color: var(--lemma-cream); }
+.footer-col ul li a .star { color: var(--lemma-brown-light); font-size: 8px; }
+.footer-col ul li a .ext { font-size: 10.5px; opacity: 0.6; }
+.footer-bottom { padding-top: 36px; border-top: 0.5px solid #1a1714; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-meta { font-family: var(--font-display); font-size: 12.5px; color: #4a4540; }
+.footer-legal { display: flex; gap: 28px; }
+.footer-legal a { font-family: var(--font-display); font-size: 12.5px; color: #8a857d; text-decoration: none; transition: color 0.15s; }
+.footer-legal a:hover { color: var(--lemma-cream); }
+@media (max-width: 980px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+
+/* RESPONSIVE */
+@media (max-width: 980px) {
+  .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 24px 72px; }
+  .hero h1 { font-size: 52px; }
+  .sec-h2 { font-size: 40px; }
+  .closing-h { font-size: 40px; }
+  section.block { padding: 80px 24px; }
+  .closing { padding: 100px 24px; }
+  .nav-main { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site">
+  <nav class="nav-bar">
+    <a href="/" class="nav-brand" aria-label="Lemma">
+      <svg viewBox="0 0 142 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"/>
+        <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"/>
+        <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"/>
+        <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"/>
+        <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <div class="nav-main">
+      <a href="/ja/pillars/" class="active">信頼インフラ <span class="caret">▾</span></a>
+      <a href="/ja/pricing/">製品 <span class="caret">▾</span></a>
+      <a href="/ja/solutions/use-cases/">ユースケース <span class="caret">▾</span></a>
+      <a href="/ja/developers/">開発者</a>
+      <a href="/ja/resources/">リソース <span class="caret">▾</span></a>
+    </div>
+    <div class="nav-right">
+      <a href="/en/" class="lang">EN</a>
+      <a href="/ja/contact/" class="nav-cta-pill">お問い合わせ <span class="arr">→</span></a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO（eyebrow 重複削除） -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>AI のための、<br><span class="accent">信頼インフラ</span>。</h1>
+    <p class="hero-sub">
+      AI とエージェントが、組織のデータと判断を扱う時代。<br>
+      Lemma は <strong>「誰が・何の権限で・どのデータを・どう処理したか」</strong>を ZK 証明で示します。データを集めず、ログを開かず、規制と運用を同時に満たす — 信頼の標準層。
+    </p>
+    <div class="hero-ctas">
+      <a href="/ja/contact/" class="btn-primary">導入相談へ →</a>
+      <a href="/ja/developers/" class="btn-secondary">開発者向けに見る</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="term-chrome">
+      <span></span><span></span><span></span>
+      <span class="label">lemma</span>
+    </div>
+    <div class="term-body">
+      <span class="term-line"><span class="prompt">$</span> <span class="cmd">lemma verify --target agent-payment</span></span>
+      <span class="term-line"><span class="comm"># 1. 来歴証明</span></span>
+      <span class="term-line">✓ <span class="key">provenance</span>: <span class="str">"raw_source"</span> — <span class="ok">verified</span></span>
+      <span class="term-line"><span class="comm"># 2. 検証可能 AI</span></span>
+      <span class="term-line">✓ <span class="key">model_attestation</span>: <span class="str">"claude-3.7-sonnet"</span> — <span class="ok">verified</span></span>
+      <span class="term-line"><span class="comm"># 3. エージェント権限証明</span></span>
+      <span class="term-line">✓ <span class="key">role</span>: <span class="str">"treasury_agent"</span> · <span class="key">spend_limit</span>: <span class="str">"$500/day"</span> — <span class="ok">in policy</span></span>
+      <span class="term-line"><span class="comm"># 4. 規制属性証明</span></span>
+      <span class="term-line">✓ <span class="key">jurisdiction</span>: <span class="str">"JP-fin"</span> · <span class="key">attribute</span>: <span class="str">"licensed"</span> — <span class="ok">satisfied</span></span>
+      <span class="term-line"><span class="prompt">→</span> <span class="ok">trust verified</span> · <span class="comm">data never left source</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM STRIP -->
+<div class="eco-strip">
+  <div class="eco-inner">
+    <div class="eco-label">対応標準</div>
+    <div class="eco-items">
+      <div class="eco-item">
+        <div class="eco-name">MCP</div>
+        <div class="eco-meta">Model Context Protocol</div>
+      </div>
+      <div class="eco-item">
+        <div class="eco-name">A2A</div>
+        <div class="eco-meta">Agent2Agent · Google</div>
+      </div>
+      <div class="eco-item">
+        <div class="eco-name">x<span class="accent">402</span></div>
+        <div class="eco-meta">HTTP 402 · Coinbase</div>
+      </div>
+      <div class="eco-item">
+        <div class="eco-name">C2PA</div>
+        <div class="eco-meta">Content Provenance</div>
+      </div>
+      <div class="eco-item">
+        <div class="eco-name">W3C VC</div>
+        <div class="eco-meta">Verifiable Credentials</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THREE DOORS IN（section bg = cream で card top と差別化） -->
+<section class="block">
+  <p class="sec-eyebrow">製品</p>
+  <h2 class="sec-h2">ひとつの基盤、<br><span class="accent">3 つの入口</span>。</h2>
+
+  <div class="doors-grid">
+
+    <!-- Seal -->
+    <a href="/ja/seal/" class="door-card">
+      <div class="door-top">
+        <div class="door-icon">
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="28" cy="28" r="23" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="28" cy="28" r="4" fill="currentColor" opacity="0.45"/>
+          </svg>
+        </div>
+        <div class="door-name">Seal</div>
+      </div>
+      <div class="door-bottom">
+        <span class="door-audience">開発者向け</span>
+        <h3 class="door-tagline">鍵ではなく、証明を送る。</h3>
+        <p class="door-desc">ZK サインイン SDK。あらゆるアプリ・AI エージェントスタックに組み込めます。</p>
+        <span class="door-url">/seal →</span>
+      </div>
+    </a>
+
+    <!-- Trust402 — triangle outline + vertical line inside (lighter) -->
+    <a href="/ja/trust402/" class="door-card">
+      <div class="door-top">
+        <div class="door-icon">
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 12 L46 28 L14 44 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+            <line x1="25" y1="21" x2="25" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+          </svg>
+        </div>
+        <div class="door-name">Trust<span class="accent">402</span></div>
+      </div>
+      <div class="door-bottom">
+        <span class="door-audience">エージェント開発者向け</span>
+        <h3 class="door-tagline">鍵を持たずに、AI を動かす。</h3>
+        <p class="door-desc">鍵不要の認証。コールごとの権限委任。x402 / MCP に対応。</p>
+        <span class="door-url">/trust402 →</span>
+      </div>
+    </a>
+
+    <!-- Industries -->
+    <a href="/ja/industries/" class="door-card">
+      <div class="door-top">
+        <div class="door-icon">
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5"/>
+            <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+            <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+            <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+          </svg>
+        </div>
+        <div class="door-name">Industries</div>
+      </div>
+      <div class="door-bottom">
+        <span class="door-audience">大企業向け</span>
+        <h3 class="door-tagline">Civic · Critical · Compliance。</h3>
+        <p class="door-desc">公共インフラ・製造業・規制金融に最適化した 3 つの製品ライン。</p>
+        <span class="door-url">/industries →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- MECHANISM — big horizontal diagram + simple 3-col phase row -->
+<section class="mech-section">
+  <div class="inner">
+    <p class="sec-eyebrow">仕組み</p>
+    <h2 class="sec-h2">データは出ない。<br><span class="accent">証明だけが流通する</span>。</h2>
+    <p class="sec-sub">
+      ソース側で証明を作り、必要な分だけ選択的に開示し、検証者が公開鍵で確かめる。3 フェーズの間、生データは一度も移動しません。
+    </p>
+
+    <div class="mech-diagram">
+      <svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- SOURCE: cylinder + lock + 機密記録 label -->
+        <g>
+          <ellipse cx="110" cy="100" rx="56" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <path d="M 54 100 L 54 230" stroke="#d4a574" stroke-width="1.6"/>
+          <path d="M 166 100 L 166 230" stroke="#d4a574" stroke-width="1.6"/>
+          <path d="M 54 230 Q 110 248 166 230" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <path d="M 54 100 Q 110 114 166 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none"/>
+          <path d="M 54 138 Q 110 152 166 138" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none"/>
+          <path d="M 54 176 Q 110 190 166 176" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none"/>
+          <!-- lock -->
+          <rect x="134" y="195" width="22" height="16" rx="2" fill="#d4a574"/>
+          <path d="M 138 195 L 138 189 Q 138 181 145 181 Q 152 181 152 189 L 152 195" stroke="#d4a574" stroke-width="1.5" fill="none"/>
+          <!-- labels -->
+          <text x="110" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">機密記録</text>
+          <text x="110" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">データは外に出ない</text>
+        </g>
+
+        <!-- ARROW 1 + check (clean, no labels) -->
+        <g>
+          <path class="dashflow" d="M 200 165 L 360 165" stroke="#d4a574" stroke-width="1.3" fill="none"/>
+          <path d="M 354 161 L 360 165 L 354 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="220" cy="165" r="10" fill="#8B4513"/>
+          <path d="M 215 165 L 218 168 L 225 161" stroke="#FCFAF5" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <!-- ATTESTATION CARD (full) — replaces cheap π -->
+        <g>
+          <rect x="385" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <rect x="385" y="115" width="100" height="22" fill="#d4a574"/>
+          <text x="435" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">属性証明</text>
+          <!-- 3 attribute rows (dot + line) -->
+          <circle cx="403" cy="158" r="4" fill="#d4a574"/>
+          <line x1="413" y1="158" x2="475" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.5"/>
+          <circle cx="403" cy="183" r="4" fill="#d4a574"/>
+          <line x1="413" y1="183" x2="475" y2="183" stroke="#d4a574" stroke-width="1.2" opacity="0.5"/>
+          <circle cx="403" cy="208" r="4" fill="#d4a574"/>
+          <line x1="413" y1="208" x2="475" y2="208" stroke="#d4a574" stroke-width="1.2" opacity="0.5"/>
+          <text x="435" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">完全な属性証明</text>
+          <text x="435" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">3 件の属性すべて</text>
+        </g>
+
+        <!-- ARROW 2 (clean) -->
+        <g>
+          <path class="dashflow" d="M 500 165 L 640 165" stroke="#d4a574" stroke-width="1.3" fill="none"/>
+          <path d="M 634 161 L 640 165 L 634 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <!-- DISCLOSED CARD — selective disclosure visualized -->
+        <g>
+          <rect x="660" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <rect x="660" y="115" width="100" height="22" fill="#d4a574"/>
+          <text x="710" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">選択開示</text>
+          <!-- Row 1: visible -->
+          <circle cx="678" cy="158" r="4" fill="#d4a574"/>
+          <line x1="688" y1="158" x2="750" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.55"/>
+          <!-- Rows 2 & 3: redacted (outline + dashed) -->
+          <circle cx="678" cy="183" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3"/>
+          <line x1="688" y1="183" x2="750" y2="183" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25"/>
+          <circle cx="678" cy="208" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3"/>
+          <line x1="688" y1="208" x2="750" y2="208" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25"/>
+          <text x="710" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">選択開示</text>
+          <text x="710" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">1 件だけを公開</text>
+        </g>
+
+        <!-- ARROW 3 (clean) -->
+        <g>
+          <path class="dashflow" d="M 775 165 L 910 165" stroke="#d4a574" stroke-width="1.3" fill="none"/>
+          <path d="M 904 161 L 910 165 L 904 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+
+        <!-- VERIFIER: cylinder + check (gentle pulse) + inner 検証済/真実 -->
+        <g>
+          <ellipse cx="1020" cy="100" rx="60" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <path d="M 960 100 L 960 230" stroke="#d4a574" stroke-width="1.6"/>
+          <path d="M 1080 100 L 1080 230" stroke="#d4a574" stroke-width="1.6"/>
+          <path d="M 960 230 Q 1020 248 1080 230" stroke="#d4a574" stroke-width="1.6" fill="none"/>
+          <path d="M 960 100 Q 1020 114 1080 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none"/>
+          <!-- check on top with gentle pulse -->
+          <circle class="check-glow" cx="970" cy="100" r="14" fill="#6ec27a"/>
+          <path d="M 962 100 L 968 106 L 980 92" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- inner labels -->
+          <text x="1020" y="160" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">検証済</text>
+          <text x="1020" y="182" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">真実</text>
+          <!-- labels below -->
+          <text x="1020" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">検証完了</text>
+          <text x="1020" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#6ec27a">漏洩ゼロ</text>
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- 3-col phase row (text only, primitives shown) -->
+    <div class="mech-phases-row">
+      <div class="mech-phase-col">
+        <div class="mech-step">フェーズ 01 · 発行</div>
+        <h3 class="mech-title">ソースで証明を作る</h3>
+        <p class="mech-desc">ソース側に Lemma SDK を組み込み、データ・モデル・権限の属性証明を発行。元データは一切外に出ない。</p>
+        <div class="mech-prims">
+          <div class="mech-prim">BBS+ 署名</div>
+          <div class="mech-prim">Poseidon ハッシュ</div>
+          <div class="mech-prim">DID / VC (W3C)</div>
+        </div>
+      </div>
+      <div class="mech-phase-col">
+        <div class="mech-step">フェーズ 02 · 証明</div>
+        <h3 class="mech-title">必要な分だけを示す</h3>
+        <p class="mech-desc">検証者が必要とする最小限の事実（権限・属性・整合性）だけを ZK で選択的に開示。生データは触らない。</p>
+        <div class="mech-prims">
+          <div class="mech-prim">Groth16 / BN254</div>
+          <div class="mech-prim">Circom 2.x 回路</div>
+          <div class="mech-prim">Selective Disclosure</div>
+        </div>
+      </div>
+      <div class="mech-phase-col">
+        <div class="mech-step">フェーズ 03 · 検証</div>
+        <h3 class="mech-title">誰でも確かめられる</h3>
+        <p class="mech-desc">公開検証鍵で誰でも・いつでも証明の真正性を確認。必要なら on-chain attestation で監査ログ化。</p>
+        <div class="mech-prims">
+          <div class="mech-prim">公開検証 (no trust)</div>
+          <div class="mech-prim">EIP-712 attestation</div>
+          <div class="mech-prim">on-chain optional</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mech-bottom">
+      <div class="mech-stack">
+        <div class="mech-stack-item">ZK <span class="meta">Groth16 / BN254</span></div>
+        <div class="mech-stack-item">署名 <span class="meta">BBS+ / EdDSA</span></div>
+        <div class="mech-stack-item">ハッシュ <span class="meta">Poseidon / Keccak</span></div>
+        <div class="mech-stack-item">識別子 <span class="meta">W3C DID/VC</span></div>
+        <div class="mech-stack-item">オンチェーン <span class="meta">EIP-712 / x402</span></div>
+      </div>
+      <a href="/ja/developers/spec/" class="mech-cta">技術仕様書を読む →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEMA EXAMPLES（4 信頼レイヤー吸収） -->
+<section class="block">
+  <p class="sec-eyebrow">スキーマ · 4 つの信頼レイヤー</p>
+  <h2 class="sec-h2">4 つの信頼レイヤー、<br>4 つの<span class="accent">スキーマ</span>。</h2>
+  <p class="sec-sub">
+    信頼インフラは 4 つの軸でできています — 来歴証明・検証可能 AI・エージェント権限証明・規制属性証明。それぞれに対応する schema を、SDK 経由で発行・検証できます。
+  </p>
+
+  <div class="schema-tabs" id="schemaTabs">
+    <button class="schema-tab active" data-tab="p1"><span class="pill-id">P1</span>来歴証明</button>
+    <button class="schema-tab" data-tab="p2"><span class="pill-id">P2</span>検証可能 AI</button>
+    <button class="schema-tab" data-tab="p3"><span class="pill-id">P3</span>エージェント権限</button>
+    <button class="schema-tab" data-tab="p4"><span class="pill-id">P4</span>規制属性</button>
+  </div>
+
+  <!-- P1 -->
+  <div class="schema-pane active" data-pane="p1" style="margin-top:24px;">
+    <div class="schema-code">
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.provenance.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:utility-meter-001"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"issuer"</span><span class="punct">:</span> <span class="str">"did:lemma:org-metawater"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"source_hash"</span><span class="punct">:</span> <span class="str">"0x9f3a...c4e8"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"lineage_chain"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"sensor"</span><span class="punct">,</span> <span class="str">"scada"</span><span class="punct">,</span> <span class="str">"oracle"</span><span class="punct">],</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"timestamp"</span><span class="punct">:</span> <span class="str">"2026-06-02T14:30:00Z"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"integrity"</span><span class="punct">:</span> <span class="str">"poseidon-merkle"</span><br>
+&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"BBS+Signature2020"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x4a2b...e1d3"</span><br>
+&nbsp;&nbsp;<span class="punct">}</span><br>
+<span class="punct">}</span>
+    </div>
+    <div class="schema-side">
+      <p class="schema-pill-id">P1 · 来歴証明</p>
+      <h4>Provenance schema</h4>
+      <p>センサー → SCADA → Oracle と多段で伝搬するデータの来歴を、改ざん検知可能な形で記録。データ本体は開示せず、ハッシュチェーンと BBS+ 署名で「同じものだ」を証明。</p>
+      <div class="schema-stack">
+        <div class="schema-stack-row"><span>署名</span><span class="val">BBS+</span></div>
+        <div class="schema-stack-row"><span>ハッシュ</span><span class="val">Poseidon-Merkle</span></div>
+        <div class="schema-stack-row"><span>識別子</span><span class="val">W3C DID</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="schema-pane" data-pane="p2" style="margin-top:24px;">
+    <div class="schema-code">
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.model.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-fin-bot-007"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"model_id"</span><span class="punct">:</span> <span class="str">"claude-3.7-sonnet"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"policy_hash"</span><span class="punct">:</span> <span class="str">"0x71c5...8b9a"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"input_commitment"</span><span class="punct">:</span> <span class="str">"0xb4e2...3f10"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"output_commitment"</span><span class="punct">:</span> <span class="str">"0xc8f1...a2d5"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"satisfies_policy"</span><span class="punct">:</span> <span class="num">true</span><br>
+&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"Groth16"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"circuit"</span><span class="punct">:</span> <span class="str">"lemma/model-attest@1.0"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x9d7e...c4f2"</span><br>
+&nbsp;&nbsp;<span class="punct">}</span><br>
+<span class="punct">}</span>
+    </div>
+    <div class="schema-side">
+      <p class="schema-pill-id">P2 · 検証可能 AI</p>
+      <h4>Model schema</h4>
+      <p>モデル ID と適用ポリシーのハッシュ、入力・出力のコミットメントを記録。実際の入出力は開示せず、ポリシー充足だけを Groth16 で証明。LLM 監査の盲点を埋めます。</p>
+      <div class="schema-stack">
+        <div class="schema-stack-row"><span>証明</span><span class="val">Groth16 / BN254</span></div>
+        <div class="schema-stack-row"><span>回路</span><span class="val">Circom 2.x</span></div>
+        <div class="schema-stack-row"><span>コミット</span><span class="val">Pedersen / Poseidon</span></div>
+        <div class="schema-stack-row"><span>連携</span><span class="val">MCP / Anthropic</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="schema-pane" data-pane="p3" style="margin-top:24px;">
+    <div class="schema-code">
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.agent.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-treasury-042"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"delegated_by"</span><span class="punct">:</span> <span class="str">"did:lemma:org-acme-fin"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"role"</span><span class="punct">:</span> <span class="str">"treasury_agent"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"spend_limit_usdc"</span><span class="punct">:</span> <span class="num">500</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"scope"</span><span class="punct">:</span> <span class="str">"x402://api.partner.jp/*"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"valid_until"</span><span class="punct">:</span> <span class="str">"2026-06-30T23:59:59Z"</span><br>
+&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"Groth16+EIP3009"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"x402_payment_id"</span><span class="punct">:</span> <span class="str">"0xa1f3...7d8e"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x6b2c...e4a9"</span><br>
+&nbsp;&nbsp;<span class="punct">}</span><br>
+<span class="punct">}</span>
+    </div>
+    <div class="schema-side">
+      <p class="schema-pill-id">P3 · エージェント権限</p>
+      <h4>Agent schema</h4>
+      <p>delegated_by で「誰が委任したか」、role・spend_limit・scope で「何をどこまでできるか」を記録。Trust402 で x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。</p>
+      <div class="schema-stack">
+        <div class="schema-stack-row"><span>証明</span><span class="val">Groth16 + EIP-3009</span></div>
+        <div class="schema-stack-row"><span>決済</span><span class="val">USDC / x402</span></div>
+        <div class="schema-stack-row"><span>委任</span><span class="val">DID-based VC</span></div>
+        <div class="schema-stack-row"><span>製品</span><span class="val">Trust402</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="schema-pane" data-pane="p4" style="margin-top:24px;">
+    <div class="schema-code">
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.attribute.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:org-fsa-licensed"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"issuer"</span><span class="punct">:</span> <span class="str">"did:lemma:authority-jp-fsa"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"jurisdiction"</span><span class="punct">:</span> <span class="str">"JP-FSA"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"license_type"</span><span class="punct">:</span> <span class="str">"type-1-financial"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"disclosed"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"is_licensed"</span><span class="punct">,</span> <span class="str">"valid_until_year"</span><span class="punct">],</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"hidden"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"license_no"</span><span class="punct">,</span> <span class="str">"address"</span><span class="punct">,</span> <span class="str">"executives"</span><span class="punct">]</span><br>
+&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"BBS+SelectiveDisclosure"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x3c8d...f7a2"</span><br>
+&nbsp;&nbsp;<span class="punct">}</span><br>
+<span class="punct">}</span>
+    </div>
+    <div class="schema-side">
+      <p class="schema-pill-id">P4 · 規制属性</p>
+      <h4>Attribute schema</h4>
+      <p>権威機関が発行する属性証明。disclosed / hidden で「何を開示し、何を隠すか」を BBS+ Selective Disclosure で制御。KYC・許認可確認の生データ集約を不要に。</p>
+      <div class="schema-stack">
+        <div class="schema-stack-row"><span>証明</span><span class="val">BBS+ Selective</span></div>
+        <div class="schema-stack-row"><span>識別子</span><span class="val">W3C DID / VC</span></div>
+        <div class="schema-stack-row"><span>標準</span><span class="val">eIDAS / DID-Auth</span></div>
+        <div class="schema-stack-row"><span>製品</span><span class="val">Lemma Compliance</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIEF（平易な導入文に変更） -->
+<section class="brief-section">
+  <div class="inner">
+    <p class="sec-eyebrow">Critical Brief</p>
+    <h2 class="sec-h2">AI 時代の、<br>新しい<span class="accent">コンプライアンス</span>。</h2>
+    <p class="sec-sub">
+      規制・運用・暗号の交差点で起きた事案を、Lemma が読み解きます。自社の信頼インフラづくりに、ぜひお役立てください。
+    </p>
+
+    <a href="/ja/critical/briefs/agentic-payment-fraud-2026/" class="brief-feat">
+      <div>
+        <p class="brief-feat-meta">注目の Brief · 2026-05-28</p>
+        <h3 class="brief-feat-h">エージェント決済の濫用と、信頼層の不在。</h3>
+        <p class="brief-feat-tldr">
+          x402 ベースのエージェント決済で発生した未承認取引事案を、権限証明の欠如・spend limit の不在・jurisdiction 属性の未確認の 3 視点から構造化。Lemma の信頼層が「ありえたか」を検証します。
+        </p>
+      </div>
+      <span class="brief-feat-cta">読む →</span>
+    </a>
+
+    <div class="brief-bottom-row">
+      <a href="/ja/critical/briefs/" class="brief-list-link">Brief 一覧を見る →</a>
+      <span class="brief-wp-hint">深く知りたい方は <a href="/ja/whitepaper/">ホワイトペーパー DL</a> も。</span>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING（暗色 slim、Vision 代替） -->
+<section class="closing">
+  <div class="closing-inner">
+    <h2 class="closing-h">エージェント時代の、<br><span class="accent">信頼インフラ</span>。</h2>
+    <div class="closing-ctas">
+      <a href="/ja/contact/" class="btn-brown-pill">導入相談へ →</a>
+      <a href="/ja/whitepaper/" class="closing-link">ホワイトペーパー →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="inner">
+    <div class="footer-top">
+      <div class="footer-brand-col">
+        <div class="footer-brand" aria-label="Lemma">
+          <svg viewBox="0 0 142 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"/>
+            <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"/>
+            <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"/>
+            <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"/>
+            <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <p class="footer-tag">AI のための信頼インフラ。<br>意思決定の確からしさを支える。</p>
+        <a href="https://dashboard.lemma.workers.dev/" class="footer-dashboard-btn">
+          ダッシュボード <span class="ic">↗</span>
+        </a>
+        <div class="footer-socials">
+          <a href="https://x.com/lemma" class="footer-social" aria-label="X">X</a>
+          <a href="https://github.com/frame00/lemma" class="footer-social" aria-label="GitHub">GH</a>
+          <a href="https://linkedin.com/company/frame00" class="footer-social" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Lemma について</h4>
+        <ul>
+          <li><a href="/ja/pillars/">4 つの信頼レイヤー</a></li>
+          <li><a href="/ja/solutions/use-cases/">ユースケース</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>製品</h4>
+        <ul>
+          <li><a href="/ja/seal/">Seal</a></li>
+          <li><a href="/ja/civic/">Lemma Civic</a></li>
+          <li><a href="/ja/critical/">Lemma Critical</a></li>
+          <li><a href="/ja/compliance/">Lemma Compliance</a></li>
+          <li><a href="/ja/trust402/">Trust402</a></li>
+          <li><a href="/ja/pricing/">料金プラン</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>開発者向け</h4>
+        <ul>
+          <li><a href="/ja/trust402/">Trust402</a></li>
+          <li><a href="https://dashboard.lemma.workers.dev/">ダッシュボード</a></li>
+          <li><a href="/ja/developers/spec/">仕様書</a></li>
+          <li><a href="https://github.com/frame00/lemma">GitHub <span class="ext">↗</span></a></li>
+          <li><a href="https://smithery.ai/server/lemma">Smithery <span class="ext">↗</span></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>リソース</h4>
+        <ul>
+          <li><a href="/ja/critical/briefs/"><span class="star">●</span> Critical Brief</a></li>
+          <li><a href="/ja/blog/">ブログ</a></li>
+          <li><a href="/ja/whitepaper/">ホワイトペーパー</a></li>
+          <li><a href="/ja/glossary/">用語集</a></li>
+          <li><a href="/ja/faq/">よくある質問</a></li>
+        </ul>
+        <h5>会社</h5>
+        <ul>
+          <li><a href="/ja/about/">会社情報</a></li>
+          <li><a href="/ja/contact/">お問い合わせ</a></li>
+          <li><a href="/en/">English</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-meta">© 2026 FRAME00, Inc. — 意思決定の確からしさを支える。</div>
+      <div class="footer-legal">
+        <a href="/ja/privacy/">プライバシー</a>
+        <a href="/ja/terms/">利用規約</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.schema-tab');
+  const panes = document.querySelectorAll('.schema-pane');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      panes.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.schema-pane[data-pane="' + target + '"]').classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
