@@ -41,7 +41,6 @@ const isSolutionsActive = startsWith(useCasesPath);
 const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
   startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
-const isPricingActive = startsWith(pricingPath);
 ---
 
 <nav class="mega-nav" id="mainNav">
@@ -148,11 +147,30 @@ const isPricingActive = startsWith(pricingPath);
       <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
     </li>
 
-    <!-- 5. Pricing (flat link — replaced the resources mega-panel per v28 mock.
-         Blog / Whitepaper / Glossary / FAQ remain reachable via the Footer
-         and the mobile drawer.) -->
+    <!-- 5. Resources — Pricing access lives inside the Products mega-panel
+         per CTO direction, so this slot returns to its blog/whitepaper/
+         glossary/FAQ dropdown. -->
     <li class="mega-nav-item">
-      <a href={pricingPath} class:list={["mega-nav-link", { active: isPricingActive }]}>{t.resources}</a>
+      <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
+      <div class="mega-panel mega-panel-right">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.resources.label}</div>
+          <div class="mega-links">
+            <a href={blogPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.blog}</span>
+            </a>
+            <a href={whitepaperPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
+            </a>
+            <a href={glossaryPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.glossary}</span>
+            </a>
+            <a href={faqPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.faq}</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </li>
   </ul>
 
