@@ -170,7 +170,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン移植性 (Groth16 ZK) — 同じ証明を再発行せずにチェーンやツールを越えて持ち運べる",
       ],
     },
-    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance"],
+    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance", "credential-presentation", "qualified-worker-attestation"],
     primaryCTA: {
       label: "Talk to us",
       href: "/solutions",
@@ -944,7 +944,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "監査可能な証明トレイル — 原本データを渡さず、規制当局が独立に再検証できる形で残せる",
       ],
     },
-    useCaseSlugs: ["counterparty-screening", "kyc-aml-selective-disclosure", "financial-data-exfiltration", "supply-chain-esg", "supplier-credential-verification"],
+    useCaseSlugs: ["counterparty-screening", "kyc-aml-selective-disclosure", "financial-data-exfiltration", "supply-chain-esg", "supplier-credential-verification", "benefit-eligibility-proof", "qualified-worker-attestation"],
     primaryCTA: {
       label: "Download regulatory whitepaper",
       href: "https://tally.so/r/xX0VYv",
