@@ -29,16 +29,18 @@
         "pillar04": "Pillar 04 — 規制属性証明"
       },
       "products": {
-        "enterprise": "Enterprise",
+        "enterprise": "大企業向け",
         "civic": "Lemma Civic",
         "civicSub": "公共インフラ · B2B2G",
         "critical": "Lemma Critical",
         "criticalSub": "基幹インフラ・製造業",
         "compliance": "Lemma Compliance",
         "complianceSub": "金融 · KYC/AML · FinTech",
-        "developer": "Developer",
+        "developer": "開発者向け",
+        "agentDeveloper": "エージェント開発者向け",
+        "sealSub": "鍵ではなく、証明を送る",
         "trust402": "Trust402",
-        "trust402Sub": "Explorer · Builder · Studio · Pro",
+        "trust402Sub": "鍵を持たずに、AI を動かす",
         "pricing": "料金プラン",
         "pricingSub": "お問い合わせベース"
       },
