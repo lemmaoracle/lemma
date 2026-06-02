@@ -969,9 +969,23 @@
   },
   "useCases": {
     "title": "ユースケース",
-    "subtitle": "ビジネスでの活用パターン。",
+    "subtitle": "ビジネスでの活用パターン。業界から探せます。",
     "sections": "セクション",
     "overview": "概要",
-    "backToPillar": "← Pillarに戻る"
+    "backToPillar": "← Pillarに戻る",
+    "finderLabel": "業界から探す",
+    "industryAll": "すべて",
+    "industryLabels": {
+      "mfg": "製造・基幹インフラ",
+      "fin": "金融・FinTech",
+      "pub": "自治体・公共",
+      "sc": "調達・サプライチェーン",
+      "ai": "AI導入（業種横断）",
+      "dev": "開発者"
+    },
+    "countAll": "全件 {n} 件",
+    "countMatch": "該当 {n} 件",
+    "emptyState": "この業界の事例は準備中です。すべて表示に戻すか、お問い合わせください。",
+    "cardCta": "見る →"
   }
 }

@@ -1,10 +1,9 @@
 ---
 /**
- * Use Cases index — v24 chrome.
+ * Use Cases index — v24 chrome with industry chip filter (SPEC 2026-06-02).
  *
- * Cream page, 1100px container, Sora display + Noto body + Space Mono labels,
- * saddle brown accent. Card grid with white surface + 0.5px line + brown top
- * accent that animates on hover (same vocabulary as Glossary / Blog index).
+ * Cream page, 1020px container, Sora display + Noto body + Space Mono labels,
+ * saddle brown accent. Industry chip finder above a simplified card grid.
  */
 import type { Locale, Translations } from "../i18n/translations";
 import type { UseCase } from "../data/useCases";
@@ -24,7 +23,7 @@ export interface UseCasesIndexTemplateProps {
   pillarT: Translations["pillars"];
 }
 
-const { locale, t, base, useCases, pillars, useCaseT, pillarT } =
+const { locale, t, base, useCases, pillars, useCaseT } =
   Astro.props as UseCasesIndexTemplateProps;
 const useCasesPath = `${base}/solutions/use-cases`;
 
@@ -32,7 +31,8 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
 }
 
-const minLabel = locale === "ja" ? "分" : "min";
+type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "ai" | "dev";
+const INDUSTRY_ORDER: ReadonlyArray<IndustryKey> = ["mfg", "fin", "pub", "sc", "ai", "dev"];
 
 const SITE = "https://lemma.frame00.com";
 const collectionJsonLd = {
@@ -74,33 +74,91 @@ const collectionJsonLd = {
         <p class="uc-hero-sub">{useCaseT.subtitle}</p>
       </section>
 
-      <section class="uc-grid">
+      <section class="uc-finder" aria-labelledby="uc-finder-label">
+        <div class="uc-finder-lbl" id="uc-finder-label">{useCaseT.finderLabel}</div>
+        <div class="uc-chips" role="radiogroup" aria-label={useCaseT.finderLabel}>
+          <button type="button" class="uc-chip on" data-f="all" role="radio" aria-checked="true">{useCaseT.industryAll}</button>
+          {INDUSTRY_ORDER.map((key) => (
+            <button type="button" class="uc-chip" data-f={key} role="radio" aria-checked="false">{useCaseT.industryLabels[key]}</button>
+          ))}
+        </div>
+        <div class="uc-count" id="uc-count" data-tpl-all={useCaseT.countAll} data-tpl-match={useCaseT.countMatch}></div>
+      </section>
+
+      <section class="uc-grid" id="uc-grid">
         {useCases.map((uc) => {
           const pillar = getPillarForUseCase(uc);
+          const inds = uc.industries.length > 0 ? uc.industries : [];
+          const summary = uc.cardSummary || uc.thesis;
           return (
-            <a href={`${useCasesPath}/${uc.slug}`} class="uc-card">
-              <div class="uc-card-head">
-                {pillar && (
-                  <span class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</span>
-                )}
-              </div>
+            <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
+              {pillar && (
+                <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
+              )}
               <h2 class="uc-card-title">{uc.title}</h2>
-              <p class="uc-card-abstract">{uc.abstract}</p>
-              <div class="uc-card-cta">
-                <span class="uc-card-cta-label">{pillarT.viewUseCase ?? useCaseT.title}</span>
-                {uc.readingTime > 0 && (
-                  <span class="uc-card-time">{uc.readingTime} {minLabel}</span>
-                )}
+              <p class="uc-card-summary">{summary}</p>
+              {inds.length > 0 && (
+                <div class="uc-card-inds">
+                  {inds.map((k) => {
+                    const label = useCaseT.industryLabels[k as IndustryKey];
+                    return label ? <span class="uc-ind">{label}</span> : null;
+                  })}
+                </div>
+              )}
+              <div class="uc-card-foot">
+                <span class="uc-card-go">{useCaseT.cardCta}</span>
               </div>
             </a>
           );
         })}
       </section>
+      <p class="uc-empty" id="uc-empty">{useCaseT.emptyState}</p>
     </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".uc-chip"));
+  const cards = Array.from(document.querySelectorAll<HTMLAnchorElement>(".uc-card"));
+  const countEl = document.getElementById("uc-count");
+  const emptyEl = document.getElementById("uc-empty");
+
+  if (!countEl || !emptyEl) {
+    // nothing to wire
+  } else {
+    const tplAll = countEl.dataset.tplAll ?? "{n}";
+    const tplMatch = countEl.dataset.tplMatch ?? "{n}";
+
+    function apply(f: string) {
+      let n = 0;
+      cards.forEach((c) => {
+        const ind = c.dataset.ind ?? "";
+        const show = f === "all" || ind.split(" ").includes(f);
+        c.style.display = show ? "" : "none";
+        if (show) n++;
+      });
+      const tpl = f === "all" ? tplAll : tplMatch;
+      countEl.textContent = tpl.replace("{n}", String(n));
+      emptyEl.style.display = n === 0 ? "block" : "none";
+    }
+
+    chips.forEach((ch) => {
+      ch.addEventListener("click", () => {
+        chips.forEach((x) => {
+          x.classList.remove("on");
+          x.setAttribute("aria-checked", "false");
+        });
+        ch.classList.add("on");
+        ch.setAttribute("aria-checked", "true");
+        apply(ch.dataset.f ?? "all");
+      });
+    });
+
+    apply("all");
+  }
+</script>
 
 <style>
   .uc-page {
@@ -111,18 +169,20 @@ const collectionJsonLd = {
     --uc-text-2: #3a3a3a;
     --uc-text-3: #5a5a5a;
     --uc-text-4: #9a9a9a;
+    --uc-cream-d: #f2eedf;
 
     background: var(--lemma-cream);
     color: var(--uc-text-2);
     font-family: var(--uc-body);
     font-weight: 400;
-    line-height: 1.65;
+    line-height: 1.7;
     padding: 0 0 96px;
     margin-top: 64px;
+    font-size: 14.5px;
   }
 
   .uc-container {
-    max-width: 1100px;
+    max-width: 1020px;
     margin: 0 auto;
     padding: 0 40px;
   }
@@ -134,44 +194,113 @@ const collectionJsonLd = {
 
   /* ─── HERO ─── */
   .uc-hero {
-    padding: 60px 0 56px;
+    padding: 60px 0 40px;
   }
   .uc-h1 {
     font-family: var(--uc-display);
-    font-size: 52px;
+    font-size: 42px;
     font-weight: 700;
     line-height: 1.15;
-    margin: 0 0 22px;
+    margin: 0 0 14px;
     color: var(--black);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     max-width: 920px;
   }
   .uc-hero-sub {
-    font-size: 16px;
-    color: var(--uc-text-2);
+    font-size: 15px;
+    color: var(--uc-text-3);
     margin: 0;
     line-height: 1.75;
     max-width: 680px;
   }
 
+  /* ─── FINDER ─── */
+  .uc-finder {
+    margin: 12px 0 26px;
+  }
+  .uc-finder-lbl {
+    font-family: var(--uc-mono);
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--uc-text-3);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .uc-finder-lbl::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .uc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+  .uc-chip {
+    font-family: var(--uc-display);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--uc-text-2);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    line-height: 1;
+  }
+  .uc-chip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lemma-line);
+    transition: background 0.15s;
+  }
+  .uc-chip:hover {
+    border-color: var(--accent);
+    color: var(--black);
+  }
+  .uc-chip.on {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border-color: var(--accent);
+  }
+  .uc-chip.on::before {
+    background: var(--lemma-cream);
+  }
+  .uc-count {
+    font-family: var(--uc-mono);
+    font-size: 11px;
+    color: var(--uc-text-4);
+    margin: 14px 0 0;
+    letter-spacing: 0.04em;
+  }
+
   /* ─── CARD GRID ─── */
   .uc-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
     margin-top: 8px;
   }
   .uc-card {
     background: var(--white);
     border: 0.5px solid var(--lemma-line);
     border-radius: 14px;
-    padding: 32px 32px 28px;
+    padding: 22px 22px 20px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     position: relative;
     overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   }
   .uc-card::before {
     content: "";
@@ -179,99 +308,116 @@ const collectionJsonLd = {
     top: 0;
     left: 0;
     height: 2px;
-    width: 48px;
+    width: 40px;
     background: var(--accent);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .uc-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 28px rgba(139, 69, 19, 0.07);
+    transform: translateY(-3px);
   }
   .uc-card:hover::before {
     width: 100%;
   }
 
-  .uc-card-head {
-    min-height: 16px;
-  }
   .uc-card-pillar {
     font-family: var(--uc-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .uc-card-pillar::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
   }
 
   .uc-card-title {
     font-family: var(--uc-display);
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 600;
-    line-height: 1.35;
+    line-height: 1.3;
     color: var(--black);
-    letter-spacing: -0.01em;
-    margin: 0;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
   }
 
-  .uc-card-abstract {
-    font-size: 13.5px;
-    line-height: 1.75;
+  .uc-card-summary {
+    font-family: var(--uc-body);
+    font-size: 13px;
     color: var(--uc-text-3);
-    margin: 0;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    line-height: 1.6;
+    margin: 0 0 16px;
   }
 
-  .uc-card-cta {
+  .uc-card-inds {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: auto;
-    padding-top: 16px;
+  }
+  .uc-ind {
+    font-size: 10.5px;
+    color: var(--uc-text-3);
+    background: var(--uc-cream-d);
+    border-radius: 5px;
+    padding: 3px 8px;
+    line-height: 1.4;
+  }
+
+  .uc-card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 13px;
     border-top: 0.5px solid var(--lemma-line);
   }
-  .uc-card-cta-label {
+  .uc-card-go {
     font-family: var(--uc-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    color: var(--black);
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .uc-card:hover .uc-card-go {
     color: var(--accent);
-    transition: transform 0.2s;
   }
-  .uc-card:hover .uc-card-cta-label {
-    transform: translateX(3px);
-  }
-  .uc-card-time {
-    font-family: var(--uc-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
+
+  .uc-empty {
+    display: none;
     color: var(--uc-text-4);
+    font-size: 13px;
+    padding: 30px 0;
+    text-align: center;
   }
 
   /* ─── RESPONSIVE ─── */
-  @media (max-width: 960px) {
+  @media (max-width: 880px) {
+    .uc-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .uc-container {
+      padding: 0 22px;
+    }
+    .uc-hero {
+      padding: 40px 0 28px;
+    }
     .uc-h1 {
-      font-size: 42px;
+      font-size: 30px;
     }
     .uc-grid {
       grid-template-columns: 1fr;
-    }
-  }
-  @media (max-width: 720px) {
-    .uc-container {
-      padding: 0 24px;
-    }
-    .uc-hero {
-      padding: 40px 0 36px;
-    }
-    .uc-h1 {
-      font-size: 32px;
-    }
-    .uc-card {
-      padding: 28px 24px 24px;
     }
   }
 </style>

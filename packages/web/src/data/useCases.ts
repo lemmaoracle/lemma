@@ -36,7 +36,9 @@ export interface UseCase {
   readonly title: string;
   readonly thesis: string;
   readonly abstract: string;
+  readonly cardSummary: string;
   readonly pillar: string;
+  readonly industries: ReadonlyArray<string>;
   readonly targetVerticals: ReadonlyArray<string>;
   readonly relatedUseCases: ReadonlyArray<string>;
   readonly cover?: string;
@@ -92,7 +94,9 @@ interface UseCaseFrontmatter {
   readonly title?: string;
   readonly thesis?: string;
   readonly abstract?: string;
+  readonly cardSummary?: string;
   readonly pillar?: string;
+  readonly industries?: ReadonlyArray<string>;
   readonly targetVerticals?: ReadonlyArray<string>;
   readonly relatedUseCases?: ReadonlyArray<string>;
   readonly cover?: string;
@@ -281,7 +285,9 @@ function parseUseCaseForLocale(dir: UseCaseDir, locale: BlogLocale): UseCase | u
     title,
     thesis: fm.thesis ?? "",
     abstract: fm.abstract ?? "",
+    cardSummary: fm.cardSummary ?? fm.thesis ?? "",
     pillar: fm.pillar ?? "verifiable-origin",
+    industries: fm.industries ?? [],
     targetVerticals: fm.targetVerticals ?? [],
     relatedUseCases: fm.relatedUseCases ?? [],
     cover: fm.cover,
