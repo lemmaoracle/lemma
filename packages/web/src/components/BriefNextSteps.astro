@@ -106,12 +106,12 @@ const variant = VARIANTS[pillar];
 const isEnterpriseLead = variant.reader === "enterprise";
 
 const consultCta = { label: "導入を相談", href: consultUrl, ev: "cta_consult_click", external: true };
-const trialCta = { label: "開発者は試す", href: trustUrl, ev: "cta_trial_click", external: true };
+const trialCta = { label: "Trust402 を試す", href: trustUrl, ev: "cta_trial_click", external: true };
 const textCta = { label: "ホワイトペーパー", href: whitepaperUrl, ev: "cta_whitepaper_click", external: true };
 
 const primaryCta = isEnterpriseLead
   ? { ...consultCta, label: "導入を相談 →" }
-  : { ...trialCta, label: "開発者は試す →" };
+  : { ...trialCta, label: "Trust402 を試す →" };
 const ghostCta = isEnterpriseLead ? trialCta : consultCta;
 
 const jsonLd = {
