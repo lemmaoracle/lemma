@@ -100,24 +100,14 @@ const isResourcesActive =
             </a>
           </div>
         </div>
-        <!-- Industries — for enterprises -->
+        <!-- Industries — for enterprises (consulting-driven; deep links surface in the
+             body of /industries/ rather than in the nav) -->
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
           <div class="mega-links">
-            <a href={SEGMENT_URLS.civic[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.civic}</span>
-              <span class="mega-link-sub">{t.mega.products.civicSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.critical[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.critical}</span>
-              <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.compliance[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.compliance}</span>
-              <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
-            </a>
             <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.pricing}</span>
+              <span class="mega-link-title">Industries</span>
+              <span class="mega-link-sub">{t.mega.products.industriesSub}</span>
             </a>
           </div>
         </div>

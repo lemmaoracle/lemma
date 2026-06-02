@@ -48,6 +48,7 @@ export interface Translations {
         readonly developer: string;
         readonly agentDeveloper: string;
         readonly sealSub: string;
+        readonly industriesSub: string;
         readonly trust402: string;
         readonly trust402Sub: string;
         readonly pricing: string;
