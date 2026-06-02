@@ -19,7 +19,6 @@ const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
-const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = servicesPath;
 const dashboardUrl = "https://dashboard.lemma.workers.dev";
 const contactPath = DISCOVERY_CALL_URL[locale];
@@ -38,7 +37,6 @@ const isPillarsActive = startsWith(pillarsPath);
 const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
-const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
   startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
 ---
@@ -142,12 +140,7 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 4. 開発者 (flat link → /guides/) -->
-    <li class="mega-nav-item">
-      <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
-    </li>
-
-    <!-- 5. Resources — Pricing access lives inside the Products mega-panel
+    <!-- 4. Resources — Pricing access lives inside the Products mega-panel
          per CTO direction, so this slot returns to its blog/whitepaper/
          glossary/FAQ dropdown. -->
     <li class="mega-nav-item">
@@ -220,8 +213,6 @@ const isResourcesActive =
         <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
       </div>
     </div>
-
-    <a href={guidesPath} class="mob-direct">{t.developers}</a>
 
     <a href={dashboardUrl} class="mob-direct" target="_blank" rel="noopener">{t.dashboardCta}</a>
 
