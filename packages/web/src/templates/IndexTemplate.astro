@@ -469,14 +469,16 @@ const panes = [
                 <path class="hp-mech-dashflow" d="M 115 45 L 175 45" stroke="#d4a574" stroke-width="1.2" fill="none" />
                 <path d="M 170 41 L 175 45 L 170 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
                 <text x="145" y="36" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#d4a574" letter-spacing="0.1em">ISSUE</text>
-                <!-- Proof token: outer ring + inner pulse ring + 4 cardinal dots -->
-                <circle cx="225" cy="45" r="24" stroke="#d4a574" stroke-width="1.5" fill="none" />
-                <circle class="hp-mech-token-pulse" cx="225" cy="45" r="10" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.5" />
-                <circle cx="225" cy="27" r="2.5" fill="#d4a574" />
-                <circle cx="225" cy="63" r="2.5" fill="#d4a574" />
-                <circle cx="207" cy="45" r="2.5" fill="#d4a574" />
-                <circle cx="243" cy="45" r="2.5" fill="#d4a574" />
-                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PROOF</text>
+                <!-- Proof token (focal): cream tones + sonar halo (2 layers) + inner pulse + 4 dots -->
+                <circle class="hp-mech-halo" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle class="hp-mech-halo hp-mech-halo--delay" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1.6" fill="none" />
+                <circle class="hp-mech-token-pulse" cx="225" cy="45" r="10" stroke="#FCFAF5" stroke-width="1.2" fill="none" opacity="0.5" />
+                <circle cx="225" cy="27" r="2.5" fill="#FCFAF5" />
+                <circle cx="225" cy="63" r="2.5" fill="#FCFAF5" />
+                <circle cx="207" cy="45" r="2.5" fill="#FCFAF5" />
+                <circle cx="243" cy="45" r="2.5" fill="#FCFAF5" />
+                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text>
               </svg>
             </div>
             <div class="hp-mech-step">{phases[0].step}</div>
@@ -493,24 +495,26 @@ const panes = [
           <div class="hp-mech-phase">
             <div class="hp-mech-viz">
               <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <!-- Full token (4 dots solid) -->
-                <circle cx="50" cy="45" r="22" stroke="#d4a574" stroke-width="1.5" fill="none" />
-                <circle cx="50" cy="29" r="2.5" fill="#d4a574" />
-                <circle cx="50" cy="61" r="2.5" fill="#d4a574" />
-                <circle cx="34" cy="45" r="2.5" fill="#d4a574" />
-                <circle cx="66" cy="45" r="2.5" fill="#d4a574" />
-                <text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">FULL</text>
-                <!-- ZK transformation box (subtle stroke pulse) -->
+                <!-- Full proof token (cream, 4 dots solid) -->
+                <circle cx="50" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none" />
+                <circle cx="50" cy="29" r="2.5" fill="#FCFAF5" />
+                <circle cx="50" cy="61" r="2.5" fill="#FCFAF5" />
+                <circle cx="34" cy="45" r="2.5" fill="#FCFAF5" />
+                <circle cx="66" cy="45" r="2.5" fill="#FCFAF5" />
+                <text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text>
+                <!-- ZK transformation box (support role: brown, stroke pulse) -->
                 <rect class="hp-mech-zk-pulse" x="105" y="28" width="70" height="34" rx="4" stroke="#d4a574" stroke-width="1.2" stroke-dasharray="3,2" fill="none" />
                 <text x="140" y="49" text-anchor="middle" font-family="Sora" font-size="11" fill="#d4a574" font-weight="600" letter-spacing="0.08em">ZK</text>
                 <text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SELECT</text>
-                <!-- Disclosed token (1 solid + 3 faded dots, faded dots breathe) -->
-                <circle cx="225" cy="45" r="22" stroke="#d4a574" stroke-width="1.5" fill="none" />
-                <circle cx="225" cy="29" r="2.5" fill="#d4a574" />
-                <circle class="hp-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#d4a574" opacity="0.18" />
-                <circle class="hp-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#d4a574" opacity="0.18" />
-                <circle class="hp-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#d4a574" opacity="0.18" />
-                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">DISCLOSED</text>
+                <!-- Disclosed proof token (focal, cream + halo, 1 solid + 3 faded dots) -->
+                <circle class="hp-mech-halo" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle class="hp-mech-halo hp-mech-halo--delay" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none" />
+                <circle cx="225" cy="29" r="2.5" fill="#FCFAF5" />
+                <circle class="hp-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#FCFAF5" opacity="0.18" />
+                <circle class="hp-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18" />
+                <circle class="hp-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18" />
+                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">DISCLOSED</text>
               </svg>
             </div>
             <div class="hp-mech-step">{phases[1].step}</div>
@@ -527,13 +531,15 @@ const panes = [
           <div class="hp-mech-phase">
             <div class="hp-mech-viz">
               <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <!-- Incoming proof (small, 1 highlighted dot) -->
-                <circle cx="40" cy="45" r="20" stroke="#d4a574" stroke-width="1.5" fill="none" />
-                <circle cx="40" cy="31" r="2" fill="#d4a574" />
-                <circle cx="40" cy="59" r="2" fill="#d4a574" opacity="0.18" />
-                <circle cx="26" cy="45" r="2" fill="#d4a574" opacity="0.18" />
-                <circle cx="54" cy="45" r="2" fill="#d4a574" opacity="0.18" />
-                <text x="40" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PROOF</text>
+                <!-- Incoming proof (focal: cream + halo, 1 highlighted dot) -->
+                <circle class="hp-mech-halo" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle class="hp-mech-halo hp-mech-halo--delay" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none" />
+                <circle cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1.6" fill="none" />
+                <circle cx="40" cy="31" r="2" fill="#FCFAF5" />
+                <circle cx="40" cy="59" r="2" fill="#FCFAF5" opacity="0.18" />
+                <circle cx="26" cy="45" r="2" fill="#FCFAF5" opacity="0.18" />
+                <circle cx="54" cy="45" r="2" fill="#FCFAF5" opacity="0.18" />
+                <text x="40" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text>
                 <!-- Arrow → pubkey -->
                 <path class="hp-mech-dashflow" d="M 70 45 L 105 45" stroke="#d4a574" stroke-width="1.2" fill="none" />
                 <path d="M 100 41 L 105 45 L 100 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
@@ -872,6 +878,19 @@ const panes = [
     50% { opacity: 0.95; }
   }
 
+  /* Sonar halo on focal Proof tokens — 2 staggered rings that scale out and
+     fade, looped. Emphasises "proof is broadcasting trust" on a quiet beat. */
+  .hp-mech-halo {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: hp-mech-halo 3s ease-out infinite;
+  }
+  .hp-mech-halo--delay { animation-delay: 1.5s; }
+  @keyframes hp-mech-halo {
+    0% { opacity: 0.55; transform: scale(1); }
+    80%, 100% { opacity: 0; transform: scale(1.7); }
+  }
+
   .hp-mech-zk-pulse { animation: hp-mech-zkpulse 2.4s ease-in-out infinite; }
   @keyframes hp-mech-zkpulse {
     0%, 100% { opacity: 1; }
@@ -897,7 +916,9 @@ const panes = [
     .hp-mech-token-pulse,
     .hp-mech-zk-pulse,
     .hp-mech-dot-fade,
-    .hp-mech-check-glow { animation: none; }
+    .hp-mech-check-glow,
+    .hp-mech-halo { animation: none; }
+    .hp-mech-halo { opacity: 0; }
   }
 
   .hp-mech-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 72px; padding-top: 36px; border-top: 0.5px solid #3a3025; flex-wrap: wrap; gap: 20px; }
