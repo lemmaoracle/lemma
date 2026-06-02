@@ -170,7 +170,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン移植性 (Groth16 ZK) — 同じ証明を再発行せずにチェーンやツールを越えて持ち運べる",
       ],
     },
-    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance", "credential-presentation", "qualified-worker-attestation"],
+    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance", "credential-presentation", "qualified-worker-attestation", "internal-control-approval-proof"],
     primaryCTA: {
       label: "Talk to us",
       href: "/solutions",
@@ -633,7 +633,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "エージェントが多段で連鎖する場面でも、上流の権限を末端まで証明できる",
       ],
     },
-    useCaseSlugs: ["multi-agent-workflows", "delegated-treasury"],
+    useCaseSlugs: ["multi-agent-workflows", "delegated-treasury", "internal-control-approval-proof"],
     primaryCTA: {
       label: "Talk to us",
       href: "https://tally.so/r/Pd2Rl5",
