@@ -100,12 +100,12 @@ const isResourcesActive =
             </a>
           </div>
         </div>
-        <!-- Industries — for enterprises (consulting-driven; deep links surface in the
-             body of /industries/ rather than in the nav) -->
+        <!-- Industries — for enterprises (consulting-driven; the Solutions hub
+             carries the discovery conversation, pricing surfaces from there) -->
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
           <div class="mega-links">
-            <a href={pricingPath} class="mega-link">
+            <a href={servicesPath} class="mega-link">
               <span class="mega-link-title">Industries</span>
               <span class="mega-link-sub">{t.mega.products.industriesSub}</span>
             </a>
@@ -114,9 +114,12 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 3. ソリューション -->
+    <!-- 3. ソリューション — top-level lands on /solutions/ (the consulting-led
+         discovery hub); the mega-panel surfaces use cases as deeper entry
+         points. Pricing / demo links live inside the post-Discovery-Call
+         form, so they don't need a nav surface here. -->
     <li class="mega-nav-item">
-      <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
+      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.solutions.label}</div>
