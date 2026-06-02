@@ -23,6 +23,8 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { getCollection } from "astro:content";
 import { extractTldr } from "../data/extractTldr";
+import { getUseCaseBySlug } from "../data/useCases";
+import { getAllPillars } from "../data/pillars";
 
 export interface IndexTemplateProps {
   locale: Locale;
@@ -57,6 +59,15 @@ const featuredTitle = featured
   ? (isJa ? featured.data.title : (featured.data.title_en ?? featured.data.title))
   : "";
 const featuredDate = featured ? featured.data.published.toISOString().slice(0, 10) : "";
+
+// ── Featured use case for the spotlight pair (operational lens) ────
+const SPOTLIGHT_USE_CASE_SLUG = "counterparty-screening";
+const spotlightUseCase = await getUseCaseBySlug(SPOTLIGHT_USE_CASE_SLUG, locale);
+const spotlightUseCaseHref = `${base}/solutions/use-cases/${SPOTLIGHT_USE_CASE_SLUG}/`;
+const allPillars = getAllPillars();
+const spotlightUseCasePillar = spotlightUseCase
+  ? allPillars.find((p) => p.slug === spotlightUseCase.pillar)
+  : undefined;
 
 // ── Copy (locale-resolved) ────────────────────────────────────────
 const C = isJa ? {
@@ -154,12 +165,14 @@ const C = isJa ? {
   p4Row2: "識別子", p4Row2Val: "W3C DID / VC",
   p4Row3: "標準", p4Row3Val: "eIDAS / DID-Auth",
   p4Row4: "製品", p4Row4Val: "Lemma Compliance",
-  briefEyebrow: "Critical Brief",
-  briefH2Line1: "AI 時代の、",
-  briefH2Line2Pre: "新しい",
-  briefH2Accent: "コンプライアンス",
-  briefH2Tail: "。",
-  briefSub: "規制・運用・暗号の交差点で起きた事案を、Lemma が読み解きます。自社の信頼インフラづくりに、ぜひお役立てください。",
+  briefEyebrow: "信頼インフラを、取り入れる",
+  briefH2Line1: "現場で。",
+  briefH2Accent: "事案で。",
+  briefH2Tail: "",
+  briefSub: "Lemma の信頼インフラ — 業務にどう乗るか / どんな事案で必要だったか、2 つのレンズで読み解きます。",
+  spotlightUcLabel: "業務にどう置くか",
+  spotlightUcAll: "ユースケース一覧 →",
+  spotlightBriefLabel: "何が起きたか",
   briefFeatMetaPrefix: "注目の Brief ·",
   briefFeatCta: "読む",
   briefList: "Brief 一覧を見る",
@@ -266,15 +279,17 @@ const C = isJa ? {
   p4Row2: "Identifier", p4Row2Val: "W3C DID / VC",
   p4Row3: "Standard", p4Row3Val: "eIDAS / DID-Auth",
   p4Row4: "Product", p4Row4Val: "Lemma Compliance",
-  briefEyebrow: "Critical Brief",
-  briefH2Line1: "Compliance",
-  briefH2Line2Pre: "for the AI era,",
-  briefH2Accent: "redefined",
-  briefH2Tail: ".",
-  briefSub: "Structured analyses of incidents at the intersection of regulation, operations, and cryptography — read by Lemma. Use them as you build your own trust infrastructure.",
+  briefEyebrow: "Adopting the trust layer",
+  briefH2Line1: "In operation.",
+  briefH2Accent: "In incidents.",
+  briefH2Tail: "",
+  briefSub: "Two lenses on Lemma's trust infrastructure — how it lands in real work, and where it was needed when things went wrong.",
+  spotlightUcLabel: "How it fits work",
+  spotlightUcAll: "All use cases →",
+  spotlightBriefLabel: "What incidents prove",
   briefFeatMetaPrefix: "Featured Brief ·",
   briefFeatCta: "Read",
-  briefList: "View all Briefs",
+  briefList: "All Briefs",
   briefWpHintBefore: "Want to go deeper? ",
   briefWpHintLink: "Download the whitepaper",
   briefWpHintAfter: ".",
@@ -688,26 +703,46 @@ const panes = [
       ))}
     </section>
 
-    <!-- CRITICAL BRIEF -->
+    <!-- SPOTLIGHT — operational lens (use case) paired with incident lens (Brief) -->
     <section class="hp-brief">
       <div class="hp-brief-inner">
         <p class="hp-eyebrow">{C.briefEyebrow}</p>
-        <h2 class="hp-h2">{C.briefH2Line1}<br />{C.briefH2Line2Pre}<span class="hp-accent">{C.briefH2Accent}</span>{C.briefH2Tail}</h2>
+        <h2 class="hp-h2">{C.briefH2Line1}<br /><span class="hp-accent">{C.briefH2Accent}</span>{C.briefH2Tail}</h2>
         <p class="hp-sub">{C.briefSub}</p>
 
-        {featured && (
-          <a href={featuredHref} class="hp-brief-feat">
-            <div>
-              <p class="hp-brief-feat-meta">{C.briefFeatMetaPrefix} {featuredDate}</p>
-              <h3 class="hp-brief-feat-h">{featuredTitle}</h3>
-              <p class="hp-brief-feat-tldr">{featuredTldr}</p>
+        <div class="hp-spotlight-grid">
+          <!-- LEFT: featured use case (cream card) -->
+          {spotlightUseCase && (
+            <div class="hp-spotlight-col">
+              <p class="hp-spotlight-label">{C.spotlightUcLabel}</p>
+              <a href={spotlightUseCaseHref} class="hp-spotlight-uc">
+                {spotlightUseCasePillar && (
+                  <span class="hp-spotlight-uc-pillar">P{spotlightUseCasePillar.order} · {spotlightUseCasePillar.title[locale]}</span>
+                )}
+                <h3 class="hp-spotlight-uc-h">{spotlightUseCase.title}</h3>
+                <p class="hp-spotlight-uc-summary">{spotlightUseCase.cardSummary || spotlightUseCase.thesis}</p>
+                <span class="hp-spotlight-uc-cta">{C.briefFeatCta} →</span>
+              </a>
+              <a href={useCasesHref} class="hp-spotlight-all">{C.spotlightUcAll}</a>
             </div>
-            <span class="hp-brief-feat-cta">{C.briefFeatCta} →</span>
-          </a>
-        )}
+          )}
+
+          <!-- RIGHT: featured brief (dark card) -->
+          {featured && (
+            <div class="hp-spotlight-col">
+              <p class="hp-spotlight-label">{C.spotlightBriefLabel}</p>
+              <a href={featuredHref} class="hp-spotlight-brief">
+                <p class="hp-brief-feat-meta">{C.briefFeatMetaPrefix} {featuredDate}</p>
+                <h3 class="hp-brief-feat-h">{featuredTitle}</h3>
+                <p class="hp-brief-feat-tldr">{featuredTldr}</p>
+                <span class="hp-brief-feat-cta">{C.briefFeatCta} →</span>
+              </a>
+              <a href={briefIndexHref} class="hp-spotlight-all">{C.briefList} →</a>
+            </div>
+          )}
+        </div>
 
         <div class="hp-brief-bottom">
-          <a href={briefIndexHref} class="hp-brief-list">{C.briefList} →</a>
           <span class="hp-brief-wp">{C.briefWpHintBefore}<a href={whitepaperHref} target="_blank" rel="noopener">{C.briefWpHintLink}</a>{C.briefWpHintAfter}</span>
         </div>
       </div>
@@ -949,15 +984,73 @@ const panes = [
   /* BRIEF */
   .hp-brief { background: var(--hp-cream-d); padding: 120px 0; }
   .hp-brief-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
-  .hp-brief-feat { background: var(--hp-code-bg); border-radius: 18px; padding: 48px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; transition: all 0.2s; margin-top: 40px; }
-  .hp-brief-feat:hover { transform: translateY(-2px); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18); }
-  .hp-brief-feat-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hp-brown-light); margin: 0 0 14px; }
-  .hp-brief-feat-h { font-family: var(--hp-display); font-size: 26px; font-weight: 600; line-height: 1.35; letter-spacing: -0.018em; color: var(--hp-cream); margin: 0 0 12px; }
-  .hp-brief-feat-tldr { font-size: 14px; line-height: 1.8; color: #b8b3a9; margin: 0; max-width: 720px; }
+
+  /* SPOTLIGHT — 2-col grid pairing the operational lens (left) with the incident lens (right) */
+  .hp-spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .hp-spotlight-col { display: flex; flex-direction: column; gap: 16px; }
+  .hp-spotlight-label {
+    font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--hp-brown); margin: 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hp-spotlight-label::before { content: ""; display: inline-block; width: 24px; height: 1px; background: var(--hp-brown); }
+  .hp-spotlight-all {
+    font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500;
+    align-self: flex-start;
+  }
+  .hp-spotlight-all:hover { color: var(--hp-brown-deep); }
+
+  /* Use-case card (cream surface) */
+  .hp-spotlight-uc {
+    display: flex; flex-direction: column;
+    background: #fff; border: 0.5px solid var(--hp-line); border-radius: 18px;
+    padding: 32px 32px 28px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    flex: 1;
+  }
+  .hp-spotlight-uc:hover { border-color: var(--hp-brown); transform: translateY(-2px); box-shadow: 0 16px 36px rgba(139, 69, 19, 0.08); }
+  .hp-spotlight-uc-pillar {
+    font-family: var(--hp-mono); font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--hp-brown); margin: 0 0 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .hp-spotlight-uc-pillar::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--hp-brown); }
+  .hp-spotlight-uc-h {
+    font-family: var(--hp-display); font-size: 22px; font-weight: 600;
+    line-height: 1.32; letter-spacing: -0.012em; color: #000; margin: 0 0 12px;
+  }
+  .hp-spotlight-uc-summary {
+    font-size: 14px; line-height: 1.7; color: var(--hp-text-3); margin: 0 0 18px;
+  }
+  .hp-spotlight-uc-cta {
+    font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500;
+    margin-top: auto;
+  }
+  .hp-spotlight-uc:hover .hp-spotlight-uc-cta { color: var(--hp-brown-deep); }
+
+  /* Brief card (dark surface) */
+  .hp-spotlight-brief {
+    display: flex; flex-direction: column;
+    background: var(--hp-code-bg); border-radius: 18px;
+    padding: 32px 32px 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+  }
+  .hp-spotlight-brief:hover { transform: translateY(-2px); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18); }
+  .hp-spotlight-brief .hp-brief-feat-meta { margin: 0 0 12px; }
+  .hp-spotlight-brief .hp-brief-feat-h { font-size: 22px; line-height: 1.32; margin: 0 0 12px; }
+  .hp-spotlight-brief .hp-brief-feat-tldr {
+    font-size: 14px; margin: 0 0 18px;
+    display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .hp-spotlight-brief .hp-brief-feat-cta { margin-top: auto; }
+
+  .hp-brief-feat-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hp-brown-light); }
+  .hp-brief-feat-h { font-family: var(--hp-display); font-size: 26px; font-weight: 600; line-height: 1.35; letter-spacing: -0.018em; color: var(--hp-cream); }
+  .hp-brief-feat-tldr { font-size: 14px; line-height: 1.8; color: #b8b3a9; max-width: 720px; }
   .hp-brief-feat-cta { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown-light); white-space: nowrap; }
-  .hp-brief-bottom { margin-top: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-  .hp-brief-list { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500; }
-  .hp-brief-list:hover { color: var(--hp-brown-deep); }
+
+  .hp-brief-bottom { margin-top: 28px; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 16px; }
   .hp-brief-wp { font-size: 13px; color: var(--hp-text-3); }
   .hp-brief-wp a { color: var(--hp-brown); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -985,7 +1078,7 @@ const panes = [
     .hp-mech-flow { grid-template-columns: 1fr; }
     .hp-mech-arrow { transform: rotate(90deg); padding: 8px 0; }
     .hp-schema-pane.is-active { grid-template-columns: 1fr; }
-    .hp-brief-feat { grid-template-columns: 1fr; padding: 36px; }
+    .hp-spotlight-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 560px) {
     .hp-hero { padding: 40px 22px 56px; gap: 36px; }
