@@ -3,6 +3,7 @@ import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
 import { SEGMENT_URLS } from "../config/navigation";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -20,10 +21,8 @@ const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-case
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const whitepaperPath = servicesPath;
-const whitepaperFormUrl = "https://tally.so/r/xX0VYv";
-const githubPath = "https://github.com/lemmaoracle";
 const dashboardUrl = "https://dashboard.lemma.workers.dev";
-const contactPath = base ? `${base}/#contact` : "/#contact";
+const contactPath = DISCOVERY_CALL_URL[locale];
 const homePath = base || "/";
 
 const currentPath = Astro.url.pathname;
@@ -177,9 +176,7 @@ const isResourcesActive =
     <a href={languageSwitchHref} class="nav-lang">
       {locale === "ja" ? t.languageEn : t.languageJa}
     </a>
-    <a href={contactPath} class="nav-contact">{t.contactCta}</a>
-    <a href={dashboardUrl} class="nav-dashboard" target="_blank" rel="noopener">{t.dashboardCta}</a>
-    <a href={whitepaperFormUrl} class="nav-cta" target="_blank" rel="noopener">{t.whitepaperCta}</a>
+    <a href={contactPath} class="nav-cta-pill">{t.contactCta} <span class="nav-cta-arr">→</span></a>
   </div>
 
   <!-- HAMBURGER -->
@@ -247,87 +244,100 @@ const isResourcesActive =
 </nav>
 
 <style>
+  /* ─── v28: cream sticky header, Sora typography, brown active underline ─── */
   .mega-nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    background: rgba(255, 255, 255, 0.92);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    position: sticky; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(252, 250, 245, 0.94);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     height: 64px;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 5%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 0 40px; gap: 28px;
+    border-bottom: 0.5px solid var(--lemma-line, #E5E0D5);
     transition: border-color .3s;
   }
-  .mega-nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+  .mega-nav-logo {
+    display: inline-flex; align-items: center;
+    text-decoration: none; flex-shrink: 0;
+    color: #000;
+    transition: color .15s;
+  }
+  .mega-nav-logo:hover { color: var(--accent); }
 
   .mega-nav-links {
     display: flex; align-items: stretch; height: 64px;
-    list-style: none; gap: 0; margin: 0; padding: 0;
+    list-style: none; gap: 26px; margin: 0; padding: 0 0 0 24px; flex: 1;
   }
   .mega-nav-item { position: relative; display: flex; align-items: center; }
 
   .mega-nav-link {
-    color: var(--gray-700, #5F5F5F);
-    font-size: 14px; font-weight: 500;
-    letter-spacing: 0.02em;
+    font-family: "Sora", system-ui, sans-serif;
+    color: #2A2622;
+    font-size: 13.5px; font-weight: 500;
+    letter-spacing: -0.005em;
     text-decoration: none;
     text-transform: none;
-    padding: 0 18px; height: 64px;
-    display: flex; align-items: center; gap: 6px;
-    transition: color .2s; white-space: nowrap;
-    background: none; border: none; cursor: pointer; font-family: inherit;
+    padding: 8px 0; height: 64px;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: color .15s; white-space: nowrap;
+    background: none; border: none; cursor: pointer;
+    position: relative;
   }
-  .mega-nav-link:hover, .mega-nav-link.active { color: var(--gray-800); }
+  .mega-nav-link:hover { color: var(--accent); }
+  .mega-nav-link.active { color: #000; }
+  .mega-nav-link.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+    height: 3px; background: var(--accent);
+  }
   .mega-nav-link.has-mega::after {
-    content: ''; width: 4px; height: 4px;
-    border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
-    transform: rotate(45deg) translateY(-2px); display: inline-block;
-    opacity: .5; transition: transform .2s;
+    content: '▾'; font-size: 9px; opacity: 0.6;
+    margin-left: 2px; display: inline-block;
+    width: auto; height: auto;
+    border: none; transform: none; position: static;
+    background: transparent;
+    transition: transform .15s, opacity .15s;
   }
+  .mega-nav-link.has-mega.active::after {
+    /* Active mega-link still shows the caret but ALSO the bottom underline:
+       inject the underline via the link itself, not the ::after. */
+    content: '▾'; opacity: 1; color: var(--accent);
+    position: static; height: auto; background: transparent;
+  }
+  .mega-nav-link.has-mega.active {
+    box-shadow: inset 0 -3px 0 var(--accent);
+  }
+  .mega-nav-link.has-mega.active::after { display: inline-block; }
   .mega-nav-item:hover .mega-nav-link.has-mega::after {
-    transform: rotate(-135deg) translateY(-2px); opacity: 1;
+    opacity: 1;
+    transform: translateY(1px);
   }
 
+  /* ─── v28: nav-right (lang + black pill) ─── */
   .mega-nav-right {
-    display: flex; align-items: center; gap: 18px;
+    display: flex; align-items: center; gap: 18px; flex-shrink: 0;
   }
   .nav-lang {
-    color: var(--gray-500);
-    font-size: 12px;
+    font-family: "Sora", system-ui, sans-serif;
+    color: #5A544D;
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .nav-lang:hover { color: var(--accent); }
+  .nav-cta-pill {
+    background: #000; color: #FCFAF5;
+    padding: 9px 20px; border-radius: 999px;
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 13px; font-weight: 500;
     letter-spacing: 0;
     text-decoration: none;
-    transition: color .2s;
-  }
-  .nav-lang:hover { color: var(--gray-800); }
-  .nav-contact {
-    color: var(--gray-700, #5F5F5F);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-decoration: none;
-    transition: color .2s;
+    transition: background .15s;
     white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
   }
-  .nav-contact:hover { color: var(--gray-800); }
-  .nav-dashboard {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-decoration: none;
-    transition: color .2s;
-    white-space: nowrap;
-  }
-  .nav-dashboard:hover { color: var(--gray-800); }
-  .nav-cta {
-    background: #000; color: #fff;
-    padding: 9px 20px;
-    font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
-    text-decoration: none;
-    transition: background .2s, color .2s;
-    white-space: nowrap;
-  }
-  .nav-cta:hover { background: var(--accent); color: #fff; }
+  .nav-cta-pill:hover { background: var(--accent); }
+  .nav-cta-arr { margin-left: 2px; }
 
   .mega-panel {
     display: none; position: absolute; top: 64px; left: 0;
@@ -459,7 +469,7 @@ const isResourcesActive =
     .mega-nav-logo { margin-right: auto; }
     .mega-nav-links { display: none; }
     .mega-nav-right { gap: 10px; }
-    .nav-lang, .nav-contact, .nav-dashboard { display: none; }
+    .nav-lang, .nav-cta-pill { display: none; }
     .nav-cta { padding: 8px 14px; font-size: 10px; letter-spacing: .06em; }
     .nav-hamburger { display: flex; }
     .nav-mobile-drawer { display: block; }
