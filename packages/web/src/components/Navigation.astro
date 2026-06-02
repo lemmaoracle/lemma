@@ -41,6 +41,7 @@ const isSolutionsActive = startsWith(useCasesPath);
 const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
   startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
+const isPricingActive = startsWith(pricingPath);
 ---
 
 <nav class="mega-nav" id="mainNav">
@@ -147,28 +148,11 @@ const isResourcesActive =
       <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
     </li>
 
-    <!-- 5. リソース -->
+    <!-- 5. Pricing (flat link — replaced the resources mega-panel per v28 mock.
+         Blog / Whitepaper / Glossary / FAQ remain reachable via the Footer
+         and the mobile drawer.) -->
     <li class="mega-nav-item">
-      <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
-      <div class="mega-panel mega-panel-right">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.resources.label}</div>
-          <div class="mega-links">
-            <a href={blogPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.resources.blog}</span>
-            </a>
-            <a href={whitepaperPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
-            </a>
-            <a href={glossaryPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.resources.glossary}</span>
-            </a>
-            <a href={faqPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.resources.faq}</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <a href={pricingPath} class:list={["mega-nav-link", { active: isPricingActive }]}>{t.resources}</a>
     </li>
   </ul>
 
@@ -273,10 +257,10 @@ const isResourcesActive =
   }
   .mega-nav-logo:hover { color: var(--accent); }
 
-  /* ─── v28: nav items pushed toward the right, generous gap, light weight ─── */
+  /* ─── v28: compact nav — items right-aligned, smaller font, tighter gap ─── */
   .mega-nav-links {
     display: flex; align-items: stretch; height: 64px;
-    list-style: none; gap: 40px; margin: 0; padding: 0; flex: 1;
+    list-style: none; gap: 32px; margin: 0; padding: 0; flex: 1;
     justify-content: flex-end;
   }
   .mega-nav-item { position: relative; display: flex; align-items: center; }
@@ -284,7 +268,7 @@ const isResourcesActive =
   .mega-nav-link {
     font-family: "Sora", system-ui, sans-serif;
     color: #2A2622;
-    font-size: 15px; font-weight: 400;
+    font-size: 14px; font-weight: 400;
     letter-spacing: 0;
     text-decoration: none;
     text-transform: none;
