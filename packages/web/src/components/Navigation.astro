@@ -236,6 +236,9 @@ const isResourcesActive =
   </div>
 </nav>
 
+<!-- v28: brand-bar — saddle-brown rail in normal flow, sits just below the sticky nav. -->
+<div class="lemma-brand-bar" aria-hidden="true"></div>
+
 <style>
   /* ─── v28: cream sticky header, Sora typography, brown active underline ─── */
   .mega-nav {
@@ -258,11 +261,6 @@ const isResourcesActive =
     position: relative;
     height: 64px;
     padding-top: 4px;
-  }
-  .mega-nav-logo::after {
-    content: ""; position: absolute; left: 0; bottom: 16px;
-    width: 100%; max-width: 220px;
-    height: 3px; background: var(--accent);
   }
   .mega-nav-logo:hover { color: var(--accent); }
 
@@ -469,6 +467,19 @@ const isResourcesActive =
   }
   @media(max-width:480px) {
     .nav-cta { padding: 7px 12px; font-size: 10px; }
+  }
+
+  /* Brand-bar (in flow, just below the sticky nav). Matches v28 / Seal v11
+     mockups: saddle-brown rail, 240×4px, left-indented to align with the
+     container's left edge. */
+  .lemma-brand-bar {
+    width: 240px;
+    height: 4px;
+    background: var(--accent);
+    margin: 18px 0 0 40px;
+  }
+  @media (max-width: 720px) {
+    .lemma-brand-bar { width: 180px; margin-left: 20px; }
   }
 </style>
 
