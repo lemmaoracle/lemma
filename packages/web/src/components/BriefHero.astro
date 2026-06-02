@@ -55,7 +55,6 @@ const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
 ---
 
 <section class="hero">
-  <div class="hero-id">{labels.briefId}</div>
   <h1 class="hero-h1">{mainTitle}</h1>
   {subtitle && <p class="hero-subtitle">{subtitle}</p>}
 
@@ -82,24 +81,6 @@ const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
     --bh-display: "Sora", system-ui, sans-serif;
     --bh-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
     padding: 32px 0 56px;
-  }
-  .hero-id {
-    font-family: var(--bh-mono);
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 22px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .hero-id::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
   }
   .hero-h1 {
     font-family: var(--bh-display);
