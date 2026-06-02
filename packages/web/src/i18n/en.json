@@ -986,6 +986,7 @@
     "countAll": "{n} total",
     "countMatch": "{n} matching",
     "emptyState": "No use cases for this industry yet. Switch back to All, or get in touch.",
-    "cardCta": "View →"
+    "cardCta": "View →",
+    "briefLinkLabel": "Structured analysis of real incidents — Critical Brief"
   }
 }
