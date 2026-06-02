@@ -179,12 +179,12 @@ export const PRICING: PricingContent = {
     trustLine: {
       ja: [
         "live in production since 2025",
-        "メタウォーター(東証プライム)共同実装",
+        "対応標準: MCP / A2A / x402 / C2PA / W3C VC",
         "ETHGlobal AI Agents 2026 Finalist",
       ],
       en: [
         "live in production since 2025",
-        "Co-implemented with MetaWater (TSE Prime)",
+        "Compatible standards: MCP / A2A / x402 / C2PA / W3C VC",
         "ETHGlobal AI Agents 2026 Finalist",
       ],
     },
