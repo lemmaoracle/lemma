@@ -1087,6 +1087,18 @@ const panes = [
 
     .hp-h2 { font-size: 32px; }
 
+    /* Ecosystem strip: skim-only on phones — drop meta, shrink names,
+       tighten gaps so the 5 standards read as a single banner instead of
+       a tall stack. */
+    .hp-eco { padding: 28px 0; }
+    .hp-eco-inner { gap: 16px; padding: 0 22px; }
+    .hp-eco-label { font-size: 10px; letter-spacing: 0.24em; gap: 10px; }
+    .hp-eco-label::before { width: 20px; }
+    .hp-eco-items { gap: 10px 16px; }
+    .hp-eco-item { gap: 0; }
+    .hp-eco-name { font-size: 16px; font-weight: 600; letter-spacing: 0; }
+    .hp-eco-meta { display: none; }
+
     /* Schema tabs: 2×2 grid so the 4 pillars don't stack to a tall column */
     .hp-schema-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .hp-schema-tab {
