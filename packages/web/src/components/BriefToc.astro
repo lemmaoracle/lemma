@@ -1,0 +1,132 @@
+---
+/**
+ * Brief detail page — compact section TOC chip row.
+ *
+ * Renders the body's §1–§8 headings as a horizontal chip row so readers can
+ * jump past the long TL;DR straight into 事案概要 / 攻撃ベクター / Lemma 等.
+ * Mobile = scrollable single row, desktop = wraps. Each section heading
+ * already carries an id (from the markdown), so chips are plain anchor jumps.
+ *
+ * Filters out the TL;DR and the §9 "Brief 配布について" entries: TL;DR sits
+ * directly below the chips so it doesn't need a jump link, and §9 is the
+ * disclaimer that BriefDistNote also renders separately at the page foot.
+ */
+import type { Locale } from "../i18n/translations";
+
+type Heading = { depth: number; slug: string; text: string };
+
+export interface BriefTocProps {
+  locale: Locale;
+  headings: ReadonlyArray<Heading>;
+}
+
+const { locale, headings } = Astro.props as BriefTocProps;
+const isJa = locale === "ja";
+
+const items = headings
+  .filter((h) => h.depth === 2)
+  .filter((h) => h.slug !== "tldr")
+  .filter((h) => !/^brief/i.test(h.slug))
+  .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
+
+const eyebrow = isJa ? "目次" : "On this page";
+---
+
+{items.length > 0 && (
+  <nav class="brief-toc" aria-label={eyebrow}>
+    <span class="brief-toc__eyebrow">{eyebrow}</span>
+    <ol class="brief-toc__chips">
+      {items.map((item) => (
+        <li class="brief-toc__item">
+          <a class="brief-toc__chip" href={`#${item.slug}`}>
+            <span class="brief-toc__num">§{item.num}</span>
+            <span class="brief-toc__label">{item.text}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .brief-toc {
+    margin: 0 0 40px;
+    padding: 16px 18px;
+    background: var(--lemma-cream-deep, #F2EEDF);
+    border-radius: 10px;
+  }
+  .brief-toc__eyebrow {
+    display: block;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray-600, #6b6157);
+    margin-bottom: 10px;
+  }
+  .brief-toc__chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .brief-toc__item { margin: 0; }
+  .brief-toc__chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 5px 11px;
+    border: 1px solid var(--lemma-line, #E5E0D5);
+    border-radius: 8px;
+    background: #fff;
+    text-decoration: none;
+    font-family: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--gray-700, #5F5F5F);
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .brief-toc__chip:hover,
+  .brief-toc__chip:focus-visible {
+    background: #fff;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .brief-toc__num {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .brief-toc__chip:hover .brief-toc__num,
+  .brief-toc__chip:focus-visible .brief-toc__num {
+    color: var(--accent);
+  }
+
+  /* Mobile: single scrolling row so chips never wrap onto 3+ lines. */
+  @media (max-width: 640px) {
+    .brief-toc {
+      margin: 0 0 28px;
+      padding: 14px 14px 12px;
+    }
+    .brief-toc__chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      padding-bottom: 4px;
+    }
+    .brief-toc__item {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+    .brief-toc__label {
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html) { scroll-behavior: smooth; }
+  }
+</style>
