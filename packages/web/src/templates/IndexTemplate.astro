@@ -452,88 +452,114 @@ const panes = [
         <h2 class="hp-h2 hp-on-dark">{C.mechH2Line1}<br /><span class="hp-accent-light">{C.mechH2Accent}</span>{C.mechH2Tail}</h2>
         <p class="hp-sub hp-on-dark">{C.mechSub}</p>
 
-        <div class="hp-mech-diagram">
-          <svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <g>
-              <ellipse cx="110" cy="100" rx="56" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <path d="M 54 100 L 54 230" stroke="#d4a574" stroke-width="1.6" />
-              <path d="M 166 100 L 166 230" stroke="#d4a574" stroke-width="1.6" />
-              <path d="M 54 230 Q 110 248 166 230" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <path d="M 54 100 Q 110 114 166 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none" />
-              <path d="M 54 138 Q 110 152 166 138" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none" />
-              <path d="M 54 176 Q 110 190 166 176" stroke="#d4a574" stroke-width="1" opacity="0.4" fill="none" />
-              <rect x="134" y="195" width="22" height="16" rx="2" fill="#d4a574" />
-              <path d="M 138 195 L 138 189 Q 138 181 145 181 Q 152 181 152 189 L 152 195" stroke="#d4a574" stroke-width="1.5" fill="none" />
-              <text x="110" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagSource}</text>
-              <text x="110" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagSourceSub}</text>
-            </g>
-            <g>
-              <path class="hp-dashflow" d="M 200 165 L 360 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
-              <path d="M 354 161 L 360 165 L 354 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-              <circle cx="220" cy="165" r="10" fill="#8B4513" />
-              <path d="M 215 165 L 218 168 L 225 161" stroke="#FCFAF5" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            </g>
-            <g>
-              <rect x="385" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <rect x="385" y="115" width="100" height="22" fill="#d4a574" />
-              <text x="435" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">{C.diagAttestHeader}</text>
-              <circle cx="403" cy="158" r="4" fill="#d4a574" />
-              <line x1="413" y1="158" x2="475" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
-              <circle cx="403" cy="183" r="4" fill="#d4a574" />
-              <line x1="413" y1="183" x2="475" y2="183" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
-              <circle cx="403" cy="208" r="4" fill="#d4a574" />
-              <line x1="413" y1="208" x2="475" y2="208" stroke="#d4a574" stroke-width="1.2" opacity="0.5" />
-              <text x="435" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagAttestLabel}</text>
-              <text x="435" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagAttestSub}</text>
-            </g>
-            <g>
-              <path class="hp-dashflow" d="M 500 165 L 640 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
-              <path d="M 634 161 L 640 165 L 634 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            </g>
-            <g>
-              <rect x="660" y="115" width="100" height="110" rx="8" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <rect x="660" y="115" width="100" height="22" fill="#d4a574" />
-              <text x="710" y="130" text-anchor="middle" font-family="Noto Sans JP" font-size="10" font-weight="700" fill="#FCFAF5" letter-spacing="0.18em">{C.diagDiscloseHeader}</text>
-              <circle cx="678" cy="158" r="4" fill="#d4a574" />
-              <line x1="688" y1="158" x2="750" y2="158" stroke="#d4a574" stroke-width="1.2" opacity="0.55" />
-              <circle cx="678" cy="183" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3" />
-              <line x1="688" y1="183" x2="750" y2="183" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25" />
-              <circle cx="678" cy="208" r="4" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.3" />
-              <line x1="688" y1="208" x2="750" y2="208" stroke="#d4a574" stroke-width="1" stroke-dasharray="2,3" opacity="0.25" />
-              <text x="710" y="265" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagDiscloseLabel}</text>
-              <text x="710" y="287" text-anchor="middle" font-family="Sora" font-size="11" fill="#8a857d">{C.diagDiscloseSub}</text>
-            </g>
-            <g>
-              <path class="hp-dashflow" d="M 775 165 L 910 165" stroke="#d4a574" stroke-width="1.3" fill="none" />
-              <path d="M 904 161 L 910 165 L 904 169" stroke="#d4a574" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            </g>
-            <g>
-              <ellipse cx="1020" cy="100" rx="60" ry="14" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <path d="M 960 100 L 960 230" stroke="#d4a574" stroke-width="1.6" />
-              <path d="M 1080 100 L 1080 230" stroke="#d4a574" stroke-width="1.6" />
-              <path d="M 960 230 Q 1020 248 1080 230" stroke="#d4a574" stroke-width="1.6" fill="none" />
-              <path d="M 960 100 Q 1020 114 1080 100" stroke="#d4a574" stroke-width="1" opacity="0.45" fill="none" />
-              <circle class="hp-check-glow" cx="970" cy="100" r="14" fill="#6ec27a" />
-              <path d="M 962 100 L 968 106 L 980 92" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-              <text x="1020" y="160" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">{C.diagVerified}</text>
-              <text x="1020" y="182" text-anchor="middle" font-family="Sora" font-size="14" fill="#6ec27a" font-weight="500">{C.diagTruth}</text>
-              <text x="1020" y="268" text-anchor="middle" font-family="Sora" font-size="15" fill="#FCFAF5" font-weight="500">{C.diagVerifier}</text>
-              <text x="1020" y="290" text-anchor="middle" font-family="Sora" font-size="11" fill="#6ec27a">{C.diagVerifierSub}</text>
-            </g>
-          </svg>
-        </div>
+        <div class="hp-mech-flow">
 
-        <div class="hp-phases">
-          {phases.map((p) => (
-            <div class="hp-phase">
-              <div class="hp-phase-step">{p.step}</div>
-              <h3 class="hp-phase-title">{p.title}</h3>
-              <p class="hp-phase-desc">{p.desc}</p>
-              <div class="hp-phase-prims">
-                {p.prims.map((pr) => <div class="hp-phase-prim">{pr}</div>)}
-              </div>
+          <!-- PHASE 01 — ISSUE -->
+          <div class="hp-mech-phase">
+            <div class="hp-mech-viz">
+              <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Source data box (encrypted lines) -->
+                <rect x="22" y="22" width="76" height="46" rx="3" stroke="#d4a574" stroke-width="1.2" fill="none" />
+                <line x1="32" y1="32" x2="88" y2="32" stroke="#d4a574" stroke-width="0.8" opacity="0.45" />
+                <line x1="32" y1="40" x2="88" y2="40" stroke="#d4a574" stroke-width="0.8" opacity="0.45" />
+                <line x1="32" y1="48" x2="88" y2="48" stroke="#d4a574" stroke-width="0.8" opacity="0.45" />
+                <line x1="32" y1="56" x2="88" y2="56" stroke="#d4a574" stroke-width="0.8" opacity="0.45" />
+                <text x="60" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SOURCE</text>
+                <!-- Arrow (dashflow) -->
+                <path class="hp-mech-dashflow" d="M 115 45 L 175 45" stroke="#d4a574" stroke-width="1.2" fill="none" />
+                <path d="M 170 41 L 175 45 L 170 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <text x="145" y="36" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#d4a574" letter-spacing="0.1em">ISSUE</text>
+                <!-- Proof token: outer ring + inner pulse ring + 4 cardinal dots -->
+                <circle cx="225" cy="45" r="24" stroke="#d4a574" stroke-width="1.5" fill="none" />
+                <circle class="hp-mech-token-pulse" cx="225" cy="45" r="10" stroke="#d4a574" stroke-width="1.2" fill="none" opacity="0.5" />
+                <circle cx="225" cy="27" r="2.5" fill="#d4a574" />
+                <circle cx="225" cy="63" r="2.5" fill="#d4a574" />
+                <circle cx="207" cy="45" r="2.5" fill="#d4a574" />
+                <circle cx="243" cy="45" r="2.5" fill="#d4a574" />
+                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PROOF</text>
+              </svg>
             </div>
-          ))}
+            <div class="hp-mech-step">{phases[0].step}</div>
+            <h3 class="hp-mech-title">{phases[0].title}</h3>
+            <p class="hp-mech-desc">{phases[0].desc}</p>
+            <div class="hp-mech-prims">
+              {phases[0].prims.map((pr) => <div class="hp-mech-prim">{pr}</div>)}
+            </div>
+          </div>
+
+          <div class="hp-mech-arrow" aria-hidden="true">→</div>
+
+          <!-- PHASE 02 — PROVE -->
+          <div class="hp-mech-phase">
+            <div class="hp-mech-viz">
+              <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Full token (4 dots solid) -->
+                <circle cx="50" cy="45" r="22" stroke="#d4a574" stroke-width="1.5" fill="none" />
+                <circle cx="50" cy="29" r="2.5" fill="#d4a574" />
+                <circle cx="50" cy="61" r="2.5" fill="#d4a574" />
+                <circle cx="34" cy="45" r="2.5" fill="#d4a574" />
+                <circle cx="66" cy="45" r="2.5" fill="#d4a574" />
+                <text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">FULL</text>
+                <!-- ZK transformation box (subtle stroke pulse) -->
+                <rect class="hp-mech-zk-pulse" x="105" y="28" width="70" height="34" rx="4" stroke="#d4a574" stroke-width="1.2" stroke-dasharray="3,2" fill="none" />
+                <text x="140" y="49" text-anchor="middle" font-family="Sora" font-size="11" fill="#d4a574" font-weight="600" letter-spacing="0.08em">ZK</text>
+                <text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SELECT</text>
+                <!-- Disclosed token (1 solid + 3 faded dots, faded dots breathe) -->
+                <circle cx="225" cy="45" r="22" stroke="#d4a574" stroke-width="1.5" fill="none" />
+                <circle cx="225" cy="29" r="2.5" fill="#d4a574" />
+                <circle class="hp-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#d4a574" opacity="0.18" />
+                <circle class="hp-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#d4a574" opacity="0.18" />
+                <circle class="hp-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#d4a574" opacity="0.18" />
+                <text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">DISCLOSED</text>
+              </svg>
+            </div>
+            <div class="hp-mech-step">{phases[1].step}</div>
+            <h3 class="hp-mech-title">{phases[1].title}</h3>
+            <p class="hp-mech-desc">{phases[1].desc}</p>
+            <div class="hp-mech-prims">
+              {phases[1].prims.map((pr) => <div class="hp-mech-prim">{pr}</div>)}
+            </div>
+          </div>
+
+          <div class="hp-mech-arrow" aria-hidden="true">→</div>
+
+          <!-- PHASE 03 — VERIFY -->
+          <div class="hp-mech-phase">
+            <div class="hp-mech-viz">
+              <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Incoming proof (small, 1 highlighted dot) -->
+                <circle cx="40" cy="45" r="20" stroke="#d4a574" stroke-width="1.5" fill="none" />
+                <circle cx="40" cy="31" r="2" fill="#d4a574" />
+                <circle cx="40" cy="59" r="2" fill="#d4a574" opacity="0.18" />
+                <circle cx="26" cy="45" r="2" fill="#d4a574" opacity="0.18" />
+                <circle cx="54" cy="45" r="2" fill="#d4a574" opacity="0.18" />
+                <text x="40" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PROOF</text>
+                <!-- Arrow → pubkey -->
+                <path class="hp-mech-dashflow" d="M 70 45 L 105 45" stroke="#d4a574" stroke-width="1.2" fill="none" />
+                <path d="M 100 41 L 105 45 L 100 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Public key verifier -->
+                <rect x="110" y="28" width="60" height="34" rx="4" stroke="#d4a574" stroke-width="1.5" fill="none" />
+                <circle cx="124" cy="45" r="6" stroke="#d4a574" stroke-width="1.4" fill="none" />
+                <line x1="130" y1="45" x2="162" y2="45" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" />
+                <line x1="155" y1="45" x2="155" y2="51" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" />
+                <line x1="162" y1="45" x2="162" y2="53" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round" />
+                <text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PUBKEY</text>
+                <!-- Arrow → verified -->
+                <path class="hp-mech-dashflow" d="M 178 45 L 210 45" stroke="#d4a574" stroke-width="1.2" fill="none" />
+                <path d="M 205 41 L 210 45 L 205 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Verified ring + checkmark (gentle glow) -->
+                <circle class="hp-mech-check-glow" cx="240" cy="45" r="20" stroke="#6ec27a" stroke-width="1.5" fill="none" />
+                <path d="M 228 45 L 237 53 L 252 36" stroke="#6ec27a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                <text x="240" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#6ec27a" letter-spacing="0.1em">VERIFIED</text>
+              </svg>
+            </div>
+            <div class="hp-mech-step">{phases[2].step}</div>
+            <h3 class="hp-mech-title">{phases[2].title}</h3>
+            <p class="hp-mech-desc">{phases[2].desc}</p>
+            <div class="hp-mech-prims">
+              {phases[2].prims.map((pr) => <div class="hp-mech-prim">{pr}</div>)}
+            </div>
+          </div>
         </div>
 
         <div class="hp-mech-bottom">
@@ -820,25 +846,59 @@ const panes = [
   .hp-door-desc { font-size: 13.5px; color: var(--hp-text-3); line-height: 1.75; margin: 0; }
   .hp-door-url { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-text-2); margin-top: auto; padding-top: 20px; border-top: 0.5px solid var(--hp-line); display: inline-flex; align-items: center; gap: 6px; }
 
-  /* MECHANISM */
+  /* MECHANISM — 3 phase cards with per-phase mini diagrams */
   .hp-mech { background: var(--hp-code-bg); color: var(--hp-code-text); padding: 120px 0; }
   .hp-mech-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
-  .hp-mech-diagram { margin: 64px auto 80px; max-width: 1080px; padding: 36px 24px; background: radial-gradient(ellipse 80% 100% at center 60%, rgba(212, 165, 116, 0.045) 0%, transparent 70%); border-radius: 20px; }
-  .hp-mech-diagram svg { width: 100%; height: auto; display: block; max-height: 360px; }
-  .hp-mech-diagram .hp-dashflow { stroke-dasharray: 6 4; animation: hp-dashflow 1.6s linear infinite; }
-  @keyframes hp-dashflow { to { stroke-dashoffset: -20; } }
-  .hp-mech-diagram .hp-check-glow { animation: hp-check-glow 2.8s ease-in-out infinite; }
-  @keyframes hp-check-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.78; } }
-  @media (prefers-reduced-motion: reduce) { .hp-mech-diagram .hp-dashflow, .hp-mech-diagram .hp-check-glow { animation: none; } }
 
-  .hp-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
-  .hp-phase { display: flex; flex-direction: column; gap: 12px; padding-top: 28px; border-top: 0.5px solid #3a3025; }
-  .hp-phase-step { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--hp-brown-light); }
-  .hp-phase-title { font-family: var(--hp-display); font-size: 22px; font-weight: 600; color: var(--hp-cream); letter-spacing: -0.015em; line-height: 1.35; margin: 0; }
-  .hp-phase-desc { font-size: 13.5px; line-height: 1.8; color: #c8c2b6; margin: 0; }
-  .hp-phase-prims { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; margin-top: 6px; border-top: 0.5px dashed #3a3025; }
-  .hp-phase-prim { font-family: var(--hp-mono); font-size: 10.5px; color: var(--hp-brown-light); display: flex; align-items: center; gap: 8px; }
-  .hp-phase-prim::before { content: "›"; font-size: 12px; color: var(--hp-brown); }
+  .hp-mech-flow { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr; gap: 0; align-items: stretch; margin-top: 56px; }
+  .hp-mech-phase { background: #2A2118; border: 0.5px solid #3a3025; border-radius: 16px; padding: 28px 28px 32px; display: flex; flex-direction: column; gap: 14px; }
+  .hp-mech-viz { padding-bottom: 18px; margin-bottom: 4px; border-bottom: 0.5px solid #3a3025; }
+  .hp-mech-viz svg { width: 100%; height: auto; display: block; }
+  .hp-mech-step { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--hp-brown-light); }
+  .hp-mech-title { font-family: var(--hp-display); font-size: 22px; font-weight: 600; color: var(--hp-cream); letter-spacing: -0.015em; line-height: 1.35; margin: 0; }
+  .hp-mech-desc { font-size: 13.5px; line-height: 1.8; color: #c8c2b6; margin: 0; }
+  .hp-mech-prims { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 0.5px solid #3a3025; margin-top: auto; }
+  .hp-mech-prim { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--hp-brown-light); display: flex; align-items: center; gap: 8px; }
+  .hp-mech-prim::before { content: "›"; font-size: 12px; color: var(--hp-brown); }
+  .hp-mech-arrow { display: flex; align-items: center; justify-content: center; color: var(--hp-brown); font-family: var(--hp-mono); font-size: 18px; }
+
+  /* Per-phase SVG animations — subtle, on-loop, motion-safe */
+  .hp-mech-dashflow { stroke-dasharray: 3 3; animation: hp-mech-dashflow 1.4s linear infinite; }
+  @keyframes hp-mech-dashflow { to { stroke-dashoffset: -12; } }
+
+  .hp-mech-token-pulse { animation: hp-mech-tokenpulse 2.6s ease-in-out infinite; }
+  @keyframes hp-mech-tokenpulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.95; }
+  }
+
+  .hp-mech-zk-pulse { animation: hp-mech-zkpulse 2.4s ease-in-out infinite; }
+  @keyframes hp-mech-zkpulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+  }
+
+  .hp-mech-dot-fade { animation: hp-mech-dotfade 2.6s ease-in-out infinite; }
+  .hp-mech-dot-fade:nth-of-type(2n) { animation-delay: 0.6s; }
+  .hp-mech-dot-fade:nth-of-type(3n) { animation-delay: 1.2s; }
+  @keyframes hp-mech-dotfade {
+    0%, 100% { opacity: 0.18; }
+    50% { opacity: 0.38; }
+  }
+
+  .hp-mech-check-glow { animation: hp-mech-checkglow 2.6s ease-in-out infinite; }
+  @keyframes hp-mech-checkglow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hp-mech-dashflow,
+    .hp-mech-token-pulse,
+    .hp-mech-zk-pulse,
+    .hp-mech-dot-fade,
+    .hp-mech-check-glow { animation: none; }
+  }
 
   .hp-mech-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 72px; padding-top: 36px; border-top: 0.5px solid #3a3025; flex-wrap: wrap; gap: 20px; }
   .hp-mech-stack { display: flex; gap: 28px; flex-wrap: wrap; }
@@ -903,16 +963,11 @@ const panes = [
     .hp-block { padding: 80px 24px; }
     .hp-closing { padding: 100px 24px; }
     .hp-doors { grid-template-columns: 1fr; }
-    .hp-phases { grid-template-columns: 1fr; gap: 32px; }
+    /* Mechanism flow: stack the 3 phase cards vertically, rotate arrows to point down */
+    .hp-mech-flow { grid-template-columns: 1fr; }
+    .hp-mech-arrow { transform: rotate(90deg); padding: 8px 0; }
     .hp-schema-pane.is-active { grid-template-columns: 1fr; }
     .hp-brief-feat { grid-template-columns: 1fr; padding: 36px; }
-  }
-  @media (max-width: 720px) {
-    /* Hide the horizontal mechanism diagram on phones — it scales below
-       legibility (≤6px labels). The 3-phase row below conveys the same
-       source→prove→verify flow in fully readable text. */
-    .hp-mech-diagram { display: none; }
-    .hp-mech-inner .hp-sub { margin-bottom: 40px; }
   }
   @media (max-width: 560px) {
     .hp-hero { padding: 40px 22px 56px; gap: 36px; }
