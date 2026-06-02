@@ -216,7 +216,6 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     }
   </head>
   <body class={bodyClass}>
-    <div class="lemma-brand-bar" aria-hidden="true"></div>
     <slot />
   </body>
 </html>
@@ -251,20 +250,9 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     overflow-x: hidden;
   }
 
-  /* Lemma brand bar — 240×4px saddle brown stripe pinned just below the
-     fixed Navigation (height 64px). Sits at z-index just under the nav so
-     mega-panel dropdowns still overlay it correctly. */
-  .lemma-brand-bar {
-    position: fixed;
-    top: 64px;
-    left: 32px;
-    width: 240px;
-    height: 4px;
-    background: var(--accent);
-    z-index: 999;
-    pointer-events: none;
-  }
-  @media (max-width: 640px) {
-    .lemma-brand-bar { left: 16px; width: 180px; }
-  }
+  /* Brand mark moved into the Navigation logo as a per-logo underline
+     (see Navigation.astro .mega-nav-logo::after). The standalone
+     fixed brand-bar that used to sit at top:64px was removed because
+     it duplicated the new logo underline and visually attached itself
+     to the menu row. */
 </style>
