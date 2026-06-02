@@ -63,9 +63,8 @@ const C = isJa ? {
   heroH1Line1: "AI のための、",
   heroH1Accent: "信頼インフラ",
   heroH1Tail: "。",
-  heroSubPre: "AI とエージェントが、組織のデータと判断を扱う時代。",
-  heroSubStrong: "「誰が・何の権限で・どのデータを・どう処理したか」",
-  heroSubPost: "を ZK 証明で示します。データを集めず、ログを開かず、規制と運用を同時に満たす — 信頼の標準層。",
+  heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
+  heroSubChord: "証明できる判断を、データを持たないままで。",
   heroPrimaryCta: "導入相談へ",
   heroSecondaryCta: "開発者向けに見る",
   termLabel: "lemma",
@@ -173,12 +172,11 @@ const C = isJa ? {
   closingPrimary: "導入相談へ",
   closingSecondary: "ホワイトペーパー",
 } : {
-  heroH1Line1: "Trust infrastructure",
+  heroH1Line1: "The Trust Layer",
   heroH1Accent: "for AI",
   heroH1Tail: ".",
-  heroSubPre: "An era where AI and agents handle organizational data and decisions.",
-  heroSubStrong: "who, with what authority, processed which data, and how",
-  heroSubPost: " — Lemma proves it as ZK proofs. No data collection, no log exposure; regulation and operations met at once — the standard trust layer.",
+  heroSubLead: "Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one trust layer.",
+  heroSubChord: "Decisions you can prove. Data you never hold.",
   heroPrimaryCta: "Talk to us",
   heroSecondaryCta: "Developer view",
   termLabel: "lemma",
@@ -335,8 +333,7 @@ const panes = [
       <div class="hp-hero-text">
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
         <p class="hp-hero-sub">
-          {C.heroSubPre}<br />
-          Lemma <strong>{C.heroSubStrong}</strong>{C.heroSubPost}
+          {C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span>
         </p>
         <div class="hp-hero-ctas">
           <a href={contactHref} class="hp-btn-primary">{C.heroPrimaryCta} →</a>
@@ -783,7 +780,7 @@ const panes = [
   .hp-hero { max-width: 1320px; margin: 0 auto; padding: 96px 40px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 80px; align-items: center; }
   .hp-hero h1 { font-family: var(--hp-display); font-size: 76px; line-height: 1.04; letter-spacing: -0.035em; color: #000; margin: 0 0 28px; font-weight: 600; }
   .hp-hero-sub { font-size: 17px; line-height: 1.8; color: var(--hp-text-2); margin: 0 0 40px; max-width: 520px; }
-  .hp-hero-sub strong { font-weight: 500; color: var(--hp-text-1); }
+  .hp-hero-sub-chord { color: var(--hp-text-3); }
   .hp-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
   .hp-btn-primary { background: #000; color: var(--hp-cream); padding: 14px 26px; border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: background 0.15s; }
   .hp-btn-primary:hover { background: var(--hp-brown); }
