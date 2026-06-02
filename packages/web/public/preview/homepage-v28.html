@@ -554,12 +554,12 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
   </div>
 </section>
 
-<!-- SCHEMA EXAMPLES（4 信頼レイヤー吸収） -->
+<!-- SCHEMA EXAMPLES — 4 信頼レイヤーをユーザ定義スキーマ例で具体化 -->
 <section class="block">
-  <p class="sec-eyebrow">スキーマ · 4 つの信頼レイヤー</p>
-  <h2 class="sec-h2">4 つの信頼レイヤー、<br>4 つの<span class="accent">スキーマ</span>。</h2>
+  <p class="sec-eyebrow">4 つの信頼レイヤー</p>
+  <h2 class="sec-h2">4 つの信頼レイヤー、<br><span class="accent">あなた</span>のスキーマ。</h2>
   <p class="sec-sub">
-    信頼インフラは 4 つの軸でできています — 来歴証明・検証可能 AI・エージェント権限証明・規制属性証明。それぞれに対応する schema を、SDK 経由で発行・検証できます。
+    信頼インフラは 4 つの軸でできています — 来歴証明・検証可能 AI・エージェント権限証明・規制属性証明。スキーマは Lemma が縛らず、御社のドメインに合わせて自由に定義できます。SDK で発行・検証。以下は <code style="font-family:var(--font-mono);font-size:12.5px;color:var(--lemma-brown);">your.*.v1</code> として組んだ例。
   </p>
 
   <div class="schema-tabs" id="schemaTabs">
@@ -573,15 +573,13 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
   <div class="schema-pane active" data-pane="p1" style="margin-top:24px;">
     <div class="schema-code">
 <span class="punct">{</span><br>
-&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.provenance.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"your.provenance.v1"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:utility-meter-001"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"issuer"</span><span class="punct">:</span> <span class="str">"did:lemma:org-metawater"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"source_hash"</span><span class="punct">:</span> <span class="str">"0x9f3a...c4e8"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"lineage_chain"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"sensor"</span><span class="punct">,</span> <span class="str">"scada"</span><span class="punct">,</span> <span class="str">"oracle"</span><span class="punct">],</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"timestamp"</span><span class="punct">:</span> <span class="str">"2026-06-02T14:30:00Z"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"integrity"</span><span class="punct">:</span> <span class="str">"poseidon-merkle"</span><br>
-&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"sourceHash"</span><span class="punct">:</span> <span class="str">"0x9f3a...c4e8"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"lineageChain"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"sensor"</span><span class="punct">,</span> <span class="str">"scada"</span><span class="punct">,</span> <span class="str">"oracle"</span><span class="punct">],</span><br>
+&nbsp;&nbsp;<span class="key">"recordedAt"</span><span class="punct">:</span> <span class="str">"2026-06-02T14:30:00Z"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"integrity"</span><span class="punct">:</span> <span class="str">"poseidon-merkle"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"BBS+Signature2020"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x4a2b...e1d3"</span><br>
@@ -604,15 +602,13 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
   <div class="schema-pane" data-pane="p2" style="margin-top:24px;">
     <div class="schema-code">
 <span class="punct">{</span><br>
-&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.model.v1"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-fin-bot-007"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"model_id"</span><span class="punct">:</span> <span class="str">"claude-3.7-sonnet"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"policy_hash"</span><span class="punct">:</span> <span class="str">"0x71c5...8b9a"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"input_commitment"</span><span class="punct">:</span> <span class="str">"0xb4e2...3f10"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"output_commitment"</span><span class="punct">:</span> <span class="str">"0xc8f1...a2d5"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"satisfies_policy"</span><span class="punct">:</span> <span class="num">true</span><br>
-&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"your.model.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"agent"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-fin-bot-007"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"modelId"</span><span class="punct">:</span> <span class="str">"claude-3.7-sonnet"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"policyHash"</span><span class="punct">:</span> <span class="str">"0x71c5...8b9a"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"inputCommitment"</span><span class="punct">:</span> <span class="str">"0xb4e2...3f10"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"outputCommitment"</span><span class="punct">:</span> <span class="str">"0xc8f1...a2d5"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"satisfiesPolicy"</span><span class="punct">:</span> <span class="num">true</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"Groth16"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"circuit"</span><span class="punct">:</span> <span class="str">"lemma/model-attest@1.0"</span><span class="punct">,</span><br>
@@ -637,18 +633,16 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
   <div class="schema-pane" data-pane="p3" style="margin-top:24px;">
     <div class="schema-code">
 <span class="punct">{</span><br>
-&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.agent.v1"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-treasury-042"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"delegated_by"</span><span class="punct">:</span> <span class="str">"did:lemma:org-acme-fin"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"role"</span><span class="punct">:</span> <span class="str">"treasury_agent"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"spend_limit_usdc"</span><span class="punct">:</span> <span class="num">500</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"scope"</span><span class="punct">:</span> <span class="str">"x402://api.partner.jp/*"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"valid_until"</span><span class="punct">:</span> <span class="str">"2026-06-30T23:59:59Z"</span><br>
-&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"your.agent.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"agent"</span><span class="punct">:</span> <span class="str">"did:lemma:agent-treasury-042"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"delegatedBy"</span><span class="punct">:</span> <span class="str">"did:lemma:org-acme-fin"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"role"</span><span class="punct">:</span> <span class="str">"treasury_agent"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"spendLimitUSDC"</span><span class="punct">:</span> <span class="num">500</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"scope"</span><span class="punct">:</span> <span class="str">"x402://api.partner.jp/*"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"validUntil"</span><span class="punct">:</span> <span class="str">"2026-06-30T23:59:59Z"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"Groth16+EIP3009"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"x402_payment_id"</span><span class="punct">:</span> <span class="str">"0xa1f3...7d8e"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"x402PaymentId"</span><span class="punct">:</span> <span class="str">"0xa1f3...7d8e"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x6b2c...e4a9"</span><br>
 &nbsp;&nbsp;<span class="punct">}</span><br>
 <span class="punct">}</span>
@@ -656,7 +650,7 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
     <div class="schema-side">
       <p class="schema-pill-id">P3 · エージェント権限</p>
       <h4>Agent schema</h4>
-      <p>delegated_by で「誰が委任したか」、role・spend_limit・scope で「何をどこまでできるか」を記録。Trust402 で x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。</p>
+      <p>delegatedBy で「誰が委任したか」、role・spendLimit・scope で「何をどこまでできるか」を記録。Trust402 で x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。</p>
       <div class="schema-stack">
         <div class="schema-stack-row"><span>証明</span><span class="val">Groth16 + EIP-3009</span></div>
         <div class="schema-stack-row"><span>決済</span><span class="val">USDC / x402</span></div>
@@ -670,15 +664,13 @@ footer.site .inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; }
   <div class="schema-pane" data-pane="p4" style="margin-top:24px;">
     <div class="schema-code">
 <span class="punct">{</span><br>
-&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"lemma.attribute.v1"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"subject"</span><span class="punct">:</span> <span class="str">"did:lemma:org-fsa-licensed"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"schema"</span><span class="punct">:</span> <span class="str">"your.attribute.v1"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"holder"</span><span class="punct">:</span> <span class="str">"did:lemma:org-fsa-licensed"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"issuer"</span><span class="punct">:</span> <span class="str">"did:lemma:authority-jp-fsa"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;<span class="key">"claims"</span><span class="punct">:</span> <span class="punct">{</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"jurisdiction"</span><span class="punct">:</span> <span class="str">"JP-FSA"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"license_type"</span><span class="punct">:</span> <span class="str">"type-1-financial"</span><span class="punct">,</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"disclosed"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"is_licensed"</span><span class="punct">,</span> <span class="str">"valid_until_year"</span><span class="punct">],</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"hidden"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"license_no"</span><span class="punct">,</span> <span class="str">"address"</span><span class="punct">,</span> <span class="str">"executives"</span><span class="punct">]</span><br>
-&nbsp;&nbsp;<span class="punct">},</span><br>
+&nbsp;&nbsp;<span class="key">"jurisdiction"</span><span class="punct">:</span> <span class="str">"JP-FSA"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"licenseType"</span><span class="punct">:</span> <span class="str">"type-1-financial"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"disclosed"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"isLicensed"</span><span class="punct">,</span> <span class="str">"validUntilYear"</span><span class="punct">],</span><br>
+&nbsp;&nbsp;<span class="key">"hidden"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"licenseNo"</span><span class="punct">,</span> <span class="str">"address"</span><span class="punct">,</span> <span class="str">"executives"</span><span class="punct">]</span><span class="punct">,</span><br>
 &nbsp;&nbsp;<span class="key">"proof"</span><span class="punct">:</span> <span class="punct">{</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"type"</span><span class="punct">:</span> <span class="str">"BBS+SelectiveDisclosure"</span><span class="punct">,</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"value"</span><span class="punct">:</span> <span class="str">"0x3c8d...f7a2"</span><br>
