@@ -24,6 +24,6 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-solidity": "^1.4.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.1"
   }
 }
