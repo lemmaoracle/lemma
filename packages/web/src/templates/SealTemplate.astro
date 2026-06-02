@@ -217,17 +217,23 @@ const compareRows = [
   <main class="seal">
     <div class="seal-container">
 
-      <!-- HERO -->
+      <!-- HERO — 2-column top (text + code on the right); cards and trust line below, full width -->
       <section class="seal-hero">
-        <div class="seal-eyebrow">{C.heroEyebrow}</div>
-        <h1 class="seal-h1">{C.heroH1Line1}<br /><span class="seal-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
-        <p class="seal-sub">
-          {C.heroSubPart1}<span class="seal-sub-k">{C.heroSubKey}</span>{C.heroSubPart2}<br />
-          {C.heroSubPart3}
-        </p>
+        <div class="seal-hero-grid">
+          <div class="seal-hero-text">
+            <div class="seal-eyebrow">{C.heroEyebrow}</div>
+            <h1 class="seal-h1">{C.heroH1Line1}<br /><span class="seal-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
+            <p class="seal-sub">
+              {C.heroSubPart1}<span class="seal-sub-k">{C.heroSubKey}</span>{C.heroSubPart2}<br />
+              {C.heroSubPart3}
+            </p>
+          </div>
 
-        <div class="seal-code" aria-label={C.codeAria}>
-          <span class="kw">import</span> {"{ "}generateSealProof{" }"} <span class="kw">from</span> <span class="str">'@lemmaoracle/seal'</span><br /><br /><span class="kw">const</span> {"{ "}proof{" }"} = <span class="kw">await</span> <span class="fn">generateSealProof</span>({"{ apiKey, nonce }"})<br /><span class="com">{C.codeComment}</span>
+          <div class="seal-hero-visual">
+            <div class="seal-code" aria-label={C.codeAria}>
+              <span class="kw">import</span> {"{ "}generateSealProof{" }"} <span class="kw">from</span> <span class="str">'@lemmaoracle/seal'</span><br /><br /><span class="kw">const</span> {"{ "}proof{" }"} = <span class="kw">await</span> <span class="fn">generateSealProof</span>({"{ apiKey, nonce }"})<br /><span class="com">{C.codeComment}</span>
+            </div>
+          </div>
         </div>
 
         <div class="seal-cards">
@@ -390,20 +396,20 @@ const compareRows = [
       </section>
 
     </div>
-  </main>
 
-  <!-- CLOSING (dark) -->
-  <section class="seal-closing">
-    <div class="seal-closing-inner">
-      <p class="seal-closing-eyebrow">{C.closingEyebrow}</p>
-      <h2 class="seal-closing-h">{C.closingHLine1}<br /><span class="seal-closing-accent">{C.closingHAccent}</span>{C.closingHTail}</h2>
-      <div class="seal-closing-ctas">
-        <a href={sealLiveUrl} class="seal-btn-brown-pill" target="_blank" rel="noopener">{C.closingPrimary}</a>
-        <a href={contactHref} target="_blank" rel="noopener" class="seal-closing-link">{C.closingLink}</a>
+    <!-- CLOSING (dark) — inside main.seal so it inherits the --hp-* CSS vars -->
+    <section class="seal-closing">
+      <div class="seal-closing-inner">
+        <p class="seal-closing-eyebrow">{C.closingEyebrow}</p>
+        <h2 class="seal-closing-h">{C.closingHLine1}<br /><span class="seal-closing-accent">{C.closingHAccent}</span>{C.closingHTail}</h2>
+        <div class="seal-closing-ctas">
+          <a href={sealLiveUrl} class="seal-btn-brown-pill" target="_blank" rel="noopener">{C.closingPrimary}</a>
+          <a href={contactHref} target="_blank" rel="noopener" class="seal-closing-link">{C.closingLink}</a>
+        </div>
+        <p class="seal-closing-meta">{C.closingMeta}</p>
       </div>
-      <p class="seal-closing-meta">{C.closingMeta}</p>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
@@ -440,8 +446,17 @@ const compareRows = [
 
   .seal-container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
 
-  /* HERO */
-  .seal-hero { padding: 72px 0 64px; max-width: 1020px; }
+  /* HERO — 2-column top (text + code), then cards + trust below at full container width */
+  .seal-hero { padding: 72px 0 64px; }
+  .seal-hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: start;
+    margin-bottom: 48px;
+  }
+  .seal-hero-text { min-width: 0; }
+  .seal-hero-visual { min-width: 0; }
   .seal-eyebrow {
     font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
     color: var(--hp-brown); margin: 0 0 28px;
@@ -449,26 +464,26 @@ const compareRows = [
   }
   .seal-eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--hp-brown); }
   .seal-h1 {
-    font-family: var(--hp-display); font-size: 64px; font-weight: 700; line-height: 1.04;
-    margin: 0 0 26px; color: #000; letter-spacing: -0.035em; max-width: 760px;
+    font-family: var(--hp-display); font-size: 56px; font-weight: 700; line-height: 1.06;
+    margin: 0 0 26px; color: #000; letter-spacing: -0.035em;
   }
-  .seal-sub { font-size: 17px; color: var(--hp-text-2); margin: 0 0 36px; line-height: 1.75; max-width: 560px; }
+  .seal-sub { font-size: 17px; color: var(--hp-text-2); margin: 0; line-height: 1.75; }
   .seal-sub-k { color: #000; font-weight: 500; }
 
-  /* CODE BLOCK */
+  /* CODE BLOCK — fills the right column */
   .seal-code {
-    max-width: 680px; margin: 0 0 40px;
     background: var(--hp-code-bg); border-radius: 14px;
     padding: 22px 26px; font-family: var(--hp-mono); font-size: 13.5px; line-height: 1.85;
     color: var(--hp-code-text); overflow-x: auto;
+    box-shadow: 0 30px 70px rgba(43, 30, 18, 0.18);
   }
   .seal-code .kw { color: #D4A574; }
   .seal-code .str { color: #9ec5e8; }
   .seal-code .fn { color: #F0DCB5; }
   .seal-code .com { color: #6a655d; }
 
-  /* CARDS */
-  .seal-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 680px; margin: 0 0 44px; }
+  /* CARDS — full container width below the hero grid */
+  .seal-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 0 0 44px; }
   .seal-card {
     position: relative; background: #fff; border-radius: 14px;
     padding: 26px 24px; border: 0.5px solid var(--hp-line);
@@ -614,6 +629,10 @@ const compareRows = [
   }
 
   /* RESPONSIVE */
+  @media (max-width: 980px) {
+    /* Stack the hero grid (text + code) at laptop-and-below so the code block sits under the text */
+    .seal-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
   @media (max-width: 820px) {
     .seal-impact-comparison { grid-template-columns: 1fr; gap: 24px; }
     .seal-migrate-bridge { width: 100%; padding: 6px 0; }
@@ -624,10 +643,12 @@ const compareRows = [
   @media (max-width: 720px) {
     .seal-container { padding: 0 20px; }
     .seal-hero { padding: 48px 0 40px; }
+    .seal-hero-grid { gap: 32px; margin-bottom: 36px; }
     .seal-h1 { font-size: 42px; }
     .seal-sub { font-size: 15px; }
     .seal-code { font-size: 12px; padding: 18px; }
     .seal-cards { grid-template-columns: 1fr; gap: 14px; }
+    .seal-trust { padding-top: 24px; }
     .seal-impact { padding: 64px 0 56px; }
     .seal-impact-h2 { font-size: 36px; }
     .seal-metrics-row { grid-template-columns: 1fr; gap: 24px; }
