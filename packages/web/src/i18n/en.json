@@ -55,6 +55,7 @@
       },
       "resources": {
         "label": "Content",
+        "criticalBrief": "Critical Brief",
         "blog": "Blog",
         "whitepaper": "Whitepaper",
         "glossary": "Glossary",

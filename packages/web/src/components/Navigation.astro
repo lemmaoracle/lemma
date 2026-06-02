@@ -2,7 +2,6 @@
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
-import { SEGMENT_URLS } from "../config/navigation";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 interface Props {
@@ -18,9 +17,9 @@ const pricingPath = base ? `${base}/pricing` : "/pricing";
 const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
+const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
-const whitepaperPath = servicesPath;
-const dashboardUrl = "https://dashboard.lemma.workers.dev";
+const whitepaperPath = "https://tally.so/r/xX0VYv";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const homePath = base || "/";
 
@@ -38,7 +37,11 @@ const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
 const isResourcesActive =
-  startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
+  startsWith(blogPath) ||
+  startsWith(faqPath) ||
+  startsWith(glossaryPath) ||
+  currentPath.startsWith("/critical") ||
+  currentPath.startsWith("/ja/critical");
 ---
 
 <nav class="mega-nav" id="mainNav">
@@ -114,12 +117,11 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 3. ソリューション — top-level lands on /solutions/ (the consulting-led
-         discovery hub); the mega-panel surfaces use cases as deeper entry
-         points. Pricing / demo links live inside the post-Discovery-Call
-         form, so they don't need a nav surface here. -->
+    <!-- 3. ソリューション — top-level lands on the use-cases listing so
+         visitors browsing the nav land directly on concrete examples. The
+         consulting-led /solutions/ hub is reached via Products → Industries. -->
     <li class="mega-nav-item">
-      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
+      <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       <div class="mega-panel">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.solutions.label}</div>
@@ -144,19 +146,22 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 4. Resources — Pricing access lives inside the Products mega-panel
-         per CTO direction, so this slot returns to its blog/whitepaper/
-         glossary/FAQ dropdown. -->
+    <!-- 4. Resources — Critical Brief leads (mirrors the Footer ordering),
+         followed by blog / whitepaper / glossary / FAQ. Pricing access lives
+         inside the Products mega-panel per CTO direction. -->
     <li class="mega-nav-item">
       <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
       <div class="mega-panel mega-panel-right">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.resources.label}</div>
           <div class="mega-links">
+            <a href={briefsPath} class="mega-link">
+              <span class="mega-link-title"><span class="mega-link-dot">●</span> {t.mega.resources.criticalBrief}</span>
+            </a>
             <a href={blogPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.blog}</span>
             </a>
-            <a href={whitepaperPath} class="mega-link">
+            <a href={whitepaperPath} class="mega-link" target="_blank" rel="noopener">
               <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
             </a>
             <a href={glossaryPath} class="mega-link">
@@ -199,11 +204,9 @@ const isResourcesActive =
     <div class="mob-section">
       <div class="mob-section-header">{t.services} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={SEGMENT_URLS.civic[locale]} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
-        <a href={SEGMENT_URLS.critical[locale]} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
-        <a href={SEGMENT_URLS.compliance[locale]} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
+        <a href={base ? `${base}/seal/` : "/seal/"} class="mob-link">Seal<small>{t.mega.products.sealSub}</small></a>
         <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
-        <a href={pricingPath} class="mob-link">{t.mega.products.pricing}<small>{t.mega.products.pricingSub}</small></a>
+        <a href={servicesPath} class="mob-link">Industries<small>{t.mega.products.industriesSub}</small></a>
       </div>
     </div>
 
@@ -218,13 +221,12 @@ const isResourcesActive =
       </div>
     </div>
 
-    <a href={dashboardUrl} class="mob-direct" target="_blank" rel="noopener">{t.dashboardCta}</a>
-
     <div class="mob-section">
       <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
+        <a href={briefsPath} class="mob-link"><span class="mob-link-dot">●</span> {t.mega.resources.criticalBrief}</a>
         <a href={blogPath} class="mob-link">{t.mega.resources.blog}</a>
-        <a href={whitepaperPath} class="mob-link">{t.mega.resources.whitepaper}</a>
+        <a href={whitepaperPath} class="mob-link" target="_blank" rel="noopener">{t.mega.resources.whitepaper}</a>
         <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
         <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
       </div>
@@ -371,6 +373,12 @@ const isResourcesActive =
     font-size: 12px; color: #5A544D; line-height: 1.4; margin-top: 2px;
   }
   .mega-link:hover .mega-link-title { color: var(--accent); }
+  .mega-link-dot {
+    color: var(--accent, #b88746);
+    font-size: 8px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
 
   .nav-hamburger {
     display: none; background: none; border: none; cursor: pointer;
@@ -421,17 +429,6 @@ const isResourcesActive =
   .mob-section-body { display: none; padding: 0 6% 16px; }
   .mob-section.open .mob-section-body { display: block; }
 
-  .mob-direct {
-    display: block;
-    padding: 18px 6%;
-    border-bottom: 1px solid var(--gray-200);
-    font-size: 14px; font-weight: 500;
-    color: var(--gray-800);
-    text-decoration: none;
-    transition: color .15s;
-  }
-  .mob-direct:hover { color: var(--accent); }
-
   .mob-link {
     display: block; padding: 12px 0; text-decoration: none;
     border-bottom: 1px solid var(--gray-200);
@@ -442,6 +439,12 @@ const isResourcesActive =
   .mob-link:last-child { border-bottom: none; }
   .mob-link:hover { color: var(--gray-800); }
   .mob-link small { display: block; font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .mob-link-dot {
+    color: var(--accent, #b88746);
+    font-size: 8px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
 
   .mob-cta { padding: 24px 6%; }
   .mob-cta-btn {

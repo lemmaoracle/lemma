@@ -55,6 +55,7 @@
       },
       "resources": {
         "label": "コンテンツ",
+        "criticalBrief": "Critical Brief",
         "blog": "ブログ",
         "whitepaper": "ホワイトペーパー",
         "glossary": "用語集",
