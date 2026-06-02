@@ -9,7 +9,7 @@ incident_date: 2026-02-28
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["005-noroboto-lying-fonts", "009-gtg1002-ai-orchestrated-espionage"]
+related_briefs: ["005-noroboto-lying-fonts", "009-gtg1002-ai-orchestrated-espionage", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
 ---

@@ -9,7 +9,7 @@ incident_date: 2026-05-11
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["015-github-vscode-extension-breach", "004-megalodon-github-supply-chain"]
+related_briefs: ["015-github-vscode-extension-breach", "004-megalodon-github-supply-chain", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
 ---
