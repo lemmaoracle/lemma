@@ -1,6 +1,6 @@
 ---
 brief_no: 4
-title: "Megalodon GitHub supply chain — 6 時間で 5,561 リポジトリを汚染した CI/CD credential 窃取キャンペーン"
+title: "Megalodon GitHub サプライチェーン — 6 時間で 5,561 リポジトリを汚染した CI/CD 認証情報窃取キャンペーン"
 title_en: "Megalodon GitHub Supply Chain — CI/CD Credential-Theft Campaign That Poisoned 5,561 Repositories in 6 Hours"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"

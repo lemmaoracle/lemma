@@ -9,7 +9,7 @@ incident_date: 2026-04-18
 published: 2026-05-29
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["002-stakedao-vsdcrv"]
+related_briefs: ["002-stakedao-vsdcrv", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
 ---
