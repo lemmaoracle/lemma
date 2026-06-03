@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust402 — 鍵を渡さず、自律で支払う | Lemma</title>
+<meta name="description" content="x402 がエージェントの支払いを通す。Trust402 が代理権限・身元・対象を ZK 証明として埋め込む。">
+<meta name="theme-color" content="#8B4513">
+<link rel="canonical" href="https://lemma.frame00.com/ja/trust402/" />
+<link rel="alternate" hreflang="en" href="https://lemma.frame00.com/trust402/" />
+<link rel="alternate" hreflang="ja" href="https://lemma.frame00.com/ja/trust402/" />
+<link rel="alternate" hreflang="x-default" href="https://lemma.frame00.com/trust402/" />
+<meta property="og:title" content="Trust402 — 鍵を渡さず、自律で支払う | Lemma" />
+<meta property="og:description" content="x402 がエージェントの支払いを通す。Trust402 が代理権限・身元・対象を ZK 証明として埋め込む。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://lemma.frame00.com/ja/trust402/" />
+<meta property="og:image" content="https://lemma.frame00.com/trust402/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Lemma" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Trust402 — 鍵を渡さず、自律で支払う | Lemma" />
+<meta name="twitter:description" content="x402 がエージェントの支払いを通す。Trust402 が代理権限・身元・対象を ZK 証明として埋め込む。" />
+<meta name="twitter:image" content="https://lemma.frame00.com/trust402/og.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lemma-black: #000000; --lemma-text-1: #1A1A1A; --lemma-text-2: #3A3A3A;
+  --lemma-text-3: #5A5A5A; --lemma-text-4: #9A9A9A;
+  --lemma-brown: #8B4513; --lemma-brown-light: #F5EBDC;
+  --lemma-cream: #FCFAF5; --lemma-cream-deep: #F2EEDF;
+  --lemma-line: #E5E5E5;
+  --legacy-bg: #ECEBE5; --legacy-border: #B5AFA0; --legacy-text: #6E6957;
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(--lemma-text-2); font-family: var(--font-body); font-weight: 400; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+header { padding: 22px 0 0; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.brand { text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--lemma-black); letter-spacing: -0.02em; }
+.brand .sup { font-size: 11px; font-weight: 600; vertical-align: super; }
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a { font-family: var(--font-display); color: var(--lemma-text-2); text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color 0.15s; }
+.nav a:hover { color: var(--lemma-black); }
+.nav-cta { font-family: var(--font-display); background: var(--lemma-black) !important; color: var(--lemma-cream) !important; padding: 8px 16px; border-radius: 999px; font-size: 12.5px; font-weight: 500; }
+.brand-bar { width: 240px; height: 4px; background: var(--lemma-brown); margin: 14px 0 0 40px; }
+
+/* === HERO (Seal-style: text + code + 2 cards + trust line) === */
+.hero { padding: 60px 0 56px; max-width: 1020px; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 28px; display: flex; align-items: center; gap: 12px; }
+.eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.eyebrow .accent { color: var(--lemma-brown); font-weight: 500; }
+.h1 { font-family: var(--font-display); font-size: 64px; font-weight: 700; line-height: 0.96; margin: 0 0 26px; color: var(--lemma-black); letter-spacing: -0.04em; max-width: 720px; }
+.h1 .accent { color: var(--lemma-brown); }
+.hero-sub { font-size: 17px; color: var(--lemma-text-2); margin: 0 0 36px; line-height: 1.7; max-width: 600px; }
+.hero-sub .k { color: var(--lemma-black); font-weight: 500; }
+
+/* Hero code block + GIF demo side by side */
+.hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; margin: 0 0 44px; align-items: start; }
+.hero-code { background: var(--lemma-text-1); border-radius: 14px; padding: 22px 26px; font-family: var(--font-mono); font-size: 13px; line-height: 1.85; color: #E8E2D4; overflow-x: auto; }
+.hero-code .kw { color: #D4A574; }
+.hero-code .str { color: #E5C9A1; }
+.hero-code .fn { color: #F0DCB5; }
+.hero-code .var { color: #FCFAF5; }
+.hero-code .com { color: #7A7468; }
+.hero-demo { background: #0A0F0E; border-radius: 14px; padding: 0; overflow: hidden; position: relative; border: 0.5px solid rgba(0,0,0,0.1); }
+.hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(139,69,19,0.7); border-radius: 4px; z-index: 2; }
+.hero-demo-frame { aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 22px 22px 18px; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; }
+.hero-demo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* === Animated terminal demo === */
+.term-line { display: block; opacity: 0; animation: term-line-in 0.4s ease forwards, term-cycle 14s ease infinite; }
+.term-line .prompt { color: #5EE08E; font-weight: 500; margin-right: 8px; }
+.term-line .cmd { color: rgba(252,250,245,0.92); }
+.term-line .ok { color: #5EE08E; }
+.term-line .ng { color: #D88A6B; }
+.term-line .info { color: rgba(252,250,245,0.55); }
+.term-line .accent { color: #E5C9A1; }
+.term-line .meta { color: rgba(252,250,245,0.4); font-size: 10.5px; }
+.term-line.success { color: #5EE08E; font-weight: 500; padding-top: 2px; }
+.term-line.spacer { height: 4px; }
+.term-line.cursor { color: #5EE08E; }
+.term-line.cursor::after { content: "▏"; animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+@keyframes term-line-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes term-cycle {
+  0%, 70% { opacity: 1; }
+  85%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.term-line:nth-child(1)  { animation-delay: 0.1s, 0s; }
+.term-line:nth-child(2)  { animation-delay: 1.0s, 0s; }
+.term-line:nth-child(3)  { animation-delay: 1.6s, 0s; }
+.term-line:nth-child(4)  { animation-delay: 2.4s, 0s; }
+.term-line:nth-child(5)  { animation-delay: 3.2s, 0s; }
+.term-line:nth-child(6)  { animation-delay: 4.0s, 0s; }
+.term-line:nth-child(7)  { animation-delay: 4.8s, 0s; }
+.term-line:nth-child(8)  { animation-delay: 5.6s, 0s; }
+.term-line:nth-child(9)  { animation-delay: 6.4s, 0s; }
+.term-line:nth-child(10) { animation-delay: 6.8s, 0s; }
+@media (prefers-reduced-motion: reduce) {
+  .term-line { animation: none; opacity: 1; }
+  .term-line.cursor::after { animation: none; }
+}
+@media (max-width: 760px) { .hero-grid { grid-template-columns: 1fr; } }
+
+/* Hero 2 cards (Seal-style) */
+.hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 720px; margin: 0 0 44px; }
+.hero-card { position: relative; background: #fff; border-radius: 14px; padding: 24px 24px 22px; border: 0.5px solid var(--lemma-line); transition: transform 0.25s, box-shadow 0.25s; }
+.hero-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(139,69,19,0.06); }
+.hero-card-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 10px; font-weight: 500; }
+.hero-card-h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--lemma-black); margin: 0 0 10px; letter-spacing: -0.015em; line-height: 1.3; }
+.hero-card-copy { font-size: 13px; color: var(--lemma-text-3); margin: 0 0 18px; line-height: 1.65; }
+.hero-card-btn { display: inline-block; padding: 10px 22px; border-radius: 999px; font-size: 12px; font-weight: 500; text-decoration: none; font-family: var(--font-display); }
+.hero-card-btn.primary { background: var(--lemma-brown); color: var(--lemma-cream); }
+.hero-card-btn.muted { background: var(--lemma-cream-deep); color: var(--lemma-black); }
+.hero-card-badge { position: absolute; top: -10px; right: 22px; background: var(--lemma-brown); color: var(--lemma-cream); font-family: var(--font-mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.12em; padding: 5px 12px; border-radius: 999px; text-transform: uppercase; }
+.hero-card-microcopy { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--lemma-brown); margin: 8px 0 0; }
+@media (max-width: 560px) { .hero-cards { grid-template-columns: 1fr; } }
+
+.trust { font-size: 13px; color: var(--lemma-text-3); line-height: 1.8; padding-top: 26px; border-top: 0.5px solid var(--lemma-line); max-width: 720px; font-family: var(--font-mono); letter-spacing: 0.04em; }
+.trust .strong { color: var(--lemma-black); font-weight: 500; }
+.trust .dot { color: var(--lemma-brown); }
+
+@media (max-width: 720px) { .h1 { font-size: 46px; } }
+
+/* === DIFF strip: Trust402 = x402 + ... === */
+.diff-strip { max-width: 1020px; margin: 0 0 64px; padding: 0; }
+.diff-row { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 18px; padding: 24px 28px; display: grid; grid-template-columns: 1fr auto 2fr auto 2fr; gap: 18px; align-items: stretch; position: relative; }
+.diff-row::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 56px; background: var(--lemma-brown); border-radius: 0 0 3px 0; }
+.diff-cell { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 12px; }
+.diff-cell.base { background: var(--lemma-cream-deep); }
+.diff-cell.add { background: var(--lemma-brown-light); }
+.diff-cell.result { background: #2C2620; color: #FCFAF5; }
+.diff-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--lemma-brown); font-weight: 500; }
+.diff-cell.result .diff-label { color: rgba(252,250,245,0.55); }
+.diff-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,69,19,0.12); color: var(--lemma-brown); margin: 4px 0; }
+.diff-name { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--lemma-text-1); letter-spacing: -0.005em; margin-top: auto; }
+.diff-plus, .diff-equals { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 28px; font-weight: 300; color: var(--lemma-brown); padding: 0 4px; }
+.diff-add-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
+.diff-add-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: baseline; }
+.diff-add-key { font-family: var(--font-mono); font-size: 11.5px; color: var(--lemma-brown); font-weight: 500; letter-spacing: 0.02em; }
+.diff-add-mono { font-family: var(--font-body); font-size: 11px; color: var(--lemma-text-2); }
+.diff-result-pill { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 500; color: var(--lemma-cream); line-height: 1.5; letter-spacing: -0.005em; }
+.diff-result-dot { width: 7px; height: 7px; border-radius: 50%; background: #5EE08E; flex-shrink: 0; }
+.diff-result-mono { font-family: var(--font-mono); font-size: 10.5px; color: rgba(252,250,245,0.55); letter-spacing: 0.04em; margin-top: auto; }
+@media (max-width: 880px) {
+  .diff-row { grid-template-columns: 1fr; gap: 12px; }
+  .diff-plus, .diff-equals { padding: 6px 0; }
+}
+
+/* === Section base === */
+.section-block { margin: 0 0 80px; max-width: 1020px; }
+.section-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
+.section-eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.section-h2 { font-family: var(--font-display); font-size: 40px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.03em; line-height: 1.08; margin: 0 0 20px; }
+.section-h2 .accent { color: var(--lemma-brown); }
+.section-sub { font-size: 15px; line-height: 1.75; color: var(--lemma-text-2); margin: 0 0 36px; max-width: 660px; }
+.section-sub .k { color: var(--lemma-black); font-weight: 500; }
+
+/* === §1 Without / With Trust402 === */
+.impact-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch; }
+.impact-panel { border-radius: 18px; padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 16px; }
+.impact-panel.before { background: var(--legacy-bg); border: 0.5px dashed var(--legacy-border); filter: saturate(0.65); }
+.impact-panel.after { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); box-shadow: 0 6px 28px rgba(139, 69, 19, 0.08); }
+.impact-panel svg { width: 100%; height: auto; display: block; }
+.impact-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+.impact-label::before { content: ""; display: block; width: 22px; height: 1px; }
+.impact-panel.before .impact-label { color: var(--legacy-text); }
+.impact-panel.before .impact-label::before { background: var(--legacy-text); }
+.impact-panel.after .impact-label { color: var(--lemma-brown); }
+.impact-panel.after .impact-label::before { background: var(--lemma-brown); }
+.impact-summary { font-family: var(--font-display); font-size: 15px; font-weight: 500; line-height: 1.5; letter-spacing: -0.01em; }
+.impact-panel.before .impact-summary { color: var(--legacy-text); }
+.impact-panel.after .impact-summary { color: var(--lemma-black); }
+.impact-panel.after .impact-summary .k { color: var(--lemma-brown); }
+.migrate-bridge { display: flex; align-items: center; justify-content: center; width: 56px; }
+@keyframes travel-pay { 0%{transform:translateX(-12px);opacity:0} 18%{opacity:1} 82%{opacity:1} 100%{transform:translateX(82px);opacity:0} }
+.travel-pay-bare, .travel-pay-proof { animation: travel-pay 4s cubic-bezier(0.4,0,0.2,1) infinite; }
+@keyframes pulse-soft { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.proof-pulse { transform-origin: center; transform-box: fill-box; animation: pulse-soft 2.4s ease-in-out infinite; }
+@keyframes server-fade { 0%,100%{opacity:0.55} 50%{opacity:1} }
+.server-record-fade { animation: server-fade 3s ease-in-out infinite; }
+.server-record-fade:nth-child(odd) { animation-delay: 0s; }
+.server-record-fade:nth-child(even) { animation-delay: 0.8s; }
+.server-record-fade:nth-child(3n) { animation-delay: 1.5s; }
+@media (prefers-reduced-motion: reduce) {
+  .travel-pay-bare, .travel-pay-proof { animation: none; transform: translateX(35px); opacity: 1; }
+  .proof-pulse, .server-record-fade { animation: none; }
+}
+@media (max-width: 720px) {
+  .impact-comparison { grid-template-columns: 1fr; gap: 18px; }
+  .migrate-bridge { width: 100%; padding: 4px 0; }
+  .migrate-bridge svg { transform: rotate(90deg); }
+}
+
+/* === §2 How it works (visual flow) === */
+.mech-block { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 18px; padding: 40px 36px; }
+.mech-svg { width: 100%; height: auto; display: block; }
+.mech-caption { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-text-3); text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 0.5px solid var(--lemma-line); display: flex; align-items: center; justify-content: center; gap: 12px; }
+.mech-caption .accent { color: var(--lemma-brown); font-weight: 500; }
+@keyframes pay-flow { 0%{transform:translateX(-10px);opacity:0} 25%{opacity:1} 75%{opacity:1} 100%{transform:translateX(75px);opacity:0} }
+.pay-flow-dot { animation: pay-flow 3s cubic-bezier(0.4,0,0.2,1) infinite; }
+.pay-flow-dot:nth-of-type(2) { animation-delay: 1s; }
+.pay-flow-dot:nth-of-type(3) { animation-delay: 2s; }
+@media (prefers-reduced-motion: reduce) { .pay-flow-dot { animation: none; opacity: 1; } }
+
+/* === §3 Trust402 + Lemma context block === */
+.context-block { background: var(--lemma-cream-deep); border-radius: 18px; padding: 40px 44px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 36px; align-items: start; position: relative; }
+.context-block::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 64px; background: var(--lemma-brown); border-radius: 0 0 3px 0; }
+.context-left { display: flex; flex-direction: column; gap: 14px; }
+.context-eyebrow { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-brown); font-weight: 500; }
+.context-h3 { font-family: var(--font-display); font-size: 26px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
+.context-h3 .accent { color: var(--lemma-brown); }
+.context-desc { font-size: 14.5px; line-height: 1.85; color: var(--lemma-text-2); margin: 0; }
+.context-desc .k { color: var(--lemma-black); font-weight: 500; }
+.context-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--lemma-brown); text-decoration: none; margin-top: 8px; transition: transform 0.2s; display: inline-block; }
+.context-link:hover { transform: translateX(3px); }
+.context-features { display: flex; flex-direction: column; gap: 14px; padding-left: 32px; border-left: 0.5px solid var(--lemma-line); }
+.context-feature { display: grid; grid-template-columns: 20px 1fr; gap: 14px; align-items: start; font-size: 13.5px; line-height: 1.65; color: var(--lemma-text-1); }
+.context-feature::before { content: "◆"; color: var(--lemma-brown); font-size: 10px; padding-top: 4px; }
+.context-feature .k { color: var(--lemma-black); font-weight: 500; }
+.context-feature .mono { font-family: var(--font-mono); font-size: 10.5px; color: var(--lemma-text-3); letter-spacing: 0.04em; display: block; margin-top: 2px; }
+@media (max-width: 760px) { .context-block { grid-template-columns: 1fr; gap: 24px; padding: 28px 26px; } .context-features { padding-left: 0; padding-top: 20px; border-left: 0; border-top: 0.5px solid var(--lemma-line); } }
+
+/* === §4 Use cases — supplementary, compact === */
+.uc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.uc-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 12px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s, transform 0.2s; }
+.uc-card:hover { border-color: rgba(139,69,19,0.4); transform: translateY(-2px); }
+.uc-card-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--lemma-brown-light); border-radius: 8px; color: var(--lemma-brown); }
+.uc-card-title { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.005em; line-height: 1.35; margin: 0; }
+.uc-card-desc { font-size: 11.5px; color: var(--lemma-text-3); line-height: 1.6; margin: 0; }
+@media (max-width: 880px) { .uc-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .uc-grid { grid-template-columns: 1fr; } }
+
+/* === §4 Plans brief === */
+.plans-brief { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin: 0 0 24px; }
+.plan-brief-card { background: var(--lemma-cream-deep); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+.plan-brief-card .name { font-family: var(--font-display); font-size: 14.5px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.005em; margin: 0; }
+.plan-brief-card .desc { font-size: 11.5px; color: var(--lemma-text-3); line-height: 1.6; margin: 0; flex: 1; }
+.plan-brief-card .status { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lemma-brown); margin: 6px 0 0; }
+.plans-brief-cta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.plans-brief-cta-primary { background: var(--lemma-brown); color: var(--lemma-cream); padding: 12px 26px; border-radius: 999px; font-family: var(--font-display); font-size: 13px; font-weight: 500; text-decoration: none; }
+.plans-brief-cta-secondary { color: var(--lemma-text-2); font-size: 13px; text-decoration: none; font-family: var(--font-display); font-weight: 500; }
+.plans-brief-cta-secondary:hover { color: var(--lemma-brown); }
+@media (max-width: 880px) { .plans-brief { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .plans-brief { grid-template-columns: 1fr; } }
+
+/* === §5 FAQ === */
+.faq-list { display: flex; flex-direction: column; gap: 0; border-top: 0.5px solid var(--lemma-line); }
+.faq-item { padding: 22px 0; border-bottom: 0.5px solid var(--lemma-line); }
+.faq-q { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.01em; margin: 0 0 8px; display: flex; align-items: baseline; gap: 12px; }
+.faq-q::before { content: "Q."; font-family: var(--font-mono); font-size: 11px; color: var(--lemma-brown); letter-spacing: 0.1em; font-weight: 500; }
+.faq-a { font-size: 13.5px; color: var(--lemma-text-2); line-height: 1.8; margin: 0; padding-left: 30px; }
+.faq-a .k { color: var(--lemma-black); font-weight: 500; }
+.faq-a code { font-family: var(--font-mono); font-size: 12px; background: var(--lemma-cream-deep); padding: 2px 6px; border-radius: 4px; color: var(--lemma-brown); }
+
+/* === Vision close === */
+.vision { background: #0F0F0F; color: var(--lemma-cream); padding: 88px 0 80px; margin-top: 64px; text-align: center; }
+.vision .container { max-width: 880px; }
+.vision-eyebrow { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(252,250,245,0.5); margin: 0 0 22px; }
+.vision-h2 { font-family: var(--font-display); font-size: 48px; font-weight: 600; line-height: 1.1; margin: 0 0 28px; letter-spacing: -0.03em; color: var(--lemma-cream); font-style: italic; }
+.vision-h2 .accent { color: var(--lemma-brown); }
+.vision-sub { font-size: 15px; color: rgba(252,250,245,0.7); margin: 0 auto 36px; max-width: 560px; line-height: 1.7; }
+.vision-cta { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; }
+.vision-cta-primary { background: var(--lemma-brown); color: var(--lemma-cream); padding: 14px 32px; border-radius: 999px; font-family: var(--font-display); font-size: 14px; font-weight: 500; text-decoration: none; }
+.vision-cta-secondary { color: rgba(252,250,245,0.7); font-size: 14px; text-decoration: none; font-family: var(--font-display); padding: 12px 16px; }
+.vision-cta-secondary:hover { color: var(--lemma-cream); }
+
+.site-footer { background: #0A0A0A; color: rgba(252,250,245,0.55); padding: 40px 0 36px; font-family: var(--font-display); font-size: 12.5px; text-align: center; }
+.site-footer em { color: rgba(252,250,245,0.4); font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a href="/ja" class="brand">L<span class="sup">e</span>mma</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/ja/pillars">信頼インフラ</a>
+        <a href="/ja/solutions">製品</a>
+        <a href="/ja/solutions/use-cases">ユースケース</a>
+        <a href="/ja/blog">リソース</a>
+        <a href="https://tally.so/r/EkBqDX" class="nav-cta">お問い合わせ</a>
+      </nav>
+    </div>
+  </div>
+</header>
+<div class="brand-bar" aria-hidden="true"></div>
+
+<main>
+  <div class="container">
+
+    <!-- HERO (Seal-style: text + code/demo + 2 cards + trust line) -->
+    <section class="hero">
+      <div class="eyebrow">Lemma <span class="accent">× x402</span> · Reference implementation</div>
+      <h1 class="h1">AI エージェントの<br>支払いに、<span class="accent">信頼を。</span></h1>
+      <p class="hero-sub"><span class="k">x402</span> がエージェントの支払いを可能にする。Lemma が「<span class="k">誰が、何の権限で、どのデータに対して</span>」を ZK 証明する。</p>
+
+      <div class="hero-grid">
+        <pre class="hero-code"><span class="kw">import</span> { <span class="var">trust402</span> } <span class="kw">from</span> <span class="str">'@lemmaoracle/trust402'</span>
+
+<span class="com">// x402 middleware に 1 行追加</span>
+<span class="var">app</span>.<span class="fn">use</span>(<span class="fn">trust402</span>({ <span class="var">scope</span>: <span class="str">'payments:autonomous'</span> }))
+
+<span class="com">// req.trust402.proof でエージェントの権限 proof にアクセス</span></pre>
+
+        <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
+          <div class="hero-demo-frame">
+            <span class="term-line"><span class="prompt">example-x402$</span><span class="cmd">agent run --pay 0.01 GET /data</span></span>
+            <span class="term-line spacer"></span>
+            <span class="term-line"><span class="info">[+]</span> generating ZK identity proof… <span class="ok">✓</span></span>
+            <span class="term-line"><span class="info">[+]</span> role check (developer-tier)… <span class="ok">✓</span></span>
+            <span class="term-line"><span class="info">[+]</span> spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></span>
+            <span class="term-line"><span class="info">[+]</span> x402 settle <span class="accent">0x4a8f…e21</span> <span class="ok">✓</span></span>
+            <span class="term-line"><span class="info">[+]</span> anchor: Base Sepolia <span class="ok">✓</span></span>
+            <span class="term-line spacer"></span>
+            <span class="term-line success">200 OK <span class="meta">{ data: "…" }</span></span>
+            <span class="term-line cursor"><span class="prompt">example-x402$</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-cards">
+        <article class="hero-card">
+          <div class="hero-card-eyebrow">Try live</div>
+          <h3 class="hero-card-h3">Reference<br>implementation</h3>
+          <p class="hero-card-copy">Base Sepolia 上で動く完全動作サンプル。<span style="font-family:var(--font-mono); color:var(--lemma-brown); font-size:11.5px">$0.01 GET</span> は proof 成功・支払い完了、<span style="font-family:var(--font-mono); color:var(--legacy-text); font-size:11.5px">$500 POST</span> は spendLimit 超過で fail-closed。</p>
+          <a href="https://github.com/lemmaoracle/trust402" class="hero-card-btn muted">GitHub で見る →</a>
+          <div class="hero-card-microcopy">Open source · Base Sepolia 公開済み</div>
+        </article>
+
+        <article class="hero-card">
+          <div class="hero-card-badge">MCP Ready</div>
+          <div class="hero-card-eyebrow">For agent builders</div>
+          <h3 class="hero-card-h3">MCP / Agent<br>に組み込む</h3>
+          <p class="hero-card-copy">Anthropic MCP・OpenAI Agent SDK・自前エージェントから直接利用可能。Trust402 が支払い検証 middleware として動作。SDK は 2026-06 公開予定。</p>
+          <a href="https://tally.so/r/kd0bZR" class="hero-card-btn primary">Waitlist に登録 →</a>
+          <div class="hero-card-microcopy">2026-06 公開予定</div>
+        </article>
+      </div>
+
+      <p class="trust">
+        <span class="dot">●</span> <span class="strong">ETHGlobal Open Agents 2026 Finalist</span>
+        &nbsp;·&nbsp; Coinbase Developer Platform 2026-06 リリース連動
+        &nbsp;·&nbsp; x402 / MCP 標準準拠
+        &nbsp;·&nbsp; <a href="https://github.com/lemmaoracle/trust402" style="color:inherit;text-decoration:underline;">Source on GitHub</a>
+      </p>
+    </section>
+
+    <!-- DIFF: Trust402 = x402 + ... -->
+    <section class="diff-strip">
+      <div class="diff-row">
+        <div class="diff-cell base">
+          <div class="diff-label">x402</div>
+          <div class="diff-icon">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <text x="11" y="14.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="currentColor" font-weight="600">¥</text>
+            </svg>
+          </div>
+          <div class="diff-name">支払いプロトコル</div>
+        </div>
+        <div class="diff-plus">+</div>
+        <div class="diff-cell add">
+          <div class="diff-label">Trust402 が足すもの</div>
+          <div class="diff-add-list">
+            <div class="diff-add-item"><span class="diff-add-key">ZK identity</span><span class="diff-add-mono">誰が</span></div>
+            <div class="diff-add-item"><span class="diff-add-key">role membership</span><span class="diff-add-mono">何の権限で</span></div>
+            <div class="diff-add-item"><span class="diff-add-key">spend limit</span><span class="diff-add-mono">どこまで</span></div>
+            <div class="diff-add-item"><span class="diff-add-key">on-chain anchor</span><span class="diff-add-mono">改ざん不能な証跡</span></div>
+          </div>
+        </div>
+        <div class="diff-equals">=</div>
+        <div class="diff-cell result">
+          <div class="diff-label">Trust-verified payment</div>
+          <div class="diff-result-pill">
+            <span class="diff-result-dot"></span>
+            <span>誰が・何の権限で・どこまで・どのデータに対して支払ったか</span>
+          </div>
+          <div class="diff-result-mono">fail-closed · audit trail · independently verifiable</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §1 Without / With Trust402 -->
+    <section class="section-block">
+      <div class="section-eyebrow">採用前後</div>
+      <h2 class="section-h2">支払うだけでは、<br><span class="accent">足りない。</span></h2>
+      <p class="section-sub">x402 は支払いを通す。Trust402 は、その支払いに <span class="k">証明可能な権限・身元・対象</span> を付帯する。誰の代理が・どこまでの範囲で・どのデータに対して支払ったか — を改ざん不能な形で残す。</p>
+
+      <div class="impact-comparison">
+        <div class="impact-panel before">
+          <div class="impact-label">Without Trust402</div>
+          <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" aria-label="Without Trust402: payment travels, no proof of authority">
+            <g transform="translate(20, 60)">
+              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
+              <circle cx="20" cy="22" r="3" fill="#6E6957"/>
+              <circle cx="38" cy="22" r="3" fill="#6E6957"/>
+              <line x1="22" y1="36" x2="36" y2="36" stroke="#6E6957" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="29" y1="4" x2="29" y2="10" stroke="#6E6957" stroke-width="1.3"/>
+              <circle cx="29" cy="3" r="2" fill="#6E6957"/>
+              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">Agent</text>
+            </g>
+            <g transform="translate(90, 95)">
+              <line x1="0" y1="0" x2="110" y2="0" stroke="#6E6957" stroke-width="1.5"/>
+              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#6E6957"/>
+              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957" letter-spacing="1">x402 pay</text>
+              <g class="travel-pay-bare">
+                <g transform="translate(0, -9)">
+                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#6E6957" stroke-width="1.4" fill="#FFFFFF"/>
+                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957">¥</text>
+                </g>
+              </g>
+            </g>
+            <g transform="translate(230, 55)">
+              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
+              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#6E6957" stroke-width="1.5"/>
+              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
+              <g class="server-record-fade" transform="translate(12, 22)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
+              <g class="server-record-fade" transform="translate(40, 24)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
+              <g class="server-record-fade" transform="translate(68, 22)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
+              <g class="server-record-fade" transform="translate(20, 42)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
+              <g class="server-record-fade" transform="translate(58, 44)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">?</text></g>
+              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">支払い記録のみ</text>
+              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957" letter-spacing="1">no audit trail</text>
+            </g>
+          </svg>
+          <p class="impact-summary">誰の代理で・どこまで・どのデータ — が <br>後から再現できない。</p>
+        </div>
+
+        <div class="migrate-bridge" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M 4 11 L 18 11 M 13 6 L 18 11 L 13 16" stroke="#8B4513" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="impact-panel after">
+          <div class="impact-label">With Trust402</div>
+          <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" aria-label="With Trust402: payment + ZK proof, verified audit trail">
+            <g transform="translate(20, 60)">
+              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
+              <circle cx="20" cy="22" r="3" fill="#8B4513"/>
+              <circle cx="38" cy="22" r="3" fill="#8B4513"/>
+              <line x1="22" y1="36" x2="36" y2="36" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="29" y1="4" x2="29" y2="10" stroke="#8B4513" stroke-width="1.3"/>
+              <circle cx="29" cy="3" r="2" fill="#8B4513"/>
+              <g transform="translate(40, 42)">
+                <circle cx="9" cy="9" r="8" fill="#8B4513"/>
+                <text x="9" y="12" text-anchor="middle" font-family="Sora, sans-serif" font-size="7" fill="#FCFAF5" font-weight="700">ZK</text>
+              </g>
+              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">Agent + proof</text>
+            </g>
+            <g transform="translate(90, 95)">
+              <line x1="0" y1="0" x2="110" y2="0" stroke="#8B4513" stroke-width="1.5"/>
+              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#8B4513"/>
+              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">x402 pay + proof</text>
+              <g class="travel-pay-proof">
+                <g transform="translate(0, -9)">
+                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#8B4513" stroke-width="1.4" fill="#FFFFFF"/>
+                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513">¥</text>
+                  <circle cx="22" cy="2" r="5" fill="#8B4513"/>
+                  <path d="M 19.5 2 L 21 3.5 L 24.5 0" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+              </g>
+            </g>
+            <g transform="translate(230, 55)">
+              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
+              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#8B4513" stroke-width="1.5"/>
+              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
+              <g class="proof-pulse" transform="translate(43, 26)">
+                <circle cx="12" cy="12" r="11" fill="#8B4513"/>
+                <path d="M 6 12 L 10.5 16.5 L 18 8" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              <g transform="translate(15, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g transform="translate(45, 55)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g transform="translate(75, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">支払い + proof</text>
+              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">audit trail · verified</text>
+            </g>
+          </svg>
+          <p class="impact-summary"><span class="k">誰の代理で・どの権限で</span>が<br>暗号で証明される。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- §2 How it works -->
+    <section class="section-block">
+      <div class="section-eyebrow">仕組み</div>
+      <h2 class="section-h2">既存の x402 flow に、<br><span class="accent">middleware を 1 つ。</span></h2>
+      <p class="section-sub">標準仕様は壊さない。Trust402 が ZK 検証層として動作する。</p>
+
+      <div class="mech-block">
+        <svg class="mech-svg" viewBox="0 0 960 240" xmlns="http://www.w3.org/2000/svg" aria-label="How Trust402 works: agent → ZK verify → x402 pay → on-chain proof">
+          <g transform="translate(20, 60)">
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8B4513" letter-spacing="2" font-weight="500">STEP 01</text>
+            <g transform="translate(58, 44)">
+              <rect x="0" y="0" width="44" height="42" rx="6" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
+              <circle cx="14" cy="16" r="3" fill="#8B4513"/>
+              <circle cx="30" cy="16" r="3" fill="#8B4513"/>
+              <line x1="16" y1="28" x2="28" y2="28" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
+            </g>
+            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">委任 proof を提示</text>
+          </g>
+          <g transform="translate(180, 115)">
+            <line x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.3"/>
+            <path d="M 50 0 L 44 -5 L 44 5 Z" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+          </g>
+          <g transform="translate(240, 60)">
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8B4513" letter-spacing="2" font-weight="500">STEP 02</text>
+            <g transform="translate(50, 44)">
+              <path d="M 30 0 L 56 8 L 56 24 Q 56 38 30 50 Q 4 38 4 24 L 4 8 Z" fill="#8B4513"/>
+              <path d="M 18 24 L 26 32 L 42 16" stroke="#FCFAF5" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">Trust402 が ZK 検証</text>
+          </g>
+          <g transform="translate(400, 115)">
+            <line x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.3"/>
+            <path d="M 50 0 L 44 -5 L 44 5 Z" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+          </g>
+          <g transform="translate(460, 60)">
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8B4513" letter-spacing="2" font-weight="500">STEP 03</text>
+            <g transform="translate(56, 44)">
+              <circle cx="24" cy="22" r="20" stroke="#8B4513" stroke-width="1.6" fill="#FCFAF5"/>
+              <text x="24" y="28" text-anchor="middle" font-family="Space Mono, monospace" font-size="18" fill="#8B4513" font-weight="700">¥</text>
+            </g>
+            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">x402 で決済</text>
+          </g>
+          <g transform="translate(620, 115)">
+            <line x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.3"/>
+            <path d="M 50 0 L 44 -5 L 44 5 Z" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+            <circle class="pay-flow-dot" cx="0" cy="0" r="3" fill="#8B4513"/>
+          </g>
+          <g transform="translate(680, 60)">
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="#8B4513" letter-spacing="2" font-weight="500">STEP 04</text>
+            <g transform="translate(56, 50)">
+              <rect x="0" y="6" width="20" height="20" rx="3" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+              <rect x="28" y="6" width="20" height="20" rx="3" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
+              <line x1="20" y1="16" x2="28" y2="16" stroke="#8B4513" stroke-width="1.6"/>
+              <circle cx="10" cy="16" r="2" fill="#8B4513"/>
+              <circle cx="38" cy="16" r="2" fill="#8B4513"/>
+            </g>
+            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">on-chain anchor</text>
+          </g>
+        </svg>
+        <div class="mech-caption">
+          <span>● 4 step flow</span> · <span class="accent">middleware は 1 行追加で完結</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- §3 Trust402 + Lemma context -->
+    <section class="section-block">
+      <div class="section-eyebrow">プロダクト</div>
+      <h2 class="section-h2">Trust402 は、<br><span class="accent">Lemma の信頼インフラ。</span></h2>
+      <p class="section-sub">x402 trust layer. <span class="k">ZK identity, role, budget</span> をエージェントに付与し、自律で支払えるように。Lemma 共通の「データを持たない」設計を継承。</p>
+
+      <div class="context-block">
+        <div class="context-left">
+          <div class="context-eyebrow">設計思想</div>
+          <h3 class="context-h3">持たない設計を、<br><span class="accent">x402 に拡張。</span></h3>
+          <p class="context-desc">Trust402 は、Lemma の信頼インフラを <span class="k">エージェント自律支払い</span>領域に展開したプロダクト。エージェントには <span class="k">鍵もデータも渡さず</span>、proof だけが流通する構造。受信側は独立検証で正当性を確認できる。</p>
+          <a href="/ja/pillars" class="context-link">信頼インフラ（Why）を詳しく →</a>
+        </div>
+        <div class="context-features">
+          <div class="context-feature">
+            <span><span class="k">ZK identity</span> — credential を Poseidon コミットメントで証明<span class="mono">prover.prove(credential)</span></span>
+          </div>
+          <div class="context-feature">
+            <span><span class="k">Role membership</span> — Circom 回路で role 所属を証明<span class="mono">Groth16 / BN254</span></span>
+          </div>
+          <div class="context-feature">
+            <span><span class="k">Spend limit</span> — 128-bit LessEqThan で予算上限を強制<span class="mono">fail-closed guarantee</span></span>
+          </div>
+          <div class="context-feature">
+            <span><span class="k">対応通貨 · 決済</span> — USDC を EIP-3009 で送金<span class="mono">extensible to other stablecoins</span></span>
+          </div>
+          <div class="context-feature">
+            <span><span class="k">On-chain attestation</span> — Lemma oracle 経由で改ざん不能な settlement<span class="mono">Base Sepolia · mainnet ready</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §4 Use cases — supplementary, compact -->
+    <section class="section-block">
+      <div class="section-eyebrow">ユースケース拡張</div>
+      <h2 class="section-h2">Trust402 が広げる、<br><span class="accent">業務 4 領域。</span></h2>
+      <p class="section-sub">エージェント代理の支払いが業務に組み込まれる場面で、Trust402 の <span class="k">権限証明 + 監査証跡</span> が価値を生む。</p>
+
+      <div class="uc-grid">
+        <div class="uc-card">
+          <div class="uc-card-icon">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <rect x="3" y="6" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <line x1="3" y1="10" x2="19" y2="10" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h3 class="uc-card-title">AI 経費承認</h3>
+          <p class="uc-card-desc">上限・対象を ZK で付与、人間レビュー不要で承認・支払い。</p>
+        </div>
+
+        <div class="uc-card">
+          <div class="uc-card-icon">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <circle cx="11" cy="11" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="uc-card-title">API 課金</h3>
+          <p class="uc-card-desc">プラン契約者 proof を提示、クレデンシャル不要の課金。</p>
+        </div>
+
+        <div class="uc-card">
+          <div class="uc-card-icon">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <circle cx="6" cy="11" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <circle cx="16" cy="11" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <line x1="9" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3 class="uc-card-title">Cross-agent settlement</h3>
+          <p class="uc-card-desc">エージェント連携の支払い権限を信頼チェーンとして証明。</p>
+        </div>
+
+        <div class="uc-card">
+          <div class="uc-card-icon">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <path d="M 11 3 L 18 6 L 18 12 Q 18 17 11 19 Q 4 17 4 12 L 4 6 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M 8 11 L 10 13 L 14 9" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="uc-card-title">Compliance flow</h3>
+          <p class="uc-card-desc">KYC / AML 属性を選択的開示で付帯、規制対応決済へ。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- §4 Plans brief -->
+    <section class="section-block">
+      <div class="section-eyebrow">料金プラン</div>
+      <h2 class="section-h2">Explorer から Pro まで、<br><span class="accent">4 つの段階。</span></h2>
+
+      <div class="plans-brief">
+        <div class="plan-brief-card">
+          <h3 class="name">Explorer</h3>
+          <p class="desc">サンドボックス · テストネット限定</p>
+          <p class="status">近日公開</p>
+        </div>
+        <div class="plan-brief-card">
+          <h3 class="name">Builder</h3>
+          <p class="desc">本番アクセス · 個人開発者向け</p>
+          <p class="status">近日公開</p>
+        </div>
+        <div class="plan-brief-card">
+          <h3 class="name">Studio</h3>
+          <p class="desc">チームプラン · 優先サポート</p>
+          <p class="status">近日公開</p>
+        </div>
+        <div class="plan-brief-card">
+          <h3 class="name">Pro</h3>
+          <p class="desc">高ボリューム · SLA 保証</p>
+          <p class="status">近日公開</p>
+        </div>
+      </div>
+
+      <div class="plans-brief-cta">
+        <a href="/ja/pricing#trust402" class="plans-brief-cta-primary">詳細料金を見る →</a>
+        <a href="https://tally.so/r/kd0bZR" class="plans-brief-cta-secondary">Waitlist に登録 ↗</a>
+      </div>
+    </section>
+
+    <!-- §5 FAQ (dev-focused, essential) -->
+    <section class="section-block">
+      <div class="section-eyebrow">FAQ</div>
+      <h2 class="section-h2">よくある質問。</h2>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">OAuth と何が違いますか？</h3>
+          <p class="faq-a">OAuth はユーザーの<span class="k">アクセス権限の認可</span>に閉じます。Trust402 は補完で、<span class="k">エージェントの代理権限・身元・対象</span>を ZK 証明します。OAuth トークン + Trust402 proof の組み合わせで、エージェント時代の権限統制が成立。</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-q">MCP との連携は？</h3>
+          <p class="faq-a">Anthropic MCP server / client、OpenAI Agent SDK、自前エージェントから利用可能。MCP server が <code>x402</code> で課金、Trust402 が「呼び出すエージェントの代理権限」を検証する構造です。</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-q">既存の x402 実装に後付けできますか？</h3>
+          <p class="faq-a">はい。<code>app.use(trust402(...))</code> を 1 行追加するだけで、既存の x402 middleware の前段に ZK 検証層が入ります。x402 標準仕様は壊さず、Trust402 を通過した請求は通常通り処理されます。</p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-q">リリース時期は？</h3>
+          <p class="faq-a">2026-06、Coinbase Developer Platform の正式公開に連動して本番提供開始予定。<span class="k">Reference implementation</span> は既に GitHub で公開済み（testnet）。</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Vision close -->
+<section class="vision">
+  <div class="container">
+    <div class="vision-eyebrow">Agentic Economy</div>
+    <h2 class="vision-h2">Agentic trust runs<br>on <span class="accent">Lemma.</span></h2>
+    <p class="vision-sub">エージェントが自律で動く時代に、責任を持って使うための信頼層。</p>
+    <div class="vision-cta">
+      <a href="https://tally.so/r/kd0bZR" class="vision-cta-primary">Waitlist に登録 →</a>
+      <a href="https://github.com/lemmaoracle/trust402" class="vision-cta-secondary">GitHub source ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">© 2026 FRAME00, INC. — Built for decisions that matter. <em>(footer 実装は v24 共通 component)</em></div>
+</footer>
+
+</body>
+</html>
