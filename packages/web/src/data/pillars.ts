@@ -185,8 +185,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["origin", "rag", "ai-data-governance", "supply-chain", "forensics"],
     seo: {
       title: {
-        en: "Verifiable Origin — Cryptographic Data Provenance | Lemma Oracle",
-        ja: "来歴証明 — データの出所を暗号的に証明 | Lemma Oracle",
+        en: "Verifiable Origin — Cryptographic Data Provenance | Lemma",
+        ja: "来歴証明 — データの出所を暗号的に証明 | Lemma",
       },
       description: {
         en: "Lemma's Verifiable Origin carves data provenance onto a tamper-evident layer at the moment of publication, so any downstream system can verify origin independently — the data-lineage capability of the Lemma Trust Layer.",
@@ -281,13 +281,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "既存実装", en: "Available today" },
             text: {
-              ja: "Lemma Oracle 経由。SDK は 2026/6/24 公開予定。",
-              en: "Via Lemma Oracle. SDK public release scheduled 2026-06-24.",
+              ja: "Lemma 経由。SDK は 2026/6/24 公開予定。",
+              en: "Via Lemma. SDK public release scheduled 2026-06-24.",
             },
           },
         ],
         links: [
-          { label: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
           { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
         ],
       },
@@ -359,7 +359,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           label: { ja: "Specs", en: "Specs" },
-          title: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼レイヤーの技術仕様。",
             en: "Technical specification of the trust layer.",
@@ -421,8 +421,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["ai", "explainability", "audit", "compliance"],
     seo: {
       title: {
-        en: "Verifiable AI — Audit-Proof AI Decisions | Lemma Oracle",
-        ja: "検証可能 AI — AI 判断を後から検証可能に | Lemma Oracle",
+        en: "Verifiable AI — Audit-Proof AI Decisions | Lemma",
+        ja: "検証可能 AI — AI 判断を後から検証可能に | Lemma",
       },
       description: {
         en: "Lemma's Verifiable AI records every AI decision — inputs, retrieved sources, applied rules, model generation — as a tamper-evident attestation that outlives model upgrades. The AI-decision capability of the Lemma Trust Layer.",
@@ -508,13 +508,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "既存実装", en: "Available today" },
             text: {
-              ja: "Lemma Oracle 経由。zkML primitives の本番実装は 2026 後半予定、それまでは commitment scheme のみで対応。",
-              en: "Via Lemma Oracle. Production zkML primitives scheduled for late 2026; commitment-scheme-only coverage in the interim.",
+              ja: "Lemma 経由。zkML primitives の本番実装は 2026 後半予定、それまでは commitment scheme のみで対応。",
+              en: "Via Lemma. Production zkML primitives scheduled for late 2026; commitment-scheme-only coverage in the interim.",
             },
           },
         ],
         links: [
-          { label: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
           { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
         ],
       },
@@ -586,7 +586,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           label: { ja: "Specs", en: "Specs" },
-          title: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼レイヤーの技術仕様。",
             en: "Technical specification of the trust layer.",
@@ -659,8 +659,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["agent", "x402", "mcp", "authority-proof", "agentic-payments"],
     seo: {
       title: {
-        en: "Agent Authority Proof — Agentic Payments Trust Layer | Lemma Oracle",
-        ja: "エージェント権限証明 — エージェント決済の信頼レイヤー | Lemma Oracle",
+        en: "Agent Authority Proof — Agentic Payments Trust Layer | Lemma",
+        ja: "エージェント権限証明 — エージェント決済の信頼レイヤー | Lemma",
       },
       description: {
         en: "Agentic payments need more than a payment rail. Lemma's Agent Authority Proof makes autonomous agent authority, spend limits, and provenance cryptographically verifiable across x402 and MCP.",
@@ -819,13 +819,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "既存実装", en: "Available today" },
             text: {
-              ja: "Lemma Oracle + Trust402 経由。x402 標準と連動。",
-              en: "Via Lemma Oracle + Trust402. Aligned with the x402 standard.",
+              ja: "Lemma + Trust402 経由。x402 標準と連動。",
+              en: "Via Lemma + Trust402. Aligned with the x402 standard.",
             },
           },
         ],
         links: [
-          { label: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
           { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
         ],
       },
@@ -897,7 +897,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           label: { ja: "Specs", en: "Specs" },
-          title: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼レイヤーの技術仕様。",
             en: "Technical specification of the trust layer.",
@@ -954,8 +954,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["regulatory", "kyc", "aml", "compliance", "esg"],
     seo: {
       title: {
-        en: "Regulatory Attribute Proof — Compliance Without Disclosure | Lemma Oracle",
-        ja: "規制属性証明 — データを共有せずに規制適合を証明 | Lemma Oracle",
+        en: "Regulatory Attribute Proof — Compliance Without Disclosure | Lemma",
+        ja: "規制属性証明 — データを共有せずに規制適合を証明 | Lemma",
       },
       description: {
         en: "Lemma's Regulatory Attribute Proof issues compliance as cryptographic attestations — regulators verify the attribute itself (KYC passed, CBAM-compliant, AI Act met) without the underlying data leaving the enterprise. The regulatory capability of the Lemma Trust Layer.",
@@ -1040,13 +1040,13 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "既存実装", en: "Available today" },
             text: {
-              ja: "Lemma Oracle + Lemma Compliance プラン経由。",
-              en: "Via Lemma Oracle + the Lemma Compliance plan.",
+              ja: "Lemma + Lemma Compliance プラン経由。",
+              en: "Via Lemma + the Lemma Compliance plan.",
             },
           },
         ],
         links: [
-          { label: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
           { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
         ],
       },
@@ -1118,7 +1118,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         {
           label: { ja: "Specs", en: "Specs" },
-          title: { ja: "Lemma Oracle 仕様書", en: "Lemma Oracle specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼レイヤーの技術仕様。",
             en: "Technical specification of the trust layer.",

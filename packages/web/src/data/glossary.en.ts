@@ -1,5 +1,5 @@
 /**
- * Lemma Oracle glossary terms (EN).
+ * Lemma glossary terms (EN).
  *
  * Source of truth for /glossary/* pages. 27 terms across 4 categories,
  * mirroring src/data/glossary.ts (JA). Authored under code review — see
@@ -25,13 +25,13 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Zero-Knowledge Proof — ZKP",
     category: "暗号レイヤ",
     description:
-      "Definition and Lemma Oracle implementation of zero-knowledge proofs — a cryptographic primitive that proves a statement true without revealing the underlying secret.",
+      "Definition and Lemma implementation of zero-knowledge proofs — a cryptographic primitive that proves a statement true without revealing the underlying secret.",
     lead:
       "A cryptographic primitive that proves a statement true without exposing the statement's contents or the underlying secret values — third-party machine-verifiable.",
     definition: [
       "A zero-knowledge proof (ZKP) is an interactive or non-interactive protocol in which a prover convinces a verifier that a statement is true while leaking no information about the witness behind it. Goldwasser, Micali, and Rackoff introduced the concept in 1985; modern formulations require completeness, soundness, and zero-knowledge.",
       "Most production deployments are non-interactive (NIZK). SNARK families (Groth16, PLONK, Halo2) and STARK families dominate, each trading proof size, verification time, and trusted-setup requirements. Any computation expressed as a constraint system can be proven over private inputs.",
-      "ZKP serves two distinct purposes: proving properties without disclosing the underlying values (privacy), and replacing heavy verification with short proofs (scalability). Lemma Oracle uses the privacy axis as its primary lever.",
+      "ZKP serves two distinct purposes: proving properties without disclosing the underlying values (privacy), and replacing heavy verification with short proofs (scalability). Lemma uses the privacy axis as its primary lever.",
     ],
     implementation: [
       'Lemma\'s core architecture pins provenance, attributes, and AI inference traces as a <code>docHash</code> and emits proofs over a ZK circuit that exposes only the facts that matter — "a provenance chain exists," "an attribute is within a range" — without leaking the underlying content or PII to the verifier.',
@@ -596,7 +596,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Mythos",
     category: "脅威モデル・AI攻撃",
     description:
-      "Definition and Lemma Oracle response path for Mythos — the Anthropic frontier model whose automated zero-day discovery and exploit-chain construction define the contemporary AI threat class.",
+      "Definition and Lemma response path for Mythos — the Anthropic frontier model whose automated zero-day discovery and exploit-chain construction define the contemporary AI threat class.",
     lead:
       "<strong>Claude Mythos Preview</strong>, the Anthropic frontier model offered for defensive use through <strong>Project Glasswing</strong> (launched April 7, 2026). It compresses zero-day discovery, exploit-chain construction, and target adaptation into a single agent. \"Mythos-grade\" names that capability class.",
     definition: [
@@ -862,7 +862,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "Tamper-evident execution history. Direct match for automated-logging duties." },
     ],
     ctaH2: "Cryptographic compliance for the EU AI Act.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
   },
   {
     slug: "ai-business-guidelines",
@@ -890,7 +890,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "Tamper-evident substrate for governance evidence." },
     ],
     ctaH2: "Cryptographic compliance for the AI Business Operator Guidelines.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
   },
   {
     slug: "ai-promotion-act",
@@ -918,7 +918,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "The substrate for after-the-fact verification." },
     ],
     ctaH2: "Stay ahead of Japan's AI regulation curve.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
   },
   {
     slug: "pii",

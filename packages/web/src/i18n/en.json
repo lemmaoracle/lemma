@@ -1,6 +1,6 @@
 {
   "nav": {
-    "lemmaOracle": "Lemma Oracle",
+    "lemmaOracle": "Lemma",
     "overview": "Overview",
     "changelog": "Changelog",
     "essays": "Articles",
@@ -63,7 +63,7 @@
       },
       "developers": {
         "architecture": "Architecture",
-        "specs": "Lemma Oracle Specs",
+        "specs": "Lemma Specs",
         "specsSub": "Full technical specification",
         "guides": "Guides",
         "encrypt": "Encrypt Everything, Expose Nothing",
@@ -138,7 +138,7 @@
   },
   "blog": {
     "title": "Blog",
-    "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma Oracle",
+    "metaTitle": "Blog — Verifiable AI, ZK Proofs & Cryptographic Provenance | Lemma",
     "metaDescription": "Articles on verifiable AI, zero-knowledge proofs, selective disclosure, and on-chain provenance — spanning industry analysis, solution deep-dives, technical design, and announcements.",
     "subtitle": "Articles, changelog, and field notes.",
     "backToBlog": "← Blog",
@@ -157,7 +157,7 @@
       "guidesTitle": "Technical documentation.",
       "guidesDesc": "Implementation guides for each layer of the Lemma architecture.",
       "readGuide": "Read →",
-      "specsTitle": "Lemma Oracle Specs",
+      "specsTitle": "Lemma Specs",
       "specsDesc": "A cryptographically verified truth layer enabling AI to reason over confidential data via zero-knowledge proofs, selective disclosure, and on-chain provenance.",
       "readSpecs": "Read Specs →"
     },
@@ -583,11 +583,11 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — The Trust Layer for AI",
+    "defaultTitle": "Lemma — The Trust Layer for AI",
     "defaultDescription": "Lemma is the Trust Layer for AI. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
   },
   "services": {
-    "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma Oracle",
+    "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma",
     "metaDescription": "Prove data authenticity without exposing contents. ZK-proof infrastructure for verifiable AI agents, supply chain traceability, and audit-ready compliance. Enterprise & developer plans.",
     "hero": {
       "eyebrow": "TRUST LAYER FOR AI",
@@ -899,7 +899,7 @@
     "sub": "You can download it immediately using the button below.",
     "dlCard": {
       "label": "Whitepaper",
-      "title": "Lemma Oracle —<br>Architecture and Implementation",
+      "title": "Lemma —<br>Architecture and Implementation",
       "desc": "ZK Proof Architecture · Selective Disclosure · On-chain Provenance · PoC Design Checklist",
       "button": "Download PDF"
     },
@@ -958,7 +958,7 @@
     "compositionLabel": "Trust Layer",
     "compositionH2": "Four questions, one trust layer.",
     "compositionCenterLabel": "AI Decision",
-    "compositionCaption": "One API · four-axis simultaneous proof · Lemma Oracle",
+    "compositionCaption": "One API · four-axis simultaneous proof · Lemma",
     "technicalDocsLabel": "Technical docs",
     "technicalDocsH2": "Implementation guides & specs.",
     "conceptSec1Label": "Why this is its own category",
