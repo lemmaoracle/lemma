@@ -103,13 +103,17 @@ const C = isJa ? {
   </footer>
 </Layout>
 
-<script is:inline define:vars={{ formId }}>
+<script is:inline define:vars={{ formId, locale }}>
   // GA4: discovery-call conversion. Tally redirects here on submit, so one
-  // page load == one contact submission. No-ops cleanly when gtag is not
-  // loaded (e.g. local dev without GOOGLE_ANALYTICS_ID).
-  if (typeof window.gtag === "function") {
-    window.gtag("event", "contact_submit", { form: formId });
-  }
+  // page load == one contact submission. The sessionStorage guard keeps a
+  // reload from double-counting. No-ops cleanly when gtag is not loaded
+  // (e.g. local dev without GOOGLE_ANALYTICS_ID).
+  (function () {
+    if (typeof window.gtag !== "function") return;
+    if (sessionStorage.getItem("cv_contact")) return;
+    window.gtag("event", "contact_submit", { form: formId, locale: locale });
+    sessionStorage.setItem("cv_contact", "1");
+  })();
 </script>
 
 <style>
