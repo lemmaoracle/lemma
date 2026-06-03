@@ -9,7 +9,7 @@ incident_date: 2020-06-25
 published: 2026-06-03
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud", "006-google-api-key-revocation-lag"]
+related_briefs: ["020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud", "006-google-api-key-revocation-lag", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
 og_lead_ja: "残高確認書の偽造で資産の存在属性が独立検証されず — Wirecard"

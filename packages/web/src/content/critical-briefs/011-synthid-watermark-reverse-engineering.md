@@ -9,7 +9,7 @@ incident_date: 2026-03-05
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts"]
+related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
 og_lead_ja: "AI 生成コンテンツの来歴透かしが統計的に剥がせる — SynthID リバースエンジニアリング"
