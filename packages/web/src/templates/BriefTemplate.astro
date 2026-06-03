@@ -61,6 +61,9 @@ const subtitle = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
 
 const briefPath = `/critical/briefs/${brief.id}/`;
 const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
+// Per-brief dynamic OG image generated at build time by
+// `/og/critical-briefs/[lang]/[slug].png.ts`. JA / EN render independently.
+const ogImage = `https://lemma.frame00.com/og/critical-briefs/${locale}/${brief.id}.png`;
 
 const { Content, headings } = await render(brief);
 
@@ -159,6 +162,7 @@ const labels = isJa
   pagePath={briefPath}
   title={pageTitle}
   description={description}
+  ogImage={ogImage}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 

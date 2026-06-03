@@ -14,6 +14,8 @@ interface Props {
   pagePath?: string;
   bodyClass?: string;
   noindex?: boolean;
+  /** Absolute URL of a page-specific OG image (overrides the locale default). */
+  ogImage?: string;
 }
 
 const { locale = "en", bodyClass, noindex } = Astro.props;
@@ -102,6 +104,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
           base={base}
           pagePath={Astro.props.pagePath}
           locale={locale}
+          ogImage={Astro.props.ogImage}
         />
       )
     }
