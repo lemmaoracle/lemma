@@ -218,19 +218,36 @@ const collectionJsonLd = {
       emptyEl.style.display = n === 0 ? "block" : "none";
     }
 
-    chips.forEach((ch) => {
-      ch.addEventListener("click", () => {
-        chips.forEach((x) => {
-          x.classList.remove("on");
-          x.setAttribute("aria-checked", "false");
-        });
-        ch.classList.add("on");
-        ch.setAttribute("aria-checked", "true");
-        apply(ch.dataset.f ?? "all");
+    function select(f: string, updateHash: boolean) {
+      const target = chips.find((c) => (c.dataset.f ?? "all") === f);
+      if (!target) return false;
+      chips.forEach((x) => {
+        x.classList.remove("on");
+        x.setAttribute("aria-checked", "false");
       });
+      target.classList.add("on");
+      target.setAttribute("aria-checked", "true");
+      apply(f);
+      // Keep the URL shareable: industry pre-filter lives in the hash (e.g.
+      // /solutions/use-cases/#mfg), "all" clears it. Nav industry headings
+      // deep-link here via the same hash.
+      if (updateHash) {
+        history.replaceState(null, "", f === "all" ? location.pathname + location.search : `#${f}`);
+      }
+      return true;
+    }
+
+    chips.forEach((ch) => {
+      ch.addEventListener("click", () => select(ch.dataset.f ?? "all", true));
     });
 
-    apply("all");
+    // Honour an incoming industry hash (#mfg, #fin, …) on load and on change.
+    const fromHash = () => {
+      const key = location.hash.replace(/^#/, "");
+      if (!key || !select(key, false)) select("all", false);
+    };
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
   }
 </script>
 
