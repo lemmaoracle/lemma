@@ -23,6 +23,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { getCollection } from "astro:content";
 import { extractTldr } from "../data/extractTldr";
+import { getEnBriefMap } from "../data/getEnBriefMap";
 import { getUseCaseBySlug } from "../data/useCases";
 import { getAllPillars } from "../data/pillars";
 
@@ -47,13 +48,22 @@ const briefIndexHref = `${base}/critical/briefs/`;
 const whitepaperHref = "https://tally.so/r/xX0VYv";
 
 // ── Latest Critical Brief (featured row) ──────────────────────────
+// Slug enumeration + sort uses the JA collection (source of truth for brief
+// numbers / dates). The TL;DR teaser, however, has to come from the
+// locale-appropriate body — on the EN homepage we prefer the entry from
+// `critical-briefs-en` so the teaser isn't JA text, falling back to the JA
+// body for briefs that have not yet been translated.
 const allBriefs = await getCollection("critical-briefs");
 const briefsByDate = [...allBriefs].sort((a, b) => {
   const diff = b.data.published.getTime() - a.data.published.getTime();
   return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
 });
 const featured = briefsByDate[0];
-const featuredTldr = featured ? extractTldr(featured.body ?? "", 180) : "";
+const enBriefMap = isJa ? null : await getEnBriefMap();
+const featuredForBody = featured
+  ? (enBriefMap?.get(featured.id) ?? featured)
+  : null;
+const featuredTldr = featuredForBody ? extractTldr(featuredForBody.body ?? "", 180) : "";
 const featuredHref = featured ? `${base}/critical/briefs/${featured.id}/` : briefIndexHref;
 const featuredTitle = featured
   ? (isJa ? featured.data.title : (featured.data.title_en ?? featured.data.title))
