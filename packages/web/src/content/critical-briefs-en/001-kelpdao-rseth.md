@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["002-stakedao-vsdcrv"]
 version: "1.0"
 status: published
+og_lead_ja: "DVN 観測層への RPC 改ざんで不正アンロック — KelpDAO / rsETH"
+og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge — KelpDAO / rsETH"
 ---
 
 ## TL;DR

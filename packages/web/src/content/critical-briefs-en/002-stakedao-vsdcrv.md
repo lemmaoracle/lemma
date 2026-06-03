@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["001-kelpdao-rseth"]
 version: "1.0"
 status: published
+og_lead_ja: "デプロイヤー鍵で LayerZero 信頼設定を書き換え不正ミント — Stake DAO vsdCRV"
+og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — Stake DAO vsdCRV"
 ---
 
 ## TL;DR

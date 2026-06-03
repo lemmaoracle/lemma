@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["017-mckinsey-lilli-system-prompts", "014-tanstack-oidc-trusted-publisher"]
 version: "1.0"
 status: published
+og_lead_ja: "リポジトリの CLAUDE.md を書き換え防御 AI を乗っ取り — hackerbot-claw 初の AI 対 AI"
+og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, the first AI-vs-AI attack"
 ---
 
 ## TL;DR

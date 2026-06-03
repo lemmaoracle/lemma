@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["015-github-vscode-extension-breach", "004-megalodon-github-supply-chain", "003-starlette-badhost"]
 version: "1.0"
 status: published
+og_lead_ja: "信頼シグナルと GitHub Releases を配送路に転用 — Claude Code 流出便乗マルウェア"
+og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel — Claude Code leak lures"
 ---
 
 ## TL;DR
