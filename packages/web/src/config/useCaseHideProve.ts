@@ -47,6 +47,26 @@ export const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProvePair>> = {
     hide: "本人の履歴・受講記録",
     prove: "必要な資格を有効に保有",
   },
+  "customer-flag-need-to-know": {
+    hide: "取扱いの理由・履歴・スコア",
+    prove: "必要な対応区分（要注意／通常）",
+  },
+  "age-eligibility-verification": {
+    hide: "生年月日・本人確認書類",
+    prove: "販売できる年齢・資格を満たす",
+  },
+  "store-network-compliance": {
+    hide: "証書原本・店舗内部の情報",
+    prove: "必要な許認可・衛生・保険を有効に保有",
+  },
+  "incident-response-record": {
+    hide: "顧客情報・対応の詳細",
+    prove: "正当な手順・権限で対応した（その時点）",
+  },
+  "work-fitness-attestation": {
+    hide: "健診結果・受講履歴・要配慮個人情報",
+    prove: "必要な健康確認・研修・資格を満たす",
+  },
 
   // P1 来歴証明
   "long-term-contract-record": {
