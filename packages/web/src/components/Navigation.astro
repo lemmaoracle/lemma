@@ -36,6 +36,64 @@ const isPillarsActive = startsWith(pillarsPath);
 const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
+/* Solutions mega-panel — JA task-axis grouping (mirrors the listing's
+   6 task groups). Hardcoded here rather than imported from
+   useCaseTaskGroups.ts so the nav controls the curated subset of slugs
+   shown in the panel — the listing always carries the full set. */
+const SOLUTIONS_TASK_GROUPS_JA: ReadonlyArray<{
+  readonly heading: string;
+  readonly items: ReadonlyArray<{ readonly label: string; readonly slug: string }>;
+}> = [
+  {
+    heading: "AI に渡さず任せる",
+    items: [
+      { label: "AI 監査ログ証明", slug: "ai-audit-log-proof" },
+      { label: "社内文書を AI に触らせない", slug: "ai-document-isolation" },
+      { label: "RAG コンテンツ来歴", slug: "rag-content-provenance" },
+    ],
+  },
+  {
+    heading: "記録・契約・承認を後から証明",
+    items: [
+      { label: "長期契約の記録・見積", slug: "long-term-contract-record" },
+      { label: "内部統制・承認フロー", slug: "internal-control-approval-proof" },
+      { label: "事故対応記録", slug: "incident-response-record" },
+    ],
+  },
+  {
+    heading: "取引相手・仕入先を確かめる",
+    items: [
+      { label: "取引先の与信・反社", slug: "counterparty-screening" },
+      { label: "KYC/AML 選択的開示", slug: "kyc-aml-selective-disclosure" },
+      { label: "顧客対応フラグ", slug: "customer-flag-need-to-know" },
+      { label: "年齢・販売資格", slug: "age-eligibility-verification" },
+    ],
+  },
+  {
+    heading: "サプライチェーン来歴・適合",
+    items: [
+      { label: "サプライチェーン ESG", slug: "supply-chain-esg" },
+      { label: "部品来歴", slug: "supply-chain-component-provenance" },
+      { label: "店舗網の適合", slug: "store-network-compliance" },
+    ],
+  },
+  {
+    heading: "資格・実績・受給資格",
+    items: [
+      { label: "学修歴・卒業証明", slug: "credential-presentation" },
+      { label: "就業適格", slug: "work-fitness-attestation" },
+    ],
+  },
+  {
+    heading: "エージェント・決済の権限",
+    items: [
+      { label: "マルチエージェント", slug: "multi-agent-workflows" },
+      { label: "DeFi ブリッジ検証", slug: "defi-bridge-verification" },
+      { label: "x402 上のエージェント取引", slug: "x402-commerce" },
+    ],
+  },
+];
+
 const isResourcesActive =
   startsWith(blogPath) ||
   startsWith(faqPath) ||
@@ -117,33 +175,58 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 3. ソリューション — top-level lands on the use-cases listing so
-         visitors browsing the nav land directly on concrete examples. The
-         consulting-led /solutions/ hub is reached via Products → Industries. -->
+    <!-- 3. ソリューション — top-level lands on the use-cases listing.
+         The mega-panel mirrors the listing's task-axis grouping (JA only):
+         six business-job sections each surface 2–4 representative use
+         cases, with a trailing "ユースケース一覧 →" link to the full
+         registry. EN falls back to the legacy flat list until that copy
+         is finalised. -->
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
-      <div class="mega-panel">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.solutions.label}</div>
-          <div class="mega-links">
-            <a href={useCasesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.overview}</span>
-            </a>
-            <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.aiAudit}</span>
-            </a>
-            <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.kycAml}</span>
-            </a>
-            <a href={`${useCasesPath}/supply-chain-esg/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.supplyChain}</span>
-            </a>
-            <a href={`${useCasesPath}/defi-bridge-verification/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.defiBridge}</span>
+      {locale === "ja" ? (
+        <div class="mega-panel mega-panel-tasks">
+          {SOLUTIONS_TASK_GROUPS_JA.map((group) => (
+            <div class="mega-section">
+              <div class="mega-section-label">{group.heading}</div>
+              <div class="mega-links">
+                {group.items.map((item) => (
+                  <a href={`${useCasesPath}/${item.slug}/`} class="mega-link">
+                    <span class="mega-link-title">{item.label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div class="mega-section mega-section--footer">
+            <a href={useCasesPath} class="mega-link mega-link--all">
+              <span class="mega-link-title">ユースケース一覧 →</span>
             </a>
           </div>
         </div>
-      </div>
+      ) : (
+        <div class="mega-panel">
+          <div class="mega-section">
+            <div class="mega-section-label">{t.mega.solutions.label}</div>
+            <div class="mega-links">
+              <a href={useCasesPath} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.overview}</span>
+              </a>
+              <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.aiAudit}</span>
+              </a>
+              <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.kycAml}</span>
+              </a>
+              <a href={`${useCasesPath}/supply-chain-esg/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.supplyChain}</span>
+              </a>
+              <a href={`${useCasesPath}/defi-bridge-verification/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.defiBridge}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </li>
 
     <!-- 4. Resources — Critical Brief leads (mirrors the Footer ordering),
@@ -213,11 +296,27 @@ const isResourcesActive =
     <div class="mob-section">
       <div class="mob-section-header">{t.solutions} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={useCasesPath} class="mob-link">{t.mega.solutions.overview}</a>
-        <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mob-link">{t.mega.solutions.aiAudit}</a>
-        <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mob-link">{t.mega.solutions.kycAml}</a>
-        <a href={`${useCasesPath}/supply-chain-esg/`} class="mob-link">{t.mega.solutions.supplyChain}</a>
-        <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
+        {locale === "ja" ? (
+          <>
+            {SOLUTIONS_TASK_GROUPS_JA.map((group) => (
+              <>
+                <div class="mob-group-label">{group.heading}</div>
+                {group.items.map((item) => (
+                  <a href={`${useCasesPath}/${item.slug}/`} class="mob-link mob-link--nested">{item.label}</a>
+                ))}
+              </>
+            ))}
+            <a href={useCasesPath} class="mob-link mob-link--all">ユースケース一覧 →</a>
+          </>
+        ) : (
+          <>
+            <a href={useCasesPath} class="mob-link">{t.mega.solutions.overview}</a>
+            <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mob-link">{t.mega.solutions.aiAudit}</a>
+            <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mob-link">{t.mega.solutions.kycAml}</a>
+            <a href={`${useCasesPath}/supply-chain-esg/`} class="mob-link">{t.mega.solutions.supplyChain}</a>
+            <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
+          </>
+        )}
       </div>
     </div>
 
@@ -345,8 +444,53 @@ const isResourcesActive =
   }
   .mega-panel-wide .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
+  /* Solutions task-axis panel — 3 columns × 2 rows of task groups, plus a
+     spanning footer row with the "ユースケース一覧 →" link. Wider than
+     the regular mega-panel so each section can hold 2–4 use-case titles
+     without clipping. */
+  .mega-panel-tasks {
+    min-width: 720px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 6px;
+  }
+  .mega-panel-tasks .mega-section {
+    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
+    border-bottom: 0.5px solid var(--lemma-line, #E5E0D5);
+    padding: 14px 16px 12px;
+  }
+  .mega-panel-tasks .mega-section:nth-child(3n) { border-right: none; }
+  .mega-panel-tasks .mega-section:nth-last-child(-n+2) { border-bottom: none; }
+  .mega-panel-tasks .mega-section--footer {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: none;
+    border-top: 0.5px solid var(--lemma-line, #E5E0D5);
+    padding: 10px 16px;
+  }
+  .mega-panel-tasks .mega-section-label {
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: none;
+    color: var(--gray-700, #5F5F5F);
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-family: "Sora", "Noto Sans JP", system-ui, sans-serif;
+  }
+  .mega-panel-tasks .mega-link {
+    padding: 6px 10px;
+  }
+  .mega-panel-tasks .mega-link-title {
+    font-size: 13px;
+  }
+  .mega-link--all .mega-link-title {
+    color: var(--accent);
+    font-weight: 500;
+  }
   .mega-nav-item:hover .mega-panel { display: block; }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
+  .mega-nav-item:hover .mega-panel-tasks { display: grid; }
 
   .mega-section { padding: 18px 20px 16px; border-bottom: 0.5px solid var(--lemma-line, #E5E0D5); }
   .mega-section:last-child { border-bottom: none; }
@@ -444,6 +588,26 @@ const isResourcesActive =
     font-size: 8px;
     margin-right: 4px;
     vertical-align: middle;
+  }
+  /* Mobile Solutions: task-group label + nested use-case link styling.
+     Group label is uppercase mono, links indent one notch under it. */
+  .mob-group-label {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent, #8B4513);
+    padding: 16px 0 6px;
+    border-bottom: none;
+  }
+  .mob-link--nested {
+    padding-left: 12px;
+    font-size: 13.5px;
+  }
+  .mob-link--all {
+    color: var(--accent, #8B4513);
+    font-weight: 500;
+    padding-top: 16px;
   }
 
   .mob-cta { padding: 24px 6%; }
