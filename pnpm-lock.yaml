@@ -4485,8 +4485,8 @@ packages:
       eslint: '*'
       typescript: '>=4.7.4'
 
-  is-immutable-type@5.0.2:
-    resolution: {integrity: sha512-liGTvz7pbINOKvy0P4VTCEAIf8xrKJ9165xnwsS7udUyYxwDGBdQIJd+OhwxAn6Kv3pzdy1uha4oJCigzNw2xA==}
+  is-immutable-type@5.0.3:
+    resolution: {integrity: sha512-BiUnHcdNSIbetYR7+d8KGgjV+QsM3kFXpKWJStLQKhMSYjIWEbTLzlbXMw8g4Tlx/SHBOHw1sjkix4yVH4kQsw==}
     peerDependencies:
       eslint: '*'
       typescript: '>=4.7.4'
@@ -10316,7 +10316,7 @@ snapshots:
       deepmerge-ts: 7.1.5
       escape-string-regexp: 5.0.0
       eslint: 9.39.3(jiti@2.6.1)
-      is-immutable-type: 5.0.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
+      is-immutable-type: 5.0.3(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
       ts-api-utils: 2.5.0(typescript@5.9.3)
       ts-declaration-location: 1.0.7(typescript@5.9.3)
     optionalDependencies:
@@ -10965,7 +10965,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  is-immutable-type@5.0.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3):
+  is-immutable-type@5.0.3(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/type-utils': 8.60.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.3(jiti@2.6.1)
