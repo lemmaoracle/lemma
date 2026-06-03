@@ -46,7 +46,7 @@ const variant = getUseCaseExitVariant(slug, pillarSlug);
 const isDev = variant.reader === "dev";
 
 const consultUrl = DISCOVERY_CALL_URL.ja;
-const trustUrl = "/trust402/";
+const trustUrl = base ? `${base}/trust402/` : "/trust402/";
 const sealUrl = base ? `${base}/seal/` : "/seal/";
 const whitepaperUrl = "https://tally.so/r/xX0VYv";
 const briefsHref = base ? `${base}/critical/briefs/` : "/critical/briefs/";
