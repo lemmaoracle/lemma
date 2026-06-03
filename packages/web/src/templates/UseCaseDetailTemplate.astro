@@ -23,6 +23,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
+import UseCaseExitCta from "../components/UseCaseExitCta.astro";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
@@ -193,37 +194,46 @@ const breadcrumbJsonLd = {
             />
           )}
 
-          <section class="ucd-partner" aria-label={pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}>
-            <div class="ucd-partner-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
-            <h2 class="ucd-partner-h2">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
-            <p class="ucd-partner-body">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
-            {(() => {
-              const primary = resolveCTA(pillar.primaryCTA, locale);
-              const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
-              return (
-                <div class="ucd-partner-cta">
-                  <a
-                    href={primary.href}
-                    class="ucd-partner-primary"
-                    target={primary.href.startsWith("http") ? "_blank" : undefined}
-                    rel={primary.href.startsWith("http") ? "noopener" : undefined}
-                  >
-                    {primary.label}
-                  </a>
-                  {secondary && (
+          {locale === "ja" ? (
+            <UseCaseExitCta
+              slug={useCase.slug}
+              pillarSlug={useCase.pillar}
+              locale={locale}
+              base={base}
+            />
+          ) : (
+            <section class="ucd-partner" aria-label={pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}>
+              <div class="ucd-partner-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
+              <h2 class="ucd-partner-h2">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
+              <p class="ucd-partner-body">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
+              {(() => {
+                const primary = resolveCTA(pillar.primaryCTA, locale);
+                const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
+                return (
+                  <div class="ucd-partner-cta">
                     <a
-                      href={secondary.href}
-                      class="ucd-partner-secondary"
-                      target={secondary.href.startsWith("http") ? "_blank" : undefined}
-                      rel={secondary.href.startsWith("http") ? "noopener" : undefined}
+                      href={primary.href}
+                      class="ucd-partner-primary"
+                      target={primary.href.startsWith("http") ? "_blank" : undefined}
+                      rel={primary.href.startsWith("http") ? "noopener" : undefined}
                     >
-                      {secondary.label}
+                      {primary.label}
                     </a>
-                  )}
-                </div>
-              );
-            })()}
-          </section>
+                    {secondary && (
+                      <a
+                        href={secondary.href}
+                        class="ucd-partner-secondary"
+                        target={secondary.href.startsWith("http") ? "_blank" : undefined}
+                        rel={secondary.href.startsWith("http") ? "noopener" : undefined}
+                      >
+                        {secondary.label}
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
+            </section>
+          )}
         </article>
       </div>
     </div>

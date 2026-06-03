@@ -1,0 +1,285 @@
+---
+/**
+ * Use case detail — exit CTA banner.
+ *
+ * Slug-driven sibling of BriefNextSteps. Both share the .lm-next* class
+ * vocabulary so a future refactor can promote the rules to a shared
+ * stylesheet; for now this component carries its own copy of the styles
+ * (kept in lockstep with the spec in lm_next_theme_inherit_fix.md).
+ *
+ * Variant comes from src/config/useCaseExitVariants.ts:
+ *   - Enterprise readers see a Consult-led primary CTA with a plan label
+ *     suffix ("(Compliance)" / "(Civic)" / "(Critical)" / empty).
+ *   - Developer readers see a Trust402-led primary, with Seal as a
+ *     secondary ghost button.
+ *
+ * GA4 instrumentation: each link carries data-ev, data-uc, data-pillar,
+ * data-reader, data-surface, data-cta — the inline listener forwards
+ * those to gtag('event', ...) once the DOM is ready. Surface is fixed
+ * to "use_case" so Brief and use-case conversions can be split in
+ * Explore.
+ *
+ * JA only. EN renders nothing (the EN copy is not finalised).
+ */
+import type { Locale } from "../i18n/translations";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+import {
+  getUseCaseExitVariant,
+  PILLAR_HREF,
+  PILLAR_LABEL_JA,
+  INDUSTRY_LABEL_JA,
+} from "../config/useCaseExitVariants";
+
+export interface UseCaseExitCtaProps {
+  /** Use case slug, e.g. "kyc-aml-selective-disclosure". */
+  slug: string;
+  /** Use-case frontmatter pillar slug ("verifiable-origin", etc.). Used by the variant fallback. */
+  pillarSlug: string;
+  locale: Locale;
+  base: string;
+}
+
+const { slug, pillarSlug, locale, base } = Astro.props as UseCaseExitCtaProps;
+const isJa = locale === "ja";
+
+const variant = getUseCaseExitVariant(slug, pillarSlug);
+const isDev = variant.reader === "dev";
+
+const consultUrl = DISCOVERY_CALL_URL.ja;
+const trustUrl = "/trust402/";
+const sealUrl = base ? `${base}/seal/` : "/seal/";
+const whitepaperUrl = "https://tally.so/r/xX0VYv";
+const briefsHref = base ? `${base}/critical/briefs/` : "/critical/briefs/";
+const pillarHrefRoot = base ? `${base}${PILLAR_HREF[variant.pillarCode]}` : PILLAR_HREF[variant.pillarCode];
+
+const badge = `ユースケース · Pillar 0${variant.pillarCode.slice(1)} · ${INDUSTRY_LABEL_JA[variant.industry]}`;
+const thesis = isDev
+  ? "Explorer で今すぐ試せます。鍵を渡さず、証明だけを送る実装をドキュメントから。"
+  : "自社の業務に合うかは、最初の会話で確認できます。技術的な詳細や機微情報の開示は不要です。";
+
+const eyebrow = "次のステップ";
+const consultLabel = `導入を相談${variant.planLabel}`;
+const trialLabel = "Trust402 を試す";
+
+type Cta = { label: string; href: string; ev: string; external: boolean };
+const primaryCta: Cta = isDev
+  ? { label: `${trialLabel} →`, href: trustUrl, ev: "cta_trial_click", external: true }
+  : { label: `${consultLabel} →`, href: consultUrl, ev: "cta_consult_click", external: true };
+const sealCta: Cta = { label: "Seal", href: sealUrl, ev: "cta_trial_click", external: false };
+const consultCta: Cta = { label: "導入を相談", href: consultUrl, ev: "cta_consult_click", external: true };
+const trialCta: Cta = { label: trialLabel, href: trustUrl, ev: "cta_trial_click", external: true };
+const textCta: Cta = { label: "ホワイトペーパー", href: whitepaperUrl, ev: "cta_whitepaper_click", external: true };
+
+const ghostCtas: ReadonlyArray<Cta> = isDev ? [sealCta, consultCta] : [trialCta];
+
+const pillarLabel = PILLAR_LABEL_JA[variant.pillarCode];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: `次のステップ — ${pillarLabel} (${INDUSTRY_LABEL_JA[variant.industry]})`,
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: `Pillar 0${variant.pillarCode.slice(1)} — ${pillarLabel}`, url: `https://lemma.frame00.com${pillarHrefRoot}` },
+    { "@type": "ListItem", position: 2, name: "Critical Brief 一覧", url: `https://lemma.frame00.com${briefsHref}` },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: isDev ? "Trust402 を試す" : `導入を相談${variant.planLabel}`,
+      url: isDev ? trustUrl : consultUrl,
+    },
+  ],
+};
+---
+
+{isJa && (
+  <section
+    class="lm-next"
+    aria-label={`次のステップ — ${pillarLabel}`}
+    data-surface="use_case"
+    data-uc={slug}
+    data-pillar={variant.pillarCode}
+    data-reader={variant.reader}
+    data-industry={variant.industry}
+  >
+    <div class="lm-next__wrap">
+      <div class="lm-next__card">
+        <div class="lm-next__top">
+          <a
+            class="lm-next__badge"
+            href={pillarHrefRoot}
+            data-ev="pillar_link_click"
+            data-cta={badge}
+          >{badge}</a>
+          <span class="lm-next__eyebrow">{eyebrow}</span>
+        </div>
+        <p class="lm-next__thesis">{thesis}</p>
+        <nav class="lm-next__ucs" aria-label="関連">
+          <a
+            class="lm-next__uc"
+            href={briefsHref}
+            data-ev="brief_link_click"
+            data-cta="Critical Brief"
+          >関連する実事案: Critical Brief →</a>
+        </nav>
+        <div class="lm-next__cta">
+          <a
+            class="lm-next__btn lm-next__btn--primary"
+            href={primaryCta.href}
+            target={primaryCta.external ? "_blank" : undefined}
+            rel={primaryCta.external ? "noopener" : undefined}
+            data-ev={primaryCta.ev}
+            data-cta={primaryCta.label}
+          >{primaryCta.label}</a>
+          {ghostCtas.map((cta) => (
+            <a
+              class="lm-next__btn lm-next__btn--ghost"
+              href={cta.href}
+              target={cta.external ? "_blank" : undefined}
+              rel={cta.external ? "noopener" : undefined}
+              data-ev={cta.ev}
+              data-cta={cta.label}
+            >{cta.label}</a>
+          ))}
+          <a
+            class="lm-next__btn--text"
+            href={textCta.href}
+            target="_blank"
+            rel="noopener"
+            data-ev={textCta.ev}
+            data-cta={textCta.label}
+          >{textCta.label}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <script is:inline>
+    (function () {
+      function wire() {
+        var banner = document.querySelector('.lm-next[data-surface="use_case"]');
+        if (!banner) return;
+        var uc = banner.getAttribute("data-uc");
+        var pillar = banner.getAttribute("data-pillar");
+        var reader = banner.getAttribute("data-reader");
+        var industry = banner.getAttribute("data-industry");
+        banner.querySelectorAll("[data-ev]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            if (typeof window.gtag !== "function") return;
+            window.gtag("event", el.getAttribute("data-ev"), {
+              surface: "use_case",
+              use_case: uc,
+              pillar: pillar,
+              reader_path: reader,
+              industry: industry,
+              cta_label: el.getAttribute("data-cta"),
+              destination: el.getAttribute("href"),
+            });
+          });
+        });
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+)}
+
+<style>
+  /* Theme-inherit palette — mirror of BriefNextSteps. Promote both to a
+     shared stylesheet whenever the next consumer lands. */
+  .lm-next {
+    --lm-accent: #8B4513;
+    font-family: "Sora", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+    color: inherit;
+    margin: 32px 0 8px;
+  }
+  .lm-next__wrap {
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .lm-next__card {
+    background: color-mix(in srgb, currentColor 6%, transparent);
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    border-radius: 12px;
+    padding: 18px 20px;
+    color: inherit;
+  }
+  .lm-next__top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 10px;
+  }
+  .lm-next__badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    color: #fff;
+    background: var(--lm-accent);
+    padding: 4px 11px; border-radius: 8px;
+    text-decoration: none;
+    transition: opacity .15s;
+  }
+  .lm-next__badge:hover { opacity: 0.88; }
+  .lm-next__eyebrow {
+    font-size: 12px;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    letter-spacing: .02em;
+  }
+  .lm-next__thesis {
+    font-size: 15px; line-height: 1.65;
+    margin: 0 0 12px;
+    color: inherit;
+  }
+  .lm-next__ucs {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .lm-next__uc {
+    font-size: 13px;
+    color: color-mix(in srgb, currentColor 70%, transparent);
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: 8px;
+    padding: 5px 11px;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .lm-next__uc:hover {
+    border-color: var(--lm-accent);
+    color: var(--lm-accent);
+  }
+  .lm-next__cta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+  .lm-next__btn {
+    font-size: 14px; text-decoration: none;
+    border-radius: 8px; padding: 8px 15px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .lm-next__btn--primary {
+    background: var(--lm-accent);
+    color: #fff;
+    border: 1px solid var(--lm-accent);
+  }
+  .lm-next__btn--ghost {
+    background: transparent;
+    color: inherit;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  }
+  .lm-next__btn--ghost:hover {
+    border-color: var(--lm-accent);
+    color: var(--lm-accent);
+  }
+  .lm-next__btn--text {
+    color: color-mix(in srgb, currentColor 60%, transparent);
+    padding: 8px 4px;
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .lm-next__btn--text:hover { color: inherit; }
+  @media (max-width: 640px) {
+    .lm-next__top { flex-wrap: wrap; }
+    .lm-next__eyebrow { width: 100%; }
+  }
+</style>
