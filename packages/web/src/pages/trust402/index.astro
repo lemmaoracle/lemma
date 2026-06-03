@@ -69,6 +69,26 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .hero-code .fn { color: #F0DCB5; }
 .hero-code .var { color: #FCFAF5; }
 .hero-code .com { color: #7A7468; }
+/* v8 — code-block dual view (mobile collapses to 1 line + expand button) */
+.hero-code-mini { display: none; }
+.hero-code-full { display: block; white-space: pre; font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; margin: 0; }
+.hero-code-expand { display: none; }
+@media (max-width: 720px) {
+  .hero-code-full { display: none; }
+  .hero-code-mini { display: block; }
+  .hero-code-expand {
+    display: inline-block; margin-top: 14px;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em;
+    color: #A89C8E; background: transparent;
+    border: 0.5px solid #3a3025; border-radius: 6px;
+    padding: 6px 12px; cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .hero-code-expand:hover { color: #E8E2D4; border-color: #5a4d3d; }
+  .hero-code.expanded .hero-code-full { display: block; }
+  .hero-code.expanded .hero-code-mini { display: none; }
+  .hero-code.expanded .hero-code-expand { display: none; }
+}
 .hero-demo { background: #0A0F0E; border-radius: 14px; padding: 0; overflow: hidden; position: relative; border: 0.5px solid rgba(0,0,0,0.1); }
 .hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(139,69,19,0.7); border-radius: 4px; z-index: 2; }
 .hero-demo-frame { aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 22px 22px 18px; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; }
@@ -110,19 +130,27 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 }
 @media (max-width: 760px) { .hero-grid { grid-template-columns: 1fr; } }
 
-/* Hero 2 cards (Seal-style) */
-.hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 720px; margin: 0 0 44px; }
-.hero-card { position: relative; background: #fff; border-radius: 14px; padding: 24px 24px 22px; border: 0.5px solid var(--lemma-line); transition: transform 0.25s, box-shadow 0.25s; }
-.hero-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(139,69,19,0.06); }
-.hero-card-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 10px; font-weight: 500; }
-.hero-card-h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--lemma-black); margin: 0 0 10px; letter-spacing: -0.015em; line-height: 1.3; }
-.hero-card-copy { font-size: 13px; color: var(--lemma-text-3); margin: 0 0 18px; line-height: 1.65; }
-.hero-card-btn { display: inline-block; padding: 10px 22px; border-radius: 999px; font-size: 12px; font-weight: 500; text-decoration: none; font-family: var(--font-display); }
-.hero-card-btn.primary { background: var(--lemma-brown); color: var(--lemma-cream); }
-.hero-card-btn.muted { background: var(--lemma-cream-deep); color: var(--lemma-black); }
-.hero-card-badge { position: absolute; top: -10px; right: 22px; background: var(--lemma-brown); color: var(--lemma-cream); font-family: var(--font-mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.12em; padding: 5px 12px; border-radius: 999px; text-transform: uppercase; }
-.hero-card-microcopy { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--lemma-brown); margin: 8px 0 0; }
-@media (max-width: 560px) { .hero-cards { grid-template-columns: 1fr; } }
+/* Hero 2 cards — v8 icon-led variant */
+.t-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; margin: 0 0 44px; }
+.t-card {
+  position: relative; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 16px;
+  padding: 30px 26px 26px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  text-decoration: none; color: inherit;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.t-card:hover { border-color: var(--lemma-brown); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(139, 69, 19, 0.08); }
+.t-card-icon { color: var(--lemma-brown); }
+.t-card-icon svg { width: 52px; height: 52px; display: block; }
+.t-card-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--lemma-black); line-height: 1.3; letter-spacing: -0.018em; margin: 0; }
+.t-card-line { font-size: 13.5px; color: var(--lemma-text-3); line-height: 1.7; margin: 0; }
+.t-card-btn { font-family: var(--font-display); font-size: 13px; font-weight: 500; color: var(--lemma-brown); margin-top: auto; padding-top: 4px; }
+.t-card-badge { position: absolute; top: 16px; right: 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em; color: var(--lemma-brown); background: var(--lemma-brown-light); padding: 4px 10px; border-radius: 999px; text-transform: uppercase; }
+@media (max-width: 720px) {
+  .t-cards { grid-template-columns: 1fr; gap: 12px; }
+  .t-card { padding: 26px 22px; }
+  .t-card-icon svg { width: 44px; height: 44px; }
+}
 
 .trust { font-size: 13px; color: var(--lemma-text-3); line-height: 1.8; padding-top: 26px; border-top: 0.5px solid var(--lemma-line); max-width: 720px; font-family: var(--font-mono); letter-spacing: 0.04em; }
 .trust .strong { color: var(--lemma-black); font-weight: 500; }
@@ -205,6 +233,22 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .mech-svg { width: 100%; height: auto; display: block; }
 .mech-caption { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-text-3); text-align: center; margin: 24px 0 0; padding-top: 20px; border-top: 0.5px solid var(--lemma-line); display: flex; align-items: center; justify-content: center; gap: 12px; }
 .mech-caption .accent { color: var(--lemma-brown); font-weight: 500; }
+/* v8 — mechanism mobile vertical cards (replace SVG ≤720px) */
+.mech-mobile { display: none; flex-direction: column; gap: 12px; }
+.mech-mstep { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); border-radius: 14px; padding: 22px 22px; display: flex; align-items: center; gap: 16px; }
+.mech-mlabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.24em; color: var(--lemma-brown); font-weight: 500; flex-shrink: 0; width: 56px; }
+.mech-micon { color: var(--lemma-brown); flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+.mech-mtitle { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--lemma-text-1); line-height: 1.4; }
+.mech-marrow { display: flex; justify-content: center; padding: 4px 0; color: var(--lemma-brown); }
+.mech-marrow svg { width: 18px; height: 22px; }
+.mech-mdash { stroke-dasharray: 6 4; animation: dashflow-v 1.6s linear infinite; }
+@keyframes dashflow-v { to { stroke-dashoffset: -20; } }
+@media (prefers-reduced-motion: reduce) { .mech-mdash { animation: none; } }
+@media (max-width: 720px) {
+  .mech-svg { display: none; }
+  .mech-mobile { display: flex; }
+  .mech-block { padding: 28px 18px; }
+}
 /* §2 step-flow dashflow arrows (v28 mech-step tone) */
 .trust402-flow-arrow { stroke-dasharray: 6 4; animation: dashflow 1.6s linear infinite; }
 @keyframes dashflow { to { stroke-dashoffset: -20; } }
@@ -226,12 +270,25 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .context-desc .k { color: var(--lemma-black); font-weight: 500; }
 .context-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--lemma-brown); text-decoration: none; margin-top: 8px; transition: transform 0.2s; display: inline-block; }
 .context-link:hover { transform: translateX(3px); }
-.context-features { display: flex; flex-direction: column; gap: 14px; padding-left: 32px; border-left: 0.5px solid var(--lemma-line); }
-.context-feature { display: grid; grid-template-columns: 20px 1fr; gap: 14px; align-items: start; font-size: 13.5px; line-height: 1.65; color: var(--lemma-text-1); }
-.context-feature::before { content: "◆"; color: var(--lemma-brown); font-size: 10px; padding-top: 4px; }
-.context-feature .k { color: var(--lemma-black); font-weight: 500; }
-.context-feature .mono { font-family: var(--font-mono); font-size: 10.5px; color: var(--lemma-text-3); letter-spacing: 0.04em; display: block; margin-top: 2px; }
-@media (max-width: 760px) { .context-block { grid-template-columns: 1fr; gap: 24px; padding: 28px 26px; } .context-features { padding-left: 0; padding-top: 20px; border-left: 0; border-top: 0.5px solid var(--lemma-line); } }
+.context-features { display: flex; flex-direction: column; gap: 12px; }
+.ctx-card {
+  background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 12px;
+  padding: 18px 22px;
+  display: grid; grid-template-columns: 32px 1fr; column-gap: 16px; row-gap: 4px;
+  align-items: start;
+  transition: border-color .15s, transform .15s;
+}
+.ctx-card:hover { border-color: var(--lemma-brown); }
+.ctx-icon { color: var(--lemma-brown); grid-row: 1 / span 3; align-self: start; padding-top: 2px; }
+.ctx-icon svg { width: 28px; height: 28px; display: block; }
+.ctx-name { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.005em; }
+.ctx-desc { font-size: 13px; color: var(--lemma-text-3); margin: 0; line-height: 1.6; }
+.ctx-mono { font-family: var(--font-mono); font-size: 10.5px; color: var(--lemma-brown); background: var(--lemma-brown-light); padding: 2px 8px; border-radius: 4px; letter-spacing: 0.04em; justify-self: start; margin-top: 2px; }
+@media (max-width: 760px) { .context-block { grid-template-columns: 1fr; gap: 24px; padding: 28px 26px; } }
+@media (max-width: 720px) {
+  .ctx-card { padding: 16px 18px; column-gap: 14px; grid-template-columns: 28px 1fr; }
+  .ctx-icon svg { width: 24px; height: 24px; }
+}
 
 /* === §4 Use cases — supplementary, compact === */
 .uc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
@@ -324,13 +381,17 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       <p class="hero-sub"><span class="k">x402</span> lets agents pay. Lemma proves <span class="k">who, under what authority, and on what data</span> — via ZK.</p>
 
       <div class="hero-grid">
-        <pre class="hero-code"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
+        <div class="hero-code" id="t402-code">
+          <pre class="hero-code-full"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
 
 <span class="com">// compose proof gating before the x402 payment</span>
 <span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, <span class="var">artifact</span>, <span class="var">gate</span>, <span class="var">lemma</span>)
 
 <span class="com">// keys and data stay put — only proofs flow</span>
 <span class="kw">await</span> <span class="fn">fetch402</span>(<span class="str">'https://api.example/data'</span>)</pre>
+          <div class="hero-code-mini"><span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, …)<br /><span class="com">// compose proof gating before the x402 payment</span></div>
+          <button type="button" class="hero-code-expand" onclick="this.parentElement.classList.toggle('expanded')">＋ Show full example</button>
+        </div>
 
         <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
           <div class="hero-demo-frame">
@@ -348,23 +409,34 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         </div>
       </div>
 
-      <div class="hero-cards">
-        <article class="hero-card">
-          <div class="hero-card-eyebrow">Try live</div>
-          <h3 class="hero-card-h3">Reference<br>implementation</h3>
-          <p class="hero-card-copy">A complete working sample on Base Sepolia. <span style="font-family:var(--font-mono); color:var(--lemma-brown); font-size:11.5px">$0.01 GET</span> succeeds with a valid proof and settles; <span style="font-family:var(--font-mono); color:var(--legacy-text); font-size:11.5px">$500 POST</span> exceeds spendLimit and fails closed.</p>
-          <a href="https://github.com/lemmaoracle/trust402" class="hero-card-btn muted">View on GitHub →</a>
-          <div class="hero-card-microcopy">Open source · live on Base Sepolia</div>
-        </article>
+      <div class="t-cards">
+        <a href="https://github.com/lemmaoracle/trust402" class="t-card" target="_blank" rel="noopener">
+          <div class="t-card-icon">
+            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="t-card-title">Reference<br>implementation</h3>
+          <p class="t-card-line">Live on Base Sepolia. $0.01 GET succeeds / $500 POST fails closed.</p>
+          <span class="t-card-btn">View on GitHub →</span>
+        </a>
 
-        <article class="hero-card">
-          <div class="hero-card-badge">MCP Ready</div>
-          <div class="hero-card-eyebrow">For agent builders</div>
-          <h3 class="hero-card-h3">Drop into your<br>MCP / Agent</h3>
-          <p class="hero-card-copy">Use directly from Anthropic MCP, OpenAI Agent SDK, or your own agent harness. Trust402 acts as the payment-verification middleware. SDK ships 2026-06.</p>
-          <a href="https://tally.so/r/kd0bZR" class="hero-card-btn primary">Join the waitlist →</a>
-          <div class="hero-card-microcopy">Shipping 2026-06</div>
-        </article>
+        <a href="https://tally.so/r/kd0bZR" class="t-card" target="_blank" rel="noopener">
+          <div class="t-card-badge">MCP READY</div>
+          <div class="t-card-icon">
+            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="13" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
+              <circle cx="39" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
+              <circle cx="26" cy="38" r="6" stroke="currentColor" stroke-width="2"/>
+              <line x1="18" y1="16" x2="22" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="34" y1="16" x2="30" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="13" x2="33" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.45" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <h3 class="t-card-title">Drop into your<br>MCP / Agent</h3>
+          <p class="t-card-line">Use directly from Anthropic MCP or OpenAI Agent SDK.</p>
+          <span class="t-card-btn">Join the waitlist →</span>
+        </a>
       </div>
 
       <p class="trust">
@@ -578,6 +650,71 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
             <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">on-chain anchor</text>
           </g>
         </svg>
+        <div class="mech-mobile" aria-hidden="true">
+          <div class="mech-mstep">
+            <div class="mech-mlabel">STEP 01</div>
+            <div class="mech-micon">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="18" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                <circle cx="11" cy="18" r="2.6" fill="currentColor"/>
+                <line x1="18" y1="18" x2="32" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="25" y1="18" x2="25" y2="24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="30" y1="18" x2="30" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="mech-mtitle">Present delegation proof</div>
+          </div>
+          <div class="mech-marrow">
+            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="mech-mstep">
+            <div class="mech-mlabel">STEP 02</div>
+            <div class="mech-micon">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="14" fill="currentColor"/>
+                <text x="18" y="22" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#FCFAF5" font-weight="700">ZK</text>
+              </svg>
+            </div>
+            <div class="mech-mtitle">Trust402 verifies via ZK</div>
+          </div>
+          <div class="mech-marrow">
+            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="mech-mstep">
+            <div class="mech-mlabel">STEP 03</div>
+            <div class="mech-micon">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                <text x="18" y="23" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" fill="currentColor" font-weight="700">¥</text>
+              </svg>
+            </div>
+            <div class="mech-mtitle">Settle on x402</div>
+          </div>
+          <div class="mech-marrow">
+            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="mech-mstep">
+            <div class="mech-mlabel">STEP 04</div>
+            <div class="mech-micon">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round">
+                  <ellipse cx="13" cy="18" rx="9" ry="5" transform="rotate(-30 13 18)"/>
+                  <ellipse cx="23" cy="18" rx="9" ry="5" transform="rotate(-30 23 18)"/>
+                </g>
+              </svg>
+            </div>
+            <div class="mech-mtitle">On-chain anchor</div>
+          </div>
+        </div>
         <div class="mech-caption">
           <span>● 4 step flow</span> · <span class="accent">one middleware line, done</span>
         </div>
@@ -598,20 +735,70 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
           <a href="/pillars" class="context-link">Read more on the Trust Layer →</a>
         </div>
         <div class="context-features">
-          <div class="context-feature">
-            <span><span class="k">ZK identity</span> — prove credentials via Poseidon commitments<span class="mono">prover.prove(credential)</span></span>
+          <div class="ctx-card">
+            <div class="ctx-icon">
+              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <circle cx="9" cy="14" r="1.8" fill="currentColor"/>
+                <line x1="14" y1="14" x2="25" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="20" y1="14" x2="20" y2="19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="24" y1="14" x2="24" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ctx-name">ZK identity</div>
+            <p class="ctx-desc">Prove credentials via Poseidon commitments.</p>
+            <code class="ctx-mono">prover.prove(credential)</code>
           </div>
-          <div class="context-feature">
-            <span><span class="k">Role membership</span> — prove role assignment via Circom circuits<span class="mono">Groth16 / BN254</span></span>
+          <div class="ctx-card">
+            <div class="ctx-icon">
+              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="7" cy="9" r="3.4" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="21" cy="9" r="3.4" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="14" cy="20" r="3.4" stroke="currentColor" stroke-width="1.6"/>
+                <line x1="10" y1="11" x2="12" y2="17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="18" y1="11" x2="16" y2="17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="10.5" y1="9" x2="17.5" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5" stroke-dasharray="2 2"/>
+              </svg>
+            </div>
+            <div class="ctx-name">Role membership</div>
+            <p class="ctx-desc">Prove role assignment via Circom circuits.</p>
+            <code class="ctx-mono">Groth16 / BN254</code>
           </div>
-          <div class="context-feature">
-            <span><span class="k">Spend limit</span> — enforce budget caps via 128-bit LessEqThan<span class="mono">fail-closed guarantee</span></span>
+          <div class="ctx-card">
+            <div class="ctx-icon">
+              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M4 17 A10 10 0 0 1 24 17" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                <line x1="14" y1="17" x2="20" y2="9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="14" cy="17" r="1.8" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="ctx-name">Spend limit</div>
+            <p class="ctx-desc">Enforce budget caps via 128-bit LessEqThan.</p>
+            <code class="ctx-mono">fail-closed guarantee</code>
           </div>
-          <div class="context-feature">
-            <span><span class="k">Currency · settlement</span> — USDC settled via EIP-3009<span class="mono">extensible to other stablecoins</span></span>
+          <div class="ctx-card">
+            <div class="ctx-icon">
+              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <text x="14" y="18.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="12" fill="currentColor" font-weight="700">¥</text>
+              </svg>
+            </div>
+            <div class="ctx-name">Currency · settlement</div>
+            <p class="ctx-desc">USDC settled via EIP-3009.</p>
+            <code class="ctx-mono">extensible to other stablecoins</code>
           </div>
-          <div class="context-feature">
-            <span><span class="k">On-chain attestation</span> — tamper-evident settlement via the Lemma oracle<span class="mono">Base Sepolia · mainnet ready</span></span>
+          <div class="ctx-card">
+            <div class="ctx-icon">
+              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round">
+                  <ellipse cx="10" cy="14" rx="7" ry="4" transform="rotate(-30 10 14)"/>
+                  <ellipse cx="18" cy="14" rx="7" ry="4" transform="rotate(-30 18 14)"/>
+                </g>
+              </svg>
+            </div>
+            <div class="ctx-name">On-chain attestation</div>
+            <p class="ctx-desc">Tamper-evident settlement via the Lemma oracle.</p>
+            <code class="ctx-mono">Base Sepolia · mainnet ready</code>
           </div>
         </div>
       </div>
