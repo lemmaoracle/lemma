@@ -47,6 +47,10 @@ export const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProvePair>> = {
     hide: "本人の履歴・受講記録",
     prove: "必要な資格を有効に保有",
   },
+  "customer-flag-need-to-know": {
+    hide: "取扱いの理由・履歴・スコア",
+    prove: "必要な対応区分（要注意／通常）",
+  },
 
   // P1 来歴証明
   "long-term-contract-record": {

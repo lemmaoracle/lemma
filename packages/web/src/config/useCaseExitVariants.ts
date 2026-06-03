@@ -60,6 +60,7 @@ export const USE_CASE_EXIT_VARIANTS: Readonly<Record<string, ExitVariant>> = {
   "financial-data-exfiltration":  { reader: "enterprise", pillarCode: "P4", industry: "finance", planLabel: "(Compliance)" },
   "counterparty-screening":       { reader: "enterprise", pillarCode: "P4", industry: "finance", planLabel: "(Compliance)" },
   "ai-audit-log-proof":            { reader: "enterprise", pillarCode: "P2", industry: "finance", planLabel: "(Compliance)" },
+  "customer-flag-need-to-know":   { reader: "enterprise", pillarCode: "P4", industry: "finance", planLabel: "(Compliance)" },
   "internal-control-approval-proof": { reader: "enterprise", pillarCode: "P1", industry: "finance", planLabel: "(Compliance)" },
 
   // Enterprise — Public → Civic

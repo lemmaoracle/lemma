@@ -48,6 +48,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     slugs: [
       "counterparty-screening",
       "kyc-aml-selective-disclosure",
+      "customer-flag-need-to-know",
       "supplier-credential-verification",
     ],
   },
