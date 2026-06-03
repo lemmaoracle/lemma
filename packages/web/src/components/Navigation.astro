@@ -65,7 +65,7 @@ const isResourcesActive =
 
 <nav class="mega-nav" id="mainNav">
   <a href={homePath} class="mega-nav-logo">
-    <LemmaOracle class="h-[26px] w-auto text-black" />
+    <LemmaOracle class="mega-nav-mark" />
   </a>
 
   <!-- DESKTOP LINKS -->
@@ -318,6 +318,11 @@ const isResourcesActive =
     padding-top: 4px;
   }
   .mega-nav-logo:hover { color: var(--accent); }
+  /* Wordmark sizing scoped to the Navigation component so it doesn't depend
+     on Tailwind utility classes being emitted into the page's CSS bundle —
+     pages like /trust402/ have their own static `<style>` and the
+     `h-[26px]` utility class would otherwise drop out of their bundle. */
+  .mega-nav-mark { height: 26px; width: auto; color: currentColor; display: block; }
 
   /* ─── v28: compact nav — items right-aligned, smaller font, tighter gap ─── */
   .mega-nav-links {
