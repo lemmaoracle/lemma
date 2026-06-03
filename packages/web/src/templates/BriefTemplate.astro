@@ -505,6 +505,15 @@ const labels = isJa
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 760px) {
+    .brief-page {
+      /* The 64px desktop gap-after-nav reads as wasted scroll on a phone;
+         shrink to a single breath-line so the breadcrumb sits near the
+         top fold. */
+      margin-top: 8px;
+    }
+    .brief-breadcrumb {
+      padding: 16px 0 0;
+    }
     .container-narrow {
       padding: 0 24px;
     }
