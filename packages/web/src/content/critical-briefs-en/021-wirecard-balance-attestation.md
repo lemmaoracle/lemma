@@ -12,6 +12,8 @@ related_pack: ["B-regulatory"]
 related_briefs: ["020-type-designation-conformity-fraud", "019-construction-engineer-qualification-fraud", "006-google-api-key-revocation-lag"]
 version: "1.0"
 status: published
+og_lead_ja: "残高確認書の偽造で資産の存在属性が独立検証されず — Wirecard"
+og_lead_en: "Forged balance confirmations went unverified, reaching disclosure — Wirecard"
 ---
 
 ## TL;DR

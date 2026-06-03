@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["005-noroboto-lying-fonts", "011-synthid-watermark-reverse-engineering"]
 version: "1.0"
 status: published
+og_lead_ja: "顔認識の AI 判定が独立検証なく強制処分に直結 — Robert Williams 誤認逮捕"
+og_lead_en: "AI face-match drove enforcement with no independent verification — Robert Williams"
 ---
 
 ## TL;DR

@@ -106,7 +106,14 @@ const relatedBriefs = brief.data.related_briefs
 const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
 
-const pageTitle = `${mainTitle} — Lemma Critical Brief No.${briefNoPad}`;
+// og:title / twitter:title / <title> all share `pageTitle`. We lead with a
+// short descriptive headline (overrideable via `og_lead_*`) so social cards
+// — which truncate og:description — communicate the brief at a glance.
+// Fallback to the existing `mainTitle` keeps untranslated briefs from
+// regressing while we backfill leads brief-by-brief.
+const ogLead = (isJa ? brief.data.og_lead_ja : brief.data.og_lead_en) ?? mainTitle;
+const seriesSep = isJa ? "｜" : " | ";
+const pageTitle = `${ogLead}${seriesSep}Lemma Critical Brief No.${briefNoPad}`;
 const description = subtitle ? `${mainTitle} — ${subtitle}` : mainTitle;
 
 const labels = isJa

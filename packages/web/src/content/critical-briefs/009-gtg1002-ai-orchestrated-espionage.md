@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost", "017-mckinsey-lilli-system-prompts"]
 version: "1.0"
 status: published
+og_lead_ja: "AI エージェントが攻撃の 80–90% を自律実行 — GTG-1002"
+og_lead_en: "AI agent ran 80–90% of an attack autonomously — GTG-1002"
 ---
 
 ## TL;DR
