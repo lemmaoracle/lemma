@@ -122,42 +122,42 @@ export const PILLAR_DESCRIPTIONS: Readonly<Record<PillarSlug, LocalizedCopy>> = 
 
 export const CATEGORY_LABELS: Readonly<Record<CategorySlug, LocalizedCopy>> = {
   "bridge-config-trust": {
-    ja: "Bridge Config Trust",
+    ja: "ブリッジ信頼設定",
     en: "Bridge Config Trust",
   },
-  "code-provenance": { ja: "Code Provenance", en: "Code Provenance" },
-  "data-provenance": { ja: "Data Provenance", en: "Data Provenance" },
+  "code-provenance": { ja: "コード来歴", en: "Code Provenance" },
+  "data-provenance": { ja: "データ来歴", en: "Data Provenance" },
   "training-data-provenance": {
-    ja: "Training Data Provenance",
+    ja: "AI 学習データ来歴",
     en: "Training Data Provenance",
   },
   "ai-decision-integrity": {
-    ja: "AI Decision Integrity",
+    ja: "AI 判断の完全性",
     en: "AI Decision Integrity",
   },
-  "ai-bias-harm": { ja: "AI Bias / Harm", en: "AI Bias / Harm" },
+  "ai-bias-harm": { ja: "AI バイアス・有害性", en: "AI Bias / Harm" },
   "model-supply-chain": {
-    ja: "Model Supply Chain",
+    ja: "モデルサプライチェーン",
     en: "Model Supply Chain",
   },
-  "agent-runaway": { ja: "Agent Runaway", en: "Agent Runaway" },
+  "agent-runaway": { ja: "エージェント暴走", en: "Agent Runaway" },
   "agent-infrastructure": {
-    ja: "Agent Infrastructure",
+    ja: "エージェント基盤",
     en: "Agent Infrastructure",
   },
   "agent-payment-abuse": {
-    ja: "Agent Payment Abuse",
+    ja: "エージェント決済悪用",
     en: "Agent Payment Abuse",
   },
   "kyc-aml-disclosure": {
-    ja: "KYC / AML Disclosure",
+    ja: "KYC / AML 開示",
     en: "KYC / AML Disclosure",
   },
   "attribute-proof-bypass": {
-    ja: "Attribute Proof Bypass",
+    ja: "属性証明バイパス",
     en: "Attribute Proof Bypass",
   },
-  "identity-auth": { ja: "Identity & Auth", en: "Identity & Auth" },
+  "identity-auth": { ja: "認証・認可", en: "Identity & Auth" },
 };
 
 /** Category descriptions. JA from the template doc; EN translated to Lemma voice. */
