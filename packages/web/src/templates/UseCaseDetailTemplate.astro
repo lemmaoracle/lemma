@@ -24,6 +24,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import UseCaseExitCta from "../components/UseCaseExitCta.astro";
+import { getUseCaseHideProve } from "../config/useCaseHideProve";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
@@ -58,6 +59,8 @@ function firstSentence(text: string): string {
 }
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
+const isJa = locale === "ja";
+const hideProve = isJa ? getUseCaseHideProve(useCase.slug) : undefined;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
@@ -119,6 +122,19 @@ const breadcrumbJsonLd = {
         <h1 class="ucd-h1">{useCase.title}</h1>
         {useCase.thesis && (
           <p class="ucd-thesis">{useCase.thesis}</p>
+        )}
+        {hideProve && (
+          <div class="ucd-hp" aria-label="HIDE と PROVE の対比">
+            <div class="ucd-hp__cell ucd-hp__cell--hide">
+              <span class="ucd-hp__lab">Hide ── 隠す</span>
+              <span class="ucd-hp__val">{hideProve.hide}</span>
+            </div>
+            <div class="ucd-hp__arrow" aria-hidden="true">→</div>
+            <div class="ucd-hp__cell ucd-hp__cell--prove">
+              <span class="ucd-hp__lab">Prove ── 証明する</span>
+              <span class="ucd-hp__val">{hideProve.prove}</span>
+            </div>
+          </div>
         )}
         <p class="ucd-abstract">{useCase.abstract}</p>
         <div class="ucd-meta">
@@ -361,6 +377,73 @@ const breadcrumbJsonLd = {
     line-height: 1.8;
     margin: 0 0 24px;
     max-width: 720px;
+  }
+
+  /* HIDE → PROVE hero device — matches usecase detail mockup (2026-06-02).
+     Two stacked cells (cream-deep "Hide" + white "Prove") connected by a
+     small saddle-brown arrow. Mobile collapses to a single column with the
+     arrow rotating into a vertical caret. */
+  .ucd-hp {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    margin: 0 0 24px;
+    max-width: 720px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ucd-hp__cell {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ucd-hp__cell--hide {
+    background: var(--lemma-cream-deep, #F2EEDF);
+  }
+  .ucd-hp__lab {
+    font-family: var(--ucd-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .ucd-hp__cell--hide .ucd-hp__lab {
+    color: var(--ucd-text-3);
+  }
+  .ucd-hp__cell--prove .ucd-hp__lab {
+    color: var(--accent);
+  }
+  .ucd-hp__val {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .ucd-hp__cell--hide .ucd-hp__val {
+    color: var(--ucd-text-3);
+  }
+  .ucd-hp__cell--prove .ucd-hp__val {
+    color: var(--black, #000);
+    font-weight: 600;
+  }
+  .ucd-hp__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    color: var(--accent);
+    font-family: var(--ucd-mono);
+    font-size: 16px;
+  }
+  @media (max-width: 620px) {
+    .ucd-hp {
+      grid-template-columns: 1fr;
+    }
+    .ucd-hp__arrow {
+      width: auto;
+      padding: 6px 0;
+      transform: rotate(90deg);
+    }
   }
   .ucd-meta {
     display: flex;
