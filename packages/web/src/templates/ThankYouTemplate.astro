@@ -22,6 +22,7 @@ const pdfUrl =
     ? "https://drive.google.com/file/d/10cNprvJe75QuSAaXgiIpaggy70gUG4P9/view?usp=sharing"
     : "https://drive.google.com/file/d/1TxcMr2t3NociJeZmBQs1UsCmHZsPJ5Qf/view?usp=sharing";
 const tallyUrl = DISCOVERY_CALL_URL[locale];
+const whitepaperFormId = locale === "ja" ? "xX0VYv" : "7RJXdR";
 ---
 
 <Layout locale={locale} title={`Download — Lemma Whitepaper`} description={ty.sub} bodyClass="page-thank-you" noindex>
@@ -377,11 +378,15 @@ const tallyUrl = DISCOVERY_CALL_URL[locale];
   }
 </style>
 
-<script is:inline>
-  // GA4: whitepaper conversion. Tally is configured to redirect to /thank-you/
-  // on submit, so one page load == one whitepaper submission. No-ops cleanly
-  // when gtag is not loaded (e.g. local dev without GOOGLE_ANALYTICS_ID).
-  if (typeof window.gtag === "function") {
-    window.gtag("event", "whitepaper_submit", { form: "xX0VYv" });
-  }
+<script is:inline define:vars={{ whitepaperFormId, locale }}>
+  // GA4: whitepaper conversion. Tally redirects here on submit, so one page
+  // load == one whitepaper submission. The sessionStorage guard keeps a
+  // reload from double-counting. No-ops cleanly when gtag is not loaded
+  // (e.g. local dev without GOOGLE_ANALYTICS_ID).
+  (function () {
+    if (typeof window.gtag !== "function") return;
+    if (sessionStorage.getItem("cv_wp")) return;
+    window.gtag("event", "whitepaper_submit", { form: whitepaperFormId, locale: locale });
+    sessionStorage.setItem("cv_wp", "1");
+  })();
 </script>
