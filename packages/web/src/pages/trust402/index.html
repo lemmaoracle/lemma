@@ -312,12 +312,13 @@ header { padding: 22px 0 0; }
       <p class="hero-sub"><span class="k">x402</span> lets agents pay. Lemma proves <span class="k">who, under what authority, and on what data</span> — via ZK.</p>
 
       <div class="hero-grid">
-        <pre class="hero-code"><span class="kw">import</span> { <span class="var">trust402</span> } <span class="kw">from</span> <span class="str">'@lemmaoracle/trust402'</span>
+        <pre class="hero-code"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
 
-<span class="com">// add one line to your x402 middleware</span>
-<span class="var">app</span>.<span class="fn">use</span>(<span class="fn">trust402</span>({ <span class="var">scope</span>: <span class="str">'payments:autonomous'</span> }))
+<span class="com">// compose proof gating before the x402 payment</span>
+<span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, <span class="var">artifact</span>, <span class="var">gate</span>, <span class="var">lemma</span>)
 
-<span class="com">// access the agent's authority proof via req.trust402.proof</span></pre>
+<span class="com">// keys and data stay put — only proofs flow</span>
+<span class="kw">await</span> <span class="fn">fetch402</span>(<span class="str">'https://api.example/data'</span>)</pre>
 
         <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
           <div class="hero-demo-frame">
@@ -709,7 +710,7 @@ header { padding: 22px 0 0; }
 
         <div class="faq-item">
           <h3 class="faq-q">Can I retrofit Trust402 onto an existing x402 setup?</h3>
-          <p class="faq-a">Yes. One line — <code>app.use(trust402(...))</code> — adds a ZK verification layer in front of your existing x402 middleware. The x402 standard is untouched; charges that pass Trust402 are processed as usual.</p>
+          <p class="faq-a">Yes. Compose <code>wrapFetchWithProof</code> in front of <code>wrapFetchWithPayment</code> — payments without a valid proof are rejected before they're sent. The x402 standard is untouched; requests that clear the proof gate are processed as usual.</p>
         </div>
 
         <div class="faq-item">
