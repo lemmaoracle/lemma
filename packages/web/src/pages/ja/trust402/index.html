@@ -312,12 +312,13 @@ header { padding: 22px 0 0; }
       <p class="hero-sub"><span class="k">x402</span> がエージェントの支払いを可能にする。Lemma が「<span class="k">誰が、何の権限で、どのデータに対して</span>」を ZK 証明する。</p>
 
       <div class="hero-grid">
-        <pre class="hero-code"><span class="kw">import</span> { <span class="var">trust402</span> } <span class="kw">from</span> <span class="str">'@lemmaoracle/trust402'</span>
+        <pre class="hero-code"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
 
-<span class="com">// x402 middleware に 1 行追加</span>
-<span class="var">app</span>.<span class="fn">use</span>(<span class="fn">trust402</span>({ <span class="var">scope</span>: <span class="str">'payments:autonomous'</span> }))
+<span class="com">// 委任 proof を生成してから x402 支払いを通す</span>
+<span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, <span class="var">artifact</span>, <span class="var">gate</span>, <span class="var">lemma</span>)
 
-<span class="com">// req.trust402.proof でエージェントの権限 proof にアクセス</span></pre>
+<span class="com">// 鍵もデータも渡さず、proof だけが流通する</span>
+<span class="kw">await</span> <span class="fn">fetch402</span>(<span class="str">'https://api.example/data'</span>)</pre>
 
         <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
           <div class="hero-demo-frame">
@@ -709,7 +710,7 @@ header { padding: 22px 0 0; }
 
         <div class="faq-item">
           <h3 class="faq-q">既存の x402 実装に後付けできますか？</h3>
-          <p class="faq-a">はい。<code>app.use(trust402(...))</code> を 1 行追加するだけで、既存の x402 middleware の前段に ZK 検証層が入ります。x402 標準仕様は壊さず、Trust402 を通過した請求は通常通り処理されます。</p>
+          <p class="faq-a">はい。<code>wrapFetchWithProof</code> を <code>wrapFetchWithPayment</code> の前段に挟むだけで、proof 検証なしの支払いは送信前に弾かれます。x402 標準仕様は壊さず、proof を通過した請求のみが通常どおり処理されます。</p>
         </div>
 
         <div class="faq-item">
