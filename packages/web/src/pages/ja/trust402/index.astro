@@ -1,3 +1,10 @@
+---
+import Footer from "../../../components/Footer.astro";
+import { getTranslations } from "../../../i18n/translations";
+
+const locale = "ja" as const;
+const t = getTranslations(locale);
+---
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -338,7 +345,7 @@ header { padding: 22px 0 0; }
             <span class="term-line"><span class="info">[+]</span> x402 settle <span class="accent">0x4a8f…e21</span> <span class="ok">✓</span></span>
             <span class="term-line"><span class="info">[+]</span> anchor: Base Sepolia <span class="ok">✓</span></span>
             <span class="term-line spacer"></span>
-            <span class="term-line success">200 OK <span class="meta">{ data: "…" }</span></span>
+            <span class="term-line success">200 OK <span class="meta">&#123; data: "…" &#125;</span></span>
             <span class="term-line cursor"><span class="prompt">example-x402$</span></span>
           </div>
         </div>
@@ -751,6 +758,8 @@ header { padding: 22px 0 0; }
     <span class="site-footer-copy">© 2026 FRAME00, INC.</span>
   </div>
 </footer>
+
+<Footer locale={locale} t={t.nav} footerT={t.footer} base="/ja" />
 
 </body>
 </html>
