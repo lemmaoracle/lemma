@@ -23,89 +23,23 @@ const whitepaperPath = "https://tally.so/r/xX0VYv";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const homePath = base || "/";
 
-/* Solutions mega-panel — industry-axis grouping (JA only).
-   Visitors self-select by their own industry rather than by an abstracted
-   "job to be done" (the task-axis a previous draft used, which testers found
-   hard to map themselves onto). Each `key` matches the use-case listing's
-   industry filter chip (`industryLabels` in i18n) so the group heading can
-   deep-link to the listing pre-filtered to that industry (`#<key>` hash).
-
-   Curated subset, NOT exhaustive: every live use case is assigned to exactly
-   ONE industry here for a clean, scannable panel, even though a use case may
-   carry several `industries` codes in its frontmatter (the listing filter
-   still surfaces that cross-industry membership). Order mirrors the listing's
-   INDUSTRY_ORDER. EN keeps the legacy flat list until that copy is finalised. */
-const SOLUTIONS_INDUSTRY_GROUPS_JA: ReadonlyArray<{
+/* Solutions mega-panel — industry headers only (JA).
+   The earlier draft listed every use case under each industry; the resulting
+   panel was wide enough to overlap the neighbouring Products panel and too
+   dense to scan. We now show industry names only, deep-linking to the
+   listing's industry filter (`#<key>`), and let the listing carry the
+   per-use-case detail. Order mirrors the listing's INDUSTRY_ORDER. */
+const SOLUTIONS_INDUSTRIES_JA: ReadonlyArray<{
   readonly key: string;
   readonly heading: string;
-  readonly items: ReadonlyArray<{ readonly label: string; readonly slug: string }>;
 }> = [
-  {
-    key: "mfg",
-    heading: "製造・基幹インフラ",
-    items: [
-      { label: "長期契約の記録・見積", slug: "long-term-contract-record" },
-      { label: "就業適格", slug: "work-fitness-attestation" },
-      { label: "内部統制・承認フロー", slug: "internal-control-approval-proof" },
-    ],
-  },
-  {
-    key: "fin",
-    heading: "金融・FinTech",
-    items: [
-      { label: "KYC/AML 選択的開示", slug: "kyc-aml-selective-disclosure" },
-      { label: "取引先の与信・反社", slug: "counterparty-screening" },
-      { label: "金融データ流出防止", slug: "financial-data-exfiltration" },
-    ],
-  },
-  {
-    key: "pub",
-    heading: "自治体・公共",
-    items: [
-      { label: "補助金・給付の受給資格", slug: "benefit-eligibility-proof" },
-      { label: "学修歴・卒業証明", slug: "credential-presentation" },
-      { label: "有資格者・安全教育の証明", slug: "qualified-worker-attestation" },
-    ],
-  },
-  {
-    key: "sc",
-    heading: "調達・サプライチェーン",
-    items: [
-      { label: "部品来歴", slug: "supply-chain-component-provenance" },
-      { label: "サプライチェーン ESG", slug: "supply-chain-esg" },
-      { label: "仕入先の許認可確認", slug: "supplier-credential-verification" },
-    ],
-  },
-  {
-    key: "svc",
-    heading: "サービス・小売",
-    items: [
-      { label: "年齢・販売資格", slug: "age-eligibility-verification" },
-      { label: "顧客対応フラグ", slug: "customer-flag-need-to-know" },
-      { label: "店舗網の適合", slug: "store-network-compliance" },
-      { label: "事故対応記録", slug: "incident-response-record" },
-    ],
-  },
-  {
-    key: "ai",
-    heading: "AI 導入（業種横断）",
-    items: [
-      { label: "AI 監査ログ証明", slug: "ai-audit-log-proof" },
-      { label: "社内文書を AI に触らせない", slug: "ai-document-isolation" },
-      { label: "RAG コンテンツ来歴", slug: "rag-content-provenance" },
-      { label: "RAG ソース認証", slug: "rag-source-attestation" },
-    ],
-  },
-  {
-    key: "dev",
-    heading: "開発者",
-    items: [
-      { label: "マルチエージェント", slug: "multi-agent-workflows" },
-      { label: "x402 上のエージェント取引", slug: "x402-commerce" },
-      { label: "DeFi ブリッジ検証", slug: "defi-bridge-verification" },
-      { label: "委任型トレジャリー", slug: "delegated-treasury" },
-    ],
-  },
+  { key: "mfg", heading: "製造・基幹インフラ" },
+  { key: "fin", heading: "金融・FinTech" },
+  { key: "pub", heading: "自治体・公共" },
+  { key: "sc", heading: "調達・サプライチェーン" },
+  { key: "svc", heading: "サービス・小売" },
+  { key: "ai", heading: "AI 導入（業種横断）" },
+  { key: "dev", heading: "開発者" },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -208,23 +142,20 @@ const isResourcesActive =
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       {locale === "ja" ? (
-        <div class="mega-panel mega-panel-industries">
-          {SOLUTIONS_INDUSTRY_GROUPS_JA.map((group) => (
-            <div class="mega-section">
-              <a href={`${useCasesPath}/#${group.key}`} class="mega-section-label mega-section-label--link">{group.heading} →</a>
-              <div class="mega-links">
-                {group.items.map((item) => (
-                  <a href={`${useCasesPath}/${item.slug}/`} class="mega-link">
-                    <span class="mega-link-title">{item.label}</span>
-                  </a>
-                ))}
-              </div>
+        <div class="mega-panel">
+          <div class="mega-section">
+            <div class="mega-section-label">業界別</div>
+            <div class="mega-links">
+              <a href={useCasesPath} class="mega-link">
+                <span class="mega-link-title">ユースケース一覧</span>
+                <span class="mega-link-sub">業界・タスク横断で全件を見る</span>
+              </a>
+              {SOLUTIONS_INDUSTRIES_JA.map((g) => (
+                <a href={`${useCasesPath}/#${g.key}`} class="mega-link">
+                  <span class="mega-link-title">{g.heading}</span>
+                </a>
+              ))}
             </div>
-          ))}
-          <div class="mega-section mega-section--footer">
-            <a href={useCasesPath} class="mega-link mega-link--all">
-              <span class="mega-link-title">ユースケース一覧 →</span>
-            </a>
           </div>
         </div>
       ) : (
@@ -322,15 +253,10 @@ const isResourcesActive =
       <div class="mob-section-body">
         {locale === "ja" ? (
           <>
-            {SOLUTIONS_INDUSTRY_GROUPS_JA.map((group) => (
-              <>
-                <a href={`${useCasesPath}/#${group.key}`} class="mob-group-label">{group.heading} →</a>
-                {group.items.map((item) => (
-                  <a href={`${useCasesPath}/${item.slug}/`} class="mob-link mob-link--nested">{item.label}</a>
-                ))}
-              </>
+            <a href={useCasesPath} class="mob-link">ユースケース一覧<small>業界・タスク横断で全件を見る</small></a>
+            {SOLUTIONS_INDUSTRIES_JA.map((g) => (
+              <a href={`${useCasesPath}/#${g.key}`} class="mob-link">{g.heading}</a>
             ))}
-            <a href={useCasesPath} class="mob-link mob-link--all">ユースケース一覧 →</a>
           </>
         ) : (
           <>
@@ -471,49 +397,6 @@ const isResourcesActive =
   .mega-nav-item:hover .mega-panel { display: block; }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
 
-  /* Industry-axis Solutions panel (JA): 3-col grid wrapping the seven
-     industry groups into rows, with a spanning "all use cases" footer. */
-  .mega-panel-industries {
-    min-width: 720px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    padding: 6px;
-  }
-  .mega-panel-industries .mega-section {
-    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
-    border-bottom: 0.5px solid var(--lemma-line, #E5E0D5);
-    padding: 14px 16px 12px;
-  }
-  .mega-panel-industries .mega-section:nth-child(3n) { border-right: none; }
-  .mega-panel-industries .mega-section:nth-last-child(2) { border-right: none; border-bottom: none; }
-  .mega-panel-industries .mega-section--footer {
-    grid-column: 1 / -1;
-    border-right: none;
-    border-bottom: none;
-    border-top: 0.5px solid var(--lemma-line, #E5E0D5);
-    padding: 10px 16px;
-  }
-  .mega-panel-industries .mega-section-label {
-    font-family: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: none;
-    color: var(--gray-700, #5F5F5F);
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-  .mega-section-label--link {
-    display: block;
-    text-decoration: none;
-    transition: color .15s;
-  }
-  .mega-section-label--link:hover { color: var(--accent); }
-  .mega-panel-industries .mega-link { padding: 6px 10px; }
-  .mega-panel-industries .mega-link-title { font-size: 13px; }
-  .mega-link--all .mega-link-title { color: var(--accent); font-weight: 500; }
-  .mega-nav-item:hover .mega-panel-industries { display: grid; }
-
   .mega-section { padding: 18px 20px 16px; border-bottom: 0.5px solid var(--lemma-line, #E5E0D5); }
   .mega-section:last-child { border-bottom: none; }
   .mega-section-label {
@@ -605,23 +488,6 @@ const isResourcesActive =
   .mob-link:last-child { border-bottom: none; }
   .mob-link:hover { color: var(--gray-800); }
   .mob-link small { display: block; font-size: 11px; color: var(--gray-500); margin-top: 2px; }
-  /* Industry-axis mobile drawer: group heading (deep-links to the listing
-     pre-filtered) followed by its indented use-case links. */
-  .mob-group-label {
-    display: block;
-    padding: 12px 0 6px;
-    margin-top: 6px;
-    text-decoration: none;
-    font-family: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    font-size: 11px; letter-spacing: .08em; font-weight: 500;
-    color: var(--gray-700, #5F5F5F);
-    border-top: 1px solid var(--gray-200);
-    transition: color .15s;
-  }
-  .mob-group-label:first-child { border-top: none; margin-top: 0; }
-  .mob-group-label:hover { color: var(--accent); }
-  .mob-link--nested { padding-left: 14px; border-bottom: none; padding-top: 6px; padding-bottom: 6px; }
-  .mob-link--all { color: var(--accent); font-weight: 500; border-bottom: none; margin-top: 8px; }
   .mob-link-dot {
     color: var(--accent, #b88746);
     font-size: 8px;
