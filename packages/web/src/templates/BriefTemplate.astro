@@ -33,6 +33,7 @@ import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefHero from "../components/BriefHero.astro";
 import BriefNextSteps from "../components/BriefNextSteps.astro";
 import BriefRelated from "../components/BriefRelated.astro";
+import BriefToc from "../components/BriefToc.astro";
 import BriefDistNote from "../components/BriefDistNote.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
@@ -61,7 +62,7 @@ const subtitle = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
 const briefPath = `/critical/briefs/${brief.id}/`;
 const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
 
-const { Content } = await render(brief);
+const { Content, headings } = await render(brief);
 
 const showRevisionHistory = brief.data.version !== "1.0";
 
@@ -176,6 +177,8 @@ const labels = isJa
         incidentDateStr={incidentDateStr}
         publishedStr={publishedStr}
       />
+
+      <BriefToc locale={locale} headings={headings} />
 
       <article class="brief-body">
         <Content />
