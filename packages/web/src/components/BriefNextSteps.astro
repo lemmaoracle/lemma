@@ -231,12 +231,16 @@ const jsonLd = {
 
 <style>
   .lm-next {
-    --lemma-accent-color: #8B4513;
-    --lemma-ink: #2b2622;
-    --lemma-muted: #6b6157;
-    --lemma-line: #e7e1d8;
-    --lemma-tintbg: #f6f1ea;
-    --lemma-card: #ffffff;
+    /* Banner runs in a permanent dark / amber palette regardless of the OS
+       prefers-color-scheme — the contrast against the cream Brief page is
+       intentional and reads as a featured CTA block. */
+    --lemma-accent-color: #c98a4b;
+    --lemma-ink: #ece6dd;
+    --lemma-muted: #a89c8e;
+    --lemma-line: #3a342d;
+    --lemma-tintbg: #211d18;
+    --lemma-card: #17140f;
+    --lemma-on-accent: #1a1408;
     font-family: "Sora", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
     color: var(--lemma-ink);
     margin: 32px 0 8px;
@@ -258,7 +262,8 @@ const jsonLd = {
   }
   .lm-next__badge {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 500; color: #fff;
+    font-size: 12px; font-weight: 500;
+    color: var(--lemma-on-accent);
     background: var(--lemma-accent-color);
     padding: 4px 11px; border-radius: 8px;
     text-decoration: none;
@@ -307,12 +312,18 @@ const jsonLd = {
     display: inline-flex; align-items: center; gap: 6px;
   }
   .lm-next__btn--primary {
-    background: var(--lemma-accent-color); color: #fff;
+    background: var(--lemma-accent-color);
+    color: var(--lemma-on-accent);
     border: 1px solid var(--lemma-accent-color);
   }
   .lm-next__btn--ghost {
-    background: transparent; color: var(--lemma-ink);
-    border: 1px solid #ccc3b8;
+    background: transparent;
+    color: var(--lemma-ink);
+    border: 1px solid var(--lemma-line);
+  }
+  .lm-next__btn--ghost:hover {
+    border-color: var(--lemma-accent-color);
+    color: var(--lemma-accent-color);
   }
   .lm-next__btn--text {
     color: var(--lemma-muted);
@@ -320,20 +331,9 @@ const jsonLd = {
     text-decoration: none;
     font-size: 13px;
   }
+  .lm-next__btn--text:hover { color: var(--lemma-ink); }
   @media (max-width: 640px) {
     .lm-next__top { flex-wrap: wrap; }
     .lm-next__eyebrow { width: 100%; }
-  }
-  @media (prefers-color-scheme: dark) {
-    .lm-next {
-      --lemma-ink: #ece6dd;
-      --lemma-muted: #a89c8e;
-      --lemma-line: #3a342d;
-      --lemma-tintbg: #211d18;
-      --lemma-card: #17140f;
-      --lemma-accent-color: #c98a4b;
-    }
-    .lm-next__badge,
-    .lm-next__btn--primary { color: #1a1408; }
   }
 </style>
