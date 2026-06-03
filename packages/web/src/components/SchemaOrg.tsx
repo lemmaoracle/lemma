@@ -20,11 +20,11 @@ export default function SchemaOrg({ post, blogPath }: SchemaOrgProps) {
     dateModified: post.date ? `${post.date.replace(/\./g, "-")}T00:00:00+09:00` : "",
     author: {
       "@type": "Organization",
-      name: "Lemma Oracle",
+      name: "Lemma",
     },
     publisher: {
       "@type": "Organization",
-      name: "Lemma Oracle",
+      name: "Lemma",
       logo: {
         "@type": "ImageObject",
         url: "https://lemma.frame00.com/favicon.svg",

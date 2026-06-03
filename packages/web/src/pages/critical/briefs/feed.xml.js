@@ -42,13 +42,13 @@ export async function GET(context) {
   return rss({
     title: "Lemma Critical Brief",
     description:
-      "Structured incident-analysis reference collection from Lemma Oracle. Each Brief examines a failure primitive and the gap that strengthening detection alone cannot close.",
+      "Structured incident-analysis reference collection from Lemma. Each Brief examines a failure primitive and the gap that strengthening detection alone cannot close.",
     site: context.site,
     trailingSlash: false,
     items,
     customData: `
       <language>en-us</language>
-      <copyright>${new Date().getFullYear()} Lemma Oracle / FRAME00, Inc.</copyright>
+      <copyright>${new Date().getFullYear()} Lemma / FRAME00, Inc.</copyright>
       <atom:link href="${new URL("critical/briefs/feed.xml", context.site)}" rel="self" type="application/rss+xml" />
     `,
     stylesheet: "/rss/styles.xsl",

@@ -35,9 +35,9 @@ const t = getTranslations(locale);
 const base = "";
 const pagePath = `/glossary/${term.slug}/`;
 
-const title = `${term.nameEn} — Lemma Oracle Glossary`;
+const title = `${term.nameEn} — Lemma Glossary`;
 const description = term.description;
-const implementationHeading = term.implementationHeading ?? "Lemma Oracle implementation";
+const implementationHeading = term.implementationHeading ?? "Lemma implementation";
 const categoryLabel = getEnCategoryLabel(term.category);
 
 const SITE = "https://lemma.frame00.com";
@@ -57,7 +57,7 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}/` },
+    { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}/` },
     { "@type": "ListItem", position: 2, name: "Glossary", item: `${SITE}/glossary/` },
     { "@type": "ListItem", position: 3, name: term.nameEn, item: pageUrl },
   ],

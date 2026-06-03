@@ -32,9 +32,9 @@ const t = getTranslations(locale);
 const base = "/ja";
 const pagePath = `/glossary/${term.slug}/`;
 
-const title = `${term.nameJa} — Lemma Oracle 用語集`;
+const title = `${term.nameJa} — Lemma 用語集`;
 const description = term.description;
-const implementationHeading = term.implementationHeading ?? "Lemma Oracle での実装";
+const implementationHeading = term.implementationHeading ?? "Lemma での実装";
 
 const SITE = "https://lemma.frame00.com";
 const pageUrl = `${SITE}/ja/glossary/${term.slug}/`;
@@ -53,7 +53,7 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}/ja/` },
+    { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}/ja/` },
     { "@type": "ListItem", position: 2, name: "用語集", item: `${SITE}/ja/glossary/` },
     { "@type": "ListItem", position: 3, name: term.nameJa, item: pageUrl },
   ],

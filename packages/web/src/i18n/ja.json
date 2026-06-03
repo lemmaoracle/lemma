@@ -1,6 +1,6 @@
 {
   "nav": {
-    "lemmaOracle": "Lemma Oracle",
+    "lemmaOracle": "Lemma",
     "overview": "概要",
     "changelog": "変更履歴",
     "essays": "記事",
@@ -63,7 +63,7 @@
       },
       "developers": {
         "architecture": "アーキテクチャ",
-        "specs": "Lemma Oracle 仕様書",
+        "specs": "Lemma 仕様書",
         "specsSub": "技術仕様・フルドキュメント",
         "guides": "ガイド",
         "encrypt": "すべてを暗号化し、何も露呈しない",
@@ -138,8 +138,8 @@
   },
   "blog": {
     "title": "ブログ",
-    "metaTitle": "ブログ — Lemma Oracle",
-    "metaDescription": "Lemma Oracle の記事・変更履歴・フィールドノート。",
+    "metaTitle": "ブログ — Lemma",
+    "metaDescription": "Lemma の記事・変更履歴・フィールドノート。",
     "subtitle": "記事、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
@@ -157,7 +157,7 @@
       "guidesTitle": "技術ドキュメント。",
       "guidesDesc": "Lemmaアーキテクチャの各レイヤーに対応する実装ガイド。",
       "readGuide": "読む →",
-      "specsTitle": "Lemma Oracle 仕様書",
+      "specsTitle": "Lemma 仕様書",
       "specsDesc": "ZK証明・選択的開示・オンチェーン来歴証明を介してAIが機密データを推論できるようにする、暗号的に検証された真実レイヤー。",
       "readSpecs": "仕様書を読む →"
     },
@@ -583,11 +583,11 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — AI のための信頼レイヤー",
+    "defaultTitle": "Lemma — AI のための信頼レイヤー",
     "defaultDescription": "Lemma は AI のための信頼レイヤー。ZK 証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズ AI・エージェント決済・コンプライアンス対応。"
   },
   "services": {
-    "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma Oracle",
+    "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma",
     "metaDescription": "データの中身を開示せずに真正性を証明。ZK 証明による検証可能 AI 向け信頼インフラで、AI エージェント・サプライチェーン追跡・監査対応を実現。エンタープライズ・開発者向けプラン提供中。",
     "hero": {
       "eyebrow": "AI のための信頼レイヤー",
@@ -899,7 +899,7 @@
     "sub": "以下のボタンからすぐにダウンロードできます。",
     "dlCard": {
       "label": "ホワイトペーパー",
-      "title": "Lemma Oracle —<br>検証可能AIインフラの技術と実装",
+      "title": "Lemma —<br>検証可能AIインフラの技術と実装",
       "desc": "ZK証明アーキテクチャ・選択的開示・オンチェーン来歴証明・PoC設計チェックリスト",
       "button": "PDFをダウンロード"
     },
@@ -958,7 +958,7 @@
     "compositionLabel": "信頼レイヤー",
     "compositionH2": "4 つの問いが、1 つの信頼レイヤーになる。",
     "compositionCenterLabel": "AI の判断",
-    "compositionCaption": "単一 API · 4 軸同時証明 · Lemma Oracle",
+    "compositionCaption": "単一 API · 4 軸同時証明 · Lemma",
     "technicalDocsLabel": "技術ドキュメント",
     "technicalDocsH2": "実装ガイドと仕様。",
     "conceptSec1Label": "なぜ単独カテゴリなのか",

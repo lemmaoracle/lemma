@@ -72,7 +72,7 @@ const articleJsonLd = {
   description: useCase.abstract,
   url: useCaseUrl,
   inLanguage: locale,
-  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma Oracle" },
+  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma" },
   publisher: { "@id": `${SITE}/#organization` },
   mainEntityOfPage: { "@type": "WebPage", "@id": useCaseUrl },
   about: pillar ? { "@type": "Thing", name: pillar.title[locale] } : undefined,
@@ -81,7 +81,7 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}${base || ""}/` },
+    { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}${base || ""}/` },
     { "@type": "ListItem", position: 2, name: useCaseT.title, item: `${SITE}${useCasesPath}/` },
     { "@type": "ListItem", position: 3, name: useCase.title, item: useCaseUrl },
   ],

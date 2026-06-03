@@ -1,5 +1,5 @@
 /**
- * Lemma Oracle glossary terms (JA).
+ * Lemma glossary terms (JA).
  *
  * Source of truth for /ja/glossary/* pages. 27 terms across 4 categories.
  *
@@ -78,7 +78,7 @@ export interface GlossaryTerm {
   readonly lead: string;
   /** "定義" section paragraphs (HTML strings). */
   readonly definition: ReadonlyArray<string>;
-  /** "Lemma Oracle での実装" / "適合経路" section paragraphs (HTML strings). */
+  /** "Lemma での実装" / "適合経路" section paragraphs (HTML strings). */
   readonly implementation: ReadonlyArray<string>;
   /** 4 related terms with one-line descriptions. */
   readonly related: ReadonlyArray<GlossaryRelated>;
@@ -86,7 +86,7 @@ export interface GlossaryTerm {
   readonly ctaH2: string;
   /**
    * Optional implementation section heading (defaults to
-   * "Lemma Oracle での実装"). Regulatory pages use "Lemma Oracle での適合経路".
+   * "Lemma での実装"). Regulatory pages use "Lemma での適合経路".
    */
   readonly implementationHeading?: string;
 }
@@ -99,13 +99,13 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Zero-Knowledge Proof — ZKP",
     category: "暗号レイヤ",
     description:
-      "ゼロ知識証明 (ZK Proof) の定義と Lemma Oracle における実装。命題を秘匿したまま正当性のみを検証可能にする暗号プリミティブ。",
+      "ゼロ知識証明 (ZK Proof) の定義と Lemma における実装。命題を秘匿したまま正当性のみを検証可能にする暗号プリミティブ。",
     lead:
       "命題が真であることを、命題の中身や前提となる秘密値を一切開示せず、第三者が機械的に検証できる暗号プリミティブ。",
     definition: [
       "ゼロ知識証明 (ZKP) は、証明者 (prover) が検証者 (verifier) に対し、ある命題が真である事実だけを納得させ、命題の根拠となる秘密値については一切の情報を漏らさない対話・非対話プロトコルを指す。Goldwasser, Micali, Rackoff が 1985 年に概念を導入し、現代では「完全性」「健全性」「ゼロ知識性」の三性質で形式化される。",
       "実装上は非対話型 (NIZK) が主流であり、SNARK 系 (Groth16, PLONK, Halo2) と STARK 系が代表的な構成。証明サイズ・検証時間・信頼セットアップの有無でトレードオフを持つ。回路 (制約系) として表現された計算であれば、入力を秘匿したまま結果の正当性を証明できる。",
-      "ZKP の有用性は二点に集約される。第一に、秘密を開示せずに性質を証明できる点 (プライバシー)。第二に、計算量の重い検証を短い証明で代替できる点 (スケーラビリティ)。Lemma Oracle は前者を主軸に用いる。",
+      "ZKP の有用性は二点に集約される。第一に、秘密を開示せずに性質を証明できる点 (プライバシー)。第二に、計算量の重い検証を短い証明で代替できる点 (スケーラビリティ)。Lemma は前者を主軸に用いる。",
     ],
     implementation: [
       "Lemma の中核アーキテクチャは、来歴・属性・AI 推論履歴を <code>docHash</code> として固定し、ZK 回路上で「ある来歴チェーンが存在する」「ある属性が範囲内にある」事実だけを取り出して証明する。コンテンツや個人情報を相手側へ渡す必要がない。",
@@ -290,7 +290,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Verifiable AI",
     category: "検証可能AI",
     description:
-      "検証可能AI (Verifiable AI) の定義と Lemma Oracle における実装。入力・モデル・推論過程の真正性を暗号で第三者検証できるようにする領域。",
+      "検証可能AI (Verifiable AI) の定義と Lemma における実装。入力・モデル・推論過程の真正性を暗号で第三者検証できるようにする領域。",
     lead:
       "AI システムの判断・推論・引用を暗号で検証可能にする実装領域。出力だけでなく、入力データの来歴・モデルの同一性・推論経路の真正性を第三者が機械的に確認できる状態を指す。",
     definition: [
@@ -317,7 +317,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Provenance — 来歴証明",
     category: "検証可能AI",
     description:
-      "プロヴナンス (Provenance) の定義と Lemma Oracle における実装。データ・モデル・判断の来歴を改ざん不能に追跡する仕組み。W3C PROV・C2PA・SLSA との接続。",
+      "プロヴナンス (Provenance) の定義と Lemma における実装。データ・モデル・判断の来歴を改ざん不能に追跡する仕組み。W3C PROV・C2PA・SLSA との接続。",
     lead:
       "データ・モデル・判断がいつ・誰によって・何を入力として生成されたかを、改ざん不能に追跡・検証する仕組み。検証可能 AI の入力層であり、Lemma の中核柱の一つ。",
     definition: [
@@ -670,7 +670,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Mythos",
     category: "脅威モデル・AI攻撃",
     description:
-      "ミュトス (Mythos) の定義と Lemma Oracle における対応経路。Anthropic のフロンティアモデルが示すゼロデイ自動発見と攻撃経路自動化の能力、および Lemma Critical の事前検証層。",
+      "ミュトス (Mythos) の定義と Lemma における対応経路。Anthropic のフロンティアモデルが示すゼロデイ自動発見と攻撃経路自動化の能力、および Lemma Critical の事前検証層。",
     lead:
       "Anthropic が 2026 年 4 月 7 日に開始した <strong>Project Glasswing</strong> で限定提供されたフロンティアモデル <strong>Claude Mythos Preview</strong>。ゼロデイ脆弱性の自動発見から攻撃経路構築までを単一エージェント内で完結させる能力を持つ。「Mythos 級」とは、この能力カテゴリそのものを指す。",
     definition: [
@@ -725,7 +725,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "HTTP 402-native payment protocol",
     category: "プロトコル・エージェント",
     description:
-      "x402 の定義と Lemma Oracle における検証層 (Trust402)。HTTP 402 Payment Required を再活用し、ステーブルコイン決済を HTTP に直接統合する Coinbase 主導のオープンプロトコル。",
+      "x402 の定義と Lemma における検証層 (Trust402)。HTTP 402 Payment Required を再活用し、ステーブルコイン決済を HTTP に直接統合する Coinbase 主導のオープンプロトコル。",
     lead:
       "HTTP 402 Payment Required を再活用し、API・コンテンツへのアクセスにステーブルコイン決済を直接組み込む Coinbase 主導のオープンプロトコル。AI エージェントによる自律決済を主要ユースケースに据える。",
     definition: [
@@ -916,7 +916,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
     nameEn: "EU Artificial Intelligence Act — Regulation (EU) 2024/1689",
     category: "規制・コンプライアンス",
     description:
-      "EU AI Act の定義と Lemma Oracle での適合経路。4 つのリスク階層、2025-2027 年の施行スケジュール、高リスク AI への自動ログ・データガバナンス義務を解説。",
+      "EU AI Act の定義と Lemma での適合経路。4 つのリスク階層、2025-2027 年の施行スケジュール、高リスク AI への自動ログ・データガバナンス義務を解説。",
     lead:
       "AI システムをリスク階層で分類し、提供者および利用者に段階的義務を課す EU の規則。違反は最大 3,500 万ユーロまたは全世界年商の 7% の制裁金。",
     definition: [
@@ -936,7 +936,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "改ざん不能な実行履歴。高リスク AI の自動ログ義務に対応する技術構成。" },
     ],
     ctaH2: "EU AI Act の適合を、暗号で。",
-    implementationHeading: "Lemma Oracle での適合経路",
+    implementationHeading: "Lemma での適合経路",
   },
   {
     slug: "ai-business-guidelines",
@@ -964,7 +964,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "ガバナンス報告の根拠を改ざん不能に残す仕組み。" },
     ],
     ctaH2: "AI 事業者ガイドラインの適合を、暗号で。",
-    implementationHeading: "Lemma Oracle での適合経路",
+    implementationHeading: "Lemma での適合経路",
   },
   {
     slug: "ai-promotion-act",
@@ -992,7 +992,7 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "事後検証可能性を担う仕組み。" },
     ],
     ctaH2: "日本の AI 規制対応を、技術で先取りする。",
-    implementationHeading: "Lemma Oracle での適合経路",
+    implementationHeading: "Lemma での適合経路",
   },
   {
     slug: "pii",
