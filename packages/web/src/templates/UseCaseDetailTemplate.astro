@@ -166,15 +166,19 @@ const breadcrumbJsonLd = {
 
       <div class="ucd-layout">
         <article class="ucd-main">
-          {useCase.sections.map((section) => {
+          {useCase.sections.map((section, i) => {
             // For the "related" section: when we have resolved related use
             // cases, render a card grid using the frontmatter slug data and
             // suppress the markdown body. Falls back to the body if the slug
             // list is empty so the page never goes blank.
             const isRelatedCards =
               section.key === "related" && relatedUseCases.length > 0;
+            const eyebrowNo = String(i + 1).padStart(2, "0");
             return (
               <section id={section.key} class={`ucd-section${isRelatedCards ? " ucd-section--related" : ""}`}>
+                {isJa && (
+                  <div class="ucd-section-eye">{eyebrowNo}</div>
+                )}
                 <h2 class="ucd-section-title">{section.title}</h2>
                 {isRelatedCards ? (
                   <ul class="ucd-related-grid">
@@ -594,6 +598,32 @@ const breadcrumbJsonLd = {
     line-height: 1.35;
   }
 
+  /* JA: separate eyebrow element (rendered conditionally) shows the
+     mockup's "── 01" pattern. EN sticks with the "§ N" counter on
+     .ucd-section-title::before. When the JA eyebrow div is present we
+     suppress that ::before to avoid stacking two eyebrows. */
+  .ucd-section-eye {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  .ucd-section-eye::before {
+    content: "";
+    width: 24px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+  .ucd-section-eye + .ucd-section-title::before {
+    display: none;
+  }
+
   /* ─── BODY (markdown HTML) ─── */
   .ucd-section-body {
     font-size: 15px;
@@ -725,29 +755,59 @@ const breadcrumbJsonLd = {
     font-family: var(--ucd-body);
     font-size: 13.5px;
     margin: 24px 0;
-    display: block;
-    overflow-x: auto;
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
   }
   .ucd-section-body :global(thead tr) {
     background: var(--lemma-cream-deep);
   }
   .ucd-section-body :global(th) {
-    padding: 12px 14px;
+    padding: 11px 12px;
     font-family: var(--ucd-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ucd-text-3);
-    text-align: left;
+    text-align: center;
     border-bottom: 0.5px solid var(--lemma-line);
   }
   .ucd-section-body :global(td) {
-    padding: 12px 14px;
+    padding: 11px 12px;
     border-bottom: 0.5px solid var(--lemma-line);
     color: var(--ucd-text-2);
     line-height: 1.6;
-    vertical-align: top;
+    vertical-align: middle;
+    text-align: center;
+  }
+  .ucd-section-body :global(th:first-child),
+  .ucd-section-body :global(td:first-child) {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(tbody tr:last-child td) {
+    border-bottom: none;
+  }
+  /* Highlight row — any tbody row whose first cell holds a <strong>.
+     Markdown writers reach this just by bolding the cell text, e.g.
+     `| **ZK 証明(Lemma)** | ... |`. */
+  .ucd-section-body :global(tbody tr:has(td:first-child strong)) {
+    background: rgba(139, 69, 19, 0.07);
+  }
+  .ucd-section-body :global(tbody tr:has(td:first-child strong) td),
+  .ucd-section-body :global(tbody tr:has(td:first-child strong) td strong) {
+    color: var(--accent);
+  }
+  /* Mobile: scroll horizontally inside the rounded card rather than
+     overflow the reading column. */
+  @media (max-width: 620px) {
+    .ucd-section-body :global(table) {
+      display: block;
+      overflow-x: auto;
+    }
   }
   .ucd-section-body :global(code:not(pre code)) {
     font-family: var(--ucd-mono);
@@ -992,6 +1052,51 @@ const breadcrumbJsonLd = {
   }
 
   /* ─── RESPONSIVE ─── */
+  /* §08 (#next) — numbered "steps" treatment: ringed mono counter on the
+     left, hairline rule between rows. Scoped to this section so other
+     ordered lists keep the lighter brown-numeral style above. */
+  .ucd-section[id="next"] .ucd-section-body :global(ol) {
+    counter-reset: ucdnextstep;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li) {
+    counter-increment: ucdnextstep;
+    position: relative;
+    padding: 14px 0 14px 42px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li:last-child) {
+    border-bottom: none;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li::before) {
+    content: counter(ucdnextstep);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 23px;
+    height: 23px;
+    border: 0.5px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li strong) {
+    font-family: var(--ucd-display);
+    font-weight: 600;
+    color: var(--black);
+  }
+
   @media (max-width: 960px) {
     .ucd-section-title {
       font-size: 24px;
