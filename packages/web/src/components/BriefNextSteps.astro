@@ -230,31 +230,29 @@ const jsonLd = {
 </script>
 
 <style>
+  /* Banner inherits the page's text colour and uses color-mix() against
+     currentColor for surfaces and borders, so it never fights the host
+     theme. The Brief page is light/cream today; if a future page renders
+     dark, the banner picks that up automatically. Saddle brown
+     (--lm-accent) stays the same in both directions because white-on-
+     #8B4513 reads cleanly on either background. */
   .lm-next {
-    /* Banner runs in a permanent dark / amber palette regardless of the OS
-       prefers-color-scheme — the contrast against the cream Brief page is
-       intentional and reads as a featured CTA block. */
-    --lemma-accent-color: #c98a4b;
-    --lemma-ink: #ece6dd;
-    --lemma-muted: #a89c8e;
-    --lemma-line: #3a342d;
-    --lemma-tintbg: #211d18;
-    --lemma-card: #17140f;
-    --lemma-on-accent: #1a1408;
+    --lm-accent: #8B4513;
     font-family: "Sora", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
-    color: var(--lemma-ink);
+    color: inherit;
     margin: 32px 0 8px;
   }
   .lm-next__wrap {
-    background: var(--lemma-tintbg);
+    background: color-mix(in srgb, currentColor 4%, transparent);
     border-radius: 14px;
     padding: 20px;
   }
   .lm-next__card {
-    background: var(--lemma-card);
-    border: 1px solid var(--lemma-line);
+    background: color-mix(in srgb, currentColor 6%, transparent);
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
     border-radius: 12px;
     padding: 18px 20px;
+    color: inherit;
   }
   .lm-next__top {
     display: flex; align-items: center; justify-content: space-between;
@@ -263,44 +261,47 @@ const jsonLd = {
   .lm-next__badge {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; font-weight: 500;
-    color: var(--lemma-on-accent);
-    background: var(--lemma-accent-color);
+    color: #fff;
+    background: var(--lm-accent);
     padding: 4px 11px; border-radius: 8px;
     text-decoration: none;
     transition: opacity .15s;
   }
   .lm-next__badge:hover { opacity: 0.88; }
   .lm-next__eyebrow {
-    font-size: 12px; color: var(--lemma-muted); letter-spacing: .02em;
+    font-size: 12px;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    letter-spacing: .02em;
   }
   .lm-next__thesis {
     font-size: 15px; line-height: 1.65;
     margin: 0 0 12px;
+    color: inherit;
   }
   .lm-next__ucs {
     display: flex; flex-wrap: wrap; gap: 8px;
     margin-bottom: 14px;
   }
   .lm-next__uc {
-    font-size: 13px; color: var(--lemma-muted);
+    font-size: 13px;
+    color: color-mix(in srgb, currentColor 70%, transparent);
     text-decoration: none;
-    border: 1px solid var(--lemma-line);
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
     border-radius: 8px;
     padding: 5px 11px;
     transition: background .15s, border-color .15s, color .15s;
   }
   .lm-next__uc:hover {
-    background: var(--lemma-tintbg);
-    border-color: var(--lemma-accent-color);
-    color: var(--lemma-accent-color);
+    border-color: var(--lm-accent);
+    color: var(--lm-accent);
   }
   .lm-next__uc--ghost {
     border-color: transparent;
-    color: var(--lemma-muted);
+    color: color-mix(in srgb, currentColor 55%, transparent);
   }
   .lm-next__uc--ghost:hover {
     background: transparent;
-    color: var(--lemma-accent-color);
+    color: var(--lm-accent);
     border-color: transparent;
   }
   .lm-next__cta {
@@ -312,26 +313,26 @@ const jsonLd = {
     display: inline-flex; align-items: center; gap: 6px;
   }
   .lm-next__btn--primary {
-    background: var(--lemma-accent-color);
-    color: var(--lemma-on-accent);
-    border: 1px solid var(--lemma-accent-color);
+    background: var(--lm-accent);
+    color: #fff;
+    border: 1px solid var(--lm-accent);
   }
   .lm-next__btn--ghost {
     background: transparent;
-    color: var(--lemma-ink);
-    border: 1px solid var(--lemma-line);
+    color: inherit;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
   }
   .lm-next__btn--ghost:hover {
-    border-color: var(--lemma-accent-color);
-    color: var(--lemma-accent-color);
+    border-color: var(--lm-accent);
+    color: var(--lm-accent);
   }
   .lm-next__btn--text {
-    color: var(--lemma-muted);
+    color: color-mix(in srgb, currentColor 60%, transparent);
     padding: 8px 4px;
     text-decoration: none;
     font-size: 13px;
   }
-  .lm-next__btn--text:hover { color: var(--lemma-ink); }
+  .lm-next__btn--text:hover { color: inherit; }
   @media (max-width: 640px) {
     .lm-next__top { flex-wrap: wrap; }
     .lm-next__eyebrow { width: 100%; }
