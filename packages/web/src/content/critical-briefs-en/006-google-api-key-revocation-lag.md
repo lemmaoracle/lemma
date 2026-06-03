@@ -9,7 +9,7 @@ incident_date: 2026-05-21
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts"]
+related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts", "019-construction-engineer-qualification-fraud", "020-type-designation-conformity-fraud", "021-wirecard-balance-attestation"]
 version: "1.0"
 status: published
 ---

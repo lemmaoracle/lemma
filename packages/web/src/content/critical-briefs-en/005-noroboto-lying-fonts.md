@@ -9,7 +9,7 @@ incident_date: 2026-05-25
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["003-starlette-badhost"]
+related_briefs: ["003-starlette-badhost", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
 ---
