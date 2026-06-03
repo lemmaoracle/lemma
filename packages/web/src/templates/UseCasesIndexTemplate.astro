@@ -50,10 +50,11 @@ const taskGroups = isJa
       .filter((g) => g.members.length > 0)
   : null;
 
-type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "ai" | "edu" | "dev";
+type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "svc" | "ai" | "edu" | "dev";
 // Visible filter chips. `edu` is a defined taxonomy key (card-level label only) but is
 // not yet a filter chip — discipline: add a chip once ≥2 use cases carry the key.
-const INDUSTRY_ORDER: ReadonlyArray<IndustryKey> = ["mfg", "fin", "pub", "sc", "ai", "dev"];
+// `svc` (サービス・小売) joins as a chip from the batch4 spec addendum (≥2 use cases).
+const INDUSTRY_ORDER: ReadonlyArray<IndustryKey> = ["mfg", "fin", "pub", "sc", "svc", "ai", "dev"];
 
 const SITE = "https://lemma.frame00.com";
 const collectionJsonLd = {

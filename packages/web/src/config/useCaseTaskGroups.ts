@@ -38,6 +38,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     slugs: [
       "long-term-contract-record",
       "internal-control-approval-proof",
+      "incident-response-record",
       "financial-data-exfiltration",
     ],
   },
@@ -48,6 +49,9 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     slugs: [
       "counterparty-screening",
       "kyc-aml-selective-disclosure",
+      "customer-flag-need-to-know",
+      "age-eligibility-verification",
+      "store-network-compliance",
       "supplier-credential-verification",
     ],
   },
@@ -67,6 +71,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     slugs: [
       "credential-presentation",
       "qualified-worker-attestation",
+      "work-fitness-attestation",
       "benefit-eligibility-proof",
     ],
   },

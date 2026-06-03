@@ -13,7 +13,7 @@
 
 export type ExitPillarCode = "P1" | "P2" | "P3" | "P4";
 export type ExitReader = "enterprise" | "dev";
-export type ExitIndustry = "finance" | "public" | "manufacturing" | "ai" | "developer";
+export type ExitIndustry = "finance" | "public" | "manufacturing" | "service" | "ai" | "developer";
 
 export interface ExitVariant {
   readonly reader: ExitReader;
@@ -48,6 +48,7 @@ export const INDUSTRY_LABEL_JA: Record<ExitIndustry, string> = {
   finance: "金融",
   public: "公共",
   manufacturing: "製造・調達",
+  service: "サービス・小売",
   ai: "AI 横断",
   developer: "開発者",
 };
@@ -67,6 +68,13 @@ export const USE_CASE_EXIT_VARIANTS: Readonly<Record<string, ExitVariant>> = {
   "credential-presentation":       { reader: "enterprise", pillarCode: "P4", industry: "public", planLabel: "(Civic)" },
   "long-term-contract-record":     { reader: "enterprise", pillarCode: "P1", industry: "public", planLabel: "(Civic)" },
   "qualified-worker-attestation":  { reader: "enterprise", pillarCode: "P4", industry: "public", planLabel: "(Civic)" },
+
+  // Enterprise — Service & Retail (batch4 svc taxonomy)
+  "customer-flag-need-to-know":   { reader: "enterprise", pillarCode: "P4", industry: "service", planLabel: "(Compliance)" },
+  "age-eligibility-verification": { reader: "enterprise", pillarCode: "P4", industry: "service", planLabel: "(Compliance)" },
+  "store-network-compliance":     { reader: "enterprise", pillarCode: "P4", industry: "service", planLabel: "(Critical)" },
+  "incident-response-record":     { reader: "enterprise", pillarCode: "P1", industry: "service", planLabel: "(Critical)" },
+  "work-fitness-attestation":     { reader: "enterprise", pillarCode: "P4", industry: "service", planLabel: "(Critical)" },
 
   // Enterprise — Manufacturing/Procurement → Critical
   "supply-chain-esg":                  { reader: "enterprise", pillarCode: "P4", industry: "manufacturing", planLabel: "(Critical)" },

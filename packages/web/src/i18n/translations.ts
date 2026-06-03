@@ -547,6 +547,7 @@ export interface Translations {
       readonly fin: string;
       readonly pub: string;
       readonly sc: string;
+      readonly svc: string;
       readonly ai: string;
       readonly edu: string;
       readonly dev: string;
