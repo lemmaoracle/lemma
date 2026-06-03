@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "009-gtg1002-ai-orchestrated-espionage", "018-hackerbot-claw-ai-vs-ai"]
 version: "1.0"
 status: published
+og_lead_ja: "AI の挙動を統治する層に完全性も来歴もなかった — McKinsey Lilli システムプロンプト"
+og_lead_en: "The layer governing the AI's behavior had no integrity or provenance — McKinsey Lilli"
 ---
 
 ## TL;DR

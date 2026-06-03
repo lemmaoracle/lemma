@@ -12,6 +12,8 @@ related_pack: ["B-regulatory"]
 related_briefs: ["006-google-api-key-revocation-lag", "005-noroboto-lying-fonts", "020-type-designation-conformity-fraud"]
 version: "1.0"
 status: published
+og_lead_ja: "国家資格の実務経験を満たさない技術者の現場配置 — 有資格者配置の独立検証不在"
+og_lead_en: "Engineers placed under national-license claims they didn't meet — qualified-worker fraud"
 ---
 
 ## TL;DR

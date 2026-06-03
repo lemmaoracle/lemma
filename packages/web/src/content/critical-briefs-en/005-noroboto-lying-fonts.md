@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["003-starlette-badhost", "019-construction-engineer-qualification-fraud"]
 version: "1.0"
 status: published
+og_lead_ja: "埋め込みフォント偽装で AI 文書レビューの入力を改ざん — Noroboto 攻撃"
+og_lead_en: "Embedded font forgery silently rewrote what the AI read — Noroboto attack"
 ---
 
 ## TL;DR
