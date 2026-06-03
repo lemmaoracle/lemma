@@ -9,7 +9,7 @@ incident_date: 2024-12-20
 published: 2026-06-03
 authors: ["Lemma Critical Team"]
 related_pack: ["B-regulatory"]
-related_briefs: ["006-google-api-key-revocation-lag", "005-noroboto-lying-fonts", "020-type-designation-conformity-fraud"]
+related_briefs: ["006-google-api-key-revocation-lag", "005-noroboto-lying-fonts", "020-type-designation-conformity-fraud", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
 og_lead_ja: "国家資格の実務経験を満たさない技術者の現場配置 — 有資格者配置の独立検証不在"
