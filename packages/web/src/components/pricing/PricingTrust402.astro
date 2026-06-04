@@ -9,9 +9,10 @@ import { PRICING } from "../../data/pricing";
 interface Props { locale: Locale; base: string }
 const { locale, base } = Astro.props as Props;
 const t = PRICING.trust402;
-const secondaryHref = t.ctaSecondary.href.startsWith("/")
-  ? `${base}${t.ctaSecondary.href}`
-  : t.ctaSecondary.href;
+const secondaryHrefRaw = t.ctaSecondary.href[locale];
+const secondaryHref = secondaryHrefRaw.startsWith("/")
+  ? `${base}${secondaryHrefRaw}`
+  : secondaryHrefRaw;
 ---
 
 <section class="pt-section">
@@ -44,7 +45,7 @@ const secondaryHref = t.ctaSecondary.href.startsWith("/")
     </div>
 
     <div class="pt-cta">
-      <a class="pt-cta-primary" href={t.ctaPrimary.href} target="_blank" rel="noopener">
+      <a class="pt-cta-primary" href={t.ctaPrimary.href[locale]} target="_blank" rel="noopener">
         {t.ctaPrimary.label[locale]}
       </a>
       <a class="pt-cta-secondary" href={secondaryHref}>

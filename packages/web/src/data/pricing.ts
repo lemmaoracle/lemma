@@ -58,8 +58,8 @@ export interface PricingContent {
       readonly features: Localized<readonly string[]>;
       readonly tiers: ReadonlyArray<{ readonly no: string; readonly scope: Localized }>;
       readonly pricingModel: Localized;
-      readonly ctaPrimary: { readonly label: Localized; readonly href: string };
-      readonly ctaSecondary: { readonly label: Localized; readonly href: string };
+      readonly ctaPrimary: { readonly label: Localized; readonly href: Localized };
+      readonly ctaSecondary: { readonly label: Localized; readonly href: Localized };
     }>;
   };
 
@@ -77,8 +77,8 @@ export interface PricingContent {
       readonly desc: Localized;
       readonly status: Localized;
     }>;
-    readonly ctaPrimary: { readonly label: Localized; readonly href: string };
-    readonly ctaSecondary: { readonly label: Localized; readonly href: string };
+    readonly ctaPrimary: { readonly label: Localized; readonly href: Localized };
+    readonly ctaSecondary: { readonly label: Localized; readonly href: Localized };
     readonly footerNote: Localized;
   };
 
@@ -144,14 +144,23 @@ export interface PricingContent {
     readonly h2Head: Localized;
     readonly h2Accent: Localized;
     readonly sub: Localized;
-    readonly ctaPrimary: { readonly label: Localized; readonly href: string };
-    readonly ctaSecondary: { readonly label: Localized; readonly href: string };
+    readonly ctaPrimary: { readonly label: Localized; readonly href: Localized };
+    readonly ctaSecondary: { readonly label: Localized; readonly href: Localized };
   };
 }
 
-const WP_URL_HERO = "https://tally.so/r/xX0VYv";
-const WP_URL_PLAN = "https://tally.so/r/7RJXdR";
-const DISCOVERY_URL = "https://tally.so/r/EkBqDX";
+const WP_URL_HERO: Localized = {
+  ja: "https://tally.so/r/xX0VYv",
+  en: "https://tally.so/r/7RJXdR",
+};
+const WP_URL_PLAN: Localized = {
+  ja: "https://tally.so/r/xX0VYv",
+  en: "https://tally.so/r/7RJXdR",
+};
+const DISCOVERY_URL: Localized = {
+  ja: "https://tally.so/r/EkBqDX",
+  en: "https://tally.so/r/Pd2Rl5",
+};
 const TRUST402_WAITLIST = "https://tally.so/r/kd0bZR";
 
 export const PRICING: PricingContent = {
@@ -358,7 +367,7 @@ export const PRICING: PricingContent = {
       },
     ],
     ctaPrimary: { label: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" }, href: TRUST402_WAITLIST },
-    ctaSecondary: { label: { ja: "製品ページを見る ↗", en: "Product page ↗" }, href: "/trust402" },
+    ctaSecondary: { label: { ja: "製品ページを見る ↗", en: "Product page ↗" }, href: { ja: "/trust402", en: "/trust402" } },
     footerNote: {
       ja: "詳細な料金とドキュメントはリリース時に提供されます。",
       en: "Detailed pricing and documentation publish at release.",

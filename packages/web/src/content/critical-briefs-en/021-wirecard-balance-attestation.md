@@ -112,9 +112,9 @@ A proof fixed at the point of confirmation and disclosure then functions, years 
 
 Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
 
-[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Download the whitepaper →](https://tally.so/r/7RJXdR)
-[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+[Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Whitepaper →](https://tally.so/r/7RJXdR)
+[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
 
 ---
 
