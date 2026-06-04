@@ -5,7 +5,7 @@ title_en: "Invisible Unicode Instruction Injection — The Gap Between Human-Rea
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["agent-infrastructure", "data-provenance"]
-incident_date: 2026-03
+incident_date: 2026-03-01
 published: 2026-06-05
 authors: ["Lemma Critical Team"]
 related_briefs: ["005-noroboto-lying-fonts", "003-starlette-badhost", "011-synthid-watermark-reverse-engineering"]
