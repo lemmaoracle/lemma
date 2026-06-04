@@ -105,6 +105,12 @@ const briefSchema = z
      */
     og_lead_ja: z.string().optional(),
     og_lead_en: z.string().optional(),
+    /**
+     * Optional cover image URL for the OG v2 artboard. When unset, the
+     * OG generator falls back to the cream-deep + dark-on-light design.
+     * Existing briefs leave this empty; future briefs can opt in.
+     */
+    cover: z.string().url().optional(),
   })
   .refine(
     (data) => {
