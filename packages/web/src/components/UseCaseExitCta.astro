@@ -48,7 +48,7 @@ const isDev = variant.reader === "dev";
 const consultUrl = DISCOVERY_CALL_URL.ja;
 const trustUrl = base ? `${base}/trust402/` : "/trust402/";
 const sealUrl = base ? `${base}/seal/` : "/seal/";
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
+const tallyWhitepaperId = locale === "ja" ? "xX0VYv" : "7RJXdR";
 const briefsHref = base ? `${base}/critical/briefs/` : "/critical/briefs/";
 const pillarHrefRoot = base ? `${base}${PILLAR_HREF[variant.pillarCode]}` : PILLAR_HREF[variant.pillarCode];
 
@@ -68,7 +68,7 @@ const primaryCta: Cta = isDev
 const sealCta: Cta = { label: "Seal", href: sealUrl, ev: "cta_trial_click", external: false };
 const consultCta: Cta = { label: "導入を相談", href: consultUrl, ev: "cta_consult_click", external: true };
 const trialCta: Cta = { label: trialLabel, href: trustUrl, ev: "cta_trial_click", external: true };
-const textCta: Cta = { label: "ホワイトペーパー", href: whitepaperUrl, ev: "cta_whitepaper_click", external: true };
+const textCta = { label: "ホワイトペーパー", ev: "cta_whitepaper_click" };
 
 const ghostCtas: ReadonlyArray<Cta> = isDev ? [sealCta, consultCta] : [trialCta];
 
@@ -139,14 +139,14 @@ const jsonLd = {
               data-cta={cta.label}
             >{cta.label}</a>
           ))}
-          <a
+          <button
+            type="button"
             class="lm-next__btn--text"
-            href={textCta.href}
-            target="_blank"
-            rel="noopener"
+            data-tally-open={tallyWhitepaperId}
+            data-tally-emoji-text=""
             data-ev={textCta.ev}
             data-cta={textCta.label}
-          >{textCta.label}</a>
+          >{textCta.label}</button>
         </div>
       </div>
     </div>
@@ -276,6 +276,10 @@ const jsonLd = {
     padding: 8px 4px;
     text-decoration: none;
     font-size: 13px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
   }
   .lm-next__btn--text:hover { color: inherit; }
   @media (max-width: 640px) {

@@ -33,7 +33,7 @@ const { pillar, briefId, base } = Astro.props as BriefNextStepsProps;
 
 const consultUrl = DISCOVERY_CALL_URL.ja;
 const trustUrl = base ? `${base}/trust402/` : "/trust402/";
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
+const tallyWhitepaperId = "xX0VYv";
 
 const ucBase = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const pillarHubBase = base ? `${base}/pillars` : "/pillars";
@@ -107,7 +107,7 @@ const isEnterpriseLead = variant.reader === "enterprise";
 
 const consultCta = { label: "導入を相談", href: consultUrl, ev: "cta_consult_click", external: true };
 const trialCta = { label: "Trust402 を試す", href: trustUrl, ev: "cta_trial_click", external: true };
-const textCta = { label: "ホワイトペーパー", href: whitepaperUrl, ev: "cta_whitepaper_click", external: true };
+const textCta = { label: "ホワイトペーパー", ev: "cta_whitepaper_click" };
 
 const primaryCta = isEnterpriseLead
   ? { ...consultCta, label: "導入を相談 →" }
@@ -184,14 +184,14 @@ const jsonLd = {
           data-ev={ghostCta.ev}
           data-cta={ghostCta.label}
         >{ghostCta.label}</a>
-        <a
+        <button
+          type="button"
           class="lm-next__btn--text"
-          href={textCta.href}
-          target="_blank"
-          rel="noopener"
+          data-tally-open={tallyWhitepaperId}
+          data-tally-emoji-text=""
           data-ev={textCta.ev}
           data-cta={textCta.label}
-        >{textCta.label}</a>
+        >{textCta.label}</button>
       </div>
     </div>
   </div>
@@ -331,6 +331,10 @@ const jsonLd = {
     padding: 8px 4px;
     text-decoration: none;
     font-size: 13px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
   }
   .lm-next__btn--text:hover { color: inherit; }
   @media (max-width: 640px) {
