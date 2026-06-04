@@ -97,3 +97,17 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 - **X41 D-Sec advisory and MCP scanner**(X41 D-Sec 公式)— mcp-scan.nemesis.services の公開 scanner と technical advisory。https://mcp-scan.nemesis.services/
 - **Starlette 1.0.1 release notes**(フレームワーク公式、GitHub release)— BadHost への patch 反映。https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package"(2026-05-27、独立報道)— https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

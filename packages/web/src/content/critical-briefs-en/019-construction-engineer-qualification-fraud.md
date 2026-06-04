@@ -101,3 +101,17 @@ A proof fixed at the point of assignment then functions, years later when "was a
 - **MLIT**: disclosure on deficiencies in practical experience for the skills examination (2021-08-31; self-investigation results 390 / 13, up to 2,422 placements; MLIT's response) — https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo13_hh_000001_00068.html
 - **MLIT**: "Amendment of the Standards for Disciplinary Action against Improper Conduct by Construction Operators" (2021-07-26; business-suspension order of 30 days or more for contractors placing fraudulently qualified persons) — https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo13_hh_000001_00064.html
 - **Trade media (secondary)**: ongoing reporting on national-license fraud in construction (January 2025 and after) — Nikkei xTECH
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

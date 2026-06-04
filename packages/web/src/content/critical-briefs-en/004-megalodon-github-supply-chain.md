@@ -97,3 +97,17 @@ Against the structural gap exposed by this incident (absent independent verifica
 - **Safe Dep technical analysis**: "Megalodon mass GitHub repo backdooring of CI workflows" (2026-05, Safe Dep official blog) — https://safedep.io/megalodon-mass-github-repo-backdooring-ci-workflows/
 - **Ox Security technical analysis**: "Megalodon CI/CD malware on GitHub" (2026-05, Ox Security official blog, lead researcher: Bustan) — https://www.ox.security/blog/megalodon-cicd-malware-github/
 - **Hudson Rock analysis**: "Infostealers just spawned a 5,000-repo GitHub supply chain attack" (2026-05, Hudson Rock official blog) — Confirmation of the infostealer-origin path with empirical data. https://www.hudsonrock.com/blog/infostealers-just-spawned-a-5000-repo-github-supply-chain-attack
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

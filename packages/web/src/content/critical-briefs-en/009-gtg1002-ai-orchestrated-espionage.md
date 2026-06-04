@@ -98,3 +98,17 @@ Against the structural gap exposed by this incident (each of an AI agent's auton
 - **Paul, Weiss client memo**: "Anthropic Disrupts First Documented Case of Large-Scale AI-Orchestrated Cyberattack" (2025-11) — https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack
 - **SOCRadar analysis**: "AI-Powered Cyber Espionage: Inside the GTG-1002 Campaign" (2025-11) — https://socradar.io/blog/ai-powered-gtg-1002-campaign/
 - **PwC**: "AI-orchestrated cyberattacks: A call to action" (2025) — https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

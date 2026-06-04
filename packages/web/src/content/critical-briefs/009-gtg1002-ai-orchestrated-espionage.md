@@ -98,3 +98,17 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 - **Paul, Weiss client memo**: "Anthropic Disrupts First Documented Case of Large-Scale AI-Orchestrated Cyberattack"（2025-11）— https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack
 - **SOCRadar analysis**: "AI-Powered Cyber Espionage: Inside the GTG-1002 Campaign"（2025-11）— https://socradar.io/blog/ai-powered-gtg-1002-campaign/
 - **PwC**: "AI-orchestrated cyberattacks: A call to action"（2025）— https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

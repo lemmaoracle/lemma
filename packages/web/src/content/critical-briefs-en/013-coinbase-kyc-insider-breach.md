@@ -97,3 +97,17 @@ Against the structural gap exposed by this incident (raw PII collected and store
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers" (2025-05-21, affected count and exfiltrated data categories) — https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
 - **Bitdefender (HotForSecurity)**: "Data Breach at Coinbase Exposes Information of Nearly 70,000 Customers" (2025-05, method and data categories) — https://www.bitdefender.com/en-us/blog/hotforsecurity/data-breach-at-coinbase-exposes-information-of-nearly-70-000-customers
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost" (2025-05, Form 8-K and remediation cost estimate) — https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

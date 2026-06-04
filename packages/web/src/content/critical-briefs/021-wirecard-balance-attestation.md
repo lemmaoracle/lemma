@@ -114,6 +114,7 @@ Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・�
 
 [Discovery Call を予約する →](https://tally.so/r/EkBqDX)
 [ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
 
 ---
 

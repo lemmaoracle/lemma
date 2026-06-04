@@ -97,3 +97,17 @@ Against the structural gap exposed here (provenance assurance stopped at the pub
 - **TanStack official postmortem**: "Postmortem: TanStack npm supply-chain compromise" (2026-05) — https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
 - **GitHub Advisory Database / CVE-2026-45321**: "Malware in @tanstack/* packages exfiltrates cloud credentials, GitHub tokens, and SSH keys" (GHSA-g7cv-rxg3-hmpx) — https://github.com/advisories/GHSA-g7cv-rxg3-hmpx
 - **The Hacker News**: "Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages" (2026-05) — https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

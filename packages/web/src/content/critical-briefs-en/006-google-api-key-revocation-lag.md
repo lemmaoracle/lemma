@@ -97,3 +97,17 @@ Against the structural gap exposed by this incident (no independent verification
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon (2026-05, Aikido official blog, including measurement data across 10 trials over 2 days, technical detail, and the report-to-Google history) — https://www.aikido.dev/blog/google-api-keys-deletion
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

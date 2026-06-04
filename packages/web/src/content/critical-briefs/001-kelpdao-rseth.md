@@ -100,3 +100,17 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026"(blockchain analytics 大手による独立解析、onchain trace を含む)— https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026"(security audit 企業による技術解説、攻撃経路の独立分析)— https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights"(独立解析)— https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

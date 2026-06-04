@@ -95,3 +95,17 @@ Against the structural gap exposed here (the cross-chain value claim was not ind
 - **CoinDesk**: "Verus-Ethereum bridge loses $11 million as hackers keep targeting cross-chain infrastructure" (2026-05-18) — https://www.coindesk.com/markets/2026/05/18/yet-another-crypto-bridge-falls-victim-to-an-usd11-million-hack
 - **AMBCrypto**: "Verus-Ethereum bridge hack drains $11.58M - Why DeFi trust is eroding" (2026-05) — https://ambcrypto.com/verus-ethereum-bridge-hack-drains-11-58m-why-defi-trust-is-eroding/
 - **Crypto Times**: "Verus Hacker Returns $8.5M After Bridge Exploit Deal" (2026-05-22, the bounty arrangement and return) — https://www.cryptotimes.io/2026/05/22/verus-hacker-returns-8-5m-after-bridge-exploit-deal/
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

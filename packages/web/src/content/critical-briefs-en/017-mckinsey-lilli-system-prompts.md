@@ -97,3 +97,17 @@ Against the structural gap exposed here (no mechanism independently verifies the
 - **CodeWall official blog**: "How We Hacked McKinsey's AI Platform" (2026-03, the primary claim of the attack chain and reach) — https://codewall.ai/blog/how-we-hacked-mckinseys-ai-platform
 - **BankInfoSecurity**: "Autonomous Agent Hacked McKinsey's AI in 2 Hours" (2026-03) — https://www.bankinfosecurity.com/autonomous-agent-hacked-mckinseys-ai-in-2-hours-a-31007
 - **Outpost24**: "How an AI Agent Hacked McKinsey's AI Platform" (2026-03, technical commentary) — https://outpost24.com/blog/ai-agent-hacked-mckinsey-ai-platform/
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

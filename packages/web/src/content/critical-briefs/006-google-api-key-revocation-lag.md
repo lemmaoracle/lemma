@@ -97,3 +97,17 @@ API 種別による失効速度の差が示すこと:
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon(2026-05、Aikido 公式 blog、10 回試験 × 2 日の計測データと技術詳細、Google への報告経緯を含む)— https://www.aikido.dev/blog/google-api-keys-deletion
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

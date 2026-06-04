@@ -100,3 +100,17 @@ Against the structural gap exposed by this incident (an AI judgment output funct
 - **University of Michigan Law (Law Quadrangle)**: "Flawed Facial Recognition Technology Leads to Wrongful Arrest and Historic Settlement" (Winter 2024–2025) — https://quadrangle.michigan.law.umich.edu/issues/winter-2024-2025/flawed-facial-recognition-technology-leads-wrongful-arrest-and-historic
 - **Michigan Public**: "'It didn't make sense at all': Wrongful facial recognition arrest in Detroit leads to landmark settlement" (2024-06-28) — https://www.michiganpublic.org/criminal-justice-legal-system/2024-06-28/it-didnt-make-sense-at-all-wrongful-facial-recognition-arrest-leads-to-landmark-settlement
 - **NIST**: "Face Recognition Vendor Test (FRVT) Part 3: Demographic Effects" (NISTIR 8280, 2019-12) — https://nvlpubs.nist.gov/nistpubs/ir/2019/nist.ir.8280.pdf
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

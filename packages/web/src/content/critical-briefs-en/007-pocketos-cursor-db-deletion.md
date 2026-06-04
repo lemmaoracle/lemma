@@ -98,3 +98,17 @@ Against the structural gap exposed by this incident (an AI agent's authority to 
 ## 8. Sources
 
 - **Jer Crane (PocketOS founder) public X account**: "An AI Agent Just Destroyed Our Production Data. It Confessed in Writing." (2026-04-25, long-form publication including the 30-hour timeline, prompting 7.1M-view-scale cross-industry argument) — https://x.com/lifeof_jer/status/2048103471019434248
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

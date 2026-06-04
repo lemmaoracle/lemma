@@ -93,3 +93,17 @@ Against the structural gap exposed by this incident (an acquired artifact's orig
 - **Trend Micro technical analysis**: "Weaponizing Trust Signals: Claude Code Lures and GitHub Release Payloads" (2026-04-03, authors Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra) — https://www.trendmicro.com/en_us/research/26/d/weaponizing-trust-claude-code-lures-and-github-release-payloads.html
 - **Trend Micro follow-up**: "Claude Code Packaging Error Remains a Lure in an Active Campaign: What Defenders Should Do" (2026-04) — https://www.trendmicro.com/en_us/research/26/d/claude-code-remains-a-lure-what-defenders-should-do.html
 - **PCMag**: "Anthropic Issues 8,000 Copyright Takedowns to Scrub Claude Code Leak" (2026-03) — https://www.pcmag.com/news/anthropic-issues-8000-copyright-takedowns-to-scrub-claude-code-leak
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

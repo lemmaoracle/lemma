@@ -99,3 +99,17 @@ A proof fixed at the point of application then functions, years later when "was 
 - **MLIT**: disclosure on irregularities in type-designation applications (2024, three-model type-designation revocation) — https://www.mlit.go.jp/jidosha/jidosha_tk8_000020.html
 - **Maker's own disclosure**: announcement on results of conformity verification (2024-06-25, completion of technical verification) — https://www.daihatsu.com/jp/news/2024/20240625-1.html
 - **Trade media (secondary)**: reporting on type-designation revocation and re-acquisition for industrial engines (2024) — Nikkei xTECH
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

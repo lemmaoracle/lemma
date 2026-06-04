@@ -113,3 +113,17 @@ Against the structural gap exposed by this incident (cross-chain message trust c
 - **Stake DAO official statement (follow-up)** (2026-05-28, Stake DAO official X post) — Preliminary investigation; disclosure of the deployer private key compromise; protection of mainnet-side backing assets; pause of the vsdCRV bridge; containment to Arbitrum; confirmation that Boosted Yields, Liquid Lockers, Votemarket, and Stake DAO lending on Morpho were not affected. https://x.com/StakeDAOHQ/status/2059938235724320959
 - **Blockaid threat intelligence (real-time detection)** (2026-05-27, Blockaid official X post) — Real-time detection of the ongoing exploit; disclosure of the 5.4 trillion vsdCRV mint and the swap to ETH; on-chain evidence of malicious peer deployment, the setPeer call, and the mint transaction. There was no standalone official blog post; X served as the primary statement channel. https://x.com/blockaid_/status/2059573118927049152
 - **PeckShield Alert analysis** (2026-05-27, PeckShield Alert official X post) — Independent confirmation of the 5.4 trillion vsdCRV mint and the swap to 43.781 ETH (approx. $91K); analysis of the swap path via Curve / KyberSwap and the bridge to Ethereum. There was no standalone official blog post; X served as the primary statement channel. https://x.com/PeckShieldAlert/status/2059578749352640679
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.
