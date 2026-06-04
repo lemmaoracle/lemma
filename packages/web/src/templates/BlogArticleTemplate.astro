@@ -84,6 +84,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   metaType="article"
   post={post}
   blogPath={blogPath}
+  ogImage={`https://lemma.frame00.com/og/blog/${locale}/${post.slug}.png`}
 >
   {post && <SchemaOrg post={post} blogPath={blogPath} />}
   <Navigation locale={locale} t={t.nav} base={base} />

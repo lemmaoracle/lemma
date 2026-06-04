@@ -28,6 +28,8 @@ interface ArticleMetaTagsProps extends BaseMetaTagsProps {
   // blogPath already contains the locale prefix (e.g. "/ja/blog"), so we do
   // NOT need a separate `base` here — using both would double-prefix the URL.
   blogPath: string;
+  /** Dynamic per-post OG image URL; falls back to `post.cover` / locale default. */
+  ogImage?: string;
 }
 
 type MetaTagsProps = HomeMetaTagsProps | PageMetaTagsProps | ArticleMetaTagsProps;
@@ -78,7 +80,7 @@ export default function MetaTags(props: MetaTagsProps) {
     );
   } else {
     const { post, blogPath, locale } = props;
-    const ogImage = post.cover || getDefaultOgImage(locale);
+    const ogImage = props.ogImage ?? post.cover ?? getDefaultOgImage(locale);
     // blogPath already includes the locale prefix (e.g. "/ja/blog"); do NOT
     // re-prefix with `base`, that would yield "/ja/ja/blog/<slug>".
     const url = `https://lemma.frame00.com${blogPath}/${post.slug}`;
@@ -90,6 +92,8 @@ export default function MetaTags(props: MetaTagsProps) {
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.abstract} />
