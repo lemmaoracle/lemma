@@ -368,6 +368,18 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
+<!-- Tally hydration fallback (per dev addendum 2026-06-04) — see Layout.astro. -->
+<script is:inline>
+  (function () {
+    var hydrate = function () {
+      var fs = document.querySelectorAll('iframe[data-tally-src]:not([src])');
+      for (var i = 0; i < fs.length; i++) fs[i].src = fs[i].getAttribute('data-tally-src');
+    };
+    document.addEventListener('DOMContentLoaded', hydrate);
+    document.addEventListener('astro:after-swap', hydrate);
+    window.addEventListener('load', hydrate);
+  })();
+</script>
 </head>
 <body>
 

@@ -159,6 +159,23 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <!-- Tally widget runtime — required by every `data-tally-open` button and
          every `data-tally-src` iframe on the site. Loaded once, globally. -->
     <script async is:inline src="https://tally.so/widgets/embed.js"></script>
+    <!-- Tally hydration fallback (per dev addendum 2026-06-04). Tally's
+         `embed.js` sometimes leaves `data-tally-src` iframes with an empty
+         `src` (loadEmbeds hook misses). Copy `data-tally-src` -> `src`
+         ourselves on DOMContentLoaded, page-swap (View Transitions), and
+         window load. Each iframe is only touched once because we skip
+         anything that already has a `src`. -->
+    <script is:inline>
+      (function () {
+        var hydrate = function () {
+          var fs = document.querySelectorAll('iframe[data-tally-src]:not([src])');
+          for (var i = 0; i < fs.length; i++) fs[i].src = fs[i].getAttribute('data-tally-src');
+        };
+        document.addEventListener('DOMContentLoaded', hydrate);
+        document.addEventListener('astro:after-swap', hydrate);
+        window.addEventListener('load', hydrate);
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet" />

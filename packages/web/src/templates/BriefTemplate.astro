@@ -193,7 +193,44 @@ const labels = isJa
 
       <article class="brief-body">
         <Content />
+        {/* TL;DR-adjacent subscribe pill — Tally newsletter popup trigger
+           (per dev addendum 2026-06-04 §B). Rendered as the last child of
+           `.brief-body`; the inline script below moves it to immediately
+           after the TL;DR paragraph (the first `<p>` after the first
+           `<h2>`) so the high-intent moment after TL;DR is captured. */}
+        <button
+          type="button"
+          class="brief-subscribe-pill"
+          data-tally-open={locale === "ja" ? "EkMj82" : "rjvN2X"}
+          data-tally-hide-title="1"
+          data-tally-auto-close="2000"
+        >
+          {locale === "ja"
+            ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
+            : "✉️ Get new Briefs & insights, once a month"}
+        </button>
+        <noscript>
+          <a class="brief-subscribe-pill" href={locale === "ja" ? "https://tally.so/r/EkMj82" : "https://tally.so/r/rjvN2X"} target="_blank" rel="noopener">
+            {locale === "ja"
+              ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
+              : "✉️ Get new Briefs & insights, once a month"}
+          </a>
+        </noscript>
       </article>
+      <script is:inline>
+        (function () {
+          var body = document.querySelector('.brief-body');
+          if (!body) return;
+          var pill = body.querySelector(':scope > .brief-subscribe-pill');
+          if (!pill) return;
+          var firstH2 = body.querySelector(':scope > h2');
+          if (!firstH2) return;
+          var tldrP = firstH2.nextElementSibling;
+          while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
+          if (!tldrP) return;
+          tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
+        })();
+      </script>
 
       {isJa && (
         <BriefNextSteps
@@ -402,6 +439,31 @@ const labels = isJa
     border-bottom-right-radius: 16px;
     font-size: 15.5px;
     line-height: 1.85;
+    color: var(--brief-text-1);
+  }
+
+  /* ─── TL;DR-adjacent subscribe pill (per dev addendum 2026-06-04 §B) ─── */
+  .brief-body .brief-subscribe-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: -32px 0 56px;
+    padding: 9px 18px;
+    font-family: var(--brief-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--brief-text-2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .brief-body .brief-subscribe-pill:hover {
+    background: var(--lemma-cream-deep);
+    border-color: var(--accent);
     color: var(--brief-text-1);
   }
 
