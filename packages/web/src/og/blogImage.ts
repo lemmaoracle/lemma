@@ -1,20 +1,21 @@
 /**
- * Blog post dynamic OG image generator (1200×630) — v2.
+ * Blog post dynamic OG image generator (1200×630) — v2 unified.
  *
  * Common artboard primitives (padding / wordmark / title / accent
- * rule) live in `ogBase.ts` and are shared with the Critical Brief
- * v2 generator. The only blog-specific pieces are the **category
- * label** rendered top-right (with `Announcements` opting into a
- * pill treatment) and the **overlay gradient stops** — Blog is the
- * lighter editorial ramp, Brief is the darker analytical ramp.
+ * rule) live in `ogBase.ts` and are shared with the other 7 OG
+ * generators. Per-surface variables for the blog: top-right is the
+ * `{CATEGORY} · {DATE}` strip (Announcements gets a pill treatment),
+ * background is the post cover + brown vertical overlay.
  */
 import type { BlogPost } from "../data/blog";
 import {
   BROWN,
   BROWN_LIGHT,
+  CREAM_DEEP,
   buildOgArtboard,
   fetchCoverAsDataUri,
   formatDate,
+  makeTopRightLabel,
   renderOgPng,
 } from "./ogBase";
 
@@ -28,9 +29,6 @@ interface CategoryStyle {
   readonly pillFg?: string;
 }
 
-/* Per-category overlay tints + label treatments. Industry / Solutions
-   / Technical follow the v2 dev spec ramps; Essays falls back to
-   Industry. Announcements gets a pill label. */
 const CATEGORY: Record<string, CategoryStyle> = {
   Industry: {
     overlay: {
@@ -38,7 +36,7 @@ const CATEGORY: Record<string, CategoryStyle> = {
       mid: "rgba(43,30,18,0.78)",
       bottom: "rgba(26,22,18,0.92)",
     },
-    labelColor: "#F5EBDC",
+    labelColor: BROWN_LIGHT,
     labelPill: false,
   },
   Solutions: {
@@ -56,7 +54,7 @@ const CATEGORY: Record<string, CategoryStyle> = {
       mid: "rgba(20,15,10,0.86)",
       bottom: "rgba(10,8,6,0.95)",
     },
-    labelColor: "#F5EBDC",
+    labelColor: BROWN_LIGHT,
     labelPill: false,
   },
   Announcements: {
@@ -65,9 +63,9 @@ const CATEGORY: Record<string, CategoryStyle> = {
       mid: "rgba(43,30,18,0.78)",
       bottom: "rgba(26,22,18,0.92)",
     },
-    labelColor: "#F5EBDC",
+    labelColor: BROWN_LIGHT,
     labelPill: true,
-    pillBg: "#F5EBDC",
+    pillBg: BROWN_LIGHT,
     pillFg: "#6B340E",
   },
   Essays: {
@@ -76,16 +74,12 @@ const CATEGORY: Record<string, CategoryStyle> = {
       mid: "rgba(43,30,18,0.78)",
       bottom: "rgba(26,22,18,0.92)",
     },
-    labelColor: "#F5EBDC",
+    labelColor: BROWN_LIGHT,
     labelPill: false,
   },
 };
 
-function buildTopRight(
-  categoryKey: string,
-  date: string,
-  isFallback: boolean,
-) {
+function buildTopRight(categoryKey: string, date: string, isFallback: boolean) {
   const c = CATEGORY[categoryKey as CategoryKey] ?? CATEGORY.Industry;
   const text = `${categoryKey.toUpperCase()} · ${formatDate(date)}`;
   if (c.labelPill && !isFallback) {
@@ -96,7 +90,7 @@ function buildTopRight(
           display: "flex",
           alignItems: "center",
           fontFamily: "Mono",
-          fontSize: 17,
+          fontSize: 16,
           letterSpacing: 4,
           textTransform: "uppercase",
           color: c.pillFg ?? BROWN,
@@ -108,20 +102,7 @@ function buildTopRight(
       },
     };
   }
-  return {
-    type: "div",
-    props: {
-      style: {
-        fontFamily: "Mono",
-        fontSize: 18,
-        letterSpacing: 4,
-        textTransform: "uppercase",
-        fontWeight: 400,
-        color: isFallback ? BROWN : c.labelColor,
-      },
-      children: text,
-    },
-  };
+  return makeTopRightLabel(text, isFallback ? BROWN : c.labelColor);
 }
 
 export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
@@ -130,8 +111,12 @@ export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
   const node = buildOgArtboard({
     title: post.title,
     topRight: buildTopRight(post.category, post.date, coverDataUri === null),
-    coverDataUri,
-    overlay: c.overlay,
+    background: {
+      kind: "cover",
+      coverDataUri,
+      overlay: c.overlay,
+      fallback: { kind: "solid", color: CREAM_DEEP },
+    },
   });
   return renderOgPng(node);
 }

@@ -1,30 +1,26 @@
 /**
- * Critical Brief dynamic OG image generator (1200×630) — v2.
+ * Critical Brief dynamic OG image generator (1200×630) — v2 unified.
  *
- * Brief OGP v2 aligns the artboard with the Blog v2 generator: the
- * shared `ogBase.ts` owns padding (56/64), wordmark (36 px top-left),
- * title typography (Sora 700, auto-shrink 80/68/56), and the
- * brown-light 90×4 accent rule bottom-left. Brief identity is kept
- * via a brief-specific top-right label —
- * `CRITICAL BRIEF · №XXX · YYYY.MM.DD` — rendered as three Space Mono
- * segments with descending weights (700 / 500 / 400) so the series
- * tag carries the most visual weight.
+ * Uses the shared `ogBase.ts` primitives. Brief identity is preserved
+ * by the top-right strip:
  *
- * Cover handling matches the blog: when `cover` is set in the brief
- * frontmatter we fetch it at build time and inline as base64, then
- * paint the slightly darker Brief overlay ramp on top. When `cover`
- * is missing (the default for every existing brief), the artboard
- * falls back to cream-deep + dark-on-light text — same layout, no
- * overlay.
+ *   CRITICAL BRIEF · №XXX · YYYY.MM.DD
+ *   weight 700      500    400
  *
- * Headline source priority unchanged: `og_lead_*` first, otherwise
- * the descriptive half of `title` / `title_en`.
+ * Brief overlay sits darker than Blog per the v2 spec (analytical
+ * trumps editorial). When the brief has no `cover`, we fall through to
+ * a cream-deep + dark-on-light layout — same composition.
+ *
+ * Headline source priority unchanged: `og_lead_*` first (with trailing
+ * codename stripped), otherwise the descriptive half of `title` /
+ * `title_en`.
  */
 import type { CollectionEntry } from "astro:content";
 import type { Locale } from "../i18n/translations";
 import {
   BROWN,
   BROWN_LIGHT,
+  CREAM_DEEP,
   buildOgArtboard,
   fetchCoverAsDataUri,
   formatDate,
@@ -37,19 +33,12 @@ type BriefEntry =
 
 const SERIES_LABEL = "CRITICAL BRIEF";
 
-/* Brief overlay sits slightly darker than the Blog one — analytical
-   trumps editorial here. Values match the v2 dev spec table. */
 const BRIEF_OVERLAY = {
   top: "rgba(35,22,12,0.55)",
   mid: "rgba(35,22,12,0.82)",
   bottom: "rgba(20,14,8,0.94)",
 };
 
-/**
- * Extract the descriptive lead from a brief title. Same logic as the
- * v1 generator — brief titles split on " — " into a codename half and
- * a descriptive half; we want the descriptive half on the artboard.
- */
 function extractHeadline(brief: BriefEntry, locale: Locale): string {
   const lead = locale === "ja" ? brief.data.og_lead_ja : brief.data.og_lead_en;
   if (lead) {
@@ -114,8 +103,12 @@ export async function renderCriticalBriefOg(
   const node = buildOgArtboard({
     title: extractHeadline(brief, locale),
     topRight: buildTopRight(brief, coverDataUri === null),
-    coverDataUri,
-    overlay: BRIEF_OVERLAY,
+    background: {
+      kind: "cover",
+      coverDataUri,
+      overlay: BRIEF_OVERLAY,
+      fallback: { kind: "solid", color: CREAM_DEEP },
+    },
   });
   return renderOgPng(node);
 }
