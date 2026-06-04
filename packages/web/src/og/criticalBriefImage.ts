@@ -91,6 +91,9 @@ const jaRegular = readFileSync(
 const jaMedium = readFileSync(
   resolve(cwd, "src/assets/fonts/NotoSansJP-Medium.otf"),
 );
+const jaBold = readFileSync(
+  resolve(cwd, "src/assets/fonts/NotoSansJP-Bold.otf"),
+);
 const enSerifMedium = readFileSync(
   resolve(
     cwd,
@@ -102,6 +105,7 @@ const SATORI_FONTS = [
   { name: "Sans", data: jaRegular, weight: 400 as const, style: "normal" as const },
   { name: "Sans", data: jaMedium, weight: 500 as const, style: "normal" as const },
   { name: "Sans", data: jaMedium, weight: 600 as const, style: "normal" as const },
+  { name: "Sans", data: jaBold, weight: 700 as const, style: "normal" as const },
   { name: "Serif", data: enSerifMedium, weight: 500 as const, style: "normal" as const },
 ];
 
@@ -148,19 +152,22 @@ function extractCodename(brief: BriefEntry, locale: Locale): string {
 }
 
 /**
- * Adaptive headline font size — keep the artboard tidy under heavy text.
- * Thresholds taken from `critical_brief_og_devspec.md` §5.
+ * Adaptive headline font size. Bumped above the original
+ * `critical_brief_og_devspec.md` §5 thresholds (54/50/46 JA, 60/52/46 EN)
+ * to match the larger headline weight the Blog OG uses — the brief
+ * artboard has the META row above and CODENAME strip below the title,
+ * so the maxima here stay a touch below the Blog OG's 80/68/56.
  */
 function headlineFontSize(headline: string, locale: Locale): number {
   const len = [...headline].length;
   if (locale === "ja") {
-    if (len <= 22) return 54;
-    if (len <= 30) return 50;
-    return 46;
+    if (len <= 22) return 72;
+    if (len <= 30) return 62;
+    return 54;
   }
-  if (len <= 40) return 60;
-  if (len <= 60) return 52;
-  return 46;
+  if (len <= 40) return 76;
+  if (len <= 60) return 64;
+  return 54;
 }
 
 const PADDING_X = 72;
@@ -181,8 +188,12 @@ function buildOgNode(brief: BriefEntry, locale: Locale) {
   const briefNo = String(brief.data.brief_no).padStart(3, "0");
   const headlineSize = headlineFontSize(headline, locale);
   const headlineFamily = locale === "en" ? "Serif" : "Sans";
-  const headlineLineHeight = locale === "en" ? 1.16 : 1.32;
-  const headlineWeight = locale === "en" ? 500 : 600;
+  const headlineLineHeight = locale === "en" ? 1.14 : 1.28;
+  // Match the Blog OG's bold weight on the JA side now that Sans 700 is
+  // loaded. Serif headline stays at Source Serif 4 Medium 500 — going
+  // heavier on a serif at 70–76px reads as overweight against the dark
+  // artboard.
+  const headlineWeight = locale === "en" ? 500 : 700;
   const headlineMaxWidth = locale === "en" ? 1010 : 1030;
 
   return {
