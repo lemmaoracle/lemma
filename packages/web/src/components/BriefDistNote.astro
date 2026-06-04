@@ -6,7 +6,6 @@
  */
 import type { Locale } from "../i18n/translations";
 import { DISCOVERY_CALL_URL } from "../config/cta";
-import NewsletterEmbed from "./NewsletterEmbed.astro";
 
 export interface BriefDistNoteLabels {
   heading: string;
@@ -22,22 +21,30 @@ export interface BriefDistNoteProps {
 
 const { locale, labels } = Astro.props as BriefDistNoteProps;
 const tallyWhitepaperId = locale === "ja" ? "xX0VYv" : "7RJXdR";
+const newsletterUrl =
+  locale === "ja"
+    ? "https://tally.so/r/EkMj82?ref=brief-cta"
+    : "https://tally.so/r/rjvN2X?ref=brief-cta";
+const newsletterLabel = locale === "ja" ? "✉️ ニュースレター" : "✉️ Newsletter";
 ---
 
 <section class="dist-note" aria-labelledby="distribution-heading">
   <h2 id="distribution-heading" class="dist-h3">{labels.heading}</h2>
   <p class="dist-text">{labels.body}</p>
-  <div class="dist-links">
+  <nav class="dist-links" aria-label={labels.heading}>
     <a href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">
-      {labels.discoveryCallLabel} ↗
+      {labels.discoveryCallLabel} →
     </a>
     <button type="button" class="dist-tally" data-tally-open={tallyWhitepaperId} data-tally-emoji-text="">
-      {labels.whitepaperLabel} ↗
+      {labels.whitepaperLabel} →
     </button>
-  </div>
+    {/* Newsletter stays a plain external link rather than a Tally popup so
+       the `?ref=brief-cta` query lands in Tally insights as the source. */}
+    <a href={newsletterUrl} target="_blank" rel="noopener">
+      {newsletterLabel} →
+    </a>
+  </nav>
 </section>
-
-<NewsletterEmbed locale={locale} placement="brief-footer" />
 
 <style>
   .dist-note {
