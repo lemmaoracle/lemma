@@ -32,7 +32,7 @@ function localize<T>(map: { ja: T; en: T }, locale: Locale): T {
 
 const HOME_TITLE: Copy = {
   ja: "AI のための、\n<accent>信頼インフラ</accent>。",
-  en: "The Trust Layer\n<accent>for AI</accent>.",
+  en: "The Trust Infrastructure\n<accent>for AI</accent>.",
 };
 
 const HOME_TAGLINE: Copy = {
@@ -107,7 +107,7 @@ export async function renderTrust402Og(locale: Locale): Promise<Buffer> {
 
 const INDUSTRIES_TITLE: Copy = {
   ja: "<accent>信頼インフラ</accent>を、\n業界の現場へ。",
-  en: "<accent>The Trust Layer</accent>,\nfor the industries.",
+  en: "<accent>The Trust Infrastructure</accent>,\nfor the industries.",
 };
 
 const INDUSTRIES_LABEL: Copy = {
@@ -161,7 +161,7 @@ export async function renderPricingOg(locale: Locale): Promise<Buffer> {
 
 const PILLARS_TITLE: Copy = {
   ja: "<accent>信頼インフラ</accent>を、\n4 つの軸で。",
-  en: "<accent>The Trust Layer</accent>,\nin four pillars.",
+  en: "<accent>The Trust Infrastructure</accent>,\nin four axes.",
 };
 
 const PILLARS_LABEL: Copy = {
