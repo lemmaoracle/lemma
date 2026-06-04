@@ -41,10 +41,10 @@ const e = PRICING.enterprise;
         </div>
         <p class="pe-pricing">{plan.pricingModel[locale]}</p>
         <div class="pe-cta">
-          <a class="pe-cta-primary" href={plan.ctaPrimary.href} target="_blank" rel="noopener">
+          <a class="pe-cta-primary" href={plan.ctaPrimary.href[locale]} target="_blank" rel="noopener">
             {plan.ctaPrimary.label[locale]}
           </a>
-          <a class="pe-cta-secondary" href={plan.ctaSecondary.href} target="_blank" rel="noopener">
+          <a class="pe-cta-secondary" href={plan.ctaSecondary.href[locale]} target="_blank" rel="noopener">
             {plan.ctaSecondary.label[locale]}
           </a>
         </div>

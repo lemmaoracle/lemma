@@ -104,9 +104,9 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 
 Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
 
-[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
-[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
-[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
 
 ---
 

@@ -21,10 +21,10 @@ const v = PRICING.visionClose;
     </h2>
     <p class="pv-sub">{v.sub[locale]}</p>
     <div class="pv-cta">
-      <a href={v.ctaPrimary.href} class="pv-cta-primary" target="_blank" rel="noopener">
+      <a href={v.ctaPrimary.href[locale]} class="pv-cta-primary" target="_blank" rel="noopener">
         {v.ctaPrimary.label[locale]}
       </a>
-      <a href={v.ctaSecondary.href} class="pv-cta-secondary" target="_blank" rel="noopener">
+      <a href={v.ctaSecondary.href[locale]} class="pv-cta-secondary" target="_blank" rel="noopener">
         {v.ctaSecondary.label[locale]}
       </a>
     </div>
