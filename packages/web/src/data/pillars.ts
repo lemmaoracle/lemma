@@ -151,7 +151,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "資産、文書、部品の出所を、改ざん不能な暗号レイヤで固定する。",
     },
     problemStatement: {
-      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the data-lineage capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
+      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the data-lineage axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
       ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。<strong>来歴証明は、Lemma の信頼インフラが「データ来歴」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
@@ -361,7 +361,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
           title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼インフラの技術仕様。",
-            en: "Technical specification of the trust layer.",
+            en: "Technical specification of the trust infrastructure.",
           },
           href: "/guides",
         },
@@ -386,7 +386,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "AIの判断と引用を、モデル更新後も遡れる構造で記録する。",
     },
     problemStatement: {
-      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the AI-decision capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
+      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the AI-decision axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
       ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。<strong>検証可能 AI は、Lemma の信頼インフラが「AI 判断」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
@@ -587,7 +587,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
           title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼インフラの技術仕様。",
-            en: "Technical specification of the trust layer.",
+            en: "Technical specification of the trust infrastructure.",
           },
           href: "/guides",
         },
@@ -670,12 +670,12 @@ const PILLARS: ReadonlyArray<Pillar> = [
         ja: "エージェント決済",
       },
       heading: {
-        en: "Agent Authority Proof and Trust402 — where the trust layer fits in agentic payments",
+        en: "Agent Authority Proof and Trust402 — where the trust infrastructure fits in agentic payments",
         ja: "エージェント権限証明と Trust402 — エージェント決済のどこに入るか",
       },
       paragraphs: {
         en: [
-          "Lemma proposes Agent Authority Proof as the trust layer that sits in front of the agent payment step. Rather than handing agents API keys and hoping prompt-engineered guardrails hold, the layer issues authority, spending limits, and provenance as cryptographic attestations — verifiable on-chain or by any counterparty, before the transaction settles. <strong>Trust402 is Lemma's product that realizes this layer at the protocol level for x402-style agent payments.</strong>",
+          "Lemma proposes Agent Authority Proof as the trust infrastructure that sits in front of the agent payment step. Rather than handing agents API keys and hoping prompt-engineered guardrails hold, the layer issues authority, spending limits, and provenance as cryptographic attestations — verifiable on-chain or by any counterparty, before the transaction settles. <strong>Trust402 is Lemma's product that realizes this layer at the protocol level for x402-style agent payments.</strong>",
           "Why this layer is needed now: agentic payments — transactions executed autonomously by AI agents — became a real category in 2024–2025 with x402, the Stripe Agent SDK, and MCP-driven tool use. The payment rail problem is largely solved. What remains is the trust question — who is the agent acting for, how much can it spend, and is the data underlying the payment authentic.",
           'The delegated-treasury, multi-agent-workflows, and x402-commerce use cases linked above show how Trust402 and the surrounding pieces compose. For the broader conceptual scope of agentic payments, see the <a href="/glossary/agentic-payments/">glossary entry</a>.',
         ],
@@ -897,7 +897,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
           title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼インフラの技術仕様。",
-            en: "Technical specification of the trust layer.",
+            en: "Technical specification of the trust infrastructure.",
           },
           href: "/guides",
         },
@@ -922,7 +922,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
     },
     problemStatement: {
-      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the regulatory-attestation capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
+      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the regulatory-attestation axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
       ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。<strong>規制属性証明は、Lemma の信頼インフラが「規制適合」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
@@ -1117,7 +1117,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
           title: { ja: "Lemma 仕様書", en: "Lemma specs" },
           desc: {
             ja: "信頼インフラの技術仕様。",
-            en: "Technical specification of the trust layer.",
+            en: "Technical specification of the trust infrastructure.",
           },
           href: "/guides",
         },

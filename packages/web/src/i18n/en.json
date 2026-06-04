@@ -784,7 +784,7 @@
   },
   "index": {
     "hero": {
-      "eyebrow": "TRUST LAYER FOR AI",
+      "eyebrow": "TRUST INFRASTRUCTURE FOR AI",
       "h1": "Give AI proven facts.",
       "sub": "ZK-proof infrastructure makes every AI decision verifiable.",
       "primaryCta": "Download the Whitepaper",
@@ -827,12 +827,12 @@
     "featured": {
       "eyebrow": "For Developers · Reference Implementation",
       "title": "Trust402",
-      "subtitle": "A Trust Layer on top of x402. Autonomous agent payments, verifiable by ZK proof.",
+      "subtitle": "Trust infrastructure on top of x402. Autonomous agent payments, verifiable by ZK proof.",
       "cta": "Try the demo"
     },
     "nowBanner": {
       "eyebrow": "Now · The Mythos-class threat era",
-      "text": "The Trust Layer across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
+      "text": "Trust infrastructure across industries. Pre-execution attestation independently verifies \"cryptographically valid ≠ semantically right\" before commit.",
       "cta": "Read the pre-execution attestation thesis",
       "href": "/blog/verifiable-ai-financial-agents-2026/"
     },
@@ -910,12 +910,12 @@
     }
   },
   "pillars": {
-    "title": "Trust Layer",
+    "title": "Trust Infrastructure",
     "metaTitle": "Trust Infrastructure — Built on Four Axes | Lemma",
-    "heroTitle": "The Trust Layer for AI.",
+    "heroTitle": "The trust infrastructure for AI.",
     "subtitle": "When AI is asked \"where did the data come from\", \"how did it decide\", \"by whose authority\", and \"does this satisfy the regulation\" — Lemma's trust infrastructure responds with independently verifiable cryptographic proofs across four axes.",
-    "categoryEyebrow": "TRUST LAYER",
-    "categoryAttribution": "One of four cryptographic capabilities.",
+    "categoryEyebrow": "TRUST INFRASTRUCTURE",
+    "categoryAttribution": "One of four axes.",
     "viewPillar": "View pillar →",
     "blockProblem": "What Lemma Solves",
     "blockWhyNow": "Why Now",
@@ -932,7 +932,7 @@
       "Four questions follow",
       "every AI decision."
     ],
-    "heroSub": "Every time AI uses data, the same four questions surface afterwards: where did it come from, what did the model see, who authorized the agent, does it satisfy the regulation. Lemma is the four-axis trust layer that answers each with an independently verifiable cryptographic proof.",
+    "heroSub": "Every time AI uses data, the same four questions surface afterwards: where did it come from, what did the model see, who authorized the agent, does it satisfy the regulation. Lemma is the four-axis trust infrastructure that answers each with an independently verifiable cryptographic proof.",
     "questionsLabel": "Four questions",
     "questions": [
       {
@@ -956,8 +956,8 @@
         "answer": "does it really satisfy the regulation?"
       }
     ],
-    "compositionLabel": "Trust Layer",
-    "compositionH2": "Four questions, one trust layer.",
+    "compositionLabel": "Trust Infrastructure",
+    "compositionH2": "Four questions, one trust infrastructure.",
     "compositionCenterLabel": "AI Decision",
     "compositionCaption": "One API · four-axis simultaneous proof · Lemma",
     "technicalDocsLabel": "Technical docs",
