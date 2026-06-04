@@ -911,6 +911,7 @@
   },
   "pillars": {
     "title": "Trust Layer",
+    "metaTitle": "Trust Layer — Lemma",
     "heroTitle": "The Trust Layer for AI.",
     "subtitle": "Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one Trust Layer.",
     "categoryEyebrow": "TRUST LAYER",
