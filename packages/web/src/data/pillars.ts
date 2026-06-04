@@ -189,9 +189,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
         ja: "来歴証明 — データの出所を暗号的に証明 | Lemma",
       },
       description: {
-        en: "Lemma's Verifiable Origin carves data provenance onto a tamper-evident layer at the moment of publication, so any downstream system can verify origin independently — the data-lineage capability of the Lemma Trust Layer.",
-        ja: "Lemma の来歴証明は、発行時点で来歴を改ざん耐性のあるレイヤーに刻み、下流のシステムが発行元に問い合わせずに独立検証できるようにします — Lemma の信頼インフラを構成する「データ来歴」の軸。",
-      },
+        en: "Lemma's Verifiable Origin carves data provenance onto a tamper-evident layer at the moment of publication, so any downstream system can verify origin independently — the data-lineage axis of Lemma's trust infrastructure.",
+                ja: "Lemma の来歴証明は、発行時点で来歴を改ざん耐性のあるレイヤーに刻み、下流のシステムが発行元に問い合わせずに独立検証できるようにします — Lemma の信頼インフラを構成する「データ来歴」の軸。",      },
     },
     conceptHub: {
       intro: {
@@ -425,9 +424,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
         ja: "検証可能 AI — AI 判断を後から検証可能に | Lemma",
       },
       description: {
-        en: "Lemma's Verifiable AI records every AI decision — inputs, retrieved sources, applied rules, model generation — as a tamper-evident attestation that outlives model upgrades. The AI-decision capability of the Lemma Trust Layer.",
-        ja: "Lemma の検証可能 AI は、AI 判断ごとの入力・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残ります — Lemma の信頼インフラを構成する「AI 判断」の軸。",
-      },
+        en: "Lemma's Verifiable AI records every AI decision — inputs, retrieved sources, applied rules, model generation — as a tamper-evident attestation that outlives model upgrades. The AI-decision axis of Lemma's trust infrastructure.",
+                ja: "Lemma の検証可能 AI は、AI 判断ごとの入力・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残ります — Lemma の信頼インフラを構成する「AI 判断」の軸。",      },
     },
     conceptHub: {
       intro: {
@@ -659,9 +657,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["agent", "x402", "mcp", "authority-proof", "agentic-payments"],
     seo: {
       title: {
-        en: "Agent Authority Proof — Agentic Payments Trust Layer | Lemma",
-        ja: "エージェント権限証明 — エージェント決済の信頼インフラ | Lemma",
-      },
+        en: "Agent Authority Proof — Agentic Payments Trust Infrastructure | Lemma",
+                ja: "エージェント権限証明 — エージェント決済の信頼インフラ | Lemma",      },
       description: {
         en: "Agentic payments need more than a payment rail. Lemma's Agent Authority Proof makes autonomous agent authority, spend limits, and provenance cryptographically verifiable across x402 and MCP.",
         ja: "エージェント決済 (agentic payments) には決済レール以上のものが必要です。Lemma のエージェント権限証明は、自律エージェントの権限・支払い限度・来歴を x402 や MCP を横断して暗号的に検証可能にします。",
@@ -958,9 +955,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
         ja: "規制属性証明 — データを共有せずに規制適合を証明 | Lemma",
       },
       description: {
-        en: "Lemma's Regulatory Attribute Proof issues compliance as cryptographic attestations — regulators verify the attribute itself (KYC passed, CBAM-compliant, AI Act met) without the underlying data leaving the enterprise. The regulatory capability of the Lemma Trust Layer.",
-        ja: "Lemma の規制属性証明は、コンプライアンスを暗号的アテステーションとして発行 — 「KYC 通過」「CBAM 適合」「AI Act 要件達成」を原本データを企業外に出さずに証明できます — Lemma の信頼インフラを構成する「規制適合」の軸。",
-      },
+        en: "Lemma's Regulatory Attribute Proof issues compliance as cryptographic attestations — regulators verify the attribute itself (KYC passed, CBAM-compliant, AI Act met) without the underlying data leaving the enterprise. The regulatory axis of Lemma's trust infrastructure.",
+                ja: "Lemma の規制属性証明は、コンプライアンスを暗号的アテステーションとして発行 — 「KYC 通過」「CBAM 適合」「AI Act 要件達成」を原本データを企業外に出さずに証明できます — Lemma の信頼インフラを構成する「規制適合」の軸。",      },
     },
     conceptHub: {
       intro: {

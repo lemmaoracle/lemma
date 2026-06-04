@@ -158,11 +158,11 @@ export const PRICING: PricingContent = {
   meta: {
     title: {
       ja: "Pricing — 信頼インフラの導入は相談から | Lemma",
-      en: "Products & Pricing — Four doors in, one cryptographic foundation | Lemma",
+      en: "Pricing — Engagement starts with a Discovery Call | Lemma",
     },
     description: {
       ja: "Seal / Trust402 / Industries（Civic · Critical · Compliance）の各プランは Discovery Call から個別構成。年契約ベース、要件に合わせた最適形をご提案します。30 分・無料。",
-      en: "Three enterprise segments and one developer product. All built on Lemma.",
+      en: "Plans for Seal, Trust402, and Industries (Civic / Critical / Compliance) are tailored from a Discovery Call. Annual contract, calibrated to your requirements. 30 minutes, free.",
     },
   },
 
