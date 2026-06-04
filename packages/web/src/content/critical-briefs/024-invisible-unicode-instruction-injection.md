@@ -8,7 +8,7 @@ secondary_categories: ["agent-infrastructure", "data-provenance"]
 incident_date: 2026-03-10
 published: 2026-06-05
 authors: ["Lemma Critical Team"]
-related_briefs: ["005-noroboto-lying-fonts", "003-starlette-badhost", "011-synthid-watermark-reverse-engineering"]
+related_briefs: ["005-noroboto-lying-fonts", "003-starlette-badhost", "011-synthid-watermark-reverse-engineering", "025-mcp-stdio-config-to-command-rce"]
 version: "1.0"
 status: draft
 og_lead_ja: "人が読む文字列とモデルが読む文字列が、検証層なしには一致を保証できない"
