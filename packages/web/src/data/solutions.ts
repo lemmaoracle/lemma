@@ -374,7 +374,7 @@ export const SOLUTIONS: SolutionsContent = {
     ],
     pillarLink: {
       prefix: { ja: "証明層の概念整理は", en: "Conceptual structure →" },
-      label: { ja: "信頼レイヤー(Why) →", en: "Trust Layer (Why) →" },
+      label: { ja: "信頼インフラ(Why) →", en: "Trust Infrastructure (Why) →" },
     },
   },
 

@@ -193,7 +193,7 @@ export const PRICING: PricingContent = {
   enterprise: {
     eyebrow: { ja: "エンタープライズ", en: "Enterprise" },
     h2Head: { ja: "3 つのセグメント、", en: "Three segments," },
-    h2Accent: { ja: "1 つの信頼レイヤー。", en: "one trust layer." },
+    h2Accent: { ja: "1 つの信頼インフラ。", en: "one trust infrastructure." },
     sub: {
       ja: "運用要件・規制要件・対象セクターに応じた 3 つのプラン。",
       en: "Three plans aligned to operational, regulatory, and sector requirements.",

@@ -184,7 +184,7 @@
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — Trust Infrastructure for AI.",
-      "p": "How Lemma provides a trust foundation for AI — four trust layers, technical implementation, the detection-vs-proof gap, and real incidents (Critical Brief)."
+      "p": "How Lemma provides a trust foundation for AI — the four trust axes, technical implementation, the detection-vs-proof gap, and real incidents (Critical Brief)."
     },
     "intentRouter": {
       "label": "Find by intent",
@@ -196,8 +196,8 @@
           "href": "#what-is-lemma"
         },
         {
-          "title": "Four trust layers",
-          "desc": "The four pillars that compose the foundation (P1–P4)",
+          "title": "Four trust axes",
+          "desc": "The four axes that compose the foundation (P1–P4)",
           "href": "#trust-layers"
         },
         {
@@ -232,7 +232,7 @@
         "items": [
           {
             "q": "What is Lemma, in one sentence?",
-            "a": "Lemma is the trust infrastructure for AI — a single layer that makes the data an AI reads, the AI's judgments, the authority of AI agents, and regulatory attributes cryptographically provable. Concretely, it is composed of four trust layers (origin / verifiable AI / agent authority / regulatory attribute)."
+            "a": "Lemma is the trust infrastructure for AI — a single layer that makes the data an AI reads, the AI's judgments, the authority of AI agents, and regulatory attributes cryptographically provable. Concretely, it is composed of four trust axes (origin / verifiable AI / agent authority / regulatory attribute)."
           },
           {
             "q": "What does \"AI Trust\" mean?",
@@ -264,11 +264,11 @@
       },
       {
         "id": "trust-layers",
-        "title": "2. Four trust layers",
+        "title": "2. Four trust axes",
         "items": [
           {
             "q": "What are Lemma's \"four pillars\"?",
-            "a": "The four cryptographic capabilities that compose Lemma as a trust infrastructure: Verifiable Origin (P1), Verifiable AI (P2), Agent Authority Proof (P3), and Regulatory Attribute Proof (P4). Not separate products — a single foundation explained through four capabilities."
+            "a": "The four axes that compose Lemma as a trust infrastructure: Verifiable Origin (P1), Verifiable AI (P2), Agent Authority Proof (P3), and Regulatory Attribute Proof (P4). Not separate products — a single foundation explained through four axes."
           },
           {
             "q": "Which pillar should I start with?",
@@ -424,7 +424,7 @@
         "items": [
           {
             "q": "What is Lemma Critical Brief?",
-            "a": "A threat intelligence brief published by Lemma. Each Brief structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents plus trust-layer risk events that are not attacks) and identifies the structural gap that detection alone cannot close and Lemma's response layer. Written for CSOs, analysts, and regulatory practitioners.",
+            "a": "A threat intelligence brief published by Lemma. Each Brief structurally analyzes incidents related to the trust infrastructure in the AI era (cyber-attack incidents plus trust-infrastructure risk events that are not attacks) and identifies the structural gap that detection alone cannot close and Lemma's response layer. Written for CSOs, analysts, and regulatory practitioners.",
             "links": [
               {
                 "label": "Critical Brief library",
@@ -515,7 +515,7 @@
       "title": "Contents",
       "links": [
         "What is Lemma?",
-        "Four trust layers",
+        "Four trust axes",
         "Security & Privacy",
         "On-Chain Provenance",
         "AI Agents and Authority",
@@ -562,7 +562,7 @@
       "badge": "Upper-tier option pack",
       "label": "Critical Brief — structured analysis of real incidents",
       "h2": "Understand Lemma through real incidents",
-      "body": "Lemma Critical Brief is a threat-intelligence brief that structurally analyzes incidents related to the trust layer in the AI era (cyber-attack incidents and trust-layer risk events that are not attacks), identifying the structural gap detection alone cannot close and Lemma's response layer. An upper-tier reference written for CSOs, analysts, and regulatory practitioners.",
+      "body": "Lemma Critical Brief is a threat-intelligence brief that structurally analyzes incidents related to the trust infrastructure in the AI era (cyber-attack incidents and trust-infrastructure risk events that are not attacks), identifying the structural gap detection alone cannot close and Lemma's response layer. An upper-tier reference written for CSOs, analysts, and regulatory practitioners.",
       "cta": [
         {
           "label": "Critical Brief library →",
@@ -590,9 +590,9 @@
     "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma",
     "metaDescription": "Prove data authenticity without exposing contents. ZK-proof infrastructure for verifiable AI agents, supply chain traceability, and audit-ready compliance. Enterprise & developer plans.",
     "hero": {
-      "eyebrow": "TRUST LAYER FOR AI",
+      "eyebrow": "TRUST INFRASTRUCTURE FOR AI",
       "title": "The real reason agent AI can't be used isn't the model—it's the data.",
-      "sub": "Lemma is the Trust Layer for AI — making every data point, every decision, and every agent action verifiable by cryptographic proof. Today, that gap is the real bottleneck for enterprise AI.",
+      "sub": "Lemma is the trust infrastructure for AI — making every data point, every decision, and every agent action verifiable by cryptographic proof. Today, that gap is the real bottleneck for enterprise AI.",
       "ctaDownload": "Download Whitepaper for Free",
       "ctaDemo": "Try the verification demo →",
       "scroll": "SCROLL"
@@ -650,8 +650,8 @@
     },
     "solution": {
       "label": "Solution",
-      "title": "Four cryptographic capabilities, in plain language.",
-      "lead": "Lemma's Trust Layer is built on four cryptographic capabilities. Each one addresses one of the data problems above.",
+      "title": "Four axes, in plain language.",
+      "lead": "Lemma's trust infrastructure is built on four cryptographic axes. Each one addresses one of the data problems above.",
       "pillars": [
         {
           "num": "Pillar 01",
@@ -793,9 +793,9 @@
       "secondaryCtaHref": "/pillars/"
     },
     "trustLayer": {
-      "eyebrow": "TRUST LAYER",
-      "h2": "Four cryptographic capabilities. One Trust Layer.",
-      "barLabel": "TRUST LAYER",
+      "eyebrow": "TRUST INFRASTRUCTURE",
+      "h2": "Four axes. One trust infrastructure.",
+      "barLabel": "TRUST INFRASTRUCTURE",
       "barFoot": "ZK proofs · AES-GCM · docHash · CID · on-chain anchoring",
       "modules": {
         "origin": {
