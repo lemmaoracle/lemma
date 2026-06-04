@@ -180,7 +180,7 @@
   },
   "faq": {
     "metaTitle": "FAQ — Lemma",
-    "metaDescription": "Common questions about Lemma — the trust infrastructure for AI. Four trust layers, technical implementation, and Critical Brief.",
+    "metaDescription": "Common questions about Lemma — the trust infrastructure for AI. The four trust axes, technical implementation, and Critical Brief.",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — Trust Infrastructure for AI.",
@@ -583,8 +583,8 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma — The Trust Layer for AI",
-    "defaultDescription": "Lemma is the Trust Layer for AI. ZK-proof infrastructure that verifies data authenticity, preserves privacy, and anchors permanent provenance on-chain. For enterprise AI, agent payments, and compliance."
+    "defaultTitle": "Lemma — Trust Infrastructure for AI",
+    "defaultDescription": "Cryptographic proof that AI and agents act on verified facts only. Decisions you can prove, without holding the data. Trust infrastructure for enterprise AI, agent payments, and compliance."
   },
   "services": {
     "title": "Verifiable AI Infrastructure — ZK-Proof Data Verification Services | Lemma",
@@ -911,9 +911,9 @@
   },
   "pillars": {
     "title": "Trust Layer",
-    "metaTitle": "Trust Layer — Lemma",
+    "metaTitle": "Trust Infrastructure — Built on Four Axes | Lemma",
     "heroTitle": "The Trust Layer for AI.",
-    "subtitle": "Four cryptographic capabilities — origin, AI decisions, agent authority, regulatory attributes — bound into one Trust Layer.",
+    "subtitle": "When AI is asked \"where did the data come from\", \"how did it decide\", \"by whose authority\", and \"does this satisfy the regulation\" — Lemma's trust infrastructure responds with independently verifiable cryptographic proofs across four axes.",
     "categoryEyebrow": "TRUST LAYER",
     "categoryAttribution": "One of four cryptographic capabilities.",
     "viewPillar": "View pillar →",
@@ -974,8 +974,8 @@
   },
   "useCases": {
     "title": "Use Cases",
-    "metaTitle": "Use Cases — Lemma",
-    "metaDescription": "Patterns for business deployments. Filter by industry.",
+    "metaTitle": "Use Cases — Business patterns for trust infrastructure | Lemma",
+    "metaDescription": "AI audit log proof, KYC selective disclosure, supply chain ESG and more — typical business deployment patterns for trust infrastructure, organized by industry and task. Find your entry point from the business side.",
     "subtitle": "Patterns for business deployments. Filter by industry.",
     "sections": "Sections",
     "overview": "Overview",
