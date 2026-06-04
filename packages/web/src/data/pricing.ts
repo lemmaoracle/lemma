@@ -157,12 +157,12 @@ const TRUST402_WAITLIST = "https://tally.so/r/kd0bZR";
 export const PRICING: PricingContent = {
   meta: {
     title: {
-      ja: "Pricing — 信頼インフラの導入は相談から | Lemma",
-      en: "Pricing — Engagement starts with a Discovery Call | Lemma",
+      ja: "Lemma 料金プラン — Trust402 / Civic / Critical / Compliance",
+      en: "Lemma Pricing — Trust402 / Civic / Critical / Compliance",
     },
     description: {
-      ja: "Seal / Trust402 / Industries（Civic · Critical · Compliance）の各プランは Discovery Call から個別構成。年契約ベース、要件に合わせた最適形をご提案します。30 分・無料。",
-      en: "Plans for Seal, Trust402, and Industries (Civic / Critical / Compliance) are tailored from a Discovery Call. Annual contract, calibrated to your requirements. 30 minutes, free.",
+      ja: "Trust402 Explorer は無料で始められます。Civic・Critical・Compliance はお問い合わせベース、Discovery Call から個別構成。年契約・30 分・無料。",
+      en: "Trust402 Explorer is free to start. Civic, Critical, and Compliance plans are inquiry-based — tailored from a Discovery Call. Annual contract, 30 minutes, free.",
     },
   },
 

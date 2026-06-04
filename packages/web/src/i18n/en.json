@@ -510,6 +510,16 @@
             "a": "Start with three areas: encryption & key management, ZKP auditability, and provenance permanence."
           }
         ]
+      },
+      {
+        "id": "other",
+        "title": "10. Other",
+        "items": [
+          {
+            "q": "Is Lemma related to uselemma.ai?",
+            "a": "No. They are separate companies. Lemma (this site) is built by FRAME00, Inc. — the trust infrastructure for AI: cryptographic proofs of data origin, AI decisions, agent authority, and regulatory attributes. Looking for pricing? <a href=\"/pricing/\">Trust402 Explorer is free to start</a>; enterprise plans are inquiry-based."
+          }
+        ]
       }
     ],
     "sidebar": {
@@ -523,7 +533,8 @@
         "Regulatory & Compliance",
         "Critical Brief",
         "Developer Implementation",
-        "Trust & Adoption"
+        "Trust & Adoption",
+        "Other"
       ]
     },
     "comparison": {

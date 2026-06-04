@@ -57,7 +57,7 @@ const faqJsonLd = {
       name: item.q,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.a,
+        text: item.a.replace(/<[^>]*>/g, ""),
       },
     })),
   ),
@@ -167,7 +167,7 @@ const faqJsonLd = {
                   <span class="fq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="fq-a">
-                  <p>{item.a}</p>
+                  <p set:html={item.a}></p>
                   {item.links && item.links.length > 0 && (
                     <div class="fq-a-links">
                       <span class="fq-a-links-label">{relatedLabel}</span>
