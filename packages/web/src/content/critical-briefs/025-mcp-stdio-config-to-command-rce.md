@@ -8,7 +8,7 @@ secondary_categories: ["identity-auth", "code-provenance"]
 incident_date: 2026-04-20
 published: 2026-06-05
 authors: ["Lemma Critical Team"]
-related_briefs: ["003-starlette-badhost", "006-google-api-key-revocation-lag"]
+related_briefs: ["003-starlette-badhost", "006-google-api-key-revocation-lag", "024-invisible-unicode-instruction-injection"]
 version: "1.0"
 status: draft
 og_lead_ja: "エージェント基盤の信頼境界が、リファレンス実装の設計段階で検証されない構造"
