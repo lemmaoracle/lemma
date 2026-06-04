@@ -84,6 +84,7 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
   description={pageDescription}
   metaType="page"
   pagePath={`/pillars/${pillar.slug}/`}
+  ogImage={`https://lemma.frame00.com/og/pillars/${pillar.slug}/${locale}.png`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />

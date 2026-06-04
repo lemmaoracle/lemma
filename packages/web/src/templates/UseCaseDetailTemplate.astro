@@ -98,6 +98,7 @@ const breadcrumbJsonLd = {
   description={useCase.abstract}
   metaType="page"
   pagePath={`/solutions/use-cases/${useCase.slug}/`}
+  ogImage={`https://lemma.frame00.com/og/use-cases/${useCase.slug}/${locale}.png`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
