@@ -105,3 +105,17 @@ A proof fixed at the point of confirmation and disclosure then functions, years 
 - **KPMG special audit report (primary)**: "Report concerning the Independent Special Investigation — Wirecard AG, Munich" (2020-04-28, on the inability to confirm the existence of overseas account balances) — https://www.wirecard.com/uploads/Bericht_Sonderpruefung_KPMG_EN_200501_Disclaimer.pdf
 - **Wikipedia (secondary, aggregated history)**: "Wirecard scandal" (EUR 1.9 billion, escrow accounts, role of EY and BaFin, course of insolvency) — https://en.wikipedia.org/wiki/Wirecard_scandal
 - **Press (secondary)**: chronology of the June 2020 collapse (forgery notice from the two Philippine banks, executive resignations and arrests, insolvency filing) — Financial Times / CNN Business / Reuters
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

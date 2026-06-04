@@ -108,3 +108,17 @@ For the design and scope, see the use case [KYC/AML Selective Disclosure](https:
 - **Benzinga / Nasdaq (secondary)**: "AI-Generated Fake IDs Bypass Crypto Exchange KYC Checks, OKX Says Industry-Wide Issue" (2024-02) — https://www.nasdaq.com/articles/ai-generated-fake-ids-bypass-crypto-exchange-kyc-checks-okx-says-industry-wide-issue
 - **AInvest (secondary, statistical aggregation)**: "Deepfake Fraud: $897M Trail and Crypto Market Risk" (2026-04, deepfake-driven fraud losses, identity-verification statistics, regulatory penalties aggregated) — https://www.ainvest.com/news/deepfake-fraud-897m-trail-crypto-market-risk-2604/
 - **Signicat (industry statistics)**: 2,137% rise in deepfake fraud attempts over three years — https://www.signicat.com/press-releases/fraud-attempts-with-deepfakes-have-increased-by-2137-over-the-last-three-year
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

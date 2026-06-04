@@ -94,3 +94,17 @@ Against the structural gap exposed by this incident (a mark embedded in the arti
 - **MediaNama**: "GitHub Tool Bypasses Google SynthID Watermark" (2026-04) — https://www.medianama.com/2026/04/223-google-gemini-synthid-ai-watermark-bypass/
 - **arXiv 2310.07726**: Guanlin Lee et al., "Warfare: Breaking the Watermark Protection of AI-Generated Content" (2023-10, updated 2024-03) — general-purpose framework for watermark removal and forgery attacks (background literature). https://arxiv.org/abs/2310.07726
 - **ACM CSAI'25**: "Insecure AI Image Watermarking — Is it Really Damaging The Future?" (2025, Proceedings of the 2025 9th International Conference on Computer Science and Artificial Intelligence) — qualitative study arguing that watermarks such as SynthID are removable and lack interoperability (background literature). https://dl.acm.org/doi/10.1145/3788149.3788154
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

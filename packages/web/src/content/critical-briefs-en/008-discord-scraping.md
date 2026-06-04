@@ -113,3 +113,17 @@ The combination of the two layers is in a complementary, not substitutive, relat
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online" (2025-05-22, initial reporting, including technical description of violations of Discord's terms of service and developer policy) — https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv research team paper**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015–2024)" (2025, 15-researcher team at the Federal University of Minas Gerais in Brazil, primary source for the dataset distribution) — https://arxiv.org/pdf/2502.00627
 - **Discord developer policy** official (the basis for the ML / AI training use ban and anti-scraping clause) — https://support-dev.discord.com/hc/ja/articles/8563934450327
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

@@ -97,3 +97,17 @@ Against the structural gap exposed by this incident (the absence of a layer that
 - **X41 D-Sec advisory and MCP scanner** (X41 D-Sec official) — The public mcp-scan.nemesis.services scanner and the technical advisory. https://mcp-scan.nemesis.services/
 - **Starlette 1.0.1 release notes** (framework official, GitHub release) — Patch landing for BadHost. https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package" (2026-05-27, independent reporting) — https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

@@ -96,3 +96,17 @@ Against the structural gap exposed here (the legitimate distribution path for de
 - **The Hacker News**: "GitHub Internal Repositories Breached via Malicious Nx Console VS Code Extension" (2026-05, extension name, listing window, exfiltration targets) — https://thehackernews.com/2026/05/github-internal-repositories-breached.html
 - **Sophos**: "GitHub internal repositories breached" (2026-05, method and response) — https://www.sophos.com/en-us/blog/github-internal-repositories-breached
 - **Infosecurity Magazine**: "GitHub Confirms Breach of Internal Repositories Via Malicious VS Code Extension" (2026-05, GitHub's public statement and scope) — https://www.infosecurity-magazine.com/news/github-confirms-breach-vs-code/
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

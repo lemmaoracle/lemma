@@ -113,3 +113,17 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online"(2025-05-22、一次報道、Discord 利用規約・開発者ポリシー違反を含む技術記述)— https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv 研究チーム論文**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015-2024)"(2025、ブラジル ミナス・ジェライス連邦大学 15 名研究者チーム、dataset 配布の一次資料)— https://arxiv.org/pdf/2502.00627
 - **Discord 開発者ポリシー** 公式(ML / AI training 用途禁止条項とスクレイピング禁止条項の根拠)— https://support-dev.discord.com/hc/ja/articles/8563934450327
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

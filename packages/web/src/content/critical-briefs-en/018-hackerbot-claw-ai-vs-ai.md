@@ -96,3 +96,17 @@ Against the structural gap in focus here (an AI agent ingesting repository-suppl
 - **InfoQ**: "AI-Powered Bot Exploits GitHub Actions Workflows Across Microsoft, DataDog, CNCF Projects" (2026-03-11) — https://www.infoq.com/news/2026/03/ai-bot-github-actions-exploit/
 - **Aqua Security (Trivy) incident disclosure**: GitHub Discussions (2026, primary on the Trivy compromise) — https://github.com/aquasecurity/trivy/discussions/10265
 - **DataDog**: datadog-iac-scanner emergency-fix PR (2026) — https://github.com/DataDog/datadog-iac-scanner/pull/9
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Book a Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Download the whitepaper →](https://tally.so/r/7RJXdR)
+[Subscribe to the newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

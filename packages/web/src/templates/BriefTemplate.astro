@@ -11,13 +11,14 @@
  * Page composition, in order:
  *   1. Breadcrumb (mono uppercase)
  *   2. BriefHero (id eyebrow + h1 + subtitle + tag pills + meta strip)
- *   3. Body: rendered markdown (TL;DR + §1–§8; §N badges injected by the
+ *   3. Body: rendered markdown (TL;DR + §1–§9; §N badges injected by the
  *      `rehype-brief-section-number` plugin and styled via the .brief-body
- *      block below)
+ *      block below). §9 "Brief 配布について" / "About distribution" is the
+ *      canonical disclaimer + Discovery Call / Whitepaper / Newsletter
+ *      links, authored inline in each brief markdown.
  *   4. BriefRelated (cards from frontmatter `related_briefs`)
  *   5. CiteBriefBox (3 tabs + copy)
  *   6. BriefRevisionNote (only when frontmatter `version` !== "1.0")
- *   7. BriefDistNote (template-owned boilerplate, cream-deep card)
  *
  * Composition uses Brief* components in src/components for the chrome.
  * Markdown body styling — TL;DR card, §N badges, lists, tables, sources —
@@ -34,7 +35,6 @@ import BriefHero from "../components/BriefHero.astro";
 import BriefNextSteps from "../components/BriefNextSteps.astro";
 import BriefRelated from "../components/BriefRelated.astro";
 import BriefToc from "../components/BriefToc.astro";
-import BriefDistNote from "../components/BriefDistNote.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
@@ -128,11 +128,6 @@ const labels = isJa
       pack: "関連 Pack",
       relatedHeading: "関連 Brief",
       revisionHeading: "改訂履歴",
-      distributionHeading: "Brief 配布について",
-      distributionBody:
-        "Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。",
-      discoveryCallLabel: "Discovery Call",
-      whitepaperLabel: "ホワイトペーパー",
       home: "ホーム",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
@@ -145,11 +140,6 @@ const labels = isJa
       pack: "Related Pack",
       relatedHeading: "Related Briefs",
       revisionHeading: "Revision History",
-      distributionHeading: "About distribution",
-      distributionBody:
-        "Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.",
-      discoveryCallLabel: "Discovery Call",
-      whitepaperLabel: "Whitepaper",
       home: "Home",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
@@ -264,15 +254,6 @@ const labels = isJa
         />
       )}
 
-      <BriefDistNote
-        locale={locale}
-        labels={{
-          heading: labels.distributionHeading,
-          body: labels.distributionBody,
-          discoveryCallLabel: labels.discoveryCallLabel,
-          whitepaperLabel: labels.whitepaperLabel,
-        }}
-      />
     </div>
   </main>
 

@@ -98,3 +98,17 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 ## 8. Sources
 
 - **Jer Crane (PocketOS founder) public X account**: "An AI Agent Just Destroyed Our Production Data. It Confessed in Writing."(2026-04-25、30 時間タイムラインを含む長文公開、7.1M view 規模で業界横断議論を喚起)— https://x.com/lifeof_jer/status/2048103471019434248
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

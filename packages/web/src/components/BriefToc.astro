@@ -8,8 +8,8 @@
  * bordered chips sitting in the cream page background.
  *
  * Filters out the TL;DR (it sits directly below the row) and the §9
- * "Brief 配布について" entry (BriefDistNote renders the disclaimer
- * separately at the page foot).
+ * "Brief 配布について" / "About distribution" entry — §9 is the inline
+ * disclaimer + CTA row at the end of the body, not a navigable section.
  */
 import type { Locale } from "../i18n/translations";
 
@@ -27,6 +27,7 @@ const items = headings
   .filter((h) => h.depth === 2)
   .filter((h) => h.slug !== "tldr")
   .filter((h) => !/^brief/i.test(h.slug))
+  .filter((h) => h.slug !== "about-distribution")
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
 const navLabel = isJa ? "目次" : "On this page";

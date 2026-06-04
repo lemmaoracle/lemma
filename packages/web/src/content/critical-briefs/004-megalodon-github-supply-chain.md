@@ -97,3 +97,17 @@ TeamPCP との関係性:Megalodon の発覚直前に TeamPCP が Shai-Hulud サ�
 - **Safe Dep technical analysis**: "Megalodon mass GitHub repo backdooring of CI workflows"(2026-05、Safe Dep 公式 blog)— https://safedep.io/megalodon-mass-github-repo-backdooring-ci-workflows/
 - **Ox Security technical analysis**: "Megalodon CI/CD malware on GitHub"(2026-05、Ox Security 公式 blog、リード研究者 Bustan 氏)— https://www.ox.security/blog/megalodon-cicd-malware-github/
 - **Hudson Rock analysis**: "Infostealers just spawned a 5,000-repo GitHub supply chain attack"(2026-05、Hudson Rock 公式 blog)— インフォスティーラー起点経路を実証データで確定。https://www.hudsonrock.com/blog/infostealers-just-spawned-a-5000-repo-github-supply-chain-attack
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call を予約する →](https://tally.so/r/EkBqDX)
+[ホワイトペーパーをダウンロード →](https://tally.so/r/xX0VYv)
+[ニュースレターを購読する →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.
