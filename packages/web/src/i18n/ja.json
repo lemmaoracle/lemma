@@ -583,8 +583,8 @@
     }
   },
   "layout": {
-    "defaultTitle": "Lemma — AI のための信頼レイヤー",
-    "defaultDescription": "Lemma は AI のための信頼レイヤー。ZK 証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズ AI・エージェント決済・コンプライアンス対応。"
+    "defaultTitle": "Lemma — AI のための信頼インフラ",
+    "defaultDescription": "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。証明できる判断を、データを持たないままで。エンタープライズ AI・エージェント決済・規制対応に効く信頼インフラ。"
   },
   "services": {
     "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma",
@@ -784,7 +784,7 @@
   },
   "index": {
     "hero": {
-      "eyebrow": "AI のための信頼レイヤー",
+      "eyebrow": "AI のための信頼インフラ",
       "h1": "AI に証明された事実を。",
       "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
       "primaryCta": "ホワイトペーパーを無料ダウンロード",
@@ -793,9 +793,9 @@
       "secondaryCtaHref": "/ja/pillars/"
     },
     "trustLayer": {
-      "eyebrow": "信頼レイヤー",
-      "h2": "4 つの暗号能力。1 つの信頼レイヤー。",
-      "barLabel": "信頼レイヤー",
+      "eyebrow": "信頼インフラ",
+      "h2": "4 つの暗号能力。1 つの信頼インフラ。",
+      "barLabel": "信頼インフラ",
       "barFoot": "ZK 証明 · AES-GCM · docHash · CID · オンチェーン記録",
       "modules": {
         "origin": {
@@ -910,10 +910,11 @@
     }
   },
   "pillars": {
-    "title": "信頼レイヤー",
-    "heroTitle": "AI のための信頼レイヤー。",
-    "subtitle": "4 つの暗号能力 — 来歴・AI 判断・エージェント権限・規制属性 — を 1 つの信頼レイヤーに束ねる。",
-    "categoryEyebrow": "信頼レイヤー",
+    "title": "信頼インフラ",
+    "metaTitle": "信頼インフラ — 4 つの軸でできている | Lemma",
+    "heroTitle": "AI のための信頼インフラ。",
+    "subtitle": "AI が「どこから来たデータか」「どう判断したか」「誰の代理で動いたか」「規制を満たすか」と問われる時代に。Lemma の信頼インフラは、独立検証可能な暗号証明で 4 つの軸に応える設計。",
+    "categoryEyebrow": "信頼インフラ",
     "categoryAttribution": "4 つの暗号能力のひとつ。",
     "viewPillar": "詳細を見る →",
     "blockProblem": "Lemma が解決する領域",
@@ -931,7 +932,7 @@
       "AI の判断に、",
       "4 つの問いが立つ。"
     ],
-    "heroSub": "AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われる。Lemma は、各問いに独立検証可能な暗号証明を返す 4 軸の信頼レイヤー。",
+    "heroSub": "AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われる。Lemma は、各問いに独立検証可能な暗号証明を返す 4 軸の信頼インフラ。",
     "questionsLabel": "4 つの問い",
     "questions": [
       {
@@ -955,8 +956,8 @@
         "answer": "本当に規制要件を満たすか？"
       }
     ],
-    "compositionLabel": "信頼レイヤー",
-    "compositionH2": "4 つの問いが、1 つの信頼レイヤーになる。",
+    "compositionLabel": "信頼インフラ",
+    "compositionH2": "4 つの問いが、1 つの信頼インフラになる。",
     "compositionCenterLabel": "AI の判断",
     "compositionCaption": "単一 API · 4 軸同時証明 · Lemma",
     "technicalDocsLabel": "技術ドキュメント",

@@ -132,11 +132,11 @@ const DISCOVERY_URL = "https://tally.so/r/EkBqDX";
 export const SOLUTIONS: SolutionsContent = {
   meta: {
     title: {
-      ja: "データを持たない、信頼インフラ — Solutions | Lemma",
+      ja: "Industries — Civic · Critical · Compliance | Lemma",
       en: "The data-less trust infrastructure — Solutions | Lemma",
     },
     description: {
-      ja: "AI 採用が止まる 3 つの壁を、データを持たない設計で構造的に解消する。",
+      ja: "公共インフラ・製造業・規制金融に最適化した Civic / Critical / Compliance の 3 製品ライン。データを持たないままで、業界の現場に信頼インフラを実装。",
       en: "Three walls that stall AI adoption, dissolved structurally by a data-less design.",
     },
   },

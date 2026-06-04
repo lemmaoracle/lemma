@@ -157,11 +157,11 @@ const TRUST402_WAITLIST = "https://tally.so/r/kd0bZR";
 export const PRICING: PricingContent = {
   meta: {
     title: {
-      ja: "Products & Pricing — 4 つの入口、1 つの暗号基盤 | Lemma",
+      ja: "Pricing — 信頼インフラの導入は相談から | Lemma",
       en: "Products & Pricing — Four doors in, one cryptographic foundation | Lemma",
     },
     description: {
-      ja: "3 つのエンタープライズセグメントと 1 つの開発者プロダクト。すべて Lemma の同じ暗号基盤上に。",
+      ja: "Seal / Trust402 / Industries（Civic · Critical · Compliance）の各プランは Discovery Call から個別構成。年契約ベース、要件に合わせた最適形をご提案します。30 分・無料。",
       en: "Three enterprise segments and one developer product. All built on Lemma.",
     },
   },
@@ -169,7 +169,7 @@ export const PRICING: PricingContent = {
   hero: {
     eyebrow: { ja: "Products & Pricing", en: "Products & Pricing" },
     h1Lines: {
-      ja: ["4 つの入口、", "1 つの暗号基盤。"],
+      ja: ["3 つの入口、", "1 つの暗号基盤。"],
       en: ["Four doors in,", "one cryptographic foundation."],
     },
     sub: {
