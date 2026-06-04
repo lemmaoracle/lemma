@@ -974,6 +974,8 @@
   },
   "useCases": {
     "title": "Use Cases",
+    "metaTitle": "Use Cases — Lemma",
+    "metaDescription": "Patterns for business deployments. Filter by industry.",
     "subtitle": "Patterns for business deployments. Filter by industry.",
     "sections": "Sections",
     "overview": "Overview",
