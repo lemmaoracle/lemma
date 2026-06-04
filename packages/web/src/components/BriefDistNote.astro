@@ -6,6 +6,7 @@
  */
 import type { Locale } from "../i18n/translations";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import NewsletterEmbed from "./NewsletterEmbed.astro";
 
 export interface BriefDistNoteLabels {
   heading: string;
@@ -20,7 +21,7 @@ export interface BriefDistNoteProps {
 }
 
 const { locale, labels } = Astro.props as BriefDistNoteProps;
-const whitepaperUrl = "https://tally.so/r/xX0VYv";
+const tallyWhitepaperId = locale === "ja" ? "xX0VYv" : "7RJXdR";
 ---
 
 <section class="dist-note" aria-labelledby="distribution-heading">
@@ -30,11 +31,13 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     <a href={DISCOVERY_CALL_URL[locale]} target="_blank" rel="noopener">
       {labels.discoveryCallLabel} ↗
     </a>
-    <a href={whitepaperUrl} target="_blank" rel="noopener">
+    <button type="button" class="dist-tally" data-tally-open={tallyWhitepaperId} data-tally-emoji-text="">
       {labels.whitepaperLabel} ↗
-    </a>
+    </button>
   </div>
 </section>
+
+<NewsletterEmbed locale={locale} placement="brief-footer" />
 
 <style>
   .dist-note {
@@ -71,12 +74,20 @@ const whitepaperUrl = "https://tally.so/r/xX0VYv";
     font-family: var(--bd-mono);
     font-size: 11px;
   }
-  .dist-links a {
+  .dist-links a,
+  .dist-links .dist-tally {
     color: var(--accent);
     text-decoration: none;
     letter-spacing: 0.05em;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
   }
-  .dist-links a:hover {
+  .dist-links a:hover,
+  .dist-links .dist-tally:hover {
     text-decoration: underline;
   }
 

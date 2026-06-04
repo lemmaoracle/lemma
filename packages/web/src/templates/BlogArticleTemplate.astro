@@ -23,6 +23,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import defaultCover from "../assets/default-blog-cover.png";
 import { DISCOVERY_CALL_URL } from "../config/cta";
@@ -168,14 +169,14 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         </h2>
         <p class="cta-text">{partnerCtaDesc}</p>
         <div class="cta-btns">
-          <a
-            href={isJa ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR"}
+          <button
+            type="button"
             class="btn-cta-main"
-            target="_blank"
-            rel="noopener"
+            data-tally-open={isJa ? "xX0VYv" : "7RJXdR"}
+            data-tally-emoji-text=""
           >
             {t.ctaSection.finalWpText}
-          </a>
+          </button>
           <a
             href={DISCOVERY_CALL_URL[locale]}
             class="btn-cta-outline"
@@ -186,6 +187,8 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           </a>
         </div>
       </section>
+
+      <NewsletterEmbed locale={locale} placement="blog-footer" />
 
       {(navigation.prev || navigation.next) && (
         <section class="blog-prevnext">

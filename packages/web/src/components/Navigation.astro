@@ -19,7 +19,7 @@ const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
-const whitepaperPath = "https://tally.so/r/xX0VYv";
+const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const homePath = base || "/";
 
@@ -199,9 +199,9 @@ const isResourcesActive =
             <a href={blogPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.blog}</span>
             </a>
-            <a href={whitepaperPath} class="mega-link" target="_blank" rel="noopener">
+            <button type="button" class="mega-link mega-link-button" data-tally-open={TALLY_WHITEPAPER_ID} data-tally-emoji-text="">
               <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
-            </a>
+            </button>
             <a href={glossaryPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.glossary}</span>
             </a>
@@ -275,7 +275,7 @@ const isResourcesActive =
       <div class="mob-section-body">
         <a href={briefsPath} class="mob-link"><span class="mob-link-dot">●</span> {t.mega.resources.criticalBrief}</a>
         <a href={blogPath} class="mob-link">{t.mega.resources.blog}</a>
-        <a href={whitepaperPath} class="mob-link" target="_blank" rel="noopener">{t.mega.resources.whitepaper}</a>
+        <button type="button" class="mob-link mob-link-button" data-tally-open={TALLY_WHITEPAPER_ID} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button>
         <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
         <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
       </div>
@@ -418,6 +418,16 @@ const isResourcesActive =
     transition: background .15s, color .15s;
   }
   .mega-link:hover { background: var(--lemma-cream-deep, #F2EEDF); }
+  /* `<button class="mega-link">` variant — strip native button chrome so the
+     Tally popup trigger matches the surrounding anchor links. */
+  .mega-link-button {
+    background: none; border: none; cursor: pointer; text-align: left;
+    font: inherit; color: inherit; width: 100%;
+  }
+  .mob-link-button {
+    background: none; border: none; cursor: pointer; text-align: left;
+    font: inherit; color: inherit; width: 100%;
+  }
   .mega-link-title {
     font-family: "Sora", system-ui, sans-serif;
     font-size: 14px; color: #1A1A1A; font-weight: 500; line-height: 1.4;

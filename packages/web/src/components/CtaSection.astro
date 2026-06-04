@@ -77,15 +77,17 @@ const finalWpText = wpText ?? t.ctaSection.finalWpText;
     <div class="cta-rule"></div>
     <p set:html={finalP}></p>
     <div class="cta-btns">
+      {/* `wpLink` is a Tally URL of shape https://tally.so/r/<id>; extract the
+         id and trigger the popup via data-tally-open instead of navigating. */}
       {wpPrimary ? (
         <>
-          <a href={wpLink} class="btn-cta" target="_blank" rel="noopener">{finalWpText}</a>
+          <button type="button" class="btn-cta" data-tally-open={wpLink.replace(/^.*\/r\//, "")} data-tally-emoji-text="">{finalWpText}</button>
           <a href={ctaLink} class="btn-cta-outline" target={ctaLink.startsWith("http") ? "_blank" : undefined} rel={ctaLink.startsWith("http") ? "noopener" : undefined}>{finalCtaText}</a>
         </>
       ) : (
         <>
           <a href={ctaLink} class="btn-cta" target={ctaLink.startsWith("http") ? "_blank" : undefined} rel={ctaLink.startsWith("http") ? "noopener" : undefined}>{finalCtaText}</a>
-          <a href={wpLink} class="btn-cta-outline" target="_blank" rel="noopener">{finalWpText}</a>
+          <button type="button" class="btn-cta-outline" data-tally-open={wpLink.replace(/^.*\/r\//, "")} data-tally-emoji-text="">{finalWpText}</button>
         </>
       )}
     </div>

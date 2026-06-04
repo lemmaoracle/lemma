@@ -18,6 +18,12 @@
  */
 import type { Locale, Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
+import NewsletterEmbed from "./NewsletterEmbed.astro";
+
+const TALLY_WHITEPAPER_ID: Record<Locale, string> = {
+  ja: "xX0VYv",
+  en: "7RJXdR",
+};
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { SEGMENT_URLS } from "../config/navigation";
 
@@ -140,7 +146,7 @@ const C = isJa ? {
         <ul>
           <li><a href={briefsPath}><span class="site-footer-dot">●</span> {C.criticalBrief}</a></li>
           <li><a href={blogPath}>{t.mega.resources.blog}</a></li>
-          <li><a href={whitepaperHref} target="_blank" rel="noopener">{t.mega.resources.whitepaper}</a></li>
+          <li><button type="button" class="site-footer-tally" data-tally-open={TALLY_WHITEPAPER_ID[locale]} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button></li>
           <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
           <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
         </ul>
@@ -152,6 +158,10 @@ const C = isJa ? {
         </ul>
       </div>
 
+    </div>
+
+    <div class="site-footer-newsletter">
+      <NewsletterEmbed locale={locale} placement="site-footer" />
     </div>
 
     <div class="site-footer-bottom">
@@ -292,6 +302,26 @@ const C = isJa ? {
   }
   .site-footer-col li a:hover {
     color: #FCFAF5;
+  }
+  .site-footer-tally {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 13.5px;
+    color: #8a857d;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s;
+  }
+  .site-footer-tally:hover {
+    color: #FCFAF5;
+  }
+  .site-footer-newsletter {
+    padding: 36px 0 0;
+    border-top: 0.5px solid #1a1714;
+    margin-top: 24px;
+    max-width: 560px;
   }
   .site-footer-dot {
     color: #F5EBDC;

@@ -34,6 +34,7 @@ import {
 } from "../data/criticalBriefs";
 import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
+import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 
 export interface BriefIndexTemplateProps {
   locale: Locale;
@@ -247,6 +248,8 @@ const featuredLede = featured ? extractTldr(featured.body, 240) : "";
           <a href={rssHref}>{labels.rssLabel}</a>
           <span class="bi-dot">·</span>
           <a href={methodologyHref}>{labels.methodologyLabel}</a>
+          <span class="bi-dot">·</span>
+          <a href="#newsletter">{locale === "ja" ? "ニュースレター" : "Newsletter"}</a>
         </div>
       </section>
 
@@ -356,6 +359,10 @@ const featuredLede = featured ? extractTldr(featured.body, 240) : "";
             </a>
           ))}
         </div>
+      </section>
+
+      <section id="newsletter" class="bi-newsletter">
+        <NewsletterEmbed locale={locale} placement="briefs-index" />
       </section>
     </div>
   </main>
