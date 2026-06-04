@@ -39,6 +39,7 @@ const { locale, t, base } = Astro.props as Props;
   pagePath="/pricing/"
   title={PRICING.meta.title[locale]}
   description={PRICING.meta.description[locale]}
+  ogImage={`https://lemma.frame00.com/og/pricing/${locale}.png`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />

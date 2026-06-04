@@ -343,7 +343,12 @@ const panes = [
 ];
 ---
 
-<Layout locale={locale} metaType="home" description={description}>
+<Layout
+  locale={locale}
+  metaType="home"
+  description={description}
+  ogImage={`https://lemma.frame00.com/og/home/${locale}.png`}
+>
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 

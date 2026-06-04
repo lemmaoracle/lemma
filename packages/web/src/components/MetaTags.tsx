@@ -11,6 +11,8 @@ interface HomeMetaTagsProps extends BaseMetaTagsProps {
   title?: string;
   description?: string;
   base: string;
+  /** Absolute URL of a homepage-specific OG image; falls back to the locale default when omitted. */
+  ogImage?: string;
 }
 
 interface PageMetaTagsProps extends BaseMetaTagsProps {
@@ -42,7 +44,7 @@ function getDefaultOgImage(locale?: string): string {
 export default function MetaTags(props: MetaTagsProps) {
   if (props.type === "home") {
     const { title = "Lemma", description, base, locale } = props;
-    const ogImage = getDefaultOgImage(locale);
+    const ogImage = props.ogImage ?? getDefaultOgImage(locale);
     const url = `https://lemma.frame00.com${base}`;
 
     return (
@@ -52,6 +54,8 @@ export default function MetaTags(props: MetaTagsProps) {
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
