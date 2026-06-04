@@ -138,8 +138,8 @@
   },
   "blog": {
     "title": "ブログ",
-    "metaTitle": "ブログ — Lemma",
-    "metaDescription": "Lemma の記事・変更履歴・フィールドノート。",
+    "metaTitle": "ブログ — 信頼インフラの記事と知見 | Lemma",
+    "metaDescription": "信頼インフラ・検証可能 AI・エージェント決済・規制対応に関する記事と知見。Industry / Solutions / Technical / Announcements の 4 カテゴリで公開。",
     "subtitle": "記事、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
@@ -180,7 +180,7 @@
   },
   "faq": {
     "metaTitle": "FAQ — Lemma",
-    "metaDescription": "Lemma および Verifiable AI に関するよくある質問。AI のための信頼インフラ、4 つの信頼レイヤー、Critical Brief。",
+    "metaDescription": "Lemma および Verifiable AI に関するよくある質問。AI のための信頼インフラ、4 つの軸、Critical Brief。",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — AI のための信頼インフラ.",
@@ -974,6 +974,8 @@
   },
   "useCases": {
     "title": "ユースケース",
+    "metaTitle": "ユースケース — 信頼インフラの業務適用パターン | Lemma",
+    "metaDescription": "AI 監査ログ・KYC 選択的開示・サプライチェーン ESG ほか、信頼インフラの典型的なビジネス適用パターンを業界・タスク横断で公開。実装の入口を業務側から見つけられます。",
     "subtitle": "ビジネスでの活用パターン。業界から探せます。",
     "sections": "セクション",
     "overview": "概要",
