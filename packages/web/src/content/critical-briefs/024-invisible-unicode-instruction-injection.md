@@ -5,7 +5,7 @@ title_en: "Invisible Unicode Instruction Injection — The Gap Between Human-Rea
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["agent-infrastructure", "data-provenance"]
-incident_date: 2026-03-01
+incident_date: 2026-03-10
 published: 2026-06-05
 authors: ["Lemma Critical Team"]
 related_briefs: ["005-noroboto-lying-fonts", "003-starlette-badhost", "011-synthid-watermark-reverse-engineering"]
@@ -35,8 +35,8 @@ og_lead_en: "What humans read and what models read cannot be guaranteed identica
 
 ## 2. タイムライン
 
-- **2026-02**: エージェントスキルの供給網監査（ToxicSkills 等）が問題の広がりを定量化
-- **2026-03〜05**: CSA AI Safety Initiative が不可視 Unicode 指示インジェクションを開示。検出フック（claude-hooks 等）や緩和策の研究が相次ぐ
+- **2026-02-05**: Snyk が ToxicSkills 監査を公開 — 3,984 スキル中 36.82% に何らかのセキュリティ問題、13.4% に重大な問題、76 件の悪意あるペイロードを確認
+- **2026-03-10**: CSA AI Safety Initiative が不可視 Unicode 指示インジェクションを Research Note として公開。検出フック（claude-hooks 等）や緩和策の研究が相次ぐ
 - **2026 継続**: スキル／ツール定義／MCP メタデータを介した間接プロンプトインジェクションが、エージェント時代の主要な入力 integrity 問題として議論
 
 ---
@@ -103,9 +103,9 @@ Models change. Proofs remain.
 
 研究・業界団体の公表資料を出典として示す。再現に資する具体的ペイロードは引用しない。
 
-- **CSA AI Safety Initiative（一次情報）**: "Hidden Unicode Instruction Injection in AI Agent Skills"（2026）— <https://labs.cloudsecurityalliance.org/research/csa-research-note-unicode-instruction-injection-ai-skills-20/>
+- **CSA AI Safety Initiative（一次情報）**: "Hidden Unicode Instruction Injection in AI Agent Skills"（2026-03-10）— <https://labs.cloudsecurityalliance.org/research/csa-research-note-unicode-instruction-injection-ai-skills-20/>
 - **研究者開示（二次情報）**: Embrace The Red "Scary Agent Skills: Hidden Unicode Instructions in Skills"（2026）— <https://embracethered.com/blog/posts/2026/scary-agent-skills/>
-- **供給網監査（二次情報）**: Snyk ToxicSkills（2026-02、3,984 スキル・36.82%／13.4%・76 悪性ペイロード）
+- **供給網監査（一次情報）**: Snyk "ToxicSkills: Comprehensive Security Audit of AI Agent Skills"（2026-02-05、3,984 スキル・36.82%・13.4% CRITICAL・76 悪性ペイロード）— <https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub>
 
 ---
 
