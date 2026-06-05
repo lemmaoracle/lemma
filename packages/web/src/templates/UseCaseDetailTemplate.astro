@@ -25,7 +25,9 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import UseCaseExitCta from "../components/UseCaseExitCta.astro";
 import SolutionsBridge from "../components/SolutionsBridge.astro";
+import UseCaseV3Body from "../components/usecase/UseCaseV3Body.astro";
 import { getUseCaseHideProve } from "../config/useCaseHideProve";
+import { getUseCaseV3 } from "../config/useCaseV3";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
@@ -75,6 +77,9 @@ const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
 const hideProve = isJa ? getUseCaseHideProve(useCase.slug) : undefined;
+// v3 detail template — JA only, opt-in per slug via config/useCaseV3.ts.
+// Slugs without a v3 entry (and all EN pages) keep the long-form template.
+const v3 = isJa ? getUseCaseV3(useCase.slug) : undefined;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
@@ -120,6 +125,20 @@ const breadcrumbJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
+  {v3 ? (
+    <UseCaseV3Body
+      locale={locale}
+      base={base}
+      useCase={useCase}
+      pillar={pillar}
+      useCaseTitle={useCaseT.title}
+      relatedUseCases={relatedUseCases}
+      hideProve={hideProve}
+      v3={v3}
+      ucBridgeHref={ucBridgeHref}
+      ucBridgeCta={ucBridgeCta}
+    />
+  ) : (
   <main class="ucd-page">
     <div class="ucd-container">
       <nav class="ucd-breadcrumb" aria-label="breadcrumb">
@@ -283,6 +302,7 @@ const breadcrumbJsonLd = {
       </div>
     </div>
   </main>
+  )}
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
