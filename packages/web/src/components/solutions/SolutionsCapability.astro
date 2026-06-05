@@ -1,0 +1,395 @@
+---
+/**
+ * §2 capability TOC + §3 four capability deep-dive sections (v29).
+ * Self-contained bilingual copy (local C), consumed by SolutionsTemplate
+ * right after the Hero. Anchor IDs match TOP §2 card links:
+ *   input-provenance / agent-authority / regulatory / verifiable-ai
+ */
+import type { Locale } from "../../i18n/translations";
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const ucHref = `${base}/solutions/use-cases/`;
+const trust402Href = base ? `${base}/trust402/` : "/trust402/";
+const pillar = (s: string) => `${base}/pillars/${s}/`;
+
+const C = isJa ? {
+  introEyebrow: "Lemma でできること、業務で",
+  h2Pre1: "4 つの能力で、業務を", h2Acc1: "動かす", h2Mid: "。",
+  h2Pre2: "リスクを", h2Acc2: "止める", h2End: "。",
+  leadPre: "Lemma の 4 つの軸を、業務領域に降ろした適用ガイドです。各能力ごとに、",
+  leadEm1: "業務でできること", leadMid: "と", leadEm2: "防ぐべきリスク",
+  leadTail: "を並べ、関連ユースケースへの動線をまとめています。",
+  runTag: "RUN / 動かす", stopTag: "STOP / 止める",
+  deepArrow: "→",
+} : {
+  introEyebrow: "What Lemma enables, in your work",
+  h2Pre1: "Four capabilities. ", h2Acc1: "Run your work", h2Mid: ".",
+  h2Pre2: "", h2Acc2: "Stop the risk", h2End: ".",
+  leadPre: "Lemma's four axes mapped to business workflows. For each capability, we show ",
+  leadEm1: "what can be done in production", leadMid: ", alongside ", leadEm2: "the risks it blocks",
+  leadTail: ".",
+  runTag: "RUN", stopTag: "STOP",
+  deepArrow: "→",
+};
+
+const toc = isJa ? [
+  { id: "input-provenance", num: "01", a: "AI 入力の", b: "来歴証明" },
+  { id: "agent-authority", num: "02", a: "エージェント", b: "権限証明" },
+  { id: "regulatory", num: "03", a: "規制属性", b: "証明" },
+  { id: "verifiable-ai", num: "04", a: "AI 入出力", b: "検証" },
+] : [
+  { id: "input-provenance", num: "01", a: "AI Input Provenance", b: "" },
+  { id: "agent-authority", num: "02", a: "Agent Authority Proof", b: "" },
+  { id: "regulatory", num: "03", a: "Regulatory Attribute Proof", b: "" },
+  { id: "verifiable-ai", num: "04", a: "Verifiable AI I/O", b: "" },
+];
+
+const caps = isJa ? [
+  {
+    id: "input-provenance", alt: false, icon: "stack",
+    eyebrow: "01 · P1 来歴証明", h2: "AI への入力に、来歴を。",
+    lead: "AI の判断のもとになるデータの「どこから来たか」「改ざんされていないか」を、中身を共有せずに証明します。RAG・学習データ・IoT センサ来歴の信頼性を、起点で確保。",
+    runHead: "来歴を渡して、AI を動かす",
+    run: [
+      { t: "RAG ソース信頼性", s: "学習データ・参照データの権利クリア証明" },
+      { t: "IoT センサデータの多階層来歴連鎖", s: "sensor → SCADA → Oracle まで非改ざんで" },
+      { t: "サプライチェーン原産地・原産国の検証", s: "原本を持たない多階層連鎖" },
+    ],
+    stopHead: "来歴なきデータは、入れない",
+    stop: [
+      { t: "汚染データ・未認証ソース", s: "signed:upstream で起点遮断" },
+      { t: "不可視 Unicode インジェクション", s: "visible_eq 検査で人/AI 入力差を検知" },
+      { t: "改ざん検知（ハッシュ不一致）", s: "checksum で改竄即拒否" },
+    ],
+    chips: [{ l: "RAG ソース信頼", h: ucHref }, { l: "サプライチェーン ESG", h: ucHref }, { l: "他のユースケース", h: ucHref }],
+    deep: "P1 来歴証明の詳細", deepHref: pillar("verifiable-origin"),
+  },
+  {
+    id: "agent-authority", alt: true, icon: "agent",
+    eyebrow: "02 · P3 エージェント権限証明", h2: "自律エージェントに、業務を任せる。",
+    lead: "x402 / MCP / A2A 環境で動くエージェントに対し、行為の前に「誰が委任したか」「どこまでの範囲か」「いくらまで支払えるか」を runtime に検証します。鍵を渡さずに、業務支払い・経費承認・cross-agent 取引を委ねられる。",
+    runHead: "範囲内なら、エージェントに任せる",
+    run: [
+      { t: "x402 ベースのエージェント決済", s: "spend limit 範囲内で自律取引" },
+      { t: "経費承認、API 課金、SaaS 契約", s: "担当 AI が業務上の支払いを実行" },
+      { t: "Cross-agent settlement (agent ↔ agent)", s: "エージェント同士の権限委譲" },
+    ],
+    stopHead: "範囲外は、実行前に止める",
+    stop: [
+      { t: "scope 超過の行為", s: "\"x402.pay ≤ ¥10k\" を超える支払いを runtime DENY" },
+      { t: "Jurisdiction 不一致", s: "権限外地域での取引を遮断" },
+      { t: "未認証 vendor への支払い", s: "delegated_by で送信先を検証" },
+    ],
+    chips: [{ l: "エージェント決済", h: ucHref }, { l: "Trust402 製品 →", h: trust402Href }, { l: "他のユースケース", h: ucHref }],
+    deep: "P3 エージェント権限の詳細", deepHref: pillar("agent-authority-proof"),
+  },
+  {
+    id: "regulatory", alt: false, icon: "filing",
+    eyebrow: "03 · P4 規制属性証明", h2: "規制適合を、原本なしで通す。",
+    lead: "KYC・AML・CBAM・EUDR・AI Act など、各規制が要求する属性を、原本データを開示せず選択的に証明します。事業者側の機密性と規制対応を、同じ層で両立。",
+    runHead: "属性だけ渡して、適合を通す",
+    run: [
+      { t: "KYC/AML 選択開示", s: "年齢・地域・適格性のみ、原本は事業者に残す" },
+      { t: "CBAM サプライヤ属性証明", s: "カーボン強度・原産国を多階層連鎖で" },
+      { t: "EUDR 原産地・伐採時期連鎖", s: "7 品目（パーム油・大豆・木材等）対応" },
+      { t: "AI Act / EU 規制対応", s: "AI 動作・データ利用の属性を選択開示" },
+    ],
+    stopHead: "偽装は、同じ層で防ぐ",
+    stop: [
+      { t: "AI 生成 ID による KYC 突破", s: "原本検証で synthetic ID を拒否" },
+      { t: "規制報告の偽装・未認証申請", s: "jurisdiction / 認証属性で検証" },
+      { t: "原本そのままの提出リスク", s: "選択開示でデータ流出を構造的に防ぐ" },
+    ],
+    chips: [{ l: "KYC 選択開示", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "LP claim", h: ucHref }],
+    deep: "P4 規制属性の詳細", deepHref: pillar("regulatory-attribute-proof"),
+  },
+  {
+    id: "verifiable-ai", alt: true, icon: "audit",
+    eyebrow: "04 · P2 検証可能 AI", h2: "AI の入出力を、見せずに検証する。",
+    lead: "AI が受け取った入力、生成した出力、実行した動作を、内容を開示せず独立検証できます。監査人・規制当局・第三者に対する説明責任を、機密性を保ったまま履行。",
+    runHead: "内容秘匿のまま、監査を通す",
+    run: [
+      { t: "AI 監査ログ証明", s: "内容を見せずに「規定通り動いた」だけ証明" },
+      { t: "コンプライアンス報告", s: "モデル動作の説明責任を、原本なしで" },
+      { t: "第三者監査の通過", s: "金融・規制業務での AI 利用の検証" },
+    ],
+    stopHead: "入出力のずれは、同じ層で検知",
+    stop: [
+      { t: "プロンプトインジェクション検知", s: "visible_eq で「人が見た入力」≠「AI が読む入力」を検出" },
+      { t: "不可視 Unicode・改ざん検知", s: "入力 hash で意図しない変換を遮断" },
+      { t: "モデル出力の改竄検知", s: "model_hash で出力 integrity を担保" },
+    ],
+    chips: [{ l: "AI 監査ログ証明", h: ucHref }, { l: "金融データ流出防止", h: ucHref }, { l: "他のユースケース", h: ucHref }],
+    deep: "P2 検証可能 AI の詳細", deepHref: pillar("verifiable-ai"),
+  },
+] : [
+  {
+    id: "input-provenance", alt: false, icon: "stack",
+    eyebrow: "01 · P1 Verifiable Origin", h2: "Provenance for every AI input.",
+    lead: "Prove where the data feeding your AI came from and that it hasn't been tampered with—without exposing the content. Trust your RAG sources, training data, and IoT sensor chains from the origin.",
+    runHead: "Pass proven data, run AI on it",
+    run: [
+      { t: "RAG source reliability", s: "Rights-cleared proof for training & reference data" },
+      { t: "Multi-tier IoT sensor provenance chain", s: "sensor → SCADA → Oracle, tamper-evident" },
+      { t: "Supply-chain origin & country verification", s: "A multi-tier chain you never hold the originals of" },
+    ],
+    stopHead: "Block data without provenance",
+    stop: [
+      { t: "Poisoned data & unverified sources", s: "Blocked at the origin via signed:upstream" },
+      { t: "Invisible Unicode injection", s: "visible_eq detects human/AI input divergence" },
+      { t: "Tamper detection (hash mismatch)", s: "checksum rejects altered data instantly" },
+    ],
+    chips: [{ l: "RAG source trust", h: ucHref }, { l: "Supply-chain ESG", h: ucHref }, { l: "More use cases", h: ucHref }],
+    deep: "P1 Verifiable Origin", deepHref: pillar("verifiable-origin"),
+  },
+  {
+    id: "agent-authority", alt: true, icon: "agent",
+    eyebrow: "02 · P3 Agent Authority Proof", h2: "Delegate work to autonomous agents.",
+    lead: "For agents running on x402 / MCP / A2A, Trust402 verifies \"who delegated this,\" \"to what scope,\" and \"up to what amount\" before action—at runtime. Delegate business payments, expense approvals, and cross-agent transactions, without sharing keys.",
+    runHead: "In scope, let the agent run",
+    run: [
+      { t: "x402-based agent payments", s: "Autonomous transactions within the spend limit" },
+      { t: "Expense approval, API metering, SaaS contracts", s: "An agent executes business payments" },
+      { t: "Cross-agent settlement (agent ↔ agent)", s: "Authority delegated between agents" },
+    ],
+    stopHead: "Out of scope, stop before execution",
+    stop: [
+      { t: "Actions that exceed scope", s: "Payments over \"x402.pay ≤ ¥10k\" are DENY'd at runtime" },
+      { t: "Jurisdiction mismatch", s: "Transactions outside the permitted region are blocked" },
+      { t: "Payments to unverified vendors", s: "Recipient checked via delegated_by" },
+    ],
+    chips: [{ l: "Agent payments", h: ucHref }, { l: "Trust402 product →", h: trust402Href }, { l: "More use cases", h: ucHref }],
+    deep: "P3 Agent Authority", deepHref: pillar("agent-authority-proof"),
+  },
+  {
+    id: "regulatory", alt: false, icon: "filing",
+    eyebrow: "03 · P4 Regulatory Attribute Proof", h2: "Prove regulatory compliance without sharing originals.",
+    lead: "KYC, AML, CBAM, EUDR, AI Act—prove the attributes each regulation requires, selectively, without disclosing original data. Reconcile your confidentiality and your compliance, in the same layer.",
+    runHead: "Share only attributes, clear compliance",
+    run: [
+      { t: "KYC/AML selective disclosure", s: "Only age, region, eligibility—originals stay with you" },
+      { t: "CBAM supplier attribute proof", s: "Carbon intensity & origin over a multi-tier chain" },
+      { t: "EUDR origin & harvest-date chain", s: "Covers the 7 commodities (palm oil, soy, timber, …)" },
+      { t: "AI Act / EU compliance", s: "Selective disclosure of AI behavior & data-use attributes" },
+    ],
+    stopHead: "Stop impersonation in the same layer",
+    stop: [
+      { t: "KYC bypass via AI-generated IDs", s: "Origin verification rejects synthetic IDs" },
+      { t: "Forged reports & unverified filings", s: "Checked via jurisdiction / certified attributes" },
+      { t: "Risk of submitting raw originals", s: "Selective disclosure structurally prevents leakage" },
+    ],
+    chips: [{ l: "KYC selective disclosure", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "LP claim", h: ucHref }],
+    deep: "P4 Regulatory Attribute", deepHref: pillar("regulatory-attribute-proof"),
+  },
+  {
+    id: "verifiable-ai", alt: true, icon: "audit",
+    eyebrow: "04 · P2 Verifiable AI", h2: "Verify AI input/output without exposing content.",
+    lead: "Verify what your AI received, generated, and did—without revealing the content. Discharge your accountability to auditors, regulators, and third parties while keeping confidentiality intact.",
+    runHead: "Clear audits while keeping content secret",
+    run: [
+      { t: "AI audit-log proof", s: "Prove \"it ran as specified\" without revealing content" },
+      { t: "Compliance reporting", s: "Accountability for model behavior, without originals" },
+      { t: "Passing third-party audits", s: "Verify AI use in financial & regulated work" },
+    ],
+    stopHead: "Catch I/O divergence in the same layer",
+    stop: [
+      { t: "Prompt-injection detection", s: "visible_eq spots \"what a human saw\" ≠ \"what the AI reads\"" },
+      { t: "Invisible Unicode & tamper detection", s: "Input hash blocks unintended transforms" },
+      { t: "Model-output tamper detection", s: "model_hash guarantees output integrity" },
+    ],
+    chips: [{ l: "AI audit-log proof", h: ucHref }, { l: "Financial data leak prevention", h: ucHref }, { l: "More use cases", h: ucHref }],
+    deep: "P2 Verifiable AI", deepHref: pillar("verifiable-ai"),
+  },
+];
+---
+
+<!-- §2 capability TOC -->
+<section class="sol-intro">
+  <p class="sol-intro-eyebrow">{C.introEyebrow}</p>
+  <h2 class="sol-intro-h2">{C.h2Pre1}<span class="accent">{C.h2Acc1}</span>{C.h2Mid}<br />{C.h2Pre2}<span class="accent">{C.h2Acc2}</span>{C.h2End}</h2>
+  <p class="sol-intro-lead">{C.leadPre}<span class="em">{C.leadEm1}</span>{C.leadMid}<span class="em">{C.leadEm2}</span>{C.leadTail}</p>
+  <div class="sol-toc">
+    {toc.map((t) => (
+      <a class="sol-toc-item" href={`#${t.id}`}>
+        <span class="sol-toc-num">{t.num}</span>
+        <p class="sol-toc-h">{t.a}{t.b && <br />}{t.b}</p>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- §3 capability deep-dive sections -->
+{caps.map((cap) => (
+  <section class:list={["cap-section", { alt: cap.alt }]} id={cap.id}>
+    <div class="cap-head">
+      <div class="cap-icon">
+        {cap.icon === "stack" && (
+          <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="14" y="26" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+            <rect x="20" y="20" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+            <rect x="26" y="14" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+            <rect x="31" y="20" width="32" height="3" fill="#8B4513"/>
+            <line x1="31" y1="29" x2="59" y2="29" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+            <line x1="31" y1="34" x2="53" y2="34" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+            <line x1="31" y1="39" x2="59" y2="39" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+            <circle cx="60" cy="54" r="11" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
+            <path d="M 55,54 L 59,58 L 65,51" stroke="#FCFAF5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        )}
+        {cap.icon === "agent" && (
+          <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="42" y1="20" x2="42" y2="13" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="42" cy="11" r="2.4" fill="#8B4513"/>
+            <rect x="18" y="20" width="48" height="48" rx="6" fill="#FCFAF5" stroke="#8B4513" stroke-width="2"/>
+            <circle cx="33" cy="40" r="3.2" fill="#8B4513"/>
+            <circle cx="51" cy="40" r="3.2" fill="#8B4513"/>
+            <line x1="35" y1="55" x2="49" y2="55" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="64" cy="64" r="9" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
+            <text x="64" y="68" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" font-weight="700" fill="#FCFAF5">¥</text>
+          </svg>
+        )}
+        {cap.icon === "filing" && (
+          <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="14" y="10" width="44" height="60" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+            <path d="M 50,10 L 58,10 L 58,18 Z" fill="#E8E1CC" stroke="#8B4513" stroke-width="1.2"/>
+            <rect x="18" y="16" width="28" height="3" fill="#8B4513"/>
+            <line x1="18" y1="26" x2="54" y2="26" stroke="#8B4513" stroke-width="1.2"/>
+            <line x1="18" y1="32" x2="48" y2="32" stroke="#8B4513" stroke-width="1.2"/>
+            <rect x="18" y="38" width="36" height="2.5" fill="#E8E1CC"/>
+            <rect x="18" y="44" width="30" height="2.5" fill="#E8E1CC"/>
+            <rect x="18" y="50" width="34" height="2.5" fill="#E8E1CC"/>
+            <rect x="18" y="56" width="28" height="2.5" fill="#E8E1CC"/>
+            <circle cx="58" cy="58" r="14" fill="none" stroke="#5C7A4A" stroke-width="2.4"/>
+            <circle cx="58" cy="58" r="10" fill="none" stroke="#5C7A4A" stroke-width="1.2"/>
+            <path d="M 53,58 L 57,62 L 64,53" stroke="#5C7A4A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        )}
+        {cap.icon === "audit" && (
+          <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="10" y="14" width="40" height="54" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+            <rect x="14" y="20" width="24" height="3" fill="#8B4513"/>
+            <line x1="16" y1="30" x2="20" y2="30" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="20" y1="30" x2="22" y2="32" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="24" y1="30" x2="44" y2="30" stroke="#8B4513" stroke-width="1.2"/>
+            <line x1="16" y1="38" x2="20" y2="38" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="20" y1="38" x2="22" y2="40" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="24" y1="38" x2="40" y2="38" stroke="#8B4513" stroke-width="1.2"/>
+            <line x1="16" y1="46" x2="20" y2="46" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="20" y1="46" x2="22" y2="48" stroke="#5C7A4A" stroke-width="1.5"/>
+            <line x1="24" y1="46" x2="44" y2="46" stroke="#8B4513" stroke-width="1.2"/>
+            <circle cx="58" cy="50" r="13" fill="#FCFAF5" stroke="#8B4513" stroke-width="2.4"/>
+            <line x1="68" y1="60" x2="76" y2="68" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 52,50 L 56,54 L 64,46" stroke="#5C7A4A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        )}
+      </div>
+      <div class="cap-head-text">
+        <p class="cap-eyebrow">{cap.eyebrow}</p>
+        <h2 class="cap-h">{cap.h2}</h2>
+        <p class="cap-lead">{cap.lead}</p>
+      </div>
+    </div>
+
+    <div class="cap-cols">
+      <div class="cap-col run">
+        <header class="cap-col-head">
+          <span class="cap-col-tag run">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M 4.5,3 L 12.5,8 L 4.5,13 Z" fill="currentColor"/></svg>
+            {C.runTag}
+          </span>
+          <h3 class="cap-col-h">{cap.runHead}</h3>
+        </header>
+        <ul>
+          {cap.run.map((it) => (<li>{it.t}<small>{it.s}</small></li>))}
+        </ul>
+      </div>
+      <div class="cap-col stop">
+        <header class="cap-col-head">
+          <span class="cap-col-tag stop">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M 8,2 L 13,3 L 13,8 Q 13,11 8,14 Q 3,11 3,8 L 3,3 Z" fill="currentColor"/>
+              <path d="M 5.5,8 L 7,9.5 L 10.5,6.5" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {C.stopTag}
+          </span>
+          <h3 class="cap-col-h">{cap.stopHead}</h3>
+        </header>
+        <ul>
+          {cap.stop.map((it) => (<li>{it.t}<small>{it.s}</small></li>))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="cap-foot">
+      <div class="cap-chips">
+        {cap.chips.map((ch) => (<a class="cap-chip" href={ch.h}>{ch.l}</a>))}
+      </div>
+      <a class="cap-deep-link" href={cap.deepHref}>{cap.deep} {C.deepArrow}</a>
+    </div>
+  </section>
+))}
+
+<style>
+  /* shared tokens for RUN/STOP */
+  .sol-intro, .cap-section { --green: #5c7a4a; --rust: #b8501f; --green-soft: rgba(92,122,74,0.12); --rust-soft: rgba(184,80,31,0.10); }
+
+  /* §2 TOC — full-bleed cream band with brown left rule */
+  .sol-intro { background: var(--lemma-cream); border-top: 1px solid var(--lemma-line); border-bottom: 1px solid var(--lemma-line); padding: 76px 48px 60px; position: relative; }
+  .sol-intro::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
+  .sol-intro-eyebrow { font-family: var(--so-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 18px; display: flex; align-items: center; gap: 10px; max-width: 1080px; margin-left: auto; margin-right: auto; }
+  .sol-intro-eyebrow::before { content: '\25B8'; font-size: 14px; }
+  .sol-intro-h2 { font-family: var(--so-display); font-weight: 700; font-size: 42px; line-height: 1.12; letter-spacing: -0.025em; margin: 0 auto 20px; color: var(--so-text-1); max-width: 1080px; }
+  .sol-intro-h2 .accent { color: var(--accent); }
+  .sol-intro-lead { font-size: 16px; color: var(--so-text-3); max-width: 1080px; margin: 0 auto 24px; line-height: 1.85; }
+  .sol-intro-lead .em { color: var(--so-text-1); font-weight: 700; }
+  .sol-toc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 1080px; margin: 20px auto 0; }
+  .sol-toc-item { background: var(--lemma-cream-deep); border: 1px solid var(--lemma-line); border-radius: 8px; padding: 14px 16px; text-decoration: none; color: inherit; transition: border-color 0.15s; display: flex; align-items: center; gap: 10px; }
+  .sol-toc-item:hover { border-color: var(--accent); }
+  .sol-toc-num { font-family: var(--so-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--accent); font-weight: 700; }
+  .sol-toc-h { font-family: var(--so-display); font-weight: 600; font-size: 13px; color: var(--so-text-1); margin: 0; line-height: 1.4; }
+
+  /* §3 capability deep-dive */
+  .cap-section { padding: 76px 48px; border-bottom: 1px solid var(--lemma-line); scroll-margin-top: 84px; background: var(--lemma-cream); }
+  .cap-section.alt { background: var(--lemma-cream-deep); }
+  .cap-head { display: flex; align-items: flex-start; gap: 24px; margin: 0 auto 40px; max-width: 1180px; }
+  .cap-icon { width: 72px; height: 72px; flex-shrink: 0; background: var(--lemma-cream); border: 1px solid var(--lemma-line); border-radius: 12px; padding: 8px; display: flex; align-items: center; justify-content: center; }
+  .cap-icon svg { width: 100%; height: 100%; }
+  .cap-head-text { flex: 1; padding-top: 4px; }
+  .cap-eyebrow { font-family: var(--so-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 0 0 10px; }
+  .cap-h { font-family: var(--so-display); font-weight: 700; font-size: 34px; line-height: 1.18; letter-spacing: -0.025em; margin: 0 0 16px; color: var(--so-text-1); }
+  .cap-lead { font-size: 15.5px; color: var(--so-text-3); line-height: 1.8; margin: 0; max-width: 860px; }
+  .cap-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 0 auto 32px; max-width: 1180px; }
+  .cap-col { background: var(--lemma-cream); border: 1px solid var(--lemma-line); border-radius: 12px; padding: 24px 26px 22px; }
+  .cap-section.alt .cap-col { background: var(--lemma-cream); }
+  .cap-col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--lemma-line); flex-wrap: wrap; }
+  .cap-col-tag { font-family: var(--so-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 4px 10px 4px 7px; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px; }
+  .cap-col-tag svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .cap-col-tag.run { color: var(--green); background: var(--green-soft); }
+  .cap-col-tag.stop { color: var(--rust); background: var(--rust-soft); }
+  .cap-col-h { font-family: var(--so-display); font-weight: 700; font-size: 16px; color: var(--so-text-1); margin: 0; }
+  .cap-col ul { margin: 0; padding: 0; list-style: none; }
+  .cap-col li { font-size: 14px; color: var(--so-text-1); line-height: 1.55; padding: 9px 0 9px 22px; position: relative; }
+  .cap-col li::before { position: absolute; left: 0; top: 9px; font-weight: 700; font-size: 14px; }
+  .cap-col.run li::before { content: '\2713'; color: var(--green); }
+  .cap-col.stop li::before { content: '\2717'; color: var(--rust); }
+  .cap-col li small { display: block; color: var(--so-text-4); font-size: 12px; margin-top: 2px; line-height: 1.5; }
+  .cap-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--lemma-line); max-width: 1180px; margin: 0 auto; }
+  .cap-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cap-chip { background: var(--lemma-cream); border: 1px solid var(--lemma-line); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--so-text-3); text-decoration: none; font-family: var(--so-display); font-weight: 500; transition: border-color 0.15s, color 0.15s; }
+  .cap-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .cap-deep-link { color: var(--accent); text-decoration: none; font-family: var(--so-display); font-weight: 600; font-size: 13px; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px; white-space: nowrap; }
+  .cap-deep-link:hover { color: var(--so-text-1); border-bottom-color: var(--so-text-1); }
+
+  @media (max-width: 900px) {
+    .sol-toc { grid-template-columns: repeat(2, 1fr); }
+    .sol-intro { padding: 56px 24px 44px; }
+    .sol-intro-h2 { font-size: 30px; }
+    .cap-section { padding: 56px 24px; }
+    .cap-head { flex-direction: column; gap: 18px; }
+    .cap-icon { width: 56px; height: 56px; }
+    .cap-cols { grid-template-columns: 1fr; }
+    .cap-h { font-size: 26px; }
+  }
+</style>
