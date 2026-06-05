@@ -260,7 +260,7 @@ function firstSentence(text: string): string {
             {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
             {audienceBullets.length > 0 ? (
               <ul class="ucv-personas">
-                {audienceBullets.map((b) => (
+                {audienceBullets.slice(0, 3).map((b) => (
                   <li class="ucv-persona">
                     <div class="ucv-persona-avatar" aria-hidden="true">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

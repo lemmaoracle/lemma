@@ -140,6 +140,28 @@ const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n>> = {
     hide: { ja: "原価・調達数量・サプライヤ取引内部", en: "cost, procurement volume and supplier-internal dealings" },
     prove: { ja: "ESG / CBAM 要件を満たすサプライチェーン構成である", en: "a supply-chain structure that meets ESG / CBAM requirements" },
   },
+  "cbam-supplier-attestation": {
+    hide: { ja: "生産データ・原価・サプライヤ取引内部", en: "production data, cost and supplier-internal dealings" },
+    prove: { ja: "CBAM 要件の国・原産・カーボン強度を満たす", en: "meets CBAM-required country, origin and carbon-intensity attributes" },
+  },
+  "eudr-traceability": {
+    hide: { ja: "サプライヤ間の原本・取引情報", en: "supplier raw records and transaction data" },
+    prove: { ja: "EUDR の原産地・伐採時期・許可属性を満たす", en: "meets EUDR origin, harvest-date and permit attributes" },
+  },
+  "public-procurement-attestation": {
+    hide: { ja: "入札者の原本書類・実績の内部情報", en: "the bidder's raw documents and performance internals" },
+    prove: { ja: "入札要件の適格性を満たす", en: "meets the tender's eligibility requirements" },
+  },
+
+  // P3 エージェント権限 / DeFi
+  "agentic-payment-fraud": {
+    hide: { ja: "エージェントの鍵・委任の中間ステップ", en: "the agent's keys and the intermediate delegation steps" },
+    prove: { ja: "各支払いが認可された委任の範囲内である", en: "each payment stayed within an authorized delegation" },
+  },
+  "lp-claim-attestation": {
+    hide: { ja: "LP の本人確認データ・残高", en: "the LP's KYC data and balances" },
+    prove: { ja: "地域・リスク許容など規制要件を満たす", en: "meets the regulatory regime (region, risk tolerance)" },
+  },
 };
 
 export function getUseCaseHideProve(slug: string, locale: Locale): HideProvePair | undefined {
