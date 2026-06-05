@@ -108,6 +108,19 @@ function stripSchemes(html: string): string {
 }
 const approachBody = approachSection ? stripSchemes(approachSection.body) : "";
 
+// Derived §1: the audience section is an intro paragraph + a short bullet
+// list. Render the bullets as persona-style cards for visual parity with the
+// authored persona quotes.
+const audienceHtml = audienceSection?.body ?? "";
+const audienceIntro = audienceHtml.match(/<p>([\s\S]*?)<\/p>/)?.[1]?.trim() ?? "";
+const audienceBullets = [...audienceHtml.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) =>
+  m[1].trim(),
+);
+// Derived §2 carries the HIDE→PROVE pair as the Before/After visual, so the
+// hero device is dropped on derived pages (it would otherwise repeat).
+const showHeroHp = !!hideProve && authored;
+const showDerivedBa = !authored && !!hideProve;
+
 /** Trim an abstract to its first sentence for related cards. */
 function firstSentence(text: string): string {
   const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
@@ -132,7 +145,7 @@ function firstSentence(text: string): string {
       </a>
       <h1 class="ucv-h1">{useCase.title}</h1>
 
-      {hideProve && (
+      {showHeroHp && (
         <div class="ucv-hp" aria-label="HIDE と PROVE の対比">
           <div class="ucv-hp__cell ucv-hp__cell--hide">
             <span class="ucv-hp__lab">Hide ── 隠す</span>
@@ -191,8 +204,25 @@ function firstSentence(text: string): string {
         ) : audienceSection && (
           <Fragment>
             <div class="ucv-eye">01 · 想定読者</div>
-            <h2 class="ucv-h2">{audienceSection.title}</h2>
-            <div class="ucv-audience ucv-steps-body" set:html={audienceSection.body} />
+            <h2 class="ucv-h2">このページは、こんな方のために。</h2>
+            {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
+            {audienceBullets.length > 0 ? (
+              <ul class="ucv-personas">
+                {audienceBullets.map((b) => (
+                  <li class="ucv-persona">
+                    <div class="ucv-persona-avatar" aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="8" r="4" fill="currentColor" />
+                        <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
+                      </svg>
+                    </div>
+                    <p class="ucv-persona-quote" set:html={b} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="ucv-audience ucv-steps-body" set:html={audienceSection.body} />
+            )}
           </Fragment>
         )}
       </div>
@@ -204,8 +234,29 @@ function firstSentence(text: string): string {
     <section class="ucv-band" aria-label="アプローチ">
       <div class="ucv-container">
         <div class="ucv-emph">
-          <div class="ucv-eye">{v3 ? "02 · 変化" : "02 · アプローチ"}</div>
+          <div class="ucv-eye">{v3 || showDerivedBa ? "02 · 変化" : "02 · アプローチ"}</div>
           <h2 class="ucv-h2">原本を渡すか、事実だけを渡すか。</h2>
+
+          {showDerivedBa && hideProve && (
+            <div class="ucv-ba ucv-ba--concept">
+              <div class="ucv-ba-card ucv-ba-card--before">
+                <div class="ucv-ba-label">Without Lemma</div>
+                <div class="ucv-ba-title">原本・中身をそのまま渡す</div>
+                <p class="ucv-ba-claim">{hideProve.hide}</p>
+                <div class="ucv-ba-flow">↓ すべて外部・AI へ渡る</div>
+              </div>
+
+              <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+
+              <div class="ucv-ba-card ucv-ba-card--after">
+                <div class="ucv-ba-label">With Lemma</div>
+                <div class="ucv-ba-title">事実だけを証明付きで渡す</div>
+                <p class="ucv-ba-claim ucv-ba-claim--prove">{hideProve.prove}</p>
+                <div><span class="ucv-ba-badge">✓ ZK VALID</span></div>
+                <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ</div>
+              </div>
+            </div>
+          )}
 
           {v3 && (
             <Fragment>
@@ -706,6 +757,18 @@ function firstSentence(text: string): string {
     border-radius: 6px;
     padding: 2px 8px;
   }
+  /* Derived (concept) Before/After — a phrase from HIDE→PROVE rather than a
+     key:value data row. */
+  .ucv-ba-claim {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ucv-text-3);
+    margin: 0;
+    padding: 14px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucv-ba-claim--prove { color: var(--black); font-weight: 600; }
   .ucv-ba-flow {
     font-family: var(--ucv-mono);
     font-size: 11px;
