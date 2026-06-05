@@ -8,6 +8,14 @@ import { SOLUTIONS } from "../../data/solutions";
 interface Props { locale: Locale }
 const { locale } = Astro.props as Props;
 const v = SOLUTIONS.visionClose;
+
+// JA books a Discovery Call; EN has no call staff, so it sends visitors to
+// the products to try them hands-on (Seal + Trust402).
+const isJa = locale === "ja";
+const primaryHref = isJa ? v.ctaPrimary.href : "/seal/";
+const primaryLabel = isJa ? v.ctaPrimary.label[locale] : "Try Seal →";
+const secondaryHref = isJa ? v.ctaSecondary.href : "/trust402/";
+const secondaryLabel = isJa ? v.ctaSecondary.label[locale] : "Trust402 reference implementation →";
 ---
 
 <section class="sv-section">
@@ -19,11 +27,11 @@ const v = SOLUTIONS.visionClose;
     </h2>
     <p class="sv-sub">{v.sub[locale]}</p>
     <div class="sv-cta">
-      <a href={v.ctaPrimary.href} class="sv-cta-primary" target="_blank" rel="noopener">
-        {v.ctaPrimary.label[locale]}
+      <a href={primaryHref} class="sv-cta-primary" target={isJa ? "_blank" : undefined} rel={isJa ? "noopener" : undefined}>
+        {primaryLabel}
       </a>
-      <a href={v.ctaSecondary.href} class="sv-cta-secondary" target="_blank" rel="noopener">
-        {v.ctaSecondary.label[locale]}
+      <a href={secondaryHref} class="sv-cta-secondary" target={isJa ? "_blank" : undefined} rel={isJa ? "noopener" : undefined}>
+        {secondaryLabel}
       </a>
     </div>
   </div>
