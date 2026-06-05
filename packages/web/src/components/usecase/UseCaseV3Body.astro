@@ -62,13 +62,17 @@ const discoveryUrl = DISCOVERY_CALL_URL.ja;
 const nextSection =
   useCase.sections.find((s) => s.key === "next") ??
   useCase.sections.find((s) => s.key === "cta");
-// The "cta" variant ends with a markdown link row (Discovery Call + white-
-// paper) that would duplicate the dedicated TALK button below — drop a
-// trailing links-only paragraph so the section closes on the button.
-const nextBody =
-  nextSection && nextSection.key === "cta"
-    ? nextSection.body.replace(/\s*<p>(?:\s*<a\b[^>]*>[\s\S]*?<\/a>\s*)+<\/p>\s*$/, "")
-    : (nextSection?.body ?? "");
+// For the "cta" variant keep only the first paragraph — a modest, use-case-
+// matched invitation ("…御社の構造を聞かせてください。…開示は必要ありません。"),
+// at the level of ai-document-isolation's closing line. The follow-up
+// paragraph (NDA 締結・規制マッピング・参照アーキテクチャ・PoC 設計) over-claims
+// for this surface, and the trailing link row duplicates the TALK button.
+const nextBody = (() => {
+  if (!nextSection) return "";
+  if (nextSection.key !== "cta") return nextSection.body;
+  const firstPara = nextSection.body.match(/<p>[\s\S]*?<\/p>/);
+  return firstPara ? firstPara[0] : nextSection.body;
+})();
 // Normalize the §4 heading to 「進め方」 — the "cta" section title is a
 // Discovery-Call headline that reads oddly here; ai-document-isolation's is
 // already "進め方".
