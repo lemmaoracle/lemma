@@ -11,6 +11,15 @@ interface Props { locale: Locale; base: string }
 const { locale, base } = Astro.props as Props;
 const s = SOLUTIONS.scenarios;
 const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
+const pillarBase = base ? `${base}/pillars` : "/pillars";
+
+// Anchor IDs (TOP §2 card targets) + Pillar deep-link, keyed by useCaseSlug.
+const capMeta: Record<string, { anchor: string; pillar: string; label: { ja: string; en: string } }> = {
+  "rag-content-provenance": { anchor: "input-provenance", pillar: "verifiable-origin", label: { ja: "P1 来歴証明の詳細", en: "P1 Verifiable Origin" } },
+  "kyc-aml-selective-disclosure": { anchor: "regulatory", pillar: "regulatory-attribute-proof", label: { ja: "P4 規制属性証明の詳細", en: "P4 Regulatory Attribute Proof" } },
+  "ai-audit-log-proof": { anchor: "agent-authority", pillar: "agent-authority-proof", label: { ja: "P3 エージェント権限証明の詳細", en: "P3 Agent Authority Proof" } },
+  "supply-chain-esg": { anchor: "verifiable-ai", pillar: "verifiable-ai", label: { ja: "P2 検証可能 AI の詳細", en: "P2 Verifiable AI" } },
+};
 ---
 
 <section class="ss-section">
@@ -22,8 +31,11 @@ const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-case
   <p class="so-section-sub">{s.sub[locale]}</p>
 
   <div class="ss-grid">
-    {s.items.map((item) => (
-      <a href={`${useCasesBase}/${item.useCaseSlug}/`} class="ss-card">
+    {s.items.map((item) => {
+    const m = capMeta[item.useCaseSlug];
+    return (
+    <div class="ss-cell">
+      <a id={m?.anchor} href={`${useCasesBase}/${item.useCaseSlug}/`} class="ss-card">
         <div class="ss-head">
           <div class="ss-icon">
             <SolutionsIcon name={item.icon} size={32} />
@@ -60,7 +72,14 @@ const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-case
         <p class="ss-desc">{item.desc[locale]}</p>
         <div class="ss-link">{item.linkLabel[locale]}</div>
       </a>
-    ))}
+      {m && (
+        <div class="ss-pillar-link">
+          <a href={`${pillarBase}/${m.pillar}/`}>{m.label[locale]} →</a>
+        </div>
+      )}
+    </div>
+    );
+    })}
   </div>
 </section>
 
@@ -69,6 +88,10 @@ const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-case
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px;
+  }
+  .ss-cell {
+    display: flex;
+    flex-direction: column;
   }
   .ss-card {
     background: var(--white);
@@ -79,9 +102,29 @@ const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-case
     display: flex;
     flex-direction: column;
     gap: 16px;
+    flex: 1 1 auto;
+    scroll-margin-top: 90px;
     transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     position: relative;
     overflow: hidden;
+  }
+  .ss-pillar-link {
+    margin-top: 12px;
+    text-align: right;
+    font-family: var(--so-display);
+    font-size: 13px;
+  }
+  .ss-pillar-link a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .ss-pillar-link a:hover {
+    color: var(--black);
+    border-bottom-color: var(--black);
   }
   .ss-card::before {
     content: "";
