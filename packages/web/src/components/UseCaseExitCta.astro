@@ -37,13 +37,9 @@ export interface UseCaseExitCtaProps {
   pillarSlug: string;
   locale: Locale;
   base: string;
-  /** Suppress the "関連する実事案: Critical Brief →" link (and its JSON-LD
-   * entry). The v3 detail template drops it to avoid a promotional tone
-   * in the final CTA. */
-  hideBriefLink?: boolean;
 }
 
-const { slug, pillarSlug, locale, base, hideBriefLink = false } = Astro.props as UseCaseExitCtaProps;
+const { slug, pillarSlug, locale, base } = Astro.props as UseCaseExitCtaProps;
 const isJa = locale === "ja";
 
 const variant = getUseCaseExitVariant(slug, pillarSlug);
@@ -83,12 +79,10 @@ const jsonLd = {
   name: `次のステップ — ${pillarLabel} (${INDUSTRY_LABEL_JA[variant.industry]})`,
   itemListElement: [
     { "@type": "ListItem", position: 1, name: `Pillar 0${variant.pillarCode.slice(1)} — ${pillarLabel}`, url: `https://lemma.frame00.com${pillarHrefRoot}` },
-    ...(hideBriefLink
-      ? []
-      : [{ "@type": "ListItem", position: 2, name: "Critical Brief 一覧", url: `https://lemma.frame00.com${briefsHref}` }]),
+    { "@type": "ListItem", position: 2, name: "Critical Brief 一覧", url: `https://lemma.frame00.com${briefsHref}` },
     {
       "@type": "ListItem",
-      position: hideBriefLink ? 2 : 3,
+      position: 3,
       name: isDev ? "Trust402 を試す" : `導入を相談${variant.planLabel}`,
       url: isDev ? trustUrl : consultUrl,
     },
@@ -118,16 +112,14 @@ const jsonLd = {
           <span class="lm-next__eyebrow">{eyebrow}</span>
         </div>
         <p class="lm-next__thesis">{thesis}</p>
-        {!hideBriefLink && (
-          <nav class="lm-next__ucs" aria-label="関連">
-            <a
-              class="lm-next__uc"
-              href={briefsHref}
-              data-ev="brief_link_click"
-              data-cta="Critical Brief"
-            >関連する実事案: Critical Brief →</a>
-          </nav>
-        )}
+        <nav class="lm-next__ucs" aria-label="関連">
+          <a
+            class="lm-next__uc"
+            href={briefsHref}
+            data-ev="brief_link_click"
+            data-cta="Critical Brief"
+          >関連する実事案: Critical Brief →</a>
+        </nav>
         <div class="lm-next__cta">
           <a
             class="lm-next__btn lm-next__btn--primary"

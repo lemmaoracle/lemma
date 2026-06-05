@@ -18,16 +18,13 @@
  * Crypto scheme names stay out of the body; the §2 callout links to /guides
  * for the technical reader. The final CTA drops the Critical Brief link.
  */
-import type { Locale } from "../../i18n/translations";
 import type { UseCase } from "../../data/useCases";
 import type { Pillar } from "../../data/pillars";
 import type { HideProvePair } from "../../config/useCaseHideProve";
 import type { UseCaseV3 } from "../../config/useCaseV3";
 import SolutionsBridge from "../SolutionsBridge.astro";
-import UseCaseExitCta from "../UseCaseExitCta.astro";
 
 export interface UseCaseV3BodyProps {
-  locale: Locale;
   base: string;
   useCase: UseCase;
   pillar: Pillar;
@@ -40,7 +37,6 @@ export interface UseCaseV3BodyProps {
 }
 
 const {
-  locale,
   base,
   useCase,
   pillar,
@@ -113,7 +109,7 @@ function firstSentence(text: string): string {
   <div class="ucv-cred">
     <div class="ucv-cred-inner">
       <span class="ucv-cred-dot" aria-hidden="true"></span>
-      <span><b>live in production since 2025</b> · メタウォーター（東証プライム）共同実装 · ETHGlobal AI Agents 2026 Finalist</span>
+      <span><b>live in production since 2025</b> · 公共インフラ PoC 稼働中 · ETHGlobal AI Agents 2026 Finalist</span>
     </div>
   </div>
 
@@ -227,7 +223,7 @@ function firstSentence(text: string): string {
   <!-- §4 進め方 — existing markdown (ORIGINAL numbered list) -->
   {nextSection && (
     <section class="ucv-band" aria-label="進め方">
-      <div class="ucv-container ucv-container--narrow">
+      <div class="ucv-container">
         <div class="ucv-eye">04 · 進め方</div>
         <h2 class="ucv-h2">{nextSection.title}</h2>
         <div class="ucv-steps-body" set:html={nextSection.body} />
@@ -271,16 +267,6 @@ function firstSentence(text: string): string {
     sub="業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。"
     ctaLabel={ucBridgeCta}
   />
-
-  <div class="ucv-container ucv-container--narrow ucv-final">
-    <UseCaseExitCta
-      slug={useCase.slug}
-      pillarSlug={useCase.pillar}
-      locale={locale}
-      base={base}
-      hideBriefLink={true}
-    />
-  </div>
 </main>
 
 <style>
@@ -307,9 +293,6 @@ function firstSentence(text: string): string {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 40px;
-  }
-  .ucv-container--narrow {
-    max-width: 760px;
   }
 
   a {
@@ -829,9 +812,6 @@ function firstSentence(text: string): string {
     transition: transform 0.2s;
   }
   .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
-
-  /* ─── FINAL CTA ─── */
-  .ucv-final { padding-top: 56px; padding-bottom: 0; }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 960px) {
