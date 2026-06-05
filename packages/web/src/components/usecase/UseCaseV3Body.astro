@@ -23,6 +23,7 @@ import type { Pillar } from "../../data/pillars";
 import type { HideProvePair } from "../../config/useCaseHideProve";
 import type { UseCaseV3 } from "../../config/useCaseV3";
 import SolutionsBridge from "../SolutionsBridge.astro";
+import { DISCOVERY_CALL_URL } from "../../config/cta";
 
 export interface UseCaseV3BodyProps {
   base: string;
@@ -51,6 +52,8 @@ const {
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const guidesHref = `${base}/guides`;
+// v3 is JA only, so the closing books the JA Discovery Call.
+const discoveryUrl = DISCOVERY_CALL_URL.ja;
 
 // §4 / §5 reuse the existing markdown sections by key.
 const nextSection = useCase.sections.find((s) => s.key === "next");
@@ -267,6 +270,19 @@ function firstSentence(text: string): string {
     sub="業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。"
     ctaLabel={ucBridgeCta}
   />
+
+  <!-- Closing — Discovery Call (mirrors the TOP / Solutions dark closing). -->
+  <section class="ucv-closing" aria-label="Discovery Call">
+    <div class="ucv-closing-inner">
+      <p class="ucv-closing-eyebrow">DISCOVERY CALL</p>
+      <h2 class="ucv-closing-h">まずは、<span class="accent">30 分の対話</span>から。</h2>
+      <p class="ucv-closing-sub">Lemma の機能や活用場面について、ご質問にお答えします。技術的な詳細や機微情報の開示は不要です。</p>
+      <div class="ucv-closing-ctas">
+        <a href={discoveryUrl} class="ucv-closing-pill" target="_blank" rel="noopener">Discovery Call を予約 →</a>
+        <button type="button" class="ucv-closing-link" data-tally-open="xX0VYv" data-tally-emoji-text="">ホワイトペーパー DL →</button>
+      </div>
+    </div>
+  </section>
 </main>
 
 <style>
@@ -286,7 +302,9 @@ function firstSentence(text: string): string {
     font-weight: 400;
     line-height: 1.75;
     margin-top: 64px;
-    padding: 0 0 24px;
+    /* No bottom padding — the dark closing band sits flush against the
+       footer (any padding here shows as a cream strip above it). */
+    padding: 0;
   }
 
   .ucv-container {
@@ -813,6 +831,72 @@ function firstSentence(text: string): string {
   }
   .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
 
+  /* ─── CLOSING (Discovery Call) ─── */
+  .ucv-closing {
+    background: #0f0f0f;
+    padding: 88px 0 80px;
+    text-align: center;
+  }
+  .ucv-closing-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .ucv-closing-eyebrow {
+    font-family: var(--ucv-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(252, 250, 245, 0.5);
+    margin: 0 0 22px;
+  }
+  .ucv-closing-h {
+    font-family: var(--ucv-display);
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--lemma-cream);
+    margin: 0 0 24px;
+  }
+  .ucv-closing-h .accent { color: var(--accent); }
+  .ucv-closing-sub {
+    font-size: 15px;
+    color: rgba(252, 250, 245, 0.7);
+    max-width: 560px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .ucv-closing-ctas {
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ucv-closing-pill {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-family: var(--ucv-display);
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .ucv-closing-pill:hover { background: #6e3610; }
+  .ucv-closing-link {
+    color: rgba(252, 250, 245, 0.7);
+    font-family: var(--ucv-display);
+    font-size: 14px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .ucv-closing-link:hover { color: var(--lemma-cream); }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 960px) {
     .ucv-personas { grid-template-columns: 1fr; }
@@ -826,5 +910,7 @@ function firstSentence(text: string): string {
     .ucv-band { padding: 48px 0; }
     .ucv-hero { padding: 18px 0 32px; }
     .ucv-emph { padding-left: 18px; }
+    .ucv-closing { padding: 60px 0 56px; }
+    .ucv-closing-inner { padding: 0 24px; }
   }
 </style>
