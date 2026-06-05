@@ -77,9 +77,12 @@ const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
 const hideProve = isJa ? getUseCaseHideProve(useCase.slug) : undefined;
-// v3 detail template — JA only, opt-in per slug via config/useCaseV3.ts.
-// Slugs without a v3 entry (and all EN pages) keep the long-form template.
+// v3 detail template — JA only. Every JA UC renders v3; slugs with a
+// config/useCaseV3.ts entry get the authored §1 personas + §2 Before/After,
+// the rest derive §1/§2 from the audience/approach markdown. EN keeps the
+// long-form template (follow-up).
 const v3 = isJa ? getUseCaseV3(useCase.slug) : undefined;
+const useV3 = isJa;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
@@ -125,7 +128,7 @@ const breadcrumbJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  {v3 ? (
+  {useV3 ? (
     <UseCaseV3Body
       base={base}
       useCase={useCase}
