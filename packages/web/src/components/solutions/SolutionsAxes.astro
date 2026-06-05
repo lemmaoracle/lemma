@@ -174,7 +174,7 @@ const axes = isJa ? [
               </div>
               <div class="axis-hp-cell prove">
                 <svg class="axis-hp-icon" viewBox="0 0 16 16" aria-hidden="true">
-                  <circle cx="8" cy="8" r="6.5" fill="#5C7A4A"/>
+                  <circle cx="8" cy="8" r="6.5" fill="#8B4513"/>
                   <path d="M 5,8 L 7,10 L 11,6" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span class="axis-hp-label prove">{C.prove}</span>
@@ -196,7 +196,7 @@ const axes = isJa ? [
 </section>
 
 <style>
-  .axes { --green: #5c7a4a; --green-soft: rgba(92,122,74,0.10); background: var(--lemma-cream-deep); border-top: 1px solid var(--lemma-line); border-bottom: 1px solid var(--lemma-line); padding: 72px 48px 80px; }
+  .axes { background: var(--lemma-cream-deep); border-top: 1px solid var(--lemma-line); border-bottom: 1px solid var(--lemma-line); padding: 72px 48px 80px; }
   .axes-inner { max-width: 1180px; margin: 0 auto; }
   .axes-head { margin-bottom: 44px; }
   .axes-eyebrow { font-family: var(--so-mono); font-size: 12px; letter-spacing: 0.18em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
@@ -213,15 +213,17 @@ const axes = isJa ? [
   .axis-num { font-family: var(--so-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--accent); font-weight: 700; margin: 0 0 6px; }
   .axis-name { font-family: var(--so-display); font-weight: 700; font-size: 22px; line-height: 1.3; letter-spacing: -0.02em; margin: 0 0 18px; color: var(--so-text-1); }
 
-  .axis-hp { display: flex; flex-direction: column; gap: 8px; margin: 0 0 18px; }
-  .axis-hp-cell { display: flex; gap: 10px; align-items: center; padding: 11px 14px; border-radius: 8px; }
-  .axis-hp-cell.hide { background: rgba(74, 70, 64, 0.06); border: 1px solid rgba(74, 70, 64, 0.18); }
-  .axis-hp-cell.prove { background: var(--green-soft); border: 1px solid rgba(92, 122, 74, 0.32); }
-  .axis-hp-icon { width: 16px; height: 16px; flex-shrink: 0; }
-  .axis-hp-label { font-family: var(--so-mono); font-size: 10px; letter-spacing: 0.16em; font-weight: 700; flex-shrink: 0; width: 44px; }
+  /* HIDE -> PROVE — borderless editorial rows (no filled cells, no green box) */
+  .axis-hp { display: flex; flex-direction: column; margin: 4px 0 18px; }
+  .axis-hp-cell { display: grid; grid-template-columns: 15px 42px 1fr; column-gap: 10px; align-items: center; padding: 11px 0; }
+  .axis-hp-cell.prove { border-top: 1px solid var(--lemma-line); }
+  .axis-hp-icon { width: 15px; height: 15px; flex-shrink: 0; }
+  .axis-hp-label { font-family: var(--so-mono); font-size: 9px; letter-spacing: 0.18em; font-weight: 700; }
   .axis-hp-label.hide { color: var(--so-text-4); }
-  .axis-hp-label.prove { color: var(--green); }
-  .axis-hp-text { font-size: 13.5px; color: var(--so-text-1); margin: 0; line-height: 1.5; font-weight: 600; }
+  .axis-hp-label.prove { color: var(--accent); }
+  .axis-hp-text { font-size: 13px; margin: 0; line-height: 1.45; }
+  .axis-hp-cell.hide .axis-hp-text { color: var(--so-text-3); }
+  .axis-hp-cell.prove .axis-hp-text { color: var(--so-text-1); font-weight: 600; }
   .axis-desc { font-size: 13.5px; color: var(--so-text-3); margin: 0 0 18px; line-height: 1.75; }
   .axis-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
   .axis-chip { background: var(--lemma-cream-deep); border: 1px solid var(--lemma-line); border-radius: 999px; padding: 4px 11px; font-family: var(--so-display); font-weight: 500; font-size: 11.5px; color: var(--so-text-3); text-decoration: none; transition: border-color 0.15s, color 0.15s; }
