@@ -76,13 +76,12 @@ function firstSentence(text: string): string {
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
-const hideProve = isJa ? getUseCaseHideProve(useCase.slug) : undefined;
-// v3 detail template — JA only. Every JA UC renders v3; slugs with a
-// config/useCaseV3.ts entry get the authored §1 personas + §2 Before/After,
-// the rest derive §1/§2 from the audience/approach markdown. EN keeps the
-// long-form template (follow-up).
+const hideProve = getUseCaseHideProve(useCase.slug, locale);
+// v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
+// (JA only) get the authored §1 personas + §2 Before/After; everything else
+// derives §1/§2 from the audience/approach markdown. EN always derives.
 const v3 = isJa ? getUseCaseV3(useCase.slug) : undefined;
-const useV3 = isJa;
+const useV3 = true;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
@@ -130,6 +129,7 @@ const breadcrumbJsonLd = {
 
   {useV3 ? (
     <UseCaseV3Body
+      locale={locale}
       base={base}
       useCase={useCase}
       pillar={pillar}
