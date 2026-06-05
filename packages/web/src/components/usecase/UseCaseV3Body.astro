@@ -56,7 +56,24 @@ const guidesHref = `${base}/guides`;
 const discoveryUrl = DISCOVERY_CALL_URL.ja;
 
 // §4 / §5 reuse the existing markdown sections by key.
-const nextSection = useCase.sections.find((s) => s.key === "next");
+// The 進め方 section is "next" on ai-document-isolation (a 5-step list) but
+// "cta" on the other 7 UCs (a Discovery-led prose section). Fall back so §4
+// renders on all of them.
+const nextSection =
+  useCase.sections.find((s) => s.key === "next") ??
+  useCase.sections.find((s) => s.key === "cta");
+// The "cta" variant ends with a markdown link row (Discovery Call + white-
+// paper) that would duplicate the dedicated TALK button below — drop a
+// trailing links-only paragraph so the section closes on the button.
+const nextBody =
+  nextSection && nextSection.key === "cta"
+    ? nextSection.body.replace(/\s*<p>(?:\s*<a\b[^>]*>[\s\S]*?<\/a>\s*)+<\/p>\s*$/, "")
+    : (nextSection?.body ?? "");
+// Normalize the §4 heading to 「進め方」 — the "cta" section title is a
+// Discovery-Call headline that reads oddly here; ai-document-isolation's is
+// already "進め方".
+const nextTitle =
+  nextSection && nextSection.key === "next" ? nextSection.title : "進め方";
 const relatedSection = useCase.sections.find((s) => s.key === "related");
 
 /** Trim an abstract to its first sentence for related cards. */
@@ -231,8 +248,8 @@ function firstSentence(text: string): string {
     <section class="ucv-band" aria-label="進め方">
       <div class="ucv-container">
         <div class="ucv-eye">04 · 進め方</div>
-        <h2 class="ucv-h2">{nextSection.title}</h2>
-        <div class="ucv-steps-body" set:html={nextSection.body} />
+        <h2 class="ucv-h2">{nextTitle}</h2>
+        <div class="ucv-steps-body" set:html={nextBody} />
         <!-- UC-specific TALK CTA — books the same Discovery Call form, but
              tags the submission with this use case's slug (?uc=) for per-UC
              attribution. The §5 Solutions bridge stays the EXPLORE path. -->
