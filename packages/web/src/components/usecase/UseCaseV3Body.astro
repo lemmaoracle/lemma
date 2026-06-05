@@ -67,10 +67,14 @@ const C = isJa
       bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
       s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
+      s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
       s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
       s2H2: "原本を渡すか、事実だけを渡すか。",
+      s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
+      baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
+      baDataFlowBefore: "↓ すべて AI・外部へ渡る", baDataFlowAfter: "↓ 必要な事実だけ AI へ渡る",
       approachLink: "技術詳細を見る ↗",
       s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
       s3Lead: "「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務こそが Lemma の領域です。",
@@ -87,10 +91,14 @@ const C = isJa
       bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
       credMid: "Public-infrastructure PoC in production",
       s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
+      s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
       s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
       s2H2: "Hand over the source, or just the facts?",
+      s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
+      baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
+      baDataFlowBefore: "↓ all of it goes to the AI / outside", baDataFlowAfter: "↓ only the necessary facts to the AI",
       approachLink: "See the technical details ↗",
       s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
       s3Lead: "Only work that needs <strong>all three at once</strong> — pass without exposing, independent verification, tamper-proof — is Lemma's domain.",
@@ -103,6 +111,10 @@ const C = isJa
       bridgeH2: "The bigger picture this use case belongs to.",
       bridgeSub: "We map use scenarios across industries and workflows by the four axes.",
     };
+
+// Resolve a Before/After data value for the active locale (vEn overrides v).
+const rv = (row: { v: string; vEn?: string }): string =>
+  !isJa && row.vEn ? row.vEn : row.v;
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -236,8 +248,8 @@ function firstSentence(text: string): string {
       <div class="ucv-container">
         {v3 ? (
           <Fragment>
-            <div class="ucv-eye">01 · 課題認識</div>
-            <h2 class="ucv-h2">推進担当の、3 つの声。</h2>
+            <div class="ucv-eye">{C.s1AuthEye}</div>
+            <h2 class="ucv-h2">{C.s1AuthH2}</h2>
             <ul class="ucv-personas">
               {v3.personas.map((p) => (
                 <li class="ucv-persona">
@@ -247,8 +259,8 @@ function firstSentence(text: string): string {
                       <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
                     </svg>
                   </div>
-                  <div class="ucv-persona-role">{p.role}</div>
-                  <p class="ucv-persona-quote">「{p.quote}」</p>
+                  <div class="ucv-persona-role">{p.role[locale]}</div>
+                  <p class="ucv-persona-quote">{isJa ? `「${p.quote.ja}」` : `“${p.quote.en}”`}</p>
                 </li>
               ))}
             </ul>
@@ -312,42 +324,42 @@ function firstSentence(text: string): string {
 
           {v3 && (
             <Fragment>
-              <p class="ucv-band-lead">AI に渡すものが変われば、漏洩のリスクごと消える。</p>
+              <p class="ucv-band-lead">{C.s2Lead}</p>
               <div class="ucv-ba">
                 <div class="ucv-ba-card ucv-ba-card--before">
                   <div class="ucv-ba-label">Without Lemma</div>
-                  <div class="ucv-ba-title">原本をそのまま渡す</div>
+                  <div class="ucv-ba-title">{C.baDataBeforeTitle}</div>
                   <dl class="ucv-ba-rows">
                     {v3.without.map((row) => (
                       <div class="ucv-ba-row">
                         <dt>{row.k}:</dt>
-                        <dd>{row.v}</dd>
+                        <dd>{rv(row)}</dd>
                       </div>
                     ))}
                   </dl>
-                  <div class="ucv-ba-flow">↓ すべて AI・外部へ渡る</div>
+                  <div class="ucv-ba-flow">{C.baDataFlowBefore}</div>
                 </div>
 
                 <div class="ucv-ba-arrow" aria-hidden="true">→</div>
 
                 <div class="ucv-ba-card ucv-ba-card--after">
                   <div class="ucv-ba-label">With Lemma</div>
-                  <div class="ucv-ba-title">事実だけを渡す</div>
+                  <div class="ucv-ba-title">{C.baDataAfterTitle}</div>
                   <dl class="ucv-ba-rows">
                     {v3.withProof.map((row) => (
                       <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
                         <dt>{row.k}:</dt>
                         <dd>
                           {row.badge ? (
-                            <span class="ucv-ba-badge">{row.v}</span>
+                            <span class="ucv-ba-badge">{rv(row)}</span>
                           ) : (
-                            <span class={row.strong ? "ucv-ba-strong" : ""}>{row.v}</span>
+                            <span class={row.strong ? "ucv-ba-strong" : ""}>{rv(row)}</span>
                           )}
                         </dd>
                       </div>
                     ))}
                   </dl>
-                  <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ AI へ渡る</div>
+                  <div class="ucv-ba-flow ucv-ba-flow--after">{C.baDataFlowAfter}</div>
                 </div>
               </div>
             </Fragment>
@@ -355,7 +367,7 @@ function firstSentence(text: string): string {
 
           <div class="ucv-approach">
             {v3 ? (
-              <p>{v3.approach}</p>
+              <p>{v3.approach[locale]}</p>
             ) : (
               <div class="ucv-approach-body" set:html={approachBody} />
             )}

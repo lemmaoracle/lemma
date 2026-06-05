@@ -78,9 +78,9 @@ const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
 const hideProve = getUseCaseHideProve(useCase.slug, locale);
 // v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
-// (JA only) get the authored §1 personas + §2 Before/After; everything else
-// derives §1/§2 from the audience/approach markdown. EN always derives.
-const v3 = isJa ? getUseCaseV3(useCase.slug) : undefined;
+// get the authored §1 personas + §2 Before/After (now bilingual); everything
+// else derives §1/§2 from the audience/approach markdown.
+const v3 = getUseCaseV3(useCase.slug);
 const useV3 = true;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
