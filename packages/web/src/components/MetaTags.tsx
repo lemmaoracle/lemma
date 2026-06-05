@@ -1,6 +1,4 @@
 import type { BlogPost } from "../data/blog";
-import OgImageEn from "../assets/ogp_en.png";
-import OgImageJa from "../assets/ogp_ja.png";
 
 interface BaseMetaTagsProps {
   locale?: string;
@@ -36,9 +34,11 @@ interface ArticleMetaTagsProps extends BaseMetaTagsProps {
 
 type MetaTagsProps = HomeMetaTagsProps | PageMetaTagsProps | ArticleMetaTagsProps;
 
+// Default OG image: the locale's cream satori card (same renderer as the
+// homepage), so pages without a custom OG share the current brand design
+// instead of the retired dark "信頼レイヤー" asset.
 function getDefaultOgImage(locale?: string): string {
-  const image = locale === "ja" ? OgImageJa : OgImageEn;
-  return `https://lemma.frame00.com${image.src}`;
+  return `https://lemma.frame00.com/og/home/${locale === "ja" ? "ja" : "en"}.png`;
 }
 
 export default function MetaTags(props: MetaTagsProps) {
