@@ -381,10 +381,10 @@ export const SOLUTIONS: SolutionsContent = {
   adoption: {
     eyebrow: { ja: "採用ステップ", en: "Adoption" },
     h2Head: { ja: "3 ヶ月で、", en: "From Discovery" },
-    h2Accent: { ja: "証明層を本番運用へ。", en: "to production in 3 months." },
+    h2Accent: { ja: "信頼インフラを本番運用へ。", en: "to production in 3 months." },
     sub: {
-      ja: "既存システムは止めない。共存設計で、証明層を前段に追加するだけ。",
-      en: "Existing systems keep running. Coexistence design: drop the proof layer in front.",
+      ja: "既存システムは止めない。共存設計で、信頼インフラを前段に組み込むだけ。",
+      en: "Existing systems keep running. Coexistence design: drop the trust infrastructure in front.",
     },
     steps: [
       {
@@ -392,8 +392,8 @@ export const SOLUTIONS: SolutionsContent = {
         label: { ja: "Discovery", en: "Discovery" },
         title: { ja: "課題と業務領域を整理", en: "Map the problem to the operation" },
         desc: {
-          ja: "どの業務で証明層が必要か、既存システムとの接続ポイントを 1 セッションで設計。",
-          en: "Identify which operations need the proof layer and the integration points with existing systems in one session.",
+          ja: "どの業務で信頼インフラが必要か、既存システムとの接続ポイントを 1 セッションで設計。",
+          en: "Identify which operations need the trust infrastructure and the integration points with existing systems in one session.",
         },
         duration: { ja: "1 セッション · 60-90 分", en: "1 session · 60–90 min" },
       },
@@ -402,8 +402,8 @@ export const SOLUTIONS: SolutionsContent = {
         label: { ja: "PoC", en: "PoC" },
         title: { ja: "4 週間で動く構成に", en: "Working integration in 4 weeks" },
         desc: {
-          ja: "対象業務の 1 シナリオで、Lemma を組み込んだ証明層を実装、社内検証まで。",
-          en: "Implement the proof layer for one target scenario, end-to-end through internal validation.",
+          ja: "対象業務の 1 シナリオで、Lemma を組み込んだ信頼インフラを実装、社内検証まで。",
+          en: "Implement the trust infrastructure for one target scenario, end-to-end through internal validation.",
         },
         duration: { ja: "4 週間 · 1 シナリオ", en: "4 weeks · 1 scenario" },
       },
@@ -412,8 +412,8 @@ export const SOLUTIONS: SolutionsContent = {
         label: { ja: "本番", en: "Production" },
         title: { ja: "1 行追加で展開", en: "Roll out with one line added" },
         desc: {
-          ja: "PoC の構成をそのまま本番に展開。既存システムを止めず、証明層を前段に追加。",
-          en: "Promote the PoC configuration as-is. Keep existing systems running; the proof layer sits in front.",
+          ja: "PoC の構成をそのまま本番に展開。既存システムを止めず、信頼インフラを前段に組み込む。",
+          en: "Promote the PoC configuration as-is. Keep existing systems running; the trust infrastructure sits in front.",
         },
         duration: { ja: "2 ヶ月以内 · 共存運用", en: "Within 2 months · coexistence" },
       },
@@ -445,7 +445,7 @@ export const SOLUTIONS: SolutionsContent = {
   checklist: {
     eyebrow: { ja: "自己診断", en: "Self-check" },
     h2Head: { ja: "チェックリスト:", en: "Checklist:" },
-    h2Accent: { ja: "証明層が必要か?", en: "do you need a proof layer?" },
+    h2Accent: { ja: "信頼インフラが必要か?", en: "do you need trust infrastructure?" },
     intro: {
       ja: "該当する項目にチェック。3 つ以上で、Lemma の組み込み検討フェーズに入る価値あり。",
       en: "Check each item that applies. Three or more means it's worth a serious look at integrating Lemma.",
@@ -474,8 +474,8 @@ export const SOLUTIONS: SolutionsContent = {
     },
     threshold: 3,
     resultText: {
-      ja: "3 つ以上の該当で、証明層の組み込みを検討する価値があります。Discovery Call で業務領域に応じた構成案を提示します。",
-      en: "Three or more matches means a proof layer is worth integrating. The Discovery Call returns a configuration tailored to your operational line.",
+      ja: "3 つ以上の該当で、信頼インフラの組み込みを検討する価値があります。Discovery Call で業務領域に応じた構成案を提示します。",
+      en: "Three or more matches means trust infrastructure is worth integrating. The Discovery Call returns a configuration tailored to your operational line.",
     },
     resultCta: {
       label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" },
