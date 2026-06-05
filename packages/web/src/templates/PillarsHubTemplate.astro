@@ -27,6 +27,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import PillarHeroIndex from "../components/pillars/PillarHeroIndex.astro";
 import PillarCard from "../components/pillars/PillarCard.astro";
 import PillarComposition from "../components/pillars/PillarComposition.astro";
+import SolutionsBridge from "../components/SolutionsBridge.astro";
 
 export interface PillarsHubTemplateProps {
   locale: Locale;
@@ -135,6 +136,13 @@ const collectionJsonLd = {
       )}
     </div>
   </main>
+
+  <SolutionsBridge
+    variant="light"
+    href={`${base}/solutions/`}
+    text={locale === "ja" ? "4 つの軸が、業務でどう動くか。" : "How the four axes run in real work. "}
+    linkLabel={locale === "ja" ? "Solutions で活用シーンを見る →" : "See use scenarios in Solutions →"}
+  />
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>

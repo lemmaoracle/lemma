@@ -24,6 +24,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
 import UseCaseExitCta from "../components/UseCaseExitCta.astro";
+import SolutionsBridge from "../components/SolutionsBridge.astro";
 import { getUseCaseHideProve } from "../config/useCaseHideProve";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
@@ -49,6 +50,19 @@ export interface UseCaseDetailTemplateProps {
 
 const { locale, t, base, useCase, pillar, pillarT, useCaseT, relatedUseCases = [] } =
   Astro.props as UseCaseDetailTemplateProps;
+
+// Bridge → Solutions「活用シーン」, keyed by this use case's primary pillar axis.
+const UC_SOL_ANCHOR: Record<string, { anchor: string; axis: { ja: string; en: string } }> = {
+  "verifiable-origin": { anchor: "input-provenance", axis: { ja: "来歴証明", en: "Verifiable Origin" } },
+  "agent-authority-proof": { anchor: "agent-authority", axis: { ja: "エージェント権限", en: "Agent Authority" } },
+  "regulatory-attribute-proof": { anchor: "regulatory", axis: { ja: "規制属性", en: "Regulatory Attribute" } },
+  "verifiable-ai": { anchor: "verifiable-ai", axis: { ja: "検証可能 AI", en: "Verifiable AI" } },
+};
+const ucSolMeta = pillar ? UC_SOL_ANCHOR[pillar.slug] : undefined;
+const ucBridgeHref = ucSolMeta ? `${base}/solutions/#${ucSolMeta.anchor}` : `${base}/solutions/`;
+const ucBridgeCta = ucSolMeta
+  ? (locale === "ja" ? `Solutions で ${ucSolMeta.axis.ja}の活用シーンを見る →` : `See use scenarios for ${ucSolMeta.axis.en} in Solutions →`)
+  : (locale === "ja" ? "Solutions で活用シーンを見る →" : "See use scenarios in Solutions →");
 
 /** Trim an abstract down to its first sentence so related-use-case cards
  * stay one-line tight. Splits on Japanese or Latin sentence terminators.
@@ -214,6 +228,16 @@ const breadcrumbJsonLd = {
               pairSampleId={demoPairSampleId ?? undefined}
             />
           )}
+
+          <SolutionsBridge
+            href={ucBridgeHref}
+            eyebrow={locale === "ja" ? "より広い活用シーン" : "The bigger picture"}
+            h2={locale === "ja" ? "このユースケースを含む、活用シーンの全体像。" : "The bigger picture this use case belongs to."}
+            sub={locale === "ja"
+              ? "業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。"
+              : "We organize use scenarios across industries and workflows by the four axes."}
+            ctaLabel={ucBridgeCta}
+          />
 
           {locale === "ja" ? (
             <UseCaseExitCta

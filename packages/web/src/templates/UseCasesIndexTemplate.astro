@@ -12,6 +12,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import SolutionsBridge from "../components/SolutionsBridge.astro";
 
 export interface UseCasesIndexTemplateProps {
   locale: Locale;
@@ -98,6 +99,13 @@ const collectionJsonLd = {
           <p class="uc-hero-subnote">データは渡さない。証明は渡る。</p>
         )}
       </section>
+
+      <SolutionsBridge
+        variant="light"
+        href={`${base}/solutions/`}
+        text={isJa ? "業務領域ごとの全体像は、" : "For the bigger picture by workflow, "}
+        linkLabel={isJa ? "Solutions の活用シーンへ →" : "see Solutions use scenarios →"}
+      />
 
       <section class="uc-finder" aria-labelledby="uc-finder-label">
         <div class="uc-finder-lbl" id="uc-finder-label">{useCaseT.finderLabel}</div>
