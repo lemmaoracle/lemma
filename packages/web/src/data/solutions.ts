@@ -428,8 +428,8 @@ export const SOLUTIONS: SolutionsContent = {
         en: "// Pass the proof to AI. The original never leaves.",
       },
       note: {
-        ja: "SDK は 2026/6/24 公開予定。既存システムへの組み込みは Discovery Call にて設計",
-        en: "SDK public release scheduled 2026-06-24. Integration design happens in the Discovery Call.",
+        ja: "SDK は近日公開予定。エンタープライズは先行 PoC からご相談ください。既存システムへの組み込みは Discovery Call にて設計",
+        en: "SDK launches soon. Enterprise customers can start with a preliminary PoC. Custom integrations are designed in the Discovery Call.",
       },
     },
     ctaPrimary: {

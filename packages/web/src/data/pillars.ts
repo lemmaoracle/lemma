@@ -280,8 +280,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
           {
             label: { ja: "既存実装", en: "Available today" },
             text: {
-              ja: "Lemma 経由。SDK は 2026/6/24 公開予定。",
-              en: "Via Lemma. SDK public release scheduled 2026-06-24.",
+              ja: "Lemma 経由。SDK は近日公開予定。",
+              en: "Via Lemma. SDK launches soon.",
             },
           },
         ],
