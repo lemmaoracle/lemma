@@ -233,6 +233,14 @@ function firstSentence(text: string): string {
         <div class="ucv-eye">04 · 進め方</div>
         <h2 class="ucv-h2">{nextSection.title}</h2>
         <div class="ucv-steps-body" set:html={nextSection.body} />
+        <!-- UC-specific TALK CTA — books the same Discovery Call form, but
+             tags the submission with this use case's slug (?uc=) for per-UC
+             attribution. The §5 Solutions bridge stays the EXPLORE path. -->
+        <div class="ucv-uc-cta">
+          <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
+            このユースケースについて、30 分話す →
+          </a>
+        </div>
       </div>
     </section>
   )}
@@ -806,6 +814,26 @@ function firstSentence(text: string): string {
     align-items: center;
     justify-content: center;
   }
+  .ucv-uc-cta {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--lemma-line);
+    text-align: center;
+  }
+  .ucv-uc-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-family: var(--ucv-display);
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .ucv-uc-cta-btn:hover { background: #6e3610; }
 
   /* ─── §5 RELATED CARDS ─── */
   .ucv-related {
