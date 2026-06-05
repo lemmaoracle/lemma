@@ -18,6 +18,7 @@
  * Crypto scheme names stay out of the body; the §2 callout links to /guides
  * for the technical reader. The final CTA drops the Critical Brief link.
  */
+import type { Locale } from "../../i18n/translations";
 import type { UseCase } from "../../data/useCases";
 import type { Pillar } from "../../data/pillars";
 import type { HideProvePair } from "../../config/useCaseHideProve";
@@ -26,6 +27,7 @@ import SolutionsBridge from "../SolutionsBridge.astro";
 import { DISCOVERY_CALL_URL } from "../../config/cta";
 
 export interface UseCaseV3BodyProps {
+  locale: Locale;
   base: string;
   useCase: UseCase;
   pillar: Pillar;
@@ -41,6 +43,7 @@ export interface UseCaseV3BodyProps {
 }
 
 const {
+  locale,
   base,
   useCase,
   pillar,
@@ -51,6 +54,67 @@ const {
   ucBridgeHref,
   ucBridgeCta,
 } = Astro.props as UseCaseV3BodyProps;
+
+const isJa = locale === "ja";
+const sealHref = `${base}/seal/`;
+const trust402Href = `${base}/trust402/`;
+
+// Locale-resolved chrome. Authored §1/§2 strings stay hardcoded JA — the
+// authored path only renders for JA (v3 config is JA-gated). EN UCs all
+// render in derived mode, so only the common + derived strings are localized.
+const C = isJa
+  ? {
+      bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
+      credMid: "公共インフラ PoC 稼働中",
+      s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
+      s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
+      s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
+      s2H2: "原本を渡すか、事実だけを渡すか。",
+      s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
+      baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
+      baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
+      baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
+      baDataFlowBefore: "↓ すべて AI・外部へ渡る", baDataFlowAfter: "↓ 必要な事実だけ AI へ渡る",
+      approachLink: "技術詳細を見る ↗",
+      s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
+      s3Lead: "「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務こそが Lemma の領域です。",
+      thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "改ざん不能",
+      rowAccess: "アクセス制御のみ", rowMask: "マスキング / 匿名化", rowEnc: "暗号化のみ",
+      lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
+      s4Eye: "04 · 進め方", s4Title: "進め方",
+      s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
+      bridgeEye: "より広い活用シーン",
+      bridgeH2: "このユースケースを含む、活用シーンの全体像。",
+      bridgeSub: "業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。",
+    }
+  : {
+      bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
+      credMid: "Public-infrastructure PoC in production",
+      s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
+      s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
+      s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
+      s2H2: "Hand over the source, or just the facts?",
+      s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
+      baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
+      baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
+      baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
+      baDataFlowBefore: "↓ all of it goes to the AI / outside", baDataFlowAfter: "↓ only the necessary facts to the AI",
+      approachLink: "See the technical details ↗",
+      s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
+      s3Lead: "Only work that needs <strong>all three at once</strong> — pass without exposing, independent verification, tamper-proof — is Lemma's domain.",
+      thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-proof",
+      rowAccess: "Access control only", rowMask: "Masking / anonymization", rowEnc: "Encryption only",
+      lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
+      s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
+      s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
+      bridgeEye: "The bigger picture",
+      bridgeH2: "The bigger picture this use case belongs to.",
+      bridgeSub: "We map use scenarios across industries and workflows by the four axes.",
+    };
+
+// Resolve a Before/After data value for the active locale (vEn overrides v).
+const rv = (row: { v: string; vEn?: string }): string =>
+  !isJa && row.vEn ? row.vEn : row.v;
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -80,7 +144,7 @@ const nextBody = (() => {
 // Discovery-Call headline that reads oddly here; ai-document-isolation's is
 // already "進め方".
 const nextTitle =
-  nextSection && nextSection.key === "next" ? nextSection.title : "進め方";
+  nextSection && nextSection.key === "next" ? nextSection.title : C.s4Title;
 const relatedSection = useCase.sections.find((s) => s.key === "related");
 
 // ── Authored vs derived mode ──────────────────────────────────────────
@@ -131,9 +195,9 @@ function firstSentence(text: string): string {
 <main class="ucv-page">
   <div class="ucv-container">
     <nav class="ucv-breadcrumb" aria-label="breadcrumb">
-      <a href={base || "/"}>ホーム</a>
+      <a href={base || "/"}>{C.bcHome}</a>
       <span class="ucv-bc-sep">/</span>
-      <a href={useCasesPath}>活用シーン</a>
+      <a href={useCasesPath}>{C.bcUC}</a>
       <span class="ucv-bc-sep">/</span>
       <span>{useCaseTitle}</span>
     </nav>
@@ -141,7 +205,7 @@ function firstSentence(text: string): string {
     <header class="ucv-hero">
       <a class="ucv-pillar-tag" href={`${pillarsPath}/${pillar.slug}`}>
         <span class="ucv-pillar-dot" aria-hidden="true"></span>
-        P{pillar.order} · {pillar.title.ja}
+        P{pillar.order} · {pillar.title[locale]}
       </a>
       <h1 class="ucv-h1">{useCase.title}</h1>
 
@@ -165,7 +229,7 @@ function firstSentence(text: string): string {
         {useCase.targetVerticals.length > 0 && (
           <span class="ucv-verticals">{useCase.targetVerticals.join(" · ")}</span>
         )}
-        <span class="ucv-rt">{useCase.readingTime} 分</span>
+        <span class="ucv-rt">{useCase.readingTime} {C.readUnit}</span>
       </div>
     </header>
   </div>
@@ -174,7 +238,7 @@ function firstSentence(text: string): string {
   <div class="ucv-cred">
     <div class="ucv-cred-inner">
       <span class="ucv-cred-dot" aria-hidden="true"></span>
-      <span><b>live in production since 2025</b> · 公共インフラ PoC 稼働中 · ETHGlobal AI Agents 2026 Finalist</span>
+      <span><b>live in production since 2025</b> · {C.credMid} · ETHGlobal AI Agents 2026 Finalist</span>
     </div>
   </div>
 
@@ -184,8 +248,8 @@ function firstSentence(text: string): string {
       <div class="ucv-container">
         {v3 ? (
           <Fragment>
-            <div class="ucv-eye">01 · 課題認識</div>
-            <h2 class="ucv-h2">推進担当の、3 つの声。</h2>
+            <div class="ucv-eye">{C.s1AuthEye}</div>
+            <h2 class="ucv-h2">{C.s1AuthH2}</h2>
             <ul class="ucv-personas">
               {v3.personas.map((p) => (
                 <li class="ucv-persona">
@@ -195,20 +259,20 @@ function firstSentence(text: string): string {
                       <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
                     </svg>
                   </div>
-                  <div class="ucv-persona-role">{p.role}</div>
-                  <p class="ucv-persona-quote">「{p.quote}」</p>
+                  <div class="ucv-persona-role">{p.role[locale]}</div>
+                  <p class="ucv-persona-quote">{isJa ? `「${p.quote.ja}」` : `“${p.quote.en}”`}</p>
                 </li>
               ))}
             </ul>
           </Fragment>
         ) : audienceSection && (
           <Fragment>
-            <div class="ucv-eye">01 · 想定読者</div>
-            <h2 class="ucv-h2">このページは、こんな方のために。</h2>
+            <div class="ucv-eye">{C.s1Eye}</div>
+            <h2 class="ucv-h2">{C.s1H2}</h2>
             {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
             {audienceBullets.length > 0 ? (
               <ul class="ucv-personas">
-                {audienceBullets.map((b) => (
+                {audienceBullets.slice(0, 3).map((b) => (
                   <li class="ucv-persona">
                     <div class="ucv-persona-avatar" aria-hidden="true">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -234,68 +298,68 @@ function firstSentence(text: string): string {
     <section class="ucv-band" aria-label="アプローチ">
       <div class="ucv-container">
         <div class="ucv-emph">
-          <div class="ucv-eye">{v3 || showDerivedBa ? "02 · 変化" : "02 · アプローチ"}</div>
-          <h2 class="ucv-h2">原本を渡すか、事実だけを渡すか。</h2>
+          <div class="ucv-eye">{v3 || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
+          <h2 class="ucv-h2">{C.s2H2}</h2>
 
           {showDerivedBa && hideProve && (
             <div class="ucv-ba ucv-ba--concept">
               <div class="ucv-ba-card ucv-ba-card--before">
                 <div class="ucv-ba-label">Without Lemma</div>
-                <div class="ucv-ba-title">原本・中身をそのまま渡す</div>
+                <div class="ucv-ba-title">{C.baBeforeTitle}</div>
                 <p class="ucv-ba-claim">{hideProve.hide}</p>
-                <div class="ucv-ba-flow">↓ すべて外部・AI へ渡る</div>
+                <div class="ucv-ba-flow">{C.baFlowBefore}</div>
               </div>
 
               <div class="ucv-ba-arrow" aria-hidden="true">→</div>
 
               <div class="ucv-ba-card ucv-ba-card--after">
                 <div class="ucv-ba-label">With Lemma</div>
-                <div class="ucv-ba-title">事実だけを証明付きで渡す</div>
+                <div class="ucv-ba-title">{C.baAfterTitle}</div>
                 <p class="ucv-ba-claim ucv-ba-claim--prove">{hideProve.prove}</p>
                 <div><span class="ucv-ba-badge">✓ ZK VALID</span></div>
-                <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ</div>
+                <div class="ucv-ba-flow ucv-ba-flow--after">{C.baFlowAfter}</div>
               </div>
             </div>
           )}
 
           {v3 && (
             <Fragment>
-              <p class="ucv-band-lead">AI に渡すものが変われば、漏洩のリスクごと消える。</p>
+              <p class="ucv-band-lead">{C.s2Lead}</p>
               <div class="ucv-ba">
                 <div class="ucv-ba-card ucv-ba-card--before">
                   <div class="ucv-ba-label">Without Lemma</div>
-                  <div class="ucv-ba-title">原本をそのまま渡す</div>
+                  <div class="ucv-ba-title">{C.baDataBeforeTitle}</div>
                   <dl class="ucv-ba-rows">
                     {v3.without.map((row) => (
                       <div class="ucv-ba-row">
                         <dt>{row.k}:</dt>
-                        <dd>{row.v}</dd>
+                        <dd>{rv(row)}</dd>
                       </div>
                     ))}
                   </dl>
-                  <div class="ucv-ba-flow">↓ すべて AI・外部へ渡る</div>
+                  <div class="ucv-ba-flow">{C.baDataFlowBefore}</div>
                 </div>
 
                 <div class="ucv-ba-arrow" aria-hidden="true">→</div>
 
                 <div class="ucv-ba-card ucv-ba-card--after">
                   <div class="ucv-ba-label">With Lemma</div>
-                  <div class="ucv-ba-title">事実だけを渡す</div>
+                  <div class="ucv-ba-title">{C.baDataAfterTitle}</div>
                   <dl class="ucv-ba-rows">
                     {v3.withProof.map((row) => (
                       <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
                         <dt>{row.k}:</dt>
                         <dd>
                           {row.badge ? (
-                            <span class="ucv-ba-badge">{row.v}</span>
+                            <span class="ucv-ba-badge">{rv(row)}</span>
                           ) : (
-                            <span class={row.strong ? "ucv-ba-strong" : ""}>{row.v}</span>
+                            <span class={row.strong ? "ucv-ba-strong" : ""}>{rv(row)}</span>
                           )}
                         </dd>
                       </div>
                     ))}
                   </dl>
-                  <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ AI へ渡る</div>
+                  <div class="ucv-ba-flow ucv-ba-flow--after">{C.baDataFlowAfter}</div>
                 </div>
               </div>
             </Fragment>
@@ -303,11 +367,11 @@ function firstSentence(text: string): string {
 
           <div class="ucv-approach">
             {v3 ? (
-              <p>{v3.approach}</p>
+              <p>{v3.approach[locale]}</p>
             ) : (
               <div class="ucv-approach-body" set:html={approachBody} />
             )}
-            <a class="ucv-approach-link" href={guidesHref}>技術詳細を見る ↗</a>
+            <a class="ucv-approach-link" href={guidesHref}>{C.approachLink}</a>
           </div>
         </div>
       </div>
@@ -317,27 +381,25 @@ function firstSentence(text: string): string {
   <!-- §3 選定基準 — common comparison table -->
   <section class="ucv-band ucv-band--deep" aria-label="選定基準">
     <div class="ucv-container">
-      <div class="ucv-eye">03 · 選定基準</div>
-      <h2 class="ucv-h2">3 つの基準で、選ぶ。</h2>
-      <p class="ucv-band-lead">
-        「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務こそが Lemma の領域です。
-      </p>
+      <div class="ucv-eye">{C.s3Eye}</div>
+      <h2 class="ucv-h2">{C.s3H2}</h2>
+      <p class="ucv-band-lead" set:html={C.s3Lead} />
       <div class="ucv-table-wrap">
         <table class="ucv-table">
           <thead>
             <tr>
-              <th>手段</th>
-              <th>中身を出さず渡す</th>
-              <th>独立検証</th>
-              <th>改ざん不能</th>
+              <th>{C.thMethod}</th>
+              <th>{C.thPass}</th>
+              <th>{C.thVerify}</th>
+              <th>{C.thTamper}</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>アクセス制御のみ</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
-            <tr><td>マスキング / 匿名化</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
-            <tr><td>暗号化のみ</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowAccess}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowMask}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowEnc}</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
             <tr class="is-lemma">
-              <td><span class="ucv-lemma-name">Lemma（ZK 証明）</span><span class="ucv-only">唯一 3 つ揃う</span></td>
+              <td><span class="ucv-lemma-name">{C.lemmaName}</span><span class="ucv-only">{C.onlyTag}</span></td>
               <td><span class="ucv-check">✓</span></td>
               <td><span class="ucv-check">✓</span></td>
               <td><span class="ucv-check">✓</span></td>
@@ -352,17 +414,18 @@ function firstSentence(text: string): string {
   {nextSection && (
     <section class="ucv-band" aria-label="進め方">
       <div class="ucv-container">
-        <div class="ucv-eye">04 · 進め方</div>
+        <div class="ucv-eye">{C.s4Eye}</div>
         <h2 class="ucv-h2">{nextTitle}</h2>
         <div class="ucv-steps-body" set:html={nextBody} />
-        <!-- UC-specific TALK CTA — books the same Discovery Call form, but
-             tags the submission with this use case's slug (?uc=) for per-UC
-             attribution. The §5 Solutions bridge stays the EXPLORE path. -->
-        <div class="ucv-uc-cta">
-          <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
-            このユースケースについて、問い合わせる →
-          </a>
-        </div>
+        {/* UC-specific TALK CTA — JA only. The form books a Discovery Call;
+            EN has no call staff, so EN closes on the product CTAs instead. */}
+        {isJa && (
+          <div class="ucv-uc-cta">
+            <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
+              このユースケースについて、問い合わせる →
+            </a>
+          </div>
+        )}
       </div>
     </section>
   )}
@@ -370,8 +433,8 @@ function firstSentence(text: string): string {
   <!-- §5 関連ユースケース -->
   <section class="ucv-band ucv-band--deep" aria-label="関連ユースケース">
     <div class="ucv-container">
-      <div class="ucv-eye">05 · 関連ユースケース</div>
-      <h2 class="ucv-h2">{relatedSection?.title ?? "関連ユースケース"}</h2>
+      <div class="ucv-eye">{C.s5Eye}</div>
+      <h2 class="ucv-h2">{relatedSection?.title ?? C.s5H2}</h2>
       {relatedUseCases.length > 0 && (
         <ul class="ucv-related">
           {relatedUseCases.map((r) => (
@@ -387,7 +450,7 @@ function firstSentence(text: string): string {
                 </span>
                 <h3 class="ucv-related-title">{r.title}</h3>
                 <p class="ucv-related-abstract">{firstSentence(r.abstract)}</p>
-                <span class="ucv-related-cta">ユースケースを見る →</span>
+                <span class="ucv-related-cta">{C.relatedCta}</span>
               </a>
             </li>
           ))}
@@ -398,24 +461,39 @@ function firstSentence(text: string): string {
 
   <SolutionsBridge
     href={ucBridgeHref}
-    eyebrow="より広い活用シーン"
-    h2="このユースケースを含む、活用シーンの全体像。"
-    sub="業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。"
+    eyebrow={C.bridgeEye}
+    h2={C.bridgeH2}
+    sub={C.bridgeSub}
     ctaLabel={ucBridgeCta}
   />
 
-  <!-- Closing — Discovery Call (mirrors the TOP / Solutions dark closing). -->
-  <section class="ucv-closing" aria-label="Discovery Call">
-    <div class="ucv-closing-inner">
-      <p class="ucv-closing-eyebrow">DISCOVERY CALL</p>
-      <h2 class="ucv-closing-h">まずは、<span class="accent">30 分の対話</span>から。</h2>
-      <p class="ucv-closing-sub">Lemma の機能や活用場面について、ご質問にお答えします。技術的な詳細や機微情報の開示は不要です。</p>
-      <div class="ucv-closing-ctas">
-        <a href={discoveryUrl} class="ucv-closing-pill" target="_blank" rel="noopener">Discovery Call を予約 →</a>
-        <button type="button" class="ucv-closing-link" data-tally-open="xX0VYv" data-tally-emoji-text="">ホワイトペーパー DL →</button>
+  {/* Closing — JA books a Discovery Call; EN has no call staff, so it sends
+      visitors to the products to try them hands-on (Seal + Trust402). */}
+  {isJa ? (
+    <section class="ucv-closing" aria-label="Discovery Call">
+      <div class="ucv-closing-inner">
+        <p class="ucv-closing-eyebrow">DISCOVERY CALL</p>
+        <h2 class="ucv-closing-h">まずは、<span class="accent">30 分の対話</span>から。</h2>
+        <p class="ucv-closing-sub">Lemma の機能や活用場面について、ご質問にお答えします。技術的な詳細や機微情報の開示は不要です。</p>
+        <div class="ucv-closing-ctas">
+          <a href={discoveryUrl} class="ucv-closing-pill" target="_blank" rel="noopener">Discovery Call を予約 →</a>
+          <button type="button" class="ucv-closing-link" data-tally-open="xX0VYv" data-tally-emoji-text="">ホワイトペーパー DL →</button>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  ) : (
+    <section class="ucv-closing" aria-label="Try Lemma">
+      <div class="ucv-closing-inner">
+        <p class="ucv-closing-eyebrow">TRY LEMMA</p>
+        <h2 class="ucv-closing-h">Run it <span class="accent">yourself</span>.</h2>
+        <p class="ucv-closing-sub">No sales call needed — start hands-on with Lemma's products.</p>
+        <div class="ucv-closing-ctas">
+          <a href={sealHref} class="ucv-closing-pill">Try Seal →</a>
+          <a href={trust402Href} class="ucv-closing-link">Trust402 reference implementation →</a>
+        </div>
+      </div>
+    </section>
+  )}
 </main>
 
 <style>
