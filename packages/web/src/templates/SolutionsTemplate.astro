@@ -52,7 +52,7 @@ const { locale, t, base } = Astro.props as Props;
     <!-- §2 業務適用の 4 軸 (v30 — full-bleed band, TOP §2 mirror) -->
     <SolutionsAxes locale={locale} base={base} />
 
-    <div class="so-container">
+    <div class="so-container so-resume">
       <SolutionsUseCasesHub locale={locale} base={base} />
       <SolutionsAdoption locale={locale} />
       <SolutionsChecklist locale={locale} />
@@ -155,6 +155,13 @@ const { locale, t, base } = Astro.props as Props;
 
   /* Section spacing — every solution section gets the same gap above. */
   .so-container > :global(section + section) {
+    margin-top: 80px;
+  }
+
+  /* v30: the container reopened after the full-bleed §2 band — its first
+     section has no preceding sibling, so add the same rhythm gap above it
+     (otherwise 業界別ユースケース sticks to the §2 band). */
+  .so-container.so-resume {
     margin-top: 80px;
   }
 
