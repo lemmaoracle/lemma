@@ -34,7 +34,10 @@ const v = SOLUTIONS.visionClose;
     background: #0f0f0f;
     color: var(--lemma-cream);
     padding: 88px 0 80px;
-    margin-top: 64px;
+    /* v30: BriefAnchor (also #0f0f0f) sits directly above — drop the cream
+       margin gap and use a hairline divider so the two dark bands sit flush. */
+    margin-top: 0;
+    border-top: 1px solid rgba(252, 250, 245, 0.08);
     text-align: center;
   }
   .sv-inner {

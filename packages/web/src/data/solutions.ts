@@ -148,8 +148,8 @@ export const SOLUTIONS: SolutionsContent = {
       en: ["PoC works.", "Production stalls."],
     },
     sub: {
-      ja: "機密を渡せない。判断を証明できない。規制が通らない。AI 導入の最後のハードルは、モデルの精度ではなく証明層。Lemma は「データを持たない」設計で、これを構造的に解消します。",
-      en: "You can't expose secrets. You can't audit decisions. You can't pass regulation. The last hurdle of AI adoption isn't model quality — it's the proof layer. Lemma resolves it structurally with a data-less design.",
+      ja: "機密を渡せない。判断を証明できない。規制が通らない。AI エージェントに、業務を任せられない。AI 導入の最後のハードルは、モデルの精度ではなく証明層。Lemma は「データを持たない」設計で、これを構造的に解消します。",
+      en: "You can't expose secrets. You can't audit decisions. You can't pass regulation. AI agents can't be trusted with work. The last hurdle of AI adoption isn't model quality — it's the proof layer. Lemma resolves it structurally with a data-less design.",
     },
     ctaPrimary: {
       label: { ja: "ホワイトペーパーをダウンロード →", en: "Download the Whitepaper →" },

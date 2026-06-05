@@ -17,8 +17,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SolutionsHero from "../components/solutions/SolutionsHero.astro";
 import SolutionsBriefAnchor from "../components/solutions/SolutionsBriefAnchor.astro";
-import SolutionsBarriers from "../components/solutions/SolutionsBarriers.astro";
-import SolutionsScenarios from "../components/solutions/SolutionsScenarios.astro";
+import SolutionsAxes from "../components/solutions/SolutionsAxes.astro";
 import SolutionsUseCasesHub from "../components/solutions/SolutionsUseCasesHub.astro";
 import SolutionsAdoption from "../components/solutions/SolutionsAdoption.astro";
 import SolutionsChecklist from "../components/solutions/SolutionsChecklist.astro";
@@ -48,8 +47,12 @@ const { locale, t, base } = Astro.props as Props;
   <main class="so-page">
     <div class="so-container">
       <SolutionsHero locale={locale} />
-      <SolutionsBarriers locale={locale} />
-      <SolutionsScenarios locale={locale} base={base} />
+    </div>
+
+    <!-- §2 業務適用の 4 軸 (v30 — full-bleed band, TOP §2 mirror) -->
+    <SolutionsAxes locale={locale} base={base} />
+
+    <div class="so-container">
       <SolutionsUseCasesHub locale={locale} base={base} />
       <SolutionsAdoption locale={locale} />
       <SolutionsChecklist locale={locale} />
