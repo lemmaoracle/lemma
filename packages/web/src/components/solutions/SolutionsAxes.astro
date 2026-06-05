@@ -1,0 +1,241 @@
+---
+/**
+ * §2 — 業務適用の 4 軸 (v30). Mirrors TOP §2: 4 vertical cards in the Pillar
+ * axis order, each with a HIDE → PROVE pair, chips, and a Pillar deep-link.
+ * Full-bleed cream-deep band placed right after the Hero. Anchor IDs match
+ * the TOP §2 card links: input-provenance / agent-authority / regulatory /
+ * verifiable-ai. Self-contained bilingual copy.
+ */
+import type { Locale } from "../../i18n/translations";
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const ucHref = `${base}/solutions/use-cases/`;
+const trust402Href = base ? `${base}/trust402/` : "/trust402/";
+const pillar = (s: string) => `${base}/pillars/${s}/`;
+
+const C = isJa
+  ? { eyebrow: "業務適用の 4 軸", h2Pre: "中身を明かさず、", h2Accent: "必要なことだけ任せる", h2Tail: "。", hide: "HIDE", prove: "PROVE" }
+  : { eyebrow: "Four axes of adoption", h2Pre: "Hide the content, ", h2Accent: "delegate only what's needed", h2Tail: ".", hide: "HIDE", prove: "PROVE" };
+
+const axes = isJa ? [
+  {
+    id: "input-provenance", icon: "stack",
+    num: "01 · 来歴証明", name: "AI への入力に、来歴を。",
+    hideText: "社内文書・学習データ の中身", proveText: "出所と完全性",
+    desc: "原本を暗号化、AI には docHash と CID だけを渡す。RAG・学習データ・IoT センサ来歴の信頼性を、起点で確保。汚染データは届かない。",
+    chips: [{ l: "RAG コンテンツ来歴", h: ucHref }, { l: "サプライチェーン来歴", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
+    pillarLabel: "P1 来歴証明 詳細 →", pillarHref: pillar("verifiable-origin"),
+  },
+  {
+    id: "agent-authority", icon: "agent",
+    num: "02 · エージェント権限証明", name: "AI エージェントに、業務を任せる。",
+    hideText: "鍵 / 代理権限 / 範囲", proveText: "範囲内なら、任せる",
+    desc: "エージェントに鍵を渡さず、x402 で「≤ ¥100k」「jurisdiction:JP」など範囲付きの自律取引を runtime 実行。経費承認・購買・cross-agent 取引を 24/7 で動かす。範囲外は実行前に拒否。",
+    chips: [{ l: "Trust402 製品 →", h: trust402Href, featured: true }, { l: "x402 決済", h: ucHref }, { l: "経費承認", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
+    pillarLabel: "P3 エージェント権限証明 詳細 →", pillarHref: pillar("agent-authority-proof"),
+  },
+  {
+    id: "regulatory", icon: "filing",
+    num: "03 · 規制属性証明", name: "規制適合を、原本なしで通す。",
+    hideText: "個人情報・商取引データ の中身", proveText: "規制属性適合",
+    desc: "KYC・AML・CBAM・EUDR・AI Act など各規制が要求する属性を、原本データを開示せず選択的に証明。AI 生成 ID 等の偽装も、同じ層で防ぐ。",
+    chips: [{ l: "KYC/AML 選択開示", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
+    pillarLabel: "P4 規制属性証明 詳細 →", pillarHref: pillar("regulatory-attribute-proof"),
+  },
+  {
+    id: "verifiable-ai", icon: "audit",
+    num: "04 · 検証可能 AI", name: "AI の入出力を、見せずに検証する。",
+    hideText: "AI 入出力 content", proveText: "動作整合性 / 規定遵守",
+    desc: "AI が受け取った入力、生成した出力、実行した動作を、内容を開示せず独立検証。プロンプト改竄も、出力 integrity も、同じ層で検知。",
+    chips: [{ l: "AI 監査ログ証明", h: ucHref }, { l: "コンプライアンス報告", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
+    pillarLabel: "P2 検証可能 AI 詳細 →", pillarHref: pillar("verifiable-ai"),
+  },
+] : [
+  {
+    id: "input-provenance", icon: "stack",
+    num: "01 · Verifiable Origin", name: "Provenance for AI inputs.",
+    hideText: "Internal docs / training data content", proveText: "Source and integrity",
+    desc: "Encrypt originals, pass only docHash and CID to AI. Secure provenance of RAG sources, training data, and IoT sensors—at the origin. Poisoned data never arrives.",
+    chips: [{ l: "RAG content provenance", h: ucHref }, { l: "Supply chain provenance", h: ucHref }, { l: "More use cases →", h: ucHref }],
+    pillarLabel: "P1 Verifiable Origin →", pillarHref: pillar("verifiable-origin"),
+  },
+  {
+    id: "agent-authority", icon: "agent",
+    num: "02 · Agent Authority Proof", name: "Delegate work to AI agents.",
+    hideText: "Keys / delegation / scope", proveText: "In-scope work runs",
+    desc: "Agents run autonomous transactions with scope constraints (\"≤ ¥100k\", \"jurisdiction:JP\") via x402—at runtime. Drive expense approvals, procurement, and cross-agent transactions 24/7. Out-of-scope actions blocked before execution.",
+    chips: [{ l: "Trust402 product →", h: trust402Href, featured: true }, { l: "x402 payments", h: ucHref }, { l: "Expense approval", h: ucHref }, { l: "More use cases →", h: ucHref }],
+    pillarLabel: "P3 Agent Authority Proof →", pillarHref: pillar("agent-authority-proof"),
+  },
+  {
+    id: "regulatory", icon: "filing",
+    num: "03 · Regulatory Attribute Proof", name: "Pass compliance without sharing originals.",
+    hideText: "Personal data / commercial transaction content", proveText: "Regulatory attribute compliance",
+    desc: "Prove attributes required by KYC, AML, CBAM, EUDR, AI Act—selectively, without disclosing originals. Block AI-generated fraud (synthetic IDs) at the same layer.",
+    chips: [{ l: "KYC/AML selective disclosure", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "More use cases →", h: ucHref }],
+    pillarLabel: "P4 Regulatory Attribute Proof →", pillarHref: pillar("regulatory-attribute-proof"),
+  },
+  {
+    id: "verifiable-ai", icon: "audit",
+    num: "04 · Verifiable AI", name: "Verify AI I/O without exposing content.",
+    hideText: "AI I/O content", proveText: "Operational integrity / compliance",
+    desc: "Independently verify AI inputs, outputs, and behavior—without revealing content. Detect prompt tampering and output integrity at the same layer.",
+    chips: [{ l: "AI audit log proof", h: ucHref }, { l: "Compliance reporting", h: ucHref }, { l: "More use cases →", h: ucHref }],
+    pillarLabel: "P2 Verifiable AI →", pillarHref: pillar("verifiable-ai"),
+  },
+];
+---
+
+<section class="axes" id="capabilities">
+  <div class="axes-inner">
+    <div class="axes-head">
+      <p class="axes-eyebrow">{C.eyebrow}</p>
+      <h2 class="axes-h2">{C.h2Pre}<span class="accent">{C.h2Accent}</span>{C.h2Tail}</h2>
+    </div>
+
+    <div class="axes-grid">
+      {axes.map((a) => (
+        <article class="axis" id={a.id}>
+          <div class="axis-icon">
+            {a.icon === "stack" && (
+              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="14" y="26" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+                <rect x="20" y="20" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+                <rect x="26" y="14" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+                <rect x="31" y="20" width="32" height="3" fill="#8B4513"/>
+                <line x1="31" y1="29" x2="59" y2="29" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+                <line x1="31" y1="34" x2="53" y2="34" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+                <line x1="31" y1="39" x2="59" y2="39" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
+                <circle cx="60" cy="54" r="11" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
+                <path d="M 55,54 L 59,58 L 65,51" stroke="#FCFAF5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            )}
+            {a.icon === "agent" && (
+              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <line x1="42" y1="20" x2="42" y2="13" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="42" cy="11" r="2.4" fill="#8B4513"/>
+                <rect x="18" y="20" width="48" height="48" rx="6" fill="#FCFAF5" stroke="#8B4513" stroke-width="2"/>
+                <circle cx="33" cy="40" r="3.2" fill="#8B4513"/>
+                <circle cx="51" cy="40" r="3.2" fill="#8B4513"/>
+                <line x1="35" y1="55" x2="49" y2="55" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="64" cy="64" r="9" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
+                <text x="64" y="68" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" font-weight="700" fill="#FCFAF5">¥</text>
+              </svg>
+            )}
+            {a.icon === "filing" && (
+              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="14" y="10" width="44" height="60" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+                <path d="M 50,10 L 58,10 L 58,18 Z" fill="#E8E1CC" stroke="#8B4513" stroke-width="1.2"/>
+                <rect x="18" y="16" width="28" height="3" fill="#8B4513"/>
+                <line x1="18" y1="26" x2="54" y2="26" stroke="#8B4513" stroke-width="1.2"/>
+                <line x1="18" y1="32" x2="48" y2="32" stroke="#8B4513" stroke-width="1.2"/>
+                <rect x="18" y="38" width="36" height="2.5" fill="#E8E1CC"/>
+                <rect x="18" y="44" width="30" height="2.5" fill="#E8E1CC"/>
+                <rect x="18" y="50" width="34" height="2.5" fill="#E8E1CC"/>
+                <rect x="18" y="56" width="28" height="2.5" fill="#E8E1CC"/>
+                <circle cx="58" cy="58" r="14" fill="none" stroke="#5C7A4A" stroke-width="2.4"/>
+                <circle cx="58" cy="58" r="10" fill="none" stroke="#5C7A4A" stroke-width="1.2"/>
+                <path d="M 53,58 L 57,62 L 64,53" stroke="#5C7A4A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            )}
+            {a.icon === "audit" && (
+              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="10" y="14" width="40" height="54" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
+                <rect x="14" y="20" width="24" height="3" fill="#8B4513"/>
+                <line x1="16" y1="30" x2="20" y2="30" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="20" y1="30" x2="22" y2="32" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="24" y1="30" x2="44" y2="30" stroke="#8B4513" stroke-width="1.2"/>
+                <line x1="16" y1="38" x2="20" y2="38" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="20" y1="38" x2="22" y2="40" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="24" y1="38" x2="40" y2="38" stroke="#8B4513" stroke-width="1.2"/>
+                <line x1="16" y1="46" x2="20" y2="46" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="20" y1="46" x2="22" y2="48" stroke="#5C7A4A" stroke-width="1.5"/>
+                <line x1="24" y1="46" x2="44" y2="46" stroke="#8B4513" stroke-width="1.2"/>
+                <circle cx="58" cy="50" r="13" fill="#FCFAF5" stroke="#8B4513" stroke-width="2.4"/>
+                <line x1="68" y1="60" x2="76" y2="68" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 52,50 L 56,54 L 64,46" stroke="#5C7A4A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            )}
+          </div>
+          <div class="axis-body">
+            <p class="axis-num">{a.num}</p>
+            <h3 class="axis-name">{a.name}</h3>
+            <div class="axis-hp">
+              <div class="axis-hp-cell hide">
+                <svg class="axis-hp-icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M 4.5,7 L 4.5,5 Q 4.5,2.5 8,2.5 Q 11.5,2.5 11.5,5 L 11.5,7" stroke="#807A6F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <rect x="3" y="7" width="10" height="6.5" rx="1" fill="#807A6F"/>
+                  <circle cx="8" cy="10.2" r="1" fill="#F2EEDF"/>
+                </svg>
+                <span class="axis-hp-label hide">{C.hide}</span>
+                <p class="axis-hp-text">{a.hideText}</p>
+              </div>
+              <div class="axis-hp-cell prove">
+                <svg class="axis-hp-icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <circle cx="8" cy="8" r="6.5" fill="#5C7A4A"/>
+                  <path d="M 5,8 L 7,10 L 11,6" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="axis-hp-label prove">{C.prove}</span>
+                <p class="axis-hp-text">{a.proveText}</p>
+              </div>
+            </div>
+            <p class="axis-desc">{a.desc}</p>
+            <div class="axis-chips">
+              {a.chips.map((ch) => (
+                <a class:list={["axis-chip", { featured: ch.featured }]} href={ch.h}>{ch.l}</a>
+              ))}
+            </div>
+            <a class="axis-pillar" href={a.pillarHref}>{a.pillarLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .axes { background: var(--lemma-cream-deep); border-top: 1px solid var(--lemma-line); border-bottom: 1px solid var(--lemma-line); padding: 72px 48px 80px; }
+  .axes-inner { max-width: 1180px; margin: 0 auto; }
+  .axes-head { margin-bottom: 44px; }
+  .axes-eyebrow { font-family: var(--so-mono); font-size: 12px; letter-spacing: 0.18em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+  .axes-eyebrow::before { content: '\25B8'; font-size: 14px; }
+  .axes-h2 { font-family: var(--so-display); font-weight: 700; font-size: 40px; line-height: 1.15; letter-spacing: -0.025em; margin: 0; color: var(--so-text-1); }
+  .axes-h2 .accent { color: var(--accent); }
+
+  .axes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .axis { background: var(--lemma-cream); border: 1px solid var(--lemma-line); border-radius: 14px; padding: 30px 30px 24px; transition: border-color 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; scroll-margin-top: 88px; }
+  .axis:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(139, 69, 19, 0.06); }
+  .axis-icon { width: 64px; height: 64px; background: var(--lemma-cream-deep); border: 1px solid var(--lemma-line); border-radius: 10px; padding: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .axis-icon svg { width: 100%; height: 100%; }
+  .axis-body { flex: 1; display: flex; flex-direction: column; }
+  .axis-num { font-family: var(--so-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--accent); font-weight: 700; margin: 0 0 6px; }
+  .axis-name { font-family: var(--so-display); font-weight: 700; font-size: 22px; line-height: 1.3; letter-spacing: -0.02em; margin: 0 0 18px; color: var(--so-text-1); }
+
+  /* HIDE -> PROVE — borderless editorial rows (no filled cells, no green box) */
+  .axis-hp { display: flex; flex-direction: column; margin: 4px 0 18px; }
+  .axis-hp-cell { display: grid; grid-template-columns: 15px 42px 1fr; column-gap: 10px; align-items: center; padding: 11px 0; }
+  .axis-hp-cell.prove { border-top: 1px solid var(--lemma-line); }
+  .axis-hp-icon { width: 15px; height: 15px; flex-shrink: 0; }
+  .axis-hp-label { font-family: var(--so-mono); font-size: 9px; letter-spacing: 0.18em; font-weight: 700; }
+  .axis-hp-label.hide { color: var(--so-text-4); }
+  .axis-hp-label.prove { color: var(--accent); }
+  .axis-hp-text { font-size: 13px; margin: 0; line-height: 1.45; }
+  .axis-hp-cell.hide .axis-hp-text { color: var(--so-text-3); }
+  .axis-hp-cell.prove .axis-hp-text { color: var(--so-text-1); font-weight: 600; }
+  .axis-desc { font-size: 13.5px; color: var(--so-text-3); margin: 0 0 18px; line-height: 1.75; }
+  .axis-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .axis-chip { background: var(--lemma-cream-deep); border: 1px solid var(--lemma-line); border-radius: 999px; padding: 4px 11px; font-family: var(--so-display); font-weight: 500; font-size: 11.5px; color: var(--so-text-3); text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+  .axis-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .axis-chip.featured { background: var(--accent); color: var(--lemma-cream); border-color: var(--accent); font-weight: 600; }
+  .axis-chip.featured:hover { background: #6b3410; color: var(--lemma-cream); }
+  .axis-pillar { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--lemma-line); color: var(--accent); font-family: var(--so-display); font-weight: 600; font-size: 13px; text-decoration: none; align-self: flex-start; }
+  .axis-pillar:hover { color: var(--so-text-1); }
+
+  @media (max-width: 900px) {
+    .axes { padding: 56px 24px 60px; }
+    .axes-grid { grid-template-columns: 1fr; }
+    .axes-h2 { font-size: 28px; }
+  }
+</style>
