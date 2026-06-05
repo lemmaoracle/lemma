@@ -390,12 +390,12 @@ export const SOLUTIONS: SolutionsContent = {
       {
         no: "01",
         label: { ja: "Discovery", en: "Discovery" },
-        title: { ja: "課題と業務領域を整理", en: "Map the problem to the operation" },
+        title: { ja: "機能と活用場面を確認", en: "Capabilities and fit" },
         desc: {
-          ja: "どの業務で信頼インフラが必要か、既存システムとの接続ポイントを 1 セッションで設計。",
-          en: "Identify which operations need the trust infrastructure and the integration points with existing systems in one session.",
+          ja: "Lemma の機能・活用場面と、想定される論点を 30 分で確認。詳細な業務設計は PoC フェーズで進めます。",
+          en: "Review Lemma's capabilities, fit, and the key questions in 30 minutes. Detailed scoping happens in the PoC phase.",
         },
-        duration: { ja: "1 セッション · 60-90 分", en: "1 session · 60–90 min" },
+        duration: { ja: "Discovery Call · 30 分", en: "Discovery Call · 30 min" },
       },
       {
         no: "02",
