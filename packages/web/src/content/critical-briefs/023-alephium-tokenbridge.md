@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["001-kelpdao-rseth", "002-stakedao-vsdcrv", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
+og_lead_ja: "guardian の鍵は無事でも、署名対象のイベントの来歴が検証されなかった — Alephium TokenBridge $815K 流出"
+og_lead_en: "Guardian keys intact — but the provenance of the events they signed was never verified — Alephium TokenBridge $815K exploit"
 ---
 
 ## TL;DR
@@ -112,8 +114,9 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 
 Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
 
-Discovery Call: https://tally.so/r/Pd2Rl5
-ホワイトペーパー: https://tally.so/r/xX0VYv
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
 
 ---
 

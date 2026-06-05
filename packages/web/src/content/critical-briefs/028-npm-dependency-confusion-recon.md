@@ -12,6 +12,8 @@ related_pack: ["A-incident-response"]
 related_briefs: ["004-megalodon-github-supply-chain", "014-tanstack-oidc-trusted-publisher", "015-github-vscode-extension-breach"]
 version: "1.0"
 status: published
+og_lead_ja: "内部スコープを偽装した 33 パッケージが、ビルド環境の来歴前提を突いた — npm 依存関係混乱キャンペーン"
+og_lead_en: "33 packages impersonating internal scopes exploited the build environment's provenance assumptions — npm dependency-confusion recon campaign"
 ---
 
 ## TL;DR
@@ -103,8 +105,9 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 
 Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
 
-Discovery Call: https://tally.so/r/Pd2Rl5
-ホワイトペーパー: https://tally.so/r/xX0VYv
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
 
 ---
 
