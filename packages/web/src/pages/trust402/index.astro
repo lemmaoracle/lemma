@@ -379,10 +379,11 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .scope-section { padding: 88px 0; background: var(--lemma-cream-deep); border-top: 0.5px solid var(--lemma-line); border-bottom: 0.5px solid var(--lemma-line); margin: 0 0 80px; }
 .scope-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-brown); margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
 .scope-eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
-.scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+.scope-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 56px; align-items: start; }
 .scope-h { font-family: var(--font-display); font-size: 40px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.03em; line-height: 1.18; margin: 0 0 18px; }
 .scope-lead { font-size: 15px; color: var(--lemma-text-3); line-height: 1.9; margin: 0 0 32px; }
 .scope-lead .k { color: var(--lemma-black); font-weight: 500; }
+.scope-lead .k-new { color: var(--lemma-black); font-weight: 700; border-bottom: 2px solid var(--lemma-brown); padding-bottom: 1px; }
 .scope-cards { display: flex; flex-direction: column; gap: 12px; }
 .scope-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 20px 24px; transition: border-color 0.15s; display: flex; gap: 18px; align-items: flex-start; }
 .scope-card:hover { border-color: var(--lemma-brown); }
@@ -394,27 +395,49 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .sc-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.015em; margin: 0; }
 .sc-desc { font-size: 13px; color: var(--lemma-text-3); line-height: 1.7; margin: 0 0 10px; }
 .sc-mono { font-family: var(--font-mono); font-size: 11px; color: var(--lemma-brown); background: var(--lemma-brown-light); padding: 3px 10px; border-radius: 4px; letter-spacing: 0.04em; }
-.scope-log { background: var(--code-bg); border-radius: 14px; padding: 16px 22px 20px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; }
-.log-bar { display: flex; align-items: center; gap: 6px; padding-bottom: 12px; border-bottom: 0.5px solid rgba(255,255,255,0.08); margin-bottom: 6px; }
+.scope-right { position: sticky; top: 96px; }
+.scope-log { background: var(--code-bg); border-radius: 14px; padding: 18px 22px 20px; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; box-shadow: 0 18px 50px rgba(0,0,0,0.30); }
+.log-bar { display: flex; align-items: center; gap: 6px; padding-bottom: 12px; border-bottom: 0.5px solid rgba(255,255,255,0.08); margin-bottom: 8px; }
 .log-bar .dot { width: 9px; height: 9px; border-radius: 50%; background: #3A3025; }
 .log-title { margin-left: 8px; font-size: 10px; letter-spacing: 0.14em; color: #6A655D; }
-.log-row { display: grid; grid-template-columns: 18px 108px 48px 1fr; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid rgba(255,255,255,0.05); align-items: baseline; }
-.log-row:last-of-type { border-bottom: none; }
-.log-result { grid-column: 2 / -1; font-size: 11px; opacity: 0.85; }
-.log-row.ok { color: var(--code-text); }
-.log-row.ok .log-mark { color: #8FBC8F; }
-.log-row.ok .log-result { color: #8FBC8F; }
-.log-row.ng { color: #6A655D; }
-.log-row.ng .log-mark { color: #C97B4A; }
-.log-row.ng .log-call { text-decoration: line-through; text-decoration-color: rgba(201, 123, 74, 0.55); }
-.log-row.ng .log-result { color: #C97B4A; }
+.log-live { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8FBC8F; }
+.log-live .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #8FBC8F; box-shadow: 0 0 6px rgba(143,188,143,0.8); }
+/* verification-stream entries: head → proof check → verdict */
+.log-entry { padding: 11px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+.log-entry:last-of-type { border-bottom: none; }
+.le-head { display: flex; align-items: baseline; gap: 10px; }
+.le-mark { font-weight: 700; }
+.le-call { color: var(--code-text); }
+.le-amt { margin-left: auto; color: #9A938A; }
+.le-proof { font-size: 11.5px; color: #7C766C; margin: 5px 0 0; padding-left: 22px; }
+.le-proof .le-k { color: #6A655D; letter-spacing: 0.08em; margin-right: 7px; }
+.le-note { color: #6A655D; }
+.le-result { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 6px 0 0; padding-left: 22px; }
+.le-badge { margin-left: auto; display: inline-block; font-size: 9.5px; letter-spacing: 0.16em; padding: 3px 9px; border-radius: 5px; font-weight: 700; }
+.log-entry.ok .le-mark, .log-entry.ok .le-pass, .log-entry.ok .le-result { color: #8FBC8F; }
+.le-badge.ok { color: #0A0F0E; background: #8FBC8F; }
+.log-entry.ng .le-mark, .log-entry.ng .le-fail, .log-entry.ng .le-result { color: #C97B4A; }
+.log-entry.ng .le-call { text-decoration: line-through; text-decoration-color: rgba(201,123,74,0.5); color: #9A938A; }
+.le-badge.ng { color: #FCFAF5; background: #C97B4A; }
 @media (prefers-reduced-motion: no-preference) {
-  .scope-log.play .log-row { opacity: 0; animation: logIn 0.45s ease forwards; }
-  .scope-log.play .log-row:nth-of-type(2) { animation-delay: 0.15s; }
-  .scope-log.play .log-row:nth-of-type(3) { animation-delay: 0.65s; }
-  .scope-log.play .log-row:nth-of-type(4) { animation-delay: 1.15s; }
+  /* staged reveal — nth-of-type 1 is .log-bar, entries are 2/3/4 */
+  .scope-log.play .log-entry { opacity: 0; animation: logIn 0.5s ease forwards; }
+  .scope-log.play .log-entry:nth-of-type(2) { animation-delay: 0.40s; }
+  .scope-log.play .log-entry:nth-of-type(3) { animation-delay: 1.00s; }
+  .scope-log.play .log-entry:nth-of-type(4) { animation-delay: 1.60s; }
+  /* blocked verdict slams in + the result line flashes brown once */
+  .scope-log.play .log-entry.ng .le-badge { animation: badgeSlam 0.5s cubic-bezier(0.2,0.8,0.2,1.4) backwards; }
+  .scope-log.play .log-entry.ng .le-result { animation: blockFlash 0.7s ease backwards; }
+  .scope-log.play .log-entry:nth-of-type(3) .le-badge,
+  .scope-log.play .log-entry:nth-of-type(3) .le-result { animation-delay: 1.25s; }
+  .scope-log.play .log-entry:nth-of-type(4) .le-badge,
+  .scope-log.play .log-entry:nth-of-type(4) .le-result { animation-delay: 1.85s; }
+  .log-live .live-dot { animation: livePulse 1.6s ease-in-out infinite; }
 }
-@keyframes logIn { to { opacity: 1; } }
+@keyframes logIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes blockFlash { 0% { background: rgba(201,123,74,0.30); border-radius: 6px; } 100% { background: transparent; } }
+@keyframes badgeSlam { 0% { opacity: 0; transform: scale(0.55); } 60% { transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .scope-trustline { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--lemma-text-4); margin: 18px 2px 0; }
 .scope-trustline .led { color: var(--lemma-brown); }
 
@@ -437,13 +460,13 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 @media (max-width: 720px) {
   .scope-section { padding: 56px 0; margin-bottom: 56px; }
   .scope-grid { grid-template-columns: 1fr; gap: 36px; }
-  .scope-right { order: -1; }
+  .scope-right { order: -1; position: static; }
   .scope-h { font-size: 28px; line-height: 1.2; }
-  .scope-log { font-size: 11px; padding: 14px 16px 18px; }
+  .scope-log { font-size: 12px; padding: 16px 16px 18px; }
   .sc-icon svg { width: 28px; height: 28px; }
   .scope-card { gap: 14px; padding: 18px 18px; }
-  .log-row { grid-template-columns: 14px 1fr auto; }
-  .log-why { grid-column: 2 / -1; font-size: 10px; opacity: 0.75; }
+  .le-proof, .le-result { padding-left: 18px; }
+  .le-proof { font-size: 11px; }
   .mid-cta { flex-direction: column; align-items: flex-start; padding: 28px 24px; }
 }
 </style>
@@ -587,7 +610,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 
         <div class="scope-left">
           <h2 class="scope-h">Out of scope,<br>it never runs.</h2>
-          <p class="scope-lead">Trust402 runs your agent only within delegated authority — <span class="k">who it acts for, in what role, up to how much, over which data</span>. Out-of-scope calls stop before they're sent. No hand-rolled guardrails. Payments are the first surface.</p>
+          <p class="scope-lead">Your agent runs only within the authority you delegate. Out of scope, <span class="k-new">it stops before the call is sent</span>. No hand-rolled guardrails.</p>
 
           <div class="scope-cards">
             <div class="scope-card">
@@ -601,7 +624,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
               </div>
               <div class="sc-body">
                 <div class="sc-head"><span class="sc-no">01</span><h3 class="sc-title">Stopped before it's sent.</h3></div>
-                <p class="sc-desc">Calls that fail proof verification stop before they reach the API. Not after-the-fact log detection — fail-closed, before the request leaves.</p>
+                <p class="sc-desc">Calls that fail proof verification stop before they're sent (fail-closed).</p>
                 <code class="sc-mono">$500 POST → blocked</code>
               </div>
             </div>
@@ -617,7 +640,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
               </div>
               <div class="sc-body">
                 <div class="sc-head"><span class="sc-no">02</span><h3 class="sc-title">Authority is declared, not coded.</h3></div>
-                <p class="sc-desc">Attach role, spend limit and scope as a delegation proof. No authority branching in app code — the proof is the boundary.</p>
+                <p class="sc-desc">Declare role, limits and scope as a proof — no authorization branches in your code.</p>
                 <code class="sc-mono">scope: payments:autonomous</code>
               </div>
             </div>
@@ -635,7 +658,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
               </div>
               <div class="sc-body">
                 <div class="sc-head"><span class="sc-no">03</span><h3 class="sc-title">Every stop leaves a trail.</h3></div>
-                <p class="sc-desc">What was allowed, and what was never run. All of it stays as an independently verifiable audit trail you can replay later.</p>
+                <p class="sc-desc">Every allow and every stop lands in an independently verifiable audit trail.</p>
                 <code class="sc-mono">audit trail · verifiable</code>
               </div>
             </div>
@@ -644,18 +667,24 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 
         <div class="scope-right">
           <div class="scope-log" id="scopeLog">
-            <div class="log-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="log-title">trust402 · execution log</span></div>
-            <div class="log-row ok">
-              <span class="log-mark">✓</span><span class="log-call">GET /data</span><span class="log-amt">$0.01</span><span class="log-why">role: developer-tier</span>
-              <span class="log-result">→ settled · anchored</span>
+            <div class="log-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="log-title">trust402 · execution log</span><span class="log-live"><span class="live-dot"></span>live</span></div>
+
+            <div class="log-entry ok">
+              <div class="le-head"><span class="le-mark">✓</span><span class="le-call">GET /data</span><span class="le-amt">$0.01</span></div>
+              <div class="le-proof"><span class="le-k">proof</span>role <span class="le-pass">✓</span> · spend <span class="le-pass">✓</span></div>
+              <div class="le-result"><span>→ settled · anchored</span><span class="le-badge ok">SETTLED</span></div>
             </div>
-            <div class="log-row ng">
-              <span class="log-mark">✗</span><span class="log-call">POST /admin</span><span class="log-amt">$500</span><span class="log-why">out of scope</span>
-              <span class="log-result">→ blocked (pre-flight)</span>
+
+            <div class="log-entry ng">
+              <div class="le-head"><span class="le-mark">✗</span><span class="le-call">POST /admin</span><span class="le-amt">$500</span></div>
+              <div class="le-proof"><span class="le-k">proof</span>scope <span class="le-fail">✗</span> <span class="le-note">admin not granted</span></div>
+              <div class="le-result"><span>→ stopped before send</span><span class="le-badge ng">BLOCKED</span></div>
             </div>
-            <div class="log-row ng">
-              <span class="log-mark">✗</span><span class="log-call">GET /data</span><span class="log-amt">$120</span><span class="log-why">spendLimit 100 USDC exceeded</span>
-              <span class="log-result">→ blocked (pre-flight)</span>
+
+            <div class="log-entry ng">
+              <div class="le-head"><span class="le-mark">✗</span><span class="le-call">GET /data</span><span class="le-amt">$120</span></div>
+              <div class="le-proof"><span class="le-k">proof</span>spend <span class="le-fail">✗</span> <span class="le-note">limit 100 USDC exceeded</span></div>
+              <div class="le-result"><span>→ stopped before send</span><span class="le-badge ng">BLOCKED</span></div>
             </div>
           </div>
           <p class="scope-trustline"><span class="led">●</span> fail-closed by default · every stop lands in the audit trail · measured on the reference implementation</p>
@@ -1108,7 +1137,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 
         <div class="faq-item">
           <h3 class="faq-q">Does this apply to actions beyond payments?</h3>
-          <p class="faq-a">Yes. Trust402 <span class="k">verifies a proof per call</span>, so the same mechanism applies to non-payment API calls and MCP tool calls. Delegate role, scope and limits as a proof; out-of-scope calls stop before they're sent (fail-closed). Start with payment trust, extend to everything your agent does.</p>
+          <p class="faq-a">Yes. Proofs are verified per call, so the same applies to non-payment API calls and MCP tool calls. Out-of-scope calls stop before they're sent. Start with payments, extend to everything your agent does.</p>
         </div>
 
         <div class="faq-item">
