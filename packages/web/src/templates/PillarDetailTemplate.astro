@@ -21,6 +21,7 @@ import PillarConceptIncidents from "../components/pillars/PillarConceptIncidents
 import PillarConceptApproach from "../components/pillars/PillarConceptApproach.astro";
 import PillarConceptScenarios from "../components/pillars/PillarConceptScenarios.astro";
 import PillarConceptFurther from "../components/pillars/PillarConceptFurther.astro";
+import SolutionsBridge from "../components/SolutionsBridge.astro";
 
 export interface PillarDetailTemplateProps {
   locale: Locale;
@@ -38,6 +39,19 @@ export interface PillarDetailTemplateProps {
 
 const { locale, t, base, pillar, pillarT } = Astro.props as PillarDetailTemplateProps;
 const pillarsPath = `${base}/pillars`;
+
+// Bridge → Solutions「活用シーン」(§2 anchor) for this pillar's axis.
+const SOL_ANCHOR: Record<string, { anchor: string; axis: { ja: string; en: string } }> = {
+  "verifiable-origin": { anchor: "input-provenance", axis: { ja: "来歴証明", en: "Verifiable Origin" } },
+  "agent-authority-proof": { anchor: "agent-authority", axis: { ja: "エージェント権限", en: "Agent Authority" } },
+  "regulatory-attribute-proof": { anchor: "regulatory", axis: { ja: "規制属性", en: "Regulatory Attribute" } },
+  "verifiable-ai": { anchor: "verifiable-ai", axis: { ja: "検証可能 AI", en: "Verifiable AI" } },
+};
+const solMeta = SOL_ANCHOR[pillar.slug];
+const bridgeHref = solMeta ? `${base}/solutions/#${solMeta.anchor}` : `${base}/solutions/`;
+const bridgeCta = solMeta
+  ? (locale === "ja" ? `Solutions で ${solMeta.axis.ja}の活用シーンを見る →` : `See use scenarios for ${solMeta.axis.en} in Solutions →`)
+  : (locale === "ja" ? "Solutions で活用シーンを見る →" : "See use scenarios in Solutions →");
 const numLabel = `Pillar ${String(pillar.order).padStart(2, "0")}`;
 const heroSubLabel = locale === "ja" ? pillar.title.en : pillar.title.ja;
 
@@ -123,6 +137,16 @@ const faqJsonLd = pillar.faq && pillar.faq.length > 0 ? {
 
     </div>
   </main>
+
+  <SolutionsBridge
+    href={bridgeHref}
+    eyebrow={locale === "ja" ? "活用シーン" : "Use scenarios"}
+    h2={locale === "ja" ? "この軸を、業務でどう動かすか。" : "How does this axis run in your work?"}
+    sub={locale === "ja"
+      ? "業界・業務領域ごとの活用シーンと、関連ユースケースを Solutions で展開しています。"
+      : "We map use scenarios across industries and workflows in Solutions, with related use cases."}
+    ctaLabel={bridgeCta}
+  />
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
