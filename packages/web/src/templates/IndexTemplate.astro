@@ -480,7 +480,7 @@ const panes = [
         <p class="hp-cap-lead">{C.capLeadPre}<span class="em">{C.capLeadEm}</span>{C.capLeadTail}</p>
 
         <div class="hp-can-grid">
-          <div class="hp-can-item">
+          <a class="hp-can-item" href={`${base}/solutions/#input-provenance`}>
             <div class="hp-can-icon">
               <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC1Do}>
                 <rect x="14" y="26" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
@@ -498,9 +498,10 @@ const panes = [
               <p class="hp-can-do">{C.capC1Do}</p>
               <p class="hp-can-prevent">{C.capC1Prevent}</p>
             </div>
-          </div>
+            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          </a>
 
-          <div class="hp-can-item">
+          <a class="hp-can-item" href={`${base}/solutions/#autonomous-agents`}>
             <div class="hp-can-icon">
               <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC2Do}>
                 <line x1="42" y1="20" x2="42" y2="13" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
@@ -517,9 +518,10 @@ const panes = [
               <p class="hp-can-do">{C.capC2Do}</p>
               <p class="hp-can-prevent">{C.capC2Prevent}</p>
             </div>
-          </div>
+            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          </a>
 
-          <div class="hp-can-item">
+          <a class="hp-can-item" href={`${base}/solutions/#regulatory-compliance`}>
             <div class="hp-can-icon">
               <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC3Do}>
                 <rect x="14" y="10" width="44" height="60" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
@@ -540,9 +542,10 @@ const panes = [
               <p class="hp-can-do">{C.capC3Do}</p>
               <p class="hp-can-prevent">{C.capC3Prevent}</p>
             </div>
-          </div>
+            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          </a>
 
-          <div class="hp-can-item">
+          <a class="hp-can-item" href={`${base}/solutions/#ai-verification`}>
             <div class="hp-can-icon">
               <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC4Do}>
                 <rect x="10" y="14" width="40" height="54" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
@@ -568,7 +571,8 @@ const panes = [
               <p class="hp-can-do">{C.capC4Do}</p>
               <p class="hp-can-prevent">{C.capC4Prevent}</p>
             </div>
-          </div>
+            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          </a>
         </div>
       </div>
     </section>
@@ -1271,13 +1275,15 @@ const panes = [
   .hp-cap-lead { font-size: 15.5px; color: var(--hp-text-3); max-width: 760px; margin: 0 0 30px; line-height: 1.85; }
   .hp-cap-lead .em { color: var(--hp-text-1); font-weight: 700; }
   .hp-can-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .hp-can-item { background: var(--hp-cream); border: 1px solid var(--hp-line); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
-  .hp-can-item:hover { border-color: var(--hp-brown); transform: translateY(-1px); }
+  .hp-can-item { position: relative; background: var(--hp-cream); border: 1px solid var(--hp-line); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+  .hp-can-item:hover { border-color: var(--hp-brown); transform: translateY(-1px); box-shadow: 0 10px 28px rgba(139, 69, 19, 0.08); }
+  .hp-can-arrow { position: absolute; right: 16px; bottom: 14px; font-family: var(--hp-mono); font-size: 15px; line-height: 1; color: var(--hp-brown); opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
+  .hp-can-item:hover .hp-can-arrow { opacity: 1; transform: translateX(3px); }
   .hp-can-icon { background: var(--hp-cream-d); border-bottom: 1px solid var(--hp-line); padding: 26px 20px 22px; display: flex; align-items: center; justify-content: center; }
   .hp-can-icon svg { width: 84px; height: 84px; display: block; }
-  .hp-can-body { padding: 18px 22px 20px; }
+  .hp-can-body { padding: 18px 22px 24px; }
   .hp-can-do { font-family: var(--hp-display); font-weight: 700; font-size: 15px; color: var(--hp-text-1); margin: 0 0 6px; line-height: 1.45; }
-  .hp-can-prevent { font-size: 12.5px; color: var(--hp-text-3); margin: 0; line-height: 1.6; }
+  .hp-can-prevent { font-size: 12.5px; color: var(--hp-text-3); margin: 0; line-height: 1.6; padding-right: 24px; }
 
   /* §5 schema capability lines (v29) */
   .hp-schema-can { font-size: 14px; color: var(--hp-text-1); line-height: 1.6; margin: 14px 0 8px; padding-left: 14px; border-left: 2px solid var(--hp-green); }
