@@ -47,6 +47,10 @@ const sealHref = `${base}/seal/`;
 const briefIndexHref = `${base}/critical/briefs/`;
 const whitepaperHref =
   locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR";
+// §8 closing CTAs. JA books a Discovery Call; EN has no call staff, so it
+// sends visitors straight to the products to try them hands-on.
+const closingPrimaryHref = locale === "ja" ? contactHref : sealHref;
+const closingSecondaryHref = locale === "ja" ? whitepaperHref : trust402Href;
 
 // ── Latest Critical Brief (featured row) ──────────────────────────
 // Slug enumeration + sort uses the JA collection (source of truth for brief
@@ -360,13 +364,13 @@ const C = isJa ? {
   briefWpHintBefore: "Want to go deeper? ",
   briefWpHintLink: "Download the whitepaper",
   briefWpHintAfter: ".",
-  closingEyebrow: "DISCOVERY CALL",
-  closingH1Line1: "Start with ",
-  closingH1Accent: "30 minutes",
+  closingEyebrow: "TRY LEMMA",
+  closingH1Line1: "Run it ",
+  closingH1Accent: "yourself",
   closingH1Tail: ".",
-  closingSub: "Ask us about Lemma's capabilities and how they fit your work.",
-  closingPrimary: "Book Discovery Call",
-  closingSecondary: "Download whitepaper",
+  closingSub: "No sales call needed — start hands-on with Lemma's products.",
+  closingPrimary: "Try Seal",
+  closingSecondary: "Trust402 reference implementation",
   closingFootPre: "Threat analysis → ",
   closingFootBrief: "Critical Brief",
   closingFootMid: " · Use scenarios → ",
@@ -939,8 +943,8 @@ const panes = [
         <h2 class="hp-closing-h">{C.closingH1Line1}<span class="hp-accent-light">{C.closingH1Accent}</span>{C.closingH1Tail}</h2>
         <p class="hp-closing-sub">{C.closingSub}</p>
         <div class="hp-closing-ctas">
-          <a href={contactHref} class="hp-btn-brown-pill">{C.closingPrimary} →</a>
-          <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-closing-link">{C.closingSecondary} →</a>
+          <a href={closingPrimaryHref} class="hp-btn-brown-pill">{C.closingPrimary} →</a>
+          <a href={closingSecondaryHref} target={locale === "ja" ? "_blank" : undefined} rel={locale === "ja" ? "noopener" : undefined} class="hp-closing-link">{C.closingSecondary} →</a>
         </div>
         <p class="hp-closing-foot">{C.closingFootPre}<a href={briefIndexHref}>{C.closingFootBrief}</a>{C.closingFootMid}<a href={industriesHref}>{C.closingFootSolutions}</a></p>
       </div>
