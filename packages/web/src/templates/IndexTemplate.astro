@@ -45,7 +45,6 @@ const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const industriesHref = `${base}/solutions/`;
 const sealHref = `${base}/seal/`;
 const briefIndexHref = `${base}/critical/briefs/`;
-const pricingHref = `${base}/pricing/`;
 const whitepaperHref =
   locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR";
 
@@ -225,8 +224,8 @@ const C = isJa ? {
   closingSecondary: "ホワイトペーパー DL",
   closingFootPre: "脅威の構造分析 → ",
   closingFootBrief: "Critical Brief",
-  closingFootMid: " · 製品詳細 → ",
-  closingFootPricing: "Pricing",
+  closingFootMid: " · 活用シーン → ",
+  closingFootSolutions: "Solutions",
 } : {
   heroH1Line1: "The Trust Infrastructure",
   heroH1Accent: "for AI",
@@ -370,8 +369,8 @@ const C = isJa ? {
   closingSecondary: "Download whitepaper",
   closingFootPre: "Threat analysis → ",
   closingFootBrief: "Critical Brief",
-  closingFootMid: " · Products → ",
-  closingFootPricing: "Pricing",
+  closingFootMid: " · Use scenarios → ",
+  closingFootSolutions: "Solutions",
 };
 
 const phases = [
@@ -943,7 +942,7 @@ const panes = [
           <a href={contactHref} class="hp-btn-brown-pill">{C.closingPrimary} →</a>
           <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-closing-link">{C.closingSecondary} →</a>
         </div>
-        <p class="hp-closing-foot">{C.closingFootPre}<a href={briefIndexHref}>{C.closingFootBrief}</a>{C.closingFootMid}<a href={pricingHref}>{C.closingFootPricing}</a></p>
+        <p class="hp-closing-foot">{C.closingFootPre}<a href={briefIndexHref}>{C.closingFootBrief}</a>{C.closingFootMid}<a href={industriesHref}>{C.closingFootSolutions}</a></p>
       </div>
     </section>
 
