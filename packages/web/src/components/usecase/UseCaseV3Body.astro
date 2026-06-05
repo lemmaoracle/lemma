@@ -198,7 +198,7 @@ function firstSentence(text: string): string {
       <div class="ucv-eye">03 · 選定基準</div>
       <h2 class="ucv-h2">3 つの基準で、選ぶ。</h2>
       <p class="ucv-band-lead">
-        「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務だけが Lemma の領域です。1 つでも欠けてよいなら既存手段で十分。
+        「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務だけが Lemma の領域です。
       </p>
       <div class="ucv-table-wrap">
         <table class="ucv-table">
@@ -215,7 +215,10 @@ function firstSentence(text: string): string {
             <tr><td>マスキング / 匿名化</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
             <tr><td>暗号化のみ</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
             <tr class="is-lemma">
-              <td>Lemma（ZK 証明）</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+              <td><span class="ucv-lemma-name">Lemma（ZK 証明）</span><span class="ucv-only">唯一 3 つ揃う</span></td>
+              <td><span class="ucv-check">✓</span></td>
+              <td><span class="ucv-check">✓</span></td>
+              <td><span class="ucv-check">✓</span></td>
             </tr>
           </tbody>
         </table>
@@ -706,8 +709,48 @@ function firstSentence(text: string): string {
   .ucv-table td.ok { color: var(--ucv-green); font-weight: 700; }
   .ucv-table td.no { color: #c0392b; }
   .ucv-table tbody tr:last-child td { border-bottom: none; }
-  .ucv-table tr.is-lemma { background: rgba(139, 69, 19, 0.07); }
-  .ucv-table tr.is-lemma td:first-child { color: var(--accent); font-weight: 700; }
+
+  /* Lemma row — the only row that satisfies all three criteria. Make that
+     unmistakable: stronger brown wash, a 3px accent left bar, and the three
+     ✓ rendered as filled green check badges (a solid green row vs. scattered
+     plain marks elsewhere). */
+  .ucv-table tbody tr.is-lemma td {
+    background: rgba(139, 69, 19, 0.10);
+    border-top: 1px solid rgba(139, 69, 19, 0.28);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .ucv-table tbody tr.is-lemma td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  .ucv-lemma-name { color: var(--accent); font-weight: 700; }
+  .ucv-only {
+    display: inline-block;
+    margin-left: 8px;
+    font-family: var(--ucv-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: var(--accent);
+    padding: 2px 8px;
+    border-radius: 999px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .ucv-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ucv-green);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(92, 122, 74, 0.35);
+  }
 
   /* ─── §4 STEPS (ORIGINAL numbered list from markdown) ─── */
   .ucv-steps-body {
