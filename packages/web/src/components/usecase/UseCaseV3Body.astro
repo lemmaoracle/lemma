@@ -32,7 +32,10 @@ export interface UseCaseV3BodyProps {
   useCaseTitle: string;
   relatedUseCases: ReadonlyArray<UseCase>;
   hideProve: HideProvePair | undefined;
-  v3: UseCaseV3;
+  /** Authored hooks (§1 personas + §2 Before/After). Undefined for UCs that
+   * are rendered in derived mode — §1 falls back to the audience section and
+   * §2 to the approach section, with no Before/After cards. */
+  v3: UseCaseV3 | undefined;
   ucBridgeHref: string;
   ucBridgeCta: string;
 }
@@ -79,6 +82,31 @@ const nextBody = (() => {
 const nextTitle =
   nextSection && nextSection.key === "next" ? nextSection.title : "進め方";
 const relatedSection = useCase.sections.find((s) => s.key === "related");
+
+// ── Authored vs derived mode ──────────────────────────────────────────
+// UCs with a v3 config entry render authored §1 persona quotes + §2
+// Before/After cards. The rest derive §1 from the audience section and §2
+// from the approach section (no fabricated Before/After data).
+const authored = !!v3;
+const audienceSection = useCase.sections.find((s) => s.key === "audience");
+const approachSection = useCase.sections.find((s) => s.key === "approach");
+
+// Derived §2 approach text: strip crypto scheme names so the body stays
+// jargon-light (the v3 surface hides scheme names; spec link covers depth).
+function stripSchemes(html: string): string {
+  return html
+    .replace(
+      /(?:BBS\+|Poseidon|Groth16|Circom|PLONK)(?:\s*over\s*(?:BLS12-?381|BN254|[A-Za-z0-9-]+))?(?:\s*回路)?\s*(?:で|を|により|の|上で)?/g,
+      "",
+    )
+    .replace(/AES-?GCM\s*(?:で|を|により)?/g, "")
+    .replace(/\(\s*CID\s*\)/g, "")
+    .replace(/\(\s*Circ[^)]*\)/g, "")
+    .replace(/（\s*）/g, "")
+    .replace(/、\s*、/g, "、")
+    .replace(/\s{2,}/g, " ");
+}
+const approachBody = approachSection ? stripSchemes(approachSection.body) : "";
 
 /** Trim an abstract to its first sentence for related cards. */
 function firstSentence(text: string): string {
@@ -137,81 +165,103 @@ function firstSentence(text: string): string {
     </div>
   </div>
 
-  <!-- §1 推進担当の、3 つの声 -->
-  <section class="ucv-band ucv-band--deep" aria-label="推進担当の声">
-    <div class="ucv-container">
-      <div class="ucv-eye">01 · 課題認識</div>
-      <h2 class="ucv-h2">推進担当の、3 つの声。</h2>
-      <ul class="ucv-personas">
-        {v3.personas.map((p) => (
-          <li class="ucv-persona">
-            <div class="ucv-persona-avatar" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4" fill="currentColor" />
-                <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
-              </svg>
-            </div>
-            <div class="ucv-persona-role">{p.role}</div>
-            <p class="ucv-persona-quote">「{p.quote}」</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <!-- §2 変化 — emphasized (brown 4px left rule) -->
-  <section class="ucv-band" aria-label="変化">
-    <div class="ucv-container">
-      <div class="ucv-emph">
-        <div class="ucv-eye">02 · 変化</div>
-        <h2 class="ucv-h2">原本を渡すか、事実だけを渡すか。</h2>
-        <p class="ucv-band-lead">AI に渡すものが変われば、漏洩のリスクごと消える。</p>
-
-        <div class="ucv-ba">
-          <div class="ucv-ba-card ucv-ba-card--before">
-            <div class="ucv-ba-label">Without Lemma</div>
-            <div class="ucv-ba-title">原本をそのまま渡す</div>
-            <dl class="ucv-ba-rows">
-              {v3.without.map((row) => (
-                <div class="ucv-ba-row">
-                  <dt>{row.k}:</dt>
-                  <dd>{row.v}</dd>
-                </div>
+  <!-- §1 — authored persona quotes, or derived from the audience section. -->
+  {(v3 || audienceSection) && (
+    <section class="ucv-band ucv-band--deep" aria-label="読者">
+      <div class="ucv-container">
+        {v3 ? (
+          <Fragment>
+            <div class="ucv-eye">01 · 課題認識</div>
+            <h2 class="ucv-h2">推進担当の、3 つの声。</h2>
+            <ul class="ucv-personas">
+              {v3.personas.map((p) => (
+                <li class="ucv-persona">
+                  <div class="ucv-persona-avatar" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="8" r="4" fill="currentColor" />
+                      <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div class="ucv-persona-role">{p.role}</div>
+                  <p class="ucv-persona-quote">「{p.quote}」</p>
+                </li>
               ))}
-            </dl>
-            <div class="ucv-ba-flow">↓ すべて AI・外部へ渡る</div>
-          </div>
+            </ul>
+          </Fragment>
+        ) : audienceSection && (
+          <Fragment>
+            <div class="ucv-eye">01 · 想定読者</div>
+            <h2 class="ucv-h2">{audienceSection.title}</h2>
+            <div class="ucv-audience ucv-steps-body" set:html={audienceSection.body} />
+          </Fragment>
+        )}
+      </div>
+    </section>
+  )}
 
-          <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+  <!-- §2 — authored Before/After cards, or derived approach. -->
+  {(v3 || approachSection) && (
+    <section class="ucv-band" aria-label="アプローチ">
+      <div class="ucv-container">
+        <div class="ucv-emph">
+          <div class="ucv-eye">{v3 ? "02 · 変化" : "02 · アプローチ"}</div>
+          <h2 class="ucv-h2">原本を渡すか、事実だけを渡すか。</h2>
 
-          <div class="ucv-ba-card ucv-ba-card--after">
-            <div class="ucv-ba-label">With Lemma</div>
-            <div class="ucv-ba-title">事実だけを渡す</div>
-            <dl class="ucv-ba-rows">
-              {v3.withProof.map((row) => (
-                <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
-                  <dt>{row.k}:</dt>
-                  <dd>
-                    {row.badge ? (
-                      <span class="ucv-ba-badge">{row.v}</span>
-                    ) : (
-                      <span class={row.strong ? "ucv-ba-strong" : ""}>{row.v}</span>
-                    )}
-                  </dd>
+          {v3 && (
+            <Fragment>
+              <p class="ucv-band-lead">AI に渡すものが変われば、漏洩のリスクごと消える。</p>
+              <div class="ucv-ba">
+                <div class="ucv-ba-card ucv-ba-card--before">
+                  <div class="ucv-ba-label">Without Lemma</div>
+                  <div class="ucv-ba-title">原本をそのまま渡す</div>
+                  <dl class="ucv-ba-rows">
+                    {v3.without.map((row) => (
+                      <div class="ucv-ba-row">
+                        <dt>{row.k}:</dt>
+                        <dd>{row.v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div class="ucv-ba-flow">↓ すべて AI・外部へ渡る</div>
                 </div>
-              ))}
-            </dl>
-            <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ AI へ渡る</div>
-          </div>
-        </div>
 
-        <div class="ucv-approach">
-          <p>{v3.approach}</p>
-          <a class="ucv-approach-link" href={guidesHref}>技術詳細を見る ↗</a>
+                <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+
+                <div class="ucv-ba-card ucv-ba-card--after">
+                  <div class="ucv-ba-label">With Lemma</div>
+                  <div class="ucv-ba-title">事実だけを渡す</div>
+                  <dl class="ucv-ba-rows">
+                    {v3.withProof.map((row) => (
+                      <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
+                        <dt>{row.k}:</dt>
+                        <dd>
+                          {row.badge ? (
+                            <span class="ucv-ba-badge">{row.v}</span>
+                          ) : (
+                            <span class={row.strong ? "ucv-ba-strong" : ""}>{row.v}</span>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div class="ucv-ba-flow ucv-ba-flow--after">↓ 必要な事実だけ AI へ渡る</div>
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+          <div class="ucv-approach">
+            {v3 ? (
+              <p>{v3.approach}</p>
+            ) : (
+              <div class="ucv-approach-body" set:html={approachBody} />
+            )}
+            <a class="ucv-approach-link" href={guidesHref}>技術詳細を見る ↗</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <!-- §3 選定基準 — common comparison table -->
   <section class="ucv-band ucv-band--deep" aria-label="選定基準">
@@ -683,12 +733,15 @@ function firstSentence(text: string): string {
     padding: 22px 24px;
     border-left: 3px solid var(--accent);
   }
-  .ucv-approach p {
+  .ucv-approach p,
+  .ucv-approach-body :global(p) {
     font-size: 14px;
     line-height: 1.85;
     color: var(--ucv-text-1);
     margin: 0 0 12px;
   }
+  .ucv-approach-body :global(strong) { color: var(--accent); font-weight: 600; }
+  .ucv-approach-body :global(em) { font-style: normal; color: var(--accent); font-weight: 500; }
   .ucv-approach-link {
     font-family: var(--ucv-mono);
     font-size: 11px;
