@@ -331,7 +331,7 @@ export const PRICING: PricingContent = {
       ja: "エージェント駆動のエコシステムで、API レイヤーから ZK 証明済みの行動 / 決済 / 権限を提供。",
       en: "ZK-attested action / payment / authority at the API layer for the agent-driven ecosystem.",
     },
-    status: { ja: "2026-06 公開予定", en: "Launching 2026-06" },
+    status: { ja: "近日公開予定", en: "Launching soon" },
     tiers: [
       {
         name: "Explorer",
