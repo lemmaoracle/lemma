@@ -516,10 +516,6 @@
         "title": "10. AI & Personal Data Protection",
         "items": [
           {
-            "q": "Do I need to share personal information for the Discovery Call?",
-            "a": "No. The Discovery Call does not require disclosing technical details or sensitive information (personal data, confidential data, PII). Sharing the structural shape of your problem (\"which decision, on which information\") is enough for us to determine if Lemma fits within the first 30 minutes."
-          },
-          {
             "q": "Can I use AI in production without exposing personal data to AI?",
             "a": "Yes. Lemma's core proposition is exactly this: pass only verifiable facts (with cryptographic proof) to AI, never the raw data. Original data (names, addresses, contracts) never enters AI's context. Only verifiable claims with ZK proofs flow through, and the originals stay encrypted in your systems — never in AI logs or caches."
           },
@@ -529,7 +525,7 @@
           },
           {
             "q": "How does Lemma reduce personal-data exposure risk in AI workflows?",
-            "a": "After deploying Lemma, AI receives only proof objects (claim + ZK proof), not raw data. Consequently:<ul><li>No original data in AI logs / caches</li><li>No original data shared with AI model providers</li><li>AI-pathway data leakage is structurally eliminated</li></ul>By changing what flows to AI, the need for downstream leak prevention is relaxed."
+            "a": "After deploying Lemma, AI receives only proof objects (claim + ZK proof), not raw data. Consequently, <strong>no original data lands in AI logs or caches</strong>, <strong>none is shared with AI model providers</strong>, and <strong>AI-pathway data leakage is structurally eliminated</strong>. By changing what flows to AI, the need for downstream leak prevention is relaxed."
           },
           {
             "q": "Does a PoC require sharing confidential data with Lemma?",

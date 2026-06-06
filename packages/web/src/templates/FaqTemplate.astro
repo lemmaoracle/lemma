@@ -459,7 +459,9 @@ const faqJsonLd = {
   /* ─── STICKY JUMP NAV ─── */
   .fq-jump {
     position: sticky;
-    top: 80px;
+    /* Flush under the 64px sticky global nav — a larger value leaves a gap
+       where page content scrolls through between the header and this bar. */
+    top: 64px;
     margin: 0 0 28px;
     z-index: 5;
     background: var(--lemma-cream);
