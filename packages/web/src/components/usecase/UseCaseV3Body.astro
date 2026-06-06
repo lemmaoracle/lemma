@@ -67,6 +67,8 @@ const C = isJa
       bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
       hpAria: "HIDE と PROVE の対比", hpHide: "Hide ── 隠す", hpProve: "Prove ── 証明する",
+      ariaReaders: "読者", ariaApproach: "アプローチ", ariaCriteria: "選定基準",
+      ariaSteps: "進め方", ariaRelated: "関連ユースケース",
       s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
       s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
       s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
@@ -92,6 +94,8 @@ const C = isJa
       bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
       credMid: "Public-infrastructure PoC in production",
       hpAria: "HIDE versus PROVE", hpHide: "Hide", hpProve: "Prove",
+      ariaReaders: "Who it's for", ariaApproach: "Approach", ariaCriteria: "How to choose",
+      ariaSteps: "How it works", ariaRelated: "Related use cases",
       s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
       s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
       s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
@@ -246,7 +250,7 @@ function firstSentence(text: string): string {
 
   <!-- §1 — authored persona quotes, or derived from the audience section. -->
   {(v3 || audienceSection) && (
-    <section class="ucv-band ucv-band--deep" aria-label="読者">
+    <section class="ucv-band ucv-band--deep" aria-label={C.ariaReaders}>
       <div class="ucv-container">
         {v3 ? (
           <Fragment>
@@ -297,7 +301,7 @@ function firstSentence(text: string): string {
 
   <!-- §2 — authored Before/After cards, or derived approach. -->
   {(v3 || approachSection) && (
-    <section class="ucv-band" aria-label="アプローチ">
+    <section class="ucv-band" aria-label={C.ariaApproach}>
       <div class="ucv-container">
         <div class="ucv-emph">
           <div class="ucv-eye">{v3 || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
@@ -381,7 +385,7 @@ function firstSentence(text: string): string {
   )}
 
   <!-- §3 選定基準 — common comparison table -->
-  <section class="ucv-band ucv-band--deep" aria-label="選定基準">
+  <section class="ucv-band ucv-band--deep" aria-label={C.ariaCriteria}>
     <div class="ucv-container">
       <div class="ucv-eye">{C.s3Eye}</div>
       <h2 class="ucv-h2">{C.s3H2}</h2>
@@ -414,7 +418,7 @@ function firstSentence(text: string): string {
 
   <!-- §4 進め方 — existing markdown (ORIGINAL numbered list) -->
   {nextSection && (
-    <section class="ucv-band" aria-label="進め方">
+    <section class="ucv-band" aria-label={C.ariaSteps}>
       <div class="ucv-container">
         <div class="ucv-eye">{C.s4Eye}</div>
         <h2 class="ucv-h2">{nextTitle}</h2>
@@ -433,7 +437,7 @@ function firstSentence(text: string): string {
   )}
 
   <!-- §5 関連ユースケース -->
-  <section class="ucv-band ucv-band--deep" aria-label="関連ユースケース">
+  <section class="ucv-band ucv-band--deep" aria-label={C.ariaRelated}>
     <div class="ucv-container">
       <div class="ucv-eye">{C.s5Eye}</div>
       <h2 class="ucv-h2">{relatedSection?.title ?? C.s5H2}</h2>
