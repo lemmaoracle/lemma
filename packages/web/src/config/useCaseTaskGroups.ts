@@ -29,6 +29,9 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
       "ai-audit-log-proof",
       "rag-content-provenance",
       "rag-source-attestation",
+      "prompt-injection-detection",
+      "ai-act-compliance-attestation",
+      "model-version-attestation",
     ],
   },
   {
