@@ -120,6 +120,22 @@ const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n>> = {
   },
 
   // P3 エージェント権限証明
+  "agent-expense-approval": {
+    hide: { ja: "経費データ・承認権限の中身", en: "expense data and the approval authority itself" },
+    prove: { ja: "範囲内なら、AI が承認できる", en: "within scope, the AI may approve" },
+  },
+  "agent-procurement": {
+    hide: { ja: "発注権限・予算・取引先データ", en: "ordering authority, budget and supplier data" },
+    prove: { ja: "範囲内なら、AI が発注実行", en: "within scope, the AI may place the order" },
+  },
+  "agent-api-billing": {
+    hide: { ja: "API キー・課金権限", en: "the API key and billing authority" },
+    prove: { ja: "範囲内なら、AI が API を呼べる", en: "within scope, the AI may call the API" },
+  },
+  "agent2agent-settlement": {
+    hide: { ja: "委任関係・取引内容の中身", en: "the delegation relationships and transaction contents" },
+    prove: { ja: "委任の連鎖と、取引の正当性", en: "the delegation chain and the transaction's legitimacy" },
+  },
   "multi-agent-workflows": {
     hide: { ja: "エージェント間の中間ステップ", en: "the intermediate steps between agents" },
     prove: { ja: "成果物が認可された委任チェーン上で生成された", en: "the result was produced on an authorized delegation chain" },

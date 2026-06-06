@@ -80,6 +80,10 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     heading: "エージェント・決済の権限を証明する",
     description: "エージェントや決済の権限を、コードで証明したいとき（開発者向け）。",
     slugs: [
+      "agent-expense-approval",
+      "agent-procurement",
+      "agent-api-billing",
+      "agent2agent-settlement",
       "multi-agent-workflows",
       "delegated-treasury",
       "x402-commerce",
