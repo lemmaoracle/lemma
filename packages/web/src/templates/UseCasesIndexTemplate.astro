@@ -13,6 +13,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import SolutionsBridge from "../components/SolutionsBridge.astro";
+import UseCaseIcon from "../components/usecase/UseCaseIcon.astro";
 
 export interface UseCasesIndexTemplateProps {
   locale: Locale;
@@ -131,6 +132,7 @@ const collectionJsonLd = {
                 const summary = uc.cardSummary || uc.thesis;
                 return (
                   <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
+                    <UseCaseIcon slug={uc.slug} />
                     {pillar && (
                       <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
                     )}
@@ -161,6 +163,7 @@ const collectionJsonLd = {
             const summary = uc.cardSummary || uc.thesis;
             return (
               <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
+                <UseCaseIcon slug={uc.slug} />
                 {pillar && (
                   <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
                 )}
