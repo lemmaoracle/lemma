@@ -66,6 +66,7 @@ const C = isJa
   ? {
       bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
+      hpAria: "HIDE と PROVE の対比", hpHide: "Hide ── 隠す", hpProve: "Prove ── 証明する",
       s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
       s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
       s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
@@ -90,6 +91,7 @@ const C = isJa
   : {
       bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
       credMid: "Public-infrastructure PoC in production",
+      hpAria: "HIDE versus PROVE", hpHide: "Hide", hpProve: "Prove",
       s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
       s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
       s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
@@ -210,14 +212,14 @@ function firstSentence(text: string): string {
       <h1 class="ucv-h1">{useCase.title}</h1>
 
       {showHeroHp && (
-        <div class="ucv-hp" aria-label="HIDE と PROVE の対比">
+        <div class="ucv-hp" aria-label={C.hpAria}>
           <div class="ucv-hp__cell ucv-hp__cell--hide">
-            <span class="ucv-hp__lab">Hide ── 隠す</span>
+            <span class="ucv-hp__lab">{C.hpHide}</span>
             <span class="ucv-hp__val">{hideProve.hide}</span>
           </div>
           <div class="ucv-hp__arrow" aria-hidden="true">→</div>
           <div class="ucv-hp__cell ucv-hp__cell--prove">
-            <span class="ucv-hp__lab">Prove ── 証明する</span>
+            <span class="ucv-hp__lab">{C.hpProve}</span>
             <span class="ucv-hp__val">{hideProve.prove}</span>
           </div>
         </div>
