@@ -517,15 +517,27 @@
         "items": [
           {
             "q": "Can I use AI in production without exposing personal data to AI?",
-            "a": "Yes. Lemma's core proposition is exactly this: pass only verifiable facts (with cryptographic proof) to AI, never the raw data. Original data (names, addresses, contracts) never enters AI's context. Only verifiable claims with ZK proofs flow through, and the originals stay encrypted in your systems — never in AI logs or caches."
+            "a": "Yes. Lemma's core proposition is exactly this: pass only verifiable facts (with cryptographic proof) to AI, never the raw data. Original data (names, addresses, contracts) never enters AI's context. Only verifiable claims with ZK proofs flow through, and the originals stay encrypted in your systems — never in AI logs or caches.",
+            "links": [
+              { "label": "Let AI Use Internal Documents Without Touching the Raw Data", "href": "/solutions/use-cases/ai-document-isolation/" },
+              { "label": "Need-to-Know Customer Flags", "href": "/solutions/use-cases/customer-flag-need-to-know/" }
+            ]
           },
           {
             "q": "How does this align with personal-data-protection regulations?",
-            "a": "Lemma's selective-disclosure structure (disclosed / hidden) structurally aligns with data-minimization principles (e.g., GDPR Art. 5, Japan's APPI). Attributes passed to AI are minimal (e.g., \"age >= 18\", \"jurisdiction = JP\"), with personally identifiable information retained at the source. Specific compliance design is discussed in the Discovery Call."
+            "a": "Lemma's selective-disclosure structure (disclosed / hidden) structurally aligns with data-minimization principles (e.g., GDPR Art. 5, Japan's APPI). Attributes passed to AI are minimal (e.g., \"age >= 18\", \"jurisdiction = JP\"), with personally identifiable information retained at the source. Specific compliance design is discussed in the Discovery Call.",
+            "links": [
+              { "label": "KYC/AML Selective Disclosure", "href": "/solutions/use-cases/kyc-aml-selective-disclosure/" },
+              { "label": "Age & Sale-Eligibility Verification", "href": "/solutions/use-cases/age-eligibility-verification/" }
+            ]
           },
           {
             "q": "How does Lemma reduce personal-data exposure risk in AI workflows?",
-            "a": "After deploying Lemma, AI receives only proof objects (claim + ZK proof), not raw data. Consequently, <strong>no original data lands in AI logs or caches</strong>, <strong>none is shared with AI model providers</strong>, and <strong>AI-pathway data leakage is structurally eliminated</strong>. By changing what flows to AI, the need for downstream leak prevention is relaxed."
+            "a": "After deploying Lemma, AI receives only proof objects (claim + ZK proof), not raw data. Consequently, <strong>no original data lands in AI logs or caches</strong>, <strong>none is shared with AI model providers</strong>, and <strong>AI-pathway data leakage is structurally eliminated</strong>. By changing what flows to AI, the need for downstream leak prevention is relaxed.",
+            "links": [
+              { "label": "Financial Data Exfiltration Defense", "href": "/solutions/use-cases/financial-data-exfiltration/" },
+              { "label": "AI Audit Log Proof", "href": "/solutions/use-cases/ai-audit-log-proof/" }
+            ]
           },
           {
             "q": "Does a PoC require sharing confidential data with Lemma?",
@@ -540,6 +552,10 @@
           {
             "q": "Is Lemma related to uselemma.ai?",
             "a": "No. They are separate companies. Lemma (this site) is built by FRAME00, Inc. — the trust infrastructure for AI: cryptographic proofs of data origin, AI decisions, agent authority, and regulatory attributes. Looking for pricing? <a href=\"/pricing/\">Trust402 Explorer is free to start</a>; enterprise plans are inquiry-based."
+          },
+          {
+            "q": "How is Lemma different from LemmaX?",
+            "a": "They're unrelated — a different company and product. LemmaX is a financial-technology platform offering secure, compliant payments infrastructure and support services for Web3 companies. Lemma (this site, by FRAME00, Inc.) is the trust infrastructure for AI — verifying data provenance, AI decisions, agent authority, and regulatory attributes with zero-knowledge proofs, without exposing the originals. It's a proof layer, not a payments service. Try our products: <a href=\"/trust402/\">Trust402</a> · <a href=\"/seal/\">Seal</a>."
           }
         ]
       }
