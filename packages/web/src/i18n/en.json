@@ -552,6 +552,10 @@
           {
             "q": "Is Lemma related to uselemma.ai?",
             "a": "No. They are separate companies. Lemma (this site) is built by FRAME00, Inc. — the trust infrastructure for AI: cryptographic proofs of data origin, AI decisions, agent authority, and regulatory attributes. Looking for pricing? <a href=\"/pricing/\">Trust402 Explorer is free to start</a>; enterprise plans are inquiry-based."
+          },
+          {
+            "q": "How is Lemma different from LemmaX?",
+            "a": "They're unrelated — a different company and product. LemmaX is a financial-technology platform offering secure, compliant payments infrastructure and support services for Web3 companies. Lemma (this site, by FRAME00, Inc.) is the trust infrastructure for AI — verifying data provenance, AI decisions, agent authority, and regulatory attributes with zero-knowledge proofs, without exposing the originals. It's a proof layer, not a payments service. Try our products: <a href=\"/trust402/\">Trust402</a> · <a href=\"/seal/\">Seal</a>."
           }
         ]
       }

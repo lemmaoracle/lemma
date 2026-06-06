@@ -699,6 +699,14 @@ const faqJsonLd = {
     margin: 0;
     padding: 0 22px 12px;
   }
+  /* Inline links inside an answer (e.g. our own product names) read as links. */
+  .fq-a p a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .fq-a p a:hover { color: #6e3610; }
   /* Related links rendered below the answer when item.links is set. */
   .fq-a-links {
     display: flex;
