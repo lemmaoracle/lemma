@@ -120,7 +120,7 @@ const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n>> = {
   },
   "prompt-injection-detection": {
     hide: { ja: "プロンプト・入力 content の中身", en: "the prompt and input content itself" },
-    prove: { ja: "「人が見た入力 = AI が読む入力」の整合性", en: "that what the human saw equals what the AI read" },
+    prove: { ja: "「人が見た入力 = AI が読む入力」の整合性", en: "what the human saw equals what the AI read" },
   },
   "ai-act-compliance-attestation": {
     hide: { ja: "AI システム内部・学習データ・モデル詳細", en: "the AI system internals, training data and model details" },
