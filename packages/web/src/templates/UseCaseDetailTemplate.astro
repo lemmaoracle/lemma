@@ -28,6 +28,7 @@ import SolutionsBridge from "../components/SolutionsBridge.astro";
 import UseCaseV3Body from "../components/usecase/UseCaseV3Body.astro";
 import { getUseCaseHideProve } from "../config/useCaseHideProve";
 import { getUseCaseV3 } from "../config/useCaseV3";
+import { getUseCaseBeforeAfter } from "../config/useCaseBeforeAfter";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
@@ -81,6 +82,9 @@ const hideProve = getUseCaseHideProve(useCase.slug, locale);
 // get the authored §1 personas + §2 Before/After (now bilingual); everything
 // else derives §1/§2 from the audience/approach markdown.
 const v3 = getUseCaseV3(useCase.slug);
+// Derived UCs (no v3 config) still get a §2 key:value Before/After table from
+// this data-only map; ignored when v3 is present.
+const beforeAfter = v3 ? undefined : getUseCaseBeforeAfter(useCase.slug);
 const useV3 = true;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
@@ -137,6 +141,7 @@ const breadcrumbJsonLd = {
       relatedUseCases={relatedUseCases}
       hideProve={hideProve}
       v3={v3}
+      beforeAfter={beforeAfter}
       ucBridgeHref={ucBridgeHref}
       ucBridgeCta={ucBridgeCta}
     />

@@ -23,6 +23,7 @@ import type { UseCase } from "../../data/useCases";
 import type { Pillar } from "../../data/pillars";
 import type { HideProvePair } from "../../config/useCaseHideProve";
 import type { UseCaseV3 } from "../../config/useCaseV3";
+import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
 import SolutionsBridge from "../SolutionsBridge.astro";
 import { DISCOVERY_CALL_URL } from "../../config/cta";
 
@@ -38,6 +39,9 @@ export interface UseCaseV3BodyProps {
    * are rendered in derived mode — §1 falls back to the audience section and
    * §2 to the approach section, with no Before/After cards. */
   v3: UseCaseV3 | undefined;
+  /** §2 Before/After data for derived UCs (no personas) — renders the same
+   * key:value table the authored path uses. Ignored when `v3` is present. */
+  beforeAfter: UseCaseBeforeAfter | undefined;
   ucBridgeHref: string;
   ucBridgeCta: string;
 }
@@ -51,6 +55,7 @@ const {
   relatedUseCases,
   hideProve,
   v3,
+  beforeAfter,
   ucBridgeHref,
   ucBridgeCta,
 } = Astro.props as UseCaseV3BodyProps;
@@ -186,10 +191,15 @@ const audienceIntro = audienceHtml.match(/<p>([\s\S]*?)<\/p>/)?.[1]?.trim() ?? "
 const audienceBullets = [...audienceHtml.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) =>
   m[1].trim(),
 );
-// Derived §2 carries the HIDE→PROVE pair as the Before/After visual, so the
-// hero device is dropped on derived pages (it would otherwise repeat).
-const showHeroHp = !!hideProve && authored;
-const showDerivedBa = !authored && !!hideProve;
+// §2 Before/After key:value table data: from the authored config, or — for
+// derived UCs — the data-only map. Either renders the same table.
+const baData = v3 ?? beforeAfter;
+const showDataBa = !!baData;
+// Hero HIDE→PROVE device shows whenever §2 renders the data table (the chip
+// pair and the table never duplicate the same surface). Concept-card fallback
+// only for UCs that have a HIDE→PROVE pair but no Before/After data.
+const showHeroHp = !!hideProve && showDataBa;
+const showDerivedBa = !showDataBa && !!hideProve;
 
 /** Trim an abstract to its first sentence for related cards. */
 function firstSentence(text: string): string {
@@ -304,7 +314,7 @@ function firstSentence(text: string): string {
     <section class="ucv-band" aria-label={C.ariaApproach}>
       <div class="ucv-container">
         <div class="ucv-emph">
-          <div class="ucv-eye">{v3 || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
+          <div class="ucv-eye">{showDataBa || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
           {showDerivedBa && hideProve && (
@@ -328,7 +338,7 @@ function firstSentence(text: string): string {
             </div>
           )}
 
-          {v3 && (
+          {showDataBa && baData && (
             <Fragment>
               <p class="ucv-band-lead">{C.s2Lead}</p>
               <div class="ucv-ba">
@@ -336,7 +346,7 @@ function firstSentence(text: string): string {
                   <div class="ucv-ba-label">Without Lemma</div>
                   <div class="ucv-ba-title">{C.baDataBeforeTitle}</div>
                   <dl class="ucv-ba-rows">
-                    {v3.without.map((row) => (
+                    {baData.without.map((row) => (
                       <div class="ucv-ba-row">
                         <dt>{row.k}:</dt>
                         <dd>{rv(row)}</dd>
@@ -352,7 +362,7 @@ function firstSentence(text: string): string {
                   <div class="ucv-ba-label">With Lemma</div>
                   <div class="ucv-ba-title">{C.baDataAfterTitle}</div>
                   <dl class="ucv-ba-rows">
-                    {v3.withProof.map((row) => (
+                    {baData.withProof.map((row) => (
                       <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
                         <dt>{row.k}:</dt>
                         <dd>
