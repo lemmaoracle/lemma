@@ -435,6 +435,191 @@ export const USE_CASE_V3: Readonly<Record<string, UseCaseV3>> = {
       en: "For every cross-organization data access, who accessed what and when is fixed as a tamper-proof record. The customer data itself never leaves; regulators, the originating org and the receiving org can each independently verify the same record. The gap that sat between detection (DLP) and log aggregation (SIEM) — \"tamper-proofness of the record itself\" and \"a shared truth across organizations\" — is filled with verifiable facts.",
     },
   },
+
+  // ── P3 エージェント権限証明（自律エージェント · Trust402）──────────────
+  "agent-expense-approval": {
+    personas: [
+      {
+        role: { ja: "経理・財務", en: "Accounting / Finance" },
+        quote: {
+          ja: "経費承認の自動化を進めたいが、無制限の権限委譲は怖い",
+          en: "We want to automate expense approvals, but handing over unlimited authority is scary",
+        },
+      },
+      {
+        role: { ja: "法務・内部統制", en: "Legal / internal control" },
+        quote: {
+          ja: "AI による承認の権限スコープを、後から監査可能な形で残したい",
+          en: "We want the AI's approval-authority scope kept in an auditable form",
+        },
+      },
+      {
+        role: { ja: "DX 推進", en: "Digital transformation" },
+        quote: {
+          ja: "経費承認の reaction time を 24h → 即時に短縮したい",
+          en: "We want to cut approval turnaround from 24h to instant",
+        },
+      },
+    ],
+    without: [
+      { k: "request", v: "¥85,000" },
+      { k: "category", v: "出張", vEn: "travel" },
+      { k: "approver", v: "AI-001" },
+      { k: "approved", v: "yes" },
+      { k: "log", v: "timestamp / IP / session_id…" },
+    ],
+    withProof: [
+      { k: "agent", v: "did:lemma:agent-expense-bot" },
+      { k: "delegatedBy", v: "did:lemma:org-acme-fin" },
+      { k: "role", v: "expense_approver" },
+      { k: "spendLimitUSDC", v: "1000", strong: true },
+      { k: "scope", v: "[travel, office, client]" },
+      { k: "validUntil", v: "2026-12-31" },
+      { k: "ZK verified", v: "✓ VALID", badge: true },
+    ],
+    approach: {
+      ja: "経理・財務部門が、上限額・カテゴリ・担当範囲・有効期限を持つ委任を署名付きで発行します。エージェントは承認を出す前にこの範囲を runtime で検証し、範囲内なら自律承認、範囲外は人間にエスカレーションして止まります。承認権限の中身を開示せず、「正規の委任の範囲内で承認した」ことを後から独立に検証できます。",
+      en: "The finance team issues a signed delegation with a spend ceiling, categories, scope and validity. Before approving, the agent verifies it stays within that scope at runtime — auto-approving inside it and escalating to a human outside it. Without disclosing the approval authority itself, the fact \"approved within an authorized delegation\" can later be independently verified.",
+    },
+  },
+
+  "agent-procurement": {
+    personas: [
+      {
+        role: { ja: "調達部・購買", en: "Procurement / purchasing" },
+        quote: {
+          ja: "定型発注の自動化を進めたいが、ベンダ選定権を AI に丸投げできない",
+          en: "We want to automate routine ordering, but can't hand vendor selection wholesale to the AI",
+        },
+      },
+      {
+        role: { ja: "経理", en: "Accounting" },
+        quote: {
+          ja: "発注の予算統制を、リアルタイムで効かせたい",
+          en: "We want budget control on orders enforced in real time",
+        },
+      },
+      {
+        role: { ja: "監査", en: "Audit" },
+        quote: {
+          ja: "AI による発注の権限根拠を、後から検証可能にしたい",
+          en: "We want the authority behind an AI's order to be verifiable after the fact",
+        },
+      },
+    ],
+    without: [
+      { k: "vendor", v: "ABC corp" },
+      { k: "amount", v: "5,500,000 JPY" },
+      { k: "category", v: "office_supplies" },
+      { k: "authorized_by", v: "AI-002" },
+      { k: "ordered_at", v: "2024-08-15…" },
+    ],
+    withProof: [
+      { k: "agent", v: "did:lemma:agent-procurement-bot" },
+      { k: "delegatedBy", v: "did:lemma:org-acme-procurement" },
+      { k: "role", v: "procurement_agent" },
+      { k: "spendLimitUSDC", v: "5000", strong: true },
+      { k: "scope", v: "[vendor:authorized, category:office-supplies]" },
+      { k: "validUntil", v: "2026-09-30" },
+      { k: "ZK verified", v: "✓ VALID", badge: true },
+    ],
+    approach: {
+      ja: "調達・購買部門が、上限額・認証済みベンダ・カテゴリ・有効期限を持つ委任を署名付きで発行します。エージェントは発注を確定する前にこの範囲を runtime で検証し、範囲内なら自律発注、範囲外は止まります。取引先データや予算の中身を開示せず、「正規の委任の範囲内で発注した」ことを独立に検証できます。",
+      en: "The procurement team issues a signed delegation with a spend ceiling, approved vendors, categories and validity. Before confirming an order, the agent verifies it stays within scope at runtime — ordering autonomously inside it and stopping outside it. Without disclosing supplier data or budgets, the fact \"ordered within an authorized delegation\" can be independently verified.",
+    },
+  },
+
+  "agent-api-billing": {
+    personas: [
+      {
+        role: { ja: "開発者", en: "Developer" },
+        quote: {
+          ja: "AI エージェントに API キーを渡すリスクを避けたい。範囲付きで委任したい",
+          en: "We want to avoid the risk of handing an AI agent the API key — delegate with scope instead",
+        },
+      },
+      {
+        role: { ja: "IT 部門", en: "IT" },
+        quote: {
+          ja: "AI が使う API の課金を、リアルタイムで統制したい",
+          en: "We want real-time control over the billing of the APIs the AI uses",
+        },
+      },
+      {
+        role: { ja: "セキュリティ", en: "Security" },
+        quote: {
+          ja: "API キー漏洩のリスクを構造的に解消したい",
+          en: "We want to structurally eliminate the risk of API-key leakage",
+        },
+      },
+    ],
+    without: [
+      { k: "api_key", v: "sk-proj-…" },
+      { k: "endpoint", v: "/v1/chat/completions" },
+      { k: "cost", v: "$0.05" },
+      { k: "agent", v: "AI-003" },
+      { k: "total_month", v: "$124.50" },
+    ],
+    withProof: [
+      { k: "agent", v: "did:lemma:agent-AI-003" },
+      { k: "delegatedBy", v: "did:lemma:org-acme-dev" },
+      { k: "role", v: "api_caller" },
+      { k: "spendLimitUSDC", v: "100", strong: true },
+      { k: "scope", v: "x402://api.openai.com/*" },
+      { k: "validUntil", v: "2026-06-30T23:59:59Z" },
+      { k: "ZK verified", v: "✓ VALID", badge: true },
+    ],
+    approach: {
+      ja: "組織・開発者が、課金上限・許可 API・有効期限を持つ委任を署名付きで発行します。API キーそのものはエージェントに渡しません。x402 middleware が API call の前に Trust402 で権限を確認し、範囲内なら自律実行、範囲外は実行前に止まります。キーや課金権限の中身を開示せず、「範囲内で呼び出した」ことを独立に検証できます。",
+      en: "An org or developer issues a signed delegation with a billing ceiling, allowed APIs and validity — without handing the agent the API key itself. x402 middleware checks authority via Trust402 before each call, executing inside scope and stopping before anything outside it. Without disclosing keys or billing authority, the fact \"called within scope\" can be independently verified.",
+    },
+  },
+
+  "agent2agent-settlement": {
+    personas: [
+      {
+        role: { ja: "A2A 開発者", en: "A2A developer" },
+        quote: {
+          ja: "マルチエージェント間の権限委任を、可監査な形で実装したい",
+          en: "We want to implement delegation across multiple agents in an auditable form",
+        },
+      },
+      {
+        role: { ja: "プロトコル運営", en: "Protocol operations" },
+        quote: {
+          ja: "エージェント間取引の正当性を、第三者検証可能にしたい",
+          en: "We want the legitimacy of agent-to-agent transactions to be third-party verifiable",
+        },
+      },
+      {
+        role: { ja: "監査", en: "Audit" },
+        quote: {
+          ja: "AI エージェント取引の責任の所在を、chain として残したい",
+          en: "We want accountability for AI-agent transactions kept as a chain",
+        },
+      },
+    ],
+    without: [
+      { k: "from_agent", v: "A-001" },
+      { k: "to_agent", v: "A-002" },
+      { k: "tx", v: "250 USDC" },
+      { k: "purpose", v: "data_purchase" },
+      { k: "chain", v: "?（権限の根拠が不明）", vEn: "? (basis unknown)" },
+    ],
+    withProof: [
+      { k: "agent", v: "did:lemma:agent-A-002" },
+      { k: "delegatedBy", v: "did:lemma:org-acme-fin" },
+      { k: "role", v: "settlement_agent" },
+      { k: "chain", v: "[org-acme-fin → A-001 → A-002]", strong: true },
+      { k: "scope", v: "a2a://acme.fin/*" },
+      { k: "validUntil", v: "2026-12-31" },
+      { k: "ZK verified", v: "✓ VALID", badge: true },
+    ],
+    approach: {
+      ja: "root 組織 → エージェント → サブエージェントの階層的な委任を、それぞれ署名付きの証明として発行します。取引の前段で委任の連鎖が範囲内かを runtime で検証し、連鎖が途切れていれば取引は成立しません。委任関係や取引内容の中身を開示せず、最終取引から委任元までを chain として辿り、正当性を独立に検証できます。",
+      en: "Hierarchical delegations — root org → agent → sub-agent — are each issued as a signed proof. Before a transaction, the delegation chain is verified to be in scope at runtime; if the chain is broken, the transaction does not settle. Without disclosing the delegation relationships or transaction contents, the chain can be traced from the final transaction back to its origin and its legitimacy independently verified.",
+    },
+  },
 };
 
 export function getUseCaseV3(slug: string): UseCaseV3 | undefined {
