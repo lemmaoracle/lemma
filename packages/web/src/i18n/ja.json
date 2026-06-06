@@ -517,15 +517,27 @@
         "items": [
           {
             "q": "個人情報を AI に渡さずに、AI を業務で使えますか？",
-            "a": "はい。Lemma の核心はまさに「個人情報を AI に渡さずに、必要な事実だけを証明付きで渡す」ことです。原本データ（氏名・住所・契約内容など）は AI の context に入らず、検証可能な事実（claim と ZK 証明）だけが流れます。原本は社内システムに暗号化のまま留まり、AI のログ・キャッシュにも残りません。"
+            "a": "はい。Lemma の核心はまさに「個人情報を AI に渡さずに、必要な事実だけを証明付きで渡す」ことです。原本データ（氏名・住所・契約内容など）は AI の context に入らず、検証可能な事実（claim と ZK 証明）だけが流れます。原本は社内システムに暗号化のまま留まり、AI のログ・キャッシュにも残りません。",
+            "links": [
+              { "label": "社内文書を AI に使わせるが生データは触らせない", "href": "/ja/solutions/use-cases/ai-document-isolation/" },
+              { "label": "顧客対応フラグの最小開示", "href": "/ja/solutions/use-cases/customer-flag-need-to-know/" }
+            ]
           },
           {
             "q": "改正個人情報保護法・国内規制への適合は？",
-            "a": "Lemma の選択的開示構造（disclosed / hidden）は、個人情報保護法の「利用目的の特定」「最小限の取扱い」原則と構造的に整合します。AI に渡る属性は「年齢 = 18 以上」「居住 = JP」など必要最小限に絞り、本人特定可能な情報は原本に留めます。具体的な適合設計は Discovery Call で個別にご相談ください。"
+            "a": "Lemma の選択的開示構造（disclosed / hidden）は、個人情報保護法の「利用目的の特定」「最小限の取扱い」原則と構造的に整合します。AI に渡る属性は「年齢 = 18 以上」「居住 = JP」など必要最小限に絞り、本人特定可能な情報は原本に留めます。具体的な適合設計は Discovery Call で個別にご相談ください。",
+            "links": [
+              { "label": "KYC/AML 選択的開示", "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/" },
+              { "label": "年齢・販売資格の確認", "href": "/ja/solutions/use-cases/age-eligibility-verification/" }
+            ]
           },
           {
             "q": "AI 利用時の個人情報漏洩リスクは、Lemma でどう低減されますか？",
-            "a": "Lemma 導入後、AI が受け取るのは証明 object（claim と ZK 証明）のみで、原本データは AI の context window に入りません。これにより、<strong>AI のログ・キャッシュに原本が残らず</strong>、<strong>AI モデル提供企業にも原本が共有されず</strong>、<strong>AI 経路でのデータ漏洩リスクが構造的に解消されます</strong>。「AI に渡す情報自体を変える」ことで、漏洩を防ぐ前提から解放されます。"
+            "a": "Lemma 導入後、AI が受け取るのは証明 object（claim と ZK 証明）のみで、原本データは AI の context window に入りません。これにより、<strong>AI のログ・キャッシュに原本が残らず</strong>、<strong>AI モデル提供企業にも原本が共有されず</strong>、<strong>AI 経路でのデータ漏洩リスクが構造的に解消されます</strong>。「AI に渡す情報自体を変える」ことで、漏洩を防ぐ前提から解放されます。",
+            "links": [
+              { "label": "金融データ流出防止", "href": "/ja/solutions/use-cases/financial-data-exfiltration/" },
+              { "label": "AI 監査ログ証明", "href": "/ja/solutions/use-cases/ai-audit-log-proof/" }
+            ]
           },
           {
             "q": "PoC や検証時に、社内の機密データを Lemma に共有する必要はありますか？",

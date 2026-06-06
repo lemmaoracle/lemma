@@ -95,6 +95,7 @@ const C = isJa
       lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
       s4Eye: "04 · 進め方", s4Title: "進め方",
       s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
+      faqLead: "残った疑問は、", faqLinkLabel: "よくある質問（FAQ）→",
       bridgeEye: "より広い活用シーン",
       bridgeH2: "このユースケースを含む、活用シーンの全体像。",
       bridgeSub: "業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。",
@@ -122,6 +123,7 @@ const C = isJa
       lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
       s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
       s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
+      faqLead: "Still have questions?", faqLinkLabel: "See the FAQ →",
       bridgeEye: "The bigger picture",
       bridgeH2: "The bigger picture this use case belongs to.",
       bridgeSub: "We map use scenarios across industries and workflows by the four axes.",
@@ -134,6 +136,7 @@ const rv = (row: { v: string; vEn?: string }): string =>
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const guidesHref = `${base}/guides`;
+const faqHref = `${base}/faq/`;
 // v3 is JA only, so the closing books the JA Discovery Call.
 const discoveryUrl = DISCOVERY_CALL_URL.ja;
 
@@ -479,6 +482,7 @@ function firstSentence(text: string): string {
           ))}
         </ul>
       )}
+      <p class="ucv-faq-link">{C.faqLead} <a href={faqHref}>{C.faqLinkLabel}</a></p>
     </div>
   </section>
 
@@ -1139,6 +1143,19 @@ function firstSentence(text: string): string {
     transition: transform 0.2s;
   }
   .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
+
+  .ucv-faq-link {
+    margin: 28px 0 0;
+    font-size: 13.5px;
+    color: var(--ucv-ink-soft, #5a544d);
+  }
+  .ucv-faq-link a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .ucv-faq-link a:hover { text-decoration: underline; }
 
   /* ─── CLOSING (Discovery Call) ─── */
   .ucv-closing {
