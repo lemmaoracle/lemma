@@ -118,6 +118,18 @@ const USE_CASE_HIDE_PROVE: Readonly<Record<string, HideProveL10n>> = {
     hide: { ja: "モデル内部のコンテキスト", en: "the model's internal context" },
     prove: { ja: "引用ごとに参照元の版が紐付いている", en: "each citation is bound to its source version" },
   },
+  "prompt-injection-detection": {
+    hide: { ja: "プロンプト・入力 content の中身", en: "the prompt and input content itself" },
+    prove: { ja: "「人が見た入力 = AI が読む入力」の整合性", en: "that what the human saw equals what the AI read" },
+  },
+  "ai-act-compliance-attestation": {
+    hide: { ja: "AI システム内部・学習データ・モデル詳細", en: "the AI system internals, training data and model details" },
+    prove: { ja: "AI Act 各条項への適合", en: "compliance with each AI Act provision" },
+  },
+  "model-version-attestation": {
+    hide: { ja: "モデル内部・パラメータ・学習データ", en: "the model internals, parameters and training data" },
+    prove: { ja: "モデル切替前後の同一判断（または差分）", en: "the same decision before and after a model change (or the diff)" },
+  },
 
   // P3 エージェント権限証明
   "agent-expense-approval": {
