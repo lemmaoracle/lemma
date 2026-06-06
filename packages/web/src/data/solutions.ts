@@ -474,8 +474,8 @@ export const SOLUTIONS: SolutionsContent = {
     },
     threshold: 3,
     resultText: {
-      ja: "3 つ以上の該当で、信頼インフラの組み込みを検討する価値があります。Discovery Call で機能や活用場面についてのご質問にお答えします。",
-      en: "Three or more matches means trust infrastructure is worth integrating. The Discovery Call answers your questions about capabilities and fit.",
+      ja: "3 つ以上の該当で、信頼インフラの組み込みを検討する価値があります。Discovery Call で機能や活用場面についてのご質問にお答えします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。",
+      en: "Three or more matches means trust infrastructure is worth integrating. The Discovery Call answers your questions about capabilities and fit. No technical details, personal information, or confidential data required.",
     },
     resultCta: {
       label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" },
