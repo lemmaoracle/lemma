@@ -440,10 +440,10 @@ export const USE_CASE_V3: Readonly<Record<string, UseCaseV3>> = {
   "agent-expense-approval": {
     personas: [
       {
-        role: { ja: "経理・財務", en: "Accounting / Finance" },
+        role: { ja: "経理・財務", en: "Accounting / finance" },
         quote: {
           ja: "経費承認の自動化を進めたいが、無制限の権限委譲は怖い",
-          en: "We want to automate expense approvals, but handing over unlimited authority is scary",
+          en: "We want to automate expense approvals, but handing over unlimited authority is a real risk",
         },
       },
       {
@@ -742,7 +742,7 @@ export const USE_CASE_V3: Readonly<Record<string, UseCaseV3>> = {
       { k: "decision_id", v: "D-001" },
       { k: "model", v: "claude-3.7-sonnet" },
       { k: "old_model", v: "gpt-4-turbo" },
-      { k: "policy", v: "?（当時のもの不明）", vEn: "? (then unknown)" },
+      { k: "policy", v: "?（当時のもの不明）", vEn: "? (unknown at the time)" },
       { k: "output", v: "承認", vEn: "approved" },
     ],
     withProof: [
