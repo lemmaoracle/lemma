@@ -42,6 +42,9 @@ export interface UseCaseV3BodyProps {
   /** §2 Before/After data for derived UCs (no personas) — renders the same
    * key:value table the authored path uses. Ignored when `v3` is present. */
   beforeAfter: UseCaseBeforeAfter | undefined;
+  /** §3 table extra "detection / monitoring only" row label for
+   * cyber-relevant UCs; undefined keeps the common 3-row table. */
+  compareRow: string | undefined;
   ucBridgeHref: string;
   ucBridgeCta: string;
 }
@@ -56,6 +59,7 @@ const {
   hideProve,
   v3,
   beforeAfter,
+  compareRow,
   ucBridgeHref,
   ucBridgeCta,
 } = Astro.props as UseCaseV3BodyProps;
@@ -414,6 +418,9 @@ function firstSentence(text: string): string {
             <tr><td>{C.rowAccess}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
             <tr><td>{C.rowMask}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
             <tr><td>{C.rowEnc}</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+            {compareRow && (
+              <tr><td>{compareRow}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            )}
             <tr class="is-lemma">
               <td><span class="ucv-lemma-name">{C.lemmaName}</span><span class="ucv-only">{C.onlyTag}</span></td>
               <td><span class="ucv-check">✓</span></td>
