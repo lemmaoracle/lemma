@@ -6,6 +6,9 @@ import MetaTags from "@/components/MetaTags";
 
 interface Props {
   title?: string;
+  /** og:title / twitter:title override. Defaults to `title`. Lets a page set a
+   * search-optimized <title> while keeping a distinct social-card headline. */
+  ogTitle?: string;
   description?: string;
   locale?: Locale;
   metaType?: "home" | "page" | "article";
@@ -21,6 +24,7 @@ interface Props {
 const { locale = "en", bodyClass, noindex } = Astro.props;
 const t = getTranslations(locale);
 const title = Astro.props.title ?? t.layout.defaultTitle;
+const ogTitle = Astro.props.ogTitle ?? title;
 const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
 
@@ -100,6 +104,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
         <MetaTags
           type="page"
           title={title}
+          ogTitle={ogTitle}
           description={description}
           base={base}
           pagePath={Astro.props.pagePath}
