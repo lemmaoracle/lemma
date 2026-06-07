@@ -109,15 +109,27 @@ const relatedBriefs = brief.data.related_briefs
 const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
 
-// og:title / twitter:title / <title> all share `pageTitle`. We lead with a
-// short descriptive headline (overrideable via `og_lead_*`) so social cards
-// — which truncate og:description — communicate the brief at a glance.
-// Fallback to the existing `mainTitle` keeps untranslated briefs from
-// regressing while we backfill leads brief-by-brief.
+// og:title / twitter:title lead with a short descriptive headline
+// (overrideable via `og_lead_*`) so social cards — which truncate
+// og:description — communicate the brief at a glance. Fallback to
+// `mainTitle` keeps untranslated briefs from regressing.
 const ogLead = (isJa ? brief.data.og_lead_ja : brief.data.og_lead_en) ?? mainTitle;
 const seriesSep = isJa ? "｜" : " | ";
 const pageTitle = `${ogLead}${seriesSep}Lemma Critical Brief No.${briefNoPad}`;
-const description = subtitle ? `${mainTitle} — ${subtitle}` : mainTitle;
+
+// <title> is search-optimized and distinct from og:title: it leads with the
+// search term ({事案名/CVE} = mainTitle) followed by a fixed series qualifier.
+// og:title / twitter:title keep the explanation-headline-first `pageTitle`.
+const seoTitle = isJa
+  ? `${mainTitle} — 構造分析と事前証明｜Lemma Critical Brief No.${briefNoPad}`
+  : `${mainTitle} — Structural Analysis & Pre-Execution Proof | Lemma Critical Brief No.${briefNoPad}`;
+
+// meta description / og:description — ~110 JA chars / ~155 EN chars, search-
+// optimized, ending on the brand line. JA pages JP-only, EN pages EN-only
+// (proper nouns / CVE / brand may stay original).
+const metaDescription = isJa
+  ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
+  : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
 const labels = isJa
   ? {
@@ -150,8 +162,9 @@ const labels = isJa
   locale={locale}
   metaType="page"
   pagePath={briefPath}
-  title={pageTitle}
-  description={description}
+  title={seoTitle}
+  ogTitle={pageTitle}
+  description={metaDescription}
   ogImage={ogImage}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
