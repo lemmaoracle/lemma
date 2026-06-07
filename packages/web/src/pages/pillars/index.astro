@@ -1,30 +1,22 @@
 ---
-import PillarsHubTemplate from "../../templates/PillarsHubTemplate.astro";
-import { getAllPillars } from "../../data/pillars";
-import { getBlogSections } from "../../data/blog";
+import PillarsHubV2 from "../../templates/PillarsHubV2.astro";
 import { getTranslations } from "../../i18n/translations";
+import bodyEn from "../../config/pillars-hub-v2/index.en.html?raw";
 
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
-const pillars = getAllPillars();
-const pillarT = t.pillars;
-
-const sections = await getBlogSections(locale);
-const guides = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "ガイド" || p.category === "Guides");
-const foundations = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "基盤" || p.category === "Foundations");
+const metaTitle =
+  "Trust infrastructure for AI — cryptographic proof for provenance, AI decisions, authority & regulatory attributes | Lemma";
+const metaDescription =
+  "Trust infrastructure for AI. Four axes — provenance, AI decisions, agent authority, regulatory attributes — return a cryptographic proof for the data AI uses. Add one layer to your existing workflow and proof rides every step.";
 ---
 
-<PillarsHubTemplate
+<PillarsHubV2
   locale={locale}
   t={t}
   base={base}
-  pillars={pillars}
-  pillarT={pillarT}
-  guides={guides}
-  foundations={foundations}
+  body={bodyEn}
+  metaTitle={metaTitle}
+  metaDescription={metaDescription}
 />
