@@ -1,5 +1,7 @@
 ---
 import PillarDetailTemplate from "../../templates/PillarDetailTemplate.astro";
+import PillarDetailV4 from "../../templates/PillarDetailV4.astro";
+import { getPillarV4Body, getPillarV4Meta } from "../../config/pillarsV4";
 import { getAllPillars, getPillarBySlug } from "../../data/pillars";
 import { getUseCasesBySlugs } from "../../data/useCases";
 import { getAllPosts } from "../../data/blog";
@@ -47,15 +49,31 @@ const locale = "en" as const;
 const t = getTranslations(locale);
 const base = "";
 const pillarT = t.pillars;
+
+// v4 rollout: render the new page when an EN body exists; else legacy template.
+const v4Body = getPillarV4Body(pillar.slug, "en");
+const v4Meta = getPillarV4Meta(pillar.slug);
 ---
 
-<PillarDetailTemplate
-  locale={locale}
-  t={t}
-  base={base}
-  pillar={pillar}
-  useCases={useCases}
-  recentPosts={recentPosts}
-  otherPillars={otherPillars}
-  pillarT={pillarT}
-/>
+{v4Body && v4Meta ? (
+  <PillarDetailV4
+    locale={locale}
+    t={t}
+    base={base}
+    pillar={pillar}
+    body={v4Body}
+    metaTitle={v4Meta.title.en}
+    metaDescription={v4Meta.description.en}
+  />
+) : (
+  <PillarDetailTemplate
+    locale={locale}
+    t={t}
+    base={base}
+    pillar={pillar}
+    useCases={useCases}
+    recentPosts={recentPosts}
+    otherPillars={otherPillars}
+    pillarT={pillarT}
+  />
+)}
