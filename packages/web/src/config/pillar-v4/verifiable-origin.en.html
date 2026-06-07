@@ -1,0 +1,282 @@
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 01 — Verifiable Origin</div>
+    <h1>Verifiable Origin.</h1>
+    <p class="hero-strap">Pass the origin of the data AI reads as a tamper-proof proof.</p>
+    <p class="hero-lead">Turn the "where it came from" of business documents, API responses, and IoT measurements into a cryptographic proof that travels with the data into AI inputs and business systems. One of the four axes that make up the Lemma trust infrastructure.</p>
+  </div>
+</section>
+
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">Answering the challenges most in demand today</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6 H20 L26 12 V26 H6 Z"/><path d="M20 6 V12 H26"/><text x="16" y="22" text-anchor="middle" font-family="Sora" font-weight="700" font-size="10" fill="currentColor">?</text></svg>
+        <span>AI inputs of unknown origin can't be used in production</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 4 L26 8 V16 a10 12 0 0 1 -10 12 a10 12 0 0 1 -10 -12 V8 Z"/><line x1="11" y1="12" x2="21" y2="22" stroke="#B8501F" stroke-width="2.2"/></svg>
+        <span>RAG and knowledge bases without tamper detection can't be trusted</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6 H22 V26 H6 Z"/><line x1="10" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="18" y2="16"/><path d="M10 22 L12 24 L17 19" stroke="#5C7A4A" stroke-width="2"/></svg>
+        <span>Audits and regulators demand proof of origin</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · What Verifiable Origin is</div>
+    <h2 class="section-h2">Pass the origin of data in a form anyone can verify.</h2>
+    <p class="section-lead">Attach the issuer's cryptographic signature and a tamper-proof hash to documents and data, then deliver it. AI and recipients can independently verify the origin without accessing the original.</p>
+
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4 H14 L20 10 V20 H4 Z"/><path d="M14 4 V10 H20"/><line x1="7" y1="14" x2="17" y2="14"/><line x1="7" y1="17" x2="13" y2="17"/></svg></div>
+          <div class="stage-label">Issuing system</div>
+          <h4>Original data</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">Data the issuer can verify, such as business documents, API responses, and IoT measurements.</p>
+          <div class="stage-note">The original stays with the issuer</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage lemma">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="2"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="15" cy="13" r="1.4" fill="currentColor"/><path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/></svg></div>
+          <div class="stage-label">Lemma</div>
+          <h4>Hash + issuer signature</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step"><span class="step-num">1</span><span>Hash the original</span></div>
+            <div class="lemma-step"><span class="step-num">2</span><span>Issuer signs cryptographically</span></div>
+            <div class="lemma-step"><span class="step-num">3</span><span>Record on the provenance chain</span></div>
+          </div>
+          <div class="stage-note">Never touches the original's contents</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><text x="12" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">AI</text></svg></div>
+          <div class="stage-label">AI / business system</div>
+          <h4>Data arrives with provenance</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">sourceHash</span><span class="strong">0x9c4f...</span></div>
+            <div class="row"><span class="field">issuer</span><span class="strong">kyc.jp</span></div>
+            <div class="row"><span class="field">issuedAt</span><span class="strong">2026-06-05</span></div>
+            <div class="row"><span class="field">lineageChain</span><span class="strong">✓</span></div>
+          </div>
+          <div class="stage-note">Tampering is detectable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy-box">
+      <div class="analogy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><circle cx="16" cy="17" r="2"/></svg></div>
+      <div class="analogy-content">
+        <h4>Think of it like a notarized deed.</h4>
+        <p>When you record an important contract or will, a notary creates a notarized deed certifying that "this document was created by this person, on this date" — have you ever gone through this? Lemma's Verifiable Origin works the same way. It cryptographically fixes "who issued the data, and when" so a third party can independently verify it later.</p>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">What is disclosed</div>
+        <h4>The provenance facts + proof</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>sourceHash</code> (the data's fingerprint)</span></li>
+          <li><span class="mark">✓</span><span><code>issuer</code> (the issuer's cryptographic signature)</span></li>
+          <li><span class="mark">✓</span><span><code>issuedAt</code> (issuance time)</span></li>
+          <li><span class="mark">✓</span><span>Provenance chain (traceability of the chain)</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">What stays private</div>
+        <h4>The contents of the original data</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span>Document body and business original</span></li>
+          <li><span class="mark">✗</span><span>Internal details and sensitive information</span></li>
+          <li><span class="mark">✗</span><span>The issuer's private keys and credentials</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="outcome-block">
+      <div class="outcome-title">What this makes possible</div>
+      <div class="outcome-grid">
+        <div class="outcome-item"><span class="check">✓</span><span>The origin of the data AI reads arrives as a cryptographic proof</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>The original data stays with the issuer and is never shared</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>Tampering is mathematically detectable</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>A third party can independently verify provenance without seeing the original</span></div>
+      </div>
+    </div>
+
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">Chain the trust of data structurally.</h3>
+      <div class="possibilities-list">
+        <div class="poss-item"><span class="arrow">→</span><span>The origin of AI inputs is always in place as a precondition of the work</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>Trust across multi-tier supply chains is linked by hashes</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>Tamper detection is built into the business workflow</span></div>
+      </div>
+    </div>
+
+    <div class="tech-bridge">
+      <div class="tech-bridge-content">
+        <div class="tech-bridge-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11 V7 a4 4 0 0 1 8 0 V11"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg></div>
+        <div class="tech-bridge-text">What makes this work is <strong>cryptography Lemma developed in-house</strong>. It can prove "who issued it" without ever touching the original.</div>
+      </div>
+      <a href="#tech" class="tech-bridge-link">Technical reference →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · How it differs from existing approaches</div>
+    <h2 class="section-h2">How is it different from hashing, digital signatures, and backups?</h2>
+    <p class="section-lead">The individual techniques exist, but Lemma is what brings "origin," "tamper-proof," and "independent verification" together in a single structure.</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>Approach</div><div>Proves origin</div><div>Original stays in hand</div><div>Independently verifiable</div><div>Cryptographic proof</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><text x="10" y="14" text-anchor="middle" font-family="Space Mono" font-size="11" fill="currentColor"># </text></svg></div>
+          <span class="matrix-label">Plain hashing</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell partial">△</div><div class="matrix-cell partial">△</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10 L8 14 L16 6"/></svg></div>
+          <span class="matrix-label">Digital signature only</span>
+        </div>
+        <div class="matrix-cell partial">△</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell partial">△</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="10" height="10" rx="1"/><rect x="7" y="9" width="10" height="10" rx="1"/></svg></div>
+          <span class="matrix-label">Backup / redundancy</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M6.5 10 L9 12.5 L14 7.5"/></svg></div>
+          <span class="matrix-label">Lemma Verifiable Origin</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · Position in the trust infrastructure</div>
+      <h3>P1 is one of the four axes that make up the Lemma trust infrastructure.</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip this">P1 Origin</span>
+      <span class="pos-chip">P2 AI</span>
+      <span class="pos-chip">P3 Authority</span>
+      <span class="pos-chip">P4 Attributes</span>
+    </div>
+    <a href="/pillars/" class="position-more">See the full trust infrastructure →</a>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · In production</div>
+    <h2 class="section-h2">Business scenarios that use this axis.</h2>
+    <div class="uc-row">
+      <a href="/solutions/use-cases/rag-content-provenance/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5 H17 V15 H3 Z"/><line x1="3" y1="9" x2="17" y2="9"/><path d="M6 13 H8 M10 13 H12 M14 13 H15"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · RAG</div>RAG content provenance</div>
+      </a>
+      <a href="/solutions/use-cases/supply-chain-component-provenance/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="10" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="15" cy="10" r="2"/><line x1="7" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="13" y2="10"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · Component</div>Supply chain component provenance</div>
+      </a>
+      <a href="/solutions/use-cases/defi-bridge-verification/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="6" height="8" rx="1"/><rect x="11" y="6" width="6" height="8" rx="1"/><line x1="9" y1="10" x2="11" y2="10"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · Bridge</div>DeFi bridge verification</div>
+      </a>
+      <a href="/solutions/use-cases/long-term-contract-record/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="12" height="14" rx="1"/><line x1="7" y1="7" x2="13" y2="7"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="7" y1="13" x2="11" y2="13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · Contract</div>Long-term contract record</div>
+      </a>
+      <a href="/solutions/use-cases/internal-control-approval-proof/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6 H17 V14 H3 Z"/><path d="M7 10 L9 12 L13 8" stroke-width="2"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · Control</div>Internal control approval proof</div>
+      </a>
+      <a href="/solutions/use-cases/credential-presentation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="10" rx="1"/><circle cx="7" cy="10" r="1.5"/><path d="M11 8 H14 M11 11 H14"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · Credential</div>Credential presentation</div>
+      </a>
+    </div>
+    <a href="/solutions/use-cases/" class="uc-link-more">See all use cases →</a>
+  </div>
+</section>
+
+<section class="tech-section" id="tech">
+  <div class="container">
+    <div class="section-eyebrow">05 · Technical reference</div>
+    <h2 class="section-h2">Prove the origin alone, with purpose-built cryptography.</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item"><h4>Issuer signature</h4><p>Cryptographically fixes the data's issuer (a vendor, a government body, an internal team). Who issued it can be independently verified later.</p></div>
+        <div class="tech-item"><h4>Hash commitment</h4><p>Keeps the original's contents hidden while publishing only the unique fingerprint. Tampering is mathematically detectable.</p></div>
+        <div class="tech-item"><h4>Provenance chain</h4><p>Records multi-tier issuance and handoffs as a chain. Guarantees continuity of origin across multi-tier supply chains and RAG indexes.</p></div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.provenance.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.provenance.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"sourceHash"</span>: <span class="str">"0x9c4f...e7d2"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuer"</span>: <span class="str">"kyc-provider.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuedAt"</span>: <span class="str">"2026-06-05T10:00Z"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"lineageChain"</span>: [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="key">"node"</span>: <span class="str">"supplier-a"</span>, <span class="key">"hash"</span>: <span class="str">"0x71..."</span> },<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="key">"node"</span>: <span class="str">"manufacturer-b"</span>, <span class="key">"hash"</span>: <span class="str">"0x9c..."</span> }<br>
+        &nbsp;&nbsp;],<br>
+        &nbsp;&nbsp;<span class="key">"attestation"</span>: <span class="str">"0xa8...4f3e"</span><br>
+        }
+      </div>
+    </div>
+
+    <div class="guides-block">
+      <div class="guides-eyebrow">Developer guides for implementing P1</div>
+      <h3 class="guides-h3">Technical documentation related to this axis.</h3>
+      <div class="guides-list">
+        <a href="/blog/provenance-that-never-disappears" class="guide-link"><div><span class="tag-mono">GUIDES</span>Provenance That Never Disappears</div><span class="arrow">→</span></a>
+        <a href="/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>Define Your Domain as a Schema</div><span class="arrow">→</span></a>
+        <a href="/blog/encrypt-everything-expose-nothing" class="guide-link"><div><span class="tag-mono">GUIDES</span>Encrypt Everything, Expose Nothing</div><span class="arrow">→</span></a>
+        <a href="/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>Prove Facts with Zero Knowledge</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/guides/" class="guides-more">See all technical documentation →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · Next steps</div>
+    <h2 class="section-h2">Start the conversation with a business scenario.</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/Pd2Rl5?pillar=verifiable-origin" class="cta-card">
+        <div class="label">For business teams</div>
+        <h3>Discovery Call</h3>
+        <p>We'll hear your business scenario in 30 minutes. No technical details, personal information, or confidential data required.</p>
+        <span class="cta-arrow">Get in touch →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">For developers</div>
+        <h3>Try the Schema</h3>
+        <p>Try your.provenance.v1 in the Lemma Dashboard in 5 minutes. Read alongside the SDK and Guides.</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

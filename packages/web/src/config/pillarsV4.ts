@@ -18,6 +18,10 @@ import verifiableOriginJa from "./pillar-v4/verifiable-origin.ja.html?raw";
 import verifiableAiJa from "./pillar-v4/verifiable-ai.ja.html?raw";
 import agentAuthorityJa from "./pillar-v4/agent-authority-proof.ja.html?raw";
 import regulatoryAttributeJa from "./pillar-v4/regulatory-attribute-proof.ja.html?raw";
+import verifiableOriginEn from "./pillar-v4/verifiable-origin.en.html?raw";
+import verifiableAiEn from "./pillar-v4/verifiable-ai.en.html?raw";
+import agentAuthorityEn from "./pillar-v4/agent-authority-proof.en.html?raw";
+import regulatoryAttributeEn from "./pillar-v4/regulatory-attribute-proof.en.html?raw";
 
 interface PillarV4 {
   readonly ja?: string;
@@ -32,6 +36,7 @@ interface PillarV4 {
 const PILLAR_V4: Partial<Record<PillarSlug, PillarV4>> = {
   "verifiable-origin": {
     ja: verifiableOriginJa,
+    en: verifiableOriginEn,
     meta: {
       title: {
         ja: "来歴証明 — AI が読むデータの出所を、改ざん不能な証明として渡す | Lemma",
@@ -45,6 +50,7 @@ const PILLAR_V4: Partial<Record<PillarSlug, PillarV4>> = {
   },
   "verifiable-ai": {
     ja: verifiableAiJa,
+    en: verifiableAiEn,
     meta: {
       title: {
         ja: "検証可能 AI — AI の判断を、後から独立に再現・検証する | Lemma",
@@ -58,6 +64,7 @@ const PILLAR_V4: Partial<Record<PillarSlug, PillarV4>> = {
   },
   "agent-authority-proof": {
     ja: agentAuthorityJa,
+    en: agentAuthorityEn,
     meta: {
       title: {
         ja: "エージェント権限証明 — AI エージェントに鍵を渡さず、権限だけを証明する | Lemma",
@@ -71,6 +78,7 @@ const PILLAR_V4: Partial<Record<PillarSlug, PillarV4>> = {
   },
   "regulatory-attribute-proof": {
     ja: regulatoryAttributeJa,
+    en: regulatoryAttributeEn,
     meta: {
       title: {
         ja: "規制属性証明 — AI に個人情報を渡さず、必要な事実だけを証明として渡す | Lemma",
