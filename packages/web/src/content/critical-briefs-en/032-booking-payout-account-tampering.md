@@ -1,0 +1,112 @@
+---
+brief_no: 32
+title: "正規の予約プラットフォーム内で、売上金の受領口座が書き換えられた — 送金先変更が、資金移動の前に独立検証されなかった(Polaris Holdings / Booking.com)"
+title_en: "Inside a Legitimate Booking Platform, the Payout Bank Account Was Silently Rewritten — The Change Was Not Independently Verified Before Funds Moved (Polaris Holdings / Booking.com)"
+pillar: "04-regulatory-attribute"
+primary_category: "attribute-proof-bypass"
+secondary_categories: ["data-provenance", "identity-auth"]
+incident_date: 2026-05-23
+published: 2026-06-08
+authors: ["Lemma Critical Team"]
+related_pack: ["A-incident-response", "B-regulatory"]
+related_briefs: ["006-google-api-key-revocation-lag", "013-coinbase-kyc-insider-breach", "002-stakedao-vsdcrv"]
+version: "1.0"
+status: published
+og_lead_ja: "売上金の受領口座が正規画面内で改ざん — Polaris / Booking.com"
+og_lead_en: "Payout account silently rewritten in-platform — Polaris / Booking.com"
+---
+
+## TL;DR
+
+On 2026-05-23, hotel operator Polaris Holdings detected that a third party had gained unauthorized access to its group Booking.com account and **rewritten the payout bank accounts of multiple hotels to a third-party account**. At one hotel, part of the receivables it should have collected was transferred to the fraudulent account, with a confirmed loss of about ¥9 million so far. The same account tampering was confirmed at several other hotels, but early response blocked those transfers. Unlike ordinary Booking.com phishing aimed at guests, this attack is distinctive in that it **rewrote the operator's own payout bank account (the destination of the funds) from inside the legitimate management console**. The authenticity of the payout-account attribute was not independently verified at the time of the change; it was accepted as an action of an authenticated session. This case illustrates a structure in the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof): **a change to a payout account (an attribute) directly tied to the movement of funds was not independently verified or authorized before the action** — and it simultaneously intersects with Pillar 01 provenance (the legitimacy of the payout-destination instruction). It extends Brief 006 (an unverified revoked attribute) and 013 (regulated stored data becoming an exposure surface).
+
+---
+
+## 1. Incident overview
+
+- **Targets**: multiple hotels under the group Booking.com account of Polaris Holdings (a hotel operator)
+- **Detection**: 2026-05-23, an anomaly in the group account was detected and an investigation opened
+- **Damage**: payout bank accounts of multiple hotels were fraudulently rewritten to a third-party account. At one hotel, part of the receivables was transferred to the fraudulent account, a confirmed loss of about ¥9 million so far. The other hotels' transfers were blocked by early response.
+- **Core**: not the common Booking.com phishing that targets guests' card data, but a B2B payment-path tampering that **rewrote the operator's payout destination from inside the legitimate extranet**
+- **Intrusion path**: as of Polaris's disclosure, the access path and logs are still under investigation with Booking.com and the authorities. **The specific method of initial access is undetermined** (this Brief does not assert it).
+- **Response**: reset passwords across all hotels; tracked the access path in cooperation with Booking.com and the authorities. No customer credit-card leak confirmed. Phishing messages aimed at guests were also reported, and whether personal data was exposed is under investigation.
+- **Industry context**: campaigns targeting Booking.com partners are continuously observed (tracked by vendor research). Most are card phishing aimed at guests, but this case is a funds-direct variant via payout-account tampering.
+
+---
+
+## 2. Timeline
+
+- 2026-05-23: Polaris Holdings detects an anomaly in its group Booking.com account and opens an investigation
+- Found during investigation: payout bank accounts of multiple hotels rewritten to a third-party account. At one hotel, part of the receivables was fraudulently transferred, a loss of about ¥9 million. The other hotels were blocked before transfer.
+- After detection: passwords reset across all hotels; access path and logs tracked in cooperation with Booking.com and the authorities. No card leak confirmed; personal-data exposure under investigation.
+- Around 2026-05-28: the company's disclosure is also reported in English-language media
+
+---
+
+## 3. Attack vector
+
+(The specific method of initial access is under investigation and undetermined. The confirmed chain of events is recorded below.)
+
+1. **Account compromise**: a third party gains unauthorized access to Polaris's group Booking.com account (path under investigation)
+2. **Payout-account tampering**: from inside the legitimate management console, the payout bank-account details of multiple hotels are rewritten to a third-party account
+3. **Outflow of funds**: part of the receivables the operator should have collected is transferred to the rewritten payout account; about ¥9 million leaves at one hotel
+4. **Partial block via early detection**: starting from the group-account anomaly detection, transfers at the other hotels are blocked
+5. **Accompanying guest phishing**: guest-facing phishing — apparently using information from the compromised partner systems or external booking tools — is also reported
+
+---
+
+## 4. Structural analysis
+
+This case is anchored in the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof) and is a boundary case that also intersects Pillar 01 (Verifiable Origin). Secondary categories are `data-provenance` (the provenance of the payout-destination instruction) and `identity-auth` (account compromise).
+
+Two readings hold at once. **The P4 reading**: the payout bank account is an attribute asserting "this is the destination designated by the legitimate operator," and its authenticity should have been verified before the funds moved. The attacker could forge this attribute simply by overwriting it within an authenticated session — proof of the attribute's authenticity was never a precondition of the change operation. **The P1 reading**: the legitimacy and provenance of the payout-destination "instruction" (who changed it, under what legitimate authorization) was accepted without verification. Both converge on a single point: a high-impact change directly tied to the movement of funds was accepted on the strength of authentication at change-time alone, and the legitimacy of the change itself was never independently verified.
+
+The central failure primitive is that **the platform trusted "an operation performed by an authenticated session" and did not independently verify whether that operation (the payout-destination change) was legitimately authorized and based on an authentic attribute.** This is the same family as Brief 006 (the "revoked" attribute of a Google API key was not independently verified and remained valid after deletion): an attribute's state is made the premise of trust yet is never independently verified. It shares a root with Brief 002 (rewriting trust configuration via a deployer key) in that **rewriting the trust configuration itself from within legitimate authority drains funds**. Unlike common Booking.com phishing (which targets guests' cards), this case strikes **the operator's funds-routing configuration value**, showing how tampering with business data on a SaaS platform converts directly into monetary loss.
+
+---
+
+## 5. The detection–proof gap
+
+Anomaly detection, password resets, and cooperation with authorities and the platform are indispensable for understanding the damage, halting its spread, and tracing the path; this Brief does not dispute that role. Here, too, detection was the starting point that blocked transfers at the other hotels and limited the damage.
+
+But detection does not change "whether the payout-destination change should be accepted before the funds move" itself. The tampering went through a legitimate authenticated session and looks normal as an extranet operation. Because detection only fires once an anomaly appears, the first fraudulent transfer (about ¥9 million) was already complete. What was missing is independent verification, at the moment of change, of "is this payout-account change based on legitimate authorization and an authentic attribute?" — a different track from account monitoring and after-the-fact log tracing. For audit, too, after the outflow there is little independent trail beyond reconciling the platform's access logs to prove "when, under whose authorization, and to which account it was changed."
+
+Pre-execution attestation requires, before execution, that a payout-account change directly tied to the movement of funds present both "the changer's legitimate authorization" and "the authenticity of the new payout-destination attribute" as independently verifiable proof. Even within an authenticated session, if the proof reports "this change lacks legitimate authorization" or "this payout destination is not established as an authentic attribute," the change and the subsequent transfer are blocked in advance. Detection of account compromise (the detection-style "is this suspicious access?") and pre-execution proof of the change ("is this payout-destination change authorized and authentic?") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+
+---
+
+## 6. Response and industry context
+
+- **Polaris Holdings**: after detecting the anomaly, reset passwords across all hotels and tracked the access path and logs in cooperation with Booking.com and the authorities. Continuing to investigate the scope of damage. No card leak confirmed.
+- **Cross-industry**: campaigns targeting Booking.com partners are continuously tracked by vendor research, and most are phishing aimed at guests' card data. This case is an extension of that line, but in striking the operator's **payout account — a funds-routing configuration** — it converts the damage into the operator's direct loss. The question of how to independently verify, at change-time, changes to operational data on SaaS/platforms (payout destinations, contact details, permission settings) is coming to the fore.
+
+The need to treat configuration changes directly tied to the movement of funds "not as operations of an authenticated session but as proofs of authorization and attribute authenticity" is expected to be re-recognized across lodging, e-commerce, and platform operators in the wake of this case.
+
+---
+
+## 7. Lemma's analysis
+
+Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution. By verifying — before the funds move — both the authenticity of the payout-account attribute (P4) and the legitimate provenance of the change instruction (P1) as a proof, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session. For the design philosophy of selective disclosure and independent verification of regulatory attributes and payout destinations, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) (Lemma).
+
+---
+
+## 8. Sources
+
+- **Polaris Holdings**: disclosure regarding unauthorized access (2026-05; group Booking.com account compromise, payout-account tampering, loss amount, response) — company IR disclosure
+- **TipRanks**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers" (2026-05) — https://www.tipranks.com/news/company-announcements/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers
+- **The Globe and Mail**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers" (2026-05) — https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/2193582/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers/
+- **Sekoia.io**: "Phishing campaigns 'I Paid Twice' targeting Booking.com hotels and customers" (2026; context on partner-compromise campaigns) — https://blog.sekoia.io/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers/
+
+---
+
+## 9. About distribution
+
+Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
+
+[Discovery Call →](https://tally.so/r/Pd2Rl5)
+[Whitepaper →](https://tally.so/r/7RJXdR)
+[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.
