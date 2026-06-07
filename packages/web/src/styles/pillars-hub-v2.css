@@ -176,6 +176,9 @@
       "p4" "c4" "l4"
       "foot";}
   .ph2 .workflow-phase:not(:first-child)::before{display:none}
+  /* Separate each Phase→+Lemma→Lemma group: gap above phases 2–4 so the
+     brown Lemma card no longer touches the next Phase (grid row-gap is 0). */
+  .ph2 .workflow-phase:not(:first-child){margin-top:32px}
   .ph2 .lemma-layer-label{display:none}
   .ph2 .lemma-bar{display:contents;background:transparent;border-radius:0;box-shadow:none;}
   .ph2 [data-pos="l1"]{grid-area:l1}
