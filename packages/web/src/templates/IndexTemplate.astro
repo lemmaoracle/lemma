@@ -40,6 +40,7 @@ const isJa = locale === "ja";
 // ── Routes ────────────────────────────────────────────────────────
 const contactHref = DISCOVERY_CALL_URL[locale];
 const useCasesHref = `${base}/solutions/use-cases/`;
+const pillarsHref = `${base}/pillars/`;
 const guidesHref = `${base}/guides/`;
 const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const industriesHref = `${base}/solutions/`;
@@ -91,7 +92,7 @@ const C = isJa ? {
   heroH1Tail: "。",
   heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
   heroSubChord: "証明できる判断を、データを持たないままで。",
-  heroPrimaryCta: "ユースケースを見る",
+  heroPrimaryCta: "信頼インフラを見る",
   heroSecondaryCta: "Seal を試す",
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
@@ -236,7 +237,7 @@ const C = isJa ? {
   heroH1Tail: ".",
   heroSubLead: "Four axes — origin, AI decisions, agent authority, regulatory attributes — bound into one trust infrastructure.",
   heroSubChord: "Decisions you can prove. Data you never hold.",
-  heroPrimaryCta: "See use cases",
+  heroPrimaryCta: "See trust infrastructure",
   heroSecondaryCta: "Try Seal",
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
@@ -433,7 +434,7 @@ const panes = [
           {C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span>
         </p>
         <div class="hp-hero-ctas">
-          <a href={useCasesHref} class="hp-btn-primary">{C.heroPrimaryCta} →</a>
+          <a href={pillarsHref} class="hp-btn-primary">{C.heroPrimaryCta} →</a>
           <a href={sealHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
