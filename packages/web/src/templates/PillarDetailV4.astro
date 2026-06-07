@@ -1,0 +1,55 @@
+---
+/**
+ * Pillar detail — v4 (Salesforce-style product page).
+ *
+ * Renders the site chrome (Layout + Navigation + Footer) around a per-pillar
+ * body fragment (config/pillarsV4.ts), injected inside `<main class="pv4">`.
+ * Shared, namespaced styles come from `styles/pillar-v4.css`.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import type { Pillar } from "../data/pillars";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import "../styles/pillar-v4.css";
+
+export interface PillarDetailV4Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  pillar: Pillar;
+  body: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
+const { locale, t, base, pillar, body, metaTitle, metaDescription } =
+  Astro.props as PillarDetailV4Props;
+
+const SITE = "https://lemma.frame00.com";
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: pillar.title[locale],
+  description: metaDescription,
+  url: `${SITE}${base}/pillars/${pillar.slug}/`,
+  inLanguage: locale,
+  isPartOf: { "@id": `${SITE}/#website` },
+};
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath={`/pillars/${pillar.slug}/`}
+  ogImage={`${SITE}/og/pillars/${pillar.slug}/${locale}.png`}
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="pv4" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
