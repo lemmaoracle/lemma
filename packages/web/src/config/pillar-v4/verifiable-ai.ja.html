@@ -1,0 +1,281 @@
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 02 — Verifiable AI</div>
+    <h1>検証可能 AI。</h1>
+    <p class="hero-strap">AI の判断を、後から独立に再現・検証する。</p>
+    <p class="hero-lead">AI 入出力・モデル ID・適用ポリシーを暗号証明として記録。判断過程を、原本にアクセスせず第三者が再現できる形で残す。Lemma 信頼インフラを構成する 4 軸の 1 つ。</p>
+  </div>
+</section>
+
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">いま、最も求められている課題に答える</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="16" cy="16" r="11"/><text x="16" y="20" text-anchor="middle" font-family="Sora" font-weight="700" font-size="12" fill="currentColor">?</text></svg>
+        <span>AI 判断の説明責任を、規制 / 監査で問われる</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="8" width="22" height="14" rx="2"/><circle cx="11" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/><circle cx="21" cy="15" r="1.5" fill="currentColor"/><path d="M12 26 L16 22 L20 26"/></svg>
+        <span>モデル切替時の判断整合性を担保したい</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 4 L26 8 V16 a10 12 0 0 1 -10 12 a10 12 0 0 1 -10 -12 V8 Z"/><path d="M11 15 L15 19 L21 12" stroke-width="2.2"/></svg>
+        <span>AI への入力改ざんを後から検出したい</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · 検証可能 AI とは</div>
+    <h2 class="section-h2">「何を見て、どう判断したか」を、後から独立検証可能に。</h2>
+    <p class="section-lead">AI への入力・利用モデル・出力にコミットメントを発行。第三者は原本にアクセスせず、判断の再現・適合性を検証できます。</p>
+
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="11" rx="2"/><circle cx="8" cy="11" r="1.5" fill="currentColor"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/><circle cx="16" cy="11" r="1.5" fill="currentColor"/></svg></div>
+          <div class="stage-label">AI 業務</div>
+          <h4>入力 + モデル + 出力</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">AI が業務で処理する入力データ、利用モデル、出力結果。</p>
+          <div class="stage-note">原本データは社内に留まる</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage lemma">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="2"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="15" cy="13" r="1.4" fill="currentColor"/><path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/></svg></div>
+          <div class="stage-label">Lemma</div>
+          <h4>コミットメント + ポリシー検証</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step"><span class="step-num">1</span><span>入力ハッシュをコミット</span></div>
+            <div class="lemma-step"><span class="step-num">2</span><span>モデル ID とポリシーを記録</span></div>
+            <div class="lemma-step"><span class="step-num">3</span><span>ZK 証明で整合性を担保</span></div>
+          </div>
+          <div class="stage-note">機密入力・モデル内部に触れない</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></div>
+          <div class="stage-label">監査 / 規制対応</div>
+          <h4>検証可能な判断ログ</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">modelId</span><span class="strong">gpt-4o</span></div>
+            <div class="row"><span class="field">inputCommitment</span><span class="strong">0xa3...</span></div>
+            <div class="row"><span class="field">outputCommitment</span><span class="strong">0xb7...</span></div>
+            <div class="row"><span class="field">satisfiesPolicy</span><span class="strong">✓</span></div>
+          </div>
+          <div class="stage-note">第三者が独立に再現・検証</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy-box">
+      <div class="analogy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="14" x2="13" y2="14"/></svg></div>
+      <div class="analogy-content">
+        <h4>たとえると、議事録のような仕組みです。</h4>
+        <p>重要な会議のあと、参加者・議題・決定事項を記した議事録を残す——このような経験はありませんか。Lemma の検証可能 AI は、AI 判断にこの議事録を自動で発行する仕組み。後から第三者が「本当にその入力で、そのモデルが、その判断を出したか」を、原本を見ずに検証できます。</p>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">公開するもの</div>
+        <h4>判断の検証可能な fingerprint</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>modelId</code>（使用したモデルの識別子）</span></li>
+          <li><span class="mark">✓</span><span><code>inputCommitment</code> / <code>outputCommitment</code></span></li>
+          <li><span class="mark">✓</span><span><code>satisfiesPolicy</code>（ポリシー適合）</span></li>
+          <li><span class="mark">✓</span><span>第三者検証用の ZK 証明</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">非公開のまま</div>
+        <h4>機密入力・出力・モデル内部</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span>入力本体（顧客データ・社内文書）</span></li>
+          <li><span class="mark">✗</span><span>出力本体（判断結果のセンシティブ詳細）</span></li>
+          <li><span class="mark">✗</span><span>モデル重み・パラメータ</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="outcome-block">
+      <div class="outcome-title">この仕組みで、何が起きるか</div>
+      <div class="outcome-grid">
+        <div class="outcome-item"><span class="check">✓</span><span>AI 判断は再現可能な「議事録」として残る</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>入力本体・モデル内部は機密として保護</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>規制・監査での説明責任に応えられる</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>モデル切替時にも判断整合性を検証できる</span></div>
+      </div>
+    </div>
+
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">AI 判断の説明責任に、暗号で応える。</h3>
+      <div class="possibilities-list">
+        <div class="poss-item"><span class="arrow">→</span><span>規制監査が後追いで成立する業務を作れる</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>モデル切替時にも、判断の整合性が保てる</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>自動化と検証可能性が、同じ構造で両立する</span></div>
+      </div>
+    </div>
+
+    <div class="tech-bridge">
+      <div class="tech-bridge-content">
+        <div class="tech-bridge-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11 V7 a4 4 0 0 1 8 0 V11"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg></div>
+        <div class="tech-bridge-text">これらを成立させているのは、<strong>Lemma が独自開発した暗号技術</strong>です。中身を見ずに「正しい入力で、正しいモデルが、その判断を出した」ことを証明できます。</div>
+      </div>
+      <a href="#tech" class="tech-bridge-link">技術リファレンス →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · 既存手段との違い</div>
+    <h2 class="section-h2">AI ログ・モデル監査・アクセス制御と、何が違うか。</h2>
+    <p class="section-lead">「記録する」「監査する」「制御する」だけでは、改ざん不能と独立検証は担保されない。</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>手段</div><div>判断を再現できる</div><div>機密データ手元</div><div>独立検証可能</div><div>暗号証明</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="17" y2="6"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="14" x2="17" y2="14"/></svg></div>
+          <span class="matrix-label">AI ログ記録のみ</span>
+        </div>
+        <div class="matrix-cell partial">△</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="9" r="6"/><line x1="13.5" y1="13.5" x2="17" y2="17"/></svg></div>
+          <span class="matrix-label">モデル監査ツール</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell partial">△</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="8" width="8" height="9" rx="1"/><path d="M8 8 V5 a2 2 0 0 1 4 0 V8"/></svg></div>
+          <span class="matrix-label">アクセス制御のみ</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M6.5 10 L9 12.5 L14 7.5"/></svg></div>
+          <span class="matrix-label">Lemma 検証可能 AI</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · 信頼インフラの位置</div>
+      <h3>P2 は、Lemma 信頼インフラを構成する 4 軸の 1 つ。</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip">P1 来歴</span>
+      <span class="pos-chip this">P2 AI 判断</span>
+      <span class="pos-chip">P3 権限</span>
+      <span class="pos-chip">P4 規制属性</span>
+    </div>
+    <a href="/ja/pillars/" class="position-more">信頼インフラ全体を見る →</a>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · 業務での活用</div>
+    <h2 class="section-h2">この軸を使う、業務シーン。</h2>
+    <div class="uc-row">
+      <a href="/ja/solutions/use-cases/ai-audit-log-proof/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="1"/><line x1="6" y1="8" x2="14" y2="8"/><line x1="6" y1="11" x2="14" y2="11"/><path d="M6 14 L8 16 L12 12" stroke-width="1.8"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · ログ</div>AI 監査ログ証明</div>
+      </a>
+      <a href="/ja/solutions/use-cases/prompt-injection-detection/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3 L17 6 V12 a7 8 0 0 1 -7 7 a7 8 0 0 1 -7 -7 V6 Z"/><line x1="8" y1="9" x2="12" y2="13"/><line x1="12" y1="9" x2="8" y2="13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · 攻撃</div>プロンプトインジェクション検知</div>
+      </a>
+      <a href="/ja/solutions/use-cases/ai-act-compliance-attestation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="12" height="14" rx="1"/><text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="8" fill="currentColor">EU</text></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · 規制</div>EU AI Act 適合</div>
+      </a>
+      <a href="/ja/solutions/use-cases/model-version-attestation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="14" height="9" rx="1"/><circle cx="7" cy="10.5" r="1" fill="currentColor"/><circle cx="10" cy="10.5" r="1" fill="currentColor"/><circle cx="13" cy="10.5" r="1" fill="currentColor"/><path d="M5 6 V4 M15 6 V4"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · モデル</div>モデル整合性証明</div>
+      </a>
+      <a href="/ja/solutions/use-cases/ai-document-isolation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4 H14 L17 7 V17 H4 Z"/><path d="M14 4 V7 H17"/><circle cx="10" cy="13" r="3"/><line x1="12" y1="15" x2="14" y2="17"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · 文書</div>AI 文書孤立化</div>
+      </a>
+      <a href="/ja/solutions/use-cases/rag-source-attestation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6 H17 V14 H3 Z"/><line x1="3" y1="9" x2="17" y2="9"/><path d="M6 13 L8 11 L10 13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P2 · RAG</div>RAG ソース証明</div>
+      </a>
+    </div>
+    <a href="/ja/solutions/use-cases/" class="uc-link-more">全ユースケースを見る →</a>
+  </div>
+</section>
+
+<section class="tech-section" id="tech">
+  <div class="container">
+    <div class="section-eyebrow">05 · 技術リファレンス</div>
+    <h2 class="section-h2">独自の暗号技術で、AI 判断を検証可能に。</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item"><h4>コミットメント</h4><p>入力・出力の中身を見せず、唯一の fingerprint として固定。後から「同じ入力だったか」を独立検証できる。</p></div>
+        <div class="tech-item"><h4>ポリシー検証</h4><p>AI の判断が事前に定めたポリシー（年齢制限・地理制限など）を満たしているかを ZK で証明。</p></div>
+        <div class="tech-item"><h4>モデル ID 固定</h4><p>どのモデル（バージョン・パラメータセット）で推論されたかを暗号的に固定。モデル切替時の整合性追跡に。</p></div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.model.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.model.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"modelId"</span>: <span class="str">"gpt-4o-2024-08-06"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"inputCommitment"</span>: <span class="str">"0xa3f1...c9d2"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"outputCommitment"</span>: <span class="str">"0xb7e2...4a8f"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"policyHash"</span>: <span class="str">"0xf1c5...e3b9"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"satisfiesPolicy"</span>: <span class="bool">true</span>,<br>
+        &nbsp;&nbsp;<span class="key">"timestamp"</span>: <span class="str">"2026-06-05T10:00Z"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"zk_proof"</span>: <span class="str">"0x8c4f...e7d2"</span><br>
+        }
+      </div>
+    </div>
+
+    <div class="guides-block">
+      <div class="guides-eyebrow">P2 を実装する開発ガイド</div>
+      <h3 class="guides-h3">この軸に関係する技術ドキュメント。</h3>
+      <div class="guides-list">
+        <a href="/ja/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>ゼロ知識で事実を証明する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/disclose-only-what-ai-needs" class="guide-link"><div><span class="tag-mono">GUIDES</span>AI に必要なものだけを開示する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>ドメインをスキーマとして定義する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/query-verified-attributes" class="guide-link"><div><span class="tag-mono">GUIDES</span>検証済み属性をクエリする</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/ja/guides/" class="guides-more">技術ドキュメント全体を見る →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · 次のステップ</div>
+    <h2 class="section-h2">業務シナリオで、話を始める。</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/EkBqDX?pillar=verifiable-ai" class="cta-card">
+        <div class="label">業務担当の方へ</div>
+        <h3>Discovery Call</h3>
+        <p>業務シナリオを 30 分でお聞きします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <span class="cta-arrow">問い合わせる →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">開発者の方へ</div>
+        <h3>Schema を試す</h3>
+        <p>your.model.v1 を Lemma Dashboard で 5 分試す。SDK と Guides を併読。</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>
