@@ -7,9 +7,8 @@
  * and injected by `PillarDetailV4.astro` inside `<main class="pv4">`. The
  * shared, namespaced CSS lives in `styles/pillar-v4.css`.
  *
- * JA-first: a slug with no `ja` body falls back to the legacy
- * `PillarDetailTemplate` (see pages/ja/pillars/[slug].astro), so pillars
- * roll onto v4 as their bodies land. EN bodies are a follow-up.
+ * Routes are generated only for slugs that have a body in the requested
+ * locale (see pages/[ja/]pillars/[slug].astro). All 4 pillars ship JA + EN.
  */
 import type { PillarSlug } from "../data/pillars";
 
