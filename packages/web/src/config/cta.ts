@@ -21,6 +21,15 @@ export const DISCOVERY_CALL_URL: Readonly<Record<Locale, string>> = {
   en: "https://tally.so/r/Pd2Rl5",
 } as const;
 
+/**
+ * Self-serve entry point ("Get Started" / 始める). Used by the global Nav
+ * button and the homepage Hero primary CTA — a self-serve B2B SaaS pattern
+ * that routes high-intent readers straight to the Dashboard. Opens in a new
+ * tab (external app). Locale-agnostic. The high-friction Discovery Call is
+ * kept for in-page CTAs (Pillar §6 / Use Case §4 / Solutions §6), not the Nav.
+ */
+export const DASHBOARD_URL = "https://dashboard.lemma.workers.dev" as const;
+
 export const DISCOVERY_CALL: Readonly<
   Record<Locale, { readonly sectionHeading: string; readonly buttonLabel: string }>
 > = {

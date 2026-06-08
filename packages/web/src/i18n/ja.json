@@ -13,7 +13,7 @@
     "resources": "リソース",
     "developers": "Developers",
     "contact": "お問い合わせ",
-    "contactCta": "お問い合わせ",
+    "contactCta": "始める",
     "whitepaperCta": "ホワイトペーパー",
     "dashboardCta": "ダッシュボード",
     "languageJa": "JA",
@@ -90,7 +90,7 @@
         "github": "GitHub →"
       },
       "mobile": {
-        "talkToUs": "お問い合わせ"
+        "talkToUs": "始める"
       }
     }
   },
