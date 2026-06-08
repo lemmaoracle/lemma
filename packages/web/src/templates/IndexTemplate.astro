@@ -1222,7 +1222,9 @@ const cap1 = [
   .hp-cap { background: var(--hp-cream); padding: 88px 40px 64px; }
   /* Tighten only the §1→§2 boundary (other hp-block rhythm unchanged). */
   .hp-cap + .hp-block { padding-top: 80px; }
-  .hp-cap-inner { max-width: 1080px; margin: 0 auto; }
+  /* 1240 = .hp-block content width (1320 max-width − 40px×2 padding), so §1's
+     left edge lines up with the other sections (which are .hp-block). */
+  .hp-cap-inner { max-width: 1240px; margin: 0 auto; }
   .hp-cap-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 52px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 48px; color: var(--hp-text-1); max-width: 880px; }
   .hp-cap-h2 .hp-accent { color: var(--hp-brown); }
   /* workflow strip — Input → Inference → Decision → Delegation */
