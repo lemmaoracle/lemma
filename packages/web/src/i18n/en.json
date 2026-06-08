@@ -13,7 +13,7 @@
     "resources": "Resources",
     "developers": "Developers",
     "contact": "Contact",
-    "contactCta": "Contact",
+    "contactCta": "Get Started",
     "whitepaperCta": "Whitepaper",
     "dashboardCta": "Dashboard",
     "languageJa": "JA",
@@ -90,7 +90,7 @@
         "github": "GitHub →"
       },
       "mobile": {
-        "talkToUs": "Talk to us"
+        "talkToUs": "Get Started"
       }
     }
   },

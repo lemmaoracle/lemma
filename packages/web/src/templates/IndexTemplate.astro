@@ -20,7 +20,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import { DISCOVERY_CALL_URL } from "../config/cta";
+import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
 import { getCollection } from "astro:content";
 import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
@@ -92,8 +92,8 @@ const C = isJa ? {
   heroH1Tail: "。",
   heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
   heroSubChord: "証明できる判断を、データを持たないままで。",
-  heroPrimaryCta: "信頼インフラを見る",
-  heroSecondaryCta: "Seal を試す",
+  heroPrimaryCta: "始める",
+  heroSecondaryCta: "詳しく見る",
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
   termComm2: "2. 検証可能 AI",
@@ -237,8 +237,8 @@ const C = isJa ? {
   heroH1Tail: ".",
   heroSubLead: "Four axes — origin, AI decisions, agent authority, regulatory attributes — bound into one trust infrastructure.",
   heroSubChord: "Decisions you can prove. Data you never hold.",
-  heroPrimaryCta: "See trust infrastructure",
-  heroSecondaryCta: "Try Seal",
+  heroPrimaryCta: "Get Started",
+  heroSecondaryCta: "Learn more",
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
   termComm2: "2. Verifiable AI",
@@ -434,8 +434,8 @@ const panes = [
           {C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span>
         </p>
         <div class="hp-hero-ctas">
-          <a href={pillarsHref} class="hp-btn-primary">{C.heroPrimaryCta} →</a>
-          <a href={sealHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
+          <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
+          <a href={pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
 

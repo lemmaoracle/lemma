@@ -2,7 +2,7 @@
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
-import { DISCOVERY_CALL_URL } from "../config/cta";
+import { DASHBOARD_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -20,7 +20,10 @@ const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-case
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
-const contactPath = DISCOVERY_CALL_URL[locale];
+// Nav CTA routes to the self-serve Dashboard ("Get Started"), not the
+// Discovery Call. The Discovery Call lives in in-page CTAs (Pillar / UC /
+// Solutions §6), see DISCOVERY_CALL_URL usages elsewhere.
+const getStartedHref = DASHBOARD_URL;
 const homePath = base || "/";
 
 /* Solutions mega-panel — industry headers only (JA).
@@ -218,7 +221,7 @@ const isResourcesActive =
     <a href={languageSwitchHref} class="nav-lang">
       {locale === "ja" ? t.languageEn : t.languageJa}
     </a>
-    <a href={contactPath} class="nav-cta-pill">{t.contactCta} <span class="nav-cta-arr">→</span></a>
+    <a href={getStartedHref} target="_blank" rel="noopener" class="nav-cta-pill">{t.contactCta} <span class="nav-cta-arr">↗</span></a>
   </div>
 
   <!-- HAMBURGER -->
@@ -282,7 +285,7 @@ const isResourcesActive =
     </div>
 
     <div class="mob-cta">
-      <a href={contactPath} class="mob-cta-btn">{t.mega.mobile.talkToUs}</a>
+      <a href={getStartedHref} target="_blank" rel="noopener" class="mob-cta-btn">{t.mega.mobile.talkToUs}</a>
     </div>
 
     <div class="mob-lang">
@@ -362,17 +365,17 @@ const isResourcesActive =
   }
   .nav-lang:hover { color: var(--accent); }
   .nav-cta-pill {
-    background: #000; color: #FCFAF5;
-    padding: 9px 20px; border-radius: 999px;
+    background: var(--accent); color: var(--lemma-cream);
+    padding: 9px 18px; border-radius: 6px;
     font-family: "Sora", system-ui, sans-serif;
-    font-size: 13px; font-weight: 500;
+    font-size: 13px; font-weight: 600;
     letter-spacing: 0;
     text-decoration: none;
     transition: background .15s;
     white-space: nowrap;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .nav-cta-pill:hover { background: var(--accent); }
+  .nav-cta-pill:hover { background: #6e3610; }
   .nav-cta-arr { margin-left: 2px; }
 
   /* ─── v28: mega-panel as a cream blur card with brown-accent typography ─── */
