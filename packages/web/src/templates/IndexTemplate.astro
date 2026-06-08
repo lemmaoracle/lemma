@@ -1219,7 +1219,9 @@ const cap1 = [
   .hp-closing-link:hover { color: var(--hp-cream); }
 
   /* §2 CAPABILITY-FIRST BAND (v29) */
-  .hp-cap { background: var(--hp-cream); padding: 88px 40px; }
+  .hp-cap { background: var(--hp-cream); padding: 88px 40px 64px; }
+  /* Tighten only the §1→§2 boundary (other hp-block rhythm unchanged). */
+  .hp-cap + .hp-block { padding-top: 80px; }
   .hp-cap-inner { max-width: 1080px; margin: 0 auto; }
   .hp-cap-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 52px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 48px; color: var(--hp-text-1); max-width: 880px; }
   .hp-cap-h2 .hp-accent { color: var(--hp-brown); }
@@ -1264,7 +1266,8 @@ const cap1 = [
     .hp-mech-arrow { transform: rotate(90deg); padding: 8px 0; }
     .hp-schema-pane.is-active { grid-template-columns: 1fr; }
     .hp-spotlight-grid { grid-template-columns: 1fr; gap: 32px; }
-    .hp-cap { padding: 56px 24px; }
+    .hp-cap { padding: 56px 24px 40px; }
+    .hp-cap + .hp-block { padding-top: 56px; }
     .hp-cap-h2 { font-size: 28px; margin-bottom: 32px; }
     .hp-wf-strip { grid-template-columns: 1fr; gap: 10px; }
     .hp-wf-pill:not(:first-child)::before { content: "↓"; left: 50%; top: -10px; transform: translateX(-50%); }
