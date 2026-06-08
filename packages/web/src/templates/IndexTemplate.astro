@@ -183,21 +183,12 @@ const C = isJa ? {
   p4Row3: "標準", p4Row3Val: "eIDAS / DID-Auth",
   p4Row4: "製品", p4Row4Val: "Lemma Compliance",
   // §2 capability-first band
-  capEyebrow: "Lemma でできること",
-  capH2Pre: "Lemma で、AI に、業務を",
-  capH2Accent: "任せる",
-  capH2Tail: "。",
-  capLeadPre: "データを渡さず、鍵を共有せず、原本を出さず——",
-  capLeadEm: "範囲内なら任せ、範囲外は止まる",
-  capLeadTail: "。",
-  capC1Do: "AI への入力を、来歴付きで動かす。",
-  capC1Prevent: "汚染データは、そもそも届かない。",
-  capC2Do: "自律エージェントを、業務で動かす。",
-  capC2Prevent: "範囲外の行為は、実行前に止める。",
-  capC3Do: "規制適合を、原本を出さず通す。",
-  capC3Prevent: "AI 生成 ID 等の偽装も、同時に防ぐ。",
-  capC4Do: "AI の入出力を、見せずに検証する。",
-  capC4Prevent: "プロンプト改ざんも改竄検知も、同じ層で。",
+  capH2Html: '<span class="hp-accent">4 つのフェーズ</span>で、<br />AI ワークフローを強化する。',
+  capCardLink: "Solutions で見る →",
+  capP1Name: "入力", capP1H3: "AI への入力を、来歴付きで動かす。", capP1P: "汚染データは、そもそも届かない。",
+  capP2Name: "推論", capP2H3: "AI の入出力を、見せずに検証する。", capP2P: "プロンプト改ざんも検知も、同じ層で。",
+  capP3Name: "決定", capP3H3: "規制適合を、原本を出さず通す。", capP3P: "AI 生成 ID 等の偽装も、同時に防ぐ。",
+  capP4Name: "代理", capP4H3: "自律エージェントを、業務で動かす。", capP4P: "範囲外の行為は、実行前に止める。",
   // §5 schema capability lines
   canLabel: "できる:",
   whereLabel: "場面:",
@@ -330,21 +321,12 @@ const C = isJa ? {
   p4Row3: "Standard", p4Row3Val: "eIDAS / DID-Auth",
   p4Row4: "Product", p4Row4Val: "Lemma Compliance",
   // §2 capability-first band
-  capEyebrow: "What Lemma enables",
-  capH2Pre: "",
-  capH2Accent: "Delegate work to AI.",
-  capH2Tail: "",
-  capLeadPre: "No data shared. No keys shared. No originals exposed—",
-  capLeadEm: "in-scope work runs, out-of-scope stops",
-  capLeadTail: ".",
-  capC1Do: "Run AI on inputs with proven provenance.",
-  capC1Prevent: "Poisoned data never arrives.",
-  capC2Do: "Run autonomous agents in production.",
-  capC2Prevent: "Out-of-scope actions are blocked before execution.",
-  capC3Do: "Prove regulatory compliance without sharing originals.",
-  capC3Prevent: "AI-generated fraud (e.g., synthetic IDs) is rejected at the same layer.",
-  capC4Do: "Verify AI input/output without exposing content.",
-  capC4Prevent: "Prompt tampering and output tampering—detected in the same layer.",
+  capH2Html: 'Strengthen your AI workflow<br />across <span class="hp-accent">4 phases</span>.',
+  capCardLink: "See in Solutions →",
+  capP1Name: "Input", capP1H3: "Move inputs into AI with provenance attached.", capP1P: "Poisoned data never arrives in the first place.",
+  capP2Name: "Inference", capP2H3: "Verify AI's inputs and outputs without exposing them.", capP2P: "Prompt tampering and its detection, in the same layer.",
+  capP3Name: "Decision", capP3H3: "Clear regulatory compliance without revealing the original.", capP3P: "AI-generated IDs and other forgeries are blocked at the same time.",
+  capP4Name: "Delegation", capP4H3: "Put autonomous agents to work in production.", capP4P: "Out-of-scope actions are stopped before execution.",
   // §5 schema capability lines
   canLabel: "Capability:",
   whereLabel: "Use cases:",
@@ -416,6 +398,15 @@ const panes = [
   { id: "p4", pill: "P4 · " + C.tabP4, h4: C.p4Title, desc: C.p4Desc, can: C.p4Can, where: C.p4Where,
     rows: [{ l: C.p4Row1, v: C.p4Row1Val }, { l: C.p4Row2, v: C.p4Row2Val }, { l: C.p4Row3, v: C.p4Row3Val }, { l: C.p4Row4, v: C.p4Row4Val }] },
 ];
+
+// §1 workflow phases (Input → Inference → Decision → Delegation). Each card
+// links to the matching Solutions § anchor (business-theme, spans multiple UCs).
+const cap1 = [
+  { num: "01", name: C.capP1Name, h3: C.capP1H3, p: C.capP1P, href: `${base}/solutions/#input-provenance` },
+  { num: "02", name: C.capP2Name, h3: C.capP2H3, p: C.capP2P, href: `${base}/solutions/#verifiable-ai` },
+  { num: "03", name: C.capP3Name, h3: C.capP3H3, p: C.capP3P, href: `${base}/solutions/#regulatory` },
+  { num: "04", name: C.capP4Name, h3: C.capP4H3, p: C.capP4P, href: `${base}/solutions/#agent-authority` },
+];
 ---
 
 <Layout
@@ -481,103 +472,63 @@ const panes = [
     <!-- §2 CAPABILITY-FIRST BAND (v29) -->
     <section class="hp-cap">
       <div class="hp-cap-inner">
-        <p class="hp-cap-eyebrow">{C.capEyebrow}</p>
-        <h2 class="hp-cap-h2">{C.capH2Pre}<span class="hp-accent">{C.capH2Accent}</span>{C.capH2Tail}</h2>
-        <p class="hp-cap-lead">{C.capLeadPre}<span class="em">{C.capLeadEm}</span>{C.capLeadTail}</p>
+        <h2 class="hp-cap-h2" set:html={C.capH2Html} />
 
-        <div class="hp-can-grid">
-          <a class="hp-can-item" href={`${base}/solutions/#input-provenance`}>
-            <div class="hp-can-icon">
-              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC1Do}>
-                <rect x="14" y="26" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
-                <rect x="20" y="20" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
-                <rect x="26" y="14" width="42" height="48" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
-                <rect x="31" y="20" width="32" height="3" fill="#8B4513"/>
-                <line x1="31" y1="29" x2="59" y2="29" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
-                <line x1="31" y1="34" x2="53" y2="34" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
-                <line x1="31" y1="39" x2="59" y2="39" stroke="#8B4513" stroke-width="1.2" opacity="0.6"/>
-                <circle cx="60" cy="54" r="11" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
-                <path d="M 55,54 L 59,58 L 65,51" stroke="#FCFAF5" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="hp-can-body">
-              <p class="hp-can-do"><svg class="hp-ci hp-ci-run" viewBox="0 0 16 16" aria-hidden="true"><path d="M 4.5,3 L 12.5,8 L 4.5,13 Z" fill="currentColor"/></svg>{C.capC1Do}</p>
-              <p class="hp-can-prevent"><svg class="hp-ci hp-ci-stop" viewBox="0 0 16 16" aria-hidden="true"><path d="M 8,2 L 13,3 L 13,8 Q 13,11 8,14 Q 3,11 3,8 L 3,3 Z" fill="currentColor"/><path d="M 5.5,8 L 7,9.5 L 10.5,6.5" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>{C.capC1Prevent}</p>
-            </div>
-            <span class="hp-can-arrow" aria-hidden="true">→</span>
+        <div class="hp-wf-strip">
+          {cap1.map((p) => (
+            <div class="hp-wf-pill"><span class="hp-wf-num">{p.num}</span>{p.name}</div>
+          ))}
+        </div>
+
+        <div class="hp-phase-grid">
+          <a class="hp-phase-card" href={cap1[0].href}>
+            <svg class="hp-phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <circle cx="11" cy="11" r="5"/>
+              <circle cx="21" cy="21" r="5"/>
+              <line x1="15" y1="15" x2="17" y2="17" stroke-width="2"/>
+            </svg>
+            <div class="hp-phase-tag">{cap1[0].name}</div>
+            <h3 class="hp-phase-h3">{cap1[0].h3}</h3>
+            <p class="hp-phase-p">{cap1[0].p}</p>
+            <div class="hp-phase-link"><span class="hp-phase-arrow">{C.capCardLink}</span></div>
           </a>
 
-          <a class="hp-can-item" href={`${base}/solutions/#agent-authority`}>
-            <div class="hp-can-icon">
-              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC2Do}>
-                <line x1="42" y1="20" x2="42" y2="13" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="42" cy="11" r="2.4" fill="#8B4513"/>
-                <rect x="18" y="20" width="48" height="48" rx="6" fill="#FCFAF5" stroke="#8B4513" stroke-width="2"/>
-                <circle cx="33" cy="40" r="3.2" fill="#8B4513"/>
-                <circle cx="51" cy="40" r="3.2" fill="#8B4513"/>
-                <line x1="35" y1="55" x2="49" y2="55" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="64" cy="64" r="9" fill="#5C7A4A" stroke="#FCFAF5" stroke-width="2"/>
-                <text x="64" y="68" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" font-weight="700" fill="#FCFAF5">¥</text>
-              </svg>
-            </div>
-            <div class="hp-can-body">
-              <p class="hp-can-do"><svg class="hp-ci hp-ci-run" viewBox="0 0 16 16" aria-hidden="true"><path d="M 4.5,3 L 12.5,8 L 4.5,13 Z" fill="currentColor"/></svg>{C.capC2Do}</p>
-              <p class="hp-can-prevent"><svg class="hp-ci hp-ci-stop" viewBox="0 0 16 16" aria-hidden="true"><path d="M 8,2 L 13,3 L 13,8 Q 13,11 8,14 Q 3,11 3,8 L 3,3 Z" fill="currentColor"/><path d="M 5.5,8 L 7,9.5 L 10.5,6.5" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>{C.capC2Prevent}</p>
-            </div>
-            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          <a class="hp-phase-card" href={cap1[1].href}>
+            <svg class="hp-phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="6" y="8" width="20" height="14" rx="2"/>
+              <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="15" r="1.5" fill="currentColor"/>
+              <circle cx="20" cy="15" r="1.5" fill="currentColor"/>
+              <path d="M11 26 L13 28 L17 24" stroke-width="2"/>
+            </svg>
+            <div class="hp-phase-tag">{cap1[1].name}</div>
+            <h3 class="hp-phase-h3">{cap1[1].h3}</h3>
+            <p class="hp-phase-p">{cap1[1].p}</p>
+            <div class="hp-phase-link"><span class="hp-phase-arrow">{C.capCardLink}</span></div>
           </a>
 
-          <a class="hp-can-item" href={`${base}/solutions/#regulatory`}>
-            <div class="hp-can-icon">
-              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC3Do}>
-                <rect x="14" y="10" width="44" height="60" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
-                <path d="M 50,10 L 58,10 L 58,18 Z" fill="#E8E1CC" stroke="#8B4513" stroke-width="1.2"/>
-                <rect x="18" y="16" width="28" height="3" fill="#8B4513"/>
-                <line x1="18" y1="26" x2="54" y2="26" stroke="#8B4513" stroke-width="1.2"/>
-                <line x1="18" y1="32" x2="48" y2="32" stroke="#8B4513" stroke-width="1.2"/>
-                <rect x="18" y="38" width="36" height="2.5" fill="#E8E1CC"/>
-                <rect x="18" y="44" width="30" height="2.5" fill="#E8E1CC"/>
-                <rect x="18" y="50" width="34" height="2.5" fill="#E8E1CC"/>
-                <rect x="18" y="56" width="28" height="2.5" fill="#E8E1CC"/>
-                <circle cx="58" cy="58" r="14" fill="none" stroke="#5C7A4A" stroke-width="2.4"/>
-                <circle cx="58" cy="58" r="10" fill="none" stroke="#5C7A4A" stroke-width="1.2"/>
-                <path d="M 53,58 L 57,62 L 64,53" stroke="#5C7A4A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="hp-can-body">
-              <p class="hp-can-do"><svg class="hp-ci hp-ci-run" viewBox="0 0 16 16" aria-hidden="true"><path d="M 4.5,3 L 12.5,8 L 4.5,13 Z" fill="currentColor"/></svg>{C.capC3Do}</p>
-              <p class="hp-can-prevent"><svg class="hp-ci hp-ci-stop" viewBox="0 0 16 16" aria-hidden="true"><path d="M 8,2 L 13,3 L 13,8 Q 13,11 8,14 Q 3,11 3,8 L 3,3 Z" fill="currentColor"/><path d="M 5.5,8 L 7,9.5 L 10.5,6.5" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>{C.capC3Prevent}</p>
-            </div>
-            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          <a class="hp-phase-card" href={cap1[2].href}>
+            <svg class="hp-phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M16 4 L26 8 V16 a10 12 0 0 1 -10 12 a10 12 0 0 1 -10 -12 V8 Z"/>
+              <path d="M11 15 L15 19 L21 12"/>
+            </svg>
+            <div class="hp-phase-tag">{cap1[2].name}</div>
+            <h3 class="hp-phase-h3">{cap1[2].h3}</h3>
+            <p class="hp-phase-p">{cap1[2].p}</p>
+            <div class="hp-phase-link"><span class="hp-phase-arrow">{C.capCardLink}</span></div>
           </a>
 
-          <a class="hp-can-item" href={`${base}/solutions/#verifiable-ai`}>
-            <div class="hp-can-icon">
-              <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" aria-label={C.capC4Do}>
-                <rect x="10" y="14" width="40" height="54" rx="3" fill="#FCFAF5" stroke="#8B4513" stroke-width="1.6"/>
-                <rect x="14" y="20" width="24" height="3" fill="#8B4513"/>
-                <line x1="16" y1="30" x2="20" y2="30" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="20" y1="30" x2="22" y2="32" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="24" y1="30" x2="44" y2="30" stroke="#8B4513" stroke-width="1.2"/>
-                <line x1="16" y1="38" x2="20" y2="38" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="20" y1="38" x2="22" y2="40" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="24" y1="38" x2="40" y2="38" stroke="#8B4513" stroke-width="1.2"/>
-                <line x1="16" y1="46" x2="20" y2="46" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="20" y1="46" x2="22" y2="48" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="24" y1="46" x2="44" y2="46" stroke="#8B4513" stroke-width="1.2"/>
-                <line x1="16" y1="54" x2="20" y2="54" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="20" y1="54" x2="22" y2="56" stroke="#5C7A4A" stroke-width="1.5"/>
-                <line x1="24" y1="54" x2="42" y2="54" stroke="#8B4513" stroke-width="1.2"/>
-                <circle cx="58" cy="50" r="13" fill="#FCFAF5" stroke="#8B4513" stroke-width="2.4"/>
-                <line x1="68" y1="60" x2="76" y2="68" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 52,50 L 56,54 L 64,46" stroke="#5C7A4A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="hp-can-body">
-              <p class="hp-can-do"><svg class="hp-ci hp-ci-run" viewBox="0 0 16 16" aria-hidden="true"><path d="M 4.5,3 L 12.5,8 L 4.5,13 Z" fill="currentColor"/></svg>{C.capC4Do}</p>
-              <p class="hp-can-prevent"><svg class="hp-ci hp-ci-stop" viewBox="0 0 16 16" aria-hidden="true"><path d="M 8,2 L 13,3 L 13,8 Q 13,11 8,14 Q 3,11 3,8 L 3,3 Z" fill="currentColor"/><path d="M 5.5,8 L 7,9.5 L 10.5,6.5" stroke="#FCFAF5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>{C.capC4Prevent}</p>
-            </div>
-            <span class="hp-can-arrow" aria-hidden="true">→</span>
+          <a class="hp-phase-card" href={cap1[3].href}>
+            <svg class="hp-phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="6" y="10" width="14" height="18" rx="2"/>
+              <circle cx="13" cy="17" r="2"/>
+              <line x1="13" y1="19" x2="13" y2="24"/>
+              <path d="M20 14 H26 V20"/>
+            </svg>
+            <div class="hp-phase-tag">{cap1[3].name}</div>
+            <h3 class="hp-phase-h3">{cap1[3].h3}</h3>
+            <p class="hp-phase-p">{cap1[3].p}</p>
+            <div class="hp-phase-link"><span class="hp-phase-arrow">{C.capCardLink}</span></div>
           </a>
         </div>
       </div>
@@ -585,7 +536,6 @@ const panes = [
 
     <!-- THREE DOORS -->
     <section class="hp-block">
-      <p class="hp-eyebrow">{C.doorsEyebrow}</p>
       <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
 
       <div class="hp-doors">
@@ -650,7 +600,6 @@ const panes = [
     <!-- MECHANISM -->
     <section class="hp-mech">
       <div class="hp-mech-inner">
-        <p class="hp-eyebrow hp-on-dark">{C.mechEyebrow}</p>
         <h2 class="hp-h2 hp-on-dark">{C.mechH2Line1}<br /><span class="hp-accent-light">{C.mechH2Accent}</span>{C.mechH2Tail}</h2>
         <p class="hp-sub hp-on-dark">{C.mechSub}</p>
 
@@ -783,7 +732,6 @@ const panes = [
 
     <!-- SCHEMA TABS -->
     <section class="hp-block">
-      <p class="hp-eyebrow">{C.schemaEyebrow}</p>
       <h2 class="hp-h2">{C.schemaH2Line1}<br /><span class="hp-accent">{C.schemaH2Accent}</span>{C.schemaH2Tail}</h2>
       <p class="hp-sub">
         {C.schemaSub1}<code class="hp-inline-code">{C.schemaSubCode}</code>{C.schemaSub2}
@@ -1271,25 +1219,30 @@ const panes = [
   .hp-closing-link:hover { color: var(--hp-cream); }
 
   /* §2 CAPABILITY-FIRST BAND (v29) */
-  .hp-cap { background: var(--hp-cream-d); border-top: 1px solid var(--hp-line); border-bottom: 1px solid var(--hp-line); padding: 72px 40px 64px; position: relative; }
-  .hp-cap::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--hp-brown); }
-  .hp-cap-inner { max-width: 1080px; margin: 0 auto; }
-  .hp-cap-eyebrow { font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
-  .hp-cap-eyebrow::before { content: '\25B8'; font-size: 14px; }
-  .hp-cap-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 40px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 16px; color: var(--hp-text-1); }
+  .hp-cap { background: var(--hp-cream); padding: 88px 40px 64px; }
+  /* Tighten only the §1→§2 boundary (other hp-block rhythm unchanged). */
+  .hp-cap + .hp-block { padding-top: 80px; }
+  /* 1240 = .hp-block content width (1320 max-width − 40px×2 padding), so §1's
+     left edge lines up with the other sections (which are .hp-block). */
+  .hp-cap-inner { max-width: 1240px; margin: 0 auto; }
+  .hp-cap-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 52px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 48px; color: var(--hp-text-1); max-width: 880px; }
   .hp-cap-h2 .hp-accent { color: var(--hp-brown); }
-  .hp-cap-lead { font-size: 15.5px; color: var(--hp-text-3); max-width: 760px; margin: 0 0 30px; line-height: 1.85; }
-  .hp-cap-lead .em { color: var(--hp-text-1); font-weight: 700; }
-  .hp-can-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .hp-can-item { position: relative; background: var(--hp-cream); border: 1px solid var(--hp-line); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
-  .hp-can-item:hover { border-color: var(--hp-brown); transform: translateY(-1px); box-shadow: 0 10px 28px rgba(139, 69, 19, 0.08); }
-  .hp-can-arrow { position: absolute; right: 16px; bottom: 14px; font-family: var(--hp-mono); font-size: 15px; line-height: 1; color: var(--hp-brown); opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
-  .hp-can-item:hover .hp-can-arrow { opacity: 1; transform: translateX(3px); }
-  .hp-can-icon { background: var(--hp-cream-d); border-bottom: 1px solid var(--hp-line); padding: 26px 20px 22px; display: flex; align-items: center; justify-content: center; }
-  .hp-can-icon svg { width: 84px; height: 84px; display: block; }
-  .hp-can-body { padding: 18px 22px 24px; }
-  .hp-can-do { font-family: var(--hp-display); font-weight: 700; font-size: 15px; color: var(--hp-text-1); margin: 0 0 6px; line-height: 1.45; }
-  .hp-can-prevent { font-size: 12.5px; color: var(--hp-text-3); margin: 0; line-height: 1.6; padding-right: 24px; }
+  /* workflow strip — Input → Inference → Decision → Delegation */
+  .hp-wf-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0 0 32px; }
+  .hp-wf-pill { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--hp-cream-d); border: 1px solid var(--hp-line); border-radius: 50px; padding: 12px 24px; font-family: var(--hp-display); font-weight: 700; font-size: 16px; color: var(--hp-brown); letter-spacing: -0.005em; }
+  .hp-wf-num { font-family: var(--hp-mono); font-size: 11px; color: #c18b5c; letter-spacing: 0.06em; font-weight: 700; }
+  .hp-wf-pill:not(:first-child)::before { content: "→"; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); font-family: var(--hp-display); font-size: 14px; font-weight: 700; color: #c18b5c; background: var(--hp-cream); padding: 0 4px; }
+  /* phase cards */
+  .hp-phase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .hp-phase-card { background: var(--hp-cream); border: 1px solid var(--hp-line); border-top: 3px solid var(--hp-brown); border-radius: 8px; padding: 32px 28px; text-decoration: none; color: var(--hp-text-1); display: flex; flex-direction: column; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+  .hp-phase-card:hover { border-color: var(--hp-brown); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(139, 69, 19, 0.08); }
+  .hp-phase-icon { width: 40px; height: 40px; color: var(--hp-brown); background: var(--hp-brown-light); border-radius: 50%; padding: 9px; margin: 0 0 18px; }
+  .hp-phase-tag { font-family: var(--hp-mono); font-size: 10px; color: var(--hp-brown); letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 8px; font-weight: 700; }
+  .hp-phase-h3 { font-family: var(--hp-display); font-weight: 700; font-size: 18px; line-height: 1.35; color: var(--hp-text-1); letter-spacing: -0.01em; margin: 0 0 14px; }
+  .hp-phase-p { font-size: 13.5px; color: var(--hp-text-3); line-height: 1.7; margin: 0 0 auto; }
+  .hp-phase-link { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--hp-line); display: flex; justify-content: flex-end; align-items: center; }
+  .hp-phase-arrow { font-family: var(--hp-mono); font-size: 11px; color: var(--hp-brown); font-weight: 700; letter-spacing: 0.04em; transition: transform 0.15s; }
+  .hp-phase-card:hover .hp-phase-arrow { transform: translateX(3px); }
   .hp-ci { width: 14px; height: 14px; display: inline-block; vertical-align: -2px; margin-right: 6px; }
   .hp-ci-run { color: var(--hp-green, #5c7a4a); }
   .hp-ci-stop { color: #b8501f; }
@@ -1315,9 +1268,12 @@ const panes = [
     .hp-mech-arrow { transform: rotate(90deg); padding: 8px 0; }
     .hp-schema-pane.is-active { grid-template-columns: 1fr; }
     .hp-spotlight-grid { grid-template-columns: 1fr; gap: 32px; }
-    .hp-cap { padding: 64px 24px 56px; }
-    .hp-cap-h2 { font-size: 30px; }
-    .hp-can-grid { grid-template-columns: 1fr; }
+    .hp-cap { padding: 56px 24px 40px; }
+    .hp-cap + .hp-block { padding-top: 56px; }
+    .hp-cap-h2 { font-size: 28px; margin-bottom: 32px; }
+    .hp-wf-strip { grid-template-columns: 1fr; gap: 10px; }
+    .hp-wf-pill:not(:first-child)::before { content: "↓"; left: 50%; top: -10px; transform: translateX(-50%); }
+    .hp-phase-grid { grid-template-columns: 1fr; gap: 14px; }
   }
   @media (max-width: 560px) {
     .hp-hero { padding: 40px 22px 56px; gap: 36px; }
