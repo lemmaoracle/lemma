@@ -31,10 +31,9 @@ export interface IndexTemplateProps {
   locale: Locale;
   t: Translations;
   base: string;
-  description: string;
 }
 
-const { locale, t, base, description } = Astro.props as IndexTemplateProps;
+const { locale, t, base } = Astro.props as IndexTemplateProps;
 const isJa = locale === "ja";
 
 // ── Routes ────────────────────────────────────────────────────────
@@ -87,11 +86,12 @@ const spotlightUseCasePillar = spotlightUseCase
 
 // ── Copy (locale-resolved) ────────────────────────────────────────
 const C = isJa ? {
-  heroH1Line1: "AI のための、",
-  heroH1Accent: "信頼インフラ",
+  pageTitle: "Lemma — データを渡さず、AI を動かす",
+  metaDescription: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。AI のための信頼インフラ。",
+  heroH1Line1: "データを渡さず、",
+  heroH1Accent: "AI を動かす",
   heroH1Tail: "。",
   heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
-  heroSubChord: "証明できる判断を、データを持たないままで。",
   heroPrimaryCta: "始める",
   heroSecondaryCta: "詳しく見る",
   termLabel: "lemma",
@@ -232,11 +232,12 @@ const C = isJa ? {
   closingFootMid: " · 活用シーン → ",
   closingFootSolutions: "Solutions",
 } : {
-  heroH1Line1: "The Trust Infrastructure",
-  heroH1Accent: "for AI",
+  pageTitle: "Lemma — AI runs on proofs, not data",
+  metaDescription: "Through Lemma's proprietary cryptography, AI and agents receive only verified facts. Trust infrastructure for AI.",
+  heroH1Line1: "AI runs on",
+  heroH1Accent: "proofs, not data",
   heroH1Tail: ".",
-  heroSubLead: "Four axes — origin, AI decisions, agent authority, regulatory attributes — bound into one trust infrastructure.",
-  heroSubChord: "Decisions you can prove. Data you never hold.",
+  heroSubLead: "Through Lemma's proprietary cryptography, AI and agents receive only verified facts.",
   heroPrimaryCta: "Get Started",
   heroSecondaryCta: "Learn more",
   termLabel: "lemma",
@@ -418,7 +419,8 @@ const panes = [
 <Layout
   locale={locale}
   metaType="home"
-  description={description}
+  title={C.pageTitle}
+  description={C.metaDescription}
   ogImage={`https://lemma.frame00.com/og/home/${locale}.png`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
@@ -430,9 +432,7 @@ const panes = [
     <section class="hp-hero">
       <div class="hp-hero-text">
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
-        <p class="hp-hero-sub">
-          {C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span>
-        </p>
+        <p class="hp-hero-sub">{C.heroSubLead}</p>
         <div class="hp-hero-ctas">
           <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
           <a href={pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
