@@ -3,27 +3,23 @@
  * Lemma Critical Brief page template — used by both
  * /critical/briefs/[slug].astro (EN) and /ja/critical/briefs/[slug].astro (JA).
  *
- * v24 visual system (PR #274 mockup detail v1 baseline):
- *   - Cream page background, container-narrow 760px reading column
- *   - Sora display + Noto Sans JP body + Space Mono labels
- *   - Saddle brown accent (--accent) for tags, links, list markers, eyebrow
+ * Phase 1 detail redesign (mockup: Lemma_brief_detail_phase1):
+ *   - Clickable hero tags (Pillar → Pillar page, categories → index ?category=)
+ *   - 4-col key-facts card (BriefMetaStrip, inside BriefHero)
+ *   - 2-col layout: reading column + sticky TOC sidebar w/ scrollspy
+ *   - Section H2 anchor links (hover ⌗, click-to-copy URL)
+ *   - Inline CTA injected after §4
+ *   - Pillar-aware end CTA (BriefNextSteps, JA) — retained
+ *   - Prev / Next Brief navigation (by brief_no)
+ *   - Related Briefs: 6 cards, auto-derived (same category → pillar → latest),
+ *     index card design
+ *   - Newsletter mini banner
+ *   - Citation tabs + copy (CiteBriefBox) — retained
  *
- * Page composition, in order:
- *   1. Breadcrumb (mono uppercase)
- *   2. BriefHero (id eyebrow + h1 + subtitle + tag pills + meta strip)
- *   3. Body: rendered markdown (TL;DR + §1–§9; §N badges injected by the
- *      `rehype-brief-section-number` plugin and styled via the .brief-body
- *      block below). §9 "Brief 配布について" / "About distribution" is the
- *      canonical disclaimer + Discovery Call / Whitepaper / Newsletter
- *      links, authored inline in each brief markdown.
- *   4. BriefRelated (cards from frontmatter `related_briefs`)
- *   5. CiteBriefBox (3 tabs + copy)
- *   6. BriefRevisionNote (only when frontmatter `version` !== "1.0")
- *
- * Composition uses Brief* components in src/components for the chrome.
- * Markdown body styling — TL;DR card, §N badges, lists, tables, sources —
- * is encoded as CSS in this template against the rendered `<Content />`
- * tree; the markdown stays the single source of truth.
+ * The markdown body stays the single source of truth; §N badges are injected
+ * by the `rehype-brief-section-number` plugin and styled via `.brief-body`.
+ * The sticky TOC, anchors, and inline-CTA placement are progressive
+ * enhancement (inline <script> at the bottom).
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import { render } from "astro:content";
@@ -32,12 +28,15 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefHero from "../components/BriefHero.astro";
-import BriefNextSteps from "../components/BriefNextSteps.astro";
-import BriefRelated from "../components/BriefRelated.astro";
-import BriefToc from "../components/BriefToc.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
+import { extractTldr } from "../data/extractTldr";
+import {
+  categoryLabel,
+  type CategorySlug,
+  type PillarSlug,
+} from "../data/criticalBriefs";
 
 export interface BriefTemplateProps {
   locale: Locale;
@@ -51,28 +50,26 @@ const t = getTranslations(locale);
 const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 
+type AnyBrief =
+  | CollectionEntry<"critical-briefs">
+  | CollectionEntry<"critical-briefs-en">;
+
 const briefNoPad = String(brief.data.brief_no).padStart(3, "0");
 const localizedTitle = isJa ? brief.data.title : brief.data.title_en;
 
-// Title may end with " — <subtitle>". Split for visual hierarchy in the hero.
 const titleParts = localizedTitle.split(" — ");
 const mainTitle = titleParts[0];
 const subtitle = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
 
 const briefPath = `/critical/briefs/${brief.id}/`;
 const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
-// Per-brief dynamic OG image generated at build time by
-// `/og/critical-briefs/[lang]/[slug].png.ts`. JA / EN render independently.
 const ogImage = `https://lemma.frame00.com/og/critical-briefs/${locale}/${brief.id}.png`;
 
 const { Content, headings } = await render(brief);
 
 const showRevisionHistory = brief.data.version !== "1.0";
 
-const PILLAR_LABELS: Record<
-  BriefTemplateProps["brief"]["data"]["pillar"],
-  { ja: string; en: string }
-> = {
+const PILLAR_LABELS: Record<PillarSlug, { ja: string; en: string }> = {
   "01-verifiable-origin": {
     ja: "Pillar 01 · 来歴証明",
     en: "Pillar 01 · Verifiable Origin",
@@ -90,46 +87,123 @@ const PILLAR_LABELS: Record<
     en: "Pillar 04 · Regulatory Attribute Proof",
   },
 };
+const PILLAR_PAGE_SLUG: Record<PillarSlug, string> = {
+  "01-verifiable-origin": "verifiable-origin",
+  "02-verifiable-ai": "verifiable-ai",
+  "03-agent-authority": "agent-authority-proof",
+  "04-regulatory-attribute": "regulatory-attribute-proof",
+};
+const PILLAR_SHORT: Record<PillarSlug, string> = {
+  "01-verifiable-origin": "P1",
+  "02-verifiable-ai": "P2",
+  "03-agent-authority": "P3",
+  "04-regulatory-attribute": "P4",
+};
 
-const pillarLabel = PILLAR_LABELS[brief.data.pillar][isJa ? "ja" : "en"];
+const pillar = brief.data.pillar as PillarSlug;
+const pillarLabel = PILLAR_LABELS[pillar][isJa ? "ja" : "en"];
+const pillarHref = `${base}/pillars/${PILLAR_PAGE_SLUG[pillar]}/`;
+const useCasesHref = `${base}/solutions/use-cases/`;
 
-// Related Briefs — resolve frontmatter slugs against the locale collection,
-// EN entry preferred, JA fallback for untranslated.
+// Locale-resolved full collection (EN preferred, JA fallback) for prev/next
+// and auto-derived related.
 const allJaBriefs = await getCollection("critical-briefs");
 const enById = isJa ? null : await getEnBriefMap();
-const relatedBriefs = brief.data.related_briefs
-  .map((slug) => {
-    const ja = allJaBriefs.find((b) => b.id === slug);
-    if (!ja) return null;
-    const enEntry = enById?.get(slug);
-    return enEntry ?? ja;
-  })
-  .filter((b): b is NonNullable<typeof b> => b !== null);
+const allLocale: ReadonlyArray<AnyBrief> = allJaBriefs.map(
+  (ja) => enById?.get(ja.id) ?? ja,
+);
+
+// Prev / Next by brief_no (ascending): prev = lower number, next = higher.
+const byNo = [...allLocale].sort((a, b) => a.data.brief_no - b.data.brief_no);
+const selfIdx = byNo.findIndex((b) => b.id === brief.id);
+const prevBrief = selfIdx > 0 ? byNo[selfIdx - 1] : null;
+const nextBrief =
+  selfIdx >= 0 && selfIdx < byNo.length - 1 ? byNo[selfIdx + 1] : null;
+
+// Related: same primary category → same pillar → latest, excluding self.
+const byNewest = [...allLocale].sort((a, b) => {
+  const diff = b.data.published.getTime() - a.data.published.getTime();
+  return diff !== 0 ? diff : b.data.brief_no - a.data.brief_no;
+});
+const primarySlug = brief.data.primary_category as CategorySlug;
+const relatedSet = new Map<string, AnyBrief>();
+const addCandidates = (pool: ReadonlyArray<AnyBrief>) => {
+  for (const b of pool) {
+    if (b.id === brief.id || relatedSet.has(b.id)) continue;
+    if (relatedSet.size >= 6) break;
+    relatedSet.set(b.id, b);
+  }
+};
+addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
+addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
+addCandidates(byNewest);
+const relatedBriefs = Array.from(relatedSet.values()).slice(0, 6);
+
+// Count of Briefs in the primary category (for the "see all N" link).
+const primaryCategoryCount = allLocale.filter(
+  (b) =>
+    b.data.primary_category === primarySlug ||
+    (b.data.secondary_categories as string[]).includes(primarySlug),
+).length;
+const primaryCatLabel = categoryLabel(primarySlug, locale);
+
+function relatedCardData(b: AnyBrief) {
+  const titleLoc = isJa ? b.data.title : b.data.title_en;
+  const parts = titleLoc.split(" — ");
+  const main = parts[0];
+  const sub = parts.length > 1 ? parts.slice(1).join(" — ") : extractTldr(b.body, 120);
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    no: String(b.data.brief_no).padStart(3, "0"),
+    date: b.data.published.toISOString().slice(0, 10),
+    title: main,
+    sub,
+    primaryLabel: categoryLabel(b.data.primary_category as CategorySlug, locale),
+    secondaryLabels: (b.data.secondary_categories as CategorySlug[]).map((c) =>
+      categoryLabel(c, locale),
+    ),
+  };
+}
+
+function pnCardData(b: AnyBrief) {
+  const titleLoc = isJa ? b.data.title : b.data.title_en;
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    no: String(b.data.brief_no).padStart(3, "0"),
+    pillarShort: PILLAR_SHORT[b.data.pillar as PillarSlug],
+    title: titleLoc.split(" — ")[0],
+  };
+}
+const prevData = prevBrief ? pnCardData(prevBrief) : null;
+const nextData = nextBrief ? pnCardData(nextBrief) : null;
+
+// TOC: TL;DR + numbered §1..§8 (drop §9 distribution + brief* helper anchors).
+const tldrHeading = headings.find((h) => h.depth === 2 && h.slug === "tldr");
+const tocSections = headings
+  .filter((h) => h.depth === 2)
+  .filter((h) => h.slug !== "tldr")
+  .filter((h) => !/^brief/i.test(h.slug))
+  .filter((h) => h.slug !== "about-distribution")
+  .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
 const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
 
-// og:title / twitter:title lead with a short descriptive headline
-// (overrideable via `og_lead_*`) so social cards — which truncate
-// og:description — communicate the brief at a glance. Fallback to
-// `mainTitle` keeps untranslated briefs from regressing.
 const ogLead = (isJa ? brief.data.og_lead_ja : brief.data.og_lead_en) ?? mainTitle;
 const seriesSep = isJa ? "｜" : " | ";
 const pageTitle = `${ogLead}${seriesSep}Lemma Critical Brief No.${briefNoPad}`;
 
-// <title> is search-optimized and distinct from og:title: it leads with the
-// search term ({事案名/CVE} = mainTitle) followed by a fixed series qualifier.
-// og:title / twitter:title keep the explanation-headline-first `pageTitle`.
 const seoTitle = isJa
   ? `${mainTitle} — 構造分析と事前証明｜Lemma Critical Brief No.${briefNoPad}`
   : `${mainTitle} — Structural Analysis & Pre-Execution Proof | Lemma Critical Brief No.${briefNoPad}`;
 
-// meta description / og:description — ~110 JA chars / ~155 EN chars, search-
-// optimized, ending on the brand line. JA pages JP-only, EN pages EN-only
-// (proper nouns / CVE / brand may stay original).
 const metaDescription = isJa
   ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
+
+const newsletterHref = isJa
+  ? "https://tally.so/r/EkMj82"
+  : "https://tally.so/r/rjvN2X";
 
 const labels = isJa
   ? {
@@ -138,11 +212,26 @@ const labels = isJa
       published: "公開日",
       authors: "発行",
       pack: "関連 Pack",
+      tocLabel: "Contents",
+      tldr: "TL;DR",
       relatedHeading: "関連 Brief",
+      relatedMore: `${primaryCatLabel}の全 ${primaryCategoryCount} 件を見る`,
       revisionHeading: "改訂履歴",
       home: "ホーム",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
+      prevDir: "← 前の Brief",
+      nextDir: "次の Brief →",
+      ctaTitle: "この構造を解決する設計を知る",
+      ctaBody:
+        "検出の後ではなく、取引・実行の前に。事前証明で根拠を独立検証可能にする層を引きます。",
+      ctaPrimary: `${pillarLabel.replace(" · ", " — ")} を見る`,
+      ctaSecondary: "関連ユースケース",
+      nlTitle: "Lemma Critical Monthly",
+      nlBody: "Brief と構造分析の要点を、月 1 回お届け。",
+      nlCta: "ニュースレターを購読",
+      copyToast: "URL をコピーしました",
+      anchorAria: "このセクションへのリンクをコピー",
     }
   : {
       briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
@@ -150,11 +239,26 @@ const labels = isJa
       published: "Published",
       authors: "Authors",
       pack: "Related Pack",
+      tocLabel: "Contents",
+      tldr: "TL;DR",
       relatedHeading: "Related Briefs",
+      relatedMore: `See all ${primaryCategoryCount} in ${primaryCatLabel}`,
       revisionHeading: "Revision History",
       home: "Home",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
+      prevDir: "← Previous Brief",
+      nextDir: "Next Brief →",
+      ctaTitle: "See the design that closes this gap",
+      ctaBody:
+        "Not after detection, but before the transaction. Pre-execution proof makes the grounds independently verifiable.",
+      ctaPrimary: `View ${pillarLabel.replace(" · ", " — ")}`,
+      ctaSecondary: "Related use cases",
+      nlTitle: "Lemma Critical Monthly",
+      nlBody: "Key Briefs and structural analysis, once a month.",
+      nlCta: "Subscribe to the newsletter",
+      copyToast: "Link copied",
+      anchorAria: "Copy link to this section",
     };
 ---
 
@@ -170,7 +274,7 @@ const labels = isJa
   <Navigation locale={locale} t={t.nav} base={base} />
 
   <main class="brief-page">
-    <div class="container-narrow">
+    <div class="bd-shell">
       <div class="brief-breadcrumb">
         <a href={base || "/"}>{labels.home}</a>
         <span class="brief-breadcrumb-sep">/</span>
@@ -178,9 +282,7 @@ const labels = isJa
         <span class="brief-breadcrumb-sep">/</span>
         <span>{labels.briefNoPrefix} {briefNoPad}</span>
       </div>
-    </div>
 
-    <div class="container-narrow">
       <BriefHero
         locale={locale}
         brief={brief}
@@ -188,67 +290,141 @@ const labels = isJa
         mainTitle={mainTitle}
         subtitle={subtitle}
         pillarLabel={pillarLabel}
+        pillarHref={pillarHref}
+        base={base}
         incidentDateStr={incidentDateStr}
         publishedStr={publishedStr}
       />
 
-      <BriefToc locale={locale} headings={headings} />
+      <div class="bd-layout">
+        <div class="bd-content">
+          <article class="brief-body">
+            <Content />
+            <button
+              type="button"
+              class="brief-subscribe-pill"
+              data-tally-open={isJa ? "EkMj82" : "rjvN2X"}
+              data-tally-hide-title="1"
+              data-tally-auto-close="2000"
+            >
+              {isJa
+                ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
+                : "✉️ Get new Briefs & insights, once a month"}
+            </button>
+            <noscript>
+              <a class="brief-subscribe-pill" href={newsletterHref} target="_blank" rel="noopener">
+                {isJa
+                  ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
+                  : "✉️ Get new Briefs & insights, once a month"}
+              </a>
+            </noscript>
+          </article>
 
-      <article class="brief-body">
-        <Content />
-        {/* TL;DR-adjacent subscribe pill — Tally newsletter popup trigger
-           (per dev addendum 2026-06-04 §B). Rendered as the last child of
-           `.brief-body`; the inline script below moves it to immediately
-           after the TL;DR paragraph (the first `<p>` after the first
-           `<h2>`) so the high-intent moment after TL;DR is captured. */}
-        <button
-          type="button"
-          class="brief-subscribe-pill"
-          data-tally-open={locale === "ja" ? "EkMj82" : "rjvN2X"}
-          data-tally-hide-title="1"
-          data-tally-auto-close="2000"
-        >
-          {locale === "ja"
-            ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
-            : "✉️ Get new Briefs & insights, once a month"}
-        </button>
-        <noscript>
-          <a class="brief-subscribe-pill" href={locale === "ja" ? "https://tally.so/r/EkMj82" : "https://tally.so/r/rjvN2X"} target="_blank" rel="noopener">
-            {locale === "ja"
-              ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
-              : "✉️ Get new Briefs & insights, once a month"}
-          </a>
-        </noscript>
-      </article>
-      <script is:inline>
-        (function () {
-          var body = document.querySelector('.brief-body');
-          if (!body) return;
-          var pill = body.querySelector(':scope > .brief-subscribe-pill');
-          if (!pill) return;
-          var firstH2 = body.querySelector(':scope > h2');
-          if (!firstH2) return;
-          var tldrP = firstH2.nextElementSibling;
-          while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
-          if (!tldrP) return;
-          tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
-        })();
-      </script>
+          {/* Inline CTA — rendered here, moved after §4 by the script below. */}
+          <aside class="bd-inline-cta" data-inline-cta>
+            <div class="bd-inline-cta__text">
+              <h3>{labels.ctaTitle}</h3>
+              <p>{labels.ctaBody}</p>
+            </div>
+            <div class="bd-inline-cta__actions">
+              <a class="primary" href={pillarHref}>{labels.ctaPrimary}</a>
+              <a class="secondary" href={useCasesHref}>{labels.ctaSecondary}</a>
+            </div>
+          </aside>
+        </div>
 
-      {isJa && (
-        <BriefNextSteps
-          pillar={brief.data.pillar}
-          briefId={brief.id}
-          base={base}
-        />
+        <aside class="bd-toc" aria-label={labels.tocLabel}>
+          <div class="bd-toc__inner">
+            <div class="bd-toc__label">{labels.tocLabel}</div>
+            <ul class="bd-toc__list">
+              {tldrHeading && (
+                <li>
+                  <a href="#tldr" data-toc-link>
+                    <span class="bd-toc__num">—</span>{labels.tldr}
+                  </a>
+                </li>
+              )}
+              {tocSections.map((s) => (
+                <li>
+                  <a href={`#${s.slug}`} data-toc-link>
+                    <span class="bd-toc__num">§{s.num}</span>{s.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      {(prevData || nextData) && (
+        <nav class="bd-prevnext" aria-label="Prev / Next Brief">
+          {prevData ? (
+            <a href={prevData.href} class="bd-pn prev">
+              <span class="bd-pn__dir">{labels.prevDir}</span>
+              <span class="bd-pn__meta">No. {prevData.no} · Pillar {prevData.pillarShort.slice(1)}</span>
+              <span class="bd-pn__title">{prevData.title}</span>
+            </a>
+          ) : (
+            <span class="bd-pn bd-pn--empty"></span>
+          )}
+          {nextData ? (
+            <a href={nextData.href} class="bd-pn next">
+              <span class="bd-pn__dir">{labels.nextDir}</span>
+              <span class="bd-pn__meta">No. {nextData.no} · Pillar {nextData.pillarShort.slice(1)}</span>
+              <span class="bd-pn__title">{nextData.title}</span>
+            </a>
+          ) : (
+            <span class="bd-pn bd-pn--empty"></span>
+          )}
+        </nav>
       )}
 
-      <BriefRelated
-        locale={locale}
-        base={base}
-        heading={labels.relatedHeading}
-        briefs={relatedBriefs}
-      />
+      {relatedBriefs.length > 0 && (
+        <section class="bd-related">
+          <div class="bd-related__head">
+            <div class="bd-related__tag">{labels.relatedHeading}</div>
+            <a
+              class="bd-related__more"
+              href={`${base}/critical/briefs/?category=${primarySlug}`}
+            >{labels.relatedMore}</a>
+          </div>
+          <div class="bd-related__grid">
+            {relatedBriefs.map((b) => {
+              const c = relatedCardData(b);
+              return (
+                <a href={c.href} class="bd-rcard">
+                  <div class="bd-rcard__meta">
+                    <span class="bd-rcard__no">No. {c.no}</span>
+                    <span class="bd-rcard__sep">·</span>
+                    <span>{c.date}</span>
+                  </div>
+                  <h3 class="bd-rcard__title">{c.title}</h3>
+                  {c.sub && <p class="bd-rcard__sub">{c.sub}</p>}
+                  <div class="bd-rcard__foot">
+                    <div class="bd-rcard__tags">
+                      <span class="bd-rcard__tag">{c.primaryLabel}</span>
+                      {c.secondaryLabels.slice(0, 2).map((lab) => (
+                        <span class="bd-rcard__tag">{lab}</span>
+                      ))}
+                    </div>
+                    <span class="bd-rcard__read">Brief →</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <section class="bd-newsletter">
+        <div class="bd-newsletter__inner">
+          <div>
+            <h3>{labels.nlTitle}</h3>
+            <p>{labels.nlBody}</p>
+          </div>
+          <a href={newsletterHref} target="_blank" rel="noopener">{labels.nlCta}</a>
+        </div>
+      </section>
 
       <CiteBriefBox
         locale={locale}
@@ -266,17 +442,129 @@ const labels = isJa
           version={brief.data.version}
         />
       )}
-
     </div>
+
+    <div class="bd-toast" data-toast hidden>{labels.copyToast}</div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
+<script is:inline>
+  (function () {
+    var body = document.querySelector('.brief-body');
+    if (!body) return;
+
+    // 1. TL;DR-adjacent subscribe pill — move to just after the TL;DR para.
+    var pill = body.querySelector(':scope > .brief-subscribe-pill');
+    if (pill) {
+      var firstH2 = body.querySelector(':scope > h2');
+      if (firstH2) {
+        var tldrP = firstH2.nextElementSibling;
+        while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
+        if (tldrP) tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
+      }
+    }
+
+    // 2. Inline CTA — move into the body, just before §5 (i.e. after §4).
+    var cta = document.querySelector('[data-inline-cta]');
+    var h4 = body.querySelector('h2[data-section-num="4"]');
+    if (cta && h4) {
+      var node = h4.nextElementSibling;
+      var stop = null;
+      while (node) {
+        if (node.nodeName === 'H2') { stop = node; break; }
+        node = node.nextElementSibling;
+      }
+      cta.classList.add('bd-inline-cta--placed');
+      if (stop) body.insertBefore(cta, stop);
+      else body.appendChild(cta);
+    }
+  })();
+</script>
+
+<script>
+  // Sticky-TOC scrollspy + section anchor links (copy URL). Module script.
+  function setupBriefChrome() {
+    const body = document.querySelector(".brief-body");
+    if (!body) return;
+
+    // Scrollspy: highlight the TOC link for the section in view.
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+    );
+    const linkByHash = new Map(
+      links.map((l) => [l.getAttribute("href") || "", l]),
+    );
+    const watched = Array.from(
+      body.querySelectorAll<HTMLElement>("h2[id]"),
+    ).filter((h) => linkByHash.has(`#${h.id}`));
+
+    if (watched.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = (entry.target as HTMLElement).id;
+            links.forEach((l) =>
+              l.classList.toggle(
+                "is-active",
+                l.getAttribute("href") === `#${id}`,
+              ),
+            );
+          });
+        },
+        { rootMargin: "-25% 0px -65% 0px" },
+      );
+      watched.forEach((h) => observer.observe(h));
+    }
+
+    // Section anchors: append a ⌗ link to each numbered/anchored h2.
+    const toast = document.querySelector<HTMLElement>("[data-toast]");
+    let toastTimer: ReturnType<typeof setTimeout> | undefined;
+    const showToast = () => {
+      if (!toast) return;
+      toast.hidden = false;
+      toast.classList.add("is-visible");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("is-visible");
+        toastTimer = setTimeout(() => {
+          toast.hidden = true;
+        }, 250);
+      }, 1600);
+    };
+
+    body.querySelectorAll<HTMLElement>("h2[id]").forEach((h) => {
+      if (h.querySelector(".brief-anchor")) return;
+      const a = document.createElement("a");
+      a.className = "brief-anchor";
+      a.href = `#${h.id}`;
+      a.setAttribute("aria-label", "Copy link to this section");
+      a.textContent = "⌗";
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const url = `${location.origin}${location.pathname}#${h.id}`;
+        history.replaceState(null, "", `#${h.id}`);
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(showToast, () => {});
+        }
+      });
+      h.appendChild(a);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupBriefChrome, {
+      once: true,
+    });
+  } else {
+    setupBriefChrome();
+  }
+</script>
+
 <style>
-  /* v24 typography palette — scoped to Brief detail pages. The rest of the
-     site keeps its existing fonts (Cormorant / DM Sans / Noto Serif JP)
-     while the Brief surface uses Sora / Noto Sans JP / Space Mono. */
+  /* v24 typography palette — scoped to Brief detail pages. */
   .brief-page {
     --brief-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
     --brief-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -285,6 +573,9 @@ const labels = isJa
     --brief-text-2: #3a3a3a;
     --brief-text-3: #5a5a5a;
     --brief-text-4: #9a9a9a;
+    --bd-brown-soft: #f4e8dc;
+    --bd-brown-dark: #6b2f0a;
+    --bd-brown-mid: #c18b5c;
 
     background: var(--lemma-cream);
     color: var(--brief-text-2);
@@ -298,8 +589,8 @@ const labels = isJa
     --brief-body: "Sora", system-ui, sans-serif;
   }
 
-  .container-narrow {
-    max-width: 760px;
+  .bd-shell {
+    max-width: 1120px;
     margin: 0 auto;
     padding: 0 40px;
   }
@@ -326,12 +617,79 @@ const labels = isJa
     margin: 0 8px;
   }
 
+  /* ─── 2-COL LAYOUT ─── */
+  .bd-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 64px;
+    align-items: start;
+    margin-top: 8px;
+  }
+  .bd-content {
+    min-width: 0;
+    max-width: 820px;
+  }
+
+  /* ─── STICKY TOC SIDEBAR ─── */
+  .bd-toc {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+  .bd-toc__label {
+    font-family: var(--brief-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--lemma-line);
+  }
+  .bd-toc__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bd-toc__list a {
+    display: flex;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-family: var(--brief-mono);
+    font-size: 12px;
+    color: var(--brief-text-3);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s;
+  }
+  .bd-toc__list a:hover {
+    background: var(--bd-brown-soft);
+    color: var(--accent);
+  }
+  .bd-toc__list a.is-active {
+    background: var(--accent);
+    color: var(--lemma-cream);
+  }
+  .bd-toc__num {
+    opacity: 0.7;
+    font-size: 10px;
+    flex-shrink: 0;
+    font-weight: 400;
+  }
+
   /* ─── BODY (rendered markdown) ─── */
   .brief-body {
     font-size: 15px;
     line-height: 1.85;
     color: var(--brief-text-2);
-    margin: 56px 0 0;
+    margin: 0;
   }
   .brief-body :global(p) {
     margin: 0 0 18px;
@@ -358,11 +716,6 @@ const labels = isJa
     color: #6e3610;
   }
 
-  /* H2 — section headings. The rehype-brief-section-number plugin tags each
-     numbered h2 with data-section-num="N" and strips the "N. " prefix; the
-     CSS below renders the "§ N" mono brown eyebrow via attr(). The first
-     h2 (TL;DR) has no data-section-num and falls into the TL;DR card
-     treatment below. */
   .brief-body :global(h2) {
     font-family: var(--brief-display);
     font-size: 30px;
@@ -371,6 +724,8 @@ const labels = isJa
     letter-spacing: -0.025em;
     line-height: 1.2;
     margin: 56px 0 24px;
+    scroll-margin-top: 88px;
+    position: relative;
   }
   :root[lang="ja"] .brief-body :global(h2) {
     line-height: 1.35;
@@ -390,6 +745,22 @@ const labels = isJa
   }
   .brief-body :global(h2:first-child) {
     margin-top: 0;
+  }
+  /* Section anchor (⌗) injected by script — visible on h2 hover. */
+  .brief-body :global(h2 .brief-anchor) {
+    margin-left: 10px;
+    font-size: 0.62em;
+    color: var(--bd-brown-mid);
+    text-decoration: none;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .brief-body :global(h2:hover .brief-anchor) {
+    opacity: 1;
+  }
+  .brief-body :global(h2 .brief-anchor:hover) {
+    color: var(--accent);
   }
   .brief-body :global(h3) {
     font-family: var(--brief-display);
@@ -436,7 +807,7 @@ const labels = isJa
     color: var(--brief-text-1);
   }
 
-  /* ─── TL;DR-adjacent subscribe pill (per dev addendum 2026-06-04 §B) ─── */
+  /* ─── TL;DR-adjacent subscribe pill ─── */
   .brief-body .brief-subscribe-pill {
     display: inline-flex;
     align-items: center;
@@ -461,7 +832,7 @@ const labels = isJa
     color: var(--brief-text-1);
   }
 
-  /* ─── LISTS — saddle brown diamond markers, mono brown numbered ─── */
+  /* ─── LISTS ─── */
   .brief-body :global(ul) {
     margin: 0 0 18px;
     padding: 0;
@@ -508,14 +879,14 @@ const labels = isJa
     font-weight: 500;
   }
 
-  /* ─── HR (markdown section separators) ─── */
+  /* ─── HR ─── */
   .brief-body :global(hr) {
     border: none;
     border-top: 0.5px solid var(--lemma-line);
     margin: 48px 0;
   }
 
-  /* ─── TABLES (Brief 002 has one) ─── */
+  /* ─── TABLES ─── */
   .brief-body :global(table) {
     width: 100%;
     border-collapse: collapse;
@@ -570,18 +941,391 @@ const labels = isJa
     color: inherit;
   }
 
+  /* ─── INLINE CTA (after §4) ─── */
+  .bd-inline-cta {
+    background: var(--white);
+    border: 1px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin: 56px 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: center;
+  }
+  .bd-inline-cta__text h3 {
+    font-family: var(--brief-display);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    line-height: 1.4;
+  }
+  .bd-inline-cta__text p {
+    font-size: 14px;
+    color: var(--brief-text-3);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .bd-inline-cta__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 210px;
+  }
+  .bd-inline-cta__actions a {
+    font-family: var(--brief-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 11px 22px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .bd-inline-cta__actions a::after {
+    content: "→";
+  }
+  .bd-inline-cta__actions a.primary {
+    background: var(--black);
+    color: var(--lemma-cream);
+  }
+  .bd-inline-cta__actions a.primary:hover {
+    background: var(--bd-brown-dark);
+  }
+  .bd-inline-cta__actions a.secondary {
+    background: transparent;
+    color: var(--black);
+    border: 1px solid var(--lemma-line);
+  }
+  .bd-inline-cta__actions a.secondary:hover {
+    border-color: var(--bd-brown-mid);
+    color: var(--accent);
+  }
+
+  /* ─── PREV / NEXT ─── */
+  .bd-prevnext {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 80px 0 0;
+  }
+  .bd-pn {
+    background: var(--white);
+    border: 1px solid var(--lemma-line);
+    border-radius: 10px;
+    padding: 24px 26px;
+    text-decoration: none;
+    color: var(--black);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .bd-pn:hover {
+    border-color: var(--bd-brown-mid);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.05);
+  }
+  .bd-pn.next {
+    text-align: right;
+  }
+  .bd-pn--empty {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .bd-pn__dir {
+    font-family: var(--brief-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .bd-pn__meta {
+    font-family: var(--brief-mono);
+    font-size: 11px;
+    color: var(--brief-text-4);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .bd-pn__title {
+    font-family: var(--brief-display);
+    font-weight: 700;
+    font-size: 15.5px;
+    color: var(--black);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  :root[lang="ja"] .bd-pn__title {
+    line-height: 1.5;
+  }
+
+  /* ─── RELATED (index card design) ─── */
+  .bd-related {
+    margin: 80px 0 0;
+  }
+  .bd-related__head {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--lemma-line);
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .bd-related__tag {
+    font-family: var(--brief-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bd-related__tag::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+  .bd-related__more {
+    margin-left: auto;
+    font-family: var(--brief-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .bd-related__more::after {
+    content: " →";
+  }
+  .bd-related__more:hover {
+    text-decoration: underline;
+  }
+  .bd-related__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .bd-rcard {
+    background: var(--white);
+    border: 1px solid var(--lemma-line);
+    border-radius: 8px;
+    padding: 28px 26px;
+    text-decoration: none;
+    color: var(--black);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .bd-rcard::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 8px 0 0 0;
+  }
+  .bd-rcard:hover {
+    border-color: var(--bd-brown-mid);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.06);
+  }
+  .bd-rcard__meta {
+    font-family: var(--brief-mono);
+    font-size: 10.5px;
+    color: var(--brief-text-4);
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bd-rcard__no {
+    color: var(--accent);
+  }
+  .bd-rcard__sep {
+    color: var(--lemma-line);
+  }
+  .bd-rcard__title {
+    font-family: var(--brief-display);
+    font-weight: 700;
+    font-size: 15.5px;
+    color: var(--black);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  :root[lang="ja"] .bd-rcard__title {
+    line-height: 1.55;
+  }
+  .bd-rcard__sub {
+    font-size: 12.5px;
+    color: var(--brief-text-3);
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+  }
+  .bd-rcard__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--lemma-line);
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .bd-rcard__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .bd-rcard__tag {
+    font-family: var(--brief-mono);
+    font-size: 9.5px;
+    background: var(--bd-brown-soft);
+    color: var(--bd-brown-dark);
+    padding: 3px 8px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+  .bd-rcard__read {
+    font-family: var(--brief-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* ─── NEWSLETTER MINI BANNER ─── */
+  .bd-newsletter {
+    margin: 72px 0 0;
+    background: var(--lemma-cream-deep);
+    border-radius: 14px;
+    padding: 40px 44px;
+  }
+  .bd-newsletter__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .bd-newsletter h3 {
+    font-family: var(--brief-display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--black);
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+  }
+  .bd-newsletter p {
+    font-size: 14px;
+    color: var(--brief-text-3);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .bd-newsletter a {
+    font-family: var(--brief-mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    background: var(--black);
+    color: var(--lemma-cream);
+    padding: 14px 28px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .bd-newsletter a::after {
+    content: "→";
+  }
+  .bd-newsletter a:hover {
+    background: var(--bd-brown-dark);
+  }
+
+  /* ─── COPY TOAST ─── */
+  .bd-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--black);
+    color: var(--lemma-cream);
+    font-family: var(--brief-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 11px 22px;
+    border-radius: 50px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+  }
+  .bd-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .bd-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .bd-content {
+      max-width: none;
+      order: 1;
+    }
+    .bd-toc {
+      position: relative;
+      top: auto;
+      order: 0;
+      padding: 0 0 24px;
+      margin: 8px 0 28px;
+      border-bottom: 1px solid var(--lemma-line);
+    }
+    .bd-toc__label {
+      border-bottom: none;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .bd-toc__list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .bd-related__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
   @media (max-width: 760px) {
     .brief-page {
-      /* The 64px desktop gap-after-nav reads as wasted scroll on a phone;
-         shrink to a single breath-line so the breadcrumb sits near the
-         top fold. */
       margin-top: 8px;
     }
     .brief-breadcrumb {
       padding: 16px 0 0;
     }
-    .container-narrow {
+    .bd-shell {
       padding: 0 24px;
     }
     .brief-body :global(h2) {
@@ -592,6 +1336,33 @@ const labels = isJa
     }
     .brief-body :global(h2:first-child + p) {
       padding: 0 24px 24px;
+    }
+    .bd-inline-cta {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 28px 24px;
+    }
+    .bd-inline-cta__actions {
+      min-width: 0;
+    }
+    .bd-prevnext {
+      grid-template-columns: 1fr;
+    }
+    .bd-pn.next {
+      text-align: left;
+    }
+    .bd-pn--empty {
+      display: none;
+    }
+    .bd-related__grid {
+      grid-template-columns: 1fr;
+    }
+    .bd-newsletter {
+      padding: 32px 24px;
+    }
+    .bd-newsletter__inner {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

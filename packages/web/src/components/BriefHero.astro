@@ -30,6 +30,10 @@ export interface BriefHeroProps {
   mainTitle: string;
   subtitle: string;
   pillarLabel: string;
+  /** Link target for the Pillar tag (Pillar detail page). */
+  pillarHref: string;
+  /** Base path ("" or "/ja") for building category filter links. */
+  base: string;
   incidentDateStr: string;
   publishedStr: string;
 }
@@ -41,16 +45,19 @@ const {
   mainTitle,
   subtitle,
   pillarLabel,
+  pillarHref,
+  base,
   incidentDateStr,
   publishedStr,
 } = Astro.props as BriefHeroProps;
 
-const primaryCatLabel = categoryLabel(
-  brief.data.primary_category as CategorySlug,
-  locale,
-);
-const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
-  categoryLabel(c as CategorySlug, locale),
+const categoryHref = (slug: string) =>
+  `${base}/critical/briefs/?category=${slug}`;
+
+const primarySlug = brief.data.primary_category as CategorySlug;
+const primaryCatLabel = categoryLabel(primarySlug, locale);
+const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
+  (c) => ({ slug: c, label: categoryLabel(c, locale) }),
 );
 ---
 
@@ -59,10 +66,12 @@ const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
   {subtitle && <p class="hero-subtitle">{subtitle}</p>}
 
   <div class="hero-tags">
-    <span class="hero-tag pillar">{pillarLabel}</span>
-    <span class="hero-tag category">{primaryCatLabel}</span>
-    {secondaryCatLabels.map((lab) => (
-      <span class="hero-tag cat-secondary">{lab}</span>
+    <a class="hero-tag pillar" href={pillarHref}>{pillarLabel}</a>
+    <a class="hero-tag category" href={categoryHref(primarySlug)}>
+      {primaryCatLabel}
+    </a>
+    {secondaryCats.map((c) => (
+      <a class="hero-tag cat-secondary" href={categoryHref(c.slug)}>{c.label}</a>
     ))}
   </div>
 
@@ -119,19 +128,32 @@ const secondaryCatLabels = brief.data.secondary_categories.map((c) =>
     text-transform: uppercase;
     padding: 6px 12px;
     border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
   }
   .hero-tag.pillar {
     background: var(--accent);
     color: var(--lemma-cream);
     font-weight: 500;
   }
+  .hero-tag.pillar:hover {
+    background: #6e3610;
+  }
   .hero-tag.category {
     background: var(--lemma-brown-light);
     color: var(--accent);
   }
+  .hero-tag.category:hover {
+    background: var(--accent);
+    color: var(--lemma-cream);
+  }
   .hero-tag.cat-secondary {
     background: var(--lemma-cream-deep);
     color: #5a5a5a;
+  }
+  .hero-tag.cat-secondary:hover {
+    background: var(--lemma-brown-light);
+    color: var(--accent);
   }
 
   @media (max-width: 760px) {
