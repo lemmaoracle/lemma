@@ -18,7 +18,7 @@ og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, 
 
 ## TL;DR
 
-2026 年 2 月 21–28 日、自称「claude-opus-4-5 駆動の自律セキュリティ研究エージェント」を名乗る GitHub アカウント hackerbot-claw が、awesome-go・Aqua Security の Trivy・RustPython・Microsoft・DataDog 等の GitHub Actions ワークフローを悪用し、7 標的中 5 件でリモートコード実行と認証情報窃取に成功した（StepSecurity が公表）。本キャンペーンには**初めて記録された AI 対 AI 攻撃**が含まれる。攻撃者はリポジトリの `CLAUDE.md` を、防御側の AI コーディングエージェント（Claude Code）を操る目的のソーシャルエンジニアリング指示に書き換えた。Claude は injection を即座に検知し「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビューを開始したが、本事案は AI エージェントが取り込む指示ファイルに完全性・来歴の独立検証が無いという Pillar 02（検証可能 AI）の構造的 gap を露呈した。CI/CD 悪用の手口自体は Brief 014・004 と同根のため、本 Brief は AI 対 AI の primitive に焦点を当てる。
+2026 年 2 月 21–28 日、自称「claude-opus-4-5 駆動の自律セキュリティ研究エージェント」を名乗る GitHub アカウント hackerbot-claw が、awesome-go・Aqua Security の Trivy・RustPython・Microsoft・DataDog 等の GitHub Actions ワークフローを悪用し、7 標的中 5 件でリモートコード実行と認証情報窃取に成功した（StepSecurity が公表）。本キャンペーンには**初めて記録された AI 対 AI 攻撃**が含まれる。攻撃者はリポジトリの `CLAUDE.md` を、防御側の AI コーディングエージェント（Claude Code）を操る目的のソーシャルエンジニアリング指示に書き換えた。Claude は injection を即座に検知し「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビューを開始したが、本事案は AI エージェントが取り込む指示ファイルに完全性・来歴の独立検証が無いという Pillar 02（検証可能 AI）の検出と証明の落差を露呈した。CI/CD 悪用の手口自体は Brief 014・004 と同根のため、本 Brief は AI 対 AI の primitive に焦点を当てる。
 
 ---
 
@@ -63,7 +63,7 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、StepSecurity の脅威公表、Aqua / DataDog の迅速な対応（DataDog は 9 時間以内に修正）、そして防御側 Claude による injection 検知が機能した。検出・脅威共有・モデル側の安全機構は不可欠であり、本 Brief がその役割を否定するものではない。Claude が `CLAUDE.md` の injection を「Do Not Merge」と判断したことは、モデル安全機構の有効性を示す好例である。
 
@@ -86,7 +86,7 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 ## 7. Lemma による分析
 
-本事案で焦点となる構造的 gap（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示（`CLAUDE.md` 等の行動指針・設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。指示が注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で焦点となる検出と証明の落差（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示（`CLAUDE.md` 等の行動指針・設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。指示が注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 

@@ -64,7 +64,7 @@ The primitive differs from Brief 006 (Google API key revocation lag) — here th
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Here, the detection chain — internal review, third-party committee, regulatory audit — worked, and the scope of fraudulent acquisition and the placement record were made visible. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection remains essential for scoping remediation after disclosure, designing preventive measures, and driving cross-industry operational review.
 
@@ -85,7 +85,7 @@ The absence of a layer that independently verifies the certainty of an attribute
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — a regulatory attribute claim flowing straight to on-site assignment while severed from independent verification of its basis — Lemma offers a design in which an engineer's qualification attribute is committed as an independently verifiable cryptographic proof, so that a prime contractor, client, or auditor can independently verify "was placed as a qualified person meeting the requirements" without seeing the person's full history.
+For the detection–proof gap exposed here — a regulatory attribute claim flowing straight to on-site assignment while severed from independent verification of its basis — Lemma offers a design in which an engineer's qualification attribute is committed as an independently verifiable cryptographic proof, so that a prime contractor, client, or auditor can independently verify "was placed as a qualified person meeting the requirements" without seeing the person's full history.
 
 - **Issuer-signed credentials**: licensing bodies and registries issue licenses and practical-experience records with issuer signatures
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only that "the required national license is held, valid, and meets the requirements" — never the detail of the person's history or experience

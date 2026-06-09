@@ -63,7 +63,7 @@ The primitive differs from Brief 003 (Starlette / BadHost) — here the assertio
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, Aikido measured revocation lag from approximately 1 minute to 23 minutes across 10 trials over 2 days and made the problem visible across the industry. This is a typical success of cross-industry threat hunting by detection firms, and this Brief does not deny the role of detection firms. Detection remains essential for shaping the contours of an event, surfacing cross-industry argument, and prompting cross-organizational operational review.
 
@@ -90,7 +90,7 @@ This suggests that "faster revocation is technically possible," and Aikido prese
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid." For design details see [Adding Layer 3 to x402 — Choices for Stablecoin Issuers and Adopters](https://lemma.frame00.com/blog/ppsi-stablecoin-aml-kyc-third-layer/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid." For design details see [Adding Layer 3 to x402 — Choices for Stablecoin Issuers and Adopters](https://lemma.frame00.com/blog/ppsi-stablecoin-aml-kyc-third-layer/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

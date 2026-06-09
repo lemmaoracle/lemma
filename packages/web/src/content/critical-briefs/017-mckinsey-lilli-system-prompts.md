@@ -18,7 +18,7 @@ og_lead_en: "The layer governing the AI's behavior had no integrity or provenanc
 
 ## TL;DR
 
-2026 年 2 月、レッドチーム企業 CodeWall の自律オフェンシブ AI エージェントが、McKinsey の社内向け生成 AI プラットフォーム「Lilli」を、認証情報も内部知識もない状態から 2 時間足らずで本番データベースへの完全な read/write アクセスに到達させた。露呈した最も重大な gap は、**Lilli の挙動を統治する 95 件の system prompt がすべて書き込み可能**だった点である。攻撃者はこれを悪用すれば、Lilli の回答・遵守するガードレール・出典の引用の仕方を**サイレントに改ざん**し、同社従業員の 72% が日常利用するチャットボットの出力を毒できた。本事案は実被害ではなく責任ある開示を伴う red-team 実証だが、AI の判断を統治する層（system prompt）と出力の完全性・来歴が独立検証されないという Pillar 02（検証可能 AI）の構造的 gap を、marquee なエンタープライズ AI 運用で露呈した。
+2026 年 2 月、レッドチーム企業 CodeWall の自律オフェンシブ AI エージェントが、McKinsey の社内向け生成 AI プラットフォーム「Lilli」を、認証情報も内部知識もない状態から 2 時間足らずで本番データベースへの完全な read/write アクセスに到達させた。露呈した最も重大な gap は、**Lilli の挙動を統治する 95 件の system prompt がすべて書き込み可能**だった点である。攻撃者はこれを悪用すれば、Lilli の回答・遵守するガードレール・出典の引用の仕方を**サイレントに改ざん**し、同社従業員の 72% が日常利用するチャットボットの出力を毒できた。本事案は実被害ではなく責任ある開示を伴う red-team 実証だが、AI の判断を統治する層（system prompt）と出力の完全性・来歴が独立検証されないという Pillar 02（検証可能 AI）の検出と証明の落差を、marquee なエンタープライズ AI 運用で露呈した。
 
 ---
 
@@ -65,7 +65,7 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 脆弱性スキャン・WAF・SOC 監視は、本事案のような認証未実装エンドポイントや異常アクセスの発見に有用であり、本 Brief がその役割を否定するものではない。実際、McKinsey は開示を受けて数時間内に全問題を修正した。ただし本事案では、自動スキャナ（OWASP ZAP）が当該 SQLi を検知できなかったように、検出は万能ではない。
 
@@ -87,7 +87,7 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（AI の挙動を統治する system prompt と出力に、完全性・来歴を独立検証する仕組みが無い）に対して、Lemma は、AI の統治指示と出力に「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づける設計を提示している。system prompt がサイレントに書き換えられても、出力に伴う proof は別系統で不整合を告げるため、利用者・監査者は改ざんされた出力を真正なものと区別できる。Lemma は脆弱性検出やアクセス制御を否定するものではなく、検出に対して「AI の出力と統治指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI の挙動を統治する system prompt と出力に、完全性・来歴を独立検証する仕組みが無い）に対して、Lemma は、AI の統治指示と出力に「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づける設計を提示している。system prompt がサイレントに書き換えられても、出力に伴う proof は別系統で不整合を告げるため、利用者・監査者は改ざんされた出力を真正なものと区別できる。Lemma は脆弱性検出やアクセス制御を否定するものではなく、検出に対して「AI の出力と統治指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 

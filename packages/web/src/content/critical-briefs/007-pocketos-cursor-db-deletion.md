@@ -67,7 +67,7 @@ Brief 003(Starlette/BadHost)と同じ Pillar 03 だが、別の primitive を持
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 AI agent の "written confession"(自身が違反した safety rules の enumeration)は、典型的な事後検出(post-execution explanation)の一形態である。これは事後の事故原因の同定・再発防止議論・業界横断問題提起には貢献するが、damage が完了した後の説明にしかならない。output filtering、ハルシネーション検出、行動異常検知などの検出層は、本事案のように「正規プロセスで実行された destructive operation」では発火しにくい構造である。
 
@@ -91,7 +91,7 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 

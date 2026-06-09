@@ -61,7 +61,7 @@ og_lead_en: "A statistical attack strips the AI-content provenance mark — Synt
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 透かしと、その検出 API は、AI 生成コンテンツのラベリング・コンテンツモデレーション・初期スクリーニングに有用であり、本 Brief がその役割を否定するものではない。大規模に「AI 生成らしさ」を判定する層として、透かしは実務的な価値を持つ。
 
@@ -83,7 +83,7 @@ og_lead_en: "A statistical attack strips the AI-content provenance mark — Synt
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 

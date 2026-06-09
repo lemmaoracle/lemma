@@ -66,7 +66,7 @@ This incident is not an attack incident; it is a trust-layer risk event in the p
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 FRT and its accuracy evaluation (NIST and others) have a certain role as a means of initial narrowing in government and investigation, and this Brief does not deny that role. Measurement of accuracy and bias (detection-style evaluation) is essential as a basis for technology selection and operational restrictions.
 
@@ -89,7 +89,7 @@ How government, when using AI outputs in enforcement actions, benefit decisions,
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

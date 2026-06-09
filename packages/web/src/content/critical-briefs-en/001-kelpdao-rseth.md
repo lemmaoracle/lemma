@@ -67,11 +67,11 @@ In its incident statement, LayerZero Labs signaled its intent to treat this stru
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, the DVN signing keys themselves were not compromised, and the signing process was legitimate. The typical observation points on the detection side (anomalous use of signing keys, misbehavior of the signing service) are difficult to fire under this structure. The attack succeeded because the input data to the observation layer was manipulated; the signing process itself operated as specified.
 
-This incident exposed a structural gap that hardening the detection layer alone cannot close. A 99.7% anomalous confidence score is unlikely to fire in a case where, as here, a legitimate process produced a legitimate signature over manipulated inputs. This is not a deficiency in the detection tools or vendors; it indicates that between detection and proof — that is, establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — an independent layer is required. Detection remains an important layer, and in this incident it narrowed the post-event blast window and contributed to scoping the impact.
+This incident exposed a detection–proof gap that hardening the detection layer alone cannot close. A 99.7% anomalous confidence score is unlikely to fire in a case where, as here, a legitimate process produced a legitimate signature over manipulated inputs. This is not a deficiency in the detection tools or vendors; it indicates that between detection and proof — that is, establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — an independent layer is required. Detection remains an important layer, and in this incident it narrowed the post-event blast window and contributed to scoping the impact.
 
 Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
 
@@ -91,7 +91,7 @@ LayerZero Labs (as of the 2026-05 incident statement):
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

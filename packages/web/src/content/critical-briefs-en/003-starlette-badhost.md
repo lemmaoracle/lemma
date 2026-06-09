@@ -64,7 +64,7 @@ The primitive differs from Brief 001 (KelpDAO / rsETH) and Brief 002 (Stake DAO)
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 The mcp-scan.nemesis.services scanner X41 D-Sec released identifies affected servers by detecting the vulnerable version. This is detection of "whether the vulnerability is present," and it is operationally useful. This Brief does not deny the role of detection vendors.
 
@@ -87,7 +87,7 @@ The "data at risk" categories X41 D-Sec enumerated illustrate the reach of this 
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof), Lemma proposes a design that embeds, at the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," "against which resource" — so that the receiver can make accept decisions by reading the proof, not the config or the path. Even if a path-resolution bug exists in the framework, the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof), Lemma proposes a design that embeds, at the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," "against which resource" — so that the receiver can make accept decisions by reading the proof, not the config or the path. Even if a path-resolution bug exists in the framework, the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

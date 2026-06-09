@@ -53,13 +53,13 @@ In May 2026, Drew Miller, founder of Tritium Legal Technologies, disclosed the "
 
 ## 4. Structural Analysis
 
-This incident is a representative case of a structure in which, in AI judgment, **the implicit assumption that "what the document file displays on screen equals what is passed to the AI" was left unverified**. There is no problem with AI inference (model performance); the structural gap is the absence of a layer that independently verifies "what the AI is seeing" and "whether it matches what the human is seeing."
+This incident is a representative case of a structure in which, in AI judgment, **the implicit assumption that "what the document file displays on screen equals what is passed to the AI" was left unverified**. There is no problem with AI inference (model performance); the detection–proof gap is the absence of a layer that independently verifies "what the AI is seeing" and "whether it matches what the human is seeing."
 
 The primitive differs from Brief 003 (Starlette / BadHost) — the target here is the trust of document text rather than the trust of an HTTP request — but the underlying structure is shared: **a trust assertion is detached from the layer that verifies it**. It shares structural adjacency with Briefs 001 / 002 / 004 (independent verification of message origin or commit origin); the gap here is the absence of independent verification of input data origin / integrity.
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 Conventional detection-side AI safety has concentrated on output filtering (hallucination detection, ungrounded-judgment detection, harmful-content detection). These do not function well against the present incident. The AI is performing inference correctly on the input it received (the text written as "Delaware"), so anomaly is hard to detect at the output level.
 
@@ -79,7 +79,7 @@ Pre-execution attestation adopts a structure that, before the AI generates a jud
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

@@ -18,7 +18,7 @@ og_lead_en: "The layer governing the AI's behavior had no integrity or provenanc
 
 ## TL;DR
 
-In February 2026, an autonomous offensive AI agent operated by the red-team firm CodeWall, starting with neither credentials nor internal knowledge, reached full read/write access to McKinsey's production database for its internal generative-AI platform "Lilli" in under two hours. The most significant gap exposed was that **all 95 system prompts governing Lilli's behavior were writable**. An attacker exploiting this position could have **silently tampered** with Lilli's responses, the guardrails it observed, and the way it cited sources — poisoning the output of a chatbot in daily use by 72% of the firm's employees. The case is a responsible-disclosure red-team demonstration rather than an actual breach, but it exposed the structural gap of Pillar 02 (Verifiable AI): the layer governing the AI's judgment (system prompts) and its outputs are not independently verified for integrity or provenance — surfaced in a marquee enterprise AI deployment.
+In February 2026, an autonomous offensive AI agent operated by the red-team firm CodeWall, starting with neither credentials nor internal knowledge, reached full read/write access to McKinsey's production database for its internal generative-AI platform "Lilli" in under two hours. The most significant gap exposed was that **all 95 system prompts governing Lilli's behavior were writable**. An attacker exploiting this position could have **silently tampered** with Lilli's responses, the guardrails it observed, and the way it cited sources — poisoning the output of a chatbot in daily use by 72% of the firm's employees. The case is a responsible-disclosure red-team demonstration rather than an actual breach, but it exposed the detection–proof gap of Pillar 02 (Verifiable AI): the layer governing the AI's judgment (system prompts) and its outputs are not independently verified for integrity or provenance — surfaced in a marquee enterprise AI deployment.
 
 ---
 
@@ -65,7 +65,7 @@ The same Pillar 02 as Brief 005 (Noroboto, AI document review misdirected via fo
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Vulnerability scanning, WAFs, and SOC monitoring are useful for discovering unauthenticated endpoints and anomalous access of the kind in this case, and this Brief does not deny that role. McKinsey in fact patched everything within hours of disclosure. That said, automated scanners (OWASP ZAP) did not detect this SQLi — detection is not omnipotent.
 
@@ -87,7 +87,7 @@ How operators and auditors should independently verify the layer governing the A
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

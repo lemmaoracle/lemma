@@ -63,7 +63,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、Anthropic が流出を人的ミスとして確認し該当バージョンを撤回・DMCA takedown を発行、Trend Micro が便乗キャンペーンの payload 経路・IOC を解析・公表し、配布プラットフォーム側も takedown を実施した。検出層は事象の輪郭把握・封じ込め・IOC 共有に貢献し、業界横断で問題を可視化した。検出企業・プラットフォームの役割を本 Brief が否定するものではない。
 
@@ -84,7 +84,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 

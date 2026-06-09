@@ -63,7 +63,7 @@ Brief 003(Starlette/BadHost)とは別の primitive(本事案では「失効済�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では Aikido が約 1 分から 23 分の失効遅延を 10 回試験 × 2 日にわたって計測し、業界横断で問題を可視化した。これは検出企業による threat hunting の典型的成功であり、検出企業の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
 
@@ -90,7 +90,7 @@ API 種別による失効速度の差が示すこと:
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。設計の詳細は [「x402 に第3層を足す — ステーブルコイン事業者の選択肢」](https://lemma.frame00.com/ja/blog/ppsi-stablecoin-aml-kyc-third-layer/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。設計の詳細は [「x402 に第3層を足す — ステーブルコイン事業者の選択肢」](https://lemma.frame00.com/ja/blog/ppsi-stablecoin-aml-kyc-third-layer/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 

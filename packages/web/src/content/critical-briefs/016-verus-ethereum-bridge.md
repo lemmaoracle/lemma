@@ -63,7 +63,7 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 ブリッジの監視・異常検知や、Halborn のような事後の root cause 解析は、被害の把握・封じ込め・再発防止議論・交渉による資産回収に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも事後解析と交渉により約 75% が回収された。
 
@@ -85,7 +85,7 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を提示している。Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）に示している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例であり、設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照のこと。
+本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を提示している。Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）に示している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例であり、設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照のこと。
 
 ---
 

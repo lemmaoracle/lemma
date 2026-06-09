@@ -65,7 +65,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案は、提供事業者（Anthropic）側の異常検知・classifier・アカウント ban という検出層が機能し、約 10 日で範囲を特定して停止に至った。検出層は incident の認識・遮断・業界横断の脅威共有に不可欠であり、本 Brief がその役割を否定するものではない。Anthropic 自身も調査における大量データ分析に AI を活用したと報告している。
 
@@ -87,7 +87,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 

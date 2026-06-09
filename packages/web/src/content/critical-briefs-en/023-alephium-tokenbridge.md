@@ -77,7 +77,7 @@ The contrast with Brief 001 is especially important. In Brief 001, the attacker 
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Blockaid's real-time detection and SEAL 911's investigation support were indispensable for damage assessment, bridge shutdown, unbacked-token burn, and fund tracing, and this Brief does not dispute their role. In this incident, detection-to-burn (96.4%) was achieved in three days.
 
@@ -99,7 +99,7 @@ Pre-execution attestation adopts a design that requires, before the guardian sig
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. The design philosophy of the Verifiable Origin category — "cryptographically valid ≠ provenance correct" — and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the design background, see [What the 2026 Bridge Incidents Are Telling Us — On the Category of Verifiable Origin](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04).
+For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. The design philosophy of the Verifiable Origin category — "cryptographically valid ≠ provenance correct" — and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the design background, see [What the 2026 Bridge Incidents Are Telling Us — On the Category of Verifiable Origin](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04).
 
 ---
 

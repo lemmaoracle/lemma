@@ -69,7 +69,7 @@ The targets differ from Brief 012 (a facial-recognition AI judgment flowing, wit
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Here, the detection chain — NHTSA's staged investigations (PE24031 → EA26002, plus PE25012 and the reporting-practice investigation), Reuters' investigative reporting, and the testimony of Tesla's in-house data labelers — worked, and the driving-decision failures, under-reporting, and statistical inflation were made visible from outside. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is indispensable for raising doubt, driving the investigation, and judging whether a recall is required.
 

@@ -67,7 +67,7 @@ The targets differ from Brief 019 (a person's qualification attribute), Brief 02
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Here, the detection chain — sustained investigative reporting and a special audit by KPMG — worked, and the divergence between asserted attribute and reality was ultimately made visible from outside. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is essential for raising the question, driving the investigation, and scoping remediation after disclosure.
 
@@ -89,7 +89,7 @@ The absence of a layer that independently verifies the basis of asset existence 
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — a claim of asset existence flowing straight to regulatory disclosure and the markets while severed from independent verification of its basis — Lemma offers a design in which balance and reserve confirmations are committed as independently verifiable cryptographic proofs, so that auditors, regulators, and counterparties can independently verify "the asset exists at or above the threshold" without the company releasing its account originals.
+For the detection–proof gap exposed here — a claim of asset existence flowing straight to regulatory disclosure and the markets while severed from independent verification of its basis — Lemma offers a design in which balance and reserve confirmations are committed as independently verifiable cryptographic proofs, so that auditors, regulators, and counterparties can independently verify "the asset exists at or above the threshold" without the company releasing its account originals.
 
 - **Issuer-signed attestations**: the financial institution holding the asset (the issuer) attests to the existence of the balance with an issuer signature. Rather than paper routed through a third party, the proof is bound to the issuer
 - **Schema-bound proofs**: each proof is bound to the regulatory schema it satisfies (disclosure standard, reserve requirements, etc.), letting auditors and regulators verify directly against the regulatory text

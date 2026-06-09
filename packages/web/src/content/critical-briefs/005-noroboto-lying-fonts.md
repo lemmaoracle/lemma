@@ -53,13 +53,13 @@ og_lead_en: "Embedded font forgery silently rewrote what the AI read — Norobot
 
 ## 4. 構造的論点
 
-本事案は、AI 判断において **「文書ファイルが画面に表示する内容と AI に渡される内容は同一である」という暗黙の前提が独立検証されないまま放置されていた** という構造の代表事例である。AI の推論能力(モデル性能)に問題はなく、AI が「何を見ているか」「人間が見ているものと同じか」を独立検証する層が存在しないことが本事案の構造的 gap である。
+本事案は、AI 判断において **「文書ファイルが画面に表示する内容と AI に渡される内容は同一である」という暗黙の前提が独立検証されないまま放置されていた** という構造の代表事例である。AI の推論能力(モデル性能)に問題はなく、AI が「何を見ているか」「人間が見ているものと同じか」を独立検証する層が存在しないことが本事案の検出と証明の落差である。
 
 Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の trust ではなく文書テキストの trust)だが、共通する構造は同じ:**信頼の assertion が、それを検証する layer と切り離されている**。Brief 001 / 002 / 004 が扱う「メッセージ origin の独立検証」「commit origin の独立検証」と隣接する構造を持ち、本事案では入力データの origin / integrity が独立検証されないことが gap として露呈している。
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 従来の検出側 AI 安全対策は、AI の出力フィルタリング(ハルシネーション検出、根拠不在の判断検出、有害コンテンツ検出など)に集中している。本事案ではこれらが機能しにくい。AI は与えられた入力(「Delaware」と書かれたテキスト)に対して正常に推論しており、出力レベルでは異常が検知されにくいためである。
 
@@ -79,7 +79,7 @@ Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の tr
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 

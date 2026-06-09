@@ -64,7 +64,7 @@ Brief 003（Starlette/BadHost、HTTP Host ヘッダー操作による MCP サー
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事象では、OX Security・CSA・各 CVE 報告者による検出・開示が機能し、供給網全体の問題が可視化された。脆弱性スキャン・実行時監視・サプライチェーン SBOM などの検出層は、影響範囲の特定と是正に不可欠であり、本 Brief がその役割を否定するものではない。
 
@@ -115,7 +115,7 @@ Models change. Proofs remain.
 
 ## 9. Brief 配布について
 
-Lemma が発行する脅威インテリジェンス・ブリーフです。CSO・アナリスト・規制実務者向けに、AI 時代のサイバー事案および信頼インフラのリスク事象を構造的に分析し、Detection 層では閉じない構造的 gap と Lemma の応答層を特定します。
+Lemma が発行する脅威インテリジェンス・ブリーフです。CSO・アナリスト・規制実務者向けに、AI 時代のサイバー事案および信頼インフラのリスク事象を構造的に分析し、検出と証明の落差と Lemma の応答層を特定します。
 
 - [Discovery Call →](https://tally.so/r/EkBqDX)
 - [ホワイトペーパー →](https://tally.so/r/xX0VYv)

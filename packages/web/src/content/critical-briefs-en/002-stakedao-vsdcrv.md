@@ -73,7 +73,7 @@ Both incidents reach the same structure from different vectors. Following the Ke
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, Blockaid detected the attack in real time within minutes, which enabled the Stake DAO team to act quickly on containment (protecting backing assets and pausing the vsdCRV bridge). The detection layer demonstrably worked to limit the spread of damage, and this Brief does not deny the role of detection vendors.
 
@@ -103,7 +103,7 @@ Industry response:
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

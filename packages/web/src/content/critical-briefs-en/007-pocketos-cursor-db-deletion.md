@@ -67,7 +67,7 @@ It shares Pillar 03 with Brief 003 (Starlette / BadHost) but has a different pri
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 The AI agent's "written confession" (the enumeration of safety rules it had violated) is a form of typical post-event detection (post-execution explanation). It contributes to identifying the cause of the incident, discussion of preventive measures, and cross-industry argument, but it can only explain after damage is complete. Detection layers such as output filtering, hallucination detection, and behavioral anomaly detection are structurally hard to fire on a case like this one — a destructive operation executed through a legitimate process.
 
@@ -91,7 +91,7 @@ How organizations should design, supervise, and verify "the AI agent's authority
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

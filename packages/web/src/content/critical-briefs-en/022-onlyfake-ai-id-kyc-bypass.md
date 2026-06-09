@@ -60,11 +60,11 @@ This incident belongs to the `attribute-proof-bypass` category of Pillar 04 (Reg
 
 Convincing-looking ≠ issued
 
-Briefs 019 (worker qualification), 020 (product conformity) and 021 (asset existence) surfaced as insider data tampering and false reporting. This case is their counterpart: **an external attacker exploited the same structural gap — an attribute assertion decoupled from the layer that would verify it.** That the gap is the same shows the answer is not "more rigorous review of the presented artifact" but "add the verification layer." Through the lens of AI-generated content provenance, this case also sits adjacent to Brief 011 (SynthID watermark reverse engineering).
+Briefs 019 (worker qualification), 020 (product conformity) and 021 (asset existence) surfaced as insider data tampering and false reporting. This case is their counterpart: **an external attacker exploited the same detection–proof gap — an attribute assertion decoupled from the layer that would verify it.** That the gap is the same shows the answer is not "more rigorous review of the presented artifact" but "add the verification layer." Through the lens of AI-generated content provenance, this case also sits adjacent to Brief 011 (SynthID watermark reverse engineering).
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 The industry's initial response to this case is to strengthen detection. Deepfake detection, image forensics, and injection detection actually stop a large share of fraud attempts, and this Brief does not dispute the role of the detection layer. Detection remains essential as the layer that lowers bypass rate and raises attacker cost.
 
@@ -86,7 +86,7 @@ The absence of a layer that cryptographically verifies the issuer of the evidenc
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — a regulatory attribute for identity verification built on top of image evidence whose issuer cannot be verified — Lemma offers a design in which identity verification shifts from "image review" to "cryptographic verification of an issuer-signed credential," so the verifying side can confirm that "the requirements are satisfied" without receiving the original data.
+For the detection–proof gap exposed here — a regulatory attribute for identity verification built on top of image evidence whose issuer cannot be verified — Lemma offers a design in which identity verification shifts from "image review" to "cryptographic verification of an issuer-signed credential," so the verifying side can confirm that "the requirements are satisfied" without receiving the original data.
 
 - **Issuer-signed credentials**: governments, issuing authorities, and verified IdPs issue subject attributes with an issuer signature. What gets verified is not the look of an image but the cryptographic fact of the issuer's signature
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only what the regulation requires — "over 18," "not on the sanctions list," "cleared KYC" — never the original ID or the full attribute set
