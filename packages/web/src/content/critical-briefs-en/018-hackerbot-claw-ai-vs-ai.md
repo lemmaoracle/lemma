@@ -18,7 +18,7 @@ og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, 
 
 ## TL;DR
 
-Between 2026-02-21 and 2026-02-28, a GitHub account named hackerbot-claw — self-described as "an autonomous security research agent powered by claude-opus-4-5" — abused GitHub Actions workflows at awesome-go, Aqua Security's Trivy, RustPython, Microsoft, and DataDog (among others), succeeding in remote code execution and credential theft at 5 out of 7 targets (per StepSecurity). The campaign included **the first recorded AI-vs-AI attack**. The attacker rewrote a repository's `CLAUDE.md` into social-engineering instructions aimed at hijacking the defending AI coding agent (Claude Code). Claude immediately identified the injection and opened the review with "⚠️ PROMPT INJECTION ALERT — Do Not Merge," but the case exposes the structural gap of Pillar 02 (Verifiable AI): instruction files ingested by AI agents are not independently verified for integrity or provenance. Because the CI/CD abuse techniques themselves are the same primitives as Briefs 014 and 004, this Brief focuses on the AI-vs-AI primitive.
+Between 2026-02-21 and 2026-02-28, a GitHub account named hackerbot-claw — self-described as "an autonomous security research agent powered by claude-opus-4-5" — abused GitHub Actions workflows at awesome-go, Aqua Security's Trivy, RustPython, Microsoft, and DataDog (among others), succeeding in remote code execution and credential theft at 5 out of 7 targets (per StepSecurity). The campaign included **the first recorded AI-vs-AI attack**. The attacker rewrote a repository's `CLAUDE.md` into social-engineering instructions aimed at hijacking the defending AI coding agent (Claude Code). Claude immediately identified the injection and opened the review with "⚠️ PROMPT INJECTION ALERT — Do Not Merge," but the case exposes the detection–proof gap of Pillar 02 (Verifiable AI): instruction files ingested by AI agents are not independently verified for integrity or provenance. Because the CI/CD abuse techniques themselves are the same primitives as Briefs 014 and 004, this Brief focuses on the AI-vs-AI primitive.
 
 ---
 
@@ -63,7 +63,7 @@ The same Pillar 02 as Brief 017 (McKinsey Lilli, writable system prompts), formi
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 The case features StepSecurity's threat disclosure, the rapid responses by Aqua / DataDog (DataDog patched within 9 hours), and the defending Claude detecting the injection. Detection, threat sharing, and model-side safety mechanisms are indispensable, and this Brief does not deny their role. That Claude judged the `CLAUDE.md` injection as "Do Not Merge" is a positive example of model-safety effectiveness.
 
@@ -86,7 +86,7 @@ How operators should independently verify the integrity and provenance of instru
 
 ## 7. Lemma's Analysis
 
-Against the structural gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

@@ -18,7 +18,7 @@ og_lead_en: "Regulation-mandated raw PII storage became the breach surface via i
 
 ## TL;DR
 
-In May 2025, Coinbase disclosed an incident in which overseas-outsourced customer-support personnel (in India) had been bribed and had exfiltrated and externally sold the KYC data of at least 69,461 customers. The exfiltrated data included names, addresses, phone numbers, email addresses, masked SSNs, bank account identifiers, government-issued ID images, and balance / transaction snapshots; passwords, private keys, and funds were not exfiltrated. The attackers demanded a $20M ransom on May 11; Coinbase refused and offered a $20M bounty instead, and estimated remediation costs at $180M–$400M in a Form 8-K filed with the SEC. This incident is a representative case of the structural gap in Pillar 04 (Regulatory Attribute Proof) in which KYC / AML regulation requires operators to collect and store raw PII and that stored attribute data itself becomes the breach surface for insider threats.
+In May 2025, Coinbase disclosed an incident in which overseas-outsourced customer-support personnel (in India) had been bribed and had exfiltrated and externally sold the KYC data of at least 69,461 customers. The exfiltrated data included names, addresses, phone numbers, email addresses, masked SSNs, bank account identifiers, government-issued ID images, and balance / transaction snapshots; passwords, private keys, and funds were not exfiltrated. The attackers demanded a $20M ransom on May 11; Coinbase refused and offered a $20M bounty instead, and estimated remediation costs at $180M–$400M in a Form 8-K filed with the SEC. This incident is a representative case of the detection–proof gap in Pillar 04 (Regulatory Attribute Proof) in which KYC / AML regulation requires operators to collect and store raw PII and that stored attribute data itself becomes the breach surface for insider threats.
 
 ---
 
@@ -65,7 +65,7 @@ It shares Pillar 04 with Brief 006 (Google API key revocation lag) but has a dif
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 Insider threat detection, anomalous access detection, DLP, and third-party governance are essential for early discovery and containment of leakage via insiders such as in this incident, and this Brief does not deny that role. Coinbase recognized the wrongdoing and moved on disclosure, the bounty, and reorganization of its support setup — outcomes of detection and response functioning as well.
 
@@ -87,7 +87,7 @@ How "to satisfy regulatory attribute verification without storing raw PII" is ex
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes a design in which attribute verification is not "protected by the verifying party while it retains raw PII" but is instead "received by the verifying party as a proof, without the verifying party receiving raw PII." A user presents regulatory attributes — KYC passage, permitted jurisdiction, non-sanctioned status, age, and the like — as an independently verifiable cryptographic proof (a ZK attribute proof), and the operator verifies only the fact that "the attribute is satisfied" without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that could leak, even when insider bribery succeeds, the scope of exfiltration is bounded. Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes a design in which attribute verification is not "protected by the verifying party while it retains raw PII" but is instead "received by the verifying party as a proof, without the verifying party receiving raw PII." A user presents regulatory attributes — KYC passage, permitted jurisdiction, non-sanctioned status, age, and the like — as an independently verifiable cryptographic proof (a ZK attribute proof), and the operator verifies only the fact that "the attribute is satisfied" without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that could leak, even when insider bribery succeeds, the scope of exfiltration is bounded. Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

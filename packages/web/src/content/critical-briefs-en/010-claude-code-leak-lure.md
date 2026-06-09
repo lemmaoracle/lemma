@@ -63,7 +63,7 @@ It shares `code-provenance` with Brief 004 (Megalodon GitHub supply chain) but h
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, Anthropic confirmed the leak as human error and withdrew the affected version and issued DMCA takedowns; Trend Micro analyzed and disclosed the payload paths and IOCs of the lure campaign; distribution platforms also executed takedowns. The detection layer contributed to shaping the contours of the event, containment, and IOC sharing, and made the problem visible across the industry. This Brief does not deny the role of detection firms and platforms.
 
@@ -84,7 +84,7 @@ Pre-execution attestation adopts a design in which an independently verifiable c
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not." For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not." For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

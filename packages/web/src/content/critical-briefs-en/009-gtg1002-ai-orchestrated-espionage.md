@@ -65,7 +65,7 @@ It shares Pillar 03 with Brief 007 (PocketOS / Cursor) but has a different primi
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, anomaly detection, classifiers, and account bans on the provider side (Anthropic) functioned as the detection layer, identifying the scope in approximately 10 days and reaching a stop. The detection layer is essential for incident recognition, blocking, and cross-industry threat sharing, and this Brief does not deny that role. Anthropic itself also reports using AI for large-scale data analysis during investigation.
 
@@ -87,7 +87,7 @@ How organizations, providers, and regulators should design, supervise, and verif
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

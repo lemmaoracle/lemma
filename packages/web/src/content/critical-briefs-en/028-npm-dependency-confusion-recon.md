@@ -71,7 +71,7 @@ The `@sber-ecom-core/sberpay-widget` impersonation of Sberbank's payment widget 
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Quarantine of the stager by Microsoft Defender and others, IOC-based egress blocking, and registry reporting and takedown functioned effectively to contain this campaign (the package set has been removed). This Brief does not dispute their role.
 
@@ -92,7 +92,7 @@ Scope locking (pinning internal scopes to a private registry in `.npmrc`) and di
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof. Even if the package name and metadata claim an internal publisher, if the provenance proof reports the absence of a legitimate publisher, ingestion is rejected before it occurs. "The name looks internal ≠ it arrived from the legitimate publisher" — the design philosophy of the Verifiable Origin category and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the supply-chain provenance design background, also see Briefs 014 / 015 (TeamPCP cluster).
+For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof. Even if the package name and metadata claim an internal publisher, if the provenance proof reports the absence of a legitimate publisher, ingestion is rejected before it occurs. "The name looks internal ≠ it arrived from the legitimate publisher" — the design philosophy of the Verifiable Origin category and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the supply-chain provenance design background, also see Briefs 014 / 015 (TeamPCP cluster).
 
 ---
 

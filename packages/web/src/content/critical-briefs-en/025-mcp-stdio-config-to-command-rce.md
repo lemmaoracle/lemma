@@ -64,7 +64,7 @@ Brief 003 (Starlette/BadHost, HTTP Host header manipulation bypassing MCP server
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 In this case, detection and disclosure by OX Security, CSA, and individual CVE reporters functioned effectively, making the supply-chain-wide issue visible. Vulnerability scanning, runtime monitoring, and supply-chain SBOMs are indispensable for impact scoping and remediation, and this Brief does not dispute their role.
 

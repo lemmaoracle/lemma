@@ -62,7 +62,7 @@ The primitive differs from Brief 019 (worker qualification — "is qualified") a
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Here, the detection chain — internal review, third-party committee, regulatory on-site inspection — worked, and the scope of irregularities and the affected models were made visible. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is essential for scoping remediation after disclosure, recall judgments, and driving cross-industry operational review.
 
@@ -83,7 +83,7 @@ The absence of a layer that independently verifies the basis of a product's regu
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — a product's regulatory-conformance attribute claim flowing straight to type designation and shipment while severed from independent verification of its basis — Lemma offers a design in which certification test results are committed as independently verifiable cryptographic proofs, so that regulators and trading partners can independently verify "met the standard under the prescribed test conditions" without the company releasing its original test records.
+For the detection–proof gap exposed here — a product's regulatory-conformance attribute claim flowing straight to type designation and shipment while severed from independent verification of its basis — Lemma offers a design in which certification test results are committed as independently verifiable cryptographic proofs, so that regulators and trading partners can independently verify "met the standard under the prescribed test conditions" without the company releasing its original test records.
 
 - **Schema-bound proofs**: each proof is bound to the regulatory schema it satisfies (safety standards, emissions regulations, etc.), letting auditors verify directly against the regulatory text
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only "met the standard under the prescribed test conditions" — the test originals and the detail of internal measurement data never leave the company

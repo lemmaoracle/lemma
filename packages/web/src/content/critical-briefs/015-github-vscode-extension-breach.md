@@ -18,7 +18,7 @@ og_lead_en: "A poisoned VS Code extension lived 18 minutes on the marketplace �
 
 ## TL;DR
 
-2026 年 5 月、攻撃グループ TeamPCP（別名 UNC6780）が、毒入りの VS Code 拡張機能を介して GitHub 従業員の開発端末を侵害し、GitHub の内部リポジトリ約 3,800 件をクローン・窃取した。使われたのは正規拡張 Nx Console（`nrwl.angular-console`）の trojan 化バージョン（v18.95.0）で、VS Code Marketplace 上に公開されていたのは 5 月 18 日 12:30–12:48 UTC のわずか 18 分間。この短時間で、拡張は IDE のローカル環境から 1Password の保管庫、Anthropic Claude Code の設定、npm・GitHub・AWS の認証情報を窃取した。GitHub は 5 月 19 日に検知して即日 IR を開始、重要なシークレットをローテーションし、顧客リポジトリ・Enterprise アカウント・ユーザーデータには影響なしと公表した。本事案は、開発者が日常的に信頼する IDE 拡張という「信頼面」が侵入口になり、その正規マーケット掲載・配布経路が成果物の安全性を保証しないという Pillar 01 の構造的 gap を露呈した。
+2026 年 5 月、攻撃グループ TeamPCP（別名 UNC6780）が、毒入りの VS Code 拡張機能を介して GitHub 従業員の開発端末を侵害し、GitHub の内部リポジトリ約 3,800 件をクローン・窃取した。使われたのは正規拡張 Nx Console（`nrwl.angular-console`）の trojan 化バージョン（v18.95.0）で、VS Code Marketplace 上に公開されていたのは 5 月 18 日 12:30–12:48 UTC のわずか 18 分間。この短時間で、拡張は IDE のローカル環境から 1Password の保管庫、Anthropic Claude Code の設定、npm・GitHub・AWS の認証情報を窃取した。GitHub は 5 月 19 日に検知して即日 IR を開始、重要なシークレットをローテーションし、顧客リポジトリ・Enterprise アカウント・ユーザーデータには影響なしと公表した。本事案は、開発者が日常的に信頼する IDE 拡張という「信頼面」が侵入口になり、その正規マーケット掲載・配布経路が成果物の安全性を保証しないという Pillar 01 の検出と証明の落差を露呈した。
 
 ---
 
@@ -64,7 +64,7 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、GitHub が翌日に検知して即日 IR・シークレットローテーションに動き、影響範囲(内部リポジトリのみ・顧客非影響)を特定して公表した。検出・封じ込めの層は被害の確定と拡大防止に不可欠であり、本 Brief がその役割を否定するものではない。
 
@@ -86,7 +86,7 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(開発者ツールの正規配布経路が成果物の完全性を保証せず、端末上の再利用可能トークンが窃取で replay される)に対して、Lemma は二方向の設計を提示している。第一に、拡張・ツール等の成果物に「正規の origin・ビルド経路から生成された」ことをビルド来歴の独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証することで、正規マーケットに掲載された trojan 化版を署名の有無に依らず reject できるようにする。第二に、開発環境の認証を端末上に静的な再利用可能トークンを残さない key-less な証明に置き換え、端末から窃取された「認証情報」が別環境で replay されないようにする。Lemma はマーケットの審査や検出を否定するものではなく、配布経路の信頼シグナルに対して成果物来歴の証明と key-less 認証を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(開発者ツールの正規配布経路が成果物の完全性を保証せず、端末上の再利用可能トークンが窃取で replay される)に対して、Lemma は二方向の設計を提示している。第一に、拡張・ツール等の成果物に「正規の origin・ビルド経路から生成された」ことをビルド来歴の独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証することで、正規マーケットに掲載された trojan 化版を署名の有無に依らず reject できるようにする。第二に、開発環境の認証を端末上に静的な再利用可能トークンを残さない key-less な証明に置き換え、端末から窃取された「認証情報」が別環境で replay されないようにする。Lemma はマーケットの審査や検出を否定するものではなく、配布経路の信頼シグナルに対して成果物来歴の証明と key-less 認証を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 

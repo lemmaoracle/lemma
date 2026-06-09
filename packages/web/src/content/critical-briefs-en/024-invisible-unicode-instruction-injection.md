@@ -63,7 +63,7 @@ Brief 005 (Noroboto, lying fonts that decouple "on-screen text" from "the string
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 For this class of technique, detection-side measures — invisible-character stripping, programmatic flagging of decode behavior, skill audits — have been proposed and shared alongside the research. These measures raise attacker cost and block known patterns, and this Brief does not dispute their role.
 
@@ -85,7 +85,7 @@ The absence of a layer that independently verifies the origin and integrity of i
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — the identity between human-read and model-read input cannot be guaranteed without a verification layer — Lemma offers a design in which the origin and integrity of inputs reaching the AI are committed as independently verifiable cryptographic proofs.
+For the detection–proof gap exposed here — the identity between human-read and model-read input cannot be guaranteed without a verification layer — Lemma offers a design in which the origin and integrity of inputs reaching the AI are committed as independently verifiable cryptographic proofs.
 
 - **Fixing input origin**: skills, tool definitions, documents, and other inputs are issued with a distributor (issuer) signature and bound to the original via docHash. At ingestion, the system verifies that the input arrived from a legitimate origin
 - **Integrity proof**: the ingested input is committed with Poseidon over BN254, and the identity between the version the human reviewed and the version the model processes is proved via Groth16 (Circom circuits). Tampering — including invisible characters — surfaces as a mismatch against the commitment

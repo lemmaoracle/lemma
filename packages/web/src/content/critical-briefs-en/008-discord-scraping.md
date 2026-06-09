@@ -73,7 +73,7 @@ What differs from the other Briefs is that this incident is not a cybersecurity 
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, technology media centered on 404 Media detected the scraping and dataset publication and prompted cross-industry argument. This is a typical function of the detection layer, and this Brief does not deny the role of detection media and researchers. Detection remains essential for shaping the contours of an event, surfacing cross-industry argument, and prompting cross-organizational operational review.
 
@@ -98,7 +98,7 @@ For the purposes of establishing in regulatory filings, administrative proceedin
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (a dataset's provenance and use-scope attributes flow downstream without independent verification), Lemma proposes a two-layer structure.
+Against the detection–proof gap exposed by this incident (a dataset's provenance and use-scope attributes flow downstream without independent verification), Lemma proposes a two-layer structure.
 
 First, at the **dataset distribution layer**, a design that embeds the dataset's collection source, collection scope (compliant / in violation), and use conditions (no redistribution, no ML / AI training, etc.) as an independently verifiable cryptographic proof, and mandates proof attestation at the point of distribution. Downstream researchers and AI vendors can then independently verify, as verifiers, whether their own use case (e.g., ML training) is consistent with the dataset's collection scope.
 

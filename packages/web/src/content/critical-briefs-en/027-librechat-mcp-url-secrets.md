@@ -65,7 +65,7 @@ In the agent-infrastructure context, registering an MCP server is an authority a
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Vulnerability scanners, dependency audits, and egress monitoring are indispensable for addressing known CVEs and detecting anomalous communications, and this Brief does not dispute their role. This incident was also handled through the normal coordinated-disclosure path — advisory publication and same-day fix availability.
 
@@ -87,7 +87,7 @@ With the spread of self-hosted AI platforms, this class of "configuration-value-
 
 ## 7. Lemma's Analysis
 
-For the structural gap exposed here — an agent's connection-destination configuration is interpreted in a privileged context without independent verification of the registrant's authority and the scope of context it may reference — Lemma offers a design that trails connection-destination registration and capability grants on agent infrastructure as authority acts, and verifies, before execution, "who authorized what, in what scope," as independently verifiable proofs. For the design philosophy of Agent Authority Proof, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) (Lemma).
+For the detection–proof gap exposed here — an agent's connection-destination configuration is interpreted in a privileged context without independent verification of the registrant's authority and the scope of context it may reference — Lemma offers a design that trails connection-destination registration and capability grants on agent infrastructure as authority acts, and verifies, before execution, "who authorized what, in what scope," as independently verifiable proofs. For the design philosophy of Agent Authority Proof, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) (Lemma).
 
 ---
 

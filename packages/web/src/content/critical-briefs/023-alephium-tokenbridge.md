@@ -75,7 +75,7 @@ Brief 001(KelpDAO/rsETH)・Brief 002(Stake DAO/vsdCRV)・Brief 016(Verus-Ethereu
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被害の把握・ブリッジ停止・無担保トークンの焼却・資金追跡に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも検知から焼却(96.4%)まで 3 日で到達している。
 
@@ -97,7 +97,7 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(guardian 署名の有効性は検証されるが、署名対象イベントの来歴は独立検証されない)に対して、Lemma は、ブリッジの観測層が受け取るイベントの emitter と経路を、署名の前に独立検証可能な暗号証明として検証する設計を提示している。guardian の署名が形式上有効でも、イベント来歴の proof が偽造発生源を告げれば署名・払出は事前に reject される。「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)を参照のこと。
+本事案で露呈した検出と証明の落差(guardian 署名の有効性は検証されるが、署名対象イベントの来歴は独立検証されない)に対して、Lemma は、ブリッジの観測層が受け取るイベントの emitter と経路を、署名の前に独立検証可能な暗号証明として検証する設計を提示している。guardian の署名が形式上有効でも、イベント来歴の proof が偽造発生源を告げれば署名・払出は事前に reject される。「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)を参照のこと。
 
 ---
 

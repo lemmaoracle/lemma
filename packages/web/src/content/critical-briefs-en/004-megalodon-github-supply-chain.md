@@ -64,7 +64,7 @@ The structure differs from Brief 003 (Starlette / BadHost) in that the present c
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 In this incident, three firms — Safe Dep, Ox Security, and Hudson Rock — independently analyzed the campaign and identified the cause (infostealer origin) and the scope (5,561 repositories, four spoofed author names) within five days. The detection layer contributed to shaping the contours of the event and made the problem visible across the industry. This Brief does not deny the role of detection vendors.
 
@@ -88,7 +88,7 @@ On the relationship with TeamPCP: Just before Megalodon surfaced, TeamPCP had an
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (absent independent verification of commit author and repo origin), Lemma proposes a design that fixes, at each stage of commit / release / CI/CD pipeline, an independently verifiable cryptographic proof of "this commit / artifact came from a legitimate origin." The core is a design in which the key itself does not sit on a machine that can be seized (combined with key-less proofs), in the direction of fixing commit author identity as a ZK proof. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (absent independent verification of commit author and repo origin), Lemma proposes a design that fixes, at each stage of commit / release / CI/CD pipeline, an independently verifiable cryptographic proof of "this commit / artifact came from a legitimate origin." The core is a design in which the key itself does not sit on a machine that can be seized (combined with key-less proofs), in the direction of fixing commit author identity as a ZK proof. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

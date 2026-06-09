@@ -18,7 +18,7 @@ og_lead_en: "Malicious npm packages signed under a legitimate OIDC trusted publi
 
 ## TL;DR
 
-2026 年 5 月 11 日 19:20–19:26 UTC、JavaScript の主要ライブラリ群 `@tanstack/*` の 42 パッケージに合計 84 件の悪性バージョンが公開された（CVE-2026-45321、CVSS 9.6）。攻撃者は npm トークンを盗むのではなく、TanStack の正規 GitHub Actions OIDC trusted publisher 連携をワークフロー実行中に乗っ取り、**正規の OIDC アイデンティティで署名された**悪性パッケージを正規の公開経路から配信した。これは有効な署名付き来歴証明を伴って配布された初のサプライチェーンワーム（"Mini Shai-Hulud"）の一部とされ、同日中に TeamPCP は npm / PyPI で 170 以上のパッケージを汚染した。悪性パッケージは AWS / GCP / Kubernetes / Vault / npm / GitHub / SSH の認証情報を窃取し、GitHub トークン失効を検知すると `rm -rf ~/` を実行した。本事案は、来歴の署名（誰が公開したか）が技術的に有効でも、成果物そのものの完全性は保証されないという Pillar 01 の構造的 gap を露呈した。
+2026 年 5 月 11 日 19:20–19:26 UTC、JavaScript の主要ライブラリ群 `@tanstack/*` の 42 パッケージに合計 84 件の悪性バージョンが公開された（CVE-2026-45321、CVSS 9.6）。攻撃者は npm トークンを盗むのではなく、TanStack の正規 GitHub Actions OIDC trusted publisher 連携をワークフロー実行中に乗っ取り、**正規の OIDC アイデンティティで署名された**悪性パッケージを正規の公開経路から配信した。これは有効な署名付き来歴証明を伴って配布された初のサプライチェーンワーム（"Mini Shai-Hulud"）の一部とされ、同日中に TeamPCP は npm / PyPI で 170 以上のパッケージを汚染した。悪性パッケージは AWS / GCP / Kubernetes / Vault / npm / GitHub / SSH の認証情報を窃取し、GitHub トークン失効を検知すると `rm -rf ~/` を実行した。本事案は、来歴の署名（誰が公開したか）が技術的に有効でも、成果物そのものの完全性は保証されないという Pillar 01 の検出と証明の落差を露呈した。
 
 ---
 
@@ -64,7 +64,7 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、外部研究者が公開後 20–26 分という短時間で悪性公開を検知・公表し、CVE 採番・postmortem・IOC 整理が続いた。検出・脅威共有の層は被害範囲の把握と封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。
 
@@ -87,7 +87,7 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は、来歴を「誰が公開したか」の署名ではなく、「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。OIDC アイデンティティが実行時に乗っ取られても、ビルド来歴の proof は別系統で「正規のビルド経路から生成された / されていない」を告げるため、受信側は署名が形式上有効でも proof の不整合で reject できる。Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は、来歴を「誰が公開したか」の署名ではなく、「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。OIDC アイデンティティが実行時に乗っ取られても、ビルド来歴の proof は別系統で「正規のビルド経路から生成された / されていない」を告げるため、受信側は署名が形式上有効でも proof の不整合で reject できる。Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 

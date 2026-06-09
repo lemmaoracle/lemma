@@ -61,7 +61,7 @@ This incident follows Brief 008 (Discord scraping) as another instance of "trust
 
 ---
 
-## 5. The Structural Gap Detection Alone Cannot Close
+## 5. The detection–proof gap
 
 Watermarks and their detection APIs are useful for labeling AI-generated content, content moderation, and initial screening, and this Brief does not deny that role. At scale, watermarks have practical value as a layer for judging "AI-generated-ness."
 
@@ -83,7 +83,7 @@ How the provenance of AI-generated content should be secured, and at which layer
 
 ## 7. Lemma's Analysis
 
-Against the structural gap exposed by this incident (a mark embedded in the artifact shares the same signal space as the artifact and is therefore statistically strip-able and forge-able), Lemma proposes a design that fixes content provenance not as an embedded mark but as an independently verifiable cryptographic proof from the generating subject. The provenance proof is placed outside the artifact's signal space, and no "key" extractable via averaging or frequency manipulation is left inside the artifact. Even if the mark is stripped, the proof tells through a separate channel whether "this artifact was generated under a legitimate origin or not." For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (a mark embedded in the artifact shares the same signal space as the artifact and is therefore statistically strip-able and forge-able), Lemma proposes a design that fixes content provenance not as an embedded mark but as an independently verifiable cryptographic proof from the generating subject. The provenance proof is placed outside the artifact's signal space, and no "key" extractable via averaging or frequency manipulation is left inside the artifact. Even if the mark is stripped, the proof tells through a separate channel whether "this artifact was generated under a legitimate origin or not." For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
 
 ---
 

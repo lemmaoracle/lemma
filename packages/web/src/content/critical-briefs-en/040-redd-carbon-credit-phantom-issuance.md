@@ -65,7 +65,7 @@ The targets differ from Brief 021 (a financial attribute = asset existence), Bri
 
 ---
 
-## 5. The Structural Gap Detection Cannot Close
+## 5. The detection–proof gap
 
 Here, the detection chain — investigative reporting (Mongabay), independent satellite-imagery analysis (CCCA), and the Federal Police investigation — worked, and the divergence between asserted attribute and reality was ultimately made visible from outside. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection is indispensable for raising doubt, driving the investigation, and scoping remediation after discovery (identifying which credits to cancel).
 
