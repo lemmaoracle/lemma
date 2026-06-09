@@ -31,8 +31,8 @@ function localize<T>(map: { ja: T; en: T }, locale: Locale): T {
 /* ───────────────────────── Homepage ───────────────────────── */
 
 const HOME_TITLE: Copy = {
-  ja: "AI のための、\n<accent>信頼インフラ</accent>。",
-  en: "The Trust Infrastructure\n<accent>for AI</accent>.",
+  ja: "データを渡さず、\n<accent>AI を動かす</accent>。",
+  en: "AI runs on proofs,\n<accent>not data</accent>.",
 };
 
 const HOME_TAGLINE: Copy = {
