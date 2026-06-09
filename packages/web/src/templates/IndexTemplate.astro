@@ -618,31 +618,66 @@ const cap1 = [
       </div>
     </section>
 
-    <!-- §6 · PRODUCTS (lowered, after take-it-in) -->
-    <section class="hp-products">
-      <div class="hp-products-inner">
-        <h2 class="hp-products-h2"><span class="hp-accent">{C.doorsH2Line1}</span>{C.doorsH2Accent}{C.doorsH2Tail}</h2>
-        <p class="hp-products-sub">{C.productsSub}</p>
-        <div class="hp-products-grid">
-          <a href={sealHref} class="hp-product-card">
-            <div class="hp-product-tag">{C.sealAud}</div>
-            <div class="hp-product-name">Seal</div>
-            <p class="hp-product-desc">{C.sealTagline} {C.sealDesc}</p>
-            <span class="hp-product-link">/seal →</span>
-          </a>
-          <a href={trust402Href} class="hp-product-card">
-            <div class="hp-product-tag">{C.trust402Aud}</div>
-            <div class="hp-product-name">Trust<span class="hp-accent">402</span></div>
-            <p class="hp-product-desc">{C.trust402Tagline} {C.trust402Desc}</p>
-            <span class="hp-product-link">/trust402 →</span>
-          </a>
-          <a href={industriesHref} class="hp-product-card">
-            <div class="hp-product-tag">{C.industriesAud}</div>
-            <div class="hp-product-name">Industries</div>
-            <p class="hp-product-desc">{C.industriesTagline} {C.industriesDesc}</p>
-            <span class="hp-product-link">/solutions →</span>
-          </a>
-        </div>
+    <!-- §6 · PRODUCTS (THREE DOORS — original card design, lowered after take-it-in) -->
+    <section class="hp-block">
+      <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
+
+      <div class="hp-doors">
+        <a href={sealHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="28" cy="28" r="23" stroke="currentColor" stroke-width="2.5" />
+                <circle cx="28" cy="28" r="4" fill="currentColor" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Seal</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.sealAud}</span>
+            <h3 class="hp-door-tag">{C.sealTagline}</h3>
+            <p class="hp-door-desc">{C.sealDesc}</p>
+            <span class="hp-door-url">/seal →</span>
+          </div>
+        </a>
+
+        <a href={trust402Href} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M14 12 L46 28 L14 44 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none" />
+                <line x1="25" y1="21" x2="25" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Trust<span class="hp-accent">402</span></div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.trust402Aud}</span>
+            <h3 class="hp-door-tag">{C.trust402Tagline}</h3>
+            <p class="hp-door-desc">{C.trust402Desc}</p>
+            <span class="hp-door-url">/trust402 →</span>
+          </div>
+        </a>
+
+        <a href={industriesHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
+                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Industries</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.industriesAud}</span>
+            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
+            <p class="hp-door-desc">{C.industriesDesc}</p>
+            <span class="hp-door-url">/pricing →</span>
+          </div>
+        </a>
       </div>
     </section>
 
@@ -1118,19 +1153,8 @@ const cap1 = [
   .hp-lens-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--hp-cream); color: var(--hp-text-1); padding: 14px 26px; border-radius: 50px; font-family: var(--hp-body); font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid var(--hp-text-1); }
   .hp-lens-btn.primary { background: var(--hp-text-1); color: var(--hp-cream); }
 
-  /* ═══ §6 PRODUCTS (lowered) ═══ */
-  .hp-products { padding: 88px 40px; background: var(--hp-cream); }
-  .hp-products-inner { max-width: 1240px; margin: 0 auto; }
-  .hp-products-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 42px; line-height: 1.2; color: var(--hp-text-1); letter-spacing: -0.025em; margin: 0 0 16px; }
-  .hp-products-h2 .hp-accent { color: var(--hp-brown); }
-  .hp-products-sub { font-size: 15px; color: var(--hp-text-3); line-height: 1.8; max-width: 720px; margin: 0 0 44px; }
-  .hp-products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .hp-product-card { background: var(--hp-cream); border: 1px solid var(--hp-line); border-radius: 12px; padding: 30px 28px; text-decoration: none; color: var(--hp-text-1); display: flex; flex-direction: column; transition: border-color 0.15s, transform 0.15s; }
-  .hp-product-card:hover { border-color: var(--hp-brown); transform: translateY(-2px); }
-  .hp-product-tag { font-family: var(--hp-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; margin: 0 0 14px; }
-  .hp-product-name { font-family: var(--hp-display); font-weight: 700; font-size: 26px; color: var(--hp-text-1); letter-spacing: -0.02em; margin: 0 0 12px; }
-  .hp-product-desc { font-size: 14px; color: var(--hp-text-3); line-height: 1.75; margin: 0 0 auto; }
-  .hp-product-link { font-family: var(--hp-mono); font-size: 12px; color: var(--hp-brown); font-weight: 700; margin-top: 20px; }
+  /* §6 PRODUCTS reuses the original .hp-doors design (defined above) — restored
+     per request to keep the existing product icon cards intact. */
 
   /* ═══ §7 DISCOVERY + DEV TAIL ═══ */
   .hp-disc { padding: 80px 40px 0; background: var(--hp-cream-d); border-top: 1px solid var(--hp-line); }
@@ -1167,9 +1191,6 @@ const cap1 = [
     .hp-scenes-h2 { font-size: 28px; }
     .hp-industries-grid { grid-template-columns: 1fr; gap: 12px; }
     .hp-lens-foot { flex-direction: column; align-items: flex-start; }
-    .hp-products { padding: 48px 24px; }
-    .hp-products-h2 { font-size: 28px; }
-    .hp-products-grid { grid-template-columns: 1fr; }
     .hp-disc { padding: 48px 24px 0; }
     .hp-disc-h2 { font-size: 28px; }
     .hp-dev-tail { flex-direction: column; align-items: flex-start; }
