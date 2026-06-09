@@ -203,14 +203,13 @@
 .ph2 .s-unified h2{font-family:var(--font-sora);font-weight:700;font-size:48px;line-height:1.15;color:var(--ink);letter-spacing:-0.025em;margin-bottom:18px}
 .ph2 .s-unified .lead{font-size:16px;color:var(--ink-soft);line-height:1.85;margin-bottom:48px;max-width:720px}
 .ph2 .workflow-block{margin-bottom:64px}
-.ph2 .workflow-label{font-family:var(--font-mono);font-size:10.5px;color:var(--brown);letter-spacing:0.14em;font-weight:700;margin-bottom:12px;text-transform:uppercase}
-.ph2 .phase-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+/* 1 flow = 1 group: phase + connector + Lemma layer, stacked (groups cleanly on mobile). */
+.ph2 .wf-flows{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start}
+.ph2 .wf-flow{display:flex;flex-direction:column;gap:10px}
 .ph2 .phase-cell{background:var(--cream);border:1px solid var(--cream-line);border-radius:8px;padding:18px 20px}
 .ph2 .phase-cell .ph{font-family:var(--font-mono);font-size:9.5px;color:var(--brown);letter-spacing:0.12em;font-weight:700;margin-bottom:6px}
 .ph2 .phase-cell h4{font-family:var(--font-sora);font-weight:700;font-size:17px;color:var(--ink);letter-spacing:-0.005em}
-.ph2 .plus-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:14px 0}
-.ph2 .plus-cell{display:flex;align-items:center;justify-content:center;height:24px;font-family:var(--font-sora);font-size:22px;color:var(--brown-mid);font-weight:300}
-.ph2 .lemma-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ph2 .plus-cell{display:flex;align-items:center;justify-content:center;font-family:var(--font-sora);font-size:20px;color:var(--brown-mid);font-weight:300;line-height:1}
 .ph2 .lemma-cell{background:var(--brown-soft);border:1px solid var(--brown-mid);border-top:3px solid var(--brown);border-radius:10px;padding:22px 20px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:10px;transition:transform .15s,box-shadow .15s}
 .ph2 .lemma-cell:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,69,19,.1)}
 .ph2 .lemma-cell .tag{font-family:var(--font-mono);font-size:10px;color:var(--brown);letter-spacing:0.12em;font-weight:700;line-height:1.4}
@@ -250,8 +249,7 @@
 @media(max-width:880px){
   .ph2 .s-unified{padding:48px 0}
   .ph2 .s-unified h2{font-size:28px}
-  .ph2 .phase-row,.ph2 .plus-row,.ph2 .lemma-row,.ph2 .outcomes{grid-template-columns:1fr;gap:10px}
-  .ph2 .plus-cell{transform:rotate(90deg);height:18px}
+  .ph2 .wf-flows{grid-template-columns:1fr;gap:28px}
   .ph2 .s-tech{padding:64px 0}
   .ph2 .s-tech h2{font-size:32px}
   .ph2 .tech-grid{grid-template-columns:1fr;gap:14px}
