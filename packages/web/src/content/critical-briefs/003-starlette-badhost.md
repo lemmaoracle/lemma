@@ -1,6 +1,6 @@
 ---
 brief_no: 3
-title: "Starlette CVE-2026-48710 (BadHost) — HTTP Host ヘッダー操作による MCP server 認証回避"
+title: "MCP サーバーの認証が Host ヘッダー操作で回避された（Starlette / BadHost）"
 title_en: "Starlette CVE-2026-48710 (BadHost) — MCP Server Authentication Bypass via HTTP Host Header Manipulation"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"

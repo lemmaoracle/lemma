@@ -1,6 +1,6 @@
 ---
 brief_no: 21
-title: "残高確認書の偽造による資産実在性の主張 — 金融属性が独立検証されないまま開示・市場に直結した構造（Wirecard）"
+title: "実在しない 19 億ユーロを「銀行に残高あり」と偽った（Wirecard） — 金融属性が独立検証されないまま開示・市場に直結した構造"
 title_en: "Forged Balance Confirmations Asserting Asset Existence — A Financial Attribute Asserted Without Independent Verification, Reaching Disclosure and Markets (Wirecard)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
