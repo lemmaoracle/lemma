@@ -8,183 +8,153 @@
   </div>
 </section>
 
-<!-- §1 4 つの軸 (Pillar cards directly) -->
-<section>
+<!-- §1 Trust across every phase (UNIFIED: old §1 + old §2) -->
+<section class="s-unified">
   <div class="container">
-    <div class="section-eyebrow">01 · Four axes</div>
-    <h2 class="section-h2">Each axis, one role.</h2>
+    <h2>Trust, across every phase.</h2>
+    <p class="lead">Your AI workflow stays as-is. Add the Lemma trust layer once, and proofs ride along every phase — from input through delegated execution.</p>
 
-    <div class="pillars-grid">
-      <a href="/pillars/verifiable-origin/" class="pillar-card">
-        <div class="pillar-card-head">
-          <svg class="pillar-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="11" cy="11" r="5"/>
-            <circle cx="21" cy="21" r="5"/>
-            <line x1="15" y1="15" x2="17" y2="17" stroke-width="2"/>
-          </svg>
-          <div class="pillar-card-num">Pillar 01 — Verifiable Origin</div>
-        </div>
-        <div class="pillar-card-name">Verifiable Origin</div>
-        <div class="pillar-card-q">Did this data really come from a legitimate issuer?</div>
-        <p class="pillar-card-desc">Bring the "where it came from" of business documents, API responses, IoT measurements and more into AI inputs as a tamper-proof cryptographic proof. A third party can independently verify the origin without touching the original.</p>
-        <div class="pillar-card-meta">
-          <span class="pillar-card-schema">your.provenance.v1</span>
-          <span class="pillar-card-link">Learn more →</span>
-        </div>
-      </a>
-      <a href="/pillars/verifiable-ai/" class="pillar-card">
-        <div class="pillar-card-head">
-          <svg class="pillar-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="6" y="8" width="20" height="14" rx="2"/>
-            <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
-            <circle cx="16" cy="15" r="1.5" fill="currentColor"/>
-            <circle cx="20" cy="15" r="1.5" fill="currentColor"/>
-            <path d="M11 26 L13 28 L17 24" stroke-width="2"/>
-          </svg>
-          <div class="pillar-card-num">Pillar 02 — Verifiable AI</div>
-        </div>
-        <div class="pillar-card-name">Verifiable AI</div>
-        <div class="pillar-card-q">Did this model really decide on that input?</div>
-        <p class="pillar-card-desc">Record AI inputs and outputs, the model ID, and the applied policy as a cryptographic proof. The reasoning process is preserved in a form a third party can reproduce without accessing the original.</p>
-        <div class="pillar-card-meta">
-          <span class="pillar-card-schema">your.model.v1</span>
-          <span class="pillar-card-link">Learn more →</span>
-        </div>
-      </a>
-      <a href="/pillars/agent-authority-proof/" class="pillar-card">
-        <div class="pillar-card-head">
-          <svg class="pillar-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="6" y="10" width="14" height="18" rx="2"/>
-            <circle cx="13" cy="17" r="2"/>
-            <line x1="13" y1="19" x2="13" y2="24"/>
-            <path d="M20 14 H26 V20"/>
-          </svg>
-          <div class="pillar-card-num">Pillar 03 — Agent Authority Proof</div>
-        </div>
-        <div class="pillar-card-name">Agent Authority Proof</div>
-        <div class="pillar-card-q">Does this agent really hold the authority to act on someone's behalf?</div>
-        <p class="pillar-card-desc">Give an AI agent a cryptographic proof of "on whose behalf" and "within what scope" it may act — without handing over signing keys. Actions outside that scope are structurally rejected.</p>
-        <div class="pillar-card-meta">
-          <span class="pillar-card-schema">your.agent.v1</span>
-          <span class="pillar-card-link">Learn more →</span>
-        </div>
-      </a>
-      <a href="/pillars/regulatory-attribute-proof/" class="pillar-card">
-        <div class="pillar-card-head">
-          <svg class="pillar-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M16 4 L26 8 V16 a10 12 0 0 1 -10 12 a10 12 0 0 1 -10 -12 V8 Z"/>
-            <path d="M11 15 L15 19 L21 12"/>
-          </svg>
-          <div class="pillar-card-num">Pillar 04 — Regulatory Attribute Proof</div>
-        </div>
-        <div class="pillar-card-name">Regulatory Attribute Proof</div>
-        <div class="pillar-card-q">Does this attribute really meet the regulatory requirement?</div>
-        <p class="pillar-card-desc">Bring regulatory attributes such as KYC, age, and location into AI inputs in a provable form, without handing over the original. It implements the "independently verifiable" that masking and encryption can't reach.</p>
-        <div class="pillar-card-meta">
-          <span class="pillar-card-schema">your.attribute.v1</span>
-          <span class="pillar-card-link">Learn more →</span>
-        </div>
-      </a>
+    <div class="workflow-block">
+      <div class="workflow-label">Your existing workflow</div>
+      <div class="phase-row">
+        <div class="phase-cell"><div class="ph">PHASE 01 · INPUT</div><h4>Input</h4></div>
+        <div class="phase-cell"><div class="ph">PHASE 02 · INFERENCE</div><h4>Inference</h4></div>
+        <div class="phase-cell"><div class="ph">PHASE 03 · DECISION</div><h4>Decision</h4></div>
+        <div class="phase-cell"><div class="ph">PHASE 04 · DELEGATION</div><h4>Delegation</h4></div>
+      </div>
+
+      <div class="plus-row">
+        <div class="plus-cell">+</div>
+        <div class="plus-cell">+</div>
+        <div class="plus-cell">+</div>
+        <div class="plus-cell">+</div>
+      </div>
+
+      <div class="workflow-label">Lemma trust infrastructure</div>
+      <div class="lemma-row">
+        <a href="/pillars/verifiable-origin/" class="lemma-cell">
+          <div class="tag">P1 · VERIFIABLE ORIGIN</div>
+          <h4>Verifiable Origin</h4>
+          <code class="schema">your.provenance.v1</code>
+          <span class="link">Explore P1 →</span>
+        </a>
+        <a href="/pillars/verifiable-ai/" class="lemma-cell">
+          <div class="tag">P2 · VERIFIABLE AI</div>
+          <h4>Verifiable AI</h4>
+          <code class="schema">your.model.v1</code>
+          <span class="link">Explore P2 →</span>
+        </a>
+        <a href="/pillars/regulatory-attribute-proof/" class="lemma-cell">
+          <div class="tag">P4 · REGULATORY</div>
+          <h4>Regulatory Attribute Proof</h4>
+          <code class="schema">your.attribute.v1</code>
+          <span class="link">Explore P4 →</span>
+        </a>
+        <a href="/pillars/agent-authority-proof/" class="lemma-cell">
+          <div class="tag">P3 · AGENT AUTHORITY</div>
+          <h4>Agent Authority Proof</h4>
+          <code class="schema">your.agent.v1</code>
+          <span class="link">Explore P3 →</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="outcomes">
+      <div class="outcome">
+        <h4>Consistent provability</h4>
+        <p>From input through delegated execution, a proof holds at every phase of the AI workflow.</p>
+      </div>
+      <div class="outcome">
+        <h4>Compliance × AI automation</h4>
+        <p>Regulatory fit and AI operating speed coexist in the same structure. Compliance never stalls velocity.</p>
+      </div>
+      <div class="outcome">
+        <h4>Multi-tier chain of trust</h4>
+        <p>Build every layer of agent and organizational chains into operations as a verifiable flow of trust.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- §2 ワークフローでの役割 — AI workflow phases × 4 軸 -->
-<section class="synth-section">
+<!-- §2 Proprietary cryptography, three cores (NEW dark) -->
+<section class="s-tech">
   <div class="container">
-    <div class="section-eyebrow">02 · Role in the workflow</div>
-    <h2 class="section-h2">Trust across every step.</h2>
-    <p class="section-lead">Your existing workflow stays as is. Just add Lemma trust infrastructure as one layer, and proof rides along across every step.</p>
+    <h2><span class="accent">Proprietary cryptography,</span><br>three cores.</h2>
+    <p class="lead">Three core technologies make the trust infrastructure work — establishing "it's the same thing," "disclose only this," and "no one can rewrite it," all without touching the original data.</p>
 
-    <!-- Combined grid: workflow + combine + Lemma layer -->
-    <div class="combined-grid">
-      <div class="workflow-existing-label">Existing workflow</div>
-
-      <!-- Workflow phases (4 cards) -->
-      <div class="workflow-flow">
-        <div class="workflow-phase" data-pos="p1">
-          <svg class="phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M6 6 H18 L24 12 V26 H6 Z"/>
-            <path d="M18 6 V12 H24"/>
-            <line x1="10" y1="16" x2="20" y2="16"/>
-            <line x1="10" y1="20" x2="20" y2="20"/>
-          </svg>
-          <div class="phase-label">Phase 01 · Input</div>
-          <h4>Input</h4>
-          <p class="phase-desc">The data the AI receives.</p>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="22" cy="32" r="20" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <circle cx="22" cy="32" r="13" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+          <circle cx="22" cy="32" r="3" fill="currentColor"/>
+          <line x1="46" y1="32" x2="58" y2="32" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="58,32 53,28 53,36" fill="currentColor"/>
+          <circle cx="68" cy="32" r="9" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M63 32 L67 36 L73 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="name-en">Zero-Knowledge<br>Proof</div>
+        <div class="name-ja">Zero-Knowledge Proof</div>
+        <p class="desc">Turn business rules like "<strong>18 or older</strong>" or "<strong>revenue over threshold</strong>" into machine-verifiable cryptographic facts. Prove a statement's truth without touching the original.</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma's edge</div>
+          <div class="txt">Each proof is recorded permanently with its <strong>circuit (Circom) and generator</strong>, so a third party can reproduce it later.</div>
         </div>
-        <div class="workflow-phase" data-pos="p2">
-          <svg class="phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="6" y="10" width="20" height="14" rx="2"/>
-            <circle cx="11" cy="17" r="1.5" fill="currentColor"/>
-            <circle cx="16" cy="17" r="1.5" fill="currentColor"/>
-            <circle cx="21" cy="17" r="1.5" fill="currentColor"/>
-            <path d="M10 6 V10 M22 6 V10"/>
-          </svg>
-          <div class="phase-label">Phase 02 · Inference</div>
-          <h4>Inference</h4>
-          <p class="phase-desc">Processing and reasoning by the AI.</p>
-        </div>
-        <div class="workflow-phase" data-pos="p3">
-          <svg class="phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="16" cy="16" r="10"/>
-            <circle cx="16" cy="16" r="5"/>
-            <circle cx="16" cy="16" r="1.5" fill="currentColor"/>
-          </svg>
-          <div class="phase-label">Phase 03 · Decision</div>
-          <h4>Decision</h4>
-          <p class="phase-desc">The decision and output.</p>
-        </div>
-        <div class="workflow-phase" data-pos="p4">
-          <svg class="phase-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="8" y="11" width="16" height="12" rx="2"/>
-            <circle cx="13" cy="8" r="2"/>
-            <circle cx="19" cy="8" r="2"/>
-            <line x1="13" y1="17" x2="19" y2="17"/>
-            <line x1="11" y1="23" x2="11" y2="26"/>
-            <line x1="21" y1="23" x2="21" y2="26"/>
-          </svg>
-          <div class="phase-label">Phase 04 · Delegation</div>
-          <h4>Delegation</h4>
-          <p class="phase-desc">An autonomous agent acts.</p>
-        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>Groth16 · Circom 2.x · BN254</div>
+        <div class="value-map">core of <strong>delegate without sharing</strong></div>
       </div>
 
-      <!-- Combine indicators: + signs -->
-      <div class="combine-tracks">
-        <div class="combine-track" data-pos="c1"><div class="combine-track-line"></div><div class="combine-track-plus">+</div><div class="combine-track-line"></div></div>
-        <div class="combine-track" data-pos="c2"><div class="combine-track-line"></div><div class="combine-track-plus">+</div><div class="combine-track-line"></div></div>
-        <div class="combine-track" data-pos="c3"><div class="combine-track-line"></div><div class="combine-track-plus">+</div><div class="combine-track-line"></div></div>
-        <div class="combine-track" data-pos="c4"><div class="combine-track-line"></div><div class="combine-track-plus">+</div><div class="combine-track-line"></div></div>
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 8 H50 L60 18 V58 H18 Z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M50 8 V18 H60" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="25" y="22" width="22" height="3" fill="currentColor"/>
+          <circle cx="51" cy="23.5" r="2" fill="currentColor"/>
+          <line x1="25" y1="32" x2="47" y2="32" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <rect x="25" y="40" width="22" height="3" fill="currentColor"/>
+          <circle cx="51" cy="41.5" r="2" fill="currentColor"/>
+          <line x1="25" y1="50" x2="47" y2="50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+        </svg>
+        <div class="name-en">Selective<br>Disclosure</div>
+        <div class="name-ja">Selective Disclosure</div>
+        <p class="desc"><strong>Keeping the binding to the original issuer signature</strong>, the holder reveals only the attributes a model needs. Minimize what AI receives as input.</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma's edge</div>
+          <div class="txt"><strong>From one issued credential, vary the disclosure per counterparty and use</strong>. Hide / Reveal stays controllable after issuance.</div>
+        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>BBS+ Signature · W3C VC · Poseidon</div>
+        <div class="value-map">core of <strong>disclose selectively</strong></div>
       </div>
 
-      <div class="lemma-layer-label">LEMMA trust infrastructure</div>
-
-      <!-- Lemma bar: 4 segments -->
-      <div class="lemma-bar">
-        <div class="lemma-segment" data-pos="l1">
-          <span class="seg-num">P1</span>
-          <h5>Provenance</h5>
-          <span class="seg-role">Proves where data came from</span>
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="6" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="10" y1="20" x2="20" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="10" y1="25" x2="18" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="24" y1="25" x2="30" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <rect x="30" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="34" y1="20" x2="44" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="34" y1="25" x2="42" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="48" y1="25" x2="54" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <rect x="54" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="58" y1="20" x2="68" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="58" y1="25" x2="66" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="4" y1="50" x2="76" y2="50" stroke="currentColor" stroke-width="2"/>
+          <line x1="15" y1="36" x2="15" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <line x1="39" y1="36" x2="39" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <line x1="63" y1="36" x2="63" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <circle cx="40" cy="56" r="2.5" fill="currentColor"/>
+        </svg>
+        <div class="name-en">On-chain<br>Provenance</div>
+        <div class="name-ja">On-chain Provenance</div>
+        <p class="desc">Anchor the document commitment, schema, issuer, and ZK verification result on-chain. Fix it as provenance that can be neither rewritten nor erased.</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma's edge</div>
+          <div class="txt"><strong>Only the docHash and CID are public</strong>; the body stays AES-GCM encrypted. Keep provenance without exposing the contents.</div>
         </div>
-        <div class="lemma-segment" data-pos="l2">
-          <span class="seg-num">P2</span>
-          <h5>Verifiable AI</h5>
-          <span class="seg-role">Makes the reasoning reproducible</span>
-        </div>
-        <div class="lemma-segment" data-pos="l3">
-          <span class="seg-num">P4</span>
-          <h5>Regulatory attribute</h5>
-          <span class="seg-role">Proves attributes without the original</span>
-        </div>
-        <div class="lemma-segment" data-pos="l4">
-          <span class="seg-num">P3</span>
-          <h5>Authority</h5>
-          <span class="seg-role">Delegated authority without keys</span>
-        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>EIP-712 · IPFS CID · AES-GCM · Keccak</div>
+        <div class="value-map">core of <strong>prove after the fact</strong></div>
       </div>
-
-      <div class="lemma-layer-foot">Just add this one layer</div>
     </div>
   </div>
 </section>
