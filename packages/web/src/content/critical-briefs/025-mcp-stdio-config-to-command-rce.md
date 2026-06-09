@@ -1,6 +1,6 @@
 ---
 brief_no: 25
-title: "MCP の設定→コマンド実行という設計と、供給網規模の RCE — 特定言語の実装バグではなく、対応言語を横断するリファレンス SDK の設計に内在"
+title: "MCP の標準設計が、広範な遠隔コード実行（RCE）の経路になった — 特定言語の実装バグではなく、対応言語を横断するリファレンス SDK の設計に内在"
 title_en: "MCP Design: Config-to-Command Execution and Supply-Chain-Scale RCE — Not a single-language implementation bug but inherent in the reference SDK design across supported languages"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"

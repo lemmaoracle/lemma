@@ -1,6 +1,6 @@
 ---
 brief_no: 27
-title: "LibreChat CVE-2026-32625 — ユーザーが指定する MCP サーバー URL が、サーバーの秘密情報を運び出す経路になった"
+title: "ユーザー指定の MCP URL からサーバーの秘密情報が漏れた（LibreChat）"
 title_en: "LibreChat CVE-2026-32625 — User-Supplied MCP Server URLs as an Exfiltration Channel for Server Secrets"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
