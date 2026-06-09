@@ -220,6 +220,48 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P1 SCHEMA</div>
+    <h2><span class="brown">Verifiable Origin — </span><code>your.provenance.v1</code></h2>
+    <p class="lead">A schema example that records the multi-tier provenance of data as it propagates sensor → SCADA → Oracle, in tamper-evident form. The body is never disclosed; a hash chain + BBS+ signature proves "this is the same thing."</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.provenance.v1"</span><span class="p">,</span>
+  <span class="k">"subject"</span><span class="p">:</span> <span class="s">"did:lemma:utility-meter-001"</span><span class="p">,</span>
+  <span class="k">"issuer"</span><span class="p">:</span> <span class="s">"did:lemma:org-acme-utility"</span><span class="p">,</span>
+  <span class="k">"sourceHash"</span><span class="p">:</span> <span class="s">"0x9f3a...c4e8"</span><span class="p">,</span>
+  <span class="k">"lineageChain"</span><span class="p">:</span> [<span class="s">"sensor"</span><span class="p">,</span> <span class="s">"scada"</span><span class="p">,</span> <span class="s">"oracle"</span>]<span class="p">,</span>
+  <span class="k">"recordedAt"</span><span class="p">:</span> <span class="s">"2026-06-02T14:30:00Z"</span><span class="p">,</span>
+  <span class="k">"integrity"</span><span class="p">:</span> <span class="s">"poseidon-merkle"</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"BBS+Signature2020"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x4a2b...e1d3"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P1 · Verifiable Origin</div>
+        <h3>Provenance schema</h3>
+        <p class="axes-detail-desc">Record the multi-tier provenance of data propagating sensor → SCADA → Oracle, tamper-evidently. The body is never disclosed; a hash chain + BBS+ signature proves "this is the same thing."</p>
+        <div class="axes-can"><strong>Capability:</strong> Prove data source and tamper-evidence without disclosing the content</div>
+        <div class="axes-scenes"><span class="label">Use cases:</span>RAG source trust / training-data clearance / IoT sensor provenance</div>
+        <dl class="axes-tech">
+        <dt>Signing</dt><dd>BBS+</dd>
+        <dt>Hash</dt><dd>Poseidon-Merkle</dd>
+        <dt>Identifier</dt><dd>W3C DID</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>Issue via the SDK · drops into existing systems</strong>
+      <a href="/seal/">Details in the Seal SDK</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · Technical reference</div>

@@ -221,6 +221,50 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P3 SCHEMA</div>
+    <h2><span class="brown">エージェント権限の</span><code>your.agent.v1</code></h2>
+    <p class="lead">delegatedBy で「誰が委任したか」、role・spendLimit・scope で「何をどこまでできるか」を記録する schema 例。Trust402 ランタイムで x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。範囲外の行為は実行前に停止します。</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.agent.v1"</span><span class="p">,</span>
+  <span class="k">"agent"</span><span class="p">:</span> <span class="s">"did:lemma:agent-treasury-042"</span><span class="p">,</span>
+  <span class="k">"delegatedBy"</span><span class="p">:</span> <span class="s">"did:lemma:org-acme-fin"</span><span class="p">,</span>
+  <span class="k">"role"</span><span class="p">:</span> <span class="s">"treasury_agent"</span><span class="p">,</span>
+  <span class="k">"spendLimitUSDC"</span><span class="p">:</span> <span class="n">500</span><span class="p">,</span>
+  <span class="k">"scope"</span><span class="p">:</span> <span class="s">"x402://api.partner.jp/*"</span><span class="p">,</span>
+  <span class="k">"validUntil"</span><span class="p">:</span> <span class="s">"2026-06-30T23:59:59Z"</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"Groth16+EIP3009"</span><span class="p">,</span>
+    <span class="k">"x402PaymentId"</span><span class="p">:</span> <span class="s">"0xa1f3...7d8e"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x6b2c...e4a9"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P3 · エージェント権限</div>
+        <h3>Agent schema</h3>
+        <p class="axes-detail-desc">delegatedBy で「誰が委任したか」、role・spendLimit・scope で「何をどこまでできるか」を記録。Trust402 で x402 決済ごとに添付され、自律エージェントの行為を権限付きで証明。</p>
+        <div class="axes-can"><strong>できる:</strong> 自律エージェントを業務に組み込める ― 範囲内なら全速、範囲外で止まる</div>
+        <div class="axes-scenes"><span class="label">場面:</span>エージェント決済 / 経費承認 / API 課金 / cross-agent</div>
+        <dl class="axes-tech">
+        <dt>証明</dt><dd>Groth16 + EIP-3009</dd>
+        <dt>決済</dt><dd>USDC / x402</dd>
+        <dt>委任</dt><dd>DID-based VC</dd>
+        <dt>製品</dt><dd>Trust402</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>権限・条件・期限を、暗号証明で固定</strong>
+      <a href="/ja/trust402/">Trust402 で詳細</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · 技術リファレンス</div>

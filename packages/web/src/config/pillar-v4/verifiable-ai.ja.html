@@ -220,6 +220,50 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P2 SCHEMA</div>
+    <h2><span class="brown">検証可能 AI の</span><code>your.model.v1</code></h2>
+    <p class="lead">モデル ID と適用ポリシーのハッシュ、入力・出力のコミットメントを記録。実際の入出力は開示せず、ポリシー充足だけを Groth16 で証明する schema 例。LLM 監査の盲点を埋めます。</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.model.v1"</span><span class="p">,</span>
+  <span class="k">"agent"</span><span class="p">:</span> <span class="s">"did:lemma:agent-fin-bot-007"</span><span class="p">,</span>
+  <span class="k">"modelId"</span><span class="p">:</span> <span class="s">"claude-3.7-sonnet"</span><span class="p">,</span>
+  <span class="k">"policyHash"</span><span class="p">:</span> <span class="s">"0x71c5...8b9a"</span><span class="p">,</span>
+  <span class="k">"inputCommitment"</span><span class="p">:</span> <span class="s">"0xb4e2...3f10"</span><span class="p">,</span>
+  <span class="k">"outputCommitment"</span><span class="p">:</span> <span class="s">"0xc8f1...a2d5"</span><span class="p">,</span>
+  <span class="k">"satisfiesPolicy"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"Groth16"</span><span class="p">,</span>
+    <span class="k">"circuit"</span><span class="p">:</span> <span class="s">"lemma/model-attest@1.0"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x9d7e...c4f2"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P2 · 検証可能 AI</div>
+        <h3>Model schema</h3>
+        <p class="axes-detail-desc">モデル ID と適用ポリシーのハッシュ、入力・出力のコミットメントを記録。実際の入出力は開示せず、ポリシー充足だけを Groth16 で証明。LLM 監査の盲点を埋めます。</p>
+        <div class="axes-can"><strong>できる:</strong> AI の入力と動作の整合性を、独立に検証できる</div>
+        <div class="axes-scenes"><span class="label">場面:</span>AI 監査ログ / コンプライアンス報告 / 説明責任</div>
+        <dl class="axes-tech">
+        <dt>証明</dt><dd>Groth16 / BN254</dd>
+        <dt>回路</dt><dd>Circom 2.x</dd>
+        <dt>コミット</dt><dd>Pedersen / Poseidon</dd>
+        <dt>連携</dt><dd>MCP / Anthropic</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>推論結果の本物性を、見せずに証明</strong>
+      <a href="/ja/seal/">Seal SDK で詳細</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · 技術リファレンス</div>

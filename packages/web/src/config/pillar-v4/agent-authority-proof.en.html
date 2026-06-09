@@ -221,6 +221,50 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P3 SCHEMA</div>
+    <h2><span class="brown">Agent Authority — </span><code>your.agent.v1</code></h2>
+    <p class="lead">A schema example recording "who delegated" via delegatedBy and "what, and how far" via role / spendLimit / scope. Attached per x402 payment by the Trust402 runtime, it proves the actions of an autonomous agent with authority. Out-of-scope actions stop before execution.</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.agent.v1"</span><span class="p">,</span>
+  <span class="k">"agent"</span><span class="p">:</span> <span class="s">"did:lemma:agent-treasury-042"</span><span class="p">,</span>
+  <span class="k">"delegatedBy"</span><span class="p">:</span> <span class="s">"did:lemma:org-acme-fin"</span><span class="p">,</span>
+  <span class="k">"role"</span><span class="p">:</span> <span class="s">"treasury_agent"</span><span class="p">,</span>
+  <span class="k">"spendLimitUSDC"</span><span class="p">:</span> <span class="n">500</span><span class="p">,</span>
+  <span class="k">"scope"</span><span class="p">:</span> <span class="s">"x402://api.partner.jp/*"</span><span class="p">,</span>
+  <span class="k">"validUntil"</span><span class="p">:</span> <span class="s">"2026-06-30T23:59:59Z"</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"Groth16+EIP3009"</span><span class="p">,</span>
+    <span class="k">"x402PaymentId"</span><span class="p">:</span> <span class="s">"0xa1f3...7d8e"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x6b2c...e4a9"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P3 · Agent Authority</div>
+        <h3>Agent schema</h3>
+        <p class="axes-detail-desc">Record "who delegated" via delegatedBy and "what, and how far" via role / spendLimit / scope. Attached per x402 payment by Trust402, it proves the actions of an autonomous agent with authority.</p>
+        <div class="axes-can"><strong>Capability:</strong> Embed autonomous agents into operations — full speed in scope, stop out of scope</div>
+        <div class="axes-scenes"><span class="label">Use cases:</span>Agent payments / expense approval / API metering / cross-agent</div>
+        <dl class="axes-tech">
+        <dt>Proof</dt><dd>Groth16 + EIP-3009</dd>
+        <dt>Payment</dt><dd>USDC / x402</dd>
+        <dt>Delegation</dt><dd>DID-based VC</dd>
+        <dt>Product</dt><dd>Trust402</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>Fix authority, conditions, and expiry as a cryptographic proof</strong>
+      <a href="/trust402/">Details in Trust402</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · Technical reference</div>

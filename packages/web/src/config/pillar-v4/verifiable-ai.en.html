@@ -220,6 +220,50 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P2 SCHEMA</div>
+    <h2><span class="brown">Verifiable AI — </span><code>your.model.v1</code></h2>
+    <p class="lead">A schema example that records the model ID, the applied-policy hash, and input/output commitments. The actual I/O is never disclosed; only policy satisfaction is proven via Groth16 — closing the blind spot of LLM audits.</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.model.v1"</span><span class="p">,</span>
+  <span class="k">"agent"</span><span class="p">:</span> <span class="s">"did:lemma:agent-fin-bot-007"</span><span class="p">,</span>
+  <span class="k">"modelId"</span><span class="p">:</span> <span class="s">"claude-3.7-sonnet"</span><span class="p">,</span>
+  <span class="k">"policyHash"</span><span class="p">:</span> <span class="s">"0x71c5...8b9a"</span><span class="p">,</span>
+  <span class="k">"inputCommitment"</span><span class="p">:</span> <span class="s">"0xb4e2...3f10"</span><span class="p">,</span>
+  <span class="k">"outputCommitment"</span><span class="p">:</span> <span class="s">"0xc8f1...a2d5"</span><span class="p">,</span>
+  <span class="k">"satisfiesPolicy"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"Groth16"</span><span class="p">,</span>
+    <span class="k">"circuit"</span><span class="p">:</span> <span class="s">"lemma/model-attest@1.0"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x9d7e...c4f2"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P2 · Verifiable AI</div>
+        <h3>Model schema</h3>
+        <p class="axes-detail-desc">Record the model ID, applied-policy hash, and input/output commitments. The actual I/O is never disclosed; only policy satisfaction is proven via Groth16 — closing the blind spot of LLM audits.</p>
+        <div class="axes-can"><strong>Capability:</strong> Independently verify the integrity of AI inputs and behavior</div>
+        <div class="axes-scenes"><span class="label">Use cases:</span>AI audit logs / compliance reporting / accountability</div>
+        <dl class="axes-tech">
+        <dt>Proof</dt><dd>Groth16 / BN254</dd>
+        <dt>Circuit</dt><dd>Circom 2.x</dd>
+        <dt>Commit</dt><dd>Pedersen / Poseidon</dd>
+        <dt>Integration</dt><dd>MCP / Anthropic</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>Prove the authenticity of inference results without revealing them</strong>
+      <a href="/seal/">Details in the Seal SDK</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · Technical reference</div>

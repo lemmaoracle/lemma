@@ -220,6 +220,48 @@
   </div>
 </section>
 
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P1 SCHEMA</div>
+    <h2><span class="brown">来歴証明の</span><code>your.provenance.v1</code></h2>
+    <p class="lead">センサー → SCADA → Oracle と多段で伝搬するデータの来歴を、改ざん検知可能な形で記録。データ本体は開示せず、ハッシュチェーンと BBS+ 署名で「同じものだ」を証明する schema 例。</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.provenance.v1"</span><span class="p">,</span>
+  <span class="k">"subject"</span><span class="p">:</span> <span class="s">"did:lemma:utility-meter-001"</span><span class="p">,</span>
+  <span class="k">"issuer"</span><span class="p">:</span> <span class="s">"did:lemma:org-acme-utility"</span><span class="p">,</span>
+  <span class="k">"sourceHash"</span><span class="p">:</span> <span class="s">"0x9f3a...c4e8"</span><span class="p">,</span>
+  <span class="k">"lineageChain"</span><span class="p">:</span> [<span class="s">"sensor"</span><span class="p">,</span> <span class="s">"scada"</span><span class="p">,</span> <span class="s">"oracle"</span>]<span class="p">,</span>
+  <span class="k">"recordedAt"</span><span class="p">:</span> <span class="s">"2026-06-02T14:30:00Z"</span><span class="p">,</span>
+  <span class="k">"integrity"</span><span class="p">:</span> <span class="s">"poseidon-merkle"</span><span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"BBS+Signature2020"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x4a2b...e1d3"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P1 · 来歴証明</div>
+        <h3>Provenance schema</h3>
+        <p class="axes-detail-desc">センサー → SCADA → Oracle と多段で伝搬するデータの来歴を、改ざん検知可能な形で記録。データ本体は開示せず、ハッシュチェーンと BBS+ 署名で「同じものだ」を証明。</p>
+        <div class="axes-can"><strong>できる:</strong> データの出所と非改ざんを、中身を出さず証明できる</div>
+        <div class="axes-scenes"><span class="label">場面:</span>RAG ソース信頼 / 学習データ権利クリア / IoT センサ来歴</div>
+        <dl class="axes-tech">
+        <dt>署名</dt><dd>BBS+</dd>
+        <dt>ハッシュ</dt><dd>Poseidon-Merkle</dd>
+        <dt>識別子</dt><dd>W3C DID</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>SDK で発行 · 既存システムに組み込み可能</strong>
+      <a href="/ja/seal/">Seal SDK で詳細</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section" id="tech">
   <div class="container">
     <div class="section-eyebrow">05 · 技術リファレンス</div>

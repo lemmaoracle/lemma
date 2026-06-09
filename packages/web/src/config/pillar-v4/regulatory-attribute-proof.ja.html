@@ -409,6 +409,49 @@
 </section>
 
 <!-- §5 Tech reference -->
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P4 SCHEMA</div>
+    <h2><span class="brown">規制属性の</span><code>your.attribute.v1</code></h2>
+    <p class="lead">権威機関が発行する属性証明。disclosed / hidden で「何を開示し、何を隠すか」を BBS+ Selective Disclosure で制御する schema 例。KYC・許認可確認の生データ集約を不要にします。</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.attribute.v1"</span><span class="p">,</span>
+  <span class="k">"holder"</span><span class="p">:</span> <span class="s">"did:lemma:org-fsa-licensed"</span><span class="p">,</span>
+  <span class="k">"issuer"</span><span class="p">:</span> <span class="s">"did:lemma:authority-jp-fsa"</span><span class="p">,</span>
+  <span class="k">"jurisdiction"</span><span class="p">:</span> <span class="s">"JP-FSA"</span><span class="p">,</span>
+  <span class="k">"licenseType"</span><span class="p">:</span> <span class="s">"type-1-financial"</span><span class="p">,</span>
+  <span class="k">"disclosed"</span><span class="p">:</span> [<span class="s">"isLicensed"</span><span class="p">,</span> <span class="s">"validUntilYear"</span>]<span class="p">,</span>
+  <span class="k">"hidden"</span><span class="p">:</span> [<span class="s">"licenseNo"</span><span class="p">,</span> <span class="s">"address"</span><span class="p">,</span> <span class="s">"executives"</span>]<span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"BBS+SelectiveDisclosure"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x3c8d...f7a2"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P4 · 規制属性</div>
+        <h3>Attribute schema</h3>
+        <p class="axes-detail-desc">権威機関が発行する属性証明。disclosed / hidden で「何を開示し、何を隠すか」を BBS+ Selective Disclosure で制御。KYC・許認可確認の生データ集約を不要に。</p>
+        <div class="axes-can"><strong>できる:</strong> 規制属性を、原本を渡さず選択的に証明できる</div>
+        <div class="axes-scenes"><span class="label">場面:</span>KYC / AML / CBAM / EUDR / AI Act / 公共調達</div>
+        <dl class="axes-tech">
+        <dt>証明</dt><dd>BBS+ Selective</dd>
+        <dt>識別子</dt><dd>W3C DID / VC</dd>
+        <dt>標準</dt><dd>eIDAS / DID-Auth</dd>
+        <dt>製品</dt><dd>Lemma Compliance</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>「年齢 18 歳以上」だけ証明、原本は渡さない</strong>
+      <a href="/ja/pricing/#compliance">Lemma Compliance で詳細</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section">
   <div class="container">
     <div class="section-eyebrow">05 · 技術リファレンス</div>

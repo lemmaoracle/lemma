@@ -409,6 +409,49 @@
 </section>
 
 <!-- §5 Tech reference -->
+<!-- §schema deep-dive (NEW) -->
+<section class="pillar-schema">
+  <div class="container">
+    <div class="eyebrow">P4 SCHEMA</div>
+    <h2><span class="brown">Regulatory Attribute — </span><code>your.attribute.v1</code></h2>
+    <p class="lead">An attribute proof issued by an authority. A schema example controlling "what to disclose and what to hide" via disclosed / hidden with BBS+ Selective Disclosure — removing the need to aggregate raw data for KYC / licensing checks.</p>
+
+    <div class="pillar-schema-grid">
+      <pre class="axes-json">{
+  <span class="k">"schema"</span><span class="p">:</span> <span class="s">"your.attribute.v1"</span><span class="p">,</span>
+  <span class="k">"holder"</span><span class="p">:</span> <span class="s">"did:lemma:org-fsa-licensed"</span><span class="p">,</span>
+  <span class="k">"issuer"</span><span class="p">:</span> <span class="s">"did:lemma:authority-jp-fsa"</span><span class="p">,</span>
+  <span class="k">"jurisdiction"</span><span class="p">:</span> <span class="s">"JP-FSA"</span><span class="p">,</span>
+  <span class="k">"licenseType"</span><span class="p">:</span> <span class="s">"type-1-financial"</span><span class="p">,</span>
+  <span class="k">"disclosed"</span><span class="p">:</span> [<span class="s">"isLicensed"</span><span class="p">,</span> <span class="s">"validUntilYear"</span>]<span class="p">,</span>
+  <span class="k">"hidden"</span><span class="p">:</span> [<span class="s">"licenseNo"</span><span class="p">,</span> <span class="s">"address"</span><span class="p">,</span> <span class="s">"executives"</span>]<span class="p">,</span>
+  <span class="k">"proof"</span><span class="p">:</span> {
+    <span class="k">"type"</span><span class="p">:</span> <span class="s">"BBS+SelectiveDisclosure"</span><span class="p">,</span>
+    <span class="k">"value"</span><span class="p">:</span> <span class="s">"0x3c8d...f7a2"</span>
+  }
+}</pre>
+      <div class="axes-detail">
+        <div class="axes-detail-eyebrow">P4 · Regulatory Attribute</div>
+        <h3>Attribute schema</h3>
+        <p class="axes-detail-desc">An attribute proof issued by an authority. Control "what to disclose and what to hide" via disclosed / hidden with BBS+ Selective Disclosure — removing the need to aggregate raw data for KYC / licensing checks.</p>
+        <div class="axes-can"><strong>Capability:</strong> Prove regulatory attributes selectively, without handing over the original</div>
+        <div class="axes-scenes"><span class="label">Use cases:</span>KYC / AML / CBAM / EUDR / AI Act / public procurement</div>
+        <dl class="axes-tech">
+        <dt>Proof</dt><dd>BBS+ Selective</dd>
+        <dt>Identifier</dt><dd>W3C DID / VC</dd>
+        <dt>Standard</dt><dd>eIDAS / DID-Auth</dd>
+        <dt>Product</dt><dd>Lemma Compliance</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="schema-callout">
+      <strong>Prove just "18 or older" — never hand over the original</strong>
+      <a href="/pricing/#compliance">Details in Lemma Compliance</a>
+    </div>
+  </div>
+</section>
+
 <section class="tech-section">
   <div class="container">
     <div class="section-eyebrow">05 · Technical reference</div>
