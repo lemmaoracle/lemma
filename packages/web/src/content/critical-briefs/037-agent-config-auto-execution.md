@@ -18,7 +18,7 @@ og_lead_en: "AI coding agents auto-execute project-local config — SymJack / Mi
 
 ## TL;DR
 
-開発者が AI コーディングツール（Claude Code・Cursor・Gemini CLI など）でリポジトリを「開く」普段の操作が、認証情報を盗まれる引き金になり得ることが、2026 年 5〜6 月に研究と実地の両面から示された。原因は、AI エージェントがプロジェクトに同梱された設定ファイルを、中身を確かめないまま自動で実行する点にある。研究側では、Adversa AI が SymJack（2026-05-26）と TrustFall（2026-05 開示）を公表した。SymJack は、シンボリックリンクの偽装によって「動画のコピー」と表示しながらエージェント自身の設定ファイルを上書きし、次回起動時に攻撃者コードを実行させる手口で、Claude Code・Gemini CLI・Cursor・GitHub Copilot CLI・Grok Build・OpenAI Codex CLI で確認された。TrustFall は、フォルダの信頼プロンプトを承認した瞬間に、プロジェクト定義の MCP サーバーが自動起動して 1 クリックで遠隔コード実行に至る手口である。実地側では、自己増殖型マルウェア Miasma が、リポジトリに `.claude/settings.json`・`.gemini/settings.json`・Cursor の設定を仕込み、開発者が Claude Code・Gemini CLI・Cursor でプロジェクトを開いた瞬間に認証情報窃取ペイロードを実行する手口（第 3 波）で展開し、2026-06-05 に GitHub が Microsoft の 4 組織（Azure・Azure-Samples・Microsoft・MicrosoftDocs）のリポジトリ 73 件を無効化する事態に至った。本 Brief は、エージェントが同梱設定を実行する際に、その設定の権限と来歴を行動の前に独立検証する層が欠けている構造を扱う。本 Brief は、研究開示と国際的に報道された実地事案を、エージェント権限の独立検証という観点から構造的に分析する。検出側・ベンダーの役割は、否定ではなく役割分担として描く。
+開発者が AI コーディングツール（Claude Code・Cursor・Gemini CLI 等）でリポジトリを「開く」普段の操作が、認証情報窃取の引き金になり得ることが、2026 年 5〜6 月に研究と実地の両面から示された。原因は、AI エージェントがプロジェクト同梱の設定ファイルを、中身を確かめないまま自動実行する点にある。研究側では Adversa AI が SymJack（symlink 偽装でエージェント設定を上書きし起動時に実行）と TrustFall（フォルダ信頼の承認で MCP サーバーが自動起動し 1 クリック RCE）を公表。実地では、自己増殖型マルウェア Miasma が `.claude/settings.json` 等を仕込み、開発者がプロジェクトを開いた瞬間に認証情報窃取を実行する手口（第 3 波）で展開し、2026-06-05 に GitHub が Microsoft 系 4 組織の 73 リポジトリを無効化した。本 Brief は、エージェントが同梱設定を実行する前に、その権限と来歴を独立検証する層が欠けている構造を、検出との役割分担の観点から分析する。
 
 ---
 
