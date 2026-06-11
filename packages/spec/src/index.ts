@@ -46,6 +46,7 @@ export type CircuitArtifactLocation = Readonly<{
   type: "ipfs" | "https";
   wasm: string;
   zkey: string;
+  vkey?: string;
 }>;
 
 export type ProofAlgId = "groth16-bn254-snarkjs"; // snarkjs — pA/pB/pC + uint[N] pubSignals
