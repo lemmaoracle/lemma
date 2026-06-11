@@ -469,7 +469,7 @@ export const SOLUTIONS: SolutionsContent = {
         "We want to expand AI but worry about confidentiality of internal data.",
         "For KYC / AML / age checks, we want to prove the attribute without handing over the original.",
         "We need audit evidence for conformity with EU AI Act / ISO 42001 / local regulation.",
-        "We want to stop AI-specific attacks—prompt tampering, AI-generated ID fraud, and the like.",
+        "We want to reject inputs that can't be proven—prompt tampering, AI-generated ID fraud, and the like.",
       ],
     },
     threshold: 3,
