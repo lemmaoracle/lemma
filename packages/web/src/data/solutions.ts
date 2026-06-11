@@ -459,7 +459,7 @@ export const SOLUTIONS: SolutionsContent = {
         "AI 導入を進めたいが、社内データの機密管理に不安がある",
         "KYC / AML / 年齢確認で、原データを渡さず属性のみ証明したい",
         "EU AI Act / ISO 42001 / 国内規制への適合に、監査証跡が必要",
-        "プロンプト改竄や AI 生成 ID の偽装など、AI 特有の攻撃を止めたい",
+        "プロンプト改竄や AI 生成 ID の偽装など、証明のない入力をはじきたい",
       ],
       en: [
         "We want to delegate expense approvals, procurement, and payments to autonomous AI agents.",
