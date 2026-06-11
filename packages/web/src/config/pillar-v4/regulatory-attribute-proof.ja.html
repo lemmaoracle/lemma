@@ -1,0 +1,491 @@
+<!-- HERO -->
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 04 — Regulatory Attribute Proof</div>
+    <h1>規制属性証明。</h1>
+    <p class="hero-strap">AI に個人情報を渡さず、必要な事実だけを証明として渡す。</p>
+    <p class="hero-lead">
+      KYC・年齢・所在などの規制属性を、原本を渡さずに AI へ。Lemma 信頼インフラを構成する 4 軸の 1 つ。
+    </p>
+  </div>
+</section>
+
+<!-- NOW band -->
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">いま、最も求められている課題に答える</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="16" cy="11" r="5"/>
+          <path d="M6 26 a10 10 0 0 1 20 0"/>
+          <line x1="6" y1="6" x2="26" y2="26" stroke-width="2.2" stroke="#B8501F"/>
+        </svg>
+        <span>個人情報を AI に渡さず、AI を業務で使いたい</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M7 4 H21 L25 8 V28 H7 Z"/>
+          <line x1="11" y1="14" x2="21" y2="14"/>
+          <line x1="11" y1="18" x2="21" y2="18"/>
+          <path d="M11 22 L13 24 L17 20" stroke="#5C7A4A" stroke-width="2"/>
+        </svg>
+        <span>改正個人情報保護法・規制適合の証跡が要る</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="14" cy="14" r="8"/>
+          <line x1="20" y1="20" x2="27" y2="27" stroke-width="2.2"/>
+          <line x1="10" y1="14" x2="18" y2="14"/>
+          <line x1="14" y1="10" x2="14" y2="18"/>
+        </svg>
+        <span>マスキング・匿名化を超える独立検証性が要る</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- §1 規制属性証明とは — mechanism -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · 規制属性証明とは</div>
+    <h2 class="section-h2">原本を手元に残したまま、属性だけを AI に渡す。</h2>
+    <p class="section-lead">必要な属性を抽出し、暗号証明とセットで AI に届けます。原本は社内に残ります。</p>
+
+    <!-- mechanism flow (LARGE — 主役、内容は最小限) -->
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <!-- Stage 1: Source -->
+        <div class="mech-stage">
+          <div class="mech-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M6 3 H15 L19 7 V21 H6 Z"/>
+              <path d="M15 3 V7 H19"/>
+              <line x1="9" y1="12" x2="16" y2="12"/>
+              <line x1="9" y1="15" x2="16" y2="15"/>
+              <line x1="9" y1="18" x2="13" y2="18"/>
+            </svg>
+          </div>
+          <div class="stage-label">社内システム</div>
+          <h4>原本データ</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">顧客レコード一式（氏名・住所・生年月日・取引履歴 など）を保持。</p>
+          <div class="stage-note">原本は社内に残る</div>
+        </div>
+
+        <!-- Arrow 1 -->
+        <div class="mech-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <polyline points="14,6 20,12 14,18"/>
+          </svg>
+        </div>
+
+        <!-- Stage 2: Lemma -->
+        <div class="mech-stage lemma">
+          <div class="mech-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="8" width="16" height="10" rx="2"/>
+              <circle cx="9" cy="13" r="1.4" fill="currentColor"/>
+              <circle cx="12" cy="13" r="1.4" fill="currentColor"/>
+              <circle cx="15" cy="13" r="1.4" fill="currentColor"/>
+              <path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/>
+            </svg>
+          </div>
+          <div class="stage-label">Lemma</div>
+          <h4>属性を取り出し、<br>証明をつける</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step">
+              <span class="step-num">1</span>
+              <span>必要な属性だけ抽出</span>
+            </div>
+            <div class="lemma-step">
+              <span class="step-num">2</span>
+              <span>発行元が署名</span>
+            </div>
+            <div class="lemma-step">
+              <span class="step-num">3</span>
+              <span>ZK 証明を生成</span>
+            </div>
+          </div>
+          <div class="stage-note">原本データには触れない</div>
+        </div>
+
+        <!-- Arrow 2 -->
+        <div class="mech-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <polyline points="14,6 20,12 14,18"/>
+          </svg>
+        </div>
+
+        <!-- Stage 3: AI / 業務 -->
+        <div class="mech-stage">
+          <div class="mech-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="4" width="18" height="13" rx="2"/>
+              <line x1="9" y1="21" x2="15" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+              <text x="12" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">AI</text>
+            </svg>
+          </div>
+          <div class="stage-label">AI / 業務システム</div>
+          <h4>属性 + 証明だけが届く</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">jurisdiction</span><span class="strong">JP</span></div>
+            <div class="row"><span class="field">age_over</span><span class="strong">18</span></div>
+            <div class="row"><span class="field">aml_clear</span><span class="strong">true</span></div>
+            <div class="row"><span class="field">zk_proof</span><span class="strong">✓</span></div>
+          </div>
+          <div class="stage-note">原本データは届かない</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- analogy text box (familiar concept hook) -->
+    <div class="analogy-box">
+      <div class="analogy-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7 V12 L15 14"/>
+        </svg>
+      </div>
+      <div class="analogy-content">
+        <h4>たとえると、印鑑証明書のような仕組みです。</h4>
+        <p>銀行口座を開設するとき、戸籍そのものではなく「印鑑証明書」を提出する——このような経験はありませんか。必要な事実だけを公的に証明する書類です。Lemma の規制属性証明は、同じ考え方。原本データを丸ごと AI に渡す代わりに、必要な属性だけを、証明とセットで渡せます。</p>
+      </div>
+    </div>
+
+    <!-- split: 公開する vs 隠したまま -->
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">公開するもの</div>
+        <h4>属性の事実 + 証明</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>jurisdiction = JP</code> など、規制が問う属性</span></li>
+          <li><span class="mark">✓</span><span>発行元（KYC 業者・行政など）の暗号署名</span></li>
+          <li><span class="mark">✓</span><span>第三者が独立検証できる ZK 証明</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">非公開のまま</div>
+        <h4>原本データ</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span><code>name</code>（氏名）</span></li>
+          <li><span class="mark">✗</span><span><code>address</code>（住所）</span></li>
+          <li><span class="mark">✗</span><span><code>birth_date</code>（生年月日）</span></li>
+          <li><span class="mark">✗</span><span>取引履歴・センシティブ属性すべて</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- outcome strip (prominent) -->
+    <div class="outcome-block">
+      <div class="outcome-title">この仕組みで、何が起きるか</div>
+      <div class="outcome-grid">
+        <div class="outcome-item">
+          <span class="check">✓</span>
+          <span>AI が見るのは属性 + 証明のみ。原本にはアクセスできない</span>
+        </div>
+        <div class="outcome-item">
+          <span class="check">✓</span>
+          <span>原本データは社内に留まり、AI ログ・モデル提供企業に届かない</span>
+        </div>
+        <div class="outcome-item">
+          <span class="check">✓</span>
+          <span>属性の発行元が暗号署名で固定される</span>
+        </div>
+        <div class="outcome-item">
+          <span class="check">✓</span>
+          <span>第三者が、原本を見ずに属性の真偽を独立検証できる</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- possibilities — thematic forward-looking -->
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">個人情報を扱う業務にも、AI を組み込める。</h3>
+      <div class="possibilities-list">
+        <div class="poss-item">
+          <span class="arrow">→</span>
+          <span>AI 採用と個人情報保護が、同じ構造で両立する</span>
+        </div>
+        <div class="poss-item">
+          <span class="arrow">→</span>
+          <span>「個人情報を渡せないから AI が使えない」業務が解消する</span>
+        </div>
+        <div class="poss-item">
+          <span class="arrow">→</span>
+          <span>規制対応の証跡が、業務フロー自体に刻まれる</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- tech-bridge: なぜ Lemma にできるのか (コンパクト) -->
+  </div>
+</section>
+
+<!-- §2 マスキング・暗号化との違い -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · 既存手段との違い</div>
+    <h2 class="section-h2">マスキング・暗号化・監視と、何が違うか。</h2>
+    <p class="section-lead">隠す・守る・観測するだけでは、AI に必要な属性は渡せない。</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>手段</div>
+        <div>属性を AI に渡せる</div>
+        <div>原本は手元</div>
+        <div>独立検証可能</div>
+        <div>暗号証明</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line x1="3" y1="6" x2="17" y2="6"/>
+              <line x1="3" y1="10" x2="17" y2="10"/>
+              <line x1="3" y1="14" x2="17" y2="14"/>
+            </svg>
+          </div>
+          <span class="matrix-label">マスキング</span>
+        </div>
+        <div class="matrix-cell partial">△</div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell no">✗</div>
+        <div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="8" width="12" height="9" rx="1"/>
+              <path d="M7 8 V5 a3 3 0 0 1 6 0 V8"/>
+            </svg>
+          </div>
+          <span class="matrix-label">データ暗号化</span>
+        </div>
+        <div class="matrix-cell no">✗</div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell no">✗</div>
+        <div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="9" cy="9" r="6"/>
+              <line x1="13.5" y1="13.5" x2="17" y2="17"/>
+            </svg>
+          </div>
+          <span class="matrix-label">監視 / 検出</span>
+        </div>
+        <div class="matrix-cell no">✗</div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell no">✗</div>
+        <div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="10" cy="10" r="7"/>
+              <path d="M6.5 10 L9 12.5 L14 7.5"/>
+            </svg>
+          </div>
+          <span class="matrix-label">Lemma 規制属性証明</span>
+        </div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell yes">✓</div>
+        <div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 信頼インフラの位置 (slim band) -->
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · 信頼インフラの位置</div>
+      <h3>P4 は、Lemma 信頼インフラを構成する 4 軸の 1 つ。</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip">P1 来歴</span>
+      <span class="pos-chip">P2 AI 判断</span>
+      <span class="pos-chip">P3 権限</span>
+      <span class="pos-chip this">P4 規制属性</span>
+    </div>
+    <a href="/ja/pillars/" class="position-more">信頼インフラ全体を見る →</a>
+  </div>
+</div>
+
+<!-- §4 UC chips -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · 業務での活用</div>
+    <h2 class="section-h2">この軸を使う、業務シーン。</h2>
+    <div class="uc-row">
+      <a href="/ja/solutions/use-cases/kyc-aml-selective-disclosure/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="3" y="5" width="14" height="11" rx="1.5"/>
+          <circle cx="7" cy="9.5" r="1.5"/>
+          <path d="M11 8 H14 M11 10.5 H14 M5 13 H15"/>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · KYC</div>
+          KYC/AML 選択的開示
+        </div>
+      </a>
+      <a href="/ja/solutions/use-cases/age-eligibility-verification/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="10" cy="10" r="7"/>
+          <text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">18+</text>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · 年齢</div>
+          年齢確認の選択開示
+        </div>
+      </a>
+      <a href="/ja/solutions/use-cases/store-network-compliance/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M10 2 C6 2 3.5 5 3.5 8 C3.5 12 10 18 10 18 S16.5 12 16.5 8 C16.5 5 14 2 10 2 Z"/>
+          <circle cx="10" cy="8" r="2"/>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · 所在</div>
+          店舗網コンプライアンス
+        </div>
+      </a>
+      <a href="/ja/solutions/use-cases/counterparty-screening/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="6" cy="7" r="2.5"/>
+          <path d="M2 16 a4 4 0 0 1 8 0"/>
+          <circle cx="14" cy="7" r="2.5"/>
+          <path d="M10 16 a4 4 0 0 1 8 0"/>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · 取引先</div>
+          取引先スクリーニング
+        </div>
+      </a>
+      <a href="/ja/solutions/use-cases/customer-flag-need-to-know/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M10 2 L13 6 H17 L14 10 L15 16 L10 13 L5 16 L6 10 L3 6 H7 Z"/>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · 顧客フラグ</div>
+          顧客フラグの要点開示
+        </div>
+      </a>
+      <a href="/ja/solutions/use-cases/benefit-eligibility-proof/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 8 L10 4 L16 8 V14 a6 6 0 0 1 -12 0 Z"/>
+          <path d="M7 11 L9 13 L13 9" stroke-width="1.8"/>
+        </svg>
+        <div class="uc-chip-text">
+          <div class="uc-chip-tag">P4 · 給付資格</div>
+          給付資格証明
+        </div>
+      </a>
+    </div>
+    <a href="/ja/solutions/use-cases/" class="uc-link-more">全ユースケースを見る →</a>
+  </div>
+</section>
+
+<!-- §5 Tech reference -->
+<section class="tech-section">
+  <div class="container">
+    <div class="section-eyebrow">05 · 技術リファレンス</div>
+    <h2 class="section-h2">独自の暗号技術で、属性だけを証明する。</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item">
+          <h4>選択的開示</h4>
+          <p>必要な属性だけを公開、それ以外は数学的に伏せる。マスキングと異なり、第三者が独立検証可能。</p>
+        </div>
+        <div class="tech-item">
+          <h4>ゼロ知識証明</h4>
+          <p>「年齢 18 以上」を、生年月日を渡さずに証明。属性の真偽だけが検証側に届く。</p>
+        </div>
+        <div class="tech-item">
+          <h4>発行者署名</h4>
+          <p>属性の発行元（KYC 業者・行政・社内システム）を暗号的に固定。誰が attest したかを後から検証可能。</p>
+        </div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.attribute.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.attribute.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"jurisdiction"</span>: { <span class="key">"disclosed"</span>: <span class="str">"JP"</span> },<br>
+        &nbsp;&nbsp;<span class="key">"age_over"</span>: { <span class="key">"disclosed"</span>: <span class="num">18</span> },<br>
+        &nbsp;&nbsp;<span class="key">"aml_clear"</span>: { <span class="key">"disclosed"</span>: <span class="bool">true</span> },<br>
+        &nbsp;&nbsp;<span class="key">"name"</span>: { <span class="key">"hidden"</span>: <span class="bool">true</span> },<br>
+        &nbsp;&nbsp;<span class="key">"address"</span>: { <span class="key">"hidden"</span>: <span class="bool">true</span> },<br>
+        &nbsp;&nbsp;<span class="key">"birth_date"</span>: { <span class="key">"hidden"</span>: <span class="bool">true</span> },<br>
+        &nbsp;&nbsp;<span class="key">"issuer"</span>: <span class="str">"kyc-provider.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"zk_proof"</span>: <span class="str">"0x9c4f...e7d2"</span><br>
+        }
+      </div>
+    </div>
+
+    <!-- guides sub-section: curated P4 docs -->
+    <div class="guides-block">
+      <div class="guides-eyebrow">P4 を実装する開発ガイド</div>
+      <h3 class="guides-h3">この軸に関係する技術ドキュメント。</h3>
+      <div class="guides-list">
+        <a href="/ja/blog/disclose-only-what-ai-needs" class="guide-link">
+          <div>
+            <span class="tag-mono">GUIDES</span>
+            AI に必要なものだけを開示する
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="/ja/blog/prove-facts-with-zero-knowledge" class="guide-link">
+          <div>
+            <span class="tag-mono">GUIDES</span>
+            ゼロ知識で事実を証明する
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="/ja/blog/query-verified-attributes" class="guide-link">
+          <div>
+            <span class="tag-mono">GUIDES</span>
+            検証済み属性をクエリする
+          </div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="/ja/blog/define-your-domain-as-a-schema" class="guide-link">
+          <div>
+            <span class="tag-mono">GUIDES</span>
+            ドメインをスキーマとして定義する
+          </div>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+      <a href="/ja/guides/" class="guides-more">技術ドキュメント全体を見る →</a>
+    </div>
+  </div>
+</section>
+
+<!-- §6 CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · 次のステップ</div>
+    <h2 class="section-h2">業務シナリオで、確かめる。</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/EkBqDX?pillar=regulatory-attribute-proof" class="cta-card">
+        <div class="label">業務担当の方へ</div>
+        <h3>Discovery Call</h3>
+        <p>業務シナリオを 30 分でお聞きします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <span class="cta-arrow">問い合わせる →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">開発者の方へ</div>
+        <h3>Schema を試す</h3>
+        <p>your.attribute.v1 を Lemma Dashboard で 5 分試す。SDK と Guides を併読。</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

@@ -92,6 +92,25 @@ const briefSchema = z
     status: z.enum(STATUSES).default("draft"),
     /** Frontmatter version. The Brief page hides "Revision History" while this is "1.0". */
     version: z.string().regex(/^\d+\.\d+$/).default("1.0"),
+    /**
+     * Optional headline used as the og:title / twitter:title / <title> lead.
+     * Format: `{short descriptive headline} — {codename or case name}`
+     * (≈30–45 chars; full og:title stays under ~65 chars for card-safe
+     * rendering on LinkedIn / X / Google). The series tail
+     * (`｜Lemma Critical Brief No.NNN` / ` | Lemma Critical Brief No.NNN`)
+     * is appended by the template. When absent, the template falls back to
+     * the existing `title` mainTitle. Locale-suffixed (`_ja` / `_en`) and
+     * duplicated across the JA + EN collections, mirroring the
+     * `title` / `title_en` pattern.
+     */
+    og_lead_ja: z.string().optional(),
+    og_lead_en: z.string().optional(),
+    /**
+     * Optional cover image URL for the OG v2 artboard. When unset, the
+     * OG generator falls back to the cream-deep + dark-on-light design.
+     * Existing briefs leave this empty; future briefs can opt in.
+     */
+    cover: z.string().url().optional(),
   })
   .refine(
     (data) => {

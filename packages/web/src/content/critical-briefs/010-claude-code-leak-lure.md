@@ -9,9 +9,11 @@ incident_date: 2026-03-31
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["004-megalodon-github-supply-chain", "003-starlette-badhost"]
+related_briefs: ["015-github-vscode-extension-breach", "004-megalodon-github-supply-chain", "003-starlette-badhost"]
 version: "1.0"
 status: published
+og_lead_ja: "信頼シグナルと GitHub Releases を配送路に転用 — Claude Code 流出便乗マルウェア"
+og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel — Claude Code leak lures"
 ---
 
 ## TL;DR
@@ -61,7 +63,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、Anthropic が流出を人的ミスとして確認し該当バージョンを撤回・DMCA takedown を発行、Trend Micro が便乗キャンペーンの payload 経路・IOC を解析・公表し、配布プラットフォーム側も takedown を実施した。検出層は事象の輪郭把握・封じ込め・IOC 共有に貢献し、業界横断で問題を可視化した。検出企業・プラットフォームの役割を本 Brief が否定するものではない。
 
@@ -82,7 +84,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 
@@ -91,3 +93,17 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 - **Trend Micro technical analysis**: "Weaponizing Trust Signals: Claude Code Lures and GitHub Release Payloads"（2026-04-03、著者 Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra）— https://www.trendmicro.com/en_us/research/26/d/weaponizing-trust-claude-code-lures-and-github-release-payloads.html
 - **Trend Micro follow-up**: "Claude Code Packaging Error Remains a Lure in an Active Campaign: What Defenders Should Do"（2026-04）— https://www.trendmicro.com/en_us/research/26/d/claude-code-remains-a-lure-what-defenders-should-do.html
 - **PCMag**: "Anthropic Issues 8,000 Copyright Takedowns to Scrub Claude Code Leak"（2026-03）— https://www.pcmag.com/news/anthropic-issues-8000-copyright-takedowns-to-scrub-claude-code-leak
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

@@ -1,6 +1,6 @@
 ---
 brief_no: 3
-title: "Starlette CVE-2026-48710 (BadHost) — HTTP Host ヘッダー操作による MCP server 認証回避"
+title: "MCP サーバーの認証が Host ヘッダー操作で回避された（Starlette / BadHost）"
 title_en: "Starlette CVE-2026-48710 (BadHost) — MCP Server Authentication Bypass via HTTP Host Header Manipulation"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["004-megalodon-github-supply-chain"]
 version: "1.0"
 status: published
+og_lead_ja: "Host ヘッダー操作で MCP server の認証を回避 — Starlette CVE-2026-48710 (BadHost)"
+og_lead_en: "Host header manipulation bypassed MCP server auth — Starlette CVE-2026-48710 (BadHost)"
 ---
 
 ## TL;DR
@@ -62,7 +64,7 @@ Brief 001(KelpDAO/rsETH)や Brief 002(Stake DAO)とは異なる primitive(対象
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサーバーを脆弱バージョン特定で検知する。これは「脆弱性が存在するか」の検出であり、運用上有用である。検出企業の役割が本 Brief で否定されるものではない。
 
@@ -85,7 +87,7 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
@@ -95,3 +97,17 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 - **X41 D-Sec advisory and MCP scanner**(X41 D-Sec 公式)— mcp-scan.nemesis.services の公開 scanner と technical advisory。https://mcp-scan.nemesis.services/
 - **Starlette 1.0.1 release notes**(フレームワーク公式、GitHub release)— BadHost への patch 反映。https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package"(2026-05-27、独立報道)— https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

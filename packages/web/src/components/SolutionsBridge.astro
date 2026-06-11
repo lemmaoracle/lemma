@@ -1,0 +1,125 @@
+---
+/**
+ * Cross-link bridge → Solutions「活用シーン」(§2 anchors).
+ *
+ * Two tones:
+ *   - variant="full"  : Pillar / Use Case detail pages. Eyebrow + H2 + sub +
+ *     brown pill button. Full-bleed cream-deep band.
+ *   - variant="light" : Pillars / Use Cases hubs. One-line text + inline link.
+ *
+ * Uses global Layout tokens (--lemma-*, --accent, --black) + literal font
+ * stacks so it renders correctly regardless of the host template's scoped vars.
+ */
+interface Props {
+  variant?: "full" | "light";
+  href: string;
+  // full
+  eyebrow?: string;
+  h2?: string;
+  sub?: string;
+  ctaLabel?: string;
+  // light
+  text?: string;
+  linkLabel?: string;
+}
+const { variant = "full", href, eyebrow, h2, sub, ctaLabel, text, linkLabel } = Astro.props as Props;
+---
+
+{variant === "light" ? (
+  <section class="solutions-bridge-light">
+    <p>{text}<a href={href}>{linkLabel}</a></p>
+  </section>
+) : (
+  <section class="solutions-bridge">
+    <p class="bridge-eyebrow">{eyebrow}</p>
+    <h2 class="bridge-h2">{h2}</h2>
+    <p class="bridge-sub">{sub}</p>
+    <a class="bridge-btn" href={href}>{ctaLabel}</a>
+  </section>
+)}
+
+<style>
+  .solutions-bridge {
+    background: var(--lemma-cream-deep);
+    border-top: 1px solid var(--lemma-line);
+    border-bottom: 1px solid var(--lemma-line);
+    padding: 56px 48px;
+    text-align: center;
+  }
+  .bridge-eyebrow {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bridge-eyebrow::before { content: "\25B8"; }
+  .bridge-h2 {
+    font-family: "Sora", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    color: var(--black, #1a1a1a);
+  }
+  .bridge-sub {
+    font-size: 14px;
+    color: var(--lemma-text-3, #5a5a5a);
+    max-width: 560px;
+    margin: 0 auto 24px;
+    line-height: 1.7;
+  }
+  .bridge-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 13px 26px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: "Sora", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .bridge-btn:hover { background: #6b3410; }
+
+  /* light */
+  .solutions-bridge-light {
+    background: var(--lemma-cream);
+    border-top: 1px solid var(--lemma-line);
+    padding: 40px 48px;
+    text-align: center;
+  }
+  .solutions-bridge-light p {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 16px;
+    color: var(--lemma-text-3, #5a5a5a);
+    margin: 0;
+  }
+  .solutions-bridge-light a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 2px;
+    margin-left: 8px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .solutions-bridge-light a:hover { color: var(--black, #1a1a1a); border-bottom-color: var(--black, #1a1a1a); }
+
+  @media (max-width: 720px) {
+    .solutions-bridge { padding: 44px 24px; }
+    .bridge-h2 { font-size: 23px; }
+    .solutions-bridge-light { padding: 32px 24px; }
+    .solutions-bridge-light p { font-size: 15px; }
+    .solutions-bridge-light a { display: inline-block; margin-left: 0; margin-top: 6px; }
+  }
+</style>

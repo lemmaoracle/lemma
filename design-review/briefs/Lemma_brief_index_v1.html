@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lemma Critical Brief — threat intelligence × proof layer</title>
+<meta name="description" content="Lemma が発行する構造的事案分析の reference 集。AI・暗号インフラ・supply chain・規制属性領域の incident を、Detection ≠ Proof thesis のもとで構造的に解析する。">
+<meta name="theme-color" content="#8B4513">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lemma-black: #000000;
+  --lemma-text-1: #1A1A1A;
+  --lemma-text-2: #3A3A3A;
+  --lemma-text-3: #5A5A5A;
+  --lemma-text-4: #9A9A9A;
+  --lemma-brown: #8B4513;
+  --lemma-brown-light: #F5EBDC;
+  --lemma-cream: #FCFAF5;
+  --lemma-cream-deep: #F2EEDF;
+  --lemma-line: #E5E5E5;
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(--lemma-text-2); font-family: var(--font-body); font-weight: 400; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+/* === Header (v24) === */
+header { padding: 22px 0 0; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: inline-flex; text-decoration: none; }
+.brand-wordmark { width: 110px; height: auto; display: block; }
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a { font-family: var(--font-display); color: var(--lemma-text-2); text-decoration: none; font-size: 13.5px; font-weight: 500; letter-spacing: -0.005em; transition: color 0.15s; }
+.nav a:hover { color: var(--lemma-black); }
+.nav-cta { font-family: var(--font-display); background: var(--lemma-black) !important; color: var(--lemma-cream) !important; padding: 8px 16px; border-radius: 999px; font-size: 12.5px; font-weight: 500; letter-spacing: -0.005em; }
+.brand-bar { width: 240px; height: 4px; background: var(--lemma-brown); margin: 14px 0 0 40px; }
+
+/* === Hero (v24 sizing) === */
+.hero-section { padding: 60px 0 56px; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 28px; display: flex; align-items: center; gap: 12px; }
+.eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.h1 { font-family: var(--font-display); font-size: 72px; font-weight: 700; line-height: 0.96; margin: 0 0 30px; color: var(--lemma-black); letter-spacing: -0.04em; max-width: 920px; }
+.h1 .accent { color: var(--lemma-brown); }
+.hero-sub { font-size: 16px; color: var(--lemma-text-2); margin: 0 0 32px; line-height: 1.7; max-width: 680px; }
+.hero-sub .k { color: var(--lemma-black); font-weight: 500; }
+.hero-meta { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--lemma-text-3); display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding-top: 22px; border-top: 0.5px solid var(--lemma-line); }
+.hero-meta .strong { color: var(--lemma-black); font-weight: 500; }
+.hero-meta .dot { color: var(--lemma-brown); }
+.hero-meta a { color: var(--lemma-text-2); text-decoration: none; transition: color 0.15s; }
+.hero-meta a:hover { color: var(--lemma-brown); }
+
+/* === About collection · brief intro === */
+.about-bar { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 24px 28px; margin: 0 0 56px; display: grid; grid-template-columns: 220px 1fr; gap: 32px; align-items: start; }
+.about-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--lemma-brown); display: flex; align-items: center; gap: 8px; padding-top: 4px; }
+.about-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lemma-brown); }
+.about-text { font-size: 14px; line-height: 1.75; color: var(--lemma-text-2); margin: 0; }
+.about-text .k { color: var(--lemma-black); font-weight: 500; }
+@media (max-width: 760px) {
+  .about-bar { grid-template-columns: 1fr; gap: 12px; }
+}
+
+/* === Featured Brief · single hero card === */
+.featured-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-text-3); margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
+.featured-eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.featured-eyebrow .accent { color: var(--lemma-brown); font-weight: 500; }
+.featured-card { display: grid; grid-template-columns: 200px 1fr; gap: 36px; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 16px; padding: 36px 36px 32px; margin: 0 0 80px; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; text-decoration: none; position: relative; overflow: hidden; }
+.featured-card::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 64px; background: var(--lemma-brown); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+.featured-card:hover { border-color: rgba(139,69,19,0.4); box-shadow: 0 16px 40px rgba(139, 69, 19, 0.08); transform: translateY(-2px); }
+.featured-card:hover::before { width: 100%; }
+.featured-side { display: flex; flex-direction: column; gap: 6px; border-right: 0.5px solid var(--lemma-line); padding-right: 32px; }
+.featured-no { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.04em; color: var(--lemma-brown); font-weight: 500; }
+.featured-date { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--lemma-text-3); }
+.featured-pillar { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--lemma-text-3); margin-top: 16px; padding-top: 14px; border-top: 0.5px solid var(--lemma-line); display: flex; align-items: center; gap: 6px; }
+.featured-pillar::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--lemma-brown); }
+.featured-body { display: flex; flex-direction: column; gap: 14px; }
+.featured-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.02em; line-height: 1.22; margin: 0; }
+.featured-lede { font-size: 14.5px; line-height: 1.7; color: var(--lemma-text-2); margin: 0; }
+.featured-read { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--lemma-brown); margin-top: 4px; align-self: start; transition: transform 0.2s; }
+.featured-card:hover .featured-read { transform: translateX(4px); }
+@media (max-width: 760px) {
+  .featured-card { grid-template-columns: 1fr; gap: 18px; padding: 28px 26px 28px; }
+  .featured-side { border-right: 0; border-bottom: 0.5px solid var(--lemma-line); padding-right: 0; padding-bottom: 18px; flex-direction: row; flex-wrap: wrap; gap: 14px; }
+  .featured-pillar { margin-top: 0; padding-top: 0; border-top: 0; }
+  .featured-title { font-size: 22px; }
+}
+
+/* === Pillar sections === */
+.pillar-section { margin: 0 0 72px; }
+.pillar-head { display: flex; align-items: baseline; gap: 18px; padding-bottom: 22px; margin: 0 0 32px; border-bottom: 0.5px solid var(--lemma-line); }
+.pillar-no { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--lemma-brown); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.pillar-no::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--lemma-brown); }
+.pillar-title { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.025em; line-height: 1.05; margin: 0; }
+.pillar-count { font-family: var(--font-mono); font-size: 12px; color: var(--lemma-text-4); margin-left: auto; flex-shrink: 0; padding-bottom: 4px; }
+.pillar-sub { font-size: 14.5px; color: var(--lemma-text-3); line-height: 1.65; margin: -16px 0 32px; max-width: 580px; }
+
+/* Brief card grid */
+.brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.brief-card { display: flex; flex-direction: column; gap: 12px; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 14px; padding: 24px 26px 22px; text-decoration: none; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; position: relative; overflow: hidden; }
+.brief-card::before { content: ""; position: absolute; top: 0; left: 0; height: 2px; width: 40px; background: var(--lemma-brown); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.brief-card:hover { border-color: rgba(139,69,19,0.4); box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06); transform: translateY(-2px); }
+.brief-card:hover::before { width: 100%; }
+.brief-meta { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em; color: var(--lemma-text-3); }
+.brief-no { color: var(--lemma-brown); font-weight: 500; letter-spacing: 0.06em; }
+.brief-sep { color: var(--lemma-line); }
+.brief-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--lemma-black); line-height: 1.35; letter-spacing: -0.015em; margin: 0; }
+.brief-sub { font-size: 13px; color: var(--lemma-text-3); line-height: 1.6; margin: 0; }
+.brief-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 14px; border-top: 0.5px solid var(--lemma-line); }
+.brief-tag { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lemma-text-3); background: var(--lemma-cream-deep); padding: 4px 10px; border-radius: 999px; }
+.brief-tag.primary { color: var(--lemma-brown); background: var(--lemma-brown-light); }
+.brief-read { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--lemma-brown); margin-left: auto; align-self: center; transition: transform 0.2s; }
+.brief-card:hover .brief-read { transform: translateX(3px); }
+@media (max-width: 760px) {
+  .brief-grid { grid-template-columns: 1fr; }
+  .pillar-title { font-size: 24px; }
+  .pillar-head { flex-wrap: wrap; gap: 10px; }
+}
+
+/* === Categories archive · tag cloud-ish === */
+.archive-section { margin: 80px 0 0; padding: 56px 0 0; border-top: 0.5px solid var(--lemma-line); }
+.archive-head { display: flex; align-items: baseline; gap: 18px; margin: 0 0 16px; }
+.archive-h2 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--lemma-black); letter-spacing: -0.025em; margin: 0; }
+.archive-sub { font-size: 14px; color: var(--lemma-text-3); margin: 0 0 28px; max-width: 580px; line-height: 1.6; }
+.archive-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.archive-chip { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 999px; text-decoration: none; transition: border-color 0.2s, background 0.2s, color 0.2s; }
+.archive-chip:hover { border-color: var(--lemma-brown); background: var(--lemma-brown-light); }
+.archive-chip-label { font-family: var(--font-display); font-size: 13.5px; font-weight: 500; color: var(--lemma-text-2); letter-spacing: -0.005em; }
+.archive-chip-count { font-family: var(--font-mono); font-size: 10.5px; color: var(--lemma-brown); font-weight: 500; padding: 2px 8px; background: var(--lemma-brown-light); border-radius: 999px; }
+.archive-chip:hover .archive-chip-label { color: var(--lemma-brown); }
+
+/* === Footer (v24) === */
+.site-footer { background: #0A0A0A; color: rgba(252,250,245,0.65); padding: 88px 0 36px; margin-top: 96px; }
+.site-footer .container { max-width: 1200px; padding: 0 40px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; gap: 56px; padding: 0 0 64px; }
+.footer-brand { display: flex; flex-direction: column; gap: 22px; }
+.footer-logo { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+.footer-logo svg { width: 124px; height: auto; display: block; }
+.footer-tagline { font-size: 13.5px; line-height: 1.55; color: rgba(252,250,245,0.55); margin: 0; max-width: 280px; }
+.footer-social { display: flex; gap: 10px; margin-top: 4px; }
+.footer-social a { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 0.5px solid rgba(252,250,245,0.2); border-radius: 8px; color: rgba(252,250,245,0.75); text-decoration: none; font-family: var(--font-display); font-size: 13px; font-weight: 500; letter-spacing: -0.01em; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.footer-social a:hover { background: rgba(252,250,245,0.05); border-color: rgba(252,250,245,0.4); color: var(--lemma-cream); }
+.footer-col { display: flex; flex-direction: column; gap: 14px; }
+.footer-col-title { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--lemma-cream); margin: 0 0 4px; letter-spacing: -0.01em; }
+.footer-col a { font-family: var(--font-display); font-size: 14px; color: rgba(252,250,245,0.6); text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.footer-col a:hover { color: var(--lemma-cream); }
+.footer-col a .arr { font-size: 12px; color: rgba(252,250,245,0.35); transition: transform 0.2s; }
+.footer-col a:hover .arr { color: var(--lemma-brown); transform: translateX(2px); }
+.footer-subtitle { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(252,250,245,0.4); margin: 22px 0 4px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 28px 0 0; border-top: 0.5px solid rgba(252,250,245,0.12); font-size: 12.5px; color: rgba(252,250,245,0.45); }
+.footer-legal { display: flex; gap: 28px; }
+.footer-legal a { color: rgba(252,250,245,0.55); text-decoration: none; font-size: 12.5px; transition: color 0.15s; }
+.footer-legal a:hover { color: var(--lemma-cream); }
+@media (max-width: 960px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .h1 { font-size: 48px; }
+  .container { padding: 0 24px; }
+  .nav { display: none; }
+}
+@media (max-width: 560px) {
+  .h1 { font-size: 38px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a href="/ja" class="brand" aria-label="Lemma home">
+        <svg class="brand-wordmark" viewBox="0 0 142 65" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="#000"/>
+          <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="#000"/>
+          <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="#000"/>
+          <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="#000"/>
+          <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="#000"/>
+        </svg>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/ja/pillars">信頼レイヤー</a>
+        <a href="/ja/services">製品</a>
+        <a href="/ja/use-cases">ソリューション</a>
+        <a href="/ja/guides">開発者</a>
+        <a href="/ja/blog">リソース</a>
+        <a href="/ja/#contact" class="nav-cta">お問い合わせ</a>
+      </nav>
+    </div>
+  </div>
+</header>
+<div class="brand-bar" aria-hidden="true"></div>
+
+<main>
+  <div class="container">
+
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="eyebrow">Lemma Critical Brief</div>
+      <h1 class="h1">threat intelligence<br>× <span class="accent">proof layer.</span></h1>
+      <p class="hero-sub">
+        AI・暗号インフラ・supply chain・規制属性領域の incident を、<br>
+        <span class="k">Detection ≠ Proof thesis</span> のもとで構造的に解析する reference 集。
+        各 Brief は failure primitive と検出側強化では届かない構造的 gap を明示し、
+        事前証明 (pre-execution attestation) の設計に接続する。
+      </p>
+      <div class="hero-meta">
+        <span class="dot">●</span>
+        <span class="strong">12 briefs published</span>
+        <span>since 2026-05-29</span>
+        <span class="dot">·</span>
+        <a href="/ja/critical/briefs/feed.xml">RSS feed</a>
+        <span class="dot">·</span>
+        <a href="/ja/critical/briefs/methodology/">Methodology</a>
+      </div>
+    </section>
+
+    <!-- About this collection -->
+    <div class="about-bar">
+      <div class="about-label">このコレクションについて</div>
+      <p class="about-text">
+        Lemma Critical Brief は、Lemma が発行する構造的事案分析の reference 集。各 Brief は 1 件の事案を <span class="k">9 セクション (TL;DR + §1–§8)</span> で扱い、failure primitive と「検出層では届かない構造的 gap」を構造化する。事前証明 (pre-execution attestation) の設計に接続することで、検出と立証の間に位置する独立層を素描する。シリーズの方針、citation 規約、編集プロセスは <a href="/ja/critical/briefs/methodology/">Methodology</a> ページに集約。
+      </p>
+    </div>
+
+    <!-- FEATURED BRIEF -->
+    <div class="featured-eyebrow">Featured <span class="accent">· 最新の Brief</span></div>
+    <a href="/ja/critical/briefs/012-williams-frt-wrongful-arrest/" class="featured-card">
+      <div class="featured-side">
+        <div class="featured-no">No. 012</div>
+        <div class="featured-date">2026-05-31</div>
+        <div class="featured-pillar">Pillar 02 · 検証可能 AI</div>
+      </div>
+      <div class="featured-body">
+        <h2 class="featured-title">Robert Williams 誤認逮捕 — 顔認識の AI 判定が独立検証なく行政の強制処分に直結した構造</h2>
+        <p class="featured-lede">2020 年 1 月、米デトロイト市警は顔認識技術（FRT）の誤マッチに基づき、Robert Williams 氏（Black アメリカ人）を窃盗容疑で誤認逮捕し、約 30 時間拘束した。2018 年の店舗防犯映像と運転免許写真の AI 照合結果が、独立した裏付けなしに「容疑者の同定」として扱われ、強制処分（逮捕）に直結した。米国で初めて公に確認された FRT 起因の誤認逮捕とされる。</p>
+        <div class="featured-read">Brief を読む →</div>
+      </div>
+    </a>
+
+    <!-- ==================== PILLAR 01 ==================== -->
+    <section class="pillar-section">
+      <div class="pillar-head">
+        <div class="pillar-no">Pillar 01</div>
+        <h2 class="pillar-title">来歴証明</h2>
+        <div class="pillar-count">6 briefs</div>
+      </div>
+      <p class="pillar-sub">メッセージ・データ・コードの origin を独立検証する層。</p>
+      <div class="brief-grid">
+
+        <a href="/ja/critical/briefs/011-synthid-watermark-reverse-engineering/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 011</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-31</span>
+          </div>
+          <h3 class="brief-title">SynthID 透かし reverse-engineering — AI 生成コンテンツの来歴標識が統計的に剥がせる構造</h3>
+          <p class="brief-sub">独立研究者が Google DeepMind の SynthID を reverse-engineering。攻撃はニューラルネットも proprietary access も使わず、123,000 枚の Gemini 生成画像に対する 2 次元フーリエ変換と位相コヒーレンス解析で実現。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Data Provenance</span>
+            <span class="brief-tag">AI Decision Integrity</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/010-claude-code-leak-lure/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 010</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-31</span>
+          </div>
+          <h3 class="brief-title">Claude Code ソース流出便乗マルウェア — 信頼シグナルと GitHub Releases を配送路に転用した来歴偽装</h3>
+          <p class="brief-sub">Anthropic の npm パッケージが packaging error で内部 TypeScript ソース 51 万 2,000 行を露出。この高注目イベントを、AI 系を装った悪意 actor がマルウェア配送路に転用。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Code Provenance</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/008-discord-scraping/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 008</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">公開 API 経由の Discord 20.5 億メッセージ scraping — 公開チャンネルデータが AI training dataset として再配布される構造</h3>
+          <p class="brief-sub">ブラジル ミナス・ジェライス連邦大学の研究チームが Discord 公開 API を使用、3,167 サーバー・473 万人・20.52 億メッセージを scraping し arXiv 論文と JSON dataset で公開。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Training Data Provenance</span>
+            <span class="brief-tag">Data Provenance</span>
+            <span class="brief-tag">Attribute Proof Bypass</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/004-megalodon-github-supply-chain/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 004</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">Megalodon GitHub supply chain — 6 時間で 5,561 リポジトリを汚染した CI/CD credential 窃取キャンペーン</h3>
+          <p class="brief-sub">自動化されたサプライチェーン攻撃。6 時間で 5,561 件に 5,781 件の悪意あるコミットが push され、CI/CD 認証情報を盗み取るマルウェアが拡散。Hudson Rock がインフォスティーラー感染を起点として特定。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Code Provenance</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/002-stakedao-vsdcrv/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 002</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-29</span>
+          </div>
+          <h3 class="brief-title">Stake DAO vsdCRV 不正ミント — デプロイヤー鍵による LayerZero v2 信頼設定書き換え</h3>
+          <p class="brief-sub">DeFi プロトコル Stake DAO の vsdCRV を巡る cross-chain インフラ上で、Arbitrum 上に 5.4 兆 vsdCRV が不正にミント。攻撃者が deployer 秘密鍵を侵害し LayerZero v2 の信頼設定を書き換え。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Bridge Config Trust</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/001-kelpdao-rseth/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 001</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-29</span>
+          </div>
+          <h3 class="brief-title">KelpDAO / rsETH 不正アンロック — DVN 観測層への RPC 改ざん攻撃</h3>
+          <p class="brief-sub">KelpDAO のクロスチェーンプロトコル上で 116,500 rsETH（被害規模約 ¥460 億）が不正にアンロック。LayerZero Labs の RPC クラウド環境侵入を起点とし、DVN が参照するメッセージ観測結果を操作。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Bridge Config Trust</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ==================== PILLAR 02 ==================== -->
+    <section class="pillar-section">
+      <div class="pillar-head">
+        <div class="pillar-no">Pillar 02</div>
+        <h2 class="pillar-title">検証可能 AI</h2>
+        <div class="pillar-count">2 briefs</div>
+      </div>
+      <p class="pillar-sub">AI 判断の過程を ZK で commit する層。</p>
+      <div class="brief-grid">
+
+        <a href="/ja/critical/briefs/012-williams-frt-wrongful-arrest/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 012</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-31</span>
+          </div>
+          <h3 class="brief-title">Robert Williams 誤認逮捕 — 顔認識の AI 判定が独立検証なく行政の強制処分に直結した構造</h3>
+          <p class="brief-sub">米デトロイト市警が FRT 誤マッチに基づき Williams 氏を約 30 時間誤認拘束。AI 照合結果が独立検証なく「容疑者同定」として扱われ強制処分に直結。米国で初の FRT 起因誤認逮捕。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">AI Decision Integrity</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-tag">AI Bias / Harm</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/005-noroboto-lying-fonts/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 005</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">Noroboto 攻撃 — フォント偽装による AI 文書レビューの入力 integrity 偽装</h3>
+          <p class="brief-sub">Tritium Legal Technologies が公開。文書に埋め込まれた悪意フォントが Unicode 符号位置と字形の対応関係を意図的にずらし、人間が読む文章と AI が処理する文字列を乖離させる。契約書中の準拠法・金額・日付などで悪用。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">AI Decision Integrity</span>
+            <span class="brief-tag">Data Provenance</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ==================== PILLAR 03 ==================== -->
+    <section class="pillar-section">
+      <div class="pillar-head">
+        <div class="pillar-no">Pillar 03</div>
+        <h2 class="pillar-title">エージェント権限証明</h2>
+        <div class="pillar-count">3 briefs</div>
+      </div>
+      <p class="pillar-sub">エージェントの委任関係を証跡化する層。</p>
+      <div class="brief-grid">
+
+        <a href="/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 009</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-31</span>
+          </div>
+          <h3 class="brief-title">GTG-1002 — AI エージェントが攻撃の 80–90% を自律実行した初の報告例、エージェント権限が独立検証されない構造</h3>
+          <p class="brief-sub">Anthropic 公表。中国国家支援グループが AI coding agent を悪用し、攻撃の 80–90% を人間の介入なしに自律実行。約 30 の標的に侵入を試み少数で成功。偵察・脆弱性探索・exploit 生成・認証情報窃取まで AI が実行。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Agent Runaway</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/007-pocketos-cursor-db-deletion/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 007</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">Cursor + Claude Opus 4.6 が PocketOS 本番 DB を 9 秒で削除 — AI coding agent の destructive 権限が独立検証されない構造</h3>
+          <p class="brief-sub">全米の car rental operator 向け SaaS で、AI coding agent Cursor が Railway インフラへの単一 API call で production database と volume-level backup を 9 秒で全削除。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Agent Runaway</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+        <a href="/ja/critical/briefs/003-starlette-badhost/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 003</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">Starlette CVE-2026-48710 (BadHost) — HTTP Host ヘッダー操作による MCP server 認証回避</h3>
+          <p class="brief-sub">Python ASGI フレームワーク Starlette（週 3.25 億 DL）に CVE-2026-48710。HTTP Host ヘッダーへの 1 文字挿入で、パスベース認証ミドルウェアを回避可能。FastAPI、vLLM、LiteLLM、Text Generation Inference に影響。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Agent Infrastructure</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ==================== PILLAR 04 ==================== -->
+    <section class="pillar-section">
+      <div class="pillar-head">
+        <div class="pillar-no">Pillar 04</div>
+        <h2 class="pillar-title">規制属性証明</h2>
+        <div class="pillar-count">1 brief</div>
+      </div>
+      <p class="pillar-sub">KYC / AML / 規制属性を選択的開示で証明する層。</p>
+      <div class="brief-grid">
+
+        <a href="/ja/critical/briefs/006-google-api-key-revocation-lag/" class="brief-card">
+          <div class="brief-meta">
+            <span class="brief-no">No. 006</span>
+            <span class="brief-sep">·</span>
+            <span>2026-05-30</span>
+          </div>
+          <h3 class="brief-title">Google API キー削除後 23 分有効 — credential 失効属性の独立検証不在</h3>
+          <p class="brief-sub">Aikido の研究者 Joe Leon 氏が公開。Google API キーは削除後も最長約 23 分間認証成功する場合あり。10 回試験で中央値約 16 分、最長約 23 分の失効遅延を確認。「最終的に整合する仕組み」設計が原因。</p>
+          <div class="brief-tags">
+            <span class="brief-tag primary">Attribute Proof Bypass</span>
+            <span class="brief-tag">Identity / Auth</span>
+            <span class="brief-read">Brief →</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ==================== CATEGORIES ARCHIVE ==================== -->
+    <section class="archive-section">
+      <div class="archive-head">
+        <h2 class="archive-h2">カテゴリ別 archive</h2>
+      </div>
+      <p class="archive-sub">primary_category と secondary_categories の両方からカウントし、出現件数の多い順に並べる。</p>
+      <div class="archive-grid">
+        <a href="/ja/critical/briefs/category/identity-auth/" class="archive-chip">
+          <span class="archive-chip-label">Identity &amp; Auth</span>
+          <span class="archive-chip-count">9</span>
+        </a>
+        <a href="/ja/critical/briefs/category/ai-decision-integrity/" class="archive-chip">
+          <span class="archive-chip-label">AI Decision Integrity</span>
+          <span class="archive-chip-count">3</span>
+        </a>
+        <a href="/ja/critical/briefs/category/data-provenance/" class="archive-chip">
+          <span class="archive-chip-label">Data Provenance</span>
+          <span class="archive-chip-count">3</span>
+        </a>
+        <a href="/ja/critical/briefs/category/agent-runaway/" class="archive-chip">
+          <span class="archive-chip-label">Agent Runaway</span>
+          <span class="archive-chip-count">2</span>
+        </a>
+        <a href="/ja/critical/briefs/category/attribute-proof-bypass/" class="archive-chip">
+          <span class="archive-chip-label">Attribute Proof Bypass</span>
+          <span class="archive-chip-count">2</span>
+        </a>
+        <a href="/ja/critical/briefs/category/bridge-config-trust/" class="archive-chip">
+          <span class="archive-chip-label">Bridge Config Trust</span>
+          <span class="archive-chip-count">2</span>
+        </a>
+        <a href="/ja/critical/briefs/category/code-provenance/" class="archive-chip">
+          <span class="archive-chip-label">Code Provenance</span>
+          <span class="archive-chip-count">2</span>
+        </a>
+        <a href="/ja/critical/briefs/category/agent-infrastructure/" class="archive-chip">
+          <span class="archive-chip-label">Agent Infrastructure</span>
+          <span class="archive-chip-count">1</span>
+        </a>
+        <a href="/ja/critical/briefs/category/ai-bias-harm/" class="archive-chip">
+          <span class="archive-chip-label">AI Bias / Harm</span>
+          <span class="archive-chip-count">1</span>
+        </a>
+        <a href="/ja/critical/briefs/category/training-data-provenance/" class="archive-chip">
+          <span class="archive-chip-label">Training Data Provenance</span>
+          <span class="archive-chip-count">1</span>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- FOOTER (v24 rich) -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a href="/ja" class="footer-logo" aria-label="Lemma home">
+          <svg viewBox="0 0 142 65" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="#FCFAF5"/>
+            <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="#FCFAF5"/>
+            <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="#FCFAF5"/>
+            <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="#FCFAF5"/>
+            <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="#FCFAF5"/>
+          </svg>
+        </a>
+        <p class="footer-tagline">Trust Layer for AI.<br>Built for decisions that matter.</p>
+        <div class="footer-social">
+          <a href="https://x.com/lemmaoracle" aria-label="X / Twitter">X</a>
+          <a href="https://github.com/lemmaoracle" aria-label="GitHub">GH</a>
+          <a href="https://www.linkedin.com/company/lemmaoracle" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+
+      <nav class="footer-col" aria-label="Why Lemma">
+        <h4 class="footer-col-title">信頼レイヤー</h4>
+        <a href="/ja/pillars">4 つの柱</a>
+        <a href="/ja/use-cases">ユースケース</a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Products">
+        <h4 class="footer-col-title">製品</h4>
+        <a href="/ja/pricing/#civic">Lemma Civic</a>
+        <a href="/ja/pricing/#critical">Lemma Critical</a>
+        <a href="/ja/pricing/#compliance">Lemma Compliance</a>
+        <a href="/trust402/">Trust402</a>
+        <a href="/ja/pricing">料金プラン</a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Developers">
+        <h4 class="footer-col-title">開発者</h4>
+        <a href="/trust402/">Trust402</a>
+        <a href="https://dashboard.lemma.workers.dev">ダッシュボード</a>
+        <a href="/ja/services">仕様書</a>
+        <a href="https://github.com/lemmaoracle">GitHub <span class="arr">↗</span></a>
+        <a href="https://smithery.ai/servers/lemmaoracle/lemma">Smithery <span class="arr">↗</span></a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Resources">
+        <h4 class="footer-col-title">リソース</h4>
+        <a href="/ja/blog">ブログ</a>
+        <a href="/ja/services">ホワイトペーパー</a>
+        <a href="/ja/glossary">用語集</a>
+        <a href="/ja/faq">FAQ</a>
+        <div class="footer-subtitle">会社</div>
+        <a href="https://corp.frame00.com/">運営会社</a>
+        <a href="https://tally.so/r/Pd2Rl5">お問い合わせ</a>
+        <a href="/critical/briefs/">English</a>
+      </nav>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 FRAME00, INC. — Built for decisions that matter.</span>
+      <div class="footer-legal">
+        <a href="/ja/privacy">プライバシーポリシー</a>
+        <a href="/ja/terms">利用規約</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

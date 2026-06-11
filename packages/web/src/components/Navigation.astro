@@ -2,7 +2,7 @@
 import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
-import { SEGMENT_URLS } from "../config/navigation";
+import { DASHBOARD_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -14,17 +14,36 @@ const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
 const pricingPath = base ? `${base}/pricing` : "/pricing";
-const servicesPath = base ? `${base}/services` : "/services";
+const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
-const useCasesPath = base ? `${base}/use-cases` : "/use-cases";
+const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
+const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
-const guidesPath = base ? `${base}/guides` : "/guides";
-const whitepaperPath = servicesPath;
-const whitepaperFormUrl = "https://tally.so/r/xX0VYv";
-const githubPath = "https://github.com/lemmaoracle";
-const dashboardUrl = "https://dashboard.lemma.workers.dev";
-const contactPath = base ? `${base}/#contact` : "/#contact";
+const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
+// Nav CTA routes to the self-serve Dashboard ("Get Started"), not the
+// Discovery Call. The Discovery Call lives in in-page CTAs (Pillar / UC /
+// Solutions §6), see DISCOVERY_CALL_URL usages elsewhere.
+const getStartedHref = DASHBOARD_URL;
 const homePath = base || "/";
+
+/* Solutions mega-panel — industry headers only (JA).
+   The earlier draft listed every use case under each industry; the resulting
+   panel was wide enough to overlap the neighbouring Products panel and too
+   dense to scan. We now show industry names only, deep-linking to the
+   listing's industry filter (`#<key>`), and let the listing carry the
+   per-use-case detail. Order mirrors the listing's INDUSTRY_ORDER. */
+const SOLUTIONS_INDUSTRIES_JA: ReadonlyArray<{
+  readonly key: string;
+  readonly heading: string;
+}> = [
+  { key: "mfg", heading: "製造・基幹インフラ" },
+  { key: "fin", heading: "金融・FinTech" },
+  { key: "pub", heading: "自治体・公共" },
+  { key: "sc", heading: "調達・サプライチェーン" },
+  { key: "svc", heading: "サービス・小売" },
+  { key: "ai", heading: "AI 導入（業種横断）" },
+  { key: "dev", heading: "開発者" },
+];
 
 const currentPath = Astro.url.pathname;
 const languageSwitchHref =
@@ -39,19 +58,22 @@ const isPillarsActive = startsWith(pillarsPath);
 const isProductsActive =
   startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
 const isSolutionsActive = startsWith(useCasesPath);
-const isDevelopersActive = startsWith(guidesPath);
 const isResourcesActive =
-  startsWith(blogPath) || startsWith(faqPath) || startsWith(glossaryPath);
+  startsWith(blogPath) ||
+  startsWith(faqPath) ||
+  startsWith(glossaryPath) ||
+  currentPath.startsWith("/critical") ||
+  currentPath.startsWith("/ja/critical");
 ---
 
 <nav class="mega-nav" id="mainNav">
   <a href={homePath} class="mega-nav-logo">
-    <LemmaOracle class="h-[26px] w-auto text-black" />
+    <LemmaOracle class="mega-nav-mark" />
   </a>
 
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
-    <!-- 1. Trust Layer / 信頼レイヤー -->
+    <!-- 1. Trust Infrastructure / 信頼インフラ -->
     <li class="mega-nav-item">
       <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
       <div class="mega-panel">
@@ -82,85 +104,107 @@ const isResourcesActive =
     <!-- 2. 製品 -->
     <li class="mega-nav-item">
       <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
-      <div class="mega-panel mega-panel-wide">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.enterprise}</div>
-          <div class="mega-links">
-            <a href={SEGMENT_URLS.civic[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.civic}</span>
-              <span class="mega-link-sub">{t.mega.products.civicSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.critical[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.critical}</span>
-              <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
-            </a>
-            <a href={SEGMENT_URLS.compliance[locale]} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.compliance}</span>
-              <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
-            </a>
-          </div>
-        </div>
+      <div class="mega-panel">
+        <!-- Seal — for developers -->
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.developer}</div>
           <div class="mega-links">
-            <a href="/trust402/" class="mega-link" target="_blank">
+            <a href={base ? `${base}/seal/` : "/seal/"} class="mega-link">
+              <span class="mega-link-title">Seal</span>
+              <span class="mega-link-sub">{t.mega.products.sealSub}</span>
+            </a>
+          </div>
+        </div>
+        <!-- Trust402 — for agent developers -->
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.agentDeveloper}</div>
+          <div class="mega-links">
+            <a href={locale === "ja" ? "/ja/trust402/" : "/trust402/"} class="mega-link" target="_blank">
               <span class="mega-link-title">{t.mega.products.trust402}</span>
               <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
             </a>
-            <a href={pricingPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.pricing}</span>
-              <span class="mega-link-sub">{t.mega.products.pricingSub}</span>
+          </div>
+        </div>
+        <!-- Industries — for enterprises (consulting-driven; the Solutions hub
+             carries the discovery conversation, pricing surfaces from there) -->
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.enterprise}</div>
+          <div class="mega-links">
+            <a href={servicesPath} class="mega-link">
+              <span class="mega-link-title">Industries</span>
+              <span class="mega-link-sub">{t.mega.products.industriesSub}</span>
             </a>
           </div>
         </div>
       </div>
     </li>
 
-    <!-- 3. ソリューション -->
+    <!-- 3. ソリューション — top-level lands on the use-cases listing so
+         visitors browsing the nav land directly on concrete examples. The
+         consulting-led /solutions/ hub is reached via Products → Industries. -->
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
-      <div class="mega-panel">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.solutions.label}</div>
-          <div class="mega-links">
-            <a href={useCasesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.overview}</span>
-            </a>
-            <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.aiAudit}</span>
-            </a>
-            <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.kycAml}</span>
-            </a>
-            <a href={`${useCasesPath}/supply-chain-esg/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.supplyChain}</span>
-            </a>
-            <a href={`${useCasesPath}/defi-bridge-verification/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.solutions.defiBridge}</span>
-            </a>
+      {locale === "ja" ? (
+        <div class="mega-panel">
+          <div class="mega-section">
+            <div class="mega-section-label">業界別</div>
+            <div class="mega-links">
+              <a href={useCasesPath} class="mega-link">
+                <span class="mega-link-title">ユースケース一覧</span>
+                <span class="mega-link-sub">業界・タスク横断で全件を見る</span>
+              </a>
+              {SOLUTIONS_INDUSTRIES_JA.map((g) => (
+                <a href={`${useCasesPath}/#${g.key}`} class="mega-link">
+                  <span class="mega-link-title">{g.heading}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div class="mega-panel">
+          <div class="mega-section">
+            <div class="mega-section-label">{t.mega.solutions.label}</div>
+            <div class="mega-links">
+              <a href={useCasesPath} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.overview}</span>
+              </a>
+              <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.aiAudit}</span>
+              </a>
+              <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.kycAml}</span>
+              </a>
+              <a href={`${useCasesPath}/supply-chain-esg/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.supplyChain}</span>
+              </a>
+              <a href={`${useCasesPath}/defi-bridge-verification/`} class="mega-link">
+                <span class="mega-link-title">{t.mega.solutions.defiBridge}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </li>
 
-    <!-- 4. 開発者 (flat link → /guides/) -->
-    <li class="mega-nav-item">
-      <a href={guidesPath} class:list={["mega-nav-link", { active: isDevelopersActive }]}>{t.developers}</a>
-    </li>
-
-    <!-- 5. リソース -->
+    <!-- 4. Resources — Critical Brief leads (mirrors the Footer ordering),
+         followed by blog / whitepaper / glossary / FAQ. Pricing access lives
+         inside the Products mega-panel per CTO direction. -->
     <li class="mega-nav-item">
       <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
       <div class="mega-panel mega-panel-right">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.resources.label}</div>
           <div class="mega-links">
+            <a href={briefsPath} class="mega-link">
+              <span class="mega-link-title"><span class="mega-link-dot">●</span> {t.mega.resources.criticalBrief}</span>
+            </a>
             <a href={blogPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.blog}</span>
             </a>
-            <a href={whitepaperPath} class="mega-link">
+            <button type="button" class="mega-link mega-link-button" data-tally-open={TALLY_WHITEPAPER_ID} data-tally-emoji-text="">
               <span class="mega-link-title">{t.mega.resources.whitepaper}</span>
-            </a>
+            </button>
             <a href={glossaryPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.glossary}</span>
             </a>
@@ -177,9 +221,7 @@ const isResourcesActive =
     <a href={languageSwitchHref} class="nav-lang">
       {locale === "ja" ? t.languageEn : t.languageJa}
     </a>
-    <a href={contactPath} class="nav-contact">{t.contactCta}</a>
-    <a href={dashboardUrl} class="nav-dashboard" target="_blank" rel="noopener">{t.dashboardCta}</a>
-    <a href={whitepaperFormUrl} class="nav-cta" target="_blank" rel="noopener">{t.whitepaperCta}</a>
+    <a href={getStartedHref} target="_blank" rel="noopener" class="nav-cta-pill">{t.contactCta} <span class="nav-cta-arr">↗</span></a>
   </div>
 
   <!-- HAMBURGER -->
@@ -203,41 +245,47 @@ const isResourcesActive =
     <div class="mob-section">
       <div class="mob-section-header">{t.services} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={SEGMENT_URLS.civic[locale]} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
-        <a href={SEGMENT_URLS.critical[locale]} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
-        <a href={SEGMENT_URLS.compliance[locale]} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
-        <a href="/trust402/" class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
-        <a href={pricingPath} class="mob-link">{t.mega.products.pricing}<small>{t.mega.products.pricingSub}</small></a>
+        <a href={base ? `${base}/seal/` : "/seal/"} class="mob-link">Seal<small>{t.mega.products.sealSub}</small></a>
+        <a href={locale === "ja" ? "/ja/trust402/" : "/trust402/"} class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
+        <a href={servicesPath} class="mob-link">Industries<small>{t.mega.products.industriesSub}</small></a>
       </div>
     </div>
 
     <div class="mob-section">
       <div class="mob-section-header">{t.solutions} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={useCasesPath} class="mob-link">{t.mega.solutions.overview}</a>
-        <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mob-link">{t.mega.solutions.aiAudit}</a>
-        <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mob-link">{t.mega.solutions.kycAml}</a>
-        <a href={`${useCasesPath}/supply-chain-esg/`} class="mob-link">{t.mega.solutions.supplyChain}</a>
-        <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
+        {locale === "ja" ? (
+          <>
+            <a href={useCasesPath} class="mob-link">ユースケース一覧<small>業界・タスク横断で全件を見る</small></a>
+            {SOLUTIONS_INDUSTRIES_JA.map((g) => (
+              <a href={`${useCasesPath}/#${g.key}`} class="mob-link">{g.heading}</a>
+            ))}
+          </>
+        ) : (
+          <>
+            <a href={useCasesPath} class="mob-link">{t.mega.solutions.overview}</a>
+            <a href={`${useCasesPath}/ai-audit-log-proof/`} class="mob-link">{t.mega.solutions.aiAudit}</a>
+            <a href={`${useCasesPath}/kyc-aml-selective-disclosure/`} class="mob-link">{t.mega.solutions.kycAml}</a>
+            <a href={`${useCasesPath}/supply-chain-esg/`} class="mob-link">{t.mega.solutions.supplyChain}</a>
+            <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
+          </>
+        )}
       </div>
     </div>
-
-    <a href={guidesPath} class="mob-direct">{t.developers}</a>
-
-    <a href={dashboardUrl} class="mob-direct" target="_blank" rel="noopener">{t.dashboardCta}</a>
 
     <div class="mob-section">
       <div class="mob-section-header">{t.resources} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
+        <a href={briefsPath} class="mob-link"><span class="mob-link-dot">●</span> {t.mega.resources.criticalBrief}</a>
         <a href={blogPath} class="mob-link">{t.mega.resources.blog}</a>
-        <a href={whitepaperPath} class="mob-link">{t.mega.resources.whitepaper}</a>
+        <button type="button" class="mob-link mob-link-button" data-tally-open={TALLY_WHITEPAPER_ID} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button>
         <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
         <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
       </div>
     </div>
 
     <div class="mob-cta">
-      <a href={contactPath} class="mob-cta-btn">{t.mega.mobile.talkToUs}</a>
+      <a href={getStartedHref} target="_blank" rel="noopener" class="mob-cta-btn">{t.mega.mobile.talkToUs}</a>
     </div>
 
     <div class="mob-lang">
@@ -246,126 +294,158 @@ const isResourcesActive =
   </div>
 </nav>
 
+<!-- v28: brand-bar — saddle-brown rail in normal flow, sits just below the sticky nav. -->
+<div class="lemma-brand-bar" aria-hidden="true"></div>
+
 <style>
+  /* ─── v28: cream sticky header, Sora typography, brown active underline ─── */
   .mega-nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    background: rgba(255, 255, 255, 0.92);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    position: sticky; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(252, 250, 245, 0.94);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     height: 64px;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 5%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 0 40px; gap: 28px;
+    border-bottom: 0.5px solid var(--lemma-line, #E5E0D5);
     transition: border-color .3s;
   }
-  .mega-nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+  /* ─── v28: brand-signature logo (always-on brown underline) ─── */
+  .mega-nav-logo {
+    display: inline-flex; align-items: center;
+    text-decoration: none; flex-shrink: 0;
+    color: #000;
+    transition: color .15s;
+    position: relative;
+    height: 64px;
+    padding-top: 4px;
+  }
+  .mega-nav-logo:hover { color: var(--accent); }
+  /* Wordmark sizing scoped to the Navigation component so it doesn't depend
+     on Tailwind utility classes being emitted into the page's CSS bundle —
+     pages like /trust402/ have their own static `<style>` and the
+     `h-[26px]` utility class would otherwise drop out of their bundle. */
+  .mega-nav-mark { height: 26px; width: auto; color: currentColor; display: block; }
 
+  /* ─── v28: compact nav — items right-aligned, smaller font, tighter gap ─── */
   .mega-nav-links {
     display: flex; align-items: stretch; height: 64px;
-    list-style: none; gap: 0; margin: 0; padding: 0;
+    list-style: none; gap: 32px; margin: 0; padding: 0; flex: 1;
+    justify-content: flex-end;
   }
   .mega-nav-item { position: relative; display: flex; align-items: center; }
 
   .mega-nav-link {
-    color: var(--gray-700, #5F5F5F);
-    font-size: 14px; font-weight: 500;
-    letter-spacing: 0.02em;
+    font-family: "Sora", system-ui, sans-serif;
+    color: #2A2622;
+    font-size: 14px; font-weight: 400;
+    letter-spacing: 0;
     text-decoration: none;
     text-transform: none;
-    padding: 0 18px; height: 64px;
-    display: flex; align-items: center; gap: 6px;
-    transition: color .2s; white-space: nowrap;
-    background: none; border: none; cursor: pointer; font-family: inherit;
+    padding: 8px 0; height: 64px;
+    display: inline-flex; align-items: center;
+    transition: color .15s; white-space: nowrap;
+    background: none; border: none; cursor: pointer;
+    position: relative;
   }
-  .mega-nav-link:hover, .mega-nav-link.active { color: var(--gray-800); }
-  .mega-nav-link.has-mega::after {
-    content: ''; width: 4px; height: 4px;
-    border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
-    transform: rotate(45deg) translateY(-2px); display: inline-block;
-    opacity: .5; transition: transform .2s;
-  }
-  .mega-nav-item:hover .mega-nav-link.has-mega::after {
-    transform: rotate(-135deg) translateY(-2px); opacity: 1;
-  }
+  .mega-nav-link:hover { color: var(--accent); }
+  .mega-nav-link.active { color: #000; font-weight: 500; }
 
+  /* ─── v28: nav-right (lang + black pill) ─── */
   .mega-nav-right {
-    display: flex; align-items: center; gap: 18px;
+    display: flex; align-items: center; gap: 18px; flex-shrink: 0;
   }
   .nav-lang {
-    color: var(--gray-500);
-    font-size: 12px;
+    font-family: "Sora", system-ui, sans-serif;
+    color: #5A544D;
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .nav-lang:hover { color: var(--accent); }
+  .nav-cta-pill {
+    background: var(--accent); color: var(--lemma-cream);
+    padding: 9px 18px; border-radius: 6px;
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 13px; font-weight: 600;
     letter-spacing: 0;
     text-decoration: none;
-    transition: color .2s;
-  }
-  .nav-lang:hover { color: var(--gray-800); }
-  .nav-contact {
-    color: var(--gray-700, #5F5F5F);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-decoration: none;
-    transition: color .2s;
+    transition: background .15s;
     white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
   }
-  .nav-contact:hover { color: var(--gray-800); }
-  .nav-dashboard {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-decoration: none;
-    transition: color .2s;
-    white-space: nowrap;
-  }
-  .nav-dashboard:hover { color: var(--gray-800); }
-  .nav-cta {
-    background: #000; color: #fff;
-    padding: 9px 20px;
-    font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
-    text-decoration: none;
-    transition: background .2s, color .2s;
-    white-space: nowrap;
-  }
-  .nav-cta:hover { background: var(--accent); color: #fff; }
+  .nav-cta-pill:hover { background: #6e3610; }
+  .nav-cta-arr { margin-left: 2px; }
 
+  /* ─── v28: mega-panel as a cream blur card with brown-accent typography ─── */
   .mega-panel {
     display: none; position: absolute; top: 64px; left: 0;
-    background: #fff;
-    border: 1px solid var(--gray-200);
-    border-top: none;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
-    min-width: 280px; z-index: 999;
+    background: rgba(252, 250, 245, 0.98);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid var(--lemma-line, #E5E0D5);
+    border-radius: 14px;
+    box-shadow: 0 24px 56px rgba(43, 30, 18, 0.10);
+    min-width: 300px; z-index: 999;
+    padding: 8px;
+    margin-top: 4px;
   }
   .mega-panel-wide {
-    min-width: 520px;
+    min-width: 540px;
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
   .mega-panel-wide .mega-section {
     border-bottom: none;
-    border-right: 1px solid var(--gray-200);
+    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
   }
   .mega-panel-wide .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
   .mega-nav-item:hover .mega-panel { display: block; }
   .mega-nav-item:hover .mega-panel-wide { display: grid; }
 
-  .mega-section { padding: 20px 24px; border-bottom: 1px solid var(--gray-200); }
+  .mega-section { padding: 18px 20px 16px; border-bottom: 0.5px solid var(--lemma-line, #E5E0D5); }
   .mega-section:last-child { border-bottom: none; }
   .mega-section-label {
-    font-size: 9px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
     color: var(--accent); margin-bottom: 14px;
   }
   .mega-links { display: flex; flex-direction: column; gap: 2px; }
   .mega-link {
-    display: flex; flex-direction: column; padding: 10px 12px;
-    text-decoration: none; border-left: 2px solid transparent;
-    transition: border-color .15s, background .15s, color .15s;
+    display: flex; flex-direction: column;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background .15s, color .15s;
   }
-  .mega-link:hover { border-left-color: var(--accent); background: var(--gray-50); }
-  .mega-link-title { font-size: 14px; color: var(--gray-800); font-weight: 400; line-height: 1.4; margin-bottom: 2px; }
+  .mega-link:hover { background: var(--lemma-cream-deep, #F2EEDF); }
+  /* `<button class="mega-link">` variant — strip native button chrome so the
+     Tally popup trigger matches the surrounding anchor links. */
+  .mega-link-button {
+    background: none; border: none; cursor: pointer; text-align: left;
+    font: inherit; color: inherit; width: 100%;
+  }
+  .mob-link-button {
+    background: none; border: none; cursor: pointer; text-align: left;
+    font: inherit; color: inherit; width: 100%;
+  }
+  .mega-link-title {
+    font-family: "Sora", system-ui, sans-serif;
+    font-size: 14px; color: #1A1A1A; font-weight: 500; line-height: 1.4;
+  }
+  .mega-link-sub {
+    font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    font-size: 12px; color: #5A544D; line-height: 1.4; margin-top: 2px;
+  }
   .mega-link:hover .mega-link-title { color: var(--accent); }
-  .mega-link-sub { font-size: 12px; color: var(--gray-500); line-height: 1.3; }
+  .mega-link-dot {
+    color: var(--accent, #b88746);
+    font-size: 8px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
 
   .nav-hamburger {
     display: none; background: none; border: none; cursor: pointer;
@@ -416,17 +496,6 @@ const isResourcesActive =
   .mob-section-body { display: none; padding: 0 6% 16px; }
   .mob-section.open .mob-section-body { display: block; }
 
-  .mob-direct {
-    display: block;
-    padding: 18px 6%;
-    border-bottom: 1px solid var(--gray-200);
-    font-size: 14px; font-weight: 500;
-    color: var(--gray-800);
-    text-decoration: none;
-    transition: color .15s;
-  }
-  .mob-direct:hover { color: var(--accent); }
-
   .mob-link {
     display: block; padding: 12px 0; text-decoration: none;
     border-bottom: 1px solid var(--gray-200);
@@ -437,6 +506,12 @@ const isResourcesActive =
   .mob-link:last-child { border-bottom: none; }
   .mob-link:hover { color: var(--gray-800); }
   .mob-link small { display: block; font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .mob-link-dot {
+    color: var(--accent, #b88746);
+    font-size: 8px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
 
   .mob-cta { padding: 24px 6%; }
   .mob-cta-btn {
@@ -459,13 +534,26 @@ const isResourcesActive =
     .mega-nav-logo { margin-right: auto; }
     .mega-nav-links { display: none; }
     .mega-nav-right { gap: 10px; }
-    .nav-lang, .nav-contact, .nav-dashboard { display: none; }
+    .nav-lang, .nav-cta-pill { display: none; }
     .nav-cta { padding: 8px 14px; font-size: 10px; letter-spacing: .06em; }
     .nav-hamburger { display: flex; }
     .nav-mobile-drawer { display: block; }
   }
   @media(max-width:480px) {
     .nav-cta { padding: 7px 12px; font-size: 10px; }
+  }
+
+  /* Brand-bar (in flow, just below the sticky nav). Matches v28 / Seal v11
+     mockups: saddle-brown rail, 240×4px, left-indented to align with the
+     container's left edge. */
+  .lemma-brand-bar {
+    width: 240px;
+    height: 4px;
+    background: var(--accent);
+    margin: 18px 0 0 40px;
+  }
+  @media (max-width: 720px) {
+    .lemma-brand-bar { width: 180px; margin-left: 20px; }
   }
 </style>
 

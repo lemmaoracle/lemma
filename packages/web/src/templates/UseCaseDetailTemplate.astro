@@ -1,4 +1,20 @@
 ---
+/**
+ * Use Case detail — v24 chrome.
+ *
+ * Long-form template matching the Brief v24 vocabulary (cream page, Sora
+ * display + Noto body + Space Mono labels, saddle brown accent) while
+ * retaining the two-column layout (sticky sidebar TOC + main content) that
+ * the use case surface needs.
+ *
+ * Page composition:
+ *   1. Breadcrumb (mono uppercase)
+ *   2. Hero: eyebrow + h1 + thesis + abstract + meta strip
+ *   3. Layout: sticky sidebar (sections nav) + main content
+ *   4. Each section: rendered HTML body (markdown -> HTML)
+ *   5. DemoCtaBanner (when configured for the slug)
+ *   6. Inline v24 partner CTA card replacing the v22 black band
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { UseCase } from "../data/useCases";
 import type { Pillar, CTA } from "../data/pillars";
@@ -7,6 +23,13 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import DemoCtaBanner from "../components/DemoCtaBanner.astro";
+import UseCaseExitCta from "../components/UseCaseExitCta.astro";
+import SolutionsBridge from "../components/SolutionsBridge.astro";
+import UseCaseV3Body from "../components/usecase/UseCaseV3Body.astro";
+import { getUseCaseHideProve } from "../config/useCaseHideProve";
+import { getUseCaseV3 } from "../config/useCaseV3";
+import { getUseCaseBeforeAfter } from "../config/useCaseBeforeAfter";
+import { getUseCaseCompareRow } from "../config/useCaseCompareRow";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 
@@ -23,16 +46,54 @@ export interface UseCaseDetailTemplateProps {
   pillar: Pillar;
   pillarT: Translations["pillars"];
   useCaseT: Translations["useCases"];
+  /** Resolved related use cases (from useCase.relatedUseCases slug list).
+   * When non-empty, the "related" section's markdown body is replaced
+   * with a card grid built from this data. */
+  relatedUseCases?: ReadonlyArray<UseCase>;
 }
 
-const { locale, t, base, useCase, pillar, pillarT, useCaseT } = Astro.props as UseCaseDetailTemplateProps;
-const useCasesPath = `${base}/use-cases`;
+const { locale, t, base, useCase, pillar, pillarT, useCaseT, relatedUseCases = [] } =
+  Astro.props as UseCaseDetailTemplateProps;
+
+// Bridge → Solutions「活用シーン」, keyed by this use case's primary pillar axis.
+const UC_SOL_ANCHOR: Record<string, { anchor: string; axis: { ja: string; en: string } }> = {
+  "verifiable-origin": { anchor: "input-provenance", axis: { ja: "来歴証明", en: "Verifiable Origin" } },
+  "agent-authority-proof": { anchor: "agent-authority", axis: { ja: "エージェント権限", en: "Agent Authority" } },
+  "regulatory-attribute-proof": { anchor: "regulatory", axis: { ja: "規制属性", en: "Regulatory Attribute" } },
+  "verifiable-ai": { anchor: "verifiable-ai", axis: { ja: "検証可能 AI", en: "Verifiable AI" } },
+};
+const ucSolMeta = pillar ? UC_SOL_ANCHOR[pillar.slug] : undefined;
+const ucBridgeHref = ucSolMeta ? `${base}/solutions/#${ucSolMeta.anchor}` : `${base}/solutions/`;
+const ucBridgeCta = ucSolMeta
+  ? (locale === "ja" ? `Solutions で ${ucSolMeta.axis.ja}の活用シーンを見る →` : `See use scenarios for ${ucSolMeta.axis.en} in Solutions →`)
+  : (locale === "ja" ? "Solutions で活用シーンを見る →" : "See use scenarios in Solutions →");
+
+/** Trim an abstract down to its first sentence so related-use-case cards
+ * stay one-line tight. Splits on Japanese or Latin sentence terminators.
+ * Falls back to the full abstract if no terminator is found. */
+function firstSentence(text: string): string {
+  const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
+  return (m?.[1] ?? text).trim();
+}
+const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
+const isJa = locale === "ja";
+const hideProve = getUseCaseHideProve(useCase.slug, locale);
+// v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
+// get the authored §1 personas + §2 Before/After (now bilingual); everything
+// else derives §1/§2 from the audience/approach markdown.
+const v3 = getUseCaseV3(useCase.slug);
+// Derived UCs (no v3 config) still get a §2 key:value Before/After table from
+// this data-only map; ignored when v3 is present.
+const beforeAfter = v3 ? undefined : getUseCaseBeforeAfter(useCase.slug);
+// §3 table gains a "detection / monitoring only" row for cyber-relevant UCs.
+const compareRow = getUseCaseCompareRow(useCase.slug, locale);
+const useV3 = true;
 const demoSampleId = getDemoSampleForUseCase(useCase.slug);
 const demoPairSampleId = getUseCasePairSample(useCase.slug);
 
-// Combine all headings for TOC
-const allHeadings = useCase.sections.flatMap((s) => s.headings);
+const homeLabel = locale === "ja" ? "ホーム" : "Home";
+const minLabel = locale === "ja" ? "分" : "min read";
 
 const SITE = "https://lemma.frame00.com";
 const useCaseUrl = `${SITE}${useCasesPath}/${useCase.slug}/`;
@@ -43,7 +104,7 @@ const articleJsonLd = {
   description: useCase.abstract,
   url: useCaseUrl,
   inLanguage: locale,
-  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma Oracle" },
+  author: { "@type": "Organization", "@id": `${SITE}/#organization`, name: "Lemma" },
   publisher: { "@id": `${SITE}/#organization` },
   mainEntityOfPage: { "@type": "WebPage", "@id": useCaseUrl },
   about: pillar ? { "@type": "Thing", name: pillar.title[locale] } : undefined,
@@ -52,7 +113,7 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Lemma Oracle", item: `${SITE}${base || ""}/` },
+    { "@type": "ListItem", position: 1, name: "Lemma", item: `${SITE}${base || ""}/` },
     { "@type": "ListItem", position: 2, name: useCaseT.title, item: `${SITE}${useCasesPath}/` },
     { "@type": "ListItem", position: 3, name: useCase.title, item: useCaseUrl },
   ],
@@ -61,10 +122,11 @@ const breadcrumbJsonLd = {
 
 <Layout
   locale={locale}
-  title={`${useCase.title} — Use Case | Lemma Oracle`}
+  title={`${useCase.title} — ${useCaseT.title} | Lemma`}
   description={useCase.abstract}
   metaType="page"
-  pagePath={`/use-cases/${useCase.slug}/`}
+  pagePath={`/solutions/use-cases/${useCase.slug}/`}
+  ogImage={`https://lemma.frame00.com/og/use-cases/${useCase.slug}/${locale}.png`}
 >
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
   <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
@@ -72,519 +134,1061 @@ const breadcrumbJsonLd = {
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="uc-hero">
-    <div class="uc-hero-inner">
-      <nav class="breadcrumb" aria-label="breadcrumb">
-        <a href={base || "/"}>{locale === "ja" ? "ホーム" : "Home"}</a>
-        <span class="breadcrumb-sep">/</span>
+  {useV3 ? (
+    <UseCaseV3Body
+      locale={locale}
+      base={base}
+      useCase={useCase}
+      pillar={pillar}
+      useCaseTitle={useCaseT.title}
+      relatedUseCases={relatedUseCases}
+      hideProve={hideProve}
+      v3={v3}
+      beforeAfter={beforeAfter}
+      compareRow={compareRow}
+      ucBridgeHref={ucBridgeHref}
+      ucBridgeCta={ucBridgeCta}
+    />
+  ) : (
+  <main class="ucd-page">
+    <div class="ucd-container">
+      <nav class="ucd-breadcrumb" aria-label="breadcrumb">
+        <a href={base || "/"}>{homeLabel}</a>
+        <span class="ucd-breadcrumb-sep">/</span>
         <a href={useCasesPath}>{useCaseT.title}</a>
-        <span class="breadcrumb-sep">/</span>
+        <span class="ucd-breadcrumb-sep">/</span>
         <span>{useCase.title}</span>
       </nav>
-      <h1>{useCase.title}</h1>
-      {useCase.thesis && (
-        <p class="uc-thesis">{useCase.thesis}</p>
-      )}
-      <p class="uc-abstract">{useCase.abstract}</p>
-      <div class="uc-meta">
-        <a href={`${pillarsPath}/${pillar.slug}`} class="uc-pillar-tag">
+
+      <header class="ucd-hero">
+        <a href={`${pillarsPath}/${pillar.slug}`} class="ucd-eyebrow">
           P{pillar.order} · {pillar.title[locale]}
         </a>
-        {useCase.targetVerticals.length > 0 && (
-          <span class="uc-verticals">{useCase.targetVerticals.join(" · ")}</span>
+        <h1 class="ucd-h1">{useCase.title}</h1>
+        {useCase.thesis && (
+          <p class="ucd-thesis">{useCase.thesis}</p>
         )}
-        <span class="uc-reading-time">
-          {useCase.readingTime} {locale === "ja" ? "分" : "min read"}
-        </span>
+        {hideProve && (
+          <div class="ucd-hp" aria-label="HIDE と PROVE の対比">
+            <div class="ucd-hp__cell ucd-hp__cell--hide">
+              <span class="ucd-hp__lab">Hide ── 隠す</span>
+              <span class="ucd-hp__val">{hideProve.hide}</span>
+            </div>
+            <div class="ucd-hp__arrow" aria-hidden="true">→</div>
+            <div class="ucd-hp__cell ucd-hp__cell--prove">
+              <span class="ucd-hp__lab">Prove ── 証明する</span>
+              <span class="ucd-hp__val">{hideProve.prove}</span>
+            </div>
+          </div>
+        )}
+        <p class="ucd-abstract">{useCase.abstract}</p>
+        <div class="ucd-meta">
+          {useCase.targetVerticals.length > 0 && (
+            <span class="ucd-verticals">{useCase.targetVerticals.join(" · ")}</span>
+          )}
+          <span class="ucd-reading-time">
+            {useCase.readingTime} {minLabel}
+          </span>
+        </div>
+      </header>
+
+      <!-- Section index card — visual TOC under the hero. Complements the
+           sticky sidebar (which is desktop-only) and gives the page a
+           designed anchor surface before the long-form sections begin. -->
+      <section class="ucd-toc-card" aria-label={useCaseT.sections}>
+        <div class="ucd-toc-label">{useCaseT.sections}</div>
+        <ol class="ucd-toc-grid">
+          {useCase.sections.map((section, i) => (
+            <li class="ucd-toc-item">
+              <a href={`#${section.key}`} class="ucd-toc-link">
+                <span class="ucd-toc-num">§ {String(i + 1).padStart(2, "0")}</span>
+                <span class="ucd-toc-title">{section.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div class="ucd-layout">
+        <article class="ucd-main">
+          {useCase.sections.map((section, i) => {
+            // For the "related" section: when we have resolved related use
+            // cases, render a card grid using the frontmatter slug data and
+            // suppress the markdown body. Falls back to the body if the slug
+            // list is empty so the page never goes blank.
+            const isRelatedCards =
+              section.key === "related" && relatedUseCases.length > 0;
+            const eyebrowNo = String(i + 1).padStart(2, "0");
+            return (
+              <section id={section.key} class={`ucd-section${isRelatedCards ? " ucd-section--related" : ""}`}>
+                {isJa && (
+                  <div class="ucd-section-eye">{eyebrowNo}</div>
+                )}
+                <h2 class="ucd-section-title">{section.title}</h2>
+                {isRelatedCards ? (
+                  <ul class="ucd-related-grid">
+                    {relatedUseCases.map((r) => (
+                      <li class="ucd-related-item">
+                        <a href={`${useCasesPath}/${r.slug}`} class="ucd-related-card">
+                          {r.thesis && (
+                            <div class="ucd-related-thesis">{r.thesis}</div>
+                          )}
+                          <h3 class="ucd-related-title">{r.title}</h3>
+                          <p class="ucd-related-abstract">{firstSentence(r.abstract)}</p>
+                          <span class="ucd-related-cta">
+                            {pillarT.viewUseCase ?? useCaseT.title} →
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div class="ucd-section-body" set:html={section.body} />
+                )}
+              </section>
+            );
+          })}
+
+          {demoSampleId && (
+            <DemoCtaBanner
+              locale={locale}
+              t={t.demoCta}
+              sampleId={demoSampleId}
+              source="use-cases"
+              pairSampleId={demoPairSampleId ?? undefined}
+            />
+          )}
+
+          <SolutionsBridge
+            href={ucBridgeHref}
+            eyebrow={locale === "ja" ? "より広い活用シーン" : "The bigger picture"}
+            h2={locale === "ja" ? "このユースケースを含む、活用シーンの全体像。" : "The bigger picture this use case belongs to."}
+            sub={locale === "ja"
+              ? "業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。"
+              : "We organize use scenarios across industries and workflows by the four axes."}
+            ctaLabel={ucBridgeCta}
+          />
+
+          {locale === "ja" ? (
+            <UseCaseExitCta
+              slug={useCase.slug}
+              pillarSlug={useCase.pillar}
+              locale={locale}
+              base={base}
+            />
+          ) : (
+            <section class="ucd-partner" aria-label={pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}>
+              <div class="ucd-partner-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
+              <h2 class="ucd-partner-h2">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h2>
+              <p class="ucd-partner-body">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
+              {(() => {
+                const primary = resolveCTA(pillar.primaryCTA, locale);
+                const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
+                return (
+                  <div class="ucd-partner-cta">
+                    <a
+                      href={primary.href}
+                      class="ucd-partner-primary"
+                      target={primary.href.startsWith("http") ? "_blank" : undefined}
+                      rel={primary.href.startsWith("http") ? "noopener" : undefined}
+                    >
+                      {primary.label}
+                    </a>
+                    {secondary && (
+                      <a
+                        href={secondary.href}
+                        class="ucd-partner-secondary"
+                        target={secondary.href.startsWith("http") ? "_blank" : undefined}
+                        rel={secondary.href.startsWith("http") ? "noopener" : undefined}
+                      >
+                        {secondary.label}
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
+            </section>
+          )}
+        </article>
       </div>
     </div>
-  </header>
-
-  <div class="uc-layout">
-    <!-- Sidebar Navigation -->
-    <nav class="uc-sidebar" aria-label="Use case sections">
-      <div class="sidebar-label">{useCaseT.sections}</div>
-      <ul class="sidebar-nav">
-        {useCase.sections.map((section) => (
-          <li>
-            <a href={`#${section.key}`} class="sidebar-link">{section.title}</a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="uc-main">
-      <!-- Dynamic Sections -->
-      {useCase.sections.map((section) => (
-        <section id={section.key} class="uc-section">
-          <h2 class="section-title">{section.title}</h2>
-          <div class="section-body" set:html={section.body} />
-        </section>
-      ))}
-
-      {demoSampleId && (
-        <DemoCtaBanner
-          locale={locale}
-          t={t.demoCta}
-          sampleId={demoSampleId}
-          source="use-cases"
-          pairSampleId={demoPairSampleId ?? undefined}
-        />
-      )}
-
-      <!-- CTA Section -->
-      <section class="uc-cta-section">
-        <div class="uc-cta-inner">
-          <div class="cta-eyebrow">{pillar.ctaCopy?.eyebrow[locale] ?? pillarT.ctaEyebrow}</div>
-          <h3 class="cta-title">{pillar.ctaCopy?.title[locale] ?? pillarT.ctaTitle}</h3>
-          <p class="cta-desc">{pillar.ctaCopy?.desc[locale] ?? pillarT.ctaDesc}</p>
-          {(() => {
-            const primary = resolveCTA(pillar.primaryCTA, locale);
-            const secondary = pillar.secondaryCTA ? resolveCTA(pillar.secondaryCTA, locale) : undefined;
-            return (
-              <div class="cta-buttons">
-                <a href={primary.href} class="cta-btn cta-btn-primary" target={primary.href.startsWith("http") ? "_blank" : undefined} rel={primary.href.startsWith("http") ? "noopener" : undefined}>
-                  {primary.label}
-                </a>
-                {secondary && (
-                  <a href={secondary.href} class="cta-btn cta-btn-secondary" target={secondary.href.startsWith("http") ? "_blank" : undefined} rel={secondary.href.startsWith("http") ? "noopener" : undefined}>
-                    {secondary.label}
-                  </a>
-                )}
-              </div>
-            );
-          })()}
-        </div>
-      </section>
-    </main>
-  </div>
+  </main>
+  )}
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .uc-hero {
-    margin-top: 64px;
-    background: var(--black);
-    padding: 56px 10% 40px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-  .uc-hero-inner {
-    max-width: 800px;
-  }
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
-  }
-  .breadcrumb a {
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .breadcrumb a:hover {
-    color: var(--white);
-  }
-  .breadcrumb-sep {
-    color: rgba(255, 255, 255, 0.2);
-  }
+  .ucd-page {
+    /* Sora carries Latin; Noto Sans JP backs JA characters so they don't
+       cascade into the Layout-level Cormorant / Noto Serif JP stack. */
+    --ucd-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --ucd-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ucd-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ucd-text-1: #1a1a1a;
+    --ucd-text-2: #3a3a3a;
+    --ucd-text-3: #5a5a5a;
+    --ucd-text-4: #9a9a9a;
 
-  .uc-hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4.4vw, 48px);
+    background: var(--lemma-cream);
+    color: var(--ucd-text-2);
+    font-family: var(--ucd-body);
     font-weight: 400;
-    color: var(--white);
-    line-height: 1.15;
-    margin: 0 0 12px 0;
+    line-height: 1.75;
+    padding: 0 0 24px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .ucd-page {
+    --ucd-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
   }
 
-  .uc-thesis {
-    font-family: var(--font-display);
-    font-size: clamp(18px, 2.2vw, 24px);
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.3;
-    margin: 0 0 12px 0;
-    max-width: 640px;
-  }
-
-  .uc-abstract {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.65;
-    margin: 0 0 14px 0;
-    max-width: 640px;
-  }
-
-  .uc-meta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .uc-pillar-tag {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .uc-pillar-tag:hover {
-    color: var(--accent-lt);
-  }
-
-  .uc-verticals {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  .uc-reading-time {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.3);
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
-    padding-left: 16px;
-  }
-
-  .uc-layout {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 60px;
-    max-width: 1080px;
+  .ucd-container {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 60px 24px 80px;
+    padding: 0 40px;
   }
 
-  .uc-sidebar {
-    position: sticky;
-    top: 96px;
-    height: fit-content;
-    align-self: start;
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 
-  .sidebar-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
+  /* ─── BREADCRUMB ─── */
+  .ucd-breadcrumb {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 16px;
+    color: var(--ucd-text-4);
+    padding: 36px 0 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
-  .sidebar-label::before {
-    content: "";
-    width: 18px;
-    height: 1px;
-    background: var(--gray-200);
-    display: block;
-  }
-
-  .sidebar-nav {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .sidebar-link {
-    display: block;
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--gray-700);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-  }
-  .sidebar-link:hover {
-    color: var(--black);
-    border-left-color: var(--accent);
-    background: var(--gray-50);
-  }
-
-  .uc-main {
-    min-width: 0;
-  }
-
-  .uc-section {
-    padding-bottom: 48px;
-    border-bottom: 1px solid var(--gray-200);
-    margin-bottom: 48px;
-  }
-  .uc-section:last-of-type {
-    border-bottom: none;
-  }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3vw, 32px);
-    font-weight: 500;
-    color: var(--black);
-    line-height: 1.25;
-    margin: 0 0 24px 0;
-  }
-
-  .section-body {
-    font-size: 16px;
-    line-height: 1.8;
-    color: var(--gray-800);
-  }
-
-  .section-body :global(h2) {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--black);
-    margin: 48px 0 16px;
-    line-height: 1.35;
-  }
-  .section-body :global(h3) {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--black);
-    margin: 36px 0 12px;
-    line-height: 1.35;
-  }
-  .section-body :global(p) {
-    margin: 0 0 24px;
-  }
-  .section-body :global(ul) {
-    list-style: none;
-    margin: 0 0 24px;
-    padding: 0;
-  }
-  .section-body :global(ul li) {
-    padding: 6px 0 6px 24px;
-    position: relative;
-  }
-  .section-body :global(ul li::before) {
-    content: "◆";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 8px;
-    top: 12px;
-  }
-  .section-body :global(a) {
-    color: var(--accent);
-    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .section-body :global(a:hover) {
-    border-bottom-color: var(--accent);
-    color: var(--accent-lt);
-  }
-  /* Inline CTA buttons — applies to the last paragraph of a section
-     whose id is "cta" (e.g. authored as 03-cta.md). Two markdown links
-     in one paragraph render as a primary + secondary button row. */
-  :global(.uc-section#cta .section-body > p:last-child) {
-    display: flex;
-    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 32px;
+    gap: 0;
   }
-  :global(.uc-section#cta .section-body > p:last-child a) {
+  .ucd-breadcrumb a {
+    color: var(--ucd-text-3);
+    transition: color 0.15s;
+  }
+  .ucd-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .ucd-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
+  }
+
+  /* ─── HERO ─── */
+  .ucd-hero {
+    padding: 36px 0 48px;
+    max-width: 820px;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucd-eyebrow {
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
     display: inline-flex;
     align-items: center;
-    padding: 14px 28px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    border: 1px solid transparent;
-    border-radius: 0;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    gap: 12px;
+    margin: 0 0 20px;
+    transition: color 0.15s;
   }
-  :global(.uc-section#cta .section-body > p:last-child a:first-child) {
+  .ucd-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 1px;
     background: var(--accent);
-    color: var(--white);
-    border-color: var(--accent);
   }
-  :global(.uc-section#cta .section-body > p:last-child a:first-child:hover) {
-    background: var(--accent-lt);
-    border-color: var(--accent-lt);
-    color: var(--white);
+  .ucd-eyebrow:hover {
+    color: #6e3610;
   }
-  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child)) {
-    background: transparent;
+  .ucd-h1 {
+    font-family: var(--ucd-display);
+    font-size: clamp(34px, 4.4vw, 52px);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .ucd-h1 {
+    line-height: 1.25;
+  }
+  /* Thesis: bold mono-styled accent block, set off by a brown left rule.
+     Italics removed — faked italics on JA glyphs read as serif-y noise. */
+  .ucd-thesis {
+    font-family: var(--ucd-display);
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 600;
     color: var(--accent);
-    border-color: var(--accent);
+    line-height: 1.5;
+    margin: 0 0 22px;
+    max-width: 720px;
+    padding: 4px 0 4px 16px;
+    border-left: 2px solid var(--accent);
   }
-  :global(.uc-section#cta .section-body > p:last-child a:not(:first-child):hover) {
-    background: var(--accent);
-    color: var(--white);
+  .ucd-abstract {
+    font-size: 15.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.8;
+    margin: 0 0 24px;
+    max-width: 720px;
   }
-  .section-body :global(code) {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
-    font-size: 0.92em;
+
+  /* HIDE → PROVE hero device — matches usecase detail mockup (2026-06-02).
+     Two stacked cells (cream-deep "Hide" + white "Prove") connected by a
+     small saddle-brown arrow. Mobile collapses to a single column with the
+     arrow rotating into a vertical caret. */
+  .ucd-hp {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    margin: 0 0 24px;
+    max-width: 720px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ucd-hp__cell {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ucd-hp__cell--hide {
+    background: var(--lemma-cream-deep, #F2EEDF);
+  }
+  .ucd-hp__lab {
+    font-family: var(--ucd-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .ucd-hp__cell--hide .ucd-hp__lab {
+    color: var(--ucd-text-3);
+  }
+  .ucd-hp__cell--prove .ucd-hp__lab {
     color: var(--accent);
   }
-  .section-body :global(pre code) {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: #e1e4e8;
+  .ucd-hp__val {
+    font-size: 13.5px;
+    line-height: 1.55;
   }
-  .section-body :global(table) {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    border-collapse: collapse;
-    font-size: 14px;
-    margin: 24px 0;
+  .ucd-hp__cell--hide .ucd-hp__val {
+    color: var(--ucd-text-3);
   }
-  .section-body :global(thead tr) {
-    background: var(--black);
-    color: var(--white);
+  .ucd-hp__cell--prove .ucd-hp__val {
+    color: var(--black, #000);
+    font-weight: 600;
   }
-  .section-body :global(th) {
-    padding: 12px 16px;
-    font-size: 10px;
-    font-weight: 500;
+  .ucd-hp__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    color: var(--accent);
+    font-family: var(--ucd-mono);
+    font-size: 16px;
+  }
+  @media (max-width: 620px) {
+    .ucd-hp {
+      grid-template-columns: 1fr;
+    }
+    .ucd-hp__arrow {
+      width: auto;
+      padding: 6px 0;
+      transform: rotate(90deg);
+    }
+  }
+  .ucd-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    text-align: left;
+    color: var(--ucd-text-4);
   }
-  .section-body :global(td) {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--gray-200);
-    vertical-align: top;
+  .ucd-verticals {
+    color: var(--ucd-text-3);
   }
-  .section-body :global(tr:nth-child(odd) td) {
-    background: var(--gray-50);
+  .ucd-reading-time::before {
+    content: "·";
+    margin-right: 12px;
+    color: var(--lemma-line);
   }
-  .section-body :global(pre) {
-    margin: 24px 0;
-    padding: 20px;
-    background: #1a1a1a;
-    border-radius: 4px;
-    overflow-x: auto;
+  .ucd-meta > :first-child::before {
+    content: none;
   }
 
-  .tag-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-    margin-bottom: 24px;
+  /* ─── TOC CARD (visual section index under hero) ─── */
+  .ucd-toc-card {
+    background: var(--lemma-cream-deep);
+    border-radius: 14px;
+    padding: 32px 32px 26px;
+    margin: 40px 0 16px;
+    position: relative;
+    overflow: hidden;
   }
-  .tag-chip {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    color: var(--gray-500);
-    letter-spacing: 0.02em;
+  .ucd-toc-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
   }
-
-  .uc-cta-section {
-    background: var(--black);
-    padding: 64px 48px;
-    margin: 60px 0 0;
-    text-align: center;
-  }
-
-  .uc-cta-inner {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .cta-eyebrow {
-    font-size: 10px;
+  .ucd-toc-label {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
     font-weight: 500;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 16px;
+    margin: 0 0 18px;
   }
-
-  .cta-title {
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3.5vw, 36px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.15;
-    margin: 0 0 12px 0;
+  .ucd-toc-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 32px;
+    row-gap: 0;
   }
-
-  .cta-desc {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.45);
-    line-height: 1.7;
-    margin: 0 0 28px 0;
+  .ucd-toc-item {
+    padding: 0;
+    margin: 0;
   }
-
-  .cta-buttons {
+  .ucd-toc-link {
     display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.18);
+    transition: color 0.15s, border-color 0.15s;
   }
-
-  .cta-btn {
-    display: inline-block;
-    padding: 14px 32px;
-    font-size: 11px;
+  .ucd-toc-link:hover {
+    border-bottom-color: var(--accent);
+  }
+  .ucd-toc-num {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
     font-weight: 500;
     letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 36px;
   }
-
-  .cta-btn-primary {
-    background: var(--white);
-    color: var(--black);
+  .ucd-toc-title {
+    font-family: var(--ucd-body);
+    font-size: 13.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.5;
+    transition: color 0.15s;
   }
-  .cta-btn-primary:hover {
-    background: var(--accent);
-    color: var(--white);
-  }
-
-  .cta-btn-secondary {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  .cta-btn-secondary:hover {
-    border-color: var(--accent);
+  .ucd-toc-link:hover .ucd-toc-title {
     color: var(--accent);
   }
 
-  @media (max-width: 900px) {
-    .uc-layout {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-    .uc-sidebar {
-      display: none;
-    }
+  /* ─── LAYOUT ─── */
+  /* Single-column reading flow. The hero TOC card replaces the previous
+     sticky sidebar (the two duplicated each other on desktop and the
+     sidebar was hidden on mobile anyway). Constrain reading width so
+     long-form sections stay scannable. */
+  .ucd-layout {
+    padding: 40px 0 0;
+    max-width: 760px;
   }
 
-  @media (max-width: 768px) {
-    .uc-hero {
-      padding: 44px 6% 32px;
+  /* ─── MAIN ─── */
+  .ucd-main {
+    min-width: 0;
+    counter-reset: ucdsec;
+  }
+  /* Each section increments a CSS counter that surfaces as a "§ N" mono
+     brown eyebrow above its title. The eyebrow itself becomes the visual
+     section break, so the bottom rule is dropped — long use case pages
+     now read as a numbered cadence instead of stacked dividers. */
+  .ucd-section {
+    counter-increment: ucdsec;
+    padding: 0 0 64px;
+    margin: 0 0 64px;
+  }
+  .ucd-section:last-of-type {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  .ucd-section-title {
+    font-family: var(--ucd-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 24px;
+  }
+  .ucd-section-title::before {
+    content: "§ " counter(ucdsec);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  :root[lang="ja"] .ucd-section-title {
+    line-height: 1.35;
+  }
+
+  /* JA: separate eyebrow element (rendered conditionally) shows the
+     mockup's "── 01" pattern. EN sticks with the "§ N" counter on
+     .ucd-section-title::before. When the JA eyebrow div is present we
+     suppress that ::before to avoid stacking two eyebrows. */
+  .ucd-section-eye {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  .ucd-section-eye::before {
+    content: "";
+    width: 24px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+  .ucd-section-eye + .ucd-section-title::before {
+    display: none;
+  }
+
+  /* ─── BODY (markdown HTML) ─── */
+  .ucd-section-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--ucd-text-2);
+  }
+  .ucd-section-body :global(p) {
+    margin: 0 0 18px;
+  }
+  .ucd-section-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .ucd-section-body :global(strong) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  /* Em is repurposed as a "key term" accent — saddle brown, weight 500,
+     not italic. Faked italics on JA glyphs read poorly. */
+  .ucd-section-body :global(em) {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  /* Lead paragraph — first paragraph in each section gets a slightly
+     larger size and a brown left rule, anchoring the section visually
+     without changing the markdown. */
+  .ucd-section-body :global(> p:first-child) {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--ucd-text-1);
+    padding: 2px 0 2px 16px;
+    border-left: 2px solid var(--accent);
+    margin: 0 0 28px;
+  }
+  /* Blockquote — cream-deep card with brown left rule. Markdown
+     blockquotes become surfaced callouts instead of plain indented text. */
+  .ucd-section-body :global(blockquote) {
+    margin: 24px 0;
+    padding: 20px 24px;
+    background: var(--lemma-cream-deep);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+  .ucd-section-body :global(a) {
+    color: var(--accent);
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+    overflow-wrap: anywhere;
+  }
+  .ucd-section-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .ucd-section-body :global(h2) {
+    font-family: var(--ucd-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    margin: 40px 0 14px;
+    line-height: 1.35;
+  }
+  .ucd-section-body :global(h3) {
+    font-family: var(--ucd-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    margin: 32px 0 12px;
+    line-height: 1.35;
+  }
+  .ucd-section-body :global(ul) {
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+  }
+  .ucd-section-body :global(ul li) {
+    position: relative;
+    padding-left: 22px;
+    margin: 0 0 10px;
+    line-height: 1.7;
+  }
+  .ucd-section-body :global(ul li::before) {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 12px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 1px;
+    transform: rotate(45deg);
+  }
+  .ucd-section-body :global(ol) {
+    margin: 0 0 18px;
+    padding: 0 0 0 4px;
+    counter-reset: ucdlist;
+    list-style: none;
+  }
+  .ucd-section-body :global(ol li) {
+    counter-increment: ucdlist;
+    position: relative;
+    padding-left: 32px;
+    margin: 0 0 14px;
+    line-height: 1.7;
+  }
+  .ucd-section-body :global(ol li::before) {
+    content: counter(ucdlist);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--ucd-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .ucd-section-body :global(hr) {
+    border: none;
+    border-top: 0.5px solid var(--lemma-line);
+    margin: 36px 0;
+  }
+  .ucd-section-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--ucd-body);
+    font-size: 13.5px;
+    margin: 24px 0;
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .ucd-section-body :global(thead tr) {
+    background: var(--lemma-cream-deep);
+  }
+  .ucd-section-body :global(th) {
+    padding: 11px 12px;
+    font-family: var(--ucd-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ucd-text-3);
+    text-align: center;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucd-section-body :global(td) {
+    padding: 11px 12px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    color: var(--ucd-text-2);
+    line-height: 1.6;
+    vertical-align: middle;
+    text-align: center;
+  }
+  .ucd-section-body :global(th:first-child),
+  .ucd-section-body :global(td:first-child) {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(tbody tr:last-child td) {
+    border-bottom: none;
+  }
+  /* Highlight row — any tbody row whose first cell holds a <strong>.
+     Markdown writers reach this just by bolding the cell text, e.g.
+     `| **ZK 証明(Lemma)** | ... |`. */
+  .ucd-section-body :global(tbody tr:has(td:first-child strong)) {
+    background: rgba(139, 69, 19, 0.07);
+  }
+  .ucd-section-body :global(tbody tr:has(td:first-child strong) td),
+  .ucd-section-body :global(tbody tr:has(td:first-child strong) td strong) {
+    color: var(--accent);
+  }
+  /* Mobile: scroll horizontally inside the rounded card rather than
+     overflow the reading column. */
+  @media (max-width: 620px) {
+    .ucd-section-body :global(table) {
+      display: block;
+      overflow-x: auto;
     }
-    .uc-layout {
-      padding: 40px 16px 60px;
+  }
+  .ucd-section-body :global(code:not(pre code)) {
+    font-family: var(--ucd-mono);
+    font-size: 0.86em;
+    background: var(--lemma-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--ucd-text-1);
+  }
+  .ucd-section-body :global(pre) {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: #1a1a1a;
+    color: #e8e2d4;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--ucd-mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .ucd-section-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Inline CTA links inside markdown sections with id "cta" — render the
+     last paragraph's links as a primary + secondary button row. Kept from
+     v22 since some use cases author CTAs as markdown. */
+  :global(.ucd-section#cta .ucd-section-body > p:last-child) {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a) {
+    display: inline-flex;
+    align-items: center;
+    padding: 13px 28px;
+    font-family: var(--ucd-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    border: 0.5px solid transparent;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:first-child) {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border-color: var(--accent);
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:first-child:hover) {
+    background: #6e3610;
+    border-color: #6e3610;
+    color: var(--lemma-cream);
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:not(:first-child)) {
+    background: var(--white);
+    color: var(--accent);
+    border-color: var(--lemma-line);
+  }
+  :global(.ucd-section#cta .ucd-section-body > p:last-child a:not(:first-child):hover) {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── RELATED USE CASES (card grid replaces long-form related text) ─── */
+  .ucd-section--related {
+    /* Drop the lead-paragraph treatment that would otherwise hit the
+       cards container instead of a real paragraph. */
+  }
+  .ucd-related-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .ucd-related-item {
+    margin: 0;
+    padding: 0;
+  }
+  .ucd-related-item::before {
+    content: none;
+  }
+  .ucd-related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    height: 100%;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ucd-related-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ucd-related-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .ucd-related-card:hover::before {
+    width: 100%;
+  }
+  .ucd-related-thesis {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  .ucd-related-title {
+    font-family: var(--ucd-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .ucd-related-abstract {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ucd-text-3);
+    margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ucd-related-cta {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .ucd-related-card:hover .ucd-related-cta {
+    transform: translateX(3px);
+  }
+
+  /* ─── PARTNER CTA (v24 inline) ─── */
+  .ucd-partner {
+    margin: 32px 0 0;
+    padding: 48px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ucd-partner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
+  }
+  .ucd-partner-eyebrow {
+    font-family: var(--ucd-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .ucd-partner-h2 {
+    font-family: var(--ucd-display);
+    font-size: clamp(26px, 3.4vw, 36px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin: 0 0 16px;
+  }
+  :root[lang="ja"] .ucd-partner-h2 {
+    line-height: 1.35;
+  }
+  .ucd-partner-body {
+    font-size: 14.5px;
+    color: var(--ucd-text-2);
+    line-height: 1.8;
+    margin: 0 auto 28px;
+    max-width: 540px;
+  }
+  .ucd-partner-cta {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ucd-partner-primary,
+  .ucd-partner-secondary {
+    font-family: var(--ucd-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 13px 30px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .ucd-partner-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border: 0;
+  }
+  .ucd-partner-primary:hover {
+    background: #6e3610;
+  }
+  .ucd-partner-secondary {
+    background: var(--white);
+    color: var(--accent);
+    border: 0.5px solid var(--lemma-line);
+  }
+  .ucd-partner-secondary:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  /* §08 (#next) — numbered "steps" treatment: ringed mono counter on the
+     left, hairline rule between rows. Scoped to this section so other
+     ordered lists keep the lighter brown-numeral style above. */
+  .ucd-section[id="next"] .ucd-section-body :global(ol) {
+    counter-reset: ucdnextstep;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li) {
+    counter-increment: ucdnextstep;
+    position: relative;
+    padding: 14px 0 14px 42px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li:last-child) {
+    border-bottom: none;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li::before) {
+    content: counter(ucdnextstep);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 23px;
+    height: 23px;
+    border: 0.5px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  .ucd-section[id="next"] .ucd-section-body :global(ol li strong) {
+    font-family: var(--ucd-display);
+    font-weight: 600;
+    color: var(--black);
+  }
+
+  @media (max-width: 960px) {
+    .ucd-section-title {
+      font-size: 24px;
     }
-    .uc-cta-section {
-      padding: 48px 24px;
-      margin: 40px -16px 0;
+  }
+  @media (max-width: 720px) {
+    .ucd-page {
+      /* The 64px desktop gap-after-nav reads as wasted scroll on a phone;
+         shrink to a single breath-line so the breadcrumb sits near the
+         top fold. */
+      margin-top: 8px;
+    }
+    .ucd-breadcrumb {
+      padding: 16px 0 0;
+    }
+    .ucd-container {
+      padding: 0 24px;
+    }
+    .ucd-hero {
+      padding: 20px 0 32px;
+    }
+    .ucd-toc-card {
+      padding: 26px 22px 22px;
+    }
+    .ucd-toc-grid {
+      grid-template-columns: 1fr;
+    }
+    .ucd-section {
+      padding-bottom: 36px;
+      margin-bottom: 36px;
+    }
+    .ucd-related-grid {
+      grid-template-columns: 1fr;
+    }
+    .ucd-partner {
+      padding: 36px 24px;
     }
   }
 </style>

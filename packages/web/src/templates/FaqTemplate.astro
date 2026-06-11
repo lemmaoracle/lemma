@@ -1,12 +1,38 @@
-
 ---
+/**
+ * Lemma FAQ — v24 chrome + content refresh per the Mayumi proposal.
+ *
+ * New surface elements beyond the v24 token migration:
+ *
+ *   - Intent router: 6 cards above the FAQ proper that route by reader
+ *     intent. The last card (Critical Brief) carries an "upper tier"
+ *     badge + brown rule accent and is rendered last so it does not
+ *     compete with foundational links above it
+ *
+ *   - Per-Q pillar chip dots (P1 teal / P2 purple / P3 amber / P4 blue)
+ *     as a silent visual hint next to the question text
+ *
+ *   - Sticky jump nav (mono pill row, horizontal scroll on mobile),
+ *     with scroll-spy that highlights the current section
+ *
+ *   - Client-side search box that filters the Q text of each item
+ *     (case-insensitive substring), and toggles empty-state messaging
+ *
+ *   - Critical Brief surface block at the bottom — isolated from the
+ *     accordion Q&A, with the "upper tier" badge and routing to the
+ *     /critical/briefs/ list + methodology
+ *
+ * Accordion behavior: first item in each section is open by default;
+ * others closed. Items use `<button aria-expanded>` for a11y. JSON-LD
+ * FAQPage structured data is preserved and now built from the new
+ * sections shape.
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import CtaSection from "../components/CtaSection.astro";
-import FaqBg from "../assets/faq-cover.jpg";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface FaqTemplateProps {
   locale: Locale;
@@ -16,6 +42,11 @@ export interface FaqTemplateProps {
 
 const { locale, t, base } = Astro.props as FaqTemplateProps;
 const fq = t.faq;
+const cta = t.ctaSection;
+const whitepaperUrl =
+  locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR";
+const discoveryCallUrl = DISCOVERY_CALL_URL[locale];
+const relatedLabel = locale === "ja" ? "関連" : "Related";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -26,7 +57,7 @@ const faqJsonLd = {
       name: item.q,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.a,
+        text: item.a.replace(/<[^>]*>/g, ""),
       },
     })),
   ),
@@ -40,315 +71,1043 @@ const faqJsonLd = {
   metaType="page"
   pagePath="/faq/"
 >
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <header class="faq-header">
-    <div class="faq-header-bg" style={`background-image: url(${FaqBg.src})`}></div>
-    <div class="faq-header-overlay"></div>
-    <div class="faq-header-content">
-      <div class="section-tag" style="color:var(--accent)">{fq.hero.tag}</div>
-      <h1 set:html={fq.hero.h1.replace(/(.+?) — (.+)/, "$1—<br />$2")} />
-      <p>{fq.hero.p}</p>
-    </div>
-  </header>
+  <main class="fq-page">
+    <div class="fq-container">
+      <section class="fq-hero">
+        <div class="fq-eyebrow">{fq.hero.tag}</div>
+        <h1 class="fq-h1" set:html={fq.hero.h1.replace(/(.+?) — (.+)/, "$1—<br />$2")}></h1>
+        <p class="fq-hero-sub">{fq.hero.p}</p>
+      </section>
 
-  <div class="faq-layout">
-    <aside class="faq-sidebar">
-      <div class="faq-sidebar-title">{fq.sidebar.title}</div>
-      <ul class="faq-nav-list">
-        {fq.sidebar.links.map((link, i) => (
-          <li class="faq-nav-item"><a href={`#s${i + 1}`}>{link}</a></li>
-        ))}
-      </ul>
-    </aside>
-    <main class="faq-content">
-      {fq.sections.map((section, si) => (
-        <div class="faq-section reveal" id={`s${si + 1}`}>
-          <div class="faq-section-title">{section.title}</div>
-          {section.items.map((item) => (
-            <div class="faq-item reveal">
-              <button class="faq-q">
-                <span>{item.q}</span>
-                <span class="faq-icon">+</span>
-              </button>
-              <div class="faq-a">
-                <p>{item.a}</p>
-              </div>
-            </div>
+      <!-- Intent router -->
+      <section class="fq-router" aria-label={fq.intentRouter.label}>
+        <div class="fq-router-label">{fq.intentRouter.label}</div>
+        <div class="fq-router-grid">
+          {fq.intentRouter.items.map((item) => (
+            <a
+              href={item.href}
+              class={`fq-router-card${item.isUpperTier ? " fq-router-card-upper" : ""}`}
+            >
+              {item.isUpperTier && (
+                <span class="fq-router-badge">
+                  {fq.intentRouter.upperTierBadge}
+                </span>
+              )}
+              <div class="fq-router-title">{item.title}</div>
+              <div class="fq-router-desc">{item.desc}</div>
+              <span class="fq-router-arrow">→</span>
+            </a>
           ))}
         </div>
-      ))}
-    </main>
-  </div>
+      </section>
 
-  <section class="comparison-section reveal">
-    <h2>{fq.comparison.h2}</h2>
-    <table class="comp-table">
-      <thead><tr>
-        {fq.comparison.headers.map(h => <th>{h}</th>)}
-      </tr></thead>
-      <tbody>
-        {fq.comparison.rows.map((row, i) => (
-          <tr class={i === fq.comparison.rows.length - 2 ? "highlight" : ""}>
-            {row.map(cell => <td><strong>{cell}</strong></td>)}
-          </tr>
+      <!-- Sticky jump nav -->
+      <nav class="fq-jump" aria-label={fq.sidebar.title}>
+        <div class="fq-jump-inner">
+          {fq.sections.map((section, i) => (
+            <a
+              href={`#${section.id}`}
+              class={`fq-jump-pill${i === 0 ? " is-active" : ""}`}
+              data-jump-target={section.id}
+            >
+              {fq.sidebar.links[i] ?? section.title}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <!-- Search -->
+      <div class="fq-controls">
+        <div class="fq-search">
+          <label class="fq-search-label" for="fq-search-input">
+            {fq.searchPlaceholder}
+          </label>
+          <input
+            id="fq-search-input"
+            class="fq-search-input"
+            type="search"
+            placeholder={fq.searchPlaceholder}
+            autocomplete="off"
+            data-faq-search
+          />
+        </div>
+      </div>
+
+      <!-- FAQ content -->
+      <div class="fq-content">
+        {fq.sections.map((section) => (
+          <section class="fq-section" id={section.id} data-section>
+            <div class="fq-section-label">{section.title}</div>
+            {section.items.map((item, ii) => (
+              <div
+                class="fq-item"
+                data-faq-item
+                data-faq-q={item.q.toLowerCase()}
+                data-faq-open={ii === 0 ? "true" : "false"}
+              >
+                <button
+                  class="fq-q"
+                  type="button"
+                  aria-expanded={ii === 0 ? "true" : "false"}
+                >
+                  <span class="fq-q-row">
+                    {item.pillar && (
+                      <span class={`fq-q-chip fq-chip-${item.pillar}`} aria-hidden="true"></span>
+                    )}
+                    <span class="fq-q-text">{item.q}</span>
+                  </span>
+                  <span class="fq-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="fq-a">
+                  <p set:html={item.a}></p>
+                  {item.links && item.links.length > 0 && (
+                    <div class="fq-a-links">
+                      <span class="fq-a-links-label">{relatedLabel}</span>
+                      {item.links.map((link) => (
+                        <a
+                          href={link.href}
+                          class="fq-a-link"
+                          target={link.href.startsWith("http") ? "_blank" : undefined}
+                          rel={link.href.startsWith("http") ? "noopener" : undefined}
+                        >
+                          {link.label} →
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </section>
         ))}
-      </tbody>
-    </table>
-  </section>
 
-  <CtaSection base={base} locale={locale} />
+        <div class="fq-no-results" data-faq-empty hidden>
+          {fq.noResultsText}
+        </div>
+      </div>
+
+      <!-- Comparison table -->
+      <section class="fq-comparison">
+        <h2 class="fq-comparison-h2">{fq.comparison.h2}</h2>
+        <div class="fq-table-wrap">
+          <table class="fq-table">
+            <thead>
+              <tr>
+                {fq.comparison.headers.map((h) => <th>{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {fq.comparison.rows.map((row, i) => (
+                <tr class={fq.comparison.highlightRows?.includes(i) ? "fq-highlight" : ""}>
+                  {row.map((cell) => <td><strong>{cell}</strong></td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Critical Brief surface block (isolated, upper-tier) -->
+      <section class="fq-brief-block" aria-label={fq.criticalBriefBlock.label}>
+        <div class="fq-brief-badge">{fq.criticalBriefBlock.badge}</div>
+        <div class="fq-brief-label">{fq.criticalBriefBlock.label}</div>
+        <h2 class="fq-brief-h2">{fq.criticalBriefBlock.h2}</h2>
+        <p class="fq-brief-body">{fq.criticalBriefBlock.body}</p>
+        <div class="fq-brief-cta">
+          {fq.criticalBriefBlock.cta.map((c) => (
+            <a class="fq-brief-link" href={c.href}>{c.label}</a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Partner CTA — inline v24 card (replaces the v22 CtaSection) -->
+      <section class="fq-partner" aria-label={cta.finalTag}>
+        <div class="fq-partner-eyebrow">{cta.finalTag}</div>
+        <h2 class="fq-partner-h2">
+          <span set:html={cta.finalH2}></span>
+          <em>{cta.finalH2Em}</em>
+        </h2>
+        <p class="fq-partner-body" set:html={cta.finalP}></p>
+        <div class="fq-partner-cta">
+          <a
+            class="fq-partner-primary"
+            href={discoveryCallUrl}
+            target={discoveryCallUrl.startsWith("http") ? "_blank" : undefined}
+            rel={discoveryCallUrl.startsWith("http") ? "noopener" : undefined}
+          >
+            {cta.finalCtaText}
+          </a>
+          <a
+            class="fq-partner-secondary"
+            href={whitepaperUrl}
+            target="_blank"
+            rel="noopener"
+          >
+            {cta.finalWpText}
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .faq-header {
+  .fq-page {
+    --fq-display: "Sora", system-ui, sans-serif;
+    --fq-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --fq-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --fq-text-1: #1a1a1a;
+    --fq-text-2: #3a3a3a;
+    --fq-text-3: #5a5a5a;
+    --fq-text-4: #9a9a9a;
+
+    /* Pillar colors per Mayumi spec */
+    --fq-p1: #14b8a6; /* teal */
+    --fq-p1-soft: #ccfbf1;
+    --fq-p2: #8b5cf6; /* purple */
+    --fq-p2-soft: #ede9fe;
+    --fq-p3: #f59e0b; /* amber */
+    --fq-p3-soft: #fef3c7;
+    --fq-p4: #3b82f6; /* blue */
+    --fq-p4-soft: #dbeafe;
+
+    background: var(--lemma-cream);
+    color: var(--fq-text-2);
+    font-family: var(--fq-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 24px;
     margin-top: 64px;
-    padding: 100px 10% 80px;
-    position: relative;
-    overflow: hidden;
-    background: var(--black);
   }
-  .faq-header-bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    filter: saturate(0.3) brightness(0.5);
-    opacity: 0.4;
-  }
-  .faq-header-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.4) 100%);
-  }
-  .faq-header-content {
-    position: relative;
-    z-index: 2;
-    max-width: 600px;
-  }
-  .faq-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(42px, 5.5vw, 72px);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 1.08;
-    margin-bottom: 20px;
-  }
-  /* Issue #150: Japanese needs more leading than Latin display type. */
-  :root[lang="ja"] .faq-header h1 {
-    line-height: 1.3;
-  }
-  .faq-header h1 em {
-    font-style: italic;
-  }
-  .faq-header p {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.5);
-    line-height: 1.78;
-    max-width: 440px;
+  :root[lang="en"] .fq-page {
+    --fq-body: "Sora", system-ui, sans-serif;
   }
 
-  .faq-layout {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 0;
-    max-width: 1200px;
+  .fq-container {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 80px 10%;
+    padding: 0 40px;
   }
-  .faq-sidebar {
-    position: sticky;
-    top: 96px;
-    align-self: start;
-    padding-right: 48px;
+
+  /* ─── HERO ─── */
+  .fq-hero {
+    padding: 60px 0 40px;
   }
-  .faq-sidebar-title {
-    font-size: 10px;
-    letter-spacing: 0.22em;
+  .fq-eyebrow {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--fq-text-3);
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .fq-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .fq-h1 {
+    font-family: var(--fq-display);
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.06;
+    color: var(--black);
+    letter-spacing: -0.04em;
+    margin: 0 0 22px;
+    max-width: 920px;
+  }
+  :root[lang="ja"] .fq-h1 {
+    font-size: 44px;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+  .fq-hero-sub {
+    font-size: 15.5px;
+    color: var(--fq-text-2);
+    line-height: 1.75;
+    margin: 0;
+    max-width: 720px;
+  }
+
+  /* ─── INTENT ROUTER ─── */
+  .fq-router {
+    margin: 0 0 56px;
+    padding: 28px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .fq-router-label {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 20px;
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .faq-nav-list {
-    list-style: none;
+  .fq-router-label::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .fq-router-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .fq-router-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 20px 22px 18px;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .faq-nav-item a {
-    display: block;
-    padding: 10px 16px;
-    font-size: 12px;
-    color: var(--gray-500);
-    border-left: 2px solid var(--gray-200);
-    letter-spacing: 0.04em;
-    transition: color 0.2s, border-color 0.2s;
+  .fq-router-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 32px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .faq-nav-item a:hover {
-    color: var(--black);
-    border-left-color: var(--accent);
+  .fq-router-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
   }
-
-  .faq-content {
-    border-left: 1px solid var(--gray-200);
-    padding-left: 64px;
+  .fq-router-card:hover::before {
+    width: 100%;
   }
-  .faq-section {
-    margin-bottom: 64px;
+  .fq-router-card-upper {
+    border-width: 1px;
+    border-color: rgba(139, 69, 19, 0.32);
+    background: var(--lemma-cream-deep);
   }
-  .faq-section-title {
-    font-family: var(--font-display);
-    font-size: 22px;
+  .fq-router-card-upper::before {
+    height: 3px;
+    width: 48px;
+    background: var(--accent);
+  }
+  .fq-router-badge {
+    align-self: flex-start;
+    font-family: var(--fq-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lemma-cream);
+    background: var(--accent);
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin: 0 0 4px;
+  }
+  .fq-router-title {
+    font-family: var(--fq-display);
+    font-size: 16px;
     font-weight: 600;
     color: var(--black);
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--gray-200);
+    letter-spacing: -0.005em;
+    line-height: 1.35;
   }
-  .faq-item {
-    border-bottom: 1px solid var(--gray-200);
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+  :root[lang="ja"] .fq-router-title {
+    line-height: 1.5;
   }
-  .faq-item.on {
-    opacity: 1;
-    transform: translateY(0);
+  .fq-router-desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--fq-text-3);
   }
-  .faq-q {
+  .fq-router-arrow {
+    font-family: var(--fq-mono);
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 10px;
+    transition: transform 0.2s;
+  }
+  .fq-router-card:hover .fq-router-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ─── STICKY JUMP NAV ─── */
+  .fq-jump {
+    position: sticky;
+    /* Flush under the 64px sticky global nav — a larger value leaves a gap
+       where page content scrolls through between the header and this bar. */
+    top: 64px;
+    margin: 0 0 28px;
+    z-index: 5;
+    background: var(--lemma-cream);
+    padding: 8px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .fq-jump-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 0;
+  }
+  .fq-jump-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .fq-jump-pill {
+    flex-shrink: 0;
+    font-family: var(--fq-display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--fq-text-3);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 7px 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .fq-jump-pill:hover {
+    color: var(--accent);
+    border-color: rgba(139, 69, 19, 0.4);
+  }
+  .fq-jump-pill.is-active {
+    color: var(--lemma-cream);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ─── CONTROLS (search) ─── */
+  .fq-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 28px;
+  }
+  .fq-chip {
+    font-family: var(--fq-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+  .fq-chip-p1 {
+    background: var(--fq-p1-soft);
+    color: var(--fq-p1);
+  }
+  .fq-chip-p2 {
+    background: var(--fq-p2-soft);
+    color: var(--fq-p2);
+  }
+  .fq-chip-p3 {
+    background: var(--fq-p3-soft);
+    color: var(--fq-p3);
+  }
+  .fq-chip-p4 {
+    background: var(--fq-p4-soft);
+    color: var(--fq-p4);
+  }
+  .fq-search {
+    position: relative;
+    min-width: 220px;
+    flex: 0 1 280px;
+  }
+  .fq-search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .fq-search-input {
     width: 100%;
+    font-family: var(--fq-display);
+    font-size: 13.5px;
+    color: var(--fq-text-2);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    line-height: 1.4;
+    transition: border-color 0.15s;
+  }
+  .fq-search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .fq-search-input::placeholder {
+    color: var(--fq-text-4);
+  }
+
+  /* ─── FAQ CONTENT ─── */
+  .fq-content {
+    margin: 0 0 56px;
+  }
+  .fq-section {
+    margin: 0 0 48px;
+    scroll-margin-top: 140px;
+  }
+  .fq-section:last-of-type {
+    margin-bottom: 0;
+  }
+  .fq-section-label {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .fq-section-label::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ─── ACCORDION ITEM ─── */
+  .fq-item {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    margin: 0 0 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .fq-item[hidden] {
+    display: none;
+  }
+  .fq-item:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+  }
+  .fq-item[data-faq-open="true"] {
+    border-color: var(--accent);
+    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
+  }
+  .fq-q {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 18px 22px;
+    text-align: left;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 20px 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--black);
-    text-align: left;
-  }
-  .faq-icon {
-    font-size: 20px;
-    font-weight: 300;
-    color: var(--gray-500);
-    transition: transform 0.3s;
-    flex-shrink: 0;
-  }
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.4s ease;
-  }
-  .faq-a p {
-    font-size: 14px;
-    line-height: 1.82;
-    color: #4a4a4a;
-  }
-  .faq-item.open .faq-icon {
-    transform: rotate(45deg);
-  }
-  .faq-item.open .faq-a {
-    max-height: 600px;
-    padding-bottom: 24px;
-  }
-
-  .comparison-section {
-    background: var(--gray-50);
-    padding: 80px 10%;
-  }
-  .comparison-section h2 {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 400;
-    color: var(--black);
-    margin-bottom: 40px;
-  }
-  .comp-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .comp-table thead tr {
-    background: var(--black);
-  }
-  .comp-table th {
-    padding: 14px 20px;
-    font-size: 10px;
+    gap: 16px;
+    font-family: var(--fq-display);
+    font-size: 14.5px;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--white);
-    text-align: left;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.45;
   }
-  .comp-table td {
-    padding: 16px 20px;
-    font-size: 14px;
-    line-height: 1.65;
-    border-bottom: 1px solid var(--gray-200);
+  :root[lang="ja"] .fq-q {
+    line-height: 1.6;
   }
-  .comp-table tr:nth-child(odd) td {
-    background: var(--white);
+  .fq-q-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
   }
-  .comp-table tr:nth-child(even) td {
-    background: var(--gray-50);
+  .fq-q-chip {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    padding: 0;
   }
-  .comp-table .highlight td {
-    background: var(--accent-bg) !important;
+  .fq-q-chip.fq-chip-p1 {
+    background: var(--fq-p1);
+  }
+  .fq-q-chip.fq-chip-p2 {
+    background: var(--fq-p2);
+  }
+  .fq-q-chip.fq-chip-p3 {
+    background: var(--fq-p3);
+  }
+  .fq-q-chip.fq-chip-p4 {
+    background: var(--fq-p4);
+  }
+  .fq-q-text {
+    flex: 1;
+  }
+  .fq-icon {
+    flex-shrink: 0;
+    font-family: var(--fq-mono);
+    font-size: 18px;
     color: var(--accent);
     font-weight: 500;
+    line-height: 1;
+    transition: transform 0.25s ease;
   }
-  .comp-table .highlight td:first-child {
-    border-left: 2px solid var(--accent);
+  .fq-item[data-faq-open="true"] .fq-icon {
+    transform: rotate(45deg);
+  }
+  .fq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .fq-item[data-faq-open="true"] .fq-a {
+    max-height: 1200px;
+  }
+  .fq-a p {
+    font-family: var(--fq-body);
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--fq-text-2);
+    margin: 0;
+    padding: 0 22px 12px;
+  }
+  /* Inline links inside an answer (e.g. our own product names) read as links. */
+  .fq-a p a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .fq-a p a:hover { color: #6e3610; }
+  /* Related links rendered below the answer when item.links is set. */
+  .fq-a-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 8px 22px 20px;
+    border-top: 0.5px dashed var(--lemma-line);
+    margin: 4px 16px 0;
+  }
+  .fq-a-links-label {
+    font-family: var(--fq-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fq-text-4);
+  }
+  .fq-a-link {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.35);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .fq-a-link:hover {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+  .fq-no-results {
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--fq-text-3);
+    background: var(--white);
+    border: 0.5px dashed var(--lemma-line);
+    border-radius: 14px;
   }
 
-  @media (max-width: 900px) {
-    .faq-layout {
-      grid-template-columns: 1fr;
-      padding: 60px 6%;
-    }
-    .faq-sidebar { display: none; }
-    .faq-content { border-left: none; padding-left: 0; }
+  /* ─── CRITICAL BRIEF BLOCK ─── */
+  .fq-brief-block {
+    margin: 56px 0 56px;
+    padding: 36px 32px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
   }
-  @media (max-width: 768px) {
-    .faq-header, .comparison-section {
-      padding-left: 6%; padding-right: 6%;
+  .fq-brief-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .fq-brief-badge {
+    display: inline-flex;
+    font-family: var(--fq-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lemma-cream);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+  .fq-brief-label {
+    font-family: var(--fq-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  .fq-brief-h2 {
+    font-family: var(--fq-display);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .fq-brief-h2 {
+    line-height: 1.4;
+  }
+  .fq-brief-body {
+    font-size: 14px;
+    color: var(--fq-text-2);
+    line-height: 1.85;
+    margin: 0 0 22px;
+    max-width: 720px;
+  }
+  .fq-brief-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .fq-brief-link {
+    font-family: var(--fq-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .fq-brief-link:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── PARTNER CTA (v24 inline, replaces v22 CtaSection) ─── */
+  .fq-partner {
+    margin: 32px 0 0;
+    padding: 48px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .fq-partner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
+  }
+  .fq-partner-eyebrow {
+    font-family: var(--fq-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .fq-partner-h2 {
+    font-family: var(--fq-display);
+    font-size: clamp(28px, 3.6vw, 40px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .fq-partner-h2 {
+    line-height: 1.3;
+  }
+  .fq-partner-h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .fq-partner-body {
+    font-size: 14.5px;
+    color: var(--fq-text-2);
+    line-height: 1.8;
+    margin: 0 auto 28px;
+    max-width: 540px;
+  }
+  .fq-partner-cta {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .fq-partner-primary,
+  .fq-partner-secondary {
+    font-family: var(--fq-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 13px 30px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .fq-partner-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    border: 0;
+  }
+  .fq-partner-primary:hover {
+    background: #6e3610;
+  }
+  .fq-partner-secondary {
+    background: var(--white);
+    color: var(--accent);
+    border: 0.5px solid var(--lemma-line);
+  }
+  .fq-partner-secondary:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── COMPARISON TABLE ─── */
+  .fq-comparison {
+    margin: 0 0 0;
+    padding: 56px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .fq-comparison-h2 {
+    font-family: var(--fq-display);
+    font-size: clamp(28px, 3.4vw, 36px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--black);
+    margin: 0 0 32px;
+  }
+  :root[lang="ja"] .fq-comparison-h2 {
+    line-height: 1.35;
+  }
+  .fq-table-wrap {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .fq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--fq-body);
+  }
+  .fq-table thead tr {
+    background: var(--lemma-cream-deep);
+  }
+  .fq-table th {
+    padding: 14px 18px;
+    font-family: var(--fq-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fq-text-3);
+    text-align: left;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .fq-table td {
+    padding: 14px 18px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--fq-text-2);
+    border-bottom: 0.5px solid var(--lemma-line);
+    vertical-align: top;
+  }
+  .fq-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .fq-table .fq-highlight td {
+    background: var(--lemma-brown-light);
+    color: var(--accent);
+  }
+  .fq-table .fq-highlight td:first-child {
+    border-left: 3px solid var(--accent);
+  }
+  .fq-table strong {
+    font-weight: 500;
+    color: inherit;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .fq-h1 {
+      font-size: 44px;
     }
-    .faq-header { padding-top: 80px; padding-bottom: 60px; }
-    .comparison-section { padding-top: 70px; padding-bottom: 70px; }
+    :root[lang="ja"] .fq-h1 {
+      font-size: 36px;
+    }
+    .fq-router-grid {
+      grid-template-columns: 1fr;
+    }
+    .fq-controls {
+      gap: 16px;
+    }
+    .fq-search {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .fq-container {
+      padding: 0 20px;
+    }
+    .fq-h1 {
+      font-size: 34px;
+    }
+    :root[lang="ja"] .fq-h1 {
+      font-size: 28px;
+    }
+    .fq-hero {
+      padding: 40px 0 28px;
+    }
+    .fq-q {
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .fq-a p {
+      padding: 0 18px 16px;
+      font-size: 13px;
+    }
+    .fq-brief-block {
+      padding: 28px 22px;
+    }
   }
 </style>
 
 <script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("on");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-  document.querySelectorAll(".reveal, .faq-item").forEach(function (el) {
-    io.observe(el);
-  });
-
-  document.querySelectorAll(".faq-q").forEach(function (btn) {
+  // ─── Accordion toggle ───
+  document.querySelectorAll("[data-faq-item]").forEach(function (item) {
+    var btn = item.querySelector(".fq-q");
+    if (!btn) return;
     btn.addEventListener("click", function () {
-      var item = btn.closest(".faq-item");
-      var isOpen = item.classList.contains("open");
-      document.querySelectorAll(".faq-item.open").forEach(function (i) {
-        i.classList.remove("open");
-      });
-      if (!isOpen) item.classList.add("open");
+      var isOpen = item.getAttribute("data-faq-open") === "true";
+      // Close siblings in the same section
+      var section = item.closest("[data-section]");
+      if (section) {
+        section.querySelectorAll("[data-faq-item]").forEach(function (sib) {
+          if (sib !== item) {
+            sib.setAttribute("data-faq-open", "false");
+            var sibBtn = sib.querySelector(".fq-q");
+            if (sibBtn) sibBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+      item.setAttribute("data-faq-open", String(!isOpen));
+      btn.setAttribute("aria-expanded", String(!isOpen));
     });
   });
+
+  // ─── Sticky jump-nav scroll spy ───
+  (function () {
+    var pills = document.querySelectorAll(".fq-jump-pill");
+    var sections = document.querySelectorAll("[data-section]");
+    if (!pills.length || !sections.length) return;
+
+    var spy = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var id = e.target.getAttribute("id");
+          pills.forEach(function (p) {
+            p.classList.toggle(
+              "is-active",
+              p.getAttribute("data-jump-target") === id,
+            );
+          });
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
+    );
+    sections.forEach(function (s) {
+      spy.observe(s);
+    });
+  })();
+
+  // ─── Client-side search ───
+  (function () {
+    var input = document.querySelector("[data-faq-search]");
+    if (!input) return;
+    var items = document.querySelectorAll("[data-faq-item]");
+    var sections = document.querySelectorAll("[data-section]");
+    var empty = document.querySelector("[data-faq-empty]");
+
+    input.addEventListener("input", function () {
+      var q = input.value.trim().toLowerCase();
+      var anyVisible = false;
+      items.forEach(function (it) {
+        var qText = it.getAttribute("data-faq-q") || "";
+        var match = !q || qText.indexOf(q) !== -1;
+        if (match) {
+          it.removeAttribute("hidden");
+          anyVisible = true;
+        } else {
+          it.setAttribute("hidden", "");
+        }
+      });
+      sections.forEach(function (sec) {
+        var visibleItems = sec.querySelectorAll(
+          "[data-faq-item]:not([hidden])",
+        );
+        sec.style.display = visibleItems.length ? "" : "none";
+      });
+      if (empty) {
+        if (q && !anyVisible) empty.removeAttribute("hidden");
+        else empty.setAttribute("hidden", "");
+      }
+    });
+  })();
 </script>

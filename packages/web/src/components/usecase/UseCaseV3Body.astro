@@ -1,0 +1,1242 @@
+---
+/**
+ * Use Case detail — v3 body (JA only).
+ *
+ * Renders the compressed 5-section v3 page (see config/useCaseV3.ts and the
+ * v3 PR spec). Only invoked when the slug has a v3 config entry AND the
+ * locale is JA; every other surface keeps the long-form template.
+ *
+ * Structure:
+ *   Hero            breadcrumb · pillar tag · H1 · HIDE→PROVE · lead · meta
+ *   Credibility     ink-dark full-bleed strip (common across all UCs)
+ *   §1 推進担当の声  cream-deep · 3 persona cards (from v3 config)
+ *   §2 変化         cream · emphasized · Before/After + approach callout
+ *   §3 選定基準      cream-deep · common 4-row comparison table
+ *   §4 進め方        cream · existing "next" markdown (ORIGINAL numbered list)
+ *   §5 関連          cream-deep · related cards → Solutions bridge → final CTA
+ *
+ * Crypto scheme names stay out of the body; the §2 callout links to /guides
+ * for the technical reader. The final CTA drops the Critical Brief link.
+ */
+import type { Locale } from "../../i18n/translations";
+import type { UseCase } from "../../data/useCases";
+import type { Pillar } from "../../data/pillars";
+import type { HideProvePair } from "../../config/useCaseHideProve";
+import type { UseCaseV3 } from "../../config/useCaseV3";
+import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
+import SolutionsBridge from "../SolutionsBridge.astro";
+import { DISCOVERY_CALL_URL } from "../../config/cta";
+
+export interface UseCaseV3BodyProps {
+  locale: Locale;
+  base: string;
+  useCase: UseCase;
+  pillar: Pillar;
+  useCaseTitle: string;
+  relatedUseCases: ReadonlyArray<UseCase>;
+  hideProve: HideProvePair | undefined;
+  /** Authored hooks (§1 personas + §2 Before/After). Undefined for UCs that
+   * are rendered in derived mode — §1 falls back to the audience section and
+   * §2 to the approach section, with no Before/After cards. */
+  v3: UseCaseV3 | undefined;
+  /** §2 Before/After data for derived UCs (no personas) — renders the same
+   * key:value table the authored path uses. Ignored when `v3` is present. */
+  beforeAfter: UseCaseBeforeAfter | undefined;
+  /** §3 table extra "detection / monitoring only" row label for
+   * cyber-relevant UCs; undefined keeps the common 3-row table. */
+  compareRow: string | undefined;
+  ucBridgeHref: string;
+  ucBridgeCta: string;
+}
+
+const {
+  locale,
+  base,
+  useCase,
+  pillar,
+  useCaseTitle,
+  relatedUseCases,
+  hideProve,
+  v3,
+  beforeAfter,
+  compareRow,
+  ucBridgeHref,
+  ucBridgeCta,
+} = Astro.props as UseCaseV3BodyProps;
+
+const isJa = locale === "ja";
+const sealHref = `${base}/seal/`;
+const trust402Href = `${base}/trust402/`;
+
+// Locale-resolved chrome. Authored §1/§2 strings stay hardcoded JA — the
+// authored path only renders for JA (v3 config is JA-gated). EN UCs all
+// render in derived mode, so only the common + derived strings are localized.
+const C = isJa
+  ? {
+      bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
+      credMid: "公共インフラ PoC 稼働中",
+      hpAria: "HIDE と PROVE の対比", hpHide: "Hide ── 隠す", hpProve: "Prove ── 証明する",
+      ariaReaders: "読者", ariaApproach: "アプローチ", ariaCriteria: "選定基準",
+      ariaSteps: "進め方", ariaRelated: "関連ユースケース",
+      s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
+      s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
+      s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
+      s2H2: "原本を渡すか、事実だけを渡すか。",
+      s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
+      baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
+      baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
+      baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
+      baDataFlowBefore: "↓ すべて AI・外部へ渡る", baDataFlowAfter: "↓ 必要な事実だけ AI へ渡る",
+      approachLink: "技術詳細を見る ↗",
+      s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
+      s3Lead: "「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務こそが Lemma の領域です。",
+      thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "改ざん不能",
+      rowAccess: "アクセス制御のみ", rowMask: "マスキング / 匿名化", rowEnc: "暗号化のみ",
+      lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
+      s4Eye: "04 · 進め方", s4Title: "進め方",
+      s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
+      faqLead: "残った疑問は、", faqLinkLabel: "よくある質問（FAQ）→",
+      bridgeEye: "より広い活用シーン",
+      bridgeH2: "このユースケースを含む、活用シーンの全体像。",
+      bridgeSub: "業界・業務領域ごとの活用シーンと、4 つの軸で整理しています。",
+    }
+  : {
+      bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
+      credMid: "Public-infrastructure PoC in production",
+      hpAria: "HIDE versus PROVE", hpHide: "Hide", hpProve: "Prove",
+      ariaReaders: "Who it's for", ariaApproach: "Approach", ariaCriteria: "How to choose",
+      ariaSteps: "How it works", ariaRelated: "Related use cases",
+      s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
+      s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
+      s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
+      s2H2: "Hand over the source, or just the facts?",
+      s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
+      baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
+      baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
+      baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
+      baDataFlowBefore: "↓ all of it goes to the AI / outside", baDataFlowAfter: "↓ only the necessary facts to the AI",
+      approachLink: "See the technical details ↗",
+      s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
+      s3Lead: "Only work that needs <strong>all three at once</strong> — pass without exposing, independent verification, tamper-proof — is Lemma's domain.",
+      thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-proof",
+      rowAccess: "Access control only", rowMask: "Masking / anonymization", rowEnc: "Encryption only",
+      lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
+      s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
+      s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
+      faqLead: "Still have questions?", faqLinkLabel: "See the FAQ →",
+      bridgeEye: "The bigger picture",
+      bridgeH2: "The bigger picture this use case belongs to.",
+      bridgeSub: "We map use scenarios across industries and workflows by the four axes.",
+    };
+
+// Resolve a Before/After data value for the active locale (vEn overrides v).
+const rv = (row: { v: string; vEn?: string }): string =>
+  !isJa && row.vEn ? row.vEn : row.v;
+
+const useCasesPath = `${base}/solutions/use-cases`;
+const pillarsPath = `${base}/pillars`;
+const guidesHref = `${base}/guides`;
+const faqHref = `${base}/faq/`;
+// v3 is JA only, so the closing books the JA Discovery Call.
+const discoveryUrl = DISCOVERY_CALL_URL.ja;
+
+// §4 / §5 reuse the existing markdown sections by key.
+// The 進め方 section is "next" on ai-document-isolation (a 5-step list) but
+// "cta" on the other 7 UCs (a Discovery-led prose section). Fall back so §4
+// renders on all of them.
+const nextSection =
+  useCase.sections.find((s) => s.key === "next") ??
+  useCase.sections.find((s) => s.key === "cta");
+// For the "cta" variant keep only the first paragraph — a modest, use-case-
+// matched invitation ("…御社の構造を聞かせてください。…開示は必要ありません。"),
+// at the level of ai-document-isolation's closing line. The follow-up
+// paragraph (NDA 締結・規制マッピング・参照アーキテクチャ・PoC 設計) over-claims
+// for this surface, and the trailing link row duplicates the TALK button.
+const nextBody = (() => {
+  if (!nextSection) return "";
+  if (nextSection.key !== "cta") return nextSection.body;
+  const firstPara = nextSection.body.match(/<p>[\s\S]*?<\/p>/);
+  return firstPara ? firstPara[0] : nextSection.body;
+})();
+// Normalize the §4 heading to 「進め方」 — the "cta" section title is a
+// Discovery-Call headline that reads oddly here; ai-document-isolation's is
+// already "進め方".
+const nextTitle =
+  nextSection && nextSection.key === "next" ? nextSection.title : C.s4Title;
+const relatedSection = useCase.sections.find((s) => s.key === "related");
+
+// ── Authored vs derived mode ──────────────────────────────────────────
+// UCs with a v3 config entry render authored §1 persona quotes + §2
+// Before/After cards. The rest derive §1 from the audience section and §2
+// from the approach section (no fabricated Before/After data).
+const authored = !!v3;
+const audienceSection = useCase.sections.find((s) => s.key === "audience");
+const approachSection = useCase.sections.find((s) => s.key === "approach");
+
+// Derived §2 approach text: strip crypto scheme names so the body stays
+// jargon-light (the v3 surface hides scheme names; spec link covers depth).
+function stripSchemes(html: string): string {
+  return html
+    .replace(
+      /(?:BBS\+|Poseidon|Groth16|Circom|PLONK)(?:\s*over\s*(?:BLS12-?381|BN254|[A-Za-z0-9-]+))?(?:\s*回路)?\s*(?:で|を|により|の|上で)?/g,
+      "",
+    )
+    .replace(/AES-?GCM\s*(?:で|を|により)?/g, "")
+    .replace(/\(\s*CID\s*\)/g, "")
+    .replace(/\(\s*Circ[^)]*\)/g, "")
+    .replace(/（\s*）/g, "")
+    .replace(/、\s*、/g, "、")
+    .replace(/\s{2,}/g, " ");
+}
+const approachBody = approachSection ? stripSchemes(approachSection.body) : "";
+
+// Derived §1: the audience section is an intro paragraph + a short bullet
+// list. Render the bullets as persona-style cards for visual parity with the
+// authored persona quotes.
+const audienceHtml = audienceSection?.body ?? "";
+const audienceIntro = audienceHtml.match(/<p>([\s\S]*?)<\/p>/)?.[1]?.trim() ?? "";
+const audienceBullets = [...audienceHtml.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) =>
+  m[1].trim(),
+);
+// §2 Before/After key:value table data: from the authored config, or — for
+// derived UCs — the data-only map. Either renders the same table.
+const baData = v3 ?? beforeAfter;
+const showDataBa = !!baData;
+// Hero HIDE→PROVE device shows whenever §2 renders the data table (the chip
+// pair and the table never duplicate the same surface). Concept-card fallback
+// only for UCs that have a HIDE→PROVE pair but no Before/After data.
+const showHeroHp = !!hideProve && showDataBa;
+const showDerivedBa = !showDataBa && !!hideProve;
+
+/** Trim an abstract to its first sentence for related cards. */
+function firstSentence(text: string): string {
+  const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
+  return (m?.[1] ?? text).trim();
+}
+---
+
+<main class="ucv-page">
+  <div class="ucv-container">
+    <nav class="ucv-breadcrumb" aria-label="breadcrumb">
+      <a href={base || "/"}>{C.bcHome}</a>
+      <span class="ucv-bc-sep">/</span>
+      <a href={useCasesPath}>{C.bcUC}</a>
+      <span class="ucv-bc-sep">/</span>
+      <span>{useCaseTitle}</span>
+    </nav>
+
+    <header class="ucv-hero">
+      <a class="ucv-pillar-tag" href={`${pillarsPath}/${pillar.slug}`}>
+        <span class="ucv-pillar-dot" aria-hidden="true"></span>
+        P{pillar.order} · {pillar.title[locale]}
+      </a>
+      <h1 class="ucv-h1">{useCase.title}</h1>
+
+      {showHeroHp && (
+        <div class="ucv-hp" aria-label={C.hpAria}>
+          <div class="ucv-hp__cell ucv-hp__cell--hide">
+            <span class="ucv-hp__lab">{C.hpHide}</span>
+            <span class="ucv-hp__val">{hideProve.hide}</span>
+          </div>
+          <div class="ucv-hp__arrow" aria-hidden="true">→</div>
+          <div class="ucv-hp__cell ucv-hp__cell--prove">
+            <span class="ucv-hp__lab">{C.hpProve}</span>
+            <span class="ucv-hp__val">{hideProve.prove}</span>
+          </div>
+        </div>
+      )}
+
+      <p class="ucv-lead">{useCase.abstract}</p>
+
+      <div class="ucv-meta">
+        {useCase.targetVerticals.length > 0 && (
+          <span class="ucv-verticals">{useCase.targetVerticals.join(" · ")}</span>
+        )}
+        <span class="ucv-rt">{useCase.readingTime} {C.readUnit}</span>
+      </div>
+    </header>
+  </div>
+
+  <!-- Credibility strip — full-bleed ink dark, common across all UCs. -->
+  <div class="ucv-cred">
+    <div class="ucv-cred-inner">
+      <span class="ucv-cred-dot" aria-hidden="true"></span>
+      <span><b>live in production since 2025</b> · {C.credMid} · ETHGlobal AI Agents 2026 Finalist</span>
+    </div>
+  </div>
+
+  <!-- §1 — authored persona quotes, or derived from the audience section. -->
+  {(v3 || audienceSection) && (
+    <section class="ucv-band ucv-band--deep" aria-label={C.ariaReaders}>
+      <div class="ucv-container">
+        {v3 ? (
+          <Fragment>
+            <div class="ucv-eye">{C.s1AuthEye}</div>
+            <h2 class="ucv-h2">{C.s1AuthH2}</h2>
+            <ul class="ucv-personas">
+              {v3.personas.map((p) => (
+                <li class="ucv-persona">
+                  <div class="ucv-persona-avatar" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="8" r="4" fill="currentColor" />
+                      <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div class="ucv-persona-role">{p.role[locale]}</div>
+                  <p class="ucv-persona-quote">{isJa ? `「${p.quote.ja}」` : `“${p.quote.en}”`}</p>
+                </li>
+              ))}
+            </ul>
+          </Fragment>
+        ) : audienceSection && (
+          <Fragment>
+            <div class="ucv-eye">{C.s1Eye}</div>
+            <h2 class="ucv-h2">{C.s1H2}</h2>
+            {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
+            {audienceBullets.length > 0 ? (
+              <ul class="ucv-personas">
+                {audienceBullets.slice(0, 3).map((b) => (
+                  <li class="ucv-persona">
+                    <div class="ucv-persona-avatar" aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="8" r="4" fill="currentColor" />
+                        <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="currentColor" />
+                      </svg>
+                    </div>
+                    <p class="ucv-persona-quote" set:html={b} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="ucv-audience ucv-steps-body" set:html={audienceSection.body} />
+            )}
+          </Fragment>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- §2 — authored Before/After cards, or derived approach. -->
+  {(v3 || approachSection) && (
+    <section class="ucv-band" aria-label={C.ariaApproach}>
+      <div class="ucv-container">
+        <div class="ucv-emph">
+          <div class="ucv-eye">{showDataBa || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
+          <h2 class="ucv-h2">{C.s2H2}</h2>
+
+          {showDerivedBa && hideProve && (
+            <div class="ucv-ba ucv-ba--concept">
+              <div class="ucv-ba-card ucv-ba-card--before">
+                <div class="ucv-ba-label">Without Lemma</div>
+                <div class="ucv-ba-title">{C.baBeforeTitle}</div>
+                <p class="ucv-ba-claim">{hideProve.hide}</p>
+                <div class="ucv-ba-flow">{C.baFlowBefore}</div>
+              </div>
+
+              <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+
+              <div class="ucv-ba-card ucv-ba-card--after">
+                <div class="ucv-ba-label">With Lemma</div>
+                <div class="ucv-ba-title">{C.baAfterTitle}</div>
+                <p class="ucv-ba-claim ucv-ba-claim--prove">{hideProve.prove}</p>
+                <div><span class="ucv-ba-badge">✓ ZK VALID</span></div>
+                <div class="ucv-ba-flow ucv-ba-flow--after">{C.baFlowAfter}</div>
+              </div>
+            </div>
+          )}
+
+          {showDataBa && baData && (
+            <Fragment>
+              <p class="ucv-band-lead">{C.s2Lead}</p>
+              <div class="ucv-ba">
+                <div class="ucv-ba-card ucv-ba-card--before">
+                  <div class="ucv-ba-label">Without Lemma</div>
+                  <div class="ucv-ba-title">{C.baDataBeforeTitle}</div>
+                  <dl class="ucv-ba-rows">
+                    {baData.without.map((row) => (
+                      <div class="ucv-ba-row">
+                        <dt>{row.k}:</dt>
+                        <dd>{rv(row)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div class="ucv-ba-flow">{C.baDataFlowBefore}</div>
+                </div>
+
+                <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+
+                <div class="ucv-ba-card ucv-ba-card--after">
+                  <div class="ucv-ba-label">With Lemma</div>
+                  <div class="ucv-ba-title">{C.baDataAfterTitle}</div>
+                  <dl class="ucv-ba-rows">
+                    {baData.withProof.map((row) => (
+                      <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
+                        <dt>{row.k}:</dt>
+                        <dd>
+                          {row.badge ? (
+                            <span class="ucv-ba-badge">{rv(row)}</span>
+                          ) : (
+                            <span class={row.strong ? "ucv-ba-strong" : ""}>{rv(row)}</span>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div class="ucv-ba-flow ucv-ba-flow--after">{C.baDataFlowAfter}</div>
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+          <div class="ucv-approach">
+            {v3 ? (
+              <p>{v3.approach[locale]}</p>
+            ) : (
+              <div class="ucv-approach-body" set:html={approachBody} />
+            )}
+            <a class="ucv-approach-link" href={guidesHref}>{C.approachLink}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- §3 選定基準 — common comparison table -->
+  <section class="ucv-band ucv-band--deep" aria-label={C.ariaCriteria}>
+    <div class="ucv-container">
+      <div class="ucv-eye">{C.s3Eye}</div>
+      <h2 class="ucv-h2">{C.s3H2}</h2>
+      <p class="ucv-band-lead" set:html={C.s3Lead} />
+      <div class="ucv-table-wrap">
+        <table class="ucv-table">
+          <thead>
+            <tr>
+              <th>{C.thMethod}</th>
+              <th>{C.thPass}</th>
+              <th>{C.thVerify}</th>
+              <th>{C.thTamper}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>{C.rowAccess}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowMask}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowEnc}</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+            {compareRow && (
+              <tr><td>{compareRow}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+            )}
+            <tr class="is-lemma">
+              <td><span class="ucv-lemma-name">{C.lemmaName}</span><span class="ucv-only">{C.onlyTag}</span></td>
+              <td><span class="ucv-check">✓</span></td>
+              <td><span class="ucv-check">✓</span></td>
+              <td><span class="ucv-check">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- §4 進め方 — existing markdown (ORIGINAL numbered list) -->
+  {nextSection && (
+    <section class="ucv-band" aria-label={C.ariaSteps}>
+      <div class="ucv-container">
+        <div class="ucv-eye">{C.s4Eye}</div>
+        <h2 class="ucv-h2">{nextTitle}</h2>
+        <div class="ucv-steps-body" set:html={nextBody} />
+        {/* UC-specific TALK CTA — JA only. The form books a Discovery Call;
+            EN has no call staff, so EN closes on the product CTAs instead. */}
+        {isJa && (
+          <div class="ucv-uc-cta">
+            <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
+              このユースケースについて、問い合わせる →
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- §5 関連ユースケース -->
+  <section class="ucv-band ucv-band--deep" aria-label={C.ariaRelated}>
+    <div class="ucv-container">
+      <div class="ucv-eye">{C.s5Eye}</div>
+      <h2 class="ucv-h2">{relatedSection?.title ?? C.s5H2}</h2>
+      {relatedUseCases.length > 0 && (
+        <ul class="ucv-related">
+          {relatedUseCases.map((r) => (
+            <li>
+              <a class="ucv-related-card" href={`${useCasesPath}/${r.slug}`}>
+                <span class="ucv-related-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <rect x="5" y="3" width="14" height="18" rx="2" />
+                    <line x1="9" y1="8" x2="15" y2="8" />
+                    <line x1="9" y1="12" x2="15" y2="12" />
+                    <line x1="9" y1="16" x2="13" y2="16" />
+                  </svg>
+                </span>
+                <h3 class="ucv-related-title">{r.title}</h3>
+                <p class="ucv-related-abstract">{firstSentence(r.abstract)}</p>
+                <span class="ucv-related-cta">{C.relatedCta}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p class="ucv-faq-link">{C.faqLead} <a href={faqHref}>{C.faqLinkLabel}</a></p>
+    </div>
+  </section>
+
+  <SolutionsBridge
+    href={ucBridgeHref}
+    eyebrow={C.bridgeEye}
+    h2={C.bridgeH2}
+    sub={C.bridgeSub}
+    ctaLabel={ucBridgeCta}
+  />
+
+  {/* Closing — JA books a Discovery Call; EN has no call staff, so it sends
+      visitors to the products to try them hands-on (Seal + Trust402). */}
+  {isJa ? (
+    <section class="ucv-closing" aria-label="Discovery Call">
+      <div class="ucv-closing-inner">
+        <p class="ucv-closing-eyebrow">DISCOVERY CALL</p>
+        <h2 class="ucv-closing-h">まずは、<span class="accent">30 分の対話</span>から。</h2>
+        <p class="ucv-closing-sub">Lemma の機能や活用場面について、ご質問にお答えします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <div class="ucv-closing-ctas">
+          <a href={discoveryUrl} class="ucv-closing-pill" target="_blank" rel="noopener">Discovery Call を予約 →</a>
+          <button type="button" class="ucv-closing-link" data-tally-open="xX0VYv" data-tally-emoji-text="">ホワイトペーパー DL →</button>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="ucv-closing" aria-label="Try Lemma">
+      <div class="ucv-closing-inner">
+        <p class="ucv-closing-eyebrow">TRY LEMMA</p>
+        <h2 class="ucv-closing-h">Run it <span class="accent">yourself</span>.</h2>
+        <p class="ucv-closing-sub">No sales call needed — start hands-on with Lemma's products.</p>
+        <div class="ucv-closing-ctas">
+          <a href={sealHref} class="ucv-closing-pill">Try Seal →</a>
+          <a href={trust402Href} class="ucv-closing-link">Trust402 reference implementation →</a>
+        </div>
+      </div>
+    </section>
+  )}
+</main>
+
+<style>
+  .ucv-page {
+    --ucv-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --ucv-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ucv-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ucv-text-1: #1a1a1a;
+    --ucv-text-2: #3a3a3a;
+    --ucv-text-3: #5a5a5a;
+    --ucv-text-4: #9a9a9a;
+    --ucv-green: #5C7A4A;
+
+    background: var(--lemma-cream);
+    color: var(--ucv-text-2);
+    font-family: var(--ucv-body);
+    font-weight: 400;
+    line-height: 1.75;
+    margin-top: 64px;
+    /* No bottom padding — the dark closing band sits flush against the
+       footer (any padding here shows as a cream strip above it). */
+    padding: 0;
+  }
+
+  .ucv-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .ucv-breadcrumb {
+    font-family: var(--ucv-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ucv-text-4);
+    padding: 36px 0 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ucv-breadcrumb a {
+    color: var(--ucv-text-3);
+    transition: color 0.15s;
+  }
+  .ucv-breadcrumb a:hover { color: var(--accent); }
+  .ucv-bc-sep { color: var(--lemma-line); margin: 0 8px; }
+
+  /* ─── HERO ─── */
+  .ucv-hero {
+    padding: 28px 0 44px;
+    max-width: 820px;
+  }
+  .ucv-pillar-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+    transition: color 0.15s;
+  }
+  .ucv-pillar-tag:hover { color: #6e3610; }
+  .ucv-pillar-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .ucv-h1 {
+    font-family: var(--ucv-display);
+    font-size: clamp(34px, 4.4vw, 52px);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    margin: 0 0 24px;
+  }
+  .ucv-lead {
+    font-size: 16px;
+    color: var(--ucv-text-1);
+    line-height: 1.9;
+    margin: 24px 0 24px;
+    max-width: 720px;
+    padding: 2px 0 2px 16px;
+    border-left: 2px solid var(--accent);
+  }
+  .ucv-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-family: var(--ucv-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ucv-text-4);
+  }
+  .ucv-verticals { color: var(--ucv-text-3); }
+  .ucv-rt::before {
+    content: "·";
+    margin-right: 12px;
+    color: var(--lemma-line);
+  }
+
+  /* HIDE → PROVE device (live format — 2 cells + arrow). */
+  .ucv-hp {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    margin: 0 0 8px;
+    max-width: 720px;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ucv-hp__cell {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ucv-hp__cell--hide { background: var(--lemma-cream-deep); }
+  .ucv-hp__lab {
+    font-family: var(--ucv-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .ucv-hp__cell--hide .ucv-hp__lab { color: var(--ucv-text-3); }
+  .ucv-hp__cell--prove .ucv-hp__lab { color: var(--accent); }
+  .ucv-hp__val { font-size: 13.5px; line-height: 1.55; }
+  .ucv-hp__cell--hide .ucv-hp__val { color: var(--ucv-text-3); }
+  .ucv-hp__cell--prove .ucv-hp__val { color: var(--black); font-weight: 600; }
+  .ucv-hp__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    color: var(--accent);
+    font-family: var(--ucv-mono);
+    font-size: 16px;
+  }
+  @media (max-width: 620px) {
+    .ucv-hp { grid-template-columns: 1fr; }
+    .ucv-hp__arrow { width: auto; padding: 6px 0; transform: rotate(90deg); }
+  }
+
+  /* ─── CREDIBILITY STRIP ─── */
+  .ucv-cred {
+    background: #0f0f0f;
+    color: rgba(252, 250, 245, 0.82);
+  }
+  .ucv-cred-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--ucv-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+  .ucv-cred-inner b { color: var(--lemma-cream); font-weight: 700; }
+  .ucv-cred-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ucv-green);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(92, 122, 74, 0.25);
+  }
+
+  /* ─── BANDS ─── */
+  .ucv-band { padding: 72px 0; }
+  .ucv-band--deep { background: var(--lemma-cream-deep); }
+  .ucv-eye {
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  .ucv-h2 {
+    font-family: var(--ucv-display);
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.35;
+    margin: 0 0 20px;
+  }
+  .ucv-band-lead {
+    font-size: 15.5px;
+    color: var(--ucv-text-2);
+    line-height: 1.85;
+    margin: 0 0 32px;
+    max-width: 720px;
+  }
+  .ucv-band-lead strong { color: var(--accent); font-weight: 600; }
+
+  /* ─── §1 PERSONAS ─── */
+  .ucv-personas {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .ucv-persona {
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 26px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ucv-persona-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--lemma-cream-deep);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ucv-persona-role {
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ucv-persona-quote {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--ucv-text-1);
+    margin: 0;
+  }
+
+  /* ─── §2 EMPHASIZED + BEFORE/AFTER ─── */
+  .ucv-emph {
+    border-left: 4px solid var(--accent);
+    padding-left: 28px;
+  }
+  .ucv-ba {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 0 28px;
+  }
+  .ucv-ba-card {
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ucv-ba-card--before {
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+  }
+  .ucv-ba-card--after {
+    background: #fff;
+    border: 1px solid rgba(139, 69, 19, 0.35);
+    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.06);
+  }
+  .ucv-ba-label {
+    font-family: var(--ucv-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ucv-text-4);
+  }
+  .ucv-ba-card--after .ucv-ba-label { color: var(--accent); }
+  .ucv-ba-title {
+    font-family: var(--ucv-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+  }
+  .ucv-ba-rows {
+    margin: 0;
+    padding: 14px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--ucv-mono);
+    font-size: 12.5px;
+  }
+  .ucv-ba-row {
+    display: flex;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .ucv-ba-row dt {
+    color: var(--ucv-text-4);
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .ucv-ba-row dd {
+    margin: 0;
+    color: var(--ucv-text-2);
+    overflow-wrap: anywhere;
+  }
+  .ucv-ba-card--before .ucv-ba-row dd { color: var(--ucv-text-3); }
+  .ucv-ba-strong { color: var(--accent); font-weight: 700; }
+  .ucv-ba-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ucv-green);
+    background: rgba(92, 122, 74, 0.12);
+    border: 0.5px solid rgba(92, 122, 74, 0.4);
+    border-radius: 6px;
+    padding: 2px 8px;
+  }
+  /* Derived (concept) Before/After — a phrase from HIDE→PROVE rather than a
+     key:value data row. */
+  .ucv-ba-claim {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ucv-text-3);
+    margin: 0;
+    padding: 14px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucv-ba-claim--prove { color: var(--black); font-weight: 600; }
+  .ucv-ba-flow {
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ucv-text-3);
+  }
+  .ucv-ba-flow--after { color: var(--accent); font-weight: 500; }
+  .ucv-ba-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    color: var(--accent);
+    font-family: var(--ucv-mono);
+    font-size: 22px;
+  }
+  @media (max-width: 720px) {
+    .ucv-ba { grid-template-columns: 1fr; gap: 0; }
+    .ucv-ba-arrow { width: auto; padding: 10px 0; transform: rotate(90deg); }
+  }
+
+  .ucv-approach {
+    background: var(--lemma-cream-deep);
+    border-radius: 12px;
+    padding: 22px 24px;
+    border-left: 3px solid var(--accent);
+  }
+  .ucv-approach p,
+  .ucv-approach-body :global(p) {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--ucv-text-1);
+    margin: 0 0 12px;
+  }
+  .ucv-approach-body :global(strong) { color: var(--accent); font-weight: 600; }
+  .ucv-approach-body :global(em) { font-style: normal; color: var(--accent); font-weight: 500; }
+  .ucv-approach-link {
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .ucv-approach-link:hover { color: #6e3610; border-bottom-color: var(--accent); }
+
+  /* ─── §3 COMPARE TABLE ─── */
+  .ucv-table-wrap { overflow-x: auto; }
+  .ucv-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: 13.5px;
+    min-width: 520px;
+  }
+  .ucv-table thead tr { background: var(--lemma-cream); }
+  .ucv-table th {
+    padding: 12px 14px;
+    font-family: var(--ucv-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ucv-text-3);
+    text-align: center;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .ucv-table th:first-child { text-align: left; }
+  .ucv-table td {
+    padding: 13px 14px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    text-align: center;
+    color: var(--ucv-text-2);
+  }
+  .ucv-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ucv-text-1);
+  }
+  .ucv-table td.ok { color: var(--ucv-green); font-weight: 700; }
+  .ucv-table td.no { color: #c0392b; }
+  .ucv-table tbody tr:last-child td { border-bottom: none; }
+
+  /* Lemma row — the only row that satisfies all three criteria. Make that
+     unmistakable: stronger brown wash, a 3px accent left bar, and the three
+     ✓ rendered as filled green check badges (a solid green row vs. scattered
+     plain marks elsewhere). */
+  .ucv-table tbody tr.is-lemma td {
+    background: rgba(139, 69, 19, 0.10);
+    border-top: 1px solid rgba(139, 69, 19, 0.28);
+    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .ucv-table tbody tr.is-lemma td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  .ucv-lemma-name { color: var(--accent); font-weight: 700; }
+  .ucv-only {
+    display: inline-block;
+    margin-left: 8px;
+    font-family: var(--ucv-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: var(--accent);
+    padding: 2px 8px;
+    border-radius: 999px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .ucv-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ucv-green);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(92, 122, 74, 0.35);
+  }
+
+  /* ─── §4 STEPS (ORIGINAL numbered list from markdown) ─── */
+  .ucv-steps-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--ucv-text-2);
+  }
+  .ucv-steps-body :global(> p:first-child) {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--ucv-text-1);
+    padding: 2px 0 2px 16px;
+    border-left: 2px solid var(--accent);
+    margin: 0 0 24px;
+  }
+  .ucv-steps-body :global(p) { margin: 0 0 18px; }
+  .ucv-steps-body :global(strong) {
+    font-family: var(--ucv-display);
+    font-weight: 600;
+    color: var(--black);
+  }
+  .ucv-steps-body :global(em) { font-style: normal; color: var(--accent); font-weight: 500; }
+  .ucv-steps-body :global(ol) {
+    counter-reset: ucvstep;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0;
+  }
+  .ucv-steps-body :global(ol li) {
+    counter-increment: ucvstep;
+    position: relative;
+    padding: 14px 0 14px 44px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .ucv-steps-body :global(ol li:last-child) { border-bottom: none; }
+  .ucv-steps-body :global(ol li::before) {
+    content: counter(ucvstep);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 24px;
+    height: 24px;
+    border: 0.5px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-family: var(--ucv-mono);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ucv-uc-cta {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--lemma-line);
+    text-align: center;
+  }
+  .ucv-uc-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-family: var(--ucv-display);
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .ucv-uc-cta-btn:hover { background: #6e3610; }
+
+  /* ─── §5 RELATED CARDS ─── */
+  .ucv-related {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .ucv-related > li { margin: 0; padding: 0; }
+  .ucv-related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .ucv-related-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ucv-related-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .ucv-related-card:hover::before { width: 100%; }
+  .ucv-related-icon { color: var(--accent); }
+  .ucv-related-title {
+    font-family: var(--ucv-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .ucv-related-abstract {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ucv-text-3);
+    margin: 0;
+    flex: 1;
+  }
+  .ucv-related-cta {
+    font-family: var(--ucv-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--lemma-line);
+    transition: transform 0.2s;
+  }
+  .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
+
+  .ucv-faq-link {
+    margin: 28px 0 0;
+    font-size: 13.5px;
+    color: var(--ucv-ink-soft, #5a544d);
+  }
+  .ucv-faq-link a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .ucv-faq-link a:hover { text-decoration: underline; }
+
+  /* ─── CLOSING (Discovery Call) ─── */
+  .ucv-closing {
+    background: #0f0f0f;
+    padding: 88px 0 80px;
+    text-align: center;
+  }
+  .ucv-closing-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .ucv-closing-eyebrow {
+    font-family: var(--ucv-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(252, 250, 245, 0.5);
+    margin: 0 0 22px;
+  }
+  .ucv-closing-h {
+    font-family: var(--ucv-display);
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--lemma-cream);
+    margin: 0 0 24px;
+  }
+  .ucv-closing-h .accent { color: var(--accent); }
+  .ucv-closing-sub {
+    font-size: 15px;
+    color: rgba(252, 250, 245, 0.7);
+    max-width: 560px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .ucv-closing-ctas {
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ucv-closing-pill {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-family: var(--ucv-display);
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .ucv-closing-pill:hover { background: #6e3610; }
+  .ucv-closing-link {
+    color: rgba(252, 250, 245, 0.7);
+    font-family: var(--ucv-display);
+    font-size: 14px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .ucv-closing-link:hover { color: var(--lemma-cream); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .ucv-personas { grid-template-columns: 1fr; }
+    .ucv-related { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .ucv-page { margin-top: 8px; }
+    .ucv-breadcrumb { padding: 16px 0 0; }
+    .ucv-container { padding: 0 24px; }
+    .ucv-cred-inner { padding: 14px 24px; }
+    .ucv-band { padding: 48px 0; }
+    .ucv-hero { padding: 18px 0 32px; }
+    .ucv-emph { padding-left: 18px; }
+    .ucv-closing { padding: 60px 0 56px; }
+    .ucv-closing-inner { padding: 0 24px; }
+  }
+</style>

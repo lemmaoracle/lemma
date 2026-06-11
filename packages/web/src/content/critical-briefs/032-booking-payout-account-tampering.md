@@ -1,0 +1,112 @@
+---
+brief_no: 32
+title: "正規の予約プラットフォーム内で、売上金の受領口座が書き換えられた — 送金先変更が、資金移動の前に独立検証されなかった(Polaris Holdings / Booking.com)"
+title_en: "Inside a Legitimate Booking Platform, the Payout Bank Account Was Silently Rewritten — The Change Was Not Independently Verified Before Funds Moved (Polaris Holdings / Booking.com)"
+pillar: "04-regulatory-attribute"
+primary_category: "attribute-proof-bypass"
+secondary_categories: ["data-provenance", "identity-auth"]
+incident_date: 2026-05-23
+published: 2026-06-08
+authors: ["Lemma Critical Team"]
+related_pack: ["A-incident-response", "B-regulatory"]
+related_briefs: ["006-google-api-key-revocation-lag", "013-coinbase-kyc-insider-breach", "002-stakedao-vsdcrv"]
+version: "1.0"
+status: published
+og_lead_ja: "売上金の受領口座が正規画面内で改ざん — Polaris / Booking.com"
+og_lead_en: "Payout account silently rewritten in-platform — Polaris / Booking.com"
+---
+
+## TL;DR
+
+2026 年 5 月 23 日、ホテル運営の Polaris Holdings は、第三者が同社グループの Booking.com アカウントに不正アクセスし、**複数ホテルの売上金受領口座を第三者口座に書き換えた**ことを検知した。1 ホテルで本来受け取るべき売掛金の一部が不正口座へ送金され、現時点で約 900 万円の損失が確認された。他の複数ホテルでも同様の口座改ざんが確認されたが、早期対応で送金は阻止された。この攻撃は宿泊客を狙う通常の Booking.com フィッシングとは異なり、**事業者側の売上金受領口座(=資金の送金先)を、正規の管理画面の中で改ざんした**点に特徴がある。送金先口座という属性の真正性は、変更時に独立検証されず、認証済みセッションの操作として受理された。本事案は Pillar 04(規制属性証明)の `attribute-proof-bypass` における、**資金移動に直結する受領口座(属性)の変更が、行動の前に独立検証・認可されていない**構造を示し、同時に Pillar 01 の来歴(送金先指示の正当性)とも交差する。Brief 006(失効属性の未検証)・013(規制保管データの漏洩面化)に連なる。
+
+---
+
+## 1. 事案概要
+
+- **対象**: Polaris Holdings(ホテル運営)のグループ Booking.com アカウント配下の複数ホテル
+- **検知**: 2026-05-23、グループアカウントの異常を検知し調査を開始
+- **被害**: 複数ホテルで売上金受領口座が第三者口座へ不正に書き換え。1 ホテルで売掛金の一部が不正口座へ送金され、現時点で約 900 万円の損失。他ホテルは早期対応で送金阻止
+- **核心**: 宿泊客のカード情報を狙う一般的な Booking.com フィッシングではなく、**事業者の売上金受領口座(payout 先)を正規 extranet 内で改ざん**した B2B の送金経路改ざん
+- **侵入経路**: Polaris の開示時点でアクセス経路・ログを Booking.com・当局と調査中。**初期侵入の具体手口は未確定**(本 Brief では断定しない)
+- **対応**: 全ホテルでパスワードをリセット。Booking.com・当局と連携してアクセス経路を追跡。顧客クレジットカードの漏洩は未確認。宿泊客向けのフィッシングメッセージも報告され、個人情報露出の有無を調査中
+- **業界文脈**: Booking.com パートナーを狙うキャンペーンは継続的に観測されている(ベンダーリサーチが追跡)。多くは宿泊客へのカードフィッシングだが、本件は受領口座改ざんという資金直撃型の変種
+
+---
+
+## 2. タイムライン
+
+- 2026-05-23: Polaris Holdings がグループ Booking.com アカウントの異常を検知、調査開始
+- 調査により判明: 複数ホテルで売上金受領口座が第三者口座へ改ざん。1 ホテルで売掛金の一部が不正送金され約 900 万円の損失。他ホテルは送金前に阻止
+- 検知後: 全ホテルでパスワードリセット、Booking.com・当局と連携してアクセス経路・ログを追跡。カード漏洩は未確認、個人情報露出を調査中
+- 2026-05-28 前後: 同社の開示が英語媒体でも報じられる
+
+---
+
+## 3. 攻撃ベクター
+
+(初期侵入の具体手口は調査中・未確定。確認されている事象連鎖を記す)
+
+1. **アカウント不正アクセス**: 第三者が Polaris のグループ Booking.com アカウントへ不正アクセス(経路は調査中)
+2. **受領口座の改ざん**: 正規の管理画面内で、複数ホテルの売上金受領口座情報を第三者口座へ書き換え
+3. **資金の流出**: 変更後の受領口座へ、本来事業者が受け取るべき売掛金の一部が送金され、1 ホテルで約 900 万円が流出
+4. **早期検知による部分阻止**: グループアカウントの異常検知を起点に、他ホテルでの送金は阻止
+5. **付随する宿泊客フィッシング**: 侵害されたパートナーシステムや外部予約ツール由来の情報を用いたとみられる宿泊客向けフィッシングも報告
+
+---
+
+## 4. 構造的論点
+
+本事案は Pillar 04(規制属性証明)の `attribute-proof-bypass` を背骨とし、Pillar 01(来歴証明)とも交差する境界事案である。secondary に `data-provenance`(送金先指示の来歴)と `identity-auth`(アカウント侵害)を併記する。
+
+二つの読みが同時に成立する。**P4 の読み**では、売上金受領口座は「正規の事業者が指定した送金先である」という属性であり、その真正性は資金移動の前に検証されるべきだった。攻撃者はこの属性を、認証済みセッションの中で上書きするだけで偽装できた——属性の真正性証明が、変更操作の前提になっていなかった。**P1 の読み**では、送金先という"指示"の正当性・来歴(誰が・正規の認可で変更したか)が検証されないまま受理された。両者は「資金移動に直結する高インパクトな変更が、変更時点の認証だけで受理され、変更そのものの正当性が独立検証されなかった」という一点に収束する。
+
+中心の失敗 primitive は、**プラットフォームが「認証済みセッションが行った操作」を信頼し、「その操作(送金先変更)が正規に認可され真正な属性に基づくか」を独立検証しなかった**点にある。これは Brief 006(Google API キーの失効という属性が独立検証されず削除後も有効だった)と同系で、属性の状態が信頼の前提にされるのに独立検証されない構造である。Brief 002(デプロイヤー鍵による信頼設定の書き換え)とも、「正規の権限の中で trust 設定そのものを書き換えると資金が流出する」点で同根。一般的な Booking.com フィッシング(宿泊客のカードを狙う)とは異なり、本件は**事業者の資金経路という設定値**を突いており、SaaS プラットフォームの業務データ改ざんが直接の金銭損失に転化する射程を示す。
+
+---
+
+## 5. 検出と証明の落差
+
+異常検知・パスワードリセット・当局/プラットフォームとの連携は、被害の把握・拡大阻止・経路追跡に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも検知を起点に他ホテルの送金が阻止され、被害が限定された。
+
+一方で、検出は「送金先変更という操作を、資金移動の前に受理してよいか」自体を変えない。改ざんは正規の認証済みセッションを通じて行われ、extranet 上の操作としては正常に見える。検知は異常が現れて初めて発火するため、最初の不正送金(約 900 万円)はすでに完了していた。欠けていたのは「この受領口座変更は、正規の認可と真正な属性に基づくか」という変更時点の独立検証であり、これはアカウント監視や事後のログ追跡とは別系統である。監査の観点でも、流出後に「いつ・誰の認可で・どの口座へ変更されたか」を立証する独立した証跡は、プラットフォームのアクセスログ突合以上には残りにくい。
+
+事前証明(pre-execution attestation)は、資金移動に直結する受領口座変更を、実行前に「変更者の正規の認可」と「新しい送金先属性の真正性」を独立検証可能な証明として要求する設計を採る。認証済みセッションであっても、proof が「この変更は正規の認可を欠く」「この送金先は真正な属性として確立されていない」と告げれば、変更と後続の送金は事前に block される。アカウント侵害の検出(detection 的な「不審なアクセスか」)と変更の事前証明(「この送金先変更は認可・真正か」)は代替ではなく**補完**の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+
+---
+
+## 6. 対応経緯と業界動向
+
+- **Polaris Holdings**: 異常検知後に全ホテルでパスワードをリセットし、Booking.com・当局と連携してアクセス経路とログを追跡。被害範囲を継続調査。カード漏洩は未確認
+- **業界横断の論点**: Booking.com パートナーを狙うキャンペーンはベンダーリサーチで継続追跡されており、多くは宿泊客のカード情報を狙うフィッシングである。本件はその延長線上にありつつ、事業者の**受領口座という資金経路設定**を突いた点で、被害が事業者の直接損失に転化する。SaaS/プラットフォーム上の業務データ(送金先・連絡先・権限設定)の変更を、変更時点でどう独立検証するかという論点が浮上している
+
+「資金移動に直結する設定変更を、認証済みセッションの操作としてではなく、認可と属性の真正性の証明として扱う」必要性が、本事案を契機に宿泊・EC・プラットフォーム事業者の間で再認識される見込み。
+
+---
+
+## 7. Lemma による分析
+
+本事案で露呈した構造(資金移動に直結する受領口座変更が、変更時点の認証だけで受理され、認可と属性の真正性が独立検証されない)に対して、Lemma は、高インパクトな属性変更を実行前に独立検証可能な証明として扱う設計を提示している。受領口座という属性の真正性(P4)と、変更指示の正当な来歴(P1)を、資金移動の前に proof として検証することで、認証済みセッションであっても正規の認可と真正性を欠く変更は事前に reject される。規制属性・送金先の選択的開示と独立検証の設計思想は [Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)(Lemma)を参照のこと。
+
+---
+
+## 8. Sources
+
+- **Polaris Holdings**: 不正アクセスに関する開示(2026-05、グループ Booking.com アカウント侵害・受領口座改ざん・損失額・対応)— 同社 IR 開示
+- **TipRanks**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers"(2026-05)— https://www.tipranks.com/news/company-announcements/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers
+- **The Globe and Mail**: "Polaris Holdings Probes Booking.com Breach After Fraudulent Hotel Transfers"(2026-05)— https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/2193582/polaris-holdings-probes-booking-com-breach-after-fraudulent-hotel-transfers/
+- **Sekoia.io**: "Phishing campaigns 'I Paid Twice' targeting Booking.com hotels and customers"(2026、パートナー侵害キャンペーンの文脈)— https://blog.sekoia.io/phishing-campaigns-i-paid-twice-targeting-booking-com-hotels-and-customers/
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

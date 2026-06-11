@@ -1,6 +1,6 @@
 ---
 brief_no: 13
-title: "Coinbase KYC データ内部漏洩 — 規制が要求する生 PII の保管が、内部買収で漏洩面に転化した構造"
+title: "Coinbase KYC データ内部漏洩 — 規制が要求する生の個人情報の保管が、内部買収で漏洩面に転化した構造"
 title_en: "The Coinbase KYC Insider Breach — When Regulation-Mandated Storage of Raw PII Becomes the Breach Surface"
 pillar: "04-regulatory-attribute"
 primary_category: "kyc-aml-disclosure"
@@ -12,11 +12,13 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["006-google-api-key-revocation-lag", "002-stakedao-vsdcrv"]
 version: "1.0"
 status: published
+og_lead_ja: "規制が要求する生の個人情報の保管が内部買収で漏洩面化 — Coinbase KYC"
+og_lead_en: "Regulation-mandated raw PII storage became the breach surface via insider — Coinbase KYC"
 ---
 
 ## TL;DR
 
-2025 年 5 月、Coinbase は、海外委託先（インド）のカスタマーサポート要員が買収され、少なくとも 69,461 名の顧客の KYC データを窃取・外部売却していた事案を公表した。流出データには氏名・住所・電話・メール・マスク済み SSN・銀行口座識別子・政府発行 ID 画像・残高/取引スナップショットが含まれ、パスワード・秘密鍵・資金は流出していない。攻撃者は 5 月 11 日に 2,000 万ドルの身代金を要求、Coinbase は拒否して同額の懸賞金を設定し、SEC への Form 8-K で復旧費用を 1.8 億〜4 億ドルと見積もった。本事案は、KYC/AML 規制が事業者に生 PII の収集・保管を要求し、その保管された属性データそのものが内部脅威の漏洩面に転化するという、Pillar 04（規制属性証明）の構造的 gap を露呈した代表事例である。
+2025 年 5 月、Coinbase は、海外委託先（インド）のカスタマーサポート要員が買収され、少なくとも 69,461 名の顧客の KYC データを窃取・外部売却していた事案を公表した。流出データには氏名・住所・電話・メール・マスク済み SSN・銀行口座識別子・政府発行 ID 画像・残高/取引スナップショットが含まれ、パスワード・秘密鍵・資金は流出していない。攻撃者は 5 月 11 日に 2,000 万ドルの身代金を要求、Coinbase は拒否して同額の懸賞金を設定し、SEC への Form 8-K で復旧費用を 1.8 億〜4 億ドルと見積もった。本事案は、KYC/AML 規制が事業者に生 PII の収集・保管を要求し、その保管された属性データそのものが内部脅威の漏洩面に転化するという、Pillar 04（規制属性証明）の検出と証明の落差を露呈した代表事例である。
 
 ---
 
@@ -63,7 +65,7 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 内部脅威検知、アクセス異常検知、DLP、委託先ガバナンスは、本事案のような insider 経由の漏洩の早期発見・封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。Coinbase が不正を認識し、開示・懸賞金・サポート体制の見直しに動いたことも、検出と対応の機能が働いた結果である。
 
@@ -85,7 +87,7 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は、属性確認を「検証側が生 PII を保管したまま守る」のではなく、「検証側が生 PII を受け取らずに属性を証明として受領する」設計を提示している。利用者が KYC 通過・許可 jurisdiction・サンクション非該当・年齢などの規制属性を独立検証可能な暗号証明（ZK 属性証明）として提示し、事業者は政府発行 ID 画像や SSN そのものを warehouse せずに「属性を満たす」事実だけを検証する。漏洩し得る生 PII の蓄積を構造的に縮小することで、内部買収が成立しても流出範囲が限定される。Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は、属性確認を「検証側が生 PII を保管したまま守る」のではなく、「検証側が生 PII を受け取らずに属性を証明として受領する」設計を提示している。利用者が KYC 通過・許可 jurisdiction・サンクション非該当・年齢などの規制属性を独立検証可能な暗号証明（ZK 属性証明）として提示し、事業者は政府発行 ID 画像や SSN そのものを warehouse せずに「属性を満たす」事実だけを検証する。漏洩し得る生 PII の蓄積を構造的に縮小することで、内部買収が成立しても流出範囲が限定される。Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 
@@ -95,3 +97,17 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers"（2025-05-21、影響者数・流出データ種別）— https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
 - **Bitdefender (HotForSecurity)**: "Data Breach at Coinbase Exposes Information of Nearly 70,000 Customers"（2025-05、手口・データ種別）— https://www.bitdefender.com/en-us/blog/hotforsecurity/data-breach-at-coinbase-exposes-information-of-nearly-70-000-customers
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost"（2025-05、Form 8-K・復旧費用見積もり）— https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

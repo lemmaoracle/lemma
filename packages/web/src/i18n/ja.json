@@ -1,23 +1,23 @@
 {
   "nav": {
-    "lemmaOracle": "Lemma Oracle",
+    "lemmaOracle": "Lemma",
     "overview": "概要",
     "changelog": "変更履歴",
-    "essays": "エッセイ",
+    "essays": "記事",
     "blog": "ブログ",
-    "pillars": "信頼レイヤー",
+    "pillars": "信頼インフラ",
     "faq": "FAQ",
     "services": "製品",
     "pricing": "料金プラン",
-    "solutions": "ソリューション",
+    "solutions": "ユースケース",
     "resources": "リソース",
-    "developers": "開発者",
+    "developers": "Developers",
     "contact": "お問い合わせ",
-    "contactCta": "お問い合わせ",
+    "contactCta": "始める",
     "whitepaperCta": "ホワイトペーパー",
     "dashboardCta": "ダッシュボード",
-    "languageJa": "日本語",
-    "languageEn": "English",
+    "languageJa": "JA",
+    "languageEn": "EN",
     "mega": {
       "pillars": {
         "label": "4つの柱",
@@ -29,16 +29,19 @@
         "pillar04": "Pillar 04 — 規制属性証明"
       },
       "products": {
-        "enterprise": "Enterprise",
+        "enterprise": "大企業向け",
         "civic": "Lemma Civic",
         "civicSub": "公共インフラ · B2B2G",
         "critical": "Lemma Critical",
         "criticalSub": "基幹インフラ・製造業",
         "compliance": "Lemma Compliance",
         "complianceSub": "金融 · KYC/AML · FinTech",
-        "developer": "Developer",
+        "developer": "開発者向け",
+        "agentDeveloper": "エージェント開発者向け",
+        "sealSub": "鍵ではなく、証明を送る",
+        "industriesSub": "Civic · Critical · Compliance",
         "trust402": "Trust402",
-        "trust402Sub": "Explorer · Builder · Studio · Pro",
+        "trust402Sub": "鍵を持たずに、AI を動かす",
         "pricing": "料金プラン",
         "pricingSub": "お問い合わせベース"
       },
@@ -52,14 +55,16 @@
       },
       "resources": {
         "label": "コンテンツ",
+        "criticalBrief": "Critical Brief",
         "blog": "ブログ",
         "whitepaper": "ホワイトペーパー",
+        "newsletter": "ニュースレター",
         "glossary": "用語集",
         "faq": "FAQ"
       },
       "developers": {
         "architecture": "アーキテクチャ",
-        "specs": "Lemma Oracle 仕様書",
+        "specs": "Lemma 仕様書",
         "specsSub": "技術仕様・フルドキュメント",
         "guides": "ガイド",
         "encrypt": "すべてを暗号化し、何も露呈しない",
@@ -85,7 +90,7 @@
         "github": "GitHub →"
       },
       "mobile": {
-        "talkToUs": "お問い合わせ"
+        "talkToUs": "始める"
       }
     }
   },
@@ -117,7 +122,7 @@
     "blog": "ブログ",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",
-    "tagline": "AI のための信頼レイヤー。",
+    "tagline": "AI のための信頼インフラ。意思決定の確からしさを支える。",
     "colCompany": "会社",
     "specs": "仕様書",
     "github": "GitHub →",
@@ -134,9 +139,9 @@
   },
   "blog": {
     "title": "ブログ",
-    "metaTitle": "ブログ — Lemma Oracle",
-    "metaDescription": "Lemma Oracle のエッセイ・変更履歴・フィールドノート。",
-    "subtitle": "エッセイ、変更履歴、フィールドノート。",
+    "metaTitle": "ブログ — 信頼インフラの記事と知見 | Lemma",
+    "metaDescription": "信頼インフラ・検証可能 AI・エージェント決済・規制対応に関する記事と知見。Industry / Solutions / Technical / Announcements の 4 カテゴリで公開。",
+    "subtitle": "記事、変更履歴、フィールドノート。",
     "backToBlog": "← ブログ",
     "index": {
       "categoriesLabel": "カテゴリ",
@@ -147,18 +152,18 @@
       "archiveTag": "アーカイブ",
       "foundationsTag": "基盤",
       "headerDesc": "ZK証明、暗号的来歴証明、選択的開示。技術と意思決定の交点を探る。",
-      "essaysTag": "エッセイ",
-      "readEssay": "エッセイを読む →",
+      "essaysTag": "記事",
+      "readEssay": "読む →",
       "guidesTag": "ガイド",
       "guidesTitle": "技術ドキュメント。",
       "guidesDesc": "Lemmaアーキテクチャの各レイヤーに対応する実装ガイド。",
       "readGuide": "読む →",
-      "specsTitle": "Lemma Oracle 仕様書",
+      "specsTitle": "Lemma 仕様書",
       "specsDesc": "ZK証明・選択的開示・オンチェーン来歴証明を介してAIが機密データを推論できるようにする、暗号的に検証された真実レイヤー。",
       "readSpecs": "仕様書を読む →"
     },
     "sections": {
-      "Essays": "エッセイ",
+      "Essays": "記事",
       "Changelog": "変更履歴",
       "Field Notes": "フィールドノート"
     }
@@ -175,20 +180,60 @@
     "backHome": "← ホームに戻る"
   },
   "faq": {
-    "metaTitle": "FAQ — Lemma Oracle",
-    "metaDescription": "LemmaおよびVerifiable AIに関するよくある質問です。",
+    "metaTitle": "FAQ — AI と個人情報保護、よくあるご質問 | Lemma",
+    "metaDescription": "Lemma の AI 個人情報保護・機微情報の開示・改正個人情報保護法対応に関する FAQ。Discovery Call では技術的な詳細・個人情報・機密情報の開示は不要です。AI のための信頼インフラ、4 つの軸、Critical Brief も解説。",
     "hero": {
       "tag": "FAQ",
-      "h1": "Lemma FAQ — AI 信頼性と検証可能性.",
-      "p": "Lemma がどのように信頼できる AI を実現するか — 技術的基盤から実用的な実装に関する質問までを網羅した Q&A。"
+      "h1": "Lemma FAQ — AI のための信頼インフラ.",
+      "p": "Lemma がどのように AI のための信頼基盤を提供するか — 4 つの軸、技術的実装、検出層との関係、実事案 (Critical Brief) を網羅した Q&A。"
     },
+    "intentRouter": {
+      "label": "目的から探す",
+      "upperTierBadge": "上位",
+      "items": [
+        {
+          "title": "Lemma とは",
+          "desc": "AI のための信頼インフラの全体像",
+          "href": "#what-is-lemma"
+        },
+        {
+          "title": "4 つの軸",
+          "desc": "基盤を構成する 4 本柱 (P1〜P4)",
+          "href": "#trust-layers"
+        },
+        {
+          "title": "業界での使いどころ",
+          "desc": "ユースケースと製品 (Civic / Critical / Compliance)",
+          "href": "/ja/solutions/use-cases"
+        },
+        {
+          "title": "技術実装",
+          "desc": "開発者ガイドと Trust402",
+          "href": "/ja/guides"
+        },
+        {
+          "title": "検出で足りない理由",
+          "desc": "Detection ≠ Proof の thesis",
+          "href": "/ja/blog/detection-is-not-proof/"
+        },
+        {
+          "title": "実際の事案",
+          "desc": "Critical Brief 事案分析の reference (CSO・アナリスト・規制実務者向け)",
+          "href": "/ja/critical/briefs/",
+          "isUpperTier": true
+        }
+      ]
+    },
+    "searchPlaceholder": "質問を検索…",
+    "noResultsText": "該当する質問は見つかりませんでした。",
     "sections": [
       {
-        "title": "セクション 1: Lemma とは？",
+        "id": "what-is-lemma",
+        "title": "1. Lemma とは？",
         "items": [
           {
             "q": "Lemma を一言で言うと？",
-            "a": "Lemma は、AI が読み取るすべてのデータに暗号学的に証明された来歴証明を付与するインフラです。"
+            "a": "Lemma は AI のための信頼インフラ (信頼基盤) です。AI が読み取るデータ、AI の判断、AI エージェントの権限、規制属性を、暗号学的に証明可能にする 1 つのレイヤー。具体的には 4 つの軸 (来歴 / 検証可能 AI / エージェント権限 / 規制属性) として構成されます。"
           },
           {
             "q": "「AI 信頼性」とは？",
@@ -199,25 +244,52 @@
             "a": "Verifiable AI は、すべての判断の根拠を事後的に検証できる AI システムです。"
           },
           {
-            "q": "既存の RAG/ AI システムの問題点は？",
+            "q": "既存の RAG / AI システムの問題点は？",
             "a": "既存の RAG システムには、取得したデータが正確かどうか、誰が発行したかを確認する仕組みがありません。"
           },
           {
             "q": "Lemma と AI エージェントの関係は？",
-            "a": "Lemma は RAG レイヤーで動作し、特定の AI モデルやフレームワークに依存しません。"
-          },
-          {
-            "q": "どのような業界に適している？",
-            "a": "AI が個人情報や機密データを参照して判断を下すすべての業務に適用可能です。"
+            "a": "Lemma は RAG レイヤーで動作しモデル非依存で、加えてエージェントが外部システムへ作用する際の権限・来歴の証明にも及びます (→ セクション 5)。",
+            "links": [
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
+            ]
           },
           {
             "q": "AI ゲートウェイとの違いは？",
-            "a": "AI ゲートウェイは API アクセスを管理しますが、データの来歴を証明しません。Lemma は永久的な記録付きの暗号学的証明を提供します。"
+            "a": "AI ゲートウェイは API アクセスを管理しますが、データの来歴を証明しません。Lemma は永続的な記録付きの暗号学的証明を提供します。"
           }
         ]
       },
       {
-        "title": "セクション 2: セキュリティとプライバシー",
+        "id": "trust-layers",
+        "title": "2. 4 つの軸",
+        "items": [
+          {
+            "q": "Lemma の「4 つの柱」とは？",
+            "a": "信頼インフラとしての Lemma を構成する 4 つの軸です: 来歴証明 (P1) / 検証可能 AI (P2) / エージェント権限証明 (P3) / 規制属性証明 (P4)。別個の製品ではなく、1 つの基盤を 4 つの軸で説明します。"
+          },
+          {
+            "q": "どの柱から検討すべき？",
+            "a": "課題ベースで選びます。データの出所を証明したい → P1、AI の判断根拠を後から証明したい → P2、AI エージェントの操作権限を証明したい → P3、規制属性を生データを渡さず証明したい → P4。各柱に対応する実事案は Critical Brief で扱っています。",
+            "links": [
+              {
+                "label": "4 つの柱",
+                "href": "/ja/pillars"
+              },
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "security",
+        "title": "3. セキュリティとプライバシー",
         "items": [
           {
             "q": "個人情報はどのように保護される？",
@@ -230,24 +302,160 @@
           {
             "q": "選択的開示とは？",
             "a": "AI が必要な属性のみを提示し、それ以上は開示しないことです。"
+          },
+          {
+            "q": "なぜ「データを守る」より「データを渡さない」なのか？",
+            "a": "規制が生 PII の収集・保管を要求する設計では、保管データそのものが漏洩面になります。実例として KYC データの内部漏洩事案 (Critical Brief、Coinbase KYC 等) がこの構造を示しています。Lemma は属性を証明として渡し、生 PII の蓄積を構造的に縮小します。",
+            "pillar": "p4",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "規制属性証明 (P4)",
+                "href": "/ja/pillars/regulatory-attribute-proof/"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "セクション 3: オンチェーン来歴証明",
+        "id": "provenance",
+        "title": "4. オンチェーン来歴証明",
         "items": [
           {
             "q": "オンチェーン記録とは？",
-            "a": "文書のコミットメント、スキーマ、発行者情報、ZK 検証結果がブロックチェーンに記録されます。"
+            "a": "文書のコミットメント、スキーマ、発行者情報、ZK 検証結果がブロックチェーンに記録されます。",
+            "pillar": "p1"
           },
           {
             "q": "永続的来歴証明のビジネス上の利点は？",
-            "a": "監査対応、コンプライアンス報告、インシデント調査において、AI がどのデータを根拠に使用したかを事後的に証明できます。"
+            "a": "監査対応、コンプライアンス報告、インシデント調査において、AI がどのデータを根拠に使用したかを事後的に証明できます。",
+            "pillar": "p1"
+          },
+          {
+            "q": "AI 生成コンテンツの「透かし」とは何が違う？",
+            "a": "透かしは標識を成果物に埋め込む detection 的手法で、統計的に剥離・偽造され得ます (Critical Brief、SynthID reverse-engineering 等で実証)。暗号的来歴は成果物の外側に証明を置き、信号空間の中に「鍵」を残さない点で異なります。",
+            "pillar": "p1",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "セクション 4: 開発者向け実装",
+        "id": "agent-authority",
+        "title": "5. AI エージェントと権限 (P3)",
+        "items": [
+          {
+            "q": "AI エージェントが自律的に動く時代に、何を証明できる？",
+            "a": "エージェントが外部システムへ作用する各操作について、「誰が」「どの権限で」「どの操作を」要求したかを独立検証可能な証明として固定できます。背景として、AI エージェントが攻撃工程の大半を自律実行した事案も報告されています (Critical Brief、GTG-1002 等)。",
+            "pillar": "p3",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
+            ]
+          },
+          {
+            "q": "MCP やエージェントハーネスの権限はどう扱う？",
+            "a": "エージェント基盤の認証・権限の検証層に関わる事案を Critical Brief で扱っています (Starlette/BadHost、PocketOS 等)。技術的な実装方針は P3 ページ「エージェント権限証明」を参照してください。",
+            "pillar": "p3",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "エージェント権限証明 (P3)",
+                "href": "/ja/pillars/agent-authority-proof/"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "regulatory",
+        "title": "6. 規制・コンプライアンス (P4)",
+        "items": [
+          {
+            "q": "「コンプライアンスの証明」とは？",
+            "a": "規制属性 (KYC 通過、許可された jurisdiction、サンクション非該当、年齢等) を、検証側が生データを保管しないまま暗号証明 (ZK 属性証明) として受領する設計です。詳細は P4 ページ「規制属性証明」、適用例は KYC/AML 選択的開示ユースケース。",
+            "pillar": "p4",
+            "links": [
+              {
+                "label": "規制属性証明 (P4)",
+                "href": "/ja/pillars/regulatory-attribute-proof/"
+              },
+              {
+                "label": "KYC/AML 選択的開示",
+                "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/"
+              }
+            ]
+          },
+          {
+            "q": "行政・公共部門での利用は？",
+            "a": "公共部門の AI 判断の検証・認可の証跡に関わる事案を Critical Brief で扱っています (Williams FRT 誤認逮捕等)。提供形態は Lemma Civic。SIer 経由の導入を想定しています。",
+            "pillar": "p4",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "Lemma Civic",
+                "href": "/ja/pricing#civic"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "critical-brief",
+        "title": "7. Critical Brief と事例",
+        "items": [
+          {
+            "q": "Lemma Critical Brief とは？",
+            "a": "Lemma が発行する threat intelligence brief。AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す reference 集です。CSO・アナリスト・規制実務者向け。",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              },
+              {
+                "label": "Methodology",
+                "href": "/ja/critical/briefs/methodology/"
+              }
+            ]
+          },
+          {
+            "q": "どの柱の事案がある？",
+            "a": "来歴 (ブリッジ / サプライチェーン / AI 生成物)、検証可能 AI (誤判定 / 透かし)、エージェント権限 (自律攻撃 / MCP)、規制属性 (KYC 漏洩) を横断。Pillar 別・Category 別アーカイブから辿れます。",
+            "links": [
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
+            ]
+          },
+          {
+            "q": "Brief は営業資料か？",
+            "a": "いいえ。公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません (各 Brief の「Brief 配布について」参照)。"
+          }
+        ]
+      },
+      {
+        "id": "developer",
+        "title": "8. 開発者向け実装",
         "items": [
           {
             "q": "スキーマとは？どのように使われる？",
@@ -263,12 +471,13 @@
           },
           {
             "q": "スキーマ・回路・ドキュメントはどこで登録する？",
-            "a": "workers API（workers.lemma.workers.dev）に対して、@lemmaoracle/sdk 経由または直接 HTTP でプログラマティックに登録します。Dashboard はスコープから読み取って表示するだけで、作成用 UI フォームはありません。Dashboard Quickstart ガイドが SDK 経由の流れを最後まで通します。"
+            "a": "workers API (workers.lemma.workers.dev) に対して、@lemmaoracle/sdk 経由または直接 HTTP でプログラマティックに登録します。Dashboard はスコープから読み取って表示するだけで、作成用 UI フォームはありません。Dashboard Quickstart ガイドが SDK 経由の流れを最後まで通します。"
           }
         ]
       },
       {
-        "title": "セクション 5: 信頼と導入",
+        "id": "adoption",
+        "title": "9. 信頼と導入",
         "items": [
           {
             "q": "Lemma で何が証明可能になる？",
@@ -279,12 +488,74 @@
             "a": "不要です。Lemma はブロックチェーンをバックエンドの記録インフラとして使用しますが、開発者がスマートコントラクトを直接操作する必要はありません。"
           },
           {
+            "q": "検出 / 監視ツールとの違いは？",
+            "a": "検出は受信側が「何を accept するか」自体を変えません。検出 (異常検知・監視) と事前証明 (attestation) は代替ではなく補完関係にあります。詳細は detection-is-not-proof essay、実証は Critical Brief 各号の §5。既存検出ベンダーを否定せず役割分担として描きます。",
+            "links": [
+              {
+                "label": "detection-is-not-proof",
+                "href": "/ja/blog/detection-is-not-proof/"
+              },
+              {
+                "label": "Critical Brief 一覧",
+                "href": "/ja/critical/briefs/"
+              }
+            ]
+          },
+          {
             "q": "どのようなデプロイメントオプションが利用可能か？",
             "a": "詳細はお問い合わせください。データ所在地、コンプライアンス制約、既存インフラとの統合を考慮した構成をご提案します。"
           },
           {
             "q": "セキュリティチームが最初に確認すべきは？",
-            "a": "暗号化と鍵管理、 ZKP の監査可能性、来歴証明の永続性の 3 つの分野から始めてください。"
+            "a": "暗号化と鍵管理、ZKP の監査可能性、来歴証明の永続性の 3 つの分野から始めてください。"
+          }
+        ]
+      },
+      {
+        "id": "ai-personal-data",
+        "title": "10. AI と個人情報保護",
+        "items": [
+          {
+            "q": "個人情報を AI に渡さずに、AI を業務で使えますか？",
+            "a": "はい。Lemma の核心はまさに「個人情報を AI に渡さずに、必要な事実だけを証明付きで渡す」ことです。原本データ（氏名・住所・契約内容など）は AI の context に入らず、検証可能な事実（claim と ZK 証明）だけが流れます。原本は社内システムに暗号化のまま留まり、AI のログ・キャッシュにも残りません。",
+            "links": [
+              { "label": "社内文書を AI に使わせるが生データは触らせない", "href": "/ja/solutions/use-cases/ai-document-isolation/" },
+              { "label": "顧客対応フラグの最小開示", "href": "/ja/solutions/use-cases/customer-flag-need-to-know/" }
+            ]
+          },
+          {
+            "q": "改正個人情報保護法・国内規制への適合は？",
+            "a": "Lemma の選択的開示構造（disclosed / hidden）は、個人情報保護法の「利用目的の特定」「最小限の取扱い」原則と構造的に整合します。AI に渡る属性は「年齢 = 18 以上」「居住 = JP」など必要最小限に絞り、本人特定可能な情報は原本に留めます。具体的な適合設計は Discovery Call で個別にご相談ください。",
+            "links": [
+              { "label": "KYC/AML 選択的開示", "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/" },
+              { "label": "年齢・販売資格の確認", "href": "/ja/solutions/use-cases/age-eligibility-verification/" }
+            ]
+          },
+          {
+            "q": "AI 利用時の個人情報漏洩リスクは、Lemma でどう低減されますか？",
+            "a": "Lemma 導入後、AI が受け取るのは証明 object（claim と ZK 証明）のみで、原本データは AI の context window に入りません。これにより、<strong>AI のログ・キャッシュに原本が残らず</strong>、<strong>AI モデル提供企業にも原本が共有されず</strong>、<strong>AI 経路でのデータ漏洩リスクが構造的に解消されます</strong>。「AI に渡す情報自体を変える」ことで、漏洩を防ぐ前提から解放されます。",
+            "links": [
+              { "label": "金融データ流出防止", "href": "/ja/solutions/use-cases/financial-data-exfiltration/" },
+              { "label": "AI 監査ログ証明", "href": "/ja/solutions/use-cases/ai-audit-log-proof/" }
+            ]
+          },
+          {
+            "q": "PoC や検証時に、社内の機密データを Lemma に共有する必要はありますか？",
+            "a": "不要です。PoC は業務シナリオ単位で進めます。Lemma 側で原本データを受け取ることはなく、お客様の社内システムに Lemma SDK を組み込み、原本は社内に保持したまま証明発行を構築します。Lemma チーム・SDK が原本データに触れる構造的可能性がありません。"
+          }
+        ]
+      },
+      {
+        "id": "other",
+        "title": "11. その他",
+        "items": [
+          {
+            "q": "uselemma.ai (同名の別プロダクト) と関係はありますか?",
+            "a": "ありません。別会社です。本サイトの Lemma は FRAME00, Inc. による、AI のための信頼インフラです — データ来歴・AI 判断・エージェント権限・規制属性の暗号証明。料金をお探しの場合: <a href=\"/ja/pricing/\">Trust402 Explorer は無料で始められます</a>。エンタープライズプランはお問い合わせベースです。"
+          },
+          {
+            "q": "LemmaX（Web3 向け決済インフラ）との違いは？",
+            "a": "別会社の別プロダクトで、関係はありません。LemmaX は Web3 企業向けにセキュアでコンプライアントな決済インフラと支援サービスを提供する fintech プラットフォームです。本サイトの Lemma（FRAME00, Inc.）は AI のための信頼インフラ — データ来歴・AI 判断・エージェント権限・規制属性を、原本を出さずゼロ知識証明で検証するレイヤで、決済サービスではありません。製品は <a href=\"/ja/trust402/\">Trust402</a>・<a href=\"/ja/seal/\">Seal</a> から試せます。"
           }
         ]
       }
@@ -293,10 +564,16 @@
       "title": "目次",
       "links": [
         "Lemma とは？",
+        "4 つの軸",
         "セキュリティとプライバシー",
         "オンチェーン来歴証明",
+        "AI エージェントと権限",
+        "規制・コンプライアンス",
+        "Critical Brief と事例",
         "開発者向け実装",
-        "信頼と導入"
+        "信頼と導入",
+        "AI と個人情報保護",
+        "その他"
       ]
     },
     "comparison": {
@@ -318,29 +595,53 @@
           "データを保護。「誰が発行したか」を証明できない"
         ],
         [
-          "Lemma オラクル",
+          "検出 / 監視",
+          "異常・脅威の検出と可視化",
+          "事象を検出する。受信側が「何を accept するか」自体は変えない (補完関係)"
+        ],
+        [
+          "Lemma",
           "データ来歴の暗号学的証明 + 永続記録",
           "エンドツーエンドの証明、追跡可能性、監査可能性"
         ]
+      ],
+      "highlightRows": [
+        3
+      ]
+    },
+    "criticalBriefBlock": {
+      "badge": "上位オプションパック向け",
+      "label": "Critical Brief — 実事案の構造化分析",
+      "h2": "事案ベースで Lemma を理解する",
+      "body": "Lemma Critical Brief は、AI 時代の信頼層に関わる事案 (サイバー攻撃 incident + 非攻撃のリスク事象) を構造化分析し、検出層では届かない構造的 gap と Lemma の応答層を示す threat intelligence brief。CSO・アナリスト・規制実務者を想定読者とする上位 reference。",
+      "cta": [
+        {
+          "label": "Critical Brief 一覧 →",
+          "href": "/ja/critical/briefs/"
+        },
+        {
+          "label": "Methodology",
+          "href": "/ja/critical/briefs/methodology/"
+        }
       ]
     },
     "partner": {
       "tag": "パートナープログラム",
       "h2": "パートナーシップと PoC の機会.",
-      "p": "Lemma オラクルとのパートナーシップや PoC、共開発の機会にご興味がある方は、パートナー候補としてご登録ください。",
+      "p": "Lemma とのパートナーシップや PoC、共開発の機会にご興味がある方は、パートナー候補としてご登録ください。",
       "cta": "パートナー候補として登録",
-      "link": "Lemma オラクルの仕様を読む →"
+      "link": "Lemma の仕様を読む →"
     }
   },
   "layout": {
-    "defaultTitle": "Lemma Oracle — AI のための信頼レイヤー",
-    "defaultDescription": "Lemma は AI のための信頼レイヤー。ZK 証明でデータ真正性を検証、プライバシーを保護、来歴をオンチェーンに永続記録。エンタープライズ AI・エージェント決済・コンプライアンス対応。"
+    "defaultTitle": "Lemma — AI のための信頼インフラ",
+    "defaultDescription": "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。証明できる判断を、データを持たないままで。エンタープライズ AI・エージェント決済・規制対応に効く信頼インフラ。"
   },
   "services": {
-    "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma Oracle",
+    "title": "検証可能AI（Verifiable AI）サービス — ZK証明でデータを信頼化 | Lemma",
     "metaDescription": "データの中身を開示せずに真正性を証明。ZK 証明による検証可能 AI 向け信頼インフラで、AI エージェント・サプライチェーン追跡・監査対応を実現。エンタープライズ・開発者向けプラン提供中。",
     "hero": {
-      "eyebrow": "AI のための信頼レイヤー",
+      "eyebrow": "AI のための信頼インフラ",
       "title": "エージェントAIが「使えない」本当の理由は、モデルではなくデータにある。",
       "sub": "Lemma は AI のためのトラストレイヤーです。データの出所、AIの判断、エージェントの行動 — そのすべてを暗号学的に検証可能にします。現場でAIが止まる本当のボトルネックは、ここにあります。",
       "ctaDownload": "ホワイトペーパーを無料でダウンロード",
@@ -497,7 +798,7 @@
         {
           "name": "Trust402",
           "desc": "x402・MCP上のビルダー向け",
-          "href": "/trust402/"
+          "href": "/ja/trust402/"
         }
       ]
     },
@@ -534,18 +835,18 @@
   },
   "index": {
     "hero": {
-      "eyebrow": "AI のための信頼レイヤー",
+      "eyebrow": "AI のための信頼インフラ",
       "h1": "AI に証明された事実を。",
       "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
       "primaryCta": "ホワイトペーパーを無料ダウンロード",
       "primaryCtaHref": "https://tally.so/r/xX0VYv",
-      "secondaryCta": "信頼レイヤーの仕組みを読む →",
+      "secondaryCta": "4 つの問いを読む →",
       "secondaryCtaHref": "/ja/pillars/"
     },
     "trustLayer": {
-      "eyebrow": "信頼レイヤー",
-      "h2": "4 つの暗号能力。1 つの信頼レイヤー。",
-      "barLabel": "信頼レイヤー",
+      "eyebrow": "信頼インフラ",
+      "h2": "4 つの軸。1 つの信頼インフラ。",
+      "barLabel": "信頼インフラ",
       "barFoot": "ZK 証明 · AES-GCM · docHash · CID · オンチェーン記録",
       "modules": {
         "origin": {
@@ -598,7 +899,7 @@
           "titleLine2": "AI 監査・KYC・AML。",
           "body": "AI 判断の根拠を改ざん不能に残し、顧客属性をデータ共有なしに証明する。",
           "cases": "AI 監査ログ証明 · KYC/AML 選択的開示 · 金融データ流出防止",
-          "href": "/ja/use-cases/kyc-aml-selective-disclosure/"
+          "href": "/ja/solutions/use-cases/kyc-aml-selective-disclosure/"
         },
         {
           "tag": "For Industry",
@@ -606,7 +907,7 @@
           "titleLine2": "チェーンとESG適合。",
           "body": "多階層サプライヤの来歴を改ざん不能にし、CBAM/EUDR/DPP の規制適合を支える。",
           "cases": "サプライチェーン部品来歴 · サプライチェーン ESG",
-          "href": "/ja/use-cases/supply-chain-esg/"
+          "href": "/ja/solutions/use-cases/supply-chain-esg/"
         },
         {
           "tag": "For Agent Economy",
@@ -614,7 +915,7 @@
           "titleLine2": "取引と権限委譲。",
           "body": "x402 や MCP 上で動くエージェントの権限・支払い・委任を、暗号的に検証可能にする。",
           "cases": "Delegated Treasury · Multi-Agent Workflows · X402 Commerce",
-          "href": "/ja/use-cases/x402-commerce/"
+          "href": "/ja/solutions/use-cases/x402-commerce/"
         },
         {
           "tag": "For AI Builders",
@@ -622,11 +923,11 @@
           "titleLine2": "来歴と引用検証。",
           "body": "AI が参照する文書の来歴を取り込み時点で固定し、応答時の引用真正性を保証する。",
           "cases": "RAG コンテンツ来歴 · RAG 出典証明",
-          "href": "/ja/use-cases/ai-audit-log-proof/"
+          "href": "/ja/solutions/use-cases/ai-audit-log-proof/"
         }
       ],
       "seeAll": "すべてのユースケースを見る →",
-      "seeAllHref": "/ja/use-cases/"
+      "seeAllHref": "/ja/solutions/use-cases/"
     },
     "thinking": {
       "title": "最新の考察。",
@@ -642,276 +943,6 @@
       "secondaryCta": "ホワイトペーパーをダウンロード"
     }
   },
-  "pricing": {
-    "metaTitle": "料金 — Lemma Oracle",
-    "metaDescription": "Lemma Oracle のエンタープライズおよび開発者向け料金。3つのセグメント、1つの信頼レイヤー。",
-    "hero": {
-      "eyebrow": "料金",
-      "h1": "重要な意思決定のために",
-      "h1Em": "作られた。",
-      "p": "3 つのエンタープライズセグメント、1 つの開発者レイヤー。すべてのプランは ZK 証明による来歴証明、AES-GCM 暗号化、オンチェーンへの永続的記録という共通の暗号基盤の上に構築されています。"
-    },
-    "notice": "料金はユースケースに合わせて調整されます。お客様の組織に適したティアについてお問い合わせください。",
-    "enterprise": {
-      "tag": "エンタープライズ",
-      "h2": "3 つのセグメント。1 つの信頼レイヤー。",
-      "p": "Lemma のエンタープライズ層は、公共インフラ、重要システム、金融コンプライアンスの 3 つの垂直領域に構造化されています。",
-      "plans": [
-        {
-          "tag": "公共セクター",
-          "name": "Lemma Civic",
-          "sub": "公共インフラ事業者向け",
-          "bestFor": "自治体サービス事業者、水道事業者、廃棄物管理事業者、複合司法管轄にわたる市民向けサービスを提供するB2B2G事業者。",
-          "features": [
-            "公共サービス適格性の ZK 証明済み属性検証",
-            "マルチサイトティアリング — 運用サイト数に応じたスケーリング",
-            "監査および公共の説明責任のためのオンチェーン来歴証明",
-            "公共インフラ向け標準スキーマライブラリ"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "1〜3サイト"
-            ],
-            [
-              "Tier 2",
-              "4〜10サイト"
-            ],
-            [
-              "Tier 3",
-              "11サイト以上 · カスタム"
-            ]
-          ],
-          "priceNote": "月額サブスクリプション + 検証通話量。カスタムスキーマ登録は別料金。",
-          "cta": "お問い合わせ"
-        },
-        {
-          "tag": "重要インフラ",
-          "name": "Lemma Critical",
-          "sub": "ミッションクリティカルシステム向け",
-          "bestFor": "電力・水道・交通インフラ事業者で、規制遵守と 24/365 の可用性が不可欠な監視・制御システムで AI を運用している事業者。",
-          "features": [
-            "ドメイン固有のビジネスルール向けカスタム ZK サーキット",
-            "コンプライアンスグレードの監査証跡",
-            "SLA 保証稼働率 · オンプレミスデプロイメントオプション",
-            "施設数と統合範囲に応じたティアリング"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "単一施設"
-            ],
-            [
-              "Tier 2",
-              "2〜10施設"
-            ],
-            [
-              "Tier 3",
-              "コア統合 · エンタープライズ"
-            ]
-          ],
-          "priceNote": "施設規模、SLA要件、ZKサーキットの複雑さに応じて価格設定。カスタム見積りについてはお問い合わせください。",
-          "cta": "お問い合わせ"
-        },
-        {
-          "tag": "金融・規制対象",
-          "name": "Lemma Compliance",
-          "sub": "金融機関・FinTech向け",
-          "bestFor": "検証可能な KYC/AML 属性、AI 判断の説明可能性、GDPR や EU AI Act、国内金融規制を満たす永続的な監査証跡を必要とする銀行・FinTech・規制対象機関。",
-          "features": [
-            "データ開示のない KYC/AML 属性検証",
-            "EU AI Act および ISO 42001 準拠の監査証跡",
-            "選択的开示 — 事実を証明し PII を保護",
-            "クエリごとに完全な来歴証明付きの RAG ポリシーレイヤー"
-          ],
-          "tiers": [
-            [
-              "Tier 1",
-              "中小 FinTech"
-            ],
-            [
-              "Tier 2",
-              "地方銀行・中規模"
-            ],
-            [
-              "Tier 3",
-              "メガバンク・中央銀行"
-            ]
-          ],
-          "priceNote": "USD 価格。月額サブスクリプション + 通話量。グローバル金融規制に準拠。",
-          "cta": "お問い合わせ"
-        }
-      ]
-    },
-    "dev": {
-      "tag": "開発者",
-      "h2": "Trust402",
-      "p": "開発者向けのプロダクト。x402 と MCP エコシステム向け — すべてのエージェント決済に ZK 証明済みの来歴証明を付与します。まもなく提供開始。",
-      "plans": [
-        {
-          "name": "Explorer",
-          "desc": "サンドボックスアクセス。コミット前に ZK 属性検証を評価できます。テストネット限定 — メインネットへの書き込みはありません。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Builder",
-          "desc": "プロダクションアクセス。x402 と MCP でアプリを出荷する個人開発者向け。標準の通話量が含まれます。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Studio",
-          "desc": "チームプラン。複数の API キー、優先サポート、拡張された通話量。スタートアップや小規模チーム向け。",
-          "badge": "近日公開"
-        },
-        {
-          "name": "Pro",
-          "desc": "高ボリュームプロダクション。SLA 保証の専用サポートチャンネル。エージェントエコシステムで規模の段階にあるプロダクト向け。",
-          "badge": "近日公開"
-        }
-      ],
-      "cta": "ウェイトリストに登録",
-      "demoCta": "製品ページを見る →（英語のみ）",
-      "note": "詳細な料金とドキュメントはリリース時に提供されます。"
-    },
-    "compare": {
-      "tag": "一覧",
-      "h2": "どのプランが組織に合っているか？",
-      "headers": [
-        "機能",
-        "Civic",
-        "Critical",
-        "Compliance",
-        "Trust402"
-      ],
-      "rows": [
-        [
-          "AES-GCM 暗号化 · docHash/CID",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "ZK 証明 — 標準サーキット",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "オンチェーン来歴証明のアンカー",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "選択的開示",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "カスタム ZK サーキット開発",
-          "—",
-          "◆",
-          "Tier 2/3",
-          "—"
-        ],
-        [
-          "オンプレミスデプロイメント",
-          "—",
-          "Tier 2/3",
-          "Tier 3",
-          "—"
-        ],
-        [
-          "SLA 保証稼働率",
-          "Tier 2/3",
-          "◆",
-          "◆",
-          "Pro"
-        ],
-        [
-          "RAG ポリシーレイヤー統合",
-          "◆",
-          "◆",
-          "◆",
-          "◆"
-        ],
-        [
-          "EU AI Act / ISO 42001 準拠",
-          "—",
-          "Tier 2/3",
-          "◆",
-          "—"
-        ],
-        [
-          "x402 決済ヘッダー統合",
-          "—",
-          "—",
-          "—",
-          "◆"
-        ],
-        [
-          "サインアップ",
-          "—",
-          "—",
-          "—",
-          "◆"
-        ],
-        [
-          "契約タイプ",
-          "B2B年契約",
-          "B2B年契約",
-          "B2B年契約",
-          "月額/年額"
-        ]
-      ]
-    },
-    "faqSection": {
-      "tag": "よくある質問",
-      "title": "料金 FAQ.",
-      "items": [
-        {
-          "q": "なぜ公開価格がないのですか？",
-          "a": "エンタープライズの料金はティア、サイト数、SLA要件、ZKサーキットの複雑さに依存します。文脈のない数字は誤解を招きます。実際のユースケースに応じて価格設定します。"
-        },
-        {
-          "q": "どのセグメントが業界に合っていますか？",
-          "a": "公共インフラ・B2B2G → Civic。電力・水道・鉄道・重要 AI → Critical。銀行・FinTech・KYC/AML → Compliance。x402・MCP 上に構築 → Trust402。"
-        },
-        {
-          "q": "料金はどのように設定されていますか？",
-          "a": "すべてのエンタープライズプランは月額基本料金に検証通話量とオプションのカスタムスキーマ登録を組み合わせています。"
-        },
-        {
-          "q": "無料トライアルはありますか？",
-          "a": "Trust402 にはサンドボックス評価用の Explorer ティアが含まれます。エンタープライズ評価はスコープ付き PoC で対応します。"
-        },
-        {
-          "q": "Trust402 はいつリリースされますか？",
-          "a": "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。"
-        },
-        {
-          "q": "低いティアから始めてアップグレードできますか？",
-          "a": "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。"
-        }
-      ]
-    },
-    "cta": {
-      "eyebrow": "はじめる",
-      "h2": "あなたの AI が必要とする",
-      "h2Em": "証明レイヤー。",
-      "p": "エンタープライズお問い合わせまたは開発者ウェイトリスト。1分で登録できます。",
-      "cta1": "お問い合わせ — エンタープライズ",
-      "cta2": "ウェイトリストに登録 — x402"
-    },
-    "nav": {
-      "wp": "ホワイトペーパーをダウンロード →"
-    }
-  },
   "thankYou": {
     "eyebrow": "ありがとうございます",
     "title": "ホワイトペーパーの<br>準備ができました",
@@ -919,7 +950,7 @@
     "sub": "以下のボタンからすぐにダウンロードできます。",
     "dlCard": {
       "label": "ホワイトペーパー",
-      "title": "Lemma Oracle —<br>検証可能AIインフラの技術と実装",
+      "title": "Lemma —<br>検証可能AIインフラの技術と実装",
       "desc": "ZK証明アーキテクチャ・選択的開示・オンチェーン来歴証明・PoC設計チェックリスト",
       "button": "PDFをダウンロード"
     },
@@ -930,11 +961,12 @@
     }
   },
   "pillars": {
-    "title": "信頼レイヤー",
-    "heroTitle": "AI のための信頼レイヤー。",
-    "subtitle": "4 つの暗号能力 — 来歴・AI 判断・エージェント権限・規制属性 — を 1 つの信頼レイヤーに束ねる。",
-    "categoryEyebrow": "信頼レイヤー",
-    "categoryAttribution": "4 つの暗号能力のひとつ。",
+    "title": "信頼インフラ",
+    "metaTitle": "信頼インフラ — 4 つの軸でできている | Lemma",
+    "heroTitle": "AI のための信頼インフラ。",
+    "subtitle": "AI が「どこから来たデータか」「どう判断したか」「誰の代理で動いたか」「規制を満たすか」と問われる時代に。Lemma の信頼インフラは、独立検証可能な暗号証明で 4 つの軸に応える設計。",
+    "categoryEyebrow": "信頼インフラ",
+    "categoryAttribution": "4 つの軸のひとつ。",
     "viewPillar": "詳細を見る →",
     "blockProblem": "Lemma が解決する領域",
     "blockWhyNow": "なぜ今か",
@@ -946,13 +978,75 @@
     "comingSoon": "ユースケースは順次追加予定です。",
     "ctaEyebrow": "はじめる",
     "ctaTitle": "証明する準備はできましたか？",
-    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。"
+    "ctaDesc": "ユースケースについてお聞かせください。1営業日以内にご返信いたします。",
+    "heroH1Lines": [
+      "AI の判断に、",
+      "4 つの問いが立つ。"
+    ],
+    "heroSub": "AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われる。Lemma は、各問いに独立検証可能な暗号証明を返す 4 軸の信頼インフラ。",
+    "questionsLabel": "4 つの問い",
+    "questions": [
+      {
+        "tag": "P1 · 来歴",
+        "stem": "そのデータは、",
+        "answer": "本当に正規の発行元から来たか？"
+      },
+      {
+        "tag": "P2 · AI 判断",
+        "stem": "そのモデルは、",
+        "answer": "本当にその入力で判断したか？"
+      },
+      {
+        "tag": "P3 · エージェント権限",
+        "stem": "そのエージェントは、",
+        "answer": "本当に代理する権限を持つか？"
+      },
+      {
+        "tag": "P4 · 規制属性",
+        "stem": "その属性は、",
+        "answer": "本当に規制要件を満たすか？"
+      }
+    ],
+    "compositionLabel": "信頼インフラ",
+    "compositionH2": "4 つの問いが、1 つの信頼インフラになる。",
+    "compositionCenterLabel": "AI の判断",
+    "compositionCaption": "単一 API · 4 軸同時証明 · Lemma",
+    "technicalDocsLabel": "技術ドキュメント",
+    "technicalDocsH2": "実装ガイドと仕様。",
+    "conceptSec1Label": "なぜ単独カテゴリなのか",
+    "conceptSec2Label": "Lemma の関わり",
+    "conceptSec3Label": "業務でどこに現れるか",
+    "conceptSec4Label": "さらに読む",
+    "conceptIncidentsHeading": "実事案",
+    "conceptRegulatoryHeading": "規制動向",
+    "conceptReadBrief": "Brief →",
+    "conceptViewUseCase": "ユースケース →",
+    "conceptApproachLinksLabel": "関連リンク"
   },
   "useCases": {
     "title": "ユースケース",
-    "subtitle": "検証可能な信頼の実世界応用",
+    "metaTitle": "ユースケース — 信頼インフラの業務適用パターン | Lemma",
+    "metaDescription": "AI 監査ログ・KYC 選択的開示・サプライチェーン ESG ほか、信頼インフラの典型的なビジネス適用パターンを業界・タスク横断で公開。実装の入口を業務側から見つけられます。",
+    "subtitle": "ビジネスでの活用パターン。業界から探せます。",
     "sections": "セクション",
     "overview": "概要",
-    "backToPillar": "← Pillarに戻る"
+    "backToPillar": "← Pillarに戻る",
+    "finderLabel": "業界から探す",
+    "industryAll": "すべて",
+    "industryLabels": {
+      "mfg": "製造・基幹インフラ",
+      "fin": "金融・FinTech",
+      "pub": "自治体・公共",
+      "sc": "調達・サプライチェーン",
+      "svc": "サービス・小売",
+      "ai": "AI導入（業種横断）",
+      "edu": "教育・HR",
+      "dev": "開発者"
+    },
+    "countAll": "全件 {n} 件",
+    "countMatch": "該当 {n} 件",
+    "emptyState": "この業界の事例は準備中です。すべて表示に戻すか、お問い合わせください。",
+    "cardCta": "見る →",
+    "briefLinkLabel": "実事案の構造化分析 — Critical Brief"
   }
 }

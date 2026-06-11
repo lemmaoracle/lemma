@@ -6,6 +6,9 @@ import MetaTags from "@/components/MetaTags";
 
 interface Props {
   title?: string;
+  /** og:title / twitter:title override. Defaults to `title`. Lets a page set a
+   * search-optimized <title> while keeping a distinct social-card headline. */
+  ogTitle?: string;
   description?: string;
   locale?: Locale;
   metaType?: "home" | "page" | "article";
@@ -14,11 +17,14 @@ interface Props {
   pagePath?: string;
   bodyClass?: string;
   noindex?: boolean;
+  /** Absolute URL of a page-specific OG image (overrides the locale default). */
+  ogImage?: string;
 }
 
 const { locale = "en", bodyClass, noindex } = Astro.props;
 const t = getTranslations(locale);
 const title = Astro.props.title ?? t.layout.defaultTitle;
+const ogTitle = Astro.props.ogTitle ?? title;
 const description = Astro.props.description ?? t.layout.defaultDescription;
 const base = locale === "ja" ? "/ja" : "";
 
@@ -90,7 +96,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     <meta name="twitter:card" content="summary_large_image" />
     {
       shouldRenderMetaTags && Astro.props.metaType === "home" && (
-        <MetaTags type="home" title={title} description={description} base={base} locale={locale} />
+        <MetaTags type="home" title={title} description={description} base={base} locale={locale} ogImage={Astro.props.ogImage} />
       )
     }
     {
@@ -98,10 +104,12 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
         <MetaTags
           type="page"
           title={title}
+          ogTitle={ogTitle}
           description={description}
           base={base}
           pagePath={Astro.props.pagePath}
           locale={locale}
+          ogImage={Astro.props.ogImage}
         />
       )
     }
@@ -115,6 +123,7 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
             post={Astro.props.post}
             blogPath={Astro.props.blogPath}
             locale={locale}
+            ogImage={Astro.props.ogImage}
           />
         )
     }
@@ -131,9 +140,9 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
           {
             "@type": "Organization",
             "@id": `${SITE_ORIGIN}/#organization`,
-            name: "Lemma Oracle by FRAME00",
+            name: "Lemma",
             url: SITE_ORIGIN,
-            description: "Lemma is the Trust Layer for AI — ZK-proof infrastructure for verifiable AI decisions, agent transactions, and regulatory attributes.",
+            description: "Lemma is the trust infrastructure for AI — ZK-proof system for verifiable AI decisions, agent transactions, and regulatory attributes.",
             logo: {
               "@type": "ImageObject",
               url: `${SITE_ORIGIN}/favicon.svg`,
@@ -144,8 +153,8 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
             "@type": "WebSite",
             "@id": `${SITE_ORIGIN}/#website`,
             url: `${SITE_ORIGIN}/`,
-            name: "Lemma Oracle",
-            description: "Trust Layer for AI — ZK-proof infrastructure composing four cryptographic capabilities: data origin, AI decisions, agent authority, regulatory attributes.",
+            name: "Lemma",
+            description: "Trust infrastructure for AI — ZK-proof system composing four axes: data origin, AI decisions, agent authority, regulatory attributes.",
             publisher: { "@id": `${SITE_ORIGIN}/#organization` },
             inLanguage: ["en", "ja"],
           },
@@ -153,19 +162,39 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
       })}
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <!-- Tally widget runtime — required by every `data-tally-open` button and
+         every `data-tally-src` iframe on the site. Loaded once, globally. -->
+    <script async is:inline src="https://tally.so/widgets/embed.js"></script>
+    <!-- Tally hydration fallback (per dev addendum 2026-06-04). Tally's
+         `embed.js` sometimes leaves `data-tally-src` iframes with an empty
+         `src` (loadEmbeds hook misses). Copy `data-tally-src` -> `src`
+         ourselves on DOMContentLoaded, page-swap (View Transitions), and
+         window load. Each iframe is only touched once because we skip
+         anything that already has a `src`. -->
+    <script is:inline>
+      (function () {
+        var hydrate = function () {
+          var fs = document.querySelectorAll('iframe[data-tally-src]:not([src])');
+          for (var i = 0; i < fs.length; i++) fs[i].src = fs[i].getAttribute('data-tally-src');
+        };
+        document.addEventListener('DOMContentLoaded', hydrate);
+        document.addEventListener('astro:after-swap', hydrate);
+        window.addEventListener('load', hydrate);
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700&family=Noto+Serif+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet" />
     <link
       rel="alternate"
       type="application/rss+xml"
-      title="Lemma Oracle Blog (English)"
+      title="Lemma Blog (English)"
       href={new URL("rss.xml", Astro.site)}
     />
     <link
       rel="alternate"
       type="application/rss+xml"
-      title="Lemma Oracle ブログ (日本語)"
+      title="Lemma ブログ (日本語)"
       href={new URL("ja/rss.xml", Astro.site)}
     />
     <link
@@ -216,7 +245,6 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
     }
   </head>
   <body class={bodyClass}>
-    <div class="lemma-brand-bar" aria-hidden="true"></div>
     <slot />
   </body>
 </html>
@@ -246,25 +274,14 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
   html { scroll-behavior: smooth; }
   body {
     font-family: var(--font-body);
-    background: var(--white);
+    background: var(--lemma-cream);
     color: var(--black);
     overflow-x: hidden;
   }
 
-  /* Lemma brand bar — 240×4px saddle brown stripe pinned just below the
-     fixed Navigation (height 64px). Sits at z-index just under the nav so
-     mega-panel dropdowns still overlay it correctly. */
-  .lemma-brand-bar {
-    position: fixed;
-    top: 64px;
-    left: 32px;
-    width: 240px;
-    height: 4px;
-    background: var(--accent);
-    z-index: 999;
-    pointer-events: none;
-  }
-  @media (max-width: 640px) {
-    .lemma-brand-bar { left: 16px; width: 180px; }
-  }
+  /* Brand mark moved into the Navigation logo as a per-logo underline
+     (see Navigation.astro .mega-nav-logo::after). The standalone
+     fixed brand-bar that used to sit at top:64px was removed because
+     it duplicated the new logo underline and visually attached itself
+     to the menu row. */
 </style>

@@ -1,6 +1,6 @@
 ---
 brief_no: 9
-title: "GTG-1002 — AI エージェントが攻撃の 80–90% を自律実行した初の報告例、エージェント権限が独立検証されない構造"
+title: "AI エージェントがサイバー攻撃の 80–90% を自律実行した初の報告（GTG-1002） — エージェント権限が独立検証されない構造"
 title_en: "GTG-1002 — The First Reported AI-Orchestrated Espionage Campaign Where the Agent Executed 80–90% Autonomously, and Agent Authority Was Never Independently Verified"
 pillar: "03-agent-authority"
 primary_category: "agent-runaway"
@@ -9,9 +9,11 @@ incident_date: 2025-11-13
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
-related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost"]
+related_briefs: ["007-pocketos-cursor-db-deletion", "003-starlette-badhost", "017-mckinsey-lilli-system-prompts"]
 version: "1.0"
 status: published
+og_lead_ja: "AI エージェントが攻撃の 80–90% を自律実行 — GTG-1002"
+og_lead_en: "AI agent ran 80–90% of an attack autonomously — GTG-1002"
 ---
 
 ## TL;DR
@@ -63,7 +65,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案は、提供事業者（Anthropic）側の異常検知・classifier・アカウント ban という検出層が機能し、約 10 日で範囲を特定して停止に至った。検出層は incident の認識・遮断・業界横断の脅威共有に不可欠であり、本 Brief がその役割を否定するものではない。Anthropic 自身も調査における大量データ分析に AI を活用したと報告している。
 
@@ -85,7 +87,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 
@@ -96,3 +98,17 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 - **Paul, Weiss client memo**: "Anthropic Disrupts First Documented Case of Large-Scale AI-Orchestrated Cyberattack"（2025-11）— https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack
 - **SOCRadar analysis**: "AI-Powered Cyber Espionage: Inside the GTG-1002 Campaign"（2025-11）— https://socradar.io/blog/ai-powered-gtg-1002-campaign/
 - **PwC**: "AI-orchestrated cyberattacks: A call to action"（2025）— https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

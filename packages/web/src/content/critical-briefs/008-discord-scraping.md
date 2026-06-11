@@ -1,6 +1,6 @@
 ---
 brief_no: 8
-title: "公開 API 経由の Discord 20.5 億メッセージ scraping — 公開チャンネルデータが AI training dataset として再配布される構造"
+title: "公開 API 経由の Discord 20.5 億メッセージのスクレイピング — 公開チャンネルデータが AI 学習データセットとして再配布される構造"
 title_en: "Discord 2.05 Billion Message Scraping via Public API — How Public Channel Data Gets Redistributed as AI Training Datasets"
 pillar: "01-verifiable-origin"
 primary_category: "training-data-provenance"
@@ -12,6 +12,8 @@ related_pack: ["B-regulatory", "C-agent-governance"]
 related_briefs: ["005-noroboto-lying-fonts", "006-google-api-key-revocation-lag"]
 version: "1.0"
 status: published
+og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
+og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
 ---
 
 ## TL;DR
@@ -71,7 +73,7 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、404 Media を中心とする技術メディアが scraping と dataset 公開の存在を検出し、業界横断議論を喚起した。これは検出層の典型的な機能であり、検出メディア・研究者の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
 
@@ -96,7 +98,7 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(dataset の来歴と利用 scope 属性が独立検証されないまま下流に流通する)に対して、Lemma は 2 層の構造を提示する。
+本事案で露呈した検出と証明の落差(dataset の来歴と利用 scope 属性が独立検証されないまま下流に流通する)に対して、Lemma は 2 層の構造を提示する。
 
 第一に **dataset 配布層** において、dataset の収集元、収集 scope(規約遵守 / 違反)、利用条件(再配布禁止、ML / AI training 禁止等)を独立検証可能な暗号証明として埋め込み、配布時点で proof attestation を必須化する設計。下流の研究者・AI 企業は proof を verifier として、自社の用途(例: ML training)が dataset の収集 scope に整合するかを独立検証できる構造になる。
 
@@ -111,3 +113,17 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online"(2025-05-22、一次報道、Discord 利用規約・開発者ポリシー違反を含む技術記述)— https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv 研究チーム論文**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015-2024)"(2025、ブラジル ミナス・ジェライス連邦大学 15 名研究者チーム、dataset 配布の一次資料)— https://arxiv.org/pdf/2502.00627
 - **Discord 開発者ポリシー** 公式(ML / AI training 用途禁止条項とスクレイピング禁止条項の根拠)— https://support-dev.discord.com/hc/ja/articles/8563934450327
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

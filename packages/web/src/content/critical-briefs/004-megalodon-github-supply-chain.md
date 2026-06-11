@@ -1,6 +1,6 @@
 ---
 brief_no: 4
-title: "Megalodon GitHub supply chain — 6 時間で 5,561 リポジトリを汚染した CI/CD credential 窃取キャンペーン"
+title: "Megalodon GitHub サプライチェーン — 6 時間で 5,561 リポジトリを汚染した CI/CD 認証情報窃取キャンペーン"
 title_en: "Megalodon GitHub Supply Chain — CI/CD Credential-Theft Campaign That Poisoned 5,561 Repositories in 6 Hours"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
@@ -9,9 +9,11 @@ incident_date: 2026-05-22
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["003-starlette-badhost"]
+related_briefs: ["014-tanstack-oidc-trusted-publisher", "003-starlette-badhost"]
 version: "1.0"
 status: published
+og_lead_ja: "6 時間で 5,561 リポジトリの CI/CD 認証情報を窃取 — Megalodon GitHub サプライチェーン"
+og_lead_en: "5,561 repos poisoned in 6 hours via CI/CD credential theft — Megalodon GitHub supply chain"
 ---
 
 ## TL;DR
@@ -62,7 +64,7 @@ Brief 003(Starlette/BadHost)とは別の構造(本事案は code commit の orig
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では Safe Dep、Ox Security、Hudson Rock の 3 社が独立に解析し、原因(インフォスティーラー起点)と影響範囲(5,561 リポジトリ、4 名義の偽装 author)を 5 日以内に特定した。検出層は事象の輪郭把握に貢献し、業界横断で問題を可視化した。検出企業の役割が本 Brief で否定されるものではない。
 
@@ -86,7 +88,7 @@ TeamPCP との関係性:Megalodon の発覚直前に TeamPCP が Shai-Hulud サ�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(commit author / repo origin の独立検証不在)に対して、Lemma は、コミット / リリース / CI/CD pipeline 各段で「この commit / artifact は正規の origin から来た」ことを独立検証可能な暗号証明として固定する設計を提示している。鍵そのものが奪取可能なマシン上に存在しない設計(key-less proof と組み合わせ)を中核とし、commit author の identity を ZK 証明として固定する方向にある。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(commit author / repo origin の独立検証不在)に対して、Lemma は、コミット / リリース / CI/CD pipeline 各段で「この commit / artifact は正規の origin から来た」ことを独立検証可能な暗号証明として固定する設計を提示している。鍵そのものが奪取可能なマシン上に存在しない設計(key-less proof と組み合わせ)を中核とし、commit author の identity を ZK 証明として固定する方向にある。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
@@ -95,3 +97,17 @@ TeamPCP との関係性:Megalodon の発覚直前に TeamPCP が Shai-Hulud サ�
 - **Safe Dep technical analysis**: "Megalodon mass GitHub repo backdooring of CI workflows"(2026-05、Safe Dep 公式 blog)— https://safedep.io/megalodon-mass-github-repo-backdooring-ci-workflows/
 - **Ox Security technical analysis**: "Megalodon CI/CD malware on GitHub"(2026-05、Ox Security 公式 blog、リード研究者 Bustan 氏)— https://www.ox.security/blog/megalodon-cicd-malware-github/
 - **Hudson Rock analysis**: "Infostealers just spawned a 5,000-repo GitHub supply chain attack"(2026-05、Hudson Rock 公式 blog)— インフォスティーラー起点経路を実証データで確定。https://www.hudsonrock.com/blog/infostealers-just-spawned-a-5000-repo-github-supply-chain-attack
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

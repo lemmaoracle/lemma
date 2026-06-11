@@ -34,13 +34,13 @@ export async function GET(context) {
   return rss({
     title: "Lemma Critical Brief",
     description:
-      "Lemma Oracle が発行する構造的事案分析の reference 集。各 Brief は failure primitive と、検出側強化では埋まらない gap を構造化して論じる。",
+      "Lemma が発行する構造的事案分析の reference 集。各 Brief は failure primitive と、検出側強化では埋まらない gap を構造化して論じる。",
     site: context.site,
     trailingSlash: false,
     items,
     customData: `
       <language>ja-jp</language>
-      <copyright>${new Date().getFullYear()} Lemma Oracle / FRAME00, Inc.</copyright>
+      <copyright>${new Date().getFullYear()} Lemma / FRAME00, Inc.</copyright>
       <atom:link href="${new URL("ja/critical/briefs/feed.xml", context.site)}" rel="self" type="application/rss+xml" />
     `,
     stylesheet: "/rss/styles.xsl",

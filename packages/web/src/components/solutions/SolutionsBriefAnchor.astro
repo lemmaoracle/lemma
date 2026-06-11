@@ -1,0 +1,64 @@
+---
+/**
+ * §5 Critical Brief anchor — dark full-bleed band placed after the Checklist
+ * and before the Discovery Call close. Establishes the threat-analysis route
+ * and a soft Discovery Call entry for Brief readers.
+ */
+import type { Locale } from "../../i18n/translations";
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const briefHref = `${base}/critical/briefs/`;
+const contactHref = `${base}/contact/`;
+
+const C = isJa ? {
+  eyebrow: "脅威への対応",
+  h2: "業界で起きている事案の、構造分析を読む。",
+  lead: "AI 関連の規制・事案・攻撃手法を Critical Brief で構造化しています。「動かす」活用シーンの裏側で、何が起きているかを把握できます。",
+  primary: "Critical Brief を読む →",
+  secondary: "内容についてのご相談は、Discovery Call でも →",
+} : {
+  eyebrow: "Threats in the field",
+  h2: "Read structural analyses of what's actually happening.",
+  lead: "Critical Brief structures the regulations, incidents, and attack patterns that shape AI today—the context behind the \"run\" guides above.",
+  primary: "Read Critical Brief →",
+  secondary: "Discuss any of these in a Discovery Call →",
+};
+---
+
+<section class="ba-section">
+  <div class="ba-inner">
+    <div class="ba-left">
+      <p class="ba-eyebrow">{C.eyebrow}</p>
+      <h2 class="ba-h2">{C.h2}</h2>
+      <p class="ba-lead">{C.lead}</p>
+    </div>
+    <div class="ba-right">
+      <a class="ba-btn" href={briefHref}>{C.primary}</a>
+      <a class="ba-sub" href={contactHref}>{C.secondary}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ba-section { background: #0f0f0f; color: var(--lemma-cream); padding: 60px 40px; }
+  .ba-inner { max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .ba-left { flex: 1; min-width: 280px; }
+  .ba-eyebrow { font-family: "Space Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lemma-brown-light, #f5ebdc); font-weight: 700; margin: 0 0 14px; display: flex; align-items: center; gap: 9px; }
+  .ba-eyebrow::before { content: '\25B8'; color: var(--accent); }
+  .ba-h2 { font-family: "Sora", system-ui, sans-serif; font-weight: 700; font-size: 26px; line-height: 1.3; letter-spacing: -0.02em; margin: 0 0 10px; color: var(--lemma-cream); }
+  .ba-lead { font-size: 14px; color: rgba(252, 250, 245, 0.65); margin: 0; max-width: 620px; line-height: 1.7; }
+  .ba-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+  .ba-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--lemma-cream); padding: 13px 26px; border-radius: 999px; text-decoration: none; font-family: "Sora", system-ui, sans-serif; font-weight: 600; font-size: 14px; transition: background 0.15s; white-space: nowrap; }
+  .ba-btn:hover { background: #6b3410; }
+  .ba-sub { color: rgba(252, 250, 245, 0.55); font-family: "Sora", system-ui, sans-serif; font-size: 12px; text-decoration: none; text-align: right; line-height: 1.5; transition: color 0.15s; }
+  .ba-sub:hover { color: var(--lemma-brown-light, #f5ebdc); }
+
+  @media (max-width: 900px) {
+    .ba-section { padding: 48px 24px; }
+    .ba-inner { flex-direction: column; align-items: flex-start; }
+    .ba-right { align-items: flex-start; }
+    .ba-sub { text-align: left; }
+  }
+</style>

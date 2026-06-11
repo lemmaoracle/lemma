@@ -1,0 +1,181 @@
+---
+/**
+ * §4 — Adoption. 3 step cards + one-line code block + 2 CTAs.
+ */
+import type { Locale } from "../../i18n/translations";
+import { SOLUTIONS } from "../../data/solutions";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const a = SOLUTIONS.adoption;
+---
+
+<section class="sa-section">
+  <div class="so-section-eyebrow">{a.eyebrow[locale]}</div>
+  <h2 class="so-section-h2">
+    {a.h2Head[locale]}<br />
+    <span class="accent">{a.h2Accent[locale]}</span>
+  </h2>
+  <p class="so-section-sub">{a.sub[locale]}</p>
+
+  <div class="sa-steps">
+    {a.steps.map((step) => (
+      <article class="sa-step">
+        <div class="sa-step-no">
+          <span class="sa-step-circle">{step.no}</span> {step.label[locale]}
+        </div>
+        <h3 class="sa-step-title">{step.title[locale]}</h3>
+        <p class="sa-step-desc">{step.desc[locale]}</p>
+        <div class="sa-step-duration">{step.duration[locale]}</div>
+      </article>
+    ))}
+  </div>
+
+  <pre class="sa-code"><span class="com">{a.code.comment1[locale]}</span>
+<span class="kw">import</span> {"{ prover }"} <span class="kw">from</span> '@lemmaoracle/sdk'
+
+<span class="kw">const</span> {"{ proof }"} = <span class="kw">await</span> <span class="fn">prover</span>.<span class="fn">prove</span>(claim)
+<span class="com">{a.code.comment2[locale]}</span>
+<span class="note">{a.code.note[locale]}</span></pre>
+
+  <div class="sa-cta">
+    <a href={a.ctaPrimary.href} class="sa-cta-primary" target="_blank" rel="noopener">
+      {a.ctaPrimary.label[locale]}
+    </a>
+    <a href={a.ctaSecondary.href} class="sa-cta-secondary" target="_blank" rel="noopener">
+      {a.ctaSecondary.label[locale]}
+    </a>
+  </div>
+</section>
+
+<style>
+  .sa-steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 0 0 24px;
+  }
+  .sa-step {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 28px 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+  }
+  .sa-step::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: var(--accent);
+  }
+  .sa-step-no {
+    font-family: var(--so-mono);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sa-step-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--lemma-brown-light);
+    color: var(--accent);
+    font-family: var(--so-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .sa-step-title {
+    font-family: var(--so-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin: 0;
+  }
+  .sa-step-desc {
+    font-size: 13.5px;
+    color: var(--so-text-3);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .sa-step-duration {
+    font-family: var(--so-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+
+  .sa-code {
+    background: var(--so-text-1);
+    color: #e8e2d4;
+    border-radius: 14px;
+    padding: 28px 32px;
+    font-family: var(--so-mono);
+    font-size: 13px;
+    line-height: 1.85;
+    overflow-x: auto;
+    margin: 24px 0 0;
+  }
+  .sa-code .com { color: #7a7468; }
+  .sa-code .kw { color: #d4a574; }
+  .sa-code .fn { color: #f0dcb5; }
+  .sa-code .note {
+    display: block;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 0.5px solid rgba(252, 250, 245, 0.12);
+    font-family: var(--so-display);
+    font-size: 12.5px;
+    color: rgba(232, 226, 212, 0.7);
+  }
+
+  .sa-cta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin: 28px 0 0;
+  }
+  .sa-cta-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 13px 28px;
+    border-radius: 999px;
+    font-family: var(--so-display);
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  .sa-cta-secondary {
+    color: var(--so-text-2);
+    font-family: var(--so-display);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .sa-cta-secondary:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .sa-steps { grid-template-columns: 1fr; }
+  }
+</style>

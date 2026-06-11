@@ -1,0 +1,122 @@
+---
+/**
+ * §3 — Use Cases hub. 6 cards (3 col, reflow to 2 / 1) + pillar link
+ * pointing back to the Why surface.
+ */
+import type { Locale } from "../../i18n/translations";
+import { SOLUTIONS } from "../../data/solutions";
+
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const h = SOLUTIONS.useCasesHub;
+const useCasesBase = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
+const pillarsBase = base ? `${base}/pillars` : "/pillars";
+---
+
+<section class="su-section">
+  <div class="so-section-eyebrow">{h.eyebrow[locale]}</div>
+  <h2 class="so-section-h2">
+    {h.h2Head[locale]}<br />
+    <span class="accent">{h.h2Accent[locale]}</span>
+  </h2>
+  <p class="so-section-sub">{h.sub[locale]}</p>
+
+  <div class="su-grid">
+    {h.items.map((item) => {
+      const href = item.useCaseSlug
+        ? `${useCasesBase}/${item.useCaseSlug}/`
+        : `${useCasesBase}/`;
+      return (
+        <a href={href} class="su-card">
+          <div class="su-eyebrow">{item.category[locale]}</div>
+          <h3 class="su-title">{item.title[locale]}</h3>
+          <p class="su-desc">{item.desc[locale]}</p>
+          <div class="su-link">{item.linkLabel[locale]}</div>
+        </a>
+      );
+    })}
+  </div>
+
+  <p class="su-pillar">
+    {h.pillarLink.prefix[locale]}{" "}
+    <a href={`${pillarsBase}/`}>{h.pillarLink.label[locale]}</a>
+  </p>
+</section>
+
+<style>
+  .su-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .su-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 22px 24px 20px;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .su-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+  }
+  .su-eyebrow {
+    font-family: var(--so-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .su-title {
+    font-family: var(--so-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .su-desc {
+    font-size: 12.5px;
+    color: var(--so-text-3);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .su-link {
+    font-family: var(--so-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+
+  .su-pillar {
+    text-align: center;
+    margin: 28px 0 0;
+    font-family: var(--so-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+    color: var(--so-text-3);
+  }
+  .su-pillar a {
+    color: var(--accent);
+    transition: text-decoration 0.15s;
+  }
+  .su-pillar a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 880px) {
+    .su-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .su-grid { grid-template-columns: 1fr; }
+  }
+</style>

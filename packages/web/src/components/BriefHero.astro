@@ -1,0 +1,170 @@
+---
+/**
+ * Brief detail page — Hero section (id eyebrow + h1 + subtitle + tag pills
+ * + 4-cell meta strip).
+ *
+ * The meta strip is delegated to BriefMetaStrip; everything above the strip
+ * (eyebrow / h1 / subtitle / tags) lives here. Tags render friendly category
+ * labels (not raw slugs) via the registry's categoryLabel().
+ */
+import type { CollectionEntry } from "astro:content";
+import type { Locale } from "../i18n/translations";
+import {
+  categoryLabel,
+  type CategorySlug,
+} from "../data/criticalBriefs";
+import BriefMetaStrip, {
+  type BriefMetaStripLabels,
+} from "./BriefMetaStrip.astro";
+
+export interface BriefHeroLabels extends BriefMetaStripLabels {
+  briefId: string;
+}
+
+export interface BriefHeroProps {
+  locale: Locale;
+  brief:
+    | CollectionEntry<"critical-briefs">
+    | CollectionEntry<"critical-briefs-en">;
+  labels: BriefHeroLabels;
+  mainTitle: string;
+  subtitle: string;
+  pillarLabel: string;
+  /** Link target for the Pillar tag (Pillar detail page). */
+  pillarHref: string;
+  /** Base path ("" or "/ja") for building category filter links. */
+  base: string;
+  incidentDateStr: string;
+  publishedStr: string;
+}
+
+const {
+  locale,
+  brief,
+  labels,
+  mainTitle,
+  subtitle,
+  pillarLabel,
+  pillarHref,
+  base,
+  incidentDateStr,
+  publishedStr,
+} = Astro.props as BriefHeroProps;
+
+const categoryHref = (slug: string) =>
+  `${base}/critical/briefs/?category=${slug}`;
+
+const primarySlug = brief.data.primary_category as CategorySlug;
+const primaryCatLabel = categoryLabel(primarySlug, locale);
+const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
+  (c) => ({ slug: c, label: categoryLabel(c, locale) }),
+);
+---
+
+<section class="hero">
+  <h1 class="hero-h1">{mainTitle}</h1>
+  {subtitle && <p class="hero-subtitle">{subtitle}</p>}
+
+  <div class="hero-tags">
+    <a class="hero-tag pillar" href={pillarHref}>{pillarLabel}</a>
+    <a class="hero-tag category" href={categoryHref(primarySlug)}>
+      {primaryCatLabel}
+    </a>
+    {secondaryCats.map((c) => (
+      <a class="hero-tag cat-secondary" href={categoryHref(c.slug)}>{c.label}</a>
+    ))}
+  </div>
+
+  <BriefMetaStrip
+    locale={locale}
+    labels={labels}
+    incidentDateStr={incidentDateStr}
+    publishedStr={publishedStr}
+    authors={brief.data.authors}
+    relatedPack={brief.data.related_pack}
+  />
+</section>
+
+<style>
+  .hero {
+    --bh-display: "Sora", system-ui, sans-serif;
+    --bh-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+    padding: 32px 0 56px;
+  }
+  .hero-h1 {
+    font-family: var(--bh-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.06;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+    max-width: 880px;
+  }
+  :root[lang="ja"] .hero-h1 {
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .hero-subtitle {
+    font-family: var(--bh-display);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #3a3a3a;
+    margin: 0 0 32px;
+    letter-spacing: -0.015em;
+    max-width: 760px;
+  }
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 36px;
+  }
+  .hero-tag {
+    font-family: var(--bh-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .hero-tag.pillar {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    font-weight: 500;
+  }
+  .hero-tag.pillar:hover {
+    background: #6e3610;
+  }
+  .hero-tag.category {
+    background: var(--lemma-brown-light);
+    color: var(--accent);
+  }
+  .hero-tag.category:hover {
+    background: var(--accent);
+    color: var(--lemma-cream);
+  }
+  .hero-tag.cat-secondary {
+    background: var(--lemma-cream-deep);
+    color: #5a5a5a;
+  }
+  .hero-tag.cat-secondary:hover {
+    background: var(--lemma-brown-light);
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding: 24px 0 40px;
+    }
+    .hero-h1 {
+      font-size: 36px;
+    }
+    .hero-subtitle {
+      font-size: 17px;
+    }
+  }
+</style>

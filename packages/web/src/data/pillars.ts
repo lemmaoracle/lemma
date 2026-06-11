@@ -52,11 +52,65 @@ export interface PillarFAQ {
   readonly a: LocalizedStrings;
 }
 
+/** v2 concept-hub: structured content for §1-§4 of the detail page.
+ * §1 → incidents + regulatory landscape; §2 → Lemma's role narrative;
+ * §3 → business scenarios mapped to use cases; §4 → onward navigation. */
+export interface PillarConceptHub {
+  /** §1 lead narrative — 1 short paragraph that frames why this is its
+   * own category, sitting above the incidents list. */
+  readonly intro: LocalizedStrings;
+  /** Section H2s (§1–§4). Each renders as `{head}<br><span class="accent">{accent}</span>`. */
+  readonly sectionH2s: ReadonlyArray<Readonly<{
+    readonly head: LocalizedStrings;
+    readonly accent: LocalizedStrings;
+  }>>;
+  readonly incidents: ReadonlyArray<Readonly<{
+    readonly date: string;
+    readonly title: LocalizedStrings;
+    readonly desc: LocalizedStrings;
+    /** Critical Brief slug under content/critical-briefs/, when one exists. */
+    readonly briefSlug?: string;
+  }>>;
+  readonly regulatory: LocalizedArray;
+  readonly approach: Readonly<{
+    readonly lead: LocalizedStrings;
+    readonly bullets: ReadonlyArray<Readonly<{
+      readonly label: LocalizedStrings;
+      readonly text: LocalizedStrings;
+    }>>;
+    readonly links: ReadonlyArray<Readonly<{
+      readonly label: LocalizedStrings;
+      readonly href: string;
+    }>>;
+  }>;
+  readonly scenarios: ReadonlyArray<Readonly<{
+    readonly label: LocalizedStrings;
+    readonly title: LocalizedStrings;
+    readonly desc: LocalizedStrings;
+    /** Use case slug under content/use-cases/, when one exists. */
+    readonly useCaseSlug?: string;
+  }>>;
+  readonly further: ReadonlyArray<Readonly<{
+    readonly label: LocalizedStrings;
+    readonly title: LocalizedStrings;
+    readonly desc: LocalizedStrings;
+    readonly href: string;
+  }>>;
+}
+
 export interface Pillar {
   readonly slug: PillarSlug;
   readonly title: LocalizedStrings;
+  /** Poetic "X ≠ Y" tag, used in the v2 hub as auxiliary text next to the
+   * Pillar number eyebrow (was the v1 main slogan). */
   readonly slogan: LocalizedStrings;
+  /** Poetic subline ("Data is copied. Provenance is carved."). In the v2
+   * hub it is rendered below the plain elevator with a dashed separator. */
   readonly subtitle: LocalizedStrings;
+  /** v2 — Plain-language elevator describing what the pillar actually does.
+   * Required for the new hub card. Set as the lead text under the card
+   * title. */
+  readonly plainElevator: LocalizedStrings;
   readonly homepageCardTitle: HomepageCardTitle;
   readonly homepageBlurb: LocalizedStrings;
   readonly problemStatement: LocalizedStrings;
@@ -72,6 +126,8 @@ export interface Pillar {
   readonly seo?: PillarSEO;
   readonly extraSection?: PillarExtraSection;
   readonly faq?: ReadonlyArray<PillarFAQ>;
+  /** v2 concept-hub copy for the redesigned detail page. */
+  readonly conceptHub?: PillarConceptHub;
 }
 
 /* ── Pillar Data (hardcoded) ───────────────────────────────────── */
@@ -82,6 +138,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Verifiable Origin", ja: "来歴証明" },
     slogan: { en: "Cryptographically valid ≠ semantically right", ja: "暗号論理的に有効 ≠ 意味的に正しい" },
     subtitle: { en: "Data is copied. Provenance is carved.", ja: "データは複製される。来歴は刻まれる。" },
+    plainElevator: {
+      en: "A cryptographic layer that lets receivers verify where a fact originated, without exposing the original.",
+      ja: "流通する事実が「どこから来たか」を、原本を渡さずに検証可能にする暗号レイヤー。",
+    },
     homepageCardTitle: {
       en: { line1: "Data is copied.", line2: "Provenance is carved." },
       ja: { line1: "データは複製される。", line2: "来歴は刻まれる。" },
@@ -91,8 +151,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "資産、文書、部品の出所を、改ざん不能な暗号レイヤで固定する。",
     },
     problemStatement: {
-      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the data-lineage capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
-      ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。<strong>来歴証明は、Lemma の信頼レイヤーが「データ来歴」を担保する層です</strong> — 信頼レイヤーを構成する 4 つの暗号能力のひとつ。",
+      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the data-lineage axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
+      ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。<strong>来歴証明は、Lemma の信頼インフラが「データ来歴」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
       en: "EU AI Act 2026 — data governance and training / RAG source-provenance requirements for high-risk AI; ISO 42001 audit-trail expectations; supply-chain DPP and CBAM provenance mandates; 2022 Ronin bridge $625M exploit as a cross-domain reference case",
@@ -110,10 +170,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "クロスチェーン移植性 (Groth16 ZK) — 同じ証明を再発行せずにチェーンやツールを越えて持ち運べる",
       ],
     },
-    useCaseSlugs: ["rag-content-provenance", "supply-chain-component-provenance", "defi-bridge-verification"],
+    useCaseSlugs: ["long-term-contract-record", "supplier-credential-verification", "supply-chain-component-provenance", "rag-content-provenance", "credential-presentation", "qualified-worker-attestation", "internal-control-approval-proof"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/services",
+      href: "/solutions",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -125,20 +185,198 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["origin", "rag", "ai-data-governance", "supply-chain", "forensics"],
     seo: {
       title: {
-        en: "Verifiable Origin — Cryptographic Data Provenance | Lemma Oracle",
-        ja: "来歴証明 — データの出所を暗号的に証明 | Lemma Oracle",
+        en: "Verifiable Origin — Cryptographic Data Provenance | Lemma",
+        ja: "来歴証明 — データの出所を暗号的に証明 | Lemma",
       },
       description: {
-        en: "Lemma's Verifiable Origin carves data provenance onto a tamper-evident layer at the moment of publication, so any downstream system can verify origin independently — the data-lineage capability of the Lemma Trust Layer.",
-        ja: "Lemma の来歴証明は、発行時点で来歴を改ざん耐性のあるレイヤーに刻み、下流のシステムが発行元に問い合わせずに独立検証できるようにします — Lemma の信頼レイヤーを構成する「データ来歴」の能力。",
+        en: "Lemma's Verifiable Origin carves data provenance onto a tamper-evident layer at the moment of publication, so any downstream system can verify origin independently — the data-lineage axis of Lemma's trust infrastructure.",
+                ja: "Lemma の来歴証明は、発行時点で来歴を改ざん耐性のあるレイヤーに刻み、下流のシステムが発行元に問い合わせずに独立検証できるようにします — Lemma の信頼インフラを構成する「データ来歴」の軸。",      },
+    },
+    conceptHub: {
+      intro: {
+        ja: "直近 1 年で、AI が読み・書き・参照する事実の来歴喪失起因の構造的事案が連続している。検出層の強化では届かない問題群として、来歴は単独の運用カテゴリとして扱われ始めている。",
+        en: "Structural incidents driven by provenance loss have been mounting over the past year in the facts AI reads, writes, and references. The class of problems that detection-layer hardening cannot reach is now being treated as its own operational category.",
       },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、来歴は", en: "In 2026, provenance has become" },
+          accent: { ja: "単独の運用カテゴリになった。", en: "its own operational category." },
+        },
+        {
+          head: { ja: "受信側が原本を持たずに、", en: "Receivers verify the origin" },
+          accent: { ja: "発行元を独立検証する。", en: "without holding the original." },
+        },
+        {
+          head: { ja: "来歴が問われる、", en: "Where provenance gets asked —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
+      incidents: [
+        {
+          date: "2026-05",
+          title: { ja: "Noroboto フォント偽装攻撃", en: "Noroboto font impersonation attack" },
+          desc: {
+            ja: "悪意フォントで AI 文書レビューの入力が改ざんされ、契約書の準拠法・金額・日付が乖離。",
+            en: "Malicious fonts altered what the AI document reviewer saw, leaving contract law, amount, and date divergent from the underlying file.",
+          },
+          briefSlug: "005-noroboto-lying-fonts",
+        },
+        {
+          date: "2026-05",
+          title: { ja: "Discord 20.5 億メッセージ scraping", en: "Discord 2.05B message scraping" },
+          desc: {
+            ja: "公開チャンネルデータが研究機関により AI 学習 dataset として無断再配布。",
+            en: "Public channel data was redistributed by a research institute as an AI training dataset without consent.",
+          },
+          briefSlug: "008-discord-scraping",
+        },
+        {
+          date: "2026-03",
+          title: { ja: "SynthID 透かし剥がし", en: "SynthID watermark reverse-engineering" },
+          desc: {
+            ja: "Google DeepMind の AI 生成コンテンツ来歴標識が、独立研究者により reverse-engineering で剥離可能と実証。",
+            en: "Independent researchers demonstrated that Google DeepMind's AI-generated-content watermark can be stripped via reverse-engineering.",
+          },
+          briefSlug: "011-synthid-watermark-reverse-engineering",
+        },
+        {
+          date: "2026-03",
+          title: { ja: "Claude Code 流出便乗マルウェア", en: "Claude Code leak-lure malware" },
+          desc: {
+            ja: "公式パッケージの来歴シグナルが悪意 actor の配送路として転用、ソフトウェアサプライチェーンで「正規ソースから来た」の根拠が機能しなくなる。",
+            en: "Official package provenance signals were repurposed by malicious actors as a delivery path — \"came from a legitimate source\" stopped being a usable claim in the software supply chain.",
+          },
+          briefSlug: "010-claude-code-leak-lure",
+        },
+      ],
+      regulatory: {
+        ja: ["EU AI Act", "C2PA", "米 SEC AI 開示", "日本 FSA 暗号資産ガイドライン"],
+        en: ["EU AI Act", "C2PA", "US SEC AI disclosure", "Japan FSA crypto guidelines"],
+      },
+      approach: {
+        lead: {
+          ja: "Lemma は、流通する事実に発行者の暗号署名を埋め込み、受信側が原本にアクセスせずに来歴を独立検証できる暗号レイヤーを提供する。フォーマット標準と独立検証可能性を分業として扱うことで、発行者・受信者・監査人が共通の事実基盤に立てる。",
+          en: "Lemma embeds an issuer's cryptographic signature into each fact it carries, giving receivers a way to verify origin independently — without contacting the issuer or seeing the original. Format standards and independent verifiability are kept as separate concerns so publishers, receivers, and auditors share a common factual basis.",
+        },
+        bullets: [
+          {
+            label: { ja: "役割", en: "Role" },
+            text: {
+              ja: "流通する各事実に発行者由来の独立検証可能な来歴 proof を付帯。原本は発行者の管理下、受信側は proof だけで真正性を確認する。",
+              en: "Each fact in flight carries an independently verifiable, issuer-signed provenance proof. The original stays with the issuer; the receiver verifies authenticity from the proof alone.",
+            },
+          },
+          {
+            label: { ja: "隣接領域との違い", en: "Distinct from adjacent layers" },
+            text: {
+              ja: "C2PA / W3C VC が標準フォーマットを定義する。Lemma はその上で受信側が独立検証する暗号レイヤーを提供する(補完関係)。",
+              en: "C2PA / W3C VC define standard formats. Lemma provides the cryptographic verification layer on top — complementary, not competing.",
+            },
+          },
+          {
+            label: { ja: "既存実装", en: "Available today" },
+            text: {
+              ja: "Lemma 経由。SDK は近日公開予定。",
+              en: "Via Lemma. SDK launches soon.",
+            },
+          },
+        ],
+        links: [
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+        ],
+      },
+      scenarios: [
+        {
+          label: { ja: "製造 · 公共 · インフラ", en: "Manufacturing · Public · Infra" },
+          title: { ja: "長期契約・台帳の記録の証明", en: "Provable long-term contract & ledger records" },
+          desc: {
+            ja: "15〜20 年の保守契約や台帳を、後年に問われても中身を出さず改ざんなく証明できる形で残す。",
+            en: "Make 15–20 year maintenance contracts and ledgers provable years later — without revealing contents.",
+          },
+          useCaseSlug: "long-term-contract-record",
+        },
+        {
+          label: { ja: "調達 · サプライチェーン", en: "Procurement · Supply chain" },
+          title: { ja: "仕入先の証書・許認可確認", en: "Verifying supplier certificates and licenses" },
+          desc: {
+            ja: "サプライヤーの ISO・許認可・保険証書が「有効に保有されている」ことだけを、原本を渡さずに確認する。",
+            en: "Confirm that ISO, licenses, and insurance are validly held — without receiving the original certificate.",
+          },
+          useCaseSlug: "supplier-credential-verification",
+        },
+        {
+          label: { ja: "サプライチェーン · 製造", en: "Supply chain · Manufacturing" },
+          title: { ja: "多階層サプライヤの部品来歴", en: "Component provenance across supplier tiers" },
+          desc: {
+            ja: "各サプライヤ階層からの来歴属性が、組立側で独立検証可能な形で連鎖する。",
+            en: "Per-tier provenance attributes chain together so the assembling side can independently verify the full path.",
+          },
+          useCaseSlug: "supply-chain-component-provenance",
+        },
+        {
+          label: { ja: "RAG · エンタープライズ", en: "RAG · Enterprise" },
+          title: { ja: "RAG 取り込みの文書来歴", en: "Document provenance at RAG ingestion" },
+          desc: {
+            ja: "日々索引化される社内文書が、来歴を失わずに AI 引用に乗ること。",
+            en: "Internal docs indexed each day carry provenance into AI citations instead of losing it on the way.",
+          },
+          useCaseSlug: "rag-content-provenance",
+        },
+      ],
+      further: [
+        {
+          label: { ja: "Brief", en: "Brief" },
+          title: { ja: "来歴喪失起因の構造的事案分析", en: "Structural analysis of provenance-loss incidents" },
+          desc: {
+            ja: "公開情報の構造化分析。CSO・アナリスト向け。",
+            en: "Structured analysis of public information. For CSOs and analysts.",
+          },
+          href: "/critical/briefs/",
+        },
+        {
+          label: { ja: "Use Case", en: "Use Case" },
+          title: { ja: "業界別の活用シナリオ", en: "Industry application scenarios" },
+          desc: {
+            ja: "来歴証明を業務に組み込むパターン。",
+            en: "Patterns for putting Verifiable Origin into operation.",
+          },
+          href: "/solutions/use-cases/",
+        },
+        {
+          label: { ja: "Product", en: "Product" },
+          title: { ja: "Lemma Industries", en: "Lemma Industries" },
+          desc: {
+            ja: "エンタープライズ向けの提供形態。",
+            en: "Enterprise delivery model.",
+          },
+          href: "/pricing",
+        },
+        {
+          label: { ja: "Specs", en: "Specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
+          desc: {
+            ja: "信頼インフラの技術仕様。",
+            en: "Technical specification of the trust infrastructure.",
+          },
+          href: "/guides",
+        },
+      ],
     },
   },
   {
     slug: "verifiable-ai",
-    title: { en: "Verifiable AI", ja: "AI出力の検証可能性" },
+    title: { en: "Verifiable AI", ja: "検証可能 AI" },
     slogan: { en: "Finds bugs ≠ proves decisions", ja: "バグを見つける ≠ 決定を証明する" },
     subtitle: { en: "Models change. Proofs remain.", ja: "モデルは変わる。証明は残る。" },
+    plainElevator: {
+      en: "A way to record an AI's decision process as a reproducible cryptographic proof — what was the input, which model, what was decided.",
+      ja: "AI の判断過程を、再現可能な暗号証明として記録する仕組み。何を入力に、どのモデルで、どう決定したかを後から独立検証できる。",
+    },
     homepageCardTitle: {
       en: { line1: "Models change.", line2: "Proofs remain." },
       ja: { line1: "モデルは変わる。", line2: "証明は残る。" },
@@ -148,8 +386,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "AIの判断と引用を、モデル更新後も遡れる構造で記録する。",
     },
     problemStatement: {
-      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the AI-decision capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
-      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。<strong>検証可能 AI は、Lemma の信頼レイヤーが「AI 判断」を担保する層です</strong> — 信頼レイヤーを構成する 4 つの暗号能力のひとつ。",
+      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the AI-decision axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
+      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。<strong>検証可能 AI は、Lemma の信頼インフラが「AI 判断」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
       en: "EU AI Act enforcement in 2026; rising ISO 42001 certification demand",
@@ -167,10 +405,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "コンプライアンス報告の選択的開示 — 入力全体ではなく、監査人が必要とする部分だけを開示できる",
       ],
     },
-    useCaseSlugs: ["ai-audit-log-proof", "rag-source-attestation"],
+    useCaseSlugs: ["ai-audit-log-proof", "ai-document-isolation", "rag-source-attestation"],
     primaryCTA: {
       label: "Talk to us",
-      href: "/services",
+      href: "/solutions",
       type: "talk-to-us",
     },
     secondaryCTA: {
@@ -182,13 +420,178 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["ai", "explainability", "audit", "compliance"],
     seo: {
       title: {
-        en: "Verifiable AI — Audit-Proof AI Decisions | Lemma Oracle",
-        ja: "検証可能 AI — AI 判断を後から検証可能に | Lemma Oracle",
+        en: "Verifiable AI — Audit-Proof AI Decisions | Lemma",
+        ja: "検証可能 AI — AI 判断を後から検証可能に | Lemma",
       },
       description: {
-        en: "Lemma's Verifiable AI records every AI decision — inputs, retrieved sources, applied rules, model generation — as a tamper-evident attestation that outlives model upgrades. The AI-decision capability of the Lemma Trust Layer.",
-        ja: "Lemma の検証可能 AI は、AI 判断ごとの入力・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残ります — Lemma の信頼レイヤーを構成する「AI 判断」の能力。",
+        en: "Lemma's Verifiable AI records every AI decision — inputs, retrieved sources, applied rules, model generation — as a tamper-evident attestation that outlives model upgrades. The AI-decision axis of Lemma's trust infrastructure.",
+                ja: "Lemma の検証可能 AI は、AI 判断ごとの入力・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残ります — Lemma の信頼インフラを構成する「AI 判断」の軸。",      },
+    },
+    conceptHub: {
+      intro: {
+        ja: "直近 1 年で、採用 AI の差別判定、医療 AI の説明不能、自律 coding agent の暴走など、判断過程が事後検証できない事案が連続している。XAI による「説明」は監査要件を満たさず、判断の事実そのものを暗号証跡として残す層が求められている。",
+        en: "Over the past year, cases where the decision process cannot be verified after the fact — hiring AI discrimination, medical AI accountability gaps, runaway autonomous coding agents — have piled up. XAI \"explanations\" do not satisfy audit requirements; a layer that preserves the facts of the decision itself as cryptographic evidence is being demanded.",
       },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、AI 判断の", en: "In 2026, independent verification of AI decisions" },
+          accent: { ja: "独立検証は監査要件になった。", en: "became an audit requirement." },
+        },
+        {
+          head: { ja: "判断の事実を、", en: "Make the facts of a decision" },
+          accent: { ja: "モデル更新後も独立検証できる。", en: "independently verifiable beyond model updates." },
+        },
+        {
+          head: { ja: "AI 判断が問われる、", en: "Where AI decisions get scrutinized —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
+      incidents: [
+        {
+          date: "2026-05",
+          title: { ja: "Robert Williams 誤認逮捕", en: "Robert Williams wrongful arrest" },
+          desc: {
+            ja: "顔認識 AI の照合結果が独立検証なく行政の強制処分に直結、米国初の FRT 起因誤認逮捕事例。",
+            en: "Face-recognition AI output drove enforcement action without independent verification — the first US wrongful arrest attributed to facial recognition.",
+          },
+          briefSlug: "012-williams-frt-wrongful-arrest",
+        },
+        {
+          date: "2026-05",
+          title: { ja: "Noroboto フォント偽装攻撃", en: "Noroboto font impersonation attack" },
+          desc: {
+            ja: "AI 文書処理での入力 integrity 偽装、契約書 AI レビューの判断根拠が乖離。",
+            en: "Input integrity forged in AI document processing — the basis of the contract review AI's judgment came apart from the actual document.",
+          },
+          briefSlug: "005-noroboto-lying-fonts",
+        },
+        {
+          date: "2026-04",
+          title: { ja: "PocketOS Cursor 本番 DB 削除", en: "PocketOS Cursor production DB deletion" },
+          desc: {
+            ja: "AI coding agent が単一 API call で 9 秒で production database を削除、判断過程の事前検証が不在。",
+            en: "An AI coding agent deleted the production database with a single API call in 9 seconds — no pre-execution verification of the decision process.",
+          },
+          briefSlug: "007-pocketos-cursor-db-deletion",
+        },
+      ],
+      regulatory: {
+        ja: ["EU AI Act 高リスク AI 要件", "NY Local Law 144 (採用 AI 監査義務)", "米 SEC AI 開示ガイダンス", "EEOC AI 採用差別ガイダンス"],
+        en: ["EU AI Act high-risk AI requirements", "NY Local Law 144 (hiring AI audit duty)", "US SEC AI disclosure guidance", "EEOC AI hiring discrimination guidance"],
+      },
+      approach: {
+        lead: {
+          ja: "検証可能 AI は、AI の判断を「説明する」のではなく「再現できる暗号証拠として残す」設計。入力・モデル・推論結果を改ざん不能な形で結びつけ、第三者監査が後から独立検証できる証跡を提供する。",
+          en: "Verifiable AI is designed not to explain an AI's decision but to preserve it as reproducible cryptographic evidence. Inputs, model version, and inference output are bound together in a tamper-evident form so a third-party auditor can independently verify after the fact.",
+        },
+        bullets: [
+          {
+            label: { ja: "役割", en: "Role" },
+            text: {
+              ja: "AI 判断の入力 / モデルバージョン / 推論結果を、改ざん不能な暗号コミットメントで紐づけた証跡として残す。",
+              en: "Bind inputs, model version, and inference output via tamper-evident cryptographic commitments — a record that survives model updates.",
+            },
+          },
+          {
+            label: { ja: "隣接領域との違い", en: "Distinct from adjacent layers" },
+            text: {
+              ja: "XAI / interpretability ツールは判断の「説明」を生成する。Lemma は判断の「事実」を独立検証可能にする(補完関係)。",
+              en: "XAI / interpretability tools generate explanations of a decision. Lemma makes the facts of the decision independently verifiable — complementary, not competing.",
+            },
+          },
+          {
+            label: { ja: "既存実装", en: "Available today" },
+            text: {
+              ja: "Lemma 経由。zkML primitives の本番実装は 2026 後半予定、それまでは commitment scheme のみで対応。",
+              en: "Via Lemma. Production zkML primitives scheduled for late 2026; commitment-scheme-only coverage in the interim.",
+            },
+          },
+        ],
+        links: [
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+        ],
+      },
+      scenarios: [
+        {
+          label: { ja: "HR · コンプライアンス", en: "HR · Compliance" },
+          title: { ja: "AI 採用評価の説明責任", en: "Accountability for AI hiring evaluation" },
+          desc: {
+            ja: "採用候補の評価過程を、後から独立検証可能な形で残す。",
+            en: "Preserve the evaluation process for hiring candidates in an independently verifiable form.",
+          },
+          useCaseSlug: "ai-audit-log-proof",
+        },
+        {
+          label: { ja: "金融 · 規制対応", en: "Finance · Regulatory" },
+          title: { ja: "AI 融資審査の監査ログ", en: "Audit log for AI lending decisions" },
+          desc: {
+            ja: "融資判断の入力・モデル・結果を、規制当局が後から確認できる証跡として記録する。",
+            en: "Record lending decision inputs, model, and output as evidence regulators can verify after the fact.",
+          },
+          useCaseSlug: "ai-audit-log-proof",
+        },
+        {
+          label: { ja: "エンタープライズ · データガバナンス", en: "Enterprise · Data governance" },
+          title: { ja: "社内文書を使う AI の漏洩対策", en: "Protecting raw data from the AI" },
+          desc: {
+            ja: "機密文書を暗号化したまま、AI には必要な事実だけを証明付きで渡す。原本に触れさせない。",
+            en: "Keep documents encrypted while passing the AI only the needed facts with proof — never the original.",
+          },
+          useCaseSlug: "ai-document-isolation",
+        },
+        {
+          label: { ja: "RAG · 引用整合性", en: "RAG · Citation integrity" },
+          title: { ja: "AI 回答の引用先検証", en: "Verifying AI citation sources" },
+          desc: {
+            ja: "AI 回答の引用ごとに参照元の版を紐付け、引用の真正性を暗号的に保つ。",
+            en: "Bind each AI citation to the source version, preserving citation integrity cryptographically.",
+          },
+          useCaseSlug: "rag-source-attestation",
+        },
+      ],
+      further: [
+        {
+          label: { ja: "Brief", en: "Brief" },
+          title: { ja: "AI 判断の独立検証ギャップ", en: "Independent verification gaps in AI decisions" },
+          desc: {
+            ja: "公開情報の構造化分析。CSO・アナリスト向け。",
+            en: "Structured analysis of public information. For CSOs and analysts.",
+          },
+          href: "/critical/briefs/",
+        },
+        {
+          label: { ja: "Use Case", en: "Use Case" },
+          title: { ja: "業界別の活用シナリオ", en: "Industry application scenarios" },
+          desc: {
+            ja: "検証可能 AI を業務に組み込むパターン。",
+            en: "Patterns for putting Verifiable AI into operation.",
+          },
+          href: "/solutions/use-cases/",
+        },
+        {
+          label: { ja: "Product", en: "Product" },
+          title: { ja: "Lemma Industries", en: "Lemma Industries" },
+          desc: {
+            ja: "エンタープライズ向けの提供形態。",
+            en: "Enterprise delivery model.",
+          },
+          href: "/pricing",
+        },
+        {
+          label: { ja: "Specs", en: "Specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
+          desc: {
+            ja: "信頼インフラの技術仕様。",
+            en: "Technical specification of the trust infrastructure.",
+          },
+          href: "/guides",
+        },
+      ],
     },
   },
   {
@@ -196,6 +599,10 @@ const PILLARS: ReadonlyArray<Pillar> = [
     title: { en: "Agent Authority Proof", ja: "エージェント権限証明" },
     slogan: { en: "Pays ≠ trustworthy", ja: "支払う ≠ 信頼できる" },
     subtitle: { en: "Authority can be delegated. Only provable authority should be.", ja: "権限は渡せる。証明できる権限だけが。" },
+    plainElevator: {
+      en: "A way to prove \"for whom\" and \"how far\" an AI agent is authorized to act, without giving it signing keys.",
+      ja: "AI エージェントが「誰の代理で」「どの範囲まで」動けるかを、署名鍵を持たせずに暗号証明する仕組み。",
+    },
     homepageCardTitle: {
       en: { line1: "Authority can be delegated.", line2: "Only provable authority should be." },
       ja: { line1: "権限は渡せる。", line2: "証明できる権限だけが。" },
@@ -224,7 +631,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "エージェントが多段で連鎖する場面でも、上流の権限を末端まで証明できる",
       ],
     },
-    useCaseSlugs: ["delegated-treasury", "multi-agent-workflows", "x402-commerce"],
+    useCaseSlugs: ["multi-agent-workflows", "delegated-treasury", "internal-control-approval-proof"],
     primaryCTA: {
       label: "Talk to us",
       href: "https://tally.so/r/Pd2Rl5",
@@ -250,9 +657,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["agent", "x402", "mcp", "authority-proof", "agentic-payments"],
     seo: {
       title: {
-        en: "Agent Authority Proof — Agentic Payments Trust Layer | Lemma Oracle",
-        ja: "エージェント権限証明 — エージェント決済の信頼レイヤー | Lemma Oracle",
-      },
+        en: "Agent Authority Proof — Agentic Payments Trust Infrastructure | Lemma",
+                ja: "エージェント権限証明 — エージェント決済の信頼インフラ | Lemma",      },
       description: {
         en: "Agentic payments need more than a payment rail. Lemma's Agent Authority Proof makes autonomous agent authority, spend limits, and provenance cryptographically verifiable across x402 and MCP.",
         ja: "エージェント決済 (agentic payments) には決済レール以上のものが必要です。Lemma のエージェント権限証明は、自律エージェントの権限・支払い限度・来歴を x402 や MCP を横断して暗号的に検証可能にします。",
@@ -264,17 +670,17 @@ const PILLARS: ReadonlyArray<Pillar> = [
         ja: "エージェント決済",
       },
       heading: {
-        en: "Agent Authority Proof and Trust402 — where the trust layer fits in agentic payments",
+        en: "Agent Authority Proof and Trust402 — where the trust infrastructure fits in agentic payments",
         ja: "エージェント権限証明と Trust402 — エージェント決済のどこに入るか",
       },
       paragraphs: {
         en: [
-          "Lemma proposes Agent Authority Proof as the trust layer that sits in front of the agent payment step. Rather than handing agents API keys and hoping prompt-engineered guardrails hold, the layer issues authority, spending limits, and provenance as cryptographic attestations — verifiable on-chain or by any counterparty, before the transaction settles. <strong>Trust402 is Lemma's product that realizes this layer at the protocol level for x402-style agent payments.</strong>",
+          "Lemma proposes Agent Authority Proof as the trust infrastructure that sits in front of the agent payment step. Rather than handing agents API keys and hoping prompt-engineered guardrails hold, the layer issues authority, spending limits, and provenance as cryptographic attestations — verifiable on-chain or by any counterparty, before the transaction settles. <strong>Trust402 is Lemma's product that realizes this layer at the protocol level for x402-style agent payments.</strong>",
           "Why this layer is needed now: agentic payments — transactions executed autonomously by AI agents — became a real category in 2024–2025 with x402, the Stripe Agent SDK, and MCP-driven tool use. The payment rail problem is largely solved. What remains is the trust question — who is the agent acting for, how much can it spend, and is the data underlying the payment authentic.",
           'The delegated-treasury, multi-agent-workflows, and x402-commerce use cases linked above show how Trust402 and the surrounding pieces compose. For the broader conceptual scope of agentic payments, see the <a href="/glossary/agentic-payments/">glossary entry</a>.',
         ],
         ja: [
-          "Lemma が提唱するエージェント権限証明は、エージェント決済の前段に置かれる信頼レイヤーです。エージェントに API キーを渡してプロンプト側のガードレールに頼るのではなく、権限・支払い限度・来歴を暗号的アテステーションとして発行し、オンチェーン、または任意の取引相手側で、決済確定の前に検証できる構造を指します。<strong>Trust402 は、この層を x402 型エージェント決済向けにプロトコルレベルで実装した Lemma の製品です。</strong>",
+          "Lemma が提唱するエージェント権限証明は、エージェント決済の前段に置かれる信頼インフラです。エージェントに API キーを渡してプロンプト側のガードレールに頼るのではなく、権限・支払い限度・来歴を暗号的アテステーションとして発行し、オンチェーン、または任意の取引相手側で、決済確定の前に検証できる構造を指します。<strong>Trust402 は、この層を x402 型エージェント決済向けにプロトコルレベルで実装した Lemma の製品です。</strong>",
           "なぜ今このレイヤーが必要か。エージェント決済 (agentic payments) — AI エージェントが自律的に実行する取引 — は、2024〜2025 年の x402・Stripe Agent SDK・MCP 駆動のツール使用によって現実のカテゴリになりました。決済レールの問題はほぼ解けています。残っているのは信頼の問題 — そのエージェントは誰の代理か、いくらまで使えるか、支払いの根拠データは真正か。",
           "上記の delegated-treasury / multi-agent-workflows / x402-commerce ユースケースが、Trust402 と各部品の組み合わせ方を示します。エージェント決済そのものの広い概念整理は <a href=\"/ja/glossary/agentic-payments/\">用語集</a> を参照してください。",
         ],
@@ -322,12 +728,191 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
       },
     ],
+    conceptHub: {
+      intro: {
+        ja: "直近 1 年で、AI エージェントが攻撃の大半を自律実行する事案、credential 失効遅延、MCP 認証回避など、エージェント権限の独立検証が機能しない事案が連続している。IAM の静的権限管理では追いつかない問題群として、行為ごとの権限証明が独立カテゴリとして扱われ始めている。",
+        en: "Over the past year, AI agents autonomously executing the bulk of an attack, credential revocation lag, MCP auth bypass — cases where independent verification of agent authority simply doesn't work — have piled up. The class of problems that static IAM permission management cannot keep up with is now being treated as its own category: proof of authority at each action.",
+      },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、エージェント権限は", en: "In 2026, agent authority" },
+          accent: { ja: "独立検証の対象になった。", en: "became a target for independent verification." },
+        },
+        {
+          head: { ja: "鍵を渡さずに、", en: "Don't hand over the keys —" },
+          accent: { ja: "行為ごとに権限を証明する。", en: "prove authority at each action." },
+        },
+        {
+          head: { ja: "権限境界が問われる、", en: "Where authority boundaries get tested —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
+      incidents: [
+        {
+          date: "2026-05",
+          title: { ja: "GTG-1002 中国国家支援グループ", en: "GTG-1002 China state-backed group" },
+          desc: {
+            ja: "AI エージェントが攻撃の 80-90% を自律実行、人間介入なしに約 30 標的に侵入試行、エージェント権限が独立検証されない構造。",
+            en: "AI agents autonomously executed 80–90% of the attack — roughly 30 targets attempted with no human intervention. The agents' authority went uninspected end-to-end.",
+          },
+          briefSlug: "009-gtg1002-ai-orchestrated-espionage",
+        },
+        {
+          date: "2026-04",
+          title: { ja: "PocketOS Cursor 本番 DB 削除", en: "PocketOS Cursor production DB deletion" },
+          desc: {
+            ja: "AI coding agent が destructive 権限を持ったまま単一 API call で 9 秒で全削除。",
+            en: "An AI coding agent retained destructive authority and dropped the entire database in one 9-second API call.",
+          },
+          briefSlug: "007-pocketos-cursor-db-deletion",
+        },
+        {
+          date: "2026-05",
+          title: { ja: "Starlette BadHost CVE-2026-48710", en: "Starlette BadHost CVE-2026-48710" },
+          desc: {
+            ja: "HTTP Host ヘッダー操作で MCP server 認証回避、エージェントインフラの権限境界が機能しない。",
+            en: "Host-header tampering let MCP server auth be bypassed — the authority boundary in the agent infrastructure stopped working.",
+          },
+          briefSlug: "003-starlette-badhost",
+        },
+        {
+          date: "2026-05",
+          title: { ja: "Google API キー失効遅延 23 分", en: "Google API key revocation lag (23 min)" },
+          desc: {
+            ja: "credential 失効属性が独立検証されず、削除後も最長 23 分間認証成功。",
+            en: "Credential revocation status was not independently verifiable — the deleted key still authenticated for up to 23 minutes.",
+          },
+          briefSlug: "006-google-api-key-revocation-lag",
+        },
+      ],
+      regulatory: {
+        ja: ["EU AI Act 高リスク AI 自律性要件", "NIST AI RMF", "米 OMB AI ガバナンスメモ (M-24-10)", "ISO/IEC 42001 AI MS"],
+        en: ["EU AI Act high-risk autonomy requirements", "NIST AI RMF", "US OMB AI governance memo (M-24-10)", "ISO/IEC 42001 AI MS"],
+      },
+      approach: {
+        lead: {
+          ja: "エージェント権限証明は、AI エージェントに署名鍵を持たせる代わりに、行為ごとに「委任された範囲内である」ことを暗号で証明する仕組み。鍵漏洩のリスクを構造的に排除しながら、エージェントの行為を独立検証可能にする。",
+          en: "Agent Authority Proof avoids handing signing keys to an AI agent and instead proves at each action that the agent is operating within delegated scope. Key-leak risk is structurally removed while every action stays independently verifiable.",
+        },
+        bullets: [
+          {
+            label: { ja: "役割", en: "Role" },
+            text: {
+              ja: "委任関係を暗号化された capability credential として発行、各行為時に「権限範囲内」を範囲付き proof で証明する。",
+              en: "Issue the delegation as an encrypted capability credential, and prove at each action that the action falls within scope via a scope-bound proof.",
+            },
+          },
+          {
+            label: { ja: "隣接領域との違い", en: "Distinct from adjacent layers" },
+            text: {
+              ja: "IAM / OAuth は静的な権限を管理する。Lemma は各行為時の動的な権限行使を proof で示す(補完関係)。",
+              en: "IAM / OAuth manage static permissions. Lemma proves the dynamic exercise of authority at each action — complementary, not competing.",
+            },
+          },
+          {
+            label: { ja: "既存実装", en: "Available today" },
+            text: {
+              ja: "Lemma + Trust402 経由。x402 標準と連動。",
+              en: "Via Lemma + Trust402. Aligned with the x402 standard.",
+            },
+          },
+        ],
+        links: [
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+        ],
+      },
+      scenarios: [
+        {
+          label: { ja: "コーポレート · ファイナンス", en: "Corporate · Finance" },
+          title: { ja: "経費承認 AI の権限境界", en: "Authority boundary for expense-approval AI" },
+          desc: {
+            ja: "経費精算エージェントが上長委任の範囲内でのみ承認できることを行為ごとに証明する。",
+            en: "Prove on each action that the expense-approval agent is operating inside the manager's delegated scope.",
+          },
+          useCaseSlug: "delegated-treasury",
+        },
+        {
+          label: { ja: "調達 · サプライチェーン", en: "Procurement · Supply chain" },
+          title: { ja: "購買発注 AI の代理権限", en: "Delegated authority for purchasing AI" },
+          desc: {
+            ja: "発注 AI が「誰の代理で」「いくらまで」発注できるかを、取引先側で独立検証できる。",
+            en: "The counterparty can independently verify on whose behalf and up to what limit the purchasing AI is authorized.",
+          },
+          useCaseSlug: "delegated-treasury",
+        },
+        {
+          label: { ja: "カスタマーサクセス · 営業", en: "Customer success · Sales" },
+          title: { ja: "顧客対応 AI の代理範囲", en: "Delegated scope for customer-facing AI" },
+          desc: {
+            ja: "カスタマー対応 AI の権限範囲を、顧客側で確認可能な proof として提示する。",
+            en: "Present the customer-facing AI's scope as a proof the customer can verify.",
+          },
+          useCaseSlug: "multi-agent-workflows",
+        },
+        {
+          label: { ja: "エンジニアリング · DevOps", en: "Engineering · DevOps" },
+          title: { ja: "AI coding agent の destructive 権限制御", en: "Destructive-authority control for AI coding agents" },
+          desc: {
+            ja: "コード変更エージェントの権限境界(書き込み範囲・削除権限)を、各操作前に独立検証する。",
+            en: "Independently verify the coding agent's authority boundary (write scope, destructive rights) before each operation.",
+          },
+          useCaseSlug: "multi-agent-workflows",
+        },
+      ],
+      further: [
+        {
+          label: { ja: "Brief", en: "Brief" },
+          title: { ja: "エージェント権限を巡る構造的事案", en: "Structural incidents around agent authority" },
+          desc: {
+            ja: "公開情報の構造化分析。CSO・アナリスト向け。",
+            en: "Structured analysis of public information. For CSOs and analysts.",
+          },
+          href: "/critical/briefs/",
+        },
+        {
+          label: { ja: "Use Case", en: "Use Case" },
+          title: { ja: "業界別の活用シナリオ", en: "Industry application scenarios" },
+          desc: {
+            ja: "エージェント権限証明を業務に組み込むパターン。",
+            en: "Patterns for putting Agent Authority Proof into operation.",
+          },
+          href: "/solutions/use-cases/",
+        },
+        {
+          label: { ja: "Product", en: "Product" },
+          title: { ja: "Trust402", en: "Trust402" },
+          desc: {
+            ja: "x402 上のエージェント信頼インフラ。",
+            en: "Trust layer for agents on x402.",
+          },
+          href: "/trust402",
+        },
+        {
+          label: { ja: "Specs", en: "Specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
+          desc: {
+            ja: "信頼インフラの技術仕様。",
+            en: "Technical specification of the trust infrastructure.",
+          },
+          href: "/guides",
+        },
+      ],
+    },
   },
   {
     slug: "regulatory-attribute-proof",
     title: { en: "Regulatory Attribute Proof", ja: "規制属性証明" },
     slogan: { en: "Compliance promised ≠ compliance proven", ja: "コンプライアンスの約束 ≠ コンプライアンスの証明" },
     subtitle: { en: "Data stays. Proofs travel.", ja: "データは渡さない。証明は渡る。" },
+    plainElevator: {
+      en: "Prove regulatory attributes (KYC, AML, age, residency, credit score) without disclosing the underlying personal data.",
+      ja: "KYC、AML、年齢、所在、信用スコアなど規制要件に紐づく属性を、原本の個人情報を渡さずに証明する。",
+    },
     homepageCardTitle: {
       en: { line1: "Data stays.", line2: "Proofs travel." },
       ja: { line1: "データは渡さない。", line2: "証明は渡る。" },
@@ -337,8 +922,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
     },
     problemStatement: {
-      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the regulatory-attestation capability of the Lemma Trust Layer</strong> — one of four cryptographic capabilities composing it.",
-      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。<strong>規制属性証明は、Lemma の信頼レイヤーが「規制適合」を担保する層です</strong> — 信頼レイヤーを構成する 4 つの暗号能力のひとつ。",
+      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the regulatory-attestation axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。<strong>規制属性証明は、Lemma の信頼インフラが「規制適合」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
     },
     whyNow: {
       en: "GDPR strengthening, EU AI Act, crypto-asset guidelines, supply chain DDP mandates",
@@ -356,7 +941,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         "監査可能な証明トレイル — 原本データを渡さず、規制当局が独立に再検証できる形で残せる",
       ],
     },
-    useCaseSlugs: ["financial-data-exfiltration", "kyc-aml-selective-disclosure", "supply-chain-esg"],
+    useCaseSlugs: ["counterparty-screening", "kyc-aml-selective-disclosure", "financial-data-exfiltration", "supply-chain-esg", "supplier-credential-verification", "benefit-eligibility-proof", "qualified-worker-attestation"],
     primaryCTA: {
       label: "Download regulatory whitepaper",
       href: "https://tally.so/r/xX0VYv",
@@ -366,13 +951,177 @@ const PILLARS: ReadonlyArray<Pillar> = [
     tags: ["regulatory", "kyc", "aml", "compliance", "esg"],
     seo: {
       title: {
-        en: "Regulatory Attribute Proof — Compliance Without Disclosure | Lemma Oracle",
-        ja: "規制属性証明 — データを共有せずに規制適合を証明 | Lemma Oracle",
+        en: "Regulatory Attribute Proof — Compliance Without Disclosure | Lemma",
+        ja: "規制属性証明 — データを共有せずに規制適合を証明 | Lemma",
       },
       description: {
-        en: "Lemma's Regulatory Attribute Proof issues compliance as cryptographic attestations — regulators verify the attribute itself (KYC passed, CBAM-compliant, AI Act met) without the underlying data leaving the enterprise. The regulatory capability of the Lemma Trust Layer.",
-        ja: "Lemma の規制属性証明は、コンプライアンスを暗号的アテステーションとして発行 — 「KYC 通過」「CBAM 適合」「AI Act 要件達成」を原本データを企業外に出さずに証明できます — Lemma の信頼レイヤーを構成する「規制適合」の能力。",
+        en: "Lemma's Regulatory Attribute Proof issues compliance as cryptographic attestations — regulators verify the attribute itself (KYC passed, CBAM-compliant, AI Act met) without the underlying data leaving the enterprise. The regulatory axis of Lemma's trust infrastructure.",
+                ja: "Lemma の規制属性証明は、コンプライアンスを暗号的アテステーションとして発行 — 「KYC 通過」「CBAM 適合」「AI Act 要件達成」を原本データを企業外に出さずに証明できます — Lemma の信頼インフラを構成する「規制適合」の軸。",      },
+    },
+    conceptHub: {
+      intro: {
+        ja: "直近 6 ヶ月で、KYC 通過の「証明」のために収集された原本(パスポート画像、住所証明、自撮り)が漏洩する事案が複数の取引所で連続している。データ最小化を満たすには、原本を渡す構造そのものを解体する必要があり、選択的開示は単独の運用カテゴリとして扱われ始めている。",
+        en: "In the past six months, originals (passport scans, address proofs, selfies) collected to \"prove\" KYC clearance have leaked across multiple exchange incidents. Meeting data minimization requires dismantling the structure of handing over originals altogether — selective disclosure is now being treated as its own operational category.",
       },
+      sectionH2s: [
+        {
+          head: { ja: "2026 年、属性証明の", en: "In 2026, the dependence of attribute proof" },
+          accent: { ja: "原本依存は構造的に終わる。", en: "on originals is ending structurally." },
+        },
+        {
+          head: { ja: "原本を渡さずに、", en: "Without handing over the original," },
+          accent: { ja: "述語だけを開示する。", en: "disclose only the predicate." },
+        },
+        {
+          head: { ja: "規制属性が問われる、", en: "Where regulatory attributes get demanded —" },
+          accent: { ja: "代表的な業務領域。", en: "the operational lines." },
+        },
+        {
+          head: { ja: "深く知る、", en: "Learn more," },
+          accent: { ja: "使い始める。", en: "start using." },
+        },
+      ],
+      incidents: [
+        {
+          date: "2026-05",
+          title: { ja: "Google API キー失効遅延", en: "Google API key revocation lag" },
+          desc: {
+            ja: "credential 失効属性の独立検証が機能せず、削除済 API キーが 23 分間有効。",
+            en: "The revocation attribute on credentials wasn't independently verifiable — a deleted API key kept authenticating for 23 minutes.",
+          },
+          briefSlug: "006-google-api-key-revocation-lag",
+        },
+        {
+          date: "2026-05",
+          title: { ja: "Discord 20.5 億メッセージ scraping", en: "Discord 2.05B message scraping" },
+          desc: {
+            ja: "公開属性の再配布で training data の attribute 来歴が消失。",
+            en: "Public attributes redistributed at scale — the attribute provenance of the training data was lost on the way.",
+          },
+          briefSlug: "008-discord-scraping",
+        },
+        {
+          date: "過去事案",
+          title: { ja: "各国 KYC データベース漏洩", en: "KYC database breaches across jurisdictions" },
+          desc: {
+            ja: "KYC 通過の「証明」のために収集された原本(パスポート画像、住所証明、自撮り)が漏洩する構造(直近 6 ヶ月で複数の取引所事案)。",
+            en: "Originals (passport scans, address proofs, selfies) collected for the sake of \"proving\" KYC clearance keep leaking — multiple exchange incidents in the past six months.",
+          },
+        },
+      ],
+      regulatory: {
+        ja: ["GDPR データ最小化原則", "FATF Travel Rule", "日本 FSA 暗号資産ガイドライン", "EU eIDAS 2 (EUDI Wallet)", "米州 BIPA (生体認証)"],
+        en: ["GDPR data minimization", "FATF Travel Rule", "Japan FSA crypto guidelines", "EU eIDAS 2 (EUDI Wallet)", "US state BIPA (biometric)"],
+      },
+      approach: {
+        lead: {
+          ja: "規制属性証明は、規制要件を満たすために原本(パスポート・診療記録・卒業証書など)を渡す構造を解体し、必要な属性だけを述語で開示する設計。データを溜める受信側のリスクを構造的に縮小しながら、規制適合の証明を成立させる。",
+          en: "Regulatory Attribute Proof dismantles the pattern of handing over originals (passports, medical records, diplomas) to satisfy a regulation, and instead discloses only the predicate that's required. Receiver-side aggregation risk shrinks structurally while compliance attestation still goes through.",
+        },
+        bullets: [
+          {
+            label: { ja: "役割", en: "Role" },
+            text: {
+              ja: "発行者が原本に署名し、ホルダーが述語(「18 歳以上」「KYC 通過」)だけを選択的開示、検証者は属性のみ確認できる。",
+              en: "An issuer signs the original; the holder selectively discloses only the predicate (\"over 18\", \"KYC passed\"); the verifier sees only the attribute.",
+            },
+          },
+          {
+            label: { ja: "隣接領域との違い", en: "Distinct from adjacent layers" },
+            text: {
+              ja: "W3C VC / EUDI Wallet が credential フォーマットを定義する。Lemma はその上で predicate proof / range proof を実装する暗号レイヤー(補完関係)。",
+              en: "W3C VC / EUDI Wallet define credential formats. Lemma is the cryptographic layer on top that implements predicate proofs and range proofs — complementary, not competing.",
+            },
+          },
+          {
+            label: { ja: "既存実装", en: "Available today" },
+            text: {
+              ja: "Lemma + Lemma Compliance プラン経由。",
+              en: "Via Lemma + the Lemma Compliance plan.",
+            },
+          },
+        ],
+        links: [
+          { label: { ja: "Lemma 仕様書", en: "Lemma specs" }, href: "/blog/lemma-oracle-specs" },
+          { label: { ja: "Developer Guides", en: "Developer guides" }, href: "/guides" },
+        ],
+      },
+      scenarios: [
+        {
+          label: { ja: "金融 · 暗号資産取引所", en: "Finance · Crypto exchange" },
+          title: { ja: "KYC / AML 選択的開示", en: "KYC / AML selective disclosure" },
+          desc: {
+            ja: "顧客の KYC 属性を、原本を渡さずに規制要件として証明する。",
+            en: "Prove KYC attributes as the regulation requires without handing over the underlying original.",
+          },
+          useCaseSlug: "kyc-aml-selective-disclosure",
+        },
+        {
+          label: { ja: "金融 · 与信 · リスク", en: "Finance · Credit · Risk" },
+          title: { ja: "取引先の与信・反社チェック", en: "Counterparty credit & sanctions screening" },
+          desc: {
+            ja: "与信・反社の判定結果だけを渡し、根拠は出さずに確認できる。",
+            en: "Share only the credit / sanctions decision result — reasons and scores stay private.",
+          },
+          useCaseSlug: "counterparty-screening",
+        },
+        {
+          label: { ja: "規制対応 · データガバナンス", en: "Regulatory · Data governance" },
+          title: { ja: "金融データ流出防止", en: "Financial-data exfiltration prevention" },
+          desc: {
+            ja: "組織を跨いだデータアクセスを、改ざん不能な証跡で証明可能にする。",
+            en: "Make cross-org data access tamper-proof and verify who accessed what.",
+          },
+          useCaseSlug: "financial-data-exfiltration",
+        },
+        {
+          label: { ja: "製造 · 規制適合", en: "Manufacturing · Regulatory conformity" },
+          title: { ja: "サプライチェーン ESG 適合", en: "Supply chain ESG conformity" },
+          desc: {
+            ja: "CBAM・EUDR・DPP への適合を、営業秘密を守りながらサプライヤ属性の連鎖で証明する。",
+            en: "Prove CBAM / EUDR / DPP conformance via a chain of supplier attributes while protecting trade secrets.",
+          },
+          useCaseSlug: "supply-chain-esg",
+        },
+      ],
+      further: [
+        {
+          label: { ja: "Brief", en: "Brief" },
+          title: { ja: "規制属性を巡る構造的事案", en: "Structural incidents around regulatory attributes" },
+          desc: {
+            ja: "公開情報の構造化分析。CSO・アナリスト向け。",
+            en: "Structured analysis of public information. For CSOs and analysts.",
+          },
+          href: "/critical/briefs/",
+        },
+        {
+          label: { ja: "Use Case", en: "Use Case" },
+          title: { ja: "業界別の活用シナリオ", en: "Industry application scenarios" },
+          desc: {
+            ja: "規制属性証明を業務に組み込むパターン。",
+            en: "Patterns for putting Regulatory Attribute Proof into operation.",
+          },
+          href: "/solutions/use-cases/",
+        },
+        {
+          label: { ja: "Product", en: "Product" },
+          title: { ja: "Lemma Compliance", en: "Lemma Compliance" },
+          desc: {
+            ja: "金融・規制対応向けの提供形態。",
+            en: "Delivery model for finance and regulated operations.",
+          },
+          href: "/pricing",
+        },
+        {
+          label: { ja: "Specs", en: "Specs" },
+          title: { ja: "Lemma 仕様書", en: "Lemma specs" },
+          desc: {
+            ja: "信頼インフラの技術仕様。",
+            en: "Technical specification of the trust infrastructure.",
+          },
+          href: "/guides",
+        },
+      ],
     },
   },
 ];

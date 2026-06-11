@@ -5,6 +5,7 @@ import {
   categoryLabel,
 } from "../../../data/criticalBriefs.ts";
 import { extractTldr } from "../../../data/extractTldr.ts";
+import { getEnBriefMap } from "../../../data/getEnBriefMap.ts";
 
 /**
  * Lemma Critical Brief RSS feed (English).
@@ -16,8 +17,7 @@ import { extractTldr } from "../../../data/extractTldr.ts";
  */
 export async function GET(context) {
   const all = await getCollection("critical-briefs");
-  const enBriefs = await getCollection("critical-briefs-en");
-  const enById = new Map(enBriefs.map((b) => [b.id, b]));
+  const enById = await getEnBriefMap();
   const items = [...all]
     .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
     .map((jaBrief) => {
@@ -42,13 +42,13 @@ export async function GET(context) {
   return rss({
     title: "Lemma Critical Brief",
     description:
-      "Structured incident-analysis reference collection from Lemma Oracle. Each Brief examines a failure primitive and the gap that strengthening detection alone cannot close.",
+      "Structured incident-analysis reference collection from Lemma. Each Brief examines a failure primitive and the gap that strengthening detection alone cannot close.",
     site: context.site,
     trailingSlash: false,
     items,
     customData: `
       <language>en-us</language>
-      <copyright>${new Date().getFullYear()} Lemma Oracle / FRAME00, Inc.</copyright>
+      <copyright>${new Date().getFullYear()} Lemma / FRAME00, Inc.</copyright>
       <atom:link href="${new URL("critical/briefs/feed.xml", context.site)}" rel="self" type="application/rss+xml" />
     `,
     stylesheet: "/rss/styles.xsl",

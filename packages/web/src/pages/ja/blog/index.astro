@@ -9,25 +9,20 @@ const base = "/ja";
 const blogPath = "/ja/blog";
 const sections = await getBlogSections(locale);
 
-const essays = (
-  sections.find((s) => s.section === "エッセイ" || s.section === "Essays")?.posts ?? []
+const articles = (
+  sections.find((s) => s.section === "記事" || s.section === "エッセイ" || s.section === "Essays")?.posts ?? []
 ).filter((p) => !isDocCategory(p.category));
 const changelog = (
   sections.find((s) => s.section === "変更履歴" || s.section === "Changelog")?.posts ?? []
 ).filter((p) => !isDocCategory(p.category));
-// All category-filterable entries (essays + changelog), newest first.
-const entries = [...essays, ...changelog].sort((a, b) => (a.date > b.date ? -1 : 1));
 
-const guides = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "ガイド" || p.category === "Guides");
-const foundations = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "基盤" || p.category === "Foundations");
+// All category-filterable entries (articles + changelog), newest first.
+const entries = [...articles, ...changelog].sort((a, b) =>
+  a.date > b.date ? -1 : 1,
+);
 
-const featured = essays[0];
-const recent = essays.slice(1, 7);
-const archive = essays.slice(7);
+const featured = articles[0];
+const recent = articles.slice(1, 7);
 ---
 
 <BlogIndexTemplate
@@ -38,8 +33,5 @@ const archive = essays.slice(7);
   entries={entries}
   featured={featured}
   recent={recent}
-  archive={archive}
   changelog={changelog}
-  guides={guides}
-  foundations={foundations}
 />

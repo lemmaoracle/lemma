@@ -1,6 +1,6 @@
 ---
 brief_no: 11
-title: "SynthID 透かし reverse-engineering — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
+title: "SynthID 透かしのリバースエンジニアリング — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
 title_en: "SynthID Watermark Reverse-Engineering — How a Statistical Attack Strips the Provenance Mark from AI-Generated Content"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
@@ -9,9 +9,11 @@ incident_date: 2026-03-05
 published: 2026-05-31
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts"]
+related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+og_lead_ja: "AI 生成コンテンツの来歴透かしが統計的に剥がせる — SynthID リバースエンジニアリング"
+og_lead_en: "A statistical attack strips the AI-content provenance mark — SynthID reverse-engineering"
 ---
 
 ## TL;DR
@@ -59,7 +61,7 @@ status: published
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 透かしと、その検出 API は、AI 生成コンテンツのラベリング・コンテンツモデレーション・初期スクリーニングに有用であり、本 Brief がその役割を否定するものではない。大規模に「AI 生成らしさ」を判定する層として、透かしは実務的な価値を持つ。
 
@@ -81,7 +83,7 @@ status: published
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 
@@ -92,3 +94,17 @@ status: published
 - **MediaNama**: "GitHub Tool Bypasses Google SynthID Watermark"（2026-04）— https://www.medianama.com/2026/04/223-google-gemini-synthid-ai-watermark-bypass/
 - **arXiv 2310.07726**: Guanlin Lee et al. "Warfare: Breaking the Watermark Protection of AI-Generated Content"（2023-10、2024-03 更新）— 透かし除去・偽造攻撃の汎用フレームワーク（背景文献）。https://arxiv.org/abs/2310.07726
 - **ACM CSAI'25**: "Insecure AI Image Watermarking — Is it Really Damaging The Future?"（2025、Proceedings of the 2025 9th International Conference on Computer Science and Artificial Intelligence）— SynthID 等の透かしが除去可能・相互運用性を欠くことを論じた定性研究（背景文献）。https://dl.acm.org/doi/10.1145/3788149.3788154
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

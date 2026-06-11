@@ -1,0 +1,80 @@
+---
+/**
+ * Inline SVG icon switch for the Solutions page.
+ * One-color saddle-brown stroke per the design system; sizes default to
+ * the parent flex slot but can be overridden.
+ */
+import type { SolutionsIconName } from "../../data/solutions";
+
+interface Props {
+  name: SolutionsIconName;
+  size?: number;
+  /** SVG fill for the inner cream where the icon overlays itself. */
+  innerFill?: string;
+}
+
+const { name, size = 36, innerFill = "#FCFAF5" } = Astro.props as Props;
+const stroke = "#8B4513";
+---
+
+{name === "lock" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="7" y="16" width="22" height="15" rx="2.5" stroke={stroke} stroke-width="1.8" />
+    <path d="M 11 16 L 11 11 Q 11 6 18 6 Q 25 6 25 11 L 25 16" stroke={stroke} stroke-width="1.8" fill="none" />
+    <circle cx="18" cy="23" r="2.5" fill={stroke} />
+  </svg>
+)}
+
+{name === "audit-doc" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="8" y="5" width="20" height="26" rx="2" stroke={stroke} stroke-width="1.8" fill="none" />
+    <line x1="12" y1="11" x2="22" y2="11" stroke={stroke} stroke-width="1.5" />
+    <line x1="12" y1="16" x2="24" y2="16" stroke={stroke} stroke-width="1.5" opacity="0.6" />
+    <line x1="12" y1="20" x2="20" y2="20" stroke={stroke} stroke-width="1.5" opacity="0.6" />
+    <circle cx="22" cy="24" r="5" fill={stroke} />
+    <path d="M 19 24 L 21 26 L 25 22" stroke={innerFill} stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "shield-check" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <path d="M 18 5 L 29 9 L 29 18 Q 29 26 18 31 Q 7 26 7 18 L 7 9 Z" stroke={stroke} stroke-width="1.8" fill="none" />
+    <path d="M 13 18 L 17 22 L 24 14" stroke={stroke} stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "doc-stack" && (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect x="5" y="9" width="18" height="22" rx="2" stroke={stroke} stroke-width="1.7" />
+    <rect x="9" y="5" width="18" height="22" rx="2" stroke={stroke} stroke-width="1.7" fill={innerFill} />
+    <line x1="13" y1="11" x2="23" y2="11" stroke={stroke} stroke-width="1.2" />
+    <line x1="13" y1="15" x2="20" y2="15" stroke={stroke} stroke-width="1.2" opacity="0.6" />
+    <line x1="13" y1="19" x2="22" y2="19" stroke={stroke} stroke-width="1.2" opacity="0.6" />
+  </svg>
+)}
+
+{name === "kyc-shield" && (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <path d="M 16 4 L 27 8 L 27 17 Q 27 24 16 28 Q 5 24 5 17 L 5 8 Z" stroke={stroke} stroke-width="1.7" fill={innerFill} />
+    <path d="M 11 16 L 15 20 L 22 12" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "robot" && (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect x="7" y="10" width="18" height="16" rx="3" stroke={stroke} stroke-width="1.7" fill={innerFill} />
+    <circle cx="12" cy="17" r="1.8" fill={stroke} />
+    <circle cx="20" cy="17" r="1.8" fill={stroke} />
+    <line x1="13" y1="22" x2="19" y2="22" stroke={stroke} stroke-width="1.5" stroke-linecap="round" />
+    <line x1="16" y1="6" x2="16" y2="10" stroke={stroke} stroke-width="1.5" />
+    <circle cx="16" cy="5" r="1.5" fill={stroke} />
+  </svg>
+)}
+
+{name === "supply-box" && (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <path d="M 16 4 L 27 10 L 27 22 L 16 28 L 5 22 L 5 10 Z" stroke={stroke} stroke-width="1.7" fill={innerFill} />
+    <path d="M 5 10 L 16 16 L 27 10" stroke={stroke} stroke-width="1.7" fill="none" />
+    <path d="M 16 16 L 16 28" stroke={stroke} stroke-width="1.7" />
+  </svg>
+)}

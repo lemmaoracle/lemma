@@ -1,0 +1,1477 @@
+---
+/**
+ * Lemma Critical Brief — shared Index template for /ja/ and /en/.
+ *
+ * Phase 1 search & discovery redesign (mockup: Lemma_brief_index_phase1):
+ *   - Simplified hero ("信頼インフラ" / "trust infrastructure") + search bar
+ *   - Meta strip (RSS · Methodology · Newsletter)
+ *   - Featured carousel — 8 most-recent Briefs, horizontal scroll
+ *   - Sticky Category filter bar (chips, dynamic counts)
+ *   - Sort (newest / oldest / category) + density (grid / list) controls
+ *   - Pillar sections × 4: capped 2-col white-card grid + "もっと見る" link
+ *   - White corner-accent Brief cards
+ *
+ * Filter / sort / search / density are client-side (progressive enhancement):
+ * every Brief is rendered server-side (SEO + no-JS fallback), and a small
+ * inline script toggles visibility, reorders, and reads/writes URL params
+ * (?category=<slug>, ?pillar=p1..p4, ?q=<keyword>). The default (no param)
+ * view is Pillar-grouped, capped to CARDS_PER_PILLAR per section.
+ *
+ * Card markup is inline here (not BriefCard.astro, which still serves the
+ * archive pages) — the card spec differs (corner accent, foot divider).
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { getTranslations, type Locale } from "../i18n/translations";
+import {
+  PILLAR_SLUGS,
+  pillarLabel,
+  pillarDescription,
+  categoryLabel,
+  type PillarSlug,
+  type CategorySlug,
+} from "../data/criticalBriefs";
+import { extractTldr } from "../data/extractTldr";
+import { getEnBriefMap } from "../data/getEnBriefMap";
+import NewsletterEmbed from "../components/NewsletterEmbed.astro";
+
+export interface BriefIndexTemplateProps {
+  locale: Locale;
+}
+
+const { locale } = Astro.props as BriefIndexTemplateProps;
+const t = getTranslations(locale);
+const isJa = locale === "ja";
+const base = isJa ? "/ja" : "";
+const pagePath = "/critical/briefs/";
+
+// Cards shown per Pillar section in the default grouped view before the
+// "もっと見る" link. Overflow cards are rendered (hidden) so client-side
+// filtering can reveal them without a round-trip.
+const CARDS_PER_PILLAR = 4;
+
+const PILLAR_PARAM: Record<PillarSlug, string> = {
+  "01-verifiable-origin": "p1",
+  "02-verifiable-ai": "p2",
+  "03-agent-authority": "p3",
+  "04-regulatory-attribute": "p4",
+};
+const PILLAR_SHORT: Record<PillarSlug, string> = {
+  "01-verifiable-origin": "P1",
+  "02-verifiable-ai": "P2",
+  "03-agent-authority": "P3",
+  "04-regulatory-attribute": "P4",
+};
+
+type AnyBrief =
+  | CollectionEntry<"critical-briefs">
+  | CollectionEntry<"critical-briefs-en">;
+
+const allJaBriefs = await getCollection("critical-briefs");
+const enById = isJa ? null : await getEnBriefMap();
+
+const allBriefs: ReadonlyArray<AnyBrief> = allJaBriefs.map((ja) =>
+  enById?.get(ja.id) ?? ja,
+);
+
+// Sort by published desc, breaking same-day ties on brief_no desc.
+const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
+  (a, b) => {
+    const diff = b.data.published.getTime() - a.data.published.getTime();
+    if (diff !== 0) return diff;
+    return b.data.brief_no - a.data.brief_no;
+  },
+);
+const featuredBriefs = briefsByPublishedDesc.slice(0, 8);
+
+// Group by pillar (preserve published-desc order within each)
+const briefsByPillar: Record<PillarSlug, ReadonlyArray<AnyBrief>> = {
+  "01-verifiable-origin": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "01-verifiable-origin",
+  ),
+  "02-verifiable-ai": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "02-verifiable-ai",
+  ),
+  "03-agent-authority": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "03-agent-authority",
+  ),
+  "04-regulatory-attribute": briefsByPublishedDesc.filter(
+    (b) => b.data.pillar === "04-regulatory-attribute",
+  ),
+};
+
+// Category usage: count primary + secondary occurrences across all Briefs.
+const categoryUsage = new Map<CategorySlug, number>();
+for (const b of allBriefs) {
+  const prim = b.data.primary_category as CategorySlug;
+  categoryUsage.set(prim, (categoryUsage.get(prim) ?? 0) + 1);
+  for (const sc of b.data.secondary_categories) {
+    const cat = sc as CategorySlug;
+    categoryUsage.set(cat, (categoryUsage.get(cat) ?? 0) + 1);
+  }
+}
+const sortedCategories = Array.from(categoryUsage.entries()).sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+const briefsCount = allBriefs.length;
+
+// Per-card derived data (one source of truth)
+function briefCardData(b: AnyBrief) {
+  const titleLoc = isJa ? b.data.title : b.data.title_en;
+  const titleParts = titleLoc.split(" — ");
+  const mainTitle = titleParts[0];
+  const subFromTitle =
+    titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
+  const tldr = extractTldr(b.body, 140);
+  const subText = subFromTitle || tldr;
+  const publishedStr = b.data.published.toISOString().slice(0, 10);
+  const briefNoPad = String(b.data.brief_no).padStart(3, "0");
+  const pillar = b.data.pillar as PillarSlug;
+  const primarySlug = b.data.primary_category as CategorySlug;
+  const secondarySlugs = b.data.secondary_categories as CategorySlug[];
+  const primaryCatLabel = categoryLabel(primarySlug, locale);
+  const secondaryCatLabels = secondarySlugs.map((c) =>
+    categoryLabel(c as CategorySlug, locale),
+  );
+  const cats = [primarySlug, ...secondarySlugs].join(",");
+  const searchBlob = [
+    mainTitle,
+    subText,
+    primaryCatLabel,
+    ...secondaryCatLabels,
+    `no${briefNoPad}`,
+    `no.${briefNoPad}`,
+  ]
+    .join(" ")
+    .toLowerCase();
+  return {
+    href: `${base}/critical/briefs/${b.id}/`,
+    briefNoPad,
+    publishedStr,
+    ts: b.data.published.getTime(),
+    briefNo: b.data.brief_no,
+    pillar,
+    pillarParam: PILLAR_PARAM[pillar],
+    pillarShort: PILLAR_SHORT[pillar],
+    mainTitle,
+    subText,
+    shortLede: extractTldr(b.body, 96),
+    primarySlug,
+    primaryCatLabel,
+    secondaryCatLabels,
+    cats,
+    searchBlob,
+  };
+}
+
+const labels = isJa
+  ? {
+      eyebrow: "Lemma Critical Brief",
+      h1Lead: "脅威インテリジェンス ×",
+      h1Accent: "信頼インフラ。",
+      descLead:
+        "AI・暗号インフラ・サプライチェーン・規制属性領域で起きた重大事案を、Lemma が構造的に解析。各 Brief は「検出と証明の落差」を明示し、",
+      descStrong: "リスク評価・規制対応・信頼インフラ設計",
+      descEnd: "に活用できるリファレンス集です。",
+      rssLabel: "RSS フィード",
+      methodologyLabel: "メソドロジー",
+      newsletterLabel: "ニュースレター",
+      searchPlaceholder: "Brief を検索 — タイトル / 概要 / タグ から探す",
+      searchBtn: "検索",
+      searchAria: "Brief を検索",
+      featuredHead: "注目 · 最新の Brief",
+      prevLabel: "前へ",
+      nextLabel: "次へ",
+      filterCategoryLabel: "Category",
+      allChip: "すべて",
+      resultsAllDesc: "すべての Brief（Pillar 別）",
+      resultsFilteredDesc: "件の Brief",
+      sortNewest: "新しい順",
+      sortOldest: "古い順",
+      sortCategory: "Category 順",
+      gridViewAria: "グリッド表示",
+      listViewAria: "リスト表示",
+      countUnit: (n: number) => `${n} 件`,
+      briefReadCta: "Brief →",
+      featuredReadCta: "Brief を読む →",
+      pageTitle:
+        "Lemma Critical Brief — 脅威インテリジェンス × 信頼インフラ",
+      description:
+        "AI・暗号インフラ・サプライチェーン・規制属性領域の重大事案を Lemma が構造的に解析するリファレンス集。各 Brief は「検出と証明の落差」を明示し、リスク評価・規制対応・信頼インフラ設計に活用できる。",
+    }
+  : {
+      eyebrow: "Lemma Critical Brief",
+      h1Lead: "threat intelligence ×",
+      h1Accent: "trust infrastructure.",
+      descLead:
+        "Lemma's structured analysis of major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes. Each Brief makes the gap between detection and proof explicit — a reference for ",
+      descStrong:
+        "risk assessment, regulatory response, and trust-infrastructure design",
+      descEnd: ".",
+      rssLabel: "RSS feed",
+      methodologyLabel: "Methodology",
+      newsletterLabel: "Newsletter",
+      searchPlaceholder: "Search Briefs — by title, summary, or tag",
+      searchBtn: "Search",
+      searchAria: "Search Briefs",
+      featuredHead: "Featured · Latest Briefs",
+      prevLabel: "Previous",
+      nextLabel: "Next",
+      filterCategoryLabel: "Category",
+      allChip: "All",
+      resultsAllDesc: "All Briefs (by Pillar)",
+      resultsFilteredDesc: "Briefs",
+      sortNewest: "Newest",
+      sortOldest: "Oldest",
+      sortCategory: "By category",
+      gridViewAria: "Grid view",
+      listViewAria: "List view",
+      countUnit: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
+      briefReadCta: "Brief →",
+      featuredReadCta: "Read Brief →",
+      pageTitle:
+        "Lemma Critical Brief — threat intelligence × trust infrastructure",
+      description:
+        "A structured-incident-analysis reference from Lemma. Major incidents across AI, cryptographic infrastructure, supply chains, and regulated attributes — each Brief makes the gap between detection and proof explicit for risk assessment, regulatory response, and trust-infrastructure design.",
+    };
+
+const rssHref = `${base}/critical/briefs/feed.xml`;
+const methodologyHref = `${base}/critical/briefs/methodology/`;
+const featuredData = featuredBriefs.map(briefCardData);
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  title={labels.pageTitle}
+  description={labels.description}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="bi-page" data-cap={CARDS_PER_PILLAR}>
+    <!-- Hero -->
+    <section class="bi-hero">
+      <div class="bi-container">
+        <div class="bi-eyebrow">{labels.eyebrow}</div>
+        <h1 class="bi-h1">
+          {labels.h1Lead}{" "}
+          <span class="bi-accent">{labels.h1Accent}</span>
+        </h1>
+        <p class="bi-hero-desc">
+          {labels.descLead}<strong>{labels.descStrong}</strong>{labels.descEnd}
+        </p>
+
+        <div class="bi-meta-strip">
+          <a href={rssHref}>{labels.rssLabel}</a>
+          <span class="bi-sep">·</span>
+          <a href={methodologyHref}>{labels.methodologyLabel}</a>
+          <span class="bi-sep">·</span>
+          <a href="#newsletter">{labels.newsletterLabel}</a>
+        </div>
+
+        <form class="bi-search" role="search" aria-label={labels.searchAria}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-linecap="round"
+            ></line>
+          </svg>
+          <input
+            type="text"
+            name="q"
+            placeholder={labels.searchPlaceholder}
+            aria-label={labels.searchAria}
+            autocomplete="off"
+          />
+          <button type="submit">{labels.searchBtn}</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Featured carousel -->
+    {featuredData.length > 0 && (
+      <section class="bi-featured">
+        <div class="bi-container">
+          <div class="bi-featured-head">
+            <h2>{labels.featuredHead}</h2>
+            <div class="bi-featured-nav">
+              <button type="button" class="bi-car-prev" aria-label={labels.prevLabel}>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 18 L9 12 L15 6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+              <button type="button" class="bi-car-next" aria-label={labels.nextLabel}>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18 L15 12 L9 6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="bi-carousel">
+            {featuredData.map((c) => (
+              <a href={c.href} class="bi-fcard">
+                <div class="bi-fc-meta">
+                  <span class="bi-fc-pillar">{c.pillarShort}</span>
+                  <span>No. {c.briefNoPad}</span>
+                  <span>{c.publishedStr}</span>
+                </div>
+                <h3>{c.mainTitle}</h3>
+                {c.shortLede && <p>{c.shortLede}</p>}
+                <div class="bi-fc-tags">
+                  <span class="bi-fc-tag">{c.primaryCatLabel}</span>
+                  {c.secondaryCatLabels.slice(0, 2).map((lab) => (
+                    <span class="bi-fc-tag">{lab}</span>
+                  ))}
+                </div>
+                <span class="bi-fc-read">{labels.featuredReadCta}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Sticky category filter bar -->
+    <div class="bi-filter-bar">
+      <div class="bi-container">
+        <div class="bi-filter-row">
+          <span class="bi-filter-label">{labels.filterCategoryLabel}</span>
+          <div class="bi-chips">
+            <button type="button" class="bi-chip is-active" data-cat="all">
+              {labels.allChip} <span class="bi-chip-count">{briefsCount}</span>
+            </button>
+            {sortedCategories.map(([cat, count]) => (
+              <button type="button" class="bi-chip" data-cat={cat}>
+                {categoryLabel(cat, locale)}{" "}
+                <span class="bi-chip-count">{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pillar-grouped grid -->
+    <section class="bi-grid-section">
+      <div class="bi-container">
+        <div class="bi-grid-head">
+          <div class="bi-results-count">
+            <strong class="bi-results-strong">{briefsCount}</strong>
+            <span class="bi-results-desc">{labels.resultsAllDesc}</span>
+          </div>
+          <div class="bi-grid-controls">
+            <select class="bi-sort" aria-label="Sort">
+              <option value="newest">{labels.sortNewest}</option>
+              <option value="oldest">{labels.sortOldest}</option>
+              <option value="category">{labels.sortCategory}</option>
+            </select>
+            <div class="bi-density">
+              <button type="button" class="is-active" data-density="grid" aria-label={labels.gridViewAria}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="8" height="8" rx="1"></rect>
+                  <rect x="13" y="3" width="8" height="8" rx="1"></rect>
+                  <rect x="3" y="13" width="8" height="8" rx="1"></rect>
+                  <rect x="13" y="13" width="8" height="8" rx="1"></rect>
+                </svg>
+              </button>
+              <button type="button" data-density="list" aria-label={labels.listViewAria}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {PILLAR_SLUGS.map((pillar) => {
+          const briefs = briefsByPillar[pillar];
+          const fullLabel = pillarLabel(pillar, locale);
+          const m = fullLabel.match(/^(Pillar \d+)\s+(.+)$/);
+          const pillarNo = m ? m[1] : fullLabel;
+          const pillarTitle = m ? m[2] : "";
+          const hasOverflow = briefs.length > CARDS_PER_PILLAR;
+          return (
+            <section class="bi-pillar-section" data-pillar={PILLAR_PARAM[pillar]}>
+              <div class="bi-pillar-head">
+                <div class="bi-pillar-no">{pillarNo}</div>
+                <h2 class="bi-pillar-title">{pillarTitle}</h2>
+                <div class="bi-pillar-count">{labels.countUnit(briefs.length)}</div>
+              </div>
+              <p class="bi-pillar-sub">{pillarDescription(pillar, locale)}</p>
+              {briefs.length > 0 ? (
+                <>
+                  <div class="bi-brief-grid">
+                    {briefs.map((b, i) => {
+                      const c = briefCardData(b);
+                      return (
+                        <a
+                          href={c.href}
+                          class={`bi-brief-card${i >= CARDS_PER_PILLAR ? " is-hidden" : ""}`}
+                          data-pillar={c.pillarParam}
+                          data-cats={c.cats}
+                          data-catkey={c.primarySlug}
+                          data-ts={c.ts}
+                          data-no={c.briefNo}
+                          data-search={c.searchBlob}
+                        >
+                          <div class="bi-brief-meta">
+                            <span class="bi-brief-no">No. {c.briefNoPad}</span>
+                            <span class="bi-brief-sep">·</span>
+                            <span>{c.publishedStr}</span>
+                          </div>
+                          <h3 class="bi-brief-title">{c.mainTitle}</h3>
+                          {c.subText && <p class="bi-brief-sub">{c.subText}</p>}
+                          <div class="bi-brief-foot">
+                            <div class="bi-brief-tags">
+                              <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
+                              {c.secondaryCatLabels.map((lab) => (
+                                <span class="bi-brief-tag">{lab}</span>
+                              ))}
+                            </div>
+                            <span class="bi-brief-read">{labels.briefReadCta}</span>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                  {hasOverflow && (
+                    <a
+                      href={`${base}/critical/briefs/pillar/${pillar}/`}
+                      class="bi-pillar-more"
+                      data-pillar={PILLAR_PARAM[pillar]}
+                    >
+                      {isJa ? (
+                        <span>{pillarTitle}の全 <strong>{briefs.length}</strong> 件を見る</span>
+                      ) : (
+                        <span>See all <strong>{briefs.length}</strong> in {pillarTitle}</span>
+                      )}
+                    </a>
+                  )}
+                </>
+              ) : (
+                <div class="bi-pillar-empty">
+                  {isJa ? "Brief は準備中" : "Briefs coming soon"}
+                </div>
+              )}
+            </section>
+          );
+        })}
+
+        <div class="bi-no-results" hidden>
+          {isJa
+            ? "該当する Brief が見つかりませんでした。"
+            : "No Briefs matched your filters."}
+        </div>
+      </div>
+    </section>
+
+    <section id="newsletter" class="bi-newsletter">
+      <div class="bi-container">
+        <NewsletterEmbed locale={locale} placement="briefs-index" />
+      </div>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .bi-page {
+    --bi-display: "Sora", system-ui, -apple-system, sans-serif;
+    --bi-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bi-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --bi-brown: #8b4513;
+    --bi-brown-dark: #6b2f0a;
+    --bi-brown-soft: #f4e8dc;
+    --bi-brown-mid: #c18b5c;
+    --bi-cream: #fcfaf5;
+    --bi-cream-deep: #f2eedf;
+    --bi-line: #e8dfc8;
+    --bi-ink: #2a1f14;
+    --bi-ink-soft: #5c4a38;
+    --bi-ink-faint: #8b7b68;
+    --bi-rust: #b8501f;
+
+    background: var(--bi-cream);
+    color: var(--bi-ink);
+    font-family: var(--bi-body);
+    font-weight: 400;
+    line-height: 1.65;
+    padding: 0 0 0;
+    margin-top: 64px;
+    font-feature-settings: "palt";
+  }
+  :root[lang="en"] .bi-page {
+    --bi-body: "Sora", system-ui, sans-serif;
+  }
+
+  .bi-page .is-hidden {
+    display: none !important;
+  }
+
+  .bi-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+
+  /* ─── HERO ─── */
+  .bi-hero {
+    padding: 64px 0 48px;
+    background: var(--bi-cream);
+  }
+  .bi-eyebrow {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--bi-brown);
+    font-weight: 700;
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bi-eyebrow::before {
+    content: "●";
+    color: var(--bi-rust);
+    font-size: 13px;
+  }
+  .bi-h1 {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 1.1;
+    color: var(--bi-ink);
+    letter-spacing: -0.025em;
+    margin: 0 0 20px;
+    max-width: 940px;
+  }
+  :root[lang="ja"] .bi-h1 {
+    font-size: 46px;
+  }
+  .bi-accent {
+    color: var(--bi-brown);
+  }
+  .bi-hero-desc {
+    font-size: 15.5px;
+    color: var(--bi-ink-soft);
+    line-height: 1.85;
+    max-width: 780px;
+    margin: 0 0 32px;
+  }
+  .bi-hero-desc strong {
+    color: var(--bi-ink);
+    font-weight: 700;
+  }
+  .bi-meta-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--bi-mono);
+    font-size: 12px;
+    color: var(--bi-ink-soft);
+    margin: 0 0 26px;
+    flex-wrap: wrap;
+  }
+  .bi-meta-strip a {
+    color: var(--bi-brown);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .bi-meta-strip a:hover {
+    text-decoration: underline;
+  }
+  .bi-meta-strip .bi-sep {
+    color: var(--bi-ink-faint);
+    opacity: 0.5;
+  }
+  .bi-search {
+    display: flex;
+    align-items: center;
+    background: var(--bi-cream);
+    border: 1px solid var(--bi-line);
+    border-radius: 50px;
+    padding: 6px 6px 6px 24px;
+    max-width: 680px;
+    box-shadow: 0 1px 3px rgba(139, 69, 19, 0.04);
+  }
+  .bi-search svg {
+    width: 18px;
+    height: 18px;
+    color: var(--bi-ink-faint);
+    flex-shrink: 0;
+  }
+  .bi-search input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--bi-body);
+    font-size: 15px;
+    color: var(--bi-ink);
+    padding: 14px;
+  }
+  .bi-search input::placeholder {
+    color: var(--bi-ink-faint);
+  }
+  .bi-search button {
+    background: var(--bi-ink);
+    color: var(--bi-cream);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-family: var(--bi-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .bi-search button:hover {
+    background: var(--bi-brown-dark);
+  }
+
+  /* ─── FEATURED CAROUSEL ─── */
+  .bi-featured {
+    padding: 40px 0 28px;
+    background: var(--bi-cream);
+  }
+  .bi-featured-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 22px;
+  }
+  .bi-featured-head h2 {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--bi-ink);
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-featured-head h2 {
+    line-height: 1.4;
+  }
+  .bi-featured-nav {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .bi-featured-nav button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bi-cream);
+    border: 1px solid var(--bi-line);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bi-ink-soft);
+    transition: all 0.15s;
+  }
+  .bi-featured-nav button:hover {
+    background: var(--bi-brown-soft);
+    color: var(--bi-brown);
+    border-color: var(--bi-brown-mid);
+  }
+  .bi-carousel {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bi-brown-mid) transparent;
+  }
+  .bi-carousel::-webkit-scrollbar {
+    height: 6px;
+  }
+  .bi-carousel::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+  .bi-carousel::-webkit-scrollbar-thumb {
+    background: var(--bi-brown-mid);
+    border-radius: 3px;
+  }
+  .bi-fcard {
+    flex: 0 0 320px;
+    background: #ffffff;
+    border: 1px solid var(--bi-line);
+    border-radius: 10px;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--bi-ink);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .bi-fcard::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--bi-brown);
+    border-radius: 10px 0 0 0;
+  }
+  .bi-fcard:hover {
+    border-color: var(--bi-brown-mid);
+    box-shadow: 0 4px 16px rgba(139, 69, 19, 0.05);
+  }
+  .bi-fc-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--bi-mono);
+    font-size: 10px;
+    color: var(--bi-ink-faint);
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .bi-fc-pillar {
+    color: var(--bi-brown);
+  }
+  .bi-fcard h3 {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--bi-ink);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    margin: 4px 0 0;
+  }
+  :root[lang="ja"] .bi-fcard h3 {
+    line-height: 1.55;
+  }
+  .bi-fcard p {
+    font-size: 12.5px;
+    color: var(--bi-ink-soft);
+    line-height: 1.7;
+    flex: 1;
+    margin: 0;
+  }
+  .bi-fc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .bi-fc-tag {
+    font-family: var(--bi-mono);
+    font-size: 9.5px;
+    background: var(--bi-brown-soft);
+    color: var(--bi-brown-dark);
+    padding: 3px 8px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+  .bi-fc-read {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    color: var(--bi-brown);
+    font-weight: 700;
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--bi-line);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── FILTER BAR ─── */
+  .bi-filter-bar {
+    padding: 18px 0;
+    background: var(--bi-cream-deep);
+    border-top: 1px solid var(--bi-line);
+    border-bottom: 1px solid var(--bi-line);
+    position: sticky;
+    top: 64px;
+    z-index: 50;
+  }
+  .bi-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .bi-filter-label {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    color: var(--bi-ink-faint);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .bi-chips {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .bi-chip {
+    font-family: var(--bi-mono);
+    font-size: 11.5px;
+    color: var(--bi-ink-soft);
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 50px;
+    background: transparent;
+    border: 1px solid var(--bi-line);
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .bi-chip:hover {
+    border-color: var(--bi-brown-mid);
+    color: var(--bi-ink);
+    background: var(--bi-brown-soft);
+  }
+  .bi-chip.is-active {
+    background: var(--bi-brown);
+    color: var(--bi-cream);
+    border-color: var(--bi-brown);
+  }
+  .bi-chip-count {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+  .bi-chip.is-active .bi-chip-count {
+    opacity: 0.85;
+  }
+
+  /* ─── GRID SECTION ─── */
+  .bi-grid-section {
+    padding: 44px 0 88px;
+  }
+  .bi-grid-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 28px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .bi-results-count {
+    font-family: var(--bi-mono);
+    font-size: 12.5px;
+    color: var(--bi-ink-soft);
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .bi-results-count strong {
+    color: var(--bi-ink);
+    font-size: 14px;
+  }
+  .bi-grid-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bi-sort {
+    font-family: var(--bi-mono);
+    font-size: 12px;
+    color: var(--bi-ink);
+    font-weight: 700;
+    background: transparent;
+    border: 1px solid var(--bi-line);
+    border-radius: 50px;
+    padding: 8px 32px 8px 16px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 4 L5 7 L8 4' stroke='%238B4513' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.15s;
+  }
+  .bi-sort:hover {
+    border-color: var(--bi-brown-mid);
+  }
+  .bi-density {
+    display: flex;
+    background: transparent;
+    border: 1px solid var(--bi-line);
+    border-radius: 50px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .bi-density button {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    color: var(--bi-ink-soft);
+    display: flex;
+    align-items: center;
+    transition: all 0.15s;
+  }
+  .bi-density button.is-active {
+    background: var(--bi-brown);
+    color: var(--bi-cream);
+  }
+
+  /* ─── PILLAR SECTION ─── */
+  .bi-pillar-section {
+    margin: 0 0 60px;
+  }
+  .bi-pillar-head {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--bi-line);
+    margin: 0 0 18px;
+  }
+  .bi-pillar-no {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    color: var(--bi-brown);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 4px;
+    flex-shrink: 0;
+  }
+  .bi-pillar-no::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--bi-brown);
+  }
+  .bi-pillar-title {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--bi-ink);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  :root[lang="ja"] .bi-pillar-title {
+    line-height: 1.25;
+  }
+  .bi-pillar-count {
+    margin-left: auto;
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    color: var(--bi-ink-faint);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    padding-bottom: 4px;
+    flex-shrink: 0;
+  }
+  .bi-pillar-sub {
+    font-size: 14px;
+    color: var(--bi-ink-soft);
+    line-height: 1.7;
+    margin: 0 0 26px;
+    max-width: 680px;
+  }
+
+  /* ─── BRIEF CARD GRID ─── */
+  .bi-brief-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .bi-brief-card {
+    background: #ffffff;
+    border: 1px solid var(--bi-line);
+    border-radius: 8px;
+    padding: 32px;
+    text-decoration: none;
+    color: var(--bi-ink);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .bi-brief-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--bi-brown);
+    border-radius: 8px 0 0 0;
+  }
+  .bi-brief-card:hover {
+    border-color: var(--bi-brown-mid);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.06);
+  }
+  .bi-brief-meta {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    color: var(--bi-ink-faint);
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .bi-brief-no {
+    color: var(--bi-brown);
+  }
+  .bi-brief-sep {
+    color: var(--bi-line);
+  }
+  .bi-brief-title {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--bi-ink);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .bi-brief-sub {
+    font-size: 13px;
+    color: var(--bi-ink-soft);
+    line-height: 1.7;
+    flex: 1;
+    margin: 0;
+  }
+  .bi-brief-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--bi-line);
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .bi-brief-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .bi-brief-tag {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    background: var(--bi-brown-soft);
+    color: var(--bi-brown-dark);
+    padding: 5px 10px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+  .bi-brief-read {
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    color: var(--bi-brown);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .bi-pillar-empty {
+    background: #ffffff;
+    border: 1px dashed var(--bi-line);
+    border-radius: 8px;
+    padding: 28px;
+    text-align: center;
+    font-family: var(--bi-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bi-ink-faint);
+  }
+
+  /* "もっと見る" link */
+  .bi-pillar-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 18px 24px;
+    background: #ffffff;
+    border: 1px solid var(--bi-line);
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: var(--bi-mono);
+    font-size: 12.5px;
+    color: var(--bi-brown);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .bi-pillar-more:hover {
+    background: var(--bi-brown-soft);
+    border-color: var(--bi-brown-mid);
+  }
+  .bi-pillar-more::after {
+    content: "→";
+  }
+  .bi-pillar-more strong {
+    color: var(--bi-ink);
+    font-weight: 700;
+    margin: 0 4px;
+  }
+
+  /* List density variant */
+  .bi-brief-grid.list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .bi-brief-grid.list .bi-brief-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px 18px 32px;
+  }
+  .bi-brief-grid.list .bi-brief-meta {
+    flex-shrink: 0;
+    min-width: 150px;
+  }
+  .bi-brief-grid.list .bi-brief-title {
+    font-size: 15px;
+    flex: 1;
+    margin: 0;
+  }
+  .bi-brief-grid.list .bi-brief-sub,
+  .bi-brief-grid.list .bi-brief-foot {
+    display: none;
+  }
+
+  /* Flat (filtered) mode: hide Pillar chrome, tighten spacing */
+  .bi-grid-section.bi-flat .bi-pillar-section {
+    margin-bottom: 18px;
+  }
+  .bi-grid-section.bi-hide-heads .bi-pillar-head,
+  .bi-grid-section.bi-hide-heads .bi-pillar-sub {
+    display: none;
+  }
+
+  .bi-no-results {
+    padding: 48px 0;
+    text-align: center;
+    font-family: var(--bi-mono);
+    font-size: 13px;
+    color: var(--bi-ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── NEWSLETTER ─── */
+  .bi-newsletter {
+    padding: 0 0 96px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 880px) {
+    .bi-container {
+      padding: 0 24px;
+    }
+    .bi-hero {
+      padding: 48px 0 36px;
+    }
+    .bi-h1 {
+      font-size: 34px;
+    }
+    :root[lang="ja"] .bi-h1 {
+      font-size: 30px;
+    }
+    .bi-filter-row {
+      gap: 12px;
+    }
+    .bi-brief-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .bi-fcard {
+      flex: 0 0 260px;
+    }
+    .bi-pillar-head {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .bi-pillar-title {
+      font-size: 22px;
+    }
+    .bi-pillar-count {
+      margin-left: 0;
+    }
+    .bi-brief-card {
+      padding: 24px;
+    }
+    .bi-brief-grid.list .bi-brief-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 18px;
+    }
+    .bi-brief-grid.list .bi-brief-meta {
+      min-width: 0;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.querySelector<HTMLElement>(".bi-page");
+    if (!root) return;
+
+    const CAP = Number(root.dataset.cap || 4);
+    const gridSection = root.querySelector<HTMLElement>(".bi-grid-section");
+    const sections = Array.from(
+      root.querySelectorAll<HTMLElement>(".bi-pillar-section"),
+    );
+    const allCards = Array.from(
+      root.querySelectorAll<HTMLElement>(".bi-brief-card"),
+    );
+    const chips = Array.from(root.querySelectorAll<HTMLElement>(".bi-chip"));
+    const sortSel = root.querySelector<HTMLSelectElement>(".bi-sort");
+    const densityBtns = Array.from(
+      root.querySelectorAll<HTMLElement>(".bi-density button"),
+    );
+    const grids = Array.from(
+      root.querySelectorAll<HTMLElement>(".bi-brief-grid"),
+    );
+    const search = root.querySelector<HTMLFormElement>(".bi-search");
+    const searchInput = root.querySelector<HTMLInputElement>(".bi-search input");
+    const resultsStrong = root.querySelector<HTMLElement>(".bi-results-strong");
+    const noResults = root.querySelector<HTMLElement>(".bi-no-results");
+    const carousel = root.querySelector<HTMLElement>(".bi-carousel");
+    const carPrev = root.querySelector<HTMLElement>(".bi-car-prev");
+    const carNext = root.querySelector<HTMLElement>(".bi-car-next");
+    if (!gridSection) return;
+
+    // mode: "grouped" | "category" | "pillar" | "search"
+    let mode = "grouped";
+    let activeCat = "all";
+    let activePillar = "";
+    let query = "";
+
+    function cardMatches(card: HTMLElement): boolean {
+      if (mode === "category")
+        return (card.dataset.cats || "").split(",").includes(activeCat);
+      if (mode === "pillar") return card.dataset.pillar === activePillar;
+      if (mode === "search") {
+        if (!query) return true;
+        return (card.dataset.search || "").includes(query);
+      }
+      return true;
+    }
+
+    function sortCards() {
+      const order = sortSel ? sortSel.value : "newest";
+      grids.forEach((grid) => {
+        const cards = Array.from(grid.children) as HTMLElement[];
+        cards.sort((a, b) => {
+          const tsA = Number(a.dataset.ts || 0);
+          const tsB = Number(b.dataset.ts || 0);
+          const noA = Number(a.dataset.no || 0);
+          const noB = Number(b.dataset.no || 0);
+          if (order === "oldest") return tsA - tsB || noA - noB;
+          if (order === "category")
+            return (
+              (a.dataset.catkey || "").localeCompare(b.dataset.catkey || "") ||
+              tsB - tsA
+            );
+          return tsB - tsA || noB - noA; // newest
+        });
+        cards.forEach((c) => grid.appendChild(c));
+      });
+    }
+
+    function apply() {
+      sortCards();
+      let totalVisible = 0;
+
+      sections.forEach((section) => {
+        const grid = section.querySelector<HTMLElement>(".bi-brief-grid");
+        const more = section.querySelector<HTMLElement>(".bi-pillar-more");
+        const cards = grid
+          ? (Array.from(grid.children) as HTMLElement[])
+          : [];
+        const sectionAllowed =
+          mode !== "pillar" || section.dataset.pillar === activePillar;
+
+        let shownInSection = 0;
+        cards.forEach((card) => {
+          let show = sectionAllowed && cardMatches(card);
+          if (show && mode === "grouped" && shownInSection >= CAP) show = false;
+          card.classList.toggle("is-hidden", !show);
+          if (show) {
+            shownInSection++;
+            totalVisible++;
+          }
+        });
+
+        // Count true matches (ignoring cap) to decide section visibility.
+        const matchCount = sectionAllowed
+          ? cards.filter((c) => cardMatches(c)).length
+          : 0;
+        section.classList.toggle("is-hidden", matchCount === 0);
+
+        if (more) more.classList.toggle("is-hidden", mode !== "grouped");
+      });
+
+      gridSection.classList.toggle("bi-flat", mode !== "grouped");
+      gridSection.classList.toggle(
+        "bi-hide-heads",
+        mode === "category" || mode === "search",
+      );
+
+      if (resultsStrong) resultsStrong.textContent = String(totalVisible);
+      if (noResults) noResults.hidden = totalVisible !== 0;
+    }
+
+    function syncChips() {
+      chips.forEach((chip) =>
+        chip.classList.toggle(
+          "is-active",
+          mode === "category"
+            ? chip.dataset.cat === activeCat
+            : chip.dataset.cat === "all",
+        ),
+      );
+    }
+
+    function setURL() {
+      const params = new URLSearchParams();
+      if (mode === "category") params.set("category", activeCat);
+      else if (mode === "pillar") params.set("pillar", activePillar);
+      else if (mode === "search" && query) params.set("q", query);
+      const qs = params.toString();
+      history.replaceState(
+        null,
+        "",
+        location.pathname + (qs ? `?${qs}` : ""),
+      );
+    }
+
+    function update(writeURL = true) {
+      syncChips();
+      apply();
+      if (writeURL) setURL();
+    }
+
+    // Chips → category filter
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const cat = chip.dataset.cat || "all";
+        if (cat === "all") {
+          mode = "grouped";
+          activeCat = "all";
+        } else {
+          mode = "category";
+          activeCat = cat;
+        }
+        activePillar = "";
+        query = "";
+        if (searchInput) searchInput.value = "";
+        update();
+      });
+    });
+
+    // "もっと見る" → pillar filter (client-side; href is the fallback)
+    root.querySelectorAll<HTMLElement>(".bi-pillar-more").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        mode = "pillar";
+        activePillar = link.dataset.pillar || "";
+        activeCat = "all";
+        query = "";
+        if (searchInput) searchInput.value = "";
+        update();
+        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Search
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        query = searchInput.value.trim().toLowerCase();
+        if (query) {
+          mode = "search";
+          activeCat = "all";
+          activePillar = "";
+        } else {
+          mode = "grouped";
+        }
+        update();
+      });
+    }
+    if (search) {
+      search.addEventListener("submit", (e) => {
+        e.preventDefault();
+        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    // Sort
+    if (sortSel) sortSel.addEventListener("change", () => apply());
+
+    // Density
+    densityBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        densityBtns.forEach((b) =>
+          b.classList.toggle("is-active", b === btn),
+        );
+        const list = btn.dataset.density === "list";
+        grids.forEach((g) => g.classList.toggle("list", list));
+      });
+    });
+
+    // Carousel nav
+    if (carousel) {
+      const step = 334;
+      carPrev?.addEventListener("click", () =>
+        carousel.scrollBy({ left: -step, behavior: "smooth" }),
+      );
+      carNext?.addEventListener("click", () =>
+        carousel.scrollBy({ left: step, behavior: "smooth" }),
+      );
+    }
+
+    // Initial state from URL
+    const params = new URLSearchParams(location.search);
+    const urlCat = params.get("category");
+    const urlPillar = params.get("pillar");
+    const urlQ = params.get("q");
+    if (urlCat && chips.some((c) => c.dataset.cat === urlCat)) {
+      mode = "category";
+      activeCat = urlCat;
+    } else if (urlPillar && /^p[1-4]$/.test(urlPillar)) {
+      mode = "pillar";
+      activePillar = urlPillar;
+    } else if (urlQ) {
+      mode = "search";
+      query = urlQ.trim().toLowerCase();
+      if (searchInput) searchInput.value = urlQ;
+    }
+    update(false);
+  })();
+</script>

@@ -9,9 +9,11 @@ incident_date: 2026-04-18
 published: 2026-05-29
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["002-stakedao-vsdcrv"]
+related_briefs: ["002-stakedao-vsdcrv", "016-verus-ethereum-bridge"]
 version: "1.0"
 status: published
+og_lead_ja: "DVN 観測層への RPC 改ざんで不正アンロック — KelpDAO / rsETH"
+og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge — KelpDAO / rsETH"
 ---
 
 ## TL;DR
@@ -65,7 +67,7 @@ LayerZero Labs は incident statement で本構造を「observation layer」と�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では、DVN 署名鍵そのものは侵害されておらず、署名プロセスも正規であった。検出側の典型的観測点(署名鍵の異常使用、署名サービスの誤動作)は機能しにくい構造であった。攻撃が成立したのは観測層の入力データが操作されたためであり、署名プロセス自体は仕様通りに動作していた。
 
@@ -89,7 +91,7 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(observation layer 入力の独立検証不在)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が observation layer の入力(RPC 応答、config 表明)に依存せず message の origin を独立検証できる設計を提示している。Observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(observation layer 入力の独立検証不在)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が observation layer の入力(RPC 応答、config 表明)に依存せず message の origin を独立検証できる設計を提示している。Observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
@@ -98,3 +100,17 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026"(blockchain analytics 大手による独立解析、onchain trace を含む)— https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026"(security audit 企業による技術解説、攻撃経路の独立分析)— https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights"(独立解析)— https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

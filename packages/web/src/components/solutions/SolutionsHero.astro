@@ -1,0 +1,152 @@
+---
+/**
+ * Solutions hero — mono eyebrow + 2-line 64px H1 (line 2 in accent
+ * brown) + 18px sub + 2 CTAs + mono trust line.
+ */
+import type { Locale } from "../../i18n/translations";
+import { SOLUTIONS } from "../../data/solutions";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const h = SOLUTIONS.hero;
+
+/** Wrap brand terms in <span class="k"> so they render as black + 500
+ * inside the otherwise grey sub paragraph. Terms are matched verbatim;
+ * no HTML in the source string. */
+function emphasize(s: string): string {
+  const terms = ["証明層", "データを持たない", "proof layer", "data-less"];
+  let out = s;
+  for (const t of terms) {
+    out = out.split(t).join(`<span class="k">${t}</span>`);
+  }
+  return out;
+}
+---
+
+<section class="sh-hero">
+  <div class="sh-eyebrow">{h.eyebrow[locale]}</div>
+  <h1 class="sh-h1">
+    {h.h1Lines[locale][0]}<br />
+    <span class="accent">{h.h1Lines[locale][1]}</span>
+  </h1>
+  <p class="sh-sub" set:html={emphasize(h.sub[locale])} />
+  <div class="sh-cta">
+    <a href={h.ctaPrimary.href} class="sh-cta-primary" target="_blank" rel="noopener">
+      {h.ctaPrimary.label[locale]}
+    </a>
+    <a href={h.ctaSecondary.href} class="sh-cta-secondary" target="_blank" rel="noopener">
+      {h.ctaSecondary.label[locale]}
+    </a>
+  </div>
+  <p class="sh-trust">
+    <span class="dot">●</span> <span class="strong">{h.trustLine[locale][0]}</span>
+    {" · "}{h.trustLine[locale][1]}
+    {" · "}{h.trustLine[locale][2]}
+  </p>
+</section>
+
+<style>
+  .sh-hero {
+    padding: 64px 0 56px;
+  }
+  .sh-eyebrow {
+    font-family: var(--so-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--so-text-3);
+    margin: 0 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sh-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .sh-h1 {
+    font-family: var(--so-display);
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 0.98;
+    margin: 0 0 28px;
+    color: var(--black);
+    letter-spacing: -0.04em;
+  }
+  :root[lang="ja"] .sh-h1 {
+    line-height: 1.15;
+  }
+  .sh-h1 .accent {
+    color: var(--accent);
+  }
+  .sh-sub {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--so-text-2);
+    margin: 0 0 36px;
+    max-width: 680px;
+  }
+  .sh-sub :global(.k) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .sh-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .sh-cta-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 30px;
+    border-radius: 999px;
+    font-family: var(--so-display);
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .sh-cta-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.25);
+  }
+  .sh-cta-secondary {
+    color: var(--so-text-2);
+    font-family: var(--so-display);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 18px;
+    transition: color 0.15s;
+  }
+  .sh-cta-secondary:hover {
+    color: var(--accent);
+  }
+  .sh-trust {
+    margin: 38px 0 0;
+    padding-top: 22px;
+    border-top: 0.5px solid var(--lemma-line);
+    font-family: var(--so-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: var(--so-text-3);
+  }
+  .sh-trust .strong {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .sh-trust .dot {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .sh-h1 {
+      font-size: 44px;
+    }
+    .sh-sub {
+      font-size: 16px;
+    }
+  }
+</style>
+

@@ -46,6 +46,9 @@ export interface Translations {
         readonly compliance: string;
         readonly complianceSub: string;
         readonly developer: string;
+        readonly agentDeveloper: string;
+        readonly sealSub: string;
+        readonly industriesSub: string;
         readonly trust402: string;
         readonly trust402Sub: string;
         readonly pricing: string;
@@ -88,6 +91,7 @@ export interface Translations {
       }>;
       readonly resources: Readonly<{
         readonly label: string;
+        readonly criticalBrief: string;
         readonly blog: string;
         readonly whitepaper: string;
         readonly glossary: string;
@@ -189,11 +193,36 @@ export interface Translations {
       readonly h1: string;
       readonly p: string;
     }>;
+    /** "Find by intent" router cards above the FAQ proper. */
+    readonly intentRouter: Readonly<{
+      readonly label: string;
+      readonly upperTierBadge: string;
+      readonly items: ReadonlyArray<{
+        readonly title: string;
+        readonly desc: string;
+        readonly href: string;
+        readonly isUpperTier?: boolean;
+      }>;
+    }>;
+    readonly searchPlaceholder: string;
+    readonly noResultsText: string;
     readonly sections: ReadonlyArray<{
+      /** Used as the anchor id (e.g. "trust-layers"). */
+      readonly id: string;
       readonly title: string;
       readonly items: ReadonlyArray<{
         readonly q: string;
         readonly a: string;
+        /** Optional pillar tag for chip coloring. */
+        readonly pillar?: "p1" | "p2" | "p3" | "p4";
+        /**
+         * Optional "Related" links shown below the answer.
+         * Used when the answer text references other pages.
+         */
+        readonly links?: ReadonlyArray<{
+          readonly label: string;
+          readonly href: string;
+        }>;
       }>;
     }>;
     readonly sidebar: Readonly<{
@@ -204,6 +233,19 @@ export interface Translations {
       readonly h2: string;
       readonly headers: ReadonlyArray<string>;
       readonly rows: ReadonlyArray<ReadonlyArray<string>>;
+      /** 0-based row indices to highlight. The Lemma row gets the brown emphasis. */
+      readonly highlightRows?: ReadonlyArray<number>;
+    }>;
+    /** Bottom Critical Brief surface block (isolated from Q&A). */
+    readonly criticalBriefBlock: Readonly<{
+      readonly badge: string;
+      readonly label: string;
+      readonly h2: string;
+      readonly body: string;
+      readonly cta: ReadonlyArray<{
+        readonly label: string;
+        readonly href: string;
+      }>;
     }>;
     readonly partner: Readonly<{
       readonly tag: string;
@@ -421,70 +463,10 @@ export interface Translations {
       readonly secondaryCta: string;
     }>;
   }>;
-  readonly pricing: Readonly<{
-    readonly metaTitle: string;
-    readonly metaDescription: string;
-    readonly hero: Readonly<{
-      readonly eyebrow: string;
-      readonly h1: string;
-      readonly h1Em: string;
-      readonly p: string;
-    }>;
-    readonly notice: string;
-    readonly nav: Readonly<{
-      readonly wp: string;
-    }>;
-    readonly enterprise: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly plans: ReadonlyArray<{
-        readonly tag: string;
-        readonly name: string;
-        readonly sub: string;
-        readonly bestFor: string;
-        readonly features: ReadonlyArray<string>;
-        readonly tiers: ReadonlyArray<ReadonlyArray<string>>;
-        readonly priceNote: string;
-        readonly cta: string;
-      }>;
-    }>;
-    readonly dev: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly p: string;
-      readonly plans: ReadonlyArray<{
-        readonly name: string;
-        readonly desc: string;
-        readonly badge: string;
-      }>;
-      readonly cta: string;
-      readonly demoCta: string;
-      readonly note: string;
-    }>;
-    readonly compare: Readonly<{
-      readonly tag: string;
-      readonly h2: string;
-      readonly headers: ReadonlyArray<string>;
-      readonly rows: ReadonlyArray<ReadonlyArray<string>>;
-    }>;
-    readonly faqSection: Readonly<{
-      readonly tag: string;
-      readonly title: string;
-      readonly items: ReadonlyArray<{
-        readonly q: string;
-        readonly a: string;
-      }>;
-    }>;
-    readonly cta: Readonly<{
-      readonly eyebrow: string;
-      readonly h2: string;
-      readonly h2Em: string;
-      readonly p: string;
-      readonly cta1: string;
-      readonly cta2: string;
-    }>;
-  }>;
+  /** Pricing page content is now sourced from src/data/pricing.ts as a
+   * single typed const (the old i18n-based shape would have ballooned
+   * the JSON files). The Translations interface no longer carries a
+   * pricing block. */
   readonly thankYou: Readonly<{
     readonly eyebrow: string;
     readonly title: string;
@@ -520,6 +502,36 @@ export interface Translations {
     readonly ctaEyebrow: string;
     readonly ctaTitle: string;
     readonly ctaDesc: string;
+    /** v2 redesign — Index hero (replaces single heroTitle). Lines render
+     * stacked with a hard break between them. */
+    readonly heroH1Lines: ReadonlyArray<string>;
+    /** v2 redesign — Hero sub paragraph (4-question setup). */
+    readonly heroSub: string;
+    /** v2 redesign — Four-questions block under the hero. */
+    readonly questionsLabel: string;
+    readonly questions: ReadonlyArray<Readonly<{
+      readonly tag: string;
+      readonly stem: string;
+      readonly answer: string;
+    }>>;
+    /** v2 redesign — Composition diagram section. */
+    readonly compositionLabel: string;
+    readonly compositionH2: string;
+    readonly compositionCenterLabel: string;
+    readonly compositionCaption: string;
+    /** v2 redesign — Technical docs section (demoted). */
+    readonly technicalDocsLabel: string;
+    readonly technicalDocsH2: string;
+    /** v2 detail concept-hub — §1-§4 section labels and sub-headings. */
+    readonly conceptSec1Label: string;
+    readonly conceptSec2Label: string;
+    readonly conceptSec3Label: string;
+    readonly conceptSec4Label: string;
+    readonly conceptIncidentsHeading: string;
+    readonly conceptRegulatoryHeading: string;
+    readonly conceptReadBrief: string;
+    readonly conceptViewUseCase: string;
+    readonly conceptApproachLinksLabel: string;
   }>;
   readonly useCases: Readonly<{
     readonly title: string;
@@ -527,6 +539,26 @@ export interface Translations {
     readonly sections: string;
     readonly overview: string;
     readonly backToPillar: string;
+    /** Index — industry chip filter labels. */
+    readonly finderLabel: string;
+    readonly industryAll: string;
+    readonly industryLabels: Readonly<{
+      readonly mfg: string;
+      readonly fin: string;
+      readonly pub: string;
+      readonly sc: string;
+      readonly svc: string;
+      readonly ai: string;
+      readonly edu: string;
+      readonly dev: string;
+    }>;
+    /** Index — counts (use {n} for the number). */
+    readonly countAll: string;
+    readonly countMatch: string;
+    readonly emptyState: string;
+    readonly cardCta: string;
+    /** Index — soft footer link to Critical Briefs (altitude reader path). */
+    readonly briefLinkLabel: string;
   }>;
 }
 

@@ -1,0 +1,274 @@
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 01 — Verifiable Origin</div>
+    <h1>来歴証明。</h1>
+    <p class="hero-strap">AI が読むデータの出所を、改ざん不能な証明として渡す。</p>
+    <p class="hero-lead">業務文書・API レスポンス・IoT 計測値などの「どこから来たか」を、暗号証明として AI 入力や業務システムへ。Lemma 信頼インフラを構成する 4 軸の 1 つ。</p>
+  </div>
+</section>
+
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">いま、最も求められている課題に答える</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6 H20 L26 12 V26 H6 Z"/><path d="M20 6 V12 H26"/><text x="16" y="22" text-anchor="middle" font-family="Sora" font-weight="700" font-size="10" fill="currentColor">?</text></svg>
+        <span>出所が不明な AI 入力を業務で使えない</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 4 L26 8 V16 a10 12 0 0 1 -10 12 a10 12 0 0 1 -10 -12 V8 Z"/><line x1="11" y1="12" x2="21" y2="22" stroke="#B8501F" stroke-width="2.2"/></svg>
+        <span>改ざん検出のない RAG・知識ベースを信頼できない</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6 H22 V26 H6 Z"/><line x1="10" y1="12" x2="18" y2="12"/><line x1="10" y1="16" x2="18" y2="16"/><path d="M10 22 L12 24 L17 19" stroke="#5C7A4A" stroke-width="2"/></svg>
+        <span>監査・規制対応で「出所証明」を求められる</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · 来歴証明とは</div>
+    <h2 class="section-h2">データの出所を、誰が見ても検証できる形で渡す。</h2>
+    <p class="section-lead">文書やデータに、発行元の暗号署名と改ざん不能なハッシュをつけて配信。AI や受信側は、原本にアクセスせず出所を独立検証できます。</p>
+
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4 H14 L20 10 V20 H4 Z"/><path d="M14 4 V10 H20"/><line x1="7" y1="14" x2="17" y2="14"/><line x1="7" y1="17" x2="13" y2="17"/></svg></div>
+          <div class="stage-label">発行システム</div>
+          <h4>原本データ</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">業務文書・API レスポンス・IoT 計測値など、発行者が確認できるデータ。</p>
+          <div class="stage-note">原本は発行元で保管</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage lemma">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="2"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="15" cy="13" r="1.4" fill="currentColor"/><path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/></svg></div>
+          <div class="stage-label">Lemma</div>
+          <h4>ハッシュ + 発行者署名</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step"><span class="step-num">1</span><span>原本をハッシュ化</span></div>
+            <div class="lemma-step"><span class="step-num">2</span><span>発行者が暗号署名</span></div>
+            <div class="lemma-step"><span class="step-num">3</span><span>来歴チェーンに記録</span></div>
+          </div>
+          <div class="stage-note">原本の中身には触れない</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><text x="12" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">AI</text></svg></div>
+          <div class="stage-label">AI / 業務システム</div>
+          <h4>来歴付きデータが届く</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">sourceHash</span><span class="strong">0x9c4f...</span></div>
+            <div class="row"><span class="field">issuer</span><span class="strong">kyc.jp</span></div>
+            <div class="row"><span class="field">issuedAt</span><span class="strong">2026-06-05</span></div>
+            <div class="row"><span class="field">lineageChain</span><span class="strong">✓</span></div>
+          </div>
+          <div class="stage-note">改ざんは検出可能</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy-box">
+      <div class="analogy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><circle cx="16" cy="17" r="2"/></svg></div>
+      <div class="analogy-content">
+        <h4>たとえると、公正証書のような仕組みです。</h4>
+        <p>重要な契約や遺言を残すとき、公証人が「この文書はこの人が、この日に作成した」と認証する公正証書を作成する——このような経験はありませんか。Lemma の来歴証明は、同じ考え方。データに対して「誰が、いつ発行したか」を暗号的に固定し、第三者が後から独立検証できます。</p>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">公開するもの</div>
+        <h4>来歴の事実 + 証明</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>sourceHash</code>（データの fingerprint）</span></li>
+          <li><span class="mark">✓</span><span><code>issuer</code>（発行元の暗号署名）</span></li>
+          <li><span class="mark">✓</span><span><code>issuedAt</code>（発行時刻）</span></li>
+          <li><span class="mark">✓</span><span>来歴チェーン（連鎖の追跡可能性）</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">非公開のまま</div>
+        <h4>原本データの中身</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span>文書本文・業務原本</span></li>
+          <li><span class="mark">✗</span><span>内部詳細・センシティブ情報</span></li>
+          <li><span class="mark">✗</span><span>発行者の秘密鍵・認証情報</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="outcome-block">
+      <div class="outcome-title">この仕組みで、何が起きるか</div>
+      <div class="outcome-grid">
+        <div class="outcome-item"><span class="check">✓</span><span>AI が読むデータの出所が、暗号証明として届く</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>原本データは発行元に留まり、共有されない</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>改ざんは数学的に検出可能</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>第三者が、原本を見ずに来歴を独立検証できる</span></div>
+      </div>
+    </div>
+
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">データの信頼を、構造で連鎖させる。</h3>
+      <div class="possibilities-list">
+        <div class="poss-item"><span class="arrow">→</span><span>AI 入力の出所が、業務の前提として常に揃う</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>多階層サプライチェーンの信頼が、ハッシュで繋がる</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>改ざん検出が、業務フローに組み込まれる</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · 既存手段との違い</div>
+    <h2 class="section-h2">ハッシュ計算・電子署名・バックアップと、何が違うか。</h2>
+    <p class="section-lead">個別の技術はあるが、「出所」「改ざん不能」「独立検証」を 1 つの構造で揃えるのが Lemma。</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>手段</div><div>出所を証明できる</div><div>原本は手元</div><div>独立検証可能</div><div>暗号証明</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><text x="10" y="14" text-anchor="middle" font-family="Space Mono" font-size="11" fill="currentColor"># </text></svg></div>
+          <span class="matrix-label">単純ハッシュ計算</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell partial">△</div><div class="matrix-cell partial">△</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10 L8 14 L16 6"/></svg></div>
+          <span class="matrix-label">電子署名のみ</span>
+        </div>
+        <div class="matrix-cell partial">△</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell partial">△</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="10" height="10" rx="1"/><rect x="7" y="9" width="10" height="10" rx="1"/></svg></div>
+          <span class="matrix-label">バックアップ・冗長化</span>
+        </div>
+        <div class="matrix-cell no">✗</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M6.5 10 L9 12.5 L14 7.5"/></svg></div>
+          <span class="matrix-label">Lemma 来歴証明</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · 信頼インフラの位置</div>
+      <h3>P1 は、Lemma 信頼インフラを構成する 4 軸の 1 つ。</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip this">P1 来歴</span>
+      <span class="pos-chip">P2 AI 判断</span>
+      <span class="pos-chip">P3 権限</span>
+      <span class="pos-chip">P4 規制属性</span>
+    </div>
+    <a href="/ja/pillars/" class="position-more">信頼インフラ全体を見る →</a>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · 業務での活用</div>
+    <h2 class="section-h2">この軸を使う、業務シーン。</h2>
+    <div class="uc-row">
+      <a href="/ja/solutions/use-cases/rag-content-provenance/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5 H17 V15 H3 Z"/><line x1="3" y1="9" x2="17" y2="9"/><path d="M6 13 H8 M10 13 H12 M14 13 H15"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · RAG</div>RAG コンテンツ来歴</div>
+      </a>
+      <a href="/ja/solutions/use-cases/supply-chain-component-provenance/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="10" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="15" cy="10" r="2"/><line x1="7" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="13" y2="10"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · 部品</div>サプライチェーン部品来歴</div>
+      </a>
+      <a href="/ja/solutions/use-cases/defi-bridge-verification/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="6" height="8" rx="1"/><rect x="11" y="6" width="6" height="8" rx="1"/><line x1="9" y1="10" x2="11" y2="10"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · ブリッジ</div>DeFi ブリッジ検証</div>
+      </a>
+      <a href="/ja/solutions/use-cases/long-term-contract-record/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="12" height="14" rx="1"/><line x1="7" y1="7" x2="13" y2="7"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="7" y1="13" x2="11" y2="13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · 契約</div>長期契約記録</div>
+      </a>
+      <a href="/ja/solutions/use-cases/internal-control-approval-proof/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6 H17 V14 H3 Z"/><path d="M7 10 L9 12 L13 8" stroke-width="2"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · 統制</div>内部統制承認証明</div>
+      </a>
+      <a href="/ja/solutions/use-cases/credential-presentation/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="10" rx="1"/><circle cx="7" cy="10" r="1.5"/><path d="M11 8 H14 M11 11 H14"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P1 · 資格</div>資格提示</div>
+      </a>
+    </div>
+    <a href="/ja/solutions/use-cases/" class="uc-link-more">全ユースケースを見る →</a>
+  </div>
+</section>
+
+<section class="tech-section" id="tech">
+  <div class="container">
+    <div class="section-eyebrow">05 · 技術リファレンス</div>
+    <h2 class="section-h2">独自の暗号技術で、出所だけを証明する。</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item"><h4>発行者署名</h4><p>データの発行元（業者・行政・社内）を暗号的に固定。誰が発行したかを後から独立検証できる。</p></div>
+        <div class="tech-item"><h4>ハッシュコミットメント</h4><p>原本の中身は伏せたまま、唯一の fingerprint だけを公開。改ざんは数学的に検出可能。</p></div>
+        <div class="tech-item"><h4>来歴チェーン</h4><p>複数階層の発行・引き継ぎを連鎖として記録。多階層サプライチェーンや RAG 索引で、出所の連続性を担保。</p></div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.provenance.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.provenance.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"sourceHash"</span>: <span class="str">"0x9c4f...e7d2"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuer"</span>: <span class="str">"kyc-provider.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuedAt"</span>: <span class="str">"2026-06-05T10:00Z"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"lineageChain"</span>: [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="key">"node"</span>: <span class="str">"supplier-a"</span>, <span class="key">"hash"</span>: <span class="str">"0x71..."</span> },<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="key">"node"</span>: <span class="str">"manufacturer-b"</span>, <span class="key">"hash"</span>: <span class="str">"0x9c..."</span> }<br>
+        &nbsp;&nbsp;],<br>
+        &nbsp;&nbsp;<span class="key">"attestation"</span>: <span class="str">"0xa8...4f3e"</span><br>
+        }
+      </div>
+    </div>
+
+    <div class="guides-block">
+      <div class="guides-eyebrow">P1 を実装する開発ガイド</div>
+      <h3 class="guides-h3">この軸に関係する技術ドキュメント。</h3>
+      <div class="guides-list">
+        <a href="/ja/blog/provenance-that-never-disappears" class="guide-link"><div><span class="tag-mono">GUIDES</span>消えることのない来歴</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>ドメインをスキーマとして定義する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/encrypt-everything-expose-nothing" class="guide-link"><div><span class="tag-mono">GUIDES</span>すべてを暗号化し、何も露出しない</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>ゼロ知識で事実を証明する</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/ja/guides/" class="guides-more">技術ドキュメント全体を見る →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · 次のステップ</div>
+    <h2 class="section-h2">業務シナリオで、確かめる。</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/EkBqDX?pillar=verifiable-origin" class="cta-card">
+        <div class="label">業務担当の方へ</div>
+        <h3>Discovery Call</h3>
+        <p>業務シナリオを 30 分でお聞きします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <span class="cta-arrow">問い合わせる →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">開発者の方へ</div>
+        <h3>Schema を試す</h3>
+        <p>your.provenance.v1 を Lemma Dashboard で 5 分試す。SDK と Guides を併読。</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

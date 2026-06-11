@@ -1,0 +1,214 @@
+---
+/**
+ * §2 — Trust402 developer plan. Single white-card block with a 4-tier
+ * cream-deep grid inside.
+ */
+import type { Locale } from "../../i18n/translations";
+import { PRICING } from "../../data/pricing";
+
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
+const t = PRICING.trust402;
+const secondaryHrefRaw = t.ctaSecondary.href[locale];
+const secondaryHref = secondaryHrefRaw.startsWith("/")
+  ? `${base}${secondaryHrefRaw}`
+  : secondaryHrefRaw;
+---
+
+<section class="pt-section">
+  <div class="pr-section-eyebrow">{t.eyebrow[locale]}</div>
+  <h2 class="pr-section-h2">
+    {t.h2Head[locale]}<span class="accent">{t.h2Accent[locale]}</span>
+  </h2>
+  <p class="pr-section-sub">{t.sub[locale]}</p>
+
+  <div class="pt-block">
+    <div class="pt-head">
+      <div class="pt-side">
+        <h3 class="pt-name">{t.name}</h3>
+        <p class="pt-tagline">{t.tagline[locale]}</p>
+        <p class="pt-desc">{t.desc[locale]}</p>
+      </div>
+      <div class="pt-meta">
+        <div class="pt-status">{t.status[locale]}</div>
+      </div>
+    </div>
+
+    <div class="pt-tiers">
+      {t.tiers.map((tier) => (
+        <article class="pt-tier-card">
+          <h4 class="pt-tier-name">{tier.name}</h4>
+          <p class="pt-tier-desc">{tier.desc[locale]}</p>
+          <p class="pt-tier-status">{tier.status[locale]}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="pt-cta">
+      <a class="pt-cta-primary" href={t.ctaPrimary.href[locale]} target="_blank" rel="noopener">
+        {t.ctaPrimary.label[locale]}
+      </a>
+      <a class="pt-cta-secondary" href={secondaryHref}>
+        {t.ctaSecondary.label[locale]}
+      </a>
+    </div>
+    <p class="pt-footer-note">{t.footerNote[locale]}</p>
+  </div>
+</section>
+
+<style>
+  .pt-block {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 18px;
+    padding: 40px 44px;
+  }
+  .pt-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: end;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .pt-name {
+    font-family: var(--pr-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    margin: 0 0 6px;
+    line-height: 1.05;
+  }
+  .pt-tagline {
+    font-family: var(--pr-display);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0;
+  }
+  .pt-desc {
+    font-size: 14px;
+    color: var(--pr-text-2);
+    margin: 14px 0 0;
+    line-height: 1.7;
+    max-width: 580px;
+  }
+  .pt-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .pt-status {
+    font-family: var(--pr-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+  .pt-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pt-pulse 2s ease-in-out infinite;
+  }
+  @keyframes pt-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pt-status::before { animation: none; }
+  }
+
+  .pt-tiers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 0 0 28px;
+  }
+  .pt-tier-card {
+    background: var(--lemma-cream-deep);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pt-tier-name {
+    font-family: var(--pr-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .pt-tier-desc {
+    font-size: 12px;
+    color: var(--pr-text-3);
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+  }
+  .pt-tier-status {
+    font-family: var(--pr-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .pt-cta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pt-cta-primary {
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-family: var(--pr-display);
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  .pt-cta-secondary {
+    color: var(--pr-text-2);
+    font-family: var(--pr-display);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .pt-cta-secondary:hover {
+    color: var(--accent);
+  }
+  .pt-footer-note {
+    font-family: var(--pr-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--pr-text-4);
+    margin: 16px 0 0;
+  }
+
+  @media (max-width: 880px) {
+    .pt-tiers { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .pt-block { padding: 28px 22px; }
+    .pt-head { grid-template-columns: 1fr; }
+    .pt-meta { align-items: flex-start; text-align: left; }
+  }
+  @media (max-width: 480px) {
+    .pt-tiers { grid-template-columns: 1fr; }
+  }
+</style>

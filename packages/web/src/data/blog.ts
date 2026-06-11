@@ -33,7 +33,15 @@ export interface BlogPost {
   readonly slug: string;
   readonly locale: BlogLocale;
   readonly date: string;
+  /** Primary category — drives section grouping and the primary chip on cards. */
   readonly category: string;
+  /**
+   * Optional cross-cutting categories. A post with `secondary_categories:
+   * ["Announcements"]` in its frontmatter surfaces in the Announcements
+   * category archive in addition to its primary category. Mirrors the
+   * Critical Brief primary / secondary pattern.
+   */
+  readonly secondaryCategories?: ReadonlyArray<string>;
   readonly section: string;
   readonly title: string;
   readonly abstract: string;
@@ -45,6 +53,18 @@ export interface BlogPost {
   readonly headings: ReadonlyArray<Heading>;
   readonly readingTime: number;
 }
+
+/**
+ * Return true if the post surfaces under the given category — either as
+ * its primary `category` or via `secondary_categories`. Use this anywhere
+ * a category archive page, filter pill, or category count is computed.
+ */
+export const postInCategory = (
+  post: BlogPost,
+  category: string,
+): boolean =>
+  post.category === category ||
+  (post.secondaryCategories?.includes(category) ?? false);
 
 export interface BlogSection {
   readonly section: string;
@@ -117,7 +137,7 @@ const TAG_DESTINATIONS: Readonly<Record<string, string>> = {
   "agent-authority": "/pillars/agent-authority-proof/",
   compliance: "/pillars/regulatory-attribute-proof/",
   // Use cases
-  "financial-services": "/use-cases/kyc-aml-selective-disclosure/",
+  "financial-services": "/solutions/use-cases/kyc-aml-selective-disclosure/",
   // Glossary
   provenance: "/glossary/provenance/",
   "zk-proof": "/glossary/zk-proof/",
@@ -148,6 +168,7 @@ interface PostFrontmatter {
   readonly slug?: string;
   readonly date?: string;
   readonly category?: string;
+  readonly secondary_categories?: ReadonlyArray<string>;
   readonly section?: string;
   readonly title?: string;
   readonly abstract?: string;
@@ -359,6 +380,10 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
               locale: parsed.locale,
               date: fm.date ?? "",
               category: fm.category ?? "",
+              secondaryCategories:
+                fm.secondary_categories && fm.secondary_categories.length > 0
+                  ? fm.secondary_categories
+                  : undefined,
               section: fm.section || defaultSectionByCategory[fm.category || ""] || "Essays",
               title: fm.title,
               abstract: fm.abstract ?? "",

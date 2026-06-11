@@ -1,0 +1,296 @@
+<!-- HERO -->
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Trust Infrastructure</div>
+    <h1>AI のための、<br>信頼インフラ。</h1>
+    <p class="hero-strap">来歴・AI 判断・権限・規制属性。それぞれに、暗号証明を返します。</p>
+    <p class="hero-lead">AI がデータを使うたび、後から「どこから来たのか」「何を見て判断したのか」「誰の代理で動いたのか」「規制を満たすのか」が問われます。Lemma 信頼インフラは、4 軸でこれらに答えます。</p>
+  </div>
+</section>
+
+<!-- §1 全工程に、信頼を入れる (UNIFIED: 旧§1 + 旧§2) -->
+<section class="s-unified">
+  <div class="container">
+    <h2>全工程に、信頼を入れる。</h2>
+    <p class="lead">AI ワークフローはそのまま。Lemma 信頼インフラを 1 レイヤー加えるだけで、入力から代理実行まで全工程に証明が乗ります。</p>
+
+    <div class="workflow-block">
+      <div class="wf-flows">
+        <div class="wf-flow">
+          <div class="phase-cell"><div class="ph">PHASE 01 · INPUT</div><h4>入力</h4></div>
+          <div class="plus-cell">+</div>
+          <a href="/ja/pillars/verifiable-origin/" class="lemma-cell">
+          <div class="tag">P1 · VERIFIABLE ORIGIN</div>
+          <h4>来歴証明</h4>
+          <code class="schema">your.provenance.v1</code>
+          <span class="link">P1 を詳しく →</span>
+        </a>
+        </div>
+        <div class="wf-flow">
+          <div class="phase-cell"><div class="ph">PHASE 02 · INFERENCE</div><h4>推論</h4></div>
+          <div class="plus-cell">+</div>
+          <a href="/ja/pillars/verifiable-ai/" class="lemma-cell">
+          <div class="tag">P2 · VERIFIABLE AI</div>
+          <h4>検証可能 AI</h4>
+          <code class="schema">your.model.v1</code>
+          <span class="link">P2 を詳しく →</span>
+        </a>
+        </div>
+        <div class="wf-flow">
+          <div class="phase-cell"><div class="ph">PHASE 03 · DECISION</div><h4>決定</h4></div>
+          <div class="plus-cell">+</div>
+          <a href="/ja/pillars/regulatory-attribute-proof/" class="lemma-cell">
+          <div class="tag">P4 · REGULATORY</div>
+          <h4>規制属性証明</h4>
+          <code class="schema">your.attribute.v1</code>
+          <span class="link">P4 を詳しく →</span>
+        </a>
+        </div>
+        <div class="wf-flow">
+          <div class="phase-cell"><div class="ph">PHASE 04 · DELEGATION</div><h4>代理</h4></div>
+          <div class="plus-cell">+</div>
+          <a href="/ja/pillars/agent-authority-proof/" class="lemma-cell">
+          <div class="tag">P3 · AGENT AUTHORITY</div>
+          <h4>エージェント権限証明</h4>
+          <code class="schema">your.agent.v1</code>
+          <span class="link">P3 を詳しく →</span>
+        </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- §2 独自の暗号技術、3 つの中核 (NEW dark) -->
+<section class="s-tech">
+  <div class="container">
+    <h2><span class="accent">独自の暗号技術、</span><br>3 つの中核。</h2>
+    <p class="lead">信頼インフラを成立させている、3 つの中核技術。原本データに触れずに「同じものだ」「これだけ開示する」「書き換えられない」を成立させます。</p>
+
+    <div class="tech-grid">
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="22" cy="32" r="20" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <circle cx="22" cy="32" r="13" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+          <circle cx="22" cy="32" r="3" fill="currentColor"/>
+          <line x1="46" y1="32" x2="58" y2="32" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="58,32 53,28 53,36" fill="currentColor"/>
+          <circle cx="68" cy="32" r="9" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M63 32 L67 36 L73 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="name-en">Zero-Knowledge<br>Proof</div>
+        <div class="name-ja">ゼロ知識証明</div>
+        <p class="desc">「<strong>18 歳以上</strong>」「<strong>収益が閾値超</strong>」などのビジネスルールを、機械検証可能な暗号事実に変換。原本に触れずに命題の真偽だけを証明する。</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma の強み</div>
+          <div class="txt">各証明は <strong>回路（Circom）とジェネレーター</strong>とともに永続記録され、後から第三者が再現可能。</div>
+        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>Groth16 · Circom 2.x · BN254</div>
+        <a href="/ja/blog/prove-facts-with-zero-knowledge/" class="doc-link">技術ドキュメントを読む</a>
+        <div class="value-map"><strong>渡さず任せる</strong> の中核</div>
+      </div>
+
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 8 H50 L60 18 V58 H18 Z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <path d="M50 8 V18 H60" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <rect x="25" y="22" width="22" height="3" fill="currentColor"/>
+          <circle cx="51" cy="23.5" r="2" fill="currentColor"/>
+          <line x1="25" y1="32" x2="47" y2="32" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <rect x="25" y="40" width="22" height="3" fill="currentColor"/>
+          <circle cx="51" cy="41.5" r="2" fill="currentColor"/>
+          <line x1="25" y1="50" x2="47" y2="50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+        </svg>
+        <div class="name-en">Selective<br>Disclosure</div>
+        <div class="name-ja">選択的開示</div>
+        <p class="desc">元の発行者署名との<strong>紐づけを維持しながら</strong>、ホルダーがモデルに必要な属性だけを選んで公開する技術。AI への入力を最小化できる。</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma の強み</div>
+          <div class="txt"><strong>1 発行物から、相手・用途ごとに開示範囲を可変</strong>。Hide / Reveal を発行後にも制御できる。</div>
+        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>BBS+ Signature · W3C VC · Poseidon</div>
+        <a href="/ja/blog/disclose-only-what-ai-needs/" class="doc-link">技術ドキュメントを読む</a>
+        <div class="value-map"><strong>選んで渡す</strong> の中核</div>
+      </div>
+
+      <div class="tech-card">
+        <svg class="tech-icon" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="6" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="10" y1="20" x2="20" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="10" y1="25" x2="18" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="24" y1="25" x2="30" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <rect x="30" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="34" y1="20" x2="44" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="34" y1="25" x2="42" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="48" y1="25" x2="54" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <rect x="54" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
+          <line x1="58" y1="20" x2="68" y2="20" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="58" y1="25" x2="66" y2="25" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="4" y1="50" x2="76" y2="50" stroke="currentColor" stroke-width="2"/>
+          <line x1="15" y1="36" x2="15" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <line x1="39" y1="36" x2="39" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <line x1="63" y1="36" x2="63" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+          <circle cx="40" cy="56" r="2.5" fill="currentColor"/>
+        </svg>
+        <div class="name-en">On-chain<br>Provenance</div>
+        <div class="name-ja">オンチェーン来歴</div>
+        <p class="desc">ドキュメントコミット・スキーマ・発行者・ZK 検証結果をオンチェーンにアンカー。改ざんも消去もできない来歴として固定する。</p>
+        <div class="strength-box">
+          <div class="lbl">Lemma の強み</div>
+          <div class="txt"><strong>docHash と CID だけが公開</strong>、本体は AES-GCM で暗号化されたまま。中身を晒さずに来歴を残せる。</div>
+        </div>
+        <div class="standards-row"><span class="lbl">Standards</span>EIP-712 · IPFS CID · AES-GCM · Keccak</div>
+        <a href="/ja/blog/provenance-that-never-disappears/" class="doc-link">技術ドキュメントを読む</a>
+        <div class="value-map"><strong>後から証明</strong> の中核</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--MECH_AXES_SLOT-->
+
+<!-- §2.5 possibilities — visualized 3 cards -->
+<section class="possibilities-section">
+  <div class="container">
+    <div class="hub-possibilities">
+      <div class="hub-possibilities-head">
+        <div class="hub-possibilities-eyebrow">ここから、開く</div>
+        <h3>AI 業務の全工程を、信頼の上で動かす。</h3>
+      </div>
+      <div class="hub-poss-list">
+        <div class="hub-poss-item">
+          <svg class="hub-poss-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="16" x2="8" y2="16"/>
+            <circle cx="8" cy="16" r="2.5"/>
+            <line x1="10.5" y1="16" x2="14.5" y2="16"/>
+            <circle cx="16" cy="16" r="2.5"/>
+            <line x1="17.5" y1="16" x2="21.5" y2="16"/>
+            <circle cx="24" cy="16" r="2.5"/>
+            <line x1="26.5" y1="16" x2="29" y2="16"/>
+            <path d="M6.5 16 L7.5 17 L9.5 14.5" stroke-width="1.2"/>
+            <path d="M14.5 16 L15.5 17 L17.5 14.5" stroke-width="1.2"/>
+            <path d="M22.5 16 L23.5 17 L25.5 14.5" stroke-width="1.2"/>
+          </svg>
+          <h4>一貫した立証可能性</h4>
+          <p>入力から代理実行まで、AI ワークフローのすべての工程で証明が成立する。</p>
+        </div>
+        <div class="hub-poss-item">
+          <svg class="hub-poss-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 6 L14 14"/>
+            <path d="M26 6 L18 14"/>
+            <circle cx="16" cy="16" r="3.5"/>
+            <line x1="16" y1="20" x2="16" y2="27"/>
+            <polyline points="13,24 16,27 19,24"/>
+          </svg>
+          <h4>規制対応 × AI 自動化</h4>
+          <p>規制適合と AI 業務スピードが、同じ構造で両立する。コンプライアンスが速度を止めない。</p>
+        </div>
+        <div class="hub-poss-item">
+          <svg class="hub-poss-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="7" cy="16" r="3.5"/>
+            <circle cx="16" cy="16" r="3.5"/>
+            <circle cx="25" cy="16" r="3.5"/>
+            <line x1="10.5" y1="16" x2="12.5" y2="16" stroke-width="2.2"/>
+            <line x1="19.5" y1="16" x2="21.5" y2="16" stroke-width="2.2"/>
+            <path d="M7 10 V6 M16 22 V26 M25 10 V6"/>
+          </svg>
+          <h4>多階層の信頼チェーン</h4>
+          <p>エージェント連鎖・組織連鎖の全層を、検証可能な信頼の流れとして業務に組み込める。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 業務での活用 + Critical Brief -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">03 · 業務での活用</div>
+    <h2 class="section-h2">3 つの入口。</h2>
+    <p class="section-lead">テーマ別・シーン別・事案別。</p>
+
+    <div class="biz-grid">
+      <a href="/ja/solutions/" class="biz-card">
+        <svg class="biz-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="6" width="24" height="20" rx="2"/>
+          <line x1="4" y1="12" x2="28" y2="12"/>
+          <circle cx="10" cy="19" r="1.5" fill="currentColor"/>
+          <line x1="14" y1="19" x2="24" y2="19"/>
+          <circle cx="10" cy="23" r="1.5" fill="currentColor"/>
+          <line x1="14" y1="23" x2="20" y2="23"/>
+        </svg>
+        <div class="label">業務テーマ別</div>
+        <h3>Solutions</h3>
+        <p>「攻め × 守り」両面で、信頼インフラを業務テーマに紐づけます。</p>
+        <span class="arrow">Solutions を見る →</span>
+      </a>
+      <a href="/ja/solutions/use-cases/" class="biz-card">
+        <svg class="biz-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="6" width="10" height="10" rx="1"/>
+          <rect x="18" y="6" width="10" height="10" rx="1"/>
+          <rect x="4" y="20" width="10" height="10" rx="1"/>
+          <rect x="18" y="20" width="10" height="10" rx="1"/>
+        </svg>
+        <div class="label">具体シーン別</div>
+        <h3>Use Cases</h3>
+        <p>業界・タスク横断で 30+ の業務シーン。軸別の before/after を見られます。</p>
+        <span class="arrow">Use Cases を見る →</span>
+      </a>
+      <a href="/ja/critical/briefs/" class="biz-card">
+        <svg class="biz-card-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 4 H20 L26 10 V28 H6 Z"/>
+          <path d="M20 4 V10 H26"/>
+          <line x1="10" y1="14" x2="22" y2="14"/>
+          <line x1="10" y1="18" x2="22" y2="18"/>
+          <line x1="10" y1="22" x2="18" y2="22"/>
+        </svg>
+        <div class="label">現実の事案別</div>
+        <h3>Critical Brief</h3>
+        <p>AI・暗号インフラ・サプライチェーン領域の重大事案を、信頼インフラの視点で構造的に解析。</p>
+        <span class="arrow">Brief を読む →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- §4 開発者向け -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · 開発者向け</div>
+    <h2 class="section-h2">実装の入口。</h2>
+    <p class="section-lead">共通スキーマと暗号プリミティブで、4 軸を実装する起点となるドキュメント。</p>
+
+    <div class="tech-block">
+      <div class="tech-list-grid">
+        <a href="/ja/blog/dashboard-quickstart" class="guide-link"><div><span class="tag-mono">QUICK START</span>Lemma Dashboard — 5 分クイックスタート</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>ドメインをスキーマとして定義する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>ゼロ知識で事実を証明する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/lemma-oracle-specs" class="guide-link"><div><span class="tag-mono">FOUNDATIONS</span>Lemma Oracle 仕様</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/ja/guides/" class="guides-more">技術ドキュメント全体を見る →</a>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">05 · 次のステップ</div>
+    <h2 class="section-h2">話を始める。</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/EkBqDX?source=pillars-hub" class="cta-card">
+        <div class="label">業務担当の方へ</div>
+        <h3>Discovery Call</h3>
+        <p>業務シナリオを 30 分でお聞きします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <span class="cta-arrow">問い合わせる →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">開発者の方へ</div>
+        <h3>Dashboard</h3>
+        <p>4 軸の canonical schema を Lemma Dashboard で 5 分試す。SDK と Guides を併読。</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

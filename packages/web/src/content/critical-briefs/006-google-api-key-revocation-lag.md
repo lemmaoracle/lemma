@@ -1,6 +1,6 @@
 ---
 brief_no: 6
-title: "Google API キー削除後 23 分有効 — credential 失効属性の独立検証不在"
+title: "Google API キー削除後 23 分有効 — 認証情報の失効属性の独立検証不在"
 title_en: "Google API Keys Remain Usable for 23 Minutes After Deletion — Independent Verification Gap in Credential Revocation Attributes"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
@@ -9,9 +9,11 @@ incident_date: 2026-05-21
 published: 2026-05-30
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "B-regulatory"]
-related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts"]
+related_briefs: ["003-starlette-badhost", "005-noroboto-lying-fonts", "019-construction-engineer-qualification-fraud", "020-type-designation-conformity-fraud", "021-wirecard-balance-attestation", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
+og_lead_ja: "削除した API キーが 23 分間も有効、失効が独立検証されない — Google"
+og_lead_en: "Deleted API keys stayed usable for 23 minutes — Google revocation lag"
 ---
 
 ## TL;DR
@@ -61,7 +63,7 @@ Brief 003(Starlette/BadHost)とは別の primitive(本事案では「失効済�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 本事案では Aikido が約 1 分から 23 分の失効遅延を 10 回試験 × 2 日にわたって計測し、業界横断で問題を可視化した。これは検出企業による threat hunting の典型的成功であり、検出企業の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
 
@@ -88,10 +90,24 @@ API 種別による失効速度の差が示すこと:
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。設計の詳細は [「x402 に第3層を足す — ステーブルコイン事業者の選択肢」](https://lemma.frame00.com/ja/blog/ppsi-stablecoin-aml-kyc-third-layer/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。設計の詳細は [「x402 に第3層を足す — ステーブルコイン事業者の選択肢」](https://lemma.frame00.com/ja/blog/ppsi-stablecoin-aml-kyc-third-layer/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
 
 ---
 
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon(2026-05、Aikido 公式 blog、10 回試験 × 2 日の計測データと技術詳細、Google への報告経緯を含む)— https://www.aikido.dev/blog/google-api-keys-deletion
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

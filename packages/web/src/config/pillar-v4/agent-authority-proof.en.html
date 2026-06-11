@@ -1,0 +1,274 @@
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 03 — Agent Authority Proof</div>
+    <h1>Agent Authority Proof.</h1>
+    <p class="hero-strap">Prove an agent's authority without handing it the keys.</p>
+    <p class="hero-lead">Give an AI agent a cryptographic proof of who it acts on behalf of and how far its scope reaches — without ever handing over a signing key. One of the four axes that make up the Lemma trust infrastructure.</p>
+  </div>
+</section>
+
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">Answering the questions being asked most urgently right now</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="14" width="14" height="11" rx="2"/><path d="M11 14 V10 a4 4 0 0 1 8 0 V14"/><line x1="6" y1="6" x2="26" y2="26" stroke="#B8501F" stroke-width="2.2"/></svg>
+        <span>We don't want to hand keys to autonomously running AI agents</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="10" r="3"/><circle cx="23" cy="10" r="3"/><circle cx="16" cy="22" r="3"/><line x1="11" y1="12" x2="14" y2="20"/><line x1="21" y1="12" x2="18" y2="20"/></svg>
+        <span>We want to verify the authority chain across multi-tier agents after the fact</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="22" height="14" rx="2"/><text x="16" y="20" text-anchor="middle" font-family="Space Mono" font-size="9" fill="currentColor">MAX</text></svg>
+        <span>We need a mechanism to stop over-limit and out-of-scope actions</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · What Agent Authority Proof is</div>
+    <h2 class="section-h2">Prove delegated authority alone, without handing over a key.</h2>
+    <p class="section-lead">Delegator, role, scope, limit, and validity are fixed in a cryptographic proof. The AI agent acts only within scope, and every action becomes verifiable.</p>
+
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="4"/><path d="M5 21 a7 7 0 0 1 14 0"/></svg></div>
+          <div class="stage-label">Delegator</div>
+          <h4>Person / organization</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">Defines the role, scope, limit, and validity period granted to the AI agent.</p>
+          <div class="stage-note">The private key stays with the delegator</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage lemma">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="2"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="15" cy="13" r="1.4" fill="currentColor"/><path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/></svg></div>
+          <div class="stage-label">Lemma</div>
+          <h4>Issues the authority as a cryptographic proof</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step"><span class="step-num">1</span><span>Fix the authority with the delegator's signature</span></div>
+            <div class="lemma-step"><span class="step-num">2</span><span>Parameterize scope, limit, and validity</span></div>
+            <div class="lemma-step"><span class="step-num">3</span><span>Hand it to the agent as a ZK proof</span></div>
+          </div>
+          <div class="stage-note">The key itself is never handed over</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="9" width="14" height="10" rx="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><line x1="10" y1="13" x2="14" y2="13"/></svg></div>
+          <div class="stage-label">AI agent</div>
+          <h4>Acts without a key</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">delegatedBy</span><span class="strong">ceo@org.jp</span></div>
+            <div class="row"><span class="field">role</span><span class="strong">procurement</span></div>
+            <div class="row"><span class="field">spendLimitUSDC</span><span class="strong">5000</span></div>
+            <div class="row"><span class="field">scope</span><span class="strong">vendor-2026</span></div>
+            <div class="row"><span class="field">validUntil</span><span class="strong">2026-12-31</span></div>
+          </div>
+          <div class="stage-note">Out-of-scope actions are impossible</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy-box">
+      <div class="analogy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><circle cx="16" cy="17" r="2"/></svg></div>
+      <div class="analogy-content">
+        <h4>Think of it like a power of attorney.</h4>
+        <p>To let someone advance a contract while you're away, you draft a power of attorney that spells out "the scope of the delegated authority" and "the expiry" — have you ever done something like this? Lemma's Agent Authority Proof uses the same mechanism for AI agents. Without handing over the key itself, it carries only "within this scope, until this expiry, in this role" as a cryptographic proof.</p>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">What is disclosed</div>
+        <h4>The scope of authority + the proof</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>delegatedBy</code> (the delegator's signature)</span></li>
+          <li><span class="mark">✓</span><span><code>role</code> / <code>scope</code> (role and scope)</span></li>
+          <li><span class="mark">✓</span><span><code>spendLimit</code> / <code>validUntil</code> (limit and expiry)</span></li>
+          <li><span class="mark">✓</span><span>The cryptographic proof of authority (independently verifiable)</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">What stays private</div>
+        <h4>Keys, personal data, internal organization</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span>The delegator's private key and credentials</span></li>
+          <li><span class="mark">✗</span><span>The delegator's personal data and internal organizational information</span></li>
+          <li><span class="mark">✗</span><span>Out-of-scope authority and other business</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="outcome-block">
+      <div class="outcome-title">What happens with this mechanism</div>
+      <div class="outcome-grid">
+        <div class="outcome-item"><span class="check">✓</span><span>The AI agent can act on behalf within scope, without holding a key</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>The private key stays with the delegator, so leakage risk is structurally absent</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>Over-limit and out-of-scope actions are cryptographically rejected</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>The authority chain across multi-tier agents can be independently verified after the fact</span></div>
+      </div>
+    </div>
+
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">Run autonomous agents without handing over a key.</h3>
+      <div class="possibilities-list">
+        <div class="poss-item"><span class="arrow">→</span><span>Independently verify the chain across multi-tier agents after the fact</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>Stop over-limit and out-of-scope actions by construction</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>Key-leakage risk disappears from the structure of the work</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · How it differs from existing approaches</div>
+    <h2 class="section-h2">How it differs from API keys, OAuth, and RBAC.</h2>
+    <p class="section-lead">Existing authority management either "hands over a key" or "stays self-contained within a system." The era of autonomous AI agents demands "acting on behalf without handing over a key" — and that needs a different structure.</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>Approach</div><div>Acts on behalf within scope</div><div>Key stays with delegator</div><div>Independently verifiable</div><div>Cryptographic proof</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="11" height="6" rx="1"/><circle cx="16" cy="11" r="2"/></svg></div>
+          <span class="matrix-label">Handing over an API key directly</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="10" r="4"/><circle cx="14" cy="10" r="4"/></svg></div>
+          <span class="matrix-label">OAuth token</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell partial">△</div><div class="matrix-cell partial">△</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="6" r="2.5"/><path d="M5 16 a5 5 0 0 1 10 0"/><rect x="3" y="12" width="14" height="6" rx="1"/></svg></div>
+          <span class="matrix-label">RBAC (in-system permissions)</span>
+        </div>
+        <div class="matrix-cell partial">△</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M6.5 10 L9 12.5 L14 7.5"/></svg></div>
+          <span class="matrix-label">Lemma Agent Authority Proof</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · Position in the trust infrastructure</div>
+      <h3>P3 is one of the four axes that make up the Lemma trust infrastructure.</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip">P1 Origin</span>
+      <span class="pos-chip">P2 AI</span>
+      <span class="pos-chip this">P3 Authority</span>
+      <span class="pos-chip">P4 Attributes</span>
+    </div>
+    <a href="/pillars/" class="position-more">See the full trust infrastructure →</a>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · Use in practice</div>
+    <h2 class="section-h2">Business scenarios that use this axis.</h2>
+    <div class="uc-row">
+      <a href="/solutions/use-cases/multi-agent-workflows/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="14" cy="14" r="2"/><line x1="8" y1="6" x2="12" y2="6"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · A2A</div>Multi-agent workflows</div>
+      </a>
+      <a href="/solutions/use-cases/delegated-treasury/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="6"/><text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="8" fill="currentColor">$</text></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · Treasury</div>Delegated treasury</div>
+      </a>
+      <a href="/solutions/use-cases/agent-expense-approval/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="11" rx="1"/><path d="M6 11 L8 13 L12 9" stroke-width="1.8"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · Expenses</div>Agent expense approval</div>
+      </a>
+      <a href="/solutions/use-cases/agent-procurement/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="14" height="10" rx="1"/><path d="M3 9 H17"/><circle cx="6" cy="13" r="1.5"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · Procurement</div>Agent procurement</div>
+      </a>
+      <a href="/solutions/use-cases/agent-api-billing/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="1"/><text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">API</text></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · Billing</div>Agent API billing</div>
+      </a>
+      <a href="/solutions/use-cases/agent2agent-settlement/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="10" r="2.5"/><circle cx="15" cy="10" r="2.5"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · Settlement</div>A2A settlement</div>
+      </a>
+    </div>
+    <a href="/solutions/use-cases/" class="uc-link-more">See all use cases →</a>
+  </div>
+</section>
+
+<section class="tech-section" id="tech">
+  <div class="container">
+    <div class="section-eyebrow">05 · Technical reference</div>
+    <h2 class="section-h2">Proprietary cryptography to prove delegated authority without handing over a key.</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item"><h4>Delegator signature</h4><p>Cryptographically fixes the issuer of the authority. Who delegated it can be independently verified by a third party after the fact.</p></div>
+        <div class="tech-item"><h4>Parametric authority</h4><p>Role, scope, limit, and validity are parameterized. Anything exceeding them is cryptographically detected and rejected before execution.</p></div>
+        <div class="tech-item"><h4>ZK authority proof</h4><p>The key itself is never handed over; only the fact that "this agent may act on behalf within this scope" is passed to the agent as a ZK proof.</p></div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.agent.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.agent.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"delegatedBy"</span>: <span class="str">"ceo@org.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"role"</span>: <span class="str">"procurement"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"spendLimitUSDC"</span>: <span class="num">5000</span>,<br>
+        &nbsp;&nbsp;<span class="key">"scope"</span>: <span class="str">"vendor-list-2026"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"validUntil"</span>: <span class="str">"2026-12-31"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuer"</span>: <span class="str">"org.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"zk_proof"</span>: <span class="str">"0x9c4f...e7d2"</span><br>
+        }
+      </div>
+    </div>
+
+    <div class="guides-block">
+      <div class="guides-eyebrow">Developer guides for implementing P3</div>
+      <h3 class="guides-h3">Technical documentation related to this axis.</h3>
+      <div class="guides-list">
+        <a href="/blog/encrypt-everything-expose-nothing" class="guide-link"><div><span class="tag-mono">GUIDES</span>Encrypt Everything, Expose Nothing</div><span class="arrow">→</span></a>
+        <a href="/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>Prove Facts with Zero Knowledge</div><span class="arrow">→</span></a>
+        <a href="/blog/query-verified-attributes" class="guide-link"><div><span class="tag-mono">GUIDES</span>Query Verified Attributes</div><span class="arrow">→</span></a>
+        <a href="/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>Define Your Domain as a Schema</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/guides/" class="guides-more">See all technical documentation →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · Next steps</div>
+    <h2 class="section-h2">See it for yourself with a business scenario.</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/Pd2Rl5?pillar=agent-authority-proof" class="cta-card">
+        <div class="label">For business teams</div>
+        <h3>Discovery Call</h3>
+        <p>We'll hear your business scenario in 30 minutes. No technical details, personal information, or confidential data required.</p>
+        <span class="cta-arrow">Get in touch →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">For developers</div>
+        <h3>Try the Schema</h3>
+        <p>Try your.agent.v1 in the Lemma Dashboard in 5 minutes. Read alongside the SDK and Guides.</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

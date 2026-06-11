@@ -1,0 +1,55 @@
+---
+/**
+ * Pillars hub — v2 (implementation-guide hub, aligned with the v4 detail pages).
+ *
+ * Site chrome (Layout/Nav/Footer) around a per-locale body fragment
+ * (config/pillars-hub-v2/index.<locale>.html), injected inside
+ * `<main class="ph2">`. Shared, namespaced styles in styles/pillars-hub-v2.css.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import PillarMechanismAxes from "../components/PillarMechanismAxes.astro";
+import "../styles/pillars-hub-v2.css";
+
+// §仕組み + §4 つの軸 are injected (verbatim from the old homepage) at the
+// <!--MECH_AXES_SLOT--> marker in the body fragment, between §2 (workflow)
+// and §possibilities.
+const MECH_AXES_SLOT = "<!--MECH_AXES_SLOT-->";
+
+export interface PillarsHubV2Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  body: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
+const { locale, t, base, body, metaTitle, metaDescription } =
+  Astro.props as PillarsHubV2Props;
+
+const slotIndex = body.indexOf(MECH_AXES_SLOT);
+const bodyBefore = slotIndex >= 0 ? body.slice(0, slotIndex) : body;
+const bodyAfter = slotIndex >= 0 ? body.slice(slotIndex + MECH_AXES_SLOT.length) : "";
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/pillars/"
+  ogImage={`https://lemma.frame00.com/og/pillars/${locale}.png`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="ph2">
+    <Fragment set:html={bodyBefore} />
+    <PillarMechanismAxes locale={locale} base={base} />
+    <Fragment set:html={bodyAfter} />
+  </main>
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>

@@ -1,4 +1,21 @@
 ---
+/**
+ * Lemma blog — article detail page, v24-aligned.
+ *
+ * Migrated from the prior v22 dark-full-bleed-hero chrome to the v24
+ * reading layout: cream page, container-narrow 760px reading column,
+ * Sora display + Noto Sans JP body + Space Mono labels, saddle brown
+ * accent on eyebrows / links / list markers / quote rules.
+ *
+ * Cover image is kept (blog content is image-heavy) but rendered as a
+ * sized 16:9 frame above the meta strip, not as a full-bleed overlay
+ * hero. Title and meta sit in the cream container that follows.
+ *
+ * Body styling, TOC, related-links, tags, CTA, prev/next, and related
+ * posts are all reworked to v24. The body's rendered markdown HTML is
+ * not touched — only the surrounding chrome and the .article-body CSS
+ * are changed.
+ */
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
 import { getTagDestination, isBlogCategory, categorySlug } from "../data/blog";
@@ -6,6 +23,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import defaultCover from "../assets/default-blog-cover.png";
 import { DISCOVERY_CALL_URL } from "../config/cta";
@@ -32,295 +50,874 @@ export interface BlogArticleTemplateProps {
   partnerCtaButton: string;
   relatedLabel: string;
   relatedLinksLabel: string;
-  tocLabel: string;
   readingTimeLabel: string;
 }
 
-const { locale, t, base, blogPath, post, navigation, related, partnerCtaTitle, partnerCtaDesc, partnerCtaButton, relatedLabel, relatedLinksLabel, tocLabel, readingTimeLabel } = Astro.props as BlogArticleTemplateProps;
+const {
+  locale,
+  t,
+  base,
+  blogPath,
+  post,
+  navigation,
+  related,
+  partnerCtaTitle,
+  partnerCtaDesc,
+  partnerCtaButton,
+  relatedLabel,
+  relatedLinksLabel,
+  readingTimeLabel,
+} = Astro.props as BlogArticleTemplateProps;
+
+const homeLabel = locale === "ja" ? "ホーム" : "Home";
+const isJa = locale === "ja";
+const builtForHeading = isJa
+  ? "意思決定のために"
+  : "Built for decisions";
+const builtForHeadingItalic = isJa ? "つくられている。" : "that matter.";
 ---
 
 <Layout
   locale={locale}
-  title={`${post.title} — Lemma Oracle`}
+  title={`${post.title} — Lemma`}
   description={post.abstract}
   metaType="article"
   post={post}
   blogPath={blogPath}
+  ogImage={`https://lemma.frame00.com/og/blog/${locale}/${post.slug}.png`}
 >
   {post && <SchemaOrg post={post} blogPath={blogPath} />}
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <section class="article-hero">
-    <img src={post.cover ?? defaultCover.src} alt="" />
-    <div class="article-hero-overlay"></div>
-    <div class="article-hero-meta">
-      <div class="eyebrow">
-        {post.category}
-        <span class="eyebrow-date">{post.date}</span>
-        <span class="eyebrow-reading-time">{readingTimeLabel}</span>
+  <main class="blog-page">
+    <div class="blog-container">
+      <div class="blog-breadcrumb">
+        <a href={base || "/"}>{homeLabel}</a>
+        <span class="blog-breadcrumb-sep">/</span>
+        <a href={blogPath}>Blog</a>
+        <span class="blog-breadcrumb-sep">/</span>
+        {isBlogCategory(post.category) ? (
+          <a href={`${blogPath}/category/${categorySlug(post.category)}`}>
+            {post.category}
+          </a>
+        ) : (
+          <span>{post.category}</span>
+        )}
       </div>
-      <h1 class="article-hero-title">{post.title}</h1>
-    </div>
-  </section>
 
-  <div class="prose-wrap">
-    <div class="breadcrumb">
-      <a href={blogPath}>Blog</a>
-      <span class="breadcrumb-sep">/</span>
-      {isBlogCategory(post.category) ? (
-        <a href={`${blogPath}/category/${categorySlug(post.category)}`}>{post.category}</a>
-      ) : (
-        <a href={blogPath}>{post.category}</a>
+      <section class="blog-hero">
+        <div class="blog-eyebrow">
+          <span class="eyebrow-cat">{post.category}</span>
+          <span class="eyebrow-sep">·</span>
+          <span class="eyebrow-date">{post.date}</span>
+          <span class="eyebrow-sep">·</span>
+          <span class="eyebrow-time">{readingTimeLabel}</span>
+        </div>
+        <h1 class="blog-h1">{post.title}</h1>
+        {post.abstract && <p class="blog-abstract">{post.abstract}</p>}
+      </section>
+
+      <figure class="blog-cover">
+        <img
+          src={post.cover ?? defaultCover.src}
+          alt=""
+          loading="lazy"
+        />
+      </figure>
+
+      <div class="blog-body" set:html={post.body} />
+
+      {post.relatedLinks && post.relatedLinks.length > 0 && (
+        <section class="blog-resources">
+          <div class="resources-label">{relatedLinksLabel}</div>
+          <ul class="resources-list">
+            {post.relatedLinks.map((link) => (
+              <li class="resources-item">
+                <a
+                  href={link.href}
+                  class="resources-link"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  <span class="resources-link-label">{link.label}</span>
+                  <span class="resources-link-href">{link.href}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {post.tags && post.tags.length > 0 && (
+        <nav class="blog-tags" aria-label="Related topics">
+          {post.tags.map((tag) => {
+            const href = getTagDestination(tag, base);
+            return href ? (
+              <a class="blog-tag blog-tag-link" href={href}>#{tag}</a>
+            ) : (
+              <span class="blog-tag">#{tag}</span>
+            );
+          })}
+        </nav>
+      )}
+
+      <section class="blog-cta">
+        <div class="cta-eyebrow">{partnerCtaTitle}</div>
+        <h2 class="cta-h2">
+          {builtForHeading}<br />
+          <em>{builtForHeadingItalic}</em>
+        </h2>
+        <p class="cta-text">{partnerCtaDesc}</p>
+        <div class="cta-btns">
+          <button
+            type="button"
+            class="btn-cta-main"
+            data-tally-open={isJa ? "xX0VYv" : "7RJXdR"}
+            data-tally-emoji-text=""
+          >
+            {t.ctaSection.finalWpText}
+          </button>
+          <a
+            href={DISCOVERY_CALL_URL[locale]}
+            class="btn-cta-outline"
+            target="_blank"
+            rel="noopener"
+          >
+            {partnerCtaButton}
+          </a>
+        </div>
+      </section>
+
+      <NewsletterEmbed locale={locale} placement="blog-footer" />
+
+      {(navigation.prev || navigation.next) && (
+        <section class="blog-prevnext">
+          {navigation.prev && (
+            <a
+              href={`${blogPath}/${navigation.prev.slug}`}
+              class="prevnext-card prev"
+            >
+              <div class="prevnext-dir">← Previous</div>
+              <div class="prevnext-title">{navigation.prev.title}</div>
+              <div class="prevnext-date">
+                {navigation.prev.date} · {navigation.prev.category}
+              </div>
+            </a>
+          )}
+          {navigation.next && (
+            <a
+              href={`${blogPath}/${navigation.next.slug}`}
+              class="prevnext-card next"
+            >
+              <div class="prevnext-dir">Next →</div>
+              <div class="prevnext-title">{navigation.next.title}</div>
+              <div class="prevnext-date">
+                {navigation.next.date} · {navigation.next.category}
+              </div>
+            </a>
+          )}
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section class="blog-related">
+          <div class="related-label">{relatedLabel}</div>
+          <ul class="related-list">
+            {related.map((r) => (
+              <li>
+                <a href={`${blogPath}/${r.slug}`} class="related-item">
+                  <div
+                    class="related-thumb"
+                    style={`background-image:url('${r.cover ?? ""}')`}
+                  ></div>
+                  <div class="related-body">
+                    <div class="related-cat">
+                      {r.category} · {r.date}
+                    </div>
+                    <div class="related-title">{r.title}</div>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
-
-    {post.headings.length > 1 && (
-      <nav class="article-toc" aria-label={tocLabel}>
-        <div class="toc-label">{tocLabel}</div>
-        <ol class="toc-list">
-          {post.headings.map((h) => (
-            <li class={`toc-item toc-level-${h.level}`}>
-              <a href={`#${h.id}`}>
-                <span class="toc-text">{h.text}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
-    )}
-
-    <div class="article-body" set:html={post.body} />
-
-    {post.relatedLinks && post.relatedLinks.length > 0 && (
-      <div class="resources-section">
-        <div class="resources-label">{relatedLinksLabel}</div>
-        <ul class="resources-list">
-          {post.relatedLinks.map((link) => (
-            <li class="resources-item">
-              <a href={link.href} class="resources-link" rel="noopener" target="_blank">
-                <span class="resources-link-label">{link.label}</span>
-                <span class="resources-link-href">{link.href}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-
-    {post.tags && post.tags.length > 0 && (
-      <nav class="tag-strip" aria-label="Related topics">
-        {post.tags.map((tag) => {
-          const href = getTagDestination(tag, base);
-          return href ? (
-            <a class="tag-chip tag-chip-link" href={href}>#{tag}</a>
-          ) : (
-            <span class="tag-chip">#{tag}</span>
-          );
-        })}
-      </nav>
-    )}
-
-    <div class="article-cta">
-      <div class="article-cta-eyebrow">{partnerCtaTitle}</div>
-      <h2>Built for decisions<br><em>that matter.</em></h2>
-      <div class="article-cta-rule"></div>
-      <p>{partnerCtaDesc}</p>
-      <div class="article-cta-btns">
-        <a
-          href={locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR"}
-          class="btn-cta-main"
-          target="_blank"
-          rel="noopener"
-        >{t.ctaSection.finalWpText}</a>
-        <a href={DISCOVERY_CALL_URL[locale]} class="btn-cta-outline" target="_blank" rel="noopener">{partnerCtaButton}</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="prevnext">
-    {navigation.prev && (
-      <a href={`${blogPath}/${navigation.prev.slug}`} class="prevnext-item">
-        <div class="prevnext-dir">← Previous</div>
-        <div class="prevnext-title">{navigation.prev.title}</div>
-        <div class="prevnext-date">{navigation.prev.date} · {navigation.prev.category}</div>
-      </a>
-    )}
-    {navigation.next && (
-      <a href={`${blogPath}/${navigation.next.slug}`} class="prevnext-item">
-        <div class="prevnext-dir right">Next →</div>
-        <div class="prevnext-title right">{navigation.next.title}</div>
-        <div class="prevnext-date right">{navigation.next.date} · {navigation.next.category}</div>
-      </a>
-    )}
-  </div>
-
-  {related.length > 0 && (
-    <div class="related-section">
-      <div class="related-label">{relatedLabel}</div>
-      <div class="related-list">
-        {related.map((r) => (
-          <a href={`${blogPath}/${r.slug}`} class="related-item">
-            <div class="related-thumb" style={`background-image:url('${r.cover ?? ""}')`}></div>
-            <div class="related-body">
-              <div class="related-cat">{r.category} · {r.date}</div>
-              <div class="related-title">{r.title}</div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  )}
+  </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
 <style>
-  .article-hero { margin-top: 64px; position: relative; height: 56vh; min-height: 400px; overflow: hidden; }
-  .article-hero img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.5) brightness(.8); }
-  .article-hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.72) 100%); }
-  .article-hero-meta { position: absolute; bottom: 0; left: 0; right: 0; padding: 0 max(5%, calc(50% - 420px)) 52px; }
-  .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #8B4513; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-  .eyebrow::before { content: ''; width: 20px; height: 1px; background: #8B4513; display: block; }
-  .eyebrow-date { font-size: 11px; color: rgba(255,255,255,.4); margin-left: 12px; }
-  .eyebrow-reading-time { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .12em; text-transform: none; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.18); }
-  .article-hero-title { font-family: var(--font-display); font-size: clamp(30px,4.5vw,54px); font-weight: 500; color: #fff; line-height: 1.1; max-width: 720px; }
+  /* v24 typography palette — scoped to blog article pages. */
+  .blog-page {
+    --bl-display: "Sora", system-ui, -apple-system, sans-serif;
+    --bl-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bl-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --bl-text-1: #1a1a1a;
+    --bl-text-2: #3a3a3a;
+    --bl-text-3: #5a5a5a;
+    --bl-text-4: #9a9a9a;
 
-  .prose-wrap { max-width: 920px; margin: 0 auto; padding: 64px 24px 0; }
-
-  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 11px; color: var(--gray-500); flex-wrap: wrap; }
-  .breadcrumb a { color: var(--gray-500); transition: color .2s; text-decoration: none; }
-  .breadcrumb a:hover { color: #000; }
-  .breadcrumb-sep { color: var(--gray-200); }
-
-  .tag-strip { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 56px 0 0; padding-top: 28px; border-top: 1px solid var(--gray-200); }
-  .tag-chip { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; color: var(--gray-500); letter-spacing: .02em; text-decoration: none; transition: color .2s; }
-  .tag-chip-link:hover { color: var(--accent, #8B4513); }
-
-  .article-toc { margin: 0 0 56px; padding: 24px 28px; border: 1px solid var(--gray-200); border-radius: 2px; background: #fafafa; }
-  .toc-label { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-  .toc-label::before { content: ''; width: 18px; height: 1px; background: var(--gray-200); display: block; }
-  .toc-list { list-style: none; margin: 0; padding: 0; }
-  .toc-item { padding: 0; }
-  .toc-item a { display: flex; align-items: baseline; gap: 14px; padding: 7px 0; color: var(--gray-700, #444); text-decoration: none; transition: color .2s; line-height: 1.45; }
-  .toc-item a:hover { color: #000; }
-  .toc-item.toc-level-3 { padding-left: 0; }
-  .toc-text { font-size: 14px; }
-  .article-body :global(h2[id]), .article-body :global(h3[id]) { scroll-margin-top: 96px; }
-  @media (max-width: 640px) {
-    .article-toc { padding: 18px 20px; margin-bottom: 40px; }
-    .toc-text { font-size: 13px; }
+    background: var(--lemma-cream);
+    color: var(--bl-text-2);
+    font-family: var(--bl-body);
+    font-weight: 400;
+    line-height: 1.85;
+    padding: 0 0 96px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .blog-page {
+    --bl-body: "Sora", system-ui, sans-serif;
   }
 
-  .article-body { font-feature-settings: "palt" 1; max-width: 100%; overflow-wrap: break-word; }
-  .article-body :global(h2) { font-family: var(--font-display); font-size: clamp(28px,3.4vw,36px); font-weight: 500; color: #000; line-height: 1.25; margin: 96px 0 28px; }
-  .article-body :global(h2:first-child) { margin-top: 0; }
-  .article-body :global(h3) { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: #000; margin: 48px 0 16px; line-height: 1.35; }
-  .article-body :global(> p:first-of-type) { font-size: 18px; line-height: 1.7; color: #2a2a2a; margin-bottom: 32px; }
-  .article-body :global(p) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.85; color: var(--gray-800); margin-bottom: 32px; }
-  .article-body :global(ul) { list-style: none; margin: 0 0 32px; padding: 0; }
-  .article-body :global(ul li) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.8; color: var(--gray-800); padding: 6px 0 6px 24px; position: relative; }
-  .article-body :global(ul li::before) { content: '◆'; position: absolute; left: 0; color: var(--accent); font-size: 8px; top: 13px; }
-  .article-body :global(ol) { list-style: none; margin: 0 0 32px; padding: 0; counter-reset: item; }
-  .article-body :global(ol li) { font-family: var(--font-body); font-size: 17px; font-weight: 400; line-height: 1.8; color: var(--gray-800); padding: 6px 0 6px 36px; position: relative; counter-increment: item; }
-  .article-body :global(ol li::before) { content: counter(item) "."; position: absolute; left: 0; top: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; font-weight: 500; letter-spacing: .04em; color: var(--accent); }
-  .article-body :global(a) { color: var(--accent); border-bottom: 1px solid rgba(139,69,19,.28); text-decoration: none; transition: border-color .2s, color .2s; }
-  .article-body :global(a:hover) { border-bottom-color: var(--accent); color: #6e3610; }
-  .article-body :global(strong) { font-weight: 600; color: #000; }
-  .article-body :global(em) { font-style: italic; color: #444; }
-  .article-body :global(p:has(> em:only-child)) {
-    font-size: 19px;
+  .blog-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .blog-breadcrumb {
+    font-family: var(--bl-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bl-text-4);
+    padding: 36px 0 0;
+  }
+  .blog-breadcrumb a {
+    color: var(--bl-text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .blog-breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .blog-breadcrumb-sep {
+    color: var(--lemma-line);
+    margin: 0 8px;
+  }
+
+  /* ─── HERO ─── */
+  .blog-hero {
+    padding: 32px 0 32px;
+  }
+  .blog-eyebrow {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bl-text-4);
+    margin: 0 0 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow-cat {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+  }
+  .eyebrow-sep {
+    color: var(--lemma-line);
+  }
+  .blog-h1 {
+    font-family: var(--bl-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.06;
+    margin: 0 0 22px;
+    color: var(--black);
+    letter-spacing: -0.03em;
+  }
+  :root[lang="ja"] .blog-h1 {
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .blog-abstract {
+    font-family: var(--bl-display);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--bl-text-2);
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+
+  /* ─── COVER ─── */
+  .blog-cover {
+    margin: 24px 0 56px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--lemma-cream-deep);
+    aspect-ratio: 16 / 9;
+  }
+  .blog-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ─── BODY (rendered markdown HTML) ─── */
+  .blog-body {
+    font-feature-settings: "palt" 1;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--bl-text-2);
+  }
+  .blog-body :global(h2[id]),
+  .blog-body :global(h3[id]) {
+    scroll-margin-top: 96px;
+  }
+  .blog-body :global(h2) {
+    font-family: var(--bl-display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 64px 0 24px;
+  }
+  :root[lang="ja"] .blog-body :global(h2) {
+    line-height: 1.35;
+  }
+  .blog-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .blog-body :global(h3) {
+    font-family: var(--bl-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.35;
+    margin: 40px 0 16px;
+  }
+  .blog-body :global(p) {
+    font-family: var(--bl-body);
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--bl-text-2);
+    margin: 0 0 24px;
+  }
+  .blog-body :global(> p:first-of-type) {
+    font-size: 17px;
+    color: var(--bl-text-1);
+  }
+  .blog-body :global(strong) {
+    color: var(--black);
+    font-weight: 500;
+  }
+  .blog-body :global(em) {
+    font-style: italic;
+    color: var(--bl-text-2);
+  }
+  .blog-body :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+    overflow-wrap: anywhere;
+  }
+  .blog-body :global(a:hover) {
+    border-bottom-color: var(--accent);
+    color: #6e3610;
+  }
+
+  /* Lists — brown diamond ul, mono brown ol */
+  .blog-body :global(ul) {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+  .blog-body :global(ul li) {
+    position: relative;
+    padding-left: 24px;
+    margin: 0 0 10px;
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  .blog-body :global(ul li::before) {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 13px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 1px;
+    transform: rotate(45deg);
+  }
+  .blog-body :global(ol) {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0 0 0 4px;
+    counter-reset: bloglist;
+  }
+  .blog-body :global(ol li) {
+    counter-increment: bloglist;
+    position: relative;
+    padding-left: 32px;
+    margin: 0 0 12px;
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  .blog-body :global(ol li::before) {
+    content: counter(bloglist);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: var(--bl-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Pull-quote (single italic paragraph) */
+  .blog-body :global(p:has(> em:only-child)) {
+    font-family: var(--bl-display);
+    font-size: 20px;
+    font-style: italic;
     line-height: 1.55;
-    color: #2a2a2a;
-    margin: 56px 0;
+    color: var(--bl-text-1);
+    margin: 48px 0;
     padding-left: 24px;
     border-left: 2px solid var(--accent);
     overflow-wrap: anywhere;
   }
-  .article-body :global(p:has(> em:only-child) em) { font-style: italic; color: inherit; }
-  .article-body :global(blockquote) { border-left: 2px solid var(--accent); padding: 4px 0 4px 24px; margin: 48px 0; font-style: italic; color: #444; }
-  .article-body :global(blockquote p) { margin-bottom: 0; }
-  .article-body :global(hr) { border: none; border-top: 1px solid var(--gray-200); margin: 56px 0; }
-  .article-body :global(table) { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-collapse: collapse; font-size: 15px; margin: 40px 0; }
-  .article-body :global(table thead), .article-body :global(table tbody) { display: table; width: 100%; min-width: 560px; }
-  .article-body :global(thead tr) { background: #000; color: #fff; }
-  .article-body :global(th) { padding: 14px 18px; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-align: left; white-space: nowrap; }
-  .article-body :global(td) { padding: 14px 18px; border-bottom: 1px solid var(--gray-200); color: var(--gray-800); line-height: 1.65; vertical-align: top; }
-  .article-body :global(tr:nth-child(odd) td) { background: var(--gray-50); }
-  .article-body :global(pre) { margin: 32px 0; padding: 24px; background: #1a1a1a; border-radius: 4px; overflow-x: auto; }
-  /* Inline `<code>` chip. Scoped with :not(pre code) so the
-     light-grey chip styling doesn't leak into Shiki-highlighted
-     code blocks, where it produced a per-line white box against
-     the dark pre background. */
-  .article-body :global(code:not(pre code)) { font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace); font-size: 0.8em; border-radius: 0.3em; padding: 0.1em 0.3em; background-color: #f5f5f5; }
-  .article-body :global(pre code) { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #e1e4e8; background: transparent; padding: 0; border-radius: 0; }
+  .blog-body :global(p:has(> em:only-child) em) {
+    font-style: italic;
+    color: inherit;
+  }
+  .blog-body :global(blockquote) {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 24px;
+    margin: 40px 0;
+    font-style: italic;
+    color: var(--bl-text-1);
+  }
+  .blog-body :global(blockquote p) {
+    margin-bottom: 0;
+  }
+  .blog-body :global(hr) {
+    border: none;
+    border-top: 0.5px solid var(--lemma-line);
+    margin: 48px 0;
+  }
 
-  .resources-section { margin: 64px 0 0; padding-top: 32px; border-top: 1px solid var(--gray-200); }
-  .resources-label { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-  .resources-label::before { content: ''; width: 18px; height: 1px; background: var(--gray-200); display: block; }
-  .resources-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
-  .resources-item { padding: 0; }
-  .resources-link { display: flex; flex-direction: column; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--gray-200); text-decoration: none; color: inherit; transition: opacity .2s; }
-  .resources-list .resources-item:first-child .resources-link { border-top: 1px solid var(--gray-200); }
-  .resources-link:hover { opacity: .65; }
-  .resources-link-label { font-family: var(--font-body); font-size: 16px; font-weight: 400; color: #000; }
-  .resources-link-href { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; color: var(--gray-500); word-break: break-all; }
+  /* Tables */
+  .blog-body :global(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-family: var(--bl-body);
+    font-size: 14px;
+    margin: 32px 0;
+  }
+  .blog-body :global(thead tr) {
+    background: var(--lemma-cream-deep);
+  }
+  .blog-body :global(th) {
+    padding: 12px 14px;
+    font-family: var(--bl-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bl-text-3);
+    text-align: left;
+    border-bottom: 0.5px solid var(--lemma-line);
+    white-space: nowrap;
+  }
+  .blog-body :global(td) {
+    padding: 12px 14px;
+    border-bottom: 0.5px solid var(--lemma-line);
+    color: var(--bl-text-2);
+    line-height: 1.65;
+    vertical-align: top;
+  }
 
-  .article-cta { margin: 80px -24px 0; background: #000; padding: 64px 48px; text-align: center; border-top: 3px solid #8B4513; }
-  .article-cta-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; color: #8B4513; margin-bottom: 20px; }
-  .article-cta h2 { font-family: var(--font-display); font-size: clamp(28px,4vw,44px); font-weight: 300; color: #fff; line-height: 1.1; margin-bottom: 16px; }
-  .article-cta h2 em { font-style: italic; }
-  .article-cta-rule { width: 40px; height: 1px; background: #8B4513; margin: 24px auto; }
-  .article-cta p { font-size: 15px; color: rgba(255,255,255,.45); line-height: 1.75; max-width: 400px; margin: 0 auto 40px; }
-  .article-cta-btns {
-    display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  /* Code */
+  .blog-body :global(code:not(pre code)) {
+    font-family: var(--bl-mono);
+    font-size: 0.86em;
+    background: var(--lemma-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    color: var(--bl-text-1);
+  }
+  .blog-body :global(pre) {
+    margin: 28px 0;
+    padding: 22px 24px;
+    background: #1a1a1a;
+    color: #e8e2d4;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: var(--bl-mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .blog-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Inline images */
+  .blog-body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 32px 0;
+  }
+
+  /* ─── RESOURCES (related links) ─── */
+  .blog-resources {
+    margin: 64px 0 0;
+    padding: 32px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .resources-label {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--bl-text-3);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .resources-label::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .resources-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .resources-item {
+    padding: 0;
+  }
+  .resources-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 10px;
+    margin: 0 0 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .resources-link:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    background: var(--lemma-cream-deep);
+  }
+  .resources-link-label {
+    font-family: var(--bl-display);
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--black);
+    letter-spacing: -0.005em;
+  }
+  .resources-link-href {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  /* ─── TAGS ─── */
+  .blog-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 56px 0 0;
+    padding-top: 28px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .blog-tag {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--bl-text-3);
+    background: var(--lemma-cream-deep);
+    padding: 5px 10px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+  }
+  .blog-tag-link:hover {
+    color: var(--accent);
+    background: var(--lemma-brown-light);
+  }
+
+  /* ─── CTA (cream-deep card, no longer black hero) ─── */
+  .blog-cta {
+    margin: 80px 0 0;
+    background: var(--lemma-cream-deep);
+    border-radius: 16px;
+    padding: 48px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .blog-cta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .cta-eyebrow {
+    font-family: var(--bl-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .cta-h2 {
+    font-family: var(--bl-display);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.1;
+    margin: 0 0 18px;
+    letter-spacing: -0.025em;
+  }
+  .cta-h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .cta-text {
+    font-family: var(--bl-body);
+    font-size: 14px;
+    color: var(--bl-text-2);
+    line-height: 1.75;
+    max-width: 460px;
+    margin: 0 auto 32px;
+  }
+  .cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
   .btn-cta-main {
-    background: #fff; color: #000; padding: 18px 52px; font-size: 12px; font-weight: 500;
-    letter-spacing: .16em; text-transform: uppercase; border: none; cursor: pointer; display: inline-block;
+    background: var(--accent);
+    color: var(--lemma-cream);
+    padding: 14px 32px;
+    font-family: var(--bl-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
     text-decoration: none;
-    transition: background .2s, color .2s;
+    transition: background 0.2s, color 0.2s;
   }
-  .btn-cta-main:hover { background: #8B4513; color: #fff; }
+  .btn-cta-main:hover {
+    background: #6e3610;
+  }
   .btn-cta-outline {
-    background: transparent; color: rgba(255,255,255,0.65); padding: 17px 44px;
-    font-size: 12px; font-weight: 400; letter-spacing: .16em; text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.28); cursor: pointer; display: inline-block;
+    background: var(--white);
+    color: var(--accent);
+    padding: 14px 30px;
+    font-family: var(--bl-display);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    cursor: pointer;
     text-decoration: none;
-    transition: border-color .2s, color .2s;
+    transition: border-color 0.2s, background 0.2s;
   }
-  .btn-cta-outline:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
-  @media (max-width: 640px) {
-    .article-cta-btns { flex-direction: column; align-items: center; }
+  .btn-cta-outline:hover {
+    border-color: var(--accent);
+    background: var(--lemma-brown-light);
   }
 
-  .prevnext { max-width: 680px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--gray-200); margin-top: 2px; }
-  .prevnext-item { background: #fff; padding: 28px 32px; border-top: 2px solid transparent; transition: border-color .2s; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
-  .prevnext-item:hover { border-top-color: #8B4513; }
-  .prevnext-dir { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #8B4513; }
-  .prevnext-dir.right { text-align: right; }
-  .prevnext-title { font-family: var(--font-display); font-size: 16px; font-weight: 400; color: #000; line-height: 1.35; }
-  .prevnext-title.right { text-align: right; }
-  .prevnext-date { font-size: 11px; color: var(--gray-500); }
-  .prevnext-date.right { text-align: right; }
+  /* ─── PREV / NEXT ─── */
+  .blog-prevnext {
+    margin: 56px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .prevnext-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    padding: 22px 24px;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .prevnext-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
+  }
+  .prevnext-card.next {
+    text-align: right;
+  }
+  .prevnext-dir {
+    font-family: var(--bl-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .prevnext-title {
+    font-family: var(--bl-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .prevnext-date {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    color: var(--bl-text-3);
+  }
 
-  .related-section { max-width: 680px; margin: 72px auto 0; padding: 0 24px; }
-  .related-label { font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
-  .related-label::before { content: ''; width: 18px; height: 1px; background: var(--gray-200); display: block; }
-  .related-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--gray-200); }
-  .related-item { display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--gray-200); transition: opacity .2s; text-decoration: none; color: inherit; }
-  .related-item:hover { opacity: .75; }
-  .related-thumb { width: 100px; height: 64px; flex-shrink: 0; background-size: cover; background-position: center; filter: saturate(.4) brightness(.88); }
-  .related-body { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .related-cat { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #8B4513; }
-  .related-title { font-family: var(--font-display); font-size: 17px; font-weight: 400; color: #000; line-height: 1.3; }
+  /* ─── RELATED POSTS ─── */
+  .blog-related {
+    margin: 72px 0 0;
+    padding: 56px 0 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .related-label {
+    font-family: var(--bl-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--bl-text-3);
+    margin: 0 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .related-label::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .related-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 16px 18px;
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .related-item:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    background: var(--lemma-cream-deep);
+  }
+  .related-thumb {
+    width: 96px;
+    height: 64px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    background-color: var(--lemma-cream-deep);
+  }
+  .related-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .related-cat {
+    font-family: var(--bl-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .related-title {
+    font-family: var(--bl-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+  }
 
-  @media(max-width:768px) {
-    .prose-wrap { padding: 32px 20px 0; }
-    .breadcrumb { margin-bottom: 16px; }
-    .tag-strip { margin-top: 40px; padding-top: 20px; }
-    .article-cta { margin: 64px -20px 0; padding: 48px 28px; }
-    .prevnext { margin-left: 0; margin-right: 0; grid-template-columns: 1fr; }
-    .related-section { padding: 0 20px; }
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 760px) {
+    .blog-container {
+      padding: 0 24px;
+    }
+    .blog-hero {
+      padding: 24px 0 24px;
+    }
+    .blog-h1 {
+      font-size: 36px;
+    }
+    .blog-abstract {
+      font-size: 17px;
+    }
+    .blog-cta {
+      padding: 36px 28px;
+    }
+    .blog-prevnext {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 540px) {
+    .blog-h1 {
+      font-size: 30px;
+    }
+    .related-item {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .related-thumb {
+      width: 100%;
+      height: 140px;
+    }
   }
 </style>

@@ -12,6 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["005-noroboto-lying-fonts", "011-synthid-watermark-reverse-engineering"]
 version: "1.0"
 status: published
+og_lead_ja: "顔認識の AI 判定が独立検証なく強制処分に直結 — Robert Williams 誤認逮捕"
+og_lead_en: "AI face-match drove enforcement with no independent verification — Robert Williams"
 ---
 
 ## TL;DR
@@ -64,7 +66,7 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 ---
 
-## 5. Detection 層では届かない構造的 gap
+## 5. 検出と証明の落差
 
 FRT とその精度評価（NIST 等）は、行政・捜査における初期の絞り込み手段として一定の役割を持ち、本 Brief がその役割を否定するものではない。精度・バイアスの計測（detection 的評価）は、技術選定や運用制限の根拠として不可欠である。
 
@@ -87,7 +89,7 @@ FRT とその精度評価（NIST 等）は、行政・捜査における初期�
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造的 gap（AI の判定出力が、その根拠・検証状態・認可を独立に証明できないまま、行政の強制処分の根拠として機能する）に対して、Lemma は、AI 出力が下流の意思決定に用いられる時点で、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されたかを、独立検証可能な暗号証明として固定する設計を提示している。Lemma は判定の公平性そのものを保証するものではないが、その判定が行動前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。これは行政が AI 利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI の判定出力が、その根拠・検証状態・認可を独立に証明できないまま、行政の強制処分の根拠として機能する）に対して、Lemma は、AI 出力が下流の意思決定に用いられる時点で、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されたかを、独立検証可能な暗号証明として固定する設計を提示している。Lemma は判定の公平性そのものを保証するものではないが、その判定が行動前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。これは行政が AI 利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
 
 ---
 
@@ -98,3 +100,17 @@ FRT とその精度評価（NIST 等）は、行政・捜査における初期�
 - **University of Michigan Law (Law Quadrangle)**: "Flawed Facial Recognition Technology Leads to Wrongful Arrest and Historic Settlement"（2024–2025 Winter）— https://quadrangle.michigan.law.umich.edu/issues/winter-2024-2025/flawed-facial-recognition-technology-leads-wrongful-arrest-and-historic
 - **Michigan Public**: "'It didn't make sense at all': Wrongful facial recognition arrest in Detroit leads to landmark settlement"（2024-06-28）— https://www.michiganpublic.org/criminal-justice-legal-system/2024-06-28/it-didnt-make-sense-at-all-wrongful-facial-recognition-arrest-leads-to-landmark-settlement
 - **NIST**: "Face Recognition Vendor Test (FRVT) Part 3: Demographic Effects"（NISTIR 8280、2019-12）— https://nvlpubs.nist.gov/nistpubs/ir/2019/nist.ir.8280.pdf
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

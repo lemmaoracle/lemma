@@ -1,0 +1,274 @@
+<section class="hero" style="border-bottom:none">
+  <div class="container">
+    <div class="hero-eyebrow">Pillar 03 — Agent Authority Proof</div>
+    <h1>エージェント権限証明。</h1>
+    <p class="hero-strap">AI エージェントに鍵を渡さず、権限だけを証明する。</p>
+    <p class="hero-lead">AI エージェントが「誰の代理で」「どの範囲まで」動けるかを、署名鍵を渡さずに暗号証明として持たせる。Lemma 信頼インフラを構成する 4 軸の 1 つ。</p>
+  </div>
+</section>
+
+<div class="now-band">
+  <div class="container">
+    <div class="now-eyebrow">いま、最も求められている課題に答える</div>
+    <div class="now-grid">
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="14" width="14" height="11" rx="2"/><path d="M11 14 V10 a4 4 0 0 1 8 0 V14"/><line x1="6" y1="6" x2="26" y2="26" stroke="#B8501F" stroke-width="2.2"/></svg>
+        <span>AI エージェントの自律実行に鍵を渡したくない</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="10" r="3"/><circle cx="23" cy="10" r="3"/><circle cx="16" cy="22" r="3"/><line x1="11" y1="12" x2="14" y2="20"/><line x1="21" y1="12" x2="18" y2="20"/></svg>
+        <span>多階層 agent の権限連鎖を後追い検証したい</span>
+      </div>
+      <div class="now-card">
+        <svg class="now-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="22" height="14" rx="2"/><text x="16" y="20" text-anchor="middle" font-family="Space Mono" font-size="9" fill="currentColor">MAX</text></svg>
+        <span>上限超過・範囲外行動を止める仕組みが要る</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">01 · エージェント権限証明とは</div>
+    <h2 class="section-h2">鍵を渡さずに、代理権限だけを証明する。</h2>
+    <p class="section-lead">委任者・役割・範囲・上限・有効期限を暗号証明に固定。AI agent は範囲内でのみ動き、行動はすべて検証可能になります。</p>
+
+    <div class="mech-wrap">
+      <div class="mech-flow">
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="4"/><path d="M5 21 a7 7 0 0 1 14 0"/></svg></div>
+          <div class="stage-label">委任者</div>
+          <h4>人間 / 組織</h4>
+          <p style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:auto">AI エージェントに与える役割・範囲・上限・有効期限を定義します。</p>
+          <div class="stage-note">秘密鍵は委任者の手元</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage lemma">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="2"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="15" cy="13" r="1.4" fill="currentColor"/><path d="M8 8 V5 a4 4 0 0 1 8 0 V8"/></svg></div>
+          <div class="stage-label">Lemma</div>
+          <h4>権限を暗号証明として発行</h4>
+          <div class="lemma-steps">
+            <div class="lemma-step"><span class="step-num">1</span><span>委任者の署名で権限を固定</span></div>
+            <div class="lemma-step"><span class="step-num">2</span><span>範囲・上限・期限をパラメータ化</span></div>
+            <div class="lemma-step"><span class="step-num">3</span><span>ZK 証明として agent に渡す</span></div>
+          </div>
+          <div class="stage-note">鍵そのものは渡さない</div>
+        </div>
+        <div class="mech-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14,6 20,12 14,18"/></svg></div>
+        <div class="mech-stage">
+          <div class="mech-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="9" width="14" height="10" rx="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><line x1="10" y1="13" x2="14" y2="13"/></svg></div>
+          <div class="stage-label">AI agent</div>
+          <h4>鍵なしで動く</h4>
+          <div class="data-list" style="line-height:1.85">
+            <div class="row"><span class="field">delegatedBy</span><span class="strong">ceo@org.jp</span></div>
+            <div class="row"><span class="field">role</span><span class="strong">procurement</span></div>
+            <div class="row"><span class="field">spendLimitUSDC</span><span class="strong">5000</span></div>
+            <div class="row"><span class="field">scope</span><span class="strong">vendor-2026</span></div>
+            <div class="row"><span class="field">validUntil</span><span class="strong">2026-12-31</span></div>
+          </div>
+          <div class="stage-note">範囲外行動は不可</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analogy-box">
+      <div class="analogy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><circle cx="16" cy="17" r="2"/></svg></div>
+      <div class="analogy-content">
+        <h4>たとえると、委任状のような仕組みです。</h4>
+        <p>不在時に契約を進めてもらうため「代理権の範囲」「期限」を明示した委任状を作成する——このような経験はありませんか。Lemma のエージェント権限証明は、AI agent に同じ仕組みを使います。鍵そのものを渡さず、「この範囲で、この期限まで、この役割で」だけを暗号証明として持たせます。</p>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="split-card show">
+        <div class="split-label">公開するもの</div>
+        <h4>権限の範囲 + 証明</h4>
+        <ul class="split-list">
+          <li><span class="mark">✓</span><span><code>delegatedBy</code>（委任者の署名）</span></li>
+          <li><span class="mark">✓</span><span><code>role</code> / <code>scope</code>（役割と範囲）</span></li>
+          <li><span class="mark">✓</span><span><code>spendLimit</code> / <code>validUntil</code>（上限と期限）</span></li>
+          <li><span class="mark">✓</span><span>権限の暗号証明（独立検証可能）</span></li>
+        </ul>
+      </div>
+      <div class="split-card hide">
+        <div class="split-label">非公開のまま</div>
+        <h4>鍵・個人情報・組織内部</h4>
+        <ul class="split-list">
+          <li><span class="mark">✗</span><span>委任者の秘密鍵・認証情報</span></li>
+          <li><span class="mark">✗</span><span>委任者の個人情報・内部組織情報</span></li>
+          <li><span class="mark">✗</span><span>範囲外の権限・他の業務</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="outcome-block">
+      <div class="outcome-title">この仕組みで、何が起きるか</div>
+      <div class="outcome-grid">
+        <div class="outcome-item"><span class="check">✓</span><span>AI agent は鍵を持たずに、範囲内で代理行動できる</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>秘密鍵は委任者の手元に留まり、漏洩リスクが構造的にない</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>上限超過・範囲外行動は暗号的に拒絶される</span></div>
+        <div class="outcome-item"><span class="check">✓</span><span>多階層 agent の権限連鎖を後から独立検証できる</span></div>
+      </div>
+    </div>
+
+    <div class="possibilities-block">
+      <h3 class="possibilities-h3">鍵を渡さずに、自律エージェントを動かす。</h3>
+      <div class="possibilities-list">
+        <div class="poss-item"><span class="arrow">→</span><span>多階層 agent の連鎖を、後から独立検証できる</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>上限超過・範囲外行動を、構造的に止められる</span></div>
+        <div class="poss-item"><span class="arrow">→</span><span>鍵漏洩リスクが、業務構造から消える</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">02 · 既存手段との違い</div>
+    <h2 class="section-h2">API キー・OAuth・RBAC と、何が違うか。</h2>
+    <p class="section-lead">既存の権限管理は「鍵を渡す」か「システム内で完結」する。AI 自律エージェント時代の「鍵を渡さない代理」は別の構造が必要。</p>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>手段</div><div>範囲内で代理</div><div>鍵は委任者手元</div><div>独立検証可能</div><div>暗号証明</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="11" height="6" rx="1"/><circle cx="16" cy="11" r="2"/></svg></div>
+          <span class="matrix-label">API キー直接渡し</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="10" r="4"/><circle cx="14" cy="10" r="4"/></svg></div>
+          <span class="matrix-label">OAuth トークン</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell partial">△</div><div class="matrix-cell partial">△</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="6" r="2.5"/><path d="M5 16 a5 5 0 0 1 10 0"/><rect x="3" y="12" width="14" height="6" rx="1"/></svg></div>
+          <span class="matrix-label">RBAC（システム内権限）</span>
+        </div>
+        <div class="matrix-cell partial">△</div><div class="matrix-cell yes">✓</div><div class="matrix-cell no">✗</div><div class="matrix-cell no">✗</div>
+      </div>
+      <div class="matrix-row lemma">
+        <div class="matrix-name">
+          <div class="matrix-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><path d="M6.5 10 L9 12.5 L14 7.5"/></svg></div>
+          <span class="matrix-label">Lemma エージェント権限証明</span>
+        </div>
+        <div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div><div class="matrix-cell yes">✓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="position-band">
+  <div class="container">
+    <div class="position-text">
+      <div class="position-eyebrow">03 · 信頼インフラの位置</div>
+      <h3>P3 は、Lemma 信頼インフラを構成する 4 軸の 1 つ。</h3>
+    </div>
+    <div class="position-chips">
+      <span class="pos-chip">P1 来歴</span>
+      <span class="pos-chip">P2 AI 判断</span>
+      <span class="pos-chip this">P3 権限</span>
+      <span class="pos-chip">P4 規制属性</span>
+    </div>
+    <a href="/ja/pillars/" class="position-more">信頼インフラ全体を見る →</a>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow">04 · 業務での活用</div>
+    <h2 class="section-h2">この軸を使う、業務シーン。</h2>
+    <div class="uc-row">
+      <a href="/ja/solutions/use-cases/multi-agent-workflows/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="14" cy="14" r="2"/><line x1="8" y1="6" x2="12" y2="6"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · A2A</div>マルチエージェント業務</div>
+      </a>
+      <a href="/ja/solutions/use-cases/delegated-treasury/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="6"/><text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="8" fill="currentColor">$</text></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · 財務</div>委任財務</div>
+      </a>
+      <a href="/ja/solutions/use-cases/agent-expense-approval/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="11" rx="1"/><path d="M6 11 L8 13 L12 9" stroke-width="1.8"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · 経費</div>エージェント経費承認</div>
+      </a>
+      <a href="/ja/solutions/use-cases/agent-procurement/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="14" height="10" rx="1"/><path d="M3 9 H17"/><circle cx="6" cy="13" r="1.5"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · 発注</div>エージェント発注</div>
+      </a>
+      <a href="/ja/solutions/use-cases/agent-api-billing/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="1"/><text x="10" y="13" text-anchor="middle" font-family="Sora" font-weight="700" font-size="7" fill="currentColor">API</text></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · 課金</div>エージェント API 課金</div>
+      </a>
+      <a href="/ja/solutions/use-cases/agent2agent-settlement/" class="uc-chip">
+        <svg class="uc-chip-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="10" r="2.5"/><circle cx="15" cy="10" r="2.5"/><line x1="7.5" y1="10" x2="12.5" y2="10"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/></svg>
+        <div class="uc-chip-text"><div class="uc-chip-tag">P3 · 決済</div>A2A 決済</div>
+      </a>
+    </div>
+    <a href="/ja/solutions/use-cases/" class="uc-link-more">全ユースケースを見る →</a>
+  </div>
+</section>
+
+<section class="tech-section" id="tech">
+  <div class="container">
+    <div class="section-eyebrow">05 · 技術リファレンス</div>
+    <h2 class="section-h2">独自の暗号技術で、鍵を渡さずに代理権限を証明する。</h2>
+    <div class="tech-grid">
+      <div class="tech-list">
+        <div class="tech-item"><h4>委任者署名</h4><p>権限の発行者を暗号的に固定。誰が委任したかを、後から第三者が独立検証できる。</p></div>
+        <div class="tech-item"><h4>パラメトリック権限</h4><p>役割・範囲・上限・期限をパラメータ化。超過は実行前に暗号的に検出して拒絶する。</p></div>
+        <div class="tech-item"><h4>ZK 権限証明</h4><p>鍵そのものは渡さず、「この範囲で代理できる」事実だけを ZK 証明として agent に渡す。</p></div>
+      </div>
+      <div class="tech-schema">
+        <span class="comment">// your.agent.v1 — Lemma canonical schema</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="key">"$schema"</span>: <span class="str">"your.agent.v1"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"delegatedBy"</span>: <span class="str">"ceo@org.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"role"</span>: <span class="str">"procurement"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"spendLimitUSDC"</span>: <span class="num">5000</span>,<br>
+        &nbsp;&nbsp;<span class="key">"scope"</span>: <span class="str">"vendor-list-2026"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"validUntil"</span>: <span class="str">"2026-12-31"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"issuer"</span>: <span class="str">"org.jp"</span>,<br>
+        &nbsp;&nbsp;<span class="key">"zk_proof"</span>: <span class="str">"0x9c4f...e7d2"</span><br>
+        }
+      </div>
+    </div>
+
+    <div class="guides-block">
+      <div class="guides-eyebrow">P3 を実装する開発ガイド</div>
+      <h3 class="guides-h3">この軸に関係する技術ドキュメント。</h3>
+      <div class="guides-list">
+        <a href="/ja/blog/encrypt-everything-expose-nothing" class="guide-link"><div><span class="tag-mono">GUIDES</span>すべてを暗号化し、何も露出しない</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/prove-facts-with-zero-knowledge" class="guide-link"><div><span class="tag-mono">GUIDES</span>ゼロ知識で事実を証明する</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/query-verified-attributes" class="guide-link"><div><span class="tag-mono">GUIDES</span>検証済み属性をクエリする</div><span class="arrow">→</span></a>
+        <a href="/ja/blog/define-your-domain-as-a-schema" class="guide-link"><div><span class="tag-mono">GUIDES</span>ドメインをスキーマとして定義する</div><span class="arrow">→</span></a>
+      </div>
+      <a href="/ja/guides/" class="guides-more">技術ドキュメント全体を見る →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-eyebrow">06 · 次のステップ</div>
+    <h2 class="section-h2">業務シナリオで、確かめる。</h2>
+    <div class="cta-grid">
+      <a href="https://tally.so/r/EkBqDX?pillar=agent-authority-proof" class="cta-card">
+        <div class="label">業務担当の方へ</div>
+        <h3>Discovery Call</h3>
+        <p>業務シナリオを 30 分でお聞きします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
+        <span class="cta-arrow">問い合わせる →</span>
+      </a>
+      <a href="https://dashboard.lemma.workers.dev" class="cta-card">
+        <div class="label">開発者の方へ</div>
+        <h3>Schema を試す</h3>
+        <p>your.agent.v1 を Lemma Dashboard で 5 分試す。SDK と Guides を併読。</p>
+        <span class="cta-arrow">Dashboard →</span>
+      </a>
+    </div>
+  </div>
+</section>

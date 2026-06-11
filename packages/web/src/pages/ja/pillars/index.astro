@@ -1,30 +1,21 @@
 ---
-import PillarsHubTemplate from "../../../templates/PillarsHubTemplate.astro";
-import { getAllPillars } from "../../../data/pillars";
-import { getBlogSections } from "../../../data/blog";
+import PillarsHubV2 from "../../../templates/PillarsHubV2.astro";
 import { getTranslations } from "../../../i18n/translations";
+import bodyJa from "../../../config/pillars-hub-v2/index.ja.html?raw";
 
 const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
-const pillars = getAllPillars();
-const pillarT = t.pillars;
-
-const sections = await getBlogSections(locale);
-const guides = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "ガイド" || p.category === "Guides");
-const foundations = sections
-  .flatMap((s) => s.posts)
-  .filter((p) => p.category === "基盤" || p.category === "Foundations");
+const metaTitle = "AI のための信頼インフラ — 来歴・AI 判断・権限・規制属性に暗号証明 | Lemma";
+const metaDescription =
+  "AI のための信頼インフラ。来歴・AI 判断・権限・規制属性の 4 軸で、AI が使うデータに暗号証明を返す。既存ワークフローに 1 レイヤー加えるだけで、全工程に証明が乗ります。";
 ---
 
-<PillarsHubTemplate
+<PillarsHubV2
   locale={locale}
   t={t}
   base={base}
-  pillars={pillars}
-  pillarT={pillarT}
-  guides={guides}
-  foundations={foundations}
+  body={bodyJa}
+  metaTitle={metaTitle}
+  metaDescription={metaDescription}
 />

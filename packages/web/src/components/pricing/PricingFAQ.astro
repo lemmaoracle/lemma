@@ -1,0 +1,67 @@
+---
+/**
+ * §6 — Pricing FAQ. 7 plain items (no accordion) with mono "Q." prefix.
+ */
+import type { Locale } from "../../i18n/translations";
+import { PRICING } from "../../data/pricing";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props as Props;
+const f = PRICING.faq;
+---
+
+<section class="pf-section">
+  <div class="pr-section-eyebrow">{f.eyebrow[locale]}</div>
+  <h2 class="pr-section-h2">
+    {f.h2Head[locale]}<br />
+    <span class="accent">{f.h2Accent[locale]}</span>
+  </h2>
+
+  <div class="pf-list">
+    {f.items.map((item) => (
+      <article class="pf-item">
+        <h3 class="pf-q">{item.q[locale]}</h3>
+        <p class="pf-a">{item.a[locale]}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .pf-item {
+    padding: 24px 0;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .pf-q {
+    font-family: var(--pr-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .pf-q::before {
+    content: "Q.";
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  .pf-a {
+    font-size: 14px;
+    color: var(--pr-text-2);
+    line-height: 1.85;
+    margin: 0;
+    padding-left: 30px;
+  }
+</style>

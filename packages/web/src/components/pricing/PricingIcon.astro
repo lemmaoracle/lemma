@@ -1,0 +1,43 @@
+---
+/**
+ * Inline SVG icon switch for the Option Packs.
+ * Stroke colour is currentColor so the parent .pack-icon-circle can
+ * theme the icon per variant.
+ */
+import type { PricingIconName } from "../../data/pricing";
+
+interface Props {
+  name: PricingIconName;
+  size?: number;
+}
+
+const { name, size = 22 } = Astro.props as Props;
+---
+
+{name === "shield-alert" && (
+  <svg width={size} height={size} viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <path d="M 11 3 L 18 6 L 18 12 Q 18 17 11 19 Q 4 17 4 12 L 4 6 Z" stroke="currentColor" stroke-width="1.5" fill="none" />
+    <line x1="11" y1="8" x2="11" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="11" cy="15" r="0.9" fill="currentColor" />
+  </svg>
+)}
+
+{name === "doc-stack" && (
+  <svg width={size} height={size} viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <rect x="5" y="3" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none" />
+    <line x1="8" y1="7" x2="14" y2="7" stroke="currentColor" stroke-width="1.3" />
+    <line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="1.3" opacity="0.7" />
+    <line x1="8" y1="15" x2="12" y2="15" stroke="currentColor" stroke-width="1.3" opacity="0.7" />
+  </svg>
+)}
+
+{name === "agent-network" && (
+  <svg width={size} height={size} viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <rect x="5" y="7" width="12" height="11" rx="2.5" stroke="currentColor" stroke-width="1.5" fill="none" />
+    <circle cx="8.5" cy="11.5" r="1.2" fill="currentColor" />
+    <circle cx="13.5" cy="11.5" r="1.2" fill="currentColor" />
+    <line x1="9" y1="15" x2="13" y2="15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+    <line x1="11" y1="4" x2="11" y2="7" stroke="currentColor" stroke-width="1.3" />
+    <circle cx="11" cy="3" r="1" fill="currentColor" />
+  </svg>
+)}

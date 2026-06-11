@@ -1,5 +1,5 @@
 /**
- * Lemma Oracle glossary terms (EN).
+ * Lemma glossary terms (EN).
  *
  * Source of truth for /glossary/* pages. 27 terms across 4 categories,
  * mirroring src/data/glossary.ts (JA). Authored under code review — see
@@ -25,13 +25,13 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Zero-Knowledge Proof — ZKP",
     category: "暗号レイヤ",
     description:
-      "Definition and Lemma Oracle implementation of zero-knowledge proofs — a cryptographic primitive that proves a statement true without revealing the underlying secret.",
+      "Definition and Lemma implementation of zero-knowledge proofs — a cryptographic primitive that proves a statement true without revealing the underlying secret.",
     lead:
       "A cryptographic primitive that proves a statement true without exposing the statement's contents or the underlying secret values — third-party machine-verifiable.",
     definition: [
       "A zero-knowledge proof (ZKP) is an interactive or non-interactive protocol in which a prover convinces a verifier that a statement is true while leaking no information about the witness behind it. Goldwasser, Micali, and Rackoff introduced the concept in 1985; modern formulations require completeness, soundness, and zero-knowledge.",
       "Most production deployments are non-interactive (NIZK). SNARK families (Groth16, PLONK, Halo2) and STARK families dominate, each trading proof size, verification time, and trusted-setup requirements. Any computation expressed as a constraint system can be proven over private inputs.",
-      "ZKP serves two distinct purposes: proving properties without disclosing the underlying values (privacy), and replacing heavy verification with short proofs (scalability). Lemma Oracle uses the privacy axis as its primary lever.",
+      "ZKP serves two distinct purposes: proving properties without disclosing the underlying values (privacy), and replacing heavy verification with short proofs (scalability). Lemma uses the privacy axis as its primary lever.",
     ],
     implementation: [
       'Lemma\'s core architecture pins provenance, attributes, and AI inference traces as a <code>docHash</code> and emits proofs over a ZK circuit that exposes only the facts that matter — "a provenance chain exists," "an attribute is within a range" — without leaking the underlying content or PII to the verifier.',
@@ -596,7 +596,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     nameEn: "Mythos",
     category: "脅威モデル・AI攻撃",
     description:
-      "Definition and Lemma Oracle response path for Mythos — the Anthropic frontier model whose automated zero-day discovery and exploit-chain construction define the contemporary AI threat class.",
+      "Definition and Lemma response path for Mythos — the Anthropic frontier model whose automated zero-day discovery and exploit-chain construction define the contemporary AI threat class.",
     lead:
       "<strong>Claude Mythos Preview</strong>, the Anthropic frontier model offered for defensive use through <strong>Project Glasswing</strong> (launched April 7, 2026). It compresses zero-day discovery, exploit-chain construction, and target adaptation into a single agent. \"Mythos-grade\" names that capability class.",
     definition: [
@@ -862,7 +862,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "Tamper-evident execution history. Direct match for automated-logging duties." },
     ],
     ctaH2: "Cryptographic compliance for the EU AI Act.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
   },
   {
     slug: "ai-business-guidelines",
@@ -890,7 +890,7 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "Tamper-evident substrate for governance evidence." },
     ],
     ctaH2: "Cryptographic compliance for the AI Business Operator Guidelines.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
   },
   {
     slug: "ai-promotion-act",
@@ -918,7 +918,34 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "The substrate for after-the-fact verification." },
     ],
     ctaH2: "Stay ahead of Japan's AI regulation curve.",
-    implementationHeading: "Lemma Oracle compliance path",
+    implementationHeading: "Lemma compliance path",
+  },
+  {
+    slug: "pii",
+    nameJa: "PII / 個人を特定可能な情報",
+    nameEn: "PII (Personally Identifiable Information)",
+    category: "規制・コンプライアンス",
+    description:
+      "Information that identifies, or can be used to identify, a specific person — name, address, ID numbers, biometrics. GDPR, CCPA, and Japan's APPI all push operators toward collection minimization and breach-surface reduction.",
+    lead:
+      "Information that identifies, or can be used to identify, a specific individual — name, contact, ID number, biometrics, device identifiers, location. GDPR, CCPA, and Japan's APPI all require operators to minimize collection and to reduce the breach surface around stored data at the same time.",
+    definition: [
+      "Scope varies by jurisdiction. GDPR uses <strong>personal data</strong>, CCPA <strong>personal information</strong>, Japan's APPI 「個人情報」; the definitions don't line up exactly. The common floor includes name, address, contact, identifier numbers (national ID, PPID, PAN, ...), biometrics, device identifiers, location, communication records, transaction history. The EU draws an additional perimeter around <strong>special-category</strong> data (sensitive PII — health, race, religion, biometric, sexual orientation, and so on) and demands additional protection.",
+      "Regulators put two loads on the operator at once: <strong>collection minimization</strong> and <strong>storage-time protection</strong>. The two are in tension — strengthening the latter doesn't erase the breach surface as long as the original data is held. The structural risk is that stored original PII remains both attack surface and regulatory exposure indefinitely.",
+      "Adjacent vocabulary: PHI (Protected Health Information, HIPAA) for healthcare, PAN (Primary Account Number, PCI DSS) for payments. This entry treats PII as the parent concept; the adjacent regulations carry their own surface and live in their own entries.",
+    ],
+    implementation: [
+      'Reframe the operator out of holding original PII, and let only the required attribute travel as a proof. The issuer signs the original; the holder discloses predicates ("over 18", "KYC passed", "Japan resident", ...) via <a href="/glossary/selective-disclosure/">selective disclosure</a>; the verifier sees only the attribute. Three layers; no original in motion.',
+      'The original stays under the issuer; it never reaches the verifier, the recipient, or the AI inference path. It sits encrypted under <a href="/glossary/aes-gcm/">AES-GCM</a>; what touches the circuit is the <a href="/glossary/doc-hash/">docHash</a> and the attribute <a href="/glossary/commitment/">commitment</a>. When a breach happens, the surface that can leak is structurally smaller.',
+      'The pattern fits anywhere a regulation simultaneously demands attribute verification and data minimization — <a href="/glossary/kyc-aml/">KYC/AML</a>, age checks, residency proofs — and shows up as an alternative path for <a href="/glossary/eu-ai-act/">EU AI Act</a> high-risk inputs, GDPR Article 8, and Japan\'s "anonymized information" pattern under APPI.',
+    ],
+    related: [
+      { slug: "kyc-aml", desc: "The canonical regulated domain where attributes can be proven without the underlying PII." },
+      { slug: "selective-disclosure", desc: "Prove the attribute, keep the PII out of motion." },
+      { slug: "audit-trail", desc: "Tamper-evident record of who confirmed which attribute and when." },
+      { slug: "provenance", desc: "Keep the processing history of PII-handling steps independently verifiable." },
+    ],
+    ctaH2: "Prove the attribute. Don't ship the PII.",
   },
 ];
 

@@ -1,25 +1,14 @@
 ---
 import IndexTemplate from "../templates/IndexTemplate.astro";
-import { getBlogSections } from "../data/blog";
 import { getTranslations } from "../i18n/translations";
 
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
-const sections = await getBlogSections(locale);
-const essays = sections.find((s) => s.section === "Essays")?.posts ?? [];
-const recentPosts = essays.slice(0, 6).map((p) => ({
-  category: p.category,
-  date: p.date,
-  title: p.title,
-  slug: p.slug,
-}));
 ---
 
 <IndexTemplate
   locale={locale}
   t={t}
   base={base}
-  description={t.layout.defaultDescription}
-  recentPosts={recentPosts}
 />
