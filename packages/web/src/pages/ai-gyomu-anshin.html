@@ -188,6 +188,12 @@
     border-radius:var(--radius);padding:20px;box-shadow:0 30px 70px -30px rgba(0,0,0,.6)}
   .hero-fig svg{width:100%;height:auto;display:block}
   .fig-cap{text-align:center;color:var(--muted);font-size:.88rem;margin-top:12px}
+  @media(max-width:560px){
+    .hero-fig{padding:16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .hero-fig svg{min-width:600px}
+    .fig-hint{display:block;text-align:center;color:var(--muted);font-size:.72rem;margin-top:6px}
+  }
+  .fig-hint{display:none}
 
   /* ===== how it works ===== */
   .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -477,6 +483,7 @@
       </svg>
       <p class="fig-cap">データは会社のPCやサーバーに置いたまま。Lemmaが「条件を満たしている」という事実だけを確かめて、AIに渡します。</p>
     </div>
+    <p class="fig-hint">← 図は横にスワイプして全体を見られます →</p>
   </div>
 </section>
 
