@@ -30,7 +30,7 @@ const whitepaperFormId = locale === "ja" ? "xX0VYv" : "7RJXdR";
     <a href={homePath} class="nav-logo">
       <LemmaOracle class="h-[65px] w-auto text-white" />
     </a>
-    <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>
+    {locale !== "ja" && <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>}
   </nav>
 
   <main class="main">
