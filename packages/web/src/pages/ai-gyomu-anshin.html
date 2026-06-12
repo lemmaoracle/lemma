@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIに業務を安全に任せるには｜個人情報を見せずに動かす・権限確認・証明 - Lemma</title>
+<meta name="description" content="生成AIに業務を任せたいけれど、機密や個人情報、勝手な操作が不安——。データを外に出さずにAIを動かし、決めた範囲を超える操作は止め、誰が何をしたか記録に残す。AIエージェント導入の不安を解消する仕組みです。">
+<meta name="keywords" content="AIエージェント 安全,生成AI 機密情報 不安,AI 個人情報 漏洩 対策,AI 権限 管理,AI 業務 自動化,AI 監査 記録,AIエージェント 導入 課題,自治体 AI 個人情報">
+<meta name="author" content="FRAME00株式会社">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#8B4513">
+<link rel="canonical" href="https://lemma.frame00.com/ai-gyomu-anshin/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="256x256" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lemma">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="AIに業務を安全に任せるには｜個人情報を見せずに動かす - Lemma">
+<meta property="og:description" content="機密も個人情報も外に出さずにAIを動かし、決めた範囲を超える操作は止め、誰が何をしたか記録に残す。AIエージェント導入の不安を解消する仕組みです。">
+<meta property="og:url" content="https://lemma.frame00.com/ai-gyomu-anshin/">
+<meta property="og:image" content="https://lemma.frame00.com/og/home/ja.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AIに業務を安全に任せるには｜個人情報を見せずに動かす - Lemma">
+<meta name="twitter:description" content="機密も個人情報も外に出さずにAIを動かし、範囲外の操作は止め、記録に残す。AIエージェント導入の不安を解消する仕組みです。">
+<meta name="twitter:image" content="https://lemma.frame00.com/og/home/ja.png">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"Organization",
+      "@id":"https://lemma.frame00.com/#org",
+      "name":"Lemma",
+      "legalName":"FRAME00株式会社",
+      "url":"https://lemma.frame00.com/",
+      "logo":"https://lemma.frame00.com/og/home/ja.png",
+      "parentOrganization":{"@type":"Organization","name":"FRAME00株式会社","url":"https://corp.frame00.com/"},
+      "sameAs":["https://x.com/lemmaoracle","https://github.com/lemmaoracle","https://www.linkedin.com/company/lemmaoracle/","https://corp.frame00.com/"]
+    },
+    {
+      "@type":"WebSite",
+      "@id":"https://lemma.frame00.com/#website",
+      "url":"https://lemma.frame00.com/",
+      "name":"Lemma",
+      "inLanguage":"ja",
+      "publisher":{"@id":"https://lemma.frame00.com/#org"}
+    },
+    {
+      "@type":"WebPage",
+      "@id":"https://lemma.frame00.com/ai-gyomu-anshin/#webpage",
+      "url":"https://lemma.frame00.com/ai-gyomu-anshin/",
+      "name":"AIに業務を安全に任せるには｜個人情報を見せずに動かす・権限確認・証明",
+      "description":"生成AIに業務を任せたいが、機密や個人情報、勝手な操作が不安。データを外に出さずにAIを動かし、決めた範囲を超える操作は止め、誰が何をしたか記録に残す仕組み。",
+      "inLanguage":"ja",
+      "isPartOf":{"@id":"https://lemma.frame00.com/#website"},
+      "about":{"@id":"https://lemma.frame00.com/#service"}
+    },
+    {
+      "@type":"Service",
+      "@id":"https://lemma.frame00.com/#service",
+      "name":"Lemma",
+      "serviceType":"AIエージェント向け信頼インフラ（権限確認・選択的証明・監査記録）",
+      "provider":{"@id":"https://lemma.frame00.com/#org"},
+      "areaServed":"JP",
+      "description":"データを見せずにAIを安全に動かす安全装置。出どころの確認、権限を超える動作の停止、改ざんされない記録を提供します。"
+    },
+    {
+      "@type":"FAQPage",
+      "@id":"https://lemma.frame00.com/ai-gyomu-anshin/#faq",
+      "mainEntity":[
+        {"@type":"Question","name":"機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？","acceptedAnswer":{"@type":"Answer","text":"個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。"}},
+        {"@type":"Question","name":"AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。","acceptedAnswer":{"@type":"Answer","text":"決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は、実行する前に止めます。「ここまで」を機械的に守れます。"}},
+        {"@type":"Question","name":"AIの判断の根拠を、あとから説明できますか？","acceptedAnswer":{"@type":"Answer","text":"誰が・いつ・何をしたかを、書き換えられない記録として残します。監査やお取引先に問われても、その場で示せます。"}},
+        {"@type":"Question","name":"既存のシステムとどうつなぎますか？導入は大変ですか？","acceptedAnswer":{"@type":"Answer","text":"いまの業務ひとつから、小さく始められます。データを渡さずに、自社システムとの連携を設計・検証します。MCP・A2A・x402などの世界標準にそのまま組み込めます。"}},
+        {"@type":"Question","name":"どんな業種で使えますか？","acceptedAnswer":{"@type":"Answer","text":"自治体・公共、製造・基幹インフラ、調達・サプライチェーン、法務・監査、金融の本人確認など、業界を横断して使えます。"}}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root{
+    --bg:#faf7f2;--bg-2:#f1e7da;--panel:#ffffff;--panel-2:#fbf6ef;
+    --ink:#2b2018;--ink-dim:#5c4f44;--muted:#8a7c6e;
+    --line:rgba(64,42,20,.14);
+    --brown:#8B4513;--brown-2:#a85a1f;--tan:#b5712e;--accent:#b5712e;
+    --good:#4e7a3a;--bad:#b5503f;
+    /* dark band */
+    --d-cream:#f6efe6;--d-cream-dim:#d8c9b8;--d-muted:#ab977f;--d-gold:#e7b884;
+    --d-line:rgba(231,184,132,.18);
+    --radius:16px;--maxw:1080px;
+    --shadow:0 1px 2px rgba(64,42,20,.05),0 10px 28px -18px rgba(64,42,20,.32);
+    --sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:
+      radial-gradient(1100px 620px at 84% -6%,rgba(139,69,19,.07),transparent 55%),
+      radial-gradient(820px 520px at -6% 104%,rgba(168,90,31,.06),transparent 60%),
+      var(--bg);
+    color:var(--ink);font-family:var(--sans);line-height:1.85;
+    -webkit-font-smoothing:antialiased;letter-spacing:.01em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{display:inline-block;font-size:.75rem;letter-spacing:.2em;font-weight:800;
+    color:var(--brown);text-transform:uppercase;margin-bottom:14px;
+    border-left:3px solid var(--brown);padding-left:10px}
+  .section-title{font-size:clamp(1.55rem,3.6vw,2.4rem);font-weight:900;line-height:1.32;color:var(--ink)}
+  .lead{color:var(--ink-dim);font-size:1.04rem;margin-top:16px;max-width:60ch}
+  svg.i{width:1em;height:1em;display:block;flex:0 0 auto}
+
+  .logo{height:26px;color:var(--ink);display:block}
+  .logo svg{height:100%;width:auto;display:block}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+    background:rgba(250,247,242,.82);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .nav-cta{font-size:.86rem;font-weight:800;padding:9px 17px;border-radius:999px;
+    background:linear-gradient(135deg,var(--brown-2),var(--brown));color:#fff;transition:.2s}
+  .nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+  section{padding:78px 0}
+  .section-head{max-width:64ch;margin-bottom:44px}
+
+  /* ===== DARK BANDS (メリハリ) ===== */
+  .band-dark{position:relative;overflow:hidden;color:var(--d-cream);
+    background:radial-gradient(1100px 640px at 80% -20%,rgba(168,90,31,.34),transparent 55%),
+               radial-gradient(820px 560px at -8% 120%,rgba(139,69,19,.3),transparent 60%),
+               linear-gradient(165deg,#2c1e13,#160e09)}
+  .band-dark .eyebrow{color:var(--d-gold);border-left-color:var(--d-gold)}
+  .band-dark .section-title{color:var(--d-cream)}
+  .band-dark .lead{color:var(--d-cream-dim)}
+
+  /* ===== HERO (dark, problem-first) ===== */
+  .hero{padding:96px 0 92px}
+  .hero h1{font-size:clamp(2.2rem,5.8vw,3.7rem);font-weight:900;line-height:1.24;color:var(--d-cream)}
+  .hero h1 em{font-style:normal;color:var(--d-gold);
+    background:linear-gradient(180deg,transparent 60%,rgba(231,184,132,.22) 60%)}
+  .hero .sub{margin-top:24px;font-size:1.14rem;color:var(--d-cream-dim);max-width:54ch}
+  .hero .stat-line{margin-top:26px;font-size:1rem;color:var(--d-muted)}
+  .hero .stat-line b{color:var(--d-gold);font-size:1.18rem}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:1rem;
+    padding:16px 28px;border-radius:12px;transition:.2s;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:linear-gradient(135deg,#e0a86a,var(--brown-2));color:#241509;
+    box-shadow:0 14px 30px -12px rgba(224,168,106,.5)}
+  .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.05)}
+  .btn-ghost{background:transparent;border:1px solid var(--d-line);color:var(--d-cream)}
+  .btn-ghost:hover{border-color:var(--d-gold);background:rgba(231,184,132,.08)}
+  .btn-primary.on-light{background:linear-gradient(135deg,var(--brown-2),var(--brown));color:#fff;
+    box-shadow:0 12px 28px -12px rgba(139,69,19,.55)}
+  .btn-ghost.on-light{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost.on-light:hover{border-color:var(--tan);background:var(--panel-2)}
+
+  /* ===== STATS (light, high contrast after dark) ===== */
+  .stats{background:#fff;border-bottom:1px solid var(--line)}
+  .stats-in{display:grid;grid-template-columns:repeat(3,1fr)}
+  .stat{padding:40px 24px;border-right:1px solid var(--line);border-top:3px solid var(--brown)}
+  .stat:last-child{border-right:none}
+  .stat .num{font-size:clamp(2rem,4.6vw,3rem);font-weight:900;color:var(--brown);line-height:1}
+  .stat .lab{margin-top:12px;color:var(--ink-dim);font-size:.9rem}
+
+  .sec-cream{background:var(--bg-2)}
+  .sec-white{background-color:#fffdfa;
+    background-image:radial-gradient(rgba(139,69,19,.05) 1px,transparent 1.4px);
+    background-size:24px 24px}
+
+  /* ===== problem cards ===== */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;box-shadow:var(--shadow);transition:.2s}
+  .card:hover{transform:translateY(-3px);border-color:var(--tan)}
+  .card .ic{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#fbeede,#f4e0c8);border:1px solid rgba(139,69,19,.18);
+    color:var(--brown);font-size:26px}
+  .card h3{margin-top:18px;font-size:1.2rem;font-weight:800}
+  .card p{margin-top:10px;color:var(--ink-dim);font-size:.95rem}
+
+  /* ===== reveal diagram (light card on dark band) ===== */
+  .reveal-promise{margin-top:22px;font-size:1.3rem;font-weight:900;color:var(--d-cream);
+    border-left:4px solid var(--d-gold);padding-left:18px;line-height:1.5}
+  .reveal-sub{margin-top:16px;color:var(--d-cream-dim);font-size:1.04rem;max-width:62ch;
+    padding-left:18px;border-left:4px solid transparent}
+  .hero-fig{margin-top:40px;background:#fff;border:1px solid rgba(231,184,132,.25);
+    border-radius:var(--radius);padding:20px;box-shadow:0 30px 70px -30px rgba(0,0,0,.6)}
+  .hero-fig svg{width:100%;height:auto;display:block}
+  .fig-cap{text-align:center;color:var(--muted);font-size:.88rem;margin-top:12px}
+
+  /* ===== how it works ===== */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .step{position:relative;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:26px 20px;text-align:center;box-shadow:var(--shadow)}
+  .step .n{position:absolute;top:14px;right:16px;font-size:.82rem;font-weight:900;color:var(--tan);opacity:.5}
+  .step .ic{width:58px;height:58px;margin:2px auto 0;border-radius:16px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--brown),var(--brown-2));color:#fff;font-size:27px;
+    box-shadow:0 12px 22px -10px rgba(139,69,19,.65)}
+  .step h4{margin-top:18px;font-size:1.04rem;font-weight:800;line-height:1.4}
+  .step p{margin-top:8px;color:var(--ink-dim);font-size:.9rem}
+  .equation{margin-top:32px;text-align:center;font-weight:900;color:var(--brown);font-size:1.18rem}
+  .standards{margin-top:40px;text-align:center;color:var(--muted);font-size:.9rem}
+  .standards .row{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-weight:700;
+    color:var(--ink-dim);font-size:.84rem;background:var(--panel)}
+
+  /* ===== before/after ===== */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ba .col{border-radius:var(--radius);padding:28px;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .ba .before{background:#fff}
+  .ba .after{background:linear-gradient(160deg,#fbede0,#fff);border-color:rgba(139,69,19,.32)}
+  .ba .col .tag{font-weight:900;font-size:.85rem;letter-spacing:.05em;margin-bottom:20px}
+  .ba .before .tag{color:var(--bad)}
+  .ba .after .tag{color:var(--good)}
+  .ba .item{padding:14px 0;border-top:1px dashed var(--line);display:flex;gap:14px;align-items:flex-start}
+  .ba .item:first-of-type{border-top:none}
+  .ba .item .ic{flex:0 0 auto;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:20px}
+  .ba .before .ic{background:#fae7e3;color:var(--bad)}
+  .ba .after .ic{background:#e9f1e1;color:var(--good)}
+  .ba .item .k{font-size:.78rem;color:var(--muted);font-weight:700}
+  .ba .item .v{margin-top:2px;font-size:.97rem;color:var(--ink)}
+
+  /* ===== trust ===== */
+  .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .tcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;box-shadow:var(--shadow)}
+  .tcard .ico{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#fbeede,#f4e0c8);border:1px solid rgba(139,69,19,.18);
+    color:var(--brown);font-size:24px}
+  .tcard h4{margin-top:16px;font-size:1.12rem;font-weight:800}
+  .tcard p{margin-top:10px;color:var(--ink-dim);font-size:.92rem}
+  .trust-line{margin-top:34px;text-align:center;font-size:1.2rem;font-weight:900;color:var(--ink)}
+  .trust-line span{color:var(--brown)}
+
+  /* ===== industries ===== */
+  .ind-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .ind{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;display:flex;gap:16px;box-shadow:var(--shadow)}
+  .ind .ico{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#fbeede,#f4e0c8);border:1px solid rgba(139,69,19,.18);
+    color:var(--brown);font-size:22px}
+  .ind .name{font-weight:800;color:var(--brown);font-size:1.04rem}
+  .ind p{margin-top:8px;color:var(--ink-dim);font-size:.92rem}
+  .ind-note{margin-top:24px;color:var(--muted);font-size:.92rem;text-align:center}
+
+  /* ===== self-check ===== */
+  .checks{display:grid;gap:12px}
+  .chk{display:flex;gap:14px;align-items:flex-start;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;padding:17px 18px;cursor:pointer;transition:.18s}
+  .chk:hover{border-color:var(--tan);background:var(--panel-2)}
+  .chk .box{flex:0 0 auto;width:23px;height:23px;border-radius:6px;border:2px solid var(--muted);
+    margin-top:2px;display:grid;place-items:center;transition:.18s;color:transparent}
+  .chk .box svg{width:14px;height:14px}
+  .chk.on .box{background:var(--brown);border-color:var(--brown);color:#fff}
+  .chk .txt{font-size:.97rem;color:var(--ink-dim)}
+  .chk.on .txt{color:var(--ink)}
+  .chk-result{margin-top:22px;text-align:center;color:var(--ink);font-weight:800;
+    opacity:0;transition:.3s;font-size:1.05rem}
+  .chk-result.show{opacity:1}
+  .chk-result span{color:var(--brown)}
+
+  /* ===== download (dark CTA band) ===== */
+  .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+  .dl-left h2{font-size:clamp(1.7rem,3.8vw,2.5rem);font-weight:900;line-height:1.3;color:var(--d-cream)}
+  .dl-left p{margin-top:16px;color:var(--d-cream-dim)}
+  .dl-list{margin-top:24px;display:grid;gap:13px}
+  .dl-list .li{display:flex;gap:12px;align-items:flex-start;color:var(--d-cream-dim);font-size:.96rem}
+  .dl-list .li svg{width:20px;height:20px;color:var(--d-gold);margin-top:2px;flex:0 0 auto}
+  .dl-second{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+  .form-card{background:#fff;border-radius:var(--radius);padding:8px;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.6);min-height:520px}
+  .form-card iframe{width:100%;min-height:560px;border:0;border-radius:10px;background:#fff}
+
+  footer{border-top:1px solid var(--line);padding:42px 0;color:var(--muted);font-size:.88rem;background:var(--bg-2)}
+  .foot-in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;align-items:flex-start}
+  .foot-tag{color:var(--muted);margin-top:10px}
+  .signoff{margin-top:8px;font-style:italic;color:var(--tan)}
+
+  @media(max-width:860px){
+    .grid3,.trust-grid{grid-template-columns:1fr}
+    .flow{grid-template-columns:1fr 1fr}
+    .ba,.ind-grid,.dl-grid,.stats-in{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1px solid var(--line)}
+    .hero{padding:68px 0 60px}
+  }
+  /* FAQ */
+  .faq-list{display:grid;gap:12px;max-width:840px;margin:0 auto}
+  .faq-list details{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:2px 22px;box-shadow:var(--shadow)}
+  .faq-list summary{cursor:pointer;font-weight:800;color:var(--ink);padding:18px 0;list-style:none;
+    display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:1.02rem}
+  .faq-list summary::-webkit-details-marker{display:none}
+  .faq-list summary::after{content:"＋";color:var(--brown);font-weight:900;font-size:1.2rem;flex:0 0 auto;transition:.2s}
+  .faq-list details[open] summary::after{content:"－"}
+  .faq-list .a{padding:0 0 20px;color:var(--ink-dim);font-size:.96rem;line-height:1.85}
+  /* emphasis: anxiety problem cards (red) */
+  #problem .card{border-top:3px solid var(--bad)}
+  #problem .card .ic{background:linear-gradient(135deg,#fbe4df,#f5cdc4);
+    border-color:rgba(181,80,63,.28);color:var(--bad)}
+  #problem .card h3{color:var(--bad)}
+  #problem .card:hover{border-color:var(--bad)}
+  /* world-standard label */
+  .std-title{font-weight:900;color:var(--brown);font-size:1.02rem;letter-spacing:.04em;margin-bottom:8px}
+  /* before/after emphasis */
+  .ba-emph .after{box-shadow:0 22px 54px -26px rgba(139,69,19,.55)}
+  .ba-emph .after .tag{display:inline-block;background:var(--good);color:#fff;
+    padding:5px 13px;border-radius:999px;font-size:.8rem}
+  .ba-emph .before .tag{display:inline-block;background:#f4ddd8;color:var(--bad);
+    padding:5px 13px;border-radius:999px;font-size:.8rem}
+  @media(max-width:520px){.flow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <span class="logo" aria-label="Lemma">
+      <svg viewBox="0 0 142 65" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lemma">
+        <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z"/>
+        <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z"/>
+        <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z"/>
+        <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z"/>
+        <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z"/>
+      </svg>
+    </span>
+    <a class="nav-cta" href="#download">ホワイトペーパーをDL</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- HERO (dark, problem-first) -->
+<section class="hero band-dark">
+  <div class="wrap">
+    <span class="eyebrow">AIエージェント時代の、本当の課題</span>
+    <h1>生成AIは、賢い。<br>なのに現場では、<em>任せきれない</em>。</h1>
+    <p class="sub">
+      AIの答えは、もっともらしく見えても、正しいとは限りません。
+      確かめないまま任せれば、誤った判断が、そのまま実行されてしまう。
+      重要な業務ほど、結局は人が抱えたままになる。
+    </p>
+    <p class="stat-line"><b>国内大企業の約9割</b>が、AIエージェント導入に課題を感じています。</p>
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="#problem">何が起きているのか →</a>
+      <a class="btn btn-primary" href="#download">ホワイトペーパーをDL</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="wrap stats-in">
+    <div class="stat"><div class="num">約9割</div><div class="lab">国内大企業のAIエージェント導入課題感（国内調査）</div></div>
+    <div class="stat"><div class="num">96%</div><div class="lab">社内データのAI活用に苦労する組織（グローバル調査）</div></div>
+    <div class="stat"><div class="num">約7兆円</div><div class="lab">2030年エージェントAI市場規模予測（年率40%超成長）</div></div>
+  </div>
+</div>
+
+<!-- 3 PROBLEMS (problem deepens) -->
+<section id="problem" class="sec-cream">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">なぜ、任せきれないのか</span>
+      <h2 class="section-title">AIに業務をまかせるとき、<br>立ちはだかる3つの不安</h2>
+      <p class="lead">生成AIを入れても現場で止まる。その理由は、賢さではなく「信頼」に集まっています。</p>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14V4"/><path d="m8 10 4 4 4-4"/><path d="M4 14v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
+        <h3>そのデータ、信じていい？</h3>
+        <p>AIに渡すデータが、本物か・どこから来たものか分からない。出どころのあいまいな情報を渡せば、AIは平気で間違えます。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 2.5h8.2l5.4 5.4v8.2l-5.4 5.4H7.9l-5.4-5.4V7.9Z"/><path d="m9.5 9.5 5 5M14.5 9.5l-5 5"/></svg></div>
+        <h3>勝手に動かない？</h3>
+        <p>支払い・発注・操作を、決めた範囲を超えてやってしまわないか。「ここまで」を機械的に守れる仕組みがないと、任せられません。</p>
+      </div>
+      <div class="card">
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4a1 1 0 0 1 1-1h8l5 5v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h5"/></svg></div>
+        <h3>あとから説明できる？</h3>
+        <p>「なぜその判断をしたのか」を、後から人が確認・説明できるか。監査や取引先に問われたときに示せる記録が要ります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TURNING POINT: ここからLemma（dark band） ===== -->
+<section class="band-dark">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">では、どうするか</span>
+      <h2 class="section-title">その不安、Lemmaが引き受けます。</h2>
+      <p class="lead">クレジットカードのICチップが、暗証番号を見せずに取引・決済できるように——Lemmaは、データを見せずにAIを安全に動かす"安全装置"です。</p>
+    </div>
+    <p class="reveal-promise">権限を確認し、危ない動きは止め、やったことは証拠に残す。</p>
+    <p class="reveal-sub">持たないから、流出しない。任せても、証拠が残る——AIを、安全に動かし、安全に止めます。</p>
+
+    <div class="hero-fig">
+      <svg viewBox="0 0 760 252" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="あなたのデータは手元に置いたまま、Lemmaの安全装置が事実だけを確かめてAIに渡す流れ">
+        <defs>
+          <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#a85a1f"/><stop offset="1" stop-color="#5f300d"/>
+          </linearGradient>
+        </defs>
+        <!-- LEFT -->
+        <rect x="20" y="58" width="190" height="124" rx="16" fill="#ffffff" stroke="#8B4513" stroke-opacity="0.45"/>
+        <text x="115" y="92" text-anchor="middle" fill="#2b2018" font-size="17" font-weight="700" font-family="sans-serif">あなたの会社のデータ</text>
+        <g>
+          <path d="M107 119 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#8B4513" stroke-width="3.4"/>
+          <rect x="101" y="119" width="28" height="22" rx="4" fill="#8B4513"/>
+          <circle cx="115" cy="129" r="3" fill="#ffffff"/>
+        </g>
+        <text x="115" y="164" text-anchor="middle" fill="#5c4f44" font-size="13" font-family="sans-serif">個人情報・機密・契約</text>
+        <text x="115" y="206" text-anchor="middle" fill="#8a7c6e" font-size="11" font-family="sans-serif">会社のPC・サーバーから出しません</text>
+        <!-- arrow 1 -->
+        <line x1="218" y1="120" x2="296" y2="120" stroke="#b09a86" stroke-width="2"/>
+        <polygon points="296,114 308,120 296,126" fill="#b09a86"/>
+        <!-- CENTER: IC chip -->
+        <g>
+          <g fill="#d99a5b">
+            <rect x="350" y="71" width="8" height="12" rx="2"/><rect x="370" y="71" width="8" height="12" rx="2"/>
+            <rect x="384" y="71" width="8" height="12" rx="2"/><rect x="404" y="71" width="8" height="12" rx="2"/>
+            <rect x="350" y="157" width="8" height="12" rx="2"/><rect x="370" y="157" width="8" height="12" rx="2"/>
+            <rect x="384" y="157" width="8" height="12" rx="2"/><rect x="404" y="157" width="8" height="12" rx="2"/>
+            <rect x="328" y="95" width="13" height="8" rx="2"/><rect x="328" y="113" width="13" height="8" rx="2"/>
+            <rect x="328" y="131" width="13" height="8" rx="2"/><rect x="328" y="149" width="13" height="8" rx="2"/>
+            <rect x="419" y="95" width="13" height="8" rx="2"/><rect x="419" y="113" width="13" height="8" rx="2"/>
+            <rect x="419" y="131" width="13" height="8" rx="2"/><rect x="419" y="149" width="13" height="8" rx="2"/>
+          </g>
+          <rect x="340" y="80" width="80" height="80" rx="13" fill="url(#chip)"/>
+          <rect x="356" y="96" width="48" height="48" rx="7" fill="#fbf6ef" stroke="#e0a86a" stroke-width="1.5"/>
+          <g stroke="#cf9a5e" stroke-width="1.3" opacity="0.8">
+            <line x1="356" y1="108" x2="350" y2="108"/><line x1="356" y1="132" x2="350" y2="132"/>
+            <line x1="404" y1="108" x2="410" y2="108"/><line x1="404" y1="132" x2="410" y2="132"/>
+          </g>
+          <path d="M380 104 l13 5 v8 c0 8 -5.5 13.5 -13 16 c-7.5 -2.5 -13 -8 -13 -16 v-8 Z"
+                fill="none" stroke="#8B4513" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M373.5 120 l4.5 4.5 l9 -9.5" fill="none" stroke="#8B4513" stroke-width="2.6"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <text x="380" y="200" text-anchor="middle" fill="#2b2018" font-size="14" font-weight="700" font-family="sans-serif">Lemma の安全装置</text>
+        <text x="380" y="220" text-anchor="middle" fill="#8a7c6e" font-size="12" font-family="sans-serif">独自の暗号技術で、中身を見ずに本物か確かめる</text>
+        <!-- arrow 2 -->
+        <line x1="452" y1="120" x2="530" y2="120" stroke="#b09a86" stroke-width="2"/>
+        <polygon points="530,114 542,120 530,126" fill="#b09a86"/>
+        <!-- RIGHT -->
+        <rect x="550" y="58" width="190" height="124" rx="16" fill="#f7faf3" stroke="#4e7a3a" stroke-opacity="0.55"/>
+        <text x="645" y="96" text-anchor="middle" fill="#2b2018" font-size="17" font-weight="700" font-family="sans-serif">AI・エージェント</text>
+        <g transform="translate(591,112)">
+          <rect x="0" y="0" width="108" height="28" rx="14" fill="#edf3e7" stroke="#4e7a3a"/>
+          <path d="M13 14 l5 5 l11 -12" fill="none" stroke="#4e7a3a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="66" y="19" text-anchor="middle" fill="#3c5e2c" font-size="13" font-weight="700" font-family="sans-serif">事実だけ</text>
+        </g>
+        <text x="645" y="206" text-anchor="middle" fill="#8a7c6e" font-size="12.5" font-family="sans-serif">条件を満たした事実だけ受け取る</text>
+      </svg>
+      <p class="fig-cap">データは会社のPCやサーバーに置いたまま。Lemmaが「条件を満たしている」という事実だけを確かめて、AIに渡します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec-white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Lemmaがすること</span>
+      <h2 class="section-title">むずかしい仕組みは、<br>4つの機能で引き受けます</h2>
+      <p class="lead">中身は見せずに、出どころの確認・権限の制御・消えない記録だけを担う。AIに業務を、安心してまかせられます。</p>
+    </div>
+    <div class="flow">
+      <div class="step">
+        <span class="n">01</span>
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h4>出どころを確かめる</h4>
+        <p>そのデータが本物か、どこから来たかを確認。あやしいデータは、AIに届きません。</p>
+      </div>
+      <div class="step">
+        <span class="n">02</span>
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3Z"/><path d="m8.5 12 2.2 2.2L15.5 9.5"/></svg></div>
+        <h4>中身は見せず、事実だけ示す</h4>
+        <p>個人情報も機密も外に出さず、「条件を満たす」ことだけを証明します。</p>
+      </div>
+      <div class="step">
+        <span class="n">03</span>
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-6M4 11V3M12 21v-8M12 9V3M20 21v-4M20 13V3"/><path d="M2 15h4M10 9h4M18 17h4"/></svg></div>
+        <h4>決めた範囲だけ、動かす</h4>
+        <p>範囲内ならAIが自動で実行。範囲外の操作は、動く前に止まります。</p>
+      </div>
+      <div class="step">
+        <span class="n">04</span>
+        <div class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
+        <h4>消えない記録が残る</h4>
+        <p>誰が・いつ・何をしたか。書き換えられない記録が残り、いつでも示せます。</p>
+      </div>
+    </div>
+    <div class="equation">「証明できる」 ≠ 「中身を見せる」</div>
+    <div class="standards">
+      <div class="std-title">世界標準に対応</div>
+      デジタル庁・内閣官房が推進する「Trusted Web」の考え方に沿って設計。主要なAI・エージェントの世界標準に、そのまま組み込めます。
+      <div class="row">
+        <span class="chip">MCP</span><span class="chip">A2A</span><span class="chip">x402</span>
+        <span class="chip">C2PA</span><span class="chip">W3C VC</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section class="sec-cream ba-emph">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">導入効果 — ここがいちばんの違い</span>
+      <h2 class="section-title">「人が抱える」から、<br>「安心して任せる」へ。</h2>
+      <p class="lead">同じ業務でも、土台が変われば、現場は変わります。</p>
+    </div>
+    <div class="ba">
+      <div class="col before">
+        <div class="tag">BEFORE — 導入前</div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/></svg></span><div><div class="k">データ確認</div><div class="v">出どころが分からないまま、目視で照合</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/></svg></span><div><div class="k">権限の管理</div><div class="v">人手の承認・押印・メール往復に頼る</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg></span><div><div class="k">監査対応</div><div class="v">記録を手作業で掘り起こす</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19Z"/><path d="M12 10v4M12 17.5h.01"/></svg></span><div><div class="k">AI活用</div><div class="v">機密・権限が不安で、任せきれない</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5l2 2.5h7a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1Z"/></svg></span><div><div class="k">対外証明</div><div class="v">機密ごと見せるか、証明を諦めるか</div></div></div>
+      </div>
+      <div class="col after">
+        <div class="tag">AFTER — Lemma導入後</div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><div><div class="k">データ確認</div><div class="v">出どころを確認済み。あやしい情報は届かない</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-6M4 11V3M12 21v-8M12 9V3M20 21v-4M20 13V3"/><path d="M2 15h4M10 9h4M18 17h4"/></svg></span><div><div class="k">権限の管理</div><div class="v">範囲内は自動、範囲外は動く前に停止</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 13h6l-1 9 9-12h-6l1-8Z"/></svg></span><div><div class="k">監査対応</div><div class="v">消えない記録を、その場で提示</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3Z"/><path d="m8.5 12 2.2 2.2L15.5 9.5"/></svg></span><div><div class="k">AI活用</div><div class="v">確かめた土台の上で、安心してまかせる</div></div></div>
+        <div class="item"><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg></span><div><div class="k">対外証明</div><div class="v">「事実だけ」を証明、中身は守る</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec-white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">安心して、ご相談ください</span>
+      <h2 class="section-title">高い信頼が求められる分野でも、<br>動いています</h2>
+      <p class="lead">新しい技術だからこそ、伴走できる相手を選びたい。Lemmaは、現場と規制の両面を見据えて設計しています。</p>
+    </div>
+    <div class="trust-grid">
+      <div class="tcard">
+        <div class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10M9 21V10M15 21V10M19 21V10"/><path d="M12 3 3 8h18Z"/></svg></div>
+        <h4>インフラ水準の信頼性</h4>
+        <p>インフラのように高い安定性と信頼が求められる分野でも動く、個人情報を見ない安全なしくみです。</p>
+      </div>
+      <div class="tcard">
+        <div class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2Z"/><path d="M19 3v18"/><path d="M8 7h7M8 11h7"/></svg></div>
+        <h4>業種ごとの知見を蓄積</h4>
+        <p>製造の検査記録から金融の本人確認まで、「どこにリスクがあり、どう守るか」の知見を継続的にまとめ、公開しています。</p>
+      </div>
+      <div class="tcard">
+        <div class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v5M15 2v5"/><path d="M7 7h10v4a5 5 0 0 1-10 0Z"/><path d="M12 16v6"/></svg></div>
+        <h4>小さく始められる</h4>
+        <p>いまの業務ひとつから。データを渡さずに、自社システムとの連携を設計・検証します。先行枠では、導入のご支援と優遇条件をご用意しています。</p>
+      </div>
+    </div>
+    <p class="trust-line">AIのインフラは変わっても、<span>証明は残る。</span></p>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section class="sec-cream">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">いまの業務に</span>
+      <h2 class="section-title">業界を横断して、いまの業務に乗ります</h2>
+    </div>
+    <div class="ind-grid">
+      <div class="ind"><span class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10M9 21V10M15 21V10M19 21V10"/><path d="M12 3 3 8h18Z"/></svg></span><div><div class="name">自治体・公共</div>
+        <p>給付・窓口・徴収を、個人情報を見ずに進める。「要件を満たす」ことだけを示し、記録はあとから書き換えられません。</p></div></div>
+      <div class="ind"><span class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l6 4V9l6 4V6l6 3v12Z"/><path d="M3 21h18"/></svg></span><div><div class="name">製造・基幹インフラ</div>
+        <p>品質・検査の記録を、中身を出さずに連携。改ざんのない証跡が自動で残り、取引先への証明にも応えます。</p></div></div>
+      <div class="ind"><span class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h11v9H2Z"/><path d="M13 10h4l3 3v3h-7Z"/><circle cx="6.5" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span><div><div class="name">調達・サプライチェーン</div>
+        <p>仕入先の許認可・与信を、原本を預からず確認。海外規制への適合も、営業秘密を守ったまま証明できます。</p></div></div>
+      <div class="ind"><span class="ico"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M6 21h12M4 7h16"/><path d="M7 4 3.5 11a3.5 3.5 0 0 0 7 0Z"/><path d="M17 4 13.5 11a3.5 3.5 0 0 0 7 0Z"/></svg></span><div><div class="name">法務・監査・コンプライアンス</div>
+        <p>AIに任せた判断の根拠を、その時点で固定。モデルが新しくなっても、後から説明できます。</p></div></div>
+    </div>
+    <p class="ind-note">ほか、金融の本人確認・サービス業など、業界を横断して使えます。</p>
+  </div>
+</section>
+
+<!-- SELF-CHECK -->
+<section class="sec-white">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">かんたん自己診断</span>
+      <h2 class="section-title">こんなお悩み、ありませんか？</h2>
+      <p class="lead">1つでも当てはまれば、Lemmaが役に立てます。タップして確認してください。</p>
+    </div>
+    <div class="checks" id="checks">
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">AIに業務を任せたいが、勝手に動かないか不安がある</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">外部の事実確認をもとに、承認・支払い・次工程を進める業務がある</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">その確認作業に、人手・時間・コストがかかっている</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">社内データの機密管理が不安で、AI導入が進まない</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">取引先をまたいで、品質や調達の証明が必要</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">監査で「誰がいつ何をしたか」の証明を求められる</div></div>
+      <div class="chk"><div class="box"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg></div><div class="txt">取引先・行政への証明で、機密を見せることに抵抗がある</div></div>
+    </div>
+    <p class="chk-result" id="chkResult">ひとつでも当てはまれば、<span>Lemmaが力になれます。</span> まずは、お気軽にご相談ください。</p>
+  </div>
+</section>
+
+<!-- FAQ (visible — mirrors FAQPage structured data) -->
+<section class="sec-cream">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">よくある質問</span>
+      <h2 class="section-title">AI導入の不安に、お答えします</h2>
+    </div>
+    <div class="faq-list">
+      <details><summary>機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？</summary>
+        <div class="a">個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。</div></details>
+      <details><summary>AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。</summary>
+        <div class="a">決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は、実行する前に止めます。「ここまで」を機械的に守れます。</div></details>
+      <details><summary>AIの判断の根拠を、あとから説明できますか？</summary>
+        <div class="a">誰が・いつ・何をしたかを、書き換えられない記録として残します。監査やお取引先に問われても、その場で示せます。</div></details>
+      <details><summary>既存のシステムとどうつなぎますか？導入は大変ですか？</summary>
+        <div class="a">いまの業務ひとつから、小さく始められます。データを渡さずに、自社システムとの連携を設計・検証します。MCP・A2A・x402などの世界標準にそのまま組み込めます。</div></details>
+      <details><summary>どんな業種で使えますか？</summary>
+        <div class="a">自治体・公共、製造・基幹インフラ、調達・サプライチェーン、法務・監査、金融の本人確認など、業界を横断して使えます。</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD (dark CTA band) -->
+<section class="band-dark" id="download">
+  <div class="wrap dl-grid">
+    <div class="dl-left">
+      <span class="eyebrow">Built for decisions that matter.</span>
+      <h2>ホワイトペーパーを<br>無料ダウンロード</h2>
+      <p>仕組みの全体像から、最短数週間で始める進め方まで。導入を検討される方の「次の一歩」をまとめています。</p>
+      <div class="dl-list">
+        <div class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg> データを渡さずに、AIへ事実だけ届ける仕組みの解説</div>
+        <div class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg> 自治体・製造・調達・規制対応の使いどころ</div>
+        <div class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg> AIにまかせる範囲を、安全に決める考え方</div>
+        <div class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg> 自社システムとの連携の進め方と、導入判断チェックリスト</div>
+      </div>
+      <div class="dl-second">
+        <a class="btn btn-ghost" href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">先に相談したい方はこちら →</a>
+      </div>
+    </div>
+    <div class="form-card">
+      <iframe src="https://tally.so/embed/xX0VYv?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+        loading="lazy" title="ホワイトペーパー ダウンロードフォーム"></iframe>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-in">
+    <div>
+      <span class="logo" aria-label="Lemma" style="height:24px">
+        <svg viewBox="0 0 142 65" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lemma">
+          <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z"/>
+          <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z"/>
+          <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z"/>
+          <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z"/>
+          <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z"/>
+        </svg>
+      </span>
+      <div class="foot-tag">AIのための信頼インフラ</div>
+      <div class="foot-tag">Built for decisions that matter.</div>
+    </div>
+    <div style="text-align:right">
+      <div>運営会社： <a href="https://corp.frame00.com/" target="_blank" rel="noopener" style="color:var(--tan)">FRAME00株式会社 ↗</a></div>
+      <div>技術・導入のご相談： <a href="mailto:support@frame00.com" style="color:var(--tan)">support@frame00.com</a></div>
+      <div style="margin-top:6px">© 2026 FRAME00株式会社</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const checks = document.querySelectorAll('#checks .chk');
+  const result = document.getElementById('chkResult');
+  function refresh(){
+    const any = [...checks].some(c => c.classList.contains('on'));
+    result.classList.toggle('show', any);
+  }
+  checks.forEach(c => c.addEventListener('click', () => {
+    c.classList.toggle('on'); refresh();
+  }));
+</script>
+</body>
+</html>
