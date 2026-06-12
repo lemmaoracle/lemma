@@ -183,3 +183,30 @@ export async function renderPillarsOg(locale: Locale): Promise<Buffer> {
   });
   return renderOgPng(node);
 }
+
+/* ─────────────── AI 業務あんしん LP (/ai-gyomu-anshin/) ─────────────── */
+
+const AIANSHIN_TITLE: Copy = {
+  ja: "「AIは不安」を、\n<accent>「任せて安心」</accent>へ。",
+  en: 'From "AI feels risky"\nto <accent>"safe to delegate."</accent>',
+};
+
+const AIANSHIN_LABEL: Copy = {
+  ja: "AI導入ガイド",
+  en: "AI Adoption Guide",
+};
+
+const AIANSHIN_TAGLINE: Copy = {
+  ja: "社内のデータは外に出さず、確かめた事実だけを AI へ。",
+  en: "Your data stays in-house — only verified facts reach the AI.",
+};
+
+export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
+  const node = buildOgArtboard({
+    title: localize(AIANSHIN_TITLE, locale),
+    topRight: makeTopRightLabel(localize(AIANSHIN_LABEL, locale), BROWN),
+    bottomTagline: makeBottomTagline(localize(AIANSHIN_TAGLINE, locale), BROWN),
+    background: { kind: "solid", color: CREAM_DEEP },
+  });
+  return renderOgPng(node);
+}
