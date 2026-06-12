@@ -233,13 +233,13 @@ export const PRICING: PricingContent = {
           ],
         },
         tiers: [
-          { no: "Tier 1", scope: { ja: "1〜3 サイト", en: "1–3 sites" } },
-          { no: "Tier 2", scope: { ja: "4〜10 サイト", en: "4–10 sites" } },
+          { no: "Tier 1", scope: { ja: "1〜3 拠点", en: "1–3 sites" } },
+          { no: "Tier 2", scope: { ja: "4〜10 拠点", en: "4–10 sites" } },
           { no: "Tier 3", scope: { ja: "11+ カスタム", en: "11+ custom" } },
         ],
         pricingModel: {
-          ja: "年契約ベース。拠点数・確認の回数・独自テンプレートの登録に応じて、Discovery で個別に構成。Option Pack は対象外。",
-          en: "Annual contract. Configured per site count, verification volume, and custom schema registration via Discovery. Option Packs not applicable.",
+          ja: "小規模自治体向けの位置づけ。年契約ベースで、拠点数・確認の回数・独自テンプレートの登録に応じて Discovery で個別に構成します。拠点数や利用量が増える場合は、上位ティアへのアップグレードで対応。Option Pack は対象外。",
+          en: "Positioned for small municipalities. Annual contract, configured per site count, verification volume, and custom schema registration via Discovery. As sites or volume grow, it moves up a tier. Option Packs not applicable.",
         },
         ctaPrimary: { label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" }, href: DISCOVERY_URL },
         ctaSecondary: { label: { ja: "ホワイトペーパー ↗", en: "Whitepaper ↗" }, href: WP_URL_PLAN },
