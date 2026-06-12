@@ -188,13 +188,16 @@
     border-radius:var(--radius);padding:20px;box-shadow:0 30px 70px -30px rgba(0,0,0,.6)}
   .hero-fig svg{display:block}
   .fig-cap{text-align:center;color:var(--muted);font-size:.88rem;margin-top:14px}
-  .sd{display:flex;align-items:stretch;justify-content:center;gap:10px}
+  .sd{display:flex;align-items:center;justify-content:center;gap:10px}
   .sd-card{flex:0 0 auto;background:#fff;border:1.5px solid rgba(139,69,19,.3);border-radius:14px;padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:110px}
   .sd-dev{background:linear-gradient(135deg,#fffdf9,#f1eadd);border-color:#8B4513}
   .sd-ai{border-color:rgba(78,122,58,.6);background:#f5f9f0}
   .sd-trash{border-color:rgba(176,65,58,.55);background:#fbf3f1}
   .sd-card .sd-h{font-weight:700;font-size:.85rem;color:#2b2018;line-height:1.35}
   .sd-card .sd-s{font-size:.68rem;color:#8a7c6e;margin-top:5px;line-height:1.3}
+  .sd-checks{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:8px}
+  .sd-checks span{font-size:.68rem;color:#6b5d4f;line-height:1.3}
+  .sd-checks span::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:#8B4513;margin-right:6px;vertical-align:middle}
   .hero-fig .sd-ic{width:30px;height:30px;color:#8B4513;margin-bottom:7px}
   .hero-fig .sd-ic.big{width:46px;height:46px}
   .sd-ai .sd-ic{color:#4e7a3a}
@@ -212,12 +215,12 @@
   @media(max-width:600px){
     .hero-fig{padding:18px 14px}
     .sd{flex-direction:column;align-items:center;gap:8px}
-    .sd-card{width:100%;max-width:300px}
-    .sd-link{width:3px;height:24px;background:repeating-linear-gradient(180deg,#c9b49b 0 6px,transparent 6px 11px);background-size:100% 11px;animation:sdDashV .8s linear infinite}
-    .sd-fork{width:100%;max-width:300px;gap:8px}
-    .sd-row{flex-direction:column;gap:8px;width:100%}
-    .sd-row .sd-card{width:100%}
-    .sd-row .sd-link{width:3px;height:20px}
+    .sd>.sd-card{width:100%;max-width:320px}
+    .sd>.sd-link{width:3px;height:24px;background:repeating-linear-gradient(180deg,#c9b49b 0 6px,transparent 6px 11px);background-size:100% 11px;animation:sdDashV .8s linear infinite}
+    .sd-fork{flex-direction:row;align-items:stretch;justify-content:center;width:100%;max-width:320px;gap:10px}
+    .sd-row{flex-direction:column;align-items:center;gap:6px;flex:1 1 0;min-width:0}
+    .sd-row .sd-card{width:100%;min-width:0}
+    .sd-row .sd-link{width:3px;height:18px;background:repeating-linear-gradient(180deg,#c9b49b 0 6px,transparent 6px 11px);background-size:100% 11px;animation:sdDashV .8s linear infinite}
   }
 
   /* ===== how it works ===== */
@@ -439,7 +442,7 @@
         <div class="sd-card sd-dev">
           <svg class="sd-ic big" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a85a1f"/><stop offset="1" stop-color="#5f300d"/></linearGradient></defs><rect x="10" y="5" width="4" height="6" rx="1.5" fill="#d99a5b"/><rect x="26" y="5" width="4" height="6" rx="1.5" fill="#d99a5b"/><rect x="10" y="29" width="4" height="6" rx="1.5" fill="#d99a5b"/><rect x="26" y="29" width="4" height="6" rx="1.5" fill="#d99a5b"/><rect x="8" y="10" width="24" height="24" rx="5" fill="url(#hcg)"/><rect x="14" y="16" width="12" height="12" rx="2.5" fill="#fbf6ef"/><path d="M20 17 l5 1.8 v3 c0 3 -2 4.7 -5 5.7 c-3 -1 -5 -2.7 -5 -5.7 v-3 Z" fill="none" stroke="#8B4513" stroke-width="1.2"/><path d="M17.5 21.7 l1.8 1.8 l3.4 -3.6" fill="none" stroke="#8B4513" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="sd-h">Lemma の安全装置</div>
-          <div class="sd-s">中身を見ずに本物か確かめる</div>
+          <div class="sd-checks"><span>権限を確認</span><span>中身は見ず、本物か確認</span><span>安全か危険かを判定</span></div>
         </div>
         <div class="sd-fork">
           <div class="sd-row">
