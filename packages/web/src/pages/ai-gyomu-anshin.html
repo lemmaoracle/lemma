@@ -405,7 +405,7 @@
 
     <div class="hero-fig">
       <svg viewBox="0 0 760 252" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="あなたのデータは手元に置いたまま、Lemmaの安全装置が事実だけを確かめてAIに渡す流れ">
+           aria-label="あなたのデータは手元に置いたまま、Lemmaの安全装置が本物かを確かめ、安全な操作だけAIに動かさせ、危ない操作は止める流れ">
         <defs>
           <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stop-color="#a85a1f"/><stop offset="1" stop-color="#5f300d"/>
@@ -474,12 +474,17 @@
         <!-- RIGHT -->
         <rect x="550" y="58" width="190" height="124" rx="16" fill="#f7faf3" stroke="#4e7a3a" stroke-opacity="0.55"/>
         <text x="645" y="96" text-anchor="middle" fill="#2b2018" font-size="17" font-weight="700" font-family="sans-serif">AI・エージェント</text>
-        <g transform="translate(591,112)">
-          <rect x="0" y="0" width="108" height="28" rx="14" fill="#edf3e7" stroke="#4e7a3a"/>
-          <path class="ai-pop" d="M13 14 l5 5 l11 -12" fill="none" stroke="#4e7a3a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="66" y="19" text-anchor="middle" fill="#3c5e2c" font-size="13" font-weight="700" font-family="sans-serif">事実だけ</text>
+        <g transform="translate(578,104)">
+          <rect x="0" y="0" width="134" height="26" rx="13" fill="#edf3e7" stroke="#4e7a3a"/>
+          <path class="ai-pop" d="M12 13 l4 4 l9 -10" fill="none" stroke="#4e7a3a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="80" y="17.5" text-anchor="middle" fill="#3c5e2c" font-size="10.5" font-weight="700" font-family="sans-serif">安全な操作は実行</text>
         </g>
-        <text x="645" y="206" text-anchor="middle" fill="#8a7c6e" font-size="12.5" font-family="sans-serif">条件を満たした事実だけ受け取る</text>
+        <g transform="translate(578,136)">
+          <rect x="0" y="0" width="134" height="26" rx="13" fill="#fbf1ef" stroke="#b0413a"/>
+          <path d="M12 11 l8 8 M20 11 l-8 8" stroke="#b0413a" stroke-width="2.4" stroke-linecap="round"/>
+          <text x="81" y="17.5" text-anchor="middle" fill="#9a352f" font-size="10.5" font-weight="700" font-family="sans-serif">危ない操作は止める</text>
+        </g>
+        <text x="645" y="206" text-anchor="middle" fill="#8a7c6e" font-size="12.5" font-family="sans-serif">安全に動かし、安全に止める。</text>
       </svg>
       <p class="fig-cap">データは会社のPCやサーバーに置いたまま。Lemmaが「条件を満たしている」という事実だけを確かめて、AIに渡します。</p>
     </div>
