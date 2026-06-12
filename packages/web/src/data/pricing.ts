@@ -308,8 +308,8 @@ export const PRICING: PricingContent = {
           { no: "Tier 3", scope: { ja: "メガバンク", en: "Global bank" } },
         ],
         pricingModel: {
-          ja: "USD 価格・年契約ベース。機関規模・利用量に応じて Discovery で構成。Tier 2 以上で Option Pack（Regulatory / Agent Governance）を追加可能。",
-          en: "USD pricing, annual contract. Configured per institution scale and volume via Discovery. Option Packs (Regulatory / Agent Governance) available from Tier 2.",
+          ja: "年契約ベース。機関規模・利用量に応じて Discovery で構成。Tier 2 以上で Option Pack（Regulatory / Agent Governance）を追加可能。",
+          en: "Annual contract. Configured per institution scale and volume via Discovery. Option Packs (Regulatory / Agent Governance) available from Tier 2.",
         },
         ctaPrimary: { label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" }, href: DISCOVERY_URL },
         ctaSecondary: { label: { ja: "ホワイトペーパー ↗", en: "Whitepaper ↗" }, href: WP_URL_PLAN },
