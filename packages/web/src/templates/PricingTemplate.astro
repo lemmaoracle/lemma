@@ -16,7 +16,6 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import PricingHero from "../components/pricing/PricingHero.astro";
 import PricingEnterprise from "../components/pricing/PricingEnterprise.astro";
-import PricingTrust402 from "../components/pricing/PricingTrust402.astro";
 import PricingPacks from "../components/pricing/PricingPacks.astro";
 import PricingCompare from "../components/pricing/PricingCompare.astro";
 import PricingAdoption from "../components/pricing/PricingAdoption.astro";
@@ -48,9 +47,8 @@ const { locale, t, base } = Astro.props as Props;
     <div class="pr-container">
       <PricingHero locale={locale} />
       <PricingEnterprise locale={locale} />
-      <PricingTrust402 locale={locale} base={base} />
       <PricingPacks locale={locale} />
-      <PricingCompare locale={locale} />
+      <PricingCompare locale={locale} base={base} />
       <PricingAdoption locale={locale} />
       <PricingFAQ locale={locale} />
     </div>

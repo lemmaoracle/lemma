@@ -6,9 +6,10 @@
 import type { Locale } from "../../i18n/translations";
 import { PRICING } from "../../data/pricing";
 
-interface Props { locale: Locale }
-const { locale } = Astro.props as Props;
+interface Props { locale: Locale; base: string }
+const { locale, base } = Astro.props as Props;
 const c = PRICING.compare;
+const trust402Href = `${base}/trust402`;
 
 type Cell = (typeof c.rows)[number]["civic"];
 
@@ -33,7 +34,11 @@ function cellText(cell: Cell, lc: Locale): string {
         <tr>
           <th class="pc-feature-col">{c.featureColLabel[locale]}</th>
           {c.planColLabels.map((label) => (
-            <th class="pc-plan-col">{label}</th>
+            <th class="pc-plan-col">
+              {label === "Trust402"
+                ? <a class="pc-trust402-link" href={trust402Href}>Trust402 ↗</a>
+                : label}
+            </th>
           ))}
         </tr>
       </thead>
@@ -51,6 +56,13 @@ function cellText(cell: Cell, lc: Locale): string {
       </tbody>
     </table>
   </div>
+  <p class="pc-note">
+    {locale === "ja"
+      ? "開発者向けの Trust402 の料金プランは、"
+      : "Trust402 (for developers) pricing lives on its "}
+    <a href={trust402Href}>{locale === "ja" ? "製品ページ" : "product page"} ↗</a>
+    {locale === "ja" ? "でご案内しています。" : "."}
+  </p>
 </section>
 
 <style>
@@ -111,6 +123,26 @@ function cellText(cell: Cell, lc: Locale): string {
   }
   .pc-table tr:last-child td {
     border-bottom: 0;
+  }
+  .pc-trust402-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .pc-trust402-link:hover {
+    border-bottom-color: var(--accent);
+  }
+  .pc-note {
+    margin: 16px 2px 0;
+    font-size: 12.5px;
+    color: var(--pr-text-3);
+    line-height: 1.6;
+  }
+  .pc-note a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
   }
   .pc-table tr:hover td {
     background: var(--lemma-cream);
