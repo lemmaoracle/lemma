@@ -93,7 +93,7 @@ export interface PricingContent {
     readonly items: ReadonlyArray<{
       readonly variant: "a" | "b" | "c";
       readonly letter: string;
-      readonly name: string;
+      readonly name: Localized;
       readonly icon: PricingIconName;
       readonly goalLines: Localized<readonly string[]>;
       readonly desc: Localized;
@@ -389,7 +389,7 @@ export const PRICING: PricingContent = {
       {
         variant: "a",
         letter: "Pack A",
-        name: "Incident Response",
+        name: { ja: "インシデント対応", en: "Incident Response" },
         icon: "shield-alert",
         goalLines: {
           ja: ["インシデントから、", "復旧と証明へ。"],
@@ -406,7 +406,7 @@ export const PRICING: PricingContent = {
       {
         variant: "b",
         letter: "Pack B",
-        name: "Regulatory",
+        name: { ja: "規制対応", en: "Regulatory" },
         icon: "doc-stack",
         goalLines: {
           ja: ["規制への適合を、", "証跡として残す。"],
@@ -423,7 +423,7 @@ export const PRICING: PricingContent = {
       {
         variant: "c",
         letter: "Pack C",
-        name: "Agent Governance",
+        name: { ja: "エージェント・ガバナンス", en: "Agent Governance" },
         icon: "agent-network",
         goalLines: {
           ja: ["AI エージェントを、", "組織で運用可能に。"],
