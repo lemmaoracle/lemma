@@ -246,6 +246,68 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
   </head>
   <body class={bodyClass}>
     <slot />
+    <!-- Whitepaper auto-popup — JA pages only, 6s after load. Reuses the
+         globally-loaded Tally runtime (embed.js above); does NOT re-inject the
+         script. Shown at most once per browser (showOnce) and never again after
+         a submit (doNotShowAfterSubmit), both enforced via localStorage so the
+         guard survives View Transitions and reloads. Excludes /ai-gyomu-anshin
+         (its own SEO LP, which is JA copy served outside /ja/). -->
+    <script is:inline>
+      (function () {
+        var FORM_ID = "xX0VYv"; // JA whitepaper
+        var DELAY_MS = 6000;
+        var SEEN_KEY = "lemma_wp_popup_seen";
+        var DONE_KEY = "lemma_wp_popup_submitted";
+        var timer = null;
+
+        function ls(key) {
+          try { return window.localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function lsSet(key, val) {
+          try { window.localStorage.setItem(key, val); } catch (e) {}
+        }
+
+        function eligible() {
+          var p = window.location.pathname;
+          // JA pages are under /ja or /ja/...; exclude the standalone SEO LP.
+          if (p !== "/ja" && p.indexOf("/ja/") !== 0) return false;
+          if (p.indexOf("/ai-gyomu-anshin") !== -1) return false;
+          if (ls(SEEN_KEY) || ls(DONE_KEY)) return false;
+          return true;
+        }
+
+        function openWhenReady() {
+          if (!eligible()) return;
+          if (typeof window.Tally === "undefined" || !window.Tally.openPopup) {
+            // embed.js is async — poll briefly until the runtime is ready.
+            window.setTimeout(openWhenReady, 300);
+            return;
+          }
+          lsSet(SEEN_KEY, "1");
+          window.Tally.openPopup(FORM_ID, {
+            layout: "modal",
+            width: 540,
+            overlay: true,
+            doNotShowAfterSubmit: true,
+            onSubmit: function () { lsSet(DONE_KEY, "1"); }
+          });
+        }
+
+        function schedule() {
+          if (timer) { window.clearTimeout(timer); timer = null; }
+          if (!eligible()) return;
+          timer = window.setTimeout(openWhenReady, DELAY_MS);
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", schedule);
+        } else {
+          schedule();
+        }
+        // Re-evaluate on client-side navigation (View Transitions).
+        document.addEventListener("astro:after-swap", schedule);
+      })();
+    </script>
   </body>
 </html>
 
