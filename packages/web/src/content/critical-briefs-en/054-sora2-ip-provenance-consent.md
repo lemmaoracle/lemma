@@ -1,6 +1,6 @@
 ---
 brief_no: 54
-title: "著作権キャラが、権利者が拒否するまで生成され続けた — 同意・来歴を生成の前ではなく事後の opt-out に委ねた構造（OpenAI Sora 2 / CODA・日本政府）"
+title: "著作権キャラが、権利者が拒否するまで生成され続けた — キャラ生成の時点で、用いる素材の来歴・許諾が固定されない構造（OpenAI Sora 2 / CODA・日本政府）"
 title_en: "Generated Until the Rightsholder Said No — The Consent-and-Provenance Gap Behind OpenAI Sora 2"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
