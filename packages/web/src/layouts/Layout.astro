@@ -246,6 +246,92 @@ const msClarityId = import.meta.env.PUBLIC_MS_CLARITY_ID ?? "wpq1vh0v64";
   </head>
   <body class={bodyClass}>
     <slot />
+    <!-- Whitepaper engagement popup — JA pages only. Opens on the EARLIEST of:
+         55% scroll (reading), exit-intent (cursor leaves the top edge, desktop),
+         or a 45s fallback (mobile). Reuses the globally-loaded Tally runtime
+         (embed.js above); does NOT re-inject the script. Shown at most once per
+         browser (showOnce) and never again after a submit, both via localStorage
+         so the guard survives View Transitions and reloads. Excludes
+         /ai-gyomu-anshin (its own SEO LP, JA copy served outside /ja/). -->
+    <script is:inline>
+      (function () {
+        var FORM_ID = "xX0VYv";   // JA whitepaper
+        var SCROLL_PCT = 0.55;    // open after reading 55% of the page
+        var FALLBACK_MS = 45000;  // open after 45s if nothing else fired
+        var SEEN_KEY = "lemma_wp_popup_seen";
+        var DONE_KEY = "lemma_wp_popup_submitted";
+
+        var opened = false;       // popup opened in this session
+        var armed = false;        // listeners currently attached
+        var timer = null;
+
+        function ls(key) {
+          try { return window.localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function lsSet(key, val) {
+          try { window.localStorage.setItem(key, val); } catch (e) {}
+        }
+
+        function eligible() {
+          var p = window.location.pathname;
+          // JA pages are under /ja or /ja/...; exclude the standalone SEO LP.
+          if (p !== "/ja" && p.indexOf("/ja/") !== 0) return false;
+          if (p.indexOf("/ai-gyomu-anshin") !== -1) return false;
+          if (ls(SEEN_KEY) || ls(DONE_KEY)) return false;
+          return true;
+        }
+
+        function open() {
+          if (opened || !eligible()) return;
+          if (typeof window.Tally === "undefined" || !window.Tally.openPopup) {
+            // embed.js is async — wait for the global runtime to be ready.
+            window.setTimeout(open, 300);
+            return;
+          }
+          opened = true;
+          lsSet(SEEN_KEY, "1");
+          disarm();
+          window.Tally.openPopup(FORM_ID, {
+            layout: "modal",
+            width: 720,
+            overlay: true,
+            doNotShowAfterSubmit: true,
+            onSubmit: function () { lsSet(DONE_KEY, "1"); }
+          });
+        }
+
+        function onScroll() {
+          var st = window.scrollY || document.documentElement.scrollTop;
+          var h = document.documentElement.scrollHeight - window.innerHeight;
+          if (h > 0 && st / h >= SCROLL_PCT) open();
+        }
+        function onExit(e) { if (e.clientY <= 0) open(); } // cursor leaves top (desktop)
+
+        function disarm() {
+          armed = false;
+          window.removeEventListener("scroll", onScroll);
+          document.removeEventListener("mouseout", onExit);
+          if (timer) { window.clearTimeout(timer); timer = null; }
+        }
+
+        function arm() {
+          if (armed || opened || !eligible()) return;
+          armed = true;
+          window.addEventListener("scroll", onScroll, { passive: true });
+          document.addEventListener("mouseout", onExit);
+          timer = window.setTimeout(open, FALLBACK_MS);
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", arm);
+        } else {
+          arm();
+        }
+        // Re-evaluate on client-side navigation (View Transitions): arm if we
+        // have navigated onto an eligible JA page that wasn't armed yet.
+        document.addEventListener("astro:after-swap", arm);
+      })();
+    </script>
   </body>
 </html>
 

@@ -93,7 +93,7 @@ export interface PricingContent {
     readonly items: ReadonlyArray<{
       readonly variant: "a" | "b" | "c";
       readonly letter: string;
-      readonly name: string;
+      readonly name: Localized;
       readonly icon: PricingIconName;
       readonly goalLines: Localized<readonly string[]>;
       readonly desc: Localized;
@@ -170,20 +170,20 @@ export const PRICING: PricingContent = {
       en: "Lemma Pricing — Trust402 / Civic / Critical / Compliance",
     },
     description: {
-      ja: "Trust402 Explorer は無料で始められます。Civic・Critical・Compliance はお問い合わせベース、Discovery Call から個別構成。年契約・30 分・無料。",
-      en: "Trust402 Explorer is free to start. Civic, Critical, and Compliance plans are inquiry-based — tailored from a Discovery Call. Annual contract, 30 minutes, free.",
+      ja: "Civic・Critical・Compliance はお問い合わせベース、Discovery Call から個別に構成。年契約・30 分・無料。",
+      en: "Civic, Critical, and Compliance plans are inquiry-based — tailored from a Discovery Call. Annual contract, 30 minutes, free.",
     },
   },
 
   hero: {
     eyebrow: { ja: "Products & Pricing", en: "Products & Pricing" },
     h1Lines: {
-      ja: ["3 つの入口、", "1 つの暗号基盤。"],
-      en: ["Four doors in,", "one cryptographic foundation."],
+      ja: ["4 つの入口、", "1 つの信頼インフラ。"],
+      en: ["Four doors in,", "one trust infrastructure."],
     },
     sub: {
-      ja: "3 つのエンタープライズセグメントと、開発者向け 1 プロダクト。すべて Lemma の同じ暗号基盤上に。",
-      en: "Three enterprise segments and one developer product. All built on Lemma.",
+      ja: "エンタープライズ向けの 3 プランと、開発者向けの 1 プロダクト。",
+      en: "Three enterprise plans and one developer product.",
     },
     trustLine: {
       ja: [
@@ -201,11 +201,11 @@ export const PRICING: PricingContent = {
 
   enterprise: {
     eyebrow: { ja: "エンタープライズ", en: "Enterprise" },
-    h2Head: { ja: "3 つのセグメント、", en: "Three segments," },
-    h2Accent: { ja: "1 つの信頼インフラ。", en: "one trust infrastructure." },
+    h2Head: { ja: "運用・規制・対象で、", en: "Three plans," },
+    h2Accent: { ja: "選ぶ 3 プラン。", en: "chosen by need." },
     sub: {
-      ja: "運用要件・規制要件・対象セクターに応じた 3 つのプラン。",
-      en: "Three plans aligned to operational, regulatory, and sector requirements.",
+      ja: "それぞれの要件に合わせて、Discovery で個別に構成します。",
+      en: "Each plan configured to your requirements via Discovery.",
     },
     bestForLabel: { ja: "Best for", en: "Best for" },
     plans: [
@@ -215,31 +215,31 @@ export const PRICING: PricingContent = {
         name: "Lemma Civic",
         tagline: { ja: "市民・住民向けサービスを提供する組織へ", en: "For organizations serving citizens" },
         bestFor: {
-          ja: "自治体、公益事業者、B2B2G の事業者など、市民・住民向けに証明可能な属性検証が必要な組織。",
+          ja: "自治体・公益事業者・B2B2G の事業者など、市民向けサービスで「資格や条件の確認」を証明付きで行う必要がある組織。",
           en: "For municipalities, utilities, and B2B2G operators that need verifiable attribute checks for citizen-facing services.",
         },
         features: {
           ja: [
-            "公共サービス適格性の ZK 証明済み属性検証",
-            "マルチサイトティアリング — 運用サイト数に応じたスケーリング",
-            "監査および公共の説明責任のためのオンチェーン来歴証明",
-            "公共インフラ向け標準スキーマライブラリ",
+            "公共サービスの利用資格を、中身を明かさずに確認（ゼロ知識証明）",
+            "拠点数に応じた段階プラン（複数拠点に対応）",
+            "監査と説明責任のための、改ざんできない来歴の記録",
+            "公共インフラ向けの標準テンプレート集",
           ],
           en: [
-            "ZK-attested attribute checks for civic eligibility",
+            "Civic-eligibility checks that confirm the fact without revealing the data (zero-knowledge proof)",
             "Multi-site tiering — scales with the number of operating sites",
-            "On-chain provenance for audit and public accountability",
+            "Tamper-evident provenance records for audit and public accountability",
             "Standard schema library for civic infrastructure",
           ],
         },
         tiers: [
-          { no: "Tier 1", scope: { ja: "1〜3 サイト", en: "1–3 sites" } },
-          { no: "Tier 2", scope: { ja: "4〜10 サイト", en: "4–10 sites" } },
+          { no: "Tier 1", scope: { ja: "1〜3 拠点", en: "1–3 sites" } },
+          { no: "Tier 2", scope: { ja: "4〜10 拠点", en: "4–10 sites" } },
           { no: "Tier 3", scope: { ja: "11+ カスタム", en: "11+ custom" } },
         ],
         pricingModel: {
-          ja: "年契約ベース。サイト数・検証通話量・カスタムスキーマ登録に応じて Discovery 型で個別構成。Pack 対象外。",
-          en: "Annual contract. Configured per site count, verification volume, and custom schema registration via Discovery. Option Packs not applicable.",
+          ja: "小規模自治体向けの位置づけ。年契約ベースで、拠点数・確認の回数・独自テンプレートの登録に応じて Discovery で個別に構成します。拠点数や利用量が増える場合は、上位ティアへのアップグレードで対応。Option Pack は対象外。",
+          en: "Positioned for small municipalities. Annual contract, configured per site count, verification volume, and custom schema registration via Discovery. As sites or volume grow, it moves up a tier. Option Packs not applicable.",
         },
         ctaPrimary: { label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" }, href: DISCOVERY_URL },
         ctaSecondary: { label: { ja: "ホワイトペーパー ↗", en: "Whitepaper ↗" }, href: WP_URL_PLAN },
@@ -255,10 +255,10 @@ export const PRICING: PricingContent = {
         },
         features: {
           ja: [
-            "ドメイン固有のビジネスルール向けカスタム ZK サーキット",
-            "コンプライアンスグレードの監査証跡",
-            "SLA 保証稼働率 · オンプレミスデプロイメントオプション",
-            "施設数と統合範囲に応じたティアリング",
+            "自社の業務ルールに合わせた専用のゼロ知識証明",
+            "監査にそのまま使える証跡（コンプライアンス対応）",
+            "稼働率保証（SLA）・自社環境（オンプレミス）への導入も可能",
+            "施設数と連携範囲に応じた段階プラン",
           ],
           en: [
             "Custom ZK circuits for domain-specific business rules",
@@ -273,7 +273,7 @@ export const PRICING: PricingContent = {
           { no: "Tier 3", scope: { ja: "エンタープライズ", en: "Enterprise" } },
         ],
         pricingModel: {
-          ja: "年契約ベース。施設規模・SLA 要件・ZK サーキットの複雑さに応じて Discovery 型で個別構成。Tier 2 以上で Option Pack(Incident Response / Regulatory)を追加可能。",
+          ja: "年契約ベース。施設規模・稼働保証（SLA）の要件・証明ロジックの複雑さに応じて、Discovery で個別に構成。Tier 2 以上で Option Pack（Incident Response / Regulatory）を追加可能。",
           en: "Annual contract. Configured per facility scale, SLA needs, and ZK circuit complexity via Discovery. Option Packs (Incident Response / Regulatory) available from Tier 2.",
         },
         ctaPrimary: { label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" }, href: DISCOVERY_URL },
@@ -285,15 +285,15 @@ export const PRICING: PricingContent = {
         name: "Lemma Compliance",
         tagline: { ja: "属性検証・監査証跡が求められる業務へ", en: "For regulated workflows" },
         bestFor: {
-          ja: "金融機関・FinTech・規制対象機関など、属性検証と監査証跡が求められる業務に AI を運用する組織。EU AI Act / GDPR / 国内規制への対応も。",
+          ja: "金融機関・FinTech・規制対象機関など、「資格や条件の確認」と監査証跡が求められる業務で AI を運用する組織。EU AI Act / GDPR / 国内規制への対応も。",
           en: "For banks, FinTechs, and regulated institutions running AI in workflows that demand attribute verification and audit trails — including EU AI Act / GDPR / domestic compliance.",
         },
         features: {
           ja: [
-            "データ開示のない KYC/AML 属性検証",
-            "EU AI Act および ISO 42001 準拠の監査証跡",
-            "選択的開示 — 事実を証明し PII を保護",
-            "クエリごとに完全な来歴証明付きの RAG ポリシーレイヤー",
+            "個人情報を開示せずに行う本人確認（KYC/AML）",
+            "EU AI Act・ISO 42001 に対応した監査証跡",
+            "必要な事実だけを証明し、個人情報は伏せたまま（選択的開示）",
+            "AI が社内データを参照するたびに来歴を記録する、参照ルール層",
           ],
           en: [
             "KYC/AML attribute verification without data disclosure",
@@ -308,8 +308,8 @@ export const PRICING: PricingContent = {
           { no: "Tier 3", scope: { ja: "メガバンク", en: "Global bank" } },
         ],
         pricingModel: {
-          ja: "USD 価格・年契約ベース。機関規模・通話量に応じて Discovery 型で構成。Tier 2 以上で Option Pack(Regulatory / Agent Governance)を追加可能。",
-          en: "USD pricing, annual contract. Configured per institution scale and volume via Discovery. Option Packs (Regulatory / Agent Governance) available from Tier 2.",
+          ja: "年契約ベース。機関規模・利用量に応じて Discovery で構成。Tier 2 以上で Option Pack（Regulatory / Agent Governance）を追加可能。",
+          en: "Annual contract. Configured per institution scale and volume via Discovery. Option Packs (Regulatory / Agent Governance) available from Tier 2.",
         },
         ctaPrimary: { label: { ja: "Discovery Call を予約 →", en: "Book a Discovery Call →" }, href: DISCOVERY_URL },
         ctaSecondary: { label: { ja: "ホワイトペーパー ↗", en: "Whitepaper ↗" }, href: WP_URL_PLAN },
@@ -328,7 +328,7 @@ export const PRICING: PricingContent = {
     name: "Trust402",
     tagline: { ja: "Explorer · Builder · Studio · Pro", en: "Explorer · Builder · Studio · Pro" },
     desc: {
-      ja: "エージェント駆動のエコシステムで、API レイヤーから ZK 証明済みの行動 / 決済 / 権限を提供。",
+      ja: "AI エージェントのエコシステム向けに、行動・決済・権限を API から証明付きで提供。",
       en: "ZK-attested action / payment / authority at the API layer for the agent-driven ecosystem.",
     },
     status: { ja: "近日公開予定", en: "Launching soon" },
@@ -336,7 +336,7 @@ export const PRICING: PricingContent = {
       {
         name: "Explorer",
         desc: {
-          ja: "サンドボックスアクセス。コミット前に ZK 属性検証を評価。テストネット限定。",
+          ja: "サンドボックス環境。導入前に、証明付きの属性確認を試せます。テストネット限定。",
           en: "Sandbox access. Evaluate ZK attribute checks before committing. Testnet only.",
         },
         status: { ja: "近日公開", en: "Coming soon" },
@@ -389,14 +389,14 @@ export const PRICING: PricingContent = {
       {
         variant: "a",
         letter: "Pack A",
-        name: "Incident Response",
+        name: { ja: "インシデント対応", en: "Incident Response" },
         icon: "shield-alert",
         goalLines: {
           ja: ["インシデントから、", "復旧と証明へ。"],
           en: ["From incident,", "to recovery and proof."],
         },
         desc: {
-          ja: 'セキュリティ事案の発生時、改ざん不能な来歴証跡から原因究明・復旧・規制報告を行うための運用パック。CISO・内部監査の事後対応プロセスに組み込む。',
+          ja: 'セキュリティ事案の発生時、改ざんできない来歴の記録から原因究明・復旧・規制報告を行うための運用パック。CISO・内部監査の事後対応プロセスに組み込む。',
           en: "An operational pack for root-cause analysis, recovery, and regulatory reporting from a tamper-evident provenance trail at incident time. Slots into the CISO / internal-audit response process.",
         },
         tier: { ja: "Critical Tier 2 以上", en: "Critical Tier 2+" },
@@ -406,7 +406,7 @@ export const PRICING: PricingContent = {
       {
         variant: "b",
         letter: "Pack B",
-        name: "Regulatory",
+        name: { ja: "規制対応", en: "Regulatory" },
         icon: "doc-stack",
         goalLines: {
           ja: ["規制への適合を、", "証跡として残す。"],
@@ -423,14 +423,14 @@ export const PRICING: PricingContent = {
       {
         variant: "c",
         letter: "Pack C",
-        name: "Agent Governance",
+        name: { ja: "エージェント・ガバナンス", en: "Agent Governance" },
         icon: "agent-network",
         goalLines: {
           ja: ["AI エージェントを、", "組織で運用可能に。"],
           en: ["AI agents,", "ready for enterprise governance."],
         },
         desc: {
-          ja: "AI エージェントが業務代理・自動取引を担う体制への対応パック。Trust402 との連携で、エージェント権限の独立検証層を組織ガバナンスに組み込む。経費承認・購買・顧客対応の自動化に。",
+          ja: "AI エージェントが業務代理・自動取引を担う体制への対応パック。Trust402 との連携で、エージェントの権限を独立に検証するしくみを組織のガバナンスに組み込む。経費承認・購買・顧客対応の自動化に。",
           en: "An operational pack for organizations where AI agents handle delegation and automated transactions. With Trust402, an independent verification layer for agent authority slots into enterprise governance — for expense approval, procurement, and customer-facing automation.",
         },
         tier: { ja: "Compliance T2 以上 / Trust402 連携", en: "Compliance T2+ / Trust402 integration" },
@@ -543,7 +543,7 @@ export const PRICING: PricingContent = {
       {
         q: { ja: "なぜ公開価格がないのですか?", en: "Why are prices not published?" },
         a: {
-          ja: "エンタープライズ料金はティア、サイト数、SLA 要件、ZK サーキットの複雑さに依存します。文脈のない数字は誤解を招くため、実際のユースケースに応じて価格設定します。",
+          ja: "エンタープライズ料金は、ティア・拠点数・稼働保証（SLA）の要件・証明ロジックの複雑さに依存します。文脈のない数字は誤解を招くため、実際のユースケースに応じて価格設定します。",
           en: "Enterprise pricing depends on tier, site count, SLA requirements, and ZK circuit complexity. Numbers without context mislead, so we price against your actual use case.",
         },
       },
@@ -557,21 +557,21 @@ export const PRICING: PricingContent = {
       {
         q: { ja: "料金はどのように設定されていますか?", en: "How is pricing set?" },
         a: {
-          ja: "エンタープライズプランは年契約ベース。月額基本料金 + 検証通話量 + オプションのカスタムスキーマ登録、必要に応じて Option Pack の追加で構成されます。Discovery 型営業で Lemma 側が Tier + Pack 構成を提案します。",
+          ja: "エンタープライズプランは年契約ベース。月額基本料金 + 確認の回数 + 任意の独自テンプレート登録、必要に応じて Option Pack の追加で構成されます。Discovery で Lemma 側が Tier + Pack 構成を提案します。",
           en: "Enterprise plans are annual contracts: monthly base + verification volume + optional custom-schema registration, plus Option Packs when relevant. Discovery returns a Tier + Pack proposal from Lemma.",
         },
       },
       {
         q: { ja: "Option Pack はどのように選びますか?", en: "How do Option Packs get selected?" },
         a: {
-          ja: "Pack 単品販売はありません。ティアゲート型で、Critical / Compliance プランの Tier 2 以上で追加可能。Discovery で業務要件をヒアリングし、Lemma 側が Tier + Pack 構成を提案します。Civic と各プランの Tier 1 は Pack 対象外。",
+          ja: "Pack 単品販売はありません。上位ティア限定で、Critical / Compliance プランの Tier 2 以上で追加可能。Discovery で業務要件をヒアリングし、Lemma 側が Tier + Pack 構成を提案します。Civic と各プランの Tier 1 は Pack 対象外。",
           en: "Option Packs aren't sold standalone — they gate to Critical / Compliance Tier 2 and above. Discovery intakes the business requirement; Lemma proposes a Tier + Pack configuration. Civic and Tier 1 on every plan are out of scope.",
         },
       },
       {
         q: { ja: "無料トライアルはありますか?", en: "Is there a free trial?" },
         a: {
-          ja: "Trust402 にはサンドボックス評価用の Explorer ティアが含まれます。エンタープライズ評価はスコープ付き PoC で対応します。",
+          ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
           en: "Trust402 includes the Explorer tier for sandbox evaluation. Enterprise evaluation runs via a scoped PoC.",
         },
       },

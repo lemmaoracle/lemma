@@ -19,7 +19,7 @@ const langSwitchHref =
 const langSwitchLabel = locale === "ja" ? "English" : "日本語";
 const pdfUrl =
   locale === "ja"
-    ? "https://drive.google.com/file/d/10cNprvJe75QuSAaXgiIpaggy70gUG4P9/view?usp=sharing"
+    ? "https://drive.google.com/file/d/1K44qTFnM3-4Z19Dr25TxtcetdOFHnrfW/view?usp=sharing"
     : "https://drive.google.com/file/d/1TxcMr2t3NociJeZmBQs1UsCmHZsPJ5Qf/view?usp=sharing";
 const tallyUrl = DISCOVERY_CALL_URL[locale];
 const whitepaperFormId = locale === "ja" ? "xX0VYv" : "7RJXdR";
@@ -30,7 +30,7 @@ const whitepaperFormId = locale === "ja" ? "xX0VYv" : "7RJXdR";
     <a href={homePath} class="nav-logo">
       <LemmaOracle class="h-[65px] w-auto text-white" />
     </a>
-    <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>
+    {locale !== "ja" && <a href={langSwitchHref} class="nav-lang">{langSwitchLabel}</a>}
   </nav>
 
   <main class="main">

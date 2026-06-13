@@ -16,14 +16,14 @@ const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const pillar = (s: string) => `${base}/pillars/${s}/`;
 
 const C = isJa
-  ? { eyebrow: "4 つの活用シーン", h2Pre: "中身を明かさず、", h2Accent: "必要なことだけ任せる", h2Tail: "。", hide: "HIDE", prove: "PROVE" }
-  : { eyebrow: "Four use scenarios", h2Pre: "Hide the content, ", h2Accent: "delegate only what's needed", h2Tail: ".", hide: "HIDE", prove: "PROVE" };
+  ? { eyebrow: "4 つの活用シーン", h2Pre: "中身を明かさず、", h2Accent: "必要なことだけ任せる", h2Tail: "。", prove: "証明する" }
+  : { eyebrow: "Four use scenarios", h2Pre: "Hide the content, ", h2Accent: "delegate only what's needed", h2Tail: ".", prove: "PROVE" };
 
 const axes = isJa ? [
   {
     id: "input-provenance", icon: "stack",
-    num: "01 · 来歴証明", name: "AI への入力に、来歴を。",
-    hideText: "社内文書・学習データ の中身", proveText: "出所と完全性",
+    num: "01 · 来歴証明", name: "AIに渡すデータの、出どころを保証する。",
+    hideLabel: "出さない", hideText: "社内文書・学習データの中身", proveText: "出どころと、改ざんのなさ",
     desc: "原本を暗号化、AI には docHash と CID だけを渡す。RAG・学習データ・IoT センサ来歴の信頼性を、起点で確保。汚染データは届かない。",
     chips: [{ l: "RAG コンテンツ来歴", h: ucHref }, { l: "サプライチェーン来歴", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
     pillarLabel: "P1 来歴証明 詳細 →", pillarHref: pillar("verifiable-origin"),
@@ -31,7 +31,7 @@ const axes = isJa ? [
   {
     id: "agent-authority", icon: "agent",
     num: "02 · エージェント権限証明", name: "AI エージェントに、業務を任せる。",
-    hideText: "鍵 / 代理権限 / 範囲", proveText: "範囲内なら、任せる",
+    hideLabel: "渡さない", hideText: "鍵・代理権限・範囲", proveText: "範囲内なら任せ、範囲外は止める",
     desc: "エージェントに鍵を渡さず、x402 で「≤ ¥100k」「jurisdiction:JP」など範囲付きの自律取引を runtime 実行。経費承認・購買・cross-agent 取引を 24/7 で動かす。範囲外は実行前に拒否。",
     chips: [{ l: "Trust402 製品 →", h: trust402Href, featured: true }, { l: "x402 決済", h: ucHref }, { l: "経費承認", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
     pillarLabel: "P3 エージェント権限証明 詳細 →", pillarHref: pillar("agent-authority-proof"),
@@ -39,7 +39,7 @@ const axes = isJa ? [
   {
     id: "regulatory", icon: "filing",
     num: "03 · 規制属性証明", name: "規制適合を、原本なしで通す。",
-    hideText: "個人情報・商取引データ の中身", proveText: "規制属性適合",
+    hideLabel: "出さない", hideText: "個人情報・取引データの中身", proveText: "規制に適合していること",
     desc: "KYC・AML・CBAM・EUDR・AI Act など各規制が要求する属性を、原本データを開示せず選択的に証明。AI 生成 ID 等の偽装も、同じ層で防ぐ。",
     chips: [{ l: "KYC/AML 選択開示", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
     pillarLabel: "P4 規制属性証明 詳細 →", pillarHref: pillar("regulatory-attribute-proof"),
@@ -47,7 +47,7 @@ const axes = isJa ? [
   {
     id: "verifiable-ai", icon: "audit",
     num: "04 · 検証可能 AI", name: "AI の入出力を、見せずに検証する。",
-    hideText: "AI 入出力 content", proveText: "動作整合性 / 規定遵守",
+    hideLabel: "見せない", hideText: "AIの入力と出力", proveText: "正しく動いたこと",
     desc: "AI が受け取った入力、生成した出力、実行した動作を、内容を開示せず独立検証。プロンプト改竄も、出力 integrity も、同じ層で検知。",
     chips: [{ l: "AI 監査ログ証明", h: ucHref }, { l: "コンプライアンス報告", h: ucHref }, { l: "他のユースケース →", h: ucHref }],
     pillarLabel: "P2 検証可能 AI 詳細 →", pillarHref: pillar("verifiable-ai"),
@@ -56,7 +56,7 @@ const axes = isJa ? [
   {
     id: "input-provenance", icon: "stack",
     num: "01 · Verifiable Origin", name: "Provenance for AI inputs.",
-    hideText: "Internal docs / training data content", proveText: "Source and integrity",
+    hideLabel: "HIDE", hideText: "Internal docs / training data content", proveText: "Source and integrity",
     desc: "Encrypt originals, pass only docHash and CID to AI. Secure provenance of RAG sources, training data, and IoT sensors—at the origin. Poisoned data never arrives.",
     chips: [{ l: "RAG content provenance", h: ucHref }, { l: "Supply chain provenance", h: ucHref }, { l: "More use cases →", h: ucHref }],
     pillarLabel: "P1 Verifiable Origin →", pillarHref: pillar("verifiable-origin"),
@@ -64,7 +64,7 @@ const axes = isJa ? [
   {
     id: "agent-authority", icon: "agent",
     num: "02 · Agent Authority Proof", name: "Delegate work to AI agents.",
-    hideText: "Keys / delegation / scope", proveText: "In-scope work runs",
+    hideLabel: "HIDE", hideText: "Keys / delegation / scope", proveText: "In-scope work runs",
     desc: "Agents run autonomous transactions with scope constraints (\"≤ ¥100k\", \"jurisdiction:JP\") via x402—at runtime. Drive expense approvals, procurement, and cross-agent transactions 24/7. Out-of-scope actions blocked before execution.",
     chips: [{ l: "Trust402 product →", h: trust402Href, featured: true }, { l: "x402 payments", h: ucHref }, { l: "Expense approval", h: ucHref }, { l: "More use cases →", h: ucHref }],
     pillarLabel: "P3 Agent Authority Proof →", pillarHref: pillar("agent-authority-proof"),
@@ -72,7 +72,7 @@ const axes = isJa ? [
   {
     id: "regulatory", icon: "filing",
     num: "03 · Regulatory Attribute Proof", name: "Pass compliance without sharing originals.",
-    hideText: "Personal data / commercial transaction content", proveText: "Regulatory attribute compliance",
+    hideLabel: "HIDE", hideText: "Personal data / commercial transaction content", proveText: "Regulatory attribute compliance",
     desc: "Prove attributes required by KYC, AML, CBAM, EUDR, AI Act—selectively, without disclosing originals. Block AI-generated fraud (synthetic IDs) at the same layer.",
     chips: [{ l: "KYC/AML selective disclosure", h: ucHref }, { l: "CBAM", h: ucHref }, { l: "EUDR", h: ucHref }, { l: "More use cases →", h: ucHref }],
     pillarLabel: "P4 Regulatory Attribute Proof →", pillarHref: pillar("regulatory-attribute-proof"),
@@ -80,7 +80,7 @@ const axes = isJa ? [
   {
     id: "verifiable-ai", icon: "audit",
     num: "04 · Verifiable AI", name: "Verify AI I/O without exposing content.",
-    hideText: "AI I/O content", proveText: "Operational integrity / compliance",
+    hideLabel: "HIDE", hideText: "AI I/O content", proveText: "Operational integrity / compliance",
     desc: "Independently verify AI inputs, outputs, and behavior—without revealing content. Detect prompt tampering and output integrity at the same layer.",
     chips: [{ l: "AI audit log proof", h: ucHref }, { l: "Compliance reporting", h: ucHref }, { l: "More use cases →", h: ucHref }],
     pillarLabel: "P2 Verifiable AI →", pillarHref: pillar("verifiable-ai"),
@@ -169,7 +169,7 @@ const axes = isJa ? [
                   <rect x="3" y="7" width="10" height="6.5" rx="1" fill="#807A6F"/>
                   <circle cx="8" cy="10.2" r="1" fill="#F2EEDF"/>
                 </svg>
-                <span class="axis-hp-label hide">{C.hide}</span>
+                <span class="axis-hp-label hide">{a.hideLabel}</span>
                 <p class="axis-hp-text">{a.hideText}</p>
               </div>
               <div class="axis-hp-cell prove">
