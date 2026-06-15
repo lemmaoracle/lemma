@@ -36,6 +36,28 @@ export interface IndexTemplateProps {
 const { locale, t, base } = Astro.props as IndexTemplateProps;
 const isJa = locale === "ja";
 
+// Hero proof-figure labels. JA pages get Japanese labels; EN keeps the
+// minimal English labels. "Lemma" (brand) and "~200B" (size) stay as-is.
+const FIG = isJa
+  ? {
+      source: "データ元",
+      issue: "発行・検証",
+      border: "境界",
+      proof: "証明",
+      verifier: "検証者",
+      eq: "中身を見せずに証明する。",
+      aria: "データ元から Lemma が証明を発行し、境界を越えて検証者に届き検証される。越えるのは証明のみで、実データはデータ元に残る。",
+    }
+  : {
+      source: "Source",
+      issue: "issue · verify",
+      border: "Border",
+      proof: "proof",
+      verifier: "Verifier",
+      eq: "prove ≠ reveal",
+      aria: "Lemma issues a proof from the Source; it crosses the Border to the Verifier and is verified. Only the proof crosses — the real data stays at the Source.",
+    };
+
 // ── Routes ────────────────────────────────────────────────────────
 const contactHref = DISCOVERY_CALL_URL[locale];
 const useCasesHref = `${base}/solutions/use-cases/`;
@@ -478,23 +500,29 @@ const cap1 = [
         </div>
       </div>
 
-      <div class="hp-hero-visual" aria-hidden="true">
-        <div class="hp-term-chrome">
-          <span></span><span></span><span></span>
-          <span class="hp-term-label">{C.termLabel}</span>
-        </div>
-        <div class="hp-term-body">
-          <span class="hp-term-line"><span class="hp-prompt">$</span> <span class="hp-cmd">lemma verify --target agent-payment</span></span>
-          <span class="hp-term-line"><span class="hp-comm"># {C.termComm1}</span></span>
-          <span class="hp-term-line">✓ <span class="hp-key">provenance</span>: <span class="hp-str">"raw_source"</span> — <span class="hp-ok">verified</span></span>
-          <span class="hp-term-line"><span class="hp-comm"># {C.termComm2}</span></span>
-          <span class="hp-term-line">✓ <span class="hp-key">model_attestation</span>: <span class="hp-str">"claude-3.7-sonnet"</span> — <span class="hp-ok">verified</span></span>
-          <span class="hp-term-line"><span class="hp-comm"># {C.termComm3}</span></span>
-          <span class="hp-term-line">✓ <span class="hp-key">role</span>: <span class="hp-str">"treasury_agent"</span> · <span class="hp-key">spend_limit</span>: <span class="hp-str">"$500/day"</span> — <span class="hp-ok">in policy</span></span>
-          <span class="hp-term-line"><span class="hp-comm"># {C.termComm4}</span></span>
-          <span class="hp-term-line">✓ <span class="hp-key">jurisdiction</span>: <span class="hp-str">"JP-fin"</span> · <span class="hp-key">attribute</span>: <span class="hp-str">"licensed"</span> — <span class="hp-ok">satisfied</span></span>
-          <span class="hp-term-line"><span class="hp-prompt">→</span> <span class="hp-ok">{C.termFinal}</span> · <span class="hp-comm">{C.termFinalSub}</span></span>
-        </div>
+      <div class="hp-hero-visual">
+        <svg id="hpHeroFig" class="hp-hero-fig" viewBox="0 0 430 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={FIG.aria}>
+          <defs><marker id="hpHeroAr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#CBB89F" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+          <rect x="6" y="46" width="106" height="64" rx="9" fill="#FBF7F1" stroke="#E7DACA"/>
+          <text x="59" y="76" text-anchor="middle" fill="#3D2A1C" font-size="15" font-weight="500">{FIG.source}</text>
+          <rect class="hp-fig-mrow" x="22" y="88" width="74" height="9" rx="3" fill="#EDE0CF"/>
+          <line x1="112" y1="78" x2="138" y2="78" stroke="#CBB89F" stroke-width="1.5" marker-end="url(#hpHeroAr)"/>
+          <rect x="140" y="54" width="98" height="50" rx="9" fill="#EAD8C2" stroke="#B5703A"/>
+          <text x="189" y="76" text-anchor="middle" fill="#6E3A12" font-size="15" font-weight="500">Lemma</text>
+          <text x="189" y="93" text-anchor="middle" fill="#6E3A12" font-size="10" class="hp-fig-mono">{FIG.issue}</text>
+          <rect x="276" y="30" width="56" height="16" rx="8" fill="#FBF7F1" stroke="#E7DACA"/><text x="304" y="42" text-anchor="middle" fill="#8A7A68" font-size="10">{FIG.border}</text>
+          <line class="hp-fig-bd" x1="304" y1="48" x2="304" y2="146" stroke="#D8C8B4" stroke-width="1.6" stroke-dasharray="5 4"/>
+          <g class="hp-fig-tok">
+            <rect x="220" y="66" width="72" height="30" rx="8" fill="#E3CBAD" stroke="#8B4513"/>
+            <text x="256" y="80" text-anchor="middle" fill="#5E2F0E" font-size="12" font-weight="500">{FIG.proof}</text>
+            <text x="256" y="91" text-anchor="middle" fill="#5E2F0E" font-size="9" class="hp-fig-mono">~200B</text>
+          </g>
+          <rect x="324" y="54" width="82" height="50" rx="9" fill="#FBF7F1" stroke="#E7DACA"/>
+          <text x="365" y="83" text-anchor="middle" fill="#3D2A1C" font-size="13" font-weight="500">{FIG.verifier}</text>
+          <g class="hp-fig-tick"><circle cx="319" cy="79" r="9" fill="#2A9D6A"/><text x="319" y="83" text-anchor="middle" fill="#fff" font-size="11">✓</text></g>
+          <text x="6" y="160" fill="#8A7A68" font-size="11" class="hp-fig-mono">{FIG.eq}</text>
+        </svg>
+        <div class="hp-hero-code">$ lemma verify &nbsp;→&nbsp; proof verified · data never left source <span class="hp-hero-ok">✓</span></div>
       </div>
     </section>
 
@@ -746,7 +774,28 @@ const cap1 = [
   .hp-btn-secondary { background: transparent; color: var(--hp-text-1); padding: 14px 26px; border: 0.5px solid var(--hp-text-1); border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: all 0.15s; }
   .hp-btn-secondary:hover { background: var(--hp-cream-d); border-color: var(--hp-brown); color: var(--hp-brown); }
 
-  .hp-hero-visual { background: var(--hp-code-bg); border-radius: 16px; padding: 24px; box-shadow: 0 30px 70px rgba(43, 30, 18, 0.18); overflow: hidden; min-width: 0; }
+  /* Hero visual — v5 proof-crossing-the-border animation (light tonal-brown
+     surface). The animated figure is the lead visual; the CLI is demoted to a
+     single-line strip below it. Only the proof token crosses the Border; the
+     Source data never moves (this embodies the difference from MPC). */
+  .hp-hero-visual { background: #F4EEE6; border: 0.5px solid var(--hp-line); border-radius: 16px; padding: 28px; box-shadow: 0 24px 56px rgba(43, 30, 18, 0.10); overflow: hidden; min-width: 0; }
+  .hp-hero-fig { width: 100%; height: auto; display: block; }
+  .hp-fig-mono { font-family: var(--hp-mono); }
+  .hp-fig-tok { animation: hpHeroTok 5s infinite; }
+  .hp-fig-bd { animation: hpHeroBd 5s infinite; }
+  .hp-fig-tick { transform-box: fill-box; transform-origin: center; animation: hpHeroTick 5s infinite; }
+  .hp-fig-mrow { animation: hpHeroHold 5s infinite; }
+  @keyframes hpHeroTok { 0%,10% { opacity: 0; transform: translateX(0); } 16% { opacity: 1; transform: translateX(0); } 46% { opacity: 1; transform: translateX(72px); } 54%,100% { opacity: 0; transform: translateX(72px); } }
+  @keyframes hpHeroBd { 0%,30% { stroke: #D8C8B4; } 36% { stroke: #8B4513; } 44%,100% { stroke: #D8C8B4; } }
+  @keyframes hpHeroTick { 0%,48% { opacity: 0; transform: scale(.5); } 56% { opacity: 1; transform: scale(1); } 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes hpHeroHold { 0%,100% { opacity: .5; } 50% { opacity: .9; } }
+  .hp-hero-code { margin-top: 14px; background: #FBF7F1; border: 1px solid #E7DACA; border-radius: 8px; padding: 10px 14px; font-family: var(--hp-mono); font-size: 12px; color: #8A7A68; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .hp-hero-ok { color: #2A9D6A; }
+  @media (prefers-reduced-motion: reduce) {
+    .hp-hero-fig * { animation: none !important; }
+    .hp-fig-tok { opacity: 1; transform: translateX(40px); }
+    .hp-fig-tick { opacity: 1; }
+  }
   .hp-term-chrome { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
   .hp-term-chrome span:not(.hp-term-label) { width: 11px; height: 11px; border-radius: 50%; background: #3a3530; flex-shrink: 0; display: inline-block; }
   .hp-term-label { margin-left: 12px; font-family: var(--hp-mono); font-size: 10.5px; color: #6a655d; letter-spacing: 0.08em; }
