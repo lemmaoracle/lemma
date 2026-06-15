@@ -391,6 +391,15 @@ const isResourcesActive =
     padding: 8px;
     margin-top: 4px;
   }
+  /* Hover bridge: fills the 4px gap between the trigger and the panel so the
+     menu stays open when the cursor crosses into it. Starts at the trigger's
+     bottom edge (top:-4px) and extends down past the gap — never overlaps the
+     nav links above, so it doesn't interfere with neighbouring items. */
+  .mega-panel::before {
+    content: "";
+    position: absolute;
+    top: -4px; left: 0; right: 0; height: 6px;
+  }
   .mega-panel-wide {
     min-width: 540px;
     grid-template-columns: 1fr 1fr;
