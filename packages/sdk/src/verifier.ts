@@ -79,6 +79,6 @@ const verifyWhir = (i: WhirInputs): Promise<boolean> =>
 export const verify = (input: VerifyInput): Promise<VerifyOutput> =>
   input.alg === "groth16-bn254-snarkjs" && isGroth16Inputs(input.inputs)
     ? verifyGroth16(input.inputs).then((ok) => ({ ok }))
-    : input.alg === "whir-31bit-koalabear" && isWhirInputs(input.inputs)
+    : input.alg === "whir-koalabear-solwhir" && isWhirInputs(input.inputs)
       ? verifyWhir(input.inputs).then((ok) => ({ ok }))
       : Promise.resolve({ ok: false });

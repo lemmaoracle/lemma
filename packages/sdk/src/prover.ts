@@ -137,7 +137,7 @@ const generateSnarkjsProof = (
   );
 
 /**
- * Generate a proof using the WHIR-31bit (KoalaBear) runtime.
+ * Generate a proof using the WHIR-KoalaBear (KoalaBear) runtime.
  * Mirrors {@link generateSnarkjsProof}: the runtime is imported dynamically
  * so it (and its wasm dependency) only loads on the WHIR path, and the
  * per-circuit `wasm` / `params` artifacts are passed in by the caller.
@@ -176,7 +176,7 @@ const resolveAlg = (meta: CircuitMeta): ProofAlgId =>
  *
  * Accepts the union location type and narrows it here: a WHIR circuit is
  * discriminated by a string `params` field (groth16 circuits carry `zkey`
- * instead). A circuit tagged `whir-31bit-koalabear` but whose metadata lacks
+ * instead). A circuit tagged `whir-koalabear-solwhir` but whose metadata lacks
  * `params` is a registration error, so we reject with a clear message rather
  * than silently falling through to the snarkjs path with an undefined URL.
  */
@@ -230,7 +230,7 @@ export const prove = async (
   // narrowed inside proveWhir; the snarkjs branch reads the { wasm, zkey }
   // shape, so we assert the groth16 member there (a same-family cast, not the
   // unsound `as unknown as`).
-  return location && resolveAlg(circuitMeta) === "whir-31bit-koalabear"
+  return location && resolveAlg(circuitMeta) === "whir-koalabear-solwhir"
     ? proveWhir(client, location, input.witness)
     : // Branch: has artifacts? → use snarkjs : fallback to SHA-256
       // Using ternary instead of if (FP compliant - expression not statement)

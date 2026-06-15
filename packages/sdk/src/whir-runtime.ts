@@ -1,6 +1,6 @@
 /**
- * WHIR-31bit runtime over the KoalaBear field
- * (ProofAlgId `"whir-31bit-koalabear"`).
+ * WHIR-KoalaBear runtime over the KoalaBear field
+ * (ProofAlgId `"whir-koalabear-solwhir"`).
  *
  * Mirrors the snarkjs role: a generic runtime consumed by the SDK that takes
  * per-circuit artifacts fetched from circuit metadata and returns / checks a

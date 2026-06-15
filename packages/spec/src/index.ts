@@ -49,8 +49,8 @@ export type CircuitArtifactLocation = Readonly<{
 }>;
 
 /**
- * Artifacts for a WHIR-31bit (KoalaBear field) circuit, used with the
- * `whir-31bit-koalabear` ProofAlgId.
+ * Artifacts for a WHIR-KoalaBear (KoalaBear field) circuit, used with the
+ * `whir-koalabear-solwhir` ProofAlgId.
  *
  * WHIR provides transparent-setup, post-quantum proofs with an EVM-native
  * Solidity verifier (sol-whir). Unlike Groth16 (which needs trusted setup
@@ -72,7 +72,7 @@ export type WhirCircuitArtifactLocation = Readonly<{
 
 export type ProofAlgId =
   | "groth16-bn254-snarkjs" // snarkjs — pA/pB/pC + uint[N] pubSignals
-  | "whir-31bit-koalabear"; // WHIR over KoalaBear — post-quantum, transparent setup, EVM-native verifier
+  | "whir-koalabear-solwhir"; // WHIR over KoalaBear — post-quantum, transparent setup, EVM-native verifier
 
 export type CircuitVerifier = Readonly<{
   type: "onchain" | "offchain";
