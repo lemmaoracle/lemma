@@ -36,6 +36,28 @@ export interface IndexTemplateProps {
 const { locale, t, base } = Astro.props as IndexTemplateProps;
 const isJa = locale === "ja";
 
+// Hero proof-figure labels. JA pages get Japanese labels; EN keeps the
+// minimal English labels. "Lemma" (brand) and "~200B" (size) stay as-is.
+const FIG = isJa
+  ? {
+      source: "出所",
+      issue: "発行・検証",
+      border: "境界",
+      proof: "証明",
+      verifier: "検証者",
+      eq: "証明 ≠ 開示",
+      aria: "出所から Lemma が証明を発行し、境界を越えて検証者に届き検証される。越えるのは証明のみで、実データは出所に残る。",
+    }
+  : {
+      source: "Source",
+      issue: "issue · verify",
+      border: "Border",
+      proof: "proof",
+      verifier: "Verifier",
+      eq: "prove ≠ reveal",
+      aria: "Lemma issues a proof from the Source; it crosses the Border to the Verifier and is verified. Only the proof crosses — the real data stays at the Source.",
+    };
+
 // ── Routes ────────────────────────────────────────────────────────
 const contactHref = DISCOVERY_CALL_URL[locale];
 const useCasesHref = `${base}/solutions/use-cases/`;
@@ -479,26 +501,26 @@ const cap1 = [
       </div>
 
       <div class="hp-hero-visual">
-        <svg id="hpHeroFig" class="hp-hero-fig" viewBox="0 0 430 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Source から Lemma が証明書を発行し、Border（社内と社外の境界）を越えて Verifier に届き検証される。越えるのは proof のみで、実データは Source に残る。">
+        <svg id="hpHeroFig" class="hp-hero-fig" viewBox="0 0 430 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={FIG.aria}>
           <defs><marker id="hpHeroAr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#CBB89F" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
           <rect x="6" y="46" width="106" height="64" rx="9" fill="#FBF7F1" stroke="#E7DACA"/>
-          <text x="59" y="76" text-anchor="middle" fill="#3D2A1C" font-size="15" font-weight="500">Source</text>
+          <text x="59" y="76" text-anchor="middle" fill="#3D2A1C" font-size="15" font-weight="500">{FIG.source}</text>
           <rect class="hp-fig-mrow" x="22" y="88" width="74" height="9" rx="3" fill="#EDE0CF"/>
           <line x1="112" y1="78" x2="138" y2="78" stroke="#CBB89F" stroke-width="1.5" marker-end="url(#hpHeroAr)"/>
           <rect x="140" y="54" width="98" height="50" rx="9" fill="#EAD8C2" stroke="#B5703A"/>
           <text x="189" y="76" text-anchor="middle" fill="#6E3A12" font-size="15" font-weight="500">Lemma</text>
-          <text x="189" y="93" text-anchor="middle" fill="#6E3A12" font-size="10" class="hp-fig-mono">issue · verify</text>
-          <rect x="276" y="30" width="56" height="16" rx="8" fill="#FBF7F1" stroke="#E7DACA"/><text x="304" y="42" text-anchor="middle" fill="#8A7A68" font-size="10">Border</text>
+          <text x="189" y="93" text-anchor="middle" fill="#6E3A12" font-size="10" class="hp-fig-mono">{FIG.issue}</text>
+          <rect x="276" y="30" width="56" height="16" rx="8" fill="#FBF7F1" stroke="#E7DACA"/><text x="304" y="42" text-anchor="middle" fill="#8A7A68" font-size="10">{FIG.border}</text>
           <line class="hp-fig-bd" x1="304" y1="48" x2="304" y2="146" stroke="#D8C8B4" stroke-width="1.6" stroke-dasharray="5 4"/>
           <g class="hp-fig-tok">
             <rect x="220" y="66" width="72" height="30" rx="8" fill="#E3CBAD" stroke="#8B4513"/>
-            <text x="256" y="80" text-anchor="middle" fill="#5E2F0E" font-size="12" font-weight="500">proof</text>
+            <text x="256" y="80" text-anchor="middle" fill="#5E2F0E" font-size="12" font-weight="500">{FIG.proof}</text>
             <text x="256" y="91" text-anchor="middle" fill="#5E2F0E" font-size="9" class="hp-fig-mono">~200B</text>
           </g>
           <rect x="324" y="54" width="82" height="50" rx="9" fill="#FBF7F1" stroke="#E7DACA"/>
-          <text x="365" y="83" text-anchor="middle" fill="#3D2A1C" font-size="13" font-weight="500">Verifier</text>
+          <text x="365" y="83" text-anchor="middle" fill="#3D2A1C" font-size="13" font-weight="500">{FIG.verifier}</text>
           <g class="hp-fig-tick"><circle cx="319" cy="79" r="9" fill="#2A9D6A"/><text x="319" y="83" text-anchor="middle" fill="#fff" font-size="11">✓</text></g>
-          <text x="6" y="160" fill="#8A7A68" font-size="11" class="hp-fig-mono">prove ≠ reveal</text>
+          <text x="6" y="160" fill="#8A7A68" font-size="11" class="hp-fig-mono">{FIG.eq}</text>
         </svg>
         <div class="hp-hero-code">$ lemma verify &nbsp;→&nbsp; proof verified · data never left source <span class="hp-hero-ok">✓</span></div>
       </div>
