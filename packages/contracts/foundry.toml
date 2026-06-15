@@ -10,6 +10,14 @@ ffi = false
 ast = true
 build_info = true
 
+# WHIR-31bit (KoalaBear) Solidity verifier — pending sol-whir integration.
+# sol-whir (privacy-ethereum/sol-whir) will be vendored as a git submodule under
+# lib/sol-whir, after which this remapping wires its src/ into the import path.
+# Left commented until the submodule is added so `forge build` stays green.
+# remappings = [
+#   "sol-whir/=lib/sol-whir/src/"
+# ]
+
 [rpc_endpoints]
 sepolia = "${SEPOLIA_RPC_URL}"
 mainnet = "${MAINNET_RPC_URL}"
