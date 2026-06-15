@@ -49,7 +49,31 @@ export type CircuitArtifactLocation = Readonly<{
   vkey?: string;
 }>;
 
-export type ProofAlgId = "groth16-bn254-snarkjs"; // snarkjs — pA/pB/pC + uint[N] pubSignals
+/**
+ * Artifacts for a WHIR-KoalaBear (KoalaBear field) circuit, used with the
+ * `whir-koalabear-solwhir` ProofAlgId.
+ *
+ * WHIR provides transparent-setup, post-quantum proofs with an EVM-native
+ * Solidity verifier (sol-whir). Unlike Groth16 (which needs trusted setup
+ * per circuit) or STARKs (which need an SNARK wrap for on-chain use),
+ * WHIR verifies directly on EVM — making it the first post-quantum
+ * ZK proof system with a true automatic Solidity verifier generation pipeline.
+ *
+ * Artifacts:
+ * - `wasm` — compiled WASM module (wasm-bindgen) for prover/verifier
+ * - `params` — WHIR verification key / PCS parameters (serialised)
+ * - `solidityVerifier` — path to the generated Solidity Verifier.sol (Foundry)
+ */
+export type WhirCircuitArtifactLocation = Readonly<{
+  type: "ipfs" | "https" | "cidv0";
+  wasm: string;
+  params: string;
+  solidityVerifier?: string;
+}>;
+
+export type ProofAlgId =
+  | "groth16-bn254-snarkjs" // snarkjs — pA/pB/pC + uint[N] pubSignals
+  | "whir-koalabear-solwhir"; // WHIR over KoalaBear — post-quantum, transparent setup, EVM-native verifier
 
 export type CircuitVerifier = Readonly<{
   type: "onchain" | "offchain";
@@ -65,7 +89,9 @@ export type CircuitMeta = Readonly<{
   description?: string;
   inputs?: ReadonlyArray<string>;
   verifiers?: ReadonlyArray<CircuitVerifier>;
-  artifact?: Readonly<{ location: CircuitArtifactLocation }>;
+  artifact?: Readonly<{
+    location: CircuitArtifactLocation | WhirCircuitArtifactLocation;
+  }>;
   [k: string]: unknown;
 }>;
 

@@ -9,7 +9,13 @@
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { reject, resolveFetch } from "./internal.js";
-import type { CircuitMeta } from "@lemmaoracle/spec";
+import type {
+  CircuitArtifactLocation,
+  CircuitMeta,
+  ProofAlgId,
+  WhirCircuitArtifactLocation,
+} from "@lemmaoracle/spec";
+import type { WhirModule } from "./whir-runtime.js";
 import { sha256Base64, toBase64 } from "./platform.js";
 
 /* ------------------------------------------------------------------ */
@@ -130,6 +136,76 @@ const generateSnarkjsProof = (
     ),
   );
 
+/**
+ * Generate a proof using the WHIR-KoalaBear (KoalaBear) runtime.
+ * Mirrors {@link generateSnarkjsProof}: the runtime is imported dynamically
+ * so it (and its wasm dependency) only loads on the WHIR path, and the
+ * per-circuit `wasm` / `params` artifacts are passed in by the caller.
+ */
+const generateWhirProof = (
+  witness: Readonly<Record<string, unknown>>,
+  wasmBuf: Uint8Array,
+  paramsBuf: Uint8Array,
+): Promise<{
+  readonly proof: Uint8Array;
+  readonly publicInputs: readonly string[];
+}> =>
+  import("./whir-runtime.js").then((mod: WhirModule) =>
+    mod.whir.prove(witness, wasmBuf, paramsBuf),
+  );
+
+/** Base64-encode raw proof bytes without overflowing the call stack. */
+const bytesToBase64 = (bytes: Uint8Array): string =>
+  toBase64(
+    Array.from(bytes).reduce((acc, b) => acc + String.fromCharCode(b), ""),
+  );
+
+/**
+ * Resolve the proof algorithm for a circuit from its verifier metadata,
+ * defaulting to groth16 so circuits registered without an explicit algorithm
+ * keep their existing behaviour.
+ */
+const resolveAlg = (meta: CircuitMeta): ProofAlgId =>
+  meta.verifiers?.find((v) => v.alg !== undefined)?.alg ??
+  "groth16-bn254-snarkjs";
+
+/**
+ * WHIR proving path. Fetches the compiled prover `wasm` and serialized
+ * verifying `params` (the parallel {@link WhirCircuitArtifactLocation}
+ * shape), then delegates to the WHIR runtime.
+ *
+ * Accepts the union location type and narrows it here: a WHIR circuit is
+ * discriminated by a string `params` field (groth16 circuits carry `zkey`
+ * instead). A circuit tagged `whir-koalabear-solwhir` but whose metadata lacks
+ * `params` is a registration error, so we reject with a clear message rather
+ * than silently falling through to the snarkjs path with an undefined URL.
+ */
+const proveWhir = (
+  client: LemmaClient,
+  location: CircuitArtifactLocation | WhirCircuitArtifactLocation,
+  witness: Readonly<Record<string, unknown>>,
+): Promise<ProveOutput> => {
+  const params = "params" in location ? location.params : undefined;
+  return typeof params === "string"
+    ? (async () => {
+        const [wasmBuf, paramsBuf] = await Promise.all([
+          fetchArtifact(client, location.wasm),
+          fetchArtifact(client, params),
+        ]);
+
+        const { proof, publicInputs } = await generateWhirProof(
+          witness,
+          wasmBuf,
+          paramsBuf,
+        );
+
+        return { proof: bytesToBase64(proof), inputs: publicInputs };
+      })()
+    : reject(
+        "WHIR circuit metadata is missing the 'params' artifact location",
+      );
+};
+
 /* ------------------------------------------------------------------ */
 /*  Main prove function                                                */
 /* ------------------------------------------------------------------ */
@@ -147,16 +223,24 @@ export const prove = async (
     input.circuitId,
   );
 
-  const { artifact } = circuitMeta;
+  const location = circuitMeta.artifact?.location;
 
-  // Branch: has artifacts? → use snarkjs : fallback to SHA-256
-  // Using ternary instead of if (FP compliant - expression not statement)
-  return artifact?.location
+  // Dispatch by proof algorithm (resolved from circuit verifier metadata).
+  // WHIR circuits carry the parallel { wasm, params } location shape and are
+  // narrowed inside proveWhir; the snarkjs branch reads the { wasm, zkey }
+  // shape, so we assert the groth16 member there (a same-family cast, not the
+  // unsound `as unknown as`).
+  return location && resolveAlg(circuitMeta) === "whir-koalabear-solwhir"
+    ? proveWhir(client, location, input.witness)
+    : // Branch: has artifacts? → use snarkjs : fallback to SHA-256
+      // Using ternary instead of if (FP compliant - expression not statement)
+      location
     ? // Production path (with artifacts)
       (async () => {
+        const groth16Loc = location as CircuitArtifactLocation;
         const [wasmBuf, zkeyBuf] = await Promise.all([
-          fetchArtifact(client, artifact.location.wasm),
-          fetchArtifact(client, artifact.location.zkey),
+          fetchArtifact(client, groth16Loc.wasm),
+          fetchArtifact(client, groth16Loc.zkey),
         ]);
 
         const { proof, publicSignals } = await generateSnarkjsProof(

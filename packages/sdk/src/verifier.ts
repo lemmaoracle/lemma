@@ -9,6 +9,7 @@
  */
 
 import type { ProofAlgId } from "@lemmaoracle/spec";
+import type { WhirModule } from "./whir-runtime.js";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -53,6 +54,24 @@ const verifyGroth16 = (i: Groth16Inputs): Promise<boolean> =>
         .groth16.verify(i.vkey, [...i.publicSignals], i.proof),
   );
 
+type WhirInputs = Readonly<{
+  wasm: Uint8Array;
+  params: Uint8Array;
+  proof: Uint8Array;
+  publicInputs: ReadonlyArray<string>;
+}>;
+
+const isWhirInputs = (i: Record<string, unknown>): i is WhirInputs =>
+  i["wasm"] instanceof Uint8Array &&
+  i["params"] instanceof Uint8Array &&
+  i["proof"] instanceof Uint8Array &&
+  Array.isArray(i["publicInputs"]);
+
+const verifyWhir = (i: WhirInputs): Promise<boolean> =>
+  import("./whir-runtime.js").then((mod: WhirModule) =>
+    mod.whir.verify(i.wasm, i.params, [...i.publicInputs], i.proof),
+  );
+
 /* ------------------------------------------------------------------ */
 /*  verify                                                             */
 /* ------------------------------------------------------------------ */
@@ -60,4 +79,6 @@ const verifyGroth16 = (i: Groth16Inputs): Promise<boolean> =>
 export const verify = (input: VerifyInput): Promise<VerifyOutput> =>
   input.alg === "groth16-bn254-snarkjs" && isGroth16Inputs(input.inputs)
     ? verifyGroth16(input.inputs).then((ok) => ({ ok }))
-    : Promise.resolve({ ok: false });
+    : input.alg === "whir-koalabear-solwhir" && isWhirInputs(input.inputs)
+      ? verifyWhir(input.inputs).then((ok) => ({ ok }))
+      : Promise.resolve({ ok: false });
