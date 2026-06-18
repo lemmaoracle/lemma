@@ -671,6 +671,49 @@ render();
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  /* ===== mobile readability pass (enterprise) ===== */
+  @media(max-width:700px){
+    .wrap{padding:0 18px}
+    section{padding:34px 0}
+    body{line-height:1.72}
+    h1{font-size:25px;line-height:1.22}
+    h2{font-size:20px;line-height:1.34}
+    .sub{font-size:15px;line-height:1.72}
+    .lede{font-size:15.5px}
+    .pull{font-size:18px;line-height:1.5;padding-left:14px}
+    .hero .kicker{font-size:19px}
+    /* hero: drop the sideways-scrolling placeholder run-grid (same info is in the caption below) */
+    .board{display:none}
+    /* scenario cards: one per row */
+    .scn{grid-template-columns:1fr;gap:10px}
+    .scn .c{padding:15px 16px}
+    /* Layer-2 contrast: clean stacked cards with clear scenario headers */
+    .cx{border:none;background:transparent;gap:12px}
+    .cxrow{border:1px solid #3a2f22;border-radius:12px;overflow:hidden;background:var(--dark)}
+    .cxs{background:#2a2117;font-size:15px;border-bottom:1px solid #3a2f22}
+    .cxd,.cxb{font-size:13.5px;line-height:1.62}
+    /* matrix: smooth, sticky-first-column horizontal scroll */
+    .tbox{-webkit-overflow-scrolling:touch}
+    table{min-width:540px;font-size:12.5px}
+    thead th{padding:9px 7px;font-size:11px}
+    thead th.model{width:128px}
+    tbody td{padding:9px 7px}
+    tbody td.model small{font-size:10.5px}
+    .panel{gap:12px;padding:12px 14px}
+    .legend{gap:9px 14px;font-size:12px}
+    /* impact band */
+    .impact .wrap{padding:38px 18px}
+    .impact .huge{font-size:44px}
+    .impact .cap{font-size:13.5px}
+    /* solution: pipeline boxes + code + banner */
+    .eq .box{min-width:0;width:100%}
+    .product{padding:24px 20px}
+    .oneline{font-size:12px;padding:14px 14px}
+    /* method + honest: breathing room for the long note */
+    .honest{padding:18px;font-size:12.5px;line-height:1.78}
+    .method li{font-size:13px}
+    .ft-cols{gap:16px}
+  }
 
 </style>
 </Layout>

@@ -500,6 +500,41 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
   .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
   @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
+  /* ===== mobile readability pass (enterprise) ===== */
+  @media(max-width:700px){
+    .wrap{padding:0 18px}
+    section{padding:34px 0}
+    body{line-height:1.72}
+    h1{font-size:25px;line-height:1.22}
+    h2{font-size:20px;line-height:1.34}
+    .sub{font-size:15px;line-height:1.72}
+    .lede{font-size:15.5px}
+    .pull{font-size:18px;line-height:1.5;padding-left:14px}
+    .hero .kicker{font-size:19px}
+    /* versus card: stack with clearer separation */
+    .vs .side{padding:18px 18px}
+    .vs .side .nm{font-size:20px}
+    /* scenario cards: one per row */
+    .scn{grid-template-columns:1fr;gap:10px}
+    .scn .c{padding:15px 16px}
+    /* Layer-2 contrast: clean stacked cards with clear scenario headers */
+    .cx{border:none;background:transparent;gap:12px}
+    .cxrow{border:1px solid #3a2f22;border-radius:12px;overflow:hidden;background:var(--dark)}
+    .cxs{background:#2a2117;font-size:15px;border-bottom:1px solid #3a2f22}
+    .cxd,.cxb{font-size:13.5px;line-height:1.62}
+    /* impact band */
+    .impact .wrap{padding:38px 18px}
+    .impact .huge{font-size:44px}
+    .impact .cap{font-size:13.5px}
+    /* solution: pipeline boxes + code + banner */
+    .eq .box{min-width:0;width:100%}
+    .product{padding:24px 20px}
+    .oneline{font-size:12px;padding:14px 14px}
+    /* method + honest: breathing room */
+    .honest{padding:18px;font-size:12.5px;line-height:1.78}
+    .method li{font-size:13px}
+    .ft-cols{gap:16px}
+  }
 
 </style>
 </Layout>
