@@ -242,6 +242,20 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
       en: "Same attack, different outcomes — capability vs. attack resistance.",
     },
   },
+  "gpt5-vs-opus": {
+    title: {
+      ja: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
+      en: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 1対1",
+      en: "AI Model Comparison · Head-to-head",
+    },
+    tagline: {
+      ja: "最強モデルほど、よく破った — 止めるのは Lemma。",
+      en: "The strongest models broke the most — Lemma stops them.",
+    },
+  },
 };
 
 export async function renderCompareOg(

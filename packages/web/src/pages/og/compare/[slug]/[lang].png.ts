@@ -5,7 +5,7 @@ import type { Locale } from "../../../../i18n/translations";
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const slugs = ["ai-models-attack-resistance", "fable5-vs-kimi"] as const;
+  const slugs = ["ai-models-attack-resistance", "fable5-vs-kimi", "gpt5-vs-opus"] as const;
   const langs = ["ja", "en"] as const;
   return slugs.flatMap((slug) =>
     langs.map((lang) => ({ params: { slug, lang } })),
