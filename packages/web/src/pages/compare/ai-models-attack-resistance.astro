@@ -87,6 +87,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="step">Layer 2 — Existing defenses don’t stop it</div>
   <h2>Does that defense work against an AI?</h2>
   <p class="sub">The classic defenses most companies already run, AI agents slipped past on their own. For each scenario, we put the conventional defense next to how the AI broke it.</p>
+  <p class="readcue"><b>What to look for —</b> Just scan the right column, “How the AI breaks it,” top to bottom: one classic defense after another falls.</p>
   <div class="cx">
     <div class="cxrow hd">
       <div class="cxs">Scenario</div>
@@ -186,6 +187,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="step">05 — Comparison table</div>
   <h2>Without proof ↔ with Lemma, in one table</h2>
   <p class="sub">Same code, same prompts, toggling the proof layer on and off. With Lemma, every model and every scenario is blocked.</p>
+  <p class="readcue"><b>What to look for —</b> Red = breached. Flip the view to “With Lemma,” and the same table turns green (blocked) in every cell.</p>
   <div class="panel">
     <div class="ctl"><label>View</label>
       <div class="seg" id="mode">
@@ -671,6 +673,9 @@ render();
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  /* read-cue: one-line "how to read this" above dense tables */
+  .readcue{font-size:13.5px;color:#5b5249;line-height:1.6;margin:-4px 0 16px;padding:11px 16px;background:var(--cream);border-left:3px solid var(--brown);border-radius:0 9px 9px 0}
+  .readcue b{color:var(--brown)}
   /* ===== mobile readability pass (enterprise) ===== */
   @media(max-width:700px){
     .wrap{padding:0 18px}

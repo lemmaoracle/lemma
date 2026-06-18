@@ -87,6 +87,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="step">Layer 2 — 既存の防御では、止まらない</div>
   <h2>その防御は、AI 相手に効きますか</h2>
   <p class="sub">多くの企業が入れている古典的な防御を、AI エージェントは自律的にすり抜けました。シナリオごとに「従来の防御」と「AI がどう破ったか」を並べます。</p>
+  <p class="readcue"><b>読みどころ —</b> 右列「AI がどう破るか」を上から眺めるだけで、古典的な防御が次々と抜かれていくのが分かります。</p>
   <div class="cx">
     <div class="cxrow hd">
       <div class="cxs">シナリオ</div>
@@ -186,6 +187,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="step">05 — 比較表</div>
   <h2>証明なし ↔ Lemma あり、同じ表で</h2>
   <p class="sub">同一コード・同一プロンプトで、証明層の有無を切り替えて比較。Lemma ありでは、全モデル・全シナリオがブロックされます。</p>
+  <p class="readcue"><b>読みどころ —</b> 赤=突破。表示モードを「Lemma あり」に切り替えると、同じ表が全マス緑(ブロック)に変わります。</p>
   <div class="panel">
     <div class="ctl"><label>表示モード</label>
       <div class="seg" id="mode">
@@ -671,6 +673,9 @@ render();
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  /* read-cue: one-line "how to read this" above dense tables */
+  .readcue{font-size:13.5px;color:#5b5249;line-height:1.6;margin:-4px 0 16px;padding:11px 16px;background:var(--cream);border-left:3px solid var(--brown);border-radius:0 9px 9px 0}
+  .readcue b{color:var(--brown)}
   /* ===== mobile readability pass (enterprise) ===== */
   @media(max-width:700px){
     .wrap{padding:0 18px}

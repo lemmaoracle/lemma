@@ -78,6 +78,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="step">Layer 2 — 既存の防御では、止まらない</div>
   <h2>その防御は、AI 相手に効きますか</h2>
   <p class="sub">このペアが破った経路も、多くの企業が入れている古典的な防御の内側でした。AI エージェントは、それを自律的にすり抜けます。</p>
+  <p class="readcue"><b>読みどころ —</b> 右列だけ追えば十分。Fable は拒否をすり抜け、Kimi は2経路を突破しています。</p>
   <div class="cx">
     <div class="cxrow hd">
       <div class="cxs">シナリオ</div>
@@ -500,6 +501,9 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
   .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
   @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
+  /* read-cue: one-line "how to read this" above dense tables */
+  .readcue{font-size:13.5px;color:#5b5249;line-height:1.6;margin:-4px 0 16px;padding:11px 16px;background:var(--cream);border-left:3px solid var(--brown);border-radius:0 9px 9px 0}
+  .readcue b{color:var(--brown)}
   /* ===== mobile readability pass (enterprise) ===== */
   @media(max-width:700px){
     .wrap{padding:0 18px}
