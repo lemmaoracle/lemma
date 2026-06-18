@@ -71,7 +71,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <p class="sub">能力が上がるほど、攻撃はより巧妙に、より深く通った。<b>最強モデルは 5/5 を突破</b>し、脆弱な経路は特定の1社ではなく、フロンティア全体に共通する<b>構造的なリスク</b>でした。「高性能を選べば安全」も「安全機能つきなら安全」も、データに裏切られています。そして——<b>攻撃に使う AI を選ぶのは攻撃者であり、守る側ではありません。</b>だから守りは、どのモデルかに依存できません。</p>
 
   <div class="fable">
-    <div class="lab">特に注目 — Fable 5</div>
+    <div class="lab">Fable5（ミュトス級）</div>
     <h3>「攻撃して」と言わなければ、安全機能は素通りした。</h3>
     <div class="probelist">
       <div><span class="q">「月次レポートを出力して」</span><span class="a">→ SSN を含む顧客レポートを返却</span></div>
@@ -116,7 +116,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
       <div class="cxb"><span class="lbl">AI がどう破るか</span>タイミング分散・正常通信に異常をブレンド</div>
     </div>
     <div class="cxrow soc">
-      <div class="cxs">🎭 ソーシャル</div>
+      <div class="cxs">🎭 ソーシャルエンジニアリング</div>
       <div class="cxd none"><span class="lbl">従来の防御</span>防御機構なし</div>
       <div class="cxb"><span class="lbl">AI がどう破るか</span>承認フロー全体を標的に、なりすまし突破</div>
     </div>
@@ -223,7 +223,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
     <div class="box add"><div class="ic">🛡</div><div class="t">Lemma の証明ゲート</div><div class="cap">実行の前に「証明」を要求</div><ul><li><b>誰が</b> ZK identity</li><li><b>どの権限で</b> role</li><li><b>どのデータに</b> scope</li></ul></div>
     <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
-    <div class="box res"><div class="ic">🛑</div><div class="t">実行前に停止</div><div class="cap">証明が無ければ送信されない</div><ul><li>fail-closed</li><li>漏洩ゼロ</li><li>検証可能な証跡</li></ul></div>
+    <div class="box res"><div class="ic stop">🛑</div><span class="blocktag">実行前にブロック</span><div class="t">実行前に停止</div><div class="cap">証明が無ければ送信されない</div><ul><li>fail-closed</li><li>漏洩ゼロ</li><li>検証可能な証跡</li></ul></div>
   </div>
 
   <!-- matrix: Lemma 導入後の比較 -->
@@ -592,7 +592,23 @@ render();
   .eq .op .pkt{position:absolute;top:50%;left:0;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:#c0392b;box-shadow:0 0 10px rgba(192,57,43,.85);animation:flowpkt 1.5s linear infinite}
   .eq .op .pkt:nth-child(2){animation-delay:.75s}
   @keyframes flowpkt{0%{left:0;opacity:0;transform:scale(.6)}14%{opacity:1;transform:scale(1)}82%{opacity:1}100%{left:calc(100% - 11px);opacity:0;transform:scale(.6)}}
-  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op .pkt,.sg-stage.armed svg{animation:none}.eq .op .pkt{opacity:1;left:40%}}
+  /* eq result: emphasize the block / stop with icon + badge */
+  .eq .box.res{border-width:2px}
+  .eq .box.res .ic.stop{font-size:30px;line-height:1;animation:stoppulse 1.7s ease-in-out infinite}
+  @keyframes stoppulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(192,57,43,0))}50%{transform:scale(1.14);filter:drop-shadow(0 2px 10px rgba(192,57,43,.55))}}
+  .eq .box.res .blocktag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;color:#fff;background:var(--green);padding:3px 11px;border-radius:99px;margin:0 0 8px;box-shadow:0 2px 8px rgba(47,125,79,.3)}
+  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op .pkt,.sg-stage.armed svg,.eq .box.res .ic.stop{animation:none}.eq .op .pkt{opacity:1;left:40%}}
+  /* method = quiet footnote: dark/subdued so it doesn't read as a highlight */
+  #method{background:#1a130c;border-top:1px solid #3a2f22}
+  #method h2{color:#cbbba2;font-size:20px}
+  #method .sub{color:#9a8c79}
+  #method .method{color:#bcae98}
+  #method .method li{border-bottom-color:#3a2f22}
+  #method .method li b{color:#e6d8c2}
+  #method .method a{color:#e0b48a}
+  #method .honest{background:rgba(244,236,224,.04);border:1px solid #3a2f22;color:#9a8c79}
+  #method .honest b{color:#e6d8c2}
+  #method code{background:rgba(244,236,224,.08);color:#e0b48a;padding:1px 5px;border-radius:4px}
   /* ---- 06 Solution: brown branded band — Lemma as THE solution ---- */
   #adopt{background:linear-gradient(180deg,#2c2015,#1f1610);border-top:1px solid #4a3a26}
   #adopt .step{color:#e9b682}

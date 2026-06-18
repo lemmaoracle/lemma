@@ -71,7 +71,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <p class="sub">The more capable the model, the more sophisticated the attack and the deeper it reached. <b>The strongest model broke 5/5</b>, and the vulnerable paths weren’t one vendor’s — they were common across the entire frontier: a <b>structural risk</b>. Both “pick the high-performer and you’re safe” and “safety-tuned means safe” are betrayed by the data. And — <b>the attacker, not the defender, chooses which AI to attack with.</b> So defense cannot depend on which model it is.</p>
 
   <div class="fable">
-    <div class="lab">Worth noting — Fable 5</div>
+    <div class="lab">Fable5 (Mythos-class)</div>
     <h3>Don’t say “attack,” and the safeguards wave it right through.</h3>
     <div class="probelist">
       <div><span class="q">“Generate the monthly report”</span><span class="a">→ Returns a customer report containing SSNs</span></div>
@@ -116,7 +116,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
       <div class="cxb"><span class="lbl">How the AI breaks it</span>Spreads timing, blends anomalies into normal traffic</div>
     </div>
     <div class="cxrow soc">
-      <div class="cxs">🎭 Social</div>
+      <div class="cxs">🎭 Social engineering</div>
       <div class="cxd none"><span class="lbl">Conventional defense</span>No defense mechanism</div>
       <div class="cxb"><span class="lbl">How the AI breaks it</span>Targets the whole approval flow, breaks through by impersonation</div>
     </div>
@@ -223,7 +223,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
     <div class="box add"><div class="ic">🛡</div><div class="t">Lemma’s proof gate</div><div class="cap">Demands a “proof” before execution</div><ul><li><b>Who</b> ZK identity</li><li><b>With what authority</b> role</li><li><b>On which data</b> scope</li></ul></div>
     <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
-    <div class="box res"><div class="ic">🛑</div><div class="t">Stops before execution</div><div class="cap">No proof, nothing is sent</div><ul><li>fail-closed</li><li>Zero leakage</li><li>Verifiable trail</li></ul></div>
+    <div class="box res"><div class="ic stop">🛑</div><span class="blocktag">Blocked before execution</span><div class="t">Stops before execution</div><div class="cap">No proof, nothing is sent</div><ul><li>fail-closed</li><li>Zero leakage</li><li>Verifiable trail</li></ul></div>
   </div>
 
   
@@ -592,7 +592,23 @@ render();
   .eq .op .pkt{position:absolute;top:50%;left:0;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:#c0392b;box-shadow:0 0 10px rgba(192,57,43,.85);animation:flowpkt 1.5s linear infinite}
   .eq .op .pkt:nth-child(2){animation-delay:.75s}
   @keyframes flowpkt{0%{left:0;opacity:0;transform:scale(.6)}14%{opacity:1;transform:scale(1)}82%{opacity:1}100%{left:calc(100% - 11px);opacity:0;transform:scale(.6)}}
-  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op .pkt,.sg-stage.armed svg{animation:none}.eq .op .pkt{opacity:1;left:40%}}
+  
+  .eq .box.res{border-width:2px}
+  .eq .box.res .ic.stop{font-size:30px;line-height:1;animation:stoppulse 1.7s ease-in-out infinite}
+  @keyframes stoppulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(192,57,43,0))}50%{transform:scale(1.14);filter:drop-shadow(0 2px 10px rgba(192,57,43,.55))}}
+  .eq .box.res .blocktag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;color:#fff;background:var(--green);padding:3px 11px;border-radius:99px;margin:0 0 8px;box-shadow:0 2px 8px rgba(47,125,79,.3)}
+  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op .pkt,.sg-stage.armed svg,.eq .box.res .ic.stop{animation:none}.eq .op .pkt{opacity:1;left:40%}}
+  
+  #method{background:#1a130c;border-top:1px solid #3a2f22}
+  #method h2{color:#cbbba2;font-size:20px}
+  #method .sub{color:#9a8c79}
+  #method .method{color:#bcae98}
+  #method .method li{border-bottom-color:#3a2f22}
+  #method .method li b{color:#e6d8c2}
+  #method .method a{color:#e0b48a}
+  #method .honest{background:rgba(244,236,224,.04);border:1px solid #3a2f22;color:#9a8c79}
+  #method .honest b{color:#e6d8c2}
+  #method code{background:rgba(244,236,224,.08);color:#e0b48a;padding:1px 5px;border-radius:4px}
   
   #adopt{background:linear-gradient(180deg,#2c2015,#1f1610);border-top:1px solid #4a3a26}
   #adopt .step{color:#e9b682}
