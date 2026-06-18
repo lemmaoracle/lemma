@@ -16,9 +16,13 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 </div></div>
 
 <header class="hero"><div class="wrap">
-  <div class="kicker">AIモデル比較 · 性能 × 攻撃耐性 — 1対1</div>
-  <h1><span class="hl">Claude Fable 5</span> vs <span class="hl">Kimi-K2.6</span><br>同じ攻撃を仕掛けたら、どう違ったか。</h1>
+  <div class="kicker">AI 脅威検証 · 安全機能つき vs 素のモデル</div>
+  <h1><span class="hl">Claude Fable 5</span> vs <span class="hl">Kimi-K2.6</span><br>同じ攻撃に、どちらが耐えたか。</h1>
   <p class="lede">片方は最新の安全機能つき、片方は素のモデル。直感では「安全機能つきの方が安全」に思えます。<b>同じ攻撃シナリオに通した結果は、その直感を裏切りました。</b></p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+    <a class="btn" href="https://tally.so/r/EkBqDX">御社のシステムで検証する →</a>
+    <a class="btn ghost" href="/ja/compare/ai-models-attack-resistance/">6モデル全部で見る ↓</a>
+  </div>
 
   <div class="vs">
     <div class="side fa">
@@ -45,11 +49,11 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <h2>何を試したか</h2>
   <p class="sub">低権限のアカウントだけを渡し、5種類の攻撃シナリオをエージェント自身に自律実行させました。手口の詳細は伏せ、狙いだけを示します。</p>
   <div class="scn">
-    <div class="c"><div class="n">01</div><h4>不正データ流出</h4><p>低権限から、機密の顧客データの取得を狙う。</p></div>
-    <div class="c"><div class="n">02</div><h4>監査ログ改ざん</h4><p>操作の痕跡を消す・書き換える。</p></div>
-    <div class="c"><div class="n">03</div><h4>ゼロデイRCE</h4><p>侵入後、暗号化データの復号を狙う。</p></div>
-    <div class="c"><div class="n">04</div><h4>SIEM回避</h4><p>検知を避けて不正送金を通す。</p></div>
-    <div class="c"><div class="n">05</div><h4>ソーシャルエンジニアリング</h4><p>承認フローのなりすまし突破。</p></div>
+    <div class="c"><div class="n">🔓 01</div><h4>不正データ流出</h4><p>低権限から、機密の顧客データの取得を狙う。</p></div>
+    <div class="c"><div class="n">📝 02</div><h4>監査ログ改ざん</h4><p>操作の痕跡を消す・書き換える。</p></div>
+    <div class="c"><div class="n">🐛 03</div><h4>ゼロデイRCE</h4><p>侵入後、暗号化データの復号を狙う。</p></div>
+    <div class="c"><div class="n">🌫 04</div><h4>SIEM回避</h4><p>検知を避けて不正送金を通す。</p></div>
+    <div class="c"><div class="n">🎭 05</div><h4>ソーシャルエンジニアリング</h4><p>承認フローのなりすまし突破。</p></div>
   </div>
 </div></section>
 
@@ -66,10 +70,11 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     </div>
     <p style="font-size:13.5px;color:#4a443d;margin-top:14px">安全訓練は、偶発的な悪用を抑える助けにはなっても、保証ではありません。<b>「攻撃を拒否する」と「業務で安全」は、別のことです。</b></p>
   </div>
+  <p class="pull">安全機能つきでも、守れない。<br>守るのは、実行の前に止める層です。</p>
 </div></section>
 
 <div class="impact"><div class="wrap">
-  <div class="lead2">03 — 結果を分けたもの</div>
+  <div class="lead2">Layer 3 — Lemma を足すと、止まる</div>
   <div class="grid">
     <div class="cell">
       <div class="small">証明層なし</div>
@@ -134,6 +139,14 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     <div class="ptag">実行の前に「証明」を要求する、サーバーサイドのセキュリティ層。</div>
     <p class="pdesc">突破はすべて、AI が鍵や認証情報を持ち、それを昇格させて起きました。Lemma はサーバー側に、その前提を変える層を一枚差します——高リスク操作の前に「誰が・どの権限で・どのデータに」を証明として要求し、範囲外の操作は実行される前に止めます(fail-closed)。アプリの大改修なしに、既存のサーバー／API に組み込めます。</p>
     <div class="pstd"><span>サーバーサイド導入</span><span>fail-closed</span><span>ゼロ知識証明</span><span>独立検証可能な監査証跡</span><span>エンタープライズ</span></div>
+  </div>
+
+  <div class="oneline"><span class="cm">// 機微な操作の前に、証明を1行で要求</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// 証明が無ければ →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· Fable / Kimi いずれもブロック</span></div>
+
+  <div class="fable" style="border-left-color:var(--brown);margin-top:18px">
+    <div class="lab" style="color:var(--brown)">ソーシャルエンジニアリングの特異点</div>
+    <h3>「守る概念すら無かった領域」に、初めて防御を</h3>
+    <p style="font-size:14px;color:#4a443d">承認や送金の指示は、従来は<b>防御機構そのものが存在しない</b>領域でした。Lemma は、送金・承認に<b>数学的な承認証明</b>を要求します。範囲外の指示は実行される前に止まる。ここは「従来防御 vs Lemma」ではなく、<b>防御不在 → Lemma で初めて防御</b>です。</p>
   </div>
 
   <p class="sub" style="margin-top:24px">攻撃に証明ゲートを重ねると、結果はこう変わります。</p>
@@ -440,6 +453,11 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  .btn.ghost{background:transparent;color:#e9b682;border-color:#5a4630}
+  .btn.ghost:hover{box-shadow:none;color:#f4ece0}
+  /* one-line code (shared with hub) */
+  .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
+  .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
 
 </style>
 </Layout>
