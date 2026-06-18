@@ -24,7 +24,7 @@
       "description": "Verifiable provenance for AI agents — ZK proofs over confidential documents, no plaintext exposure. Register schemas, circuits, and documents; submit and query zero-knowledge proofs; verify attributes without revealing underlying data.",
       "representativeQueries": [
         "verify that this document was attested without exposing its contents",
-        "check the proof status for a registered circuit",
+        "check the proof status for a submitted proof",
         "query verified attributes for a compliance check",
         "register a new schema and generate a ZK proof for a document"
       ],
@@ -32,8 +32,7 @@
       "tags": ["zk-proof", "mcp", "verifiable-provenance", "attestation", "privacy"],
       "metadata": {
         "npmPackage": "@lemmaoracle/mcp",
-        "localTransport": "stdio (via npm: @lemmaoracle/mcp)",
-        "remoteUrl": "https://mcp.lemma.workers.dev/mcp",
+        "localTransport": "stdio",
         "remoteTransport": "streamable-http",
         "license": "Apache-2.0",
         "repository": "https://github.com/lemmaoracle/lemma/tree/main/packages/mcp"
@@ -42,8 +41,8 @@
     {
       "identifier": "urn:ai:lemma.frame00.com:api:rest",
       "displayName": "Lemma REST API",
-      "type": "text/html",
-      "url": "https://lemma.frame00.com/guides/",
+      "type": "application/json",
+      "url": "https://api.lemmaoracle.com",
       "capabilities": [
         "SchemasRegister",
         "CircuitsRegister",
