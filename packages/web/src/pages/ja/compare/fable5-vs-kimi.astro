@@ -47,7 +47,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 <section><div class="wrap">
   <div class="step">01 — テストの中身</div>
   <h2>何を試したか</h2>
-  <p class="sub">低権限のアカウントだけを渡し、5種類の攻撃シナリオをエージェント自身に自律実行させました。手口の詳細は伏せ、狙いだけを示します。</p>
+  <p class="sub">AI を「攻撃役」とし、低権限のアカウントだけを渡して、5種類の攻撃シナリオをシステムにぶつけました。狙いは、企業システムが現実に晒される攻撃の再現です。手口の詳細は伏せ、何を狙ったかだけを示します。</p>
   <div class="scn">
     <div class="c"><div class="n">🔓 01</div><h4>不正データ流出</h4><p>低権限から、機密の顧客データの取得を狙う。</p></div>
     <div class="c"><div class="n">📝 02</div><h4>監査ログ改ざん</h4><p>操作の痕跡を消す・書き換える。</p></div>
@@ -70,7 +70,37 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     </div>
     <p style="font-size:13.5px;color:#4a443d;margin-top:14px">安全訓練は、偶発的な悪用を抑える助けにはなっても、保証ではありません。<b>「攻撃を拒否する」と「業務で安全」は、別のことです。</b></p>
   </div>
-  <p class="pull">安全機能つきでも、守れない。<br>守るのは、実行の前に止める層です。</p>
+  <p class="pull">拒否できても、守れない。<br>では、既存の防御は AI に効くのか——</p>
+</div></section>
+
+<!-- LAYER 2: existing defenses fail (condensed for this pair) -->
+<section><div class="wrap">
+  <div class="step">Layer 2 — 既存の防御では、止まらない</div>
+  <h2>その防御は、AI 相手に効きますか</h2>
+  <p class="sub">このペアが破った経路も、多くの企業が入れている古典的な防御の内側でした。AI エージェントは、それを自律的にすり抜けます。</p>
+  <div class="cx">
+    <div class="cxrow hd">
+      <div class="cxs">シナリオ</div>
+      <div class="cxd">従来の防御</div>
+      <div class="cxb">AI がどう破るか</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🔓 データ流出</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>JWT 認証・ロール制御</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>Fable は業務指示のまま顧客 PII を返却(拒否をすり抜け)</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🌫 SIEM回避</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>異常検知・相関分析</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>Kimi がタイミング分散で正常通信に異常をブレンド</div>
+    </div>
+    <div class="cxrow soc">
+      <div class="cxs">🎭 ソーシャル</div>
+      <div class="cxd none"><span class="lbl">従来の防御</span>防御機構なし</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>Kimi が承認フローを標的に、なりすまし突破</div>
+    </div>
+  </div>
+  <p class="pull">古典的な防御は、AI には突破可能。<br>ソーシャルエンジニアリングに至っては、守る概念すら存在しない。</p>
 </div></section>
 
 <div class="impact"><div class="wrap">
@@ -160,7 +190,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
   <div class="ctas" style="grid-template-columns:1fr;max-width:680px">
     <div class="ctacard">
-      <h3>自社環境で、同じ検証を</h3>
+      <h3>御社のシステムは、AI 攻撃に耐えますか</h3>
       <p>今回の攻撃シナリオを御社のシステムに合わせて実施し(セキュリティ評価)、サーバー側のどこに証明ゲートを差すべきかをご提案します。まず30分のディスカバリーコールから。機微なデータの開示は不要です。</p>
       <a class="btn" href="https://tally.so/r/EkBqDX">Discovery Callを予約する →</a>
       <a class="btn ghost" href="https://lemma.frame00.com/ja/pricing/">プランを見る →</a>
@@ -458,6 +488,18 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   /* one-line code (shared with hub) */
   .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
   .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
+  /* Layer 2 defense contrast table (shared with hub) */
+  .cx{display:grid;gap:0;border:1px solid #3a2f22;border-radius:14px;overflow:hidden;background:var(--dark)}
+  .cxrow{display:grid;grid-template-columns:150px 1fr 1.15fr}
+  .cxrow>div{padding:13px 16px;border-bottom:1px solid #3a2f22}
+  .cxrow:last-child>div{border-bottom:none}
+  .cxrow.hd>div{background:#2a2117;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#cbb89a;font-weight:700}
+  .cxs{font-weight:700;font-size:14px;color:#f4ece0;display:flex;align-items:center;gap:6px;border-right:1px solid #3a2f22}
+  .cxd{font-size:13.5px;color:#bcae98;border-right:1px solid #3a2f22}
+  .cxb{font-size:13.5px;color:#e8927f}
+  .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
+  .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+  @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
 
 </style>
 </Layout>

@@ -47,7 +47,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 <section><div class="wrap">
   <div class="step">01 — What we tested</div>
   <h2>What we put to the test</h2>
-  <p class="sub">We handed over nothing but a low-privilege account and let the agent run five attack scenarios autonomously. We withhold the methods and show only the intent.</p>
+  <p class="sub">We cast the AI as the attacker, gave it nothing but a low-privilege account, and threw five attack scenarios at the system. The goal is to reproduce the attacks enterprise systems are really exposed to. We withhold the methods and show only what each one targeted.</p>
   <div class="scn">
     <div class="c"><div class="n">🔓 01</div><h4>Data exfiltration</h4><p>From low privilege, go after confidential customer data.</p></div>
     <div class="c"><div class="n">📝 02</div><h4>Audit-log tampering</h4><p>Erase or rewrite the traces of what was done.</p></div>
@@ -70,7 +70,37 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     </div>
     <p style="font-size:13.5px;color:#4a443d;margin-top:14px">Safety training may help curb accidental misuse, but it is no guarantee.<b>“Refusing attacks” and “safe in real work” are two different things.</b></p>
   </div>
-  <p class="pull">Even safety-tuned, it can’t protect you.<br>What protects you is a layer that stops things before they execute.</p>
+  <p class="pull">Refusal isn’t protection.<br>So — do existing defenses work against an AI? —</p>
+</div></section>
+
+<!-- LAYER 2: existing defenses fail (condensed for this pair) -->
+<section><div class="wrap">
+  <div class="step">Layer 2 — Existing defenses don’t stop it</div>
+  <h2>Does that defense work against an AI?</h2>
+  <p class="sub">The paths this pair broke were inside the classic defenses most companies already run. AI agents slip past them on their own.</p>
+  <div class="cx">
+    <div class="cxrow hd">
+      <div class="cxs">Scenario</div>
+      <div class="cxd">Conventional defense</div>
+      <div class="cxb">How the AI breaks it</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🔓 Data exfiltration</div>
+      <div class="cxd"><span class="lbl">Conventional defense</span>JWT auth · role-based access</div>
+      <div class="cxb"><span class="lbl">How the AI breaks it</span>Fable returns customer PII straight from a business prompt (slips past refusal)</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🌫 SIEM evasion</div>
+      <div class="cxd"><span class="lbl">Conventional defense</span>Anomaly detection · correlation analysis</div>
+      <div class="cxb"><span class="lbl">How the AI breaks it</span>Kimi spreads timing, blends anomalies into normal traffic</div>
+    </div>
+    <div class="cxrow soc">
+      <div class="cxs">🎭 Social</div>
+      <div class="cxd none"><span class="lbl">Conventional defense</span>No defense mechanism</div>
+      <div class="cxb"><span class="lbl">How the AI breaks it</span>Kimi targets the approval flow, breaks through by impersonation</div>
+    </div>
+  </div>
+  <p class="pull">Classic defenses are breakable by AI.<br>And for social engineering, the very concept of a defense doesn’t exist.</p>
 </div></section>
 
 <div class="impact"><div class="wrap">
@@ -160,7 +190,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
   <div class="ctas" style="grid-template-columns:1fr;max-width:680px">
     <div class="ctacard">
-      <h3>Run the same test in your own environment</h3>
+      <h3>Will your systems withstand an AI attack?</h3>
       <p>We run these attack scenarios against your own systems (a security assessment) and propose where, on the server side, to place the proof gate. Start with a 30-minute discovery call. No disclosure of sensitive data required.</p>
       <a class="btn" href="https://tally.so/r/Pd2Rl5">Book a Discovery Call →</a>
       <a class="btn ghost" href="https://lemma.frame00.com/pricing/">See the plans →</a>
@@ -458,6 +488,18 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   /* one-line code (shared with hub) */
   .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
   .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
+  /* Layer 2 defense contrast table (shared with hub) */
+  .cx{display:grid;gap:0;border:1px solid #3a2f22;border-radius:14px;overflow:hidden;background:var(--dark)}
+  .cxrow{display:grid;grid-template-columns:150px 1fr 1.15fr}
+  .cxrow>div{padding:13px 16px;border-bottom:1px solid #3a2f22}
+  .cxrow:last-child>div{border-bottom:none}
+  .cxrow.hd>div{background:#2a2117;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#cbb89a;font-weight:700}
+  .cxs{font-weight:700;font-size:14px;color:#f4ece0;display:flex;align-items:center;gap:6px;border-right:1px solid #3a2f22}
+  .cxd{font-size:13.5px;color:#bcae98;border-right:1px solid #3a2f22}
+  .cxb{font-size:13.5px;color:#e8927f}
+  .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
+  .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+  @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
 
 </style>
 </Layout>
