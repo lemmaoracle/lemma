@@ -220,9 +220,9 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <p class="sub" style="margin-top:24px">攻撃に証明ゲートを重ねると、結果はこう変わります。</p>
   <div class="eq">
     <div class="box atk"><div class="ic">⚠️</div><div class="t">攻撃</div><div class="cap">鍵・認証情報を昇格させて悪用</div><ul><li>JWT 権限昇格</li><li>なりすまし</li><li>監査ログ改ざん</li></ul></div>
-    <div class="op">→</div>
+    <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
     <div class="box add"><div class="ic">🛡</div><div class="t">Lemma の証明ゲート</div><div class="cap">実行の前に「証明」を要求</div><ul><li><b>誰が</b> ZK identity</li><li><b>どの権限で</b> role</li><li><b>どのデータに</b> scope</li></ul></div>
-    <div class="op">→</div>
+    <div class="op"><span class="pkt"></span><span class="pkt"></span></div>
     <div class="box res"><div class="ic">🛑</div><div class="t">実行前に停止</div><div class="cap">証明が無ければ送信されない</div><ul><li>fail-closed</li><li>漏洩ゼロ</li><li>検証可能な証跡</li></ul></div>
   </div>
 
@@ -585,10 +585,25 @@ render();
   .eq .box{animation:eqp 3.6s ease-in-out infinite}
   .eq .box.add{animation-delay:1.2s} .eq .box.res{animation-delay:2.4s}
   @keyframes eqp{0%,38%,100%{box-shadow:0 6px 18px rgba(40,30,16,.06)}12%,24%{box-shadow:0 12px 36px var(--gl)}}
-  .eq .op{animation:eqop 3.6s ease-in-out infinite}
-  .eq .op:last-of-type{animation-delay:1.2s}
-  @keyframes eqop{0%,30%,100%{opacity:.4;transform:translateX(0)}15%{opacity:1;transform:translateX(5px)}}
-  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op,.sg-stage.armed svg{animation:none}}
+  /* eq connectors: data packets flow along the arrows (→), homepage-style */
+  .eq .op{position:relative;width:52px;height:22px;flex:0 0 auto;align-self:center;font-size:0;color:transparent;animation:none}
+  .eq .op::before{content:"";position:absolute;top:50%;left:3px;right:10px;height:2px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#c79a6a 0 5px,transparent 5px 10px);opacity:.55}
+  .eq .op::after{content:"";position:absolute;top:50%;right:2px;width:0;height:0;transform:translateY(-50%);border-left:8px solid #c79a6a;border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .eq .op .pkt{position:absolute;top:50%;left:0;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:#c0392b;box-shadow:0 0 10px rgba(192,57,43,.85);animation:flowpkt 1.5s linear infinite}
+  .eq .op .pkt:nth-child(2){animation-delay:.75s}
+  @keyframes flowpkt{0%{left:0;opacity:0;transform:scale(.6)}14%{opacity:1;transform:scale(1)}82%{opacity:1}100%{left:calc(100% - 11px);opacity:0;transform:scale(.6)}}
+  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op .pkt,.sg-stage.armed svg{animation:none}.eq .op .pkt{opacity:1;left:40%}}
+  /* ---- 06 Solution: brown branded band — Lemma as THE solution ---- */
+  #adopt{background:linear-gradient(180deg,#2c2015,#1f1610);border-top:1px solid #4a3a26}
+  #adopt .step{color:#e9b682}
+  #adopt h2{color:#f7f1e7}
+  #adopt .sub{color:#cbbba2}
+  #adopt .pull{color:#f4ece0;border-left-color:#c79a6a}
+  #adopt .pull b{color:#fff}
+  #adopt .legend{color:#cbbba2}
+  #adopt .oneline{border:1px solid #4a3a26}
+  #adopt .product,#adopt .singularity,#adopt .oneline,#adopt .ctacard{box-shadow:0 16px 44px rgba(0,0,0,.36)}
+  #adopt .panel,#adopt .tbox,#adopt .poc .s{box-shadow:0 12px 32px rgba(0,0,0,.24)}
   /* matrix */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 0 0;border-bottom:none;padding:14px 18px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
   .ctl{display:flex;align-items:center;gap:9px}
