@@ -210,3 +210,50 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
   });
   return renderOgPng(node);
 }
+
+/* ─────────────── Model comparison LPs (/compare/...) ─────────────── */
+
+const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> = {
+  "ai-models-attack-resistance": {
+    title: {
+      ja: "6 つの AI モデルに、\n<accent>同じ攻撃</accent>を仕掛けた。",
+      en: "Six AI models,\n<accent>one identical attack.</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 攻撃耐性",
+      en: "AI Model Comparison · Attack Resistance",
+    },
+    tagline: {
+      ja: "性能と攻撃耐性 — 結果を分けたのは Lemma。",
+      en: "Capability vs. attack resistance — Lemma made the difference.",
+    },
+  },
+  "fable5-vs-kimi": {
+    title: {
+      ja: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
+      en: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 1対1",
+      en: "AI Model Comparison · Head-to-head",
+    },
+    tagline: {
+      ja: "同じ攻撃で、どう違ったか — 性能と攻撃耐性。",
+      en: "Same attack, different outcomes — capability vs. attack resistance.",
+    },
+  },
+};
+
+export async function renderCompareOg(
+  slug: string,
+  locale: Locale,
+): Promise<Buffer> {
+  const c = COMPARE_COPY[slug] ?? COMPARE_COPY["ai-models-attack-resistance"];
+  const node = buildOgArtboard({
+    title: localize(c.title, locale),
+    topRight: makeTopRightLabel(localize(c.label, locale), BROWN),
+    bottomTagline: makeBottomTagline(localize(c.tagline, locale), BROWN),
+    background: PRODUCT_GRADIENT,
+  });
+  return renderOgPng(node);
+}
