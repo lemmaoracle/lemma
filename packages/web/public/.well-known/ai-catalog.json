@@ -1,0 +1,72 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Lemma",
+    "identifier": "did:web:lemma.frame00.com",
+    "documentationUrl": "https://lemma.frame00.com/guides/",
+    "logoUrl": "https://lemma.frame00.com/apple-touch-icon.png"
+  },
+  "entries": [
+    {
+      "identifier": "urn:ai:lemma.frame00.com:mcp:server",
+      "displayName": "Lemma MCP Server",
+      "type": "application/mcp-server-card+json",
+      "url": "https://mcp.lemma.workers.dev/mcp",
+      "capabilities": [
+        "QueryVerifiedAttributes",
+        "GetSchema",
+        "GetCircuit",
+        "GetGenerator",
+        "GetProofStatus",
+        "RegisterDocument",
+        "SubmitProof"
+      ],
+      "description": "Verifiable provenance for AI agents — ZK proofs over confidential documents, no plaintext exposure. Register schemas, circuits, and documents; submit and query zero-knowledge proofs; verify attributes without revealing underlying data.",
+      "representativeQueries": [
+        "verify that this document was attested without exposing its contents",
+        "check the proof status for a submitted proof",
+        "query verified attributes for a compliance check",
+        "register a new schema and generate a ZK proof for a document"
+      ],
+      "version": "0.0.18",
+      "tags": ["zk-proof", "mcp", "verifiable-provenance", "attestation", "privacy"],
+      "metadata": {
+        "npmPackage": "@lemmaoracle/mcp",
+        "localTransport": "stdio",
+        "remoteTransport": "streamable-http",
+        "license": "Apache-2.0",
+        "repository": "https://github.com/lemmaoracle/lemma/tree/main/packages/mcp"
+      }
+    },
+    {
+      "identifier": "urn:ai:lemma.frame00.com:api:rest",
+      "displayName": "Lemma REST API",
+      "type": "application/json",
+      "url": "https://api.lemmaoracle.com",
+      "capabilities": [
+        "SchemasRegister",
+        "CircuitsRegister",
+        "DocumentsRegister",
+        "ProofsSubmit",
+        "AttributesQuery",
+        "GeneratorsRegister"
+      ],
+      "description": "REST API for registering schemas, circuits, and documents; submitting zero-knowledge proofs; and querying verified attributes. Agents use this API to integrate verifiable provenance into their workflows without handling plaintext data.",
+      "representativeQueries": [
+        "submit a ZK proof for an attested document",
+        "query verified attributes for a given subject",
+        "register a new circuit and schema",
+        "retrieve proof status for a submitted attestation by proof ID",
+        "list registered circuits available for proving"
+      ],
+      "tags": ["zk-proof", "rest-api", "verifiable-provenance", "privacy", "attestation"],
+      "metadata": {
+        "apiBase": "https://api.lemmaoracle.com",
+        "authMethod": "Bearer token (API key)",
+        "getApiKey": "https://lemma.frame00.com/solutions/",
+        "license": "Apache-2.0",
+        "repository": "https://github.com/lemmaoracle/lemma"
+      }
+    }
+  ]
+}
