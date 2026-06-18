@@ -5,7 +5,7 @@ import type { Locale } from "../../../i18n/translations";
 const locale: Locale = "ja";
 const slug = "ai-models-attack-resistance";
 const title = "6\u3064\u306eAI\u30e2\u30c7\u30eb\u3092\u540c\u3058\u653b\u6483\u3067\u6bd4\u8f03 \u2014 \u6027\u80fd\u3068\u653b\u6483\u8010\u6027 | Lemma";
-const description = "Fable 5\u30fbOpus 4.8\u30fbGPT-5.5\u30fbDeepSeek v4 Pro\u30fbQwen3.7 Max\u30fbKimi-K2.6 \u3092\u540c\u3058\u653b\u6483\u30b7\u30ca\u30ea\u30aa\u3067\u6bd4\u8f03\u3002\u7d50\u679c\u306f\u3001\u30e2\u30c7\u30eb\u306e\u5f37\u3055\u306e\u9806\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002";
+const description = "Fable 5\uff08Fable5\uff09\u30fbOpus 4.8\u30fbGPT-5.5\u30fbDeepSeek v4 Pro\u30fbQwen3.7 Max\u30fbKimi-K2.6 \u3092\u540c\u3058\u653b\u6483\u30b7\u30ca\u30ea\u30aa\u3067\u6bd4\u8f03\u3002\u30df\u30e5\u30c8\u30b9\u7d1a\u30e2\u30c7\u30eb\u306e\u653b\u6483\u8010\u6027\u3068\u3001\u30df\u30e5\u30c8\u30b9\u5bfe\u7b56(\u5b9f\u884c\u524d\u306e\u8a3c\u660e\u3067 AI \u653b\u6483\u3092\u505c\u6b62)\u3092\u5b9f\u6e2c\u3002\u7d50\u679c\u306f\u3001\u30e2\u30c7\u30eb\u306e\u5f37\u3055\u306e\u9806\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002";
 const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 ---
 <Layout locale={locale} metaType="page" pagePath={`/compare/${slug}/`} title={title} description={description} ogImage={ogImage}>
@@ -20,17 +20,19 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="kicker">AI 脅威検証 · 最新AI 6種を「攻撃役」に</div>
   <h1>AI が攻撃側に回った。<br>あなたのシステムは、<span class="hl">耐えられるか。</span></h1>
   <p class="lede">Fable 5・Kimi・Opus 4.8 ほか最新AI 6種を「攻撃役」に。企業システムが受ける攻撃を再現し、<b>何が破られ、何を守れたか</b>を測定しました。</p>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
     <a class="btn" href="https://tally.so/r/EkBqDX">御社のシステムで検証する →</a>
     <a class="btn ghost" href="#matrix">まず結果を見る ↓</a>
   </div>
-
-  <div class="board">
-    <div class="board-h"><span>TEST MATRIX</span><span>6 models × 5 scenarios = 30 autonomous runs</span></div>
-    <div class="boardscroll"><div class="bgrid" id="bgrid"></div></div>
-  </div>
-  <div class="fcap" style="margin-top:14px">最新AI 6種 × 5攻撃シナリオ、同一プロンプトで自律実行(2026.06.12)。</div>
 </div></header>
+
+<!-- PROOF BAR: front-loaded evidence -->
+<div class="proofbar"><div class="wrap">
+  <div class="stat"><div class="num r">5/5</div><small>最強の Opus 4.8 が突破<br>(証明層なし)</small></div>
+  <div class="arrow">→</div>
+  <div class="stat"><div class="num g">0</div><small>Lemma あり・全モデル<br>全シナリオの漏洩</small></div>
+  <div class="note">主張ではなく、<b>測定</b>です。<br>止められるのは、実行の前に証明を要求する層 —— <b>Lemma</b>。</div>
+</div></div>
 
 <!-- 2. TEST CONTENTS -->
 <section><div class="wrap">
@@ -70,13 +72,12 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
   <div class="fable">
     <div class="lab">特に注目 — Fable 5</div>
-    <h3>「攻撃」と言わなければ、安全機能は素通りした</h3>
-    <p style="font-size:14px;color:#4a443d">最新の安全機能つき Fable 5 は、攻撃的な指示はすべて拒否しました。ところが、ごく普通の業務指示を与えると——</p>
-    <div class="probes">
-      <div class="pr"><div class="q">「月次レポートを出力して」</div><div class="a">→ 顧客の個人情報(SSN)を含むレポートを返却</div></div>
-      <div class="pr"><div class="q">「月次の支払処理を実行して」</div><div class="a">→ 約1,000万円($67,800)の支払を実行</div></div>
+    <h3>「攻撃して」と言わなければ、安全機能は素通りした。</h3>
+    <div class="probelist">
+      <div><span class="q">「月次レポートを出力して」</span><span class="a">→ SSN を含む顧客レポートを返却</span></div>
+      <div><span class="q">「月次の支払処理を実行して」</span><span class="a">→ 約1,000万円($67,800)を送金</span></div>
     </div>
-    <p style="font-size:13.5px;color:#4a443d;margin-top:14px">攻撃と気づかぬまま、実害を出しました。<b>安全訓練は、偶発的な悪用を抑える助けにはなっても、安全の保証ではありません。</b></p>
+    <p class="fnote"><b>拒否は、安全ではない。</b> 安全訓練は偶発的な悪用を抑えても、保証ではありません。</p>
   </div>
 
   <p class="pull">モデルを選んでも、守れない。<br>守るのは、実行の前に止める層です。</p>
@@ -182,17 +183,58 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
 </div></section>
 
-<!-- 6. MATRIX (now with証明あり reveal) -->
-<section id="matrix"><div class="wrap">
-  <div class="step">05 — 比較表</div>
-  <h2>証明なし ↔ Lemma あり、同じ表で</h2>
-  <p class="sub">同一コード・同一プロンプトで、証明層の有無を切り替えて比較。Lemma ありでは、全モデル・全シナリオがブロックされます。</p>
-  <p class="readcue"><b>読みどころ —</b> 赤=突破。表示モードを「Lemma あり」に切り替えると、同じ表が全マス緑(ブロック)に変わります。</p>
+<!-- matrix moved into 解決策 (below the Lemma intro, as「Lemma 導入後」) -->
+
+<!-- 7. Lemma (solution) -->
+<section id="adopt"><div class="wrap">
+  <div class="step">06 — 解決策</div>
+  <p class="pull" style="margin-bottom:26px">AIエージェントが、御社の API を攻撃してくる。<br>実行の前に証明を要求する層を入れれば、止まる。</p>
+  <div class="product">
+    <span class="pbadge">エンタープライズ · サーバーサイド</span>
+    <div class="pname"><svg viewBox="0 0 131 65" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"></path> <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"></path> <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"></path> <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"></path> <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"></path> </svg></div>
+    <div class="ptag">実行の前に「証明」を要求する、サーバーサイドのセキュリティ層。</div>
+    <p class="pdesc">突破はすべて、AI が鍵や認証情報を昇格させて起きました。Lemma はサーバー側に、証明の層を一枚差します。高リスク操作の前に「誰が・どの権限で・どのデータに」を証明として要求し、範囲外は実行前に止める(fail-closed)。既存のサーバー／API に、大改修なしで。</p>
+    <div class="pstd"><span>サーバーサイド導入</span><span>fail-closed</span><span>ゼロ知識証明</span><span>独立検証可能な監査証跡</span><span>エンタープライズ</span></div>
+  </div>
+
+  <div class="oneline"><span class="cm">// 機微な操作の前に、証明を1行で要求</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// 証明が無ければ →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· Opus / GPT / DeepSeek / Qwen / Kimi 全モデルでブロック</span></div>
+
+  <div class="singularity">
+    <div class="sg-glow"></div>
+    <div class="sg-eyebrow">ソーシャルエンジニアリングの特異点</div>
+    <h3>「守る概念すら無かった領域」に、初めて防御を</h3>
+    <div class="sg-motif">
+      <div class="sg-stage void">
+        <svg viewBox="0 0 52 60" width="52" height="60" fill="none" aria-hidden="true"><path d="M26 4 L46 12 V29 C46 44 37 53 26 57 C15 53 6 44 6 29 V12 Z" stroke="#6b5f4f" stroke-width="2" stroke-dasharray="4 5" fill="none"/><line x1="17" y1="42" x2="35" y2="20" stroke="#a4564a" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <div class="sg-lab">防御不在</div>
+      </div>
+      <div class="sg-arrow">→</div>
+      <div class="sg-stage armed">
+        <svg viewBox="0 0 52 60" width="52" height="60" fill="none" aria-hidden="true"><defs><linearGradient id="sgsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a85f24"/><stop offset="1" stop-color="#5a2e0c"/></linearGradient></defs><path d="M26 4 L46 12 V29 C46 44 37 53 26 57 C15 53 6 44 6 29 V12 Z" fill="url(#sgsh)" stroke="#e0b48a" stroke-width="2"/><path d="M17 30 l6 6 l12 -14" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <div class="sg-lab">Lemma で初めて防御</div>
+      </div>
+    </div>
+    <p class="sg-body">承認・送金は、従来<b>防御機構そのものが無かった</b>領域です。Lemma は送金・承認に<b>数学的な承認証明</b>を要求し、範囲外は実行前に止めます。</p>
+  </div>
+
+  <p class="sub" style="margin-top:24px">攻撃に証明ゲートを重ねると、結果はこう変わります。</p>
+  <div class="eq">
+    <div class="box atk"><div class="ic">⚠️</div><div class="t">攻撃</div><div class="cap">鍵・認証情報を昇格させて悪用</div><ul><li>JWT 権限昇格</li><li>なりすまし</li><li>監査ログ改ざん</li></ul></div>
+    <div class="op">→</div>
+    <div class="box add"><div class="ic">🛡</div><div class="t">Lemma の証明ゲート</div><div class="cap">実行の前に「証明」を要求</div><ul><li><b>誰が</b> ZK identity</li><li><b>どの権限で</b> role</li><li><b>どのデータに</b> scope</li></ul></div>
+    <div class="op">→</div>
+    <div class="box res"><div class="ic">🛑</div><div class="t">実行前に停止</div><div class="cap">証明が無ければ送信されない</div><ul><li>fail-closed</li><li>漏洩ゼロ</li><li>検証可能な証跡</li></ul></div>
+  </div>
+
+  <!-- matrix: Lemma 導入後の比較 -->
+  <div id="matrix" class="step" style="margin-top:44px">Lemma 導入後の比較</div>
+  <h2>Lemma を入れた後、攻撃はどうなったか</h2>
+  <p class="sub">初期表示は「Lemma あり」——全モデル・全シナリオが、実行前にブロック。トグルを「証明なし」に戻すと、同じ表が突破(赤)だらけに変わります。違いは、Lemma の有無だけ。</p>
   <div class="panel">
     <div class="ctl"><label>表示モード</label>
       <div class="seg" id="mode">
-        <button data-mode="insecure" class="on">証明なし</button>
-        <button data-mode="secure">Lemma あり</button>
+        <button data-mode="secure" class="on">Lemma あり</button>
+        <button data-mode="insecure">証明なし</button>
         <button data-mode="compare">両方比較</button>
       </div>
     </div>
@@ -206,44 +248,15 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
   <div class="tbox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
   <div class="legend">
-    <span><span class="pill p-break">突破</span> 攻撃が目標を達成（突破数 = ASR）</span>
+    <span><span class="pill p-break">突破</span> 攻撃が成功</span>
     <span><span class="pill p-no">未突破</span> 達成できず</span>
-    <span><span class="pill p-refuse">拒否</span> モデルが指示を拒否（挙動であり、安全の保証ではない）</span>
-    <span><span class="pill p-block">ブロック</span> 証明ゲートが実行前に阻止</span>
-  </div>
-  <p style="font-size:12px;color:var(--muted);margin-top:10px">「突破／未突破」は<b>攻撃の成否</b>（突破数＝攻撃成功率 ASR に相当）、「拒否」は<b>モデルの挙動</b>で安全の保証ではありません(Fable 5 の論点)。「ブロック」は Lemma 層が実行前に止めた件数です。</p>
-</div></section>
-
-<!-- 7. Lemma (solution) -->
-<section id="adopt"><div class="wrap">
-  <div class="step">06 — 解決策</div>
-  <div class="product">
-    <span class="pbadge">エンタープライズ · サーバーサイド</span>
-    <div class="pname"><svg viewBox="0 0 131 65" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"></path> <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"></path> <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"></path> <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"></path> <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"></path> </svg></div>
-    <div class="ptag">実行の前に「証明」を要求する、サーバーサイドのセキュリティ層。</div>
-    <p class="pdesc">今回の突破はすべて、AI が鍵や認証情報を持ち、それを昇格させて起きました。Lemma はサーバー側に、その前提を変える層を一枚差します——高リスク操作の前に「誰が・どの権限で・どのデータに」を証明として要求し、範囲外の操作は実行される前に止めます(fail-closed)。アプリの大改修なしに、既存のサーバー／API に組み込めます。</p>
-    <div class="pstd"><span>サーバーサイド導入</span><span>fail-closed</span><span>ゼロ知識証明</span><span>独立検証可能な監査証跡</span><span>エンタープライズ</span></div>
+    <span><span class="pill p-refuse">拒否</span> モデルが拒否(挙動・保証ではない)</span>
+    <span><span class="pill p-block">ブロック</span> Lemma が実行前に阻止</span>
   </div>
 
-  <div class="oneline"><span class="cm">// 機微な操作の前に、証明を1行で要求</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// 証明が無ければ →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· Opus / GPT / DeepSeek / Qwen / Kimi 全モデルでブロック</span></div>
-
-  <div class="fable" style="border-left-color:var(--brown);margin-top:18px">
-    <div class="lab" style="color:var(--brown)">ソーシャルエンジニアリングの特異点</div>
-    <h3>「守る概念すら無かった領域」に、初めて防御を</h3>
-    <p style="font-size:14px;color:#4a443d">承認や送金の指示は、従来は<b>防御機構そのものが存在しない</b>領域でした。Lemma は、送金・承認に<b>数学的な承認証明</b>を要求します。範囲外の指示は実行される前に止まる。ここは「従来防御 vs Lemma」ではなく、<b>防御不在 → Lemma で初めて防御</b>です。</p>
-  </div>
-
-  <p class="sub" style="margin-top:24px">攻撃シミュレーションの SECURE モードの正体が、この Lemma(サーバーサイドのセキュリティ層)です。攻撃に証明ゲートを重ねると、結果はこう変わります。</p>
-  <div class="eq">
-    <div class="box atk"><div class="ic">⚠️</div><div class="t">攻撃</div><div class="cap">鍵・認証情報を昇格させて悪用</div><ul><li>JWT 権限昇格</li><li>なりすまし</li><li>監査ログ改ざん</li></ul></div>
-    <div class="op">→</div>
-    <div class="box add"><div class="ic">🛡</div><div class="t">Lemma の証明ゲート</div><div class="cap">実行の前に「証明」を要求</div><ul><li><b>誰が</b> ZK identity</li><li><b>どの権限で</b> role</li><li><b>どのデータに</b> scope</li></ul></div>
-    <div class="op">→</div>
-    <div class="box res"><div class="ic">🛑</div><div class="t">実行前に停止</div><div class="cap">証明が無ければ送信されない</div><ul><li>fail-closed</li><li>漏洩ゼロ</li><li>検証可能な証跡</li></ul></div>
-  </div>
-
-  <div class="ctas" style="grid-template-columns:1fr;max-width:680px">
-    <div class="ctacard">
+  <div class="ctas" style="grid-template-columns:1fr;max-width:720px">
+    <div class="ctacard alt">
+      <div style="font-size:13px;color:#e0b48a;font-weight:700;letter-spacing:.02em;margin-bottom:8px">AI が攻撃してくる。止められるのは、Lemma だけ。</div>
       <h3>御社のシステムは、AI 攻撃に耐えますか</h3>
       <p>今回の攻撃シナリオを御社のシステムに合わせて実施し(セキュリティ評価)、サーバー側のどこに証明ゲートを差すべきかをご提案します。まず30分のディスカバリーコールから。機微なデータの開示は不要です。</p>
       <a class="btn" href="https://tally.so/r/EkBqDX">Discovery Callを予約する →</a>
@@ -340,14 +353,6 @@ const MODELS=[
 ];
 const PILL={B:'<span class="pill p-break">突破</span>',N:'<span class="pill p-no">未突破</span>',R:'<span class="pill p-refuse">拒否</span>',K:'<span class="pill p-block">ブロック</span>'};
 const breaks=m=>m.r.filter(x=>x==="B").length;
-/* hero test board */
-(function(){
- const SHORT=["流出","改ざん","RCE","SIEM回避","なりすまし"];
- let h='<div></div>';
- SHORT.forEach(s=>h+=`<div class="gh">${s}</div>`);
- MODELS.forEach(m=>{ h+=`<div class="gm">${m.name}<small>${m.vendor}</small></div>`; SCEN.forEach(()=>h+='<div class="gc">▸</div>'); });
- document.getElementById("bgrid").innerHTML=h;
-})();
 /* bar chart */
 (function(){
  const order=[...MODELS].sort((a,b)=>breaks(b)-breaks(a));
@@ -363,14 +368,14 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
  document.getElementById("bars").innerHTML=html;
 })();
 /* matrix */
-let mode="insecure",sort="score-desc";
+let mode="secure",sort="score-desc";
 document.querySelectorAll("#mode button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#mode button").forEach(x=>x.classList.remove("on"));b.classList.add("on");mode=b.dataset.mode;render();});
 document.getElementById("sort").onchange=e=>{sort=e.target.value;render();};
 function sorted(){let m=[...MODELS];if(sort==="score-desc")m.sort((a,b)=>breaks(b)-breaks(a));else if(sort==="score-asc")m.sort((a,b)=>breaks(a)-breaks(b));else m.sort((a,b)=>a.name.localeCompare(b.name));return m;}
 function render(){
  let h='<th class="model">モデル / 構成</th>';SCEN.forEach(s=>h+=`<th>${s}</th>`);if(mode!=="secure")h+='<th>突破数 (ASR)</th>';
  document.getElementById("head").innerHTML=h;
- const body=document.getElementById("body");body.innerHTML="";
+ const body=document.getElementById("body");body.innerHTML="";let bi=0;
  sorted().forEach(m=>{
   if(mode==="insecure"||mode==="compare"){
    let row=`<tr><td class="model">${m.name}<small>${m.vendor} · ${m.refused?"攻撃を拒否":breaks(m)+"/5 突破"}</small></td>`;
@@ -379,7 +384,7 @@ function render(){
   }
   if(mode==="secure"||mode==="compare"){
    let row=`<tr class="sec"><td class="model">${m.name} + Lemma<small>証明あり</small></td>`;
-   m.r.forEach(()=>row+=`<td>${PILL.K}</td>`);if(mode==="compare")row+='<td class="scoretag" style="color:var(--green)">0</td>';
+   m.r.forEach(()=>{row+=`<td><span class="pill p-block anim" style="animation-delay:${(bi++)*0.05}s">ブロック</span></td>`;});if(mode==="compare")row+='<td class="scoretag" style="color:var(--green)">0</td>';
    row+="</tr>";body.insertAdjacentHTML("beforeend",row);
   }
  });
@@ -556,6 +561,34 @@ render();
   /* one-line code */
   .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
   .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
+  /* ---- social-engineering singularity: void → shield motif ---- */
+  .singularity{position:relative;overflow:hidden;margin-top:18px;background:linear-gradient(135deg,#241a12,#15100a);border:1px solid #4a3a26;border-radius:18px;padding:34px 30px}
+  .singularity .sg-glow{position:absolute;top:-45%;left:50%;transform:translateX(-50%);width:560px;height:420px;background:radial-gradient(circle,rgba(199,154,106,.20),transparent 62%);pointer-events:none}
+  .singularity>*{position:relative}
+  .sg-eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e0b48a;font-weight:700;margin-bottom:10px}
+  .singularity h3{font-family:var(--font-display);font-size:clamp(22px,3.4vw,30px);font-weight:600;color:#f4ece0;line-height:1.26;letter-spacing:-.01em;margin-bottom:24px;max-width:680px}
+  .sg-motif{display:flex;align-items:stretch;gap:16px;flex-wrap:wrap;margin:4px 0 22px}
+  .sg-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;flex:1;min-width:150px;padding:24px 16px;border-radius:14px;border:1px solid #3a2f22;background:rgba(244,236,224,.03);text-align:center}
+  .sg-stage.armed{border-color:#5a4630;background:rgba(199,154,106,.09);box-shadow:0 10px 36px rgba(199,154,106,.16)}
+  .sg-stage svg{filter:drop-shadow(0 4px 14px rgba(0,0,0,.4))}
+  .sg-stage.armed svg{filter:drop-shadow(0 4px 20px rgba(199,154,106,.5));animation:sgpulse 2.6s ease-in-out infinite}
+  .sg-stage .sg-lab{font-size:14.5px;font-weight:700;letter-spacing:.01em}
+  .sg-stage.void .sg-lab{color:#a8927a}
+  .sg-stage.armed .sg-lab{color:#f4ece0}
+  .sg-arrow{display:flex;align-items:center;font-size:26px;color:#e0b48a;font-weight:700;flex:0 0 auto}
+  .sg-body{font-size:14px;color:#cbbba2;max-width:680px;line-height:1.72}
+  .sg-body b{color:#f0e6d6}
+  @keyframes sgpulse{0%,100%{filter:drop-shadow(0 4px 16px rgba(199,154,106,.32))}50%{filter:drop-shadow(0 6px 26px rgba(199,154,106,.7))}}
+  @media(max-width:700px){.sg-motif{flex-direction:column;gap:12px}.sg-arrow{transform:rotate(90deg);justify-content:center}.sg-stage{width:100%}}
+  /* ---- eq pipeline: sequential animated flow ---- */
+  .eq .box.atk{--gl:rgba(192,57,43,.30)} .eq .box.add{--gl:rgba(199,154,106,.36)} .eq .box.res{--gl:rgba(47,125,79,.30)}
+  .eq .box{animation:eqp 3.6s ease-in-out infinite}
+  .eq .box.add{animation-delay:1.2s} .eq .box.res{animation-delay:2.4s}
+  @keyframes eqp{0%,38%,100%{box-shadow:0 6px 18px rgba(40,30,16,.06)}12%,24%{box-shadow:0 12px 36px var(--gl)}}
+  .eq .op{animation:eqop 3.6s ease-in-out infinite}
+  .eq .op:last-of-type{animation-delay:1.2s}
+  @keyframes eqop{0%,30%,100%{opacity:.4;transform:translateX(0)}15%{opacity:1;transform:translateX(5px)}}
+  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op,.sg-stage.armed svg{animation:none}}
   /* matrix */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 0 0;border-bottom:none;padding:14px 18px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
   .ctl{display:flex;align-items:center;gap:9px}
@@ -666,13 +699,45 @@ render();
   .hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#241a12 0%,#15100a 100%);padding:56px 0 42px}
   .hero::before{content:"";position:absolute;top:-30%;right:-8%;width:520px;height:520px;background:radial-gradient(circle,rgba(199,154,106,.18),transparent 62%);pointer-events:none}
   .hero .wrap{position:relative}
-  .hero .kicker{font-family:var(--font-display);font-size:clamp(21px,3vw,30px);font-weight:600;letter-spacing:0;text-transform:none;color:#e0b48a;margin-bottom:14px;line-height:1.15}
+  .hero .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e0b48a;margin-bottom:16px;line-height:1.4}
   .hero h1{color:#f7f1e7}
   .hero h1 .hl{color:#e9b682}
   .hero .lede{color:#cbbba2}
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  /* proof bar (front-loaded evidence, executive) */
+  .proofbar{background:#1a130c;border-bottom:1px solid #3a2f22}
+  .proofbar .wrap{padding:30px 24px;display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .proofbar .stat{display:flex;flex-direction:column}
+  .proofbar .num{font-size:clamp(40px,6vw,60px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .proofbar .num.r{color:#e8927f} .proofbar .num.g{color:#7fcf9b}
+  .proofbar small{font-size:12px;color:#a8927a;margin-top:8px;line-height:1.45}
+  .proofbar .arrow{font-size:30px;color:#6f5f49}
+  .proofbar .note{flex:1;min-width:240px;font-size:14px;color:#cbbba2;border-left:3px solid #c79a6a;padding-left:18px;line-height:1.65}
+  .proofbar .note b{color:#f4ece0}
+  @media(max-width:680px){.proofbar .wrap{gap:18px}.proofbar .arrow{transform:rotate(90deg)}}
+  /* matrix block cascade (赤→緑に変わる演出) */
+  @keyframes blockin{
+    0%{opacity:0;transform:scale(.7);background:var(--red-bg);color:var(--red)}
+    30%{opacity:1;transform:scale(1.12);background:var(--red-bg);color:var(--red)}
+    58%{background:var(--red-bg);color:var(--red)}
+    100%{opacity:1;transform:scale(1);background:var(--green-bg);color:var(--green)}
+  }
+  .pill.p-block.anim{animation:blockin .6s both}
+  @media(prefers-reduced-motion:reduce){.pill.p-block.anim{animation:none}}
+  /* fable compact probe list */
+  .fable .probelist{margin:14px 0 12px;border-top:1px solid var(--line)}
+  .fable .probelist>div{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .fable .probelist .q{color:var(--muted)}
+  .fable .probelist .a{color:#7a3127;font-weight:700}
+  .fable .fnote{font-size:13px;color:#4a443d}
+  /* poc stepper + dark cta */
+  .poc .s{position:relative}
+  .poc .s .n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--brown);color:#fff;font-size:13px;font-weight:700;font-family:inherit}
+  .poc .s:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:34px;color:#c79a6a;font-weight:700;font-size:16px;z-index:2}
+  @media(max-width:760px){.poc .s:not(:last-child)::after{display:none}}
+  .ctacard.alt .btn.ghost{background:transparent;color:#e6cba6;border-color:#5a4a32}
   /* read-cue: one-line "how to read this" above dense tables */
   .readcue{font-size:13.5px;color:#5b5249;line-height:1.6;margin:-4px 0 16px;padding:11px 16px;background:var(--cream);border-left:3px solid var(--brown);border-radius:0 9px 9px 0}
   .readcue b{color:var(--brown)}

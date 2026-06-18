@@ -5,7 +5,7 @@ import type { Locale } from "../../i18n/translations";
 const locale: Locale = "en";
 const slug = "ai-models-attack-resistance";
 const title = "Six AI models, one identical attack \u2014 capability vs. attack resistance | Lemma";
-const description = "We ran the same five attack scenarios against Fable 5, Opus 4.8, GPT-5.5, DeepSeek v4 Pro, Qwen3.7 Max and Kimi-K2.6. The result didn't track model strength.";
+const description = "We ran the same five attack scenarios against Fable 5 (Fable5), Opus 4.8, GPT-5.5, DeepSeek v4 Pro, Qwen3.7 Max and Kimi-K2.6. The result didn't track model strength.";
 const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 ---
 <Layout locale={locale} metaType="page" pagePath={`/compare/${slug}/`} title={title} description={description} ogImage={ogImage}>
@@ -15,24 +15,26 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <a class="navcta" href="https://tally.so/r/Pd2Rl5">Discovery Call →</a>
 </div></div>
 
-<!-- 1. HERO: comparison intent, no Lemma yet -->
+
 <header class="hero"><div class="wrap">
   <div class="kicker">AI Threat Test · 6 frontier models cast as the attacker</div>
   <h1>AI has switched to the attacker’s side.<br>Can your systems <span class="hl">hold the line?</span></h1>
   <p class="lede">We cast six frontier AIs — Fable 5, Kimi, Opus 4.8 and more — as the attacker, reproduced the attacks enterprise systems actually face, and measured <b>what broke and what held</b>.</p>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
     <a class="btn" href="https://tally.so/r/Pd2Rl5">Test it on your systems →</a>
     <a class="btn ghost" href="#matrix">See the results first ↓</a>
   </div>
-
-  <div class="board">
-    <div class="board-h"><span>TEST MATRIX</span><span>6 models × 5 scenarios = 30 autonomous runs</span></div>
-    <div class="boardscroll"><div class="bgrid" id="bgrid"></div></div>
-  </div>
-  <div class="fcap" style="margin-top:14px">6 frontier AIs × 5 attack scenarios, run autonomously on identical prompts (2026.06.12).</div>
 </div></header>
 
-<!-- 2. TEST CONTENTS -->
+
+<div class="proofbar"><div class="wrap">
+  <div class="stat"><div class="num r">5/5</div><small>The strongest, Opus 4.8, broke through<br>(no proof layer)</small></div>
+  <div class="arrow">→</div>
+  <div class="stat"><div class="num g">0</div><small>With Lemma · all models<br>leaks, every scenario</small></div>
+  <div class="note">Not a claim — <b>measured</b>.<br>What stops it is a layer that demands proof before execution ——  <b>Lemma</b>.</div>
+</div></div>
+
+
 <section><div class="wrap">
   <div class="step">01 — What we tested</div>
   <h2>What we put to the test</h2>
@@ -53,7 +55,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
 </div></section>
 
-<!-- 3. RESULTS -->
+
 <section><div class="wrap">
   <div class="step">Layer 1 — The attacks get through</div>
   <h2>Which AI broke through, and how far</h2>
@@ -62,7 +64,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <div class="barnote">The strongest,  <b style="color:var(--red)">Opus 4.8, broke through the most at 5/5</b>. The striped  <b>Fable 5</b>  refused the attack instructions — but that turned out to be a different matter from being “safe” (next section).</div>
 </div></section>
 
-<!-- 4. INSIGHT -->
+
 <section><div class="wrap">
   <div class="step">03 — What we found</div>
   <h2>The stronger the model, the less its safety features held</h2>
@@ -70,19 +72,18 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
   <div class="fable">
     <div class="lab">Worth noting — Fable 5</div>
-    <h3>Don’t say “attack,” and the safeguards wave it through</h3>
-    <p style="font-size:14px;color:#4a443d">Safety-tuned Fable 5 refused every overtly hostile instruction. But give it an ordinary business request, and —</p>
-    <div class="probes">
-      <div class="pr"><div class="q">“Generate the monthly report”</div><div class="a">→ Returns a report containing customer PII (SSNs)</div></div>
-      <div class="pr"><div class="q">“Run the monthly payment batch”</div><div class="a">→ Executes ~$67,800 in payments</div></div>
+    <h3>Don’t say “attack,” and the safeguards wave it right through.</h3>
+    <div class="probelist">
+      <div><span class="q">“Generate the monthly report”</span><span class="a">→ Returns a customer report containing SSNs</span></div>
+      <div><span class="q">“Run the monthly payment batch”</span><span class="a">→ Wires ~$67,800</span></div>
     </div>
-    <p style="font-size:13.5px;color:#4a443d;margin-top:14px">Without ever recognizing it as an attack, it did real damage. <b>Safety training may help curb accidental misuse, but it is not a guarantee of safety.</b></p>
+    <p class="fnote"><b>Refusal is not safety.</b> Safety training may curb accidental misuse, but it’s no guarantee.</p>
   </div>
 
   <p class="pull">No choice of model protects you.<br>What protects you is a layer that stops things before they execute.</p>
 </div></section>
 
-<!-- LAYER 2: existing defenses fail -->
+
 <section><div class="wrap">
   <div class="step">Layer 2 — Existing defenses don’t stop it</div>
   <h2>Does that defense work against an AI?</h2>
@@ -123,7 +124,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <p class="pull">Classic defenses are breakable by AI.<br>And for social engineering, the very concept of a defense doesn’t exist.</p>
 </div></section>
 
-<!-- LAYER 3 / 5. LEMMA ENTERS: impact band -->
+
 <div class="impact"><div class="wrap">
   <div class="lead2">Layer 3 — Add Lemma, and all of it stops</div>
   <div class="grid">
@@ -182,17 +183,58 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
 </div></section>
 
-<!-- 6. MATRIX (now withWith proof reveal) -->
-<section id="matrix"><div class="wrap">
-  <div class="step">05 — Comparison table</div>
-  <h2>Without proof ↔ with Lemma, in one table</h2>
-  <p class="sub">Same code, same prompts, toggling the proof layer on and off. With Lemma, every model and every scenario is blocked.</p>
-  <p class="readcue"><b>What to look for —</b> Red = breached. Flip the view to “With Lemma,” and the same table turns green (blocked) in every cell.</p>
+
+
+
+<section id="adopt"><div class="wrap">
+  <div class="step">06 — The solution</div>
+  <p class="pull" style="margin-bottom:26px">AI agents will attack your API.<br>Add a layer that demands proof before execution, and it stops.</p>
+  <div class="product">
+    <span class="pbadge">Enterprise · server-side</span>
+    <div class="pname"><svg viewBox="0 0 131 65" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"></path> <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"></path> <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"></path> <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"></path> <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"></path> </svg></div>
+    <div class="ptag">A server-side security layer that demands a “proof” before execution.</div>
+    <p class="pdesc">Every breach happened because the AI escalated keys or credentials. Lemma adds one proof layer on the server: before a high-risk operation it requires, as proof, who, with what authority, on which data, and stops anything out of scope before it executes (fail-closed). Into your existing servers and APIs, with no major rewrite.</p>
+    <div class="pstd"><span>Server-side deployment</span><span>fail-closed</span><span>Zero-knowledge proofs</span><span>Independently verifiable audit trail</span><span>Enterprise</span></div>
+  </div>
+
+  <div class="oneline"><span class="cm">// Require a proof before sensitive operations, in one line</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// No proof →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· blocked across Opus / GPT / DeepSeek / Qwen / Kimi</span></div>
+
+  <div class="singularity">
+    <div class="sg-glow"></div>
+    <div class="sg-eyebrow">The social-engineering singularity</div>
+    <h3>Defense, for the first time, where the very concept was absent</h3>
+    <div class="sg-motif">
+      <div class="sg-stage void">
+        <svg viewBox="0 0 52 60" width="52" height="60" fill="none" aria-hidden="true"><path d="M26 4 L46 12 V29 C46 44 37 53 26 57 C15 53 6 44 6 29 V12 Z" stroke="#6b5f4f" stroke-width="2" stroke-dasharray="4 5" fill="none"/><line x1="17" y1="42" x2="35" y2="20" stroke="#a4564a" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <div class="sg-lab">No defense</div>
+      </div>
+      <div class="sg-arrow">→</div>
+      <div class="sg-stage armed">
+        <svg viewBox="0 0 52 60" width="52" height="60" fill="none" aria-hidden="true"><defs><linearGradient id="sgsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a85f24"/><stop offset="1" stop-color="#5a2e0c"/></linearGradient></defs><path d="M26 4 L46 12 V29 C46 44 37 53 26 57 C15 53 6 44 6 29 V12 Z" fill="url(#sgsh)" stroke="#e0b48a" stroke-width="2"/><path d="M17 30 l6 6 l12 -14" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <div class="sg-lab">Defense — for the first time, with Lemma</div>
+      </div>
+    </div>
+    <p class="sg-body">Approvals and payments have, traditionally, <b>had no defense mechanism at all</b> as a domain. For transfers and approvals, Lemma requires <b>a mathematical proof of authorization</b> and stops anything out of scope before it executes.</p>
+  </div>
+
+  <p class="sub" style="margin-top:24px">Layer a proof gate over the attacks, and the outcome changes like this:</p>
+  <div class="eq">
+    <div class="box atk"><div class="ic">⚠️</div><div class="t">Attack</div><div class="cap">Escalates keys/credentials and abuses them</div><ul><li>JWT privilege escalation</li><li>Impersonation</li><li>Audit-log tampering</li></ul></div>
+    <div class="op">→</div>
+    <div class="box add"><div class="ic">🛡</div><div class="t">Lemma’s proof gate</div><div class="cap">Demands a “proof” before execution</div><ul><li><b>Who</b> ZK identity</li><li><b>With what authority</b> role</li><li><b>On which data</b> scope</li></ul></div>
+    <div class="op">→</div>
+    <div class="box res"><div class="ic">🛑</div><div class="t">Stops before execution</div><div class="cap">No proof, nothing is sent</div><ul><li>fail-closed</li><li>Zero leakage</li><li>Verifiable trail</li></ul></div>
+  </div>
+
+  
+  <div id="matrix" class="step" style="margin-top:44px">After deploying Lemma</div>
+  <h2>After adding Lemma, what happened to the attacks</h2>
+  <p class="sub">The default view is “With Lemma” — every model and every scenario, blocked before execution. Flip the toggle to “No proof,” and the same table fills with breaches (red). The only difference is Lemma.</p>
   <div class="panel">
     <div class="ctl"><label>View</label>
       <div class="seg" id="mode">
-        <button data-mode="insecure" class="on">No proof</button>
-        <button data-mode="secure">With Lemma</button>
+        <button data-mode="secure" class="on">With Lemma</button>
+        <button data-mode="insecure">No proof</button>
         <button data-mode="compare">Compare both</button>
       </div>
     </div>
@@ -206,44 +248,15 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
   <div class="tbox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
   <div class="legend">
-    <span><span class="pill p-break">Breached</span> Attack achieved its objective (breach count = ASR)</span>
+    <span><span class="pill p-break">Breached</span> Attack succeeded</span>
     <span><span class="pill p-no">Held</span> Did not succeed</span>
-    <span><span class="pill p-refuse">Refused</span> Model refused the instruction (behavior, not a guarantee of safety)</span>
-    <span><span class="pill p-block">Blocked</span> Proof gate stopped it before execution</span>
-  </div>
-  <p style="font-size:12px;color:var(--muted);margin-top:10px">“Breached / Held” is <b>whether the attack succeeded</b> (breach count ≈ attack success rate, ASR); “Refused” is <b>model behavior</b> and not a guarantee of safety (the Fable 5 point). “Blocked” is the count Lemma’s layer stopped before execution.</p>
-</div></section>
-
-<!-- 7. Lemma (solution) -->
-<section id="adopt"><div class="wrap">
-  <div class="step">06 — The solution</div>
-  <div class="product">
-    <span class="pbadge">Enterprise · server-side</span>
-    <div class="pname"><svg viewBox="0 0 131 65" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" fill="currentColor"></path> <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" fill="currentColor"></path> <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" fill="currentColor"></path> <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" fill="currentColor"></path> <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" fill="currentColor"></path> </svg></div>
-    <div class="ptag">A server-side security layer that demands a “proof” before execution.</div>
-    <p class="pdesc">Every breach here happened because the AI held keys or credentials and escalated them. Lemma adds one layer on the server that changes that premise — before a high-risk operation it requires, as proof, who, with what authority, on which data, and stops out-of-scope operations before they execute (fail-closed). It drops into your existing servers and APIs without a major rewrite.</p>
-    <div class="pstd"><span>Server-side deployment</span><span>fail-closed</span><span>Zero-knowledge proofs</span><span>Independently verifiable audit trail</span><span>Enterprise</span></div>
+    <span><span class="pill p-refuse">Refused</span> Model refused (behavior, not a guarantee)</span>
+    <span><span class="pill p-block">Blocked</span> Lemma blocked it before execution</span>
   </div>
 
-  <div class="oneline"><span class="cm">// Require a proof before sensitive operations, in one line</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// No proof →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· blocked across Opus / GPT / DeepSeek / Qwen / Kimi</span></div>
-
-  <div class="fable" style="border-left-color:var(--brown);margin-top:18px">
-    <div class="lab" style="color:var(--brown)">The social-engineering singularity</div>
-    <h3>Defense, for the first time, where the very concept was absent</h3>
-    <p style="font-size:14px;color:#4a443d">Approval and payment instructions have, until now, <b>had no defense mechanism at all</b> as a domain. Lemma requires, for transfers and approvals, <b>a mathematical proof of authorization</b>. Out-of-scope instructions stop before they execute. This isn’t “conventional defense vs. Lemma” — it’s <b>no defense → defense for the first time, with Lemma</b>.</p>
-  </div>
-
-  <p class="sub" style="margin-top:24px">The SECURE mode in the attack simulation is exactly this Lemma (the server-side security layer). Layer a proof gate over the attacks, and the outcome changes like this:</p>
-  <div class="eq">
-    <div class="box atk"><div class="ic">⚠️</div><div class="t">Attack</div><div class="cap">Escalates keys/credentials and abuses them</div><ul><li>JWT privilege escalation</li><li>Impersonation</li><li>Audit-log tampering</li></ul></div>
-    <div class="op">→</div>
-    <div class="box add"><div class="ic">🛡</div><div class="t">Lemma’s proof gate</div><div class="cap">Demands a “proof” before execution</div><ul><li><b>Who</b> ZK identity</li><li><b>With what authority</b> role</li><li><b>On which data</b> scope</li></ul></div>
-    <div class="op">→</div>
-    <div class="box res"><div class="ic">🛑</div><div class="t">Stops before execution</div><div class="cap">No proof, nothing is sent</div><ul><li>fail-closed</li><li>Zero leakage</li><li>Verifiable trail</li></ul></div>
-  </div>
-
-  <div class="ctas" style="grid-template-columns:1fr;max-width:680px">
-    <div class="ctacard">
+  <div class="ctas" style="grid-template-columns:1fr;max-width:720px">
+    <div class="ctacard alt">
+      <div style="font-size:13px;color:#e0b48a;font-weight:700;letter-spacing:.02em;margin-bottom:8px">AI attacks. Only Lemma stops it.</div>
       <h3>Will your systems withstand an AI attack?</h3>
       <p>We run these attack scenarios against your own systems (a security assessment) and propose where, on the server side, to place the proof gate. Start with a 30-minute discovery call. No disclosure of sensitive data required.</p>
       <a class="btn" href="https://tally.so/r/Pd2Rl5">Book a Discovery Call →</a>
@@ -262,7 +275,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   </div>
 </div></section>
 
-<!-- 8. method -->
+
 <section id="method"><div class="wrap">
   <h2>How we tested</h2>
   <p class="sub">This is measurement, not assertion. The code is public, and anyone can re-run it in the same environment.</p>
@@ -340,14 +353,6 @@ const MODELS=[
 ];
 const PILL={B:'<span class="pill p-break">Breached</span>',N:'<span class="pill p-no">Held</span>',R:'<span class="pill p-refuse">Refused</span>',K:'<span class="pill p-block">Blocked</span>'};
 const breaks=m=>m.r.filter(x=>x==="B").length;
-/* hero test board */
-(function(){
- const SHORT=["Exfil","Tamper","RCE","SIEM evasion","Impersonation"];
- let h='<div></div>';
- SHORT.forEach(s=>h+=`<div class="gh">${s}</div>`);
- MODELS.forEach(m=>{ h+=`<div class="gm">${m.name}<small>${m.vendor}</small></div>`; SCEN.forEach(()=>h+='<div class="gc">▸</div>'); });
- document.getElementById("bgrid").innerHTML=h;
-})();
 /* bar chart */
 (function(){
  const order=[...MODELS].sort((a,b)=>breaks(b)-breaks(a));
@@ -363,14 +368,14 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
  document.getElementById("bars").innerHTML=html;
 })();
 /* matrix */
-let mode="insecure",sort="score-desc";
+let mode="secure",sort="score-desc";
 document.querySelectorAll("#mode button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#mode button").forEach(x=>x.classList.remove("on"));b.classList.add("on");mode=b.dataset.mode;render();});
 document.getElementById("sort").onchange=e=>{sort=e.target.value;render();};
 function sorted(){let m=[...MODELS];if(sort==="score-desc")m.sort((a,b)=>breaks(b)-breaks(a));else if(sort==="score-asc")m.sort((a,b)=>breaks(a)-breaks(b));else m.sort((a,b)=>a.name.localeCompare(b.name));return m;}
 function render(){
  let h='<th class="model">Model / config</th>';SCEN.forEach(s=>h+=`<th>${s}</th>`);if(mode!=="secure")h+='<th>Breaches (ASR)</th>';
  document.getElementById("head").innerHTML=h;
- const body=document.getElementById("body");body.innerHTML="";
+ const body=document.getElementById("body");body.innerHTML="";let bi=0;
  sorted().forEach(m=>{
   if(mode==="insecure"||mode==="compare"){
    let row=`<tr><td class="model">${m.name}<small>${m.vendor} · ${m.refused?"Refused attacks":breaks(m)+"/5 breached"}</small></td>`;
@@ -379,7 +384,7 @@ function render(){
   }
   if(mode==="secure"||mode==="compare"){
    let row=`<tr class="sec"><td class="model">${m.name} + Lemma<small>With proof</small></td>`;
-   m.r.forEach(()=>row+=`<td>${PILL.K}</td>`);if(mode==="compare")row+='<td class="scoretag" style="color:var(--green)">0</td>';
+   m.r.forEach(()=>{row+=`<td><span class="pill p-block anim" style="animation-delay:${(bi++)*0.05}s">Blocked</span></td>`;});if(mode==="compare")row+='<td class="scoretag" style="color:var(--green)">0</td>';
    row+="</tr>";body.insertAdjacentHTML("beforeend",row);
   }
  });
@@ -438,14 +443,14 @@ render();
   .logo sup{font-size:11px}
   .navcta{font-size:13px;font-weight:700;color:#fff;background:var(--brown);border:1px solid var(--brown-d);padding:8px 16px;border-radius:8px;box-shadow:0 4px 13px rgba(139,69,19,.24);transition:transform .15s ease,box-shadow .2s ease}
   .navcta:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(139,69,19,.32);color:#fff}
-  /* hero */
+  
   .hero{padding:52px 0 8px}
   .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--brown);font-weight:700;margin-bottom:16px}
   h1{font-size:clamp(28px,4vw,42px);line-height:1.16;letter-spacing:-.015em;margin-bottom:16px;max-width:920px}
   h1 .hl{color:var(--brown)}
   .lede{font-size:17px;color:#3a352f;max-width:730px}
   .lede b{color:var(--ink)}
-  /* setup grid (hero) */
+  
   .setupwrap{margin:32px 0 6px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
   .setupgrid{display:grid;grid-template-columns:150px repeat(5,1fr);gap:6px;min-width:560px}
   .setupgrid .gh{font-size:11px;color:var(--muted);text-align:center;padding:4px 2px;line-height:1.25;align-self:end}
@@ -453,7 +458,7 @@ render();
   .setupgrid .gc{height:34px;border-radius:7px;background:var(--cream);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#c3b49a;font-size:14px}
   .setupscroll{overflow-x:auto}
   .fcap{margin-top:14px;font-size:12.5px;color:var(--muted)}
-  /* hero test board */
+  
   .board{margin:30px 0 0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .board-h{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--dark);color:#e3d6c0;padding:11px 18px;font-size:12px;font-family:"SF Mono",ui-monospace,Menlo,monospace;letter-spacing:.03em}
   .board-h span:first-child{font-weight:700;letter-spacing:.18em;color:#f4ece0}
@@ -463,7 +468,7 @@ render();
   .bgrid .gm{font-size:13px;font-weight:700;display:flex;flex-direction:column;justify-content:center}
   .bgrid .gm small{font-weight:400;color:var(--muted);font-size:10.5px}
   .bgrid .gc{height:32px;border-radius:6px;background:var(--cream);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#c0ab8c;font-size:12px}
-  /* product intro */
+  
   .product{background:linear-gradient(180deg,#fff,#fbf3ea);border:1px solid var(--brown);border-radius:16px;padding:28px 30px;margin-bottom:8px}
   .pbadge{display:inline-block;font-size:11px;letter-spacing:.14em;font-weight:700;color:#fff;background:var(--brown);padding:5px 12px;border-radius:99px}
   .pname{font-family:Georgia,serif;font-size:38px;font-weight:700;color:var(--brown);margin-top:14px;line-height:1}
@@ -471,7 +476,7 @@ render();
   .pdesc{font-size:14.5px;color:#4a443d;margin-top:12px;max-width:760px}
   .pstd{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
   .pstd span{font-size:11.5px;font-family:"SF Mono",ui-monospace,Menlo,monospace;background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 10px;color:#5b5249}
-  /* two-path cta */
+  
   .ctas{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
   .ctacard{background:linear-gradient(180deg,#fff,var(--cream));border:1px solid var(--line);border-top:3px solid var(--brown);border-radius:16px;padding:28px}
   .ctacard.alt{background:var(--dark);border:1px solid #3a2f22;border-top:3px solid #c79a6a}
@@ -485,7 +490,7 @@ render();
   .ctacard.alt .fine a{color:#e6cba6}
   .ctacard.alt .btn{background:#f4ece0;color:#2a2117;border-color:#f4ece0}
   @media(max-width:760px){.ctas{grid-template-columns:1fr}}
-  /* fable callout */
+  
   .fable{background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:22px 24px;margin-top:8px}
   .fable .lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:8px}
   .fable h3{font-size:19px;margin-bottom:6px}
@@ -494,19 +499,19 @@ render();
   .fable .pr .q{font-size:12.5px;color:var(--muted);margin-bottom:6px}
   .fable .pr .a{font-size:13.5px;color:#7a3127;font-weight:600}
   @media(max-width:680px){.fable .probes{grid-template-columns:1fr}}
-  /* sections */
+  
   section{padding:48px 0;border-top:1px solid var(--line)}
   h2{font-size:25px;margin-bottom:10px;letter-spacing:-.01em}
   .sub{color:var(--muted);font-size:15px;margin-bottom:24px;max-width:760px}
   .step{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brown);font-weight:700;margin-bottom:8px}
-  /* scenario cards */
+  
   .scn{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
   .scn .c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px}
   .scn .c .n{font-size:12px;font-weight:700;color:var(--brown);margin-bottom:7px}
   .scn .c h4{font-size:14px;margin-bottom:5px} .scn .c p{font-size:12.5px;color:#4a443d}
   .setupline{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
   .chip{font-size:12.5px;background:var(--cream);border:1px solid var(--line);border-radius:99px;padding:6px 13px;color:#5b5249}
-  /* bar chart */
+  
   .bars{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px}
   .bar{display:grid;grid-template-columns:130px 1fr 54px;align-items:center;gap:14px;padding:9px 0}
   .bar .name{font-size:13.5px;font-weight:600}
@@ -518,7 +523,7 @@ render();
   .barnote{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
   .barnote b{color:var(--amber)}
   .pull{font-size:23px;font-weight:600;letter-spacing:-.01em;margin-top:30px;padding-left:18px;border-left:4px solid var(--brown);color:var(--ink)}
-  /* impact band */
+  
   .impact{background:var(--dark);color:#f4ece0;margin:0}
   .impact .wrap{padding:52px 24px}
   .impact .lead2{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#a8927a;font-weight:700;margin-bottom:18px}
@@ -530,10 +535,10 @@ render();
   .impact .small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a8927a;font-weight:700;margin-bottom:6px}
   .impact .cap{font-size:14.5px;color:#cbbba2;margin-top:12px;max-width:380px}
   @media(max-width:680px){.impact .grid{grid-template-columns:1fr}.impact .cell:first-child{border-right:none;border-bottom:1px solid #43372a;padding-bottom:26px;margin-bottom:22px}}
-  /* flow */
+  
   .flow{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;overflow-x:auto}
   .flow svg{min-width:680px;width:100%;height:auto;display:block}
-  /* poc steps */
+  
   .poc{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:4px}
   .poc .s{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 16px;position:relative}
   .poc .s .n{font-family:Georgia,serif;font-size:15px;color:var(--brown);font-weight:700}
@@ -541,7 +546,7 @@ render();
   .poc .s p{font-size:12.5px;color:#4a443d}
   @media(max-width:760px){.poc{grid-template-columns:1fr 1fr}}
   @media(max-width:460px){.poc{grid-template-columns:1fr}}
-  /* layer2 defense contrast (dark) */
+  
   .cx{display:grid;gap:0;border:1px solid #3a2f22;border-radius:14px;overflow:hidden;background:var(--dark)}
   .cxrow{display:grid;grid-template-columns:150px 1fr 1.15fr}
   .cxrow>div{padding:13px 16px;border-bottom:1px solid #3a2f22}
@@ -553,10 +558,38 @@ render();
   .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
   .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
   @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
-  /* one-line code */
+  
   .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
   .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
-  /* matrix */
+  
+  .singularity{position:relative;overflow:hidden;margin-top:18px;background:linear-gradient(135deg,#241a12,#15100a);border:1px solid #4a3a26;border-radius:18px;padding:34px 30px}
+  .singularity .sg-glow{position:absolute;top:-45%;left:50%;transform:translateX(-50%);width:560px;height:420px;background:radial-gradient(circle,rgba(199,154,106,.20),transparent 62%);pointer-events:none}
+  .singularity>*{position:relative}
+  .sg-eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e0b48a;font-weight:700;margin-bottom:10px}
+  .singularity h3{font-family:var(--font-display);font-size:clamp(22px,3.4vw,30px);font-weight:600;color:#f4ece0;line-height:1.26;letter-spacing:-.01em;margin-bottom:24px;max-width:680px}
+  .sg-motif{display:flex;align-items:stretch;gap:16px;flex-wrap:wrap;margin:4px 0 22px}
+  .sg-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;flex:1;min-width:150px;padding:24px 16px;border-radius:14px;border:1px solid #3a2f22;background:rgba(244,236,224,.03);text-align:center}
+  .sg-stage.armed{border-color:#5a4630;background:rgba(199,154,106,.09);box-shadow:0 10px 36px rgba(199,154,106,.16)}
+  .sg-stage svg{filter:drop-shadow(0 4px 14px rgba(0,0,0,.4))}
+  .sg-stage.armed svg{filter:drop-shadow(0 4px 20px rgba(199,154,106,.5));animation:sgpulse 2.6s ease-in-out infinite}
+  .sg-stage .sg-lab{font-size:14.5px;font-weight:700;letter-spacing:.01em}
+  .sg-stage.void .sg-lab{color:#a8927a}
+  .sg-stage.armed .sg-lab{color:#f4ece0}
+  .sg-arrow{display:flex;align-items:center;font-size:26px;color:#e0b48a;font-weight:700;flex:0 0 auto}
+  .sg-body{font-size:14px;color:#cbbba2;max-width:680px;line-height:1.72}
+  .sg-body b{color:#f0e6d6}
+  @keyframes sgpulse{0%,100%{filter:drop-shadow(0 4px 16px rgba(199,154,106,.32))}50%{filter:drop-shadow(0 6px 26px rgba(199,154,106,.7))}}
+  @media(max-width:700px){.sg-motif{flex-direction:column;gap:12px}.sg-arrow{transform:rotate(90deg);justify-content:center}.sg-stage{width:100%}}
+  
+  .eq .box.atk{--gl:rgba(192,57,43,.30)} .eq .box.add{--gl:rgba(199,154,106,.36)} .eq .box.res{--gl:rgba(47,125,79,.30)}
+  .eq .box{animation:eqp 3.6s ease-in-out infinite}
+  .eq .box.add{animation-delay:1.2s} .eq .box.res{animation-delay:2.4s}
+  @keyframes eqp{0%,38%,100%{box-shadow:0 6px 18px rgba(40,30,16,.06)}12%,24%{box-shadow:0 12px 36px var(--gl)}}
+  .eq .op{animation:eqop 3.6s ease-in-out infinite}
+  .eq .op:last-of-type{animation-delay:1.2s}
+  @keyframes eqop{0%,30%,100%{opacity:.4;transform:translateX(0)}15%{opacity:1;transform:translateX(5px)}}
+  @media (prefers-reduced-motion: reduce){.eq .box,.eq .op,.sg-stage.armed svg{animation:none}}
+  
   .panel{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 0 0;border-bottom:none;padding:14px 18px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
   .ctl{display:flex;align-items:center;gap:9px}
   .ctl label{font-size:12.5px;color:var(--muted);font-weight:600}
@@ -579,7 +612,7 @@ render();
   .scoretag{font-weight:700;font-variant-numeric:tabular-nums}
   .legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:14px;font-size:12.5px;color:var(--muted)}
   .legend span{display:flex;align-items:center;gap:7px}
-  /* equation */
+  
   .eq{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap;margin-top:8px}
   .eq .box{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--card)}
   .eq .box.add{border-color:var(--brown);background:linear-gradient(180deg,#fff,#fbf3ea)}
@@ -589,7 +622,7 @@ render();
   .eq .box ul{list-style:none;font-size:13px}
   .eq .box li{padding:3px 0;color:#4a443d} .eq .box li b{color:var(--ink)}
   .eq .op{display:flex;align-items:center;font-size:24px;color:var(--muted)}
-  /* cta */
+  
   .cta{background:linear-gradient(180deg,#fff,var(--cream));border:1px solid var(--line);border-radius:16px;padding:36px}
   .cta h2{font-size:24px} .cta p{color:#4a443d;max-width:620px;margin:10px 0 22px;font-size:15px}
   .btn{display:inline-block;background:var(--brown);color:#fff;font-weight:600;font-size:15px;padding:13px 26px;border-radius:10px;border:1px solid var(--brown-d)}
@@ -616,7 +649,7 @@ render();
   .ft-bottom a{color:#a8927a} .ft-bottom a:hover{color:#e6cba6}
   @media(max-width:760px){.ft-cols{grid-template-columns:1fr 1fr}}
   @media(max-width:760px){.bar{grid-template-columns:96px 1fr 40px}.scn{grid-template-columns:1fr 1fr}.eq .op{transform:rotate(90deg)}}
-  /* ---- motion & polish (added) ---- */
+  
   .js section>.wrap,.js .impact>.wrap{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform}
   .js section>.wrap.in,.js .impact>.wrap.in{opacity:1;transform:none}
   .scn .c,.eq .box,.vs .side{transition:transform .25s ease,box-shadow .25s ease}
@@ -631,7 +664,7 @@ render();
     .js section>.wrap,.js .impact>.wrap{opacity:1;transform:none;transition:none}
     .bar .fill{transition:none}
   }
-  /* ---- Lemma banner + mechanism pipeline (section 06) ---- */
+  
   .product{background:linear-gradient(135deg,#241a12,#191309);border:1px solid #4a3a26;border-radius:18px;padding:34px 34px 30px;position:relative;overflow:hidden}
   .product::before{content:"";position:absolute;top:-45%;right:-8%;width:360px;height:360px;background:radial-gradient(circle,rgba(199,154,106,.22),transparent 62%);pointer-events:none}
   .product>*{position:relative}
@@ -653,30 +686,62 @@ render();
   .eq .box.res .cap{color:#2f7d4f}
   .eq .op{font-size:22px;color:var(--brown);font-weight:700}
   @media(max-width:760px){.eq{flex-direction:column}.eq .op{align-self:center}}
-  /* ---- brand typography & effects (lemma.frame00.com) ---- */
+  
   h1,h2,.pname,.pull,.vs .nm{font-family:var(--font-display)}
   h1,h2{font-weight:600;letter-spacing:-.02em}
   .logo{line-height:0;display:inline-flex;align-items:center;color:var(--brown)}
   .logo svg{height:27px;width:auto;display:block}
   .logo:hover{opacity:.82}
-  /* ---- dark hero / topbar (impact) ---- */
+  
   .topbar{background:rgba(20,15,9,.92);border-bottom:1px solid #3a2f22}
   .logo{color:#f4ece0}
   .topbar .navcta{box-shadow:0 4px 14px rgba(0,0,0,.35)}
   .hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#241a12 0%,#15100a 100%);padding:56px 0 42px}
   .hero::before{content:"";position:absolute;top:-30%;right:-8%;width:520px;height:520px;background:radial-gradient(circle,rgba(199,154,106,.18),transparent 62%);pointer-events:none}
   .hero .wrap{position:relative}
-  .hero .kicker{font-family:var(--font-display);font-size:clamp(21px,3vw,30px);font-weight:600;letter-spacing:0;text-transform:none;color:#e0b48a;margin-bottom:14px;line-height:1.15}
+  .hero .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e0b48a;margin-bottom:16px;line-height:1.4}
   .hero h1{color:#f7f1e7}
   .hero h1 .hl{color:#e9b682}
   .hero .lede{color:#cbbba2}
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
-  /* read-cue: one-line "how to read this" above dense tables */
+  
+  .proofbar{background:#1a130c;border-bottom:1px solid #3a2f22}
+  .proofbar .wrap{padding:30px 24px;display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .proofbar .stat{display:flex;flex-direction:column}
+  .proofbar .num{font-size:clamp(40px,6vw,60px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .proofbar .num.r{color:#e8927f} .proofbar .num.g{color:#7fcf9b}
+  .proofbar small{font-size:12px;color:#a8927a;margin-top:8px;line-height:1.45}
+  .proofbar .arrow{font-size:30px;color:#6f5f49}
+  .proofbar .note{flex:1;min-width:240px;font-size:14px;color:#cbbba2;border-left:3px solid #c79a6a;padding-left:18px;line-height:1.65}
+  .proofbar .note b{color:#f4ece0}
+  @media(max-width:680px){.proofbar .wrap{gap:18px}.proofbar .arrow{transform:rotate(90deg)}}
+  
+  @keyframes blockin{
+    0%{opacity:0;transform:scale(.7);background:var(--red-bg);color:var(--red)}
+    30%{opacity:1;transform:scale(1.12);background:var(--red-bg);color:var(--red)}
+    58%{background:var(--red-bg);color:var(--red)}
+    100%{opacity:1;transform:scale(1);background:var(--green-bg);color:var(--green)}
+  }
+  .pill.p-block.anim{animation:blockin .6s both}
+  @media(prefers-reduced-motion:reduce){.pill.p-block.anim{animation:none}}
+  
+  .fable .probelist{margin:14px 0 12px;border-top:1px solid var(--line)}
+  .fable .probelist>div{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .fable .probelist .q{color:var(--muted)}
+  .fable .probelist .a{color:#7a3127;font-weight:700}
+  .fable .fnote{font-size:13px;color:#4a443d}
+  
+  .poc .s{position:relative}
+  .poc .s .n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--brown);color:#fff;font-size:13px;font-weight:700;font-family:inherit}
+  .poc .s:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:34px;color:#c79a6a;font-weight:700;font-size:16px;z-index:2}
+  @media(max-width:760px){.poc .s:not(:last-child)::after{display:none}}
+  .ctacard.alt .btn.ghost{background:transparent;color:#e6cba6;border-color:#5a4a32}
+  
   .readcue{font-size:13.5px;color:#5b5249;line-height:1.6;margin:-4px 0 16px;padding:11px 16px;background:var(--cream);border-left:3px solid var(--brown);border-radius:0 9px 9px 0}
   .readcue b{color:var(--brown)}
-  /* ===== mobile readability pass (enterprise) ===== */
+  
   @media(max-width:700px){
     .wrap{padding:0 18px}
     section{padding:34px 0}
@@ -687,17 +752,17 @@ render();
     .lede{font-size:15.5px}
     .pull{font-size:18px;line-height:1.5;padding-left:14px}
     .hero .kicker{font-size:19px}
-    /* hero: drop the sideways-scrolling placeholder run-grid (same info is in the caption below) */
+    
     .board{display:none}
-    /* scenario cards: one per row */
+    
     .scn{grid-template-columns:1fr;gap:10px}
     .scn .c{padding:15px 16px}
-    /* Layer-2 contrast: clean stacked cards with clear scenario headers */
+    
     .cx{border:none;background:transparent;gap:12px}
     .cxrow{border:1px solid #3a2f22;border-radius:12px;overflow:hidden;background:var(--dark)}
     .cxs{background:#2a2117;font-size:15px;border-bottom:1px solid #3a2f22}
     .cxd,.cxb{font-size:13.5px;line-height:1.62}
-    /* matrix: smooth, sticky-first-column horizontal scroll */
+    
     .tbox{-webkit-overflow-scrolling:touch}
     table{min-width:540px;font-size:12.5px}
     thead th{padding:9px 7px;font-size:11px}
@@ -706,15 +771,15 @@ render();
     tbody td.model small{font-size:10.5px}
     .panel{gap:12px;padding:12px 14px}
     .legend{gap:9px 14px;font-size:12px}
-    /* impact band */
+    
     .impact .wrap{padding:38px 18px}
     .impact .huge{font-size:44px}
     .impact .cap{font-size:13.5px}
-    /* solution: pipeline boxes + code + banner */
+    
     .eq .box{min-width:0;width:100%}
     .product{padding:24px 20px}
     .oneline{font-size:12px;padding:14px 14px}
-    /* method + honest: breathing room for the long note */
+    
     .honest{padding:18px;font-size:12.5px;line-height:1.78}
     .method li{font-size:13px}
     .ft-cols{gap:16px}
