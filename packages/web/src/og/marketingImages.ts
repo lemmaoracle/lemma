@@ -224,8 +224,8 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
       en: "AI Model Comparison · Attack Resistance",
     },
     tagline: {
-      ja: "性能と攻撃耐性 — 結果を分けたのは Lemma。",
-      en: "Capability vs. attack resistance — Lemma made the difference.",
+      ja: "AI を攻撃役にすると、防御は抜かれた。止めるのは Lemma。",
+      en: "Make an AI the attacker, and defenses fall. Lemma stops it.",
     },
   },
   "fable5-vs-kimi": {
@@ -238,8 +238,8 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
       en: "AI Model Comparison · Head-to-head",
     },
     tagline: {
-      ja: "同じ攻撃で、どう違ったか — 性能と攻撃耐性。",
-      en: "Same attack, different outcomes — capability vs. attack resistance.",
+      ja: "拒否できても、守れない。止めるのは Lemma。",
+      en: "Refusal isn’t protection. Lemma stops the attack.",
     },
   },
   "gpt5-vs-opus": {
