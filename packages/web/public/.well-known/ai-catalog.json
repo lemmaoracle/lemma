@@ -32,7 +32,7 @@
       "tags": ["zk-proof", "mcp", "verifiable-provenance", "attestation", "privacy"],
       "metadata": {
         "npmPackage": "@lemmaoracle/mcp",
-        "transport": "stdio",
+        "localTransport": "stdio (via npm: @lemmaoracle/mcp)",
         "remoteUrl": "https://mcp.lemma.workers.dev/mcp",
         "remoteTransport": "streamable-http",
         "license": "Apache-2.0",
@@ -42,8 +42,8 @@
     {
       "identifier": "urn:ai:lemma.frame00.com:api:rest",
       "displayName": "Lemma REST API",
-      "type": "application/openapi+json",
-      "url": "https://api.lemmaoracle.com/v1/health",
+      "type": "text/html",
+      "url": "https://lemma.frame00.com/guides/",
       "capabilities": [
         "SchemasRegister",
         "CircuitsRegister",
@@ -57,7 +57,8 @@
         "submit a ZK proof for an attested document",
         "query verified attributes for a given subject",
         "register a new circuit and schema",
-        "check API health and availability"
+        "retrieve proof status for a submitted attestation by proof ID",
+        "list registered circuits available for proving"
       ],
       "tags": ["zk-proof", "rest-api", "verifiable-provenance", "privacy", "attestation"],
       "metadata": {
