@@ -590,6 +590,20 @@ render();
   .logo{line-height:0;display:inline-flex;align-items:center;color:var(--brown)}
   .logo svg{height:27px;width:auto;display:block}
   .logo:hover{opacity:.82}
+  /* ---- dark hero / topbar (impact) ---- */
+  .topbar{background:rgba(20,15,9,.92);border-bottom:1px solid #3a2f22}
+  .logo{color:#f4ece0}
+  .topbar .navcta{box-shadow:0 4px 14px rgba(0,0,0,.35)}
+  .hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#241a12 0%,#15100a 100%);padding:56px 0 42px}
+  .hero::before{content:"";position:absolute;top:-30%;right:-8%;width:520px;height:520px;background:radial-gradient(circle,rgba(199,154,106,.18),transparent 62%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .hero .kicker{font-family:var(--font-display);font-size:clamp(21px,3vw,30px);font-weight:600;letter-spacing:0;text-transform:none;color:#e0b48a;margin-bottom:14px;line-height:1.15}
+  .hero h1{color:#f7f1e7}
+  .hero h1 .hl{color:#e9b682}
+  .hero .lede{color:#cbbba2}
+  .hero .lede b{color:#f4ece0}
+  .hero .fcap{color:#a8927a}
+  .hero .vs .mid{color:#e0b48a}
 
 </style>
 </Layout>
