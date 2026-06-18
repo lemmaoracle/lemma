@@ -210,3 +210,64 @@ export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
   });
   return renderOgPng(node);
 }
+
+/* ─────────────── Model comparison LPs (/compare/...) ─────────────── */
+
+const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> = {
+  "ai-models-attack-resistance": {
+    title: {
+      ja: "6 つの AI モデルに、\n<accent>同じ攻撃</accent>を仕掛けた。",
+      en: "Six AI models,\n<accent>one identical attack.</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 攻撃耐性",
+      en: "AI Model Comparison · Attack Resistance",
+    },
+    tagline: {
+      ja: "AI を攻撃役にすると、防御は抜かれた。止めるのは Lemma。",
+      en: "Make an AI the attacker, and defenses fall. Lemma stops it.",
+    },
+  },
+  "fable5-vs-kimi": {
+    title: {
+      ja: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
+      en: "Claude Fable 5\n<accent>vs Kimi-K2.6</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 1対1",
+      en: "AI Model Comparison · Head-to-head",
+    },
+    tagline: {
+      ja: "拒否できても、守れない。止めるのは Lemma。",
+      en: "Refusal isn’t protection. Lemma stops the attack.",
+    },
+  },
+  "gpt5-vs-opus": {
+    title: {
+      ja: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
+      en: "GPT-5.5\n<accent>vs Opus 4.8</accent>",
+    },
+    label: {
+      ja: "AIモデル比較 · 1対1",
+      en: "AI Model Comparison · Head-to-head",
+    },
+    tagline: {
+      ja: "最強モデルほど、よく破った — 止めるのは Lemma。",
+      en: "The strongest models broke the most — Lemma stops them.",
+    },
+  },
+};
+
+export async function renderCompareOg(
+  slug: string,
+  locale: Locale,
+): Promise<Buffer> {
+  const c = COMPARE_COPY[slug] ?? COMPARE_COPY["ai-models-attack-resistance"];
+  const node = buildOgArtboard({
+    title: localize(c.title, locale),
+    topRight: makeTopRightLabel(localize(c.label, locale), BROWN),
+    bottomTagline: makeBottomTagline(localize(c.tagline, locale), BROWN),
+    background: PRODUCT_GRADIENT,
+  });
+  return renderOgPng(node);
+}
