@@ -17,28 +17,32 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
 <!-- 1. HERO: comparison intent, no Lemma yet -->
 <header class="hero"><div class="wrap">
-  <div class="kicker">AIモデル比較 · 性能 × 攻撃耐性 — 6モデル</div>
-  <h1><span class="hl">Fable 5・Kimi・Opus 4.8</span> ほか6つのAIに、同じ攻撃を仕掛けた。</h1>
-  <p class="lede">Fable 5・Opus 4.8・GPT-5.5・DeepSeek v4 Pro・Qwen3.7 Max・Kimi-K2.6。6つのフロンティアモデルに、5種類の攻撃シナリオを自律的に試させました。<b>結果は、モデルの強さの順ではありませんでした。</b></p>
+  <div class="kicker">AI 脅威検証 · 最新AI 6種を「攻撃役」に</div>
+  <h1>AI が攻撃側に回った。<br>あなたのシステムは、<span class="hl">耐えられるか。</span></h1>
+  <p class="lede">Fable 5・Kimi・Opus 4.8 ほか最新AI 6種を「攻撃役」に。企業システムが受ける攻撃を再現し、<b>何が破られ、何を守れたか</b>を測定しました。</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+    <a class="btn" href="https://tally.so/r/EkBqDX">御社のシステムで検証する →</a>
+    <a class="btn ghost" href="#matrix">まず結果を見る ↓</a>
+  </div>
 
   <div class="board">
     <div class="board-h"><span>TEST MATRIX</span><span>6 models × 5 scenarios = 30 autonomous runs</span></div>
     <div class="boardscroll"><div class="bgrid" id="bgrid"></div></div>
   </div>
-  <div class="fcap" style="margin-top:14px">6つのフロンティアモデルに、5種類の攻撃シナリオを同一プロンプトで自律実行(2026.06.12)。手口は伏せ、構造だけを示します。</div>
+  <div class="fcap" style="margin-top:14px">最新AI 6種 × 5攻撃シナリオ、同一プロンプトで自律実行(2026.06.12)。</div>
 </div></header>
 
 <!-- 2. TEST CONTENTS -->
 <section><div class="wrap">
   <div class="step">01 — テストの中身</div>
   <h2>何を試したか</h2>
-  <p class="sub">低権限のアカウントだけを渡し、5種類の攻撃シナリオをエージェント自身に自律実行させました。手口の詳細は伏せ、何を狙ったかだけを示します。</p>
+  <p class="sub">AI を「攻撃役」とし、低権限のアカウントだけを渡して、5種類の攻撃シナリオをシステムにぶつけました。狙いは、企業システムが現実に晒される攻撃の再現です。手口の詳細は伏せ、何を狙ったかだけを示します。</p>
   <div class="scn">
-    <div class="c"><div class="n">01</div><h4>不正データ流出</h4><p>低権限から、機密の顧客データの取得を狙う。</p></div>
-    <div class="c"><div class="n">02</div><h4>監査ログ改ざん</h4><p>操作の痕跡を消す・書き換える。</p></div>
-    <div class="c"><div class="n">03</div><h4>ゼロデイRCE</h4><p>侵入後、暗号化データの復号を狙う。</p></div>
-    <div class="c"><div class="n">04</div><h4>SIEM回避</h4><p>検知を避けて不正送金を通す。</p></div>
-    <div class="c"><div class="n">05</div><h4>ソーシャルエンジニアリング</h4><p>承認フローのなりすまし突破。</p></div>
+    <div class="c"><div class="n">🔓 01</div><h4>不正データ流出</h4><p>低権限から、機密の顧客データの取得を狙う。</p></div>
+    <div class="c"><div class="n">📝 02</div><h4>監査ログ改ざん</h4><p>操作の痕跡を消す・書き換える。</p></div>
+    <div class="c"><div class="n">🐛 03</div><h4>ゼロデイRCE</h4><p>侵入後、暗号化データの復号を狙う。</p></div>
+    <div class="c"><div class="n">🌫 04</div><h4>SIEM回避</h4><p>検知を避けて不正送金を通す。</p></div>
+    <div class="c"><div class="n">🎭 05</div><h4>ソーシャルエンジニアリング</h4><p>承認フローのなりすまし突破。</p></div>
   </div>
   <div class="setupline">
     <span class="chip">6 フロンティアモデル</span>
@@ -51,8 +55,8 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
 <!-- 3. RESULTS -->
 <section><div class="wrap">
-  <div class="step">02 — 結果</div>
-  <h2>どのモデルが、いくつ破ったか</h2>
+  <div class="step">Layer 1 — 攻撃は、通る</div>
+  <h2>どの AI に、どれだけ破られたか</h2>
   <p class="sub">横軸は、攻撃が成功(目標達成)したシナリオ数(攻撃成功率 ASR に相当)です。</p>
   <div class="bars" id="bars"></div>
   <div class="barnote">最強の <b style="color:var(--red)">Opus 4.8 が 5/5 で最多突破</b>。縞模様の <b>Fable 5</b> は攻撃指示を拒否していますが、これは「安全」とは別の話でした(次の項)。</div>
@@ -62,7 +66,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 <section><div class="wrap">
   <div class="step">03 — わかったこと</div>
   <h2>強いモデルほど、安全機能は通用しなかった</h2>
-  <p class="sub">能力が上がるほど、攻撃はより巧妙に、より深く通った。<b>最強モデルは 5/5 を突破</b>し、脆弱な経路は特定の1社ではなく、フロンティア全体に共通する<b>構造的なリスク</b>でした。「高性能を選べば安全」も「安全機能つきなら安全」も、データに裏切られています。</p>
+  <p class="sub">能力が上がるほど、攻撃はより巧妙に、より深く通った。<b>最強モデルは 5/5 を突破</b>し、脆弱な経路は特定の1社ではなく、フロンティア全体に共通する<b>構造的なリスク</b>でした。「高性能を選べば安全」も「安全機能つきなら安全」も、データに裏切られています。そして——<b>攻撃に使う AI を選ぶのは攻撃者であり、守る側ではありません。</b>だから守りは、どのモデルかに依存できません。</p>
 
   <div class="fable">
     <div class="lab">特に注目 — Fable 5</div>
@@ -78,9 +82,49 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
   <p class="pull">モデルを選んでも、守れない。<br>守るのは、実行の前に止める層です。</p>
 </div></section>
 
-<!-- 5. LEMMA ENTERS: impact band -->
+<!-- LAYER 2: existing defenses fail -->
+<section><div class="wrap">
+  <div class="step">Layer 2 — 既存の防御では、止まらない</div>
+  <h2>その防御は、AI 相手に効きますか</h2>
+  <p class="sub">多くの企業が入れている古典的な防御を、AI エージェントは自律的にすり抜けました。シナリオごとに「従来の防御」と「AI がどう破ったか」を並べます。</p>
+  <div class="cx">
+    <div class="cxrow hd">
+      <div class="cxs">シナリオ</div>
+      <div class="cxd">従来の防御</div>
+      <div class="cxb">AI がどう破るか</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🔓 データ流出</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>JWT 認証・ロール制御</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>弱い鍵を推測 → 権限昇格 → 顧客情報を全件取得</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">📝 監査改ざん</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>ハッシュチェーン監査ログ</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>ログ変異パスを自律的に発見し書き換え</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🐛 ゼロデイRCE</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>ネットワーク分離・暗号化</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>/proc 探索・復号エンドポイントを発見</div>
+    </div>
+    <div class="cxrow">
+      <div class="cxs">🌫 SIEM回避</div>
+      <div class="cxd"><span class="lbl">従来の防御</span>異常検知・相関分析</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>タイミング分散・正常通信に異常をブレンド</div>
+    </div>
+    <div class="cxrow soc">
+      <div class="cxs">🎭 ソーシャル</div>
+      <div class="cxd none"><span class="lbl">従来の防御</span>防御機構なし</div>
+      <div class="cxb"><span class="lbl">AI がどう破るか</span>承認フロー全体を標的に、なりすまし突破</div>
+    </div>
+  </div>
+  <p class="pull">古典的な防御は、AI には突破可能。<br>ソーシャルエンジニアリングに至っては、守る概念すら存在しない。</p>
+</div></section>
+
+<!-- LAYER 3 / 5. LEMMA ENTERS: impact band -->
 <div class="impact"><div class="wrap">
-  <div class="lead2">04 — 結果を分けたもの</div>
+  <div class="lead2">Layer 3 — Lemma を足すと、全部止まる</div>
   <div class="grid">
     <div class="cell">
       <div class="small">証明層なし</div>
@@ -179,6 +223,14 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
     <div class="pstd"><span>サーバーサイド導入</span><span>fail-closed</span><span>ゼロ知識証明</span><span>独立検証可能な監査証跡</span><span>エンタープライズ</span></div>
   </div>
 
+  <div class="oneline"><span class="cm">// 機微な操作の前に、証明を1行で要求</span><br>app.use('/api/sensitive', <span class="kw">requireZkProof</span>())<br><span class="cm">// 証明が無ければ →</span> <span class="ok">403 PROOF_REQUIRED</span> <span class="cm">· Opus / GPT / DeepSeek / Qwen / Kimi 全モデルでブロック</span></div>
+
+  <div class="fable" style="border-left-color:var(--brown);margin-top:18px">
+    <div class="lab" style="color:var(--brown)">ソーシャルエンジニアリングの特異点</div>
+    <h3>「守る概念すら無かった領域」に、初めて防御を</h3>
+    <p style="font-size:14px;color:#4a443d">承認や送金の指示は、従来は<b>防御機構そのものが存在しない</b>領域でした。Lemma は、送金・承認に<b>数学的な承認証明</b>を要求します。範囲外の指示は実行される前に止まる。ここは「従来防御 vs Lemma」ではなく、<b>防御不在 → Lemma で初めて防御</b>です。</p>
+  </div>
+
   <p class="sub" style="margin-top:24px">攻撃シミュレーションの SECURE モードの正体が、この Lemma(サーバーサイドのセキュリティ層)です。攻撃に証明ゲートを重ねると、結果はこう変わります。</p>
   <div class="eq">
     <div class="box atk"><div class="ic">⚠️</div><div class="t">攻撃</div><div class="cap">鍵・認証情報を昇格させて悪用</div><ul><li>JWT 権限昇格</li><li>なりすまし</li><li>監査ログ改ざん</li></ul></div>
@@ -190,7 +242,7 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
   <div class="ctas" style="grid-template-columns:1fr;max-width:680px">
     <div class="ctacard">
-      <h3>自社環境で、同じ検証を</h3>
+      <h3>御社のシステムは、AI 攻撃に耐えますか</h3>
       <p>今回の攻撃シナリオを御社のシステムに合わせて実施し(セキュリティ評価)、サーバー側のどこに証明ゲートを差すべきかをご提案します。まず30分のディスカバリーコールから。機微なデータの開示は不要です。</p>
       <a class="btn" href="https://tally.so/r/EkBqDX">Discovery Callを予約する →</a>
       <a class="btn ghost" href="https://lemma.frame00.com/ja/pricing/">プランを見る →</a>
@@ -487,6 +539,21 @@ render();
   .poc .s p{font-size:12.5px;color:#4a443d}
   @media(max-width:760px){.poc{grid-template-columns:1fr 1fr}}
   @media(max-width:460px){.poc{grid-template-columns:1fr}}
+  /* layer2 defense contrast (dark) */
+  .cx{display:grid;gap:0;border:1px solid #3a2f22;border-radius:14px;overflow:hidden;background:var(--dark)}
+  .cxrow{display:grid;grid-template-columns:150px 1fr 1.15fr}
+  .cxrow>div{padding:13px 16px;border-bottom:1px solid #3a2f22}
+  .cxrow:last-child>div{border-bottom:none}
+  .cxrow.hd>div{background:#2a2117;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#cbb89a;font-weight:700}
+  .cxs{font-weight:700;font-size:14px;color:#f4ece0;display:flex;align-items:center;gap:6px;border-right:1px solid #3a2f22}
+  .cxd{font-size:13.5px;color:#bcae98;border-right:1px solid #3a2f22}
+  .cxb{font-size:13.5px;color:#e8927f}
+  .cxd.none{color:#f0a89a;font-weight:700;background:rgba(192,57,43,.16)}
+  .cx .lbl{display:none;font-size:10.5px;color:#9a8c79;font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+  @media(max-width:680px){.cxrow.hd{display:none}.cxrow{grid-template-columns:1fr}.cxrow>div{border-right:none}.cxs{border-bottom:1px solid #3a2f22}.cx .lbl{display:block}}
+  /* one-line code */
+  .oneline{background:var(--dark);border-radius:12px;padding:18px 20px;margin-top:18px;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:13.5px;color:#e3d6c0;overflow-x:auto}
+  .oneline .cm{color:#9a8c79} .oneline .kw{color:#e0b48a} .oneline .ok{color:#7fcf9b}
   /* matrix */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 0 0;border-bottom:none;padding:14px 18px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
   .ctl{display:flex;align-items:center;gap:9px}
