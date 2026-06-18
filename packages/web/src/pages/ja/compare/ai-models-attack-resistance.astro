@@ -97,7 +97,8 @@ const ogImage = `https://lemma.frame00.com/og/compare/${slug}/${locale}.png`;
 
 <section class="" style="border-top:none"><div class="wrap">
   <h2>同じ攻撃を止めたのは、実行前の「証明」——Lemma でした</h2>
-  <p class="sub">差はモデルではなく、証明層の有無でした(SECURE モード)。高リスク操作の前に「誰が・どの権限で・どのデータに」の証明を要求し、無ければ送信される前に止めます(fail-closed)。これが Lemma の役割です。</p>
+  <p class="sub">差はモデルではなく、証明層の有無でした(SECURE モード)。これが Lemma の役割です。</p>
+  <p class="keystmt">高リスク操作の前に「誰が・どの権限で・どのデータに」の証明を要求し、無ければ送信される前に止めます(<b>fail-closed</b>)。</p>
   <div class="flow">
     <svg viewBox="0 0 920 240" role="img" aria-label="攻撃が証明ゲートで連続的にブロックされ、検証済みのみが実行され監査証跡を残す様子のアニメーション。">
       <defs>
@@ -604,6 +605,8 @@ render();
   .hero .lede b{color:#f4ece0}
   .hero .fcap{color:#a8927a}
   .hero .vs .mid{color:#e0b48a}
+  .keystmt{font-size:clamp(18px,2.6vw,26px);line-height:1.5;font-weight:600;color:var(--ink);max-width:840px;margin:4px 0 24px;letter-spacing:-.01em}
+  .keystmt b{color:var(--brown)}
 
 </style>
 </Layout>
