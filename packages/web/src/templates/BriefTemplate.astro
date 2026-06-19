@@ -104,7 +104,6 @@ const PILLAR_SHORT: Record<PillarSlug, string> = {
 const pillar = brief.data.pillar as PillarSlug;
 const pillarLabel = PILLAR_LABELS[pillar][isJa ? "ja" : "en"];
 const pillarHref = `${base}/pillars/${PILLAR_PAGE_SLUG[pillar]}/`;
-const useCasesHref = `${base}/solutions/use-cases/`;
 
 // Locale-resolved full collection (EN preferred, JA fallback) for prev/next
 // and auto-derived related.
@@ -138,7 +137,7 @@ const addCandidates = (pool: ReadonlyArray<AnyBrief>) => {
 addCandidates(byNewest.filter((b) => b.data.primary_category === primarySlug));
 addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
-const relatedBriefs = Array.from(relatedSet.values()).slice(0, 6);
+const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
 
 // Count of Briefs in the primary category (for the "see all N" link).
 const primaryCategoryCount = allLocale.filter(
@@ -202,10 +201,6 @@ const metaDescription = isJa
   ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
-const newsletterHref = isJa
-  ? "https://tally.so/r/EkMj82"
-  : "https://tally.so/r/rjvN2X";
-
 const labels = isJa
   ? {
       briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
@@ -223,14 +218,6 @@ const labels = isJa
       briefNoPrefix: "No.",
       prevDir: "← 前の Brief",
       nextDir: "次の Brief →",
-      ctaTitle: "この構造を解決する設計を知る",
-      ctaBody:
-        "検出の後ではなく、取引・実行の前に。事前証明で根拠を独立検証可能にする層を引きます。",
-      ctaPrimary: `${pillarLabel.replace(" · ", " — ")} を見る`,
-      ctaSecondary: "関連ユースケース",
-      nlTitle: "Lemma Critical Monthly",
-      nlBody: "実際に起きたリスク事案の構造分析(Critical Brief)を軸に、検出の先に必要な「証明」への視点を月 1 回お届け。",
-      nlCta: "ニュースレターを購読",
       copyToast: "URL をコピーしました",
       anchorAria: "このセクションへのリンクをコピー",
     }
@@ -250,14 +237,6 @@ const labels = isJa
       briefNoPrefix: "No.",
       prevDir: "← Previous Brief",
       nextDir: "Next Brief →",
-      ctaTitle: "See the design that closes this gap",
-      ctaBody:
-        "Not after detection, but before the transaction. Pre-execution proof makes the grounds independently verifiable.",
-      ctaPrimary: `View ${pillarLabel.replace(" · ", " — ")}`,
-      ctaSecondary: "Related use cases",
-      nlTitle: "Lemma Critical Monthly",
-      nlBody: "The structural analysis of real-world risk incidents (Critical Brief) at its core, plus insight on the proof needed beyond detection, once a month.",
-      nlCta: "Subscribe to the newsletter",
       copyToast: "Link copied",
       anchorAria: "Copy link to this section",
     };
@@ -301,39 +280,9 @@ const labels = isJa
         <div class="bd-content">
           <article class="brief-body">
             <Content />
-            <button
-              type="button"
-              class="brief-subscribe-pill"
-              data-tally-open={isJa ? "EkMj82" : "rjvN2X"}
-              data-tally-hide-title="1"
-              data-tally-auto-close="2000"
-            >
-              {isJa
-                ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
-                : "✉️ Get new Briefs & insights, once a month"}
-            </button>
-            <noscript>
-              <a class="brief-subscribe-pill" href={newsletterHref} target="_blank" rel="noopener">
-                {isJa
-                  ? "✉️ 最新の Brief とインサイトを月 1 通で受け取る"
-                  : "✉️ Get new Briefs & insights, once a month"}
-              </a>
-            </noscript>
           </article>
 
-          {/* Inline CTA — rendered here, moved after §4 by the script below. */}
-          <aside class="bd-inline-cta" data-inline-cta>
-            <div class="bd-inline-cta__text">
-              <h3>{labels.ctaTitle}</h3>
-              <p>{labels.ctaBody}</p>
-            </div>
-            <div class="bd-inline-cta__actions">
-              <a class="primary" href={pillarHref}>{labels.ctaPrimary}</a>
-              <a class="secondary" href={useCasesHref}>{labels.ctaSecondary}</a>
-            </div>
-          </aside>
-
-          {/* 導線 v1 §1 banner — rendered here, moved to just after the TL;DR
+          {/* 導線 v2 §1 banner — rendered here, moved to just after the TL;DR
               by the inline script below (neutral analysis stays first). */}
           <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="banner" />
 
@@ -424,24 +373,18 @@ const labels = isJa
         </section>
       )}
 
-      <section class="bd-newsletter">
-        <div class="bd-newsletter__inner">
-          <div>
-            <h3>{labels.nlTitle}</h3>
-            <p>{labels.nlBody}</p>
-          </div>
-          <a href={newsletterHref} target="_blank" rel="noopener">{labels.nlCta}</a>
-        </div>
-      </section>
-
-      <CiteBriefBox
-        locale={locale}
-        briefNo={briefNoPad}
-        titleForCitation={localizedTitle}
-        year={brief.data.published.getFullYear()}
-        briefUrl={briefUrl}
-        briefSlug={brief.id}
-      />
+      {/* 導線 v2 §7: newsletter consolidated to the footer; Cite collapsed by default. */}
+      <details class="bd-cite">
+        <summary class="bd-cite__summary">{isJa ? "この Brief を引用する" : "Cite this Brief"}</summary>
+        <CiteBriefBox
+          locale={locale}
+          briefNo={briefNoPad}
+          titleForCitation={localizedTitle}
+          year={brief.data.published.getFullYear()}
+          briefUrl={briefUrl}
+          briefSlug={brief.id}
+        />
+      </details>
 
       {showRevisionHistory && (
         <BriefRevisionNote
@@ -463,36 +406,16 @@ const labels = isJa
     var body = document.querySelector('.brief-body');
     if (!body) return;
 
-    // 1. After the TL;DR para: subscribe pill, then the §1 attack banner —
-    //    so the neutral TL;DR is read first (導線 v1 §1, guardrail §4).
+    // Move the §1 attack banner to just after the TL;DR para, so the neutral
+    // TL;DR is read first (導線 v2 §1, guardrail §4).
     var firstH2 = body.querySelector(':scope > h2');
     var tldrP = null;
     if (firstH2) {
       tldrP = firstH2.nextElementSibling;
       while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
     }
-    var pill = body.querySelector(':scope > .brief-subscribe-pill');
-    if (pill && tldrP) tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
     var atkBanner = document.querySelector('[data-attack-banner]');
-    if (atkBanner && tldrP) {
-      var anchor = pill && pill.parentNode === tldrP.parentNode ? pill : tldrP;
-      anchor.parentNode.insertBefore(atkBanner, anchor.nextSibling);
-    }
-
-    // 2. Inline CTA — move into the body, just before §5 (i.e. after §4).
-    var cta = document.querySelector('[data-inline-cta]');
-    var h4 = body.querySelector('h2[data-section-num="4"]');
-    if (cta && h4) {
-      var node = h4.nextElementSibling;
-      var stop = null;
-      while (node) {
-        if (node.nodeName === 'H2') { stop = node; break; }
-        node = node.nextElementSibling;
-      }
-      cta.classList.add('bd-inline-cta--placed');
-      if (stop) body.insertBefore(cta, stop);
-      else body.appendChild(cta);
-    }
+    if (atkBanner && tldrP) tldrP.parentNode.insertBefore(atkBanner, tldrP.nextSibling);
   })();
 </script>
 
@@ -854,31 +777,6 @@ const labels = isJa
     color: var(--brief-text-1);
   }
 
-  /* ─── TL;DR-adjacent subscribe pill ─── */
-  .brief-body .brief-subscribe-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    margin: -32px 0 56px;
-    padding: 9px 18px;
-    font-family: var(--brief-mono);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--brief-text-2);
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-  }
-  .brief-body .brief-subscribe-pill:hover {
-    background: var(--lemma-cream-deep);
-    border-color: var(--accent);
-    color: var(--brief-text-1);
-  }
-
   /* ─── LISTS ─── */
   .brief-body :global(ul) {
     margin: 0 0 18px;
@@ -986,73 +884,6 @@ const labels = isJa
     background: transparent;
     padding: 0;
     color: inherit;
-  }
-
-  /* ─── INLINE CTA (after §4) ─── */
-  .bd-inline-cta {
-    background: var(--white);
-    border: 1px solid var(--lemma-line);
-    border-radius: 12px;
-    padding: 32px 36px;
-    margin: 56px 0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 28px;
-    align-items: center;
-  }
-  .bd-inline-cta__text h3 {
-    font-family: var(--brief-display);
-    font-weight: 700;
-    font-size: 20px;
-    color: var(--black);
-    letter-spacing: -0.01em;
-    margin: 0 0 8px;
-    line-height: 1.4;
-  }
-  .bd-inline-cta__text p {
-    font-size: 14px;
-    color: var(--brief-text-3);
-    line-height: 1.7;
-    margin: 0;
-  }
-  .bd-inline-cta__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 210px;
-  }
-  .bd-inline-cta__actions a {
-    font-family: var(--brief-mono);
-    font-size: 12.5px;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 11px 22px;
-    border-radius: 50px;
-    letter-spacing: 0.04em;
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-  }
-  .bd-inline-cta__actions a::after {
-    content: "→";
-  }
-  .bd-inline-cta__actions a.primary {
-    background: var(--black);
-    color: var(--lemma-cream);
-  }
-  .bd-inline-cta__actions a.primary:hover {
-    background: var(--bd-brown-dark);
-  }
-  .bd-inline-cta__actions a.secondary {
-    background: transparent;
-    color: var(--black);
-    border: 1px solid var(--lemma-line);
-  }
-  .bd-inline-cta__actions a.secondary:hover {
-    border-color: var(--bd-brown-mid);
-    color: var(--accent);
   }
 
   /* ─── PREV / NEXT ─── */
@@ -1259,55 +1090,43 @@ const labels = isJa
     white-space: nowrap;
   }
 
-  /* ─── NEWSLETTER MINI BANNER ─── */
-  .bd-newsletter {
+  /* ─── CITE (collapsible) ─── */
+  .bd-cite {
     margin: 72px 0 0;
-    background: var(--lemma-cream-deep);
-    border-radius: 14px;
-    padding: 40px 44px;
+    border-top: 1px solid var(--lemma-line);
   }
-  .bd-newsletter__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 36px;
-    flex-wrap: wrap;
-  }
-  .bd-newsletter h3 {
-    font-family: var(--brief-display);
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--black);
-    letter-spacing: -0.015em;
-    margin: 0 0 8px;
-  }
-  .bd-newsletter p {
-    font-size: 14px;
-    color: var(--brief-text-3);
-    line-height: 1.7;
-    margin: 0;
-  }
-  .bd-newsletter a {
+  .bd-cite__summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 0 0;
     font-family: var(--brief-mono);
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
-    text-decoration: none;
-    background: var(--black);
-    color: var(--lemma-cream);
-    padding: 14px 28px;
-    border-radius: 50px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    white-space: nowrap;
-    transition: background 0.15s;
   }
-  .bd-newsletter a::after {
-    content: "→";
+  .bd-cite__summary::-webkit-details-marker {
+    display: none;
   }
-  .bd-newsletter a:hover {
-    background: var(--bd-brown-dark);
+  .bd-cite__summary::after {
+    content: "▾";
+    font-size: 10px;
+    transition: transform 0.15s;
+  }
+  .bd-cite[open] .bd-cite__summary::after {
+    transform: rotate(180deg);
+  }
+  /* The inner CiteBriefBox renders its own heading; the summary replaces it. */
+  .bd-cite :global(.cite-box) {
+    margin-top: 12px;
+  }
+  .bd-cite :global(.cite-eyebrow),
+  .bd-cite :global(.cite-heading) {
+    display: none;
   }
 
   /* ─── COPY TOAST ─── */
@@ -1384,14 +1203,6 @@ const labels = isJa
     .brief-body :global(h2:first-child + p) {
       padding: 0 24px 24px;
     }
-    .bd-inline-cta {
-      grid-template-columns: 1fr;
-      gap: 20px;
-      padding: 28px 24px;
-    }
-    .bd-inline-cta__actions {
-      min-width: 0;
-    }
     .bd-prevnext {
       grid-template-columns: 1fr;
     }
@@ -1403,13 +1214,6 @@ const labels = isJa
     }
     .bd-related__grid {
       grid-template-columns: 1fr;
-    }
-    .bd-newsletter {
-      padding: 32px 24px;
-    }
-    .bd-newsletter__inner {
-      flex-direction: column;
-      align-items: flex-start;
     }
   }
 </style>
