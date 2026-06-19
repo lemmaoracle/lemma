@@ -63,7 +63,7 @@ LayerZero Labs 公表に基づく chain:
 
 同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**(Brief 002)がある。共通する構造は cross-chain bridge の信頼設定が単一主体の支配下にある点。差異は、本事案が DVN 観測層への RPC 改ざんを通じて trust を歪めたのに対し、Stake DAO 事案はデプロイヤー秘密鍵による LayerZero v2 trust source 直接書き換えを通じて trust を歪めた点にある。両事案は別ベクターから同一構造に到達している。
 
-LayerZero Labs は incident statement で本構造を「observation layer」として独立した運用カテゴリと位置付ける方針を示した。観測層を硬化させる方針(quorum・多重化・人手 review)と、message 自体に独立検証可能な暗号証明を埋め込む方針は、対立軸ではなく補完関係にある(後者の議論は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)を参照)。
+LayerZero Labs は incident statement で本構造を「observation layer」として独立した運用カテゴリと位置付ける方針を示した。観測層を硬化させる方針(quorum・多重化・人手 review)と、message 自体に独立検証可能な暗号証明を埋め込む方針は、対立軸ではなく補完関係にある。
 
 ---
 
@@ -73,7 +73,7 @@ LayerZero Labs は incident statement で本構造を「observation layer」と�
 
 検出層強化のみでは構造的に届きにくい gap が本事案で露呈した。「99.7% で異常」型の信頼度スコアは、本事案のように「正規プロセスが操作された入力に対して正規署名を出した」事案では発火しにくい。これは検出ツール / 検出ベンダーの設計が劣っているのではなく、検出と立証(規制報告・行政手続き・訴訟での「許可されていない権限行使があった」立証)の間に独立した層が必要であることを示している。検出は依然として重要な層であり、本事案でも事象後の blast window を狭め、影響範囲の同定に貢献した。
 
-事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にある。取引前に「メッセージの出所」を独立に検証可能な形で証跡化することで、検出 + 事前証明の二段構成で trust boundary を確立する設計が成立する。Observation layer に改ざんが入っていても、message に埋め込まれた origin proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にある。取引前に「メッセージの出所」を独立に検証可能な形で証跡化することで、検出 + 事前証明の二段構成で trust boundary を確立する設計が成立する。Observation layer に改ざんが入っていても、message に埋め込まれた origin proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる。
 
 ---
 
@@ -91,7 +91,7 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(observation layer 入力の独立検証不在)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が observation layer の入力(RPC 応答、config 表明)に依存せず message の origin を独立検証できる設計を提示している。Observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(observation layer 入力の独立検証不在)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が observation layer の入力(RPC 応答、config 表明)に依存せず message の origin を独立検証できる設計を提示している。Observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
 
 ---
 
@@ -100,16 +100,13 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026"(blockchain analytics 大手による独立解析、onchain trace を含む)— https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026"(security audit 企業による技術解説、攻撃経路の独立分析)— https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights"(独立解析)— https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

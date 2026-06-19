@@ -70,7 +70,7 @@ Output-by-output content-violation adjudication, rightsholder objections, the pl
 
 At the same time, after-the-fact adjudication of output does not, **at the moment of generation**, independently establish "does this generation carry the rights, consent, and provenance of the material used." The opt-out model permits generation unless the rightsholder preemptively refuses, pushing the judgment to after the fact. A content-violation filter scans for "does this output resemble a known protected work," but that works after generation and spread. What was missing is the at-generation independent verification of "does this generation carry the rights, consent, and provenance of the material it uses," which is a separate track from after-the-fact adjudication and objection. As long as confirmation of permission is placed after generation, the response can only trail the spread. Japan's prior-permission principle can be seen as an institutional expression of this "confirm before generation" requirement.
 
-Pre-execution attestation and provenance binding close this gap by inserting one step — verification of the material's rights, consent, and provenance — into the output path of the generative AI. By fixing the provenance of training data and outputs via docHash, bound to their rightsholders and permissions, and making it possible to ask before generation "does this material carry permitted provenance for this use," generation lacking permission can be distinguished before spread. Detecting the output (the detection-style "does this output resemble a protected work") and the pre-execution attestation of the material's rights and provenance ("does this generation carry permitted provenance") are not substitutes but **complements**. For fixing provenance before generation see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation and provenance binding close this gap by inserting one step — verification of the material's rights, consent, and provenance — into the output path of the generative AI. By fixing the provenance of training data and outputs via docHash, bound to their rightsholders and permissions, and making it possible to ask before generation "does this material carry permitted provenance for this use," generation lacking permission can be distinguished before spread. Detecting the output (the detection-style "does this output resemble a protected work") and the pre-execution attestation of the material's rights and provenance ("does this generation carry permitted provenance") are not substitutes but **complements**.
 
 ---
 
@@ -92,7 +92,7 @@ Against the gap this incident exposed (the rights, consent, and provenance in th
 - **Selective disclosure of rights attributes**: Prove only the rights attribute "this material is permitted for this use" with minimal disclosure, without sending the rightsholder's sensitive contract information outside the environment. Mechanisms like revenue sharing with opt-in rightsholders can also be made verifiable, bound to the permission evidence
 - **Scoped generation**: Bind the generative AI's output to the scope of permission, so generation from material lacking permission cannot succeed without proof
 
-Through this, proof of provenance and permission fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry permitted provenance," before spread. Detection and after-the-fact response (output filters, policy reversal, halting generation) serve to deter and correct harm, while pre-execution attestation of provenance and permission (fixing before generation) serves to distinguish generation lacking permission before the fact — each working complementarily. For the design and scope see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/).
+Through this, proof of provenance and permission fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry permitted provenance," before spread. Detection and after-the-fact response (output filters, policy reversal, halting generation) serve to deter and correct harm, while pre-execution attestation of provenance and permission (fixing before generation) serves to distinguish generation lacking permission before the fact — each working complementarily.
 
 ---
 
@@ -106,11 +106,7 @@ Through this, proof of provenance and permission fixed at the moment of generati
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

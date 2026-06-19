@@ -74,7 +74,7 @@ ServiceNow's anomaly detection, application of the configuration update, notific
 
 At the same time, detection does not change "may this requester perform this data query" itself. The queries in this incident proceeded through a legitimate REST endpoint, and each request, on its own, looks protocol-normal. The missing setting manifests externally as a normal response, and by the time it was detected, unauthenticated requests could already be processed. What was missing was the response-time independent verification of "does this requester hold the authorization and provenance to perform this query, within this scope" — a chain distinct from anomaly detection or after-the-fact log tracing. As long as the state of a configuration flag is equated with proof of authorization, detection cannot help but trail the exposure.
 
-Pre-execution attestation adopts a design that inverts authentication from "is the configuration enforcing authentication" to "response-time verification of whether this request carries scoped authorization and provenance." Instead of depending on the endpoint's configuration state, it makes each request present a verifiable, scoped, non-reusable proof — so that even if one setting is off, if the proof says "this query lacks legitimate authorization/provenance," the response is blocked beforehand. Detecting anomalies (the detection-style "is this request unusual") and attesting requests beforehand (the "does this query carry authorization/provenance") are not substitutes but **complements**. For an approach to authentication that does not depend on configuration or stored credentials, see ["Proof-as-Auth: Sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation adopts a design that inverts authentication from "is the configuration enforcing authentication" to "response-time verification of whether this request carries scoped authorization and provenance." Instead of depending on the endpoint's configuration state, it makes each request present a verifiable, scoped, non-reusable proof — so that even if one setting is off, if the proof says "this query lacks legitimate authorization/provenance," the response is blocked beforehand. Detecting anomalies (the detection-style "is this request unusual") and attesting requests beforehand (the "does this query carry authorization/provenance") are not substitutes but **complements**.
 
 ---
 
@@ -88,7 +88,7 @@ Pre-execution attestation adopts a design that inverts authentication from "is t
 
 ## 7. Lemma's analysis
 
-Against the structure this incident exposed (a request to the endpoint is accepted by relying on a configuration-level premise rather than making the requester prove authorization per action), Lemma proposes a design that inverts authentication from "is the configuration enforcing authentication" to "response-time proof of scoped authorization and provenance per request." Under the proof-as-auth idea, where a proof is presented without depending on configuration state or long-lived credentials, even if one endpoint setting is off, the query is rejected beforehand unless the proof of legitimate authorization/provenance holds. By binding the endpoint's response to a pre-execution attestation of "this request carries authorization/provenance" rather than "it was called," unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests. For the design philosophy, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) (Lemma) and ["Proof-as-Auth: Sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+Against the structure this incident exposed (a request to the endpoint is accepted by relying on a configuration-level premise rather than making the requester prove authorization per action), Lemma proposes a design that inverts authentication from "is the configuration enforcing authentication" to "response-time proof of scoped authorization and provenance per request." Under the proof-as-auth idea, where a proof is presented without depending on configuration state or long-lived credentials, even if one endpoint setting is off, the query is rejected beforehand unless the proof of legitimate authorization/provenance holds. By binding the endpoint's response to a pre-execution attestation of "this request carries authorization/provenance" rather than "it was called," unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests.
 
 ---
 
@@ -102,11 +102,7 @@ Against the structure this incident exposed (a request to the endpoint is accept
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -71,7 +71,7 @@ Insider threat detection, anomalous access detection, DLP, and third-party gover
 
 That said, detection does not change the fact that "data is stored." Under a design that satisfies KYC / AML by collecting and storing raw PII, that attribute data is always reachable to insiders with legitimate access permissions, and once bribery or misuse succeeds, detection can only contain after the fact. As long as regulatory compliance is operated as a promise that "the operator collects raw PII and protects it properly," the very existence of the data to be protected continues to be the breach surface. As material for establishing in regulatory reporting and audit that "attribute verification was performed appropriately and completed with minimal disclosure," logs of raw PII storage are inseparable from leakage risk.
 
-Attribute attestation adopts a design in which attribute verification (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) is received by the verifying party as an independently verifiable cryptographic proof (a ZK attribute proof) without retaining raw PII. The verifying party can confirm "this user satisfies KYC / holds the permitted attribute" via the proof, without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that would constitute the breach surface, even when insider bribery succeeds, the data that can leak is structurally reduced. Detection (insider monitoring and the like) and attribute attestation (attribute proof) are in a **complementary**, not substitutive, relationship (for the thesis on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Attribute attestation adopts a design in which attribute verification (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) is received by the verifying party as an independently verifiable cryptographic proof (a ZK attribute proof) without retaining raw PII. The verifying party can confirm "this user satisfies KYC / holds the permitted attribute" via the proof, without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that would constitute the breach surface, even when insider bribery succeeds, the data that can leak is structurally reduced. Detection (insider monitoring and the like) and attribute attestation (attribute proof) are in a **complementary**, not substitutive, relationship.
 
 ---
 
@@ -87,7 +87,7 @@ How "to satisfy regulatory attribute verification without storing raw PII" is ex
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes a design in which attribute verification is not "protected by the verifying party while it retains raw PII" but is instead "received by the verifying party as a proof, without the verifying party receiving raw PII." A user presents regulatory attributes — KYC passage, permitted jurisdiction, non-sanctioned status, age, and the like — as an independently verifiable cryptographic proof (a ZK attribute proof), and the operator verifies only the fact that "the attribute is satisfied" without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that could leak, even when insider bribery succeeds, the scope of exfiltration is bounded. Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes a design in which attribute verification is not "protected by the verifying party while it retains raw PII" but is instead "received by the verifying party as a proof, without the verifying party receiving raw PII." A user presents regulatory attributes — KYC passage, permitted jurisdiction, non-sanctioned status, age, and the like — as an independently verifiable cryptographic proof (a ZK attribute proof), and the operator verifies only the fact that "the attribute is satisfied" without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that could leak, even when insider bribery succeeds, the scope of exfiltration is bounded. Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof."
 
 ---
 
@@ -97,16 +97,13 @@ Against the detection–proof gap exposed by this incident (raw PII collected an
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers" (2025-05-21, affected count and exfiltrated data categories) — https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
 - **Bitdefender (HotForSecurity)**: "Data Breach at Coinbase Exposes Information of Nearly 70,000 Customers" (2025-05, method and data categories) — https://www.bitdefender.com/en-us/blog/hotforsecurity/data-breach-at-coinbase-exposes-information-of-nearly-70-000-customers
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost" (2025-05, Form 8-K and remediation cost estimate) — https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

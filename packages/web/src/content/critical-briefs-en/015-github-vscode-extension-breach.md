@@ -70,7 +70,7 @@ GitHub detected on the following day and moved that same day to IR and secret ro
 
 But detection does not change "which extension version the receiver accepts and installs" or "how broadly an installed extension can reach local secrets." The malicious version was listed in the legitimate marketplace as a legitimate extension and passed through trust signals — listing and signing. The 18-minute listing window let installations complete before review and takedown caught up. Worse, many of the exfiltrated credentials were reusable static tokens — once pulled from the endpoint, they could be replayed from a different environment. For regulatory reporting and audit, a marketplace listing or a signature alone is not an independent evidentiary trail that "this extension was a legitimate, untampered artifact."
 
-Pre-execution attestation changes the structure in two directions: (1) attach an independently verifiable build-provenance proof — "produced from a legitimate origin and build path" — to the extension or tool artifact, and verify it on the receiving side **before installation**; (2) replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint. The first rejects the trojanized version on proof inconsistency at install time rather than after the fact; the second makes "credentials" exfiltrated from an endpoint non-replayable from another environment. Detection (post-hoc extension takedown, IR) and pre-execution attestation (artifact provenance + key-less authentication) are **complementary** rather than substitutes (see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05) for the thesis on detection vs. pre-execution attestation).
+Pre-execution attestation changes the structure in two directions: (1) attach an independently verifiable build-provenance proof — "produced from a legitimate origin and build path" — to the extension or tool artifact, and verify it on the receiving side **before installation**; (2) replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint. The first rejects the trojanized version on proof inconsistency at install time rather than after the fact; the second makes "credentials" exfiltrated from an endpoint non-replayable from another environment. Detection (post-hoc extension takedown, IR) and pre-execution attestation (artifact provenance + key-less authentication) are **complementary** rather than substitutes.
 
 ---
 
@@ -86,7 +86,7 @@ How distribution and publishing paths that developers trust (extensions, package
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design. First, fix "produced from a legitimate origin and build path" to extensions and tool artifacts as an independently verifiable build-provenance cryptographic proof, so the receiver verifies the proof **before execution** and can reject a trojanized version listed in the legitimate marketplace regardless of signature. Second, replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint, so credentials exfiltrated from an endpoint cannot be replayed from another environment. Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals. For design details see [What the 2026 Bridge Incidents Are Showing — On the Verifiable-Origin Category](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design. First, fix "produced from a legitimate origin and build path" to extensions and tool artifacts as an independently verifiable build-provenance cryptographic proof, so the receiver verifies the proof **before execution** and can reject a trojanized version listed in the legitimate marketplace regardless of signature. Second, replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint, so credentials exfiltrated from an endpoint cannot be replayed from another environment. Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals.
 
 ---
 
@@ -96,16 +96,13 @@ Against the detection–proof gap exposed here (the legitimate distribution path
 - **The Hacker News**: "GitHub Internal Repositories Breached via Malicious Nx Console VS Code Extension" (2026-05, extension name, listing window, exfiltration targets) — https://thehackernews.com/2026/05/github-internal-repositories-breached.html
 - **Sophos**: "GitHub internal repositories breached" (2026-05, method and response) — https://www.sophos.com/en-us/blog/github-internal-repositories-breached
 - **Infosecurity Magazine**: "GitHub Confirms Breach of Internal Repositories Via Malicious VS Code Extension" (2026-05, GitHub's public statement and scope) — https://www.infosecurity-magazine.com/news/github-confirms-breach-vs-code/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

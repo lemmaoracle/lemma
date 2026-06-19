@@ -70,7 +70,7 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 
 一方で、検出は「どの拡張バージョンを accept してインストールするか」「インストールされた拡張がローカルシークレットにアクセスできるか」自体を変えない。悪性版は正規マーケットに正規拡張として掲載され、署名・掲載という信頼シグナルを通過した。掲載が 18 分間に限定されたことで、審査・撤回が事象に追いつく前にインストールが成立した。さらに、窃取された認証情報の多くは再利用可能な静的トークンであり、端末から抜き取られた時点で別環境から replay 可能だった。規制報告・監査で「この拡張は正規の・改ざんされていない成果物だったか」を立証する材料として、マーケット掲載や署名だけでは独立した証跡にならない。
 
-事前証明(pre-execution attestation)は、(1) 拡張・ツールの成果物に「正規の origin・ビルド経路から生成された」ことを示すビルド来歴の独立検証可能な証明を付与し、取得側がインストール前に検証する、(2) 開発環境の認証を、端末上に静的な再利用可能トークンを置かない key-less な証明に置き換える、という二方向で構造を変える。前者は trojan 化版の不整合を検出時点ではなく実行前に reject し、後者は端末から窃取された「認証情報」が別環境で replay できないようにする。検出(拡張の事後撤回・IR)と事前証明(成果物来歴 + key-less 認証)は代替ではなく **補完** の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、(1) 拡張・ツールの成果物に「正規の origin・ビルド経路から生成された」ことを示すビルド来歴の独立検証可能な証明を付与し、取得側がインストール前に検証する、(2) 開発環境の認証を、端末上に静的な再利用可能トークンを置かない key-less な証明に置き換える、という二方向で構造を変える。前者は trojan 化版の不整合を検出時点ではなく実行前に reject し、後者は端末から窃取された「認証情報」が別環境で replay できないようにする。検出(拡張の事後撤回・IR)と事前証明(成果物来歴 + key-less 認証)は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -86,7 +86,7 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(開発者ツールの正規配布経路が成果物の完全性を保証せず、端末上の再利用可能トークンが窃取で replay される)に対して、Lemma は二方向の設計を提示している。第一に、拡張・ツール等の成果物に「正規の origin・ビルド経路から生成された」ことをビルド来歴の独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証することで、正規マーケットに掲載された trojan 化版を署名の有無に依らず reject できるようにする。第二に、開発環境の認証を端末上に静的な再利用可能トークンを残さない key-less な証明に置き換え、端末から窃取された「認証情報」が別環境で replay されないようにする。Lemma はマーケットの審査や検出を否定するものではなく、配布経路の信頼シグナルに対して成果物来歴の証明と key-less 認証を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(開発者ツールの正規配布経路が成果物の完全性を保証せず、端末上の再利用可能トークンが窃取で replay される)に対して、Lemma は二方向の設計を提示している。第一に、拡張・ツール等の成果物に「正規の origin・ビルド経路から生成された」ことをビルド来歴の独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証することで、正規マーケットに掲載された trojan 化版を署名の有無に依らず reject できるようにする。第二に、開発環境の認証を端末上に静的な再利用可能トークンを残さない key-less な証明に置き換え、端末から窃取された「認証情報」が別環境で replay されないようにする。Lemma はマーケットの審査や検出を否定するものではなく、配布経路の信頼シグナルに対して成果物来歴の証明と key-less 認証を補完する層を提供する。
 
 ---
 
@@ -96,16 +96,13 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 - **The Hacker News**: "GitHub Internal Repositories Breached via Malicious Nx Console VS Code Extension"(2026-05、拡張名・掲載時間・窃取対象)— https://thehackernews.com/2026/05/github-internal-repositories-breached.html
 - **Sophos**: "GitHub internal repositories breached"(2026-05、手口と対応)— https://www.sophos.com/en-us/blog/github-internal-repositories-breached
 - **Infosecurity Magazine**: "GitHub Confirms Breach of Internal Repositories Via Malicious VS Code Extension"(2026-05、GitHub の公表内容・影響範囲)— https://www.infosecurity-magazine.com/news/github-confirms-breach-vs-code/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

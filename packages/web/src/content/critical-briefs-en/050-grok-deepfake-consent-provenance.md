@@ -71,7 +71,7 @@ Reporting channels, detection technology, platform takedowns, and the investigat
 
 At the same time, detection and takedown do not, **at the moment of generation**, independently establish "whether this output went through consent and age attribute verification and carries authorized provenance." Watermarks can be stripped (Brief 011), detection operates after generation and distribution, and takedown does not fully recover harm that has already spread. What was missing is the at-generation independent verification of "does this generation come with evidence that the subject's consent and age were independently verified and authorized," which is a separate track from after-the-fact detection and takedown. As long as attribute verification and provenance binding are pushed to after generation, the response can only trail the harm. Regulatory analysis (BISI and others) likewise notes that the solution lies at the moment of generation (upstream).
 
-Pre-execution attestation closes this gap by inserting one step — verification of the subject's attributes and provenance binding — into the output path of the generative AI. By requiring, before generation, that "the subject's consent and age attributes are independently verified and authorized," and by binding a verifiable provenance marker to the output at the moment of action, generation lacking attribute verification, and outputs without provenance, can be distinguished before generation and distribution. Detecting the output (the detection-style "is this harmful") and the pre-execution attestation of generation ("does this generation carry attribute verification, authorization, and provenance") are not substitutes but **complements**. For independently verifying attributes and provenance before the action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation closes this gap by inserting one step — verification of the subject's attributes and provenance binding — into the output path of the generative AI. By requiring, before generation, that "the subject's consent and age attributes are independently verified and authorized," and by binding a verifiable provenance marker to the output at the moment of action, generation lacking attribute verification, and outputs without provenance, can be distinguished before generation and distribution. Detecting the output (the detection-style "is this harmful") and the pre-execution attestation of generation ("does this generation carry attribute verification, authorization, and provenance") are not substitutes but **complements**.
 
 ---
 
@@ -92,7 +92,7 @@ Against the gap this incident exposed (at the moment of generation, the subject'
 - **Selective disclosure**: Disclose only that the attribute conditions "the subject has consented and is an adult" are met, without exposing the subject's personal information itself outside the environment
 - **Scoped authorization**: Bind the generative AI's output to attribute conditions, so generation that does not meet them cannot succeed without proof
 
-Through this, proof fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry attribute verification, authorization, and provenance," before distribution. Detection and takedown (after-the-fact moderation and regulatory response) serve to remove and deter harm, while pre-execution attestation (attribute verification and provenance binding at the moment of generation) serves to distinguish harmful generation before it occurs — each working complementarily. For the design and scope see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/).
+Through this, proof fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry attribute verification, authorization, and provenance," before distribution. Detection and takedown (after-the-fact moderation and regulatory response) serve to remove and deter harm, while pre-execution attestation (attribute verification and provenance binding at the moment of generation) serves to distinguish harmful generation before it occurs — each working complementarily.
 
 ---
 
@@ -106,11 +106,7 @@ Through this, proof fixed at the moment of generation functions as an independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

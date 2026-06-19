@@ -69,7 +69,7 @@ Brief 005（Noroboto、フォント偽装で「画面の文字」と「AI が処
 
 一方で、検出は「人間がレビューした入力と、モデルが実際に解釈した入力が同一だったか」を、事後に独立して立証する材料にはならない。不可視文字の除去は既知の符号化に有効でも、入力の origin と integrity を保証する層ではない。新たな符号化・難読化が現れれば、検出は再び後手に回る。これは検出層の射程外にある、構造的に独立した層の gap である。
 
-現状、AI の入力検証の運用モデル全体において、モデルが解釈した入力の origin と integrity を独立に固定する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、入力の取り込みの経路に来歴・整合性の証明を 1 段挟むことで、この gap を埋める。検出が「危険な入力を見つけて除く」のに対し、事前証明は「モデルが処理した入力が、正規の origin から改ざんなく渡ったこと」を固定する。両者は相補的である（検出と事前証明の関係についての詳細は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+現状、AI の入力検証の運用モデル全体において、モデルが解釈した入力の origin と integrity を独立に固定する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、入力の取り込みの経路に来歴・整合性の証明を 1 段挟むことで、この gap を埋める。検出が「危険な入力を見つけて除く」のに対し、事前証明は「モデルが処理した入力が、正規の origin から改ざんなく渡ったこと」を固定する。両者は相補的である。
 
 ---
 
@@ -95,8 +95,6 @@ AI に渡る入力の origin と integrity を独立検証する層の不在は�
 
 Models change. Proofs remain.
 
-設計と適用範囲は、ユースケース[「社内文書を AI に使わせるが生データは触らせない」](https://lemma.frame00.com/ja/solutions/use-cases/ai-document-isolation/)・[「RAG コンテンツ来歴」](https://lemma.frame00.com/ja/solutions/use-cases/rag-content-provenance/)および [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) を参照のこと。
-
 ---
 
 ## 8. Sources
@@ -111,12 +109,8 @@ Models change. Proofs remain.
 
 ## 9. Brief 配布について
 
-Lemma が発行する脅威インテリジェンス・ブリーフです。CSO・アナリスト・規制実務者向けに、AI 時代のサイバー事案および信頼インフラのリスク事象を構造的に分析し、検出と証明の落差と Lemma の応答層を特定します。
-
-- [Discovery Call →](https://tally.so/r/EkBqDX)
-- [ホワイトペーパー →](https://tally.so/r/xX0VYv)
-- [✉️ ニュースレター →](https://tally.so/r/rjvN2X?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 
-© 2026 FRAME00, Inc.
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

@@ -79,7 +79,7 @@ In this incident, technology media centered on 404 Media detected the scraping a
 
 That said, detection cannot reverse the state in which the dataset **has already been posted to arXiv and distributed as JSON**. Downstream researchers and AI vendors can download the dataset, and the path into AI training is not closed by detection alone. Even though there are violations of Discord's terms of service and developer policy, no technical access controls exist, and no mechanism for withdrawing a distributed dataset is established. Even if anonymization measures were applied, the regulatory compliance of the collection scope cannot be verified from the dataset alone.
 
-For the purposes of establishing in regulatory filings, administrative proceedings, or enterprise AI-adoption due diligence that "the training data was collected under a lawful scope," when a dataset like this one flows into downstream AI training, an independent layer is required between detection scores and proof of dataset origin / scope. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for AI training data (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+For the purposes of establishing in regulatory filings, administrative proceedings, or enterprise AI-adoption due diligence that "the training data was collected under a lawful scope," when a dataset like this one flows into downstream AI training, an independent layer is required between detection scores and proof of dataset origin / scope. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for AI training data.
 
 ---
 
@@ -104,7 +104,7 @@ First, at the **dataset distribution layer**, a design that embeds the dataset's
 
 Second, at the **AI training data audit layer**, a design that builds proof-mandatory verification into the AI vendor's training-data audit process, enabling independent verification of "what training data is this output based on" and "was that training data collected under a lawful scope" against AI model outputs. Enterprise CSOs are then able to exclude — as contract requirements at the AI-adoption decision point — training data with no proof or with proof of an unlawful scope.
 
-The combination of the two layers is in a complementary, not substitutive, relationship to detection. Detection can retroactively capture the occurrence of scraping and the dataset's distribution but cannot control downstream flow of an already-distributed dataset. Pre-execution attestation establishes the trust boundary at the two layers: dataset distribution and AI training audit. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+The combination of the two layers is in a complementary, not substitutive, relationship to detection. Detection can retroactively capture the occurrence of scraping and the dataset's distribution but cannot control downstream flow of an already-distributed dataset. Pre-execution attestation establishes the trust boundary at the two layers: dataset distribution and AI training audit.
 
 ---
 
@@ -113,16 +113,13 @@ The combination of the two layers is in a complementary, not substitutive, relat
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online" (2025-05-22, initial reporting, including technical description of violations of Discord's terms of service and developer policy) — https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv research team paper**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015–2024)" (2025, 15-researcher team at the Federal University of Minas Gerais in Brazil, primary source for the dataset distribution) — https://arxiv.org/pdf/2502.00627
 - **Discord developer policy** official (the basis for the ML / AI training use ban and anti-scraping clause) — https://support-dev.discord.com/hc/ja/articles/8563934450327
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

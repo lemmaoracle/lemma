@@ -73,7 +73,7 @@ Breach detection, notification of affected users, vendor switching (5CA to K-ID)
 
 At the same time, detection and after-the-fact response do not change "can age be proven without disclosing and storing a raw ID." Switching vendors, or shortening the ID retention period, leaves the structure of "hand a raw ID to a third party to show age" in place, so the storage surface remains an attack surface. A deletion policy, too, is irrecoverable if theft precedes deletion. What was missing is a mechanism to show only that "age meets the requirement," in an independently verifiable form, without disclosing the raw ID — a design on a separate track from vendor selection and retention shortening. As long as the exchange of raw IDs is equated with attribute proof, leak risk is managed by trailing the storage.
 
-Pre-execution attestation and selective disclosure close this gap by separating the disclosure and storage of raw IDs from the proof of the attribute. If only the predicate "is 18 or older" can be proven with minimal disclosure, without sending raw IDs (name, document number, face photo) outside the environment, then there is no raw ID for a third party to store, and the storage surface itself disappears. Confirming whether the attribute meets the requirement (the detection-style "is this ID genuine and does it meet the age condition") and selectively proving the attribute ("prove only that the age condition is met, without a raw ID") are not substitutes but **complements**. For proving an attribute without handing over a raw document see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation and selective disclosure close this gap by separating the disclosure and storage of raw IDs from the proof of the attribute. If only the predicate "is 18 or older" can be proven with minimal disclosure, without sending raw IDs (name, document number, face photo) outside the environment, then there is no raw ID for a third party to store, and the storage surface itself disappears. Confirming whether the attribute meets the requirement (the detection-style "is this ID genuine and does it meet the age condition") and selectively proving the attribute ("prove only that the age condition is met, without a raw ID") are not substitutes but **complements**.
 
 ---
 
@@ -94,7 +94,7 @@ Against the structure this incident exposed (proving an attribute depends on dis
 - **Provenance binding**: Bind the check underlying the attribute proof (the basis for age) to tamper-resistant provenance, making the capture and submission verifiable (connecting to the capture-provenance problem of Brief 034)
 - **Pre-action authorization**: Do not authorize age-restricted features or access unless an attribute proof that the age condition is met holds
 
-Through this, proving an attribute is separated from raw-ID storage, and "does age meet the requirement" functions as an independently verifiable trail without piling raw IDs up with a third party. Detection and after-the-fact response (breach detection, vendor switching, deletion) serve to manage harm, while selective-disclosure attribute proof (proof without a raw ID) serves to eliminate the storage surface itself — each working complementarily. For the design and scope see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/).
+Through this, proving an attribute is separated from raw-ID storage, and "does age meet the requirement" functions as an independently verifiable trail without piling raw IDs up with a third party. Detection and after-the-fact response (breach detection, vendor switching, deletion) serve to manage harm, while selective-disclosure attribute proof (proof without a raw ID) serves to eliminate the storage surface itself — each working complementarily.
 
 ---
 
@@ -108,11 +108,7 @@ Through this, proving an attribute is separated from raw-ID storage, and "does a
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

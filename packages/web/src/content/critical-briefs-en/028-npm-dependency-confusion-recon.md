@@ -77,7 +77,7 @@ Quarantine of the stager by Microsoft Defender and others, IOC-based egress bloc
 
 Detection, however, does not change the decision of which packages a build accepts as originating from a legitimate internal publisher. The stager in this campaign goes silent on CI, avoids re-execution via cache, and disguises itself with obfuscation and innocuous build/test scripts — all designed to delay detection. By the time detection fires, the `npm install`-time reconnaissance payload has already run and environment variables and development context may have been sent to C2. What was absent was pre-ingestion provenance verification of "was this package actually issued by the legitimate publisher of the internal scope it claims?" — and this is separate from malware detection. For regulatory reporting and audit, a post-hoc scan result does not, on its own, serve as an independent provenance trail proving that "the dependencies the build consumed carry legitimate provenance."
 
-Pre-execution attestation adopts a design that requires, before a build consumes a dependency, an independently verifiable cryptographic proof of the package's publisher provenance (is it the legitimate publisher of the claimed scope? was it published through the expected path?). If the proof reports that "this `@sber-ecom-core` package carries no provenance from the legitimate publisher," resolution and installation are blocked before they occur. Malware detection ("this payload is malicious" — a detection-style judgment) and publisher-provenance pre-execution attestation ("this artifact arrived from the legitimate publisher") are not substitutes but **complements** (for the thesis on detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design that requires, before a build consumes a dependency, an independently verifiable cryptographic proof of the package's publisher provenance (is it the legitimate publisher of the claimed scope? was it published through the expected path?). If the proof reports that "this `@sber-ecom-core` package carries no provenance from the legitimate publisher," resolution and installation are blocked before they occur. Malware detection ("this payload is malicious" — a detection-style judgment) and publisher-provenance pre-execution attestation ("this artifact arrived from the legitimate publisher") are not substitutes but **complements**.
 
 ---
 
@@ -92,7 +92,7 @@ Scope locking (pinning internal scopes to a private registry in `.npmrc`) and di
 
 ## 7. Lemma's Analysis
 
-For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof. Even if the package name and metadata claim an internal publisher, if the provenance proof reports the absence of a legitimate publisher, ingestion is rejected before it occurs. "The name looks internal ≠ it arrived from the legitimate publisher" — the design philosophy of the Verifiable Origin category and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the supply-chain provenance design background, also see Briefs 014 / 015 (TeamPCP cluster).
+For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof. Even if the package name and metadata claim an internal publisher, if the provenance proof reports the absence of a legitimate publisher, ingestion is rejected before it occurs. "The name looks internal ≠ it arrived from the legitimate publisher" — this is the design philosophy of the Verifiable Origin category.
 
 ---
 
@@ -100,16 +100,13 @@ For the detection–proof gap exposed here — package resolution uses name and 
 
 - **Microsoft Security Blog (Microsoft Defender Security Research Team)**: "Malicious npm packages abuse dependency confusion to profile developer environments" (2026-05-29, attack chain, attribution, IOCs, mitigations) — https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/
 - **Microsoft Security Blog**: "Typosquatted npm packages used to steal cloud and CI/CD secrets" (2026-05-28, contemporaneous Mini Shai-Hulud campaign, adjacent incident) — https://www.microsoft.com/en-us/security/blog/2026/05/28/typosquatted-npm-packages-used-steal-cloud-ci-cd-secrets/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

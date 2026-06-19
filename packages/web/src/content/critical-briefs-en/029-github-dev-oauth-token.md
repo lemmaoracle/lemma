@@ -70,7 +70,7 @@ The near-coordinated disclosure (advance notice to GitHub) and Microsoft's next-
 
 But detection does not change "what range of token github.dev holds, and which actions it can execute without authorization." Use of a stolen OAuth token via the GitHub API is indistinguishable from github.dev's legitimate token use, and the extension install follows the legitimate flow. What was missing is the pre-execution, independent verification of "on whose authorization does this extension install run" and "to what range is this token delegated" — a different track from anomaly detection. For audit, too, after a leak there is little independent trail beyond reconciling API access logs to prove "which private repo, on whose delegation, was accessed when."
 
-Pre-execution attestation embeds a verifiable scope (target repo, valid range) into the delegated token and independently verifies privileged actions like extension installs against "the registrant's authorization" and "the delegated range" before they run. If the proof says "this action exceeds the delegated range" or "this token must not be valid outside this repo," the action is blocked before execution. Detection of privileged actions ("a suspicious extension ran") and pre-execution proof of delegated authority ("is this action within the authorized range") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation embeds a verifiable scope (target repo, valid range) into the delegated token and independently verifies privileged actions like extension installs against "the registrant's authorization" and "the delegated range" before they run. If the proof says "this action exceeds the delegated range" or "this token must not be valid outside this repo," the action is blocked before execution. Detection of privileged actions ("a suspicious extension ran") and pre-execution proof of delegated authority ("is this action within the authorized range") are not substitutes but **complements**.
 
 ---
 
@@ -84,7 +84,7 @@ Pre-execution attestation embeds a verifiable scope (target repo, valid range) i
 
 ## 7. Lemma's analysis
 
-Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof. Even if an OAuth token is over-valid, if the delegation-range proof says "this action reaches a repo outside scope," the action is rejected in advance. For the design of agent authority proof, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) (Lemma).
+Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof. Even if an OAuth token is over-valid, if the delegation-range proof says "this action reaches a repo outside scope," the action is rejected in advance.
 
 ---
 
@@ -100,11 +100,7 @@ Against the detection–proof gap exposed here (a delegated token not scoped to 
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

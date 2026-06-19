@@ -70,7 +70,7 @@ External researchers detected and published the malicious release within about 2
 
 But detection does not change what the receiving side (the npm registry, the CI/CD or developer environment fetching dependencies) actually **accepts**. In this case the malicious artifact arrived through the legitimate channel **bearing a valid OIDC provenance signature**, so signature verification passed. The assumption "signed by a trusted publisher = trustworthy artifact" was broken by an in-flight identity hijack. Environments that fetched packages during the tens of minutes before public detection had less reason to suspect the artifacts precisely because the signatures were valid. For regulatory reporting, audit, and litigation, the publisher-identity signature alone is not an independent evidentiary trail that "this artifact is the intended build output."
 
-Pre-execution attestation takes the design choice of not stopping provenance at the publisher-identity signature: it fixes "this artifact was produced from the intended source, build inputs, and review path" as an independently verifiable cryptographic proof tied to the build's provenance. If the runner is hijacked during workflow execution, the build-provenance proof is inconsistent, and the receiving side can reject the artifact even when the signature is formally valid. Detection (IOC, anomaly monitoring) and pre-execution attestation (build-provenance proof) are **complementary** rather than substitutes (see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05) for the thesis on detection vs. pre-execution attestation).
+Pre-execution attestation takes the design choice of not stopping provenance at the publisher-identity signature: it fixes "this artifact was produced from the intended source, build inputs, and review path" as an independently verifiable cryptographic proof tied to the build's provenance. If the runner is hijacked during workflow execution, the build-provenance proof is inconsistent, and the receiving side can reject the artifact even when the signature is formally valid. Detection (IOC, anomaly monitoring) and pre-execution attestation (build-provenance proof) are **complementary** rather than substitutes.
 
 ---
 
@@ -87,7 +87,7 @@ How to verify "was this generated from the intended build provenance?" — not o
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (provenance assurance stopped at the publisher-identity signature, and the workflow-runtime hijack let malicious artifacts move through with a valid signature still attached), Lemma proposes a design in which provenance is not "the signature of who published this" but rather "this artifact was produced from this source, with these build inputs, via this path" — fixed to the build's provenance as an independently verifiable cryptographic proof. Even if the OIDC identity is hijacked at runtime, the build-provenance proof, on a separate channel, signals "this was / was not produced from the intended build path," so the receiver can reject on proof inconsistency even when the signature is formally valid. Lemma does not substitute for signatures or trusted publishers; it adds a complementary layer that proves the artifact's origin alongside the signature that identifies its publisher. For design details see [What the 2026 Bridge Incidents Are Showing — On the Verifiable-Origin Category](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed here (provenance assurance stopped at the publisher-identity signature, and the workflow-runtime hijack let malicious artifacts move through with a valid signature still attached), Lemma proposes a design in which provenance is not "the signature of who published this" but rather "this artifact was produced from this source, with these build inputs, via this path" — fixed to the build's provenance as an independently verifiable cryptographic proof. Even if the OIDC identity is hijacked at runtime, the build-provenance proof, on a separate channel, signals "this was / was not produced from the intended build path," so the receiver can reject on proof inconsistency even when the signature is formally valid. Lemma does not substitute for signatures or trusted publishers; it adds a complementary layer that proves the artifact's origin alongside the signature that identifies its publisher.
 
 ---
 
@@ -97,16 +97,13 @@ Against the detection–proof gap exposed here (provenance assurance stopped at 
 - **TanStack official postmortem**: "Postmortem: TanStack npm supply-chain compromise" (2026-05) — https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
 - **GitHub Advisory Database / CVE-2026-45321**: "Malware in @tanstack/* packages exfiltrates cloud credentials, GitHub tokens, and SSH keys" (GHSA-g7cv-rxg3-hmpx) — https://github.com/advisories/GHSA-g7cv-rxg3-hmpx
 - **The Hacker News**: "Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages" (2026-05) — https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

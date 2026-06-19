@@ -73,7 +73,7 @@ Meta's discovery of the vulnerability, detection of the abuse, notification of t
 
 At the same time, detection does not, **at the moment the AI runs the recovery operation**, independently establish "is this recovery request coming from the rightful owner of the account." The support conversation proceeds through a legitimate channel, and a single request looks normal as a support request. Because the ownership check was missing, "a request arrived" became the basis for executing the operation. What was missing is the at-action independent verification of "does this requester hold the ownership and authorization to perform a recovery operation on this account," which is a separate track from after-the-fact anomaly detection and notification. As long as receiving a request is equated with proof of authorization, detection can only trail the takeover.
 
-Pre-execution attestation closes this gap by inserting one step — proof of the requester's ownership and authorization — into the recovery path. By requiring, before the AI support runs an email change or reset, that "this requester is the rightful owner of this account" as independently verifiable proof, the recovery operation is blocked up front when the proof of ownership does not hold — regardless of the request's framing or urgency. Detecting the request's content (the detection-style "does this request look plausible") and the pre-execution attestation of ownership and authorization ("does this requester hold the authority to operate on this account") are not substitutes but **complements**. For independently verifying ownership and authorization before the action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation closes this gap by inserting one step — proof of the requester's ownership and authorization — into the recovery path. By requiring, before the AI support runs an email change or reset, that "this requester is the rightful owner of this account" as independently verifiable proof, the recovery operation is blocked up front when the proof of ownership does not hold — regardless of the request's framing or urgency. Detecting the request's content (the detection-style "does this request look plausible") and the pre-execution attestation of ownership and authorization ("does this requester hold the authority to operate on this account") are not substitutes but **complements**.
 
 ---
 
@@ -94,7 +94,7 @@ Against the gap this incident exposed (the AI recovery agent's action is decoupl
 - **Scoped authority**: Minimize the delegated authority granted to AI support per operation, and place ownership proof ahead of high-impact operations (email change, reset). Do not let operations beyond the scope of authorization succeed without proof
 - **Evidence trail of actions**: Bind recovery operations to the proof of the requester's authorization/ownership and record them as evidence, so that even in later audits "under whose authorization was this operation performed" is independently verifiable
 
-Through this, proof fixed at the moment of action functions as an independently verifiable trail for "does this recovery operation carry the rightful owner's authorization," before the operation runs. Detection and notification (after-the-fact detection and user notification) serve to grasp and remediate harm, while pre-execution attestation (pre-action ownership and authorization verification) serves the independent verification of recovery operations — each working complementarily. For the design and scope see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+Through this, proof fixed at the moment of action functions as an independently verifiable trail for "does this recovery operation carry the rightful owner's authorization," before the operation runs. Detection and notification (after-the-fact detection and user notification) serve to grasp and remediate harm, while pre-execution attestation (pre-action ownership and authorization verification) serves the independent verification of recovery operations — each working complementarily.
 
 ---
 
@@ -108,11 +108,7 @@ Through this, proof fixed at the moment of action functions as an independently 
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

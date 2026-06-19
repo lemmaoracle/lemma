@@ -71,7 +71,7 @@ Anomaly detection, password resets, and cooperation with authorities and the pla
 
 But detection does not change "whether the payout-destination change should be accepted before the funds move" itself. The tampering went through a legitimate authenticated session and looks normal as an extranet operation. Because detection only fires once an anomaly appears, the first fraudulent transfer (about ¥9 million) was already complete. What was missing is independent verification, at the moment of change, of "is this payout-account change based on legitimate authorization and an authentic attribute?" — a different track from account monitoring and after-the-fact log tracing. For audit, too, after the outflow there is little independent trail beyond reconciling the platform's access logs to prove "when, under whose authorization, and to which account it was changed."
 
-Pre-execution attestation requires, before execution, that a payout-account change directly tied to the movement of funds present both "the changer's legitimate authorization" and "the authenticity of the new payout-destination attribute" as independently verifiable proof. Even within an authenticated session, if the proof reports "this change lacks legitimate authorization" or "this payout destination is not established as an authentic attribute," the change and the subsequent transfer are blocked in advance. Detection of account compromise (the detection-style "is this suspicious access?") and pre-execution proof of the change ("is this payout-destination change authorized and authentic?") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation requires, before execution, that a payout-account change directly tied to the movement of funds present both "the changer's legitimate authorization" and "the authenticity of the new payout-destination attribute" as independently verifiable proof. Even within an authenticated session, if the proof reports "this change lacks legitimate authorization" or "this payout destination is not established as an authentic attribute," the change and the subsequent transfer are blocked in advance. Detection of account compromise (the detection-style "is this suspicious access?") and pre-execution proof of the change ("is this payout-destination change authorized and authentic?") are not substitutes but **complements**.
 
 ---
 
@@ -86,7 +86,7 @@ The need to treat configuration changes directly tied to the movement of funds "
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution. By verifying — before the funds move — both the authenticity of the payout-account attribute (P4) and the legitimate provenance of the change instruction (P1) as a proof, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session. For the design philosophy of selective disclosure and independent verification of regulatory attributes and payout destinations, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) (Lemma).
+Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution. By verifying — before the funds move — both the authenticity of the payout-account attribute (P4) and the legitimate provenance of the change instruction (P1) as a proof, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session.
 
 ---
 
@@ -101,11 +101,7 @@ Against the structure exposed here (a payout-account change directly tied to the
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -72,7 +72,7 @@ The buyer's report, recovery, the criminal complaint, and scoping of the impact 
 
 At the same time, detection provides no material to independently establish — **at the moment of disposal** — whether the media just entrusted were actually destroyed. A disposal contract and a destruction certificate record the premise that destruction took place, but do not independently underwrite the act of shredding itself. Here, the absence of destruction was learned only after the data-laden drives surfaced on the market and a buyer reported it — and disclosure took about a year after that report. What was missing is a mechanism to fix, at the moment of disposal, an independently verifiable trail that "this medium was indeed destroyed," and to carry it forward through each link of the disposal chain — a chain separate from after-the-fact discovery and the complaint. Once media have circulated, neither the absence of destruction nor the provenance of which medium leaked, when, and where can be fixed retroactively.
 
-Pre-execution attestation flips the disposal of sensitive media from "trust the vendor" to "bind the fact of destruction to an independently verifiable trail at the moment of disposal." Fix each medium's destruction as a tamper-resistant trail (proof-of-destruction) tied to its time, place, and target, and make it verifiable at each handoff in the disposal chain (hospital → disposal vendor → recycler), and the circulation of a medium lacking a "destroyed" trail can be detected before the handoff. Detecting the absence of destruction (the detection-style "did it surface on the market") and proving destruction ("can this medium be independently verified to have been destroyed") are not substitutes but **complements** (for verifying provenance independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation flips the disposal of sensitive media from "trust the vendor" to "bind the fact of destruction to an independently verifiable trail at the moment of disposal." Fix each medium's destruction as a tamper-resistant trail (proof-of-destruction) tied to its time, place, and target, and make it verifiable at each handoff in the disposal chain (hospital → disposal vendor → recycler), and the circulation of a medium lacking a "destroyed" trail can be detected before the handoff. Detecting the absence of destruction (the detection-style "did it surface on the market") and proving destruction ("can this medium be independently verified to have been destroyed") are not substitutes but **complements**.
 
 ---
 
@@ -99,7 +99,7 @@ Against the gap this incident exposed (the destruction attribute of sensitive me
 - **Extension to the whole lifecycle**: The same independent-verification design applies not only to disposal but to storage (no unauthorized access) and transit (no tampering). The more sensitive and long-retained the medical data, the greater the value of provenance proof at each stage.
 - **Selective disclosure**: Without exposing the contents of the stored data, disclose only the minimum — that "this medium met the destruction verification condition" — reconciling independent verification with privacy protection.
 
-In this way, a proof fixed at the moment of disposal functions as an independently verifiable trail of whether "this sensitive medium was indeed destroyed," without depending on after-the-fact discovery. Detection (after-the-fact reporting, recovery, the complaint) works on correcting the damage; attestation (independent verification of destruction at the moment of disposal) works on establishing trust at the end of the data lifecycle — each complementary to the other. For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and the [use-case index](https://lemma.frame00.com/solutions/use-cases/).
+In this way, a proof fixed at the moment of disposal functions as an independently verifiable trail of whether "this sensitive medium was indeed destroyed," without depending on after-the-fact discovery. Detection (after-the-fact reporting, recovery, the complaint) works on correcting the damage; attestation (independent verification of destruction at the moment of disposal) works on establishing trust at the end of the data lifecycle — each complementary to the other.
 
 ---
 
@@ -114,11 +114,7 @@ In this way, a proof fixed at the moment of disposal functions as an independent
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

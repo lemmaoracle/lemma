@@ -71,7 +71,7 @@ Vulnerability scanners, dependency audits, and egress monitoring are indispensab
 
 Detection, however, does not change the decision of which destination the server connects to and what it carries in that connection. The malicious communications in this incident are legitimate outbound HTTPS connections initiated by the LibreChat server itself. The destination is an attacker domain, but the communication pattern is indistinguishable from a normal MCP server connection attempt. The secrets travel inside the encrypted TLS URL path, making content inspection equally difficult to capture. What was absent was pre-execution verification of "who registered this MCP connection configuration, and what environmental context is it authorized to access" — and this is separate from communication monitoring. From an audit perspective as well, after exfiltration, no independent trail exists — beyond correlating access logs — to prove which secrets were sent, when, and through whose registered configuration.
 
-Pre-execution attestation treats connection-destination registration on agent infrastructure as an authority act, and requires — before the configuration value is interpreted — an independently verifiable proof of "the registrant's authority" and "the scope of context the configuration may reference." If the proof reports that "this configuration references context (server environment variables) beyond the registrant's authority," the connection is blocked before execution (for the thesis on detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation treats connection-destination registration on agent infrastructure as an authority act, and requires — before the configuration value is interpreted — an independently verifiable proof of "the registrant's authority" and "the scope of context the configuration may reference." If the proof reports that "this configuration references context (server environment variables) beyond the registrant's authority," the connection is blocked before execution.
 
 ---
 
@@ -87,7 +87,7 @@ With the spread of self-hosted AI platforms, this class of "configuration-value-
 
 ## 7. Lemma's Analysis
 
-For the detection–proof gap exposed here — an agent's connection-destination configuration is interpreted in a privileged context without independent verification of the registrant's authority and the scope of context it may reference — Lemma offers a design that trails connection-destination registration and capability grants on agent infrastructure as authority acts, and verifies, before execution, "who authorized what, in what scope," as independently verifiable proofs. For the design philosophy of Agent Authority Proof, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) (Lemma).
+For the detection–proof gap exposed here — an agent's connection-destination configuration is interpreted in a privileged context without independent verification of the registrant's authority and the scope of context it may reference — Lemma offers a design that trails connection-destination registration and capability grants on agent infrastructure as authority acts, and verifies, before execution, "who authorized what, in what scope," as independently verifiable proofs.
 
 ---
 
@@ -101,11 +101,7 @@ For the detection–proof gap exposed here — an agent's connection-destination
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

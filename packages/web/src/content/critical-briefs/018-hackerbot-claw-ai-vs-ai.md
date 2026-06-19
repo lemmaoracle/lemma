@@ -69,7 +69,7 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 一方で、injection の検知はモデルの能力・文脈・その時々の判断に依存し、独立した保証ではない。同じ injection 面（AI エージェントがリポジトリ供給の指示を検証なく取り込む）は一般に残り、別のエージェント・別の文脈では検知をすり抜け得る。受信側（AI エージェント、それを運用する CI/CD・開発組織）が「この指示は正規の・認可された・改ざんされていないものか」を独立検証する基準を持たなければ、injection の成否はモデルの当たり外れに委ねられる。規制報告・監査で「この AI エージェントは正規の指示の下で判断したか」を立証する材料としても、モデルが今回検知できたという事実は独立した証跡にはならない。
 
-事前証明（pre-execution attestation）は、AI エージェントが取り込む指示（`CLAUDE.md` 等の行動指針や設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づけ、エージェントが実行前に proof を検証する設計を採る。指示が攻撃者により注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。モデル安全機構（detection）と指示の完全性証明（proof）は代替ではなく **補完** の関係にある（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution attestation）は、AI エージェントが取り込む指示（`CLAUDE.md` 等の行動指針や設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づけ、エージェントが実行前に proof を検証する設計を採る。指示が攻撃者により注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。モデル安全機構（detection）と指示の完全性証明（proof）は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -86,7 +86,7 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 ## 7. Lemma による分析
 
-本事案で焦点となる検出と証明の落差（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示（`CLAUDE.md` 等の行動指針・設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。指示が注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で焦点となる検出と証明の落差（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示（`CLAUDE.md` 等の行動指針・設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。指示が注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。
 
 ---
 
@@ -96,16 +96,13 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 - **InfoQ**: "AI-Powered Bot Exploits GitHub Actions Workflows Across Microsoft, DataDog, CNCF Projects"（2026-03-11）— https://www.infoq.com/news/2026/03/ai-bot-github-actions-exploit/
 - **Aqua Security (Trivy) インシデント開示**: GitHub Discussions（2026、Trivy 侵害の一次）— https://github.com/aquasecurity/trivy/discussions/10265
 - **DataDog**: datadog-iac-scanner の緊急修正 PR（2026）— https://github.com/DataDog/datadog-iac-scanner/pull/9
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

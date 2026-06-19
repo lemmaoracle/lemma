@@ -75,7 +75,7 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 
 一方で、検出は「ビルドがどのパッケージを正規の内部発行元のものとして受け入れるか」の決定自体を変えない。本件のステージャは CI 検出で沈黙し、キャッシュで重複実行を避け、難読化と無害な build/test スクリプトで正当な開発ワークフローを装う——いずれも検知を遅らせる設計である。検知が成立した時点では、すでに `npm install` 時に偵察 payload が走り、環境変数や開発文脈が C2 へ送出されうる。欠けていたのは「このパッケージは、騙っている内部スコープの正規発行元から実際に発行されたか」という取り込み前の来歴検証であり、これはマルウェア検知とは別系統である。規制報告・監査で「ビルドが取り込んだ依存が正規来歴を持つか」を立証する材料として、事後のスキャン結果は独立した来歴証跡にならない。
 
-事前証明(pre-execution attestation)は、ビルドが依存を取り込む前に、パッケージの発行元来歴(主張するスコープの正規発行者か、想定経路で発行されたか)を独立検証可能な暗号証明として要求する設計を採る。proof が「この `@sber-ecom-core` パッケージは正規発行元の来歴を持たない」と告げれば、解決・インストールは事前に block される。マルウェア検知(detection 的な「この payload は悪性だ」)と発行元来歴の事前証明(「この成果物は正規発行元から来た」)は代替ではなく**補完**の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、ビルドが依存を取り込む前に、パッケージの発行元来歴(主張するスコープの正規発行者か、想定経路で発行されたか)を独立検証可能な暗号証明として要求する設計を採る。proof が「この `@sber-ecom-core` パッケージは正規発行元の来歴を持たない」と告げれば、解決・インストールは事前に block される。マルウェア検知(detection 的な「この payload は悪性だ」)と発行元来歴の事前証明(「この成果物は正規発行元から来た」)は代替ではなく**補完**の関係にある。
 
 ---
 
@@ -90,7 +90,7 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 
 ## 7. Lemma による分析
 
-本キャンペーンで露呈した検出と証明の落差(パッケージ解決が名前とメタデータの内部らしさを来歴の代わりに使い、発行元来歴を独立検証しない)に対して、Lemma は、ビルドが依存を取り込む前に成果物の発行元来歴を独立検証可能な暗号証明として検証する設計を提示している。パッケージ名やメタデータが内部発行元を騙っていても、来歴の proof が正規発行元の不在を告げれば取り込みは事前に reject される。「名前が内部らしい ≠ 正規発行元から来た」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。サプライチェーン来歴の設計背景は Brief 014 / 015(TeamPCP クラスタ)と合わせて参照のこと。
+本キャンペーンで露呈した検出と証明の落差(パッケージ解決が名前とメタデータの内部らしさを来歴の代わりに使い、発行元来歴を独立検証しない)に対して、Lemma は、ビルドが依存を取り込む前に成果物の発行元来歴を独立検証可能な暗号証明として検証する設計を提示している。パッケージ名やメタデータが内部発行元を騙っていても、来歴の proof が正規発行元の不在を告げれば取り込みは事前に reject される。「名前が内部らしい ≠ 正規発行元から来た」という来歴証明カテゴリの設計思想に基づく。
 
 ---
 
@@ -98,16 +98,13 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 
 - **Microsoft Security Blog (Microsoft Defender Security Research Team)**: "Malicious npm packages abuse dependency confusion to profile developer environments"(2026-05-29、攻撃チェーン・帰属・IOC・緩和策)— https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/
 - **Microsoft Security Blog**: "Typosquatted npm packages used to steal cloud and CI/CD secrets"(2026-05-28、同時期の Mini Shai-Hulud キャンペーン、隣接事案)— https://www.microsoft.com/en-us/security/blog/2026/05/28/typosquatted-npm-packages-used-steal-cloud-ci-cd-secrets/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

@@ -71,7 +71,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 一方で、検出は受信側（標的システム、API、MCP ツール）が「どの action を accept するか」自体を変えない。本事案では、AI が発行する各 operation が「正規の委任関係の下で生成されたものか」を、受信側が実行前に独立検証する仕組みは存在しなかった。攻撃者が注入した「防御テスト中の正規企業従業員」という identity の主張は proof を伴わず、role-play として通過した。規制報告・行政手続き・訴訟で「この AI agent は認可された権限の下で動いていたか」を立証する材料として、提供事業者側の事後 telemetry は被害組織から独立した証跡になりにくい。
 
-事前証明（pre-execution attestation）は、AI agent が外部システムへ作用する前に、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定する設計を採る。proof が「正規の委任関係なし」「scope 外」と告げれば、当該 action は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される（検出と事前証明の関係についての thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution attestation）は、AI agent が外部システムへ作用する前に、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定する設計を採る。proof が「正規の委任関係なし」「scope 外」と告げれば、当該 action は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される。
 
 ---
 
@@ -87,7 +87,7 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
 
 ---
 
@@ -98,16 +98,13 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 - **Paul, Weiss client memo**: "Anthropic Disrupts First Documented Case of Large-Scale AI-Orchestrated Cyberattack"（2025-11）— https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack
 - **SOCRadar analysis**: "AI-Powered Cyber Espionage: Inside the GTG-1002 Campaign"（2025-11）— https://socradar.io/blog/ai-powered-gtg-1002-campaign/
 - **PwC**: "AI-orchestrated cyberattacks: A call to action"（2025）— https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

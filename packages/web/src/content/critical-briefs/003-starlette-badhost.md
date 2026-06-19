@@ -70,7 +70,7 @@ X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサ�
 
 一方、本脆弱性の根本は「パスベース認証という仕組み自体が trust boundary を独立検証していない」点にある。Starlette 1.0.1 の patch は当該乖離を修正するが、AI エージェントが外部リソースに HTTP 経由でアクセスする世界では、フレームワーク側のバグ修正に依存しない、より上位の trust boundary 検証が不可欠となる。
 
-事前証明(pre-execution attestation)の文脈でこれを再構成すると、「エージェント / 認証主体 / 委任スコープ」を HTTP request 自体に独立検証可能な暗号証明として埋め込む設計が要求される。フレームワークが何を accept するかではなく、accept されるべきものが何かを別系統で証明する層が必要となる。X41 D-Sec が「CVSS 7 では過小評価」と表現した深刻度は、本質的にはこの構造的欠落の規模に由来する(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)の文脈でこれを再構成すると、「エージェント / 認証主体 / 委任スコープ」を HTTP request 自体に独立検証可能な暗号証明として埋め込む設計が要求される。フレームワークが何を accept するかではなく、accept されるべきものが何かを別系統で証明する層が必要となる。X41 D-Sec が「CVSS 7 では過小評価」と表現した深刻度は、本質的にはこの構造的欠落の規模に由来する。
 
 ---
 
@@ -87,7 +87,7 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
 
 ---
 
@@ -97,16 +97,13 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 - **X41 D-Sec advisory and MCP scanner**(X41 D-Sec 公式)— mcp-scan.nemesis.services の公開 scanner と technical advisory。https://mcp-scan.nemesis.services/
 - **Starlette 1.0.1 release notes**(フレームワーク公式、GitHub release)— BadHost への patch 反映。https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package"(2026-05-27、独立報道)— https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

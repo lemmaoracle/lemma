@@ -73,7 +73,7 @@ Advancing deepfake-detection models, layering liveness, monitoring fraud pattern
 
 But detection does not change "on what basis the verifier accepts the video it receives as a 'live, genuine person'" itself. From the verifier's side, VCam injection and API hooks arrive over the same path as a legitimate camera feed. Deepfake detection becomes a perpetual cat-and-mouse with rising generation quality, and if detection cannot judge "this is synthetic," the attribute is established anyway. What was missing is independent verification that "this video was live-captured from a real sensor and has not been injected or swapped" — the provenance of the capture, a different track from synthesis detection. For regulation (KYC/AML), too, there is little independent trail beyond the verification log to later prove "was this identity check based on a real biometric?"
 
-Pre-execution attestation inverts liveness from "judging whether the video looks genuine" to "provenance proof that the capture was live-acquired from a real sensor and not tampered with or injected." Through device and capture-path attestation, if the feed's provenance cannot be proven, the identity check does not hold no matter how natural the video looks. Deepfake detection (the detection-style "is this synthetic?") and pre-execution proof of capture provenance ("is this a live capture from a real biometric?") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation inverts liveness from "judging whether the video looks genuine" to "provenance proof that the capture was live-acquired from a real sensor and not tampered with or injected." Through device and capture-path attestation, if the feed's provenance cannot be proven, the identity check does not hold no matter how natural the video looks. Deepfake detection (the detection-style "is this synthetic?") and pre-execution proof of capture provenance ("is this a live capture from a real biometric?") are not substitutes but **complements**.
 
 ---
 
@@ -88,7 +88,7 @@ The need to "prove identity as the provenance of the capture rather than the app
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (identity as a regulatory attribute is accepted on the appearance of the video without verifying the provenance of the capture), Lemma proposes a design that inverts identity verification from "judging whether the video looks genuine" to "independent verification of the provenance that the capture was live-acquired from a real sensor." No matter how natural the feed, if the proof of capture provenance does not hold, the attribute is not established. For the design philosophy of selective disclosure and independent verification of regulatory attributes, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) (Lemma). Read together with Brief 022 (OnlyFake) as the "looks right but the provenance is fake" lineage.
+Against the structure exposed here (identity as a regulatory attribute is accepted on the appearance of the video without verifying the provenance of the capture), Lemma proposes a design that inverts identity verification from "judging whether the video looks genuine" to "independent verification of the provenance that the capture was live-acquired from a real sensor." No matter how natural the feed, if the proof of capture provenance does not hold, the attribute is not established. Read together with Brief 022 (OnlyFake) as the "looks right but the provenance is fake" lineage.
 
 ---
 
@@ -101,11 +101,7 @@ Against the structure exposed here (identity as a regulatory attribute is accept
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

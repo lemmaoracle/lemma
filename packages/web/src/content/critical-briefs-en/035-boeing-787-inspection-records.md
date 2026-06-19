@@ -68,7 +68,7 @@ The FAA's investigation, Boeing's voluntary report and re-inspection, and the pl
 
 But detection/audit does not guarantee "whether a record is accompanied by performance" itself. On the record the inspection was complete, and it passed document audits and system checks. Only a later investigation revealed the divergence between record and performance. What was missing is independent verification, at the moment the record is generated, that "this inspection record is backed by an actual inspection act" — a different track from after-the-fact audit. For regulatory reporting, too, there is little independent trail beyond the record itself to later prove "was this aircraft actually inspected?"
 
-Pre-execution attestation proves the "inspected" attribute not by the existence of a record but as "the provenance of when, by whom, and that the inspection act was actually performed." Before proceeding downstream (shipment, operation), if the attribute's proof is not backed by the provenance of performance, the attribute does not hold even when the record is formally in order. Audit of records (the detection-style "are the records all there?") and pre-execution proof of performance ("is the record backed by the actual act?") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation proves the "inspected" attribute not by the existence of a record but as "the provenance of when, by whom, and that the inspection act was actually performed." Before proceeding downstream (shipment, operation), if the attribute's proof is not backed by the provenance of performance, the attribute does not hold even when the record is formally in order. Audit of records (the detection-style "are the records all there?") and pre-execution proof of performance ("is the record backed by the actual act?") are not substitutes but **complements**.
 
 ---
 
@@ -83,7 +83,7 @@ The need to "prove the inspected/conformant attribute as the provenance of perfo
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed." Even when a record is formally in order, if a proof backed by the provenance of performance does not hold, the attribute is not established. For the design philosophy of independent verification of regulatory attributes, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) (Lemma). Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
+Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed." Even when a record is formally in order, if a proof backed by the provenance of performance does not hold, the attribute is not established. Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
 
 ---
 
@@ -98,11 +98,7 @@ Against the structure exposed here (regulatory/safety attributes pass on the exi
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

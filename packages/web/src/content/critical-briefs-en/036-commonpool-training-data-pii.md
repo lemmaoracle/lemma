@@ -69,7 +69,7 @@ The research team's audit, the curators' face blurring, and improving PII-detect
 
 But detection / after-the-fact filtering does not decide "whether, at the time of collection, this material may be ingested for training" itself. Face blurring and PII detection try to mechanically remove material from the already-collected 12.8 billion pairs, but coverage is not guaranteed — as 800-plus faces leaked in a 0.1% sample. Detection is reactive to generation/collection, and once a dataset is released and has propagated to downstream models, recall is nearly impossible. What was missing is independent verification, at the time of collection, that "this material has the provenance and consent to be used for training" — a different track from after-the-fact PII detection. For regulatory response, too, from data without provenance one cannot prove "under whose consent and within what scope it may be used."
 
-Pre-execution attestation places the ingestion of training data not in after-the-fact filtering but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before it is ingested into the dataset. PII detection (the detection-style "search for contaminants after the fact") and pre-execution proof of provenance ("is this material fit to ingest?") are not substitutes but **complements**, and to prevent hard-to-recall downstream propagation, the weight shifts toward the latter (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation places the ingestion of training data not in after-the-fact filtering but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before it is ingested into the dataset. PII detection (the detection-style "search for contaminants after the fact") and pre-execution proof of provenance ("is this material fit to ingest?") are not substitutes but **complements**, and to prevent hard-to-recall downstream propagation, the weight shifts toward the latter.
 
 ---
 
@@ -84,7 +84,7 @@ The need to "ingest training data by whether it has provenance and consent, not 
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before ingestion, and the dataset's composition becomes auditable with provenance attached. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). Read together with Brief 008 (Discord scraping) as the training-data-provenance lineage.
+Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before ingestion, and the dataset's composition becomes auditable with provenance attached. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — is what operates here. Read together with Brief 008 (Discord scraping) as the training-data-provenance lineage.
 
 ---
 
@@ -92,16 +92,13 @@ Against the structure exposed here (the provenance and consent of training data 
 
 - **MIT Technology Review**: "A major AI training data set contains millions of examples of personal data" (2025-07-18; CommonPool's PII contamination, scale estimates, leakage past face blurring) — https://www.technologyreview.com/2025/07/18/1120466/a-major-ai-training-data-set-contains-millions-of-examples-of-personal-data/
 - **Research paper (arXiv)**: "A Common Pool of Privacy Problems: Legal and Technical Lessons from a Large-Scale Web-Scraped Machine Learning Dataset" (arXiv:2506.17185, 2025-06) — https://arxiv.org/abs/2506.17185
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

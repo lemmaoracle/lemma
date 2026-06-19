@@ -69,7 +69,7 @@ Here the detection chain — Wiz Research's external scan and responsible disclo
 
 But the problem is that even when an external scan can "detect" the exposure, that operates after the fact, after the exposure already exists; it is not a layer that proves, at the moment of access, "is this access based on legitimate authority." On a backend with no authentication, there is simply no means to distinguish whether the party that reached it is legitimate. "The port was open / not open" is an object of detection, but not proof of "legitimate access."
 
-At present, in AI-service data backends, examples abound where reach control (network) and authorization (who can access what) are operated without being separated. Pre-execution attestation places, ahead of the data-backend access path, an attribute proof that "the party legitimately holds the authority for this scope," structurally separating reachability from authorization. Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**. For verifying independently before the action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+At present, in AI-service data backends, examples abound where reach control (network) and authorization (who can access what) are operated without being separated. Pre-execution attestation places, ahead of the data-backend access path, an attribute proof that "the party legitimately holds the authority for this scope," structurally separating reachability from authorization. Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**.
 
 ---
 
@@ -93,7 +93,7 @@ Against the gap DeepSeek exposed — access to the AI service's sensitive-data b
 - **Handling of secrets**: Do not hold or expose API keys and tokens in plaintext; move to proof-based authorization (send a proof, not the key)
 - **Selective disclosure**: Prove only that "the access was within the scope of authority," without exposing the sensitive data itself, such as chat history
 
-Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the sensitive data — when asked "was this access legitimate." Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary. For the design and scope see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Seal (send a proof, not the key)](https://lemma.frame00.com/seal/).
+Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the sensitive data — when asked "was this access legitimate." Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary.
 
 ---
 
@@ -107,11 +107,7 @@ Proof fixed at the moment of action functions as evidence that can be independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

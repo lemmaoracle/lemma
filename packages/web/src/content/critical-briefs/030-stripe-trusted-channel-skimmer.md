@@ -74,7 +74,7 @@ Sansec のような EC セキュリティ事業者によるスキマー解析・
 
 一方で、検出は「ブラウザが信頼ドメインから読み込むコードを実行するか」「信頼ドメインへ送るデータを許すか」自体を変えない。本事案の通信は `api.stripe.com` / `googletagmanager.com` 宛で、CSP もネットワークフィルタも既定で許可する。スキマー本体は顧客レコードのメタデータに分散して置かれ `new Function()` で動的構成されるため、静的検査でも捕捉しにくい。窃取データは正規の Stripe 顧客オブジェクト作成 API を通って出ていく。欠けていたのは「このチェックアウトページで実行されるスクリプトは、ストアが正規に配置したものか」というコードの来歴検証であり、これはドメイン allowlist や異常検知とは別系統である。規制報告・PCI 監査の観点でも、流出後に「どのスクリプトが・誰の配置で・いつカード情報に触れたか」を立証する独立した証跡は、GTM 履歴とアクセスログの突合以上には残りにくい。
 
-事前証明(pre-execution attestation)は、チェックアウトで実行されるコードを、ドメインの allowlist ではなく**配置者・経路・内容の来歴**として実行前に独立検証する設計を採る。proof が「このスクリプトはストアの正規配置の来歴を持たない」と告げれば、信頼ドメインから来ていても実行は block される。ドメイン allowlist(detection 的な「既知の信頼先か」)とコード来歴の事前証明(「この内容は正規に配置されたか」)は代替ではなく**補完**の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、チェックアウトで実行されるコードを、ドメインの allowlist ではなく**配置者・経路・内容の来歴**として実行前に独立検証する設計を採る。proof が「このスクリプトはストアの正規配置の来歴を持たない」と告げれば、信頼ドメインから来ていても実行は block される。ドメイン allowlist(detection 的な「既知の信頼先か」)とコード来歴の事前証明(「この内容は正規に配置されたか」)は代替ではなく**補完**の関係にある。
 
 ---
 
@@ -88,7 +88,7 @@ Sansec のような EC セキュリティ事業者によるスキマー解析・
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(allowlist がドメインの身元を信頼し、運ばれるコードとデータの来歴を検証しない)に対して、Lemma は、実行されるコードや受け渡されるデータを、ドメインの allowlist ではなく配置者・経路・内容の来歴として実行前に独立検証可能な暗号証明として検証する設計を提示している。信頼ドメインから配送されても、来歴の proof が正規配置の不在を告げれば実行・送出は事前に reject される。「ドメインが信頼できる ≠ 中身の来歴が正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。信頼シグナルの転用という同型事例は Brief 010(Lemma Critical Brief)と合わせて参照のこと。
+本事案で露呈した検出と証明の落差(allowlist がドメインの身元を信頼し、運ばれるコードとデータの来歴を検証しない)に対して、Lemma は、実行されるコードや受け渡されるデータを、ドメインの allowlist ではなく配置者・経路・内容の来歴として実行前に独立検証可能な暗号証明として検証する設計を提示している。信頼ドメインから配送されても、来歴の proof が正規配置の不在を告げれば実行・送出は事前に reject される。「ドメインが信頼できる ≠ 中身の来歴が正しい」という来歴証明カテゴリの設計思想に立つ。信頼シグナルの転用という同型事例は Brief 010 と合わせて参照されたい。
 
 ---
 
@@ -97,16 +97,13 @@ Sansec のような EC セキュリティ事業者によるスキマー解析・
 - **Sansec**: Magecart キャンペーン解析(Stripe / Firestore 悪用構造、顧客レコード作成日、IOC)(2026-06)— https://sansec.io/research
 - **BleepingComputer**: "Credit card theft campaign abuses Stripe to host stolen payment info"(2026-06-04)— https://www.bleepingcomputer.com/news/security/credit-card-theft-campaign-abuses-stripe-to-host-stolen-payment-info/
 - **The Hacker News**: "New Magecart Campaign Abuses Stripe API to Host and Exfiltrate Stolen Card Data"(2026-06)— https://thehackernews.com/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

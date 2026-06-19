@@ -73,7 +73,7 @@ Here, the detection chain — sustained investigative reporting and a special au
 
 Detection, however, cannot change whether, at the moment the confirmation letter is accepted, that letter reflects a legitimate balance at the issuing bank. Investigative reporting and special audits are both after-the-fact chains that activate only after years of disclosure have been received by the market. Paper-based confirmation does not, on its own, serve as material to independently prove "the balance existed at the time" in regulatory disclosure or audit opinions. This is a gap in a structurally independent layer, beyond detection's reach.
 
-As things stand, across the operating model for financial compliance, independent verification of asset existence still depends on trust in forwarded confirmation letters and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the confirmation / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for asset existence (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for financial compliance, independent verification of asset existence still depends on trust in forwarded confirmation letters and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the confirmation / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for asset existence.
 
 ---
 
@@ -96,7 +96,7 @@ For the detection–proof gap exposed here — a claim of asset existence flowin
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only that "the balance exists at or above the threshold" — account numbers and transaction details never leave the company
 - **Original binding and validity**: committed with Poseidon over BN254; existence and non-tampering proven with Groth16 (Circom circuits); bound to the balance originals via docHash
 
-A proof fixed at the point of confirmation and disclosure then functions, years later when "did the asset exist at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact special audits, investigative journalism) serves remediation after disclosure; pre-execution attestation (attribute verification at confirmation) serves independent verification of asset existence — complementary layers. For the design and scope, see the use cases [Financial Data Exfiltration](https://lemma.frame00.com/ja/solutions/use-cases/financial-data-exfiltration/) and [KYC/AML Selective Disclosure](https://lemma.frame00.com/ja/solutions/use-cases/kyc-aml-selective-disclosure/), and [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/).
+A proof fixed at the point of confirmation and disclosure then functions, years later when "did the asset exist at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact special audits, investigative journalism) serves remediation after disclosure; pre-execution attestation (attribute verification at confirmation) serves independent verification of asset existence — complementary layers.
 
 ---
 
@@ -110,11 +110,7 @@ A proof fixed at the point of confirmation and disclosure then functions, years 
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

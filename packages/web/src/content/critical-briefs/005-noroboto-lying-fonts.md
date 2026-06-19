@@ -65,7 +65,7 @@ Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の tr
 
 検出層は AI 判断品質の事後評価には引き続き重要であり、その役割を本 Brief が否定するものではない。一方で、入力の integrity が侵害された状態での AI 判断の正確性は、検出層の射程外にある層として独立して存在する。
 
-事前証明(pre-execution attestation)は、AI が判断を生成する前に、AI が見ている入力データと「人間目視で見えるべき」入力データの同一性を独立に commit する構造を採る。文書を AI に渡す前のテキスト抽出 layer に、フォント解釈の独立検証(ミラー氏が提案する OCR ベースの再検証、または Unicode と表示字形の対応 audit)を組み込むことで、入力の integrity を AI 判断の前段で保証する。判断後の検出と判断前の入力 attestation は **代替ではなく補完** の関係にあり、両層の組み合わせで AI 文書レビューの trust boundary が確立される(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、AI が判断を生成する前に、AI が見ている入力データと「人間目視で見えるべき」入力データの同一性を独立に commit する構造を採る。文書を AI に渡す前のテキスト抽出 layer に、フォント解釈の独立検証(ミラー氏が提案する OCR ベースの再検証、または Unicode と表示字形の対応 audit)を組み込むことで、入力の integrity を AI 判断の前段で保証する。判断後の検出と判断前の入力 attestation は **代替ではなく補完** の関係にあり、両層の組み合わせで AI 文書レビューの trust boundary が確立される。
 
 ---
 
@@ -79,23 +79,20 @@ Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の tr
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。
 
 ---
 
 ## 8. Sources
 
 - **Tritium Legal Technologies official blog**: "Noroboto: Lying Fonts and Mitigation in Rust" by Drew Miller(2026-05、公式 blog、Rust 実装 mitigation コード公開を含む)— https://tritium.legal/blog/noroboto
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

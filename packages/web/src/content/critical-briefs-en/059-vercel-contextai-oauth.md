@@ -71,7 +71,7 @@ Infostealer intelligence feeds, OAuth-grant audits, egress monitoring, and EDR a
 
 At the same time, detection provides no material to independently establish, **before the access executes**, whether "the access being made with this token right now is within the original authorization." The attacker's operations are formally legitimate access via valid OAuth tokens issued on behalf of consenting users. The Workspace-to-Vercel pivot, too, happens inside the already-granted broad scope, so token-validity checks do not stop it. What the Hudson Rock case shows is that what was missing was not the detection capability but **the workflow connecting intelligence to immediate revocation of standing authority.** From an audit standpoint, too, evidence that independently shows "which token executed which action within which authorization" rarely survives beyond reconciling each service's access logs.
 
-Pre-execution attestation treats authority grants to AI tools not as "broad, long-lived consent" but as authorization scoped and independently verifiable per action (the industry standardization context likewise points toward avoiding user-OAuth pass-through and converting, via RFC 8693 token exchange, into per-operation scoped, auditable tokens). If the proof does not satisfy "this operation is within the granter's authorization and is currently valid," the access is blocked before execution. For the relationship between detection and pre-execution attestation see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation treats authority grants to AI tools not as "broad, long-lived consent" but as authorization scoped and independently verifiable per action (the industry standardization context likewise points toward avoiding user-OAuth pass-through and converting, via RFC 8693 token exchange, into per-operation scoped, auditable tokens). If the proof does not satisfy "this operation is within the granter's authorization and is currently valid," the access is blocked before execution.
 
 ---
 
@@ -88,7 +88,7 @@ The absence of a design that treats OAuth grants to AI tools not as "standing au
 
 ## 7. Lemma's analysis
 
-Against the detection-and-proof gap this incident exposed (broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action), Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization." By verifying, before an operation executes, "is this action within the granter's authorization" and "is that authorization currently valid" — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access. For the design philosophy of agent authority proof see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/).
+Against the detection-and-proof gap this incident exposed (broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action), Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization." By verifying, before an operation executes, "is this action within the granter's authorization" and "is that authorization currently valid" — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access.
 
 ---
 
@@ -104,11 +104,7 @@ Against the detection-and-proof gap this incident exposed (broad, long-lived OAu
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

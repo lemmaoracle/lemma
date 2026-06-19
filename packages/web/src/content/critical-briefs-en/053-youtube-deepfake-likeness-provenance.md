@@ -71,7 +71,7 @@ YouTube's AI likeness detection, partnership with talent agencies, removal of fa
 
 At the same time, detection does not, **at the moment of generation and publication**, independently establish "does this video's likeness carry legitimate provenance with the person's consent." Likeness detection scans for "does it match an enrolled face," but that works after the synthetic media is uploaded. Watermarks can be stripped (Brief 011), and removal does not recover views already spread. What was missing is the at-generation-and-publication independent verification of "was this likeness/voice generated with the person's consent and accompanied by verifiable provenance," which is a separate track from after-the-fact scanning and removal. As long as detection is placed after generation and publication, the response can only trail the spread.
 
-Pre-execution attestation and provenance binding close this gap by fixing verifiable provenance and consent to likeness and voice before generation and publication. By binding to the output, via docHash, a provenance indicating whose likeness it used and under what consent, and by making the publication path able to ask "does this carry provenance with the person's consent," synthetic media lacking provenance can be distinguished before spread. Detecting the synthetic media (the detection-style "does it match an enrolled face") and proving likeness provenance ("does it carry provenance with the person's consent") are not substitutes but **complements**. For fixing provenance to an output see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation and provenance binding close this gap by fixing verifiable provenance and consent to likeness and voice before generation and publication. By binding to the output, via docHash, a provenance indicating whose likeness it used and under what consent, and by making the publication path able to ask "does this carry provenance with the person's consent," synthetic media lacking provenance can be distinguished before spread. Detecting the synthetic media (the detection-style "does it match an enrolled face") and proving likeness provenance ("does it carry provenance with the person's consent") are not substitutes but **complements**.
 
 ---
 
@@ -92,7 +92,7 @@ Against the gap this incident exposed (the provenance and consent of likeness an
 - **Provenance lookup on the distribution path**: Make the platform's publication and distribution path able to query "does this video carry provenance with the person's consent," so synthetic media lacking provenance can be handled before spread
 - **Complement to detection**: Distinguish, by evidence, legitimate synthesis/editing that carries provenance (consented parody, dubbing, etc.) from malicious synthesis that lacks it, complementing the after-the-fact nature of detection with up-front proof
 
-Through this, provenance fixed at the moment of generation and publication functions as an independently verifiable trail for "does this likeness carry provenance with the person's consent," before spread. Detection and removal (after-the-fact scanning and removal) serve to remove and deter harm, while pre-execution attestation of provenance and consent (fixing before generation and publication) serves to distinguish synthetic media before the fact — each working complementarily. For the design and scope see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/).
+Through this, provenance fixed at the moment of generation and publication functions as an independently verifiable trail for "does this likeness carry provenance with the person's consent," before spread. Detection and removal (after-the-fact scanning and removal) serve to remove and deter harm, while pre-execution attestation of provenance and consent (fixing before generation and publication) serves to distinguish synthetic media before the fact — each working complementarily.
 
 ---
 
@@ -106,11 +106,7 @@ Through this, provenance fixed at the moment of generation and publication funct
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

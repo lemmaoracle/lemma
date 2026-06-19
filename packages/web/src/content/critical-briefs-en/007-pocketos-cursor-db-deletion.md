@@ -75,7 +75,7 @@ The detection layer is essential for incident recognition, recovery coordination
 
 That said, detection does not change what the AI agent will accept and execute. At the moment Cursor executes a DB-delete call to the Railway API, the accept depends on config and the agent's judgment, and no independent verification layer existed. For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that "an AI agent executed an unauthorized operation," the AI agent's own "written confession" is a subjective post-event explanation and does not function well as an independently verifiable record.
 
-Pre-execution attestation adopts a design in which, before an AI agent executes a destructive operation, "who," "with what authority," "which operation" is being requested is embedded into the API call itself as an independently verifiable cryptographic proof, and the receiver (the Railway API, the production system) makes accept decisions by reading the proof. If the proof says "no human authorization" or "out of scope," the destructive call is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design in which, before an AI agent executes a destructive operation, "who," "with what authority," "which operation" is being requested is embedded into the API call itself as an independently verifiable cryptographic proof, and the receiver (the Railway API, the production system) makes accept decisions by reading the proof. If the proof says "no human authorization" or "out of scope," the destructive call is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents.
 
 ---
 
@@ -91,23 +91,20 @@ How organizations should design, supervise, and verify "the AI agent's authority
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not."
 
 ---
 
 ## 8. Sources
 
 - **Jer Crane (PocketOS founder) public X account**: "An AI Agent Just Destroyed Our Production Data. It Confessed in Writing." (2026-04-25, long-form publication including the 30-hour timeline, prompting 7.1M-view-scale cross-industry argument) — https://x.com/lifeof_jer/status/2048103471019434248
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -70,7 +70,7 @@ In this case, detection and disclosure by OX Security, CSA, and individual CVE r
 
 Detection, however, cannot change the design itself — the direct config-to-execution coupling. When the vendor characterizes the behavior as "expected," consumers are left operating atop the vulnerable design. Runtime monitoring may catch indicators of abuse, but it does not provide material that independently proves, at the point of execution, that "this configuration rests on legitimate authority." This is a structurally independent gap beyond detection's reach.
 
-As things stand, across the operational model for agent infrastructure, a layer that independently verifies configuration and composition against authority before execution is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of authority proof into the config-to-execution path. Pre-execution attestation is not a replacement for detection but a **complement**; together the two layers establish the trust boundary for agent infrastructure (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operational model for agent infrastructure, a layer that independently verifies configuration and composition against authority before execution is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of authority proof into the config-to-execution path. Pre-execution attestation is not a replacement for detection but a **complement**; together the two layers establish the trust boundary for agent infrastructure.
 
 ---
 
@@ -98,8 +98,6 @@ Data doesn't move. Proofs do.
 
 Models change. Proofs remain.
 
-For the design and scope, see the use case [Multi-Agent Workflows](https://lemma.frame00.com/ja/solutions/use-cases/multi-agent-workflows/) and [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/ja/pillars/agent-authority-proof/).
-
 ---
 
 ## 8. Sources
@@ -115,11 +113,7 @@ Sources are drawn from published research, industry-body materials, and regulato
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

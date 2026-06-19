@@ -71,7 +71,7 @@ The CISA and Universal Robots advisories, updating to PolyScope 5.25.1, and netw
 
 At the same time, network monitoring and patches are no material for the robot to independently verify — **before moving** — whether "the command just received may be executed in light of the sender's authority." The core of this incident is that the Dashboard Server passed the command to the OS without verifying the sender's authorization — the authorization check itself was absent from the path. Network segmentation narrows "who can reach," but the robot does not thereby confirm whether the party that reached it is a legitimate controller. Anomaly detection firing after the motion cannot undo the result at the moment the command executed and physical motion occurred. For audit and safety reporting, a record of network reach alone is no independent evidentiary trail that "this robot's motion was based on an instruction held by legitimate authority."
 
-Pre-execution attestation takes the design choice of treating a command the robot receives not as "the fact that it arrived over the network" but as "an independently verifiable proof of authorization from a sender holding legitimate authority." If commands that lead to physical motion — start, operate, load program — are verified before motion against the bounds of the grantor's authorization, then network reachability alone does not produce motion. Detecting network reach (the detection-style "who reached") and proving the command's authorization ("is the command based on legitimate authority") are **complements**, not substitutes; only where the two overlap can increasingly autonomous robots be safely placed on manufacturing and logistics floors (for verifying authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation takes the design choice of treating a command the robot receives not as "the fact that it arrived over the network" but as "an independently verifiable proof of authorization from a sender holding legitimate authority." If commands that lead to physical motion — start, operate, load program — are verified before motion against the bounds of the grantor's authorization, then network reachability alone does not produce motion. Detecting network reach (the detection-style "who reached") and proving the command's authorization ("is the command based on legitimate authority") are **complements**, not substitutes; only where the two overlap can increasingly autonomous robots be safely placed on manufacturing and logistics floors.
 
 ---
 
@@ -95,7 +95,7 @@ Against the detection–proof gap this incident exposed (an embodied agent not i
 - **Consistent application to embodied agents**: apply the same authorization-proof framework used for software agents (the gateway of Brief 066) consistently to embodied agents that perform physical motion.
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this command is within the grantor's authorization" — reconciling independent verification with the protection of operational information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this robot's motion is based on an instruction from a sender holding legitimate authority," without depending on after-the-fact network logs. Detection (after-the-fact monitoring, patching, segmentation) works on correcting exposure; pre-execution attestation (independent verification of authorization before motion) works on establishing trust in embodied agents — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this robot's motion is based on an instruction from a sender holding legitimate authority," without depending on after-the-fact network logs. Detection (after-the-fact monitoring, patching, segmentation) works on correcting exposure; pre-execution attestation (independent verification of authorization before motion) works on establishing trust in embodied agents — each complementary to the other.
 
 ---
 
@@ -110,11 +110,7 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

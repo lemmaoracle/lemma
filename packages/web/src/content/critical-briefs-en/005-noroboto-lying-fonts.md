@@ -65,7 +65,7 @@ Conventional detection-side AI safety has concentrated on output filtering (hall
 
 The detection layer remains important for after-the-fact evaluation of AI judgment quality, and this Brief does not deny that role. That said, the accuracy of AI judgment when input integrity is compromised exists independently as a layer outside the reach of detection.
 
-Pre-execution attestation adopts a structure that, before the AI generates a judgment, independently commits the equivalence between the input the AI is seeing and the input that "should be visible to a human." By embedding independent verification of font interpretation (Miller's proposed OCR-based re-verification, or audit of the Unicode-to-rendered-glyph correspondence) into the text-extraction layer upstream of passing the document to the AI, input integrity is guaranteed before AI judgment. Post-judgment detection and pre-judgment input attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI document review (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a structure that, before the AI generates a judgment, independently commits the equivalence between the input the AI is seeing and the input that "should be visible to a human." By embedding independent verification of font interpretation (Miller's proposed OCR-based re-verification, or audit of the Unicode-to-rendered-glyph correspondence) into the text-extraction layer upstream of passing the document to the AI, input integrity is guaranteed before AI judgment. Post-judgment detection and pre-judgment input attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI document review.
 
 ---
 
@@ -79,23 +79,20 @@ Pre-execution attestation adopts a structure that, before the AI generates a jud
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match."
 
 ---
 
 ## 8. Sources
 
 - **Tritium Legal Technologies official blog**: "Noroboto: Lying Fonts and Mitigation in Rust" by Drew Miller (2026-05, official blog, including the Rust-implementation mitigation code) — https://tritium.legal/blog/noroboto
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

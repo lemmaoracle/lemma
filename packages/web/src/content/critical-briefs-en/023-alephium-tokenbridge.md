@@ -83,7 +83,7 @@ Blockaid's real-time detection and SEAL 911's investigation support were indispe
 
 Detection, however, does not change which events the guardians sign. In this incident, the guardian keys were intact, the signing process functioned normally, and the VAA format verification passed. What was absent was verification of the provenance of the event being signed — whether the event originated from a legitimate contract via a legitimate path — and this is separate from signature-validity verification. By the time detection fired, the main drain (64 seconds) was already complete, and roughly 500K wALPH had entered liquidity pools before the burn. For regulatory reporting and audit, the validity of a guardian signature alone does not, on its own, serve as an independent trail of event provenance.
 
-Pre-execution attestation adopts a design that requires, before the guardian signs, an independently verifiable cryptographic proof of the observed event's emitter, path, and integrity. If the proof reports that "this event's source is not a registered legitimate contract," signing is blocked before it occurs. Signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") are not substitutes but **complements** (for the thesis on detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design that requires, before the guardian signs, an independently verifiable cryptographic proof of the observed event's emitter, path, and integrity. If the proof reports that "this event's source is not a registered legitimate contract," signing is blocked before it occurs. Signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") are not substitutes but **complements**.
 
 ---
 
@@ -99,7 +99,7 @@ Pre-execution attestation adopts a design that requires, before the guardian sig
 
 ## 7. Lemma's Analysis
 
-For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. The design philosophy of the Verifiable Origin category — "cryptographically valid ≠ provenance correct" — and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the design background, see [What the 2026 Bridge Incidents Are Telling Us — On the Category of Verifiable Origin](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04).
+For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
 
 ---
 
@@ -109,16 +109,13 @@ For the detection–proof gap exposed here — the validity of guardian signatur
 - **The Defiant**: "Alephium Bridge Loses $815K to Forged Guardian Messages, Not Stolen Keys" (2026-05/06, cause-correction narrative, guardian-set comparison) — https://thedefiant.io/news/hacks/alephium-bridge-815k-forged-guardian-messages
 - **The Crypto Times**: "Bridge Breach Unpacked: Alephium Traces $815K Hack Step by Step" (2026-06-03, detailed breakdown of the on-chain report) — https://www.cryptotimes.io/2026/06/03/bridge-breach-unpacked-alephium-traces-815k-hack-step-by-step/
 - **AMBCrypto**: "$815K gone in 7 minutes – Inside Ethereum's Alephium TokenBridge exploit" (2026-05/06) — https://ambcrypto.com/815k-gone-in-7-minutes-inside-ethereums-alephium-tokenbridge-exploit/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -74,7 +74,7 @@ Owner reports, NHTSA ODI's inquiry, and Hyundai's recall and camera reflash are 
 
 At the same time, detection provides no material to independently establish — **before the action** — whether the automatic braking about to occur is a genuinely needed judgment. Phantom braking is an action FCA executed as a legitimate safety feature, indistinguishable on the vehicle side from normal activation. After-the-fact telemetry analysis and report aggregation make "how many occurred" visible, but not "was that activation independently verified, before the action, for the necessity of braking." A recall and a software update also retune activation timing after the fact, not independently before each activation.
 
-Pre-execution attestation flips an AI decision that cuts into human driving from "verify it by telemetry after the fact" to "fix the validity of the judgment to an independently verifiable trail before the action." Bind "this automatic braking executed having met an independently verifiable condition" to a tamper-resistant provenance at the moment of the act, so each activation's validity can be independently verified without depending on after-the-fact record-keeping or retuning. Detecting the malfunction (the detection-style "what happened") and proving the AI decision ("was that action independently verified for validity before the action") are not substitutes but **complements** (for verifying provenance and authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation flips an AI decision that cuts into human driving from "verify it by telemetry after the fact" to "fix the validity of the judgment to an independently verifiable trail before the action." Bind "this automatic braking executed having met an independently verifiable condition" to a tamper-resistant provenance at the moment of the act, so each activation's validity can be independently verified without depending on after-the-fact record-keeping or retuning. Detecting the malfunction (the detection-style "what happened") and proving the AI decision ("was that action independently verified for validity before the action") are not substitutes but **complements**.
 
 ---
 
@@ -97,7 +97,7 @@ Against the gap this incident exposed (an AI decision that cuts into human drivi
 - **Independent-verification gate on decisions**: Aim for a design in which an action that overrides human control executes not on internal judgment alone, but only when an independently verifiable proof of validity is met.
 - **Selective disclosure**: Without exposing the internal perception model or implementation, disclose only the minimum — that "this action met the verification condition" — reconciling independent verification with the protection of sensitive information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this AI judgment was independently verified for validity before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, recalls, retuning) works on social evaluation and remediation; attestation (independent verification of the judgment at the moment of the act) works on proving the validity of the AI judgment — each complementary to the other. For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this AI judgment was independently verified for validity before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, recalls, retuning) works on social evaluation and remediation; attestation (independent verification of the judgment at the moment of the act) works on proving the validity of the AI judgment — each complementary to the other.
 
 ---
 
@@ -111,11 +111,7 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -70,7 +70,7 @@ Brief 003（Starlette/BadHost、HTTP Host ヘッダー操作による MCP サー
 
 一方で、検出は「設定から実行への直結」という設計そのものを変えることはできない。ベンダーが当該挙動を「想定通り」とする以上、利用側は脆弱な設計の上で運用を続けることになる。実行時監視は悪用の兆候を捉え得るが、「その構成が正当な権限に基づくものか」を実行の時点で独立に保証する材料にはならない。これは検出層の射程外にある、構造的に独立した層の gap である。
 
-現状、エージェント基盤の運用モデル全体において、設定・構成を権限の観点で実行前に独立検証する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、設定→実行の経路に権限証明を 1 段挟むことで、この gap を埋める。事前証明は検出に対する代替ではなく**補完**であり、両層の組み合わせでエージェント基盤の trust boundary が確立される（検出と事前証明の関係についての詳細は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+現状、エージェント基盤の運用モデル全体において、設定・構成を権限の観点で実行前に独立検証する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、設定→実行の経路に権限証明を 1 段挟むことで、この gap を埋める。事前証明は検出に対する代替ではなく**補完**であり、両層の組み合わせでエージェント基盤の trust boundary が確立される。
 
 ---
 
@@ -98,8 +98,6 @@ Lemma 自身も MCP エコシステムの一部として MCP サーバーを提�
 
 Models change. Proofs remain.
 
-設計と適用範囲は、ユースケース[「マルチエージェント・ワークフロー」](https://lemma.frame00.com/ja/solutions/use-cases/multi-agent-workflows/)および [Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) を参照のこと。
-
 ---
 
 ## 8. Sources
@@ -115,12 +113,8 @@ Models change. Proofs remain.
 
 ## 9. Brief 配布について
 
-Lemma が発行する脅威インテリジェンス・ブリーフです。CSO・アナリスト・規制実務者向けに、AI 時代のサイバー事案および信頼インフラのリスク事象を構造的に分析し、検出と証明の落差と Lemma の応答層を特定します。
-
-- [Discovery Call →](https://tally.so/r/EkBqDX)
-- [ホワイトペーパー →](https://tally.so/r/xX0VYv)
-- [✉️ ニュースレター →](https://tally.so/r/rjvN2X?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 
-© 2026 FRAME00, Inc.
+(c) 2026 FRAME00, INC. — Built for decisions that matter.

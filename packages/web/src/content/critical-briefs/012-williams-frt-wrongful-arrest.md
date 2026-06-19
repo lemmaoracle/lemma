@@ -72,7 +72,7 @@ FRT とその精度評価（NIST 等）は、行政・捜査における初期�
 
 一方で、精度スコアやバイアス計測は、個々の判定が「行動の前に独立に裏付け・認可されたか」を変えない。本事案では、FRT 出力が確率的候補にすぎないという事実、その信頼性低下要因、独立裏付けの有無が、強制処分の前に検証可能な証跡として固定されていなかった。和解が課した remedy——FRT 単独での逮捕禁止、独立裏付けの義務化、信頼性要因の開示義務——は、まさに「AI 出力の使用には、検証と認可の独立した証跡が要る」という要請に他ならない。規制報告・司法手続き・行政監査で「この AI 出力は、行動前に独立検証・認可されたか」を立証する材料として、精度スコアそのものは独立した証跡を伴わない。
 
-事前証明（pre-execution attestation）は、AI 出力が下流の意思決定に用いられる前に、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されるのかを、独立検証可能な記録として固定する設計を採る。proof が「独立裏付けなし」「認可なし」と告げれば、当該出力に基づく強制処分は事前に保留される。精度評価（detection）と検証・認可の証跡（proof）は代替ではなく **補完** の関係にある（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution attestation）は、AI 出力が下流の意思決定に用いられる前に、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されるのかを、独立検証可能な記録として固定する設計を採る。proof が「独立裏付けなし」「認可なし」と告げれば、当該出力に基づく強制処分は事前に保留される。精度評価（detection）と検証・認可の証跡（proof）は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -89,7 +89,7 @@ FRT とその精度評価（NIST 等）は、行政・捜査における初期�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（AI の判定出力が、その根拠・検証状態・認可を独立に証明できないまま、行政の強制処分の根拠として機能する）に対して、Lemma は、AI 出力が下流の意思決定に用いられる時点で、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されたかを、独立検証可能な暗号証明として固定する設計を提示している。Lemma は判定の公平性そのものを保証するものではないが、その判定が行動前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。これは行政が AI 利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI の判定出力が、その根拠・検証状態・認可を独立に証明できないまま、行政の強制処分の根拠として機能する）に対して、Lemma は、AI 出力が下流の意思決定に用いられる時点で、「どの出力が」「どの信頼性条件で」「どの独立裏付け・認可の下で」使用されたかを、独立検証可能な暗号証明として固定する設計を提示している。Lemma は判定の公平性そのものを保証するものではないが、その判定が行動前に独立検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残す。これは行政が AI 利用の説明責任を制度的に満たすための監査・証跡層に相当し、システムインテグレーション経由で公共部門の調達要件に組み込みうる。
 
 ---
 
@@ -100,16 +100,13 @@ FRT とその精度評価（NIST 等）は、行政・捜査における初期�
 - **University of Michigan Law (Law Quadrangle)**: "Flawed Facial Recognition Technology Leads to Wrongful Arrest and Historic Settlement"（2024–2025 Winter）— https://quadrangle.michigan.law.umich.edu/issues/winter-2024-2025/flawed-facial-recognition-technology-leads-wrongful-arrest-and-historic
 - **Michigan Public**: "'It didn't make sense at all': Wrongful facial recognition arrest in Detroit leads to landmark settlement"（2024-06-28）— https://www.michiganpublic.org/criminal-justice-legal-system/2024-06-28/it-didnt-make-sense-at-all-wrongful-facial-recognition-arrest-leads-to-landmark-settlement
 - **NIST**: "Face Recognition Vendor Test (FRVT) Part 3: Demographic Effects"（NISTIR 8280、2019-12）— https://nvlpubs.nist.gov/nistpubs/ir/2019/nist.ir.8280.pdf
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

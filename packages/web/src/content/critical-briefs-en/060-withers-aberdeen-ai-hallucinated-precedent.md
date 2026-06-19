@@ -76,7 +76,7 @@ The judge's scrutiny, the opposing party's flagging, and the Rule 11 sanction ar
 
 At the same time, detection provides no material to independently establish — **before the action** — whether the grounds of the brief about to be filed exist and carry a legitimate origin. A citation to a nonexistent case looks authentic on the page and is indistinguishable from a legitimate argument at the moment of filing. The judge and the opposing party notice only after the brief has been filed and brought into the proceeding. Rule 11 requires counsel to certify accuracy, but that is the filer's self-certification, not an external layer that independently underwrites the existence of the grounds. That even a local counsel's signature can become a "rubberstamp" shows that self-certification alone cannot guarantee the existence of the grounds. What was missing is a mechanism to fix, before the action, an independently verifiable trail that "this authority exists and the citation derives from that source" — a chain separate from after-the-fact scrutiny and sanction.
 
-The idea of pre-execution attestation flips the grounds an AI surfaces from "reconcile them by hand after the fact" to "fix, before the action, an independently verifiable trail of their existence and provenance." Bind the authorities an AI cites (cases, statutes, sources) to their actual origins as provenance, and make their existence and the consistency of the citation independently verifiable at the moment of the act — and an output that lacks grounds is screened out before the act of filing. Detecting the error (the detection-style "what was wrong") and proving the grounds ("were these grounds independently verified to exist and to derive from their source") are not substitutes but **complements**. Independently verifying the origin of the grounds an AI used connects directly to designs that attest the sources of RAG (retrieval-augmented generation) (for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying provenance independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
+The idea of pre-execution attestation flips the grounds an AI surfaces from "reconcile them by hand after the fact" to "fix, before the action, an independently verifiable trail of their existence and provenance." Bind the authorities an AI cites (cases, statutes, sources) to their actual origins as provenance, and make their existence and the consistency of the citation independently verifiable at the moment of the act — and an output that lacks grounds is screened out before the act of filing. Detecting the error (the detection-style "what was wrong") and proving the grounds ("were these grounds independently verified to exist and to derive from their source") are not substitutes but **complements**. Independently verifying the origin of the grounds an AI used connects directly to designs that attest the sources of RAG (retrieval-augmented generation).
 
 ---
 
@@ -99,7 +99,7 @@ Against the gap this incident exposed (the existence and provenance of the autho
 - **Record authenticity proof**: Bind an AI's output and the grounds it relied on at the moment of issuance, making "which output rests on which grounds" independently verifiable without depending on after-the-fact reconciliation.
 - **Selective disclosure**: Without exposing internal prompts or model implementation, disclose only the minimum — that "the grounds for this output exist and meet the verification conditions" — reconciling independent verification with the protection of sensitive information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this claim rests on grounds that exist, and their provenance is verifiable," without depending on after-the-fact human reconciliation. Detection (after-the-fact scrutiny and sanction) works on correcting errors; attestation (independent verification of the grounds at the moment of the act) works on establishing trust in AI outputs — each complementary to the other. Rather than rejecting AI use itself, making the grounds checkable in layers lets AI use and practical trust coexist. For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [RAG source attestation](https://lemma.frame00.com/solutions/use-cases/rag-source-attestation/), and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this claim rests on grounds that exist, and their provenance is verifiable," without depending on after-the-fact human reconciliation. Detection (after-the-fact scrutiny and sanction) works on correcting errors; attestation (independent verification of the grounds at the moment of the act) works on establishing trust in AI outputs — each complementary to the other. Rather than rejecting AI use itself, making the grounds checkable in layers lets AI use and practical trust coexist.
 
 ---
 
@@ -115,11 +115,7 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

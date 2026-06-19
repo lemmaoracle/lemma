@@ -73,7 +73,7 @@ Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合�
 
 一方で、検出は受信側（relay、mint を承認するコントラクト）が「どの proof を accept するか」自体を変えない。本事案では、構造化された偽 proof がパースの欠陥を通って受理されたため、形式上の検証は通過した。欠けていたのは「この proof が指す burn は相手チェーンで実在するか」の独立検証であり、これは proof の形式的受理とは別系統の検証である。異常検知が mint の後に発火しても、relay が accept した時点での発行は止まらない。規制報告・監査で「この cross-chain mint は正規の burn に裏づけられていたか」を立証する材料として、proof が形式上有効だったという事実だけでは、burn の実在の独立した証跡にならない。
 
-事前証明（pre-execution attestation）は、cross-chain の proof を、受信側が mint の実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を採る。proof のパースが通ることと、burn の実在が独立に確かめられることを切り離さず、burn の来歴が確認できなければ mint を事前に block する。proof の形式的受理（detection 的な「この proof は通る」）と、burn の実在の事前証明（「対応する burn は実在する」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、cross-chain の発行を安心して実務に出せる（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、ブリッジ来歴の設計背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）を参照）。
+事前証明（pre-execution attestation）は、cross-chain の proof を、受信側が mint の実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を採る。proof のパースが通ることと、burn の実在が独立に確かめられることを切り離さず、burn の来歴が確認できなければ mint を事前に block する。proof の形式的受理（detection 的な「この proof は通る」）と、burn の実在の事前証明（「対応する burn は実在する」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、cross-chain の発行を安心して実務に出せる。
 
 ---
 
@@ -90,7 +90,7 @@ Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（cross-chain の proof が、形式的受理とは別に、それが指す burn の実在として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される proof を、受信側が実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を提示している。proof のパースが形式上通っても、burn の実在の proof が確認できなければ mint は事前に reject される。「暗号論理的に有効 ≠ 指す事実が実在する」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）に示している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例であり、設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照のこと。検出（事後の停止・凍結・解析）は被害の是正に、事前証明（mint 実行前の burn 来歴の独立検証）は cross-chain 発行の信頼確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照のこと。
+本事案で露呈した検出と証明の落差（cross-chain の proof が、形式的受理とは別に、それが指す burn の実在として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される proof を、受信側が実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を提示している。proof のパースが形式上通っても、burn の実在の proof が確認できなければ mint は事前に reject される。「暗号論理的に有効 ≠ 指す事実が実在する」という来歴証明カテゴリの設計思想を、その reference 実装が体現している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。検出（事後の停止・凍結・解析）は被害の是正に、事前証明（mint 実行前の burn 来歴の独立検証）は cross-chain 発行の信頼確立に、それぞれ相補的に働く。
 
 ---
 
@@ -101,16 +101,13 @@ Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合�
 - **AMBCrypto**: “Syscoin — How a validation flaw enabled 5 billion unauthorized SYS”（2026-06）— <https://ambcrypto.com/syscoin-how-a-validation-flaw-enabled-5-billion-unauthorized-sys/>
 - **Crypto Times**: “Syscoin Halts Bridge After Exploit Mints 5 Billion SYS Tokens”（2026-06-08）— <https://www.cryptotimes.io/2026/06/08/syscoin-halts-bridge-after-exploit-mints-5-billion-sys-tokens/>
 - **Bitcoin.com News（業界文脈）**: “Crypto Bridge Exploits Hit $328 Million by May 2026”（PeckShield 集計、8 件・累計 約 3 億 2,860 万ドル）— <https://news.bitcoin.com/crypto-bridge-exploits-328-million-may-2026-peckshield/>
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

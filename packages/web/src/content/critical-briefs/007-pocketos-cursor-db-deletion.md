@@ -75,7 +75,7 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 
 一方で、検出は AI agent が「何を accept して実行するか」自体を変えない。Cursor が Railway API への DB delete call を実行する瞬間、accept は config と agent の判断に依存しており、独立検証 layer は存在しなかった。規制報告・行政手続き・訴訟で「AI agent が認可されていない operation を実行した」と立証する材料として、AI agent 自身の "written confession" は subjective な事後説明であり、独立検証可能な証跡として機能しにくい。
 
-事前証明(pre-execution attestation)は、AI agent が destructive operation を実行する前に、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側(Railway API、production system)が proof を見て accept 判定する設計を採る。proof が「人間の認可なし」「scope 外」と告げれば、destructive call は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、AI agent が destructive operation を実行する前に、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側(Railway API、production system)が proof を見て accept 判定する設計を採る。proof が「人間の認可なし」「scope 外」と告げれば、destructive call は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される。
 
 ---
 
@@ -91,23 +91,20 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
 
 ---
 
 ## 8. Sources
 
 - **Jer Crane (PocketOS founder) public X account**: "An AI Agent Just Destroyed Our Production Data. It Confessed in Writing."(2026-04-25、30 時間タイムラインを含む長文公開、7.1M view 規模で業界横断議論を喚起)— https://x.com/lifeof_jer/status/2048103471019434248
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

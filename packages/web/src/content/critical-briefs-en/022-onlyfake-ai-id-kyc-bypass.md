@@ -70,7 +70,7 @@ The industry's initial response to this case is to strengthen detection. Deepfak
 
 Detection, however, cannot itself answer the question "did the presented image capture a document the issuer actually issued?" What detection scores is the presence or absence of generation artifacts; the generative side and the detection side are structurally locked in an arms race. No matter how high the detection rate climbs, it is a probabilistic score — not, on its own, material that proves in regulatory reporting, administrative procedure, or litigation that "this account was opened through legitimate identity verification." This is a structurally independent gap beyond detection's reach.
 
-As things stand, across the operating model for identity verification, issuer verification of the presented evidence is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of issuer-signed attribute proof into the onboarding path. When the object of review shifts from "image" to "proof," progress on the generative side no longer translates into bypass rate. Pre-execution attestation complements detection rather than replacing it; together the two layers establish the trust boundary for identity verification (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for identity verification, issuer verification of the presented evidence is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of issuer-signed attribute proof into the onboarding path. When the object of review shifts from "image" to "proof," progress on the generative side no longer translates into bypass rate. Pre-execution attestation complements detection rather than replacing it; together the two layers establish the trust boundary for identity verification.
 
 ---
 
@@ -96,8 +96,6 @@ A proof fixed at the point of onboarding then functions, years later when "was t
 
 Data doesn't move. Proofs do.
 
-For the design and scope, see the use case [KYC/AML Selective Disclosure](https://lemma.frame00.com/ja/solutions/use-cases/kyc-aml-selective-disclosure/) and [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/).
-
 ---
 
 ## 8. Sources
@@ -113,11 +111,7 @@ For the design and scope, see the use case [KYC/AML Selective Disclosure](https:
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

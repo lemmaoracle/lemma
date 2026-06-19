@@ -72,7 +72,7 @@ FRT and its accuracy evaluation (NIST and others) have a certain role as a means
 
 That said, accuracy scores and bias measurements do not change whether each individual judgment was "independently corroborated and authorized before action." In this incident, the fact that the FRT output was no more than a probabilistic candidate, its reliability-degrading factors, and the presence or absence of independent corroboration were not fixed as a verifiable record before the enforcement action. The remedies the settlement imposed — a ban on arrests based on FRT alone, mandatory independent corroboration, an obligation to disclose reliability factors — are precisely the requirement that "the use of AI outputs requires an independent record of verification and authorization." As material for establishing in regulatory reporting, judicial proceedings, or administrative audit that "this AI output was independently verified and authorized before action," accuracy scores themselves carry no independent attribution residue.
 
-Pre-execution attestation adopts a design in which, before an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it is used are fixed as an independently verifiable record. If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance. Accuracy evaluation (detection) and the record of verification and authorization (proof) are in a **complementary**, not substitutive, relationship (for the thesis on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design in which, before an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it is used are fixed as an independently verifiable record. If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance. Accuracy evaluation (detection) and the record of verification and authorization (proof) are in a **complementary**, not substitutive, relationship.
 
 ---
 
@@ -89,7 +89,7 @@ How government, when using AI outputs in enforcement actions, benefit decisions,
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration.
 
 ---
 
@@ -100,16 +100,13 @@ Against the detection–proof gap exposed by this incident (an AI judgment outpu
 - **University of Michigan Law (Law Quadrangle)**: "Flawed Facial Recognition Technology Leads to Wrongful Arrest and Historic Settlement" (Winter 2024–2025) — https://quadrangle.michigan.law.umich.edu/issues/winter-2024-2025/flawed-facial-recognition-technology-leads-wrongful-arrest-and-historic
 - **Michigan Public**: "'It didn't make sense at all': Wrongful facial recognition arrest in Detroit leads to landmark settlement" (2024-06-28) — https://www.michiganpublic.org/criminal-justice-legal-system/2024-06-28/it-didnt-make-sense-at-all-wrongful-facial-recognition-arrest-leads-to-landmark-settlement
 - **NIST**: "Face Recognition Vendor Test (FRVT) Part 3: Demographic Effects" (NISTIR 8280, 2019-12) — https://nvlpubs.nist.gov/nistpubs/ir/2019/nist.ir.8280.pdf
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

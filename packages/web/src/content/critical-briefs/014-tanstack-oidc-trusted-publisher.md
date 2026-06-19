@@ -70,7 +70,7 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 一方で、検出は受信側(npm registry、依存パッケージを取得する CI/CD・開発者環境)が「何を accept するか」自体を変えない。本事案では、悪性成果物が **有効な OIDC provenance 署名を伴って** 正規経路から公開されたため、署名検証は通過した。「trusted publisher が署名した＝信頼できる成果物」という前提が、ワークフロー実行中のアイデンティティ乗っ取りで崩れた。検出が公表されるまでの数十分の窓で取得した環境は、署名が有効であるがゆえに警戒しにくい。規制報告・監査で「この成果物は正規のビルド出力か」を立証する材料として、publisher アイデンティティの署名だけでは独立した証跡にならない。
 
-事前証明(pre-execution attestation)は、来歴を publisher アイデンティティの署名にとどめず、「この成果物が、意図されたソース・ビルド入力・レビュー経路から生成された」ことをビルド来歴に紐づく独立検証可能な暗号証明として固定する設計を採る。ワークフロー実行中に runner が乗っ取られれば、ビルド来歴の proof は不整合となり、受信側は署名が形式上有効でも reject できる。検出(IOC・異常監視)と事前証明(build provenance proof)は代替ではなく **補完** の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、来歴を publisher アイデンティティの署名にとどめず、「この成果物が、意図されたソース・ビルド入力・レビュー経路から生成された」ことをビルド来歴に紐づく独立検証可能な暗号証明として固定する設計を採る。ワークフロー実行中に runner が乗っ取られれば、ビルド来歴の proof は不整合となり、受信側は署名が形式上有効でも reject できる。検出(IOC・異常監視)と事前証明(build provenance proof)は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -87,7 +87,7 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は、来歴を「誰が公開したか」の署名ではなく、「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。OIDC アイデンティティが実行時に乗っ取られても、ビルド来歴の proof は別系統で「正規のビルド経路から生成された / されていない」を告げるため、受信側は署名が形式上有効でも proof の不整合で reject できる。Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は、来歴を「誰が公開したか」の署名ではなく、「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。OIDC アイデンティティが実行時に乗っ取られても、ビルド来歴の proof は別系統で「正規のビルド経路から生成された / されていない」を告げるため、受信側は署名が形式上有効でも proof の不整合で reject できる。Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。
 
 ---
 
@@ -97,16 +97,13 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 - **TanStack 公式 postmortem**: "Postmortem: TanStack npm supply-chain compromise"(2026-05)— https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
 - **GitHub Advisory Database / CVE-2026-45321**: "Malware in @tanstack/* packages exfiltrates cloud credentials, GitHub tokens, and SSH keys"(GHSA-g7cv-rxg3-hmpx)— https://github.com/advisories/GHSA-g7cv-rxg3-hmpx
 - **The Hacker News**: "Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages"(2026-05)— https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

@@ -69,7 +69,7 @@ Here the detection chain — external research by the researchers, responsible d
 
 But the problem is that no matter how well detection functions, it does not provide the material to independently prove, at the moment of access, "does the party making this access request hold legitimate authority over this record." Strengthening one guessable credential leaves the separate flaw of per-record authorization (IDOR) intact. "Logged in legitimately" or "referenced by ID" is not proof of "having legitimate authority." Because it is enumeration over a legitimate path, after-the-fact log analysis tends to become a trailing sequence that operates only after retrieval has occurred.
 
-At present, in AI-service data access, authority-attribute verification is left to per-implementation access control and is not treated as an independent layer. Pre-execution attestation places, ahead of the sensitive-data access path, an attribute proof that "the requesting party legitimately holds the authority for this scope," and with selective disclosure makes authorization independently verifiable without exposing the personal data itself. Detection (external research, fixes) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**. For verifying independently before the action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+At present, in AI-service data access, authority-attribute verification is left to per-implementation access control and is not treated as an independent layer. Pre-execution attestation places, ahead of the sensitive-data access path, an attribute proof that "the requesting party legitimately holds the authority for this scope," and with selective disclosure makes authorization independently verifiable without exposing the personal data itself. Detection (external research, fixes) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**.
 
 ---
 
@@ -92,7 +92,7 @@ Against the gap McHire exposed — for access to an AI system's sensitive data, 
 - **Selective disclosure**: Prove only that "the access was within the scope of authority," with minimal disclosure, without sending the applicants' personal data outside
 - **Proof for non-human identity**: Treat system-account authority, too, as a verifiable attribute rather than a fixed credential
 
-Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the personal data — when asked "was this access based on legitimate authority." Detection and disclosure (researcher investigation, fixes) contribute to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary. For the design and scope see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/).
+Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the personal data — when asked "was this access based on legitimate authority." Detection and disclosure (researcher investigation, fixes) contribute to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary.
 
 ---
 
@@ -106,11 +106,7 @@ Proof fixed at the moment of action functions as evidence that can be independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -72,7 +72,7 @@ Here the detection chain — Aim Labs' research, the MSRC report, Microsoft's se
 
 But the problem here is that the XPIA classifier detection layer was **bypassed in multiple ways**, and that no matter how much the detection layer is strengthened, it does not provide the material to independently prove, **at the moment the AI acts, whether the origin and authority of the ingested instruction are legitimate.** A classifier is a probabilistic judgment, not proof that "this command was legitimately granted." As long as the attack uses legitimate domains and a zero-click path, after-the-fact detection and analysis become a trailing sequence that operates only after the data has already crossed the boundary. This is a structurally independent layer gap, outside the reach of detection.
 
-At present, across the operating model of enterprise AI, independent verification of the origin and authority of the instructions an agent ingests depends on the model's self-judgment and trust in classifiers, and is not treated as an independent layer. Pre-execution attestation closes the gap by inserting one step into the agent's action path — an attribute proof that "this instruction was legitimately granted under this authority." It is a **complement** to, not a substitute for, detection; only with both in place is a trust boundary for the AI's actions established. For verifying independently before the action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+At present, across the operating model of enterprise AI, independent verification of the origin and authority of the instructions an agent ingests depends on the model's self-judgment and trust in classifiers, and is not treated as an independent layer. Pre-execution attestation closes the gap by inserting one step into the agent's action path — an attribute proof that "this instruction was legitimately granted under this authority." It is a **complement** to, not a substitute for, detection; only with both in place is a trust boundary for the AI's actions established.
 
 ---
 
@@ -96,7 +96,7 @@ Against the gap EchoLeak exposed — an AI agent connecting directly to reading 
 - **Proof of authority scope**: Bind the agent's access authority (whose data, of what scope, and how far) as an attribute that is independently verifiable before acting
 - **Selective disclosure**: Prove only that "the action was within the scope of authority," with minimal disclosure, without sending the internal data itself outside
 
-Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the source data — when asked "was this exfiltration even based on a legitimate command in the first place." Detection (after-the-fact research and classifiers) contributes to shrinking the blast radius, while pre-execution attestation (verification at the moment of action) contributes to independently verifying the basis for the AI's action — each complementary. For the design and scope see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
+Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the source data — when asked "was this exfiltration even based on a legitimate command in the first place." Detection (after-the-fact research and classifiers) contributes to shrinking the blast radius, while pre-execution attestation (verification at the moment of action) contributes to independently verifying the basis for the AI's action — each complementary.
 
 ---
 
@@ -111,11 +111,7 @@ Proof fixed at the moment of action functions as evidence that can be independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

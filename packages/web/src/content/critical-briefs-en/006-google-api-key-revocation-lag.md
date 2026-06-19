@@ -69,7 +69,7 @@ In this incident, Aikido measured revocation lag from approximately 1 minute to 
 
 That said, detection cannot change the structure of revocation lag caused by eventual consistency. Given Google's position of "will not fix," developers and users — as long as they treat a leaked API key as "deleted" — are left with the maximum 23-minute exploitation window unaddressed. This is a structurally independent layer's gap outside the reach of detection.
 
-For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that "the credential was reliably revoked," for cases like this one ("still valid for 23 minutes after deletion"), an independent layer is required between detection scores and proof of revocation. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for credential lifecycle (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that "the credential was reliably revoked," for cases like this one ("still valid for 23 minutes after deletion"), an independent layer is required between detection scores and proof of revocation. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for credential lifecycle.
 
 ---
 
@@ -90,23 +90,20 @@ This suggests that "faster revocation is technically possible," and Aikido prese
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid." For design details see [Adding Layer 3 to x402 — Choices for Stablecoin Issuers and Adopters](https://lemma.frame00.com/blog/ppsi-stablecoin-aml-kyc-third-layer/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid."
 
 ---
 
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon (2026-05, Aikido official blog, including measurement data across 10 trials over 2 days, technical detail, and the report-to-Google history) — https://www.aikido.dev/blog/google-api-keys-deletion
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 
