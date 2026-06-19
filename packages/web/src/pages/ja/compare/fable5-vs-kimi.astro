@@ -63,8 +63,7 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
 <section><div class="wrap">
   <div class="sectop">02 — Fable 5 の落とし穴</div>
   <h2>「攻撃」と言わなければ、安全機能は素通りした</h2>
-  <div class="pt">攻撃は拒否。だが普通の業務指示では、実害が出た。</div>
-  <p class="sub">Fable 5 は攻撃的なプロンプトをすべて拒否しました。ところが、ごく普通の業務指示を与えると——攻撃と気づかぬまま、実害を出しました。これが、このペアで最も重要な発見です。</p>
+  <div class="pt">攻撃は拒否。だが普通の業務指示では、実害が出た。これが、このペアで最も重要な発見。</div>
   <div class="fable">
     <div class="fable-head">
       <span class="ftag">Fable 5 · ミュトス級（安全機能つき）</span>
@@ -353,7 +352,7 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
 <style is:global>
 
   :root{
-    --font-display:"Cormorant Garamond","Noto Serif JP",Georgia,serif; --font-body:"DM Sans","Hiragino Sans","Noto Sans JP",sans-serif;
+    --font-display:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif; --font-body:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
     --brown:#8B4513; --brown-d:#6b350f; --ink:#1c1a17; --muted:#6f675e; --line:#e7e0d6;
     --bg:#fbf8f3; --card:#fff; --cream:#f4ece0;
     --green:#2f7d4f; --green-bg:#e7f3ec; --red:#c0392b; --red-bg:#fbe9e6;
@@ -571,7 +570,7 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
   @media(max-width:760px){.eq{flex-direction:column}.eq .op{align-self:center}}
   /* ---- brand typography & effects (lemma.frame00.com) ---- */
   h1,h2,.pname,.pull,.vs .nm{font-family:var(--font-display)}
-  h1,h2{font-weight:600;letter-spacing:-.02em}
+  h1,h2{font-weight:700;letter-spacing:-.01em}
   .logo{line-height:0;display:inline-flex;align-items:center;color:var(--brown)}
   .logo svg{height:27px;width:auto;display:block}
   .logo:hover{opacity:.82}

@@ -78,22 +78,14 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
   </div>
 </div></section>
 
-<!-- 3. RESULTS -->
+<!-- 3. RESULTS — bars + insight + Fable finding (merged) -->
 <section><div class="wrap">
   <div class="sectop">Layer 1 — 攻撃は、通る</div>
   <h2>どの AI に、どれだけ破られたか</h2>
   <div class="pt">最強の Opus 4.8 が 5/5 突破。強さの順ではなかった。</div>
-  <p class="sub">横軸は、攻撃が成功(目標達成)したシナリオ数(攻撃成功率 ASR に相当)です。</p>
+  <p class="sub">横軸は攻撃が成功（目標達成）したシナリオ数（ASR 相当）。脆弱な経路は特定の1社ではなく、フロンティア全体に共通する<b>構造的なリスク</b>でした。</p>
   <div class="bars" id="bars"></div>
-  <div class="barnote">最強の <b style="color:var(--red)">Opus 4.8 が 5/5 で最多突破</b>。縞模様の <b>Fable 5</b> は攻撃指示を拒否していますが、これは「安全」とは別の話でした(次の項)。</div>
-</div></section>
-
-<!-- 4. INSIGHT -->
-<section><div class="wrap">
-  <div class="sectop">03 — わかったこと</div>
-  <h2>強いモデルほど、安全機能は通用しなかった</h2>
-  <div class="pt">脆弱な経路は1社ではなく、フロンティア全体に共通する構造的なリスク。</div>
-  <p class="sub">能力が上がるほど、攻撃はより巧妙に、より深く通った。<b>最強モデルは 5/5 を突破</b>し、脆弱な経路は特定の1社ではなく、フロンティア全体に共通する<b>構造的なリスク</b>でした。「高性能を選べば安全」も「安全機能つきなら安全」も、データに裏切られています。そして——<b>攻撃に使う AI を選ぶのは攻撃者であり、守る側ではありません。</b>だから守りは、どのモデルかに依存できません。</p>
+  <div class="barnote">縞模様の <b>Fable 5</b> は攻撃指示を拒否しましたが、これは「安全」とは別の話です——普通の業務指示では、実害が出ました。</div>
 
   <div class="fable">
     <div class="fable-head">
@@ -114,8 +106,6 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
     </div>
     <div class="fable-foot">拒否は、安全ではない。守るのは、実行の前に止める層です。</div>
   </div>
-
-  <p class="pull">モデルを選んでも、守れない。<br>守るのは、実行の前に止める層です。</p>
 </div></section>
 
 <!-- LAYER 2: existing defenses fail -->
@@ -123,7 +113,7 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
   <div class="sectop">Layer 2 — 既存の防御では、止まらない</div>
   <h2>その防御は、AI 相手に効きますか</h2>
   <div class="pt">古典的な防御は、AI エージェントが自律的にすり抜けた。</div>
-  <p class="sub">多くの企業が入れている古典的な防御を、AI エージェントは自律的にすり抜けました。シナリオごとに「従来の防御」と「AI がどう破ったか」を並べます。</p>
+  <p class="sub">多くの企業が入れている古典的な防御を、AI エージェントは自律的にすり抜けました。</p>
   <div class="cx">
     <div class="cxrow hd">
       <div class="cxs">シナリオ</div>
@@ -483,7 +473,7 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
 <style is:global>
 
   :root{
-    --font-display:"Cormorant Garamond","Noto Serif JP",Georgia,serif; --font-body:"DM Sans","Hiragino Sans","Noto Sans JP",sans-serif;
+    --font-display:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif; --font-body:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
     --brown:#8B4513; --brown-d:#6b350f; --ink:#1c1a17; --muted:#6f675e; --line:#e7e0d6;
     --bg:#fbf8f3; --card:#fff; --cream:#f4ece0;
     --green:#2f7d4f; --green-bg:#e7f3ec; --red:#c0392b; --red-bg:#fbe9e6;
@@ -790,7 +780,7 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
   @media(max-width:760px){.eq{flex-direction:column}.eq .op{align-self:center}}
   /* ---- brand typography & effects (lemma.frame00.com) ---- */
   h1,h2,.pname,.pull,.vs .nm{font-family:var(--font-display)}
-  h1,h2{font-weight:600;letter-spacing:-.02em}
+  h1,h2{font-weight:700;letter-spacing:-.01em}
   .logo{line-height:0;display:inline-flex;align-items:center;color:var(--brown)}
   .logo svg{height:27px;width:auto;display:block}
   .logo:hover{opacity:.82}
