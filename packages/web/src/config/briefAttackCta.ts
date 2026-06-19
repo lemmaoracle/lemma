@@ -90,7 +90,7 @@ const THEMES: Record<Locale, Record<BriefCtaTheme, ThemeCopy>> = {
     },
     social_eng: {
       bannerLine: "AIが承認フローをなりすまし突破。止め方は？",
-      tailHead: "承認・送金フロー、なりすましに耐えますか？",
+      tailHead: "自社のシステムはなりすましに耐えますか？",
     },
   },
   en: {
@@ -113,7 +113,7 @@ const THEMES: Record<Locale, Record<BriefCtaTheme, ThemeCopy>> = {
     },
     social_eng: {
       bannerLine: "AI impersonated its way through the approval flow. How do you stop it?",
-      tailHead: "Would your approval & payment flow withstand impersonation?",
+      tailHead: "Would your systems withstand impersonation?",
     },
   },
 };
