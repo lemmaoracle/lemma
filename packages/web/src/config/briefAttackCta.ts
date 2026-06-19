@@ -54,7 +54,7 @@ const SHARED: Record<Locale, SharedCopy> = {
     tailMainBtn: "最新AI攻撃実験を見る →",
     tailSubLink: "デモをリクエスト →",
     tailNote: "※ セキュリティ評価（システム監査）は別途・規模に応じて設計します。",
-    loopLine: "同じ構造を、最新 AI 6 種で再現したら？ 最強モデルが 5/5 突破。Lemma 導入後は 0 漏洩だった。",
+    loopLine: "同じ構造を、最新 AI 6 種で再現したら？ 最強モデルが 5/5 突破。Lemma 導入後は突破ゼロだった。",
     loopBtn: "実証を見る →",
   },
   en: {
@@ -65,7 +65,7 @@ const SHARED: Record<Locale, SharedCopy> = {
     tailNote:
       "* Security assessment (system audit) is scoped separately, sized to the engagement.",
     loopLine:
-      "What if the same structure were run against 6 frontier AIs? The strongest broke through 5/5; after Lemma, 0 leaks.",
+      "What if the same structure were run against 6 frontier AIs? The strongest broke through 5/5; after Lemma, 0 broke through.",
     loopBtn: "See the evidence →",
   },
 };
