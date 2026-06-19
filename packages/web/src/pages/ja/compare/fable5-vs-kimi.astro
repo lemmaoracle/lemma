@@ -352,14 +352,14 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
 <style is:global>
 
   :root{
-    --font-display:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif; --font-body:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+    --font-display:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif; --font-body:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;
     --brown:#8B4513; --brown-d:#6b350f; --ink:#1c1a17; --muted:#6f675e; --line:#e7e0d6;
     --bg:#fbf8f3; --card:#fff; --cream:#f4ece0;
     --green:#2f7d4f; --green-bg:#e7f3ec; --red:#c0392b; --red-bg:#fbe9e6;
     --amber:#b5841f; --amber-bg:#f7eed8; --gray:#8a8178; --gray-bg:#efeae2; --dark:#1d1710;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font-body);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{--font-display:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;--font-body:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;font-family:var(--font-body);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
   a{color:var(--brown);text-decoration:none}
   code{font-family:"SF Mono",ui-monospace,Menlo,monospace}
@@ -581,7 +581,7 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
   .hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#241a12 0%,#15100a 100%);padding:56px 0 42px}
   .hero::before{content:"";position:absolute;top:-30%;right:-8%;width:520px;height:520px;background:radial-gradient(circle,rgba(199,154,106,.18),transparent 62%);pointer-events:none}
   .hero .wrap{position:relative}
-  .hero .kicker{font-family:var(--font-display);font-size:clamp(21px,3vw,30px);font-weight:600;letter-spacing:0;text-transform:none;color:#e0b48a;margin-bottom:14px;line-height:1.15}
+  .hero .kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#e0b48a;margin-bottom:16px;line-height:1.4}
   .hero h1{color:#f7f1e7}
   .hero h1 .hl{color:#e9b682}
   .hero .lede{color:#cbbba2}

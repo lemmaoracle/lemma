@@ -473,7 +473,7 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
 <style is:global>
 
   :root{
-    --font-display:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif; --font-body:"DM Sans","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+    --font-display:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif; --font-body:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;
     --brown:#8B4513; --brown-d:#6b350f; --ink:#1c1a17; --muted:#6f675e; --line:#e7e0d6;
     --bg:#fbf8f3; --card:#fff; --cream:#f4ece0;
     --green:#2f7d4f; --green-bg:#e7f3ec; --red:#c0392b; --red-bg:#fbe9e6;
@@ -481,7 +481,7 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
     --dark:#1d1710; --term-dim:#b9a98f;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font-body);
+  body{--font-display:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;--font-body:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP",sans-serif;font-family:var(--font-body);
     color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
   a{color:var(--brown);text-decoration:none}
