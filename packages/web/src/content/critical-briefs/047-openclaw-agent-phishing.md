@@ -15,8 +15,8 @@ version: "1.0"
 og_lead_ja: "AI エージェントが送信者を確かめる前に認証情報を社外送信 — OpenClaw / Varonis"
 og_lead_en: "An AI agent forwarded credentials before verifying the sender — OpenClaw / Varonis"
 gap_detected: "不審 URL・悪性 OAuth 同意画面は遮断できた。"
-gap_missing: "「送信者は誰か」を行動の前に確かめる層が無く、社会的な依頼は素通りした。これが、既存の検出では止まらない理由。"
-gap_fix: "高リスク行動の前に「この依頼は、この主体に、このスコープで認可されている」ことを独立検証していれば、送出は事前に止まった。"
+gap_missing: "「送信者は誰か」を行動の前に確かめる層が無く、社会的な依頼は素通りした。"
+gap_fix: "高リスク行動の前に「この依頼は、この主体に、このスコープで認可されている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
