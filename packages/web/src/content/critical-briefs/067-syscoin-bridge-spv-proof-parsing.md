@@ -1,0 +1,117 @@
+---
+brief_no: 67
+title: "偽の proof が「有効」と解釈され、burn のないまま 50 億 SYS が発行された（Syscoin ブリッジ） — 暗号的に偽の proof が、パースの欠陥ゆえに「有効な burn の証明」として受理された構造（Syscoin / Halborn）"
+title_en: "Syscoin Bridge — A Parsing Flaw Let an Invalid SPV Proof Mint 5B SYS"
+pillar: "01-verifiable-origin"
+primary_category: "bridge-config-trust"
+secondary_categories: ["identity-auth"]
+incident_date: 2026-06-07
+published: 2026-06-19
+authors: ["Lemma Critical Team"]
+related_pack: ["A-incident-response"]
+related_briefs: ["016-verus-ethereum-bridge", "023-alephium-tokenbridge", "002-stakedao-vsdcrv", "001-kelpdao-rseth"]
+status: draft
+version: "1.0"
+og_lead_ja: "偽 proof のパース欠陥で burn なく 50 億 SYS 発行 — Syscoin ブリッジ"
+og_lead_en: "An invalid SPV proof minted 5B SYS with no burn — Syscoin bridge"
+---
+
+## TL;DR
+
+クロスチェーンブリッジは、片方のチェーンで資産を「burn（焼却）」したことを相手チェーンに証明できて初めて、相手側で同額を「mint（発行）」する——その証明が崩れれば、裏づけのない発行が起きる。2026 年 6 月 7 日、Syscoin のブリッジで、**burn が実在しないにもかかわらず約 50 億 SYS（当時約 850 万ドル相当、一部報道は約 1,000 万ドルと概算）が発行された**。根本原因は暗号方式の破綻ではない。攻撃者は**有効な proof を偽造したのではなく、burn の実在を確かめる SPV（Simplified Payment Verification）proof の検証コードにあるパースの欠陥を突くように構造化した「偽の proof」を作り**、relay 側がそれを「実在しない burn に対する有効な proof」と解釈した（NEVM 側の burn なしに UTXO 側で mint が承認された）。これは 2022 年の Nomad ブリッジ事件と同型で、暗号アルゴリズムの強度ではなく、proof の取り扱い・パース・実装の検証に落差があった事例である。本 Brief は本事案を Pillar 01（来歴証明）の `bridge-config-trust` の観点から、**「proof が構造上受理されること」と「その proof が指す事実（burn）が実在すること」が分離されていた**構造として分析する。
+
+---
+
+## 1. 事案概要
+
+- **対象**: Syscoin のクロスチェーンブリッジ（Bitcoin 型の UTXO モデルと、EVM 互換チェーン〔NEVM〕を接続）
+- **被害規模**: 約 50 億 SYS が不正に発行された。当時の SYS 価格換算で約 850 万ドル相当（事案当日終値ベース。一部報道は約 9 百万〜1,000 万ドルと概算）
+- **発生日**: 2026-06-07（同日夜に Syscoin が暫定ポストモーテムを公表、翌 6-08 に Halborn が技術解説を公開）
+- **根本原因**: ブリッジ relay の proof 検証コードに**パースの欠陥**が存在。攻撃者は、暗号的に「有効な偽 proof」を作ること（本来は不可能に近い）ではなく、パースの欠陥を突くように構造化した偽 proof を作成した。relay はこれを「実在しない burn 取引に対する有効な proof」と解釈した
+- **悪用の核心**: Syscoin は SPV proof で「相手チェーンで burn が行われたか」を検証してから mint する設計。だが proof が指す burn が NEVM 側で実在しないにもかかわらず、UTXO 側で mint が承認された。**暗号的に有効であること（proof の形式）と、それが指す事実が実在すること（burn の来歴）が分離されていた**
+- **解析**: Halborn が root cause（SPV proof のパース欠陥）と Nomad（2022）との同型性を技術解説で提示
+- **事後**: Syscoin はブリッジを停止。コア開発陣が世界各国の取引所・エコシステム各社に連絡し、複数の二次アドレスに分散していた該当資産の凍結・ブラックリスト化・追跡を進めた
+- **文脈**: 2026 年のクロスチェーンブリッジ関連 exploit は 5 月までに 8 件・累計約 3 億 2,860 万ドル（PeckShield 集計）に達したとされ、proof の取り扱いに起因する事例が反復している（うち単一最大は 4 月の約 3 億ドル規模事案。Brief 001 参照）
+
+---
+
+## 2. タイムライン
+
+- 2026-06-07: Syscoin ブリッジで burn の実在を伴わない約 50 億 SYS が発行される。攻撃者は資産を複数の二次アドレスへ分散
+- 2026-06-07（同日夜）: Syscoin が暫定ポストモーテムを公表し、ブリッジを停止
+- 2026-06-08: Halborn が root cause（SPV proof のパース欠陥）と Nomad 事件との同型性を技術解説で公開
+- 2026-06-07 以降: コア開発陣が取引所・エコシステム各社と連携し、該当資産の凍結・ブラックリスト化・追跡を実施。SYS 価格は一時下落
+
+> 注: Syscoin の暫定ポストモーテムは公式声明として発表された。本 Brief は、技術的事実は Halborn の解説と確立メディアの報道に基づき、規模・手口の断定を避けて出所を明示する。
+
+---
+
+## 3. 攻撃ベクター
+
+1. **偽 proof の構造化**: 攻撃者は、暗号的に有効な proof を偽造するのではなく、relay の proof 検証コードのパースの欠陥を突くように構造化した偽 proof を作成する
+2. **パース欠陥の悪用**: relay の proof 検証経路が、構造化された偽 proof を「実在しない burn 取引に対する有効な proof」と解釈する。暗号アルゴリズムそのものは破られていない
+3. **burn 不在のまま mint 承認**: NEVM 側で対応する burn が行われていないにもかかわらず、UTXO 側で mint が承認される
+4. **巨額発行の実現**: 約 50 億 SYS（当時約 850 万ドル相当）が裏づけなく発行される
+5. **資産の分散**: 発行された SYS が複数の二次アドレスへ分散される
+6. **停止と封じ込め**: Syscoin がブリッジを停止し、取引所・エコシステム各社と連携して凍結・追跡に動く（mint が承認された後に作動する事後の系列）
+
+---
+
+## 4. 構造的論点
+
+本事案は Pillar 01（来歴証明）の `bridge-config-trust` カテゴリに属する。中心的な失敗 primitive は、cross-chain で受け渡される proof が、**「形式として構造上受理されること」と「それが指す事実（相手チェーンでの burn）が実在すること」に分離されたまま accept された**点にある。SPV proof が（パースを通って）受理されることは「この proof は形式上有効」を示すが、「対応する burn が実在する」ことを別途独立に保証しない。relay のパースの欠陥が、その分離を突かれる入口になった。primary に `bridge-config-trust`、secondary に `identity-auth`（mint を承認する権限の根拠検証）を併記する。
+
+Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合が未検証）・Brief 023（Alephium、guardian の鍵は無事でも署名対象イベントの来歴が未検証）と同じ `bridge-config-trust` であり、primitive がほぼ同型である。016 が「value claim の意味的整合」、023 が「署名対象イベントの来歴」、本事案が「proof が指す burn の実在」と、いずれも **暗号構成要素の有効性検証と、それが主張する事実の独立検証が切り離されている**。Brief 001（KelpDAO、DVN 観測層の RPC 改ざん）・Brief 002（Stake DAO、デプロイヤー鍵による trust source 書き換え）とは、cross-chain で受け渡される主張が、それを独立検証する層と分離したまま受理される構造で同根。本事案は「暗号論理的に有効 ≠ 指す事実が実在する」という来歴証明カテゴリの核心を、burn 不在のまま 50 億 SYS という形で具体的に示した。
+
+2022 年の Nomad 事件との同型性が示すのは、ブリッジの安全性が暗号アルゴリズムの強度ではなく、**proof の取り扱い・パース・実装の検証**に依存するという論点だ。proof が形式上通っても、それが指す事実の来歴が独立検証されて初めて、cross-chain の発行を業務・決済の現場に安心して載せられる。
+
+---
+
+## 5. 検出と証明の落差
+
+ブリッジの監視・異常検知、Syscoin による停止、取引所・エコシステムと連携した凍結・追跡、Halborn の事後解析は、被害の把握・封じ込め・再発防止議論に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも停止と連携により拡散の抑止が図られた。
+
+一方で、検出は受信側（relay、mint を承認するコントラクト）が「どの proof を accept するか」自体を変えない。本事案では、構造化された偽 proof がパースの欠陥を通って受理されたため、形式上の検証は通過した。欠けていたのは「この proof が指す burn は相手チェーンで実在するか」の独立検証であり、これは proof の形式的受理とは別系統の検証である。異常検知が mint の後に発火しても、relay が accept した時点での発行は止まらない。規制報告・監査で「この cross-chain mint は正規の burn に裏づけられていたか」を立証する材料として、proof が形式上有効だったという事実だけでは、burn の実在の独立した証跡にならない。
+
+事前証明（pre-execution attestation）は、cross-chain の proof を、受信側が mint の実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を採る。proof のパースが通ることと、burn の実在が独立に確かめられることを切り離さず、burn の来歴が確認できなければ mint を事前に block する。proof の形式的受理（detection 的な「この proof は通る」）と、burn の実在の事前証明（「対応する burn は実在する」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、cross-chain の発行を安心して実務に出せる（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、ブリッジ来歴の設計背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）を参照）。
+
+---
+
+## 6. 対応経緯と業界動向
+
+- **Syscoin**: 攻撃当日にブリッジを停止し、暫定ポストモーテムを公表。コア開発陣が世界各国の取引所・エコシステム各社へ連絡し、複数の二次アドレスに分散していた該当資産の凍結・ブラックリスト化・追跡を実施
+- **Halborn**: root cause（SPV proof のパース欠陥）と悪用の構造を技術解説で公開し、2022 年 Nomad 事件との同型性を指摘して業界横断で問題を可視化
+- **業界横断の論点**: 2026 年のブリッジ関連 exploit は 5 月までに累計約 3 億 2,860 万ドル（PeckShield 集計、8 件）に達したとされ、proof の取り扱いに起因する事例が反復。SPV / Merkle proof の形式的検証だけでは、proof が指す事実（burn・入出力額・イベント来歴）の実在を保証できないという設計上の論点が、ブリッジ運用者の間で再認識された
+- **proof 検証の実装品質**: 暗号方式の強度ではなく、proof のパース・実装ロジックの徹底検証が、ブリッジの安全性を左右する論点として共有された
+
+「cross-chain の proof を、形式的受理とは別に、それが指す事実の実在としてどう独立検証するか」は、本事案を契機にブリッジ設計の必須要件として議論が進む見込み。
+
+---
+
+## 7. Lemma による分析
+
+本事案で露呈した検出と証明の落差（cross-chain の proof が、形式的受理とは別に、それが指す burn の実在として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される proof を、受信側が実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を提示している。proof のパースが形式上通っても、burn の実在の proof が確認できなければ mint は事前に reject される。「暗号論理的に有効 ≠ 指す事実が実在する」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）に示している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例であり、設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照のこと。検出（事後の停止・凍結・解析）は被害の是正に、事前証明（mint 実行前の burn 来歴の独立検証）は cross-chain 発行の信頼確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照のこと。
+
+---
+
+## 8. Sources
+
+- **Halborn（一次・技術解析）**: “Explained: The Syscoin Bridge Hack (June 2026)”（2026-06、root cause＝SPV proof のパース欠陥・Nomad との同型性）— <https://www.halborn.com/blog/post/explained-the-syscoin-bridge-hack-june-2026>
+- **Cryptopolitan**: “Syscoin bridge remains paused as 5B token mint exploit threatens project's future”（2026-06）— <https://www.cryptopolitan.com/syscoin-bridge-paused-exploit-project/>
+- **AMBCrypto**: “Syscoin — How a validation flaw enabled 5 billion unauthorized SYS”（2026-06）— <https://ambcrypto.com/syscoin-how-a-validation-flaw-enabled-5-billion-unauthorized-sys/>
+- **Crypto Times**: “Syscoin Halts Bridge After Exploit Mints 5 Billion SYS Tokens”（2026-06-08）— <https://www.cryptotimes.io/2026/06/08/syscoin-halts-bridge-after-exploit-mints-5-billion-sys-tokens/>
+- **Bitcoin.com News（業界文脈）**: “Crypto Bridge Exploits Hit $328 Million by May 2026”（PeckShield 集計、8 件・累計 約 3 億 2,860 万ドル）— <https://news.bitcoin.com/crypto-bridge-exploits-328-million-may-2026-peckshield/>
+
+---
+
+## 9. Brief 配布について
+
+Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
+
+[Discovery Call →](https://tally.so/r/EkBqDX)
+[ホワイトペーパー →](https://tally.so/r/xX0VYv)
+[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.
