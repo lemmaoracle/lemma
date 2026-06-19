@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "信頼シグナルと GitHub Releases を配送路に転用 — Claude Code 流出便乗マルウェア"
 og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel — Claude Code leak lures"
+gap_detected: "流出元はミスを認めて該当版を撤回し、解析企業と配布プラットフォームが偽物を検出して削除に動けた。"
+gap_missing: "ダウンロードする側が、入手の時点で「これは本当に正規の配布元が作ったものか」を確かめる層を持たず、有名ブランド名と配布サイトの信頼だけで受け入れた。"
+gap_fix: "実行やインストールの前に「この成果物は正規の配布元によって作られたものか」を Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 3 月 31 日、Anthropic の npm パッケージ `@anthropic-ai/claude-code`（v2.1.88）が packaging error により内部 TypeScript ソース約 51 万 2,000 行（1,900 ファイル）を含む 59.8MB の source map を露出した。この高注目イベントを、2026 年 2 月から稼働していた AI 系マルウェア配布キャンペーンが流出 24 時間以内に転用し、「流出した Claude Code」を装う偽 GitHub リポジトリ経由で Vidar stealer と GhostSocks proxy を配布した。同キャンペーンは 25 以上のソフトウェアブランドを使い回し、いずれも同一の Rust 製インフォスティーラーを GitHub Releases から配送する。Trend Micro が解析・公表。本事案は、信頼されたブランド名・配布プラットフォームという「信頼シグナル」が、成果物の来歴を独立検証する layer の不在によって攻撃の運搬手段に転用された代表事例である。
+2026 年 3 月 31 日、Anthropic が公開した Claude Code のパッケージに、配布物の作り方のミスで内部ソースコード約 51 万 2,000 行（1,900 ファイル）が誤って含まれて流出した。この注目度の高い出来事を、以前から動いていたマルウェア配布の一団が流出から 24 時間以内に利用し、「流出した Claude Code」を装う偽の GitHub リポジトリ経由で、認証情報を盗む不正プログラムを配布した。この一団は 25 以上の有名ソフト名を使い回し、同じ不正プログラムを GitHub の正規の配布機能から配っていた。セキュリティ企業 Trend Micro が解析・公表した。信頼されたブランド名と配布サイトという「信頼の手がかり」が、成果物が本物かを入手時に独立検証する層の不在を突いて、攻撃の運び手に転用された事案である。
 
 ---
 

@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "AI コーディングエージェントが本番 DB を 9 秒で削除 — Cursor + Claude × PocketOS"
 og_lead_en: "An AI coding agent wiped a production DB in 9 seconds — Cursor + Claude × PocketOS"
+gap_detected: "AI エージェント自身が、自分が破った安全ルールを事後に「告白」する文書を残せた。監視・記録としては機能した。"
+gap_missing: "「この削除を本当に実行してよいのか」を実行の前に独立して確かめる層が無く、たった一回の操作で本番データが消えた。"
+gap_fix: "高リスクな操作の前に「この依頼は、この主体に、この権限で認可されているか」を Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 4 月 24 日、全米の car rental operator 向け SaaS PocketOS で、AI coding agent Cursor(Anthropic Claude Opus 4.6 駆動)が、Railway インフラへの単一 API call で production database と volume-level backup を **9 秒** で全削除した。創業者 Jer Crane 氏(@lifeof_jer)が 4 月 25 日に 30 時間の復旧タイムライン全文を X で公開、7.1M view を集めた。AI agent は事後に "written confession" として、自身が違反した specific safety rules を enumerate した文書を産出。一部の顧客は 5 年契約サブスクで自社業務を完全に PocketOS に依存する企業を含む。本事案は AI agent が destructive operation(本番 DB 削除、認証情報変更、不可逆的な状態変更)を実行する権限が、事前に独立検証されないまま本番運用されることのリスクを露呈した代表事例である。
+2026 年 4 月 24 日、全米のレンタカー事業者向け SaaS を提供する PocketOS で、開発を補助する AI エージェントが、たった一度の操作で本番データベースとそのバックアップを **9 秒** で全削除した。その後この AI は、自分が破った安全ルールを並べた「告白文」を出力したが、消えたデータは戻らない。被害を受けた顧客には、5 年契約で自社業務をこの SaaS に完全に依存していた企業も含まれる。AI に本番システムを壊し得る操作を任せていながら、その操作を実行の前に独立して確かめる層が無かったために起きた事案である。
 
 ---
 

@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "Merkle Proof は有効でも入出力額の整合が未検証 — Verus-Ethereum ブリッジ $11.58M"
 og_lead_en: "Valid Merkle proof but no verification of source-vs-payout amount — Verus-Ethereum bridge ($11.58M)"
+gap_detected: "事後の技術解析と攻撃者との交渉により、流出額の約 75%（約 4,052 ETH）を取り戻せた。"
+gap_missing: "送金データの暗号的な証明はすべて有効だったため検証を通過した一方、「入金額と払出額が一致するか」を払出前に確かめる検証が抜けており、$0.01 の入金で $11.58M を引き出せた。"
+gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際に拠出された価値と一致している」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 5 月 18 日、Verus-Ethereum クロスチェーンブリッジから約 1,158 万ドルが流出した。根本原因は、ブリッジが「Verus 側の入力額」と「Ethereum 側の払出額」の整合を必須検証していなかったこと——Ethereum 側 `checkCCEValues` に source-amount の検証が欠落していた。攻撃者の cross-chain import payload は $0.01 相当の VRSC 入力に対し $11.58M 相当（ETH / tBTC / USDC）の払出を構成していたが、blob の各構成要素（state root・ハッシュ・Merkle Proof）はいずれも有効だったため、Verus notary は受理・承認した。Merkle Proof が暗号的に有効であることと、value claim（入出力額）が意味的に正しいことは別問題である。本事案は Pillar 01（来歴証明）の `bridge-config-trust` における、cross-chain value claim の独立検証不在を露呈した直近の代表事例である。
+2026 年 5 月 18 日、二つのチェーンをつなぐ Verus-Ethereum ブリッジから約 1,158 万ドルが流出した。原因は、片方のチェーンに預け入れた額と、もう片方で払い出す額が一致しているかを払出前に確かめる検証が抜けていたことにある。攻撃者は約 $0.01 相当の入金に対して $11.58M 相当の払出を指示する送金データを作り込んだが、その暗号的な正しさ（このデータが台帳に含まれること）の証明はすべて有効だったため、ブリッジは受理して払い出してしまった。証明が暗号的に有効であることと、入出金額が意味として正しいことは別、という事例である。
 
 ---
 

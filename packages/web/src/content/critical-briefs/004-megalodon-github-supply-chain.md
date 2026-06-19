@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "6 時間で 5,561 リポジトリの CI/CD 認証情報を窃取 — Megalodon GitHub サプライチェーン"
 og_lead_en: "5,561 repos poisoned in 6 hours via CI/CD credential theft — Megalodon GitHub supply chain"
+gap_detected: "セキュリティ企業 3 社が独立に解析し、感染の起点と影響範囲（5,561 リポジトリ）を 5 日以内に特定できた。"
+gap_missing: "盗まれた正規の認証情報で投入されたため、コードを取り込む前に「本当に正規の開発者が出したものか」を確かめる層が無く、偽装コミットが正規扱いで通った。"
+gap_fix: "コードを取り込み・公開する前に「この変更は正規の開発者が正規の権限で出したものである」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 5 月に発覚した Megalodon は、自動化されたサプライチェーン攻撃キャンペーン。6 時間で GitHub リポジトリ 5,561 件に 5,781 件の悪意あるコミットが push され、CI/CD 認証情報を盗み取るマルウェアが拡散された。Safe Dep と Ox Security が初期解析、Hudson Rock がインフォスティーラー感染を起点として特定。攻撃の chain は、感染した開発者の窃取された GitHub credentials を用いた直接 push であり、npm パッケージ @tiledesk/tiledesk-server の正規 npm アカウントは触らずに GitHub リポジトリ側を侵害して悪意あるバージョン(2.18.6 〜 2.18.12)を流通させた。本事案は code provenance(commit author / origin)の独立検証不在を露呈した最近の代表事例である。
+「Megalodon」と呼ばれる自動化された攻撃が、盗み出した開発者の正規の認証情報を悪用し、6 時間で GitHub 上の 5,561 リポジトリに 5,781 件の不正なコードを送り込んだ。取り込んだ組織の開発基盤からクラウドの認証情報を次々と盗み出し連鎖的に広がる仕組みで、正規アカウントを装っていたため正規の変更として通ってしまった。
 
 ---
 
