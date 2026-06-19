@@ -373,18 +373,15 @@ const labels = isJa
         </section>
       )}
 
-      {/* 導線 v2 §7: newsletter consolidated to the footer; Cite collapsed by default. */}
-      <details class="bd-cite">
-        <summary class="bd-cite__summary">{isJa ? "この Brief を引用する" : "Cite this Brief"}</summary>
-        <CiteBriefBox
-          locale={locale}
-          briefNo={briefNoPad}
-          titleForCitation={localizedTitle}
-          year={brief.data.published.getFullYear()}
-          briefUrl={briefUrl}
-          briefSlug={brief.id}
-        />
-      </details>
+      {/* 導線 v2 §7: newsletter consolidated to the footer. Cite kept expanded. */}
+      <CiteBriefBox
+        locale={locale}
+        briefNo={briefNoPad}
+        titleForCitation={localizedTitle}
+        year={brief.data.published.getFullYear()}
+        briefUrl={briefUrl}
+        briefSlug={brief.id}
+      />
 
       {showRevisionHistory && (
         <BriefRevisionNote
@@ -1088,45 +1085,6 @@ const labels = isJa
     font-weight: 700;
     letter-spacing: 0.04em;
     white-space: nowrap;
-  }
-
-  /* ─── CITE (collapsible) ─── */
-  .bd-cite {
-    margin: 72px 0 0;
-    border-top: 1px solid var(--lemma-line);
-  }
-  .bd-cite__summary {
-    cursor: pointer;
-    list-style: none;
-    padding: 18px 0 0;
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .bd-cite__summary::-webkit-details-marker {
-    display: none;
-  }
-  .bd-cite__summary::after {
-    content: "▾";
-    font-size: 10px;
-    transition: transform 0.15s;
-  }
-  .bd-cite[open] .bd-cite__summary::after {
-    transform: rotate(180deg);
-  }
-  /* The inner CiteBriefBox renders its own heading; the summary replaces it. */
-  .bd-cite :global(.cite-box) {
-    margin-top: 12px;
-  }
-  .bd-cite :global(.cite-eyebrow),
-  .bd-cite :global(.cite-heading) {
-    display: none;
   }
 
   /* ─── COPY TOAST ─── */
