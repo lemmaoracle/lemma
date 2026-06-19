@@ -24,15 +24,21 @@ export interface Props {
   locale: Locale;
   base: string;
   slug: string;
-  placement: "banner" | "tail";
+  placement: "banner" | "loop" | "tail";
 }
 
 const { locale, base, slug, placement } = Astro.props as Props;
 const theme = resolveBriefCtaTheme(slug);
 const c = briefCtaCopy(locale, theme);
-const medium = placement === "banner" ? "banner" : "cta_tail";
+const medium =
+  placement === "banner" ? "banner" : placement === "loop" ? "openloop" : "cta_tail";
 const lpHref = attackLpUrl(base, locale, medium);
 const discoveryHref = attackDiscoveryUrl(locale, medium);
+
+// Open-loop line: bold the leading question, keep the rest normal.
+const qIdx = c.loopLine.search(/[？?]/);
+const loopBold = qIdx >= 0 ? c.loopLine.slice(0, qIdx + 1) : c.loopLine;
+const loopRest = qIdx >= 0 ? c.loopLine.slice(qIdx + 1) : "";
 ---
 
 {
@@ -49,6 +55,18 @@ const discoveryHref = attackDiscoveryUrl(locale, medium);
         data-cta="banner"
       >
         {c.bannerBtn}
+      </a>
+    </aside>
+  ) : placement === "loop" ? (
+    <aside class="bac-loop" data-attack-loop>
+      <p class="bac-loop__t"><b>{loopBold}</b>{loopRest}</p>
+      <a
+        class="bac-loop__btn"
+        href={lpHref}
+        data-brief-cta-ev="brief_detail_lp_click"
+        data-cta="openloop"
+      >
+        {c.loopBtn}
       </a>
     </aside>
   ) : (
@@ -84,7 +102,8 @@ const discoveryHref = attackDiscoveryUrl(locale, medium);
      --brief-display falls back to Noto Serif JP = 明朝 otherwise). Palette
      reads the global cream/brown tokens with hard fallbacks. */
   .bac-banner,
-  .bac-tail {
+  .bac-tail,
+  .bac-loop {
     --bac-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
     --bac-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
     --bac-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -98,8 +117,52 @@ const discoveryHref = attackDiscoveryUrl(locale, medium);
     font-family: var(--bac-body);
   }
   :root[lang="en"] .bac-banner,
-  :root[lang="en"] .bac-tail {
+  :root[lang="en"] .bac-tail,
+  :root[lang="en"] .bac-loop {
     --bac-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+  }
+
+  /* ─── open-loop CTA (§1-screen, after the gap module) ─── */
+  .bac-loop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 18px;
+    flex-wrap: wrap;
+    background: #1d1710;
+    border-radius: 11px;
+    padding: 15px 18px;
+    margin: 0 0 26px;
+  }
+  .bac-loop__t {
+    flex: 1;
+    min-width: 200px;
+    color: #f3e9d8;
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .bac-loop__t b {
+    color: #fff;
+  }
+  .bac-loop__btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    background: #f0c98a;
+    color: #1d1710;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: var(--bac-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .bac-loop__btn:hover {
+    background: #e7b56a;
   }
 
   /* ─── §1 banner ─── */
