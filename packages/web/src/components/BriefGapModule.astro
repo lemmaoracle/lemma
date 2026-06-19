@@ -1,0 +1,135 @@
+---
+/**
+ * First-screen "detection vs proof" gap module (Brief restructure 2026-06).
+ *
+ * Renders the Brief's core — the detection–proof gap — as one calm card right
+ * after the TL;DR: ✓ detection worked / ✕ but there was no proof / → what
+ * proof would have prevented it. Driven by the gap_detected / gap_missing /
+ * gap_fix frontmatter fields; the template only mounts this when all three
+ * exist, so briefs without them are unaffected.
+ */
+import type { Locale } from "../i18n/translations";
+
+export interface Props {
+  locale: Locale;
+  detected: string;
+  missing: string;
+  fix: string;
+}
+
+const { locale, detected, missing, fix } = Astro.props as Props;
+const isJa = locale === "ja";
+const t = isJa
+  ? {
+      head: "検出と証明の落差 — この Brief の核心",
+      ok: "検出は効いた",
+      ng: "だが、証明が無かった",
+      fix: "Lemma で変わること",
+    }
+  : {
+      head: "Detection vs. proof — the core of this Brief",
+      ok: "Detection worked",
+      ng: "But there was no proof",
+      fix: "What Lemma changes",
+    };
+---
+
+<aside class="bgap" data-brief-gap aria-label={t.head}>
+  <div class="bgap__h">{t.head}</div>
+  <div class="bgap__row bgap--ok">
+    <span class="bgap__mk">✓</span>
+    <div class="bgap__tx"><b>{t.ok}</b>{detected}</div>
+  </div>
+  <div class="bgap__row bgap--ng">
+    <span class="bgap__mk">✕</span>
+    <div class="bgap__tx"><b>{t.ng}</b>{missing}</div>
+  </div>
+  <div class="bgap__row bgap--fix">
+    <span class="bgap__mk">→</span>
+    <div class="bgap__tx"><b>{t.fix}</b>{fix}</div>
+  </div>
+</aside>
+
+<style>
+  .bgap {
+    --bg-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --bg-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bg-mono: "Space Mono", ui-monospace, monospace;
+    --bg-green: #3f7a4d;
+    --bg-red: #b23c2e;
+    --bg-brown: var(--accent, #8b4513);
+    border: 1px solid #dcc7a8;
+    border-radius: 13px;
+    overflow: hidden;
+    background: var(--lemma-cream, #fcfaf5);
+    margin: 6px 0 20px;
+    font-family: var(--bg-body);
+  }
+  :root[lang="en"] .bgap {
+    --bg-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+  }
+  .bgap__h {
+    background: #f3e7d2;
+    color: var(--bg-brown);
+    font-family: var(--bg-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 11px 20px;
+  }
+  .bgap__row {
+    display: flex;
+    gap: 15px;
+    padding: 17px 20px;
+    border-top: 1px solid #efe4d2;
+    align-items: flex-start;
+  }
+  .bgap__row:first-of-type {
+    border-top: 0;
+  }
+  .bgap--fix {
+    background: #f9f1e4;
+  }
+  .bgap__mk {
+    flex: 0 0 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    margin-top: 1px;
+  }
+  .bgap--ok .bgap__mk {
+    background: var(--bg-green);
+  }
+  .bgap--ng .bgap__mk {
+    background: var(--bg-red);
+  }
+  .bgap--fix .bgap__mk {
+    background: var(--bg-brown);
+  }
+  .bgap__tx {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--black, #1a1a1a);
+  }
+  .bgap__tx b {
+    display: block;
+    font-family: var(--bg-display);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+  .bgap--ok .bgap__tx b {
+    color: var(--bg-green);
+  }
+  .bgap--ng .bgap__tx b {
+    color: var(--bg-red);
+  }
+  .bgap--fix .bgap__tx b {
+    color: var(--bg-brown);
+  }
+</style>

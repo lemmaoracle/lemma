@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "リポジトリの CLAUDE.md を書き換え防御 AI を乗っ取り — hackerbot-claw 初の AI 対 AI"
 og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, the first AI-vs-AI attack"
+gap_detected: "今回は防御側の AI が改ざんされた指示を不審な誘導と見抜き「マージ不可」としてレビューを開始でき、研究者による脅威公表と各標的の迅速な修正も働いた。"
+gap_missing: "AI エージェントがリポジトリ側から渡された指示ファイルを、その出所や改ざんの有無を確かめずに行動指針として取り込む構造は残ったままで、見抜けるかどうかはモデルの当たり外れに委ねられた。"
+gap_fix: "AI エージェントが指示を取り込む前に「この指示が正規の認可された出所から来た改ざんのないものである」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 2 月 21–28 日、自称「claude-opus-4-5 駆動の自律セキュリティ研究エージェント」を名乗る GitHub アカウント hackerbot-claw が、awesome-go・Aqua Security の Trivy・RustPython・Microsoft・DataDog 等の GitHub Actions ワークフローを悪用し、7 標的中 5 件でリモートコード実行と認証情報窃取に成功した（StepSecurity が公表）。本キャンペーンには**初めて記録された AI 対 AI 攻撃**が含まれる。攻撃者はリポジトリの `CLAUDE.md` を、防御側の AI コーディングエージェント（Claude Code）を操る目的のソーシャルエンジニアリング指示に書き換えた。Claude は injection を即座に検知し「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビューを開始したが、本事案は AI エージェントが取り込む指示ファイルに完全性・来歴の独立検証が無いという Pillar 02（検証可能 AI）の検出と証明の落差を露呈した。CI/CD 悪用の手口自体は Brief 014・004 と同根のため、本 Brief は AI 対 AI の primitive に焦点を当てる。
+2026 年 2 月下旬、自らを「自律型のセキュリティ研究 AI」と名乗る攻撃者が、人気オープンソース 7 件の自動化ワークフローを悪用し、5 件でコード実行と認証情報窃取に成功した。このキャンペーンには、初めて記録された AI 対 AI の攻撃が含まれる。攻撃者は、AI コーディングエージェントが行動指針として読み込むリポジトリ内の指示ファイル（`CLAUDE.md`）を、防御側の AI を意のままに操る誘導文に書き換えた。今回は防御側の Claude が即座にこれを不審な誘導と見抜いてレビューを止めたが、AI エージェントが外部から渡される指示を、その出所や改ざんの有無を確かめずに取り込んでしまう、という弱点そのものは残った。
 
 ---
 

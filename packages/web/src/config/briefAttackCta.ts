@@ -42,6 +42,9 @@ interface SharedCopy {
   tailMainBtn: string;
   tailSubLink: string;
   tailNote: string;
+  /** Open-loop CTA (§1-screen, after the gap module) — theme-invariant. */
+  loopLine: string;
+  loopBtn: string;
 }
 
 const SHARED: Record<Locale, SharedCopy> = {
@@ -51,6 +54,8 @@ const SHARED: Record<Locale, SharedCopy> = {
     tailMainBtn: "最新AI攻撃実験を見る →",
     tailSubLink: "デモをリクエスト →",
     tailNote: "※ セキュリティ評価（システム監査）は別途・規模に応じて設計します。",
+    loopLine: "同じ構造を、最新 AI 6 種で再現したら？ 最強モデルが 5/5 突破。Lemma 導入後は突破ゼロだった。",
+    loopBtn: "実証を見る →",
   },
   en: {
     bannerTag: "AI ATTACK LAB",
@@ -59,6 +64,9 @@ const SHARED: Record<Locale, SharedCopy> = {
     tailSubLink: "Request a demo →",
     tailNote:
       "* Security assessment (system audit) is scoped separately, sized to the engagement.",
+    loopLine:
+      "What if the same structure were run against 6 frontier AIs? The strongest broke through 5/5; after Lemma, 0 broke through.",
+    loopBtn: "See the evidence →",
   },
 };
 
@@ -82,7 +90,7 @@ const THEMES: Record<Locale, Record<BriefCtaTheme, ThemeCopy>> = {
     },
     social_eng: {
       bannerLine: "AIが承認フローをなりすまし突破。止め方は？",
-      tailHead: "承認・送金フロー、なりすましに耐えますか？",
+      tailHead: "自社のシステムはなりすましに耐えますか？",
     },
   },
   en: {
@@ -105,7 +113,7 @@ const THEMES: Record<Locale, Record<BriefCtaTheme, ThemeCopy>> = {
     },
     social_eng: {
       bannerLine: "AI impersonated its way through the approval flow. How do you stop it?",
-      tailHead: "Would your approval & payment flow withstand impersonation?",
+      tailHead: "Would your systems withstand impersonation?",
     },
   },
 };
@@ -118,6 +126,7 @@ const THEME_BY_SLUG: Readonly<Record<string, BriefCtaTheme>> = {
   "066-litellm-ai-gateway-privilege-escalation": "data_exfil_privesc",
   "064-salesloft-drift-oauth-salesforce": "data_exfil_privesc",
   "063-claude-code-github-action-bot-trust": "social_eng",
+  "047-openclaw-agent-phishing": "social_eng",
 };
 
 export function resolveBriefCtaTheme(slug: string): BriefCtaTheme {

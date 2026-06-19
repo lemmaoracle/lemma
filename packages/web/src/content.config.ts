@@ -111,6 +111,16 @@ const briefSchema = z
      * Existing briefs leave this empty; future briefs can opt in.
      */
     cover: z.string().url().optional(),
+    /**
+     * First-screen "detection vs proof" gap module (Brief restructure 2026-06).
+     * One-sentence each: what detection caught (ok), what was missing /
+     * unverified before the action (ng), and what pre-execution proof would
+     * have prevented it (fix). The module renders only when all three are set;
+     * briefs without them render unchanged. Authored per locale.
+     */
+    gap_detected: z.string().optional(),
+    gap_missing: z.string().optional(),
+    gap_fix: z.string().optional(),
   })
   .refine(
     (data) => {

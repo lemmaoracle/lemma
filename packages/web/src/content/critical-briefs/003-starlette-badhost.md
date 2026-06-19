@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "Host ヘッダー操作で MCP server の認証を回避 — Starlette CVE-2026-48710 (BadHost)"
 og_lead_en: "Host header manipulation bypassed MCP server auth — Starlette CVE-2026-48710 (BadHost)"
+gap_detected: "影響を受けるサーバーを脆弱なバージョンから特定するオンライン点検ツールが、発見者から公開された。"
+gap_missing: "通信の宛先情報を 1 文字だけ細工すると、本来そこで止めるはずの認証の関門を、行動の前に「誰の正規の要求か」を確かめないまま素通りできた。"
+gap_fix: "外部リソースへアクセスする前に「この要求は、誰が、どの権限で、どこまで出したものか」を Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 5 月 27 日、Python の ASGI フレームワーク Starlette(週 3.25 億ダウンロード)に CVE-2026-48710(BadHost)が公開された。HTTP Host ヘッダーへの 1 文字挿入で、Starlette のパスベース認証ミドルウェアを回避できる脆弱性で、FastAPI、vLLM、LiteLLM、Text Generation Inference、OpenAI 互換プロキシ、MCP サーバー、エージェントハーネス、評価ダッシュボード、モデル管理 UI など Python AI エコシステムの大部分に波及する。発見した X41 D-Sec は CVSS 7 評価を「深刻度を著しく過小評価している」と表現、Secwest も同様の見解。MCP サーバーは外部リソース接続のための認証情報を保管する性質上、攻撃者にとって価値が高く、本脆弱性は AI agent infrastructure 層における trust boundary 失敗の象徴的事例として位置付けられる。
+多くの AI ツールの土台となっている Python 製の基盤ソフト Starlette（週 3.25 億ダウンロード）に、通信の宛先情報をわずか 1 文字細工するだけで認証の関門を素通りできる欠陥が見つかった。FastAPI など主要な AI 関連ソフトの大半が影響を受け、特に外部接続用の認証情報を預かる中継サーバーが狙われやすいため、発見元は公式の深刻度評価を「実態より著しく低い」と指摘している。
 
 ---
 

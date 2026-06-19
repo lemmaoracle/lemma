@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "guardian の鍵は無事でも、署名対象のイベントの来歴が検証されなかった — Alephium TokenBridge $815K 流出"
 og_lead_en: "Guardian keys intact — but the provenance of the events they signed was never verified — Alephium TokenBridge $815K exploit"
+gap_detected: "Blockaid のリアルタイム検知と SEAL 911 の調査支援が、被害把握・ブリッジ停止・無担保トークンの焼却（約 96.4%）・資金追跡を可能にした。"
+gap_missing: "「署名対象のイベントが、正規のコントラクトから正規の経路で発されたものか」を署名の前に確かめる層が無く、攻撃者が偽造したイベントは素通りした。"
+gap_fix: "ブリッジが署名・払出を行う前に「このイベントは、登録された正規の発生源から、改ざんなく発されている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 5 月 30 日、Alephium の TokenBridge(Wormhole フォーク)が Ethereum / BNB Chain の両側で exploit を受け、約 81.5 万ドル相当の資産が流出、1,375.7 万 wALPH が無担保でミントされた。guardian の秘密鍵は侵害されておらず、スマートコントラクトのバグでもない。攻撃者は LOG7 で偽の Wormhole メッセージを emit するコントラクトをデプロイし、ブリッジのバックエンドのオフチェーン脆弱性を突いて、偽造イベントを guardian に「観測」させ、署名させた。guardian の署名は有効、VAA も形式上有効——しかし署名対象のイベント自体が攻撃者のコントラクトから発されたものだった。主要な流出は約 64 秒で完了した。本事案は Pillar 01(来歴証明)の `bridge-config-trust` における、**署名の有効性とイベントの来歴は別問題である**ことを示す直近の代表事例であり、Brief 001(観測層への偽データ注入)・016(有効 Proof でも金額整合未検証)に続く bridge 信頼層の第 3 の failure primitive を構成する。
+2026 年 5 月 30 日、Alephium のクロスチェーンブリッジ（TokenBridge）が攻撃を受け、約 81.5 万ドル相当の資産が流出し、裏づけのない 1,375.7 万 wALPH が新規に発行された。ブリッジを承認する側（guardian）の鍵は盗まれておらず、プログラムのバグでもない。攻撃者は、ブリッジが「正規の取引が起きた」と認識するためのイベント自体を偽造し、それを guardian に正規のものとして観測・署名させた。署名手続きそのものは正常に機能していたが、署名する対象のイベントが攻撃者のコントラクトから発されたものか否か（来歴）を確かめる層が無かった。主要な流出は約 64 秒で完了した。本事案は Pillar 01（来歴証明）の `bridge-config-trust` における、**署名の有効性とイベントの来歴は別問題である**ことを示す直近の代表事例であり、Brief 001（観測層への偽データ注入）・016（有効 Proof でも金額整合未検証）に続く bridge 信頼層の第 3 の failure primitive を構成する。
 
 ---
 

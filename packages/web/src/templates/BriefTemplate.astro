@@ -30,6 +30,7 @@ import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefHero from "../components/BriefHero.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
 import BriefAttackCta from "../components/BriefAttackCta.astro";
+import BriefGapModule from "../components/BriefGapModule.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { extractTldr } from "../data/extractTldr";
@@ -67,6 +68,17 @@ const briefUrl = `https://lemma.frame00.com${base}${briefPath}`;
 const ogImage = `https://lemma.frame00.com/og/critical-briefs/${locale}/${brief.id}.png`;
 
 const { Content, headings } = await render(brief);
+
+// First-screen gap module (Brief restructure 2026-06): renders only when all
+// three sentences are authored; briefs without them are unchanged.
+const gap =
+  brief.data.gap_detected && brief.data.gap_missing && brief.data.gap_fix
+    ? {
+        detected: brief.data.gap_detected,
+        missing: brief.data.gap_missing,
+        fix: brief.data.gap_fix,
+      }
+    : null;
 
 const showRevisionHistory = brief.data.version !== "1.0";
 
@@ -278,15 +290,29 @@ const labels = isJa
 
       <div class="bd-layout">
         <div class="bd-content">
+          {/* 第1スクリーン改修 §1: theme banner above the TL;DR (top of body). */}
+          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="banner" />
+
           <article class="brief-body">
             <Content />
           </article>
 
-          {/* 導線 v2 §1 banner — rendered here, moved to just after the TL;DR
-              by the inline script below (neutral analysis stays first). */}
-          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="banner" />
+          {/* 第1スクリーン改修 §3/§4: gap module + open-loop CTA — rendered here,
+              JS-moved to just after the TL;DR by the inline script below. The
+              gap module renders only when its frontmatter fields are authored. */}
+          {gap && (
+            <div data-firstscreen>
+              <BriefGapModule
+                locale={locale}
+                detected={gap.detected}
+                missing={gap.missing}
+                fix={gap.fix}
+              />
+              <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="loop" />
+            </div>
+          )}
 
-          {/* 導線 v1 §2 tail CTA — article-end, single path to the LP. */}
+          {/* §2 tail CTA — article-end, single path to the LP. */}
           <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="tail" />
         </div>
 
@@ -403,16 +429,16 @@ const labels = isJa
     var body = document.querySelector('.brief-body');
     if (!body) return;
 
-    // Move the §1 attack banner to just after the TL;DR para, so the neutral
-    // TL;DR is read first (導線 v2 §1, guardrail §4).
+    // Move the first-screen block (gap module + open-loop CTA) to just after
+    // the TL;DR para. The theme banner now renders statically above the TL;DR.
     var firstH2 = body.querySelector(':scope > h2');
     var tldrP = null;
     if (firstH2) {
       tldrP = firstH2.nextElementSibling;
       while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
     }
-    var atkBanner = document.querySelector('[data-attack-banner]');
-    if (atkBanner && tldrP) tldrP.parentNode.insertBefore(atkBanner, tldrP.nextSibling);
+    var fs = document.querySelector('[data-firstscreen]');
+    if (fs && tldrP) tldrP.parentNode.insertBefore(fs, tldrP.nextSibling);
   })();
 </script>
 
@@ -671,16 +697,13 @@ const labels = isJa
     border-bottom-color: var(--accent);
     color: #6e3610;
   }
-  /* 導線 v1: the §1 banner is moved into .brief-body after the TL;DR, so the
-     generic link/paragraph rules above would otherwise repaint its button
-     text brown-on-brown. Keep the banner's own styling intact. */
-  .brief-body :global(.bac-btn),
-  .brief-body :global(.bac-btn:hover) {
-    color: var(--lemma-cream);
+  /* 第1スクリーン改修: the gap module + open-loop CTA are JS-moved into
+     .brief-body after the TL;DR. Keep the open-loop button from inheriting the
+     generic body link color/underline (it has its own dark-on-amber styling). */
+  .brief-body :global(.bac-loop__btn),
+  .brief-body :global(.bac-loop__btn:hover) {
+    color: #1d1710;
     border-bottom: none;
-  }
-  .brief-body :global(.bac-line) {
-    margin: 0;
   }
 
   .brief-body :global(h2) {

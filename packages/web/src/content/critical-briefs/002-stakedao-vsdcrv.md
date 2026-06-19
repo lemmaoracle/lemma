@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "デプロイヤー鍵で LayerZero 信頼設定を書き換え不正ミント — Stake DAO vsdCRV"
 og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — Stake DAO vsdCRV"
+gap_detected: "セキュリティ企業 Blockaid が攻撃を分単位でリアルタイム検知し、迅速な封じ込めにつながった。"
+gap_missing: "「どこからの依頼を信頼するか」の設定そのものが攻撃者の鍵で書き換えられており、偽の依頼を受け入れる前に出所を確かめる層が無かった。"
+gap_fix: "資産を発行する前に「このメッセージは正規の出所から来ている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 5 月 27 日、DeFi プロトコル Stake DAO の vsdCRV を巡る cross-chain インフラ上で、Arbitrum 上に 5.4 兆 vsdCRV が不正にミントされた。攻撃者は Stake DAO デプロイヤー秘密鍵を侵害し、その鍵を用いて LayerZero v2 における vsdCRV の信頼設定(Arbitrum 側 vsdCRV が message を受け入れる Ethereum 側 trusted source)を、攻撃者自身が展開したコントラクトへ書き換えた。その後、攻撃者のコントラクトから偽 cross-chain メッセージを送信して 5.4 兆 vsdCRV を不正ミントし、一部を 43.781 ETH(約 $91K)へ交換して Ethereum へブリッジした。Stake DAO チームは即座にメインネット側 vsdCRV の裏付資産を保護し、vsdCRV ブリッジを停止することで影響範囲を Arbitrum に限定した。
+DeFi サービス Stake DAO の管理用の秘密鍵が盗まれ、攻撃者は「どこからの依頼なら信頼するか」という設定を自分のものに書き換えて、5.4 兆 vsdCRV を不正に発行した。一部は約 91,000 ドル相当に換金されたが、運営チームが裏付け資産を即座に保護し、被害は Arbitrum 側に限定された。
 
 ---
 

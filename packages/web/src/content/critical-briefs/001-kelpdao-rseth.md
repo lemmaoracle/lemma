@@ -14,11 +14,14 @@ version: "1.0"
 status: published
 og_lead_ja: "DVN 観測層への RPC 改ざんで不正アンロック — KelpDAO / rsETH"
 og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge — KelpDAO / rsETH"
+gap_detected: "事象後の監視で被害の輪郭を絞り込み、影響範囲の同定に貢献できた。"
+gap_missing: "署名の鍵も手続きも正規だったため「署名対象のデータが本物か」を承認の前に確かめる層が無く、改ざんされた入力に正規の承認が下りた。"
+gap_fix: "資産を動かす前に「このメッセージは正規の出所から来ている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-2026 年 4 月 18 日、KelpDAO のクロスチェーンプロトコル上で 116,500 rsETH(被害規模約 ¥460 億)が不正にアンロックされた。LayerZero Labs の RPC クラウド環境への侵入を起点とする攻撃で、内部 RPC ノードが改ざんされることで LayerZero Labs DVN が参照するメッセージ観測結果が操作された。DVN 署名鍵そのものは侵害されていない。1-of-1 単一 DVN 構成のもと、改ざんされたデータに対する正規署名が単独で承認資格を持ち、偽 cross-chain メッセージが accept された。LayerZero Labs は同年 5 月、本事案の incident statement と続報を公開し、「observation layer」を独立カテゴリとして命名している。
+KelpDAO のクロスチェーン送金の仕組みで、AI ではなく自動承認の基盤が、改ざんされたデータに正規の承認を下し、116,500 rsETH（約 460 億円相当）が不正に引き出された。鍵が盗まれたのではなく、承認が参照する元データだけがすり替えられ、署名も手続きも「正規」のまま通ってしまった事案である。
 
 ---
 
