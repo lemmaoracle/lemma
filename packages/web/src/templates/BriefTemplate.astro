@@ -751,6 +751,17 @@ const labels = isJa
     border-bottom-color: var(--accent);
     color: #6e3610;
   }
+  /* 導線 v1: the §1 banner is moved into .brief-body after the TL;DR, so the
+     generic link/paragraph rules above would otherwise repaint its button
+     text brown-on-brown. Keep the banner's own styling intact. */
+  .brief-body :global(.bac-btn),
+  .brief-body :global(.bac-btn:hover) {
+    color: var(--lemma-cream);
+    border-bottom: none;
+  }
+  .brief-body :global(.bac-line) {
+    margin: 0;
+  }
 
   .brief-body :global(h2) {
     font-family: var(--brief-display);
