@@ -36,6 +36,7 @@ import {
 import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BriefIndexTemplateProps {
   locale: Locale;
@@ -241,6 +242,51 @@ const labels = isJa
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
 const featuredData = featuredBriefs.map(briefCardData);
+
+// ── Brief → Lemma conversion path (BizDev 導線モジュール v1) ──
+// Active path (banner + tail CTA) → AI-attack-resistance LP, with the
+// Discovery Call as the quiet secondary. Index uses the default (共通)
+// copy variant; per-Brief theme swaps live on the detail page. Neutral
+// hero/analysis above stays untouched; UTM + GA4 tag the Brief→LP→Call route.
+const LP_PATH = `${base}/compare/ai-models-attack-resistance/`;
+function lpUrl(medium: string): string {
+  const p = new URLSearchParams({
+    utm_source: "brief_index",
+    utm_medium: medium,
+    utm_campaign: "brief_to_lp",
+    utm_term: locale,
+  });
+  return `${LP_PATH}?${p.toString()}`;
+}
+const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?${new URLSearchParams({
+  utm_source: "brief_index",
+  utm_medium: "cta_tail",
+  utm_campaign: "brief_to_lp",
+  utm_term: locale,
+}).toString()}`;
+
+const cta = isJa
+  ? {
+      bannerTag: "最新AI攻撃実験",
+      bannerLine: "最強AIが企業システムを突破。Lemma 導入後は？",
+      bannerBtn: "結果を見る →",
+      tailHead: "AI 時代のサイバー攻撃に、備えはできていますか？",
+      tailMainBtn: "最新AI攻撃実験を見る →",
+      tailSubLink: "30分の相談を予約 →",
+      tailNote:
+        "※ セキュリティ評価（システム監査）は別途・規模に応じて設計します。",
+    }
+  : {
+      bannerTag: "AI ATTACK LAB",
+      bannerLine:
+        "The strongest AI broke into enterprise systems. What changes after Lemma?",
+      bannerBtn: "See the results →",
+      tailHead: "Are you ready for cyberattacks in the age of AI?",
+      tailMainBtn: "See the latest AI attack experiments →",
+      tailSubLink: "Book a 30-min call →",
+      tailNote:
+        "* Security assessment (system audit) is scoped separately, sized to the engagement.",
+    };
 ---
 
 <Layout
@@ -294,6 +340,24 @@ const featuredData = featuredBriefs.map(briefCardData);
           />
           <button type="submit">{labels.searchBtn}</button>
         </form>
+      </div>
+    </section>
+
+    <!-- Brief → Lemma banner (導線 v1 §1) — active path to the attack-resistance LP -->
+    <section class="bi-cta-banner-wrap">
+      <div class="bi-container">
+        <div class="bi-cta-banner">
+          <div class="bi-cta-banner-text">
+            <div class="bi-cta-tag">{cta.bannerTag}</div>
+            <p class="bi-cta-line">{cta.bannerLine}</p>
+          </div>
+          <a
+            class="bi-cta-btn"
+            href={lpUrl("banner")}
+            data-ev="brief_index_lp_click"
+            data-cta="banner"
+          >{cta.bannerBtn}</a>
+        </div>
       </div>
     </section>
 
@@ -472,6 +536,32 @@ const featuredData = featuredBriefs.map(briefCardData);
           {isJa
             ? "該当する Brief が見つかりませんでした。"
             : "No Briefs matched your filters."}
+        </div>
+      </div>
+    </section>
+
+    <!-- Brief → Lemma tail CTA (導線 v1 §2) — single path; newsletter stays below as the quiet option -->
+    <section class="bi-cta-tail">
+      <div class="bi-container">
+        <div class="bi-cta-tail-card">
+          <h2 class="bi-cta-tail-head">{cta.tailHead}</h2>
+          <div class="bi-cta-tail-actions">
+            <a
+              class="bi-cta-tail-main"
+              href={lpUrl("cta_tail")}
+              data-ev="brief_index_lp_click"
+              data-cta="cta_tail"
+            >{cta.tailMainBtn}</a>
+            <a
+              class="bi-cta-tail-sub"
+              href={discoveryUrl}
+              target="_blank"
+              rel="noopener"
+              data-ev="brief_index_call_click"
+              data-cta="cta_tail"
+            >{cta.tailSubLink}</a>
+          </div>
+          <p class="bi-cta-tail-note">{cta.tailNote}</p>
         </div>
       </div>
     </section>
@@ -1183,6 +1273,142 @@ const featuredData = featuredBriefs.map(briefCardData);
     letter-spacing: 0.04em;
   }
 
+  /* ─── BRIEF → LEMMA CONVERSION (導線 v1) ─── */
+  /* §1 banner — after hero, before featured. Visually set off from the
+     neutral analysis above (cream-deep card + brown top-bar). */
+  .bi-cta-banner-wrap {
+    padding: 8px 0 12px;
+    background: var(--bi-cream);
+  }
+  .bi-cta-banner {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 28px;
+    flex-wrap: wrap;
+    background: var(--bi-cream-deep);
+    border-radius: 14px;
+    padding: 22px 28px;
+  }
+  .bi-cta-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--bi-brown);
+    border-radius: 0 0 3px 0;
+  }
+  .bi-cta-banner-text {
+    min-width: 0;
+  }
+  .bi-cta-tag {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bi-brown);
+    margin: 0 0 8px;
+  }
+  .bi-cta-line {
+    font-family: var(--bi-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .bi-cta-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    background: var(--bi-brown);
+    color: var(--bi-cream);
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-family: var(--bi-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .bi-cta-btn:hover {
+    background: var(--bi-brown-dark);
+  }
+
+  /* §2 tail CTA — before newsletter. Single path: LP primary, Call quiet
+     secondary, but-honest note. No columns/numbers (one straight line). */
+  .bi-cta-tail {
+    padding: 24px 0 8px;
+  }
+  .bi-cta-tail-card {
+    background: var(--bi-cream-deep);
+    border: 1px solid var(--bi-line);
+    border-radius: 14px;
+    padding: 44px 32px;
+    text-align: center;
+  }
+  .bi-cta-tail-head {
+    font-family: var(--bi-display);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    margin: 0 0 24px;
+  }
+  .bi-cta-tail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 24px;
+    flex-wrap: wrap;
+  }
+  .bi-cta-tail-main {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bi-brown);
+    color: var(--bi-cream);
+    padding: 14px 30px;
+    border-radius: 999px;
+    font-family: var(--bi-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .bi-cta-tail-main:hover {
+    background: var(--bi-brown-dark);
+  }
+  .bi-cta-tail-sub {
+    font-family: var(--bi-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--bi-brown);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .bi-cta-tail-sub:hover {
+    color: var(--bi-brown-dark);
+    border-bottom-color: var(--bi-brown);
+  }
+  .bi-cta-tail-note {
+    font-size: 11.5px;
+    color: var(--bi-ink-faint);
+    line-height: 1.6;
+    margin: 20px 0 0;
+  }
+
   /* ─── NEWSLETTER ─── */
   .bi-newsletter {
     padding: 0 0 96px;
@@ -1233,6 +1459,18 @@ const featuredData = featuredBriefs.map(briefCardData);
     }
     .bi-brief-grid.list .bi-brief-meta {
       min-width: 0;
+    }
+    .bi-cta-banner {
+      padding: 20px 22px;
+    }
+    .bi-cta-line {
+      font-size: 16px;
+    }
+    .bi-cta-tail-card {
+      padding: 32px 22px;
+    }
+    .bi-cta-tail-head {
+      font-size: 20px;
     }
   }
 </style>
@@ -1473,5 +1711,31 @@ const featuredData = featuredBriefs.map(briefCardData);
       if (searchInput) searchInput.value = urlQ;
     }
     update(false);
+  })();
+</script>
+
+<!-- 導線 v1: forward Brief→LP/Call CTA clicks to GA4 (surface=brief_index). -->
+<script is:inline>
+  (function () {
+    function wire() {
+      var root = document.querySelector(".bi-page");
+      if (!root) return;
+      var sel = ".bi-cta-banner-wrap [data-ev], .bi-cta-tail [data-ev]";
+      root.querySelectorAll(sel).forEach(function (el) {
+        el.addEventListener("click", function () {
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", el.getAttribute("data-ev"), {
+            surface: "brief_index",
+            cta_label: el.getAttribute("data-cta"),
+            destination: el.getAttribute("href"),
+          });
+        });
+      });
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", wire);
+    } else {
+      wire();
+    }
   })();
 </script>
