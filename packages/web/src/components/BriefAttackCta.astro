@@ -1,0 +1,247 @@
+---
+/**
+ * Brief detail — Brief → Lemma conversion module (導線 v1).
+ *
+ * Two placements off one component:
+ *   - placement="banner": §1 strip, JS-moved to just after the TL;DR by
+ *     BriefTemplate's inline script (carries data-attack-banner). Neutral
+ *     analysis stays first.
+ *   - placement="tail": §2 single-path CTA at the article end — LP primary,
+ *     Discovery Call quiet secondary, but-honest note.
+ *
+ * Copy + theme + links come from config/briefAttackCta. CTA clicks carry
+ * data-brief-cta-ev; BriefTemplate forwards them to GA4 (surface=brief_detail).
+ */
+import type { Locale } from "../i18n/translations";
+import {
+  briefCtaCopy,
+  resolveBriefCtaTheme,
+  attackLpUrl,
+  attackDiscoveryUrl,
+} from "../config/briefAttackCta";
+
+export interface Props {
+  locale: Locale;
+  base: string;
+  slug: string;
+  placement: "banner" | "tail";
+}
+
+const { locale, base, slug, placement } = Astro.props as Props;
+const theme = resolveBriefCtaTheme(slug);
+const c = briefCtaCopy(locale, theme);
+const medium = placement === "banner" ? "banner" : "cta_tail";
+const lpHref = attackLpUrl(base, locale, medium);
+const discoveryHref = attackDiscoveryUrl(locale, medium);
+---
+
+{
+  placement === "banner" ? (
+    <aside class="bac-banner" data-attack-banner data-theme={theme}>
+      <div class="bac-banner__text">
+        <div class="bac-tag">{c.bannerTag}</div>
+        <p class="bac-line">{c.bannerLine}</p>
+      </div>
+      <a
+        class="bac-btn"
+        href={lpHref}
+        data-brief-cta-ev="brief_detail_lp_click"
+        data-cta="banner"
+      >
+        {c.bannerBtn}
+      </a>
+    </aside>
+  ) : (
+    <aside class="bac-tail" data-theme={theme}>
+      <h2 class="bac-tail__head">{c.tailHead}</h2>
+      <div class="bac-tail__actions">
+        <a
+          class="bac-tail__main"
+          href={lpHref}
+          data-brief-cta-ev="brief_detail_lp_click"
+          data-cta="cta_tail"
+        >
+          {c.tailMainBtn}
+        </a>
+        <a
+          class="bac-tail__sub"
+          href={discoveryHref}
+          target="_blank"
+          rel="noopener"
+          data-brief-cta-ev="brief_detail_call_click"
+          data-cta="cta_tail"
+        >
+          {c.tailSubLink}
+        </a>
+      </div>
+      <p class="bac-tail__note">{c.tailNote}</p>
+    </aside>
+  )
+}
+
+<style>
+  /* Scoped fonts so JA glyphs stay in Noto Sans JP (the brief page's
+     --brief-display falls back to Noto Serif JP = 明朝 otherwise). Palette
+     reads the global cream/brown tokens with hard fallbacks. */
+  .bac-banner,
+  .bac-tail {
+    --bac-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --bac-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bac-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --bac-accent: var(--accent, #8b4513);
+    --bac-accent-dark: #6b2f0a;
+    --bac-cream: var(--lemma-cream, #fcfaf5);
+    --bac-cream-deep: var(--lemma-cream-deep, #f2eedf);
+    --bac-line: var(--lemma-line, #e8dfc8);
+    --bac-ink: var(--black, #1a1a1a);
+    --bac-ink-soft: #5a5a5a;
+    font-family: var(--bac-body);
+  }
+  :root[lang="en"] .bac-banner,
+  :root[lang="en"] .bac-tail {
+    --bac-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+  }
+
+  /* ─── §1 banner ─── */
+  .bac-banner {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px 28px;
+    flex-wrap: wrap;
+    background: var(--bac-cream-deep);
+    border-radius: 14px;
+    padding: 22px 28px;
+    margin: 0 0 56px;
+  }
+  .bac-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 3px;
+    background: var(--bac-accent);
+    border-radius: 0 0 3px 0;
+  }
+  .bac-banner__text {
+    min-width: 0;
+  }
+  .bac-tag {
+    font-family: var(--bac-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bac-accent);
+    margin: 0 0 8px;
+  }
+  .bac-line {
+    font-family: var(--bac-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bac-ink);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .bac-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    background: var(--bac-accent);
+    color: var(--bac-cream);
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-family: var(--bac-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .bac-btn:hover {
+    background: var(--bac-accent-dark);
+  }
+
+  /* ─── §2 tail CTA ─── */
+  .bac-tail {
+    background: var(--bac-cream-deep);
+    border: 1px solid var(--bac-line);
+    border-radius: 14px;
+    padding: 44px 32px;
+    margin: 64px 0 0;
+    text-align: center;
+  }
+  .bac-tail__head {
+    font-family: var(--bac-display);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--bac-ink);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    margin: 0 0 24px;
+  }
+  .bac-tail__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 24px;
+    flex-wrap: wrap;
+  }
+  .bac-tail__main {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bac-accent);
+    color: var(--bac-cream);
+    padding: 14px 30px;
+    border-radius: 999px;
+    font-family: var(--bac-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .bac-tail__main:hover {
+    background: var(--bac-accent-dark);
+  }
+  .bac-tail__sub {
+    font-family: var(--bac-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--bac-accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .bac-tail__sub:hover {
+    color: var(--bac-accent-dark);
+    border-bottom-color: var(--bac-accent);
+  }
+  .bac-tail__note {
+    font-size: 11.5px;
+    color: var(--bac-ink-soft);
+    line-height: 1.6;
+    margin: 20px 0 0;
+  }
+
+  @media (max-width: 760px) {
+    .bac-banner {
+      padding: 20px 22px;
+    }
+    .bac-line {
+      font-size: 16px;
+    }
+    .bac-tail {
+      padding: 32px 22px;
+    }
+    .bac-tail__head {
+      font-size: 20px;
+    }
+  }
+</style>

@@ -29,6 +29,7 @@ import Footer from "../components/Footer.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
 import BriefHero from "../components/BriefHero.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
+import BriefAttackCta from "../components/BriefAttackCta.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { extractTldr } from "../data/extractTldr";
@@ -331,6 +332,13 @@ const labels = isJa
               <a class="secondary" href={useCasesHref}>{labels.ctaSecondary}</a>
             </div>
           </aside>
+
+          {/* 導線 v1 §1 banner — rendered here, moved to just after the TL;DR
+              by the inline script below (neutral analysis stays first). */}
+          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="banner" />
+
+          {/* 導線 v1 §2 tail CTA — article-end, single path to the LP. */}
+          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="tail" />
         </div>
 
         <aside class="bd-toc" aria-label={labels.tocLabel}>
@@ -455,15 +463,20 @@ const labels = isJa
     var body = document.querySelector('.brief-body');
     if (!body) return;
 
-    // 1. TL;DR-adjacent subscribe pill — move to just after the TL;DR para.
+    // 1. After the TL;DR para: subscribe pill, then the §1 attack banner —
+    //    so the neutral TL;DR is read first (導線 v1 §1, guardrail §4).
+    var firstH2 = body.querySelector(':scope > h2');
+    var tldrP = null;
+    if (firstH2) {
+      tldrP = firstH2.nextElementSibling;
+      while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
+    }
     var pill = body.querySelector(':scope > .brief-subscribe-pill');
-    if (pill) {
-      var firstH2 = body.querySelector(':scope > h2');
-      if (firstH2) {
-        var tldrP = firstH2.nextElementSibling;
-        while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
-        if (tldrP) tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
-      }
+    if (pill && tldrP) tldrP.parentNode.insertBefore(pill, tldrP.nextSibling);
+    var atkBanner = document.querySelector('[data-attack-banner]');
+    if (atkBanner && tldrP) {
+      var anchor = pill && pill.parentNode === tldrP.parentNode ? pill : tldrP;
+      anchor.parentNode.insertBefore(atkBanner, anchor.nextSibling);
     }
 
     // 2. Inline CTA — move into the body, just before §5 (i.e. after §4).
@@ -479,6 +492,29 @@ const labels = isJa
       cta.classList.add('bd-inline-cta--placed');
       if (stop) body.insertBefore(cta, stop);
       else body.appendChild(cta);
+    }
+  })();
+</script>
+
+<!-- 導線 v1: forward Brief→LP/Call CTA clicks to GA4 (surface=brief_detail). -->
+<script is:inline>
+  (function () {
+    function wire() {
+      document.querySelectorAll("[data-brief-cta-ev]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", el.getAttribute("data-brief-cta-ev"), {
+            surface: "brief_detail",
+            cta_label: el.getAttribute("data-cta"),
+            destination: el.getAttribute("href"),
+          });
+        });
+      });
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", wire);
+    } else {
+      wire();
     }
   })();
 </script>
