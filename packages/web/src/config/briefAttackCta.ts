@@ -49,14 +49,14 @@ const SHARED: Record<Locale, SharedCopy> = {
     bannerTag: "最新AI攻撃実験",
     bannerBtn: "結果を見る →",
     tailMainBtn: "最新AI攻撃実験を見る →",
-    tailSubLink: "30分の相談を予約 →",
+    tailSubLink: "デモをリクエスト →",
     tailNote: "※ セキュリティ評価（システム監査）は別途・規模に応じて設計します。",
   },
   en: {
     bannerTag: "AI ATTACK LAB",
     bannerBtn: "See the results →",
     tailMainBtn: "See the latest AI attack experiments →",
-    tailSubLink: "Book a 30-min call →",
+    tailSubLink: "Request a demo →",
     tailNote:
       "* Security assessment (system audit) is scoped separately, sized to the engagement.",
   },
