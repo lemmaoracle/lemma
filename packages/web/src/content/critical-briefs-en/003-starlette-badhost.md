@@ -70,7 +70,7 @@ The mcp-scan.nemesis.services scanner X41 D-Sec released identifies affected ser
 
 That said, the root cause is that the path-based authentication scheme itself does not independently verify the trust boundary. The Starlette 1.0.1 patch corrects the specific divergence, but in a world where AI agents access external resources over HTTP, a higher-level trust-boundary verification — one that does not rely on framework-side bug fixes — is essential.
 
-Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence.
 
 ---
 
@@ -87,7 +87,7 @@ The "data at risk" categories X41 D-Sec enumerated illustrate the reach of this 
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof), Lemma proposes a design that embeds, at the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," "against which resource" — so that the receiver can make accept decisions by reading the proof, not the config or the path. Even if a path-resolution bug exists in the framework, the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof), Lemma proposes a design that embeds, at the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," "against which resource" — so that the receiver can make accept decisions by reading the proof, not the config or the path. Even if a path-resolution bug exists in the framework, the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not.
 
 ---
 
@@ -97,16 +97,13 @@ Against the detection–proof gap exposed by this incident (the absence of a lay
 - **X41 D-Sec advisory and MCP scanner** (X41 D-Sec official) — The public mcp-scan.nemesis.services scanner and the technical advisory. https://mcp-scan.nemesis.services/
 - **Starlette 1.0.1 release notes** (framework official, GitHub release) — Patch landing for BadHost. https://github.com/Kludex/starlette/releases/tag/1.0.1
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package" (2026-05-27, independent reporting) — https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

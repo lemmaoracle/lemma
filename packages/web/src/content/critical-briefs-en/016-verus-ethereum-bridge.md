@@ -69,7 +69,7 @@ Bridge monitoring, anomaly detection, and post-hoc root-cause analysis (such as 
 
 But detection does not change what the receiving side (the Ethereum-side contract, the notary) actually **accepts**. The blob's cryptographic components were all valid, so signature and Merkle Proof verification passed. What was missing was verification of "is the value claim semantically correct (does the input amount match the payout)?" — a separate question from cryptographic validity. Anomaly detection firing after a payout does not stop the payout that `checkCCEValues` accepted at the time. For regulatory reporting and audit, the validity of a Merkle Proof alone is not an independent evidentiary trail that "this cross-chain import was a legitimate value claim."
 
-Pre-execution attestation takes the design choice of receiving the cross-chain value claim as an independently verifiable cryptographic proof on the receiving side, before execution, and verifying the integrity of "value actually contributed on the source side" against "payout amount." If the proof signals "input and payout amounts are inconsistent," the payout is blocked before it executes. Inclusion proofs via Merkle Proof (detection-style: "this blob exists") and pre-execution attestation of the value claim ("this payout matches the source-side input") are **complementary** rather than substitutes (see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05) for the thesis on detection vs. pre-execution attestation).
+Pre-execution attestation takes the design choice of receiving the cross-chain value claim as an independently verifiable cryptographic proof on the receiving side, before execution, and verifying the integrity of "value actually contributed on the source side" against "payout amount." If the proof signals "input and payout amounts are inconsistent," the payout is blocked before it executes. Inclusion proofs via Merkle Proof (detection-style: "this blob exists") and pre-execution attestation of the value claim ("this payout matches the source-side input") are **complementary** rather than substitutes.
 
 ---
 
@@ -85,7 +85,7 @@ How to independently verify the integrity of cross-chain value claims — as inp
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (the cross-chain value claim was not independently verified for input/payout integrity separately from the cryptographic validity of Merkle Proofs), Lemma proposes a design in which cross-chain value claims are received as independently verifiable cryptographic proofs on the receiving side, before execution, and the integrity of "value actually contributed on the source side" against "payout amount" is verified as a proof. Even if a Merkle Proof is formally valid, if the value-claim proof signals input/payout inconsistency, the payout is rejected before it executes. The design thinking of "cryptographically valid ≠ semantically correct" — the core of the verifiable-origin category — is shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub) reference implementation. This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss. For the design background see [What the 2026 Bridge Incidents Are Showing — On the Verifiable-Origin Category](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+Against the detection–proof gap exposed here (the cross-chain value claim was not independently verified for input/payout integrity separately from the cryptographic validity of Merkle Proofs), Lemma proposes a design in which cross-chain value claims are received as independently verifiable cryptographic proofs on the receiving side, before execution, and the integrity of "value actually contributed on the source side" against "payout amount" is verified as a proof. Even if a Merkle Proof is formally valid, if the value-claim proof signals input/payout inconsistency, the payout is rejected before it executes. This is the design thinking of "cryptographically valid ≠ semantically correct" — the core of the verifiable-origin category. This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss.
 
 ---
 
@@ -95,16 +95,13 @@ Against the detection–proof gap exposed here (the cross-chain value claim was 
 - **CoinDesk**: "Verus-Ethereum bridge loses $11 million as hackers keep targeting cross-chain infrastructure" (2026-05-18) — https://www.coindesk.com/markets/2026/05/18/yet-another-crypto-bridge-falls-victim-to-an-usd11-million-hack
 - **AMBCrypto**: "Verus-Ethereum bridge hack drains $11.58M - Why DeFi trust is eroding" (2026-05) — https://ambcrypto.com/verus-ethereum-bridge-hack-drains-11-58m-why-defi-trust-is-eroding/
 - **Crypto Times**: "Verus Hacker Returns $8.5M After Bridge Exploit Deal" (2026-05-22, the bounty arrangement and return) — https://www.cryptotimes.io/2026/05/22/verus-hacker-returns-8-5m-after-bridge-exploit-deal/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

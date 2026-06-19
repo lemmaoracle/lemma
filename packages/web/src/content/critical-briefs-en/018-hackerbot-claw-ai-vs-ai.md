@@ -69,7 +69,7 @@ The case features StepSecurity's threat disclosure, the rapid responses by Aqua 
 
 That said, injection detection depends on model capability, context, and judgment in the moment — it is not an independent guarantee. The same injection surface (an AI agent ingesting repository-supplied instructions without verification) generally remains, and another agent in another context might be bypassed. Unless the receiver (the AI agent, and the CI/CD / development organization operating it) has independent criteria for "is this instruction legitimate, authorized, and untampered?", whether injection succeeds or fails is left to the luck of the model's draw. For regulatory reporting and audit, the fact that the model detected this case is not an independent evidentiary trail for "this AI agent judged under legitimate instructions."
 
-Pre-execution attestation takes the design choice of binding the instructions the AI agent ingests (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof, with the agent verifying the proof before execution. If the instructions are injected or tampered with by an attacker, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Model safety mechanisms (detection) and integrity proof of instructions (proof) are **complementary** rather than substitutes (see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05) for the thesis on detection vs. pre-execution attestation).
+Pre-execution attestation takes the design choice of binding the instructions the AI agent ingests (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof, with the agent verifying the proof before execution. If the instructions are injected or tampered with by an attacker, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Model safety mechanisms (detection) and integrity proof of instructions (proof) are **complementary** rather than substitutes.
 
 ---
 
@@ -86,7 +86,7 @@ How operators should independently verify the integrity and provenance of instru
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection.
 
 ---
 
@@ -96,16 +96,13 @@ Against the detection–proof gap in focus here (an AI agent ingesting repositor
 - **InfoQ**: "AI-Powered Bot Exploits GitHub Actions Workflows Across Microsoft, DataDog, CNCF Projects" (2026-03-11) — https://www.infoq.com/news/2026/03/ai-bot-github-actions-exploit/
 - **Aqua Security (Trivy) incident disclosure**: GitHub Discussions (2026, primary on the Trivy compromise) — https://github.com/aquasecurity/trivy/discussions/10265
 - **DataDog**: datadog-iac-scanner emergency-fix PR (2026) — https://github.com/DataDog/datadog-iac-scanner/pull/9
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

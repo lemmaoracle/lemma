@@ -74,7 +74,7 @@ Skimmer analysis, IOC sharing, and victim-store notification by e-commerce secur
 
 But detection does not change "whether the browser executes code loaded from a trusted domain" or "whether data sent to a trusted domain is allowed." Here the traffic is to `api.stripe.com` / `googletagmanager.com`, which CSP and network filters allow by default. The skimmer body is scattered across customer-record metadata and dynamically assembled via `new Function()`, so it is hard to catch even with static inspection. Stolen data leaves through the legitimate Stripe customer-object-creation API. What was missing is provenance verification of "is the script that runs on this checkout page one the store placed legitimately?" — a different track from domain allowlists and anomaly detection. For regulatory reporting and PCI audit, too, after a leak there is little independent trail beyond reconciling GTM history with access logs to prove "which script, by whose placement, touched the card data when."
 
-Pre-execution attestation verifies the code that runs at checkout not by a domain allowlist but by **the provenance of who placed it, by which path, and with what content** — before execution. If the proof says "this script has no legitimate store-placement provenance," execution is blocked even when it comes from a trusted domain. A domain allowlist ("is this a known trusted source") and pre-execution proof of code provenance ("was this content placed legitimately") are not substitutes but **complements** (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation verifies the code that runs at checkout not by a domain allowlist but by **the provenance of who placed it, by which path, and with what content** — before execution. If the proof says "this script has no legitimate store-placement provenance," execution is blocked even when it comes from a trusted domain. A domain allowlist ("is this a known trusted source") and pre-execution proof of code provenance ("was this content placed legitimately") are not substitutes but **complements**.
 
 ---
 
@@ -88,7 +88,7 @@ Pre-execution attestation verifies the code that runs at checkout not by a domai
 
 ## 7. Lemma's analysis
 
-Against the detection–proof gap exposed here (an allowlist trusts a domain's identity but does not verify the provenance of the code and data it carries), Lemma proposes a design that verifies executed code and exchanged data — not by a domain allowlist but as the provenance of who placed it, by which path, and with what content — as an independently verifiable cryptographic proof before execution. Even when delivered from a trusted domain, if the provenance proof reports the absence of legitimate placement, execution and exfiltration are rejected in advance. For the "a domain is trusted ≠ the provenance of its contents is correct" design of the verifiable-origin category, and its reference implementation, see the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). For the same shape of trust-signal repurposing, see Brief 010 (Lemma Critical Brief).
+Against the detection–proof gap exposed here (an allowlist trusts a domain's identity but does not verify the provenance of the code and data it carries), Lemma proposes a design that verifies executed code and exchanged data — not by a domain allowlist but as the provenance of who placed it, by which path, and with what content — as an independently verifiable cryptographic proof before execution. Even when delivered from a trusted domain, if the provenance proof reports the absence of legitimate placement, execution and exfiltration are rejected in advance. This rests on the "a domain is trusted ≠ the provenance of its contents is correct" design of the verifiable-origin category. For the same shape of trust-signal repurposing, see Brief 010.
 
 ---
 
@@ -97,16 +97,13 @@ Against the detection–proof gap exposed here (an allowlist trusts a domain's i
 - **Sansec**: Magecart campaign analysis (Stripe / Firestore abuse structure, customer-record creation date, IOCs) (2026-06) — https://sansec.io/research
 - **BleepingComputer**: "Credit card theft campaign abuses Stripe to host stolen payment info" (2026-06-04) — https://www.bleepingcomputer.com/news/security/credit-card-theft-campaign-abuses-stripe-to-host-stolen-payment-info/
 - **The Hacker News**: "New Magecart Campaign Abuses Stripe API to Host and Exfiltrate Stolen Card Data" (2026-06) — https://thehackernews.com/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

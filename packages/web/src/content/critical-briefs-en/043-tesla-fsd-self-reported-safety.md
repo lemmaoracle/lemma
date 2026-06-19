@@ -75,7 +75,7 @@ Here, the detection chain — NHTSA's staged investigations (PE24031 → EA26002
 
 What matters here is that, while this case looks at first like an "AI perception" crash, the gap Lemma addresses is not perception accuracy itself. However much perception is improved, detection does not serve as material to independently prove "the basis of the driving decision (was camera input valid?)" and "whether the reported crash population and safety statistics reflect reality" **at the moment the vehicle keeps driving and at the moment the data is submitted to the regulator.** Both regulatory investigation and investigative reporting are after-the-fact chains that activate after the action and the report have been received by the market. This is a gap in a structurally independent layer, beyond detection's reach.
 
-As things stand, across the operating model for autonomous-driving safety assurance, independent verification of the validity of the driving decision and of the safety attributes depends on trust in the operator's self-reported telemetry, crash labels, and statistics, and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the driving-decision and reporting / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for safety attributes (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for autonomous-driving safety assurance, independent verification of the validity of the driving decision and of the safety attributes depends on trust in the operator's self-reported telemetry, crash labels, and statistics, and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the driving-decision and reporting / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for safety attributes.
 
 ---
 
@@ -98,7 +98,7 @@ For the gap exposed here — the AI driving decision and the safety attributes f
 - **Schema-bound proofs**: each proof is bound to the regulatory schema it satisfies (reporting obligations, metric definitions, comparison populations), so the regulator can verify directly against the schema
 - **Selective disclosure**: only "the given metric is met as defined" is disclosed at minimum; driving video and source data that could identify individuals never leave the operator
 
-A proof fixed at the point of action and reporting then functions, years later when "was the basis of the decision met at the time?" and "is the report complete?" are asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact regulatory investigation, investigative reporting) serves remediation after discovery; pre-execution attestation (verification at the time of action and reporting) serves independent verification of the driving decision and the safety attributes — complementary layers. For the design and scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) and the [use-case index](https://lemma.frame00.com/ja/solutions/use-cases/).
+A proof fixed at the point of action and reporting then functions, years later when "was the basis of the decision met at the time?" and "is the report complete?" are asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact regulatory investigation, investigative reporting) serves remediation after discovery; pre-execution attestation (verification at the time of action and reporting) serves independent verification of the driving decision and the safety attributes — complementary layers.
 
 ---
 
@@ -113,11 +113,7 @@ A proof fixed at the point of action and reporting then functions, years later w
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

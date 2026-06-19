@@ -69,7 +69,7 @@ In this incident, Anthropic confirmed the leak as human error and withdrew the a
 
 That said, detection does not change what the receiver (developers, CI/CD pipelines, endpoints acquiring artifacts) will accept. Attackers repeatedly evade takedowns via disposable accounts and brand switching, and after-the-fact detection and withdrawal cannot stop the moment of acceptance. Both for the leaked legitimate source and for malicious artifacts impersonating the brand, users had no means at the point of acquisition to independently verify "did this really come from a legitimate origin." For the purposes of establishing in regulatory filings or administrative proceedings whether "the distribution was legitimate," brand names and distribution-URL destinations carry no independent attribution residue.
 
-Pre-execution attestation adopts a design in which an independently verifiable cryptographic proof of "generated and published by a legitimate origin (here, the official publisher)" is embedded into each artifact, and the receiver verifies the proof before executing or installing. If the proof says "no legitimate origin," the artifact is rejected before it executes. npm signatures and GitHub verified badges are conceptually in this direction, but as long as they depend on trust in the brand name or distribution channel, room for impersonation remains. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship (the direction of fixing origin as a ZK proof without exposing the key is in [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); the thesis on the relationship between detection and pre-execution attestation is in [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design in which an independently verifiable cryptographic proof of "generated and published by a legitimate origin (here, the official publisher)" is embedded into each artifact, and the receiver verifies the proof before executing or installing. If the proof says "no legitimate origin," the artifact is rejected before it executes. npm signatures and GitHub verified badges are conceptually in this direction, but as long as they depend on trust in the brand name or distribution channel, room for impersonation remains. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship.
 
 ---
 
@@ -84,7 +84,7 @@ Pre-execution attestation adopts a design in which an independently verifiable c
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not." For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not."
 
 ---
 
@@ -93,16 +93,13 @@ Against the detection–proof gap exposed by this incident (an acquired artifact
 - **Trend Micro technical analysis**: "Weaponizing Trust Signals: Claude Code Lures and GitHub Release Payloads" (2026-04-03, authors Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra) — https://www.trendmicro.com/en_us/research/26/d/weaponizing-trust-claude-code-lures-and-github-release-payloads.html
 - **Trend Micro follow-up**: "Claude Code Packaging Error Remains a Lure in an Active Campaign: What Defenders Should Do" (2026-04) — https://www.trendmicro.com/en_us/research/26/d/claude-code-remains-a-lure-what-defenders-should-do.html
 - **PCMag**: "Anthropic Issues 8,000 Copyright Takedowns to Scrub Claude Code Leak" (2026-03) — https://www.pcmag.com/news/anthropic-issues-8000-copyright-takedowns-to-scrub-claude-code-leak
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

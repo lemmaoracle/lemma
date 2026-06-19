@@ -69,7 +69,7 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 一方で、検出は受信側（Ethereum 側コントラクト、notary）が「どの payload を accept するか」自体を変えない。本事案では、blob の暗号構成要素がすべて有効だったため、署名・Merkle Proof の検証は通過した。欠けていたのは「value claim が意味的に正しいか（入力額と払出額が一致するか）」の検証であり、これは暗号的有効性とは別系統の検証である。異常検知が払出後に発火しても、`checkCCEValues` が accept した時点での払出は止まらない。規制報告・監査で「この cross-chain import は正規の value claim だったか」を立証する材料として、Merkle Proof の有効性だけでは入出力整合の独立した証跡にならない。
 
-事前証明（pre-execution attestation）は、cross-chain の value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を採る。proof が「入力額と払出額が不整合」と告げれば、払出は事前に block される。Merkle Proof による包含証明（detection 的な「この blob は存在する」）と、value claim の事前証明（「この払出額は source の入力と整合する」）は代替ではなく **補完** の関係にある（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution attestation）は、cross-chain の value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を採る。proof が「入力額と払出額が不整合」と告げれば、払出は事前に block される。Merkle Proof による包含証明（detection 的な「この blob は存在する」）と、value claim の事前証明（「この払出額は source の入力と整合する」）は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -85,7 +85,7 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を提示している。Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）に示している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例であり、設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照のこと。
+本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を提示している。Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの設計思想である。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。
 
 ---
 
@@ -95,16 +95,13 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 - **CoinDesk**: "Verus-Ethereum bridge loses $11 million as hackers keep targeting cross-chain infrastructure"（2026-05-18）— https://www.coindesk.com/markets/2026/05/18/yet-another-crypto-bridge-falls-victim-to-an-usd11-million-hack
 - **AMBCrypto**: "Verus-Ethereum bridge hack drains $11.58M - Why DeFi trust is eroding"（2026-05）— https://ambcrypto.com/verus-ethereum-bridge-hack-drains-11-58m-why-defi-trust-is-eroding/
 - **Crypto Times**: "Verus Hacker Returns $8.5M After Bridge Exploit Deal"（2026-05-22、bounty 取り決め・返還）— https://www.cryptotimes.io/2026/05/22/verus-hacker-returns-8-5m-after-bridge-exploit-deal/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

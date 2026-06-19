@@ -67,7 +67,7 @@ og_lead_en: "A statistical attack strips the AI-content provenance mark — Synt
 
 一方で、透かしは標識を成果物の内部に埋め込む detection 的アプローチであり、標識が成果物と同じ信号空間に存在する以上、十分な観測量があれば統計的に分離・除去・偽造され得る。本事案はその構造を実証した。受信側が「この画像は本当に当該モデルが生成したものか」を判定する基準が透かしの有無である限り、攻撃者は除去（来歴の消去）と注入（来歴の偽造）の双方を行える。規制報告・訴訟・コンテンツ真正性の立証で「透かしが無い ＝ 非 AI 生成」「透かしが有る ＝ 当該モデル生成」と扱うことは、独立した証跡を伴わない。学術側でも汎用的な透かし除去・偽造攻撃（例: USENIX Security 2025 の UnMarker、arXiv の Warfare）が 2023–2026 年に相次いで示されており、本事案は孤立した事例ではない。
 
-事前証明（pre-execution / pre-distribution attestation）は、コンテンツの来歴を成果物に埋め込む標識ではなく、生成主体が「この成果物は正規の origin によって生成された」ことを独立検証可能な暗号証明（署名付き manifest や ZK origin proof）として付与し、受信側が proof を検証する設計を採る。proof は成果物の信号空間の外側にあり、統計的平均化で抽出できる「埋め込み標識」ではない。透かし（detection）と暗号的来歴（proof）は代替ではなく **補完** の関係にある（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution / pre-distribution attestation）は、コンテンツの来歴を成果物に埋め込む標識ではなく、生成主体が「この成果物は正規の origin によって生成された」ことを独立検証可能な暗号証明（署名付き manifest や ZK origin proof）として付与し、受信側が proof を検証する設計を採る。proof は成果物の信号空間の外側にあり、統計的平均化で抽出できる「埋め込み標識」ではない。透かし（detection）と暗号的来歴（proof）は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -83,7 +83,7 @@ og_lead_en: "A statistical attack strips the AI-content provenance mark — Synt
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。
 
 ---
 
@@ -94,16 +94,13 @@ og_lead_en: "A statistical attack strips the AI-content provenance mark — Synt
 - **MediaNama**: "GitHub Tool Bypasses Google SynthID Watermark"（2026-04）— https://www.medianama.com/2026/04/223-google-gemini-synthid-ai-watermark-bypass/
 - **arXiv 2310.07726**: Guanlin Lee et al. "Warfare: Breaking the Watermark Protection of AI-Generated Content"（2023-10、2024-03 更新）— 透かし除去・偽造攻撃の汎用フレームワーク（背景文献）。https://arxiv.org/abs/2310.07726
 - **ACM CSAI'25**: "Insecure AI Image Watermarking — Is it Really Damaging The Future?"（2025、Proceedings of the 2025 9th International Conference on Computer Science and Artificial Intelligence）— SynthID 等の透かしが除去可能・相互運用性を欠くことを論じた定性研究（背景文献）。https://dl.acm.org/doi/10.1145/3788149.3788154
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

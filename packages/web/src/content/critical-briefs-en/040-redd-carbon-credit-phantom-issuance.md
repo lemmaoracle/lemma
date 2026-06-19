@@ -71,7 +71,7 @@ Here, the detection chain — investigative reporting (Mongabay), independent sa
 
 Detection, however, cannot change whether "the declared conservation area and logging volume reflect the true state of the source data" at the moment credits are issued and purchased. Both investigative reporting and satellite analysis are after-the-fact chains that activated only after the credits had been issued and incorporated into major corporations' disclosures. Declaration-based issuance does not, on its own, serve as material to independently prove "the area was actually conserved at the time" in a company's emissions disclosure. This is a gap in a structurally independent layer, beyond detection's reach.
 
-As things stand, across the operating model for the voluntary carbon market, independent verification of environmental attributes depends on trust in the registration data declared by operators and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the issuance / trading path. It is a complement to detection, not a substitute; together the two establish the trust boundary for credits (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for the voluntary carbon market, independent verification of environmental attributes depends on trust in the registration data declared by operators and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the issuance / trading path. It is a complement to detection, not a substitute; together the two establish the trust boundary for credits.
 
 ---
 
@@ -94,7 +94,7 @@ For the gap exposed here — an environmental-attribute claim flowing straight t
 - **Selective disclosure**: only "the conservation area and avoided emissions meet the standard" is disclosed at minimum; coordinates, contracts, and operator-internal data never leave the operator
 - **Original binding and validity**: bound to the satellite-observation and land-registration originals via docHash, proving existence and non-tampering. The trail to the source data at the time is fixed per issuance lot
 
-A proof fixed at the point of issuance and trading then functions, years later when "was the area actually conserved at the time?" is asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact satellite monitoring, investigative journalism) serves remediation after discovery; pre-execution attestation (attribute verification at issuance) serves independent verification of environmental attributes — complementary layers. For the design and scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) and the [use-case index](https://lemma.frame00.com/ja/solutions/use-cases/).
+A proof fixed at the point of issuance and trading then functions, years later when "was the area actually conserved at the time?" is asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact satellite monitoring, investigative journalism) serves remediation after discovery; pre-execution attestation (attribute verification at issuance) serves independent verification of environmental attributes — complementary layers.
 
 ---
 
@@ -109,11 +109,7 @@ A proof fixed at the point of issuance and trading then functions, years later w
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

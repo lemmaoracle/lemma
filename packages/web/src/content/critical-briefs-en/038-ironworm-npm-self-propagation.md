@@ -70,7 +70,7 @@ In this incident, the detection chain — vendor research (JFrog and others) and
 
 At the same time, detection provides no material to independently establish — **at the moment of publication** — whether the artifact about to be published was authorized by a legitimate author. The registry sees only "a publication by a valid token," and IronWorm is built to slip past signature and pattern inspection with encryption and the modified UPX. Both vendor research and the registry's disablement are after-the-fact chains that act once the artifact has been published and the credentials stolen. This is a structurally independent layer gap, outside the reach of the detection layer.
 
-As things stand, across the package ecosystem as a whole, independent verification of a publisher's authorship still depends on trust in "a valid token was presented," and is not yet treated as an independent layer (mechanisms in which a leaked token alone cannot publish — such as npm's staged publishing — are beginning to be adopted, but they do not amount to proof of authorship itself). Pre-execution attestation closes this gap by inserting one step of authorship proof into the publish/commit path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the artifact's trust boundary (for more on the relationship between detection and attestation, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the package ecosystem as a whole, independent verification of a publisher's authorship still depends on trust in "a valid token was presented," and is not yet treated as an independent layer (mechanisms in which a leaked token alone cannot publish — such as npm's staged publishing — are beginning to be adopted, but they do not amount to proof of authorship itself). Pre-execution attestation closes this gap by inserting one step of authorship proof into the publish/commit path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the artifact's trust boundary.
 
 ---
 
@@ -94,7 +94,7 @@ Against the gap this incident exposed (stolen credentials convert directly into 
 - **Immediate reflection of revocation**: Make the validity attributes of credentials and keys independently verifiable, so that revocation and rotation are reflected in the publishing decision immediately (severing the republication chain driven by stolen credentials).
 - **Selective disclosure**: Disclose only the minimum — that "the publisher meets the legitimate authorship requirement" — without letting internal keys or credentials leave the environment.
 
-In this way, a proof fixed at the moment of publication functions as an independently verifiable trail of whether "this artifact is legitimately authorized and carries legitimate provenance," before downstream consumes it. Detection (after-the-fact vendor research and disablement) works on remediation after discovery; attestation (authorship and provenance verification at the moment of publication) works on the independent verification of the supply chain — each complementary to the other. For the design and its scope of application, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and the [use-case index](https://lemma.frame00.com/solutions/use-cases/).
+In this way, a proof fixed at the moment of publication functions as an independently verifiable trail of whether "this artifact is legitimately authorized and carries legitimate provenance," before downstream consumes it. Detection (after-the-fact vendor research and disablement) works on remediation after discovery; attestation (authorship and provenance verification at the moment of publication) works on the independent verification of the supply chain — each complementary to the other.
 
 ---
 
@@ -109,11 +109,7 @@ In this way, a proof fixed at the moment of publication functions as an independ
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

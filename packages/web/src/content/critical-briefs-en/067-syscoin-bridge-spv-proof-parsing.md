@@ -73,7 +73,7 @@ Bridge monitoring and anomaly detection, Syscoin's pause, the exchange/ecosystem
 
 At the same time, detection does not change what the receiving side (the relay, the contract that approves the mint) actually **accepts**. In this incident, the structured fake proof passed through the parsing flaw and was accepted, so the formal verification passed. What was missing was the independent verification of "does the burn this proof points to actually exist on the other chain" — a verification on a separate track from the formal acceptance of the proof. Anomaly detection firing after the mint does not stop the issuance at the moment the relay accepted it. For regulatory reporting and audit, the fact that a proof was formally valid is, by itself, no independent evidentiary trail that "this cross-chain mint was backed by a legitimate burn."
 
-Pre-execution attestation takes the design choice of receiving the cross-chain proof as a cryptographic proof the receiving side can independently verify before executing the mint, and verifying as a proof the very fact that "a burn actually happened on the other chain." It does not decouple the proof passing the parse from the burn's existence being independently confirmed, and it blocks the mint in advance if the burn's provenance cannot be confirmed. The formal acceptance of a proof (the detection-style "this proof passes") and the pre-execution attestation of the burn's existence ("a corresponding burn actually exists") are **complements**, not substitutes; only where the two overlap can cross-chain issuance be safely put into practice (for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for the bridge-provenance design background, see ["What the 2026 bridge incidents are showing — on the verifiable-origin category"](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04)).
+Pre-execution attestation takes the design choice of receiving the cross-chain proof as a cryptographic proof the receiving side can independently verify before executing the mint, and verifying as a proof the very fact that "a burn actually happened on the other chain." It does not decouple the proof passing the parse from the burn's existence being independently confirmed, and it blocks the mint in advance if the burn's provenance cannot be confirmed. The formal acceptance of a proof (the detection-style "this proof passes") and the pre-execution attestation of the burn's existence ("a corresponding burn actually exists") are **complements**, not substitutes; only where the two overlap can cross-chain issuance be safely put into practice.
 
 ---
 
@@ -90,7 +90,7 @@ Pre-execution attestation takes the design choice of receiving the cross-chain p
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap this incident exposed (a cross-chain proof not independently verified, separately from formal acceptance, as the existence of the burn it points to), Lemma proposes a design in which a cross-chain proof is received as a cryptographic proof the receiving side can independently verify before execution, and the very fact that "a burn actually happened on the other chain" is verified as a proof. Even if the proof formally passes the parse, the mint is rejected in advance if a proof of the burn's existence cannot be confirmed. The design thinking of "cryptographically valid ≠ the fact it points to exists" — the core of the verifiable-origin category — and its reference implementation are shown in the [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub). This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss; for the design background, see ["What the 2026 bridge incidents are showing — on the verifiable-origin category"](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04) and ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). Detection (after-the-fact pause, freeze, analysis) works on remediating the damage; pre-execution attestation (independent verification of the burn's provenance before the mint executes) works on establishing trust in cross-chain issuance — each complementary to the other. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/).
+Against the detection–proof gap this incident exposed (a cross-chain proof not independently verified, separately from formal acceptance, as the existence of the burn it points to), Lemma proposes a design in which a cross-chain proof is received as a cryptographic proof the receiving side can independently verify before execution, and the very fact that "a burn actually happened on the other chain" is verified as a proof. Even if the proof formally passes the parse, the mint is rejected in advance if a proof of the burn's existence cannot be confirmed. The design thinking of "cryptographically valid ≠ the fact it points to exists" — the core of the verifiable-origin category — is embodied in its reference implementation. This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss. Detection (after-the-fact pause, freeze, analysis) works on remediating the damage; pre-execution attestation (independent verification of the burn's provenance before the mint executes) works on establishing trust in cross-chain issuance — each complementary to the other.
 
 ---
 
@@ -101,16 +101,13 @@ Against the detection–proof gap this incident exposed (a cross-chain proof not
 - **AMBCrypto**: "Syscoin — How a validation flaw enabled 5 billion unauthorized SYS" (2026-06) — <https://ambcrypto.com/syscoin-how-a-validation-flaw-enabled-5-billion-unauthorized-sys/>
 - **Crypto Times**: "Syscoin Halts Bridge After Exploit Mints 5 Billion SYS Tokens" (2026-06-08) — <https://www.cryptotimes.io/2026/06/08/syscoin-halts-bridge-after-exploit-mints-5-billion-sys-tokens/>
 - **Bitcoin.com News (industry context)**: "Crypto Bridge Exploits Hit $328 Million by May 2026" (PeckShield tally, 8 incidents / ~$328.6M cumulative) — <https://news.bitcoin.com/crypto-bridge-exploits-328-million-may-2026-peckshield/>
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat-intelligence brief published by Lemma. It is a structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

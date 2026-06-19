@@ -70,7 +70,7 @@ Here, the detection chain — internal review, third-party committee, regulatory
 
 Detection, however, cannot change whether, at the point of assignment, this engineer met the requirements. Self-investigation and audit are both after-the-fact; the projects carried out between assignment and discovery are already complete. Detection and audit results do not, on their own, serve as material to prove "was properly qualified at the time of assignment" in regulatory reporting, administrative procedure, or litigation. This is a gap in a structurally independent layer, beyond detection's reach.
 
-As things stand, across the operating model for qualification checks, independent verification of the attribute at the point of assignment is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the assignment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for qualified-worker placement (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for qualification checks, independent verification of the attribute at the point of assignment is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the assignment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for qualified-worker placement.
 
 ---
 
@@ -91,7 +91,7 @@ For the detection–proof gap exposed here — a regulatory attribute claim flow
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only that "the required national license is held, valid, and meets the requirements" — never the detail of the person's history or experience
 - **Validity and revocation**: committed with Poseidon over BN254; validity and non-revocation proven with Groth16 (Circom circuits); bound to the source records via docHash
 
-A proof fixed at the point of assignment then functions, years later when "was a qualified person placed at the time?" is asked, as an independently verifiable trail that discloses no sensitive personal information. Detection (after-the-fact audit) serves remediation after disclosure; pre-execution attestation (attribute verification at assignment) serves independent verification of the legitimacy of placement — complementary layers. For the design and scope, see the use case [Qualified-Worker Placement and Safety-Training Attestation](https://lemma.frame00.com/ja/solutions/use-cases/qualified-worker-attestation/) and [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/).
+A proof fixed at the point of assignment then functions, years later when "was a qualified person placed at the time?" is asked, as an independently verifiable trail that discloses no sensitive personal information. Detection (after-the-fact audit) serves remediation after disclosure; pre-execution attestation (attribute verification at assignment) serves independent verification of the legitimacy of placement — complementary layers.
 
 ---
 
@@ -106,11 +106,7 @@ A proof fixed at the point of assignment then functions, years later when "was a
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

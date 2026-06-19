@@ -68,7 +68,7 @@ Here, the detection chain — internal review, third-party committee, regulatory
 
 Detection, however, cannot change whether, at the point of application, the submitted test data was legitimately obtained under the prescribed test conditions. On-site inspection and verification tests are both after-the-fact; the vehicles and products mass-produced and shipped before disclosure are already in the market. Detection results do not, on their own, serve as material to prove "was properly conformant at the time of application" in regulatory reporting, administrative procedure, or litigation. This is a gap in a structurally independent layer, beyond detection's reach.
 
-As things stand, across the operating model for product certification, independent verification of the test data at the point of application is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the application / shipment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for product conformity (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operating model for product certification, independent verification of the test data at the point of application is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the application / shipment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for product conformity.
 
 ---
 
@@ -89,7 +89,7 @@ For the detection–proof gap exposed here — a product's regulatory-conformanc
 - **Selective disclosure**: BBS+ over BLS12-381 discloses only "met the standard under the prescribed test conditions" — the test originals and the detail of internal measurement data never leave the company
 - **Original binding and validity**: committed with Poseidon over BN254; conformity and non-tampering proven with Groth16 (Circom circuits); bound to the test data originals via docHash
 
-A proof fixed at the point of application then functions, years later when "was the standard met under the prescribed test conditions at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact on-site inspection) serves remediation after disclosure; pre-execution attestation (attribute verification at application) serves independent verification of conformity — complementary layers. For the design and scope, see the use case [Verify Supplier Licenses, ISO & Certificates](https://lemma.frame00.com/ja/solutions/use-cases/supplier-credential-verification/) and [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/).
+A proof fixed at the point of application then functions, years later when "was the standard met under the prescribed test conditions at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact on-site inspection) serves remediation after disclosure; pre-execution attestation (attribute verification at application) serves independent verification of conformity — complementary layers.
 
 ---
 
@@ -104,11 +104,7 @@ A proof fixed at the point of application then functions, years later when "was 
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

@@ -81,7 +81,7 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 
 一方で、検出は guardian が「どのイベントに署名するか」自体を変えない。本事案では、guardian の鍵は健在で、署名プロセスも正常に機能し、VAA の形式検証も通過した。欠けていたのは「署名対象のイベントが正規のコントラクト・正規の経路から発されたものか」というイベント来歴の検証であり、これは署名の有効性検証とは別系統である。検知が発火した時点で主要な流出(64 秒)はすでに完了しており、約 50 万 wALPH は焼却前に流動性プールへ流入した。規制報告・監査で「この VAA は正規イベントに基づくか」を立証する材料として、guardian 署名の有効性だけではイベント来歴の独立した証跡にならない。
 
-事前証明(pre-execution attestation)は、guardian が署名する前に、観測対象イベントの emitter・経路・整合性を独立検証可能な暗号証明として要求する設計を採る。proof が「このイベントの発生源は登録された正規コントラクトではない」と告げれば、署名は事前に block される。署名の有効性検証(「この guardian が署名した」)とイベント来歴の事前証明(「署名対象は正規の発生源から来た」)は代替ではなく**補完**の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、guardian が署名する前に、観測対象イベントの emitter・経路・整合性を独立検証可能な暗号証明として要求する設計を採る。proof が「このイベントの発生源は登録された正規コントラクトではない」と告げれば、署名は事前に block される。署名の有効性検証(「この guardian が署名した」)とイベント来歴の事前証明(「署名対象は正規の発生源から来た」)は代替ではなく**補完**の関係にある。
 
 ---
 
@@ -97,7 +97,7 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(guardian 署名の有効性は検証されるが、署名対象イベントの来歴は独立検証されない)に対して、Lemma は、ブリッジの観測層が受け取るイベントの emitter と経路を、署名の前に独立検証可能な暗号証明として検証する設計を提示している。guardian の署名が形式上有効でも、イベント来歴の proof が偽造発生源を告げれば署名・払出は事前に reject される。「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想と、その reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。設計の背景は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)を参照のこと。
+本事案で露呈した検出と証明の落差(guardian 署名の有効性は検証されるが、署名対象イベントの来歴は独立検証されない)に対して、Lemma は、ブリッジの観測層が受け取るイベントの emitter と経路を、署名の前に独立検証可能な暗号証明として検証する設計を提示している。guardian の署名が形式上有効でも、イベント来歴の proof が偽造発生源を告げれば署名・払出は事前に reject される。「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
 
 ---
 
@@ -107,16 +107,13 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 - **The Defiant**: "Alephium Bridge Loses $815K to Forged Guardian Messages, Not Stolen Keys"(2026-05/06、原因訂正の経緯・guardian 構成の対比)— https://thedefiant.io/news/hacks/alephium-bridge-815k-forged-guardian-messages
 - **The Crypto Times**: "Bridge Breach Unpacked: Alephium Traces $815K Hack Step by Step"(2026-06-03、on-chain report の詳細整理)— https://www.cryptotimes.io/2026/06/03/bridge-breach-unpacked-alephium-traces-815k-hack-step-by-step/
 - **AMBCrypto**: "$815K gone in 7 minutes – Inside Ethereum's Alephium TokenBridge exploit"(2026-05/06)— https://ambcrypto.com/815k-gone-in-7-minutes-inside-ethereums-alephium-tokenbridge-exploit/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

@@ -71,7 +71,7 @@ In this incident, the detection-and-remediation chain functioned — vendor rese
 
 At the same time, detection provides no material to independently establish — **at the moment the AI reads and executes the instructions** — whether the instruction file the AI is about to read is legitimately authorized and originates from a legitimate author. A registry scan sees only "is this package malicious," and a PR review sees only "is this change reasonable." Neither can distinguish, before the AI executes, the directives hidden in the instruction file with zero-width Unicode from the side of provenance. Removal and rejection, too, are after-the-fact chains that act once the instructions could already be read. This is a structurally independent layer gap, outside the reach of the detection layer.
 
-Pre-execution attestation closes this gap by inserting one step — proof of the instructions' provenance and authorization — into the path by which the AI assistant reads an instruction file and executes the task. Even when what is shown diverges from what is real, by binding the instructions / artifacts to their issuer (the legitimate author / distributor) and verifying provenance via a docHash, instructions tampered with via zero-width Unicode, or slipped into a legitimate project without authorization, can be distinguished before execution as "lacking legitimate provenance / authorization." Detecting the surface plausibility of the instructions (the detection-style "does this content look reasonable") and attesting the instructions' provenance/authorization beforehand (the "do these instructions have a legitimate issuer / authorization") are not substitutes but **complements**. For the idea of independently verifying provenance before execution, see ["Proof-as-Auth: Sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation closes this gap by inserting one step — proof of the instructions' provenance and authorization — into the path by which the AI assistant reads an instruction file and executes the task. Even when what is shown diverges from what is real, by binding the instructions / artifacts to their issuer (the legitimate author / distributor) and verifying provenance via a docHash, instructions tampered with via zero-width Unicode, or slipped into a legitimate project without authorization, can be distinguished before execution as "lacking legitimate provenance / authorization." Detecting the surface plausibility of the instructions (the detection-style "does this content look reasonable") and attesting the instructions' provenance/authorization beforehand (the "do these instructions have a legitimate issuer / authorization") are not substitutes but **complements**.
 
 ---
 
@@ -92,7 +92,7 @@ Against the gap this incident exposed (the provenance and authorization of the i
 - **Scoped authority**: Minimize the authority given to the AI assistant per task, and do not let the collection / sending of secrets beyond the scope of authorization succeed without proof. Distinguish legitimate tasks from tasks driven by tampered instructions via the evidence trail.
 - **Selective disclosure**: Disclose only the minimum — that "this task meets the authorization schema" — without letting internal keys or credentials leave the environment.
 
-In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "these instructions are legitimately authorized and carry legitimate provenance," before the AI executes them. Detection (after-the-fact removal of malicious packages, PR rejection) works on remediation after discovery; attestation (provenance / authorization verification before execution) works on the independent verification of AI instructions — each complementary to the other. For the design and its scope of application, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "these instructions are legitimately authorized and carry legitimate provenance," before the AI executes them. Detection (after-the-fact removal of malicious packages, PR rejection) works on remediation after discovery; attestation (provenance / authorization verification before execution) works on the independent verification of AI instructions — each complementary to the other.
 
 ---
 
@@ -106,11 +106,7 @@ In this way, a proof fixed at the moment of execution functions as an independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

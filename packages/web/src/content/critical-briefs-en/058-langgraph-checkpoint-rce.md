@@ -76,7 +76,7 @@ Vulnerability scanners, dependency audits, egress monitoring, and prompt CVE pat
 
 At the same time, detection does not change the judgment of "may the agent trust the state it is reading back right now as legitimate self-state." The exploitation happens inside the agent's own legitimate query and deserialization against its checkpoint store. As traffic, it is indistinguishable from the agent's normal operation, and the injected forged row is read back via the same path as "correctly saved state." Pattern-matching for SQL injection plugs individual entrances, but it provides no material to establish the provenance and integrity of the state — "under whose authority, and tamper-free, was this state written." From an audit standpoint, too, evidence that independently shows "which state was reconstructed into the runtime, when, by whose write" rarely survives beyond reconciling app logs.
 
-Pre-execution attestation treats reading the agent's state back as an authority-bearing action, and requires, before the state is reconstructed, an independently verifiable proof of the state's authorship (which agent / run wrote it) and integrity (no tampering). If the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," the state load is blocked before execution. For the relationship between detection and pre-execution attestation see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation treats reading the agent's state back as an authority-bearing action, and requires, before the state is reconstructed, an independently verifiable proof of the state's authorship (which agent / run wrote it) and integrity (no tampering). If the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," the state load is blocked before execution.
 
 ---
 
@@ -92,7 +92,7 @@ With the spread of self-hosted agent platforms, "verifying the provenance and in
 
 ## 7. Lemma's analysis
 
-Against the detection-and-proof gap this incident exposed (the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity), Lemma proposes a design that records the writing and reading-back of the agent's state as authority-bearing actions, and — before the state is reconstructed into the runtime — verifies, as an independently verifiable proof, "which run wrote it, under what authority" and "whether it is untampered." For the design philosophy of agent authority proof see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/).
+Against the detection-and-proof gap this incident exposed (the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity), Lemma proposes a design that records the writing and reading-back of the agent's state as authority-bearing actions, and — before the state is reconstructed into the runtime — verifies, as an independently verifiable proof, "which run wrote it, under what authority" and "whether it is untampered."
 
 ---
 
@@ -108,11 +108,7 @@ Against the detection-and-proof gap this incident exposed (the agent reconstruct
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

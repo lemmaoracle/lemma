@@ -71,7 +71,7 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 一方で、検出は「データが保管されていること」自体を変えない。KYC/AML を生 PII の収集・保管で満たす設計では、その属性データは正規アクセス権を持つ内部者にとって常に到達可能であり、買収・誤用が成立すれば検出は事後の封じ込めにしかならない。規制遵守を「事業者が生 PII を集めて適切に守る」という約束として運用する限り、守るべきデータの存在そのものが漏洩面であり続ける。規制報告・監査で「属性確認は適正に行われ、かつ最小限の開示で完結したか」を立証する材料としても、生 PII の保管ログは漏洩リスクと不可分である。
 
-事前証明（attribute attestation）は、属性確認（KYC 通過・許可された jurisdiction・サンクション非該当・年齢等）を、検証側が生 PII を保管しないまま独立検証可能な暗号証明（ZK 属性証明）として受け取る設計を採る。検証側は「この利用者は KYC を満たす / 許可属性を持つ」を proof で確認でき、政府発行 ID 画像や SSN そのものを warehouse しない。漏洩面となる生 PII の蓄積を最小化することで、内部買収が成立しても流出し得るデータが構造的に縮小する。検出（insider monitoring 等）と事前証明（attribute proof）は代替ではなく **補完** の関係にある（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（attribute attestation）は、属性確認（KYC 通過・許可された jurisdiction・サンクション非該当・年齢等）を、検証側が生 PII を保管しないまま独立検証可能な暗号証明（ZK 属性証明）として受け取る設計を採る。検証側は「この利用者は KYC を満たす / 許可属性を持つ」を proof で確認でき、政府発行 ID 画像や SSN そのものを warehouse しない。漏洩面となる生 PII の蓄積を最小化することで、内部買収が成立しても流出し得るデータが構造的に縮小する。検出（insider monitoring 等）と事前証明（attribute proof）は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -87,7 +87,7 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は、属性確認を「検証側が生 PII を保管したまま守る」のではなく、「検証側が生 PII を受け取らずに属性を証明として受領する」設計を提示している。利用者が KYC 通過・許可 jurisdiction・サンクション非該当・年齢などの規制属性を独立検証可能な暗号証明（ZK 属性証明）として提示し、事業者は政府発行 ID 画像や SSN そのものを warehouse せずに「属性を満たす」事実だけを検証する。漏洩し得る生 PII の蓄積を構造的に縮小することで、内部買収が成立しても流出範囲が限定される。Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は、属性確認を「検証側が生 PII を保管したまま守る」のではなく、「検証側が生 PII を受け取らずに属性を証明として受領する」設計を提示している。利用者が KYC 通過・許可 jurisdiction・サンクション非該当・年齢などの規制属性を独立検証可能な暗号証明（ZK 属性証明）として提示し、事業者は政府発行 ID 画像や SSN そのものを warehouse せずに「属性を満たす」事実だけを検証する。漏洩し得る生 PII の蓄積を構造的に縮小することで、内部買収が成立しても流出範囲が限定される。Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。
 
 ---
 
@@ -97,16 +97,13 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers"（2025-05-21、影響者数・流出データ種別）— https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
 - **Bitdefender (HotForSecurity)**: "Data Breach at Coinbase Exposes Information of Nearly 70,000 Customers"（2025-05、手口・データ種別）— https://www.bitdefender.com/en-us/blog/hotforsecurity/data-breach-at-coinbase-exposes-information-of-nearly-70-000-customers
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost"（2025-05、Form 8-K・復旧費用見積もり）— https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

@@ -71,7 +71,7 @@ Vulnerability scanning, WAFs, and SOC monitoring are useful for discovering unau
 
 The deeper issue is that detection does not independently guarantee "whether the AI's output, or the instructions governing it, are authentic." If a system prompt is rewritten, Lilli's output looks normal on the surface. If users (the consultants) have no way to judge "is this answer based on the legitimate, untampered instruction set?", silent tampering slips past detection. For regulatory reporting, audit, and litigation, access logs and after-the-fact vulnerability patching are not independent evidentiary trails for "the AI's output was produced under legitimate governance instructions."
 
-Pre-execution attestation takes the design choice of binding the instructions governing the AI's behavior (system prompts and the like) and the outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof, so users and auditors can verify the authenticity of the output. If the instructions are rewritten, the proof becomes inconsistent and tampered outputs can be distinguished from authentic ones. Vulnerability detection and integrity proof of the outputs / governance instructions are **complementary** rather than substitutes (see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05) for the thesis on detection vs. pre-execution attestation).
+Pre-execution attestation takes the design choice of binding the instructions governing the AI's behavior (system prompts and the like) and the outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof, so users and auditors can verify the authenticity of the output. If the instructions are rewritten, the proof becomes inconsistent and tampered outputs can be distinguished from authentic ones. Vulnerability detection and integrity proof of the outputs / governance instructions are **complementary** rather than substitutes.
 
 ---
 
@@ -87,7 +87,7 @@ How operators and auditors should independently verify the layer governing the A
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection. For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection.
 
 ---
 
@@ -97,16 +97,13 @@ Against the detection–proof gap exposed here (no mechanism independently verif
 - **CodeWall official blog**: "How We Hacked McKinsey's AI Platform" (2026-03, the primary claim of the attack chain and reach) — https://codewall.ai/blog/how-we-hacked-mckinseys-ai-platform
 - **BankInfoSecurity**: "Autonomous Agent Hacked McKinsey's AI in 2 Hours" (2026-03) — https://www.bankinfosecurity.com/autonomous-agent-hacked-mckinseys-ai-in-2-hours-a-31007
 - **Outpost24**: "How an AI Agent Hacked McKinsey's AI Platform" (2026-03, technical commentary) — https://outpost24.com/blog/ai-agent-hacked-mckinsey-ai-platform/
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

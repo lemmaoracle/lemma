@@ -72,7 +72,7 @@ GTIG / Mandiant's investigation, Salesloft's token revocation and integration re
 
 At the same time, detection provides no material to independently establish — **before the access executes** — whether the querying now being done with this token is within the bounds of its original authorization. Querying with a stolen Drift token is, in form, legitimate integration access, and as long as the token is valid each company's defenses cannot distinguish it from normal integration. After-the-fact log analysis reconstructs "which objects were queried," but is no material to independently verify before the action "whether that query was within the granted authorization and actually valid." Revocation acts after the compromise, and the provenance of the secrets accumulated in the CRM cannot be fixed retroactively.
 
-Pre-execution attestation treats an integration's authority not as "broad, persistent consent" but as an authorization scoped per action and independently verifiable. Verify each operation the integration performs against Salesforce — against the bounds of the grantor's authorization and the token's validity — at the moment of the act, and bind the secrets stored in the CRM to their origin and expiry as provenance, and out-of-bounds querying with a stolen token, or use of a revoked credential, can be screened out before the action. Detecting the compromise (the detection-style "what was queried") and proving authority and validity ("was that query within the authorization and actually valid") are not substitutes but **complements** (for verifying provenance and authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation treats an integration's authority not as "broad, persistent consent" but as an authorization scoped per action and independently verifiable. Verify each operation the integration performs against Salesforce — against the bounds of the grantor's authorization and the token's validity — at the moment of the act, and bind the secrets stored in the CRM to their origin and expiry as provenance, and out-of-bounds querying with a stolen token, or use of a revoked credential, can be screened out before the action. Detecting the compromise (the detection-style "what was queried") and proving authority and validity ("was that query within the authorization and actually valid") are not substitutes but **complements**.
 
 ---
 
@@ -96,7 +96,7 @@ Against the gap this incident exposed (broad, persistent integration OAuth persi
 - **Provenance binding of secrets**: Bind credentials stored in a CRM and the like to their origin and expiry as provenance, suppressing the accumulation and reuse of provenance-less secrets.
 - **Selective disclosure**: Without exposing internal data, disclose only the minimum — that "this operation is within the grantor's authorization and is actually valid" — reconciling independent verification with the protection of sensitive information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this integration's operation rests on an authorization within bounds and on an actually valid token," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, revocation, rotation) works on correcting the damage; attestation (independent verification of authority and validity at the moment of the act) works on establishing trust in integration access — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this integration's operation rests on an authorization within bounds and on an actually valid token," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, revocation, rotation) works on correcting the damage; attestation (independent verification of authority and validity at the moment of the act) works on establishing trust in integration access — each complementary to the other.
 
 ---
 
@@ -111,11 +111,7 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

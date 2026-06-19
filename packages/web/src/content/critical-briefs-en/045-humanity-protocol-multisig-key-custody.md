@@ -70,7 +70,7 @@ In this incident, the detection chain — onchain analysis (The Block and others
 
 At the same time, detection provides no material to independently establish — **at the moment the approval executes** — whether the signatures that just met the threshold are a deliberate approval by separate legitimate parties. From onchain, it looks only like "a legitimately threshold-met approval"; whether the keys had collapsed onto a single custody point, and whether the signing parties were independent, can only be learned through after-the-fact offchain investigation. The price collapse and the exchange response, too, are after-the-fact chains that act once funds have moved. This is a structurally independent layer gap, outside the reach of the detection layer.
 
-As things stand, across multisig operations as a whole, verification of the independence of approving parties still depends on trust in "a threshold of signatures was gathered," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by inserting one step of proof — of party independence and operation scope — into the approval/execution path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of approval authority (for more on the relationship between detection and attestation, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across multisig operations as a whole, verification of the independence of approving parties still depends on trust in "a threshold of signatures was gathered," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by inserting one step of proof — of party independence and operation scope — into the approval/execution path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of approval authority.
 
 ---
 
@@ -93,7 +93,7 @@ Against the gap this incident exposed (the formal establishment of distributed a
 - **Proof of custody separation**: Make it verifiable that the keys composing the threshold belong to independent custody and parties. Make a collapse of custody detectable before execution.
 - **Selective disclosure**: Disclose only the minimum — that "the approval meets the legitimate threshold and independence requirements" — without exposing individual keys or internal configuration.
 
-In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "this approval is an authorized operation by separate legitimate parties," before funds move. Detection (after-the-fact onchain analysis and attribution scrutiny) works on remediation after discovery; attestation (verification of party independence and operation authorization at the moment of approval) works on the independent verification of approval authority — each complementary to the other. For the design and its scope of application, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/).
+In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "this approval is an authorized operation by separate legitimate parties," before funds move. Detection (after-the-fact onchain analysis and attribution scrutiny) works on remediation after discovery; attestation (verification of party independence and operation authorization at the moment of approval) works on the independent verification of approval authority — each complementary to the other.
 
 ---
 
@@ -110,11 +110,7 @@ In this way, a proof fixed at the moment of execution functions as an independen
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

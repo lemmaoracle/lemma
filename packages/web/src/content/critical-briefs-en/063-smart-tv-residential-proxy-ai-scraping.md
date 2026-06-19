@@ -76,7 +76,7 @@ The researchers' reverse engineering, the DNS-level blocking they offered, and t
 
 At the same time, detection provides no material to independently establish — **at the moment of collection** — whether this relay traffic originates from a genuinely consented source, or whether this AI-training data was collected under verifiable provenance and consent. Scraping from a residential IP is hard to distinguish from ordinary household use (which is exactly how it evades measures that reject datacenter IPs), and the origin of the collected data is invisible to the receiving side. Even if blocking addresses can be shown after the fact, the provenance of the relay that already ran and the data that already circulated cannot be fixed retroactively. What was missing is a mechanism to fix, at the moment of collection, an independently verifiable trail that "this relay derives from a consented device, and this data was collected under this origin and consent" — a chain separate from after-the-fact blocking and restriction.
 
-Pre-execution attestation flips data collection from "infer the origin after the fact" to "bind origin and consent to an independently verifiable trail at the moment of collection." Tie relay traffic to a proof of a genuinely consented device, and bind collected data to the provenance of its origin and consent — and data lacking proof of provenance and consent can be screened out before it is taken into AI training. Detecting the collection infrastructure (the detection-style "which devices are relaying") and proving provenance ("under which origin and consent can this data be independently verified to have been gathered") are not substitutes but **complements** (for the detection-and-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying provenance independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
+Pre-execution attestation flips data collection from "infer the origin after the fact" to "bind origin and consent to an independently verifiable trail at the moment of collection." Tie relay traffic to a proof of a genuinely consented device, and bind collected data to the provenance of its origin and consent — and data lacking proof of provenance and consent can be screened out before it is taken into AI training. Detecting the collection infrastructure (the detection-style "which devices are relaying") and proving provenance ("under which origin and consent can this data be independently verified to have been gathered") are not substitutes but **complements.**
 
 ---
 
@@ -99,7 +99,7 @@ Against the gap this incident exposed (the origin and consent of the collected d
 - **Gating data without provenance**: Aim for a design in which intake into AI training and circulation proceeds only when an independently verifiable proof of origin and consent is satisfied. Data lacking proof of provenance and consent is screened out before intake.
 - **Selective disclosure**: Without exposing the details of an individual's device or behavior, disclose only the minimum — that "this data was collected under verifiable origin and consent" — reconciling provenance verification with privacy protection.
 
-In this way, a proof fixed at the moment of collection functions as an independently verifiable trail of whether "this training data was gathered under verifiable origin and consent," without depending on after-the-fact blocking and restriction. Detection (after-the-fact analysis, blocking, platform restriction) works on correcting harm; attestation (independent verification of provenance and consent at collection) works on establishing trust in AI-training data — each complementary to the other. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and the [use-case index](https://lemma.frame00.com/solutions/use-cases/).
+In this way, a proof fixed at the moment of collection functions as an independently verifiable trail of whether "this training data was gathered under verifiable origin and consent," without depending on after-the-fact blocking and restriction. Detection (after-the-fact analysis, blocking, platform restriction) works on correcting harm; attestation (independent verification of provenance and consent at collection) works on establishing trust in AI-training data — each complementary to the other.
 
 ---
 
@@ -114,11 +114,7 @@ In this way, a proof fixed at the moment of collection functions as an independe
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

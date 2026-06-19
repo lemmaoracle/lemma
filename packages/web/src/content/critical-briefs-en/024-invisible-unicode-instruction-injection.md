@@ -69,7 +69,7 @@ For this class of technique, detection-side measures — invisible-character str
 
 Detection, however, cannot itself independently prove, after the fact, that "the input the human reviewed and the input the model actually interpreted were identical." Stripping invisible characters is effective against known encodings, but it is not a layer that guarantees the origin and integrity of the input. When a new encoding or obfuscation emerges, detection is again reactive. This is a structurally independent gap beyond detection's reach.
 
-As things stand, across the operational model for AI input verification, a layer that independently fixes the origin and integrity of the input the model interprets is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of provenance and integrity proof into the input ingestion path. Detection finds and removes dangerous inputs; pre-execution attestation fixes, independently of content inspection, that "the input the model processed reached it from a legitimate origin, unaltered." The two are complementary (for more on the relationship between detection and pre-execution attestation, see [The Last Layer Left for Cyber Defense in the AI Era](https://lemma.frame00.com/ja/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+As things stand, across the operational model for AI input verification, a layer that independently fixes the origin and integrity of the input the model interprets is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of provenance and integrity proof into the input ingestion path. Detection finds and removes dangerous inputs; pre-execution attestation fixes, independently of content inspection, that "the input the model processed reached it from a legitimate origin, unaltered." The two are complementary.
 
 ---
 
@@ -95,8 +95,6 @@ Under this design, even invisible tampering like Unicode injections surfaces as 
 
 Models change. Proofs remain.
 
-For the design and scope, see the use cases [AI Document Isolation — Let AI Use Documents, Never Touch Raw Data](https://lemma.frame00.com/ja/solutions/use-cases/ai-document-isolation/) and [RAG Content Provenance](https://lemma.frame00.com/ja/solutions/use-cases/rag-content-provenance/), and [Pillar 02 — Verifiable AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/).
-
 ---
 
 ## 8. Sources
@@ -111,11 +109,7 @@ Sources are drawn from published research and industry-body materials. Specific 
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

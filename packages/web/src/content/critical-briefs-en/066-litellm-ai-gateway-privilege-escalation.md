@@ -79,7 +79,7 @@ Responsible disclosure of the vulnerabilities, BerriAI's incremental fixes, upda
 
 At the same time, detection and patches are no material for independently establishing — **before the operation executes** — whether this call is an operation permitted to its caller. The core of this incident is that each layer assumed "an earlier layer checked," and no authorization verification existed at the moment of the action. Log analysis reconstructs after the fact "which endpoint was hit," but is no material for independently verifying, before the action, "was that call within the authorization granted to the caller." In Man-in-the-Gateway in particular, the callback never appears in the admin UI, and the altered tool call looks like a legitimate response to the downstream agent. After-the-fact reconciliation can barely tell them apart.
 
-Pre-execution attestation takes the design choice of treating each operation of an agent or gateway not as "the presentation of a role or token" but as "a proof of authorization scoped per action and independently verifiable." If privileged operations — registering a guardrail, changing an authority field, making a tool call — are verified at the moment of the act against the bounds of the grantor's authorization, then even after the route gate is passed once, the handler-side operation cannot proceed without a proof of authorization. Detection (after-the-fact investigation, patching, inventory) and proof of authorization (independent verification at the moment of the act) are **complements**, not substitutes; only where the two overlap can an AI gateway be safely placed under audit, regulation, and real workloads (for verifying authorization independently at the moment of the act, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation takes the design choice of treating each operation of an agent or gateway not as "the presentation of a role or token" but as "a proof of authorization scoped per action and independently verifiable." If privileged operations — registering a guardrail, changing an authority field, making a tool call — are verified at the moment of the act against the bounds of the grantor's authorization, then even after the route gate is passed once, the handler-side operation cannot proceed without a proof of authorization. Detection (after-the-fact investigation, patching, inventory) and proof of authorization (independent verification at the moment of the act) are **complements**, not substitutes; only where the two overlap can an AI gateway be safely placed under audit, regulation, and real workloads.
 
 ---
 
@@ -103,7 +103,7 @@ Against the gap this incident exposed (authority leaning on assumptions across l
 - **Integrity of the gateway path**: make the provenance and integrity of requests/responses flowing between agent and model independently verifiable, so altered tool calls and invisible callbacks are rejected before a downstream agent accepts them (connecting to the input-identity verification of Brief 062 and the MCP path of Brief 027).
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this operation is within the grantor's authorization" — reconciling independent verification with the protection of sensitive information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this gateway / agent operation is within the authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, patching, inventory) works on remediating the damage; pre-execution attestation (independent verification of authorization at the moment of the act) works on establishing trust in AI infrastructure — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this gateway / agent operation is within the authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, patching, inventory) works on remediating the damage; pre-execution attestation (independent verification of authorization at the moment of the act) works on establishing trust in AI infrastructure — each complementary to the other.
 
 ---
 
@@ -118,11 +118,7 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

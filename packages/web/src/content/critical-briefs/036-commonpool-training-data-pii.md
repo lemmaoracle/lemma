@@ -69,7 +69,7 @@ Brief 008(Discord の公開 API 経由 20.5 億メッセージのスクレイピ
 
 一方で、検出・事後フィルタは「収集の時点で、この素材を学習に取り込んでよいか」自体を決めない。顔ぼかしや PII 検出は、すでに収集した 128 億ペアから機械的に除こうとするが、0.1% サンプルで 800 超の顔が漏れたように、網羅性は保証されない。検出は生成・収集の後追いであり、いったんデータセットが公開され下流モデルへ伝播すれば、回収はほぼ不可能になる。欠けていたのは「この素材は、学習に供してよい来歴・同意を持つか」という収集時点の独立検証であり、これは事後の PII 検出とは別系統である。規制対応の観点でも、来歴のないデータからは「誰の同意で・どの範囲で使ってよいか」を立証できない。
 
-事前証明(pre-execution attestation)は、学習データの取り込みを、事後フィルタではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を採る。来歴・同意の proof が成立しない素材は、データセットに取り込む前に reject される。PII 検出(detection 的な「混入物を後から探す」)と来歴の事前証明(「取り込んでよい素材か」)は代替ではなく**補完**の関係にあり、回収困難な下流波及を防ぐには後者の比重が増す(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+事前証明(pre-execution attestation)は、学習データの取り込みを、事後フィルタではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を採る。来歴・同意の proof が成立しない素材は、データセットに取り込む前に reject される。PII 検出(detection 的な「混入物を後から探す」)と来歴の事前証明(「取り込んでよい素材か」)は代替ではなく**補完**の関係にあり、回収困難な下流波及を防ぐには後者の比重が増す。
 
 ---
 
@@ -84,7 +84,7 @@ Brief 008(Discord の公開 API 経由 20.5 億メッセージのスクレイピ
 
 ## 7. Lemma による分析
 
-本事案で露呈した構造(学習データの来歴・同意が収集時点で検証されず、事後フィルタでは網羅できない)に対して、Lemma は、データの取り込みを、事後の PII 検出ではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を提示している。来歴・同意の proof が成立しない素材は取り込み前に reject され、データセットの構成は来歴つきで可監査になる。「公開されている ≠ 来歴・同意がある」という来歴証明カテゴリの設計思想と reference 実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)に示している。Brief 008(Discord scraping)と合わせ、学習データ来歴の系譜として参照されたい。
+本事案で露呈した構造(学習データの来歴・同意が収集時点で検証されず、事後フィルタでは網羅できない)に対して、Lemma は、データの取り込みを、事後の PII 検出ではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を提示している。来歴・同意の proof が成立しない素材は取り込み前に reject され、データセットの構成は来歴つきで可監査になる。「公開されている ≠ 来歴・同意がある」という来歴証明カテゴリの設計思想がここで働く。Brief 008(Discord scraping)と合わせ、学習データ来歴の系譜として参照されたい。
 
 ---
 
@@ -92,16 +92,13 @@ Brief 008(Discord の公開 API 経由 20.5 億メッセージのスクレイピ
 
 - **MIT Technology Review**: "A major AI training data set contains millions of examples of personal data"(2025-07-18、CommonPool の PII 混入・規模推定・顔ぼかしの漏れ)— https://www.technologyreview.com/2025/07/18/1120466/a-major-ai-training-data-set-contains-millions-of-examples-of-personal-data/
 - **研究論文(arXiv)**: "A Common Pool of Privacy Problems: Legal and Technical Lessons from a Large-Scale Web-Scraped Machine Learning Dataset"(arXiv:2506.17185、2025-06)— https://arxiv.org/abs/2506.17185
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する threat intelligence brief です。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

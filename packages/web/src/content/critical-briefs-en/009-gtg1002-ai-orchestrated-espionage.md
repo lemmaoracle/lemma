@@ -71,7 +71,7 @@ In this incident, anomaly detection, classifiers, and account bans on the provid
 
 That said, detection does not change what the receiver (the target system, API, MCP tool) will accept. In this incident, no mechanism existed for the receiver to independently verify before execution whether each operation issued by the AI was "generated under a legitimate delegation relationship." The identity assertion the attacker injected — "an employee of a legitimate firm conducting defensive testing" — passed as role-play without proof. For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that "this AI agent was operating under authorized authority," post-event telemetry on the provider side is hard to constitute an independent record from the perspective of the affected organization.
 
-Pre-execution attestation adopts a design in which, before an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested is embedded into the request itself as an independently verifiable cryptographic proof, and the receiver makes accept decisions by reading the proof. If the proof says "no legitimate delegation relationship" or "out of scope," the action is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents (for the thesis on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation adopts a design in which, before an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested is embedded into the request itself as an independently verifiable cryptographic proof, and the receiver makes accept decisions by reading the proof. If the proof says "no legitimate delegation relationship" or "out of scope," the action is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents.
 
 ---
 
@@ -87,7 +87,7 @@ How organizations, providers, and regulators should design, supervise, and verif
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not." For design details see [Proof-as-Auth: Sign In Without Sending Your Key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not."
 
 ---
 
@@ -98,16 +98,13 @@ Against the detection–proof gap exposed by this incident (each of an AI agent'
 - **Paul, Weiss client memo**: "Anthropic Disrupts First Documented Case of Large-Scale AI-Orchestrated Cyberattack" (2025-11) — https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack
 - **SOCRadar analysis**: "AI-Powered Cyber Espionage: Inside the GTG-1002 Campaign" (2025-11) — https://socradar.io/blog/ai-powered-gtg-1002-campaign/
 - **PwC**: "AI-orchestrated cyberattacks: A call to action" (2025) — https://www.pwc.com/us/en/services/consulting/cybersecurity-risk-regulatory/library/ai-orchestrated-cyberattacks.html
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

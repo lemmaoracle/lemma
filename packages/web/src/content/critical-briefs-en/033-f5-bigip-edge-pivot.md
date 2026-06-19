@@ -72,7 +72,7 @@ Microsoft Threat Intelligence's visualization of the attack chain, CISA's KEV ad
 
 But detection does not change "whether, at each hop, that action should be authorized" itself. The lateral movement here proceeded through legitimate SSH, valid domain credentials, and legitimate authentication flows, and each operation looks normal in isolation. Because the edge appliance is externally exposed and lightly monitored, detection fired late — by the time it was detected, credentials and certificates were already in the attacker's hands. What was missing is independent verification, at the moment of the action, of "does the holder of this credential have the authorization and provenance to perform this action, within this scope?" — a different track from network monitoring and after-the-fact log tracing. As NTLM reflection shows, as long as possession of a credential is equated with proof of authorization, detection can only be reactive to the compromise.
 
-Pre-execution attestation inverts authentication from "do you hold a credential?" to "pre-execution verification of whether this action has scoped authorization and provenance." Instead of sending a key or a long-lived credential, it requires a verifiable, scoped, non-reusable proof per action, so that even with credentials stolen from the edge appliance or privileges gained via reflection, if the proof says "this action lacks legitimate authorization and provenance," execution is blocked in advance. Detection of credentials (the detection-style "is this a valid credential?") and pre-execution proof of the action ("does this action have authorization and provenance?") are not substitutes but **complements**. For an authentication approach that does not depend on positional trust and stored credentials, see [Proof-as-Auth: sign in without ever sending your key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+Pre-execution attestation inverts authentication from "do you hold a credential?" to "pre-execution verification of whether this action has scoped authorization and provenance." Instead of sending a key or a long-lived credential, it requires a verifiable, scoped, non-reusable proof per action, so that even with credentials stolen from the edge appliance or privileges gained via reflection, if the proof says "this action lacks legitimate authorization and provenance," execution is blocked in advance. Detection of credentials (the detection-style "is this a valid credential?") and pre-execution proof of the action ("does this action have authorization and provenance?") are not substitutes but **complements**.
 
 ---
 
@@ -86,7 +86,7 @@ Pre-execution attestation inverts authentication from "do you hold a credential?
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (each hop of lateral movement is accepted on positional trust and implicit trust in stored credentials, rather than per-action proof of authorization), Lemma proposes a design that inverts authentication from "possession of a credential" to "pre-execution proof of scoped authorization and provenance per action." Under the proof-as-auth approach of presenting a proof without sending a key or a long-lived credential, even with credentials stolen from the edge appliance or privileges gained via reflection, if a proof of legitimate authorization and provenance does not hold, the action is rejected in advance. For the design philosophy, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) (Lemma) and [Proof-as-Auth: sign in without ever sending your key](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+Against the structure exposed here (each hop of lateral movement is accepted on positional trust and implicit trust in stored credentials, rather than per-action proof of authorization), Lemma proposes a design that inverts authentication from "possession of a credential" to "pre-execution proof of scoped authorization and provenance per action." Under the proof-as-auth approach of presenting a proof without sending a key or a long-lived credential, even with credentials stolen from the edge appliance or privileges gained via reflection, if a proof of legitimate authorization and provenance does not hold, the action is rejected in advance.
 
 ---
 
@@ -100,11 +100,7 @@ Against the structure exposed here (each hop of lateral movement is accepted on 
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

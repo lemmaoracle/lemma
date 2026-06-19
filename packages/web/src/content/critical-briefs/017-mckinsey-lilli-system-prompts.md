@@ -71,7 +71,7 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 より本質的なのは、検出が「AI の出力やそれを統治する指示が真正か」を独立に保証しない点である。system prompt が書き換えられても、Lilli の出力は表面上は正常に見える。利用者（コンサルタント）が「この回答は正規の、改ざんされていない指示に基づくものか」を判定する手段が無ければ、サイレントな改ざんは検出をすり抜ける。規制報告・監査・訴訟で「この AI の出力は正規の統治指示の下で生成されたか」を立証する材料として、アクセスログや事後の脆弱性修正は、出力そのものの真正性の独立した証跡にはならない。
 
-事前証明（pre-execution attestation）は、AI の挙動を統治する指示（system prompt 等）と出力に、「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づけ、利用者・監査者が出力の真正性を検証できる設計を採る。指示が書き換えられれば proof は不整合となり、改ざんされた出力は真正なものと区別できる。脆弱性検出(detection)と出力・統治指示の完全性証明(proof)は代替ではなく **補完** の関係にある(検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照)。
+事前証明（pre-execution attestation）は、AI の挙動を統治する指示（system prompt 等）と出力に、「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づけ、利用者・監査者が出力の真正性を検証できる設計を採る。指示が書き換えられれば proof は不整合となり、改ざんされた出力は真正なものと区別できる。脆弱性検出(detection)と出力・統治指示の完全性証明(proof)は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -87,7 +87,7 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（AI の挙動を統治する system prompt と出力に、完全性・来歴を独立検証する仕組みが無い）に対して、Lemma は、AI の統治指示と出力に「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づける設計を提示している。system prompt がサイレントに書き換えられても、出力に伴う proof は別系統で不整合を告げるため、利用者・監査者は改ざんされた出力を真正なものと区別できる。Lemma は脆弱性検出やアクセス制御を否定するものではなく、検出に対して「AI の出力と統治指示の真正性の証明」を補完する層を提供する。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（AI の挙動を統治する system prompt と出力に、完全性・来歴を独立検証する仕組みが無い）に対して、Lemma は、AI の統治指示と出力に「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づける設計を提示している。system prompt がサイレントに書き換えられても、出力に伴う proof は別系統で不整合を告げるため、利用者・監査者は改ざんされた出力を真正なものと区別できる。Lemma は脆弱性検出やアクセス制御を否定するものではなく、検出に対して「AI の出力と統治指示の真正性の証明」を補完する層を提供する。
 
 ---
 
@@ -97,16 +97,13 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 - **CodeWall 公式ブログ**: "How We Hacked McKinsey's AI Platform"（2026-03、攻撃チェーン・到達点の一次主張）— https://codewall.ai/blog/how-we-hacked-mckinseys-ai-platform
 - **BankInfoSecurity**: "Autonomous Agent Hacked McKinsey's AI in 2 Hours"（2026-03）— https://www.bankinfosecurity.com/autonomous-agent-hacked-mckinseys-ai-in-2-hours-a-31007
 - **Outpost24**: "How an AI Agent Hacked McKinsey's AI Platform"（2026-03、技術解説）— https://outpost24.com/blog/ai-agent-hacked-mckinsey-ai-platform/
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

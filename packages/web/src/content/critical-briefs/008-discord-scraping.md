@@ -79,7 +79,7 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 一方で、検出は dataset が **すでに arXiv に投稿され JSON として配布されている状態を取り消せない**。下流の研究者・AI 企業は dataset をダウンロード可能であり、AI training への流入経路は検出のみでは閉じない。Discord の利用規約と開発者ポリシー違反であっても、技術的なアクセス制御は存在せず、配布後の dataset を撤回する mechanism も成立しない。匿名化措置が施されていても、収集 scope の規約適合性は dataset 単体からは検証できない。
 
-規制報告・行政手続き・企業の AI 採用 due diligence で「training data が適法 scope で収集された」と立証する材料として、本事案のような dataset が下流の AI training に流入した場合、検出スコアと dataset origin / scope 証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで AI training data の trust boundary が確立される(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+規制報告・行政手続き・企業の AI 採用 due diligence で「training data が適法 scope で収集された」と立証する材料として、本事案のような dataset が下流の AI training に流入した場合、検出スコアと dataset origin / scope 証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで AI training data の trust boundary が確立される。
 
 ---
 
@@ -104,7 +104,7 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 第二に **AI training data audit 層** において、AI ベンダーの training data audit 工程に proof 必須化を組み込み、AI モデルの出力に対して「この出力はどの training data に基づくか」「その training data は適法 scope で収集されたか」を独立検証可能にする設計。エンプラ CSO は AI 採用判断時点で proof のない、または不正 scope proof を持つ training data を契約要件として排除可能になる。
 
-2 層の組み合わせは、検出に対する代替ではなく補完の関係にある。検出は scraping の発生と dataset 配布を後追いで把握できるが、配布済み dataset の下流流通を制御できない。事前証明は dataset 配布時点と AI training audit 時点の 2 層で trust boundary を確立する。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+2 層の組み合わせは、検出に対する代替ではなく補完の関係にある。検出は scraping の発生と dataset 配布を後追いで把握できるが、配布済み dataset の下流流通を制御できない。事前証明は dataset 配布時点と AI training audit 時点の 2 層で trust boundary を確立する。
 
 ---
 
@@ -113,16 +113,13 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online"(2025-05-22、一次報道、Discord 利用規約・開発者ポリシー違反を含む技術記述)— https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv 研究チーム論文**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015-2024)"(2025、ブラジル ミナス・ジェライス連邦大学 15 名研究者チーム、dataset 配布の一次資料)— https://arxiv.org/pdf/2502.00627
 - **Discord 開発者ポリシー** 公式(ML / AI training 用途禁止条項とスクレイピング禁止条項の根拠)— https://support-dev.discord.com/hc/ja/articles/8563934450327
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

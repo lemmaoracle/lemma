@@ -69,7 +69,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 一方で、検出は受信側（成果物を取得する開発者・CI/CD・端末）が「このアーティファクトを accept するか」自体を変えない。攻撃者は使い捨てアカウントとブランド切り替えで takedown を反復回避しており、検出と撤回の後追いでは accept の瞬間を止められない。流出した正規ソースと、ブランドを騙る悪意アーティファクトの双方について、利用者は「これは本当に正規 origin から来たものか」を取得時点で独立検証する手段を持たなかった。規制報告・行政手続きで「正規配布だったか」を立証する材料としても、ブランド名や配布先 URL は独立した証跡を伴わない。
 
-事前証明（pre-execution attestation）は、各アーティファクトに「正規の origin（ここでは公式 publisher）によって生成・公開された」ことを示す独立検証可能な暗号証明を埋め込み、取得側が実行・インストール前に proof を検証する設計を採る。proof が「正規 origin なし」と告げれば、当該アーティファクトは事前に reject される。npm の署名や GitHub の verified バッジは概念的に近い方向だが、ブランド名や配布チャネルの信頼に依存する限り、impersonation の余地を残す。検出と事前証明は代替ではなく **補完** の関係にある（鍵を露出させずに origin を ZK 証明として固定する方向は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）を参照）。
+事前証明（pre-execution attestation）は、各アーティファクトに「正規の origin（ここでは公式 publisher）によって生成・公開された」ことを示す独立検証可能な暗号証明を埋め込み、取得側が実行・インストール前に proof を検証する設計を採る。proof が「正規 origin なし」と告げれば、当該アーティファクトは事前に reject される。npm の署名や GitHub の verified バッジは概念的に近い方向だが、ブランド名や配布チャネルの信頼に依存する限り、impersonation の余地を残す。検出と事前証明は代替ではなく **補完** の関係にある。
 
 ---
 
@@ -84,7 +84,7 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)（Lemma、2026-04）および [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)（GitHub）を参照のこと。
+本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。
 
 ---
 
@@ -93,16 +93,13 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 - **Trend Micro technical analysis**: "Weaponizing Trust Signals: Claude Code Lures and GitHub Release Payloads"（2026-04-03、著者 Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra）— https://www.trendmicro.com/en_us/research/26/d/weaponizing-trust-claude-code-lures-and-github-release-payloads.html
 - **Trend Micro follow-up**: "Claude Code Packaging Error Remains a Lure in an Active Campaign: What Defenders Should Do"（2026-04）— https://www.trendmicro.com/en_us/research/26/d/claude-code-remains-a-lure-what-defenders-should-do.html
 - **PCMag**: "Anthropic Issues 8,000 Copyright Takedowns to Scrub Claude Code Leak"（2026-03）— https://www.pcmag.com/news/anthropic-issues-8000-copyright-takedowns-to-scrub-claude-code-leak
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

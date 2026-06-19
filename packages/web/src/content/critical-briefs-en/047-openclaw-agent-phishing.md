@@ -70,7 +70,7 @@ In this incident, the detection-and-remediation chain functioned — research di
 
 At the same time, detection provides no material to independently establish — **at the moment the agent takes the action** — whether the request it is about to fulfill comes from a legitimately authorized party. Malicious-URL detection sees only "is this link suspicious," and an email filter sees only "does this text look like spam." Neither can distinguish, before execution and from the side of the requester's identity/authorization, whether the request will lead to credential exfiltration. Post-send detection and patches, too, are after-the-fact chains that act once the action has executed. This is a structurally independent layer gap, outside the reach of the detection layer.
 
-Pre-execution attestation closes this gap by inserting one step — proof of the requester's identity/authorization — into the path by which the agent takes a high-risk action. Rather than hardening prompt wording or internal judgment, it requires, before acting, that "this request is authorized, with this scope, to this party" in an independently verifiable form — so that even under the social pressure of urgency/routineness, the send is blocked beforehand unless the proof holds. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of agent actions (for more on the relationship between detection and attestation, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for proving identity without sending the key, see ["Proof-as-Auth: Sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
+Pre-execution attestation closes this gap by inserting one step — proof of the requester's identity/authorization — into the path by which the agent takes a high-risk action. Rather than hardening prompt wording or internal judgment, it requires, before acting, that "this request is authorized, with this scope, to this party" in an independently verifiable form — so that even under the social pressure of urgency/routineness, the send is blocked beforehand unless the proof holds. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of agent actions.
 
 ---
 
@@ -91,7 +91,7 @@ Against the gap this incident exposed (the agent executes high-risk actions deco
 - **Scoped authority**: Minimize the authority given to the agent per action, and bind connector access to the trust level of the party that initiated the task. Do not let a send beyond the scope of authorization succeed without proof.
 - **Selective disclosure**: Disclose only the minimum — that "this action meets the authorization schema" — without letting internal keys or credentials leave the environment.
 
-In this way, a proof fixed at the moment of action functions as an independently verifiable trail of whether "this request is legitimately authorized and has a legitimate origin," before the agent takes a high-risk action. Detection (after-the-fact detection, patches, warnings) works on remediation after discovery; attestation (pre-action authorization and origin verification) works on the independent verification of agent actions — each complementary to the other. For the design and its scope of application, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of action functions as an independently verifiable trail of whether "this request is legitimately authorized and has a legitimate origin," before the agent takes a high-risk action. Detection (after-the-fact detection, patches, warnings) works on remediation after discovery; attestation (pre-action authorization and origin verification) works on the independent verification of agent actions — each complementary to the other.
 
 ---
 
@@ -106,11 +106,7 @@ In this way, a proof fixed at the moment of action functions as an independently
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

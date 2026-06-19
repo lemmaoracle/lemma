@@ -71,7 +71,7 @@ In this event, the detection sequence functioned — research disclosure (Advers
 
 At the same time, detection is no material for independently establishing — **at the moment the agent loads and executes the bundled config** — whether that config is legitimately authorized and originates from the legitimate author. Signature checks can only see "the repository is valid," and the approval prompt can only see "the user opened / trusted." Neither can distinguish, before execution, whether the config will steal credentials. Platform disabling, too, is an after-the-fact sequence that acts only after the config has executed. This is a structurally independent gap that lies outside the reach of the detection layer.
 
-As it stands, across the entire operating model of AI coding agents, independent verification of the authorization and provenance of bundled config depends on trust in the act of "the user opened / trusted," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by interposing one step of authority proof into the path by which an agent executes config and actions. Pre-execution attestation is not a replacement for detection but a **complement**; the combination of both layers establishes the trust boundary of agent operations. (For more on the relationship between detection and pre-execution proof, see [\"The last layer left in AI-era cyber defense\"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).)
+As it stands, across the entire operating model of AI coding agents, independent verification of the authorization and provenance of bundled config depends on trust in the act of "the user opened / trusted," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by interposing one step of authority proof into the path by which an agent executes config and actions. Pre-execution attestation is not a replacement for detection but a **complement**; the combination of both layers establishes the trust boundary of agent operations.
 
 ---
 
@@ -94,7 +94,7 @@ For the gap this event exposed — an agent executing bundled config decoupled f
 - **Scoped authority**: The authority granted to the agent is minimized per operation, and execution beyond the authorized scope cannot succeed without proof. Legitimate agent operations are distinguished, by trail, from operations driven by attacker-planted config.
 - **Selective disclosure**: Only "this operation satisfies the authorization schema" is disclosed minimally; internal keys and credentials never leave the environment.
 
-In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of "is this operation legitimately authorized, and does it carry legitimate provenance," before the agent executes the bundled config. Detection (after-the-fact disabling and vendor research) works on post-discovery remediation; pre-execution proof (pre-execution verification of authority and provenance) works on independent verification of agent operations — the two complement each other. For the design and scope of application, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of "is this operation legitimately authorized, and does it carry legitimate provenance," before the agent executes the bundled config. Detection (after-the-fact disabling and vendor research) works on post-discovery remediation; pre-execution proof (pre-execution verification of authority and provenance) works on independent verification of agent operations — the two complement each other.
 
 ---
 
@@ -110,11 +110,7 @@ In this way, a proof fixed at the moment of execution functions as an independen
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

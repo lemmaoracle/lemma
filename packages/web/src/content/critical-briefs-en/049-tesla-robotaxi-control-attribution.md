@@ -73,7 +73,7 @@ Crash reports to NHTSA, regulatory investigations and preliminary evaluations, v
 
 At the same time, detection and disclosure do not in themselves independently establish "who/what was in control at that moment" or "does this record reflect the facts without tampering." The crash report is authored by the operator, and the operator also decides the scope of narrative disclosure. As the teleoperator cause became known only after the redaction was lifted, the truth of control attribution depended on record-keeping and disclosure decisions. What was missing is "is this crash's control attribution and driving decision fixed in independently verifiable evidence at the moment of action," which is a separate track from after-the-fact reporting and disclosure. As long as the existence of a record is equated with proof of attribution, verification can only trail behind disclosure decisions.
 
-The idea of pre-execution attestation inverts safety assessment from "trust the records submitted and disclosed after the fact" to "are the handover of control and the driving decisions fixed as independently verifiable evidence at the moment of action." By binding the switching of the controlling agent (ADS / remote human / safety monitor) and each decision to tamper-resistant provenance at the moment of action, "what was in control at the time of this crash" can be independently verified without depending on after-the-fact record-keeping or disclosure scope. Detecting a crash (the detection-style "did a crash occur") and proving control attribution and decision provenance ("what was in control, under what authorization, at that moment") are not substitutes but **complements**. For verifying provenance independently at the moment of action see ["Proof-as-Auth: Sign In Without Ever Sending Your Key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05); for the detection-and-proof thesis see ["The Last Layer Left for Cyber Defense in the Age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
+The idea of pre-execution attestation inverts safety assessment from "trust the records submitted and disclosed after the fact" to "are the handover of control and the driving decisions fixed as independently verifiable evidence at the moment of action." By binding the switching of the controlling agent (ADS / remote human / safety monitor) and each decision to tamper-resistant provenance at the moment of action, "what was in control at the time of this crash" can be independently verified without depending on after-the-fact record-keeping or disclosure scope. Detecting a crash (the detection-style "did a crash occur") and proving control attribution and decision provenance ("what was in control, under what authorization, at that moment") are not substitutes but **complements**.
 
 ---
 
@@ -94,7 +94,7 @@ Against the gap this incident exposed (control attribution and driving-decision 
 - **Pre-execution attestation of attributes**: Present the attribute "this drive was autonomous / was remote-human" as independently verifiable evidence rather than self-reporting
 - **Selective disclosure**: Reconcile trade secrets with independent safety verification — disclose only that "control attribution and record authenticity meet the verification conditions" without exposing sensitive internal information
 
-Through this, proof fixed at the moment of action functions as an independently verifiable trail for "what was in control at the time of this crash, and is this record authentic," without depending on after-the-fact disclosure decisions. Detection and disclosure (after-the-fact reporting and unredaction) serve as the foundation for social assessment, while pre-execution attestation (fixing provenance and authorization at the moment of action) serves the independent verification of control attribution and records — each working complementarily. For the design and scope see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
+Through this, proof fixed at the moment of action functions as an independently verifiable trail for "what was in control at the time of this crash, and is this record authentic," without depending on after-the-fact disclosure decisions. Detection and disclosure (after-the-fact reporting and unredaction) serve as the foundation for social assessment, while pre-execution attestation (fixing provenance and authorization at the moment of action) serves the independent verification of control attribution and records — each working complementarily.
 
 ---
 
@@ -109,11 +109,7 @@ Through this, proof fixed at the moment of action functions as an independently 
 
 ## 9. About Brief distribution
 
-The Lemma Critical Brief is a threat-intelligence brief published by Lemma. This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization. If you use it as a reference for decision-making, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

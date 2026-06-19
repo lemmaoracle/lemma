@@ -69,7 +69,7 @@ Brief 003(Starlette/BadHost)とは別の primitive(本事案では「失効済�
 
 一方で、検出は eventual consistency による失効遅延の構造そのものを変更できない。Google が「修正しない」とした立場である以上、開発者・ユーザーは漏洩 API キーを「削除済み」として扱う限り、最長 23 分間の悪用窓を放置することになる。これは検出層の射程外にある、構造的に独立した層の gap である。
 
-規制報告・行政手続き・訴訟で「credential を確実に失効させた」と立証する材料として、本事案のような「削除しても 23 分有効」事例では、検出スコアと失効証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで credential lifecycle の trust boundary が確立される(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+規制報告・行政手続き・訴訟で「credential を確実に失効させた」と立証する材料として、本事案のような「削除しても 23 分有効」事例では、検出スコアと失効証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで credential lifecycle の trust boundary が確立される。
 
 ---
 
@@ -90,23 +90,20 @@ API 種別による失効速度の差が示すこと:
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。設計の詳細は [「x402 に第3層を足す — ステーブルコイン事業者の選択肢」](https://lemma.frame00.com/ja/blog/ppsi-stablecoin-aml-kyc-third-layer/)(Lemma、2026-05)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。
 
 ---
 
 ## 8. Sources
 
 - **Aikido security technical analysis**: "Google API keys keep working after you delete them long enough to be exploited" by Joe Leon(2026-05、Aikido 公式 blog、10 回試験 × 2 日の計測データと技術詳細、Google への報告経緯を含む)— https://www.aikido.dev/blog/google-api-keys-deletion
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

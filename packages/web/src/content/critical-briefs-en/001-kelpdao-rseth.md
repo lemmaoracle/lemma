@@ -63,7 +63,7 @@ This incident is a representative case of a structure in which, on a cross-chain
 
 The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** (Brief 002). The shared structure is that the trust configuration of a cross-chain bridge sits under the control of a single entity. The difference is that this incident distorted trust by manipulating the RPC observation layer the DVN reads from, while the Stake DAO incident distorted trust by directly rewriting the LayerZero v2 trust source via a deployer private key. Both reach the same structure from different vectors.
 
-In its incident statement, LayerZero Labs signaled its intent to treat this structure as an independent operational category — the observation layer. Hardening the observation layer (quorum, redundancy, human review) and embedding independently verifiable cryptographic proof into the message itself are not opposing approaches but complementary ones (for the latter argument, see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04)).
+In its incident statement, LayerZero Labs signaled its intent to treat this structure as an independent operational category — the observation layer. Hardening the observation layer (quorum, redundancy, human review) and embedding independently verifiable cryptographic proof into the message itself are not opposing approaches but complementary ones.
 
 ---
 
@@ -73,7 +73,7 @@ In this incident, the DVN signing keys themselves were not compromised, and the 
 
 This incident exposed a detection–proof gap that hardening the detection layer alone cannot close. A 99.7% anomalous confidence score is unlikely to fire in a case where, as here, a legitimate process produced a legitimate signature over manipulated inputs. This is not a deficiency in the detection tools or vendors; it indicates that between detection and proof — that is, establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — an independent layer is required. Detection remains an important layer, and in this incident it narrowed the post-event blast window and contributed to scoping the impact.
 
-Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not.
 
 ---
 
@@ -91,7 +91,7 @@ LayerZero Labs (as of the 2026-05 incident statement):
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
 
 ---
 
@@ -100,16 +100,13 @@ Against the detection–proof gap exposed by this incident (no independent verif
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026" (independent analysis by a leading blockchain analytics firm, including on-chain traces) — https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026" (technical analysis by a security audit firm, independent breakdown of the attack path) — https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights" (independent analysis) — https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

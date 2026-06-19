@@ -71,7 +71,7 @@ Campaign identification, IOC provision, and MITRE ATT&CK mapping by threat resea
 
 But detection does not change "what is allowed to run in the environment" itself. The core of this case is that the tools the AI generates per target carry no stable signature, so IOCs and known-tool matching are inherently reactive. A generated backdoor or script becomes an IOC only once observed and analyzed — and a different one is generated for the next target. What was missing is independent, pre-execution verification of "is the operation or tool about to run in this environment one that is legitimately authorized and has confirmed provenance?" — a different track from detecting known artifacts. For audit, too, after a compromise there is little independent trail beyond reconciling logs with forensics to prove "which operation ran, under whose authorization, by which path."
 
-Pre-execution attestation inverts detection from "matching known malicious artifacts" to "verifying, before execution, whether the operation or code about to run is authorized and carries provenance." Even when a tool is unknown or freshly generated, if the proof reports "this operation has no legitimately authorized provenance," execution is blocked in advance. Signature-based detection (the detection-style "is this known-malicious?") and pre-execution proof of operations (the "is this an authorized, provenanced execution?") are not substitutes but **complements** — and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter (for the detection-vs-proof thesis, see [The last layer left for cyber defense in the AI era](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+Pre-execution attestation inverts detection from "matching known malicious artifacts" to "verifying, before execution, whether the operation or code about to run is authorized and carries provenance." Even when a tool is unknown or freshly generated, if the proof reports "this operation has no legitimately authorized provenance," execution is blocked in advance. Signature-based detection (the detection-style "is this known-malicious?") and pre-execution proof of operations (the "is this an authorized, provenanced execution?") are not substitutes but **complements** — and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter.
 
 ---
 
@@ -85,7 +85,7 @@ Pre-execution attestation inverts detection from "matching known malicious artif
 
 ## 7. Lemma's analysis
 
-Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run." Even when a tool is unknown, if the proof of the operation's authorization and provenance does not hold, execution is rejected in advance. For the design philosophy of attesting agent delegation and execution, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) (Lemma).
+Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run." Even when a tool is unknown, if the proof of the operation's authorization and provenance does not hold, execution is rejected in advance.
 
 ---
 
@@ -98,11 +98,7 @@ Against the structural problem exposed here (attack tools are AI-generated per t
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 

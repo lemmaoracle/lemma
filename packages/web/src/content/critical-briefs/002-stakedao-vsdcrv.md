@@ -79,7 +79,7 @@ og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — S
 
 一方で、検出は bridge が「何を accept するか」自体を変えない。Forged message が Arbitrum 側 vsdCRV に届いた時点で、bridge は config(攻撃者によって書き換えられた trusted source 指定)に従って accept する。検出は accept そのものを止められない、という構造的な層境界が残る。
 
-規制報告・行政手続き・訴訟で「許可されていない権限行使があった」と立証する材料として、「設定書き換えが正規プロセスを通じて実行された(攻撃者の鍵に対して LayerZero v2 が config 変更を受け入れた)」という本事案のような事象では、検出スコアと立証の間に独立した層が必要となる。事象後の検出と、事象前に message 自体に独立検証可能な証拠を付与する事前証明(pre-execution attestation)は、代替関係ではなく補完関係にあり、両層を組み合わせて trust boundary を確立する設計が、構造的応答として求められる(検出と事前証明の関係についての詳細な議論は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)(Lemma、2026-05)を参照)。
+規制報告・行政手続き・訴訟で「許可されていない権限行使があった」と立証する材料として、「設定書き換えが正規プロセスを通じて実行された(攻撃者の鍵に対して LayerZero v2 が config 変更を受け入れた)」という本事案のような事象では、検出スコアと立証の間に独立した層が必要となる。事象後の検出と、事象前に message 自体に独立検証可能な証拠を付与する事前証明(pre-execution attestation)は、代替関係ではなく補完関係にあり、両層を組み合わせて trust boundary を確立する設計が、構造的応答として求められる。
 
 ---
 
@@ -103,7 +103,7 @@ Stake DAO(2026-05-28〜29):
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(cross-chain message の信頼設定が config 層に集中点を持ち、その集中点を単一主体が支配可能)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が config 層に依存せず message の origin を独立検証できる設計を提示している。Config が書き換えられた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。設計の詳細は [「2026 年のブリッジ事象が示しているもの — 来歴証明というカテゴリについて」](https://lemma.frame00.com/ja/blog/verifiable-origin-bridge-exploits-2026/)(Lemma、2026-04)、リファレンス実装は [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin)(GitHub)を参照のこと。
+本事案で露呈した検出と証明の落差(cross-chain message の信頼設定が config 層に集中点を持ち、その集中点を単一主体が支配可能)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が config 層に依存せず message の origin を独立検証できる設計を提示している。Config が書き換えられた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
 
 ---
 
@@ -113,16 +113,13 @@ Stake DAO(2026-05-28〜29):
 - **Stake DAO official statement (follow-up)**(2026-05-28、Stake DAO 公式 X 投稿)— preliminary investigation、デプロイヤー秘密鍵侵害の公表、メインネット側裏付資産保護、vsdCRV ブリッジ停止、影響範囲 Arbitrum 限定化、Boosted Yields / Liquid Lockers / Votemarket / Morpho 上 Stake DAO レンディングが影響外であることを含む。https://x.com/StakeDAOHQ/status/2059938235724320959
 - **Blockaid threat intelligence (real-time detection)**(2026-05-27、Blockaid 公式 X 投稿)— ongoing exploit としての real-time 検出、5.4 兆 vsdCRV mint と ETH への swap、malicious peer deployment・setPeer call・mint transaction の onchain evidence を公開。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/blockaid_/status/2059573118927049152
 - **PeckShield Alert analysis**(2026-05-27、PeckShield Alert 公式 X 投稿)— 5.4 兆 vsdCRV mint と 43.781 ETH(約 $91K)swap の独立確認、Curve / KyberSwap 経由の swap と Ethereum への bridge 経路の解析を含む。公式 blog 単独投稿はなく X が primary statement 経路。https://x.com/PeckShieldAlert/status/2059578749352640679
+- **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. Brief 配布について
 
-Lemma Critical Brief は Lemma が発行する脅威インテリジェンス・ブリーフです。本資料は公開情報の構造化分析であり、特定の組織への監査・診断・推奨ではありません。意思決定の参考として用いる場合は、貴組織の Lemma Critical 担当に直接ご相談ください。
-
-[Discovery Call →](https://tally.so/r/EkBqDX)
-[ホワイトペーパー →](https://tally.so/r/xX0VYv)
-[✉️ ニュースレター →](https://tally.so/r/EkMj82?ref=brief-cta)
+本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
 
 ---
 

@@ -79,7 +79,7 @@ In this incident, Blockaid detected the attack in real time within minutes, whic
 
 That said, detection does not change what the bridge will accept. Once a forged message reaches vsdCRV on Arbitrum, the bridge accepts it in accordance with its config (the trusted source pointer the attacker rewrote). The structural layer boundary remains: detection cannot stop acceptance itself.
 
-For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — in cases like this one, where a configuration rewrite was carried out through a legitimate process (LayerZero v2 accepted a config change from the attacker's key) — an independent layer is required between detection scores and proof. Post-event detection and pre-execution attestation, which attaches independently verifiable evidence to the message itself before the event, are not substitutes but complements; a design that combines both layers to establish the trust boundary is the structural response required (for a more detailed argument on the relationship between detection and pre-execution attestation, see [The last layer left in AI-era cyber defense](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05)).
+For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — in cases like this one, where a configuration rewrite was carried out through a legitimate process (LayerZero v2 accepted a config change from the attacker's key) — an independent layer is required between detection scores and proof. Post-event detection and pre-execution attestation, which attaches independently verifiable evidence to the message itself before the event, are not substitutes but complements; a design that combines both layers to establish the trust boundary is the structural response required.
 
 ---
 
@@ -103,7 +103,7 @@ Industry response:
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. For design details see [Bridge exploits in 2026: the case for verifiable origin proofs](https://lemma.frame00.com/blog/verifiable-origin-bridge-exploits-2026/) (Lemma, 2026-04); for the reference implementation see [verifiable-origin proof sample](https://github.com/lemmaoracle/example-origin) (GitHub).
+Against the detection–proof gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
 
 ---
 
@@ -113,16 +113,13 @@ Against the detection–proof gap exposed by this incident (cross-chain message 
 - **Stake DAO official statement (follow-up)** (2026-05-28, Stake DAO official X post) — Preliminary investigation; disclosure of the deployer private key compromise; protection of mainnet-side backing assets; pause of the vsdCRV bridge; containment to Arbitrum; confirmation that Boosted Yields, Liquid Lockers, Votemarket, and Stake DAO lending on Morpho were not affected. https://x.com/StakeDAOHQ/status/2059938235724320959
 - **Blockaid threat intelligence (real-time detection)** (2026-05-27, Blockaid official X post) — Real-time detection of the ongoing exploit; disclosure of the 5.4 trillion vsdCRV mint and the swap to ETH; on-chain evidence of malicious peer deployment, the setPeer call, and the mint transaction. There was no standalone official blog post; X served as the primary statement channel. https://x.com/blockaid_/status/2059573118927049152
 - **PeckShield Alert analysis** (2026-05-27, PeckShield Alert official X post) — Independent confirmation of the 5.4 trillion vsdCRV mint and the swap to 43.781 ETH (approx. $91K); analysis of the swap path via Curve / KyberSwap and the bridge to Ethereum. There was no standalone official blog post; X served as the primary statement channel. https://x.com/PeckShieldAlert/status/2059578749352640679
+- **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
 ---
 
 ## 9. About distribution
 
-Lemma Critical Brief is a threat intelligence brief published by Lemma. It is structured analysis of public information — not an audit, assessment, or recommendation directed at any specific organization. For decision-support use, please consult your Lemma Critical contact directly.
-
-[Discovery Call →](https://tally.so/r/Pd2Rl5)
-[Whitepaper →](https://tally.so/r/7RJXdR)
-[✉️ Newsletter →](https://tally.so/r/rjvN2X?ref=brief-cta)
+This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
 ---
 
