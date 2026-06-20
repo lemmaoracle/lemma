@@ -266,22 +266,33 @@ const railChips = railCats.map((slug) => ({
 }));
 const lpBase = `${base}/compare/ai-models-attack-resistance/`;
 const briefsIndexHref = `${base}/critical/briefs/`;
-const railLpHref = `${lpBase}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=ja`;
-const railDemoHref =
-  "https://tally.so/r/EkBqDX?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo";
-const barLpHref = `${lpBase}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=ja`;
-const barDemoHref =
-  "https://tally.so/r/EkBqDX?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_demo";
-const railCopy = {
-  progress: "読了",
-  explore: "カテゴリで探す",
-  index: "Brief 一覧を見る",
-  lp: "AI攻撃実験を見る",
-  demo: "30分デモを予約",
-  barIndex: "一覧",
-  barLp: "攻撃実験",
-  barDemo: "デモ予約",
-};
+const utmTerm = isJa ? "ja" : "en";
+const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
+const railLpHref = `${lpBase}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
+const railDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
+const barLpHref = `${lpBase}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
+const barDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_demo`;
+const railCopy = isJa
+  ? {
+      progress: "読了",
+      explore: "カテゴリで探す",
+      index: "Brief 一覧を見る",
+      lp: "AI攻撃実験を見る",
+      demo: "30分デモを予約",
+      barIndex: "一覧",
+      barLp: "攻撃実験",
+      barDemo: "デモ予約",
+    }
+  : {
+      progress: "Read",
+      explore: "Explore by category",
+      index: "See all Briefs",
+      lp: "See the AI attack test",
+      demo: "Book a 30-min demo",
+      barIndex: "All",
+      barLp: "Attack test",
+      barDemo: "Demo",
+    };
 ---
 
 <Layout
@@ -348,15 +359,13 @@ const railCopy = {
 
         <aside class="bd-toc" aria-label={labels.tocLabel}>
           <div class="bd-toc__inner">
-            {isJa && (
-              <div class="bd-rail__progress">
-                <div class="bd-rail__progress-top">
-                  <span class="bd-rail__progress-label">{railCopy.progress}</span>
-                  <span class="bd-rail__pct"><span data-rail-pct>0</span>%</span>
-                </div>
-                <div class="bd-rail__track"><div class="bd-rail__bar" data-rail-bar></div></div>
+            <div class="bd-rail__progress">
+              <div class="bd-rail__progress-top">
+                <span class="bd-rail__progress-label">{railCopy.progress}</span>
+                <span class="bd-rail__pct"><span data-rail-pct>0</span>%</span>
               </div>
-            )}
+              <div class="bd-rail__track"><div class="bd-rail__bar" data-rail-bar></div></div>
+            </div>
             <div class="bd-toc__label">{labels.tocLabel}</div>
             <ul class="bd-toc__list">
               {tldrHeading && (
@@ -374,33 +383,29 @@ const railCopy = {
                 </li>
               ))}
             </ul>
-            {isJa && (
-              <div class="bd-rail__block">
-                <div class="bd-rail__h">{railCopy.explore}</div>
-                <div class="bd-rail__chips">
-                  {railChips.map((c) => (
-                    <a class="bd-rail__chip" href={c.href}>{c.label}</a>
-                  ))}
-                </div>
-                <a class="bd-rail__index" href={briefsIndexHref}>{railCopy.index} →</a>
+            <div class="bd-rail__block">
+              <div class="bd-rail__h">{railCopy.explore}</div>
+              <div class="bd-rail__chips">
+                {railChips.map((c) => (
+                  <a class="bd-rail__chip" href={c.href}>{c.label}</a>
+                ))}
               </div>
-            )}
-            {isJa && (
-              <div class="bd-rail__block bd-rail__convert">
-                <a
-                  class="bd-rail__cta bd-rail__cta--solid"
-                  href={railLpHref}
-                  data-brief-cta-ev="brief_rail_lp"
-                  data-cta="rail_lp"
-                >{railCopy.lp}</a>
-                <a
-                  class="bd-rail__cta bd-rail__cta--outline"
-                  href={railDemoHref}
-                  data-brief-cta-ev="brief_rail_demo"
-                  data-cta="rail_demo"
-                >{railCopy.demo}</a>
-              </div>
-            )}
+              <a class="bd-rail__index" href={briefsIndexHref}>{railCopy.index} →</a>
+            </div>
+            <div class="bd-rail__block bd-rail__convert">
+              <a
+                class="bd-rail__cta bd-rail__cta--solid"
+                href={railLpHref}
+                data-brief-cta-ev="brief_rail_lp"
+                data-cta="rail_lp"
+              >{railCopy.lp}</a>
+              <a
+                class="bd-rail__cta bd-rail__cta--outline"
+                href={railDemoHref}
+                data-brief-cta-ev="brief_rail_demo"
+                data-cta="rail_demo"
+              >{railCopy.demo}</a>
+            </div>
           </div>
         </aside>
       </div>
@@ -486,8 +491,7 @@ const railCopy = {
 
     <div class="bd-toast" data-toast hidden>{labels.copyToast}</div>
 
-    {isJa && (
-      <nav class="bd-mbar" aria-label="Brief navigation">
+    <nav class="bd-mbar" aria-label="Brief navigation">
         <div class="bd-mbar__progress" data-bar-bar></div>
         <a class="bd-mbar__btn bd-mbar__btn--ghost" href={briefsIndexHref}>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
@@ -511,8 +515,7 @@ const railCopy = {
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           <span>{railCopy.barDemo}</span>
         </a>
-      </nav>
-    )}
+    </nav>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -966,22 +969,22 @@ const railCopy = {
     border: 1px solid var(--accent);
   }
 
-  /* ─── JA: rail ≥1024 / mobile bar < 1024 (overrides shared 960 layout) ─── */
+  /* ─── Rail ≥1024 / mobile bar < 1024 (JA + EN; overrides shared 960 layout) ─── */
   @media (max-width: 1023px) {
-    :root[lang="ja"] .bd-layout {
+    .bd-layout {
       grid-template-columns: 1fr;
       gap: 0;
     }
-    :root[lang="ja"] .bd-content {
+    .bd-content {
       max-width: none;
     }
-    :root[lang="ja"] .bd-toc {
+    .bd-toc {
       display: none;
     }
-    :root[lang="ja"] .bd-mbar {
+    .bd-mbar {
       display: flex;
     }
-    :root[lang="ja"] .brief-page {
+    .brief-page {
       padding-bottom: calc(76px + env(safe-area-inset-bottom));
     }
   }
