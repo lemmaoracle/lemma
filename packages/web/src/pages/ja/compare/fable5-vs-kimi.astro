@@ -31,15 +31,15 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
       <div class="vn">安全機能つき</div>
       <div class="nm">Claude Fable 5</div>
       <div class="vd">Anthropic</div>
-      <div class="res">攻撃的な指示は <b>5/5 すべて拒否</b>。一見、最も安全に見える。</div>
-      <div class="tag">だが業務指示では漏れた</div>
+      <div class="res">攻撃は 5/5 拒否。だが普通の業務指示で <b>SSN 流出・送金</b>の実害。</div>
+      <div class="tag">業務指示で実害</div>
     </div>
     <div class="mid">vs</div>
     <div class="side ki">
       <div class="vn">素のモデル</div>
       <div class="nm">Kimi-K2.6</div>
       <div class="vd">Moonshot</div>
-      <div class="res">5つの攻撃シナリオ中 <b>2つを突破</b>。能力相応の結果。</div>
+      <div class="res">5 シナリオ中 <b>2つを突破</b>。実システムに侵入。</div>
       <div class="tag">2/5 突破</div>
     </div>
   </div>
@@ -383,14 +383,14 @@ const jsonLd = {"@context": "https://schema.org", "@graph": [{"@type": "Article"
   .lede b{color:var(--ink)}
   /* versus */
   .vs{display:grid;grid-template-columns:1fr 64px 1fr;gap:0;align-items:stretch;margin:32px 0 6px}
-  .vs .side{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .vs .side{background:var(--card);border:1px solid #e6cdc5;border-top:3px solid var(--red);border-radius:16px;padding:24px}
+  .vs .side .res b{color:var(--red)}
   .vs .side .vn{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
   .vs .side .nm{font-size:22px;font-weight:700;margin-top:6px;letter-spacing:-.01em}
   .vs .side .vd{font-size:12px;color:var(--muted);margin-top:2px}
   .vs .side .res{margin-top:16px;font-size:13.5px;color:#4a443d}
   .vs .side .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 11px;border-radius:99px;margin-top:14px}
-  .vs .side.fa .tag{background:var(--amber-bg);color:var(--amber)}
-  .vs .side.ki .tag{background:var(--red-bg);color:var(--red)}
+  .vs .side.fa .tag,.vs .side.ki .tag{background:var(--red-bg);color:var(--red)}
   .vs .mid{display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--brown)}
   @media(max-width:680px){.vs{grid-template-columns:1fr;gap:12px}.vs .mid{padding:6px}}
   .fcap{margin-top:14px;font-size:12.5px;color:var(--muted)}
