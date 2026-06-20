@@ -21,7 +21,7 @@ gap_fix: "Before running or installing, independently verify with Lemma that the
 
 ## TL;DR
 
-On 2026-03-31, Anthropic's npm package `@anthropic-ai/claude-code` (v2.1.88) exposed a 59.8MB source map containing roughly 512,000 lines (1,900 files) of internal TypeScript source via a packaging error. Within 24 hours of the leak, an AI-themed malware distribution campaign that had been operational since February 2026 pivoted to lean on the high-attention event, distributing the Vidar stealer and the GhostSocks proxy via fake GitHub repositories disguised as "the leaked Claude Code." The same campaign reuses 25-plus software brands, all of which deliver the same Rust-built infostealer from GitHub Releases. Trend Micro analyzed and disclosed it. This incident is a representative case in which trusted brand names and distribution platforms — the "trust signals" themselves — were turned into vehicles for the attack by the absence of a layer that independently verifies artifact provenance.
+Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal source via a packaging error that shipped a source map. Within 24 hours, an existing malware campaign pivoted to the leak, distributing the Vidar credential stealer from GitHub Releases via fake repositories disguised as "the leaked Claude Code." The attack exploited no vulnerability; it turned trust signals — a brand name and a hosting site — into a substitute for provenance, exploiting the absence of any layer that verifies artifact authenticity at acquisition. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Rather than trusting the crash records after the fact, independently v
 
 ## TL;DR
 
-When you hear that "a self-driving car crashed," you naturally picture a mistake by the autonomous system. But on 15 May 2026, Tesla unredacted the Robotaxi crash narratives it had filed with the federal regulator (NHTSA), revealing that at least 2 of the 17 Austin crashes were caused not by the autonomous system but by **the human teleoperators driving the cars remotely**. Tesla had also redacted every crash narrative as a "trade secret" — unlike peers such as Waymo and Zoox, which filed readable accounts. The structural problem: for each crash, **the attribution of "who or what was in control at that moment" and the provenance of the crash record itself remained self-reported and self-redacted under Tesla's own control, never independently verified.** We analyze this through Pillar 02 (Verifiable AI) as a structure in which control attribution and driving-decision provenance go unverified, framed as a division of labor with detection and disclosure.
+Tesla unredacted the Robotaxi crash narratives filed with NHTSA, revealing that 2 of the Austin crashes were caused not by the autonomous system but by human teleoperators driving remotely. Tesla had redacted every narrative as a "trade secret." Crash reporting and regulatory investigation worked, but what was in control, and whether the record reflects the facts, were left to the operator's self-reporting and self-redaction. The record's existence is not proof of attribution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this l
 
 ## TL;DR
 
-A celebrity who looks just like the real one recommends a product you've never seen them use — and you usually only learn the video is fake after a lot of people have already watched it. A campaign of AI scam ads impersonating celebrities was, by one investigation, viewed about 200 million times, and YouTube removed more than 1,000 ads using fake celebrities. In response, YouTube has been expanding an AI likeness-detection tool — which scans uploaded videos for an enrolled face — from public figures to all creators over 2026 (the rollout timeline and mechanics are below). But detection operates after the synthetic clone has been made and spread. The structural problem: **likeness and voice — a person's own attributes — carry no verifiable provenance or consent fixed before generation and publication.** We analyze this through Pillar 01 (Verifiable Origin) as a structure in which likeness provenance is not fixed at generation, framed as a division of labor with detection.
+A campaign of AI scam ads impersonating celebrities on YouTube was, by one investigation, viewed about 200 million times. YouTube expanded an AI likeness-detection tool that scans uploaded videos for an enrolled face, but it works only after the synthetic clone has been made and spread. Because likeness and voice carry no consented provenance fixed before generation and publication, detection structurally trails the spread. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

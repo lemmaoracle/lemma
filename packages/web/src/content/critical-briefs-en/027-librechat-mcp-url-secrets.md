@@ -21,7 +21,7 @@ gap_fix: "For the privileged act of registering a connection target, independent
 
 ## TL;DR
 
-On June 2, 2026, CVE-2026-32625 (CVSS 9.6, Critical) was published against LibreChat, a multi-provider AI chat platform. In versions ≤0.8.3, the MCP server integration resolves `${VAR}` placeholders inside user-supplied MCP server URLs against the server's own `process.env` during Zod schema validation. A low-privilege authenticated user registers an attacker-controlled domain URL embedding `${CREDS_KEY}` or `${MONGO_URI}` as an MCP server — and the LibreChat server sends encryption keys, JWT secrets, and DB connection strings to the attacker encoded in the request URL. No admin privileges are required; the installation's entire cryptographic foundation is compromised. This incident belongs to Pillar 03 (Agent Authority Proof) `agent-infrastructure` and illustrates that **configuration values describing where an agent connects are themselves unverified inputs interpreted in a privileged context.** Together with Brief 003 (MCP server authentication bypass), it forms a trust-boundary issue in the agent infrastructure layer.
+LibreChat (CVE-2026-32625): a low-privilege user who embeds placeholders like `${MONGO_URI}` in an MCP server URL makes the server send its own encryption keys, JWT secrets, and DB connection strings to the attacker. What is missing is a layer that verifies, before the config is interpreted, who registered the target and what context they may reach. The traffic looks like a legitimate outbound MCP connection, so post-hoc detection struggles. Detection and pre-execution attestation are complements, not substitutes.
 
 Registered the server URL ≠ authorized the secrets access
 

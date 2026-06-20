@@ -21,7 +21,7 @@ gap_fix: "Before a high-value payout, independently verify with Lemma that the p
 
 ## TL;DR
 
-On 2026-05-18, approximately $11.58M was drained from the Verus-Ethereum cross-chain bridge. The root cause was that the bridge did not mandate verification that the "input amount on the Verus side" matched the "payout amount on the Ethereum side" — the `checkCCEValues` function on the Ethereum side lacked source-amount verification. The attacker's cross-chain import payload composed an $11.58M-equivalent payout (in ETH / tBTC / USDC) against only $0.01-equivalent of VRSC on input, but each component of the blob (state root, hashes, Merkle Proof) was valid, so the Verus notary accepted and approved it. A Merkle Proof being cryptographically valid is a separate question from the value claim (input vs. payout amount) being semantically correct. The case is a recent representative example of the detection–proof gap in Pillar 01's `bridge-config-trust` category: cross-chain value claims accepted without an independent verification layer.
+In May 2026, about $11.58M was drained from the Verus-Ethereum bridge. The attacker composed a blob directing a massive payout against a $0.01-equivalent input, but its components — state root, Merkle Proof, and the rest — were all valid, so signature verification passed. Missing was a check that input matched payout, and anomaly detection firing afterward cannot stop an accepted payout. A valid Merkle Proof attests only inclusion, not that the value claim is correct. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

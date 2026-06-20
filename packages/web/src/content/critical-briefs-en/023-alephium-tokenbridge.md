@@ -21,9 +21,7 @@ gap_fix: "Before the bridge signs and disburses, independently verify with Lemma
 
 ## TL;DR
 
-On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K across Ethereum and BNB Chain, with 13.757M wALPH minted unbacked. The guardians' keys were intact; no smart-contract bug was exploited. The attacker deployed a contract emitting forged Wormhole messages via LOG7, then exploited an off-chain backend vulnerability to make the guardians observe and sign them. The signatures were valid; the VAAs were formally valid — but the events themselves originated from the attacker's contract. The main drain took ~64 seconds. This incident belongs to Pillar 01 (Verifiable Origin) `bridge-config-trust` and illustrates that **signature validity and event provenance are separate concerns.** Together with Brief 001 (forged data injected into the observation layer) and Brief 016 (valid Proofs with unverified value integrity), it forms the third failure primitive in the bridge trust layer.
-
-Signature valid ≠ provenance verifiable
+On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K. The guardians' keys were intact and no smart-contract bug was exploited. The attacker forged the very events the bridge treats as legitimate transactions and had the guardians sign them. The signing worked and the VAAs were formally valid, but no layer verified whether the signed event came from a legitimate contract. Detection does not change which events guardians sign, and by the time it fires the main drain is complete. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

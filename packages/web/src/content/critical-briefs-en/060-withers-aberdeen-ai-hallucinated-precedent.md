@@ -21,7 +21,7 @@ gap_fix: "Before filing, independently verify with Lemma that the basis for this
 
 ## TL;DR
 
-On June 8, 2026, Senior U.S. District Judge Sharion Aycock (N.D. Miss.) sanctioned four attorneys under Rule 11 and vacated the trial in Withers v. City of Aberdeen, after finding that counsel on **both opposing sides** had cited AI-generated cases that do not exist. The out-of-state attorneys who drafted the briefs were fined and barred from the district for two years; the local counsel who signed them were sanctioned as "rubberstamp[s]." The issue is not that lawyers used AI, but that **nothing independently verified — before the brief was filed — that the cited authorities actually exist and carry a legitimate origin.** We analyze this through Pillar 02 (Verifiable AI) as a division of labor with detection: detection corrects the error after the fact, while pre-execution proof fixes whether the grounds exist before the act.
+In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides filed AI-generated cases that do not exist, and Judge Aycock (N.D. Miss.) sanctioned all four under Rule 11. Catching the hallucinated citations after filing cannot establish that the cited authorities exist and carry a legitimate origin; a Rule 11 signature only self-certifies and guarantees nothing. What is structurally missing is a layer that, before the act, fixes the existence and provenance of cited sources to a verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

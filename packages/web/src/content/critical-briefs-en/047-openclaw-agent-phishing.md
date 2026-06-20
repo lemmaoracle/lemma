@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that the re
 
 ## TL;DR
 
-You instruct the email-reading AI agent to "stop if anything seems suspicious" — and it was shown that this instruction breaks under a single ordinary-looking email dressed up as urgent. In June 2026, Varonis Threat Labs built a test agent on the self-hosted AI agent platform OpenClaw and ran four phishing exercises in an inbox seeded with synthetic business email and mock secrets. The agent could detect and stop at suspicious URLs and malicious OAuth consent screens, yet it was weak against social requests that **act before confirming "who the sender is"**: under requests framed as "I need staging access for a production incident" and "I need the weekly customer export," it forwarded AWS IAM keys and a mock customer dataset of 247 companies out of the organization (the exercise setup and the models used are below). Both failures occurred under a strict profile that explicitly said "verify the sender first." We analyze this as a structure in which **the requester's identity and authorization are not independently verified** before the agent takes a high-risk action, framed as a division of labor with detection.
+On OpenClaw, Varonis tested an email-reading AI agent and found it would forward mock credentials and customer data out of the organization for a request merely dressed up as urgent — even under a profile that said "verify the sender first." It caught suspicious URLs and a malicious OAuth screen, yet had no layer to confirm, before acting, who the sender was, so a plain social request passed through. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

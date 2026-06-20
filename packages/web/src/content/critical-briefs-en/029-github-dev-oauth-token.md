@@ -21,7 +21,7 @@ gap_fix: "Before a privileged act such as installing an extension, independently
 
 ## TL;DR
 
-On June 2, 2026, researcher Ammar Askar published a vulnerability and PoC in github.dev, the browser build of VS Code. One click on an attacker's github.dev link (a repo containing a Jupyter Notebook) lets a script inside the webview **relay synthetic key events — not real user actions — to the VS Code host**, walking the victim into installing a malicious extension and stealing the GitHub OAuth token github.dev holds. Decisively, that token was **not scoped to the open repo — it was valid for every repo the user can access**; the PoC enumerated private repos with it. Microsoft shipped interim fixes the next day (a trust prompt when opening browser Notebooks, caller checks on the extension-install command). No CVE at the time of writing. This belongs to Pillar 03 (Agent Authority Proof) `agent-infrastructure`: a **delegated permission (the OAuth token) not scoped to least privilege, and a privileged action (extension install) executed without independent authorization** — joining Briefs 027 (MCP connection-config privilege context) and 003 (MCP-server auth bypass).
+Ammar Askar published a one-click attack and PoC in github.dev, the browser build of VS Code. Clicking an attacker's link lets a webview script use synthetic key events (not real user actions) to install a malicious extension that steals github.dev's OAuth token. That token was valid for every repo the user can access, not just the open one. What is missing is a layer that verifies, before the action, under whose authorization the install runs and how far the token is delegated. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before an agent acts with privilege, independently verify with Lemma t
 
 ## TL;DR
 
-In June 2026, researcher RyotaK (GMO Flatt Security) disclosed a flaw in Anthropic's Claude Code GitHub Action by which a single malicious GitHub issue could hijack a vulnerable repository. The trigger check unconditionally trusted any actor whose name ends in `[bot]` — and anyone can register a GitHub App and open an issue on a public repo with its installation token. Layering on indirect prompt injection (an issue disguised as an error message), an attacker could make Claude exfiltrate environment variables, steal the credentials for OIDC token exchange, and gain write access to the repo — and, because Anthropic's own Action used the same workflow, potentially poison the Action itself downstream. Anthropic fixed it within four days (v1.0.94), rated it 7.8 (CVSS 4.0), and paid a bounty. The issue is not using AI in CI, but that **neither the launching actor's authority nor the provenance of the input is independently verified before the agent acts.**
+In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

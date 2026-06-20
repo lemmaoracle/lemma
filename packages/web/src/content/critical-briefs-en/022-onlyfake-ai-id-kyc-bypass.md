@@ -21,9 +21,7 @@ gap_fix: "Before account opening, independently verify with Lemma that the ident
 
 ## TL;DR
 
-On February 5, 2024, US outlet 404 Media reported that an image of a UK passport produced by the fake-ID generation service "OnlyFake" passed the KYC (identity verification) check at the major crypto exchange OKX. OnlyFake generated ID images for 26 countries at USD 15 apiece, let the buyer freely specify name, address, expiry, and signature, and also covered the spoofing of capture-device, timestamp, and GPS metadata. The operator claimed the images were produced by a "neural network" (404 Media said it could not verify that claim itself) and asserted that the major exchanges and crypto-friendly neobanks could be cleared. OKX framed the issue as industry-wide rather than specific to any one firm. International bodies subsequently documented attack chains that combine AI-generated documents, face swap, and camera injection to defeat both document and biometric checks, and by 2025 about one in twenty global identity-verification failures was reported to be deepfake-related. This Brief examines a structure in which the regulatory attribute "cleared KYC" is built on top of evidence — a document image — whose issuer cannot be cryptographically verified. Once the cost of producing a "convincing image" collapses, image review without issuer verification stops functioning as attribute proof.
-
-Reviewed the image ≠ verified the issuer
+In February 2024, 404 Media reported that a UK passport image from the fake-ID service "OnlyFake" cleared the KYC check at the major crypto exchange OKX. KYC review only judges whether an ID image looks authentic; it never verifies that the issuer actually issued the document. Strengthening detection is an arms race with the generative side and cannot answer whether an image came from a genuine issuer. What is missing is a layer that cryptographically verifies the issuer signature before account opening. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

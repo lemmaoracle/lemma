@@ -21,7 +21,7 @@ gap_fix: "Before pulling in and publishing code, independently verify with Lemma
 
 ## TL;DR
 
-Megalodon, surfaced in May 2026, is an automated supply-chain attack campaign. Within 6 hours, 5,781 malicious commits were pushed to 5,561 GitHub repositories, propagating malware that exfiltrates CI/CD credentials. Initial analyses were published by Safe Dep and Ox Security; Hudson Rock identified infostealer infections as the origin point. The attack chain proceeded by direct push using GitHub credentials stolen from infected developers — without touching the legitimate npm account behind the @tiledesk/tiledesk-server package, the GitHub repository was compromised and malicious versions (2.18.6 through 2.18.12) were distributed. This incident is a recent representative case of absent independent verification of code provenance (commit author / origin).
+Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate developer credentials to push spoofed commits to 5,561 GitHub repositories within 6 hours. Three firms pinpointed the origin and scope within five days, but detection cannot change what the receiving sides accept. The spoofed commits passed through legitimate processes and were accepted as legitimate. The gap is that commit author and repo owner authentication form a chain never independently verified at each stage. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

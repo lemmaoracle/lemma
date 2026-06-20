@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this a
 
 ## TL;DR
 
-An enterprise AI assistant reads incoming email and documents as "data to be processed." But if the AI cannot distinguish an "instruction" smuggled into that data from a legitimate command, an attacker can make the AI read internal documents and send them out. On 11 June 2025, the security firm Aim Labs (Aim Security) disclosed **EchoLeak (CVE-2025-32711, CVSS 9.3)**, which achieved exactly this in Microsoft 365 Copilot. **With no user interaction at all (zero-click)** — just one crafted email — sensitive data within Copilot's access scope (OneDrive, SharePoint, Teams, chat history, etc.) could be exfiltrated to an attacker-controlled server. We analyze this through Pillar 02 (Verifiable AI) as a structure in which, **at the moment the AI acts, the basis for that action — the origin and authority of the ingested instruction — is not independently verified.** Microsoft says there is no evidence of exploitation in the wild and fixed it server-side, but the failure primitive is not one vendor's bug — it is the design gap of an LLM that has no trust boundary.
+EchoLeak (CVE-2025-32711), disclosed by Aim Labs in June 2025, made Microsoft 365 Copilot exfiltrate sensitive internal data to an attacker's server with no user interaction (zero-click) — just one crafted email. Copilot could not distinguish an instruction smuggled into that email from data to be processed. However much after-the-fact detection like the XPIA classifier is strengthened, it cannot supply, at the moment the AI acts, an independent check that the ingested instruction's origin and authority are legitimate. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before taking a safety-critical action such as a stopping obligation, 
 
 ## TL;DR
 
-When a school bus has its red lights on and its stop arm out to let children off, following cars stop — a judgment any human driver makes, that a robotaxi failed to make. In October 2025, NHTSA's Office of Defects Investigation opened a probe after footage showed a Waymo vehicle driving past a stopped school bus in Atlanta. An Austin school district logged 19 instances this school year of Waymo illegally passing its buses (with at least 6 more in Atlanta in 2025), one just after a child had crossed in front of the car. Waymo identified the software fault, updated it by November, and in December issued a voluntary software recall (3,067 fifth-generation ADS vehicles) — yet incidents were still reported after the update. In 2026 NHTSA expanded the probe to cover 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, plus collisions with fixed objects and running signals. We analyze this through Pillar 02 (Verifiable AI) as a structure in which **a self-driving system's driving decision is not independently verified before a safety-critical action.**
+A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

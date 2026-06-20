@@ -20,9 +20,7 @@ gap_fix: "Before moving from configuration to execution, independently verify wi
 
 ## TL;DR
 
-In April 2026, OX Security disclosed that Anthropic's Model Context Protocol (MCP) official SDK contains a design-level issue in which configuration flows directly into command execution, enabling RCE. The issue is not a single-language bug but **inherent in the reference SDK's design across Python, TypeScript, Java, and Rust.** The reported impact spans over 150M cumulative downloads, 7,000+ publicly listed servers, and up to ~200K instances. Multiple independently reported CVEs trace to the same core issue (CVE-2026-30623 and others), and the CSA consolidated the picture under "MCP by Design: RCE Across the AI Agent Ecosystem." Anthropic did not alter the core architecture, characterizing the behavior as "expected." This Brief examines the structure in which agent-infrastructure trust boundaries — where configuration stops being merely accepted and starts being treated as authorized execution — propagate through the entire supply chain without independent verification at the reference-implementation design level.
-
-Accepted the config ≠ authorized the execution
+In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows externally supplied configuration directly into command execution, enabling RCE. It is not a single-language bug but inherent in the reference SDK's design, so it propagates at supply-chain scale. The vendor reportedly called the behavior "expected" and did not alter the core design, and detection cannot change the design itself. What is missing is a layer that separates accepting a configuration from authorizing it as execution, verifying authority before execution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

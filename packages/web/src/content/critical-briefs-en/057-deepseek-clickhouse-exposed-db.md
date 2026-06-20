@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this p
 
 ## TL;DR
 
-Users of an AI service assume the chats they type are handled safely. But in January 2025, Wiz Research found that the AI company **DeepSeek** had a backend **ClickHouse database publicly exposed with no authentication.** Anyone could reach it over open ports (8123 / 9000), and it exposed **over a million log lines, plaintext chat history, API keys, secret tokens, and backend information.** We analyze this through Pillar 03 (Agent Authority Proof) as a structure in which **access to the AI service's sensitive data backend had no authentication or authority verification at all, so network reachability became full retrieval.** Wiz disclosed responsibly and DeepSeek remediated within about 30 minutes. The failure primitive is not one misconfiguration — it is that reachability and authorization on the data plane were not separated.
+In January 2025, Wiz Research found that AI company DeepSeek had a backend ClickHouse database publicly exposed with no authentication. Anyone could reach it over open ports, and it exposed over a million log lines, plaintext chat history, API keys, and secret tokens. After-the-fact detection like external scanning works only once the exposure already exists, and on an unauthenticated backend there is no means to tell whether a party that reached it is legitimate — reachability became full retrieval. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

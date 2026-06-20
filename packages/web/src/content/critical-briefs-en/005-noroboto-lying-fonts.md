@@ -21,7 +21,7 @@ gap_fix: "Before the AI makes a decision, independently verify with Lemma that t
 
 ## TL;DR
 
-In May 2026, Drew Miller, founder of Tritium Legal Technologies, disclosed the "Noroboto" attack technique. A malicious font embedded in a document intentionally shifts the correspondence between Unicode code points and rendered glyphs, deliberately decoupling what a human reads on screen from the string an AI processes internally. When abused in places where meaning changes substantially — governing law, monetary amounts, dates in contracts — the conclusion an AI document-review system reaches diverges from what a human would assume. The core of the attack is not AI inference but the text-extraction stage upstream of the AI, and the implicit assumption that "human-visible text equals AI-interpreted text" is broken. This incident is a representative case of the absence of an independent verification layer for AI judgment inputs.
+Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a document shifts the mapping between Unicode code points and rendered glyphs, decoupling what a human reads on screen from the string an AI extracts. Because the AI reasons correctly over the input it receives, output-side hallucination detection is unlikely to fire. What was missing is a layer that, before judgment, independently verifies whether what the AI read matches what the human saw. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 
