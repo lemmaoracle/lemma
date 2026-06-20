@@ -21,7 +21,7 @@ gap_fix: "When performing the identity verification regulators require, independ
 
 ## TL;DR
 
-In May 2025, Coinbase disclosed an incident in which overseas-outsourced customer-support personnel (in India) had been bribed and had exfiltrated and externally sold the KYC data of at least 69,461 customers. The exfiltrated data included names, addresses, phone numbers, email addresses, masked SSNs, bank account identifiers, government-issued ID images, and balance / transaction snapshots; passwords, private keys, and funds were not exfiltrated. The attackers demanded a $20M ransom on May 11; Coinbase refused and offered a $20M bounty instead, and estimated remediation costs at $180M–$400M in a Form 8-K filed with the SEC. This incident is a representative case of the detection–proof gap in Pillar 04 (Regulatory Attribute Proof) in which KYC / AML regulation requires operators to collect and store raw PII and that stored attribute data itself becomes the breach surface for insider threats.
+Coinbase disclosed that bribed overseas-outsourced support personnel in India had exfiltrated and sold the KYC data of at least 69,461 customers — names, addresses, masked SSNs, bank account identifiers, and government-issued ID images. Passwords, private keys, and funds were not taken. The attackers demanded a $20M ransom; Coinbase refused. Detection and response functioned, but the raw PII that KYC/AML regulation requires operators to store was always within reach of insiders holding legitimate access — a standing breach surface. Detection and pre-execution attestation that proves a user is verified without hoarding raw PII are complements, not substitutes.
 
 ---
 

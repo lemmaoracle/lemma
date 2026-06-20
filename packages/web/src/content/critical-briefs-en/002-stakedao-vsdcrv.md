@@ -21,7 +21,7 @@ gap_fix: "Before minting assets, independently verify with Lemma that the messag
 
 ## TL;DR
 
-On 2026-05-27, 5.4 trillion vsdCRV was unauthorizedly minted on Arbitrum across the cross-chain infrastructure governing the DeFi protocol Stake DAO's vsdCRV. The attacker compromised the Stake DAO deployer private key and used it to rewrite the vsdCRV trust source under LayerZero v2 — the Ethereum-side trusted source from which vsdCRV on Arbitrum accepts cross-chain messages — to a contract the attacker had themselves deployed. The attacker then sent a forged cross-chain message from their contract to mint 5.4 trillion vsdCRV, swapping a portion to 43.781 ETH (approx. $91K) and bridging it to Ethereum. The Stake DAO team immediately protected the mainnet-side vsdCRV backing assets and paused the vsdCRV bridge, containing impact to Arbitrum.
+On Stake DAO vsdCRV, the attacker used the compromised deployer private key to rewrite the LayerZero v2 trust source to a contract they controlled, then minted 5.4 trillion vsdCRV from a forged message. Blockaid detected the attack within minutes, enabling containment, but detection cannot change what the bridge will accept. The configuration that anchors trust was rewritable by a single key, and no layer independently verified message origin before acceptance. Post-event detection and pre-execution attestation of origin are complements, not substitutes.
 
 ---
 

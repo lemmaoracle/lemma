@@ -21,7 +21,7 @@ gap_fix: "Before pulling in a high-risk artifact, independently verify with Lemm
 
 ## TL;DR
 
-On 2026-05-11 between 19:20 and 19:26 UTC, 84 malicious versions across 42 packages in the `@tanstack/*` JavaScript namespace were published to npm (CVE-2026-45321, CVSS 9.6). The attacker did not steal an npm token; instead, they hijacked TanStack's legitimate GitHub Actions OIDC trusted-publisher integration during workflow execution and delivered malicious packages via the legitimate publishing path, **signed under a valid OIDC identity**. The incident is reported as part of the first supply-chain worm ("Mini Shai-Hulud") to spread with valid signed provenance attached, and TeamPCP contaminated more than 170 npm / PyPI packages on the same day. The malicious payload exfiltrated AWS / GCP / Kubernetes / Vault / npm / GitHub / SSH credentials and ran `rm -rf ~/` whenever it detected that a GitHub token had been revoked. The case exposes a detection–proof gap in Pillar 01: a technically valid provenance signature (who published it) does not guarantee that the artifact itself is what was intended.
+In May 2026, malicious versions of the `@tanstack/*` packages reached npm. The attacker stole no token; they hijacked TanStack's legitimate OIDC trusted-publisher integration mid-workflow and shipped malicious artifacts through the legitimate channel, signed under a valid OIDC identity. A signature attests who published an artifact, not whether its contents are the intended build output, and pre-detection fetches had little reason to suspect them precisely because the signatures were valid. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
 
 ---
 

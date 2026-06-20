@@ -20,9 +20,7 @@ gap_fix: "Before passing input to the model, independently verify with Lemma tha
 
 ## TL;DR
 
-In 2026, the CSA AI Safety Initiative disclosed a technique embedding invisible Unicode characters (U+E0000–U+E007F) into AI agent skills and tool definitions. These characters render as blank space in most editors, yet language models interpret them as meaningful content — allowing attackers to encode arbitrary instructions inside skill files, tool descriptions, and documents entirely hidden from human review. The Snyk ToxicSkills audit (2026-02) corroborated the supply-chain dimension: 3,984 skills scanned, 36.82% with security issues, 13.4% critical, 76 confirmed malicious payloads. This incident is the same primitive as Noroboto (No.005, lying fonts): **what a human reads ≠ what the model interprets**, realized through invisible Unicode. This Brief examines the structure in which human review cannot serve as a safety guarantee when the origin and integrity of inputs reaching the AI are not independently verified.
-
-What you saw ≠ what the model read
+In 2026, the CSA disclosed a technique that hides invisible Unicode characters in AI-agent skills and tool definitions to steer the model. Characters that render as blank space to humans are read as meaningful instructions, so an attacker can embed commands that pass human review unseen. Without a verification layer there is no guarantee that what a human sees equals what the model reads. Detection and pre-execution attestation of input origin and integrity are complements, not substitutes.
 
 ---
 

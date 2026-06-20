@@ -21,7 +21,7 @@ gap_fix: "Before pulling in a development tool, independently verify with Lemma 
 
 ## TL;DR
 
-In May 2026, the attack group TeamPCP (also tracked as UNC6780) breached GitHub employee development endpoints through a poisoned VS Code extension and cloned approximately 3,800 GitHub internal repositories. The vector was a trojanized version (v18.95.0) of the legitimate Nx Console extension (`nrwl.angular-console`), live on the VS Code Marketplace for only the 18 minutes between 12:30 and 12:48 UTC on May 18. In that short window the extension exfiltrated 1Password vaults, Anthropic Claude Code settings, and npm / GitHub / AWS credentials from local IDE environments. GitHub detected the activity on May 19, immediately ran incident response, rotated critical secrets, and stated that customer repositories, Enterprise accounts, and user data were not affected. The case exposes a detection–proof gap in Pillar 01: the "trust surface" developers rely on daily — IDE extensions — became the intrusion point, and listing in a legitimate marketplace did not guarantee artifact safety.
+In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code extension on the official marketplace for just 18 minutes, exfiltrated credentials from GitHub employee endpoints that installed it, and cloned about 3,800 internal repositories. It sat there as a legitimate extension and passed the trust signals of signing and listing, so there was no way to tell it apart before install — a trusted distribution path does not guarantee an untampered build output. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
 
 ---
 

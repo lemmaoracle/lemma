@@ -21,7 +21,7 @@ gap_fix: "Before moving assets, independently verify with Lemma that the message
 
 ## TL;DR
 
-On 2026-04-18, 116,500 rsETH ($292M, approx. ¥46B) was unauthorizedly unlocked on KelpDAO's cross-chain protocol. The attack originated from intrusion into LayerZero Labs' RPC cloud environment: internal RPC nodes were manipulated so that the message observations referenced by the LayerZero Labs DVN were forged. The DVN signing keys themselves were not compromised. Under a 1-of-1 single-DVN configuration, a legitimate signature over manipulated data carried sole approval authority, and a fraudulent cross-chain message was accepted. In May 2026, LayerZero Labs published an incident statement and follow-up update, naming the observation layer as an independent operational category.
+On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the DVN signed forged observations, unlocking 116,500 rsETH (approx. ¥46B). The signing keys were never stolen; only the observation-layer inputs the approval relied on were swapped. Because the signature and process were legitimate, detection that watches for anomalous key use is unlikely to fire. What was missing was a layer to independently verify those inputs before approval. Post-hoc detection and pre-execution attestation of origin are complements, not substitutes.
 
 ---
 

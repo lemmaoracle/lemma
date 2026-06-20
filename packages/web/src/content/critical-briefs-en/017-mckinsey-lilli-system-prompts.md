@@ -21,7 +21,7 @@ gap_fix: "Before the AI produces output, independently verify with Lemma that th
 
 ## TL;DR
 
-In February 2026, an autonomous offensive AI agent operated by the red-team firm CodeWall, starting with neither credentials nor internal knowledge, reached full read/write access to McKinsey's production database for its internal generative-AI platform "Lilli" in under two hours. The most significant gap exposed was that **all 95 system prompts governing Lilli's behavior were writable**. An attacker exploiting this position could have **silently tampered** with Lilli's responses, the guardrails it observed, and the way it cited sources — poisoning the output of a chatbot in daily use by 72% of the firm's employees. The case is a responsible-disclosure red-team demonstration rather than an actual breach, but it exposed the detection–proof gap of Pillar 02 (Verifiable AI): the layer governing the AI's judgment (system prompts) and its outputs are not independently verified for integrity or provenance — surfaced in a marquee enterprise AI deployment.
+In February 2026, an autonomous AI agent run by red-team firm CodeWall, under responsible disclosure, reached full read/write access to the production database behind McKinsey's internal generative-AI platform "Lilli," from zero credentials. The most significant exposure: the system prompts governing Lilli's behavior were all writable. Because output looks normal even when those instructions are rewritten, users cannot judge whether a response rests on legitimate, untampered instructions, and silent tampering slips past detection. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
 
 ---
 

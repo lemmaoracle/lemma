@@ -21,7 +21,7 @@ gap_fix: "Before accessing an external resource, independently verify with Lemma
 
 ## TL;DR
 
-On 2026-05-27, CVE-2026-48710 (BadHost) was disclosed in Starlette, the Python ASGI framework with 325 million weekly downloads. A single-character insertion in the HTTP Host header bypasses Starlette's path-based authentication middleware. The vulnerability propagates across most of the Python AI ecosystem: FastAPI, vLLM, LiteLLM, Text Generation Inference, OpenAI-compatible proxies, MCP servers, agent harnesses, evaluation dashboards, and model management UIs. X41 D-Sec, the discoverer, characterized the CVSS 7 rating as "significantly underestimating the severity"; Secwest concurred. Because MCP servers retain credentials for external-resource access, they are particularly attractive to attackers, and this vulnerability stands as a symbolic case of trust-boundary failure in the AI agent infrastructure layer.
+Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion in the HTTP Host header diverges the router's resolved path from the path the middleware sees, slipping past path-based authentication. It propagates across most of the Python AI ecosystem — FastAPI, MCP servers, and more. A scanner for vulnerable versions is useful, but the path-based auth scheme itself never independently verifies the trust boundary, so a framework patch alone falls short. Missing was a layer verifying request origin and authority before the action. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

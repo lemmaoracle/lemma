@@ -21,7 +21,7 @@ gap_fix: "Before authorizing an age-restricted feature, independently verify wit
 
 ## TL;DR
 
-To prove "are you over 18," a user photographs their face and a government-issued ID and sends them to the platform. But that ID goes not to the platform itself but into the hands of a contracted third party, where it piles up. In October 2025, Discord disclosed that a third-party support vendor (5CA) involved in age verification had been breached, and at least 70,000 government-issued ID images were stolen. The structural problem: **to make a user prove one regulatory attribute — age — their raw identity document itself is handed to a third party and stored, so the proof of the attribute and the storage of the raw ID are not separated.** As age-verification mandates advance worldwide, the same structure recurs on every platform. We analyze this through Pillar 04 (Regulatory Attribute Proof) as a structure in which proving an attribute depends on disclosing and storing raw PII, framed as a division of labor with detection.
+A third-party vendor, 5CA, used in Discord's age verification was breached, and at least 70,000 government-issued ID images were stolen. To prove one predicate — that they are over 18 — users hand over the raw ID, which then piles up with the third party, so proving the attribute is never separated from storing the ID. Discord detected the breach and switched vendors, but only after the theft, and leaked IDs cannot be recovered. Detection and pre-execution attestation via selective disclosure — proving only that the age condition is met without the raw ID — are complements, not substitutes.
 
 ---
 

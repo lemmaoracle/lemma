@@ -21,7 +21,7 @@ gap_fix: "Before a high-impact recovery operation, independently verify with Lem
 
 ## TL;DR
 
-Hijacking an account didn't require breaking a password. It was enough to ask the AI support agent to "change the email on this account." In late May 2026, Meta disclosed that a vulnerability in Instagram's AI-assisted account-recovery system (High Touch Support) had been abused by third parties to take over more than 20,000 accounts. The attackers had the AI run email changes and password resets **without it verifying that the requester was the rightful owner of the account**, and bypassed two-factor authentication too. The structural problem: the AI recovery agent performed high-impact operations **before independently verifying the requester's ownership and authorization**. We analyze this through Pillar 03 (Agent Authority Proof) as a structure in which the agent's action is decoupled from the proof of authorization, framed as a division of labor with detection.
+A vulnerability in Meta High Touch Support was abused so that merely asking the AI support agent to "change the email on this account" took over Instagram accounts. The AI recovery agent ran email changes and resets without verifying that the requester was the rightful owner, bypassing two-factor authentication. Meta detected the abuse and notified users, but only after the takeover; the mere arrival of a request became the basis for the operation, with no layer to confirm ownership before acting. Detection and pre-execution attestation of the requester's ownership and authorization are complements, not substitutes.
 
 ---
 

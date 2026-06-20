@@ -21,7 +21,7 @@ gap_fix: "Before the AI acts on an instruction, independently verify with Lemma 
 
 ## TL;DR
 
-The configuration files that tell an AI coding tool "work this way on this project" (`.cursorrules`, `CLAUDE.md`) are now everyday development items. But whose hands placed those instructions, and with what provenance, is not checked at the moment the AI reads and obeys them. In May 2026, Socket disclosed TrapDoor, a credential-stealing campaign spanning npm, PyPI, and Crates.io. Its distinctive technique is that, on top of the usual theft of keys and cloud credentials, it **plants invisible directives via zero-width Unicode in the instruction files meant for AI assistants, getting the AI to perform what it calls a "security scan" and carry secrets out**. (The packages, PRs, and attacker documents are detailed below.) We analyze this as a structure in which **the provenance and authorization of the instructions an AI obeys are not independently verified before execution**, from the standpoint of a division of labor with detection.
+TrapDoor, disclosed by Socket, is a credential-stealing campaign whose distinctive technique plants invisible directives via zero-width Unicode in the AI-assistant instruction files (`.cursorrules`, `CLAUDE.md`), getting the AI to run a "security scan" and carry development secrets out. Scans and hidden-character warnings removed the malicious artifacts, but nothing checks, before the AI acts, whether an instruction comes from a legitimate author under legitimate authorization. Since what is shown diverges from what the AI ingests, detecting plausibility cannot reach this. Detection and pre-execution attestation of an instruction's origin and authorization are complements, not substitutes.
 
 ---
 
