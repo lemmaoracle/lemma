@@ -27,9 +27,9 @@ import Footer from "../components/Footer.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import {
   PILLAR_SLUGS,
-  pillarLabel,
-  pillarDescription,
+  CATEGORIES_BY_PILLAR,
   categoryLabel,
+  categoryDescription,
   type PillarSlug,
   type CategorySlug,
 } from "../data/criticalBriefs";
@@ -87,21 +87,24 @@ const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
 );
 const featuredBriefs = briefsByPublishedDesc.slice(0, 8);
 
-// Group by pillar (preserve published-desc order within each)
-const briefsByPillar: Record<PillarSlug, ReadonlyArray<AnyBrief>> = {
-  "01-verifiable-origin": briefsByPublishedDesc.filter(
-    (b) => b.data.pillar === "01-verifiable-origin",
-  ),
-  "02-verifiable-ai": briefsByPublishedDesc.filter(
-    (b) => b.data.pillar === "02-verifiable-ai",
-  ),
-  "03-agent-authority": briefsByPublishedDesc.filter(
-    (b) => b.data.pillar === "03-agent-authority",
-  ),
-  "04-regulatory-attribute": briefsByPublishedDesc.filter(
-    (b) => b.data.pillar === "04-regulatory-attribute",
-  ),
-};
+// Default grouped view is by primary_category ("threat type"), most-covered
+// first. Pillar is kept only as a per-section badge + the parent-pillar tie, so
+// it stays available as a secondary axis rather than the primary one.
+const PILLAR_OF_CAT = new Map<CategorySlug, PillarSlug>();
+for (const p of PILLAR_SLUGS) {
+  for (const c of CATEGORIES_BY_PILLAR[p]) PILLAR_OF_CAT.set(c, p);
+}
+const briefsByPrimaryCat = new Map<CategorySlug, AnyBrief[]>();
+for (const b of briefsByPublishedDesc) {
+  const pc = b.data.primary_category as CategorySlug;
+  const arr = briefsByPrimaryCat.get(pc);
+  if (arr) arr.push(b);
+  else briefsByPrimaryCat.set(pc, [b]);
+}
+// Section order: most briefs first, then stable by slug.
+const categorySections = Array.from(briefsByPrimaryCat.entries()).sort(
+  (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
+);
 
 // Category usage: count primary + secondary occurrences across all Briefs.
 const categoryUsage = new Map<CategorySlug, number>();
@@ -186,13 +189,13 @@ const labels = isJa
       featuredHead: "注目 · 最新の Brief",
       prevLabel: "前へ",
       nextLabel: "次へ",
-      filterCategoryLabel: "Category",
+      filterCategoryLabel: "脅威タイプ",
       allChip: "すべて",
-      resultsAllDesc: "すべての Brief（Pillar 別）",
+      resultsAllDesc: "すべての Brief（脅威タイプ別）",
       resultsFilteredDesc: "件の Brief",
       sortNewest: "新しい順",
       sortOldest: "古い順",
-      sortCategory: "Category 順",
+      sortCategory: "脅威タイプ順",
       gridViewAria: "グリッド表示",
       listViewAria: "リスト表示",
       countUnit: (n: number) => `${n} 件`,
@@ -221,9 +224,9 @@ const labels = isJa
       featuredHead: "Featured · Latest Briefs",
       prevLabel: "Previous",
       nextLabel: "Next",
-      filterCategoryLabel: "Category",
+      filterCategoryLabel: "Threat type",
       allChip: "All",
-      resultsAllDesc: "All Briefs (by Pillar)",
+      resultsAllDesc: "All Briefs (by threat type)",
       resultsFilteredDesc: "Briefs",
       sortNewest: "Newest",
       sortOldest: "Oldest",
@@ -458,75 +461,69 @@ const cta = isJa
           </div>
         </div>
 
-        {PILLAR_SLUGS.map((pillar) => {
-          const briefs = briefsByPillar[pillar];
-          const fullLabel = pillarLabel(pillar, locale);
-          const m = fullLabel.match(/^(Pillar \d+)\s+(.+)$/);
-          const pillarNo = m ? m[1] : fullLabel;
-          const pillarTitle = m ? m[2] : "";
+        {categorySections.map(([cat, briefs]) => {
+          const parentPillar = PILLAR_OF_CAT.get(cat) ?? null;
+          const catTitle = categoryLabel(cat, locale);
+          const pillarBadge = parentPillar ? PILLAR_SHORT[parentPillar] : "";
           const hasOverflow = briefs.length > CARDS_PER_PILLAR;
           return (
-            <section class="bi-pillar-section" data-pillar={PILLAR_PARAM[pillar]}>
+            <section
+              class="bi-pillar-section"
+              data-pillar={parentPillar ? PILLAR_PARAM[parentPillar] : ""}
+              data-catkey={cat}
+            >
               <div class="bi-pillar-head">
-                <div class="bi-pillar-no">{pillarNo}</div>
-                <h2 class="bi-pillar-title">{pillarTitle}</h2>
+                {pillarBadge && <div class="bi-pillar-no">{pillarBadge}</div>}
+                <h2 class="bi-pillar-title">{catTitle}</h2>
                 <div class="bi-pillar-count">{labels.countUnit(briefs.length)}</div>
               </div>
-              <p class="bi-pillar-sub">{pillarDescription(pillar, locale)}</p>
-              {briefs.length > 0 ? (
-                <>
-                  <div class="bi-brief-grid">
-                    {briefs.map((b, i) => {
-                      const c = briefCardData(b);
-                      return (
-                        <a
-                          href={c.href}
-                          class={`bi-brief-card${i >= CARDS_PER_PILLAR ? " is-hidden" : ""}`}
-                          data-pillar={c.pillarParam}
-                          data-cats={c.cats}
-                          data-catkey={c.primarySlug}
-                          data-ts={c.ts}
-                          data-no={c.briefNo}
-                          data-search={c.searchBlob}
-                        >
-                          <div class="bi-brief-meta">
-                            <span class="bi-brief-no">No. {c.briefNoPad}</span>
-                            <span class="bi-brief-sep">·</span>
-                            <span>{c.publishedStr}</span>
-                          </div>
-                          <h3 class="bi-brief-title">{c.mainTitle}</h3>
-                          {c.subText && <p class="bi-brief-sub">{c.subText}</p>}
-                          <div class="bi-brief-foot">
-                            <div class="bi-brief-tags">
-                              <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
-                              {c.secondaryCatLabels.map((lab) => (
-                                <span class="bi-brief-tag">{lab}</span>
-                              ))}
-                            </div>
-                            <span class="bi-brief-read">{labels.briefReadCta}</span>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
-                  {hasOverflow && (
+              <p class="bi-pillar-sub">{categoryDescription(cat, locale)}</p>
+              <div class="bi-brief-grid">
+                {briefs.map((b, i) => {
+                  const c = briefCardData(b);
+                  return (
                     <a
-                      href={`${base}/critical/briefs/pillar/${pillar}/`}
-                      class="bi-pillar-more"
-                      data-pillar={PILLAR_PARAM[pillar]}
+                      href={c.href}
+                      class={`bi-brief-card${i >= CARDS_PER_PILLAR ? " is-hidden" : ""}`}
+                      data-pillar={c.pillarParam}
+                      data-cats={c.cats}
+                      data-catkey={c.primarySlug}
+                      data-ts={c.ts}
+                      data-no={c.briefNo}
+                      data-search={c.searchBlob}
                     >
-                      {isJa ? (
-                        <span>{pillarTitle}の全 <strong>{briefs.length}</strong> 件を見る</span>
-                      ) : (
-                        <span>See all <strong>{briefs.length}</strong> in {pillarTitle}</span>
-                      )}
+                      <div class="bi-brief-meta">
+                        <span class="bi-brief-no">No. {c.briefNoPad}</span>
+                        <span class="bi-brief-sep">·</span>
+                        <span>{c.publishedStr}</span>
+                      </div>
+                      <h3 class="bi-brief-title">{c.mainTitle}</h3>
+                      {c.subText && <p class="bi-brief-sub">{c.subText}</p>}
+                      <div class="bi-brief-foot">
+                        <div class="bi-brief-tags">
+                          <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
+                          {c.secondaryCatLabels.map((lab) => (
+                            <span class="bi-brief-tag">{lab}</span>
+                          ))}
+                        </div>
+                        <span class="bi-brief-read">{labels.briefReadCta}</span>
+                      </div>
                     </a>
+                  );
+                })}
+              </div>
+              {hasOverflow && (
+                <a
+                  href={`${base}/critical/briefs/category/${cat}/`}
+                  class="bi-pillar-more"
+                  data-pillar={parentPillar ? PILLAR_PARAM[parentPillar] : ""}
+                >
+                  {isJa ? (
+                    <span>{catTitle}の全 <strong>{briefs.length}</strong> 件を見る</span>
+                  ) : (
+                    <span>See all <strong>{briefs.length}</strong> in {catTitle}</span>
                   )}
-                </>
-              ) : (
-                <div class="bi-pillar-empty">
-                  {isJa ? "Brief は準備中" : "Briefs coming soon"}
-                </div>
+                </a>
               )}
             </section>
           );
@@ -1430,6 +1427,23 @@ const cta = isJa
     }
     .bi-filter-row {
       gap: 12px;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+    /* Mobile: one horizontally-scrollable row of chips so the sticky filter
+       bar stays ~1 line tall instead of occupying the screen. */
+    .bi-chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 16px;
+    }
+    .bi-chips::-webkit-scrollbar {
+      display: none;
+    }
+    .bi-chip {
+      flex: 0 0 auto;
     }
     .bi-brief-grid {
       grid-template-columns: 1fr;
