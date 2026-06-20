@@ -106,6 +106,66 @@ const categorySections = Array.from(briefsByPrimaryCat.entries()).sort(
   (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
 );
 
+// "課題から探す": threat-scenario entry groups that bundle the categories into a
+// handful of problem areas for readers evaluating threats (not Lemma's Pillars).
+const THREAT_GROUPS: ReadonlyArray<{
+  id: string;
+  ja: string;
+  en: string;
+  descJa: string;
+  descEn: string;
+  cats: ReadonlyArray<CategorySlug>;
+}> = [
+  {
+    id: "identity",
+    ja: "本人確認・属性・規制",
+    en: "Identity, attributes & compliance",
+    descJa: "なりすまし・属性証明の回避・KYC / AML",
+    descEn: "Impersonation, attribute-proof bypass, KYC / AML",
+    cats: ["identity-auth", "attribute-proof-bypass", "kyc-aml-disclosure"],
+  },
+  {
+    id: "agent",
+    ja: "AIエージェントの暴走・不正操作",
+    en: "Agent runaway & abuse",
+    descJa: "自律エージェントの暴走・基盤奪取・不正送金",
+    descEn: "Runaway agents, hijacked infra, payment abuse",
+    cats: ["agent-runaway", "agent-infrastructure", "agent-payment-abuse"],
+  },
+  {
+    id: "provenance",
+    ja: "データ・コードの真正性／来歴",
+    en: "Data & code provenance",
+    descJa: "コード・データ・学習データの来歴改ざん",
+    descEn: "Tampered code, data, and training-data origin",
+    cats: ["code-provenance", "data-provenance", "training-data-provenance"],
+  },
+  {
+    id: "supplychain",
+    ja: "サプライチェーン・設定の汚染",
+    en: "Supply-chain & config integrity",
+    descJa: "モデル供給網・接続設定の汚染",
+    descEn: "Model supply chain and connection/config trust",
+    cats: ["model-supply-chain", "bridge-config-trust"],
+  },
+  {
+    id: "aiintegrity",
+    ja: "AI判断の信頼性・バイアス",
+    en: "AI decision integrity & bias",
+    descJa: "AI判断の完全性・バイアス／被害",
+    descEn: "AI decision integrity, bias and harm",
+    cats: ["ai-decision-integrity", "ai-bias-harm"],
+  },
+];
+const groupCount = (cats: ReadonlyArray<CategorySlug>): number => {
+  const set = new Set(cats);
+  return allBriefs.filter(
+    (b) =>
+      set.has(b.data.primary_category as CategorySlug) ||
+      (b.data.secondary_categories as CategorySlug[]).some((c) => set.has(c)),
+  ).length;
+};
+
 // Category usage: count primary + secondary occurrences across all Briefs.
 const categoryUsage = new Map<CategorySlug, number>();
 for (const b of allBriefs) {
@@ -406,6 +466,34 @@ const cta = isJa
         </div>
       </section>
     )}
+
+    <!-- 課題から探す: threat-scenario entry groups -->
+    <section class="bi-groups-section">
+      <div class="bi-container">
+        <div class="bi-groups-head">
+          <h2 class="bi-groups-title">{isJa ? "課題から探す" : "Find by problem"}</h2>
+          <p class="bi-groups-sub">
+            {isJa
+              ? "脅威タイプをまとめた入口から、関連 Brief を絞り込みます。"
+              : "Jump in by threat area to filter the related Briefs."}
+          </p>
+        </div>
+        <div class="bi-groups">
+          {THREAT_GROUPS.map((g) => (
+            <button
+              type="button"
+              class="bi-group-card"
+              data-group={g.id}
+              data-group-cats={g.cats.join(",")}
+            >
+              <span class="bi-group-label">{isJa ? g.ja : g.en}</span>
+              <span class="bi-group-desc">{isJa ? g.descJa : g.descEn}</span>
+              <span class="bi-group-count">{labels.countUnit(groupCount(g.cats))}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <!-- Sticky category filter bar -->
     <div class="bi-filter-bar">
@@ -885,6 +973,78 @@ const cta = isJa
   }
 
   /* ─── FILTER BAR ─── */
+  /* ─── 課題から探す: threat-group entry cards ─── */
+  .bi-groups-section {
+    padding: 36px 0 4px;
+  }
+  .bi-groups-head {
+    margin: 0 0 16px;
+  }
+  .bi-groups-title {
+    font-family: var(--bi-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .bi-groups-sub {
+    font-size: 13px;
+    color: var(--bi-ink-soft);
+    margin: 0;
+  }
+  .bi-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .bi-group-card {
+    text-align: left;
+    background: var(--bi-cream);
+    border: 1px solid var(--bi-line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .bi-group-card:hover {
+    border-color: var(--bi-brown-mid);
+    background: var(--bi-brown-soft);
+  }
+  .bi-group-card.is-active {
+    background: var(--bi-brown);
+    border-color: var(--bi-brown);
+  }
+  .bi-group-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.45;
+  }
+  .bi-group-desc {
+    font-size: 11.5px;
+    color: var(--bi-ink-soft);
+    line-height: 1.5;
+  }
+  .bi-group-count {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--bi-brown);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+  .bi-group-card.is-active .bi-group-label,
+  .bi-group-card.is-active .bi-group-desc,
+  .bi-group-card.is-active .bi-group-count {
+    color: var(--bi-cream);
+  }
+
   .bi-filter-bar {
     padding: 18px 0;
     background: var(--bi-cream-deep);
@@ -1503,6 +1663,9 @@ const cta = isJa
       root.querySelectorAll<HTMLElement>(".bi-brief-card"),
     );
     const chips = Array.from(root.querySelectorAll<HTMLElement>(".bi-chip"));
+    const groupCards = Array.from(
+      root.querySelectorAll<HTMLElement>(".bi-group-card"),
+    );
     const sortSel = root.querySelector<HTMLSelectElement>(".bi-sort");
     const densityBtns = Array.from(
       root.querySelectorAll<HTMLElement>(".bi-density button"),
@@ -1523,11 +1686,17 @@ const cta = isJa
     let mode = "grouped";
     let activeCat = "all";
     let activePillar = "";
+    let activeGroup = "";
+    let activeGroupCats: string[] = [];
     let query = "";
 
     function cardMatches(card: HTMLElement): boolean {
       if (mode === "category")
         return (card.dataset.cats || "").split(",").includes(activeCat);
+      if (mode === "group")
+        return (card.dataset.cats || "")
+          .split(",")
+          .some((c) => activeGroupCats.includes(c));
       if (mode === "pillar") return card.dataset.pillar === activePillar;
       if (mode === "search") {
         if (!query) return true;
@@ -1593,7 +1762,7 @@ const cta = isJa
       gridSection.classList.toggle("bi-flat", mode !== "grouped");
       gridSection.classList.toggle(
         "bi-hide-heads",
-        mode === "category" || mode === "search",
+        mode === "category" || mode === "search" || mode === "group",
       );
 
       if (resultsStrong) resultsStrong.textContent = String(totalVisible);
@@ -1614,6 +1783,7 @@ const cta = isJa
     function setURL() {
       const params = new URLSearchParams();
       if (mode === "category") params.set("category", activeCat);
+      else if (mode === "group") params.set("group", activeGroup);
       else if (mode === "pillar") params.set("pillar", activePillar);
       else if (mode === "search" && query) params.set("q", query);
       const qs = params.toString();
@@ -1624,8 +1794,18 @@ const cta = isJa
       );
     }
 
+    function syncGroups() {
+      groupCards.forEach((c) =>
+        c.classList.toggle(
+          "is-active",
+          mode === "group" && c.dataset.group === activeGroup,
+        ),
+      );
+    }
+
     function update(writeURL = true) {
       syncChips();
+      syncGroups();
       apply();
       if (writeURL) setURL();
     }
@@ -1645,6 +1825,23 @@ const cta = isJa
         query = "";
         if (searchInput) searchInput.value = "";
         update();
+      });
+    });
+
+    // Group cards → multi-category ("threat area") filter
+    groupCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        mode = "group";
+        activeGroup = card.dataset.group || "";
+        activeGroupCats = (card.dataset.groupCats || "")
+          .split(",")
+          .filter(Boolean);
+        activeCat = "all";
+        activePillar = "";
+        query = "";
+        if (searchInput) searchInput.value = "";
+        update();
+        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
 
@@ -1711,11 +1908,21 @@ const cta = isJa
     // Initial state from URL
     const params = new URLSearchParams(location.search);
     const urlCat = params.get("category");
+    const urlGroup = params.get("group");
     const urlPillar = params.get("pillar");
     const urlQ = params.get("q");
+    const urlGroupCard = urlGroup
+      ? groupCards.find((c) => c.dataset.group === urlGroup)
+      : undefined;
     if (urlCat && chips.some((c) => c.dataset.cat === urlCat)) {
       mode = "category";
       activeCat = urlCat;
+    } else if (urlGroupCard) {
+      mode = "group";
+      activeGroup = urlGroup as string;
+      activeGroupCats = (urlGroupCard.dataset.groupCats || "")
+        .split(",")
+        .filter(Boolean);
     } else if (urlPillar && /^p[1-4]$/.test(urlPillar)) {
       mode = "pillar";
       activePillar = urlPillar;
