@@ -14,6 +14,9 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証 gRPC で受けた pickle が即コード実行 — Hugging Face LeRobot"
 og_lead_en: "Pickle over an unauthenticated gRPC channel = instant RCE — LeRobot"
+gap_detected: "CVE-2026-25874 の採番・公表、影響範囲（v0.4.3〜0.5.1）の検証、pickle/deserialize の危険性の周知、0.6.0 での対応予定までは機能した。"
+gap_missing: "認証も TLS も無い gRPC で受け取ったデータを、出所も認可も確かめずに deserialize（pickle）する層しか無く、未認証の到達がそのままロボットの関節制御に直結する RCE になった。"
+gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当に持ち込まれたものか」を Lemma で独立検証し、証明できない入力の実行を事前に止める。"
 ---
 
 ## TL;DR

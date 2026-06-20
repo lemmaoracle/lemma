@@ -14,6 +14,9 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証 ZMQ ＋ pickle の同一実装が推論基盤に拡散 — ShadowMQ"
 og_lead_en: "The same unauthenticated ZMQ + pickle implementation, copied across inference stacks — ShadowMQ"
+gap_detected: "Oligo・Orca の研究公表、各ベンダーの CVE 採番と修正、pickle 自体の危険性の周知は機能し、事後の検出・報告・パッチの系列は回った。"
+gap_missing: "未認証 ZMQ ソケットに届いた pickle を「正当な送り手か・正当な内容か」を確かめずに復元する層しか無く、受信の瞬間に任意コードが実行され、同型実装が検証なく複数基盤へコピーされて同じ欠陥が拡散した。"
+gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当に持ち込まれたものか」を Lemma で独立検証し、証明できない入力の実行を事前に止める。"
 ---
 
 ## TL;DR
