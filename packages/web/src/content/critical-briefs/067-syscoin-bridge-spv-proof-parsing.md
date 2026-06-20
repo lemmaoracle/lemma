@@ -1,7 +1,7 @@
 ---
 brief_no: 67
 title: "偽の proof が「有効」と解釈され、burn のないまま 50 億 SYS が発行された（Syscoin ブリッジ） — 暗号的に偽の proof が、パースの欠陥ゆえに「有効な burn の証明」として受理された構造（Syscoin / Halborn）"
-title_en: "Syscoin Bridge — A Parsing Flaw Let an Invalid SPV Proof Mint 5B SYS"
+title_en: "An Invalid SPV Proof Was Read as \"Valid\" and Minted 5B SYS With No Burn (Syscoin Bridge) — A Parsing Flaw in SPV Proof Verification"
 pillar: "01-verifiable-origin"
 primary_category: "bridge-config-trust"
 secondary_categories: ["identity-auth"]
