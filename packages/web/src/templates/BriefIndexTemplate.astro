@@ -26,8 +26,6 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import {
-  PILLAR_SLUGS,
-  CATEGORIES_BY_PILLAR,
   categoryLabel,
   categoryDescription,
   type PillarSlug,
@@ -35,6 +33,7 @@ import {
 } from "../data/criticalBriefs";
 import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
+import { POPULAR_BRIEF_SLUGS } from "../data/popularBriefs";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
@@ -47,11 +46,6 @@ const t = getTranslations(locale);
 const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 const pagePath = "/critical/briefs/";
-
-// Cards shown per Pillar section in the default grouped view before the
-// "もっと見る" link. Overflow cards are rendered (hidden) so client-side
-// filtering can reveal them without a round-trip.
-const CARDS_PER_PILLAR = 4;
 
 const PILLAR_PARAM: Record<PillarSlug, string> = {
   "01-verifiable-origin": "p1",
@@ -87,23 +81,11 @@ const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
 );
 const featuredBriefs = briefsByPublishedDesc.slice(0, 8);
 
-// Default grouped view is by primary_category ("threat type"), most-covered
-// first. Pillar is kept only as a per-section badge + the parent-pillar tie, so
-// it stays available as a secondary axis rather than the primary one.
-const PILLAR_OF_CAT = new Map<CategorySlug, PillarSlug>();
-for (const p of PILLAR_SLUGS) {
-  for (const c of CATEGORIES_BY_PILLAR[p]) PILLAR_OF_CAT.set(c, p);
-}
-const briefsByPrimaryCat = new Map<CategorySlug, AnyBrief[]>();
-for (const b of briefsByPublishedDesc) {
-  const pc = b.data.primary_category as CategorySlug;
-  const arr = briefsByPrimaryCat.get(pc);
-  if (arr) arr.push(b);
-  else briefsByPrimaryCat.set(pc, [b]);
-}
-// Section order: most briefs first, then stable by slug.
-const categorySections = Array.from(briefsByPrimaryCat.entries()).sort(
-  (a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]),
+// Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
+// Brief entries in listed order; unknown slugs are dropped.
+const briefById = new Map(allBriefs.map((b) => [b.id, b]));
+const popularBriefs = POPULAR_BRIEF_SLUGS.map((s) => briefById.get(s)).filter(
+  (b): b is AnyBrief => Boolean(b),
 );
 
 // Category usage: count primary + secondary occurrences across all Briefs.
@@ -191,7 +173,7 @@ const labels = isJa
       nextLabel: "次へ",
       filterCategoryLabel: "脅威タイプ",
       allChip: "すべて",
-      resultsAllDesc: "すべての Brief（脅威タイプ別）",
+      resultsAllDesc: "すべての Brief",
       resultsFilteredDesc: "件の Brief",
       sortNewest: "新しい順",
       sortOldest: "古い順",
@@ -226,7 +208,7 @@ const labels = isJa
       nextLabel: "Next",
       filterCategoryLabel: "Threat type",
       allChip: "All",
-      resultsAllDesc: "All Briefs (by threat type)",
+      resultsAllDesc: "All Briefs",
       resultsFilteredDesc: "Briefs",
       sortNewest: "Newest",
       sortOldest: "Oldest",
@@ -301,7 +283,7 @@ const cta = isJa
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="bi-page" data-cap={CARDS_PER_PILLAR}>
+  <main class="bi-page">
     <!-- Hero -->
     <section class="bi-hero">
       <div class="bi-container">
@@ -392,7 +374,6 @@ const cta = isJa
                   <span>{c.publishedStr}</span>
                 </div>
                 <h3>{c.mainTitle}</h3>
-                {c.shortLede && <p>{c.shortLede}</p>}
                 <div class="bi-fc-tags">
                   <span class="bi-fc-tag">{c.primaryCatLabel}</span>
                   {c.secondaryCatLabels.slice(0, 2).map((lab) => (
@@ -403,6 +384,35 @@ const cta = isJa
               </a>
             ))}
           </div>
+        </div>
+      </section>
+    )}
+
+    {/* よく見られている Brief: manually-curated ranking (popularBriefs.ts) */}
+    {popularBriefs.length > 0 && (
+      <section class="bi-popular-section">
+        <div class="bi-container">
+          <div class="bi-popular-head">
+            <h2 class="bi-popular-title">
+              {isJa ? "よく見られている Brief" : "Most-read Briefs"}
+            </h2>
+          </div>
+          <ol class="bi-popular-list">
+            {popularBriefs.map((b, i) => {
+              const c = briefCardData(b);
+              return (
+                <li class="bi-popular-li">
+                  <a href={c.href} class="bi-popular-item">
+                    <span class="bi-popular-rank">{i + 1}</span>
+                    <span class="bi-popular-main">
+                      <span class="bi-popular-name">{c.mainTitle}</span>
+                      <span class="bi-popular-meta">{c.primaryCatLabel} · No. {c.briefNoPad}</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
     )}
@@ -421,7 +431,13 @@ const cta = isJa
             <span class="bi-tile-count">{labels.countUnit(briefsCount)}</span>
           </button>
           {sortedCategories.map(([cat, count]) => (
-            <button type="button" class="bi-tile" data-cat={cat}>
+            <button
+              type="button"
+              class="bi-tile"
+              data-cat={cat}
+              data-label={categoryLabel(cat, locale)}
+              data-desc={categoryDescription(cat, locale)}
+            >
               <span class="bi-tile-label">{categoryLabel(cat, locale)}</span>
               <span class="bi-tile-count">{labels.countUnit(count)}</span>
             </button>
@@ -464,73 +480,47 @@ const cta = isJa
           </div>
         </div>
 
-        {categorySections.map(([cat, briefs]) => {
-          const parentPillar = PILLAR_OF_CAT.get(cat) ?? null;
-          const catTitle = categoryLabel(cat, locale);
-          const pillarBadge = parentPillar ? PILLAR_SHORT[parentPillar] : "";
-          const hasOverflow = briefs.length > CARDS_PER_PILLAR;
-          return (
-            <section
-              class="bi-pillar-section"
-              data-pillar={parentPillar ? PILLAR_PARAM[parentPillar] : ""}
-              data-catkey={cat}
-            >
-              <div class="bi-pillar-head">
-                {pillarBadge && <div class="bi-pillar-no">{pillarBadge}</div>}
-                <h2 class="bi-pillar-title">{catTitle}</h2>
-                <div class="bi-pillar-count">{labels.countUnit(briefs.length)}</div>
-              </div>
-              <p class="bi-pillar-sub">{categoryDescription(cat, locale)}</p>
-              <div class="bi-brief-grid">
-                {briefs.map((b, i) => {
-                  const c = briefCardData(b);
-                  return (
-                    <a
-                      href={c.href}
-                      class={`bi-brief-card${i >= CARDS_PER_PILLAR ? " is-hidden" : ""}`}
-                      data-pillar={c.pillarParam}
-                      data-cats={c.cats}
-                      data-catkey={c.primarySlug}
-                      data-ts={c.ts}
-                      data-no={c.briefNo}
-                      data-search={c.searchBlob}
-                    >
-                      <div class="bi-brief-meta">
-                        <span class="bi-brief-no">No. {c.briefNoPad}</span>
-                        <span class="bi-brief-sep">·</span>
-                        <span>{c.publishedStr}</span>
-                      </div>
-                      <h3 class="bi-brief-title">{c.mainTitle}</h3>
-                      {c.subText && <p class="bi-brief-sub">{c.subText}</p>}
-                      <div class="bi-brief-foot">
-                        <div class="bi-brief-tags">
-                          <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
-                          {c.secondaryCatLabels.map((lab) => (
-                            <span class="bi-brief-tag">{lab}</span>
-                          ))}
-                        </div>
-                        <span class="bi-brief-read">{labels.briefReadCta}</span>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
-              {hasOverflow && (
-                <a
-                  href={`${base}/critical/briefs/category/${cat}/`}
-                  class="bi-pillar-more"
-                  data-pillar={parentPillar ? PILLAR_PARAM[parentPillar] : ""}
-                >
-                  {isJa ? (
-                    <span>{catTitle}の全 <strong>{briefs.length}</strong> 件を見る</span>
-                  ) : (
-                    <span>See all <strong>{briefs.length}</strong> in {catTitle}</span>
-                  )}
-                </a>
-              )}
-            </section>
-          );
-        })}
+        {/* Shown only while a threat-type tile is active (filter context). */}
+        <div class="bi-filter-context" data-filter-context hidden>
+          <div class="bi-fctx-text">
+            <span class="bi-fctx-label" data-fctx-label></span>
+            <span class="bi-fctx-desc" data-fctx-desc></span>
+          </div>
+          <button type="button" class="bi-fctx-clear" data-fctx-clear>
+            {isJa ? "すべて表示" : "Show all"}
+          </button>
+        </div>
+
+        <div class="bi-brief-grid">
+          {briefsByPublishedDesc.map((b) => {
+            const c = briefCardData(b);
+            return (
+              <a
+                href={c.href}
+                class="bi-brief-card"
+                data-pillar={c.pillarParam}
+                data-cats={c.cats}
+                data-catkey={c.primarySlug}
+                data-ts={c.ts}
+                data-no={c.briefNo}
+                data-search={c.searchBlob}
+              >
+                <div class="bi-brief-meta">
+                  <span class="bi-brief-no">No. {c.briefNoPad}</span>
+                  <span class="bi-brief-sep">·</span>
+                  <span>{c.publishedStr}</span>
+                </div>
+                <h3 class="bi-brief-title">{c.mainTitle}</h3>
+                <div class="bi-brief-foot">
+                  <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
+                  <span class="bi-brief-read">{labels.briefReadCta}</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <nav class="bi-pager" data-pager hidden aria-label="Pagination"></nav>
 
         <div class="bi-no-results" hidden>
           {isJa
@@ -571,6 +561,36 @@ const cta = isJa
         <NewsletterEmbed locale={locale} placement="briefs-index" />
       </div>
     </section>
+
+    {/* Dismissible sticky newsletter bar — tucks away at the footer #newsletter. */}
+    <div class="bi-nlbar" data-nlbar>
+      <div class="bi-nlbar-inner">
+        <div class="bi-nlbar-text">
+          <span class="bi-nlbar-title">Lemma Critical Weekly</span>
+          <span class="bi-nlbar-lead">
+            {isJa
+              ? "重大リスク事案の構造分析を、毎週メールで。"
+              : "Structural analysis of major risk incidents — weekly, by email."}
+          </span>
+        </div>
+        <div class="bi-nlbar-actions">
+          <button
+            type="button"
+            class="bi-nlbar-cta"
+            data-tally-open={isJa ? "EkMj82" : "rjvN2X"}
+            data-tally-layout="modal"
+            data-tally-width="540"
+            data-tally-emoji-text=""
+          >{isJa ? "メールで購読" : "Subscribe"}</button>
+          <button
+            type="button"
+            class="bi-nlbar-close"
+            data-nlbar-close
+            aria-label={isJa ? "閉じる" : "Dismiss"}
+          >✕</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -864,7 +884,8 @@ const cta = isJa
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: 6px;
+    margin-top: auto;
+    padding-top: 8px;
   }
   .bi-fc-tag {
     font-family: var(--bi-mono);
@@ -885,6 +906,79 @@ const cta = isJa
     padding-top: 10px;
     border-top: 1px solid var(--bi-line);
     letter-spacing: 0.04em;
+  }
+
+  /* ─── よく見られている Brief: curated ranking ─── */
+  .bi-popular-section {
+    padding: 28px 0 4px;
+  }
+  .bi-popular-head {
+    margin: 0 0 10px;
+  }
+  .bi-popular-title {
+    font-family: var(--bi-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .bi-popular-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+  .bi-popular-li {
+    border-bottom: 1px solid var(--bi-line);
+  }
+  .bi-popular-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 4px;
+    text-decoration: none;
+  }
+  .bi-popular-rank {
+    font-family: var(--bi-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bi-brown);
+    min-width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .bi-popular-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .bi-popular-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .bi-popular-item:hover .bi-popular-name {
+    color: var(--bi-brown);
+  }
+  .bi-popular-meta {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    color: var(--bi-ink-soft);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 700px) {
+    .bi-popular-list {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* ─── 脅威タイプ tile grid (filter) ─── */
@@ -1254,13 +1348,190 @@ const cta = isJa
     display: none;
   }
 
-  /* Flat (filtered) mode: hide Pillar chrome, tighten spacing */
-  .bi-grid-section.bi-flat .bi-pillar-section {
-    margin-bottom: 18px;
+  /* Active threat-type filter banner (shown only when a tile is selected) */
+  .bi-filter-context {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    margin: 0 0 20px;
+    background: var(--bi-brown-soft);
+    border: 1px solid var(--bi-brown-mid);
+    border-radius: 10px;
   }
-  .bi-grid-section.bi-hide-heads .bi-pillar-head,
-  .bi-grid-section.bi-hide-heads .bi-pillar-sub {
+  .bi-filter-context[hidden] {
     display: none;
+  }
+  .bi-fctx-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .bi-fctx-label {
+    font-family: var(--bi-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.4;
+  }
+  .bi-fctx-desc {
+    font-size: 12.5px;
+    color: var(--bi-ink-soft);
+    line-height: 1.55;
+  }
+  .bi-fctx-clear {
+    flex-shrink: 0;
+    font-family: var(--bi-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--bi-brown);
+    background: transparent;
+    border: 1px solid var(--bi-brown-mid);
+    border-radius: 50px;
+    padding: 7px 16px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, color 0.15s;
+  }
+  .bi-fctx-clear:hover {
+    background: var(--bi-brown);
+    color: var(--bi-cream);
+  }
+
+  /* ─── Pagination ─── */
+  .bi-pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 36px 0 0;
+    flex-wrap: wrap;
+  }
+  .bi-pager[hidden] {
+    display: none;
+  }
+  .bi-pager-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    font-family: var(--bi-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bi-ink-soft);
+    background: #ffffff;
+    border: 1px solid var(--bi-line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .bi-pager-btn:hover:not([disabled]):not(.is-active) {
+    border-color: var(--bi-brown-mid);
+    color: var(--bi-ink);
+  }
+  .bi-pager-btn.is-active {
+    background: var(--bi-brown);
+    border-color: var(--bi-brown);
+    color: var(--bi-cream);
+    cursor: default;
+  }
+  .bi-pager-btn[disabled] {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .bi-pager-arrow {
+    font-size: 16px;
+  }
+
+  /* ─── Sticky newsletter bar ─── */
+  .bi-nlbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 80;
+    transform: translateY(110%);
+    transition: transform 0.3s ease;
+    background: #211a14;
+    border-top: 1px solid var(--bi-brown);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+  }
+  .bi-nlbar.is-visible {
+    transform: translateY(0);
+  }
+  .bi-nlbar-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 40px calc(12px + env(safe-area-inset-bottom));
+  }
+  .bi-nlbar-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+  .bi-nlbar-title {
+    font-family: var(--bi-display);
+    font-weight: 700;
+    font-size: 14px;
+    color: #ffffff;
+  }
+  .bi-nlbar-lead {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bi-nlbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .bi-nlbar-cta {
+    font-family: var(--bi-body);
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--bi-brown);
+    color: #ffffff;
+    border: 1px solid var(--bi-brown);
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .bi-nlbar-cta:hover {
+    background: #743a10;
+  }
+  .bi-nlbar-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    cursor: pointer;
+    padding: 6px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .bi-nlbar-close:hover {
+    color: #ffffff;
+  }
+  @media (max-width: 720px) {
+    .bi-nlbar-inner {
+      padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+      gap: 12px;
+    }
+    .bi-nlbar-lead {
+      display: none;
+    }
   }
 
   .bi-no-results {
@@ -1479,11 +1750,11 @@ const cta = isJa
     const root = document.querySelector<HTMLElement>(".bi-page");
     if (!root) return;
 
-    const CAP = Number(root.dataset.cap || 4);
     const gridSection = root.querySelector<HTMLElement>(".bi-grid-section");
-    const sections = Array.from(
-      root.querySelectorAll<HTMLElement>(".bi-pillar-section"),
-    );
+    const filterContext = root.querySelector<HTMLElement>("[data-filter-context]");
+    const fctxLabel = root.querySelector<HTMLElement>("[data-fctx-label]");
+    const fctxDesc = root.querySelector<HTMLElement>("[data-fctx-desc]");
+    const fctxClear = root.querySelector<HTMLElement>("[data-fctx-clear]");
     const allCards = Array.from(
       root.querySelectorAll<HTMLElement>(".bi-brief-card"),
     );
@@ -1499,6 +1770,7 @@ const cta = isJa
     const searchInput = root.querySelector<HTMLInputElement>(".bi-search input");
     const resultsStrong = root.querySelector<HTMLElement>(".bi-results-strong");
     const noResults = root.querySelector<HTMLElement>(".bi-no-results");
+    const pager = root.querySelector<HTMLElement>("[data-pager]");
     const carousel = root.querySelector<HTMLElement>(".bi-carousel");
     const carPrev = root.querySelector<HTMLElement>(".bi-car-prev");
     const carNext = root.querySelector<HTMLElement>(".bi-car-next");
@@ -1509,6 +1781,8 @@ const cta = isJa
     let activeCat = "all";
     let activePillar = "";
     let query = "";
+    let currentPage = 1;
+    const PAGE_SIZE = 12;
 
     function cardMatches(card: HTMLElement): boolean {
       if (mode === "category")
@@ -1544,45 +1818,64 @@ const cta = isJa
 
     function apply() {
       sortCards();
-      let totalVisible = 0;
+      const grid = grids[0];
+      const ordered = grid
+        ? (Array.from(grid.children) as HTMLElement[])
+        : allCards;
+      const matching = ordered.filter(cardMatches);
+      const totalPages = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+      const start = (currentPage - 1) * PAGE_SIZE;
+      allCards.forEach((c) => c.classList.add("is-hidden"));
+      matching
+        .slice(start, start + PAGE_SIZE)
+        .forEach((c) => c.classList.remove("is-hidden"));
+      renderPagination(totalPages);
+      updateFilterContext();
+      if (resultsStrong) resultsStrong.textContent = String(matching.length);
+      if (noResults) noResults.hidden = matching.length !== 0;
+    }
 
-      sections.forEach((section) => {
-        const grid = section.querySelector<HTMLElement>(".bi-brief-grid");
-        const more = section.querySelector<HTMLElement>(".bi-pillar-more");
-        const cards = grid
-          ? (Array.from(grid.children) as HTMLElement[])
-          : [];
-        const sectionAllowed =
-          mode !== "pillar" || section.dataset.pillar === activePillar;
+    function renderPagination(totalPages: number) {
+      if (!pager) return;
+      if (totalPages <= 1) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+      }
+      let html =
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="prev" aria-label="Previous"' +
+        (currentPage === 1 ? " disabled" : "") +
+        ">‹</button>";
+      for (let p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" class="bi-pager-btn' +
+          (p === currentPage ? " is-active" : "") +
+          '" data-page="' +
+          p +
+          '">' +
+          p +
+          "</button>";
+      }
+      html +=
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="next" aria-label="Next"' +
+        (currentPage === totalPages ? " disabled" : "") +
+        ">›</button>";
+      pager.innerHTML = html;
+      pager.hidden = false;
+    }
 
-        let shownInSection = 0;
-        cards.forEach((card) => {
-          let show = sectionAllowed && cardMatches(card);
-          if (show && mode === "grouped" && shownInSection >= CAP) show = false;
-          card.classList.toggle("is-hidden", !show);
-          if (show) {
-            shownInSection++;
-            totalVisible++;
-          }
-        });
-
-        // Count true matches (ignoring cap) to decide section visibility.
-        const matchCount = sectionAllowed
-          ? cards.filter((c) => cardMatches(c)).length
-          : 0;
-        section.classList.toggle("is-hidden", matchCount === 0);
-
-        if (more) more.classList.toggle("is-hidden", mode !== "grouped");
-      });
-
-      gridSection.classList.toggle("bi-flat", mode !== "grouped");
-      gridSection.classList.toggle(
-        "bi-hide-heads",
-        mode === "category" || mode === "search",
-      );
-
-      if (resultsStrong) resultsStrong.textContent = String(totalVisible);
-      if (noResults) noResults.hidden = totalVisible !== 0;
+    function updateFilterContext() {
+      if (!filterContext) return;
+      if (mode === "category") {
+        const tile = chips.find((c) => c.dataset.cat === activeCat);
+        if (fctxLabel) fctxLabel.textContent = tile?.dataset.label || "";
+        if (fctxDesc) fctxDesc.textContent = tile?.dataset.desc || "";
+        filterContext.hidden = false;
+      } else {
+        filterContext.hidden = true;
+      }
     }
 
     function syncChips() {
@@ -1610,6 +1903,7 @@ const cta = isJa
     }
 
     function update(writeURL = true) {
+      currentPage = 1;
       syncChips();
       apply();
       if (writeURL) setURL();
@@ -1633,19 +1927,17 @@ const cta = isJa
       });
     });
 
-    // "もっと見る" → pillar filter (client-side; href is the fallback)
-    root.querySelectorAll<HTMLElement>(".bi-pillar-more").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        mode = "pillar";
-        activePillar = link.dataset.pillar || "";
+    // Filter-context "show all" → clear the active category filter
+    if (fctxClear) {
+      fctxClear.addEventListener("click", () => {
+        mode = "grouped";
         activeCat = "all";
+        activePillar = "";
         query = "";
         if (searchInput) searchInput.value = "";
         update();
-        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
       });
-    });
+    }
 
     // Search
     if (searchInput) {
@@ -1669,7 +1961,32 @@ const cta = isJa
     }
 
     // Sort
-    if (sortSel) sortSel.addEventListener("change", () => apply());
+    if (sortSel)
+      sortSel.addEventListener("change", () => {
+        currentPage = 1;
+        apply();
+      });
+
+    // Pagination
+    if (pager) {
+      pager.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-page]");
+        if (!btn || btn.hasAttribute("disabled")) return;
+        const grid = grids[0];
+        const matchCount = grid
+          ? (Array.from(grid.children) as HTMLElement[]).filter(cardMatches)
+              .length
+          : 0;
+        const totalPages = Math.max(1, Math.ceil(matchCount / PAGE_SIZE));
+        const v = btn.dataset.page;
+        if (v === "prev") currentPage = Math.max(1, currentPage - 1);
+        else if (v === "next")
+          currentPage = Math.min(totalPages, currentPage + 1);
+        else currentPage = Number(v) || 1;
+        apply();
+        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
 
     // Density
     densityBtns.forEach((btn) => {
@@ -1735,6 +2052,52 @@ const cta = isJa
       document.addEventListener("DOMContentLoaded", wire);
     } else {
       wire();
+    }
+  })();
+</script>
+
+<!-- Sticky newsletter bar: reveal after scroll, hide near the footer #newsletter,
+     dismiss persists via localStorage. -->
+<script is:inline>
+  (function () {
+    var bar = document.querySelector("[data-nlbar]");
+    if (!bar) return;
+    try {
+      if (window.localStorage.getItem("lemma_nlbar_dismissed")) return;
+    } catch (e) {}
+    var nlSection = document.getElementById("newsletter");
+    var footerInView = false;
+    var revealed = false;
+    function sync() {
+      bar.classList.toggle("is-visible", revealed && !footerInView);
+    }
+    if (nlSection && "IntersectionObserver" in window) {
+      new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            footerInView = e.isIntersecting;
+            sync();
+          });
+        },
+        { rootMargin: "0px 0px -40px 0px" },
+      ).observe(nlSection);
+    }
+    function onScroll() {
+      if (!revealed && (window.scrollY || 0) > 300) {
+        revealed = true;
+        sync();
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    var closeBtn = bar.querySelector("[data-nlbar-close]");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        bar.classList.remove("is-visible");
+        try {
+          window.localStorage.setItem("lemma_nlbar_dismissed", "1");
+        } catch (e) {}
+      });
     }
   })();
 </script>

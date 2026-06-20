@@ -1,6 +1,6 @@
 ---
 /**
- * Lemma Critical Monthly newsletter — inline Tally iframe embed.
+ * Lemma Critical Weekly newsletter — inline Tally iframe embed.
  *
  * Renders the locale-appropriate Tally form (JA: EkMj82, EN: rjvN2X) as
  * a transparent inline iframe with `dynamicHeight=1` so the iframe sizes
@@ -24,9 +24,9 @@ const src = `https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparen
 const heading = locale === "ja" ? "✉️ ニュースレター" : "✉️ Newsletter";
 const lead =
   locale === "ja"
-    ? "Lemma Critical Monthly — 実際に起きたリスク事案の構造分析(Critical Brief)を軸に、検出の先に必要な「証明」への視点を月 1 回お届け。"
-    : "Lemma Critical Monthly — the structural analysis of real-world risk incidents (Critical Brief) at its core, plus insight on the proof needed beyond detection, once a month.";
-const title = "Lemma Critical Monthly";
+    ? "Lemma Critical Weekly — 実際に起きたリスク事案の構造分析(Critical Brief)を軸に、検出の先に必要な「証明」への視点を毎週お届け。"
+    : "Lemma Critical Weekly — the structural analysis of real-world risk incidents (Critical Brief) at its core, plus insight on the proof needed beyond detection, every week.";
+const title = "Lemma Critical Weekly";
 ---
 
 <div class="newsletter-embed" data-placement={placement}>
