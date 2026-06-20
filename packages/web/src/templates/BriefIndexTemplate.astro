@@ -374,7 +374,6 @@ const cta = isJa
                   <span>{c.publishedStr}</span>
                 </div>
                 <h3>{c.mainTitle}</h3>
-                {c.shortLede && <p>{c.shortLede}</p>}
                 <div class="bi-fc-tags">
                   <span class="bi-fc-tag">{c.primaryCatLabel}</span>
                   {c.secondaryCatLabels.slice(0, 2).map((lab) => (
@@ -853,7 +852,8 @@ const cta = isJa
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: 6px;
+    margin-top: auto;
+    padding-top: 8px;
   }
   .bi-fc-tag {
     font-family: var(--bi-mono);
