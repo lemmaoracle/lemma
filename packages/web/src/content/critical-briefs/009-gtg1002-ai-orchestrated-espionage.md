@@ -1,7 +1,7 @@
 ---
 brief_no: 9
 title: "AI エージェントがサイバー攻撃の 80–90% を自律実行した初の報告（GTG-1002） — エージェント権限が独立検証されない構造"
-title_en: "AI Agent Autonomously Executed 80–90% of a Cyberattack — First Reported AI-Orchestrated Espionage (GTG-1002), Agent Authority Never Independently Verified"
+title_en: "GTG-1002: AI agent autonomously executed 80–90% of a cyberattack — first reported AI-orchestrated espionage, agent authority never independently verified"
 pillar: "03-agent-authority"
 primary_category: "agent-runaway"
 secondary_categories: ["identity-auth"]
