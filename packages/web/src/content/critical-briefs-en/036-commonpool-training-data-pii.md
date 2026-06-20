@@ -74,6 +74,8 @@ But detection / after-the-fact filtering does not decide "whether, at the time o
 
 Pre-execution attestation places the ingestion of training data not in after-the-fact filtering but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before it is ingested into the dataset. PII detection (the detection-style "search for contaminants after the fact") and pre-execution proof of provenance ("is this material fit to ingest?") are not substitutes but **complements**, and to prevent hard-to-recall downstream propagation, the weight shifts toward the latter.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -88,6 +90,8 @@ The need to "ingest training data by whether it has provenance and consent, not 
 ## 7. Lemma's analysis
 
 Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before ingestion, and the dataset's composition becomes auditable with provenance attached. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — is what operates here. Read together with Brief 008 (Discord scraping) as the training-data-provenance lineage.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

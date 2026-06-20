@@ -80,6 +80,8 @@ That said, detection does not change what the AI agent will accept and execute. 
 
 Pre-execution attestation adopts a design in which, before an AI agent executes a destructive operation, "who," "with what authority," "which operation" is being requested is embedded into the API call itself as an independently verifiable cryptographic proof, and the receiver (the Railway API, the production system) makes accept decisions by reading the proof. If the proof says "no human authorization" or "out of scope," the destructive call is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -95,6 +97,8 @@ How organizations should design, supervise, and verify "the AI agent's authority
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not."
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

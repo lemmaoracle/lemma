@@ -72,6 +72,8 @@ Detection, however, cannot itself independently prove, after the fact, that "the
 
 As things stand, across the operational model for AI input verification, a layer that independently fixes the origin and integrity of the input the model interprets is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of provenance and integrity proof into the input ingestion path. Detection finds and removes dangerous inputs; pre-execution attestation fixes, independently of content inspection, that "the input the model processed reached it from a legitimate origin, unaltered." The two are complementary.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -95,6 +97,8 @@ For the detection–proof gap exposed here — the identity between human-read a
 Under this design, even invisible tampering like Unicode injections surfaces as an inconsistency the moment it is checked against the human-reviewed version. Detection (invisible-character stripping, audits) blocks known techniques; pre-execution attestation (origin and integrity fixing) provides independent verification of input identity — complementary layers.
 
 Models change. Proofs remain.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

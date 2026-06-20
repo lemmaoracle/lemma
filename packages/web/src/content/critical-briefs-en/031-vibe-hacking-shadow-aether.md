@@ -76,6 +76,8 @@ But detection does not change "what is allowed to run in the environment" itself
 
 Pre-execution attestation inverts detection from "matching known malicious artifacts" to "verifying, before execution, whether the operation or code about to run is authorized and carries provenance." Even when a tool is unknown or freshly generated, if the proof reports "this operation has no legitimately authorized provenance," execution is blocked in advance. Signature-based detection (the detection-style "is this known-malicious?") and pre-execution proof of operations (the "is this an authorized, provenanced execution?") are not substitutes but **complements** — and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -89,6 +91,8 @@ Pre-execution attestation inverts detection from "matching known malicious artif
 ## 7. Lemma's analysis
 
 Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run." Even when a tool is unknown, if the proof of the operation's authorization and provenance does not hold, execution is rejected in advance.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

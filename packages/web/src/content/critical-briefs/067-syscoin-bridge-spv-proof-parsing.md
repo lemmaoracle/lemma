@@ -78,6 +78,8 @@ Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合�
 
 事前証明（pre-execution attestation）は、cross-chain の proof を、受信側が mint の実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を採る。proof のパースが通ることと、burn の実在が独立に確かめられることを切り離さず、burn の来歴が確認できなければ mint を事前に block する。proof の形式的受理（detection 的な「この proof は通る」）と、burn の実在の事前証明（「対応する burn は実在する」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、cross-chain の発行を安心して実務に出せる。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -94,6 +96,8 @@ Brief 016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差（cross-chain の proof が、形式的受理とは別に、それが指す burn の実在として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される proof を、受信側が実行前に独立検証可能な暗号証明として受け取り、「相手チェーンで実際に burn が行われた」事実そのものを proof として検証する設計を提示している。proof のパースが形式上通っても、burn の実在の proof が確認できなければ mint は事前に reject される。「暗号論理的に有効 ≠ 指す事実が実在する」という来歴証明カテゴリの設計思想を、その reference 実装が体現している。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。検出（事後の停止・凍結・解析）は被害の是正に、事前証明（mint 実行前の burn 来歴の独立検証）は cross-chain 発行の信頼確立に、それぞれ相補的に働く。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

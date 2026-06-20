@@ -79,6 +79,8 @@ Sansec のような EC セキュリティ事業者によるスキマー解析・
 
 事前証明(pre-execution attestation)は、チェックアウトで実行されるコードを、ドメインの allowlist ではなく**配置者・経路・内容の来歴**として実行前に独立検証する設計を採る。proof が「このスクリプトはストアの正規配置の来歴を持たない」と告げれば、信頼ドメインから来ていても実行は block される。ドメイン allowlist(detection 的な「既知の信頼先か」)とコード来歴の事前証明(「この内容は正規に配置されたか」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -92,6 +94,8 @@ Sansec のような EC セキュリティ事業者によるスキマー解析・
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(allowlist がドメインの身元を信頼し、運ばれるコードとデータの来歴を検証しない)に対して、Lemma は、実行されるコードや受け渡されるデータを、ドメインの allowlist ではなく配置者・経路・内容の来歴として実行前に独立検証可能な暗号証明として検証する設計を提示している。信頼ドメインから配送されても、来歴の proof が正規配置の不在を告げれば実行・送出は事前に reject される。「ドメインが信頼できる ≠ 中身の来歴が正しい」という来歴証明カテゴリの設計思想に立つ。信頼シグナルの転用という同型事例は Brief 010 と合わせて参照されたい。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

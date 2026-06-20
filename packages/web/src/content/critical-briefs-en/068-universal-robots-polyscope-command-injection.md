@@ -76,6 +76,8 @@ At the same time, network monitoring and patches are no material for the robot t
 
 Pre-execution attestation takes the design choice of treating a command the robot receives not as "the fact that it arrived over the network" but as "an independently verifiable proof of authorization from a sender holding legitimate authority." If commands that lead to physical motion — start, operate, load program — are verified before motion against the bounds of the grantor's authorization, then network reachability alone does not produce motion. Detecting network reach (the detection-style "who reached") and proving the command's authorization ("is the command based on legitimate authority") are **complements**, not substitutes; only where the two overlap can increasingly autonomous robots be safely placed on manufacturing and logistics floors.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -99,6 +101,8 @@ Against the detection–proof gap this incident exposed (an embodied agent not i
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this command is within the grantor's authorization" — reconciling independent verification with the protection of operational information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this robot's motion is based on an instruction from a sender holding legitimate authority," without depending on after-the-fact network logs. Detection (after-the-fact monitoring, patching, segmentation) works on correcting exposure; pre-execution attestation (independent verification of authorization before motion) works on establishing trust in embodied agents — each complementary to the other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

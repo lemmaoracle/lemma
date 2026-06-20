@@ -76,6 +76,8 @@ At the same time, detection and takedown do not, **at the moment of generation**
 
 Pre-execution attestation closes this gap by inserting one step — verification of the subject's attributes and provenance binding — into the output path of the generative AI. By requiring, before generation, that "the subject's consent and age attributes are independently verified and authorized," and by binding a verifiable provenance marker to the output at the moment of action, generation lacking attribute verification, and outputs without provenance, can be distinguished before generation and distribution. Detecting the output (the detection-style "is this harmful") and the pre-execution attestation of generation ("does this generation carry attribute verification, authorization, and provenance") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -96,6 +98,8 @@ Against the gap this incident exposed (at the moment of generation, the subject'
 - **Scoped authorization**: Bind the generative AI's output to attribute conditions, so generation that does not meet them cannot succeed without proof
 
 Through this, proof fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry attribute verification, authorization, and provenance," before distribution. Detection and takedown (after-the-fact moderation and regulatory response) serve to remove and deter harm, while pre-execution attestation (attribute verification and provenance binding at the moment of generation) serves to distinguish harmful generation before it occurs — each working complementarily.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

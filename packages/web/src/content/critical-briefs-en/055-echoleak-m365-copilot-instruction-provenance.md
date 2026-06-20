@@ -77,6 +77,8 @@ But the problem here is that the XPIA classifier detection layer was **bypassed 
 
 At present, across the operating model of enterprise AI, independent verification of the origin and authority of the instructions an agent ingests depends on the model's self-judgment and trust in classifiers, and is not treated as an independent layer. Pre-execution attestation closes the gap by inserting one step into the agent's action path — an attribute proof that "this instruction was legitimately granted under this authority." It is a **complement** to, not a substitute for, detection; only with both in place is a trust boundary for the AI's actions established.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -100,6 +102,8 @@ Against the gap EchoLeak exposed — an AI agent connecting directly to reading 
 - **Selective disclosure**: Prove only that "the action was within the scope of authority," with minimal disclosure, without sending the internal data itself outside
 
 Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the source data — when asked "was this exfiltration even based on a legitimate command in the first place." Detection (after-the-fact research and classifiers) contributes to shrinking the blast radius, while pre-execution attestation (verification at the moment of action) contributes to independently verifying the basis for the AI's action — each complementary.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

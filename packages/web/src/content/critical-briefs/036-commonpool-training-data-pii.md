@@ -74,6 +74,8 @@ Brief 008(Discord の公開 API 経由 20.5 億メッセージのスクレイピ
 
 事前証明(pre-execution attestation)は、学習データの取り込みを、事後フィルタではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を採る。来歴・同意の proof が成立しない素材は、データセットに取り込む前に reject される。PII 検出(detection 的な「混入物を後から探す」)と来歴の事前証明(「取り込んでよい素材か」)は代替ではなく**補完**の関係にあり、回収困難な下流波及を防ぐには後者の比重が増す。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -88,6 +90,8 @@ Brief 008(Discord の公開 API 経由 20.5 億メッセージのスクレイピ
 ## 7. Lemma による分析
 
 本事案で露呈した構造(学習データの来歴・同意が収集時点で検証されず、事後フィルタでは網羅できない)に対して、Lemma は、データの取り込みを、事後の PII 検出ではなく「各素材が学習利用に供してよい来歴・同意を持つかの収集時点での独立検証」に置く設計を提示している。来歴・同意の proof が成立しない素材は取り込み前に reject され、データセットの構成は来歴つきで可監査になる。「公開されている ≠ 来歴・同意がある」という来歴証明カテゴリの設計思想がここで働く。Brief 008(Discord scraping)と合わせ、学習データ来歴の系譜として参照されたい。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

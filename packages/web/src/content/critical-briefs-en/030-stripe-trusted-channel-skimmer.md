@@ -79,6 +79,8 @@ But detection does not change "whether the browser executes code loaded from a t
 
 Pre-execution attestation verifies the code that runs at checkout not by a domain allowlist but by **the provenance of who placed it, by which path, and with what content** — before execution. If the proof says "this script has no legitimate store-placement provenance," execution is blocked even when it comes from a trusted domain. A domain allowlist ("is this a known trusted source") and pre-execution proof of code provenance ("was this content placed legitimately") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -92,6 +94,8 @@ Pre-execution attestation verifies the code that runs at checkout not by a domai
 ## 7. Lemma's analysis
 
 Against the detection–proof gap exposed here (an allowlist trusts a domain's identity but does not verify the provenance of the code and data it carries), Lemma proposes a design that verifies executed code and exchanged data — not by a domain allowlist but as the provenance of who placed it, by which path, and with what content — as an independently verifiable cryptographic proof before execution. Even when delivered from a trusted domain, if the provenance proof reports the absence of legitimate placement, execution and exfiltration are rejected in advance. This rests on the "a domain is trusted ≠ the provenance of its contents is correct" design of the verifiable-origin category. For the same shape of trust-signal repurposing, see Brief 010.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

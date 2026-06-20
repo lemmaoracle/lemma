@@ -75,6 +75,8 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 事前証明(pre-execution attestation)は、来歴を publisher アイデンティティの署名にとどめず、「この成果物が、意図されたソース・ビルド入力・レビュー経路から生成された」ことをビルド来歴に紐づく独立検証可能な暗号証明として固定する設計を採る。ワークフロー実行中に runner が乗っ取られれば、ビルド来歴の proof は不整合となり、受信側は署名が形式上有効でも reject できる。検出(IOC・異常監視)と事前証明(build provenance proof)は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -91,6 +93,8 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は、来歴を「誰が公開したか」の署名ではなく、「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。OIDC アイデンティティが実行時に乗っ取られても、ビルド来歴の proof は別系統で「正規のビルド経路から生成された / されていない」を告げるため、受信側は署名が形式上有効でも proof の不整合で reject できる。Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -75,6 +75,8 @@ Brief 027(LibreChat MCP URL)・003(Starlette/BadHost)と同じくエージェン
 
 事前証明(pre-execution attestation)は、委任トークンに検証可能なスコープ(対象リポジトリ・有効範囲)を埋め込み、拡張インストールのような特権行為を実行前に「登録者の認可」と「委任範囲」に照らして独立検証する設計を採る。proof が「この行為は委任範囲を超える」「このトークンは当該リポジトリ外に有効であってはならない」と告げれば、行為は実行前に block される。特権行為の検出(detection 的な「不審な拡張が動いた」)と委任権限の事前証明(「この行為は認可された範囲内か」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -88,6 +90,8 @@ Brief 027(LibreChat MCP URL)・003(Starlette/BadHost)と同じくエージェン
 ## 7. Lemma による分析
 
 本事象で露呈した検出と証明の落差(委任トークンが最小権限にスコープされず、特権行為が独立認可なく実行される)に対して、Lemma は、エージェント基盤への権限委任・特権行為を証跡化し、実行前に「誰が・何を・どの範囲で」認可したかを独立検証可能な証明として検証する設計を提示している。OAuth トークンが過剰に有効でも、委任範囲の proof が「この行為は対象外リポジトリに及ぶ」と告げれば行為は事前に reject される。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -73,6 +73,8 @@ Brief 003（Starlette/BadHost、HTTP Host ヘッダー操作による MCP サー
 
 現状、エージェント基盤の運用モデル全体において、設定・構成を権限の観点で実行前に独立検証する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、設定→実行の経路に権限証明を 1 段挟むことで、この gap を埋める。事前証明は検出に対する代替ではなく**補完**であり、両層の組み合わせでエージェント基盤の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -98,6 +100,8 @@ Lemma 自身も MCP エコシステムの一部として MCP サーバーを提�
 データは渡さない。証明は渡る。
 
 Models change. Proofs remain.
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

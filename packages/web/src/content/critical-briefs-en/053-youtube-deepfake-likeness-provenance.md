@@ -76,6 +76,8 @@ At the same time, detection does not, **at the moment of generation and publicat
 
 Pre-execution attestation and provenance binding close this gap by fixing verifiable provenance and consent to likeness and voice before generation and publication. By binding to the output, via docHash, a provenance indicating whose likeness it used and under what consent, and by making the publication path able to ask "does this carry provenance with the person's consent," synthetic media lacking provenance can be distinguished before spread. Detecting the synthetic media (the detection-style "does it match an enrolled face") and proving likeness provenance ("does it carry provenance with the person's consent") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -96,6 +98,8 @@ Against the gap this incident exposed (the provenance and consent of likeness an
 - **Complement to detection**: Distinguish, by evidence, legitimate synthesis/editing that carries provenance (consented parody, dubbing, etc.) from malicious synthesis that lacks it, complementing the after-the-fact nature of detection with up-front proof
 
 Through this, provenance fixed at the moment of generation and publication functions as an independently verifiable trail for "does this likeness carry provenance with the person's consent," before spread. Detection and removal (after-the-fact scanning and removal) serve to remove and deter harm, while pre-execution attestation of provenance and consent (fixing before generation and publication) serves to distinguish synthetic media before the fact — each working complementarily.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

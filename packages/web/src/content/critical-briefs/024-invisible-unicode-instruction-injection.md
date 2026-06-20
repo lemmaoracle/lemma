@@ -72,6 +72,8 @@ Brief 005（Noroboto、フォント偽装で「画面の文字」と「AI が処
 
 現状、AI の入力検証の運用モデル全体において、モデルが解釈した入力の origin と integrity を独立に固定する層は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、入力の取り込みの経路に来歴・整合性の証明を 1 段挟むことで、この gap を埋める。検出が「危険な入力を見つけて除く」のに対し、事前証明は「モデルが処理した入力が、正規の origin から改ざんなく渡ったこと」を固定する。両者は相補的である。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -95,6 +97,8 @@ AI に渡る入力の origin と integrity を独立検証する層の不在は�
 これにより、不可視 Unicode のような「見えない改変」も、人間がレビューした版と照合した時点で不整合として現れる。検出（不可視文字の除去・監査）は既知手口の遮断に、事前証明（origin・integrity の固定）は入力の同一性の独立検証に、それぞれ相補的に働く。
 
 Models change. Proofs remain.
+
+設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -73,6 +73,8 @@ But detection/audit does not guarantee "whether a record is accompanied by perfo
 
 Pre-execution attestation proves the "inspected" attribute not by the existence of a record but as "the provenance of when, by whom, and that the inspection act was actually performed." Before proceeding downstream (shipment, operation), if the attribute's proof is not backed by the provenance of performance, the attribute does not hold even when the record is formally in order. Audit of records (the detection-style "are the records all there?") and pre-execution proof of performance ("is the record backed by the actual act?") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -87,6 +89,8 @@ The need to "prove the inspected/conformant attribute as the provenance of perfo
 ## 7. Lemma's analysis
 
 Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed." Even when a record is formally in order, if a proof backed by the provenance of performance does not hold, the attribute is not established. Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

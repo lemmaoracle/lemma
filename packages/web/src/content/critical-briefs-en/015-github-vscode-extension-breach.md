@@ -75,6 +75,8 @@ But detection does not change "which extension version the receiver accepts and 
 
 Pre-execution attestation changes the structure in two directions: (1) attach an independently verifiable build-provenance proof — "produced from a legitimate origin and build path" — to the extension or tool artifact, and verify it on the receiving side **before installation**; (2) replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint. The first rejects the trojanized version on proof inconsistency at install time rather than after the fact; the second makes "credentials" exfiltrated from an endpoint non-replayable from another environment. Detection (post-hoc extension takedown, IR) and pre-execution attestation (artifact provenance + key-less authentication) are **complementary** rather than substitutes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -90,6 +92,8 @@ How distribution and publishing paths that developers trust (extensions, package
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design. First, fix "produced from a legitimate origin and build path" to extensions and tool artifacts as an independently verifiable build-provenance cryptographic proof, so the receiver verifies the proof **before execution** and can reject a trojanized version listed in the legitimate marketplace regardless of signature. Second, replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint, so credentials exfiltrated from an endpoint cannot be replayed from another environment. Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

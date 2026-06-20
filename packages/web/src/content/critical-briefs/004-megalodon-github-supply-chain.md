@@ -75,6 +75,8 @@ Brief 003(Starlette/BadHost)とは別の構造(本事案は code commit の orig
 
 規制報告・行政手続きで「正規の commit / 正規の公開だったか」を立証する材料として、検出スコアは独立した証跡を伴わない。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係に位置する。各 commit に「正規の開発者個人によって、正規の権限の下で生成された」ことを示す独立検証可能な暗号証明を埋め込み、CI/CD pipeline が commit を build する前に proof を検証する設計が要求される。GitHub の signing commit(GPG 署名)は概念的に近い方向だが、鍵そのものがマシン上に存在する以上、インフォスティーラーで奪取される構造を残す。求められるのは、鍵を露出させずに commit author の identity を ZK 証明として固定する方向である。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -92,6 +94,8 @@ TeamPCP との関係性:Megalodon の発覚直前に TeamPCP が Shai-Hulud サ�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(commit author / repo origin の独立検証不在)に対して、Lemma は、コミット / リリース / CI/CD pipeline 各段で「この commit / artifact は正規の origin から来た」ことを独立検証可能な暗号証明として固定する設計を提示している。鍵そのものが奪取可能なマシン上に存在しない設計(key-less proof と組み合わせ)を中核とし、commit author の identity を ZK 証明として固定する方向にある。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -74,6 +74,8 @@ Brief 003(Starlette/BadHost)とは別の primitive(本事案では「失効済�
 
 規制報告・行政手続き・訴訟で「credential を確実に失効させた」と立証する材料として、本事案のような「削除しても 23 分有効」事例では、検出スコアと失効証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで credential lifecycle の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -94,6 +96,8 @@ API 種別による失効速度の差が示すこと:
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -75,6 +75,8 @@ Brief 006（Google API キー失効遅延）が扱った「失効属性が独立
 
 現状、資格確認の運用モデル全体において、配置時点での属性の独立検証は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、配置・割当の経路に属性証明を 1 段挟むことで、この gap を埋める。事前証明は検出に対する代替ではなく **補完** であり、両層の組み合わせで有資格者配置の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -95,6 +97,8 @@ Brief 006（Google API キー失効遅延）が扱った「失効属性が独立
 - **有効性・失効**: Poseidon over BN254 でコミットし、有効性・非失効を Groth16（Circom 回路）で証明する。docHash で資格・実務経験の原本に紐付ける
 
 これにより、配置の時点で固定された証明が、後年に「当時、要件を満たす有資格者が配置されていたか」を問われた際に、本人の機微情報を開示せず独立検証可能なトレイルとして機能する。検出（事後の監査）は発覚後の是正に、事前証明（配置時点の属性検証）は配置の正当性の独立検証に、それぞれ相補的に働く。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

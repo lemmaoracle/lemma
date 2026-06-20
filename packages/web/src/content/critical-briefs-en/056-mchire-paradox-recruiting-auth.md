@@ -74,6 +74,8 @@ But the problem is that no matter how well detection functions, it does not prov
 
 At present, in AI-service data access, authority-attribute verification is left to per-implementation access control and is not treated as an independent layer. Pre-execution attestation places, ahead of the sensitive-data access path, an attribute proof that "the requesting party legitimately holds the authority for this scope," and with selective disclosure makes authorization independently verifiable without exposing the personal data itself. Detection (external research, fixes) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -96,6 +98,8 @@ Against the gap McHire exposed — for access to an AI system's sensitive data, 
 - **Proof for non-human identity**: Treat system-account authority, too, as a verifiable attribute rather than a fixed credential
 
 Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the personal data — when asked "was this access based on legitimate authority." Detection and disclosure (researcher investigation, fixes) contribute to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

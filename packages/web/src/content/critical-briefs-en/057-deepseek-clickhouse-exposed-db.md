@@ -74,6 +74,8 @@ But the problem is that even when an external scan can "detect" the exposure, th
 
 At present, in AI-service data backends, examples abound where reach control (network) and authorization (who can access what) are operated without being separated. Pre-execution attestation places, ahead of the data-backend access path, an attribute proof that "the party legitimately holds the authority for this scope," structurally separating reachability from authorization. Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each **complementary**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -97,6 +99,8 @@ Against the gap DeepSeek exposed — access to the AI service's sensitive-data b
 - **Selective disclosure**: Prove only that "the access was within the scope of authority," without exposing the sensitive data itself, such as chat history
 
 Proof fixed at the moment of action functions as evidence that can be independently verified later — without disclosing the sensitive data — when asked "was this access legitimate." Detection (external scans, disclosure) contributes to shrinking harm, while pre-execution attestation (authority verification at access time) contributes to independently verifying authorization — each complementary.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

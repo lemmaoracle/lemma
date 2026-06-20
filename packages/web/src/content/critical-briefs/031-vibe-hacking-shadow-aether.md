@@ -76,6 +76,8 @@ Trend Micro のような脅威リサーチによるキャンペーン特定・IO
 
 事前証明(pre-execution attestation)は、検出を「既知の悪性物の照合」から、「実行されようとしている操作・コードが認可され来歴を持つかの実行前検証」へと反転させる設計を採る。ツールが未知・新規生成であっても、proof が「この操作は正規に認可された来歴を持たない」と告げれば実行は事前に block される。署名ベースの検出(detection 的な「既知の悪性か」)と操作の事前証明(「これは認可・来歴のある実行か」)は代替ではなく**補完**の関係にあり、攻撃ツールが AI 生成で署名を持たない世界では後者の比重が増す。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -89,6 +91,8 @@ Trend Micro のような脅威リサーチによるキャンペーン特定・IO
 ## 7. Lemma による分析
 
 本事案で露呈した構造的な問題(攻撃ツールが標的ごとに AI 生成され固有署名を持たないため、既知物照合に依拠する検出が後追いになる)に対して、Lemma は、検出を「既知の悪性物の照合」から「実行されようとする操作・コードの認可と来歴の実行前検証」へ反転させる設計を提示している。ツールが未知でも、操作の認可・来歴の proof が成立しなければ実行は事前に reject される。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

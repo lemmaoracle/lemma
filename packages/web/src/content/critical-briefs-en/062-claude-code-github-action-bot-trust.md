@@ -78,6 +78,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation treats the agent's action as a privileged act and requires, before execution, an independently verifiable proof of "does the launcher hold legitimate authority" and "what source does the input derive from, and is it untampered." Make the launcher's authority attributes — not the `[bot]` name — and the input's provenance — not the look of the issue body — verifiable at the moment of the act, and privileged execution based on an unverified launch or input is blocked before the action. Further, an authorization like the OIDC token exchange can be replaced with a per-action-scoped proof that a replayed stolen credential cannot satisfy. Detecting the vulnerability (the detection-style "where is the hole") and proving authority and input ("was the action authorized after independently verifying the launcher's authority and the input's provenance") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -100,6 +102,8 @@ Against the gap this incident exposed (the agent's launcher authority and input 
 - **Selective disclosure**: Without exposing internal implementation or secrets, disclose only the minimum — that "this execution was authorized after independently verifying the launcher's authority and the input's provenance."
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this agent's action rests on a launcher with legitimate authority and input from a trustworthy source," without depending on after-the-fact log reconciliation. Detection (after-the-fact vulnerability discovery and patching) works on closing holes; attestation (independent verification of authority and input at the moment of the act) works on establishing trust in agent execution — each complementary to the other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

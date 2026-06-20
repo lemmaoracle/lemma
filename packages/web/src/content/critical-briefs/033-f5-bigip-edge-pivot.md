@@ -77,6 +77,8 @@ Microsoft Threat Intelligence による攻撃チェーンの可視化、CISA の
 
 事前証明(pre-execution attestation)は、認証を「資格情報を持っているか」から「この行動が、スコープされた認可と来歴を持つかの実行前検証」へと反転させる設計を採る。鍵や長期資格情報を送る代わりに、行動ごとに検証可能でスコープされ再利用不能な proof を提示させることで、エッジ機器から盗まれた資格情報や reflection で得た権限があっても、proof が「この行動は正規の認可・来歴を欠く」と告げれば実行は事前に block される。資格情報の検出(detection 的な「これは有効な資格情報か」)と行動の事前証明(「この行動は認可・来歴を持つか」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -90,6 +92,8 @@ Microsoft Threat Intelligence による攻撃チェーンの可視化、CISA の
 ## 7. Lemma による分析
 
 本事案で露呈した構造(横展開の各ホップが、行動ごとの認可証明ではなく位置的信頼と保存資格情報への暗黙信頼で受理される)に対して、Lemma は、認証を「資格情報の保有」から「行動ごとのスコープされた認可・来歴の実行前証明」へ反転させる設計を提示している。鍵や長期資格情報を送らずに proof を提示する proof-as-auth の考え方では、エッジ機器から盗まれた資格情報や reflection で得た権限があっても、正規の認可・来歴の proof が成立しなければ行動は事前に reject される。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

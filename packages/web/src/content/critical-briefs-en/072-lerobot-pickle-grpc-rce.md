@@ -78,6 +78,8 @@ At the same time, network monitoring and patches are no material for the foundat
 
 Pre-execution attestation takes the design choice of treating the data a foundation receives not as "it arrived over the network" but as "something of legitimate origin/authorization, independently verifiable." If inference/control input is verified against the sender's authorization and the content's origin before the deserialize, and received in a safe (no-code-execution) format, then unauthenticated reach alone does not run code. Detecting reach (the detection-style "who arrived") and proving the input's origin/authorization ("is it a legitimate sender's legitimate content") are **complements**, not substitutes; only where the two overlap can OSS-based robot and inference foundations be safely placed in the field.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -101,6 +103,8 @@ Against the detection–proof gap this incident exposed (an OSS foundation reach
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this input is of legitimate origin/authorization" — reconciling independent verification with the protection of operational information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this input is of legitimate origin/authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact analysis, patching) works on correcting exposure; pre-execution attestation (independent verification of origin/authorization before processing) works on establishing trust in OSS foundations and robots — each complementary to the other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

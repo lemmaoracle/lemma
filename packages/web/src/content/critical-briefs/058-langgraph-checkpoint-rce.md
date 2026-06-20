@@ -83,6 +83,8 @@ Brief 027（LibreChat）と同じく、エージェント基盤において「�
 
 脆弱性スキャナ・依存関係監査による事後の検知・修正（detection）と、チェックポイントの読み戻しの前にその状態の作者性・完全性を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。前者は既知の脆弱性の発見とパッチ適用に、後者は注入された偽の状態が正規の自己状態として読み戻されコード実行へ転化する連鎖の遮断に、それぞれ働く。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -98,6 +100,8 @@ Brief 027（LibreChat）と同じく、エージェント基盤において「�
 ## 7. Lemma による分析
 
 本事象で露呈した検出と証明の落差（エージェントが自分の永続状態を、来歴と完全性の検証なしに特権文脈で再構築する）に対して、Lemma は、エージェントの状態の書き込み・読み戻しを権限行為として証跡化し、状態がランタイムに再構築される前に「どの実行が・どの権限で書いたか」「改ざんがないか」を独立検証可能な証明として検証する設計を提示している。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

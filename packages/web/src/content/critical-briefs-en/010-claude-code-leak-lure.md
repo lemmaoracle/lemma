@@ -74,6 +74,8 @@ That said, detection does not change what the receiver (developers, CI/CD pipeli
 
 Pre-execution attestation adopts a design in which an independently verifiable cryptographic proof of "generated and published by a legitimate origin (here, the official publisher)" is embedded into each artifact, and the receiver verifies the proof before executing or installing. If the proof says "no legitimate origin," the artifact is rejected before it executes. npm signatures and GitHub verified badges are conceptually in this direction, but as long as they depend on trust in the brand name or distribution channel, room for impersonation remains. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -88,6 +90,8 @@ Pre-execution attestation adopts a design in which an independently verifiable c
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not."
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

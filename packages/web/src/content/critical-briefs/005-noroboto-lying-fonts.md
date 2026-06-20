@@ -70,6 +70,8 @@ Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の tr
 
 事前証明(pre-execution attestation)は、AI が判断を生成する前に、AI が見ている入力データと「人間目視で見えるべき」入力データの同一性を独立に commit する構造を採る。文書を AI に渡す前のテキスト抽出 layer に、フォント解釈の独立検証(ミラー氏が提案する OCR ベースの再検証、または Unicode と表示字形の対応 audit)を組み込むことで、入力の integrity を AI 判断の前段で保証する。判断後の検出と判断前の入力 attestation は **代替ではなく補完** の関係にあり、両層の組み合わせで AI 文書レビューの trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -83,6 +85,8 @@ Brief 003(Starlette/BadHost)とは別の primitive(対象が HTTP request の tr
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(AI 判断の入力 integrity が独立検証されない)に対して、Lemma は、AI が判断に使用する入力データを独立検証可能な暗号証明として commit し、verifier が「AI が見ている入力」と「人間目視で見えるべき入力」の同一性を独立に検証できる設計を提示している。入力フォントが偽装された状態でも、proof は別系統で「この AI 判断はこの入力に基づいている / その入力は人間目視のものと一致する / していない」を verifier に告げる構造である。
+
+設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

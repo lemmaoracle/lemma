@@ -75,6 +75,8 @@ At the same time, after-the-fact adjudication of output does not, **at the momen
 
 Pre-execution attestation and provenance binding close this gap by inserting one step — verification of the material's rights, consent, and provenance — into the output path of the generative AI. By fixing the provenance of training data and outputs via docHash, bound to their rightsholders and permissions, and making it possible to ask before generation "does this material carry permitted provenance for this use," generation lacking permission can be distinguished before spread. Detecting the output (the detection-style "does this output resemble a protected work") and the pre-execution attestation of the material's rights and provenance ("does this generation carry permitted provenance") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -96,6 +98,8 @@ Against the gap this incident exposed (the rights, consent, and provenance in th
 - **Scoped generation**: Bind the generative AI's output to the scope of permission, so generation from material lacking permission cannot succeed without proof
 
 Through this, proof of provenance and permission fixed at the moment of generation functions as an independently verifiable trail for "does this generation carry permitted provenance," before spread. Detection and after-the-fact response (output filters, policy reversal, halting generation) serve to deter and correct harm, while pre-execution attestation of provenance and permission (fixing before generation) serves to distinguish generation lacking permission before the fact — each working complementarily.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -84,6 +84,8 @@ That said, detection does not change what the bridge will accept. Once a forged 
 
 For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — in cases like this one, where a configuration rewrite was carried out through a legitimate process (LayerZero v2 accepted a config change from the attacker's key) — an independent layer is required between detection scores and proof. Post-event detection and pre-execution attestation, which attaches independently verifiable evidence to the message itself before the event, are not substitutes but complements; a design that combines both layers to establish the trust boundary is the structural response required.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -107,6 +109,8 @@ Industry response:
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

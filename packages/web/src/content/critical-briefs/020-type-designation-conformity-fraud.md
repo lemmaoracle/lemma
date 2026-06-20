@@ -73,6 +73,8 @@ Brief 019（有資格者配置）が扱った「人の資格属性が独立検�
 
 現状、製品認証の運用モデル全体において、申請時点での試験データの独立検証は、まだ独立した層として扱われていない。事前証明（pre-execution attestation）は、申請・出荷の経路に属性証明を 1 段挟むことで、この gap を埋める。事前証明は検出に対する代替ではなく **補完** であり、両層の組み合わせで製品適合の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -93,6 +95,8 @@ Brief 019（有資格者配置）が扱った「人の資格属性が独立検�
 - **原本バインドと有効性**: Poseidon over BN254 でコミットし、適合・非改ざんを Groth16（Circom 回路）で証明する。docHash で試験データの原本に紐付ける
 
 これにより、申請の時点で固定された証明が、後年に「当時、規定の試験条件で基準に適合していたか」を問われた際に、原本データを開示せず独立検証可能なトレイルとして機能する。検出（事後の立入検査）は発覚後の是正に、事前証明（申請時点の属性検証）は適合の独立検証に、それぞれ相補的に働く。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

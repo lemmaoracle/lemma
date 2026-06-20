@@ -76,6 +76,8 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 事前証明（attribute attestation）は、属性確認（KYC 通過・許可された jurisdiction・サンクション非該当・年齢等）を、検証側が生 PII を保管しないまま独立検証可能な暗号証明（ZK 属性証明）として受け取る設計を採る。検証側は「この利用者は KYC を満たす / 許可属性を持つ」を proof で確認でき、政府発行 ID 画像や SSN そのものを warehouse しない。漏洩面となる生 PII の蓄積を最小化することで、内部買収が成立しても流出し得るデータが構造的に縮小する。検出（insider monitoring 等）と事前証明（attribute proof）は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -91,6 +93,8 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は、属性確認を「検証側が生 PII を保管したまま守る」のではなく、「検証側が生 PII を受け取らずに属性を証明として受領する」設計を提示している。利用者が KYC 通過・許可 jurisdiction・サンクション非該当・年齢などの規制属性を独立検証可能な暗号証明（ZK 属性証明）として提示し、事業者は政府発行 ID 画像や SSN そのものを warehouse せずに「属性を満たす」事実だけを検証する。漏洩し得る生 PII の蓄積を構造的に縮小することで、内部買収が成立しても流出範囲が限定される。Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

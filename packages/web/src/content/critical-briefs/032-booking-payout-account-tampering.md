@@ -76,6 +76,8 @@ Polaris Holdings のグループ Booking.com アカウントが侵害され、�
 
 事前証明(pre-execution attestation)は、資金移動に直結する受領口座変更を、実行前に「変更者の正規の認可」と「新しい送金先属性の真正性」を独立検証可能な証明として要求する設計を採る。認証済みセッションであっても、proof が「この変更は正規の認可を欠く」「この送金先は真正な属性として確立されていない」と告げれば、変更と後続の送金は事前に block される。アカウント侵害の検出(detection 的な「不審なアクセスか」)と変更の事前証明(「この送金先変更は認可・真正か」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -90,6 +92,8 @@ Polaris Holdings のグループ Booking.com アカウントが侵害され、�
 ## 7. Lemma による分析
 
 本事案で露呈した構造(資金移動に直結する受領口座変更が、変更時点の認証だけで受理され、認可と属性の真正性が独立検証されない)に対して、Lemma は、高インパクトな属性変更を実行前に独立検証可能な証明として扱う設計を提示している。受領口座という属性の真正性(P4)と、変更指示の正当な来歴(P1)を、資金移動の前に proof として検証することで、認証済みセッションであっても正規の認可と真正性を欠く変更は事前に reject される。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

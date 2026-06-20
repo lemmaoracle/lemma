@@ -77,6 +77,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation treats an integration's authority not as "broad, persistent consent" but as an authorization scoped per action and independently verifiable. Verify each operation the integration performs against Salesforce — against the bounds of the grantor's authorization and the token's validity — at the moment of the act, and bind the secrets stored in the CRM to their origin and expiry as provenance, and out-of-bounds querying with a stolen token, or use of a revoked credential, can be screened out before the action. Detecting the compromise (the detection-style "what was queried") and proving authority and validity ("was that query within the authorization and actually valid") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -100,6 +102,8 @@ Against the gap this incident exposed (broad, persistent integration OAuth persi
 - **Selective disclosure**: Without exposing internal data, disclose only the minimum — that "this operation is within the grantor's authorization and is actually valid" — reconciling independent verification with the protection of sensitive information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this integration's operation rests on an authorization within bounds and on an actually valid token," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, revocation, rotation) works on correcting the damage; attestation (independent verification of authority and validity at the moment of the act) works on establishing trust in integration access — each complementary to the other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -73,6 +73,8 @@ Detection, however, cannot itself answer the question "did the presented image c
 
 As things stand, across the operating model for identity verification, issuer verification of the presented evidence is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of issuer-signed attribute proof into the onboarding path. When the object of review shifts from "image" to "proof," progress on the generative side no longer translates into bypass rate. Pre-execution attestation complements detection rather than replacing it; together the two layers establish the trust boundary for identity verification.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -96,6 +98,8 @@ For the detection–proof gap exposed here — a regulatory attribute for identi
 A proof fixed at the point of onboarding then functions, years later when "was this account opened through legitimate identity verification?" is asked, as an independently verifiable trail that discloses no original data. Detection (deepfake detection, after-the-fact monitoring) raises attacker cost and serves remediation after disclosure; pre-execution attestation (issuer verification) serves independent verification of attribute legitimacy — complementary layers.
 
 Data doesn't move. Proofs do.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

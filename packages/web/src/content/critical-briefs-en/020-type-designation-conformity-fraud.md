@@ -73,6 +73,8 @@ Detection, however, cannot change whether, at the point of application, the subm
 
 As things stand, across the operating model for product certification, independent verification of the test data at the point of application is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the application / shipment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for product conformity.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -93,6 +95,8 @@ For the detection–proof gap exposed here — a product's regulatory-conformanc
 - **Original binding and validity**: committed with Poseidon over BN254; conformity and non-tampering proven with Groth16 (Circom circuits); bound to the test data originals via docHash
 
 A proof fixed at the point of application then functions, years later when "was the standard met under the prescribed test conditions at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact on-site inspection) serves remediation after disclosure; pre-execution attestation (attribute verification at application) serves independent verification of conformity — complementary layers.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

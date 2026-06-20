@@ -74,6 +74,8 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 事前証明（pre-execution attestation）は、AI エージェントが取り込む指示（`CLAUDE.md` 等の行動指針や設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づけ、エージェントが実行前に proof を検証する設計を採る。指示が攻撃者により注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。モデル安全機構（detection）と指示の完全性証明（proof）は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -90,6 +92,8 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 ## 7. Lemma による分析
 
 本事案で焦点となる検出と証明の落差（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示（`CLAUDE.md` 等の行動指針・設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。指示が注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。
+
+設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -76,6 +76,8 @@ That said, detection does not change the fact that "data is stored." Under a des
 
 Attribute attestation adopts a design in which attribute verification (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) is received by the verifying party as an independently verifiable cryptographic proof (a ZK attribute proof) without retaining raw PII. The verifying party can confirm "this user satisfies KYC / holds the permitted attribute" via the proof, without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that would constitute the breach surface, even when insider bribery succeeds, the data that can leak is structurally reduced. Detection (insider monitoring and the like) and attribute attestation (attribute proof) are in a **complementary**, not substitutive, relationship.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -91,6 +93,8 @@ How "to satisfy regulatory attribute verification without storing raw PII" is ex
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes a design in which attribute verification is not "protected by the verifying party while it retains raw PII" but is instead "received by the verifying party as a proof, without the verifying party receiving raw PII." A user presents regulatory attributes — KYC passage, permitted jurisdiction, non-sanctioned status, age, and the like — as an independently verifiable cryptographic proof (a ZK attribute proof), and the operator verifies only the fact that "the attribute is satisfied" without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that could leak, even when insider bribery succeeds, the scope of exfiltration is bounded. Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof."
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

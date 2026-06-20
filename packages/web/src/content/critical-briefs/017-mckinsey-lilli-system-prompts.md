@@ -76,6 +76,8 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 
 事前証明（pre-execution attestation）は、AI の挙動を統治する指示（system prompt 等）と出力に、「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づけ、利用者・監査者が出力の真正性を検証できる設計を採る。指示が書き換えられれば proof は不整合となり、改ざんされた出力は真正なものと区別できる。脆弱性検出(detection)と出力・統治指示の完全性証明(proof)は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -91,6 +93,8 @@ Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差（AI の挙動を統治する system prompt と出力に、完全性・来歴を独立検証する仕組みが無い）に対して、Lemma は、AI の統治指示と出力に「正規の・認可された・改ざんされていない指示の下で生成された」ことを独立検証可能な暗号証明として紐づける設計を提示している。system prompt がサイレントに書き換えられても、出力に伴う proof は別系統で不整合を告げるため、利用者・監査者は改ざんされた出力を真正なものと区別できる。Lemma は脆弱性検出やアクセス制御を否定するものではなく、検出に対して「AI の出力と統治指示の真正性の証明」を補完する層を提供する。
+
+設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

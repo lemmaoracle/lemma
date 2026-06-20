@@ -74,6 +74,8 @@ But detection does not change what the receiving side (the Ethereum-side contrac
 
 Pre-execution attestation takes the design choice of receiving the cross-chain value claim as an independently verifiable cryptographic proof on the receiving side, before execution, and verifying the integrity of "value actually contributed on the source side" against "payout amount." If the proof signals "input and payout amounts are inconsistent," the payout is blocked before it executes. Inclusion proofs via Merkle Proof (detection-style: "this blob exists") and pre-execution attestation of the value claim ("this payout matches the source-side input") are **complementary** rather than substitutes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -89,6 +91,8 @@ How to independently verify the integrity of cross-chain value claims — as inp
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed here (the cross-chain value claim was not independently verified for input/payout integrity separately from the cryptographic validity of Merkle Proofs), Lemma proposes a design in which cross-chain value claims are received as independently verifiable cryptographic proofs on the receiving side, before execution, and the integrity of "value actually contributed on the source side" against "payout amount" is verified as a proof. Even if a Merkle Proof is formally valid, if the value-claim proof signals input/payout inconsistency, the payout is rejected before it executes. This is the design thinking of "cryptographically valid ≠ semantically correct" — the core of the verifiable-origin category. This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 
