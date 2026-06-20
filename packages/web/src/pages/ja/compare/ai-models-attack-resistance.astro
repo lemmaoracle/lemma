@@ -1016,4 +1016,27 @@ const breaks=m=>m.r.filter(x=>x==="B").length;
   @media(max-width:680px){.manifesto .wrap{padding:42px 18px}.middemo{padding:22px 20px}.finalcta{padding:34px 22px}}
 
 </style>
+<script is:inline>
+/* compare-LP CTA analytics: UTM tagging + GA4 click events, segmented by placement */
+(function(){
+  var TYPE={EkBqDX:"demo",Pd2Rl5:"demo",QKjAlg:"whitepaper",MePOe8:"whitepaper","7RJXdR":"whitepaper",xX0VYv:"whitepaper",EkMj82:"newsletter",rjvN2X:"newsletter"};
+  var slug=(location.pathname.replace(/\/+$/,"").split("/").pop())||"compare";
+  function place(a){
+    if(a.closest(".sticky"))return"sticky";
+    if(a.closest(".topbar"))return"nav";
+    if(a.closest(".middemo"))return"mid";
+    if(a.closest(".bridgecta"))return"bridge";
+    if(a.closest(".finalcta"))return"footer";
+    if(a.closest(".hero"))return"hero";
+    if(a.closest("footer"))return"footer";
+    return"body";
+  }
+  document.querySelectorAll('a[href*="tally.so/r/"]').forEach(function(a){
+    var m=a.getAttribute("href").match(/tally\.so\/r\/([A-Za-z0-9]+)/);if(!m)return;
+    var type=TYPE[m[1]]||"form",p=place(a);
+    try{var u=new URL(a.href);u.searchParams.set("utm_source","compare-lp");u.searchParams.set("utm_medium",p);u.searchParams.set("utm_campaign",slug);a.href=u.toString();}catch(e){}
+    a.addEventListener("click",function(){if(typeof window.gtag==="function")window.gtag("event",type+"_click",{cta_placement:p,page_slug:slug,transport_type:"beacon"});});
+  });
+})();
+</script>
 </Layout>
