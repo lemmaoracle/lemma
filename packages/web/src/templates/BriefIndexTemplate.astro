@@ -407,25 +407,28 @@ const cta = isJa
       </section>
     )}
 
-    <!-- Sticky category filter bar -->
-    <div class="bi-filter-bar">
+    <!-- 脅威タイプで探す: category tile grid (filter) -->
+    <section class="bi-tiles-section">
       <div class="bi-container">
-        <div class="bi-filter-row">
-          <span class="bi-filter-label">{labels.filterCategoryLabel}</span>
-          <div class="bi-chips">
-            <button type="button" class="bi-chip is-active" data-cat="all">
-              {labels.allChip} <span class="bi-chip-count">{briefsCount}</span>
+        <div class="bi-tiles-head">
+          <h2 class="bi-tiles-title">
+            {isJa ? "脅威タイプで探す" : "Browse by threat type"}
+          </h2>
+        </div>
+        <div class="bi-tiles">
+          <button type="button" class="bi-tile bi-tile--all is-active" data-cat="all">
+            <span class="bi-tile-label">{labels.allChip}</span>
+            <span class="bi-tile-count">{labels.countUnit(briefsCount)}</span>
+          </button>
+          {sortedCategories.map(([cat, count]) => (
+            <button type="button" class="bi-tile" data-cat={cat}>
+              <span class="bi-tile-label">{categoryLabel(cat, locale)}</span>
+              <span class="bi-tile-count">{labels.countUnit(count)}</span>
             </button>
-            {sortedCategories.map(([cat, count]) => (
-              <button type="button" class="bi-chip" data-cat={cat}>
-                {categoryLabel(cat, locale)}{" "}
-                <span class="bi-chip-count">{count}</span>
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Pillar-grouped grid -->
     <section class="bi-grid-section">
@@ -884,69 +887,68 @@ const cta = isJa
     letter-spacing: 0.04em;
   }
 
-  /* ─── FILTER BAR ─── */
-  .bi-filter-bar {
-    padding: 18px 0;
-    background: var(--bi-cream-deep);
-    border-top: 1px solid var(--bi-line);
-    border-bottom: 1px solid var(--bi-line);
-    position: sticky;
-    top: 64px;
-    z-index: 50;
+  /* ─── 脅威タイプ tile grid (filter) ─── */
+  .bi-tiles-section {
+    padding: 32px 0 4px;
   }
-  .bi-filter-row {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
+  .bi-tiles-head {
+    margin: 0 0 14px;
   }
-  .bi-filter-label {
-    font-family: var(--bi-mono);
-    font-size: 10.5px;
-    color: var(--bi-ink-faint);
-    letter-spacing: 0.1em;
+  .bi-tiles-title {
+    font-family: var(--bi-display);
+    font-size: 20px;
     font-weight: 700;
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-  .bi-chips {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-  .bi-chip {
-    font-family: var(--bi-mono);
-    font-size: 11.5px;
-    color: var(--bi-ink-soft);
-    font-weight: 700;
-    padding: 7px 14px;
-    border-radius: 50px;
-    background: transparent;
-    border: 1px solid var(--bi-line);
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.15s;
-  }
-  .bi-chip:hover {
-    border-color: var(--bi-brown-mid);
     color: var(--bi-ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .bi-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(186px, 1fr));
+    gap: 10px;
+  }
+  .bi-tile {
+    text-align: left;
+    background: var(--bi-cream);
+    border: 1px solid var(--bi-line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: inherit;
+    min-height: 60px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .bi-tile:hover {
+    border-color: var(--bi-brown-mid);
     background: var(--bi-brown-soft);
   }
-  .bi-chip.is-active {
+  .bi-tile.is-active {
     background: var(--bi-brown);
-    color: var(--bi-cream);
     border-color: var(--bi-brown);
   }
-  .bi-chip-count {
-    font-size: 10px;
-    opacity: 0.7;
+  .bi-tile--all {
+    background: var(--bi-cream-deep);
   }
-  .bi-chip.is-active .bi-chip-count {
-    opacity: 0.85;
+  .bi-tile-label {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.4;
+  }
+  .bi-tile-count {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--bi-brown);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+  }
+  .bi-tile.is-active .bi-tile-label,
+  .bi-tile.is-active .bi-tile-count {
+    color: var(--bi-cream);
   }
 
   /* ─── GRID SECTION ─── */
@@ -1425,25 +1427,8 @@ const cta = isJa
     :root[lang="ja"] .bi-h1 {
       font-size: 30px;
     }
-    .bi-filter-row {
-      gap: 12px;
-      flex-wrap: nowrap;
-      align-items: center;
-    }
-    /* Mobile: one horizontally-scrollable row of chips so the sticky filter
-       bar stays ~1 line tall instead of occupying the screen. */
-    .bi-chips {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      padding-right: 16px;
-    }
-    .bi-chips::-webkit-scrollbar {
-      display: none;
-    }
-    .bi-chip {
-      flex: 0 0 auto;
+    .bi-tiles {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
     .bi-brief-grid {
       grid-template-columns: 1fr;
@@ -1502,7 +1487,7 @@ const cta = isJa
     const allCards = Array.from(
       root.querySelectorAll<HTMLElement>(".bi-brief-card"),
     );
-    const chips = Array.from(root.querySelectorAll<HTMLElement>(".bi-chip"));
+    const chips = Array.from(root.querySelectorAll<HTMLElement>(".bi-tile"));
     const sortSel = root.querySelector<HTMLSelectElement>(".bi-sort");
     const densityBtns = Array.from(
       root.querySelectorAll<HTMLElement>(".bi-density button"),
