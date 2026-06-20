@@ -35,6 +35,7 @@ import {
 } from "../data/criticalBriefs";
 import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
+import { POPULAR_BRIEF_SLUGS } from "../data/popularBriefs";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
@@ -86,6 +87,13 @@ const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
   },
 );
 const featuredBriefs = briefsByPublishedDesc.slice(0, 8);
+
+// Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
+// Brief entries in listed order; unknown slugs are dropped.
+const briefById = new Map(allBriefs.map((b) => [b.id, b]));
+const popularBriefs = POPULAR_BRIEF_SLUGS.map((s) => briefById.get(s)).filter(
+  (b): b is AnyBrief => Boolean(b),
+);
 
 // Default grouped view is by primary_category ("threat type"), most-covered
 // first. Pillar is kept only as a per-section badge + the parent-pillar tie, so
@@ -403,6 +411,35 @@ const cta = isJa
               </a>
             ))}
           </div>
+        </div>
+      </section>
+    )}
+
+    {/* よく見られている Brief: manually-curated ranking (popularBriefs.ts) */}
+    {popularBriefs.length > 0 && (
+      <section class="bi-popular-section">
+        <div class="bi-container">
+          <div class="bi-popular-head">
+            <h2 class="bi-popular-title">
+              {isJa ? "よく見られている Brief" : "Most-read Briefs"}
+            </h2>
+          </div>
+          <ol class="bi-popular-list">
+            {popularBriefs.map((b, i) => {
+              const c = briefCardData(b);
+              return (
+                <li class="bi-popular-li">
+                  <a href={c.href} class="bi-popular-item">
+                    <span class="bi-popular-rank">{i + 1}</span>
+                    <span class="bi-popular-main">
+                      <span class="bi-popular-name">{c.mainTitle}</span>
+                      <span class="bi-popular-meta">{c.primaryCatLabel} · No. {c.briefNoPad}</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
     )}
@@ -885,6 +922,79 @@ const cta = isJa
     padding-top: 10px;
     border-top: 1px solid var(--bi-line);
     letter-spacing: 0.04em;
+  }
+
+  /* ─── よく見られている Brief: curated ranking ─── */
+  .bi-popular-section {
+    padding: 28px 0 4px;
+  }
+  .bi-popular-head {
+    margin: 0 0 10px;
+  }
+  .bi-popular-title {
+    font-family: var(--bi-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .bi-popular-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+  .bi-popular-li {
+    border-bottom: 1px solid var(--bi-line);
+  }
+  .bi-popular-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 4px;
+    text-decoration: none;
+  }
+  .bi-popular-rank {
+    font-family: var(--bi-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bi-brown);
+    min-width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .bi-popular-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .bi-popular-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bi-ink);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .bi-popular-item:hover .bi-popular-name {
+    color: var(--bi-brown);
+  }
+  .bi-popular-meta {
+    font-family: var(--bi-mono);
+    font-size: 10.5px;
+    color: var(--bi-ink-soft);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 700px) {
+    .bi-popular-list {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* ─── 脅威タイプ tile grid (filter) ─── */
