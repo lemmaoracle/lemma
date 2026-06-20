@@ -1,7 +1,7 @@
 ---
 brief_no: 66
 title: "一般ユーザー権限のまま、AI ゲートウェイの管理者権限とサーバーのコード実行に到達できた（LiteLLM） — 権限チェックの各層が互いの検証を前提にし、行動の前に認可が独立検証されない構造（LiteLLM / Obsidian Security）"
-title_en: "LiteLLM AI Gateway — From Low-Privilege User to Admin and RCE"
+title_en: "LiteLLM AI Gateway: from low-privilege user to admin and RCE — authorization not independently verified before action (Obsidian Security)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]

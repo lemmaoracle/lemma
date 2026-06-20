@@ -1,6 +1,6 @@
 ---
 brief_no: 3
-title: "MCP サーバーの認証が Host ヘッダー操作で回避された（Starlette / BadHost）"
+title: "Starlette（BadHost）：MCP サーバーの認証が Host ヘッダー操作で回避された — CVE-2026-48710 によるサーバー認証バイパス"
 title_en: "Starlette CVE-2026-48710 (BadHost) — MCP Server Authentication Bypass via HTTP Host Header Manipulation"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
@@ -74,6 +74,8 @@ X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサ�
 一方、本脆弱性の根本は「パスベース認証という仕組み自体が trust boundary を独立検証していない」点にある。Starlette 1.0.1 の patch は当該乖離を修正するが、AI エージェントが外部リソースに HTTP 経由でアクセスする世界では、フレームワーク側のバグ修正に依存しない、より上位の trust boundary 検証が不可欠となる。
 
 事前証明(pre-execution attestation)の文脈でこれを再構成すると、「エージェント / 認証主体 / 委任スコープ」を HTTP request 自体に独立検証可能な暗号証明として埋め込む設計が要求される。フレームワークが何を accept するかではなく、accept されるべきものが何かを別系統で証明する層が必要となる。X41 D-Sec が「CVSS 7 では過小評価」と表現した深刻度は、本質的にはこの構造的欠落の規模に由来する。
+
+なお、Host ヘッダー操作による認証バイパスのような事案において、事後の検知・修正（detection）と、行動の前に出所・認可を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。MCP サーバーが外部リソースへアクセスする前に要求の正規性を証明することは、脆弱バージョンを検出する取り組みを置き換えるものではなく、これを補って機能するものである。
 
 ---
 

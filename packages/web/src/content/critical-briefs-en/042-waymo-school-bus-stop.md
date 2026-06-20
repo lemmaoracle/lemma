@@ -1,7 +1,7 @@
 ---
 brief_no: 42
-title: "自動運転車が、停止中のスクールバスを止まらずに通り過ぎた（Waymo） — 走行判断が、安全に関わる行動の前に独立検証されない構造（Waymo / NHTSA）"
-title_en: "When the Robotaxi Drove Past a Stopped School Bus (Waymo)"
+title: "Waymo：自動運転車が、停止中のスクールバスを止まらずに通り過ぎた — 走行判断が、安全に関わる行動の前に独立検証されない構造（NHTSA）"
+title_en: "Waymo: the robotaxi drove past a stopped school bus — a driving decision not independently verified before a safety-critical action"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]
@@ -21,7 +21,7 @@ gap_fix: "Before taking a safety-critical action such as a stopping obligation, 
 
 ## TL;DR
 
-When a school bus has its red lights on and its stop arm out to let children off, following cars stop — a judgment any human driver makes, that a robotaxi failed to make. In October 2025, NHTSA's Office of Defects Investigation opened a probe after footage showed a Waymo vehicle driving past a stopped school bus in Atlanta. An Austin school district logged 19 instances this school year of Waymo illegally passing its buses (with at least 6 more in Atlanta in 2025), one just after a child had crossed in front of the car. Waymo identified the software fault, updated it by November, and in December issued a voluntary software recall (3,067 fifth-generation ADS vehicles) — yet incidents were still reported after the update. In 2026 NHTSA expanded the probe to cover 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, plus collisions with fixed objects and running signals. We analyze this through Pillar 02 (Verifiable AI) as a structure in which **a self-driving system's driving decision is not independently verified before a safety-critical action.** Connects to Briefs 049, 043, and 012.
+When a school bus has its red lights on and its stop arm out to let children off, following cars stop — a judgment any human driver makes, that a robotaxi failed to make. In October 2025, NHTSA's Office of Defects Investigation opened a probe after footage showed a Waymo vehicle driving past a stopped school bus in Atlanta. An Austin school district logged 19 instances this school year of Waymo illegally passing its buses (with at least 6 more in Atlanta in 2025), one just after a child had crossed in front of the car. Waymo identified the software fault, updated it by November, and in December issued a voluntary software recall (3,067 fifth-generation ADS vehicles) — yet incidents were still reported after the update. In 2026 NHTSA expanded the probe to cover 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, plus collisions with fixed objects and running signals. We analyze this through Pillar 02 (Verifiable AI) as a structure in which **a self-driving system's driving decision is not independently verified before a safety-critical action.**
 
 ---
 

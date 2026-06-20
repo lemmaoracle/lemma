@@ -76,6 +76,8 @@ Detection, however, does not change the decision of which destination the server
 
 Pre-execution attestation treats connection-destination registration on agent infrastructure as an authority act, and requires — before the configuration value is interpreted — an independently verifiable proof of "the registrant's authority" and "the scope of context the configuration may reference." If the proof reports that "this configuration references context (server environment variables) beyond the registrant's authority," the connection is blocked before execution.
 
+In a case like this, where a user-supplied MCP URL exfiltrates the server's secrets, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — **complements**, not substitutes for, one another (the core of the brand). Proving the registrant's authority and the context a connection configuration may reference before it is interpreted does not replace vulnerability scanning or egress monitoring; it functions alongside them.
+
 ---
 
 ## 6. Response and Industry Response
