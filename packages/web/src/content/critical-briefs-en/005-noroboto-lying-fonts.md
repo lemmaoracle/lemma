@@ -1,7 +1,7 @@
 ---
 brief_no: 5
 title: "Noroboto 攻撃 — フォント偽装による AI 文書レビューの入力 integrity 偽装"
-title_en: "Font Forgery Made AI's Document Review Read Different Text (Noroboto) — Input-Integrity Forgery via Embedded Lying Fonts"
+title_en: "Noroboto: embedded \"lying fonts\" made AI's document review read different text — input-integrity forgery"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]
