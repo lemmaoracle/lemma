@@ -77,6 +77,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation flips the disposal of sensitive media from "trust the vendor" to "bind the fact of destruction to an independently verifiable trail at the moment of disposal." Fix each medium's destruction as a tamper-resistant trail (proof-of-destruction) tied to its time, place, and target, and make it verifiable at each handoff in the disposal chain (hospital → disposal vendor → recycler), and the circulation of a medium lacking a "destroyed" trail can be detected before the handoff. Detecting the absence of destruction (the detection-style "did it surface on the market") and proving destruction ("can this medium be independently verified to have been destroyed") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -103,6 +105,8 @@ Against the gap this incident exposed (the destruction attribute of sensitive me
 - **Selective disclosure**: Without exposing the contents of the stored data, disclose only the minimum — that "this medium met the destruction verification condition" — reconciling independent verification with privacy protection.
 
 In this way, a proof fixed at the moment of disposal functions as an independently verifiable trail of whether "this sensitive medium was indeed destroyed," without depending on after-the-fact discovery. Detection (after-the-fact reporting, recovery, the complaint) works on correcting the damage; attestation (independent verification of destruction at the moment of disposal) works on establishing trust at the end of the data lifecycle — each complementary to the other.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

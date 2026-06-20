@@ -76,6 +76,8 @@ But detection does not change "whether the payout-destination change should be a
 
 Pre-execution attestation requires, before execution, that a payout-account change directly tied to the movement of funds present both "the changer's legitimate authorization" and "the authenticity of the new payout-destination attribute" as independently verifiable proof. Even within an authenticated session, if the proof reports "this change lacks legitimate authorization" or "this payout destination is not established as an authentic attribute," the change and the subsequent transfer are blocked in advance. Detection of account compromise (the detection-style "is this suspicious access?") and pre-execution proof of the change ("is this payout-destination change authorized and authentic?") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -90,6 +92,8 @@ The need to treat configuration changes directly tied to the movement of funds "
 ## 7. Lemma's analysis
 
 Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution. By verifying — before the funds move — both the authenticity of the payout-account attribute (P4) and the legitimate provenance of the change instruction (P1) as a proof, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

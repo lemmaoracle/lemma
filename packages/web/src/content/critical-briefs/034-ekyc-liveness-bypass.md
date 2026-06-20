@@ -78,6 +78,8 @@ deepfake 検出モデルの高度化、liveness の多層化、不正パター�
 
 事前証明(pre-execution attestation)は、liveness を「映像が本物らしいかの判定」から、「撮影が実在のセンサーからライブ取得され、改ざん・注入されていないことの来歴証明」へと反転させる設計を採る。端末・撮影経路の attestation により、フィードの来歴が証明できなければ、映像がどれほど自然でも本人確認は成立しない。deepfake 検出(detection 的な「これは合成か」)と撮影来歴の事前証明(「これは実在生体からのライブ取得か」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -92,6 +94,8 @@ deepfake 検出モデルの高度化、liveness の多層化、不正パター�
 ## 7. Lemma による分析
 
 本事案で露呈した構造(本人性という規制属性が、撮影の来歴を検証せず映像の見た目で受理される)に対して、Lemma は、本人確認を「映像が本物らしいかの判定」から「撮影が実在センサーからライブ取得された来歴の独立検証」へ反転させる設計を提示している。フィードがどれほど自然でも、撮影来歴の proof が成立しなければ属性は確立されない。Brief 022(OnlyFake)と合わせ、「見た目は正しいが来歴は偽」の系譜として参照されたい。
+
+設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

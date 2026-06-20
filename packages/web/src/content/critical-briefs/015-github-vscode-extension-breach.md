@@ -75,6 +75,8 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 
 事前証明(pre-execution attestation)は、(1) 拡張・ツールの成果物に「正規の origin・ビルド経路から生成された」ことを示すビルド来歴の独立検証可能な証明を付与し、取得側がインストール前に検証する、(2) 開発環境の認証を、端末上に静的な再利用可能トークンを置かない key-less な証明に置き換える、という二方向で構造を変える。前者は trojan 化版の不整合を検出時点ではなく実行前に reject し、後者は端末から窃取された「認証情報」が別環境で replay できないようにする。検出(拡張の事後撤回・IR)と事前証明(成果物来歴 + key-less 認証)は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -90,6 +92,8 @@ Brief 014(TanStack OIDC trusted publisher 汚染)と同一アクター(TeamPCP)�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(開発者ツールの正規配布経路が成果物の完全性を保証せず、端末上の再利用可能トークンが窃取で replay される)に対して、Lemma は二方向の設計を提示している。第一に、拡張・ツール等の成果物に「正規の origin・ビルド経路から生成された」ことをビルド来歴の独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証することで、正規マーケットに掲載された trojan 化版を署名の有無に依らず reject できるようにする。第二に、開発環境の認証を端末上に静的な再利用可能トークンを残さない key-less な証明に置き換え、端末から窃取された「認証情報」が別環境で replay されないようにする。Lemma はマーケットの審査や検出を否定するものではなく、配布経路の信頼シグナルに対して成果物来歴の証明と key-less 認証を補完する層を提供する。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

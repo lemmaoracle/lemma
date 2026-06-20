@@ -84,6 +84,8 @@ Stake DAO vsdCRV で、攻撃者はデプロイヤー秘密鍵を用いて Layer
 
 規制報告・行政手続き・訴訟で「許可されていない権限行使があった」と立証する材料として、「設定書き換えが正規プロセスを通じて実行された(攻撃者の鍵に対して LayerZero v2 が config 変更を受け入れた)」という本事案のような事象では、検出スコアと立証の間に独立した層が必要となる。事象後の検出と、事象前に message 自体に独立検証可能な証拠を付与する事前証明(pre-execution attestation)は、代替関係ではなく補完関係にあり、両層を組み合わせて trust boundary を確立する設計が、構造的応答として求められる。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -107,6 +109,8 @@ Stake DAO(2026-05-28〜29):
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(cross-chain message の信頼設定が config 層に集中点を持ち、その集中点を単一主体が支配可能)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が config 層に依存せず message の origin を独立検証できる設計を提示している。Config が書き換えられた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

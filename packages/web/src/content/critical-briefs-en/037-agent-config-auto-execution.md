@@ -76,6 +76,8 @@ At the same time, detection is no material for independently establishing — **
 
 As it stands, across the entire operating model of AI coding agents, independent verification of the authorization and provenance of bundled config depends on trust in the act of "the user opened / trusted," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by interposing one step of authority proof into the path by which an agent executes config and actions. Pre-execution attestation is not a replacement for detection but a **complement**; the combination of both layers establishes the trust boundary of agent operations.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -98,6 +100,8 @@ For the gap this event exposed — an agent executing bundled config decoupled f
 - **Selective disclosure**: Only "this operation satisfies the authorization schema" is disclosed minimally; internal keys and credentials never leave the environment.
 
 In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of "is this operation legitimately authorized, and does it carry legitimate provenance," before the agent executes the bundled config. Detection (after-the-fact disabling and vendor research) works on post-discovery remediation; pre-execution proof (pre-execution verification of authority and provenance) works on independent verification of agent operations — the two complement each other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

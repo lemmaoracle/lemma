@@ -78,6 +78,8 @@ Detection, however, cannot change whether, at the moment the confirmation letter
 
 As things stand, across the operating model for financial compliance, independent verification of asset existence still depends on trust in forwarded confirmation letters and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the confirmation / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for asset existence.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -100,6 +102,8 @@ For the detection–proof gap exposed here — a claim of asset existence flowin
 - **Original binding and validity**: committed with Poseidon over BN254; existence and non-tampering proven with Groth16 (Circom circuits); bound to the balance originals via docHash
 
 A proof fixed at the point of confirmation and disclosure then functions, years later when "did the asset exist at the time?" is asked, as an independently verifiable trail that discloses no original data. Detection (after-the-fact special audits, investigative journalism) serves remediation after disclosure; pre-execution attestation (attribute verification at confirmation) serves independent verification of asset existence — complementary layers.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

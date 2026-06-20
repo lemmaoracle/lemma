@@ -74,6 +74,8 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 事前証明（pre-execution attestation）は、各アーティファクトに「正規の origin（ここでは公式 publisher）によって生成・公開された」ことを示す独立検証可能な暗号証明を埋め込み、取得側が実行・インストール前に proof を検証する設計を採る。proof が「正規 origin なし」と告げれば、当該アーティファクトは事前に reject される。npm の署名や GitHub の verified バッジは概念的に近い方向だが、ブランド名や配布チャネルの信頼に依存する限り、impersonation の余地を残す。検出と事前証明は代替ではなく **補完** の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -88,6 +90,8 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

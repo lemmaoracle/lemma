@@ -79,6 +79,8 @@ At the same time, detection does not change "may this requester perform this dat
 
 Pre-execution attestation adopts a design that inverts authentication from "is the configuration enforcing authentication" to "response-time verification of whether this request carries scoped authorization and provenance." Instead of depending on the endpoint's configuration state, it makes each request present a verifiable, scoped, non-reusable proof — so that even if one setting is off, if the proof says "this query lacks legitimate authorization/provenance," the response is blocked beforehand. Detecting anomalies (the detection-style "is this request unusual") and attesting requests beforehand (the "does this query carry authorization/provenance") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -92,6 +94,8 @@ Pre-execution attestation adopts a design that inverts authentication from "is t
 ## 7. Lemma's analysis
 
 Against the structure this incident exposed (a request to the endpoint is accepted by relying on a configuration-level premise rather than making the requester prove authorization per action), Lemma proposes a design that inverts authentication from "is the configuration enforcing authentication" to "response-time proof of scoped authorization and provenance per request." Under the proof-as-auth idea, where a proof is presented without depending on configuration state or long-lived credentials, even if one endpoint setting is off, the query is rejected beforehand unless the proof of legitimate authorization/provenance holds. By binding the endpoint's response to a pre-execution attestation of "this request carries authorization/provenance" rather than "it was called," unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

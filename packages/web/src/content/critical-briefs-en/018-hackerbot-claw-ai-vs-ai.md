@@ -74,6 +74,8 @@ That said, injection detection depends on model capability, context, and judgmen
 
 Pre-execution attestation takes the design choice of binding the instructions the AI agent ingests (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof, with the agent verifying the proof before execution. If the instructions are injected or tampered with by an attacker, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Model safety mechanisms (detection) and integrity proof of instructions (proof) are **complementary** rather than substitutes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -90,6 +92,8 @@ How operators should independently verify the integrity and provenance of instru
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

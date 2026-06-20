@@ -73,6 +73,8 @@ Detection, however, cannot change the design itself — the direct config-to-exe
 
 As things stand, across the operational model for agent infrastructure, a layer that independently verifies configuration and composition against authority before execution is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of authority proof into the config-to-execution path. Pre-execution attestation is not a replacement for detection but a **complement**; together the two layers establish the trust boundary for agent infrastructure.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -98,6 +100,8 @@ Under this design, the config-to-execution path has one step of independent auth
 Data doesn't move. Proofs do.
 
 Models change. Proofs remain.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -76,6 +76,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation closes this gap by inserting one step — proof of the instructions' provenance and authorization — into the path by which the AI assistant reads an instruction file and executes the task. Even when what is shown diverges from what is real, by binding the instructions / artifacts to their issuer (the legitimate author / distributor) and verifying provenance via a docHash, instructions tampered with via zero-width Unicode, or slipped into a legitimate project without authorization, can be distinguished before execution as "lacking legitimate provenance / authorization." Detecting the surface plausibility of the instructions (the detection-style "does this content look reasonable") and attesting the instructions' provenance/authorization beforehand (the "do these instructions have a legitimate issuer / authorization") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -96,6 +98,8 @@ Against the gap this incident exposed (the provenance and authorization of the i
 - **Selective disclosure**: Disclose only the minimum — that "this task meets the authorization schema" — without letting internal keys or credentials leave the environment.
 
 In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "these instructions are legitimately authorized and carry legitimate provenance," before the AI executes them. Detection (after-the-fact removal of malicious packages, PR rejection) works on remediation after discovery; attestation (provenance / authorization verification before execution) works on the independent verification of AI instructions — each complementary to the other.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

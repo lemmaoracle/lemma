@@ -84,6 +84,8 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 規制報告・行政手続き・企業の AI 採用 due diligence で「training data が適法 scope で収集された」と立証する材料として、本事案のような dataset が下流の AI training に流入した場合、検出スコアと dataset origin / scope 証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで AI training data の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -108,6 +110,8 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 第二に **AI training data audit 層** において、AI ベンダーの training data audit 工程に proof 必須化を組み込み、AI モデルの出力に対して「この出力はどの training data に基づくか」「その training data は適法 scope で収集されたか」を独立検証可能にする設計。エンプラ CSO は AI 採用判断時点で proof のない、または不正 scope proof を持つ training data を契約要件として排除可能になる。
 
 2 層の組み合わせは、検出に対する代替ではなく補完の関係にある。検出は scraping の発生と dataset 配布を後追いで把握できるが、配布済み dataset の下流流通を制御できない。事前証明は dataset 配布時点と AI training audit 時点の 2 層で trust boundary を確立する。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

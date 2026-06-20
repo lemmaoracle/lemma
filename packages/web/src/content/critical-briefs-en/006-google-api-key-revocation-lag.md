@@ -74,6 +74,8 @@ That said, detection cannot change the structure of revocation lag caused by eve
 
 For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that "the credential was reliably revoked," for cases like this one ("still valid for 23 minutes after deletion"), an independent layer is required between detection scores and proof of revocation. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for credential lifecycle.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -94,6 +96,8 @@ This suggests that "faster revocation is technically possible," and Aikido prese
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid."
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

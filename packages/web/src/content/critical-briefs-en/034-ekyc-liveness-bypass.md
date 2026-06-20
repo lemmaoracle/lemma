@@ -78,6 +78,8 @@ But detection does not change "on what basis the verifier accepts the video it r
 
 Pre-execution attestation inverts liveness from "judging whether the video looks genuine" to "provenance proof that the capture was live-acquired from a real sensor and not tampered with or injected." Through device and capture-path attestation, if the feed's provenance cannot be proven, the identity check does not hold no matter how natural the video looks. Deepfake detection (the detection-style "is this synthetic?") and pre-execution proof of capture provenance ("is this a live capture from a real biometric?") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -92,6 +94,8 @@ The need to "prove identity as the provenance of the capture rather than the app
 ## 7. Lemma's analysis
 
 Against the structure exposed here (identity as a regulatory attribute is accepted on the appearance of the video without verifying the provenance of the capture), Lemma proposes a design that inverts identity verification from "judging whether the video looks genuine" to "independent verification of the provenance that the capture was live-acquired from a real sensor." No matter how natural the feed, if the proof of capture provenance does not hold, the attribute is not established. Read together with Brief 022 (OnlyFake) as the "looks right but the provenance is fake" lineage.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

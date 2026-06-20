@@ -78,6 +78,8 @@ Pre-execution attestation treats authority grants to AI tools not as "broad, lon
 
 Detecting an infostealer infection or OAuth-token compromise after the fact and revoking or rotating the leaked credentials (detection), and independently verifying the party, scope, and validity of the authorization before the action (pre-execution attestation), are **complements**, not substitutes: the former works on discovering the breach and containing the damage, the latter on breaking the chain by which a compromised standing token converts straight into downstream breach access.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -94,6 +96,8 @@ The absence of a design that treats OAuth grants to AI tools not as "standing au
 ## 7. Lemma's analysis
 
 Against the detection-and-proof gap this incident exposed (broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action), Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization." By verifying, before an operation executes, "is this action within the granter's authorization" and "is that authorization currently valid" — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

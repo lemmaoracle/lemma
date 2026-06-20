@@ -75,6 +75,8 @@ At the same time, detection provides no material to independently establish — 
 
 As things stand, across the package ecosystem as a whole, independent verification of a publisher's authorship still depends on trust in "a valid token was presented," and is not yet treated as an independent layer (mechanisms in which a leaked token alone cannot publish — such as npm's staged publishing — are beginning to be adopted, but they do not amount to proof of authorship itself). Pre-execution attestation closes this gap by inserting one step of authorship proof into the publish/commit path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the artifact's trust boundary.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -98,6 +100,8 @@ Against the gap this incident exposed (stolen credentials convert directly into 
 - **Selective disclosure**: Disclose only the minimum — that "the publisher meets the legitimate authorship requirement" — without letting internal keys or credentials leave the environment.
 
 In this way, a proof fixed at the moment of publication functions as an independently verifiable trail of whether "this artifact is legitimately authorized and carries legitimate provenance," before downstream consumes it. Detection (after-the-fact vendor research and disablement) works on remediation after discovery; attestation (authorship and provenance verification at the moment of publication) works on the independent verification of the supply chain — each complementary to the other.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

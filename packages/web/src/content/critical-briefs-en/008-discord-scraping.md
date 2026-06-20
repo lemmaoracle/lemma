@@ -84,6 +84,8 @@ That said, detection cannot reverse the state in which the dataset **has already
 
 For the purposes of establishing in regulatory filings, administrative proceedings, or enterprise AI-adoption due diligence that "the training data was collected under a lawful scope," when a dataset like this one flows into downstream AI training, an independent layer is required between detection scores and proof of dataset origin / scope. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection; the combination of both layers establishes the trust boundary for AI training data.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -108,6 +110,8 @@ First, at the **dataset distribution layer**, a design that embeds the dataset's
 Second, at the **AI training data audit layer**, a design that builds proof-mandatory verification into the AI vendor's training-data audit process, enabling independent verification of "what training data is this output based on" and "was that training data collected under a lawful scope" against AI model outputs. Enterprise CSOs are then able to exclude — as contract requirements at the AI-adoption decision point — training data with no proof or with proof of an unlawful scope.
 
 The combination of the two layers is in a complementary, not substitutive, relationship to detection. Detection can retroactively capture the occurrence of scraping and the dataset's distribution but cannot control downstream flow of an already-distributed dataset. Pre-execution attestation establishes the trust boundary at the two layers: dataset distribution and AI training audit.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

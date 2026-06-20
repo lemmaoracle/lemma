@@ -78,6 +78,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation flips a safety-critical driving decision from "verify it by telemetry after the fact" to "fix the satisfaction of the safety rule to an independently verifiable trail before the action." Bind the judgment "I satisfied the duty to stop for a stopped school bus" to a tamper-resistant provenance at the moment of the act, so that whether each action satisfied the rule can be independently verified without depending on after-the-fact record-keeping or remediation. Detecting crashes/violations (the detection-style "what happened") and proving the driving decision ("was that action independently verified to satisfy the safety rule before the action") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -100,6 +102,8 @@ Against the gap this incident exposed (a self-driving system's driving decision 
 - **Selective disclosure**: Without exposing the internal perception model or implementation, disclose only the minimum — that "this action met the safety-rule verification condition" — reconciling independent verification with the protection of sensitive information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this driving decision satisfied the safety rule before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, telemetry, recalls) works on social evaluation and remediation; attestation (independent verification of the decision at the moment of the act) works on proving rule-satisfaction — each complementary to the other.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

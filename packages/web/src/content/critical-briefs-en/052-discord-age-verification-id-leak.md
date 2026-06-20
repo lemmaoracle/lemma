@@ -78,6 +78,8 @@ At the same time, detection and after-the-fact response do not change "can age b
 
 Pre-execution attestation and selective disclosure close this gap by separating the disclosure and storage of raw IDs from the proof of the attribute. If only the predicate "is 18 or older" can be proven with minimal disclosure, without sending raw IDs (name, document number, face photo) outside the environment, then there is no raw ID for a third party to store, and the storage surface itself disappears. Confirming whether the attribute meets the requirement (the detection-style "is this ID genuine and does it meet the age condition") and selectively proving the attribute ("prove only that the age condition is met, without a raw ID") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -98,6 +100,8 @@ Against the structure this incident exposed (proving an attribute depends on dis
 - **Pre-action authorization**: Do not authorize age-restricted features or access unless an attribute proof that the age condition is met holds
 
 Through this, proving an attribute is separated from raw-ID storage, and "does age meet the requirement" functions as an independently verifiable trail without piling raw IDs up with a third party. Detection and after-the-fact response (breach detection, vendor switching, deletion) serve to manage harm, while selective-disclosure attribute proof (proof without a raw ID) serves to eliminate the storage surface itself — each working complementarily.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

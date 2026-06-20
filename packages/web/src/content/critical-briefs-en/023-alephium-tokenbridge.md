@@ -86,6 +86,8 @@ Detection, however, does not change which events the guardians sign. In this inc
 
 Pre-execution attestation adopts a design that requires, before the guardian signs, an independently verifiable cryptographic proof of the observed event's emitter, path, and integrity. If the proof reports that "this event's source is not a registered legitimate contract," signing is blocked before it occurs. Signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -101,6 +103,8 @@ Pre-execution attestation adopts a design that requires, before the guardian sig
 ## 7. Lemma's Analysis
 
 For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

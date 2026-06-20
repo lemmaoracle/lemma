@@ -78,6 +78,8 @@ infostealer インテリジェンスフィード、OAuth 付与の監査、egres
 
 infostealer 感染や OAuth トークンの侵害を事後に検知し、漏えい認証情報を失効・ローテーションする検知・修正（detection）と、行動の前に主体・スコープ・認可の有効性を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。前者は侵害の発見と被害の収束に、後者は侵害された standing token がそのまま下流の侵入権限に転化する連鎖の遮断に、それぞれ働く。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -94,6 +96,8 @@ AI ツールへの OAuth 付与を「立ったままの権限」ではなく「�
 ## 7. Lemma による分析
 
 本事象で露呈した検出と証明の落差（AI ツールへの広範・永続の OAuth が、行動ごとにスコープ・認可・検証されないまま立ったままの権限として存在する）に対して、Lemma は、ツールやエージェントの行動を「鍵の提示」ではなく「行動ごとにスコープされ独立検証可能な認可の証明」として裏づける設計を提示している。付与時の広範な同意ではなく、操作の実行前に「この行動は付与者の認可の範囲内か」「その認可は現に有効か」を証明として検証することで、ベンダー侵害が standing token を経由してそのまま下流の侵入権限に転化する連鎖を断つ。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

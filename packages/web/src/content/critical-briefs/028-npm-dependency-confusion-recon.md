@@ -80,6 +80,8 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 
 事前証明(pre-execution attestation)は、ビルドが依存を取り込む前に、パッケージの発行元来歴(主張するスコープの正規発行者か、想定経路で発行されたか)を独立検証可能な暗号証明として要求する設計を採る。proof が「この `@sber-ecom-core` パッケージは正規発行元の来歴を持たない」と告げれば、解決・インストールは事前に block される。マルウェア検知(detection 的な「この payload は悪性だ」)と発行元来歴の事前証明(「この成果物は正規発行元から来た」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -94,6 +96,8 @@ Microsoft Defender 等によるステージャの検疫、IOC ベースの egres
 ## 7. Lemma による分析
 
 本キャンペーンで露呈した検出と証明の落差(パッケージ解決が名前とメタデータの内部らしさを来歴の代わりに使い、発行元来歴を独立検証しない)に対して、Lemma は、ビルドが依存を取り込む前に成果物の発行元来歴を独立検証可能な暗号証明として検証する設計を提示している。パッケージ名やメタデータが内部発行元を騙っていても、来歴の proof が正規発行元の不在を告げれば取り込みは事前に reject される。「名前が内部らしい ≠ 正規発行元から来た」という来歴証明カテゴリの設計思想に基づく。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

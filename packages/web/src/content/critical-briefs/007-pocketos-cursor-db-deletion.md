@@ -80,6 +80,8 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 
 事前証明(pre-execution attestation)は、AI agent が destructive operation を実行する前に、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側(Railway API、production system)が proof を見て accept 判定する設計を採る。proof が「人間の認可なし」「scope 外」と告げれば、destructive call は事前に block される。検出と事前証明は代替ではなく **補完** の関係にあり、両層の組み合わせで AI agent の trust boundary が確立される。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -95,6 +97,8 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

@@ -83,6 +83,8 @@ Pre-execution attestation treats reading the agent's state back as an authority-
 
 After-the-fact detection and remediation by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of the state before the checkpoint is read back (pre-execution attestation), are **complements**, not substitutes: the former works on discovering known vulnerabilities and applying patches, the latter on breaking the chain by which an injected forged state is read back as legitimate self-state and converts into code execution.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -98,6 +100,8 @@ With the spread of self-hosted agent platforms, "verifying the provenance and in
 ## 7. Lemma's analysis
 
 Against the detection-and-proof gap this incident exposed (the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity), Lemma proposes a design that records the writing and reading-back of the agent's state as authority-bearing actions, and — before the state is reconstructed into the runtime — verifies, as an independently verifiable proof, "which run wrote it, under what authority" and "whether it is untampered."
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

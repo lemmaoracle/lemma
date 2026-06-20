@@ -80,6 +80,8 @@ What matters here is that, while this case looks at first like an "AI perception
 
 As things stand, across the operating model for autonomous-driving safety assurance, independent verification of the validity of the driving decision and of the safety attributes depends on trust in the operator's self-reported telemetry, crash labels, and statistics, and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the driving-decision and reporting / disclosure path. It is a complement to detection, not a substitute; together the two establish the trust boundary for safety attributes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -102,6 +104,8 @@ For the gap exposed here — the AI driving decision and the safety attributes f
 - **Selective disclosure**: only "the given metric is met as defined" is disclosed at minimum; driving video and source data that could identify individuals never leave the operator
 
 A proof fixed at the point of action and reporting then functions, years later when "was the basis of the decision met at the time?" and "is the report complete?" are asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact regulatory investigation, investigative reporting) serves remediation after discovery; pre-execution attestation (verification at the time of action and reporting) serves independent verification of the driving decision and the safety attributes — complementary layers.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

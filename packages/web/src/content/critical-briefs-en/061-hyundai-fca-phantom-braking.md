@@ -79,6 +79,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation flips an AI decision that cuts into human driving from "verify it by telemetry after the fact" to "fix the validity of the judgment to an independently verifiable trail before the action." Bind "this automatic braking executed having met an independently verifiable condition" to a tamper-resistant provenance at the moment of the act, so each activation's validity can be independently verified without depending on after-the-fact record-keeping or retuning. Detecting the malfunction (the detection-style "what happened") and proving the AI decision ("was that action independently verified for validity before the action") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -101,6 +103,8 @@ Against the gap this incident exposed (an AI decision that cuts into human drivi
 - **Selective disclosure**: Without exposing the internal perception model or implementation, disclose only the minimum — that "this action met the verification condition" — reconciling independent verification with the protection of sensitive information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this AI judgment was independently verified for validity before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, recalls, retuning) works on social evaluation and remediation; attestation (independent verification of the judgment at the moment of the act) works on proving the validity of the AI judgment — each complementary to the other.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

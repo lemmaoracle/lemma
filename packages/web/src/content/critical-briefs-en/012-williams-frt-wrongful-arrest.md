@@ -77,6 +77,8 @@ That said, accuracy scores and bias measurements do not change whether each indi
 
 Pre-execution attestation adopts a design in which, before an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it is used are fixed as an independently verifiable record. If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance. Accuracy evaluation (detection) and the record of verification and authorization (proof) are in a **complementary**, not substitutive, relationship.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -93,6 +95,8 @@ How government, when using AI outputs in enforcement actions, benefit decisions,
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

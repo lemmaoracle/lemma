@@ -76,6 +76,8 @@ The deeper issue is that detection does not independently guarantee "whether the
 
 Pre-execution attestation takes the design choice of binding the instructions governing the AI's behavior (system prompts and the like) and the outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof, so users and auditors can verify the authenticity of the output. If the instructions are rewritten, the proof becomes inconsistent and tampered outputs can be distinguished from authentic ones. Vulnerability detection and integrity proof of the outputs / governance instructions are **complementary** rather than substitutes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -91,6 +93,8 @@ How operators and auditors should independently verify the layer governing the A
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

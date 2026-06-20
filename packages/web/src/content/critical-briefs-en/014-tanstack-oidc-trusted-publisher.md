@@ -75,6 +75,8 @@ But detection does not change what the receiving side (the npm registry, the CI/
 
 Pre-execution attestation takes the design choice of not stopping provenance at the publisher-identity signature: it fixes "this artifact was produced from the intended source, build inputs, and review path" as an independently verifiable cryptographic proof tied to the build's provenance. If the runner is hijacked during workflow execution, the build-provenance proof is inconsistent, and the receiving side can reject the artifact even when the signature is formally valid. Detection (IOC, anomaly monitoring) and pre-execution attestation (build-provenance proof) are **complementary** rather than substitutes.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -91,6 +93,8 @@ How to verify "was this generated from the intended build provenance?" — not o
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed here (provenance assurance stopped at the publisher-identity signature, and the workflow-runtime hijack let malicious artifacts move through with a valid signature still attached), Lemma proposes a design in which provenance is not "the signature of who published this" but rather "this artifact was produced from this source, with these build inputs, via this path" — fixed to the build's provenance as an independently verifiable cryptographic proof. Even if the OIDC identity is hijacked at runtime, the build-provenance proof, on a separate channel, signals "this was / was not produced from the intended build path," so the receiver can reject on proof inconsistency even when the signature is formally valid. Lemma does not substitute for signatures or trusted publishers; it adds a complementary layer that proves the artifact's origin alongside the signature that identifies its publisher.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

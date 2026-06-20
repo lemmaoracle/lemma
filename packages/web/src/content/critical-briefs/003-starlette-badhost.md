@@ -77,6 +77,8 @@ X41 D-Sec が公開した mcp-scan.nemesis.services は、影響を受けるサ�
 
 なお、Host ヘッダー操作による認証バイパスのような事案において、事後の検知・修正（detection）と、行動の前に出所・認可を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。MCP サーバーが外部リソースへアクセスする前に要求の正規性を証明することは、脆弱バージョンを検出する取り組みを置き換えるものではなく、これを補って機能するものである。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -93,6 +95,8 @@ X41 D-Sec が列挙した data at risk のカテゴリは、本事案の波及�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(エージェント / 認証主体 / 委任スコープを HTTP request 自体に証明として乗せる層の不在)に対して、Lemma は、エージェントが外部リソースへ HTTP アクセスする時点で「誰が」「どの権限で」「どこまで」「どのリソースに対して」要求しているかを HTTP request 自体に独立検証可能な暗号証明として埋め込み、受信側が config / path ではなく proof を見て accept 判定できる設計を提示している。フレームワーク側の path 解決バグが存在しても、proof は別系統で「この request は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

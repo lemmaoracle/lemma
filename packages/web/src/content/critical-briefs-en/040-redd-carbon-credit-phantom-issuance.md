@@ -76,6 +76,8 @@ Detection, however, cannot change whether "the declared conservation area and lo
 
 As things stand, across the operating model for the voluntary carbon market, independent verification of environmental attributes depends on trust in the registration data declared by operators and is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the issuance / trading path. It is a complement to detection, not a substitute; together the two establish the trust boundary for credits.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -98,6 +100,8 @@ For the gap exposed here — an environmental-attribute claim flowing straight t
 - **Original binding and validity**: bound to the satellite-observation and land-registration originals via docHash, proving existence and non-tampering. The trail to the source data at the time is fixed per issuance lot
 
 A proof fixed at the point of issuance and trading then functions, years later when "was the area actually conserved at the time?" is asked, as an independently verifiable trail that discloses no source data. Detection (after-the-fact satellite monitoring, investigative journalism) serves remediation after discovery; pre-execution attestation (attribute verification at issuance) serves independent verification of environmental attributes — complementary layers.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

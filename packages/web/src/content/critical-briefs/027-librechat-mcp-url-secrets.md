@@ -76,6 +76,8 @@ Brief 003(Starlette/BadHost)と同じくエージェント基盤の信頼境界�
 
 なお、ユーザー指定の MCP URL がサーバーの秘密情報を搬出するような事案において、事後の検知・修正（detection）と、行動の前に出所・認可を独立検証する事前証明（pre-execution attestation）は代替ではなく **補完** の関係にある。接続先設定が解釈される前に登録者の権限と参照しうる文脈を証明することは、脆弱性スキャンや egress 監視を置き換えるものではなく、これを補って機能するものである。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -91,6 +93,8 @@ Brief 003(Starlette/BadHost)と同じくエージェント基盤の信頼境界�
 ## 7. Lemma による分析
 
 本事象で露呈した検出と証明の落差(エージェントの接続先設定が、登録者の権限と参照可能な文脈の範囲について独立検証されないまま特権文脈で解釈される)に対して、Lemma は、エージェント基盤への接続先登録・能力付与を権限行為として証跡化し、実行前に「誰が・何を・どの範囲で」認可したかを独立検証可能な証明として検証する設計を提示している。
+
+設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

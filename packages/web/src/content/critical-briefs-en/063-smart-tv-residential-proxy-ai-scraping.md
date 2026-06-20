@@ -81,6 +81,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation flips data collection from "infer the origin after the fact" to "bind origin and consent to an independently verifiable trail at the moment of collection." Tie relay traffic to a proof of a genuinely consented device, and bind collected data to the provenance of its origin and consent — and data lacking proof of provenance and consent can be screened out before it is taken into AI training. Detecting the collection infrastructure (the detection-style "which devices are relaying") and proving provenance ("under which origin and consent can this data be independently verified to have been gathered") are not substitutes but **complements.**
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -103,6 +105,8 @@ Against the gap this incident exposed (the origin and consent of the collected d
 - **Selective disclosure**: Without exposing the details of an individual's device or behavior, disclose only the minimum — that "this data was collected under verifiable origin and consent" — reconciling provenance verification with privacy protection.
 
 In this way, a proof fixed at the moment of collection functions as an independently verifiable trail of whether "this training data was gathered under verifiable origin and consent," without depending on after-the-fact blocking and restriction. Detection (after-the-fact analysis, blocking, platform restriction) works on correcting harm; attestation (independent verification of provenance and consent at collection) works on establishing trust in AI-training data — each complementary to the other.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

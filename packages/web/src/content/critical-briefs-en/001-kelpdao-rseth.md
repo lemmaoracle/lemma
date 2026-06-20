@@ -78,6 +78,8 @@ This incident exposed a detection–proof gap that hardening the detection layer
 
 Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -95,6 +97,8 @@ LayerZero Labs (as of the 2026-05 incident statement):
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

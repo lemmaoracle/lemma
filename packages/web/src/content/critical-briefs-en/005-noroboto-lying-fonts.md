@@ -70,6 +70,8 @@ The detection layer remains important for after-the-fact evaluation of AI judgme
 
 Pre-execution attestation adopts a structure that, before the AI generates a judgment, independently commits the equivalence between the input the AI is seeing and the input that "should be visible to a human." By embedding independent verification of font interpretation (Miller's proposed OCR-based re-verification, or audit of the Unicode-to-rendered-glyph correspondence) into the text-extraction layer upstream of passing the document to the AI, input integrity is guaranteed before AI judgment. Post-judgment detection and pre-judgment input attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI document review.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -83,6 +85,8 @@ Pre-execution attestation adopts a structure that, before the AI generates a jud
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match."
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -78,6 +78,8 @@ At the same time, detection and disclosure do not in themselves independently es
 
 The idea of pre-execution attestation inverts safety assessment from "trust the records submitted and disclosed after the fact" to "are the handover of control and the driving decisions fixed as independently verifiable evidence at the moment of action." By binding the switching of the controlling agent (ADS / remote human / safety monitor) and each decision to tamper-resistant provenance at the moment of action, "what was in control at the time of this crash" can be independently verified without depending on after-the-fact record-keeping or disclosure scope. Detecting a crash (the detection-style "did a crash occur") and proving control attribution and decision provenance ("what was in control, under what authorization, at that moment") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -98,6 +100,8 @@ Against the gap this incident exposed (control attribution and driving-decision 
 - **Selective disclosure**: Reconcile trade secrets with independent safety verification — disclose only that "control attribution and record authenticity meet the verification conditions" without exposing sensitive internal information
 
 Through this, proof fixed at the moment of action functions as an independently verifiable trail for "what was in control at the time of this crash, and is this record authentic," without depending on after-the-fact disclosure decisions. Detection and disclosure (after-the-fact reporting and unredaction) serve as the foundation for social assessment, while pre-execution attestation (fixing provenance and authorization at the moment of action) serves the independent verification of control attribution and records — each working complementarily.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

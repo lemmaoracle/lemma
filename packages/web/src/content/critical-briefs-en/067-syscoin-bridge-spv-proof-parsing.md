@@ -78,6 +78,8 @@ At the same time, detection does not change what the receiving side (the relay, 
 
 Pre-execution attestation takes the design choice of receiving the cross-chain proof as a cryptographic proof the receiving side can independently verify before executing the mint, and verifying as a proof the very fact that "a burn actually happened on the other chain." It does not decouple the proof passing the parse from the burn's existence being independently confirmed, and it blocks the mint in advance if the burn's provenance cannot be confirmed. The formal acceptance of a proof (the detection-style "this proof passes") and the pre-execution attestation of the burn's existence ("a corresponding burn actually exists") are **complements**, not substitutes; only where the two overlap can cross-chain issuance be safely put into practice.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -94,6 +96,8 @@ Pre-execution attestation takes the design choice of receiving the cross-chain p
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap this incident exposed (a cross-chain proof not independently verified, separately from formal acceptance, as the existence of the burn it points to), Lemma proposes a design in which a cross-chain proof is received as a cryptographic proof the receiving side can independently verify before execution, and the very fact that "a burn actually happened on the other chain" is verified as a proof. Even if the proof formally passes the parse, the mint is rejected in advance if a proof of the burn's existence cannot be confirmed. The design thinking of "cryptographically valid ≠ the fact it points to exists" — the core of the verifiable-origin category — is embodied in its reference implementation. This incident is a case in which the failure mode anticipated by the existing reference implementation (pre-execution attestation of bridge provenance) has materialized as a recent real-world loss. Detection (after-the-fact pause, freeze, analysis) works on remediating the damage; pre-execution attestation (independent verification of the burn's provenance before the mint executes) works on establishing trust in cross-chain issuance — each complementary to the other.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

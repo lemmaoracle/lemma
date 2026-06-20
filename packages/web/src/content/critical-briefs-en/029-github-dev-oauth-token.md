@@ -75,6 +75,8 @@ But detection does not change "what range of token github.dev holds, and which a
 
 Pre-execution attestation embeds a verifiable scope (target repo, valid range) into the delegated token and independently verifies privileged actions like extension installs against "the registrant's authorization" and "the delegated range" before they run. If the proof says "this action exceeds the delegated range" or "this token must not be valid outside this repo," the action is blocked before execution. Detection of privileged actions ("a suspicious extension ran") and pre-execution proof of delegated authority ("is this action within the authorized range") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -88,6 +90,8 @@ Pre-execution attestation embeds a verifiable scope (target repo, valid range) i
 ## 7. Lemma's analysis
 
 Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof. Even if an OAuth token is over-valid, if the delegation-range proof says "this action reaches a repo outside scope," the action is rejected in advance.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

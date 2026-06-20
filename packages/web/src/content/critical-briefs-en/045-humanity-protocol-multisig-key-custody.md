@@ -75,6 +75,8 @@ At the same time, detection provides no material to independently establish — 
 
 As things stand, across multisig operations as a whole, verification of the independence of approving parties still depends on trust in "a threshold of signatures was gathered," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by inserting one step of proof — of party independence and operation scope — into the approval/execution path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of approval authority.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -97,6 +99,8 @@ Against the gap this incident exposed (the formal establishment of distributed a
 - **Selective disclosure**: Disclose only the minimum — that "the approval meets the legitimate threshold and independence requirements" — without exposing individual keys or internal configuration.
 
 In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "this approval is an authorized operation by separate legitimate parties," before funds move. Detection (after-the-fact onchain analysis and attribution scrutiny) works on remediation after discovery; attestation (verification of party independence and operation authorization at the moment of approval) works on the independent verification of approval authority — each complementary to the other.
+
+For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -84,6 +84,8 @@ At the same time, detection and patches are no material for independently establ
 
 Pre-execution attestation takes the design choice of treating each operation of an agent or gateway not as "the presentation of a role or token" but as "a proof of authorization scoped per action and independently verifiable." If privileged operations — registering a guardrail, changing an authority field, making a tool call — are verified at the moment of the act against the bounds of the grantor's authorization, then even after the route gate is passed once, the handler-side operation cannot proceed without a proof of authorization. Detection (after-the-fact investigation, patching, inventory) and proof of authorization (independent verification at the moment of the act) are **complements**, not substitutes; only where the two overlap can an AI gateway be safely placed under audit, regulation, and real workloads.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -107,6 +109,8 @@ Against the gap this incident exposed (authority leaning on assumptions across l
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this operation is within the grantor's authorization" — reconciling independent verification with the protection of sensitive information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this gateway / agent operation is within the authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact investigation, patching, inventory) works on remediating the damage; pre-execution attestation (independent verification of authorization at the moment of the act) works on establishing trust in AI infrastructure — each complementary to the other.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

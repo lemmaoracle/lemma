@@ -75,6 +75,8 @@ Detection, however, cannot change whether, at the point of assignment, this engi
 
 As things stand, across the operating model for qualification checks, independent verification of the attribute at the point of assignment is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the assignment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for qualified-worker placement.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Response
@@ -95,6 +97,8 @@ For the detection–proof gap exposed here — a regulatory attribute claim flow
 - **Validity and revocation**: committed with Poseidon over BN254; validity and non-revocation proven with Groth16 (Circom circuits); bound to the source records via docHash
 
 A proof fixed at the point of assignment then functions, years later when "was a qualified person placed at the time?" is asked, as an independently verifiable trail that discloses no sensitive personal information. Detection (after-the-fact audit) serves remediation after disclosure; pre-execution attestation (attribute verification at assignment) serves independent verification of the legitimacy of placement — complementary layers.
+
+For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -77,6 +77,8 @@ But detection does not change "whether, at each hop, that action should be autho
 
 Pre-execution attestation inverts authentication from "do you hold a credential?" to "pre-execution verification of whether this action has scoped authorization and provenance." Instead of sending a key or a long-lived credential, it requires a verifiable, scoped, non-reusable proof per action, so that even with credentials stolen from the edge appliance or privileges gained via reflection, if the proof says "this action lacks legitimate authorization and provenance," execution is blocked in advance. Detection of credentials (the detection-style "is this a valid credential?") and pre-execution proof of the action ("does this action have authorization and provenance?") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry context
@@ -90,6 +92,8 @@ Pre-execution attestation inverts authentication from "do you hold a credential?
 ## 7. Lemma's analysis
 
 Against the structure exposed here (each hop of lateral movement is accepted on positional trust and implicit trust in stored credentials, rather than per-action proof of authorization), Lemma proposes a design that inverts authentication from "possession of a credential" to "pre-execution proof of scoped authorization and provenance per action." Under the proof-as-auth approach of presenting a proof without sending a key or a long-lived credential, even with credentials stolen from the edge appliance or privileges gained via reflection, if a proof of legitimate authorization and provenance does not hold, the action is rejected in advance.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

@@ -86,6 +86,8 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 
 事前証明(pre-execution attestation)は、guardian が署名する前に、観測対象イベントの emitter・経路・整合性を独立検証可能な暗号証明として要求する設計を採る。proof が「このイベントの発生源は登録された正規コントラクトではない」と告げれば、署名は事前に block される。署名の有効性検証(「この guardian が署名した」)とイベント来歴の事前証明(「署名対象は正規の発生源から来た」)は代替ではなく**補完**の関係にある。
 
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
+
 ---
 
 ## 6. 対応経緯と業界動向
@@ -101,6 +103,8 @@ Blockaid によるリアルタイム検知と SEAL 911 の調査支援は、被�
 ## 7. Lemma による分析
 
 本事案で露呈した検出と証明の落差(guardian 署名の有効性は検証されるが、署名対象イベントの来歴は独立検証されない)に対して、Lemma は、ブリッジの観測層が受け取るイベントの emitter と経路を、署名の前に独立検証可能な暗号証明として検証する設計を提示している。guardian の署名が形式上有効でも、イベント来歴の proof が偽造発生源を告げれば署名・払出は事前に reject される。「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
+
+設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

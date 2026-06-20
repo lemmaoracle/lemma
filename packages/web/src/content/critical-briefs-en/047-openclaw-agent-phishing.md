@@ -75,6 +75,8 @@ At the same time, detection provides no material to independently establish — 
 
 Pre-execution attestation closes this gap by inserting one step — proof of the requester's identity/authorization — into the path by which the agent takes a high-risk action. Rather than hardening prompt wording or internal judgment, it requires, before acting, that "this request is authorized, with this scope, to this party" in an independently verifiable form — so that even under the social pressure of urgency/routineness, the send is blocked beforehand unless the proof holds. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of agent actions.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -95,6 +97,8 @@ Against the gap this incident exposed (the agent executes high-risk actions deco
 - **Selective disclosure**: Disclose only the minimum — that "this action meets the authorization schema" — without letting internal keys or credentials leave the environment.
 
 In this way, a proof fixed at the moment of action functions as an independently verifiable trail of whether "this request is legitimately authorized and has a legitimate origin," before the agent takes a high-risk action. Detection (after-the-fact detection, patches, warnings) works on remediation after discovery; attestation (pre-action authorization and origin verification) works on the independent verification of agent actions — each complementary to the other.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

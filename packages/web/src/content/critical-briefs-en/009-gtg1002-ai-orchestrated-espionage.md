@@ -76,6 +76,8 @@ That said, detection does not change what the receiver (the target system, API, 
 
 Pre-execution attestation adopts a design in which, before an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested is embedded into the request itself as an independently verifiable cryptographic proof, and the receiver makes accept decisions by reading the proof. If the proof says "no legitimate delegation relationship" or "out of scope," the action is blocked before it executes. Detection and pre-execution attestation are in a **complementary**, not substitutive, relationship; the combination of both layers establishes the trust boundary for AI agents.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and Industry Developments
@@ -91,6 +93,8 @@ How organizations, providers, and regulators should design, supervise, and verif
 ## 7. Lemma's Analysis
 
 Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not."
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

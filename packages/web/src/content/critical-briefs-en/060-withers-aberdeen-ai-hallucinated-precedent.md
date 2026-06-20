@@ -81,6 +81,8 @@ At the same time, detection provides no material to independently establish — 
 
 The idea of pre-execution attestation flips the grounds an AI surfaces from "reconcile them by hand after the fact" to "fix, before the action, an independently verifiable trail of their existence and provenance." Bind the authorities an AI cites (cases, statutes, sources) to their actual origins as provenance, and make their existence and the consistency of the citation independently verifiable at the moment of the act — and an output that lacks grounds is screened out before the act of filing. Detecting the error (the detection-style "what was wrong") and proving the grounds ("were these grounds independently verified to exist and to derive from their source") are not substitutes but **complements**. Independently verifying the origin of the grounds an AI used connects directly to designs that attest the sources of RAG (retrieval-augmented generation).
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -103,6 +105,8 @@ Against the gap this incident exposed (the existence and provenance of the autho
 - **Selective disclosure**: Without exposing internal prompts or model implementation, disclose only the minimum — that "the grounds for this output exist and meet the verification conditions" — reconciling independent verification with the protection of sensitive information.
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this claim rests on grounds that exist, and their provenance is verifiable," without depending on after-the-fact human reconciliation. Detection (after-the-fact scrutiny and sanction) works on correcting errors; attestation (independent verification of the grounds at the moment of the act) works on establishing trust in AI outputs — each complementary to the other. Rather than rejecting AI use itself, making the grounds checkable in layers lets AI use and practical trust coexist.
+
+For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

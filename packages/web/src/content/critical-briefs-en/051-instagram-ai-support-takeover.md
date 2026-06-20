@@ -78,6 +78,8 @@ At the same time, detection does not, **at the moment the AI runs the recovery o
 
 Pre-execution attestation closes this gap by inserting one step — proof of the requester's ownership and authorization — into the recovery path. By requiring, before the AI support runs an email change or reset, that "this requester is the rightful owner of this account" as independently verifiable proof, the recovery operation is blocked up front when the proof of ownership does not hold — regardless of the request's framing or urgency. Detecting the request's content (the detection-style "does this request look plausible") and the pre-execution attestation of ownership and authorization ("does this requester hold the authority to operate on this account") are not substitutes but **complements**.
 
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
+
 ---
 
 ## 6. Response and industry trends
@@ -98,6 +100,8 @@ Against the gap this incident exposed (the AI recovery agent's action is decoupl
 - **Evidence trail of actions**: Bind recovery operations to the proof of the requester's authorization/ownership and record them as evidence, so that even in later audits "under whose authorization was this operation performed" is independently verifiable
 
 Through this, proof fixed at the moment of action functions as an independently verifiable trail for "does this recovery operation carry the rightful owner's authorization," before the operation runs. Detection and notification (after-the-fact detection and user notification) serve to grasp and remediate harm, while pre-execution attestation (pre-action ownership and authorization verification) serves the independent verification of recovery operations — each working complementarily.
+
+For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 
