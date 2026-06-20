@@ -252,6 +252,47 @@ const labels = isJa
       copyToast: "Link copied",
       anchorAria: "Copy link to this section",
     };
+
+// ── 回遊・転換レール／モバイルバー（JA のみ・spec: brief_engagement_rail）──
+const railCats = Array.from(
+  new Set<CategorySlug>([
+    brief.data.primary_category as CategorySlug,
+    ...(brief.data.secondary_categories as CategorySlug[]),
+  ]),
+).slice(0, 4);
+const railChips = railCats.map((slug) => ({
+  label: categoryLabel(slug, locale),
+  href: `${base}/critical/briefs/?category=${slug}`,
+}));
+const lpBase = `${base}/compare/ai-models-attack-resistance/`;
+const briefsIndexHref = `${base}/critical/briefs/`;
+const utmTerm = isJa ? "ja" : "en";
+const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
+const railLpHref = `${lpBase}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
+const railDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
+const barLpHref = `${lpBase}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
+const barDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_demo`;
+const railCopy = isJa
+  ? {
+      progress: "読了",
+      explore: "カテゴリで探す",
+      index: "Brief 一覧を見る",
+      lp: "AI攻撃実験を見る",
+      demo: "30分デモを予約",
+      barIndex: "一覧",
+      barLp: "攻撃実験",
+      barDemo: "デモ予約",
+    }
+  : {
+      progress: "Read",
+      explore: "Explore by category",
+      index: "See all Briefs",
+      lp: "See the AI attack test",
+      demo: "Book a 30-min demo",
+      barIndex: "All",
+      barLp: "Attack test",
+      barDemo: "Demo",
+    };
 ---
 
 <Layout
@@ -318,6 +359,13 @@ const labels = isJa
 
         <aside class="bd-toc" aria-label={labels.tocLabel}>
           <div class="bd-toc__inner">
+            <div class="bd-rail__progress">
+              <div class="bd-rail__progress-top">
+                <span class="bd-rail__progress-label">{railCopy.progress}</span>
+                <span class="bd-rail__pct"><span data-rail-pct>0</span>%</span>
+              </div>
+              <div class="bd-rail__track"><div class="bd-rail__bar" data-rail-bar></div></div>
+            </div>
             <div class="bd-toc__label">{labels.tocLabel}</div>
             <ul class="bd-toc__list">
               {tldrHeading && (
@@ -335,6 +383,29 @@ const labels = isJa
                 </li>
               ))}
             </ul>
+            <div class="bd-rail__block">
+              <div class="bd-rail__h">{railCopy.explore}</div>
+              <div class="bd-rail__chips">
+                {railChips.map((c) => (
+                  <a class="bd-rail__chip" href={c.href}>{c.label}</a>
+                ))}
+              </div>
+              <a class="bd-rail__index" href={briefsIndexHref}>{railCopy.index} →</a>
+            </div>
+            <div class="bd-rail__block bd-rail__convert">
+              <a
+                class="bd-rail__cta bd-rail__cta--solid"
+                href={railLpHref}
+                data-brief-cta-ev="brief_rail_lp"
+                data-cta="rail_lp"
+              >{railCopy.lp}</a>
+              <a
+                class="bd-rail__cta bd-rail__cta--outline"
+                href={railDemoHref}
+                data-brief-cta-ev="brief_rail_demo"
+                data-cta="rail_demo"
+              >{railCopy.demo}</a>
+            </div>
           </div>
         </aside>
       </div>
@@ -419,6 +490,32 @@ const labels = isJa
     </div>
 
     <div class="bd-toast" data-toast hidden>{labels.copyToast}</div>
+
+    <nav class="bd-mbar" aria-label="Brief navigation">
+        <div class="bd-mbar__progress" data-bar-bar></div>
+        <a class="bd-mbar__btn bd-mbar__btn--ghost" href={briefsIndexHref}>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          <span>{railCopy.barIndex}</span>
+        </a>
+        <a
+          class="bd-mbar__btn bd-mbar__btn--outline"
+          href={barLpHref}
+          data-brief-cta-ev="brief_bar_lp"
+          data-cta="bar_lp"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+          <span>{railCopy.barLp}</span>
+        </a>
+        <a
+          class="bd-mbar__btn bd-mbar__btn--solid"
+          href={barDemoHref}
+          data-brief-cta-ev="brief_bar_demo"
+          data-cta="bar_demo"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span>{railCopy.barDemo}</span>
+        </a>
+    </nav>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -439,6 +536,37 @@ const labels = isJa
     }
     var fs = document.querySelector('[data-firstscreen]');
     if (fs && tldrP) tldrP.parentNode.insertBefore(fs, tldrP.nextSibling);
+  })();
+</script>
+
+<!-- 回遊・転換レール／バー: 読了プログレス（本文領域基準）. -->
+<script is:inline>
+  (function () {
+    function compute() {
+      var art = document.querySelector(".brief-body");
+      if (!art) return;
+      var bars = document.querySelectorAll("[data-rail-bar],[data-bar-bar]");
+      if (!bars.length) return;
+      var y = window.scrollY || document.documentElement.scrollTop;
+      var top = art.getBoundingClientRect().top + y;
+      var denom = art.offsetHeight - window.innerHeight;
+      var p = denom > 0 ? (y - top) / denom : (y >= top ? 1 : 0);
+      p = Math.max(0, Math.min(1, p));
+      var n = Math.round(p * 100);
+      var pctEl = document.querySelector("[data-rail-pct]");
+      if (pctEl) pctEl.textContent = n;
+      for (var i = 0; i < bars.length; i++) bars[i].style.width = n + "%";
+    }
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () { ticking = false; compute(); });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    document.addEventListener("astro:after-swap", compute);
+    compute();
   })();
 </script>
 
@@ -664,6 +792,201 @@ const labels = isJa
     font-size: 10px;
     flex-shrink: 0;
     font-weight: 400;
+  }
+
+  /* ─── ENGAGEMENT RAIL (JA): progress + explore + convert ─── */
+  .bd-rail__progress {
+    margin: 0 0 18px;
+  }
+  .bd-rail__progress-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-family: var(--brief-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin: 0 0 7px;
+  }
+  .bd-rail__progress-label {
+    color: var(--brief-text-3);
+    text-transform: uppercase;
+  }
+  .bd-rail__pct {
+    color: var(--accent);
+  }
+  .bd-rail__track {
+    height: 6px;
+    background: var(--lemma-line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bd-rail__bar {
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.15s linear;
+  }
+  .bd-rail__block {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--lemma-line);
+  }
+  .bd-rail__h {
+    font-family: var(--brief-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .bd-rail__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 12px;
+  }
+  .bd-rail__chip {
+    font-family: var(--brief-mono);
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(139, 69, 19, 0.1);
+    color: var(--accent);
+    padding: 5px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    line-height: 1.3;
+    transition: background 0.15s;
+  }
+  .bd-rail__chip:hover {
+    background: rgba(139, 69, 19, 0.18);
+  }
+  .bd-rail__index {
+    display: block;
+    text-align: center;
+    font-family: var(--brief-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 9px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .bd-rail__index:hover {
+    background: var(--accent);
+    color: var(--lemma-cream);
+  }
+  .bd-rail__convert {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bd-rail__cta {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-family: var(--brief-body);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 12px;
+    border-radius: 8px;
+    line-height: 1.3;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .bd-rail__cta--solid {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+  }
+  .bd-rail__cta--solid:hover {
+    background: #743a10;
+    border-color: #743a10;
+  }
+  .bd-rail__cta--outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .bd-rail__cta--outline:hover {
+    background: rgba(139, 69, 19, 0.08);
+  }
+
+  /* ─── MOBILE ENGAGEMENT BAR (JA, shown < 1024px) ─── */
+  .bd-mbar {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(252, 250, 245, 0.96);
+    backdrop-filter: saturate(1.1) blur(6px);
+    border-top: 1px solid var(--lemma-line);
+  }
+  .bd-mbar__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: var(--accent);
+  }
+  .bd-mbar__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: var(--brief-body);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .bd-mbar__btn--ghost {
+    flex: 0 0 auto;
+    color: var(--brief-text-3);
+  }
+  .bd-mbar__btn--outline {
+    flex: 1;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .bd-mbar__btn--solid {
+    flex: 1;
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  /* ─── Rail ≥1024 / mobile bar < 1024 (JA + EN; overrides shared 960 layout) ─── */
+  @media (max-width: 1023px) {
+    .bd-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .bd-content {
+      max-width: none;
+    }
+    .bd-toc {
+      display: none;
+    }
+    .bd-mbar {
+      display: flex;
+    }
+    .brief-page {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
   }
 
   /* ─── BODY (rendered markdown) ─── */
