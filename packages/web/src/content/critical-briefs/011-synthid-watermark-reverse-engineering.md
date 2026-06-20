@@ -1,7 +1,7 @@
 ---
 brief_no: 11
-title: "SynthID 透かしのリバースエンジニアリング — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
-title_en: "SynthID Watermark Reverse-Engineering — How a Statistical Attack Strips the Provenance Mark from AI-Generated Content"
+title: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる（Google DeepMind / Alosh Denny）"
+title_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged (Google DeepMind / Alosh Denny)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["ai-decision-integrity"]
@@ -12,8 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
-og_lead_ja: "AI 生成コンテンツの来歴透かしが統計的に剥がせる — SynthID リバースエンジニアリング"
-og_lead_en: "A statistical attack strips the AI-content provenance mark — SynthID reverse-engineering"
+og_lead_ja: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる"
+og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged"
 gap_detected: "透かしと検出 API は、コンテンツを大規模に「AI 生成らしいか」とラベル付けする初期選別としては機能する。"
 gap_missing: "来歴の印を成果物そのものに埋め込むため、十分な量を観測すれば統計的に印を剥がすことも、偽って付けることもできてしまう。"
 gap_fix: "コンテンツの真偽を判断する前に「この成果物は正規の生成主体によって作られたものか」を、成果物の外側に置いた証明として Lemma で独立検証して、事前に防ぐ。"
@@ -21,7 +21,7 @@ gap_fix: "コンテンツの真偽を判断する前に「この成果物は正�
 
 ## TL;DR
 
-2026 年 3 月、ある独立研究者が、Google DeepMind が AI 生成画像に埋め込む電子透かし **SynthID** を解析し、その手法と実装を GitHub に公開した。特別な機材も内部情報も使わず、12 万 3,000 枚の Gemini 生成画像を統計的に処理するだけで、画質をほぼ保ったまま透かしの **約 91%** を取り除けることを示した。これは特定の組織を狙った攻撃ではなくセキュリティ研究の実証だが、AI が作ったという来歴を「成果物に埋め込む印」で担保する仕組みは、その印自体を後から剥がすことも偽って付けることもできてしまう、という構造を明らかにした。来歴を担保する印（検出）と、暗号で固める来歴証明とが橋渡しできない点を扱う。
+SynthID — Google DeepMind の AI 画像向け透かし — が、2026 年 3 月、研究者 Alosh Denny によって 2D フーリエ変換と位相コヒーレンス分析だけ（ニューラルネットも専有アクセスも使わず）でリバースエンジニアリングされた。画質をほぼ保ったまま透かしの約 91% を除去でき、同じ原理で非 AI 画像への偽装も成立する。攻撃事案ではなく研究実証だが、成果物に埋め込んだ印は統計的に剥離・偽造されうる構造を示す。透かし（検出）と暗号来歴（証明）は代替ではなく補完。
 
 ---
 
@@ -34,6 +34,7 @@ gap_fix: "コンテンツの真偽を判断する前に「この成果物は正�
 - **手法**: ニューラルネット不使用・proprietary access 不使用。123,000 枚の Gemini 生成画像を用い、SynthID が固定 carrier 周波数を一定位相で符号化する性質を観測。多数画像を平均して透かしの周波数領域シグネチャ（鍵に相当するパターン）を抽出し、phase-shift attack で当該周波数を狙って無効化
 - **結果**: 透かしエネルギーの約 91% を除去、画質はほぼ無損（PSNR 43.5 dB / SSIM 0.997）、任意解像度の Gemini 画像で再現
 - **性質**: 攻撃 incident（被害組織・被害額のある事案）ではなく、来歴標識の構造的限界を示すセキュリティ研究の実証
+- **核心**: 来歴の主張（AI 生成か否か）を担保するのが「成果物に埋め込んだ標識」であり、標識が成果物と同じ信号空間にあるため、独立検証する別系統の証明と切り離されたまま抽出・除去・偽造され得ること
 
 ---
 
@@ -53,12 +54,13 @@ gap_fix: "コンテンツの真偽を判断する前に「この成果物は正�
 2. **鍵抽出（Key extraction）**: 多数の Gemini 生成画像（実証では 123,000 枚）のノイズを平均し、共通パターン＝透かしのシグネチャを分離。proprietary access なしに「鍵に相当するもの」を統計的に復元
 3. **除去（Removal）**: phase-shift attack により、透かしが存在する特定周波数を狙って位相を操作し、標識を無効化。画質に視認可能な損傷を与えずに透かしエネルギーの約 91% を除去
 4. **偽造可能性（Forging surface）**: 透かしのシグネチャが復元される以上、除去の逆操作——非 AI 生成コンテンツへの透かし注入（misattribution）——も同じ原理で成立し得る。透かしの「有無」が真正性の判定基準である限り、両方向の改ざんが脅威になる
+5. **規制との衝突（Regulatory collision）**: 透かしが真正性の制度的根拠（EU AI Act の透明性要件など）として要件化される一方、上記のとおり剥離・偽造が可能なため、「透かしの有無＝来歴の真偽」という前提自体が成立しない
 
 ---
 
 ## 4. 構造的論点
 
-本事案は Pillar 01（来歴証明）の `data-provenance` カテゴリに属する。中心的な失敗 primitive は、AI 生成コンテンツの来歴が「成果物そのものに埋め込まれた標識」として担保されており、その標識が成果物と同じ統計的特性を持つために、外部から観測・抽出・除去・偽造され得る点にある。来歴の主張（この画像は AI 生成である / ない）が、それを独立検証する別系統の証明と切り離されている。secondary に `ai-decision-integrity` を併記し、AI 出力の検証可能性（Pillar 02）との straddle を記録する。
+本事案は Pillar 01（来歴証明）の `data-provenance` カテゴリに属する。中心的な**失敗 primitive は「来歴標識を成果物そのものに埋め込むこと（embedded provenance marking）」**であり、その標識が成果物と同じ統計的特性を持つために、外部から観測・抽出・除去・偽造され得る。来歴の主張（この画像は AI 生成である / ない）が、それを独立検証する別系統の証明と切り離されている。secondary に `ai-decision-integrity` を併記し、AI 出力の検証可能性（Pillar 02）との straddle を記録する。
 
 本事案は、Brief 008（Discord scraping）に続く「攻撃 incident ではない信頼層リスク事象」の事例である（Methodology の射程拡張に基づく）。Brief 008 が公開 API + ToS を通じた訓練データの来歴の問題を扱ったのに対し、本事案は AI 生成 **出力** の来歴標識の問題を扱う。両者は「データ / コンテンツの来歴が、それを検証する独立 layer を欠く」という構造で同根。Brief 005（Noroboto、フォント偽装による AI 文書レビューの誤誘導）とも、コンテンツの真正性の主張が独立検証されないという論点で隣接する。前者は AI への入力、本事案は AI からの出力という対称性を持つ。
 
@@ -70,7 +72,7 @@ gap_fix: "コンテンツの真偽を判断する前に「この成果物は正�
 
 一方で、透かしは標識を成果物の内部に埋め込む detection 的アプローチであり、標識が成果物と同じ信号空間に存在する以上、十分な観測量があれば統計的に分離・除去・偽造され得る。本事案はその構造を実証した。受信側が「この画像は本当に当該モデルが生成したものか」を判定する基準が透かしの有無である限り、攻撃者は除去（来歴の消去）と注入（来歴の偽造）の双方を行える。規制報告・訴訟・コンテンツ真正性の立証で「透かしが無い ＝ 非 AI 生成」「透かしが有る ＝ 当該モデル生成」と扱うことは、独立した証跡を伴わない。学術側でも汎用的な透かし除去・偽造攻撃（例: USENIX Security 2025 の UnMarker、arXiv の Warfare）が 2023–2026 年に相次いで示されており、本事案は孤立した事例ではない。
 
-事前証明（pre-execution / pre-distribution attestation）は、コンテンツの来歴を成果物に埋め込む標識ではなく、生成主体が「この成果物は正規の origin によって生成された」ことを独立検証可能な暗号証明（署名付き manifest や ZK origin proof）として付与し、受信側が proof を検証する設計を採る。proof は成果物の信号空間の外側にあり、統計的平均化で抽出できる「埋め込み標識」ではない。透かし（detection）と暗号的来歴（proof）は代替ではなく **補完** の関係にある。
+事前証明（pre-execution / pre-distribution attestation）は、コンテンツの来歴を成果物に埋め込む標識ではなく、生成主体が「この成果物は正規の origin によって生成された」ことを独立検証可能な暗号証明（署名付き manifest や ZK origin proof）として付与し、受信側が proof を検証する設計を採る。proof は成果物の信号空間の外側にあり、統計的平均化で抽出できる「埋め込み標識」ではない。透かし（detection）と暗号的来歴（proof）は代替ではなく **補完** の関係にある（事後の検知では満たせない来歴の独立検証については [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、鍵を渡さずに正当性を立証する設計については [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照）。
 
 ---
 
@@ -86,7 +88,14 @@ gap_fix: "コンテンツの真偽を判断する前に「この成果物は正�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。来歴の証明は成果物の信号空間の外側に置かれ、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない。標識が剥がされても、proof は別系統で「この成果物は正規の origin の下で生成された / 生成されていない」を告げる構造である。
+本事案で露呈した検出と証明の落差（来歴を成果物に埋め込む標識は、成果物と同じ信号空間に存在するため統計的に剥離・偽造され得る）に対して、Lemma は、コンテンツの来歴を埋め込み標識ではなく、生成主体による独立検証可能な暗号証明として固定する設計を提示している。
+
+- **来歴の暗号証明（origin proof / proof-as-auth）**: 生成主体が「この成果物は正規の origin の下で生成された」ことを、署名付き manifest や ZK origin proof として付与し、受信側が proof を検証する
+- **信号空間の外側に置く**: 証明を成果物の信号空間の外側に置き、平均化や周波数操作で抽出できる「鍵」を成果物内に残さない
+- **両方向の改ざんに対処**: 標識が剥がされても、非正規コンテンツに偽って付けられても、proof が別系統で「正規の origin か否か」を告げる
+- **選択的開示**: 内部情報を出さずに「この成果物は正規の origin の下で生成された」ことだけを最小開示する
+
+検出（事後の透かし判定・モデレーション）は AI 生成らしさのラベリングに、事前証明（来歴の独立検証）はコンテンツ真正性の確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 

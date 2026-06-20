@@ -1,7 +1,7 @@
 ---
 brief_no: 73
-title: "同じ「未認証ソケットで受けたデータを即実行する」実装が、AI 推論基盤に次々コピーされていた（ShadowMQ） — trust boundary 不在の同一実装が、フレームワーク間で再利用され、エコシステム規模で広がった構造（Oligo Security / ShadowMQ）"
-title_en: "One Unsafe Pattern Copied Across AI Inference Frameworks — ShadowMQ (Unauthenticated ZMQ + pickle)"
+title: "ShadowMQ：未認証 pickle を即実行する同一実装が AI 推論基盤に次々コピーされていた — 再利用でエコシステム規模に広がった構造（Oligo Security）"
+title_en: "ShadowMQ: one unsafe pattern (unauthenticated ZMQ + pickle) copied across AI inference frameworks — the same flaw spread at ecosystem scale through reuse (Oligo Security)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["code-provenance", "identity-auth"]
@@ -10,10 +10,10 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["072-lerobot-pickle-grpc-rce", "058-langgraph-checkpoint-rce", "025-mcp-stdio-config-to-command-rce", "028-npm-dependency-confusion-recon", "003-starlette-badhost"]
-status: draft
+status: published
 version: "1.0"
-og_lead_ja: "未認証 ZMQ ＋ pickle の同一実装が推論基盤に拡散 — ShadowMQ"
-og_lead_en: "The same unauthenticated ZMQ + pickle implementation, copied across inference stacks — ShadowMQ"
+og_lead_ja: "ShadowMQ：未認証 pickle の同一実装が AI 推論基盤に拡散した — 再利用でエコシステム規模に"
+og_lead_en: "ShadowMQ: one unauthenticated ZMQ + pickle implementation, copied across inference stacks — at ecosystem scale"
 gap_detected: "Oligo's and Orca's research disclosures, each vendor's CVE assignment and patches, and the known danger of pickle all worked — the after-the-fact detect/report/patch chain ran."
 gap_missing: "There was only a layer that restored pickle arriving on an unauthenticated ZMQ socket without checking whether the sender or contents were legitimate, so arbitrary code ran the instant it was received — and the same implementation was copied across frameworks, spreading the flaw."
 gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
@@ -21,7 +21,7 @@ gap_fix: "Before deserializing, independently verify with Lemma that the input w
 
 ## TL;DR
 
-Inference stacks that serve LLMs fast often connect internal processes with ZeroMQ (ZMQ) and exchange data via Python pickle — but if the socket has no authentication and the pickle is restored immediately, anyone who can reach it can execute code. In November 2025, Oligo Security disclosed, as **"ShadowMQ,"** that this same unsafe implementation (unauthenticated ZMQ + pickle) had been copied from Meta's **Llama Stack** across major frameworks — NVIDIA TensorRT-LLM, Microsoft Sarathi-Serve, Modular Max Server, vLLM, and SGLang. More than individual bugs, it is one trust-boundary-less implementation — "execute received data without verifying it" — reused across frameworks, spreading the same flaw at ecosystem scale.
+Inference stacks that serve LLMs fast often connect internal processes with ZeroMQ (ZMQ) and exchange data via Python pickle — and if the socket is unauthenticated and the pickle is restored immediately, anyone who can reach it can execute code. In November 2025, Oligo Security disclosed, as "ShadowMQ," that this same implementation had been copied from Meta's Llama Stack across NVIDIA, Microsoft, Modular, vLLM, and SGLang. More than individual bugs, one trust-boundary-less implementation, reused across frameworks, spread the same flaw at ecosystem scale.
 
 ---
 
@@ -77,7 +77,7 @@ Publishing each CVE, replacing pickle, reviewing ZMQ authentication / bind scope
 
 At the same time, network monitoring and patches are no material for the foundation to independently verify — **before execution** — "is the data just received from a legitimate sender, with legitimate contents." The core of this incident is that no layer verified the origin or authorization of received data, the deserialize was itself code execution, and — moreover — this **spread cross-cuttingly through reuse.** After-the-fact log analysis reconstructs "what arrived on which socket," but is no material to independently verify, before execution, "was that payload of legitimate origin and content." Because the same-shape implementation reaches multiple foundations, a single detection pattern cannot cover the whole.
 
-Pre-execution attestation takes the design choice of treating the input a foundation receives not as "it arrived on the socket" but as "something of legitimate origin/authorization, independently verifiable," and at an untrusted boundary receiving it in a safe, no-execution format. Shared as a foundation's standard pattern, the unsafe assumption is not carried even when reused. Detecting reach (the detection-style "what arrived") and proving the input's origin/authorization ("is it a legitimate sender's legitimate content") are **complements**, not substitutes; only where the two overlap can inference foundations be safely built on at ecosystem scale.
+Pre-execution attestation takes the design choice of treating the input a foundation receives not as "it arrived on the socket" but as "something of legitimate origin/authorization, independently verifiable," and at an untrusted boundary receiving it in a safe, no-execution format. Shared as a foundation's standard pattern, the unsafe assumption is not carried even when reused. Detecting reach (the detection-style "what arrived") and proving the input's origin/authorization ("is it a legitimate sender's legitimate content") are **complements**, not substitutes; only where the two overlap can inference foundations be safely built on at ecosystem scale (for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying origin/authorization before processing, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
 
 ---
 
@@ -101,7 +101,7 @@ Against the detection–proof gap this incident exposed (a trust-boundary-less i
 - **Cross-cutting integrity**: close, uniformly with input origin/authorization proofs, the path that works even when the same-shape implementation reaches multiple foundations. Do not rely on a single detection pattern.
 - **Selective disclosure**: without exposing internal data, disclose only the minimum — that "this input is of legitimate origin/authorization" — reconciling independent verification with the protection of operational information.
 
-In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this input is of legitimate origin/authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact analysis, patching) works on correcting exposure; pre-execution attestation (independent verification of origin/authorization before processing) works on establishing trust in the AI inference-foundation ecosystem — each complementary to the other.
+In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this input is of legitimate origin/authorization," without depending on after-the-fact log reconciliation. Detection (after-the-fact analysis, patching) works on correcting exposure; pre-execution attestation (independent verification of origin/authorization before processing) works on establishing trust in the AI inference-foundation ecosystem — each complementary to the other. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 
