@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "1 台の端末から奪われた鍵がマルチシグ閾値を突破 — Humanity Protocol"
 og_lead_en: "Keys stolen from one device clear the multisig threshold — Humanity Protocol"
+gap_detected: "On-chain analysis, investigators' scrutiny of attribution, and response from exchanges and security firms made the fund movements and the structure of the breach externally visible."
+gap_missing: "At the point of execution there was no layer to confirm whether the threshold-meeting set of signatures was an intentional approval by separate legitimate subjects, so formally meeting the threshold alone became the basis for execution."
+gap_fix: "Before executing a fund movement or contract change, independently verify with Lemma that the approval is authorized by separate legitimate subjects at this scope, and prevent it up front."
 ---
 
 ## TL;DR

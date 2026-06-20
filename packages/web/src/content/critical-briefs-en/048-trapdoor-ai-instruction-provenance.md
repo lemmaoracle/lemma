@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI 指示ファイル（.cursorrules/CLAUDE.md）に隠し命令 — TrapDoor"
 og_lead_en: "Hidden directives planted in AI instruction files — TrapDoor"
+gap_detected: "Security firms and GitHub could detect and remove or reject the malicious packages and PRs containing hidden characters, and could publicize the technique."
+gap_missing: "Before the AI read an instruction file and acted on it, there was no layer to confirm whether the instruction was placed by a legitimate author under legitimate authorization, so hidden commands were executed as is."
+gap_fix: "Before the AI acts on an instruction, independently verify with Lemma that the instruction comes from this issuer under this authorization, and prevent it up front."
 ---
 
 ## TL;DR

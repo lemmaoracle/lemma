@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "エージェントが自分のチェックポイントを検証せず読み込み RCE — LangGraph"
 og_lead_en: "An agent loads its own checkpoint unverified → RCE — LangGraph"
+gap_detected: "Vulnerability scanners, dependency audits, and egress monitoring worked, so all three issues were handled as coordinated disclosure with fixed versions already available."
+gap_missing: "There was no layer to check before reconstruction whether the state being reloaded was legitimate self-state, written under proper authority and free of tampering, so injected forged rows were reloaded through the same path as legitimate state."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this checkpoint originates from authorized execution and is free of tampering, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ status: draft
 version: "1.0"
 og_lead_ja: "一般ユーザーが管理者権限と RCE に到達 — LiteLLM ゲートウェイの連鎖"
 og_lead_en: "Low-priv user to admin and RCE — the LiteLLM gateway chain"
+gap_detected: "Responsible disclosure, staged patches, and after-the-fact logs of which endpoints were hit were all recorded and communicated."
+gap_missing: "There was no layer to check before an operation whether the call was permitted for that party, so each stage trusted the previous one and authorization checks were bypassed."
+gap_fix: "Before a privileged operation, independently verify with Lemma that this operation is permitted for this party within the authority granted to it, and prevent it up front."
 ---
 
 ## TL;DR

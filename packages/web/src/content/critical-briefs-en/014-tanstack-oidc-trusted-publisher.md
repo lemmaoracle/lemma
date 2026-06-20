@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "正規 OIDC trusted publisher で署名された悪性パッケージ — TanStack npm 汚染"
 og_lead_en: "Malicious npm packages signed under a legitimate OIDC trusted publisher — TanStack"
+gap_detected: "External researchers found the malicious publication within just 20 to 26 minutes of release, leading to scope identification and alerts."
+gap_missing: "Because the artifact was accepted on the premise that 'signed by a legitimate publisher means a trustworthy artifact,' signature verification could not stop an artifact whose contents had been swapped even though the signature was genuine."
+gap_fix: "Before pulling in a high-risk artifact, independently verify with Lemma that it was produced from the intended source and build path, and prevent it up front."
 ---
 
 ## TL;DR

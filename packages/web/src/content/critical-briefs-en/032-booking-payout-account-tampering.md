@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "売上金の受領口座が正規画面内で改ざん — Polaris / Booking.com"
 og_lead_en: "Payout account silently rewritten in-platform — Polaris / Booking.com"
+gap_detected: "Account anomalies could be detected, and using that as a starting point, transfers to other hotels were blocked and the damage contained."
+gap_missing: "There was no layer to confirm before moving funds whether the payout-account change was based on legitimate authorization and a genuine account, so it passed straight through as an operation within an authenticated session."
+gap_fix: "Before moving funds, independently verify with Lemma that the payout-account change was legitimately authorized and the destination account is genuine, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "規制が要求する生の個人情報の保管が内部買収で漏洩面化 — Coinbase KYC"
 og_lead_en: "Regulation-mandated raw PII storage became the breach surface via insider — Coinbase KYC"
+gap_detected: "After recognizing the insider misconduct, the company moved on disclosure, setting a bounty, reviewing support operations, and reimbursing affected customers."
+gap_missing: "The raw personal data collected and stored for regulatory compliance was always within reach of insiders holding legitimate business access, so once they were bribed they could carry it straight out of the company."
+gap_fix: "When performing the identity verification regulators require, independently verify with Lemma that the user is verified without hoarding raw personal data, and prevent it up front."
 ---
 
 ## TL;DR

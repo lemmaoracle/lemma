@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "顔認識の AI 判定が独立検証なく強制処分に直結 — Robert Williams 誤認逮捕"
 og_lead_en: "AI face-match drove enforcement with no independent verification — Robert Williams"
+gap_detected: "Evaluations measuring facial-recognition accuracy and bias (such as NIST) functioned as a basis for technology selection and operational limits."
+gap_missing: "For each individual match there was no layer to confirm whether independent corroboration and authorization existed before the act of arrest, so a probabilistic candidate was treated as a positive identification."
+gap_fix: "Before using an AI judgment in a decision such as a coercive enforcement action, independently verify with Lemma under what reliability conditions and with what independent corroboration and authorization the output is being used, and prevent it up front."
 ---
 
 ## TL;DR

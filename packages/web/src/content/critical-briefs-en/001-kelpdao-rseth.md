@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "DVN 観測層への RPC 改ざんで不正アンロック — KelpDAO / rsETH"
 og_lead_en: "RPC manipulation on the DVN observation layer unlocked the bridge — KelpDAO / rsETH"
+gap_detected: "Post-incident monitoring narrowed down the shape of the damage and helped identify the affected scope."
+gap_missing: "Because both the signing key and the procedure were legitimate, there was no layer to confirm whether the signed data itself was genuine before approval, so tampered input received a valid approval."
+gap_fix: "Before moving assets, independently verify with Lemma that the message comes from a legitimate origin, and prevent it up front."
 ---
 
 ## TL;DR

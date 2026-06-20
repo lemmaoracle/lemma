@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "採用 AI が権限を検証せず 6,400 万件に到達 — McHire / Paradox.ai"
 og_lead_en: "Hiring AI: 64M records within reach, no authorization check — McHire"
+gap_detected: "External researcher investigation and responsible disclosure surfaced the vulnerability, letting Paradox.ai fix it the same day and launch a bug bounty."
+gap_missing: "There was no layer to check before access whether the accessing party held legitimate authority over a record, so guessable credentials and a sequential reference ID alone were enough to reach the records."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this requesting party legitimately holds authority over data in this scope, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "認証試験データの改ざんで型式指定を取得し出荷に直結 — 型式指定不正"
 og_lead_en: "Tampered certification test data reached type designation and shipment — type-designation fraud"
+gap_detected: "Internal investigations, a third-party committee, and on-site inspections by the regulator could make the scope of the fraud and the affected vehicle models visible after the fact."
+gap_missing: "There was no layer to confirm before type designation whether the submitted test data had been legitimately obtained under the prescribed conditions, so test data the company ran and submitted itself passed straight through."
+gap_fix: "Before type designation, independently verify with Lemma that the product conforms to the standards under the prescribed test conditions, and prevent it up front."
 ---
 
 ## TL;DR

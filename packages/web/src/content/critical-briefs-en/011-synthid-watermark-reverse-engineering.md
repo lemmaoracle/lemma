@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "AI 生成コンテンツの来歴透かしが統計的に剥がせる — SynthID リバースエンジニアリング"
 og_lead_en: "A statistical attack strips the AI-content provenance mark — SynthID reverse-engineering"
+gap_detected: "The watermark and detection API still function as an initial filter that labels content at scale as 'likely AI-generated.'"
+gap_missing: "Because the provenance mark is embedded in the artifact itself, observing enough of it lets an attacker statistically strip the mark or forge it onto something else."
+gap_fix: "Before judging whether content is authentic, independently verify with Lemma, as a proof held outside the artifact, that it was created by a legitimate generating party, and prevent it up front."
 ---
 
 ## TL;DR

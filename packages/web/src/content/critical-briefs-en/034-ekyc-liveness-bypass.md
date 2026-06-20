@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "ライブ生体認証が注入映像に突破された — eKYC liveness"
 og_lead_en: "Live biometric verification defeated by an injected video feed — eKYC"
+gap_detected: "Detection models that spot synthetic video (deepfakes), multi-layered liveness, and monitoring of fraud patterns are being continuously strengthened."
+gap_missing: "There was no layer to confirm the capture's origin — whether the video was captured on the spot from a real camera and not swapped out — so injected video passed straight through on the same path as legitimate camera footage."
+gap_fix: "Rather than whether the video looks authentic, independently verify with Lemma that the video carries provenance of being captured live from a real sensor, and prevent it up front."
 ---
 
 ## TL;DR

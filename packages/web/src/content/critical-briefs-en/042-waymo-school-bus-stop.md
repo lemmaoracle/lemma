@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "自動運転車が停止中のスクールバスを止まらず通過 — Waymo"
 og_lead_en: "A robotaxi drove past a stopped school bus — Waymo"
+gap_detected: "Video footage, a school district report, and the NHTSA crash report made the incident visible after the fact, leading to investigation and recall."
+gap_missing: "Before taking the action of driving past, there was no layer to independently confirm whether the bus ahead was stopped and the stopping obligation was met, so rule compliance was left to a judgment internal to the system."
+gap_fix: "Before taking a safety-critical action such as a stopping obligation, independently verify with Lemma that the driving decision satisfies the safety rules, and prevent it up front."
 ---
 
 ## TL;DR

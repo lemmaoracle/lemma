@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "連携の OAuth 窃取で 700 超の Salesforce が横断照会 — Salesloft Drift"
 og_lead_en: "Stolen integration OAuth tokens hit 700+ Salesforce tenants — Salesloft Drift"
+gap_detected: "The breach investigation reconstructed after the fact which data had been queried, and Salesloft was able to revoke the tokens and remove the integration."
+gap_missing: "There was no layer to check before action whether the queries this integration was making stayed within their originally intended scope under still-valid authority, so queries disguised as legitimate via stolen integration tokens passed straight through."
+gap_fix: "Before an integration touches customer data, independently verify with Lemma that this operation stays within its permitted scope and rests on still-valid authorization, and prevent it up front."
 ---
 
 ## TL;DR

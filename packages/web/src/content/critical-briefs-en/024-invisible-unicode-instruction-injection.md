@@ -13,6 +13,9 @@ version: "1.0"
 status: draft
 og_lead_ja: "人が読む文字列とモデルが読む文字列が、検証層なしには一致を保証できない"
 og_lead_en: "What humans read and what models read cannot be guaranteed identical without a verification layer"
+gap_detected: "Detection measures such as stripping invisible characters, flagging decode behavior, and skill audits could stop the known techniques."
+gap_missing: "There was no layer to confirm before passing input to the model whether the input a human reviewed and the input the model actually interpreted were identical, so invisible characters undetectable to the eye passed straight through."
+gap_fix: "Before passing input to the model, independently verify with Lemma that the input arrived from a legitimate distribution source identical to the human-reviewed version and without tampering, and prevent it up front."
 ---
 
 ## TL;DR

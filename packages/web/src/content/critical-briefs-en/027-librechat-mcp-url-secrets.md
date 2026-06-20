@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "ユーザーが指定する MCP サーバー URL が、サーバーの秘密情報を運び出す経路に — LibreChat CVE-2026-32625 CVSS 9.6"
 og_lead_en: "User-supplied MCP server URLs became an exfiltration channel for server secrets — LibreChat CVE-2026-32625 CVSS 9.6"
+gap_detected: "The normal flow of disclosure and remediation — publishing the vulnerability and shipping a fixed version the same day — worked."
+gap_missing: "There was no layer to confirm before execution who registered each connection-target configuration and whether it may access sensitive internal information, so the configuration was interpreted in a privileged context."
+gap_fix: "For the privileged act of registering a connection target, independently verify with Lemma that the registrant holds authorization to access information of this scope, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証のネット到達だけで産業用ロボットに RCE — UR PolyScope"
 og_lead_en: "Unauthenticated network access yields RCE on cobots — UR PolyScope"
+gap_detected: "CISA and vendor advisories, the availability of a patch, and exposure cutoff through network segmentation were all communicated and put in place."
+gap_missing: "There was no layer to check before physical motion whether the sender of a command held legitimate authority to operate the robot, so commands arriving over the network passed straight through."
+gap_fix: "Before physical motion, independently verify with Lemma that this command comes from a sender with legitimate authority, and prevent it up front."
 ---
 
 ## TL;DR

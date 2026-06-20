@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI の幻覚判例を双方の弁護士が提出し制裁 — ミシシッピ連邦地裁"
 og_lead_en: "Both sides filed AI-hallucinated cases, both sanctioned — N.D. Miss."
+gap_detected: "The judge and opposing counsel caught the hallucinated citations after filing and imposed sanctions under Rule 11."
+gap_missing: "There was no layer to independently check before the act of filing whether a cited precedent actually existed and the citation traced to a correct source, so authentic-looking citations passed straight through."
+gap_fix: "Before filing, independently verify with Lemma that the basis for this claim actually exists and its provenance traces to a correct source, and prevent it up front."
 ---
 
 ## TL;DR

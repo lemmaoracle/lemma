@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "Merkle Proof は有効でも入出力額の整合が未検証 — Verus-Ethereum ブリッジ $11.58M"
 og_lead_en: "Valid Merkle proof but no verification of source-vs-payout amount — Verus-Ethereum bridge ($11.58M)"
+gap_detected: "Post-incident technical analysis and negotiation with the attacker recovered about 75% of the stolen funds (roughly 4,052 ETH)."
+gap_missing: "All the cryptographic proofs of the transfer data were valid so verification passed, but the check confirming that the deposit and payout amounts matched was missing before payout, letting a $0.01 deposit withdraw $11.58M."
+gap_fix: "Before a high-value payout, independently verify with Lemma that the payout amount matches the value actually deposited on the counterpart chain, and prevent it up front."
 ---
 
 ## TL;DR
