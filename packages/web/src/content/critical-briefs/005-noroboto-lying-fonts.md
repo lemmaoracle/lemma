@@ -1,6 +1,6 @@
 ---
 brief_no: 5
-title: "フォント偽装で AI の文書レビューに別の文章を読ませた（Noroboto）"
+title: "Noroboto：フォント偽装で AI の文書レビューに別の文章を読ませた — 埋め込みフォントによる入力 integrity の偽装"
 title_en: "Noroboto: embedded \"lying fonts\" made AI's document review read different text — input-integrity forgery"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
