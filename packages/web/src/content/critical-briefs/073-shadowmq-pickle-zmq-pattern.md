@@ -21,7 +21,7 @@ gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当�
 
 ## TL;DR
 
-大規模言語モデルを高速に動かす推論基盤は、内部のプロセス同士を ZeroMQ（ZMQ）という高速ソケットでつなぎ、データを Python の pickle でやり取りすることが多い——だが、その ZMQ ソケットに認証が無く、受け取った pickle を即座に復元すると、ソケットに到達できる者は誰でもコードを実行できる。2025 年 11 月、Oligo Security は、この**まったく同じ危険な実装（未認証 ZMQ ＋ `pickle.loads()`）が、主要 AI 推論フレームワークの間でコピーされて広がっていた**ことを「**ShadowMQ**」として公表した。起点は Meta の **Llama Stack（CVE-2024-50050）**とされ、同型の実装が **NVIDIA TensorRT-LLM（CVE-2025-23254、CVSS 9.3）・Microsoft Sarathi-Serve（CVE 未採番）・Modular Max Server（CVE-2025-60455）・vLLM（CVE-2025-30165）・SGLang（vLLM から派生）**に渡っていた。いずれも「ZMQ が（しばしば全インターフェースに）認証なしでバインドし、受信した pickle を即復元する」同型の経路を持つ。同型の ZMQ/pickle RCE は後に SGLang でも **CVE-2026-3059 / 3060（CVSS 9.8、Orca Security が 2026-03 に別途公表）**として再び現れた。本 Brief は本事案を Pillar 03（エージェント権限証明）の観点から、**「受け取ったデータを検証せず実行する」trust boundary 不在の同一実装が、フレームワーク間で再利用され、エコシステム規模で同じ欠陥を広げた**構造として分析する。Brief 072（同パターンのロボット基盤版＝LeRobot）・Brief 058（未検証状態の deserialize）・Brief 025（MCP 標準設計の系統的 RCE）と同根である。
+LLM を高速に動かす推論基盤は、内部プロセスを ZeroMQ（ZMQ）という高速ソケットでつなぎ、データを Python の pickle でやり取りすることが多い。だが ZMQ に認証が無く、受け取った pickle を即座に復元すると、ソケットに到達できる者は誰でもコードを実行できる。2025 年 11 月、Oligo Security は、この同一の危険な実装（未認証 ZMQ ＋ pickle）が Meta の **Llama Stack** を起点に NVIDIA・Microsoft・Modular・vLLM・SGLang など主要 AI 推論フレームワークへコピーされて広がっていたことを「**ShadowMQ**」として公表した。個々のバグである以上に、「受け取ったデータを検証せず実行する」trust boundary 不在の同一実装が再利用され、エコシステム規模で同じ欠陥を広げた構造である。
 
 ---
 
