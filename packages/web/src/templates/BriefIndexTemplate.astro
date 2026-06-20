@@ -5,7 +5,6 @@
  * Phase 1 search & discovery redesign (mockup: Lemma_brief_index_phase1):
  *   - Simplified hero ("信頼インフラ" / "trust infrastructure") + search bar
  *   - Meta strip (RSS · Methodology · Newsletter)
- *   - Featured carousel — 8 most-recent Briefs, horizontal scroll
  *   - Sticky Category filter bar (chips, dynamic counts)
  *   - Sort (newest / oldest / category) + density (grid / list) controls
  *   - Pillar sections × 4: capped 2-col white-card grid + "もっと見る" link
@@ -79,7 +78,6 @@ const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
     return b.data.brief_no - a.data.brief_no;
   },
 );
-const featuredBriefs = briefsByPublishedDesc.slice(0, 8);
 
 // Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
 // Brief entries in listed order; unknown slugs are dropped.
@@ -226,7 +224,6 @@ const labels = isJa
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
-const featuredData = featuredBriefs.map(briefCardData);
 
 // ── Brief → Lemma conversion path (BizDev 導線モジュール v1) ──
 // Active path (banner + tail CTA) → AI-attack-resistance LP, with the
@@ -346,47 +343,6 @@ const cta = isJa
       </div>
     </section>
 
-    <!-- Featured carousel -->
-    {featuredData.length > 0 && (
-      <section class="bi-featured">
-        <div class="bi-container">
-          <div class="bi-featured-head">
-            <h2>{labels.featuredHead}</h2>
-            <div class="bi-featured-nav">
-              <button type="button" class="bi-car-prev" aria-label={labels.prevLabel}>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 18 L9 12 L15 6" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-              <button type="button" class="bi-car-next" aria-label={labels.nextLabel}>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 18 L15 12 L9 6" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="bi-carousel">
-            {featuredData.map((c) => (
-              <a href={c.href} class="bi-fcard">
-                <div class="bi-fc-meta">
-                  <span class="bi-fc-pillar">{c.pillarShort}</span>
-                  <span>No. {c.briefNoPad}</span>
-                  <span>{c.publishedStr}</span>
-                </div>
-                <h3>{c.mainTitle}</h3>
-                <div class="bi-fc-tags">
-                  <span class="bi-fc-tag">{c.primaryCatLabel}</span>
-                  {c.secondaryCatLabels.slice(0, 2).map((lab) => (
-                    <span class="bi-fc-tag">{lab}</span>
-                  ))}
-                </div>
-                <span class="bi-fc-read">{labels.featuredReadCta}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     {/* よく見られている Brief: manually-curated ranking (popularBriefs.ts) */}
     {popularBriefs.length > 0 && (
@@ -754,160 +710,6 @@ const cta = isJa
     background: var(--bi-brown-dark);
   }
 
-  /* ─── FEATURED CAROUSEL ─── */
-  .bi-featured {
-    padding: 40px 0 28px;
-    background: var(--bi-cream);
-  }
-  .bi-featured-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 0 22px;
-  }
-  .bi-featured-head h2 {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 26px;
-    color: var(--bi-ink);
-    letter-spacing: -0.015em;
-    margin: 0;
-  }
-  :root[lang="ja"] .bi-featured-head h2 {
-    line-height: 1.4;
-  }
-  .bi-featured-nav {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .bi-featured-nav button {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--bi-cream);
-    border: 1px solid var(--bi-line);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--bi-ink-soft);
-    transition: all 0.15s;
-  }
-  .bi-featured-nav button:hover {
-    background: var(--bi-brown-soft);
-    color: var(--bi-brown);
-    border-color: var(--bi-brown-mid);
-  }
-  .bi-carousel {
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 14px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--bi-brown-mid) transparent;
-  }
-  .bi-carousel::-webkit-scrollbar {
-    height: 6px;
-  }
-  .bi-carousel::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 3px;
-  }
-  .bi-carousel::-webkit-scrollbar-thumb {
-    background: var(--bi-brown-mid);
-    border-radius: 3px;
-  }
-  .bi-fcard {
-    flex: 0 0 320px;
-    background: #ffffff;
-    border: 1px solid var(--bi-line);
-    border-radius: 10px;
-    padding: 28px 24px;
-    text-decoration: none;
-    color: var(--bi-ink);
-    scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: relative;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .bi-fcard::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: var(--bi-brown);
-    border-radius: 10px 0 0 0;
-  }
-  .bi-fcard:hover {
-    border-color: var(--bi-brown-mid);
-    box-shadow: 0 4px 16px rgba(139, 69, 19, 0.05);
-  }
-  .bi-fc-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--bi-mono);
-    font-size: 10px;
-    color: var(--bi-ink-faint);
-    letter-spacing: 0.08em;
-    font-weight: 700;
-  }
-  .bi-fc-pillar {
-    color: var(--bi-brown);
-  }
-  .bi-fcard h3 {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--bi-ink);
-    line-height: 1.45;
-    letter-spacing: -0.005em;
-    margin: 4px 0 0;
-  }
-  :root[lang="ja"] .bi-fcard h3 {
-    line-height: 1.55;
-  }
-  .bi-fcard p {
-    font-size: 12.5px;
-    color: var(--bi-ink-soft);
-    line-height: 1.7;
-    flex: 1;
-    margin: 0;
-  }
-  .bi-fc-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: auto;
-    padding-top: 8px;
-  }
-  .bi-fc-tag {
-    font-family: var(--bi-mono);
-    font-size: 9.5px;
-    background: var(--bi-brown-soft);
-    color: var(--bi-brown-dark);
-    padding: 3px 8px;
-    border-radius: 50px;
-    letter-spacing: 0.04em;
-    font-weight: 700;
-  }
-  .bi-fc-read {
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    color: var(--bi-brown);
-    font-weight: 700;
-    margin-top: 6px;
-    padding-top: 10px;
-    border-top: 1px solid var(--bi-line);
-    letter-spacing: 0.04em;
-  }
-
   /* ─── よく見られている Brief: curated ranking ─── */
   .bi-popular-section {
     padding: 28px 0 4px;
@@ -928,7 +730,7 @@ const cta = isJa
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0 32px;
   }
   .bi-popular-li {
@@ -977,7 +779,7 @@ const cta = isJa
   }
   @media (max-width: 700px) {
     .bi-popular-list {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
@@ -1690,7 +1492,10 @@ const cta = isJa
       padding: 0 24px;
     }
     .bi-hero {
-      padding: 48px 0 36px;
+      padding: 26px 0 24px;
+    }
+    .bi-hero-desc {
+      display: none;
     }
     .bi-h1 {
       font-size: 34px;
@@ -1704,9 +1509,6 @@ const cta = isJa
     .bi-brief-grid {
       grid-template-columns: 1fr;
       gap: 14px;
-    }
-    .bi-fcard {
-      flex: 0 0 260px;
     }
     .bi-pillar-head {
       flex-wrap: wrap;
@@ -1771,9 +1573,6 @@ const cta = isJa
     const resultsStrong = root.querySelector<HTMLElement>(".bi-results-strong");
     const noResults = root.querySelector<HTMLElement>(".bi-no-results");
     const pager = root.querySelector<HTMLElement>("[data-pager]");
-    const carousel = root.querySelector<HTMLElement>(".bi-carousel");
-    const carPrev = root.querySelector<HTMLElement>(".bi-car-prev");
-    const carNext = root.querySelector<HTMLElement>(".bi-car-next");
     if (!gridSection) return;
 
     // mode: "grouped" | "category" | "pillar" | "search"
@@ -1998,17 +1797,6 @@ const cta = isJa
         grids.forEach((g) => g.classList.toggle("list", list));
       });
     });
-
-    // Carousel nav
-    if (carousel) {
-      const step = 334;
-      carPrev?.addEventListener("click", () =>
-        carousel.scrollBy({ left: -step, behavior: "smooth" }),
-      );
-      carNext?.addEventListener("click", () =>
-        carousel.scrollBy({ left: step, behavior: "smooth" }),
-      );
-    }
 
     // Initial state from URL
     const params = new URLSearchParams(location.search);
