@@ -467,7 +467,6 @@ const cta = isJa
         {categorySections.map(([cat, briefs]) => {
           const parentPillar = PILLAR_OF_CAT.get(cat) ?? null;
           const catTitle = categoryLabel(cat, locale);
-          const pillarBadge = parentPillar ? PILLAR_SHORT[parentPillar] : "";
           const hasOverflow = briefs.length > CARDS_PER_PILLAR;
           return (
             <section
@@ -476,7 +475,6 @@ const cta = isJa
               data-catkey={cat}
             >
               <div class="bi-pillar-head">
-                {pillarBadge && <div class="bi-pillar-no">{pillarBadge}</div>}
                 <h2 class="bi-pillar-title">{catTitle}</h2>
                 <div class="bi-pillar-count">{labels.countUnit(briefs.length)}</div>
               </div>
