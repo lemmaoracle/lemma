@@ -1,7 +1,7 @@
 ---
 brief_no: 63
-title: "家庭のテレビが、AI 学習向けスクレイピングの中継ノードにされていた（Bright Data SDK） — 収集データと中継トラフィックの出所・同意が、独立検証されない構造（Include Security）"
-title_en: "Your Living-Room TV Is a Node in the AI-Scraping Economy (Bright Data SDK)"
+title: "Bright Data SDK：家庭のテレビが、AI 学習向けスクレイピングの中継ノードにされていた — 収集データと中継トラフィックの出所・同意が、独立検証されない構造（Include Security）"
+title_en: "Bright Data SDK: your living-room TV became a relay node for AI-scraping — the origin and consent of collected data and relayed traffic not independently verified (Include Security)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["training-data-provenance"]
@@ -21,7 +21,7 @@ gap_fix: "Before ingesting data into AI training, independently verify with Lemm
 
 ## TL;DR
 
-A living-room smart TV is usually left on, on a fast connection, with unmetered data and no one watching — an ideal relay point for collecting AI-training data. In June 2026, researchers (Include Security and the independent researcher Buchodi) reverse-engineered the SDK that the data broker Bright Data embeds in free apps and showed that it turns devices, including always-on smart TVs, into **exit nodes that relay web-scraping traffic** — so the scraping leaves not from the customer's IP but from a **household's IP.** Bright Data runs one of the world's largest residential proxy networks (advertising 400M+ home IPs) and supplies part of it as a "consent-based pool of 150M+ IPs" behind an opt-in screen in free apps. But the analysis found the opt-in screen and what the SDK actually allows do not match (one Roku app showed "sometimes" while the SDK was configured to permit up to 200 GB/month), the channel carrying relay jobs lacks meaningful authentication, and on iOS it bypasses a configured VPN. We analyze this through Pillar 01 (Verifiable Origin) as a structure in which **the origin and consent of the collected data, and of the relay traffic carrying it, are not independently verified at the moment of collection.** This Brief does not censure any party; it addresses the absence of provenance and consent verification. Connects to Briefs 008, 036, and 011.
+A living-room smart TV is usually left on, on a fast connection, with unmetered data and no one watching — an ideal relay point for collecting AI-training data. In June 2026, researchers (Include Security and the independent researcher Buchodi) reverse-engineered the SDK that the data broker Bright Data embeds in free apps and showed that it turns devices, including always-on smart TVs, into **exit nodes that relay web-scraping traffic** — so the scraping leaves not from the customer's IP but from a **household's IP.** Bright Data runs one of the world's largest residential proxy networks (advertising 400M+ home IPs) and supplies part of it as a "consent-based pool of 150M+ IPs" behind an opt-in screen in free apps. But the analysis found the opt-in screen and what the SDK actually allows do not match (one Roku app showed "sometimes" while the SDK was configured to permit up to 200 GB/month), the channel carrying relay jobs lacks meaningful authentication, and on iOS it bypasses a configured VPN. We analyze this through Pillar 01 (Verifiable Origin) as a structure in which **the origin and consent of the collected data, and of the relay traffic carrying it, are not independently verified at the moment of collection.** This Brief does not censure any party; it addresses the absence of provenance and consent verification.
 
 ---
 

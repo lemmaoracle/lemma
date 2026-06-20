@@ -1,7 +1,7 @@
 ---
 brief_no: 72
-title: "ロボット制御フレームワークが、未認証の通信で受け取ったデータを検証せず実行した（Hugging Face LeRobot） — OSS のロボット基盤が、出所を検証しないデータを deserialize（pickle）した時点でコード実行に至る trust boundary 不在の構造（Hugging Face / CVE-2026-25874）"
-title_en: "A Robotics Framework Executed Untrusted Data Received Over an Unauthenticated Channel — Hugging Face LeRobot (CVE-2026-25874)"
+title: "Hugging Face LeRobot：未認証の通信で受け取ったデータを検証せず実行した — 出所を検証しないデータを deserialize（pickle）した時点でコード実行に至る trust boundary 不在の構造（CVE-2026-25874）"
+title_en: "Hugging Face LeRobot: a robotics framework executed untrusted data received over an unauthenticated channel — deserializing (pickle) unverified data leads straight to code execution (CVE-2026-25874)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "code-provenance"]

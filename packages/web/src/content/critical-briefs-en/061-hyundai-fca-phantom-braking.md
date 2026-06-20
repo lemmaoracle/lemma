@@ -1,7 +1,7 @@
 ---
 brief_no: 61
-title: "AI の自動ブレーキが、危険がないのに勝手に作動し追突を招いた（Hyundai） — 人間の運転に割り込む AI 判断が、行動の前に独立検証されない構造（Hyundai / NHTSA）"
-title_en: "When Driver-Assist AI Braked on a Threat That Wasn't There (Hyundai)"
+title: "Hyundai：AI の自動ブレーキが、危険がないのに勝手に作動し追突を招いた — 人間の運転に割り込む AI 判断が、行動の前に独立検証されない構造（NHTSA）"
+title_en: "Hyundai: driver-assist AI braked on a threat that wasn't there — an AI decision overriding the driver, not independently verified before acting (NHTSA)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]
@@ -21,7 +21,7 @@ gap_fix: "Before an AI decision that overrides human operation, independently ve
 
 ## TL;DR
 
-Even in an ordinary production car a human is driving — not a fully autonomous one — AI cuts into the driving for safety: Forward Collision-Avoidance (FCA) brakes automatically when it judges a crash is imminent. But if that judgment is wrong, the car brakes hard with no danger present and gets rear-ended. In May 2026, Hyundai recalled 421,078 Tucson- and Santa Cruz-family vehicles (NHTSA 26V316) because a front-camera software fault could make FCA activate earlier than the driver expects. In NHTSA reporting, among 376 FCA-activation reports, four involved a Hyundai being rear-ended and four alleged injuries. The remedy is a front-camera reflash (tuning activation timing to driver expectation); owner notification is set for July 17, 2026. We analyze this through Pillar 02 (Verifiable AI) as a structure in which **an AI decision that cuts into human driving (automatic braking) is not independently verified before the physical action.** Precisely because this is driver assistance — human and AI judgment mixed, not full autonomy — it mirrors where enterprises are now embedding AI into human work. Connects to Briefs 049, 043, and 012.
+Even in an ordinary production car a human is driving — not a fully autonomous one — AI cuts into the driving for safety: Forward Collision-Avoidance (FCA) brakes automatically when it judges a crash is imminent. But if that judgment is wrong, the car brakes hard with no danger present and gets rear-ended. In May 2026, Hyundai recalled 421,078 Tucson- and Santa Cruz-family vehicles (NHTSA 26V316) because a front-camera software fault could make FCA activate earlier than the driver expects. In NHTSA reporting, among 376 FCA-activation reports, four involved a Hyundai being rear-ended and four alleged injuries. The remedy is a front-camera reflash (tuning activation timing to driver expectation); owner notification is set for July 17, 2026. We analyze this through Pillar 02 (Verifiable AI) as a structure in which **an AI decision that cuts into human driving (automatic braking) is not independently verified before the physical action.** Precisely because this is driver assistance — human and AI judgment mixed, not full autonomy — it mirrors where enterprises are now embedding AI into human work.
 
 ---
 

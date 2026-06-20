@@ -1,7 +1,7 @@
 ---
 brief_no: 42
-title: "自動運転車が、停止中のスクールバスを止まらずに通り過ぎた（Waymo） — 走行判断が、安全に関わる行動の前に独立検証されない構造（Waymo / NHTSA）"
-title_en: "When the Robotaxi Drove Past a Stopped School Bus (Waymo)"
+title: "Waymo：自動運転車が、停止中のスクールバスを止まらずに通り過ぎた — 走行判断が、安全に関わる行動の前に独立検証されない構造（NHTSA）"
+title_en: "Waymo: the robotaxi drove past a stopped school bus — a driving decision not independently verified before a safety-critical action"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]

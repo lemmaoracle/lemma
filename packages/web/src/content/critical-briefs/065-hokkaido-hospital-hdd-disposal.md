@@ -1,7 +1,7 @@
 ---
 brief_no: 65
-title: "「破砕した」という前提のまま、患者 18 万人分の HDD が中古市場に流れた（北海道の国立病院） — 機微媒体の廃棄が、独立検証可能な破壊証跡として固定されない構造（NHO 北海道医療センター・北海道がんセンター）"
-title_en: "Assumed Shredded, Sold Online — 180,000+ Patients' Drives Slipped Through (NHO Hokkaido Hospitals)"
+title: "北海道の国立病院：「破砕した」という前提のまま、患者 18 万人分の HDD が中古市場に流れた — 機微媒体の廃棄が独立検証可能な破壊証跡として固定されない構造（NHO 北海道医療センター・北海道がんセンター）"
+title_en: "NHO Hokkaido Hospitals: assumed shredded, sold online — 180,000+ patients' drives slipped through, with no independently verifiable destruction trail"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["data-provenance"]

@@ -81,6 +81,8 @@ At the same time, detection does not change the judgment of "may the agent trust
 
 Pre-execution attestation treats reading the agent's state back as an authority-bearing action, and requires, before the state is reconstructed, an independently verifiable proof of the state's authorship (which agent / run wrote it) and integrity (no tampering). If the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," the state load is blocked before execution.
 
+After-the-fact detection and remediation by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of the state before the checkpoint is read back (pre-execution attestation), are **complements**, not substitutes: the former works on discovering known vulnerabilities and applying patches, the latter on breaking the chain by which an injected forged state is read back as legitimate self-state and converts into code execution.
+
 ---
 
 ## 6. Response and industry trends

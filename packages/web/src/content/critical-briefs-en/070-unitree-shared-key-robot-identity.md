@@ -1,7 +1,7 @@
 ---
 brief_no: 70
 title: "全機が同じ鍵を共有していたため、1 台の乗っ取りが機体群ごと崩せた（Unitree ロボット） — 実体エージェントに per-device の identity がなく、共有された 1 つの秘密が機体群全体の信頼を兼ねていた構造（Alias Robotics / UniPwn）"
-title_en: "One Shared Key Across the Fleet — Per-Device Identity Absent in Unitree Robots (UniPwn)"
+title_en: "Unitree (UniPwn): one shared key across the fleet — per-device identity absent, so one compromise broke the whole fleet (Alias Robotics)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]

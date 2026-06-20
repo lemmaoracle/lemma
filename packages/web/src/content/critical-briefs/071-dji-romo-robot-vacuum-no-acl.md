@@ -1,7 +1,7 @@
 ---
 brief_no: 71
-title: "1 つの認証で、7,000 台のロボット掃除機のカメラ・マイクに届いた（DJI ROMO） — クラウド基盤が、機体ごとの認可を分離せず、認証済みなら全機の映像・音声を購読できた構造（DJI / The Verge）"
-title_en: "One Authenticated Client Reached 7,000 Robot Vacuums' Cameras — DJI ROMO (No Broker ACL)"
+title: "DJI ROMO：1 つの認証で 7,000 台のロボット掃除機のカメラ・マイクに届いた — クラウド基盤が機体ごとの認可を分離せず、認証済みなら全機の映像・音声を購読できた構造（The Verge）"
+title_en: "DJI ROMO: one authenticated client reached 7,000 robot vacuums' cameras — the cloud didn't separate per-device authorization (No Broker ACL)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]

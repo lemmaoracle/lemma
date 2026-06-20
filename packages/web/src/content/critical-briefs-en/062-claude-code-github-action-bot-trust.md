@@ -1,7 +1,7 @@
 ---
 brief_no: 62
-title: "AI コーディングエージェントが、`[bot]` を名乗る 1 件の issue を信頼して特権実行した（Claude Code GitHub Action） — エージェントの起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
-title_en: "One Issue, Full Repo Takeover — When the Agent Trusted \"[bot]\" (Claude Code GitHub Action)"
+title: "Claude Code GitHub Action：`[bot]` を名乗る 1 件の issue を信頼してエージェントが特権実行した — 起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
+title_en: "Claude Code GitHub Action: one issue claiming \"[bot]\" led the agent to privileged execution — the trigger's authority and input origin not verified before acting (GMO Flatt Security)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "ai-decision-integrity"]
@@ -21,7 +21,7 @@ gap_fix: "Before an agent acts with privilege, independently verify with Lemma t
 
 ## TL;DR
 
-In June 2026, researcher RyotaK (GMO Flatt Security) disclosed a flaw in Anthropic's Claude Code GitHub Action by which a single malicious GitHub issue could hijack a vulnerable repository. The trigger check unconditionally trusted any actor whose name ends in `[bot]` — and anyone can register a GitHub App and open an issue on a public repo with its installation token. Layering on indirect prompt injection (an issue disguised as an error message), an attacker could make Claude exfiltrate environment variables, steal the credentials for OIDC token exchange, and gain write access to the repo — and, because Anthropic's own Action used the same workflow, potentially poison the Action itself downstream. Anthropic fixed it within four days (v1.0.94), rated it 7.8 (CVSS 4.0), and paid a bounty. The issue is not using AI in CI, but that **neither the launching actor's authority nor the provenance of the input is independently verified before the agent acts.** Connects to Briefs 037, 048, and 029.
+In June 2026, researcher RyotaK (GMO Flatt Security) disclosed a flaw in Anthropic's Claude Code GitHub Action by which a single malicious GitHub issue could hijack a vulnerable repository. The trigger check unconditionally trusted any actor whose name ends in `[bot]` — and anyone can register a GitHub App and open an issue on a public repo with its installation token. Layering on indirect prompt injection (an issue disguised as an error message), an attacker could make Claude exfiltrate environment variables, steal the credentials for OIDC token exchange, and gain write access to the repo — and, because Anthropic's own Action used the same workflow, potentially poison the Action itself downstream. Anthropic fixed it within four days (v1.0.94), rated it 7.8 (CVSS 4.0), and paid a bounty. The issue is not using AI in CI, but that **neither the launching actor's authority nor the provenance of the input is independently verified before the agent acts.**
 
 ---
 

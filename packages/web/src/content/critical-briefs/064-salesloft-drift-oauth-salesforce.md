@@ -1,7 +1,7 @@
 ---
 brief_no: 64
-title: "信頼された連携アプリの OAuth トークンが盗まれ、数百の Salesforce 環境が横断照会された（Salesloft Drift） — 広範・永続の OAuth が、行動ごとにスコープ・失効検証されない構造（UNC6395）"
-title_en: "One Stolen Integration's OAuth Tokens, Hundreds of Salesforce Tenants — The Salesloft Drift Breach (UNC6395)"
+title: "Salesloft Drift：信頼された連携アプリの OAuth トークンが盗まれ、数百の Salesforce 環境が横断照会された — 広範・永続の OAuth が、行動ごとにスコープ・失効検証されない構造（UNC6395）"
+title_en: "Salesloft Drift: a trusted integration's OAuth tokens stolen, hundreds of Salesforce tenants queried — broad, persistent OAuth not scope/revocation-verified per action (UNC6395)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "attribute-proof-bypass"]

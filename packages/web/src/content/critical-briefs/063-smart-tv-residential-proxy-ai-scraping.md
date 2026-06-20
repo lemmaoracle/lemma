@@ -1,7 +1,7 @@
 ---
 brief_no: 63
-title: "家庭のテレビが、AI 学習向けスクレイピングの中継ノードにされていた（Bright Data SDK） — 収集データと中継トラフィックの出所・同意が、独立検証されない構造（Include Security）"
-title_en: "Your Living-Room TV Is a Node in the AI-Scraping Economy (Bright Data SDK)"
+title: "Bright Data SDK：家庭のテレビが、AI 学習向けスクレイピングの中継ノードにされていた — 収集データと中継トラフィックの出所・同意が、独立検証されない構造（Include Security）"
+title_en: "Bright Data SDK: your living-room TV became a relay node for AI-scraping — the origin and consent of collected data and relayed traffic not independently verified (Include Security)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["training-data-provenance"]

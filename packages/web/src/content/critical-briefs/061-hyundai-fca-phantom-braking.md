@@ -1,7 +1,7 @@
 ---
 brief_no: 61
-title: "AI の自動ブレーキが、危険がないのに勝手に作動し追突を招いた（Hyundai） — 人間の運転に割り込む AI 判断が、行動の前に独立検証されない構造（Hyundai / NHTSA）"
-title_en: "When Driver-Assist AI Braked on a Threat That Wasn't There (Hyundai)"
+title: "Hyundai：AI の自動ブレーキが、危険がないのに勝手に作動し追突を招いた — 人間の運転に割り込む AI 判断が、行動の前に独立検証されない構造（NHTSA）"
+title_en: "Hyundai: driver-assist AI braked on a threat that wasn't there — an AI decision overriding the driver, not independently verified before acting (NHTSA)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
 secondary_categories: ["data-provenance"]

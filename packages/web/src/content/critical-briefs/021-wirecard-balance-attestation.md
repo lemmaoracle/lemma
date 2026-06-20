@@ -1,7 +1,7 @@
 ---
 brief_no: 21
-title: "実在しない 19 億ユーロを「銀行に残高あり」と偽った（Wirecard） — 金融属性が独立検証されないまま開示・市場に直結した構造"
-title_en: "Forged Balance Confirmations Asserting Asset Existence — A Financial Attribute Asserted Without Independent Verification, Reaching Disclosure and Markets (Wirecard)"
+title: "Wirecard：実在しない 19 億ユーロを「銀行に残高あり」と偽った — 金融属性が独立検証されないまま開示・市場に直結した構造"
+title_en: "Wirecard: forged balance confirmations asserted €1.9B that didn't exist — a financial attribute disclosed without independent verification"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["kyc-aml-disclosure"]

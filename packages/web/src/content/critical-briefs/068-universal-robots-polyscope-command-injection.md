@@ -1,7 +1,7 @@
 ---
 brief_no: 68
-title: "未認証のネットワークアクセスだけで、産業用ロボットの OS で任意コードが実行できた（Universal Robots PolyScope） — ロボット（実体エージェント）が、命令の送り手の権限を物理動作の前に検証しない構造（Universal Robots / CISA）"
-title_en: "Unauthenticated Network Access Yields RCE on Industrial Robots — Universal Robots PolyScope (CVE-2026-8153)"
+title: "Universal Robots PolyScope：未認証のネットワークアクセスだけで産業用ロボットの OS で任意コードが実行できた — ロボットが命令の送り手の権限を物理動作の前に検証しない構造（CISA）"
+title_en: "Universal Robots PolyScope: unauthenticated network access yields RCE on industrial robots — the robot doesn't verify the commander's authority before physical action (CVE-2026-8153)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
 secondary_categories: ["agent-infrastructure", "attribute-proof-bypass"]

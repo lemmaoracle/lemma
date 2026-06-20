@@ -1,7 +1,7 @@
 ---
 brief_no: 62
-title: "AI コーディングエージェントが、`[bot]` を名乗る 1 件の issue を信頼して特権実行した（Claude Code GitHub Action） — エージェントの起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
-title_en: "One Issue, Full Repo Takeover — When the Agent Trusted \"[bot]\" (Claude Code GitHub Action)"
+title: "Claude Code GitHub Action：`[bot]` を名乗る 1 件の issue を信頼してエージェントが特権実行した — 起動者の権限と入力の出所が、実行の前に独立検証されない構造（GMO Flatt Security）"
+title_en: "Claude Code GitHub Action: one issue claiming \"[bot]\" led the agent to privileged execution — the trigger's authority and input origin not verified before acting (GMO Flatt Security)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "ai-decision-integrity"]

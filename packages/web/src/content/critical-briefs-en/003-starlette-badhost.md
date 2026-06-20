@@ -75,6 +75,8 @@ That said, the root cause is that the path-based authentication scheme itself do
 
 Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence.
 
+In a case like this Host-header authentication bypass, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — **complements**, not substitutes for, one another (the core of the brand). Proving that an MCP server's request is legitimate before it reaches an external resource does not replace the work of detecting vulnerable versions; it functions alongside it.
+
 ---
 
 ## 6. Response and Industry Developments
