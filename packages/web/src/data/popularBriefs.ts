@@ -12,13 +12,14 @@
  * (e.g. "072-lerobot-pickle-grpc-rce"). Order = rank (top first).
  * Unknown/typo slugs are skipped silently. Set to [] to hide the section.
  *
- * NOTE: the current list is a PROVISIONAL placeholder — replace with real GA4
- * top pages before relying on it.
+ * Last updated from GA4 on 2026-06-20 — JA + EN Views combined per Brief, the two
+ * index pages (/critical/briefs/) excluded. (#5 was a 9-view tie with
+ * 008-discord-scraping; the higher single-page entry won.)
  */
 export const POPULAR_BRIEF_SLUGS: ReadonlyArray<string> = [
-  "072-lerobot-pickle-grpc-rce",
-  "067-syscoin-bridge-spv-proof-parsing",
-  "066-litellm-ai-gateway-privilege-escalation",
-  "071-dji-romo-robot-vacuum-no-acl",
-  "065-hokkaido-hospital-hdd-disposal",
+  "060-withers-aberdeen-ai-hallucinated-precedent", // 30 views (JA 6 + EN 24)
+  "047-openclaw-agent-phishing", // 29 (JA)
+  "005-noroboto-lying-fonts", // 16 (JA)
+  "009-gtg1002-ai-orchestrated-espionage", // 13 (JA 7 + EN 6)
+  "067-syscoin-bridge-spv-proof-parsing", // 9 (JA)
 ];
