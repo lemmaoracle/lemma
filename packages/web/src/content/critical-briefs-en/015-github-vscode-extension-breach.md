@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "マーケット掲載 18 分の毒入り VS Code 拡張で開発者を突破 — GitHub 内部侵害"
 og_lead_en: "A poisoned VS Code extension lived 18 minutes on the marketplace — GitHub internal breach"
+gap_detected: "GitHub detected the unauthorized access the next day, rotated critical credentials the same day, and identified and disclosed the scope (internal repositories only, no customer impact)."
+gap_missing: "There was no way to tell a poisoned version listed as a legitimate extension on the legitimate marketplace apart before install, relying only on trust signals like signing and listing, and the stolen credentials were static and reusable from another environment as-is."
+gap_fix: "Before pulling in a development tool, independently verify with Lemma that the extension is an untampered artifact produced from a legitimate build path, and prevent it up front."
 ---
 
 ## TL;DR

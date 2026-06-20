@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "issue 1 件で AI エージェントにリポジトリを乗っ取られる — Claude Code GitHub Action"
 og_lead_en: "One GitHub issue hijacks the repo via the agent — Claude Code GitHub Action"
+gap_detected: "The vulnerability was reported through responsible disclosure, a patch was shipped quickly, and CI logs recorded the execution."
+gap_missing: "There was no layer to check before action whether the party that triggered the agent held legitimate authority or whether the loaded content came from a trusted source, so a trigger claiming to be a `[bot]` and malicious instructions disguised as a request passed straight through."
+gap_fix: "Before an agent acts with privilege, independently verify with Lemma that this trigger comes from a party with legitimate authority and this input originates from a trusted source, and prevent it up front."
 ---
 
 ## TL;DR

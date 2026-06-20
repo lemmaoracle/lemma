@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "内部スコープを偽装した 33 パッケージが、ビルド環境の来歴前提を突いた — npm 依存関係混乱キャンペーン"
 og_lead_en: "33 packages impersonating internal scopes exploited the build environment's provenance assumptions — npm dependency-confusion recon campaign"
+gap_detected: "Investigations by security vendors made containment work — quarantine, blocking communication, and removal from the registry."
+gap_missing: "There was no layer to confirm before ingestion whether each package was actually issued by the internal publisher it claimed, so the internal-looking quality of the name and metadata was used in place of provenance."
+gap_fix: "Before the build ingests a dependency, independently verify with Lemma that the artifact carries provenance showing it was issued by a legitimate publisher, and prevent it up front."
 ---
 
 ## TL;DR

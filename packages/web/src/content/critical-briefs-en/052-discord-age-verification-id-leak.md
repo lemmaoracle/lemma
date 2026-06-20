@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "年齢証明のため渡した政府 ID 7 万枚が第三者から流出 — Discord"
 og_lead_en: "70k government IDs leaked to prove age — Discord / 5CA"
+gap_detected: "Discord detected the breach, notified affected users, and could switch vendors."
+gap_missing: "There was no mechanism to show that age met the requirement without handing over the raw ID, so to prove a single fact of age the entire ID was passed to a third party and kept accumulating."
+gap_fix: "Before authorizing an age-restricted feature, independently verify with Lemma that you can show only that the user is 18 or older without handing over the raw ID, and prevent it up front."
 ---
 
 ## TL;DR

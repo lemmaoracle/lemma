@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "リポジトリの CLAUDE.md を書き換え防御 AI を乗っ取り — hackerbot-claw 初の AI 対 AI"
 og_lead_en: "Rewriting CLAUDE.md to hijack the defending AI — hackerbot-claw, the first AI-vs-AI attack"
+gap_detected: "This time the defending AI saw the tampered instructions as a suspicious nudge, marked them as not-mergeable and opened a review, and the researchers' threat disclosure plus rapid fixes by each target also worked."
+gap_missing: "The structure where an AI agent ingests instruction files handed over from the repository side as its operating guidance without checking their origin or whether they were tampered with remained, leaving detection to the luck of the model."
+gap_fix: "Before an AI agent ingests instructions, independently verify with Lemma that the instructions came from a legitimate, authorized origin and were not tampered with, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "埋め込みフォント偽装で AI 文書レビューの入力を改ざん — Noroboto 攻撃"
 og_lead_en: "Embedded font forgery silently rewrote what the AI read — Noroboto attack"
+gap_detected: "Output-side AI safety measures (such as hallucination detection) remain usable as a layer that inspects the quality of decisions after the fact."
+gap_missing: "Because the AI processes the given string normally, there was no layer to confirm before the decision whether what the AI read matched what the human saw."
+gap_fix: "Before the AI makes a decision, independently verify with Lemma that the input the AI read matches what the human sees on screen, and prevent it up front."
 ---
 
 ## TL;DR

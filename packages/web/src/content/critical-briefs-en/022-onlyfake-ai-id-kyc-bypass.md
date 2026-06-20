@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "AI 生成 ID で取引所 KYC を突破、画像審査は発行者検証ではない — OnlyFake"
 og_lead_en: "AI-generated IDs bypassed exchange KYC — image review isn't issuer verification — OnlyFake"
+gap_detected: "Deepfake detection, image forensics, and injection detection did actually stop many of the fraudulent attempts."
+gap_missing: "There was no layer to cryptographically confirm before account opening whether each ID was genuine and actually issued by the issuer, so images that merely looked authentic passed straight through."
+gap_fix: "Before account opening, independently verify with Lemma that the identity attribute was legitimately issued as a signed credential from the issuer, and prevent it up front."
 ---
 
 ## TL;DR

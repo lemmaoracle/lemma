@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "保全の実態がない森林からクレジットが発行・販売 — Operation Greenwashing"
 og_lead_en: "Carbon credits from forests with no real conservation — Operation Greenwashing"
+gap_detected: "Investigative reporting, independent satellite imagery analysis, and federal police investigation made the gap between the claims and reality externally visible."
+gap_missing: "At credit issuance time there was no layer to confirm whether the claimed conservation area and deforestation volumes reflected the true state of the source data, so operators' self-declarations were accepted as is."
+gap_fix: "Before issuing or trading credits, independently verify with Lemma that this area is actually conserved and meets the methodology's requirements, and prevent it up front."
 ---
 
 ## TL;DR

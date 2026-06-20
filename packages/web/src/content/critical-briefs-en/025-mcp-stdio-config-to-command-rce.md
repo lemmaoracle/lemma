@@ -13,6 +13,9 @@ version: "1.0"
 status: draft
 og_lead_ja: "エージェント基盤の信頼境界が、リファレンス実装の設計段階で検証されない構造"
 og_lead_en: "Agent infrastructure trust boundaries, unverified at the reference implementation design level"
+gap_detected: "Investigations by security firms and CVE reporters could identify the scope of impact and make the problem visible."
+gap_missing: "There was no layer to confirm before execution whether the received configuration constituted an execution backed by legitimate authority, so the configuration led directly to execution as-is."
+gap_fix: "Before moving from configuration to execution, independently verify with Lemma that the configuration falls within the range of permitted authority, and prevent it up front."
 ---
 
 ## TL;DR

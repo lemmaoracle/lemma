@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "AI の挙動を統治する層に完全性も来歴もなかった — McKinsey Lilli システムプロンプト"
 og_lead_en: "The layer governing the AI's behavior had no integrity or provenance — McKinsey Lilli"
+gap_detected: "After being notified, McKinsey fixed the unauthenticated endpoint and took the development environment offline within hours."
+gap_missing: "Because output looks normal on the surface even when the instructions governing the AI's behavior are rewritten, users had no layer to confirm whether a response was based on legitimate untampered instructions, and automated scanners could not detect this intrusion path either."
+gap_fix: "Before the AI produces output, independently verify with Lemma that the response was generated under legitimate, authorized, untampered instructions, and prevent it up front."
 ---
 
 ## TL;DR

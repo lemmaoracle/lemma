@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI サポートに頼むだけで Instagram 2 万件が乗っ取り — Meta HTS"
 og_lead_en: "Asking the AI support bot hijacked 20k accounts — Meta HTS"
+gap_detected: "Meta detected the vulnerability and its exploitation, identified the affected accounts, and could notify users."
+gap_missing: "Before the AI support executed an email change or reset, there was no layer to confirm whether the requester was the legitimate owner of this account, so the mere arrival of a request became the basis for the operation."
+gap_fix: "Before a high-impact recovery operation, independently verify with Lemma that the requester is the legitimate owner of this account, and prevent it up front."
 ---
 
 ## TL;DR

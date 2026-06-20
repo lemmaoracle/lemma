@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "残高確認書の偽造で資産の存在属性が独立検証されず — Wirecard"
 og_lead_en: "Forged balance confirmations went unverified, reaching disclosure — Wirecard"
+gap_detected: "Questions raised by investigative journalism and a separately commissioned special audit (KPMG) could make the gap between the claimed balances and reality visible to outsiders after the fact."
+gap_missing: "There was no layer to confirm before disclosure and audit whether each balance confirmation was genuine and issued by the originating bank, so confirmation documents forwarded via a third party passed straight through."
+gap_fix: "Before disclosure and confirmation, independently verify with Lemma that the assets genuinely exist above the threshold amount as attested by the originating financial institution, and prevent it up front."
 ---
 
 ## TL;DR

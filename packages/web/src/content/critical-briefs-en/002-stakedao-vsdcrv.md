@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "デプロイヤー鍵で LayerZero 信頼設定を書き換え不正ミント — Stake DAO vsdCRV"
 og_lead_en: "Deployer key rewrote LayerZero v2 trust config to mint tokens — Stake DAO vsdCRV"
+gap_detected: "Security firm Blockaid detected the attack in real time, within minutes, which led to rapid containment."
+gap_missing: "The configuration of which senders to trust was itself rewritten with the attacker's key, so there was no layer to confirm the origin before accepting the forged request."
+gap_fix: "Before minting assets, independently verify with Lemma that the message comes from a legitimate origin, and prevent it up front."
 ---
 
 ## TL;DR

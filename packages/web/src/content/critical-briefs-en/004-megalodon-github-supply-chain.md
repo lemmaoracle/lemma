@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "6 時間で 5,561 リポジトリの CI/CD 認証情報を窃取 — Megalodon GitHub サプライチェーン"
 og_lead_en: "5,561 repos poisoned in 6 hours via CI/CD credential theft — Megalodon GitHub supply chain"
+gap_detected: "Three security firms independently analyzed the campaign and pinpointed the origin and the affected scope (5,561 repositories) within five days."
+gap_missing: "Because the payload was injected with stolen legitimate credentials, there was no layer to confirm whether it really came from a legitimate developer before pulling the code in, so the spoofed commits passed as legitimate."
+gap_fix: "Before pulling in and publishing code, independently verify with Lemma that the change was issued by a legitimate developer with legitimate authority, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "1 台のエッジ機器の侵害がドメイン全体へ連鎖 — F5 BIG-IP"
 og_lead_en: "One edge-appliance compromise cascaded to full domain takeover — F5 BIG-IP"
+gap_detected: "Threat research could make the attack chain visible, observe the exposure of vulnerable appliances, and identify what needed patching."
+gap_missing: "At each stage of lateral movement there was no layer to confirm before the action whether the holder of the credential held authorization to take this action within this scope, so mere possession of stolen credentials passed as authority."
+gap_fix: "Rather than possession of a key or credential, independently verify with Lemma that the action carries scoped authorization and provenance, and prevent it up front."
 ---
 
 ## TL;DR

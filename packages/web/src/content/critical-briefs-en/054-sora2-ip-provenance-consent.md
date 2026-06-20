@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "著作権キャラが事後 opt-out まで生成され続けた — Sora 2"
 og_lead_en: "Copyrighted characters generated until opt-out — Sora 2"
+gap_detected: "Per-output content-violation judgments and rights holders' after-the-fact objections could stop generations resembling protected works."
+gap_missing: "There was no layer to confirm before generation whether this generation had the rights, consent, and provenance for the material it used, so permission checking was left to after-the-fact refusal (opt-out)."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this material has a licensed provenance for this use, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "認証なしの AI バックエンド、到達＝全取得 — DeepSeek / ClickHouse"
 og_lead_en: "No auth on the AI backend — reachable meant readable — DeepSeek"
+gap_detected: "Continuous external attack-surface monitoring and responsible disclosure worked, so the exposure was remediated before evidence of exploitation spread."
+gap_missing: "There was no layer to check before access whether the access rested on legitimate authority, and on an unauthenticated backend there was simply no means to tell whether a party that reached it was legitimate."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this party legitimately holds authority over data in this scope, and prevent it up front."
 ---
 
 ## TL;DR

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "自動運転の事故データと安全性の根拠が自社申告のまま — Tesla FSD/NHTSA"
 og_lead_en: "Tesla FSD crash data and safety stats, self-reported and unverified — Tesla FSD"
+gap_detected: "Regulators' phased investigations, investigative reporting, and insider testimony made the driving-decision failures, under-reporting of crashes, and inflated statistics externally visible."
+gap_missing: "At the point of continuing to drive or submitting data to regulators, there was no layer to confirm whether the premises of a decision (can the camera see) and the declared crash data and statistics reflected reality, so everything was accepted as the operator's self-declaration."
+gap_fix: "Before continuing to drive or releasing safety data to regulators and the market, independently verify with Lemma that the decision's premises are met, the declaration is exhaustive, and the statistics follow their definitions, and prevent it up front."
 ---
 
 ## TL;DR

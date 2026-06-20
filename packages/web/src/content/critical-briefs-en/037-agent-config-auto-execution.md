@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI コーディングエージェントが同梱設定を無検証で自動実行 — SymJack / Miasma"
 og_lead_en: "AI coding agents auto-execute project-local config — SymJack / Miasma"
+gap_detected: "The malicious commits could be detected, and GitHub was able to disable 73 repositories across 4 Microsoft-affiliated organizations at once."
+gap_missing: "Before the agent executed the bundled config, there was no layer to confirm whether the config came from a legitimate author and stayed within an authorized scope, so an opened or trusted action became the basis for execution itself."
+gap_fix: "Before the agent executes a bundled config, independently verify with Lemma that the operation is authorized for this subject at this scope and carries legitimate provenance, and prevent it up front."
 ---
 
 ## TL;DR

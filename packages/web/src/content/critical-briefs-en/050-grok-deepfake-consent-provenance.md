@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "非同意画像、生成の時点で同意・年齢が未検証 — Grok"
 og_lead_en: "Consent and age unverified at generation — Grok deepfakes"
+gap_detected: "Reports, detection technology, and investigations by national authorities operated to remove and remediate the spread outputs."
+gap_missing: "At generation time there was no layer to confirm whether the subject consented or was not a minor, and the outputs carried no verifiable provenance marker, so harmful generations could not be distinguished until the spread had begun."
+gap_fix: "Before generating an image, independently verify with Lemma that the subject's consent and age are confirmed and authorized, and prevent it up front."
 ---
 
 ## TL;DR

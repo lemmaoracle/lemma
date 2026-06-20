@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "AI が侵入から情報持ち出しまでを自律実行 — SHADOW-AETHER"
 og_lead_en: "AI agents ran intrusions end to end — SHADOW-AETHER"
+gap_detected: "Threat-research firm Trend Micro could identify and publish the techniques and indicators (IOCs) of both campaigns and share them with defenders."
+gap_missing: "Because the AI builds new attack tools per target, detection that matches against known-bad becomes reactive, and there was no layer to confirm before the action what was permitted to run internally."
+gap_fix: "Even for an unknown tool, independently verify with Lemma that the operation carries legitimately authorized provenance, and prevent it up front."
 ---
 
 ## TL;DR

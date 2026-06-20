@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI エージェントが送信者を確かめる前に認証情報を社外送信 — OpenClaw / Varonis"
 og_lead_en: "An AI agent forwarded credentials before verifying the sender — OpenClaw / Varonis"
+gap_detected: "Suspicious URLs and a malicious OAuth consent screen could be blocked."
+gap_missing: "There was no layer to confirm before acting who the sender was, so a social request passed straight through."
+gap_fix: "Before a high-risk action, independently verify with Lemma that the request is authorized for this subject at this scope, and prevent it up front."
 ---
 
 ## TL;DR

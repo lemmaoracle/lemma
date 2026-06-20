@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "AI ツールへの「すべて許可」OAuth が侵入経路に — Vercel / Context.ai"
 og_lead_en: "\"Allow all\" OAuth to an AI tool became the breach path — Vercel"
+gap_detected: "The compromised credentials were identifiable in threat-intelligence feeds more than a month before public disclosure, and monitoring and logs captured the activity."
+gap_missing: "There was no layer to check before action whether this access stayed within the originally intended scope, so access operating inside a once-granted 'allow all' consent passed straight through."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this operation is authorized for this party in this scope and is currently valid, and prevent it up front."
 ---
 
 ## TL;DR

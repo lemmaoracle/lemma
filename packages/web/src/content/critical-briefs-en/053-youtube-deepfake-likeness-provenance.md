@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "偽著名人が 2 億回再生、肖像の来歴が固定されない — YouTube"
 og_lead_en: "200M views of fake celebrities, likeness provenance gap — YouTube"
+gap_detected: "Synthetic videos matching enrolled faces could be scanned and removed, and reporting and investigations made the scale of harm visible."
+gap_missing: "There was no layer to confirm before generation or publication whether this likeness or voice had legitimate provenance with the person's consent, so synthetics lacking provenance went undistinguished before spreading."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this likeness or voice was generated with the person's consent and a verifiable provenance, and prevent it up front."
 ---
 
 ## TL;DR

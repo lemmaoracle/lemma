@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "国家資格の実務経験を満たさない技術者の現場配置 — 有資格者配置の独立検証不在"
 og_lead_en: "Engineers placed under national-license claims they didn't meet — qualified-worker fraud"
+gap_detected: "Internal investigations, a third-party committee, and administrative audits could make the scope of the fraudulent acquisitions and the placement record visible after the fact."
+gap_missing: "There was no layer to confirm before placement whether each engineer was a qualified holder meeting the requirements, so self-reported work experience passed straight through."
+gap_fix: "Before placement, independently verify with Lemma that the engineer validly holds the required national license and meets the requirements, and prevent it up front."
 ---
 
 ## TL;DR

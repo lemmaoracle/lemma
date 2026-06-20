@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "公開 API 経由で 20.5 億メッセージが AI 学習データに再配布 — Discord スクレイピング"
 og_lead_en: "2.05 billion public messages redistributed as AI training data — Discord scraping"
+gap_detected: "Tech media detected the dataset's existence after the collection and publication had already happened, raising the issue with the industry."
+gap_missing: "Before distribution there was no layer to confirm whether the data had been collected within the bounds of the terms of service, so data gathered for a use the terms prohibited was published as-is."
+gap_fix: "Before distributing data or ingesting it into AI training, independently verify with Lemma where the data came from and under what usage conditions it was collected, and prevent it up front."
 ---
 
 ## TL;DR

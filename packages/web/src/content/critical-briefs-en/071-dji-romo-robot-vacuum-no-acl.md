@@ -14,6 +14,9 @@ status: draft
 version: "1.0"
 og_lead_ja: "1 つの認証で 7,000 台のロボット掃除機のカメラ・マイクに到達 — DJI ROMO"
 og_lead_en: "One authenticated client reached 7,000 robot vacuums' cameras — DJI ROMO"
+gap_detected: "Responsible disclosure by researchers, reporting via the media, DJI's swift fix and bounty, and after-the-fact logs of which connection subscribed to what were all carried out and recorded."
+gap_missing: "There was no layer to check before access whether the party attempting to subscribe held authority over a given device, so a single authenticated connection passed straight through to every device."
+gap_fix: "Before access, independently verify with Lemma that this party holds legitimate authority over this device, and prevent it up front."
 ---
 
 ## TL;DR

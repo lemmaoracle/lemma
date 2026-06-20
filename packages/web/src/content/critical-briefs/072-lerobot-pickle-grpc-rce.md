@@ -14,11 +14,14 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証 gRPC で受けた pickle が即コード実行 — Hugging Face LeRobot"
 og_lead_en: "Pickle over an unauthenticated gRPC channel = instant RCE — LeRobot"
+gap_detected: "CVE-2026-25874 の採番・公表、影響範囲（v0.4.3〜0.5.1）の検証、pickle/deserialize の危険性の周知、0.6.0 での対応予定までは機能した。"
+gap_missing: "認証も TLS も無い gRPC で受け取ったデータを、出所も認可も確かめずに deserialize（pickle）する層しか無く、未認証の到達がそのままロボットの関節制御に直結する RCE になった。"
+gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当に持ち込まれた」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
 ## TL;DR
 
-ロボットを動かす AI は、推論サーバー（方策＝policy を計算する側）とロボット本体（client）がネットワークで会話しながら動く——その会話で受け取ったデータを「中身を確かめずにそのまま Python オブジェクトに復元（deserialize）」すると、データを送れる者は誰でもコードを実行できてしまう。2026 年 4 月、Hugging Face の OSS ロボット学習基盤 **LeRobot** に、この型の致命的な脆弱性 **CVE-2026-25874（CVSS 9.8）**が公表された。非同期推論パイプラインの **PolicyServer / robot client** が、**認証も TLS も無い gRPC** で受け取ったデータを `pickle.loads()` で復元しており、Python の pickle は復元の最中に任意コードを実行できる。つまり、PolicyServer のネットワークポートに到達できる**未認証の攻撃者**が、細工した payload を送るだけでホスト上の任意コマンドを実行でき、その経路はロボットの関節制御に直結する。LeRobot は GPU 付き・高権限・ロボットハードウェア接続の環境で動くことが多く、影響は大きい。v0.4.3 が実環境で脆弱と検証され、影響は 0.5.1 までの各リリースに及ぶ（本稿時点で修正版は未リリース、0.6.0 で対応予定）。本 Brief は本事案を Pillar 03（エージェント権限証明）の観点から、**OSS のロボット基盤が、受け取ったデータの出所・認可を検証する trust boundary を持たず、deserialize の時点でコード実行に至っていた**構造として分析する。Brief 058（来歴も完全性も検証せず永続状態を読み込んだ LangGraph）の推論・ロボット制御版であり、後述の ShadowMQ パターン（Brief 073）と同根である。
+ロボットを動かす AI は、推論サーバーとロボット本体がネットワークで会話しながら動く。2026 年 4 月、Hugging Face の OSS ロボット学習基盤 **LeRobot** に、その会話で受け取ったデータを「中身を確かめずに復元（deserialize）」する致命的な脆弱性 **CVE-2026-25874（CVSS 9.8）**が公表された。**認証も TLS も無い gRPC** に細工した payload を送るだけで、未認証の攻撃者がホスト上で任意コードを実行でき、その経路はロボットの関節制御に直結する。受け取ったデータの出所・認可を確かめる trust boundary を持たず、deserialize の時点でコード実行に至る構造だった。
 
 ---
 

@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "命令の出所を検証せず AI が社内データを送出 — EchoLeak / M365 Copilot"
 og_lead_en: "AI exfiltrated data without verifying the instruction's origin — EchoLeak"
+gap_detected: "External research discovery and disclosure, together with deterrent layers such as the XPIA classifier, worked, so the vulnerability was surfaced and fixed before exploitation."
+gap_missing: "There was no layer to independently verify before action whether an instruction the AI ingested was granted under legitimate authority, so directives embedded in data were executed as if they were legitimate commands."
+gap_fix: "Before a high-risk action, independently verify with Lemma that this action stays within the bounds of legitimately granted commands and authority, and prevent it up front."
 ---
 
 ## TL;DR

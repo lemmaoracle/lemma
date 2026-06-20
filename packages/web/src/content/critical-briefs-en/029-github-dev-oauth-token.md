@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "OAuth トークンが 1 クリックで窃取 — github.dev webview の合成イベント"
 og_lead_en: "One-click GitHub OAuth token theft via github.dev"
+gap_detected: "The preventive response — advance notification by the researcher and a same-day interim fix from the provider — worked."
+gap_missing: "There was no layer to confirm before execution under whose authorization the extension install would run or what scope the token was delegated, so excessive privileges were exercised as-is."
+gap_fix: "Before a privileged act such as installing an extension, independently verify with Lemma that the act falls within the range of delegated authority, and prevent it up front."
 ---
 
 ## TL;DR

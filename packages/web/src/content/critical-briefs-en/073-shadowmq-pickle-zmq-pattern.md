@@ -14,11 +14,14 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証 ZMQ ＋ pickle の同一実装が推論基盤に拡散 — ShadowMQ"
 og_lead_en: "The same unauthenticated ZMQ + pickle implementation, copied across inference stacks — ShadowMQ"
+gap_detected: "Oligo's and Orca's research disclosures, each vendor's CVE assignment and patches, and the known danger of pickle all worked — the after-the-fact detect/report/patch chain ran."
+gap_missing: "There was only a layer that restored pickle arriving on an unauthenticated ZMQ socket without checking whether the sender or contents were legitimate, so arbitrary code ran the instant it was received — and the same implementation was copied across frameworks, spreading the flaw."
+gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
 ---
 
 ## TL;DR
 
-Inference stacks that serve large language models fast often connect their internal processes with ZeroMQ (ZMQ), a fast socket, and exchange data via Python pickle — but if that ZMQ socket has no authentication and the received pickle is restored immediately, anyone who can reach the socket can execute code. In November 2025, Oligo Security disclosed, as **"ShadowMQ,"** that **this exact unsafe implementation (unauthenticated ZMQ + `pickle.loads()`) had been copied and spread across major AI inference frameworks.** The origin is attributed to Meta's **Llama Stack (CVE-2024-50050)**, with the same-shape implementation passed to **NVIDIA TensorRT-LLM (CVE-2025-23254, CVSS 9.3), Microsoft Sarathi-Serve (no CVE assigned), Modular Max Server (CVE-2025-60455), vLLM (CVE-2025-30165), and SGLang (adapted from vLLM)**. Each carries the same path: a ZMQ socket binds (often to all interfaces) with no authentication and immediately restores received pickle. The same ZMQ/pickle RCE later resurfaced in SGLang as **CVE-2026-3059 / 3060 (CVSS 9.8, a separate Orca Security disclosure in March 2026)**. We analyze this through Pillar 03 (Agent Authority Proof) as a structure in which **one trust-boundary-less implementation — "execute received data without verifying it" — was reused across frameworks and spread the same flaw at ecosystem scale.** It shares a root with Brief 072 (the robot-framework version of the same pattern — LeRobot), Brief 058 (deserialize of unverified state), and Brief 025 (the systematic RCE of MCP's default design).
+Inference stacks that serve LLMs fast often connect internal processes with ZeroMQ (ZMQ) and exchange data via Python pickle — but if the socket has no authentication and the pickle is restored immediately, anyone who can reach it can execute code. In November 2025, Oligo Security disclosed, as **"ShadowMQ,"** that this same unsafe implementation (unauthenticated ZMQ + pickle) had been copied from Meta's **Llama Stack** across major frameworks — NVIDIA TensorRT-LLM, Microsoft Sarathi-Serve, Modular Max Server, vLLM, and SGLang. More than individual bugs, it is one trust-boundary-less implementation — "execute received data without verifying it" — reused across frameworks, spreading the same flaw at ecosystem scale.
 
 ---
 

@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "信頼シグナルと GitHub Releases を配送路に転用 — Claude Code 流出便乗マルウェア"
 og_lead_en: "Trust signals and GitHub Releases weaponized as a delivery channel — Claude Code leak lures"
+gap_detected: "The leak source admitted the mistake and pulled the version, and analysis firms and the distribution platform were able to detect and remove the fakes."
+gap_missing: "Those downloading had no layer to confirm at the point of acquisition whether the artifact was really built by a legitimate distributor, accepting it on the trust of a well-known brand name and the hosting site alone."
+gap_fix: "Before running or installing, independently verify with Lemma that the artifact was built by a legitimate distributor, and prevent it up front."
 ---
 
 ## TL;DR

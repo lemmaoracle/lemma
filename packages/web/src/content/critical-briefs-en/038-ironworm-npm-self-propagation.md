@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "盗んだ認証情報で自分を再公開する npm ワーム — IronWorm"
 og_lead_en: "A self-propagating npm worm republishes itself with stolen credentials — IronWorm"
+gap_detected: "Analysis by security firms such as JFrog and registry response identified and disabled the infected packages."
+gap_missing: "At publish and commit time there was no layer to confirm whether the party attempting to publish was the legitimate author of the artifact, so presenting valid credentials alone became the basis for publishing."
+gap_fix: "Before publishing or committing, independently verify with Lemma that the artifact is authorized by a legitimate author and carries legitimate provenance, and prevent it up front."
 ---
 
 ## TL;DR

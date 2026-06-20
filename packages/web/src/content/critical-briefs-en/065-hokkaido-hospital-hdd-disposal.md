@@ -14,6 +14,9 @@ status: published
 version: "1.0"
 og_lead_ja: "「破砕したはず」のHDDが中古市場に — 患者18万人分流出（北海道の国立病院）"
 og_lead_en: "Drives assumed shredded resurfaced online — 180,000+ patients (NHO Hokkaido)"
+gap_detected: "The winning bidder's report, recovery of the drives, a criminal complaint, and the paper certificate-of-destruction records were all preserved."
+gap_missing: "There was no layer at disposal time to check whether the media had actually been destroyed, so the destruction premise rested on the contractor's self-declaration and passed straight through."
+gap_fix: "Before a high-risk disposal, independently verify with Lemma that this sensitive media has actually been destroyed, and prevent it up front."
 ---
 
 ## TL;DR

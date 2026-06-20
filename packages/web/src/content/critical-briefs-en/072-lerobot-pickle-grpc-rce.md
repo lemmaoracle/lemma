@@ -14,11 +14,14 @@ status: draft
 version: "1.0"
 og_lead_ja: "未認証 gRPC で受けた pickle が即コード実行 — Hugging Face LeRobot"
 og_lead_en: "Pickle over an unauthenticated gRPC channel = instant RCE — LeRobot"
+gap_detected: "The CVE-2026-25874 assignment and disclosure, verification of the affected range (v0.4.3–0.5.1), the known danger of pickle deserialization, and the planned 0.6.0 fix all worked."
+gap_missing: "Nothing checked the origin or authorization of data arriving over an unauthenticated, non-TLS gRPC channel before deserializing it (pickle), so an unauthenticated reach became an RCE wired straight into the robot's joint control."
+gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
 ---
 
 ## TL;DR
 
-An AI that drives a robot runs as a conversation over the network — an inference server (which computes the policy) and the robot itself (the client) exchange data. If the data received in that conversation is "restored into Python objects (deserialized) without checking its contents," anyone who can send data can execute code. In April 2026, **CVE-2026-25874 (CVSS 9.8)** was disclosed in **LeRobot**, Hugging Face's OSS robot-learning framework, exactly this kind of critical flaw. The async-inference pipeline's **PolicyServer / robot client** runs `pickle.loads()` on data received over **gRPC with no authentication and no TLS**, and Python's pickle can execute arbitrary code mid-restore. So an **unauthenticated attacker** who can reach the PolicyServer's network port can run arbitrary commands on the host just by sending a crafted payload — and that path leads straight to the robot's joint control. LeRobot often runs on GPU-backed, high-privilege, robot-hardware-connected hosts, so the impact is large. v0.4.3 was verified vulnerable in the wild, and the affected range reaches up to 0.5.1 (no fixed release as of writing; 0.6.0 is planned). We analyze this through Pillar 03 (Agent Authority Proof) as a structure in which **an OSS robot framework had no trust boundary verifying the origin or authorization of received data, and reached code execution at the moment of deserialization.** It is the inference/robot-control version of Brief 058 (LangGraph loading persistent state without verifying provenance or integrity), and shares a root with the ShadowMQ pattern that follows (Brief 073).
+An AI that drives a robot runs as a conversation over the network between an inference server and the robot itself. In April 2026, **CVE-2026-25874 (CVSS 9.8)** was disclosed in **LeRobot**, Hugging Face's OSS robot-learning framework: it deserializes (pickle) data received in that conversation without checking its contents. Over a **gRPC channel with no authentication and no TLS**, an unauthenticated attacker can run arbitrary commands on the host just by sending a crafted payload — and that path leads straight to the robot's joint control. There was no trust boundary verifying the origin or authorization of received data; code execution happened at the moment of deserialization.
 
 ---
 

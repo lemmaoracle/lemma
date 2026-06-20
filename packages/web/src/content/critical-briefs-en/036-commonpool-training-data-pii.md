@@ -14,6 +14,9 @@ version: "1.0"
 status: published
 og_lead_ja: "128 億枚の AI 学習データに ID・履歴書・顔が混入 — DataComp CommonPool"
 og_lead_en: "12.8B training images contained passports, résumés, faces — CommonPool"
+gap_detected: "An independent researcher audit made the contamination visible, and improvements to automatic face blurring and PII detection filters were advanced."
+gap_missing: "There was no layer to confirm at collection time whether each item had the provenance and consent to be used for training, and after-the-fact mechanical filters could not cover everything (a 0.1% sample alone leaked over 800 faces)."
+gap_fix: "Rather than asking whether it is public, independently verify with Lemma that each item has the provenance and consent to be used for training, and prevent it up front."
 ---
 
 ## TL;DR
