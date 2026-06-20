@@ -1,7 +1,7 @@
 ---
 brief_no: 11
-title: "SynthID 透かし reverse-engineering — AI 生成コンテンツの来歴標識が統計的に剥がせる構造"
-title_en: "SynthID Watermark Reverse-Engineering — How a Statistical Attack Strips the Provenance Mark from AI-Generated Content"
+title: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる（Google DeepMind / Alosh Denny）"
+title_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged (Google DeepMind / Alosh Denny)"
 pillar: "01-verifiable-origin"
 primary_category: "data-provenance"
 secondary_categories: ["ai-decision-integrity"]
@@ -12,8 +12,8 @@ related_pack: ["A-incident-response", "B-regulatory"]
 related_briefs: ["008-discord-scraping", "005-noroboto-lying-fonts", "022-onlyfake-ai-id-kyc-bypass"]
 version: "1.0"
 status: published
-og_lead_ja: "AI 生成コンテンツの来歴透かしが統計的に剥がせる — SynthID リバースエンジニアリング"
-og_lead_en: "A statistical attack strips the AI-content provenance mark — SynthID reverse-engineering"
+og_lead_ja: "SynthID 透かしが統計的に剥がされた — 成果物に埋めた来歴印は除去も偽造もされうる"
+og_lead_en: "SynthID Watermark, Statistically Stripped — a provenance mark that can be removed and forged"
 gap_detected: "The watermark and detection API still function as an initial filter that labels content at scale as 'likely AI-generated.'"
 gap_missing: "Because the provenance mark is embedded in the artifact itself, observing enough of it lets an attacker statistically strip the mark or forge it onto something else."
 gap_fix: "Before judging whether content is authentic, independently verify with Lemma, as a proof held outside the artifact, that it was created by a legitimate generating party, and prevent it up front."
@@ -21,7 +21,7 @@ gap_fix: "Before judging whether content is authentic, independently verify with
 
 ## TL;DR
 
-In March 2026, independent researcher Alosh Denny reverse-engineered Google DeepMind's watermark for AI-generated images, **SynthID**, and published the method and implementation on GitHub. The attack uses neither neural networks nor proprietary access — only a 2D Fourier transform and phase-coherence analysis (a phase-shift attack) over 123,000 Gemini-generated images — to remove **approximately 91%** of the watermark energy while preserving image quality almost entirely (PSNR 43.5 dB / SSIM 0.997, resolution-independent). This is not an attack on a specific organization but a security-research demonstration; nevertheless, it exposes a structure in which the design that secures the provenance of AI-generated content as "a mark embedded in the artifact" can have the mark itself statistically stripped or forged. This Brief addresses, from the perspective of Pillar 01 (Verifiable Origin), the non-bridgeability between watermarks (detection-style marking) and cryptographic provenance proofs.
+SynthID — Google DeepMind's watermark for AI-generated images — was reverse-engineered in March 2026 by researcher Alosh Denny using only a 2D Fourier transform and phase-coherence analysis (no neural networks, no proprietary access). It removes about 91% of the watermark while preserving image quality, and the same principle forges the mark onto non-AI images. Not an attack but a research demonstration, it shows that a mark embedded in the artifact can be statistically stripped or forged. Watermarking (detection) and cryptographic provenance (proof) are complements, not substitutes.
 
 ---
 
@@ -34,6 +34,7 @@ In March 2026, independent researcher Alosh Denny reverse-engineered Google Deep
 - **Method**: No neural networks, no proprietary access used. Using 123,000 Gemini-generated images, the researcher observes that SynthID encodes at a fixed carrier frequency with constant phase. By averaging across many images, the frequency-domain signature of the watermark (the pattern equivalent to the key) is extracted; a phase-shift attack targets this frequency to nullify it
 - **Result**: Approximately 91% of watermark energy removed; image quality almost intact (PSNR 43.5 dB / SSIM 0.997); reproducible at arbitrary resolution on Gemini images
 - **Nature**: Not an attack incident (an event with a victim organization and damages) but a security-research demonstration of the structural limits of provenance marking
+- **Core**: what secures the provenance assertion (is this AI-generated or not) is "a mark embedded in the artifact"; because the mark lives in the same signal space as the artifact, it stays detached from an independently verifying proof in a separate channel and can be extracted, removed, or forged
 
 ---
 
@@ -53,12 +54,13 @@ In March 2026, independent researcher Alosh Denny reverse-engineered Google Deep
 2. **Key extraction**: Averages noise across many Gemini-generated images (123,000 in the demonstration) and isolates the common pattern — the watermark's signature. Statistically recovers "the equivalent of the key" without proprietary access
 3. **Removal**: A phase-shift attack targets the specific frequency where the watermark resides and manipulates the phase to nullify the mark. Removes approximately 91% of watermark energy without giving visually noticeable damage to image quality
 4. **Forging surface**: Once the watermark's signature is recovered, the inverse — injecting the watermark into non-AI-generated content (misattribution) — also holds by the same principle. As long as the presence / absence of the watermark is the criterion for authenticity, tampering in both directions becomes a threat
+5. **Regulatory collision**: as watermarking is mandated as an institutional basis for authenticity (e.g. the EU AI Act's transparency requirement), the strip-ability and forge-ability above mean the premise "presence / absence of the watermark = truth of provenance" does not hold
 
 ---
 
 ## 4. Structural Analysis
 
-This incident belongs to the `data-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that the provenance of AI-generated content is secured as "a mark embedded in the artifact itself," and because the mark shares statistical properties with the artifact, it can be externally observed, extracted, removed, and forged. The provenance assertion (this image is / is not AI-generated) is detached from an independently verifying proof in a separate channel. Secondary tagging is `ai-decision-integrity`, recording the straddle with the verifiability of AI outputs (Pillar 02).
+This incident belongs to the `data-provenance` category of Pillar 01 (Verifiable Origin). The central **failure primitive is "embedding the provenance mark in the artifact itself (embedded provenance marking),"** and because the mark shares statistical properties with the artifact, it can be externally observed, extracted, removed, and forged. The provenance assertion (this image is / is not AI-generated) is detached from an independently verifying proof in a separate channel. Secondary tagging is `ai-decision-integrity`, recording the straddle with the verifiability of AI outputs (Pillar 02).
 
 This incident follows Brief 008 (Discord scraping) as another instance of "trust-layer risk events that are not attack incidents" (per the Methodology's scope expansion). Where Brief 008 addressed the provenance of training data via a public API plus terms of service, this incident addresses the provenance mark of AI **outputs**. Both share the structure that "the provenance of data / content lacks an independent verification layer." It is also adjacent to Brief 005 (Noroboto, font-impersonation-induced misdirection of AI document review) on the point that an authenticity assertion about content is not independently verified. The two have a symmetry: the former concerns AI input, this incident concerns AI output.
 
@@ -70,7 +72,7 @@ Watermarks and their detection APIs are useful for labeling AI-generated content
 
 That said, watermarks are a detection-style approach that embeds a mark inside the artifact, and as long as the mark exists in the same signal space as the artifact, with sufficient observation it can be statistically separated, removed, and forged. This incident demonstrates that structure. As long as the criterion by which the receiver judges "did this image really come from this model" is the presence / absence of the watermark, the attacker can both remove (erase provenance) and inject (forge provenance). Treating "no watermark = not AI-generated" or "watermark present = generated by this model" in regulatory reporting, litigation, or content-authenticity proofs carries no independent attribution residue. On the academic side as well, general-purpose watermark removal and forgery attacks (for example, UnMarker at USENIX Security 2025 and Warfare on arXiv) have been demonstrated in succession from 2023 through 2026; this incident is not an isolated case.
 
-Pre-execution / pre-distribution attestation adopts a design in which content provenance is granted not as a mark embedded in the artifact but as an independently verifiable cryptographic proof from the generating subject (a signed manifest, a ZK origin proof) that the receiver verifies. The proof sits outside the artifact's signal space and is not an "embedded mark" extractable via statistical averaging. Watermarks (detection) and cryptographic provenance (proof) are in a **complementary**, not substitutive, relationship.
+Pre-execution / pre-distribution attestation adopts a design in which content provenance is granted not as a mark embedded in the artifact but as an independently verifiable cryptographic proof from the generating subject (a signed manifest, a ZK origin proof) that the receiver verifies. The proof sits outside the artifact's signal space and is not an "embedded mark" extractable via statistical averaging. Watermarks (detection) and cryptographic provenance (proof) are in a **complementary**, not substitutive, relationship (for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for proving legitimacy without handing over a key, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
 
 ---
 
@@ -86,7 +88,14 @@ How the provenance of AI-generated content should be secured, and at which layer
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (a mark embedded in the artifact shares the same signal space as the artifact and is therefore statistically strip-able and forge-able), Lemma proposes a design that fixes content provenance not as an embedded mark but as an independently verifiable cryptographic proof from the generating subject. The provenance proof is placed outside the artifact's signal space, and no "key" extractable via averaging or frequency manipulation is left inside the artifact. Even if the mark is stripped, the proof tells through a separate channel whether "this artifact was generated under a legitimate origin or not."
+Against the detection–proof gap exposed by this incident (a mark embedded in the artifact shares the same signal space as the artifact and is therefore statistically strip-able and forge-able), Lemma proposes a design that fixes content provenance not as an embedded mark but as an independently verifiable cryptographic proof from the generating subject.
+
+- **Cryptographic provenance proof (origin proof / proof-as-auth)**: the generating subject grants, as a signed manifest or ZK origin proof, that "this artifact was generated under a legitimate origin," and the receiver verifies the proof.
+- **Placed outside the signal space**: the proof sits outside the artifact's signal space, leaving no "key" inside the artifact that averaging or frequency manipulation can extract.
+- **Addresses tampering in both directions**: even if the mark is stripped, or forged onto non-legitimate content, the proof tells through a separate channel whether the origin is legitimate.
+- **Selective disclosure**: without exposing internal information, disclose only the minimum — that "this artifact was generated under a legitimate origin."
+
+Detection (after-the-fact watermark judgment and moderation) works on labeling AI-generated-ness; pre-execution attestation (independent verification of provenance) works on establishing content authenticity — each complementary to the other. For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

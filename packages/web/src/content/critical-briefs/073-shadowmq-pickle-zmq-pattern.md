@@ -1,7 +1,7 @@
 ---
 brief_no: 73
-title: "同じ「未認証ソケットで受けたデータを即実行する」実装が、AI 推論基盤に次々コピーされていた（ShadowMQ） — trust boundary 不在の同一実装が、フレームワーク間で再利用され、エコシステム規模で広がった構造（Oligo Security / ShadowMQ）"
-title_en: "One Unsafe Pattern Copied Across AI Inference Frameworks — ShadowMQ (Unauthenticated ZMQ + pickle)"
+title: "ShadowMQ：未認証 pickle を即実行する同一実装が AI 推論基盤に次々コピーされていた — 再利用でエコシステム規模に広がった構造（Oligo Security）"
+title_en: "ShadowMQ: one unsafe pattern (unauthenticated ZMQ + pickle) copied across AI inference frameworks — the same flaw spread at ecosystem scale through reuse (Oligo Security)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["code-provenance", "identity-auth"]
@@ -10,10 +10,10 @@ published: 2026-06-19
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["072-lerobot-pickle-grpc-rce", "058-langgraph-checkpoint-rce", "025-mcp-stdio-config-to-command-rce", "028-npm-dependency-confusion-recon", "003-starlette-badhost"]
-status: draft
+status: published
 version: "1.0"
-og_lead_ja: "未認証 ZMQ ＋ pickle の同一実装が推論基盤に拡散 — ShadowMQ"
-og_lead_en: "The same unauthenticated ZMQ + pickle implementation, copied across inference stacks — ShadowMQ"
+og_lead_ja: "ShadowMQ：未認証 pickle の同一実装が AI 推論基盤に拡散した — 再利用でエコシステム規模に"
+og_lead_en: "ShadowMQ: one unauthenticated ZMQ + pickle implementation, copied across inference stacks — at ecosystem scale"
 gap_detected: "Oligo・Orca の研究公表、各ベンダーの CVE 採番と修正、pickle 自体の危険性の周知は機能し、事後の検出・報告・パッチの系列は回った。"
 gap_missing: "未認証 ZMQ ソケットに届いた pickle を「正当な送り手か・正当な内容か」を確かめずに復元する層しか無く、受信の瞬間に任意コードが実行され、同型実装が検証なく複数基盤へコピーされて同じ欠陥が拡散した。"
 gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当に持ち込まれた」ことを Lemma で独立検証して、事前に防ぐ。"
@@ -21,7 +21,7 @@ gap_fix: "deserialize の前に「この入力は信頼境界を越えて正当�
 
 ## TL;DR
 
-LLM を高速に動かす推論基盤は、内部プロセスを ZeroMQ（ZMQ）という高速ソケットでつなぎ、データを Python の pickle でやり取りすることが多い。だが ZMQ に認証が無く、受け取った pickle を即座に復元すると、ソケットに到達できる者は誰でもコードを実行できる。2025 年 11 月、Oligo Security は、この同一の危険な実装（未認証 ZMQ ＋ pickle）が Meta の **Llama Stack** を起点に NVIDIA・Microsoft・Modular・vLLM・SGLang など主要 AI 推論フレームワークへコピーされて広がっていたことを「**ShadowMQ**」として公表した。個々のバグである以上に、「受け取ったデータを検証せず実行する」trust boundary 不在の同一実装が再利用され、エコシステム規模で同じ欠陥を広げた構造である。
+多くの LLM 推論基盤は内部プロセス間を未認証の ZeroMQ で繋ぎ、データを pickle でやり取りする。届いた pickle を検証せず即復元するため、ソケットに到達できれば誰でもコードを実行できる。2025 年 11 月、Oligo Security はこの同一実装が Meta の Llama Stack を起点に主要フレームワークへ広がっていたと「ShadowMQ」として公表した。trust boundary 不在の実装が再利用で拡散した構造である。
 
 ---
 
@@ -77,7 +77,7 @@ Brief 072（LeRobot、gRPC 上の同型「未認証＋ pickle」）はこのパ�
 
 一方で、ネットワーク監視やパッチは、基盤が「いま受け取ったデータは正当な送り手の正当な内容か」を、**実行の前に**独立に検証する材料にはならない。本事案の中核は、受け取ったデータの出所・認可を検証する層が無く、deserialize がそのままコード実行になっていたこと、しかもそれが**再利用で横断的に広がっていた**ことにある。事後のログ解析は「どのソケットに何が来たか」を再構成するが、「その payload は正当な出所・内容か」を実行の前に独立検証する材料にはならない。同型実装が複数基盤に渡っているため、1 つの検知パターンでは全体を覆えない。
 
-事前証明（pre-execution attestation）は、基盤が受け取る入力を「ソケットに届いた」ことではなく「正当な出所・認可を持つ、独立検証可能なもの」として扱い、未信頼境界では実行を伴わない安全な形式で受ける設計を採る。これを基盤の標準パターンとして共有すれば、再利用されても危険な前提は運ばれない。到達の検出（detection 的な「何が来たか」）と、入力の出所・認可の証明（「正当な送り手の正当な内容か」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、推論基盤をエコシステム規模で安心して土台にできる。
+事前証明（pre-execution attestation）は、基盤が受け取る入力を「ソケットに届いた」ことではなく「正当な出所・認可を持つ、独立検証可能なもの」として扱い、未信頼境界では実行を伴わない安全な形式で受ける設計を採る。これを基盤の標準パターンとして共有すれば、再利用されても危険な前提は運ばれない。到達の検出（detection 的な「何が来たか」）と、入力の出所・認可の証明（「正当な送り手の正当な内容か」）は代替ではなく **補完** の関係にあり、両者が重なって初めて、推論基盤をエコシステム規模で安心して土台にできる（検出と事前証明の thesis は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、処理前に出所・認可を独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照）。
 
 ---
 
@@ -101,7 +101,7 @@ Brief 072（LeRobot、gRPC 上の同型「未認証＋ pickle」）はこのパ�
 - **横断的な完全性**: 同型実装が複数基盤に渡っても通用する経路を、入力の出所・認可の証明で一様に塞ぐ。1 つの検知パターン頼みにしない
 - **選択的開示**: 内部データを出さずに、「この入力は正当な出所・認可を持つ」ことだけを最小開示し、独立検証と運用情報の保護を両立する
 
-これにより、行為の時点で固定された証明が、「この入力は正当な出所・認可を持つか」を、事後のログ照合に依存せず独立検証可能なトレイルとして機能させる。検出（事後の解析・パッチ）は露出の是正に、事前証明（処理前の出所・認可の独立検証）は AI 推論基盤エコシステムの信頼確立に、それぞれ相補的に働く。
+これにより、行為の時点で固定された証明が、「この入力は正当な出所・認可を持つか」を、事後のログ照合に依存せず独立検証可能なトレイルとして機能させる。検出（事後の解析・パッチ）は露出の是正に、事前証明（処理前の出所・認可の独立検証）は AI 推論基盤エコシステムの信頼確立に、それぞれ相補的に働く。設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 
