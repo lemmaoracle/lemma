@@ -21,7 +21,7 @@ gap_fix: "For the privileged act of registering a connection target, independent
 
 ## TL;DR
 
-CVE-2026-32625 (CVSS 9.6) was published against LibreChat, an AI chat platform. A low-privilege user who embeds placeholders like `${MONGO_URI}` in an MCP server URL makes the server send its own encryption keys, JWT secrets, and DB connection strings to the attacker. What is missing is a layer that verifies, before the configuration is interpreted, who registered the connection target and what sensitive context they are authorized to reach. The resulting traffic is indistinguishable from a legitimate outbound MCP connection, so post-hoc detection struggles. Detection and pre-execution attestation are complements, not substitutes.
+LibreChat (CVE-2026-32625): a low-privilege user who embeds placeholders like `${MONGO_URI}` in an MCP server URL makes the server send its own encryption keys, JWT secrets, and DB connection strings to the attacker. What is missing is a layer that verifies, before the config is interpreted, who registered the target and what context they may reach. The traffic looks like a legitimate outbound MCP connection, so post-hoc detection struggles. Detection and pre-execution attestation are complements, not substitutes.
 
 Registered the server URL ≠ authorized the secrets access
 

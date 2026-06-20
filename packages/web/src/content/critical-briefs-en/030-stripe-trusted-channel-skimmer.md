@@ -21,7 +21,7 @@ gap_fix: "Before code runs at checkout, independently verify with Lemma that the
 
 ## TL;DR
 
-E-commerce security firm Sansec disclosed a Magecart card-skimming campaign abusing Stripe's API infrastructure (Stripe itself was not breached). The attacker repurposed the trusted domains a store allows by default (`api.stripe.com`, Google) as both the delivery channel for the skimmer and the storage backend for stolen data, slipping past CSP and network filters. What is missing is a layer that verifies, before code runs at checkout, whether that script carries provenance of legitimate placement by the store — trust in the domain's identity was used in place of the provenance of its contents. Detection and pre-execution attestation are complements, not substitutes.
+Sansec disclosed a Magecart skimming campaign abusing Stripe's API infrastructure (Stripe itself was not breached). The attacker repurposed the trusted domains a store allows by default (`api.stripe.com`, Google) as both the skimmer's delivery channel and the store for stolen data, slipping past CSP and network filters. What is missing is a layer that verifies, before code runs at checkout, whether the script carries provenance of legitimate placement by the store, not merely trust in the domain's identity. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before filing, independently verify with Lemma that the basis for this
 
 ## TL;DR
 
-In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides filed AI-generated cases that do not exist, and Judge Aycock (N.D. Miss.) sanctioned all four under Rule 11. Catching the hallucinated citations after filing cannot establish, before a brief is filed, that its cited authorities exist and carry a legitimate origin; a Rule 11 signature is only self-certification that, as the "rubberstamp[ing]" shows, guarantees nothing. What is structurally missing is a layer that, before the act, fixes the existence and provenance of cited sources to a verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides filed AI-generated cases that do not exist, and Judge Aycock (N.D. Miss.) sanctioned all four under Rule 11. Catching the hallucinated citations after filing cannot establish that the cited authorities exist and carry a legitimate origin; a Rule 11 signature only self-certifies and guarantees nothing. What is structurally missing is a layer that, before the act, fixes the existence and provenance of cited sources to a verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before ingesting data into AI training, independently verify with Lemm
 
 ## TL;DR
 
-In June 2026, researchers reverse-engineered the SDK that data broker Bright Data embeds in free apps and showed it turns devices, including always-on smart TVs, into exit nodes relaying AI-scraping traffic from a household's IP. After-the-fact analysis, DNS blocking, and platform restrictions cannot establish, at collection, under what source and consent the relay and training data were gathered; the opt-in screen ("used sometimes") and the actual behavior (200 GB/month) do not match. What is structurally missing is a layer that fixes origin and consent to a verifiable trail at collection. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, researchers reverse-engineered the SDK that data broker Bright Data embeds in free apps, showing it turns devices, including always-on smart TVs, into exit nodes relaying AI-scraping traffic from a household's IP. After-the-fact analysis, DNS blocking, and platform restrictions cannot establish under what source and consent the data was gathered; the opt-in ("used sometimes") and the behavior (200 GB/month) do not match. What is missing is a layer that fixes origin and consent to a verifiable trail at collection. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 
