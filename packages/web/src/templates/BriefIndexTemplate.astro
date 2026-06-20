@@ -520,6 +520,8 @@ const cta = isJa
           })}
         </div>
 
+        <nav class="bi-pager" data-pager hidden aria-label="Pagination"></nav>
+
         <div class="bi-no-results" hidden>
           {isJa
             ? "該当する Brief が見つかりませんでした。"
@@ -1369,6 +1371,50 @@ const cta = isJa
     color: var(--bi-cream);
   }
 
+  /* ─── Pagination ─── */
+  .bi-pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 36px 0 0;
+    flex-wrap: wrap;
+  }
+  .bi-pager[hidden] {
+    display: none;
+  }
+  .bi-pager-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    font-family: var(--bi-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bi-ink-soft);
+    background: #ffffff;
+    border: 1px solid var(--bi-line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .bi-pager-btn:hover:not([disabled]):not(.is-active) {
+    border-color: var(--bi-brown-mid);
+    color: var(--bi-ink);
+  }
+  .bi-pager-btn.is-active {
+    background: var(--bi-brown);
+    border-color: var(--bi-brown);
+    color: var(--bi-cream);
+    cursor: default;
+  }
+  .bi-pager-btn[disabled] {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .bi-pager-arrow {
+    font-size: 16px;
+  }
+
   .bi-no-results {
     padding: 48px 0;
     text-align: center;
@@ -1605,6 +1651,7 @@ const cta = isJa
     const searchInput = root.querySelector<HTMLInputElement>(".bi-search input");
     const resultsStrong = root.querySelector<HTMLElement>(".bi-results-strong");
     const noResults = root.querySelector<HTMLElement>(".bi-no-results");
+    const pager = root.querySelector<HTMLElement>("[data-pager]");
     const carousel = root.querySelector<HTMLElement>(".bi-carousel");
     const carPrev = root.querySelector<HTMLElement>(".bi-car-prev");
     const carNext = root.querySelector<HTMLElement>(".bi-car-next");
@@ -1615,6 +1662,8 @@ const cta = isJa
     let activeCat = "all";
     let activePillar = "";
     let query = "";
+    let currentPage = 1;
+    const PAGE_SIZE = 12;
 
     function cardMatches(card: HTMLElement): boolean {
       if (mode === "category")
@@ -1650,15 +1699,52 @@ const cta = isJa
 
     function apply() {
       sortCards();
-      let totalVisible = 0;
-      allCards.forEach((card) => {
-        const show = cardMatches(card);
-        card.classList.toggle("is-hidden", !show);
-        if (show) totalVisible++;
-      });
+      const grid = grids[0];
+      const ordered = grid
+        ? (Array.from(grid.children) as HTMLElement[])
+        : allCards;
+      const matching = ordered.filter(cardMatches);
+      const totalPages = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+      const start = (currentPage - 1) * PAGE_SIZE;
+      allCards.forEach((c) => c.classList.add("is-hidden"));
+      matching
+        .slice(start, start + PAGE_SIZE)
+        .forEach((c) => c.classList.remove("is-hidden"));
+      renderPagination(totalPages);
       updateFilterContext();
-      if (resultsStrong) resultsStrong.textContent = String(totalVisible);
-      if (noResults) noResults.hidden = totalVisible !== 0;
+      if (resultsStrong) resultsStrong.textContent = String(matching.length);
+      if (noResults) noResults.hidden = matching.length !== 0;
+    }
+
+    function renderPagination(totalPages: number) {
+      if (!pager) return;
+      if (totalPages <= 1) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+      }
+      let html =
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="prev" aria-label="Previous"' +
+        (currentPage === 1 ? " disabled" : "") +
+        ">‹</button>";
+      for (let p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" class="bi-pager-btn' +
+          (p === currentPage ? " is-active" : "") +
+          '" data-page="' +
+          p +
+          '">' +
+          p +
+          "</button>";
+      }
+      html +=
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="next" aria-label="Next"' +
+        (currentPage === totalPages ? " disabled" : "") +
+        ">›</button>";
+      pager.innerHTML = html;
+      pager.hidden = false;
     }
 
     function updateFilterContext() {
@@ -1698,6 +1784,7 @@ const cta = isJa
     }
 
     function update(writeURL = true) {
+      currentPage = 1;
       syncChips();
       apply();
       if (writeURL) setURL();
@@ -1755,7 +1842,32 @@ const cta = isJa
     }
 
     // Sort
-    if (sortSel) sortSel.addEventListener("change", () => apply());
+    if (sortSel)
+      sortSel.addEventListener("change", () => {
+        currentPage = 1;
+        apply();
+      });
+
+    // Pagination
+    if (pager) {
+      pager.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-page]");
+        if (!btn || btn.hasAttribute("disabled")) return;
+        const grid = grids[0];
+        const matchCount = grid
+          ? (Array.from(grid.children) as HTMLElement[]).filter(cardMatches)
+              .length
+          : 0;
+        const totalPages = Math.max(1, Math.ceil(matchCount / PAGE_SIZE));
+        const v = btn.dataset.page;
+        if (v === "prev") currentPage = Math.max(1, currentPage - 1);
+        else if (v === "next")
+          currentPage = Math.min(totalPages, currentPage + 1);
+        else currentPage = Number(v) || 1;
+        apply();
+        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
 
     // Density
     densityBtns.forEach((btn) => {
