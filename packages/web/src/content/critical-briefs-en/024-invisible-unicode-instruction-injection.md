@@ -20,7 +20,7 @@ gap_fix: "Before passing input to the model, independently verify with Lemma tha
 
 ## TL;DR
 
-In 2026, the CSA disclosed a technique that hides invisible Unicode characters in AI-agent skills and tool definitions to steer the model. Characters that render as blank space to humans are read as meaningful instructions, so an attacker can embed commands that pass human review unseen. Without a verification layer there is no guarantee that what a human sees equals what the model reads. Detection and pre-execution attestation of input origin and integrity are complements, not substitutes.
+In 2026, the CSA disclosed a technique that hides invisible Unicode characters in AI-agent skills and tool definitions to steer the model. Characters that render as blank space to humans are read as meaningful instructions, so an attacker can embed commands that pass human review unseen. Without a verification layer there is no guarantee that what a human sees equals what the model reads. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

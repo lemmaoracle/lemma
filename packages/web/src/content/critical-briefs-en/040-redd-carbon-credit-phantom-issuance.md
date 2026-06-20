@@ -21,7 +21,7 @@ gap_fix: "Before issuing or trading credits, independently verify with Lemma tha
 
 ## TL;DR
 
-Brazil's Federal Police charged 31 people as "Operation Greenwashing," over carbon credits generated from land with no real conservation and sold to majors including Nestlé and Boeing. Reporting, satellite analysis, and the police probe surfaced the divergence only after the credits had flowed into corporate disclosure — after-the-fact detection. What is structurally missing is a layer that verifies, at issuance, whether the declared conservation area and logging volume reflect the true source data; self-declaration was accepted as is. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+Brazil's Federal Police charged 31 people as "Operation Greenwashing," over carbon credits generated from land with no real conservation and sold to majors including Nestlé and Boeing. Reporting, satellite analysis, and the police probe surfaced the divergence only after the credits had flowed into corporate disclosure — after-the-fact detection. What is structurally missing is a layer that verifies, at issuance, whether the declared conservation area and logging volume reflect the true source data; self-declaration was accepted as is. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

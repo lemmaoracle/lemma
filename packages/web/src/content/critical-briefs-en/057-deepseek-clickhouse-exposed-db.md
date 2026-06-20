@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this p
 
 ## TL;DR
 
-In January 2025, Wiz Research found that AI company DeepSeek had a backend ClickHouse database publicly exposed with no authentication. Anyone could reach it over open ports, and it exposed over a million log lines, plaintext chat history, API keys, and secret tokens. After-the-fact detection like external scanning works only once the exposure already exists, and on an unauthenticated backend there is no means to tell whether a party that reached it is legitimate — reachability became full retrieval. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+In January 2025, Wiz Research found that AI company DeepSeek had a backend ClickHouse database publicly exposed with no authentication. Anyone could reach it over open ports, and it exposed over a million log lines, plaintext chat history, API keys, and secret tokens. After-the-fact detection like external scanning works only once the exposure already exists, and on an unauthenticated backend there is no means to tell whether a party that reached it is legitimate — reachability became full retrieval. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

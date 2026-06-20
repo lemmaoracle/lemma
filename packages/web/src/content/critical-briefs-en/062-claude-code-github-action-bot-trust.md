@@ -21,7 +21,7 @@ gap_fix: "Before an agent acts with privilege, independently verify with Lemma t
 
 ## TL;DR
 
-In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution. After-the-fact detection and pre-execution proof that independently verifies origin and authorization before acting are complements, not substitutes.
+In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

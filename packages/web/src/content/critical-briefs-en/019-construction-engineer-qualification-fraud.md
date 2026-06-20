@@ -21,7 +21,7 @@ gap_fix: "Before placement, independently verify with Lemma that the engineer va
 
 ## TL;DR
 
-In December 2024, Japan's MLIT issued an administrative instruction against a construction operator for placing employees who held national construction-management licenses obtained without the required practical experience on sites that mandate qualified workers. Self-reported experience is not re-verified at issuance, and with no layer to confirm qualification before placement, the gap between the asserted attribute and reality surfaces only through after-the-fact detection — internal review or audit — years late, which cannot change whether the engineer was properly qualified at assignment. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In December 2024, Japan's MLIT issued an administrative instruction against a construction operator for placing employees who held national construction-management licenses obtained without the required practical experience on sites that mandate qualified workers. Self-reported experience is not re-verified at issuance, and with no layer to confirm qualification before placement, the gap between the asserted attribute and reality surfaces only through after-the-fact detection — internal review or audit — years late, which cannot change whether the engineer was properly qualified at assignment. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

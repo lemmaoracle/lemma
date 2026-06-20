@@ -21,7 +21,7 @@ gap_fix: "Rather than trusting the crash records after the fact, independently v
 
 ## TL;DR
 
-Tesla unredacted the Robotaxi crash narratives filed with NHTSA, revealing that 2 of the Austin crashes were caused not by the autonomous system but by human teleoperators driving remotely. Tesla had redacted every narrative as a "trade secret." Crash reporting and regulatory investigation worked, but what was in control, and whether the record reflects the facts, were left to the operator's self-reporting and self-redaction. The record's existence is not proof of attribution. Detection and after-the-fact disclosure, and pre-execution attestation that fixes control attribution and authorization at the moment of action, are complements, not substitutes.
+Tesla unredacted the Robotaxi crash narratives filed with NHTSA, revealing that 2 of the Austin crashes were caused not by the autonomous system but by human teleoperators driving remotely. Tesla had redacted every narrative as a "trade secret." Crash reporting and regulatory investigation worked, but what was in control, and whether the record reflects the facts, were left to the operator's self-reporting and self-redaction. The record's existence is not proof of attribution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before using an AI judgment in a decision such as a coercive enforceme
 
 ## TL;DR
 
-The Detroit Police Department wrongfully arrested Robert Williams, a Black American, and held him roughly 30 hours on a false facial-recognition (FRT) match. The AI match — a probabilistic candidate from a surveillance still and a driver's-license photo — was treated as identification of the suspect without independent corroboration and drove the arrest directly: the first publicly confirmed FRT-induced wrongful arrest in the US. Accuracy and bias evaluations such as NIST's inform technology selection but cannot change whether each match was independently corroborated and authorized before action. Detection and pre-action attestation of origin and authorization are complements, not substitutes.
+The Detroit Police Department wrongfully arrested Robert Williams, a Black American, and held him roughly 30 hours on a false facial-recognition (FRT) match. The AI match — a probabilistic candidate from a surveillance still and a driver's-license photo — was treated as identification of the suspect without independent corroboration and drove the arrest directly: the first publicly confirmed FRT-induced wrongful arrest in the US. Accuracy and bias evaluations such as NIST's inform technology selection but cannot change whether each match was independently corroborated and authorized before action. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

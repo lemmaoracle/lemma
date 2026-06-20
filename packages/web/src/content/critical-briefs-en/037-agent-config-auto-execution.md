@@ -21,7 +21,7 @@ gap_fix: "Before the agent executes a bundled config, independently verify with 
 
 ## TL;DR
 
-SymJack and TrustFall — flaws letting AI coding agents (Claude Code, Cursor, Gemini CLI) auto-execute repository-bundled config without checking its contents or origin — were weaponized by the self-propagating malware Miasma. GitHub disabled 73 Microsoft-org repositories, but only after the config had executed and credentials were stolen. What was missing was a layer to confirm, before execution, whether the config came from a legitimate author within an authorized scope; instead an "opened / trusted" action became the basis for execution. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+SymJack and TrustFall — flaws letting AI coding agents (Claude Code, Cursor, Gemini CLI) auto-execute repository-bundled config without checking its contents or origin — were weaponized by the self-propagating malware Miasma. GitHub disabled 73 Microsoft-org repositories, but only after the config had executed and credentials were stolen. What was missing was a layer to confirm, before execution, whether the config came from a legitimate author within an authorized scope; instead an "opened / trusted" action became the basis for execution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

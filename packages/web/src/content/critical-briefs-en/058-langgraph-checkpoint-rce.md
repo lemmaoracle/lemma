@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this c
 
 ## TL;DR
 
-In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabilities: chaining CVE-2025-67644 (SQL injection in the SQLite checkpointer) with CVE-2026-28277 (unsafe msgpack deserialization) achieves remote code execution. The attacker slips a forged row into the checkpoint (the agent's "memory"), and the moment the agent deserializes that state back unverified, arbitrary code runs. Vulnerability scanners and patching cannot reach a structure in which the agent reconstructs its own persistent state in a privileged context without verifying provenance or integrity. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabilities: chaining CVE-2025-67644 (SQL injection in the SQLite checkpointer) with CVE-2026-28277 (unsafe msgpack deserialization) achieves remote code execution. The attacker slips a forged row into the checkpoint (the agent's "memory"), and the moment the agent deserializes that state back unverified, arbitrary code runs. Vulnerability scanners and patching cannot reach a structure in which the agent reconstructs its own persistent state in a privileged context without verifying provenance or integrity. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

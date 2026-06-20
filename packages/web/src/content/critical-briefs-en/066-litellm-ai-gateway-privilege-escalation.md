@@ -21,7 +21,7 @@ gap_fix: "Before a privileged operation, independently verify with Lemma that th
 
 ## TL;DR
 
-LiteLLM — the leading OSS AI gateway consolidating internal AI use — let a low-privilege user reach admin and remote code execution on the server, a chain of three vulnerabilities Obsidian Security disclosed. Responsible disclosure and after-the-fact logs cannot confirm, before an operation, whether a call is permitted for that party. Authorization was split across a route layer and a handler layer, each assuming the other had checked, with no layer verifying authorization at the moment of the action. Detection and pre-execution attestation that independently verifies authorization before acting are complements, not substitutes.
+LiteLLM — the leading OSS AI gateway consolidating internal AI use — let a low-privilege user reach admin and remote code execution on the server, a chain of three vulnerabilities Obsidian Security disclosed. Responsible disclosure and after-the-fact logs cannot confirm, before an operation, whether a call is permitted for that party. Authorization was split across a route layer and a handler layer, each assuming the other had checked, with no layer verifying authorization at the moment of the action. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

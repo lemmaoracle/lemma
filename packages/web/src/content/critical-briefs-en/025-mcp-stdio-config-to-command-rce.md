@@ -20,7 +20,7 @@ gap_fix: "Before moving from configuration to execution, independently verify wi
 
 ## TL;DR
 
-In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows externally supplied configuration directly into command execution, enabling RCE. It is not a single-language bug but inherent in the reference SDK's design, so it propagates at supply-chain scale. The vendor reportedly called the behavior "expected" and did not alter the core design, and detection cannot change the design itself. What is missing is a layer that separates accepting a configuration from authorizing it as execution, verifying authority before execution. After-the-fact detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows externally supplied configuration directly into command execution, enabling RCE. It is not a single-language bug but inherent in the reference SDK's design, so it propagates at supply-chain scale. The vendor reportedly called the behavior "expected" and did not alter the core design, and detection cannot change the design itself. What is missing is a layer that separates accepting a configuration from authorizing it as execution, verifying authority before execution. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

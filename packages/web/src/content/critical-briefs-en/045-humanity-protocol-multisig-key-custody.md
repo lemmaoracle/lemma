@@ -21,7 +21,7 @@ gap_fix: "Before executing a fund movement or contract change, independently ver
 
 ## TL;DR
 
-At Humanity Protocol, one developer's malware-infected laptop was enough for the seven private keys co-located on that device to be stolen at once, clearing the multisig threshold and draining over $32M. Onchain analysis, attribution scrutiny, and exchange response act only after funds move — after-the-fact detection. (This Brief makes no attribution.) What is structurally missing is a layer that verifies, at execution, whether the threshold-meeting signatures are a deliberate approval by separate legitimate parties; the threshold alone sufficed. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+At Humanity Protocol, one developer's malware-infected laptop was enough for the seven private keys co-located on that device to be stolen at once, clearing the multisig threshold and draining over $32M. Onchain analysis, attribution scrutiny, and exchange response act only after funds move — after-the-fact detection. (This Brief makes no attribution.) What is structurally missing is a layer that verifies, at execution, whether the threshold-meeting signatures are a deliberate approval by separate legitimate parties; the threshold alone sufficed. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before physical motion, independently verify with Lemma that this comm
 
 ## TL;DR
 
-CISA warned that PolyScope 5 (before 5.25.1), the control software for the widely deployed Universal Robots cobots, carries a critical flaw (CVE-2026-8153) by which an unauthenticated attacker can run arbitrary code on the robot's OS. PolyScope passed user-supplied input to the OS without neutralizing it, so network reachability alone meant control. CISA advisories, a patch, and segmentation cannot confirm, before physical motion, whether the command's sender holds legitimate authority to operate the robot. The authorization check itself was absent from the path. Detection and pre-execution attestation that independently verifies authorization before acting are complements, not substitutes.
+CISA warned that PolyScope 5 (before 5.25.1), the control software for the widely deployed Universal Robots cobots, carries a critical flaw (CVE-2026-8153) by which an unauthenticated attacker can run arbitrary code on the robot's OS. PolyScope passed user-supplied input to the OS without neutralizing it, so network reachability alone meant control. CISA advisories, a patch, and segmentation cannot confirm, before physical motion, whether the command's sender holds legitimate authority to operate the robot. The authorization check itself was absent from the path. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

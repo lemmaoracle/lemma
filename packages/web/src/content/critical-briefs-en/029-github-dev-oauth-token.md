@@ -21,7 +21,7 @@ gap_fix: "Before a privileged act such as installing an extension, independently
 
 ## TL;DR
 
-Researcher Ammar Askar published a one-click attack and PoC in github.dev, the browser build of VS Code. Clicking an attacker's link lets a webview script use synthetic key events — not real user actions — to install a malicious extension that steals github.dev's OAuth token. That token was not scoped to the open repo but valid for every repo the user can access. What is missing is a layer that verifies, before the action, under whose authorization the install runs and to what range the token is delegated. Post-hoc detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+Researcher Ammar Askar published a one-click attack and PoC in github.dev, the browser build of VS Code. Clicking an attacker's link lets a webview script use synthetic key events — not real user actions — to install a malicious extension that steals github.dev's OAuth token. That token was not scoped to the open repo but valid for every repo the user can access. What is missing is a layer that verifies, before the action, under whose authorization the install runs and to what range the token is delegated. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this r
 
 ## TL;DR
 
-In June 2025, researchers Ian Carroll and Sam Curry found that the admin console of McDonald's AI recruitment platform McHire (Paradox.ai) could be entered with an abandoned test account whose username and password were both "123456," and that via an IDOR, incrementing applicant IDs reached up to 64 million records. The same-day fix and bug bounty — after-the-fact remediation — cannot reach a structure in which the accessing party's authority is not independently verified before access, so reachability became retrieval. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+In June 2025, researchers Ian Carroll and Sam Curry found that the admin console of McDonald's AI recruitment platform McHire (Paradox.ai) could be entered with an abandoned test account whose username and password were both "123456," and that via an IDOR, incrementing applicant IDs reached up to 64 million records. The same-day fix and bug bounty — after-the-fact remediation — cannot reach a structure in which the accessing party's authority is not independently verified before access, so reachability became retrieval. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

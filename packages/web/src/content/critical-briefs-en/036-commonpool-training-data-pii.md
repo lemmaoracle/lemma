@@ -21,7 +21,7 @@ gap_fix: "Rather than asking whether it is public, independently verify with Lem
 
 ## TL;DR
 
-DataComp CommonPool, one of the largest public AI training datasets, was reported to contain large volumes of real individuals' personal data — passports, résumés, faces. Independent audit made it visible, but after-the-fact PII filtering cannot guarantee coverage: a 0.1% sample alone leaked over 800 faces. What was missing was a layer to confirm, at collection time, whether each item had the provenance and consent for training; instead it was fixed at scale and propagates downstream irrecoverably. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+DataComp CommonPool, one of the largest public AI training datasets, was reported to contain large volumes of real individuals' personal data — passports, résumés, faces. Independent audit made it visible, but after-the-fact PII filtering cannot guarantee coverage: a 0.1% sample alone leaked over 800 faces. What was missing was a layer to confirm, at collection time, whether each item had the provenance and consent for training; instead it was fixed at scale and propagates downstream irrecoverably. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

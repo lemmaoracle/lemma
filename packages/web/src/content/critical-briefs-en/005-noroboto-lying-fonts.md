@@ -21,7 +21,7 @@ gap_fix: "Before the AI makes a decision, independently verify with Lemma that t
 
 ## TL;DR
 
-Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a document shifts the mapping between Unicode code points and rendered glyphs, decoupling what a human reads on screen from the string an AI extracts. Because the AI reasons correctly over the input it receives, output-side hallucination detection is unlikely to fire. What was missing is a layer that, before judgment, independently verifies whether what the AI read matches what the human saw. Post-judgment detection and pre-execution attestation of input origin and integrity are complements, not substitutes.
+Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a document shifts the mapping between Unicode code points and rendered glyphs, decoupling what a human reads on screen from the string an AI extracts. Because the AI reasons correctly over the input it receives, output-side hallucination detection is unlikely to fire. What was missing is a layer that, before judgment, independently verifies whether what the AI read matches what the human saw. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

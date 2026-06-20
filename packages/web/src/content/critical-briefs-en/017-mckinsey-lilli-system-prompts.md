@@ -21,7 +21,7 @@ gap_fix: "Before the AI produces output, independently verify with Lemma that th
 
 ## TL;DR
 
-In February 2026, an autonomous AI agent run by red-team firm CodeWall, under responsible disclosure, reached full read/write access to the production database behind McKinsey's internal generative-AI platform "Lilli," from zero credentials. The most significant exposure: the system prompts governing Lilli's behavior were all writable. Because output looks normal even when those instructions are rewritten, users cannot judge whether a response rests on legitimate, untampered instructions, and silent tampering slips past detection. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In February 2026, an autonomous AI agent run by red-team firm CodeWall, under responsible disclosure, reached full read/write access to the production database behind McKinsey's internal generative-AI platform "Lilli," from zero credentials. The most significant exposure: the system prompts governing Lilli's behavior were all writable. Because output looks normal even when those instructions are rewritten, users cannot judge whether a response rests on legitimate, untampered instructions, and silent tampering slips past detection. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

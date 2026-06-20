@@ -21,7 +21,7 @@ gap_fix: "Before type designation, independently verify with Lemma that the prod
 
 ## TL;DR
 
-In January 2024, in a type-designation fraud, Japan's MLIT revoked the type designation of three models from a major automaker after the certification test data — the state's basis for confirming vehicles meet safety standards — was found falsified; similar irregularities surfaced across makers of cars, motorcycles, and industrial engines. Detection is after-the-fact: it cannot change whether the submitted data was legitimately obtained at application, and shipped vehicles are already in the market. What is missing is a layer that independently verifies conformity at application. After-the-fact detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+In January 2024, in a type-designation fraud, Japan's MLIT revoked the type designation of three models from a major automaker after the certification test data — the state's basis for confirming vehicles meet safety standards — was found falsified; similar irregularities surfaced across makers of cars, motorcycles, and industrial engines. Detection is after-the-fact: it cannot change whether the submitted data was legitimately obtained at application, and shipped vehicles are already in the market. What is missing is a layer that independently verifies conformity at application. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

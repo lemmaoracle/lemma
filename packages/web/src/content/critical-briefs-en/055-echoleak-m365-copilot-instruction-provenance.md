@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this a
 
 ## TL;DR
 
-EchoLeak (CVE-2025-32711), disclosed by Aim Labs in June 2025, made Microsoft 365 Copilot exfiltrate sensitive internal data to an attacker's server with no user interaction (zero-click) — just one crafted email. Copilot could not distinguish an instruction smuggled into that email from data to be processed. However much after-the-fact detection like the XPIA classifier is strengthened, it cannot supply, at the moment the AI acts, an independent check that the ingested instruction's origin and authority are legitimate. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+EchoLeak (CVE-2025-32711), disclosed by Aim Labs in June 2025, made Microsoft 365 Copilot exfiltrate sensitive internal data to an attacker's server with no user interaction (zero-click) — just one crafted email. Copilot could not distinguish an instruction smuggled into that email from data to be processed. However much after-the-fact detection like the XPIA classifier is strengthened, it cannot supply, at the moment the AI acts, an independent check that the ingested instruction's origin and authority are legitimate. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Rather than possession of a key or credential, independently verify wi
 
 ## TL;DR
 
-Microsoft Threat Intelligence published an attack in which compromising one internet-facing, end-of-life F5 BIG-IP cascaded into full Active Directory takeover. Threat research made the chain visible, but detection is reactive: by the time it fired, the stored credentials were already taken. What was missing was a layer to confirm, at each hop, whether the credential's holder had the authorization and provenance for this action within this scope; instead, mere possession of stolen credentials passed as authority. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+Microsoft Threat Intelligence published an attack in which compromising one internet-facing, end-of-life F5 BIG-IP cascaded into full Active Directory takeover. Threat research made the chain visible, but detection is reactive: by the time it fired, the stored credentials were already taken. What was missing was a layer to confirm, at each hop, whether the credential's holder had the authorization and provenance for this action within this scope; instead, mere possession of stolen credentials passed as authority. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

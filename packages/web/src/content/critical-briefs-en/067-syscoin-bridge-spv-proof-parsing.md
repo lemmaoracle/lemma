@@ -21,7 +21,7 @@ gap_fix: "Before minting, independently verify with Lemma that the burn this pro
 
 ## TL;DR
 
-The Syscoin bridge minted roughly 5 billion SYS with no real burn behind it. The cryptography was not broken: the attacker sent a fake proof crafted to exploit a parsing flaw in the SPV proof-verification code, and the relay read it as "a valid proof for a nonexistent burn." Halting the bridge, freezing assets, and post-incident analysis cannot confirm, before minting, whether the burn a proof references actually exists. A proof being structurally accepted was decoupled from the fact it points to. Detection and pre-execution attestation that independently verifies provenance and authorization before acting are complements, not substitutes.
+The Syscoin bridge minted roughly 5 billion SYS with no real burn behind it. The cryptography was not broken: the attacker sent a fake proof crafted to exploit a parsing flaw in the SPV proof-verification code, and the relay read it as "a valid proof for a nonexistent burn." Halting the bridge, freezing assets, and post-incident analysis cannot confirm, before minting, whether the burn a proof references actually exists. A proof being structurally accepted was decoupled from the fact it points to. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

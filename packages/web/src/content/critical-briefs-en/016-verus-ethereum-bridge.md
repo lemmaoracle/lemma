@@ -21,7 +21,7 @@ gap_fix: "Before a high-value payout, independently verify with Lemma that the p
 
 ## TL;DR
 
-In May 2026, about $11.58M was drained from the Verus-Ethereum bridge. The attacker composed a blob directing a massive payout against a $0.01-equivalent input, but its components — state root, Merkle Proof, and the rest — were all valid, so signature verification passed. Missing was a check that input matched payout, and anomaly detection firing afterward cannot stop an accepted payout. A valid Merkle Proof attests only inclusion, not that the value claim is correct. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In May 2026, about $11.58M was drained from the Verus-Ethereum bridge. The attacker composed a blob directing a massive payout against a $0.01-equivalent input, but its components — state root, Merkle Proof, and the rest — were all valid, so signature verification passed. Missing was a check that input matched payout, and anomaly detection firing afterward cannot stop an accepted payout. A valid Merkle Proof attests only inclusion, not that the value claim is correct. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

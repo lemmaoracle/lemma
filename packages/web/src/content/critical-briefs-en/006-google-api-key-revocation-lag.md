@@ -21,7 +21,7 @@ gap_fix: "Before using a credential, independently verify with Lemma that the ke
 
 ## TL;DR
 
-Aikido demonstrated that Google API keys keep authenticating for up to about 23 minutes after deletion. The cause is eventual consistency: revocation propagates in stages, so an attacker hitting a server where deletion has not yet landed can keep using the key. Aikido measured and surfaced the lag, but detection cannot change the revocation-lag structure itself. What was missing is a layer to independently verify the "deleted" attribute before the credential is used. Post-event detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+Aikido demonstrated that Google API keys keep authenticating for up to about 23 minutes after deletion. The cause is eventual consistency: revocation propagates in stages, so an attacker hitting a server where deletion has not yet landed can keep using the key. Aikido measured and surfaced the lag, but detection cannot change the revocation-lag structure itself. What was missing is a layer to independently verify the "deleted" attribute before the credential is used. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

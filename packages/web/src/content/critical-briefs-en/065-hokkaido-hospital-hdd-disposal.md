@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk disposal, independently verify with Lemma that this
 
 ## TL;DR
 
-HDDs that NHO's Hokkaido Medical Center and Hokkaido Cancer Center entrusted to a disposal vendor reached the secondhand market unshredded, still holding names and medical conditions for roughly 186,900 patients and staff. A buyer's report, recovery, and a criminal complaint cannot confirm, at the moment of disposal, whether the media were actually destroyed. A paper certificate can be issued even when nothing was shredded, so the destruction attribute was never fixed as an independently verifiable trail. Detection and pre-execution attestation that independently verifies provenance and authorization before acting are complements, not substitutes.
+HDDs that NHO's Hokkaido Medical Center and Hokkaido Cancer Center entrusted to a disposal vendor reached the secondhand market unshredded, still holding names and medical conditions for roughly 186,900 patients and staff. A buyer's report, recovery, and a criminal complaint cannot confirm, at the moment of disposal, whether the media were actually destroyed. A paper certificate can be issued even when nothing was shredded, so the destruction attribute was never fixed as an independently verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

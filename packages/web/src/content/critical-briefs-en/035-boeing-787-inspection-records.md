@@ -21,7 +21,7 @@ gap_fix: "Before moving downstream, independently verify with Lemma that the ins
 
 ## TL;DR
 
-Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory wing-to-body-join safety inspections were recorded as complete while workers had never performed them. The records were in order, so document audits and system checks passed; the divergence surfaced only in a later investigation. What was missing was independent verification, when the record was generated, that it was backed by an actual inspection act; records with no underlying work passed downstream as "inspected." After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory wing-to-body-join safety inspections were recorded as complete while workers had never performed them. The records were in order, so document audits and system checks passed; the divergence surfaced only in a later investigation. What was missing was independent verification, when the record was generated, that it was backed by an actual inspection act; records with no underlying work passed downstream as "inspected." Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

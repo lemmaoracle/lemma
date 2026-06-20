@@ -21,7 +21,7 @@ gap_fix: "Before authorizing an age-restricted feature, independently verify wit
 
 ## TL;DR
 
-A third-party vendor, 5CA, used in Discord's age verification was breached, and at least 70,000 government-issued ID images were stolen. To prove one predicate — that they are over 18 — users hand over the raw ID, which then piles up with the third party, so proving the attribute is never separated from storing the ID. Discord detected the breach and switched vendors, but only after the theft, and leaked IDs cannot be recovered. Detection and pre-execution attestation via selective disclosure — proving only that the age condition is met without the raw ID — are complements, not substitutes.
+A third-party vendor, 5CA, used in Discord's age verification was breached, and at least 70,000 government-issued ID images were stolen. To prove one predicate — that they are over 18 — users hand over the raw ID, which then piles up with the third party, so proving the attribute is never separated from storing the ID. Discord detected the breach and switched vendors, but only after the theft, and leaked IDs cannot be recovered. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

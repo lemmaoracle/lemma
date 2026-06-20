@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this m
 
 ## TL;DR
 
-In October 2025, OpenAI released the video generator Sora 2 with a policy under which copyrighted characters could be generated unless the rightsholder opted out. That inversion — use first, object later — spread videos including One Piece, Demon Slayer, and Pokémon; within about three days OpenAI reversed to opt-in, and CODA and the Japanese government requested correction. After-the-fact objection and output filters cannot reach a structure in which the material's rights, consent, and provenance were never fixed before generation. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+In October 2025, OpenAI released the video generator Sora 2 with a policy under which copyrighted characters could be generated unless the rightsholder opted out. That inversion — use first, object later — spread videos including One Piece, Demon Slayer, and Pokémon; within about three days OpenAI reversed to opt-in, and CODA and the Japanese government requested correction. After-the-fact objection and output filters cannot reach a structure in which the material's rights, consent, and provenance were never fixed before generation. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

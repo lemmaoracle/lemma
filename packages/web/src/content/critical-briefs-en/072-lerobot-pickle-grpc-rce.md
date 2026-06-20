@@ -21,7 +21,7 @@ gap_fix: "Before deserializing, independently verify with Lemma that the input w
 
 ## TL;DR
 
-CVE-2026-25874 was disclosed in LeRobot, Hugging Face's OSS robot-learning framework: it deserializes (pickle) data received over a gRPC channel with no authentication and no TLS, without checking its contents. An unauthenticated attacker can run arbitrary commands on the host just by sending a crafted payload, and that path leads straight to the robot's joint control. The CVE assignment and disclosure cannot confirm, before deserialization, that the input legitimately crossed the trust boundary — there was none verifying the origin or authorization of received data. Detection and pre-execution attestation that independently verifies provenance and authorization before acting are complements, not substitutes.
+CVE-2026-25874 was disclosed in LeRobot, Hugging Face's OSS robot-learning framework: it deserializes (pickle) data received over a gRPC channel with no authentication and no TLS, without checking its contents. An unauthenticated attacker can run arbitrary commands on the host just by sending a crafted payload, and that path leads straight to the robot's joint control. The CVE assignment and disclosure cannot confirm, before deserialization, that the input legitimately crossed the trust boundary — there was none verifying the origin or authorization of received data. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

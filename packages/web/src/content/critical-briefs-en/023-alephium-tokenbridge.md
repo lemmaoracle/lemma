@@ -21,7 +21,7 @@ gap_fix: "Before the bridge signs and disburses, independently verify with Lemma
 
 ## TL;DR
 
-On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K. The guardians' keys were intact and no smart-contract bug was exploited. The attacker forged the very events the bridge treats as legitimate transactions and had the guardians sign them. The signing worked and the VAAs were formally valid, but no layer verified whether the signed event came from a legitimate contract. Detection does not change which events guardians sign, and by the time it fires the main drain is complete. Signature-validity verification and pre-execution attestation of an event's origin are complements, not substitutes.
+On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K. The guardians' keys were intact and no smart-contract bug was exploited. The attacker forged the very events the bridge treats as legitimate transactions and had the guardians sign them. The signing worked and the VAAs were formally valid, but no layer verified whether the signed event came from a legitimate contract. Detection does not change which events guardians sign, and by the time it fires the main drain is complete. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

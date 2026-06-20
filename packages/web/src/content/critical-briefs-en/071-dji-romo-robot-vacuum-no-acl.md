@@ -21,7 +21,7 @@ gap_fix: "Before access, independently verify with Lemma that this party holds l
 
 ## TL;DR
 
-When a researcher connected a homemade client to the DJI ROMO robot vacuum's cloud, ~7,000 other people's units (across 24+ countries) responded, exposing live camera video, microphone audio, and home maps. The MQTT broker had no ACL, so one authenticated connection — bound to no specific unit — could subscribe to every unit's topics. Responsible disclosure, a swift fix, and logs cannot confirm, before access, whether the subscribing party holds authority over a given unit. Authentication and per-device authorization were never separated or independently verified. Detection and pre-execution attestation that independently verifies authorization before acting are complements, not substitutes.
+When a researcher connected a homemade client to the DJI ROMO robot vacuum's cloud, ~7,000 other people's units (across 24+ countries) responded, exposing live camera video, microphone audio, and home maps. The MQTT broker had no ACL, so one authenticated connection — bound to no specific unit — could subscribe to every unit's topics. Responsible disclosure, a swift fix, and logs cannot confirm, before access, whether the subscribing party holds authority over a given unit. Authentication and per-device authorization were never separated or independently verified. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

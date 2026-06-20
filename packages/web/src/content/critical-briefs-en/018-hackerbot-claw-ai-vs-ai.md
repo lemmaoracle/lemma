@@ -21,7 +21,7 @@ gap_fix: "Before an AI agent ingests instructions, independently verify with Lem
 
 ## TL;DR
 
-In February 2026, an attacker called hackerbot-claw, self-described as autonomous, abused several popular open-source projects' CI/CD workflows and mounted the first recorded AI-vs-AI attack. It rewrote a repository's `CLAUDE.md` — the instruction file an AI coding agent ingests as its behavioral guidance — into text aimed at hijacking the defending AI. Claude refused the injection this time, but detection depends on the model, and the structure in which an agent ingests external instructions without checking their origin or integrity remains. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In February 2026, an attacker called hackerbot-claw, self-described as autonomous, abused several popular open-source projects' CI/CD workflows and mounted the first recorded AI-vs-AI attack. It rewrote a repository's `CLAUDE.md` — the instruction file an AI coding agent ingests as its behavioral guidance — into text aimed at hijacking the defending AI. Claude refused the injection this time, but detection depends on the model, and the structure in which an agent ingests external instructions without checking their origin or integrity remains. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

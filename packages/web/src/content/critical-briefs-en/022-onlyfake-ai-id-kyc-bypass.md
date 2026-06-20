@@ -21,7 +21,7 @@ gap_fix: "Before account opening, independently verify with Lemma that the ident
 
 ## TL;DR
 
-In February 2024, 404 Media reported that a UK passport image from the fake-ID service "OnlyFake" cleared the KYC check at the major crypto exchange OKX. KYC review only judges whether an ID image looks authentic; it never verifies that the issuer actually issued the document. Strengthening detection is an arms race with the generative side and cannot answer whether an image came from a genuine issuer. What is missing is a layer that cryptographically verifies the issuer signature before account opening. After-the-fact detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+In February 2024, 404 Media reported that a UK passport image from the fake-ID service "OnlyFake" cleared the KYC check at the major crypto exchange OKX. KYC review only judges whether an ID image looks authentic; it never verifies that the issuer actually issued the document. Strengthening detection is an arms race with the generative side and cannot answer whether an image came from a genuine issuer. What is missing is a layer that cryptographically verifies the issuer signature before account opening. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

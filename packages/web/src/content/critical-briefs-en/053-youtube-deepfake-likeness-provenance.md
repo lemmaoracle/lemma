@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this l
 
 ## TL;DR
 
-A campaign of AI scam ads impersonating celebrities on YouTube was, by one investigation, viewed about 200 million times. YouTube expanded an AI likeness-detection tool that scans uploaded videos for an enrolled face, but it works only after the synthetic clone has been made and spread. Because likeness and voice carry no consented provenance fixed before generation and publication, detection structurally trails the spread. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before action are not substitutes but complements.
+A campaign of AI scam ads impersonating celebrities on YouTube was, by one investigation, viewed about 200 million times. YouTube expanded an AI likeness-detection tool that scans uploaded videos for an enrolled face, but it works only after the synthetic clone has been made and spread. Because likeness and voice carry no consented provenance fixed before generation and publication, detection structurally trails the spread. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

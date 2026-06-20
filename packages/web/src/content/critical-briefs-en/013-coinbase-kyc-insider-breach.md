@@ -21,7 +21,7 @@ gap_fix: "When performing the identity verification regulators require, independ
 
 ## TL;DR
 
-Coinbase disclosed that bribed overseas-outsourced support personnel in India had exfiltrated and sold the KYC data of at least 69,461 customers — names, addresses, masked SSNs, bank account identifiers, and government-issued ID images. Passwords, private keys, and funds were not taken. The attackers demanded a $20M ransom; Coinbase refused. Detection and response functioned, but the raw PII that KYC/AML regulation requires operators to store was always within reach of insiders holding legitimate access — a standing breach surface. Detection and pre-execution attestation that proves a user is verified without hoarding raw PII are complements, not substitutes.
+Coinbase disclosed that bribed overseas-outsourced support personnel in India had exfiltrated and sold the KYC data of at least 69,461 customers — names, addresses, masked SSNs, bank account identifiers, and government-issued ID images. Passwords, private keys, and funds were not taken. The attackers demanded a $20M ransom; Coinbase refused. Detection and response functioned, but the raw PII that KYC/AML regulation requires operators to store was always within reach of insiders holding legitimate access — a standing breach surface. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

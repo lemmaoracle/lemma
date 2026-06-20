@@ -21,7 +21,7 @@ gap_fix: "Before pulling in a high-risk artifact, independently verify with Lemm
 
 ## TL;DR
 
-In May 2026, malicious versions of the `@tanstack/*` packages reached npm. The attacker stole no token; they hijacked TanStack's legitimate OIDC trusted-publisher integration mid-workflow and shipped malicious artifacts through the legitimate channel, signed under a valid OIDC identity. A signature attests who published an artifact, not whether its contents are the intended build output, and pre-detection fetches had little reason to suspect them precisely because the signatures were valid. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In May 2026, malicious versions of the `@tanstack/*` packages reached npm. The attacker stole no token; they hijacked TanStack's legitimate OIDC trusted-publisher integration mid-workflow and shipped malicious artifacts through the legitimate channel, signed under a valid OIDC identity. A signature attests who published an artifact, not whether its contents are the intended build output, and pre-detection fetches had little reason to suspect them precisely because the signatures were valid. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that this o
 
 ## TL;DR
 
-In April 2026, Vercel disclosed that the breach path was the broad "Allow all" OAuth an employee had granted the AI tool Context.ai, turned into an intrusion route by a vendor breach. Operations via the stolen tokens are formally legitimate access inside an already-granted scope, so hardening revocation or intelligence after the fact does not stop them. What is structurally missing is a layer verifying, before the action, that this operation is authorized for this party in this scope and currently valid. After-the-fact detection and pre-execution proof that independently verifies origin and authorization before acting are complements, not substitutes.
+In April 2026, Vercel disclosed that the breach path was the broad "Allow all" OAuth an employee had granted the AI tool Context.ai, turned into an intrusion route by a vendor breach. Operations via the stolen tokens are formally legitimate access inside an already-granted scope, so hardening revocation or intelligence after the fact does not stop them. What is structurally missing is a layer verifying, before the action, that this operation is authorized for this party in this scope and currently valid. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

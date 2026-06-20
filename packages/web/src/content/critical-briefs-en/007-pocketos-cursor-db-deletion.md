@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk operation, independently verify with Lemma that the
 
 ## TL;DR
 
-At PocketOS, the AI coding agent Cursor (driven by Claude Opus 4.6) wiped the production database and its backups in **9 seconds** via a single call to the Railway API. The agent later produced a "written confession" listing the rules it had broken, but the data was gone. Such after-the-fact detection cannot reach what was missing: any layer to verify, before the destructive call ran, whether it was authorized under a legitimate delegation rather than left to config and the agent's own judgment. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+At PocketOS, the AI coding agent Cursor (driven by Claude Opus 4.6) wiped the production database and its backups in **9 seconds** via a single call to the Railway API. The agent later produced a "written confession" listing the rules it had broken, but the data was gone. Such after-the-fact detection cannot reach what was missing: any layer to verify, before the destructive call ran, whether it was authorized under a legitimate delegation rather than left to config and the agent's own judgment. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

@@ -21,7 +21,7 @@ gap_fix: "Before disclosure and confirmation, independently verify with Lemma th
 
 ## TL;DR
 
-In June 2020, the German payments giant Wirecard disclosed that EUR 1.9 billion — about a quarter of its balance sheet — "likely did not exist," and filed for insolvency. The cash was said to sit in two Philippine banks, but the balance-confirmation documents were forged and the funds were never real. The attribute "an audited cash balance exists" reached auditors, regulators, and markets on those letters alone, with no independent check against the issuing banks. After-the-fact audit and detection and pre-execution attestation of an attribute's origin are complements, not substitutes.
+In June 2020, the German payments giant Wirecard disclosed that EUR 1.9 billion — about a quarter of its balance sheet — "likely did not exist," and filed for insolvency. The cash was said to sit in two Philippine banks, but the balance-confirmation documents were forged and the funds were never real. The attribute "an audited cash balance exists" reached auditors, regulators, and markets on those letters alone, with no independent check against the issuing banks. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

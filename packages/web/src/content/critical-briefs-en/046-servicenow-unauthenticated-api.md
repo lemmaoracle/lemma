@@ -21,7 +21,7 @@ gap_fix: "Before returning data, independently verify with Lemma that the reques
 
 ## TL;DR
 
-ServiceNow disclosed that a Scripted REST endpoint had shipped with `requires_authentication=false`, letting customer-instance tables be queried with no session, token, or credential check; unauthenticated requests queried customer data successfully. Anomaly detection and log tracing act only after such requests could already be processed — after-the-fact detection. What is structurally missing is a layer that verifies, before the response, whether this requester may query this customer data; with a single auth flag flipped off, the request passed straight through. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+ServiceNow disclosed that a Scripted REST endpoint had shipped with `requires_authentication=false`, letting customer-instance tables be queried with no session, token, or credential check; unauthenticated requests queried customer data successfully. Anomaly detection and log tracing act only after such requests could already be processed — after-the-fact detection. What is structurally missing is a layer that verifies, before the response, whether this requester may query this customer data; with a single auth flag flipped off, the request passed straight through. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

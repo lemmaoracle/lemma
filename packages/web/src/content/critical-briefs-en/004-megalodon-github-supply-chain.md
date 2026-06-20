@@ -21,7 +21,7 @@ gap_fix: "Before pulling in and publishing code, independently verify with Lemma
 
 ## TL;DR
 
-Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate developer credentials to push spoofed commits to 5,561 GitHub repositories within 6 hours. Three firms pinpointed the origin and scope within five days, but detection cannot change what the receiving sides accept. The spoofed commits passed through legitimate processes and were accepted as legitimate. The gap is that commit author and repo owner authentication form a chain never independently verified at each stage. Pre-execution attestation of origin before code is pulled in complements detection, it does not substitute for it.
+Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate developer credentials to push spoofed commits to 5,561 GitHub repositories within 6 hours. Three firms pinpointed the origin and scope within five days, but detection cannot change what the receiving sides accept. The spoofed commits passed through legitimate processes and were accepted as legitimate. The gap is that commit author and repo owner authentication form a chain never independently verified at each stage. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

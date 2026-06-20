@@ -21,7 +21,7 @@ gap_fix: "Before an AI decision that overrides human operation, independently ve
 
 ## TL;DR
 
-In May 2026, Hyundai recalled vehicles (NHTSA 26V316) because a software fault could make Forward Collision-Avoidance (FCA) brake earlier than the driver expects — phantom braking that hits with no danger and gets the car rear-ended. Aggregating owner reports into a recall cannot establish, before the braking, whether it is genuinely needed; a malfunction executes as a legitimate safety feature, indistinguishable from normal activation. What is structurally missing is a layer that verifies, before the action, the validity of an AI decision cutting into human driving. After-the-fact detection and pre-execution proof that independently verifies validity before acting are complements, not substitutes.
+In May 2026, Hyundai recalled vehicles (NHTSA 26V316) because a software fault could make Forward Collision-Avoidance (FCA) brake earlier than the driver expects — phantom braking that hits with no danger and gets the car rear-ended. Aggregating owner reports into a recall cannot establish, before the braking, whether it is genuinely needed; a malfunction executes as a legitimate safety feature, indistinguishable from normal activation. What is structurally missing is a layer that verifies, before the action, the validity of an AI decision cutting into human driving. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

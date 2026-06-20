@@ -21,7 +21,7 @@ gap_fix: "Before publishing or committing, independently verify with Lemma that 
 
 ## TL;DR
 
-JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer environment's credentials, then uses the stolen keys to commit itself into the victim's repository and republish through the developer's own legitimate workflow. Registry disablement and vendor analysis act only after publication and credential theft — after-the-fact detection. What is structurally missing is a layer that verifies, at publish, whether the publisher is truly the artifact's legitimate author; a valid token alone is the grounds for publication. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer environment's credentials, then uses the stolen keys to commit itself into the victim's repository and republish through the developer's own legitimate workflow. Registry disablement and vendor analysis act only after publication and credential theft — after-the-fact detection. What is structurally missing is a layer that verifies, at publish, whether the publisher is truly the artifact's legitimate author; a valid token alone is the grounds for publication. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

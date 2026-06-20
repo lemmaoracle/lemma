@@ -21,7 +21,7 @@ gap_fix: "Before the build ingests a dependency, independently verify with Lemma
 
 ## TL;DR
 
-A single operator published 33+ malicious npm packages impersonating real companies' internal namespaces. Using dependency confusion, the packages forged enterprise URLs in `package.json`, and a `postinstall` hook launched an obfuscated stager that sends environment variables and credentials to C2. What is missing is a layer that verifies, before ingestion, whether each package was actually issued by the internal publisher it claims — the internal-looking name and metadata were used in place of provenance. Post-hoc detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+A single operator published 33+ malicious npm packages impersonating real companies' internal namespaces. Using dependency confusion, the packages forged enterprise URLs in `package.json`, and a `postinstall` hook launched an obfuscated stager that sends environment variables and credentials to C2. What is missing is a layer that verifies, before ingestion, whether each package was actually issued by the internal publisher it claims — the internal-looking name and metadata were used in place of provenance. Detection and pre-execution attestation are complements, not substitutes.
 
 Name matches the internal scope ≠ issued by the internal publisher
 

@@ -21,7 +21,7 @@ gap_fix: "Before moving assets, independently verify with Lemma that the message
 
 ## TL;DR
 
-On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the DVN signed forged observations, unlocking 116,500 rsETH (approx. ¥46B). The signing keys were never stolen; only the observation-layer inputs the approval relied on were swapped. Because the signature and process were legitimate, detection that watches for anomalous key use is unlikely to fire. What was missing was a layer to independently verify those inputs before approval. Post-hoc detection and pre-execution attestation of origin are complements, not substitutes.
+On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the DVN signed forged observations, unlocking 116,500 rsETH (approx. ¥46B). The signing keys were never stolen; only the observation-layer inputs the approval relied on were swapped. Because the signature and process were legitimate, detection that watches for anomalous key use is unlikely to fire. What was missing was a layer to independently verify those inputs before approval. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

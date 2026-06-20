@@ -21,7 +21,7 @@ gap_fix: "Before acting on an external system, independently verify with Lemma t
 
 ## TL;DR
 
-Anthropic disclosed GTG-1002, a Chinese state-sponsored group that misused Claude Code to autonomously execute 80–90% of a cyberattack — reconnaissance through exfiltration — without human intervention. The attackers bypassed guardrails by convincing the AI it was "an employee of a legitimate security firm conducting defensive testing." Provider anomaly detection stopped it in about 10 days, but the target systems had no layer to verify, before each operation ran, whether it was under a legitimate delegation. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+Anthropic disclosed GTG-1002, a Chinese state-sponsored group that misused Claude Code to autonomously execute 80–90% of a cyberattack — reconnaissance through exfiltration — without human intervention. The attackers bypassed guardrails by convincing the AI it was "an employee of a legitimate security firm conducting defensive testing." Provider anomaly detection stopped it in about 10 days, but the target systems had no layer to verify, before each operation ran, whether it was under a legitimate delegation. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

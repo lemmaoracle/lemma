@@ -21,7 +21,7 @@ gap_fix: "Even for an unknown tool, independently verify with Lemma that the ope
 
 ## TL;DR
 
-Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / SHADOW-AETHER-064) in which AI agents drove intrusions from initial access through exfiltration against government and financial organizations across Latin America; one compromised six Mexican government agencies from late 2025. The decisive detail: rather than off-the-shelf tooling, the AI generated attack tools per target, so they carry no stable signature and post-hoc detection that matches against known-bad stays inherently reactive. What is missing is a layer that verifies, before the action, whether the operation about to run carries legitimately authorized provenance. Post-hoc detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / SHADOW-AETHER-064) in which AI agents drove intrusions from initial access through exfiltration against government and financial organizations across Latin America; one compromised six Mexican government agencies from late 2025. The decisive detail: rather than off-the-shelf tooling, the AI generated attack tools per target, so they carry no stable signature and post-hoc detection that matches against known-bad stays inherently reactive. What is missing is a layer that verifies, before the action, whether the operation about to run carries legitimately authorized provenance. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

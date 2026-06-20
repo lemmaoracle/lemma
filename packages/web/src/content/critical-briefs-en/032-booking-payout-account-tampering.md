@@ -21,7 +21,7 @@ gap_fix: "Before moving funds, independently verify with Lemma that the payout-a
 
 ## TL;DR
 
-At hotel operator Polaris Holdings, a compromised group Booking.com account let attackers rewrite multiple hotels' payout bank accounts from inside the legitimate console. Anomaly detection blocked later transfers, but fires only once an anomaly appears — the first fraudulent transfer was already complete. What was missing was a layer to confirm, before funds moved, whether the change was authorized and the destination genuine; the tampering passed straight through as an authenticated-session action. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+At hotel operator Polaris Holdings, a compromised group Booking.com account let attackers rewrite multiple hotels' payout bank accounts from inside the legitimate console. Anomaly detection blocked later transfers, but fires only once an anomaly appears — the first fraudulent transfer was already complete. What was missing was a layer to confirm, before funds moved, whether the change was authorized and the destination genuine; the tampering passed straight through as an authenticated-session action. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

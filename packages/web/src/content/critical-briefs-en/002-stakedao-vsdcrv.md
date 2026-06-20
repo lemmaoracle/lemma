@@ -21,7 +21,7 @@ gap_fix: "Before minting assets, independently verify with Lemma that the messag
 
 ## TL;DR
 
-On Stake DAO vsdCRV, the attacker used the compromised deployer private key to rewrite the LayerZero v2 trust source to a contract they controlled, then minted 5.4 trillion vsdCRV from a forged message. Blockaid detected the attack within minutes, enabling containment, but detection cannot change what the bridge will accept. The configuration that anchors trust was rewritable by a single key, and no layer independently verified message origin before acceptance. Post-event detection and pre-execution attestation of origin are complements, not substitutes.
+On Stake DAO vsdCRV, the attacker used the compromised deployer private key to rewrite the LayerZero v2 trust source to a contract they controlled, then minted 5.4 trillion vsdCRV from a forged message. Blockaid detected the attack within minutes, enabling containment, but detection cannot change what the bridge will accept. The configuration that anchors trust was rewritable by a single key, and no layer independently verified message origin before acceptance. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

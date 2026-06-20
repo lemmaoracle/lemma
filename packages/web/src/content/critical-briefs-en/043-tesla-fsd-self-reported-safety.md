@@ -21,7 +21,7 @@ gap_fix: "Before continuing to drive or releasing safety data to regulators and 
 
 ## TL;DR
 
-NHTSA escalated its probe into Tesla FSD's inability to handle reduced visibility, noting that data-labeling constraints may have under-reported crashes; Reuters separately found the "up to 10× safer than humans" claim rested on an asymmetric comparison inflating safety by roughly 3×. Investigation, reporting, and insider testimony surfaced it only after the fact. What is structurally missing is a layer that verifies, while driving and submitting data, whether a decision's premises and declared statistics reflect reality; all was self-reported. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+NHTSA escalated its probe into Tesla FSD's inability to handle reduced visibility, noting that data-labeling constraints may have under-reported crashes; Reuters separately found the "up to 10× safer than humans" claim rested on an asymmetric comparison inflating safety by roughly 3×. Investigation, reporting, and insider testimony surfaced it only after the fact. What is structurally missing is a layer that verifies, while driving and submitting data, whether a decision's premises and declared statistics reflect reality; all was self-reported. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

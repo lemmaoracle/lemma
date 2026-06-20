@@ -21,7 +21,7 @@ gap_fix: "Before running or installing, independently verify with Lemma that the
 
 ## TL;DR
 
-Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal source via a packaging error that shipped a source map. Within 24 hours, an existing malware campaign pivoted to the leak, distributing the Vidar credential stealer from GitHub Releases via fake repositories disguised as "the leaked Claude Code." The attack exploited no vulnerability; it turned trust signals — a brand name and a hosting site — into a substitute for provenance, exploiting the absence of any layer that verifies artifact authenticity at acquisition. Detection and pre-execution attestation of origin are complements, not substitutes.
+Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal source via a packaging error that shipped a source map. Within 24 hours, an existing malware campaign pivoted to the leak, distributing the Vidar credential stealer from GitHub Releases via fake repositories disguised as "the leaked Claude Code." The attack exploited no vulnerability; it turned trust signals — a brand name and a hosting site — into a substitute for provenance, exploiting the absence of any layer that verifies artifact authenticity at acquisition. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

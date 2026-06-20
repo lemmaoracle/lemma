@@ -21,7 +21,7 @@ gap_fix: "Before taking a safety-critical action such as a stopping obligation, 
 
 ## TL;DR
 
-A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment. Detection and pre-execution attestation of origin and authorization are complements, not substitutes.
+A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

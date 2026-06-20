@@ -21,7 +21,7 @@ gap_fix: "Before the AI acts on an instruction, independently verify with Lemma 
 
 ## TL;DR
 
-TrapDoor, disclosed by Socket, is a credential-stealing campaign whose distinctive technique plants invisible directives via zero-width Unicode in the AI-assistant instruction files (`.cursorrules`, `CLAUDE.md`), getting the AI to run a "security scan" and carry development secrets out. Scans and hidden-character warnings removed the malicious artifacts, but nothing checks, before the AI acts, whether an instruction comes from a legitimate author under legitimate authorization. Since what is shown diverges from what the AI ingests, detecting plausibility cannot reach this. Detection and pre-execution attestation of an instruction's origin and authorization are complements, not substitutes.
+TrapDoor, disclosed by Socket, is a credential-stealing campaign whose distinctive technique plants invisible directives via zero-width Unicode in the AI-assistant instruction files (`.cursorrules`, `CLAUDE.md`), getting the AI to run a "security scan" and carry development secrets out. Scans and hidden-character warnings removed the malicious artifacts, but nothing checks, before the AI acts, whether an instruction comes from a legitimate author under legitimate authorization. Since what is shown diverges from what the AI ingests, detecting plausibility cannot reach this. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

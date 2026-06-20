@@ -21,7 +21,7 @@ gap_fix: "Rather than whether the video looks authentic, independently verify wi
 
 ## TL;DR
 
-MIT Technology Review found off-the-shelf tools — virtual cameras, deepfakes, stolen biometric bundles — that defeat banks' and exchanges' facial liveness checks, sold openly on Telegram. Deepfake detection keeps improving, but if it cannot judge a feed synthetic, the attribute is established anyway. What was missing was independent verification of capture provenance — that the video was live-captured from a real sensor, not injected — so injected video arrived over a legitimate camera feed's path. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before the action are not substitutes but complements.
+MIT Technology Review found off-the-shelf tools — virtual cameras, deepfakes, stolen biometric bundles — that defeat banks' and exchanges' facial liveness checks, sold openly on Telegram. Deepfake detection keeps improving, but if it cannot judge a feed synthetic, the attribute is established anyway. What was missing was independent verification of capture provenance — that the video was live-captured from a real sensor, not injected — so injected video arrived over a legitimate camera feed's path. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

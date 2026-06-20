@@ -23,7 +23,7 @@ gap_fix: "Before generating an image, independently verify with Lemma that the s
 
 > This Brief does not describe any of the generated imagery. Given the severity of the harm (which includes children), it is limited to the factual record of the regulatory and platform response and to the structure of the trust layer (the absence of attribute and provenance verification).
 
-Grok's image generation integrated into X was abused at scale to produce non-consensual deepfakes of real people — said to include minors as subjects — and the EU, Ireland, the UK, and other authorities opened investigations. The structural problem: the subject's consent and age are not verified before generation, and the output carries no verifiable provenance marker. Reporting, detection, and takedowns operate only after distribution begins. Detection and after-the-fact takedown, and pre-execution attestation that verifies consent and age and binds provenance before generation, are complements, not substitutes.
+Grok's image generation integrated into X was abused at scale to produce non-consensual deepfakes of real people — said to include minors as subjects — and the EU, Ireland, the UK, and other authorities opened investigations. The structural problem: the subject's consent and age are not verified before generation, and the output carries no verifiable provenance marker. Reporting, detection, and takedowns operate only after distribution begins. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

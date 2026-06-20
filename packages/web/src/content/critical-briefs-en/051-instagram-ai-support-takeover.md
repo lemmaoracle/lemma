@@ -21,7 +21,7 @@ gap_fix: "Before a high-impact recovery operation, independently verify with Lem
 
 ## TL;DR
 
-A vulnerability in Meta High Touch Support was abused so that merely asking the AI support agent to "change the email on this account" took over Instagram accounts. The AI recovery agent ran email changes and resets without verifying that the requester was the rightful owner, bypassing two-factor authentication. Meta detected the abuse and notified users, but only after the takeover; the mere arrival of a request became the basis for the operation, with no layer to confirm ownership before acting. Detection and pre-execution attestation of the requester's ownership and authorization are complements, not substitutes.
+A vulnerability in Meta High Touch Support was abused so that merely asking the AI support agent to "change the email on this account" took over Instagram accounts. The AI recovery agent ran email changes and resets without verifying that the requester was the rightful owner, bypassing two-factor authentication. Meta detected the abuse and notified users, but only after the takeover; the mere arrival of a request became the basis for the operation, with no layer to confirm ownership before acting. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

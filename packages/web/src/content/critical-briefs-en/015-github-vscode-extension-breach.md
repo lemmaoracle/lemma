@@ -21,7 +21,7 @@ gap_fix: "Before pulling in a development tool, independently verify with Lemma 
 
 ## TL;DR
 
-In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code extension on the official marketplace for just 18 minutes, exfiltrated credentials from GitHub employee endpoints that installed it, and cloned about 3,800 internal repositories. It sat there as a legitimate extension and passed the trust signals of signing and listing, so there was no way to tell it apart before install — a trusted distribution path does not guarantee an untampered build output. After-the-fact detection and pre-execution attestation that independently verifies origin and authorization before acting are complementary, not substitutes.
+In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code extension on the official marketplace for just 18 minutes, exfiltrated credentials from GitHub employee endpoints that installed it, and cloned about 3,800 internal repositories. It sat there as a legitimate extension and passed the trust signals of signing and listing, so there was no way to tell it apart before install — a trusted distribution path does not guarantee an untampered build output. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

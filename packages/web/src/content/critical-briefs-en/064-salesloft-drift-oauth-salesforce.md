@@ -21,7 +21,7 @@ gap_fix: "Before an integration touches customer data, independently verify with
 
 ## TL;DR
 
-In August 2025, the threat actor UNC6395 abused OAuth tokens held by the integration Salesloft Drift — stolen after compromising Salesloft's GitHub and AWS — to query 700+ Salesforce environments. Salesloft's token revocation cannot establish, before execution, whether the queries stay within their intended scope under still-valid authority; querying with a stolen token is formally legitimate access, indistinguishable from normal use while the token is valid. What is structurally missing is a layer that, before the action, verifies the operation's scope, authorization, and validity. After-the-fact detection and pre-execution proof that independently verifies origin and authorization before acting are complements, not substitutes.
+In August 2025, the threat actor UNC6395 abused OAuth tokens held by the integration Salesloft Drift — stolen after compromising Salesloft's GitHub and AWS — to query 700+ Salesforce environments. Salesloft's token revocation cannot establish, before execution, whether the queries stay within their intended scope under still-valid authority; querying with a stolen token is formally legitimate access, indistinguishable from normal use while the token is valid. What is structurally missing is a layer that, before the action, verifies the operation's scope, authorization, and validity. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 

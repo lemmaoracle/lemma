@@ -21,7 +21,7 @@ gap_fix: "Before distributing data or ingesting it into AI training, independent
 
 ## TL;DR
 
-A research team used Discord's public API to scrape 2.05 billion messages from 3,167 servers and published them as an arXiv paper and a JSON dataset anyone can download. Discord's terms explicitly ban using API-obtained messages for AI training and ban bulk scraping and redistribution. Technical access through a public API and the use-scope the terms permit are different things — yet nothing verified, before distribution, whether the dataset was collected within a lawful scope, so forbidden-use data can flow downstream into AI training. Detection and pre-distribution attestation of provenance and usage conditions are complements, not substitutes.
+A research team used Discord's public API to scrape 2.05 billion messages from 3,167 servers and published them as an arXiv paper and a JSON dataset anyone can download. Discord's terms explicitly ban using API-obtained messages for AI training and ban bulk scraping and redistribution. Technical access through a public API and the use-scope the terms permit are different things — yet nothing verified, before distribution, whether the dataset was collected within a lawful scope, so forbidden-use data can flow downstream into AI training. Detection and pre-execution attestation are complements, not substitutes.
 
 ---
 
