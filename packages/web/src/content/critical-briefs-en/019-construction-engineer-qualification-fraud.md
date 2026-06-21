@@ -33,6 +33,7 @@ In December 2024, Japan's MLIT issued an administrative instruction against a co
 - **The company's account**: described as a misunderstanding of the practical-experience requirements rather than intentional fraud
 - **Landmark precedent**: group companies of a major electronics maker (disclosed by MLIT, August 2021). 390 employees took the examination and obtained construction management licenses without sufficient experience; 13 obtained the supervising-engineer certificate. Unqualified employees may have been placed as chief engineers and the like on up to 2,422 projects (150 of them with contract value of ¥5M or more), and 58 as dedicated engineers at business offices. The improper acquisitions ran from around 2000 to 2021
 - **Regulatory frame**: in July 2021 MLIT amended the "Standards for Disciplinary Action against Improper Conduct by Construction Operators," setting a business-suspension order of 30 days or more for placing a fraudulently qualified person as a chief or supervising engineer
+- **Core**: a regulatory attribute (a national license) flowed straight to on-site assignment while severed from independent verification of its basis, the practical experience
 
 ---
 
@@ -44,6 +45,8 @@ In December 2024, Japan's MLIT issued an administrative instruction against a co
 - 2021-08-31: MLIT discloses the major electronics maker's group self-investigation (390 / 13, up to 2,422 placements) and its own response (license revocation, 3-year examination ban, disciplinary action, designation suspension)
 - 2024-12-20: a regional bureau issues an administrative instruction against a mid-to-large road-paving contractor under Article 28(1)
 - 2025-01: trade media report the recent case, framing national-license fraud as an ongoing structural problem
+
+> Note: proper nouns and the details of disciplinary actions are based on primary sources (MLIT's published materials and press releases, and the like); the status of actions and operations varies over time, so consult the latest information.
 
 ---
 

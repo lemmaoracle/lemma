@@ -35,6 +35,7 @@ On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the D
 - **Manipulated assets**: LayerZero Labs' internal RPC cloud environment (multiple internal RPC nodes)
 - **Assets NOT compromised**: The LayerZero Labs DVN signing keys themselves
 - **Official disclosures**: The LayerZero Labs incident statement and the May follow-up update. These name the observation layer as an independent category, and announce that the LayerZero Labs DVN will refuse 1-of-1 signing configurations and that the v2 default will move to 3-of-3
+- **Core**: The structural failure was that the observation-layer inputs the DVN relies on to judge message origin were accepted as the basis for a legitimate signature without ever being independently verified.
 
 ---
 
@@ -44,6 +45,8 @@ On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the D
 - 2026-04-18: 116,500 rsETH on KelpDAO unauthorizedly unlocked
 - Around 2026-04-22: Industry incident response begins
 - 2026-05: LayerZero Labs publishes its incident statement and follow-up update. Announces the observation layer as an independent category, the LayerZero Labs DVN's refusal of 1-of-1 configurations, and a default move to ≥3-of-3
+
+> Note: Names, dates, and loss figures are based on primary sources — the official LayerZero Labs incident statement and the independent analyses (Chainalysis, Halborn, Galaxy Research, etc.). Each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -62,7 +65,7 @@ Chain of events, per LayerZero Labs' disclosure:
 
 ## 4. Structural Analysis
 
-This incident is a representative case of a structure in which, on a cross-chain bridge, **the verifier had no independent means of verifying the observation layer inputs it relies on to determine message origin.** The inputs to the observation layer — the RPC responses referenced by the LayerZero Labs DVN — were left in a state where they could be manipulated by a single entity, namely the RPC nodes inside the compromised operations environment.
+In this incident the central **failure primitive is "absent independent verification of observation-layer inputs"** — a representative case of a structure in which, on a cross-chain bridge, the verifier had no independent means of verifying the observation layer inputs it relies on to determine message origin. The inputs to the observation layer — the RPC responses referenced by the LayerZero Labs DVN — were left in a state where they could be manipulated by a single entity, namely the RPC nodes inside the compromised operations environment.
 
 The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** (Brief 002). The shared structure is that the trust configuration of a cross-chain bridge sits under the control of a single entity. The difference is that this incident distorted trust by manipulating the RPC observation layer the DVN reads from, while the Stake DAO incident distorted trust by directly rewriting the LayerZero v2 trust source via a deployer private key. Both reach the same structure from different vectors.
 
@@ -96,7 +99,14 @@ LayerZero Labs (as of the 2026-05 incident statement):
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of the observation layer inputs), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the observation layer inputs (RPC responses, config assertions). Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+Lemma's design answers this incident's gap — absent independent verification of observation-layer inputs — by embedding origin proof in the message itself and decoupling the accept decision from the observation layer.
+
+- **Origin provenance binding**: The cross-chain message itself carries an independently verifiable cryptographic proof that it "came from a legitimate origin," so the verifier can verify origin without relying on RPC responses or config assertions.
+- **Proof-as-auth before the action**: The proof is verified before assets move, establishing the trust boundary ahead of acceptance rather than through after-the-fact anomaly detection.
+- **Independence from the observation layer**: Even when the observation layer has been manipulated, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not.
+- **Complement to detection**: The blast window that detection narrowed and the prior origin guarantee the proof provides function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

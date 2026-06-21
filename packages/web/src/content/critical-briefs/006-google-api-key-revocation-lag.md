@@ -34,6 +34,7 @@ Google API キーは削除後も最長約 23 分間そのまま認証に通る�
 - **試験条件**: API キー作成・削除後、1 秒あたり 3-5 リクエストを送り続けて最後の認証成功時点を計測。米東部・西ヨーロッパ・東南アジアの 3 リージョンで追加 5 試験を実施
 - **API 種別による失効速度の差**: 旧 Gemini API キー(最長約 23 分)、新 Gemini API キー形式(約 1 分)、Google サービスアカウントキー(約 5 秒)
 - **Google の対応**: Aikido の報告を「修正しない」「想定通りの動作」「セキュリティ問題ではない」として終了
+- **核心**: 本事案の構造的失敗は、credential の「失効済み」という属性主張が独立検証されないまま「削除済み」として presented され、実際には全サーバーで失効していない鍵が有効な認証情報として受理された点にある。
 
 ---
 
@@ -43,6 +44,8 @@ Google API キーは削除後も最長約 23 分間そのまま認証に通る�
 - 2026-05-21: The Register が初報「Threat hunters find Google API keys still usable 23 minutes after deletion」
 - 2026-05: Aikido 公式 blog で技術詳細と試験結果を公開、Google への報告と「修正しない」回答の経緯を含む
 - 2026-05-22: GIGAZINE が日本語で続報
+
+> 注: 固有名・計測値は一次（Aikido security 公式 blog の Joe Leon 氏による試験データ、The Register の初報）に基づき、各 API 種別・実装の失効挙動は時点により異なるため最新情報を参照のこと。本 Brief は研究者による失効遅延の計測結果として扱い、実環境での被害規模を誇張しない。
 
 ---
 
@@ -95,7 +98,14 @@ API 種別による失効速度の差が示すこと:
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(credential の失効属性が独立検証されない、eventual consistency による遅延窓)に対して、Lemma は、credential(API キー、アクセストークン、認証情報)の属性(有効・失効・スコープ・有効期限など)を独立検証可能な暗号証明として commit し、verifier(受信側サーバー、規制報告者、監査人)が各サーバーの local state に依存せず、proof として固定された属性を独立に検証できる設計を提示している。Eventual consistency による失効遅延窓が存在する状況でも、proof は別系統で「この credential は失効済みである / まだ有効である」を verifier に告げる。
+Lemma の設計は、credential の失効属性が独立検証されず eventual consistency の遅延窓が残るという本事案の gap に対し、属性を各サーバーの local state から切り離して proof として固定する点で対置される。
+
+- **属性の来歴バインド**: credential（API キー、アクセストークン、認証情報）の属性（有効・失効・スコープ・有効期限など）を独立検証可能な暗号証明として commit する。
+- **使用前の認可証明(proof-as-auth)**: credential を使う前に proof を検証する設計であり、各サーバーの「有効」判定に依存せず、失効状態を使用の前段で確定する。
+- **選択的開示**: 属性を proof として固定することで、規制報告者・監査人が鍵そのものを露出させずに「失効済み」という事実だけを独立検証できる。
+- **検出との補完**: Aikido が計測・可視化した失効遅延と、属性を proof として固定する層は、対立軸ではなく二段構成として機能する。
+
+これは local state ではなく proof として固定された属性を verifier が検証する設計思想であり、検出層を置き換えるものではなく補完する。
 
 設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

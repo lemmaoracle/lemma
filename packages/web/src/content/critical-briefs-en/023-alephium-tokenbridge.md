@@ -55,6 +55,8 @@ On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for 
 - 06-02: 13.257M unbacked wALPH (approx. 96.4%) in attacker wallets burned via the `upgrade(bytes encodedVM)` governance function
 - 06-03: Alephium published a complete on-chain breakdown. Compensation plan and technical postmortem to follow
 
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
+
 ---
 
 ## 3. Attack Vector
@@ -102,7 +104,14 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's Analysis
 
-For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs. Even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs.
+
+- **Fixing the emitter**: the source contract of each observed event is checked against a registry of legitimate emitters, rejecting events emitted from unregistered sources before signing
+- **Path and integrity proof**: the event's emission path and content are committed with Poseidon over BN254, and Groth16 (Circom circuits) prove it traversed a legitimate path without tampering — the same provenance proof is required even when the system degrades to backup verification
+- **Reject before signing**: even if a guardian signature is formally valid, if the event-provenance proof reports a forged source, signing and payout are rejected before they occur
+- **Selective disclosure**: BBS+ over BLS12-381 discloses to the verifying side only that "this event was emitted from a registered, legitimate emitter without tampering"
+
+Through this, signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") work as complements. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

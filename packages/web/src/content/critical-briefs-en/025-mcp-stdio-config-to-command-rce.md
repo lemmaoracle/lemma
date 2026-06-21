@@ -31,6 +31,7 @@ In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows ext
 - **Reported impact**: Over 150M cumulative downloads, 7,000+ publicly listed servers, up to ~200,000 instances
 - **Related CVEs (independently reported)**: MCP SDK command injection CVE-2026-30623, MCP Inspector CVE-2025-49596, LibreChat CVE-2026-22252, Cursor CVE-2025-54136, and others — organized as the same core issue series
 - **Vendor response**: Anthropic did not alter the core architecture, and the behavior was reported to be characterized as "expected." The result: the reference implementation continues to propagate the same pattern
+- **Core**: there was no layer to independently verify before execution whether an accepted configuration rested on legitimate authority, and the design of configuration flowing directly into command execution over STDIO was inherent in the reference SDK
 
 ---
 
@@ -40,6 +41,8 @@ In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows ext
 - **~2026-04-20**: OX Security disclosed the core SDK design issue. CSA consolidated the picture under "MCP by Design: RCE Across the AI Agent Ecosystem"
 - **2026-04**: The Hacker News, Infosecurity Magazine, and others reported ("150M DL," "7,000+ servers," "up to 200,000 instances")
 - **Thereafter**: CVEs rooted in the same core issue continued to be reported across implementations
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 

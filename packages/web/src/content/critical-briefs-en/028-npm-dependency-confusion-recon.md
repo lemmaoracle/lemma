@@ -37,6 +37,7 @@ Name matches the internal scope ≠ issued by the internal publisher
 - **Staging design**: locked to `RECON_ONLY=1` reconnaissance mode (collects environment info, hostname, environment variables, development context). A server-side flag switch transitions to full credential theft and backdoor installation
 - **Attribution**: a common X-Secret header value across all accounts, identical C2, identical template generator, and matching publishing toolchain strongly point to a single operator. One account showed prior activity as a bug-bounty researcher in 2024
 - **Response**: Microsoft Threat Intelligence investigated and fed back to npm; the affected repos and users were removed
+- **Core**: package resolution used "name match" and "internal-looking metadata" in place of the provenance of whether it came from the legitimate publisher, and no pre-ingestion publisher verification existed
 
 ---
 
@@ -50,6 +51,8 @@ Name matches the internal scope ≠ issued by the internal publisher
 - 2026-05-29 09:01:56–09:02:39: t-in-one published 10 auth/token-named packages under `@t-in-one` in a 43-second automated burst. Immediately republished under `@capibar.chat` and `@sber-ecom-core`
 - After publication: each payload connected to the same C2 (`oob.moika[.]tech`) with the same X-Secret header
 - After 2026-05-29: Microsoft Threat Intelligence identified and disclosed the campaign as an active supply-chain attack (blog dated 5/29, updated 5/30). Feedback to npm led to removal of the package set
+
+> Note: proper nouns, package names, and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -97,7 +100,13 @@ Scope locking (pinning internal scopes to a private registry in `.npmrc`) and di
 
 ## 7. Lemma's Analysis
 
-For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof. Even if the package name and metadata claim an internal publisher, if the provenance proof reports the absence of a legitimate publisher, ingestion is rejected before it occurs. "The name looks internal ≠ it arrived from the legitimate publisher" — this is the design philosophy of the Verifiable Origin category.
+For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof.
+
+- **Trailing publisher provenance**: an artifact's "which publisher issued it, by which expected path" is trailed under an issuer signature, holding provenance independently of name and metadata
+- **Pre-ingestion provenance verification**: before a build resolves and installs a dependency, the system independently verifies that it carries provenance from the legitimate publisher of the claimed scope. Artifacts without valid provenance are stopped as a pre-ingestion reject, not via detection
+- **Separating name from provenance**: "the name looks internal" and "the metadata points at internal URLs" are not treated as grounds for trust — even a brand-new package impersonating `@sber-ecom-core` is refused if it lacks legitimate-publisher provenance
+
+This closes the gap that dependency confusion exploits — "provenance never checked in the first place" — as a mandatory pre-ingestion step. On the "name looks internal ≠ it arrived from the legitimate publisher" design of the Verifiable Origin category, malware detection (detection) and publisher-provenance pre-execution attestation work as complements.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

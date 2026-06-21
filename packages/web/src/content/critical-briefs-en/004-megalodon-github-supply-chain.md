@@ -34,6 +34,7 @@ Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate dev
 - **Exfiltrated**: AWS secret keys, Google Cloud access tokens, AWS / GCP / Azure metadata, instance role credentials, SSH private keys, Docker / Kubernetes configurations, Vault tokens, GitHub tokens, Bitbucket tokens
 - **Attacker GitHub account characteristics**: Random usernames (rkb8el9r, bhlru9nr, and similar), pushing via compromised PATs or deploy keys
 - **Spoofing characteristics**: Reuse of four author names — build-bot / auto-ci / ci-bot / pipeline-bot — paired with seven kinds of commit messages dressed up as routine CI maintenance
+- **Core**: The structural failure was that commit author identity and repository owner authentication form a chain of trust never independently verified at each stage, so spoofed commits made with stolen legitimate credentials were accepted as "a legitimate developer's legitimate commit."
 
 ---
 
@@ -43,6 +44,8 @@ Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate dev
 - 2026-05-19 to 2026-05-21: 2.18.7 through 2.18.12 are released in succession, all backdoored
 - 2026-05-22: Safe Dep and Ox Security each publish independent technical analyses
 - Around 2026-05-22: Hudson Rock reports the infostealer-origin path. The attacker GitHub usernames associated with affected repositories match infostealer-infected machines in 33% of cases directly, with additional matches via email address
+
+> Note: Names, package names, and versions are based on the primary analyses by Safe Dep, Ox Security, and Hudson Rock and on public npm registry information. Each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -93,7 +96,14 @@ On the relationship with TeamPCP: Just before Megalodon surfaced, TeamPCP had an
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (absent independent verification of commit author and repo origin), Lemma proposes a design that fixes, at each stage of commit / release / CI/CD pipeline, an independently verifiable cryptographic proof of "this commit / artifact came from a legitimate origin." The core is a design in which the key itself does not sit on a machine that can be seized (combined with key-less proofs), in the direction of fixing commit author identity as a ZK proof.
+Lemma's design answers this incident's gap — absent independent verification of commit author and repo origin — by verifying each commit's provenance as a proof before the CI/CD pipeline builds it.
+
+- **Origin provenance binding**: At each stage of commit / release / CI/CD pipeline, an independently verifiable cryptographic proof that "this commit / artifact came from a legitimate origin" is fixed.
+- **Key-less proof**: Unlike GPG signing, the key itself does not sit on a machine that can be seized, so even if infostealers steal credentials they cannot generate the proof for a spoofed commit.
+- **Proof-as-auth before the action**: Commit author identity is fixed as a ZK proof, verifying legitimate authority before the pipeline builds or merges.
+- **Complement to detection**: After-the-fact analysis like the three firms' scoping and a proof that fixes provenance before acceptance function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

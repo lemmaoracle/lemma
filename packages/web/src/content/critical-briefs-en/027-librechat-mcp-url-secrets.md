@@ -36,6 +36,7 @@ Registered the server URL ≠ authorized the secrets access
 - **Root cause**: during schema validation of the user-supplied MCP server URL, `${VAR}`-form placeholders are expanded against the server's `process.env`. Environment-variable referencing — an operator-facing configuration feature — was active for all authenticated user input
 - **Exfiltrated data**: `CREDS_KEY` / `CREDS_IV` (credential encryption keys), `JWT_SECRET`, `MONGO_URI`, etc. These constitute the installation's cryptographic material and DB connection information; exfiltration compromises all user data and the authentication foundation
 - **Exploitation status**: CISA SSVC assessment: Exploitation: poc (proof-of-concept exists). Fixed in 0.8.4-rc1
+- **Core**: unverified user-supplied input (the MCP URL) was interpreted in the server's privileged context (`process.env`) without checking the registrant's authority, so a single configuration notation collapsed the authority boundary
 
 ---
 
@@ -45,6 +46,8 @@ Registered the server URL ≠ authorized the secrets access
 - 2026-06-02: GitHub Security Advisory (GHSA-4pcc-j6m6-wcwx) and CVE-2026-32625 published. Fix version 0.8.4-rc1 made available
 - 2026-06-03: CISA assigned SSVC assessment (Exploitation: poc / Technical Impact: total)
 - 2026-06-04: NVD analysis completed (CVSS 9.6 Critical confirmed)
+
+> Note: proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -60,7 +63,7 @@ Registered the server URL ≠ authorized the secrets access
 
 ## 4. Structural Argument
 
-This incident belongs to the `agent-infrastructure` category of Pillar 03 (Agent Authority Proof). The central failure primitive is that **the configuration value describing which external server an agent connects to is interpreted, as unverified user-supplied input, in the server's privileged context (`process.env`).** `identity-auth` is noted as secondary.
+This incident belongs to the `agent-infrastructure` category of Pillar 03 (Agent Authority Proof). The central **failure primitive is "the configuration value describing an agent's connection target is interpreted, without checking the registrant's authority, as unverified user-supplied input in the server's privileged context (`process.env`)."** `identity-auth` is noted as secondary.
 
 Brief 003 (Starlette/BadHost) shares the agent-infrastructure trust-boundary category but differs in direction. Brief 003 was a case where external HTTP Host header manipulation bypassed the **ingress** (authentication) of an MCP server; this incident is a case where the connection destination a user specifies becomes, on the **egress** side, a channel for exfiltrating secrets. What the two share is the structure in which the MCP agent-connection layer processes boundaries that conventional web applications had long established as input-validation targets (headers, user-supplied URLs) — now re-skinned as "agent configuration" and handled with privilege.
 
@@ -76,7 +79,7 @@ Detection, however, does not change the decision of which destination the server
 
 Pre-execution attestation treats connection-destination registration on agent infrastructure as an authority act, and requires — before the configuration value is interpreted — an independently verifiable proof of "the registrant's authority" and "the scope of context the configuration may reference." If the proof reports that "this configuration references context (server environment variables) beyond the registrant's authority," the connection is blocked before execution.
 
-In a case like this, where a user-supplied MCP URL exfiltrates the server's secrets, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — **complements**, not substitutes for, one another (the core of the brand). Proving the registrant's authority and the context a connection configuration may reference before it is interpreted does not replace vulnerability scanning or egress monitoring; it functions alongside them.
+In a case like this, where a user-supplied MCP URL exfiltrates the server's secrets, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — are **complements**, not substitutes. Proving the registrant's authority and the context a connection configuration may reference before it is interpreted does not replace vulnerability scanning or egress monitoring; it functions alongside them.
 
 For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
 
@@ -95,6 +98,12 @@ With the spread of self-hosted AI platforms, this class of "configuration-value-
 ## 7. Lemma's Analysis
 
 For the detection–proof gap exposed here — an agent's connection-destination configuration is interpreted in a privileged context without independent verification of the registrant's authority and the scope of context it may reference — Lemma offers a design that trails connection-destination registration and capability grants on agent infrastructure as authority acts, and verifies, before execution, "who authorized what, in what scope," as independently verifiable proofs.
+
+- **Connection registration as an authority act**: registering an MCP server URL is treated as the authority act of "granting the agent a new connection target and capability," with the registrant and delegation scope trailed under an issuer signature
+- **Pre-interpretation authority verification**: before the configuration value is expanded and interpreted against `process.env`, the system independently verifies — before execution — that the registrant is authorized to reference that context. Out-of-scope references are stopped as a pre-execution refusal, not via detection
+- **Selective disclosure of referenced context**: only "this configuration is within the registrant's authority" is disclosed to the verifier; the server's secrets and full set of environment variables are never transmitted
+
+This closes — as a pre-execution refusal rather than via detection — the structure in which a single configuration notation (a placeholder) collapses the authority boundary. Detection (vulnerability scanning, egress monitoring) and pre-execution attestation (pre-execution verification of registrant authority) work as complements.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

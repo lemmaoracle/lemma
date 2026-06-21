@@ -45,6 +45,8 @@ gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際�
 - 2026-05-22 前後: 交渉による bounty 取り決めが成立。攻撃者が約 4,052.4 ETH（約 75%）を返還、約 1,350 ETH を保持
 - 2026-05（同時期）: Halborn が root cause の技術解説を公開
 
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
+
 ---
 
 ## 3. 攻撃ベクター
@@ -60,7 +62,7 @@ gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際�
 
 ## 4. 構造的論点
 
-本事案は Pillar 01（来歴証明）の `bridge-config-trust` カテゴリに属する。中心的な失敗 primitive は、cross-chain の value claim（「この import は source 側でこれだけの価値が拠出された」という主張）が、暗号的構成要素（Merkle Proof 等）の有効性検証とは別に、**入出力額の整合として独立検証されていなかった**点にある。Merkle Proof が有効であることは「この blob が state root に含まれる」ことを示すが、「払出額が source 側の入力額と一致する」ことを示さない。secondary に `identity-auth` を併記する。
+本事案は Pillar 01（来歴証明）の `bridge-config-trust` カテゴリに属する。中心的な**失敗 primitive は「cross-chain の value claim が、暗号的構成要素（Merkle Proof 等）の有効性検証とは別に、入出力額の整合として独立検証されていなかった」**点にある。Merkle Proof が有効であることは「この blob が state root に含まれる」ことを示すが、「払出額が source 側の入力額と一致する」ことを示さない。secondary に `identity-auth` を併記する。
 
 Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-config-trust` だが primitive が異なる。Brief 001 は DVN 観測層の RPC 改ざん、Brief 002 はデプロイヤー鍵による trust source の書き換え、本事案は value claim の整合検証の欠落。三者は「cross-chain で受け渡される主張が、それを独立検証する layer と切り離されたまま accept される」という構造で同根。本事案は「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの核心を、$0.01 入力 → $11.58M 払出という極端なギャップで具体的に示している。
 
@@ -90,7 +92,14 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を提示している。Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの設計思想である。本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。
+本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、整合を proof として検証する設計を提示している。
+
+- **value claim の事前証明**: cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取る。
+- **入出力整合の検証**: 「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する。
+- **不整合時の事前 reject**: Merkle Proof が形式上有効でも、value claim の proof が入出力不整合を告げれば払出は事前に reject される。
+- **設計思想**: 「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの核心を実装する。
+
+本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。
 
 設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

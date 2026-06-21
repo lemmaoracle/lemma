@@ -31,6 +31,7 @@ In 2026, the CSA disclosed a technique that hides invisible Unicode characters i
 - **Embedding locations**: headings, line endings, inside whitespace — positions undetectable during human review
 - **Supply-chain corroboration (related investigation)**: Snyk ToxicSkills (2026-02) audited 3,984 skills, confirming 36.82% with issues, 13.4% with critical issues, and 76 malicious payloads. The audit quantified skills — reusable capability packages — as a supply-chain attack surface
 - **Posture**: Not a specific incident of realized harm, but a technique disclosure and ecosystem audit. Demonstrates the limits of safety assurance predicated on human review
+- **Core**: the identity between what a human reads and what a model reads cannot be guaranteed without a layer that independently verifies the input's origin and integrity, so invisible Unicode undetectable to the eye passed human review and reached the model
 
 ---
 
@@ -39,6 +40,8 @@ In 2026, the CSA disclosed a technique that hides invisible Unicode characters i
 - **2026-02-05**: Snyk published the ToxicSkills audit — 3,984 skills, 36.82% with some security issue, 13.4% critical, 76 malicious payloads confirmed
 - **2026-03-10**: CSA AI Safety Initiative published the invisible Unicode instruction injection as a Research Note. Detection hooks (claude-hooks etc.) and mitigations began circulating in parallel
 - **2026, ongoing**: Indirect prompt injection via skills / tool definitions / MCP metadata is taking shape as a principal input-integrity problem of the agent era
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This is a research/lab technique demonstration, not a specific incident of realized harm — do not overstate it.
 
 ---
 

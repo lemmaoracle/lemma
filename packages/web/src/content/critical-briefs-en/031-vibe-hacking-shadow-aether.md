@@ -46,6 +46,8 @@ Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / 064) in which AI 
 - From 2026-04: SHADOW-AETHER-064 observed targeting Brazilian financial institutions
 - 2026-05-11: Trend Micro (TrendAI Research) discloses both campaigns
 
+> Note: proper nouns, campaign names, and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information.
+
 ---
 
 ## 3. Attack vector
@@ -90,7 +92,13 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's analysis
 
-Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run." Even when a tool is unknown, if the proof of the operation's authorization and provenance does not hold, execution is rejected in advance.
+Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run."
+
+- **Inverting the detection premise**: the defensive axis shifts from "match known malicious artifacts" to "verify, before execution, whether the operation or code about to run carries authorization and provenance" — covering unknown and freshly generated tools
+- **Verifying operation authorization and provenance**: operations that run in the environment are independently verified, before execution, for whether they are legitimately authorized with confirmed provenance. Operations whose authorization/provenance proof does not hold are stopped as a pre-execution reject, not via detection
+- **No dependence on AI-generated tooling**: even when tools are generated dynamically per target with no stable signature, execution is decided solely on the presence of operation authorization and provenance, without relying on the stability of IOCs or tool signatures
+
+This replaces the premise that detection undermines — "enumerate what is malicious in advance" — with pre-execution authorization and provenance verification. Signature-based detection (detection) and pre-execution proof of operations work as complements, and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

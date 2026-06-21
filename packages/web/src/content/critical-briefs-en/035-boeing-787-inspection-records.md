@@ -34,6 +34,7 @@ Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory 
 - **Scale**: per sources, roughly 450 aircraft were affected (about 60 of them within Boeing's production line)
 - **Response**: the FAA required Boeing to re-inspect all 787s on the production line and to develop a plan for the in-service fleet
 - **Positioning**: a textbook case of "the existence of a record ≠ proof of the act" in the high-assurance domain of aviation safety
+- **Core**: "inspected," a safety/regulatory attribute, was established on the existence of a record alone without independent evidence of the act of performance, so records with no underlying work passed straight downstream
 
 ---
 
@@ -42,6 +43,8 @@ Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory 
 - 2024-04: Boeing voluntarily reports to the FAA that some 787 inspections recorded as complete may not have been performed
 - 2024-05-06: the FAA announces the opening of an investigation; Boeing also acknowledges the falsification of inspection records by employees
 - From 2024-05: Boeing re-inspects all 787s on the production line; a plan for the in-service fleet is required
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
 ---
 
@@ -88,7 +91,14 @@ The need to "prove the inspected/conformant attribute as the provenance of perfo
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed." Even when a record is formally in order, if a proof backed by the provenance of performance does not hold, the attribute is not established. Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
+Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed."
+
+- **Invert record into act**: treat "inspected/conformant" not as the presence or absence of a record but as independent verification of "the provenance that the act producing the attribute was actually performed."
+- **Prove the provenance of performance**: tie the attribute to the provenance of who actually inspected and when, requiring as a proof that the record generation is accompanied by the act.
+- **Block before proceeding downstream**: even when a record is formally in order, if a proof backed by the provenance of performance does not hold, do not establish the attribute and reject progression to shipment/operation in advance.
+- **Complement to audit**: place audit of records (are they all there?) and pre-execution proof of performance (is it backed by the actual act?) side by side as separate tracks.
+
+If a proof backed by the provenance of performance does not hold, the attribute is not established, and after-the-fact audit is complemented by proof beforehand. Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
 
 For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

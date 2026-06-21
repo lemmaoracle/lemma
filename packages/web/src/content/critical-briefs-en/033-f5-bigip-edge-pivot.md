@@ -47,6 +47,8 @@ Microsoft Threat Intelligence published an attack in which compromising one inte
 - 2026-03-27: CISA adds CVE-2025-53521 to the KEV; Shadowserver observes over 17,000 vulnerable IPs
 - 2026-05-22: Microsoft Threat Intelligence publishes the full chain of the multi-stage Linux intrusion starting from F5 BIG-IP (via F5 / Confluence)
 
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
+
 ---
 
 ## 3. Attack vector
@@ -91,7 +93,14 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (each hop of lateral movement is accepted on positional trust and implicit trust in stored credentials, rather than per-action proof of authorization), Lemma proposes a design that inverts authentication from "possession of a credential" to "pre-execution proof of scoped authorization and provenance per action." Under the proof-as-auth approach of presenting a proof without sending a key or a long-lived credential, even with credentials stolen from the edge appliance or privileges gained via reflection, if a proof of legitimate authorization and provenance does not hold, the action is rejected in advance.
+Against the structure exposed here (each hop of lateral movement is accepted on positional trust and implicit trust in stored credentials, rather than per-action proof of authorization), Lemma proposes a design that inverts authentication from "possession of a credential" to "pre-execution proof of scoped authorization and provenance per action."
+
+- **Invert possession into proof**: shift authentication from "do you hold a valid credential?" to "pre-execution verification of whether this action has legitimate authorization and provenance."
+- **Scope per action**: instead of sending a key or a long-lived credential, require a verifiable, scoped, non-reusable proof per action, cutting off lateral reuse.
+- **Eliminate positional trust**: do not rest on implicit trust in network "position" or stored credentials; verify authorization and provenance independently at each hop.
+- **Block theft and reflection in advance**: even with credentials stolen from the edge appliance or privileges gained via reflection, if the proof reports missing legitimate authorization or provenance, reject execution in advance.
+
+In this way, if a proof of legitimate authorization and provenance does not hold, the action is rejected in advance, and detection of credentials is complemented by proof beforehand.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

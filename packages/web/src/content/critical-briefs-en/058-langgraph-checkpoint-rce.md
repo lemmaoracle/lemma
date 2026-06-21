@@ -36,6 +36,7 @@ In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabil
 - **Bounded scope**: LangChain's managed platform (LangSmith Deployment, on PostgreSQL) is not affected. The vulnerabilities are limited to self-hosted deployments
 - **Exfiltration / reachable targets**: On success — the LLM API keys, customer data, conversation history the agent handles, and credentials for external systems (CRM, internal APIs). LangGraph frames CVE-2026-28277 as "post-exploitation," a threat model that presumes write access to the checkpoint store
 - **Exploitation status**: All three patched. Fixed in `langgraph-checkpoint-sqlite` 3.0.1+, `langgraph` 1.0.10+, and `@langchain/langgraph-checkpoint-redis` 1.0.2+
+- **Core**: The agent reads back its own persistent state (the checkpoint) in a privileged context without independently verifying its provenance or integrity before acting, so an injected forged state converts straight into code execution
 
 ---
 
@@ -65,7 +66,7 @@ Check Point's point is that a classic vulnerability class — SQL injection — 
 
 ## 4. Structural analysis
 
-This incident belongs to the `agent-infrastructure` category under Pillar 03 (Agent Authority Proof). The central failure primitive is that **the agent interprets its own persistent state (the checkpoint) in a privileged runtime context without verifying its provenance and integrity.** A checkpoint is the agent's "memory," and on resume the agent reads it back as legitimate self-state. But with no layer that verifies, before execution, "when, under whose authority, and tamper-free this state was written," a forged row injected into the state store converts straight into code execution. As secondary we note `identity-auth` (authorization of the state write) and `ai-decision-integrity` (the integrity of the state that underpins the agent's decisions).
+This incident belongs to the `agent-infrastructure` category under Pillar 03 (Agent Authority Proof). The central **failure primitive is "the agent interprets its own persistent state (the checkpoint) in a privileged runtime context without verifying its provenance and integrity."** A checkpoint is the agent's "memory," and on resume the agent reads it back as legitimate self-state. But with no layer that verifies, before execution, "when, under whose authority, and tamper-free this state was written," a forged row injected into the state store converts straight into code execution. As secondary we note `identity-auth` (authorization of the state write) and `ai-decision-integrity` (the integrity of the state that underpins the agent's decisions).
 
 As in Brief 027 (LibreChat), it is a structure in which "data that describes config/state is interpreted unverified in a privileged context" on an agent platform. In 027, a user-specified **connection config** was expanded in a privileged context (`process.env`); here, the agent's own **persistent state** is reconstructed into the runtime without verification — both cases share that "a data layer specific to agent platforms (config / state) passes straight through the input-validation boundary that traditional web apps had established, wearing the agent's skin." Where Brief 003 (Starlette/BadHost) addressed the **entrance** of a connection (auth bypass) and Brief 025 (the MCP SDK design) an RCE path inherent in the reference implementation, this case highlights that no trust boundary is drawn around the **origin of the agent's state.**
 
@@ -99,7 +100,14 @@ With the spread of self-hosted agent platforms, "verifying the provenance and in
 
 ## 7. Lemma's analysis
 
-Against the detection-and-proof gap this incident exposed (the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity), Lemma proposes a design that records the writing and reading-back of the agent's state as authority-bearing actions, and — before the state is reconstructed into the runtime — verifies, as an independently verifiable proof, "which run wrote it, under what authority" and "whether it is untampered."
+Against the gap this incident exposed — the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity — Lemma proposes a design that records the writing and reading-back of state as authority-bearing actions and requires an independently verifiable proof before reconstruction.
+
+- **Binding state authorship**: Bind a checkpoint to "which agent, which run, under what authority" wrote it, fixing the authorization of the write as a verifiable attribute
+- **Pre-execution integrity verification**: Before the state is reconstructed into the runtime, cryptographically verify it is untampered; an injected forged row cannot be read back through the same path as legitimate self-state
+- **Reading-back as an authority-bearing action**: Treat a state load as an authority-bearing action rather than mere I/O — if the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," it is blocked before execution
+- **Selective disclosure**: Prove only that "the state was legitimately written and is untampered," with minimal disclosure, without exposing the state's contents (conversation history, secrets) outside
+
+After-the-fact detection by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of state before it is read back (pre-execution attestation), work as complements, not substitutes.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

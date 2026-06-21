@@ -46,6 +46,8 @@ SynthID — Google DeepMind's watermark for AI-generated images — was reverse-
 - After April 2026: The existence of a SynthID-watermark bypass tool based on the method is reported in general media (MediaNama, etc.)
 - 2026-08-02: The EU AI Act's mandatory watermarking of AI-generated content (transparency requirement) takes effect. The phase in which watermarking becomes a regulatory requirement and the phase in which its strip-ability is demonstrated overlap
 
+> Note: Proper names and CVEs rest on primary sources (research institutions, GitHub Advisory, NVD, etc.), and since each implementation's response status varies over time, consult the latest information. This is a research / lab demonstration, not an attack incident, and the scale of harm and operational impact are not exaggerated.
+
 ---
 
 ## 3. Event Chain

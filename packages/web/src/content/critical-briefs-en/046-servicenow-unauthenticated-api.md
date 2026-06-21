@@ -93,9 +93,14 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's analysis
 
-Against the structure this incident exposed (a request to the endpoint is accepted by relying on a configuration-level premise rather than making the requester prove authorization per action), Lemma proposes a design that inverts authentication from "is the configuration enforcing authentication" to "response-time proof of scoped authorization and provenance per request." Under the proof-as-auth idea, where a proof is presented without depending on configuration state or long-lived credentials, even if one endpoint setting is off, the query is rejected beforehand unless the proof of legitimate authorization/provenance holds. By binding the endpoint's response to a pre-execution attestation of "this request carries authorization/provenance" rather than "it was called," unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests.
+Against the structure this incident exposed (a request to the endpoint is accepted by relying on a configuration-level premise rather than making the requester prove authorization per action), Lemma proposes a design that inverts authentication from "is the configuration enforcing authentication" to "response-time proof of scoped authorization and provenance per request."
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+- **Per-request authorization proof (proof-as-auth)**: Make each request present a verifiable, scoped, non-reusable proof, rather than depending on the endpoint's configuration state or long-lived credentials. Even if one setting is off, reject the query beforehand unless the proof of legitimate authorization/provenance holds.
+- **Pre-execution binding of the response**: Bind the endpoint's response to a pre-execution attestation of "this request carries authorization/provenance" rather than "it was called," distinguishing unauthorized queries before execution even amid configuration drift or unauthenticated requests.
+- **Scope-limited operations**: Bind, per request, which data and on whose authorization may be queried, so that a once-established premise does not carry over beyond the scope of the action.
+- **Selective disclosure**: Disclose only the minimum — that "this request meets the authorization/provenance verification condition" — without exposing internal configuration or credentials.
+
+In this way, unauthorized queries can be distinguished before execution even amid configuration drift or unauthenticated requests. For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

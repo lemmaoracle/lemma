@@ -37,6 +37,7 @@ Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion i
 - **CVSS score**: 7/10. Both X41 D-Sec and Secwest assess this as significantly underestimating the severity
 - **Fix release**: Patched in Starlette 1.0.1
 - **Detection tool**: An online scanner for identifying affected servers is available at mcp-scan.nemesis.services
+- **Core**: The structural failure was that the divergence between the path the router resolves and the path path-based authentication sees was left in place, detached from the auth layer and never independently verified, so a single Host-header manipulation let the "authenticated" assertion slip through without prior verification.
 
 ---
 
@@ -46,6 +47,8 @@ Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion i
 - 2026-05-27: Ars Technica publishes first reporting; GIGAZINE follows up in Japanese
 - 2026-05-27: X41 D-Sec publishes the mcp-scan.nemesis.services online scanner
 - 2026-05-27: Secwest publishes a comment noting that the CVSS rating is underestimated
+
+> Note: Names and the CVE are based on primary sources (the X41 D-Sec advisory, the MITRE CVE record, the Starlette GitHub release, etc.). Each implementation's remediation status varies over time, so consult the latest information. This Brief treats the matter as a demonstrated structural defect (CVE-2026-48710) and does not exaggerate real-world impact.
 
 ---
 
@@ -75,7 +78,7 @@ That said, the root cause is that the path-based authentication scheme itself do
 
 Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence.
 
-In a case like this Host-header authentication bypass, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — **complements**, not substitutes for, one another (the core of the brand). Proving that an MCP server's request is legitimate before it reaches an external resource does not replace the work of detecting vulnerable versions; it functions alongside it.
+In a case like this Host-header authentication bypass, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — are **complements**, not substitutes. Proving that an MCP server's request is legitimate before it reaches an external resource does not replace the work of detecting vulnerable versions; it functions alongside it.
 
 For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
 
@@ -94,7 +97,14 @@ The "data at risk" categories X41 D-Sec enumerated illustrate the reach of this 
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof), Lemma proposes a design that embeds, at the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," "against which resource" — so that the receiver can make accept decisions by reading the proof, not the config or the path. Even if a path-resolution bug exists in the framework, the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not.
+Lemma's design answers this incident's gap — the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof — by having the receiver decide on the proof rather than the path.
+
+- **Proof-as-auth before the action**: At the point an agent makes an HTTP request to an external resource, an independently verifiable cryptographic proof of "who," "with what authority," "up to where," and "against which resource" is embedded in the request itself.
+- **Scoped authority**: By binding the delegated scope into the proof, reachability of a protected endpoint like `/admin` is decided by the reach of the authority rather than by path resolution.
+- **Independence from the framework**: Even if a path-resolution bug exists in the framework (the Host-header divergence here), the proof tells the receiver through a separate channel whether the request was generated under a legitimate delegation relationship or not.
+- **Complement to detection**: Scanning for vulnerable versions, as mcp-scan does, and a layer that proves request legitimacy before acceptance function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of proving through a separate channel what should be accepted — a higher-level trust-boundary verification that does not depend on framework-side bug fixes, and that complements, rather than replaces, the detection layer.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

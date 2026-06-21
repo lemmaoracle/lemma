@@ -47,6 +47,8 @@ EchoLeak (CVE-2025-32711), disclosed by Aim Labs in June 2025, made Microsoft 36
 - 2025-06-11: The advisory and the attack-chain research are published (CVE-2025-32711); listed in that month's Patch Tuesday
 - 2026 onward: Similar strains are reported in SharePoint / Copilot integrations, showing the AI-assistant trust-boundary problem is not a one-off
 
+> Note: Proper names and CVEs rest on primary sources (research labs, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case was demonstrated at the responsible-disclosure (PoC) stage by a research lab and does not assert harm in the wild.
+
 ---
 
 ## 3. How the attack propagates into "unverified execution"

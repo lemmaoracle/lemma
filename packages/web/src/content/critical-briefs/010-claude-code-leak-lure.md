@@ -34,6 +34,7 @@ gap_fix: "実行やインストールの前に「この成果物は正規の配�
 - **配送路**: GitHub Releases を信頼された配布チャネルとして悪用。78–167MB の trojan 化アーカイブと使い捨てアカウントで takedown を反復回避
 - **二次リスク**: 流出ソース自体が脆弱性発見・prompt injection の設計図・agentic attack surface の露出という長期リスクを伴う
 - **解析・公表**: Trend Micro（2026-04-03、著者 Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra）
+- **核心**: 取得される成果物が正規 publisher の origin かを、利用者・配布プラットフォームが取得時点で独立検証せず、ブランド名と配布チャネルの信頼で accept する構造である。
 
 ---
 
@@ -44,6 +45,8 @@ gap_fix: "実行やインストールの前に「この成果物は正規の配�
 - 2026-03-31 以降: Anthropic が人的ミスと確認、該当バージョンを撤回、ミラーへ DMCA / 著作権 takedown を発行（顧客データ・認証情報の露出はないと表明）
 - 2026-04-01: 流出 24 時間以内に、既存キャンペーンが「流出 Claude Code」へ pivot。`ClaudeCode_x64.7z` / `ClaudeCode_x64.exe` を GitHub Releases から配布
 - 2026-04-03: Trend Micro が解析を公表
+
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
 ---
 
@@ -60,7 +63,7 @@ gap_fix: "実行やインストールの前に「この成果物は正規の配�
 
 ## 4. 構造的論点
 
-本事案は Pillar 01（来歴証明）の `code-provenance` カテゴリに属する。中心的な失敗 primitive は、ダウンロードされる成果物が「本当に Anthropic の Claude Code か」を、利用者・配布プラットフォームが取得時点で独立検証する layer を欠いていた点にある。攻撃者は脆弱性を突いたのではなく、ブランド名と GitHub Releases という **信頼シグナルそのもの** を来歴の代替として悪用した。secondary に `identity-auth` を併記する。
+本事案は Pillar 01（来歴証明）の `code-provenance` カテゴリに属する。中心的な**失敗 primitive は「ダウンロードされる成果物が正規 publisher の origin かを、取得時点で独立検証する layer の不在」**である。攻撃者は脆弱性を突いたのではなく、ブランド名と GitHub Releases という **信頼シグナルそのもの** を来歴の代替として悪用した。secondary に `identity-auth` を併記する。
 
 Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが primitive が異なる。Brief 004 は窃取された開発者 credential を用いた正規プロセス経由の汚染（commit author の origin 偽装）、本事案は信頼ブランドの impersonation による成果物 origin の偽装（配布アーティファクトの来歴偽装）。両者は「成果物の origin が、それを検証する layer と切り離されたまま accept される」という構造で同根である。Brief 003（Starlette/BadHost）とも、identity / origin の主張が独立検証されないという論点で隣接する。なお本事案は、流出元（Anthropic 側の packaging error）と便乗攻撃（第三者によるブランド偽装）という二層構造を持ち、ソフトウェア脆弱性ではなく人的・組織的ギャップが material impact の起点になりうることを示している。
 
@@ -89,7 +92,14 @@ Brief 004（Megalodon GitHub supply chain）と同じ `code-provenance` だが p
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は、各成果物に「正規の origin から生成・公開された」ことを独立検証可能な暗号証明として固定し、取得側が実行前に proof を検証する設計を提示している。ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる構造である。
+本事案で露呈した検出と証明の落差（取得アーティファクトの origin が独立検証されないまま、ブランド名・配布チャネルの信頼で accept される）に対して、Lemma は次の設計要素を提示している。
+
+- **成果物への origin 証明の固定**: 各成果物に「正規の origin（公式 publisher）から生成・公開された」ことを独立検証可能な暗号証明として固定する。
+- **取得時点での proof 検証**: 取得側（開発者・CI/CD・端末）が実行・インストール前に proof を検証し、正規 origin でなければ reject する。
+- **信頼シグナルからの分離**: ブランド名や配布 URL が偽装されても、proof は別系統で「この artifact は正規 publisher の下で生成された / 生成されていない」を告げる。
+- **impersonation の遮断**: ブランド名・配布チャネルの信頼に依存しないため、信頼シグナルを来歴の代替に転用する impersonation を取得時点で遮断する。
+
+proof は別系統で正規 publisher の有無を告げる構造であり、検出層と組み合わせることで成果物の trust boundary を確立する。
 
 設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

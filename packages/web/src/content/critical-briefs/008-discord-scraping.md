@@ -38,6 +38,7 @@ gap_fix: "配布や AI 学習への取り込みの前に「このデータは、
   - Discord 利用規約: スクレイピング禁止条項を含む
 - **配布範囲**: arXiv 経由で誰でもダウンロード可能、下流の研究者・AI 企業への流通経路が成立
 - **Discord プラットフォーム側 response**: 公開時点で公式 statement は未確認(同社は過去に類似事案 Spy Pet に対して 2024-04 時点で法的措置を検討した経緯あり)
+- **核心**: 公開アクセス可能という属性と規約上の利用 scope 属性が、配布前に独立検証されないまま dataset が下流の AI 学習へ流通する構造である。
 
 本事案は cybersecurity attack incident ではなく、研究目的の規約違反を契機とする「信頼層に関わるリスク事象」として扱う。Lemma Critical Brief の射程を、攻撃 incident に加え、AI 時代の信頼層に関わるリスク事象一般に拡張する第 1 事例として位置付ける。
 
@@ -51,6 +52,8 @@ gap_fix: "配布や AI 学習への取り込みの前に「このデータは、
 - 2025-05: arXiv 論文(2502.00627)と JSON dataset をオンライン公開
 - 2025-05-22: 404 Media が一次報道、Discord 利用規約・開発者ポリシー違反を明示。同日、日本語メディアでも続報
 - 2025-05 以降: GenAI 業界横断で training data provenance の論点として議論
+
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本 Brief は実証された構造的欠陥として扱い、被害規模を誇張しない。
 
 ---
 
@@ -68,7 +71,7 @@ gap_fix: "配布や AI 学習への取り込みの前に「このデータは、
 
 ## 4. 構造的論点
 
-本事案は、chat プラットフォームの公開チャンネルデータについて、**「サーバーが公開設定である」という属性表明と、規約で定められた「利用 scope」属性表明が独立に attestation されないまま、配布層を経由して下流に流通する** という構造の代表事例である。技術的にはアクセス可能な公開 API、規約上禁止された利用 scope(ML / AI training 用途、再配布、scraping)、そして dataset 配布時点で「収集 scope が規約遵守か」を独立検証する layer の不在が同時に成立している。
+本事案は、chat プラットフォームの公開チャンネルデータについて、**「サーバーが公開設定である」という属性表明と、規約で定められた「利用 scope」属性表明が独立に attestation されないまま、配布層を経由して下流に流通する** という構造の代表事例である。技術的にはアクセス可能な公開 API、規約上禁止された利用 scope(ML / AI training 用途、再配布、scraping)、そして dataset 配布時点で「収集 scope が規約遵守か」を独立検証する layer の不在が同時に成立している。中心的な**失敗 primitive は「dataset 配布時点で、収集 scope が規約上の利用 scope に整合するかを独立検証する layer の不在」**である。
 
 Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構造、Brief 006(Google API キー失効遅延)は credential の **失効属性** が独立検証されない構造、本事案は dataset の **来歴・利用 scope 属性** が独立検証されない構造として位置する。3 件はいずれも「信頼の assertion(本事案では『この dataset は適法 scope で収集された』)が、それを検証する layer と切り離されている」という共通構造を持つ。
 
@@ -103,11 +106,12 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(dataset の来歴と利用 scope 属性が独立検証されないまま下流に流通する)に対して、Lemma は 2 層の構造を提示する。
+本事案で露呈した検出と証明の落差(dataset の来歴と利用 scope 属性が独立検証されないまま下流に流通する)に対して、Lemma は次の 2 層の設計要素を提示する。
 
-第一に **dataset 配布層** において、dataset の収集元、収集 scope(規約遵守 / 違反)、利用条件(再配布禁止、ML / AI training 禁止等)を独立検証可能な暗号証明として埋め込み、配布時点で proof attestation を必須化する設計。下流の研究者・AI 企業は proof を verifier として、自社の用途(例: ML training)が dataset の収集 scope に整合するかを独立検証できる構造になる。
-
-第二に **AI training data audit 層** において、AI ベンダーの training data audit 工程に proof 必須化を組み込み、AI モデルの出力に対して「この出力はどの training data に基づくか」「その training data は適法 scope で収集されたか」を独立検証可能にする設計。エンプラ CSO は AI 採用判断時点で proof のない、または不正 scope proof を持つ training data を契約要件として排除可能になる。
+- **dataset 配布層での来歴埋め込み**: dataset の収集元、収集 scope(規約遵守 / 違反)、利用条件(再配布禁止、ML / AI training 禁止等)を独立検証可能な暗号証明として埋め込む。
+- **配布時点での proof attestation 必須化**: 配布時点で proof attestation を必須化し、下流の研究者・AI 企業は proof を verifier として、自社の用途(例: ML training)が dataset の収集 scope に整合するかを独立検証できる。
+- **AI training data audit 層への proof 組み込み**: AI ベンダーの training data audit 工程に proof 必須化を組み込み、出力に対して「どの training data に基づくか」「適法 scope で収集されたか」を独立検証可能にする。
+- **採用判断時点での排除**: エンプラ CSO は AI 採用判断時点で proof のない、または不正 scope proof を持つ training data を契約要件として排除できる。
 
 2 層の組み合わせは、検出に対する代替ではなく補完の関係にある。検出は scraping の発生と dataset 配布を後追いで把握できるが、配布済み dataset の下流流通を制御できない。事前証明は dataset 配布時点と AI training audit 時点の 2 層で trust boundary を確立する。
 

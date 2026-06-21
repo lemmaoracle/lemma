@@ -34,6 +34,7 @@ Stake DAO vsdCRV で、攻撃者はデプロイヤー秘密鍵を用いて Layer
 - **侵害された資産**: Stake DAO デプロイヤー秘密鍵
 - **影響範囲**: Arbitrum に限定。Boosted Yields、Liquid Lockers、Votemarket、Morpho 上の Stake DAO レンディングは影響なし
 - **継続事案**: Arbitrum 上の asdCRV Llamalend 市場は終了手続きへ
+- **核心**: 本事案の構造的失敗は、bridge が「どの送信元を信頼するか」を定める信頼設定そのものが、独立検証されないまま単一鍵で書き換えられ、偽メッセージが正規の trusted source として受理された点にある。
 
 ---
 
@@ -44,6 +45,8 @@ Stake DAO vsdCRV で、攻撃者はデプロイヤー秘密鍵を用いて Layer
 - 2026-05-27: PeckShield Alert が swap および bridge を含む流出経路を解析
 - 2026-05-28: Stake DAO 公式が初期声明。コントリビューターがメインネット上の vsdCRV 裏付資産を保護、vsdCRV ブリッジを停止
 - 2026-05-29: Stake DAO チームが初期調査結果を公表。影響範囲が Arbitrum に限定されたこと、Boosted Yields など主要プロトコルが影響外であることを確認。法執行機関およびセキュリティパートナーと連携した調査継続
+
+> 注: 固有名・日付・被害額は Stake DAO の公式声明（X）および Blockaid・PeckShield Alert の独立解析の一次情報に基づき、各実装の対応状況は時点により異なるため最新情報を参照のこと。
 
 ---
 
@@ -59,7 +62,7 @@ Stake DAO vsdCRV で、攻撃者はデプロイヤー秘密鍵を用いて Layer
 
 ## 4. 構造的論点
 
-本事案は、cross-chain bridge において **信頼の起点となる設定そのものが単一鍵で書き換え可能な状態に置かれていた** という構造の代表事例である。LayerZero v2 における vsdCRV の trusted source 指定は、コントラクト所有者(本事案ではデプロイヤー秘密鍵保有者)が変更可能な config として実装されており、その config 自体に対する独立検証 layer は存在しない。受信側コントラクト(Arbitrum 側 vsdCRV)は config が示す「正規の送信元」を信頼して message を accept する設計のため、config 書き換え後の偽 message は仕様通りに accept された。
+本事案における中心的な**失敗 primitive は「信頼設定の単一鍵書き換え可能性」**であり、cross-chain bridge において信頼の起点となる設定そのものが単一鍵で書き換え可能な状態に置かれていた、という構造の代表事例である。LayerZero v2 における vsdCRV の trusted source 指定は、コントラクト所有者(本事案ではデプロイヤー秘密鍵保有者)が変更可能な config として実装されており、その config 自体に対する独立検証 layer は存在しない。受信側コントラクト(Arbitrum 側 vsdCRV)は config が示す「正規の送信元」を信頼して message を accept する設計のため、config 書き換え後の偽 message は仕様通りに accept された。
 
 同じ構造の事案として、4 月の **KelpDAO / rsETH 不正アンロック**(Brief 001)がある。両事案の構造を対比すると:
 
@@ -108,7 +111,14 @@ Stake DAO(2026-05-28〜29):
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(cross-chain message の信頼設定が config 層に集中点を持ち、その集中点を単一主体が支配可能)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が config 層に依存せず message の origin を独立検証できる設計を提示している。Config が書き換えられた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
+Lemma の設計は、信頼設定が config 層に集中し単一鍵で書き換え可能という本事案の gap に対し、message 自体に来歴証明を埋め込んで accept 判定を config 層から切り離す点で対置される。
+
+- **発信元の来歴バインド**: cross-chain message 自体に「正規の origin から来た」ことを独立検証可能な暗号証明として束ね、verifier が config(trusted source 指定)に依存せず origin を検証できる。
+- **行動前の認可証明(proof-as-auth)**: 資産を発行する前に proof を検証する設計であり、書き換えられた config に従って accept する前段で trust boundary を確立する。
+- **config 層からの独立**: config が書き換えられた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる。
+- **検出との補完**: Blockaid の real-time 検出が支えた containment と、proof が与える事前の origin 保証は、対立軸ではなく二段構成として機能する。
+
+これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想であり、検出層を置き換えるものではなく補完する。
 
 設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

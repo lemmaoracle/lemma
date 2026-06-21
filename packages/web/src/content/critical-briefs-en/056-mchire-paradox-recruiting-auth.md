@@ -45,6 +45,8 @@ In June 2025, researchers Ian Carroll and Sam Curry found that the admin console
 - 2025-06-30: Paradox.ai disables and fixes the account the same day and opens a bug bounty
 - Thereafter: Logged in the AI Incident Database as Incident #1179
 
+> Note: Proper names and CVEs rest on primary sources (research labs, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
+
 ---
 
 ## 3. How access propagates into "unverified retrieval"

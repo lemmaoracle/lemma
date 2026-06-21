@@ -34,6 +34,7 @@ Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal so
 - **Delivery path**: GitHub Releases abused as a trusted distribution channel. 78–167MB trojan archives and disposable accounts repeatedly evade takedown
 - **Secondary risk**: The leaked source itself carries long-term risk via vulnerability discovery, prompt-injection design blueprints, and exposure of agentic attack surface
 - **Analysis / disclosure**: Trend Micro (2026-04-03, authors Jacob Santos / Sophia Nilette Robles / Jeffrey Francis Bonaobra)
+- **Core**: Users and distribution platforms did not independently verify at the point of acquisition whether the artifact came from a legitimate publisher origin, accepting it on the trust of the brand name and distribution channel.
 
 ---
 
@@ -44,6 +45,8 @@ Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal so
 - After 2026-03-31: Anthropic confirms this was human error, withdraws the affected version, issues DMCA / copyright takedowns to mirrors (states that no exposure of customer data or credentials)
 - 2026-04-01: Within 24 hours of the leak, the existing campaign pivots to "leaked Claude Code." Distributes `ClaudeCode_x64.7z` / `ClaudeCode_x64.exe` via GitHub Releases
 - 2026-04-03: Trend Micro publishes the analysis
+
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
 ---
 
@@ -60,7 +63,7 @@ Anthropic's Claude Code npm package exposed roughly 512,000 lines of internal so
 
 ## 4. Structural Analysis
 
-This incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is the absence of a layer in which users and distribution platforms can independently verify, at the point of acquisition, that a downloaded artifact "really is Anthropic's Claude Code." The attackers did not exploit a vulnerability; they abused **the trust signals themselves** — the brand name and GitHub Releases — as substitutes for provenance. Secondary tagging is `identity-auth`.
+This incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central **failure primitive is "the absence of a layer in which users and distribution platforms can independently verify, at the point of acquisition, that a downloaded artifact comes from a legitimate publisher origin."** The attackers did not exploit a vulnerability; they abused **the trust signals themselves** — the brand name and GitHub Releases — as substitutes for provenance. Secondary tagging is `identity-auth`.
 
 It shares `code-provenance` with Brief 004 (Megalodon GitHub supply chain) but has a different primitive. Brief 004 was contamination via a legitimate process using stolen developer credentials (forging commit author origin); this incident is forgery of artifact origin via brand impersonation (forging the provenance of distributed artifacts). Both share the structure that "an artifact's origin is accepted without an independent verification layer." It is also adjacent to Brief 003 (Starlette / BadHost) on the point that identity / origin assertions are not independently verified. Note that this incident has a two-layer structure — the source of the leak (Anthropic-side packaging error) and the lure attack (third-party brand impersonation) — and shows that software vulnerabilities are not the only path; human and organizational gaps can become the starting point of material impact.
 
@@ -89,7 +92,14 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes a design that fixes, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin," so that the receiver verifies the proof before execution. Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not."
+Against the detection–proof gap exposed by this incident (an acquired artifact's origin is accepted on the basis of brand name and distribution channel trust without independent verification), Lemma proposes the following design elements.
+
+- **Origin proof fixed on the artifact**: Fix, on each artifact, an independently verifiable cryptographic proof of "generated and published from a legitimate origin (the official publisher)."
+- **Proof verification at acquisition**: The receiver (developers, CI/CD, endpoints) verifies the proof before executing or installing, and rejects anything not from a legitimate origin.
+- **Separation from trust signals**: Even when the brand name or distribution URL is forged, the proof tells the receiver through a separate channel whether "this artifact was generated under a legitimate publisher or not."
+- **Blocking impersonation**: Because it does not depend on trust in the brand name or distribution channel, it blocks at acquisition the impersonation that turns trust signals into a substitute for provenance.
+
+The proof tells the receiver through a separate channel whether a legitimate publisher exists, and combined with the detection layer it establishes the trust boundary for artifacts.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

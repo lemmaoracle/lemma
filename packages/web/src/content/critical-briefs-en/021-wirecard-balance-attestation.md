@@ -33,6 +33,7 @@ In June 2020, the German payments giant Wirecard disclosed that EUR 1.9 billion 
 - **Who verified the attribute**: long-time auditor EY relied on those balances as the basis of its audit opinion. EY did not directly confirm with the banks; it relied on the confirmation letters as forwarded
 - **Trigger for detection**: KPMG's special audit, which Wirecard itself commissioned in October 2019, reported in April 2020 that it could not confirm the existence of about EUR 1.0 billion in overseas account balances. On June 16, 2020, the two Philippine banks notified EY that the confirmation documents were forged
 - **Limits of the regulator**: regulator BaFin's powers extended only to Wirecard's banking subsidiary, not to the payments parent or to accounting practice
+- **Core**: the authenticity and issuer-genuineness of balance-confirmation letters forwarded via a third party went unverified at disclosure and audit, so the financial attribute of asset existence flowed straight to regulatory disclosure and the markets
 
 ---
 
@@ -47,6 +48,8 @@ In June 2020, the German payments giant Wirecard disclosed that EUR 1.9 billion 
 - 2020-06-22: ad-hoc disclosure states that the balance "likely does not exist"
 - 2020-06-23: Braun is arrested on suspicion of false accounting and market manipulation
 - 2020-06-25: Wirecard AG files for insolvency
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 

@@ -36,6 +36,7 @@ Ammar Askar published a one-click attack and PoC in github.dev, the browser buil
 - **A very short entry**: desktop VS Code has a similar issue, but it requires cloning a repo and opening a Notebook. github.dev opens an editor on a single link click, so the attack's entry is extremely short.
 - **Fixes**: Microsoft added a trust prompt for opening browser Notebooks and rejected arbitrary callers of the extension-install command on 6-03, and stopped forwarding some synthetic events from the webview on 6-04. Microsoft stated desktop VS Code is unaffected.
 - **CVE**: unassigned at the time of writing.
+- **Core**: the delegated OAuth token was not scoped to the least range (the open repo), and the privileged act of installing an extension proceeded without independently verifying under whose authorization it ran.
 
 ---
 
@@ -44,6 +45,8 @@ Ammar Askar published a one-click attack and PoC in github.dev, the browser buil
 - 2026-06-02: ~1 hour after notifying GitHub, Ammar Askar did a full disclosure via blog, PoC, and GitHub issue #319593 — bypassing MSRC, citing a past VS Code bug report that was silently fixed without credit.
 - 2026-06-03: Microsoft shipped interim fixes (trust prompt on opening Notebooks, caller checks on the extension-install command). BleepingComputer and others reported; Microsoft issued a statement.
 - 2026-06-04: Microsoft shipped a further fix (stopping some synthetic-event forwarding from the webview).
+
+> Note: proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case is CVE-unassigned and mid-way through staged fixes, so its remediation status may be updated.
 
 ---
 
@@ -59,7 +62,7 @@ Ammar Askar published a one-click attack and PoC in github.dev, the browser buil
 
 ## 4. Structural analysis
 
-This belongs to Pillar 03 (Agent Authority Proof), category `agent-infrastructure`. The central failure primitive is that the **permission delegated to github.dev (the OAuth token) was not scoped to the least range needed for the work (the open repo), and the privileged action of installing an extension proceeded without independently verifying "on whose authorization it runs."** We mark `identity-auth` as secondary.
+This belongs to Pillar 03 (Agent Authority Proof), category `agent-infrastructure`. The central **failure primitive is "the OAuth token delegated to github.dev was not scoped to the least range (the open repo), and the privileged act of installing an extension proceeded without independently verifying on whose authorization it ran."** We mark `identity-auth` as secondary.
 
 Like Briefs 027 (LibreChat MCP URL) and 003 (Starlette/BadHost), this is an agent-infrastructure trust-boundary problem. 027 was an "exit" where the connection target config referenced the server's privilege context; 003 was an "entry" where Host-header manipulation bypassed auth. This case sits between them — the **scope of a delegated token and the authorization of a privileged action** were missing — and the three share a root: agent infrastructure that acts without independently verifying the range and exercise of a permission. In particular, "had the token been least-scoped to the target, theft would have been limited to that one repo" plainly states the core of the authority-proof category: over-delegation turns a single leak into a total compromise.
 
@@ -89,7 +92,13 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's analysis
 
-Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof. Even if an OAuth token is over-valid, if the delegation-range proof says "this action reaches a repo outside scope," the action is rejected in advance.
+Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof.
+
+- **Trailing the delegation scope**: a delegated permission like an OAuth token embeds the target repo and valid range as a verifiable scope, trailed under an issuer signature
+- **Pre-execution authorization of privileged actions**: privileged actions like extension installs are independently verified, before execution, against "the registrant's authorization" and "the delegated range." Actions exceeding the delegated range are stopped as a pre-execution refusal, not via detection
+- **Enforcing least scope**: even when a token is over-valid, if the proof says "this action reaches a repo outside scope" or "this token must not be valid outside this repo," it is rejected before execution
+
+This closes — through least-scope enforcement and pre-execution authorization of privileged actions — the structure in which over-delegation turns a single leak into a total compromise. Detection of privileged actions (detection) and pre-execution proof of delegated authority work as complements.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

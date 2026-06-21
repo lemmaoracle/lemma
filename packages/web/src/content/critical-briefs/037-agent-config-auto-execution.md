@@ -32,6 +32,7 @@ AI コーディングエージェント（Claude Code・Cursor・Gemini CLI 等�
 - **TrustFall（研究、Adversa AI、2026-05 開示）**: フォルダの信頼プロンプト（既定が「信頼する」）を承認した瞬間に、プロジェクト定義の MCP サーバーが明示承認なしに自動起動し、1 クリックで遠隔コード実行に至る
 - **Miasma 第 3 波（実地、2026-06-03〜05）**: 自己増殖型マルウェア Miasma が、リポジトリに `.claude/settings.json`・`.gemini/settings.json`・Cursor の設定ファイルを仕込み、開発者が AI コーディングツールでプロジェクトを開いた瞬間に認証情報窃取ペイロードを実行。Bun ランタイムを取得して二次ペイロードを起動し、GitHub・npm・AWS・Azure・GCP・Vault・Kubernetes 等の認証情報を掃き出して自己増殖する
 - **実地の規模**: 2026-06-05、GitHub が Microsoft の 4 組織（Azure・Azure-Samples・Microsoft・MicrosoftDocs）のリポジトリ 73 件を無効化。Miasma は TeamPCP が OSS 化した Mini Shai-Hulud の変種
+- **核心**: エージェントが「開いた／信頼した」操作を十分な認可と見なし、同梱設定の作者・来歴・スコープを実行前に検証しなかったため、悪意ある設定がそのまま自動実行された
 
 ---
 

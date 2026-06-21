@@ -45,6 +45,8 @@ In January 2025, Wiz Research found that AI company DeepSeek had a backend Click
 - 2025-01: Wiz Research discovers two ClickHouse instances during an external-infrastructure assessment
 - 2025-01-29: Wiz discloses responsibly to DeepSeek; DeepSeek remediates within about 30 minutes
 
+> Note: Proper names and CVEs rest on primary sources (research labs, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case rests on a research lab's responsible disclosure and does not assert the presence or absence of illicit retrieval by third parties.
+
 ---
 
 ## 3. How exposure propagates into "reachable = fully retrievable"

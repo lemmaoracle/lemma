@@ -62,7 +62,7 @@ This incident stems from a structure in which proving a regulatory attribute (ag
 
 ## 4. Structural analysis
 
-This incident belongs to the `attribute-proof-bypass` category under Pillar 04 (Regulatory Attribute Proof). The central failure primitive is that **to make a user prove one regulatory attribute — that "age meets the requirement" — the raw identity document itself is disclosed and stored with a third party, so the proof of the attribute and the storage of the raw PII are not separated.** As secondary we note `data-provenance` (the provenance of the submitted ID and its capture) and `identity-auth` (the confirmation of identity and age).
+This incident belongs to the `attribute-proof-bypass` category under Pillar 04 (Regulatory Attribute Proof). The central **failure primitive is "to make a user prove one regulatory attribute — that age meets the requirement — the raw identity document itself is disclosed and stored with a third party, so the proof of the attribute and the storage of the raw PII are not separated"** — As secondary we note `data-provenance` (the provenance of the submitted ID and its capture) and `identity-auth` (the confirmation of identity and age).
 
 The crux is over-disclosure: to "prove age," you hand over "the entire ID." What should be proven is one predicate, "is this person 18+," but what actually changes hands is the entire ID — name, date of birth, document number, face photo — and it is stored with a third party. A disclosure to prove an attribute once turns into a permanent storage risk. The more age-verification mandates advance worldwide, the more each platform collects raw IDs through third parties, and the same leak structure recurs across the board.
 

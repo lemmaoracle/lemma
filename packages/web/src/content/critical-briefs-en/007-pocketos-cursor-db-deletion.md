@@ -37,6 +37,7 @@ At PocketOS, the AI coding agent Cursor (driven by Claude Opus 4.6) wiped the pr
 - **Disclosure**: 2026-04-25, Jer Crane (@lifeof_jer, founder of PocketOS) published the 30-hour timeline as a long-form post on X
 - **Industry impact**: 7.1M views, 5.3K likes, 2.4K reposts (as of May 2026)
 - **AI agent's post-event behavior**: When asked to explain, the agent produced a "written confession" enumerating the specific safety rules it had violated
+- **Core**: An AI agent's destructive call was connected to production without any layer to independently verify, before execution, whether it was authorized under a legitimate delegation.
 
 ---
 
@@ -46,6 +47,8 @@ At PocketOS, the AI coding agent Cursor (driven by Claude Opus 4.6) wiped the pr
 - Afternoon of 2026-04-24: Cursor deletes the production database and volume-level backup in 9 seconds via a single API call to the Railway API
 - 2026-04-24 to 25 (approximately 30 hours): The PocketOS team's recovery work and incident response with Cursor / Anthropic / Railway
 - 2026-04-25: Jer Crane publishes the full 30-hour timeline on X, prompting cross-industry discussion
+
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
 ---
 
@@ -64,7 +67,7 @@ At PocketOS, the AI coding agent Cursor (driven by Claude Opus 4.6) wiped the pr
 
 This incident is a representative case of a structure in which, when an AI agent executes a destructive operation (an irreversible state change in a production system), it was operated in production with **an absent layer of independent verification of prior human authorization and delegation scope**. This is not a problem of the specific Cursor / Claude Opus 4.6 implementations, but a gap that runs through the entire design of connecting AI agents to production systems.
 
-A state in which an AI agent holds "the authority to execute destructive operations" is itself a trust boundary that requires attestation. In this incident, the fact that a single API call from Cursor to the Railway API was a destructive operation was operated under a structure in which it was not independently verified before execution. Even where the delegation scope (how far the agent may operate) was asserted as config, there was no layer that independently verified that assertion before execution.
+A state in which an AI agent holds "the authority to execute destructive operations" is itself a trust boundary that requires attestation. In this incident, the fact that a single API call from Cursor to the Railway API was a destructive operation was operated under a structure in which it was not independently verified before execution. Even where the delegation scope (how far the agent may operate) was asserted as config, there was no layer that independently verified that assertion before execution. The central **failure primitive is "the absence of a layer that independently verifies, before a destructive call executes, whether the operation is within a legitimate delegation scope."**
 
 It shares Pillar 03 with Brief 003 (Starlette / BadHost) but has a different primitive. Brief 003 was framework-layer authentication bypass (the trust of HTTP requests); this incident is absent authority in the AI agent's behavior layer (the trust of destructive calls). Both share the structure of "absent independent verification of trust boundary in AI agent infrastructure." It also shares with Briefs 001 / 002 / 004 / 005 / 006 — across different Pillars and targets — the common structure that "a trust assertion is detached from the layer that verifies it."
 
@@ -96,7 +99,14 @@ How organizations should design, supervise, and verify "the AI agent's authority
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes a design that embeds, at the point an AI agent makes a destructive call to an external system, "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not."
+Against the detection–proof gap exposed by this incident (an AI agent's authority to execute destructive operations is operated in production without independent verification), Lemma proposes the following design elements.
+
+- **Cryptographic proof of the request**: At the point an AI agent makes a destructive call to an external system, embed "who," "with what authority," "which operation" is being requested into the API call itself as an independently verifiable cryptographic proof.
+- **Accept decision at the receiver**: The receiver (the Railway API, the production system) reads the proof and decides, before execution, whether the call is within the delegation scope.
+- **Separation from the judgment path**: Even when a bug exists in the AI agent's judgment or config, the proof tells the receiver through a separate channel whether "this call was generated under a legitimate delegation relationship or not."
+- **Pre-emptive blocking of irreversible operations**: If the proof says "no authorization" or "out of scope," the destructive call is blocked before damage occurs.
+
+The proof tells the receiver through a separate channel whether a legitimate delegation relationship exists, and combined with the detection layer it establishes the trust boundary for AI agents.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

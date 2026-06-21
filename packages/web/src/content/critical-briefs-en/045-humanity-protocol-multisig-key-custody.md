@@ -33,6 +33,7 @@ At Humanity Protocol, one developer's malware-infected laptop was enough for the
 - **What was lost**: 141.2M H was drained from the Ethereum bridge. A malicious contract upgrade minted over 100M new H (the mint chain varies across reports). H fell from about $0.70 to briefly $0.05 — an 80–90% drop within hours.
 - **Attribution held open**: Onchain investigator ZachXBT noted the incident may have been staged. Whether it was an external attack or an inside job is unconfirmed, and this Brief does not assert one.
 - **Response**: The project urged users to pause use of the cross-chain bridge and liquidity pools, and said it was working with security firms and exchanges.
+- **Core**: distributed approval flowed straight into execution on the formal satisfaction of the threshold alone — never verifying each signature as a deliberate approval by a separate legitimate party before execution — so compromising a single custody point collapsed the multi-party approval all at once.
 
 ---
 
