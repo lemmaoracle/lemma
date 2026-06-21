@@ -33,6 +33,7 @@ DataComp CommonPool, one of the largest public AI training datasets, was reporte
 - **Gaps in privacy measures**: the curators applied automatic face blurring, but over 800 faces escaped detection in the sample, with an estimated ~102 million faces missed overall; filters for known PII strings such as emails and SSNs were not applied
 - **Propagation**: CommonPool is the successor to LAION-5B and sits in the lineage that trained Stable Diffusion, Midjourney, and others; PII contamination of downstream generative models and derivatives propagates with high likelihood
 - **Positioning**: not an attack incident, but a trust-layer risk event of the AI era (the absence of provenance and consent in training data); a training-data-provenance case following Brief 008 (Discord scraping)
+- **Core**: the provenance and consent of training data were not verified at collection, material without provenance was fixed at massive scale, and it propagated to downstream models in a form that after-the-fact mechanical filters could not cover
 
 ---
 
@@ -43,6 +44,8 @@ DataComp CommonPool, one of the largest public AI training datasets, was reporte
 - 2014–2022: Common Crawl broadly web-scrapes (images and text on the public web)
 - 2023: DataComp CommonPool is released at 12.8 billion pairs, with privacy measures such as automatic face blurring applied
 - 2025-07-18: the research team publishes the results of a 0.1% audit (arXiv:2506.17185), reporting the large-scale contamination by ID documents, résumés, and missed faces, and the overall estimates; reported by MIT Technology Review
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information. This is a 0.1% sample audit and overall estimate by the research team; estimated figures are not treated as confirmed totals, and the scale of contamination is not exaggerated.
 
 ---
 
@@ -60,7 +63,7 @@ DataComp CommonPool, one of the largest public AI training datasets, was reporte
 
 This case belongs to the `training-data-provenance` category of Pillar 01 (Verifiable Origin). Secondary categories are `data-provenance` (the provenance of individual material) and `attribute-proof-bypass` (regulated personal data — ID documents and the like — ingested without any attribute verification of fitness for use).
 
-The central failure primitive is that **the provenance of "from where, under whose consent, and within what scope of use" the training data was collected is not verified at the time of collection and release.** A dataset can say "collected from the public web," but whether each piece of material may be used for training (consent, regulated status, scope of use) does not accompany the data. Provenance and consent are missing yet fixed at massive scale, and after-the-fact filters like face blurring cannot guarantee coverage (over 800 faces leaked in a 0.1% sample).
+The central **failure primitive is "the provenance of from where, under whose consent, and within what scope of use the training data was collected is not verified at the time of collection and release."** A dataset can say "collected from the public web," but whether each piece of material may be used for training (consent, regulated status, scope of use) does not accompany the data. Provenance and consent are missing yet fixed at massive scale, and after-the-fact filters like face blurring cannot guarantee coverage (over 800 faces leaked in a 0.1% sample).
 
 This is the **sibling** of Brief 008 (scraping 2.05 billion Discord messages via the public API into an AI training dataset). 008 showed "publicly available ≠ consent for training use," and this case concretizes, at a scale of 12.8 billion, that "after-the-fact filtering of large-scale collection cannot prevent contamination by regulated personal data (ID documents, faces)." Both share the root that "if the provenance and consent of training data are not verified at the time of collection, they propagate downstream in a form that is hard to recall." It also connects to Brief 011 (SynthID, whose provenance markers on AI-generated outputs can be stripped) as a family of problems in which provenance is not independently verified across the entire AI lifecycle. For regulation (GDPR's personal data and right to be forgotten), deletion and correction from a dataset without provenance are effectively infeasible.
 
@@ -89,7 +92,14 @@ The need to "ingest training data by whether it has provenance and consent, not 
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training." Material for which a proof of provenance/consent does not hold is rejected before ingestion, and the dataset's composition becomes auditable with provenance attached. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — is what operates here. Read together with Brief 008 (Discord scraping) as the training-data-provenance lineage.
+Against the structure exposed here (the provenance and consent of training data are not verified at collection, and after-the-fact filtering cannot be comprehensive), Lemma proposes a design that places data ingestion not in after-the-fact PII detection but in "independent verification, at the time of collection, of whether each piece of material has the provenance and consent to be used for training."
+
+- **Invert public into provenance**: shift the ingestion criterion from "is it publicly available?" to "does each piece of material have the provenance and consent to be used for training?"
+- **Block at collection time**: reject material for which a proof of provenance/consent does not hold before it is ingested into the dataset, preventing fixation without provenance.
+- **Auditability of composition**: record which material, with what provenance, is included — with provenance attached — so the composition can answer deletion, correction, and regulatory response (right to be forgotten, etc.).
+- **Complement to detection**: place after-the-fact PII detection (search for contaminants later) and pre-execution proof of provenance (is this material fit to ingest?) side by side as separate tracks, shifting weight to the latter for hard-to-recall downstream propagation.
+
+Material for which a proof of provenance/consent does not hold is rejected before ingestion, and after-the-fact filtering is complemented by proof beforehand. The design philosophy of the verifiable-origin category — "publicly available ≠ has provenance and consent" — is what operates here. Read together with Brief 008 (Discord scraping) as the training-data-provenance lineage.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -35,6 +35,7 @@ The Detroit Police Department wrongfully arrested Robert Williams, a Black Ameri
 - **Historical position**: Regarded as the first publicly confirmed FRT-induced wrongful arrest in the United States. Several similar wrongful arrests have since been reported
 - **Technical background**: NIST's large-scale evaluation (NISTIR 8280, 2019-12) had quantitatively shown bias in false positives across some race, age, and sex groups in many algorithms
 - **Legal outcome**: The ACLU filed Williams v. City of Detroit. The case was settled on 2024-06-28, with the Detroit Police Department accepting what is considered the most stringent FRT restriction policy in the country
+- **Core**: An AI's probabilistic judgment output was accepted as the basis for a government enforcement action without passing through any layer verifying its grounds, reliability, independent corroboration, and authorization.
 
 ---
 
@@ -46,6 +47,8 @@ The Detroit Police Department wrongfully arrested Robert Williams, a Black Ameri
 - 2021: The ACLU files Williams v. City of Detroit
 - 2024-06-28: Settlement is reached. The Detroit Police Department accepts the policy including a ban on arrests or photo lineups based on FRT results alone, mandatory independent corroboration, disclosure obligations, and training
 - 2024 onward: The Detroit Police Department's FRT operation is significantly scaled back (reporting indicates that the number of operations and actionable leads has fallen notably)
+
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
 ---
 
@@ -61,7 +64,7 @@ The Detroit Police Department wrongfully arrested Robert Williams, a Black Ameri
 
 ## 4. Structural Analysis
 
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central failure primitive is that the AI's judgment output (a probabilistic face match) was accepted as the de facto basis for a government enforcement action without an accompanying record that could independently prove its grounds, reliability, and verification state. Secondary tagging is `identity-auth` (false identification of personhood) and `ai-bias-harm` (bias in false positives across groups).
+This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "the AI's judgment output (a probabilistic face match) being accepted as the de facto basis for a government enforcement action without an accompanying record that could independently prove its grounds, reliability, and verification state."** Secondary tagging is `identity-auth` (false identification of personhood) and `ai-bias-harm` (bias in false positives across groups).
 
 It shares Pillar 02 with Brief 005 (Noroboto, font-impersonation-induced misdirection of AI document review) but addresses a different target. Brief 005 was a case in which AI **input** was tampered with and judgment was distorted; this incident is a case in which AI **output** flowed directly into downstream decisions without verification. Both share the structure that "an AI judgment is detached from the layer that independently verifies its grounds." It is also adjacent to Brief 011 (SynthID) on the point that authenticity of AI-related content or judgment is not independently verified (011 is the stripping of provenance marks; this incident is the absence of verification of judgment grounds).
 
@@ -94,7 +97,14 @@ How government, when using AI outputs in enforcement actions, benefit decisions,
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes a design that fixes, at the point an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof. Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record. This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and can be built into public-sector procurement requirements via system integration.
+Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes the following design elements.
+
+- **Fixing the conditions of output use**: At the point an AI output is used in downstream decision-making, fix "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it was used as an independently verifiable cryptographic proof.
+- **Hold-off decision before action**: If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance.
+- **Tamper-evident record**: Lemma does not guarantee the fairness of the judgment itself, but it leaves the fact that the judgment was (or was not) independently verified and authorized before action as a tamper-evident record.
+- **Built into procurement requirements**: As an audit and attribution layer, it can be built into public-sector procurement requirements via system integration.
+
+This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and combined with accuracy evaluation (detection) it establishes the trust boundary for the use of AI outputs.
 
 For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -37,6 +37,7 @@ gap_fix: "高リスクな操作の前に「この依頼は、この主体に、�
 - **公表**: 2026-04-25、Jer Crane 氏(@lifeof_jer、PocketOS 創業者)が X で 30 時間タイムラインを長文投稿
 - **業界インパクト**: 7.1M view、5.3K likes、2.4K reposts(2026-05 時点)
 - **AI agent の事後挙動**: 説明を求められた agent が "written confession" として、自身が違反した specific safety rules を enumerate
+- **核心**: AI agent の destructive call が、実行前に「正規の委任の下か」を独立検証する layer を欠いたまま本番に接続されている構造である。
 
 ---
 
@@ -46,6 +47,8 @@ gap_fix: "高リスクな操作の前に「この依頼は、この主体に、�
 - 2026-04-24(afternoon): Cursor が Railway API への単一 API call で production database および volume-level backup を 9 秒で削除
 - 2026-04-24 〜 25(約 30 時間): PocketOS チームの復旧作業、Cursor / Anthropic / Railway とのインシデント対応
 - 2026-04-25: Jer Crane 氏が X で 30 時間タイムライン全文を公開、業界横断議論を喚起
+
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
 ---
 
@@ -64,7 +67,7 @@ gap_fix: "高リスクな操作の前に「この依頼は、この主体に、�
 
 本事案は、AI agent が destructive operation(本番システムにおける不可逆な状態変更)を実行する際に、**事前の人間認可・委任 scope の独立検証 layer が欠落したまま本番運用された** という構造の代表事例である。Cursor / Claude Opus 4.6 という個別実装の問題ではなく、AI agent を本番システムに接続する設計全体に通底する gap が露呈した。
 
-AI agent が「destructive operation を実行する権限」を持つ状態は、それ自体が attestation を要する trust boundary である。本事案では、Cursor → Railway API への single API call が destructive operation であるという fact が、実行前に独立検証されない構造で運用されていた。委任 scope(エージェントがどこまで操作してよいか)が config として表明されていても、その表明を実行前に独立検証する layer は存在しなかった。
+AI agent が「destructive operation を実行する権限」を持つ状態は、それ自体が attestation を要する trust boundary である。本事案では、Cursor → Railway API への single API call が destructive operation であるという fact が、実行前に独立検証されない構造で運用されていた。委任 scope(エージェントがどこまで操作してよいか)が config として表明されていても、その表明を実行前に独立検証する layer は存在しなかった。中心的な**失敗 primitive は「destructive call が実行される前に、その操作が正規の委任 scope 内かを独立検証する layer の不在」**である。
 
 Brief 003(Starlette/BadHost)と同じ Pillar 03 だが、別の primitive を持つ。Brief 003 はフレームワーク層の認証回避(HTTP request の trust)、本事案は AI agent の挙動層の権限不在(destructive call の trust)。両者は「AI agent infrastructure における trust boundary の独立検証不在」という構造で同根。Brief 001 / 002 / 004 / 005 / 006 とも、Pillar や対象は異なるが「信頼の assertion が、それを検証する layer と切り離されている」という共通構造を持つ。
 
@@ -96,7 +99,14 @@ AI agent の "written confession"(自身が違反した safety rules の enumera
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は、AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
+本事案で露呈した検出と証明の落差(AI agent が destructive operation を実行する authority が独立検証されないまま本番運用される)に対して、Lemma は次の設計要素を提示している。
+
+- **要求の暗号証明化**: AI agent が外部システムへ destructive call を行う時点で、「誰が」「どの権限で」「どの operation を」要求しているかを API call 自体に独立検証可能な暗号証明として埋め込む。
+- **受信側での accept 判定**: 受信側(Railway API、production system)が proof を見て、委任 scope 内かを実行前に判定する。
+- **判断系統からの分離**: AI agent の判断や config に bug が存在しても、proof は別系統で「この call は正規の委任関係の下で生成された / 生成されていない」を告げる。
+- **不可逆操作の事前 block**: proof が「認可なし」「scope 外」と告げれば、destructive call は damage 発生前に block される。
+
+proof は別系統で正規の委任関係の有無を告げる構造であり、検出層と組み合わせることで AI agent の trust boundary を確立する。
 
 設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

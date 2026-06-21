@@ -63,7 +63,7 @@ This incident stems from an AI decision that cuts into human driving (automatic 
 
 ## 4. Structural analysis
 
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central failure primitive is that **an AI decision that cuts into human driving (FCA's automatic braking) is not independently verified before the physical action, and the correctness of the judgment depends on processing inside the camera and software and its after-the-fact detection.** We note `data-provenance` (the provenance of decisions and telemetry as a trail) as a secondary category.
+This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "an AI decision that cuts into human driving (FCA's automatic braking) is not independently verified before the physical action, and the correctness of the judgment depends on processing inside the camera and software and its after-the-fact detection."** We note `data-provenance` (the provenance of decisions and telemetry as a trail) as a secondary category.
 
 The implication of this incident lies precisely in its **not being full autonomy.** Unlike the full-autonomy control attribution of Brief 049 (Tesla Robotaxi), here a human keeps driving and the AI's safety judgment cuts in on top. This mirrors where enterprises are now embedding AI into human work: with a human bearing ultimate responsibility, the AI perceives, judges, and sometimes overrides human operation to act. If that AI judgment is not independently verified before the action, a wrong judgment executes as a physical/operational action and the harm spreads to those around. Phantom braking is a microcosm of this.
 

@@ -49,6 +49,8 @@ Sansec disclosed a Magecart skimming campaign abusing Stripe's API infrastructur
 - After page load / every minute: it splits the stolen data, creates fake customer records in the attacker's Stripe account, and wipes the local copy.
 - 2026-06-04: Sansec discloses; BleepingComputer and others report; the Firestore variant is confirmed alongside.
 
+> Note: proper nouns and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information. Stripe / Google themselves were not breached — what was abused were legitimate API and tag-management features — and we do not overstate this.
+
 ---
 
 ## 3. Technical structure of the chain
@@ -63,7 +65,7 @@ Sansec disclosed a Magecart skimming campaign abusing Stripe's API infrastructur
 
 ## 4. Structural analysis
 
-This belongs to Pillar 01 (Verifiable Origin), category `code-provenance`. The central failure primitive is that **CSP / network allowlists trust a domain's "identity" (this is Stripe; this is Google) but do not verify the "provenance" of the code and data it carries (who placed this script, and by which legitimate path)**. We mark `identity-auth` (over-reliance on a trusted domain's identity) and `data-provenance` (stolen data exfiltrated over a legitimate channel) as secondary.
+This belongs to Pillar 01 (Verifiable Origin), category `code-provenance`. The central **failure primitive is "CSP / network allowlists trust a domain's identity but do not verify the provenance of the code and data it carries — who placed it, and by which legitimate path."** We mark `identity-auth` (over-reliance on a trusted domain's identity) and `data-provenance` (stolen data exfiltrated over a legitimate channel) as secondary.
 
 It is the same shape as Brief 010 (Claude Code source-leak lure malware). 010 repurposed the trust signal of the Anthropic brand and the legitimate delivery path of GitHub Releases for malware delivery. This case repurposed the infrastructure of trusted brands — Stripe / Google — for skimmer delivery and stolen-data storage. Both share the core of the verifiable-origin category: what is trusted is the issuer's identity, not the provenance of the contents it carries. It is also adjacent to Brief 004 (Megalodon) in using a legitimate ecosystem (GitHub / a payment API) as the attack's transport layer.
 
@@ -93,7 +95,13 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's analysis
 
-Against the detection–proof gap exposed here (an allowlist trusts a domain's identity but does not verify the provenance of the code and data it carries), Lemma proposes a design that verifies executed code and exchanged data — not by a domain allowlist but as the provenance of who placed it, by which path, and with what content — as an independently verifiable cryptographic proof before execution. Even when delivered from a trusted domain, if the provenance proof reports the absence of legitimate placement, execution and exfiltration are rejected in advance. This rests on the "a domain is trusted ≠ the provenance of its contents is correct" design of the verifiable-origin category. For the same shape of trust-signal repurposing, see Brief 010.
+Against the detection–proof gap exposed here (an allowlist trusts a domain's identity but does not verify the provenance of the code and data it carries), Lemma proposes a design that verifies executed code and exchanged data — not by a domain allowlist but as the provenance of who placed it, by which path, and with what content — as an independently verifiable cryptographic proof before execution.
+
+- **Trailing placement provenance**: the script that runs at checkout is trailed as "who placed it, by which legitimate path" under an issuer signature, holding provenance independently of the delivery domain's identity
+- **Pre-execution provenance verification**: before code runs and before data is sent, the system independently verifies that it carries provenance of legitimate placement by the store. A script without valid provenance is stopped as a pre-execution block — even when it comes from a trusted domain — not via detection
+- **Separating domain identity from content provenance**: that `api.stripe.com` is a legitimate API and that the metadata it carries is legitimately placed are treated as separate questions; per-domain trust is not used in place of the correctness of the contents
+
+This closes the hole in the allowlist premise — that a trusted domain can carry arbitrary code and data — through pre-execution verification of content provenance. On the "a domain is trusted ≠ the provenance of its contents is correct" design of the verifiable-origin category, a domain allowlist (detection) and pre-execution proof of code provenance work as complements. For the same shape of trust-signal repurposing, see Brief 010.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

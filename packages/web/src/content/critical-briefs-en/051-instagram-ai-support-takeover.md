@@ -62,7 +62,7 @@ This incident stems from a structure in which the AI recovery agent does not ind
 
 ## 4. Structural analysis
 
-This incident belongs to the `identity-auth` category under Pillar 03 (Agent Authority Proof). The central failure primitive is that **the AI recovery agent, when performing high-impact operations (changing the registered email, resetting the password), does not independently verify before acting that the requester is the rightful owner of the account.** As secondary we note `agent-infrastructure` (the AI support as infrastructure) and `ai-decision-integrity` (the AI's decision to honor a request that lacks authorization).
+This incident belongs to the `identity-auth` category under Pillar 03 (Agent Authority Proof). The central **failure primitive is "the AI recovery agent, when performing high-impact operations (changing the registered email, resetting the password), does not independently verify before acting that the requester is the rightful owner of the account"** — As secondary we note `agent-infrastructure` (the AI support as infrastructure) and `ai-decision-integrity` (the AI's decision to honor a request that lacks authorization).
 
 The crux is the structure by which a "help" function — support — becomes an attack surface. The AI recovery agent changes registration details and resets credentials on the user's behalf, to help them. But "a request arrived" is not proof that the requester is the rightful owner. As the requested email's link to the account went unverified here, the proof of ownership was decoupled from the execution of the recovery operation. Account recovery is the path that should demand the strictest identity check, yet its authorization was not independently verified before the action.
 

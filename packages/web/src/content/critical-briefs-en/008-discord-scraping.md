@@ -38,6 +38,7 @@ A research team used Discord's public API to scrape 2.05 billion messages from 3
   - Discord terms of service: includes an anti-scraping clause
 - **Distribution reach**: Publicly downloadable via arXiv, with downstream flow to researchers and AI vendors established
 - **Discord platform response**: No public statement confirmed at the time of disclosure (the company had previously considered legal action against a similar case, Spy Pet, as of April 2024)
+- **Core**: Public accessibility and the terms-defined use scope were not independently verified before distribution, so the dataset flows downstream into AI training as-is.
 
 This incident is treated not as a cybersecurity attack incident but as a "trust-layer-related risk event" prompted by a research-purpose terms violation. We position it as the first case in expanding the scope of Lemma Critical Brief — beyond attack incidents to trust-layer-related risk events of the AI era in general.
 
@@ -51,6 +52,8 @@ This incident is treated not as a cybersecurity attack incident but as a "trust-
 - May 2025: The arXiv paper (2502.00627) and JSON dataset are published online
 - 2025-05-22: 404 Media publishes the initial reporting, explicitly noting violations of Discord's terms of service and developer policy. Japanese-language outlets follow up the same day
 - After May 2025: Cross-industry discussion proceeds in GenAI as an argument concerning training data provenance
+
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information. This Brief treats it as a demonstrated structural flaw and does not exaggerate the scale of harm.
 
 ---
 
@@ -68,7 +71,7 @@ This incident is treated not as a cybersecurity attack incident but as a "trust-
 
 ## 4. Structural Analysis
 
-This incident is a representative case of a structure in which, for public channel data on a chat platform, **the attribute assertion that "the server is set to public" and the use-scope attribute assertion defined by terms are not independently attested, and flow downstream via the distribution layer**. A technically accessible public API, a use scope forbidden by terms (ML / AI training use, redistribution, scraping), and the absence of a layer that independently verifies "whether the collection scope complies with terms" at the point of dataset distribution coexist simultaneously.
+This incident is a representative case of a structure in which, for public channel data on a chat platform, **the attribute assertion that "the server is set to public" and the use-scope attribute assertion defined by terms are not independently attested, and flow downstream via the distribution layer**. A technically accessible public API, a use scope forbidden by terms (ML / AI training use, redistribution, scraping), and the absence of a layer that independently verifies "whether the collection scope complies with terms" at the point of dataset distribution coexist simultaneously. The central **failure primitive is "the absence of a layer that, at the point of dataset distribution, independently verifies whether the collection scope is consistent with the terms-defined use scope."**
 
 Brief 005 (Noroboto) is a structure in which AI judgment's **input integrity** is forged; Brief 006 (Google API key revocation lag) is a structure in which a credential's **revocation attribute** is not independently verified; the present incident is positioned as a structure in which a dataset's **provenance and use-scope attributes** are not independently verified. The three share the common structure that "a trust assertion (in this incident, 'this dataset was collected under a lawful scope') is detached from the layer that verifies it."
 
@@ -103,11 +106,12 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (a dataset's provenance and use-scope attributes flow downstream without independent verification), Lemma proposes a two-layer structure.
+Against the detection–proof gap exposed by this incident (a dataset's provenance and use-scope attributes flow downstream without independent verification), Lemma proposes the following two-layer design elements.
 
-First, at the **dataset distribution layer**, a design that embeds the dataset's collection source, collection scope (compliant / in violation), and use conditions (no redistribution, no ML / AI training, etc.) as an independently verifiable cryptographic proof, and mandates proof attestation at the point of distribution. Downstream researchers and AI vendors can then independently verify, as verifiers, whether their own use case (e.g., ML training) is consistent with the dataset's collection scope.
-
-Second, at the **AI training data audit layer**, a design that builds proof-mandatory verification into the AI vendor's training-data audit process, enabling independent verification of "what training data is this output based on" and "was that training data collected under a lawful scope" against AI model outputs. Enterprise CSOs are then able to exclude — as contract requirements at the AI-adoption decision point — training data with no proof or with proof of an unlawful scope.
+- **Provenance embedding at the distribution layer**: Embed the dataset's collection source, collection scope (compliant / in violation), and use conditions (no redistribution, no ML / AI training, etc.) as an independently verifiable cryptographic proof.
+- **Mandatory proof attestation at distribution**: Mandate proof attestation at the point of distribution, so downstream researchers and AI vendors can independently verify, as verifiers, whether their own use case (e.g., ML training) is consistent with the dataset's collection scope.
+- **Proof built into the AI training-data audit layer**: Build proof-mandatory verification into the AI vendor's training-data audit process, enabling independent verification of "what training data this output is based on" and "whether it was collected under a lawful scope."
+- **Exclusion at the adoption decision point**: Enterprise CSOs can exclude — as contract requirements at the AI-adoption decision point — training data with no proof or with proof of an unlawful scope.
 
 The combination of the two layers is in a complementary, not substitutive, relationship to detection. Detection can retroactively capture the occurrence of scraping and the dataset's distribution but cannot control downstream flow of an already-distributed dataset. Pre-execution attestation establishes the trust boundary at the two layers: dataset distribution and AI training audit.
 

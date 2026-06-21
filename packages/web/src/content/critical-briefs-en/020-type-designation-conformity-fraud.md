@@ -32,6 +32,7 @@ In January 2024, in a type-designation fraud, Japan's MLIT revoked the type desi
 - **Cross-industry spread**: around the same period, on-site inspections at multiple makers of cars, motorcycles, and industrial machinery uncovered irregularities across several models and engines. In one case, a major industrial-machinery maker saw nearly the entire range of its industrial-engine designations revoked
 - **Nature of the irregularities**: alterations or falsification of test conditions or measurement values for crash, emissions, fuel-economy, and output tests — touching safety standards and regulatory thresholds
 - **Regulator response**: MLIT conducted on-site inspections and conformity-verification tests. In June 2024, announced the completion of technical verification across all affected vehicles and engines
+- **Core**: the authenticity and test-condition validity of certification data the maker ran and submitted itself went unverified at the point of type designation, so the product's regulatory-conformance attribute flowed straight to shipment
 
 ---
 
@@ -42,6 +43,8 @@ In January 2024, in a type-designation fraud, Japan's MLIT revoked the type desi
 - 2024-01-26: the three models' type designations are formally revoked
 - First half of 2024: on-site inspection extends to multiple makers of cars, motorcycles, and industrial machinery. Irregularities are confirmed across multiple companies
 - 2024-06-25: MLIT announces the completion of technical verification of conformity across all affected vehicles and engines
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 

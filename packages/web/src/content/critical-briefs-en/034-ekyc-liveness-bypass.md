@@ -36,6 +36,7 @@ MIT Technology Review found off-the-shelf tools — virtual cameras, deepfakes, 
   - Deepfake generators / hooking frameworks: on rooted Android, intercept the camera API calls inside the target banking app
 - **Pricing (observed in early 2026)**: a basic VCam Android build at ~$30–$60, stolen-ID bundles at $100–$300, and "VIP" custom deepfakes tailored to a specific institution's liveness flow at $500–$2,000
 - **Context**: Sumsub's tally puts deepfakes at 11% of all fraud in 2026 (up from 7% in 2024). This is not a one-off incident but the visualization of a commercialized KYC-bypass ecosystem.
+- **Core**: a liveness check trusted the attribute "the face on camera is a real biometric" without verifying the provenance of the capture feed, so injected video passed straight through on the same path as legitimate camera footage
 
 ---
 
@@ -47,6 +48,8 @@ MIT Technology Review found off-the-shelf tools — virtual cameras, deepfakes, 
 - Early 2026: a market for VCam, deepfakes, hooking frameworks, and stolen biometric bundles is observed on Telegram
 - 2026-04-15: MIT Technology Review investigates and publishes the market of 22 channels, naming Binance, BBVA, Revolut, and others as targets
 - Same month: Biometric Update and others follow with reporting; Sumsub reports the rising fraud share of deepfakes
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information. This is investigative reporting / demonstration of a commercial tool market; it does not assert per-institution victim counts or success rates, and does not exaggerate effect beyond the existence of the tools.
 
 ---
 
@@ -64,7 +67,7 @@ MIT Technology Review found off-the-shelf tools — virtual cameras, deepfakes, 
 
 This case is anchored in the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof) and also intersects Pillar 02 (Verifiable AI). Secondary categories are `ai-decision-integrity` (the verifying AI cannot distinguish an injected feed from a real one) and `identity-auth`.
 
-The central failure primitive is that **a liveness check trusts the attribute "the face on camera is a real biometric present here and now" without verifying the provenance of the capture feed.** What the verifier sees is a "processed camera feed," and whether it was live-captured from a real sensor, injected by a VCam, or swapped via an API hook cannot be told from the feed's content. The authenticity of the attribute (the person's biometric) is decoupled from the provenance of the capture (proof of live capture from a real biometric).
+The central **failure primitive is "a liveness check trusts the attribute that the face on camera is a real biometric present here and now, without verifying the provenance of the capture feed."** What the verifier sees is a "processed camera feed," and whether it was live-captured from a real sensor, injected by a VCam, or swapped via an API hook cannot be told from the feed's content. The authenticity of the attribute (the person's biometric) is decoupled from the provenance of the capture (proof of live capture from a real biometric).
 
 This is the same lineage as Brief 022 (OnlyFake, defeating KYC with AI-generated static ID documents) — "looks right but the provenance is fake" — but it goes a step further: this case targets **live video / biometrics rather than a static document**, showing that even "dynamic verification" like active liveness cannot substitute for provenance. It shares a root with Brief 012 (a facial-recognition AI decision feeding directly into an administrative action with no independent verification): when a biometric AI decision lacks independent verification, it leads directly to serious consequences. The divergence "looks genuine to both the human operator and the verifying AI, but the provenance is fake" is also the biometric/video version of Brief 005 (Noroboto, the divergence between what a human and an AI see).
 
@@ -93,7 +96,14 @@ The need to "prove identity as the provenance of the capture rather than the app
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (identity as a regulatory attribute is accepted on the appearance of the video without verifying the provenance of the capture), Lemma proposes a design that inverts identity verification from "judging whether the video looks genuine" to "independent verification of the provenance that the capture was live-acquired from a real sensor." No matter how natural the feed, if the proof of capture provenance does not hold, the attribute is not established. Read together with Brief 022 (OnlyFake) as the "looks right but the provenance is fake" lineage.
+Against the structure exposed here (identity as a regulatory attribute is accepted on the appearance of the video without verifying the provenance of the capture), Lemma proposes a design that inverts identity verification from "judging whether the video looks genuine" to "independent verification of the provenance that the capture was live-acquired from a real sensor."
+
+- **Invert appearance into provenance**: shift identity verification from "does the video look genuine?" to independent verification of "does the capture carry provenance of being live-acquired from a real sensor?"
+- **Capture-path and device attestation**: prove the feed's provenance via device and capture-path attestation, cutting off VCam injection and API-hook swaps at the provenance stage.
+- **Block in advance on missing provenance**: no matter how natural the feed, if the proof of capture provenance does not hold, do not establish the attribute and reject the identity check in advance.
+- **Complement to detection**: place deepfake detection (synthetic or not) and pre-execution proof of capture provenance (live-captured or not) side by side as separate tracks, not relying on a cat-and-mouse race.
+
+If the proof of capture provenance does not hold, the attribute is not established, and detection is complemented by proof beforehand. Read together with Brief 022 (OnlyFake) as the "looks right but the provenance is fake" lineage.
 
 For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

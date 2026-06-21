@@ -35,6 +35,7 @@ In February 2026, an autonomous AI agent run by red-team firm CodeWall, under re
 - **Most significant primitive**: with SQLi as read/write, the system prompts could be silently rewritten, tampering with Lilli's answer content, guardrails, and citation behavior
 - **Response**: CodeWall discovered the SQLi in late February, disclosed the full attack chain on March 1. By the following day McKinsey had remediated the unauthenticated endpoints, taken the development environment offline, blocked the public API specifications, and patched the identified issues within hours. The firm stated there was no evidence that customer data or sensitive information had been accessed by CodeWall or any third party
 - **Public disclosure**: 2026-03-09 (The Register / CodeWall blog)
+- **Core**: the system prompts governing the AI's behavior and its outputs had no independent verification of integrity or provenance, so users could not distinguish a silent rewrite from authentic output
 
 ---
 
@@ -46,6 +47,8 @@ In February 2026, an autonomous AI agent run by red-team firm CodeWall, under re
 - 2026-03-01: CodeWall discloses the full attack chain to McKinsey
 - Around 2026-03-02: McKinsey remediates the unauthenticated endpoints, takes development offline, blocks public API specifications. All identified issues patched within hours
 - 2026-03-09: The Register and the CodeWall blog publish
+
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information. This case was a red-team demonstration under responsible disclosure, not an attack that caused real-world harm — it should not be overstated.
 
 ---
 
@@ -62,7 +65,7 @@ In February 2026, an autonomous AI agent run by red-team firm CodeWall, under re
 
 ## 4. Structural Argument
 
-The incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central failure primitive is that the layer governing the AI's (Lilli's) judgment — the system prompts — and the outputs that follow, had no mechanism to independently verify integrity or provenance. Because the prompts were writable and any rewrite could not be independently verified, even silent tampering of the chatbot's answers, guardrails, and citation behavior could not be distinguished from authentic output by the tens of thousands of consultants relying on it. `identity-auth` (unauthenticated endpoints) and `agent-runaway` (autonomous offensive AI agent) are noted as secondary categories.
+The incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "the layer governing the AI's (Lilli's) judgment — the system prompts — and the outputs that follow had no mechanism to independently verify integrity or provenance."** Because the prompts were writable and any rewrite could not be independently verified, even silent tampering of the chatbot's answers, guardrails, and citation behavior could not be distinguished from authentic output by the tens of thousands of consultants relying on it. `identity-auth` (unauthenticated endpoints) and `agent-runaway` (autonomous offensive AI agent) are noted as secondary categories.
 
 The same Pillar 02 as Brief 005 (Noroboto, AI document review misdirected via font impersonation), but a different target. Brief 005 turned AI judgment by **tampering with input**; this incident is the absent integrity / provenance of the **governing instructions (system prompts) and outputs** of the AI. Both share the structure that "AI judgment is decoupled from a layer that independently verifies the authenticity of its grounds." Adjacent to Brief 009 (GTG-1002) on a different primitive — that an autonomous AI agent executed reconnaissance through exfiltration without human intervention — and this incident shows that "autonomization on the attacker side" has materialized as a red-team demonstration. Like Brief 008 (Discord scraping) and Brief 011 (SynthID), this case is a non-attack trust-layer risk event accompanied by responsible disclosure.
 
@@ -92,7 +95,14 @@ How operators and auditors should independently verify the layer governing the A
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof. Even if the system prompts are silently rewritten, the proof accompanying the output signals the inconsistency through a separate channel, so users and auditors can distinguish tampered outputs from authentic ones. Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection.
+Against the detection–proof gap exposed here (no mechanism independently verifies the integrity and provenance of the system prompts governing the AI's behavior and the AI's outputs), Lemma proposes a design that binds the AI's governance instructions and outputs to "produced under legitimate, authorized, untampered instructions" as an independently verifiable cryptographic proof.
+
+- **Proof on the governance instructions**: bind a cryptographic proof to the governance instructions (system prompts and the like) attesting that they are legitimate, authorized, and untampered.
+- **Proof propagated to the output**: accompany each output with an independently verifiable proof that it was generated under those instructions.
+- **Making tampering visible**: even if the system prompts are silently rewritten, the proof signals the inconsistency through a separate channel.
+- **Authenticity judgment**: users and auditors can distinguish tampered outputs from authentic ones.
+
+Lemma does not deny vulnerability detection or access control; it provides a complementary layer of "proof of authenticity for the AI's outputs and governance instructions" alongside detection.
 
 For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 

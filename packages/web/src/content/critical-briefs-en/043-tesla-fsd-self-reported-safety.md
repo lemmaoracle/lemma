@@ -33,6 +33,7 @@ NHTSA escalated its probe into Tesla FSD's inability to handle reduced visibilit
 - **Failure on the reporting side (under-reporting)**: Tesla told NHTSA that "data-labeling constraints" meant it could not uniformly identify and analyze crashes that occurred while degradation detection was active. NHTSA stated this may have led to **under-reporting** of crashes for part of the period in scope
 - **Inflation of the safety claim**: 2026-05-28, Reuters reported that Tesla's "up to 10× safer" claim rests on an asymmetric comparison — its own airbag-deployment crashes against all tow-away crashes in federal data. A University of Michigan researcher, correcting to a symmetric comparison, found the advantage shrinks to about 3×, and even that is unreliable given differences such as fleet age (Tesla average 4.1 years vs U.S. 12.8 years). Of 11 traffic-safety researchers who reviewed it, 10 assessed it as "misleading marketing"
 - **Delayed data submission**: in a separate investigation, Tesla has repeatedly delayed submitting FSD driving-violation data (video, EDR, CAN bus)
+- **Core**: both the validity of the AI driving decision and the safety attributes derived from it remained the operator's self-report, severed from independent verification, and flowed straight to action, regulatory disclosure, and the market
 
 ---
 

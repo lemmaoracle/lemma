@@ -32,6 +32,7 @@ In February 2024, 404 Media reported that a UK passport image from the fake-ID s
 - **Metadata spoofing**: EXIF spoofing for capture device, timestamp, and GPS is supported
 - **Operator claims**: An anonymous operator (self-styled "John Wick") claimed the service could clear KYC at major exchanges and crypto-friendly neobanks. They described the pipeline as a "neural network." (404 Media explicitly noted it could not verify the AI-use claim itself; the price point, however, points at automated generation)
 - **Target-side framing**: OKX framed the case as industry-wide rather than as a single-firm problem
+- **Core**: KYC document review judges only whether an image "looks authentic" and never verifies the issuer signature, so the regulatory attribute "cleared KYC" passed straight through the moment the cost of producing a convincing image collapsed
 
 ---
 
@@ -42,6 +43,8 @@ In February 2024, 404 Media reported that a UK passport image from the fake-ID s
 - 2025: The World Economic Forum and others document attack chains combining AI-generated documents, face swap, and camera injection that defeat both document and biometric checks
 - 2025: Identity-verification industry statistics report a 2,137% rise in deepfake-related fraud attempts over three years, with about one in twenty identity-verification failures reported to be deepfake-related
 - H1 2025: Reported deepfake-driven fraud losses reach roughly USD 410 million in a half-year. Regulatory fines for AML/KYC violations also rise sharply
+
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case is a researcher/press demonstration report, not a specific incident of realized harm — do not overstate it.
 
 ---
 
@@ -57,7 +60,7 @@ In February 2024, 404 Media reported that a UK passport image from the fake-ID s
 
 ## 4. Structural Argument
 
-This incident belongs to the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof). The central failure primitive is that **a regulatory attribute — "cleared KYC" — is built on top of evidence whose issuer cannot be verified.** What the document review actually checks is not the document but its image; the substance of the review is a "looks-plausible" judgment. Disconnected from the cryptographic fact of an issuer signature, this review stops functioning as attribute proof at the moment the cost of producing a "convincing image" collapses. `identity-auth` (binding between the person and their attributes) and `data-provenance` (the provenance of AI-generated content) are noted as secondary categories.
+This incident belongs to the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof). The central **failure primitive is "a regulatory attribute — 'cleared KYC' — is built on top of evidence (an image) whose issuer cannot be verified."** What the document review actually checks is not the document but its image; the substance of the review is a "looks-plausible" judgment. Disconnected from the cryptographic fact of an issuer signature, this review stops functioning as attribute proof at the moment the cost of producing a "convincing image" collapses. `identity-auth` (binding between the person and their attributes) and `data-provenance` (the provenance of AI-generated content) are noted as secondary categories.
 
 Convincing-looking ≠ issued
 

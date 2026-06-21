@@ -35,6 +35,7 @@ In February 2026, an attacker called hackerbot-claw, self-described as autonomou
 - **Most severe impact (Trivy)**: during "Set up Go" the build executed `curl | bash` for more than five minutes; 19 minutes later the stolen PAT was used in a direct push. The repository was made private, 178 releases deleted, more than 32K stars lost, and a suspicious VS Code extension was pushed
 - **AI-vs-AI (the focus of this Brief)**: the attacker replaced a repository's `CLAUDE.md` with social-engineering instructions aimed at manipulating the defending AI coding agent, Claude Code. Claude (running on claude-sonnet-4-6) immediately identified the injection and opened the review with "⚠️ PROMPT INJECTION ALERT — Do Not Merge"
 - **Response**: DataDog deployed an emergency patch within 9 hours. The attacker's account was removed, but researchers observed the campaign continuing
+- **Core**: an AI agent ingested a repository-supplied instruction file (`CLAUDE.md`) as its behavioral guidance without independently verifying its origin or integrity, leaving whether the injection succeeded to the model's detection capability
 
 ---
 
@@ -45,6 +46,8 @@ In February 2026, an attacker called hackerbot-claw, self-described as autonomou
 - During the period: at Trivy, a direct push with the stolen PAT damages the repository (privacy switch, 178 release deletions)
 - During the period: the attacker rewrites `CLAUDE.md` with injection instructions — Claude Code detects and refuses the injection (the first recorded AI-vs-AI attack)
 - 2026-02 / 03: DataDog ships an emergency fix within 9 hours. StepSecurity publishes the attack chain; researchers warn the campaign is continuing
+
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information. The autonomy of the attacking and defending AI rests in part on researchers' claims and demonstrations — its capabilities should not be overstated.
 
 ---
 
@@ -60,7 +63,7 @@ In February 2026, an attacker called hackerbot-claw, self-described as autonomou
 
 ## 4. Structural Argument
 
-The incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The failure primitive this Brief focuses on is that when an AI coding agent ingests a repository-supplied instruction file (`CLAUDE.md` and the like) as its behavioral guidance, there is no mechanism to independently verify the integrity and provenance of those instructions (legitimate / authorized / untampered?). An attacker who can control repository contents can inject instructions the agent follows and hijack decisions such as review and merge. Claude detected the injection in this case, but detection depends on model capability and is not guaranteed to succeed in every situation. `agent-runaway` (both attacker and defender are autonomous AI agents) and `identity-auth` (lateral movement using stolen credentials) are noted as secondary categories.
+The incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive this Brief focuses on is "when an AI coding agent ingests a repository-supplied instruction file (`CLAUDE.md` and the like) as its behavioral guidance, there is no mechanism to independently verify the integrity and provenance of those instructions."** An attacker who can control repository contents can inject instructions the agent follows and hijack decisions such as review and merge. Claude detected the injection in this case, but detection depends on model capability and is not guaranteed to succeed in every situation. `agent-runaway` (both attacker and defender are autonomous AI agents) and `identity-auth` (lateral movement using stolen credentials) are noted as secondary categories.
 
 The same Pillar 02 as Brief 017 (McKinsey Lilli, writable system prompts), forming a pair. Brief 017 is the integrity of the AI's own governance configuration (system prompts); this incident is the integrity of instructions the AI ingests from outside (the repository). Both share the structure that "the instructions governing the AI's judgment are decoupled from a layer that independently verifies their authenticity." Adjacent to Brief 009 (GTG-1002) and Brief 007 (PocketOS) on the autonomous AI-agent dimension. The CI/CD abuse primitives of this campaign (Pwn Request, OIDC, source→sink) are already covered by Brief 014 (TanStack OIDC) and Brief 004 (Megalodon), so this Brief avoids duplication and concentrates on the AI-vs-AI facet.
 
@@ -91,7 +94,14 @@ How operators should independently verify the integrity and provenance of instru
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof. If the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection.
+Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof.
+
+- **Proof on the instructions**: bind a cryptographic proof to `CLAUDE.md`-style behavioral guidance and configuration attesting that they come from a legitimate, authorized origin and are untampered.
+- **Verification before execution**: the agent verifies the proof before ingesting the instructions.
+- **Model-independent rejection**: if the instructions are injected or tampered with, the proof becomes inconsistent and the agent can reject them regardless of model detection capability.
+- **Removing the luck of the draw**: whether an injection succeeds is decided by an independent criterion rather than the model's judgment.
+
+Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection.
 
 For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -32,6 +32,7 @@ In April 2026, Vercel disclosed that the breach path was the broad "Allow all" O
 - **What Context.ai is**: An enterprise AI platform that connects to 40+ corporate tools via OAuth/API, processing organizational data to generate content. Its very value proposition presumes broad access to the corporate identity fabric (a high-privilege third party by design)
 - **Reachable targets**: Vercel's project settings and environment-variable management console. The attacker accessed environment variables not classified as "sensitive" (i.e. stored in readable form). "Sensitive"-marked variables carry encryption that prevents UI retrieval, and Vercel says there is no evidence of access to those. Reach was per team scope, not a platform-wide single-point exposure
 - **Attacker's claims**: An actor claiming to be ShinyHunters posted on BreachForums around 2026-04-19, claiming internal DBs, API keys, GitHub/NPM tokens, source code, etc., and offered ~580 Vercel employee records (names, emails, account status, activity timestamps) as evidence, claiming to sell the data for $2M. ShinyHunters denied involvement (a possible impersonation or splinter; no technical evidence), and Vercel is investigating and has not independently verified the full scope of the claim
+- **Core**: Broad, long-lived "Allow all" OAuth granted to an AI tool remained as standing authority that is not scoped or verified per action, and a vendor breach converted it straight into downstream breach access
 
 ---
 
@@ -60,7 +61,7 @@ A contributing factor is a **secret-classification gap**. Vercel's "sensitive en
 
 ## 4. Structural analysis
 
-This incident belongs to the `agent-infrastructure` category under Pillar 03 (Agent Authority Proof). The central failure primitive is that **the OAuth granted to an AI tool persists as broad, long-lived "standing authority" rather than a "dynamic authority" scoped, authorized, and verified per action.** AI productivity tools, by their functional requirements (reading and writing across email, documents, internal knowledge), structurally demand broad OAuth scopes. The moment a user authorizes that with a corporate identity, they extend their access posture to the vendor's infrastructure — and to whoever later breaches that vendor. As secondary we note `identity-auth` (authorization of the delegated authority) and `attribute-proof-bypass` (the absence of independent verification of the authority attribute).
+This incident belongs to the `agent-infrastructure` category under Pillar 03 (Agent Authority Proof). The central **failure primitive is "the OAuth granted to an AI tool persists as broad, long-lived standing authority rather than a dynamic authority scoped, authorized, and verified per action."** AI productivity tools, by their functional requirements (reading and writing across email, documents, internal knowledge), structurally demand broad OAuth scopes. The moment a user authorizes that with a corporate identity, they extend their access posture to the vendor's infrastructure — and to whoever later breaches that vendor. As secondary we note `identity-auth` (authorization of the delegated authority) and `attribute-proof-bypass` (the absence of independent verification of the authority attribute).
 
 As in Brief 029 (an over-scoped OAuth token stolen at github.dev), it is a structure in which "the token is not scoped to the act." Where 029 was over-scoping within a single service, this case adds another axis: **an organization-crossing standing token routed through a high-privilege third party — an AI tool.** And the problem Brief 033 (F5 BIG-IP) showed — "lateral movement via positional trust plus stored credentials" — recurs here on the OAuth trust surface of AI-SaaS integration rather than a network appliance. The common thread: **a party's access depends not on per-occasion authorization, but on broad trust granted once in the past.**
 
@@ -95,7 +96,14 @@ The absence of a design that treats OAuth grants to AI tools not as "standing au
 
 ## 7. Lemma's analysis
 
-Against the detection-and-proof gap this incident exposed (broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action), Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization." By verifying, before an operation executes, "is this action within the granter's authorization" and "is that authorization currently valid" — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access.
+Against the gap this incident exposed — broad, long-lived OAuth to an AI tool persists as standing authority without being scoped, authorized, and verified per action — Lemma proposes a design that backs a tool's or agent's actions not by "presenting a key" but by "a proof of per-action-scoped, independently verifiable authorization."
+
+- **Per-action scoping**: Rather than the broad consent at grant time, verify per operation, as a proof, "is this action within the granter's authorization," so broad scope cannot pass straight through
+- **Pre-execution validity verification**: Before execution, independently verify "is that authorization currently valid," cutting off the state in which a compromised or revoked token keeps passing as standing access
+- **Authorization without sending the key**: Move from presenting long-lived static tokens to presenting proofs, so a token theft does not convert straight into downstream breach access
+- **Selective disclosure**: Prove only that "the action was within the scope of authorization," with minimal disclosure, without sending the corporate identity fabric or data itself outside
+
+By verifying the scope and validity of authorization as a proof before an operation executes — rather than relying on the broad consent at grant time — it breaks the chain by which a vendor breach converts a standing token straight into downstream breach access. Detection (after-the-fact breach discovery and revocation) and pre-execution attestation (authorization verification before the action) work as complements.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

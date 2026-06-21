@@ -34,6 +34,7 @@ Aikido demonstrated that Google API keys keep authenticating for up to about 23 
 - **Test conditions**: After creating and deleting an API key, send 3–5 requests per second continuously and measure the timestamp of the last successful authentication. Additional 5 trials conducted across three regions: US East, Western Europe, and Southeast Asia
 - **Revocation-speed differences by API type**: Old Gemini API keys (maximum approximately 23 minutes), new Gemini API key format (approximately 1 minute), Google service account keys (approximately 5 seconds)
 - **Google's response**: Treated Aikido's report as "will not fix," "operating as intended," and "not a security issue," and closed it
+- **Core**: The structural failure was that a credential's "revoked" attribute was presented as "deleted" without independent verification, so a key not actually revoked across all servers was accepted as a valid credential.
 
 ---
 
@@ -43,6 +44,8 @@ Aikido demonstrated that Google API keys keep authenticating for up to about 23 
 - 2026-05-21: The Register publishes the initial reporting, "Threat hunters find Google API keys still usable 23 minutes after deletion"
 - May 2026: Aikido official blog publishes technical detail and test results, including the report to Google and the "will not fix" response
 - 2026-05-22: GIGAZINE follows up in Japanese
+
+> Note: Names and measured values are based on primary sources (Joe Leon's test data on the Aikido security official blog, and The Register's initial reporting). Revocation behavior varies by API type and implementation over time, so consult the latest information. This Brief treats the matter as a researcher's measurement of revocation lag and does not exaggerate real-world impact.
 
 ---
 
@@ -95,7 +98,14 @@ This suggests that "faster revocation is technically possible," and Aikido prese
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of the revocation attribute of credentials, the lag window caused by eventual consistency), Lemma proposes a design that commits credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — as independently verifiable cryptographic proofs, so that a verifier (the receiving server, regulatory reporter, auditor) can independently verify the attribute fixed as a proof without relying on the local state of each server. Even when a revocation-lag window exists due to eventual consistency, the proof tells the verifier through a separate channel whether "this credential is revoked / is still valid."
+Lemma's design answers this incident's gap — no independent verification of the revocation attribute and the lag window caused by eventual consistency — by fixing the attribute as a proof decoupled from each server's local state.
+
+- **Attribute provenance binding**: Credential attributes (validity, revocation, scope, expiration, etc.) — for API keys, access tokens, authentication credentials — are committed as independently verifiable cryptographic proofs.
+- **Proof-as-auth before use**: The proof is verified before a credential is used, fixing revocation status upstream of use rather than relying on each server's "valid" judgment.
+- **Selective disclosure**: By fixing the attribute as a proof, a regulatory reporter or auditor can independently verify just the fact "revoked" without exposing the key itself.
+- **Complement to detection**: The revocation lag that Aikido measured and surfaced and a layer that fixes the attribute as a proof function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of having the verifier check an attribute fixed as a proof rather than local state — it complements, rather than replaces, the detection layer.
 
 For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -62,7 +62,7 @@ This incident stems from a structure in which, at the time of a crash, the attri
 
 ## 4. Structural analysis
 
-This incident belongs to the `ai-decision-integrity` category under Pillar 02 (Verifiable AI). The central failure primitive is that **the autonomous system's driving decisions and the attribution of "who/what was in control" at the time of a crash are not fixed as independently verifiable evidence at the moment of action, and instead depend on after-the-fact self-reporting and self-redaction.** As secondary we note `data-provenance` (the provenance of the crash record as evidence) and `attribute-proof-bypass` (the attribute "this was autonomous driving" goes unverified).
+This incident belongs to the `ai-decision-integrity` category under Pillar 02 (Verifiable AI). The central **failure primitive is "the autonomous system's driving decisions and the attribution of who/what was in control at the time of a crash are not fixed as independently verifiable evidence at the moment of action, and instead depend on after-the-fact self-reporting and self-redaction"** — As secondary we note `data-provenance` (the provenance of the crash record as evidence) and `attribute-proof-bypass` (the attribute "this was autonomous driving" goes unverified).
 
 The phrase "a self-driving crash" obscures the attribution of control. As 2 of these were remote human driving, in an operation where control moves among the ADS, a remote human, and a safety monitor, "what was driving at that moment" is the premise of any safety assessment. Yet that attribution depends on the vehicle's logs and the operator's record-keeping, and cannot be independently reconstructed from outside. The existence of a crash record is not authentic proof of attribution.
 

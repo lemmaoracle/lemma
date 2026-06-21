@@ -63,7 +63,7 @@ This incident stems from a structure in which the existence and provenance of th
 
 ## 4. Structural analysis
 
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central failure primitive is that **the existence and provenance of the authorities (grounds) surfaced by AI are not fixed as an independently verifiable trail before they are acted upon, and the look of the output is equated with the authenticity of the grounds.** We note `data-provenance` (the origin and provenance of the cited authority as the ground) as a secondary category.
+This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "the existence and provenance of the authorities (grounds) surfaced by AI are not fixed as an independently verifiable trail before they are acted upon, and the look of the output is equated with the authenticity of the grounds."** We note `data-provenance` (the origin and provenance of the cited authority as the ground) as a secondary category.
 
 The point is not "that the lawyers used AI" as such. AI-assisted research and drafting is settling into practice and is itself a productivity gain. What was missing is a layer that, **before the work enters practice**, independently confirms the existence and origin of the grounds the AI surfaced. With that layer, using AI is not itself the problem; indeed, if the authenticity of the grounds is independently verified before action, AI use and practical trust can coexist. The judge's decision to center "rubberstamp[ing]" reinforces this: certification by signature, absent a layer that independently confirms the existence of the grounds, leaves only the form and lets faulty grounds pass through.
 

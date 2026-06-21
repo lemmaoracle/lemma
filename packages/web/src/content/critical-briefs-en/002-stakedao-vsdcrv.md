@@ -34,6 +34,7 @@ On Stake DAO vsdCRV, the attacker used the compromised deployer private key to r
 - **Compromised asset**: The Stake DAO deployer private key
 - **Scope**: Contained to Arbitrum. Boosted Yields, Liquid Lockers, Votemarket, and Stake DAO lending on Morpho were not affected
 - **Ongoing matter**: The asdCRV Llamalend market on Arbitrum is being wound down
+- **Core**: The structural failure was that the trust configuration defining which senders the bridge trusts was itself rewritten with a single key without independent verification, so a forged message was accepted as the legitimate trusted source.
 
 ---
 
@@ -44,6 +45,8 @@ On Stake DAO vsdCRV, the attacker used the compromised deployer private key to r
 - 2026-05-27: PeckShield Alert analyzes the exfiltration path, including the swap and bridge
 - 2026-05-28: Stake DAO publishes an initial statement. Contributors protect the mainnet-side vsdCRV backing assets and pause the vsdCRV bridge
 - 2026-05-29: The Stake DAO team publishes preliminary investigation results, confirming that impact is contained to Arbitrum and that core protocols including Boosted Yields are not affected. Investigation continues in coordination with law enforcement and security partners
+
+> Note: Names, dates, and loss figures are based on primary sources — the official Stake DAO statements (X) and the independent analyses by Blockaid and PeckShield Alert. Each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -59,7 +62,7 @@ On Stake DAO vsdCRV, the attacker used the compromised deployer private key to r
 
 ## 4. Structural Analysis
 
-This incident is a representative case of a structure in which, on a cross-chain bridge, **the very configuration that anchors trust is left rewritable by a single key**. The trusted source pointer for vsdCRV under LayerZero v2 is implemented as config that the contract owner — in this case, the holder of the deployer private key — can modify, and there is no independent verification layer over the config itself. The receiving contract (vsdCRV on Arbitrum) is designed to trust the legitimate sender that the config points to, so once the config was rewritten, the forged messages were accepted exactly as specified.
+In this incident the central **failure primitive is "single-key rewritability of the trust configuration"** — a representative case of a structure in which, on a cross-chain bridge, the very configuration that anchors trust is left rewritable by a single key. The trusted source pointer for vsdCRV under LayerZero v2 is implemented as config that the contract owner — in this case, the holder of the deployer private key — can modify, and there is no independent verification layer over the config itself. The receiving contract (vsdCRV on Arbitrum) is designed to trust the legitimate sender that the config points to, so once the config was rewritten, the forged messages were accepted exactly as specified.
 
 A same-structure case is the April **KelpDAO / rsETH unauthorized unlock** (Brief 001). The two incidents compare as follows:
 
@@ -108,7 +111,14 @@ Industry response:
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (cross-chain message trust configurations have a concentration point in the config layer, and that point is controllable by a single entity), Lemma proposes a design that embeds an independently verifiable cryptographic proof in the cross-chain message itself, so that the verifier can verify message origin independently of the config layer. Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
+Lemma's design answers this incident's gap — a trust configuration concentrated in the config layer and controllable by a single entity — by embedding origin proof in the message itself and decoupling the accept decision from the config layer.
+
+- **Origin provenance binding**: The cross-chain message itself carries an independently verifiable cryptographic proof that it "came from a legitimate origin," so the verifier can verify origin without relying on config (the trusted source pointer).
+- **Proof-as-auth before the action**: The proof is verified before assets are minted, establishing the trust boundary ahead of accepting under a rewritten config.
+- **Independence from the config layer**: Even when the config has been rewritten, the proof tells the verifier through a separate channel whether the message came from a legitimate origin or not.
+- **Complement to detection**: The containment that Blockaid's real-time detection enabled and the prior origin guarantee the proof provides function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

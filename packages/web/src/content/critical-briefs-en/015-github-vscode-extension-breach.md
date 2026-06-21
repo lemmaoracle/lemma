@@ -35,6 +35,7 @@ In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code ext
 - **Scope (per GitHub)**: customer repositories, Enterprise accounts, and user data unaffected. Exfiltration limited to GitHub internal repositories, with the ~3,800-count claim consistent with the investigation
 - **Detection and response**: GitHub detected the intrusion on 2026-05-19, immediately initiated IR and rotated critical secrets. On 2026-05-26, released GHES 3.20.3 with a precautionary signing-key rotation
 - **Adjacent activity**: TeamPCP also compromised Aqua Trivy, Checkmarx KICS, LiteLLM, Telnyx SDK, TanStack (Brief 014), and Mistral AI. Same actor as Brief 014, part of one developer-trust-surface campaign
+- **Core**: the trust signals of legitimate-marketplace listing and signing did not guarantee artifact integrity, so a poisoned extension reached straight into the local secrets of the developer environment
 
 ---
 
@@ -45,6 +46,8 @@ In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code ext
 - 2026-05-19: GitHub detects the unauthorized access, opens IR, and rotates critical secrets the same day
 - 2026-05-20 around: GitHub publicly states it "detected and contained an employee-endpoint compromise via a malicious VS Code extension." TeamPCP posts the internal repository data for sale on the dark web / criminal forums (over $50,000)
 - 2026-05-26: GHES 3.20.3 released, precautionary signing-key rotation
+
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information.
 
 ---
 
@@ -61,7 +64,7 @@ In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code ext
 
 ## 4. Structural Argument
 
-The incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that the legitimate-marketplace listing and distribution path for a developer tool (an IDE extension) functioned as a trust premise without guaranteeing "this extension version is a safe, intended artifact." That extensions have broad access to local secrets inside the IDE turned the breach directly into credential exfiltration. `identity-auth` (lateral movement using exfiltrated GitHub credentials) is noted as a secondary category.
+The incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central **failure primitive is "the legitimate-marketplace listing and distribution path for a developer tool (an IDE extension) functioned as a trust premise without guaranteeing that this extension version is a safe, intended artifact."** That extensions have broad access to local secrets inside the IDE turned the breach directly into credential exfiltration. `identity-auth` (lateral movement using exfiltrated GitHub credentials) is noted as a secondary category.
 
 This sits alongside Brief 014 (the TanStack OIDC trusted-publisher compromise) as the same actor's (TeamPCP) developer-trust-surface campaign — the two should be read together. Brief 014 is a hijack of the package-publishing path (the OIDC identity); this incident is abuse of an IDE extension as a distribution path. Both share the structure that "the distribution and publishing paths developers trust are decoupled from any layer that independently verifies artifact integrity." It is also adjacent to Brief 004 (Megalodon, falsifying commit author origins) and Brief 010 (Claude Code impersonation, abusing a brand trust signal).
 
@@ -91,7 +94,14 @@ How distribution and publishing paths that developers trust (extensions, package
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design. First, fix "produced from a legitimate origin and build path" to extensions and tool artifacts as an independently verifiable build-provenance cryptographic proof, so the receiver verifies the proof **before execution** and can reject a trojanized version listed in the legitimate marketplace regardless of signature. Second, replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint, so credentials exfiltrated from an endpoint cannot be replayed from another environment. Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals.
+Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design.
+
+- **Artifact-provenance proof**: fix "produced from a legitimate origin and build path" to extensions and tool artifacts as an independently verifiable build-provenance cryptographic proof.
+- **Rejection before execution**: the receiver verifies the proof before execution and can reject a trojanized version listed in the legitimate marketplace regardless of signature.
+- **Key-less authentication**: replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint.
+- **Non-replayability**: credentials exfiltrated from an endpoint cannot be replayed from another environment.
+
+Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

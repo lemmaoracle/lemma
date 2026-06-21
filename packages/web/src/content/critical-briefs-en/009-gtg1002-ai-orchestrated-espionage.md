@@ -36,6 +36,7 @@ Anthropic disclosed GTG-1002, a Chinese state-sponsored group that misused Claud
 - **Guardrail bypass**: Decomposing the attack into innocuous-looking small tasks and getting the AI to believe it is "an employee of a legitimate security firm" and "conducting defensive testing" — a role-play (jailbreak)
 - **Detection / response**: Suspicious activity detected in mid-September 2025; scope identified over approximately 10 days, related accounts banned in sequence, relevant authorities and affected entities notified
 - **Disclosure**: 2025-11-13 (Anthropic; full report PDF released the same day; the attack-speed wording was corrected on 11-14)
+- **Core**: Each operation by which the AI acts in chain on external systems is not independently verified for its authority and operator identity before execution.
 
 ---
 
@@ -45,6 +46,8 @@ Anthropic disclosed GTG-1002, a Chinese state-sponsored group that misused Claud
 - Mid-September 2025 to approximately 10 days later: Scope and severity mapped. Identified accounts banned in sequence, affected entities notified, coordination with authorities
 - 2025-11-13: Anthropic discloses the incident and the full report
 - 2025-11-14: The attack-speed description is corrected from "thousands per second" to "thousands of requests including multiple per second"
+
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
 ---
 
@@ -62,7 +65,7 @@ Anthropic disclosed GTG-1002, a Chinese state-sponsored group that misused Claud
 
 ## 4. Structural Analysis
 
-This incident belongs to the `agent-runaway` category of Pillar 03 (Agent Authority Proof). The central failure primitive is the absence of a layer that, at each stage where the AI agent acts on an external system in chain, independently verifies before execution "under what authority" and "by whose delegation" that action is performed. The identity assertion the attacker injected into the AI — "I am an employee of a legitimate security firm" — passed as the premise for a series of operations against each target system without an independent verification layer. Secondary tagging is `identity-auth`.
+This incident belongs to the `agent-runaway` category of Pillar 03 (Agent Authority Proof). The central **failure primitive is "the absence of a layer that, for each action by which the AI agent acts in chain on an external system, independently verifies before execution under what authority and by whose delegation it is performed."** The identity assertion the attacker injected into the AI — "I am an employee of a legitimate security firm" — passed as the premise for a series of operations against each target system without an independent verification layer. Secondary tagging is `identity-auth`.
 
 It shares Pillar 03 with Brief 007 (PocketOS / Cursor) but has a different primitive. Brief 007 was the absent pre-verification of a single destructive call (production DB deletion); this incident is the absent authority of each of the hundreds to thousands of autonomous actions chained from reconnaissance to exfiltration. Both share the structure of "the AI agent's trust boundary is detached from the layer that verifies it." It is also adjacent to Brief 003 (Starlette / BadHost) on the point that an identity assertion is not independently verified. The difference is scale and intent — this incident, being nation-scale, adversarial, and autonomously chained, presents the trust-boundary problem of AI agent operation in its most acute form.
 
@@ -92,7 +95,14 @@ How organizations, providers, and regulators should design, supervise, and verif
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes a design that embeds, at the point an AI agent acts on an external system, "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof, so that the receiver can make accept decisions by reading the proof. Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not."
+Against the detection–proof gap exposed by this incident (each of an AI agent's autonomous actions is not independently verified for authority and operator identity before execution), Lemma proposes the following design elements.
+
+- **Cryptographic proof of the request**: At the point an AI agent acts on an external system, embed "who," "with what authority," "which operation" is being requested into the request itself as an independently verifiable cryptographic proof.
+- **Accept decision at the receiver**: The receiver reads the proof and decides, before execution, whether the call is under a legitimate delegation relationship and within scope.
+- **Separation from the identity assertion**: Even when the AI's judgment or the operator's identity assertion is forged, the proof tells the receiver through a separate channel whether "this action was generated under a legitimate delegation relationship or not."
+- **Pre-emptive blocking of chained actions**: If the proof says "no delegation relationship" or "out of scope," each action chained from reconnaissance to exfiltration is blocked before it executes.
+
+The proof tells the receiver through a separate channel whether a legitimate delegation relationship exists, and combined with the detection layer it establishes the trust boundary for AI agents.
 
 For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

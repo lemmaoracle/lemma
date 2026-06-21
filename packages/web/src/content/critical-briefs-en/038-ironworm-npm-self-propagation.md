@@ -33,6 +33,7 @@ JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer
 - **Self-propagation**: Using the stolen credentials, it commits itself into the victim's GitHub repository and republishes to npm through the developer's legitimate workflow. The compromise of a single environment chains outward to every repository and package reachable from it.
 - **C2**: It fetches the Tor expert bundle, writes its own torrc, and beacons to `/api/agent` on a hidden service.
 - **Assessment**: From the combination of capability and encryption, JFrog characterized it as a "carefully built, purpose-made implementation" and suggested it may be a dress rehearsal rather than the campaign's final form. It belongs to the Shai-Hulud lineage (the same family includes TeamPCP's Mini Shai-Hulud / Miasma).
+- **Core**: Stolen credentials convert directly into publishing authority, and because the publishing workflow never verifies at publish time whether the publisher is the legitimate author, the worm self-propagates as a "legitimate publication."
 
 ---
 

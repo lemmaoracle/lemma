@@ -33,6 +33,7 @@ Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a 
 - **Scope**: Contract review, invoice processing, audit, bid-document verification, and any domain where AI makes decisions based on document content
 - **Demonstration**: In Miller's testing, several AI platforms produced incorrect answers
 - **Mitigation**: Miller published Rust-implementation mitigation code on the official blog
+- **Core**: The structural failure was that the implicit assumption that "what the document displays on screen equals what is passed to the AI" was never independently verified, so the AI's judgment over tampered input was accepted as a legitimate judgment.
 
 ---
 
@@ -41,6 +42,8 @@ Noroboto (the Lying Fonts attack) was disclosed: a malicious font embedded in a 
 - May 2026: Miller publishes the Noroboto attack and Rust-implementation mitigation on the Tritium official blog
 - 2026-05-25: GIGAZINE publishes a Japanese explainer; cross-industry attention to input-integrity for AI document review follows
 - After May 2026: Discussion of input-integrity verification requirements for organizations adopting AI in contract / invoice / audit domains proceeds in parallel
+
+> Note: Names and the attack technique are based on the primary source (Drew Miller's disclosure on the Tritium Legal Technologies official blog). Each implementation's remediation status varies over time, so consult the latest information. This Brief treats the matter as a researcher's demonstration (the Lying Fonts attack) and does not exaggerate real-world impact.
 
 ---
 
@@ -84,7 +87,14 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed by this incident (no independent verification of input integrity for AI judgment), Lemma proposes a design that commits the input data the AI uses for judgment as an independently verifiable cryptographic proof, so that a verifier can independently verify the equivalence between "the input the AI is seeing" and "the input that should be visible to a human." Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match."
+Lemma's design answers this incident's gap — no independent verification of input integrity for AI judgment — by fixing input equivalence as a proof before the judgment.
+
+- **Input-integrity provenance binding**: The input data the AI uses for judgment is committed as an independently verifiable cryptographic proof, fixing the equivalence between "the input the AI is seeing" and "the input that should be visible to a human."
+- **Pre-judgment input attestation (proof-as-auth)**: Input equivalence is verified before the AI generates inference, establishing the trust boundary upstream of the input rather than through output filtering.
+- **Independence from the rendering layer**: Even when the input font is forged, the proof tells the verifier through a separate channel whether "this AI judgment is based on this input / and the input matches what is humanly visible / does not match."
+- **Complement to detection**: Output-side hallucination detection and an attestation that fixes equivalence upstream of the input function as a two-stage configuration, not opposing approaches.
+
+This is the design philosophy of proving through a separate channel what the AI is "seeing" — it complements, rather than replaces, the output-side detection layer.
 
 For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 

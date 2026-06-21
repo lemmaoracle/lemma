@@ -34,6 +34,7 @@ Brazil's Federal Police charged 31 people as "Operation Greenwashing," over carb
 - **Trigger for detection**: investigative reporting by Mongabay journalist Fernanda Wenzel (2024-05) and the satellite-imagery analysis CCCA conducted on its commission. The mismatch between declared logging volume and satellite estimates was flagged
 - **Where the credits went**: credits had been sold to Nestlé, Toshiba, Spotify, Boeing, PwC, and others. One central figure, Ricardo Stoppe Júnior, was among Brazil's largest individual credit sellers and had promoted the business model in public venues including COP28
 - **Complicit structure**: the Federal Police held that fraudulent registrations were made possible by the involvement of public servants at the land-reform agency (Incra), registry offices, and the Amazonas state environmental agency (Ipaam)
+- **Core**: an environmental-attribute claim was turned into credits as the operator's self-declaration — its underlying data never independently verified at issuance — and flowed straight into the market and corporate disclosure
 
 ---
 

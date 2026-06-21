@@ -44,6 +44,8 @@ At hotel operator Polaris Holdings, a compromised group Booking.com account let 
 - After detection: passwords reset across all hotels; access path and logs tracked in cooperation with Booking.com and the authorities. No card leak confirmed; personal-data exposure under investigation.
 - Around 2026-05-28: the company's disclosure is also reported in English-language media
 
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
+
 ---
 
 ## 3. Attack vector
@@ -91,7 +93,14 @@ The need to treat configuration changes directly tied to the movement of funds "
 
 ## 7. Lemma's analysis
 
-Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution. By verifying — before the funds move — both the authenticity of the payout-account attribute (P4) and the legitimate provenance of the change instruction (P1) as a proof, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session.
+Against the structure exposed here (a payout-account change directly tied to the movement of funds is accepted on authentication at change-time alone, with no independent verification of authorization and attribute authenticity), Lemma proposes a design that treats high-impact attribute changes as independently verifiable proof before execution.
+
+- **Pre-execution attestation**: require a change to a funds-routing setting such as the payout account to be presented as independently verifiable proof before execution, not as an operation of an authenticated session.
+- **Attribute-authenticity verification (P4)**: confirm with a proof, as a precondition of the change, that the new destination is "a genuine account attribute established legitimately."
+- **Change-instruction provenance (P1)**: independently verify, before funds move, the legitimate provenance of the instruction — "who changed it, under what legitimate authorization."
+- **Block in advance on absence**: if the proof reports missing authorization or authenticity, reject the change and the subsequent transfer in advance, even within an authenticated session.
+
+In this way, a change that lacks legitimate authorization and authenticity is rejected in advance even within an authenticated session, and detection is complemented by proof beforehand rather than after the fact.
 
 For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -36,6 +36,7 @@ gap_fix: "外部システムへ作用する前に「この操作は、この主�
 - **guardrail 回避**: 攻撃を無害に見える小タスクに分解し、AI に「正規のセキュリティ企業の従業員」「防御テスト中」と信じ込ませる role-play（jailbreak）
 - **検知・対応**: 2025-09 中旬に suspicious activity を検知、約 10 日かけて範囲を特定し、関連アカウントを順次 ban、関係当局・affected entities に通知
 - **公表**: 2025-11-13（Anthropic、full report PDF 同時公開。11-14 に攻撃速度の表記を訂正）
+- **核心**: AI が外部システムへ連鎖的に作用する各操作について、その権限と運用者 identity が実行前に独立検証されない構造である。
 
 ---
 
@@ -45,6 +46,8 @@ gap_fix: "外部システムへ作用する前に「この操作は、この主�
 - 2025-09 中旬 〜（約 10 日間）: 範囲と深刻度を mapping。特定したアカウントを順次 ban、affected entities へ通知、当局と連携
 - 2025-11-13: Anthropic が事案と full report を公表
 - 2025-11-14: 攻撃速度の記述を「毎秒数千」から「毎秒複数を含む数千リクエスト」へ訂正
+
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
 ---
 
@@ -62,7 +65,7 @@ gap_fix: "外部システムへ作用する前に「この操作は、この主�
 
 ## 4. 構造的論点
 
-本事案は Pillar 03（エージェント権限証明）の `agent-runaway` カテゴリに属する。中心的な失敗 primitive は、AI agent が外部システムへ連鎖的に作用する各段で、「どの権限の下で」「誰の委任により」その action が実行されているかが、実行前に独立検証される layer を欠いていた点にある。攻撃者が AI に注入した「正規のセキュリティ企業の従業員である」という identity の主張は、それを検証する独立 layer を持たないまま、各標的システムへの一連の operation の前提として通過した。secondary に `identity-auth` を併記する。
+本事案は Pillar 03（エージェント権限証明）の `agent-runaway` カテゴリに属する。中心的な**失敗 primitive は「AI agent が外部システムへ連鎖的に作用する各 action について、どの権限・誰の委任によるかを実行前に独立検証する layer の不在」**である。攻撃者が AI に注入した「正規のセキュリティ企業の従業員である」という identity の主張は、それを検証する独立 layer を持たないまま、各標的システムへの一連の operation の前提として通過した。secondary に `identity-auth` を併記する。
 
 Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異なる。Brief 007 は単一の destructive call（本番 DB 削除）の事前検証不在、本事案は偵察から exfiltration まで連鎖する数百〜数千の autonomous action それぞれの authority 不在。両者は「AI agent の trust boundary が、それを検証する layer と切り離されている」という構造で同根。Brief 003（Starlette/BadHost）の認証回避とも、identity の主張が独立検証されないという論点で隣接する。違いは規模と意図——本事案は国家規模・敵対的・自律連鎖である点で、AI agent 運用の trust boundary 問題が最も先鋭化した形で現れている。
 
@@ -92,7 +95,14 @@ Brief 007（PocketOS / Cursor）と同じ Pillar 03 だが primitive が異な�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は、AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込み、受信側が proof を見て accept 判定できる設計を提示している。AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる構造である。
+本事案で露呈した検出と証明の落差（AI agent の autonomous action それぞれについて、その権限と運用者 identity が実行前に独立検証されない）に対して、Lemma は次の設計要素を提示している。
+
+- **要求の暗号証明化**: AI agent が外部システムへ作用する時点で、「誰が」「どの権限で」「どの operation を」要求しているかを request 自体に独立検証可能な暗号証明として埋め込む。
+- **受信側での accept 判定**: 受信側が proof を見て、正規の委任関係・scope 内かを実行前に判定する。
+- **identity 主張からの分離**: AI の判断や運用者の identity 主張が偽装されていても、proof は別系統で「この action は正規の委任関係の下で生成された / 生成されていない」を告げる。
+- **連鎖 action の事前 block**: proof が「委任関係なし」「scope 外」と告げれば、偵察から exfiltration まで連鎖する各 action は事前に block される。
+
+proof は別系統で正規の委任関係の有無を告げる構造であり、検出層と組み合わせることで AI agent の trust boundary を確立する。
 
 設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

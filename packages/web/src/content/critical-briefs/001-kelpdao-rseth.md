@@ -35,6 +35,7 @@ KelpDAO / rsETH で、LayerZero Labs の内部 RPC が改ざんされ、DVN が�
 - **改ざんされた資産**: LayerZero Labs の内部 RPC クラウド環境(複数の内部 RPC ノード)
 - **侵害されなかった資産**: LayerZero Labs DVN 署名鍵そのもの
 - **公式情報**: LayerZero Labs incident statement および 5 月の続報 update。「observation layer」の独立カテゴリ化と、LayerZero Labs DVN の 1-of-1 構成署名拒否・3-of-3 default 化を含む
+- **核心**: 本事案の構造的失敗は、DVN が「メッセージの出所」を判断する際に参照する観測層の入力が、独立検証されないまま正規署名の根拠として受理された点にある。
 
 ---
 
@@ -44,6 +45,8 @@ KelpDAO / rsETH で、LayerZero Labs の内部 RPC が改ざんされ、DVN が�
 - 2026-04-18: KelpDAO の rsETH 116,500 が不正アンロック
 - 2026-04-22 前後: 業界 incident response 開始
 - 2026-05 月: LayerZero Labs が incident statement と続報 update を公開。「observation layer」の独立カテゴリ化、LayerZero Labs DVN の 1-of-1 構成署名拒否ポリシー、3-of-3 default 化を発表
+
+> 注: 固有名・日付・被害額は LayerZero Labs の公式 incident statement および各社の独立解析（Chainalysis・Halborn・Galaxy Research 等）の一次情報に基づき、各実装の対応状況は時点により異なるため最新情報を参照のこと。
 
 ---
 
@@ -62,7 +65,7 @@ LayerZero Labs 公表に基づく chain:
 
 ## 4. 構造的論点
 
-本事案は、cross-chain bridge において **verifier が「メッセージの origin」を判断する際に参照する入力(観測層)に対する独立検証手段が欠落していた** という構造の代表事例である。Observation layer の入力(本事案では LayerZero Labs DVN が参照する RPC 応答)が、単一の主体(侵害されたオペレーション環境内の RPC ノード)で操作可能な状態に置かれていた。
+本事案における中心的な**失敗 primitive は「観測層入力の独立検証不在」**であり、cross-chain bridge において verifier が「メッセージの origin」を判断する際に参照する入力(観測層)に対する独立検証手段が欠落していた、という構造の代表事例である。Observation layer の入力(本事案では LayerZero Labs DVN が参照する RPC 応答)が、単一の主体(侵害されたオペレーション環境内の RPC ノード)で操作可能な状態に置かれていた。
 
 同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**(Brief 002)がある。共通する構造は cross-chain bridge の信頼設定が単一主体の支配下にある点。差異は、本事案が DVN 観測層への RPC 改ざんを通じて trust を歪めたのに対し、Stake DAO 事案はデプロイヤー秘密鍵による LayerZero v2 trust source 直接書き換えを通じて trust を歪めた点にある。両事案は別ベクターから同一構造に到達している。
 
@@ -96,7 +99,14 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(observation layer 入力の独立検証不在)に対して、Lemma は cross-chain message 自体に独立検証可能な暗号証明を埋め込み、verifier が observation layer の入力(RPC 応答、config 表明)に依存せず message の origin を独立検証できる設計を提示している。Observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる構造である。これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想である。
+Lemma の設計は、observation layer 入力の独立検証不在という本事案の gap に対し、message 自体に来歴証明を埋め込んで accept 判定を観測層から切り離す点で対置される。
+
+- **発信元の来歴バインド**: cross-chain message 自体に「正規の origin から来た」ことを独立検証可能な暗号証明として束ね、verifier が RPC 応答や config 表明に依存せず origin を検証できる。
+- **行動前の認可証明(proof-as-auth)**: 資産を動かす前に proof を検証する設計であり、事後の異常検知ではなく accept の前段で trust boundary を確立する。
+- **観測層からの独立**: observation layer が改ざんされた状態でも、proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる。
+- **検出との補完**: 検出が狭めた blast window と、proof が与える事前の origin 保証は、対立軸ではなく二段構成として機能する。
+
+これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想であり、検出層を置き換えるものではなく補完する。
 
 設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

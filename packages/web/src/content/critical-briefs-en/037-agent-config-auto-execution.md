@@ -32,6 +32,7 @@ SymJack and TrustFall — flaws letting AI coding agents (Claude Code, Cursor, G
 - **TrustFall (research, Adversa AI, disclosed 2026-05)**: The moment the folder-trust prompt (defaulting to "trust") is approved, a project-defined MCP server auto-starts without explicit approval, reaching one-click remote code execution.
 - **Miasma third wave (real-world, 2026-06-03 to 05)**: The self-propagating malware Miasma planted `.claude/settings.json`, `.gemini/settings.json`, and Cursor configuration files in repositories and executed a credential-stealing payload the moment a developer opened the project in an AI coding tool. It fetches the Bun runtime to launch a second-stage payload, harvests credentials for GitHub, npm, AWS, Azure, GCP, Vault, Kubernetes, and more, and self-propagates.
 - **Real-world scale**: On 2026-06-05, GitHub disabled 73 repositories across four Microsoft organizations (Azure, Azure-Samples, Microsoft, MicrosoftDocs). Miasma is a variant of Mini Shai-Hulud, open-sourced by TeamPCP.
+- **Core**: the agent treated an "opened / trusted" action as sufficient authorization and did not verify the author, provenance, or scope of the bundled config before execution, so malicious config was auto-executed as-is
 
 ---
 

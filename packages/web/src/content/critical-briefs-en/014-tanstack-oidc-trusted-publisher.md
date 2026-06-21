@@ -46,6 +46,8 @@ In May 2026, malicious versions of the `@tanstack/*` packages reached npm. The a
 - 2026-05-11, same day: the same actor contaminates more than 170 packages across npm / PyPI ("Mini Shai-Hulud")
 - 2026-05 onward: CVE-2026-45321 is assigned, TanStack publishes a postmortem, and IOCs / response guidance are consolidated by vendors
 
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information.
+
 ---
 
 ## 3. Attack Vector
@@ -61,7 +63,7 @@ In May 2026, malicious versions of the `@tanstack/*` packages reached npm. The a
 
 ## 4. Structural Argument
 
-The incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that provenance assurance depended on "was it signed by a legitimate publisher identity (OIDC trusted publisher)?" — and once that identity was hijacked during workflow execution, **the malicious artifact moved through the legitimate channel with a valid signature still attached**. A signature attests "who published this"; it does not attest "the contents of this artifact are the intended, reviewed build output." `identity-auth` (hijack of the OIDC identity) is noted as a secondary category.
+The incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central **failure primitive is "provenance assurance depended on the publisher-identity signature (OIDC trusted publisher), and once that identity was hijacked at runtime, the malicious artifact moved through the legitimate channel with a valid signature still attached."** A signature attests "who published this"; it does not attest "the contents of this artifact are the intended, reviewed build output." `identity-auth` (hijack of the OIDC identity) is noted as a secondary category.
 
 The same `code-provenance` category as Brief 004 (Megalodon GitHub supply chain), but a different primitive. Brief 004 was a direct push using stolen developer credentials; this incident is a runtime hijack of a legitimate OIDC trusted publisher. Both share the structure that "an artifact's origin is accepted while remaining decoupled from any layer that independently verifies it." This incident sits alongside Brief 015 (the GitHub internal-repository compromise and the poisoned VS Code extension) as part of the same actor's (TeamPCP) campaign against developer trust surfaces, and is adjacent to Brief 010 (the Claude Code impersonation distribution) on the shared theme of "abuse of trust signals." It is described as "the first supply-chain worm to ship with valid signed provenance," sharply illustrating the gap between signature validity and artifact integrity.
 
@@ -92,7 +94,14 @@ How to verify "was this generated from the intended build provenance?" — not o
 
 ## 7. Lemma's Analysis
 
-Against the detection–proof gap exposed here (provenance assurance stopped at the publisher-identity signature, and the workflow-runtime hijack let malicious artifacts move through with a valid signature still attached), Lemma proposes a design in which provenance is not "the signature of who published this" but rather "this artifact was produced from this source, with these build inputs, via this path" — fixed to the build's provenance as an independently verifiable cryptographic proof. Even if the OIDC identity is hijacked at runtime, the build-provenance proof, on a separate channel, signals "this was / was not produced from the intended build path," so the receiver can reject on proof inconsistency even when the signature is formally valid. Lemma does not substitute for signatures or trusted publishers; it adds a complementary layer that proves the artifact's origin alongside the signature that identifies its publisher.
+Against the detection–proof gap exposed here (provenance assurance stopped at the publisher-identity signature, and the workflow-runtime hijack let malicious artifacts move through with a valid signature still attached), Lemma proposes a design in which provenance is not "the signature of who published this" but rather "this artifact was produced from this source, with these build inputs, via this path" — fixed to the build's provenance as an independently verifiable cryptographic proof.
+
+- **From signature to provenance**: move the basis of provenance from the publisher-identity signature to a cryptographic proof tied to the source, build inputs, and path.
+- **Verification before execution**: the receiver (CI/CD or developer environment) verifies the proof before pulling the artifact in, and rejects it on inconsistency even when the signature is formally valid.
+- **Hijack resistance**: even if the OIDC identity is hijacked at runtime, the build-provenance proof signals on a separate channel whether the artifact was produced from the intended build path.
+- **Compatibility with existing layers**: it does not replace signatures or trusted publishers but layers independent artifact-provenance verification on top of them.
+
+Lemma does not substitute for signatures or trusted publishers; it adds a complementary layer that proves the artifact's origin alongside the signature that identifies its publisher.
 
 For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 

@@ -34,6 +34,7 @@ Megalodon は、窃取した開発者の正規認証情報を悪用し、6 時�
 - **盗み取られたもの**: AWS 秘密鍵、Google Cloud アクセストークン、AWS/GCP/Azure メタデータ、インスタンスロール認証情報、SSH 秘密鍵、Docker / Kubernetes 構成、Vault トークン、GitHub トークン、Bitbucket トークン
 - **攻撃者 GitHub アカウント特徴**: ランダムなユーザー名(rkb8el9r、bhlru9nr 等)、侵害された PAT または deploy key を用いて push
 - **偽装の特徴**: build-bot / auto-ci / ci-bot / pipeline-bot の 4 つの author 名と、ルーチン CI メンテナンスを装う 7 種類のコミットメッセージを使い回し
+- **核心**: 本事案の構造的失敗は、commit author の identity と repository owner の認証が各段で独立検証されないまま信頼の chain を構成し、盗まれた正規認証情報による偽装コミットが「正規開発者の正規コミット」として受理された点にある。
 
 ---
 
@@ -43,6 +44,8 @@ Megalodon は、窃取した開発者の正規認証情報を悪用し、6 時�
 - 2026-05-19 〜 2026-05-21: 2.18.7 〜 2.18.12 まで連続して backdoor 版を公開
 - 2026-05-22: Safe Dep と Ox Security がそれぞれ独立に技術解析を公表
 - 2026-05-22 前後: Hudson Rock がインフォスティーラー感染を起点とする経路を報告。影響リポジトリと紐づくユーザー名の 33% がスティーラー感染コンピューターと直接一致、加えてメールアドレス経由で追加の一致を確認
+
+> 注: 固有名・パッケージ名・バージョンは Safe Dep・Ox Security・Hudson Rock の各一次解析および npm registry の公開情報に基づき、各実装の対応状況は時点により異なるため最新情報を参照のこと。
 
 ---
 
@@ -93,7 +96,14 @@ TeamPCP との関係性:Megalodon の発覚直前に TeamPCP が Shai-Hulud サ�
 
 ## 7. Lemma による分析
 
-本事案で露呈した検出と証明の落差(commit author / repo origin の独立検証不在)に対して、Lemma は、コミット / リリース / CI/CD pipeline 各段で「この commit / artifact は正規の origin から来た」ことを独立検証可能な暗号証明として固定する設計を提示している。鍵そのものが奪取可能なマシン上に存在しない設計(key-less proof と組み合わせ)を中核とし、commit author の identity を ZK 証明として固定する方向にある。
+Lemma の設計は、commit author / repo origin の独立検証不在という本事案の gap に対し、CI/CD pipeline が build する前に各 commit の来歴を proof として検証する点で対置される。
+
+- **発信元の来歴バインド**: コミット / リリース / CI/CD pipeline 各段で「この commit / artifact は正規の origin から来た」ことを独立検証可能な暗号証明として固定する。
+- **鍵を露出させない設計(key-less proof)**: GPG 署名と異なり鍵そのものを奪取可能なマシン上に置かないため、インフォスティーラーで credentials を奪っても偽装コミットの proof は生成できない。
+- **行動前の認可証明(proof-as-auth)**: commit author の identity を ZK 証明として固定し、pipeline が build / merge する前段で正規の権限を検証する。
+- **検出との補完**: 3 社が範囲を特定したような事後解析と、accept 前に来歴を固定する proof は、対立軸ではなく二段構成として機能する。
+
+これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想であり、検出層を置き換えるものではなく補完する。
 
 設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 

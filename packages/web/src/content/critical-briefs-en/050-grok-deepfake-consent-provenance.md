@@ -60,7 +60,7 @@ This incident stems from a structure in which, at the moment of generation, the 
 
 ## 4. Structural analysis
 
-This incident belongs to the `attribute-proof-bypass` category under Pillar 04 (Regulatory Attribute Proof). The central failure primitive is that **at the moment of generation, regulatorily significant attributes — the subject's consent and age — are not independently verified, and the output is given no verifiable provenance.** As secondary we note `data-provenance` (the provenance of AI output) and `ai-decision-integrity` (the verifiability of generation as an AI action).
+This incident belongs to the `attribute-proof-bypass` category under Pillar 04 (Regulatory Attribute Proof). The central **failure primitive is "at the moment of generation, regulatorily significant attributes — the subject's consent and age — are not independently verified, and the output is given no verifiable provenance"** — As secondary we note `data-provenance` (the provenance of AI output) and `ai-decision-integrity` (the verifiability of generation as an AI action).
 
 The center of gravity here is not "fairness" or "whether the content is good or bad," but **whether, before the action (generation and publication), there is evidence that the attributes regulation requires were independently verified and authorized.** Consent and age are attributes that ought to be verified before generation. Yet generation runs without attribute verification, and the output spreads lacking provenance. Because the judgment of illegality comes after generation and distribution, detection and takedown trail behind the harm.
 
