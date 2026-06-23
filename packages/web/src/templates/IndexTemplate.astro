@@ -26,6 +26,7 @@ import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { getUseCaseBySlug } from "../data/useCases";
 import { getAllPillars } from "../data/pillars";
+import { getAllPosts, isDocCategory, postInCategory } from "../data/blog";
 
 export interface IndexTemplateProps {
   locale: Locale;
@@ -67,6 +68,20 @@ const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const industriesHref = `${base}/solutions/`;
 const sealHref = `${base}/seal/`;
 const briefIndexHref = `${base}/critical/briefs/`;
+
+// Homepage "News" section: latest blog posts (essays + changelog, excluding
+// guide/foundation docs) plus an Announcements one-liner strip. Dates are
+// zero-padded "YYYY.MM.DD" strings, so lexical sort == chronological.
+const blogHref = `${base}/blog`;
+const allBlogPosts = await getAllPosts(locale);
+const newsPosts = [...allBlogPosts]
+  .filter((p) => !isDocCategory(p.category))
+  .sort((a, b) => (a.date > b.date ? -1 : 1))
+  .slice(0, 3);
+const newsAnnouncements = [...allBlogPosts]
+  .filter((p) => postInCategory(p, "Announcements"))
+  .sort((a, b) => (a.date > b.date ? -1 : 1))
+  .slice(0, 2);
 const whitepaperHref =
   locale === "ja" ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR";
 // §8 closing CTAs. JA books a Discovery Call; EN has no call staff, so it
@@ -129,6 +144,11 @@ const C = isJa ? {
   doorsH2Line1: "ひとつの基盤、",
   doorsH2Accent: "3 つの入口",
   doorsH2Tail: "。",
+  newsEyebrow: "NEWS",
+  newsH2: "新着記事",
+  newsAll: "ブログをすべて見る",
+  newsRead: "記事を読む",
+  newsAnnLabel: "Announcements",
   sealAud: "開発者向け",
   sealTagline: "鍵ではなく、証明を送る。",
   sealDesc: "ZK サインイン SDK。あらゆるアプリ・AI エージェントスタックに組み込めます。",
@@ -290,6 +310,11 @@ const C = isJa ? {
   doorsH2Line1: "One foundation,",
   doorsH2Accent: "three doors in",
   doorsH2Tail: ".",
+  newsEyebrow: "NEWS",
+  newsH2: "Latest",
+  newsAll: "View all posts",
+  newsRead: "Read",
+  newsAnnLabel: "Announcements",
   sealAud: "For developers",
   sealTagline: "Send proofs, not keys.",
   sealDesc: "A ZK sign-in SDK that drops into any app or AI agent stack.",
@@ -709,6 +734,49 @@ const cap1 = [
       </div>
     </section>
 
+    <!-- §6.5 · NEWS / 新着記事 -->
+    {newsPosts.length > 0 && (
+      <section class="hp-block hp-news">
+        <div class="hp-news-head">
+          <div>
+            <p class="hp-disc-eyebrow">{C.newsEyebrow}</p>
+            <h2 class="hp-h2 hp-news-h2">{C.newsH2}</h2>
+          </div>
+          <a href={blogHref} class="hp-news-all">{C.newsAll} <span class="hp-arrow">→</span></a>
+        </div>
+
+        <div class="hp-news-grid">
+          {newsPosts.map((p) => (
+            <a href={`${base}/blog/${p.slug}`} class="hp-news-card">
+              <div class="hp-news-meta">
+                <span
+                  class="hp-news-cat"
+                  style={`background:${p.categoryColor ?? "#8b6b4a"}1f;color:${p.categoryColor ?? "#8b6b4a"};`}
+                >{p.category}</span>
+                <span class="hp-news-date">{p.date}</span>
+              </div>
+              <h3 class="hp-news-title">{p.title}</h3>
+              <span class="hp-news-go">{C.newsRead} →</span>
+            </a>
+          ))}
+        </div>
+
+        {newsAnnouncements.length > 0 && (
+          <div class="hp-news-ann">
+            <span class="hp-news-ann-label">{C.newsAnnLabel}</span>
+            {newsAnnouncements.map((p, i) => (
+              <Fragment>
+                {i > 0 && <span class="hp-news-ann-sep">/</span>}
+                <a href={`${base}/blog/${p.slug}`} class="hp-news-ann-link">
+                  {p.title}<span class="hp-news-ann-date"> ({p.date})</span>
+                </a>
+              </Fragment>
+            ))}
+          </div>
+        )}
+      </section>
+    )}
+
     <!-- §7 · DISCOVERY + dev tail -->
     <section class="hp-disc">
       <div class="hp-disc-inner">
@@ -856,6 +924,33 @@ const cap1 = [
   .hp-door-tag { font-family: var(--hp-display); font-size: 22px; font-weight: 700; color: #000; letter-spacing: -0.02em; line-height: 1.45; margin: 4px 0 0; }
   .hp-door-desc { font-size: 13.5px; color: var(--hp-text-3); line-height: 1.75; margin: 0; }
   .hp-door-url { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-text-2); margin-top: auto; padding-top: 20px; border-top: 0.5px solid var(--hp-line); display: inline-flex; align-items: center; gap: 6px; }
+
+  /* §6.5 NEWS / 新着記事 */
+  .hp-news { border-top: 0.5px solid var(--hp-line); }
+  .hp-news-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 44px; }
+  .hp-news-h2 { font-size: 40px; margin: 0; }
+  .hp-news-all { font-family: var(--hp-mono); font-size: 13px; font-weight: 700; color: var(--hp-brown); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: gap 0.15s; }
+  .hp-news-all:hover { gap: 10px; }
+  .hp-news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .hp-news-card { background: #fff; border: 0.5px solid var(--hp-line); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 16px; min-height: 196px; transition: all 0.2s; }
+  .hp-news-card:hover { border-color: var(--hp-brown); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(139, 69, 19, 0.10); }
+  .hp-news-meta { display: flex; align-items: center; gap: 10px; }
+  .hp-news-cat { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 3px 9px; border-radius: 6px; }
+  .hp-news-date { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-text-3); }
+  .hp-news-title { font-family: var(--hp-display); font-size: 19px; line-height: 1.5; font-weight: 700; color: #000; margin: 0; }
+  .hp-news-go { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-text-2); margin-top: auto; padding-top: 18px; border-top: 0.5px solid var(--hp-line); }
+  .hp-news-ann { margin-top: 18px; border: 0.5px solid var(--hp-line); border-radius: 14px; background: var(--hp-cream-d); padding: 14px 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .hp-news-ann-label { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
+  .hp-news-ann-label::before { content: "●"; font-size: 8px; }
+  .hp-news-ann-link { font-size: 13px; color: var(--hp-text-2); line-height: 1.5; }
+  .hp-news-ann-link:hover { color: var(--hp-brown); }
+  .hp-news-ann-date { color: var(--hp-text-3); font-family: var(--hp-mono); font-size: 11px; }
+  .hp-news-ann-sep { color: var(--hp-line); }
+  @media (max-width: 760px) {
+    .hp-news-grid { grid-template-columns: 1fr; }
+    .hp-news-h2 { font-size: 30px; }
+    .hp-news-head { margin-bottom: 32px; }
+  }
 
   /* MECHANISM — 3 phase cards with per-phase mini diagrams */
   .hp-mech { background: var(--hp-code-bg); color: var(--hp-code-text); padding: 120px 0; }
