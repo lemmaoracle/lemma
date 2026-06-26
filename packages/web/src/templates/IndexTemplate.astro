@@ -128,10 +128,10 @@ const C = isJa ? {
   heroH1Line1: "データを渡さず、",
   heroH1Accent: "AI を動かす",
   heroH1Tail: "。",
-  heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
-  heroSubChord: "証明できる判断を、データを持たないままで。",
-  heroPrimaryCta: "始める",
-  heroSecondaryCta: "詳しく見る",
+  heroSubLead: "真正性のある AI データ基盤。",
+  heroSubChord: "生データを渡さずに来歴・属性・実績を暗号的に証明し、第三者が独立して検証できるようにします。",
+  heroPrimaryCta: "ホワイトペーパーを無料 DL",
+  heroSecondaryCta: "ユースケースを見る",
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
   termComm2: "2. 検証可能 AI",
@@ -155,7 +155,7 @@ const C = isJa ? {
   trust402Aud: "エージェント開発者向け",
   trust402Tagline: "鍵を持たずに、AI を動かす。",
   trust402Desc: "鍵不要の認証。コールごとの権限委任。x402 / MCP に対応。",
-  industriesAud: "大企業向け",
+  industriesAud: "エンタープライズ向け",
   industriesTagline: "Civic · Critical · Compliance。",
   industriesDesc: "公共インフラ・製造業・規制金融に最適化した 3 つの製品ライン。",
   mechEyebrow: "仕組み",
@@ -294,10 +294,10 @@ const C = isJa ? {
   heroH1Line1: "AI runs on",
   heroH1Accent: "proofs, not data",
   heroH1Tail: ".",
-  heroSubLead: "Through Lemma's proprietary cryptography, AI and agents receive only verified facts.",
-  heroSubChord: "Decisions you can prove — without ever holding the data.",
-  heroPrimaryCta: "Get Started",
-  heroSecondaryCta: "Learn more",
+  heroSubLead: "An authentic data foundation for AI.",
+  heroSubChord: "Prove provenance, attributes, and track record cryptographically — without ever sharing raw data — so third parties can verify independently.",
+  heroPrimaryCta: "Download the Whitepaper",
+  heroSecondaryCta: "See use cases",
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
   termComm2: "2. Verifiable AI",
@@ -494,12 +494,7 @@ const panes = [
 
 // §1 workflow phases (Input → Inference → Decision → Delegation). Each card
 // links to the matching Solutions § anchor (business-theme, spans multiple UCs).
-const cap1 = [
-  { num: "01", name: C.capP1Name, h3: C.capP1H3, p: C.capP1P, href: `${base}/solutions/#input-provenance` },
-  { num: "02", name: C.capP2Name, h3: C.capP2H3, p: C.capP2P, href: `${base}/solutions/#verifiable-ai` },
-  { num: "03", name: C.capP3Name, h3: C.capP3H3, p: C.capP3P, href: `${base}/solutions/#regulatory` },
-  { num: "04", name: C.capP4Name, h3: C.capP4H3, p: C.capP4P, href: `${base}/solutions/#agent-authority` },
-];
+// §1 4 PHASES 撤去に伴い cap1 を削除
 ---
 
 <Layout
@@ -520,8 +515,8 @@ const cap1 = [
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
         <p class="hp-hero-sub">{C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span></p>
         <div class="hp-hero-ctas">
-          <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
-          <a href={pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
+          <a href="https://tally.so/r/7RJXdR" target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
+          <a href={`${base}/solutions/use-cases/`} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
 
@@ -551,23 +546,7 @@ const cap1 = [
       </div>
     </section>
 
-    <!-- §1 · 4 PHASES (unified phase cards) -->
-    <section class="hp-s1">
-      <div class="hp-s1-inner">
-        <h2 class="hp-s1-h2" set:html={C.capH2Html} />
-        <div class="hp-unified-cards">
-          {cap1.map((p) => (
-            <a class="hp-u-card" href={p.href}>
-              <div class="hp-u-num">{p.num}</div>
-              <div class="hp-u-tag">{p.name}</div>
-              <h3 class="hp-u-h3">{p.h3}</h3>
-              <p class="hp-u-p">{p.p}</p>
-              <span class="hp-u-arrow">{C.capCardLink}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- §1 4 PHASES は撤去（JA/EN とも /pillars へ誘導） -->
 
     <!-- §対応標準 (ecosystem strip) -->
     <div class="hp-eco">
@@ -676,6 +655,25 @@ const cap1 = [
       <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
 
       <div class="hp-doors">
+        <a href={industriesHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
+                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Industries</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.industriesAud}</span>
+            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
+            <p class="hp-door-desc">{C.industriesDesc}</p>
+            <span class="hp-door-url">/pricing →</span>
+          </div>
+        </a>
         <a href={sealHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -712,25 +710,6 @@ const cap1 = [
           </div>
         </a>
 
-        <a href={industriesHref} class="hp-door">
-          <div class="hp-door-top">
-            <div class="hp-door-icon">
-              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
-                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-              </svg>
-            </div>
-            <div class="hp-door-name">Industries</div>
-          </div>
-          <div class="hp-door-bottom">
-            <span class="hp-door-aud">{C.industriesAud}</span>
-            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
-            <p class="hp-door-desc">{C.industriesDesc}</p>
-            <span class="hp-door-url">/pricing →</span>
-          </div>
-        </a>
       </div>
     </section>
 
@@ -774,6 +753,35 @@ const cap1 = [
             ))}
           </div>
         )}
+
+        <div class="hp-res-strip">
+          <a href={`${base}/compare/ai-models-attack-resistance/`} class="hp-res-attack hp-res-attack-compact">
+            <div class="hp-res-attack-l">
+              <p class="hp-res-attack-eyebrow">{isJa ? "AI攻撃実験 · 最新6モデル" : "AI ATTACK SIM · 6 FRONTIER MODELS"}</p>
+              <h3 class="hp-res-attack-head">{isJa ? (<>最強のAIが攻撃側に回った。止められるのは、<em>証明だけ。</em></>) : (<>The strongest AI turned attacker. Only <em>proof</em> stops it.</>)}</h3>
+              <span class="hp-res-attack-cta">{isJa ? "結果を見る →" : "See the results →"}</span>
+            </div>
+            <div class="hp-res-attack-div"></div>
+            <div class="hp-res-attack-r">
+              <div class="hp-res-stat hp-res-stat-bad"><span class="hp-res-stat-num">18</span><span class="hp-res-stat-den">/30</span> <span class="hp-res-stat-lab">{isJa ? "突破" : "breached"}</span></div>
+              <div class="hp-res-stat-arrow">↓</div>
+              <div class="hp-res-stat hp-res-stat-good"><span class="hp-res-stat-num">0</span> <span class="hp-res-stat-lab">{isJa ? "件（Lemma適用後）" : "with Lemma"}</span></div>
+              <div class="hp-res-stat-note">{isJa ? "Lemma なし → あり" : "Without Lemma → With"}</div>
+            </div>
+          </a>
+          <a href={briefIndexHref} class="hp-res-brief">
+            <div class="hp-res-brief-l">
+              <p class="hp-res-brief-eyebrow">Critical Brief</p>
+              <h3 class="hp-res-brief-head">{isJa ? (<>Lemma が注目する、<em>AI × 信頼の最前線。</em></>) : (<>The frontier of <em>AI × trust</em>, watched by Lemma.</>)}</h3>
+              <span class="hp-res-brief-cta">{isJa ? "一覧を見る →" : "Browse all →"}</span>
+            </div>
+            <div class="hp-res-brief-div"></div>
+            <div class="hp-res-brief-r">
+              <span class="hp-res-brief-r-label">{isJa ? "最新" : "LATEST"}</span>
+              <p class="hp-res-brief-r-title">{featuredTitle}</p>
+            </div>
+          </a>
+        </div>
       </section>
     )}
 
@@ -889,7 +897,7 @@ const cap1 = [
   @media (prefers-reduced-motion: reduce) { .hp-term-line { opacity: 1; animation: none; } }
 
   /* ECO STRIP */
-  .hp-eco { border-top: 0.5px solid var(--hp-line); border-bottom: 0.5px solid var(--hp-line); background: var(--hp-cream-d); padding: 56px 0; }
+  .hp-eco { border-top: 0.5px solid var(--hp-line); border-bottom: 0.5px solid var(--hp-line); background: var(--hp-cream-d); padding: 40px 0; }
   .hp-eco-inner { max-width: 1320px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; gap: 56px; flex-wrap: wrap; }
   .hp-eco-label { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--hp-brown); display: flex; align-items: center; gap: 12px; }
   .hp-eco-label::before { content: ""; width: 28px; height: 1px; background: var(--hp-brown); }
@@ -899,7 +907,7 @@ const cap1 = [
   .hp-eco-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--hp-text-3); }
 
   /* SECTION COMMON */
-  .hp-block { max-width: 1320px; margin: 0 auto; padding: 120px 40px; }
+  .hp-block { max-width: 1320px; margin: 0 auto; padding: 84px 40px; }
   .hp-eyebrow { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--hp-brown); margin: 0 0 20px; display: flex; align-items: center; gap: 12px; }
   .hp-eyebrow::before { content: ""; width: 32px; height: 1px; background: var(--hp-brown); }
   .hp-eyebrow.hp-on-dark { color: var(--hp-brown-light); }
@@ -911,7 +919,7 @@ const cap1 = [
   .hp-inline-code { font-family: var(--hp-mono); font-size: 12.5px; color: var(--hp-brown); }
 
   /* DOORS */
-  .hp-doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+  .hp-doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
   .hp-door { background: #fff; border: 0.5px solid var(--hp-line); border-radius: 22px; transition: all 0.2s; display: flex; flex-direction: column; overflow: hidden; }
   .hp-door:hover { border-color: var(--hp-brown); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(139, 69, 19, 0.10); }
   .hp-door-top { background: var(--hp-cream-d); padding: 60px 36px 52px; display: flex; flex-direction: column; align-items: center; gap: 32px; }
@@ -927,7 +935,7 @@ const cap1 = [
 
   /* §6.5 NEWS / 新着記事 */
   .hp-news { border-top: 0.5px solid var(--hp-line); }
-  .hp-news-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 44px; }
+  .hp-news-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
   .hp-news-h2 { font-size: 40px; margin: 0; }
   .hp-news-all { font-family: var(--hp-mono); font-size: 13px; font-weight: 700; color: var(--hp-brown); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: gap 0.15s; }
   .hp-news-all:hover { gap: 10px; }
@@ -946,6 +954,47 @@ const cap1 = [
   .hp-news-ann-link:hover { color: var(--hp-brown); }
   .hp-news-ann-date { color: var(--hp-text-3); font-family: var(--hp-mono); font-size: 11px; }
   .hp-news-ann-sep { color: var(--hp-line); }
+
+  /* §リソース (MizuDako) — News 内に地続きで配置 */
+  .hp-res-strip { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .hp-res-attack { display: flex; align-items: center; gap: 0; background: #0f0f0f; border-radius: 12px; padding: 28px 32px; text-decoration: none; overflow: hidden; }
+  .hp-res-attack:hover .hp-res-attack-cta { border-bottom-color: #b89b7a; }
+  .hp-res-attack-l { flex: 1; min-width: 0; }
+  .hp-res-attack-eyebrow { font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin: 0 0 14px; }
+  .hp-res-attack-head { font-family: var(--hp-display); font-size: 24px; line-height: 1.3; color: #f5f5f2; margin: 0 0 14px; font-weight: 700; }
+  .hp-res-attack-head em { font-style: italic; }
+  .hp-res-attack-cta { display: inline-block; color: #b89b7a; font-size: 14px; font-weight: 600; border-bottom: 1px solid #b89b7a44; padding-bottom: 2px; transition: border-color 0.2s; }
+  .hp-res-attack-div { width: 1px; height: 80px; background: #333; margin: 0 40px; flex-shrink: 0; }
+  .hp-res-attack-r { flex-shrink: 0; text-align: center; font-family: var(--hp-display); }
+  .hp-res-stat { line-height: 1.1; }
+  .hp-res-stat-bad { color: #c0392b; }
+  .hp-res-stat-good { color: #5a9e6f; }
+  .hp-res-stat-num { font-size: 38px; }
+  .hp-res-stat-den { font-size: 22px; opacity: 0.8; }
+  .hp-res-stat-lab { font-size: 13px; font-family: var(--hp-mono); }
+  .hp-res-stat-arrow { color: #444; font-size: 22px; margin: 6px 0; }
+  .hp-res-stat-note { color: #555; font-size: 11px; font-family: var(--hp-mono); margin-top: 8px; }
+  .hp-res-brief { display: flex; align-items: center; gap: 0; background: linear-gradient(135deg, #8B4513 0%, #5f300d 100%); border-radius: 12px; padding: 28px 32px; text-decoration: none; overflow: hidden; }
+  .hp-res-brief:hover .hp-res-brief-cta { border-bottom-color: #f0d6b8; }
+  .hp-res-brief-l { flex: 1; min-width: 0; }
+  .hp-res-brief-eyebrow { font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #e7b884; margin: 0 0 12px; }
+  .hp-res-brief-head { font-family: var(--hp-display); font-size: 24px; line-height: 1.3; color: #fff; margin: 0 0 14px; font-weight: 700; }
+  .hp-res-brief-head em { font-style: italic; color: #f0d6b8; }
+  .hp-res-brief-cta { display: inline-block; color: #f0d6b8; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f0d6b855; padding-bottom: 2px; transition: border-color 0.2s; }
+  .hp-res-brief-div { width: 1px; height: 80px; background: rgba(255,255,255,0.18); margin: 0 32px; flex-shrink: 0; }
+  .hp-res-brief-r { flex-shrink: 0; width: 210px; }
+  .hp-res-brief-r-label { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #e7b884; font-weight: 700; }
+  .hp-res-brief-r-title { font-family: var(--hp-display); font-size: 15px; line-height: 1.5; color: #f5ede2; margin: 8px 0 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  @media (max-width: 760px) {
+    .hp-res-attack { flex-direction: column; align-items: flex-start; gap: 22px; padding: 28px 24px; }
+    .hp-res-attack-div { width: 100%; height: 1px; margin: 0; }
+    .hp-res-attack-r { text-align: left; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+    .hp-res-attack-head { font-size: 22px; }
+    .hp-res-stat-arrow { margin: 0; }
+    .hp-res-brief { flex-direction: column; align-items: flex-start; }
+    .hp-res-brief-div { width: 100%; height: 1px; margin: 0; }
+    .hp-res-brief-r { width: 100%; }
+  }
   @media (max-width: 760px) {
     .hp-news-grid { grid-template-columns: 1fr; }
     .hp-news-h2 { font-size: 30px; }
@@ -1185,7 +1234,7 @@ const cap1 = [
     .hp-hero-sub { font-size: 16px; margin: 0 0 32px; }
     .hp-h2 { font-size: 40px; }
     .hp-closing-h { font-size: 40px; }
-    .hp-block { padding: 80px 24px; }
+    .hp-block { padding: 56px 24px; }
     .hp-closing { padding: 100px 24px; }
     .hp-doors { grid-template-columns: 1fr; }
     /* Mechanism flow: stack the 3 phase cards vertically, rotate arrows to point down */
@@ -1253,7 +1302,7 @@ const cap1 = [
   }
 
   /* ═══ §1 UNIFIED PHASE CARDS ═══ */
-  .hp-s1 { background: var(--hp-cream); padding: 80px 40px 64px; border-top: 1px solid var(--hp-line); }
+  .hp-s1 { background: var(--hp-cream); padding: 64px 40px 52px; border-top: 1px solid var(--hp-line); }
   .hp-s1-inner { max-width: 1240px; margin: 0 auto; }
   .hp-s1-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 48px; line-height: 1.15; color: var(--hp-text-1); letter-spacing: -0.025em; margin: 0 0 48px; max-width: 820px; }
   .hp-s1-h2 .hp-accent { color: var(--hp-brown); }
@@ -1268,8 +1317,8 @@ const cap1 = [
   .hp-u-arrow { font-family: var(--hp-mono); font-size: 11px; color: var(--hp-brown); font-weight: 700; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--hp-line); }
 
   /* ═══ §3 VALUES BANNER ═══ */
-  .hp-values { padding: 88px 40px; background: var(--hp-cream); }
-  .hp-values-inner { max-width: 1240px; margin: 0 auto; background: var(--hp-brown-light); border-radius: 12px; padding: 64px 56px; }
+  .hp-values { padding: 64px 40px; background: var(--hp-cream); }
+  .hp-values-inner { max-width: 1240px; margin: 0 auto; background: var(--hp-brown-light); border-radius: 12px; padding: 52px 48px; }
   .hp-values-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 42px; line-height: 1.2; color: var(--hp-text-1); letter-spacing: -0.025em; margin: 0 0 48px; }
   .hp-values-h2 .hp-accent { color: var(--hp-brown); }
   .hp-values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 0 0 44px; }
@@ -1281,7 +1330,7 @@ const cap1 = [
   .hp-values-link { display: inline-flex; align-items: center; gap: 10px; background: var(--hp-text-1); color: var(--hp-cream); padding: 14px 30px; border-radius: 50px; font-family: var(--hp-display); font-size: 14.5px; font-weight: 600; text-decoration: none; border: 1px solid var(--hp-text-1); }
 
   /* ═══ §5 INDUSTRIES (TAKE IT IN) ═══ */
-  .hp-scenes { padding: 88px 40px; background: var(--hp-cream-d); }
+  .hp-scenes { padding: 64px 40px; background: var(--hp-cream-d); }
   .hp-scenes-inner { max-width: 1240px; margin: 0 auto; }
   .hp-scenes-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 48px; line-height: 1.15; color: var(--hp-text-1); letter-spacing: -0.025em; margin: 0 0 40px; }
   .hp-scenes-h2 .hp-accent { color: var(--hp-brown); }
@@ -1301,7 +1350,7 @@ const cap1 = [
      per request to keep the existing product icon cards intact. */
 
   /* ═══ §7 DISCOVERY + DEV TAIL ═══ */
-  .hp-disc { padding: 80px 40px 0; background: var(--hp-cream-d); border-top: 1px solid var(--hp-line); }
+  .hp-disc { padding: 60px 40px 0; background: var(--hp-cream-d); border-top: 1px solid var(--hp-line); }
   .hp-disc-inner { max-width: 1240px; margin: 0 auto; }
   .hp-disc-eyebrow { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--hp-brown); font-weight: 700; text-transform: uppercase; margin: 0 0 14px; }
   .hp-disc-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 42px; line-height: 1.2; color: var(--hp-text-1); letter-spacing: -0.02em; margin: 0 0 22px; }
@@ -1320,22 +1369,22 @@ const cap1 = [
 
   /* ═══ responsive — new homepage sections ═══ */
   @media (max-width: 880px) {
-    .hp-s1 { padding: 48px 24px; }
+    .hp-s1 { padding: 40px 24px; }
     .hp-s1-h2 { font-size: 28px; margin-bottom: 32px; }
     .hp-unified-cards { grid-template-columns: 1fr; gap: 0; padding-top: 0; padding-left: 48px; }
     .hp-unified-cards::before { top: 32px; bottom: 32px; left: 23px; right: auto; width: 2px; height: auto; }
     .hp-u-card { padding: 24px; margin-bottom: 14px; }
     .hp-u-num { position: absolute; left: -48px; top: 24px; margin: 0; width: 48px; height: 48px; font-size: 13px; }
     .hp-u-tag { text-align: left; }
-    .hp-values { padding: 48px 24px; }
+    .hp-values { padding: 40px 24px; }
     .hp-values-inner { padding: 40px 28px; }
     .hp-values-h2 { font-size: 28px; }
     .hp-values-grid { grid-template-columns: 1fr; gap: 32px; }
-    .hp-scenes { padding: 48px 24px; }
+    .hp-scenes { padding: 40px 24px; }
     .hp-scenes-h2 { font-size: 28px; }
     .hp-industries-grid { grid-template-columns: 1fr; gap: 12px; }
     .hp-lens-foot { flex-direction: column; align-items: flex-start; }
-    .hp-disc { padding: 48px 24px 0; }
+    .hp-disc { padding: 40px 24px 0; }
     .hp-disc-h2 { font-size: 28px; }
     .hp-dev-tail { flex-direction: column; align-items: flex-start; }
   }
