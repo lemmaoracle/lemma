@@ -115,6 +115,17 @@ const collectionJsonLd = {
         </section>
       )}
 
+      <section class="uc-finder" aria-labelledby="uc-finder-label">
+        <div class="uc-finder-lbl" id="uc-finder-label">{useCaseT.finderLabel}</div>
+        <div class="uc-chips" role="radiogroup" aria-label={useCaseT.finderLabel}>
+          <button type="button" class="uc-chip on" data-f="all" role="radio" aria-checked="true">{useCaseT.industryAll}</button>
+          {INDUSTRY_ORDER.map((key) => (
+            <button type="button" class="uc-chip" data-f={key} role="radio" aria-checked="false">{useCaseT.industryLabels[key]}</button>
+          ))}
+        </div>
+        <div class="uc-count" id="uc-count" data-tpl-all={useCaseT.countAll} data-tpl-match={useCaseT.countMatch}></div>
+      </section>
+
       {isJa && (
         <section class="uc-pop" aria-label="よく読まれるケース">
           <div class="uc-sec-lbl">よく読まれるケース</div>
@@ -137,24 +148,6 @@ const collectionJsonLd = {
           </div>
         </section>
       )}
-
-      <SolutionsBridge
-        variant="light"
-        href={`${base}/solutions/`}
-        text={isJa ? "業務領域ごとの全体像は、" : "For the bigger picture by workflow, "}
-        linkLabel={isJa ? "Solutions の活用シーンへ →" : "see Solutions use scenarios →"}
-      />
-
-      <section class="uc-finder" aria-labelledby="uc-finder-label">
-        <div class="uc-finder-lbl" id="uc-finder-label">{useCaseT.finderLabel}</div>
-        <div class="uc-chips" role="radiogroup" aria-label={useCaseT.finderLabel}>
-          <button type="button" class="uc-chip on" data-f="all" role="radio" aria-checked="true">{useCaseT.industryAll}</button>
-          {INDUSTRY_ORDER.map((key) => (
-            <button type="button" class="uc-chip" data-f={key} role="radio" aria-checked="false">{useCaseT.industryLabels[key]}</button>
-          ))}
-        </div>
-        <div class="uc-count" id="uc-count" data-tpl-all={useCaseT.countAll} data-tpl-match={useCaseT.countMatch}></div>
-      </section>
 
       {taskGroups ? (
         taskGroups.map((group, gi) => (
@@ -236,6 +229,13 @@ const collectionJsonLd = {
         <span aria-hidden="true"> · </span>
         <a href={`${base}/faq/`}>{isJa ? "よくある質問（FAQ）" : "FAQ"} →</a>
       </aside>
+
+      <SolutionsBridge
+        variant="light"
+        href={`${base}/solutions/`}
+        text={isJa ? "業務領域ごとの全体像は、" : "For the bigger picture by workflow, "}
+        linkLabel={isJa ? "Solutions の活用シーンへ →" : "see Solutions use scenarios →"}
+      />
 
       {isJa && (
         <section class="uc-cta">
