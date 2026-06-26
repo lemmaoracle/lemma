@@ -99,12 +99,6 @@ const collectionJsonLd = {
         {isJa && (
           <p class="uc-hero-subnote">データは渡さない。証明は渡る。</p>
         )}
-        {isJa && (
-          <div class="uc-hero-links">
-            <a href={`${base}/faq/`}>FAQ →</a>
-            <a href={`${base}/pillars/`}>仕組みを詳しく →</a>
-          </div>
-        )}
       </section>
 
       {isJa && taskGroups && (
@@ -724,10 +718,7 @@ const collectionJsonLd = {
     }
   }
 
-  /* ─── Utility links / shortcut / popular / CTA (JA) ─── */
-  .uc-hero-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; }
-  .uc-hero-links a { font-family: var(--uc-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--uc-text-4); transition: color 0.2s; }
-  .uc-hero-links a:hover { color: var(--accent); }
+  /* ─── Shortcut / popular / CTA (JA) ─── */
   .uc-sec-lbl { font-family: var(--uc-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--uc-text-4); display: flex; align-items: center; gap: 11px; }
   .uc-sec-lbl::before { content: ""; width: 26px; height: 1.5px; background: var(--accent); }
   .uc-shortcut { margin: 32px 0 0; }
