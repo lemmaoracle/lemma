@@ -240,6 +240,9 @@
   .badge svg{width:62px;height:auto;display:block}
   .badge .bl{font-weight:800;color:var(--ink);font-size:.92rem;text-align:center;line-height:1.4}
   .std-line{margin-top:18px;color:var(--muted);font-size:.85rem}
+  .std-chips{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:22px}
+  .std-chips .lbl{width:100%;text-align:center;color:var(--muted);font-size:.82rem;font-weight:700;letter-spacing:.08em;margin-bottom:4px}
+  .std-chip{display:inline-block;padding:8px 18px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--brown);font-weight:800;font-size:.98rem;letter-spacing:.02em;box-shadow:0 1px 3px rgba(64,42,20,.06)}
   @media(max-width:600px){.badges{gap:18px}.badge{width:108px}}
   .trust-line{margin-top:34px;text-align:center;font-size:1.2rem;font-weight:900;color:var(--ink)}
   .trust-line span{color:var(--brown)}
@@ -638,7 +641,14 @@
       <span class="eyebrow">国が進める信頼の枠組みに沿って</span>
       <h2 class="section-title">「真正性」を、世界標準のしくみで。</h2>
       <p class="lead">Lemmaが準拠する <b>Trusted Web</b>（内閣官房デジタル市場競争本部・デジタル庁が推進）の考え方では、データの<b>「真正性」</b>──それが本物で、どこから来たか──を、中身を見せずに確認できることを目指しています。Lemmaは、その考え方を現場の運用に落とし込みます。</p>
-      <p class="std-line" style="margin-top:18px">世界標準に対応（「Trusted Web」準拠）：MCP · A2A · x402 · C2PA · W3C VC</p>
+      <div class="std-chips">
+        <span class="lbl">対応する世界標準（「Trusted Web」準拠）</span>
+        <span class="std-chip">MCP</span>
+        <span class="std-chip">A2A</span>
+        <span class="std-chip">x402</span>
+        <span class="std-chip">C2PA</span>
+        <span class="std-chip">W3C VC</span>
+      </div>
     </div>
   </div>
 </section>
