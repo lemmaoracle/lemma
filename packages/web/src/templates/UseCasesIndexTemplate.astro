@@ -152,17 +152,6 @@ const collectionJsonLd = {
                       )}
                       <h3 class="uc-card-title">{uc.title}</h3>
                       <p class="uc-card-summary">{summary}</p>
-                      {inds.length > 0 && (
-                        <div class="uc-card-inds">
-                          {inds.map((k) => {
-                            const label = useCaseT.industryLabels[k as IndustryKey];
-                            return label ? <span class="uc-ind">{label}</span> : null;
-                          })}
-                        </div>
-                      )}
-                      <div class="uc-card-foot">
-                        <span class="uc-card-go">{useCaseT.cardCta}</span>
-                      </div>
                     </a>
                   );
                 })}
