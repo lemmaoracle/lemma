@@ -678,6 +678,27 @@ const cap1 = [
       <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
 
       <div class="hp-doors">
+        {isJa && (
+        <a href={industriesHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
+                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name">Industries</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">{C.industriesAud}</span>
+            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
+            <p class="hp-door-desc">{C.industriesDesc}</p>
+            <span class="hp-door-url">/pricing →</span>
+          </div>
+        </a>
+        )}
         <a href={sealHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -714,6 +735,7 @@ const cap1 = [
           </div>
         </a>
 
+        {!isJa && (
         <a href={industriesHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -733,6 +755,7 @@ const cap1 = [
             <span class="hp-door-url">/pricing →</span>
           </div>
         </a>
+        )}
       </div>
     </section>
 
@@ -793,12 +816,12 @@ const cap1 = [
               <div class="hp-res-stat-note">Lemma なし → あり</div>
             </div>
           </a>
-          <a href={briefIndexHref} class="hp-res-brief">
+          <a href={featuredHref} class="hp-res-brief">
             <div class="hp-res-brief-l">
-              <div class="hp-res-brief-label">Critical Brief</div>
-              <p class="hp-res-brief-desc">Lemma が注目する AI × 信頼の最前線。隔週配信。</p>
+              <div class="hp-res-brief-label">Critical Brief · 最新の分析</div>
+              <p class="hp-res-brief-desc">{featuredTitle}</p>
             </div>
-            <span class="hp-res-brief-cta">最新号を読む →</span>
+            <span class="hp-res-brief-cta">読む →</span>
           </a>
         </div>
         )}
@@ -997,7 +1020,7 @@ const cap1 = [
   .hp-res-brief { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fff; border: 0.5px solid var(--hp-line); border-radius: 12px; padding: 20px 28px; text-decoration: none; transition: border-color 0.2s; }
   .hp-res-brief:hover { border-color: var(--hp-brown); }
   .hp-res-brief-label { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; }
-  .hp-res-brief-desc { font-size: 14px; color: var(--hp-text-3); margin: 8px 0 0; }
+  .hp-res-brief-desc { font-size: 14px; color: var(--hp-text-3); margin: 8px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .hp-res-brief-cta { font-family: var(--hp-mono); font-size: 13px; font-weight: 700; color: var(--hp-brown); white-space: nowrap; }
   @media (max-width: 760px) {
     .hp-res-attack { flex-direction: column; align-items: flex-start; gap: 22px; padding: 28px 24px; }
