@@ -869,11 +869,11 @@
     "hero": {
       "eyebrow": "AI のための信頼インフラ",
       "h1": "AI に証明された事実を。",
-      "sub": "ZK 証明インフラが、すべての AI 判断を検証可能にする。",
-      "primaryCta": "ホワイトペーパーを無料ダウンロード",
-      "primaryCtaHref": "https://tally.so/r/xX0VYv",
-      "secondaryCta": "4 つの問いを読む →",
-      "secondaryCtaHref": "/ja/pillars/"
+      "sub": "真正性のある AI データ基盤。生データを渡さずに来歴・属性・実績を暗号的に証明し、第三者が独立して検証できるようにします。",
+      "primaryCta": "ホワイトペーパーを無料 DL",
+      "primaryCtaHref": "https://tally.so/r/7RJXdR",
+      "secondaryCta": "ユースケースを見る →",
+      "secondaryCtaHref": "/ja/solutions/use-cases/"
     },
     "trustLayer": {
       "eyebrow": "信頼インフラ",
