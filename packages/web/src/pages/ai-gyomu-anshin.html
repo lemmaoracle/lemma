@@ -72,6 +72,7 @@
       "@id":"https://lemma.frame00.com/ai-gyomu-anshin/#faq",
       "mainEntity":[
         {"@type":"Question","name":"機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？","acceptedAnswer":{"@type":"Answer","text":"個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。"}},
+        {"@type":"Question","name":"「真正性のあるデータ」とは何ですか？","acceptedAnswer":{"@type":"Answer","text":"データが「本物であり、改ざんされていない」こと、そして「どこから来たか（出どころ）」を証明できる状態のことです。Lemmaはその証明を、元データを外に出さずに行います。"}},
         {"@type":"Question","name":"AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。","acceptedAnswer":{"@type":"Answer","text":"決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は実行されません。「ここまで」を機械的に守れます。"}},
         {"@type":"Question","name":"AIの判断の根拠を、あとから説明できますか？","acceptedAnswer":{"@type":"Answer","text":"誰が・いつ・何をしたかを、書き換えられない記録として残します。監査やお取引先に問われても、その場で示せます。"}},
         {"@type":"Question","name":"既存のシステムとどうつなぎますか？導入は大変ですか？","acceptedAnswer":{"@type":"Answer","text":"いまの業務ひとつから、小さく始められます。データを渡さずに、ERPや基幹システム（SAP等）を含む既存システムとの連携を設計・検証します。"}},
@@ -468,11 +469,11 @@
 <!-- HERO (dark, problem-first) -->
 <section class="hero band-dark">
   <div class="wrap">
-    <span class="eyebrow">データを渡さずに、前へ</span>
+    <span class="eyebrow">AIが安心して使えるデータ基盤</span>
     <h1>データは渡さない。<br>それでも、取引は<em>前に進む</em>。</h1>
     <p class="sub">
       社内のデータは、外に出さない。AIには確かめた事実だけを渡し、
-      取引先や行政へは「証明」だけを届ける。
+      取引先や行政へは、その真正性（本物であること）の「証明」だけを届ける。
       だから、重要な取引ほど、AIに任せて前に進められます。
     </p>
     <div class="cta-row">
@@ -616,6 +617,7 @@
       <span class="eyebrow">仕組み — なぜ安全か</span>
       <h2 class="section-title">なぜ、中身を渡さずに証明できるのか。</h2>
       <p class="lead">クレジットカードのICチップが暗証番号を見せずに「本物」を通すように、Lemmaは<b>独自の暗号技術</b>で、中身を出さずに「確かさ」を証明します。その証明には、<b>誰が・何を・いつ・どこから・正しい順序で・改ざんなく</b>進んだかが、個人情報を見せないまま収まります。</p>
+      <p class="lead" style="margin-top:14px">Lemmaが準拠する<b>Trusted Web</b>（内閣官房デジタル市場競争本部・デジタル庁が推進）の考え方では、データの<b>「真正性」</b>──本物であり、どこから来たか──を、中身を見せずに確認できることを目指しています（対応標準：MCP・A2A・x402・C2PA・W3C VC）。</p>
     </div>
     <p class="reveal-eq">「証明できる」 ≠ 「中身を見せる」</p>
 
@@ -704,6 +706,8 @@
     <div class="faq-list">
       <details><summary>機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？</summary>
         <div class="a">個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。</div></details>
+      <details><summary>「真正性のあるデータ」とは何ですか？</summary>
+        <div class="a">データが「本物であり、改ざんされていない」こと、そして「どこから来たか（出どころ）」を証明できる状態のことです。Lemmaはその証明を、元データを外に出さずに行います。</div></details>
       <details><summary>AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。</summary>
         <div class="a">決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は実行されません。「ここまで」を機械的に守れます。</div></details>
       <details><summary>AIの判断の根拠を、あとから説明できますか？</summary>
