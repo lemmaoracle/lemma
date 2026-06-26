@@ -294,10 +294,10 @@ const C = isJa ? {
   heroH1Line1: "AI runs on",
   heroH1Accent: "proofs, not data",
   heroH1Tail: ".",
-  heroSubLead: "Through Lemma's proprietary cryptography, AI and agents receive only verified facts.",
-  heroSubChord: "Decisions you can prove — without ever holding the data.",
-  heroPrimaryCta: "Get Started",
-  heroSecondaryCta: "Learn more",
+  heroSubLead: "An authentic data foundation for AI.",
+  heroSubChord: "Prove provenance, attributes, and track record cryptographically — without ever sharing raw data — so third parties can verify independently.",
+  heroPrimaryCta: "Download the Whitepaper",
+  heroSecondaryCta: "See use cases",
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
   termComm2: "2. Verifiable AI",
@@ -494,12 +494,7 @@ const panes = [
 
 // §1 workflow phases (Input → Inference → Decision → Delegation). Each card
 // links to the matching Solutions § anchor (business-theme, spans multiple UCs).
-const cap1 = [
-  { num: "01", name: C.capP1Name, h3: C.capP1H3, p: C.capP1P, href: `${base}/solutions/#input-provenance` },
-  { num: "02", name: C.capP2Name, h3: C.capP2H3, p: C.capP2P, href: `${base}/solutions/#verifiable-ai` },
-  { num: "03", name: C.capP3Name, h3: C.capP3H3, p: C.capP3P, href: `${base}/solutions/#regulatory` },
-  { num: "04", name: C.capP4Name, h3: C.capP4H3, p: C.capP4P, href: `${base}/solutions/#agent-authority` },
-];
+// §1 4 PHASES 撤去に伴い cap1 を削除
 ---
 
 <Layout
@@ -520,8 +515,8 @@ const cap1 = [
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
         <p class="hp-hero-sub">{C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span></p>
         <div class="hp-hero-ctas">
-          <a href={isJa ? "https://tally.so/r/7RJXdR" : DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
-          <a href={isJa ? `${base}/solutions/use-cases/` : pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
+          <a href="https://tally.so/r/7RJXdR" target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
+          <a href={`${base}/solutions/use-cases/`} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
 
@@ -551,25 +546,7 @@ const cap1 = [
       </div>
     </section>
 
-    <!-- §1 · 4 PHASES (unified phase cards) — EN のみ表示（JA はトップから削除し /pillars へ誘導） -->
-    {!isJa && (
-    <section class="hp-s1">
-      <div class="hp-s1-inner">
-        <h2 class="hp-s1-h2" set:html={C.capH2Html} />
-        <div class="hp-unified-cards">
-          {cap1.map((p) => (
-            <a class="hp-u-card" href={p.href}>
-              <div class="hp-u-num">{p.num}</div>
-              <div class="hp-u-tag">{p.name}</div>
-              <h3 class="hp-u-h3">{p.h3}</h3>
-              <p class="hp-u-p">{p.p}</p>
-              <span class="hp-u-arrow">{C.capCardLink}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-    )}
+    <!-- §1 4 PHASES は撤去（JA/EN とも /pillars へ誘導） -->
 
     <!-- §対応標準 (ecosystem strip) -->
     <div class="hp-eco">
@@ -678,7 +655,6 @@ const cap1 = [
       <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
 
       <div class="hp-doors">
-        {isJa && (
         <a href={industriesHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -698,7 +674,6 @@ const cap1 = [
             <span class="hp-door-url">/pricing →</span>
           </div>
         </a>
-        )}
         <a href={sealHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -735,27 +710,6 @@ const cap1 = [
           </div>
         </a>
 
-        {!isJa && (
-        <a href={industriesHref} class="hp-door">
-          <div class="hp-door-top">
-            <div class="hp-door-icon">
-              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
-                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-              </svg>
-            </div>
-            <div class="hp-door-name">Industries</div>
-          </div>
-          <div class="hp-door-bottom">
-            <span class="hp-door-aud">{C.industriesAud}</span>
-            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
-            <p class="hp-door-desc">{C.industriesDesc}</p>
-            <span class="hp-door-url">/pricing →</span>
-          </div>
-        </a>
-        )}
       </div>
     </section>
 
@@ -800,36 +754,34 @@ const cap1 = [
           </div>
         )}
 
-        {isJa && (
         <div class="hp-res-strip">
           <a href={`${base}/compare/ai-models-attack-resistance/`} class="hp-res-attack hp-res-attack-compact">
             <div class="hp-res-attack-l">
-              <p class="hp-res-attack-eyebrow">AI攻撃実験 · 最新6モデル</p>
-              <h3 class="hp-res-attack-head">最強のAIが攻撃側に回った。止められるのは、<em>証明だけ。</em></h3>
-              <span class="hp-res-attack-cta">結果を見る →</span>
+              <p class="hp-res-attack-eyebrow">{isJa ? "AI攻撃実験 · 最新6モデル" : "AI ATTACK SIM · 6 FRONTIER MODELS"}</p>
+              <h3 class="hp-res-attack-head">{isJa ? (<>最強のAIが攻撃側に回った。止められるのは、<em>証明だけ。</em></>) : (<>The strongest AI turned attacker. Only <em>proof</em> stops it.</>)}</h3>
+              <span class="hp-res-attack-cta">{isJa ? "結果を見る →" : "See the results →"}</span>
             </div>
             <div class="hp-res-attack-div"></div>
             <div class="hp-res-attack-r">
-              <div class="hp-res-stat hp-res-stat-bad"><span class="hp-res-stat-num">18</span><span class="hp-res-stat-den">/30</span> <span class="hp-res-stat-lab">突破</span></div>
+              <div class="hp-res-stat hp-res-stat-bad"><span class="hp-res-stat-num">18</span><span class="hp-res-stat-den">/30</span> <span class="hp-res-stat-lab">{isJa ? "突破" : "breached"}</span></div>
               <div class="hp-res-stat-arrow">↓</div>
-              <div class="hp-res-stat hp-res-stat-good"><span class="hp-res-stat-num">0</span> <span class="hp-res-stat-lab">件（Lemma適用後）</span></div>
-              <div class="hp-res-stat-note">Lemma なし → あり</div>
+              <div class="hp-res-stat hp-res-stat-good"><span class="hp-res-stat-num">0</span> <span class="hp-res-stat-lab">{isJa ? "件（Lemma適用後）" : "with Lemma"}</span></div>
+              <div class="hp-res-stat-note">{isJa ? "Lemma なし → あり" : "Without Lemma → With"}</div>
             </div>
           </a>
           <a href={briefIndexHref} class="hp-res-brief">
             <div class="hp-res-brief-l">
               <p class="hp-res-brief-eyebrow">Critical Brief</p>
-              <h3 class="hp-res-brief-head">Lemma が注目する、<em>AI × 信頼の最前線。</em></h3>
-              <span class="hp-res-brief-cta">一覧を見る →</span>
+              <h3 class="hp-res-brief-head">{isJa ? (<>Lemma が注目する、<em>AI × 信頼の最前線。</em></>) : (<>The frontier of <em>AI × trust</em>, watched by Lemma.</>)}</h3>
+              <span class="hp-res-brief-cta">{isJa ? "一覧を見る →" : "Browse all →"}</span>
             </div>
             <div class="hp-res-brief-div"></div>
             <div class="hp-res-brief-r">
-              <span class="hp-res-brief-r-label">最新</span>
+              <span class="hp-res-brief-r-label">{isJa ? "最新" : "LATEST"}</span>
               <p class="hp-res-brief-r-title">{featuredTitle}</p>
             </div>
           </a>
         </div>
-        )}
       </section>
     )}
 
