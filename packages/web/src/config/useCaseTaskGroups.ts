@@ -14,6 +14,8 @@
 export interface UseCaseTaskGroup {
   /** Two-digit id displayed in the eyebrow, e.g. "01". */
   readonly id: string;
+  /** Hash anchor + section id, e.g. "ai-data". */
+  readonly anchor: string;
   readonly heading: string;
   readonly description: string;
   readonly slugs: ReadonlyArray<string>;
@@ -22,6 +24,7 @@ export interface UseCaseTaskGroup {
 export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   {
     id: "01",
+    anchor: "ai-data",
     heading: "AIに生データを渡さず任せる",
     description: "漏洩させずに AI を業務に入れたいとき。",
     slugs: [
@@ -36,6 +39,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "02",
+    anchor: "records",
     heading: "記録・契約・承認を後から証明する",
     description: "「その時、正しかった」を、改ざんなく残したいとき。",
     slugs: [
@@ -47,6 +51,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "03",
+    anchor: "counterparty",
     heading: "取引相手・仕入先を確かめる",
     description: "相手の信頼性を、中身を見ずに確認したいとき。",
     slugs: [
@@ -60,6 +65,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "04",
+    anchor: "supply-chain",
     heading: "サプライチェーンの来歴・適合を証明する",
     description: "調達の正しさを、営業秘密を守って示したいとき。",
     slugs: [
@@ -69,6 +75,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "05",
+    anchor: "credentials",
     heading: "資格・実績・受給資格を証明する",
     description: "人や組織の資格を、履歴を出さずに示したいとき。",
     slugs: [
@@ -80,6 +87,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "06",
+    anchor: "agent",
     heading: "エージェント・決済の権限を証明する",
     description: "エージェントや決済の権限を、コードで証明したいとき（開発者向け）。",
     slugs: [

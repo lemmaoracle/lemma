@@ -99,7 +99,51 @@ const collectionJsonLd = {
         {isJa && (
           <p class="uc-hero-subnote">データは渡さない。証明は渡る。</p>
         )}
+        {isJa && (
+          <div class="uc-hero-links">
+            <a href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">ユースケースを提案 → お問い合わせ</a>
+            <a href={`${base}/faq/`}>FAQ →</a>
+            <a href={`${base}/pillars/`}>仕組みを詳しく →</a>
+          </div>
+        )}
       </section>
+
+      {isJa && taskGroups && (
+        <section class="uc-shortcut" aria-label="目的から探す">
+          <div class="uc-sec-lbl">目的から探す</div>
+          <div class="uc-shortcut-grid">
+            {taskGroups.map((g) => (
+              <a class="uc-shortcut-item" href={`#${g.anchor}`}>
+                <span class="uc-shortcut-num">{g.id}</span>
+                <span class="uc-shortcut-name">{g.heading}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {isJa && (
+        <section class="uc-pop" aria-label="よく読まれるケース">
+          <div class="uc-sec-lbl">よく読まれるケース</div>
+          <div class="uc-pop-grid">
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
+              <span class="uc-pop-tag">P2 · AI導入 / 製造</span>
+              <h3 class="uc-pop-title">社内文書をAIに使わせるが生データは触らせない</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
+              <span class="uc-pop-tag">P4 · 金融 / 製造 / SC</span>
+              <h3 class="uc-pop-title">取引先の与信・反社チェック — 結果だけを渡す</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
+              <span class="uc-pop-tag">P2 · 金融 / 自治体</span>
+              <h3 class="uc-pop-title">AI監査ログ証明</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+          </div>
+        </section>
+      )}
 
       <SolutionsBridge
         variant="light"
@@ -120,38 +164,45 @@ const collectionJsonLd = {
       </section>
 
       {taskGroups ? (
-        taskGroups.map((group) => (
-          <section class="uc-group" data-group={group.id}>
-            <div class="uc-group-eye">{group.id}</div>
-            <h2 class="uc-group-heading">{group.heading}</h2>
-            <p class="uc-group-desc">{group.description}</p>
-            <div class="uc-grid">
-              {group.members.map((uc) => {
-                const pillar = getPillarForUseCase(uc);
-                const inds = uc.industries.length > 0 ? uc.industries : [];
-                const summary = uc.cardSummary || uc.thesis;
-                return (
-                  <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
-                    <UseCaseIcon slug={uc.slug} />
-                    {pillar && (
-                      <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
-                    )}
-                    <h3 class="uc-card-title">{uc.title}</h3>
-                    <p class="uc-card-summary">{summary}</p>
-                    {inds.length > 0 && (
-                      <div class="uc-card-inds">
-                        {inds.map((k) => {
-                          const label = useCaseT.industryLabels[k as IndustryKey];
-                          return label ? <span class="uc-ind">{label}</span> : null;
-                        })}
+        taskGroups.map((group, gi) => (
+          <section class:list={["uc-group", { open: gi === 0 }]} id={group.anchor} data-group={group.id}>
+            <h2 class="uc-group-head">
+              <button type="button" class="uc-group-toggle" aria-expanded={gi === 0 ? "true" : "false"}>
+                <span class="uc-group-eye">{group.id}</span>
+                <span class="uc-group-heading">{group.heading}</span>
+                <span class="uc-group-chev" aria-hidden="true">▾</span>
+              </button>
+            </h2>
+            <div class="uc-group-body">
+              <p class="uc-group-desc">{group.description}</p>
+              <div class="uc-grid">
+                {group.members.map((uc) => {
+                  const pillar = getPillarForUseCase(uc);
+                  const inds = uc.industries.length > 0 ? uc.industries : [];
+                  const summary = uc.cardSummary || uc.thesis;
+                  return (
+                    <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
+                      <UseCaseIcon slug={uc.slug} />
+                      {pillar && (
+                        <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
+                      )}
+                      <h3 class="uc-card-title">{uc.title}</h3>
+                      <p class="uc-card-summary">{summary}</p>
+                      {inds.length > 0 && (
+                        <div class="uc-card-inds">
+                          {inds.map((k) => {
+                            const label = useCaseT.industryLabels[k as IndustryKey];
+                            return label ? <span class="uc-ind">{label}</span> : null;
+                          })}
+                        </div>
+                      )}
+                      <div class="uc-card-foot">
+                        <span class="uc-card-go">{useCaseT.cardCta}</span>
                       </div>
-                    )}
-                    <div class="uc-card-foot">
-                      <span class="uc-card-go">{useCaseT.cardCta}</span>
-                    </div>
-                  </a>
-                );
-              })}
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </section>
         ))
@@ -192,6 +243,16 @@ const collectionJsonLd = {
         <span aria-hidden="true"> · </span>
         <a href={`${base}/faq/`}>{isJa ? "よくある質問（FAQ）" : "FAQ"} →</a>
       </aside>
+
+      {isJa && (
+        <section class="uc-cta">
+          <h2 class="uc-cta-h">業務に乗るか、確かめる。</h2>
+          <div class="uc-cta-row">
+            <a class="uc-cta-primary" href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">Discovery Call を予約 →</a>
+            <a class="uc-cta-secondary" href="https://tally.so/r/xX0VYv" target="_blank" rel="noopener">ホワイトペーパー DL →</a>
+          </div>
+        </section>
+      )}
     </div>
   </main>
 
@@ -204,6 +265,22 @@ const collectionJsonLd = {
   const groups = Array.from(document.querySelectorAll<HTMLElement>(".uc-group"));
   const countEl = document.getElementById("uc-count");
   const emptyEl = document.getElementById("uc-empty");
+
+  // ── Accordion (task-axis groups) ──
+  function setOpen(g: HTMLElement, open: boolean) {
+    g.classList.toggle("open", open);
+    const btn = g.querySelector<HTMLButtonElement>(".uc-group-toggle");
+    if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  groups.forEach((g) => {
+    const btn = g.querySelector<HTMLButtonElement>(".uc-group-toggle");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        if (g.classList.contains("dim")) return; // zero-match groups stay folded
+        setOpen(g, !g.classList.contains("open"));
+      });
+    }
+  });
 
   if (!countEl || !emptyEl) {
     // nothing to wire
@@ -219,13 +296,22 @@ const collectionJsonLd = {
         c.style.display = show ? "" : "none";
         if (show) n++;
       });
-      // Hide whole task-axis groups whose cards are all filtered out so the
-      // h2 doesn't sit alone above an empty grid.
-      groups.forEach((g) => {
-        const anyVisible = Array.from(g.querySelectorAll<HTMLAnchorElement>(".uc-card"))
-          .some((c) => c.style.display !== "none");
-        g.style.display = anyVisible ? "" : "none";
-      });
+      // Filter ↔ accordion coordination:
+      //  - "all": reset to initial (group 01 open, the rest folded), undimmed.
+      //  - industry: groups with a match auto-expand; zero-match groups dim + fold.
+      if (f === "all") {
+        groups.forEach((g, i) => {
+          g.classList.remove("dim");
+          setOpen(g, i === 0);
+        });
+      } else {
+        groups.forEach((g) => {
+          const any = Array.from(g.querySelectorAll<HTMLAnchorElement>(".uc-card"))
+            .some((c) => c.style.display !== "none");
+          g.classList.toggle("dim", !any);
+          setOpen(g, any);
+        });
+      }
       const tpl = f === "all" ? tplAll : tplMatch;
       countEl.textContent = tpl.replace("{n}", String(n));
       emptyEl.style.display = n === 0 ? "block" : "none";
@@ -241,9 +327,6 @@ const collectionJsonLd = {
       target.classList.add("on");
       target.setAttribute("aria-checked", "true");
       apply(f);
-      // Keep the URL shareable: industry pre-filter lives in the hash (e.g.
-      // /solutions/use-cases/#mfg), "all" clears it. Nav industry headings
-      // deep-link here via the same hash.
       if (updateHash) {
         history.replaceState(null, "", f === "all" ? location.pathname + location.search : `#${f}`);
       }
@@ -254,10 +337,20 @@ const collectionJsonLd = {
       ch.addEventListener("click", () => select(ch.dataset.f ?? "all", true));
     });
 
-    // Honour an incoming industry hash (#mfg, #fin, …) on load and on change.
+    // Hash routing: industry keys (#mfg, …) filter; task anchors (#ai-data, …)
+    // expand the matching group and scroll to it.
+    const groupByAnchor = new Map(groups.map((g) => [g.id, g] as const));
     const fromHash = () => {
       const key = location.hash.replace(/^#/, "");
-      if (!key || !select(key, false)) select("all", false);
+      if (!key) { select("all", false); return; }
+      const g = groupByAnchor.get(key);
+      if (g) {
+        select("all", false);
+        setOpen(g, true);
+        g.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (!select(key, false)) select("all", false);
     };
     window.addEventListener("hashchange", fromHash);
     fromHash();
@@ -327,10 +420,27 @@ const collectionJsonLd = {
 
   /* ─── TASK-AXIS GROUPS (JA) ─── */
   .uc-group {
-    margin: 48px 0 0;
+    margin: 0;
   }
   .uc-group:first-of-type {
-    margin-top: 28px;
+    margin-top: 20px;
+  }
+  .uc-group-head {
+    margin: 0;
+  }
+  .uc-group-toggle {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: none;
+    border: 0;
+    border-top: 0.5px solid var(--lemma-line);
+    padding: 22px 0;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
   }
   .uc-group-eye {
     font-family: var(--uc-mono);
@@ -338,10 +448,11 @@ const collectionJsonLd = {
     letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 8px;
-    display: flex;
+    margin: 0;
+    display: inline-flex;
     align-items: center;
     gap: 11px;
+    flex-shrink: 0;
   }
   .uc-group-eye::before {
     content: "";
@@ -351,12 +462,34 @@ const collectionJsonLd = {
   }
   .uc-group-heading {
     font-family: var(--uc-display);
-    font-size: 23px;
+    font-size: 21px;
     font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--black, #000);
-    margin: 0 0 4px;
-    line-height: 1.25;
+    margin: 0;
+    line-height: 1.3;
+  }
+  .uc-group-chev {
+    margin-left: auto;
+    color: var(--uc-text-4);
+    font-size: 13px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .uc-group.open .uc-group-chev {
+    transform: rotate(180deg);
+  }
+  .uc-group-body {
+    padding: 2px 0 10px;
+  }
+  .uc-group:not(.open) > .uc-group-body {
+    display: none;
+  }
+  .uc-group.dim {
+    opacity: 0.45;
+  }
+  .uc-group.dim .uc-group-toggle {
+    cursor: default;
   }
   .uc-group-desc {
     font-size: 13.5px;
@@ -590,5 +723,37 @@ const collectionJsonLd = {
     .uc-grid {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* ─── Utility links / shortcut / popular / CTA (JA) ─── */
+  .uc-hero-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; }
+  .uc-hero-links a { font-family: var(--uc-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--uc-text-4); transition: color 0.2s; }
+  .uc-hero-links a:hover { color: var(--accent); }
+  .uc-sec-lbl { font-family: var(--uc-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--uc-text-4); display: flex; align-items: center; gap: 11px; }
+  .uc-sec-lbl::before { content: ""; width: 26px; height: 1.5px; background: var(--accent); }
+  .uc-shortcut { margin: 32px 0 0; }
+  .uc-shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .uc-shortcut-item { display: flex; gap: 10px; align-items: baseline; padding: 14px 16px; border: 0.5px solid var(--lemma-line); border-radius: 12px; background: #fff; transition: border-color 0.2s; }
+  .uc-shortcut-item:hover { border-color: var(--accent); }
+  .uc-shortcut-num { font-family: var(--uc-mono); font-size: 11px; color: var(--accent); flex-shrink: 0; }
+  .uc-shortcut-name { font-family: var(--uc-display); font-size: 13.5px; font-weight: 600; color: var(--black); line-height: 1.4; }
+  .uc-pop { margin: 36px 0 0; }
+  .uc-pop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .uc-pop-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 0.5px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, transform 0.2s; }
+  .uc-pop-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .uc-pop-tag { font-family: var(--uc-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--accent); }
+  .uc-pop-title { font-family: var(--uc-display); font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.45; margin: 0; }
+  .uc-pop-go { margin-top: auto; font-family: var(--uc-mono); font-size: 11px; color: var(--uc-text-4); }
+  .uc-cta { margin: 44px 0 0; padding: 40px 36px; border-radius: 16px; background: var(--uc-cream-d); text-align: center; }
+  .uc-cta-h { font-family: var(--uc-display); font-size: 24px; font-weight: 700; color: var(--black); margin: 0 0 20px; letter-spacing: -0.02em; }
+  .uc-cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .uc-cta-primary { background: var(--accent); color: #fff; padding: 13px 28px; border-radius: 50px; font-size: 14px; font-weight: 600; }
+  .uc-cta-secondary { border: 1px solid var(--uc-text-1); color: var(--uc-text-1); padding: 13px 28px; border-radius: 50px; font-size: 14px; font-weight: 600; }
+  @media (max-width: 880px) {
+    .uc-shortcut-grid { grid-template-columns: 1fr 1fr; }
+    .uc-pop-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .uc-shortcut-grid { grid-template-columns: 1fr; }
   }
 </style>
