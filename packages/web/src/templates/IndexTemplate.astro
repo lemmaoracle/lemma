@@ -128,10 +128,10 @@ const C = isJa ? {
   heroH1Line1: "データを渡さず、",
   heroH1Accent: "AI を動かす",
   heroH1Tail: "。",
-  heroSubLead: "独自の暗号技術で、AI とエージェントに証明された事実だけを渡す。",
-  heroSubChord: "証明できる判断を、データを持たないままで。",
-  heroPrimaryCta: "始める",
-  heroSecondaryCta: "詳しく見る",
+  heroSubLead: "真正性のある AI データ基盤。",
+  heroSubChord: "生データを渡さずに来歴・属性・実績を暗号的に証明し、第三者が独立して検証できるようにします。",
+  heroPrimaryCta: "ホワイトペーパーを無料 DL",
+  heroSecondaryCta: "ユースケースを見る",
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
   termComm2: "2. 検証可能 AI",
@@ -520,8 +520,8 @@ const cap1 = [
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
         <p class="hp-hero-sub">{C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span></p>
         <div class="hp-hero-ctas">
-          <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
-          <a href={pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
+          <a href={isJa ? "https://tally.so/r/7RJXdR" : DASHBOARD_URL} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
+          <a href={isJa ? `${base}/solutions/use-cases/` : pillarsHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
 
@@ -551,7 +551,8 @@ const cap1 = [
       </div>
     </section>
 
-    <!-- §1 · 4 PHASES (unified phase cards) -->
+    <!-- §1 · 4 PHASES (unified phase cards) — EN のみ表示（JA はトップから削除し /pillars へ誘導） -->
+    {!isJa && (
     <section class="hp-s1">
       <div class="hp-s1-inner">
         <h2 class="hp-s1-h2" set:html={C.capH2Html} />
@@ -568,6 +569,7 @@ const cap1 = [
         </div>
       </div>
     </section>
+    )}
 
     <!-- §対応標準 (ecosystem strip) -->
     <div class="hp-eco">
@@ -676,6 +678,66 @@ const cap1 = [
       <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
 
       <div class="hp-doors">
+        {isJa ? (
+        <>
+        <a href={`${base}/solutions/use-cases/`} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
+                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name hp-door-name-aud">大企業・業務担当者</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">ユースケース・業務適用</span>
+            <h3 class="hp-door-tag">いまの業務に、Lemma が乗る。</h3>
+            <p class="hp-door-desc">製造・調達・法務・公共。業界とタスクからユースケースを探せます。</p>
+            <span class="hp-door-url">/solutions/use-cases →</span>
+          </div>
+        </a>
+
+        <a href={pillarsHref} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="28" cy="28" r="23" stroke="currentColor" stroke-width="2.5" />
+                <circle cx="28" cy="28" r="4" fill="currentColor" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name hp-door-name-aud">開発者</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">SDK・ドキュメント</span>
+            <h3 class="hp-door-tag">鍵ではなく、証明を送る。</h3>
+            <p class="hp-door-desc">ZK サインイン SDK。あらゆるアプリ・AI エージェントスタックに組み込めます。</p>
+            <span class="hp-door-url">/pillars →</span>
+          </div>
+        </a>
+
+        <a href={`${base}/pillars/agent-authority-proof/`} class="hp-door">
+          <div class="hp-door-top">
+            <div class="hp-door-icon">
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M14 12 L46 28 L14 44 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none" />
+                <line x1="25" y1="21" x2="25" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </div>
+            <div class="hp-door-name hp-door-name-aud">AI エージェント開発者</div>
+          </div>
+          <div class="hp-door-bottom">
+            <span class="hp-door-aud">Trust402・権限証明</span>
+            <h3 class="hp-door-tag">鍵を持たずに、AI を動かす。</h3>
+            <p class="hp-door-desc">鍵不要の認証。コールごとの権限委任。x402 / MCP に対応。</p>
+            <span class="hp-door-url">/pillars/agent-authority-proof →</span>
+          </div>
+        </a>
+        </>
+        ) : (
+        <>
         <a href={sealHref} class="hp-door">
           <div class="hp-door-top">
             <div class="hp-door-icon">
@@ -731,6 +793,8 @@ const cap1 = [
             <span class="hp-door-url">/pricing →</span>
           </div>
         </a>
+        </>
+        )}
       </div>
     </section>
 
@@ -775,6 +839,36 @@ const cap1 = [
           </div>
         )}
       </section>
+    )}
+
+    <!-- §リソース (MizuDako) — JA 限定 -->
+    {isJa && (
+    <section class="hp-block hp-res">
+      <h2 class="hp-h2 hp-res-h2">リソース</h2>
+
+      <a href={`${base}/compare/ai-models-attack-resistance/`} class="hp-res-attack">
+        <div class="hp-res-attack-l">
+          <p class="hp-res-attack-eyebrow">AI攻撃実験 · 最新6モデル</p>
+          <h3 class="hp-res-attack-head">最強のAIが攻撃側に回った。止められるのは、<em>証明だけ。</em></h3>
+          <span class="hp-res-attack-cta">結果を見る →</span>
+        </div>
+        <div class="hp-res-attack-div"></div>
+        <div class="hp-res-attack-r">
+          <div class="hp-res-stat hp-res-stat-bad"><span class="hp-res-stat-num">18</span><span class="hp-res-stat-den">/30</span> <span class="hp-res-stat-lab">突破</span></div>
+          <div class="hp-res-stat-arrow">↓</div>
+          <div class="hp-res-stat hp-res-stat-good"><span class="hp-res-stat-num">0</span> <span class="hp-res-stat-lab">件（Lemma適用後）</span></div>
+          <div class="hp-res-stat-note">Lemma なし → あり</div>
+        </div>
+      </a>
+
+      <a href={briefIndexHref} class="hp-res-brief">
+        <div class="hp-res-brief-l">
+          <div class="hp-res-brief-label">Critical Brief</div>
+          <p class="hp-res-brief-desc">Lemma が注目する AI × 信頼の最前線。隔週配信。</p>
+        </div>
+        <span class="hp-res-brief-cta">最新号を読む →</span>
+      </a>
+    </section>
     )}
 
     <!-- §7 · DISCOVERY + dev tail -->
@@ -946,6 +1040,40 @@ const cap1 = [
   .hp-news-ann-link:hover { color: var(--hp-brown); }
   .hp-news-ann-date { color: var(--hp-text-3); font-family: var(--hp-mono); font-size: 11px; }
   .hp-news-ann-sep { color: var(--hp-line); }
+
+  /* §リソース (MizuDako) + 属性ドア名 */
+  .hp-door-name-aud { font-size: clamp(22px, 2.4vw, 30px); line-height: 1.25; text-align: center; }
+  .hp-res-h2 { margin-bottom: 28px; }
+  .hp-res-attack { display: flex; align-items: center; gap: 0; background: #0f0f0f; border-radius: 12px; padding: 36px 40px; text-decoration: none; overflow: hidden; }
+  .hp-res-attack:hover .hp-res-attack-cta { border-bottom-color: #b89b7a; }
+  .hp-res-attack-l { flex: 1; min-width: 0; }
+  .hp-res-attack-eyebrow { font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin: 0 0 14px; }
+  .hp-res-attack-head { font-family: var(--hp-display); font-size: 28px; line-height: 1.3; color: #f5f5f2; margin: 0 0 18px; font-weight: 700; }
+  .hp-res-attack-head em { font-style: italic; }
+  .hp-res-attack-cta { display: inline-block; color: #b89b7a; font-size: 14px; font-weight: 600; border-bottom: 1px solid #b89b7a44; padding-bottom: 2px; transition: border-color 0.2s; }
+  .hp-res-attack-div { width: 1px; height: 80px; background: #333; margin: 0 40px; flex-shrink: 0; }
+  .hp-res-attack-r { flex-shrink: 0; text-align: center; font-family: var(--hp-display); }
+  .hp-res-stat { line-height: 1.1; }
+  .hp-res-stat-bad { color: #c0392b; }
+  .hp-res-stat-good { color: #5a9e6f; }
+  .hp-res-stat-num { font-size: 38px; }
+  .hp-res-stat-den { font-size: 22px; opacity: 0.8; }
+  .hp-res-stat-lab { font-size: 13px; font-family: var(--hp-mono); }
+  .hp-res-stat-arrow { color: #444; font-size: 22px; margin: 6px 0; }
+  .hp-res-stat-note { color: #555; font-size: 11px; font-family: var(--hp-mono); margin-top: 8px; }
+  .hp-res-brief { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; background: #fff; border: 0.5px solid var(--hp-line); border-radius: 12px; padding: 24px 32px; text-decoration: none; transition: border-color 0.2s; }
+  .hp-res-brief:hover { border-color: var(--hp-brown); }
+  .hp-res-brief-label { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; }
+  .hp-res-brief-desc { font-size: 14px; color: var(--hp-text-3); margin: 8px 0 0; }
+  .hp-res-brief-cta { font-family: var(--hp-mono); font-size: 13px; font-weight: 700; color: var(--hp-brown); white-space: nowrap; }
+  @media (max-width: 760px) {
+    .hp-res-attack { flex-direction: column; align-items: flex-start; gap: 22px; padding: 28px 24px; }
+    .hp-res-attack-div { width: 100%; height: 1px; margin: 0; }
+    .hp-res-attack-r { text-align: left; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+    .hp-res-attack-head { font-size: 22px; }
+    .hp-res-stat-arrow { margin: 0; }
+    .hp-res-brief { flex-direction: column; align-items: flex-start; }
+  }
   @media (max-width: 760px) {
     .hp-news-grid { grid-template-columns: 1fr; }
     .hp-news-h2 { font-size: 30px; }
