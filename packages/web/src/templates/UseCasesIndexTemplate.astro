@@ -25,7 +25,7 @@ export interface UseCasesIndexTemplateProps {
   pillarT: Translations["pillars"];
 }
 
-import { USE_CASE_TASK_GROUPS_JA } from "../config/useCaseTaskGroups";
+import { USE_CASE_TASK_GROUPS_JA, USE_CASE_TASK_GROUPS_EN } from "../config/useCaseTaskGroups";
 
 const { locale, t, base, useCases, pillars, useCaseT } =
   Astro.props as UseCasesIndexTemplateProps;
@@ -41,16 +41,14 @@ function getPillarForUseCase(uc: UseCase): Pillar | undefined {
 // the group config, in the config's order. Groups with no resolved members
 // are dropped so we never render an empty section.
 const useCasesBySlug = new Map(useCases.map((uc) => [uc.slug, uc]));
-const taskGroups = isJa
-  ? USE_CASE_TASK_GROUPS_JA
-      .map((g) => ({
-        ...g,
-        members: g.slugs
-          .map((s) => useCasesBySlug.get(s))
-          .filter((uc): uc is UseCase => uc !== undefined),
-      }))
-      .filter((g) => g.members.length > 0)
-  : null;
+const taskGroups = (isJa ? USE_CASE_TASK_GROUPS_JA : USE_CASE_TASK_GROUPS_EN)
+  .map((g) => ({
+    ...g,
+    members: g.slugs
+      .map((s) => useCasesBySlug.get(s))
+      .filter((uc): uc is UseCase => uc !== undefined),
+  }))
+  .filter((g) => g.members.length > 0);
 
 type IndustryKey = "mfg" | "fin" | "pub" | "sc" | "svc" | "ai" | "edu" | "dev";
 // Visible filter chips. `edu` is a defined taxonomy key (card-level label only) but is
@@ -96,14 +94,12 @@ const collectionJsonLd = {
       <section class="uc-hero">
         <h1 class="uc-h1">{useCaseT.title}</h1>
         <p class="uc-hero-sub">{useCaseT.subtitle}</p>
-        {isJa && (
-          <p class="uc-hero-subnote">データは渡さない。証明は渡る。</p>
-        )}
+        <p class="uc-hero-subnote">{isJa ? "データは渡さない。証明は渡る。" : "Data stays. Proof travels."}</p>
       </section>
 
-      {isJa && taskGroups && (
-        <section class="uc-shortcut" aria-label="課題から探す">
-          <div class="uc-sec-lbl">課題から探す</div>
+      {taskGroups && (
+        <section class="uc-shortcut" aria-label={isJa ? "課題から探す" : "Find by challenge"}>
+          <div class="uc-sec-lbl">{isJa ? "課題から探す" : "Find by challenge"}</div>
           <div class="uc-shortcut-grid">
             {taskGroups.map((g) => (
               <a class="uc-shortcut-item" href={`#${g.anchor}`}>
@@ -192,28 +188,26 @@ const collectionJsonLd = {
       )}
       <p class="uc-empty" id="uc-empty">{useCaseT.emptyState}</p>
 
-      {isJa && (
-        <section class="uc-pop" aria-label="よく読まれるケース">
-          <div class="uc-sec-lbl">よく読まれるケース</div>
-          <div class="uc-pop-grid">
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
-              <span class="uc-pop-tag">P2 · AI導入 / 製造</span>
-              <h3 class="uc-pop-title">社内文書をAIに使わせるが生データは触らせない</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
-              <span class="uc-pop-tag">P4 · 金融 / 製造 / SC</span>
-              <h3 class="uc-pop-title">取引先の与信・反社チェック — 結果だけを渡す</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
-              <span class="uc-pop-tag">P2 · 金融 / 自治体</span>
-              <h3 class="uc-pop-title">AI監査ログ証明</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-          </div>
-        </section>
-      )}
+      <section class="uc-pop" aria-label={isJa ? "よく読まれるケース" : "Popular use cases"}>
+        <div class="uc-sec-lbl">{isJa ? "よく読まれるケース" : "Popular use cases"}</div>
+        <div class="uc-pop-grid">
+          <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
+            <span class="uc-pop-tag">{isJa ? "P2 · AI導入 / 製造" : "P2 · AI adoption / Mfg"}</span>
+            <h3 class="uc-pop-title">{isJa ? "社内文書をAIに使わせるが生データは触らせない" : "Let AI use internal documents without touching raw data"}</h3>
+            <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
+          </a>
+          <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
+            <span class="uc-pop-tag">{isJa ? "P4 · 金融 / 製造 / SC" : "P4 · Finance / Mfg / SC"}</span>
+            <h3 class="uc-pop-title">{isJa ? "取引先の与信・反社チェック — 結果だけを渡す" : "Counterparty credit & sanctions checks — hand over only the result"}</h3>
+            <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
+          </a>
+          <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
+            <span class="uc-pop-tag">{isJa ? "P2 · 金融 / 自治体" : "P2 · Finance / Public"}</span>
+            <h3 class="uc-pop-title">{isJa ? "AI監査ログ証明" : "AI audit-log proof"}</h3>
+            <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
+          </a>
+        </div>
+      </section>
 
       <SolutionsBridge
         variant="light"
@@ -222,15 +216,13 @@ const collectionJsonLd = {
         linkLabel={isJa ? "Solutions の活用シーンへ →" : "see Solutions use scenarios →"}
       />
 
-      {isJa && (
-        <section class="uc-cta">
-          <h2 class="uc-cta-h">業務に乗るか、確かめる。</h2>
-          <div class="uc-cta-row">
-            <a class="uc-cta-primary" href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">Discovery Call を予約 →</a>
-            <a class="uc-cta-secondary" href="https://tally.so/r/xX0VYv" target="_blank" rel="noopener">ホワイトペーパー DL →</a>
-          </div>
-        </section>
-      )}
+      <section class="uc-cta">
+        <h2 class="uc-cta-h">{isJa ? "業務に乗るか、確かめる。" : "See if it fits your workflow."}</h2>
+        <div class="uc-cta-row">
+          <a class="uc-cta-primary" href={isJa ? "https://tally.so/r/EkBqDX" : "https://tally.so/r/Pd2Rl5"} target="_blank" rel="noopener">{isJa ? "Discovery Call を予約 →" : "Book a Discovery Call →"}</a>
+          <a class="uc-cta-secondary" href={isJa ? "https://tally.so/r/xX0VYv" : "https://tally.so/r/7RJXdR"} target="_blank" rel="noopener">{isJa ? "ホワイトペーパー DL →" : "Download the whitepaper →"}</a>
+        </div>
+      </section>
     </div>
   </main>
 
