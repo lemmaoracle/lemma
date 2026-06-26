@@ -72,6 +72,7 @@
       "@id":"https://lemma.frame00.com/ai-gyomu-anshin/#faq",
       "mainEntity":[
         {"@type":"Question","name":"機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？","acceptedAnswer":{"@type":"Answer","text":"個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。"}},
+        {"@type":"Question","name":"「真正性のあるデータ」とは何ですか？","acceptedAnswer":{"@type":"Answer","text":"データが「本物であり、改ざんされていない」こと、そして「どこから来たか（出どころ）」を証明できる状態のことです。Lemmaはその証明を、元データを外に出さずに行います。"}},
         {"@type":"Question","name":"AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。","acceptedAnswer":{"@type":"Answer","text":"決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は実行されません。「ここまで」を機械的に守れます。"}},
         {"@type":"Question","name":"AIの判断の根拠を、あとから説明できますか？","acceptedAnswer":{"@type":"Answer","text":"誰が・いつ・何をしたかを、書き換えられない記録として残します。監査やお取引先に問われても、その場で示せます。"}},
         {"@type":"Question","name":"既存のシステムとどうつなぎますか？導入は大変ですか？","acceptedAnswer":{"@type":"Answer","text":"いまの業務ひとつから、小さく始められます。データを渡さずに、ERPや基幹システム（SAP等）を含む既存システムとの連携を設計・検証します。"}},
@@ -239,6 +240,10 @@
   .badge svg{width:62px;height:auto;display:block}
   .badge .bl{font-weight:800;color:var(--ink);font-size:.92rem;text-align:center;line-height:1.4}
   .std-line{margin-top:18px;color:var(--muted);font-size:.85rem}
+  .std-chips{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:22px}
+  .std-chips .lbl{width:100%;text-align:center;color:var(--muted);font-size:.82rem;font-weight:700;letter-spacing:.08em;margin-bottom:4px}
+  .std-chip{display:inline-block;padding:8px 18px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--brown);font-weight:800;font-size:.98rem;letter-spacing:.02em;box-shadow:0 1px 3px rgba(64,42,20,.06)}
+  @media(max-width:600px){.std-chips{gap:8px;margin-top:18px}.std-chip{padding:7px 14px;font-size:.9rem}.std-chips .lbl{font-size:.78rem;letter-spacing:.04em}}
   @media(max-width:600px){.badges{gap:18px}.badge{width:108px}}
   .trust-line{margin-top:34px;text-align:center;font-size:1.2rem;font-weight:900;color:var(--ink)}
   .trust-line span{color:var(--brown)}
@@ -468,11 +473,11 @@
 <!-- HERO (dark, problem-first) -->
 <section class="hero band-dark">
   <div class="wrap">
-    <span class="eyebrow">データを渡さずに、前へ</span>
+    <span class="eyebrow">AIが安心して使えるデータ基盤</span>
     <h1>データは渡さない。<br>それでも、取引は<em>前に進む</em>。</h1>
     <p class="sub">
       社内のデータは、外に出さない。AIには確かめた事実だけを渡し、
-      取引先や行政へは「証明」だけを届ける。
+      取引先や行政へは、その真正性（本物であること）の「証明」だけを届ける。
       だから、重要な取引ほど、AIに任せて前に進められます。
     </p>
     <div class="cta-row">
@@ -547,7 +552,7 @@
     <div class="section-head">
       <span class="eyebrow">そこで、Lemma</span>
       <h2 class="section-title">その確認、まるごと引き受けます。</h2>
-      <p class="lead">AIがどんな相手に向けて動いても、その裏でLemmaが働きます——むずかしい処理はぜんぶ引き受け、相手に渡すのは"確かな証明"だけ。</p>
+      <p class="lead">Lemmaは、データの中身を渡さずに「本物である」ことだけを証明する、AIのための信頼インフラです。AIがどんな相手に向けて動いても、その裏でLemmaが働きます——むずかしい処理はぜんぶ引き受け、相手に渡すのは"確かな証明"だけ。</p>
     </div>
     <div class="proof-fig big">
       <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -615,7 +620,7 @@
     <div class="section-head">
       <span class="eyebrow">仕組み — なぜ安全か</span>
       <h2 class="section-title">なぜ、中身を渡さずに証明できるのか。</h2>
-      <p class="lead">クレジットカードのICチップが暗証番号を見せずに「本物」を通すように、Lemmaは<b>独自の暗号技術</b>で、中身を出さずに「確かさ」を証明します。</p>
+      <p class="lead">クレジットカードのICチップが暗証番号を見せずに「本物」を通すように、Lemmaは<b>独自の暗号技術</b>で、中身を出さずに「確かさ」を証明します。その証明には、<b>誰が・何を・いつ・どこから・正しい順序で・改ざんなく</b>進んだかが、個人情報を見せないまま収まります。</p>
     </div>
     <p class="reveal-eq">「証明できる」 ≠ 「中身を見せる」</p>
 
@@ -627,6 +632,23 @@
       <div class="node recv"><div class="nt">取引先・行政</div><div class="ns"><b class="hl">取引先・行政・別のAI</b></div><span class="recv-icon"><svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="15" cy="15" r="13" fill="#7fa86a"/><path d="M9 15.5 l4 4 l8-9" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
     </div>
     <p class="reveal-promise" style="margin-top:26px">持たないから、流出しない。任せても、証拠が残る。</p>
+  </div>
+</section>
+
+<!-- TRUSTED WEB（安全性の根拠・独立セクション） -->
+<section class="sec-cream">
+  <div class="wrap" style="text-align:center;max-width:820px">
+    <span class="eyebrow" style="border-left:0;padding-left:0">国が進める信頼の枠組みに沿って</span>
+    <h2 class="section-title" style="margin-top:6px">「真正性」を、世界標準のしくみで。</h2>
+    <p class="lead" style="max-width:62ch;margin:16px auto 0">Lemmaが準拠する <b>Trusted Web</b>（内閣官房デジタル市場競争本部・デジタル庁が推進）の考え方では、データの<b>「真正性」</b>──それが本物で、どこから来たか──を、中身を見せずに確認できることを目指しています。Lemmaは、その考え方を現場の運用に落とし込みます。</p>
+    <div class="std-chips">
+      <span class="lbl">対応する世界標準（「Trusted Web」準拠）</span>
+      <span class="std-chip">MCP</span>
+      <span class="std-chip">A2A</span>
+      <span class="std-chip">x402</span>
+      <span class="std-chip">C2PA</span>
+      <span class="std-chip">W3C VC</span>
+    </div>
   </div>
 </section>
 
@@ -644,7 +666,7 @@
     <div class="section-head">
       <span class="eyebrow">導入効果 — ここがいちばんの違い</span>
       <h2 class="section-title">「確認」に追われる仕事を、<br>AIにまるごと渡す。</h2>
-      <p class="lead">確認に追われる業務ほど、人手と時間が消えていきます。Lemmaなら、データを預けずに「条件を満たす」事実だけで先へ。往復・照合・掘り起こしが、まるごと要らなくなります。</p>
+      <p class="lead">確認に追われる業務ほど、人手と時間が消えていきます。Lemmaなら、データを預けずに「条件を満たす」事実だけで先へ。往復・照合・掘り起こしが、まるごと要らなくなります。しかも現場の手順は、これまでどおり——<b>業務の運用を変えずに</b>重ねられます。</p>
     </div>
     <div class="ba">
       <div class="col before">
@@ -704,6 +726,8 @@
     <div class="faq-list">
       <details><summary>機密情報や個人情報をAIに渡すのが不安です。大丈夫ですか？</summary>
         <div class="a">個人情報や機密は、外に出しません。会社のPC・サーバーに置いたまま、「条件を満たしている」という事実だけを確かめてAIに渡します。中身は誰にも見せません。</div></details>
+      <details><summary>「真正性のあるデータ」とは何ですか？</summary>
+        <div class="a">データが「本物であり、改ざんされていない」こと、そして「どこから来たか（出どころ）」を証明できる状態のことです。Lemmaはその証明を、元データを外に出さずに行います。</div></details>
       <details><summary>AIエージェントが、決めた範囲を超えて勝手に動かないか心配です。</summary>
         <div class="a">決めた範囲内ならAIが自動で実行し、範囲を超える支払い・発注・操作は実行されません。「ここまで」を機械的に守れます。</div></details>
       <details><summary>AIの判断の根拠を、あとから説明できますか？</summary>
@@ -728,7 +752,6 @@
       <div class="badge"><svg viewBox="0 0 60 80" aria-hidden="true"><path d="M21 44 L19 76 L25 69 L30 76 L30 44 Z" fill="#9a4f1a"/><path d="M39 44 L41 76 L35 69 L30 76 L30 44 Z" fill="#a85a1f"/><circle cx="30" cy="28" r="24" fill="#caa05a"/><circle cx="30" cy="28" r="20.5" fill="#e7b884" stroke="#9a4f1a" stroke-width="1.5"/><circle cx="30" cy="28" r="15" fill="#fff7ec" stroke="#9a4f1a" stroke-width="1.2"/></svg><div class="bl">AI事故・リスク分析</div></div>
     </div>
     <p class="trust-line">AIのインフラは変わっても、<span>証明は残る。</span></p>
-    <p class="std-line">世界標準に対応（「Trusted Web」準拠）：MCP · A2A · x402 · C2PA · W3C VC</p>
   </div>
 </section>
 
@@ -777,6 +800,7 @@
       <div class="foot-tag">Built for decisions that matter.</div>
     </div>
     <div style="text-align:right">
+      <div style="margin-bottom:6px;color:var(--tan)">社会を動かす、信頼の基盤を、つくる。</div>
       <div>運営会社： <a href="https://corp.frame00.com/" target="_blank" rel="noopener" style="color:var(--tan)">FRAME00株式会社 ↗</a></div>
       <div>技術・導入のご相談： <a href="mailto:support@frame00.com" style="color:var(--tan)">support@frame00.com</a></div>
       <div style="margin-top:6px">© 2026 FRAME00株式会社</div>
