@@ -25,7 +25,7 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   {
     id: "01",
     anchor: "ai-data",
-    heading: "AIに生データを渡さず任せる",
+    heading: "社内データを外に出さず、AI に使わせる",
     description: "漏洩させずに AI を業務に入れたいとき。",
     slugs: [
       "ai-document-isolation",
@@ -39,21 +39,9 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
   },
   {
     id: "02",
-    anchor: "records",
-    heading: "記録・契約・承認を後から証明する",
-    description: "「その時、正しかった」を、改ざんなく残したいとき。",
-    slugs: [
-      "long-term-contract-record",
-      "internal-control-approval-proof",
-      "incident-response-record",
-      "financial-data-exfiltration",
-    ],
-  },
-  {
-    id: "03",
-    anchor: "counterparty",
-    heading: "取引相手・仕入先を確かめる",
-    description: "相手の信頼性を、中身を見ずに確認したいとき。",
+    anchor: "verify",
+    heading: "取引相手・データの正しさを確かめる",
+    description: "相手・調達・資格の正しさを、中身や履歴を出さずに確認・証明したいとき。",
     slugs: [
       "counterparty-screening",
       "kyc-aml-selective-disclosure",
@@ -61,24 +49,8 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
       "age-eligibility-verification",
       "store-network-compliance",
       "supplier-credential-verification",
-    ],
-  },
-  {
-    id: "04",
-    anchor: "supply-chain",
-    heading: "サプライチェーンの来歴・適合を証明する",
-    description: "調達の正しさを、営業秘密を守って示したいとき。",
-    slugs: [
       "supply-chain-component-provenance",
       "supply-chain-esg",
-    ],
-  },
-  {
-    id: "05",
-    anchor: "credentials",
-    heading: "資格・実績・受給資格を証明する",
-    description: "人や組織の資格を、履歴を出さずに示したいとき。",
-    slugs: [
       "credential-presentation",
       "qualified-worker-attestation",
       "work-fitness-attestation",
@@ -86,10 +58,10 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
     ],
   },
   {
-    id: "06",
+    id: "03",
     anchor: "agent",
-    heading: "エージェント・決済の権限を証明する",
-    description: "エージェントや決済の権限を、コードで証明したいとき（開発者向け）。",
+    heading: "AI・エージェントの権限を安全に委ねる",
+    description: "エージェントや決済の権限を、決めた範囲でコードによって証明したいとき（開発者向け）。",
     slugs: [
       "agent-expense-approval",
       "agent-procurement",
@@ -99,6 +71,18 @@ export const USE_CASE_TASK_GROUPS_JA: ReadonlyArray<UseCaseTaskGroup> = [
       "delegated-treasury",
       "x402-commerce",
       "defi-bridge-verification",
+    ],
+  },
+  {
+    id: "04",
+    anchor: "records",
+    heading: "判断・記録を後から証明する",
+    description: "「その時、正しかった」を、改ざんなく残したいとき。",
+    slugs: [
+      "long-term-contract-record",
+      "internal-control-approval-proof",
+      "incident-response-record",
+      "financial-data-exfiltration",
     ],
   },
 ];

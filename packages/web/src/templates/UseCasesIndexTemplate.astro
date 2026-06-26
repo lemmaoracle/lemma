@@ -101,7 +101,6 @@ const collectionJsonLd = {
         )}
         {isJa && (
           <div class="uc-hero-links">
-            <a href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">ユースケースを提案 → お問い合わせ</a>
             <a href={`${base}/faq/`}>FAQ →</a>
             <a href={`${base}/pillars/`}>仕組みを詳しく →</a>
           </div>
@@ -109,8 +108,8 @@ const collectionJsonLd = {
       </section>
 
       {isJa && taskGroups && (
-        <section class="uc-shortcut" aria-label="目的から探す">
-          <div class="uc-sec-lbl">目的から探す</div>
+        <section class="uc-shortcut" aria-label="課題から探す">
+          <div class="uc-sec-lbl">課題から探す</div>
           <div class="uc-shortcut-grid">
             {taskGroups.map((g) => (
               <a class="uc-shortcut-item" href={`#${g.anchor}`}>
@@ -732,11 +731,11 @@ const collectionJsonLd = {
   .uc-sec-lbl { font-family: var(--uc-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--uc-text-4); display: flex; align-items: center; gap: 11px; }
   .uc-sec-lbl::before { content: ""; width: 26px; height: 1.5px; background: var(--accent); }
   .uc-shortcut { margin: 32px 0 0; }
-  .uc-shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
-  .uc-shortcut-item { display: flex; gap: 10px; align-items: baseline; padding: 14px 16px; border: 0.5px solid var(--lemma-line); border-radius: 12px; background: #fff; transition: border-color 0.2s; }
-  .uc-shortcut-item:hover { border-color: var(--accent); }
-  .uc-shortcut-num { font-family: var(--uc-mono); font-size: 11px; color: var(--accent); flex-shrink: 0; }
-  .uc-shortcut-name { font-family: var(--uc-display); font-size: 13.5px; font-weight: 600; color: var(--black); line-height: 1.4; }
+  .uc-shortcut-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+  .uc-shortcut-item { display: flex; gap: 14px; align-items: center; padding: 20px 22px; border: 1px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  .uc-shortcut-item:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(139, 69, 19, 0.08); transform: translateY(-2px); }
+  .uc-shortcut-num { font-family: var(--uc-mono); font-size: 12px; font-weight: 700; color: #fff; background: var(--accent); width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .uc-shortcut-name { font-family: var(--uc-display); font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.4; }
   .uc-pop { margin: 36px 0 0; }
   .uc-pop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
   .uc-pop-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 0.5px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, transform 0.2s; }
