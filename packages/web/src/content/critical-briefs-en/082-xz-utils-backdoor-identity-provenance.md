@@ -5,7 +5,7 @@ title_en: "xz utils backdoor (CVE-2024-3094): a two-year impersonation of a \"tr
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
 secondary_categories: ["identity-auth"]
-incident_date: 2024-02-24
+incident_date: 2024-03-29
 published: 2026-06-26
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]

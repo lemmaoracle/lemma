@@ -120,7 +120,7 @@ Detection (after-the-fact judgment of the authenticity of video) and pre-executi
 
 ---
 
-## 9. About Brief distribution
+## 9. About distribution
 
 This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
 
