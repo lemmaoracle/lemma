@@ -224,12 +224,6 @@ const collectionJsonLd = {
       )}
       <p class="uc-empty" id="uc-empty">{useCaseT.emptyState}</p>
 
-      <aside class="uc-brief-link">
-        <a href={`${base}/critical/briefs/`}>{useCaseT.briefLinkLabel} →</a>
-        <span aria-hidden="true"> · </span>
-        <a href={`${base}/faq/`}>{isJa ? "よくある質問（FAQ）" : "FAQ"} →</a>
-      </aside>
-
       <SolutionsBridge
         variant="light"
         href={`${base}/solutions/`}
@@ -518,28 +512,28 @@ const collectionJsonLd = {
   .uc-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 9px;
+    gap: 10px;
   }
   .uc-chip {
     font-family: var(--uc-display);
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     color: var(--uc-text-2);
     background: var(--white);
-    border: 0.5px solid var(--lemma-line);
+    border: 1px solid var(--lemma-line);
     border-radius: 999px;
-    padding: 8px 16px;
+    padding: 11px 20px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     line-height: 1;
   }
   .uc-chip::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--lemma-line);
     transition: background 0.15s;
@@ -680,22 +674,6 @@ const collectionJsonLd = {
     text-align: center;
   }
 
-  .uc-brief-link {
-    margin-top: 56px;
-    padding-top: 24px;
-    border-top: 0.5px solid var(--lemma-line);
-    text-align: center;
-  }
-  .uc-brief-link a {
-    font-family: var(--uc-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--uc-text-4);
-    transition: color 0.2s;
-  }
-  .uc-brief-link a:hover {
-    color: var(--accent);
-  }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 880px) {
