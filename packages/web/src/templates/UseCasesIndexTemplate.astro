@@ -126,31 +126,9 @@ const collectionJsonLd = {
         <div class="uc-count" id="uc-count" data-tpl-all={useCaseT.countAll} data-tpl-match={useCaseT.countMatch}></div>
       </section>
 
-      {isJa && (
-        <section class="uc-pop" aria-label="よく読まれるケース">
-          <div class="uc-sec-lbl">よく読まれるケース</div>
-          <div class="uc-pop-grid">
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
-              <span class="uc-pop-tag">P2 · AI導入 / 製造</span>
-              <h3 class="uc-pop-title">社内文書をAIに使わせるが生データは触らせない</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
-              <span class="uc-pop-tag">P4 · 金融 / 製造 / SC</span>
-              <h3 class="uc-pop-title">取引先の与信・反社チェック — 結果だけを渡す</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
-              <span class="uc-pop-tag">P2 · 金融 / 自治体</span>
-              <h3 class="uc-pop-title">AI監査ログ証明</h3>
-              <span class="uc-pop-go">見る →</span>
-            </a>
-          </div>
-        </section>
-      )}
-
       {taskGroups ? (
-        taskGroups.map((group, gi) => (
+        <div class="uc-groups">
+        {taskGroups.map((group, gi) => (
           <section class:list={["uc-group", { open: gi === 0 }]} id={group.anchor} data-group={group.id}>
             <h2 class="uc-group-head">
               <button type="button" class="uc-group-toggle" aria-expanded={gi === 0 ? "true" : "false"}>
@@ -191,7 +169,8 @@ const collectionJsonLd = {
               </div>
             </div>
           </section>
-        ))
+        ))}
+        </div>
       ) : (
         <section class="uc-grid" id="uc-grid">
           {useCases.map((uc) => {
@@ -224,6 +203,29 @@ const collectionJsonLd = {
       )}
       <p class="uc-empty" id="uc-empty">{useCaseT.emptyState}</p>
 
+      {isJa && (
+        <section class="uc-pop" aria-label="よく読まれるケース">
+          <div class="uc-sec-lbl">よく読まれるケース</div>
+          <div class="uc-pop-grid">
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
+              <span class="uc-pop-tag">P2 · AI導入 / 製造</span>
+              <h3 class="uc-pop-title">社内文書をAIに使わせるが生データは触らせない</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
+              <span class="uc-pop-tag">P4 · 金融 / 製造 / SC</span>
+              <h3 class="uc-pop-title">取引先の与信・反社チェック — 結果だけを渡す</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+            <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
+              <span class="uc-pop-tag">P2 · 金融 / 自治体</span>
+              <h3 class="uc-pop-title">AI監査ログ証明</h3>
+              <span class="uc-pop-go">見る →</span>
+            </a>
+          </div>
+        </section>
+      )}
+
       <SolutionsBridge
         variant="light"
         href={`${base}/solutions/`}
@@ -250,6 +252,7 @@ const collectionJsonLd = {
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".uc-chip"));
   const cards = Array.from(document.querySelectorAll<HTMLAnchorElement>(".uc-card"));
   const groups = Array.from(document.querySelectorAll<HTMLElement>(".uc-group"));
+  const groupsWrap = document.querySelector<HTMLElement>(".uc-groups");
   const countEl = document.getElementById("uc-count");
   const emptyEl = document.getElementById("uc-empty");
 
@@ -287,17 +290,14 @@ const collectionJsonLd = {
       //  - "all": reset to initial (group 01 open, the rest folded), undimmed.
       //  - industry: groups with a match auto-expand; zero-match groups dim + fold.
       if (f === "all") {
-        groups.forEach((g, i) => {
-          g.classList.remove("dim");
-          setOpen(g, i === 0);
-        });
+        // Browse mode: accordion (group 01 open, the rest folded).
+        groupsWrap?.classList.remove("filtering");
+        groups.forEach((g, i) => { g.style.display = ""; setOpen(g, i === 0); });
       } else {
-        groups.forEach((g) => {
-          const any = Array.from(g.querySelectorAll<HTMLAnchorElement>(".uc-card"))
-            .some((c) => c.style.display !== "none");
-          g.classList.toggle("dim", !any);
-          setOpen(g, any);
-        });
+        // Filter mode: collapse the accordion chrome and reflow every matching
+        // card into one flat grid (group headings hidden via .filtering CSS).
+        groupsWrap?.classList.add("filtering");
+        groups.forEach((g) => { g.style.display = ""; setOpen(g, true); });
       }
       const tpl = f === "all" ? tplAll : tplMatch;
       countEl.textContent = tpl.replace("{n}", String(n));
@@ -486,6 +486,28 @@ const collectionJsonLd = {
   }
   .uc-group .uc-grid {
     margin: 0;
+  }
+  /* Filter mode: flatten groups into a single grid (headings hidden) */
+  .uc-groups.filtering {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .uc-groups.filtering .uc-group,
+  .uc-groups.filtering .uc-group-body,
+  .uc-groups.filtering .uc-grid {
+    display: contents;
+  }
+  .uc-groups.filtering .uc-group-head,
+  .uc-groups.filtering .uc-group-desc {
+    display: none;
+  }
+  @media (max-width: 880px) {
+    .uc-groups.filtering { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .uc-groups.filtering { grid-template-columns: 1fr; }
   }
 
   /* ─── FINDER ─── */
