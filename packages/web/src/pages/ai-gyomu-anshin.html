@@ -56,7 +56,8 @@
       "description":"Lemmaは、データの中身を渡さずに「本物である」ことを証明する、AIのための信頼インフラ（データ基盤）。実績・属性・来歴の真正性を、元データを開示せず第三者が独立検証できる形で証明します。Trusted Web 準拠（MCP・A2A・x402・C2PA・W3C VC）。",
       "inLanguage":"ja",
       "isPartOf":{"@id":"https://lemma.frame00.com/#website"},
-      "about":{"@id":"https://lemma.frame00.com/#service"}
+      "about":{"@id":"https://lemma.frame00.com/#service"},
+      "breadcrumb":{"@id":"https://lemma.frame00.com/ai-gyomu-anshin/#breadcrumb"}
     },
     {
       "@type":"Service",
@@ -77,6 +78,14 @@
         {"@type":"Question","name":"AIの判断の根拠を、あとから説明できますか？","acceptedAnswer":{"@type":"Answer","text":"誰が・いつ・何をしたかを、書き換えられない記録として残します。監査やお取引先に問われても、その場で示せます。"}},
         {"@type":"Question","name":"既存のシステムとどうつなぎますか？導入は大変ですか？","acceptedAnswer":{"@type":"Answer","text":"いまの業務ひとつから、小さく始められます。データを渡さずに、ERPや基幹システム（SAP等）を含む既存システムとの連携を設計・検証します。"}},
         {"@type":"Question","name":"どんな業種で使えますか？","acceptedAnswer":{"@type":"Answer","text":"自治体・公共、製造・基幹インフラ、調達・サプライチェーン、法務・監査、金融の本人確認など、業界を横断して使えます。"}}
+      ]
+    },
+    {
+      "@type":"BreadcrumbList",
+      "@id":"https://lemma.frame00.com/ai-gyomu-anshin/#breadcrumb",
+      "itemListElement":[
+        {"@type":"ListItem","position":1,"name":"ホーム","item":"https://lemma.frame00.com/"},
+        {"@type":"ListItem","position":2,"name":"AIに業務を安全に任せるデータ基盤","item":"https://lemma.frame00.com/ai-gyomu-anshin/"}
       ]
     }
   ]
