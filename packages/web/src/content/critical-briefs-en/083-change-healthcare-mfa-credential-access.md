@@ -112,11 +112,11 @@ Detection (incident detection, containment) and pre-execution attestation (indep
 
 ## 8. Sources
 
-- **UnitedHealth Group congressional testimony (primary)**: Testimony by CEO Andrew Witty before the US Senate Finance Committee and House Energy and Commerce Committee (around 2024-05-01, 05-08). Stated the MFA-less Citrix account as the intrusion path
+- **UnitedHealth Group congressional testimony (primary)**: Testimony by CEO Andrew Witty before the US Senate Finance Committee and House Energy and Commerce Committee (around 2024-05-01, 05-08). Stated the MFA-less Citrix account as the intrusion path — https://www.finance.senate.gov/hearings/hacking-americas-health-care-assessing-the-change-healthcare-cyber-attack-and-whats-next (Witty testimony PDF: https://www.finance.senate.gov/imo/media/doc/0501_witty_testimony.pdf)
 - **HHS (US Department of Health and Human Services)**: Breach notification and disclosure of the affected count (from 2024-10). Change Healthcare Breach Substitute Notice
 - **AHA (American Hospital Association)**: "Change Healthcare Cyberattack" (from 2024-02) — https://www.aha.org/change-healthcare-cyberattack
 - **Wired**: "The Change Healthcare Hack: How It Happened and What It Means" (2024)
-- **CISA / FBI joint advisory**: Technical advisory on the AlphV/BlackCat ransomware group (2024-02-27)
+- **CISA / FBI joint advisory**: Technical advisory on the AlphV/BlackCat ransomware group (2024-02-27) — https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-353a
 
 ---
 

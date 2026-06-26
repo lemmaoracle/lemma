@@ -114,8 +114,9 @@ Detection (after-the-fact judgment of the authenticity of video) and pre-executi
 
 - **Hong Kong Police (primary, disclosure)**: 2024-02-04 press conference. Announced as a "super deepfake" fraud case — reported by multiple international media outlets
 - **Arup official confirmation**: Arup's comment to the media confirming it as the victim company (around May 2024) — BBC, The Guardian, CNN, etc.
+- **Fortune**: "Arup deepfake fraud scam victim Hong Kong $25 million CFO" (additional primary reporting confirming Arup as the victim, 2024-05-17) — https://fortune.com/europe/2024/05/17/arup-deepfake-fraud-scam-victim-hong-kong-25-million-cfo/
 - **South China Morning Post**: "Deepfake video call used in HK$200 million fraud" (2024-02-04)
-- **CNN**: "Finance worker pays out $25 million after video call with deepfake 'chief financial officer'" (2024-02-04)
+- **CNN**: "Finance worker pays out $25 million after video call with deepfake 'chief financial officer'" (2024-02-04) — https://www.cnn.com/2024/05/16/tech/arup-deepfake-scam-loss-hong-kong-intl-hnk
 - **The Guardian**: "Arup loses $25m after employee duped by deepfake video call" (2024)
 
 ---

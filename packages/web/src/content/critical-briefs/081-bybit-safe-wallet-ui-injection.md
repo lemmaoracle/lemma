@@ -117,8 +117,8 @@ secondary カテゴリとして `identity-auth`（コントラクト実装の正
 ## 8. Sources
 
 - **Bybit 公式声明**: CEO Ben Zhou による X（旧 Twitter）投稿（2025-02-21）および Bybit 公式ブログ
-- **Mandiant（Google Cloud）**: Safe{Wallet} サプライチェーン侵害の技術解析レポート（2025-02-26 前後公表）
-- **FBI 公式声明**: "FBI Identifies North Korean Hackers as Culprits in Bybit Theft"（2025-03）
+- **Mandiant（Google Cloud）**: Safe{Wallet} サプライチェーン侵害の技術解析レポート（2025-02-26 前後公表）。Mandiant のフォレンジクス結果を報じた報道 — https://thehackernews.com/2025/03/safewallet-confirms-north-korean.html
+- **FBI 公式声明**: "North Korea Responsible for $1.5 Billion Bybit Hack"（2025-03）— https://www.fbi.gov/investigate/cyber/alerts/2025/north-korea-responsible-for-1-5-billion-bybit-hack
 - **Elliptic**: 資金追跡レポート（2025-02〜03）
 - **Chainalysis**: ブロックチェーン分析レポート（2025-02〜03）
 - **Unchained / The Block / CoinDesk 等**: 事案経緯の報道（2025-02-21〜）

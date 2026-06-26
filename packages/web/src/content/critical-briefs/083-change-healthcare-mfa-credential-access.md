@@ -112,11 +112,11 @@ secondary カテゴリとして `attribute-proof-bypass` を併記する。HIPAA
 
 ## 8. Sources
 
-- **UnitedHealth Group 議会証言（一次）**: CEO Andrew Witty による米上院財政委員会・下院エネルギー商業委員会での証言（2024-05-01、05-08 前後）。侵入経路として MFA 未設定の Citrix アカウントを明言
+- **UnitedHealth Group 議会証言（一次）**: CEO Andrew Witty による米上院財政委員会・下院エネルギー商業委員会での証言（2024-05-01、05-08 前後）。侵入経路として MFA 未設定の Citrix アカウントを明言 — https://www.finance.senate.gov/hearings/hacking-americas-health-care-assessing-the-change-healthcare-cyber-attack-and-whats-next （Witty 証言 PDF: https://www.finance.senate.gov/imo/media/doc/0501_witty_testimony.pdf ）
 - **HHS（米保健福祉省）**: 侵害通知・影響者数の公表（2024-10 以降）。Change Healthcare Breach Substitute Notice
 - **AHA（米国病院協会）**: "Change Healthcare Cyberattack"（2024-02〜）— https://www.aha.org/change-healthcare-cyberattack
 - **Wired**: "The Change Healthcare Hack: How It Happened and What It Means"（2024 年）
-- **CISA / FBI 共同勧告**: AlphV/BlackCat ランサムウェアグループに関する技術勧告（2024-02-27）
+- **CISA / FBI 共同勧告**: AlphV/BlackCat ランサムウェアグループに関する技術勧告（2024-02-27）— https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-353a
 
 ---
 

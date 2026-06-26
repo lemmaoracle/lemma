@@ -117,8 +117,8 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 ## 8. Sources
 
 - **Bybit official statement**: CEO Ben Zhou's posts on X (formerly Twitter) (2025-02-21) and the official Bybit blog
-- **Mandiant (Google Cloud)**: technical analysis report on the Safe{Wallet} supply-chain compromise (published around 2025-02-26)
-- **FBI official statement**: "FBI Identifies North Korean Hackers as Culprits in Bybit Theft" (2025-03)
+- **Mandiant (Google Cloud)**: technical analysis report on the Safe{Wallet} supply-chain compromise (published around 2025-02-26). Reporting on Mandiant's forensic findings — https://thehackernews.com/2025/03/safewallet-confirms-north-korean.html
+- **FBI official statement**: "North Korea Responsible for $1.5 Billion Bybit Hack" (2025-03) — https://www.fbi.gov/investigate/cyber/alerts/2025/north-korea-responsible-for-1-5-billion-bybit-hack
 - **Elliptic**: fund-tracing report (2025-02 to 03)
 - **Chainalysis**: blockchain analysis report (2025-02 to 03)
 - **Unchained / The Block / CoinDesk, etc.**: reporting on the incident's course (2025-02-21 onward)
