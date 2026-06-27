@@ -27,17 +27,17 @@ importers:
         specifier: ^9.0.5
         version: 9.0.5(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
       prettier:
-        specifier: ^3.8.5
-        version: 3.8.5
+        specifier: ^3.9.0
+        version: 3.9.0
       prettier-plugin-astro:
         specifier: ^0.14.1
         version: 0.14.1
       prettier-plugin-solidity:
         specifier: ^1.4.3
-        version: 1.4.3(prettier@3.8.5)
+        version: 1.4.3(prettier@3.9.0)
       prettier-plugin-tailwindcss:
         specifier: ^0.8.0
-        version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.5)
+        version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.9.0)
       typescript-eslint:
         specifier: ^8.62.0
         version: 8.62.0(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
@@ -5477,8 +5477,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.8.5:
-    resolution: {integrity: sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==}
+  prettier@3.9.0:
+    resolution: {integrity: sha512-LjIqSIC5VYLzs9WedVmJ2ljNAGnU+DteIClbahu4L/DBeWjZ6iT/k1lAYyu9JUh+1xINxWadaPw/Pl63y/agAw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -12021,22 +12021,22 @@ snapshots:
   prettier-plugin-astro@0.14.1:
     dependencies:
       '@astrojs/compiler': 2.13.1
-      prettier: 3.8.5
+      prettier: 3.9.0
       sass-formatter: 0.7.9
 
-  prettier-plugin-solidity@1.4.3(prettier@3.8.5):
+  prettier-plugin-solidity@1.4.3(prettier@3.9.0):
     dependencies:
       '@solidity-parser/parser': 0.20.2
-      prettier: 3.8.5
+      prettier: 3.9.0
       semver: 7.8.5
 
-  prettier-plugin-tailwindcss@0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.5):
+  prettier-plugin-tailwindcss@0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.9.0):
     dependencies:
-      prettier: 3.8.5
+      prettier: 3.9.0
     optionalDependencies:
       prettier-plugin-astro: 0.14.1
 
-  prettier@3.8.5: {}
+  prettier@3.9.0: {}
 
   pretty-format@29.7.0:
     dependencies:
