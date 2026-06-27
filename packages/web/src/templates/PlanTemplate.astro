@@ -44,9 +44,8 @@ const contactUrl = DISCOVERY_CALL_URL[locale];
 const useCasesUrl = `${base}/solutions/use-cases/`;
 const C = getPlanContent(planKey, locale);
 
-// Icons are locale- and plan-independent (same section structure for every
-// plan), zipped by index with the per-plan copy from data/plans.ts.
-const doIcons: readonly CivicIconName[] = ["check", "history", "template"];
+// §2 capability icons are per-plan (carried on each doItem). The flow icons
+// are the same shape for every plan, so they stay here, zipped by index.
 const flowIcons: readonly CivicIconName[] = ["inbox", "shield-check", "database"];
 
 // ─── SEO: page-specific structured data (Layout already emits Organization +
@@ -120,9 +119,9 @@ const breadcrumbJsonLd = {
         <p class="cv-section-label">{C.doSec.label}</p>
         <h2 class="cv-section-h" id="cv-do-h">{C.doSec.h}</h2>
         <div class="cv-do-grid">
-          {C.doSec.items.map((item, i) => (
+          {C.doSec.items.map((item) => (
             <article class="cv-do-card">
-              <span class="cv-do-icon"><CivicIcon name={doIcons[i]} size={28} /></span>
+              <span class="cv-do-icon"><CivicIcon name={item.icon} size={28} /></span>
               <h3 class="cv-do-h3">{item.h}</h3>
               <p class="cv-do-p">{item.p}</p>
             </article>

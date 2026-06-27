@@ -12,7 +12,7 @@
  *   inbox        ← ti-inbox          (§4 集める)
  *   database     ← ti-database-cog   (§4 残す・活かす)
  */
-export type CivicIconName = "check" | "history" | "template" | "shield-check" | "inbox" | "database";
+export type CivicIconName = "check" | "history" | "template" | "shield-check" | "inbox" | "database" | "adjustments" | "clipboard-check" | "server" | "user-check" | "eye-off";
 
 interface Props {
   name: CivicIconName;
@@ -68,5 +68,49 @@ const stroke = color;
     <ellipse cx="18" cy="9" rx="10" ry="4" stroke={stroke} stroke-width="1.8" />
     <path d="M 8 9 L 8 21 Q 8 25 18 25 Q 28 25 28 21 L 28 9" stroke={stroke} stroke-width="1.8" fill="none" />
     <path d="M 8 15 Q 8 19 18 19 Q 28 19 28 15" stroke={stroke} stroke-width="1.8" fill="none" opacity="0.7" />
+  </svg>
+)}
+
+{name === "adjustments" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <line x1="6" y1="11" x2="30" y2="11" stroke={stroke} stroke-width="1.8" stroke-linecap="round" />
+    <line x1="6" y1="18" x2="30" y2="18" stroke={stroke} stroke-width="1.8" stroke-linecap="round" />
+    <line x1="6" y1="25" x2="30" y2="25" stroke={stroke} stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="13" cy="11" r="3" fill="var(--lemma-cream, #fff)" stroke={stroke} stroke-width="1.8" />
+    <circle cx="23" cy="18" r="3" fill="var(--lemma-cream, #fff)" stroke={stroke} stroke-width="1.8" />
+    <circle cx="16" cy="25" r="3" fill="var(--lemma-cream, #fff)" stroke={stroke} stroke-width="1.8" />
+  </svg>
+)}
+
+{name === "clipboard-check" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="9" y="7" width="18" height="24" rx="2.5" stroke={stroke} stroke-width="1.8" />
+    <rect x="13" y="5" width="10" height="5" rx="1.5" stroke={stroke} stroke-width="1.8" fill="var(--lemma-cream, #fff)" />
+    <path d="M 14 19 L 17 22 L 23 15" stroke={stroke} stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "server" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="7" y="9" width="22" height="8" rx="2" stroke={stroke} stroke-width="1.8" />
+    <rect x="7" y="19" width="22" height="8" rx="2" stroke={stroke} stroke-width="1.8" />
+    <circle cx="12" cy="13" r="1.3" fill={stroke} />
+    <circle cx="12" cy="23" r="1.3" fill={stroke} />
+  </svg>
+)}
+
+{name === "user-check" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <circle cx="15" cy="13" r="5" stroke={stroke} stroke-width="1.8" />
+    <path d="M 7 28 Q 7 21 15 21 Q 18.5 21 21 22.5" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <path d="M 22 24 L 25 27 L 31 20" stroke={stroke} stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "eye-off" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <path d="M 7 18 C 11 12, 25 12, 29 18 C 27 21.5, 23 24, 18 24" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <circle cx="18" cy="18" r="3.5" stroke={stroke} stroke-width="1.8" />
+    <line x1="8" y1="8" x2="28" y2="28" stroke={stroke} stroke-width="2" stroke-linecap="round" />
   </svg>
 )}

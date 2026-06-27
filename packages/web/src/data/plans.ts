@@ -2,23 +2,35 @@
  * Plan-page content for Lemma Civic / Critical / Compliance, both locales.
  * Consumed by templates/PlanTemplate.astro via getPlanContent(planKey, locale).
  *
- * Structure-shared strings (section labels, the bridge line, the steps, the
- * tier ranges, the closing CTA) live in COMMON[locale]; only the per-plan,
- * per-locale copy lives in UNIQUE. getPlanContent() composes the two into the
- * exact shape PlanTemplate renders.
+ * Each plan is meaningfully distinct (per the confirmed mockups), so most copy
+ * is per-plan in UNIQUE — including the §2 icons, the bridge body, the flow
+ * label, and the whole tier structure (Civic = sites; Critical = facilities +
+ * Option Packs; Compliance = institution size + Option Packs). COMMON holds
+ * only what is genuinely identical across all three (labels, the bridge quote,
+ * the steps, the closing CTA).
  *
  * Permission gate (pre-permission): §6 is an "illustrative scenario", never a
- * case study; no MizuDAkO / client-identifying context anywhere here.
+ * case study; no client-identifying context anywhere here.
  *
- * NOTE: Civic copy is the confirmed Wave 1 spec. Critical & Compliance copy is
- * AUTHORED to mirror Civic (only one-line taglines were specified) and is
- * pending review.
+ * Source of truth: the Lemma BizDev plan-page mockups. EN mirrors the JA.
  */
 import type { Locale } from "../i18n/translations";
 
 export type PlanKey = "civic" | "critical" | "compliance";
 
+/** Subset of CivicIconName used by the §2 capability cards. */
+type PlanIconName =
+  | "check"
+  | "history"
+  | "template"
+  | "adjustments"
+  | "clipboard-check"
+  | "server"
+  | "user-check"
+  | "eye-off";
+
 interface DoItem {
+  icon: PlanIconName;
   h: string;
   p: string;
 }
@@ -27,6 +39,10 @@ interface Step {
   h: string;
   lead: string;
   p: string;
+}
+interface Tier {
+  name: string;
+  range: string;
 }
 export interface PlanContent {
   meta: { title: string; desc: string };
@@ -43,13 +59,7 @@ export interface PlanContent {
   doSec: { label: string; h: string; items: DoItem[] };
   bridge: { quote: string; body: string };
   flow: { label: string; h: string; items: Step[] };
-  tiers: {
-    label: string;
-    h: string;
-    body: string;
-    items: { name: string; range: string }[];
-    note: string;
-  };
+  tiers: { label: string; h: string; body: string; items: Tier[]; note: string };
   caseSec: { label: string; h: string; body: string };
   steps: { label: string; h: string; items: Step[] };
   uc: { label: string; h: string; items: string[]; all: string };
@@ -62,13 +72,9 @@ interface Common {
   ctaNote: string;
   doLabel: string;
   doH: string;
-  bridge: { quote: string; body: string };
-  flowLabel: string;
+  bridgeQuote: string;
   flowH: string;
   tiersLabel: string;
-  tiersH: string;
-  tiersItems: { name: string; range: string }[];
-  tiersNote: string;
   caseLabel: string;
   stepsLabel: string;
   stepsH: string;
@@ -86,20 +92,9 @@ const COMMON: Record<Locale, Common> = {
     ctaNote: "導入のご相談・お見積もり・ご検討から。",
     doLabel: "このプランでできること",
     doH: "中身を見せずに、確かさだけを渡す。",
-    bridge: {
-      quote: "持たないから、流出しない。任せても、証拠は残る。",
-      body: "Lemma が現場と AI の間に入り、中身は渡さずに「確かさ」だけを受け渡します。むずかしい処理は引き受けるので、いつもの業務のまま、安心して任せられます。",
-    },
-    flowLabel: "運用イメージ（いつもの業務のまま）",
+    bridgeQuote: "持たないから、流出しない。任せても、証拠は残る。",
     flowH: "新しい操作は、増えません。",
     tiersLabel: "対象とプラン構成",
-    tiersH: "拠点数に応じた、段階プラン。",
-    tiersItems: [
-      { name: "Tier 1", range: "1〜3 拠点" },
-      { name: "Tier 2", range: "4〜10 拠点" },
-      { name: "Tier 3", range: "11+ 拠点（カスタム）" },
-    ],
-    tiersNote: "年契約・拠点数ベース。拠点や利用が増えたら上位ティアへアップグレード。標準サーキット・テンプレート構成。",
     caseLabel: "活用例 ［想定シナリオ］",
     stepsLabel: "進め方（一緒に作る・既存運用は止めない）",
     stepsH: "小さく始めて、止めずに広げる。",
@@ -122,20 +117,9 @@ const COMMON: Record<Locale, Common> = {
     ctaNote: "Start with a conversation — about fit, scope, or pricing.",
     doLabel: "What this plan does",
     doH: "Pass on the certainty, not the contents.",
-    bridge: {
-      quote: "Hold nothing, leak nothing. Delegate the work — keep the proof.",
-      body: "Lemma sits between your front line and your AI, passing along only the certainty — never the contents. It takes on the hard parts, so you can keep working exactly as you do today and hand it off with confidence.",
-    },
-    flowLabel: "How it works (no change to daily operations)",
+    bridgeQuote: "Hold nothing, leak nothing. Delegate the work — keep the proof.",
     flowH: "No new steps to learn.",
     tiersLabel: "Who it's for & plan structure",
-    tiersH: "Tiered by number of sites.",
-    tiersItems: [
-      { name: "Tier 1", range: "1–3 sites" },
-      { name: "Tier 2", range: "4–10 sites" },
-      { name: "Tier 3", range: "11+ sites (custom)" },
-    ],
-    tiersNote: "Annual contract, priced by the number of sites. Upgrade to a higher tier as sites or usage grow. Built on standard circuits and templates.",
     caseLabel: "Use case [illustrative scenario]",
     stepsLabel: "How we engage (we build it with you — without stopping your operations)",
     stepsH: "Start small, scale without disruption.",
@@ -162,8 +146,13 @@ interface Unique {
   h1b: string;
   lead: string;
   doItems: DoItem[];
+  bridgeBody: string;
+  flowLabel: string;
   flowItems: Step[];
+  tiersH: string;
   tiersBody: string;
+  tiersItems: Tier[];
+  tiersNote: string;
   caseH: string;
   caseBody: string;
   ucItems: string[];
@@ -182,16 +171,25 @@ const UNIQUE: Record<PlanKey, Record<Locale, Unique>> = {
       h1b: "AI が安全に使えるデータに。",
       lead: "窓口対応・給付・福祉相談・住民参加など、現場で生まれる記録に、中身を見せずに改ざん不能な来歴と真正性を付与します。個人情報を見せずに、AI が安心して使えるデータ基盤を、いつもの運用を変えずに構築できます。",
       doItems: [
-        { h: "資格・条件を中身を見せず確認", p: "受給資格・年齢・資格などを、個人情報を出さずに。" },
-        { h: "改ざん不能な来歴の記録", p: "監査と説明責任のための、書き換えられない記録。" },
-        { h: "標準テンプレートで小さく", p: "公共向けひな型から、特定の業務ひとつを選んで。" },
+        { icon: "check", h: "資格・条件を中身を見せず確認", p: "受給資格・年齢・資格などを、個人情報を出さずに。" },
+        { icon: "history", h: "改ざん不能な来歴の記録", p: "監査と説明責任のための、書き換えられない記録。" },
+        { icon: "template", h: "標準テンプレートで小さく", p: "公共向けひな型から、特定の業務ひとつを選んで。" },
       ],
+      bridgeBody: "Lemma が現場と AI の間に入り、中身は渡さずに「確かさ」だけを受け渡します。むずかしい処理は引き受けるので、いつもの業務のまま、安心して任せられます。",
+      flowLabel: "運用イメージ（いつもの業務のまま）",
       flowItems: [
         { n: "01", h: "集める", lead: "住民・事業者が記録を出す", p: "いつもの申請・活動のまま。新しい操作は増えません。" },
         { n: "02", h: "確かめる", lead: "職員は中身を見ずに確認", p: "「条件を満たす・本物である」だけを確認して処理を進める。" },
         { n: "03", h: "残す・活かす", lead: "改ざんなく残り、AI に使える", p: "監査でも AI 活用でも、後から検証できる形で残ります。" },
       ],
+      tiersH: "拠点数に応じた、段階プラン。",
       tiersBody: "自治体・公益事業者、および B2B2G で市民向けサービスを提供する事業者向けです。複数拠点・複数自治体への展開にも、拠点数に応じた段階プランで対応します。",
+      tiersItems: [
+        { name: "Tier 1", range: "1〜3 拠点" },
+        { name: "Tier 2", range: "4〜10 拠点" },
+        { name: "Tier 3", range: "11+ 拠点（カスタム）" },
+      ],
+      tiersNote: "年契約・拠点数ベース。拠点や利用が増えたら上位ティアへアップグレード。標準サーキット・テンプレート構成。",
       caseH: "補助金・給付の受給資格証明",
       caseBody: "所得や属性の中身を出さず「受給要件を満たす」ことだけを証明し、給付主体が検証できます。標準テンプレートで構成できる、Civic の代表的な使い方です。",
       ucItems: [
@@ -212,16 +210,25 @@ const UNIQUE: Record<PlanKey, Record<Locale, Unique>> = {
       h1b: "into data AI can safely use.",
       lead: "For the records your front line generates — service desks, benefits, welfare consultations, civic participation — Lemma adds tamper-proof provenance and authenticity, without ever revealing what's inside. The result is a data foundation your AI can rely on: no personal information exposed, and no change to how you already work.",
       doItems: [
-        { h: "Verify eligibility without revealing the contents", p: "Confirm eligibility, age, or qualifications — without exposing personal data." },
-        { h: "Tamper-proof provenance records", p: "Unalterable records for audit and accountability." },
-        { h: "Start small with standard templates", p: "Pick one workflow from ready-made public-sector templates." },
+        { icon: "check", h: "Verify eligibility without revealing the contents", p: "Confirm eligibility, age, or qualifications — without exposing personal data." },
+        { icon: "history", h: "Tamper-proof provenance records", p: "Unalterable records for audit and accountability." },
+        { icon: "template", h: "Start small with standard templates", p: "Pick one workflow from ready-made public-sector templates." },
       ],
+      bridgeBody: "Lemma sits between your front line and your AI, passing along only the certainty — never the contents. It takes on the hard parts, so you can keep working exactly as you do today and hand it off with confidence.",
+      flowLabel: "How it works (no change to daily operations)",
       flowItems: [
         { n: "01", h: "Collect", lead: "Residents and businesses submit records", p: "Through the same applications and activities as always — no new steps." },
         { n: "02", h: "Verify", lead: "Staff confirm without seeing the contents", p: "Confirm only that it meets the criteria and is genuine, then proceed." },
         { n: "03", h: "Keep & use", lead: "Stored tamper-proof, ready for AI", p: "Kept in a form you can verify later — for audits and for AI alike." },
       ],
+      tiersH: "Tiered by number of sites.",
       tiersBody: "For municipalities, public utilities, and businesses delivering citizen-facing services under a B2B2G model. Rollouts across multiple sites or municipalities are covered by tiers that scale with the number of sites.",
+      tiersItems: [
+        { name: "Tier 1", range: "1–3 sites" },
+        { name: "Tier 2", range: "4–10 sites" },
+        { name: "Tier 3", range: "11+ sites (custom)" },
+      ],
+      tiersNote: "Annual contract, priced by the number of sites. Upgrade to a higher tier as sites or usage grow. Built on standard circuits and templates.",
       caseH: "Proving eligibility for subsidies and benefits",
       caseBody: "Prove only that the eligibility requirements are met — without disclosing income or attributes — so the issuing body can verify it. A representative Civic use case that can be built from standard templates.",
       ucItems: [
@@ -235,61 +242,79 @@ const UNIQUE: Record<PlanKey, Record<Locale, Unique>> = {
   critical: {
     ja: {
       meta: {
-        title: "Lemma Critical — 製造・基幹インフラの記録を、AI に任せられる確かなデータに｜基幹インフラ・製造向けプラン",
-        desc: "品質・検査・サプライチェーンなど製造・基幹インフラの現場で生まれる記録に、中身を見せずに真正性を付与。機微な技術情報を抱えずに、いつもの運用のまま AI 活用へ。基幹インフラ・製造向け、拠点数ベースの段階プラン。",
+        title: "Lemma Critical — 品質・検査・サプライチェーンの記録を、AI に任せられる確かなデータに｜基幹インフラ・製造向けプラン",
+        desc: "製造・基幹インフラの現場で生まれる記録に、営業秘密を出さずに真正性を付与。業務を止めず、監査にも AI にも任せられるデータ基盤へ。基幹インフラ・製造（B2B）向け、段階プラン。",
       },
       name: "Lemma Critical",
-      seg: "基幹インフラ・製造",
-      h1a: "現場で生まれる品質・検査の記録を、",
-      h1b: "AI が安全に使えるデータに。",
-      lead: "品質・検査・サプライチェーンなど、製造と基幹インフラの現場で生まれる記録に、中身を見せずに改ざん不能な来歴と真正性を付与します。機微な技術情報を抱え込まずに、AI が安心して使えるデータ基盤を、いつもの運用を変えずに構築できます。",
+      seg: "基幹インフラ・製造（B2B）",
+      h1a: "品質・検査・サプライチェーンの記録を、",
+      h1b: "AI に任せられる確かなデータに。",
+      lead: "製造・基幹インフラの現場で生まれる記録に、営業秘密を出さずに真正性を付与。業務を止めず、監査にも AI にも任せられるデータ基盤へ。",
       doItems: [
-        { h: "検査・品質を中身を見せず証明", p: "検査結果・規格適合・工程履歴を、技術情報を出さずに。" },
-        { h: "改ざん不能な来歴の記録", p: "監査とトレーサビリティのための、書き換えられない記録。" },
-        { h: "標準テンプレートで小さく", p: "製造・インフラ向けひな型から、特定の工程ひとつを選んで。" },
+        { icon: "adjustments", h: "自社ルールに合わせた専用証明", p: "業務ルールに合わせて作り込めるカスタム証明。" },
+        { icon: "clipboard-check", h: "監査にそのまま使える証跡", p: "コンプライアンス対応の証跡を、標準で残せます。" },
+        { icon: "server", h: "SLA・オンプレにも対応", p: "稼働率保証・自社環境（オンプレミス）への導入も。" },
       ],
+      bridgeBody: "Lemma が現場と AI の間に入り、営業秘密は出さずに「確かさ」だけを受け渡します。むずかしい処理は引き受けるので、業務を止めずに、安心して任せられます。",
+      flowLabel: "運用イメージ ── いつもの工程のまま、こう使えます",
       flowItems: [
-        { n: "01", h: "集める", lead: "現場・サプライヤーが記録を出す", p: "いつもの検査・報告のまま。新しい操作は増えません。" },
-        { n: "02", h: "確かめる", lead: "担当者は中身を見ずに確認", p: "「規格を満たす・本物である」だけを確認して工程を進める。" },
-        { n: "03", h: "残す・活かす", lead: "改ざんなく残り、AI に使える", p: "監査でも AI 活用でも、後から検証できる形で残ります。" },
+        { n: "01", h: "集める", lead: "現場・サプライヤが記録を出す", p: "品質・検査・点検・部品来歴を、いつもの工程のまま。" },
+        { n: "02", h: "確かめる", lead: "営業秘密を出さずに確認", p: "「基準を満たす・本物である」だけを確認して進める。" },
+        { n: "03", h: "残す・活かす", lead: "改ざんなく残り、監査・AI に", p: "監査・規制報告・AI 活用に、後から検証できる形で。" },
       ],
-      tiersBody: "製造業・基幹インフラ事業者、およびサプライチェーン全体で記録を扱う事業者向けです。複数拠点・複数サプライヤーへの展開にも、拠点数に応じた段階プランで対応します。",
-      caseH: "サプライチェーンの品質・適合証明",
-      caseBody: "技術情報や原価の中身を出さず「規格・要件を満たす」ことだけを証明し、発注者や監査人が検証できます。標準テンプレートで構成できる、Critical の代表的な使い方です。",
+      tiersH: "規模に応じた、段階プラン。",
+      tiersBody: "重要インフラ・製造業・大規模事業など、業務継続性と規制遵守が問われる運用に AI を組み込む組織向けです。施設数と連携範囲に応じた段階プランで展開できます。",
+      tiersItems: [
+        { name: "Tier 1", range: "単一施設" },
+        { name: "Tier 2", range: "2〜10 施設" },
+        { name: "Tier 3", range: "エンタープライズ" },
+      ],
+      tiersNote: "年契約。Tier 2 以上で Option Pack を追加可能 ── インシデント対応（復旧と証明）／規制対応（適合の証跡・提出書類）。詳しくはお問い合わせください。SLA・オンプレミス対応。",
+      caseH: "サプライチェーン部品来歴",
+      caseBody: "多階層のサプライヤが、各段階の部品・検査記録を署名付きで連鎖させます。組立側は営業秘密を見ずに「基準に適合し、改ざんがない」ことを検証でき、調達リスクと監査対応を同時に下げられます。",
       ucItems: [
-        "検査・品質結果の適合証明（品質）",
-        "サプライチェーンの来歴・トレーサビリティ（調達）",
-        "設備・保守記録の改ざん不能な保全（保全）",
+        "サプライチェーン部品来歴（来歴）",
+        "仕入先の許認可・ISO・証書の確認（調達）",
+        "内部統制・承認フローの非改ざん証明（統制）",
         "有資格者の配置・安全教育の証明（人材）",
       ],
     },
     en: {
       meta: {
-        title: "Lemma Critical — Turn manufacturing & critical-infrastructure records into data you can trust your AI with | Plan for critical infrastructure & manufacturing",
-        desc: "Give the quality, inspection, and supply-chain records your manufacturing and critical-infrastructure operations generate verifiable authenticity without revealing their contents. No sensitive technical data hoarded, no change to how you already work. For critical infrastructure & manufacturing (B2B), tiered by the number of sites.",
+        title: "Lemma Critical — Turn quality, inspection & supply-chain records into data you can trust your AI with | Plan for critical infrastructure & manufacturing",
+        desc: "For records from manufacturing and critical-infrastructure operations, add authenticity without exposing trade secrets — keep work running, ready for audits and AI alike. Critical infrastructure & manufacturing (B2B), tiered plan.",
       },
       name: "Lemma Critical",
-      seg: "Critical infrastructure & manufacturing",
-      h1a: "Turn quality and inspection records",
-      h1b: "into data AI can safely use.",
-      lead: "For the records your manufacturing and critical-infrastructure operations generate — quality, inspection, supply chain — Lemma adds tamper-proof provenance and authenticity, without ever revealing what's inside. The result is a data foundation your AI can rely on: no sensitive technical data hoarded, and no change to how you already work.",
+      seg: "Critical infrastructure & manufacturing (B2B)",
+      h1a: "Turn quality, inspection & supply-chain records",
+      h1b: "into data you can trust AI with.",
+      lead: "For the records generated across manufacturing and critical-infrastructure operations, Lemma adds authenticity without exposing trade secrets — a data foundation you can hand to audits and AI alike, without stopping work.",
       doItems: [
-        { h: "Prove inspection & quality without revealing the contents", p: "Confirm test results, standards conformance, or process history — without exposing technical data." },
-        { h: "Tamper-proof provenance records", p: "Unalterable records for audit and traceability." },
-        { h: "Start small with standard templates", p: "Pick one process from ready-made manufacturing templates." },
+        { icon: "adjustments", h: "Custom proofs built to your rules", p: "Proofs tailored to your operational rules." },
+        { icon: "clipboard-check", h: "Audit-ready evidence", p: "Keep compliance-ready evidence by default." },
+        { icon: "server", h: "SLA & on-prem ready", p: "Uptime SLAs and on-premise deployment available." },
       ],
+      bridgeBody: "Lemma sits between your floor and your AI, passing along only the certainty — never the trade secrets. It takes on the hard parts, so you can keep operations running and hand it off with confidence.",
+      flowLabel: "How it works — in your existing process",
       flowItems: [
-        { n: "01", h: "Collect", lead: "The floor and suppliers submit records", p: "Through the same inspections and reports as always — no new steps." },
-        { n: "02", h: "Verify", lead: "Your team confirms without seeing the contents", p: "Confirm only that it meets the standard and is genuine, then move the process on." },
-        { n: "03", h: "Keep & use", lead: "Stored tamper-proof, ready for AI", p: "Kept in a form you can verify later — for audits and for AI alike." },
+        { n: "01", h: "Collect", lead: "The floor and suppliers submit records", p: "Quality, inspection, maintenance, and part provenance — in your existing process." },
+        { n: "02", h: "Verify", lead: "Confirm without exposing trade secrets", p: "Confirm only that it meets the standard and is genuine, then move on." },
+        { n: "03", h: "Keep & use", lead: "Tamper-proof, ready for audit & AI", p: "For audits, regulatory reporting, and AI — kept verifiable after the fact." },
       ],
-      tiersBody: "For manufacturers, critical-infrastructure operators, and businesses handling records across the supply chain. Rollouts across multiple sites or suppliers are covered by tiers that scale with the number of sites.",
-      caseH: "Proving supply-chain quality & conformance",
-      caseBody: "Prove only that the standard or requirement is met — without disclosing technical data or costs — so buyers and auditors can verify it. A representative Critical use case that can be built from standard templates.",
+      tiersH: "Tiered by scale.",
+      tiersBody: "For critical infrastructure, manufacturers, and large operations embedding AI where business continuity and regulatory compliance matter. Roll out in tiers by number of facilities and integration scope.",
+      tiersItems: [
+        { name: "Tier 1", range: "Single facility" },
+        { name: "Tier 2", range: "2–10 facilities" },
+        { name: "Tier 3", range: "Enterprise" },
+      ],
+      tiersNote: "Annual contract. Tier 2+ can add Option Packs — Incident response (recovery & proof) / Regulatory (conformance evidence & filings). Contact us for details. SLA & on-prem available.",
+      caseH: "Supply-chain part provenance",
+      caseBody: "Multi-tier suppliers chain signed part and inspection records at each stage. The assembler verifies that everything conforms to standard and is untampered — without seeing trade secrets — lowering procurement risk and audit burden at once.",
       ucItems: [
-        "Conformance proof for inspection & quality results (Quality)",
-        "Provenance and traceability across the supply chain (Procurement)",
-        "Tamper-proof preservation of equipment & maintenance records (Maintenance)",
+        "Supply-chain part provenance (Provenance)",
+        "Supplier licenses, ISO & certificate checks (Procurement)",
+        "Tamper-proof internal-control & approval flows (Controls)",
         "Proof of qualified staffing and safety training (Workforce)",
       ],
     },
@@ -297,62 +322,80 @@ const UNIQUE: Record<PlanKey, Record<Locale, Unique>> = {
   compliance: {
     ja: {
       meta: {
-        title: "Lemma Compliance — 本人確認・取引のデータを、個人情報を抱えずに AI 活用へ｜金融・FinTech 向けプラン",
-        desc: "本人確認・取引・KYC/AML など金融の現場で生まれるデータに、中身を見せずに真正性を付与。個人情報を抱えずに、いつもの運用のまま AI 活用へ。金融・FinTech 向け、拠点数ベースの段階プラン。",
+        title: "Lemma Compliance — 本人確認や取引のデータを、AI に任せられる確かなデータに｜金融・FinTech 向けプラン",
+        desc: "KYC・取引・規制対応の現場で、個人情報を保管・開示せず「要件を満たす」ことだけを証明。監査証跡を残しながら、AI に業務を任せられます。金融・FinTech（B2B）向け、段階プラン。",
       },
       name: "Lemma Compliance",
-      seg: "金融・FinTech",
-      h1a: "本人確認・取引のデータを、",
-      h1b: "個人情報を抱えずに AI へ。",
-      lead: "本人確認・取引・KYC/AML など、金融の現場で生まれるデータに、中身を見せずに改ざん不能な来歴と真正性を付与します。個人情報を抱え込まずに、AI が安心して使えるデータ基盤を、いつもの運用を変えずに構築できます。",
+      seg: "金融・FinTech（B2B）",
+      h1a: "本人確認や取引のデータを、",
+      h1b: "AI に任せられる確かなデータに。",
+      lead: "KYC・取引・規制対応の現場で、個人情報を保管・開示せず「要件を満たす」ことだけを証明。監査証跡を残しながら、AI に業務を任せられます。",
       doItems: [
-        { h: "属性・適格性を中身を見せず確認", p: "年齢・居住・取引適格性などを、個人情報を出さずに。" },
-        { h: "改ざん不能な取引来歴", p: "監査と説明責任のための、書き換えられない記録。" },
-        { h: "標準テンプレートで小さく", p: "金融向けひな型から、特定の手続きひとつを選んで。" },
+        { icon: "user-check", h: "個人情報を開示せず本人確認", p: "KYC/AML を、中身を保管・開示せずに。" },
+        { icon: "clipboard-check", h: "規制対応の監査証跡", p: "EU AI Act・ISO 42001 に対応した証跡を残せます。" },
+        { icon: "eye-off", h: "必要な事実だけ選択開示", p: "個人情報は伏せたまま、要件だけを証明します。" },
       ],
+      bridgeBody: "Lemma が顧客と AI の間に入り、個人情報は保管せずに「確かさ」だけを受け渡します。生データを抱え込まないので、漏えい面そのものを小さくできます。",
+      flowLabel: "運用イメージ ── いつもの取引フローのまま、こう使えます",
       flowItems: [
-        { n: "01", h: "集める", lead: "顧客・取引先がデータを出す", p: "いつもの申込・取引のまま。新しい操作は増えません。" },
-        { n: "02", h: "確かめる", lead: "担当者は中身を見ずに確認", p: "「要件を満たす・本物である」だけを確認して手続きを進める。" },
-        { n: "03", h: "残す・活かす", lead: "改ざんなく残り、AI に使える", p: "監査でも AI 活用でも、後から検証できる形で残ります。" },
+        { n: "01", h: "受け取る", lead: "取引のなかで情報を受け取る", p: "いつもの本人確認・取引フローのまま。" },
+        { n: "02", h: "確かめる", lead: "保管・開示せず要件を確認", p: "KYC 通過・サンクション非該当・年齢などだけを確認。" },
+        { n: "03", h: "残す・活かす", lead: "監査証跡として残り、AI に", p: "規制報告・AI 運用に、後から検証できる形で。" },
       ],
-      tiersBody: "銀行・証券・保険・FinTech 事業者、および金融サービスを提供する事業者向けです。複数拠点・複数サービスへの展開にも、拠点数に応じた段階プランで対応します。",
-      caseH: "本人確認（KYC）の属性証明",
-      caseBody: "氏名や口座の中身を出さず「本人要件を満たす」ことだけを証明し、検証主体が確認できます。標準テンプレートで構成できる、Compliance の代表的な使い方です。",
+      tiersH: "規模に応じた、段階プラン。",
+      tiersBody: "金融機関・FinTech・規制対象機関など、属性検証と監査証跡が求められる業務に AI を運用する組織向けです。EU AI Act / GDPR / 国内規制への対応も。機関規模に応じた段階プランで展開できます。",
+      tiersItems: [
+        { name: "Tier 1", range: "中小 FinTech" },
+        { name: "Tier 2", range: "地方銀行" },
+        { name: "Tier 3", range: "メガバンク" },
+      ],
+      tiersNote: "年契約。Tier 2 以上で Option Pack を追加可能 ── 規制対応（適合の証跡）／エージェント・ガバナンス（AI 権限の検証）。詳しくはお問い合わせください。",
+      caseH: "KYC / AML 選択的開示",
+      caseBody: "顧客の生年月日や本人確認書類を保管せず、「18 歳以上・サンクション非該当・許可された地域」など必要な属性だけを証明します。原本を受け取らずに規制要件を満たし、漏えい時のリスクそのものを小さくできます。",
       ucItems: [
-        "本人確認（KYC）の属性証明（本人確認）",
-        "取引適格性・与信の証明（取引）",
-        "改ざん不能な取引・監査記録（監査）",
-        "資格・登録要件の充足証明（規制対応）",
+        "KYC / AML 選択的開示（KYC）",
+        "取引先の与信・反社チェック（結果だけ）（与信）",
+        "AI 監査ログ証明（監査）",
+        "金融データ流出防止（統制）",
       ],
     },
     en: {
       meta: {
-        title: "Lemma Compliance — Put identity and transaction data to work for AI without hoarding personal information | Plan for finance & FinTech",
-        desc: "Give the identity, transaction, and KYC/AML data your financial operations generate verifiable authenticity without revealing their contents. No personal data hoarded, no change to how you already work. For finance & FinTech (B2B), tiered by the number of sites.",
+        title: "Lemma Compliance — Turn identity & transaction data into data you can trust your AI with | Plan for finance & FinTech",
+        desc: "In KYC, transactions, and regulatory work, prove only that requirements are met — without storing or disclosing personal data. Keep audit trails while handing work to AI. Finance & FinTech (B2B), tiered plan.",
       },
       name: "Lemma Compliance",
-      seg: "Finance & FinTech",
-      h1a: "Put identity and transaction data to work",
-      h1b: "for AI — without hoarding it.",
-      lead: "For the data your financial operations generate — identity, transactions, KYC/AML — Lemma adds tamper-proof provenance and authenticity, without ever revealing what's inside. The result is a data foundation your AI can rely on: no personal information hoarded, and no change to how you already work.",
+      seg: "Finance & FinTech (B2B)",
+      h1a: "Turn identity & transaction data",
+      h1b: "into data you can trust AI with.",
+      lead: "Across KYC, transactions, and regulatory work, prove only that requirements are met — without storing or disclosing personal data. Keep audit trails while handing work to AI.",
       doItems: [
-        { h: "Verify attributes & eligibility without revealing the contents", p: "Confirm age, residency, or transaction eligibility — without exposing personal data." },
-        { h: "Tamper-proof transaction provenance", p: "Unalterable records for audit and accountability." },
-        { h: "Start small with standard templates", p: "Pick one procedure from ready-made finance templates." },
+        { icon: "user-check", h: "Identity checks without disclosure", p: "KYC/AML without storing or exposing the contents." },
+        { icon: "clipboard-check", h: "Regulatory audit trails", p: "Keep evidence aligned with the EU AI Act and ISO 42001." },
+        { icon: "eye-off", h: "Selective disclosure", p: "Prove only the requirement, with personal data hidden." },
       ],
+      bridgeBody: "Lemma sits between your customers and your AI, passing along only the certainty — without storing personal data. By not hoarding raw data, you shrink the leak surface itself.",
+      flowLabel: "How it works — in your existing transaction flow",
       flowItems: [
-        { n: "01", h: "Collect", lead: "Customers and counterparties submit data", p: "Through the same applications and transactions as always — no new steps." },
-        { n: "02", h: "Verify", lead: "Your team confirms without seeing the contents", p: "Confirm only that it meets the requirement and is genuine, then proceed." },
-        { n: "03", h: "Keep & use", lead: "Stored tamper-proof, ready for AI", p: "Kept in a form you can verify later — for audits and for AI alike." },
+        { n: "01", h: "Receive", lead: "Receive information in the course of business", p: "In your existing identity-check and transaction flows." },
+        { n: "02", h: "Verify", lead: "Confirm requirements without storing or disclosing", p: "Confirm only KYC pass, no-sanctions, age, and the like." },
+        { n: "03", h: "Keep & use", lead: "Kept as an audit trail, ready for AI", p: "For regulatory reporting and AI operations — kept verifiable after the fact." },
       ],
-      tiersBody: "For banks, securities and insurance firms, and FinTechs delivering financial services. Rollouts across multiple sites or services are covered by tiers that scale with the number of sites.",
-      caseH: "Attribute proof for identity verification (KYC)",
-      caseBody: "Prove only that the identity requirement is met — without disclosing names or account details — so the verifying party can confirm it. A representative Compliance use case that can be built from standard templates.",
+      tiersH: "Tiered by scale.",
+      tiersBody: "For financial institutions, FinTechs, and regulated entities running AI where attribute verification and audit trails are required. EU AI Act / GDPR / domestic regulation covered. Roll out in tiers by institution size.",
+      tiersItems: [
+        { name: "Tier 1", range: "SME FinTech" },
+        { name: "Tier 2", range: "Regional bank" },
+        { name: "Tier 3", range: "Megabank" },
+      ],
+      tiersNote: "Annual contract. Tier 2+ can add Option Packs — Regulatory (conformance evidence) / Agent governance (verifying AI authority). Contact us for details.",
+      caseH: "KYC / AML selective disclosure",
+      caseBody: "Without storing a customer's date of birth or ID documents, prove only the needed attributes — over 18, not sanctioned, in a permitted region. Meet regulatory requirements without receiving originals, and shrink the risk in the event of a leak.",
       ucItems: [
-        "Attribute proof for identity verification / KYC (Identity)",
-        "Proof of transaction eligibility and creditworthiness (Transactions)",
-        "Tamper-proof transaction & audit records (Audit)",
-        "Proof of meeting licensing & registration requirements (Regulatory)",
+        "KYC / AML selective disclosure (KYC)",
+        "Counterparty credit & AML checks, results only (Credit)",
+        "AI audit-log proof (Audit)",
+        "Financial-data leak prevention (Controls)",
       ],
     },
   },
@@ -374,14 +417,14 @@ export function getPlanContent(planKey: PlanKey, locale: Locale): PlanContent {
       ctaNote: c.ctaNote,
     },
     doSec: { label: c.doLabel, h: c.doH, items: u.doItems },
-    bridge: c.bridge,
-    flow: { label: c.flowLabel, h: c.flowH, items: u.flowItems },
+    bridge: { quote: c.bridgeQuote, body: u.bridgeBody },
+    flow: { label: u.flowLabel, h: c.flowH, items: u.flowItems },
     tiers: {
       label: c.tiersLabel,
-      h: c.tiersH,
+      h: u.tiersH,
       body: u.tiersBody,
-      items: c.tiersItems,
-      note: c.tiersNote,
+      items: u.tiersItems,
+      note: u.tiersNote,
     },
     caseSec: { label: c.caseLabel, h: u.caseH, body: u.caseBody },
     steps: { label: c.stepsLabel, h: c.stepsH, items: c.steps },
