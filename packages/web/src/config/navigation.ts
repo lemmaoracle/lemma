@@ -15,7 +15,9 @@ export const SEGMENT_URLS: Readonly<
   Record<SegmentSlug, Readonly<Record<Locale, string>>>
 > = {
   civic: {
-    ja: "/ja/pricing/#civic",
+    // JA has a dedicated Civic plan page (Wave 1). EN still points at the
+    // Pricing anchor until an EN Civic page is authored.
+    ja: "/ja/plans/civic/",
     en: "/pricing/#civic",
   },
   critical: {

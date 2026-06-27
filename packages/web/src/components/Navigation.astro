@@ -215,10 +215,9 @@ const isResourcesActive =
         </div>
       </div>
     </li>
-
-    <li class="mega-nav-item">
-      <a href={faqPath} class:list={["mega-nav-link", { active: currentPath.startsWith(faqPath) }]}>{t.faq}</a>
-    </li>
+    <!-- FAQ is intentionally NOT a top-level item: it already lives in the
+         Resources mega-panel above (and the mobile menu), so a top-level entry
+         duplicated it. Top-level is reserved for the primary sections. -->
   </ul>
 
   <div class="mega-nav-right">
