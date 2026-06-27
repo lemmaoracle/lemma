@@ -31,14 +31,14 @@ const contactUrl = DISCOVERY_CALL_URL[locale];
 const useCasesUrl = `${base}/solutions/use-cases/`;
 
 const metaTitle =
-  "Lemma Civic — Make public-sector records data you can trust AI with | Plan for government & public services";
+  "Lemma Civic — Turn public-sector records into data you can trust your AI with | Plan for government & public services";
 const metaDesc =
-  "Add authenticity to the records that arise in public-sector operations — front desk, benefits, civic participation — without revealing their contents. No personal data exposed, no change to how you already work. For government and public services (B2B2G), tiered by number of sites.";
+  "Give the records your public-sector operations generate — front desk, benefits, civic participation — verifiable authenticity without revealing their contents. No personal data exposed, no change to how you already work. For government and public services (B2B2G), tiered by the number of sites.";
 
 const doItems = [
   {
     icon: "check",
-    h: "Verify eligibility without revealing contents",
+    h: "Verify eligibility without revealing the contents",
     p: "Confirm eligibility, age, or qualifications — without exposing personal data.",
   },
   {
@@ -49,7 +49,7 @@ const doItems = [
   {
     icon: "template",
     h: "Start small with standard templates",
-    p: "Pick one workflow from public-sector templates.",
+    p: "Pick one workflow from ready-made public-sector templates.",
   },
 ] as const;
 
@@ -99,15 +99,15 @@ const steps = [
   {
     n: "03",
     h: "Production",
-    lead: "Roll out without changing operations",
-    p: "Layer it in front — it runs alongside what you have.",
+    lead: "Roll out without changing your operations",
+    p: "Layer it in front — it runs alongside what you already have.",
   },
 ];
 
 const useCases = [
-  "Eligibility proof for subsidies and benefits (Benefits)",
+  "Eligibility proof for subsidies and benefits (Payments)",
   "Eligibility proof for public services (Front desk)",
-  "Records and quote proof for long-term contracts (Contracts)",
+  "Proof of records and quotes for long-term contracts (Contracts)",
   "Proof of qualified staffing and safety training (Workforce)",
 ];
 ---
@@ -135,15 +135,15 @@ const useCases = [
           <span class="cv-hero-seg">Government &amp; public sector (B2B2G)</span>
         </div>
         <h1 class="cv-h1">
-          Turn front-line public-sector records<br />
+          Turn everyday public-sector records<br />
           <span class="cv-accent">into data AI can safely use.</span>
         </h1>
         <p class="cv-lead">
-          For the records generated on the front line — service desks, benefits, welfare consultations, civic participation — Lemma adds tamper-proof provenance and authenticity without revealing their contents. Build a data foundation your AI can rely on, without exposing personal information and without changing how you already work.
+          For the records your front line generates — service desks, benefits, welfare consultations, civic participation — Lemma adds tamper-proof provenance and authenticity, without ever revealing what's inside. The result is a data foundation your AI can rely on: no personal information exposed, and no change to how you already work.
         </p>
         <div class="cv-hero-cta">
           <a href={contactUrl} class="cv-btn-primary" target="_blank" rel="noopener">Contact us</a>
-          <span class="cv-hero-cta-note">Start with a conversation, a quote, or just exploring.</span>
+          <span class="cv-hero-cta-note">Start with a conversation — about fit, scope, or pricing.</span>
         </div>
         {/*
           POST-permission: only when press-release-linked, place the achievement
@@ -155,7 +155,7 @@ const useCases = [
       <!-- §2 What this plan does -->
       <section class="cv-section" aria-labelledby="cv-do-h">
         <p class="cv-section-label">What this plan does</p>
-        <h2 class="cv-section-h" id="cv-do-h">Pass on certainty — not the contents.</h2>
+        <h2 class="cv-section-h" id="cv-do-h">Pass on the certainty, not the contents.</h2>
         <div class="cv-do-grid">
           {doItems.map((item) => (
             <article class="cv-do-card">
@@ -201,7 +201,7 @@ const useCases = [
         <p class="cv-section-label">Who it's for &amp; plan structure</p>
         <h2 class="cv-section-h" id="cv-tiers-h">Tiered by number of sites.</h2>
         <p class="cv-tiers-body">
-          For municipalities, public utilities, and businesses delivering citizen-facing services under a B2B2G model. Rollouts across multiple sites or municipalities are handled by tiers scaled to the number of sites.
+          For municipalities, public utilities, and businesses delivering citizen-facing services under a B2B2G model. Rollouts across multiple sites or municipalities are covered by tiers that scale with the number of sites.
         </p>
         <div class="cv-tiers-grid">
           {tiers.map((tier) => (
@@ -212,7 +212,7 @@ const useCases = [
           ))}
         </div>
         <p class="cv-tiers-note">
-          Annual contract, priced by number of sites. Upgrade to a higher tier as sites or usage grow. Built on standard circuits and templates.
+          Annual contract, priced by the number of sites. Upgrade to a higher tier as sites or usage grow. Built on standard circuits and templates.
         </p>
       </section>
 
@@ -260,7 +260,7 @@ const useCases = [
       <section class="cv-close">
         <div class="cv-close-band">
           <h2 class="cv-close-h2">We don't deploy and walk away.</h2>
-          <p class="cv-close-sub">Our engineers embed with you and stay alongside. Talk to us about deployment — and about integrating with your operations and systems.</p>
+          <p class="cv-close-sub">Our engineers embed with your team and stay alongside you. Talk to us about deployment — and about integrating with your operations and systems.</p>
           <a href={contactUrl} class="cv-btn-primary" target="_blank" rel="noopener">Contact us</a>
         </div>
       </section>
