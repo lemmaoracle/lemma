@@ -7,7 +7,7 @@
     "blog": "Blog",
     "pillars": "How it works",
     "faq": "FAQ",
-    "services": "Products",
+    "services": "Plans",
     "pricing": "Pricing",
     "solutions": "Solutions",
     "resources": "Resources",
@@ -44,6 +44,11 @@
         "trust402Sub": "Run AI without holding keys",
         "pricing": "Pricing",
         "pricingSub": "Contact-based"
+      },
+      "developers": {
+        "label": "For developers",
+        "specs": "Specs",
+        "specsSub": "API & spec docs"
       },
       "solutions": {
         "label": "Use Cases",

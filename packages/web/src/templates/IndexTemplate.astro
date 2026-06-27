@@ -63,7 +63,6 @@ const FIG = isJa
 const contactHref = DISCOVERY_CALL_URL[locale];
 const useCasesHref = `${base}/solutions/use-cases/`;
 const pillarsHref = `${base}/pillars/`;
-const guidesHref = `${base}/guides/`;
 const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const industriesHref = `${base}/solutions/`;
 const sealHref = `${base}/seal/`;
@@ -125,13 +124,36 @@ const spotlightUseCasePillar = spotlightUseCase
 const C = isJa ? {
   pageTitle: "Lemma — 真正性のある AI データ基盤｜検証可能 AI の信頼インフラ",
   metaDescription: "データを渡さずに来歴・属性・実績の真正性を暗号的に証明する、AI のための信頼インフラ（データ基盤）。生データを開示せず第三者が独立検証。検証可能AI・エージェント決済・規制対応。Trusted Web 準拠。",
-  heroH1Line1: "データを渡さず、",
-  heroH1Accent: "AI を動かす",
-  heroH1Tail: "。",
+  heroH1Line1: "AI に、",
+  heroH1Accent: "証明された事実",
+  heroH1Tail: "を。",
   heroSubLead: "真正性のある AI データ基盤。",
   heroSubChord: "生データを渡さずに来歴・属性・実績を暗号的に証明し、第三者が独立して検証できるようにします。",
   heroPrimaryCta: "ホワイトペーパーを無料 DL",
   heroSecondaryCta: "ユースケースを見る",
+  // §プラン3枚（業種で選ぶ）
+  plansEyebrow: "エンタープライズ",
+  plansH2: "業種で選ぶ、3 つのプラン。",
+  plansLead: "業種に合うプランを選び、御社の業務に合わせて一緒に作ります。",
+  planCivicSeg: "公共・自治体（B2B2G）",
+  planCivicLine: "窓口・給付・住民参加の記録を、AI に任せられる確かなデータに。",
+  planCriticalSeg: "基幹インフラ・製造",
+  planCriticalLine: "品質・検査・サプライチェーンの記録を、AI に任せられる確かなデータに。",
+  planComplianceSeg: "金融・FinTech",
+  planComplianceLine: "本人確認・取引のデータを、個人情報を抱えずに AI 活用へ。",
+  planMore: "詳しく",
+  plansCompare: "どのプランが合うか・料金は 料金プランで比べる",
+  // §開発者ブランドゾーン
+  devZoneEyebrow: "for developers",
+  devZoneTag: "self-serve",
+  devZoneH2: "鍵ではなく、証明を。コードで。",
+  devTerminal: "$ npm i @lemmaoracle/sdk",
+  devSealDesc: "鍵ではなく、証明を送る。ZK サインイン SDK を数行で。",
+  devSealLink: "Seal を見る",
+  devTrustDesc: "鍵を持たずに、AI を動かす。コールごとの権限委任。x402 / MCP。",
+  devTrustLink: "Trust402 を見る",
+  devZoneCta: "Dashboard を開く",
+  // §相談 CTA（締め）
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
   termComm2: "2. 検証可能 AI",
@@ -248,12 +270,12 @@ const C = isJa ? {
   // §6 products sub
   productsSub: "業務の理解を経て、用途に合わせて選べます。開発者向け SDK、エージェント開発者向けランタイム、大企業向け製品ライン。",
   // §7 discovery (action verb register)
-  discoveryH2Pre: "業務に乗るか、", discoveryH2Accent: "確かめる", discoveryH2Tail: "。",
-  discoveryBody: "30 分の対話で、Lemma の機能や、御社の業務にどう乗るかを確かめられます。機微情報（個人情報や機密情報など）の開示は不要です。",
+  discoveryH2Pre: "業務に合うか、", discoveryH2Accent: "確かめる", discoveryH2Tail: "。",
+  discoveryBody: "30 分の対話で、御社の業務にどう活かせるかを確認できます。機微情報の開示は不要です。",
   // dev tail
   devLabel: "For Developers", devTailStrong: "SDK ですぐ動かす。", devTailRest: "Seal の ZK サインインを、Dashboard から数行で。",
   devDash: "Dashboard を開く", devDocs: "Seal を見る",
-  discoveryPrimary: "Discovery Call を予約", discoverySecondary: "ホワイトペーパー DL",
+  discoveryPrimary: "問い合わせる", discoverySecondary: "ホワイトペーパー DL",
   // §5 schema capability lines
   canLabel: "できる:",
   whereLabel: "場面:",
@@ -291,13 +313,36 @@ const C = isJa ? {
 } : {
   pageTitle: "Lemma — An authentic data foundation for AI | verifiable-AI trust infrastructure",
   metaDescription: "Lemma is trust infrastructure for AI: prove the provenance, attributes, and track record of data cryptographically — without sharing raw data — verifiable by any third party. Verifiable AI, agent payments, regulatory attributes. Trusted Web–aligned.",
-  heroH1Line1: "AI runs on",
-  heroH1Accent: "proofs, not data",
+  heroH1Line1: "Give AI",
+  heroH1Accent: "proven facts",
   heroH1Tail: ".",
   heroSubLead: "An authentic data foundation for AI.",
   heroSubChord: "Prove provenance, attributes, and track record cryptographically — without ever sharing raw data — so third parties can verify independently.",
   heroPrimaryCta: "Download the Whitepaper",
   heroSecondaryCta: "See use cases",
+  // §Plans (choose by sector)
+  plansEyebrow: "Enterprise",
+  plansH2: "Choose by sector — three plans.",
+  plansLead: "Pick the plan that fits your sector; we tailor and build it with you.",
+  planCivicSeg: "Government & public sector (B2B2G)",
+  planCivicLine: "Turn front-desk, benefits, and civic-participation records into data you can trust AI with.",
+  planCriticalSeg: "Critical infrastructure & manufacturing",
+  planCriticalLine: "Turn quality, inspection, and supply-chain records into data you can trust AI with.",
+  planComplianceSeg: "Finance & FinTech",
+  planComplianceLine: "Put identity and transaction data to work for AI — without hoarding personal information.",
+  planMore: "Learn more",
+  plansCompare: "Compare plans and pricing",
+  // §Developer brand zone
+  devZoneEyebrow: "for developers",
+  devZoneTag: "self-serve",
+  devZoneH2: "Proofs, not keys. In code.",
+  devTerminal: "$ npm i @lemmaoracle/sdk",
+  devSealDesc: "Send a proof, not the key. A ZK sign-in SDK in a few lines.",
+  devSealLink: "Explore Seal",
+  devTrustDesc: "Run AI without holding keys. Per-call delegation. x402 / MCP.",
+  devTrustLink: "Explore Trust402",
+  devZoneCta: "Open Dashboard",
+  // §Closing CTA
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
   termComm2: "2. Verifiable AI",
@@ -415,11 +460,11 @@ const C = isJa ? {
   productsSub: "Once you understand the fit, choose by use: an SDK for developers, a runtime for agent developers, product lines for enterprises.",
   // §7 discovery (action verb register)
   discoveryH2Pre: "See if it fits — ", discoveryH2Accent: "verify it", discoveryH2Tail: ".",
-  discoveryBody: "In a 30-minute conversation, verify Lemma's capabilities and how it fits your operations. No disclosure of sensitive data (personal or confidential) required.",
+  discoveryBody: "In a 30-minute conversation, see how it fits your operations. No disclosure of sensitive information required.",
   // dev tail
   devLabel: "For Developers", devTailStrong: "Run the SDK now.", devTailRest: "Seal's ZK sign-in, in a few lines from the Dashboard.",
   devDash: "Open Dashboard", devDocs: "Explore Seal",
-  discoveryPrimary: "Book a Discovery Call", discoverySecondary: "Download whitepaper",
+  discoveryPrimary: "Contact us", discoverySecondary: "Download whitepaper",
   // §5 schema capability lines
   canLabel: "Capability:",
   whereLabel: "Use cases:",
@@ -516,7 +561,7 @@ const panes = [
         <p class="hp-hero-sub">{C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span></p>
         <div class="hp-hero-ctas">
           <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
-          <a href={`${base}/solutions/use-cases/`} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
+          <a href={useCasesHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
 
@@ -606,110 +651,70 @@ const panes = [
       </div>
     </section>
 
-    <!-- §5 · TAKE IT IN (industries) -->
-    <section class="hp-scenes">
-      <div class="hp-scenes-inner">
-        <h2 class="hp-scenes-h2" set:html={C.scenesH2Html} />
-        <div class="hp-industries-grid">
-          <div class="hp-industry-card">
-            <svg class="hp-industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <rect x="3" y="14" width="6" height="7"/><rect x="10" y="9" width="6" height="12"/><rect x="17" y="5" width="4" height="16"/>
-            </svg>
-            <div class="hp-industry-name">{C.ind1Name}</div>
-            <p class="hp-industry-desc">{C.ind1Desc}</p>
-          </div>
-          <div class="hp-industry-card">
-            <svg class="hp-industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7 8 L11 16 M17 8 L13 16"/>
-            </svg>
-            <div class="hp-industry-name">{C.ind2Name}</div>
-            <p class="hp-industry-desc">{C.ind2Desc}</p>
-          </div>
-          <div class="hp-industry-card">
-            <svg class="hp-industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M5 4 H15 L19 8 V20 H5 Z"/><line x1="8" y1="11" x2="16" y2="11"/><path d="M8 15 L10 17 L14 13"/>
-            </svg>
-            <div class="hp-industry-name">{C.ind3Name}</div>
-            <p class="hp-industry-desc">{C.ind3Desc}</p>
-          </div>
-          <div class="hp-industry-card">
-            <svg class="hp-industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M3 21 V11 L12 5 L21 11 V21 Z"/><line x1="9" y1="21" x2="9" y2="15"/><line x1="15" y1="21" x2="15" y2="15"/>
-            </svg>
-            <div class="hp-industry-name">{C.ind4Name}</div>
-            <p class="hp-industry-desc">{C.ind4Desc}</p>
-          </div>
-        </div>
-        <div class="hp-lens-foot">
-          <p class="hp-lens-note"><strong>{C.lensFootStrong}</strong>{C.lensFootRest}</p>
-          <div class="hp-lens-buttons">
-            <a href={`${base}/solutions/use-cases/`} class="hp-lens-btn primary">{C.lensAll} <span class="hp-arrow">→</span></a>
-            <a href={briefIndexHref} class="hp-lens-btn">{C.lensRisk} <span class="hp-arrow">→</span></a>
-          </div>
-        </div>
+    <!-- §プラン3枚（業種で選ぶ）── エンタープライズ・コア -->
+    <section class="hp-block hp-plans">
+      <div class="hp-plans-head">
+        <p class="hp-plans-eyebrow">{C.plansEyebrow}</p>
+        <h2 class="hp-h2">{C.plansH2}</h2>
+        <p class="hp-plans-lead">{C.plansLead}</p>
       </div>
+      <div class="hp-plans-grid">
+        <a href={`${base}/plans/civic/`} class="hp-plan-card">
+          <span class="hp-plan-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18"/><path d="M5 21V11l7-5 7 5v10"/><path d="M10 21v-6h4v6"/>
+            </svg>
+          </span>
+          <span class="hp-plan-name">Lemma Civic</span>
+          <span class="hp-plan-seg">{C.planCivicSeg}</span>
+          <p class="hp-plan-line">{C.planCivicLine}</p>
+          <span class="hp-plan-more">{C.planMore} &#8594;</span>
+        </a>
+        <a href={`${base}/plans/critical/`} class="hp-plan-card">
+          <span class="hp-plan-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18"/><path d="M5 21V11l4 2.5V11l4 2.5V11l4 2.5V21"/><rect x="6" y="5" width="2.6" height="5"/>
+            </svg>
+          </span>
+          <span class="hp-plan-name">Lemma Critical</span>
+          <span class="hp-plan-seg">{C.planCriticalSeg}</span>
+          <p class="hp-plan-line">{C.planCriticalLine}</p>
+          <span class="hp-plan-more">{C.planMore} &#8594;</span>
+        </a>
+        <a href={`${base}/plans/compliance/`} class="hp-plan-card">
+          <span class="hp-plan-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18"/><path d="M3 10l9-5 9 5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/>
+            </svg>
+          </span>
+          <span class="hp-plan-name">Lemma Compliance</span>
+          <span class="hp-plan-seg">{C.planComplianceSeg}</span>
+          <p class="hp-plan-line">{C.planComplianceLine}</p>
+          <span class="hp-plan-more">{C.planMore} &#8594;</span>
+        </a>
+      </div>
+      <p class="hp-plans-compare"><a href={`${base}/pricing/`}>{C.plansCompare} &#8594;</a></p>
     </section>
 
-    <!-- §6 · PRODUCTS (THREE DOORS — original card design, lowered after take-it-in) -->
-    <section class="hp-block">
-      <h2 class="hp-h2">{C.doorsH2Line1}<br /><span class="hp-accent">{C.doorsH2Accent}</span>{C.doorsH2Tail}</h2>
-
-      <div class="hp-doors">
-        <a href={industriesHref} class="hp-door">
-          <div class="hp-door-top">
-            <div class="hp-door-icon">
-              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="7" y="11" width="42" height="34" rx="2" stroke="currentColor" stroke-width="2.5" />
-                <line x1="20" y1="19" x2="20" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="28" y1="19" x2="28" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-                <line x1="36" y1="19" x2="36" y2="37" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-              </svg>
-            </div>
-            <div class="hp-door-name">Industries</div>
+    <!-- §開発者ブランドゾーン（ライトグレー × 蛍光グリーン・固定ライト） -->
+    <section class="hp-devzone">
+      <div class="hp-devzone-inner">
+        <p class="hp-devzone-eyebrow"><span class="hp-devzone-tag">{C.devZoneEyebrow}</span><span class="hp-devzone-muted">{C.devZoneTag}</span></p>
+        <h2 class="hp-devzone-h2">{C.devZoneH2}</h2>
+        <div class="hp-devzone-term"><span class="hp-devzone-prompt">$</span> npm i @lemmaoracle/sdk</div>
+        <div class="hp-devzone-cards">
+          <div class="hp-devzone-card">
+            <span class="hp-devzone-fn">seal</span>
+            <p class="hp-devzone-desc">{C.devSealDesc}</p>
+            <a href={sealHref} class="hp-devzone-link">{C.devSealLink} <span class="hp-devzone-arr">&#8250;</span></a>
           </div>
-          <div class="hp-door-bottom">
-            <span class="hp-door-aud">{C.industriesAud}</span>
-            <h3 class="hp-door-tag">{C.industriesTagline}</h3>
-            <p class="hp-door-desc">{C.industriesDesc}</p>
-            <span class="hp-door-url">/pricing →</span>
+          <div class="hp-devzone-card">
+            <span class="hp-devzone-fn">trust402</span>
+            <p class="hp-devzone-desc">{C.devTrustDesc}</p>
+            <a href={trust402Href} class="hp-devzone-link">{C.devTrustLink} <span class="hp-devzone-arr">&#8250;</span></a>
           </div>
-        </a>
-        <a href={sealHref} class="hp-door">
-          <div class="hp-door-top">
-            <div class="hp-door-icon">
-              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="28" cy="28" r="23" stroke="currentColor" stroke-width="2.5" />
-                <circle cx="28" cy="28" r="4" fill="currentColor" opacity="0.45" />
-              </svg>
-            </div>
-            <div class="hp-door-name">Seal</div>
-          </div>
-          <div class="hp-door-bottom">
-            <span class="hp-door-aud">{C.sealAud}</span>
-            <h3 class="hp-door-tag">{C.sealTagline}</h3>
-            <p class="hp-door-desc">{C.sealDesc}</p>
-            <span class="hp-door-url">/seal →</span>
-          </div>
-        </a>
-
-        <a href={trust402Href} class="hp-door">
-          <div class="hp-door-top">
-            <div class="hp-door-icon">
-              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M14 12 L46 28 L14 44 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="none" />
-                <line x1="25" y1="21" x2="25" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
-              </svg>
-            </div>
-            <div class="hp-door-name">Trust<span class="hp-accent">402</span></div>
-          </div>
-          <div class="hp-door-bottom">
-            <span class="hp-door-aud">{C.trust402Aud}</span>
-            <h3 class="hp-door-tag">{C.trust402Tagline}</h3>
-            <p class="hp-door-desc">{C.trust402Desc}</p>
-            <span class="hp-door-url">/trust402 →</span>
-          </div>
-        </a>
-
+        </div>
+        <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-devzone-cta"><span class="hp-devzone-arr">&#8250;</span> {C.devZoneCta}</a>
       </div>
     </section>
 
@@ -785,22 +790,13 @@ const panes = [
       </section>
     )}
 
-    <!-- §7 · DISCOVERY + dev tail -->
+    <!-- §相談 CTA（締め） -->
     <section class="hp-disc">
       <div class="hp-disc-inner">
-        <p class="hp-disc-eyebrow">{C.closingEyebrow}</p>
         <h2 class="hp-disc-h2">{C.discoveryH2Pre}<span class="hp-accent">{C.discoveryH2Accent}</span>{C.discoveryH2Tail}</h2>
         <p class="hp-disc-body">{C.discoveryBody}</p>
         <div class="hp-disc-ctas">
           <a href={contactHref} target="_blank" rel="noopener" class="hp-disc-primary">{C.discoveryPrimary} →</a>
-          <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-disc-secondary">{C.discoverySecondary} →</a>
-        </div>
-      </div>
-      <div class="hp-dev-tail">
-        <p class="hp-dev-text"><span class="hp-dev-label">{C.devLabel}</span> <strong>{C.devTailStrong}</strong> {C.devTailRest}</p>
-        <div class="hp-dev-links">
-          <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-dev-link">{C.devDash} <span class="hp-arrow">↗</span></a>
-          <a href={sealHref} class="hp-dev-link">{C.devDocs} <span class="hp-arrow">→</span></a>
         </div>
       </div>
     </section>
@@ -849,6 +845,49 @@ const panes = [
   .hp-btn-primary:hover { background: var(--hp-brown); }
   .hp-btn-secondary { background: transparent; color: var(--hp-text-1); padding: 14px 26px; border: 0.5px solid var(--hp-text-1); border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: all 0.15s; }
   .hp-btn-secondary:hover { background: var(--hp-cream-d); border-color: var(--hp-brown); color: var(--hp-brown); }
+
+  /* ─── §プラン3枚（エンタープライズ・ブラウン） ─── */
+  .hp-plans { max-width: 1240px; margin: 0 auto; padding: 88px 40px; }
+  .hp-plans-head { margin: 0 0 36px; }
+  .hp-plans-eyebrow { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--hp-brown); margin: 0 0 14px; }
+  .hp-plans .hp-h2 { font-family: var(--hp-display); font-weight: 700; font-size: clamp(28px, 3.6vw, 42px); line-height: 1.2; letter-spacing: -0.025em; color: var(--hp-text-1); margin: 0 0 14px; }
+  .hp-plans-lead { font-size: 15.5px; color: var(--hp-text-3); margin: 0; max-width: 620px; }
+  .hp-plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .hp-plan-card { display: flex; flex-direction: column; background: #fff; border: 0.5px solid var(--hp-line); border-radius: 16px; padding: 28px 26px; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
+  .hp-plan-card:hover { border-color: rgba(139, 69, 19, 0.4); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(139, 69, 19, 0.07); }
+  .hp-plan-icon { color: var(--hp-brown); width: 30px; height: 30px; margin: 0 0 18px; }
+  .hp-plan-icon svg { width: 100%; height: 100%; display: block; }
+  .hp-plan-name { font-family: var(--hp-display); font-size: 19px; font-weight: 700; color: var(--hp-text-1); letter-spacing: -0.01em; }
+  .hp-plan-seg { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hp-brown); margin: 6px 0 14px; }
+  .hp-plan-line { font-size: 14px; line-height: 1.75; color: var(--hp-text-3); margin: 0 0 20px; flex: 1; }
+  .hp-plan-more { font-family: var(--hp-display); font-size: 13.5px; font-weight: 600; color: var(--hp-brown); }
+  .hp-plan-card:hover .hp-plan-more { color: var(--hp-brown-deep); }
+  .hp-plans-compare { margin: 26px 0 0; font-size: 14px; }
+  .hp-plans-compare a { color: var(--hp-brown); font-weight: 600; border-bottom: 1px solid rgba(139, 69, 19, 0.35); }
+  .hp-plans-compare a:hover { color: var(--hp-brown-deep); }
+
+  /* ─── §開発者ブランドゾーン（ライトグレー × 蛍光グリーン・固定ライト） ─── */
+  .hp-devzone { --dz-bg: #ECEBE3; --dz-green: #B6F500; --dz-green-deep: #4B6B0F; --dz-ink: #1F1E1A; --dz-card: #FFFFFF; --dz-border: #D8D6CC;
+    background: var(--dz-bg); color: var(--dz-ink); border-top: 3px solid var(--dz-green); }
+  .hp-devzone-inner { max-width: 1240px; margin: 0 auto; padding: 80px 40px; }
+  .hp-devzone-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.14em; }
+  .hp-devzone-tag { background: var(--dz-green); color: var(--dz-ink); padding: 3px 10px; border-radius: 4px; font-weight: 700; text-transform: lowercase; }
+  .hp-devzone-muted { color: #6f6e66; text-transform: lowercase; }
+  .hp-devzone-h2 { font-family: var(--hp-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.25; letter-spacing: -0.025em; color: var(--dz-ink); margin: 0 0 26px; }
+  .hp-devzone-term { font-family: var(--hp-mono); font-size: 14px; background: var(--dz-ink); color: #ECEBE3; padding: 14px 20px; border-radius: 10px; margin: 0 0 30px; max-width: 420px; }
+  .hp-devzone-prompt { color: var(--dz-green); margin-right: 8px; }
+  .hp-devzone-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 0 0 30px; }
+  .hp-devzone-card { background: var(--dz-card); border: 0.5px solid var(--dz-border); border-radius: 14px; padding: 24px 24px; }
+  .hp-devzone-fn { font-family: var(--hp-mono); font-size: 16px; font-weight: 700; color: var(--dz-ink); }
+  .hp-devzone-desc { font-size: 13.5px; line-height: 1.75; color: #4a4942; margin: 12px 0 16px; }
+  .hp-devzone-link { font-family: var(--hp-mono); font-size: 12.5px; font-weight: 700; color: var(--dz-green-deep); display: inline-flex; align-items: center; gap: 6px; }
+  .hp-devzone-link:hover { color: var(--dz-ink); }
+  .hp-devzone-arr { color: var(--dz-green-deep); font-weight: 700; }
+  .hp-devzone-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--dz-green); color: var(--dz-ink); font-family: var(--hp-display); font-size: 14.5px; font-weight: 700; padding: 14px 30px; border-radius: 999px; transition: filter 0.15s; }
+  .hp-devzone-cta:hover { filter: brightness(0.94); }
+  .hp-devzone-cta .hp-devzone-arr { color: var(--dz-ink); }
+
+  /* ─── §相談 CTA additions ─── */
 
   /* Hero visual — v5 proof-crossing-the-border animation (light tonal-brown
      surface). The animated figure is the lead visual; the CLI is demoted to a
