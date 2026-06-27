@@ -127,11 +127,10 @@ const C = isJa ? {
   heroH1Line1: "データを渡さず、",
   heroH1Accent: "AI を動かす",
   heroH1Tail: "。",
-  heroEyebrow: "真正性のある AI データ基盤",
-  heroSubLead: "AI に渡すデータが「本物で、改ざんされていない」ことを、中身を見せずに証明します。",
-  heroSubChord: "第三者が独立して検証できる、AI のための信頼インフラです。",
-  heroPrimaryCta: "問い合わせる",
-  heroSecondaryCta: "ユースケースから探す",
+  heroSubLead: "真正性のある AI データ基盤。",
+  heroSubChord: "生データを渡さずに来歴・属性・実績を暗号的に証明し、第三者が独立して検証できるようにします。",
+  heroPrimaryCta: "ホワイトペーパーを無料 DL",
+  heroSecondaryCta: "ユースケースを見る",
   // §プラン3枚（業種で選ぶ）
   plansEyebrow: "エンタープライズ",
   plansH2: "業種で選ぶ、3 つのプラン。",
@@ -319,11 +318,10 @@ const C = isJa ? {
   heroH1Line1: "AI runs on",
   heroH1Accent: "proofs, not data",
   heroH1Tail: ".",
-  heroEyebrow: "An authentic data foundation for AI",
-  heroSubLead: "Prove that the data your AI consumes is genuine and untampered — without revealing its contents.",
-  heroSubChord: "Trust infrastructure for AI, verifiable by any third party.",
-  heroPrimaryCta: "Contact us",
-  heroSecondaryCta: "Explore use cases",
+  heroSubLead: "An authentic data foundation for AI.",
+  heroSubChord: "Prove provenance, attributes, and track record cryptographically — without ever sharing raw data — so third parties can verify independently.",
+  heroPrimaryCta: "Download the Whitepaper",
+  heroSecondaryCta: "See use cases",
   // §Plans (choose by sector)
   plansEyebrow: "Enterprise",
   plansH2: "Choose by sector — three plans.",
@@ -563,11 +561,10 @@ const panes = [
     <!-- HERO -->
     <section class="hp-hero">
       <div class="hp-hero-text">
-        <p class="hp-hero-eyebrow">{C.heroEyebrow}</p>
         <h1>{C.heroH1Line1}<br /><span class="hp-accent">{C.heroH1Accent}</span>{C.heroH1Tail}</h1>
         <p class="hp-hero-sub">{C.heroSubLead} <span class="hp-hero-sub-chord">{C.heroSubChord}</span></p>
         <div class="hp-hero-ctas">
-          <a href={contactHref} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} →</a>
+          <a href={whitepaperHref} target="_blank" rel="noopener" class="hp-btn-primary">{C.heroPrimaryCta} ↗</a>
           <a href={useCasesHref} class="hp-btn-secondary">{C.heroSecondaryCta} →</a>
         </div>
       </div>
@@ -847,8 +844,6 @@ const panes = [
   /* HERO */
   .hp-hero { max-width: 1320px; margin: 0 auto; padding: 96px 40px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 80px; align-items: center; }
   .hp-hero h1 { font-family: var(--hp-display); font-size: 76px; line-height: 1.04; letter-spacing: -0.035em; color: #000; margin: 0 0 28px; font-weight: 600; }
-  .hp-hero-eyebrow { font-family: var(--hp-mono); font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hp-brown); margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
-  .hp-hero-eyebrow::before { content: ""; display: inline-block; width: 26px; height: 1px; background: var(--hp-brown); }
   .hp-hero-sub { font-size: 17px; line-height: 1.8; color: var(--hp-text-2); margin: 0 0 40px; max-width: 520px; }
   .hp-hero-sub-chord { color: var(--hp-text-3); }
   .hp-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
