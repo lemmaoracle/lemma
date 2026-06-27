@@ -154,8 +154,6 @@ const C = isJa ? {
   devTrustLink: "Trust402 を見る",
   devZoneCta: "Dashboard を開く",
   // §相談 CTA（締め）
-  closingMono: "Models change. Proofs remain.",
-  closingTagline: "Built for decisions that matter.",
   termLabel: "lemma",
   termComm1: "1. 来歴証明",
   termComm2: "2. 検証可能 AI",
@@ -272,8 +270,8 @@ const C = isJa ? {
   // §6 products sub
   productsSub: "業務の理解を経て、用途に合わせて選べます。開発者向け SDK、エージェント開発者向けランタイム、大企業向け製品ライン。",
   // §7 discovery (action verb register)
-  discoveryH2Pre: "業務に乗るか、", discoveryH2Accent: "確かめる", discoveryH2Tail: "。",
-  discoveryBody: "30 分の対話で、御社の業務にどう乗るかを確認できます。機微情報の開示は不要です。",
+  discoveryH2Pre: "業務に合うか、", discoveryH2Accent: "確かめる", discoveryH2Tail: "。",
+  discoveryBody: "30 分の対話で、御社の業務にどう活かせるかを確認できます。機微情報の開示は不要です。",
   // dev tail
   devLabel: "For Developers", devTailStrong: "SDK ですぐ動かす。", devTailRest: "Seal の ZK サインインを、Dashboard から数行で。",
   devDash: "Dashboard を開く", devDocs: "Seal を見る",
@@ -345,8 +343,6 @@ const C = isJa ? {
   devTrustLink: "Explore Trust402",
   devZoneCta: "Open Dashboard",
   // §Closing CTA
-  closingMono: "Models change. Proofs remain.",
-  closingTagline: "Built for decisions that matter.",
   termLabel: "lemma",
   termComm1: "1. Verifiable Origin",
   termComm2: "2. Verifiable AI",
@@ -797,13 +793,11 @@ const panes = [
     <!-- §相談 CTA（締め） -->
     <section class="hp-disc">
       <div class="hp-disc-inner">
-        <p class="hp-disc-mono">{C.closingMono}</p>
         <h2 class="hp-disc-h2">{C.discoveryH2Pre}<span class="hp-accent">{C.discoveryH2Accent}</span>{C.discoveryH2Tail}</h2>
         <p class="hp-disc-body">{C.discoveryBody}</p>
         <div class="hp-disc-ctas">
           <a href={contactHref} target="_blank" rel="noopener" class="hp-disc-primary">{C.discoveryPrimary} →</a>
         </div>
-        <p class="hp-disc-tagline">{C.closingTagline}</p>
       </div>
     </section>
 
@@ -894,8 +888,6 @@ const panes = [
   .hp-devzone-cta .hp-devzone-arr { color: var(--dz-ink); }
 
   /* ─── §相談 CTA additions ─── */
-  .hp-disc-mono { font-family: var(--hp-display); font-style: italic; font-weight: 700; font-size: clamp(18px, 2.4vw, 24px); color: var(--hp-cream); opacity: 0.92; margin: 0 0 18px; }
-  .hp-disc-tagline { font-family: var(--hp-mono); font-size: 12px; letter-spacing: 0.16em; color: rgba(252, 250, 245, 0.5); margin: 26px 0 0; }
 
   /* Hero visual — v5 proof-crossing-the-border animation (light tonal-brown
      surface). The animated figure is the lead visual; the CLI is demoted to a
