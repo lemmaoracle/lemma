@@ -5,12 +5,15 @@
  * and a soft Discovery Call entry for Brief readers.
  */
 import type { Locale } from "../../i18n/translations";
+import { DISCOVERY_CALL_URL } from "../../config/cta";
 interface Props { locale: Locale; base: string }
 const { locale, base } = Astro.props as Props;
 const isJa = locale === "ja";
 
 const briefHref = `${base}/critical/briefs/`;
-const contactHref = `${base}/contact/`;
+// Inquiry CTA — the standard Discovery Call form per locale (ja=EkBqDX, en=Pd2Rl5).
+// Previously pointed at `${base}/contact/`, a route that does not exist (404).
+const contactHref = DISCOVERY_CALL_URL[locale];
 
 const C = isJa ? {
   eyebrow: "脅威への対応",
@@ -36,7 +39,7 @@ const C = isJa ? {
     </div>
     <div class="ba-right">
       <a class="ba-btn" href={briefHref}>{C.primary}</a>
-      <a class="ba-sub" href={contactHref}>{C.secondary}</a>
+      <a class="ba-sub" href={contactHref} target="_blank" rel="noopener">{C.secondary}</a>
     </div>
   </div>
 </section>

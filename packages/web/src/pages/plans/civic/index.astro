@@ -1,0 +1,10 @@
+---
+import CivicTemplate from "../../../templates/CivicTemplate.astro";
+import { getTranslations } from "../../../i18n/translations";
+
+const locale = "en" as const;
+const t = getTranslations(locale);
+const base = "" as const;
+---
+
+<CivicTemplate locale={locale} t={t} base={base} />

@@ -1,0 +1,72 @@
+---
+/**
+ * Inline SVG icon switch for the Civic plan page.
+ * One-color saddle-brown stroke per the design system (matches
+ * SolutionsIcon / PricingIcon). Names mirror the Wave 1 mockup's Tabler
+ * icons so the page reflects the agreed iconography without pulling in an
+ * external icon webfont:
+ *   check        ← ti-circle-check   (§2 資格・条件確認)
+ *   history      ← ti-history        (§2 来歴の記録)
+ *   template     ← ti-template       (§2 標準テンプレート)
+ *   shield-check ← ti-shield-check   (§3 つなぎ / §4 確かめる)
+ *   inbox        ← ti-inbox          (§4 集める)
+ *   database     ← ti-database-cog   (§4 残す・活かす)
+ */
+export type CivicIconName = "check" | "history" | "template" | "shield-check" | "inbox" | "database";
+
+interface Props {
+  name: CivicIconName;
+  size?: number;
+  /** Stroke color. Defaults to the design-system saddle brown; pass a light
+   *  value (e.g. on a dark band) where brown would not read. */
+  color?: string;
+}
+
+const { name, size = 28, color = "#8B4513" } = Astro.props as Props;
+const stroke = color;
+---
+
+{name === "check" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <circle cx="18" cy="18" r="13" stroke={stroke} stroke-width="1.8" />
+    <path d="M 12 18 L 16 22 L 24 13" stroke={stroke} stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "history" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <path d="M 7 18 A 11 11 0 1 0 11 9.6" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <polyline points="6.5 8.5 6.5 14 12 14" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 18 12.5 L 18 18 L 22 20.5" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "template" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="7" y="7" width="22" height="22" rx="2.5" stroke={stroke} stroke-width="1.8" />
+    <line x1="7" y1="14" x2="29" y2="14" stroke={stroke} stroke-width="1.8" />
+    <line x1="16" y1="14" x2="16" y2="29" stroke={stroke} stroke-width="1.8" />
+  </svg>
+)}
+
+{name === "shield-check" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <path d="M 18 5 L 29 9 L 29 18 Q 29 26 18 31 Q 7 26 7 18 L 7 9 Z" stroke={stroke} stroke-width="1.8" fill="none" />
+    <path d="M 13 18 L 17 22 L 24 14" stroke={stroke} stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "inbox" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <rect x="6" y="7" width="24" height="22" rx="2.5" stroke={stroke} stroke-width="1.8" />
+    <path d="M 6 21 L 13 21 L 15 24 L 21 24 L 23 21 L 30 21" stroke={stroke} stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === "database" && (
+  <svg width={size} height={size} viewBox="0 0 36 36" fill="none" aria-hidden="true">
+    <ellipse cx="18" cy="9" rx="10" ry="4" stroke={stroke} stroke-width="1.8" />
+    <path d="M 8 9 L 8 21 Q 8 25 18 25 Q 28 25 28 21 L 28 9" stroke={stroke} stroke-width="1.8" fill="none" />
+    <path d="M 8 15 Q 8 19 18 19 Q 28 19 28 15" stroke={stroke} stroke-width="1.8" fill="none" opacity="0.7" />
+  </svg>
+)}
