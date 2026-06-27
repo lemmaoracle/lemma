@@ -63,7 +63,6 @@ const FIG = isJa
 const contactHref = DISCOVERY_CALL_URL[locale];
 const useCasesHref = `${base}/solutions/use-cases/`;
 const pillarsHref = `${base}/pillars/`;
-const guidesHref = `${base}/guides/`;
 const trust402Href = base ? `${base}/trust402/` : "/trust402/";
 const industriesHref = `${base}/solutions/`;
 const sealHref = `${base}/seal/`;
@@ -151,9 +150,9 @@ const C = isJa ? {
   devZoneH2: "鍵ではなく、証明を。コードで。",
   devTerminal: "$ npm i @lemmaoracle/sdk",
   devSealDesc: "鍵ではなく、証明を送る。ZK サインイン SDK を数行で。",
-  devSealLink: "Dashboard で試す",
+  devSealLink: "Seal を見る",
   devTrustDesc: "鍵を持たずに、AI を動かす。コールごとの権限委任。x402 / MCP。",
-  devTrustLink: "ドキュメントを見る",
+  devTrustLink: "Trust402 を見る",
   devZoneCta: "Dashboard を開く",
   // §相談 CTA（締め）
   closingMono: "Models change. Proofs remain.",
@@ -343,9 +342,9 @@ const C = isJa ? {
   devZoneH2: "Proofs, not keys. In code.",
   devTerminal: "$ npm i @lemmaoracle/sdk",
   devSealDesc: "Send a proof, not the key. A ZK sign-in SDK in a few lines.",
-  devSealLink: "Try it in Dashboard",
+  devSealLink: "Explore Seal",
   devTrustDesc: "Run AI without holding keys. Per-call delegation. x402 / MCP.",
-  devTrustLink: "Read the docs",
+  devTrustLink: "Explore Trust402",
   devZoneCta: "Open Dashboard",
   // §Closing CTA
   closingMono: "Models change. Proofs remain.",
@@ -714,12 +713,12 @@ const panes = [
           <div class="hp-devzone-card">
             <span class="hp-devzone-fn">seal()</span>
             <p class="hp-devzone-desc">{C.devSealDesc}</p>
-            <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-devzone-link">{C.devSealLink} <span class="hp-devzone-arr">&#8250;</span></a>
+            <a href={sealHref} class="hp-devzone-link">{C.devSealLink} <span class="hp-devzone-arr">&#8250;</span></a>
           </div>
           <div class="hp-devzone-card">
             <span class="hp-devzone-fn">trust402()</span>
             <p class="hp-devzone-desc">{C.devTrustDesc}</p>
-            <a href={guidesHref} class="hp-devzone-link">{C.devTrustLink} <span class="hp-devzone-arr">&#8250;</span></a>
+            <a href={trust402Href} class="hp-devzone-link">{C.devTrustLink} <span class="hp-devzone-arr">&#8250;</span></a>
           </div>
         </div>
         <a href={DASHBOARD_URL} target="_blank" rel="noopener" class="hp-devzone-cta"><span class="hp-devzone-arr">&#8250;</span> {C.devZoneCta}</a>
