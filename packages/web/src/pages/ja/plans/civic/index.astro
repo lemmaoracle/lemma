@@ -26,7 +26,6 @@ const t = getTranslations(locale);
 const base = "/ja" as const;
 
 const contactUrl = DISCOVERY_CALL_URL[locale];
-const pillarsUrl = `${base}/pillars/`;
 const useCasesUrl = `${base}/solutions/use-cases/`;
 
 const metaTitle =
@@ -257,11 +256,9 @@ const useCases = [
 
       <!-- §9 締め -->
       <section class="cv-close">
-        <p class="cv-close-line">Models change. Proofs remain.</p>
-        <a href={pillarsUrl} class="cv-close-pillars">仕組み（4 柱）を見る →</a>
         <div class="cv-close-band">
-          <h2 class="cv-close-h2">業務に乗るか、一緒に確かめます。</h2>
-          <p class="cv-close-sub">導入のご相談・お見積もり・ご検討、まずはお気軽に。</p>
+          <h2 class="cv-close-h2">エンジニアが現場に入り、伴走します。</h2>
+          <p class="cv-close-sub">製品を渡して終わり、にはしません。PoC から本番まで、いつもの運用を止めずに一緒に組み立てます。</p>
           <a href={contactUrl} class="cv-btn-primary" target="_blank" rel="noopener">問い合わせる</a>
         </div>
         <p class="cv-close-tagline">Built for decisions that matter.</p>
@@ -685,26 +682,8 @@ const useCases = [
     border-top: 0.5px solid var(--lemma-line);
     text-align: center;
   }
-  .cv-close-line {
-    font-family: var(--cv-display);
-    font-size: clamp(20px, 2.6vw, 26px);
-    font-weight: 700;
-    font-style: italic;
-    color: var(--black);
-    letter-spacing: -0.01em;
-    margin: 0 0 12px;
-  }
-  .cv-close-pillars {
-    font-family: var(--cv-display);
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .cv-close-pillars:hover { color: #6e3610; }
   .cv-close-band {
-    margin: 48px 0 40px;
+    margin: 0 0 40px;
     padding: 52px 36px;
     background: var(--lemma-cream-deep);
     border-radius: 20px;
