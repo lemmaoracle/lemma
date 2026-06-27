@@ -3,6 +3,7 @@ import type { Locale } from "../i18n/translations";
 import type { Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
 import { DASHBOARD_URL } from "../config/cta";
+import { SEGMENT_URLS } from "../config/navigation";
 
 interface Props {
   locale: Locale;
@@ -14,11 +15,14 @@ const { locale, t, base } = Astro.props;
 const blogPath = base ? `${base}/blog` : "/blog";
 const faqPath = base ? `${base}/faq` : "/faq";
 const pricingPath = base ? `${base}/pricing` : "/pricing";
-const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
+const guidesPath = base ? `${base}/guides` : "/guides";
+const sealHref = base ? `${base}/seal/` : "/seal/";
+const trust402Href = locale === "ja" ? "/ja/trust402/" : "/trust402/";
+const plansPrefix = base ? `${base}/plans` : "/plans";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
 // Nav CTA routes to the self-serve Dashboard ("Get Started"), not the
 // Discovery Call. The Discovery Call lives in in-page CTAs (Pillar / UC /
@@ -55,8 +59,11 @@ const startsWith = (prefix: string): boolean =>
   prefix !== "" && currentPath.startsWith(prefix);
 
 const isPillarsActive = startsWith(pillarsPath);
-const isProductsActive =
-  startsWith(servicesPath) || startsWith(pricingPath) || currentPath.startsWith("/trust402");
+const isPlansActive = startsWith(plansPrefix) || startsWith(pricingPath);
+const isDevActive =
+  startsWith(base ? `${base}/seal` : "/seal") ||
+  currentPath.includes("/trust402") ||
+  startsWith(guidesPath);
 const isSolutionsActive = startsWith(useCasesPath);
 const isResourcesActive =
   startsWith(blogPath) ||
@@ -73,75 +80,35 @@ const isResourcesActive =
 
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
-    <!-- 1. Trust Infrastructure / 信頼インフラ -->
+    <!-- 1. プラン — enterprise plans by name + pricing -->
     <li class="mega-nav-item">
-      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
+      <a href={pricingPath} class:list={["mega-nav-link has-mega", { active: isPlansActive }]}>{t.services}</a>
       <div class="mega-panel">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.pillars.label}</div>
-          <div class="mega-links">
-            <a href={pillarsPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.overview}</span>
-              <span class="mega-link-sub">{t.mega.pillars.overviewSub}</span>
-            </a>
-            <a href={`${pillarsPath}/verifiable-origin/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar01}</span>
-            </a>
-            <a href={`${pillarsPath}/verifiable-ai/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar02}</span>
-            </a>
-            <a href={`${pillarsPath}/agent-authority-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar03}</span>
-            </a>
-            <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar04}</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </li>
-
-    <!-- 2. 製品 -->
-    <li class="mega-nav-item">
-      <a href={servicesPath} class:list={["mega-nav-link has-mega", { active: isProductsActive }]}>{t.services}</a>
-      <div class="mega-panel">
-        <!-- Seal — for developers -->
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.developer}</div>
-          <div class="mega-links">
-            <a href={base ? `${base}/seal/` : "/seal/"} class="mega-link">
-              <span class="mega-link-title">Seal</span>
-              <span class="mega-link-sub">{t.mega.products.sealSub}</span>
-            </a>
-          </div>
-        </div>
-        <!-- Trust402 — for agent developers -->
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.agentDeveloper}</div>
-          <div class="mega-links">
-            <a href={locale === "ja" ? "/ja/trust402/" : "/trust402/"} class="mega-link" target="_blank">
-              <span class="mega-link-title">{t.mega.products.trust402}</span>
-              <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
-            </a>
-          </div>
-        </div>
-        <!-- Industries — for enterprises (consulting-driven; the Solutions hub
-             carries the discovery conversation, pricing surfaces from there) -->
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
           <div class="mega-links">
-            <a href={servicesPath} class="mega-link">
-              <span class="mega-link-title">Industries</span>
-              <span class="mega-link-sub">{t.mega.products.industriesSub}</span>
+            <a href={SEGMENT_URLS.civic[locale]} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.civic}</span>
+              <span class="mega-link-sub">{t.mega.products.civicSub}</span>
+            </a>
+            <a href={SEGMENT_URLS.critical[locale]} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.critical}</span>
+              <span class="mega-link-sub">{t.mega.products.criticalSub}</span>
+            </a>
+            <a href={SEGMENT_URLS.compliance[locale]} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.compliance}</span>
+              <span class="mega-link-sub">{t.mega.products.complianceSub}</span>
+            </a>
+            <a href={pricingPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.products.pricing}</span>
+              <span class="mega-link-sub">{t.mega.products.pricingSub}</span>
             </a>
           </div>
         </div>
       </div>
     </li>
 
-    <!-- 3. ソリューション — top-level lands on the use-cases listing so
-         visitors browsing the nav land directly on concrete examples. The
-         consulting-led /solutions/ hub is reached via Products → Industries. -->
+    <!-- 2. ユースケース — lands on the use-cases listing -->
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       {locale === "ja" ? (
@@ -187,9 +154,62 @@ const isResourcesActive =
       )}
     </li>
 
-    <!-- 4. Resources — Critical Brief leads (mirrors the Footer ordering),
-         followed by blog / whitepaper / glossary / FAQ. Pricing access lives
-         inside the Products mega-panel per CTO direction. -->
+    <!-- 3. 仕組み — the four pillars -->
+    <li class="mega-nav-item">
+      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
+      <div class="mega-panel">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.pillars.label}</div>
+          <div class="mega-links">
+            <a href={pillarsPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.overview}</span>
+              <span class="mega-link-sub">{t.mega.pillars.overviewSub}</span>
+            </a>
+            <a href={`${pillarsPath}/verifiable-origin/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar01}</span>
+            </a>
+            <a href={`${pillarsPath}/verifiable-ai/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar02}</span>
+            </a>
+            <a href={`${pillarsPath}/agent-authority-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar03}</span>
+            </a>
+            <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar04}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <!-- 4. 開発者 — self-serve lane (Seal / Trust402 / Dashboard / specs) -->
+    <li class="mega-nav-item">
+      <a href={sealHref} class:list={["mega-nav-link has-mega", { active: isDevActive }]}>{t.developers}</a>
+      <div class="mega-panel">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.developers.label}</div>
+          <div class="mega-links">
+            <a href={sealHref} class="mega-link">
+              <span class="mega-link-title">Seal</span>
+              <span class="mega-link-sub">{t.mega.products.sealSub}</span>
+            </a>
+            <a href={trust402Href} class="mega-link" target="_blank">
+              <span class="mega-link-title">{t.mega.products.trust402}</span>
+              <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
+            </a>
+            <a href={getStartedHref} class="mega-link" target="_blank" rel="noopener">
+              <span class="mega-link-title">{t.dashboardCta}</span>
+            </a>
+            <a href={guidesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.developers.specs}</span>
+              <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <!-- 5. リソース — Critical Brief leads; FAQ lives here (not top-level) -->
     <li class="mega-nav-item">
       <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
       <div class="mega-panel mega-panel-right">
@@ -215,9 +235,6 @@ const isResourcesActive =
         </div>
       </div>
     </li>
-    <!-- FAQ is intentionally NOT a top-level item: it already lives in the
-         Resources mega-panel above (and the mobile menu), so a top-level entry
-         duplicated it. Top-level is reserved for the primary sections. -->
   </ul>
 
   <div class="mega-nav-right">
@@ -235,22 +252,12 @@ const isResourcesActive =
   <!-- MOBILE DRAWER -->
   <div class="nav-mobile-drawer" id="navMobileDrawer">
     <div class="mob-section">
-      <div class="mob-section-header">{t.pillars} <span class="mob-arrow"></span></div>
-      <div class="mob-section-body">
-        <a href={pillarsPath} class="mob-link">{t.mega.pillars.overview}</a>
-        <a href={`${pillarsPath}/verifiable-origin/`} class="mob-link">{t.mega.pillars.pillar01}</a>
-        <a href={`${pillarsPath}/verifiable-ai/`} class="mob-link">{t.mega.pillars.pillar02}</a>
-        <a href={`${pillarsPath}/agent-authority-proof/`} class="mob-link">{t.mega.pillars.pillar03}</a>
-        <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mob-link">{t.mega.pillars.pillar04}</a>
-      </div>
-    </div>
-
-    <div class="mob-section">
       <div class="mob-section-header">{t.services} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
-        <a href={base ? `${base}/seal/` : "/seal/"} class="mob-link">Seal<small>{t.mega.products.sealSub}</small></a>
-        <a href={locale === "ja" ? "/ja/trust402/" : "/trust402/"} class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
-        <a href={servicesPath} class="mob-link">Industries<small>{t.mega.products.industriesSub}</small></a>
+        <a href={SEGMENT_URLS.civic[locale]} class="mob-link">{t.mega.products.civic}<small>{t.mega.products.civicSub}</small></a>
+        <a href={SEGMENT_URLS.critical[locale]} class="mob-link">{t.mega.products.critical}<small>{t.mega.products.criticalSub}</small></a>
+        <a href={SEGMENT_URLS.compliance[locale]} class="mob-link">{t.mega.products.compliance}<small>{t.mega.products.complianceSub}</small></a>
+        <a href={pricingPath} class="mob-link">{t.mega.products.pricing}<small>{t.mega.products.pricingSub}</small></a>
       </div>
     </div>
 
@@ -273,6 +280,27 @@ const isResourcesActive =
             <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
           </>
         )}
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <div class="mob-section-header">{t.pillars} <span class="mob-arrow"></span></div>
+      <div class="mob-section-body">
+        <a href={pillarsPath} class="mob-link">{t.mega.pillars.overview}</a>
+        <a href={`${pillarsPath}/verifiable-origin/`} class="mob-link">{t.mega.pillars.pillar01}</a>
+        <a href={`${pillarsPath}/verifiable-ai/`} class="mob-link">{t.mega.pillars.pillar02}</a>
+        <a href={`${pillarsPath}/agent-authority-proof/`} class="mob-link">{t.mega.pillars.pillar03}</a>
+        <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mob-link">{t.mega.pillars.pillar04}</a>
+      </div>
+    </div>
+
+    <div class="mob-section">
+      <div class="mob-section-header">{t.developers} <span class="mob-arrow"></span></div>
+      <div class="mob-section-body">
+        <a href={sealHref} class="mob-link">Seal<small>{t.mega.products.sealSub}</small></a>
+        <a href={trust402Href} class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
+        <a href={getStartedHref} class="mob-link" target="_blank" rel="noopener">{t.dashboardCta}</a>
+        <a href={guidesPath} class="mob-link">{t.mega.developers.specs}<small>{t.mega.developers.specsSub}</small></a>
       </div>
     </div>
 
