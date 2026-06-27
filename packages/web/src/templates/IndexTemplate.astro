@@ -1360,7 +1360,7 @@ const panes = [
   .hp-values-inner { max-width: 1240px; margin: 0 auto; background: var(--hp-brown-light); border-radius: 12px; padding: 52px 48px; }
   .hp-values-h2 { font-family: var(--hp-display); font-weight: 700; font-size: 42px; line-height: 1.2; color: var(--hp-text-1); letter-spacing: -0.025em; margin: 0 0 48px; }
   .hp-values-h2 .hp-accent { color: var(--hp-brown); }
-  .hp-values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 0 0 44px; }
+  .hp-values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; margin: 0 0 44px; }
   .hp-value-card { display: flex; flex-direction: column; gap: 12px; }
   .hp-value-icon { width: 44px; height: 44px; color: var(--hp-brown); }
   .hp-value-label { font-family: var(--hp-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hp-brown); font-weight: 700; }
@@ -1415,10 +1415,27 @@ const panes = [
     .hp-u-card { padding: 24px; margin-bottom: 14px; }
     .hp-u-num { position: absolute; left: -48px; top: 24px; margin: 0; width: 48px; height: 48px; font-size: 13px; }
     .hp-u-tag { text-align: left; }
-    .hp-values { padding: 40px 24px; }
-    .hp-values-inner { padding: 40px 28px; }
-    .hp-values-h2 { font-size: 28px; }
-    .hp-values-grid { grid-template-columns: 1fr; gap: 32px; }
+    /* §3 values — the 42px heading + 52px banner padding dominate the phone
+       viewport; shrink heading + padding, single-column the cards, tighten. */
+    .hp-values { padding: 40px 22px; }
+    .hp-values-inner { padding: 30px 24px; }
+    .hp-values-h2 { font-size: 25px; line-height: 1.3; margin: 0 0 28px; }
+    .hp-values-grid { grid-template-columns: 1fr; gap: 20px; margin: 0 0 30px; }
+    .hp-value-card { gap: 8px; }
+    .hp-value-icon { width: 36px; height: 36px; }
+    .hp-value-h3 { font-size: 19px; line-height: 1.4; }
+    .hp-value-desc { font-size: 14.5px; line-height: 1.7; }
+    .hp-values-link { padding: 13px 26px; font-size: 14px; }
+    /* §プラン3枚 / §開発者ゾーン — trim large vertical padding + tighten cards */
+    .hp-plans { padding: 48px 22px; }
+    .hp-plans-head { margin: 0 0 26px; }
+    .hp-plans-grid { gap: 12px; }
+    .hp-plan-card { padding: 24px 22px; }
+    .hp-devzone-inner { padding: 48px 22px; }
+    .hp-devzone-h2 { font-size: 25px; line-height: 1.3; }
+    .hp-devzone-term { font-size: 13px; padding: 13px 16px; }
+    .hp-devzone-cards { gap: 12px; }
+    .hp-devzone-card { padding: 22px 22px; }
     .hp-scenes { padding: 40px 24px; }
     .hp-scenes-h2 { font-size: 28px; }
     .hp-industries-grid { grid-template-columns: 1fr; gap: 12px; }
