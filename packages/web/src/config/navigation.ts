@@ -15,17 +15,17 @@ export const SEGMENT_URLS: Readonly<
   Record<SegmentSlug, Readonly<Record<Locale, string>>>
 > = {
   civic: {
-    // Dedicated Civic plan pages (Wave 1), both locales.
+    // Dedicated plan pages, both locales.
     ja: "/ja/plans/civic/",
     en: "/plans/civic/",
   },
   critical: {
-    ja: "/ja/pricing/#critical",
-    en: "/pricing/#critical",
+    ja: "/ja/plans/critical/",
+    en: "/plans/critical/",
   },
   compliance: {
-    ja: "/ja/pricing/#compliance",
-    en: "/pricing/#compliance",
+    ja: "/ja/plans/compliance/",
+    en: "/plans/compliance/",
   },
 } as const;
 

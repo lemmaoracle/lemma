@@ -1,20 +1,21 @@
 ---
 /**
- * Lemma Civic — plan page for government & the public sector (B2B2G).
- * Single source for BOTH locales: thin page wrappers
- * (pages/ja/plans/civic/, pages/plans/civic/) pass locale/t/base in.
+ * Plan page for the enterprise segments — Civic / Critical / Compliance.
+ * One template for all three plans × both locales: thin page wrappers
+ * (pages/{ja/,}plans/<key>/) pass locale/t/base/planKey in; copy comes from
+ * data/plans.ts via getPlanContent(planKey, locale).
  *
- * Wave 1 confirmed copy. Buyer-facing, product-fit framing, FDE-led (talk
- * first), pricing on request (no ¥ / no figures).
+ * Buyer-facing, product-fit framing, FDE-led (talk first), pricing on request
+ * (no ¥ / no figures).
  *
  * Permission gate: PRE-permission at launch. The MizuDAkO engagement must not
  * appear anywhere —
  *   - no achievement badge in the hero
- *   - §6 shows an "illustrative scenario" (NOT a case study); no water-infra /
- *     civic-participation / municipality-name context
+ *   - §6 shows an "illustrative scenario" (NOT a case study); no client- or
+ *     site-identifying context
  * After permission (press-release linked) the badge + a real case study replace
  * those; see the "POST-permission:" comments. Identifying wording lives in the
- * Wave 1 spec, never in this source.
+ * spec, never in this source.
  *
  * Accent = saddle brown #8B4513 (matches the global --accent).
  * Locale typography: JA uses Noto Sans JP + slightly looser line-heights (the
@@ -28,183 +29,25 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import CivicIcon, { type CivicIconName } from "../components/civic/CivicIcon.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
+import { getPlanContent, type PlanKey } from "../data/plans";
 
 interface Props {
   locale: Locale;
   t: Translations;
   base: string;
+  planKey: PlanKey;
 }
 
-const { locale, t, base } = Astro.props as Props;
-const isJa = locale === "ja";
+const { locale, t, base, planKey } = Astro.props as Props;
 
 const contactUrl = DISCOVERY_CALL_URL[locale];
 const useCasesUrl = `${base}/solutions/use-cases/`;
+const C = getPlanContent(planKey, locale);
 
-// Icons are locale-independent — kept here, zipped by index with the per-locale
-// copy below, so the glyph assignments live in exactly one place.
+// Icons are locale- and plan-independent (same section structure for every
+// plan), zipped by index with the per-plan copy from data/plans.ts.
 const doIcons: readonly CivicIconName[] = ["check", "history", "template"];
 const flowIcons: readonly CivicIconName[] = ["inbox", "shield-check", "database"];
-
-const C = isJa
-  ? {
-      meta: {
-        title:
-          "Lemma Civic — 自治体の記録を、AI に任せられる確かなデータに｜公共・自治体向けプラン",
-        desc:
-          "窓口・給付・住民参加など自治体の現場で生まれる記録に、中身を見せずに真正性を付与。個人情報を見せず、いつもの運用のまま AI 活用へ。公共・自治体（B2B2G）向け、拠点数ベースの段階プラン。",
-      },
-      hero: {
-        badgeTag: "プラン",
-        seg: "公共・自治体（B2B2G）",
-        h1a: "自治体の現場で生まれる記録を、",
-        h1b: "AI が安全に使えるデータに。",
-        lead: "窓口対応・給付・福祉相談・住民参加など、現場で生まれる記録に、中身を見せずに改ざん不能な来歴と真正性を付与します。個人情報を見せずに、AI が安心して使えるデータ基盤を、いつもの運用を変えずに構築できます。",
-        ctaLabel: "問い合わせる",
-        ctaNote: "導入のご相談・お見積もり・ご検討から。",
-      },
-      doSec: {
-        label: "このプランでできること",
-        h: "中身を見せずに、確かさだけを渡す。",
-        items: [
-          { h: "資格・条件を中身を見せず確認", p: "受給資格・年齢・資格などを、個人情報を出さずに。" },
-          { h: "改ざん不能な来歴の記録", p: "監査と説明責任のための、書き換えられない記録。" },
-          { h: "標準テンプレートで小さく", p: "公共向けひな型から、特定の業務ひとつを選んで。" },
-        ],
-      },
-      bridge: {
-        quote: "持たないから、流出しない。任せても、証拠は残る。",
-        body: "Lemma が現場と AI の間に入り、中身は渡さずに「確かさ」だけを受け渡します。むずかしい処理は引き受けるので、いつもの業務のまま、安心して任せられます。",
-      },
-      flow: {
-        label: "運用イメージ（いつもの業務のまま）",
-        h: "新しい操作は、増えません。",
-        items: [
-          { n: "01", h: "集める", lead: "住民・事業者が記録を出す", p: "いつもの申請・活動のまま。新しい操作は増えません。" },
-          { n: "02", h: "確かめる", lead: "職員は中身を見ずに確認", p: "「条件を満たす・本物である」だけを確認して処理を進める。" },
-          { n: "03", h: "残す・活かす", lead: "改ざんなく残り、AI に使える", p: "監査でも AI 活用でも、後から検証できる形で残ります。" },
-        ],
-      },
-      tiers: {
-        label: "対象とプラン構成",
-        h: "拠点数に応じた、段階プラン。",
-        body: "自治体・公益事業者、および B2B2G で市民向けサービスを提供する事業者向けです。複数拠点・複数自治体への展開にも、拠点数に応じた段階プランで対応します。",
-        items: [
-          { name: "Tier 1", range: "1〜3 拠点" },
-          { name: "Tier 2", range: "4〜10 拠点" },
-          { name: "Tier 3", range: "11+ 拠点（カスタム）" },
-        ],
-        note: "年契約・拠点数ベース。拠点や利用が増えたら上位ティアへアップグレード。標準サーキット・テンプレート構成。",
-      },
-      caseSec: {
-        label: "活用例 ［想定シナリオ］",
-        h: "補助金・給付の受給資格証明",
-        body: "所得や属性の中身を出さず「受給要件を満たす」ことだけを証明し、給付主体が検証できます。標準テンプレートで構成できる、Civic の代表的な使い方です。",
-      },
-      steps: {
-        label: "進め方（一緒に作る・既存運用は止めない）",
-        h: "小さく始めて、止めずに広げる。",
-        items: [
-          { n: "01", h: "お問い合わせ", lead: "ご相談・ご検討から", p: "30 分の対話も。機微情報の開示は不要。" },
-          { n: "02", h: "PoC", lead: "区切った範囲で実証", p: "1 シナリオで実装・検証。" },
-          { n: "03", h: "本番", lead: "既存運用を変えず展開", p: "前段に重ねるだけ。共存運用。" },
-        ],
-      },
-      uc: {
-        label: "このプランのユースケース",
-        h: "課題から選べます。",
-        items: [
-          "補助金・給付の受給資格証明（給付）",
-          "公共サービスの適格性証明（窓口）",
-          "長期契約の記録・見積の証明（契約）",
-          "有資格者の配置・安全教育の証明（人材）",
-        ],
-        all: "すべて見る →",
-      },
-      close: {
-        h: "導入して終わり、にはしません。",
-        sub: "エンジニアが現場に入り、伴走します。導入はもちろん、業務やシステムとの連携もご相談ください。",
-      },
-    }
-  : {
-      meta: {
-        title:
-          "Lemma Civic — Turn public-sector records into data you can trust your AI with | Plan for government & public services",
-        desc:
-          "Give the records your public-sector operations generate — front desk, benefits, civic participation — verifiable authenticity without revealing their contents. No personal data exposed, no change to how you already work. For government and public services (B2B2G), tiered by the number of sites.",
-      },
-      hero: {
-        badgeTag: "Plan",
-        seg: "Government & public sector (B2B2G)",
-        h1a: "Turn everyday public-sector records",
-        h1b: "into data AI can safely use.",
-        lead: "For the records your front line generates — service desks, benefits, welfare consultations, civic participation — Lemma adds tamper-proof provenance and authenticity, without ever revealing what's inside. The result is a data foundation your AI can rely on: no personal information exposed, and no change to how you already work.",
-        ctaLabel: "Contact us",
-        ctaNote: "Start with a conversation — about fit, scope, or pricing.",
-      },
-      doSec: {
-        label: "What this plan does",
-        h: "Pass on the certainty, not the contents.",
-        items: [
-          { h: "Verify eligibility without revealing the contents", p: "Confirm eligibility, age, or qualifications — without exposing personal data." },
-          { h: "Tamper-proof provenance records", p: "Unalterable records for audit and accountability." },
-          { h: "Start small with standard templates", p: "Pick one workflow from ready-made public-sector templates." },
-        ],
-      },
-      bridge: {
-        quote: "Hold nothing, leak nothing. Delegate the work — keep the proof.",
-        body: "Lemma sits between your front line and your AI, passing along only the certainty — never the contents. It takes on the hard parts, so you can keep working exactly as you do today and hand it off with confidence.",
-      },
-      flow: {
-        label: "How it works (no change to daily operations)",
-        h: "No new steps to learn.",
-        items: [
-          { n: "01", h: "Collect", lead: "Residents and businesses submit records", p: "Through the same applications and activities as always — no new steps." },
-          { n: "02", h: "Verify", lead: "Staff confirm without seeing the contents", p: "Confirm only that it meets the criteria and is genuine, then proceed." },
-          { n: "03", h: "Keep & use", lead: "Stored tamper-proof, ready for AI", p: "Kept in a form you can verify later — for audits and for AI alike." },
-        ],
-      },
-      tiers: {
-        label: "Who it's for & plan structure",
-        h: "Tiered by number of sites.",
-        body: "For municipalities, public utilities, and businesses delivering citizen-facing services under a B2B2G model. Rollouts across multiple sites or municipalities are covered by tiers that scale with the number of sites.",
-        items: [
-          { name: "Tier 1", range: "1–3 sites" },
-          { name: "Tier 2", range: "4–10 sites" },
-          { name: "Tier 3", range: "11+ sites (custom)" },
-        ],
-        note: "Annual contract, priced by the number of sites. Upgrade to a higher tier as sites or usage grow. Built on standard circuits and templates.",
-      },
-      caseSec: {
-        label: "Use case [illustrative scenario]",
-        h: "Proving eligibility for subsidies and benefits",
-        body: "Prove only that the eligibility requirements are met — without disclosing income or attributes — so the issuing body can verify it. A representative Civic use case that can be built from standard templates.",
-      },
-      steps: {
-        label: "How we engage (we build it with you — without stopping your operations)",
-        h: "Start small, scale without disruption.",
-        items: [
-          { n: "01", h: "Get in touch", lead: "Start with a conversation", p: "A 30-minute talk works too. No sensitive information required." },
-          { n: "02", h: "PoC", lead: "Prove it in a bounded scope", p: "Build and validate one scenario." },
-          { n: "03", h: "Production", lead: "Roll out without changing your operations", p: "Layer it in front — it runs alongside what you already have." },
-        ],
-      },
-      uc: {
-        label: "Use cases in this plan",
-        h: "Pick by the problem you're solving.",
-        items: [
-          "Eligibility proof for subsidies and benefits (Payments)",
-          "Eligibility proof for public services (Front desk)",
-          "Proof of records and quotes for long-term contracts (Contracts)",
-          "Proof of qualified staffing and safety training (Workforce)",
-        ],
-        all: "See all →",
-      },
-      close: {
-        h: "We don't deploy and walk away.",
-        sub: "Our engineers embed with your team and stay alongside you. Talk to us about deployment — and about integrating with your operations and systems.",
-      },
-    };
 ---
 
 <Layout
@@ -212,7 +55,7 @@ const C = isJa
   title={C.meta.title}
   description={C.meta.desc}
   metaType="page"
-  pagePath="/plans/civic/"
+  pagePath={`/plans/${planKey}/`}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
@@ -225,7 +68,7 @@ const C = isJa
         <div class="cv-hero-tags">
           <span class="cv-hero-badge">
             <span class="cv-hero-badge-tag">{C.hero.badgeTag}</span>
-            <span class="cv-hero-badge-name">Lemma Civic</span>
+            <span class="cv-hero-badge-name">{C.hero.name}</span>
           </span>
           <span class="cv-hero-seg">{C.hero.seg}</span>
         </div>
