@@ -89,9 +89,6 @@ const planName: Readonly<Record<string, string>> = {
   critical: "Lemma Critical",
   compliance: "Lemma Compliance",
 };
-const planNote = isJa
-  ? "課題に近ければ、まずはこのプランから相談できます。"
-  : "If this is close to your problem, you can start the conversation from this plan.";
 const hideProve = getUseCaseHideProve(useCase.slug, locale);
 // v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
 // get the authored §1 personas + §2 Before/After (now bilingual); everything
@@ -203,9 +200,7 @@ const breadcrumbJsonLd = {
         </div>
         {planKey && (
           <a class="ucd-plan" href={SEGMENT_URLS[planKey][locale]}>
-            <span class="ucd-plan-pill">🔔 {isJa ? "対応プラン" : "Plan"} · {planName[planKey]}</span>
-            <span class="ucd-plan-note">{planNote}</span>
-            <span class="ucd-plan-go" aria-hidden="true">→</span>
+            <span class="ucd-plan-pill">🔔 {isJa ? "対応プラン" : "Plan"} · {planName[planKey]} →</span>
           </a>
         )}
       </header>
@@ -568,19 +563,6 @@ const breadcrumbJsonLd = {
     border-radius: 999px;
     padding: 5px 14px;
     white-space: nowrap;
-  }
-  .ucd-plan-note {
-    font-size: 13px;
-    color: var(--ucd-text-3);
-    line-height: 1.6;
-  }
-  .ucd-plan-go {
-    color: var(--accent);
-    font-weight: 600;
-    transition: transform 0.2s;
-  }
-  .ucd-plan:hover .ucd-plan-go {
-    transform: translateX(3px);
   }
 
   /* ─── TOC CARD (visual section index under hero) ─── */

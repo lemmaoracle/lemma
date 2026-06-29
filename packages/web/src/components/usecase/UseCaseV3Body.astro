@@ -146,10 +146,6 @@ const planName: Readonly<Record<string, string>> = {
   critical: "Lemma Critical",
   compliance: "Lemma Compliance",
 };
-const planNote =
-  locale === "ja"
-    ? "課題に近ければ、まずはこのプランから相談できます。"
-    : "If this is close to your problem, you can start the conversation from this plan.";
 const faqHref = `${base}/faq/`;
 // v3 is JA only, so the closing books the JA Discovery Call.
 const discoveryUrl = DISCOVERY_CALL_URL.ja;
@@ -266,20 +262,10 @@ function firstSentence(text: string): string {
       </div>
       {planKey && (
         <a class="ucv-plan" href={SEGMENT_URLS[planKey][locale]}>
-          <span class="ucv-plan-pill">🔔 {locale === "ja" ? "対応プラン" : "Plan"} · {planName[planKey]}</span>
-          <span class="ucv-plan-note">{planNote}</span>
-          <span class="ucv-plan-go" aria-hidden="true">→</span>
+          <span class="ucv-plan-pill">🔔 {locale === "ja" ? "対応プラン" : "Plan"} · {planName[planKey]} →</span>
         </a>
       )}
     </header>
-  </div>
-
-  <!-- Credibility strip — full-bleed ink dark, common across all UCs. -->
-  <div class="ucv-cred">
-    <div class="ucv-cred-inner">
-      <span class="ucv-cred-dot" aria-hidden="true"></span>
-      <span><b>live in production since 2025</b> · {C.credMid} · ETHGlobal AI Agents 2026 Finalist</span>
-    </div>
   </div>
 
   <!-- §1 — authored persona quotes, or derived from the audience section. -->
@@ -682,19 +668,6 @@ function firstSentence(text: string): string {
     padding: 5px 14px;
     white-space: nowrap;
   }
-  .ucv-plan-note {
-    font-size: 13px;
-    color: var(--ucv-text-3);
-    line-height: 1.6;
-  }
-  .ucv-plan-go {
-    color: var(--accent);
-    font-weight: 600;
-    transition: transform 0.2s;
-  }
-  .ucv-plan:hover .ucv-plan-go {
-    transform: translateX(3px);
-  }
 
   /* HIDE → PROVE device (live format — 2 cells + arrow). */
   .ucv-hp {
@@ -738,33 +711,6 @@ function firstSentence(text: string): string {
   @media (max-width: 620px) {
     .ucv-hp { grid-template-columns: 1fr; }
     .ucv-hp__arrow { width: auto; padding: 6px 0; transform: rotate(90deg); }
-  }
-
-  /* ─── CREDIBILITY STRIP ─── */
-  .ucv-cred {
-    background: #0f0f0f;
-    color: rgba(252, 250, 245, 0.82);
-  }
-  .ucv-cred-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 16px 40px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--ucv-mono);
-    font-size: 11.5px;
-    letter-spacing: 0.04em;
-    line-height: 1.6;
-  }
-  .ucv-cred-inner b { color: var(--lemma-cream); font-weight: 700; }
-  .ucv-cred-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--ucv-green);
-    flex-shrink: 0;
-    box-shadow: 0 0 0 3px rgba(92, 122, 74, 0.25);
   }
 
   /* ─── BANDS ─── */
@@ -1292,7 +1238,6 @@ function firstSentence(text: string): string {
     .ucv-page { margin-top: 8px; }
     .ucv-breadcrumb { padding: 16px 0 0; }
     .ucv-container { padding: 0 24px; }
-    .ucv-cred-inner { padding: 14px 24px; }
     .ucv-band { padding: 48px 0; }
     .ucv-hero { padding: 18px 0 32px; }
     .ucv-emph { padding-left: 18px; }
