@@ -211,16 +211,19 @@ const collectionJsonLd = {
         <div class="uc-pop-grid">
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
             <span class="uc-pop-tag">{isJa ? "P2 · AI導入 / 製造" : "P2 · AI adoption / Mfg"}</span>
+            <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["ai-document-isolation"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "社内文書をAIに使わせるが生データは触らせない" : "Let AI use internal documents without touching raw data"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
           </a>
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
             <span class="uc-pop-tag">{isJa ? "P4 · 金融 / 製造 / SC" : "P4 · Finance / Mfg / SC"}</span>
+            <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["counterparty-screening"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "取引先の与信・反社チェック — 結果だけを渡す" : "Counterparty credit & sanctions checks — hand over only the result"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
           </a>
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
             <span class="uc-pop-tag">{isJa ? "P2 · 金融 / 自治体" : "P2 · Finance / Public"}</span>
+            <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["ai-audit-log-proof"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "AI監査ログ証明" : "AI audit-log proof"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
           </a>
@@ -746,6 +749,7 @@ const collectionJsonLd = {
   .uc-pop-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 0.5px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, transform 0.2s; }
   .uc-pop-card:hover { border-color: var(--accent); transform: translateY(-2px); }
   .uc-pop-tag { font-family: var(--uc-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--accent); }
+  .uc-pop-plan { font-family: var(--uc-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--uc-text-4); margin-top: -4px; }
   .uc-pop-title { font-family: var(--uc-display); font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.45; margin: 0; }
   .uc-pop-go { margin-top: auto; font-family: var(--uc-mono); font-size: 11px; color: var(--uc-text-4); }
   .uc-cta { margin: 44px 0 0; padding: 40px 36px; border-radius: 16px; background: var(--uc-cream-d); text-align: center; }
