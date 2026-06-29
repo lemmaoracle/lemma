@@ -5,8 +5,10 @@
  *   - `node:crypto` → Web Crypto API + @noble/hashes
  *   - `Buffer`      → TextEncoder / TextDecoder / Uint8Array helpers
  *
- * Also provides a Buffer polyfill injection for third-party packages
- * (e.g. @docknetwork/crypto-wasm) that unconditionally reference `Buffer`.
+ * Also provides polyfill injections for third-party packages that
+ * unconditionally reference Node/browser globals at module-load time
+ * (e.g. @docknetwork/crypto-wasm → `Buffer`, snarkjs →
+ * `URL.createObjectURL`).
  */
 
 import { sha256 } from "@noble/hashes/sha2";
@@ -40,6 +42,46 @@ export const ensureBufferPolyfill = (): void => {
 // Auto-inject on import so that any consumer gets the polyfill
 // before third-party modules evaluate their top-level code.
 ensureBufferPolyfill();
+
+/* ------------------------------------------------------------------ */
+/*  URL.createObjectURL polyfill (snarkjs)                            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Ensure `URL.createObjectURL` does not throw at module-load time.
+ *
+ * snarkjs (used by the Groth16 prover) calls `URL.createObjectURL(blob)`
+ * at module-load time whenever `globalThis.Blob` exists, in order to
+ * build a worker source string for its optional multi-thread path.
+ *
+ * In Cloudflare Workers `Blob` exists but `URL.createObjectURL` is a
+ * stub that throws "URL.createObjectURL() is not implemented" when
+ * invoked (and `nodejs_compat` does not add a real implementation).
+ * Because `globalThis.Worker` is also absent in Workers, snarkjs
+ * forces `singleThread = true` and never actually consumes the
+ * returned URL — so a non-throwing placeholder is safe.
+ *
+ * In Node.js and browsers a real implementation exists and is left
+ * untouched.
+ */
+export const ensureUrlCreateObjectUrlPolyfill = (): void => {
+  // Detect a stub that exists as a function but throws when invoked
+  // (notably Cloudflare Workers, where `typeof URL.createObjectURL` is
+  // "function" yet calling it rejects). A typeof guard alone cannot
+  // distinguish this from a real implementation, so probe it.
+  try {
+    URL.createObjectURL(new Blob([""]));
+    return;
+  } catch {
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    (URL as unknown as { createObjectURL: () => string }).createObjectURL =
+      () => "blob:snarkjs-shim";
+  }
+};
+
+// Auto-inject on import so that any consumer gets the polyfill
+// before snarkjs evaluates its top-level code.
+ensureUrlCreateObjectUrlPolyfill();
 
 /* ------------------------------------------------------------------ */
 /*  Encoding helpers (replace Buffer)                                  */
