@@ -42,6 +42,8 @@ export type EnhancedRequest = Readonly<{
   headers: HttpHeaders;
   /** Parsed request body (if any). */
   body?: RequestBody;
+  /** Path parameters extracted from the route pattern (e.g. `:jobId`). */
+  params?: Readonly<Record<string, string>>;
 }>;
 
 /** Request handler function type. */
@@ -53,8 +55,36 @@ export type RequestHandler = (
 export type Route = Readonly<{
   /** HTTP method. */
   method: HttpMethod;
-  /** URL path pattern. */
+  /** URL path pattern, may include `:param` segments. */
   path: string;
   /** Request handler. */
   handler: RequestHandler;
 }>;
+
+/**
+ * Compile a route path pattern (`/prover/prove/:jobId`) into a RegExp and
+ * the ordered list of parameter names. Each `:param` segment matches
+ * `[^/]+` so it never crosses a path separator.
+ */
+export const compilePathPattern = (
+  path: string,
+): Readonly<{ regex: RegExp; paramNames: readonly string[] }> => {
+  // eslint-disable-next-line functional/no-let, functional/immutable-data
+  const paramNames: string[] = [];
+  const pattern = path
+    .split("/")
+    .map((segment) =>
+      segment.startsWith(":")
+        ? (() => {
+            // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+            paramNames.push(segment.slice(1));
+            return "([^/]+)";
+          })()
+        : segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+    )
+    .join("/");
+  return {
+    regex: new RegExp(`^${pattern}$`),
+    paramNames,
+  } as const;
+};

@@ -14,6 +14,7 @@ import type {
   RequestHandler,
   Route,
 } from "./types/http.js";
+import { compilePathPattern } from "./types/http.js";
 import { proveHandler } from "./routes/prover/prove.js";
 import { prepareHandler } from "./routes/prepare/prepare.js";
 import { verifyHandler } from "./routes/verifier/verify.js";
@@ -46,6 +47,11 @@ const ROUTES: readonly Route[] = [
     handler: proveHandler,
   },
   {
+    method: "GET",
+    path: "/prover/prove/:jobId",
+    handler: proveHandler,
+  },
+  {
     method: "POST",
     path: "/prepare",
     handler: prepareHandler,
@@ -56,6 +62,19 @@ const ROUTES: readonly Route[] = [
     handler: verifyHandler,
   },
 ] as const;
+
+/** Compiled route: route + RegExp + parameter names. */
+type CompiledRoute = Readonly<{
+  route: Route;
+  regex: RegExp;
+  paramNames: readonly string[];
+}>;
+
+/** Pre-compile route patterns once at startup. */
+const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
+  const { regex, paramNames } = compilePathPattern(route.path);
+  return { route, regex, paramNames } as const;
+});
 
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
@@ -125,11 +144,32 @@ const createEnhancedRequest = (
   };
 };
 
-/** Find matching route for request. */
-const findMatchingRoute = (request: EnhancedRequest): Route | undefined =>
-  ROUTES.find(
-    (route) => route.method === request.method && route.path === request.url,
-  );
+/** Extract parameter values from a URL pathname against a compiled route. */
+const extractParams = (
+  compiled: CompiledRoute,
+  pathname: string,
+): Readonly<Record<string, string>> | undefined => {
+  const match = compiled.regex.exec(pathname);
+  return match
+    ? compiled.paramNames.reduce<Record<string, string>>(
+        (acc, name, i) => ({ ...acc, [name]: match[i + 1] ?? "" }),
+        {},
+      )
+    : undefined;
+};
+
+/** Find matching route for a request, populating path params when present. */
+const findMatchingRoute = (
+  request: EnhancedRequest,
+): Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined =>
+  COMPILED_ROUTES.reduce<
+    Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined
+  >((acc, compiled) => {
+    if (acc) return acc;
+    if (compiled.route.method !== request.method) return undefined;
+    const params = extractParams(compiled, request.url);
+    return params !== undefined ? { route: compiled.route, params } : undefined;
+  }, undefined);
 
 /** Send HTTP response. */
 const sendResponse = (
@@ -169,15 +209,16 @@ const handleRequest = (
   parseRequestBody(req)
     .then((body: unknown) => createEnhancedRequest(req, body))
     .then((request: EnhancedRequest) => {
-      const route = findMatchingRoute(request);
+      const match = findMatchingRoute(request);
       return R.ifElse(
-        (r: Route | undefined) => r === undefined,
-        (_r: Route | undefined) => {
+        (m: typeof match) => m === undefined,
+        (_m: typeof match) => {
           sendResponse(res, 404, {}, { error: "Not found" });
           return Promise.resolve();
         },
-        (r: Route) =>
-          Promise.resolve(r.handler(request))
+        (m: NonNullable<typeof match>) => {
+          const enriched: EnhancedRequest = { ...request, params: m.params };
+          return Promise.resolve(m.route.handler(enriched))
             .catch((error: unknown) => ({
               status: 500,
               headers: {},
@@ -188,8 +229,9 @@ const handleRequest = (
             }))
             .then((result) => {
               sendResponse(res, result.status, result.headers, result.body);
-            }),
-      )(route);
+            });
+        },
+      )(match);
     });
 
 /** Create and start HTTP server. */
