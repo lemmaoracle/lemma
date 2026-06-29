@@ -8,13 +8,13 @@
     "subfolder": "packages/mcp"
   },
   "websiteUrl": "https://lemma.frame00.com",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@lemmaoracle/mcp",
-      "version": "0.0.18",
+      "version": "0.0.19",
       "transport": {
         "type": "stdio"
       },

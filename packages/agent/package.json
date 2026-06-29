@@ -1,6 +1,6 @@
 {
   "name": "@lemmaoracle/agent",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "Agent Identity + Authority Credential schema WASM for Lemma circuits",
   "type": "module",
   "main": "dist/index.js",
