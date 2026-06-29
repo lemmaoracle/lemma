@@ -26,11 +26,22 @@ export interface UseCasesIndexTemplateProps {
 }
 
 import { USE_CASE_TASK_GROUPS_JA, USE_CASE_TASK_GROUPS_EN } from "../config/useCaseTaskGroups";
+import { USE_CASE_PLAN } from "../data/useCasePlanMap";
 
 const { locale, t, base, useCases, pillars, useCaseT } =
   Astro.props as UseCasesIndexTemplateProps;
 const useCasesPath = `${base}/solutions/use-cases`;
 const isJa = locale === "ja";
+
+// "対応プラン" badge — non-interactive (card is already a link). Names are
+// brand-fixed (Civic / Critical / Compliance), so they read the same in both
+// locales; only the lead label is localised.
+const planTagLabel = isJa ? "対応プラン" : "Plan";
+const PLAN_NAME: Readonly<Record<string, string>> = {
+  civic: "Civic",
+  critical: "Critical",
+  compliance: "Compliance",
+};
 
 function getPillarForUseCase(uc: UseCase): Pillar | undefined {
   return pillars.find((p) => p.slug === uc.pillar);
@@ -95,6 +106,7 @@ const collectionJsonLd = {
         <h1 class="uc-h1">{useCaseT.title}</h1>
         <p class="uc-hero-sub">{useCaseT.subtitle}</p>
         <p class="uc-hero-subnote">{isJa ? "データは渡さない。証明は渡る。" : "Data stays. Proof travels."}</p>
+        <p class="uc-hero-intro">{useCaseT.chooseOne}</p>
       </section>
 
       {taskGroups && (
@@ -146,6 +158,9 @@ const collectionJsonLd = {
                       {pillar && (
                         <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
                       )}
+                      {USE_CASE_PLAN[uc.slug] && (
+                        <div class="uc-card-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN[uc.slug]]}</div>
+                      )}
                       <h3 class="uc-card-title">{uc.title}</h3>
                       <p class="uc-card-summary">{summary}</p>
                     </a>
@@ -167,6 +182,9 @@ const collectionJsonLd = {
                 <UseCaseIcon slug={uc.slug} />
                 {pillar && (
                   <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
+                )}
+                {USE_CASE_PLAN[uc.slug] && (
+                  <div class="uc-card-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN[uc.slug]]}</div>
                 )}
                 <h2 class="uc-card-title">{uc.title}</h2>
                 <p class="uc-card-summary">{summary}</p>
@@ -384,6 +402,13 @@ const collectionJsonLd = {
     color: var(--uc-text-4);
     margin: 4px 0 0;
     letter-spacing: 0.01em;
+  }
+  .uc-hero-intro {
+    font-size: 14px;
+    color: var(--uc-text-3);
+    margin: 14px 0 0;
+    line-height: 1.7;
+    max-width: 680px;
   }
 
   /* ─── TASK-AXIS GROUPS (JA) ─── */
@@ -604,7 +629,7 @@ const collectionJsonLd = {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 12px;
+    margin: 0 0 6px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -615,6 +640,14 @@ const collectionJsonLd = {
     height: 5px;
     border-radius: 50%;
     background: var(--accent);
+  }
+  .uc-card-plan {
+    font-family: var(--uc-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--uc-text-4);
+    margin: 0 0 12px;
   }
 
   .uc-card-title {

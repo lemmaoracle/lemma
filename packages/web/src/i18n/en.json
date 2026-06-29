@@ -1033,6 +1033,7 @@
     "metaTitle": "Use Cases — Business patterns for trust infrastructure | Lemma",
     "metaDescription": "AI audit log proof, KYC selective disclosure, supply chain ESG and more — typical business deployment patterns for trust infrastructure, organized by industry and task. Find your entry point from the business side.",
     "subtitle": "Patterns for business deployments. Filter by industry.",
+    "chooseOne": "You don't have to adopt everything. Pick the one closest to your problem, and start the conversation there.",
     "sections": "Sections",
     "overview": "Overview",
     "backToPillar": "← Back to pillar",
