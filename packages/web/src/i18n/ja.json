@@ -189,8 +189,8 @@
     "metaDescription": "Lemma の AI 個人情報保護・機微情報の開示・改正個人情報保護法対応に関する FAQ。Discovery Call では技術的な詳細・個人情報・機密情報の開示は不要です。AI のための信頼インフラ、4 つの軸、Critical Brief も解説。",
     "hero": {
       "tag": "FAQ",
-      "h1": "Lemma FAQ — AI のための信頼インフラ.",
-      "p": "Lemma がどのように AI のための信頼基盤を提供するか — 4 つの軸、技術的実装、検出層との関係、実事案 (Critical Brief) を網羅した Q&A。"
+      "h1": "Lemma FAQ — 真正性のある AI データ基盤",
+      "p": "Lemma がどのように AI のための信頼インフラ（真正性のある AI データ基盤）を提供するか — 4 つの軸、技術的実装、検出層との関係、実事案 (Critical Brief) を網羅した Q&A。"
     },
     "intentRouter": {
       "label": "目的から探す",
@@ -1065,6 +1065,7 @@
     "metaTitle": "ユースケース — 信頼インフラの業務適用パターン | Lemma",
     "metaDescription": "AI 監査ログ・KYC 選択的開示・サプライチェーン ESG ほか、信頼インフラの典型的なビジネス適用パターンを業界・タスク横断で公開。実装の入口を業務側から見つけられます。",
     "subtitle": "業務課題から探せる、Lemmaの適用パターン集。真正性・来歴・規制属性・エージェント権限の業務実装例を30件以上掲載。",
+    "chooseOne": "全部を導入する必要はありません。課題に近いものを 1 つ選び、そこから相談できます。",
     "sections": "セクション",
     "overview": "概要",
     "backToPillar": "← Pillarに戻る",

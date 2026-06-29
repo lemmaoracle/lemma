@@ -4,10 +4,12 @@
  */
 import type { Locale } from "../../i18n/translations";
 import { PRICING } from "../../data/pricing";
+import { SEGMENT_URLS } from "../../config/navigation";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props as Props;
 const e = PRICING.enterprise;
+const detailLabel = locale === "ja" ? "プラン詳細を見る →" : "See full plan →";
 ---
 
 <section class="pe-section">
@@ -28,9 +30,6 @@ const e = PRICING.enterprise;
           <span class="pe-bestfor-label">{e.bestForLabel[locale]}</span>
           {plan.bestFor[locale]}
         </div>
-        <ul class="pe-features">
-          {plan.features[locale].map((f) => <li>{f}</li>)}
-        </ul>
         <div class="pe-tiers">
           {plan.tiers.map((t) => (
             <div class="pe-tier">
@@ -40,6 +39,7 @@ const e = PRICING.enterprise;
           ))}
         </div>
         <p class="pe-pricing">{plan.pricingModel[locale]}</p>
+        <a class="pe-detail" href={SEGMENT_URLS[plan.slug][locale]}>{detailLabel}</a>
         <div class="pe-cta">
           <a class="pe-cta-primary" href={plan.ctaPrimary.href[locale]} target="_blank" rel="noopener">
             {plan.ctaPrimary.label[locale]}
@@ -142,28 +142,17 @@ const e = PRICING.enterprise;
     display: block;
     margin-bottom: 6px;
   }
-  .pe-features {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .pe-features li {
-    position: relative;
-    padding-left: 22px;
+  .pe-detail {
+    font-family: var(--pr-display);
     font-size: 13px;
-    line-height: 1.6;
-    color: var(--pr-text-1);
-  }
-  .pe-features li::before {
-    content: "◆";
-    position: absolute;
-    left: 0;
-    top: 1px;
+    font-weight: 500;
     color: var(--accent);
-    font-size: 10px;
+    letter-spacing: 0.01em;
+    align-self: flex-start;
+    transition: opacity 0.2s;
+  }
+  .pe-detail:hover {
+    opacity: 0.7;
   }
   .pe-tiers {
     display: flex;

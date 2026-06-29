@@ -55,7 +55,6 @@ export interface PricingContent {
       readonly name: string;
       readonly tagline: Localized;
       readonly bestFor: Localized;
-      readonly features: Localized<readonly string[]>;
       readonly tiers: ReadonlyArray<{ readonly no: string; readonly scope: Localized }>;
       readonly pricingModel: Localized;
       readonly ctaPrimary: { readonly label: Localized; readonly href: Localized };
@@ -218,20 +217,6 @@ export const PRICING: PricingContent = {
           ja: "自治体・公益事業者・B2B2G の事業者など、市民向けサービスで「資格や条件の確認」を証明付きで行う必要がある組織。",
           en: "For municipalities, utilities, and B2B2G operators that need verifiable attribute checks for citizen-facing services.",
         },
-        features: {
-          ja: [
-            "公共サービスの利用資格を、中身を明かさずに確認（ゼロ知識証明）",
-            "拠点数に応じた段階プラン（複数拠点に対応）",
-            "監査と説明責任のための、改ざんできない来歴の記録",
-            "公共インフラ向けの標準テンプレート集",
-          ],
-          en: [
-            "Civic-eligibility checks that confirm the fact without revealing the data (zero-knowledge proof)",
-            "Multi-site tiering — scales with the number of operating sites",
-            "Tamper-evident provenance records for audit and public accountability",
-            "Standard schema library for civic infrastructure",
-          ],
-        },
         tiers: [
           { no: "Tier 1", scope: { ja: "1〜3 拠点", en: "1–3 sites" } },
           { no: "Tier 2", scope: { ja: "4〜10 拠点", en: "4–10 sites" } },
@@ -253,20 +238,6 @@ export const PRICING: PricingContent = {
           ja: "重要インフラ、製造業、大規模事業など、業務継続性と規制遵守が問われる運用システムに AI を組み込む組織。",
           en: "For critical infrastructure, manufacturing, and large enterprises embedding AI into operational systems where business continuity and regulatory compliance matter.",
         },
-        features: {
-          ja: [
-            "自社の業務ルールに合わせた専用のゼロ知識証明",
-            "監査にそのまま使える証跡（コンプライアンス対応）",
-            "稼働率保証（SLA）・自社環境（オンプレミス）への導入も可能",
-            "施設数と連携範囲に応じた段階プラン",
-          ],
-          en: [
-            "Custom ZK circuits for domain-specific business rules",
-            "Compliance-grade audit trail",
-            "SLA-backed uptime · on-premises deployment option",
-            "Tiering by facility count and integration scope",
-          ],
-        },
         tiers: [
           { no: "Tier 1", scope: { ja: "単一施設", en: "Single facility" } },
           { no: "Tier 2", scope: { ja: "2〜10 施設", en: "2–10 facilities" } },
@@ -287,20 +258,6 @@ export const PRICING: PricingContent = {
         bestFor: {
           ja: "金融機関・FinTech・規制対象機関など、「資格や条件の確認」と監査証跡が求められる業務で AI を運用する組織。EU AI Act / GDPR / 国内規制への対応も。",
           en: "For banks, FinTechs, and regulated institutions running AI in workflows that demand attribute verification and audit trails — including EU AI Act / GDPR / domestic compliance.",
-        },
-        features: {
-          ja: [
-            "個人情報を開示せずに行う本人確認（KYC/AML）",
-            "EU AI Act・ISO 42001 に対応した監査証跡",
-            "必要な事実だけを証明し、個人情報は伏せたまま（選択的開示）",
-            "AI が社内データを参照するたびに来歴を記録する、参照ルール層",
-          ],
-          en: [
-            "KYC/AML attribute verification without data disclosure",
-            "EU AI Act and ISO 42001 audit trail",
-            "Selective disclosure — prove the fact, protect the PII",
-            "RAG policy layer with full provenance per query",
-          ],
         },
         tiers: [
           { no: "Tier 1", scope: { ja: "中小 FinTech", en: "SMB FinTech" } },
