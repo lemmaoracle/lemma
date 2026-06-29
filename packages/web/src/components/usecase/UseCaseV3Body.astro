@@ -240,10 +240,6 @@ function firstSentence(text: string): string {
     </nav>
 
     <header class="ucv-hero">
-      <a class="ucv-pillar-tag" href={`${pillarsPath}/${pillar.slug}`}>
-        <span class="ucv-pillar-dot" aria-hidden="true"></span>
-        P{pillar.order} · {pillar.title[locale]}
-      </a>
       <h1 class="ucv-h1">{useCase.title}</h1>
 
       {showHeroHp && (
@@ -542,6 +538,14 @@ function firstSentence(text: string): string {
       </div>
     </section>
   )}
+
+  {pillar && (
+    <div class="ucv-pillar-foot-wrap">
+      <a class="ucv-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
+        {locale === "ja" ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
+      </a>
+    </div>
+  )}
 </main>
 
 <style>
@@ -601,26 +605,24 @@ function firstSentence(text: string): string {
     padding: 28px 0 44px;
     max-width: 820px;
   }
-  .ucv-pillar-tag {
+  /* Footer pillar link — light "learn how it works" route to the pillar page,
+     placed at the very end (the pillar tag was removed from the hero). */
+  .ucv-pillar-foot-wrap {
+    text-align: center;
+    padding: 44px 24px;
+  }
+  .ucv-pillar-foot {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 6px;
     font-family: var(--ucv-mono);
     font-size: 11px;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 20px;
+    color: var(--ucv-text-3);
     transition: color 0.15s;
   }
-  .ucv-pillar-tag:hover { color: #6e3610; }
-  .ucv-pillar-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
+  .ucv-pillar-foot:hover { color: var(--accent); }
   .ucv-h1 {
     font-family: var(--ucv-display);
     font-size: clamp(34px, 4.4vw, 52px);
