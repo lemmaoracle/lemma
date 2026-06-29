@@ -28,7 +28,7 @@ export interface UseCasesIndexTemplateProps {
 import { USE_CASE_TASK_GROUPS_JA, USE_CASE_TASK_GROUPS_EN } from "../config/useCaseTaskGroups";
 import { USE_CASE_PLAN } from "../data/useCasePlanMap";
 
-const { locale, t, base, useCases, pillars, useCaseT } =
+const { locale, t, base, useCases, useCaseT } =
   Astro.props as UseCasesIndexTemplateProps;
 const useCasesPath = `${base}/solutions/use-cases`;
 const isJa = locale === "ja";
@@ -42,10 +42,6 @@ const PLAN_NAME: Readonly<Record<string, string>> = {
   critical: "Critical",
   compliance: "Compliance",
 };
-
-function getPillarForUseCase(uc: UseCase): Pillar | undefined {
-  return pillars.find((p) => p.slug === uc.pillar);
-}
 
 // Task-axis grouping (JA only — EN keeps the flat grid until copy lands).
 // Each group's `members` is the subset of `useCases` whose slug appears in
@@ -149,15 +145,11 @@ const collectionJsonLd = {
               <p class="uc-group-desc">{group.description}</p>
               <div class="uc-grid">
                 {group.members.map((uc) => {
-                  const pillar = getPillarForUseCase(uc);
                   const inds = uc.industries.length > 0 ? uc.industries : [];
                   const summary = uc.cardSummary || uc.thesis;
                   return (
                     <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
                       <UseCaseIcon slug={uc.slug} />
-                      {pillar && (
-                        <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
-                      )}
                       {USE_CASE_PLAN[uc.slug] && (
                         <div class="uc-card-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN[uc.slug]]}</div>
                       )}
@@ -174,15 +166,11 @@ const collectionJsonLd = {
       ) : (
         <section class="uc-grid" id="uc-grid">
           {useCases.map((uc) => {
-            const pillar = getPillarForUseCase(uc);
             const inds = uc.industries.length > 0 ? uc.industries : [];
             const summary = uc.cardSummary || uc.thesis;
             return (
               <a href={`${useCasesPath}/${uc.slug}/`} class="uc-card" data-ind={inds.join(" ")}>
                 <UseCaseIcon slug={uc.slug} />
-                {pillar && (
-                  <div class="uc-card-pillar">P{pillar.order} · {pillar.title[locale]}</div>
-                )}
                 {USE_CASE_PLAN[uc.slug] && (
                   <div class="uc-card-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN[uc.slug]]}</div>
                 )}
@@ -210,19 +198,19 @@ const collectionJsonLd = {
         <div class="uc-sec-lbl">{isJa ? "よく読まれるケース" : "Popular use cases"}</div>
         <div class="uc-pop-grid">
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-document-isolation/`}>
-            <span class="uc-pop-tag">{isJa ? "P2 · AI導入 / 製造" : "P2 · AI adoption / Mfg"}</span>
+            <span class="uc-pop-tag">{isJa ? "AI導入 / 製造" : "AI adoption / Mfg"}</span>
             <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["ai-document-isolation"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "社内文書をAIに使わせるが生データは触らせない" : "Let AI use internal documents without touching raw data"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
           </a>
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/counterparty-screening/`}>
-            <span class="uc-pop-tag">{isJa ? "P4 · 金融 / 製造 / SC" : "P4 · Finance / Mfg / SC"}</span>
+            <span class="uc-pop-tag">{isJa ? "金融 / 製造 / SC" : "Finance / Mfg / SC"}</span>
             <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["counterparty-screening"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "取引先の与信・反社チェック — 結果だけを渡す" : "Counterparty credit & sanctions checks — hand over only the result"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
           </a>
           <a class="uc-pop-card" href={`${base}/solutions/use-cases/ai-audit-log-proof/`}>
-            <span class="uc-pop-tag">{isJa ? "P2 · 金融 / 自治体" : "P2 · Finance / Public"}</span>
+            <span class="uc-pop-tag">{isJa ? "金融 / 自治体" : "Finance / Public"}</span>
             <span class="uc-pop-plan">{planTagLabel} · {PLAN_NAME[USE_CASE_PLAN["ai-audit-log-proof"]]}</span>
             <h3 class="uc-pop-title">{isJa ? "AI監査ログ証明" : "AI audit-log proof"}</h3>
             <span class="uc-pop-go">{isJa ? "見る →" : "View →"}</span>
@@ -644,13 +632,27 @@ const collectionJsonLd = {
     border-radius: 50%;
     background: var(--accent);
   }
+  /* 対応プラン — prominent label pill (filled accent) so it reads as the
+     primary routing signal on each card. */
   .uc-card-plan {
-    font-family: var(--uc-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--uc-text-4);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    align-self: flex-start;
+    font-family: var(--uc-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 4px 12px;
     margin: 0 0 12px;
+  }
+  .uc-card-plan::before {
+    content: "🔔";
+    font-size: 9px;
+    line-height: 1;
   }
 
   .uc-card-title {
@@ -749,7 +751,8 @@ const collectionJsonLd = {
   .uc-pop-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 0.5px solid var(--lemma-line); border-radius: 14px; background: #fff; transition: border-color 0.2s, transform 0.2s; }
   .uc-pop-card:hover { border-color: var(--accent); transform: translateY(-2px); }
   .uc-pop-tag { font-family: var(--uc-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--accent); }
-  .uc-pop-plan { font-family: var(--uc-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--uc-text-4); margin-top: -4px; }
+  .uc-pop-plan { display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; font-family: var(--uc-display); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: #fff; background: var(--accent); border-radius: 999px; padding: 4px 12px; }
+  .uc-pop-plan::before { content: "🔔"; font-size: 9px; line-height: 1; }
   .uc-pop-title { font-family: var(--uc-display); font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.45; margin: 0; }
   .uc-pop-go { margin-top: auto; font-family: var(--uc-mono); font-size: 11px; color: var(--uc-text-4); }
   .uc-cta { margin: 44px 0 0; padding: 40px 36px; border-radius: 16px; background: var(--uc-cream-d); text-align: center; }
