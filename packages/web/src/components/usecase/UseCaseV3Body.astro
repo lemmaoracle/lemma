@@ -294,7 +294,7 @@ function firstSentence(text: string): string {
         ) : audienceSection && (
           <Fragment>
             <div class="ucv-eye">{C.s1Eye}</div>
-            <h2 class="ucv-h2">{C.s1H2}</h2>
+            <h2 class="ucv-h2">{audienceSection.title || C.s1H2}</h2>
             {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
             {audienceBullets.length > 0 ? (
               <ul class="ucv-personas">
