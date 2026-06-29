@@ -137,7 +137,6 @@ const rv = (row: { v: string; vEn?: string }): string =>
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
-const guidesHref = `${base}/guides`;
 
 // 対応プラン — links to the matching plan page. DRAFT map in useCasePlanMap.ts.
 const planKey = USE_CASE_PLAN[useCase.slug];
@@ -397,7 +396,7 @@ function firstSentence(text: string): string {
             ) : (
               <div class="ucv-approach-body" set:html={approachBody} />
             )}
-            <a class="ucv-approach-link" href={guidesHref}>{C.approachLink}</a>
+            <a class="ucv-approach-link" href={`${pillarsPath}/${pillar.slug}`}>{C.approachLink}</a>
           </div>
         </div>
       </div>
