@@ -19,9 +19,6 @@ import SolutionsHero from "../components/solutions/SolutionsHero.astro";
 import SolutionsBriefAnchor from "../components/solutions/SolutionsBriefAnchor.astro";
 import SolutionsAxes from "../components/solutions/SolutionsAxes.astro";
 import SolutionsUseCasesHub from "../components/solutions/SolutionsUseCasesHub.astro";
-import SolutionsAdoption from "../components/solutions/SolutionsAdoption.astro";
-import SolutionsChecklist from "../components/solutions/SolutionsChecklist.astro";
-import SolutionsVisionClose from "../components/solutions/SolutionsVisionClose.astro";
 import { SOLUTIONS } from "../data/solutions";
 
 interface Props {
@@ -54,15 +51,13 @@ const { locale, t, base } = Astro.props as Props;
 
     <div class="so-container so-resume">
       <SolutionsUseCasesHub locale={locale} base={base} />
-      <SolutionsAdoption locale={locale} />
-      <SolutionsChecklist locale={locale} />
     </div>
   </main>
 
-  <!-- §5 Critical Brief anchor (dark band) -->
+  <!-- Critical Brief anchor (dark band) — closes the light hub with a soft
+       Discovery Call entry. Adoption / Checklist / Vision-close sections were
+       removed: their funnel content now lives on the dedicated plan pages. -->
   <SolutionsBriefAnchor locale={locale} base={base} />
-
-  <SolutionsVisionClose locale={locale} />
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
