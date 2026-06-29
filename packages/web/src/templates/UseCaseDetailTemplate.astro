@@ -32,6 +32,8 @@ import { getUseCaseBeforeAfter } from "../config/useCaseBeforeAfter";
 import { getUseCaseCompareRow } from "../config/useCaseCompareRow";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
+import { USE_CASE_PLAN } from "../data/useCasePlanMap";
+import { SEGMENT_URLS } from "../config/navigation";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -78,6 +80,15 @@ function firstSentence(text: string): string {
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
+
+// 対応プラン — links to the matching plan page (clickable here; detail page is
+// not nested inside a card anchor). DRAFT mapping in data/useCasePlanMap.ts.
+const planKey = USE_CASE_PLAN[useCase.slug];
+const planName: Readonly<Record<string, string>> = {
+  civic: "Lemma Civic",
+  critical: "Lemma Critical",
+  compliance: "Lemma Compliance",
+};
 const hideProve = getUseCaseHideProve(useCase.slug, locale);
 // v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
 // get the authored §1 personas + §2 Before/After (now bilingual); everything
@@ -161,9 +172,6 @@ const breadcrumbJsonLd = {
       </nav>
 
       <header class="ucd-hero">
-        <a href={`${pillarsPath}/${pillar.slug}`} class="ucd-eyebrow">
-          P{pillar.order} · {pillar.title[locale]}
-        </a>
         <h1 class="ucd-h1">{useCase.title}</h1>
         {useCase.thesis && (
           <p class="ucd-thesis">{useCase.thesis}</p>
@@ -190,6 +198,11 @@ const breadcrumbJsonLd = {
             {useCase.readingTime} {minLabel}
           </span>
         </div>
+        {planKey && (
+          <a class="ucd-plan" href={SEGMENT_URLS[planKey][locale]}>
+            <span class="ucd-plan-pill">🔔 {isJa ? "対応プラン" : "Plan"} · {planName[planKey]} →</span>
+          </a>
+        )}
       </header>
 
       <!-- Section index card — visual TOC under the hero. Complements the
@@ -310,6 +323,11 @@ const breadcrumbJsonLd = {
             </section>
           )}
         </article>
+        {pillar && (
+          <a class="ucd-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
+            {isJa ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
+          </a>
+        )}
       </div>
     </div>
   </main>
@@ -384,27 +402,22 @@ const breadcrumbJsonLd = {
     max-width: 820px;
     border-bottom: 0.5px solid var(--lemma-line);
   }
-  .ucd-eyebrow {
-    font-family: var(--ucd-mono);
-    font-size: 11px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--accent);
+  /* Footer pillar link — light "learn how it works" route to the pillar page,
+     placed at the end of the article (the pillar tag was removed from the hero). */
+  .ucd-pillar-foot {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    margin: 0 0 20px;
+    gap: 6px;
+    margin: 40px 0 0;
+    font-family: var(--ucd-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ucd-text-3);
     transition: color 0.15s;
   }
-  .ucd-eyebrow::before {
-    content: "";
-    display: inline-block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .ucd-eyebrow:hover {
-    color: #6e3610;
+  .ucd-pillar-foot:hover {
+    color: var(--accent);
   }
   .ucd-h1 {
     font-family: var(--ucd-display);
@@ -526,6 +539,30 @@ const breadcrumbJsonLd = {
   }
   .ucd-meta > :first-child::before {
     content: none;
+  }
+
+  /* ─── 対応プラン (links to the matching plan page) ─── */
+  .ucd-plan {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 22px 0 0;
+    text-decoration: none;
+  }
+  .ucd-plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--ucd-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
   }
 
   /* ─── TOC CARD (visual section index under hero) ─── */

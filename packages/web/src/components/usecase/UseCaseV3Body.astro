@@ -26,6 +26,8 @@ import type { UseCaseV3 } from "../../config/useCaseV3";
 import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
 import SolutionsBridge from "../SolutionsBridge.astro";
 import { DISCOVERY_CALL_URL } from "../../config/cta";
+import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
+import { SEGMENT_URLS } from "../../config/navigation";
 
 export interface UseCaseV3BodyProps {
   locale: Locale;
@@ -136,6 +138,14 @@ const rv = (row: { v: string; vEn?: string }): string =>
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const guidesHref = `${base}/guides`;
+
+// 対応プラン — links to the matching plan page. DRAFT map in useCasePlanMap.ts.
+const planKey = USE_CASE_PLAN[useCase.slug];
+const planName: Readonly<Record<string, string>> = {
+  civic: "Lemma Civic",
+  critical: "Lemma Critical",
+  compliance: "Lemma Compliance",
+};
 const faqHref = `${base}/faq/`;
 // v3 is JA only, so the closing books the JA Discovery Call.
 const discoveryUrl = DISCOVERY_CALL_URL.ja;
@@ -226,10 +236,6 @@ function firstSentence(text: string): string {
     </nav>
 
     <header class="ucv-hero">
-      <a class="ucv-pillar-tag" href={`${pillarsPath}/${pillar.slug}`}>
-        <span class="ucv-pillar-dot" aria-hidden="true"></span>
-        P{pillar.order} · {pillar.title[locale]}
-      </a>
       <h1 class="ucv-h1">{useCase.title}</h1>
 
       {showHeroHp && (
@@ -254,15 +260,12 @@ function firstSentence(text: string): string {
         )}
         <span class="ucv-rt">{useCase.readingTime} {C.readUnit}</span>
       </div>
+      {planKey && (
+        <a class="ucv-plan" href={SEGMENT_URLS[planKey][locale]}>
+          <span class="ucv-plan-pill">🔔 {locale === "ja" ? "対応プラン" : "Plan"} · {planName[planKey]} →</span>
+        </a>
+      )}
     </header>
-  </div>
-
-  <!-- Credibility strip — full-bleed ink dark, common across all UCs. -->
-  <div class="ucv-cred">
-    <div class="ucv-cred-inner">
-      <span class="ucv-cred-dot" aria-hidden="true"></span>
-      <span><b>live in production since 2025</b> · {C.credMid} · ETHGlobal AI Agents 2026 Finalist</span>
-    </div>
   </div>
 
   <!-- §1 — authored persona quotes, or derived from the audience section. -->
@@ -291,7 +294,7 @@ function firstSentence(text: string): string {
         ) : audienceSection && (
           <Fragment>
             <div class="ucv-eye">{C.s1Eye}</div>
-            <h2 class="ucv-h2">{C.s1H2}</h2>
+            <h2 class="ucv-h2">{audienceSection.title || C.s1H2}</h2>
             {audienceIntro && <p class="ucv-band-lead" set:html={audienceIntro} />}
             {audienceBullets.length > 0 ? (
               <ul class="ucv-personas">
@@ -521,6 +524,14 @@ function firstSentence(text: string): string {
       </div>
     </section>
   )}
+
+  {pillar && (
+    <div class="ucv-pillar-foot-wrap">
+      <a class="ucv-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
+        {locale === "ja" ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
+      </a>
+    </div>
+  )}
 </main>
 
 <style>
@@ -580,26 +591,24 @@ function firstSentence(text: string): string {
     padding: 28px 0 44px;
     max-width: 820px;
   }
-  .ucv-pillar-tag {
+  /* Footer pillar link — light "learn how it works" route to the pillar page,
+     placed at the very end (the pillar tag was removed from the hero). */
+  .ucv-pillar-foot-wrap {
+    text-align: center;
+    padding: 44px 24px;
+  }
+  .ucv-pillar-foot {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 6px;
     font-family: var(--ucv-mono);
     font-size: 11px;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 20px;
+    color: var(--ucv-text-3);
     transition: color 0.15s;
   }
-  .ucv-pillar-tag:hover { color: #6e3610; }
-  .ucv-pillar-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
+  .ucv-pillar-foot:hover { color: var(--accent); }
   .ucv-h1 {
     font-family: var(--ucv-display);
     font-size: clamp(34px, 4.4vw, 52px);
@@ -634,6 +643,30 @@ function firstSentence(text: string): string {
     content: "·";
     margin-right: 12px;
     color: var(--lemma-line);
+  }
+
+  /* 対応プラン — links to the matching plan page. */
+  .ucv-plan {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 22px 0 0;
+    text-decoration: none;
+  }
+  .ucv-plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--ucv-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
   }
 
   /* HIDE → PROVE device (live format — 2 cells + arrow). */
@@ -678,33 +711,6 @@ function firstSentence(text: string): string {
   @media (max-width: 620px) {
     .ucv-hp { grid-template-columns: 1fr; }
     .ucv-hp__arrow { width: auto; padding: 6px 0; transform: rotate(90deg); }
-  }
-
-  /* ─── CREDIBILITY STRIP ─── */
-  .ucv-cred {
-    background: #0f0f0f;
-    color: rgba(252, 250, 245, 0.82);
-  }
-  .ucv-cred-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 16px 40px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--ucv-mono);
-    font-size: 11.5px;
-    letter-spacing: 0.04em;
-    line-height: 1.6;
-  }
-  .ucv-cred-inner b { color: var(--lemma-cream); font-weight: 700; }
-  .ucv-cred-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--ucv-green);
-    flex-shrink: 0;
-    box-shadow: 0 0 0 3px rgba(92, 122, 74, 0.25);
   }
 
   /* ─── BANDS ─── */
@@ -1232,7 +1238,6 @@ function firstSentence(text: string): string {
     .ucv-page { margin-top: 8px; }
     .ucv-breadcrumb { padding: 16px 0 0; }
     .ucv-container { padding: 0 24px; }
-    .ucv-cred-inner { padding: 14px 24px; }
     .ucv-band { padding: 48px 0; }
     .ucv-hero { padding: 18px 0 32px; }
     .ucv-emph { padding-left: 18px; }
