@@ -26,6 +26,8 @@ import type { UseCaseV3 } from "../../config/useCaseV3";
 import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
 import SolutionsBridge from "../SolutionsBridge.astro";
 import { DISCOVERY_CALL_URL } from "../../config/cta";
+import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
+import { SEGMENT_URLS } from "../../config/navigation";
 
 export interface UseCaseV3BodyProps {
   locale: Locale;
@@ -136,6 +138,18 @@ const rv = (row: { v: string; vEn?: string }): string =>
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const guidesHref = `${base}/guides`;
+
+// 対応プラン — links to the matching plan page. DRAFT map in useCasePlanMap.ts.
+const planKey = USE_CASE_PLAN[useCase.slug];
+const planName: Readonly<Record<string, string>> = {
+  civic: "Lemma Civic",
+  critical: "Lemma Critical",
+  compliance: "Lemma Compliance",
+};
+const planNote =
+  locale === "ja"
+    ? "課題に近ければ、まずはこのプランから相談できます。"
+    : "If this is close to your problem, you can start the conversation from this plan.";
 const faqHref = `${base}/faq/`;
 // v3 is JA only, so the closing books the JA Discovery Call.
 const discoveryUrl = DISCOVERY_CALL_URL.ja;
@@ -254,6 +268,13 @@ function firstSentence(text: string): string {
         )}
         <span class="ucv-rt">{useCase.readingTime} {C.readUnit}</span>
       </div>
+      {planKey && (
+        <a class="ucv-plan" href={SEGMENT_URLS[planKey][locale]}>
+          <span class="ucv-plan-pill">🔔 {locale === "ja" ? "対応プラン" : "Plan"} · {planName[planKey]}</span>
+          <span class="ucv-plan-note">{planNote}</span>
+          <span class="ucv-plan-go" aria-hidden="true">→</span>
+        </a>
+      )}
     </header>
   </div>
 
@@ -634,6 +655,43 @@ function firstSentence(text: string): string {
     content: "·";
     margin-right: 12px;
     color: var(--lemma-line);
+  }
+
+  /* 対応プラン — links to the matching plan page. */
+  .ucv-plan {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 22px 0 0;
+    text-decoration: none;
+  }
+  .ucv-plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--ucv-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
+  }
+  .ucv-plan-note {
+    font-size: 13px;
+    color: var(--ucv-text-3);
+    line-height: 1.6;
+  }
+  .ucv-plan-go {
+    color: var(--accent);
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+  .ucv-plan:hover .ucv-plan-go {
+    transform: translateX(3px);
   }
 
   /* HIDE → PROVE device (live format — 2 cells + arrow). */

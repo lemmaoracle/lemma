@@ -32,6 +32,8 @@ import { getUseCaseBeforeAfter } from "../config/useCaseBeforeAfter";
 import { getUseCaseCompareRow } from "../config/useCaseCompareRow";
 import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
+import { USE_CASE_PLAN } from "../data/useCasePlanMap";
+import { SEGMENT_URLS } from "../config/navigation";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -78,6 +80,18 @@ function firstSentence(text: string): string {
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const isJa = locale === "ja";
+
+// 対応プラン — links to the matching plan page (clickable here; detail page is
+// not nested inside a card anchor). DRAFT mapping in data/useCasePlanMap.ts.
+const planKey = USE_CASE_PLAN[useCase.slug];
+const planName: Readonly<Record<string, string>> = {
+  civic: "Lemma Civic",
+  critical: "Lemma Critical",
+  compliance: "Lemma Compliance",
+};
+const planNote = isJa
+  ? "課題に近ければ、まずはこのプランから相談できます。"
+  : "If this is close to your problem, you can start the conversation from this plan.";
 const hideProve = getUseCaseHideProve(useCase.slug, locale);
 // v3 detail template — both locales. Slugs with a config/useCaseV3.ts entry
 // get the authored §1 personas + §2 Before/After (now bilingual); everything
@@ -190,6 +204,13 @@ const breadcrumbJsonLd = {
             {useCase.readingTime} {minLabel}
           </span>
         </div>
+        {planKey && (
+          <a class="ucd-plan" href={SEGMENT_URLS[planKey][locale]}>
+            <span class="ucd-plan-pill">🔔 {isJa ? "対応プラン" : "Plan"} · {planName[planKey]}</span>
+            <span class="ucd-plan-note">{planNote}</span>
+            <span class="ucd-plan-go" aria-hidden="true">→</span>
+          </a>
+        )}
       </header>
 
       <!-- Section index card — visual TOC under the hero. Complements the
@@ -526,6 +547,43 @@ const breadcrumbJsonLd = {
   }
   .ucd-meta > :first-child::before {
     content: none;
+  }
+
+  /* ─── 対応プラン (links to the matching plan page) ─── */
+  .ucd-plan {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 22px 0 0;
+    text-decoration: none;
+  }
+  .ucd-plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--ucd-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
+  }
+  .ucd-plan-note {
+    font-size: 13px;
+    color: var(--ucd-text-3);
+    line-height: 1.6;
+  }
+  .ucd-plan-go {
+    color: var(--accent);
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+  .ucd-plan:hover .ucd-plan-go {
+    transform: translateX(3px);
   }
 
   /* ─── TOC CARD (visual section index under hero) ─── */
