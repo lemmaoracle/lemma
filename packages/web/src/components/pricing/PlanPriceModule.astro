@@ -32,6 +32,10 @@ const isJa = locale === "ja";
 
 const civicHref = SEGMENT_URLS.civic[locale];
 const inquiryHref = DISCOVERY_CALL_URL[locale];
+// Per-plan inquiry links carry ?plan= so the Tally form (EkBqDX) records which
+// plan the visitor came from. The bottom "問い合わせる" stays plan-less (generic).
+const planInquiry = (plan: "civic" | "critical" | "compliance") =>
+  `${inquiryHref}?plan=${plan}`;
 
 const t = isJa
   ? {
@@ -81,7 +85,7 @@ const t = isJa
       <span class="ppm-link">{t.civic.cta}</span>
     </a>
 
-    <a class="ppm-card" href={inquiryHref} target="_blank" rel="noopener">
+    <a class="ppm-card" href={planInquiry("critical")} target="_blank" rel="noopener">
       <div class="ppm-name">Lemma Critical</div>
       <div class="ppm-seg">{t.critical.seg}</div>
       <div class="ppm-quote">{t.critical.quote}</div>
@@ -89,7 +93,7 @@ const t = isJa
       <span class="ppm-link">{t.critical.cta}</span>
     </a>
 
-    <a class="ppm-card" href={inquiryHref} target="_blank" rel="noopener">
+    <a class="ppm-card" href={planInquiry("compliance")} target="_blank" rel="noopener">
       <div class="ppm-name">Lemma Compliance</div>
       <div class="ppm-seg">{t.compliance.seg}</div>
       <div class="ppm-quote">{t.compliance.quote}</div>
@@ -101,12 +105,12 @@ const t = isJa
   <div class="ppm-notes">
     {isJa ? (
       <Fragment>
-        <p><strong>月額利用料</strong>は、規模に応じた段階価格体系です。それに加えて、やりたいことに合わせた<strong>専用の証明を用意する初期構築費用</strong>がかかります。</p>
+        <p><strong>月額利用料</strong>は、規模に応じた段階価格体系です（年間契約を前提とした価格です）。それに加えて、やりたいことに合わせた<strong>専用の証明を用意する初期構築費用</strong>がかかります。</p>
         <p>Civic は標準テンプレートで構成します。Critical / Compliance はカスタム開発・規制対応・業務継続性などで要件が増えるため、個別にお見積もりします。詳しい内訳は、お見積もり時にご説明します。</p>
       </Fragment>
     ) : (
       <Fragment>
-        <p>The <strong>monthly fee</strong> follows a tiered structure based on scale. On top of that, an <strong>initial setup fee builds the dedicated proofs</strong> for what you want to do.</p>
+        <p>The <strong>monthly fee</strong> follows a tiered structure based on scale (priced on an annual contract). On top of that, an <strong>initial setup fee builds the dedicated proofs</strong> for what you want to do.</p>
         <p>Civic is configured from standard templates. Critical / Compliance add custom development, regulatory compliance, and business continuity, so we quote them individually. We walk through the breakdown at quote time.</p>
       </Fragment>
     )}

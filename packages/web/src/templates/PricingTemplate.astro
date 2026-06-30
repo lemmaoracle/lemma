@@ -157,6 +157,10 @@ const { locale, t, base } = Astro.props as Props;
   .pr-container > :global(section + section) {
     margin-top: 88px;
   }
+  /* Hero → Plans-and-pricing module sits tighter (the old trust strip is gone). */
+  .pr-container > :global(.ph-hero + section) {
+    margin-top: 36px;
+  }
 
   @media (max-width: 720px) {
     .pr-container { padding: 0 24px; }

@@ -40,7 +40,6 @@ export interface PricingContent {
     readonly eyebrow: Localized;
     readonly h1Lines: Localized<readonly string[]>;
     readonly sub: Localized;
-    readonly trustLine: Localized<readonly string[]>;
   };
 
   readonly enterprise: {
@@ -183,18 +182,6 @@ export const PRICING: PricingContent = {
     sub: {
       ja: "エンタープライズ向けの 3 プランと、開発者向けの 1 プロダクト。",
       en: "Three enterprise plans and one developer product.",
-    },
-    trustLine: {
-      ja: [
-        "live in production since 2025",
-        "対応標準: MCP / A2A / x402 / C2PA / W3C VC",
-        "ETHGlobal AI Agents 2026 Finalist",
-      ],
-      en: [
-        "live in production since 2025",
-        "Compatible standards: MCP / A2A / x402 / C2PA / W3C VC",
-        "ETHGlobal AI Agents 2026 Finalist",
-      ],
     },
   },
 

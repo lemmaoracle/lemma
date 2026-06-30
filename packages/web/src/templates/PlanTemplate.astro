@@ -41,7 +41,9 @@ interface Props {
 
 const { locale, t, base, planKey } = Astro.props as Props;
 
-const contactUrl = DISCOVERY_CALL_URL[locale];
+// ?plan= lets the Tally form (EkBqDX) record which plan page the inquiry
+// came from. planKey is one of civic / critical / compliance.
+const contactUrl = `${DISCOVERY_CALL_URL[locale]}?plan=${planKey}`;
 const useCasesUrl = `${base}/solutions/use-cases/`;
 const C = getPlanContent(planKey, locale);
 
