@@ -24,6 +24,7 @@ import {
   buildOgArtboard,
   fetchCoverAsDataUri,
   formatDate,
+  makeBottomTagline,
   renderOgPng,
 } from "./ogBase";
 
@@ -32,6 +33,20 @@ type BriefEntry =
   | CollectionEntry<"critical-briefs-en">;
 
 const SERIES_LABEL = "CRITICAL BRIEF";
+
+/** Brand sign-off rendered bottom-right on every Brief card. */
+const TAGLINE = "Built for decisions that matter";
+
+/**
+ * OG image visual headline. Prefer the dedicated short `og_headline_*`
+ * (concrete, incident-specific hook; supports `\n` + `<accent>`), and
+ * fall back to the shortened `og_lead_*` / `title` via `extractHeadline`.
+ */
+function pickHeadline(brief: BriefEntry, locale: Locale): string {
+  const head =
+    locale === "ja" ? brief.data.og_headline_ja : brief.data.og_headline_en;
+  return head ?? extractHeadline(brief, locale);
+}
 
 const BRIEF_OVERLAY = {
   top: "rgba(35,22,12,0.55)",
@@ -83,7 +98,7 @@ function buildTopRight(brief: BriefEntry, isFallback: boolean) {
         sep,
         {
           type: "div",
-          props: { style: { fontWeight: 500 }, children: `№${briefNo}` },
+          props: { style: { fontWeight: 500 }, children: `No.${briefNo}` },
         },
         sep,
         {
@@ -100,9 +115,11 @@ export async function renderCriticalBriefOg(
   locale: Locale,
 ): Promise<Buffer> {
   const coverDataUri = await fetchCoverAsDataUri(brief.data.cover);
+  const isFallback = coverDataUri === null;
   const node = buildOgArtboard({
-    title: extractHeadline(brief, locale),
-    topRight: buildTopRight(brief, coverDataUri === null),
+    title: pickHeadline(brief, locale),
+    topRight: buildTopRight(brief, isFallback),
+    bottomTagline: makeBottomTagline(TAGLINE, isFallback ? BROWN : BROWN_LIGHT),
     background: {
       kind: "cover",
       coverDataUri,
