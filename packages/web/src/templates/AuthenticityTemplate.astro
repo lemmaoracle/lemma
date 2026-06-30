@@ -1,0 +1,828 @@
+---
+/**
+ * Authenticity hub — cornerstone SEO page for the head term「真正性」/
+ * "authenticity". One shared template, locale-branched content, mounted
+ * at `/authenticity/` (EN) and `/ja/authenticity/` (JA).
+ *
+ * The page is the entry point that funnels head-term search traffic to
+ * the Four Pillars, the relevant Critical Briefs, and the conversion LP.
+ * Structured data: Article + FAQPage + BreadcrumbList. canonical +
+ * hreflang are emitted automatically by Layout (metaType="page").
+ *
+ * Writing rules (per the marketing handoff): declarative, no meta
+ * preamble, define in the first ~120 chars, JA ですます調.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+
+export interface AuthenticityTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as AuthenticityTemplateProps;
+const isJa = locale === "ja";
+
+const SITE = "https://lemma.frame00.com";
+const pageUrl = `${SITE}${base}/authenticity/`;
+const discoveryUrl = DISCOVERY_CALL_URL[locale];
+const newsletterUrl = isJa
+  ? "https://tally.so/r/EkMj82"
+  : "https://tally.so/r/rjvN2X";
+const anshinUrl = "https://lemma.frame00.com/ai-gyomu-anshin/";
+
+/** Locale-aware internal link helper. */
+const L = (path: string) => `${base}${path}`;
+
+const C = isJa
+  ? {
+      metaTitle:
+        "真正性とは — データ・コンテンツ・AIの「本物である」を来歴で検証する｜Lemma",
+      metaDescription:
+        "真正性とは、データやコンテンツが本物で、改ざんされておらず、出所（来歴）が確かであること。電子記録・報道コンテンツ・金融・AIまで、ジャンル別の意味と、来歴を暗号的に検証する方法をLemmaがまとめます。",
+      eyebrow: "真正性ハブ",
+      h1: "真正性とは",
+      breadcrumbHome: "ホーム",
+      breadcrumbHere: "真正性",
+      intro: [
+        "真正性とは、データやコンテンツが本物であり、作られてから改ざんされていないこと、そして出所（来歴）が確かであることを指します。英語では Authenticity と呼びます。「誰が・いつ・何を作り、その後どう扱われたか」をたどれる状態が、真正性が保たれている状態です。",
+        "生成AIによる画像生成や文書加工が広がり、本物と見分けのつかないフェイクが流通するいま、真正性は情報を扱うすべての現場で前提条件になりました。報道、金融、行政、医療、製造、そしてAIエージェントの運用まで、「目にしたデータは本物か」を確かめられることが、意思決定の土台になります。",
+      ],
+      sections: [
+        {
+          id: "difference",
+          label: "真正性・完全性・機密性の違い",
+          h2: "真正性・完全性・機密性の違い",
+          body: [
+            "情報セキュリティでは、真正性は近い概念と並べて語られます。混同しやすいため、ここで切り分けます。",
+          ],
+          list: [
+            "<strong>真正性（Authenticity）</strong>：本物であること。誰が作ったか、出所が確かか、なりすましでないか。",
+            "<strong>完全性（Integrity）</strong>：改ざんされていないこと。作成時点から内容が変わっていないか。",
+            "<strong>機密性（Confidentiality）</strong>：許可された者だけが見られること。",
+          ],
+          after: [
+            "完全性は「中身が変わっていない」を保証しますが、それだけでは「そもそも本物の出所から来たのか」までは保証しません。真正性は、完全性に<strong>出所（来歴）の検証</strong>を加えた、一段広い概念です。",
+          ],
+        },
+        {
+          id: "three-requirements",
+          label: "電子記録の三要件",
+          h2: "「真正性・見読性・保存性」— 日本の電子記録に求められる三要件",
+          body: [
+            `日本の規制では、真正性は具体的な要件として定められています。電子帳簿保存法や、厚生労働省の医療情報システムに関するガイドライン（電子カルテ・診療録）では、電子記録に <strong>真正性・見読性・保存性</strong> の三要件が求められます。`,
+          ],
+          list: [
+            "<strong>真正性</strong>：記録が本物で、改ざん・消去の有無をたどれること。作成者の責任が明確であること。",
+            "<strong>見読性</strong>：必要なときに読める形で出力できること。",
+            "<strong>保存性</strong>：保存期間を通じて読める状態を保つこと。",
+          ],
+          after: [
+            `このうち真正性の確保は、電子署名・タイムスタンプ・操作履歴（来歴）の管理で支えられます。Lemmaの来歴証明は、この「誰が・いつ・どの版を作り、改ざんされていないか」を、暗号的に検証できる形で固定します。詳しくは <a href="${L("/pillars/regulatory-attribute-proof/")}">規制属性証明（Pillar 04）</a> をご覧ください。`,
+          ],
+        },
+        {
+          id: "genres",
+          label: "ジャンル別の真正性",
+          h2: "真正性が問われる場面（ジャンル別）",
+          body: ["真正性は一つの言葉ですが、求められる現場ごとに中身が変わります。"],
+          list: [
+            `<strong>規制・電子記録</strong>：電子帳簿、電子カルテ、契約・監査証跡。改ざんされていない正規の記録であることを、後から立証できる状態が要ります。→ <a href="${L("/pillars/regulatory-attribute-proof/")}">規制属性証明（Pillar 04）</a>／業務での適用は <a href="${anshinUrl}">AIに業務を安全に任せるデータ基盤</a>`,
+            `<strong>報道・コンテンツ</strong>：写真・映像・記事が、撮影時点から加工されていない本物であること。業界標準の <strong>C2PA（Coalition for Content Provenance and Authenticity）</strong> や Content Credentials が、出所と来歴の記録を標準化しています。→ 関連事案：<a href="${L("/critical/briefs/")}">ディープフェイクで実在の人物を生成（No.050／053／084）</a>`,
+            `<strong>金融・DeFi</strong>：取引やクロスチェーン送金が、正規の発信元から来た本物であること。発信元の来歴を検証しないと、裏づけのない発行や不正送金に直結します。→ 関連事案：<a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">ブリッジの infinite-mint（No.085）</a>`,
+            `<strong>AIエージェント・AI出力</strong>：AIが参照した事実や生成した出力が、何に裏づけられているか（来歴）をたどれること。→ <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a>`,
+            `<strong>サプライチェーン・調達</strong>：部品・検査記録・サプライヤー資格が、正規の発行元による本物であること。→ <a href="${L("/solutions/use-cases/supply-chain-esg/")}">サプライチェーンESG</a>`,
+          ],
+          after: [
+            "ジャンルは違っても、根は同じです。「どこから来た、誰の、どの版か」を独立して検証できるか。それが真正性の核心です。",
+          ],
+        },
+        {
+          id: "verify",
+          label: "真正性をどう検証するか",
+          h2: "真正性をどう検証するか",
+          body: ["真正性を支える技術は、いくつかの層に分かれます。"],
+          list: [
+            "<strong>電子署名</strong>：作成者が本人であることと、署名後に改ざんされていないことを示します。",
+            "<strong>タイムスタンプ</strong>：いつ存在したかを固定します。",
+            "<strong>ハッシュ</strong>：内容が一致しているかを照合します。",
+            "<strong>来歴（プロヴナンス）</strong>：誰が・いつ・どこで作成・編集したかの連なりを記録します。C2PA はこの来歴をコンテンツに付与する標準です。",
+            "<strong>ゼロ知識証明（ZK証明）</strong>：元データを開示せずに、「条件を満たす」ことだけを証明します。",
+          ],
+          after: [
+            `ここで重要なのは、<strong>検出（detection）と証明（proof）は別物</strong>だという点です。異常を後から見つける検出は、被害の把握に欠かせません。しかし検出は、「いま扱っているデータが正規の出所から来た本物か」を、事が起きる前に立証はしません。事後に異常を見つけても、すでに通ってしまった処理は止まりません。真正性は、<strong>実行の前に来歴を独立検証する層</strong>があって初めて担保されます（参考：<a href="${L("/blog/detection-is-not-proof/")}">検出は証明ではない</a>）。`,
+          ],
+        },
+        {
+          id: "lemma",
+          label: "Lemmaの来歴証明",
+          h2: "Lemmaの来歴証明で、真正性を満たす",
+          body: [
+            "Lemmaは、データを渡さずに来歴を証明します。元データは Lemma に渡さず、受け取るのは「来歴をたどれる」という証明だけです。",
+          ],
+          list: [
+            "<strong>暗号的に検証された来歴</strong>：「誰が・いつ・どの版を作り、改ざんされていないか」を、改ざんできない証明として固定します。",
+            "<strong>データを出さずに証明する</strong>：ゼロ知識証明により、元データを開示せずに真正性だけを示します。<strong>選択的開示</strong>で、必要な属性だけを最小限に出します。",
+            "<strong>標準と並んで動く</strong>：C2PA、MCP、A2A、x402 と協調する設計です。コンテンツの来歴標準を置き換えるのではなく、その上に検証の層を重ねます。",
+            "<strong>モデルに依存しない</strong>：AIモデルが入れ替わっても、来歴の証明は残ります。",
+          ],
+          after: [
+            `詳しい設計は <a href="${L("/pillars/verifiable-origin/")}">来歴証明（Pillar 01）</a> と <a href="${L("/seal/")}">Seal</a>、AIの出力に対する検証は <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a> と <a href="${L("/trust402/")}">Trust402</a> をご覧ください。`,
+          ],
+        },
+      ],
+      faqLabel: "よくある質問（FAQ）",
+      faq: [
+        {
+          q: "真正性と完全性は何が違いますか？",
+          a: "完全性は「内容が改ざんされていない」ことを保証します。真正性はそれに加えて「出所が本物か（誰が作ったか、なりすましでないか）」までを含む、一段広い概念です。",
+        },
+        {
+          q: "電子帳簿保存法や電子カルテで求められる真正性とは何ですか？",
+          a: "記録が本物で、改ざん・消去の有無をたどれ、作成者の責任が明確であることです。電子署名・タイムスタンプ・操作履歴（来歴）の管理で確保します。日本の電子記録では真正性・見読性・保存性の三要件として定められています。",
+        },
+        {
+          q: "C2PA と来歴証明はどう関係しますか？",
+          a: "C2PA はコンテンツに来歴情報を付与する業界標準です。Lemmaの来歴証明はそれと並んで動き、付与された来歴を暗号的に検証する層を担います。置き換えではなく補完です。",
+        },
+        {
+          q: "検出ツールがあれば真正性は守れますか？",
+          a: "検出は異常を後から見つけるもので、被害の把握に不可欠です。ただし「実行前に、本物の出所から来たか」を立証はしません。真正性には、事前に来歴を独立検証する層が必要です。",
+        },
+      ],
+      ctaLabel: "次の一歩",
+      ctaH2: "真正性を、本番の意思決定に組み込む",
+      ctaBody:
+        "真正性の確保を、自社の業務でどう設計するか。Lemmaの導入で何が変わるかを、30分の Discovery Call でお話しします。元データを開示いただく必要はありません。",
+      ctaItems: [
+        {
+          label: "AIに業務を安全に任せるデータ基盤（安心業務LP）",
+          desc: "データを渡さず真正性を証明する仕組みと導入の進め方。",
+          href: anshinUrl,
+        },
+        {
+          label: "Discovery Call（30分）",
+          desc: "導入相談から。お問い合わせはこちら。",
+          href: discoveryUrl,
+        },
+        {
+          label: "Lemma Critical Weekly（週次）",
+          desc: "実際のリスク事案の構造分析を、毎週メールで。",
+          href: newsletterUrl,
+        },
+        {
+          label: "事案で見る — Lemma Critical Brief 一覧",
+          desc: "実際に起きた真正性の破れを構造で読み解く。",
+          href: L("/critical/briefs/"),
+        },
+      ],
+    }
+  : {
+      metaTitle:
+        "What Is Authenticity — Verifying That Data, Content, and AI Are Real, by Provenance | Lemma",
+      metaDescription:
+        "Authenticity means data and content are real, unaltered, and of verified origin (provenance). Lemma maps what it means across e-records, media, finance, and AI — and how to verify provenance cryptographically.",
+      eyebrow: "Authenticity hub",
+      h1: "What is authenticity?",
+      breadcrumbHome: "Home",
+      breadcrumbHere: "Authenticity",
+      intro: [
+        "Authenticity means that data or content is genuine, has not been altered since it was created, and comes from a verified origin (its provenance). A thing is authentic when you can trace who made it, when, and how it was handled afterward.",
+        "As generative AI spreads and fakes become indistinguishable from the real thing, authenticity has become a precondition everywhere information is handled. Across journalism, finance, government, healthcare, manufacturing, and the operation of AI agents, being able to confirm whether the data in front of you is real is the foundation of any decision.",
+      ],
+      sections: [
+        {
+          id: "difference",
+          label: "Authenticity vs. integrity vs. confidentiality",
+          h2: "Authenticity, integrity, and confidentiality",
+          body: [
+            "In information security, authenticity is often discussed alongside neighboring concepts. They are easy to confuse, so here is the distinction.",
+          ],
+          list: [
+            "<strong>Authenticity</strong>: being genuine — who made it, whether the origin is verified, and that it is not an impersonation.",
+            "<strong>Integrity</strong>: being unaltered — that the content has not changed since creation.",
+            "<strong>Confidentiality</strong>: being visible only to those permitted.",
+          ],
+          after: [
+            "Integrity guarantees that the contents have not changed, but on its own it does not guarantee that the thing came from a genuine origin in the first place. Authenticity is the broader concept: integrity plus <strong>verification of origin (provenance)</strong>.",
+          ],
+        },
+        {
+          id: "three-requirements",
+          label: "Three requirements for e-records",
+          h2: "Authenticity, legibility, and preservation — the three requirements for Japanese e-records",
+          body: [
+            `In Japanese regulation, authenticity is defined as a concrete requirement. The Electronic Books Preservation Act and the Ministry of Health, Labour and Welfare's guidelines for medical information systems (electronic medical records) require three properties of electronic records: <strong>authenticity, legibility, and preservation</strong>.`,
+          ],
+          list: [
+            "<strong>Authenticity</strong>: the record is genuine, any alteration or deletion is traceable, and the author's responsibility is clear.",
+            "<strong>Legibility</strong>: it can be output in a readable form when needed.",
+            "<strong>Preservation</strong>: it stays readable throughout the retention period.",
+          ],
+          after: [
+            `Of these, authenticity is upheld through electronic signatures, timestamps, and management of operation history (provenance). Lemma's provenance proof fixes exactly this — who created which version, when, and whether it was altered — in a cryptographically verifiable form. See <a href="${L("/pillars/regulatory-attribute-proof/")}">Regulatory Attribute Proof (Pillar 04)</a>.`,
+          ],
+        },
+        {
+          id: "genres",
+          label: "Authenticity by domain",
+          h2: "Where authenticity is at stake (by domain)",
+          body: [
+            "Authenticity is a single word, but what it requires changes with each setting.",
+          ],
+          list: [
+            `<strong>Regulation & e-records</strong>: electronic books, electronic medical records, contracts, and audit trails. You need to be able to prove later that a record is a genuine, unaltered original. → <a href="${L("/pillars/regulatory-attribute-proof/")}">Regulatory Attribute Proof (Pillar 04)</a>; for operational adoption, <a href="${anshinUrl}">a data foundation for delegating work to AI safely</a>.`,
+            `<strong>Media & content</strong>: that a photo, video, or article is genuine and unedited since capture. The industry standard <strong>C2PA (Coalition for Content Provenance and Authenticity)</strong> and Content Credentials standardize the recording of origin and provenance. → Related cases: <a href="${L("/critical/briefs/")}">deepfakes generating real people (No.050/053/084)</a>.`,
+            `<strong>Finance & DeFi</strong>: that a transaction or cross-chain transfer is genuine and came from a legitimate origin. Without verifying the origin's provenance, unbacked issuance and illicit transfers follow directly. → Related case: <a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">a bridge infinite-mint (No.085)</a>.`,
+            `<strong>AI agents & AI output</strong>: that you can trace what an AI's referenced facts and generated output are backed by (their provenance). → <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a>.`,
+            `<strong>Supply chain & procurement</strong>: that parts, inspection records, and supplier qualifications are genuine and from a legitimate issuer. → <a href="${L("/solutions/use-cases/supply-chain-esg/")}">Supply-chain ESG</a>.`,
+          ],
+          after: [
+            "The domains differ, but the root is the same: can you independently verify where it came from, whose it is, and which version it is? That is the core of authenticity.",
+          ],
+        },
+        {
+          id: "verify",
+          label: "How to verify authenticity",
+          h2: "How to verify authenticity",
+          body: ["The technologies that support authenticity divide into several layers."],
+          list: [
+            "<strong>Electronic signatures</strong>: show that the author is who they claim and that nothing was altered after signing.",
+            "<strong>Timestamps</strong>: fix when something existed.",
+            "<strong>Hashes</strong>: check whether contents match.",
+            "<strong>Provenance</strong>: record the chain of who created or edited what, when, and where. C2PA is the standard for attaching this provenance to content.",
+            "<strong>Zero-knowledge proofs (ZK proofs)</strong>: prove only that a condition is met, without disclosing the underlying data.",
+          ],
+          after: [
+            `The key point is that <strong>detection and proof are different things</strong>. Detection — finding anomalies after the fact — is indispensable for grasping damage. But detection does not establish, before the fact, whether the data in hand is genuine and came from a legitimate origin. Finding an anomaly afterward does not stop a process that has already gone through. Authenticity is upheld only when there is a layer that <strong>independently verifies provenance before execution</strong> (see <a href="${L("/blog/detection-is-not-proof/")}">detection is not proof</a>).`,
+          ],
+        },
+        {
+          id: "lemma",
+          label: "Lemma's provenance proof",
+          h2: "Meet authenticity with Lemma's provenance proof",
+          body: [
+            "Lemma proves provenance without handing over the data. The source data never goes to Lemma; what you receive is only a proof that the provenance is traceable.",
+          ],
+          list: [
+            "<strong>Cryptographically verified provenance</strong>: fixes who created which version, when, and whether it was altered, as a tamper-proof proof.",
+            "<strong>Prove without exposing data</strong>: zero-knowledge proofs show only authenticity without disclosing the source data. <strong>Selective disclosure</strong> reveals only the attributes you need, minimally.",
+            "<strong>Works alongside standards</strong>: designed to cooperate with C2PA, MCP, A2A, and x402. It does not replace content provenance standards — it layers verification on top of them.",
+            "<strong>Model-independent</strong>: even when AI models change, the provenance proof remains.",
+          ],
+          after: [
+            `For the design, see <a href="${L("/pillars/verifiable-origin/")}">Verifiable Origin (Pillar 01)</a> and <a href="${L("/seal/")}">Seal</a>; for verifying AI output, see <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a> and <a href="${L("/trust402/")}">Trust402</a>.`,
+          ],
+        },
+      ],
+      faqLabel: "Frequently asked questions",
+      faq: [
+        {
+          q: "What is the difference between authenticity and integrity?",
+          a: "Integrity guarantees that the content has not been altered. Authenticity adds to that whether the origin is genuine — who made it and that it is not an impersonation — a broader concept.",
+        },
+        {
+          q: "What does authenticity mean under e-record and medical-record rules?",
+          a: "That a record is genuine, that any alteration or deletion is traceable, and that the author's responsibility is clear. It is upheld through electronic signatures, timestamps, and operation history (provenance). In Japanese e-records it is one of three requirements: authenticity, legibility, and preservation.",
+        },
+        {
+          q: "How does C2PA relate to provenance proof?",
+          a: "C2PA is an industry standard for attaching provenance information to content. Lemma's provenance proof works alongside it, providing the layer that cryptographically verifies the attached provenance. It is complementary, not a replacement.",
+        },
+        {
+          q: "Can detection tools alone protect authenticity?",
+          a: "Detection finds anomalies after the fact and is indispensable for grasping damage. But it does not establish, before execution, whether something came from a genuine origin. Authenticity needs a layer that independently verifies provenance beforehand.",
+        },
+      ],
+      ctaLabel: "Next step",
+      ctaH2: "Build authenticity into the decisions that matter",
+      ctaBody:
+        "How should you design for authenticity in your own operations? We will talk through what changes with Lemma in a 30-minute Discovery Call. You do not need to disclose any source data.",
+      ctaItems: [
+        {
+          label: "A data foundation for delegating work to AI safely",
+          desc: "How to prove authenticity without handing over data, and how to adopt it.",
+          href: anshinUrl,
+        },
+        {
+          label: "Discovery Call (30 min)",
+          desc: "Start from a conversation. Get in touch.",
+          href: discoveryUrl,
+        },
+        {
+          label: "Lemma Critical Weekly",
+          desc: "A structural analysis of real risk incidents, in your inbox each week.",
+          href: newsletterUrl,
+        },
+        {
+          label: "See the cases — Lemma Critical Briefs",
+          desc: "Read real breaks of authenticity, structurally.",
+          href: L("/critical/briefs/"),
+        },
+      ],
+    };
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: C.h1,
+  description: C.metaDescription,
+  url: pageUrl,
+  inLanguage: locale,
+  author: { "@type": "Organization", name: "Lemma" },
+  publisher: {
+    "@type": "Organization",
+    name: "Lemma",
+    logo: { "@type": "ImageObject", url: `${SITE}/favicon.svg` },
+  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+  about: [
+    { "@type": "Thing", name: isJa ? "真正性" : "Authenticity" },
+    { "@type": "Thing", name: isJa ? "データ来歴" : "Data provenance" },
+  ],
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: C.faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: C.breadcrumbHome,
+      item: `${SITE}${base || "/"}`,
+    },
+    { "@type": "ListItem", position: 2, name: C.breadcrumbHere, item: pageUrl },
+  ],
+};
+---
+
+<Layout
+  locale={locale}
+  title={C.metaTitle}
+  description={C.metaDescription}
+  metaType="page"
+  pagePath="/authenticity/"
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(articleJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="au-page">
+    <div class="au-container">
+      <article>
+        <header class="au-hero">
+          <div class="au-eyebrow">{C.eyebrow}</div>
+          <h1 class="au-h1">{C.h1}</h1>
+          {C.intro.map((p) => <p class="au-lead" set:html={p} />)}
+        </header>
+
+        <nav class="au-jump" aria-label={C.eyebrow}>
+          <div class="au-jump-inner">
+            {C.sections.map((s, i) => (
+              <a
+                href={`#${s.id}`}
+                class={`au-jump-pill${i === 0 ? " is-active" : ""}`}
+                data-jump-target={s.id}
+              >
+                {s.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+        {C.sections.map((s) => (
+          <section class="au-section" id={s.id} data-section>
+            <div class="au-section-label">{s.label}</div>
+            <h2 class="au-h2">{s.h2}</h2>
+            {s.body.map((p) => <p class="au-p" set:html={p} />)}
+            <ul class="au-list">
+              {s.list.map((li) => <li set:html={li} />)}
+            </ul>
+            {s.after.map((p) => <p class="au-p" set:html={p} />)}
+          </section>
+        ))}
+
+        <section class="au-section" id="faq" data-section>
+          <div class="au-section-label">{C.faqLabel}</div>
+          <h2 class="au-h2">{C.faqLabel}</h2>
+          <dl class="au-faq">
+            {C.faq.map((item) => (
+              <div class="au-faq-item">
+                <dt class="au-faq-q">{item.q}</dt>
+                <dd class="au-faq-a">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </article>
+
+      <!-- CTA -->
+      <section class="au-cta" aria-label={C.ctaLabel}>
+        <div class="au-cta-eyebrow">{C.ctaLabel}</div>
+        <h2 class="au-cta-h2">{C.ctaH2}</h2>
+        <p class="au-cta-body">{C.ctaBody}</p>
+        <div class="au-cta-grid">
+          {C.ctaItems.map((item) => (
+            <a
+              class="au-cta-card"
+              href={item.href}
+              target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noopener" : undefined}
+            >
+              <span class="au-cta-card-title">{item.label}</span>
+              <span class="au-cta-card-desc">{item.desc}</span>
+              <span class="au-cta-card-arrow">→</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .au-page {
+    --au-display: "Sora", system-ui, sans-serif;
+    --au-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --au-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --au-text-1: #1a1a1a;
+    --au-text-2: #3a3a3a;
+    --au-text-3: #5a5a5a;
+    --au-text-4: #9a9a9a;
+    background: var(--lemma-cream);
+    color: var(--au-text-2);
+    font-family: var(--au-body);
+    line-height: 1.85;
+    padding: 0 0 32px;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .au-page {
+    --au-body: "Sora", system-ui, sans-serif;
+  }
+  .au-container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── HERO ─── */
+  .au-hero {
+    padding: 64px 0 36px;
+  }
+  .au-eyebrow {
+    font-family: var(--au-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .au-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .au-h1 {
+    font-family: var(--au-display);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--black);
+    letter-spacing: -0.04em;
+    margin: 0 0 24px;
+  }
+  :root[lang="ja"] .au-h1 {
+    font-size: 42px;
+    line-height: 1.22;
+    letter-spacing: -0.03em;
+  }
+  .au-lead {
+    font-size: 16.5px;
+    color: var(--au-text-1);
+    line-height: 1.9;
+    margin: 0 0 16px;
+  }
+
+  /* ─── STICKY JUMP NAV ─── */
+  .au-jump {
+    position: sticky;
+    top: 64px;
+    z-index: 5;
+    background: var(--lemma-cream);
+    padding: 10px 0;
+    margin: 0 0 16px;
+    border-top: 0.5px solid var(--lemma-line);
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .au-jump-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 0;
+  }
+  .au-jump-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .au-jump-pill {
+    flex-shrink: 0;
+    font-family: var(--au-display);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--au-text-3);
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 999px;
+    padding: 7px 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .au-jump-pill:hover {
+    color: var(--accent);
+    border-color: rgba(139, 69, 19, 0.4);
+  }
+  .au-jump-pill.is-active {
+    color: var(--lemma-cream);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ─── SECTIONS ─── */
+  .au-section {
+    padding: 36px 0;
+    border-top: 0.5px solid var(--lemma-line);
+    scroll-margin-top: 140px;
+  }
+  .au-section-label {
+    font-family: var(--au-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  .au-h2 {
+    font-family: var(--au-display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin: 0 0 18px;
+  }
+  :root[lang="ja"] .au-h2 {
+    font-size: 25px;
+    line-height: 1.45;
+  }
+  .au-p {
+    font-size: 15px;
+    color: var(--au-text-2);
+    line-height: 1.9;
+    margin: 0 0 16px;
+  }
+  .au-p a,
+  .au-list a,
+  .au-lead a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .au-p a:hover,
+  .au-list a:hover,
+  .au-lead a:hover {
+    color: #6e3610;
+  }
+  .au-list {
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+  .au-list li {
+    position: relative;
+    padding: 0 0 0 22px;
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--au-text-2);
+  }
+  .au-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .au-list li strong {
+    color: var(--black);
+    font-weight: 700;
+  }
+
+  /* ─── FAQ ─── */
+  .au-faq {
+    margin: 0;
+  }
+  .au-faq-item {
+    padding: 18px 0;
+    border-bottom: 0.5px solid var(--lemma-line);
+  }
+  .au-faq-item:first-child {
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .au-faq-q {
+    font-family: var(--au-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.5;
+    margin: 0 0 8px;
+  }
+  .au-faq-a {
+    font-size: 14.5px;
+    color: var(--au-text-2);
+    line-height: 1.85;
+    margin: 0;
+  }
+
+  /* ─── CTA ─── */
+  .au-cta {
+    margin: 40px 0 0;
+    padding: 44px 36px;
+    background: var(--lemma-cream-deep);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .au-cta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 88px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 0;
+  }
+  .au-cta-eyebrow {
+    font-family: var(--au-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+  .au-cta-h2 {
+    font-family: var(--au-display);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin: 0 0 16px;
+  }
+  :root[lang="ja"] .au-cta-h2 {
+    line-height: 1.4;
+  }
+  .au-cta-body {
+    font-size: 14.5px;
+    color: var(--au-text-2);
+    line-height: 1.85;
+    margin: 0 0 26px;
+    max-width: 640px;
+  }
+  .au-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+    gap: 12px;
+  }
+  .au-cta-card {
+    background: var(--white);
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .au-cta-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
+  }
+  .au-cta-card-title {
+    font-family: var(--au-display);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+  }
+  .au-cta-card-desc {
+    font-size: 12.5px;
+    color: var(--au-text-3);
+    line-height: 1.6;
+  }
+  .au-cta-card-arrow {
+    font-family: var(--au-mono);
+    font-size: 14px;
+    color: var(--accent);
+    margin-top: auto;
+    padding-top: 6px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 720px) {
+    .au-container {
+      padding: 0 20px;
+    }
+    .au-h1 {
+      font-size: 34px;
+    }
+    :root[lang="ja"] .au-h1 {
+      font-size: 28px;
+    }
+    .au-hero {
+      padding: 44px 0 28px;
+    }
+    .au-h2 {
+      font-size: 23px;
+    }
+    :root[lang="ja"] .au-h2 {
+      font-size: 21px;
+    }
+    .au-cta {
+      padding: 30px 22px;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Sticky jump-nav scroll spy (mirrors the FAQ page behavior).
+  (function () {
+    var pills = document.querySelectorAll(".au-jump-pill");
+    var sections = document.querySelectorAll("[data-section]");
+    if (!pills.length || !sections.length) return;
+    var spy = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var id = e.target.getAttribute("id");
+          pills.forEach(function (p) {
+            p.classList.toggle(
+              "is-active",
+              p.getAttribute("data-jump-target") === id,
+            );
+          });
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
+    );
+    sections.forEach(function (s) {
+      spy.observe(s);
+    });
+  })();
+</script>
