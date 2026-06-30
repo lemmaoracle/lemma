@@ -54,15 +54,15 @@ const client = create({ apiBase: "https://api.lemma.xyz", apiKey: "your-api-key"
 
 // 2. Get and define schema
 const schemaMeta = await schemas.getById(client, "dev:weather:v1");
-const weatherSchema = await define<WeatherRaw, WeatherNorm>(schemaMeta.normalize!);
+const weatherSchema = await define<WeatherRaw, WeatherNorm>(schemaMeta);
 
 // 3. Encrypt document for a holder
 const enc = await encrypt(client, {
   payload: { weather: "rain", temperature: 12, city: "Tokyo" },
-  holderKey: "0x1234...", // Holder's public key
+  holderKey: "0x1234...", // Holder's secp256k1 compressed public key (hex)
 });
 
-// 4. Prepare document (normalize + compute commitments)
+// 4. Prepare document (normalize + compute Poseidon Merkle commitments)
 const prep = await prepare<WeatherRaw, WeatherNorm>(client, {
   schema: weatherSchema.id,
   payload: rawDoc,
@@ -76,6 +76,7 @@ await documents.register(client, {
   issuerId: "weather-issuer",
   subjectId: "tokyo-weather",
   commitments: prep.commitments,
+  revocation: { scheme: "none", root: "0x" + "0".repeat(64) },
 });
 
 // 6. Generate and submit ZK proof
@@ -104,23 +105,18 @@ console.log("Proof status:", proofResult.status);
 ```typescript
 import { circuits, prover } from "@lemmaoracle/sdk";
 
-// Register a custom circuit
 await circuits.register(client, {
   circuitId: "custom-threshold",
-  artifact: {
-    type: "ipfs",
-    wasm: "Qm...", // IPFS CID of circuit WASM
-    provingKey: "Qm...", // Proving key CID
-    verificationKey: "Qm...", // Verification key CID
-  },
+  schema: "dev:weather:v1",
   description: "Custom threshold circuit",
+  artifact: {
+    location: { type: "ipfs", wasm: "ipfs://Qm...", zkey: "ipfs://Qm..." },
+  },
 });
 
-// Generate proof using custom circuit
-const proof = await prover.generateProof({
+const result = await prover.prove(client, {
   circuitId: "custom-threshold",
-  privateInputs: { value: 42, threshold: 40 },
-  inputs: { thresholdMet: true },
+  witness: { value: 42, threshold: 40 },
 });
 ```
 
@@ -129,38 +125,34 @@ const proof = await prover.generateProof({
 ```typescript
 import { disclose } from "@lemmaoracle/sdk";
 
-// Create a selective disclosure proof
-const sdProof = await disclose.createProof({
-  document: {
-    /* signed document */
-  },
-  attributes: ["temperature", "city"], // Only reveal these
-  signerPubKey: "issuer-public-key",
-  holderPrivKey: "holder-private-key",
+const { secretKey, publicKey } = await disclose.generateKeyPair();
+const messages = disclose.payloadToMessages({ city: "Tokyo", temperature: "12", weather: "rain" });
+
+const signed = await disclose.sign(client, {
+  messages, secretKey, header: new TextEncoder().encode("lemma"), issuerId: "weather-issuer",
 });
 
-// Verify the disclosure proof
-const isValid = await disclose.verifyProof(sdProof);
+const revealed = await disclose.reveal(client, {
+  signature: signed.signature, messages, publicKey,
+  indexes: [0, 1], header: signed.header,
+});
+
+const sd = disclose.toSelectiveDisclosure(revealed, {
+  publicKey, header: signed.header, count: messages.length,
+});
+
+const isValid = await disclose.verifyProof(client, disclose.fromSelectiveDisclosure(sd));
 ```
 
 ### Smart Contract Hooks
 
 ```typescript
-// Register document with on-chain hook
 await documents.register(client, {
-  rawDoc: {
-    /* ... */
-  },
-  holderPubKey: "0x...",
-  schemaId: "dev:weather:v1",
-  hooks: [
-    {
-      address: "0xabc...",
-      method: "processWeatherData",
-      abi: ["function processWeatherData(bytes32, uint256)"],
-      calldata: "0x...",
-    },
-  ],
+  schema: "dev:weather:v1", docHash: enc.docHash, cid: enc.cid,
+  issuerId: "weather-issuer", subjectId: "tokyo-weather",
+  commitments: prep.commitments,
+  revocation: { scheme: "none", root: "0x..." },
+  hooks: [{ chainId: 1, address: "0xabc...", method: "processWeatherData", mode: "after-registry" }],
 });
 ```
 
