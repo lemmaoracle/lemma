@@ -19,7 +19,7 @@ export type LemmaMcpServerConfig = Readonly<{
 // serverInfo.version on initialize handshake; agents and registries (Glama,
 // Smithery) display this. CTO follow-up: replace with build-time injection
 // or a sync hook in publish-npm.sh.
-const PACKAGE_VERSION = "0.0.19";
+const PACKAGE_VERSION = "0.0.20";
 
 /** Tool registration functions */
 type ToolRegister = (server: McpServer, client: LemmaClient) => void;
