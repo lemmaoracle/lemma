@@ -27,16 +27,11 @@ function emphasize(s: string): string {
     <span class="accent">{h.h1Lines[locale][1]}</span>
   </h1>
   <p class="ph-sub" set:html={emphasize(h.sub[locale])} />
-  <p class="ph-trust">
-    <span class="dot">●</span> <span class="strong">{h.trustLine[locale][0]}</span>
-    {" · "}{h.trustLine[locale][1]}
-    {" · "}{h.trustLine[locale][2]}
-  </p>
 </section>
 
 <style>
   .ph-hero {
-    padding: 64px 0 56px;
+    padding: 64px 0 24px;
   }
   .ph-eyebrow {
     font-family: var(--pr-mono);
@@ -81,22 +76,6 @@ function emphasize(s: string): string {
   .ph-sub :global(.k) {
     color: var(--black);
     font-weight: 500;
-  }
-  .ph-trust {
-    margin: 38px 0 0;
-    padding-top: 22px;
-    border-top: 0.5px solid var(--lemma-line);
-    font-family: var(--pr-mono);
-    font-size: 11.5px;
-    letter-spacing: 0.05em;
-    color: var(--pr-text-3);
-  }
-  .ph-trust .strong {
-    color: var(--black);
-    font-weight: 500;
-  }
-  .ph-trust .dot {
-    color: var(--accent);
   }
   @media (max-width: 720px) {
     .ph-h1 { font-size: 44px; }
