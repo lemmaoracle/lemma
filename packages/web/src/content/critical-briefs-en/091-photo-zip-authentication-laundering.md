@@ -12,8 +12,10 @@ related_pack: ["A-incident-response"]
 related_briefs: ["030-stripe-trusted-channel-skimmer", "064-salesloft-drift-oauth-salesforce", "062-claude-code-github-action-bot-trust", "047-openclaw-agent-phishing"]
 status: "published"
 version: "1.0"
-og_lead_ja: "Photo ZIP：Calendly+Google リダイレクトの認証ランダリングで SPF/DKIM/DMARC を全通過。メール認証は経路を確かめ authorship を確かめない（ホテル受付に Node.js バックドア TonRAT）"
-og_lead_en: "Photo ZIP: authentication laundering via Calendly+Google redirects cleared SPF/DKIM/DMARC. Email auth checks the path, not authorship (a Node.js backdoor, TonRAT, at hotel front desks)"
+og_lead_ja: "Photo ZIP：認証ランダリングでメール認証を全通過。認証は送信経路を確かめ、作成主体を確かめない"
+og_lead_en: "Photo ZIP: authentication laundering cleared SPF/DKIM/DMARC; email auth verifies the path, not the author"
+og_headline_ja: "認証を通ったメールは、\n攻撃者が書いた<accent>偽物</accent>だった。"
+og_headline_en: "An email passed every check.\n<accent>An attacker wrote it.</accent>"
 gap_detected: "All three email authentication checks — SPF, DKIM, and DMARC — fired and completed, genuinely verifying that the email was sent from legitimate infrastructure (Calendly)."
 gap_missing: "Authentication confirmed only the legitimacy of the sending path; there was no layer that, before execution, proved whether a legitimate counterparty had actually authored the booking/complaint message (its authorship)."
 gap_fix: "Attach a cryptographic provenance proof of authorship to legitimate booking and guest communications, and independently verify with Lemma any message that lacks it, to prevent it up front."

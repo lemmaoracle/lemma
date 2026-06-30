@@ -106,6 +106,18 @@ const briefSchema = z
     og_lead_ja: z.string().optional(),
     og_lead_en: z.string().optional(),
     /**
+     * Optional short headline rendered as the *OG image* visual hook
+     * (the big line on the 1200×630 card) — distinct from `og_lead_*`,
+     * which feeds the HTML/og:title. Keep it concrete and incident-
+     * specific (a curiosity hook, not a generic thesis), ≈1–2 short
+     * lines. Supports `\n` line breaks and a single `<accent>…</accent>`
+     * span (brown). When absent, the OG generator falls back to the
+     * shortened `og_lead_*` / `title` headline. Locale-suffixed and
+     * duplicated across the JA + EN collections.
+     */
+    og_headline_ja: z.string().optional(),
+    og_headline_en: z.string().optional(),
+    /**
      * Optional cover image URL for the OG v2 artboard. When unset, the
      * OG generator falls back to the cream-deep + dark-on-light design.
      * Existing briefs leave this empty; future briefs can opt in.
