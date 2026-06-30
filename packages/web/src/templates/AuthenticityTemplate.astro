@@ -75,7 +75,7 @@ const C = isJa
           label: "電子記録の三要件",
           h2: "「真正性・見読性・保存性」— 日本の電子記録に求められる三要件",
           body: [
-            `日本の規制では、真正性は具体的な要件として定められています。電子帳簿保存法や、厚生労働省の医療情報システムに関するガイドライン（電子カルテ・診療録）では、電子記録に <strong>真正性・見読性・保存性</strong> の三要件が求められます。`,
+            `日本の規制では、真正性は具体的な要件として定められています。電子帳簿保存法<sup class="au-ref"><a href="#ref-1">[1]</a></sup>や、厚生労働省の医療情報システムに関するガイドライン（電子カルテ・診療録）<sup class="au-ref"><a href="#ref-2">[2]</a></sup>では、電子記録に <strong>真正性・見読性・保存性</strong> の三要件が求められます。`,
           ],
           list: [
             "<strong>真正性</strong>：記録が本物で、改ざん・消去の有無をたどれること。作成者の責任が明確であること。",
@@ -93,7 +93,7 @@ const C = isJa
           body: ["真正性は一つの言葉ですが、求められる現場ごとに中身が変わります。"],
           list: [
             `<strong>規制・電子記録</strong>：電子帳簿、電子カルテ、契約・監査証跡。改ざんされていない正規の記録であることを、後から立証できる状態が要ります。→ <a href="${L("/pillars/regulatory-attribute-proof/")}">規制属性証明（Pillar 04）</a>／業務での適用は <a href="${anshinUrl}">AIに業務を安全に任せるデータ基盤</a>`,
-            `<strong>報道・コンテンツ</strong>：写真・映像・記事が、撮影時点から加工されていない本物であること。業界標準の <strong>C2PA（Coalition for Content Provenance and Authenticity）</strong> や Content Credentials が、出所と来歴の記録を標準化しています。→ 関連事案：<a href="${L("/critical/briefs/")}">ディープフェイクで実在の人物を生成（No.050／053／084）</a>`,
+            `<strong>報道・コンテンツ</strong>：写真・映像・記事が、撮影時点から加工されていない本物であること。業界標準の <strong>C2PA（Coalition for Content Provenance and Authenticity）</strong><sup class="au-ref"><a href="#ref-3">[3]</a></sup> や Content Credentials が、出所と来歴の記録を標準化しています。→ 関連事案：<a href="${L("/critical/briefs/")}">ディープフェイクで実在の人物を生成（No.050／053／084）</a>`,
             `<strong>金融・DeFi</strong>：取引やクロスチェーン送金が、正規の発信元から来た本物であること。発信元の来歴を検証しないと、裏づけのない発行や不正送金に直結します。→ 関連事案：<a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">ブリッジの infinite-mint（No.085）</a>`,
             `<strong>AIエージェント・AI出力</strong>：AIが参照した事実や生成した出力が、何に裏づけられているか（来歴）をたどれること。→ <a href="${L("/pillars/verifiable-ai/")}">検証可能AI（Pillar 02）</a>`,
             `<strong>サプライチェーン・調達</strong>：部品・検査記録・サプライヤー資格が、正規の発行元による本物であること。→ <a href="${L("/solutions/use-cases/supply-chain-esg/")}">サプライチェーンESG</a>`,
@@ -153,6 +153,24 @@ const C = isJa
         {
           q: "検出ツールがあれば真正性は守れますか？",
           a: "検出は異常を後から見つけるもので、被害の把握に不可欠です。ただし「実行前に、本物の出所から来たか」を立証はしません。真正性には、事前に来歴を独立検証する層が必要です。",
+        },
+      ],
+      referencesLabel: "出典（一次情報）",
+      references: [
+        {
+          n: 1,
+          text: "国税庁「電子帳簿等保存制度特設サイト」（電子帳簿保存法）",
+          url: "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/tokusetsu/index.htm",
+        },
+        {
+          n: 2,
+          text: "厚生労働省「医療情報システムの安全管理に関するガイドライン 第6.0版」",
+          url: "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+        },
+        {
+          n: 3,
+          text: "C2PA（Coalition for Content Provenance and Authenticity）公式・技術仕様",
+          url: "https://c2pa.org/",
         },
       ],
       ctaLabel: "次の一歩",
@@ -217,7 +235,7 @@ const C = isJa
           label: "Three requirements for e-records",
           h2: "Authenticity, legibility, and preservation — the three requirements for Japanese e-records",
           body: [
-            `In Japanese regulation, authenticity is defined as a concrete requirement. The Electronic Books Preservation Act and the Ministry of Health, Labour and Welfare's guidelines for medical information systems (electronic medical records) require three properties of electronic records: <strong>authenticity, legibility, and preservation</strong>.`,
+            `In Japanese regulation, authenticity is defined as a concrete requirement. The Electronic Books Preservation Act<sup class="au-ref"><a href="#ref-1">[1]</a></sup> and the Ministry of Health, Labour and Welfare's guidelines for medical information systems (electronic medical records)<sup class="au-ref"><a href="#ref-2">[2]</a></sup> require three properties of electronic records: <strong>authenticity, legibility, and preservation</strong>.`,
           ],
           list: [
             "<strong>Authenticity</strong>: the record is genuine, any alteration or deletion is traceable, and the author's responsibility is clear.",
@@ -237,7 +255,7 @@ const C = isJa
           ],
           list: [
             `<strong>Regulation & e-records</strong>: electronic books, electronic medical records, contracts, and audit trails. You need to be able to prove later that a record is a genuine, unaltered original. → <a href="${L("/pillars/regulatory-attribute-proof/")}">Regulatory Attribute Proof (Pillar 04)</a>; for operational adoption, <a href="${anshinUrl}">a data foundation for delegating work to AI safely</a>.`,
-            `<strong>Media & content</strong>: that a photo, video, or article is genuine and unedited since capture. The industry standard <strong>C2PA (Coalition for Content Provenance and Authenticity)</strong> and Content Credentials standardize the recording of origin and provenance. → Related cases: <a href="${L("/critical/briefs/")}">deepfakes generating real people (No.050/053/084)</a>.`,
+            `<strong>Media & content</strong>: that a photo, video, or article is genuine and unedited since capture. The industry standard <strong>C2PA (Coalition for Content Provenance and Authenticity)</strong><sup class="au-ref"><a href="#ref-3">[3]</a></sup> and Content Credentials standardize the recording of origin and provenance. → Related cases: <a href="${L("/critical/briefs/")}">deepfakes generating real people (No.050/053/084)</a>.`,
             `<strong>Finance & DeFi</strong>: that a transaction or cross-chain transfer is genuine and came from a legitimate origin. Without verifying the origin's provenance, unbacked issuance and illicit transfers follow directly. → Related case: <a href="${L("/critical/briefs/085-secret-network-axelar-bridge-infinite-mint/")}">a bridge infinite-mint (No.085)</a>.`,
             `<strong>AI agents & AI output</strong>: that you can trace what an AI's referenced facts and generated output are backed by (their provenance). → <a href="${L("/pillars/verifiable-ai/")}">Verifiable AI (Pillar 02)</a>.`,
             `<strong>Supply chain & procurement</strong>: that parts, inspection records, and supplier qualifications are genuine and from a legitimate issuer. → <a href="${L("/solutions/use-cases/supply-chain-esg/")}">Supply-chain ESG</a>.`,
@@ -297,6 +315,24 @@ const C = isJa
         {
           q: "Can detection tools alone protect authenticity?",
           a: "Detection finds anomalies after the fact and is indispensable for grasping damage. But it does not establish, before execution, whether something came from a genuine origin. Authenticity needs a layer that independently verifies provenance beforehand.",
+        },
+      ],
+      referencesLabel: "Primary sources",
+      references: [
+        {
+          n: 1,
+          text: "National Tax Agency — Electronic Books Maintenance system special site (電子帳簿保存法, in Japanese)",
+          url: "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/tokusetsu/index.htm",
+        },
+        {
+          n: 2,
+          text: "Ministry of Health, Labour and Welfare — Guidelines for the Safety Management of Medical Information Systems, ed. 6.0 (in Japanese)",
+          url: "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+        },
+        {
+          n: 3,
+          text: "C2PA (Coalition for Content Provenance and Authenticity) — official site & technical specifications",
+          url: "https://c2pa.org/",
         },
       ],
       ctaLabel: "Next step",
@@ -443,6 +479,17 @@ const breadcrumbJsonLd = {
               </div>
             ))}
           </dl>
+        </section>
+
+        <section class="au-section au-refs" id="references">
+          <div class="au-section-label">{C.referencesLabel}</div>
+          <ol class="au-ref-list">
+            {C.references.map((r) => (
+              <li id={`ref-${r.n}`}>
+                <a href={r.url} target="_blank" rel="noopener">{r.text}</a>
+              </li>
+            ))}
+          </ol>
         </section>
       </article>
 
@@ -684,6 +731,41 @@ const breadcrumbJsonLd = {
     color: var(--au-text-2);
     line-height: 1.85;
     margin: 0;
+  }
+
+  /* ─── REFERENCES (footnotes) ─── */
+  .au-ref {
+    font-size: 0.7em;
+    line-height: 0;
+    margin-left: 1px;
+  }
+  .au-ref a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .au-ref-list {
+    margin: 0;
+    padding: 0 0 0 20px;
+  }
+  .au-ref-list li {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--au-text-3);
+    margin: 0 0 10px;
+    word-break: break-word;
+  }
+  .au-ref-list li a {
+    color: var(--au-text-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .au-ref-list li a:hover {
+    color: var(--accent);
+  }
+  .au-ref-list li:target {
+    background: var(--lemma-brown-light);
+    border-radius: 4px;
   }
 
   /* ─── CTA ─── */
