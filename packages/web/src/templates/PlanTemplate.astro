@@ -28,6 +28,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import CivicIcon, { type CivicIconName } from "../components/civic/CivicIcon.astro";
+import PlanPriceModule from "../components/pricing/PlanPriceModule.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 import { getPlanContent, type PlanKey } from "../data/plans";
 
@@ -168,6 +169,11 @@ const breadcrumbJsonLd = {
           ))}
         </div>
         <p class="cv-tiers-note">{C.tiers.note}</p>
+      </section>
+
+      {/* プランと価格モジュール（v13・確定）— 選び方・価格 */}
+      <section class="cv-section cv-price-module" aria-label="プランと価格">
+        <PlanPriceModule locale={locale} />
       </section>
 
       {/* §6 Use case (pre-permission = illustrative scenario).
