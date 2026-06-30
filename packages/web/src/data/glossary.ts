@@ -90,6 +90,17 @@ export interface GlossaryTerm {
    * "Lemma での実装"). Regulatory pages use "Lemma での適合経路".
    */
   readonly implementationHeading?: string;
+  /**
+   * SEO escalation knobs for keyword-cannibalization control. Leave unset
+   * for a normal self-canonical, indexable entry. To defer a thin entry to
+   * a cornerstone hub when Search Console shows the hub losing the head
+   * term: set `canonicalOverride` to the hub's absolute URL (consolidation),
+   * then if still needed set `noindexFollow: true` (drop from the index
+   * while still following outbound links). Dormant until set.
+   * See project_lemma_authenticity_hub: 真正性 entry vs /authenticity/ hub.
+   */
+  readonly canonicalOverride?: string;
+  readonly noindexFollow?: boolean;
 }
 
 export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
