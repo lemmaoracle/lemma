@@ -59,7 +59,7 @@ const computeLeaves = (
   randomness: string,
 ): LeafResult => {
   const sortedKeys = [...R.keys(normalized)].sort();
-  // randomness is a hex string WITHOUT "0x" prefix (from commitNormalized)
+  // randomness is a hex string WITHOUT "0x" prefix (from commit)
   // Convert it to field element (snarkjs will do the same with "0x" + randomness)
   // No modulo reduction - randomness is already in the field
   const blindingField = BigInt(`0x${randomness}`);
@@ -205,7 +205,7 @@ export type CommitResult = Readonly<{
   leafPreimages: ReadonlyArray<LeafPreimage>;
 }>;
 
-export const commitNormalized = (
+export const commit = (
   normalized: Json,
 ): Promise<CommitResult> =>
   R.cond([

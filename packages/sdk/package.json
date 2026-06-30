@@ -22,6 +22,11 @@
       "import": "./dist/client.js",
       "default": "./dist/client.js"
     },
+    "./disclose": {
+      "types": "./dist/disclose.d.ts",
+      "import": "./dist/disclose.js",
+      "default": "./dist/disclose.js"
+    },
     "./prover": {
       "types": "./dist/prover.d.ts",
       "import": "./dist/prover.js",

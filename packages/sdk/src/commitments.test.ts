@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { commitNormalized, toScalar, poseidon } from "./commitments.js";
+import { commit, toScalar, poseidon } from "./commitments.js";
 import { poseidon2, poseidon3 } from "poseidon-lite";
 import type { Json } from "./internal.js";
 import * as R from "ramda";
@@ -93,18 +93,18 @@ describe("commitments", () => {
     });
   });
 
-  describe("commitNormalized", () => {
+  describe("commit", () => {
     it("rejects empty or non-object normalized input", async () => {
-      await expect(commitNormalized({} as Json)).rejects.toThrow("non-empty object");
-      await expect(commitNormalized([] as Json)).rejects.toThrow("non-empty object");
-      await expect(commitNormalized("string" as Json)).rejects.toThrow("non-empty object");
+      await expect(commit({} as Json)).rejects.toThrow("non-empty object");
+      await expect(commit([] as Json)).rejects.toThrow("non-empty object");
+      await expect(commit("string" as Json)).rejects.toThrow("non-empty object");
     });
 
     it("produces deterministic leaves for same input", async () => {
       const normalized = { x: 123, y: true, z: "text" };
 
-      const result1 = await commitNormalized(normalized);
-      const result2 = await commitNormalized(normalized);
+      const result1 = await commit(normalized);
+      const result2 = await commit(normalized);
 
       // All fields should be present
       expect(result1.root).toBeDefined();
@@ -126,8 +126,8 @@ describe("commitments", () => {
       const base = { field1: "A", field2: "B" };
       const modified = { field1: "A", field2: "C" };
 
-      const resultBase = await commitNormalized(base);
-      const resultModified = await commitNormalized(modified);
+      const resultBase = await commit(base);
+      const resultModified = await commit(modified);
 
       expect(resultBase.root).not.toBe(resultModified.root);
     });
@@ -136,7 +136,7 @@ describe("commitments", () => {
       const normalized = { test: "value" };
 
       // Run multiple times to get different random values
-      const results = await Promise.all(R.times(() => commitNormalized(normalized), 3));
+      const results = await Promise.all(R.times(() => commit(normalized), 3));
 
       // All roots should be different (extremely low probability of collision)
       const roots = R.map(R.prop("root"), results);
@@ -146,7 +146,7 @@ describe("commitments", () => {
 
     it("handles single attribute object", async () => {
       const normalized = { single: "attribute" };
-      const result = await commitNormalized(normalized);
+      const result = await commit(normalized);
 
       expect(result.leaves).toHaveLength(1);
       expect(result.root).toMatch(/^0x/);
@@ -155,22 +155,22 @@ describe("commitments", () => {
     });
 
     it("returns depth 0 for a single-leaf tree", async () => {
-      const result = await commitNormalized({ only: "one" });
+      const result = await commit({ only: "one" });
       expect(result.depth).toBe(0);
     });
 
     it("returns depth 1 for a 2-leaf tree", async () => {
-      const result = await commitNormalized({ a: "1", b: "2" });
+      const result = await commit({ a: "1", b: "2" });
       expect(result.depth).toBe(1);
     });
 
     it("returns depth 2 for a 3-leaf tree (padded to 4)", async () => {
-      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+      const result = await commit({ a: "1", b: "2", c: "3" });
       expect(result.depth).toBe(2);
     });
 
     it("returns depth matching inclusionProofs[].siblings.length", async () => {
-      const result = await commitNormalized({ a: "1", b: "2", c: "3", d: "4", e: "5" });
+      const result = await commit({ a: "1", b: "2", c: "3", d: "4", e: "5" });
       // 5 leaves → padded to 8 → depth 3
       expect(result.depth).toBe(3);
       result.inclusionProofs.forEach((proof) => {
@@ -188,7 +188,7 @@ describe("commitments", () => {
         nested: { inner: "value" },
       };
 
-      const result = await commitNormalized(normalized);
+      const result = await commit(normalized);
 
       // Should have 6 leaves (all top-level keys)
       expect(result.leaves).toHaveLength(6);
@@ -203,8 +203,8 @@ describe("commitments", () => {
       const obj1 = { b: 2, a: 1, c: 3 };
       const obj2 = { a: 1, c: 3, b: 2 };
 
-      const result1 = await commitNormalized(obj1);
-      const result2 = await commitNormalized(obj2);
+      const result1 = await commit(obj1);
+      const result2 = await commit(obj2);
 
       // Same values, same order should produce same leaf commitments
       // (though randomness differs, so roots will differ)
@@ -217,13 +217,13 @@ describe("commitments", () => {
   describe("inclusionProofs", () => {
     it("returns one proof per leaf", async () => {
       const normalized = { a: "1", b: "2", c: "3" };
-      const result = await commitNormalized(normalized);
+      const result = await commit(normalized);
 
       expect(result.inclusionProofs).toHaveLength(3);
     });
 
     it("returns empty siblings/indices for single-leaf tree", async () => {
-      const result = await commitNormalized({ only: "one" });
+      const result = await commit({ only: "one" });
 
       expect(result.inclusionProofs).toHaveLength(1);
       expect(result.inclusionProofs[0]?.siblings).toEqual([]);
@@ -232,7 +232,7 @@ describe("commitments", () => {
 
     it("returns correct depth for multi-leaf tree", async () => {
       // 3 leaves → padded to 4 → depth 2
-      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+      const result = await commit({ a: "1", b: "2", c: "3" });
 
       result.inclusionProofs.forEach((proof) => {
         expect(proof.siblings).toHaveLength(2);
@@ -254,7 +254,7 @@ describe("commitments", () => {
   describe("leafPreimages", () => {
     it("returns one preimage per leaf with correct attribute names", async () => {
       const normalized = { task_bucket: "field_ops", area_bucket: "east" };
-      const result = await commitNormalized(normalized);
+      const result = await commit(normalized);
 
       expect(result.leafPreimages).toHaveLength(2);
 
@@ -266,7 +266,7 @@ describe("commitments", () => {
     });
 
     it("contains valid hex hashes", async () => {
-      const result = await commitNormalized({ key: "value" });
+      const result = await commit({ key: "value" });
       const pre = result.leafPreimages[0];
 
       expect(pre?.nameHash).toMatch(/^0x[0-9a-f]+$/);
@@ -275,7 +275,7 @@ describe("commitments", () => {
     });
 
     it("shares the same blindingHash across all leaves", async () => {
-      const result = await commitNormalized({ a: "1", b: "2", c: "3" });
+      const result = await commit({ a: "1", b: "2", c: "3" });
       const blindings = result.leafPreimages.map((p) => p.blindingHash);
 
       expect(new Set(blindings).size).toBe(1);

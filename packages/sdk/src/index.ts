@@ -8,7 +8,7 @@
 export { create } from "./client.js";
 export { define } from "./schema.js";
 export { encrypt, decrypt, derivePublicKey } from "./crypto.js";
-export { poseidon, toScalar } from "./commitments.js";
+export { commit, poseidon, toScalar } from "./commitments.js";
 export { prepare, normalize } from "./prepare.js";
 export type { PrepareInput } from "./prepare.js";
 export type { PrepareOutput } from "./commitments.js";

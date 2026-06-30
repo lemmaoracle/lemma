@@ -5,7 +5,7 @@
 import type { LemmaClient } from "@lemmaoracle/spec";
 import type { Json } from "./internal.js";
 import { reject } from "./internal.js";
-import { commitNormalized, type PrepareOutput } from "./commitments.js";
+import { commit, type PrepareOutput } from "./commitments.js";
 import { getSchemaById } from "./schema.js";
 
 export type PrepareInput<Raw> = Readonly<{
@@ -21,7 +21,7 @@ export const prepare = async <Raw, Norm extends Json>(
 
   return schema
     ? Promise.resolve(schema.normalize(input.payload)).then((normalized) =>
-        commitNormalized(normalized).then((result) => ({
+        commit(normalized).then((result) => ({
           normalized,
           commitments: { scheme: "poseidon" as const, ...result },
           depth: result.depth,
@@ -39,7 +39,7 @@ export const prepare = async <Raw, Norm extends Json>(
  * Use this when you need to apply a custom commitment scheme (e.g. the
  * sectioned Poseidon commitment in `@lemmaoracle/agent`).
  *
- * `prepare` is equivalent to `normalize` + `commitMerkle`.
+ * `prepare` is equivalent to `normalize` + `commit`.
  */
 export const normalize = async <Raw, Norm extends Json>(
   _client: LemmaClient,
