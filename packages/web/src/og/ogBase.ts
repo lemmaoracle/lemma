@@ -7,7 +7,7 @@
  *   - Blog (per-post) / Critical Brief (per-brief)
  *
  * Every artboard shares: 1200×630 canvas, 60/72 padding, Lemma
- * wordmark top-left at 52 px, Sora 700 auto-shrink H1 (100 / 84 / 68),
+ * wordmark top-left at 66 px, Sora 700 auto-shrink H1 (100 / 84 / 68),
  * 96×5 brown accent rule bottom-left. Per-surface variables are the
  * top-right label, the bottom-right tagline, and the background
  * treatment (solid / gradient / cover photo + overlay).
@@ -253,8 +253,8 @@ export function buildOgArtboard(input: OgArtboardInput) {
         {
           type: "svg",
           props: {
-            width: 113,
-            height: 52,
+            width: 145,
+            height: 66,
             viewBox: "0 0 142 65",
             xmlns: "http://www.w3.org/2000/svg",
             children: LEMMA_LOGO_PATHS.map((d) => ({
