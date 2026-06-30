@@ -235,7 +235,10 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
  * Holder creates a selective disclosure proof, choosing which
  * attribute indexes to reveal.
  */
-export const reveal = async (_client: LemmaClient, input: RevealInput): Promise<RevealOutput> => {
+export const reveal = async (
+  _client: LemmaClient | undefined,
+  input: RevealInput,
+): Promise<RevealOutput> => {
   // Ensure WASM is initialized before any crypto operations
   // eslint-disable-next-line functional/no-expression-statements
   await ensureWasmInitialized;
@@ -380,6 +383,55 @@ export const fromSelectiveDisclosure = (
   count: sd.count,
   header: hexToBytes(sd.header),
 });
+
+/* ------------------------------------------------------------------ */
+/*  High-level helpers                                                 */
+/* ------------------------------------------------------------------ */
+
+export type CreateProofInput = Readonly<{
+  /** Attribute keys to reveal. Resolved to indexes against `signed.messages`
+   *  by matching the `"key"` prefix of each `"key:value"` message. */
+  attributes: ReadonlyArray<string>;
+  /** Output of `sign` — supplies signature, messages, public key, and header. */
+  signed: SignOutput;
+}>;
+
+/**
+ * High-level selective-disclosure helper.
+ *
+ * Wraps `reveal` → `toSelectiveDisclosure` so callers can think in terms of
+ * attribute key names instead of message arrays and indexes. Reuses
+ * `signed.messages` to avoid recomputing `payloadToMessages`. Pair with
+ * `fromSelectiveDisclosure` + `verifyProof` on the verifier side.
+ */
+export const createProof = async (
+  input: CreateProofInput,
+): Promise<SelectiveDisclosure> => {
+  const messages = input.signed.messages;
+
+  const indexes = R.pipe(
+    R.map((attr: string) =>
+      messages.findIndex((m: string) => m.startsWith(`${attr}:`)),
+    ),
+    R.filter((i: number) => i >= 0),
+  )([...input.attributes]);
+
+  return indexes.length === 0
+    ? reject("attributes must match at least one message key in signed.messages")
+    : reveal(undefined, {
+        signature: input.signed.signature,
+        messages,
+        publicKey: input.signed.publicKey,
+        indexes,
+        header: input.signed.header,
+      }).then((revealed) =>
+        toSelectiveDisclosure(revealed, {
+          publicKey: input.signed.publicKey,
+          header: input.signed.header,
+          count: messages.length,
+        }),
+      );
+};
 
 /* ------------------------------------------------------------------ */
 /*  Helper functions                                                   */

@@ -11,6 +11,7 @@ import {
   fromSelectiveDisclosure,
   payloadToMessages,
   messagesToDisclosedMap,
+  createProof,
 } from "./disclose.js";
 
 describe("disclose", () => {
@@ -295,6 +296,70 @@ describe("disclose", () => {
 
       const valid = await verifyProof(client, verifyInput);
       expect(valid).toBe(false);
+    });
+  });
+
+  describe("createProof", () => {
+    it("builds a SelectiveDisclosure from signed + attribute names", async () => {
+      const kp = await generateKeyPair();
+      const document = { city: "Tokyo", temperature: "12", weather: "rain" };
+
+      const signed = await sign(client, {
+        messages: payloadToMessages(document),
+        secretKey: kp.secretKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const sd = await createProof({
+        attributes: ["city", "temperature"],
+        signed,
+      });
+
+      expect(sd.format).toBe("bbs+");
+      expect(sd.attributes).toEqual({ city: "Tokyo", temperature: "12" });
+      expect(typeof sd.proof).toBe("string");
+      expect(sd.proof.length).toBeGreaterThan(0);
+      expect(sd.count).toBe(3);
+    });
+
+    it("produced envelope round-trips through verifyProof", async () => {
+      const kp = await generateKeyPair();
+      const document = { age: "25", country: "JP", name: "Alice" };
+
+      const signed = await sign(client, {
+        messages: payloadToMessages(document),
+        secretKey: kp.secretKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      const sd = await createProof({
+        attributes: ["age", "name"],
+        signed,
+      });
+
+      const valid = await verifyProof(client, fromSelectiveDisclosure(sd));
+      expect(valid).toBe(true);
+    });
+
+    it("rejects when no attribute matches", async () => {
+      const kp = await generateKeyPair();
+      const document = { age: "25" };
+
+      const signed = await sign(client, {
+        messages: payloadToMessages(document),
+        secretKey: kp.secretKey,
+        header,
+        issuerId: "issuer-1",
+      });
+
+      await expect(
+        createProof({
+          attributes: ["nonexistent"],
+          signed,
+        }),
+      ).rejects.toThrow("attributes must match at least one message key in signed.messages");
     });
   });
 });

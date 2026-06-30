@@ -125,22 +125,22 @@ const result = await prover.prove(client, {
 ```typescript
 import { disclose } from "@lemmaoracle/sdk";
 
-const { secretKey, publicKey } = await disclose.generateKeyPair();
-const messages = disclose.payloadToMessages({ city: "Tokyo", temperature: "12", weather: "rain" });
+const { secretKey } = await disclose.generateKeyPair();
+const header = new TextEncoder().encode("lemma");
 
+// Issuer signs the attribute document
+const document = { city: "Tokyo", temperature: "12", weather: "rain" };
 const signed = await disclose.sign(client, {
-  messages, secretKey, header: new TextEncoder().encode("lemma"), issuerId: "weather-issuer",
+  messages: disclose.payloadToMessages(document), secretKey, header, issuerId: "weather-issuer",
 });
 
-const revealed = await disclose.reveal(client, {
-  signature: signed.signature, messages, publicKey,
-  indexes: [0, 1], header: signed.header,
+// Holder creates a selective-disclosure proof for `city` and `temperature`
+const sd = await disclose.createProof({
+  attributes: ["city", "temperature"],
+  signed,
 });
 
-const sd = disclose.toSelectiveDisclosure(revealed, {
-  publicKey, header: signed.header, count: messages.length,
-});
-
+// Verifier checks the proof envelope
 const isValid = await disclose.verifyProof(client, disclose.fromSelectiveDisclosure(sd));
 ```
 
