@@ -205,9 +205,13 @@ const ogLead = (isJa ? brief.data.og_lead_ja : brief.data.og_lead_en) ?? mainTit
 const seriesSep = isJa ? "｜" : " | ";
 const pageTitle = `${ogLead}${seriesSep}Lemma Critical Brief No.${briefNoPad}`;
 
+// Keep the <title> lean: the descriptive `mainTitle` already fills the
+// SERP-visible width, so a long generic tail ("Structural Analysis of a
+// Critical AI-Era Incident …") only gets truncated and invites Google to
+// rewrite the title. Use the same compact series suffix as og:title.
 const seoTitle = isJa
-  ? `${mainTitle} — AI時代の重大事案を構造分析｜Lemma Critical Brief`
-  : `${mainTitle} — Structural Analysis of a Critical AI-Era Incident | Lemma Critical Brief`;
+  ? `${mainTitle}｜Lemma Critical Brief No.${briefNoPad}`
+  : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
 
 const metaDescription = isJa
   ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
