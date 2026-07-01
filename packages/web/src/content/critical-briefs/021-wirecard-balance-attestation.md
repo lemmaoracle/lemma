@@ -1,7 +1,7 @@
 ---
 brief_no: 21
 title: "Wirecard：実在しない 19 億ユーロを「銀行に残高あり」と偽った — 金融属性が独立検証されないまま開示・市場に直結した構造"
-title_en: "Wirecard: forged balance confirmations asserted €1.9B that didn't exist — a financial attribute disclosed without independent verification"
+title_en: "Wirecard: forged bank balance confirmations asserted €1.9B that didn't exist — a financial attribute disclosed without independent verification"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
 secondary_categories: ["kyc-aml-disclosure"]
@@ -13,7 +13,7 @@ related_briefs: ["020-type-designation-conformity-fraud", "019-construction-engi
 version: "1.0"
 status: published
 og_lead_ja: "残高確認書の偽造で資産の存在属性が独立検証されず — Wirecard"
-og_lead_en: "Forged balance confirmations went unverified, reaching disclosure — Wirecard"
+og_lead_en: "Forged bank balance confirmations went unverified, reaching disclosure — Wirecard"
 gap_detected: "調査報道による疑義提起と、別途依頼された特別監査（KPMG）が、残高の主張と実態の乖離をあとから外部に可視化できた。"
 gap_missing: "「この残高確認書は発行元の銀行が出した本物か」を開示・監査の前に確かめる層が無く、第三者を経由して転送された確認書面は素通りした。"
 gap_fix: "開示・確認の前に「この資産が、発行元の金融機関の証明として、基準額以上に実在する」ことを Lemma で独立検証して、事前に防ぐ。"
