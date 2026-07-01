@@ -583,6 +583,37 @@ const breadcrumbJsonLd = {
                   <section
                     class={`au-lane${ln.kind === "receive" ? " au-lane--receive" : ""}`}
                   >
+                    <span class="au-lane-icon" aria-hidden="true">
+                      {ln.kind === "receive" ? (
+                        <svg
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          <path d="m9 12 2 2 4-4" />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="22" y1="2" x2="11" y2="13" />
+                          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                      )}
+                    </span>
                     <span class="au-lane-tag">{ln.tag}</span>
                     <div class="au-lane-role">{ln.role}</div>
                     <div class="au-lane-sub">{ln.sub}</div>
@@ -889,6 +920,14 @@ const breadcrumbJsonLd = {
   }
   .au-lane--receive {
     border-top-color: var(--black);
+  }
+  .au-lane-icon {
+    display: block;
+    color: var(--accent);
+    margin: 2px 0 16px;
+  }
+  .au-lane--receive .au-lane-icon {
+    color: var(--black);
   }
   .au-lane-tag {
     font-family: var(--au-mono);
