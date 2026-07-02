@@ -191,7 +191,7 @@ export interface Trust402Content {
       readonly h2: Localized;
       readonly sub: Localized;
       readonly tiers: ReadonlyArray<Tier>;
-      readonly note: Localized;
+      readonly notes: ReadonlyArray<Localized>;
     };
     readonly faq: {
       readonly eyebrow: Localized;
@@ -203,7 +203,6 @@ export interface Trust402Content {
       readonly h2: Localized;
       readonly core: Localized;
       readonly ctaPrimary: Localized;
-      readonly ctaWaitlist: Localized;
       readonly github: Localized;
     };
   };
@@ -529,10 +528,13 @@ export const T402: Trust402Content = {
         {
           name: "Pro",
           featured: true,
-          pos: { en: "Production · for individuals selling on their own.", ja: "本番 · 個人で売る人向け。" },
+          pos: { en: "Your own storefront, live in production.", ja: "あなたの売り場を、本番で持つ。" },
           price: { en: "$19", ja: "¥2,980" },
           priceSub: { en: "/mo · 0% commission on sales", ja: "/月 · 販売手数料 0%" },
-          means: { en: "Everything in Explorer, live. Optional API for developers.", ja: "Explorer の全機能を本番で。開発者向け API はオプション。" },
+          means: {
+            en: "Listings, pricing, USDC payouts, your Dashboard — proof of authenticity standard on every listing. Optional API for developers.",
+            ja: "出品・価格設定・USDC 受け取り・ダッシュボード — 真贋証明は全出品に標準装備。開発者向け API はオプション。",
+          },
           state: { en: "Coming soon", ja: "近日公開" },
         },
         {
@@ -544,10 +546,20 @@ export const T402: Trust402Content = {
           state: { en: "Coming soon", ja: "近日公開" },
         },
       ],
-      note: {
-        en: "0% commission on sales — you keep 100% of every sale, paid directly in USDC to your own wallet (self-custody; we never hold your funds). Your monthly plan covers producing proofs; checking them is always free. Students & lab members publish free under their institution's plan.",
-        ja: "販売手数料 0% — 売上の 100% があなたのもので、USDC が直接あなたのウォレットに届きます(セルフカストディ。資金は預かりません)。月額プランは証明の生成をカバーし、検証は常に無料。学生や研究室メンバーは組織のプランで無料で出品できます。",
-      },
+      notes: [
+        {
+          en: "Your monthly plan pays for your storefront. Proof of authenticity comes standard on every listing.",
+          ja: "月額は、あなたの売り場の費用。真贋証明は、すべての出品に最初からついてきます。",
+        },
+        {
+          en: "0% commission on sales — you keep 100% of every sale, paid directly in USDC to your own wallet (self-custody; we never hold your funds).",
+          ja: "販売手数料 0% — 売上の 100% があなたのもので、USDC が直接あなたのウォレットに届きます(セルフカストディ。資金は預かりません)。",
+        },
+        {
+          en: "Agents verify proofs for free — always.",
+          ja: "エージェントによる証明の検証は、常に無料。",
+        },
+      ],
     },
 
     faq: {
@@ -618,7 +630,6 @@ export const T402: Trust402Content = {
       h2: { en: "Turn your work into something agents trust.", ja: "あなたの成果を、エージェントが信頼できるものに。" },
       core: { en: "Your work. Provably yours.", ja: "あなたの成果。証明できる、あなたのもの。" },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
-      ctaWaitlist: { en: "Join the waitlist", ja: "ウェイトリストに登録" },
       github: { en: "GitHub", ja: "GitHub" },
     },
   },

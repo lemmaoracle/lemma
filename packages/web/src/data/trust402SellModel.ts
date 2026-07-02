@@ -28,6 +28,8 @@ export interface SellModel {
     readonly sells: ReadonlyArray<{ readonly item: Localized; readonly price: string }>;
     readonly income: string;
     readonly vol: Localized;
+    /** Optional one-liner under the income block (e.g. a scarcity note). */
+    readonly note?: Localized;
   }>;
   readonly catalogH: Localized;
   readonly catalogSub: Localized;
@@ -118,18 +120,23 @@ export const T402_SELL_MODEL: SellModel = {
       vol: { en: "approx. ~450 / mo", ja: "目安：月 ~450 件" },
     },
     {
-      plan: "pro",
-      planLabel: "Pro",
-      name: "Liam O'Connor",
-      initials: "LO",
-      icon: "ic-pen",
-      role: { en: "Content creator", ja: "コンテンツクリエイター" },
+      plan: "inst",
+      planLabel: "Institutional ID",
+      name: "田中 悠希 (yuki_t)",
+      initials: "YT",
+      icon: "ic-notebook",
+      role: { en: "Grad student (master's) · free via their university", ja: "大学院生(修士) · 大学経由で本人は無料" },
       sells: [
-        { item: { en: "Everyday original photos", ja: "日常のオリジナル写真" }, price: "$0.15" },
-        { item: { en: "Local knowledge & firsthand accounts", ja: "地域知識・一次体験" }, price: "$0.10" },
+        { item: { en: "Anonymized thesis-survey data (with consent)", ja: "卒論アンケートの匿名化データ(同意取得済み)" }, price: "$0.30" },
+        { item: { en: "Annotated dictionary of Japanese youth slang", ja: "日本語の若者言葉・スラング注釈辞書" }, price: "$0.10" },
+        { item: { en: "Seminar reproducibility notes", ja: "ゼミの再現手順ノート" }, price: "$0.20" },
       ],
-      income: "$80",
-      vol: { en: "approx. ~600 / mo", ja: "目安：月 ~600 件" },
+      income: "$60–90",
+      vol: { en: "approx. ~350 / mo", ja: "目安：月 ~350 件" },
+      note: {
+        en: "Japanese-language primary data is still scarce in the agent economy.",
+        ja: "日本語の一次データは、エージェント経済ではまだ希少です。",
+      },
     },
   ],
 
