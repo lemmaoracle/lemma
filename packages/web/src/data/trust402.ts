@@ -92,10 +92,13 @@ export interface Trust402Content {
       readonly cardCaption: Localized;
       readonly card: {
         readonly file: string;
+        readonly badge: Localized;
         readonly madeBy: Localized;
+        readonly madeByVal: Localized;
         readonly untouched: Localized;
+        readonly verifiedVal: Localized;
         readonly priceRow: Localized;
-        readonly price: string;
+        readonly price: Localized;
         readonly checking: Localized;
         readonly checkingVal: Localized;
         readonly note: Localized;
@@ -171,7 +174,7 @@ export interface Trust402Content {
       readonly fileLabel: Localized;
       readonly fileHint: Localized;
       readonly titleLabel: Localized;
-      readonly titleValue: string;
+      readonly titleValue: Localized;
       readonly versionLabel: Localized;
       readonly priceLabel: Localized;
       readonly asLabel: Localized;
@@ -181,6 +184,12 @@ export interface Trust402Content {
       readonly note: Localized;
       readonly previewLabel: Localized;
       readonly cardNote: Localized;
+      readonly signedBadge: Localized;
+      readonly priceInit: Localized;
+      readonly unit: Localized;
+      readonly untitled: Localized;
+      readonly asYouShort: Localized;
+      readonly asInstShort: Localized;
     };
     readonly listings: {
       readonly eyebrow: Localized;
@@ -195,6 +204,17 @@ export interface Trust402Content {
       readonly colUses: Localized;
       readonly colEarned: Localized;
       readonly note: Localized;
+      readonly statusLive: Localized;
+      readonly statusSandbox: Localized;
+      readonly statusTestnet: Localized;
+      readonly rows: ReadonlyArray<{
+        readonly title: Localized;
+        readonly file: string;
+        readonly status: "live" | "sandbox";
+        readonly price: string;
+        readonly uses: string;
+        readonly earned: Localized;
+      }>;
     };
     readonly twoSides: {
       readonly eyebrow: Localized;
@@ -290,10 +310,13 @@ export const T402: Trust402Content = {
       },
       card: {
         file: "my-dataset.csv",
+        badge: { en: "yours ✓", ja: "あなたのもの ✓" },
         madeBy: { en: "made by", ja: "作成者" },
+        madeByVal: { en: "you ✓", ja: "あなた ✓" },
         untouched: { en: "untouched", ja: "改ざんなし" },
+        verifiedVal: { en: "verified ✓", ja: "検証済み ✓" },
         priceRow: { en: "your price", ja: "あなたの価格" },
-        price: "0.05 USDC ≈ $0.05 / use",
+        price: { en: "0.05 USDC ≈ $0.05 / use", ja: "0.05 USDC ≈ $0.05 / 回" },
         checking: { en: "checking it's real", ja: "本物か確認" },
         checkingVal: { en: "always free", ja: "常に無料" },
         note: {
@@ -503,7 +526,7 @@ export const T402: Trust402Content = {
       fileLabel: { en: "your file", ja: "ファイル" },
       fileHint: { en: "drop a file, or point to a URL you already host", ja: "ファイルをドロップ、または既存の URL を指定" },
       titleLabel: { en: "title", ja: "タイトル" },
-      titleValue: "Labeled image set — 2026",
+      titleValue: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
       versionLabel: { en: "version", ja: "バージョン" },
       priceLabel: { en: "price per use", ja: "1 回あたりの価格" },
       asLabel: { en: "publish as", ja: "発行者" },
@@ -516,6 +539,12 @@ export const T402: Trust402Content = {
         en: "This card is your listing. Agents verify the proof for free, then pay to get the file.",
         ja: "このカードがあなたの出品です。エージェントは証明を無料で検証し、支払ってファイルを受け取ります。",
       },
+      signedBadge: { en: "signed", ja: "署名済み" },
+      priceInit: { en: "0.05 USDC / use", ja: "0.05 USDC / 回" },
+      unit: { en: " USDC / use", ja: " USDC / 回" },
+      untitled: { en: "untitled", ja: "無題" },
+      asYouShort: { en: "you ✓", ja: "あなた ✓" },
+      asInstShort: { en: "you · under your institution ✓", ja: "あなた・組織の名義 ✓" },
     },
 
     listings: {
@@ -537,6 +566,35 @@ export const T402: Trust402Content = {
         en: "Sandbox listings run on a test network — the numbers are there so you can watch the whole loop before going live.",
         ja: "サンドボックスの出品はテストネット上 — 本番前に全体の流れを見られるよう、数値も表示しています。",
       },
+      statusLive: { en: "live", ja: "公開中" },
+      statusSandbox: { en: "sandbox", ja: "お試し" },
+      statusTestnet: { en: "testnet", ja: "テストネット" },
+      rows: [
+        {
+          title: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
+          file: "my-dataset.csv",
+          status: "live",
+          price: "0.05 USDC",
+          uses: "840",
+          earned: { en: "42.00 USDC", ja: "42.00 USDC" },
+        },
+        {
+          title: { en: "Cleaned JA text corpus", ja: "整形済み日本語コーパス" },
+          file: "corpus-ja.jsonl",
+          status: "live",
+          price: "0.03 USDC",
+          uses: "400",
+          earned: { en: "12.00 USDC", ja: "12.00 USDC" },
+        },
+        {
+          title: { en: "Benchmark results · Q2", ja: "ベンチマーク結果 · Q2" },
+          file: "bench-q2.csv",
+          status: "sandbox",
+          price: "0.10 USDC",
+          uses: "—",
+          earned: { en: "testnet", ja: "テストネット" },
+        },
+      ],
     },
 
     twoSides: {

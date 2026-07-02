@@ -26,6 +26,13 @@ interface Props {
 const { locale, t, base } = Astro.props as Props;
 const c = T402.sell;
 const payHref = `${base}/trust402/`;
+// Locale strings the client form-preview script needs (passed via define:vars).
+const formL = {
+  asYou: c.form.asYouShort[locale],
+  asInst: c.form.asInstShort[locale],
+  unit: c.form.unit[locale],
+  untitled: c.form.untitled[locale],
+};
 ---
 
 <Layout
@@ -60,10 +67,10 @@ const payHref = `${base}/trust402/`;
               <span>{c.hero.cardCaption[locale]}</span>
             </div>
             <div class="ocard">
-              <div class="ochead"><span class="ofile">{c.hero.card.file}</span><span class="obadge">yours ✓</span></div>
-              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b>you ✓</b></div>
-              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">verified ✓</span></div>
-              <div class="orow"><span>{c.hero.card.priceRow[locale]}</span><b>{c.hero.card.price}</b></div>
+              <div class="ochead"><span class="ofile">{c.hero.card.file}</span><span class="obadge">{c.hero.card.badge[locale]}</span></div>
+              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b>{c.hero.card.madeByVal[locale]}</b></div>
+              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">{c.hero.card.verifiedVal[locale]}</span></div>
+              <div class="orow"><span>{c.hero.card.priceRow[locale]}</span><b>{c.hero.card.price[locale]}</b></div>
               <div class="orow orow-top"><span>{c.hero.card.checking[locale]}</span><span class="ocheck">{c.hero.card.checkingVal[locale]}</span></div>
               <div class="onote">{c.hero.card.note[locale]}</div>
             </div>
@@ -255,7 +262,7 @@ const payHref = `${base}/trust402/`;
               </div>
               <div class="field">
                 <label>{c.form.titleLabel[locale]}</label>
-                <input id="t402-f-title" type="text" value={c.form.titleValue} />
+                <input id="t402-f-title" type="text" value={c.form.titleValue[locale]} />
               </div>
               <div class="field">
                 <div class="row2">
@@ -282,12 +289,12 @@ const payHref = `${base}/trust402/`;
           <div>
             <span class="preview-label">{c.form.previewLabel[locale]}</span>
             <div class="ocard">
-              <div class="ochead"><span class="ofile" id="t402-p-file">my-dataset.csv</span><span class="obadge">signed</span></div>
-              <div class="orow"><span>{c.form.titleLabel[locale]}</span><b id="t402-p-title">{c.form.titleValue}</b></div>
-              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b id="t402-p-as">you ✓</b></div>
-              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">verified ✓</span></div>
+              <div class="ochead"><span class="ofile" id="t402-p-file">my-dataset.csv</span><span class="obadge">{c.form.signedBadge[locale]}</span></div>
+              <div class="orow"><span>{c.form.titleLabel[locale]}</span><b id="t402-p-title">{c.form.titleValue[locale]}</b></div>
+              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b id="t402-p-as">{c.form.asYouShort[locale]}</b></div>
+              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">{c.hero.card.verifiedVal[locale]}</span></div>
               <div class="orow"><span>{c.form.versionLabel[locale]}</span><b id="t402-p-version">v3 · canonical</b></div>
-              <div class="orow"><span>{c.form.priceLabel[locale]}</span><b id="t402-p-price">0.05 USDC / use</b></div>
+              <div class="orow"><span>{c.form.priceLabel[locale]}</span><b id="t402-p-price">{c.form.priceInit[locale]}</b></div>
               <div class="orow orow-top"><span>{c.hero.card.checking[locale]}</span><span class="ocheck">{c.hero.card.checkingVal[locale]}</span></div>
               <div class="onote">{c.form.cardNote[locale]}</div>
             </div>
@@ -312,9 +319,9 @@ const payHref = `${base}/trust402/`;
           </div>
           <div class="ltable">
             <div class="lrow lhead"><span>{c.listings.colListing[locale]}</span><span>{c.listings.colStatus[locale]}</span><span>{c.listings.colPrice[locale]}</span><span>{c.listings.colUses[locale]}</span><span>{c.listings.colEarned[locale]}</span></div>
-            <div class="lrow"><div><div class="lt">Labeled image set — 2026</div><div class="lf">my-dataset.csv</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.05 USDC</div><div class="mono">840</div><div class="mono">42.00 USDC</div></div>
-            <div class="lrow"><div><div class="lt">Cleaned JA text corpus</div><div class="lf">corpus-ja.jsonl</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.03 USDC</div><div class="mono">400</div><div class="mono">12.00 USDC</div></div>
-            <div class="lrow"><div><div class="lt">Benchmark results · Q2</div><div class="lf">bench-q2.csv</div></div><div><span class="lstatus sandbox">sandbox</span></div><div class="mono">0.10 USDC</div><div class="mono">—</div><div class="mono muted">testnet</div></div>
+            {c.listings.rows.map((r) => (
+            <div class="lrow"><div><div class="lt">{r.title[locale]}</div><div class="lf">{r.file}</div></div><div><span class:list={["lstatus", r.status]}>{r.status === "live" ? c.listings.statusLive[locale] : c.listings.statusSandbox[locale]}</span></div><div class="mono">{r.price}</div><div class="mono">{r.uses}</div><div class:list={["mono", { muted: r.status === "sandbox" }]}>{r.earned[locale]}</div></div>
+            ))}
           </div>
         </div>
         <p class="price-note">{c.listings.note[locale]}</p>
@@ -635,7 +642,7 @@ const payHref = `${base}/trust402/`;
   @media (max-width: 760px) { .t402 .lsum { grid-template-columns: 1fr; } .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; } .t402 .lrow.lhead { display: none; } .t402 .lrow .lt { grid-column: 1 / -1; } }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ formL }}>
   (function () {
     // reveal-on-scroll
     var els = document.querySelectorAll(".t402 .reveal");
@@ -661,12 +668,12 @@ const payHref = `${base}/trust402/`;
     var file = g("t402-f-file"), title = g("t402-f-title"), ver = g("t402-f-version"), price = g("t402-f-price"), as = g("t402-f-as");
     if (!title) return;
     function sync() {
-      g("t402-p-file").textContent = (file.textContent || "").trim() || "untitled";
+      g("t402-p-file").textContent = (file.textContent || "").trim() || formL.untitled;
       g("t402-p-title").textContent = title.value || "—";
       g("t402-p-version").textContent = ver.value;
       var p = (price.value || "").trim();
-      g("t402-p-price").textContent = (p ? p : "0") + " USDC / use";
-      g("t402-p-as").textContent = as.value === "inst" ? "you · under your institution ✓" : "you ✓";
+      g("t402-p-price").textContent = (p ? p : "0") + formL.unit;
+      g("t402-p-as").textContent = as.value === "inst" ? formL.asInst : formL.asYou;
     }
     ["input", "change", "keyup"].forEach(function (ev) {
       title.addEventListener(ev, sync);
