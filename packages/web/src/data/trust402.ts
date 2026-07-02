@@ -207,6 +207,7 @@ export interface Trust402Content {
       readonly statusLive: Localized;
       readonly statusSandbox: Localized;
       readonly statusTestnet: Localized;
+      readonly dashLink: Localized;
       readonly rows: ReadonlyArray<{
         readonly title: Localized;
         readonly file: string;
@@ -532,7 +533,7 @@ export const T402: Trust402Content = {
       asLabel: { en: "publish as", ja: "発行者" },
       asYou: { en: "You (individual)", ja: "あなた(個人)" },
       asInst: { en: "Under your institution", ja: "所属組織の名義で" },
-      submit: { en: "Generate proof & preview", ja: "証明を生成してプレビュー" },
+      submit: { en: "Publish in the Dashboard", ja: "ダッシュボードで公開" },
       note: { en: "no real money · testnet", ja: "実マネーなし · テストネット" },
       previewLabel: { en: "what the agent sees ↓", ja: "エージェントが見るもの ↓" },
       cardNote: {
@@ -569,6 +570,7 @@ export const T402: Trust402Content = {
       statusLive: { en: "live", ja: "公開中" },
       statusSandbox: { en: "sandbox", ja: "お試し" },
       statusTestnet: { en: "testnet", ja: "テストネット" },
+      dashLink: { en: "Open the Dashboard", ja: "ダッシュボードを開く" },
       rows: [
         {
           title: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },

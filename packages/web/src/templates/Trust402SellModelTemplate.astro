@@ -112,8 +112,8 @@ const sellHref = `${base}/trust402/sell/`;
         </div>
 
         <div class="pm-cta">
-          {/* TODO: point "Try it free" at the real sandbox start flow once its URL exists. */}
-          <a class="pm-btn primary" href={`${sellHref}#the-form`}>{M.ctaTry[locale]}</a>
+          {/* "Try it free" leads to the Dashboard demo; repoint to the real sandbox flow once its URL exists. */}
+          <a class="pm-btn primary" href={`${base}/trust402/sell/dashboard/`}>{M.ctaTry[locale]}</a>
           <a class="pm-btn secondary" href={`${sellHref}#pricing`}>{M.ctaPricing[locale]}</a>
         </div>
       </div>

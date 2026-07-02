@@ -57,7 +57,7 @@ const formL = {
             <h1>{c.hero.h1a[locale]} <span class="g">{c.hero.h1em[locale]}</span></h1>
             <p class="hero-sub">{c.hero.sub[locale]}</p>
             <div class="hero-cta-row">
-              <a class="btn btn-primary" href="#the-form">{c.hero.ctaPrimary[locale]} →</a>
+              <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hero.ctaPrimary[locale]} →</a>
               <a class="btn btn-ghost on-dark" href="#how">{c.hero.ctaSecondary[locale]}</a>
             </div>
             <div class="lede-note">{c.hero.lede[locale]}</div>
@@ -293,7 +293,7 @@ const formL = {
                 <select id="t402-f-as"><option value="you">{c.form.asYou[locale]}</option><option value="inst">{c.form.asInst[locale]}</option></select>
               </div>
               <div class="form-foot">
-                <a class="btn btn-primary" href="#" onclick="return false">{c.form.submit[locale]} →</a>
+                <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.form.submit[locale]} →</a>
                 <span class="form-note">{c.form.note[locale]}</span>
               </div>
             </div>
@@ -337,6 +337,7 @@ const formL = {
           </div>
         </div>
         <p class="price-note">{c.listings.note[locale]}</p>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/sell/dashboard/`}>→ {c.listings.dashLink[locale]}</a></div>
       </div>
     </section>
 
@@ -396,7 +397,7 @@ const formL = {
         <div class="core">{c.closing.core[locale]}</div>
         <div class="rule"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#the-form">{c.closing.ctaPrimary[locale]} →</a>
+          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.closing.ctaPrimary[locale]} →</a>
           <a class="btn btn-ghost on-dark" href="#">{c.closing.ctaWaitlist[locale]}</a>
           <a class="btn btn-ghost on-dark" href={T402_GITHUB}><svg class="ic btn-ic"><use href="#ic-github" /></svg> {c.closing.github[locale]}</a>
         </div>
