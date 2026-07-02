@@ -486,6 +486,40 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .path-btn { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--lemma-brown); margin-top: auto; padding-top: 6px; }
 .pay-demo { max-width: 1020px; margin: 0 0 64px; }
 @media (max-width: 720px) { .path-cards { grid-template-columns: 1fr; } }
+
+/* === hub hero v2 — dark umbrella (matches prototype) === */
+.hub-hero-v2 { background: #1F1E1A; color: #ECEBE3; padding: clamp(116px, 13vh, 150px) 8% 84px; }
+.hub-hero-v2 .inner { max-width: 1240px; margin: 0 auto; }
+.hub-hero-v2 .hero-grid2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+.hub-hero-v2 .eyebrow2 { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--t402-green); color: #1F1E1A; padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
+.hub-hero-v2 h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 6vw, 74px); line-height: 1.04; letter-spacing: -0.03em; margin: 0 0 26px; max-width: 14ch; color: #fff; }
+.hub-hero-v2 h1 .g { color: var(--t402-green); }
+.hub-hero-v2 .hero-sub2 { font-size: clamp(16px, 1.4vw, 19px); color: rgba(236,235,227,0.66); max-width: 56ch; line-height: 1.7; margin: 0 0 36px; }
+.hub-hero-v2 .hero-sub2 em { font-style: italic; }
+.hub-hero-v2 .cta-row2 { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+.hub-hero-v2 .btn2 { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s, color .2s, border-color .2s, transform .2s; }
+.hub-hero-v2 .btn2.primary { background: var(--t402-green); color: #1F1E1A; }
+.hub-hero-v2 .btn2.primary:hover { background: #8FBF00; transform: translateY(-1px); }
+.hub-hero-v2 .btn2.ghost { background: transparent; color: #ECEBE3; border-color: rgba(236,235,227,0.2); }
+.hub-hero-v2 .btn2.ghost:hover { border-color: #ECEBE3; }
+.hub-hero-v2 .btn-ic { width: 16px; height: 16px; }
+.hub-hero-v2 .trust-bar { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; font-family: var(--font-mono); font-size: 12px; color: rgba(236,235,227,0.5); }
+.hub-hero-v2 .trust-bar .std { padding: 3px 10px; border: 1px solid rgba(236,235,227,0.14); border-radius: 6px; }
+.hub-hero-v2 .trust-bar .bazaar { color: var(--t402-green); }
+.hub-hero-v2 .term { background: #131210; color: #ECEBE3; border-radius: 10px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.9; padding: 18px 22px; overflow-x: auto; border: 1px solid rgba(236,235,227,0.12); }
+.hub-hero-v2 .term .p, .hub-hero-v2 .term .ok { color: var(--t402-green); }
+.hub-hero-v2 .term .dim { color: rgba(236,235,227,0.45); }
+.hub-hero-v2 .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+.hub-hero-v2 .door { background: rgba(236,235,227,0.04); border: 1px solid rgba(236,235,227,0.12); border-top: 3px solid var(--t402-green); border-radius: 14px; padding: 32px 30px; transition: background .2s, transform .2s; display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; }
+.hub-hero-v2 .door:hover { background: rgba(236,235,227,0.08); transform: translateY(-3px); }
+.hub-hero-v2 .door-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--t402-green); }
+.hub-hero-v2 .door h3 { font-family: var(--font-display); font-size: 23px; font-weight: 700; color: #fff; margin: 0; line-height: 1.22; }
+.hub-hero-v2 .door p { color: rgba(236,235,227,0.6); font-size: 14px; margin: 0; flex: 1; }
+.hub-hero-v2 .door .link-arrow2 { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--t402-green); display: inline-flex; align-items: center; gap: 6px; }
+.hub-hero-v2 .door-ic { height: 56px; width: auto; color: #ECEBE3; }
+.hub-hero-v2 .ic { display: inline-block; vertical-align: middle; }
+@media (max-width: 900px) { .hub-hero-v2 .hero-grid2 { grid-template-columns: 1fr; gap: 32px; } }
+@media (max-width: 820px) { .hub-hero-v2 .doors { grid-template-columns: 1fr; } }
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
@@ -507,92 +541,74 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 <Navigation locale={locale} t={t.nav} base={base} />
 
 <main>
+  <header class="hub-hero-v2">
+    <div class="inner">
+      <div class="hero-grid2">
+        <div>
+          <span class="eyebrow2">lemma × x402</span>
+          <h1>Trust for the <span class="g">x402 agent economy.</span></h1>
+          <p class="hero-sub2">Authority when you pay, provenance when you sell. x402 moves the money — Trust402 attaches <em>who</em>, by what authority, and whose data, as cryptographic proof. Verifiable by anyone, on the standards agents already speak.</p>
+          <div class="cta-row2">
+            <a class="btn2 primary" href="#adds">Explore the two sides ↓</a>
+            <a class="btn2 ghost" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener"><svg class="ic btn-ic" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" fill="currentColor"/></svg> View on GitHub →</a>
+          </div>
+          <div class="trust-bar">
+            <span class="std">x402</span><span class="std">MCP</span><span class="std">A2A</span>
+            <span class="bazaar">● Discoverable in the x402 Bazaar</span>
+          </div>
+        </div>
+        <div>
+          <div class="term">
+            <div><span class="p">$</span> agent run --pay 0.01 GET /data</div>
+            <div class="dim">[+] ZK identity proof… <span class="ok">✓</span></div>
+            <div class="dim">[+] role check (developer-tier)… <span class="ok">✓</span></div>
+            <div class="dim">[+] spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></div>
+            <div class="dim">[+] x402 settle 0x4a8f…e21 <span class="ok">✓</span></div>
+            <div class="dim">[+] anchor: Base Sepolia <span class="ok">✓</span></div>
+            <div><span class="ok">200 OK</span> &#123; data: "…" &#125;</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doors">
+        <a class="door" href="#adds">
+          <svg class="ic door-ic" viewBox="0 0 74 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="29" cy="4" r="3" fill="var(--t402-green)"/>
+            <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
+            <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <circle cx="20" cy="39" r="4" fill="var(--t402-green)"/>
+            <circle cx="38" cy="39" r="4" fill="var(--t402-green)"/>
+            <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="58" cy="60" r="14" fill="var(--t402-green)"/>
+            <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
+          </svg>
+          <span class="door-tag">trust402 · pay</span>
+          <h3>Run AI without holding keys.</h3>
+          <p>Per-call delegated authority for agent payments. Attach who, by what authority, and up to what amount — as ZK proofs. Out of scope, it never runs.</p>
+          <span class="link-arrow2">You're here →</span>
+        </a>
+        <a class="door" href="/trust402/sell/">
+          <svg class="ic door-ic" viewBox="0 0 58 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="5" width="40" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <line x1="16" y1="19" x2="40" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="27" x2="40" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="35" x2="30" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="42" cy="60" r="15" fill="var(--t402-green)"/>
+            <path d="M35 60 l5 5 l9 -10" fill="none" stroke="#1F1E1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="door-tag">trust402 · sell</span>
+          <h3>Sell your data to agents, provably yours.</h3>
+          <p>Attach cryptographic provenance to what you publish. Agents verify it's authentic, then pay over x402. You keep selling it — Lemma is the tool, not the store.</p>
+          <span class="link-arrow2">See Trust402 · Sell →</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
 
-    <!-- HERO (Seal-style: text + code/demo + 2 cards + trust line) -->
-    <section class="hero">
-      <div class="eyebrow"><span class="accent">trust402</span></div>
-      <h1 class="h1">Are you paying with AI,<br><span class="accent">or getting paid by it?</span></h1>
-      <p class="hero-sub">AI agents are starting to pay for things. Trust402 puts proof on both sides of that payment — so everyone can trust who's paying, and whose work they're paying for. No servers, no code, and no one holding your keys or your money.</p>
-      <div class="t402-standards">Works over x402 · MCP · A2A — discoverable in the x402 Bazaar</div>
-
-      <div class="path-cards">
-        <a href="#pay" class="path-card">
-          <span class="path-tag">trust402 · pay</span>
-          <div class="path-icon">
-            <svg viewBox="0 0 74 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="29" cy="4" r="3" fill="var(--t402-green)"/>
-              <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
-              <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
-              <circle cx="20" cy="39" r="4" fill="var(--t402-green)"/>
-              <circle cx="38" cy="39" r="4" fill="var(--t402-green)"/>
-              <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-              <circle cx="58" cy="60" r="14" fill="var(--t402-green)"/>
-              <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
-            </svg>
-          </div>
-          <h3 class="path-title">I'm paying with AI</h3>
-          <span class="path-btn">Go to Pay →</span>
-        </a>
-        <a href="/trust402/sell/" class="path-card">
-          <span class="path-tag">trust402 · sell</span>
-          <div class="path-icon">
-            <svg viewBox="0 0 58 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="8" y="5" width="40" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
-              <line x1="16" y1="19" x2="40" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="16" y1="27" x2="40" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="16" y1="35" x2="30" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="42" cy="60" r="15" fill="var(--t402-green)"/>
-              <path d="M35 60 l5 5 l9 -10" fill="none" stroke="#1F1E1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="path-title">I'm getting paid</h3>
-          <span class="path-btn">Go to Sell →</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- Pay entry: reference demo (code + live terminal) -->
-    <section class="pay-demo" id="pay">
-      <div class="hero-grid">
-        <div class="hero-code" id="t402-code">
-          <pre class="hero-code-full"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
-
-<span class="com">// compose proof gating before the x402 payment</span>
-<span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, <span class="var">artifact</span>, <span class="var">gate</span>, <span class="var">lemma</span>)
-
-<span class="com">// keys and data stay put — only proofs flow</span>
-<span class="kw">await</span> <span class="fn">fetch402</span>(<span class="str">'https://api.example/data'</span>)</pre>
-          <div class="hero-code-mini"><span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, …)<br /><span class="com">// compose proof gating before the x402 payment</span></div>
-          <button type="button" class="hero-code-expand" onclick="this.parentElement.classList.toggle('expanded')">＋ Show full example</button>
-        </div>
-
-        <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
-          <div class="hero-demo-frame">
-            <span class="term-line"><span class="prompt">example-x402$</span><span class="cmd">agent run --pay 0.01 GET /data</span></span>
-            <span class="term-line spacer"></span>
-            <span class="term-line"><span class="info">[+]</span> generating ZK identity proof… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> role check (developer-tier)… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> x402 settle <span class="accent">0x4a8f…e21</span> <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> anchor: Base Sepolia <span class="ok">✓</span></span>
-            <span class="term-line spacer"></span>
-            <span class="term-line success">200 OK <span class="meta">&#123; data: "…" &#125;</span></span>
-            <span class="term-line cursor"><span class="prompt">example-x402$</span></span>
-          </div>
-        </div>
-      </div>
-
-      <p class="trust">
-        <span class="dot">●</span> <span class="strong">ETHGlobal Open Agents 2026 Finalist</span>
-        &nbsp;·&nbsp; Aligned with Coinbase Developer Platform 2026-06 release
-        &nbsp;·&nbsp; x402 / MCP standards
-        &nbsp;·&nbsp; <a href="https://github.com/lemmaoracle/trust402" style="color:inherit;text-decoration:underline;">Source on GitHub</a>
-      </p>
-    </section>
-
     <!-- DIFF: Trust402 = x402 + ... -->
-    <section class="diff-strip">
+    <section class="diff-strip" id="adds">
       <div class="diff-row">
         <div class="diff-cell base">
           <div class="diff-label">x402</div>
