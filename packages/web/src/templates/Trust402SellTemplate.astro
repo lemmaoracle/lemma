@@ -15,6 +15,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
 import { T402, T402_GITHUB, T402_SELL_OG } from "../data/trust402";
 
 interface Props {
@@ -26,6 +27,11 @@ interface Props {
 const { locale, t, base } = Astro.props as Props;
 const c = T402.sell;
 const payHref = `${base}/trust402/`;
+// Shared by students into their lab (LINE/Slack/mail) — lands on the
+// Institutional section; ?source=share keeps forward traffic measurable.
+const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#institutional`;
+// Faculty contact — same ?plan= convention the pricing/plan pages use.
+const facultyContactUrl = `${DISCOVERY_CALL_URL[locale]}?plan=institutional`;
 ---
 
 <Layout
@@ -205,8 +211,8 @@ const payHref = `${base}/trust402/`;
       </div>
     </section>
 
-    {/* 6. INSTITUTIONAL ID — participation framing + request funnel */}
-    <section class="section-dark">
+    {/* 6. INSTITUTIONAL ID — participation framing + share loop */}
+    <section class="section-dark" id="institutional">
       <div class="inner">
         <div class="sec-head reveal">
           <span class="eyebrow-plain on-dark">{c.institutional.eyebrow[locale]}</span>
@@ -223,8 +229,15 @@ const payHref = `${base}/trust402/`;
           ))}
         </div>
         <div class="request reveal">
-          <p class="request-lead">{c.institutional.request.lead[locale]}</p>
-          <a class="btn btn-primary" href={c.institutional.request.href[locale]}>{c.institutional.request.cta[locale]} →</a>
+          <p class="request-lead">{c.institutional.share.lead[locale]}</p>
+          <button
+            class="btn btn-primary t402-share"
+            type="button"
+            data-share-text={c.institutional.share.text[locale]}
+            data-share-url={shareUrl}
+            data-copied={c.institutional.share.copied[locale]}
+          >{c.institutional.share.cta[locale]}</button>
+          <p class="request-contact"><a class="link-arrow" href={facultyContactUrl}>→ {c.institutional.share.contact[locale]}</a></p>
         </div>
       </div>
     </section>
@@ -454,9 +467,11 @@ const payHref = `${base}/trust402/`;
   .t402 .center-link { text-align: center; margin-top: 24px; }
   .t402 .cta-note { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 14px; }
 
-  /* institutional request funnel */
+  /* institutional share loop */
   .t402 .request { text-align: center; margin-top: 44px; }
   .t402 .request-lead { font-size: 14.5px; color: rgba(236, 235, 227, 0.6); max-width: 58ch; margin: 0 auto 18px; }
+  .t402 .request-contact { margin-top: 18px; }
+  .t402 .section-dark .link-arrow { color: var(--green); }
 
   /* thin Pay↔Sell band above pricing */
   .t402 .payband { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 10px; padding: 14px 20px; margin-bottom: 48px; }
@@ -569,6 +584,26 @@ const payHref = `${base}/trust402/`;
       els.forEach(function (el) { io.observe(el); });
     } else {
       els.forEach(function (el) { el.classList.add("on"); });
+    }
+
+    // "Share this page" (Institutional) — Web Share API where available
+    // (mobile share sheet: LINE / Slack / mail), clipboard fallback with a
+    // "link copied" swap on desktop.
+    var share = document.querySelector(".t402-share");
+    if (share) {
+      share.addEventListener("click", function () {
+        var url = share.getAttribute("data-share-url") || location.href;
+        var text = share.getAttribute("data-share-text") || "";
+        if (navigator.share) {
+          navigator.share({ text: text, url: url }).catch(function () {});
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text + "\n" + url).then(function () {
+            var orig = share.textContent;
+            share.textContent = share.getAttribute("data-copied") || orig;
+            setTimeout(function () { share.textContent = orig; }, 2000);
+          });
+        }
+      });
     }
   })();
 </script>
