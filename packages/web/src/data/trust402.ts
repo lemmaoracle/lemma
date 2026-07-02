@@ -293,8 +293,8 @@ export const T402: Trust402Content = {
   sell: {
     hero: {
       eyebrow: { en: "trust402 · sell", ja: "trust402 · sell" },
-      h1a: { en: "Made something good?", ja: "いいものを作った?" },
-      h1em: { en: "Sell it to AI agents.", ja: "それ、AI エージェントに売れます。" },
+      h1a: { en: "Your research, your work.", ja: "その研究も、作品も。" },
+      h1em: { en: "Sell it to AI agents.", ja: "AI エージェントに売れる。" },
       sub: {
         en: "Turn your data or papers into something AI agents can buy — with proof it's yours and unaltered. No code, no server; you're paid directly in USDC to your own wallet.",
         ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
@@ -424,10 +424,10 @@ export const T402: Trust402Content = {
 
     whyProof: {
       eyebrow: { en: "why proof matters", ja: "なぜ証明が要るのか" },
-      h2: { en: "Copies of your work are everywhere.", ja: "あなたの成果のコピーは、どこにでもある。" },
+      h2: { en: "The web fills with copies. Only one is really yours.", ja: "ネットは、コピーで埋まっていく。本物は、あなたのだけ。" },
       sub: {
         en: "Scraped versions and AI-made imitations sit right next to your original. Without proof, an agent can't tell which one is really yours — so it might pay someone else, or trust a fake.",
-        ja: "スクレイピングされた版や AI が作った模倣が、あなたの原本のすぐ隣に並びます。証明がなければ、エージェントはどれが本当にあなたのものか区別できず — 別人に支払ったり、偽物を信頼したりしかねません。",
+        ja: "スクレイピングされた版や AI が作った模倣が、あなたの本物のすぐ隣に並びます。証明がなければ、エージェントはどれが本当にあなたのものか区別できず — 別人に支払ったり、偽物を信頼したりしかねません。",
       },
       sloganA: { en: "A copy can look identical.", ja: "コピーは見た目がまったく同じでも、" },
       sloganEm: { en: "Only yours can prove it.", ja: "証明できるのはあなたのものだけ。" },
