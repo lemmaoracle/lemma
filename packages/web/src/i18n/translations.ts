@@ -51,6 +51,8 @@ export interface Translations {
         readonly industriesSub: string;
         readonly trust402: string;
         readonly trust402Sub: string;
+        readonly trust402Sell: string;
+        readonly trust402SellSub: string;
         readonly pricing: string;
         readonly pricingSub: string;
       }>;

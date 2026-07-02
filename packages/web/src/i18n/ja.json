@@ -42,30 +42,10 @@
         "industriesSub": "Civic · Critical · Compliance",
         "trust402": "Trust402",
         "trust402Sub": "鍵を持たずに、AI を動かす",
+        "trust402Sell": "Trust402 · Sell",
+        "trust402SellSub": "成果をエージェントに販売",
         "pricing": "料金プラン",
         "pricingSub": "お問い合わせベース"
-      },
-      "developers": {
-        "label": "開発者",
-        "specs": "仕様書",
-        "specsSub": "API・仕様ドキュメント"
-      },
-      "solutions": {
-        "label": "ユースケース",
-        "overview": "Use Cases 一覧",
-        "aiAudit": "AI 監査ログ証明",
-        "kycAml": "KYC/AML 選択的開示",
-        "supplyChain": "サプライチェーン ESG",
-        "defiBridge": "DeFi ブリッジ検証"
-      },
-      "resources": {
-        "label": "コンテンツ",
-        "criticalBrief": "Critical Brief",
-        "blog": "ブログ",
-        "whitepaper": "ホワイトペーパー",
-        "newsletter": "ニュースレター",
-        "glossary": "用語集",
-        "faq": "FAQ"
       },
       "developers": {
         "architecture": "アーキテクチャ",
@@ -93,6 +73,23 @@
         "whitepaper": "仕様書 / ホワイトペーパー",
         "whitepaperSub": "",
         "github": "GitHub →"
+      },
+      "solutions": {
+        "label": "ユースケース",
+        "overview": "Use Cases 一覧",
+        "aiAudit": "AI 監査ログ証明",
+        "kycAml": "KYC/AML 選択的開示",
+        "supplyChain": "サプライチェーン ESG",
+        "defiBridge": "DeFi ブリッジ検証"
+      },
+      "resources": {
+        "label": "コンテンツ",
+        "criticalBrief": "Critical Brief",
+        "blog": "ブログ",
+        "whitepaper": "ホワイトペーパー",
+        "newsletter": "ニュースレター",
+        "glossary": "用語集",
+        "faq": "FAQ"
       },
       "mobile": {
         "talkToUs": "始める"
