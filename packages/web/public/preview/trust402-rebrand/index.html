@@ -378,6 +378,31 @@ section{padding:96px 8%}
 .lstatus{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block}
 .lstatus.live{background:var(--green);color:var(--ink)}
 .lstatus.sandbox{background:var(--surface);color:var(--muted)}
+/* ---------- dashboard mock (prototype · non-functional) ---------- */
+.db-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:22px}
+.db-head .db-title{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--ink)}
+.db-tabs{display:flex;gap:6px;margin-top:12px}
+.db-tab{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:lowercase;color:var(--muted);background:transparent;border:1px solid var(--border);border-radius:999px;padding:6px 14px;cursor:default}
+.db-tab.active{color:var(--ink);background:var(--green);border-color:var(--green)}
+.db-tag{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:10px}
+.db-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.db-toggle{display:inline-flex;gap:3px;background:var(--ink);padding:4px;border-radius:999px}
+.db-toggle button{font-family:var(--font-mono);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:lowercase;color:var(--term-fg);background:transparent;border:none;cursor:pointer;padding:7px 16px;border-radius:999px;transition:background .2s,color .2s}
+.db-toggle button.active{background:var(--green);color:var(--ink)}
+.db-wallet{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px}
+.db-wallet b{color:var(--ink)}
+.db-banner{border:1px solid var(--border);border-left-width:3px;border-radius:12px;padding:14px 18px;margin-bottom:22px;font-family:var(--font-body);font-size:14px;color:var(--ink-soft)}
+.db-banner b{color:var(--ink)}
+.db-banner.is-test{border-left-color:var(--muted);background:var(--surface)}
+.db-banner.is-prod{border-left-color:var(--green);background:var(--surface-2)}
+.db-metrics{grid-template-columns:repeat(4,1fr)}
+.db-listhead{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.db-form{border:1px solid var(--border);border-radius:14px;background:var(--card);padding:24px;margin:18px 0;display:none}
+.db-form.open{display:block}
+.db-form .fgrid{display:flex;flex-direction:column;gap:16px;max-width:560px}
+.db-foot{border-top:1px solid var(--border);margin-top:26px;padding-top:18px}
+.db-foot .fmain{font-family:var(--font-body);font-size:14.5px;color:var(--ink)}
+.db-foot .fnote{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.7}
 @media(max-width:760px){.lsum{grid-template-columns:1fr}.lrow{grid-template-columns:1fr 1fr;gap:6px 12px}.lrow.lhead{display:none}.lrow .lt{grid-column:1/-1}}
 </style>
 </head>
@@ -888,6 +913,7 @@ section{padding:96px 8%}
         </div>
       </div>
       <p class="price-note">Sandbox listings run on a test network — the numbers are there so you can watch the whole loop before going live.</p>
+      <div style="text-align:center;margin-top:20px"><a class="link-arrow" href="#page-dashboard" data-goto="dashboard">→ Open the full dashboard — manage listings, switch testnet ↔ production</a></div>
     </div>
   </section>
 
@@ -958,16 +984,119 @@ section{padding:96px 8%}
   <div class="inner">lemma.frame00.com — Built for decisions that matter. · © 2026 FRAME00, INC. · <span style="color:var(--green)">Trust402 rebrand prototype</span></div>
 </footer>
 
+<!-- ================= PAGE: DASHBOARD (self-serve · Sell admin) ================= -->
+<div class="page" id="page-dashboard">
+  <section>
+    <div class="inner">
+      <span class="eyebrow-plain">dashboard · prototype · non-functional mock</span>
+
+      <!-- header: title + product tabs + mode toggle + wallet -->
+      <div class="db-head">
+        <div>
+          <div class="db-title">Dashboard</div>
+          <div class="db-tabs">
+            <span class="db-tab">pay</span>
+            <span class="db-tab active">sell</span>
+            <span class="db-tab">seal</span>
+          </div>
+          <div class="db-tag">self-serve · standard</div>
+        </div>
+        <div class="db-right">
+          <div class="db-toggle">
+            <button id="db-mode-test" class="active">testnet</button>
+            <button id="db-mode-prod">production</button>
+          </div>
+          <div class="db-wallet">wallet <b>0x9c…b3f7</b> ✓ · self-custody</div>
+        </div>
+      </div>
+
+      <!-- mode banner (switches with the toggle) -->
+      <div class="db-banner is-test" data-mode="testnet"><b>Testnet · Base Sepolia</b> — no real money. Rehearse the whole loop, then switch to Production.</div>
+      <div class="db-banner is-prod" data-mode="production" hidden><b>Production · Base mainnet</b> — real USDC settles directly to your wallet.</div>
+
+      <!-- listings header + new listing -->
+      <div class="db-listhead">
+        <span class="eyebrow-plain" style="margin-bottom:0">your listings</span>
+        <button class="btn btn-primary" id="db-new">+ New listing</button>
+      </div>
+
+      <!-- new listing form (opens/closes) -->
+      <div class="db-form" id="db-form">
+        <div class="fgrid">
+          <div class="field">
+            <label>your file</label>
+            <div class="filedrop">
+              <div class="fd-file">bench-q2.csv</div>
+              <div class="fd-hint">drop a file, or point to a URL you already host</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>title</label>
+            <input type="text" value="Benchmark results · Q2" />
+          </div>
+          <div class="field">
+            <div class="row2">
+              <div class="field">
+                <label>version</label>
+                <select><option>v1</option><option>v2</option><option selected>v3 · canonical</option></select>
+              </div>
+              <div class="field">
+                <label>price per use</label>
+                <div class="price-in"><input type="text" value="0.10" /><span class="cur">USDC</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>publish as</label>
+            <select><option value="you">You (individual)</option><option value="inst">Under your institution</option></select>
+          </div>
+          <div class="form-foot">
+            <a class="btn btn-primary" href="#" onclick="return false">Generate proof &amp; publish →</a>
+            <span class="form-note" data-mode="testnet">Publishes in Testnet (Base Sepolia) — test USDC, no real money.</span>
+            <span class="form-note" data-mode="production" hidden>Publishes live — agents discover, verify (free), and pay you in USDC.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- metrics + listings table -->
+      <div class="listings">
+        <div class="lsum db-metrics">
+          <div class="lcell"><div class="lnum" id="db-m-listings">1</div><div class="llab">active listings</div></div>
+          <div class="lcell"><div class="lnum" id="db-m-uses">—</div><div class="llab">total uses</div></div>
+          <div class="lcell"><div class="lnum" id="db-m-earned">testnet</div><div class="llab">earned</div></div>
+          <div class="lcell"><div class="lnum">1,240 <span class="u">/ 5,000</span></div><div class="llab">allowance · pay+sell</div></div>
+        </div>
+        <div class="ltable" data-mode="production" hidden>
+          <div class="lrow lhead"><span>listing</span><span>status</span><span>price</span><span>uses</span><span>earned</span></div>
+          <div class="lrow"><div><div class="lt">Labeled image set — 2026</div><div class="lf">my-dataset.csv</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.05 USDC</div><div class="mono">840</div><div class="mono">42.00 USDC</div></div>
+          <div class="lrow"><div><div class="lt">Cleaned JA text corpus</div><div class="lf">corpus-ja.jsonl</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.03 USDC</div><div class="mono">400</div><div class="mono">12.00 USDC</div></div>
+        </div>
+        <div class="ltable" data-mode="testnet">
+          <div class="lrow lhead"><span>listing</span><span>status</span><span>price</span><span>uses</span><span>earned</span></div>
+          <div class="lrow"><div><div class="lt">Benchmark results · Q2</div><div class="lf">bench-q2.csv</div></div><div><span class="lstatus sandbox">sandbox</span></div><div class="mono">0.10 USDC</div><div class="mono">—</div><div class="mono" style="color:var(--muted)">testnet</div></div>
+        </div>
+      </div>
+
+      <!-- footer strip -->
+      <div class="db-foot">
+        <div class="fmain"><b>0% commission · you keep 100% · self-custody</b> — paid directly in USDC to your wallet. We never hold your funds.</div>
+        <div class="fnote">One monthly allowance shared across Pay and Sell — producing proofs uses it; verifying is always free. Enterprise deployments live in a separate, isolated console.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- ================= SWITCHER (prototype control) ================= -->
 <div class="switcher">
   <button id="sw-hub" class="active">trust402 · pay</button>
   <button id="sw-sell">trust402 · sell</button>
+  <button id="sw-dash">dashboard</button>
 </div>
 
 <script>
 (function(){
-  const pages={hub:document.getElementById('page-hub'),sell:document.getElementById('page-sell')};
-  const btns={hub:document.getElementById('sw-hub'),sell:document.getElementById('sw-sell')};
+  const pages={hub:document.getElementById('page-hub'),sell:document.getElementById('page-sell'),dashboard:document.getElementById('page-dashboard')};
+  const btns={hub:document.getElementById('sw-hub'),sell:document.getElementById('sw-sell'),dashboard:document.getElementById('sw-dash')};
   function show(which){
     Object.keys(pages).forEach(k=>{
       pages[k].classList.toggle('active',k===which);
@@ -978,6 +1107,33 @@ section{padding:96px 8%}
   }
   btns.hub.onclick=()=>show('hub');
   btns.sell.onclick=()=>show('sell');
+  btns.dashboard.onclick=()=>show('dashboard');
+
+  // dashboard mock: testnet ↔ production + new-listing form
+  (function(){
+    const root=document.getElementById('page-dashboard');
+    if(!root) return;
+    const data={
+      production:{listings:'2',uses:'1,240',earned:'54.00 <span class="u">USDC</span>'},
+      testnet:{listings:'1',uses:'—',earned:'testnet'}
+    };
+    const test=document.getElementById('db-mode-test'),prod=document.getElementById('db-mode-prod');
+    function setMode(mode){
+      root.querySelectorAll('[data-mode]').forEach(el=>{el.hidden=el.getAttribute('data-mode')!==mode;});
+      const d=data[mode];
+      document.getElementById('db-m-listings').textContent=d.listings;
+      document.getElementById('db-m-uses').textContent=d.uses;
+      document.getElementById('db-m-earned').innerHTML=d.earned;
+      test.classList.toggle('active',mode==='testnet');
+      prod.classList.toggle('active',mode==='production');
+    }
+    test.onclick=()=>setMode('testnet');
+    prod.onclick=()=>setMode('production');
+    const nl=document.getElementById('db-new'),form=document.getElementById('db-form');
+    nl.onclick=()=>{const open=form.classList.toggle('open');nl.textContent=open?'× Close':'+ New listing';};
+    setMode('testnet');
+  })();
+
   document.querySelectorAll('[data-goto]').forEach(el=>{
     el.addEventListener('click',e=>{e.preventDefault();show(el.getAttribute('data-goto'));});
   });
