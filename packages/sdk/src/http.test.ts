@@ -33,4 +33,25 @@ describe("http helpers", () => {
     const client = makeMockClient({ status: 404, body: { error: "Not Found" } });
     await expect(get(client)("/v1/schemas/unknown")()).rejects.toThrow("HTTP 404");
   });
+
+  it("enriches network errors with apiBase and apiKey status", async () => {
+    const client: LemmaClient = {
+      apiBase: "http://localhost:8787",
+      apiKey: "test-key",
+      fetcher: vi.fn().mockRejectedValue(new TypeError("fetch failed")) as unknown as typeof fetch,
+    };
+    await expect(get<{ id: string }>(client)("/v1/schemas/s1")()).rejects.toThrow(
+      "fetch failed (apiBase: http://localhost:8787; apiKey: set)",
+    );
+  });
+
+  it("reports apiKey unset when no key configured", async () => {
+    const client: LemmaClient = {
+      apiBase: "https://api.example.com",
+      fetcher: vi.fn().mockRejectedValue(new TypeError("fetch failed")) as unknown as typeof fetch,
+    };
+    await expect(get<{ id: string }>(client)("/v1/schemas/s1")()).rejects.toThrow(
+      "fetch failed (apiBase: https://api.example.com; apiKey: unset)",
+    );
+  });
 });

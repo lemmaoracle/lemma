@@ -27,3 +27,6 @@ export const toErrorMessage = (e: unknown): string =>
 
 export const reject = <T = never>(message: string): Promise<T> =>
   Promise.reject(new Error(message));
+
+export const fetchHint = (client: LemmaClient): string =>
+  `(apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`;

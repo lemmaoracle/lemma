@@ -1,5 +1,5 @@
 import type { LemmaClient } from "@lemmaoracle/spec";
-import { reject, resolveFetch, withApiKey } from "./internal.js";
+import { fetchHint, reject, resolveFetch, toErrorMessage, withApiKey } from "./internal.js";
 
 export type HttpMethod = "GET" | "POST";
 
@@ -19,10 +19,12 @@ export const requestJson =
       body: body === undefined ? undefined : JSON.stringify(body),
     };
 
-    return resolveFetch(client)(url, init).then((res) =>
-      res.ok
-        ? (asJson(res) as Promise<T>)
-        : asJson(res).then((b) => reject<T>(`HTTP ${String(res.status)}: ${JSON.stringify(b)}`)),
+    return resolveFetch(client)(url, init).then(
+      (res) =>
+        res.ok
+          ? (asJson(res) as Promise<T>)
+          : asJson(res).then((b) => reject<T>(`HTTP ${String(res.status)}: ${JSON.stringify(b)}`)),
+      (e: unknown) => reject<T>(`${toErrorMessage(e)} ${fetchHint(client)}`),
     );
   };
 
