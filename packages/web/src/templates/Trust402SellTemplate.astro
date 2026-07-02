@@ -17,6 +17,7 @@ import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402, T402_GITHUB } from "../data/trust402";
 import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
+import { DASHBOARD_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -477,6 +478,13 @@ const formL = {
         </div>
       </div>
     </section>
+
+    {/* Fixed Pay / Sell / Dashboard switcher (Sell active) */}
+    <nav class="t402-switch" aria-label="Trust402">
+      <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
+      <a class="t402-switch-btn active" href={`${base}/trust402/sell/`} aria-current="page">Sell</a>
+      <a class="t402-switch-btn" href={DASHBOARD_URL} target="_blank" rel="noopener">Dashboard</a>
+    </nav>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
@@ -793,6 +801,13 @@ const formL = {
   .t402 .pm-btn.secondary:hover { background: var(--surface); }
   @media (max-width: 900px) { .t402 .pm-grid { grid-template-columns: repeat(2, 1fr); } .t402 .pm-whgrid, .t402 .pm-cat { grid-template-columns: 1fr; } }
   @media (max-width: 560px) { .t402 .pm-grid { grid-template-columns: 1fr; } .t402 .pm-barow { flex-direction: column; gap: 12px; } .t402 .pm-arrowcol { flex-direction: row; padding: 4px 0; } .t402 .pm-ar { transform: rotate(90deg); } }
+
+  /* ── fixed Pay/Sell/Dashboard switcher ── */
+  .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
+  .t402 .t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: var(--term-fg); padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+  .t402 .t402-switch-btn:hover { color: #fff; }
+  .t402 .t402-switch-btn.active { background: var(--green); color: var(--ink); }
+  @media (max-width: 560px) { .t402 .t402-switch-btn { padding: 8px 15px; } }
 </style>
 
 <script is:inline define:vars={{ formL }}>
