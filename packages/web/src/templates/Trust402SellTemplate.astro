@@ -307,12 +307,10 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
       </div>
     </section>
 
-    {/* 9. CLOSING */}
+    {/* 9. CLOSING — one line straight into the CTAs */}
     <section class="closing">
       <div class="inner">
-        <span class="eyebrow on-dark">{c.closing.eyebrow[locale]}</span>
         <h2>{c.closing.h2[locale]}</h2>
-        <div class="core">{c.closing.core[locale]}</div>
         <div class="rule"></div>
         <div class="cta-row">
           <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.closing.ctaPrimary[locale]} →</a>
@@ -500,7 +498,6 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
   /* closing */
   .t402 .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 120px 8%; }
   .t402 .closing h2 { font-size: clamp(30px, 4.5vw, 54px); font-weight: 800; margin-bottom: 14px; }
-  .t402 .closing .core { font-family: var(--font-display); font-weight: 300; font-size: clamp(20px, 2.6vw, 30px); color: var(--green); letter-spacing: -0.01em; margin: 22px 0 30px; }
   .t402 .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
   .t402 .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 

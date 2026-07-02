@@ -201,10 +201,10 @@ export interface Trust402Content {
        *  belongs after the questions are answered, not mid-funnel. */
       readonly techLink: Localized;
     };
+    /** Closing = one line straight into the CTAs (same declutter as the
+     *  Pay page's closing). */
     readonly closing: {
-      readonly eyebrow: Localized;
       readonly h2: Localized;
-      readonly core: Localized;
       readonly ctaPrimary: Localized;
       readonly github: Localized;
     };
@@ -599,9 +599,7 @@ export const T402: Trust402Content = {
     },
 
     closing: {
-      eyebrow: { en: "get started", ja: "はじめる" },
-      h2: { en: "Turn your work into something agents trust.", ja: "あなたの成果を、エージェントが信頼できるものに。" },
-      core: { en: "Your work. Provably yours.", ja: "あなたの成果。証明できる、あなたのもの。" },
+      h2: { en: "Your work. Provably yours.", ja: "あなたの成果。証明できる、あなたのもの。" },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       github: { en: "GitHub", ja: "GitHub" },
     },
