@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trust402 — Rebrand Prototype (Pay + Sell)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  /* --- Trust402 developer sub-brand (extracted from live devzone) --- */
+  --green:      #B6F500;   /* fluorescent lime — the accent (replaces saddle brown) */
+  --green-link: #4B6B0F;   /* olive — accessible green text-link on light */
+  --green-deep: #8FBF00;   /* hover on green surfaces */
+  --ink:        #1F1E1A;   /* warm near-black — text + dark surfaces + terminal bg */
+  --ink-soft:   #4A4942;   /* secondary text on light */
+  --muted:      #6F6E66;   /* muted labels / meta */
+  --surface:    #ECEBE3;   /* warm light-gray section bg */
+  --surface-2:  #F5F4EE;   /* lighter warm gray */
+  --card:       #FFFFFF;
+  --border:     #D8D6CC;   /* hairline on light */
+  --border-dk:  rgba(236,235,227,0.12); /* hairline on dark */
+  --term-fg:    #ECEBE3;
+
+  --font-display:'Sora','Noto Sans JP',system-ui,sans-serif;
+  --font-body:'DM Sans','Noto Sans JP','Hiragino Sans',sans-serif;
+  --font-mono:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--card);
+  font-size:15px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-0.025em;line-height:1.08}
+em{font-family:var(--font-serif);font-style:italic;font-weight:400}
+
+/* ---------- shared eyebrow (dev tag style) ---------- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;
+  letter-spacing:0.14em;text-transform:lowercase;
+  background:var(--green);color:var(--ink);
+  padding:3px 10px;border-radius:4px;margin-bottom:22px;
+}
+.eyebrow.on-dark{background:var(--green);color:var(--ink)}
+.eyebrow-plain{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;
+  letter-spacing:0.14em;text-transform:lowercase;color:var(--green-link);
+  margin-bottom:20px;
+}
+.eyebrow-plain::before{content:'';width:16px;height:2px;background:currentColor;display:block}
+.eyebrow-plain.on-dark{color:var(--green)}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-display);font-size:13.5px;font-weight:700;
+  letter-spacing:0.01em;padding:14px 30px;border-radius:999px;
+  cursor:pointer;border:1.5px solid transparent;
+  transition:background .2s,color .2s,border-color .2s,transform .2s;
+}
+.btn-primary{background:var(--green);color:var(--ink)}
+.btn-primary:hover{background:var(--green-deep);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-ghost.on-dark{color:var(--term-fg);border-color:var(--border-dk)}
+.btn-ghost.on-dark:hover{border-color:var(--term-fg)}
+.link-arrow{
+  font-family:var(--font-mono);font-size:12.5px;font-weight:700;
+  color:var(--green-link);display:inline-flex;align-items:center;gap:6px;
+}
+.link-arrow.on-dark{color:var(--green)}
+.link-arrow:hover{gap:10px;transition:gap .2s}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;height:60px;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;background:rgba(236,235,227,0.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:inline-flex;align-items:center;color:var(--ink)}
+.nav-logo svg{height:23px;width:auto;display:block}
+.nav-logo:hover{opacity:0.72}
+.nav-links{display:flex;align-items:center;gap:28px;font-size:13.5px}
+.nav-links a{color:var(--ink-soft);font-weight:500}
+.nav-links a:hover{color:var(--ink)}
+.nav-dev-badge{
+  font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.12em;
+  text-transform:lowercase;background:var(--green);color:var(--ink);padding:2px 8px;border-radius:4px;
+}
+.nav-cta{background:var(--ink);color:var(--term-fg)!important;padding:8px 18px;border-radius:999px;font-weight:600!important}
+.nav-cta:hover{background:var(--green);color:var(--ink)!important}
+@media(max-width:900px){.nav-links a:not(.nav-cta):not(.nav-prod){display:none}}
+
+/* ---------- page switcher (prototype control) ---------- */
+.switcher{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;
+  display:flex;gap:4px;background:var(--ink);padding:5px;border-radius:999px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.25);
+}
+.switcher button{
+  font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:0.06em;
+  text-transform:lowercase;color:var(--term-fg);background:transparent;border:none;cursor:pointer;
+  padding:9px 20px;border-radius:999px;transition:background .2s,color .2s;
+}
+.switcher button.active{background:var(--green);color:var(--ink)}
+
+/* ---------- layout primitives ---------- */
+.page{display:none}
+.page.active{display:block}
+section{padding:96px 8%}
+.inner{max-width:1240px;margin:0 auto}
+.section-dark{background:var(--ink);color:var(--term-fg)}
+.section-dark h1,.section-dark h2,.section-dark h3{color:var(--term-fg)}
+.section-gray{background:var(--surface)}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-head h2{font-size:clamp(30px,4vw,48px);margin-bottom:18px}
+.sec-head p{font-size:16px;color:var(--ink-soft);line-height:1.75}
+.section-dark .sec-head p{color:rgba(236,235,227,0.6)}
+
+/* ---------- hero ---------- */
+.hero{background:var(--ink);color:var(--term-fg);padding:150px 8% 90px}
+.hero h1{font-size:clamp(40px,6vw,74px);font-weight:800;line-height:1.04;max-width:14ch;margin-bottom:26px}
+.hero h1 .g{color:var(--green)}
+.hero-sub{font-size:clamp(16px,1.4vw,19px);color:rgba(236,235,227,0.66);max-width:56ch;line-height:1.7;margin-bottom:36px}
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px}
+.trust-bar{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-family:var(--font-mono);font-size:12px;color:rgba(236,235,227,0.5)}
+.trust-bar .std{padding:3px 10px;border:1px solid var(--border-dk);border-radius:6px}
+.trust-bar .bazaar{color:var(--green)}
+
+/* ---------- two doors ---------- */
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
+.door{
+  background:rgba(236,235,227,0.04);border:1px solid var(--border-dk);
+  border-top:3px solid var(--green);border-radius:14px;padding:34px 32px;
+  transition:background .2s,transform .2s;display:flex;flex-direction:column;gap:12px;
+}
+.door:hover{background:rgba(236,235,227,0.08);transform:translateY(-3px)}
+.door .door-tag{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:lowercase;color:var(--green)}
+.door h3{font-size:26px;color:var(--term-fg)}
+.door p{color:rgba(236,235,227,0.6);font-size:14.5px;flex:1}
+@media(max-width:820px){.doors{grid-template-columns:1fr}}
+
+/* ---------- terminal block ---------- */
+.term{
+  background:var(--ink);color:var(--term-fg);border-radius:10px;
+  font-family:var(--font-mono);font-size:13.5px;line-height:1.9;
+  padding:18px 22px;overflow-x:auto;border:1px solid var(--border-dk);
+}
+.section-dark .term{background:#131210;border-color:var(--border-dk)}
+.term .p{color:var(--green)}
+.term .ok{color:var(--green)}
+.term .no{color:#ff6b5e}
+.term .dim{color:rgba(236,235,227,0.45)}
+
+/* ---------- output card (hero visual / sell) ---------- */
+.ocard{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:22px;color:var(--ink);box-shadow:0 20px 50px rgba(0,0,0,0.25);
+}
+.ocard .ochead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.ocard .ofile{font-family:var(--font-mono);font-size:13px;font-weight:700}
+.ocard .obadge{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:var(--green);color:var(--ink);padding:3px 9px;border-radius:4px}
+.ocard .orow{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12.5px;padding:6px 0;color:var(--ink-soft)}
+.ocard .orow b{color:var(--ink)}
+.ocard .ocheck{color:var(--green-link);font-weight:700}
+.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:36px}}
+
+/* ---------- generic card grid (2px gutter, but rounded dev cards) ---------- */
+.cards{display:grid;gap:16px}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.cards.c2{grid-template-columns:repeat(2,1fr)}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:30px 28px;transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.06)}
+.section-dark .card{background:rgba(236,235,227,0.04);border-color:var(--border-dk)}
+.section-dark .card:hover{border-color:var(--green)}
+.card .fn{font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--ink)}
+.section-dark .card .fn{color:var(--term-fg)}
+.card h3{font-size:19px;margin-bottom:10px}
+.card p{font-size:14px;color:var(--ink-soft)}
+.section-dark .card p{color:rgba(236,235,227,0.6)}
+.card .chip{display:inline-block;margin-top:14px;font-family:var(--font-mono);font-size:11.5px;color:var(--green-link);background:var(--surface);padding:4px 10px;border-radius:6px}
+.section-dark .card .chip{color:var(--green);background:rgba(182,245,0,0.08)}
+@media(max-width:1024px){.cards.c4,.cards.c3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.cards.c4,.cards.c3,.cards.c2{grid-template-columns:1fr}}
+
+/* ---------- equation / what-adds ---------- */
+.equation{display:flex;flex-wrap:wrap;align-items:stretch;gap:12px;margin-top:20px}
+.eq-item{flex:1;min-width:150px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.section-dark .eq-item{background:rgba(236,235,227,0.04);border-color:var(--border-dk)}
+.eq-item .lab{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--green-link);margin-bottom:6px}
+.section-dark .eq-item .lab{color:var(--green)}
+.eq-item .sub{font-size:13px;color:var(--muted)}
+.eq-op{display:flex;align-items:center;font-family:var(--font-display);font-size:26px;font-weight:300;color:var(--green-link)}
+.section-dark .eq-op{color:var(--green)}
+.eq-result{flex:1.4;min-width:180px;background:var(--green);border-radius:12px;padding:20px;color:var(--ink)}
+.eq-result .lab{font-family:var(--font-mono);font-size:12px;font-weight:700;margin-bottom:6px}
+.eq-caption{margin-top:16px;font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
+
+/* ---------- slogan line ---------- */
+.slogan{
+  font-family:var(--font-display);font-weight:300;font-size:clamp(24px,3.2vw,40px);
+  letter-spacing:-0.02em;line-height:1.25;margin:8px 0;
+}
+.slogan .g{color:var(--green-link)}
+.section-dark .slogan .g{color:var(--green)}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:step}
+.step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 24px;position:relative}
+.section-dark .step{background:rgba(236,235,227,0.04);border-color:var(--border-dk)}
+.step .num{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--green-link);margin-bottom:12px}
+.section-dark .step .num{color:var(--green)}
+.step h3{font-size:16px;margin-bottom:8px}
+.step p{font-size:13.5px;color:var(--ink-soft)}
+.section-dark .step p{color:rgba(236,235,227,0.6)}
+@media(max-width:1024px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+
+/* ---------- two-sides tie-in ---------- */
+.sides{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin:34px 0}
+.side{background:rgba(236,235,227,0.04);border:1px solid var(--border-dk);border-top:3px solid var(--green);border-radius:14px;padding:28px 26px}
+.side .st{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:lowercase;color:var(--green);margin-bottom:8px}
+.side h3{font-size:22px;color:var(--term-fg);margin-bottom:8px}
+.side p{font-size:13.5px;color:rgba(236,235,227,0.6)}
+.sides .swap{font-size:26px;color:var(--green)}
+@media(max-width:760px){.sides{grid-template-columns:1fr}.sides .swap{text-align:center}}
+
+/* ---------- pricing ---------- */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tier{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:30px 26px;display:flex;flex-direction:column}
+.tier.featured{border-color:var(--green);border-top:3px solid var(--green)}
+.tier .tname{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px}
+.tier .tpos{font-size:13px;color:var(--muted);margin-bottom:18px;min-height:38px}
+.tier .tprice{font-family:var(--font-mono);font-size:22px;font-weight:700;margin-bottom:4px}
+.tier .tprice small{font-size:12px;color:var(--muted);font-weight:400}
+.tier .tmeans{font-size:12.5px;color:var(--ink-soft);margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.tier .tstate{margin-top:auto;padding-top:18px;font-family:var(--font-mono);font-size:11.5px;color:var(--green-link)}
+.price-note{margin-top:20px;font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+
+/* ---------- FAQ ---------- */
+.faq-item{border-top:1px solid var(--border);padding:24px 0}
+.faq-item:last-child{border-bottom:1px solid var(--border)}
+.faq-item h3{font-size:18px;margin-bottom:8px}
+.faq-item p{font-size:14.5px;color:var(--ink-soft);max-width:70ch}
+
+/* ---------- closing CTA ---------- */
+.closing{text-align:center;background:var(--ink);color:var(--term-fg);padding:120px 8%}
+.closing h2{font-size:clamp(30px,4.5vw,54px);font-weight:800;margin-bottom:14px}
+.closing .core{font-family:var(--font-display);font-weight:300;font-size:clamp(20px,2.6vw,30px);color:var(--green);letter-spacing:-0.01em;margin:22px 0 30px}
+.closing .rule{width:44px;height:2px;background:var(--green);margin:26px auto}
+.closing .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- misc ---------- */
+.footer{background:var(--ink);color:rgba(236,235,227,0.5);padding:40px 8%;font-size:12.5px;font-family:var(--font-mono);border-top:1px solid var(--border-dk)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.reveal.on{opacity:1;transform:none}
+.callout{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);margin-top:18px}
+.callout.on-dark{color:rgba(236,235,227,0.5)}
+
+/* ---------- iconography (agent robot + glyphs, from live site, recolored) ---------- */
+.ic{display:inline-block;vertical-align:middle;color:var(--ink)}
+.section-dark .ic,.door .ic,.side .ic{color:var(--term-fg)}
+.ic-robot{width:46px;height:64px}
+.ic-sm{width:22px;height:22px}
+.ic-lg{width:64px;height:88px}
+.door-ic{margin-bottom:4px}
+.side-ic{margin-bottom:14px}
+.robot-eye{fill:var(--green)}
+@keyframes blink{0%,92%,100%{opacity:1}96%{opacity:0.15}}
+.robot-eye{animation:blink 5.5s infinite}
+.card-ic{width:26px;height:26px;color:var(--green-link);margin-bottom:14px}
+.section-dark .card-ic{color:var(--green)}
+.btn-ic{width:16px;height:16px}
+
+/* ---------- friendly Sell components ---------- */
+.lede-note{font-family:var(--font-mono);font-size:12.5px;color:rgba(236,235,227,0.55);margin-top:16px;display:flex;align-items:center;gap:8px}
+.lede-note::before{content:'●';color:var(--green)}
+.bigsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.bigstep{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px}
+.bigstep .badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:999px;background:var(--green);color:var(--ink);font-family:var(--font-display);font-weight:700;font-size:16px;margin-bottom:16px}
+.bigstep .who{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:lowercase;color:var(--green-link);margin-bottom:6px}
+.bigstep h3{font-size:20px;margin-bottom:10px}
+.bigstep p{font-size:14.5px;color:var(--ink-soft)}
+.bigstep .ic-robot{margin-top:18px;width:34px;height:48px}
+@media(max-width:820px){.bigsteps{grid-template-columns:1fr}}
+
+.example{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ex-cell{background:var(--card);border-radius:14px;padding:24px 22px;display:flex;flex-direction:column}
+.ex-cell .exnum{font-family:var(--font-mono);font-size:11px;color:var(--green-link);font-weight:700;margin-bottom:12px}
+.ex-cell h4{font-family:var(--font-display);font-size:16px;font-weight:600;margin-bottom:8px;line-height:1.25}
+.ex-cell p{font-size:13.5px;color:var(--ink-soft);flex:1}
+.ex-cell .tagpay{margin-top:14px;align-self:flex-start;font-family:var(--font-mono);font-size:12px;color:var(--ink);background:var(--green);padding:3px 10px;border-radius:6px}
+@media(max-width:820px){.example{grid-template-columns:1fr}}
+
+.keeps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.keepcol{border-radius:16px;padding:30px 28px}
+.keepcol.yes{background:var(--card);border:1px solid var(--border);border-top:3px solid var(--green)}
+.keepcol.no{background:var(--surface);border:1px solid var(--border)}
+.keepcol h3{font-size:18px;margin-bottom:18px}
+.keeplist{list-style:none;display:flex;flex-direction:column;gap:13px}
+.keeplist li{display:flex;gap:11px;font-size:14.5px;color:var(--ink-soft);align-items:flex-start}
+.keeplist .mk{flex:none;font-family:var(--font-mono);font-weight:700;color:var(--green-link);line-height:1.5}
+.keepcol.no .keeplist .mk{color:var(--muted)}
+@media(max-width:680px){.keeps{grid-template-columns:1fr}}
+
+.details{border:1px solid var(--border);border-radius:14px;background:var(--card);padding:0 26px}
+.details+.details{margin-top:12px}
+.details summary{cursor:pointer;padding:22px 0;font-family:var(--font-display);font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.details summary::-webkit-details-marker{display:none}
+.details summary::after{content:'+';font-family:var(--font-mono);color:var(--green-link);font-size:22px;line-height:1}
+.details[open] summary::after{content:'\2013'}
+.details .body{padding:4px 0 26px}
+.prim{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
+.prim .pcell{background:var(--surface);border-radius:12px;padding:18px}
+.prim .plab{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--green-link);margin-bottom:5px}
+.prim .psub{font-size:12.5px;color:var(--muted);line-height:1.5}
+@media(max-width:680px){.prim{grid-template-columns:1fr}}
+.free-badge{display:inline-block;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:lowercase;background:var(--green);color:var(--ink);padding:2px 9px;border-radius:5px;margin-left:8px;vertical-align:middle}
+.plain-note{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);margin-top:20px}
+.ocard .onote{font-family:var(--font-body);font-size:11.5px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border);line-height:1.5}
+
+/* ---------- publish form mock ---------- */
+.formsec-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:28px;align-items:start}
+@media(max-width:900px){.formsec-grid{grid-template-columns:1fr}}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.form-ribbon{display:flex;align-items:center;gap:9px;background:var(--ink);color:var(--term-fg);font-family:var(--font-mono);font-size:12px;padding:12px 22px}
+.form-ribbon .dot{width:8px;height:8px;border-radius:999px;background:var(--green);flex:none}
+.form-ribbon .rt{margin-left:auto;color:rgba(236,235,227,0.55)}
+.form-ribbon .prevtag{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:lowercase;border:1px solid rgba(236,235,227,0.4);color:var(--term-fg);padding:2px 8px;border-radius:5px}
+.form-body{padding:26px 24px;display:flex;flex-direction:column;gap:17px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:lowercase;color:var(--muted)}
+.field input,.field select{font-family:var(--font-body);font-size:14.5px;color:var(--ink);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus{border-color:var(--green);background:#fff}
+.filedrop{border:1.5px dashed var(--border);border-radius:12px;padding:20px;text-align:center;background:var(--surface-2);cursor:pointer;transition:border-color .2s}
+.filedrop:hover{border-color:var(--green)}
+.filedrop .fd-file{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:var(--ink)}
+.filedrop .fd-hint{font-size:12px;color:var(--muted);margin-top:4px}
+.price-in{position:relative}
+.price-in .cur{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-family:var(--font-mono);font-size:12px;color:var(--muted);pointer-events:none}
+.form-foot{display:flex;align-items:center;gap:14px;margin-top:2px;flex-wrap:wrap}
+.form-note{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+.preview-label{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:lowercase;color:var(--green-link);margin-bottom:12px;display:block}
+.field .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ---------- your listings (manage view) ---------- */
+.listings{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card)}
+.lsum{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.lsum .lcell{background:var(--card);padding:22px 24px}
+.lsum .lnum{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--ink);line-height:1}
+.lsum .lnum .u{font-family:var(--font-mono);font-size:13px;color:var(--muted);font-weight:400}
+.lsum .llab{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:lowercase;color:var(--green-link);margin-top:8px}
+.ltable{padding:4px 0 8px}
+.lrow{display:grid;grid-template-columns:2fr 0.9fr 1fr 0.7fr 1fr;gap:12px;align-items:center;padding:16px 24px;border-top:1px solid var(--border)}
+.lrow.lhead{border-top:none;padding-bottom:8px}
+.lrow.lhead span{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:lowercase;color:var(--muted)}
+.lrow .lt{font-weight:600;font-size:14.5px}
+.lrow .lf{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-top:2px}
+.lrow .mono{font-family:var(--font-mono);font-size:13px;color:var(--ink)}
+.lstatus{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block}
+.lstatus.live{background:var(--green);color:var(--ink)}
+.lstatus.sandbox{background:var(--surface);color:var(--muted)}
+@media(max-width:760px){.lsum{grid-template-columns:1fr}.lrow{grid-template-columns:1fr 1fr;gap:6px 12px}.lrow.lhead{display:none}.lrow .lt{grid-column:1/-1}}
+</style>
+</head>
+<body>
+
+<!-- ================= ICON SPRITE (agent robot + glyphs, recolored from live site) ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-robot" viewBox="0 0 58 80">
+    <circle cx="29" cy="4" r="3" class="robot-eye"/>
+    <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
+    <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <circle cx="20" cy="39" r="4" class="robot-eye"/>
+    <circle cx="38" cy="39" r="4" class="robot-eye"/>
+    <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-robot-proof" viewBox="0 0 74 80">
+    <circle cx="29" cy="4" r="3" class="robot-eye"/>
+    <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
+    <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <circle cx="20" cy="39" r="4" class="robot-eye"/>
+    <circle cx="38" cy="39" r="4" class="robot-eye"/>
+    <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="58" cy="60" r="14" fill="var(--green)"/>
+    <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="var(--ink)">ZK</text>
+  </symbol>
+  <symbol id="ic-signed" viewBox="0 0 58 80">
+    <rect x="8" y="5" width="40" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <line x1="16" y1="19" x2="40" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="16" y1="27" x2="40" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="16" y1="35" x2="30" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="42" cy="60" r="15" fill="var(--green)"/>
+    <path d="M35 60 l5 5 l9 -10" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-network" viewBox="0 0 52 52">
+    <circle cx="13" cy="13" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <circle cx="39" cy="13" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <circle cx="26" cy="38" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <line x1="18" y1="16" x2="22" y2="32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="34" y1="16" x2="30" y2="32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="19" y1="13" x2="33" y2="13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.5" stroke-dasharray="3 3"/>
+  </symbol>
+  <symbol id="ic-github" viewBox="0 0 52 52">
+    <path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" fill="currentColor"/>
+  </symbol>
+  <symbol id="ic-dataset" viewBox="0 0 52 52">
+    <rect x="6" y="9" width="40" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <line x1="6" y1="21" x2="46" y2="21" stroke="currentColor" stroke-width="2"/>
+    <line x1="6" y1="33" x2="46" y2="33" stroke="currentColor" stroke-width="2"/>
+    <line x1="22" y1="9" x2="22" y2="43" stroke="currentColor" stroke-width="2"/>
+    <rect x="8.5" y="11.5" width="11" height="7.5" fill="var(--green)"/>
+  </symbol>
+  <symbol id="ic-chart" viewBox="0 0 52 52">
+    <line x1="9" y1="43" x2="43" y2="43" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="12" y="29" width="7" height="12" rx="1.5" fill="currentColor"/>
+    <rect x="23" y="22" width="7" height="19" rx="1.5" fill="currentColor"/>
+    <rect x="34" y="14" width="7" height="27" rx="1.5" fill="var(--green)"/>
+  </symbol>
+  <symbol id="ic-notebook" viewBox="0 0 52 52">
+    <rect x="9" y="7" width="34" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+    <path d="M22 20 L16 26 L22 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 20 L36 26 L30 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="27" y1="17" x2="25" y2="35" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round"/>
+  </symbol>
+</defs></svg>
+
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <a class="nav-logo" href="#" aria-label="Lemma — home">
+    <svg viewBox="0 0 131 65" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <path d="M7.10025 50C6.65225 50 6.42825 49.84 6.42825 49.52C6.42825 49.168 6.74825 48.944 7.38825 48.848L8.34825 48.704C9.05225 48.608 9.53225 48.448 9.78825 48.224C10.0763 47.968 10.2843 47.504 10.4123 46.832L16.9403 18.608C17.1003 17.936 17.1003 17.488 16.9403 17.264C16.7803 17.04 16.3803 16.864 15.7403 16.736L14.7803 16.544C14.3643 16.448 14.1562 16.272 14.1562 16.016C14.1562 15.632 14.4443 15.44 15.0203 15.44H23.7083C24.1883 15.44 24.3803 15.632 24.2843 16.016C24.2203 16.304 24.0123 16.48 23.6603 16.544L22.3163 16.736C21.6123 16.832 21.1323 17.008 20.8763 17.264C20.6203 17.52 20.4123 17.984 20.2523 18.656L14.0123 45.536C13.7563 46.688 13.9163 47.52 14.4922 48.032C15.0683 48.544 15.9003 48.8 16.9883 48.8C18.2043 48.8 19.4523 48.336 20.7323 47.408C22.0123 46.48 23.0683 45.024 23.9003 43.04L25.3403 39.68C25.5003 39.264 25.7563 39.056 26.1083 39.056C26.5883 39.056 26.7483 39.328 26.5883 39.872L23.9003 48.896C23.7083 49.632 23.2283 50 22.4603 50H7.10025Z" />
+      <path d="M37.216 35.432C35.68 35.432 34.304 34.92 33.088 33.896C31.872 32.872 30.896 31.432 30.16 29.576C29.456 27.688 29.104 25.512 29.104 23.048C29.104 20.52 29.472 18.296 30.208 16.376C30.944 14.456 31.952 12.952 33.232 11.864C34.512 10.776 35.936 10.232 37.504 10.232C39.392 10.232 40.912 11.016 42.064 12.584C43.248 14.12 43.84 16.632 43.84 20.12C43.84 21.176 43.44 21.704 42.64 21.704H33.52C32.88 21.704 32.56 22.072 32.56 22.808C32.56 26.2 33.056 28.744 34.048 30.44C35.04 32.136 36.304 32.984 37.84 32.984C39.056 32.984 40.048 32.552 40.816 31.688C41.584 30.824 42.208 29.368 42.688 27.32C42.784 26.968 42.992 26.792 43.312 26.792C43.696 26.792 43.84 27.112 43.744 27.752C43.232 30.6 42.416 32.6 41.296 33.752C40.176 34.872 38.816 35.432 37.216 35.432ZM33.376 20.504H38.224C39.76 20.504 40.528 19.704 40.528 18.104C40.528 16.024 40.272 14.392 39.76 13.208C39.248 12.024 38.48 11.432 37.456 11.432C36.208 11.432 35.152 12.152 34.288 13.592C33.456 15.032 32.912 17.08 32.656 19.736C32.592 20.248 32.832 20.504 33.376 20.504Z" />
+      <path d="M46.44 50C45.96 50 45.72 49.824 45.72 49.472C45.72 49.184 45.928 48.992 46.344 48.896L46.92 48.8C47.592 48.672 48.024 48.48 48.216 48.224C48.44 47.936 48.552 47.456 48.552 46.784V30.656C48.552 30.08 48.456 29.696 48.264 29.504C48.104 29.28 47.8 29.136 47.352 29.072L46.344 28.928C45.928 28.896 45.72 28.72 45.72 28.4C45.72 28.144 45.976 27.968 46.488 27.872C47.48 27.712 48.232 27.456 48.744 27.104C49.288 26.752 49.848 26.32 50.424 25.808C50.712 25.52 50.952 25.376 51.144 25.376C51.432 25.376 51.576 25.568 51.576 25.952V28.112C51.576 28.336 51.672 28.512 51.864 28.64C52.056 28.736 52.264 28.672 52.488 28.448C53.8 27.2 54.936 26.352 55.896 25.904C56.888 25.456 57.88 25.232 58.872 25.232C59.8 25.232 60.616 25.488 61.32 26C62.056 26.48 62.6 27.216 62.952 28.208C63.048 28.464 63.208 28.624 63.432 28.688C63.688 28.72 63.928 28.624 64.152 28.4C65.464 27.184 66.6 26.352 67.56 25.904C68.52 25.456 69.496 25.232 70.488 25.232C71.832 25.232 72.92 25.744 73.752 26.768C74.616 27.76 75.048 29.232 75.048 31.184V46.784C75.048 47.456 75.144 47.936 75.336 48.224C75.56 48.48 76.008 48.656 76.68 48.752L77.736 48.896C78.088 48.96 78.264 49.152 78.264 49.472C78.264 49.824 78.072 50 77.688 50H69.48C69.032 50 68.808 49.824 68.808 49.472C68.808 49.152 68.984 48.96 69.336 48.896L70.008 48.8C70.744 48.704 71.224 48.512 71.448 48.224C71.672 47.936 71.784 47.456 71.784 46.784V31.712C71.784 30.144 71.496 29.04 70.92 28.4C70.376 27.76 69.624 27.44 68.664 27.44C67.704 27.44 66.824 27.744 66.024 28.352C65.256 28.928 64.632 29.712 64.152 30.704C63.672 31.664 63.432 32.736 63.432 33.92V46.784C63.432 47.456 63.544 47.936 63.768 48.224C63.992 48.48 64.456 48.656 65.16 48.752L66.216 48.896C66.568 48.96 66.744 49.152 66.744 49.472C66.744 49.824 66.552 50 66.168 50H58.008C57.56 50 57.336 49.824 57.336 49.472C57.336 49.152 57.512 48.96 57.864 48.896L58.536 48.8C59.208 48.704 59.64 48.512 59.832 48.224C60.056 47.936 60.168 47.456 60.168 46.784V31.712C60.168 30.144 59.88 29.04 59.304 28.4C58.76 27.76 58.008 27.44 57.048 27.44C56.088 27.44 55.208 27.744 54.408 28.352C53.64 28.928 53.016 29.712 52.536 30.704C52.056 31.664 51.816 32.736 51.816 33.92V46.784C51.816 47.456 51.912 47.936 52.104 48.224C52.328 48.512 52.776 48.688 53.448 48.752L54.744 48.896C55.096 48.96 55.272 49.136 55.272 49.424C55.272 49.808 55.032 50 54.552 50H46.44Z" />
+      <path d="M79.44 50C78.96 50 78.72 49.824 78.72 49.472C78.72 49.184 78.928 48.992 79.344 48.896L79.92 48.8C80.592 48.672 81.024 48.48 81.216 48.224C81.44 47.936 81.552 47.456 81.552 46.784V30.656C81.552 30.08 81.456 29.696 81.264 29.504C81.104 29.28 80.8 29.136 80.352 29.072L79.344 28.928C78.928 28.896 78.72 28.72 78.72 28.4C78.72 28.144 78.976 27.968 79.488 27.872C80.48 27.712 81.232 27.456 81.744 27.104C82.288 26.752 82.848 26.32 83.424 25.808C83.712 25.52 83.952 25.376 84.144 25.376C84.432 25.376 84.576 25.568 84.576 25.952V28.112C84.576 28.336 84.672 28.512 84.864 28.64C85.056 28.736 85.264 28.672 85.488 28.448C86.8 27.2 87.936 26.352 88.896 25.904C89.888 25.456 90.88 25.232 91.872 25.232C92.8 25.232 93.616 25.488 94.32 26C95.056 26.48 95.6 27.216 95.952 28.208C96.048 28.464 96.208 28.624 96.432 28.688C96.688 28.72 96.928 28.624 97.152 28.4C98.464 27.184 99.6 26.352 100.56 25.904C101.52 25.456 102.496 25.232 103.488 25.232C104.832 25.232 105.92 25.744 106.752 26.768C107.616 27.76 108.048 29.232 108.048 31.184V46.784C108.048 47.456 108.144 47.936 108.336 48.224C108.56 48.48 109.008 48.656 109.68 48.752L110.736 48.896C111.088 48.96 111.264 49.152 111.264 49.472C111.264 49.824 111.072 50 110.688 50H102.48C102.032 50 101.808 49.824 101.808 49.472C101.808 49.152 101.984 48.96 102.336 48.896L103.008 48.8C103.744 48.704 104.224 48.512 104.448 48.224C104.672 47.936 104.784 47.456 104.784 46.784V31.712C104.784 30.144 104.496 29.04 103.92 28.4C103.376 27.76 102.624 27.44 101.664 27.44C100.704 27.44 99.824 27.744 99.024 28.352C98.256 28.928 97.632 29.712 97.152 30.704C96.672 31.664 96.432 32.736 96.432 33.92V46.784C96.432 47.456 96.544 47.936 96.768 48.224C96.992 48.48 97.456 48.656 98.16 48.752L99.216 48.896C99.568 48.96 99.744 49.152 99.744 49.472C99.744 49.824 99.552 50 99.168 50H91.008C90.56 50 90.336 49.824 90.336 49.472C90.336 49.152 90.512 48.96 90.864 48.896L91.536 48.8C92.208 48.704 92.64 48.512 92.832 48.224C93.056 47.936 93.168 47.456 93.168 46.784V31.712C93.168 30.144 92.88 29.04 92.304 28.4C91.76 27.76 91.008 27.44 90.048 27.44C89.088 27.44 88.208 27.744 87.408 28.352C86.64 28.928 86.016 29.712 85.536 30.704C85.056 31.664 84.816 32.736 84.816 33.92V46.784C84.816 47.456 84.912 47.936 85.104 48.224C85.328 48.512 85.776 48.688 86.448 48.752L87.744 48.896C88.096 48.96 88.272 49.136 88.272 49.424C88.272 49.808 88.032 50 87.552 50H79.44Z" />
+      <path d="M116.76 50.432C115.416 50.432 114.312 50.016 113.448 49.184C112.584 48.32 112.152 47.184 112.152 45.776C112.152 44.4 112.584 43.104 113.448 41.888C114.312 40.64 115.496 39.52 117 38.528C118.504 37.536 120.216 36.736 122.136 36.128C122.552 36 122.76 35.728 122.76 35.312V30.944C122.76 29.408 122.52 28.32 122.04 27.68C121.56 27.008 120.904 26.672 120.072 26.672C119.272 26.672 118.536 27.04 117.864 27.776C117.224 28.48 116.76 29.68 116.472 31.376C116.312 32.4 115.96 33.152 115.416 33.632C114.904 34.08 114.376 34.304 113.832 34.304C112.936 34.304 112.488 33.856 112.488 32.96C112.488 32.032 112.744 31.12 113.256 30.224C113.8 29.296 114.504 28.464 115.368 27.728C116.232 26.96 117.176 26.352 118.2 25.904C119.224 25.456 120.248 25.232 121.272 25.232C124.44 25.232 126.024 27.072 126.024 30.752V45.44C126.024 46.784 126.36 47.456 127.032 47.456C127.448 47.456 127.832 47.184 128.184 46.64C128.536 46.064 128.712 45.104 128.712 43.76C128.712 43.248 128.92 42.992 129.336 42.992C129.72 42.992 129.912 43.264 129.912 43.808C129.912 46.144 129.496 47.84 128.664 48.896C127.864 49.92 126.952 50.432 125.928 50.432C125.16 50.432 124.552 50.128 124.104 49.52C123.656 48.88 123.352 48.128 123.192 47.264C123.16 46.944 123.016 46.784 122.76 46.784C122.536 46.752 122.312 46.896 122.088 47.216C121.32 48.272 120.536 49.072 119.736 49.616C118.936 50.16 117.944 50.432 116.76 50.432ZM118.056 48.224C118.888 48.224 119.656 47.936 120.36 47.36C121.064 46.752 121.64 45.952 122.088 44.96C122.536 43.968 122.76 42.848 122.76 41.6V38.096C122.76 37.488 122.424 37.312 121.752 37.568C119.8 38.272 118.28 39.248 117.192 40.496C116.136 41.712 115.608 43.184 115.608 44.912C115.608 47.12 116.424 48.224 118.056 48.224Z" />
+    </svg>
+  </a>
+  <div class="nav-links">
+    <a class="nav-prod" href="#">Products</a>
+    <a href="#">Solutions</a>
+    <a href="#">How it works</a>
+    <a href="#" style="color:var(--ink);font-weight:600">Trust402 <span class="nav-dev-badge">dev</span></a>
+    <a href="#">Docs</a>
+    <a class="nav-cta" href="#">Get Started ↗</a>
+  </div>
+</nav>
+
+<!-- ================= PAGE: HUB (rebranded /trust402/) ================= -->
+<div class="page active" id="page-hub">
+
+  <!-- HERO: widened to the umbrella framing (doc §0) -->
+  <header class="hero">
+    <div class="inner">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow on-dark">lemma × x402</span>
+          <h1>Trust for the <span class="g">x402 agent economy.</span></h1>
+          <p class="hero-sub">Authority when you pay, provenance when you sell. x402 moves the money — Trust402 attaches <em>who</em>, by what authority, and whose data, as cryptographic proof. Verifiable by anyone, on the standards agents already speak.</p>
+          <div class="hero-cta-row">
+            <a class="btn btn-primary" href="#">Explore the two sides ↓</a>
+            <a class="btn btn-ghost on-dark" href="https://github.com/lemmaoracle/trust402"><svg class="ic btn-ic"><use href="#ic-github"/></svg> View on GitHub →</a>
+          </div>
+          <div class="trust-bar">
+            <span class="std">x402</span><span class="std">MCP</span><span class="std">A2A</span>
+            <span class="bazaar">● Discoverable in the x402 Bazaar</span>
+          </div>
+        </div>
+        <div>
+          <div class="term">
+            <div><span class="p">$</span> agent run --pay 0.01 GET /data</div>
+            <div class="dim">[+] ZK identity proof… <span class="ok">✓</span></div>
+            <div class="dim">[+] role check (developer-tier)… <span class="ok">✓</span></div>
+            <div class="dim">[+] spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></div>
+            <div class="dim">[+] x402 settle 0x4a8f…e21 <span class="ok">✓</span></div>
+            <div class="dim">[+] anchor: Base Sepolia <span class="ok">✓</span></div>
+            <div><span class="ok">200 OK</span> { data: "…" }</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-door導線 (doc §0) -->
+      <div class="doors">
+        <a class="door" href="#page-hub" data-goto="hub">
+          <svg class="ic ic-robot door-ic"><use href="#ic-robot-proof"/></svg>
+          <span class="door-tag">trust402 · pay</span>
+          <h3>Run AI without holding keys.</h3>
+          <p>Per-call delegated authority for agent payments. Attach who, by what authority, and up to what amount — as ZK proofs. Out of scope, it never runs.</p>
+          <span class="link-arrow on-dark">You're here →</span>
+        </a>
+        <a class="door" href="#page-sell" data-goto="sell">
+          <svg class="ic ic-robot door-ic"><use href="#ic-signed"/></svg>
+          <span class="door-tag">trust402 · sell</span>
+          <h3>Sell your data to agents, provably yours.</h3>
+          <p>Attach cryptographic provenance to what you publish. Agents verify it's authentic, then pay over x402. You keep selling it — Lemma is the tool, not the store.</p>
+          <span class="link-arrow on-dark">See Trust402 · Sell →</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- WHAT TRUST402 ADDS -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">what trust402 adds</span>
+        <h2>Attach trust to the payment.</h2>
+        <p>x402 settles the money. Trust402 adds provable authority, identity, and scope on top — recording who paid on behalf of whom, within what bounds, against what data.</p>
+      </div>
+      <div class="equation reveal">
+        <div class="eq-item"><div class="lab">ZK identity</div><div class="sub">who</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">role membership</div><div class="sub">under what authority</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">spend limit</div><div class="sub">up to what</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">on-chain anchor</div><div class="sub">tamper-evident trail</div></div>
+        <div class="eq-op">=</div>
+        <div class="eq-result"><div class="lab">trust-verified payment</div><div class="sub" style="color:var(--ink)">fail-closed · audit trail · independently verifiable</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCOPE -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">scope</span>
+        <h2>Out of scope, <em>it never runs.</em></h2>
+        <p>Your agent runs only within the authority you delegate. Out of scope, it stops before the call is sent — no hand-rolled guardrails.</p>
+      </div>
+      <div class="cards c3">
+        <div class="card reveal"><div class="num" style="font-family:var(--font-mono);font-size:12px;color:var(--green-link);font-weight:700">01</div><h3>Stopped before it's sent.</h3><p>Calls that fail proof verification stop before they're sent (fail-closed).</p><span class="chip">$500 POST → blocked</span></div>
+        <div class="card reveal"><div class="num" style="font-family:var(--font-mono);font-size:12px;color:var(--green-link);font-weight:700">02</div><h3>Authority is declared, not coded.</h3><p>Declare role, limits and scope as a proof — no authorization branches in your code.</p><span class="chip">scope: payments:autonomous</span></div>
+        <div class="card reveal"><div class="num" style="font-family:var(--font-mono);font-size:12px;color:var(--green-link);font-weight:700">03</div><h3>Every stop leaves a trail.</h3><p>Every allow and every stop lands in an independently verifiable audit trail.</p><span class="chip">audit trail · verifiable</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section-dark">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain on-dark">how it works</span>
+        <h2>One middleware, over your existing x402 flow.</h2>
+        <p>The standard stays intact. Trust402 sits as a ZK verification layer.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div class="num">step 01</div><h3>Present delegation proof</h3><p>The agent presents the authority you delegated.</p></div>
+        <div class="step reveal"><div class="num">step 02</div><h3>Trust402 verifies via ZK</h3><p>Identity, role and limits checked cryptographically.</p></div>
+        <div class="step reveal"><div class="num">step 03</div><h3>Settle on x402</h3><p>Cleared requests settle over the untouched standard.</p></div>
+        <div class="step reveal"><div class="num">step 04</div><h3>On-chain anchor</h3><p>Every allow and stop is anchored, tamper-evident.</p></div>
+      </div>
+      <p class="callout on-dark">● 4-step flow · one middleware line, done · <a class="link-arrow on-dark" href="#">wrapFetchWithProof →</a></p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">pricing</span>
+        <h2>Explorer to Pro.</h2>
+        <p>Verify is always free. You pay to produce proofs and settle — not to be trusted.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">Sandbox · testnet only</div><div class="tprice">Free</div><div class="tmeans">Manual form · the current demo.</div><div class="tstate">Coming soon</div></div>
+        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">Production · individual developers</div><div class="tprice">$19<small>/mo + per-query</small></div><div class="tmeans">Manual form (+ API add-on).</div><div class="tstate">Coming soon</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">¥50k<small>/mo + attestation</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
+      </div>
+      <p class="price-note">One monthly allowance across Pay and Sell. Verify is free.</p>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <div class="inner">
+      <span class="eyebrow on-dark">agentic economy</span>
+      <h2>Trust for the agent era.</h2>
+      <div class="core">Trust402 attaches trust to x402 — authority when you pay, provenance when you sell.</div>
+      <div class="rule"></div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#">Join the waitlist →</a>
+        <a class="btn btn-ghost on-dark" href="#page-sell" data-goto="sell">See Trust402 · Sell →</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PAGE: SELL (new /trust402/sell/) — student-friendly ================= -->
+<div class="page" id="page-sell">
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <div class="inner">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow on-dark">trust402 · sell</span>
+          <h1>Made something good? <span class="g">Sell it to AI agents.</span></h1>
+          <p class="hero-sub">Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof that it came from <em>you</em> and hasn't been changed. No servers to run, no crypto to learn. You keep everything; Lemma is just the tool.</p>
+          <div class="hero-cta-row">
+            <a class="btn btn-primary" href="#">Try it free →</a>
+            <a class="btn btn-ghost on-dark" href="#">See how it works</a>
+          </div>
+          <div class="lede-note">Free to start · made for students, researchers, and labs</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <svg class="ic ic-robot" style="width:32px;height:44px;color:var(--term-fg)"><use href="#ic-robot"/></svg>
+            <span style="font-family:var(--font-mono);font-size:12px;color:rgba(236,235,227,0.55)">an agent checks it's real (free), then pays you ↓</span>
+          </div>
+          <div class="ocard">
+            <div class="ochead"><span class="ofile">my-dataset.csv</span><span class="obadge">yours ✓</span></div>
+            <div class="orow"><span>made by</span><b>you ✓</b></div>
+            <div class="orow"><span>untouched</span><span class="ocheck">verified ✓</span></div>
+            <div class="orow"><span>your price</span><b>0.05 USDC ≈ $0.05 / use</b></div>
+            <div class="orow" style="border-top:1px solid var(--border);margin-top:8px;padding-top:12px"><span>checking it's real</span><span class="ocheck">always free</span></div>
+            <div class="onote">USDC is a digital dollar — the agent pays automatically, and it lands in your account.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. HOW SELLING WORKS (you / we / agent) -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">how selling works</span>
+        <h2>Three steps. You only do the first one.</h2>
+        <p>The rest is automatic. You don't write code, run a server, or manage payments.</p>
+      </div>
+      <div class="bigsteps">
+        <div class="bigstep reveal">
+          <div class="badge">1</div>
+          <div class="who">you</div>
+          <h3>Point to your file</h3>
+          <p>Upload a dataset, a paper, or an export — or just link one you already have online. That's your whole job.</p>
+          <a class="link-arrow" href="#the-form" style="margin-top:16px;display:inline-flex">See the form ↓</a>
+        </div>
+        <div class="bigstep reveal">
+          <div class="badge">2</div>
+          <div class="who">lemma does this</div>
+          <h3>We stamp it and set your price</h3>
+          <p>We attach a proof that it's yours and unchanged, add the price you chose, and turn it into something payable. Zero setup.</p>
+        </div>
+        <div class="bigstep reveal">
+          <div class="badge">3</div>
+          <div class="who">an agent does this</div>
+          <h3>It gets found, checked, and bought</h3>
+          <p>An AI agent discovers your listing, checks the proof for free, and pays you automatically. You get paid; it gets a source it can cite.</p>
+          <svg class="ic ic-robot"><use href="#ic-robot"/></svg>
+        </div>
+      </div>
+      <p class="eq-caption">Checking your proof is always free. You get paid for the data — not for being trusted.</p>
+    </div>
+  </section>
+
+  <!-- 3. WHAT YOU CAN SELL (research-oriented, no persona) -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">what you can sell</span>
+        <h2>If you made it, an agent can cite it.</h2>
+        <p>Research work is exactly what AI agents are hungry for — real, structured, and verifiable. A few things people put up:</p>
+      </div>
+      <div class="cards c4">
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-dataset"/></svg><span class="fn">labeled datasets</span><p>The training data you built and annotated by hand.</p></div>
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-signed"/></svg><span class="fn">cleaned corpora</span><p>Messy sources you turned into something usable.</p></div>
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-chart"/></svg><span class="fn">results & benchmarks</span><p>Experiment numbers others want to build on.</p></div>
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-notebook"/></svg><span class="fn">methods & notebooks</span><p>The <em>how</em> — pipelines, prompts, reproducible steps.</p></div>
+      </div>
+      <p class="eq-caption">Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.</p>
+    </div>
+  </section>
+
+  <!-- 4. WHAT STAYS YOURS / DON'T NEED -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">no strings attached</span>
+        <h2>You stay in control.</h2>
+        <p>Selling through Lemma doesn't take anything away from you.</p>
+      </div>
+      <div class="keeps reveal">
+        <div class="keepcol yes">
+          <h3>What stays yours</h3>
+          <ul class="keeplist">
+            <li><span class="mk">✓</span><span>Full ownership of your work — always.</span></li>
+            <li><span class="mk">✓</span><span>The right to sell or share it anywhere else, too.</span></li>
+            <li><span class="mk">✓</span><span>Your name on it, as the recognized source.</span></li>
+            <li><span class="mk">✓</span><span>You set the price, and you can change it.</span></li>
+          </ul>
+        </div>
+        <div class="keepcol no">
+          <h3>What you don't need</h3>
+          <ul class="keeplist">
+            <li><span class="mk">✕</span><span>A server, or any code to write.</span></li>
+            <li><span class="mk">✕</span><span>A storefront or marketplace account to set up.</span></li>
+            <li><span class="mk">✕</span><span>To hand over your raw data just to prove it's real.</span></li>
+            <li><span class="mk">✕</span><span>Any crypto know-how — getting paid just works.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. WHY PROOF MATTERS -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">why proof matters</span>
+        <h2>Copies of your work are everywhere.</h2>
+        <p>Scraped versions and AI-made imitations sit right next to your original. Without proof, an agent can't tell which one is really yours — so it might pay someone else, or trust a fake.</p>
+      </div>
+      <div class="slogan reveal">A copy can look identical. <span class="g">Only yours can prove it.</span></div>
+      <p class="plain-note">The technical way to say it: <span style="color:var(--green-link)">Signed is the only real.</span></p>
+    </div>
+  </section>
+
+  <!-- 6. INSTITUTIONAL ID (the plan that covers students & labs) -->
+  <section class="section-dark">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain on-dark">institutional id · shared with pay</span>
+        <h2>At a university or lab? <span class="g">You're already covered.</span></h2>
+        <p>The Institutional ID plan lets an organization register once — then everyone under it publishes under that umbrella. It's the same plan on the Pay side.</p>
+      </div>
+      <div class="cards c3">
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-network"/></svg><h3>Your institution registers once</h3><p>A university or lab signs up as an institution. After that, its members can publish.</p></div>
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-signed"/></svg><h3>You publish under the umbrella</h3><p>No separate plan or cost for you — just point to your file and set a price.</p></div>
+        <div class="card reveal"><svg class="ic card-ic"><use href="#ic-robot"/></svg><h3>Credit follows you</h3><p>Everything is attributed to you by name. Move on, and your proofs still check out.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. UNDER THE HOOD (collapsible) -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">for the curious</span>
+        <h2>How the proof actually works.</h2>
+        <p>You never have to touch any of this — but if you like knowing what's under the hood, here it is.</p>
+      </div>
+      <div class="reveal">
+        <details class="details">
+          <summary>The three things we attach to your file</summary>
+          <div class="body">
+            <div class="prim">
+              <div class="pcell"><div class="plab">who made it</div><div class="psub">A signature proving you're the publisher — you can reveal only the parts you want. <span style="opacity:.7">(BBS+ over BLS12-381)</span></div></div>
+              <div class="pcell"><div class="plab">not changed</div><div class="psub">A fingerprint that breaks if even one byte is altered. <span style="opacity:.7">(Poseidon over BN254)</span></div></div>
+              <div class="pcell"><div class="plab">which version</div><div class="psub">So an agent always knows it's citing the exact version you meant.</div></div>
+            </div>
+          </div>
+        </details>
+        <details class="details">
+          <summary>How agents find and pay for it</summary>
+          <div class="body">
+            <p style="font-size:14.5px;color:var(--ink-soft);max-width:70ch">Your listing is discoverable in the <b>x402 Bazaar</b> — a shared directory agents browse. It's added automatically the first time someone buys. Payment happens over the open <b>x402</b> standard in USDC. You never run an x402 server; the standard template handles it for you.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7.5 WHAT YOU ACTUALLY DO (lightweight) -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">hands-on</span>
+        <h2>What you actually do: fill one short form.</h2>
+        <p>No dashboard to wire up, no code — and you can rehearse the whole thing for free before anything goes live.</p>
+      </div>
+      <div class="cards c2 reveal">
+        <div class="card">
+          <span class="fn" style="color:var(--green-link)">① try it in the sandbox <span class="free-badge">free</span></span>
+          <p style="margin-top:12px">Fill one short form — point to a file, set a test price. It runs on a test network, so no real money moves. Break things, retry, get comfortable. <b>Students start here.</b></p>
+          <span class="chip">no real money · testnet</span>
+        </div>
+        <div class="card">
+          <span class="fn">② go live in production</span>
+          <p style="margin-top:12px">The exact same form — now it's real. Agents can discover your listing, verify it for free, and pay you. Nothing new to learn.</p>
+          <span class="chip">same steps · real payouts</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7.6 THE FORM (interactive mock) -->
+  <section class="section-gray" id="the-form">
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">the form · preview</span>
+        <h2>This is the whole form.</h2>
+        <p>A live preview — play with it here, nothing gets published. The real form lives in your Dashboard. Five fields: fill them in and your listing takes shape on the right, exactly what an agent sees.</p>
+      </div>
+      <div class="formsec-grid reveal">
+        <div class="form-card">
+          <div class="form-ribbon"><span class="dot"></span> publish a listing <span class="prevtag">preview</span><span class="rt">nothing is saved here</span></div>
+          <div class="form-body">
+            <div class="field">
+              <label>your file</label>
+              <div class="filedrop">
+                <div class="fd-file" id="f-file">my-dataset.csv</div>
+                <div class="fd-hint">drop a file, or point to a URL you already host</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>title</label>
+              <input id="f-title" type="text" value="Labeled image set — 2026" />
+            </div>
+            <div class="field">
+              <div class="row2">
+                <div class="field">
+                  <label>version</label>
+                  <select id="f-version"><option>v1</option><option>v2</option><option selected>v3 · canonical</option></select>
+                </div>
+                <div class="field">
+                  <label>price per use</label>
+                  <div class="price-in"><input id="f-price" type="text" value="0.05" /><span class="cur">USDC</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>publish as</label>
+              <select id="f-as"><option value="you">You (individual)</option><option value="inst">Under your institution</option></select>
+            </div>
+            <div class="form-foot">
+              <a class="btn btn-primary" href="#" onclick="return false">Generate proof &amp; preview →</a>
+              <span class="form-note">no real money · testnet</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="preview-label">what the agent sees ↓</span>
+          <div class="ocard">
+            <div class="ochead"><span class="ofile" id="p-file">my-dataset.csv</span><span class="obadge">signed</span></div>
+            <div class="orow"><span>title</span><b id="p-title">Labeled image set — 2026</b></div>
+            <div class="orow"><span>made by</span><b id="p-as">you ✓</b></div>
+            <div class="orow"><span>untouched</span><span class="ocheck">verified ✓</span></div>
+            <div class="orow"><span>version</span><b id="p-version">v3 · canonical</b></div>
+            <div class="orow"><span>price</span><b id="p-price">0.05 USDC / use</b></div>
+            <div class="orow" style="border-top:1px solid var(--border);margin-top:8px;padding-top:12px"><span>checking it's real</span><span class="ocheck">always free</span></div>
+            <div class="onote">This card is your listing. Agents verify the proof for free, then pay to get the file.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7.7 YOUR LISTINGS (manage after publishing) -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">your listings</span>
+        <h2>After you publish, track it here.</h2>
+        <p>Everything you've put up lives in one place — whether it's live or still a sandbox test, how many times it's been used, and what it's earned.</p>
+      </div>
+      <div class="listings reveal">
+        <div class="lsum">
+          <div class="lcell"><div class="lnum">3</div><div class="llab">active listings</div></div>
+          <div class="lcell"><div class="lnum">1,240</div><div class="llab">total uses</div></div>
+          <div class="lcell"><div class="lnum">54.00 <span class="u">USDC</span></div><div class="llab">earned</div></div>
+        </div>
+        <div class="ltable">
+          <div class="lrow lhead"><span>listing</span><span>status</span><span>price</span><span>uses</span><span>earned</span></div>
+          <div class="lrow"><div><div class="lt">Labeled image set — 2026</div><div class="lf">my-dataset.csv</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.05 USDC</div><div class="mono">840</div><div class="mono">42.00 USDC</div></div>
+          <div class="lrow"><div><div class="lt">Cleaned JA text corpus</div><div class="lf">corpus-ja.jsonl</div></div><div><span class="lstatus live">live</span></div><div class="mono">0.03 USDC</div><div class="mono">400</div><div class="mono">12.00 USDC</div></div>
+          <div class="lrow"><div><div class="lt">Benchmark results · Q2</div><div class="lf">bench-q2.csv</div></div><div><span class="lstatus sandbox">sandbox</span></div><div class="mono">0.10 USDC</div><div class="mono">—</div><div class="mono" style="color:var(--muted)">testnet</div></div>
+        </div>
+      </div>
+      <p class="price-note">Sandbox listings run on a test network — the numbers are there so you can watch the whole loop before going live.</p>
+    </div>
+  </section>
+
+  <!-- 8. TWO SIDES (compact tie-in) -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal"><span class="eyebrow-plain">part of trust402</span><h2>Two sides, one idea.</h2><p>Trust402 attaches proof to the moment money moves — whichever side you're on. One plan and one monthly allowance cover both.</p></div>
+      <div class="sides reveal">
+        <div class="side" style="background:var(--card);border:1px solid var(--border);border-top:3px solid var(--green)"><svg class="ic ic-robot side-ic" style="color:var(--ink)"><use href="#ic-robot-proof"/></svg><div class="st">trust402 · pay</div><h3 style="color:var(--ink)">When you pay</h3><p style="color:var(--ink-soft)">Prove an agent is allowed to spend — who, by what authority, up to how much.</p></div>
+        <div class="swap" style="color:var(--green-link)">↔</div>
+        <div class="side" style="background:var(--card);border:1px solid var(--border);border-top:3px solid var(--green)"><svg class="ic ic-robot side-ic" style="color:var(--ink)"><use href="#ic-signed"/></svg><div class="st">trust402 · sell</div><h3 style="color:var(--ink)">When you sell</h3><p style="color:var(--ink-soft)">Prove what you publish is authentic, unchanged, and yours. <b>You're here.</b></p></div>
+      </div>
+      <div style="text-align:center;margin-top:24px"><a class="link-arrow" href="#page-hub" data-goto="hub">→ See Trust402 · Pay</a></div>
+    </div>
+  </section>
+
+  <!-- 9. PRICING -->
+  <section>
+    <div class="inner">
+      <div class="sec-head reveal">
+        <span class="eyebrow-plain">pricing · shared with pay</span>
+        <h2>Free while you learn. Pay only when you really sell.</h2>
+        <p>The same three plans cover both Pay and Sell. Checking proofs is always free — you only pay to publish and settle for real.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier reveal"><div class="tname">Explorer <span class="free-badge">free</span></div><div class="tpos">Sandbox · test mode. Practice safely.</div><div class="tprice">Free</div><div class="tmeans">Try the whole flow end to end — no real money involved. <b>Students start here.</b></div><div class="tstate">Coming soon</div></div>
+        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">Production · for individuals selling on their own.</div><div class="tprice">$19<small>/mo + a small share of each sale</small></div><div class="tmeans">Everything in Explorer, live. Optional API for developers.</div><div class="tstate">Coming soon</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">For universities, labs & organizations.</div><div class="tprice">¥50k<small>/mo + attestation</small></div><div class="tmeans">Register once; members & students publish under the umbrella, free to them.</div><div class="tstate">Coming soon</div></div>
+      </div>
+      <p class="price-note">One monthly allowance across Pay and Sell — producing proofs uses it; checking them is always free. The per-sale share is a small take-rate on what you earn, separate from that allowance. Students & lab members publish free under their institution's plan.</p>
+    </div>
+  </section>
+
+  <!-- 10. FAQ (student worries) -->
+  <section class="section-gray">
+    <div class="inner">
+      <div class="sec-head reveal"><span class="eyebrow-plain">questions students ask</span><h2>Good things to check.</h2></div>
+      <div class="reveal">
+        <div class="faq-item"><h3>Are Pay and Sell separate plans?</h3><p>No — it's one set of plans. Explorer, Pro, and Institutional ID each cover <b>both</b> Pay and Sell, with a single monthly allowance shared across the two. Checking proofs is always free on either side.</p></div>
+        <div class="faq-item"><h3>I've never done this — where do I start?</h3><p>In the free sandbox. Fill one short form on a test network, watch the whole flow happen, and pay nothing. When it clicks, going live is the same form.</p></div>
+        <div class="faq-item"><h3>Do I need to know anything about crypto or blockchain?</h3><p>No. You point to a file and pick a price — that's it. The payment and proof happen behind the scenes.</p></div>
+        <div class="faq-item"><h3>How do I actually get paid?</h3><p>In USDC, a digital dollar. When an agent buys your work, the payment settles automatically and shows up in your account — no invoicing.</p></div>
+        <div class="faq-item"><h3>Do I have to give away my data to prove it's mine?</h3><p>No. Agents check a proof, not the raw file. Your data stays with you until someone actually pays for it.</p></div>
+        <div class="faq-item"><h3>Can I still use or sell my work somewhere else?</h3><p>Yes. It's yours. Selling through Lemma doesn't lock you in or take exclusive rights.</p></div>
+        <div class="faq-item"><h3>I'm a student — where do I start, and is there a cost?</h3><p>Start free in the sandbox to try it with no real money. When you're ready to go live, publish free under your school's institutional plan — still credited to you by name.</p></div>
+        <div class="faq-item"><h3>Is this a marketplace? Does Lemma resell my data?</h3><p>No. You sell; Lemma is just the tool that makes it possible. Discovery happens in the open x402 Bazaar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CLOSING -->
+  <section class="closing">
+    <div class="inner">
+      <span class="eyebrow on-dark">get started</span>
+      <h2>Turn your work into something agents trust.</h2>
+      <div class="core">Your work. Provably yours.</div>
+      <div class="rule"></div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#">Try it free →</a>
+        <a class="btn btn-ghost on-dark" href="#">Join the waitlist</a>
+        <a class="btn btn-ghost on-dark" href="https://github.com/lemmaoracle/trust402"><svg class="ic btn-ic"><use href="#ic-github"/></svg> GitHub</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="inner">lemma.frame00.com — Built for decisions that matter. · © 2026 FRAME00, INC. · <span style="color:var(--green)">Trust402 rebrand prototype</span></div>
+</footer>
+
+<!-- ================= SWITCHER (prototype control) ================= -->
+<div class="switcher">
+  <button id="sw-hub" class="active">trust402 · pay</button>
+  <button id="sw-sell">trust402 · sell</button>
+</div>
+
+<script>
+(function(){
+  const pages={hub:document.getElementById('page-hub'),sell:document.getElementById('page-sell')};
+  const btns={hub:document.getElementById('sw-hub'),sell:document.getElementById('sw-sell')};
+  function show(which){
+    Object.keys(pages).forEach(k=>{
+      pages[k].classList.toggle('active',k===which);
+      btns[k].classList.toggle('active',k===which);
+    });
+    window.scrollTo({top:0,behavior:'auto'});
+    runReveal();
+  }
+  btns.hub.onclick=()=>show('hub');
+  btns.sell.onclick=()=>show('sell');
+  document.querySelectorAll('[data-goto]').forEach(el=>{
+    el.addEventListener('click',e=>{e.preventDefault();show(el.getAttribute('data-goto'));});
+  });
+  // reveal on scroll
+  let io;
+  function runReveal(){
+    if(io) io.disconnect();
+    const els=document.querySelectorAll('.page.active .reveal');
+    io=new IntersectionObserver((entries)=>{
+      entries.forEach((en,i)=>{if(en.isIntersecting){en.target.classList.add('on');io.unobserve(en.target);}});
+    },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+    els.forEach(el=>{el.classList.remove('on');io.observe(el);});
+  }
+  runReveal();
+
+  // live publish-form preview
+  function bindForm(){
+    const g=id=>document.getElementById(id);
+    const file=g('f-file'),title=g('f-title'),ver=g('f-version'),price=g('f-price'),as=g('f-as');
+    if(!title) return;
+    function sync(){
+      g('p-file').textContent=file.textContent.trim()||'untitled';
+      g('p-title').textContent=title.value||'—';
+      g('p-version').textContent=ver.value;
+      const p=(price.value||'').trim();
+      g('p-price').textContent=(p?p:'0')+' USDC / use';
+      g('p-as').textContent=(as.value==='inst')?'you · under your institution ✓':'you ✓';
+    }
+    ['input','change','keyup'].forEach(ev=>{title.addEventListener(ev,sync);price.addEventListener(ev,sync);});
+    ver.addEventListener('change',sync);as.addEventListener('change',sync);
+    sync();
+  }
+  bindForm();
+})();
+</script>
+</body>
+</html>
