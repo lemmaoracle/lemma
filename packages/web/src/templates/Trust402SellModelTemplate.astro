@@ -11,6 +11,7 @@ import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
 
 interface Props {
@@ -33,10 +34,10 @@ const sellHref = `${base}/trust402/sell/`;
   <Navigation locale={locale} t={t.nav} base={base} />
 
   <main class="t402">
+    <Trust402Icons />
     <section class="personas">
       <div class="pm-inner">
         <a class="pm-back" href={sellHref}>{M.backLink[locale]}</a>
-        <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
         <h2 class="pm-h2">{M.h2[locale]}</h2>
 
         <div class="pm-grid">
@@ -44,7 +45,7 @@ const sellHref = `${base}/trust402/sell/`;
             <div class="pm-card">
               <div class="pm-cardtop">
                 <span class:list={["pm-badge", p.plan]}>{p.planLabel}</span>
-                <span class="pm-avatar" aria-hidden="true">{p.initials}</span>
+                <span class="pm-avatar" aria-hidden="true"><svg class="pm-avatar-ic"><use href={`#${p.icon}`} /></svg></span>
               </div>
               <div class="pm-who">{p.name}</div>
               <div class="pm-role">{p.role[locale]}</div>
@@ -65,28 +66,15 @@ const sellHref = `${base}/trust402/sell/`;
 
         <p class="pm-sec-h">{M.catalogH[locale]}</p>
         <p class="pm-sec-sub">{M.catalogSub[locale]}</p>
-        <div class="pm-cat">
+        <ul class="pm-catlist">
           {M.catalog.map((cell) => (
-            <div class:list={["pm-catcell", { hl: cell.hl }]}>
-              <div class="pm-cattitle">{cell.title[locale]}</div>
-              <div class="pm-tags">
-                {cell.tags.map((tg) => (<span class="pm-tag">{tg[locale]}</span>))}
-              </div>
-            </div>
+            <li class:list={["pm-catrow", { hl: cell.hl }]}>
+              <span class="pm-catname">{cell.title[locale]}</span>
+              <span class="pm-catitems">{cell.tags.map((tg) => tg[locale]).join(" · ")}</span>
+            </li>
           ))}
-        </div>
+        </ul>
         <p class="pm-dashnote">{M.dashNote[locale]}</p>
-
-        <p class="pm-sec-h">{M.whyH[locale]}</p>
-        <div class="pm-whgrid">
-          {M.why.map((w) => (
-            <div class="pm-wcell">
-              <div class="pm-wnum">{w.num}</div>
-              <div class="pm-wtitle">{w.title[locale]}</div>
-              <div class="pm-wtext">{w.text[locale]}</div>
-            </div>
-          ))}
-        </div>
 
         <div class="pm-ba">
           <h3 class="pm-bah">{M.baH[locale]}</h3>
@@ -111,10 +99,24 @@ const sellHref = `${base}/trust402/sell/`;
           <p class="pm-note">{M.baNote[locale]}</p>
         </div>
 
+        <p class="pm-sec-h pm-why-h">{M.whyH[locale]}</p>
+        <div class="pm-why2">
+          {M.why.map((w) => (
+            <div class="pm-wrow">
+              <span class="pm-wicon"><svg class="pm-wic"><use href={`#${w.icon}`} /></svg></span>
+              <div class="pm-wbody">
+                <div class="pm-wtitle">{w.title[locale]}</div>
+                <div class="pm-wtext">{w.text[locale]}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <div class="pm-cta">
-          {/* TODO: point "Try it free" at the real sandbox start flow once its URL exists. */}
-          <a class="pm-btn primary" href={`${sellHref}#the-form`}>{M.ctaTry[locale]}</a>
+          {/* "Try it free" leads to the Dashboard demo; repoint to the real sandbox flow once its URL exists. */}
+          <a class="pm-btn primary" href={`${base}/trust402/sell/dashboard/`}>{M.ctaTry[locale]}</a>
           <a class="pm-btn secondary" href={`${sellHref}#pricing`}>{M.ctaPricing[locale]}</a>
+          <a class="pm-btn secondary" href={sellHref}>{M.ctaStart[locale]}</a>
         </div>
       </div>
     </section>
@@ -123,7 +125,7 @@ const sellHref = `${base}/trust402/sell/`;
     <nav class="t402-switch" aria-label="Trust402">
       <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
       <a class="t402-switch-btn active" href={sellHref} aria-current="page">Sell</a>
-      <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
+      <a class="t402-switch-btn" href={`${base}/trust402/sell/dashboard/`}>Dashboard <span class="t402-switch-badge">demo</span></a>
     </nav>
   </main>
 
@@ -159,13 +161,14 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-back:hover { text-decoration: underline; }
   .t402 .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 12px; }
   .t402 .pm-h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 30px; color: var(--ink); }
-  .t402 .pm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .t402 .pm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .t402 .pm-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 22px 20px 20px; display: flex; flex-direction: column; }
   .t402 .pm-cardtop { display: flex; align-items: center; justify-content: space-between; }
   .t402 .pm-badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
   .t402 .pm-badge.inst { background: var(--ink); color: var(--green); }
   .t402 .pm-badge.pro { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); }
-  .t402 .pm-avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-soft); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .t402 .pm-avatar { width: 42px; height: 42px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .t402 .pm-avatar-ic { width: 23px; height: 23px; color: var(--ink-soft); }
   .t402 .pm-who { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin: 12px 0 2px; color: var(--ink); }
   .t402 .pm-role { color: var(--muted); font-size: 12.5px; margin-bottom: 16px; }
   .t402 .pm-lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--green-link); margin: 0 0 6px; }
@@ -180,17 +183,20 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-vol { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
   .t402 .pm-sec-h { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 44px 0 4px; color: var(--ink); }
   .t402 .pm-sec-sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
-  .t402 .pm-cat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .t402 .pm-catcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-  .t402 .pm-catcell.hl { border-top: 3px solid var(--green); }
-  .t402 .pm-cattitle { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 12px; color: var(--ink); }
-  .t402 .pm-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-  .t402 .pm-tag { font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; color: var(--ink-soft); }
+  .t402 .pm-catlist { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid var(--border); }
+  .t402 .pm-catrow { display: grid; grid-template-columns: 190px 1fr; gap: 22px; padding: 13px 2px; border-bottom: 1px solid var(--border); align-items: baseline; }
+  .t402 .pm-catname { font-family: var(--font-display); font-weight: 700; font-size: 14.5px; color: var(--ink); position: relative; padding-left: 15px; }
+  .t402 .pm-catname::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 7px; height: 7px; border-radius: 2px; background: var(--border); }
+  .t402 .pm-catrow.hl .pm-catname { color: var(--green-link); }
+  .t402 .pm-catrow.hl .pm-catname::before { background: var(--green); }
+  .t402 .pm-catitems { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
   .t402 .pm-dashnote { margin-top: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-  .t402 .pm-whgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .t402 .pm-wcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 18px; }
-  .t402 .pm-wnum { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
-  .t402 .pm-wtitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 8px 0 6px; color: var(--ink); }
+  .t402 .pm-why-h { margin-top: 44px; }
+  .t402 .pm-why2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 12px; }
+  .t402 .pm-wrow { display: flex; gap: 14px; align-items: flex-start; }
+  .t402 .pm-wicon { flex: none; width: 42px; height: 42px; border-radius: 11px; background: rgba(182, 245, 0, 0.13); display: inline-flex; align-items: center; justify-content: center; }
+  .t402 .pm-wic { width: 23px; height: 23px; color: var(--ink-soft); }
+  .t402 .pm-wtitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 3px 0 6px; color: var(--ink); }
   .t402 .pm-wtext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
   .t402 .pm-ba { margin-top: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px 26px 24px; }
   .t402 .pm-bah { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0 0 14px; color: var(--ink); }
@@ -222,7 +228,7 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: var(--term-fg); padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
   .t402 .t402-switch-btn:hover { color: #fff; }
   .t402 .t402-switch-btn.active { background: var(--green); color: var(--ink); }
-  @media (max-width: 900px) { .t402 .pm-grid { grid-template-columns: repeat(2, 1fr); } .t402 .pm-whgrid, .t402 .pm-cat { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .t402 .pm-why2 { grid-template-columns: 1fr; } .t402 .pm-catrow { grid-template-columns: 1fr; gap: 3px; } }
   @media (max-width: 560px) { .t402 .pm-grid { grid-template-columns: 1fr; } .t402 .pm-barow { flex-direction: column; gap: 12px; } .t402 .pm-arrowcol { flex-direction: row; padding: 4px 0; } .t402 .pm-ar { transform: rotate(90deg); } .t402 .t402-switch-btn { padding: 8px 15px; } }
   .t402 .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
 </style>

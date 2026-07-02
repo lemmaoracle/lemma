@@ -7,7 +7,7 @@
  * they're easy to swap later. Sellers set their own prices; 0% commission
  * (keep 100%) — no sale-fee framing anywhere in this copy.
  */
-import type { Localized } from "./trust402";
+import type { Localized, T402IconId } from "./trust402";
 
 export interface SellModel {
   readonly meta: { readonly title: Localized; readonly description: Localized };
@@ -23,6 +23,7 @@ export interface SellModel {
     readonly planLabel: string;
     readonly name: string;
     readonly initials: string;
+    readonly icon: T402IconId;
     readonly role: Localized;
     readonly sells: ReadonlyArray<{ readonly item: Localized; readonly price: string }>;
     readonly income: string;
@@ -37,7 +38,7 @@ export interface SellModel {
   }>;
   readonly dashNote: Localized;
   readonly whyH: Localized;
-  readonly why: ReadonlyArray<{ readonly num: string; readonly title: Localized; readonly text: Localized }>;
+  readonly why: ReadonlyArray<{ readonly num: string; readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
   readonly baH: Localized;
   readonly baExample: Localized;
   readonly beforeTag: Localized;
@@ -50,6 +51,7 @@ export interface SellModel {
   readonly baNote: Localized;
   readonly ctaTry: Localized;
   readonly ctaPricing: Localized;
+  readonly ctaStart: Localized;
 }
 
 export const T402_SELL_MODEL: SellModel = {
@@ -77,6 +79,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Institutional ID",
       name: "Dr. Aisha Rahman",
       initials: "AR",
+      icon: "ic-flask",
       role: { en: "Researcher · university lab", ja: "研究者 · 大学ラボ" },
       sells: [
         { item: { en: "Consented measurement data", ja: "被験者同意済みの計測データ" }, price: "$0.50" },
@@ -90,6 +93,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Marco Ferretti",
       initials: "MF",
+      icon: "ic-chart",
       role: { en: "Independent researcher · data journalist", ja: "独立研究者 · データジャーナリスト" },
       sells: [
         { item: { en: "Verified primary datasets", ja: "検証済み一次データセット" }, price: "$0.20" },
@@ -103,6 +107,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Sofia Almeida",
       initials: "SA",
+      icon: "ic-camera",
       role: { en: "Photographer · filmmaker", ja: "フォトグラファー · 映像作家" },
       sells: [
         { item: { en: "Original photography", ja: "オリジナル写真" }, price: "$0.20" },
@@ -117,6 +122,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Liam O'Connor",
       initials: "LO",
+      icon: "ic-pen",
       role: { en: "Content creator", ja: "コンテンツクリエイター" },
       sells: [
         { item: { en: "Everyday original photos", ja: "日常のオリジナル写真" }, price: "$0.15" },
@@ -198,6 +204,7 @@ export const T402_SELL_MODEL: SellModel = {
   why: [
     {
       num: "01",
+      icon: "ic-signed",
       title: { en: "You can prove it's real", ja: "本物だと証明できる" },
       text: {
         en: "It carries \"whose, when, unaltered.\" AI prefers verified primary sources.",
@@ -206,6 +213,7 @@ export const T402_SELL_MODEL: SellModel = {
     },
     {
       num: "02",
+      icon: "ic-direct",
       title: { en: "No middleman", ja: "仲介を通さない" },
       text: {
         en: "You license it directly, as the original — no one skims your cut.",
@@ -214,6 +222,7 @@ export const T402_SELL_MODEL: SellModel = {
     },
     {
       num: "03",
+      icon: "ic-gem",
       title: { en: "The real gets scarce", ja: "本物は希少になる" },
       text: {
         en: "As the web fills with generated content, verified human primary data and work grow more valuable.",
@@ -243,4 +252,5 @@ export const T402_SELL_MODEL: SellModel = {
 
   ctaTry: { en: "Try it free →", ja: "無料で試す →" },
   ctaPricing: { en: "See pricing", ja: "料金を見る" },
+  ctaStart: { en: "See how to get started", ja: "始め方を見る" },
 };

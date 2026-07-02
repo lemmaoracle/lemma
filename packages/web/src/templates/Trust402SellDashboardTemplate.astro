@@ -1,0 +1,349 @@
+---
+/**
+ * /trust402/sell/dashboard/ (+ /ja/…) — the Trust402 · Sell Dashboard DEMO.
+ *
+ * A faithful, NON-FUNCTIONAL port of the self-serve Sell admin mock from the
+ * rebrand prototype. Reached from the fixed Pay/Sell/Dashboard switcher so
+ * "Dashboard" shows what selling will look like instead of pointing at the
+ * real, not-yet-public dashboard app. noindexed; every figure is illustrative.
+ * Copy/data live in src/data/trust402Dashboard.ts.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { T402_DASHBOARD as D } from "../data/trust402Dashboard";
+
+interface Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as Props;
+const sellHref = `${base}/trust402/sell/`;
+
+// Values swapped client-side by the testnet ↔ production toggle.
+const md = {
+  newBtn: D.newBtn[locale],
+  closeBtn: D.closeBtn[locale],
+  production: {
+    listings: D.modeData.production.listings,
+    uses: D.modeData.production.uses,
+    earned: D.modeData.production.earned,
+    earnedUnit: D.modeData.production.earnedUnit,
+  },
+  testnet: {
+    listings: D.modeData.testnet.listings,
+    uses: D.modeData.testnet.uses,
+    earned: D.modeData.testnet.earned[locale],
+  },
+};
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/trust402/sell/dashboard/"
+  title={D.meta.title[locale]}
+  description={D.meta.description[locale]}
+  noindex
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="t402">
+    <section class="db">
+      <div class="db-inner">
+        <a class="db-back" href={sellHref}>{D.backLink[locale]}</a>
+        <span class="eyebrow-plain">{D.eyebrow[locale]}</span>
+
+        {/* header: title + product tabs + mode toggle + wallet */}
+        <div class="db-head">
+          <div>
+            <div class="db-title">{D.title[locale]}</div>
+            <div class="db-tabs">
+              {D.tabs.map((tb) => (
+                <span class:list={["db-tab", { active: tb.active }]}>{tb.label}</span>
+              ))}
+            </div>
+            <div class="db-tag">{D.tag[locale]}</div>
+          </div>
+          <div class="db-right">
+            <div class="db-toggle">
+              <button id="db-mode-test" class="active" type="button">{D.modeTest}</button>
+              <button id="db-mode-prod" type="button">{D.modeProd}</button>
+            </div>
+            <div class="db-wallet">
+              {D.walletLabel[locale]} <b>{D.walletAddr}</b> ✓ · {D.walletSuffix[locale]}
+            </div>
+          </div>
+        </div>
+
+        {/* mode banner (switches with the toggle) */}
+        <div class="db-banner is-test" data-mode="testnet">
+          <b>{D.bannerTest.strong[locale]}</b> {D.bannerTest.rest[locale]}
+        </div>
+        <div class="db-banner is-prod" data-mode="production" hidden>
+          <b>{D.bannerProd.strong[locale]}</b> {D.bannerProd.rest[locale]}
+        </div>
+
+        {/* listings header + new listing */}
+        <div class="db-listhead">
+          <span class="eyebrow-plain" style="margin-bottom:0">{D.listingsLabel[locale]}</span>
+          <button class="btn btn-primary" id="db-new" type="button">{D.newBtn[locale]}</button>
+        </div>
+
+        {/* new listing form (opens/closes) */}
+        <div class="db-form" id="db-form">
+          <div class="fgrid">
+            <div class="field">
+              <label>{D.form.fileLabel[locale]}</label>
+              <div class="filedrop">
+                <div class="fd-file">{D.form.fileName}</div>
+                <div class="fd-hint">{D.form.fileHint[locale]}</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>{D.form.titleLabel[locale]}</label>
+              <input type="text" value={D.form.titleVal[locale]} />
+            </div>
+            <div class="field">
+              <div class="row2">
+                <div class="field">
+                  <label>{D.form.versionLabel[locale]}</label>
+                  <select>
+                    {D.form.versions.map((v, i) => (
+                      <option selected={i === D.form.versions.length - 1}>{v[locale]}</option>
+                    ))}
+                  </select>
+                </div>
+                <div class="field">
+                  <label>{D.form.priceLabel[locale]}</label>
+                  <div class="price-in">
+                    <input type="text" value={D.form.priceVal} />
+                    <span class="cur">{D.form.cur}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>{D.form.publishAsLabel[locale]}</label>
+              <select>
+                <option value="you">{D.form.publishAsYou[locale]}</option>
+                <option value="inst">{D.form.publishAsInst[locale]}</option>
+              </select>
+            </div>
+            <div class="form-foot">
+              <button class="btn btn-primary" type="button">{D.form.publishBtn[locale]}</button>
+              <span class="form-note" data-mode="testnet">{D.form.noteTest[locale]}</span>
+              <span class="form-note" data-mode="production" hidden>{D.form.noteProd[locale]}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* metrics + listings table */}
+        <div class="listings">
+          <div class="lsum db-metrics">
+            <div class="lcell"><div class="lnum" id="db-m-listings">1</div><div class="llab">{D.metrics.activeListings[locale]}</div></div>
+            <div class="lcell"><div class="lnum" id="db-m-uses">—</div><div class="llab">{D.metrics.totalUses[locale]}</div></div>
+            <div class="lcell"><div class="lnum" id="db-m-earned">{md.testnet.earned}</div><div class="llab">{D.metrics.earned[locale]}</div></div>
+            <div class="lcell"><div class="lnum">{D.metrics.allowanceVal} <span class="u">{D.metrics.allowanceCap}</span></div><div class="llab">{D.metrics.allowance[locale]}</div></div>
+          </div>
+          <div class="ltable" data-mode="production" hidden>
+            <div class="lrow lhead">
+              <span>{D.tableHead.listing[locale]}</span><span>{D.tableHead.status[locale]}</span><span>{D.tableHead.price[locale]}</span><span>{D.tableHead.uses[locale]}</span><span>{D.tableHead.earned[locale]}</span>
+            </div>
+            {D.rowsProd.map((r) => (
+              <div class="lrow">
+                <div><div class="lt">{r.title[locale]}</div><div class="lf">{r.file}</div></div>
+                <div><span class:list={["lstatus", r.status]}>{r.statusLabel[locale]}</span></div>
+                <div class="mono">{r.price}</div>
+                <div class="mono">{r.uses}</div>
+                <div class="mono">{r.earned[locale]}</div>
+              </div>
+            ))}
+          </div>
+          <div class="ltable" data-mode="testnet">
+            <div class="lrow lhead">
+              <span>{D.tableHead.listing[locale]}</span><span>{D.tableHead.status[locale]}</span><span>{D.tableHead.price[locale]}</span><span>{D.tableHead.uses[locale]}</span><span>{D.tableHead.earned[locale]}</span>
+            </div>
+            {D.rowsTest.map((r) => (
+              <div class="lrow">
+                <div><div class="lt">{r.title[locale]}</div><div class="lf">{r.file}</div></div>
+                <div><span class:list={["lstatus", r.status]}>{r.statusLabel[locale]}</span></div>
+                <div class="mono">{r.price}</div>
+                <div class="mono">{r.uses}</div>
+                <div class:list={["mono", { muted: r.earnedMuted }]}>{r.earned[locale]}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* footer strip */}
+        <div class="db-foot">
+          <div class="fmain"><b>{D.footMain.strong[locale]}</b> {D.footMain.rest[locale]}</div>
+          <div class="fnote">{D.footNote[locale]}</div>
+        </div>
+      </div>
+    </section>
+
+    {/* Fixed Pay / Sell / Dashboard switcher (Dashboard active — this IS the dashboard demo) */}
+    <nav class="t402-switch" aria-label="Trust402">
+      <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
+      <a class="t402-switch-btn" href={sellHref}>Sell</a>
+      <a class="t402-switch-btn active" href="#" aria-current="page">Dashboard</a>
+    </nav>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<script is:inline define:vars={{ md }}>
+  (function () {
+    const root = document.querySelector(".t402 .db");
+    if (!root) return;
+
+    const test = document.getElementById("db-mode-test");
+    const prod = document.getElementById("db-mode-prod");
+    function setMode(mode) {
+      root.querySelectorAll("[data-mode]").forEach((el) => {
+        el.hidden = el.getAttribute("data-mode") !== mode;
+      });
+      const d = md[mode];
+      document.getElementById("db-m-listings").textContent = d.listings;
+      document.getElementById("db-m-uses").textContent = d.uses;
+      const earned = document.getElementById("db-m-earned");
+      if (mode === "production") {
+        earned.textContent = d.earned + " ";
+        const u = document.createElement("span");
+        u.className = "u";
+        u.textContent = d.earnedUnit;
+        earned.appendChild(u);
+      } else {
+        earned.textContent = d.earned;
+      }
+      test.classList.toggle("active", mode === "testnet");
+      prod.classList.toggle("active", mode === "production");
+    }
+    test.onclick = () => setMode("testnet");
+    prod.onclick = () => setMode("production");
+
+    const nl = document.getElementById("db-new");
+    const form = document.getElementById("db-form");
+    nl.onclick = () => {
+      const open = form.classList.toggle("open");
+      nl.textContent = open ? md.closeBtn : md.newBtn;
+    };
+
+    setMode("testnet");
+  })();
+</script>
+
+<style>
+  .t402 {
+    --green: #b6f500;
+    --green-link: #4b6b0f;
+    --green-deep: #8fbf00;
+    --ink: #1f1e1a;
+    --ink-soft: #4a4942;
+    --muted: #6f6e66;
+    --surface: #ecebe3;
+    --surface-2: #f5f4ee;
+    --card: #fff;
+    --border: #d8d6cc;
+    --term-fg: #ecebe3;
+    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --font-body: "DM Sans", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-body);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .t402 .db { background: var(--surface-2); padding: 56px 8% 120px; }
+  .t402 .db-inner { max-width: 1080px; margin: 0 auto; }
+  .t402 .db-back { font-family: var(--font-mono); font-size: 13px; color: var(--green-link); text-decoration: none; display: block; margin-bottom: 26px; }
+  .t402 .db-back:hover { text-decoration: underline; }
+  .t402 .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 20px; }
+  .t402 .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
+
+  .t402 .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; padding: 14px 30px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; transition: background .2s, color .2s, border-color .2s, transform .2s; }
+  .t402 .btn-primary { background: var(--green); color: var(--ink); }
+  .t402 .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
+
+  .t402 .db-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 22px; }
+  .t402 .db-head .db-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--ink); }
+  .t402 .db-tabs { display: flex; gap: 6px; margin-top: 12px; }
+  .t402 .db-tab { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: lowercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; cursor: default; }
+  .t402 .db-tab.active { color: var(--ink); background: var(--green); border-color: var(--green); }
+  .t402 .db-tag { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .t402 .db-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .t402 .db-toggle { display: inline-flex; gap: 3px; background: var(--ink); padding: 4px; border-radius: 999px; }
+  .t402 .db-toggle button { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: lowercase; color: var(--term-fg); background: transparent; border: none; cursor: pointer; padding: 7px 16px; border-radius: 999px; transition: background .2s, color .2s; }
+  .t402 .db-toggle button.active { background: var(--green); color: var(--ink); }
+  .t402 .db-wallet { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; }
+  .t402 .db-wallet b { color: var(--ink); }
+
+  .t402 .db-banner { border: 1px solid var(--border); border-left-width: 3px; border-radius: 12px; padding: 14px 18px; margin-bottom: 22px; font-family: var(--font-body); font-size: 14px; color: var(--ink-soft); }
+  .t402 .db-banner b { color: var(--ink); }
+  .t402 .db-banner.is-test { border-left-color: var(--muted); background: var(--surface); }
+  .t402 .db-banner.is-prod { border-left-color: var(--green); background: var(--surface-2); }
+
+  .t402 .db-listhead { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .t402 .db-form { border: 1px solid var(--border); border-radius: 14px; background: var(--card); padding: 24px; margin: 18px 0; display: none; }
+  .t402 .db-form.open { display: block; }
+  .t402 .db-form .fgrid { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
+
+  .t402 .field { display: flex; flex-direction: column; gap: 7px; }
+  .t402 .field label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: lowercase; color: var(--muted); }
+  .t402 .field input, .t402 .field select { font-family: var(--font-body); font-size: 14.5px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; outline: none; width: 100%; -webkit-appearance: none; appearance: none; }
+  .t402 .field input:focus, .t402 .field select:focus { border-color: var(--green); background: #fff; }
+  .t402 .field .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .t402 .filedrop { border: 1.5px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; background: var(--surface-2); cursor: pointer; transition: border-color .2s; }
+  .t402 .filedrop:hover { border-color: var(--green); }
+  .t402 .filedrop .fd-file { font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .t402 .filedrop .fd-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .t402 .price-in { position: relative; }
+  .t402 .price-in .cur { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--muted); pointer-events: none; }
+  .t402 .form-foot { display: flex; align-items: center; gap: 14px; margin-top: 2px; flex-wrap: wrap; }
+  .t402 .form-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
+
+  .t402 .listings { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card); }
+  .t402 .lsum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .t402 .db-metrics { grid-template-columns: repeat(4, 1fr); }
+  .t402 .lsum .lcell { background: var(--card); padding: 22px 24px; }
+  .t402 .lsum .lnum { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1; }
+  .t402 .lsum .lnum .u { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-weight: 400; }
+  .t402 .lsum .llab { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: lowercase; color: var(--green-link); margin-top: 8px; }
+  .t402 .ltable { padding: 4px 0 8px; }
+  .t402 .lrow { display: grid; grid-template-columns: 2fr 0.9fr 1fr 0.7fr 1fr; gap: 12px; align-items: center; padding: 16px 24px; border-top: 1px solid var(--border); }
+  .t402 .lrow.lhead { border-top: none; padding-bottom: 8px; }
+  .t402 .lrow.lhead span { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: lowercase; color: var(--muted); }
+  .t402 .lrow .lt { font-weight: 600; font-size: 14.5px; }
+  .t402 .lrow .lf { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .t402 .lrow .mono { font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+  .t402 .lrow .mono.muted { color: var(--muted); }
+  .t402 .lstatus { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; display: inline-block; }
+  .t402 .lstatus.live { background: var(--green); color: var(--ink); }
+  .t402 .lstatus.sandbox { background: var(--surface); color: var(--muted); }
+
+  .t402 .db-foot { border-top: 1px solid var(--border); margin-top: 26px; padding-top: 18px; }
+  .t402 .db-foot .fmain { font-family: var(--font-body); font-size: 14.5px; color: var(--ink); }
+  .t402 .db-foot .fmain b { color: var(--ink); }
+  .t402 .db-foot .fnote { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+
+  .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
+  .t402 .t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: var(--term-fg); padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+  .t402 .t402-switch-btn:hover { color: #fff; }
+  .t402 .t402-switch-btn.active { background: var(--green); color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .t402 .lsum, .t402 .db-metrics { grid-template-columns: 1fr; }
+    .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+    .t402 .lrow.lhead { display: none; }
+    .t402 .lrow .lt { grid-column: 1 / -1; }
+    .t402 .db-right { align-items: flex-start; }
+    .t402 .t402-switch-btn { padding: 8px 15px; }
+  }
+</style>

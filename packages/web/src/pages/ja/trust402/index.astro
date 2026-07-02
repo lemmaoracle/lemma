@@ -730,13 +730,25 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
+    <section id="provenance">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>本物であることを、どう証明するか。</h2><p>触れる必要は一切ありません — でも中身を知りたい人へ。公開するものには、3 つが添えられます。</p></div>
+        <div class="cards c3">
+        <div class="card reveal"><div class="num">01</div><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><div class="num">02</div><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><div class="num">03</div><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
+        </div>
+        <p class="callout">● エージェントが見つけて支払う仕組み：出品は共有ディレクトリ「x402 Bazaar」から発見でき、誰かが最初に購入した時点で自動追加。支払いはオープンな x402 標準・USDC で、x402 サーバーを動かす必要はありません。</p>
+      </div>
+    </section>
+
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>Explorer から Pro まで。</h2><p>検証は常に無料。支払うのは証明の生成と決済のため — 信頼されること自体には課金しない。</p></div>
         <div class="tiers">
         <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">サンドボックス · テストネット限定</div><div class="tprice">無料</div><div class="tmeans">手動フォーム · 現在のデモ。</div><div class="tstate">近日公開</div></div>
-        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">本番 · 個人開発者</div><div class="tprice">$19<small>/月 + 従量</small></div><div class="tmeans">手動フォーム（+ API アドオン）。</div><div class="tstate">近日公開</div></div>
-        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">一括登録 · 組織向け</div><div class="tprice">¥50k<small>/月 + アテステーション</small></div><div class="tmeans">プログラム利用（API / MCP）込み。</div><div class="tstate">近日公開</div></div>
+        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">本番 · 個人開発者</div><div class="tprice">¥2,980<small>/月 + 従量</small></div><div class="tmeans">手動フォーム（+ API アドオン）。</div><div class="tstate">近日公開</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">一括登録 · 組織向け</div><div class="tprice">¥50,000<small>/月 + アテステーション</small></div><div class="tmeans">プログラム利用（API / MCP）込み。</div><div class="tstate">近日公開</div></div>
         </div>
         <p class="price-note">Pay と Sell をまたぐ月間枠は1つ。検証は無料。</p>
       </div>
@@ -758,7 +770,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
     <nav class="t402-switch" aria-label="Trust402">
     <a class="t402-switch-btn active" href="/ja/trust402/" aria-current="page">Pay</a>
     <a class="t402-switch-btn" href="/ja/trust402/sell/">Sell</a>
-    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
+    <a class="t402-switch-btn" href="/ja/trust402/sell/dashboard/">Dashboard <span class="t402-switch-badge">demo</span></a>
   </nav>
 </main>
 

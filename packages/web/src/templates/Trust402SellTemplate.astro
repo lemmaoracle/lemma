@@ -16,8 +16,6 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402, T402_GITHUB } from "../data/trust402";
-import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
-import { DASHBOARD_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -28,13 +26,6 @@ interface Props {
 const { locale, t, base } = Astro.props as Props;
 const c = T402.sell;
 const payHref = `${base}/trust402/`;
-// Locale strings the client form-preview script needs (passed via define:vars).
-const formL = {
-  asYou: c.form.asYouShort[locale],
-  asInst: c.form.asInstShort[locale],
-  unit: c.form.unit[locale],
-  untitled: c.form.untitled[locale],
-};
 ---
 
 <Layout
@@ -58,10 +49,14 @@ const formL = {
             <h1>{c.hero.h1a[locale]} <span class="g">{c.hero.h1em[locale]}</span></h1>
             <p class="hero-sub">{c.hero.sub[locale]}</p>
             <div class="hero-cta-row">
-              <a class="btn btn-primary" href="#the-form">{c.hero.ctaPrimary[locale]} →</a>
-              <a class="btn btn-ghost on-dark" href="#how">{c.hero.ctaSecondary[locale]}</a>
+              <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hero.ctaPrimary[locale]} →</a>
+              <a class="btn btn-ghost on-dark" href={`${base}/trust402/sell/model/`}>{c.hero.ctaSecondary[locale]}</a>
             </div>
-            <div class="lede-note">{c.hero.lede[locale]}</div>
+            <div class="lede-note">
+              {c.hero.lede.map((chip) => (
+                <span class="lede-chip">{chip[locale]}</span>
+              ))}
+            </div>
           </div>
           <div>
             <div class="card-caption">
@@ -81,14 +76,23 @@ const formL = {
       </div>
     </header>
 
-    {/* Reference model — links to the /trust402/sell/model/ child page */}
-    <section class="model-entry-sec">
+    {/* 1.5 WHY IT SELLS FOR MORE (catchy, right below hero) */}
+    <section class="section-gray">
       <div class="inner">
-        <a class="model-entry" href={`${base}/trust402/sell/model/`}>
-          <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
-          <span class="model-entry-h">{M.h2[locale]}</span>
-          <span class="model-entry-cta">{M.entryCta[locale]} →</span>
-        </a>
+        <div class="sec-head reveal">
+          <span class="eyebrow-plain">{c.whyMore.eyebrow[locale]}</span>
+          <h2>{c.whyMore.h2[locale]}</h2>
+          <p>{c.whyMore.sub[locale]}</p>
+        </div>
+        <div class="whymore reveal">
+          {c.whyMore.items.map((w) => (
+            <div class="wm">
+              <span class="wm-ic-wrap"><svg class="ic wm-ic"><use href={`#${w.icon}`} /></svg></span>
+              <h3>{w.title[locale]}</h3>
+              <p>{w.text[locale]}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -107,7 +111,6 @@ const formL = {
               <div class="who">{s.who[locale]}</div>
               <h3>{s.title[locale]}</h3>
               <p>{s.body[locale]}</p>
-              {i === 0 && <a class="link-arrow step-link" href="#the-form">{c.how.stepLink[locale]}</a>}
               {i === 2 && <svg class="ic ic-robot step-robot"><use href="#ic-robot" /></svg>}
             </div>
           ))}
@@ -134,35 +137,7 @@ const formL = {
           ))}
         </div>
         <p class="eq-caption">{c.whatSell.caption[locale]}</p>
-      </div>
-    </section>
-
-    {/* 4. WHAT STAYS YOURS / DON'T NEED */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.control.eyebrow[locale]}</span>
-          <h2>{c.control.h2[locale]}</h2>
-          <p>{c.control.sub[locale]}</p>
-        </div>
-        <div class="keeps reveal">
-          <div class="keepcol yes">
-            <h3>{c.control.yesTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.yes.map((item) => (
-                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
-          <div class="keepcol no">
-            <h3>{c.control.noTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.no.map((item) => (
-                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/sell/model/`}>→ {c.whatSell.modelLink[locale]}</a></div>
       </div>
     </section>
 
@@ -176,6 +151,7 @@ const formL = {
         </div>
         <div class="slogan reveal">{c.whyProof.sloganA[locale]} <span class="g">{c.whyProof.sloganEm[locale]}</span></div>
         <p class="plain-note">{c.whyProof.note[locale]}<span class="note-em">{c.whyProof.noteEm[locale]}</span></p>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.whyProof.techLink[locale]}</a></div>
       </div>
     </section>
 
@@ -195,38 +171,6 @@ const formL = {
               <p>{card.body[locale]}</p>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-
-    {/* 7. UNDER THE HOOD */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.underHood.eyebrow[locale]}</span>
-          <h2>{c.underHood.h2[locale]}</h2>
-          <p>{c.underHood.sub[locale]}</p>
-        </div>
-        <div class="reveal">
-          <details class="details">
-            <summary>{c.underHood.d1Summary[locale]}</summary>
-            <div class="body">
-              <div class="prim">
-                {c.underHood.primitives.map((p) => (
-                  <div class="pcell">
-                    <div class="plab">{p.label[locale]}</div>
-                    <div class="psub">{p.sub[locale]}{p.tech && <span class="tech"> ({p.tech})</span>}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </details>
-          <details class="details">
-            <summary>{c.underHood.d2Summary[locale]}</summary>
-            <div class="body">
-              <p class="detail-body">{c.underHood.d2Body[locale]}</p>
-            </div>
-          </details>
         </div>
       </div>
     </section>
@@ -254,90 +198,17 @@ const formL = {
       </div>
     </section>
 
-    {/* 7.6 THE FORM (interactive preview) */}
-    <section class="section-gray" id="the-form">
+    {/* 7.6 SEE IT IN THE DASHBOARD (demo) — replaces the on-page form/listings previews */}
+    <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.form.eyebrow[locale]}</span>
-          <h2>{c.form.h2[locale]}</h2>
-          <p>{c.form.sub[locale]}</p>
+          <span class="eyebrow-plain">{c.dash.eyebrow[locale]}</span>
+          <h2>{c.dash.h2[locale]}</h2>
+          <p>{c.dash.sub[locale]}</p>
         </div>
-        <div class="formsec-grid reveal">
-          <div class="form-card">
-            <div class="form-ribbon"><span class="dot"></span> {c.form.ribbon[locale]} <span class="prevtag">{c.form.previewTag[locale]}</span><span class="rt">{c.form.ribbonNote[locale]}</span></div>
-            <div class="form-body">
-              <div class="field">
-                <label>{c.form.fileLabel[locale]}</label>
-                <div class="filedrop">
-                  <div class="fd-file" id="t402-f-file">my-dataset.csv</div>
-                  <div class="fd-hint">{c.form.fileHint[locale]}</div>
-                </div>
-              </div>
-              <div class="field">
-                <label>{c.form.titleLabel[locale]}</label>
-                <input id="t402-f-title" type="text" value={c.form.titleValue[locale]} />
-              </div>
-              <div class="field">
-                <div class="row2">
-                  <div class="field">
-                    <label>{c.form.versionLabel[locale]}</label>
-                    <select id="t402-f-version"><option>v1</option><option>v2</option><option selected>v3 · canonical</option></select>
-                  </div>
-                  <div class="field">
-                    <label>{c.form.priceLabel[locale]}</label>
-                    <div class="price-in"><input id="t402-f-price" type="text" value="0.05" /><span class="cur">USDC</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="field">
-                <label>{c.form.asLabel[locale]}</label>
-                <select id="t402-f-as"><option value="you">{c.form.asYou[locale]}</option><option value="inst">{c.form.asInst[locale]}</option></select>
-              </div>
-              <div class="form-foot">
-                <a class="btn btn-primary" href="#" onclick="return false">{c.form.submit[locale]} →</a>
-                <span class="form-note">{c.form.note[locale]}</span>
-              </div>
-            </div>
-          </div>
-          <div>
-            <span class="preview-label">{c.form.previewLabel[locale]}</span>
-            <div class="ocard">
-              <div class="ochead"><span class="ofile" id="t402-p-file">my-dataset.csv</span><span class="obadge">{c.form.signedBadge[locale]}</span></div>
-              <div class="orow"><span>{c.form.titleLabel[locale]}</span><b id="t402-p-title">{c.form.titleValue[locale]}</b></div>
-              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b id="t402-p-as">{c.form.asYouShort[locale]}</b></div>
-              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">{c.hero.card.verifiedVal[locale]}</span></div>
-              <div class="orow"><span>{c.form.versionLabel[locale]}</span><b id="t402-p-version">v3 · canonical</b></div>
-              <div class="orow"><span>{c.form.priceLabel[locale]}</span><b id="t402-p-price">{c.form.priceInit[locale]}</b></div>
-              <div class="orow orow-top"><span>{c.hero.card.checking[locale]}</span><span class="ocheck">{c.hero.card.checkingVal[locale]}</span></div>
-              <div class="onote">{c.form.cardNote[locale]}</div>
-            </div>
-          </div>
+        <div class="center-link reveal">
+          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.dash.cta[locale]} →</a>
         </div>
-      </div>
-    </section>
-
-    {/* 7.7 YOUR LISTINGS */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.listings.eyebrow[locale]}</span>
-          <h2>{c.listings.h2[locale]}</h2>
-          <p>{c.listings.sub[locale]}</p>
-        </div>
-        <div class="listings reveal">
-          <div class="lsum">
-            <div class="lcell"><div class="lnum">3</div><div class="llab">{c.listings.sumListings[locale]}</div></div>
-            <div class="lcell"><div class="lnum">1,240</div><div class="llab">{c.listings.sumUses[locale]}</div></div>
-            <div class="lcell"><div class="lnum">54.00 <span class="u">USDC</span></div><div class="llab">{c.listings.sumEarned[locale]}</div></div>
-          </div>
-          <div class="ltable">
-            <div class="lrow lhead"><span>{c.listings.colListing[locale]}</span><span>{c.listings.colStatus[locale]}</span><span>{c.listings.colPrice[locale]}</span><span>{c.listings.colUses[locale]}</span><span>{c.listings.colEarned[locale]}</span></div>
-            {c.listings.rows.map((r) => (
-            <div class="lrow"><div><div class="lt">{r.title[locale]}</div><div class="lf">{r.file}</div></div><div><span class:list={["lstatus", r.status]}>{r.status === "live" ? c.listings.statusLive[locale] : c.listings.statusSandbox[locale]}</span></div><div class="mono">{r.price}</div><div class="mono">{r.uses}</div><div class:list={["mono", { muted: r.status === "sandbox" }]}>{r.earned[locale]}</div></div>
-            ))}
-          </div>
-        </div>
-        <p class="price-note">{c.listings.note[locale]}</p>
       </div>
     </section>
 
@@ -351,6 +222,35 @@ const formL = {
           <div class="side side-here"><svg class="ic ic-robot side-ic"><use href="#ic-signed" /></svg><div class="st">{c.twoSides.sellTag[locale]}</div><h3>{c.twoSides.sellH3[locale]}</h3><p>{c.twoSides.sellBody[locale]}</p></div>
         </div>
         <div class="center-link"><a class="link-arrow" href={payHref}>→ {c.twoSides.link[locale]}</a></div>
+      </div>
+    </section>
+
+    {/* 8.5 WHAT STAYS YOURS / DON'T NEED (moved lower — reassurance before pricing) */}
+    <section>
+      <div class="inner">
+        <div class="sec-head reveal">
+          <span class="eyebrow-plain">{c.control.eyebrow[locale]}</span>
+          <h2>{c.control.h2[locale]}</h2>
+          <p>{c.control.sub[locale]}</p>
+        </div>
+        <div class="keeps reveal">
+          <div class="keepcol yes">
+            <h3>{c.control.yesTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.yes.map((item) => (
+                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div class="keepcol no">
+            <h3>{c.control.noTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.no.map((item) => (
+                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -397,7 +297,7 @@ const formL = {
         <div class="core">{c.closing.core[locale]}</div>
         <div class="rule"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#the-form">{c.closing.ctaPrimary[locale]} →</a>
+          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.closing.ctaPrimary[locale]} →</a>
           <a class="btn btn-ghost on-dark" href="#">{c.closing.ctaWaitlist[locale]}</a>
           <a class="btn btn-ghost on-dark" href={T402_GITHUB}><svg class="ic btn-ic"><use href="#ic-github" /></svg> {c.closing.github[locale]}</a>
         </div>
@@ -408,7 +308,7 @@ const formL = {
     <nav class="t402-switch" aria-label="Trust402">
       <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
       <a class="t402-switch-btn active" href={`${base}/trust402/sell/`} aria-current="page">Sell</a>
-      <a class="t402-switch-btn" href={DASHBOARD_URL} target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
+      <a class="t402-switch-btn" href={`${base}/trust402/sell/dashboard/`}>Dashboard <span class="t402-switch-badge">demo</span></a>
     </nav>
   </main>
 
@@ -577,8 +477,9 @@ const formL = {
   .t402 .btn-ic { width: 16px; height: 16px; }
 
   /* sell components */
-  .t402 .lede-note { font-family: var(--font-mono); font-size: 12.5px; color: rgba(236, 235, 227, 0.55); margin-top: 16px; display: flex; align-items: center; gap: 8px; }
-  .t402 .lede-note::before { content: "●"; color: var(--green); }
+  .t402 .lede-note { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+  .t402 .lede-chip { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.03em; color: var(--green); background: rgba(182, 245, 0, 0.1); border-radius: 6px; padding: 5px 10px; white-space: nowrap; }
+  .t402 .lede-chip::before { content: "✓"; margin-right: 6px; opacity: 0.85; }
   .t402 .bigsteps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .t402 .bigstep { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; }
   .t402 .bigstep .badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 999px; background: var(--green); color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-bottom: 16px; }
@@ -600,74 +501,16 @@ const formL = {
   .t402 .keepcol.no .keeplist .mk { color: var(--muted); }
   @media (max-width: 680px) { .t402 .keeps { grid-template-columns: 1fr; } }
 
-  .t402 .details { border: 1px solid var(--border); border-radius: 14px; background: var(--card); padding: 0 26px; }
-  .t402 .details + .details { margin-top: 12px; }
-  .t402 .details summary { cursor: pointer; padding: 22px 0; font-family: var(--font-display); font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-  .t402 .details summary::-webkit-details-marker { display: none; }
-  .t402 .details summary::after { content: "+"; font-family: var(--font-mono); color: var(--green-link); font-size: 22px; line-height: 1; }
-  .t402 .details[open] summary::after { content: "\2013"; }
-  .t402 .details .body { padding: 4px 0 26px; }
-  .t402 .details .detail-body { font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
-  .t402 .prim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 6px; }
-  .t402 .prim .pcell { background: var(--surface); border-radius: 12px; padding: 18px; }
-  .t402 .prim .plab { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); margin-bottom: 5px; }
-  .t402 .prim .psub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-  .t402 .prim .psub .tech { opacity: 0.7; }
-  @media (max-width: 680px) { .t402 .prim { grid-template-columns: 1fr; } }
 
   .t402 .free-badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 2px 9px; border-radius: 5px; margin-left: 8px; vertical-align: middle; }
 
-  /* publish form */
-  .t402 .formsec-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: start; }
-  @media (max-width: 900px) { .t402 .formsec-grid { grid-template-columns: 1fr; } }
-  .t402 .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-  .t402 .form-ribbon { display: flex; align-items: center; gap: 9px; background: var(--ink); color: var(--term-fg); font-family: var(--font-mono); font-size: 12px; padding: 12px 22px; }
-  .t402 .form-ribbon .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); flex: none; }
-  .t402 .form-ribbon .rt { margin-left: auto; color: rgba(236, 235, 227, 0.55); }
-  .t402 .form-ribbon .prevtag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; border: 1px solid rgba(236, 235, 227, 0.4); color: var(--term-fg); padding: 2px 8px; border-radius: 5px; }
-  .t402 .form-body { padding: 26px 24px; display: flex; flex-direction: column; gap: 17px; }
-  .t402 .field { display: flex; flex-direction: column; gap: 7px; }
-  .t402 .field label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: lowercase; color: var(--muted); }
-  .t402 .field input, .t402 .field select { font-family: var(--font-body); font-size: 14.5px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; outline: none; width: 100%; -webkit-appearance: none; appearance: none; }
-  .t402 .field input:focus, .t402 .field select:focus { border-color: var(--green); background: #fff; }
-  .t402 .field .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .t402 .filedrop { border: 1.5px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; background: var(--surface-2); cursor: pointer; transition: border-color 0.2s; }
-  .t402 .filedrop:hover { border-color: var(--green); }
-  .t402 .filedrop .fd-file { font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; color: var(--ink); }
-  .t402 .filedrop .fd-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .t402 .price-in { position: relative; }
-  .t402 .price-in .cur { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--muted); pointer-events: none; }
-  .t402 .form-foot { display: flex; align-items: center; gap: 14px; margin-top: 2px; flex-wrap: wrap; }
-  .t402 .form-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
-  .t402 .preview-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: lowercase; color: var(--green-link); margin-bottom: 12px; display: block; }
-
-  /* listings */
-  .t402 .listings { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card); }
-  .t402 .lsum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
-  .t402 .lsum .lcell { background: var(--card); padding: 22px 24px; }
-  .t402 .lsum .lnum { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1; }
-  .t402 .lsum .lnum .u { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-weight: 400; }
-  .t402 .lsum .llab { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; color: var(--green-link); margin-top: 8px; }
-  .t402 .ltable { padding: 4px 0 8px; }
-  .t402 .lrow { display: grid; grid-template-columns: 2fr 0.9fr 1fr 0.7fr 1fr; gap: 12px; align-items: center; padding: 16px 24px; border-top: 1px solid var(--border); }
-  .t402 .lrow.lhead { border-top: none; padding-bottom: 8px; }
-  .t402 .lrow.lhead span { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; color: var(--muted); }
-  .t402 .lrow .lt { font-weight: 600; font-size: 14.5px; }
-  .t402 .lrow .lf { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  .t402 .lrow .mono { font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
-  .t402 .lrow .mono.muted { color: var(--muted); }
-  .t402 .lstatus { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; display: inline-block; }
-  .t402 .lstatus.live { background: var(--green); color: var(--ink); }
-  .t402 .lstatus.sandbox { background: var(--surface); color: var(--muted); }
-  @media (max-width: 760px) { .t402 .lsum { grid-template-columns: 1fr; } .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; } .t402 .lrow.lhead { display: none; } .t402 .lrow .lt { grid-column: 1 / -1; } }
-
-  /* ── reference-model entry card (links to child page) ── */
-  .t402 .model-entry-sec { background: var(--surface-2); }
-  .t402 .model-entry { display: block; background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 30px 32px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
-  .t402 .model-entry:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); border-color: var(--green); }
-  .t402 .model-entry .eyebrow-plain { margin-bottom: 10px; }
-  .t402 .model-entry .model-entry-h { display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 3vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
-  .t402 .model-entry .model-entry-cta { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
+  /* ── why it sells for more (below hero) ── */
+  .t402 .whymore { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .t402 .wm-ic-wrap { display: inline-flex; width: 52px; height: 52px; border-radius: 13px; background: rgba(182, 245, 0, 0.15); align-items: center; justify-content: center; margin-bottom: 16px; }
+  .t402 .wm-ic { width: 28px; height: 28px; color: var(--ink); }
+  .t402 .wm h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0 0 8px; color: var(--ink); letter-spacing: -0.01em; }
+  .t402 .wm p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+  @media (max-width: 760px) { .t402 .whymore { grid-template-columns: 1fr; gap: 22px; } }
 
   /* ── fixed Pay/Sell/Dashboard switcher ── */
   .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
@@ -678,7 +521,7 @@ const formL = {
   .t402 .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
 </style>
 
-<script is:inline define:vars={{ formL }}>
+<script is:inline>
   (function () {
     // reveal-on-scroll
     var els = document.querySelectorAll(".t402 .reveal");
@@ -698,25 +541,5 @@ const formL = {
     } else {
       els.forEach(function (el) { el.classList.add("on"); });
     }
-
-    // live publish-form preview
-    var g = function (id) { return document.getElementById(id); };
-    var file = g("t402-f-file"), title = g("t402-f-title"), ver = g("t402-f-version"), price = g("t402-f-price"), as = g("t402-f-as");
-    if (!title) return;
-    function sync() {
-      g("t402-p-file").textContent = (file.textContent || "").trim() || formL.untitled;
-      g("t402-p-title").textContent = title.value || "—";
-      g("t402-p-version").textContent = ver.value;
-      var p = (price.value || "").trim();
-      g("t402-p-price").textContent = (p ? p : "0") + formL.unit;
-      g("t402-p-as").textContent = as.value === "inst" ? formL.asInst : formL.asYou;
-    }
-    ["input", "change", "keyup"].forEach(function (ev) {
-      title.addEventListener(ev, sync);
-      price.addEventListener(ev, sync);
-    });
-    ver.addEventListener("change", sync);
-    as.addEventListener("change", sync);
-    sync();
   })();
 </script>

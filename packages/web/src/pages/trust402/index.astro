@@ -730,13 +730,25 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
+    <section id="provenance">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>How we prove a file is really yours.</h2><p>You never touch any of this — but here's what's under the hood. Three things get attached to whatever you publish.</p></div>
+        <div class="cards c3">
+        <div class="card reveal"><div class="num">01</div><h3>who made it</h3><p>A signature proving you're the publisher — reveal only the parts you want.</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><div class="num">02</div><h3>not changed</h3><p>A fingerprint that breaks if even one byte is altered.</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><div class="num">03</div><h3>which version</h3><p>So an agent always cites the exact version you meant.</p></div>
+        </div>
+        <p class="callout">● How agents find and pay: your listing is discoverable in the x402 Bazaar and added automatically the first time someone buys. Payment settles over the open x402 standard in USDC — you never run an x402 server.</p>
+      </div>
+    </section>
+
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>Explorer to Pro.</h2><p>Verify is always free. You pay to produce proofs and settle — not to be trusted.</p></div>
         <div class="tiers">
         <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">Sandbox · testnet only</div><div class="tprice">Free</div><div class="tmeans">Manual form · the current demo.</div><div class="tstate">Coming soon</div></div>
         <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">Production · individual developers</div><div class="tprice">$19<small>/mo + per-query</small></div><div class="tmeans">Manual form (+ API add-on).</div><div class="tstate">Coming soon</div></div>
-        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">¥50k<small>/mo + attestation</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">$330<small>/mo + attestation</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
         </div>
         <p class="price-note">One monthly allowance across Pay and Sell. Verify is free.</p>
       </div>
@@ -758,7 +770,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
     <nav class="t402-switch" aria-label="Trust402">
     <a class="t402-switch-btn active" href="/trust402/" aria-current="page">Pay</a>
     <a class="t402-switch-btn" href="/trust402/sell/">Sell</a>
-    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
+    <a class="t402-switch-btn" href="/trust402/sell/dashboard/">Dashboard <span class="t402-switch-badge">demo</span></a>
   </nav>
 </main>
 

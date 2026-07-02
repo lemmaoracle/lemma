@@ -36,7 +36,12 @@ export type T402IconId =
   | "ic-chart"
   | "ic-notebook"
   | "ic-network"
-  | "ic-github";
+  | "ic-github"
+  | "ic-flask"
+  | "ic-camera"
+  | "ic-pen"
+  | "ic-direct"
+  | "ic-gem";
 
 interface Card {
   readonly icon: T402IconId;
@@ -88,7 +93,7 @@ export interface Trust402Content {
       readonly sub: Localized;
       readonly ctaPrimary: Localized;
       readonly ctaSecondary: Localized;
-      readonly lede: Localized;
+      readonly lede: ReadonlyArray<Localized>;
       readonly cardCaption: Localized;
       readonly card: {
         readonly file: string;
@@ -118,6 +123,13 @@ export interface Trust402Content {
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
       readonly caption: Localized;
+      readonly modelLink: Localized;
+    };
+    readonly whyMore: {
+      readonly eyebrow: Localized;
+      readonly h2: Localized;
+      readonly sub: Localized;
+      readonly items: ReadonlyArray<{ readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
     };
     readonly control: {
       readonly eyebrow: Localized;
@@ -136,6 +148,7 @@ export interface Trust402Content {
       readonly sloganEm: Localized;
       readonly note: Localized;
       readonly noteEm: Localized;
+      readonly techLink: Localized;
     };
     readonly institutional: {
       readonly eyebrow: Localized;
@@ -143,15 +156,6 @@ export interface Trust402Content {
       readonly h2em: Localized;
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
-    };
-    readonly underHood: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly d1Summary: Localized;
-      readonly primitives: ReadonlyArray<{ readonly label: Localized; readonly sub: Localized; readonly tech?: string }>;
-      readonly d2Summary: Localized;
-      readonly d2Body: Localized;
     };
     readonly hands: {
       readonly eyebrow: Localized;
@@ -164,57 +168,11 @@ export interface Trust402Content {
       readonly prodBody: Localized;
       readonly prodChip: Localized;
     };
-    readonly form: {
+    readonly dash: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly sub: Localized;
-      readonly ribbon: Localized;
-      readonly previewTag: Localized;
-      readonly ribbonNote: Localized;
-      readonly fileLabel: Localized;
-      readonly fileHint: Localized;
-      readonly titleLabel: Localized;
-      readonly titleValue: Localized;
-      readonly versionLabel: Localized;
-      readonly priceLabel: Localized;
-      readonly asLabel: Localized;
-      readonly asYou: Localized;
-      readonly asInst: Localized;
-      readonly submit: Localized;
-      readonly note: Localized;
-      readonly previewLabel: Localized;
-      readonly cardNote: Localized;
-      readonly signedBadge: Localized;
-      readonly priceInit: Localized;
-      readonly unit: Localized;
-      readonly untitled: Localized;
-      readonly asYouShort: Localized;
-      readonly asInstShort: Localized;
-    };
-    readonly listings: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly sumUses: Localized;
-      readonly sumEarned: Localized;
-      readonly sumListings: Localized;
-      readonly colListing: Localized;
-      readonly colStatus: Localized;
-      readonly colPrice: Localized;
-      readonly colUses: Localized;
-      readonly colEarned: Localized;
-      readonly note: Localized;
-      readonly statusLive: Localized;
-      readonly statusSandbox: Localized;
-      readonly statusTestnet: Localized;
-      readonly rows: ReadonlyArray<{
-        readonly title: Localized;
-        readonly file: string;
-        readonly status: "live" | "sandbox";
-        readonly price: string;
-        readonly uses: string;
-        readonly earned: Localized;
-      }>;
+      readonly cta: Localized;
     };
     readonly twoSides: {
       readonly eyebrow: Localized;
@@ -261,7 +219,7 @@ export const T402: Trust402Content = {
     },
     description: {
       en: "Turn a dataset, paper, or any file into something AI agents can verify and pay for — proof it came from you, paid directly in USDC to your own wallet. No servers, no code. 0% commission.",
-      ja: "データセットや論文、ファイルを、AI エージェントが検証して購入できる資源に。あなた由来である証明つきで、USDC が直接あなたのウォレットに届く。サーバーもコードも不要、手数料 0%。",
+      ja: "データセットや論文、どんなファイルも、AI エージェントが検証して購入できる形に。本人が作った本物である証明つきで、USDC が直接あなたのウォレットに届く。コードもサーバーも不要、手数料 0%。",
     },
   },
 
@@ -292,18 +250,19 @@ export const T402: Trust402Content = {
   sell: {
     hero: {
       eyebrow: { en: "trust402 · sell", ja: "trust402 · sell" },
-      h1a: { en: "Made something good?", ja: "いいものを作った?" },
-      h1em: { en: "Sell it to AI agents.", ja: "それ、AI エージェントに売れます。" },
+      h1a: { en: "Made something good?", ja: "その研究も、作品も。" },
+      h1em: { en: "Sell it to AI agents.", ja: "AI エージェントに売れる。" },
       sub: {
         en: "Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof it came from you and hasn't been changed. A no-code way in: no servers, no code, and no one holding your money — you're paid directly in USDC to your own wallet. You keep everything; Lemma is just the tool.",
-        ja: "データセットや論文、どんなファイルでも、AI エージェントが買える資源に変えられます — あなた由来で改ざんされていないという証明つき。ノーコードで始められ、サーバーもコードも不要、お金を預ける相手もいません — USDC が直接あなたのウォレットに届きます。すべてはあなたのまま。Lemma は道具にすぎません。",
+        ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
       },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
-      ctaSecondary: { en: "See how it works", ja: "仕組みを見る" },
-      lede: {
-        en: "Free to start · made for students, researchers, and labs",
-        ja: "無料で開始 · 学生・研究者・研究室のために",
-      },
+      ctaSecondary: { en: "See what sells", ja: "何が売れるか見る" },
+      lede: [
+        { en: "Free to start", ja: "無料で開始" },
+        { en: "No code", ja: "ノーコード" },
+        { en: "0% commission", ja: "手数料 0%" },
+      ],
       cardCaption: {
         en: "an agent checks it's real (free), then pays you ↓",
         ja: "エージェントが本物か確認し(無料)、支払う ↓",
@@ -359,7 +318,7 @@ export const T402: Trust402Content = {
           },
         },
       ],
-      stepLink: { en: "See the form ↓", ja: "フォームを見る ↓" },
+      stepLink: { en: "See the preview ↓", ja: "プレビューを見る ↓" },
       caption: {
         en: "Checking your proof is always free. You get paid for the data — not for being trusted.",
         ja: "証明の検証は常に無料。報酬は成果に対して支払われます — 信頼されること自体には課金しません。",
@@ -368,7 +327,7 @@ export const T402: Trust402Content = {
 
     whatSell: {
       eyebrow: { en: "what you can sell", ja: "売れるもの" },
-      h2: { en: "If you made it, an agent can cite it.", ja: "あなたが作ったなら、エージェントは引用できる。" },
+      h2: { en: "If you made it, an agent can cite it.", ja: "あなたが作ったなら、エージェントの出典になる。" },
       sub: {
         en: "Research work is exactly what AI agents are hungry for — real, structured, and verifiable. A few things people put up:",
         ja: "研究成果こそ AI エージェントが求めているもの — 本物で、構造化され、検証可能。出品されている例をいくつか:",
@@ -397,15 +356,51 @@ export const T402: Trust402Content = {
       ],
       caption: {
         en: "Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.",
-        ja: "何を出しても、エージェントが信頼し、支払い、あなたに引用を戻せる資源になります。",
+        ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
+      modelLink: { en: "See what sells", ja: "何が売れるか見る" },
+    },
+
+    whyMore: {
+      eyebrow: { en: "why it earns more", ja: "より高く売れる理由" },
+      h2: { en: "Why it sells for more.", ja: "なぜ、より高く売れるのか。" },
+      sub: {
+        en: "Real, verifiable, original — exactly what AI agents will pay a premium for.",
+        ja: "本物で・検証でき・オリジナル。それが AI エージェントが割増しでも欲しいものです。",
+      },
+      items: [
+        {
+          icon: "ic-signed",
+          title: { en: "Being real gets it chosen", ja: "本物だと、選ばれる" },
+          text: {
+            en: "It carries who, when, and unaltered — and AI prefers sources it can verify.",
+            ja: "「誰が・いつ・無改変か」が証明つき。AI は裏取りできる一次ソースを優先します。",
+          },
+        },
+        {
+          icon: "ic-direct",
+          title: { en: "Direct means you keep more", ja: "直接だから、手取りが多い" },
+          text: {
+            en: "You license the original yourself — no middleman skimming your cut.",
+            ja: "オリジナルのまま本人が販売。仲介の中抜きがないぶん、そのまま収入に。",
+          },
+        },
+        {
+          icon: "ic-gem",
+          title: { en: "The real gets scarce", ja: "本物は、これから希少になる" },
+          text: {
+            en: "As generated content floods the web, verified human originals only grow more valuable.",
+            ja: "生成物が増えるほど、検証済みの“人間の本物”は希少になり、値がつく。",
+          },
+        },
+      ],
     },
 
     control: {
       eyebrow: { en: "no strings attached", ja: "縛りなし" },
       h2: { en: "You stay in control.", ja: "主導権はあなたに。" },
-      sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたから何かを奪うことはありません。" },
-      yesTitle: { en: "What stays yours", ja: "あなたのままのもの" },
+      sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたの権利はそのまま。" },
+      yesTitle: { en: "What stays yours", ja: "あなたのものであり続けるもの" },
       yes: [
         { en: "Full ownership of your work — always.", ja: "成果の完全な所有権 — 常に。" },
         { en: "The right to sell or share it anywhere else, too.", ja: "他の場所でも売る・共有する権利。" },
@@ -423,21 +418,22 @@ export const T402: Trust402Content = {
 
     whyProof: {
       eyebrow: { en: "why proof matters", ja: "なぜ証明が要るのか" },
-      h2: { en: "Copies of your work are everywhere.", ja: "あなたの成果のコピーは、どこにでもある。" },
+      h2: { en: "The web fills with copies. Only one is really yours.", ja: "ネットは、コピーで埋まっていく。本物は、あなたのだけ。" },
       sub: {
         en: "Scraped versions and AI-made imitations sit right next to your original. Without proof, an agent can't tell which one is really yours — so it might pay someone else, or trust a fake.",
-        ja: "スクレイピングされた版や AI が作った模倣が、あなたの原本のすぐ隣に並びます。証明がなければ、エージェントはどれが本当にあなたのものか区別できず — 別人に支払ったり、偽物を信頼したりしかねません。",
+        ja: "スクレイピングされた版や AI が作った模倣が、あなたの本物のすぐ隣に並びます。証明がなければ、エージェントはどれが本当にあなたのものか区別できず — 別人に支払ったり、偽物を信頼したりしかねません。",
       },
       sloganA: { en: "A copy can look identical.", ja: "コピーは見た目がまったく同じでも、" },
       sloganEm: { en: "Only yours can prove it.", ja: "証明できるのはあなたのものだけ。" },
       note: { en: "The technical way to say it: ", ja: "技術的に言えば: " },
       noteEm: { en: "Signed is the only real.", ja: "署名されたものだけが本物。" },
+      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み（Trust402）" },
     },
 
     institutional: {
       eyebrow: { en: "institutional id · shared with pay", ja: "institutional id · pay と共通" },
       h2a: { en: "At a university or lab?", ja: "大学や研究室に所属?" },
-      h2em: { en: "You're already covered.", ja: "もうカバーされています。" },
+      h2em: { en: "You're already covered.", ja: "すでに対象です。" },
       sub: {
         en: "The Institutional ID plan lets an organization register once — then everyone under it publishes under that umbrella. It's the same plan on the Pay side.",
         ja: "Institutional ID プランなら、組織が一度登録すれば — 傘下の全員がその名義で出品できます。Pay 側と同じプランです。",
@@ -461,140 +457,35 @@ export const T402: Trust402Content = {
       ],
     },
 
-    underHood: {
-      eyebrow: { en: "for the curious", ja: "詳しく知りたい人へ" },
-      h2: { en: "How the proof actually works.", ja: "証明の実際の仕組み。" },
-      sub: {
-        en: "You never have to touch any of this — but if you like knowing what's under the hood, here it is.",
-        ja: "触れる必要は一切ありません — でも中身を知りたい人のために、ここに置いておきます。",
-      },
-      d1Summary: { en: "The three things we attach to your file", ja: "ファイルに添える 3 つのもの" },
-      primitives: [
-        {
-          label: { en: "who made it", ja: "誰が作ったか" },
-          sub: { en: "A signature proving you're the publisher — you can reveal only the parts you want.", ja: "あなたが発行者だと示す署名 — 開示する部分は選べます。" },
-          tech: "BBS+ over BLS12-381",
-        },
-        {
-          label: { en: "not changed", ja: "改ざんされていない" },
-          sub: { en: "A fingerprint that breaks if even one byte is altered.", ja: "1 バイトでも変わると壊れる指紋。" },
-          tech: "Poseidon over BN254",
-        },
-        {
-          label: { en: "which version", ja: "どのバージョンか" },
-          sub: { en: "So an agent always knows it's citing the exact version you meant.", ja: "エージェントが、あなたの意図した版を正確に引用できるように。" },
-        },
-      ],
-      d2Summary: { en: "How agents find and pay for it", ja: "エージェントが発見して支払う仕組み" },
-      d2Body: {
-        en: "Your listing is discoverable in the x402 Bazaar — a shared directory agents browse. It's added automatically the first time someone buys. Payment happens over the open x402 standard in USDC. You never run an x402 server; the standard template handles it for you.",
-        ja: "あなたの出品は x402 Bazaar — エージェントが見て回る共有ディレクトリ — から発見できます。誰かが最初に購入した時点で自動的に追加されます。支払いはオープンな x402 標準で USDC で行われます。x402 サーバーを動かす必要はなく、標準テンプレートが処理します。",
-      },
-    },
-
     hands: {
       eyebrow: { en: "hands-on", ja: "実際にやること" },
-      h2: { en: "What you actually do: fill one short form.", ja: "やることは、短いフォームを 1 つ埋めるだけ。" },
+      h2: { en: "What you actually do: pick a file, set a price — in the Dashboard.", ja: "やることは、ダッシュボードでファイルを選び、価格を決めるだけ。" },
       sub: {
-        en: "No dashboard to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
-        ja: "組み立てるダッシュボードもコードも不要 — 本番前に、全体を無料で予行演習できます。",
+        en: "Nothing to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
+        ja: "設定するものも、書くコードもなし — 本番前に、全体を無料で予行演習できます。",
       },
       sandboxTitle: { en: "① try it in the sandbox", ja: "① サンドボックスで試す" },
       sandboxBody: {
-        en: "Fill one short form — point to a file, set a test price. It runs on a test network, so no real money moves. Break things, retry, get comfortable. Students start here.",
-        ja: "短いフォームを 1 つ埋める — ファイルを指定し、テスト価格を設定。テストネット上で動くので、実際のお金は動きません。壊して、やり直して、慣れる。学生はここから。",
+        en: "In the Dashboard, point to a file and set a test price. It runs on a test network, so no real money moves. Break things, retry, get comfortable. Students start here.",
+        ja: "ダッシュボードでファイルを指定し、テスト価格を設定するだけ。テストネット上で動くので、実際のお金は動きません。壊して、やり直して、慣れる。学生はここから。",
       },
       sandboxChip: { en: "no real money · testnet", ja: "実マネーなし · テストネット" },
       prodTitle: { en: "② go live in production", ja: "② 本番に出す" },
       prodBody: {
-        en: "The exact same form — now it's real. Agents can discover your listing, verify it for free, and pay you. Nothing new to learn.",
-        ja: "まったく同じフォーム — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
+        en: "The exact same steps — now it's real. Agents can discover your listing, verify it for free, and pay you. Nothing new to learn.",
+        ja: "同じ手順のまま — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
       },
       prodChip: { en: "same steps · real payouts", ja: "同じ手順 · 実際の入金" },
     },
 
-    form: {
-      eyebrow: { en: "the form · preview", ja: "フォーム · プレビュー" },
-      h2: { en: "This is the whole form.", ja: "これがフォームのすべて。" },
+    dash: {
+      eyebrow: { en: "the dashboard · demo", ja: "ダッシュボード · デモ" },
+      h2: { en: "The rest happens in your Dashboard.", ja: "あとは、ダッシュボードで。" },
       sub: {
-        en: "A live preview — play with it here, nothing gets published. The real form lives in your Dashboard. Five fields: fill them in and your listing takes shape on the right, exactly what an agent sees.",
-        ja: "ライブプレビューです — ここで触っても何も公開されません。本物のフォームはダッシュボードにあります。5 項目を埋めると、右側にあなたの出品が形になります — エージェントが見るものそのままです。",
+        en: "Publishing, pricing, and tracking what you've sold all live in one place. Take a look — it's a non-functional demo, nothing goes live.",
+        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。非機能デモなので公開はされません — 中を覗いてみてください。",
       },
-      ribbon: { en: "publish a listing", ja: "出品を公開" },
-      previewTag: { en: "preview", ja: "preview" },
-      ribbonNote: { en: "nothing is saved here", ja: "ここでは何も保存されません" },
-      fileLabel: { en: "your file", ja: "ファイル" },
-      fileHint: { en: "drop a file, or point to a URL you already host", ja: "ファイルをドロップ、または既存の URL を指定" },
-      titleLabel: { en: "title", ja: "タイトル" },
-      titleValue: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
-      versionLabel: { en: "version", ja: "バージョン" },
-      priceLabel: { en: "price per use", ja: "1 回あたりの価格" },
-      asLabel: { en: "publish as", ja: "発行者" },
-      asYou: { en: "You (individual)", ja: "あなた(個人)" },
-      asInst: { en: "Under your institution", ja: "所属組織の名義で" },
-      submit: { en: "Generate proof & preview", ja: "証明を生成してプレビュー" },
-      note: { en: "no real money · testnet", ja: "実マネーなし · テストネット" },
-      previewLabel: { en: "what the agent sees ↓", ja: "エージェントが見るもの ↓" },
-      cardNote: {
-        en: "This card is your listing. Agents verify the proof for free, then pay to get the file.",
-        ja: "このカードがあなたの出品です。エージェントは証明を無料で検証し、支払ってファイルを受け取ります。",
-      },
-      signedBadge: { en: "signed", ja: "署名済み" },
-      priceInit: { en: "0.05 USDC / use", ja: "0.05 USDC / 回" },
-      unit: { en: " USDC / use", ja: " USDC / 回" },
-      untitled: { en: "untitled", ja: "無題" },
-      asYouShort: { en: "you ✓", ja: "あなた ✓" },
-      asInstShort: { en: "you · under your institution ✓", ja: "あなた・組織の名義 ✓" },
-    },
-
-    listings: {
-      eyebrow: { en: "your listings", ja: "あなたの出品" },
-      h2: { en: "After you publish, track it here.", ja: "公開したら、ここで追える。" },
-      sub: {
-        en: "Everything you've put up lives in one place — whether it's live or still a sandbox test, how many times it's been used, and what it's earned.",
-        ja: "出したものがすべて一か所に — 本番かサンドボックスか、何回使われ、いくら稼いだか。",
-      },
-      sumListings: { en: "active listings", ja: "有効な出品" },
-      sumUses: { en: "total uses", ja: "総利用回数" },
-      sumEarned: { en: "earned", ja: "獲得額" },
-      colListing: { en: "listing", ja: "出品" },
-      colStatus: { en: "status", ja: "状態" },
-      colPrice: { en: "price", ja: "価格" },
-      colUses: { en: "uses", ja: "利用" },
-      colEarned: { en: "earned", ja: "獲得" },
-      note: {
-        en: "Sandbox listings run on a test network — the numbers are there so you can watch the whole loop before going live.",
-        ja: "サンドボックスの出品はテストネット上 — 本番前に全体の流れを見られるよう、数値も表示しています。",
-      },
-      statusLive: { en: "live", ja: "公開中" },
-      statusSandbox: { en: "sandbox", ja: "お試し" },
-      statusTestnet: { en: "testnet", ja: "テストネット" },
-      rows: [
-        {
-          title: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
-          file: "my-dataset.csv",
-          status: "live",
-          price: "0.05 USDC",
-          uses: "840",
-          earned: { en: "42.00 USDC", ja: "42.00 USDC" },
-        },
-        {
-          title: { en: "Cleaned JA text corpus", ja: "整形済み日本語コーパス" },
-          file: "corpus-ja.jsonl",
-          status: "live",
-          price: "0.03 USDC",
-          uses: "400",
-          earned: { en: "12.00 USDC", ja: "12.00 USDC" },
-        },
-        {
-          title: { en: "Benchmark results · Q2", ja: "ベンチマーク結果 · Q2" },
-          file: "bench-q2.csv",
-          status: "sandbox",
-          price: "0.10 USDC",
-          uses: "—",
-          earned: { en: "testnet", ja: "テストネット" },
-        },
-      ],
+      cta: { en: "Open the Dashboard demo", ja: "ダッシュボードデモを開く" },
     },
 
     twoSides: {
@@ -621,7 +512,7 @@ export const T402: Trust402Content = {
 
     pricing: {
       eyebrow: { en: "pricing · shared with pay", ja: "料金 · pay と共通" },
-      h2: { en: "Free while you learn. Pay only when you really sell.", ja: "学ぶ間は無料。本当に売るときだけ支払う。" },
+      h2: { en: "Pay only when you really sell.", ja: "本当に売るときだけ、支払う。" },
       sub: {
         en: "The same three plans cover both Pay and Sell. Checking proofs is always free — you only pay for a plan when you publish for real. No commission on sales.",
         ja: "同じ 3 プランが Pay と Sell の両方をカバー。証明の検証は常に無料 — 本番で公開するときだけプラン料金がかかります。販売手数料はゼロ。",
@@ -639,7 +530,7 @@ export const T402: Trust402Content = {
           name: "Pro",
           featured: true,
           pos: { en: "Production · for individuals selling on their own.", ja: "本番 · 個人で売る人向け。" },
-          price: { en: "$19", ja: "$19" },
+          price: { en: "$19", ja: "¥2,980" },
           priceSub: { en: "/mo · 0% commission on sales", ja: "/月 · 販売手数料 0%" },
           means: { en: "Everything in Explorer, live. Optional API for developers.", ja: "Explorer の全機能を本番で。開発者向け API はオプション。" },
           state: { en: "Coming soon", ja: "近日公開" },
@@ -647,7 +538,7 @@ export const T402: Trust402Content = {
         {
           name: "Institutional ID",
           pos: { en: "For universities, labs & organizations.", ja: "大学・研究室・組織向け。" },
-          price: { en: "¥50k", ja: "¥50k" },
+          price: { en: "$330", ja: "¥50,000" },
           priceSub: { en: "/mo + attestation", ja: "/月 + アテステーション" },
           means: { en: "Register once; members & students publish under the umbrella, free to them.", ja: "一度登録すれば、メンバーや学生がその名義で出品 — 本人は無料。" },
           state: { en: "Coming soon", ja: "近日公開" },
@@ -660,7 +551,7 @@ export const T402: Trust402Content = {
     },
 
     faq: {
-      eyebrow: { en: "questions students ask", ja: "学生からよくある質問" },
+      eyebrow: { en: "common questions", ja: "よくある質問" },
       h2: { en: "Good things to check.", ja: "確認しておきたいこと。" },
       items: [
         {
@@ -673,15 +564,15 @@ export const T402: Trust402Content = {
         {
           q: { en: "I've never done this — where do I start?", ja: "やったことがない — どこから始める?" },
           a: {
-            en: "In the free sandbox. Fill one short form on a test network, watch the whole flow happen, and pay nothing. When it clicks, going live is the same form.",
-            ja: "無料のサンドボックスから。テストネットで短いフォームを 1 つ埋め、流れ全体を見る — 費用はゼロ。感覚が掴めたら、本番も同じフォームです。",
+            en: "In the free sandbox. In the Dashboard, point to a file and set a test price, watch the whole flow, and pay nothing. When it clicks, going live takes the same steps.",
+            ja: "無料のサンドボックスから。ダッシュボードでファイルを指定してテスト価格を決め、流れ全体を見る — 費用はゼロ。感覚が掴めたら、本番も同じ手順です。",
           },
         },
         {
           q: { en: "Do I need to know anything about crypto or blockchain?", ja: "暗号資産やブロックチェーンの知識は要る?" },
           a: {
             en: "You receive USDC — a digital dollar — to your own wallet, so you set one up once (a 2-minute step if you don't have one). We handle all the proof and payment plumbing behind the scenes.",
-            ja: "USDC — デジタルのドル — を自分のウォレットで受け取るので、ウォレットを一度用意します(なければ 2 分ほど)。証明と支払いの配管はすべて裏側で私たちが処理します。",
+            ja: "USDC — デジタルのドル — を自分のウォレットで受け取るので、ウォレットを一度用意します(なければ 2 分ほど)。証明や支払いまわりは、すべて裏側で私たちが処理します。",
           },
         },
         {
