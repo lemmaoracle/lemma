@@ -565,6 +565,8 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .card p { font-size: 14px; color: var(--ink-soft); margin: 0; }
 .t402b .chip { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
 .t402b .card .chip { margin-top: 14px; }
+.t402b .card .cardic { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 13px; background: rgba(182,245,0,0.16); color: var(--ink); margin-bottom: 16px; }
+.t402b .card .cardic svg { width: 27px; height: 27px; }
 /* accident scenario (risk) */
 .t402b .risk-pivot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 12px; padding: 18px 22px; }
 .t402b .risk-line { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
@@ -751,7 +753,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <div class="step reveal"><div class="num">step 03</div><h3>x402 で決済</h3><p>通った要求は、無改変の標準の上で決済される。</p></div>
         <div class="step reveal"><div class="num">step 04</div><h3>オンチェーン記録</h3><p>許可も停止も記録され、改ざん検知可能。</p></div>
         </div>
-        <p class="callout on-dark">● 4ステップ · ミドルウェア1行で完了 · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">wrapFetchWithProof →</a></p>
+        <p class="callout on-dark">● 4ステップ · ミドルウェア1行（wrapFetchWithProof）で完了 · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">GitHub で見る →</a></p>
       </div>
     </section>
 
@@ -761,11 +763,11 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         本文中の離脱は作らない。 */}
     <section id="provenance">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>本物であることを、どう証明するか。</h2><p>売るときだけの話ではありません — 来歴の証明は、Lemma の中核技術です。生成された偽物をあとから検出するのではなく、公開される瞬間に本物であることを刻む。公開するものには、この 3 つが添えられます。</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>本物であることを、どう証明するか。</h2><p>来歴の証明は、Lemma の中核技術 — 生成された偽物をあとから検出するのではなく、公開される瞬間に、本物であることを刻みます。公開するものには、この 3 つが添えられます。</p></div>
         <div class="cards c3">
-        <div class="card reveal"><div class="num">01</div><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
-        <div class="card reveal"><div class="num">02</div><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
-        <div class="card reveal"><div class="num">03</div><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="11" r="7.5"/><path d="M10 17.5 8 26l6-3 6 3-2-8.5"/><path d="M11 11.2l2.2 2.2 4.4-4.6" stroke="#8FBF00"/></svg></span><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a10 10 0 0 1 18-6"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88" stroke="#8FBF00"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M2 16h.01"/></svg></span><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5 24 9l-10 5.5L4 9z"/><path d="M4 14l10 5.5L24 14" stroke="#8FBF00"/><path d="M4 19l10 5.5L24 19"/></svg></span><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
         </div>
         <p class="callout">● データは複製される。来歴は刻まれる。 · <a class="link-arrow" href="/ja/pillars/verifiable-origin/">来歴証明 — Lemma の仕組みを見る →</a></p>
       </div>
