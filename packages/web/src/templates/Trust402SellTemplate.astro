@@ -81,89 +81,14 @@ const formL = {
       </div>
     </header>
 
-    {/* 1.5 REFERENCE MODEL — who / what / how much (all figures illustrative) */}
-    <section class="personas">
-      <div class="pm-inner">
-        <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
-        <h2 class="pm-h2">{M.h2[locale]}</h2>
-
-        <div class="pm-grid">
-          {M.personas.map((p) => (
-            <div class="pm-card">
-              <div class="pm-cardtop">
-                <span class:list={["pm-badge", p.plan]}>{p.planLabel}</span>
-                <span class="pm-avatar" aria-hidden="true">{p.initials}</span>
-              </div>
-              <div class="pm-who">{p.name}</div>
-              <div class="pm-role">{p.role[locale]}</div>
-              <p class="pm-lbl">{M.sellsLabel[locale]}</p>
-              <div class="pm-sells">
-                {p.sells.map((s) => (
-                  <div class="pm-row"><span>{s.item[locale]}</span><span class="pm-price">{s.price}</span></div>
-                ))}
-              </div>
-              <div class="pm-income">
-                <p class="pm-lbl">{M.incomeLabel[locale]}</p>
-                <div class="pm-amt"><span class="pm-hl">{p.income}</span><span class="pm-per">{M.per[locale]}</span></div>
-                <div class="pm-vol">{p.vol[locale]}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <p class="pm-sec-h">{M.catalogH[locale]}</p>
-        <p class="pm-sec-sub">{M.catalogSub[locale]}</p>
-        <div class="pm-cat">
-          {M.catalog.map((cell) => (
-            <div class:list={["pm-catcell", { hl: cell.hl }]}>
-              <div class="pm-cattitle">{cell.title[locale]}</div>
-              <div class="pm-tags">
-                {cell.tags.map((tg) => (<span class="pm-tag">{tg[locale]}</span>))}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p class="pm-dashnote">{M.dashNote[locale]}</p>
-
-        <p class="pm-sec-h">{M.whyH[locale]}</p>
-        <div class="pm-whgrid">
-          {M.why.map((w) => (
-            <div class="pm-wcell">
-              <div class="pm-wnum">{w.num}</div>
-              <div class="pm-wtitle">{w.title[locale]}</div>
-              <div class="pm-wtext">{w.text[locale]}</div>
-            </div>
-          ))}
-        </div>
-
-        <div class="pm-ba">
-          <h3 class="pm-bah">{M.baH[locale]}</h3>
-          <span class="pm-ctag">{M.baExample[locale]}</span>
-          <div class="pm-barow">
-            <div class="pm-bside before">
-              <div class="pm-btag">{M.beforeTag[locale]}</div>
-              <div class="pm-mo">{M.beforePrice} <span class="pm-mo-per">{M.perItem[locale]}</span></div>
-            </div>
-            <div class="pm-arrowcol">
-              <div class="pm-ar">→</div>
-              <div class="pm-mult">{M.mult}</div>
-            </div>
-            <div class="pm-bside after">
-              <div class="pm-btag">{M.afterTag[locale]}</div>
-              <div class="pm-mo">{M.afterPrice} <span class="pm-mo-per">{M.perItem[locale]}</span></div>
-            </div>
-          </div>
-          <div class="pm-foot">
-            {M.chips.map((ch) => (<span class:list={["pm-chip", { key: ch.key }]}>{ch.label[locale]}</span>))}
-          </div>
-          <p class="pm-note">{M.baNote[locale]}</p>
-        </div>
-
-        <div class="pm-cta">
-          {/* TODO: point "Try it free" at the real sandbox start flow once its URL exists; #the-form is the in-page preview for now. */}
-          <a class="pm-btn primary" href="#the-form">{M.ctaTry[locale]}</a>
-          <a class="pm-btn secondary" href="#pricing">{M.ctaPricing[locale]}</a>
-        </div>
+    {/* Reference model — links to the /trust402/sell/model/ child page */}
+    <section class="model-entry-sec">
+      <div class="inner">
+        <a class="model-entry" href={`${base}/trust402/sell/model/`}>
+          <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
+          <span class="model-entry-h">{M.h2[locale]}</span>
+          <span class="model-entry-cta">{M.entryCta[locale]} →</span>
+        </a>
       </div>
     </section>
 
@@ -736,71 +661,13 @@ const formL = {
   .t402 .lstatus.sandbox { background: var(--surface); color: var(--muted); }
   @media (max-width: 760px) { .t402 .lsum { grid-template-columns: 1fr; } .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; } .t402 .lrow.lhead { display: none; } .t402 .lrow .lt { grid-column: 1 / -1; } }
 
-  /* ── reference model (personas / catalog / why / before-after) ── */
-  .t402 .personas { background: var(--surface-2); }
-  .t402 .pm-inner { max-width: 1080px; margin: 0 auto; }
-  .t402 .pm-h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.25; letter-spacing: -0.01em; margin: 10px 0 30px; color: var(--ink); }
-  .t402 .pm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .t402 .pm-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 22px 20px 20px; display: flex; flex-direction: column; }
-  .t402 .pm-cardtop { display: flex; align-items: center; justify-content: space-between; }
-  .t402 .pm-badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
-  .t402 .pm-badge.inst { background: var(--ink); color: var(--green); }
-  .t402 .pm-badge.pro { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); }
-  .t402 .pm-avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-soft); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-  .t402 .pm-who { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin: 12px 0 2px; color: var(--ink); }
-  .t402 .pm-role { color: var(--muted); font-size: 12.5px; margin-bottom: 16px; }
-  .t402 .pm-lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--green-link); margin: 0 0 6px; }
-  .t402 .pm-sells { margin: 0 0 18px; }
-  .t402 .pm-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 4px 0; border-bottom: 1px dotted var(--border); color: var(--ink-soft); }
-  .t402 .pm-row:last-child { border-bottom: none; }
-  .t402 .pm-price { font-family: var(--font-mono); color: var(--ink-soft); white-space: nowrap; }
-  .t402 .pm-income { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
-  .t402 .pm-amt { font-family: var(--font-mono); font-weight: 700; font-size: 32px; line-height: 1; color: var(--ink); }
-  .t402 .pm-hl { background: linear-gradient(transparent 62%, var(--green) 62%); padding: 0 2px; }
-  .t402 .pm-per { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 5px; }
-  .t402 .pm-vol { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .t402 .pm-sec-h { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 44px 0 4px; color: var(--ink); }
-  .t402 .pm-sec-sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
-  .t402 .pm-cat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .t402 .pm-catcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-  .t402 .pm-catcell.hl { border-top: 3px solid var(--green); }
-  .t402 .pm-cattitle { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 12px; color: var(--ink); }
-  .t402 .pm-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-  .t402 .pm-tag { font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; color: var(--ink-soft); }
-  .t402 .pm-dashnote { margin-top: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-  .t402 .pm-whgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .t402 .pm-wcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 18px; }
-  .t402 .pm-wnum { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
-  .t402 .pm-wtitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 8px 0 6px; color: var(--ink); }
-  .t402 .pm-wtext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
-  .t402 .pm-ba { margin-top: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px 26px 24px; }
-  .t402 .pm-bah { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0 0 14px; color: var(--ink); }
-  .t402 .pm-ctag { display: inline-block; font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; margin: 0 0 18px; }
-  .t402 .pm-barow { display: flex; align-items: stretch; }
-  .t402 .pm-bside { flex: 1; padding: 18px 20px; border-radius: 12px; }
-  .t402 .pm-bside.before { background: var(--surface); }
-  .t402 .pm-bside.after { background: var(--ink); color: var(--surface); }
-  .t402 .pm-btag { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
-  .t402 .pm-bside.before .pm-btag { color: var(--muted); }
-  .t402 .pm-bside.after .pm-btag { color: #E9F5C6; }
-  .t402 .pm-mo { font-family: var(--font-mono); font-weight: 700; font-size: 30px; }
-  .t402 .pm-bside.after .pm-mo { color: var(--green); }
-  .t402 .pm-mo-per { font-size: 14px; font-weight: 400; opacity: .7; }
-  .t402 .pm-arrowcol { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 16px; }
-  .t402 .pm-ar { font-size: 26px; color: var(--green-deep); line-height: 1; }
-  .t402 .pm-mult { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); margin-top: 6px; white-space: nowrap; }
-  .t402 .pm-foot { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
-  .t402 .pm-chip { font-family: var(--font-mono); font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; color: var(--ink-soft); }
-  .t402 .pm-chip.key { background: var(--green); border-color: var(--green-deep); color: var(--ink); font-weight: 700; }
-  .t402 .pm-note { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
-  .t402 .pm-cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-  .t402 .pm-btn { font-family: var(--font-display); font-weight: 700; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 13px 26px; display: inline-block; }
-  .t402 .pm-btn.primary { background: var(--green); color: var(--ink); }
-  .t402 .pm-btn.primary:hover { background: var(--green-deep); }
-  .t402 .pm-btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }
-  .t402 .pm-btn.secondary:hover { background: var(--surface); }
-  @media (max-width: 900px) { .t402 .pm-grid { grid-template-columns: repeat(2, 1fr); } .t402 .pm-whgrid, .t402 .pm-cat { grid-template-columns: 1fr; } }
-  @media (max-width: 560px) { .t402 .pm-grid { grid-template-columns: 1fr; } .t402 .pm-barow { flex-direction: column; gap: 12px; } .t402 .pm-arrowcol { flex-direction: row; padding: 4px 0; } .t402 .pm-ar { transform: rotate(90deg); } }
+  /* ── reference-model entry card (links to child page) ── */
+  .t402 .model-entry-sec { background: var(--surface-2); }
+  .t402 .model-entry { display: block; background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 30px 32px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .t402 .model-entry:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); border-color: var(--green); }
+  .t402 .model-entry .eyebrow-plain { margin-bottom: 10px; }
+  .t402 .model-entry .model-entry-h { display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 3vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
+  .t402 .model-entry .model-entry-cta { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
 
   /* ── fixed Pay/Sell/Dashboard switcher ── */
   .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }

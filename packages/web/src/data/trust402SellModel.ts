@@ -10,6 +10,9 @@
 import type { Localized } from "./trust402";
 
 export interface SellModel {
+  readonly meta: { readonly title: Localized; readonly description: Localized };
+  readonly entryCta: Localized;
+  readonly backLink: Localized;
   readonly eyebrow: Localized;
   readonly h2: Localized;
   readonly sellsLabel: Localized;
@@ -50,6 +53,18 @@ export interface SellModel {
 }
 
 export const T402_SELL_MODEL: SellModel = {
+  meta: {
+    title: {
+      en: "Trust402 · Sell — reference model: who's selling, and for how much | Lemma",
+      ja: "Trust402 · Sell — 参考モデル：誰が・何を・いくらで売れるか | Lemma",
+    },
+    description: {
+      en: "Illustrative examples of who sells to AI agents through Trust402, what they list, and roughly what they earn — plus what else you can sell. Figures are examples; you set your own price, 0% commission.",
+      ja: "Trust402 で AI エージェントに売る人の例 — 誰が・何を出品し、目安でいくら稼ぐか。ほかに出品できるものも。金額は例示で、価格は自分で設定、手数料 0%。",
+    },
+  },
+  entryCta: { en: "See the reference model", ja: "参考モデルを見る" },
+  backLink: { en: "← Trust402 · Sell", ja: "← Trust402 · Sell" },
   eyebrow: { en: "trust402 · sell", ja: "trust402 · sell" },
   h2: { en: "The kind of people already selling to AI agents.", ja: "こんな人が、AI エージェントに売れる。" },
   sellsLabel: { en: "what they sell", ja: "売るもの" },
