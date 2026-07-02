@@ -91,9 +91,13 @@ export default function MetaTags(props: MetaTagsProps) {
     // re-prefix with `base`, that would yield "/ja/ja/blog/<slug>".
     const url = `https://lemma.frame00.com${blogPath}/${post.slug}`;
 
+    // og:/twitter:title use the short `ogTitle` when set; the on-page
+    // <title> and H1 keep the full SEO title (set elsewhere, unchanged).
+    const shareTitle = post.ogTitle ?? post.title;
+
     return (
       <>
-        <meta property="og:title" content={post.title} />
+        <meta property="og:title" content={shareTitle} />
         <meta property="og:description" content={post.abstract} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
@@ -101,7 +105,7 @@ export default function MetaTags(props: MetaTagsProps) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:title" content={shareTitle} />
         <meta name="twitter:description" content={post.abstract} />
         <meta name="twitter:image" content={ogImage} />
       </>

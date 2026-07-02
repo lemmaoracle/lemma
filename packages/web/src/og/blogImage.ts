@@ -74,7 +74,12 @@ export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
   const coverDataUri = await fetchCoverAsDataUri(post.cover);
   const isFallback = coverDataUri === null;
   const node = buildOgArtboard({
-    title: post.title,
+    // Prefer the bespoke short card title when the post supplies one; the
+    // full `post.title` (H1 / SEO) can be too long to wrap cleanly here.
+    title: post.ogTitle ?? post.title,
+    // Balanced auto-fit layout only kicks in for posts that opt in via
+    // `ogTitle`; posts without it render byte-for-byte as before.
+    balanceTitle: post.ogTitle != null,
     // Dark-on-light: the banner's title zone is a light cream field.
     titleColorOverride: BLACK,
     topRight: buildTopRight(post.category, post.date, isFallback),
