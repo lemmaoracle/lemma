@@ -59,6 +59,7 @@ const sellHref = `${base}/trust402/sell/`;
                 <p class="pm-lbl">{M.incomeLabel[locale]}</p>
                 <div class="pm-amt"><span class="pm-hl">{p.income}</span><span class="pm-per">{M.per[locale]}</span></div>
                 <div class="pm-vol">{p.vol[locale]}</div>
+                {p.note && <p class="pm-pnote">{p.note[locale]}</p>}
               </div>
             </div>
           ))}
@@ -181,6 +182,7 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-hl { background: linear-gradient(transparent 62%, var(--green) 62%); padding: 0 2px; }
   .t402 .pm-per { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 5px; }
   .t402 .pm-vol { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .t402 .pm-pnote { font-size: 12px; color: var(--green-link); margin: 10px 0 0; line-height: 1.6; }
   .t402 .pm-sec-h { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 44px 0 4px; color: var(--ink); }
   .t402 .pm-sec-sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
   .t402 .pm-catlist { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid var(--border); }
