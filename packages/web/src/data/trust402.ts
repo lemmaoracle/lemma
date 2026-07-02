@@ -101,7 +101,8 @@ export interface Trust402Content {
        *  Card copy is FINAL — don't reword in copy edits. */
       readonly card: {
         readonly handle: string;
-        readonly org: Localized;
+        readonly orgName: Localized;
+        readonly orgPlan: string;
         readonly idChip: string;
         readonly statusChip: Localized;
         readonly file: string;
@@ -265,7 +266,8 @@ export const T402: Trust402Content = {
       },
       card: {
         handle: "yuki_t",
-        org: { en: "Tokyo ◯◯ University — Institutional ID", ja: "東京◯◯大学 — Institutional ID" },
+        orgName: { en: "Tokyo ◯◯ University", ja: "東京◯◯大学" },
+        orgPlan: "— Institutional ID",
         idChip: "ID 0x742d…bEb8",
         statusChip: { en: "listed · dataset", ja: "出品中 · データセット" },
         file: "shibuya-survey-2026.csv",
@@ -277,7 +279,7 @@ export const T402: Trust402Content = {
           { label: { en: "provenance", ja: "来歴" }, value: { en: "recorded", ja: "記録済み" } },
         ],
         priceBig: "0.30",
-        priceRest: { en: "USDC ≈ $0.30 / use", ja: "USDC ≈ $0.30 / 回" },
+        priceRest: { en: "≈ $0.30 / use", ja: "≈ $0.30 / 回" },
         proof: "proof 0x8f2c…a41e",
         verifiedBy: "Verified by Lemma",
       },
