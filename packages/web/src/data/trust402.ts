@@ -599,7 +599,9 @@ export const T402: Trust402Content = {
     },
 
     closing: {
-      h2: { en: "Your work. Provably yours.", ja: "あなたの成果。証明できる、あなたのもの。" },
+      /* "agents trust" over "provably yours" — trust implies verified,
+         licensed use (not silent scraping), which is the Sell promise. */
+      h2: { en: "Turn your work into something agents trust.", ja: "あなたの成果を、エージェントが信頼できるものに。" },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       github: { en: "GitHub", ja: "GitHub" },
     },
