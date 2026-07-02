@@ -125,6 +125,12 @@ export interface Trust402Content {
       readonly caption: Localized;
       readonly modelLink: Localized;
     };
+    readonly whyMore: {
+      readonly eyebrow: Localized;
+      readonly h2: Localized;
+      readonly sub: Localized;
+      readonly items: ReadonlyArray<{ readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
+    };
     readonly control: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
@@ -353,6 +359,41 @@ export const T402: Trust402Content = {
         ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
       modelLink: { en: "See what sells", ja: "何が売れるか見る" },
+    },
+
+    whyMore: {
+      eyebrow: { en: "why it earns more", ja: "より高く売れる理由" },
+      h2: { en: "Why it sells for more.", ja: "なぜ、より高く売れるのか。" },
+      sub: {
+        en: "Real, verifiable, original — exactly what AI agents will pay a premium for.",
+        ja: "本物で・検証でき・オリジナル。それが AI エージェントが割増しでも欲しいものです。",
+      },
+      items: [
+        {
+          icon: "ic-signed",
+          title: { en: "Being real gets it chosen", ja: "本物だと、選ばれる" },
+          text: {
+            en: "It carries who, when, and unaltered — and AI prefers sources it can verify.",
+            ja: "「誰が・いつ・無改変か」が証明つき。AI は裏取りできる一次ソースを優先します。",
+          },
+        },
+        {
+          icon: "ic-direct",
+          title: { en: "Direct means you keep more", ja: "直接だから、手取りが多い" },
+          text: {
+            en: "You license the original yourself — no middleman skimming your cut.",
+            ja: "オリジナルのまま本人が販売。仲介の中抜きがないぶん、そのまま収入に。",
+          },
+        },
+        {
+          icon: "ic-gem",
+          title: { en: "The real gets scarce", ja: "本物は、これから希少になる" },
+          text: {
+            en: "As generated content floods the web, verified human originals only grow more valuable.",
+            ja: "生成物が増えるほど、検証済みの“人間の本物”は希少になり、値がつく。",
+          },
+        },
+      ],
     },
 
     control: {

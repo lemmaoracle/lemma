@@ -76,6 +76,26 @@ const payHref = `${base}/trust402/`;
       </div>
     </header>
 
+    {/* 1.5 WHY IT SELLS FOR MORE (catchy, right below hero) */}
+    <section class="section-gray">
+      <div class="inner">
+        <div class="sec-head reveal">
+          <span class="eyebrow-plain">{c.whyMore.eyebrow[locale]}</span>
+          <h2>{c.whyMore.h2[locale]}</h2>
+          <p>{c.whyMore.sub[locale]}</p>
+        </div>
+        <div class="whymore reveal">
+          {c.whyMore.items.map((w) => (
+            <div class="wm">
+              <span class="wm-ic-wrap"><svg class="ic wm-ic"><use href={`#${w.icon}`} /></svg></span>
+              <h3>{w.title[locale]}</h3>
+              <p>{w.text[locale]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     {/* 2. HOW SELLING WORKS */}
     <section id="how">
       <div class="inner">
@@ -118,35 +138,6 @@ const payHref = `${base}/trust402/`;
         </div>
         <p class="eq-caption">{c.whatSell.caption[locale]}</p>
         <div class="center-link"><a class="link-arrow" href={`${base}/trust402/sell/model/`}>→ {c.whatSell.modelLink[locale]}</a></div>
-      </div>
-    </section>
-
-    {/* 4. WHAT STAYS YOURS / DON'T NEED */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.control.eyebrow[locale]}</span>
-          <h2>{c.control.h2[locale]}</h2>
-          <p>{c.control.sub[locale]}</p>
-        </div>
-        <div class="keeps reveal">
-          <div class="keepcol yes">
-            <h3>{c.control.yesTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.yes.map((item) => (
-                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
-          <div class="keepcol no">
-            <h3>{c.control.noTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.no.map((item) => (
-                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -231,6 +222,35 @@ const payHref = `${base}/trust402/`;
           <div class="side side-here"><svg class="ic ic-robot side-ic"><use href="#ic-signed" /></svg><div class="st">{c.twoSides.sellTag[locale]}</div><h3>{c.twoSides.sellH3[locale]}</h3><p>{c.twoSides.sellBody[locale]}</p></div>
         </div>
         <div class="center-link"><a class="link-arrow" href={payHref}>→ {c.twoSides.link[locale]}</a></div>
+      </div>
+    </section>
+
+    {/* 8.5 WHAT STAYS YOURS / DON'T NEED (moved lower — reassurance before pricing) */}
+    <section>
+      <div class="inner">
+        <div class="sec-head reveal">
+          <span class="eyebrow-plain">{c.control.eyebrow[locale]}</span>
+          <h2>{c.control.h2[locale]}</h2>
+          <p>{c.control.sub[locale]}</p>
+        </div>
+        <div class="keeps reveal">
+          <div class="keepcol yes">
+            <h3>{c.control.yesTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.yes.map((item) => (
+                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div class="keepcol no">
+            <h3>{c.control.noTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.no.map((item) => (
+                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -483,6 +503,14 @@ const payHref = `${base}/trust402/`;
 
 
   .t402 .free-badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 2px 9px; border-radius: 5px; margin-left: 8px; vertical-align: middle; }
+
+  /* ── why it sells for more (below hero) ── */
+  .t402 .whymore { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .t402 .wm-ic-wrap { display: inline-flex; width: 52px; height: 52px; border-radius: 13px; background: rgba(182, 245, 0, 0.15); align-items: center; justify-content: center; margin-bottom: 16px; }
+  .t402 .wm-ic { width: 28px; height: 28px; color: var(--ink); }
+  .t402 .wm h3 { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0 0 8px; color: var(--ink); letter-spacing: -0.01em; }
+  .t402 .wm p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+  @media (max-width: 760px) { .t402 .whymore { grid-template-columns: 1fr; gap: 22px; } }
 
   /* ── fixed Pay/Sell/Dashboard switcher ── */
   .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
