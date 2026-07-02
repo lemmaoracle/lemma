@@ -15,7 +15,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
-import { T402, T402_GITHUB } from "../data/trust402";
+import { T402, T402_GITHUB, T402_SELL_OG } from "../data/trust402";
 
 interface Props {
   locale: Locale;
@@ -34,6 +34,7 @@ const payHref = `${base}/trust402/`;
   pagePath="/trust402/sell/"
   title={T402.sellMeta.title[locale]}
   description={T402.sellMeta.description[locale]}
+  ogImage={T402_SELL_OG[locale]}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
@@ -63,13 +64,47 @@ const payHref = `${base}/trust402/`;
               <svg class="ic ic-robot" style="width:32px;height:44px"><use href="#ic-robot" /></svg>
               <span>{c.hero.cardCaption[locale]}</span>
             </div>
+            {/* v9 listing card — HTML/CSS port of the OGP card's left half
+                (the right column's pitch copy stays out: the hero copy + CTAs
+                already play that role) */}
             <div class="ocard">
-              <div class="ochead"><span class="ofile">{c.hero.card.file}</span><span class="obadge">{c.hero.card.badge[locale]}</span></div>
-              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b>{c.hero.card.madeByVal[locale]}</b></div>
-              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">{c.hero.card.verifiedVal[locale]}</span></div>
-              <div class="orow"><span>{c.hero.card.priceRow[locale]}</span><b>{c.hero.card.price[locale]}</b></div>
-              <div class="orow orow-top"><span>{c.hero.card.checking[locale]}</span><span class="ocheck">{c.hero.card.checkingVal[locale]}</span></div>
-              <div class="onote">{c.hero.card.note[locale]}</div>
+              <div class="oc-seller">
+                <div>
+                  <div class="oc-handle">{c.hero.card.handle}</div>
+                  <div class="oc-org">{c.hero.card.org[locale]}</div>
+                </div>
+                <span class="oc-idchip">{c.hero.card.idChip}</span>
+              </div>
+              <div class="oc-rule"></div>
+              <span class="oc-status">{c.hero.card.statusChip[locale]}</span>
+              <div class="oc-item">
+                <svg class="oc-fileico" viewBox="0 0 30 38" aria-hidden="true">
+                  <path class="oc-fileico-doc" d="M2 1.5h17.5L28 10v26.5H2z" />
+                  <path class="oc-fileico-fold" d="M19.5 1.5V10H28" />
+                  <path class="oc-fileico-lines" d="M7 17.5h16M7 23.5h16M7 29.5h10" />
+                </svg>
+                <div class="oc-filemeta">
+                  <div class="oc-filename">{c.hero.card.file}</div>
+                  <div class="oc-filesub">{c.hero.card.fileMeta}</div>
+                </div>
+                <div class="oc-seal">
+                  <span class="oc-seal-circle" aria-hidden="true">
+                    <svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </span>
+                  <span class="oc-seal-label">{c.hero.card.sealLabel[locale]}</span>
+                </div>
+              </div>
+              <div class="oc-checks">
+                {c.hero.card.checks.map((k) => (
+                  <span class="oc-check"><span class="oc-check-label">{k.label[locale]}</span> <b>{k.value[locale]}</b> <span class="oc-mk">✓</span></span>
+                ))}
+              </div>
+              <div class="oc-dots"></div>
+              <div class="oc-pricerow">
+                <div class="oc-price"><b>{c.hero.card.priceBig}</b> <span>{c.hero.card.priceRest[locale]}</span></div>
+                <span class="oc-proof">{c.hero.card.proof}</span>
+              </div>
+              <div class="oc-foot">{c.hero.card.verifiedBy}</div>
             </div>
           </div>
         </div>
@@ -361,16 +396,37 @@ const payHref = `${base}/trust402/`;
   .t402 .card-caption .ic { color: var(--term-fg); }
   @media (max-width: 900px) { .t402 .hero-grid { grid-template-columns: 1fr; gap: 36px; } }
 
-  /* output card */
-  .t402 .ocard { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; color: var(--ink); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); }
-  .t402 .ocard .ochead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-  .t402 .ocard .ofile { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
-  .t402 .ocard .obadge { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--green); color: var(--ink); padding: 3px 9px; border-radius: 4px; }
-  .t402 .ocard .orow { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12.5px; padding: 6px 0; color: var(--ink-soft); }
-  .t402 .ocard .orow b { color: var(--ink); }
-  .t402 .ocard .orow-top { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 12px; }
-  .t402 .ocard .ocheck { color: var(--green-link); font-weight: 700; }
-  .t402 .ocard .onote { font-family: var(--font-body); font-size: 11.5px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.5; }
+  /* v9 listing card */
+  .t402 .ocard { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px 24px 16px; color: var(--ink); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); }
+  .t402 .oc-seller { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .t402 .oc-handle { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
+  .t402 .oc-org { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .t402 .oc-idchip { flex: none; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; white-space: nowrap; }
+  .t402 .oc-rule { height: 1px; background: var(--border); margin: 16px 0; }
+  .t402 .oc-status { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; background: var(--green); color: var(--ink); border-radius: 5px; padding: 3px 10px; margin-bottom: 14px; }
+  .t402 .oc-item { display: flex; align-items: center; gap: 14px; }
+  .t402 .oc-fileico { flex: none; width: 30px; height: 38px; }
+  .t402 .oc-fileico-doc { fill: var(--card); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  .t402 .oc-fileico-fold { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  .t402 .oc-fileico-lines { fill: none; stroke: var(--green-deep); stroke-width: 2.5; stroke-linecap: round; }
+  .t402 .oc-filemeta { min-width: 0; }
+  .t402 .oc-filename { font-family: var(--font-display); font-size: 15.5px; font-weight: 700; overflow-wrap: anywhere; }
+  .t402 .oc-filesub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .t402 .oc-seal { margin-left: auto; flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .t402 .oc-seal-circle { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 999px; background: var(--green); color: var(--ink); }
+  .t402 .oc-seal-circle svg { width: 15px; height: 15px; }
+  .t402 .oc-seal-label { font-size: 10px; font-weight: 700; color: var(--green-link); white-space: nowrap; }
+  .t402 .oc-checks { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 16px; font-size: 12px; }
+  .t402 .oc-check { white-space: nowrap; }
+  .t402 .oc-check-label { color: var(--muted); }
+  .t402 .oc-check b { color: var(--ink); font-weight: 700; }
+  .t402 .oc-mk { color: var(--green-deep); font-weight: 700; }
+  .t402 .oc-dots { border-top: 1px dotted var(--border); margin: 14px 0; }
+  .t402 .oc-pricerow { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .t402 .oc-price { font-family: var(--font-mono); color: var(--ink-soft); font-size: 12.5px; }
+  .t402 .oc-price b { font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .t402 .oc-proof { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+  .t402 .oc-foot { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--muted); text-align: center; border-top: 1px solid var(--border); margin-top: 14px; padding-top: 10px; }
 
   /* card grid */
   .t402 .cards { display: grid; gap: 16px; }

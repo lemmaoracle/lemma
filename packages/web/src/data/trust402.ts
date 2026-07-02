@@ -97,18 +97,21 @@ export interface Trust402Content {
       readonly ctaSecondary: Localized;
       readonly lede: ReadonlyArray<Localized>;
       readonly cardCaption: Localized;
+      /** The v9 listing card (HTML/CSS port of the OGP card's left half).
+       *  Card copy is FINAL — don't reword in copy edits. */
       readonly card: {
+        readonly handle: string;
+        readonly org: Localized;
+        readonly idChip: string;
+        readonly statusChip: Localized;
         readonly file: string;
-        readonly badge: Localized;
-        readonly madeBy: Localized;
-        readonly madeByVal: Localized;
-        readonly untouched: Localized;
-        readonly verifiedVal: Localized;
-        readonly priceRow: Localized;
-        readonly price: Localized;
-        readonly checking: Localized;
-        readonly checkingVal: Localized;
-        readonly note: Localized;
+        readonly fileMeta: string;
+        readonly sealLabel: Localized;
+        readonly checks: ReadonlyArray<{ readonly label: Localized; readonly value: Localized }>;
+        readonly priceBig: string;
+        readonly priceRest: Localized;
+        readonly proof: string;
+        readonly verifiedBy: string;
       };
     };
     readonly how: {
@@ -257,24 +260,26 @@ export const T402: Trust402Content = {
         { en: "0% commission", ja: "手数料 0%" },
       ],
       cardCaption: {
-        en: "an agent checks it's real (free), then pays you ↓",
+        en: "an agent checks it's real (free), then pays ↓",
         ja: "エージェントが本物か確認し(無料)、支払う ↓",
       },
       card: {
-        file: "my-dataset.csv",
-        badge: { en: "yours ✓", ja: "あなたのもの ✓" },
-        madeBy: { en: "made by", ja: "作成者" },
-        madeByVal: { en: "you ✓", ja: "あなた ✓" },
-        untouched: { en: "untouched", ja: "改ざんなし" },
-        verifiedVal: { en: "verified ✓", ja: "検証済み ✓" },
-        priceRow: { en: "your price", ja: "あなたの価格" },
-        price: { en: "0.05 USDC ≈ $0.05 / use", ja: "0.05 USDC ≈ $0.05 / 回" },
-        checking: { en: "checking it's real", ja: "本物か確認" },
-        checkingVal: { en: "always free", ja: "常に無料" },
-        note: {
-          en: "USDC is a digital dollar — the agent pays automatically, straight to your own wallet.",
-          ja: "USDC はデジタルのドル。エージェントが自動で支払い、直接あなたのウォレットに届きます。",
-        },
+        handle: "yuki_t",
+        org: { en: "Tokyo ◯◯ University — Institutional ID", ja: "東京◯◯大学 — Institutional ID" },
+        idChip: "ID 0x742d…bEb8",
+        statusChip: { en: "listed · dataset", ja: "出品中 · データセット" },
+        file: "shibuya-survey-2026.csv",
+        fileMeta: "CSV · 4.2 MB",
+        sealLabel: { en: "proof of authenticity", ja: "真贋証明つき" },
+        checks: [
+          { label: { en: "made by", ja: "作成者" }, value: { en: "the seller", ja: "本人" } },
+          { label: { en: "untouched", ja: "改ざん" }, value: { en: "verified", ja: "なし" } },
+          { label: { en: "provenance", ja: "来歴" }, value: { en: "recorded", ja: "記録済み" } },
+        ],
+        priceBig: "0.30",
+        priceRest: { en: "USDC ≈ $0.30 / use", ja: "USDC ≈ $0.30 / 回" },
+        proof: "proof 0x8f2c…a41e",
+        verifiedBy: "Verified by Lemma",
       },
     },
 
@@ -585,3 +590,14 @@ export const T402: Trust402Content = {
 };
 
 export const T402_GITHUB = GH;
+
+/**
+ * Page-specific OG image for the Sell pages (v9 card, full 1200×630 version
+ * incl. the right pitch column). Asset lives at
+ * packages/web/public/og/products/trust402/sell-ja.png.
+ * JA only for now — the card's text is Japanese, so EN pages keep the locale
+ * default until an EN card is delivered (MetaTags falls back when undefined).
+ */
+export const T402_SELL_OG: { readonly ja?: string; readonly en?: string } = {
+  ja: "https://lemma.frame00.com/og/products/trust402/sell-ja.png",
+};

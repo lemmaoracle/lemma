@@ -12,6 +12,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
+import { T402_SELL_OG } from "../data/trust402";
 import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
 
 interface Props {
@@ -30,6 +31,7 @@ const sellHref = `${base}/trust402/sell/`;
   pagePath="/trust402/sell/model/"
   title={M.meta.title[locale]}
   description={M.meta.description[locale]}
+  ogImage={T402_SELL_OG[locale]}
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
