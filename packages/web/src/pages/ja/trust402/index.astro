@@ -538,7 +538,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 18px; }
 .t402b .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
 .t402b .eyebrow-plain.on-dark { color: var(--green); }
-.t402b .eyebrow { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
 .t402b .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s,color .2s,border-color .2s,transform .2s; }
 .t402b .btn-primary { background: var(--green); color: var(--ink); }
 .t402b .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
@@ -596,7 +595,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
-.t402b .closing .core { font-family: var(--font-display); font-weight: 300; font-size: clamp(18px,2.4vw,26px); color: var(--green); letter-spacing: -0.01em; margin: 22px auto 30px; max-width: 40ch; }
 .t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
 .t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 /* reveal */
@@ -785,11 +783,11 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
+    {/* closing — 問いかけ一本。eyebrow と Trust402/x402 の説明行は削除
+        （並べると長く、ごちゃつくため）。問い → CTA の直結。 */}
     <section class="closing">
       <div class="inner">
-        <span class="eyebrow on-dark">エージェント経済</span>
-        <h2>エージェント時代の信頼を。</h2>
-        <div class="core">Trust402 は x402 に信頼を添える — 支払うときは権限を、売るときは来歴を。</div>
+        <h2>エージェント経済を切り開く準備は、できていますか。</h2>
         <div class="rule"></div>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">ウェイトリストに登録 →</a>
