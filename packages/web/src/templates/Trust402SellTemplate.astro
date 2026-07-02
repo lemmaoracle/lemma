@@ -113,8 +113,9 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
     </header>
 
     {/* 2. WHY IT SELLS FOR MORE — merged with "why proof matters": the
-        copies-flood-the-web narrative leads in, the 3 cards answer it,
-        and the tech link closes the section */}
+        copies-flood-the-web narrative leads in, the 3 cards answer it.
+        (The technical deep-dive link lives at the FAQ tail, not here —
+        no mid-funnel page exits.) */}
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal">
@@ -131,7 +132,6 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
             </div>
           ))}
         </div>
-        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.whyMore.techLink[locale]}</a></div>
       </div>
     </section>
 
@@ -303,6 +303,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
             </div>
           ))}
         </div>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.faq.techLink[locale]}</a></div>
       </div>
     </section>
 

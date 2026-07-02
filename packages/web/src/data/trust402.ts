@@ -132,13 +132,13 @@ export interface Trust402Content {
       readonly modelLink: Localized;
     };
     /** Merged "why it earns more" + "why proof matters" — narrative intro,
-     *  3 cards, tech link at the end (13→9 restructure). */
+     *  3 cards (13→9 restructure). No outbound tech link here: study
+     *  material lives at the FAQ tail, not mid-funnel. */
     readonly whyMore: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly sub: Localized;
       readonly items: ReadonlyArray<{ readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
-      readonly techLink: Localized;
     };
     /** ✓✕ lists rendered inside the FAQ section (replaces the FAQ items
      *  they duplicated). */
@@ -196,6 +196,10 @@ export interface Trust402Content {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly items: ReadonlyArray<Faq>;
+      /** "Go deeper" link at the section tail (→ /trust402/#provenance).
+       *  Deliberately here, not in the why-real section — a page exit
+       *  belongs after the questions are answered, not mid-funnel. */
+      readonly techLink: Localized;
     };
     readonly closing: {
       readonly eyebrow: Localized;
@@ -262,8 +266,8 @@ export const T402: Trust402Content = {
         { en: "0% commission", ja: "手数料 0%" },
       ],
       cardCaption: {
-        en: "an agent checks it's real (free), then pays ↓",
-        ja: "エージェントが本物か確認し(無料)、支払う ↓",
+        en: "an agent checks it's real, then pays ↓",
+        ja: "エージェントが本物か確認し、支払う ↓",
       },
       card: {
         handle: "yuki_t",
@@ -395,7 +399,6 @@ export const T402: Trust402Content = {
           },
         },
       ],
-      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み(Trust402)" },
     },
 
     control: {
@@ -578,6 +581,7 @@ export const T402: Trust402Content = {
           },
         },
       ],
+      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み(Trust402)" },
     },
 
     closing: {
