@@ -495,21 +495,21 @@ export const T402: Trust402Content = {
 
     hands: {
       eyebrow: { en: "hands-on", ja: "実際にやること" },
-      h2: { en: "What you actually do: fill one short form.", ja: "やることは、短いフォームを 1 つ埋めるだけ。" },
+      h2: { en: "What you actually do: pick a file, set a price — in the Dashboard.", ja: "やることは、ダッシュボードでファイルを選び、価格を決めるだけ。" },
       sub: {
-        en: "No dashboard to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
-        ja: "ダッシュボードの設定もコードも不要 — 本番前に、全体を無料で予行演習できます。",
+        en: "Nothing to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
+        ja: "設定するものも、書くコードもなし — 本番前に、全体を無料で予行演習できます。",
       },
       sandboxTitle: { en: "① try it in the sandbox", ja: "① サンドボックスで試す" },
       sandboxBody: {
-        en: "Fill one short form — point to a file, set a test price. It runs on a test network, so no real money moves. Break things, retry, get comfortable. Students start here.",
-        ja: "短いフォームを 1 つ埋める — ファイルを指定し、テスト価格を設定。テストネット上で動くので、実際のお金は動きません。壊して、やり直して、慣れる。学生はここから。",
+        en: "In the Dashboard, point to a file and set a test price. It runs on a test network, so no real money moves. Break things, retry, get comfortable. Students start here.",
+        ja: "ダッシュボードでファイルを指定し、テスト価格を設定するだけ。テストネット上で動くので、実際のお金は動きません。壊して、やり直して、慣れる。学生はここから。",
       },
       sandboxChip: { en: "no real money · testnet", ja: "実マネーなし · テストネット" },
       prodTitle: { en: "② go live in production", ja: "② 本番に出す" },
       prodBody: {
-        en: "The exact same form — now it's real. Agents can discover your listing, verify it for free, and pay you. Nothing new to learn.",
-        ja: "まったく同じフォーム — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
+        en: "The exact same steps — now it's real. Agents can discover your listing, verify it for free, and pay you. Nothing new to learn.",
+        ja: "同じ手順のまま — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
       },
       prodChip: { en: "same steps · real payouts", ja: "同じ手順 · 実際の入金" },
     },
@@ -675,8 +675,8 @@ export const T402: Trust402Content = {
         {
           q: { en: "I've never done this — where do I start?", ja: "やったことがない — どこから始める?" },
           a: {
-            en: "In the free sandbox. Fill one short form on a test network, watch the whole flow happen, and pay nothing. When it clicks, going live is the same form.",
-            ja: "無料のサンドボックスから。テストネットで短いフォームを 1 つ埋め、流れ全体を見る — 費用はゼロ。感覚が掴めたら、本番も同じフォームです。",
+            en: "In the free sandbox. In the Dashboard, point to a file and set a test price, watch the whole flow, and pay nothing. When it clicks, going live takes the same steps.",
+            ja: "無料のサンドボックスから。ダッシュボードでファイルを指定してテスト価格を決め、流れ全体を見る — 費用はゼロ。感覚が掴めたら、本番も同じ手順です。",
           },
         },
         {
