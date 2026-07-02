@@ -50,6 +50,7 @@ export interface SellModel {
   readonly baNote: Localized;
   readonly ctaTry: Localized;
   readonly ctaPricing: Localized;
+  readonly ctaStart: Localized;
 }
 
 export const T402_SELL_MODEL: SellModel = {
@@ -243,4 +244,5 @@ export const T402_SELL_MODEL: SellModel = {
 
   ctaTry: { en: "Try it free →", ja: "無料で試す →" },
   ctaPricing: { en: "See pricing", ja: "料金を見る" },
+  ctaStart: { en: "See how to get started", ja: "始め方を見る" },
 };

@@ -115,6 +115,7 @@ const sellHref = `${base}/trust402/sell/`;
           {/* "Try it free" leads to the Dashboard demo; repoint to the real sandbox flow once its URL exists. */}
           <a class="pm-btn primary" href={`${base}/trust402/sell/dashboard/`}>{M.ctaTry[locale]}</a>
           <a class="pm-btn secondary" href={`${sellHref}#pricing`}>{M.ctaPricing[locale]}</a>
+          <a class="pm-btn secondary" href={sellHref}>{M.ctaStart[locale]}</a>
         </div>
       </div>
     </section>
@@ -159,7 +160,7 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-back:hover { text-decoration: underline; }
   .t402 .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 12px; }
   .t402 .pm-h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 30px; color: var(--ink); }
-  .t402 .pm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .t402 .pm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .t402 .pm-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 22px 20px 20px; display: flex; flex-direction: column; }
   .t402 .pm-cardtop { display: flex; align-items: center; justify-content: space-between; }
   .t402 .pm-badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
