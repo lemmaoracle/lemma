@@ -118,6 +118,7 @@ export interface Trust402Content {
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
       readonly caption: Localized;
+      readonly modelLink: Localized;
     };
     readonly control: {
       readonly eyebrow: Localized;
@@ -322,7 +323,7 @@ export const T402: Trust402Content = {
 
     whatSell: {
       eyebrow: { en: "what you can sell", ja: "売れるもの" },
-      h2: { en: "If you made it, an agent can cite it.", ja: "あなたが作ったなら、エージェントは引用できる。" },
+      h2: { en: "If you made it, an agent can cite it.", ja: "あなたが作ったなら、エージェントの出典になる。" },
       sub: {
         en: "Research work is exactly what AI agents are hungry for — real, structured, and verifiable. A few things people put up:",
         ja: "研究成果こそ AI エージェントが求めているもの — 本物で、構造化され、検証可能。出品されている例をいくつか:",
@@ -353,12 +354,13 @@ export const T402: Trust402Content = {
         en: "Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.",
         ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
+      modelLink: { en: "See what sells", ja: "何が売れるか見る" },
     },
 
     control: {
       eyebrow: { en: "no strings attached", ja: "縛りなし" },
       h2: { en: "You stay in control.", ja: "主導権はあなたに。" },
-      sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたから何かを奪うことはありません。" },
+      sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたの権利はそのまま。" },
       yesTitle: { en: "What stays yours", ja: "あなたのものであり続けるもの" },
       yes: [
         { en: "Full ownership of your work — always.", ja: "成果の完全な所有権 — 常に。" },
