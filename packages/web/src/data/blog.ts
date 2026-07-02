@@ -44,6 +44,13 @@ export interface BlogPost {
   readonly secondaryCategories?: ReadonlyArray<string>;
   readonly section: string;
   readonly title: string;
+  /**
+   * Optional short title for the OG card + og:title / twitter:title.
+   * The full `title` stays as the H1 and <title> (SEO); this lets the
+   * shareable card carry a punchier headline that wraps cleanly.
+   * Falls back to `title` when absent.
+   */
+  readonly ogTitle?: string;
   readonly abstract: string;
   readonly body: string;
   readonly categoryColor?: string;
@@ -171,6 +178,7 @@ interface PostFrontmatter {
   readonly secondary_categories?: ReadonlyArray<string>;
   readonly section?: string;
   readonly title?: string;
+  readonly ogTitle?: string;
   readonly abstract?: string;
   readonly categoryColor?: string;
   readonly cover?: string;
@@ -386,6 +394,7 @@ function parsePost(filename: string, raw: string): BlogPost | undefined {
                   : undefined,
               section: fm.section || defaultSectionByCategory[fm.category || ""] || "Essays",
               title: fm.title,
+              ogTitle: fm.ogTitle || undefined,
               abstract: fm.abstract ?? "",
               body: marked.parse(content, { async: false }),
               categoryColor:
