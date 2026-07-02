@@ -76,7 +76,9 @@ const payHref = `${base}/trust402/`;
       </div>
     </header>
 
-    {/* 1.5 WHY IT SELLS FOR MORE (catchy, right below hero) */}
+    {/* 2. WHY IT SELLS FOR MORE — merged with "why proof matters": the
+        copies-flood-the-web narrative leads in, the 3 cards answer it,
+        and the tech link closes the section */}
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal">
@@ -93,10 +95,11 @@ const payHref = `${base}/trust402/`;
             </div>
           ))}
         </div>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.whyMore.techLink[locale]}</a></div>
       </div>
     </section>
 
-    {/* 2. HOW SELLING WORKS */}
+    {/* 3. HOW SELLING WORKS */}
     <section id="how">
       <div class="inner">
         <div class="sec-head reveal">
@@ -119,7 +122,7 @@ const payHref = `${base}/trust402/`;
       </div>
     </section>
 
-    {/* 3. WHAT YOU CAN SELL */}
+    {/* 4. WHAT YOU CAN SELL */}
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal">
@@ -141,41 +144,8 @@ const payHref = `${base}/trust402/`;
       </div>
     </section>
 
-    {/* 5. WHY PROOF MATTERS */}
-    <section class="section-gray">
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.whyProof.eyebrow[locale]}</span>
-          <h2>{c.whyProof.h2[locale]}</h2>
-          <p>{c.whyProof.sub[locale]}</p>
-        </div>
-        <div class="slogan reveal">{c.whyProof.sloganA[locale]} <span class="g">{c.whyProof.sloganEm[locale]}</span></div>
-        <p class="plain-note">{c.whyProof.note[locale]}<span class="note-em">{c.whyProof.noteEm[locale]}</span></p>
-        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.whyProof.techLink[locale]}</a></div>
-      </div>
-    </section>
-
-    {/* 6. INSTITUTIONAL ID */}
-    <section class="section-dark">
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain on-dark">{c.institutional.eyebrow[locale]}</span>
-          <h2>{c.institutional.h2a[locale]} <span class="g">{c.institutional.h2em[locale]}</span></h2>
-          <p>{c.institutional.sub[locale]}</p>
-        </div>
-        <div class="cards c3">
-          {c.institutional.cards.map((card) => (
-            <div class="card reveal">
-              <svg class="ic card-ic"><use href={`#${card.icon}`} /></svg>
-              <h3>{card.title[locale]}</h3>
-              <p>{card.body[locale]}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* 7.5 WHAT YOU ACTUALLY DO */}
+    {/* 5. WHAT YOU ACTUALLY DO — the Dashboard-demo CTA sits right under
+        the ①② cards (was its own section) */}
     <section>
       <div class="inner">
         <div class="sec-head reveal">
@@ -195,68 +165,44 @@ const payHref = `${base}/trust402/`;
             <span class="chip">{c.hands.prodChip[locale]}</span>
           </div>
         </div>
-      </div>
-    </section>
-
-    {/* 7.6 SEE IT IN THE DASHBOARD (demo) — replaces the on-page form/listings previews */}
-    <section class="section-gray">
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.dash.eyebrow[locale]}</span>
-          <h2>{c.dash.h2[locale]}</h2>
-          <p>{c.dash.sub[locale]}</p>
-        </div>
         <div class="center-link reveal">
-          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.dash.cta[locale]} →</a>
+          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hands.cta[locale]} →</a>
+          <p class="cta-note">{c.hands.ctaNote[locale]}</p>
         </div>
       </div>
     </section>
 
-    {/* 8. TWO SIDES */}
-    <section class="section-gray">
-      <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">{c.twoSides.eyebrow[locale]}</span><h2>{c.twoSides.h2[locale]}</h2><p>{c.twoSides.sub[locale]}</p></div>
-        <div class="sides reveal">
-          <div class="side"><svg class="ic ic-robot side-ic"><use href="#ic-robot-proof" /></svg><div class="st">{c.twoSides.payTag[locale]}</div><h3>{c.twoSides.payH3[locale]}</h3><p>{c.twoSides.payBody[locale]}</p></div>
-          <div class="swap">↔</div>
-          <div class="side side-here"><svg class="ic ic-robot side-ic"><use href="#ic-signed" /></svg><div class="st">{c.twoSides.sellTag[locale]}</div><h3>{c.twoSides.sellH3[locale]}</h3><p>{c.twoSides.sellBody[locale]}</p></div>
-        </div>
-        <div class="center-link"><a class="link-arrow" href={payHref}>→ {c.twoSides.link[locale]}</a></div>
-      </div>
-    </section>
-
-    {/* 8.5 WHAT STAYS YOURS / DON'T NEED (moved lower — reassurance before pricing) */}
-    <section>
+    {/* 6. INSTITUTIONAL ID — participation framing + request funnel */}
+    <section class="section-dark">
       <div class="inner">
         <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.control.eyebrow[locale]}</span>
-          <h2>{c.control.h2[locale]}</h2>
-          <p>{c.control.sub[locale]}</p>
+          <span class="eyebrow-plain on-dark">{c.institutional.eyebrow[locale]}</span>
+          <h2>{c.institutional.h2a[locale]} <span class="g">{c.institutional.h2em[locale]}</span></h2>
+          <p>{c.institutional.sub[locale]}</p>
         </div>
-        <div class="keeps reveal">
-          <div class="keepcol yes">
-            <h3>{c.control.yesTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.yes.map((item) => (
-                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
-          <div class="keepcol no">
-            <h3>{c.control.noTitle[locale]}</h3>
-            <ul class="keeplist">
-              {c.control.no.map((item) => (
-                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
-              ))}
-            </ul>
-          </div>
+        <div class="cards c3">
+          {c.institutional.cards.map((card) => (
+            <div class="card reveal">
+              <svg class="ic card-ic"><use href={`#${card.icon}`} /></svg>
+              <h3>{card.title[locale]}</h3>
+              <p>{card.body[locale]}</p>
+            </div>
+          ))}
+        </div>
+        <div class="request reveal">
+          <p class="request-lead">{c.institutional.request.lead[locale]}</p>
+          <a class="btn btn-primary" href={c.institutional.request.href[locale]}>{c.institutional.request.cta[locale]} →</a>
         </div>
       </div>
     </section>
 
-    {/* 9. PRICING */}
+    {/* 7. PRICING — the Pay↔Sell relationship is a thin band here (was a section) */}
     <section id="pricing">
       <div class="inner">
+        <div class="payband reveal">
+          <span>{c.payBand.text[locale]}</span>
+          <a class="link-arrow" href={payHref}>→ {c.payBand.link[locale]}</a>
+        </div>
         <div class="sec-head reveal">
           <span class="eyebrow-plain">{c.pricing.eyebrow[locale]}</span>
           <h2>{c.pricing.h2[locale]}</h2>
@@ -281,19 +227,42 @@ const payHref = `${base}/trust402/`;
       </div>
     </section>
 
-    {/* 10. FAQ */}
+    {/* 8. FAQ — leads with the ✓✕ "no strings attached" lists (they answer
+        the lock-in / data-handover questions the FAQ used to duplicate) */}
     <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">{c.faq.eyebrow[locale]}</span><h2>{c.faq.h2[locale]}</h2></div>
-        <div class="reveal">
+        <div class="keeps reveal">
+          <div class="keepcol yes">
+            <h3>{c.control.yesTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.yes.map((item) => (
+                <li><span class="mk">✓</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div class="keepcol no">
+            <h3>{c.control.noTitle[locale]}</h3>
+            <ul class="keeplist">
+              {c.control.no.map((item) => (
+                <li><span class="mk">✕</span><span>{item[locale]}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div class="reveal faq-list">
           {c.faq.items.map((item) => (
-            <div class="faq-item"><h3>{item.q[locale]}</h3><p>{item.a[locale]}</p></div>
+            <div class="faq-item">
+              <h3>{item.q[locale]}</h3>
+              <p>{item.a[locale]}</p>
+              {item.link && <a class="link-arrow" href={item.link.href[locale]}>→ {item.link.label[locale]}</a>}
+            </div>
           ))}
         </div>
       </div>
     </section>
 
-    {/* 11. CLOSING */}
+    {/* 9. CLOSING */}
     <section class="closing">
       <div class="inner">
         <span class="eyebrow on-dark">{c.closing.eyebrow[locale]}</span>
@@ -424,21 +393,17 @@ const payHref = `${base}/trust402/`;
 
   .t402 .eq-caption { margin-top: 16px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
 
-  /* slogan */
-  .t402 .slogan { font-family: var(--font-display); font-weight: 300; font-size: clamp(24px, 3.2vw, 40px); letter-spacing: -0.02em; line-height: 1.25; margin: 8px 0; }
-  .t402 .plain-note { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin-top: 20px; }
-  .t402 .plain-note .note-em { color: var(--green-link); }
-
-  /* two sides */
-  .t402 .sides { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; margin: 34px 0; }
-  .t402 .side { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 14px; padding: 28px 26px; }
-  .t402 .side .ic { color: var(--ink); margin-bottom: 14px; }
-  .t402 .side .st { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 8px; }
-  .t402 .side h3 { font-size: 22px; color: var(--ink); margin-bottom: 8px; }
-  .t402 .side p { font-size: 13.5px; color: var(--ink-soft); }
-  .t402 .sides .swap { font-size: 26px; color: var(--green-link); text-align: center; }
   .t402 .center-link { text-align: center; margin-top: 24px; }
-  @media (max-width: 760px) { .t402 .sides { grid-template-columns: 1fr; } }
+  .t402 .cta-note { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  /* institutional request funnel */
+  .t402 .request { text-align: center; margin-top: 44px; }
+  .t402 .request-lead { font-size: 14.5px; color: rgba(236, 235, 227, 0.6); max-width: 58ch; margin: 0 auto 18px; }
+
+  /* thin Pay↔Sell band above pricing */
+  .t402 .payband { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 10px; padding: 14px 20px; margin-bottom: 48px; }
+  .t402 .payband span { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); }
+  .t402 .payband .link-arrow { white-space: nowrap; }
 
   /* pricing */
   .t402 .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -455,10 +420,12 @@ const payHref = `${base}/trust402/`;
   @media (max-width: 900px) { .t402 .tiers { grid-template-columns: 1fr; } }
 
   /* FAQ */
+  .t402 .faq-list { margin-top: 44px; }
   .t402 .faq-item { border-top: 1px solid var(--border); padding: 24px 0; }
   .t402 .faq-item:last-child { border-bottom: 1px solid var(--border); }
   .t402 .faq-item h3 { font-size: 18px; margin-bottom: 8px; }
   .t402 .faq-item p { font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
+  .t402 .faq-item .link-arrow { margin-top: 10px; }
 
   /* closing */
   .t402 .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 120px 8%; }
