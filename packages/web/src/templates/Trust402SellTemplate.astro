@@ -16,7 +16,6 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402, T402_GITHUB } from "../data/trust402";
-import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
 
 interface Props {
   locale: Locale;
@@ -58,7 +57,7 @@ const formL = {
             <p class="hero-sub">{c.hero.sub[locale]}</p>
             <div class="hero-cta-row">
               <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hero.ctaPrimary[locale]} →</a>
-              <a class="btn btn-ghost on-dark" href="#how">{c.hero.ctaSecondary[locale]}</a>
+              <a class="btn btn-ghost on-dark" href={`${base}/trust402/sell/model/`}>{c.hero.ctaSecondary[locale]}</a>
             </div>
             <div class="lede-note">{c.hero.lede[locale]}</div>
           </div>
@@ -79,17 +78,6 @@ const formL = {
         </div>
       </div>
     </header>
-
-    {/* Reference model — links to the /trust402/sell/model/ child page */}
-    <section class="model-entry-sec">
-      <div class="inner">
-        <a class="model-entry" href={`${base}/trust402/sell/model/`}>
-          <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
-          <span class="model-entry-h">{M.h2[locale]}</span>
-          <span class="model-entry-cta">{M.entryCta[locale]} →</span>
-        </a>
-      </div>
-    </section>
 
     {/* 2. HOW SELLING WORKS */}
     <section id="how">
@@ -662,12 +650,6 @@ const formL = {
   @media (max-width: 760px) { .t402 .lsum { grid-template-columns: 1fr; } .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; } .t402 .lrow.lhead { display: none; } .t402 .lrow .lt { grid-column: 1 / -1; } }
 
   /* ── reference-model entry card (links to child page) ── */
-  .t402 .model-entry-sec { background: var(--surface-2); }
-  .t402 .model-entry { display: block; background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 30px 32px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
-  .t402 .model-entry:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); border-color: var(--green); }
-  .t402 .model-entry .eyebrow-plain { margin-bottom: 10px; }
-  .t402 .model-entry .model-entry-h { display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 3vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
-  .t402 .model-entry .model-entry-cta { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
 
   /* ── fixed Pay/Sell/Dashboard switcher ── */
   .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }

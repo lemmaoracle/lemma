@@ -300,10 +300,10 @@ export const T402: Trust402Content = {
         ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
       },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
-      ctaSecondary: { en: "See how it works", ja: "仕組みを見る" },
+      ctaSecondary: { en: "See what sells", ja: "何が売れるか見る" },
       lede: {
-        en: "Free to start · made for students, researchers, and labs",
-        ja: "無料で開始 · 学生・研究者・研究室のために",
+        en: "Free to start · no code · 0% commission",
+        ja: "無料で開始 · ノーコード · 手数料0%",
       },
       cardCaption: {
         en: "an agent checks it's real (free), then pays you ↓",
