@@ -164,58 +164,11 @@ export interface Trust402Content {
       readonly prodBody: Localized;
       readonly prodChip: Localized;
     };
-    readonly form: {
+    readonly dash: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly sub: Localized;
-      readonly ribbon: Localized;
-      readonly previewTag: Localized;
-      readonly ribbonNote: Localized;
-      readonly fileLabel: Localized;
-      readonly fileHint: Localized;
-      readonly titleLabel: Localized;
-      readonly titleValue: Localized;
-      readonly versionLabel: Localized;
-      readonly priceLabel: Localized;
-      readonly asLabel: Localized;
-      readonly asYou: Localized;
-      readonly asInst: Localized;
-      readonly submit: Localized;
-      readonly note: Localized;
-      readonly previewLabel: Localized;
-      readonly cardNote: Localized;
-      readonly signedBadge: Localized;
-      readonly priceInit: Localized;
-      readonly unit: Localized;
-      readonly untitled: Localized;
-      readonly asYouShort: Localized;
-      readonly asInstShort: Localized;
-    };
-    readonly listings: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly sumUses: Localized;
-      readonly sumEarned: Localized;
-      readonly sumListings: Localized;
-      readonly colListing: Localized;
-      readonly colStatus: Localized;
-      readonly colPrice: Localized;
-      readonly colUses: Localized;
-      readonly colEarned: Localized;
-      readonly note: Localized;
-      readonly statusLive: Localized;
-      readonly statusSandbox: Localized;
-      readonly statusTestnet: Localized;
-      readonly dashLink: Localized;
-      readonly rows: ReadonlyArray<{
-        readonly title: Localized;
-        readonly file: string;
-        readonly status: "live" | "sandbox";
-        readonly price: string;
-        readonly uses: string;
-        readonly earned: Localized;
-      }>;
+      readonly cta: Localized;
     };
     readonly twoSides: {
       readonly eyebrow: Localized;
@@ -262,7 +215,7 @@ export const T402: Trust402Content = {
     },
     description: {
       en: "Turn a dataset, paper, or any file into something AI agents can verify and pay for — proof it came from you, paid directly in USDC to your own wallet. No servers, no code. 0% commission.",
-      ja: "データセットや論文、ファイルを、AI エージェントが検証して購入できる資源に。あなた由来である証明つきで、USDC が直接あなたのウォレットに届く。サーバーもコードも不要、手数料 0%。",
+      ja: "データセットや論文、どんなファイルも、AI エージェントが検証して購入できる形に。本人が作った本物である証明つきで、USDC が直接あなたのウォレットに届く。コードもサーバーも不要、手数料 0%。",
     },
   },
 
@@ -514,89 +467,14 @@ export const T402: Trust402Content = {
       prodChip: { en: "same steps · real payouts", ja: "同じ手順 · 実際の入金" },
     },
 
-    form: {
-      eyebrow: { en: "listing · preview", ja: "出品 · プレビュー" },
-      h2: { en: "This is all it takes to list.", ja: "出品に必要なのは、これだけ。" },
+    dash: {
+      eyebrow: { en: "the dashboard · demo", ja: "ダッシュボード · デモ" },
+      h2: { en: "The rest happens in your Dashboard.", ja: "あとは、ダッシュボードで。" },
       sub: {
-        en: "A live preview — play with it here, nothing gets published. You do this for real in the Dashboard. Five fields: fill them in and your listing takes shape on the right, exactly what an agent sees.",
-        ja: "ライブプレビューです — ここで触っても何も公開されません。実際の入力はダッシュボードで行います。5 項目を埋めると、右側にあなたの出品が形になります — エージェントが見るものそのままです。",
+        en: "Publishing, pricing, and tracking what you've sold all live in one place. Take a look — it's a non-functional demo, nothing goes live.",
+        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。非機能デモなので公開はされません — 中を覗いてみてください。",
       },
-      ribbon: { en: "publish a listing", ja: "出品を公開" },
-      previewTag: { en: "preview", ja: "preview" },
-      ribbonNote: { en: "nothing is saved here", ja: "ここでは何も保存されません" },
-      fileLabel: { en: "your file", ja: "ファイル" },
-      fileHint: { en: "drop a file, or point to a URL you already host", ja: "ファイルをドロップ、または既存の URL を指定" },
-      titleLabel: { en: "title", ja: "タイトル" },
-      titleValue: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
-      versionLabel: { en: "version", ja: "バージョン" },
-      priceLabel: { en: "price per use", ja: "1 回あたりの価格" },
-      asLabel: { en: "publish as", ja: "発行者" },
-      asYou: { en: "You (individual)", ja: "あなた(個人)" },
-      asInst: { en: "Under your institution", ja: "所属組織の名義で" },
-      submit: { en: "Publish in the Dashboard", ja: "ダッシュボードで公開" },
-      note: { en: "no real money · testnet", ja: "実マネーなし · テストネット" },
-      previewLabel: { en: "what the agent sees ↓", ja: "エージェントが見るもの ↓" },
-      cardNote: {
-        en: "This card is your listing. Agents verify the proof for free, then pay to get the file.",
-        ja: "このカードがあなたの出品です。エージェントは証明を無料で検証し、支払ってファイルを受け取ります。",
-      },
-      signedBadge: { en: "signed", ja: "署名済み" },
-      priceInit: { en: "0.05 USDC / use", ja: "0.05 USDC / 回" },
-      unit: { en: " USDC / use", ja: " USDC / 回" },
-      untitled: { en: "untitled", ja: "無題" },
-      asYouShort: { en: "you ✓", ja: "あなた ✓" },
-      asInstShort: { en: "you · under your institution ✓", ja: "あなた・組織の名義 ✓" },
-    },
-
-    listings: {
-      eyebrow: { en: "your listings", ja: "あなたの出品" },
-      h2: { en: "After you publish, track it here.", ja: "公開したら、ここで追える。" },
-      sub: {
-        en: "Everything you've put up lives in one place — whether it's live or still a sandbox test, how many times it's been used, and what it's earned.",
-        ja: "出したものがすべて一か所に — 本番かサンドボックスか、何回使われ、いくら稼いだか。",
-      },
-      sumListings: { en: "active listings", ja: "有効な出品" },
-      sumUses: { en: "total uses", ja: "総利用回数" },
-      sumEarned: { en: "earned", ja: "獲得額" },
-      colListing: { en: "listing", ja: "出品" },
-      colStatus: { en: "status", ja: "状態" },
-      colPrice: { en: "price", ja: "価格" },
-      colUses: { en: "uses", ja: "利用" },
-      colEarned: { en: "earned", ja: "獲得" },
-      note: {
-        en: "Sandbox listings run on a test network — the numbers are there so you can watch the whole loop before going live.",
-        ja: "サンドボックスの出品はテストネット上 — 本番前に全体の流れを見られるよう、数値も表示しています。",
-      },
-      statusLive: { en: "live", ja: "公開中" },
-      statusSandbox: { en: "sandbox", ja: "お試し" },
-      statusTestnet: { en: "testnet", ja: "テストネット" },
-      dashLink: { en: "Open the Dashboard", ja: "ダッシュボードを開く" },
-      rows: [
-        {
-          title: { en: "Labeled image set — 2026", ja: "ラベル付き画像セット — 2026" },
-          file: "my-dataset.csv",
-          status: "live",
-          price: "0.05 USDC",
-          uses: "840",
-          earned: { en: "42.00 USDC", ja: "42.00 USDC" },
-        },
-        {
-          title: { en: "Cleaned JA text corpus", ja: "整形済み日本語コーパス" },
-          file: "corpus-ja.jsonl",
-          status: "live",
-          price: "0.03 USDC",
-          uses: "400",
-          earned: { en: "12.00 USDC", ja: "12.00 USDC" },
-        },
-        {
-          title: { en: "Benchmark results · Q2", ja: "ベンチマーク結果 · Q2" },
-          file: "bench-q2.csv",
-          status: "sandbox",
-          price: "0.10 USDC",
-          uses: "—",
-          earned: { en: "testnet", ja: "テストネット" },
-        },
-      ],
+      cta: { en: "Open the Dashboard demo", ja: "ダッシュボードデモを開く" },
     },
 
     twoSides: {

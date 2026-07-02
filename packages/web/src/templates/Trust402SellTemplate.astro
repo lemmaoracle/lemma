@@ -26,13 +26,6 @@ interface Props {
 const { locale, t, base } = Astro.props as Props;
 const c = T402.sell;
 const payHref = `${base}/trust402/`;
-// Locale strings the client form-preview script needs (passed via define:vars).
-const formL = {
-  asYou: c.form.asYouShort[locale],
-  asInst: c.form.asInstShort[locale],
-  unit: c.form.unit[locale],
-  untitled: c.form.untitled[locale],
-};
 ---
 
 <Layout
@@ -94,7 +87,6 @@ const formL = {
               <div class="who">{s.who[locale]}</div>
               <h3>{s.title[locale]}</h3>
               <p>{s.body[locale]}</p>
-              {i === 0 && <a class="link-arrow step-link" href="#the-form">{c.how.stepLink[locale]}</a>}
               {i === 2 && <svg class="ic ic-robot step-robot"><use href="#ic-robot" /></svg>}
             </div>
           ))}
@@ -241,91 +233,17 @@ const formL = {
       </div>
     </section>
 
-    {/* 7.6 THE FORM (interactive preview) */}
-    <section class="section-gray" id="the-form">
+    {/* 7.6 SEE IT IN THE DASHBOARD (demo) — replaces the on-page form/listings previews */}
+    <section class="section-gray">
       <div class="inner">
         <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.form.eyebrow[locale]}</span>
-          <h2>{c.form.h2[locale]}</h2>
-          <p>{c.form.sub[locale]}</p>
+          <span class="eyebrow-plain">{c.dash.eyebrow[locale]}</span>
+          <h2>{c.dash.h2[locale]}</h2>
+          <p>{c.dash.sub[locale]}</p>
         </div>
-        <div class="formsec-grid reveal">
-          <div class="form-card">
-            <div class="form-ribbon"><span class="dot"></span> {c.form.ribbon[locale]} <span class="prevtag">{c.form.previewTag[locale]}</span><span class="rt">{c.form.ribbonNote[locale]}</span></div>
-            <div class="form-body">
-              <div class="field">
-                <label>{c.form.fileLabel[locale]}</label>
-                <div class="filedrop">
-                  <div class="fd-file" id="t402-f-file">my-dataset.csv</div>
-                  <div class="fd-hint">{c.form.fileHint[locale]}</div>
-                </div>
-              </div>
-              <div class="field">
-                <label>{c.form.titleLabel[locale]}</label>
-                <input id="t402-f-title" type="text" value={c.form.titleValue[locale]} />
-              </div>
-              <div class="field">
-                <div class="row2">
-                  <div class="field">
-                    <label>{c.form.versionLabel[locale]}</label>
-                    <select id="t402-f-version"><option>v1</option><option>v2</option><option selected>v3 · canonical</option></select>
-                  </div>
-                  <div class="field">
-                    <label>{c.form.priceLabel[locale]}</label>
-                    <div class="price-in"><input id="t402-f-price" type="text" value="0.05" /><span class="cur">USDC</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="field">
-                <label>{c.form.asLabel[locale]}</label>
-                <select id="t402-f-as"><option value="you">{c.form.asYou[locale]}</option><option value="inst">{c.form.asInst[locale]}</option></select>
-              </div>
-              <div class="form-foot">
-                <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.form.submit[locale]} →</a>
-                <span class="form-note">{c.form.note[locale]}</span>
-              </div>
-            </div>
-          </div>
-          <div>
-            <span class="preview-label">{c.form.previewLabel[locale]}</span>
-            <div class="ocard">
-              <div class="ochead"><span class="ofile" id="t402-p-file">my-dataset.csv</span><span class="obadge">{c.form.signedBadge[locale]}</span></div>
-              <div class="orow"><span>{c.form.titleLabel[locale]}</span><b id="t402-p-title">{c.form.titleValue[locale]}</b></div>
-              <div class="orow"><span>{c.hero.card.madeBy[locale]}</span><b id="t402-p-as">{c.form.asYouShort[locale]}</b></div>
-              <div class="orow"><span>{c.hero.card.untouched[locale]}</span><span class="ocheck">{c.hero.card.verifiedVal[locale]}</span></div>
-              <div class="orow"><span>{c.form.versionLabel[locale]}</span><b id="t402-p-version">v3 · canonical</b></div>
-              <div class="orow"><span>{c.form.priceLabel[locale]}</span><b id="t402-p-price">{c.form.priceInit[locale]}</b></div>
-              <div class="orow orow-top"><span>{c.hero.card.checking[locale]}</span><span class="ocheck">{c.hero.card.checkingVal[locale]}</span></div>
-              <div class="onote">{c.form.cardNote[locale]}</div>
-            </div>
-          </div>
+        <div class="center-link reveal">
+          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.dash.cta[locale]} →</a>
         </div>
-      </div>
-    </section>
-
-    {/* 7.7 YOUR LISTINGS */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.listings.eyebrow[locale]}</span>
-          <h2>{c.listings.h2[locale]}</h2>
-          <p>{c.listings.sub[locale]}</p>
-        </div>
-        <div class="listings reveal">
-          <div class="lsum">
-            <div class="lcell"><div class="lnum">3</div><div class="llab">{c.listings.sumListings[locale]}</div></div>
-            <div class="lcell"><div class="lnum">1,240</div><div class="llab">{c.listings.sumUses[locale]}</div></div>
-            <div class="lcell"><div class="lnum">54.00 <span class="u">USDC</span></div><div class="llab">{c.listings.sumEarned[locale]}</div></div>
-          </div>
-          <div class="ltable">
-            <div class="lrow lhead"><span>{c.listings.colListing[locale]}</span><span>{c.listings.colStatus[locale]}</span><span>{c.listings.colPrice[locale]}</span><span>{c.listings.colUses[locale]}</span><span>{c.listings.colEarned[locale]}</span></div>
-            {c.listings.rows.map((r) => (
-            <div class="lrow"><div><div class="lt">{r.title[locale]}</div><div class="lf">{r.file}</div></div><div><span class:list={["lstatus", r.status]}>{r.status === "live" ? c.listings.statusLive[locale] : c.listings.statusSandbox[locale]}</span></div><div class="mono">{r.price}</div><div class="mono">{r.uses}</div><div class:list={["mono", { muted: r.status === "sandbox" }]}>{r.earned[locale]}</div></div>
-            ))}
-          </div>
-        </div>
-        <p class="price-note">{c.listings.note[locale]}</p>
-        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/sell/dashboard/`}>→ {c.listings.dashLink[locale]}</a></div>
       </div>
     </section>
 
@@ -605,52 +523,6 @@ const formL = {
 
   .t402 .free-badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 2px 9px; border-radius: 5px; margin-left: 8px; vertical-align: middle; }
 
-  /* publish form */
-  .t402 .formsec-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: start; }
-  @media (max-width: 900px) { .t402 .formsec-grid { grid-template-columns: 1fr; } }
-  .t402 .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-  .t402 .form-ribbon { display: flex; align-items: center; gap: 9px; background: var(--ink); color: var(--term-fg); font-family: var(--font-mono); font-size: 12px; padding: 12px 22px; }
-  .t402 .form-ribbon .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); flex: none; }
-  .t402 .form-ribbon .rt { margin-left: auto; color: rgba(236, 235, 227, 0.55); }
-  .t402 .form-ribbon .prevtag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; border: 1px solid rgba(236, 235, 227, 0.4); color: var(--term-fg); padding: 2px 8px; border-radius: 5px; }
-  .t402 .form-body { padding: 26px 24px; display: flex; flex-direction: column; gap: 17px; }
-  .t402 .field { display: flex; flex-direction: column; gap: 7px; }
-  .t402 .field label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: lowercase; color: var(--muted); }
-  .t402 .field input, .t402 .field select { font-family: var(--font-body); font-size: 14.5px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; outline: none; width: 100%; -webkit-appearance: none; appearance: none; }
-  .t402 .field input:focus, .t402 .field select:focus { border-color: var(--green); background: #fff; }
-  .t402 .field .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .t402 .filedrop { border: 1.5px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; background: var(--surface-2); cursor: pointer; transition: border-color 0.2s; }
-  .t402 .filedrop:hover { border-color: var(--green); }
-  .t402 .filedrop .fd-file { font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; color: var(--ink); }
-  .t402 .filedrop .fd-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .t402 .price-in { position: relative; }
-  .t402 .price-in .cur { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--muted); pointer-events: none; }
-  .t402 .form-foot { display: flex; align-items: center; gap: 14px; margin-top: 2px; flex-wrap: wrap; }
-  .t402 .form-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
-  .t402 .preview-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: lowercase; color: var(--green-link); margin-bottom: 12px; display: block; }
-
-  /* listings */
-  .t402 .listings { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card); }
-  .t402 .lsum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
-  .t402 .lsum .lcell { background: var(--card); padding: 22px 24px; }
-  .t402 .lsum .lnum { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1; }
-  .t402 .lsum .lnum .u { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-weight: 400; }
-  .t402 .lsum .llab { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; color: var(--green-link); margin-top: 8px; }
-  .t402 .ltable { padding: 4px 0 8px; }
-  .t402 .lrow { display: grid; grid-template-columns: 2fr 0.9fr 1fr 0.7fr 1fr; gap: 12px; align-items: center; padding: 16px 24px; border-top: 1px solid var(--border); }
-  .t402 .lrow.lhead { border-top: none; padding-bottom: 8px; }
-  .t402 .lrow.lhead span { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; color: var(--muted); }
-  .t402 .lrow .lt { font-weight: 600; font-size: 14.5px; }
-  .t402 .lrow .lf { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  .t402 .lrow .mono { font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
-  .t402 .lrow .mono.muted { color: var(--muted); }
-  .t402 .lstatus { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; display: inline-block; }
-  .t402 .lstatus.live { background: var(--green); color: var(--ink); }
-  .t402 .lstatus.sandbox { background: var(--surface); color: var(--muted); }
-  @media (max-width: 760px) { .t402 .lsum { grid-template-columns: 1fr; } .t402 .lrow { grid-template-columns: 1fr 1fr; gap: 6px 12px; } .t402 .lrow.lhead { display: none; } .t402 .lrow .lt { grid-column: 1 / -1; } }
-
-  /* ── reference-model entry card (links to child page) ── */
-
   /* ── fixed Pay/Sell/Dashboard switcher ── */
   .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
   .t402 .t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: var(--term-fg); padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
@@ -660,7 +532,7 @@ const formL = {
   .t402 .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
 </style>
 
-<script is:inline define:vars={{ formL }}>
+<script is:inline>
   (function () {
     // reveal-on-scroll
     var els = document.querySelectorAll(".t402 .reveal");
@@ -680,25 +552,5 @@ const formL = {
     } else {
       els.forEach(function (el) { el.classList.add("on"); });
     }
-
-    // live publish-form preview
-    var g = function (id) { return document.getElementById(id); };
-    var file = g("t402-f-file"), title = g("t402-f-title"), ver = g("t402-f-version"), price = g("t402-f-price"), as = g("t402-f-as");
-    if (!title) return;
-    function sync() {
-      g("t402-p-file").textContent = (file.textContent || "").trim() || formL.untitled;
-      g("t402-p-title").textContent = title.value || "—";
-      g("t402-p-version").textContent = ver.value;
-      var p = (price.value || "").trim();
-      g("t402-p-price").textContent = (p ? p : "0") + formL.unit;
-      g("t402-p-as").textContent = as.value === "inst" ? formL.asInst : formL.asYou;
-    }
-    ["input", "change", "keyup"].forEach(function (ev) {
-      title.addEventListener(ev, sync);
-      price.addEventListener(ev, sync);
-    });
-    ver.addEventListener("change", sync);
-    as.addEventListener("change", sync);
-    sync();
   })();
 </script>
