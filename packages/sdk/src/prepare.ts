@@ -13,6 +13,17 @@ export type PrepareInput<Raw> = Readonly<{
   payload: Raw;
 }>;
 
+/**
+ * Normalize a credential payload and compute its Poseidon Merkle commitment.
+ *
+ * This function performs no network I/O. It is a pure local operation:
+ * schema lookup, normalization, and in-memory Poseidon commitment. The
+ * `_client` parameter is accepted for forward-compatibility of the public
+ * signature and is not read; it is retained so future versions may add
+ * client-bound behavior without a breaking change.
+ *
+ * Whitepaper §4.5.
+ */
 export const prepare = async <Raw, Norm extends Json>(
   _client: LemmaClient,
   input: PrepareInput<Raw>,
@@ -40,6 +51,11 @@ export const prepare = async <Raw, Norm extends Json>(
  * sectioned Poseidon commitment in `@lemmaoracle/agent`).
  *
  * `prepare` is equivalent to `normalize` + `commit`.
+ *
+ * This function performs no network I/O; it is a pure local normalization.
+ * The `_client` parameter is accepted for forward-compatibility of the public
+ * signature and is not read; it is retained so future versions may add
+ * client-bound behavior without a breaking change.
  */
 export const normalize = async <Raw, Norm extends Json>(
   _client: LemmaClient,
