@@ -22,7 +22,6 @@ const glossaryPath = base ? `${base}/glossary` : "/glossary";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const sealHref = base ? `${base}/seal/` : "/seal/";
 const trust402Href = locale === "ja" ? "/ja/trust402/" : "/trust402/";
-const trust402SellHref = locale === "ja" ? "/ja/trust402/sell/" : "/trust402/sell/";
 const plansPrefix = base ? `${base}/plans` : "/plans";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
 // Nav CTA routes to the self-serve Dashboard ("Get Started"), not the
@@ -198,10 +197,6 @@ const isResourcesActive =
               <span class="mega-link-title">{t.mega.products.trust402}</span>
               <span class="mega-link-sub">{t.mega.products.trust402Sub}</span>
             </a>
-            <a href={trust402SellHref} class="mega-link">
-              <span class="mega-link-title">{t.mega.products.trust402Sell}</span>
-              <span class="mega-link-sub">{t.mega.products.trust402SellSub}</span>
-            </a>
             <a href={getStartedHref} class="mega-link" target="_blank" rel="noopener">
               <span class="mega-link-title">{t.dashboardCta}</span>
             </a>
@@ -304,7 +299,6 @@ const isResourcesActive =
       <div class="mob-section-body">
         <a href={sealHref} class="mob-link">Seal<small>{t.mega.products.sealSub}</small></a>
         <a href={trust402Href} class="mob-link" target="_blank">{t.mega.products.trust402}<small>{t.mega.products.trust402Sub}</small></a>
-        <a href={trust402SellHref} class="mob-link">{t.mega.products.trust402Sell}<small>{t.mega.products.trust402SellSub}</small></a>
         <a href={getStartedHref} class="mob-link" target="_blank" rel="noopener">{t.dashboardCta}</a>
         <a href={guidesPath} class="mob-link">{t.mega.developers.specs}<small>{t.mega.developers.specsSub}</small></a>
       </div>
