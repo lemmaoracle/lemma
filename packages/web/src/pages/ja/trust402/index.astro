@@ -572,12 +572,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .risk-metaphor { font-family: var(--font-display); font-weight: 300; font-size: clamp(21px, 2.8vw, 32px); letter-spacing: -0.02em; line-height: 1.4; color: var(--ink); margin: 40px 0 0; }
 .t402b .risk-metaphor .hl { color: var(--green-link); }
 .t402b #risk .callout { margin-top: 22px; }
-/* compact provenance (kept at #provenance for the Sell FAQ-tail link) */
-.t402b .prov-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 28px; }
-.t402b .prov-list { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.t402b .prov-list li { font-size: 14.5px; color: var(--ink-soft); line-height: 1.8; }
-.t402b .prov-list b { color: var(--ink); font-family: var(--font-display); }
-.t402b .prov-list .chip { margin-left: 10px; }
 /* steps */
 .t402b .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .t402b .step { background: rgba(236,235,227,0.04); border: 1px solid var(--border-dk); border-radius: 14px; padding: 26px 24px; }
@@ -761,20 +755,19 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* provenance — もう一方の側面 (Sell) の技術要点。Sell ページの FAQ 末尾リンクが
-        #provenance に着地するため、アンカーと 3 点（BBS+/Poseidon/バージョン）は
-        コンパクト化しても残す。焦点は Pay(権限) に絞り、詳細は Sell へ。 */}
+    {/* provenance — Sell の付属品ではなく Trust402（= Lemma 自体）の強み。
+        説明はここに置き切る。Sell ページの FAQ 末尾リンクも #provenance に
+        着地する。深掘りリンクは来歴証明ピラーへ — セクション末尾に置き、
+        本文中の離脱は作らない。 */}
     <section id="provenance">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>本物であることを、どう証明するか。</h2><p>こちらはもう一方の側面 — 売るときの証明（来歴）。要点は 3 つだけ。</p></div>
-        <div class="prov-card reveal">
-          <ul class="prov-list">
-            <li><b>誰が作ったか</b> — あなたが発行者だと示す署名。開示する部分は選べる。<span class="chip">BBS+ over BLS12-381</span></li>
-            <li><b>改ざんされていない</b> — 1 バイトでも変わると壊れる指紋。<span class="chip">Poseidon over BN254</span></li>
-            <li><b>どのバージョンか</b> — エージェントが、意図した版を正確に引用できるように。</li>
-          </ul>
-          <a class="btn btn-primary" href="/ja/trust402/sell/">Trust402 · Sell を見る →</a>
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>本物であることを、どう証明するか。</h2><p>売るときだけの話ではありません — 来歴の証明は、Lemma の中核技術です。生成された偽物をあとから検出するのではなく、公開される瞬間に本物であることを刻む。公開するものには、この 3 つが添えられます。</p></div>
+        <div class="cards c3">
+        <div class="card reveal"><div class="num">01</div><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><div class="num">02</div><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><div class="num">03</div><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
         </div>
+        <p class="callout">● データは複製される。来歴は刻まれる。 · <a class="link-arrow" href="/ja/pillars/verifiable-origin/">来歴証明 — Lemma の仕組みを見る →</a></p>
       </div>
     </section>
 

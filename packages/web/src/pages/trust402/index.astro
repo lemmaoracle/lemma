@@ -572,12 +572,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .risk-metaphor { font-family: var(--font-display); font-weight: 300; font-size: clamp(21px, 2.8vw, 32px); letter-spacing: -0.02em; line-height: 1.4; color: var(--ink); margin: 40px 0 0; }
 .t402b .risk-metaphor .hl { color: var(--green-link); }
 .t402b #risk .callout { margin-top: 22px; }
-/* compact provenance (kept at #provenance for the Sell FAQ-tail link) */
-.t402b .prov-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 28px; }
-.t402b .prov-list { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.t402b .prov-list li { font-size: 14.5px; color: var(--ink-soft); line-height: 1.8; }
-.t402b .prov-list b { color: var(--ink); font-family: var(--font-display); }
-.t402b .prov-list .chip { margin-left: 10px; }
 /* steps */
 .t402b .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .t402b .step { background: rgba(236,235,227,0.04); border: 1px solid var(--border-dk); border-radius: 14px; padding: 26px 24px; }
@@ -762,21 +756,19 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* provenance — the other side's (Sell) technical gist. The Sell page's
-        FAQ-tail link lands on #provenance, so the anchor and the 3 points
-        (BBS+/Poseidon/version) stay even in compact form. Focus of this
-        page narrows to Pay (authority); details live on Sell. */}
+    {/* provenance — not a Sell accessory but Trust402's (= Lemma's own)
+        strength; the full explanation lives here. The Sell page's FAQ-tail
+        link lands on #provenance. The deep-dive link goes to the
+        Verifiable Origin pillar — at the section tail, no mid-copy exits. */}
     <section id="provenance">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>How we prove a file is really yours.</h2><p>This is the other side — proof of provenance when you sell. Just three things to know.</p></div>
-        <div class="prov-card reveal">
-          <ul class="prov-list">
-            <li><b>who made it</b> — a signature proving you're the publisher; reveal only the parts you want.<span class="chip">BBS+ over BLS12-381</span></li>
-            <li><b>not changed</b> — a fingerprint that breaks if even one byte is altered.<span class="chip">Poseidon over BN254</span></li>
-            <li><b>which version</b> — so an agent always cites the exact version you meant.</li>
-          </ul>
-          <a class="btn btn-primary" href="/trust402/sell/">See Trust402 · Sell →</a>
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>How we prove a file is really yours.</h2><p>This isn't just a Sell feature — provenance is Lemma's core craft. Not detecting fakes after the fact, but carving in authenticity the moment something is published. Three things get attached to whatever you publish.</p></div>
+        <div class="cards c3">
+        <div class="card reveal"><div class="num">01</div><h3>who made it</h3><p>A signature proving you're the publisher — reveal only the parts you want.</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><div class="num">02</div><h3>not changed</h3><p>A fingerprint that breaks if even one byte is altered.</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><div class="num">03</div><h3>which version</h3><p>So an agent always cites the exact version you meant.</p></div>
         </div>
+        <p class="callout">● Data is copied. Provenance is carved. · <a class="link-arrow" href="/pillars/verifiable-origin/">Verifiable Origin — how Lemma does it →</a></p>
       </div>
     </section>
 
