@@ -58,6 +58,8 @@ interface Step {
 interface Faq {
   readonly q: Localized;
   readonly a: Localized;
+  /** Optional follow-up link rendered after the answer. */
+  readonly link?: { readonly href: Localized; readonly label: Localized };
 }
 
 interface Tier {
@@ -125,30 +127,22 @@ export interface Trust402Content {
       readonly caption: Localized;
       readonly modelLink: Localized;
     };
+    /** Merged "why it earns more" + "why proof matters" — narrative intro,
+     *  3 cards (13→9 restructure). No outbound tech link here: study
+     *  material lives at the FAQ tail, not mid-funnel. */
     readonly whyMore: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly sub: Localized;
       readonly items: ReadonlyArray<{ readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
     };
+    /** ✓✕ lists rendered inside the FAQ section (replaces the FAQ items
+     *  they duplicated). */
     readonly control: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
       readonly yesTitle: Localized;
       readonly yes: ReadonlyArray<Localized>;
       readonly noTitle: Localized;
       readonly no: ReadonlyArray<Localized>;
-    };
-    readonly whyProof: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly sloganA: Localized;
-      readonly sloganEm: Localized;
-      readonly note: Localized;
-      readonly noteEm: Localized;
-      readonly techLink: Localized;
     };
     readonly institutional: {
       readonly eyebrow: Localized;
@@ -156,7 +150,19 @@ export interface Trust402Content {
       readonly h2em: Localized;
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
+      /** "Share this page" loop — students forward the page itself
+       *  (Web Share API / copy-link). No request form and no contact CTA:
+       *  budget owners read the plan themselves. A direct sign-up from the
+       *  pricing tier is planned later (Discovery Call is the enterprise
+       *  door — wrong entry point here). */
+      readonly share: {
+        readonly lead: Localized;
+        readonly cta: Localized;
+        readonly copied: Localized;
+        readonly text: Localized;
+      };
     };
+    /** Merged "what you actually do" + Dashboard-demo CTA. */
     readonly hands: {
       readonly eyebrow: Localized;
       readonly h2: Localized;
@@ -167,23 +173,12 @@ export interface Trust402Content {
       readonly prodTitle: Localized;
       readonly prodBody: Localized;
       readonly prodChip: Localized;
-    };
-    readonly dash: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
       readonly cta: Localized;
+      readonly ctaNote: Localized;
     };
-    readonly twoSides: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly payTag: Localized;
-      readonly payH3: Localized;
-      readonly payBody: Localized;
-      readonly sellTag: Localized;
-      readonly sellH3: Localized;
-      readonly sellBody: Localized;
+    /** Thin Pay↔Sell band right before pricing (was the twoSides section). */
+    readonly payBand: {
+      readonly text: Localized;
       readonly link: Localized;
     };
     readonly pricing: {
@@ -197,6 +192,10 @@ export interface Trust402Content {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly items: ReadonlyArray<Faq>;
+      /** "Go deeper" link at the section tail (→ /trust402/#provenance).
+       *  Deliberately here, not in the why-real section — a page exit
+       *  belongs after the questions are answered, not mid-funnel. */
+      readonly techLink: Localized;
     };
     readonly closing: {
       readonly eyebrow: Localized;
@@ -263,8 +262,8 @@ export const T402: Trust402Content = {
         { en: "0% commission", ja: "手数料 0%" },
       ],
       cardCaption: {
-        en: "an agent checks it's real (free), then pays you ↓",
-        ja: "エージェントが本物か確認し(無料)、支払う ↓",
+        en: "an agent checks it's real, then pays you ↓",
+        ja: "エージェントが本物か確認し、支払う ↓",
       },
       card: {
         file: "my-dataset.csv",
@@ -357,15 +356,15 @@ export const T402: Trust402Content = {
         en: "Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.",
         ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
-      modelLink: { en: "See what sells", ja: "何が売れるか見る" },
+      modelLink: { en: "See who sells, what & for how much", ja: "誰が・何を・いくらで売れるか見る" },
     },
 
     whyMore: {
       eyebrow: { en: "why it earns more", ja: "より高く売れる理由" },
-      h2: { en: "Why it sells for more.", ja: "なぜ、より高く売れるのか。" },
+      h2: { en: "Only the real earns a price.", ja: "値段がつくのは、本物だけ。" },
       sub: {
-        en: "Real, verifiable, original — exactly what AI agents will pay a premium for.",
-        ja: "本物で・検証でき・オリジナル。それが AI エージェントが割増しでも欲しいものです。",
+        en: "Scraped versions and AI-made imitations sit right next to your original — without proof, an agent can't tell which one is really yours. Real, verifiable, original: exactly what agents will pay a premium for.",
+        ja: "スクレイピングされた版や AI が作った模倣が、あなたの本物のすぐ隣に並びます — 証明がなければ、エージェントはどれが本当にあなたのものか区別できません。本物で・検証でき・オリジナル。それが、エージェントが割増しでも欲しいものです。",
       },
       items: [
         {
@@ -396,9 +395,6 @@ export const T402: Trust402Content = {
     },
 
     control: {
-      eyebrow: { en: "no strings attached", ja: "縛りなし" },
-      h2: { en: "You stay in control.", ja: "主導権はあなたに。" },
-      sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたの権利はそのまま。" },
       yesTitle: { en: "What stays yours", ja: "あなたのものであり続けるもの" },
       yes: [
         { en: "Full ownership of your work — always.", ja: "成果の完全な所有権 — 常に。" },
@@ -415,37 +411,23 @@ export const T402: Trust402Content = {
       ],
     },
 
-    whyProof: {
-      eyebrow: { en: "why proof matters", ja: "なぜ証明が要るのか" },
-      h2: { en: "The web fills with copies. Only one is really yours.", ja: "ネットは、コピーで埋まっていく。本物は、あなたのだけ。" },
-      sub: {
-        en: "Scraped versions and AI-made imitations sit right next to your original. Without proof, an agent can't tell which one is really yours — so it might pay someone else, or trust a fake.",
-        ja: "スクレイピングされた版や AI が作った模倣が、あなたの本物のすぐ隣に並びます。証明がなければ、エージェントはどれが本当にあなたのものか区別できず — 別人に支払ったり、偽物を信頼したりしかねません。",
-      },
-      sloganA: { en: "A copy can look identical.", ja: "コピーは見た目がまったく同じでも、" },
-      sloganEm: { en: "Only yours can prove it.", ja: "証明できるのはあなたのものだけ。" },
-      note: { en: "The technical way to say it: ", ja: "技術的に言えば: " },
-      noteEm: { en: "Signed is the only real.", ja: "署名されたものだけが本物。" },
-      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み（Trust402）" },
-    },
-
     institutional: {
-      eyebrow: { en: "institutional id · shared with pay", ja: "institutional id · pay と共通" },
-      h2a: { en: "At a university or lab?", ja: "大学や研究室に所属?" },
-      h2em: { en: "You're already covered.", ja: "すでに対象です。" },
+      eyebrow: { en: "institutional id", ja: "institutional id" },
+      h2a: { en: "If your lab registers,", ja: "あなたの研究室が登録すれば、" },
+      h2em: { en: "everyone in it publishes free.", ja: "ラボメンバー全員が無料で出品。" },
       sub: {
-        en: "The Institutional ID plan lets an organization register once — then everyone under it publishes under that umbrella. It's the same plan on the Pay side.",
-        ja: "Institutional ID プランなら、組織が一度登録すれば — 傘下の全員がその名義で出品できます。Pay 側と同じプランです。",
+        en: "Registered institutions are just coming online.",
+        ja: "登録機関は、これから増えていく段階です。",
       },
       cards: [
         {
           icon: "ic-network",
-          title: { en: "Your institution registers once", ja: "組織が一度だけ登録" },
-          body: { en: "A university or lab signs up as an institution. After that, its members can publish.", ja: "大学や研究室が組織として登録。あとはメンバーが出品できます。" },
+          title: { en: "Your lab registers once", ja: "研究室が一度だけ登録" },
+          body: { en: "A lab or university signs up as the institution. After that, every member can publish under its name.", ja: "研究室や大学が組織として登録。あとはメンバー全員がその名義で出品できます。" },
         },
         {
           icon: "ic-signed",
-          title: { en: "You publish under the umbrella", ja: "その名義で出品" },
+          title: { en: "You publish under the umbrella", ja: "その名義で、本人は無料" },
           body: { en: "No separate plan or cost for you — just point to your file and set a price.", ja: "個別のプランや費用は不要 — ファイルを指定して価格を決めるだけ。" },
         },
         {
@@ -454,6 +436,18 @@ export const T402: Trust402Content = {
           body: { en: "Everything is attributed to you by name. Move on, and your proofs still check out.", ja: "すべてあなたの名前に帰属します。所属が変わっても、証明は有効なまま。" },
         },
       ],
+      share: {
+        lead: {
+          en: "It starts with getting this page in front of your lab.",
+          ja: "まずは、このページを研究室に届けるところから。",
+        },
+        cta: { en: "Share this page", ja: "このページをシェアする" },
+        copied: { en: "Link copied", ja: "リンクをコピーしました" },
+        text: {
+          en: "A platform for selling research data to AI agents, with proof of authenticity built in. When a lab registers, its members publish free.",
+          ja: "研究データを、真贋証明つきでAIエージェントに販売できる基盤。研究室が登録するとメンバーは無料。",
+        },
+      },
     },
 
     hands: {
@@ -475,36 +469,17 @@ export const T402: Trust402Content = {
         ja: "同じ手順のまま — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
       },
       prodChip: { en: "same steps · real payouts", ja: "同じ手順 · 実際の入金" },
-    },
-
-    dash: {
-      eyebrow: { en: "the dashboard · demo", ja: "ダッシュボード · デモ" },
-      h2: { en: "The rest happens in your Dashboard.", ja: "あとは、ダッシュボードで。" },
-      sub: {
-        en: "Publishing, pricing, and tracking what you've sold all live in one place. Take a look — it's a non-functional demo, nothing goes live.",
-        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。非機能デモなので公開はされません — 中を覗いてみてください。",
-      },
       cta: { en: "Open the Dashboard demo", ja: "ダッシュボードデモを開く" },
+      ctaNote: {
+        en: "Publishing, pricing, and tracking what you've sold all live in the Dashboard. It's a non-functional demo — nothing goes live.",
+        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。非機能デモなので、公開はされません。",
+      },
     },
 
-    twoSides: {
-      eyebrow: { en: "part of trust402", ja: "trust402 の一部" },
-      h2: { en: "Two sides, one idea.", ja: "2 つの側面、1 つの考え。" },
-      sub: {
-        en: "Trust402 attaches proof to the moment money moves — whichever side you're on. One plan and one monthly allowance cover both.",
-        ja: "Trust402 は、お金が動く瞬間に証明を添えます — どちら側でも。1 つのプラン、1 つの月間枠が両方をカバーします。",
-      },
-      payTag: { en: "trust402 · pay", ja: "trust402 · pay" },
-      payH3: { en: "When you pay", ja: "支払うとき" },
-      payBody: {
-        en: "Prove an agent is allowed to spend — who, by what authority, up to how much.",
-        ja: "エージェントに支払い権限があると証明 — 誰が、どの権限で、いくらまで。",
-      },
-      sellTag: { en: "trust402 · sell", ja: "trust402 · sell" },
-      sellH3: { en: "When you sell", ja: "売るとき" },
-      sellBody: {
-        en: "Prove what you publish is authentic, unchanged, and yours. You're here.",
-        ja: "公開するものが本物で、改ざんされておらず、あなたのものだと証明。いまここ。",
+    payBand: {
+      text: {
+        en: "Pay ↔ Sell — Trust402 puts proof on both sides of the payment. One plan and one monthly allowance cover both.",
+        ja: "Pay ↔ Sell — Trust402 は支払いの両側に証明を添えます。1 つのプラン、1 つの月間枠が両方をカバー。",
       },
       link: { en: "See Trust402 · Pay", ja: "Trust402 · Pay を見る" },
     },
@@ -539,9 +514,9 @@ export const T402: Trust402Content = {
         },
         {
           name: "Institutional ID",
-          pos: { en: "For universities, labs & organizations.", ja: "大学・研究室・組織向け。" },
+          pos: { en: "For labs, universities & organizations.", ja: "研究室・大学・組織向け。" },
           price: { en: "$330", ja: "¥50,000" },
-          priceSub: { en: "/mo + attestation", ja: "/月 + アテステーション" },
+          priceSub: { en: "/mo + identity check at registration", ja: "/月 + 登録時の本人性確認" },
           means: { en: "Register once; members & students publish under the umbrella, free to them.", ja: "一度登録すれば、メンバーや学生がその名義で出品 — 本人は無料。" },
           state: { en: "Coming soon", ja: "近日公開" },
         },
@@ -567,13 +542,6 @@ export const T402: Trust402Content = {
       h2: { en: "Good things to check.", ja: "確認しておきたいこと。" },
       items: [
         {
-          q: { en: "Are Pay and Sell separate plans?", ja: "Pay と Sell は別プラン?" },
-          a: {
-            en: "No — it's one set of plans. Explorer, Pro, and Institutional ID each cover both Pay and Sell, with a single monthly allowance shared across the two. Checking proofs is always free on either side.",
-            ja: "いいえ — プランは 1 セットです。Explorer・Pro・Institutional ID はいずれも Pay と Sell の両方をカバーし、月間枠は両者で共有されます。証明の検証はどちら側でも常に無料です。",
-          },
-        },
-        {
           q: { en: "I've never done this — where do I start?", ja: "やったことがない — どこから始める?" },
           a: {
             en: "In the free sandbox. In the Dashboard, point to a file and set a test price, watch the whole flow, and pay nothing. When it clicks, going live takes the same steps.",
@@ -581,38 +549,21 @@ export const T402: Trust402Content = {
           },
         },
         {
-          q: { en: "Do I need to know anything about crypto or blockchain?", ja: "暗号資産やブロックチェーンの知識は要る?" },
+          q: { en: "How do I get paid? Do I need to know crypto?", ja: "支払いはどう受け取る? 暗号資産の知識は要る?" },
           a: {
-            en: "You receive USDC — a digital dollar — to your own wallet, so you set one up once (a 2-minute step if you don't have one). We handle all the proof and payment plumbing behind the scenes.",
-            ja: "USDC — デジタルのドル — を自分のウォレットで受け取るので、ウォレットを一度用意します(なければ 2 分ほど)。証明や支払いまわりは、すべて裏側で私たちが処理します。",
-          },
-        },
-        {
-          q: { en: "How do I actually get paid?", ja: "実際どうやって支払われる?" },
-          a: {
-            en: "In USDC, a digital dollar, straight to your own wallet — self-custody, we never hold your funds. When an agent buys your work, the payment settles automatically and shows up in your wallet, no invoicing.",
-            ja: "デジタルのドル USDC で、直接あなたのウォレットに — セルフカストディで、資金は預かりません。エージェントが購入すると自動で決済され、請求書なしでウォレットに届きます。",
-          },
-        },
-        {
-          q: { en: "Do I have to give away my data to prove it's mine?", ja: "自分のものだと示すためにデータを渡す必要は?" },
-          a: {
-            en: "No. Agents check a proof, not the raw file. Your data stays with you until someone actually pays for it.",
-            ja: "いいえ。エージェントが確認するのは証明で、生ファイルではありません。誰かが実際に支払うまで、データはあなたの手元に残ります。",
-          },
-        },
-        {
-          q: { en: "Can I still use or sell my work somewhere else?", ja: "他の場所でも使える・売れる?" },
-          a: {
-            en: "Yes. It's yours. Selling through Lemma doesn't lock you in or take exclusive rights.",
-            ja: "はい。あなたのものです。Lemma で売っても囲い込みや独占権はありません。",
+            en: "In USDC, a digital dollar, straight to your own wallet — self-custody, we never hold your funds. When an agent buys your work, payment settles automatically, no invoicing. If you don't have a wallet, setting one up is a one-time ~2-minute step; we handle all the proof and payment plumbing behind the scenes.",
+            ja: "デジタルのドル USDC で、直接あなたのウォレットに — セルフカストディで、資金は預かりません。エージェントが購入すると自動で決済され、請求書も不要。ウォレットがなければ一度用意するだけ(2 分ほど)で、証明や支払いまわりはすべて裏側で処理されます。",
           },
         },
         {
           q: { en: "I'm a student — where do I start, and is there a cost?", ja: "学生です — どこから始める? 費用は?" },
           a: {
-            en: "Start free in the sandbox to try it with no real money. When you're ready to go live, publish free under your school's institutional plan — still credited to you by name.",
-            ja: "まずサンドボックスで無料で試す(実マネー不要)。本番の準備ができたら、学校の Institutional プランで無料で公開 — クレジットはあなたの名前のまま。",
+            en: "Two steps. First, try everything free in the sandbox — no affiliation, no real money. When you're ready to go live, publish free under your university's or lab's Institutional plan, still credited to you by name. If your institution isn't registered yet, start by sharing this page with your lab.",
+            ja: "二段構えです。まずサンドボックスで無料で試す — 所属も実マネーも不要。本番に出すときは、大学や研究室の Institutional プランの名義で無料で公開できます(クレジットはあなたの名前のまま)。機関がまだ登録していなければ、このページを研究室でシェアするところから始めてください。",
+          },
+          link: {
+            href: { en: "#institutional", ja: "#institutional" },
+            label: { en: "Share this with your lab", ja: "研究室にシェアする" },
           },
         },
         {
@@ -623,6 +574,7 @@ export const T402: Trust402Content = {
           },
         },
       ],
+      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み(Trust402)" },
     },
 
     closing: {
