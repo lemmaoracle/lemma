@@ -595,6 +595,13 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 @media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 900px) { .t402b .tiers { grid-template-columns: 1fr; } .t402b .equation { flex-direction: column; } .t402b .eq-op { justify-content: center; } }
 @media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } }
+
+/* fixed Pay/Sell/Dashboard switcher */
+.t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: #1F1E1A; padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
+.t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: #ECEBE3; padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+.t402-switch-btn:hover { color: #fff; }
+.t402-switch-btn.active { background: var(--t402-green); color: #1F1E1A; }
+@media (max-width: 560px) { .t402-switch-btn { padding: 8px 15px; } }
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
@@ -747,7 +754,12 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
   </div>
-  </main>
+    <nav class="t402-switch" aria-label="Trust402">
+    <a class="t402-switch-btn active" href="/ja/trust402/" aria-current="page">Pay</a>
+    <a class="t402-switch-btn" href="/ja/trust402/sell/">Sell</a>
+    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard</a>
+  </nav>
+</main>
 
 <Footer locale={locale} t={t.nav} footerT={t.footer} base="/ja" />
 
