@@ -39,7 +39,9 @@ export type T402IconId =
   | "ic-github"
   | "ic-flask"
   | "ic-camera"
-  | "ic-pen";
+  | "ic-pen"
+  | "ic-direct"
+  | "ic-gem";
 
 interface Card {
   readonly icon: T402IconId;

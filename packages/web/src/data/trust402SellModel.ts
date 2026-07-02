@@ -38,7 +38,7 @@ export interface SellModel {
   }>;
   readonly dashNote: Localized;
   readonly whyH: Localized;
-  readonly why: ReadonlyArray<{ readonly num: string; readonly title: Localized; readonly text: Localized }>;
+  readonly why: ReadonlyArray<{ readonly num: string; readonly icon: T402IconId; readonly title: Localized; readonly text: Localized }>;
   readonly baH: Localized;
   readonly baExample: Localized;
   readonly beforeTag: Localized;
@@ -204,6 +204,7 @@ export const T402_SELL_MODEL: SellModel = {
   why: [
     {
       num: "01",
+      icon: "ic-signed",
       title: { en: "You can prove it's real", ja: "本物だと証明できる" },
       text: {
         en: "It carries \"whose, when, unaltered.\" AI prefers verified primary sources.",
@@ -212,6 +213,7 @@ export const T402_SELL_MODEL: SellModel = {
     },
     {
       num: "02",
+      icon: "ic-direct",
       title: { en: "No middleman", ja: "仲介を通さない" },
       text: {
         en: "You license it directly, as the original — no one skims your cut.",
@@ -220,6 +222,7 @@ export const T402_SELL_MODEL: SellModel = {
     },
     {
       num: "03",
+      icon: "ic-gem",
       title: { en: "The real gets scarce", ja: "本物は希少になる" },
       text: {
         en: "As the web fills with generated content, verified human primary data and work grow more valuable.",
