@@ -14,7 +14,7 @@ const t = getTranslations(locale);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust402 — AI エージェントが鍵を渡さず自律で支払う | Lemma</title>
 <meta name="description" content="鍵を持たずに、コールごとに権限を委任。「誰が・どの権限で・どのデータに対して」を証明として添付する。権限の外は実行させない。x402 / MCP / A2A 対応の Reference implementation を Base Sepolia で公開。">
-<meta name="theme-color" content="#8B4513">
+<meta name="theme-color" content="#4B6B0F">
 <link rel="canonical" href="https://lemma.frame00.com/ja/trust402/" />
 <link rel="alternate" hreflang="en" href="https://lemma.frame00.com/trust402/" />
 <link rel="alternate" hreflang="ja" href="https://lemma.frame00.com/ja/trust402/" />
@@ -39,9 +39,9 @@ const t = getTranslations(locale);
 :root {
   --lemma-black: #000000; --lemma-text-1: #1A1A1A; --lemma-text-2: #3A3A3A;
   --lemma-text-3: #5A5A5A; --lemma-text-4: #9A9A9A;
-  --lemma-brown: #8B4513; --lemma-brown-light: #F5EBDC;
+  --lemma-brown: #4B6B0F; --lemma-brown-light: #EEF6D0;
   --lemma-cream: #FCFAF5; --lemma-cream-deep: #F2EEDF;
-  --lemma-line: #E5E5E5;
+  --lemma-line: #E5E5E5; --t402-green: #B6F500;
   --legacy-bg: #ECEBE5; --legacy-border: #B5AFA0; --legacy-text: #6E6957;
   --code-bg: #1A1612; --code-text: #D4CFC4;
   --font-display: 'Sora', system-ui, sans-serif;
@@ -91,7 +91,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   .hero-code.expanded .hero-code-expand { display: none; }
 }
 .hero-demo { background: #0A0F0E; border-radius: 14px; padding: 0; overflow: hidden; position: relative; border: 0.5px solid rgba(0,0,0,0.1); }
-.hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(139,69,19,0.7); border-radius: 4px; z-index: 2; }
+.hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(75, 107, 15,0.7); border-radius: 4px; z-index: 2; }
 .hero-demo-frame { aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 22px 22px 18px; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; }
 .hero-demo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -140,7 +140,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   text-decoration: none; color: inherit;
   transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-.t-card:hover { border-color: var(--lemma-brown); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(139, 69, 19, 0.08); }
+.t-card:hover { border-color: var(--lemma-brown); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(75, 107, 15, 0.08); }
 .t-card-icon { color: var(--lemma-brown); }
 .t-card-icon svg { width: 52px; height: 52px; display: block; }
 .t-card-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--lemma-black); line-height: 1.3; letter-spacing: -0.018em; margin: 0; }
@@ -169,7 +169,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .diff-cell.result { background: #2C2620; color: #FCFAF5; }
 .diff-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--lemma-brown); font-weight: 500; }
 .diff-cell.result .diff-label { color: rgba(252,250,245,0.55); }
-.diff-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,69,19,0.12); color: var(--lemma-brown); margin: 4px 0; }
+.diff-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(75, 107, 15,0.12); color: var(--lemma-brown); margin: 4px 0; }
 .diff-name { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--lemma-text-1); letter-spacing: -0.005em; margin-top: auto; }
 .diff-plus, .diff-equals { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 28px; font-weight: 300; color: var(--lemma-brown); padding: 0 4px; }
 .diff-add-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
@@ -197,7 +197,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .impact-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch; }
 .impact-panel { border-radius: 18px; padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 16px; }
 .impact-panel.before { background: var(--legacy-bg); border: 0.5px dashed var(--legacy-border); filter: saturate(0.65); }
-.impact-panel.after { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); box-shadow: 0 6px 28px rgba(139, 69, 19, 0.08); }
+.impact-panel.after { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); box-shadow: 0 6px 28px rgba(75, 107, 15, 0.08); }
 .impact-panel svg { width: 100%; height: auto; display: block; }
 .impact-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
 .impact-label::before { content: ""; display: block; width: 22px; height: 1px; }
@@ -294,7 +294,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* === §4 Use cases — supplementary, compact === */
 .uc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
 .uc-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 12px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s, transform 0.2s; }
-.uc-card:hover { border-color: rgba(139,69,19,0.4); transform: translateY(-2px); }
+.uc-card:hover { border-color: rgba(75, 107, 15,0.4); transform: translateY(-2px); }
 .uc-card-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--lemma-brown-light); border-radius: 8px; color: var(--lemma-brown); }
 .uc-card-title { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.005em; line-height: 1.35; margin: 0; }
 .uc-card-desc { font-size: 11.5px; color: var(--lemma-text-3); line-height: 1.6; margin: 0; }
@@ -472,6 +472,20 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   .le-proof { font-size: 11px; }
   .mid-cta { flex-direction: column; align-items: flex-start; padding: 28px 24px; }
 }
+
+/* === two-way branch hero (rebrand) === */
+.t402-standards { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--lemma-text-3); margin: 0 0 40px; }
+.t402-standards::before { content: "\25CF "; color: var(--t402-green); }
+.path-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; margin: 0; }
+.path-card { position: relative; background: #fff; border: 0.5px solid var(--lemma-line); border-top: 3px solid var(--t402-green); border-radius: 16px; padding: 32px 28px 26px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.path-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(0,0,0,0.07); border-color: var(--t402-green); }
+.path-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--lemma-brown); }
+.path-icon { color: var(--lemma-black); }
+.path-icon svg { width: 52px; height: 58px; display: block; }
+.path-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--lemma-black); line-height: 1.2; letter-spacing: -0.02em; margin: 0; }
+.path-btn { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--lemma-brown); margin-top: auto; padding-top: 6px; }
+.pay-demo { max-width: 1020px; margin: 0 0 64px; }
+@media (max-width: 720px) { .path-cards { grid-template-columns: 1fr; } }
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
@@ -497,10 +511,49 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 
     <!-- HERO (Seal-style: text + code/demo + 2 cards + trust line) -->
     <section class="hero">
-      <div class="eyebrow">Lemma <span class="accent">× x402</span></div>
-      <h1 class="h1">AI エージェントの<br>支払いに、<span class="accent">信頼を。</span></h1>
-      <p class="hero-sub"><span class="k">x402</span> がエージェントの支払いを可能にする。Lemma が「<span class="k">誰が、何の権限で、どのデータに対して</span>」を ZK 証明し、<span class="k-new">権限の外は実行させない</span>。</p>
+      <div class="eyebrow"><span class="accent">trust402</span></div>
+      <h1 class="h1">AIで支払う側ですか、<br><span class="accent">それとも AI に支払われる側?</span></h1>
+      <p class="hero-sub">AI エージェントがものを買い始めています。Trust402 はその支払いの両側に証明を添えます — 誰が払っているのか、誰の成果に払っているのかを、みんなが信頼できるように。サーバーもコードも不要、鍵もお金も預けません。</p>
+      <div class="t402-standards">x402 · MCP · A2A に対応 — x402 Bazaar から発見可能</div>
 
+      <div class="path-cards">
+        <a href="#pay" class="path-card">
+          <span class="path-tag">trust402 · pay</span>
+          <div class="path-icon">
+            <svg viewBox="0 0 74 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="29" cy="4" r="3" fill="var(--t402-green)"/>
+              <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
+              <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <circle cx="20" cy="39" r="4" fill="var(--t402-green)"/>
+              <circle cx="38" cy="39" r="4" fill="var(--t402-green)"/>
+              <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+              <circle cx="58" cy="60" r="14" fill="var(--t402-green)"/>
+              <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
+            </svg>
+          </div>
+          <h3 class="path-title">AIで支払う</h3>
+          <span class="path-btn">Pay を見る →</span>
+        </a>
+        <a href="/ja/trust402/sell/" class="path-card">
+          <span class="path-tag">trust402 · sell</span>
+          <div class="path-icon">
+            <svg viewBox="0 0 58 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="8" y="5" width="40" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <line x1="16" y1="19" x2="40" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16" y1="27" x2="40" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16" y1="35" x2="30" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="42" cy="60" r="15" fill="var(--t402-green)"/>
+              <path d="M35 60 l5 5 l9 -10" fill="none" stroke="#1F1E1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="path-title">成果で支払いを受ける</h3>
+          <span class="path-btn">Sell を見る →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Pay 導線: リファレンスデモ(コード + ライブ端末) -->
+    <section class="pay-demo" id="pay">
       <div class="hero-grid">
         <div class="hero-code" id="t402-code">
           <pre class="hero-code-full"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
@@ -528,36 +581,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
             <span class="term-line cursor"><span class="prompt">example-x402$</span></span>
           </div>
         </div>
-      </div>
-
-      <div class="t-cards">
-        <a href="https://github.com/lemmaoracle/trust402" class="t-card" target="_blank" rel="noopener">
-          <div class="t-card-icon">
-            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="t-card-title">Reference<br>implementation</h3>
-          <p class="t-card-line">Base Sepolia 上で動作中。$0.01 GET 成功 / $500 POST fail-closed。</p>
-          <span class="t-card-btn">GitHub で見る →</span>
-        </a>
-
-        <a href="https://tally.so/r/kd0bZR" class="t-card" target="_blank" rel="noopener">
-          <div class="t-card-badge">MCP READY</div>
-          <div class="t-card-icon">
-            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="13" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
-              <circle cx="39" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
-              <circle cx="26" cy="38" r="6" stroke="currentColor" stroke-width="2"/>
-              <line x1="18" y1="16" x2="22" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="34" y1="16" x2="30" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="19" y1="13" x2="33" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.45" stroke-dasharray="3 3"/>
-            </svg>
-          </div>
-          <h3 class="t-card-title">MCP / Agent<br>に組み込む</h3>
-          <p class="t-card-line">Anthropic MCP・OpenAI Agent SDK から直接利用可能。</p>
-          <span class="t-card-btn">Waitlist に登録 →</span>
-        </a>
       </div>
 
       <p class="trust">
@@ -747,7 +770,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 
         <div class="migrate-bridge" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M 4 11 L 18 11 M 13 6 L 18 11 L 13 16" stroke="#8B4513" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M 4 11 L 18 11 M 13 6 L 18 11 L 13 16" stroke="#4B6B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
           </svg>
         </div>
 
@@ -755,44 +778,44 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
           <div class="impact-label">With Trust402</div>
           <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" aria-label="With Trust402: payment + ZK proof, verified audit trail">
             <g transform="translate(20, 60)">
-              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
-              <circle cx="20" cy="22" r="3" fill="#8B4513"/>
-              <circle cx="38" cy="22" r="3" fill="#8B4513"/>
-              <line x1="22" y1="36" x2="36" y2="36" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-              <line x1="29" y1="4" x2="29" y2="10" stroke="#8B4513" stroke-width="1.3"/>
-              <circle cx="29" cy="3" r="2" fill="#8B4513"/>
+              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#4B6B0F" stroke-width="1.5" fill="#FFFFFF"/>
+              <circle cx="20" cy="22" r="3" fill="#4B6B0F"/>
+              <circle cx="38" cy="22" r="3" fill="#4B6B0F"/>
+              <line x1="22" y1="36" x2="36" y2="36" stroke="#4B6B0F" stroke-width="1.4" stroke-linecap="round"/>
+              <line x1="29" y1="4" x2="29" y2="10" stroke="#4B6B0F" stroke-width="1.3"/>
+              <circle cx="29" cy="3" r="2" fill="#4B6B0F"/>
               <g transform="translate(40, 42)">
-                <circle cx="9" cy="9" r="8" fill="#8B4513"/>
+                <circle cx="9" cy="9" r="8" fill="#4B6B0F"/>
                 <text x="9" y="12" text-anchor="middle" font-family="Sora, sans-serif" font-size="7" fill="#FCFAF5" font-weight="700">ZK</text>
               </g>
-              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">Agent + proof</text>
+              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#4B6B0F" font-weight="500">Agent + proof</text>
             </g>
             <g transform="translate(90, 95)">
-              <line x1="0" y1="0" x2="110" y2="0" stroke="#8B4513" stroke-width="1.5"/>
-              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#8B4513"/>
-              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">x402 pay + proof</text>
+              <line x1="0" y1="0" x2="110" y2="0" stroke="#4B6B0F" stroke-width="1.5"/>
+              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#4B6B0F"/>
+              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#4B6B0F" letter-spacing="1">x402 pay + proof</text>
               <g class="travel-pay-proof">
                 <g transform="translate(0, -9)">
-                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#8B4513" stroke-width="1.4" fill="#FFFFFF"/>
-                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513">¥</text>
-                  <circle cx="22" cy="2" r="5" fill="#8B4513"/>
+                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#4B6B0F" stroke-width="1.4" fill="#FFFFFF"/>
+                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#4B6B0F">¥</text>
+                  <circle cx="22" cy="2" r="5" fill="#4B6B0F"/>
                   <path d="M 19.5 2 L 21 3.5 L 24.5 0" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
               </g>
             </g>
             <g transform="translate(230, 55)">
-              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
-              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#8B4513" stroke-width="1.5"/>
-              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
+              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#4B6B0F" stroke-width="1.5" fill="#FFFFFF"/>
+              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#4B6B0F" stroke-width="1.5"/>
+              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#4B6B0F" stroke-width="1.5" fill="#FFFFFF"/>
               <g class="proof-pulse" transform="translate(43, 26)">
-                <circle cx="12" cy="12" r="11" fill="#8B4513"/>
+                <circle cx="12" cy="12" r="11" fill="#4B6B0F"/>
                 <path d="M 6 12 L 10.5 16.5 L 18 8" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
               </g>
-              <g transform="translate(15, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <g transform="translate(45, 55)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <g transform="translate(75, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">支払い + proof</text>
-              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">audit trail · verified</text>
+              <g transform="translate(15, 50)"><circle cx="9" cy="9" r="8" fill="#4B6B0F"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g transform="translate(45, 55)"><circle cx="9" cy="9" r="8" fill="#4B6B0F"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g transform="translate(75, 50)"><circle cx="9" cy="9" r="8" fill="#4B6B0F"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#4B6B0F" font-weight="500">支払い + proof</text>
+              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#4B6B0F" letter-spacing="1">audit trail · verified</text>
             </g>
           </svg>
           <p class="impact-summary"><span class="k">誰の代理で・どの権限で</span>が<br>暗号で証明される。</p>
@@ -873,57 +896,57 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <svg class="mech-svg" viewBox="0 0 960 240" xmlns="http://www.w3.org/2000/svg" aria-label="How Trust402 works: agent → ZK verify → x402 pay → on-chain proof">
           <!-- STEP 01: present delegation proof (key icon) -->
           <g transform="translate(20, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 01</text>
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#4B6B0F" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#4B6B0F" letter-spacing="2.5" font-weight="500">STEP 01</text>
             <g transform="translate(54, 46)">
-              <circle cx="14" cy="20" r="9" stroke="#8B4513" stroke-width="1.6" fill="none"/>
-              <circle cx="14" cy="20" r="3" fill="#8B4513"/>
-              <line x1="23" y1="20" x2="48" y2="20" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-              <line x1="38" y1="20" x2="38" y2="27" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-              <line x1="46" y1="20" x2="46" y2="25" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="14" cy="20" r="9" stroke="#4B6B0F" stroke-width="1.6" fill="none"/>
+              <circle cx="14" cy="20" r="3" fill="#4B6B0F"/>
+              <line x1="23" y1="20" x2="48" y2="20" stroke="#4B6B0F" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="38" y1="20" x2="38" y2="27" stroke="#4B6B0F" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="46" y1="20" x2="46" y2="25" stroke="#4B6B0F" stroke-width="1.6" stroke-linecap="round"/>
             </g>
             <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">委任 proof を提示</text>
           </g>
           <!-- arrow 1 -->
           <g transform="translate(180, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
+            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#4B6B0F" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#4B6B0F"/>
           </g>
           <!-- STEP 02: ZK verify (filled circular ZK badge) -->
           <g transform="translate(240, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 02</text>
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#4B6B0F" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#4B6B0F" letter-spacing="2.5" font-weight="500">STEP 02</text>
             <g transform="translate(56, 44)">
-              <circle cx="24" cy="22" r="20" fill="#8B4513"/>
+              <circle cx="24" cy="22" r="20" fill="#4B6B0F"/>
               <text x="24" y="28" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" fill="#FCFAF5" font-weight="700">ZK</text>
             </g>
             <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">Trust402 が ZK 検証</text>
           </g>
           <!-- arrow 2 -->
           <g transform="translate(400, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
+            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#4B6B0F" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#4B6B0F"/>
           </g>
           <!-- STEP 03: x402 settlement (¥ in a circle) -->
           <g transform="translate(460, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 03</text>
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#4B6B0F" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#4B6B0F" letter-spacing="2.5" font-weight="500">STEP 03</text>
             <g transform="translate(56, 44)">
-              <circle cx="24" cy="22" r="20" stroke="#8B4513" stroke-width="1.6" fill="#FCFAF5"/>
-              <text x="24" y="28" text-anchor="middle" font-family="Space Mono, monospace" font-size="18" fill="#8B4513" font-weight="700">¥</text>
+              <circle cx="24" cy="22" r="20" stroke="#4B6B0F" stroke-width="1.6" fill="#FCFAF5"/>
+              <text x="24" y="28" text-anchor="middle" font-family="Space Mono, monospace" font-size="18" fill="#4B6B0F" font-weight="700">¥</text>
             </g>
             <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">x402 で決済</text>
           </g>
           <!-- arrow 3 -->
           <g transform="translate(620, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
+            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#4B6B0F" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#4B6B0F"/>
           </g>
           <!-- STEP 04: on-chain anchor (chain link icon) -->
           <g transform="translate(680, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 04</text>
-            <g transform="translate(56, 48)" stroke="#8B4513" stroke-width="1.6" fill="none" stroke-linecap="round">
+            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#4B6B0F" stroke-width="1.5" fill="#FCFAF5"/>
+            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#4B6B0F" letter-spacing="2.5" font-weight="500">STEP 04</text>
+            <g transform="translate(56, 48)" stroke="#4B6B0F" stroke-width="1.6" fill="none" stroke-linecap="round">
               <ellipse cx="14" cy="17" rx="10" ry="6" transform="rotate(-30 14 17)"/>
               <ellipse cx="34" cy="17" rx="10" ry="6" transform="rotate(-30 34 17)"/>
             </g>
