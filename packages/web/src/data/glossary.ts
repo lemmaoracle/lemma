@@ -26,6 +26,7 @@ export type GlossarySlug =
   | "selective-disclosure"
   | "commitment"
   // 検証可能AI
+  | "authenticity"
   | "verifiable-ai"
   | "provenance"
   | "provenance-proof"
@@ -89,6 +90,17 @@ export interface GlossaryTerm {
    * "Lemma での実装"). Regulatory pages use "Lemma での適合経路".
    */
   readonly implementationHeading?: string;
+  /**
+   * SEO escalation knobs for keyword-cannibalization control. Leave unset
+   * for a normal self-canonical, indexable entry. To defer a thin entry to
+   * a cornerstone hub when Search Console shows the hub losing the head
+   * term: set `canonicalOverride` to the hub's absolute URL (consolidation),
+   * then if still needed set `noindexFollow: true` (drop from the index
+   * while still following outbound links). Dormant until set.
+   * See project_lemma_authenticity_hub: 真正性 entry vs /authenticity/ hub.
+   */
+  readonly canonicalOverride?: string;
+  readonly noindexFollow?: boolean;
 }
 
 export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
@@ -391,6 +403,31 @@ export const GLOSSARY_TERMS: ReadonlyArray<GlossaryTerm> = [
       { slug: "audit-trail", desc: "C2PA の Assertion チェーンと類似する記録モデル。" },
     ],
     ctaH2: "メディアと AI、両方の来歴を一本化する。",
+  },
+  {
+    slug: "authenticity",
+    nameJa: "真正性",
+    nameEn: "Authenticity",
+    category: "検証可能AI",
+    description:
+      "真正性 (Authenticity) の定義と Lemma における来歴証明。データやコンテンツが本物で、改ざんされておらず、出所 (来歴) が確かであること。完全性に出所の検証を加えた一段広い概念。",
+    lead:
+      "データやコンテンツが本物であり、作成時点から改ざんされておらず、出所 (来歴) が確かであること。改ざんの有無を保証する完全性に、出所の検証を加えた一段広い概念です。",
+    definition: [
+      "真正性 (しんせいせい / Authenticity) は、「誰が・いつ・何を作り、その後どう扱われたか」をたどれる状態を指す。完全性 (Integrity) が内容の不変だけを保証するのに対し、真正性は出所そのものの確かさ——正規の発信元から来たか、なりすましでないか——までを含む。",
+      "日本の電子記録では、真正性・見読性・保存性の三要件のひとつとして電子帳簿保存法や医療情報システムのガイドラインに定められている。確保は電子署名・タイムスタンプ・操作履歴 (来歴) の管理で支える。",
+    ],
+    implementation: [
+      "Lemma は元データを渡さずに来歴を暗号的に検証し、真正性を証明する。「誰が・いつ・どの版を作り、改ざんされていないか」を改ざんできない証明として固定し、ゼロ知識証明と選択的開示で必要な属性だけを最小限に開示する。",
+      'ジャンル別の意味 (規制・電子記録 / 報道・コンテンツ / 金融・DeFi / AI 出力) と検証方法は、解説ハブ <a href="/ja/authenticity/">「真正性とは」</a> にまとめている。',
+    ],
+    related: [
+      { slug: "provenance", desc: "真正性を支える来歴そのもの。誰が・いつ・どの版かの連なり。" },
+      { slug: "c2pa", desc: "コンテンツに来歴を付与する業界標準。Lemma の証明と相補関係。" },
+      { slug: "provenance-proof", desc: "来歴を改ざん不能に固定する証明。真正性の検証を担う。" },
+      { slug: "audit-trail", desc: "改ざん・消去の有無をたどる操作履歴。真正性確保の基盤。" },
+    ],
+    ctaH2: "真正性を、本番の意思決定に組み込む。",
   },
   {
     slug: "did",

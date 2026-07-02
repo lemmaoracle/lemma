@@ -12,8 +12,10 @@ related_pack: ["C-agent-governance"]
 related_briefs: ["014-tanstack-oidc-trusted-publisher", "082-xz-utils-backdoor-identity-provenance", "030-stripe-trusted-channel-skimmer", "037-agent-config-auto-execution"]
 status: "published"
 version: "1.0"
-og_lead_ja: "AIR：偽のエージェントスキルが Cisco/Nvidia/skills.sh の全スキャナーを通過。スキャン後に差し替えた外部リンクが盲点（約26,000エージェントに到達と主張）"
-og_lead_en: "AIR: a fake agent skill cleared Cisco/Nvidia/skills.sh scanners; the blind spot was an external link swapped after the scan (claimed ~26,000 agents)"
+og_lead_ja: "AIR：偽のエージェントスキルが全スキャナーを通過。スキャン後に差し替わる外部リンクが盲点だった"
+og_lead_en: "AIR: a fake agent skill cleared every scanner; the blind spot was an external link swapped after the scan"
+og_headline_ja: "全スキャナーを通過した\nスキルは、<accent>偽物</accent>だった。"
+og_headline_en: "A skill cleared every scanner.\n<accent>It was fake.</accent>"
 gap_detected: "The scanners (Cisco, Nvidia, skills.sh) analyzed the submitted package itself and correctly judged that, as submitted, it contained no malicious code."
 gap_missing: "The external link the skill follows at runtime could be swapped after submission, and there was no layer that, at the moment of execution, independently verified whether the artifact now running was identical to the one that was scanned."
 gap_fix: "Independently verify with Lemma that the skill and the resource it points to still match the scanned known-good at the moment of execution, and prevent it up front."

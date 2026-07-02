@@ -319,6 +319,31 @@ export const GLOSSARY_TERMS_EN: ReadonlyArray<GlossaryTerm> = [
     ctaH2: "Unify provenance across media and AI.",
   },
   {
+    slug: "authenticity",
+    nameJa: "真正性",
+    nameEn: "Authenticity",
+    category: "検証可能AI",
+    description:
+      "The definition of authenticity and how Lemma proves provenance. Data and content that is genuine, unaltered, and of verified origin (provenance) — integrity plus verification of origin.",
+    lead:
+      "Data or content that is genuine, unaltered since creation, and of verified origin (provenance). It is the broader concept of integrity plus verification of where something came from.",
+    definition: [
+      "Authenticity is the state in which you can trace who made what, when, and how it was handled afterward. Where integrity guarantees only that contents are unchanged, authenticity also covers the genuineness of the origin itself — whether it came from a legitimate source and is not an impersonation.",
+      "In Japanese e-records it is defined as one of three requirements — authenticity, legibility, and preservation — under the Electronic Books Preservation Act and medical-information-system guidelines. It is upheld through electronic signatures, timestamps, and management of operation history (provenance).",
+    ],
+    implementation: [
+      "Lemma verifies provenance cryptographically without handing over the source data, proving authenticity. It fixes who created which version, when, and whether it was altered as a tamper-proof proof, and uses zero-knowledge proofs and selective disclosure to reveal only the attributes needed.",
+      'What authenticity means by domain (regulation & e-records / media & content / finance & DeFi / AI output) and how to verify it are gathered in the explainer hub, <a href="/authenticity/">“What is authenticity”</a>.',
+    ],
+    related: [
+      { slug: "provenance", desc: "The lineage that authenticity rests on — the chain of who, when, and which version." },
+      { slug: "c2pa", desc: "Industry standard for attaching provenance to content. Complementary to Lemma's proof." },
+      { slug: "provenance-proof", desc: "The proof that fixes provenance tamper-evidently and verifies authenticity." },
+      { slug: "audit-trail", desc: "The operation history that traces alteration or deletion — the basis for authenticity." },
+    ],
+    ctaH2: "Build authenticity into the decisions that matter.",
+  },
+  {
     slug: "did",
     nameJa: "分散型識別子 (DID)",
     nameEn: "Decentralized Identifier — DID",

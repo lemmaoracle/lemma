@@ -3,86 +3,51 @@
  *
  * Common artboard primitives (padding / wordmark / title / accent
  * rule) live in `ogBase.ts` and are shared with the other 7 OG
- * generators. Per-surface variables for the blog: top-right is the
- * `{CATEGORY} · {DATE}` strip (Announcements gets a pill treatment),
- * background is the post cover + brown vertical overlay.
+ * generators.
+ *
+ * Cover treatment: the per-category cover is now a fixed, brand-designed
+ * banner (a light cream field up top, a coloured wave along the bottom).
+ * The old heavy brown gradient buried that banner, so we keep it visible
+ * and lay only a faint scrim over the bottom strip — just enough for the
+ * accent rule + tagline to read over the wave. Text is dark-on-light, and
+ * the bottom-right brand tagline matches the other surfaces.
  */
 import type { BlogPost } from "../data/blog";
 import {
+  BLACK,
   BROWN,
   BROWN_LIGHT,
+  CREAM,
   CREAM_DEEP,
   buildOgArtboard,
   fetchCoverAsDataUri,
   formatDate,
+  makeBottomTagline,
   makeTopRightLabel,
   renderOgPng,
 } from "./ogBase";
 
-type CategoryKey = "Industry" | "Solutions" | "Technical" | "Announcements" | "Essays";
+/** Categories whose top-right label gets the filled-pill emphasis. */
+const PILL_CATEGORIES = new Set(["Announcements"]);
 
-interface CategoryStyle {
-  readonly overlay: { top: string; mid: string; bottom: string };
-  readonly labelColor: string;
-  readonly labelPill: boolean;
-  readonly pillBg?: string;
-  readonly pillFg?: string;
-}
+/** Brand sign-off rendered bottom-right on every card. */
+const TAGLINE = "Built for decisions that matter";
 
-const CATEGORY: Record<string, CategoryStyle> = {
-  Industry: {
-    overlay: {
-      top: "rgba(43,30,18,0.45)",
-      mid: "rgba(43,30,18,0.78)",
-      bottom: "rgba(26,22,18,0.92)",
-    },
-    labelColor: BROWN_LIGHT,
-    labelPill: false,
-  },
-  Solutions: {
-    overlay: {
-      top: "rgba(70,40,18,0.45)",
-      mid: "rgba(70,40,18,0.80)",
-      bottom: "rgba(40,24,12,0.92)",
-    },
-    labelColor: "#F5DDB8",
-    labelPill: false,
-  },
-  Technical: {
-    overlay: {
-      top: "rgba(20,15,10,0.55)",
-      mid: "rgba(20,15,10,0.86)",
-      bottom: "rgba(10,8,6,0.95)",
-    },
-    labelColor: BROWN_LIGHT,
-    labelPill: false,
-  },
-  Announcements: {
-    overlay: {
-      top: "rgba(43,30,18,0.45)",
-      mid: "rgba(43,30,18,0.78)",
-      bottom: "rgba(26,22,18,0.92)",
-    },
-    labelColor: BROWN_LIGHT,
-    labelPill: true,
-    pillBg: BROWN_LIGHT,
-    pillFg: "#6B340E",
-  },
-  Essays: {
-    overlay: {
-      top: "rgba(43,30,18,0.45)",
-      mid: "rgba(43,30,18,0.78)",
-      bottom: "rgba(26,22,18,0.92)",
-    },
-    labelColor: BROWN_LIGHT,
-    labelPill: false,
-  },
+/**
+ * Faint scrim laid only over the bottom strip of the banner (transparent
+ * for the top ~60%, easing to a soft dark at the very bottom). Keeps the
+ * banner art visible while giving the footer (accent rule + tagline) just
+ * enough contrast over the coloured wave.
+ */
+const BOTTOM_SCRIM = {
+  top: "rgba(26,22,18,0)",
+  mid: "rgba(26,22,18,0)",
+  bottom: "rgba(26,22,18,0.42)",
 };
 
 function buildTopRight(categoryKey: string, date: string, isFallback: boolean) {
-  const c = CATEGORY[categoryKey as CategoryKey] ?? CATEGORY.Industry;
   const text = `${categoryKey.toUpperCase()} · ${formatDate(date)}`;
-  if (c.labelPill && !isFallback) {
+  if (PILL_CATEGORIES.has(categoryKey) && !isFallback) {
     return {
       type: "div",
       props: {
@@ -93,8 +58,8 @@ function buildTopRight(categoryKey: string, date: string, isFallback: boolean) {
           fontSize: 16,
           letterSpacing: 4,
           textTransform: "uppercase",
-          color: c.pillFg ?? BROWN,
-          background: c.pillBg ?? BROWN_LIGHT,
+          color: CREAM,
+          background: BROWN,
           padding: "6px 16px",
           borderRadius: 999,
         },
@@ -102,19 +67,29 @@ function buildTopRight(categoryKey: string, date: string, isFallback: boolean) {
       },
     };
   }
-  return makeTopRightLabel(text, isFallback ? BROWN : c.labelColor);
+  return makeTopRightLabel(text, BROWN);
 }
 
 export async function renderBlogOg(post: BlogPost): Promise<Buffer> {
   const coverDataUri = await fetchCoverAsDataUri(post.cover);
-  const c = CATEGORY[post.category as CategoryKey] ?? CATEGORY.Industry;
+  const isFallback = coverDataUri === null;
   const node = buildOgArtboard({
-    title: post.title,
-    topRight: buildTopRight(post.category, post.date, coverDataUri === null),
+    // Prefer the bespoke short card title when the post supplies one; the
+    // full `post.title` (H1 / SEO) can be too long to wrap cleanly here.
+    title: post.ogTitle ?? post.title,
+    // Balanced auto-fit layout only kicks in for posts that opt in via
+    // `ogTitle`; posts without it render byte-for-byte as before.
+    balanceTitle: post.ogTitle != null,
+    // Dark-on-light: the banner's title zone is a light cream field.
+    titleColorOverride: BLACK,
+    topRight: buildTopRight(post.category, post.date, isFallback),
+    // On a cover the footer sits on the dark bottom scrim → light tagline;
+    // on the cream fallback there is no scrim → dark tagline.
+    bottomTagline: makeBottomTagline(TAGLINE, isFallback ? BROWN : BROWN_LIGHT),
     background: {
       kind: "cover",
       coverDataUri,
-      overlay: c.overlay,
+      overlay: BOTTOM_SCRIM,
       fallback: { kind: "solid", color: CREAM_DEEP },
     },
   });

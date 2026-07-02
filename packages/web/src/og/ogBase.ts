@@ -7,7 +7,7 @@
  *   - Blog (per-post) / Critical Brief (per-brief)
  *
  * Every artboard shares: 1200×630 canvas, 60/72 padding, Lemma
- * wordmark top-left at 52 px, Sora 700 auto-shrink H1 (100 / 84 / 68),
+ * wordmark top-left at 66 px, Sora 700 auto-shrink H1 (100 / 84 / 68),
  * 96×5 brown accent rule bottom-left. Per-surface variables are the
  * top-right label, the bottom-right tagline, and the background
  * treatment (solid / gradient / cover photo + overlay).
@@ -62,6 +62,190 @@ export function pickTitleFont(text: string): {
   if (lines.length <= 2 && maxLine <= 14) return { size: 100, lineHeight: 1.08, maxWidth: 1010 };
   if (lines.length <= 3 && maxLine <= 22) return { size: 84, lineHeight: 1.08, maxWidth: 1040 };
   return { size: 68, lineHeight: 1.12, maxWidth: 1040 };
+}
+
+/* ── Balanced title layout (opt-in via OgArtboardInput.balanceTitle) ──
+ * When a surface supplies a purpose-built short title (e.g. a blog
+ * post's `ogTitle`), we can do better than satori's greedy wrap. This
+ * picks the largest font tier at which the title fits within the line
+ * budget (auto-fit shrink), then inserts explicit line breaks chosen to
+ * even the lines out. Balancing the line widths is what removes the
+ * single-word "orphan" last line (e.g. a lone "showed") that greedy
+ * wrapping leaves behind.
+ *
+ * This path is only taken when balanceTitle is set AND the title has no
+ * manual "\n", no <accent> markup, and no titleFont override — so every
+ * title that does NOT opt in renders byte-for-byte as before. */
+const TITLE_TIERS = [
+  { size: 100, lineHeight: 1.08, maxWidth: 1010, maxLines: 2 },
+  { size: 84, lineHeight: 1.08, maxWidth: 1040, maxLines: 3 },
+  { size: 68, lineHeight: 1.12, maxWidth: 1040, maxLines: 3 },
+] as const;
+
+/* Kana / CJK ideographs / full-width forms — glyphs that advance ~1em
+ * and can break between any two of them (no spaces). */
+const CJK_CHAR = /[\u3000-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]/;
+
+/** Rough per-glyph advance (px) for the Sora / Noto 700 display face.
+ * Deliberately a slight over-estimate (letter-spacing is negative, so
+ * real widths are a touch tighter) — over-estimating keeps satori from
+ * re-wrapping a line we already placed and re-introducing an orphan. */
+function glyphAdvance(ch: string, size: number): number {
+  if (ch === " ") return size * 0.3;
+  if (CJK_CHAR.test(ch)) return size * 1.0;
+  return size * 0.56;
+}
+
+function textWidth(text: string, size: number): number {
+  let w = 0;
+  for (const ch of text) w += glyphAdvance(ch, size);
+  return w;
+}
+
+/* Japanese line-break preferences (light-touch kinsoku): break *before*
+ * an opening bracket, and *after* a closing bracket or clause/sentence
+ * punctuation — never in the middle of a 「…」 phrase. */
+const CJK_OPEN = "「『（【〔《〈［｛“‘";
+const CJK_BREAK_AFTER = "」』）】〕》〉］｝、。，．・！？：；”’…—";
+
+/** Segment a space-free (CJK) title into break-safe chunks at punctuation
+ * and bracket boundaries, so the balancer wraps between phrases instead of
+ * mid-phrase. Over-long chunks fall back to per-character breaking. */
+function segmentCjk(text: string): string[] {
+  const chars = Array.from(text);
+  const chunks: string[] = [];
+  let cur = "";
+  const flush = () => {
+    if (cur !== "") {
+      chunks.push(cur);
+      cur = "";
+    }
+  };
+  for (let i = 0; i < chars.length; i++) {
+    const ch = chars[i];
+    if (CJK_OPEN.includes(ch)) flush(); // break before an opening bracket
+    cur += ch;
+    const hasNext = i + 1 < chars.length;
+    const next = hasNext ? chars[i + 1] : "";
+    if (
+      CJK_BREAK_AFTER.includes(ch) &&
+      hasNext &&
+      !CJK_BREAK_AFTER.includes(next) && // keep runs like 」。 together
+      !CJK_OPEN.includes(next) // a following 「 is handled by break-before
+    ) {
+      flush();
+    }
+  }
+  flush();
+  // Safety net: a chunk must never be wider than a line — split any
+  // over-long unpunctuated run back into single characters.
+  const MAX_CHUNK = 12;
+  const out: string[] = [];
+  for (const c of chunks) {
+    const cChars = Array.from(c);
+    if (cChars.length > MAX_CHUNK) out.push(...cChars);
+    else out.push(c);
+  }
+  return out;
+}
+
+/** Wrap tokens: whole words for space-delimited (Latin) titles,
+ * punctuation-safe phrase chunks for space-free (CJK) titles. */
+function tokenizeTitle(text: string): { tokens: string[]; sep: string } {
+  const trimmed = text.trim();
+  if (/\s/.test(trimmed) && /[A-Za-z0-9]/.test(trimmed)) {
+    return { tokens: trimmed.split(/\s+/), sep: " " };
+  }
+  return { tokens: segmentCjk(trimmed), sep: "" };
+}
+
+/** Greedy line count when packing token widths at `limit` px per line. */
+function lineCountAtLimit(tokenWidths: number[], sepWidth: number, limit: number): number {
+  let lines = 1;
+  let cur = 0;
+  for (const w of tokenWidths) {
+    const add = cur === 0 ? w : sepWidth + w;
+    if (cur !== 0 && cur + add > limit) {
+      lines += 1;
+      cur = w;
+    } else {
+      cur += add;
+    }
+  }
+  return lines;
+}
+
+/** Greedy pack tokens into lines at `limit` px per line. */
+function packAtLimit(
+  tokens: string[],
+  tokenWidths: number[],
+  sep: string,
+  sepWidth: number,
+  limit: number,
+): string[] {
+  const lines: string[] = [];
+  let cur = "";
+  let curW = 0;
+  tokens.forEach((tok, i) => {
+    const w = tokenWidths[i];
+    const add = curW === 0 ? w : sepWidth + w;
+    if (curW !== 0 && curW + add > limit) {
+      lines.push(cur);
+      cur = tok;
+      curW = w;
+    } else {
+      cur = curW === 0 ? tok : cur + sep + tok;
+      curW += add;
+    }
+  });
+  if (cur !== "") lines.push(cur);
+  return lines;
+}
+
+/**
+ * Lay a short title out over ≤3 lines: auto-fit the font down until it
+ * fits, then balance the line widths so the last line is never a lone
+ * short word. Returns the title with explicit "\n" breaks inserted plus
+ * the chosen font metrics.
+ */
+export function layoutBalancedTitle(raw: string): {
+  text: string;
+  size: number;
+  lineHeight: number;
+  maxWidth: number;
+} {
+  const { tokens, sep } = tokenizeTitle(raw);
+  const sepIsSpace = sep === " ";
+
+  for (const tier of TITLE_TIERS) {
+    const tokenWidths = tokens.map((t) => textWidth(t, tier.size));
+    const sepWidth = sepIsSpace ? glyphAdvance(" ", tier.size) : 0;
+    // A single token wider than the line can't fit this tier — shrink.
+    if (Math.max(...tokenWidths) > tier.maxWidth) continue;
+    const minLines = lineCountAtLimit(tokenWidths, sepWidth, tier.maxWidth);
+    if (minLines > tier.maxLines) continue;
+    // Balance: the smallest per-line width limit that still yields the
+    // same (minimal) line count. Tightening the limit pushes words down
+    // off an over-full first line, evening the lines and killing orphans.
+    let lo = Math.ceil(Math.max(...tokenWidths));
+    let hi = Math.ceil(tier.maxWidth);
+    while (lo < hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      if (lineCountAtLimit(tokenWidths, sepWidth, mid) <= minLines) hi = mid;
+      else lo = mid + 1;
+    }
+    const lines = packAtLimit(tokens, tokenWidths, sep, sepWidth, lo);
+    return { text: lines.join("\n"), size: tier.size, lineHeight: tier.lineHeight, maxWidth: tier.maxWidth };
+  }
+
+  // Fallback: pathologically long title — pack greedily at the smallest
+  // tier's width. (Such a title should set an explicit ogTitle with its
+  // own line breaks; this just keeps output sane.)
+  const tier = TITLE_TIERS[TITLE_TIERS.length - 1];
+  const tokenWidths = tokens.map((t) => textWidth(t, tier.size));
+  const sepWidth = sepIsSpace ? glyphAdvance(" ", tier.size) : 0;
+  const lines = packAtLimit(tokens, tokenWidths, sep, sepWidth, tier.maxWidth);
+  return { text: lines.join("\n"), size: tier.size, lineHeight: tier.lineHeight, maxWidth: tier.maxWidth };
 }
 
 /** "2026-05-28" or Date → "2026.05.28". */
@@ -155,6 +339,14 @@ export interface OgArtboardInput {
   readonly titleFont?: { size: number; lineHeight: number; maxWidth: number };
   /** Override the title colour (e.g. force black on a cream gradient). */
   readonly titleColorOverride?: string;
+  /**
+   * Opt in to balanced title layout (auto-fit + orphan-free line breaks).
+   * Only takes effect for a plain title — no manual "\n", no <accent>
+   * markup, and no titleFont override. Surfaces that pass a bespoke short
+   * title (e.g. a blog post's `ogTitle`) set this; everything else leaves
+   * it unset and renders exactly as before.
+   */
+  readonly balanceTitle?: boolean;
 }
 
 interface ResolvedBackground {
@@ -193,7 +385,21 @@ export function buildOgArtboard(input: OgArtboardInput) {
   const accent = resolved.isDark ? BROWN_LIGHT : BROWN;
   const titleAccent = resolved.isDark ? BROWN_LIGHT : BROWN;
 
-  const t = input.titleFont ?? pickTitleFont(input.title);
+  // Balanced layout is opt-in and only for a plain title: a manual "\n"
+  // means the author already controls the breaks, <accent> markup would
+  // be lost by re-wrapping, and an explicit titleFont is a hard override.
+  const canBalance =
+    input.balanceTitle &&
+    !input.titleFont &&
+    !/\n/.test(input.title) &&
+    !/<accent>/.test(input.title);
+  const balanced = canBalance ? layoutBalancedTitle(input.title) : undefined;
+  const renderedTitle = balanced ? balanced.text : input.title;
+  const t =
+    input.titleFont ??
+    (balanced
+      ? { size: balanced.size, lineHeight: balanced.lineHeight, maxWidth: balanced.maxWidth }
+      : pickTitleFont(input.title));
 
   const layers: Array<unknown> = [];
 
@@ -253,8 +459,8 @@ export function buildOgArtboard(input: OgArtboardInput) {
         {
           type: "svg",
           props: {
-            width: 113,
-            height: 52,
+            width: 145,
+            height: 66,
             viewBox: "0 0 142 65",
             xmlns: "http://www.w3.org/2000/svg",
             children: LEMMA_LOGO_PATHS.map((d) => ({
@@ -281,7 +487,7 @@ export function buildOgArtboard(input: OgArtboardInput) {
         display: "flex",
         flexDirection: "column",
       },
-      children: renderTitle(input.title, fg, titleAccent),
+      children: renderTitle(renderedTitle, fg, titleAccent),
     },
   };
 
