@@ -155,14 +155,15 @@ export interface Trust402Content {
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
       /** "Share this page" loop — students forward the page itself
-       *  (Web Share API / copy-link); faculty land here and contact us
-       *  directly. No request form: the page does the selling. */
+       *  (Web Share API / copy-link). No request form and no contact CTA:
+       *  budget owners read the plan themselves. A direct sign-up from the
+       *  pricing tier is planned later (Discovery Call is the enterprise
+       *  door — wrong entry point here). */
       readonly share: {
         readonly lead: Localized;
         readonly cta: Localized;
         readonly copied: Localized;
         readonly text: Localized;
-        readonly contact: Localized;
       };
     };
     /** Merged "what you actually do" + Dashboard-demo CTA. */
@@ -358,7 +359,7 @@ export const T402: Trust402Content = {
         en: "Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.",
         ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
-      modelLink: { en: "See what sells", ja: "何が売れるか見る" },
+      modelLink: { en: "See who sells, what & for how much", ja: "誰が・何を・いくらで売れるか見る" },
     },
 
     whyMore: {
@@ -419,8 +420,8 @@ export const T402: Trust402Content = {
       h2a: { en: "If your lab registers,", ja: "あなたの研究室が登録すれば、" },
       h2em: { en: "everyone in it publishes free.", ja: "ラボメンバー全員が無料で出品。" },
       sub: {
-        en: "At $330/mo, Institutional ID isn't a decision for the university board — one PI can approve it within a lab budget or research grant. Registered institutions are just coming online.",
-        ja: "¥50,000/月の Institutional ID は、大学本部の稟議ではなく — 教授(PI)一人の判断で、研究室予算・科研費の範囲で決裁できる金額です。登録機関は、これから増えていく段階です。",
+        en: "Registered institutions are just coming online.",
+        ja: "登録機関は、これから増えていく段階です。",
       },
       cards: [
         {
@@ -450,7 +451,6 @@ export const T402: Trust402Content = {
           en: "A platform for selling research data to AI agents, with proof of authenticity built in. When a lab registers, its members publish free.",
           ja: "研究データを、真贋証明つきでAIエージェントに販売できる基盤。研究室が登録するとメンバーは無料。",
         },
-        contact: { en: "Faculty? Register or ask us anything", ja: "教員の方: 登録・お問い合わせはこちら" },
       },
     },
 
