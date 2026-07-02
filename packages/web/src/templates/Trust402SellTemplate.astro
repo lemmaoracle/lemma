@@ -52,7 +52,11 @@ const payHref = `${base}/trust402/`;
               <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hero.ctaPrimary[locale]} →</a>
               <a class="btn btn-ghost on-dark" href={`${base}/trust402/sell/model/`}>{c.hero.ctaSecondary[locale]}</a>
             </div>
-            <div class="lede-note">{c.hero.lede[locale]}</div>
+            <div class="lede-note">
+              {c.hero.lede.map((chip) => (
+                <span class="lede-chip">{chip[locale]}</span>
+              ))}
+            </div>
           </div>
           <div>
             <div class="card-caption">
@@ -453,8 +457,9 @@ const payHref = `${base}/trust402/`;
   .t402 .btn-ic { width: 16px; height: 16px; }
 
   /* sell components */
-  .t402 .lede-note { font-family: var(--font-mono); font-size: 12.5px; color: rgba(236, 235, 227, 0.55); margin-top: 16px; display: flex; align-items: center; gap: 8px; }
-  .t402 .lede-note::before { content: "●"; color: var(--green); }
+  .t402 .lede-note { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+  .t402 .lede-chip { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--green); background: rgba(182, 245, 0, 0.13); border: 1px solid rgba(182, 245, 0, 0.42); border-radius: 999px; padding: 6px 14px; white-space: nowrap; }
+  .t402 .lede-chip::before { content: "✓"; margin-right: 6px; font-weight: 700; }
   .t402 .bigsteps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .t402 .bigstep { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; }
   .t402 .bigstep .badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 999px; background: var(--green); color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-bottom: 16px; }

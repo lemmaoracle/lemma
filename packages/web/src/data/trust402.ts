@@ -88,7 +88,7 @@ export interface Trust402Content {
       readonly sub: Localized;
       readonly ctaPrimary: Localized;
       readonly ctaSecondary: Localized;
-      readonly lede: Localized;
+      readonly lede: ReadonlyArray<Localized>;
       readonly cardCaption: Localized;
       readonly card: {
         readonly file: string;
@@ -239,18 +239,19 @@ export const T402: Trust402Content = {
   sell: {
     hero: {
       eyebrow: { en: "trust402 · sell", ja: "trust402 · sell" },
-      h1a: { en: "Your research, your work.", ja: "その研究も、作品も。" },
+      h1a: { en: "Made something good?", ja: "その研究も、作品も。" },
       h1em: { en: "Sell it to AI agents.", ja: "AI エージェントに売れる。" },
       sub: {
-        en: "Turn your data or papers into something AI agents can buy — with proof it's yours and unaltered. No code, no server; you're paid directly in USDC to your own wallet.",
+        en: "Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof it came from you and hasn't been changed. A no-code way in: no servers, no code, and no one holding your money — you're paid directly in USDC to your own wallet. You keep everything; Lemma is just the tool.",
         ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
       },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       ctaSecondary: { en: "See what sells", ja: "何が売れるか見る" },
-      lede: {
-        en: "Free to start · no code · 0% commission",
-        ja: "無料で開始 · ノーコード · 手数料0%",
-      },
+      lede: [
+        { en: "Free to start", ja: "無料で開始" },
+        { en: "No code", ja: "ノーコード" },
+        { en: "0% commission", ja: "手数料 0%" },
+      ],
       cardCaption: {
         en: "an agent checks it's real (free), then pays you ↓",
         ja: "エージェントが本物か確認し(無料)、支払う ↓",
