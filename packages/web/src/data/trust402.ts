@@ -360,7 +360,7 @@ export const T402: Trust402Content = {
           },
         },
       ],
-      stepLink: { en: "See the form ↓", ja: "フォームを見る ↓" },
+      stepLink: { en: "See the preview ↓", ja: "プレビューを見る ↓" },
       caption: {
         en: "Checking your proof is always free. You get paid for the data — not for being trusted.",
         ja: "証明の検証は常に無料。報酬は成果に対して支払われます — 信頼されること自体には課金しません。",
@@ -515,11 +515,11 @@ export const T402: Trust402Content = {
     },
 
     form: {
-      eyebrow: { en: "the form · preview", ja: "フォーム · プレビュー" },
-      h2: { en: "This is the whole form.", ja: "これがフォームのすべて。" },
+      eyebrow: { en: "listing · preview", ja: "出品 · プレビュー" },
+      h2: { en: "This is all it takes to list.", ja: "出品に必要なのは、これだけ。" },
       sub: {
-        en: "A live preview — play with it here, nothing gets published. The real form lives in your Dashboard. Five fields: fill them in and your listing takes shape on the right, exactly what an agent sees.",
-        ja: "ライブプレビューです — ここで触っても何も公開されません。本物のフォームはダッシュボードにあります。5 項目を埋めると、右側にあなたの出品が形になります — エージェントが見るものそのままです。",
+        en: "A live preview — play with it here, nothing gets published. You do this for real in the Dashboard. Five fields: fill them in and your listing takes shape on the right, exactly what an agent sees.",
+        ja: "ライブプレビューです — ここで触っても何も公開されません。実際の入力はダッシュボードで行います。5 項目を埋めると、右側にあなたの出品が形になります — エージェントが見るものそのままです。",
       },
       ribbon: { en: "publish a listing", ja: "出品を公開" },
       previewTag: { en: "preview", ja: "preview" },
@@ -623,7 +623,7 @@ export const T402: Trust402Content = {
 
     pricing: {
       eyebrow: { en: "pricing · shared with pay", ja: "料金 · pay と共通" },
-      h2: { en: "Free while you learn. Pay only when you really sell.", ja: "学ぶ間は無料。本当に売るときだけ支払う。" },
+      h2: { en: "Pay only when you really sell.", ja: "本当に売るときだけ、支払う。" },
       sub: {
         en: "The same three plans cover both Pay and Sell. Checking proofs is always free — you only pay for a plan when you publish for real. No commission on sales.",
         ja: "同じ 3 プランが Pay と Sell の両方をカバー。証明の検証は常に無料 — 本番で公開するときだけプラン料金がかかります。販売手数料はゼロ。",
@@ -662,7 +662,7 @@ export const T402: Trust402Content = {
     },
 
     faq: {
-      eyebrow: { en: "questions students ask", ja: "学生からよくある質問" },
+      eyebrow: { en: "common questions", ja: "よくある質問" },
       h2: { en: "Good things to check.", ja: "確認しておきたいこと。" },
       items: [
         {
