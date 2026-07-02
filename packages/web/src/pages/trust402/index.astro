@@ -14,7 +14,7 @@ const t = getTranslations(locale);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust402 — AI Agents Pay Autonomously Without Holding Keys | Lemma</title>
 <meta name="description" content="Per-call delegated authority for AI agent payments. Attach &quot;who, by what authority, for which data&quot; as ZK proofs. Out of scope, it never runs. Reference implementation on Base Sepolia, x402 / MCP / A2A compliant.">
-<meta name="theme-color" content="#8B4513">
+<meta name="theme-color" content="#4B6B0F">
 <link rel="canonical" href="https://lemma.frame00.com/trust402/" />
 <link rel="alternate" hreflang="en" href="https://lemma.frame00.com/trust402/" />
 <link rel="alternate" hreflang="ja" href="https://lemma.frame00.com/ja/trust402/" />
@@ -39,9 +39,9 @@ const t = getTranslations(locale);
 :root {
   --lemma-black: #000000; --lemma-text-1: #1A1A1A; --lemma-text-2: #3A3A3A;
   --lemma-text-3: #5A5A5A; --lemma-text-4: #9A9A9A;
-  --lemma-brown: #8B4513; --lemma-brown-light: #F5EBDC;
+  --lemma-brown: #4B6B0F; --lemma-brown-light: #EEF6D0;
   --lemma-cream: #FCFAF5; --lemma-cream-deep: #F2EEDF;
-  --lemma-line: #E5E5E5;
+  --lemma-line: #E5E5E5; --t402-green: #B6F500;
   --legacy-bg: #ECEBE5; --legacy-border: #B5AFA0; --legacy-text: #6E6957;
   --code-bg: #1A1612; --code-text: #D4CFC4;
   --font-display: 'Sora', system-ui, sans-serif;
@@ -91,7 +91,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   .hero-code.expanded .hero-code-expand { display: none; }
 }
 .hero-demo { background: #0A0F0E; border-radius: 14px; padding: 0; overflow: hidden; position: relative; border: 0.5px solid rgba(0,0,0,0.1); }
-.hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(139,69,19,0.7); border-radius: 4px; z-index: 2; }
+.hero-demo::before { content: "DEMO · live"; position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: rgba(252,250,245,0.55); padding: 4px 9px; background: rgba(75, 107, 15,0.7); border-radius: 4px; z-index: 2; }
 .hero-demo-frame { aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 22px 22px 18px; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; }
 .hero-demo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -140,7 +140,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   text-decoration: none; color: inherit;
   transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-.t-card:hover { border-color: var(--lemma-brown); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(139, 69, 19, 0.08); }
+.t-card:hover { border-color: var(--lemma-brown); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(75, 107, 15, 0.08); }
 .t-card-icon { color: var(--lemma-brown); }
 .t-card-icon svg { width: 52px; height: 52px; display: block; }
 .t-card-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--lemma-black); line-height: 1.3; letter-spacing: -0.018em; margin: 0; }
@@ -169,7 +169,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .diff-cell.result { background: #2C2620; color: #FCFAF5; }
 .diff-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--lemma-brown); font-weight: 500; }
 .diff-cell.result .diff-label { color: rgba(252,250,245,0.55); }
-.diff-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(139,69,19,0.12); color: var(--lemma-brown); margin: 4px 0; }
+.diff-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(75, 107, 15,0.12); color: var(--lemma-brown); margin: 4px 0; }
 .diff-name { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--lemma-text-1); letter-spacing: -0.005em; margin-top: auto; }
 .diff-plus, .diff-equals { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 28px; font-weight: 300; color: var(--lemma-brown); padding: 0 4px; }
 .diff-add-list { display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
@@ -197,7 +197,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .impact-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch; }
 .impact-panel { border-radius: 18px; padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 16px; }
 .impact-panel.before { background: var(--legacy-bg); border: 0.5px dashed var(--legacy-border); filter: saturate(0.65); }
-.impact-panel.after { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); box-shadow: 0 6px 28px rgba(139, 69, 19, 0.08); }
+.impact-panel.after { background: var(--lemma-cream); border: 0.5px solid var(--lemma-brown); box-shadow: 0 6px 28px rgba(75, 107, 15, 0.08); }
 .impact-panel svg { width: 100%; height: auto; display: block; }
 .impact-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
 .impact-label::before { content: ""; display: block; width: 22px; height: 1px; }
@@ -294,7 +294,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* === §4 Use cases — supplementary, compact === */
 .uc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
 .uc-card { background: #fff; border: 0.5px solid var(--lemma-line); border-radius: 12px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s, transform 0.2s; }
-.uc-card:hover { border-color: rgba(139,69,19,0.4); transform: translateY(-2px); }
+.uc-card:hover { border-color: rgba(75, 107, 15,0.4); transform: translateY(-2px); }
 .uc-card-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--lemma-brown-light); border-radius: 8px; color: var(--lemma-brown); }
 .uc-card-title { font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--lemma-black); letter-spacing: -0.005em; line-height: 1.35; margin: 0; }
 .uc-card-desc { font-size: 11.5px; color: var(--lemma-text-3); line-height: 1.6; margin: 0; }
@@ -472,6 +472,136 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   .le-proof { font-size: 11px; }
   .mid-cta { flex-direction: column; align-items: flex-start; padding: 28px 24px; }
 }
+
+/* === two-way branch hero (rebrand) === */
+.t402-standards { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--lemma-text-3); margin: 0 0 40px; }
+.t402-standards::before { content: "\25CF "; color: var(--t402-green); }
+.path-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; margin: 0; }
+.path-card { position: relative; background: #fff; border: 0.5px solid var(--lemma-line); border-top: 3px solid var(--t402-green); border-radius: 16px; padding: 32px 28px 26px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.path-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(0,0,0,0.07); border-color: var(--t402-green); }
+.path-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--lemma-brown); }
+.path-icon { color: var(--lemma-black); }
+.path-icon svg { width: 52px; height: 58px; display: block; }
+.path-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--lemma-black); line-height: 1.2; letter-spacing: -0.02em; margin: 0; }
+.path-btn { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--lemma-brown); margin-top: auto; padding-top: 6px; }
+.pay-demo { max-width: 1020px; margin: 0 0 64px; }
+@media (max-width: 720px) { .path-cards { grid-template-columns: 1fr; } }
+
+/* === hub hero v2 — dark umbrella (matches prototype) === */
+.hub-hero-v2 { background: #1F1E1A; color: #ECEBE3; padding: clamp(116px, 13vh, 150px) 8% 84px; }
+.hub-hero-v2 .inner { max-width: 1240px; margin: 0 auto; }
+.hub-hero-v2 .hero-grid2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+.hub-hero-v2 .eyebrow2 { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--t402-green); color: #1F1E1A; padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
+.hub-hero-v2 h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 6vw, 74px); line-height: 1.04; letter-spacing: -0.03em; margin: 0 0 26px; max-width: 14ch; color: #fff; }
+.hub-hero-v2 h1 .g { color: var(--t402-green); }
+.hub-hero-v2 .hero-sub2 { font-size: clamp(16px, 1.4vw, 19px); color: rgba(236,235,227,0.66); max-width: 56ch; line-height: 1.7; margin: 0 0 36px; }
+.hub-hero-v2 .hero-sub2 em { font-style: italic; }
+.hub-hero-v2 .cta-row2 { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+.hub-hero-v2 .btn2 { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s, color .2s, border-color .2s, transform .2s; }
+.hub-hero-v2 .btn2.primary { background: var(--t402-green); color: #1F1E1A; }
+.hub-hero-v2 .btn2.primary:hover { background: #8FBF00; transform: translateY(-1px); }
+.hub-hero-v2 .btn2.ghost { background: transparent; color: #ECEBE3; border-color: rgba(236,235,227,0.2); }
+.hub-hero-v2 .btn2.ghost:hover { border-color: #ECEBE3; }
+.hub-hero-v2 .btn-ic { width: 16px; height: 16px; }
+.hub-hero-v2 .trust-bar { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; font-family: var(--font-mono); font-size: 12px; color: rgba(236,235,227,0.5); }
+.hub-hero-v2 .trust-bar .std { padding: 3px 10px; border: 1px solid rgba(236,235,227,0.14); border-radius: 6px; }
+.hub-hero-v2 .trust-bar .bazaar { color: var(--t402-green); }
+.hub-hero-v2 .term { background: #131210; color: #ECEBE3; border-radius: 10px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.9; padding: 18px 22px; overflow-x: auto; border: 1px solid rgba(236,235,227,0.12); }
+.hub-hero-v2 .term .p, .hub-hero-v2 .term .ok { color: var(--t402-green); }
+.hub-hero-v2 .term .dim { color: rgba(236,235,227,0.45); }
+.hub-hero-v2 .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+.hub-hero-v2 .door { background: rgba(236,235,227,0.04); border: 1px solid rgba(236,235,227,0.12); border-top: 3px solid var(--t402-green); border-radius: 14px; padding: 32px 30px; transition: background .2s, transform .2s; display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; }
+.hub-hero-v2 .door:hover { background: rgba(236,235,227,0.08); transform: translateY(-3px); }
+.hub-hero-v2 .door-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--t402-green); }
+.hub-hero-v2 .door h3 { font-family: var(--font-display); font-size: 23px; font-weight: 700; color: #fff; margin: 0; line-height: 1.22; }
+.hub-hero-v2 .door p { color: rgba(236,235,227,0.6); font-size: 14px; margin: 0; flex: 1; }
+.hub-hero-v2 .door .link-arrow2 { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--t402-green); display: inline-flex; align-items: center; gap: 6px; }
+.hub-hero-v2 .door-ic { height: 56px; width: auto; color: #ECEBE3; }
+.hub-hero-v2 .ic { display: inline-block; vertical-align: middle; }
+@media (max-width: 900px) { .hub-hero-v2 .hero-grid2 { grid-template-columns: 1fr; gap: 32px; } }
+@media (max-width: 820px) { .hub-hero-v2 .doors { grid-template-columns: 1fr; } }
+
+/* === hub body v2 — prototype sections (sub-brand), scoped .t402b === */
+.t402b { --green:#B6F500; --green-link:#4B6B0F; --green-deep:#8FBF00; --ink:#1F1E1A; --ink-soft:#4A4942; --muted:#6F6E66; --surface:#ECEBE3; --surface-2:#F5F4EE; --card:#FFFFFF; --border:#D8D6CC; --border-dk:rgba(236,235,227,0.12); --term-fg:#ECEBE3; --font-serif:'Cormorant Garamond',Georgia,serif; color:var(--ink); }
+.t402b section { padding: 92px 8%; }
+.t402b .inner { max-width: 1240px; margin: 0 auto; }
+.t402b .section-dark { background: var(--ink); color: var(--term-fg); }
+.t402b .section-dark h2, .t402b .section-dark h3 { color: var(--term-fg); }
+.t402b .section-gray { background: var(--surface); }
+.t402b .sec-head { max-width: 720px; margin-bottom: 52px; }
+.t402b .sec-head h2 { font-family: var(--font-display); font-size: clamp(28px,4vw,44px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 16px; color: var(--ink); }
+.t402b .section-dark .sec-head h2 { color: var(--term-fg); }
+.t402b .sec-head h2 em { font-style: italic; color: var(--green-link); }
+.t402b .section-dark .sec-head h2 em { color: var(--green); }
+.t402b .sec-head p { font-size: 16px; color: var(--ink-soft); line-height: 1.75; margin: 0; }
+.t402b .section-dark .sec-head p { color: rgba(236,235,227,0.6); }
+.t402b .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 18px; }
+.t402b .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
+.t402b .eyebrow-plain.on-dark { color: var(--green); }
+.t402b .eyebrow { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
+.t402b .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s,color .2s,border-color .2s,transform .2s; }
+.t402b .btn-primary { background: var(--green); color: var(--ink); }
+.t402b .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
+.t402b .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+.t402b .btn-ghost.on-dark { color: var(--term-fg); border-color: var(--border-dk); }
+.t402b .btn-ghost.on-dark:hover { border-color: var(--term-fg); }
+.t402b .link-arrow { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); display: inline-flex; align-items: center; gap: 6px; }
+.t402b .link-arrow.on-dark { color: var(--green); }
+/* equation */
+.t402b .equation { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; }
+.t402b .eq-item { flex: 1; min-width: 150px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.t402b .eq-item .lab { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--green-link); margin-bottom: 6px; }
+.t402b .eq-item .sub { font-size: 13px; color: var(--muted); }
+.t402b .eq-op { display: flex; align-items: center; font-family: var(--font-display); font-size: 26px; font-weight: 300; color: var(--green-link); }
+.t402b .eq-result { flex: 1.4; min-width: 180px; background: var(--green); border-radius: 12px; padding: 20px; color: var(--ink); }
+.t402b .eq-result .lab { font-family: var(--font-mono); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+/* cards */
+.t402b .cards { display: grid; gap: 16px; }
+.t402b .cards.c3 { grid-template-columns: repeat(3,1fr); }
+.t402b .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 28px; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.t402b .card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+.t402b .card .num { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); font-weight: 700; margin-bottom: 12px; }
+.t402b .card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin: 0 0 10px; color: var(--ink); }
+.t402b .card p { font-size: 14px; color: var(--ink-soft); margin: 0; }
+.t402b .card .chip { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
+/* steps */
+.t402b .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.t402b .step { background: rgba(236,235,227,0.04); border: 1px solid var(--border-dk); border-radius: 14px; padding: 26px 24px; }
+.t402b .step .num { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 12px; }
+.t402b .step h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin: 0 0 8px; color: var(--term-fg); }
+.t402b .step p { font-size: 13.5px; color: rgba(236,235,227,0.6); margin: 0; }
+.t402b .callout { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+.t402b .callout.on-dark { color: rgba(236,235,227,0.5); }
+/* tiers */
+.t402b .tiers { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.t402b .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
+.t402b .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
+.t402b .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.t402b .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
+.t402b .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.t402b .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.t402b .tier .tmeans { font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.t402b .tier .tstate { margin-top: auto; padding-top: 18px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
+.t402b .price-note { margin-top: 20px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
+/* closing */
+.t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
+.t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
+.t402b .closing .core { font-family: var(--font-display); font-weight: 300; font-size: clamp(18px,2.4vw,26px); color: var(--green); letter-spacing: -0.01em; margin: 22px auto 30px; max-width: 40ch; }
+.t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
+.t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+/* reveal */
+.t402b .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s, transform .6s; }
+.t402b .reveal.on { opacity: 1; transform: none; }
+@media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 900px) { .t402b .tiers { grid-template-columns: 1fr; } .t402b .equation { flex-direction: column; } .t402b .eq-op { justify-content: center; } }
+@media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } }
+
+/* fixed Pay/Sell/Dashboard switcher */
+.t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: #1F1E1A; padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
+.t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: #ECEBE3; padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+.t402-switch-btn:hover { color: #fff; }
+.t402-switch-btn.active { background: var(--t402-green); color: #1F1E1A; }
+@media (max-width: 560px) { .t402-switch-btn { padding: 8px 15px; } }
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
@@ -493,684 +623,143 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 <Navigation locale={locale} t={t.nav} base={base} />
 
 <main>
-  <div class="container">
-
-    <!-- HERO (Seal-style: text + code/demo + 2 cards + trust line) -->
-    <section class="hero">
-      <div class="eyebrow">Lemma <span class="accent">× x402</span></div>
-      <h1 class="h1">Trust for AI agent<br><span class="accent">payments.</span></h1>
-      <p class="hero-sub"><span class="k">x402</span> lets agents pay. Lemma proves <span class="k">who, under what authority, and on what data</span> — via ZK, and <span class="k-new">out of scope, it never runs</span>.</p>
-
-      <div class="hero-grid">
-        <div class="hero-code" id="t402-code">
-          <pre class="hero-code-full"><span class="kw">import</span> { <span class="var">wrapFetchWithProof</span> } <span class="kw">from</span> <span class="str">'@trust402/protocol'</span>
-
-<span class="com">// compose proof gating before the x402 payment</span>
-<span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, <span class="var">artifact</span>, <span class="var">gate</span>, <span class="var">lemma</span>)
-
-<span class="com">// keys and data stay put — only proofs flow</span>
-<span class="kw">await</span> <span class="fn">fetch402</span>(<span class="str">'https://api.example/data'</span>)</pre>
-          <div class="hero-code-mini"><span class="kw">const</span> <span class="var">fetch402</span> = <span class="fn">wrapFetchWithProof</span>(<span class="var">fetch</span>, …)<br /><span class="com">// compose proof gating before the x402 payment</span></div>
-          <button type="button" class="hero-code-expand" onclick="this.parentElement.classList.toggle('expanded')">＋ Show full example</button>
+  <header class="hub-hero-v2">
+    <div class="inner">
+      <div class="hero-grid2">
+        <div>
+          <span class="eyebrow2">lemma × x402</span>
+          <h1>Trust for the <span class="g">x402 agent economy.</span></h1>
+          <p class="hero-sub2">Authority when you pay, provenance when you sell. x402 moves the money — Trust402 attaches <em>who</em>, by what authority, and whose data, as cryptographic proof. Verifiable by anyone, on the standards agents already speak.</p>
+          <div class="cta-row2">
+            <a class="btn2 primary" href="#adds">Explore the two sides ↓</a>
+            <a class="btn2 ghost" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener"><svg class="ic btn-ic" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" fill="currentColor"/></svg> View on GitHub →</a>
+          </div>
+          <div class="trust-bar">
+            <span class="std">x402</span><span class="std">MCP</span><span class="std">A2A</span>
+            <span class="bazaar">● Discoverable in the x402 Bazaar</span>
+          </div>
         </div>
-
-        <div class="hero-demo" aria-label="Demo: agent fetches, pays via x402, receives ZK-verified attributes">
-          <div class="hero-demo-frame">
-            <span class="term-line"><span class="prompt">example-x402$</span><span class="cmd">agent run --pay 0.01 GET /data</span></span>
-            <span class="term-line spacer"></span>
-            <span class="term-line"><span class="info">[+]</span> generating ZK identity proof… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> role check (developer-tier)… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> x402 settle <span class="accent">0x4a8f…e21</span> <span class="ok">✓</span></span>
-            <span class="term-line"><span class="info">[+]</span> anchor: Base Sepolia <span class="ok">✓</span></span>
-            <span class="term-line spacer"></span>
-            <span class="term-line success">200 OK <span class="meta">&#123; data: "…" &#125;</span></span>
-            <span class="term-line cursor"><span class="prompt">example-x402$</span></span>
+        <div>
+          <div class="term">
+            <div><span class="p">$</span> agent run --pay 0.01 GET /data</div>
+            <div class="dim">[+] ZK identity proof… <span class="ok">✓</span></div>
+            <div class="dim">[+] role check (developer-tier)… <span class="ok">✓</span></div>
+            <div class="dim">[+] spendLimit 0.01 ≤ 100 USDC… <span class="ok">✓</span></div>
+            <div class="dim">[+] x402 settle 0x4a8f…e21 <span class="ok">✓</span></div>
+            <div class="dim">[+] anchor: Base Sepolia <span class="ok">✓</span></div>
+            <div><span class="ok">200 OK</span> &#123; data: "…" &#125;</div>
           </div>
         </div>
       </div>
 
-      <div class="t-cards">
-        <a href="https://github.com/lemmaoracle/trust402" class="t-card" target="_blank" rel="noopener">
-          <div class="t-card-icon">
-            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="t-card-title">Reference<br>implementation</h3>
-          <p class="t-card-line">Live on Base Sepolia. $0.01 GET succeeds / $500 POST fails closed.</p>
-          <span class="t-card-btn">View on GitHub →</span>
+      <div class="doors">
+        <a class="door" href="#adds">
+          <svg class="ic door-ic" viewBox="0 0 74 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="29" cy="4" r="3" fill="var(--t402-green)"/>
+            <line x1="29" y1="7" x2="29" y2="16" stroke="currentColor" stroke-width="2.2"/>
+            <rect x="1.5" y="16" width="55" height="56" rx="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <circle cx="20" cy="39" r="4" fill="var(--t402-green)"/>
+            <circle cx="38" cy="39" r="4" fill="var(--t402-green)"/>
+            <line x1="21" y1="57" x2="37" y2="57" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="58" cy="60" r="14" fill="var(--t402-green)"/>
+            <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
+          </svg>
+          <span class="door-tag">trust402 · pay</span>
+          <h3>Run AI without holding keys.</h3>
+          <p>Per-call delegated authority for agent payments. Attach who, by what authority, and up to what amount — as ZK proofs. Out of scope, it never runs.</p>
+          <span class="link-arrow2">You're here →</span>
         </a>
-
-        <a href="https://tally.so/r/kd0bZR" class="t-card" target="_blank" rel="noopener">
-          <div class="t-card-badge">MCP READY</div>
-          <div class="t-card-icon">
-            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="13" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
-              <circle cx="39" cy="13" r="6" stroke="currentColor" stroke-width="2"/>
-              <circle cx="26" cy="38" r="6" stroke="currentColor" stroke-width="2"/>
-              <line x1="18" y1="16" x2="22" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="34" y1="16" x2="30" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="19" y1="13" x2="33" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.45" stroke-dasharray="3 3"/>
-            </svg>
-          </div>
-          <h3 class="t-card-title">Drop into your<br>MCP / Agent</h3>
-          <p class="t-card-line">Use directly from Anthropic MCP or OpenAI Agent SDK.</p>
-          <span class="t-card-btn">Join the waitlist →</span>
+        <a class="door" href="/trust402/sell/">
+          <svg class="ic door-ic" viewBox="0 0 58 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="5" width="40" height="60" rx="5" fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <line x1="16" y1="19" x2="40" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="27" x2="40" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="35" x2="30" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="42" cy="60" r="15" fill="var(--t402-green)"/>
+            <path d="M35 60 l5 5 l9 -10" fill="none" stroke="#1F1E1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="door-tag">trust402 · sell</span>
+          <h3>Sell your data to agents, provably yours.</h3>
+          <p>Attach cryptographic provenance to what you publish. Agents verify it's authentic, then pay over x402. You keep selling it — Lemma is the tool, not the store.</p>
+          <span class="link-arrow2">See Trust402 · Sell →</span>
         </a>
-      </div>
-
-      <p class="trust">
-        <span class="dot">●</span> <span class="strong">ETHGlobal Open Agents 2026 Finalist</span>
-        &nbsp;·&nbsp; Aligned with Coinbase Developer Platform 2026-06 release
-        &nbsp;·&nbsp; x402 / MCP standards
-        &nbsp;·&nbsp; <a href="https://github.com/lemmaoracle/trust402" style="color:inherit;text-decoration:underline;">Source on GitHub</a>
-      </p>
-    </section>
-
-    <!-- DIFF: Trust402 = x402 + ... -->
-    <section class="diff-strip">
-      <div class="diff-row">
-        <div class="diff-cell base">
-          <div class="diff-label">x402</div>
-          <div class="diff-icon">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-              <circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <text x="11" y="14.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" fill="currentColor" font-weight="600">¥</text>
-            </svg>
-          </div>
-          <div class="diff-name">Payment protocol</div>
-        </div>
-        <div class="diff-plus">+</div>
-        <div class="diff-cell add">
-          <div class="diff-label">What Trust402 adds</div>
-          <div class="diff-add-list">
-            <div class="diff-add-item"><span class="diff-add-key">ZK identity</span><span class="diff-add-mono">who</span></div>
-            <div class="diff-add-item"><span class="diff-add-key">role membership</span><span class="diff-add-mono">under what authority</span></div>
-            <div class="diff-add-item"><span class="diff-add-key">spend limit</span><span class="diff-add-mono">up to what</span></div>
-            <div class="diff-add-item"><span class="diff-add-key">on-chain anchor</span><span class="diff-add-mono">tamper-evident trail</span></div>
-          </div>
-        </div>
-        <div class="diff-equals">=</div>
-        <div class="diff-cell result">
-          <div class="diff-label">Trust-verified payment</div>
-          <div class="diff-result-pill">
-            <span class="diff-result-dot"></span>
-            <span>Who, under what authority, up to what amount, on what data</span>
-          </div>
-          <div class="diff-result-mono">fail-closed · audit trail · independently verifiable</div>
-        </div>
-      </div>
-    </section>
-
-  </div><!-- /.container — break for full-bleed Scope band -->
-
-  <!-- B Scope (v9 — first benefit, right after Formula) -->
-  <section class="scope-section">
-    <div class="container">
-      <p class="scope-eyebrow">Scope</p>
-      <div class="scope-grid">
-
-        <div class="scope-left">
-          <h2 class="scope-h">Out of scope,<br>it never runs.</h2>
-          <p class="scope-lead">Your agent runs only within the authority you delegate. Out of scope, <span class="k-new">it stops before the call is sent</span>. No hand-rolled guardrails.</p>
-
-          <div class="scope-cards">
-            <div class="scope-card">
-              <div class="sc-icon">
-                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <line x1="4" y1="16" x2="17" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M13 11.5 L17.5 16 L13 20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                  <line x1="24" y1="7" x2="24" y2="25" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                  <line x1="28" y1="10" x2="28" y2="22" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
-                </svg>
-              </div>
-              <div class="sc-body">
-                <div class="sc-head"><span class="sc-no">01</span><h3 class="sc-title">Stopped before it's sent.</h3></div>
-                <p class="sc-desc">Calls that fail proof verification stop before they're sent (fail-closed).</p>
-                <code class="sc-mono">$500 POST → blocked</code>
-              </div>
-            </div>
-            <div class="scope-card">
-              <div class="sc-icon">
-                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect x="7" y="4" width="15" height="21" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/>
-                  <line x1="11" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                  <line x1="11" y1="14.5" x2="18" y2="14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                  <circle cx="23" cy="23" r="5.5" stroke="currentColor" stroke-width="1.8" fill="var(--lemma-cream-deep)"/>
-                  <path d="M20.7 23 L22.3 24.6 L25.3 21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                </svg>
-              </div>
-              <div class="sc-body">
-                <div class="sc-head"><span class="sc-no">02</span><h3 class="sc-title">Authority is declared, not coded.</h3></div>
-                <p class="sc-desc">Declare role, limits and scope as a proof — no authorization branches in your code.</p>
-                <code class="sc-mono">scope: payments:autonomous</code>
-              </div>
-            </div>
-            <div class="scope-card">
-              <div class="sc-icon">
-                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M5.5 7.5 L7 9 L9.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                  <line x1="13" y1="7.5" x2="27" y2="7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  <line x1="5.8" y1="14" x2="9.2" y2="17.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
-                  <line x1="9.2" y1="14" x2="5.8" y2="17.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
-                  <line x1="13" y1="15.7" x2="27" y2="15.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
-                  <path d="M5.5 24 L7 25.5 L9.5 22.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                  <line x1="13" y1="24" x2="27" y2="24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div class="sc-body">
-                <div class="sc-head"><span class="sc-no">03</span><h3 class="sc-title">Every stop leaves a trail.</h3></div>
-                <p class="sc-desc">Every allow and every stop lands in an independently verifiable audit trail.</p>
-                <code class="sc-mono">audit trail · verifiable</code>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="scope-right">
-          <div class="scope-log" id="scopeLog">
-            <div class="log-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="log-title">trust402 · execution log</span><span class="log-live"><span class="live-dot"></span>live</span></div>
-
-            <div class="log-entry ok">
-              <div class="le-head"><span class="le-mark">✓</span><span class="le-call">GET /data</span><span class="le-amt">$0.01</span></div>
-              <div class="le-proof"><span class="le-k">proof</span>role <span class="le-pass">✓</span> · spend <span class="le-pass">✓</span></div>
-              <div class="le-result"><span>→ settled · anchored</span><span class="le-badge ok">SETTLED</span></div>
-            </div>
-
-            <div class="log-entry ng">
-              <div class="le-head"><span class="le-mark">✗</span><span class="le-call">POST /admin</span><span class="le-amt">$500</span></div>
-              <div class="le-proof"><span class="le-k">proof</span>scope <span class="le-fail">✗</span> <span class="le-note">admin not granted</span></div>
-              <div class="le-result"><span>→ stopped before send</span><span class="le-badge ng">BLOCKED</span></div>
-            </div>
-
-            <div class="log-entry ng">
-              <div class="le-head"><span class="le-mark">✗</span><span class="le-call">GET /data</span><span class="le-amt">$120</span></div>
-              <div class="le-proof"><span class="le-k">proof</span>spend <span class="le-fail">✗</span> <span class="le-note">limit 100 USDC exceeded</span></div>
-              <div class="le-result"><span>→ stopped before send</span><span class="le-badge ng">BLOCKED</span></div>
-            </div>
-          </div>
-          <p class="scope-trustline"><span class="led">●</span> fail-closed by default · every stop lands in the audit trail · measured on the reference implementation</p>
-        </div>
-
       </div>
     </div>
-  </section>
+  </header>
 
-  <div class="container"><!-- /.container — resume in-flow sections -->
-
-    <!-- §1 Without / With Trust402 -->
-    <section class="section-block">
-      <div class="section-eyebrow">Before / After</div>
-      <h2 class="section-h2">Just paying<br><span class="accent">isn't enough.</span></h2>
-      <p class="section-sub">x402 settles the payment. Trust402 attaches <span class="k">provable authority, identity, and scope</span> to that payment — recording who paid on behalf of whom, within what bounds, and against what data in a tamper-evident form.</p>
-
-      <div class="impact-comparison">
-        <div class="impact-panel before">
-          <div class="impact-label">Without Trust402</div>
-          <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" aria-label="Without Trust402: payment travels, no proof of authority">
-            <g transform="translate(20, 60)">
-              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
-              <circle cx="20" cy="22" r="3" fill="#6E6957"/>
-              <circle cx="38" cy="22" r="3" fill="#6E6957"/>
-              <line x1="22" y1="36" x2="36" y2="36" stroke="#6E6957" stroke-width="1.4" stroke-linecap="round"/>
-              <line x1="29" y1="4" x2="29" y2="10" stroke="#6E6957" stroke-width="1.3"/>
-              <circle cx="29" cy="3" r="2" fill="#6E6957"/>
-              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">Agent</text>
-            </g>
-            <g transform="translate(90, 95)">
-              <line x1="0" y1="0" x2="110" y2="0" stroke="#6E6957" stroke-width="1.5"/>
-              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#6E6957"/>
-              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957" letter-spacing="1">x402 pay</text>
-              <g class="travel-pay-bare">
-                <g transform="translate(0, -9)">
-                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#6E6957" stroke-width="1.4" fill="#FFFFFF"/>
-                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957">¥</text>
-                </g>
-              </g>
-            </g>
-            <g transform="translate(230, 55)">
-              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
-              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#6E6957" stroke-width="1.5"/>
-              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#6E6957" stroke-width="1.5" fill="#FFFFFF" opacity="0.7"/>
-              <g class="server-record-fade" transform="translate(12, 22)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
-              <g class="server-record-fade" transform="translate(40, 24)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
-              <g class="server-record-fade" transform="translate(68, 22)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
-              <g class="server-record-fade" transform="translate(20, 42)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">¥</text></g>
-              <g class="server-record-fade" transform="translate(58, 44)"><rect x="0" y="0" width="20" height="11" rx="1.5" stroke="#6E6957" stroke-width="1.2" fill="none"/><text x="10" y="9" text-anchor="middle" font-family="Space Mono, monospace" font-size="7" fill="#6E6957">?</text></g>
-              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">Payment record only</text>
-              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957" letter-spacing="1">no audit trail</text>
-            </g>
-          </svg>
-          <p class="impact-summary">Who, within what bounds, on what data —<br>cannot be reconstructed afterward.</p>
-        </div>
-
-        <div class="migrate-bridge" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M 4 11 L 18 11 M 13 6 L 18 11 L 13 16" stroke="#8B4513" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          </svg>
-        </div>
-
-        <div class="impact-panel after">
-          <div class="impact-label">With Trust402</div>
-          <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" aria-label="With Trust402: payment + ZK proof, verified audit trail">
-            <g transform="translate(20, 60)">
-              <rect x="0" y="0" width="58" height="60" rx="6" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
-              <circle cx="20" cy="22" r="3" fill="#8B4513"/>
-              <circle cx="38" cy="22" r="3" fill="#8B4513"/>
-              <line x1="22" y1="36" x2="36" y2="36" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-              <line x1="29" y1="4" x2="29" y2="10" stroke="#8B4513" stroke-width="1.3"/>
-              <circle cx="29" cy="3" r="2" fill="#8B4513"/>
-              <g transform="translate(40, 42)">
-                <circle cx="9" cy="9" r="8" fill="#8B4513"/>
-                <text x="9" y="12" text-anchor="middle" font-family="Sora, sans-serif" font-size="7" fill="#FCFAF5" font-weight="700">ZK</text>
-              </g>
-              <text x="29" y="78" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">Agent + proof</text>
-            </g>
-            <g transform="translate(90, 95)">
-              <line x1="0" y1="0" x2="110" y2="0" stroke="#8B4513" stroke-width="1.5"/>
-              <path d="M 110 0 L 104 -5 L 104 5 Z" fill="#8B4513"/>
-              <text x="55" y="-12" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">x402 pay + proof</text>
-              <g class="travel-pay-proof">
-                <g transform="translate(0, -9)">
-                  <rect x="0" y="0" width="20" height="14" rx="2" stroke="#8B4513" stroke-width="1.4" fill="#FFFFFF"/>
-                  <text x="10" y="11" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513">¥</text>
-                  <circle cx="22" cy="2" r="5" fill="#8B4513"/>
-                  <path d="M 19.5 2 L 21 3.5 L 24.5 0" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                </g>
-              </g>
-            </g>
-            <g transform="translate(230, 55)">
-              <ellipse cx="55" cy="6" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
-              <path d="M 5 6 L 5 78 M 105 6 L 105 78" stroke="#8B4513" stroke-width="1.5"/>
-              <ellipse cx="55" cy="78" rx="50" ry="5" stroke="#8B4513" stroke-width="1.5" fill="#FFFFFF"/>
-              <g class="proof-pulse" transform="translate(43, 26)">
-                <circle cx="12" cy="12" r="11" fill="#8B4513"/>
-                <path d="M 6 12 L 10.5 16.5 L 18 8" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-              <g transform="translate(15, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <g transform="translate(45, 55)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <g transform="translate(75, 50)"><circle cx="9" cy="9" r="8" fill="#8B4513"/><path d="M 5 9 L 8 12 L 14 6" stroke="#FCFAF5" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-              <text x="55" y="100" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">payment + proof</text>
-              <text x="55" y="115" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">audit trail · verified</text>
-            </g>
-          </svg>
-          <p class="impact-summary"><span class="k">Who, under what authority</span><br>proven cryptographically.</p>
+  <div class="t402b">
+    <section>
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">what trust402 adds</span><h2>Attach trust to the payment.</h2><p>x402 settles the money. Trust402 adds provable authority, identity, and scope on top — recording who paid on behalf of whom, within what bounds, against what data.</p></div>
+        <div class="equation reveal">
+        <div class="eq-item"><div class="lab">ZK identity</div><div class="sub">who</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">role membership</div><div class="sub">under what authority</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">spend limit</div><div class="sub">up to what</div></div>
+        <div class="eq-op">+</div>
+        <div class="eq-item"><div class="lab">on-chain anchor</div><div class="sub">tamper-evident trail</div></div>
+        <div class="eq-op">=</div>
+        <div class="eq-result"><div class="lab">trust-verified payment</div><div class="sub">fail-closed · audit trail · independently verifiable</div></div>
         </div>
       </div>
     </section>
 
-    <!-- §4 Use cases — supplementary, compact (v9: moved above §2, closes the benefit trio) -->
-    <section class="section-block">
-      <div class="section-eyebrow">Where it pays off</div>
-      <h2 class="section-h2">Four operational areas<br><span class="accent">Trust402 unlocks.</span></h2>
-      <p class="section-sub">Where agent-delegated payments meet real workflows, Trust402's <span class="k">authority proof + audit trail</span> earns its keep.</p>
-
-      <div class="uc-grid">
-        <div class="uc-card">
-          <div class="uc-card-icon">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-              <rect x="3" y="6" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <line x1="3" y1="10" x2="19" y2="10" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h3 class="uc-card-title">AI expense approval</h3>
-          <p class="uc-card-desc">Limits and scope as ZK proof — settle and approve without a human in the loop.</p>
-        </div>
-
-        <div class="uc-card">
-          <div class="uc-card-icon">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <circle cx="11" cy="11" r="1.5" fill="currentColor"/>
-            </svg>
-          </div>
-          <h3 class="uc-card-title">Metered API billing</h3>
-          <p class="uc-card-desc">Plan-holder proof at the wire — bill without provisioning credentials.</p>
-        </div>
-
-        <div class="uc-card">
-          <div class="uc-card-icon">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-              <circle cx="6" cy="11" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <circle cx="16" cy="11" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <line x1="9" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h3 class="uc-card-title">Cross-agent settlement</h3>
-          <p class="uc-card-desc">Prove the payment authority across an agent-to-agent chain.</p>
-        </div>
-
-        <div class="uc-card">
-          <div class="uc-card-icon">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-              <path d="M 11 3 L 18 6 L 18 12 Q 18 17 11 19 Q 4 17 4 12 L 4 6 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-              <path d="M 8 11 L 10 13 L 14 9" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="uc-card-title">Compliance flow</h3>
-          <p class="uc-card-desc">Attach KYC / AML attributes via selective disclosure — settle under regulation.</p>
-        </div>
-      </div>
-
-      <!-- D — mid CTA (action hook right after the benefit trio) -->
-      <div class="mid-cta">
-        <p class="mid-cta-line">The reference implementation is live on GitHub.</p>
-        <div class="mid-cta-btns">
-          <a class="primary" href="https://github.com/lemmaoracle/trust402">Try it on GitHub →</a>
-          <a class="secondary" href="https://tally.so/r/kd0bZR">Join the waitlist →</a>
+    <section>
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">scope</span><h2>Out of scope, <em>it never runs.</em></h2><p>Your agent runs only within the authority you delegate. Out of scope, it stops before the call is sent — no hand-rolled guardrails.</p></div>
+        <div class="cards c3">
+        <div class="card reveal"><div class="num">01</div><h3>Stopped before it's sent.</h3><p>Calls that fail proof verification stop before they're sent (fail-closed).</p><span class="chip">$500 POST → blocked</span></div>
+        <div class="card reveal"><div class="num">02</div><h3>Authority is declared, not coded.</h3><p>Declare role, limits and scope as a proof — no authorization branches in your code.</p><span class="chip">scope: payments:autonomous</span></div>
+        <div class="card reveal"><div class="num">03</div><h3>Every stop leaves a trail.</h3><p>Every allow and every stop lands in an independently verifiable audit trail.</p><span class="chip">audit trail · verifiable</span></div>
         </div>
       </div>
     </section>
 
-    <!-- §2 How it works -->
-    <section class="section-block">
-      <div class="section-eyebrow">How it works</div>
-      <h2 class="section-h2">One middleware,<br><span class="accent">over your existing x402 flow.</span></h2>
-      <p class="section-sub">The standard stays intact. Trust402 sits as a ZK verification layer.</p>
-
-      <div class="mech-block">
-        <svg class="mech-svg" viewBox="0 0 960 240" xmlns="http://www.w3.org/2000/svg" aria-label="How Trust402 works: agent → ZK verify → x402 pay → on-chain proof">
-          <!-- STEP 01: present delegation proof (key icon) -->
-          <g transform="translate(20, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 01</text>
-            <g transform="translate(54, 46)">
-              <circle cx="14" cy="20" r="9" stroke="#8B4513" stroke-width="1.6" fill="none"/>
-              <circle cx="14" cy="20" r="3" fill="#8B4513"/>
-              <line x1="23" y1="20" x2="48" y2="20" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-              <line x1="38" y1="20" x2="38" y2="27" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-              <line x1="46" y1="20" x2="46" y2="25" stroke="#8B4513" stroke-width="1.6" stroke-linecap="round"/>
-            </g>
-            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">Present delegation proof</text>
-          </g>
-          <!-- arrow 1 -->
-          <g transform="translate(180, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
-          </g>
-          <!-- STEP 02: ZK verify (filled circular ZK badge) -->
-          <g transform="translate(240, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 02</text>
-            <g transform="translate(56, 44)">
-              <circle cx="24" cy="22" r="20" fill="#8B4513"/>
-              <text x="24" y="28" text-anchor="middle" font-family="Sora, sans-serif" font-size="13" fill="#FCFAF5" font-weight="700">ZK</text>
-            </g>
-            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">Trust402 verifies via ZK</text>
-          </g>
-          <!-- arrow 2 -->
-          <g transform="translate(400, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
-          </g>
-          <!-- STEP 03: x402 settlement (¥ in a circle) -->
-          <g transform="translate(460, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 03</text>
-            <g transform="translate(56, 44)">
-              <circle cx="24" cy="22" r="20" stroke="#8B4513" stroke-width="1.6" fill="#FCFAF5"/>
-              <text x="24" y="28" text-anchor="middle" font-family="Space Mono, monospace" font-size="18" fill="#8B4513" font-weight="700">¥</text>
-            </g>
-            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">Settle on x402</text>
-          </g>
-          <!-- arrow 3 -->
-          <g transform="translate(620, 115)">
-            <line class="trust402-flow-arrow" x1="0" y1="0" x2="50" y2="0" stroke="#8B4513" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M 56 0 L 50 -5 L 50 5 Z" fill="#8B4513"/>
-          </g>
-          <!-- STEP 04: on-chain anchor (chain link icon) -->
-          <g transform="translate(680, 60)">
-            <rect x="0" y="0" width="160" height="120" rx="14" stroke="#8B4513" stroke-width="1.5" fill="#FCFAF5"/>
-            <text x="80" y="32" text-anchor="middle" font-family="Space Mono, monospace" font-size="10.5" fill="#8B4513" letter-spacing="2.5" font-weight="500">STEP 04</text>
-            <g transform="translate(56, 48)" stroke="#8B4513" stroke-width="1.6" fill="none" stroke-linecap="round">
-              <ellipse cx="14" cy="17" rx="10" ry="6" transform="rotate(-30 14 17)"/>
-              <ellipse cx="34" cy="17" rx="10" ry="6" transform="rotate(-30 34 17)"/>
-            </g>
-            <text x="80" y="106" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#1A1A1A" font-weight="600">on-chain anchor</text>
-          </g>
-        </svg>
-        <div class="mech-mobile" aria-hidden="true">
-          <div class="mech-mstep">
-            <div class="mech-mlabel">STEP 01</div>
-            <div class="mech-micon">
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="11" cy="18" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/>
-                <circle cx="11" cy="18" r="2.6" fill="currentColor"/>
-                <line x1="18" y1="18" x2="32" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="25" y1="18" x2="25" y2="24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="30" y1="18" x2="30" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="mech-mtitle">Present delegation proof</div>
-          </div>
-          <div class="mech-marrow">
-            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <div class="mech-mstep">
-            <div class="mech-mlabel">STEP 02</div>
-            <div class="mech-micon">
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="14" fill="currentColor"/>
-                <text x="18" y="22" text-anchor="middle" font-family="Sora, sans-serif" font-size="11" fill="#FCFAF5" font-weight="700">ZK</text>
-              </svg>
-            </div>
-            <div class="mech-mtitle">Trust402 verifies via ZK</div>
-          </div>
-          <div class="mech-marrow">
-            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <div class="mech-mstep">
-            <div class="mech-mlabel">STEP 03</div>
-            <div class="mech-micon">
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="1.8" fill="none"/>
-                <text x="18" y="23" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" fill="currentColor" font-weight="700">¥</text>
-              </svg>
-            </div>
-            <div class="mech-mtitle">Settle on x402</div>
-          </div>
-          <div class="mech-marrow">
-            <svg viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line class="mech-mdash" x1="9" y1="1" x2="9" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M9 21 L4 15 L14 15 Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <div class="mech-mstep">
-            <div class="mech-mlabel">STEP 04</div>
-            <div class="mech-micon">
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round">
-                  <ellipse cx="13" cy="18" rx="9" ry="5" transform="rotate(-30 13 18)"/>
-                  <ellipse cx="23" cy="18" rx="9" ry="5" transform="rotate(-30 23 18)"/>
-                </g>
-              </svg>
-            </div>
-            <div class="mech-mtitle">On-chain anchor</div>
-          </div>
+    <section class="section-dark">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain on-dark">how it works</span><h2>One middleware, over your existing x402 flow.</h2><p>The standard stays intact. Trust402 sits as a ZK verification layer.</p></div>
+        <div class="steps">
+        <div class="step reveal"><div class="num">step 01</div><h3>Present delegation proof</h3><p>The agent presents the authority you delegated.</p></div>
+        <div class="step reveal"><div class="num">step 02</div><h3>Trust402 verifies via ZK</h3><p>Identity, role and limits checked cryptographically.</p></div>
+        <div class="step reveal"><div class="num">step 03</div><h3>Settle on x402</h3><p>Cleared requests settle over the untouched standard.</p></div>
+        <div class="step reveal"><div class="num">step 04</div><h3>On-chain anchor</h3><p>Every allow and stop is anchored, tamper-evident.</p></div>
         </div>
-        <div class="mech-caption">
-          <span>● 4 step flow</span> · <span class="accent">one middleware line, done</span>
-        </div>
+        <p class="callout on-dark">● 4-step flow · one middleware line, done · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">wrapFetchWithProof →</a></p>
       </div>
     </section>
 
-    <!-- §3 Trust402 + Lemma context -->
-    <section class="section-block">
-      <div class="section-eyebrow">Product</div>
-      <h2 class="section-h2">Trust402 is<br><span class="accent">Lemma's trust infrastructure.</span></h2>
-      <p class="section-sub">x402 trust infrastructure. Grants agents <span class="k">ZK identity, role, and budget</span> so they can pay autonomously — built on Lemma's shared "don't hold the data" design.</p>
-
-      <div class="context-block">
-        <div class="context-left">
-          <div class="context-eyebrow">Design</div>
-          <h3 class="context-h3">Extending the "don't hold"<br>design <span class="accent">to x402.</span></h3>
-          <p class="context-desc">Trust402 takes Lemma's trust infrastructure and extends it into <span class="k">agent autonomous payment</span>. Agents are handed <span class="k">neither keys nor data</span>; only proofs flow. The receiving side independently verifies legitimacy.</p>
-          <a href="/pillars" class="context-link">Read more on the Trust Infrastructure →</a>
+    <section class="section-gray">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>Explorer to Pro.</h2><p>Verify is always free. You pay to produce proofs and settle — not to be trusted.</p></div>
+        <div class="tiers">
+        <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">Sandbox · testnet only</div><div class="tprice">Free</div><div class="tmeans">Manual form · the current demo.</div><div class="tstate">Coming soon</div></div>
+        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">Production · individual developers</div><div class="tprice">$19<small>/mo + per-query</small></div><div class="tmeans">Manual form (+ API add-on).</div><div class="tstate">Coming soon</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">¥50k<small>/mo + attestation</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
         </div>
-        <div class="context-features">
-          <div class="ctx-card">
-            <div class="ctx-icon">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.6" fill="none"/>
-                <circle cx="9" cy="14" r="1.8" fill="currentColor"/>
-                <line x1="14" y1="14" x2="25" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <line x1="20" y1="14" x2="20" y2="19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <line x1="24" y1="14" x2="24" y2="17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="ctx-name">ZK identity</div>
-            <p class="ctx-desc">Prove credentials via Poseidon commitments.</p>
-            <code class="ctx-mono">prover.prove(credential)</code>
-          </div>
-          <div class="ctx-card">
-            <div class="ctx-icon">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="7" cy="9" r="3.4" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="21" cy="9" r="3.4" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="14" cy="20" r="3.4" stroke="currentColor" stroke-width="1.6"/>
-                <line x1="10" y1="11" x2="12" y2="17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="18" y1="11" x2="16" y2="17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <line x1="10.5" y1="9" x2="17.5" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5" stroke-dasharray="2 2"/>
-              </svg>
-            </div>
-            <div class="ctx-name">Role membership</div>
-            <p class="ctx-desc">Prove role assignment via Circom circuits.</p>
-            <code class="ctx-mono">Groth16 / BN254</code>
-          </div>
-          <div class="ctx-card">
-            <div class="ctx-icon">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M4 17 A10 10 0 0 1 24 17" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-                <line x1="14" y1="17" x2="20" y2="9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <circle cx="14" cy="17" r="1.8" fill="currentColor"/>
-              </svg>
-            </div>
-            <div class="ctx-name">Spend limit</div>
-            <p class="ctx-desc">Enforce budget caps via 128-bit LessEqThan.</p>
-            <code class="ctx-mono">fail-closed guarantee</code>
-          </div>
-          <div class="ctx-card">
-            <div class="ctx-icon">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="1.6" fill="none"/>
-                <text x="14" y="18.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="12" fill="currentColor" font-weight="700">¥</text>
-              </svg>
-            </div>
-            <div class="ctx-name">Currency · settlement</div>
-            <p class="ctx-desc">USDC settled via EIP-3009.</p>
-            <code class="ctx-mono">extensible to other stablecoins</code>
-          </div>
-          <div class="ctx-card">
-            <div class="ctx-icon">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <g stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round">
-                  <ellipse cx="10" cy="14" rx="7" ry="4" transform="rotate(-30 10 14)"/>
-                  <ellipse cx="18" cy="14" rx="7" ry="4" transform="rotate(-30 18 14)"/>
-                </g>
-              </svg>
-            </div>
-            <div class="ctx-name">On-chain attestation</div>
-            <p class="ctx-desc">Tamper-evident settlement via the Lemma oracle.</p>
-            <code class="ctx-mono">Base Sepolia · mainnet ready</code>
-          </div>
-        </div>
+        <p class="price-note">One monthly allowance across Pay and Sell. Verify is free.</p>
       </div>
     </section>
 
-    <!-- §4 Plans brief -->
-    <section class="section-block">
-      <div class="section-eyebrow">Pricing</div>
-      <h2 class="section-h2">Four tiers,<br><span class="accent">Explorer to Pro.</span></h2>
-
-      <div class="plans-brief">
-        <div class="plan-brief-card">
-          <h3 class="name">Explorer</h3>
-          <p class="desc">Sandbox · testnet only</p>
-          <p class="status">Coming soon</p>
-        </div>
-        <div class="plan-brief-card">
-          <h3 class="name">Builder</h3>
-          <p class="desc">Production access · for individual developers</p>
-          <p class="status">Coming soon</p>
-        </div>
-        <div class="plan-brief-card">
-          <h3 class="name">Studio</h3>
-          <p class="desc">Team plan · priority support</p>
-          <p class="status">Coming soon</p>
-        </div>
-        <div class="plan-brief-card">
-          <h3 class="name">Pro</h3>
-          <p class="desc">High volume · SLA guaranteed</p>
-          <p class="status">Coming soon</p>
-        </div>
-      </div>
-
-      <div class="plans-brief-cta">
-        <a href="https://tally.so/r/kd0bZR" class="plans-brief-cta-primary">Join the waitlist →</a>
-      </div>
-    </section>
-
-    <!-- §5 FAQ (dev-focused, essential) -->
-    <section class="section-block">
-      <div class="section-eyebrow">FAQ</div>
-      <h2 class="section-h2">Common questions.</h2>
-
-      <div class="faq-list">
-        <div class="faq-item">
-          <h3 class="faq-q">How is this different from OAuth?</h3>
-          <p class="faq-a">OAuth covers <span class="k">user access authorization</span>. Trust402 complements it by ZK-proving <span class="k">the agent's delegated authority, identity, and scope</span>. OAuth token + Trust402 proof together close authority governance for the agent era.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3 class="faq-q">How does it integrate with MCP?</h3>
-          <p class="faq-a">Works with Anthropic MCP server / client, OpenAI Agent SDK, or your own agent harness. The MCP server charges via <code>x402</code>; Trust402 verifies the calling agent's delegated authority.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3 class="faq-q">Can I retrofit Trust402 onto an existing x402 setup?</h3>
-          <p class="faq-a">Yes. Compose <code>wrapFetchWithProof</code> in front of <code>wrapFetchWithPayment</code> — payments without a valid proof are rejected before they're sent. The x402 standard is untouched; requests that clear the proof gate are processed as usual.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3 class="faq-q">Does this apply to actions beyond payments?</h3>
-          <p class="faq-a">Yes. Proofs are verified per call, so the same applies to non-payment API calls and MCP tool calls. Out-of-scope calls stop before they're sent. Start with payments, extend to everything your agent does.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3 class="faq-q">Do you support enterprise-specific requirements?</h3>
-          <p class="faq-a">Authority design, audit requirements, integration with existing systems — start with a <span class="k">discovery call</span>. <a href="https://tally.so/r/EkBqDX">Book one via the contact form</a>.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3 class="faq-q">When does this ship?</h3>
-          <p class="faq-a">2026-06, aligned with the Coinbase Developer Platform GA. The <span class="k">reference implementation</span> is already on GitHub (testnet).</p>
+    <section class="closing">
+      <div class="inner">
+        <span class="eyebrow on-dark">agentic economy</span>
+        <h2>Trust for the agent era.</h2>
+        <div class="core">Trust402 attaches trust to x402 — authority when you pay, provenance when you sell.</div>
+        <div class="rule"></div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener">Join the waitlist →</a>
+          <a class="btn btn-ghost on-dark" href="/trust402/sell/">See Trust402 · Sell →</a>
         </div>
       </div>
     </section>
-
   </div>
+    <nav class="t402-switch" aria-label="Trust402">
+    <a class="t402-switch-btn active" href="/trust402/" aria-current="page">Pay</a>
+    <a class="t402-switch-btn" href="/trust402/sell/">Sell</a>
+    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard</a>
+  </nav>
 </main>
-
-<!-- Vision close (v28 tone) -->
-<section class="vision">
-  <div class="container">
-    <div class="vision-eyebrow">Agentic Economy</div>
-    <h2 class="vision-h2">The trust infrastructure<br><span class="accent">for the agent era.</span></h2>
-    <p class="vision-sub">Pay autonomously without giving up keys — Lemma attaches provable authority.</p>
-    <div class="vision-cta">
-      <a href="https://tally.so/r/kd0bZR" class="vision-cta-primary">Join the waitlist →</a>
-      <a href="https://github.com/lemmaoracle/trust402" class="vision-cta-secondary">GitHub source ↗</a>
-    </div>
-    <p class="cta-consult">Enterprise customization starts with a discovery call. <a href="https://tally.so/r/EkBqDX">Book a discovery call →</a></p>
-  </div>
-</section>
 
 <Footer locale={locale} t={t.nav} footerT={t.footer} base="" />
 
@@ -1188,5 +777,15 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   })();
 </script>
 
+<script>
+  (function () {
+    var els = document.querySelectorAll(".t402b .reveal");
+    if (!("IntersectionObserver" in window)) { els.forEach(function (e){ e.classList.add("on"); }); return; }
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("on"); io.unobserve(en.target); } });
+    }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+</script>
 </body>
 </html>
