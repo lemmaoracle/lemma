@@ -408,7 +408,7 @@ const formL = {
     <nav class="t402-switch" aria-label="Trust402">
       <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
       <a class="t402-switch-btn active" href={`${base}/trust402/sell/`} aria-current="page">Sell</a>
-      <a class="t402-switch-btn" href={DASHBOARD_URL} target="_blank" rel="noopener">Dashboard</a>
+      <a class="t402-switch-btn" href={DASHBOARD_URL} target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
     </nav>
   </main>
 
@@ -675,6 +675,7 @@ const formL = {
   .t402 .t402-switch-btn:hover { color: #fff; }
   .t402 .t402-switch-btn.active { background: var(--green); color: var(--ink); }
   @media (max-width: 560px) { .t402 .t402-switch-btn { padding: 8px 15px; } }
+  .t402 .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
 </style>
 
 <script is:inline define:vars={{ formL }}>

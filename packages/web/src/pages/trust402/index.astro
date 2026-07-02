@@ -602,6 +602,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402-switch-btn:hover { color: #fff; }
 .t402-switch-btn.active { background: var(--t402-green); color: #1F1E1A; }
 @media (max-width: 560px) { .t402-switch-btn { padding: 8px 15px; } }
+  .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--t402-green); border: 1px solid var(--t402-green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
 </style>
 <!-- Tally widget runtime — required for the WP / Newsletter triggers Navigation/Footer drop into this page. -->
 <script async is:inline src="https://tally.so/widgets/embed.js"></script>
@@ -757,7 +758,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
     <nav class="t402-switch" aria-label="Trust402">
     <a class="t402-switch-btn active" href="/trust402/" aria-current="page">Pay</a>
     <a class="t402-switch-btn" href="/trust402/sell/">Sell</a>
-    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard</a>
+    <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
   </nav>
 </main>
 
