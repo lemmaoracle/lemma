@@ -9,6 +9,13 @@
  */
 ---
 
+<style is:global>
+  /* Robot eyes: green so they read on both the dark hero and light sections
+     (unstyled they default to black and vanish on dark). --green cascades
+     from the .t402 scope the sprite renders inside. */
+  .robot-eye { fill: var(--green); }
+</style>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="ic-robot" viewBox="0 0 58 80">
     <circle cx="29" cy="4" r="3" class="robot-eye"></circle>

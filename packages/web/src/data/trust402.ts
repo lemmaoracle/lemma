@@ -484,7 +484,7 @@ export const T402: Trust402Content = {
           name: "Pro",
           featured: true,
           pos: { en: "Production · for individuals selling on their own.", ja: "本番 · 個人で売る人向け。" },
-          price: { en: "$19", ja: "$19" },
+          price: { en: "$19", ja: "¥2,980" },
           priceSub: { en: "/mo · 0% commission on sales", ja: "/月 · 販売手数料 0%" },
           means: { en: "Everything in Explorer, live. Optional API for developers.", ja: "Explorer の全機能を本番で。開発者向け API はオプション。" },
           state: { en: "Coming soon", ja: "近日公開" },
@@ -492,7 +492,7 @@ export const T402: Trust402Content = {
         {
           name: "Institutional ID",
           pos: { en: "For universities, labs & organizations.", ja: "大学・研究室・組織向け。" },
-          price: { en: "¥50k", ja: "¥50k" },
+          price: { en: "$330", ja: "¥50,000" },
           priceSub: { en: "/mo + attestation", ja: "/月 + アテステーション" },
           means: { en: "Register once; members & students publish under the umbrella, free to them.", ja: "一度登録すれば、メンバーや学生がその名義で出品 — 本人は無料。" },
           state: { en: "Coming soon", ja: "近日公開" },
