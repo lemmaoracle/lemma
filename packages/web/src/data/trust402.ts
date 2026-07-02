@@ -295,8 +295,8 @@ export const T402: Trust402Content = {
       h1a: { en: "Made something good?", ja: "いいものを作った?" },
       h1em: { en: "Sell it to AI agents.", ja: "それ、AI エージェントに売れます。" },
       sub: {
-        en: "Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof it came from you and hasn't been changed. A no-code way in: no servers, no code, and no one holding your money — you're paid directly in USDC to your own wallet. You keep everything; Lemma is just the tool.",
-        ja: "データセットや論文、どんなファイルでも、AI エージェントが買える資源に変えられます — あなた由来で改ざんされていないという証明つき。ノーコードで始められ、サーバーもコードも不要、お金を預ける相手もいません — USDC が直接あなたのウォレットに届きます。すべてはあなたのまま。Lemma は道具にすぎません。",
+        en: "Turn your data or papers into something AI agents can buy — with proof it's yours and unaltered. No code, no server; you're paid directly in USDC to your own wallet.",
+        ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
       },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       ctaSecondary: { en: "See how it works", ja: "仕組みを見る" },
@@ -397,7 +397,7 @@ export const T402: Trust402Content = {
       ],
       caption: {
         en: "Whatever you put up becomes a resource an agent can trust, pay for, and cite back to you.",
-        ja: "何を出しても、エージェントが信頼し、支払い、あなたに引用を戻せる資源になります。",
+        ja: "何を出品しても、エージェントが信頼して支払い、あなたを出典として引用できる資源になります。",
       },
     },
 
@@ -405,7 +405,7 @@ export const T402: Trust402Content = {
       eyebrow: { en: "no strings attached", ja: "縛りなし" },
       h2: { en: "You stay in control.", ja: "主導権はあなたに。" },
       sub: { en: "Selling through Lemma doesn't take anything away from you.", ja: "Lemma で売っても、あなたから何かを奪うことはありません。" },
-      yesTitle: { en: "What stays yours", ja: "あなたのままのもの" },
+      yesTitle: { en: "What stays yours", ja: "あなたのものであり続けるもの" },
       yes: [
         { en: "Full ownership of your work — always.", ja: "成果の完全な所有権 — 常に。" },
         { en: "The right to sell or share it anywhere else, too.", ja: "他の場所でも売る・共有する権利。" },
@@ -437,7 +437,7 @@ export const T402: Trust402Content = {
     institutional: {
       eyebrow: { en: "institutional id · shared with pay", ja: "institutional id · pay と共通" },
       h2a: { en: "At a university or lab?", ja: "大学や研究室に所属?" },
-      h2em: { en: "You're already covered.", ja: "もうカバーされています。" },
+      h2em: { en: "You're already covered.", ja: "すでに対象です。" },
       sub: {
         en: "The Institutional ID plan lets an organization register once — then everyone under it publishes under that umbrella. It's the same plan on the Pay side.",
         ja: "Institutional ID プランなら、組織が一度登録すれば — 傘下の全員がその名義で出品できます。Pay 側と同じプランです。",
@@ -497,7 +497,7 @@ export const T402: Trust402Content = {
       h2: { en: "What you actually do: fill one short form.", ja: "やることは、短いフォームを 1 つ埋めるだけ。" },
       sub: {
         en: "No dashboard to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
-        ja: "組み立てるダッシュボードもコードも不要 — 本番前に、全体を無料で予行演習できます。",
+        ja: "ダッシュボードの設定もコードも不要 — 本番前に、全体を無料で予行演習できます。",
       },
       sandboxTitle: { en: "① try it in the sandbox", ja: "① サンドボックスで試す" },
       sandboxBody: {
@@ -681,7 +681,7 @@ export const T402: Trust402Content = {
           q: { en: "Do I need to know anything about crypto or blockchain?", ja: "暗号資産やブロックチェーンの知識は要る?" },
           a: {
             en: "You receive USDC — a digital dollar — to your own wallet, so you set one up once (a 2-minute step if you don't have one). We handle all the proof and payment plumbing behind the scenes.",
-            ja: "USDC — デジタルのドル — を自分のウォレットで受け取るので、ウォレットを一度用意します(なければ 2 分ほど)。証明と支払いの配管はすべて裏側で私たちが処理します。",
+            ja: "USDC — デジタルのドル — を自分のウォレットで受け取るので、ウォレットを一度用意します(なければ 2 分ほど)。証明や支払いまわりは、すべて裏側で私たちが処理します。",
           },
         },
         {
