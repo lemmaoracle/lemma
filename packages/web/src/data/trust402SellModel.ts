@@ -7,7 +7,7 @@
  * they're easy to swap later. Sellers set their own prices; 0% commission
  * (keep 100%) — no sale-fee framing anywhere in this copy.
  */
-import type { Localized } from "./trust402";
+import type { Localized, T402IconId } from "./trust402";
 
 export interface SellModel {
   readonly meta: { readonly title: Localized; readonly description: Localized };
@@ -23,6 +23,7 @@ export interface SellModel {
     readonly planLabel: string;
     readonly name: string;
     readonly initials: string;
+    readonly icon: T402IconId;
     readonly role: Localized;
     readonly sells: ReadonlyArray<{ readonly item: Localized; readonly price: string }>;
     readonly income: string;
@@ -78,6 +79,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Institutional ID",
       name: "Dr. Aisha Rahman",
       initials: "AR",
+      icon: "ic-flask",
       role: { en: "Researcher · university lab", ja: "研究者 · 大学ラボ" },
       sells: [
         { item: { en: "Consented measurement data", ja: "被験者同意済みの計測データ" }, price: "$0.50" },
@@ -91,6 +93,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Marco Ferretti",
       initials: "MF",
+      icon: "ic-chart",
       role: { en: "Independent researcher · data journalist", ja: "独立研究者 · データジャーナリスト" },
       sells: [
         { item: { en: "Verified primary datasets", ja: "検証済み一次データセット" }, price: "$0.20" },
@@ -104,6 +107,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Sofia Almeida",
       initials: "SA",
+      icon: "ic-camera",
       role: { en: "Photographer · filmmaker", ja: "フォトグラファー · 映像作家" },
       sells: [
         { item: { en: "Original photography", ja: "オリジナル写真" }, price: "$0.20" },
@@ -118,6 +122,7 @@ export const T402_SELL_MODEL: SellModel = {
       planLabel: "Pro",
       name: "Liam O'Connor",
       initials: "LO",
+      icon: "ic-pen",
       role: { en: "Content creator", ja: "コンテンツクリエイター" },
       sells: [
         { item: { en: "Everyday original photos", ja: "日常のオリジナル写真" }, price: "$0.15" },

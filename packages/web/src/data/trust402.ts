@@ -36,7 +36,10 @@ export type T402IconId =
   | "ic-chart"
   | "ic-notebook"
   | "ic-network"
-  | "ic-github";
+  | "ic-github"
+  | "ic-flask"
+  | "ic-camera"
+  | "ic-pen";
 
 interface Card {
   readonly icon: T402IconId;

@@ -11,6 +11,7 @@ import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
 
 interface Props {
@@ -33,6 +34,7 @@ const sellHref = `${base}/trust402/sell/`;
   <Navigation locale={locale} t={t.nav} base={base} />
 
   <main class="t402">
+    <Trust402Icons />
     <section class="personas">
       <div class="pm-inner">
         <a class="pm-back" href={sellHref}>{M.backLink[locale]}</a>
@@ -44,7 +46,7 @@ const sellHref = `${base}/trust402/sell/`;
             <div class="pm-card">
               <div class="pm-cardtop">
                 <span class:list={["pm-badge", p.plan]}>{p.planLabel}</span>
-                <span class="pm-avatar" aria-hidden="true">{p.initials}</span>
+                <span class="pm-avatar" aria-hidden="true"><svg class="pm-avatar-ic"><use href={`#${p.icon}`} /></svg></span>
               </div>
               <div class="pm-who">{p.name}</div>
               <div class="pm-role">{p.role[locale]}</div>
@@ -166,7 +168,8 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
   .t402 .pm-badge.inst { background: var(--ink); color: var(--green); }
   .t402 .pm-badge.pro { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); }
-  .t402 .pm-avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-soft); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .t402 .pm-avatar { width: 42px; height: 42px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .t402 .pm-avatar-ic { width: 23px; height: 23px; color: var(--ink-soft); }
   .t402 .pm-who { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin: 12px 0 2px; color: var(--ink); }
   .t402 .pm-role { color: var(--muted); font-size: 12.5px; margin-bottom: 16px; }
   .t402 .pm-lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--green-link); margin: 0 0 6px; }
