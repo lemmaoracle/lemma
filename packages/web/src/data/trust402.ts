@@ -150,11 +150,15 @@ export interface Trust402Content {
       readonly h2em: Localized;
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
-      /** "Request your university / lab" funnel (Tally). */
-      readonly request: {
+      /** "Share this page" loop — students forward the page itself
+       *  (Web Share API / copy-link); faculty land here and contact us
+       *  directly. No request form: the page does the selling. */
+      readonly share: {
         readonly lead: Localized;
         readonly cta: Localized;
-        readonly href: Localized;
+        readonly copied: Localized;
+        readonly text: Localized;
+        readonly contact: Localized;
       };
     };
     /** Merged "what you actually do" + Dashboard-demo CTA. */
@@ -199,10 +203,6 @@ export interface Trust402Content {
 }
 
 const GH = "https://github.com/lemmaoracle/trust402";
-
-/** "Request your university / lab" Tally forms (locale-specific, like the
- *  contact forms). `?source=` marks which page section the request came from. */
-const REQUEST_FORM = { ja: "https://tally.so/r/81W7rO", en: "https://tally.so/r/jap1Ex" };
 
 export const T402: Trust402Content = {
   sellMeta: {
@@ -412,8 +412,8 @@ export const T402: Trust402Content = {
       h2a: { en: "If your lab registers,", ja: "あなたの研究室が登録すれば、" },
       h2em: { en: "everyone in it publishes free.", ja: "ラボメンバー全員が無料で出品。" },
       sub: {
-        en: "At $330/mo, Institutional ID isn't a decision for the university board — one PI can approve it on a lab budget. Registered institutions are just coming online; yours can start with a request.",
-        ja: "¥50,000/月の Institutional ID は、大学本部の稟議ではなく — 教授(PI)一人の判断、研究室の予算で決められる金額です。登録機関はこれから増えていく段階。あなたの機関は、リクエストから始まります。",
+        en: "At $330/mo, Institutional ID isn't a decision for the university board — one PI can approve it within a lab budget or research grant. Registered institutions are just coming online.",
+        ja: "¥50,000/月の Institutional ID は、大学本部の稟議ではなく — 教授(PI)一人の判断で、研究室予算・科研費の範囲で決裁できる金額です。登録機関は、これから増えていく段階です。",
       },
       cards: [
         {
@@ -432,16 +432,18 @@ export const T402: Trust402Content = {
           body: { en: "Everything is attributed to you by name. Move on, and your proofs still check out.", ja: "すべてあなたの名前に帰属します。所属が変わっても、証明は有効なまま。" },
         },
       ],
-      request: {
+      share: {
         lead: {
-          en: "Not registered yet? It starts here — we tally student and member requests per institution and reach out to them directly.",
-          ja: "あなたの機関がまだでも、ここから始まります — 学生・メンバーからのリクエストを機関ごとに集計し、こちらから登録を働きかけます。",
+          en: "It starts with getting this page in front of your lab.",
+          ja: "まずは、このページを研究室に届けるところから。",
         },
-        cta: { en: "Request your university or lab", ja: "あなたの大学・研究室をリクエスト" },
-        href: {
-          en: `${REQUEST_FORM.en}?source=sell-institutional`,
-          ja: `${REQUEST_FORM.ja}?source=sell-institutional`,
+        cta: { en: "Share this page", ja: "このページをシェアする" },
+        copied: { en: "Link copied", ja: "リンクをコピーしました" },
+        text: {
+          en: "A platform for selling research data to AI agents, with proof of authenticity built in. When a lab registers, its members publish free.",
+          ja: "研究データを、真贋証明つきでAIエージェントに販売できる基盤。研究室が登録するとメンバーは無料。",
         },
+        contact: { en: "Faculty? Register or ask us anything", ja: "教員の方: 登録・お問い合わせはこちら" },
       },
     },
 
@@ -553,15 +555,12 @@ export const T402: Trust402Content = {
         {
           q: { en: "I'm a student — where do I start, and is there a cost?", ja: "学生です — どこから始める? 費用は?" },
           a: {
-            en: "Two steps. First, try everything free in the sandbox — no affiliation, no real money. When you're ready to go live, publish free under your university's or lab's Institutional plan, still credited to you by name. If your institution isn't registered yet, send a request.",
-            ja: "二段構えです。まずサンドボックスで無料で試す — 所属も実マネーも不要。本番に出すときは、大学や研究室の Institutional プランの名義で無料で公開できます(クレジットはあなたの名前のまま)。機関がまだ登録していなければ、リクエストを送ってください。",
+            en: "Two steps. First, try everything free in the sandbox — no affiliation, no real money. When you're ready to go live, publish free under your university's or lab's Institutional plan, still credited to you by name. If your institution isn't registered yet, start by sharing this page with your lab.",
+            ja: "二段構えです。まずサンドボックスで無料で試す — 所属も実マネーも不要。本番に出すときは、大学や研究室の Institutional プランの名義で無料で公開できます(クレジットはあなたの名前のまま)。機関がまだ登録していなければ、このページを研究室でシェアするところから始めてください。",
           },
           link: {
-            href: {
-              en: `${REQUEST_FORM.en}?source=sell-faq`,
-              ja: `${REQUEST_FORM.ja}?source=sell-faq`,
-            },
-            label: { en: "Request your university or lab", ja: "あなたの大学・研究室をリクエスト" },
+            href: { en: "#institutional", ja: "#institutional" },
+            label: { en: "Share this with your lab", ja: "研究室にシェアする" },
           },
         },
         {
