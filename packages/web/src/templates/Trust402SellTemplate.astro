@@ -156,6 +156,7 @@ const payHref = `${base}/trust402/`;
         </div>
         <div class="slogan reveal">{c.whyProof.sloganA[locale]} <span class="g">{c.whyProof.sloganEm[locale]}</span></div>
         <p class="plain-note">{c.whyProof.note[locale]}<span class="note-em">{c.whyProof.noteEm[locale]}</span></p>
+        <div class="center-link"><a class="link-arrow" href={`${base}/trust402/#provenance`}>→ {c.whyProof.techLink[locale]}</a></div>
       </div>
     </section>
 
@@ -175,38 +176,6 @@ const payHref = `${base}/trust402/`;
               <p>{card.body[locale]}</p>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-
-    {/* 7. UNDER THE HOOD */}
-    <section>
-      <div class="inner">
-        <div class="sec-head reveal">
-          <span class="eyebrow-plain">{c.underHood.eyebrow[locale]}</span>
-          <h2>{c.underHood.h2[locale]}</h2>
-          <p>{c.underHood.sub[locale]}</p>
-        </div>
-        <div class="reveal">
-          <details class="details">
-            <summary>{c.underHood.d1Summary[locale]}</summary>
-            <div class="body">
-              <div class="prim">
-                {c.underHood.primitives.map((p) => (
-                  <div class="pcell">
-                    <div class="plab">{p.label[locale]}</div>
-                    <div class="psub">{p.sub[locale]}{p.tech && <span class="tech"> ({p.tech})</span>}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </details>
-          <details class="details">
-            <summary>{c.underHood.d2Summary[locale]}</summary>
-            <div class="body">
-              <p class="detail-body">{c.underHood.d2Body[locale]}</p>
-            </div>
-          </details>
         </div>
       </div>
     </section>
@@ -507,20 +476,6 @@ const payHref = `${base}/trust402/`;
   .t402 .keepcol.no .keeplist .mk { color: var(--muted); }
   @media (max-width: 680px) { .t402 .keeps { grid-template-columns: 1fr; } }
 
-  .t402 .details { border: 1px solid var(--border); border-radius: 14px; background: var(--card); padding: 0 26px; }
-  .t402 .details + .details { margin-top: 12px; }
-  .t402 .details summary { cursor: pointer; padding: 22px 0; font-family: var(--font-display); font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-  .t402 .details summary::-webkit-details-marker { display: none; }
-  .t402 .details summary::after { content: "+"; font-family: var(--font-mono); color: var(--green-link); font-size: 22px; line-height: 1; }
-  .t402 .details[open] summary::after { content: "\2013"; }
-  .t402 .details .body { padding: 4px 0 26px; }
-  .t402 .details .detail-body { font-size: 14.5px; color: var(--ink-soft); max-width: 70ch; }
-  .t402 .prim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 6px; }
-  .t402 .prim .pcell { background: var(--surface); border-radius: 12px; padding: 18px; }
-  .t402 .prim .plab { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); margin-bottom: 5px; }
-  .t402 .prim .psub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-  .t402 .prim .psub .tech { opacity: 0.7; }
-  @media (max-width: 680px) { .t402 .prim { grid-template-columns: 1fr; } }
 
   .t402 .free-badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 2px 9px; border-radius: 5px; margin-left: 8px; vertical-align: middle; }
 

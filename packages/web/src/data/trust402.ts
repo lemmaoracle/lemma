@@ -137,6 +137,7 @@ export interface Trust402Content {
       readonly sloganEm: Localized;
       readonly note: Localized;
       readonly noteEm: Localized;
+      readonly techLink: Localized;
     };
     readonly institutional: {
       readonly eyebrow: Localized;
@@ -144,15 +145,6 @@ export interface Trust402Content {
       readonly h2em: Localized;
       readonly sub: Localized;
       readonly cards: ReadonlyArray<Card>;
-    };
-    readonly underHood: {
-      readonly eyebrow: Localized;
-      readonly h2: Localized;
-      readonly sub: Localized;
-      readonly d1Summary: Localized;
-      readonly primitives: ReadonlyArray<{ readonly label: Localized; readonly sub: Localized; readonly tech?: string }>;
-      readonly d2Summary: Localized;
-      readonly d2Body: Localized;
     };
     readonly hands: {
       readonly eyebrow: Localized;
@@ -388,6 +380,7 @@ export const T402: Trust402Content = {
       sloganEm: { en: "Only yours can prove it.", ja: "証明できるのはあなたのものだけ。" },
       note: { en: "The technical way to say it: ", ja: "技術的に言えば: " },
       noteEm: { en: "Signed is the only real.", ja: "署名されたものだけが本物。" },
+      techLink: { en: "How the proof works, technically — Trust402", ja: "証明の技術的な仕組み（Trust402）" },
     },
 
     institutional: {
@@ -415,37 +408,6 @@ export const T402: Trust402Content = {
           body: { en: "Everything is attributed to you by name. Move on, and your proofs still check out.", ja: "すべてあなたの名前に帰属します。所属が変わっても、証明は有効なまま。" },
         },
       ],
-    },
-
-    underHood: {
-      eyebrow: { en: "for the curious", ja: "詳しく知りたい人へ" },
-      h2: { en: "How the proof actually works.", ja: "証明の実際の仕組み。" },
-      sub: {
-        en: "You never have to touch any of this — but if you like knowing what's under the hood, here it is.",
-        ja: "触れる必要は一切ありません — でも中身を知りたい人のために、ここに置いておきます。",
-      },
-      d1Summary: { en: "The three things we attach to your file", ja: "ファイルに添える 3 つのもの" },
-      primitives: [
-        {
-          label: { en: "who made it", ja: "誰が作ったか" },
-          sub: { en: "A signature proving you're the publisher — you can reveal only the parts you want.", ja: "あなたが発行者だと示す署名 — 開示する部分は選べます。" },
-          tech: "BBS+ over BLS12-381",
-        },
-        {
-          label: { en: "not changed", ja: "改ざんされていない" },
-          sub: { en: "A fingerprint that breaks if even one byte is altered.", ja: "1 バイトでも変わると壊れる指紋。" },
-          tech: "Poseidon over BN254",
-        },
-        {
-          label: { en: "which version", ja: "どのバージョンか" },
-          sub: { en: "So an agent always knows it's citing the exact version you meant.", ja: "エージェントが、あなたの意図した版を正確に引用できるように。" },
-        },
-      ],
-      d2Summary: { en: "How agents find and pay for it", ja: "エージェントが発見して支払う仕組み" },
-      d2Body: {
-        en: "Your listing is discoverable in the x402 Bazaar — a shared directory agents browse. It's added automatically the first time someone buys. Payment happens over the open x402 standard in USDC. You never run an x402 server; the standard template handles it for you.",
-        ja: "あなたの出品は x402 Bazaar — エージェントが見て回る共有ディレクトリ — から発見できます。誰かが最初に購入した時点で自動的に追加されます。支払いはオープンな x402 標準で USDC で行われます。x402 サーバーを動かす必要はなく、標準テンプレートが処理します。",
-      },
     },
 
     hands: {
