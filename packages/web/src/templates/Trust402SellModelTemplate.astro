@@ -1,0 +1,228 @@
+---
+/**
+ * /trust402/sell/model/ (+ /ja/…) — the Trust402 · Sell "reference model"
+ * child page (who / what / how much), linked from the Sell page.
+ *
+ * All figures are illustrative — copy/data live in src/data/trust402SellModel.ts.
+ * Built on the .t402 sub-brand tokens; standalone page with a back-link
+ * to the Sell hub and CTAs pointing back into the Sell page.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { T402_SELL_MODEL as M } from "../data/trust402SellModel";
+
+interface Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as Props;
+const sellHref = `${base}/trust402/sell/`;
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/trust402/sell/model/"
+  title={M.meta.title[locale]}
+  description={M.meta.description[locale]}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="t402">
+    <section class="personas">
+      <div class="pm-inner">
+        <a class="pm-back" href={sellHref}>{M.backLink[locale]}</a>
+        <span class="eyebrow-plain">{M.eyebrow[locale]}</span>
+        <h2 class="pm-h2">{M.h2[locale]}</h2>
+
+        <div class="pm-grid">
+          {M.personas.map((p) => (
+            <div class="pm-card">
+              <div class="pm-cardtop">
+                <span class:list={["pm-badge", p.plan]}>{p.planLabel}</span>
+                <span class="pm-avatar" aria-hidden="true">{p.initials}</span>
+              </div>
+              <div class="pm-who">{p.name}</div>
+              <div class="pm-role">{p.role[locale]}</div>
+              <p class="pm-lbl">{M.sellsLabel[locale]}</p>
+              <div class="pm-sells">
+                {p.sells.map((s) => (
+                  <div class="pm-row"><span>{s.item[locale]}</span><span class="pm-price">{s.price}</span></div>
+                ))}
+              </div>
+              <div class="pm-income">
+                <p class="pm-lbl">{M.incomeLabel[locale]}</p>
+                <div class="pm-amt"><span class="pm-hl">{p.income}</span><span class="pm-per">{M.per[locale]}</span></div>
+                <div class="pm-vol">{p.vol[locale]}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p class="pm-sec-h">{M.catalogH[locale]}</p>
+        <p class="pm-sec-sub">{M.catalogSub[locale]}</p>
+        <div class="pm-cat">
+          {M.catalog.map((cell) => (
+            <div class:list={["pm-catcell", { hl: cell.hl }]}>
+              <div class="pm-cattitle">{cell.title[locale]}</div>
+              <div class="pm-tags">
+                {cell.tags.map((tg) => (<span class="pm-tag">{tg[locale]}</span>))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p class="pm-dashnote">{M.dashNote[locale]}</p>
+
+        <p class="pm-sec-h">{M.whyH[locale]}</p>
+        <div class="pm-whgrid">
+          {M.why.map((w) => (
+            <div class="pm-wcell">
+              <div class="pm-wnum">{w.num}</div>
+              <div class="pm-wtitle">{w.title[locale]}</div>
+              <div class="pm-wtext">{w.text[locale]}</div>
+            </div>
+          ))}
+        </div>
+
+        <div class="pm-ba">
+          <h3 class="pm-bah">{M.baH[locale]}</h3>
+          <span class="pm-ctag">{M.baExample[locale]}</span>
+          <div class="pm-barow">
+            <div class="pm-bside before">
+              <div class="pm-btag">{M.beforeTag[locale]}</div>
+              <div class="pm-mo">{M.beforePrice} <span class="pm-mo-per">{M.perItem[locale]}</span></div>
+            </div>
+            <div class="pm-arrowcol">
+              <div class="pm-ar">→</div>
+              <div class="pm-mult">{M.mult}</div>
+            </div>
+            <div class="pm-bside after">
+              <div class="pm-btag">{M.afterTag[locale]}</div>
+              <div class="pm-mo">{M.afterPrice} <span class="pm-mo-per">{M.perItem[locale]}</span></div>
+            </div>
+          </div>
+          <div class="pm-foot">
+            {M.chips.map((ch) => (<span class:list={["pm-chip", { key: ch.key }]}>{ch.label[locale]}</span>))}
+          </div>
+          <p class="pm-note">{M.baNote[locale]}</p>
+        </div>
+
+        <div class="pm-cta">
+          {/* TODO: point "Try it free" at the real sandbox start flow once its URL exists. */}
+          <a class="pm-btn primary" href={`${sellHref}#the-form`}>{M.ctaTry[locale]}</a>
+          <a class="pm-btn secondary" href={`${sellHref}#pricing`}>{M.ctaPricing[locale]}</a>
+        </div>
+      </div>
+    </section>
+
+    {/* Fixed Pay / Sell / Dashboard switcher (Sell active — this is a Sell sub-page) */}
+    <nav class="t402-switch" aria-label="Trust402">
+      <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
+      <a class="t402-switch-btn active" href={sellHref} aria-current="page">Sell</a>
+      <a class="t402-switch-btn" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Dashboard <span class="t402-switch-badge">demo</span></a>
+    </nav>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .t402 {
+    --green: #b6f500;
+    --green-link: #4b6b0f;
+    --green-deep: #8fbf00;
+    --ink: #1f1e1a;
+    --ink-soft: #4a4942;
+    --muted: #6f6e66;
+    --surface: #ecebe3;
+    --surface-2: #f5f4ee;
+    --card: #fff;
+    --border: #d8d6cc;
+    --term-fg: #ecebe3;
+    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --font-body: "DM Sans", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-body);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .t402 .personas { background: var(--surface-2); }
+  .t402 section { padding: 56px 8% 96px; }
+  .t402 .pm-inner { max-width: 1080px; margin: 0 auto; }
+  .t402 .pm-back { font-family: var(--font-mono); font-size: 13px; color: var(--green-link); text-decoration: none; display: block; margin-bottom: 26px; }
+  .t402 .pm-back:hover { text-decoration: underline; }
+  .t402 .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 12px; }
+  .t402 .pm-h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 30px; color: var(--ink); }
+  .t402 .pm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .t402 .pm-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 16px; padding: 22px 20px 20px; display: flex; flex-direction: column; }
+  .t402 .pm-cardtop { display: flex; align-items: center; justify-content: space-between; }
+  .t402 .pm-badge { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
+  .t402 .pm-badge.inst { background: var(--ink); color: var(--green); }
+  .t402 .pm-badge.pro { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); }
+  .t402 .pm-avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-soft); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .t402 .pm-who { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin: 12px 0 2px; color: var(--ink); }
+  .t402 .pm-role { color: var(--muted); font-size: 12.5px; margin-bottom: 16px; }
+  .t402 .pm-lbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--green-link); margin: 0 0 6px; }
+  .t402 .pm-sells { margin: 0 0 18px; }
+  .t402 .pm-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 4px 0; border-bottom: 1px dotted var(--border); color: var(--ink-soft); }
+  .t402 .pm-row:last-child { border-bottom: none; }
+  .t402 .pm-price { font-family: var(--font-mono); color: var(--ink-soft); white-space: nowrap; }
+  .t402 .pm-income { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+  .t402 .pm-amt { font-family: var(--font-mono); font-weight: 700; font-size: 32px; line-height: 1; color: var(--ink); }
+  .t402 .pm-hl { background: linear-gradient(transparent 62%, var(--green) 62%); padding: 0 2px; }
+  .t402 .pm-per { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 5px; }
+  .t402 .pm-vol { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .t402 .pm-sec-h { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 44px 0 4px; color: var(--ink); }
+  .t402 .pm-sec-sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+  .t402 .pm-cat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .t402 .pm-catcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .t402 .pm-catcell.hl { border-top: 3px solid var(--green); }
+  .t402 .pm-cattitle { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 12px; color: var(--ink); }
+  .t402 .pm-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+  .t402 .pm-tag { font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px; color: var(--ink-soft); }
+  .t402 .pm-dashnote { margin-top: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .t402 .pm-whgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .t402 .pm-wcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 18px; }
+  .t402 .pm-wnum { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
+  .t402 .pm-wtitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 8px 0 6px; color: var(--ink); }
+  .t402 .pm-wtext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
+  .t402 .pm-ba { margin-top: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px 26px 24px; }
+  .t402 .pm-bah { font-family: var(--font-display); font-weight: 700; font-size: 18px; margin: 0 0 14px; color: var(--ink); }
+  .t402 .pm-ctag { display: inline-block; font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; margin: 0 0 18px; }
+  .t402 .pm-barow { display: flex; align-items: stretch; }
+  .t402 .pm-bside { flex: 1; padding: 18px 20px; border-radius: 12px; }
+  .t402 .pm-bside.before { background: var(--surface); }
+  .t402 .pm-bside.after { background: var(--ink); color: var(--surface); }
+  .t402 .pm-btag { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
+  .t402 .pm-bside.before .pm-btag { color: var(--muted); }
+  .t402 .pm-bside.after .pm-btag { color: #E9F5C6; }
+  .t402 .pm-mo { font-family: var(--font-mono); font-weight: 700; font-size: 30px; }
+  .t402 .pm-bside.after .pm-mo { color: var(--green); }
+  .t402 .pm-mo-per { font-size: 14px; font-weight: 400; opacity: .7; }
+  .t402 .pm-arrowcol { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 16px; }
+  .t402 .pm-ar { font-size: 26px; color: var(--green-deep); line-height: 1; }
+  .t402 .pm-mult { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); margin-top: 6px; white-space: nowrap; }
+  .t402 .pm-foot { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  .t402 .pm-chip { font-family: var(--font-mono); font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; color: var(--ink-soft); }
+  .t402 .pm-chip.key { background: var(--green); border-color: var(--green-deep); color: var(--ink); font-weight: 700; }
+  .t402 .pm-note { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
+  .t402 .pm-cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .t402 .pm-btn { font-family: var(--font-display); font-weight: 700; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 13px 26px; display: inline-block; }
+  .t402 .pm-btn.primary { background: var(--green); color: var(--ink); }
+  .t402 .pm-btn.primary:hover { background: var(--green-deep); }
+  .t402 .pm-btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .t402 .pm-btn.secondary:hover { background: var(--surface); }
+  .t402 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: var(--ink); padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
+  .t402 .t402-switch-btn { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: lowercase; color: var(--term-fg); padding: 9px 20px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s; white-space: nowrap; }
+  .t402 .t402-switch-btn:hover { color: #fff; }
+  .t402 .t402-switch-btn.active { background: var(--green); color: var(--ink); }
+  @media (max-width: 900px) { .t402 .pm-grid { grid-template-columns: repeat(2, 1fr); } .t402 .pm-whgrid, .t402 .pm-cat { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .t402 .pm-grid { grid-template-columns: 1fr; } .t402 .pm-barow { flex-direction: column; gap: 12px; } .t402 .pm-arrowcol { flex-direction: row; padding: 4px 0; } .t402 .pm-ar { transform: rotate(90deg); } .t402 .t402-switch-btn { padding: 8px 15px; } }
+  .t402 .t402-switch-badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); border-radius: 999px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
+</style>
