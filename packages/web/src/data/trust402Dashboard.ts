@@ -135,8 +135,8 @@ export const T402_DASHBOARD: Dashboard = {
     fileLabel: { en: "your file", ja: "ファイル" },
     fileName: "bench-q2.csv",
     fileHint: {
-      en: "drop a file, or point to a URL you already host",
-      ja: "ファイルをドロップ、または手持ちの URL を指定",
+      en: "drop a file to upload",
+      ja: "ファイルをドロップしてアップロード",
     },
     titleLabel: { en: "title", ja: "タイトル" },
     titleVal: { en: "Benchmark results · Q2", ja: "ベンチマーク結果 · Q2" },

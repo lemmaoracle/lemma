@@ -201,10 +201,10 @@ export interface Trust402Content {
        *  belongs after the questions are answered, not mid-funnel. */
       readonly techLink: Localized;
     };
+    /** Closing = one line straight into the CTAs (same declutter as the
+     *  Pay page's closing). */
     readonly closing: {
-      readonly eyebrow: Localized;
       readonly h2: Localized;
-      readonly core: Localized;
       readonly ctaPrimary: Localized;
       readonly github: Localized;
     };
@@ -302,8 +302,8 @@ export const T402: Trust402Content = {
           who: { en: "you", ja: "あなた" },
           title: { en: "Point to your file", ja: "ファイルを指定する" },
           body: {
-            en: "Upload a dataset, a paper, or an export — or just link one you already have online. That's your whole job.",
-            ja: "データセットや論文、エクスポートをアップロード — もしくは既にネット上にあるものをリンクするだけ。あなたの仕事はこれだけです。",
+            en: "Upload a dataset, a paper, or an export. That's your whole job.",
+            ja: "データセットや論文、エクスポートをアップロードするだけ。あなたの仕事はこれだけです。",
           },
         },
         {
@@ -563,6 +563,13 @@ export const T402: Trust402Content = {
           },
         },
         {
+          q: { en: "Do I have to hand over my data to prove it's mine?", ja: "自分のものだと示すためにデータを渡す必要は?" },
+          a: {
+            en: "No. Agents check a proof, not the raw file. Your file is stored encrypted and released only to buyers who have completed payment.",
+            ja: "いいえ。エージェントが確認するのは証明で、生ファイルではありません。ファイルは暗号化して保管され、支払いが完了した相手にだけ渡ります。",
+          },
+        },
+        {
           q: { en: "I'm a student — where do I start, and is there a cost?", ja: "学生です — どこから始める? 費用は?" },
           a: {
             en: "Two steps. First, try everything free in the sandbox — no affiliation, no real money. When you're ready to go live, publish free under your university's or lab's Institutional plan, still credited to you by name. If your institution isn't registered yet, start by sharing this page with your lab.",
@@ -571,6 +578,13 @@ export const T402: Trust402Content = {
           link: {
             href: { en: "#institutional", ja: "#institutional" },
             label: { en: "Share this with your lab", ja: "研究室にシェアする" },
+          },
+        },
+        {
+          q: { en: "What happens if I sell without proof?", ja: "証明を付けずに売ると、どうなりますか?" },
+          a: {
+            en: "Selling itself you can do anywhere. But without proof, agents can't tell your original from a scraped copy or an AI imitation. Verifiable primary sources get chosen first — and if a payment or citation goes to someone else, you have no way left to show the work was yours. Your sales don't accumulate into a track record, either.",
+            ja: "売ること自体は、どこでもできます。ただし証明がないと、エージェントはあなたの本物と、スクレイピングされたコピーやAIの模倣を区別できません。検証できる一次ソースが優先され、支払いや引用が別人に向かっても、あなたのものだと示す手段が残りません。販売の記録も、実績として積み上がりません。",
           },
         },
         {
@@ -585,9 +599,9 @@ export const T402: Trust402Content = {
     },
 
     closing: {
-      eyebrow: { en: "get started", ja: "はじめる" },
+      /* "agents trust" over "provably yours" — trust implies verified,
+         licensed use (not silent scraping), which is the Sell promise. */
       h2: { en: "Turn your work into something agents trust.", ja: "あなたの成果を、エージェントが信頼できるものに。" },
-      core: { en: "Your work. Provably yours.", ja: "あなたの成果。証明できる、あなたのもの。" },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       github: { en: "GitHub", ja: "GitHub" },
     },
