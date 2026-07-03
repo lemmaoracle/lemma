@@ -254,3 +254,11 @@
   .ph2 .s-tech h2{font-size:32px}
   .ph2 .tech-grid{grid-template-columns:1fr;gap:14px}
 }
+
+/* Authenticity bridge — 4 axes support one thing: data authenticity */
+.ph2 .s-authenticity{padding:40px 0 44px;background:var(--cream-deep);border-bottom:1px solid var(--cream-line)}
+.ph2 .au-bridge-lead{font-family:var(--font-sora);font-weight:600;font-size:24px;line-height:1.5;color:var(--ink);letter-spacing:-0.01em;max-width:900px;margin:0 0 16px}
+.ph2 .au-bridge-link{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--brown);letter-spacing:0.04em;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid transparent;transition:border-color .15s}
+.ph2 .au-bridge-link:hover{border-bottom-color:var(--brown)}
+.ph2 .lemma-cell .cell-auth{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--brown-dark);letter-spacing:0.02em;background:var(--cream);padding:4px 9px;border-radius:5px;align-self:flex-start}
+@media(max-width:720px){.ph2 .au-bridge-lead{font-size:19px}}

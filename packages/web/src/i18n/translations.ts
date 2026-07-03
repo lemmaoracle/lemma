@@ -94,7 +94,9 @@ export interface Translations {
         readonly criticalBrief: string;
         readonly blog: string;
         readonly whitepaper: string;
+        readonly newsletter: string;
         readonly glossary: string;
+        readonly authenticity: string;
         readonly faq: string;
       }>;
       readonly mobile: Readonly<{
