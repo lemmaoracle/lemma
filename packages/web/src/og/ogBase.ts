@@ -318,7 +318,7 @@ function renderTitle(text: string, color: string, accent: string) {
 
 export type OgBackground =
   | { kind: "solid"; color: string }
-  | { kind: "gradient"; from: string; to: string }
+  | { kind: "gradient"; from: string; to: string; isDark?: boolean }
   | {
       kind: "cover";
       coverDataUri: string | null;
@@ -339,6 +339,10 @@ export interface OgArtboardInput {
   readonly titleFont?: { size: number; lineHeight: number; maxWidth: number };
   /** Override the title colour (e.g. force black on a cream gradient). */
   readonly titleColorOverride?: string;
+  /** Override the accent colour used for `<accent>` title spans and the
+   *  bottom rule (default: brown). Set for sub-brand tones — e.g. Trust402's
+   *  fluorescent green on a dark card. */
+  readonly accentOverride?: string;
   /**
    * Opt in to balanced title layout (auto-fit + orphan-free line breaks).
    * Only takes effect for a plain title — no manual "\n", no <accent>
@@ -363,7 +367,7 @@ function resolveBackground(bg: OgBackground): ResolvedBackground {
     return { isDark: false, underlayColor: bg.color, hasCover: false };
   }
   if (bg.kind === "gradient") {
-    return { isDark: false, underlayColor: bg.from, hasCover: false, gradient: { from: bg.from, to: bg.to } };
+    return { isDark: bg.isDark ?? false, underlayColor: bg.from, hasCover: false, gradient: { from: bg.from, to: bg.to } };
   }
   if (bg.coverDataUri) {
     return {
@@ -382,8 +386,8 @@ function resolveBackground(bg: OgBackground): ResolvedBackground {
 export function buildOgArtboard(input: OgArtboardInput) {
   const resolved = resolveBackground(input.background);
   const fg = input.titleColorOverride ?? (resolved.isDark ? CREAM : BLACK);
-  const accent = resolved.isDark ? BROWN_LIGHT : BROWN;
-  const titleAccent = resolved.isDark ? BROWN_LIGHT : BROWN;
+  const accent = input.accentOverride ?? (resolved.isDark ? BROWN_LIGHT : BROWN);
+  const titleAccent = accent;
 
   // Balanced layout is opt-in and only for a plain title: a manual "\n"
   // means the author already controls the breaks, <accent> markup would

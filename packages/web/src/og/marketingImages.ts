@@ -76,7 +76,18 @@ export async function renderSealOg(locale: Locale): Promise<Buffer> {
   return renderOgPng(node);
 }
 
-/* ───────────────────────── Product: Trust402 ───────────────────────── */
+/* ───────────────────────── Product: Trust402 ─────────────────────────
+ * Trust402 (Pay + Sell) carries a developer sub-brand tone — fluorescent
+ * green (#B6F500) on dark ink (#1F1E1A), not the cream/brown marketing
+ * tone. These cards match the page: dark background, light logo/title,
+ * a green accent word + rule, green label, muted-light tagline. */
+const T402_INK = "#1F1E1A";
+const T402_INK_DEEP = "#141310";
+const T402_GREEN = "#B6F500";
+const T402_FG = "#ECEBE3";
+const T402_MUTED = "#8F8E86";
+/** Dark gradient, flagged isDark so the shared artboard lightens the logo/text. */
+const T402_DARK_BG = { kind: "gradient" as const, from: T402_INK, to: T402_INK_DEEP, isDark: true };
 
 const TRUST402_TITLE: Copy = {
   ja: "AI エージェントの\n支払いに、<accent>信頼を</accent>。",
@@ -96,9 +107,42 @@ const TRUST402_TAGLINE: Copy = {
 export async function renderTrust402Og(locale: Locale): Promise<Buffer> {
   const node = buildOgArtboard({
     title: localize(TRUST402_TITLE, locale),
-    topRight: makeTopRightLabel(localize(TRUST402_LABEL, locale), BROWN),
-    bottomTagline: makeBottomTagline(localize(TRUST402_TAGLINE, locale), BROWN),
-    background: PRODUCT_GRADIENT,
+    titleColorOverride: T402_FG,
+    accentOverride: T402_GREEN,
+    topRight: makeTopRightLabel(localize(TRUST402_LABEL, locale), T402_GREEN),
+    bottomTagline: makeBottomTagline(localize(TRUST402_TAGLINE, locale), T402_MUTED),
+    background: T402_DARK_BG,
+  });
+  return renderOgPng(node);
+}
+
+/* ───────────────────────── Trust402 · Sell ─────────────────────────
+ * Own card for /trust402/sell/ social shares, same developer tone. JA
+ * production uses the delivered v9 listing card (dark + green as well);
+ * this generator gives EN a matching card and JA a fallback. */
+const TRUST402_SELL_TITLE: Copy = {
+  ja: "その成果を、AI エージェントに\n<accent>売れる</accent>。",
+  en: "Get paid by AI agents\n<accent>for your work</accent>.",
+};
+
+const TRUST402_SELL_LABEL: Copy = {
+  ja: "For Researchers & Creators · Trust402 · Sell",
+  en: "For Researchers & Creators · Trust402 · Sell",
+};
+
+const TRUST402_SELL_TAGLINE: Copy = {
+  ja: "データ · 論文 · USDC · 手数料 0%",
+  en: "Datasets · Papers · USDC · 0% commission",
+};
+
+export async function renderTrust402SellOg(locale: Locale): Promise<Buffer> {
+  const node = buildOgArtboard({
+    title: localize(TRUST402_SELL_TITLE, locale),
+    titleColorOverride: T402_FG,
+    accentOverride: T402_GREEN,
+    topRight: makeTopRightLabel(localize(TRUST402_SELL_LABEL, locale), T402_GREEN),
+    bottomTagline: makeBottomTagline(localize(TRUST402_SELL_TAGLINE, locale), T402_MUTED),
+    background: T402_DARK_BG,
   });
   return renderOgPng(node);
 }

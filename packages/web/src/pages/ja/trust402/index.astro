@@ -13,14 +13,14 @@ const t = getTranslations(locale);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trust402 — AI エージェントが鍵を渡さず自律で支払う | Lemma</title>
+<title>Trust402 — 鍵を預けずに、AI エージェントを動かす | Lemma</title>
 <meta name="description" content="鍵を持たずに、コールごとに権限を委任。「誰が・どの権限で・どのデータに対して」を証明として添付する。権限の外は実行させない。x402 / MCP / A2A 対応の Reference implementation を Base Sepolia で公開。">
 <meta name="theme-color" content="#4B6B0F">
 <link rel="canonical" href="https://lemma.frame00.com/ja/trust402/" />
 <link rel="alternate" hreflang="en" href="https://lemma.frame00.com/trust402/" />
 <link rel="alternate" hreflang="ja" href="https://lemma.frame00.com/ja/trust402/" />
 <link rel="alternate" hreflang="x-default" href="https://lemma.frame00.com/trust402/" />
-<meta property="og:title" content="Trust402 — AI エージェントが鍵を渡さず自律で支払う | Lemma" />
+<meta property="og:title" content="Trust402 — 鍵を預けずに、AI エージェントを動かす | Lemma" />
 <meta property="og:description" content="鍵を持たずに、コールごとに権限を委任。「誰が・どの権限で・どのデータに対して」を証明として添付する。権限の外は実行させない。x402 / MCP / A2A 対応の Reference implementation を Base Sepolia で公開。" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://lemma.frame00.com/ja/trust402/" />
@@ -29,9 +29,41 @@ const t = getTranslations(locale);
 <meta property="og:image:height" content="630" />
 <meta property="og:site_name" content="Lemma" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Trust402 — AI エージェントが鍵を渡さず自律で支払う | Lemma" />
+<meta name="twitter:title" content="Trust402 — 鍵を預けずに、AI エージェントを動かす | Lemma" />
 <meta name="twitter:description" content="鍵を持たずに、コールごとに権限を委任。「誰が・どの権限で・どのデータに対して」を証明として添付する。権限の外は実行させない。x402 / MCP / A2A 対応の Reference implementation を Base Sepolia で公開。" />
 <meta name="twitter:image" content="https://lemma.frame00.com/og/products/trust402/ja.png" />
+<script type="application/ld+json" is:inline set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://lemma.frame00.com/ja/trust402/#webpage",
+      "url": "https://lemma.frame00.com/ja/trust402/",
+      "name": "Trust402 — 鍵を預けずに、AI エージェントを動かす | Lemma",
+      "description": "鍵を持たずに、コールごとに権限を委任。「誰が・どの権限で・どのデータに対して」を証明として添付する。権限の外は実行させない。x402 / MCP / A2A 対応。",
+      "inLanguage": "ja",
+      "isPartOf": { "@id": "https://lemma.frame00.com/#website" },
+      "primaryImageOfPage": "https://lemma.frame00.com/og/products/trust402/ja.png",
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Trust402",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Any",
+      "url": "https://lemma.frame00.com/ja/trust402/",
+      "description": "x402 に信頼を添えるレイヤー。AI エージェントの支払いに、呼び出し単位の委譲権限を「誰が・どの権限で・いくらまで」の ZK 証明として付与し、範囲外の支払いは実行させない。",
+      "publisher": { "@id": "https://lemma.frame00.com/#organization" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY", "description": "Explorer プラン — 無料の testnet サンドボックス" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Lemma", "item": "https://lemma.frame00.com/ja/" },
+        { "@type": "ListItem", "position": 2, "name": "Trust402", "item": "https://lemma.frame00.com/ja/trust402/" },
+      ],
+    },
+  ],
+})} />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
