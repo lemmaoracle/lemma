@@ -75,11 +75,12 @@ export const T402_PRICING: Trust402Pricing = {
     ja: "信頼されること自体には課金しません。Pay と Sell は一つの発行枠を共有 — どのプランでも両方使えます。",
     en: "Being trusted costs nothing. Pay and Sell share one issuance allowance — every plan covers both.",
   },
+  // Two headline chips only — the shared allowance and non-custody points
+  // get their first, fuller mention in the "課金のしくみ" cells below (02/03),
+  // so keeping them here too would just repeat.
   chips: [
     { text: { ja: "検証 無料", en: "verification free" }, key: true },
     { text: { ja: "販売手数料 0% — keep 100%", en: "0% commission — keep 100%" }, key: true },
-    { text: { ja: "Pay / Sell 共有発行枠", en: "one allowance across Pay / Sell" } },
-    { text: { ja: "ノンカストディ — 売上は自分のウォレットへ直接", en: "non-custodial — sales go straight to your wallet" } },
   ],
   tiers: [
     {
@@ -105,7 +106,7 @@ export const T402_PRICING: Trust402Pricing = {
       meter: { ja: `${T402_PRICE.unit} / 証明1件の発行`, en: `${T402_PRICE.unit} / proof issued` },
       features: [
         { text: { ja: "本番。月額なし・最低額なし", en: "Production. No monthly fee, no minimum" } },
-        { text: { ja: "証明1件目の発行から、発行ごとに x402 決済 — 払わなければ発行されないだけ", en: "x402 settles per proof, from the very first one — unpaid simply isn't issued" } },
+        { text: { ja: "証明の発行ごとに x402 決済 — 払わなければ発行されないだけ", en: "x402 settles each proof issued — unpaid simply isn't issued" } },
       ],
       payment: { ja: "x402 (USDC)", en: "x402 (USDC)" },
       state: { ja: "近日公開", en: "Coming soon" },
