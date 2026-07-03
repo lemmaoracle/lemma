@@ -538,7 +538,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 18px; }
 .t402b .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
 .t402b .eyebrow-plain.on-dark { color: var(--green); }
-.t402b .eyebrow { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
 .t402b .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s,color .2s,border-color .2s,transform .2s; }
 .t402b .btn-primary { background: var(--green); color: var(--ink); }
 .t402b .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
@@ -563,7 +562,17 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .card .num { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); font-weight: 700; margin-bottom: 12px; }
 .t402b .card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin: 0 0 10px; color: var(--ink); }
 .t402b .card p { font-size: 14px; color: var(--ink-soft); margin: 0; }
-.t402b .card .chip { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
+.t402b .chip { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
+.t402b .card .chip { margin-top: 14px; }
+.t402b .card .cardic { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 13px; background: rgba(182,245,0,0.16); color: var(--ink); margin-bottom: 16px; }
+.t402b .card .cardic svg { width: 27px; height: 27px; }
+/* accident scenario (risk) */
+.t402b .risk-pivot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 12px; padding: 18px 22px; }
+.t402b .risk-line { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+.t402b .risk-pivot .chip { background: var(--surface-2); }
+.t402b .risk-metaphor { font-family: var(--font-display); font-weight: 300; font-size: clamp(21px, 2.8vw, 32px); letter-spacing: -0.02em; line-height: 1.4; color: var(--ink); margin: 40px 0 0; }
+.t402b .risk-metaphor .hl { color: var(--green-link); }
+.t402b #risk .callout { margin-top: 22px; }
 /* steps */
 .t402b .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .t402b .step { background: rgba(236,235,227,0.04); border: 1px solid var(--border-dk); border-radius: 14px; padding: 26px 24px; }
@@ -586,7 +595,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
-.t402b .closing .core { font-family: var(--font-display); font-weight: 300; font-size: clamp(18px,2.4vw,26px); color: var(--green); letter-spacing: -0.01em; margin: 22px auto 30px; max-width: 40ch; }
+.t402b .closing .closing-sub { font-size: 15.5px; color: rgba(236,235,227,0.62); line-height: 1.8; max-width: 46ch; margin: 16px auto 0; }
 .t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
 .t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 /* reveal */
@@ -629,8 +638,11 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       <div class="hero-grid2">
         <div>
           <span class="eyebrow2">lemma × x402</span>
-          <h1>Trust for the <span class="g">x402 agent economy.</span></h1>
-          <p class="hero-sub2">Authority when you pay, provenance when you sell. x402 moves the money — Trust402 attaches <em>who</em>, by what authority, and whose data, as cryptographic proof. Verifiable by anyone, on the standards agents already speak.</p>
+          {/* Product name stays "Pay" — the authority-proof substance is carried
+              by this definition pair, not by a rename: x402 pays; Trust402 proves
+              the payment is allowed. */}
+          <h1>Run AI without <span class="g">holding the keys.</span></h1>
+          <p class="hero-sub2">x402 pays. Trust402 attaches <em>who</em>, by what authority, and up to how much — as proof — and stops out-of-scope payments before they're sent.</p>
           <div class="cta-row2">
             <a class="btn2 primary" href="#adds">Explore the two sides ↓</a>
             <a class="btn2 ghost" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener"><svg class="ic btn-ic" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" fill="currentColor"/></svg> View on GitHub →</a>
@@ -666,7 +678,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
             <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
           </svg>
           <span class="door-tag">trust402 · pay</span>
-          <h3>Run AI without holding keys.</h3>
+          <h3>Proof of authority, on every payment.</h3>
           <p>Per-call delegated authority for agent payments. Attach who, by what authority, and up to what amount — as ZK proofs. Out of scope, it never runs.</p>
           <span class="link-arrow2">You're here →</span>
         </a>
@@ -689,7 +701,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   </header>
 
   <div class="t402b">
-    <section>
+    <section id="adds">
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">what trust402 adds</span><h2>Attach trust to the payment.</h2><p>x402 settles the money. Trust402 adds provable authority, identity, and scope on top — recording who paid on behalf of whom, within what bounds, against what data.</p></div>
         <div class="equation reveal">
@@ -706,11 +718,26 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
+    {/* Accident scenario — the Pay-side story that mirrors Sell's
+        "the web fills with copies". Factual tone, not scare copy; the
+        $500 POST → blocked beat connects at the pivot. */}
+    <section class="section-gray" id="risk">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">the failure mode</span><h2>An agent holding your keys <em>can't be stopped.</em></h2><p>An agent with an uncapped API key keeps paying — when it runs away, when prompt injection tricks it, when it misreads an instruction. The incident reaches your logs only after the money is gone.</p></div>
+        <div class="risk-pivot reveal">
+          <span class="risk-line">With Trust402, out-of-scope never executes in the first place.</span>
+          <span class="chip">$500 POST → blocked</span>
+        </div>
+        <p class="risk-metaphor reveal">You hand your agent a card with a limit — <span class="hl">not the keys.</span></p>
+        <p class="callout">● The more resources charge over x402, the more the paying side needs control.</p>
+      </div>
+    </section>
+
     <section>
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">scope</span><h2>Out of scope, <em>it never runs.</em></h2><p>Your agent runs only within the authority you delegate. Out of scope, it stops before the call is sent — no hand-rolled guardrails.</p></div>
         <div class="cards c3">
-        <div class="card reveal"><div class="num">01</div><h3>Stopped before it's sent.</h3><p>Calls that fail proof verification stop before they're sent (fail-closed).</p><span class="chip">$500 POST → blocked</span></div>
+        <div class="card reveal"><div class="num">01</div><h3>Stopped before it's sent.</h3><p>Calls that fail proof verification stop before they're sent (fail-closed).</p><span class="chip">fail-closed</span></div>
         <div class="card reveal"><div class="num">02</div><h3>Authority is declared, not coded.</h3><p>Declare role, limits and scope as a proof — no authorization branches in your code.</p><span class="chip">scope: payments:autonomous</span></div>
         <div class="card reveal"><div class="num">03</div><h3>Every stop leaves a trail.</h3><p>Every allow and every stop lands in an independently verifiable audit trail.</p><span class="chip">audit trail · verifiable</span></div>
         </div>
@@ -726,19 +753,23 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <div class="step reveal"><div class="num">step 03</div><h3>Settle on x402</h3><p>Cleared requests settle over the untouched standard.</p></div>
         <div class="step reveal"><div class="num">step 04</div><h3>On-chain anchor</h3><p>Every allow and stop is anchored, tamper-evident.</p></div>
         </div>
-        <p class="callout on-dark">● 4-step flow · one middleware line, done · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">wrapFetchWithProof →</a></p>
+        <p class="callout on-dark">● 4-step flow · one middleware line (wrapFetchWithProof), done · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">View on GitHub →</a></p>
       </div>
     </section>
 
+    {/* provenance — not a Sell accessory but Trust402's (= Lemma's own)
+        strength; the full explanation lives here. The Sell page's FAQ-tail
+        link lands on #provenance. The deep-dive link goes to the
+        Verifiable Origin pillar — at the section tail, no mid-copy exits. */}
     <section id="provenance">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>How we prove a file is really yours.</h2><p>You never touch any of this — but here's what's under the hood. Three things get attached to whatever you publish.</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>How we prove a file is really yours.</h2><p>Provenance is Lemma's core craft — not detecting fakes after the fact, but carving in authenticity the moment something is published. Three things get attached to whatever you publish.</p></div>
         <div class="cards c3">
-        <div class="card reveal"><div class="num">01</div><h3>who made it</h3><p>A signature proving you're the publisher — reveal only the parts you want.</p><span class="chip">BBS+ over BLS12-381</span></div>
-        <div class="card reveal"><div class="num">02</div><h3>not changed</h3><p>A fingerprint that breaks if even one byte is altered.</p><span class="chip">Poseidon over BN254</span></div>
-        <div class="card reveal"><div class="num">03</div><h3>which version</h3><p>So an agent always cites the exact version you meant.</p></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="11" r="7.5"/><path d="M10 17.5 8 26l6-3 6 3-2-8.5"/><path d="M11 11.2l2.2 2.2 4.4-4.6" stroke="#8FBF00"/></svg></span><h3>who made it</h3><p>A signature proving you're the publisher — reveal only the parts you want.</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a10 10 0 0 1 18-6"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88" stroke="#8FBF00"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M2 16h.01"/></svg></span><h3>not changed</h3><p>A fingerprint that breaks if even one byte is altered.</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5 24 9l-10 5.5L4 9z"/><path d="M4 14l10 5.5L24 14" stroke="#8FBF00"/><path d="M4 19l10 5.5L24 19"/></svg></span><h3>which version</h3><p>So an agent always cites the exact version you meant.</p></div>
         </div>
-        <p class="callout">● How agents find and pay: your listing is discoverable in the x402 Bazaar and added automatically the first time someone buys. Payment settles over the open x402 standard in USDC — you never run an x402 server.</p>
+        <p class="callout">● Data is copied. Provenance is carved. · <a class="link-arrow" href="/pillars/verifiable-origin/">Verifiable Origin — how Lemma does it →</a></p>
       </div>
     </section>
 
@@ -748,20 +779,22 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <div class="tiers">
         <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">Sandbox · testnet only</div><div class="tprice">Free</div><div class="tmeans">Manual form · the current demo.</div><div class="tstate">Coming soon</div></div>
         <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">Production · individual developers</div><div class="tprice">$19<small>/mo + per-query</small></div><div class="tmeans">Manual form (+ API add-on).</div><div class="tstate">Coming soon</div></div>
-        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">$330<small>/mo + attestation</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">Bundled registration · orgs</div><div class="tprice">$330<small>/mo + identity check at registration</small></div><div class="tmeans">Programmatic (API / MCP) included.</div><div class="tstate">Coming soon</div></div>
         </div>
         <p class="price-note">One monthly allowance across Pay and Sell. Verify is free.</p>
       </div>
     </section>
 
+    {/* closing — the question + the dividing line. Pay's counterpart to
+        the Sell FAQ's "selling itself you can do anywhere": letting an
+        agent pay only takes keys; trusting it takes proof. */}
     <section class="closing">
       <div class="inner">
-        <span class="eyebrow on-dark">agentic economy</span>
-        <h2>Trust for the agent era.</h2>
-        <div class="core">Trust402 attaches trust to x402 — authority when you pay, provenance when you sell.</div>
+        <h2>Ready to open up the agent economy?</h2>
+        <p class="closing-sub">Keys let an agent pay. Trusting it takes proof.</p>
         <div class="rule"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener">Join the waitlist →</a>
+          <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">Join the waitlist →</a>
           <a class="btn btn-ghost on-dark" href="/trust402/sell/">See Trust402 · Sell →</a>
         </div>
       </div>

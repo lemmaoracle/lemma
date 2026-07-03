@@ -538,7 +538,6 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 18px; }
 .t402b .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
 .t402b .eyebrow-plain.on-dark { color: var(--green); }
-.t402b .eyebrow { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; background: var(--green); color: var(--ink); padding: 3px 10px; border-radius: 4px; margin-bottom: 22px; }
 .t402b .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; padding: 14px 28px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; text-decoration: none; transition: background .2s,color .2s,border-color .2s,transform .2s; }
 .t402b .btn-primary { background: var(--green); color: var(--ink); }
 .t402b .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
@@ -563,7 +562,17 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .card .num { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); font-weight: 700; margin-bottom: 12px; }
 .t402b .card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin: 0 0 10px; color: var(--ink); }
 .t402b .card p { font-size: 14px; color: var(--ink-soft); margin: 0; }
-.t402b .card .chip { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
+.t402b .chip { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); background: var(--surface); padding: 4px 10px; border-radius: 6px; }
+.t402b .card .chip { margin-top: 14px; }
+.t402b .card .cardic { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 13px; background: rgba(182,245,0,0.16); color: var(--ink); margin-bottom: 16px; }
+.t402b .card .cardic svg { width: 27px; height: 27px; }
+/* accident scenario (risk) */
+.t402b .risk-pivot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 12px; padding: 18px 22px; }
+.t402b .risk-line { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+.t402b .risk-pivot .chip { background: var(--surface-2); }
+.t402b .risk-metaphor { font-family: var(--font-display); font-weight: 300; font-size: clamp(21px, 2.8vw, 32px); letter-spacing: -0.02em; line-height: 1.4; color: var(--ink); margin: 40px 0 0; }
+.t402b .risk-metaphor .hl { color: var(--green-link); }
+.t402b #risk .callout { margin-top: 22px; }
 /* steps */
 .t402b .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .t402b .step { background: rgba(236,235,227,0.04); border: 1px solid var(--border-dk); border-radius: 14px; padding: 26px 24px; }
@@ -586,7 +595,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
-.t402b .closing .core { font-family: var(--font-display); font-weight: 300; font-size: clamp(18px,2.4vw,26px); color: var(--green); letter-spacing: -0.01em; margin: 22px auto 30px; max-width: 40ch; }
+.t402b .closing .closing-sub { font-size: 15.5px; color: rgba(236,235,227,0.62); line-height: 1.8; max-width: 46ch; margin: 16px auto 0; }
 .t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
 .t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 /* reveal */
@@ -629,8 +638,11 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       <div class="hero-grid2">
         <div>
           <span class="eyebrow2">lemma × x402</span>
-          <h1>x402 エージェント経済のための<span class="g">信頼インフラ。</span></h1>
-          <p class="hero-sub2">支払うときは権限を、売るときは来歴を。x402 がお金を動かし、Trust402 が「<em>誰が</em>・どの権限で・どのデータに対して」を暗号学的な証明として添えます。エージェントが既に話す標準の上で、誰でも検証できます。</p>
+          {/* Product name stays "Pay" — the authority-proof substance is carried
+              by this definition pair, not by a rename: x402 pays; Trust402 proves
+              the payment is allowed. */}
+          <h1>鍵を預けずに、<span class="g">AI を動かす。</span></h1>
+          <p class="hero-sub2">x402 が、支払う。Trust402 は「<em>誰が</em>・どの権限で・いくらまで」を証明として添え、範囲外の支払いは送信前に止める。</p>
           <div class="cta-row2">
             <a class="btn2 primary" href="#adds">2つの側面を見る ↓</a>
             <a class="btn2 ghost" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener"><svg class="ic btn-ic" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 4 C13.85 4 4 13.85 4 26 c0 9.72 6.305 17.962 15.05 20.873 c1.1 .2 1.5-.475 1.5-1.062 c0-.525-.02-1.92-.03-3.767 c-6.12 1.33-7.41-2.95-7.41-2.95 c-.99-2.53-2.42-3.2-2.42-3.2 c-1.98-1.354 .15-1.327 .15-1.327 c2.19.154 3.34 2.247 3.34 2.247 c1.94 3.327 5.1 2.367 6.35 1.811 c.2-1.41 .76-2.367 1.38-2.91 c-4.88-.554-10.02-2.444-10.02-10.87 c0-2.4 .86-4.37 2.27-5.91 c-.23-.554-.99-2.79 .21-5.82 c0 0 1.85-.59 6.07 2.26 a21.13 21.13 0 0 1 5.52-.74 c1.87.008 3.76.252 5.52.74 c4.22-2.85 6.07-2.26 6.07-2.26 c1.2 3.03 .45 5.27 .22 5.82 c1.41 1.54 2.27 3.51 2.27 5.91 c0 8.45-5.15 10.31-10.05 10.86 c.79.68 1.49 2.03 1.49 4.09 c0 2.95-.026 5.32-.026 6.04 c0 .59.4 1.27 1.51 1.06 C41.7 43.962 48 35.722 48 26 C48 13.85 38.15 4 26 4 z" fill="currentColor"/></svg> GitHub を見る →</a>
@@ -666,7 +678,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
             <text x="58" y="65" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="700" fill="#1F1E1A">ZK</text>
           </svg>
           <span class="door-tag">trust402 · pay</span>
-          <h3>鍵を預けずに AI を動かす。</h3>
+          <h3>支払いに、権限の証明を。</h3>
           <p>エージェントの支払いに、呼び出し単位の委譲権限を。誰が・どの権限で・いくらまでを ZK 証明として添える。範囲外は実行されない。</p>
           <span class="link-arrow2">いま表示中 →</span>
         </a>
@@ -689,7 +701,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
   </header>
 
   <div class="t402b">
-    <section>
+    <section id="adds">
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">trust402 が足すもの</span><h2>支払いに信頼を添える。</h2><p>x402 がお金を決済する。Trust402 はその上に、証明可能な権限・身元・範囲を足す — 誰が誰の代わりに、どの範囲で、どのデータに対して支払ったかを記録する。</p></div>
         <div class="equation reveal">
@@ -706,11 +718,25 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
+    {/* 事故シナリオ — Sell の「ネットはコピーで埋まっていく」に対応する Pay 側の物語。
+        脅しではなく事実の記述。$500 POST → ブロック の演出は結語側に接続。 */}
+    <section class="section-gray" id="risk">
+      <div class="inner">
+        <div class="sec-head reveal"><span class="eyebrow-plain">事故シナリオ</span><h2>鍵を渡したエージェントは、<em>止められない。</em></h2><p>上限のない API キーを持ったエージェントは、暴走しても、プロンプトインジェクションで騙されても、指示を誤解しても — 支払い続けます。事故が証跡に残るのは、お金が消えたあとです。</p></div>
+        <div class="risk-pivot reveal">
+          <span class="risk-line">Trust402 では、範囲外はそもそも実行されない。</span>
+          <span class="chip">$500 POST → ブロック</span>
+        </div>
+        <p class="risk-metaphor reveal">エージェントに渡すのは、鍵ではなく、<span class="hl">限度額つきのカード。</span></p>
+        <p class="callout">● x402 で課金されるリソースが増えるほど、必要になるのは支払う側の統制です。</p>
+      </div>
+    </section>
+
     <section>
       <div class="inner">
         <div class="sec-head reveal"><span class="eyebrow-plain">scope</span><h2>範囲外は、<em>そもそも実行されない。</em></h2><p>エージェントは委譲した権限の中だけで動く。範囲外なら、呼び出しが送られる前に停止する — 手書きのガードレールは不要。</p></div>
         <div class="cards c3">
-        <div class="card reveal"><div class="num">01</div><h3>送られる前に止まる。</h3><p>証明の検証に失敗した呼び出しは、送信前に停止する（フェイルクローズド）。</p><span class="chip">$500 POST → ブロック</span></div>
+        <div class="card reveal"><div class="num">01</div><h3>送られる前に止まる。</h3><p>証明の検証に失敗した呼び出しは、送信前に停止する（フェイルクローズド）。</p><span class="chip">fail-closed</span></div>
         <div class="card reveal"><div class="num">02</div><h3>権限はコードでなく宣言する。</h3><p>ロール・上限・範囲を証明として宣言 — コードに認可分岐を書かない。</p><span class="chip">scope: payments:autonomous</span></div>
         <div class="card reveal"><div class="num">03</div><h3>停止はすべて証跡に残る。</h3><p>許可も停止も、独立検証可能な監査証跡に記録される。</p><span class="chip">監査証跡 · 検証可能</span></div>
         </div>
@@ -726,19 +752,23 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <div class="step reveal"><div class="num">step 03</div><h3>x402 で決済</h3><p>通った要求は、無改変の標準の上で決済される。</p></div>
         <div class="step reveal"><div class="num">step 04</div><h3>オンチェーン記録</h3><p>許可も停止も記録され、改ざん検知可能。</p></div>
         </div>
-        <p class="callout on-dark">● 4ステップ · ミドルウェア1行で完了 · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">wrapFetchWithProof →</a></p>
+        <p class="callout on-dark">● 4ステップ · ミドルウェア1行（wrapFetchWithProof）で完了 · <a class="link-arrow on-dark" href="https://github.com/lemmaoracle/trust402">GitHub で見る →</a></p>
       </div>
     </section>
 
+    {/* provenance — Sell の付属品ではなく Trust402（= Lemma 自体）の強み。
+        説明はここに置き切る。Sell ページの FAQ 末尾リンクも #provenance に
+        着地する。深掘りリンクは来歴証明ピラーへ — セクション末尾に置き、
+        本文中の離脱は作らない。 */}
     <section id="provenance">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">provenance · sell</span><h2>本物であることを、どう証明するか。</h2><p>触れる必要は一切ありません — でも中身を知りたい人へ。公開するものには、3 つが添えられます。</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">provenance</span><h2>本物であることを、どう証明するか。</h2><p>来歴の証明は、Lemma の中核技術 — 生成された偽物をあとから検出するのではなく、公開される瞬間に、本物であることを刻みます。公開するものには、この 3 つが添えられます。</p></div>
         <div class="cards c3">
-        <div class="card reveal"><div class="num">01</div><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
-        <div class="card reveal"><div class="num">02</div><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
-        <div class="card reveal"><div class="num">03</div><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="11" r="7.5"/><path d="M10 17.5 8 26l6-3 6 3-2-8.5"/><path d="M11 11.2l2.2 2.2 4.4-4.6" stroke="#8FBF00"/></svg></span><h3>誰が作ったか</h3><p>あなたが発行者だと示す署名 — 開示する部分は選べます。</p><span class="chip">BBS+ over BLS12-381</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a10 10 0 0 1 18-6"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88" stroke="#8FBF00"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M2 16h.01"/></svg></span><h3>改ざんされていない</h3><p>1 バイトでも変わると壊れる指紋。</p><span class="chip">Poseidon over BN254</span></div>
+        <div class="card reveal"><span class="cardic" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5 24 9l-10 5.5L4 9z"/><path d="M4 14l10 5.5L24 14" stroke="#8FBF00"/><path d="M4 19l10 5.5L24 19"/></svg></span><h3>どのバージョンか</h3><p>エージェントが、あなたの意図した版を正確に引用できるように。</p></div>
         </div>
-        <p class="callout">● エージェントが見つけて支払う仕組み：出品は共有ディレクトリ「x402 Bazaar」から発見でき、誰かが最初に購入した時点で自動追加。支払いはオープンな x402 標準・USDC で、x402 サーバーを動かす必要はありません。</p>
+        <p class="callout">● データは複製される。来歴は刻まれる。 · <a class="link-arrow" href="/ja/pillars/verifiable-origin/">来歴証明 — Lemma の仕組みを見る →</a></p>
       </div>
     </section>
 
@@ -748,20 +778,22 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
         <div class="tiers">
         <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">サンドボックス · テストネット限定</div><div class="tprice">無料</div><div class="tmeans">手動フォーム · 現在のデモ。</div><div class="tstate">近日公開</div></div>
         <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">本番 · 個人開発者</div><div class="tprice">¥2,980<small>/月 + 従量</small></div><div class="tmeans">手動フォーム（+ API アドオン）。</div><div class="tstate">近日公開</div></div>
-        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">一括登録 · 組織向け</div><div class="tprice">¥50,000<small>/月 + アテステーション</small></div><div class="tmeans">プログラム利用（API / MCP）込み。</div><div class="tstate">近日公開</div></div>
+        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">一括登録 · 組織向け</div><div class="tprice">¥50,000<small>/月 + 登録時の本人性確認</small></div><div class="tmeans">プログラム利用（API / MCP）込み。</div><div class="tstate">近日公開</div></div>
         </div>
         <p class="price-note">Pay と Sell をまたぐ月間枠は1つ。検証は無料。</p>
       </div>
     </section>
 
+    {/* closing — 問い + 土俵の一行。Sell FAQ の「売ること自体は、どこでも
+        できます。」と対になる Pay 側の線引き: 支払わせるだけなら鍵で足りる、
+        任せるには証明が要る。 */}
     <section class="closing">
       <div class="inner">
-        <span class="eyebrow on-dark">エージェント経済</span>
-        <h2>エージェント時代の信頼を。</h2>
-        <div class="core">Trust402 は x402 に信頼を添える — 支払うときは権限を、売るときは来歴を。</div>
+        <h2>エージェント経済を切り開く準備は、できていますか。</h2>
+        <p class="closing-sub">鍵があれば、エージェントは支払えます。任せるには、証明が要ります。</p>
         <div class="rule"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" href="https://github.com/lemmaoracle/trust402" target="_blank" rel="noopener">ウェイトリストに登録 →</a>
+          <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">ウェイトリストに登録 →</a>
           <a class="btn btn-ghost on-dark" href="/ja/trust402/sell/">Trust402 · Sell を見る →</a>
         </div>
       </div>
