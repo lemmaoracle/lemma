@@ -19,6 +19,7 @@ const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
+const authenticityPath = base ? `${base}/authenticity` : "/authenticity";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const sealHref = base ? `${base}/seal/` : "/seal/";
 const trust402Href = locale === "ja" ? "/ja/trust402/" : "/trust402/";
@@ -69,6 +70,7 @@ const isResourcesActive =
   startsWith(blogPath) ||
   startsWith(faqPath) ||
   startsWith(glossaryPath) ||
+  startsWith(authenticityPath) ||
   currentPath.startsWith("/critical") ||
   currentPath.startsWith("/ja/critical");
 ---
@@ -227,6 +229,9 @@ const isResourcesActive =
             </button>
             <a href={glossaryPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.glossary}</span>
+            </a>
+            <a href={authenticityPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.resources.authenticity}</span>
             </a>
             <a href={faqPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.faq}</span>

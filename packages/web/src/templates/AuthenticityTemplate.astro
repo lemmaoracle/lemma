@@ -49,6 +49,11 @@ const C = isJa
       h1: "真正性とは",
       breadcrumbHome: "ホーム",
       breadcrumbHere: "真正性",
+      stakes:
+        "見た目では、もう本物とフェイクを見分けられません。真正性は、目で確かめるものから、証明で確かめるものへ変わりました。",
+      thesis: "検出は、証明ではない。",
+      thesisSub:
+        "異常を後から見つける検出は、被害の把握に欠かせません。ですが「いま扱うデータが本物か」を、事が起きる前には立証しません。真正性は、実行の前に来歴を独立検証する層があって、初めて担保されます。",
       intro: [
         "真正性とは、データやコンテンツが本物であり、作られてから改ざんされていないこと、そして出所（来歴）が確かであることを指します。英語では Authenticity と呼びます。「誰が・いつ・何を作り、その後どう扱われたか」をたどれる状態が、真正性が保たれている状態です。",
         "生成AIによる画像生成や文書加工が広がり、本物と見分けのつかないフェイクが流通するいま、真正性は情報を扱うすべての現場で前提条件になりました。報道、金融、行政、医療、製造、そしてAIエージェントの運用まで、「目にしたデータは本物か」を確かめられることが、意思決定の土台になります。",
@@ -267,6 +272,11 @@ const C = isJa
       h1: "What is authenticity?",
       breadcrumbHome: "Home",
       breadcrumbHere: "Authenticity",
+      stakes:
+        "You can no longer tell the real from the fake by looking. Authenticity has moved from something you confirm by sight to something you confirm by proof.",
+      thesis: "Detection is not proof.",
+      thesisSub:
+        "Detection — finding anomalies after the fact — is essential for grasping the damage. But it does not establish, before something happens, whether the data in front of you is real. Authenticity holds only when a layer verifies provenance independently, before execution.",
       intro: [
         "Authenticity means that data or content is genuine, has not been altered since it was created, and comes from a verified origin (its provenance). A thing is authentic when you can trace who made it, when, and how it was handled afterward.",
         "As generative AI spreads and fakes become indistinguishable from the real thing, authenticity has become a precondition everywhere information is handled. Across journalism, finance, government, healthcare, manufacturing, and the operation of AI agents, being able to confirm whether the data in front of you is real is the foundation of any decision.",
@@ -555,7 +565,14 @@ const breadcrumbJsonLd = {
         <header class="au-hero">
           <div class="au-eyebrow">{C.eyebrow}</div>
           <h1 class="au-h1">{C.h1}</h1>
+          {C.stakes && <p class="au-stakes" set:html={C.stakes} />}
           {C.intro.map((p) => <p class="au-lead" set:html={p} />)}
+          {C.thesis && (
+            <div class="au-thesis">
+              <p class="au-thesis-line">{C.thesis}</p>
+              {C.thesisSub && <p class="au-thesis-sub" set:html={C.thesisSub} />}
+            </div>
+          )}
         </header>
 
         <nav class="au-jump" aria-label={C.eyebrow}>
@@ -770,6 +787,46 @@ const breadcrumbJsonLd = {
     color: var(--au-text-1);
     line-height: 1.9;
     margin: 0 0 16px;
+  }
+  /* Stakes — one assertive line before the definition */
+  .au-stakes {
+    font-family: var(--au-display);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin: 0 0 26px;
+    max-width: 40ch;
+  }
+  :root[lang="en"] .au-stakes {
+    max-width: 52ch;
+  }
+  /* Thesis — "detection is not proof", surfaced in the first screen */
+  .au-thesis {
+    margin: 30px 0 4px;
+    padding: 22px 0 4px 22px;
+    border-left: 3px solid var(--accent);
+  }
+  .au-thesis-line {
+    font-family: var(--au-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .au-thesis-sub {
+    font-size: 15px;
+    color: var(--au-text-2);
+    line-height: 1.85;
+    margin: 0;
+    max-width: 64ch;
+  }
+  @media (max-width: 640px) {
+    .au-stakes { font-size: 17px; }
+    .au-thesis-line { font-size: 21px; }
   }
 
   /* ─── STICKY JUMP NAV ─── */

@@ -47,6 +47,7 @@ const servicesPath = base ? `${base}/solutions` : "/solutions";
 const pillarsPath = base ? `${base}/pillars` : "/pillars";
 const useCasesPath = base ? `${base}/solutions/use-cases` : "/solutions/use-cases";
 const glossaryPath = base ? `${base}/glossary` : "/glossary";
+const authenticityPath = base ? `${base}/authenticity` : "/authenticity";
 const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
@@ -152,6 +153,7 @@ const C = isJa ? {
           <li><button type="button" class="site-footer-tally" data-tally-open={TALLY_WHITEPAPER_ID[locale]} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button></li>
           <li><a href={NEWSLETTER_URL[locale]} target="_blank" rel="noopener">{t.mega.resources.newsletter}</a></li>
           <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
+          <li><a href={authenticityPath}>{t.mega.resources.authenticity}</a></li>
           <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
         </ul>
         <h5>{C.company}</h5>
