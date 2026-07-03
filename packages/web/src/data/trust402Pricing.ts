@@ -122,6 +122,7 @@ export const T402_PRICING: Trust402Pricing = {
         en: `${T402_PRICE.proIncluded} proof issuances/mo included* · overage ${T402_PRICE.unit} each`,
       },
       features: [
+        { text: { ja: "月額内で、出品し放題", en: "Publish freely within your plan" } },
         { text: { ja: "真贋証明つきの来歴を、チェーンに永続", en: "Provenance with proof of authenticity, persisted on-chain" } },
         { text: { ja: "フォーム＋API", en: "Form + API" } },
       ],
