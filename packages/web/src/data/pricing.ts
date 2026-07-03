@@ -513,6 +513,16 @@ export const PRICING: PricingContent = {
         },
       },
       {
+        q: {
+          ja: "自社の CRM や業務システムと連携できますか? 現場向けの画面は作ってもらえますか?",
+          en: "Can you integrate with our CRM or business systems? Can you build front-line screens?",
+        },
+        a: {
+          ja: "はい。Lemma は API での連携を基本とし、お使いのシステムを置き換えません。現場向けの画面が必要な場合は、統合開発として個別にお見積りします（エージェント組織基盤 CLUBS と同一の基盤上で構築します）。",
+          en: "Yes. Lemma integrates via API and doesn't replace the systems you use. When you need front-line screens, we quote them individually as integrated development (built on the same platform as CLUBS, our agent-organization infrastructure).",
+        },
+      },
+      {
         q: { ja: "無料トライアルはありますか?", en: "Is there a free trial?" },
         a: {
           ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
