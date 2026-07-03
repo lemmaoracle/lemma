@@ -103,6 +103,36 @@ export async function renderTrust402Og(locale: Locale): Promise<Buffer> {
   return renderOgPng(node);
 }
 
+/* ───────────────────────── Trust402 · Sell ─────────────────────────
+ * Own card for /trust402/sell/ social shares. JA production uses the
+ * delivered v9 listing card (public/og/products/trust402/sell-ja.png);
+ * this generator gives EN a matching product-family card, and JA a
+ * fallback if the static asset is ever removed. */
+const TRUST402_SELL_TITLE: Copy = {
+  ja: "その成果を、AI エージェントに\n<accent>売れる</accent>。",
+  en: "Get paid by AI agents\n<accent>for your work</accent>.",
+};
+
+const TRUST402_SELL_LABEL: Copy = {
+  ja: "For Researchers & Creators · Trust402 · Sell",
+  en: "For Researchers & Creators · Trust402 · Sell",
+};
+
+const TRUST402_SELL_TAGLINE: Copy = {
+  ja: "データ · 論文 · USDC · 手数料 0%",
+  en: "Datasets · Papers · USDC · 0% commission",
+};
+
+export async function renderTrust402SellOg(locale: Locale): Promise<Buffer> {
+  const node = buildOgArtboard({
+    title: localize(TRUST402_SELL_TITLE, locale),
+    topRight: makeTopRightLabel(localize(TRUST402_SELL_LABEL, locale), BROWN),
+    bottomTagline: makeBottomTagline(localize(TRUST402_SELL_TAGLINE, locale), BROWN),
+    background: PRODUCT_GRADIENT,
+  });
+  return renderOgPng(node);
+}
+
 /* ───────────────────────── Product: Industries ───────────────────────── */
 
 const INDUSTRIES_TITLE: Copy = {
