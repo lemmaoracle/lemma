@@ -117,9 +117,11 @@ export const T402_PRICING: Trust402Pricing = {
       pos: { ja: "継続して出品 — 研究者・クリエイター", en: "Publish regularly — researchers & creators" },
       price: { ja: T402_PRICE.pro.ja, en: T402_PRICE.pro.en },
       priceUnit: { ja: "/月", en: "/mo" },
+      // Just the included allowance; the overage rate lives in the footnote
+      // (the * anchors it) so the meter stays a single clean line.
       meter: {
-        ja: `証明発行 ${T402_PRICE.proIncluded} 件/月 込み* · 超過 ${T402_PRICE.unit}/件`,
-        en: `${T402_PRICE.proIncluded} proof issuances/mo included* · overage ${T402_PRICE.unit} each`,
+        ja: `証明発行 月 ${T402_PRICE.proIncluded} 件まで込み*`,
+        en: `up to ${T402_PRICE.proIncluded} proofs a month, included*`,
       },
       features: [
         { text: { ja: "月額内で、出品し放題", en: "Publish freely within your plan" } },
