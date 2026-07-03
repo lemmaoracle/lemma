@@ -16,6 +16,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Trust402Icons from "../components/trust402/Trust402Icons.astro";
 import { T402, T402_GITHUB, T402_SELL_OG } from "../data/trust402";
+import { T402_PRICING } from "../data/trust402Pricing";
 
 interface Props {
   locale: Locale;
@@ -252,14 +253,23 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
           <h2>{c.pricing.h2[locale]}</h2>
           <p>{c.pricing.sub[locale]}</p>
         </div>
+        {/* Tiers come from the shared module so Sell and the Pay hub can
+            never drift apart on prices (see src/data/trust402Pricing.ts). */}
         <div class="tiers">
-          {c.pricing.tiers.map((tier) => (
-            <div class:list={["tier", "reveal", { featured: tier.featured }]}>
-              <div class="tname">{tier.name}{tier.free && <span class="free-badge">free</span>}</div>
+          {T402_PRICING.tiers.map((tier) => (
+            <div class:list={["tier", "reveal", { featured: tier.featured, inst: tier.dark }]}>
+              <div class="tname">{tier.name}</div>
               <div class="tpos">{tier.pos[locale]}</div>
-              <div class="tprice">{tier.price[locale]}{tier.priceSub && <small>{tier.priceSub[locale]}</small>}</div>
-              <div class="tmeans">{tier.means[locale]}</div>
-              <div class="tstate">{tier.state[locale]}</div>
+              <div class="tprice">{tier.price[locale]}{tier.priceUnit && <small> {tier.priceUnit[locale]}</small>}</div>
+              <div class="tmeter">{tier.meter[locale]}</div>
+              <ul class="tlist">
+                {tier.features.map((f) => (
+                  <li class:list={[{ soon: f.soon }]}>{f.text[locale]}</li>
+                ))}
+              </ul>
+              {tier.state && <div class="tstate">{tier.state[locale]}</div>}
+              {tier.contact && <a class="tcontact" href={locale === "ja" ? tier.contact.hrefJa : tier.contact.hrefEn}>{tier.contact.label[locale]}</a>}
+              <div class="tpay">{tier.payment[locale]}</div>
             </div>
           ))}
         </div>
@@ -267,6 +277,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
           {c.pricing.notes.map((n) => (
             <p class="price-note">{n[locale]}</p>
           ))}
+          <p class="price-footnote">{T402_PRICING.footnote[locale]}</p>
         </div>
       </div>
     </section>
@@ -473,19 +484,40 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
   .t402 .payband span { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); }
   .t402 .payband .link-arrow { white-space: nowrap; }
 
-  /* pricing */
-  .t402 .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .t402 .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
+  /* pricing (tiers shared with the Pay hub — see src/data/trust402Pricing.ts) */
+  .t402 .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .t402 .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px 22px; display: flex; flex-direction: column; }
   .t402 .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
-  .t402 .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .t402 .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
+  .t402 .tier .tname { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .t402 .tier .tpos { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; min-height: 38px; }
   .t402 .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
   .t402 .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
-  .t402 .tier .tmeans { font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
-  .t402 .tier .tstate { margin-top: auto; padding-top: 18px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
+  .t402 .tier .tmeter { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); margin: 8px 0 14px; min-height: 38px; }
+  .t402 .tier .tlist { list-style: none; margin: 0 0 16px; padding: 0; font-size: 13px; color: var(--ink-soft); }
+  .t402 .tier .tlist li { padding: 5px 0 5px 20px; position: relative; border-bottom: 1px dotted var(--border); }
+  .t402 .tier .tlist li:last-child { border-bottom: none; }
+  .t402 .tier .tlist li::before { content: "✓"; position: absolute; left: 0; color: var(--green-deep); font-family: var(--font-mono); }
+  .t402 .tier .tlist li.soon { color: var(--muted); }
+  .t402 .tier .tlist li.soon::before { content: "◷"; color: var(--muted); }
+  .t402 .tier .tstate { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
+  .t402 .tier .tcontact { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); text-decoration: none; }
+  .t402 .tier .tpay { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .t402 .tier.inst { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .t402 .tier.inst .tpos { color: #a8a79e; }
+  .t402 .tier.inst .tprice { color: var(--green); }
+  .t402 .tier.inst .tprice small { color: #a8a79e; }
+  .t402 .tier.inst .tmeter { color: #d7f58a; }
+  .t402 .tier.inst .tlist { color: #d8d7ce; }
+  .t402 .tier.inst .tlist li { border-bottom-color: #3a3934; }
+  .t402 .tier.inst .tlist li::before { color: var(--green); }
+  .t402 .tier.inst .tlist li.soon { color: #8b8a80; }
+  .t402 .tier.inst .tstate, .t402 .tier.inst .tcontact { color: var(--green); }
+  .t402 .tier.inst .tpay { color: #8b8a80; }
   .t402 .price-notes { margin-top: 20px; display: flex; flex-direction: column; gap: 7px; }
   .t402 .price-note { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
-  @media (max-width: 900px) { .t402 .tiers { grid-template-columns: 1fr; } }
+  .t402 .price-footnote { margin-top: 8px; font-size: 12.5px; color: var(--muted); border-left: 3px solid var(--border); padding: 4px 0 4px 14px; max-width: 860px; }
+  @media (max-width: 1024px) { .t402 .tiers { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px) { .t402 .tiers { grid-template-columns: 1fr; } }
 
   /* FAQ */
   .t402 .faq-list { margin-top: 44px; }

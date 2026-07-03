@@ -2,6 +2,7 @@
 import Navigation from "../../../components/Navigation.astro";
 import Footer from "../../../components/Footer.astro";
 import { getTranslations } from "../../../i18n/translations";
+import { T402_PRICING } from "../../../data/trust402Pricing";
 
 const locale = "ja" as const;
 const base = "/ja" as const;
@@ -582,16 +583,46 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .callout { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin-top: 18px; }
 .t402b .callout.on-dark { color: rgba(236,235,227,0.5); }
 /* tiers */
-.t402b .tiers { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.t402b .tiers { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.t402b .pchips { display: flex; flex-wrap: wrap; gap: 9px; margin: -24px 0 40px; }
+.t402b .pchip { font-family: var(--font-mono); font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; color: var(--ink-soft); }
+.t402b .pchip.key { background: var(--green); border-color: var(--green-deep); color: var(--ink); font-weight: 700; }
 .t402b .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
 .t402b .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
 .t402b .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
 .t402b .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
 .t402b .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
 .t402b .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
-.t402b .tier .tmeans { font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
-.t402b .tier .tstate { margin-top: auto; padding-top: 18px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
-.t402b .price-note { margin-top: 20px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
+.t402b .tier .tmeter { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); margin: 8px 0 14px; min-height: 38px; }
+.t402b .tier .tlist { list-style: none; margin: 0 0 16px; padding: 0; font-size: 13px; color: var(--ink-soft); }
+.t402b .tier .tlist li { padding: 5px 0 5px 20px; position: relative; border-bottom: 1px dotted var(--border); }
+.t402b .tier .tlist li:last-child { border-bottom: none; }
+.t402b .tier .tlist li::before { content: "✓"; position: absolute; left: 0; color: var(--green-deep); font-family: var(--font-mono); }
+.t402b .tier .tlist li.soon { color: var(--muted); }
+.t402b .tier .tlist li.soon::before { content: "◷"; color: var(--muted); }
+.t402b .tier .tstate { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
+.t402b .tier .tcontact { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); text-decoration: none; }
+.t402b .tier .tpay { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 10px; }
+/* Institutional — dark (ink) card */
+.t402b .tier.inst { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.t402b .tier.inst .tpos { color: #a8a79e; }
+.t402b .tier.inst .tprice { color: var(--green); }
+.t402b .tier.inst .tprice small { color: #a8a79e; }
+.t402b .tier.inst .tmeter { color: #d7f58a; }
+.t402b .tier.inst .tlist { color: #d8d7ce; }
+.t402b .tier.inst .tlist li { border-bottom-color: #3a3934; }
+.t402b .tier.inst .tlist li::before { color: var(--green); }
+.t402b .tier.inst .tlist li.soon { color: #8b8a80; }
+.t402b .tier.inst .tstate, .t402b .tier.inst .tcontact { color: var(--green); }
+.t402b .tier.inst .tpay { color: #8b8a80; }
+/* how billing works */
+.t402b .bill-h { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin: 48px 0 16px; color: var(--ink); }
+.t402b .bill { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.t402b .bcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.t402b .bcell .bnum { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
+.t402b .bcell .btitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 8px 0 6px; color: var(--ink); }
+.t402b .bcell .btext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
+.t402b .pnote { margin-top: 22px; font-size: 12.5px; color: var(--muted); border-left: 3px solid var(--border); padding: 4px 0 4px 14px; max-width: 860px; }
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
@@ -601,9 +632,9 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* reveal */
 .t402b .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s, transform .6s; }
 .t402b .reveal.on { opacity: 1; transform: none; }
-@media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 900px) { .t402b .tiers { grid-template-columns: 1fr; } .t402b .equation { flex-direction: column; } .t402b .eq-op { justify-content: center; } }
-@media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } .t402b .tiers { grid-template-columns: repeat(2,1fr); } .t402b .bill { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .t402b .equation { flex-direction: column; } .t402b .eq-op { justify-content: center; } }
+@media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } .t402b .tiers { grid-template-columns: 1fr; } }
 
 /* fixed Pay/Sell/Dashboard switcher */
 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: #1F1E1A; padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
@@ -772,15 +803,47 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    <section class="section-gray">
+    {/* pricing — 4 プランを共有データ (src/data/trust402Pricing.ts) から描画。
+        価格・枠・単価はあちらの定数で差し替え可能。表示のみ — 決済フロー
+        (x402 middleware / spend cap / 通知) は別 Issue。プレローンチのため
+        CTA ボタンは置かず「近日公開」表記（Institutional のみ相談リンク）。 */}
+    <section class="section-gray" id="pricing">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>Explorer から Pro まで。</h2><p>検証は常に無料。支払うのは証明の生成と決済のため — 信頼されること自体には課金しない。</p></div>
-        <div class="tiers">
-        <div class="tier reveal"><div class="tname">Explorer</div><div class="tpos">サンドボックス · テストネット限定</div><div class="tprice">無料</div><div class="tmeans">手動フォーム · 現在のデモ。</div><div class="tstate">近日公開</div></div>
-        <div class="tier featured reveal"><div class="tname">Pro</div><div class="tpos">本番 · 個人開発者</div><div class="tprice">¥2,980<small>/月 + 従量</small></div><div class="tmeans">手動フォーム（+ API アドオン）。</div><div class="tstate">近日公開</div></div>
-        <div class="tier reveal"><div class="tname">Institutional ID</div><div class="tpos">一括登録 · 組織向け</div><div class="tprice">¥50,000<small>/月 + 登録時の本人性確認</small></div><div class="tmeans">プログラム利用（API / MCP）込み。</div><div class="tstate">近日公開</div></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>{T402_PRICING.h2.ja}</h2><p>{T402_PRICING.sub.ja}</p></div>
+        <div class="pchips reveal">
+          {T402_PRICING.chips.map((c) => (
+            <span class:list={["pchip", { key: c.key }]}>{c.text.ja}</span>
+          ))}
         </div>
-        <p class="price-note">Pay と Sell をまたぐ月間枠は1つ。検証は無料。</p>
+        <div class="tiers">
+          {T402_PRICING.tiers.map((t) => (
+            <div class:list={["tier", "reveal", { featured: t.featured, inst: t.dark }]}>
+              <div class="tname">{t.name}</div>
+              <div class="tpos">{t.pos.ja}</div>
+              <div class="tprice">{t.price.ja}{t.priceUnit && <small> {t.priceUnit.ja}</small>}</div>
+              <div class="tmeter">{t.meter.ja}</div>
+              <ul class="tlist">
+                {t.features.map((f) => (
+                  <li class:list={[{ soon: f.soon }]}>{f.text.ja}</li>
+                ))}
+              </ul>
+              {t.state && <div class="tstate">{t.state.ja}</div>}
+              {t.contact && <a class="tcontact" href={t.contact.hrefJa}>{t.contact.label.ja}</a>}
+              <div class="tpay">{t.payment.ja}</div>
+            </div>
+          ))}
+        </div>
+        <p class="bill-h reveal">{T402_PRICING.billingH.ja}</p>
+        <div class="bill">
+          {T402_PRICING.billing.map((b) => (
+            <div class="bcell reveal">
+              <div class="bnum">{b.num}</div>
+              <div class="btitle">{b.title.ja}</div>
+              <div class="btext">{b.text.ja}</div>
+            </div>
+          ))}
+        </div>
+        <p class="pnote reveal">{T402_PRICING.footnote.ja}</p>
       </div>
     </section>
 

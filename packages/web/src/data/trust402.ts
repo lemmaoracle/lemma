@@ -62,17 +62,6 @@ interface Faq {
   readonly link?: { readonly href: Localized; readonly label: Localized };
 }
 
-interface Tier {
-  readonly name: string;
-  readonly free?: boolean;
-  readonly featured?: boolean;
-  readonly pos: Localized;
-  readonly price: Localized;
-  readonly priceSub?: Localized;
-  readonly means: Localized;
-  readonly state: Localized;
-}
-
 export interface Trust402Content {
   readonly sellMeta: { readonly title: Localized; readonly description: Localized };
 
@@ -189,7 +178,8 @@ export interface Trust402Content {
       readonly eyebrow: Localized;
       readonly h2: Localized;
       readonly sub: Localized;
-      readonly tiers: ReadonlyArray<Tier>;
+      /** Tiers render from the shared module (src/data/trust402Pricing.ts)
+       *  so Sell and the Pay hub can never drift apart on prices. */
       readonly notes: ReadonlyArray<Localized>;
     };
     readonly faq: {
@@ -495,39 +485,9 @@ export const T402: Trust402Content = {
       eyebrow: { en: "pricing · shared with pay", ja: "料金 · pay と共通" },
       h2: { en: "Pay only when you really sell.", ja: "本当に売るときだけ、支払う。" },
       sub: {
-        en: "The same three plans cover both Pay and Sell. Checking proofs is always free — you only pay for a plan when you publish for real. No commission on sales.",
-        ja: "同じ 3 プランが Pay と Sell の両方をカバー。証明の検証は常に無料 — 本番で公開するときだけプラン料金がかかります。販売手数料はゼロ。",
+        en: "The same four plans cover both Pay and Sell. Checking proofs is always free — you're billed only for issuing them, and sales carry no commission.",
+        ja: "同じ 4 プランが Pay と Sell の両方をカバー。証明の検証は常に無料 — 課金されるのは証明の発行だけで、販売手数料はゼロ。",
       },
-      tiers: [
-        {
-          name: "Explorer",
-          free: true,
-          pos: { en: "Sandbox · test mode. Practice safely.", ja: "サンドボックス · テストモード。安全に練習。" },
-          price: { en: "Free", ja: "無料" },
-          means: { en: "Try the whole flow end to end — no real money involved. Students start here.", ja: "全体の流れを最初から最後まで — 実際のお金は不要。学生はここから。" },
-          state: { en: "Coming soon", ja: "近日公開" },
-        },
-        {
-          name: "Pro",
-          featured: true,
-          pos: { en: "Your own storefront, live in production.", ja: "あなたの売り場を、本番で持つ。" },
-          price: { en: "$19", ja: "¥2,980" },
-          priceSub: { en: "/mo · 0% commission on sales", ja: "/月 · 販売手数料 0%" },
-          means: {
-            en: "Listings, pricing, USDC payouts, your Dashboard — proof of authenticity standard on every listing. Optional API for developers.",
-            ja: "出品・価格設定・USDC 受け取り・ダッシュボード — 真贋証明は全出品に標準装備。開発者向け API はオプション。",
-          },
-          state: { en: "Coming soon", ja: "近日公開" },
-        },
-        {
-          name: "Institutional ID",
-          pos: { en: "For labs, universities & organizations.", ja: "研究室・大学・組織向け。" },
-          price: { en: "$330", ja: "¥50,000" },
-          priceSub: { en: "/mo + identity check at registration", ja: "/月 + 登録時の本人性確認" },
-          means: { en: "Register once; members & students publish under the umbrella, free to them.", ja: "一度登録すれば、メンバーや学生がその名義で出品 — 本人は無料。" },
-          state: { en: "Coming soon", ja: "近日公開" },
-        },
-      ],
       notes: [
         {
           en: "Your monthly plan pays for your storefront. Proof of authenticity comes standard on every listing.",
