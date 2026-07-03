@@ -175,6 +175,16 @@ export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsK
 
 /**
  * Issuer signs a set of attribute messages with their BBS+ secret key.
+ *
+ * Performs BBS+ signing via the `@docknetwork/crypto-wasm` WASM module,
+ * which is lazy-initialized on first use (see `ensureWasmInitialized`).
+ * This function performs no network I/O; it is a local cryptographic
+ * operation against the WASM boundary. The `_client` parameter is
+ * accepted for forward-compatibility of the public signature and is not
+ * read; it is retained so future versions may add client-bound behavior
+ * without a breaking change.
+ *
+ * Whitepaper §2.6 / §4.6.
  */
 export const sign = async (_client: LemmaClient, input: SignInput): Promise<SignOutput> => {
   // Ensure WASM is initialized before any crypto operations
@@ -210,6 +220,16 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
 
 /**
  * Verify a BBS+ signature against the issuer's public key.
+ *
+ * Performs BBS+ verification via the `@docknetwork/crypto-wasm` WASM
+ * module, which is lazy-initialized on first use (see
+ * `ensureWasmInitialized`). This function performs no network I/O; it
+ * is a local cryptographic operation against the WASM boundary. The
+ * `_client` parameter is accepted for forward-compatibility of the
+ * public signature and is not read; it is retained so future versions
+ * may add client-bound behavior without a breaking change.
+ *
+ * Whitepaper §2.6 / §4.6.
  */
 export const verify = async (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> => {
   // Ensure WASM is initialized before any crypto operations
@@ -234,6 +254,19 @@ export const verify = async (_client: LemmaClient, signOutput: SignOutput): Prom
 /**
  * Holder creates a selective disclosure proof, choosing which
  * attribute indexes to reveal.
+ *
+ * Performs BBS+ proof generation via the `@docknetwork/crypto-wasm`
+ * WASM module, which is lazy-initialized on first use (see
+ * `ensureWasmInitialized`). This function performs no network I/O; it
+ * is a local cryptographic operation against the WASM boundary. The
+ * `_client` parameter is accepted for forward-compatibility of the
+ * public signature and is not read; its type is `LemmaClient | undefined`
+ * intentionally — the high-level helper `createProof` calls
+ * `reveal(undefined, ...)` since it has no client in scope. The
+ * parameter is retained so future versions may add client-bound
+ * behavior without a breaking change.
+ *
+ * Whitepaper §2.6 / §4.6.
  */
 export const reveal = async (
   _client: LemmaClient | undefined,
@@ -288,6 +321,16 @@ export const reveal = async (
 
 /**
  * Verifier checks a selective-disclosure proof against the issuer's public key.
+ *
+ * Performs BBS+ proof verification via the `@docknetwork/crypto-wasm`
+ * WASM module, which is lazy-initialized on first use (see
+ * `ensureWasmInitialized`). This function performs no network I/O; it
+ * is a local cryptographic operation against the WASM boundary. The
+ * `_client` parameter is accepted for forward-compatibility of the
+ * public signature and is not read; it is retained so future versions
+ * may add client-bound behavior without a breaking change.
+ *
+ * Whitepaper §2.6 / §4.6.
  */
 export const verifyProof = async (
   _client: LemmaClient,
