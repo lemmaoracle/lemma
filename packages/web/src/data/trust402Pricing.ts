@@ -25,14 +25,15 @@ import type { Localized } from "./trust402";
 
 /** All swappable numbers in one place. */
 export const T402_PRICE = {
-  /** Metered per-issuance rate (Builder always, Pro overage). */
-  unit: "$0.005",
+  /** Metered rate per PROOF ISSUANCE (Builder always, Pro overage).
+   *  Denominated in USDC — the actual settlement currency — so the JA
+   *  page doesn't mix ¥ plan prices with $ metered rates. */
+  unit: "0.005 USDC",
   pro: { ja: "¥2,980", en: "$19" },
-  /** Issuances included in Pro per month. */
+  /** Proof issuances included in Pro per month. */
   proIncluded: "1,000",
-  /** Institutional — monthly-equivalent headline + annual-contract total. */
+  /** Institutional — monthly-equivalent headline (annual contract). */
   instMonthly: { ja: "¥100,000", en: "$667" },
-  instYearly: { ja: "¥1,200,000", en: "$8,000" },
 } as const;
 
 export interface PricingTier {
@@ -88,9 +89,9 @@ export const T402_PRICING: Trust402Pricing = {
       price: { ja: "¥0", en: "$0" },
       meter: { ja: "testnet 無制限", en: "unlimited on testnet" },
       features: [
-        { text: { ja: "testnet で発行・出品を練習", en: "Practice issuing & listing on testnet" } },
+        { text: { ja: "testnet で証明発行・出品を練習", en: "Practice proof issuance & listing on testnet" } },
         { text: { ja: "フォームでも API でも", en: "By form or by API — both" } },
-        { text: { ja: "本番発行なし(コストゼロ)", en: "No production issuance (zero cost)" } },
+        { text: { ja: "本番の証明発行なし(コストゼロ)", en: "No production proof issuance (zero cost)" } },
       ],
       payment: { ja: "アカウントのみ (GitHub)", en: "account only (GitHub)" },
       state: { ja: "近日公開", en: "Coming soon" },
@@ -101,12 +102,10 @@ export const T402_PRICING: Trust402Pricing = {
       pos: { ja: "使った分だけ — 開発者・エージェント", en: "Pay as you go — developers & agents" },
       price: { ja: "¥0", en: "$0" },
       priceUnit: { ja: "/月", en: "/mo" },
-      meter: { ja: `${T402_PRICE.unit} / 発行(都度 x402)`, en: `${T402_PRICE.unit} / issuance (per-call x402)` },
+      meter: { ja: `${T402_PRICE.unit} / 証明1件の発行`, en: `${T402_PRICE.unit} / proof issued` },
       features: [
         { text: { ja: "本番。月額なし・最低額なし", en: "Production. No monthly fee, no minimum" } },
-        { text: { ja: "1コール目から都度決済 — 払わなければ実行されないだけ", en: "Per-call settlement from call one — unpaid simply doesn't run" } },
-        { text: { ja: "API キー1本目 無料", en: "First API key free" } },
-        { text: { ja: "spend cap(月次上限)設定可", en: "Spend cap (monthly ceiling) available" } },
+        { text: { ja: "証明1件目の発行から、発行ごとに x402 決済 — 払わなければ発行されないだけ", en: "x402 settles per proof, from the very first one — unpaid simply isn't issued" } },
       ],
       payment: { ja: "x402 (USDC)", en: "x402 (USDC)" },
       state: { ja: "近日公開", en: "Coming soon" },
@@ -119,14 +118,12 @@ export const T402_PRICING: Trust402Pricing = {
       price: { ja: T402_PRICE.pro.ja, en: T402_PRICE.pro.en },
       priceUnit: { ja: "/月", en: "/mo" },
       meter: {
-        ja: `同梱 ${T402_PRICE.proIncluded} 発行/月 · 超過 ${T402_PRICE.unit}`,
-        en: `includes ${T402_PRICE.proIncluded} issuances/mo · overage ${T402_PRICE.unit}`,
+        ja: `証明発行 ${T402_PRICE.proIncluded} 件/月 込み* · 超過 ${T402_PRICE.unit}/件`,
+        en: `${T402_PRICE.proIncluded} proof issuances/mo included* · overage ${T402_PRICE.unit} each`,
       },
       features: [
-        { text: { ja: "都度払いが消える — 月額内で出品し放題*", en: "Per-call payments disappear — publish freely within the plan*" } },
         { text: { ja: "真贋証明つきの来歴を、チェーンに永続", en: "Provenance with proof of authenticity, persisted on-chain" } },
         { text: { ja: "フォーム＋API", en: "Form + API" } },
-        { text: { ja: "枠 80% / 100% で通知 · spend cap", en: "Alerts at 80% / 100% of allowance · spend cap" } },
       ],
       payment: { ja: "x402 (USDC) — カード対応 準備中", en: "x402 (USDC) — card support in preparation" },
       state: { ja: "近日公開", en: "Coming soon" },
@@ -139,8 +136,8 @@ export const T402_PRICING: Trust402Pricing = {
       price: { ja: T402_PRICE.instMonthly.ja, en: T402_PRICE.instMonthly.en },
       priceUnit: { ja: "/月", en: "/mo" },
       meter: {
-        ja: `年間契約(${T402_PRICE.instYearly.ja}/年) · アテステーション込み`,
-        en: `annual contract (${T402_PRICE.instYearly.en}/yr) · attestation included`,
+        ja: "年間契約 · アテステーション込み",
+        en: "annual contract · attestation included",
       },
       features: [
         { text: { ja: "機関確認(登記＋ドメイン)＋属性アテステーション", en: "Institution verification (registry + domain) + attribute attestation" } },
@@ -184,7 +181,7 @@ export const T402_PRICING: Trust402Pricing = {
     },
   ],
   footnote: {
-    ja: `* 同梱 ${T402_PRICE.proIncluded} 発行は、フォームでの通常出品(月数百件)を余裕で覆う設計です。超過は API 等での大量発行時のみ、1 発行 ${T402_PRICE.unit}(都度 x402)。spend cap を設定すれば上限で自動停止します。価格は税別。`,
-    en: `* The included ${T402_PRICE.proIncluded} issuances comfortably cover normal form-based publishing (a few hundred listings a month); overage applies only to high-volume API issuance, at ${T402_PRICE.unit} per issuance (per-call x402). Set a spend cap and it stops automatically at your ceiling. Prices exclude tax.`,
+    ja: `* 「発行」は証明 1 件の発行を指します(API コール数ではありません)。同梱の証明発行 ${T402_PRICE.proIncluded} 件は、フォームでの通常出品(月数百件)を余裕で覆う設計です。超過は API 等での大量発行時のみ、証明 1 件につき ${T402_PRICE.unit}(発行ごとに x402 決済)。spend cap を設定すれば上限で自動停止します。価格は税別。`,
+    en: `* An "issuance" is the issuance of one proof (not an API call). The included ${T402_PRICE.proIncluded} proof issuances comfortably cover normal form-based publishing (a few hundred listings a month); overage applies only to high-volume API issuance, at ${T402_PRICE.unit} per proof (settled per issuance via x402). Set a spend cap and it stops automatically at your ceiling. Prices exclude tax.`,
   },
 };
