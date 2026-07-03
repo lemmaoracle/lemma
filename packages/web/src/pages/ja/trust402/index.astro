@@ -595,6 +595,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
+.t402b .closing .closing-sub { font-size: 15.5px; color: rgba(236,235,227,0.62); line-height: 1.8; max-width: 46ch; margin: 16px auto 0; }
 .t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
 .t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 /* reveal */
@@ -783,11 +784,13 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* closing — 問いかけ一本。eyebrow と Trust402/x402 の説明行は削除
-        （並べると長く、ごちゃつくため）。問い → CTA の直結。 */}
+    {/* closing — 問い + 土俵の一行。Sell FAQ の「売ること自体は、どこでも
+        できます。」と対になる Pay 側の線引き: 支払わせるだけなら鍵で足りる、
+        任せるには証明が要る。 */}
     <section class="closing">
       <div class="inner">
         <h2>エージェント経済を切り開く準備は、できていますか。</h2>
+        <p class="closing-sub">鍵があれば、エージェントは支払えます。任せるには、証明が要ります。</p>
         <div class="rule"></div>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">ウェイトリストに登録 →</a>

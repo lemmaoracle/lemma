@@ -595,6 +595,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
 .t402b .closing h2 { font-family: var(--font-display); font-size: clamp(30px,4.5vw,52px); font-weight: 800; margin: 0 0 14px; color: var(--term-fg); }
+.t402b .closing .closing-sub { font-size: 15.5px; color: rgba(236,235,227,0.62); line-height: 1.8; max-width: 46ch; margin: 16px auto 0; }
 .t402b .closing .rule { width: 44px; height: 2px; background: var(--green); margin: 26px auto; }
 .t402b .closing .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 /* reveal */
@@ -784,12 +785,13 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* closing — one question, nothing else. The eyebrow and the
-        Trust402/x402 explainer line are gone (too long side by side,
-        cluttered the send-off). Question → CTA, directly. */}
+    {/* closing — the question + the dividing line. Pay's counterpart to
+        the Sell FAQ's "selling itself you can do anywhere": letting an
+        agent pay only takes keys; trusting it takes proof. */}
     <section class="closing">
       <div class="inner">
         <h2>Ready to open up the agent economy?</h2>
+        <p class="closing-sub">Keys let an agent pay. Trusting it takes proof.</p>
         <div class="rule"></div>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">Join the waitlist →</a>
