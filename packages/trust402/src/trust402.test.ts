@@ -155,8 +155,8 @@ describe("trust402.publish", () => {
       expect(listing.cid).toBeUndefined(); // blog-article doesn't need CID
 
       // perSchemaProof
-      expect(listing.perSchemaProof.circuitId).toBe("blog-article-v1");
-      expect(listing.perSchemaProof.inputs.length).toBeGreaterThan(0);
+      expect(listing.perSchemaProof!.circuitId).toBe("blog-article-v1");
+      expect(listing.perSchemaProof!.inputs.length).toBeGreaterThan(0);
 
       // listingBindingProof
       expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
@@ -260,7 +260,7 @@ describe("trust402.publish", () => {
       const listing = await publish(client, genericInput);
 
       expect(listing.schemaId).toBe("content-commitment-v1");
-      expect(listing.perSchemaProof.circuitId).toBe("content-commitment-v1");
+      expect(listing.perSchemaProof!.circuitId).toBe("content-commitment-v1");
       expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
 
       // CID should be present for content-commitment
@@ -437,6 +437,122 @@ describe("trust402.publish", () => {
       });
 
       await expect(publish(client, input)).rejects.toThrow();
+    });
+  });
+
+  // ── Commitment override ─────────────────────────────────────────────
+
+  describe("external commitment", () => {
+    it("skips per-schema proof when commitment is provided", async () => {
+      const client = setupNoArtifactMocks();
+
+      const input: Trust402PublishInput = Object.freeze({
+        content: Object.freeze({
+          type: "generic",
+          mimeType: "application/octet-stream",
+          payload: new Uint8Array([1, 2, 3]),
+        } as const),
+        price: Object.freeze({ amount: 500, currency: "USDC" as const }),
+        did: "did:ethr:0xext",
+        commitment: "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
+      });
+
+      const listing = await publish(client, input);
+
+      expect(listing.schemaId).toBe("external");
+      expect(listing.commitment).toBe(
+        "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
+      );
+      expect(listing.perSchemaProof).toBeNull();
+      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
+      expect(listing.listingRoot).toBeDefined();
+    });
+
+    it("still computes CID when commitment is external", async () => {
+      const client = setupNoArtifactMocks();
+
+      const bytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]);
+      const input: Trust402PublishInput = Object.freeze({
+        content: Object.freeze({
+          type: "generic",
+          mimeType: "text/plain",
+          payload: bytes,
+        } as const),
+        price: Object.freeze({ amount: 100, currency: "USDC" as const }),
+        did: "did:ethr:0xextcid",
+        commitment: "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
+      });
+
+      const listing = await publish(client, input);
+
+      expect(listing.cid).toBeDefined();
+      expect(listing.cid).toMatch(/^sha256:[0-9a-f]{64}$/);
+    });
+
+    it("does NOT call circuits or proofs endpoints for per-schema", async () => {
+      const calls: string[] = [];
+      const mockFetch = vi.fn().mockImplementation((url: string) => {
+        calls.push(url);
+        if (url.includes("/v1/circuits/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ circuitId: url.split("/v1/circuits/")[1], schema: "test" }),
+          });
+        }
+        if (url.includes("/v1/proofs")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ status: "received", verificationId: "v" }),
+          });
+        }
+        return Promise.resolve({ ok: false });
+      });
+
+      const client = create({ apiBase: "http://localhost:8787" });
+      (client as Record<string, unknown>).fetcher = mockFetch;
+
+      const input: Trust402PublishInput = Object.freeze({
+        content: Object.freeze({
+          type: "generic",
+          mimeType: "text/plain",
+          payload: new Uint8Array([1]),
+        } as const),
+        price: Object.freeze({ amount: 100, currency: "USDC" as const }),
+        did: "did:ethr:0xnocall",
+        commitment: "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
+      });
+
+      await publish(client, input);
+
+      // Should only hit /v1/proofs (for listing-binding), never per-schema circuits
+      const circuitCalls = calls.filter((u) => u.includes("/v1/circuits"));
+      // listing-binding-v1 circuit lookup is expected; per-schema (content-commitment-v1) is not
+      const perSchemaCircuitCalls = calls.filter((u) => u.includes("content-commitment-v1"));
+      expect(perSchemaCircuitCalls.length).toBe(0);
+      const proofCalls = calls.filter((u) => u.includes("/v1/proofs"));
+      expect(proofCalls.length).toBeGreaterThan(0);
+    });
+
+    it("commitment override works with file type too", async () => {
+      const client = setupNoArtifactMocks();
+
+      const input: Trust402PublishInput = Object.freeze({
+        content: Object.freeze({
+          type: "file",
+          name: "secret.bin",
+          bytes: new Uint8Array([7, 8, 9]),
+          mimeType: "application/octet-stream",
+        } as const),
+        price: Object.freeze({ amount: 1000, currency: "USDC" as const }),
+        did: "did:ethr:0xfileext",
+        commitment: "0xcafebabe00000000000000000000000000000000000000000000000000000000",
+      });
+
+      const listing = await publish(client, input);
+
+      expect(listing.schemaId).toBe("external");
+      expect(listing.perSchemaProof).toBeNull();
+      expect(listing.cid).toBeDefined();
     });
   });
 });

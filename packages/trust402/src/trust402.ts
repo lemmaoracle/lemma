@@ -111,6 +111,13 @@ export type Trust402PublishInput = Readonly<{
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
   /** Salt for listing-binding proof. Auto-generated if omitted. */
   salt?: string;
+  /**
+   * Pre-computed commitment (0x-hex). When set, per-schema proof generation
+   * is skipped — only the listing-binding proof is produced. Use when the
+   * caller has already computed a commitment via an unsupported content type
+   * or external circuit.
+   */
+  commitment?: string;
 }>;
 
 /** Full listing returned after successful publish. */
@@ -120,7 +127,11 @@ export type Trust402Listing = Readonly<{
   commitment: string;
   price: PriceInput;
   cid?: string;
-  perSchemaProof: { circuitId: string; proof: string; inputs: ReadonlyArray<string> };
+  perSchemaProof: {
+    circuitId: string;
+    proof: string;
+    inputs: ReadonlyArray<string>;
+  } | null;
   listingBindingProof: { circuitId: string; proof: string; inputs: ReadonlyArray<string> };
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
   createdAt: number;
@@ -265,8 +276,12 @@ const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
 /**
  * Publish a Trust402 listing — chains 2 proofs transparently.
  *
- * One call: generates per-schema proof, listing-binding proof, registers
- * both proofs with Lemma, and returns a full listing.
+ * One call: generates per-schema proof (unless commitment is provided),
+ * listing-binding proof, registers proofs with Lemma, and returns a full listing.
+ *
+ * When `input.commitment` is set, per-schema proof generation is skipped.
+ * Only the listing-binding proof is produced. The caller is responsible for
+ * the correctness of the commitment.
  */
 export const publish = async (
   client: LemmaClient,
@@ -280,35 +295,50 @@ export const publish = async (
   const { prove } = prover;
   const { submit } = proofs;
 
-  // ── Step 0: select circuit ──
-  const mapping = selectCircuit(input.content);
+  // ── Step 0: resolve commitment ──
+  const externalCommitment = input.commitment !== undefined;
+  const mapping = externalCommitment
+    ? { circuitId: "external", needsCID: input.content.type !== "blog-article" }
+    : selectCircuit(input.content);
 
-  // ── Step 1: Per-schema proof ──
-  const { circuitId, witness: perSchemaWitness } =
-    buildPerSchemaWitness(input.content);
+  // ── Step 1: Per-schema proof (skipped when commitment is externally provided) ──
+  let commitment: string;
+  let perSchemaProof: Trust402Listing["perSchemaProof"];
 
-  const perSchemaProof = await prove(client, {
-    circuitId,
-    witness: perSchemaWitness,
-  });
+  if (externalCommitment) {
+    commitment = input.commitment!;
+    perSchemaProof = null;
+  } else {
+    const { circuitId, witness: perSchemaWitness } =
+      buildPerSchemaWitness(input.content);
 
-  // Commitment is public signal [0]
-  const commitment = perSchemaProof.inputs[0];
-  if (commitment === undefined) {
-    throw new Error("Per-schema proof produced no public signals");
+    const proof = await prove(client, {
+      circuitId,
+      witness: perSchemaWitness,
+    });
+
+    commitment = proof.inputs[0]!;
+    if (commitment === undefined) {
+      throw new Error("Per-schema proof produced no public signals");
+    }
+
+    // Register per-schema proof
+    await submit(client, {
+      docHash: commitment,
+      circuitId,
+      proof: proof.proof,
+      inputs: proof.inputs,
+    });
+
+    perSchemaProof = {
+      circuitId,
+      proof: proof.proof,
+      inputs: proof.inputs,
+    };
   }
 
-  // Register per-schema proof
-  const docHash = commitment;
-  await submit(client, {
-    docHash,
-    circuitId,
-    proof: perSchemaProof.proof,
-    inputs: perSchemaProof.inputs,
-  });
-
   // ── Step 2: Listing-binding proof ──
-  const schemaId = toScalar(circuitId);
+  const schemaId = toScalar(mapping.circuitId!);
   const priceUsdc = toScalar(input.price.amount);
   const didScalar = toScalar(input.did);
   const salt = toScalar(input.salt ?? randomHex(32));
@@ -354,15 +384,11 @@ export const publish = async (
   // ── Step 4: Return listing ──
   return Object.freeze({
     listingRoot: bigintToHex(listingRoot),
-    schemaId: circuitId,
+    schemaId: mapping.circuitId,
     commitment,
     price: input.price,
     cid,
-    perSchemaProof: {
-      circuitId,
-      proof: perSchemaProof.proof,
-      inputs: perSchemaProof.inputs,
-    },
+    perSchemaProof,
     listingBindingProof: {
       circuitId: "listing-binding-v1",
       proof: listingBindingProof.proof,
