@@ -25,14 +25,8 @@ export * as schemas from "./namespaces/schemas.js";
 export * as circuits from "./namespaces/circuits.js";
 export * as generators from "./namespaces/generators.js";
 export * as attributes from "./namespaces/attributes.js";
-export * as trust402 from "./namespaces/trust402.js";
 
 /* Re-export spec types for convenience */
-export type {
-  Trust402PublishInput,
-  Trust402Listing,
-} from "./namespaces/trust402.js";
-
 export type {
   LemmaClient,
   LemmaClientConfig,

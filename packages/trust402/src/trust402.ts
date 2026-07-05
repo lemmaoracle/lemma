@@ -1,14 +1,15 @@
 /**
- * Trust402 namespace — SDK proof orchestration for publishing content listings.
+ * Trust402 SDK — proof orchestration for publishing content listings.
  *
  * One call (`publish`) chains 2 proofs transparently:
  *   1. Per-schema proof   (blog-article-v1 or content-commitment-v1)
  *   2. Listing-binding proof (listing-binding-v1)
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
+import { toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
-import { toScalar } from "../commitments.js";
-import { randomHex, sha256Hex } from "../platform.js";
+import { sha256 } from "@noble/hashes/sha256";
+import { randomBytes } from "@noble/hashes/utils";
 
 /* ------------------------------------------------------------------ */
 /*  Inlined normalizer helpers (from @lemmaoracle/content)             */
@@ -66,6 +67,19 @@ const reduceElements = (
   }
   return acc;
 };
+
+/* ------------------------------------------------------------------ */
+/*  Inlined crypto helpers (from @lemmaoracle/sdk platform)            */
+/* ------------------------------------------------------------------ */
+
+const bytesToHex = (bytes: Uint8Array): string =>
+  Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+const sha256Hex = (data: Uint8Array): string => bytesToHex(sha256(data));
+
+const randomHex = (length = 32): string => bytesToHex(randomBytes(length));
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -258,11 +272,13 @@ export const publish = async (
   client: LemmaClient,
   input: Trust402PublishInput,
 ): Promise<Trust402Listing> => {
-  // Dynamically import to avoid circular deps at module load
-  const [{ prove }, { submit }] = await Promise.all([
-    import("../prover.js"),
-    import("../namespaces/proofs.js"),
+  // Dynamically import from SDK to avoid circular deps at module load
+  const [{ prover }, { proofs }] = await Promise.all([
+    import("@lemmaoracle/sdk"),
+    import("@lemmaoracle/sdk"),
   ]);
+  const { prove } = prover;
+  const { submit } = proofs;
 
   // ── Step 0: select circuit ──
   const mapping = selectCircuit(input.content);

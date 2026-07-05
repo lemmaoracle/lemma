@@ -4,8 +4,7 @@ import type {
   Trust402PublishInput,
   BlogArticlePayload,
 } from "./trust402.js";
-import { create } from "../client.js";
-import { toScalar } from "../commitments.js";
+import { create, toScalar } from "@lemmaoracle/sdk";
 import { poseidon5 } from "poseidon-lite";
 
 // ---------------------------------------------------------------------------
