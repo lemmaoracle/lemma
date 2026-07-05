@@ -10,7 +10,7 @@
 set -e
 
 # All available packages
-ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/seal" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp")
+ALL_PACKAGES=("@lemmaoracle/spec" "@lemmaoracle/parser" "@lemmaoracle/sdk" "@lemmaoracle/seal" "@lemmaoracle/agent" "@lemmaoracle/x402" "@lemmaoracle/mcp" "@trust402/sdk")
 
 # Track backup files for cleanup on exit
 _BACKUP_FILES=()
@@ -72,7 +72,7 @@ fi
 
 # Build filter
 if [[ "$TARGET" == "all" ]]; then
-    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/seal -F @lemmaoracle/agent -F @lemmaoracle/x402 -F @lemmaoracle/mcp"
+    BUILD_FILTER="-F @lemmaoracle/spec -F @lemmaoracle/parser -F @lemmaoracle/sdk -F @lemmaoracle/seal -F @lemmaoracle/agent -F @lemmaoracle/x402 -F @lemmaoracle/mcp -F @trust402/sdk"
 else
     BUILD_FILTER="-F ${TARGET}"
 fi
@@ -234,6 +234,37 @@ require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n
     echo "🔄 Restored agent package.json for development"
 }
 
+# Publish trust402 with SDK and spec dependency update
+publish_trust402() {
+    cd packages/trust402
+
+    npm version $VERSION --no-git-tag-version
+    cp package.json package.json.backup
+    _BACKUP_FILES+=("$(pwd)/package.json.backup")
+
+    local sdk_version=$(node -p "require('../sdk/package.json').version")
+    local spec_version=$(node -p "require('../spec/package.json').version")
+    node -e "
+const pkg = require('./package.json');
+pkg.dependencies['@lemmaoracle/sdk'] = '^${sdk_version}';
+pkg.dependencies['@lemmaoracle/spec'] = '^${spec_version}';
+require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+"
+
+    local trust402_version=$(node -p "require('./package.json').version")
+    echo "📝 Updated @trust402/sdk version: $trust402_version"
+    echo "🚀 Publishing @trust402/sdk..."
+    npm publish --access public
+
+    cd ../..
+    echo "✅ Published @trust402/sdk@$trust402_version"
+
+    # Restore
+    cd packages/trust402 && mv package.json.backup package.json && cd ../..
+    _BACKUP_FILES=("${_BACKUP_FILES[@]/$(pwd)/packages/trust402/package.json.backup}")
+    echo "🔄 Restored trust402 package.json for development"
+}
+
 # Publish seal with SDK and spec dependency update
 publish_seal() {
     cd packages/seal
@@ -272,6 +303,7 @@ if [[ "$TARGET" == "all" ]]; then
     publish_sdk
     publish_seal
     publish_agent
+    publish_trust402
     publish_x402
     publish_mcp
 
@@ -282,10 +314,11 @@ if [[ "$TARGET" == "all" ]]; then
     echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json').version")"
     echo "  - @lemmaoracle/seal@$(node -p "require('./packages/seal/package.json').version")"
     echo "  - @lemmaoracle/agent@$(node -p "require('./packages/agent/package.json').version")"
+    echo "  - @trust402/sdk@$(node -p "require('./packages/trust402/package.json').version")""
     echo "  - @lemmaoracle/x402@$(node -p "require('./packages/x402/package.json').version")"
     echo "  - @lemmaoracle/mcp@$(node -p "require('./packages/mcp/package.json').version")"
     echo ""
-    echo "⚠️  Don't forget to commit the version changes in packages/spec/package.json, packages/parser/package.json, packages/x402/package.json, and packages/mcp/package.json"
+    echo "⚠️  Don't forget to commit the version changes in packages/spec/package.json, packages/parser/package.json, packages/trust402/package.json, packages/x402/package.json, and packages/mcp/package.json"
 else
     # Publish single package
     case "$TARGET" in
@@ -294,6 +327,7 @@ else
         "@lemmaoracle/sdk")     publish_sdk ;;
         "@lemmaoracle/seal")    publish_seal ;;
         "@lemmaoracle/agent")   publish_agent ;;
+        "@trust402/sdk")       publish_trust402 ;;
         "@lemmaoracle/x402")    publish_x402 ;;
         "@lemmaoracle/mcp")     publish_mcp ;;
     esac
