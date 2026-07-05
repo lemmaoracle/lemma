@@ -98,20 +98,21 @@ const md = {
           <div class="fgrid">
             <div class="field">
               <label>{D.form.fileLabel[locale]}</label>
-              <div class="filedrop">
-                <div class="fd-file">{D.form.fileName}</div>
+              <div class="filedrop" id="t402-file-drop">
+                <div class="fd-file" id="t402-file-name">{D.form.fileName}</div>
                 <div class="fd-hint">{D.form.fileHint[locale]}</div>
+                <input type="file" id="t402-file-input" style="display:none" />
               </div>
             </div>
             <div class="field">
               <label>{D.form.titleLabel[locale]}</label>
-              <input type="text" value={D.form.titleVal[locale]} />
+              <input type="text" id="t402-title" value={D.form.titleVal[locale]} />
             </div>
             <div class="field">
               <div class="row2">
                 <div class="field">
                   <label>{D.form.versionLabel[locale]}</label>
-                  <select>
+                  <select id="t402-version">
                     {D.form.versions.map((v, i) => (
                       <option selected={i === D.form.versions.length - 1}>{v[locale]}</option>
                     ))}
@@ -120,7 +121,7 @@ const md = {
                 <div class="field">
                   <label>{D.form.priceLabel[locale]}</label>
                   <div class="price-in">
-                    <input type="text" value={D.form.priceVal} />
+                    <input type="text" id="t402-price" value={D.form.priceVal} />
                     <span class="cur">{D.form.cur}</span>
                   </div>
                 </div>
@@ -128,16 +129,17 @@ const md = {
             </div>
             <div class="field">
               <label>{D.form.publishAsLabel[locale]}</label>
-              <select>
+              <select id="t402-publish-as">
                 <option value="you">{D.form.publishAsYou[locale]}</option>
                 <option value="inst">{D.form.publishAsInst[locale]}</option>
               </select>
             </div>
             <div class="form-foot">
-              <button class="btn btn-primary" type="button">{D.form.publishBtn[locale]}</button>
+              <button class="btn btn-primary" id="t402-publish-btn" type="button">{D.form.publishBtn[locale]}</button>
               <span class="form-note" data-mode="testnet">{D.form.noteTest[locale]}</span>
               <span class="form-note" data-mode="production" hidden>{D.form.noteProd[locale]}</span>
             </div>
+            <div id="t402-publish-result" style="display:none; margin-top:12px; font-family:var(--font-mono); font-size:13px;"></div>
           </div>
         </div>
 
@@ -234,6 +236,94 @@ const md = {
       const open = form.classList.toggle("open");
       nl.textContent = open ? md.closeBtn : md.newBtn;
     };
+
+    // ── Trust402 Publish ─────────────────────────────────────────
+    const publishBtn = document.getElementById("t402-publish-btn");
+    const publishResult = document.getElementById("t402-publish-result");
+    const fileDrop = document.getElementById("t402-file-drop");
+    const fileInput = document.getElementById("t402-file-input");
+    const fileName = document.getElementById("t402-file-name");
+
+    // File drop → hidden file input click
+    if (fileDrop && fileInput) {
+      fileDrop.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        if (file) fileName.textContent = file.name;
+      });
+    }
+
+    if (publishBtn) {
+      publishBtn.addEventListener("click", async () => {
+        const title = document.getElementById("t402-title")?.value || "";
+        const version = document.getElementById("t402-version")?.value || "";
+        const priceStr = document.getElementById("t402-price")?.value || "0";
+        const publishAs = document.getElementById("t402-publish-as")?.value || "you";
+        const file = fileInput?.files?.[0];
+
+        const priceAmount = Math.round(parseFloat(priceStr) * 1_000_000);
+        if (!priceAmount || priceAmount <= 0) {
+          showResult("⚠️ Enter a valid price", "var(--muted)");
+          return;
+        }
+
+        publishBtn.disabled = true;
+        const originalText = publishBtn.textContent;
+
+        try {
+          setBtnText("⌛ Generating proofs...");
+          showResult("", "");
+
+          // Dynamic import of SDK (browser-bundled)
+          const { create, trust402 } = await import("@lemmaoracle/sdk");
+          const client = create({
+            apiBase: "https://workers.lemma.workers.dev",
+            apiKey: "demo", // demo mode — real publish needs API key
+          });
+
+          const content = file
+            ? { type: "file", name: file.name, bytes: new Uint8Array(await file.arrayBuffer()), mimeType: file.type || "application/octet-stream" }
+            : { type: "generic", mimeType: "text/plain", payload: new TextEncoder().encode(title || "listing content") };
+
+          setBtnText("🔐 Submitting to Lemma...");
+          const listing = await trust402.publish(client, {
+            content,
+            price: { amount: priceAmount, currency: "USDC" },
+            did: publishAs === "you" ? "did:ethr:demo" : "did:ethr:demo-institution",
+            metadata: { title, version },
+          });
+
+          showResult(`✅ Published! <code style="font-size:11px">${listing.listingRoot.slice(0, 14)}...</code>`, "var(--green-deep)");
+
+          // Add to demo table
+          addDemoListing(title || file?.name || "Listing", version, priceStr);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          showResult(`❌ ${msg.slice(0, 120)}`, "#d00");
+        } finally {
+          publishBtn.disabled = false;
+          setBtnText(originalText || "Publish");
+        }
+      });
+    }
+
+    function setBtnText(text) { if (publishBtn) publishBtn.textContent = text; }
+    function showResult(html, color) {
+      if (!publishResult) return;
+      publishResult.style.display = html ? "block" : "none";
+      publishResult.innerHTML = html;
+      if (color) publishResult.style.color = color;
+    }
+    function addDemoListing(name, version, price) {
+      const tbody = root.querySelector(".ltable[data-mode='testnet']");
+      if (!tbody) return;
+      const row = document.createElement("div");
+      row.className = "lrow";
+      row.innerHTML = `<div><div class="lt">${name}</div><div class="lf">v${version} · ${price} USDC</div></div><div><span class="lstatus live">demo</span></div><div class="mono">${price}</div><div class="mono">—</div><div class="mono muted">$0.00</div>`;
+      tbody.appendChild(row);
+      const count = document.getElementById("db-m-listings");
+      if (count) count.textContent = String(parseInt(count.textContent || "0") + 1);
+    }
 
     setMode("testnet");
   })();

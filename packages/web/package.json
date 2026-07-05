@@ -27,7 +27,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "satori": "^0.26.0",
-    "shiki": "^3.0.0"
+    "shiki": "^3.0.0",
+    "@lemmaoracle/sdk": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",

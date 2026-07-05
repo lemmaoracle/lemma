@@ -1,0 +1,11 @@
+{
+  "name": "@lemmaoracle/blog-article",
+  "version": "1.0.0",
+  "description": "Blog article authenticity ZK circuit for Lemma",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*"
+  }
+}

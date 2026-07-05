@@ -1,7 +1,7 @@
 {
-  "name": "roles-circuits",
+  "name": "blog-article-circuits",
   "version": "1.0.0",
-  "description": "ZK circuit for Lemma roles — agent role-spend-limit proof",
+  "description": "ZK circuit for Lemma blog-article — commitment-opening proof",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "@types/snarkjs": "^0.7.9",
-    "circom_tester": "^0.0.24",
     "poseidon-lite": "^0.3.0",
     "vitest": "^3.0.0"
   }
