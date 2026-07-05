@@ -27,7 +27,7 @@ const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
 const CIRCUIT_ID = "listing-binding-v1";
-const SCHEMA = "trust402-listing";
+const SCHEMA = "passthrough-v1";
 
 const WASM_PATH = path.join(PKG_ROOT, "circuits", "build", "listing-binding_js", "listing-binding.wasm");
 const ZKEY_PATH = path.join(PKG_ROOT, "circuits", "build", "listing-binding_final.zkey");

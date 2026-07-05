@@ -1,7 +1,7 @@
 {
   "name": "@lemmaoracle/content",
   "version": "0.1.0",
-  "description": "Content — ZK circuit for file content commitment proof.",
+  "description": "Content \u2014 ZK circuit for file content commitment proof.",
   "type": "module",
   "main": "dist/normalizer.js",
   "types": "dist/normalizer.d.ts",
@@ -26,9 +26,13 @@
   "author": "Lemma Oracle",
   "license": "MIT",
   "dependencies": {
-    "poseidon-lite": "^0.3.0"
+    "poseidon-lite": "^0.3.0",
+    "@lemmaoracle/sdk": "workspace:*",
+    "@lemmaoracle/spec": "workspace:*"
   },
   "devDependencies": {
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.0",
     "vitest": "^3.0.0"
   }
 }

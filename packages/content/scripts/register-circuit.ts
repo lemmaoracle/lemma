@@ -27,7 +27,7 @@ const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
 const CIRCUIT_ID = "content-commitment-v1";
-const SCHEMA = "content-commitment-v1";
+const SCHEMA = "passthrough-v1";
 
 const WASM_PATH = path.join(PKG_ROOT, "circuits", "build", "content-commitment_js", "content-commitment.wasm");
 const ZKEY_PATH = path.join(PKG_ROOT, "circuits", "build", "content-commitment_final.zkey");

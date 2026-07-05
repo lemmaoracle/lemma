@@ -1,7 +1,7 @@
 {
   "name": "@lemmaoracle/roles",
   "version": "0.1.0",
-  "description": "Roles — ZK circuit for agent role-spend-limit governance (Trust402).",
+  "description": "Roles \u2014 ZK circuit for agent role-spend-limit governance (Trust402).",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
