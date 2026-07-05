@@ -479,6 +479,9 @@ importers:
       '@fontsource/space-mono':
         specifier: ^5.2.9
         version: 5.2.9
+      '@lemmaoracle/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
