@@ -1,0 +1,34 @@
+{
+  "name": "@lemmaoracle/content",
+  "version": "0.1.0",
+  "description": "Content — ZK circuit for file content commitment proof.",
+  "type": "module",
+  "main": "dist/normalizer.js",
+  "types": "dist/normalizer.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/normalizer.d.ts",
+      "import": "./dist/normalizer.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc && cd circuits && bash scripts/build.sh",
+    "test": "vitest run",
+    "test:ts": "vitest run"
+  },
+  "keywords": [
+    "lemma",
+    "content",
+    "commitment",
+    "zk",
+    "circuit"
+  ],
+  "author": "Lemma Oracle",
+  "license": "MIT",
+  "dependencies": {
+    "poseidon-lite": "^0.3.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}
