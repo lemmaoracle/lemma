@@ -111,6 +111,16 @@ describe("trust402.publish", () => {
             }),
         });
       }
+      if (url.includes("/v1/documents")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              status: "registered",
+              docHash: "mock-doc-hash",
+            }),
+        });
+      }
       return Promise.resolve({ ok: false });
     });
 
@@ -503,6 +513,12 @@ describe("trust402.publish", () => {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({ status: "received", verificationId: "v" }),
+          });
+        }
+        if (url.includes("/v1/documents")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ status: "registered", docHash: "mock" }),
           });
         }
         return Promise.resolve({ ok: false });

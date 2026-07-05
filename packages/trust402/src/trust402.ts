@@ -284,12 +284,13 @@ export const publish = async (
   input: Trust402PublishInput,
 ): Promise<Trust402Listing> => {
   // Dynamically import from SDK to avoid circular deps at module load
-  const [{ prover }, { proofs }] = await Promise.all([
+  const [{ prover }, { proofs, documents }] = await Promise.all([
     import("@lemmaoracle/sdk"),
     import("@lemmaoracle/sdk"),
   ]);
   const { prove } = prover;
   const { submit } = proofs;
+  const { register: registerDocument } = documents;
 
   // ── Step 0: resolve commitment ──
   const externalCommitment = input.commitment !== undefined;
@@ -300,6 +301,20 @@ export const publish = async (
   // ── Step 1: Per-schema proof (skipped when commitment is externally provided) ──
   let commitment: string;
   let perSchemaProof: Trust402Listing["perSchemaProof"];
+
+  // Compute CID once — needed for documents.register.
+  // Returns undefined for blog-articles (no CID needed).
+  const cid = mapping.needsCID
+    ? (() => {
+        const bytes =
+          input.content.type === "file"
+            ? input.content.bytes
+            : input.content.type === "generic"
+              ? input.content.payload
+              : undefined;
+        return bytes !== undefined ? `sha256:${sha256Hex(bytes)}` : undefined;
+      })()
+    : undefined;
 
   if (externalCommitment) {
     commitment = input.commitment!;
@@ -314,6 +329,24 @@ export const publish = async (
     });
 
     commitment = perSchemaWitness.commitment!;
+
+    // Register the document before submitting the proof.
+    // proofs.submit requires the docHash to already exist in the
+    // documents table (POST /v1/proofs → SELECT 1 FROM documents).
+    await registerDocument(client, {
+      docHash: commitment,
+      schema: circuitId,
+      cid: cid ?? "",
+      issuerId: input.did,
+      subjectId: input.did,
+      commitments: {
+        scheme: "poseidon" as const,
+        root: commitment,
+        leaves: [commitment],
+        randomness: "0x0",
+      },
+      revocation: { root: "" },
+    });
 
     // Register per-schema proof
     await submit(client, {
@@ -351,6 +384,22 @@ export const publish = async (
     witness: listingWitness,
   });
 
+  // Register listing-binding document before submitting the proof.
+  await registerDocument(client, {
+    docHash: listingRootHex,
+    schema: "listing-binding-v1.1",
+    cid: "",
+    issuerId: input.did,
+    subjectId: input.did,
+    commitments: {
+      scheme: "poseidon" as const,
+      root: listingRootHex,
+      leaves: [listingRootHex],
+      randomness: "0x0",
+    },
+    revocation: { root: "" },
+  });
+
   // Register listing-binding proof
   await submit(client, {
     docHash: listingRootHex,
@@ -359,18 +408,7 @@ export const publish = async (
     inputs: [listingRootHex],
   });
 
-  // ── Step 3: Compute CID if needed ──
-  const cid = mapping.needsCID
-    ? (() => {
-        const bytes =
-          input.content.type === "file"
-            ? input.content.bytes
-            : input.content.type === "generic"
-              ? input.content.payload
-              : undefined;
-        return bytes !== undefined ? `sha256:${sha256Hex(bytes)}` : undefined;
-      })()
-    : undefined;
+  // ── Step 3: Return listing (CID already computed in Step 1) ──
 
   // ── Step 4: Return listing ──
   return Object.freeze({
