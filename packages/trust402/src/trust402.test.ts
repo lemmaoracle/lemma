@@ -150,17 +150,17 @@ describe("trust402.publish", () => {
       expect(listing).toHaveProperty("commitment");
       expect(listing).toHaveProperty("perSchemaProof");
       expect(listing).toHaveProperty("listingBindingProof");
-      expect(listing.schemaId).toBe("blog-article-v1");
+      expect(listing.schemaId).toBe("blog-article-v1.2");
       expect(listing.price).toEqual(blogInput.price);
       expect(listing.cid).toBeUndefined(); // blog-article doesn't need CID
 
       // perSchemaProof
-      expect(listing.perSchemaProof!.circuitId).toBe("blog-article-v1");
+      expect(listing.perSchemaProof!.circuitId).toBe("blog-article-v1.2");
       expect(listing.perSchemaProof!.inputs.length).toBeGreaterThan(0);
 
       // listingBindingProof
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
-      expect(listing.listingBindingProof.inputs.length).toBeGreaterThan(0);
+      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
+      expect(listing.listingBindingProof.proof).toBeTruthy();
 
       // Metadata preserved
       expect(listing.metadata).toEqual(blogInput.metadata);
@@ -259,9 +259,9 @@ describe("trust402.publish", () => {
 
       const listing = await publish(client, genericInput);
 
-      expect(listing.schemaId).toBe("content-commitment-v1");
-      expect(listing.perSchemaProof!.circuitId).toBe("content-commitment-v1");
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
+      expect(listing.schemaId).toBe("content-commitment-v1.2");
+      expect(listing.perSchemaProof!.circuitId).toBe("content-commitment-v1.2");
+      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
 
       // CID should be present for content-commitment
       expect(listing.cid).toBeDefined();
@@ -372,7 +372,7 @@ describe("trust402.publish", () => {
 
       const listing = await publish(client, fileInput);
 
-      expect(listing.schemaId).toBe("content-commitment-v1");
+      expect(listing.schemaId).toBe("content-commitment-v1.2");
       expect(listing.cid).toBeDefined();
       expect(listing.cid).toMatch(/^sha256:[0-9a-f]{64}$/);
     });
@@ -405,7 +405,7 @@ describe("trust402.publish", () => {
       const listing = await publish(client, input);
 
       // Recompute listingRoot manually to verify
-      const schemaId = toScalar("blog-article-v1");
+      const schemaId = toScalar("blog-article-v1.2");
       const priceUsdc = toScalar(100);
       const didScalar = toScalar("did:ethr:0xcross");
       const salt = toScalar(
@@ -464,7 +464,7 @@ describe("trust402.publish", () => {
         "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
       );
       expect(listing.perSchemaProof).toBeNull();
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1");
+      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
       expect(listing.listingRoot).toBeDefined();
     });
 

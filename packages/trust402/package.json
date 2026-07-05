@@ -1,6 +1,6 @@
 {
   "name": "@trust402/sdk",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -31,8 +31,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@lemmaoracle/sdk": "workspace:*",
-    "@lemmaoracle/spec": "workspace:*",
+    "@lemmaoracle/sdk": "^0.0.36",
+    "@lemmaoracle/spec": "^0.0.35",
     "@noble/hashes": "^1.7.0",
     "poseidon-lite": "^0.2.0"
   },

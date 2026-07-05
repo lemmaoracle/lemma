@@ -147,8 +147,8 @@ type ContentMapping = Readonly<{
 }>;
 
 const CONTENT_REGISTRY: Record<string, ContentMapping> = {
-  "blog-article": { circuitId: "blog-article-v1", needsCID: false },
-  default: { circuitId: "content-commitment-v1", needsCID: true },
+  "blog-article": { circuitId: "blog-article-v1.2", needsCID: false },
+  default: { circuitId: "content-commitment-v1.2", needsCID: true },
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -218,8 +218,6 @@ const buildBlogArticleWitness = (
     words: words.toString(),
     langCode: langCode.toString(),
     commitment: `0x${commitment.toString(16)}`,
-    // Fallback prover compatibility: also expose as commitment_root
-    commitment_root: `0x${commitment.toString(16)}`,
   });
 };
 
@@ -240,8 +238,6 @@ const buildContentCommitmentWitness = (
   return Object.freeze({
     fileHash: `0x${fileHash.toString(16)}`,
     commitment: `0x${commitment.toString(16)}`,
-    // Fallback prover compatibility: also expose as commitment_root
-    commitment_root: `0x${commitment.toString(16)}`,
   });
 };
 
@@ -251,14 +247,14 @@ const buildPerSchemaWitness = (
 ): { circuitId: string; witness: Readonly<Record<string, string>> } =>
   content.type === "blog-article"
     ? {
-        circuitId: "blog-article-v1",
+        circuitId: "blog-article-v1.2",
         witness: buildBlogArticleWitness(content.payload),
       }
     : (() => {
         const bytes =
           content.type === "file" ? content.bytes : content.payload;
         return {
-          circuitId: "content-commitment-v1",
+          circuitId: "content-commitment-v1.2",
           witness: buildContentCommitmentWitness(bytes),
         };
       })();
@@ -317,23 +313,20 @@ export const publish = async (
       witness: perSchemaWitness,
     });
 
-    commitment = proof.inputs[0]!;
-    if (commitment === undefined) {
-      throw new Error("Per-schema proof produced no public signals");
-    }
+    commitment = perSchemaWitness.commitment!;
 
     // Register per-schema proof
     await submit(client, {
       docHash: commitment,
       circuitId,
       proof: proof.proof,
-      inputs: proof.inputs,
+      inputs: [commitment],
     });
 
     perSchemaProof = {
       circuitId,
       proof: proof.proof,
-      inputs: proof.inputs,
+      inputs: [commitment],
     };
   }
 
@@ -343,6 +336,7 @@ export const publish = async (
   const didScalar = toScalar(input.did);
   const salt = toScalar(input.salt ?? randomHex(32));
   const listingRoot = poseidon5([schemaId, BigInt(commitment), priceUsdc, didScalar, salt]);
+  const listingRootHex = bigintToHex(listingRoot);
 
   const listingWitness = Object.freeze({
     did: `0x${didScalar.toString(16)}`,
@@ -351,21 +345,18 @@ export const publish = async (
     perSchemaCommitment: commitment,
     schemaId: `0x${schemaId.toString(16)}`,
     priceUsdc: `0x${priceUsdc.toString(16)}`,
-    // Fallback prover compatibility
-    commitment_root: commitment,
   });
-
   const listingBindingProof = await prove(client, {
-    circuitId: "listing-binding-v1",
+    circuitId: "listing-binding-v1.1",
     witness: listingWitness,
   });
 
   // Register listing-binding proof
   await submit(client, {
-    docHash: bigintToHex(listingRoot),
-    circuitId: "listing-binding-v1",
+    docHash: listingRootHex,
+    circuitId: "listing-binding-v1.1",
     proof: listingBindingProof.proof,
-    inputs: listingBindingProof.inputs,
+    inputs: [listingRootHex],
   });
 
   // ── Step 3: Compute CID if needed ──
@@ -390,9 +381,9 @@ export const publish = async (
     cid,
     perSchemaProof,
     listingBindingProof: {
-      circuitId: "listing-binding-v1",
+      circuitId: "listing-binding-v1.1",
       proof: listingBindingProof.proof,
-      inputs: listingBindingProof.inputs,
+      inputs: [listingRootHex],
     },
     metadata: input.metadata,
     createdAt: Date.now(),
