@@ -284,6 +284,10 @@ export const publish = async (
   // it for billing network selection. We call the proxy directly rather than
   // going through the SDK's proofs.submit() primitive, which is typed for
   // the bare API Worker endpoint and has no concept of listing environment.
+  //
+  // Errors are normalized to Error instances — the x402 fetcher may throw
+  // non-Error objects (e.g. wallet provider errors like { code: 4001 }) and
+  // the catch block in PublishForm expects Error instances for message checks.
   const proofPath =
     input.environment !== undefined
       ? `/v1/proofs?environment=${encodeURIComponent(input.environment)}`
@@ -295,16 +299,33 @@ export const publish = async (
   if (client.apiKey !== undefined) {
     proofHeaders["x-api-key"] = client.apiKey;
   }
-  const proofRes = await (client.fetcher ?? fetch)(proofUrl, {
-    method: "POST",
-    headers: proofHeaders,
-    body: JSON.stringify({
-      docHash: input.commitment,
-      circuitId: input.circuitId,
-      proof: proof.proof,
-      inputs: [input.commitment],
-    }),
-  });
+  let proofRes: Response;
+  try {
+    proofRes = await (client.fetcher ?? fetch)(proofUrl, {
+      method: "POST",
+      headers: proofHeaders,
+      body: JSON.stringify({
+        docHash: input.commitment,
+        circuitId: input.circuitId,
+        proof: proof.proof,
+        inputs: [input.commitment],
+      }),
+    });
+  } catch (e: unknown) {
+    // Re-throw as Error so downstream catch blocks can inspect message/code.
+    if (e instanceof Error) throw e;
+    const msg = typeof e === "string" ? e
+      : typeof (e as Readonly<{ message?: unknown }>)?.message === "string"
+        ? String((e as Readonly<{ message: string }>).message)
+        : "Unknown error";
+    const code = (e as Readonly<{ code?: unknown }>)?.code;
+    const err = new Error(
+      `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+    );
+    throw typeof code === "number"
+      ? (Object.assign(err, { code }) as Error & { code: number })
+      : err;
+  }
   if (!proofRes.ok) {
     const errBody = await proofRes.json().catch(() => ({}));
     throw new Error(
