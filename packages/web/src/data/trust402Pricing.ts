@@ -32,8 +32,10 @@ export const T402_PRICE = {
   pro: { ja: "¥2,980", en: "$19" },
   /** Proof issuances included in Pro per month. */
   proIncluded: "1,000",
-  /** Institutional — monthly-equivalent headline (annual contract). */
-  instMonthly: { ja: "¥100,000", en: "$667" },
+  /** Institutional — monthly-equivalent headline (annual contract).
+   *  USD is a clean round figure ($700/mo ≈ $8,400/yr), not the raw ¥ FX
+   *  conversion — swap for the official USD list price when it lands. */
+  instMonthly: { ja: "¥100,000", en: "$700" },
 } as const;
 
 export interface PricingTier {
