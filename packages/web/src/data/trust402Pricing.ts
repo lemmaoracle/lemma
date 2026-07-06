@@ -101,9 +101,12 @@ export const T402_PRICING: Trust402Pricing = {
       key: "builder",
       name: "Builder",
       pos: { ja: "使った分だけ — 開発者・エージェント", en: "Pay as you go — developers & agents" },
-      price: { ja: "¥0", en: "$0" },
-      priceUnit: { ja: "/月", en: "/mo" },
-      meter: { ja: `${T402_PRICE.unit} / 証明1件の発行`, en: `${T402_PRICE.unit} / proof issued` },
+      // Builder is metered, not monthly: lead with the per-proof rate (the
+      // number that actually matters) and demote "月額 ¥0" to the meter, so
+      // the free-to-start point doesn't visually drown out the unit price.
+      price: { ja: T402_PRICE.unit, en: T402_PRICE.unit },
+      priceUnit: { ja: "/ 証明1件", en: "/ proof" },
+      meter: { ja: "月額 ¥0・最低額なし", en: "$0/mo · no minimum" },
       features: [
         { text: { ja: "本番。月額なし・最低額なし", en: "Production. No monthly fee, no minimum" } },
         { text: { ja: "証明の発行ごとに x402 決済 — 払わなければ発行されないだけ", en: "x402 settles each proof issued — unpaid simply isn't issued" } },
