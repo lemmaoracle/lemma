@@ -318,6 +318,41 @@ describe("trust402.publish", () => {
       expect(listing1.cid).toBe(listing2.cid);
       expect(listing1.commitment).toBe(listing2.commitment);
     });
+
+    it("passes environment through to the proof submission payload", async () => {
+      const client = setupMocks();
+      const listing = await publish(
+        client,
+        Object.freeze({ ...makeInput(), environment: "production" as const }),
+      );
+
+      const mockFetch = client.fetcher as ReturnType<typeof vi.fn>;
+      const proofCall = mockFetch.mock.calls.find(
+        (call) =>
+          String(call[0]).includes("/v1/proofs") &&
+          (call[1] as RequestInit | undefined)?.method === "POST",
+      );
+      expect(proofCall).toBeDefined();
+      const body = JSON.parse((proofCall![1] as RequestInit).body as string);
+      expect(body.environment).toBe("production");
+      expect(listing.environment).toBe("production");
+    });
+
+    it("omits environment from the submission payload when not set", async () => {
+      const client = setupMocks();
+      const listing = await publish(client, makeInput());
+
+      const mockFetch = client.fetcher as ReturnType<typeof vi.fn>;
+      const proofCall = mockFetch.mock.calls.find(
+        (call) =>
+          String(call[0]).includes("/v1/proofs") &&
+          (call[1] as RequestInit | undefined)?.method === "POST",
+      );
+      expect(proofCall).toBeDefined();
+      const body = JSON.parse((proofCall![1] as RequestInit).body as string);
+      expect(body.environment).toBeUndefined();
+      expect(listing.environment).toBeUndefined();
+    });
   });
 
   // ── Custom circuit (any circuitId) ──────────────────────────────────

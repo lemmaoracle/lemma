@@ -114,6 +114,8 @@ export type Trust402PublishInput = Readonly<{
   cid?: string;
   /** Optional metadata. */
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
+  /** Listing environment — determines billing network (sandbox → base-sepolia, production → base). */
+  environment?: "sandbox" | "production";
 }>;
 
 /** Full listing returned after successful publish. */
@@ -130,6 +132,8 @@ export type Trust402Listing = Readonly<{
     inputs: ReadonlyArray<string>;
   } | null;
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
+  /** Listing environment the proof was billed under. */
+  environment?: "sandbox" | "production";
   createdAt: number;
 }>;
 
@@ -281,6 +285,7 @@ export const publish = async (
     circuitId: input.circuitId,
     proof: proof.proof,
     inputs: [input.commitment],
+    environment: input.environment,
   });
 
   // ── 4. Compute listingRoot (deterministic identifier, no ZK proof) ──
@@ -310,6 +315,7 @@ export const publish = async (
       inputs: [input.commitment],
     },
     metadata: input.metadata,
+    environment: input.environment,
     createdAt: Date.now(),
   });
 };
