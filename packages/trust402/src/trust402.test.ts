@@ -159,7 +159,6 @@ describe("trust402.publish", () => {
       expect(listing).toHaveProperty("listingRoot");
       expect(listing).toHaveProperty("commitment");
       expect(listing).toHaveProperty("perSchemaProof");
-      expect(listing).toHaveProperty("listingBindingProof");
       expect(listing).toHaveProperty("did");
       expect(listing.did).toBe(blogInput.did);
       expect(listing.schemaId).toBe("blog-article-v1.2");
@@ -169,10 +168,6 @@ describe("trust402.publish", () => {
       // perSchemaProof
       expect(listing.perSchemaProof!.circuitId).toBe("blog-article-v1.2");
       expect(listing.perSchemaProof!.inputs.length).toBeGreaterThan(0);
-
-      // listingBindingProof
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
-      expect(listing.listingBindingProof.proof).toBeTruthy();
 
       // Metadata preserved
       expect(listing.metadata).toEqual(blogInput.metadata);
@@ -231,19 +226,13 @@ describe("trust402.publish", () => {
       expect(listing.commitment).toBe(expectedCommitment);
     });
 
-    it("respects custom salt for listing-binding", async () => {
+    it("generates unique listingRoots per call (random salt)", async () => {
       const client = setupNoArtifactMocks();
 
-      const listing1 = await publish(client, {
-        ...blogInput,
-        salt: "0xcustomsalt0000000000000000000000000000000000000000000000000000000001",
-      });
-      const listing2 = await publish(client, {
-        ...blogInput,
-        salt: "0xcustomsalt0000000000000000000000000000000000000000000000000000000002",
-      });
+      const listing1 = await publish(client, blogInput);
+      const listing2 = await publish(client, blogInput);
 
-      // Different salts → different listingRoots (commitment stays same)
+      // Same input → different listingRoots (random salt per call)
       expect(listing1.commitment).toBe(listing2.commitment);
       expect(listing1.listingRoot).not.toBe(listing2.listingRoot);
     });
@@ -273,7 +262,6 @@ describe("trust402.publish", () => {
 
       expect(listing.schemaId).toBe("content-commitment-v1.2");
       expect(listing.perSchemaProof!.circuitId).toBe("content-commitment-v1.2");
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
 
       // CID should be present for content-commitment
       expect(listing.cid).toBeDefined();
@@ -390,46 +378,6 @@ describe("trust402.publish", () => {
     });
   });
 
-  // ── Listing-binding proof cross-check ───────────────────────────────
-
-  describe("listing-binding proof", () => {
-    it("chains per-schema commitment into listing-binding", async () => {
-      const client = setupNoArtifactMocks();
-
-      const blogPayload: BlogArticlePayload = Object.freeze({
-        author: "did:ethr:0xcross",
-        body: "Cross-check test body.",
-        published: 1700000000,
-        words: 4,
-        lang: "en",
-      });
-
-      const input: Trust402PublishInput = Object.freeze({
-        content: Object.freeze({
-          type: "blog-article",
-          payload: blogPayload,
-        } as const),
-        price: Object.freeze({ amount: 100, currency: "USDC" as const }),
-        did: "did:ethr:0xcross",
-        salt: "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
-      });
-
-      const listing = await publish(client, input);
-
-      // Recompute listingRoot manually to verify
-      const schemaId = toScalar("blog-article-v1.2");
-      const priceUsdc = toScalar(100);
-      const didScalar = toScalar("did:ethr:0xcross");
-      const salt = toScalar(
-        "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
-      );
-      const commitment = BigInt(listing.commitment);
-      const expectedRoot = `0x${poseidon5([schemaId, commitment, priceUsdc, didScalar, salt]).toString(16)}`;
-
-      expect(listing.listingRoot).toBe(expectedRoot);
-    });
-  });
-
   // ── Error handling ──────────────────────────────────────────────────
 
   describe("error handling", () => {
@@ -476,7 +424,6 @@ describe("trust402.publish", () => {
         "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
       );
       expect(listing.perSchemaProof).toBeNull();
-      expect(listing.listingBindingProof.circuitId).toBe("listing-binding-v1.1");
       expect(listing.listingRoot).toBeDefined();
     });
 
@@ -542,13 +489,9 @@ describe("trust402.publish", () => {
 
       await publish(client, input);
 
-      // Should only hit /v1/proofs (for listing-binding), never per-schema circuits
-      const circuitCalls = calls.filter((u) => u.includes("/v1/circuits"));
-      // listing-binding-v1 circuit lookup is expected; per-schema (content-commitment-v1) is not
-      const perSchemaCircuitCalls = calls.filter((u) => u.includes("content-commitment-v1"));
-      expect(perSchemaCircuitCalls.length).toBe(0);
+      // Should not hit circuits/proofs endpoints (no proofs issued for external commitment)
       const proofCalls = calls.filter((u) => u.includes("/v1/proofs"));
-      expect(proofCalls.length).toBeGreaterThan(0);
+      expect(proofCalls.length).toBe(0);
     });
 
     it("commitment override works with file type too", async () => {

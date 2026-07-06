@@ -1,9 +1,8 @@
 /**
  * Trust402 SDK — proof orchestration for publishing content listings.
  *
- * One call (`publish`) chains 2 proofs transparently:
- *   1. Per-schema proof   (blog-article-v1 or content-commitment-v1)
- *   2. Listing-binding proof (listing-binding-v1)
+ * One call (`publish`) generates a per-schema proof and returns
+ * a full listing with a listingRoot identifier.
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
@@ -107,15 +106,12 @@ export type PriceInput = Readonly<{ amount: number; currency: "USDC" }>;
 export type Trust402PublishInput = Readonly<{
   content: ContentInput;
   price: PriceInput;
-  did: string; // seller DID, e.g. "did:ethr:0x..."
+  did: string; // seller DID, e.g. "did:pkh:0x..."
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
-  /** Salt for listing-binding proof. Auto-generated if omitted. */
-  salt?: string;
   /**
    * Pre-computed commitment (0x-hex). When set, per-schema proof generation
-   * is skipped — only the listing-binding proof is produced. Use when the
-   * caller has already computed a commitment via an unsupported content type
-   * or external circuit.
+   * is skipped. Use when the caller has already computed a commitment via an
+   * unsupported content type or external circuit.
    */
   commitment?: string;
 }>;
@@ -133,7 +129,6 @@ export type Trust402Listing = Readonly<{
     proof: string;
     inputs: ReadonlyArray<string>;
   } | null;
-  listingBindingProof: { circuitId: string; proof: string; inputs: ReadonlyArray<string> };
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
   createdAt: number;
 }>;
@@ -271,20 +266,16 @@ const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
 /* ------------------------------------------------------------------ */
 
 /**
- * Publish a Trust402 listing — chains 2 proofs transparently.
+ * Publish a Trust402 listing.
  *
- * One call: generates per-schema proof (unless commitment is provided),
- * listing-binding proof, registers proofs with Lemma, and returns a full listing.
- *
- * When `input.commitment` is set, per-schema proof generation is skipped.
- * Only the listing-binding proof is produced. The caller is responsible for
- * the correctness of the commitment.
+ * Generates a per-schema proof for the content, registers it with
+ * Lemma, and returns a full listing with a deterministic listingRoot
+ * identifier (Poseidon5 of schemaId, commitment, price, did, salt).
  */
 export const publish = async (
   client: LemmaClient,
   input: Trust402PublishInput,
 ): Promise<Trust402Listing> => {
-  // Dynamically import from SDK to avoid circular deps at module load
   const [{ prover }, { proofs, documents }] = await Promise.all([
     import("@lemmaoracle/sdk"),
     import("@lemmaoracle/sdk"),
@@ -293,18 +284,16 @@ export const publish = async (
   const { submit } = proofs;
   const { register: registerDocument } = documents;
 
-  // ── Step 0: resolve commitment ──
+  // ── Resolve commitment ──
   const externalCommitment = input.commitment !== undefined;
   const mapping = externalCommitment
     ? { circuitId: "external", needsCID: input.content.type !== "blog-article" }
     : selectCircuit(input.content);
 
-  // ── Step 1: Per-schema proof (skipped when commitment is externally provided) ──
   let commitment: string;
   let perSchemaProof: Trust402Listing["perSchemaProof"];
 
   // Compute CID once — needed for documents.register.
-  // Returns undefined for blog-articles (no CID needed).
   const cid = mapping.needsCID
     ? (() => {
         const bytes =
@@ -332,8 +321,6 @@ export const publish = async (
     commitment = perSchemaWitness.commitment!;
 
     // Register the document before submitting the proof.
-    // proofs.submit requires the docHash to already exist in the
-    // documents table (POST /v1/proofs → SELECT 1 FROM documents).
     await registerDocument(client, {
       docHash: commitment,
       schema: circuitId,
@@ -364,67 +351,25 @@ export const publish = async (
     };
   }
 
-  // ── Step 2: Listing-binding proof ──
+  // ── Listing root (deterministic identifier, no ZK proof) ──
+  // Previously wrapped in a listing-binding ZK proof which was removed
+  // as redundant (crossCheckPassed already binds listing to proof).
+  // The listingRoot formula is preserved for backward compat.
   const schemaId = toScalar(mapping.circuitId!);
   const priceUsdc = toScalar(input.price.amount);
   const didScalar = toScalar(input.did);
-  const salt = toScalar(input.salt ?? randomHex(32));
+  const salt = toScalar(randomHex(32));
   const listingRoot = poseidon5([schemaId, BigInt(commitment), priceUsdc, didScalar, salt]);
   const listingRootHex = bigintToHex(listingRoot);
 
-  const listingWitness = Object.freeze({
-    did: `0x${didScalar.toString(16)}`,
-    salt: `0x${salt.toString(16)}`,
-    listingRoot: `0x${listingRoot.toString(16)}`,
-    perSchemaCommitment: commitment,
-    schemaId: `0x${schemaId.toString(16)}`,
-    priceUsdc: `0x${priceUsdc.toString(16)}`,
-  });
-  const listingBindingProof = await prove(client, {
-    circuitId: "listing-binding-v1.1",
-    witness: listingWitness,
-  });
-
-  // Register listing-binding document before submitting the proof.
-  await registerDocument(client, {
-    docHash: listingRootHex,
-    schema: "listing-binding-v1.1",
-    cid: "",
-    issuerId: input.did,
-    subjectId: input.did,
-    commitments: {
-      scheme: "poseidon" as const,
-      root: listingRootHex,
-      leaves: [listingRootHex],
-      randomness: "0x0",
-    },
-    revocation: { root: "" },
-  });
-
-  // Register listing-binding proof
-  await submit(client, {
-    docHash: listingRootHex,
-    circuitId: "listing-binding-v1.1",
-    proof: listingBindingProof.proof,
-    inputs: [listingRootHex],
-  });
-
-  // ── Step 3: Return listing (CID already computed in Step 1) ──
-
-  // ── Step 4: Return listing ──
   return Object.freeze({
-    listingRoot: bigintToHex(listingRoot),
+    listingRoot: listingRootHex,
     schemaId: mapping.circuitId,
     commitment,
     did: input.did,
     price: input.price,
     cid,
     perSchemaProof,
-    listingBindingProof: {
-      circuitId: "listing-binding-v1.1",
-      proof: listingBindingProof.proof,
-      inputs: [listingRootHex],
-    },
     metadata: input.metadata,
     createdAt: Date.now(),
   });
@@ -456,7 +401,6 @@ export const detectContentType = (file: {
   readonly type: string;
   readonly name: string;
 }): string => {
-  // Try exact MIME match first
   const exactMatch = Object.entries(MIME_TO_CONTENT_TYPE).find(([key]) =>
     file.type === key,
   );
@@ -464,7 +408,6 @@ export const detectContentType = (file: {
     return exactMatch[1];
   }
 
-  // Try prefix match (e.g. "image/png" → "image")
   const prefixMatch = Object.entries(MIME_TO_CONTENT_TYPE).find(([key]) =>
     key.endsWith("/") && file.type.startsWith(key),
   );
@@ -472,7 +415,6 @@ export const detectContentType = (file: {
     return prefixMatch[1];
   }
 
-  // Fall back to extension detection
   const ext = file.name.split(".").pop()?.toLowerCase();
   if (ext === "csv") return "csv";
   if (ext === "json" || ext === "jsonl") return "code";
