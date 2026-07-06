@@ -319,7 +319,7 @@ describe("trust402.publish", () => {
       expect(listing1.commitment).toBe(listing2.commitment);
     });
 
-    it("passes environment through to the proof submission payload", async () => {
+    it("passes environment as a query parameter on the proof submission URL", async () => {
       const client = setupMocks();
       const listing = await publish(
         client,
@@ -333,12 +333,13 @@ describe("trust402.publish", () => {
           (call[1] as RequestInit | undefined)?.method === "POST",
       );
       expect(proofCall).toBeDefined();
+      expect(String(proofCall![0])).toContain("/v1/proofs?environment=production");
       const body = JSON.parse((proofCall![1] as RequestInit).body as string);
-      expect(body.environment).toBe("production");
+      expect(body.environment).toBeUndefined();
       expect(listing.environment).toBe("production");
     });
 
-    it("omits environment from the submission payload when not set", async () => {
+    it("omits the environment query parameter when not set", async () => {
       const client = setupMocks();
       const listing = await publish(client, makeInput());
 
@@ -349,6 +350,7 @@ describe("trust402.publish", () => {
           (call[1] as RequestInit | undefined)?.method === "POST",
       );
       expect(proofCall).toBeDefined();
+      expect(String(proofCall![0])).not.toContain("environment=");
       const body = JSON.parse((proofCall![1] as RequestInit).body as string);
       expect(body.environment).toBeUndefined();
       expect(listing.environment).toBeUndefined();

@@ -8,7 +8,7 @@
  * Witness builders for known circuits (blog-article-v1.2,
  * content-commitment-v1.2) are exported as convenience utilities.
  */
-import type { LemmaClient } from "@lemmaoracle/spec";
+import type { LemmaClient, SubmitProofResponse } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha256";
@@ -249,12 +249,11 @@ export const publish = async (
   client: LemmaClient,
   input: Trust402PublishInput,
 ): Promise<Trust402Listing> => {
-  const [{ prover }, { proofs, documents }] = await Promise.all([
+  const [{ prover }, { post, documents }] = await Promise.all([
     import("@lemmaoracle/sdk"),
     import("@lemmaoracle/sdk"),
   ]);
   const { prove } = prover;
-  const { submit } = proofs;
   const { register: registerDocument } = documents;
 
   // ── 1. Generate per-schema proof ──
@@ -280,12 +279,17 @@ export const publish = async (
   });
 
   // ── 3. Submit proof ──
-  await submit(client, {
+  // Environment rides as a query param so the proof body stays a clean
+  // SubmitProofRequest; the Trust402 proxy consumes it for billing.
+  const proofPath =
+    input.environment !== undefined
+      ? `/v1/proofs?environment=${encodeURIComponent(input.environment)}`
+      : "/v1/proofs";
+  await post<SubmitProofResponse>(client)(proofPath)({
     docHash: input.commitment,
     circuitId: input.circuitId,
     proof: proof.proof,
     inputs: [input.commitment],
-    environment: input.environment,
   });
 
   // ── 4. Compute listingRoot (deterministic identifier, no ZK proof) ──

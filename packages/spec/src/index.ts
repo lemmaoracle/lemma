@@ -218,8 +218,6 @@ export type SubmitProofRequest = Readonly<{
   chainId?: number; // Target chain for on-chain verification (optional)
   disclosure?: SelectiveDisclosure;
   onchain?: boolean;
-  /** Listing environment — determines billing network (sandbox → base-sepolia, production → base). */
-  environment?: "sandbox" | "production";
 }>;
 
 export type SubmitProofResponse = Readonly<{
