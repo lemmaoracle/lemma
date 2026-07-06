@@ -2,7 +2,7 @@
 import Navigation from "../../../components/Navigation.astro";
 import Footer from "../../../components/Footer.astro";
 import { getTranslations } from "../../../i18n/translations";
-import { T402_PRICING } from "../../../data/trust402Pricing";
+import { T402_DEV_PLANS } from "../../../data/trust402Pricing";
 
 const locale = "ja" as const;
 const base = "/ja" as const;
@@ -53,7 +53,7 @@ const t = getTranslations(locale);
       "url": "https://lemma.frame00.com/ja/trust402/",
       "description": "x402 に信頼を添えるレイヤー。AI エージェントの支払いに、呼び出し単位の委譲権限を「誰が・どの権限で・いくらまで」の ZK 証明として付与し、範囲外の支払いは実行させない。",
       "publisher": { "@id": "https://lemma.frame00.com/#organization" },
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY", "description": "Explorer プラン — 無料の testnet サンドボックス" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY", "description": "Builder プラン — 月額なしの従量課金(PAYG)。検証は常に無料。開発者プランは近日公開。" },
     },
     {
       "@type": "BreadcrumbList",
@@ -622,6 +622,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
 .t402b .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
 .t402b .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.t402b .tier .tname .ttag { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); }
 .t402b .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
 .t402b .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
 .t402b .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
@@ -835,47 +836,29 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* pricing — 4 プランを共有データ (src/data/trust402Pricing.ts) から描画。
-        価格・枠・単価はあちらの定数で差し替え可能。表示のみ — 決済フロー
-        (x402 middleware / spend cap / 通知) は別 Issue。プレローンチのため
-        CTA ボタンは置かず「近日公開」表記（Institutional のみ相談リンク）。 */}
+    {/* pricing — Pay の権限証明価格は Lemma API 開発者プランに吸収。ここは
+        名称＋一言のプレースホルダ(全て「近日公開」)＋ waitlist のみ。具体単価・
+        来歴 0.005・出品(Sell)系コピーは出さない。据置くのは「検証は、常に無料」
+        の一行だけ。spec: Trust402_ページ改修スペック_20260706.md §1 */}
     <section class="section-gray" id="pricing">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>{T402_PRICING.h2.ja}</h2><p>{T402_PRICING.sub.ja}</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">{T402_DEV_PLANS.eyebrow.ja}</span><h2>{T402_DEV_PLANS.h2.ja}</h2><p>{T402_DEV_PLANS.sub.ja}</p></div>
         <div class="pchips reveal">
-          {T402_PRICING.chips.map((c) => (
-            <span class:list={["pchip", { key: c.key }]}>{c.text.ja}</span>
-          ))}
+          <span class="pchip key">{T402_DEV_PLANS.freeNote.ja}</span>
         </div>
         <div class="tiers">
-          {T402_PRICING.tiers.map((t) => (
-            <div class:list={["tier", "reveal", { featured: t.featured, inst: t.dark }]}>
-              <div class="tname">{t.name}</div>
-              <div class="tpos">{t.pos.ja}</div>
-              <div class="tprice">{t.price.ja}{t.priceUnit && <small> {t.priceUnit.ja}</small>}</div>
-              <div class="tmeter">{t.meter.ja}</div>
-              <ul class="tlist">
-                {t.features.map((f) => (
-                  <li class:list={[{ soon: f.soon }]}>{f.text.ja}</li>
-                ))}
-              </ul>
-              {t.state && <div class="tstate">{t.state.ja}</div>}
-              {t.contact && <a class="tcontact" href={t.contact.hrefJa}>{t.contact.label.ja}</a>}
-              <div class="tpay">{t.payment.ja}</div>
+          {T402_DEV_PLANS.cards.map((card) => (
+            <div class="tier reveal">
+              <div class="tname">{card.name}{card.tag && <small class="ttag"> · {card.tag.ja}</small>}</div>
+              <div class="tpos">{card.blurb.ja}</div>
+              <div class="tstate">{T402_DEV_PLANS.state.ja}</div>
             </div>
           ))}
         </div>
-        <p class="bill-h reveal">{T402_PRICING.billingH.ja}</p>
-        <div class="bill">
-          {T402_PRICING.billing.map((b) => (
-            <div class="bcell reveal">
-              <div class="bnum">{b.num}</div>
-              <div class="btitle">{b.title.ja}</div>
-              <div class="btext">{b.text.ja}</div>
-            </div>
-          ))}
+        <p class="pnote reveal">{T402_DEV_PLANS.note.ja}</p>
+        <div class="reveal" style="margin-top:26px;">
+          <a class="btn btn-primary" href={T402_DEV_PLANS.ctaHref} target="_blank" rel="noopener">{T402_DEV_PLANS.cta.ja}</a>
         </div>
-        <p class="pnote reveal">{T402_PRICING.footnote.ja}</p>
       </div>
     </section>
 

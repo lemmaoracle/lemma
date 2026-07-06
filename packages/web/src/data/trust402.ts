@@ -475,18 +475,18 @@ export const T402: Trust402Content = {
 
     payBand: {
       text: {
-        en: "Pay ↔ Sell — Trust402 puts proof on both sides of the payment. One plan and one monthly allowance cover both.",
-        ja: "Pay ↔ Sell — Trust402 は支払いの両側に証明を添えます。1 つのプラン、1 つの月間枠が両方をカバー。",
+        en: "Pay ↔ Sell — Trust402 puts proof on both sides of the payment.",
+        ja: "Pay ↔ Sell — Trust402 は支払いの両側に証明を添えます。",
       },
       link: { en: "See Trust402 · Pay", ja: "Trust402 · Pay を見る" },
     },
 
     pricing: {
-      eyebrow: { en: "pricing · shared with pay", ja: "料金 · pay と共通" },
+      eyebrow: { en: "pricing", ja: "料金" },
       h2: { en: "Pay only when you really sell.", ja: "本当に売るときだけ、支払う。" },
       sub: {
-        en: "The same four plans cover both Pay and Sell. Checking proofs is always free — you're billed only for issuing them, and sales carry no commission.",
-        ja: "同じ 4 プランが Pay と Sell の両方をカバー。証明の検証は常に無料 — 課金されるのは証明の発行だけで、販売手数料はゼロ。",
+        en: "Checking proofs is always free — you're billed only for issuing them, and sales carry no commission.",
+        ja: "証明の検証は常に無料 — 課金されるのは証明の発行だけで、販売手数料はゼロ。",
       },
       notes: [
         {

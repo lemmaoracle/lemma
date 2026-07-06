@@ -118,18 +118,19 @@ export const T402_PRICING: Trust402Pricing = {
       pos: { ja: "継続して出品 — 研究者・クリエイター", en: "Publish regularly — researchers & creators" },
       price: { ja: T402_PRICE.pro.ja, en: T402_PRICE.pro.en },
       priceUnit: { ja: "/月", en: "/mo" },
-      // Just the included allowance; the overage rate lives in the footnote
-      // (the * anchors it) so the meter stays a single clean line.
+      // Flat, fair-use — no per-count promise on the card (counting would
+      // need usage tracking we don't ship in Phase 1). The metered overage
+      // for high-volume API issuance is spelled out in the footnote.
       meter: {
-        ja: `証明発行 月 ${T402_PRICE.proIncluded} 件まで込み*`,
-        en: `up to ${T402_PRICE.proIncluded} proofs a month, included*`,
+        ja: "定額で、出品し放題（フェアユース）",
+        en: "Flat rate — publish freely (fair use)",
       },
       features: [
-        { text: { ja: "月額内で、出品し放題", en: "Publish freely within your plan" } },
+        { text: { ja: "定額で、出品し放題（フェアユース枠内）", en: "Publish freely, within fair use" } },
         { text: { ja: "真贋証明つきの来歴を、チェーンに永続", en: "Provenance with proof of authenticity, persisted on-chain" } },
-        { text: { ja: "フォーム＋API", en: "Form + API" } },
+        { text: { ja: "安定運用・優先サポート（SLA）", en: "Reliable operation & priority support (SLA)" } },
       ],
-      payment: { ja: "x402 (USDC) — カード対応 準備中", en: "x402 (USDC) — card support in preparation" },
+      payment: { ja: "x402 (USDC)", en: "x402 (USDC)" },
       state: { ja: "近日公開", en: "Coming soon" },
     },
     {
@@ -185,7 +186,67 @@ export const T402_PRICING: Trust402Pricing = {
     },
   ],
   footnote: {
-    ja: `* 「発行」は証明 1 件の発行を指します(API コール数ではありません)。同梱の証明発行 ${T402_PRICE.proIncluded} 件は、フォームでの通常出品(月数百件)を余裕で覆う設計です。超過は API 等での大量発行時のみ、証明 1 件につき ${T402_PRICE.unit}(発行ごとに x402 決済)。spend cap を設定すれば上限で自動停止します。価格は税別。`,
-    en: `* An "issuance" is the issuance of one proof (not an API call). The included ${T402_PRICE.proIncluded} proof issuances comfortably cover normal form-based publishing (a few hundred listings a month); overage applies only to high-volume API issuance, at ${T402_PRICE.unit} per proof (settled per issuance via x402). Set a spend cap and it stops automatically at your ceiling. Prices exclude tax.`,
+    ja: `通常の出品はフェアユース枠内で、追加費用はありません。従量になるのは API 等での大量の自動発行のみ(証明 1 件につき ${T402_PRICE.unit}・発行ごとに x402 決済)。spend cap を設定すれば上限で自動停止します。価格は税別。`,
+    en: `Normal publishing stays within fair use at no extra cost. Only high-volume automated issuance (e.g. via API) is metered — ${T402_PRICE.unit} per proof, settled per issuance via x402. Set a spend cap and it stops automatically at your ceiling. Prices exclude tax.`,
   },
 };
+
+/**
+ * Pay-side developer plans (placeholder). Pay's authority-proof pricing is
+ * absorbed into the Lemma API developer ladder, so the Pay hub shows plan
+ * names + one-liners only — no prices, no Sell/creator framing. All cards
+ * are pre-launch ("近日公開"); the sole retained pricing message is that
+ * verification is always free. See Trust402_ページ改修スペック_20260706 §1.
+ */
+export interface DevPlanCard {
+  readonly name: string;
+  /** Optional qualifier shown next to the name, e.g. Scale (dashboard). */
+  readonly tag?: Localized;
+  readonly blurb: Localized;
+}
+
+export const T402_DEV_PLANS = {
+  eyebrow: { ja: "pricing", en: "pricing" } as Localized,
+  h2: { ja: "開発者向けプラン（近日公開）", en: "Developer plans (coming soon)" } as Localized,
+  sub: {
+    ja: "Pay（x402 権限証明）は Lemma API の開発者プランでご利用いただけます。",
+    en: "Pay (x402 authority proofs) is available through the Lemma API developer plans.",
+  } as Localized,
+  /** The one pricing message carried over from the old tier table. */
+  freeNote: { ja: "検証は、常に無料。", en: "Verification is always free." } as Localized,
+  cards: [
+    {
+      name: "Builder",
+      blurb: {
+        ja: "使った分だけ（PAYG）。権限証明を発行ごとに x402 決済・月額なし。",
+        en: "Pay as you go (PAYG). Authority proofs settle per issuance via x402 — no monthly fee.",
+      },
+    },
+    {
+      name: "Team",
+      blurb: {
+        ja: "定額＋発行 quota＋API 割引。開発者・チーム向け。",
+        en: "Flat rate + issuance quota + API discounts. For developers and teams.",
+      },
+    },
+    {
+      name: "Scale",
+      tag: { ja: "ダッシュボード", en: "dashboard" },
+      blurb: {
+        ja: "委譲レジストリ・失効管理・監査ダッシュボード・SLA を含む managed プラン。",
+        en: "A managed plan with delegated registry, revocation management, an audit dashboard, and SLA.",
+      },
+    },
+    {
+      name: "Enterprise",
+      blurb: {
+        ja: "カスタム回路・オンプレ・規制対応（→ Lemma Critical / Compliance）。",
+        en: "Custom circuits, on-prem, and regulatory compliance (→ Lemma Critical / Compliance).",
+      },
+    },
+  ] as ReadonlyArray<DevPlanCard>,
+  note: { ja: "価格は近日公開。", en: "Pricing coming soon." } as Localized,
+  state: { ja: "近日公開", en: "Coming soon" } as Localized,
+  cta: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" } as Localized,
+  ctaHref: "https://tally.so/r/kd0bZR",
+} as const;
