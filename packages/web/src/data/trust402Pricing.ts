@@ -49,6 +49,10 @@ export interface PricingTier {
   readonly payment: Localized;
   /** "Coming soon" state line (plans are pre-launch; no dead CTA buttons). */
   readonly state?: Localized;
+  /** Prominent "coming soon" badge at the card top — for a plan that ships
+   *  later than the rest (Pro is Phase 2, not in the Phase-1 launch). When
+   *  set, it replaces (suppresses) the quiet bottom state line. */
+  readonly badge?: Localized;
   /** Consultative contact link instead of a state line (Institutional). */
   readonly contact?: { readonly label: Localized; readonly hrefJa: string; readonly hrefEn: string };
   readonly featured?: boolean;
@@ -108,8 +112,8 @@ export const T402_PRICING: Trust402Pricing = {
       priceUnit: { ja: "/ 証明1件", en: "/ proof" },
       meter: { ja: "月額 ¥0・最低額なし", en: "$0/mo · no minimum" },
       features: [
-        { text: { ja: "本番。月額なし・最低額なし", en: "Production. No monthly fee, no minimum" } },
-        { text: { ja: "証明の発行ごとに x402 決済 — 払わなければ発行されないだけ", en: "x402 settles each proof issued — unpaid simply isn't issued" } },
+        { text: { ja: "本番の出品に対応（testnet の練習は Explorer）", en: "Ready for real, production listings (testnet practice is Explorer)" } },
+        { text: { ja: "出品ごとに来歴証明を発行し、その都度 x402 で決済（出品しなければ費用なし）", en: "Each listing issues its provenance proof, settled via x402 — no listing, no cost" } },
       ],
       payment: { ja: "x402 (USDC)", en: "x402 (USDC)" },
       state: { ja: "近日公開", en: "Coming soon" },
@@ -118,6 +122,8 @@ export const T402_PRICING: Trust402Pricing = {
       key: "pro",
       name: "Pro",
       featured: true,
+      // Pro is Phase 2 (not in the Phase-1 launch) — flag it loudly.
+      badge: { ja: "近日公開", en: "Coming soon" },
       pos: { ja: "継続して出品 — 研究者・クリエイター", en: "Publish regularly — researchers & creators" },
       price: { ja: T402_PRICE.pro.ja, en: T402_PRICE.pro.en },
       priceUnit: { ja: "/月", en: "/mo" },
