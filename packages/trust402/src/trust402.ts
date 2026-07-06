@@ -1,8 +1,12 @@
 /**
  * Trust402 SDK — proof orchestration for publishing content listings.
  *
- * One call (`publish`) generates a per-schema proof and returns
- * a full listing with a listingRoot identifier.
+ * `publish()` is circuit-agnostic: the caller provides `circuitId`,
+ * `witness`, and `commitment`, and publish() handles proof generation,
+ * document registration, proof submission, and listingRoot computation.
+ *
+ * Witness builders for known circuits (blog-article-v1.2,
+ * content-commitment-v1.2) are exported as convenience utilities.
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
@@ -11,8 +15,7 @@ import { sha256 } from "@noble/hashes/sha256";
 import { randomBytes } from "@noble/hashes/utils";
 
 /* ------------------------------------------------------------------ */
-/*  Inlined normalizer helpers (from @lemmaoracle/content)             */
-/*  Inlined to avoid cross-package rootDir issues and circular deps.   */
+/*  Normalizer helpers (for content-commitment witness builder)        */
 /* ------------------------------------------------------------------ */
 
 /** Chunk size in bytes: 31 bytes = 248 bits < 254-bit field prime. */
@@ -68,7 +71,7 @@ const reduceElements = (
 };
 
 /* ------------------------------------------------------------------ */
-/*  Inlined crypto helpers (from @lemmaoracle/sdk platform)            */
+/*  Hex / hash helpers                                                 */
 /* ------------------------------------------------------------------ */
 
 const bytesToHex = (bytes: Uint8Array): string =>
@@ -80,40 +83,37 @@ const sha256Hex = (data: Uint8Array): string => bytesToHex(sha256(data));
 
 const randomHex = (length = 32): string => bytesToHex(randomBytes(length));
 
+const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
+
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-/** Payload for blog-article content type. */
-export type BlogArticlePayload = Readonly<{
-  author: string; // DID string
-  body: string; // article body text
-  published: number; // unix timestamp seconds
-  words: number; // word count
-  lang: string; // ISO 639-1 (en, ja, ...)
-}>;
-
-/** Supported content input variants. */
-export type ContentInput =
-  | Readonly<{ type: "file"; name: string; bytes: Uint8Array; mimeType: string }>
-  | Readonly<{ type: "blog-article"; payload: BlogArticlePayload }>
-  | Readonly<{ type: "generic"; mimeType: string; payload: Uint8Array }>;
-
 /** Price in USDC smallest unit (6 decimals). */
 export type PriceInput = Readonly<{ amount: number; currency: "USDC" }>;
 
-/** Publish input — everything the seller provides. */
+/**
+ * Publish input — circuit-agnostic.
+ *
+ * The caller is responsible for building the witness according to
+ * the circuit's expected inputs. Witness builders for known circuits
+ * are exported as convenience utilities (see below).
+ */
 export type Trust402PublishInput = Readonly<{
-  content: ContentInput;
+  /** Circuit ID registered with the Lemma API. */
+  circuitId: string;
+  /** Witness fields passed to prover.prove(). */
+  witness: Readonly<Record<string, string>>;
+  /** Commitment — the public output that ties the witness to content. */
+  commitment: string;
+  /** Price in USDC smallest unit (6 decimals). */
   price: PriceInput;
-  did: string; // seller DID, e.g. "did:pkh:0x..."
+  /** Seller DID. */
+  did: string;
+  /** Optional content CID (e.g. "sha256:..."). */
+  cid?: string;
+  /** Optional metadata. */
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
-  /**
-   * Pre-computed commitment (0x-hex). When set, per-schema proof generation
-   * is skipped. Use when the caller has already computed a commitment via an
-   * unsupported content type or external circuit.
-   */
-  commitment?: string;
 }>;
 
 /** Full listing returned after successful publish. */
@@ -121,7 +121,7 @@ export type Trust402Listing = Readonly<{
   listingRoot: string;
   schemaId: string;
   commitment: string;
-  did: string; // seller DID echoed back (did:pkh, did:ethr, etc.)
+  did: string;
   price: PriceInput;
   cid?: string;
   perSchemaProof: {
@@ -134,72 +134,44 @@ export type Trust402Listing = Readonly<{
 }>;
 
 /* ------------------------------------------------------------------ */
-/*  Content-Type Registry (internal constant)                          */
+/*  Witness builders for known circuits                                */
 /* ------------------------------------------------------------------ */
 
-type ContentMapping = Readonly<{
-  circuitId: string;
-  needsCID: boolean;
+/** Payload for blog-article content type. */
+export type BlogArticlePayload = Readonly<{
+  author: string; // DID string
+  body: string; // article body text
+  published: number; // unix timestamp seconds
+  words: number; // word count
+  lang: string; // ISO 639-1 (en, ja, ...)
 }>;
 
-const CONTENT_REGISTRY: Record<string, ContentMapping> = {
-  "blog-article": { circuitId: "blog-article-v1.2", needsCID: false },
-  default: { circuitId: "content-commitment-v1.2", needsCID: true },
-} as const;
+/** Result of a witness builder — the witness record plus the commitment. */
+export type WitnessResult = Readonly<{
+  witness: Readonly<Record<string, string>>;
+  commitment: string;
+}>;
 
-/* ------------------------------------------------------------------ */
-/*  Language code map (ISO 639-1 → numeric code)                       */
-/* ------------------------------------------------------------------ */
-
+/** ISO 639-1 → numeric code map. */
 const LANG_MAP: Readonly<Record<string, bigint>> = Object.freeze({
-  en: 1n,
-  ja: 2n,
-  zh: 3n,
-  ko: 4n,
-  es: 5n,
-  fr: 6n,
-  de: 7n,
-  pt: 8n,
-  ru: 9n,
-  ar: 10n,
-  hi: 11n,
-  it: 12n,
-  nl: 13n,
-  tr: 14n,
-  vi: 15n,
-  th: 16n,
-  id: 17n,
-  pl: 18n,
-  uk: 19n,
-  sv: 20n,
+  en: 1n, ja: 2n, zh: 3n, ko: 4n, es: 5n, fr: 6n,
+  de: 7n, pt: 8n, ru: 9n, ar: 10n, hi: 11n, it: 12n,
+  nl: 13n, tr: 14n, vi: 15n, th: 16n, id: 17n, pl: 18n,
+  uk: 19n, sv: 20n,
 });
 
 const langToCode = (lang: string): bigint => LANG_MAP[lang.toLowerCase()] ?? 0n;
 
-/* ------------------------------------------------------------------ */
-/*  Step 0: selectCircuit                                              */
-/* ------------------------------------------------------------------ */
-
-/** Select the per-schema circuit and CID requirement for a content input. */
-const selectCircuit = (content: ContentInput): ContentMapping =>
-  content.type === "blog-article"
-    ? CONTENT_REGISTRY["blog-article"]!
-    : CONTENT_REGISTRY.default!;
-
-/* ------------------------------------------------------------------ */
-/*  Witness Builders (internal, not exported)                          */
-/* ------------------------------------------------------------------ */
-
 /**
- * Build witness for blog-article-v1 circuit.
+ * Build witness for blog-article-v1.2 circuit.
  *
  * Witness fields:
  *   authorHash, published, integrityHash, words, langCode, commitment
  *   where commitment = poseidon5([authorHash, published, integrityHash, words, langCode])
  */
-const buildBlogArticleWitness = (
+export const buildBlogArticleWitness = (
   payload: BlogArticlePayload,
-): Readonly<Record<string, string>> => {
+): WitnessResult => {
   const authorHash = toScalar(payload.author);
   const published = BigInt(payload.published);
   const integrityHash = toScalar(payload.body);
@@ -207,59 +179,52 @@ const buildBlogArticleWitness = (
   const langCode = langToCode(payload.lang);
   const commitment = poseidon5([authorHash, published, integrityHash, words, langCode]);
 
+  const commitmentHex = bigintToHex(commitment);
   return Object.freeze({
-    authorHash: `0x${authorHash.toString(16)}`,
-    published: published.toString(),
-    integrityHash: `0x${integrityHash.toString(16)}`,
-    words: words.toString(),
-    langCode: langCode.toString(),
-    commitment: `0x${commitment.toString(16)}`,
+    witness: Object.freeze({
+      authorHash: bigintToHex(authorHash),
+      published: published.toString(),
+      integrityHash: bigintToHex(integrityHash),
+      words: words.toString(),
+      langCode: langCode.toString(),
+      commitment: commitmentHex,
+    }),
+    commitment: commitmentHex,
   });
 };
 
 /**
- * Build witness for content-commitment-v1 circuit.
+ * Build witness for content-commitment-v1.2 circuit.
  *
- * Uses the canonical normalizer: bytes → fieldElements → poseidon2 reduction → poseidon1.
+ * Uses the canonical normalizer: bytes → fieldElements → poseidon2
+ * reduction → poseidon1.
  */
-const buildContentCommitmentWitness = (
+export const buildContentCommitmentWitness = (
   bytes: Uint8Array,
-): Readonly<Record<string, string>> => {
+): WitnessResult => {
   const elements = bytesToFieldElements(bytes);
   const fileHash = reduceElements(elements, (inputs: [bigint, bigint]) =>
     poseidon2(inputs),
   );
   const commitment = poseidon1([fileHash]);
 
+  const commitmentHex = bigintToHex(commitment);
   return Object.freeze({
-    fileHash: `0x${fileHash.toString(16)}`,
-    commitment: `0x${commitment.toString(16)}`,
+    witness: Object.freeze({
+      fileHash: bigintToHex(fileHash),
+      commitment: commitmentHex,
+    }),
+    commitment: commitmentHex,
   });
 };
 
-/** Build the per-schema witness based on content type. */
-const buildPerSchemaWitness = (
-  content: ContentInput,
-): { circuitId: string; witness: Readonly<Record<string, string>> } =>
-  content.type === "blog-article"
-    ? {
-        circuitId: "blog-article-v1.2",
-        witness: buildBlogArticleWitness(content.payload),
-      }
-    : (() => {
-        const bytes =
-          content.type === "file" ? content.bytes : content.payload;
-        return {
-          circuitId: "content-commitment-v1.2",
-          witness: buildContentCommitmentWitness(bytes),
-        };
-      })();
-
 /* ------------------------------------------------------------------ */
-/*  Hex helpers                                                        */
+/*  CID helper                                                         */
 /* ------------------------------------------------------------------ */
 
-const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
+/** Compute a sha256-based CID from raw bytes. */
+export const computeCid = (bytes: Uint8Array): string =>
+  `sha256:${sha256Hex(bytes)}`;
 
 /* ------------------------------------------------------------------ */
 /*  Main publish function                                              */
@@ -268,9 +233,13 @@ const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
 /**
  * Publish a Trust402 listing.
  *
- * Generates a per-schema proof for the content, registers it with
- * Lemma, and returns a full listing with a deterministic listingRoot
- * identifier (Poseidon5 of schemaId, commitment, price, did, salt).
+ * Generates a per-schema proof via prover.prove(), registers the
+ * document, submits the proof, and returns a full listing with a
+ * deterministic listingRoot identifier (Poseidon5 of schemaId,
+ * commitment, price, did, salt).
+ *
+ * Circuit-agnostic: the caller chooses the circuitId and builds the
+ * witness. Use the exported witness builders for known circuits.
  */
 export const publish = async (
   client: LemmaClient,
@@ -284,102 +253,72 @@ export const publish = async (
   const { submit } = proofs;
   const { register: registerDocument } = documents;
 
-  // ── Resolve commitment ──
-  const externalCommitment = input.commitment !== undefined;
-  const mapping = externalCommitment
-    ? { circuitId: "external", needsCID: input.content.type !== "blog-article" }
-    : selectCircuit(input.content);
+  // ── 1. Generate per-schema proof ──
+  const proof = await prove(client, {
+    circuitId: input.circuitId,
+    witness: input.witness,
+  });
 
-  let commitment: string;
-  let perSchemaProof: Trust402Listing["perSchemaProof"];
+  // ── 2. Register document ──
+  await registerDocument(client, {
+    docHash: input.commitment,
+    schema: input.circuitId,
+    cid: input.cid ?? "",
+    issuerId: input.did,
+    subjectId: input.did,
+    commitments: {
+      scheme: "poseidon" as const,
+      root: input.commitment,
+      leaves: [input.commitment],
+      randomness: "0x0",
+    },
+    revocation: { root: "" },
+  });
 
-  // Compute CID once — needed for documents.register.
-  const cid = mapping.needsCID
-    ? (() => {
-        const bytes =
-          input.content.type === "file"
-            ? input.content.bytes
-            : input.content.type === "generic"
-              ? input.content.payload
-              : undefined;
-        return bytes !== undefined ? `sha256:${sha256Hex(bytes)}` : undefined;
-      })()
-    : undefined;
+  // ── 3. Submit proof ──
+  await submit(client, {
+    docHash: input.commitment,
+    circuitId: input.circuitId,
+    proof: proof.proof,
+    inputs: [input.commitment],
+  });
 
-  if (externalCommitment) {
-    commitment = input.commitment!;
-    perSchemaProof = null;
-  } else {
-    const { circuitId, witness: perSchemaWitness } =
-      buildPerSchemaWitness(input.content);
-
-    const proof = await prove(client, {
-      circuitId,
-      witness: perSchemaWitness,
-    });
-
-    commitment = perSchemaWitness.commitment!;
-
-    // Register the document before submitting the proof.
-    await registerDocument(client, {
-      docHash: commitment,
-      schema: circuitId,
-      cid: cid ?? "",
-      issuerId: input.did,
-      subjectId: input.did,
-      commitments: {
-        scheme: "poseidon" as const,
-        root: commitment,
-        leaves: [commitment],
-        randomness: "0x0",
-      },
-      revocation: { root: "" },
-    });
-
-    // Register per-schema proof
-    await submit(client, {
-      docHash: commitment,
-      circuitId,
-      proof: proof.proof,
-      inputs: [commitment],
-    });
-
-    perSchemaProof = {
-      circuitId,
-      proof: proof.proof,
-      inputs: [commitment],
-    };
-  }
-
-  // ── Listing root (deterministic identifier, no ZK proof) ──
-  // Previously wrapped in a listing-binding ZK proof which was removed
-  // as redundant (crossCheckPassed already binds listing to proof).
-  // The listingRoot formula is preserved for backward compat.
-  const schemaId = toScalar(mapping.circuitId!);
+  // ── 4. Compute listingRoot (deterministic identifier, no ZK proof) ──
+  const schemaIdScalar = toScalar(input.circuitId);
   const priceUsdc = toScalar(input.price.amount);
   const didScalar = toScalar(input.did);
   const salt = toScalar(randomHex(32));
-  const listingRoot = poseidon5([schemaId, BigInt(commitment), priceUsdc, didScalar, salt]);
+  const listingRoot = poseidon5([
+    schemaIdScalar,
+    BigInt(input.commitment),
+    priceUsdc,
+    didScalar,
+    salt,
+  ]);
   const listingRootHex = bigintToHex(listingRoot);
 
   return Object.freeze({
     listingRoot: listingRootHex,
-    schemaId: mapping.circuitId,
-    commitment,
+    schemaId: input.circuitId,
+    commitment: input.commitment,
     did: input.did,
     price: input.price,
-    cid,
-    perSchemaProof,
+    cid: input.cid,
+    perSchemaProof: {
+      circuitId: input.circuitId,
+      proof: proof.proof,
+      inputs: [input.commitment],
+    },
     metadata: input.metadata,
     createdAt: Date.now(),
   });
 };
 
 /* ------------------------------------------------------------------ */
-/*  Content type detection utility                                     */
+/*  Content type detection utility (UI helper)                         */
 /* ------------------------------------------------------------------ */
 
-/** MIME type → content type detection (for File-based input). */
+/** MIME type → content type detection (for browser File objects). */
 const MIME_TO_CONTENT_TYPE: Readonly<Record<string, string>> = Object.freeze({
   "image/": "image",
   "video/": "video",
