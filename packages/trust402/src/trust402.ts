@@ -125,6 +125,7 @@ export type Trust402Listing = Readonly<{
   listingRoot: string;
   schemaId: string;
   commitment: string;
+  did: string; // seller DID echoed back (did:pkh, did:ethr, etc.)
   price: PriceInput;
   cid?: string;
   perSchemaProof: {
@@ -415,6 +416,7 @@ export const publish = async (
     listingRoot: bigintToHex(listingRoot),
     schemaId: mapping.circuitId,
     commitment,
+    did: input.did,
     price: input.price,
     cid,
     perSchemaProof,

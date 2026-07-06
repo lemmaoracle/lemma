@@ -160,6 +160,8 @@ describe("trust402.publish", () => {
       expect(listing).toHaveProperty("commitment");
       expect(listing).toHaveProperty("perSchemaProof");
       expect(listing).toHaveProperty("listingBindingProof");
+      expect(listing).toHaveProperty("did");
+      expect(listing.did).toBe(blogInput.did);
       expect(listing.schemaId).toBe("blog-article-v1.2");
       expect(listing.price).toEqual(blogInput.price);
       expect(listing.cid).toBeUndefined(); // blog-article doesn't need CID
