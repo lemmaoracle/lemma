@@ -2,7 +2,7 @@
 import Navigation from "../../components/Navigation.astro";
 import Footer from "../../components/Footer.astro";
 import { getTranslations } from "../../i18n/translations";
-import { T402_PRICING } from "../../data/trust402Pricing";
+import { T402_DEV_PLANS } from "../../data/trust402Pricing";
 
 const locale = "en" as const;
 const base = "" as const;
@@ -53,7 +53,7 @@ const t = getTranslations(locale);
       "url": "https://lemma.frame00.com/trust402/",
       "description": "Trust layer over x402 for AI agent payments: per-call delegated authority attached as ZK proofs of who, by what authority, and up to how much — out-of-scope payments never run.",
       "publisher": { "@id": "https://lemma.frame00.com/#organization" },
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Explorer plan — free testnet sandbox" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Builder plan — pay as you go, no monthly fee. Verification is always free. Developer plans coming soon." },
     },
     {
       "@type": "BreadcrumbList",
@@ -622,6 +622,7 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
 .t402b .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
 .t402b .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.t402b .tier .tname .ttag { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); }
 .t402b .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
 .t402b .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
 .t402b .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
@@ -836,48 +837,30 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* pricing — 4 plans rendered from the shared data module
-        (src/data/trust402Pricing.ts; prices/quotas are constants there).
-        Display-only: the billing flow (x402 middleware / spend cap /
-        notifications) is a separate issue. Pre-launch: no CTA buttons —
-        "Coming soon" state lines (Institutional gets a consult link). */}
+    {/* pricing — Pay's authority-proof pricing is absorbed into the Lemma
+        API developer ladder, so this is name + one-liner placeholders (all
+        "Coming soon") + waitlist only. No unit prices, no 0.005 provenance
+        rate, no Sell/creator copy. The one line kept from the old tier table
+        is "Verification is always free." spec: Trust402_ページ改修スペック §1 */}
     <section class="section-gray" id="pricing">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>{T402_PRICING.h2.en}</h2><p>{T402_PRICING.sub.en}</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">{T402_DEV_PLANS.eyebrow.en}</span><h2>{T402_DEV_PLANS.h2.en}</h2><p>{T402_DEV_PLANS.sub.en}</p></div>
         <div class="pchips reveal">
-          {T402_PRICING.chips.map((c) => (
-            <span class:list={["pchip", { key: c.key }]}>{c.text.en}</span>
-          ))}
+          <span class="pchip key">{T402_DEV_PLANS.freeNote.en}</span>
         </div>
         <div class="tiers">
-          {T402_PRICING.tiers.map((t) => (
-            <div class:list={["tier", "reveal", { featured: t.featured, inst: t.dark }]}>
-              <div class="tname">{t.name}</div>
-              <div class="tpos">{t.pos.en}</div>
-              <div class="tprice">{t.price.en}{t.priceUnit && <small> {t.priceUnit.en}</small>}</div>
-              <div class="tmeter">{t.meter.en}</div>
-              <ul class="tlist">
-                {t.features.map((f) => (
-                  <li class:list={[{ soon: f.soon }]}>{f.text.en}</li>
-                ))}
-              </ul>
-              {t.state && <div class="tstate">{t.state.en}</div>}
-              {t.contact && <a class="tcontact" href={t.contact.hrefEn}>{t.contact.label.en}</a>}
-              <div class="tpay">{t.payment.en}</div>
+          {T402_DEV_PLANS.cards.map((card) => (
+            <div class="tier reveal">
+              <div class="tname">{card.name}{card.tag && <small class="ttag"> · {card.tag.en}</small>}</div>
+              <div class="tpos">{card.blurb.en}</div>
+              <div class="tstate">{T402_DEV_PLANS.state.en}</div>
             </div>
           ))}
         </div>
-        <p class="bill-h reveal">{T402_PRICING.billingH.en}</p>
-        <div class="bill">
-          {T402_PRICING.billing.map((b) => (
-            <div class="bcell reveal">
-              <div class="bnum">{b.num}</div>
-              <div class="btitle">{b.title.en}</div>
-              <div class="btext">{b.text.en}</div>
-            </div>
-          ))}
+        <p class="pnote reveal">{T402_DEV_PLANS.note.en}</p>
+        <div class="reveal" style="margin-top:26px;">
+          <a class="btn btn-primary" href={T402_DEV_PLANS.ctaHref} target="_blank" rel="noopener">{T402_DEV_PLANS.cta.en}</a>
         </div>
-        <p class="pnote reveal">{T402_PRICING.footnote.en}</p>
       </div>
     </section>
 

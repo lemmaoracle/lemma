@@ -257,7 +257,8 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
             never drift apart on prices (see src/data/trust402Pricing.ts). */}
         <div class="tiers">
           {T402_PRICING.tiers.map((tier) => (
-            <div class:list={["tier", "reveal", { featured: tier.featured, inst: tier.dark }]}>
+            <div class:list={["tier", "reveal", { featured: tier.featured, inst: tier.dark, badged: !!tier.badge }]}>
+              {tier.badge && <span class="tbadge">{tier.badge[locale]}</span>}
               <div class="tname">{tier.name}</div>
               <div class="tpos">{tier.pos[locale]}</div>
               <div class="tprice">{tier.price[locale]}{tier.priceUnit && <small> {tier.priceUnit[locale]}</small>}</div>
@@ -267,7 +268,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
                   <li class:list={[{ soon: f.soon }]}>{f.text[locale]}</li>
                 ))}
               </ul>
-              {tier.state && <div class="tstate">{tier.state[locale]}</div>}
+              {tier.state && !tier.badge && <div class="tstate">{tier.state[locale]}</div>}
               {tier.contact && <a class="tcontact" href={locale === "ja" ? tier.contact.hrefJa : tier.contact.hrefEn}>{tier.contact.label[locale]}</a>}
               <div class="tpay">{tier.payment[locale]}</div>
             </div>
@@ -486,8 +487,12 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
 
   /* pricing (tiers shared with the Pay hub — see src/data/trust402Pricing.ts) */
   .t402 .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .t402 .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px 22px; display: flex; flex-direction: column; }
+  .t402 .tier { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px 22px; display: flex; flex-direction: column; }
   .t402 .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
+  /* Prominent "coming soon" badge on the featured card top border (Pro = Phase 2). */
+  .t402 .tier .tbadge { position: absolute; top: -12px; right: 16px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--green); color: var(--ink); border: 1px solid var(--green-deep); border-radius: 999px; padding: 4px 12px; }
+  /* No bottom state line on a badged card — keep the payment line bottom-aligned. */
+  .t402 .tier.badged .tpay { margin-top: auto; padding-top: 14px; }
   .t402 .tier .tname { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin-bottom: 4px; }
   .t402 .tier .tpos { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; min-height: 38px; }
   .t402 .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
