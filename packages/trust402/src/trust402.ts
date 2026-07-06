@@ -8,7 +8,7 @@
  * Witness builders for known circuits (blog-article-v1.2,
  * content-commitment-v1.2) are exported as convenience utilities.
  */
-import type { LemmaClient, SubmitProofResponse } from "@lemmaoracle/spec";
+import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha256";
@@ -249,7 +249,7 @@ export const publish = async (
   client: LemmaClient,
   input: Trust402PublishInput,
 ): Promise<Trust402Listing> => {
-  const [{ prover }, { post, documents }] = await Promise.all([
+  const [{ prover }, { documents }] = await Promise.all([
     import("@lemmaoracle/sdk"),
     import("@lemmaoracle/sdk"),
   ]);
@@ -279,18 +279,38 @@ export const publish = async (
   });
 
   // ── 3. Submit proof ──
-  // Environment rides as a query param so the proof body stays a clean
-  // SubmitProofRequest; the Trust402 proxy consumes it for billing.
+  // Trust402-specific HTTP call: environment rides as a query param so the
+  // proof body stays a clean SubmitProofRequest and the Trust402 proxy uses
+  // it for billing network selection. We call the proxy directly rather than
+  // going through the SDK's proofs.submit() primitive, which is typed for
+  // the bare API Worker endpoint and has no concept of listing environment.
   const proofPath =
     input.environment !== undefined
       ? `/v1/proofs?environment=${encodeURIComponent(input.environment)}`
       : "/v1/proofs";
-  await post<SubmitProofResponse>(client)(proofPath)({
-    docHash: input.commitment,
-    circuitId: input.circuitId,
-    proof: proof.proof,
-    inputs: [input.commitment],
+  const proofUrl = `${client.apiBase}${proofPath}`;
+  const proofHeaders: Record<string, string> = {
+    "content-type": "application/json",
+  };
+  if (client.apiKey !== undefined) {
+    proofHeaders["x-api-key"] = client.apiKey;
+  }
+  const proofRes = await (client.fetcher ?? fetch)(proofUrl, {
+    method: "POST",
+    headers: proofHeaders,
+    body: JSON.stringify({
+      docHash: input.commitment,
+      circuitId: input.circuitId,
+      proof: proof.proof,
+      inputs: [input.commitment],
+    }),
   });
+  if (!proofRes.ok) {
+    const errBody = await proofRes.json().catch(() => ({}));
+    throw new Error(
+      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+    );
+  }
 
   // ── 4. Compute listingRoot (deterministic identifier, no ZK proof) ──
   const schemaIdScalar = toScalar(input.circuitId);
