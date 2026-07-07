@@ -82,7 +82,7 @@ const C = isJa
       standards: ["MCP", "A2A", "x402", "C2PA", "W3C VC"],
       ctaSandbox: "Sandbox で試す（testnet・無料）",
       ctaSpecs: "仕様書を読む →",
-      heroSee: "用途で選ぶ →",
+      heroSee: "用途で選ぶ ↓",
       secNavLabel: "このページ",
       secNav: [
         { id: "proofs", l: "5つの証明" },
@@ -133,7 +133,7 @@ const C = isJa
       intStandards: "対応標準：MCP · A2A · x402 · C2PA · W3C VC",
       intNote: "既存のフローにミドルウェア1枚で載ります。エンドポイントとコード例は、仕様書にまとめています。このページから API を呼び出すことはありません。",
       intSandbox: "Sandbox で試す（testnet・無料）",
-      intSpecs: "仕様書",
+      intSpecs: "仕様書 →",
       intGithub: "GitHub →",
 
       mechEyebrow: "仕組み",
@@ -175,7 +175,7 @@ const C = isJa
       ctaH2: "モデルは変わる。証明は残る。",
       ctaDevLabel: "開発者の方へ",
       ctaDevBtn: "Sandbox で試す（testnet・無料）",
-      ctaDevSpecs: "仕様書",
+      ctaDevSpecs: "仕様書 →",
       ctaGithub: "GitHub →",
       ctaEntLabel: "エンタープライズの方へ",
       ctaEntLead: "御社の業務に合わせて構成します。",
@@ -201,7 +201,7 @@ const C = isJa
       standards: ["MCP", "A2A", "x402", "C2PA", "W3C VC"],
       ctaSandbox: "Try the Sandbox (testnet · free)",
       ctaSpecs: "Read the specs →",
-      heroSee: "Find your proof →",
+      heroSee: "Find your proof ↓",
       secNavLabel: "On this page",
       secNav: [
         { id: "proofs", l: "Five proofs" },
@@ -252,7 +252,7 @@ const C = isJa
       intStandards: "Standards: MCP · A2A · x402 · C2PA · W3C VC",
       intNote: "It rides your existing flow as one middleware layer. Endpoints and code samples are in the specs. This page never calls the API.",
       intSandbox: "Try the Sandbox (testnet · free)",
-      intSpecs: "Specs",
+      intSpecs: "Specs →",
       intGithub: "GitHub →",
 
       mechEyebrow: "How it works",
@@ -294,7 +294,7 @@ const C = isJa
       ctaH2: "Models change. Proofs remain.",
       ctaDevLabel: "For developers",
       ctaDevBtn: "Try the Sandbox (testnet · free)",
-      ctaDevSpecs: "Specs",
+      ctaDevSpecs: "Specs →",
       ctaGithub: "GitHub →",
       ctaEntLabel: "For enterprises",
       ctaEntLead: "We configure it to your operations.",
@@ -366,7 +366,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
       {/* HERO + CONSOLE */}
       <section class="la-hero">
         <div class="la-hero-copy">
-          <div class="la-eyebrow">{C.heroEyebrow}</div>
+          <div class="la-hero-badge">{C.heroEyebrow}</div>
           <p class="la-hero-lead">{C.heroLead}</p>
           <h1 class="la-h1">{C.heroH1}</h1>
           <p class="la-sub">{C.heroSub}</p>
@@ -606,11 +606,18 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   .la a { text-decoration: none; color: inherit; }
 
   .la-eyebrow {
-    font-family: var(--la-mono); font-size: 11px; letter-spacing: 0.24em;
-    text-transform: uppercase; color: var(--accent, #8b4513);
-    display: flex; align-items: center; gap: 12px; margin: 0 0 20px;
+    font-family: var(--la-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    color: var(--accent, #8b4513);
+    display: flex; align-items: center; gap: 10px; margin: 0 0 20px;
   }
-  .la-eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--accent, #8b4513); flex: none; }
+  .la-eyebrow::before { content: ""; width: 16px; height: 2px; background: var(--accent, #8b4513); flex: none; }
+  /* Hero eyebrow as a boxed badge (Trust402-style), hub palette */
+  .la-hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--la-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    color: var(--accent, #8b4513); background: var(--lemma-brown-light, #f3ece4);
+    border: 0.5px solid #e4d6c3; padding: 4px 11px; border-radius: 5px; margin: 0 0 18px;
+  }
   .la-eyebrow.on-dark { color: #d8b48c; }
   .la-eyebrow.on-dark::before { background: #d8b48c; }
 
@@ -720,12 +727,12 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
 
   /* Buttons */
   .la-btn {
-    display: inline-flex; align-items: center; justify-content: center;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     background: var(--accent, #8b4513); color: var(--lemma-cream, #fcfaf5);
-    font-family: var(--la-display); font-size: 14.5px; font-weight: 600;
-    padding: 13px 28px; border-radius: 12px; transition: background 0.2s, opacity 0.2s;
+    font-family: var(--la-display); font-size: 14px; font-weight: 700;
+    padding: 14px 28px; border-radius: 999px; transition: background 0.2s, transform 0.2s, border-color 0.2s;
   }
-  .la-btn:hover { background: #6e3610; }
+  .la-btn:hover { background: #6e3610; transform: translateY(-1px); }
   .la-btn--ghost { background: transparent; color: var(--accent, #8b4513); border: 1px solid var(--accent, #8b4513); }
   .la-btn--ghost:hover { background: rgba(139, 69, 19, 0.08); }
   .la-btn--ghost.on-dark { color: #ecebe3; border-color: rgba(236, 235, 227, 0.4); }
