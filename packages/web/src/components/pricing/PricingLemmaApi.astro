@@ -46,6 +46,7 @@ const t = isJa
       devDesc: "月額なし。証明の発行ごとに x402 で都度決済。検証は常に無料。",
       tableH: "証明クラス別 発行単価",
       freeNote: "検証は常に無料",
+      refPrice: "参考価格。API 正式公開時に確定します。",
       colClass: "証明クラス",
       colRate: "発行単価 (USD)",
       colLink: "詳細（柱ページ）",
@@ -68,6 +69,7 @@ const t = isJa
       devDesc: "No monthly fee. Each proof settles per issuance via x402. Verification is always free.",
       tableH: "Per-proof-class issuance rates",
       freeNote: "Verification is always free",
+      refPrice: "Reference pricing — final rates are set at the API's public launch.",
       colClass: "Proof class",
       colRate: "Rate (USD)",
       colLink: "Detail (pillar)",
@@ -96,6 +98,7 @@ const t = isJa
   </div>
 
   <div class="api-table-h">{t.tableH}<span class="api-free">{t.freeNote}</span></div>
+  <p class="api-ref">{t.refPrice}</p>
   <div class="api-table-wrap">
     <table class="api-table">
       <thead>
@@ -159,8 +162,9 @@ const t = isJa
   .api-dev-unit { font-size: 14px; font-weight: 400; color: var(--pr-text-3, #5a5a5a); margin-left: 2px; }
   .api-dev-desc { font-size: 13.5px; line-height: 1.7; color: var(--pr-text-2, #3a3a3a); margin: 0; }
 
-  .api-table-h { font-family: var(--pr-display); font-weight: 700; font-size: 16px; color: var(--black, #1a1a1a); margin: 32px 0 12px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  .api-table-h { font-family: var(--pr-display); font-weight: 700; font-size: 16px; color: var(--black, #1a1a1a); margin: 32px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
   .api-free { font-family: var(--api-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); text-transform: none; }
+  .api-ref { font-size: 11.5px; line-height: 1.5; color: var(--pr-text-3, #7a7568); margin: 0 0 12px; }
   .api-table-wrap { overflow-x: auto; }
   .api-table { width: 100%; border-collapse: collapse; background: var(--white, #fff); border: 0.5px solid var(--lemma-line, #e6e1d6); border-radius: 14px; overflow: hidden; }
   .api-table th {
