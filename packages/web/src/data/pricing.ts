@@ -496,26 +496,26 @@ export const PRICING: PricingContent = {
       // — 共通（全プラン） —
       {
         audience: "common",
-        q: { ja: "エンタープライズはなぜ個別見積なのですか?", en: "Why is enterprise custom-quoted?" },
+        q: { ja: "なぜエンタープライズは個別見積なのですか?", en: "Why is enterprise custom-quoted?" },
         a: {
-          ja: "Lemma API と Trust402 の単価は本ページで公開しています。エンタープライズ（Civic / Critical / Compliance）だけは、ティア・拠点数・稼働保証（SLA）・証明ロジックの複雑さに価格が依存するため、実際のユースケースに応じて個別に見積もります（各プランに開始価格の目安を掲載しています）。",
-          en: "The Lemma API and Trust402 rates are published on this page. Only enterprise (Civic / Critical / Compliance) is custom-quoted — pricing depends on tier, site count, SLA, and ZK-circuit complexity, so we price against your actual use case (each plan shows a starting anchor).",
+          ja: "エンタープライズ料金は、ティア・拠点数・稼働保証（SLA）・証明ロジックの複雑さによって変わります。文脈のない数字は誤解を招くため、実際のユースケースに応じて設計します。（Lemma API と Trust402 の単価は、本ページに公開しています。）",
+          en: "Enterprise pricing varies with tier, site count, SLA, and the complexity of the proof logic. Numbers without context mislead, so we design against your actual use case. (The Lemma API and Trust402 rates are published on this page.)",
         },
       },
       {
         audience: "common",
         q: { ja: "どのプランが組織に合っていますか?", en: "Which plan fits my organization?" },
         a: {
-          ja: "市民・住民向けサービスや公益事業 → Civic。業務継続性・運用基盤への AI 組み込み → Critical。属性検証・監査証跡・規制対応 → Compliance。x402 / MCP 上での実装 → Trust402。判別は Discovery セッションで一緒に整理します。",
-          en: "Citizen-facing services and utilities → Civic. AI embedded in operational systems with business-continuity demands → Critical. Attribute verification, audit trails, regulated workflows → Compliance. Building on x402 / MCP → Trust402. We map you to the right plan during Discovery.",
+          ja: "市民・住民向けサービスや公益事業 → Civic。業務継続性・運用基盤への AI 組み込み → Critical。属性検証・監査証跡・規制対応 → Compliance。生の API で証明を発行 → Lemma API。x402 上でのエージェント決済・出品 → Trust402。判別は Discovery セッションで一緒に整理します。",
+          en: "Citizen-facing services and utilities → Civic. AI embedded in operational systems with business-continuity demands → Critical. Attribute verification, audit trails, regulated workflows → Compliance. Issuing proofs from the raw API → Lemma API. Agent payments and listings over x402 → Trust402. We sort it out together in a Discovery session.",
         },
       },
       {
         audience: "common",
         q: { ja: "無料トライアルはありますか?", en: "Is there a free trial?" },
         a: {
-          ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。Lemma API も本番課金までは testnet の Sandbox で無料。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
-          en: "Trust402 includes the Explorer tier for sandbox evaluation, and the Lemma API is free on the testnet Sandbox until production billing begins. Enterprise evaluation runs via a scoped PoC.",
+          ja: "Trust402 と Lemma API には、testnet の Sandbox（Explorer）があります。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
+          en: "Trust402 and the Lemma API both have a testnet Sandbox (Explorer). Enterprise evaluation runs via a scoped PoC.",
         },
       },
       // — エンタープライズ（Civic / Critical / Compliance） —
@@ -531,8 +531,8 @@ export const PRICING: PricingContent = {
         audience: "enterprise",
         q: { ja: "Option Pack はどのように選びますか?", en: "How do Option Packs get selected?" },
         a: {
-          ja: "Pack 単品販売はありません。上位ティア限定で、Critical / Compliance プランの Tier 2 以上で追加可能。Discovery で業務要件をヒアリングし、Lemma 側が Tier + Pack 構成を提案します。Civic と各プランの Tier 1 は Pack 対象外。",
-          en: "Option Packs aren't sold standalone — they gate to Critical / Compliance Tier 2 and above. Discovery intakes the business requirement; Lemma proposes a Tier + Pack configuration. Civic and Tier 1 on every plan are out of scope.",
+          ja: "Pack の単品販売はありません。Critical / Compliance プランの Tier 2 以上で追加できます。Discovery で業務要件をうかがい、Lemma 側から Tier + Pack 構成をご提案します。Civic と各プランの Tier 1 は Pack の対象外です。",
+          en: "Option Packs aren't sold standalone — they can be added on Critical / Compliance Tier 2 and above. We intake your business requirements in Discovery and propose a Tier + Pack configuration. Civic and Tier 1 on every plan are out of scope.",
         },
       },
       {
@@ -542,8 +542,8 @@ export const PRICING: PricingContent = {
           en: "Can you integrate with our CRM or business systems? Can you build front-line screens?",
         },
         a: {
-          ja: "はい。Lemma は API での連携を基本とし、お使いのシステムを置き換えません。現場向けの画面が必要な場合は、統合開発として個別にお見積りします（エージェント組織基盤 CLUBS と同一の基盤上で構築します）。",
-          en: "Yes. Lemma integrates via API and doesn't replace the systems you use. When you need front-line screens, we quote them individually as integrated development (built on the same platform as CLUBS, our agent-organization infrastructure).",
+          ja: "はい。Lemma は API での連携を基本とし、お使いのシステムを置き換えません。現場向けの画面が必要な場合は、統合開発として個別にお見積りします。",
+          en: "Yes. Lemma integrates via API and doesn't replace the systems you use. When you need front-line screens, we quote them individually as integrated development.",
         },
       },
       {
@@ -559,11 +559,19 @@ export const PRICING: PricingContent = {
         audience: "developer",
         q: { ja: "Lemma API はいつ使えますか? いくらですか?", en: "When can I use the Lemma API, and how much?" },
         a: {
-          ja: "証明の発行はクラスごとに単価が決まっていて、検証はいつでも無料です。単価の一覧は、上の Lemma API プランセクションにまとめています。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。",
-          en: "Issuance is priced per proof class, and verification is always free — the full rate list is in the Lemma API section above. Production billing is coming soon; until then you can try it free on the testnet Sandbox.",
+          ja: "発行単価はクラス別に確定しています（来歴 0.005 / 認証 0.01–0.05 / 権限 0.05 / 推論 0.07 / 属性 0.20 USD）。検証は常に無料です。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。定額の quota / grade プランも近日公開予定です。",
+          en: "Issuance rates are fixed per proof class (provenance 0.005 / authentication 0.01–0.05 / authority 0.05 / inference 0.07 / attribute 0.20 USD). Verification is always free. Production billing is coming soon; until then you can try it free on the testnet Sandbox. Flat-rate quota / grade plans are coming soon too.",
         },
       },
       // — エージェント（Trust402） —
+      {
+        audience: "agent",
+        q: { ja: "Trust402 はいつ使えますか?", en: "When can I use Trust402?" },
+        a: {
+          ja: "Trust402 の4プラン（Explorer / Builder / Pro / Institutional ID）は、本ページに掲載しています。本番課金は近日公開で、Explorer の Sandbox で無料でお試しいただけます。",
+          en: "The four Trust402 plans (Explorer / Builder / Pro / Institutional ID) are listed on this page. Production billing is coming soon; you can try it free on the Explorer Sandbox.",
+        },
+      },
       {
         audience: "agent",
         q: { ja: "Pay と Sell の違いは? 発行枠は共有ですか?", en: "How do Pay and Sell differ? Is the issuance allowance shared?" },

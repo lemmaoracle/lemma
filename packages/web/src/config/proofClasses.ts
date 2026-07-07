@@ -24,11 +24,11 @@ export interface ProofClass {
 }
 
 export const PROOF_CLASSES: ReadonlyArray<ProofClass> = [
-  { key: "provenance",     name: { ja: "来歴", en: "Provenance" },     blurb: { ja: "データの出所を証明", en: "Prove where data came from" },       rate: "0.005",     path: "/pillars/verifiable-origin/" },
-  { key: "authentication", name: { ja: "認証", en: "Authentication" }, blurb: { ja: "本人性・所属を証明", en: "Prove identity & affiliation" },      rate: "0.01–0.05", path: "/seal/" },
-  { key: "authority",      name: { ja: "権限", en: "Authority" },      blurb: { ja: "委譲された権限を証明", en: "Prove delegated authority" },        rate: "0.05",      path: "/pillars/agent-authority-proof/" },
-  { key: "inference",      name: { ja: "推論", en: "Inference" },      blurb: { ja: "AI の推論を証明", en: "Prove an AI's inference" },              rate: "0.07",      path: "/pillars/verifiable-ai/" },
-  { key: "attribute",      name: { ja: "属性", en: "Attribute" },      blurb: { ja: "規制属性を満たすと証明", en: "Prove a regulated attribute" },     rate: "0.20",      path: "/pillars/regulatory-attribute-proof/" },
+  { key: "provenance",     name: { ja: "来歴", en: "Provenance" },     blurb: { ja: "原本を渡さず、出所を証明する。", en: "Prove origin without handing over the original." },        rate: "0.005",     path: "/pillars/verifiable-origin/" },
+  { key: "authentication", name: { ja: "認証", en: "Authentication" }, blurb: { ja: "鍵を送らず、本人だと証明する。", en: "Prove identity without sending a key." },                rate: "0.01–0.05", path: "/seal/" },
+  { key: "authority",      name: { ja: "権限", en: "Authority" },      blurb: { ja: "鍵を渡さず、権限だけを委ねる。", en: "Delegate authority without handing over a key." },         rate: "0.05",      path: "/pillars/agent-authority-proof/" },
+  { key: "inference",      name: { ja: "推論", en: "Inference" },      blurb: { ja: "モデルを開示せず、推論を証明する。", en: "Prove inference without disclosing the model." },        rate: "0.07",      path: "/pillars/verifiable-ai/" },
+  { key: "attribute",      name: { ja: "属性", en: "Attribute" },      blurb: { ja: "属性を明かさず、要件を満たすと証明する。", en: "Prove you meet a requirement without revealing the attribute." }, rate: "0.20",      path: "/pillars/regulatory-attribute-proof/" },
 ] as const;
 
 /** Locale-prefixed href for a proof class (base = "" for en, "/ja" for ja). */
