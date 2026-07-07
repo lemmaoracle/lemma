@@ -1,21 +1,18 @@
 ---
-import PillarsHubV2 from "../../../templates/PillarsHubV2.astro";
+// /ja/pillars — the canonical "Lemma API 全体像" hub (code納品 20260707). The old
+// pillars/4-axes hub was retired; the thin /ja/lemma-api route now redirects here.
+import LemmaApiTemplate from "../../../templates/LemmaApiTemplate.astro";
 import { getTranslations } from "../../../i18n/translations";
-import bodyJa from "../../../config/pillars-hub-v2/index.ja.html?raw";
 
 const locale = "ja";
 const t = getTranslations(locale);
 const base = "/ja";
-const metaTitle = "AI のための信頼インフラ — 来歴・AI 判断・権限・規制属性に暗号証明 | Lemma";
-const metaDescription =
-  "AI のための信頼インフラ。来歴・AI 判断・権限・規制属性の 4 軸で、AI が使うデータに暗号証明を返す。既存ワークフローに 1 レイヤー加えるだけで、全工程に証明が乗ります。";
 ---
 
-<PillarsHubV2
+<LemmaApiTemplate
   locale={locale}
   t={t}
   base={base}
-  body={bodyJa}
-  metaTitle={metaTitle}
-  metaDescription={metaDescription}
+  pagePath="/pillars/"
+  ogImage="https://lemma.frame00.com/og/pillars/ja.png"
 />

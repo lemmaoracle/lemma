@@ -1,10 +1,26 @@
 ---
-import LemmaApiTemplate from "../../../templates/LemmaApiTemplate.astro";
-import { getTranslations } from "../../../i18n/translations";
-
-const locale = "ja";
-const t = getTranslations(locale);
-const base = "/ja";
+// /ja/lemma-api → /ja/pillars. The Lemma API overview is now canonical at
+// /pillars (code納品 20260707).
+const target = "/ja/pillars/";
+const canonical = `https://lemma.frame00.com${target}`;
 ---
-
-<LemmaApiTemplate locale={locale} t={t} base={base} />
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lemma API 全体像へリダイレクトしています — Lemma</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 2rem; color: #333; }
+      a { color: #8B4513; }
+    </style>
+  </head>
+  <body>
+    <p>このページは移動しました。<a href={target}>Lemma API 全体像</a>へリダイレクトしています…</p>
+  </body>
+</html>

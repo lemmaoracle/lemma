@@ -1,10 +1,27 @@
 ---
-import LemmaApiTemplate from "../../templates/LemmaApiTemplate.astro";
-import { getTranslations } from "../../i18n/translations";
-
-const locale = "en";
-const t = getTranslations(locale);
-const base = "";
+// /lemma-api → /pillars. The Lemma API overview is now canonical at /pillars
+// (code納品 20260707). Same meta-refresh + replace pattern as
+// pillars/agent-trust-chain.
+const target = "/pillars/";
+const canonical = `https://lemma.frame00.com${target}`;
 ---
-
-<LemmaApiTemplate locale={locale} t={t} base={base} />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting to the Lemma API overview — Lemma</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 2rem; color: #333; }
+      a { color: #8B4513; }
+    </style>
+  </head>
+  <body>
+    <p>This page has moved. Redirecting to the <a href={target}>Lemma API overview</a>…</p>
+  </body>
+</html>

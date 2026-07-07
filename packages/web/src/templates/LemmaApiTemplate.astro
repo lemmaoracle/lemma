@@ -21,8 +21,12 @@ interface Props {
   locale: Locale;
   t: Translations;
   base: string;
+  /** Canonical path — "/pillars/" when this serves as the hub, "/lemma-api/" on the legacy route. */
+  pagePath?: string;
+  /** Optional OG image URL (the /pillars hub keeps its dedicated card). */
+  ogImage?: string;
 }
-const { locale, t, base } = Astro.props as Props;
+const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Props;
 const isJa = locale === "ja";
 
 const sandboxUrl = DASHBOARD_URL;
@@ -251,7 +255,8 @@ const proofs = PROOF_CLASSES.map((c, i) => ({
 <Layout
   locale={locale}
   metaType="page"
-  pagePath="/lemma-api/"
+  pagePath={pagePath}
+  ogImage={ogImage}
   title={C.metaTitle}
   description={C.metaDesc}
 >
