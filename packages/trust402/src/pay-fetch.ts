@@ -55,12 +55,34 @@ export type Eip1193Provider = Readonly<{
   ) => Promise<unknown>;
 }>;
 
-export type Signer = Readonly<{ provider: Eip1193Provider; address: string }>;
+/**
+ * Signer — either a raw EIP-1193 provider (browser wallet) or a richer
+ * object with a native signTypedData function (viem WalletClient in Node.js).
+ *
+ * Browser path: payFetch calls provider.request({ method: "eth_signTypedData_v4" }).
+ * Node/viem path: payFetch calls signer.signTypedData directly, avoiding the
+ * unsupported RPC method on viem's WalletClient.
+ */
+export type Signer = Readonly<{
+  provider: Eip1193Provider;
+  address: string;
+  /** Optional native typed-data signer (viem). Falls back to eth_signTypedData_v4. */
+  signTypedData?: (
+    params: Readonly<{
+      domain: Readonly<Record<string, unknown>>;
+      types: Readonly<Record<string, ReadonlyArray<unknown>>>;
+      primaryType: string;
+      message: Readonly<Record<string, unknown>>;
+    }>,
+  ) => Promise<string>;
+}>;
 
 export type PayFetchOptions = Readonly<{
   getSigner: () => Promise<Signer>;
   maxAmountMicroUsdc?: number;
   onPayment?: (info: Readonly<{ amount: string; resource: string }>) => void;
+  /** Origin to allow for x402 payments in non-browser (Node.js) contexts. */
+  apiBase?: string;
 }>;
 
 export type FetchLike = (
@@ -126,15 +148,33 @@ const parseRequirements = async (
 const isKnownNetwork = (network: string): network is X402Network =>
   network in X402_CHAIN_IDS;
 
+/**
+ * Check whether a 402 response is payable. In the browser, the request URL
+ * must be same-origin (prevent exfiltrating payment to third parties). In
+ * Node.js (no `location`), the request URL must point at the client's
+ * apiBase — the Trust402 proxy origin — to serve the same guardrail.
+ */
+const isPayableOrigin = (url: URL, apiBase: string): boolean => {
+  if (typeof location !== "undefined") {
+    return url.origin === location.origin;
+  }
+  // Node.js / server-side: allow only the configured apiBase.
+  try {
+    return url.origin === new URL(apiBase).origin;
+  } catch {
+    return false;
+  }
+};
+
 const isPayable = (
   url: URL,
   method: string,
   body: BodyInit | null | undefined,
   reqs: PaymentRequirements,
   maxAmountMicroUsdc: number,
+  apiBase: string,
 ): boolean =>
-  typeof location !== "undefined" &&
-  url.origin === location.origin &&
+  isPayableOrigin(url, apiBase) &&
   url.pathname.startsWith("/v1/") &&
   method === "POST" &&
   (body === undefined || typeof body === "string") &&
@@ -150,10 +190,22 @@ const randomNonce = (): string => {
   return `0x${Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
 };
 
+/**
+ * Ensure the signer's active chain matches the x402 network.
+ *
+ * Browser wallets (MetaMask) need wallet_switchEthereumChain. A viem
+ * WalletClient in Node.js already has its chain baked in at creation
+ * time and does not support wallet_switchEthereumChain — so we skip
+ * the RPC call and assume the caller created the client on the right
+ * chain.
+ */
 const ensureChain = async (
   provider: Eip1193Provider,
   network: X402Network,
 ): Promise<void> => {
+  // viem WalletClient and other non-wallet providers don't implement
+  // wallet_switchEthereumChain — skip and trust the configured chain.
+  if (typeof location === "undefined") return;
   const chainId = `0x${X402_CHAIN_IDS[network].toString(16)}`;
   try {
     await provider.request({
@@ -228,7 +280,7 @@ export const payFetch = (options: PayFetchOptions): FetchLike =>
     const maxAmount =
       options.maxAmountMicroUsdc ?? DEFAULT_MAX_AMOUNT_MICRO_USDC;
     if (
-      !isPayable(url, requestMethod(input, init), init?.body, reqs, maxAmount)
+      !isPayable(url, requestMethod(input, init), init?.body, reqs, maxAmount, options.apiBase ?? "")
     ) {
       return res;
     }
@@ -259,13 +311,25 @@ export const payFetch = (options: PayFetchOptions): FetchLike =>
       reqs,
       network,
       authorization,
-    );
-    const signature = String(
-      await freshSigner.provider.request({
-        method: "eth_signTypedData_v4",
-        params: [freshSigner.address, JSON.stringify(typedData)],
-      }),
-    );
+    ) as Readonly<{
+      types: Readonly<Record<string, ReadonlyArray<unknown>>>;
+      primaryType: string;
+      domain: Readonly<Record<string, unknown>>;
+      message: Readonly<Record<string, unknown>>;
+    }>;
+    const signature = freshSigner.signTypedData !== undefined
+      ? await freshSigner.signTypedData({
+          domain: typedData.domain,
+          types: typedData.types,
+          primaryType: typedData.primaryType,
+          message: typedData.message,
+        })
+      : String(
+          await freshSigner.provider.request({
+            method: "eth_signTypedData_v4",
+            params: [freshSigner.address, JSON.stringify(typedData)],
+          }),
+        );
 
     const payment: PaymentPayload = {
       x402Version: 1,

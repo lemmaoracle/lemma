@@ -33,7 +33,7 @@ export const create = (config: ClientConfig): LemmaClient => {
 
   const fetcher =
     getSigner !== undefined
-      ? payFetch({ getSigner, onPayment, maxAmountMicroUsdc })
+      ? payFetch({ getSigner, onPayment, maxAmountMicroUsdc, apiBase: apiBase ?? DEFAULT_API_BASE })
       : undefined;
 
   return lemmaCreate(
