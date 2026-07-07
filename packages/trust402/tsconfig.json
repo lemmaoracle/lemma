@@ -8,6 +8,9 @@
   },
   "include": [
     "src/index.ts",
+    "src/create.ts",
+    "src/pay-fetch.ts",
+    "src/pay-types.ts",
     "src/trust402.ts"
   ],
   "references": [
