@@ -56,16 +56,18 @@ const { locale, t, base } = Astro.props as Props;
       {/* Common-principles band + product-line overview (jump to #ent/#api/#t402) */}
       <PricingPrincipleBand locale={locale} />
       <PricingProductLines locale={locale} />
-      {/* #ent — enterprise: 3 plans, then feature-compare + option-packs as
-          collapsibles nested under the block (not peer sections) */}
+      {/* #ent — enterprise chapter: 3 plans, then feature-compare +
+          option-packs (collapsibles nested under the block), then the
+          enterprise onboarding flow — kept contiguous so one persona's
+          content reads as a single block. */}
       <PlanPriceModule locale={locale} />
       <PricingCompare locale={locale} />
       <PricingPacks locale={locale} />
+      <PricingAdoption locale={locale} />
       {/* #api — Lemma API (developer line) */}
       <PricingLemmaApi locale={locale} />
       {/* #t402 — Trust402 (agent line), 4-plan table via shared component */}
       <PricingTrust402Block locale={locale} />
-      <PricingAdoption locale={locale} />
       <PricingFAQ locale={locale} />
     </div>
   </main>
