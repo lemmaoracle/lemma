@@ -309,6 +309,7 @@ export const publish = async (
         circuitId: input.circuitId,
         proof: proof.proof,
         inputs: [input.commitment],
+        chainId: input.environment === "production" ? 8453 : 84532,
       }),
     });
   } catch (e: unknown) {
