@@ -56,10 +56,11 @@ const { locale, t, base } = Astro.props as Props;
       {/* Common-principles band + product-line overview (jump to #ent/#api/#t402) */}
       <PricingPrincipleBand locale={locale} />
       <PricingProductLines locale={locale} />
-      {/* #ent — enterprise (PlanPriceModule + Packs + Compare) */}
+      {/* #ent — enterprise: 3 plans, then feature-compare + option-packs as
+          collapsibles nested under the block (not peer sections) */}
       <PlanPriceModule locale={locale} />
+      <PricingCompare locale={locale} />
       <PricingPacks locale={locale} />
-      <PricingCompare locale={locale} base={base} />
       {/* #api — Lemma API (developer line) */}
       <PricingLemmaApi locale={locale} />
       {/* #t402 — Trust402 (agent line), 4-plan table via shared component */}
@@ -168,10 +169,44 @@ const { locale, t, base } = Astro.props as Props;
     font-weight: 500;
   }
 
+  /* Collapsible (feature-compare / option-packs) nested under a block. */
+  :global(.pr-fold) {
+    border: 0.5px solid var(--lemma-line);
+    border-radius: 14px;
+    background: var(--white);
+    overflow: hidden;
+  }
+  :global(.pr-fold-summary) {
+    cursor: pointer;
+    list-style: none;
+    padding: 15px 22px;
+    font-family: var(--pr-display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  :global(.pr-fold-summary::-webkit-details-marker) { display: none; }
+  :global(.pr-fold-summary::before) {
+    content: "▸";
+    color: var(--accent);
+    font-size: 12px;
+    transition: transform 0.15s;
+  }
+  :global(.pr-fold[open] .pr-fold-summary::before) { transform: rotate(90deg); }
+  :global(.pr-fold-summary:hover) { color: var(--accent); }
+  :global(.pr-fold-body) { padding: 2px 22px 22px; }
+
   /* Section spacing — every section after the hero gets the same gap. */
   .pr-container > :global(section + section) {
     margin-top: 88px;
   }
+  /* Folds sit tight under the enterprise plans; a full gap resumes before #api. */
+  .pr-container > :global(section) + :global(.pr-fold) { margin-top: 24px; }
+  .pr-container > :global(.pr-fold) + :global(.pr-fold) { margin-top: 12px; }
+  .pr-container > :global(.pr-fold) + :global(section) { margin-top: 88px; }
   /* Hero → Plans-and-pricing module sits tighter (the old trust strip is gone). */
   .pr-container > :global(.ph-hero + section) {
     margin-top: 36px;

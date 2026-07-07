@@ -463,12 +463,12 @@ export const PRICING: PricingContent = {
   },
 
   adoption: {
-    eyebrow: { ja: "ご導入プロセス", en: "Adoption flow" },
+    eyebrow: { ja: "エンタープライズの導入", en: "Enterprise onboarding" },
     h2Head: { ja: "Discovery から、", en: "From Discovery" },
     h2Accent: { ja: "本番運用まで。", en: "to production." },
     sub: {
-      ja: "業務要件に応じて構成を設計、PoC を経て本番運用へ。",
-      en: "Configuration designed against business requirements; PoC, then production.",
+      ja: "エンタープライズ（Civic / Critical / Compliance）は、業務要件に応じて構成を設計し、PoC を経て本番運用へ。Lemma API・Trust402 は Sandbox からのセルフサーブで、この導線とは別です。",
+      en: "Enterprise (Civic / Critical / Compliance): configuration designed against business requirements, a PoC, then production. The Lemma API and Trust402 are self-serve from the Sandbox — a separate path.",
     },
     steps: [
       { no: "Step 1", title: { ja: "Talk to us", en: "Talk to us" }, meta: { ja: "お問い合わせ", en: "Get in touch" } },
@@ -485,10 +485,10 @@ export const PRICING: PricingContent = {
     h2Accent: { ja: "よくある質問。", en: "common questions." },
     items: [
       {
-        q: { ja: "なぜ公開価格がないのですか?", en: "Why are prices not published?" },
+        q: { ja: "エンタープライズはなぜ個別見積なのですか?", en: "Why is enterprise custom-quoted?" },
         a: {
-          ja: "エンタープライズ料金は、ティア・拠点数・稼働保証（SLA）の要件・証明ロジックの複雑さに依存します。文脈のない数字は誤解を招くため、実際のユースケースに応じて価格設定します。",
-          en: "Enterprise pricing depends on tier, site count, SLA requirements, and ZK circuit complexity. Numbers without context mislead, so we price against your actual use case.",
+          ja: "Lemma API と Trust402 の単価は本ページで公開しています。エンタープライズ（Civic / Critical / Compliance）だけは、ティア・拠点数・稼働保証（SLA）・証明ロジックの複雑さに価格が依存するため、実際のユースケースに応じて個別に見積もります（各プランに開始価格の目安を掲載しています）。",
+          en: "The Lemma API and Trust402 rates are published on this page. Only enterprise (Civic / Critical / Compliance) is custom-quoted — pricing depends on tier, site count, SLA, and ZK-circuit complexity, so we price against your actual use case (each plan shows a starting anchor).",
         },
       },
       {
@@ -527,13 +527,6 @@ export const PRICING: PricingContent = {
         a: {
           ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
           en: "Trust402 includes the Explorer tier for sandbox evaluation. Enterprise evaluation runs via a scoped PoC.",
-        },
-      },
-      {
-        q: { ja: "Trust402 はいつリリースされますか?", en: "When does Trust402 launch?" },
-        a: {
-          ja: "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。",
-          en: "Detailed pricing publishes with the x402 integration demo. Join the waitlist to hear first.",
         },
       },
       {
