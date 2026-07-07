@@ -32,6 +32,7 @@ const githubUrl = "https://github.com/lemmaoracle";
 
 const classes = PROOF_CLASSES.map((c) => ({
   name: proofClassName(c, locale),
+  blurb: c.blurb[locale],
   rate: c.rate,
   href: proofClassHref(c, base),
 }));
@@ -167,7 +168,10 @@ const C = isJa
             <tbody>
               {classes.map((c) => (
                 <tr>
-                  <td class="la-cls">{c.name}</td>
+                  <td class="la-cls">
+                    <span class="la-cls-name">{c.name}</span>
+                    <span class="la-cls-blurb">{c.blurb}</span>
+                  </td>
                   <td class="la-rate">{c.rate}</td>
                   <td><a class="la-cls-link" href={c.href}>→</a></td>
                 </tr>
@@ -290,7 +294,9 @@ const C = isJa
   }
   .la-table td { padding: 14px 20px; border-bottom: 0.5px solid var(--lemma-line, #e6e1d6); font-size: 15px; }
   .la-table tr:last-child td { border-bottom: none; }
-  .la-cls { font-family: var(--la-display); font-weight: 600; color: var(--black, #1a1a1a); }
+  .la-cls { display: flex; flex-direction: column; gap: 2px; }
+  .la-cls-name { font-family: var(--la-display); font-weight: 700; color: var(--black, #1a1a1a); }
+  .la-cls-blurb { font-size: 12.5px; color: var(--la-t3); }
   .la-rate { font-family: var(--la-mono); font-weight: 700; color: var(--accent, #8b4513); }
   .la-cls-link { font-family: var(--la-mono); font-weight: 700; color: var(--accent, #8b4513); }
   .la-price-line { margin: 20px 2px 0; font-size: 13.5px; color: var(--la-t3); }

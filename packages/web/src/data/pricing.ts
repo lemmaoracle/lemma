@@ -532,8 +532,8 @@ export const PRICING: PricingContent = {
       {
         q: { ja: "Lemma API はいつ使えますか? いくらですか?", en: "When can I use the Lemma API, and how much?" },
         a: {
-          ja: "証明の発行単価はクラス別に確定しており（来歴 0.005 / 認証 0.01–0.05 / 権限 0.05 / 推論 0.07 / 属性 0.20 USD）、検証は常に無料です。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。定額の quota / grade プランも近日公開予定です。",
-          en: "Per-proof-class issuance rates are set (provenance 0.005 / authentication 0.01–0.05 / authority 0.05 / inference 0.07 / attribute 0.20 USD), and verification is always free. Production billing is coming soon — until then, try it free on the testnet Sandbox. Flat-rate quota / grade plans are coming soon too.",
+          ja: "証明の発行はクラスごとに単価が決まっていて、検証はいつでも無料です。単価の一覧は、上の Lemma API プランセクションにまとめています。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。",
+          en: "Issuance is priced per proof class, and verification is always free — the full rate list is in the Lemma API section above. Production billing is coming soon; until then you can try it free on the testnet Sandbox.",
         },
       },
       {
