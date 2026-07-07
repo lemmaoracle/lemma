@@ -269,6 +269,7 @@ export const publish = async (
     cid: input.cid ?? "",
     issuerId: input.did,
     subjectId: input.did,
+    chainId: input.environment === "production" ? 8453 : 84532,
     commitments: {
       scheme: "poseidon" as const,
       root: input.commitment,
@@ -309,7 +310,6 @@ export const publish = async (
         circuitId: input.circuitId,
         proof: proof.proof,
         inputs: [input.commitment],
-        chainId: input.environment === "production" ? 8453 : 84532,
       }),
     });
   } catch (e: unknown) {
