@@ -5,7 +5,9 @@
  * Dark slim footer with 5-column grid:
  *   1. Brand: logo + tagline + Dashboard CTA button + social icons
  *   2. "Lemma について" — trust layers + use cases
- *   3. "製品" — Seal / Lemma Civic / Critical / Compliance / Trust402 / pricing
+ *   3. "製品" — Lemma API / Lemma Civic / Critical / Compliance / Trust402 / pricing
+ *      (Seal is folded into Lemma API as the authentication proof; its /seal LP
+ *       stays reachable from the nav "five proofs" panel, not listed here.)
  *   4. "開発者向け" — Trust402 / Dashboard / specs / GitHub / Smithery
  *   5. "リソース" — Critical Brief (●) / blog / whitepaper / glossary / FAQ
  *      + "会社" — about / contact / language switch
@@ -52,7 +54,6 @@ const privacyPath = base ? `${base}/privacy` : "/privacy";
 const termsPath = base ? `${base}/terms` : "/terms";
 const briefsPath = base ? `${base}/critical/briefs` : "/critical/briefs";
 const guidesPath = base ? `${base}/guides` : "/guides";
-const sealHref = base ? `${base}/seal/` : "/seal/";
 const homePath = base || "/";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const trust402Href = base ? `${base}/trust402/` : "/trust402/";
@@ -123,7 +124,7 @@ const C = isJa ? {
       <div class="site-footer-col">
         <h4>{C.products}</h4>
         <ul>
-          <li><a href={sealHref}>Seal</a></li>
+          <li><a href={pillarsPath}>Lemma API</a></li>
           <li><a href={SEGMENT_URLS.civic[locale]}>{t.mega.products.civic}</a></li>
           <li><a href={SEGMENT_URLS.critical[locale]}>{t.mega.products.critical}</a></li>
           <li><a href={SEGMENT_URLS.compliance[locale]}>{t.mega.products.compliance}</a></li>

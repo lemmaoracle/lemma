@@ -79,6 +79,7 @@ function firstSentence(text: string): string {
 }
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
+const pricingPath = `${base}/pricing`;
 const isJa = locale === "ja";
 
 // 対応プラン — links to the matching plan page (clickable here; detail page is
@@ -324,9 +325,14 @@ const breadcrumbJsonLd = {
           )}
         </article>
         {pillar && (
-          <a class="ucd-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
-            {isJa ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
-          </a>
+          <nav class="ucd-foot-links" aria-label={isJa ? "関連リンク" : "Related links"}>
+            <a class="ucd-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
+              {isJa ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
+            </a>
+            <a class="ucd-pillar-foot" href={`${pricingPath}#api`}>
+              {isJa ? "料金・API 仕様" : "Pricing & API"} →
+            </a>
+          </nav>
         )}
       </div>
     </div>
@@ -402,13 +408,20 @@ const breadcrumbJsonLd = {
     max-width: 820px;
     border-bottom: 0.5px solid var(--lemma-line);
   }
-  /* Footer pillar link — light "learn how it works" route to the pillar page,
-     placed at the end of the article (the pillar tag was removed from the hero). */
+  /* Footer links — light "learn how it works" route to the proof page + a
+     pricing/API route into the Lemma API hub, at the end of the article
+     (the pillar tag was removed from the hero). */
+  .ucd-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+    margin: 40px 0 0;
+  }
   .ucd-pillar-foot {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin: 40px 0 0;
     font-family: var(--ucd-mono);
     font-size: 11px;
     letter-spacing: 0.14em;
