@@ -4,7 +4,7 @@
  *
  * Dark slim footer with 5-column grid:
  *   1. Brand: logo + tagline + Dashboard CTA button + social icons
- *   2. "Lemma について" — trust layers + use cases
+ *   2. "Lemma について" — use cases + authenticity hub
  *   3. "製品" — Lemma API / Lemma Civic / Critical / Compliance / Trust402 / pricing
  *      (Seal is folded into Lemma API as the authentication proof; its /seal LP
  *       stays reachable from the nav "five proofs" panel, not listed here.)
@@ -70,7 +70,6 @@ const languageSwitchLabel = isJa ? t.languageEn : t.languageJa;
 
 const C = isJa ? {
   aboutLemma: "Lemma について",
-  trustLayers: "Lemma API（5つの証明）",
   useCases: "ユースケース",
   products: "製品",
   developers: "開発者向け",
@@ -80,7 +79,6 @@ const C = isJa ? {
   criticalBrief: "Critical Brief",
 } : {
   aboutLemma: "About Lemma",
-  trustLayers: "Lemma API (five proofs)",
   useCases: "Use cases",
   products: "Products",
   developers: "For developers",
@@ -115,8 +113,8 @@ const C = isJa ? {
       <div class="site-footer-col">
         <h4>{C.aboutLemma}</h4>
         <ul>
-          <li><a href={pillarsPath}>{C.trustLayers}</a></li>
           <li><a href={useCasesPath}>{C.useCases}</a></li>
+          <li><a href={authenticityPath}>{t.mega.resources.authenticity}</a></li>
         </ul>
       </div>
 
@@ -154,7 +152,6 @@ const C = isJa ? {
           <li><button type="button" class="site-footer-tally" data-tally-open={TALLY_WHITEPAPER_ID[locale]} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button></li>
           <li><a href={NEWSLETTER_URL[locale]} target="_blank" rel="noopener">{t.mega.resources.newsletter}</a></li>
           <li><a href={glossaryPath}>{t.mega.resources.glossary}</a></li>
-          <li><a href={authenticityPath}>{t.mega.resources.authenticity}</a></li>
           <li><a href={faqPath}>{t.mega.resources.faq}</a></li>
         </ul>
         <h5>{C.company}</h5>
