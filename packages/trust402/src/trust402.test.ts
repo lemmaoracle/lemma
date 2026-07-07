@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   publish,
   detectContentType,
-  buildBlogArticleWitness,
-  buildContentCommitmentWitness,
+  blogArticle,
+  contentCommitment,
   computeCid,
 } from "./trust402.js";
-import type { Trust402PublishInput, BlogArticlePayload } from "./trust402.js";
+import type { PublishInput, Article } from "./trust402.js";
 import { create, toScalar } from "@lemmaoracle/sdk";
 import { poseidon5 } from "poseidon-lite";
 
@@ -83,8 +83,8 @@ describe("detectContentType", () => {
 // Witness builders
 // ---------------------------------------------------------------------------
 
-describe("buildBlogArticleWitness", () => {
-  const payload: BlogArticlePayload = Object.freeze({
+describe("blogArticle", () => {
+  const payload: Article = Object.freeze({
     author: "did:ethr:0xabc123",
     body: "Zero-knowledge proofs enable privacy-preserving verification.",
     published: 1714069800,
@@ -93,7 +93,7 @@ describe("buildBlogArticleWitness", () => {
   });
 
   it("returns witness with commitment field", () => {
-    const result = buildBlogArticleWitness(payload);
+    const result = blogArticle(payload);
     expect(result.witness).toHaveProperty("authorHash");
     expect(result.witness).toHaveProperty("published");
     expect(result.witness).toHaveProperty("integrityHash");
@@ -104,7 +104,7 @@ describe("buildBlogArticleWitness", () => {
   });
 
   it("computes commitment as Poseidon5 of witness fields", () => {
-    const result = buildBlogArticleWitness(payload);
+    const result = blogArticle(payload);
     const authorHash = toScalar(payload.author);
     const published = BigInt(payload.published);
     const integrityHash = toScalar(payload.body);
@@ -115,44 +115,44 @@ describe("buildBlogArticleWitness", () => {
   });
 
   it("is deterministic for same input", () => {
-    expect(buildBlogArticleWitness(payload).commitment).toBe(
-      buildBlogArticleWitness(payload).commitment,
+    expect(blogArticle(payload).commitment).toBe(
+      blogArticle(payload).commitment,
     );
   });
 
   it("produces different commitments for different payloads", () => {
-    const different = buildBlogArticleWitness({ ...payload, body: "Different." });
+    const different = blogArticle({ ...payload, body: "Different." });
     expect(different.commitment).not.toBe(
-      buildBlogArticleWitness(payload).commitment,
+      blogArticle(payload).commitment,
     );
   });
 
   it("maps unknown language to 0", () => {
-    const result = buildBlogArticleWitness({ ...payload, lang: "xx" });
+    const result = blogArticle({ ...payload, lang: "xx" });
     expect(result.witness.langCode).toBe("0");
   });
 });
 
-describe("buildContentCommitmentWitness", () => {
+describe("contentCommitment", () => {
   const bytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]); // "Hello"
 
   it("returns witness with fileHash and commitment", () => {
-    const result = buildContentCommitmentWitness(bytes);
+    const result = contentCommitment(bytes);
     expect(result.witness).toHaveProperty("fileHash");
     expect(result.witness).toHaveProperty("commitment");
     expect(result.commitment).toBe(result.witness.commitment);
   });
 
   it("is deterministic for same input", () => {
-    expect(buildContentCommitmentWitness(bytes).commitment).toBe(
-      buildContentCommitmentWitness(bytes).commitment,
+    expect(contentCommitment(bytes).commitment).toBe(
+      contentCommitment(bytes).commitment,
     );
   });
 
   it("produces different commitments for different content", () => {
     const different = new Uint8Array([0x57, 0x6f, 0x72, 0x6c, 0x64]); // "World"
-    expect(buildContentCommitmentWitness(bytes).commitment).not.toBe(
-      buildContentCommitmentWitness(different).commitment,
+    expect(contentCommitment(bytes).commitment).not.toBe(
+      contentCommitment(different).commitment,
     );
   });
 });
@@ -221,7 +221,7 @@ describe("trust402.publish", () => {
   // ── Blog article via witness builder ───────────────────────────────
 
   describe("blog-article circuit", () => {
-    const payload: BlogArticlePayload = Object.freeze({
+    const payload: Article = Object.freeze({
       author: "did:ethr:0xabc123",
       body: "Zero-knowledge proofs enable privacy-preserving verification on decentralized networks.",
       published: 1714069800,
@@ -229,8 +229,8 @@ describe("trust402.publish", () => {
       lang: "en",
     });
 
-    const makeInput = (): Trust402PublishInput => {
-      const { witness, commitment } = buildBlogArticleWitness(payload);
+    const makeInput = (): PublishInput => {
+      const { witness, commitment } = blogArticle(payload);
       return Object.freeze({
         circuitId: "blog-article-v1.2",
         witness,
@@ -290,8 +290,8 @@ describe("trust402.publish", () => {
   describe("content-commitment circuit", () => {
     const bytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]);
 
-    const makeInput = (): Trust402PublishInput => {
-      const { witness, commitment } = buildContentCommitmentWitness(bytes);
+    const makeInput = (): PublishInput => {
+      const { witness, commitment } = contentCommitment(bytes);
       return Object.freeze({
         circuitId: "content-commitment-v1.2",
         witness,
@@ -363,7 +363,7 @@ describe("trust402.publish", () => {
     it("accepts arbitrary circuitId and witness", async () => {
       const client = setupMocks();
 
-      const input: Trust402PublishInput = Object.freeze({
+      const input: PublishInput = Object.freeze({
         circuitId: "blog-article-v1",
         witness: Object.freeze({
           foo: "0x1",
@@ -390,7 +390,7 @@ describe("trust402.publish", () => {
       const client = create({ apiBase: "http://localhost:8787" });
       (client as Record<string, unknown>).fetcher = mockFetch;
 
-      const input: Trust402PublishInput = Object.freeze({
+      const input: PublishInput = Object.freeze({
         circuitId: "content-commitment-v1.2",
         witness: Object.freeze({ fileHash: "0x1", commitment: "0x2" }),
         commitment: "0x2",

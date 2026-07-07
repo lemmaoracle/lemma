@@ -99,7 +99,7 @@ export type PriceInput = Readonly<{ amount: number; currency: "USDC" }>;
  * the circuit's expected inputs. Witness builders for known circuits
  * are exported as convenience utilities (see below).
  */
-export type Trust402PublishInput = Readonly<{
+export type PublishInput = Readonly<{
   /** Circuit ID registered with the Lemma API. */
   circuitId: string;
   /** Witness fields passed to prover.prove(). */
@@ -119,7 +119,7 @@ export type Trust402PublishInput = Readonly<{
 }>;
 
 /** Full listing returned after successful publish. */
-export type Trust402Listing = Readonly<{
+export type Listing = Readonly<{
   listingRoot: string;
   schemaId: string;
   commitment: string;
@@ -142,7 +142,7 @@ export type Trust402Listing = Readonly<{
 /* ------------------------------------------------------------------ */
 
 /** Payload for blog-article content type. */
-export type BlogArticlePayload = Readonly<{
+export type Article = Readonly<{
   author: string; // DID string
   body: string; // article body text
   published: number; // unix timestamp seconds
@@ -151,7 +151,7 @@ export type BlogArticlePayload = Readonly<{
 }>;
 
 /** Result of a witness builder — the witness record plus the commitment. */
-export type WitnessResult = Readonly<{
+export type Witness = Readonly<{
   witness: Readonly<Record<string, string>>;
   commitment: string;
 }>;
@@ -173,9 +173,9 @@ const langToCode = (lang: string): bigint => LANG_MAP[lang.toLowerCase()] ?? 0n;
  *   authorHash, published, integrityHash, words, langCode, commitment
  *   where commitment = poseidon5([authorHash, published, integrityHash, words, langCode])
  */
-export const buildBlogArticleWitness = (
-  payload: BlogArticlePayload,
-): WitnessResult => {
+export const blogArticle = (
+  payload: Article,
+): Witness => {
   const authorHash = toScalar(payload.author);
   const published = BigInt(payload.published);
   const integrityHash = toScalar(payload.body);
@@ -203,9 +203,9 @@ export const buildBlogArticleWitness = (
  * Uses the canonical normalizer: bytes → fieldElements → poseidon2
  * reduction → poseidon1.
  */
-export const buildContentCommitmentWitness = (
+export const contentCommitment = (
   bytes: Uint8Array,
-): WitnessResult => {
+): Witness => {
   const elements = bytesToFieldElements(bytes);
   const fileHash = reduceElements(elements, (inputs: [bigint, bigint]) =>
     poseidon2(inputs),
@@ -247,8 +247,8 @@ export const computeCid = (bytes: Uint8Array): string =>
  */
 export const publish = async (
   client: LemmaClient,
-  input: Trust402PublishInput,
-): Promise<Trust402Listing> => {
+  input: PublishInput,
+): Promise<Listing> => {
   const [{ prover }, { documents }] = await Promise.all([
     import("@lemmaoracle/sdk"),
     import("@lemmaoracle/sdk"),

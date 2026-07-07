@@ -6,7 +6,10 @@
     "rootDir": "src",
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/index.ts",
+    "src/trust402.ts"
+  ],
   "references": [
     { "path": "../sdk" },
     { "path": "../spec" }
