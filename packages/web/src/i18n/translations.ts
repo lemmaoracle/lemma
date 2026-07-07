@@ -47,6 +47,16 @@ export interface Translations {
         readonly complianceSub: string;
         readonly developer: string;
         readonly agentDeveloper: string;
+        readonly lemmaApi: string;
+        readonly lemmaApiSub: string;
+        readonly trust402Pay: string;
+        readonly trust402PaySub: string;
+        readonly trust402Sell: string;
+        readonly trust402SellSub: string;
+        readonly institutionalId: string;
+        readonly institutionalIdSub: string;
+        readonly devResources: string;
+        readonly seeAllPricing: string;
         readonly sealSub: string;
         readonly industriesSub: string;
         readonly trust402: string;
