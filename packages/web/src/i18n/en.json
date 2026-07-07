@@ -5,7 +5,7 @@
     "changelog": "Changelog",
     "essays": "Articles",
     "blog": "Blog",
-    "pillars": "How it works",
+    "pillars": "Lemma API",
     "faq": "FAQ",
     "services": "Plans",
     "pricing": "Pricing",
@@ -20,7 +20,7 @@
     "languageEn": "EN",
     "mega": {
       "pillars": {
-        "label": "Lemma API",
+        "label": "Five proofs",
         "overview": "Lemma API overview",
         "overviewSub": "Five proofs, one API — the full picture",
         "pillar01": "Provenance · Verifiable Origin",

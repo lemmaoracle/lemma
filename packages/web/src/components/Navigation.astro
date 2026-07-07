@@ -24,10 +24,12 @@ const authenticityPath = base ? `${base}/authenticity` : "/authenticity";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const trust402Href = locale === "ja" ? "/ja/trust402/" : "/trust402/";
 const trust402SellHref = `${trust402Href}sell/`;
-// The Lemma API overview is canonical at /pillars (the /lemma-api route
-// redirects there); nav "Lemma API" points straight at the hub.
+// Top-level nav "Lemma API" points at the /pillars overview (the item below,
+// elevated above use-cases). Inside the Plans panel, the "Lemma API" entry is
+// the pricing context, so it deep-links to /pricing#api — avoids duplicating
+// the top-level with the same label + destination.
 // The Trust402 Institutional ID plan is an anchored block on /pricing (#t402).
-const apiHref = pillarsPath;
+const apiHref = `${pricingPath}#api`;
 const t402PricingHref = `${pricingPath}#t402`;
 const plansPrefix = base ? `${base}/plans` : "/plans";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
@@ -146,7 +148,39 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 2. ユースケース — lands on the use-cases listing -->
+    <!-- 2. Lemma API — overview + the five proofs (elevated above use-cases:
+         /pillars is now the Lemma API product page) -->
+    <li class="mega-nav-item">
+      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
+      <div class="mega-panel">
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.pillars.label}</div>
+          <div class="mega-links">
+            <a href={pillarsPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.overview}</span>
+              <span class="mega-link-sub">{t.mega.pillars.overviewSub}</span>
+            </a>
+            <a href={`${pillarsPath}/verifiable-origin/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar01}</span>
+            </a>
+            <a href={sealHref} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.auth}</span>
+            </a>
+            <a href={`${pillarsPath}/agent-authority-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar03}</span>
+            </a>
+            <a href={`${pillarsPath}/verifiable-ai/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar02}</span>
+            </a>
+            <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mega-link">
+              <span class="mega-link-title">{t.mega.pillars.pillar04}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <!-- 3. ユースケース — lands on the use-cases listing -->
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       {locale === "ja" ? (
@@ -190,37 +224,6 @@ const isResourcesActive =
           </div>
         </div>
       )}
-    </li>
-
-    <!-- 3. 仕組み — Lemma API overview + the five proofs -->
-    <li class="mega-nav-item">
-      <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
-      <div class="mega-panel">
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.pillars.label}</div>
-          <div class="mega-links">
-            <a href={pillarsPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.overview}</span>
-              <span class="mega-link-sub">{t.mega.pillars.overviewSub}</span>
-            </a>
-            <a href={`${pillarsPath}/verifiable-origin/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar01}</span>
-            </a>
-            <a href={sealHref} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.auth}</span>
-            </a>
-            <a href={`${pillarsPath}/agent-authority-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar03}</span>
-            </a>
-            <a href={`${pillarsPath}/verifiable-ai/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar02}</span>
-            </a>
-            <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mega-link">
-              <span class="mega-link-title">{t.mega.pillars.pillar04}</span>
-            </a>
-          </div>
-        </div>
-      </div>
     </li>
 
     <!-- リソース — Critical Brief leads; FAQ lives here (not top-level) -->
@@ -295,6 +298,18 @@ const isResourcesActive =
     </div>
 
     <div class="mob-section">
+      <div class="mob-section-header">{t.pillars} <span class="mob-arrow"></span></div>
+      <div class="mob-section-body">
+        <a href={pillarsPath} class="mob-link">{t.mega.pillars.overview}</a>
+        <a href={`${pillarsPath}/verifiable-origin/`} class="mob-link">{t.mega.pillars.pillar01}</a>
+        <a href={sealHref} class="mob-link">{t.mega.pillars.auth}</a>
+        <a href={`${pillarsPath}/agent-authority-proof/`} class="mob-link">{t.mega.pillars.pillar03}</a>
+        <a href={`${pillarsPath}/verifiable-ai/`} class="mob-link">{t.mega.pillars.pillar02}</a>
+        <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mob-link">{t.mega.pillars.pillar04}</a>
+      </div>
+    </div>
+
+    <div class="mob-section">
       <div class="mob-section-header">{t.solutions} <span class="mob-arrow"></span></div>
       <div class="mob-section-body">
         {locale === "ja" ? (
@@ -313,18 +328,6 @@ const isResourcesActive =
             <a href={`${useCasesPath}/defi-bridge-verification/`} class="mob-link">{t.mega.solutions.defiBridge}</a>
           </>
         )}
-      </div>
-    </div>
-
-    <div class="mob-section">
-      <div class="mob-section-header">{t.pillars} <span class="mob-arrow"></span></div>
-      <div class="mob-section-body">
-        <a href={pillarsPath} class="mob-link">{t.mega.pillars.overview}</a>
-        <a href={`${pillarsPath}/verifiable-origin/`} class="mob-link">{t.mega.pillars.pillar01}</a>
-        <a href={sealHref} class="mob-link">{t.mega.pillars.auth}</a>
-        <a href={`${pillarsPath}/agent-authority-proof/`} class="mob-link">{t.mega.pillars.pillar03}</a>
-        <a href={`${pillarsPath}/verifiable-ai/`} class="mob-link">{t.mega.pillars.pillar02}</a>
-        <a href={`${pillarsPath}/regulatory-attribute-proof/`} class="mob-link">{t.mega.pillars.pillar04}</a>
       </div>
     </div>
 
