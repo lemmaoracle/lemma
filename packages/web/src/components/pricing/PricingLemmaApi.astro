@@ -14,6 +14,7 @@
  */
 import type { Locale } from "../../i18n/translations";
 import { DASHBOARD_URL } from "../../config/cta";
+import { PROOF_CLASSES, proofClassHref, proofClassName } from "../../config/proofClasses";
 
 interface Props {
   locale: Locale;
@@ -23,16 +24,15 @@ const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 const specsHref = `${base}/guides`;
 
-// Per-proof-class rates (USD). Canonical rate table — working values, confirm
-// with CTO at PR time. Each class deep-links to its pillar (認証 has no pillar
-// page yet → its Seal LP).
-const classes = [
-  { ja: "来歴", en: "Provenance", rate: "0.005", href: `${base}/pillars/verifiable-origin/` },
-  { ja: "認証", en: "Authentication", rate: "0.01–0.05", href: `${base}/seal/` },
-  { ja: "権限", en: "Authority", rate: "0.05", href: `${base}/pillars/agent-authority-proof/` },
-  { ja: "推論", en: "Inference", rate: "0.07", href: `${base}/pillars/verifiable-ai/` },
-  { ja: "属性", en: "Attribute", rate: "0.20", href: `${base}/pillars/regulatory-attribute-proof/` },
-];
+// Per-proof-class rates + canonical links come from the shared single source
+// (config/proofClasses.ts) so /pricing, /lemma-api and the pillar pages stay
+// consistent. Rates are working values — confirm with CTO.
+const classes = PROOF_CLASSES.map((c) => ({
+  name: proofClassName(c, locale),
+  blurb: c.blurb[locale],
+  rate: c.rate,
+  href: proofClassHref(c, base),
+}));
 
 const t = isJa
   ? {
@@ -45,6 +45,7 @@ const t = isJa
       devUnit: "/月",
       devDesc: "月額なし。証明の発行ごとに x402 で都度決済。検証は常に無料。",
       tableH: "証明クラス別 発行単価",
+      freeNote: "検証は常に無料",
       colClass: "証明クラス",
       colRate: "発行単価 (USD)",
       colLink: "詳細（柱ページ）",
@@ -66,6 +67,7 @@ const t = isJa
       devUnit: "/mo",
       devDesc: "No monthly fee. Each proof settles per issuance via x402. Verification is always free.",
       tableH: "Per-proof-class issuance rates",
+      freeNote: "Verification is always free",
       colClass: "Proof class",
       colRate: "Rate (USD)",
       colLink: "Detail (pillar)",
@@ -93,7 +95,7 @@ const t = isJa
     <p class="api-dev-desc">{t.devDesc}</p>
   </div>
 
-  <div class="api-table-h">{t.tableH}</div>
+  <div class="api-table-h">{t.tableH}<span class="api-free">{t.freeNote}</span></div>
   <div class="api-table-wrap">
     <table class="api-table">
       <thead>
@@ -106,7 +108,10 @@ const t = isJa
       <tbody>
         {classes.map((c) => (
           <tr>
-            <td class="api-cls">{isJa ? c.ja : c.en}</td>
+            <td class="api-cls">
+              <span class="api-cls-name">{c.name}</span>
+              <span class="api-cls-blurb">{c.blurb}</span>
+            </td>
             <td class="api-rate">{c.rate}</td>
             <td><a class="api-cls-link" href={c.href}>→</a></td>
           </tr>
@@ -154,7 +159,8 @@ const t = isJa
   .api-dev-unit { font-size: 14px; font-weight: 400; color: var(--pr-text-3, #5a5a5a); margin-left: 2px; }
   .api-dev-desc { font-size: 13.5px; line-height: 1.7; color: var(--pr-text-2, #3a3a3a); margin: 0; }
 
-  .api-table-h { font-family: var(--pr-display); font-weight: 700; font-size: 16px; color: var(--black, #1a1a1a); margin: 32px 0 12px; }
+  .api-table-h { font-family: var(--pr-display); font-weight: 700; font-size: 16px; color: var(--black, #1a1a1a); margin: 32px 0 12px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  .api-free { font-family: var(--api-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); text-transform: none; }
   .api-table-wrap { overflow-x: auto; }
   .api-table { width: 100%; border-collapse: collapse; background: var(--white, #fff); border: 0.5px solid var(--lemma-line, #e6e1d6); border-radius: 14px; overflow: hidden; }
   .api-table th {
@@ -164,7 +170,9 @@ const t = isJa
   }
   .api-table td { padding: 12px 18px; border-bottom: 0.5px solid var(--lemma-line, #e6e1d6); font-size: 14px; }
   .api-table tr:last-child td { border-bottom: none; }
-  .api-cls { font-weight: 600; color: var(--black, #1a1a1a); }
+  .api-cls { display: flex; flex-direction: column; gap: 2px; }
+  .api-cls-name { font-family: var(--pr-display); font-weight: 700; color: var(--black, #1a1a1a); }
+  .api-cls-blurb { font-size: 12.5px; color: var(--pr-text-3, #5a5a5a); }
   .api-rate { font-family: var(--api-mono); font-weight: 700; color: var(--accent); }
   .api-cls-link { color: var(--accent); font-family: var(--api-mono); font-weight: 700; }
 

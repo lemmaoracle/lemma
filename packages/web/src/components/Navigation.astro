@@ -23,10 +23,9 @@ const authenticityPath = base ? `${base}/authenticity` : "/authenticity";
 const guidesPath = base ? `${base}/guides` : "/guides";
 const trust402Href = locale === "ja" ? "/ja/trust402/" : "/trust402/";
 const trust402SellHref = `${trust402Href}sell/`;
-// Phase 1: Lemma API and the Trust402 Institutional ID plan live as anchored
-// blocks on /pricing (#api / #t402). The dedicated /lemma-api product node is
-// phase 2 — repoint here when it ships.
-const apiHref = `${pricingPath}#api`;
+// The Lemma API product node shipped in phase 2; nav "Lemma API" points there.
+// The Trust402 Institutional ID plan is an anchored block on /pricing (#t402).
+const apiHref = `${base}/lemma-api`;
 const t402PricingHref = `${pricingPath}#t402`;
 const plansPrefix = base ? `${base}/plans` : "/plans";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
