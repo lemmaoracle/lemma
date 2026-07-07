@@ -15,9 +15,13 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import PricingHero from "../components/pricing/PricingHero.astro";
+import PricingPrincipleBand from "../components/pricing/PricingPrincipleBand.astro";
+import PricingProductLines from "../components/pricing/PricingProductLines.astro";
 import PlanPriceModule from "../components/pricing/PlanPriceModule.astro";
 import PricingPacks from "../components/pricing/PricingPacks.astro";
 import PricingCompare from "../components/pricing/PricingCompare.astro";
+import PricingLemmaApi from "../components/pricing/PricingLemmaApi.astro";
+import PricingTrust402Block from "../components/pricing/PricingTrust402Block.astro";
 import PricingAdoption from "../components/pricing/PricingAdoption.astro";
 import PricingFAQ from "../components/pricing/PricingFAQ.astro";
 import PricingVisionClose from "../components/pricing/PricingVisionClose.astro";
@@ -46,9 +50,17 @@ const { locale, t, base } = Astro.props as Props;
   <main class="pr-page">
     <div class="pr-container">
       <PricingHero locale={locale} />
+      {/* Common-principles band + product-line overview (jump to #ent/#api/#t402) */}
+      <PricingPrincipleBand locale={locale} />
+      <PricingProductLines locale={locale} />
+      {/* #ent — enterprise (PlanPriceModule + Packs + Compare) */}
       <PlanPriceModule locale={locale} />
       <PricingPacks locale={locale} />
       <PricingCompare locale={locale} base={base} />
+      {/* #api — Lemma API (developer line) */}
+      <PricingLemmaApi locale={locale} />
+      {/* #t402 — Trust402 (agent line), 4-plan table via shared component */}
+      <PricingTrust402Block locale={locale} />
       <PricingAdoption locale={locale} />
       <PricingFAQ locale={locale} />
     </div>

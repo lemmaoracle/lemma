@@ -9,6 +9,9 @@ import { PRICING } from "../../data/pricing";
 interface Props { locale: Locale }
 const { locale } = Astro.props as Props;
 const h = PRICING.hero;
+const anchors = locale === "ja"
+  ? [{ l: "エンタープライズ", href: "#ent" }, { l: "Lemma API", href: "#api" }, { l: "Trust402", href: "#t402" }]
+  : [{ l: "Enterprise", href: "#ent" }, { l: "Lemma API", href: "#api" }, { l: "Trust402", href: "#t402" }];
 
 function emphasize(s: string): string {
   const terms = ["Lemma"];
@@ -27,6 +30,14 @@ function emphasize(s: string): string {
     <span class="accent">{h.h1Lines[locale][1]}</span>
   </h1>
   <p class="ph-sub" set:html={emphasize(h.sub[locale])} />
+  <nav class="ph-anchors" aria-label={locale === "ja" ? "価格セクション" : "Pricing sections"}>
+    {anchors.map((a, i) => (
+      <Fragment>
+        {i > 0 && <span class="ph-anchor-sep">·</span>}
+        <a href={a.href}>{a.l}</a>
+      </Fragment>
+    ))}
+  </nav>
 </section>
 
 <style>
@@ -77,6 +88,23 @@ function emphasize(s: string): string {
     color: var(--black);
     font-weight: 500;
   }
+  .ph-anchors {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--pr-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+  }
+  .ph-anchors a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+  .ph-anchors a:hover { border-bottom-color: var(--accent); }
+  .ph-anchor-sep { color: var(--pr-text-4); }
   @media (max-width: 720px) {
     .ph-h1 { font-size: 44px; }
     .ph-sub { font-size: 16px; }

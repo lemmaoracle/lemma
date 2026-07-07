@@ -1,0 +1,95 @@
+---
+/**
+ * /pricing — product-line overview: three audience-tagged cards that jump to
+ * the three in-page blocks (#ent / #api / #t402). One engine, three doors.
+ * Inline-bilingual copy.
+ */
+import type { Locale } from "../../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const cards = isJa
+  ? [
+      { tag: "エンタープライズ向け", name: "Lemma エンタープライズ", desc: "Civic / Critical / Compliance — 公共・基幹・金融。月額＋初期構築。", href: "#ent", cta: "3プランを見る →" },
+      { tag: "開発者向け", name: "Lemma API", desc: "ZK 証明の発行 API。クラス別単価・従量課金（認証 suite を内包）。", href: "#api", cta: "単価を見る →" },
+      { tag: "エージェント向け", name: "Trust402", desc: "Pay / Sell の2ページ・Institutional ID。自己サーブの4プラン。", href: "#t402", cta: "4プランを見る →" },
+    ]
+  : [
+      { tag: "For enterprises", name: "Lemma Enterprise", desc: "Civic / Critical / Compliance — public, critical, and financial systems. Monthly + setup.", href: "#ent", cta: "See the 3 plans →" },
+      { tag: "For developers", name: "Lemma API", desc: "The ZK proof issuance API — per-class, usage-based (auth suite included).", href: "#api", cta: "See the rates →" },
+      { tag: "For agents", name: "Trust402", desc: "Pay / Sell + Institutional ID. Four self-serve plans.", href: "#t402", cta: "See the 4 plans →" },
+    ];
+---
+
+<section class="pl" aria-label={isJa ? "製品ライン" : "Product lines"}>
+  <div class="pl-grid">
+    {cards.map((c) => (
+      <a class="pl-card" href={c.href}>
+        <div class="pl-tag">{c.tag}</div>
+        <div class="pl-name">{c.name}</div>
+        <p class="pl-desc">{c.desc}</p>
+        <span class="pl-cta">{c.cta}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .pl-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--white, #fff);
+    border: 0.5px solid var(--lemma-line, #e6e1d6);
+    border-radius: 16px;
+    padding: 26px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .pl-card:hover {
+    border-color: rgba(139, 69, 19, 0.4);
+    box-shadow: 0 8px 24px rgba(139, 69, 19, 0.06);
+    transform: translateY(-2px);
+  }
+  .pl-tag {
+    font-family: var(--pr-mono, "Space Mono", monospace);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pl-name {
+    font-family: var(--pr-display, "Sora", sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--black, #1a1a1a);
+  }
+  .pl-desc {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--pr-text-2, #3a3a3a);
+    margin: 0;
+  }
+  .pl-cta {
+    margin-top: auto;
+    padding-top: 14px;
+    font-family: var(--pr-display, "Sora", sans-serif);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .pl-grid { grid-template-columns: 1fr; }
+  }
+</style>
