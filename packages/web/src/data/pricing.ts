@@ -483,8 +483,19 @@ export const PRICING: PricingContent = {
     eyebrow: { ja: "FAQ", en: "FAQ" },
     h2Head: { ja: "料金について、", en: "Pricing —" },
     h2Accent: { ja: "よくある質問。", en: "common questions." },
+    // Persona filter tabs. `common` is the default active tab; each item below
+    // carries an `audience` matching one of these keys, and PricingFAQ.astro
+    // shows only the active audience's items (client-side, progressive).
+    tabs: [
+      { key: "common", label: { ja: "共通", en: "Common" } },
+      { key: "enterprise", label: { ja: "エンタープライズ", en: "Enterprise" } },
+      { key: "developer", label: { ja: "開発者", en: "Developer" } },
+      { key: "agent", label: { ja: "エージェント", en: "Agent" } },
+    ],
     items: [
+      // — 共通（全プラン） —
       {
+        audience: "common",
         q: { ja: "エンタープライズはなぜ個別見積なのですか?", en: "Why is enterprise custom-quoted?" },
         a: {
           ja: "Lemma API と Trust402 の単価は本ページで公開しています。エンタープライズ（Civic / Critical / Compliance）だけは、ティア・拠点数・稼働保証（SLA）・証明ロジックの複雑さに価格が依存するため、実際のユースケースに応じて個別に見積もります（各プランに開始価格の目安を掲載しています）。",
@@ -492,6 +503,7 @@ export const PRICING: PricingContent = {
         },
       },
       {
+        audience: "common",
         q: { ja: "どのプランが組織に合っていますか?", en: "Which plan fits my organization?" },
         a: {
           ja: "市民・住民向けサービスや公益事業 → Civic。業務継続性・運用基盤への AI 組み込み → Critical。属性検証・監査証跡・規制対応 → Compliance。x402 / MCP 上での実装 → Trust402。判別は Discovery セッションで一緒に整理します。",
@@ -499,6 +511,16 @@ export const PRICING: PricingContent = {
         },
       },
       {
+        audience: "common",
+        q: { ja: "無料トライアルはありますか?", en: "Is there a free trial?" },
+        a: {
+          ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。Lemma API も本番課金までは testnet の Sandbox で無料。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
+          en: "Trust402 includes the Explorer tier for sandbox evaluation, and the Lemma API is free on the testnet Sandbox until production billing begins. Enterprise evaluation runs via a scoped PoC.",
+        },
+      },
+      // — エンタープライズ（Civic / Critical / Compliance） —
+      {
+        audience: "enterprise",
         q: { ja: "料金はどのように設定されていますか?", en: "How is pricing set?" },
         a: {
           ja: "エンタープライズプランは年契約ベース。月額基本料金 + 確認の回数 + 任意の独自テンプレート登録、必要に応じて Option Pack の追加で構成されます。Discovery で Lemma 側が Tier + Pack 構成を提案します。",
@@ -506,6 +528,7 @@ export const PRICING: PricingContent = {
         },
       },
       {
+        audience: "enterprise",
         q: { ja: "Option Pack はどのように選びますか?", en: "How do Option Packs get selected?" },
         a: {
           ja: "Pack 単品販売はありません。上位ティア限定で、Critical / Compliance プランの Tier 2 以上で追加可能。Discovery で業務要件をヒアリングし、Lemma 側が Tier + Pack 構成を提案します。Civic と各プランの Tier 1 は Pack 対象外。",
@@ -513,6 +536,7 @@ export const PRICING: PricingContent = {
         },
       },
       {
+        audience: "enterprise",
         q: {
           ja: "自社の CRM や業務システムと連携できますか? 現場向けの画面は作ってもらえますか?",
           en: "Can you integrate with our CRM or business systems? Can you build front-line screens?",
@@ -523,24 +547,37 @@ export const PRICING: PricingContent = {
         },
       },
       {
-        q: { ja: "無料トライアルはありますか?", en: "Is there a free trial?" },
+        audience: "enterprise",
+        q: { ja: "低いティアから始めてアップグレードできますか?", en: "Can we start at a lower tier and upgrade?" },
         a: {
-          ja: "Trust402 には、お試し用の Explorer ティア（サンドボックス）が含まれます。エンタープライズの評価は、範囲を区切った PoC（実証）で対応します。",
-          en: "Trust402 includes the Explorer tier for sandbox evaluation. Enterprise evaluation runs via a scoped PoC.",
+          ja: "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。",
+          en: "Yes. Every enterprise tier is designed to move up as the deployment grows.",
         },
       },
+      // — 開発者（Lemma API） —
       {
+        audience: "developer",
         q: { ja: "Lemma API はいつ使えますか? いくらですか?", en: "When can I use the Lemma API, and how much?" },
         a: {
           ja: "証明の発行はクラスごとに単価が決まっていて、検証はいつでも無料です。単価の一覧は、上の Lemma API プランセクションにまとめています。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。",
           en: "Issuance is priced per proof class, and verification is always free — the full rate list is in the Lemma API section above. Production billing is coming soon; until then you can try it free on the testnet Sandbox.",
         },
       },
+      // — エージェント（Trust402） —
       {
-        q: { ja: "低いティアから始めてアップグレードできますか?", en: "Can we start at a lower tier and upgrade?" },
+        audience: "agent",
+        q: { ja: "Pay と Sell の違いは? 発行枠は共有ですか?", en: "How do Pay and Sell differ? Is the issuance allowance shared?" },
         a: {
-          ja: "はい。すべてのエンタープライズティアはデプロイメントの成長に合わせて上方移行できるように設計されています。",
-          en: "Yes. Every enterprise tier is designed to move up as the deployment grows.",
+          ja: "Pay は AI エージェントの支払い、Sell は成果の出品です。どちらも 1 つの発行枠でまかなえ、プランを分ける必要はありません。検証は常に無料、販売手数料は 0%（売上はすべて手元に残ります）。",
+          en: "Pay is the AI agent's payment; Sell is listing what it produces. Both draw on a single issuance allowance — no need to split plans. Verification is always free and the sales commission is 0% (you keep 100%).",
+        },
+      },
+      {
+        audience: "agent",
+        q: { ja: "決済はどの通貨で、手数料はかかりますか?", en: "What currency is settlement in, and are there fees?" },
+        a: {
+          ja: "証明の発行ごとに x402 で USDC を都度決済します（従量・最低額なし）。検証は無料で、Lemma は売上に触れません（手数料 0%）。まず試すなら Explorer ティアが testnet で無制限・無料です。",
+          en: "Each proof issuance settles per-use in USDC over x402 (metered, no minimum). Verification is free and Lemma never touches your revenue (0% commission). To try it first, the Explorer tier is unlimited and free on testnet.",
         },
       },
     ],

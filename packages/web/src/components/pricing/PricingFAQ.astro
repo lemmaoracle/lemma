@@ -1,6 +1,11 @@
 ---
 /**
- * §6 — Pricing FAQ. 7 plain items (no accordion) with mono "Q." prefix.
+ * §6 — Pricing FAQ. Persona-filtered: a pill tablist (共通 / エンタープライズ /
+ * 開発者 / エージェント) shows only the active audience's Q&A. Each item carries
+ * an `audience` (see pricing.ts faq.tabs / faq.items). Default active = the
+ * first tab (`common`). Filtering is CSS-driven off `data-active` on the panel,
+ * so a single inline script only has to swap that attribute — and every Q&A
+ * stays in the DOM for crawlers even before the script runs.
  */
 import type { Locale } from "../../i18n/translations";
 import { PRICING } from "../../data/pricing";
@@ -8,6 +13,8 @@ import { PRICING } from "../../data/pricing";
 interface Props { locale: Locale }
 const { locale } = Astro.props as Props;
 const f = PRICING.faq;
+const isJa = locale === "ja";
+const defaultTab = f.tabs[0].key;
 ---
 
 <section class="pf-section" id="faq">
@@ -17,18 +24,64 @@ const f = PRICING.faq;
     <span class="accent">{f.h2Accent[locale]}</span>
   </h2>
 
-  <div class="pf-list">
-    {f.items.map((item) => (
-      <article class="pf-item">
-        <h3 class="pf-q">{item.q[locale]}</h3>
-        <p class="pf-a">{item.a[locale]}</p>
-      </article>
+  <div class="pf-tabs" role="tablist" aria-label={isJa ? "立場でしぼり込む" : "Filter by audience"}>
+    {f.tabs.map((tab) => (
+      <button
+        type="button"
+        class="pf-tab"
+        role="tab"
+        data-faq-tab={tab.key}
+        aria-selected={tab.key === defaultTab ? "true" : "false"}
+      >
+        {tab.label[locale]}
+      </button>
     ))}
+  </div>
+
+  <div class="pf-panel" data-active={defaultTab}>
+    <div class="pf-list">
+      {f.items.map((item) => (
+        <article class="pf-item" data-audience={item.audience}>
+          <h3 class="pf-q">{item.q[locale]}</h3>
+          <p class="pf-a">{item.a[locale]}</p>
+        </article>
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
   .pf-section { scroll-margin-top: 120px; }
+
+  /* Persona filter pills — mirrors the sticky section-nav pill treatment. */
+  .pf-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 4px;
+  }
+  .pf-tab {
+    font-family: var(--pr-display);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--pr-text-2);
+    cursor: pointer;
+    padding: 6px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--lemma-line, #e6e1d6);
+    background: var(--white, #fff);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .pf-tab:not([aria-selected="true"]):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .pf-tab[aria-selected="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--lemma-cream, #fcfaf5);
+  }
+
   .pf-list {
     display: flex;
     flex-direction: column;
@@ -39,6 +92,17 @@ const f = PRICING.faq;
     padding: 24px 0;
     border-bottom: 0.5px solid var(--lemma-line);
   }
+  /* Show only the active audience's items. Every item hidden by default; the
+     panel's data-active un-hides the matching set. No-JS falls back to the
+     default (common) tab; all items remain in the DOM regardless. */
+  .pf-item { display: none; }
+  .pf-panel[data-active="common"] .pf-item[data-audience="common"],
+  .pf-panel[data-active="enterprise"] .pf-item[data-audience="enterprise"],
+  .pf-panel[data-active="developer"] .pf-item[data-audience="developer"],
+  .pf-panel[data-active="agent"] .pf-item[data-audience="agent"] {
+    display: block;
+  }
+
   .pf-q {
     font-family: var(--pr-display);
     font-size: 17px;
@@ -66,3 +130,21 @@ const f = PRICING.faq;
     padding-left: 30px;
   }
 </style>
+
+<script>
+  (function () {
+    const section = document.getElementById("faq");
+    if (!section) return;
+    const panel = section.querySelector<HTMLElement>(".pf-panel");
+    const tabs = Array.from(section.querySelectorAll<HTMLButtonElement>(".pf-tab"));
+    if (!panel || !tabs.length) return;
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const key = tab.getAttribute("data-faq-tab");
+        if (!key) return;
+        panel.setAttribute("data-active", key);
+        tabs.forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+      });
+    });
+  })();
+</script>
