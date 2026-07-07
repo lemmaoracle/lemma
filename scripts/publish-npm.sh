@@ -314,7 +314,7 @@ if [[ "$TARGET" == "all" ]]; then
     echo "  - @lemmaoracle/sdk@$(node -p "require('./packages/sdk/package.json').version")"
     echo "  - @lemmaoracle/seal@$(node -p "require('./packages/seal/package.json').version")"
     echo "  - @lemmaoracle/agent@$(node -p "require('./packages/agent/package.json').version")"
-    echo "  - @trust402/sdk@$(node -p "require('./packages/trust402/package.json').version")""
+    echo "  - @trust402/sdk@$(node -p "require('./packages/trust402/package.json').version")"
     echo "  - @lemmaoracle/x402@$(node -p "require('./packages/x402/package.json').version")"
     echo "  - @lemmaoracle/mcp@$(node -p "require('./packages/mcp/package.json').version")"
     echo ""
@@ -333,7 +333,7 @@ else
     esac
 
     echo ""
-    echo "📋 Published: $TARGET@$(node -p "require('./packages/${TARGET#@lemmaoracle/}/package.json').version")"
+    echo "📋 Published: $TARGET@$(node -p "require('./packages/${TARGET#*/}/package.json').version")"
 fi
 
 echo ""
