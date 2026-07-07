@@ -1,0 +1,95 @@
+---
+/**
+ * Shared Trust402 4-tier pricing grid (Explorer / Builder / Pro / Institutional),
+ * rendered from the single source T402_PRICING so the Trust402 Sell product page
+ * and the consolidated /pricing page can never drift on prices or plans.
+ *
+ * Self-contained: it defines the Trust402 sub-brand tokens on its own
+ * `.t402-tiers` wrapper and carries all the tier CSS, so it renders correctly
+ * dropped into ANY host scope — the Trust402 `.t402` pages or the `.pr-page`
+ * /pricing scope (whose brand tokens differ). The footnote is intentionally NOT
+ * rendered here; each host renders `T402_PRICING.footnote[locale]` itself (still
+ * one shared string, so no drift), keeping this component to just the cards.
+ */
+import type { Locale } from "../../i18n/translations";
+import { T402_PRICING } from "../../data/trust402Pricing";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props as Props;
+---
+
+<div class="t402-tiers">
+  <div class="tiers">
+    {T402_PRICING.tiers.map((tier) => (
+      <div class:list={["tier", { featured: tier.featured, inst: tier.dark, badged: !!tier.badge }]}>
+        {tier.badge && <span class="tbadge">{tier.badge[locale]}</span>}
+        <div class="tname">{tier.name}</div>
+        <div class="tpos">{tier.pos[locale]}</div>
+        <div class="tprice">{tier.price[locale]}{tier.priceUnit && <small> {tier.priceUnit[locale]}</small>}</div>
+        <div class="tmeter">{tier.meter[locale]}</div>
+        <ul class="tlist">
+          {tier.features.map((f) => (
+            <li class:list={[{ soon: f.soon }]}>{f.text[locale]}</li>
+          ))}
+        </ul>
+        {tier.state && !tier.badge && <div class="tstate">{tier.state[locale]}</div>}
+        {tier.contact && <a class="tcontact" href={locale === "ja" ? tier.contact.hrefJa : tier.contact.hrefEn}>{tier.contact.label[locale]}</a>}
+        <div class="tpay">{tier.payment[locale]}</div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* Trust402 sub-brand tokens defined on the component wrapper so styling
+     travels with the markup regardless of the host page's scope. */
+  .t402-tiers {
+    --green: #b6f500;
+    --green-link: #4b6b0f;
+    --green-deep: #8fbf00;
+    --ink: #1f1e1a;
+    --ink-soft: #4a4942;
+    --muted: #6f6e66;
+    --surface: #ecebe3;
+    --card: #fff;
+    --border: #d8d6cc;
+    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .t402-tiers .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .t402-tiers .tier { position: relative; color: var(--ink); background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px 22px; display: flex; flex-direction: column; }
+  .t402-tiers .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
+  /* Prominent "coming soon" badge on the featured card top border (Pro = Phase 2). */
+  .t402-tiers .tier .tbadge { position: absolute; top: -12px; right: 16px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--green); color: var(--ink); border: 1px solid var(--green-deep); border-radius: 999px; padding: 4px 12px; }
+  /* No bottom state line on a badged card — keep the payment line bottom-aligned. */
+  .t402-tiers .tier.badged .tpay { margin-top: auto; padding-top: 14px; }
+  .t402-tiers .tier .tname { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .t402-tiers .tier .tpos { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; min-height: 38px; }
+  .t402-tiers .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .t402-tiers .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .t402-tiers .tier .tmeter { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); margin: 8px 0 14px; min-height: 38px; }
+  .t402-tiers .tier .tlist { list-style: none; margin: 0 0 16px; padding: 0; font-size: 13px; color: var(--ink-soft); }
+  .t402-tiers .tier .tlist li { padding: 5px 0 5px 20px; position: relative; border-bottom: 1px dotted var(--border); }
+  .t402-tiers .tier .tlist li:last-child { border-bottom: none; }
+  .t402-tiers .tier .tlist li::before { content: "✓"; position: absolute; left: 0; color: var(--green-deep); font-family: var(--font-mono); }
+  .t402-tiers .tier .tlist li.soon { color: var(--muted); }
+  .t402-tiers .tier .tlist li.soon::before { content: "◷"; color: var(--muted); }
+  .t402-tiers .tier .tstate { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
+  .t402-tiers .tier .tcontact { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); text-decoration: none; }
+  .t402-tiers .tier .tpay { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .t402-tiers .tier.inst { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .t402-tiers .tier.inst .tpos { color: #a8a79e; }
+  .t402-tiers .tier.inst .tprice { color: var(--green); }
+  .t402-tiers .tier.inst .tprice small { color: #a8a79e; }
+  .t402-tiers .tier.inst .tmeter { color: #d7f58a; }
+  .t402-tiers .tier.inst .tlist { color: #d8d7ce; }
+  .t402-tiers .tier.inst .tlist li { border-bottom-color: #3a3934; }
+  .t402-tiers .tier.inst .tlist li::before { color: var(--green); }
+  .t402-tiers .tier.inst .tlist li.soon { color: #8b8a80; }
+  .t402-tiers .tier.inst .tstate, .t402-tiers .tier.inst .tcontact { color: var(--green); }
+  .t402-tiers .tier.inst .tpay { color: #8b8a80; }
+  @media (max-width: 1024px) { .t402-tiers .tiers { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px) { .t402-tiers .tiers { grid-template-columns: 1fr; } }
+</style>
