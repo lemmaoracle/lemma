@@ -20,13 +20,14 @@
     "languageEn": "EN",
     "mega": {
       "pillars": {
-        "label": "4つの柱",
-        "overview": "4つの柱 概要",
-        "overviewSub": "検証可能AIインフラの全体像",
-        "pillar01": "Pillar 01 — 来歴証明",
-        "pillar02": "Pillar 02 — 検証可能AI",
-        "pillar03": "Pillar 03 — エージェント権限証明",
-        "pillar04": "Pillar 04 — 規制属性証明"
+        "label": "Lemma API",
+        "overview": "Lemma API 全体像",
+        "overviewSub": "5つの証明を、1つの API で",
+        "pillar01": "来歴 · Verifiable Origin",
+        "auth": "認証 · Seal",
+        "pillar03": "権限 · Agent Authority",
+        "pillar02": "推論 · Verifiable AI",
+        "pillar04": "属性 · Regulatory Attribute"
       },
       "products": {
         "enterprise": "エンタープライズ向け",
@@ -192,11 +193,11 @@
   },
   "faq": {
     "metaTitle": "FAQ — AI と個人情報保護、よくあるご質問 | Lemma",
-    "metaDescription": "Lemma の AI 個人情報保護・機微情報の開示・改正個人情報保護法対応に関する FAQ。Discovery Call では技術的な詳細・個人情報・機密情報の開示は不要です。AI のための信頼インフラ、4 つの軸、Critical Brief も解説。",
+    "metaDescription": "Lemma の AI 個人情報保護・機微情報の開示・改正個人情報保護法対応に関する FAQ。Discovery Call では技術的な詳細・個人情報・機密情報の開示は不要です。AI のための信頼インフラ、5つの証明、Critical Brief も解説。",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — 真正性のある AI データ基盤",
-      "p": "Lemma がどのように AI のための信頼インフラ（真正性のある AI データ基盤）を提供するか — 4 つの軸、技術的実装、検出層との関係、実事案 (Critical Brief) を網羅した Q&A。"
+      "p": "Lemma がどのように AI のための信頼インフラ（真正性のある AI データ基盤）を提供するか — 5つの証明、技術的実装、検出層との関係、実事案 (Critical Brief) を網羅した Q&A。"
     },
     "intentRouter": {
       "label": "目的から探す",
@@ -208,8 +209,8 @@
           "href": "#what-is-lemma"
         },
         {
-          "title": "4 つの軸",
-          "desc": "基盤を構成する 4 本柱 (P1〜P4)",
+          "title": "5つの証明",
+          "desc": "Lemma API を構成する 5つの証明",
           "href": "#trust-layers"
         },
         {
@@ -244,7 +245,7 @@
         "items": [
           {
             "q": "Lemma を一言で言うと？",
-            "a": "Lemma は、ゼロ知識証明を用いた AI のための信頼インフラです。生データを渡さずに、実績・属性・来歴の正しさを証明し、第三者が独立して検証できるようにします。4 つの軸（来歴 / 検証可能 AI / エージェント権限 / 規制属性）で AI ワークフローの全工程をカバー。対応標準（Trusted Web 準拠）：MCP・A2A・x402・C2PA・W3C VC。"
+            "a": "Lemma は、ゼロ知識証明を用いた AI のための信頼インフラです。生データを渡さずに、実績・属性・来歴の正しさを証明し、第三者が独立して検証できるようにします。Lemma API の5つの証明（来歴 / 認証 / 権限 / 推論 / 属性）で AI ワークフローの全工程をカバー。対応標準（Trusted Web 準拠）：MCP・A2A・x402・C2PA・W3C VC。"
           },
           {
             "q": "「AI 信頼性」とは？",
@@ -281,7 +282,7 @@
             "a": "Trusted Web は、国（内閣官房デジタル市場競争本部・デジタル庁）が推進するデジタル社会の信頼の枠組みです。「特定のサービスに過度に依存せず、やり取りするデータや相手を検証できるようにする」ことを目指します。Lemma はこの方向性を現場の AI ワークフローに実装した信頼インフラです。対応標準（MCP・A2A・x402・C2PA・W3C VC）は Trusted Web の考え方と軌を一にする国際標準で構成されています。",
             "links": [
               {
-                "label": "4 つの柱",
+                "label": "Lemma API",
                 "href": "/ja/pillars"
               }
             ]
@@ -290,18 +291,18 @@
       },
       {
         "id": "trust-layers",
-        "title": "2. 4 つの軸",
+        "title": "2. 5つの証明",
         "items": [
           {
-            "q": "Lemma の「4 つの柱」とは？",
-            "a": "信頼インフラとしての Lemma を構成する 4 つの軸です: 来歴証明 (P1) / 検証可能 AI (P2) / エージェント権限証明 (P3) / 規制属性証明 (P4)。別個の製品ではなく、1 つの基盤を 4 つの軸で説明します。"
+            "q": "Lemma の「5つの証明」とは？",
+            "a": "Lemma API を構成する 5つの証明です: 来歴証明（来歴）/ Seal（認証）/ エージェント権限証明（権限）/ 検証可能 AI（推論）/ 規制属性証明（属性）。別個の製品ではなく、1 つの API を5つの証明で説明します。"
           },
           {
-            "q": "どの柱から検討すべき？",
-            "a": "課題ベースで選びます。データの出所を証明したい → P1、AI の判断根拠を後から証明したい → P2、AI エージェントの操作権限を証明したい → P3、規制属性を生データを渡さず証明したい → P4。各柱に対応する実事案は Critical Brief で扱っています。",
+            "q": "どの証明から検討すべき？",
+            "a": "課題ベースで選びます。データの出所を証明したい → 来歴、鍵を送らず本人性を証明したい → 認証（Seal）、AI エージェントの操作権限を証明したい → 権限、AI の判断根拠を後から証明したい → 推論、規制属性を生データを渡さず証明したい → 属性。各証明に対応する実事案は Critical Brief で扱っています。",
             "links": [
               {
-                "label": "4 つの柱",
+                "label": "Lemma API",
                 "href": "/ja/pillars"
               },
               {
@@ -463,7 +464,7 @@
             ]
           },
           {
-            "q": "どの柱の事案がある？",
+            "q": "どの証明の事案がある？",
             "a": "来歴 (ブリッジ / サプライチェーン / AI 生成物)、検証可能 AI (誤判定 / 透かし)、エージェント権限 (自律攻撃 / MCP)、規制属性 (KYC 漏洩) を横断。Pillar 別・Category 別アーカイブから辿れます。",
             "links": [
               {
@@ -607,7 +608,7 @@
       "title": "目次",
       "links": [
         "Lemma とは？",
-        "4 つの軸",
+        "5つの証明",
         "セキュリティとプライバシー",
         "オンチェーン来歴証明",
         "AI エージェントと権限",
@@ -1009,14 +1010,14 @@
     "heroTitle": "AI のための信頼インフラ。",
     "subtitle": "AI が「どこから来たデータか」「どう判断したか」「誰の代理で動いたか」「規制を満たすか」と問われる時代に。Lemma の信頼インフラは、独立検証可能な暗号証明で 4 つの軸に応える設計。",
     "categoryEyebrow": "信頼インフラ",
-    "categoryAttribution": "4 つの軸のひとつ。",
+    "categoryAttribution": "Lemma API の5つの証明のひとつ。",
     "viewPillar": "詳細を見る →",
     "blockProblem": "Lemma が解決する領域",
     "blockWhyNow": "なぜ今か",
     "blockHowLemmaFits": "Lemmaの役割",
     "blockUseCases": "ユースケース",
     "blockRecentThinking": "最新の考察",
-    "blockOtherPillars": "Lemma の他の柱",
+    "blockOtherPillars": "Lemma の他の証明",
     "viewUseCase": "ユースケースを見る →",
     "comingSoon": "ユースケースは順次追加予定です。",
     "ctaEyebrow": "はじめる",

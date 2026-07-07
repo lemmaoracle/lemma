@@ -33,8 +33,9 @@ export interface Translations {
         readonly overview: string;
         readonly overviewSub: string;
         readonly pillar01: string;
-        readonly pillar02: string;
+        readonly auth: string;
         readonly pillar03: string;
+        readonly pillar02: string;
         readonly pillar04: string;
       }>;
       readonly products: Readonly<{

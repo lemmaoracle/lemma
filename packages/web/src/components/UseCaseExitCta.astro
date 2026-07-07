@@ -52,7 +52,7 @@ const tallyWhitepaperId = locale === "ja" ? "xX0VYv" : "7RJXdR";
 const briefsHref = base ? `${base}/critical/briefs/` : "/critical/briefs/";
 const pillarHrefRoot = base ? `${base}${PILLAR_HREF[variant.pillarCode]}` : PILLAR_HREF[variant.pillarCode];
 
-const badge = `ユースケース · Pillar 0${variant.pillarCode.slice(1)} · ${INDUSTRY_LABEL_JA[variant.industry]}`;
+const badge = `ユースケース · ${INDUSTRY_LABEL_JA[variant.industry]}`;
 const thesis = isDev
   ? "Explorer で今すぐ試せます。鍵を渡さず、証明だけを送る実装をドキュメントから。"
   : "自社の業務に合うかは、最初の会話で確認できます。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。";
@@ -78,7 +78,7 @@ const jsonLd = {
   "@type": "ItemList",
   name: `次のステップ — ${pillarLabel} (${INDUSTRY_LABEL_JA[variant.industry]})`,
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: `Pillar 0${variant.pillarCode.slice(1)} — ${pillarLabel}`, url: `https://lemma.frame00.com${pillarHrefRoot}` },
+    { "@type": "ListItem", position: 1, name: pillarLabel, url: `https://lemma.frame00.com${pillarHrefRoot}` },
     { "@type": "ListItem", position: 2, name: "Critical Brief 一覧", url: `https://lemma.frame00.com${briefsHref}` },
     {
       "@type": "ListItem",

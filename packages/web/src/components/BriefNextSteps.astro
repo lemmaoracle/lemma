@@ -52,7 +52,7 @@ const VARIANTS: Record<BriefNextStepsProps["pillar"], Variant> = {
   "01-verifiable-origin": {
     pillarCode: "P1",
     reader: "dev",
-    badge: "Pillar 01 · 来歴証明",
+    badge: "来歴証明",
     thesis: "監視を増やしても、メッセージやコードの起点の真正性は後からは復元できない。残るのは取引・取り込みの前に origin を証明する独立層です。",
     useCases: [
       { label: "DeFi ブリッジ検証", slug: "defi-bridge-verification" },
@@ -60,12 +60,12 @@ const VARIANTS: Record<BriefNextStepsProps["pillar"], Variant> = {
       { label: "RAG コンテンツ来歴", slug: "rag-content-provenance" },
     ],
     pillarHref: `${pillarHubBase}/verifiable-origin/`,
-    pillarName: "Pillar 01 — 来歴証明",
+    pillarName: "来歴証明",
   },
   "02-verifiable-ai": {
     pillarCode: "P2",
     reader: "enterprise",
-    badge: "Pillar 02 · 検証可能 AI",
+    badge: "検証可能 AI",
     thesis: "検出の精度を上げても、その判断が正当な入力と根拠で下されたことは後からは立証しにくい。残るのは判断の根拠を判断時に固定する独立層です。",
     useCases: [
       { label: "AI 監査ログ証明", slug: "ai-audit-log-proof" },
@@ -73,24 +73,24 @@ const VARIANTS: Record<BriefNextStepsProps["pillar"], Variant> = {
       { label: "RAG ソース認証", slug: "rag-source-attestation" },
     ],
     pillarHref: `${pillarHubBase}/verifiable-ai/`,
-    pillarName: "Pillar 02 — 検証可能 AI",
+    pillarName: "検証可能 AI",
   },
   "03-agent-authority": {
     pillarCode: "P3",
     reader: "dev",
-    badge: "Pillar 03 · エージェント権限証明",
+    badge: "エージェント権限証明",
     thesis: "実行ログを監視しても、誰の権限でどこまで許可されたかは、事前に証明がなければ後から争えない。残るのは委任を取引前に証跡化する独立層です。",
     useCases: [
       { label: "マルチエージェント・ワークフロー", slug: "multi-agent-workflows" },
       { label: "委任型トレジャリー", slug: "delegated-treasury" },
     ],
     pillarHref: `${pillarHubBase}/agent-authority-proof/`,
-    pillarName: "Pillar 03 — エージェント権限証明",
+    pillarName: "エージェント権限証明",
   },
   "04-regulatory-attribute": {
     pillarCode: "P4",
     reader: "enterprise",
-    badge: "Pillar 04 · 規制属性証明",
+    badge: "規制属性証明",
     thesis: "検出を増やしても、主体が要件を満たし制裁リストに載っていないことは、原データなしには示せない。残るのは属性を選択的開示で証明する独立層です。",
     useCases: [
       { label: "KYC/AML 選択的開示", slug: "kyc-aml-selective-disclosure" },
@@ -98,7 +98,7 @@ const VARIANTS: Record<BriefNextStepsProps["pillar"], Variant> = {
       { label: "金融データ流出防止", slug: "financial-data-exfiltration" },
     ],
     pillarHref: `${pillarHubBase}/regulatory-attribute-proof/`,
-    pillarName: "Pillar 04 — 規制属性証明",
+    pillarName: "規制属性証明",
   },
 };
 

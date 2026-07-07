@@ -20,13 +20,14 @@
     "languageEn": "EN",
     "mega": {
       "pillars": {
-        "label": "Four Pillars",
-        "overview": "Four Pillars Overview",
-        "overviewSub": "The full architecture of verifiable-AI infrastructure",
-        "pillar01": "Pillar 01 — Verifiable Origin",
-        "pillar02": "Pillar 02 — Verifiable AI",
-        "pillar03": "Pillar 03 — Agent Authority Proof",
-        "pillar04": "Pillar 04 — Regulatory Attribute Proof"
+        "label": "Lemma API",
+        "overview": "Lemma API overview",
+        "overviewSub": "Five proofs, one API — the full picture",
+        "pillar01": "Provenance · Verifiable Origin",
+        "auth": "Authentication · Seal",
+        "pillar03": "Authority · Agent Authority",
+        "pillar02": "Inference · Verifiable AI",
+        "pillar04": "Attribute · Regulatory Attribute"
       },
       "products": {
         "enterprise": "For enterprises",
@@ -192,11 +193,11 @@
   },
   "faq": {
     "metaTitle": "FAQ — AI & personal data protection | Lemma",
-    "metaDescription": "FAQ on AI and personal data protection with Lemma — no disclosure of sensitive information, personal data, or confidential data in the Discovery Call. Plus the trust infrastructure for AI, the four trust axes, and Critical Brief.",
+    "metaDescription": "FAQ on AI and personal data protection with Lemma — no disclosure of sensitive information, personal data, or confidential data in the Discovery Call. Plus the trust infrastructure for AI, the five proofs, and Critical Brief.",
     "hero": {
       "tag": "FAQ",
       "h1": "Lemma FAQ — Trust Infrastructure for AI.",
-      "p": "How Lemma provides a trust foundation for AI — the four trust axes, technical implementation, the detection-vs-proof gap, and real incidents (Critical Brief)."
+      "p": "How Lemma provides a trust foundation for AI — the five proofs, technical implementation, the detection-vs-proof gap, and real incidents (Critical Brief)."
     },
     "intentRouter": {
       "label": "Find by intent",
@@ -208,8 +209,8 @@
           "href": "#what-is-lemma"
         },
         {
-          "title": "Four trust axes",
-          "desc": "The four axes that compose the foundation (P1–P4)",
+          "title": "Five proofs",
+          "desc": "The five proofs that compose the Lemma API",
           "href": "#trust-layers"
         },
         {
@@ -244,7 +245,7 @@
         "items": [
           {
             "q": "What is Lemma, in one sentence?",
-            "a": "Lemma is the trust infrastructure for AI — a single layer that makes the data an AI reads, the AI's judgments, the authority of AI agents, and regulatory attributes cryptographically provable. Concretely, it is composed of four trust axes (origin / verifiable AI / agent authority / regulatory attribute)."
+            "a": "Lemma is the trust infrastructure for AI — a single layer that makes the data an AI reads, the AI's judgments, the authority of AI agents, and regulatory attributes cryptographically provable. Concretely, it is the Lemma API, composed of five proofs (provenance / authentication / authority / inference / regulatory attribute)."
           },
           {
             "q": "What does \"AI Trust\" mean?",
@@ -276,18 +277,18 @@
       },
       {
         "id": "trust-layers",
-        "title": "2. Four trust axes",
+        "title": "2. Five proofs",
         "items": [
           {
-            "q": "What are Lemma's \"four pillars\"?",
-            "a": "The four axes that compose Lemma as a trust infrastructure: Verifiable Origin (P1), Verifiable AI (P2), Agent Authority Proof (P3), and Regulatory Attribute Proof (P4). Not separate products — a single foundation explained through four axes."
+            "q": "What are Lemma's \"five proofs\"?",
+            "a": "The five proofs that compose the Lemma API: Verifiable Origin (provenance), Authentication (Seal), Agent Authority Proof (authority), Verifiable AI (inference), and Regulatory Attribute Proof (attribute). Not separate products — one API explained through five proofs."
           },
           {
-            "q": "Which pillar should I start with?",
-            "a": "Choose by problem. Want to prove where data comes from → P1. Want to prove the basis of an AI judgment after the fact → P2. Want to prove the operational authority of an AI agent → P3. Want to prove regulatory attributes without handing over raw data → P4. Each pillar has corresponding real incidents in Critical Brief.",
+            "q": "Which proof should I start with?",
+            "a": "Choose by problem. Want to prove where data comes from → Verifiable Origin. Want to prove identity without sending a key → Authentication (Seal). Want to prove the operational authority of an AI agent → Agent Authority Proof. Want to prove the basis of an AI judgment after the fact → Verifiable AI. Want to prove regulatory attributes without handing over raw data → Regulatory Attribute Proof. Each proof has corresponding real incidents in Critical Brief.",
             "links": [
               {
-                "label": "Four Pillars",
+                "label": "Lemma API",
                 "href": "/pillars"
               },
               {
@@ -593,7 +594,7 @@
       "title": "Contents",
       "links": [
         "What is Lemma?",
-        "Four trust axes",
+        "Five proofs",
         "Security & Privacy",
         "On-Chain Provenance",
         "AI Agents and Authority",
@@ -995,14 +996,14 @@
     "heroTitle": "The trust infrastructure for AI.",
     "subtitle": "When AI is asked \"where did the data come from\", \"how did it decide\", \"by whose authority\", and \"does this satisfy the regulation\" — Lemma's trust infrastructure responds with independently verifiable cryptographic proofs across four axes.",
     "categoryEyebrow": "TRUST INFRASTRUCTURE",
-    "categoryAttribution": "One of four axes.",
-    "viewPillar": "View pillar →",
+    "categoryAttribution": "One of the Lemma API's five proofs.",
+    "viewPillar": "View proof →",
     "blockProblem": "What Lemma Solves",
     "blockWhyNow": "Why Now",
     "blockHowLemmaFits": "How Lemma Fits",
     "blockUseCases": "Use Cases",
     "blockRecentThinking": "Recent Thinking",
-    "blockOtherPillars": "Lemma's Other Pillars",
+    "blockOtherPillars": "Lemma's Other Proofs",
     "viewUseCase": "View use case →",
     "comingSoon": "Use cases coming soon — stay tuned.",
     "ctaEyebrow": "Get Started",
