@@ -1,22 +1,18 @@
 ---
-import PillarsHubV2 from "../../templates/PillarsHubV2.astro";
+// /pillars — the canonical "Lemma API 全体像" hub (code納品 20260707). The old
+// pillars/4-axes hub was retired; the short-lived /lemma-api route was removed.
+import LemmaApiTemplate from "../../templates/LemmaApiTemplate.astro";
 import { getTranslations } from "../../i18n/translations";
-import bodyEn from "../../config/pillars-hub-v2/index.en.html?raw";
 
 const locale = "en";
 const t = getTranslations(locale);
 const base = "";
-const metaTitle =
-  "Trust infrastructure for AI — cryptographic proof for provenance, AI decisions, authority & regulatory attributes | Lemma";
-const metaDescription =
-  "Trust infrastructure for AI. Four axes — provenance, AI decisions, agent authority, regulatory attributes — return a cryptographic proof for the data AI uses. Add one layer to your existing workflow and proof rides every step.";
 ---
 
-<PillarsHubV2
+<LemmaApiTemplate
   locale={locale}
   t={t}
   base={base}
-  body={bodyEn}
-  metaTitle={metaTitle}
-  metaDescription={metaDescription}
+  pagePath="/pillars/"
+  ogImage="https://lemma.frame00.com/og/pillars/en.png"
 />

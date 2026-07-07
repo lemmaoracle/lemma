@@ -151,8 +151,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "資産、文書、部品の出所を、改ざん不能な暗号レイヤで固定する。",
     },
     problemStatement: {
-      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the data-lineage axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
-      ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。<strong>来歴証明は、Lemma の信頼インフラが「データ来歴」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
+      en: "Data crosses organizations and systems and loses its origin at every hop. Where assets, documents, and parts came from has not been cryptographically provable — auditors and receivers have had to take the publisher's word for it. Lemma carves provenance onto a tamper-evident layer at the moment data is published, so any downstream system can verify origin independently, without re-contacting the publisher. <strong>Verifiable Origin is the provenance proof of the Lemma API</strong> — one of its five proofs.",
+      ja: "データは組織やシステムを越えるたびに「出所」を失っていきます。資産・文書・部品が「どこから来たか」は、いまも暗号論理的に証明されておらず、受信側や監査人は発行元の保証を額面通りに受け取るしかありませんでした。Lemma は、データが発行される瞬間に来歴を改ざん耐性のあるレイヤーに刻み、下流のどのシステムも、発行元に問い合わせずに独立して検証できるようにします。<strong>来歴証明は、Lemma API が「データ来歴」を担保する証明です</strong> — Lemma API を構成する 5 つの証明のひとつ。",
     },
     whyNow: {
       en: "EU AI Act 2026 — data governance and training / RAG source-provenance requirements for high-risk AI; ISO 42001 audit-trail expectations; supply-chain DPP and CBAM provenance mandates; 2022 Ronin bridge $625M exploit as a cross-domain reference case",
@@ -386,8 +386,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "AIの判断と引用を、モデル更新後も遡れる構造で記録する。",
     },
     problemStatement: {
-      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the AI-decision axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
-      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。<strong>検証可能 AI は、Lemma の信頼インフラが「AI 判断」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
+      en: "AI now makes decisions across enterprise and public services every day, and regulation (EU AI Act, ISO 42001) is mandating explainability. But model logs are vendor-controlled and rotate with each upgrade, so there is still no mechanism to verify, after the fact, why a model decided what it decided. Lemma records the inputs, retrieved sources, applied rules, and model generation behind each decision as a tamper-evident attestation, so the audit trail outlives the model version it was made on. <strong>Verifiable AI is the inference proof of the Lemma API</strong> — one of its five proofs.",
+      ja: "AI は、企業と公共の判断を日常的に下しています。規制（EU AI Act、ISO 42001）は説明可能性を義務化しつつありますが、モデルログはベンダー側で管理され、世代交代のたびに失われていくため、「なぜそう判断したか」を後から検証できる仕組みは、いまもありません。Lemma は、判断ごとの入力データ・参照ソース・適用ルール・モデル世代を改ざん耐性のあるアテステーションとして記録し、モデル更新後も監査トレイルが残るようにします。<strong>検証可能 AI は、Lemma API が「AI 判断」を担保する証明です</strong> — Lemma API を構成する 5 つの証明のひとつ。",
     },
     whyNow: {
       en: "EU AI Act enforcement in 2026; rising ISO 42001 certification demand",
@@ -724,7 +724,7 @@ const PILLARS: ReadonlyArray<Pillar> = [
         },
         a: {
           en: 'Provenance answers the third trust question: "is the data underlying this payment genuine and unaltered." Without it, an agent can be tricked — by retrieved documents, by upstream tool outputs, by another agent — into authorizing the wrong transaction. Lemma\'s provenance stack is fed into the same Authority Proof attestation chain so that the proof an agent shows at payment time includes evidence that the input data is verifiable. See the <a href="/pillars/verifiable-origin/">Verifiable Origin pillar</a> for the input side.',
-          ja: 'プロヴナンス (来歴) は三つ目の信頼問題 — 「この支払いの根拠データは真正か」 — に答える要素。これがないと、検索文書・上流ツール出力・別エージェントを通じてエージェントが誤った取引を承認させられる経路が残る。Lemma の来歴インフラは同じ権限証明のアテステーション連鎖に流し込まれ、支払い時にエージェントが提示する証明に「入力データが真正であること」の根拠が含まれる。入力側は <a href="/ja/pillars/verifiable-origin/">来歴証明の柱</a> を参照。',
+          ja: 'プロヴナンス (来歴) は三つ目の信頼問題 — 「この支払いの根拠データは真正か」 — に答える要素。これがないと、検索文書・上流ツール出力・別エージェントを通じてエージェントが誤った取引を承認させられる経路が残る。Lemma の来歴インフラは同じ権限証明のアテステーション連鎖に流し込まれ、支払い時にエージェントが提示する証明に「入力データが真正であること」の根拠が含まれる。入力側は <a href="/ja/pillars/verifiable-origin/">来歴証明</a> を参照。',
         },
       },
     ],
@@ -922,8 +922,8 @@ const PILLARS: ReadonlyArray<Pillar> = [
       ja: "KYC/AML・ESG・データ漏洩対策を、原本を共有せずに成立させる。",
     },
     problemStatement: {
-      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the regulatory-attestation axis of Lemma's trust infrastructure</strong> — one of four axes composing it.",
-      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。<strong>規制属性証明は、Lemma の信頼インフラが「規制適合」を担保する軸です</strong> — 信頼インフラを構成する 4 つの軸のひとつ。",
+      en: "GDPR, EU AI Act, crypto-asset guidelines, CBAM, EUDR, DPP — regulation's center of gravity is shifting from \"disclose your data\" to \"prove your compliance.\" Most enterprises still respond with self-declaration and paper trails. Lemma issues compliance as cryptographic attestations: regulators and counterparties verify the attribute itself — \"this entity passed KYC,\" \"this shipment is CBAM-compliant,\" \"this dataset met the AI Act requirement\" — without the underlying data ever leaving the enterprise. <strong>Regulatory Attribute Proof is the attribute proof of the Lemma API</strong> — one of its five proofs.",
+      ja: "GDPR、EU AI Act、暗号資産ガイドライン、CBAM・EUDR・DPP——規制の重心は、データ開示からコンプライアンス証明へと移ってきています。しかし現場の多くは、いまも自己申告と紙のドキュメントで対応しています。Lemma は、コンプライアンスを暗号的アテステーションとして発行します。「この企業は KYC を通過した」「この出荷は CBAM 適合」「このデータセットは AI Act の要件を満たした」といった属性そのものを、原本データを企業外に出さずに、規制当局や取引相手に検証してもらえる形にします。<strong>規制属性証明は、Lemma API が「規制適合」を担保する証明です</strong> — Lemma API を構成する 5 つの証明のひとつ。",
     },
     whyNow: {
       en: "GDPR strengthening, EU AI Act, crypto-asset guidelines, supply chain DDP mandates",

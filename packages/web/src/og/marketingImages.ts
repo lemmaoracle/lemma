@@ -204,13 +204,13 @@ export async function renderPricingOg(locale: Locale): Promise<Buffer> {
 /* ───────────────────────── Pillars ───────────────────────── */
 
 const PILLARS_TITLE: Copy = {
-  ja: "<accent>信頼インフラ</accent>を、\n4 つの軸で。",
-  en: "<accent>The Trust Infrastructure</accent>,\nin four axes.",
+  ja: "<accent>Lemma API</accent>、\n5つの証明を1つの API で。",
+  en: "<accent>The Lemma API</accent>,\nfive proofs in one API.",
 };
 
 const PILLARS_LABEL: Copy = {
-  ja: "Trust Infrastructure · Pillars",
-  en: "Trust Infrastructure · Pillars",
+  ja: "Lemma API · Five Proofs",
+  en: "Lemma API · Five Proofs",
 };
 
 const PILLARS_TAGLINE: Copy = {
