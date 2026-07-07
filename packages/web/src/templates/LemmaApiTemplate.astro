@@ -1,0 +1,341 @@
+---
+/**
+ * /lemma-api (+ /ja/lemma-api) — the Lemma API product node.
+ *
+ * The raw ZK-proof issuance API. This page is an INDEX + framing, not a
+ * re-explanation: each of the 5 suites deep-links to its canonical page (4
+ * pillars + Seal for 認証), and all prices live on /pricing #api — no prices,
+ * endpoints, or code on this page (phase-2 rule). Production billing is
+ * backend-pending → "近日公開" + a Sandbox entry only; the page never makes an
+ * API call. Modeled on SealTemplate; copy is inline-bilingual.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
+import { PROOF_CLASSES, proofClassHref, proofClassName } from "../config/proofClasses";
+
+interface Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+const { locale, t, base } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const sandboxUrl = DASHBOARD_URL;
+const specsHref = `${base}/guides`;
+const pricingHref = `${base}/pricing#api`;
+const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?source=lemma-api`;
+const githubUrl = "https://github.com/lemmaoracle";
+
+const classes = PROOF_CLASSES.map((c) => ({
+  name: proofClassName(c, locale),
+  rate: c.rate,
+  href: proofClassHref(c, base),
+}));
+
+const C = isJa
+  ? {
+      metaTitle: "Lemma API — ZK 証明の発行 API | Lemma",
+      metaDesc:
+        "来歴・認証・権限・推論・属性の証明を発行する ZK API。検証は常に無料。MCP / A2A / x402 / C2PA / W3C VC 対応。まずは testnet の Sandbox で。",
+      heroEyebrow: "Lemma API — 開発者向け",
+      heroH1a: "ZK 証明の発行 API。",
+      heroH1em: "4つの柱を、そのまま叩ける。",
+      heroSub:
+        "来歴・認証・権限・推論・属性の証明を発行。検証は常に無料 — 支払うのは発行のときだけ。",
+      standards: "対応標準：MCP / A2A / x402 / C2PA / W3C VC",
+      ctaSandbox: "Sandbox で試す（testnet・無料）",
+      ctaSpecs: "仕様書を読む →",
+      suitesEyebrow: "suites",
+      suitesH2: "5つの証明 suite。",
+      suitesSub:
+        "各 suite の概念・発行手順・単価は正典ページに一本化しています。ここは索引と集約価格のみ。",
+      colClass: "証明クラス",
+      colRate: "発行単価 (USD)",
+      colLink: "正典ページ",
+      billingEyebrow: "課金モデル",
+      billingH2: "発行に課金、検証は無料。",
+      billing: [
+        "証明を「発行」するときだけ課金。誰かがそれを「確かめる」のは、いつでも無料。",
+        "従量課金（x402 で都度決済）＋ 月額の quota / grade（ダッシュボード利用料）。",
+        "オンチェーンの来歴は選択制 — 従量は既定オフチェーン、月額プランは永続を標準搭載。",
+      ],
+      soonBadge: "近日公開",
+      soonNote:
+        "本番課金は近日公開です。まずは testnet の Sandbox で、無料で発行をお試しいただけます。",
+      priceLine: "各 suite の単価・プランは料金ページに集約しています。",
+      priceLink: "料金を見る →",
+      relEyebrow: "関係整理",
+      relH2: "認証 suite ＝ Lemma API。Trust402 ＝ セルフ面。",
+      rel: [
+        "認証 suite は Lemma API の一部です（/seal は集客 LP）。",
+        "Trust402 は suites のセルフサーブ面（Pay / Sell）です。",
+      ],
+      ctaEyebrow: "はじめる",
+      ctaH2: "証明を、発行しよう。",
+      ctaDevLabel: "開発者の方へ",
+      ctaDevBtn: "Sandbox で試す（testnet・無料）",
+      ctaDevSpecs: "仕様書",
+      ctaGithub: "GitHub →",
+      ctaEntLabel: "エンタープライズの方へ",
+      ctaEntBtn: "デモを予約（Discovery Call）",
+    }
+  : {
+      metaTitle: "Lemma API — the ZK proof issuance API | Lemma",
+      metaDesc:
+        "The ZK API to issue proofs of provenance, authentication, authority, inference, and attributes. Verification is always free. MCP / A2A / x402 / C2PA / W3C VC compliant.",
+      heroEyebrow: "Lemma API — for developers",
+      heroH1a: "The ZK proof issuance API.",
+      heroH1em: "Call the four pillars, as one API.",
+      heroSub:
+        "Issue proofs of provenance, authentication, authority, inference, and attributes. Verification is always free — you pay only to issue.",
+      standards: "Standards: MCP / A2A / x402 / C2PA / W3C VC",
+      ctaSandbox: "Try the Sandbox (testnet · free)",
+      ctaSpecs: "Read the specs →",
+      suitesEyebrow: "suites",
+      suitesH2: "Five proof suites.",
+      suitesSub:
+        "Each suite's concept, issuance steps, and rate live on its canonical page. This is the index and the aggregate rates only.",
+      colClass: "Proof class",
+      colRate: "Rate (USD)",
+      colLink: "Canonical page",
+      billingEyebrow: "Billing model",
+      billingH2: "Issuance is billed; verification is free.",
+      billing: [
+        "You pay only when a proof is issued. Anyone verifying it pays nothing — anywhere, anytime.",
+        "Usage-based (settled per issuance via x402) plus a monthly quota / grade (dashboard subscription).",
+        "On-chain provenance is optional — usage-based defaults to off-chain; monthly plans include permanence as standard.",
+      ],
+      soonBadge: "Coming soon",
+      soonNote:
+        "Production billing is coming soon — start free on the testnet Sandbox and issue proofs there.",
+      priceLine: "Every suite's rates and plans are consolidated on the pricing page.",
+      priceLink: "See pricing →",
+      relEyebrow: "How it fits",
+      relH2: "The authentication suite is the Lemma API. Trust402 is the self-serve face.",
+      rel: [
+        "The authentication suite is part of the Lemma API (/seal is its landing page).",
+        "Trust402 is the self-serve surface for the suites (Pay / Sell).",
+      ],
+      ctaEyebrow: "Get started",
+      ctaH2: "Issue your first proof.",
+      ctaDevLabel: "For developers",
+      ctaDevBtn: "Try the Sandbox (testnet · free)",
+      ctaDevSpecs: "Specs",
+      ctaGithub: "GitHub →",
+      ctaEntLabel: "For enterprises",
+      ctaEntBtn: "Book a Discovery Call",
+    };
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath="/lemma-api/"
+  title={C.metaTitle}
+  description={C.metaDesc}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="la">
+    <div class="la-container">
+      {/* HERO */}
+      <section class="la-hero">
+        <div class="la-eyebrow">{C.heroEyebrow}</div>
+        <h1 class="la-h1">{C.heroH1a}<br /><span class="la-accent">{C.heroH1em}</span></h1>
+        <p class="la-sub">{C.heroSub}</p>
+        <p class="la-standards">{C.standards}</p>
+        <div class="la-hero-cta">
+          <a class="la-btn" href={sandboxUrl} target="_blank" rel="noopener">{C.ctaSandbox}</a>
+          <a class="la-btn la-btn--ghost" href={specsHref}>{C.ctaSpecs}</a>
+        </div>
+      </section>
+
+      {/* SUITES INDEX */}
+      <section class="la-section">
+        <div class="la-eyebrow">{C.suitesEyebrow}</div>
+        <h2 class="la-h2">{C.suitesH2}</h2>
+        <p class="la-section-sub">{C.suitesSub}</p>
+        <div class="la-table-wrap">
+          <table class="la-table">
+            <thead>
+              <tr><th>{C.colClass}</th><th>{C.colRate}</th><th>{C.colLink}</th></tr>
+            </thead>
+            <tbody>
+              {classes.map((c) => (
+                <tr>
+                  <td class="la-cls">{c.name}</td>
+                  <td class="la-rate">{c.rate}</td>
+                  <td><a class="la-cls-link" href={c.href}>→</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="la-price-line">{C.priceLine} <a class="la-link" href={pricingHref}>{C.priceLink}</a></p>
+      </section>
+
+      {/* BILLING MODEL */}
+      <section class="la-section">
+        <div class="la-eyebrow">{C.billingEyebrow}</div>
+        <h2 class="la-h2">{C.billingH2}</h2>
+        <ol class="la-billing">
+          {C.billing.map((b) => (<li>{b}</li>))}
+        </ol>
+        <div class="la-soon">
+          <span class="la-soon-badge">{C.soonBadge}</span>
+          <p>{C.soonNote}</p>
+        </div>
+      </section>
+
+      {/* HOW IT FITS */}
+      <section class="la-section">
+        <div class="la-eyebrow">{C.relEyebrow}</div>
+        <h2 class="la-h2">{C.relH2}</h2>
+        <ul class="la-rel">
+          {C.rel.map((r) => (<li>{r}</li>))}
+        </ul>
+      </section>
+    </div>
+
+    {/* CTA — two branches */}
+    <section class="la-cta">
+      <div class="la-container">
+        <div class="la-eyebrow on-dark">{C.ctaEyebrow}</div>
+        <h2 class="la-cta-h2">{C.ctaH2}</h2>
+        <div class="la-cta-grid">
+          <div class="la-cta-card">
+            <div class="la-cta-label">{C.ctaDevLabel}</div>
+            <div class="la-cta-actions">
+              <a class="la-btn" href={sandboxUrl} target="_blank" rel="noopener">{C.ctaDevBtn}</a>
+              <a class="la-btn la-btn--ghost on-dark" href={specsHref}>{C.ctaDevSpecs}</a>
+              <a class="la-cta-link" href={githubUrl} target="_blank" rel="noopener">{C.ctaGithub}</a>
+            </div>
+          </div>
+          <div class="la-cta-card">
+            <div class="la-cta-label">{C.ctaEntLabel}</div>
+            <div class="la-cta-actions">
+              <a class="la-btn la-btn--accent" href={discoveryUrl} target="_blank" rel="noopener">{C.ctaEntBtn}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .la {
+    --la-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --la-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --la-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --la-t1: #1a1a1a;
+    --la-t2: #3a3a3a;
+    --la-t3: #5a5a5a;
+    --la-t4: #9a9a9a;
+    background: var(--lemma-cream, #fcfaf5);
+    color: var(--la-t2);
+    font-family: var(--la-body);
+    line-height: 1.7;
+    margin-top: 64px;
+  }
+  :root[lang="en"] .la { --la-body: "Sora", "Noto Sans JP", system-ui, sans-serif; }
+  .la-container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+  .la a { text-decoration: none; color: inherit; }
+
+  .la-eyebrow {
+    font-family: var(--la-mono); font-size: 11px; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent, #8b4513);
+    display: flex; align-items: center; gap: 12px; margin: 0 0 20px;
+  }
+  .la-eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--accent, #8b4513); }
+  .la-eyebrow.on-dark { color: #d8b48c; }
+  .la-eyebrow.on-dark::before { background: #d8b48c; }
+
+  .la-hero { padding: 72px 0 20px; }
+  .la-h1 {
+    font-family: var(--la-display); font-size: clamp(34px, 5vw, 56px);
+    font-weight: 700; line-height: 1.1; letter-spacing: -0.03em;
+    color: var(--black, #1a1a1a); margin: 0 0 24px;
+  }
+  :root[lang="ja"] .la-h1 { line-height: 1.22; }
+  .la-accent { color: var(--accent, #8b4513); }
+  .la-sub { font-size: 17px; line-height: 1.8; color: var(--la-t2); max-width: 640px; margin: 0 0 18px; }
+  .la-standards { font-family: var(--la-mono); font-size: 12px; color: var(--la-t4); margin: 0 0 28px; }
+  .la-hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .la-section { padding: 56px 0; border-top: 0.5px solid var(--lemma-line, #e6e1d6); }
+  .la-h2 {
+    font-family: var(--la-display); font-size: clamp(26px, 3.4vw, 36px);
+    font-weight: 700; letter-spacing: -0.02em; color: var(--black, #1a1a1a);
+    line-height: 1.2; margin: 0 0 16px;
+  }
+  .la-section-sub { font-size: 15px; line-height: 1.8; color: var(--la-t2); max-width: 680px; margin: 0 0 28px; }
+
+  .la-table-wrap { overflow-x: auto; }
+  .la-table {
+    width: 100%; border-collapse: collapse; background: var(--white, #fff);
+    border: 0.5px solid var(--lemma-line, #e6e1d6); border-radius: 14px; overflow: hidden;
+  }
+  .la-table th {
+    text-align: left; font-family: var(--la-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--la-t3);
+    padding: 13px 20px; background: var(--lemma-cream, #fcfaf5);
+    border-bottom: 0.5px solid var(--lemma-line, #e6e1d6);
+  }
+  .la-table td { padding: 14px 20px; border-bottom: 0.5px solid var(--lemma-line, #e6e1d6); font-size: 15px; }
+  .la-table tr:last-child td { border-bottom: none; }
+  .la-cls { font-family: var(--la-display); font-weight: 600; color: var(--black, #1a1a1a); }
+  .la-rate { font-family: var(--la-mono); font-weight: 700; color: var(--accent, #8b4513); }
+  .la-cls-link { font-family: var(--la-mono); font-weight: 700; color: var(--accent, #8b4513); }
+  .la-price-line { margin: 20px 2px 0; font-size: 13.5px; color: var(--la-t3); }
+  .la-link { color: var(--accent, #8b4513); font-weight: 600; border-bottom: 1px solid var(--accent, #8b4513); }
+
+  .la-billing { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .la-billing li { font-size: 15px; line-height: 1.75; color: var(--la-t2); }
+  .la-soon {
+    margin-top: 24px; padding: 18px 22px; display: flex; align-items: flex-start; gap: 14px;
+    background: var(--lemma-cream, #fcfaf5); border: 0.5px dashed var(--lemma-line, #d8d2c4); border-radius: 14px;
+  }
+  .la-soon-badge {
+    flex: none; font-family: var(--la-mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--accent, #8b4513);
+    border: 1px solid var(--accent, #8b4513); border-radius: 999px; padding: 3px 11px; margin-top: 2px;
+  }
+  .la-soon p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--la-t2); }
+
+  .la-rel { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .la-rel li { font-size: 15px; line-height: 1.75; color: var(--la-t2); }
+
+  .la-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent, #8b4513); color: var(--lemma-cream, #fcfaf5);
+    font-family: var(--la-display); font-size: 14.5px; font-weight: 600;
+    padding: 13px 28px; border-radius: 12px; transition: background 0.2s, opacity 0.2s;
+  }
+  .la-btn:hover { background: #6e3610; }
+  .la-btn--ghost { background: transparent; color: var(--accent, #8b4513); border: 1px solid var(--accent, #8b4513); }
+  .la-btn--ghost:hover { background: rgba(139, 69, 19, 0.08); }
+  .la-btn--ghost.on-dark { color: #ecebe3; border-color: rgba(236, 235, 227, 0.4); }
+  .la-btn--ghost.on-dark:hover { background: rgba(236, 235, 227, 0.08); }
+  .la-btn--accent { background: #d8b48c; color: #1f1e1a; }
+  .la-btn--accent:hover { background: #e6c9a8; }
+
+  .la-cta { background: var(--ink, #1f1e1a); color: #ecebe3; padding: 80px 0; margin-top: 40px; }
+  .la-cta-h2 { font-family: var(--la-display); font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: #fff; margin: 0 0 36px; letter-spacing: -0.02em; }
+  .la-cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .la-cta-card { background: rgba(236, 235, 227, 0.05); border: 0.5px solid rgba(236, 235, 227, 0.14); border-radius: 16px; padding: 26px; }
+  .la-cta-label { font-family: var(--la-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #d8b48c; margin: 0 0 18px; }
+  .la-cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .la-cta-link { font-family: var(--la-display); font-size: 13.5px; font-weight: 600; color: #d8b48c; }
+
+  @media (max-width: 720px) {
+    .la-container { padding: 0 24px; }
+    .la-cta-grid { grid-template-columns: 1fr; }
+  }
+</style>

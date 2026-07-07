@@ -1,0 +1,10 @@
+---
+import LemmaApiTemplate from "../../templates/LemmaApiTemplate.astro";
+import { getTranslations } from "../../i18n/translations";
+
+const locale = "en";
+const t = getTranslations(locale);
+const base = "";
+---
+
+<LemmaApiTemplate locale={locale} t={t} base={base} />

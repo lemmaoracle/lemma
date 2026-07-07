@@ -14,6 +14,7 @@
  */
 import type { Locale } from "../../i18n/translations";
 import { DASHBOARD_URL } from "../../config/cta";
+import { PROOF_CLASSES, proofClassHref, proofClassName } from "../../config/proofClasses";
 
 interface Props {
   locale: Locale;
@@ -23,16 +24,14 @@ const isJa = locale === "ja";
 const base = isJa ? "/ja" : "";
 const specsHref = `${base}/guides`;
 
-// Per-proof-class rates (USD). Canonical rate table — working values, confirm
-// with CTO at PR time. Each class deep-links to its pillar (認証 has no pillar
-// page yet → its Seal LP).
-const classes = [
-  { ja: "来歴", en: "Provenance", rate: "0.005", href: `${base}/pillars/verifiable-origin/` },
-  { ja: "認証", en: "Authentication", rate: "0.01–0.05", href: `${base}/seal/` },
-  { ja: "権限", en: "Authority", rate: "0.05", href: `${base}/pillars/agent-authority-proof/` },
-  { ja: "推論", en: "Inference", rate: "0.07", href: `${base}/pillars/verifiable-ai/` },
-  { ja: "属性", en: "Attribute", rate: "0.20", href: `${base}/pillars/regulatory-attribute-proof/` },
-];
+// Per-proof-class rates + canonical links come from the shared single source
+// (config/proofClasses.ts) so /pricing, /lemma-api and the pillar pages stay
+// consistent. Rates are working values — confirm with CTO.
+const classes = PROOF_CLASSES.map((c) => ({
+  name: proofClassName(c, locale),
+  rate: c.rate,
+  href: proofClassHref(c, base),
+}));
 
 const t = isJa
   ? {
@@ -106,7 +105,7 @@ const t = isJa
       <tbody>
         {classes.map((c) => (
           <tr>
-            <td class="api-cls">{isJa ? c.ja : c.en}</td>
+            <td class="api-cls">{c.name}</td>
             <td class="api-rate">{c.rate}</td>
             <td><a class="api-cls-link" href={c.href}>→</a></td>
           </tr>
