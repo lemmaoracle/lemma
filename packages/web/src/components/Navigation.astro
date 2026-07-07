@@ -95,7 +95,8 @@ const isResourcesActive =
          (its /seal LP stays reachable but is not listed). -->
     <li class="mega-nav-item">
       <a href={pricingPath} class:list={["mega-nav-link has-mega", { active: isPlansActive }]}>{t.services}</a>
-      <div class="mega-panel mega-panel-wide mega-panel-4col">
+      <div class="mega-panel mega-panel-plans">
+        <div class="mega-plans-grid">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.products.enterprise}</div>
           <div class="mega-links">
@@ -150,6 +151,7 @@ const isResourcesActive =
               <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
             </a>
           </div>
+        </div>
         </div>
         <a href={pricingPath} class="mega-foot-link">▸ {t.mega.products.seeAllPricing}</a>
       </div>
@@ -461,14 +463,24 @@ const isResourcesActive =
   }
   .mega-panel-wide .mega-section:last-child { border-right: none; }
   .mega-panel-right { left: auto; right: 0; }
-  /* Plans hub: four audience columns + a full-width footer link. */
-  .mega-panel-4col {
-    min-width: 780px;
-    grid-template-columns: repeat(4, 1fr);
+  /* Plans hub: two columns, each stacking two audience sections, + a
+     full-width footer link. Right-anchored (opens leftward from the trigger)
+     so the compact panel never runs off the right edge on desktop. */
+  .mega-panel-plans { min-width: 480px; left: auto; right: 0; }
+  .mega-plans-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr 1fr;
   }
-  .mega-panel-4col .mega-section:nth-child(4) { border-right: none; }
+  /* Column divider on the left column's two cells (children 1 & 2). */
+  .mega-plans-grid .mega-section:nth-child(-n+2) {
+    border-right: 0.5px solid var(--lemma-line, #E5E0D5);
+  }
+  /* Bottom cell of each column carries no bottom rule. */
+  .mega-plans-grid .mega-section:nth-child(2),
+  .mega-plans-grid .mega-section:nth-child(4) { border-bottom: none; }
   .mega-foot-link {
-    grid-column: 1 / -1;
     display: flex; align-items: center; gap: 6px;
     margin: 4px 6px 2px; padding: 12px 14px;
     border-top: 0.5px solid var(--lemma-line, #E5E0D5);
