@@ -8,8 +8,12 @@
  * plan-page CSS contexts.
  *
  * Invariant rules (do not change without product sign-off):
- *   - Civic is the only plan with a public price. Critical / Compliance are
- *     individual-quote only — NEVER show a lower bound for them.
+ *   - All three plans show a "from" starting anchor only (lower bound), never
+ *     an upper bound — keeps the entrance visible while leaving quote room
+ *     (product decision 2026-07-07). Every plan still pairs the anchor with
+ *     "個別見積 / custom quote" + a Discovery CTA.
+ *   - Currency is optimised per locale: JA in ¥, EN in $ (working conversions,
+ *     confirm official USD with CTO at PR time).
  *   - Fixed terms: 専用の証明 (all plans) / 標準テンプレート (Civic) ·
  *     カスタム開発 (Critical/Compliance) / 月額利用料 / 初期構築.
  *   - No Web3 words (mainnet, gas, etc.). No ownership words like "Lemma の基盤"
@@ -42,9 +46,9 @@ const t = isJa
       eyebrow: "プランと価格",
       h2: "月額利用料 ＋ ユースケースの初期構築。",
       lead: "価格を決めるのは、規模（拠点数・施設数・機関規模）と、やりたいこと（ユースケース）の内容です。",
-      civic: { seg: "公共・自治体（B2B2G）", tag: "標準テンプレート構成", monthly: "月額利用料", unit: "/月〜", setup: "初期構築", setupUnit: "〜", cta: "詳しく →" },
-      critical: { seg: "基幹インフラ・製造", quote: "個別見積", desc: "カスタム開発・オンプレミス・業務継続性を前提に構成します。", cta: "相談する →" },
-      compliance: { seg: "金融・FinTech", quote: "個別見積", desc: "カスタム開発・規制対応・監査証跡を前提に構成します。", cta: "相談する →" },
+      civic: { seg: "公共・自治体（B2B2G）", tag: "標準テンプレート構成", monthly: "月額利用料", val: "¥50,000", unit: "/月〜", setup: "初期構築", setupVal: "¥800,000", setupUnit: "〜", cta: "詳しく →" },
+      critical: { seg: "基幹インフラ・製造", monthly: "月額利用料", val: "¥500,000", unit: "/月〜", note: "個別見積", desc: "カスタム開発・オンプレミス・業務継続性を前提に構成します。", cta: "相談する →" },
+      compliance: { seg: "金融・FinTech", monthly: "月額利用料", val: "¥750,000", unit: "/月〜", note: "個別見積", desc: "カスタム開発・規制対応・監査証跡を前提に構成します。", cta: "相談する →" },
       cta: "問い合わせる",
       standards: "対応標準：MCP / A2A / x402 / C2PA / W3C VC",
       proof: "ETHGlobal AI Agents 2026 Finalist ・ OpenClaw Security Challenge ファイナリスト ・ Trusted Web 準拠",
@@ -53,16 +57,16 @@ const t = isJa
       eyebrow: "Plans & pricing",
       h2: "A monthly platform fee + per-use-case setup.",
       lead: "Pricing is set by scale (sites, facilities, organization size) and what you want to do (your use cases).",
-      civic: { seg: "Public · Government (B2B2G)", tag: "Standard templates", monthly: "Monthly fee", unit: "/mo+", setup: "Initial setup", setupUnit: "+", cta: "Learn more →" },
-      critical: { seg: "Critical infrastructure · Manufacturing", quote: "Custom quote", desc: "Configured for custom development, on-premises, and business continuity.", cta: "Talk to us →" },
-      compliance: { seg: "Finance · FinTech", quote: "Custom quote", desc: "Configured for custom development, regulatory compliance, and audit trails.", cta: "Talk to us →" },
+      civic: { seg: "Public · Government (B2B2G)", tag: "Standard templates", monthly: "Monthly fee", val: "$350", unit: "/mo+", setup: "Initial setup", setupVal: "$5,500", setupUnit: "+", cta: "Learn more →" },
+      critical: { seg: "Critical infrastructure · Manufacturing", monthly: "Monthly fee", val: "$3,500", unit: "/mo+", note: "Custom quote", desc: "Configured for custom development, on-premises, and business continuity.", cta: "Talk to us →" },
+      compliance: { seg: "Finance · FinTech", monthly: "Monthly fee", val: "$5,000", unit: "/mo+", note: "Custom quote", desc: "Configured for custom development, regulatory compliance, and audit trails.", cta: "Talk to us →" },
       cta: "Contact us",
       standards: "Standards: MCP / A2A / x402 / C2PA / W3C VC",
       proof: "ETHGlobal AI Agents 2026 Finalist · OpenClaw Security Challenge finalist · Trusted Web compliant",
     };
 ---
 
-<section class="ppm" aria-label={t.eyebrow}>
+<section class="ppm" id="ent" aria-label={t.eyebrow}>
   <div class="ppm-eyebrow">{t.eyebrow}</div>
   <h2 class="ppm-h2">{t.h2}</h2>
   <p class="ppm-lead">{t.lead}</p>
@@ -75,11 +79,11 @@ const t = isJa
       <div class="ppm-prices">
         <div class="ppm-price-row">
           <span class="ppm-price-label">{t.civic.monthly}</span>
-          <span class="ppm-price">¥50,000<span class="ppm-unit">{t.civic.unit}</span></span>
+          <span class="ppm-price">{t.civic.val}<span class="ppm-unit">{t.civic.unit}</span></span>
         </div>
         <div class="ppm-price-row">
           <span class="ppm-price-label">{t.civic.setup}</span>
-          <span class="ppm-price">¥800,000<span class="ppm-unit">{t.civic.setupUnit}</span></span>
+          <span class="ppm-price">{t.civic.setupVal}<span class="ppm-unit">{t.civic.setupUnit}</span></span>
         </div>
       </div>
       <span class="ppm-link">{t.civic.cta}</span>
@@ -88,7 +92,13 @@ const t = isJa
     <a class="ppm-card" href={planInquiry("critical")} target="_blank" rel="noopener">
       <div class="ppm-name">Lemma Critical</div>
       <div class="ppm-seg">{t.critical.seg}</div>
-      <div class="ppm-quote">{t.critical.quote}</div>
+      <div class="ppm-prices">
+        <div class="ppm-price-row">
+          <span class="ppm-price-label">{t.critical.monthly}</span>
+          <span class="ppm-price">{t.critical.val}<span class="ppm-unit">{t.critical.unit}</span></span>
+        </div>
+      </div>
+      <span class="ppm-quote-note">{t.critical.note}</span>
       <p class="ppm-desc">{t.critical.desc}</p>
       <span class="ppm-link">{t.critical.cta}</span>
     </a>
@@ -96,7 +106,13 @@ const t = isJa
     <a class="ppm-card" href={planInquiry("compliance")} target="_blank" rel="noopener">
       <div class="ppm-name">Lemma Compliance</div>
       <div class="ppm-seg">{t.compliance.seg}</div>
-      <div class="ppm-quote">{t.compliance.quote}</div>
+      <div class="ppm-prices">
+        <div class="ppm-price-row">
+          <span class="ppm-price-label">{t.compliance.monthly}</span>
+          <span class="ppm-price">{t.compliance.val}<span class="ppm-unit">{t.compliance.unit}</span></span>
+        </div>
+      </div>
+      <span class="ppm-quote-note">{t.compliance.note}</span>
       <p class="ppm-desc">{t.compliance.desc}</p>
       <span class="ppm-link">{t.compliance.cta}</span>
     </a>
@@ -130,6 +146,7 @@ const t = isJa
   .ppm {
     --ppm-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
     --ppm-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    scroll-margin-top: 120px;
     background: var(--white, #fff);
     border: 0.5px solid var(--lemma-line, #e6e1d6);
     border-radius: 20px;
@@ -229,6 +246,13 @@ const t = isJa
     font-weight: 700;
     color: var(--black, #1a1a1a);
     margin: 4px 0 2px;
+  }
+  .ppm-quote-note {
+    font-family: var(--ppm-display);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--lemma-text-4, #9a9a9a);
+    margin: 2px 0 6px;
   }
   .ppm-desc {
     font-size: 13.5px;

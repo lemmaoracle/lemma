@@ -1,0 +1,80 @@
+---
+/**
+ * /pricing — common-principles band. Sits at the top of the pricing surface
+ * (right after the hero) and states the three things true of every line:
+ * verification is free, 0% transaction fees, passport standard on all plans.
+ * Inline-bilingual copy (mirrors the other pricing components).
+ */
+import type { Locale } from "../../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const items = isJa
+  ? [
+      { k: "検証は無料", v: "誰かがあなたの証明を確かめるのは、いつでも無料。" },
+      { k: "取引手数料 0%", v: "売上の 100% があなたのもの。Lemma は資金に触れません。" },
+      { k: "passport は全プラン標準", v: "検証済みの証明が積み上がる passport は、どのプランでも標準。" },
+    ]
+  : [
+      { k: "Verification is free", v: "Anyone checking your proof pays nothing — always." },
+      { k: "0% transaction fees", v: "You keep 100% of every sale. Lemma never touches the funds." },
+      { k: "passport on every plan", v: "The passport that accrues your verified proofs is standard on all plans." },
+    ];
+---
+
+<section class="pb-band" aria-label={isJa ? "共通原則" : "Common principles"}>
+  <div class="pb-inner">
+    {items.map((it) => (
+      <div class="pb-item">
+        <div class="pb-k">{it.k}</div>
+        <div class="pb-v">{it.v}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pb-band {
+    background: var(--lemma-brown-light, #f3ece4);
+    border: 0.5px solid var(--lemma-line, #e6e1d6);
+    border-radius: 16px;
+    padding: 22px 28px;
+  }
+  .pb-inner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 32px;
+  }
+  .pb-item {
+    position: relative;
+    padding-left: 22px;
+  }
+  .pb-item::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: var(--pr-mono, "Space Mono", monospace);
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .pb-k {
+    font-family: var(--pr-display, "Sora", sans-serif);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black, #1a1a1a);
+    margin-bottom: 4px;
+  }
+  .pb-v {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--pr-text-2, #3a3a3a);
+  }
+  @media (max-width: 860px) {
+    .pb-inner { grid-template-columns: 1fr; gap: 16px; }
+  }
+</style>

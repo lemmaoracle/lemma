@@ -176,12 +176,12 @@ export const PRICING: PricingContent = {
   hero: {
     eyebrow: { ja: "Products & Pricing", en: "Products & Pricing" },
     h1Lines: {
-      ja: ["4 つの入口、", "1 つの信頼インフラ。"],
-      en: ["Four doors in,", "one trust infrastructure."],
+      ja: ["1 つの信頼インフラ、", "目的別の 3 つの入口。"],
+      en: ["One trust infrastructure,", "three doors by purpose."],
     },
     sub: {
-      ja: "エンタープライズ向けの 3 プランと、開発者向けの 1 プロダクト。",
-      en: "Three enterprise plans and one developer product.",
+      ja: "エンタープライズ 3 プラン、開発者向け Lemma API（認証を内包）、エージェント向け Trust402（Pay / Sell）。",
+      en: "Three enterprise plans, the Lemma API for developers (auth included), and Trust402 for agents (Pay / Sell).",
     },
   },
 
@@ -534,6 +534,13 @@ export const PRICING: PricingContent = {
         a: {
           ja: "詳細な価格は x402 統合デモで発表されます。ウェイトリストにご登録いただくと最初にお知らせします。",
           en: "Detailed pricing publishes with the x402 integration demo. Join the waitlist to hear first.",
+        },
+      },
+      {
+        q: { ja: "Lemma API はいつ使えますか? いくらですか?", en: "When can I use the Lemma API, and how much?" },
+        a: {
+          ja: "証明の発行単価はクラス別に確定しており（来歴 0.005 / 認証 0.01–0.05 / 権限 0.05 / 推論 0.07 / 属性 0.20 USD）、検証は常に無料です。本番課金は近日公開で、それまでは testnet の Sandbox で無料でお試しいただけます。定額の quota / grade プランも近日公開予定です。",
+          en: "Per-proof-class issuance rates are set (provenance 0.005 / authentication 0.01–0.05 / authority 0.05 / inference 0.07 / attribute 0.20 USD), and verification is always free. Production billing is coming soon — until then, try it free on the testnet Sandbox. Flat-rate quota / grade plans are coming soon too.",
         },
       },
       {
