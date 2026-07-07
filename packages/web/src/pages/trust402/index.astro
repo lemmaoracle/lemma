@@ -2,7 +2,8 @@
 import Navigation from "../../components/Navigation.astro";
 import Footer from "../../components/Footer.astro";
 import { getTranslations } from "../../i18n/translations";
-import { T402_DEV_PLANS } from "../../data/trust402Pricing";
+import Trust402Tiers from "../../components/trust402/Trust402Tiers.astro";
+import { T402_PRICING } from "../../data/trust402Pricing";
 
 const locale = "en" as const;
 const base = "" as const;
@@ -53,7 +54,7 @@ const t = getTranslations(locale);
       "url": "https://lemma.frame00.com/trust402/",
       "description": "Trust layer over x402 for AI agent payments: per-call delegated authority attached as ZK proofs of who, by what authority, and up to how much — out-of-scope payments never run.",
       "publisher": { "@id": "https://lemma.frame00.com/#organization" },
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Builder plan — pay as you go, no monthly fee. Verification is always free. Developer plans coming soon." },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Explorer plan — free testnet sandbox. Verification is always free; Pay and Sell share one set of plans." },
     },
     {
       "@type": "BreadcrumbList",
@@ -615,46 +616,12 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 .t402b .callout { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin-top: 18px; }
 .t402b .callout.on-dark { color: rgba(236,235,227,0.5); }
 /* tiers */
-.t402b .tiers { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
 .t402b .pchips { display: flex; flex-wrap: wrap; gap: 9px; margin: -24px 0 40px; }
 .t402b .pchip { font-family: var(--font-mono); font-size: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; color: var(--ink-soft); }
 .t402b .pchip.key { background: var(--green); border-color: var(--green-deep); color: var(--ink); font-weight: 700; }
-.t402b .tier { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 30px 26px; display: flex; flex-direction: column; }
-.t402b .tier.featured { border-color: var(--green); border-top: 3px solid var(--green); }
-.t402b .tier .tname { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-.t402b .tier .tname .ttag { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--muted); }
-.t402b .tier .tpos { font-size: 13px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
-.t402b .tier .tprice { font-family: var(--font-mono); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.t402b .tier .tprice small { font-size: 12px; color: var(--muted); font-weight: 400; }
-.t402b .tier .tmeter { font-family: var(--font-mono); font-size: 12px; color: var(--green-link); margin: 8px 0 14px; min-height: 38px; }
-.t402b .tier .tlist { list-style: none; margin: 0 0 16px; padding: 0; font-size: 13px; color: var(--ink-soft); }
-.t402b .tier .tlist li { padding: 5px 0 5px 20px; position: relative; border-bottom: 1px dotted var(--border); }
-.t402b .tier .tlist li:last-child { border-bottom: none; }
-.t402b .tier .tlist li::before { content: "✓"; position: absolute; left: 0; color: var(--green-deep); font-family: var(--font-mono); }
-.t402b .tier .tlist li.soon { color: var(--muted); }
-.t402b .tier .tlist li.soon::before { content: "◷"; color: var(--muted); }
-.t402b .tier .tstate { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 11.5px; color: var(--green-link); }
-.t402b .tier .tcontact { margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; color: var(--green-link); text-decoration: none; }
-.t402b .tier .tpay { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 10px; }
-/* Institutional — dark (ink) card */
-.t402b .tier.inst { background: var(--ink); color: var(--surface); border-color: var(--ink); }
-.t402b .tier.inst .tpos { color: #a8a79e; }
-.t402b .tier.inst .tprice { color: var(--green); }
-.t402b .tier.inst .tprice small { color: #a8a79e; }
-.t402b .tier.inst .tmeter { color: #d7f58a; }
-.t402b .tier.inst .tlist { color: #d8d7ce; }
-.t402b .tier.inst .tlist li { border-bottom-color: #3a3934; }
-.t402b .tier.inst .tlist li::before { color: var(--green); }
-.t402b .tier.inst .tlist li.soon { color: #8b8a80; }
-.t402b .tier.inst .tstate, .t402b .tier.inst .tcontact { color: var(--green); }
-.t402b .tier.inst .tpay { color: #8b8a80; }
-/* how billing works */
-.t402b .bill-h { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin: 48px 0 16px; color: var(--ink); }
-.t402b .bill { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-.t402b .bcell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-.t402b .bcell .bnum { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green-link); }
-.t402b .bcell .btitle { font-family: var(--font-display); font-weight: 700; font-size: 15.5px; margin: 8px 0 6px; color: var(--ink); }
-.t402b .bcell .btext { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
+/* Trust402 tier cards render via the shared <Trust402Tiers> component
+   (self-contained .t402-tiers tokens); the old .t402b .tier / billing CSS was
+   removed with the T402_DEV_PLANS retirement. */
 .t402b .pnote { margin-top: 22px; font-size: 12.5px; color: var(--muted); border-left: 3px solid var(--border); padding: 4px 0 4px 14px; max-width: 860px; }
 /* closing */
 .t402b .closing { text-align: center; background: var(--ink); color: var(--term-fg); padding: 110px 8%; }
@@ -665,9 +632,9 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
 /* reveal */
 .t402b .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s, transform .6s; }
 .t402b .reveal.on { opacity: 1; transform: none; }
-@media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } .t402b .tiers { grid-template-columns: repeat(2,1fr); } .t402b .bill { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .t402b .cards.c3 { grid-template-columns: repeat(2,1fr); } .t402b .steps { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 900px) { .t402b .equation { flex-direction: column; } .t402b .eq-op { justify-content: center; } }
-@media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } .t402b .tiers { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .t402b .cards.c3 { grid-template-columns: 1fr; } }
 
 /* fixed Pay/Sell/Dashboard switcher */
 .t402-switch { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; gap: 4px; background: #1F1E1A; padding: 5px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); }
@@ -837,29 +804,24 @@ html, body { margin: 0; padding: 0; background: var(--lemma-cream); color: var(-
       </div>
     </section>
 
-    {/* pricing — Pay's authority-proof pricing is absorbed into the Lemma
-        API developer ladder, so this is name + one-liner placeholders (all
-        "Coming soon") + waitlist only. No unit prices, no 0.005 provenance
-        rate, no Sell/creator copy. The one line kept from the old tier table
-        is "Verification is always free." spec: Trust402_ページ改修スペック §1 */}
+    {/* pricing — Pay and Sell share ONE set of 4 plans (Explorer / Builder /
+        Pro / Institutional ID), rendered from the shared <Trust402Tiers>
+        component (single source T402_PRICING) so Pay / Sell / /pricing #t402
+        never drift. One issuance allowance covers both surfaces. */}
     <section class="section-gray" id="pricing">
       <div class="inner">
-        <div class="sec-head reveal"><span class="eyebrow-plain">{T402_DEV_PLANS.eyebrow.en}</span><h2>{T402_DEV_PLANS.h2.en}</h2><p>{T402_DEV_PLANS.sub.en}</p></div>
+        <div class="sec-head reveal"><span class="eyebrow-plain">pricing</span><h2>{T402_PRICING.h2.en}</h2><p>{T402_PRICING.sub.en}</p></div>
         <div class="pchips reveal">
-          <span class="pchip key">{T402_DEV_PLANS.freeNote.en}</span>
-        </div>
-        <div class="tiers">
-          {T402_DEV_PLANS.cards.map((card) => (
-            <div class="tier reveal">
-              <div class="tname">{card.name}{card.tag && <small class="ttag"> · {card.tag.en}</small>}</div>
-              <div class="tpos">{card.blurb.en}</div>
-              <div class="tstate">{T402_DEV_PLANS.state.en}</div>
-            </div>
+          {T402_PRICING.chips.map((c) => (
+            <span class:list={["pchip", { key: c.key }]}>{c.text.en}</span>
           ))}
         </div>
-        <p class="pnote reveal">{T402_DEV_PLANS.note.en}</p>
+        <div class="reveal">
+          <Trust402Tiers locale={locale} />
+        </div>
+        <p class="pnote reveal">{T402_PRICING.footnote.en}</p>
         <div class="reveal" style="margin-top:26px;">
-          <a class="btn btn-primary" href={T402_DEV_PLANS.ctaHref} target="_blank" rel="noopener">{T402_DEV_PLANS.cta.en}</a>
+          <a class="btn btn-primary" href="https://tally.so/r/kd0bZR" target="_blank" rel="noopener">Join the waitlist →</a>
         </div>
       </div>
     </section>

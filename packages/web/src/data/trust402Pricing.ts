@@ -202,62 +202,7 @@ export const T402_PRICING: Trust402Pricing = {
   },
 };
 
-/**
- * Pay-side developer plans (placeholder). Pay's authority-proof pricing is
- * absorbed into the Lemma API developer ladder, so the Pay hub shows plan
- * names + one-liners only — no prices, no Sell/creator framing. All cards
- * are pre-launch ("近日公開"); the sole retained pricing message is that
- * verification is always free. See Trust402_ページ改修スペック_20260706 §1.
- */
-export interface DevPlanCard {
-  readonly name: string;
-  /** Optional qualifier shown next to the name, e.g. Scale (dashboard). */
-  readonly tag?: Localized;
-  readonly blurb: Localized;
-}
-
-export const T402_DEV_PLANS = {
-  eyebrow: { ja: "pricing", en: "pricing" } as Localized,
-  h2: { ja: "開発者向けプラン（近日公開）", en: "Developer plans (coming soon)" } as Localized,
-  sub: {
-    ja: "Pay（x402 権限証明）は Lemma API の開発者プランでご利用いただけます。",
-    en: "Pay (x402 authority proofs) is available through the Lemma API developer plans.",
-  } as Localized,
-  /** The one pricing message carried over from the old tier table. */
-  freeNote: { ja: "検証は、常に無料。", en: "Verification is always free." } as Localized,
-  cards: [
-    {
-      name: "Builder",
-      blurb: {
-        ja: "使った分だけ（PAYG）。権限証明を発行ごとに x402 決済・月額なし。",
-        en: "Pay as you go (PAYG). Authority proofs settle per issuance via x402 — no monthly fee.",
-      },
-    },
-    {
-      name: "Team",
-      blurb: {
-        ja: "定額＋発行 quota＋API 割引。開発者・チーム向け。",
-        en: "Flat rate + issuance quota + API discounts. For developers and teams.",
-      },
-    },
-    {
-      name: "Scale",
-      tag: { ja: "ダッシュボード", en: "dashboard" },
-      blurb: {
-        ja: "委譲レジストリ・失効管理・監査ダッシュボード・SLA を含む managed プラン。",
-        en: "A managed plan with delegated registry, revocation management, an audit dashboard, and SLA.",
-      },
-    },
-    {
-      name: "Enterprise",
-      blurb: {
-        ja: "カスタム回路・オンプレ・規制対応（→ Lemma Critical / Compliance）。",
-        en: "Custom circuits, on-prem, and regulatory compliance (→ Lemma Critical / Compliance).",
-      },
-    },
-  ] as ReadonlyArray<DevPlanCard>,
-  note: { ja: "価格は近日公開。", en: "Pricing coming soon." } as Localized,
-  state: { ja: "近日公開", en: "Coming soon" } as Localized,
-  cta: { ja: "ウェイトリストに登録 →", en: "Join the waitlist →" } as Localized,
-  ctaHref: "https://tally.so/r/kd0bZR",
-} as const;
+// NOTE: T402_DEV_PLANS (Pay-side Builder/Team/Scale/Enterprise placeholder
+// ladder) was retired 2026-07-07. Pay, Sell, and /pricing #t402 all share the
+// single T402_PRICING 4-plan set via <Trust402Tiers>; Pay does not carry its
+// own developer ladder.
