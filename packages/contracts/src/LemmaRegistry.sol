@@ -110,4 +110,55 @@ contract LemmaRegistry {
   function isRegistered(bytes32 docHash) external view returns (bool) {
     return documents[docHash].docHash != bytes32(0);
   }
+
+  /* ── Bundle Types ───────────────────────────────────────────── */
+
+  struct BundleAnchor {
+    uint64 registeredAt;    // block.timestamp
+    uint32 documentCount;   // packed into same slot → single SSTORE
+  }
+
+  /* ── Bundle State ───────────────────────────────────────────── */
+
+  mapping(bytes32 => BundleAnchor) public bundleAnchors;
+
+  /* ── Bundle Events ──────────────────────────────────────────── */
+
+  event DocumentRootRegistered(
+    bytes32 indexed root,
+    uint32 documentCount,
+    bytes32[] docHashes
+  );
+
+  /* ── Bundle Errors ──────────────────────────────────────────── */
+
+  error RootAlreadyRegistered(bytes32 root);
+
+  /* ── Bundle External ────────────────────────────────────────── */
+
+  /**
+   * @notice Register a Merkle root of batched documents on-chain.
+   * @param root       Merkle root of the sorted document leaves.
+   * @param docHashes  Array of individual document hashes in this bundle.
+   */
+  function registerDocumentRoot(
+    bytes32 root,
+    bytes32[] calldata docHashes
+  ) external {
+    if (bundleAnchors[root].registeredAt != 0) {
+      revert RootAlreadyRegistered(root);
+    }
+    bundleAnchors[root] = BundleAnchor({
+      registeredAt: uint64(block.timestamp),
+      documentCount: uint32(docHashes.length)
+    });
+    emit DocumentRootRegistered(root, uint32(docHashes.length), docHashes);
+  }
+
+  /**
+   * @notice Check whether a Merkle root has been registered on-chain.
+   */
+  function isRootRegistered(bytes32 root) external view returns (bool) {
+    return bundleAnchors[root].registeredAt != 0;
+  }
 }

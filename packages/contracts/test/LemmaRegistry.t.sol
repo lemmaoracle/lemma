@@ -186,4 +186,46 @@ contract LemmaRegistryTest is Test {
       attrValues
     );
   }
+
+  // ── Bundle Tests ──────────────────────────────────────────────
+
+  function test_registerDocumentRoot_storesAnchor() public {
+    bytes32 root = bytes32(uint256(0xdead));
+    bytes32[] memory docHashes = new bytes32[](3);
+    docHashes[0] = bytes32(uint256(0x01));
+    docHashes[1] = bytes32(uint256(0x02));
+    docHashes[2] = bytes32(uint256(0x03));
+
+    registry.registerDocumentRoot(root, docHashes);
+
+    (uint64 registeredAt, uint32 documentCount) = registry.bundleAnchors(root);
+    assertEq(documentCount, 3);
+    assertTrue(registeredAt > 0);
+    assertTrue(registry.isRootRegistered(root));
+  }
+
+  function test_registerDocumentRoot_emitsEvent() public {
+    bytes32 root = bytes32(uint256(0xdead));
+    bytes32[] memory docHashes = new bytes32[](2);
+    docHashes[0] = bytes32(uint256(0x01));
+    docHashes[1] = bytes32(uint256(0x02));
+
+    vm.expectEmit(true, false, false, true, address(registry));
+    emit LemmaRegistry.DocumentRootRegistered(root, 2, docHashes);
+    registry.registerDocumentRoot(root, docHashes);
+  }
+
+  function test_registerDocumentRoot_revertsOnDuplicate() public {
+    bytes32 root = bytes32(uint256(0xdead));
+    bytes32[] memory docHashes = new bytes32[](1);
+    docHashes[0] = bytes32(uint256(0x01));
+
+    registry.registerDocumentRoot(root, docHashes);
+    vm.expectRevert(abi.encodeWithSelector(LemmaRegistry.RootAlreadyRegistered.selector, root));
+    registry.registerDocumentRoot(root, docHashes);
+  }
+
+  function test_isRootRegistered_returnsFalseForUnknown() public {
+    assertFalse(registry.isRootRegistered(bytes32(uint256(0xdeadbeef))));
+  }
 }
