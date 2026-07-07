@@ -603,7 +603,9 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   }
   :root[lang="en"] .la { --la-body: "Sora", "Noto Sans JP", system-ui, sans-serif; }
   .la-container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
-  .la a { text-decoration: none; color: inherit; }
+  /* Links style their own color via their class; don't force-inherit the body
+     grey (that clobbered .la-btn cream text → grey-on-brown, unreadable). */
+  .la a { text-decoration: none; }
 
   .la-eyebrow {
     font-family: var(--la-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
