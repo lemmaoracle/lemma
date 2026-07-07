@@ -256,30 +256,40 @@ export const publish = async (
   const { prove } = prover;
   const { register: registerDocument } = documents;
 
-  // ── 1. Generate per-schema proof ──
+  const chainId = input.environment === "production" ? 8453 : 84532;
+
+  // ── 1. Compute docHash = Poseidon2(commitment, chainId) ──
+  // Binding chainId into docHash makes Sandbox/Production documents distinct,
+  // preventing INSERT OR IGNORE collisions when the same content is registered
+  // on multiple chains.
+  const docHash = bigintToHex(
+    poseidon2([BigInt(input.commitment), BigInt(chainId)]),
+  );
+
+  // ── 2. Generate per-schema proof ──
   const proof = await prove(client, {
     circuitId: input.circuitId,
     witness: input.witness,
   });
 
-  // ── 2. Register document ──
+  // ── 3. Register document ──
   await registerDocument(client, {
-    docHash: input.commitment,
+    docHash,
     schema: input.circuitId,
     cid: input.cid ?? "",
     issuerId: input.did,
     subjectId: input.did,
-    chainId: input.environment === "production" ? 8453 : 84532,
+    chainId,
     commitments: {
       scheme: "poseidon" as const,
-      root: input.commitment,
-      leaves: [input.commitment],
+      root: docHash,
+      leaves: [docHash],
       randomness: "0x0",
     },
     revocation: { root: "" },
   });
 
-  // ── 3. Submit proof ──
+  // ── 4. Submit proof ──
   // Trust402-specific HTTP call: environment rides as a query param so the
   // proof body stays a clean SubmitProofRequest and the Trust402 proxy uses
   // it for billing network selection. We call the proxy directly rather than
@@ -306,7 +316,7 @@ export const publish = async (
       method: "POST",
       headers: proofHeaders,
       body: JSON.stringify({
-        docHash: input.commitment,
+        docHash,
         circuitId: input.circuitId,
         proof: proof.proof,
         inputs: [input.commitment],
@@ -334,7 +344,7 @@ export const publish = async (
     );
   }
 
-  // ── 4. Compute listingRoot (deterministic identifier, no ZK proof) ──
+  // ── 5. Compute listingRoot (deterministic identifier, no ZK proof) ──
   const schemaIdScalar = toScalar(input.circuitId);
   const priceUsdc = toScalar(input.price.amount);
   const didScalar = toScalar(input.did);
