@@ -19,8 +19,7 @@ export default defineConfig({
       i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },
       filter: (page) =>
         !page.includes("/thank-you/") &&
-        !page.includes("/pillars/agent-trust-chain/") &&
-        !page.includes("/lemma-api/"),
+        !page.includes("/pillars/agent-trust-chain/"),
     }),
   ],
   vite: {

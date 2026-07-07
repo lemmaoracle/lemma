@@ -7,8 +7,8 @@
  * columns → 料金導線 → CTA 分岐. Terminology is "Lemma API / 5つの証明"
  * (the "柱 / Pillar / 4つの軸" framing is retired). No prices on this page
  * (→ /pricing#api); no endpoints or code (→ specs); the page never calls the
- * API. Copy is inline-bilingual. Rendered at /lemma-api today; PR-B repoints
- * /pillars here and redirects /lemma-api → /pillars.
+ * API. Copy is inline-bilingual. Rendered at /pillars (the canonical hub); the
+ * short-lived /lemma-api route was removed (never announced, no inbound links).
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
@@ -21,7 +21,7 @@ interface Props {
   locale: Locale;
   t: Translations;
   base: string;
-  /** Canonical path — "/pillars/" when this serves as the hub, "/lemma-api/" on the legacy route. */
+  /** Canonical path — defaults to "/pillars/" (the hub). */
   pagePath?: string;
   /** Optional OG image URL (the /pillars hub keeps its dedicated card). */
   ogImage?: string;
