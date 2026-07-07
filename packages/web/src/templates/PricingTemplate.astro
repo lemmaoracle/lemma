@@ -15,6 +15,7 @@ import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import PricingHero from "../components/pricing/PricingHero.astro";
+import PricingSectionNav from "../components/pricing/PricingSectionNav.astro";
 import PricingPrincipleBand from "../components/pricing/PricingPrincipleBand.astro";
 import PricingProductLines from "../components/pricing/PricingProductLines.astro";
 import PlanPriceModule from "../components/pricing/PlanPriceModule.astro";
@@ -50,6 +51,8 @@ const { locale, t, base } = Astro.props as Props;
   <main class="pr-page">
     <div class="pr-container">
       <PricingHero locale={locale} />
+      {/* Sticky in-page section nav (scroll-spy) — the page is long */}
+      <PricingSectionNav locale={locale} />
       {/* Common-principles band + product-line overview (jump to #ent/#api/#t402) */}
       <PricingPrincipleBand locale={locale} />
       <PricingProductLines locale={locale} />

@@ -1,0 +1,138 @@
+---
+/**
+ * /pricing — sticky in-page section nav. The page is long, so this pill bar
+ * sticks under the site nav (top:64px) and lets visitors jump between the
+ * blocks; scroll-spy highlights the current section. Reads clearly as
+ * navigation (labelled pills), unlike the earlier subtle hero anchor line.
+ */
+import type { Locale } from "../../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const items = isJa
+  ? [
+      { id: "ent", l: "エンタープライズ" },
+      { id: "api", l: "Lemma API" },
+      { id: "t402", l: "Trust402" },
+      { id: "faq", l: "FAQ" },
+    ]
+  : [
+      { id: "ent", l: "Enterprise" },
+      { id: "api", l: "Lemma API" },
+      { id: "t402", l: "Trust402" },
+      { id: "faq", l: "FAQ" },
+    ];
+---
+
+<nav class="psn" aria-label={isJa ? "このページの目次" : "On this page"}>
+  <span class="psn-label">{isJa ? "このページ" : "On this page"}</span>
+  <div class="psn-pills">
+    {items.map((it) => (
+      <a class="psn-pill" href={`#${it.id}`} data-sec={it.id}>{it.l}</a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .psn {
+    position: sticky;
+    top: 64px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* bleed to the 1100px container edges so the bar reads as a full strip */
+    margin: 8px -40px 40px;
+    padding: 11px 40px;
+    background: rgba(252, 250, 245, 0.94);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-top: 0.5px solid var(--lemma-line, #e6e1d6);
+    border-bottom: 0.5px solid var(--lemma-line, #e6e1d6);
+  }
+  .psn-label {
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pr-text-4);
+    white-space: nowrap;
+  }
+  .psn-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .psn-pill {
+    font-family: var(--pr-display);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--pr-text-2);
+    text-decoration: none;
+    padding: 6px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--lemma-line, #e6e1d6);
+    background: var(--white, #fff);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .psn-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .psn-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--lemma-cream, #fcfaf5);
+  }
+  @media (max-width: 720px) {
+    .psn { margin: 8px -24px 32px; padding: 10px 24px; gap: 10px; }
+    .psn-label { display: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    const nav = document.querySelector(".psn");
+    if (!nav) return;
+    const pills = Array.from(nav.querySelectorAll(".psn-pill"));
+    const byId = new Map(pills.map((p) => [p.getAttribute("data-sec"), p]));
+    const secs = pills
+      .map((p) => document.getElementById(p.getAttribute("data-sec")))
+      .filter(Boolean);
+    if (!secs.length) return;
+
+    // Highlight the section at the top of the reading area (just below the
+    // site nav + this sticky bar ≈ 138px). recompute() is deterministic — it
+    // picks the last section whose top has passed the line — and is fired by
+    // an IntersectionObserver (event-driven, works whatever the scroll
+    // container is) plus scroll/resize as a backstop. No perpetual rAF loop.
+    const OFFSET = 138;
+    let lastId = null;
+    function recompute() {
+      let best = secs[0];
+      for (const s of secs) {
+        if (s.getBoundingClientRect().top - OFFSET <= 0) best = s;
+      }
+      if (best && best.id !== lastId) {
+        lastId = best.id;
+        pills.forEach((p) =>
+          p.classList.toggle("active", p.getAttribute("data-sec") === best.id)
+        );
+      }
+    }
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(recompute, {
+        rootMargin: "-138px 0px -70% 0px",
+        threshold: 0,
+      });
+      secs.forEach((s) => io.observe(s));
+    }
+    window.addEventListener("scroll", recompute, { passive: true, capture: true });
+    window.addEventListener("resize", recompute, { passive: true });
+    recompute();
+  })();
+</script>

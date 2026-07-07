@@ -10,7 +10,7 @@ const { locale } = Astro.props as Props;
 const f = PRICING.faq;
 ---
 
-<section class="pf-section">
+<section class="pf-section" id="faq">
   <div class="pr-section-eyebrow">{f.eyebrow[locale]}</div>
   <h2 class="pr-section-h2">
     {f.h2Head[locale]}<br />
@@ -28,6 +28,7 @@ const f = PRICING.faq;
 </section>
 
 <style>
+  .pf-section { scroll-margin-top: 120px; }
   .pf-list {
     display: flex;
     flex-direction: column;
