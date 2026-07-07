@@ -140,18 +140,6 @@ const isResourcesActive =
             </a>
           </div>
         </div>
-        <div class="mega-section">
-          <div class="mega-section-label">{t.mega.products.devResources}</div>
-          <div class="mega-links">
-            <a href={getStartedHref} class="mega-link" target="_blank" rel="noopener">
-              <span class="mega-link-title">{t.dashboardCta}</span>
-            </a>
-            <a href={guidesPath} class="mega-link">
-              <span class="mega-link-title">{t.mega.developers.specs}</span>
-              <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
-            </a>
-          </div>
-        </div>
         </div>
         <a href={pricingPath} class="mega-foot-link">▸ {t.mega.products.seeAllPricing}</a>
       </div>
@@ -234,7 +222,7 @@ const isResourcesActive =
     <!-- リソース — Critical Brief leads; FAQ lives here (not top-level) -->
     <li class="mega-nav-item">
       <a href={blogPath} class:list={["mega-nav-link has-mega", { active: isResourcesActive }]}>{t.resources}</a>
-      <div class="mega-panel mega-panel-right">
+      <div class="mega-panel mega-panel-wide mega-panel-right">
         <div class="mega-section">
           <div class="mega-section-label">{t.mega.resources.label}</div>
           <div class="mega-links">
@@ -255,6 +243,18 @@ const isResourcesActive =
             </a>
             <a href={faqPath} class="mega-link">
               <span class="mega-link-title">{t.mega.resources.faq}</span>
+            </a>
+          </div>
+        </div>
+        <div class="mega-section">
+          <div class="mega-section-label">{t.mega.products.devResources}</div>
+          <div class="mega-links">
+            <a href={getStartedHref} class="mega-link" target="_blank" rel="noopener">
+              <span class="mega-link-title">{t.dashboardCta}</span>
+            </a>
+            <a href={guidesPath} class="mega-link">
+              <span class="mega-link-title">{t.mega.developers.specs}</span>
+              <span class="mega-link-sub">{t.mega.developers.specsSub}</span>
             </a>
           </div>
         </div>
@@ -286,8 +286,6 @@ const isResourcesActive =
         <a href={trust402Href} class="mob-link" target="_blank">{t.mega.products.trust402Pay}<small>{t.mega.products.trust402PaySub}</small></a>
         <a href={trust402SellHref} class="mob-link" target="_blank">{t.mega.products.trust402Sell}<small>{t.mega.products.trust402SellSub}</small></a>
         <a href={t402PricingHref} class="mob-link">{t.mega.products.institutionalId}<small>{t.mega.products.institutionalIdSub}</small></a>
-        <a href={getStartedHref} class="mob-link" target="_blank" rel="noopener">{t.dashboardCta}</a>
-        <a href={guidesPath} class="mob-link">{t.mega.developers.specs}<small>{t.mega.developers.specsSub}</small></a>
         <a href={pricingPath} class="mob-link">▸ {t.mega.products.seeAllPricing}</a>
       </div>
     </div>
@@ -333,6 +331,8 @@ const isResourcesActive =
         <button type="button" class="mob-link mob-link-button" data-tally-open={TALLY_WHITEPAPER_ID} data-tally-emoji-text="">{t.mega.resources.whitepaper}</button>
         <a href={glossaryPath} class="mob-link">{t.mega.resources.glossary}</a>
         <a href={faqPath} class="mob-link">{t.mega.resources.faq}</a>
+        <a href={getStartedHref} class="mob-link" target="_blank" rel="noopener">{t.dashboardCta}</a>
+        <a href={guidesPath} class="mob-link">{t.mega.developers.specs}<small>{t.mega.developers.specsSub}</small></a>
       </div>
     </div>
 
@@ -466,20 +466,17 @@ const isResourcesActive =
   /* Plans hub: two columns, each stacking two audience sections, + a
      full-width footer link. Right-anchored (opens leftward from the trigger)
      so the compact panel never runs off the right edge on desktop. */
-  .mega-panel-plans { min-width: 480px; left: auto; right: 0; }
+  .mega-panel-plans { min-width: 600px; left: auto; right: 0; }
+  /* Three audience columns in a row (enterprise / developer / agent). */
   .mega-plans-grid {
     display: grid;
-    grid-auto-flow: column;
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
   }
-  /* Column divider on the left column's two cells (children 1 & 2). */
+  .mega-plans-grid .mega-section { border-bottom: none; }
+  /* Column dividers after the first two columns. */
   .mega-plans-grid .mega-section:nth-child(-n+2) {
     border-right: 0.5px solid var(--lemma-line, #E5E0D5);
   }
-  /* Bottom cell of each column carries no bottom rule. */
-  .mega-plans-grid .mega-section:nth-child(2),
-  .mega-plans-grid .mega-section:nth-child(4) { border-bottom: none; }
   .mega-foot-link {
     display: flex; align-items: center; gap: 6px;
     margin: 4px 6px 2px; padding: 12px 14px;
@@ -526,7 +523,7 @@ const isResourcesActive =
   }
   .mega-link-sub {
     font-family: "Noto Sans JP", "Sora", system-ui, sans-serif;
-    font-size: 12px; color: #5A544D; line-height: 1.4; margin-top: 2px;
+    font-size: 12px; color: #938c82; line-height: 1.4; margin-top: 2px;
   }
   .mega-link:hover .mega-link-title { color: var(--accent); }
   .mega-link-dot {
@@ -594,7 +591,7 @@ const isResourcesActive =
   }
   .mob-link:last-child { border-bottom: none; }
   .mob-link:hover { color: var(--gray-800); }
-  .mob-link small { display: block; font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .mob-link small { display: block; font-size: 11px; color: #938c82; margin-top: 2px; }
   .mob-link-dot {
     color: var(--accent, #b88746);
     font-size: 8px;
