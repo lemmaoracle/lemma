@@ -10,6 +10,7 @@ import PricingIcon from "./PricingIcon.astro";
 interface Props { locale: Locale }
 const { locale } = Astro.props as Props;
 const p = PRICING.packs;
+const isJa = locale === "ja";
 
 function emphasizeNote(s: string): string {
   // Surface a handful of brand-aligned terms in black + 500 inside the
@@ -31,54 +32,66 @@ function emphasizeNote(s: string): string {
 }
 ---
 
-<section class="pk-section">
-  <div class="pr-section-eyebrow">{p.eyebrow[locale]}</div>
-  <h2 class="pr-section-h2">
-    {p.h2Head[locale]}<br />
-    <span class="accent">{p.h2Accent[locale]}</span>
-  </h2>
-  <p class="pr-section-sub">{p.sub[locale]}</p>
-
-  <div class="pk-grid">
-    {p.items.map((pack) => (
-      <article class={`pk-card pk-card--${pack.variant}`}>
-        <div class="pk-top"></div>
-        <div class="pk-body">
-          <div class="pk-head">
-            <div class="pk-icon-circle">
-              <PricingIcon name={pack.icon} size={22} />
-            </div>
-            <div class="pk-letter-meta">
-              <div class="pk-letter">{pack.letter}</div>
-              <h4 class="pk-name">{pack.name[locale]}</h4>
-            </div>
+<details class="pr-fold pk-fold">
+  <summary class="pr-fold-summary">{isJa ? "拡張パック（Critical / Compliance Tier2+）" : "Option Packs (Critical / Compliance Tier 2+)"}</summary>
+  <div class="pr-fold-body">
+    <p class="pk-note" set:html={emphasizeNote(p.note[locale])} />
+    <ul class="pk-rows">
+      {p.items.map((pack) => (
+        <li class="pk-row">
+          <span class="pk-row-letter" aria-hidden="true">
+            <PricingIcon name={pack.icon} size={16} />
+          </span>
+          <div class="pk-row-text">
+            <span class="pk-row-name">{pack.letter} · {pack.name[locale]}</span>
+            <span class="pk-row-goal">{pack.goalLines[locale].join(" · ")}</span>
           </div>
-          <h3 class="pk-goal">
-            {pack.goalLines[locale][0]}<br />
-            {pack.goalLines[locale][1]}
-          </h3>
-          <p class="pk-desc">{pack.desc[locale]}</p>
-          <div class="pk-meta">
-            <div class="pk-meta-row">
-              <span class="pk-meta-label">{p.metaTierLabel[locale]}</span>
-              <span class="pk-meta-value">{pack.tier[locale]}</span>
-            </div>
-            <div class="pk-meta-row">
-              <span class="pk-meta-label">
-                {pack.entryKind === "entry" ? p.metaEntryLabel[locale] : p.metaScopeLabel[locale]}
-              </span>
-              <span class="pk-meta-value">{pack.entryOrScope[locale]}</span>
-            </div>
-          </div>
-        </div>
-      </article>
-    ))}
+          <span class="pk-row-tier">{pack.tier[locale]}</span>
+        </li>
+      ))}
+    </ul>
   </div>
-
-  <p class="pk-note" set:html={emphasizeNote(p.note[locale])} />
-</section>
+</details>
 
 <style>
+  /* Compact collapsed-pack list (the big 3-card layout below is retired). */
+  .pk-note {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--pr-text-3);
+  }
+  .pk-note :global(.k) { color: var(--black); font-weight: 500; }
+  .pk-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .pk-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    border-top: 0.5px solid var(--lemma-line);
+  }
+  .pk-row:first-child { border-top: none; }
+  .pk-row-letter {
+    flex: none;
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px;
+    background: var(--lemma-brown-light, #f3ece4);
+    color: var(--accent);
+  }
+  .pk-row-text { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .pk-row-name { font-family: var(--pr-display); font-weight: 600; font-size: 14px; color: var(--black); }
+  .pk-row-goal { font-size: 12.5px; color: var(--pr-text-3); line-height: 1.5; }
+  .pk-row-tier {
+    flex: none;
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    color: var(--pr-text-4);
+    text-align: right;
+    max-width: 40%;
+  }
+  @media (max-width: 640px) { .pk-row-tier { display: none; } }
+
   .pk-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

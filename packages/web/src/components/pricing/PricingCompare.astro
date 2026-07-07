@@ -6,10 +6,10 @@
 import type { Locale } from "../../i18n/translations";
 import { PRICING } from "../../data/pricing";
 
-interface Props { locale: Locale; base: string }
-const { locale, base } = Astro.props as Props;
+interface Props { locale: Locale; base?: string }
+const { locale } = Astro.props as Props;
 const c = PRICING.compare;
-const trust402Href = `${base}/trust402`;
+const isJa = locale === "ja";
 
 type Cell = (typeof c.rows)[number]["civic"];
 
@@ -18,52 +18,42 @@ function cellText(cell: Cell, lc: Locale): string {
   if (cell.kind === "no") return "—";
   return cell.label[lc];
 }
+
+// Enterprise-only comparison — Trust402 has its own block (#t402), so its
+// column is dropped here. Collapsed by default: it's supporting detail, not a
+// headline section.
+const planCols = c.planColLabels.filter((l) => l !== "Trust402");
 ---
 
-<section class="pc-section">
-  <div class="pr-section-eyebrow">{c.eyebrow[locale]}</div>
-  <h2 class="pr-section-h2">
-    {c.h2Head[locale]}<br />
-    <span class="accent">{c.h2Accent[locale]}</span>
-  </h2>
-  <p class="pr-section-sub">{c.sub[locale]}</p>
-
-  <div class="pc-wrap">
-    <table class="pc-table">
-      <thead>
-        <tr>
-          <th class="pc-feature-col">{c.featureColLabel[locale]}</th>
-          {c.planColLabels.map((label) => (
-            <th class="pc-plan-col">
-              {label === "Trust402"
-                ? <a class="pc-trust402-link" href={trust402Href}>Trust402 ↗</a>
-                : label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {c.rows.map((row) => (
+<details class="pr-fold pc-fold">
+  <summary class="pr-fold-summary">{isJa ? "機能を比較する（Civic / Critical / Compliance）" : "Compare features (Civic / Critical / Compliance)"}</summary>
+  <div class="pr-fold-body">
+    <div class="pc-wrap">
+      <table class="pc-table">
+        <thead>
           <tr>
-            <td class="pc-feature">{row.feature[locale]}</td>
-            {([row.civic, row.critical, row.compliance, row.trust402] as const).map((cell) => (
-              <td class={`pc-plan${cell.kind === "no" ? " pc-none" : ""}${cell.kind === "tier" ? " pc-tier" : ""}`}>
-                {cellText(cell, locale)}
-              </td>
+            <th class="pc-feature-col">{c.featureColLabel[locale]}</th>
+            {planCols.map((label) => (
+              <th class="pc-plan-col">{label}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {c.rows.map((row) => (
+            <tr>
+              <td class="pc-feature">{row.feature[locale]}</td>
+              {([row.civic, row.critical, row.compliance] as const).map((cell) => (
+                <td class={`pc-plan${cell.kind === "no" ? " pc-none" : ""}${cell.kind === "tier" ? " pc-tier" : ""}`}>
+                  {cellText(cell, locale)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </div>
-  <p class="pc-note">
-    {locale === "ja"
-      ? "開発者向けの Trust402 の料金プランは、"
-      : "Trust402 (for developers) pricing lives on its "}
-    <a href={trust402Href}>{locale === "ja" ? "製品ページ" : "product page"} ↗</a>
-    {locale === "ja" ? "でご案内しています。" : "."}
-  </p>
-</section>
+</details>
 
 <style>
   .pc-wrap {
