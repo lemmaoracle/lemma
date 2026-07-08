@@ -466,10 +466,10 @@ export const T402: Trust402Content = {
         ja: "同じ手順のまま — 今度は本番。エージェントが出品を見つけ、無料で検証し、支払います。新しく学ぶことはありません。",
       },
       prodChip: { en: "same steps · real payouts", ja: "同じ手順 · 実際の入金" },
-      cta: { en: "Open the Dashboard demo", ja: "ダッシュボードデモを開く" },
+      cta: { en: "Open the Dashboard", ja: "ダッシュボードを開く" },
       ctaNote: {
-        en: "Publishing, pricing, and tracking what you've sold all live in the Dashboard. It's a non-functional demo — nothing goes live.",
-        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。非機能デモなので、公開はされません。",
+        en: "Publish, price, and track your listings in the Dashboard. Sandbox is free — testnet only, no real money.",
+        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。サンドボックスは無料 — テストネットのみ、実マネーは不要です。",
       },
     },
 
