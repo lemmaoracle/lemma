@@ -77,6 +77,7 @@ const fetchArtifact = async (
   client: LemmaClient,
   url: string,
 ): Promise<Uint8Array> => {
+  /* eslint-disable functional/no-conditional-statements, functional/no-loop-statements, functional/no-try-statements */
   const fetchFn = resolveFetch(client);
 
   // Non-IPFS URLs: single fetch, no fallback.
@@ -105,6 +106,7 @@ const fetchArtifact = async (
   return reject(
     `Failed to fetch circuit artifact from all IPFS gateways: ${url}`,
   );
+  /* eslint-enable functional/no-conditional-statements, functional/no-loop-statements, functional/no-try-statements */
 };
 
 /**

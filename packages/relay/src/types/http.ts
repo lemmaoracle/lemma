@@ -69,7 +69,7 @@ export type Route = Readonly<{
 export const compilePathPattern = (
   path: string,
 ): Readonly<{ regex: RegExp; paramNames: readonly string[] }> => {
-  // eslint-disable-next-line functional/no-let, functional/immutable-data
+   
   const paramNames: string[] = [];
   const pattern = path
     .split("/")

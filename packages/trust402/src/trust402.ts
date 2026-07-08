@@ -334,7 +334,7 @@ export const publish = async (
       `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
     );
     throw typeof code === "number"
-      ? (Object.assign(err, { code }) as Error & { code: number })
+      ? (Object.assign(err, { code }))
       : err;
   }
   if (!proofRes.ok) {

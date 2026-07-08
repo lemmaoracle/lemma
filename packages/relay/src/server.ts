@@ -165,8 +165,10 @@ const findMatchingRoute = (
   COMPILED_ROUTES.reduce<
     Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined
   >((acc, compiled) => {
+    /* eslint-disable functional/no-conditional-statements */
     if (acc) return acc;
     if (compiled.route.method !== request.method) return undefined;
+    /* eslint-enable functional/no-conditional-statements */
     const params = extractParams(compiled, request.url);
     return params !== undefined ? { route: compiled.route, params } : undefined;
   }, undefined);

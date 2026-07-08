@@ -77,40 +77,42 @@ const jobs: Map<string, Job> = new Map();
 
 /** Insert a fresh job. */
 const insertJob = (id: string): void => {
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+  // eslint-disable-next-line functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data
   jobs.set(id, { id, status: "pending", createdAt: Date.now() });
 };
 
 /** Replace a job by id with an evolved record. */
 const updateJob = (id: string, evolve: (j: Job) => Job): void => {
   const current = jobs.get(id);
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+  // eslint-disable-next-line functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data
   if (current) jobs.set(id, evolve(current));
 };
 
 /** Garbage-collect jobs older than the TTL. Called on each GET/POST. */
+// eslint-disable-next-line functional/functional-parameters
 const gcJobs = (): void => {
   const cutoff = Date.now() - JOB_TTL_MS;
-  // eslint-disable-next-line functional/no-expression-statements
+   
   jobs.forEach((job, id) => {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    // eslint-disable-next-line functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data
     if (job.createdAt < cutoff) jobs.delete(id);
   });
 };
 
 /** Run the proof in the background, updating the job on completion. */
 const runProofInBackground = (body: RequestBody, jobId: string): void => {
+  // eslint-disable-next-line functional/no-expression-statements
   void prover
     .prove(create({ apiBase: body.apiBase, apiKey: body.apiKey }), body.input)
     .then((result: ProveOutput) =>
-      updateJob(jobId, (j) => ({ ...j, status: "done", result })),
+      { updateJob(jobId, (j) => ({ ...j, status: "done", result })); },
     )
     .catch((err: unknown) =>
-      updateJob(jobId, (j) => ({
+      { updateJob(jobId, (j) => ({
         ...j,
         status: "error",
         error: err instanceof Error ? err.message : String(err),
-      })),
+      })); },
     );
 };
 
@@ -201,12 +203,12 @@ const lookupJob = (
         (jobId: string) => jobs.get(jobId),
         (job: Job | undefined) =>
           job ? jobStatusResponse(job) : jobNotFoundResponse,
-      )(params!["jobId"]!)
+      )(params["jobId"])
     : jobNotFoundResponse;
 
 /** Main request handler. */
 export const proveHandler: RequestHandler = (request) => {
-  // eslint-disable-next-line functional/no-expression-statements
+   
   gcJobs();
   return R.cond([
     [

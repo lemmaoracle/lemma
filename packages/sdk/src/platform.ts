@@ -31,6 +31,7 @@ const td = new TextDecoder();
  * Call this before any code that depends on `@docknetwork/crypto-wasm`
  * or other Node-oriented packages.
  */
+// eslint-disable-next-line functional/functional-parameters
 export const ensureBufferPolyfill = (): void => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (typeof globalThis.Buffer === "undefined") {
@@ -64,19 +65,23 @@ ensureBufferPolyfill();
  * In Node.js and browsers a real implementation exists and is left
  * untouched.
  */
+// eslint-disable-next-line functional/functional-parameters
 export const ensureUrlCreateObjectUrlPolyfill = (): void => {
   // Detect a stub that exists as a function but throws when invoked
   // (notably Cloudflare Workers, where `typeof URL.createObjectURL` is
   // "function" yet calling it rejects). A typeof guard alone cannot
   // distinguish this from a real implementation, so probe it.
+  /* eslint-disable functional/no-try-statements, functional/no-expression-statements */
   try {
     URL.createObjectURL(new Blob([""]));
     return;
   } catch {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+    // eslint-disable-next-line functional/immutable-data
     (URL as unknown as { createObjectURL: () => string }).createObjectURL =
+      // eslint-disable-next-line functional/functional-parameters
       () => "blob:snarkjs-shim";
   }
+  /* eslint-enable functional/no-try-statements, functional/no-expression-statements */
 };
 
 // Auto-inject on import so that any consumer gets the polyfill
