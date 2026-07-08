@@ -37,9 +37,10 @@ interface Props {
   t: Translations["nav"];
   footerT: Translations["footer"];
   base: string;
+  dashboardUrl?: string;
 }
 
-const { locale, t, footerT, base } = Astro.props;
+const { locale, t, footerT, base, dashboardUrl: dashboardUrlOverride } = Astro.props;
 const isJa = locale === "ja";
 
 const blogPath = base ? `${base}/blog` : "/blog";
@@ -57,7 +58,7 @@ const guidesPath = base ? `${base}/guides` : "/guides";
 const homePath = base || "/";
 const contactPath = DISCOVERY_CALL_URL[locale];
 const trust402Href = base ? `${base}/trust402/` : "/trust402/";
-const dashboardUrl = "https://dashboard.lemma.workers.dev";
+const dashboardUrl = dashboardUrlOverride ?? "https://dashboard.lemma.workers.dev";
 const whitepaperHref = "https://tally.so/r/xX0VYv";
 const aboutUsHref =
   isJa ? "https://corp.frame00.com/" : "https://corp.frame00.com/index-en";

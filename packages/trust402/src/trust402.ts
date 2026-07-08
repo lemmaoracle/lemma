@@ -92,6 +92,16 @@ const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
 /** Price in USDC smallest unit (6 decimals). */
 export type PriceInput = Readonly<{ amount: number; currency: "USDC" }>;
 
+/** File abstraction — avoids `new File()` requirement in Node.js. */
+export type FileInput = Readonly<{
+  body: string | Uint8Array;
+  name: string;
+  type?: string;
+}>;
+
+/** Storefront content categories (mirrors server ALLOWED_CATEGORIES). */
+export type Category = "dataset" | "model" | "code" | "document" | "image" | "audio" | "other";
+
 /**
  * Publish input — circuit-agnostic.
  *
@@ -117,9 +127,9 @@ export type PublishInput = Readonly<{
   /** Listing environment — determines billing network (sandbox → base-sepolia, production → base). */
   environment?: "sandbox" | "production";
   /** Content file to upload to the storefront. If provided, publish() auto-uploads to /api/cards. */
-  file?: Blob | File;
+  file?: Blob | File | FileInput;
   /** Storefront category (e.g. "article", "code"). Required when `file` is set. */
-  category?: string;
+  category?: Category;
   /** Seller payout wallet (0x-prefixed). Required when `file` is set and price > 0. */
   payoutAddress?: string;
 }>;
@@ -391,9 +401,10 @@ export const publish = async (
     const result = await list(client, {
       listing,
       file: input.file,
-      category: input.category ?? detectContentType(
-        input.file as { type: string; name: string },
-      ),
+      category: input.category ?? detectContentType({
+        type: (input.file as { type?: string }).type ?? "",
+        name: (input.file as { name: string }).name,
+      }),
       priceUsdc: input.price.amount,
       environment: input.environment ?? "sandbox",
       payoutAddress: input.payoutAddress ?? "",
@@ -411,15 +422,16 @@ export const publish = async (
 /** MIME type → content type detection (for browser File objects). */
 const MIME_TO_CONTENT_TYPE: Readonly<Record<string, string>> = Object.freeze({
   "image/": "image",
-  "video/": "video",
-  "text/csv": "csv",
+  "video/": "other",
+  "audio/": "audio",
+  "text/csv": "dataset",
   "application/json": "code",
   "text/plain": "code",
   "text/html": "code",
   "text/javascript": "code",
   "text/typescript": "code",
   "application/xml": "code",
-  "text/markdown": "code",
+  "text/markdown": "document",
 });
 
 /**
@@ -445,16 +457,18 @@ export const detectContentType = (file: {
   }
 
   const ext = file.name.split(".").pop()?.toLowerCase();
-  if (ext === "csv") return "csv";
+  if (ext === "csv") return "dataset";
   if (ext === "json" || ext === "jsonl") return "code";
-  if (ext === "md") return "code";
+  if (ext === "md") return "document";
   if (ext === "xml") return "code";
   if (ext === "html" || ext === "htm") return "code";
   if (ext === "js" || ext === "ts" || ext === "jsx" || ext === "tsx") return "code";
   if (ext === "py" || ext === "rs" || ext === "go" || ext === "java") return "code";
   if (ext === "sol" || ext === "vy") return "code";
+  if (ext === "mp3" || ext === "wav" || ext === "ogg") return "audio";
+  if (ext === "png" || ext === "jpg" || ext === "jpeg" || ext === "webp" || ext === "svg") return "image";
 
-  return "generic";
+  return "other";
 };
 
 /* ------------------------------------------------------------------ */
@@ -472,8 +486,8 @@ export const detectContentType = (file: {
 export type ListInput = Readonly<{
   /** The listing object returned by `publish()`. */
   listing: Listing;
-  /** Content file to upload (browser `File` or Node.js `Blob`). */
-  file: Blob | File;
+  /** Content file to upload (browser `File`, `Blob`, or `FileInput` object). */
+  file: Blob | File | FileInput;
   /** Content category (e.g. "article", "code", "csv"). */
   category: string;
   /** Price in micro-USDC (6 decimals). Must match the listing price. */
@@ -501,7 +515,15 @@ export const list = async (
 ): Promise<{ id: string }> => {
   const url = `${client.apiBase}/api/cards`;
   const form = new FormData();
-  form.append("file", input.file as File);
+
+  // Convert FileInput to Blob for FormData. File and Blob pass through.
+  const fileBlob =
+    "body" in input.file
+      ? new Blob([input.file.body], { type: input.file.type ?? "application/octet-stream" })
+      : input.file;
+  const fileName =
+    "name" in input.file ? input.file.name : (fileBlob as File).name ?? "untitled";
+  form.append("file", fileBlob, fileName);
   form.append("category", input.category);
   form.append("price_usdc", String(input.priceUsdc));
   form.append("environment", input.environment);
