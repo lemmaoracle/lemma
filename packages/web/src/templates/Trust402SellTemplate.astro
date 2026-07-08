@@ -28,6 +28,7 @@ interface Props {
 const { locale, t, base } = Astro.props as Props;
 const c = T402.sell;
 const payHref = `${base}/trust402/`;
+const dashboardUrl = "https://trust402.lemma.workers.dev";
 // Shared by students into their lab (LINE/Slack/mail) — lands on the
 // Institutional section; ?source=share keeps forward traffic measurable.
 const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#institutional`;
@@ -55,7 +56,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
             <h1>{c.hero.h1a[locale]} <span class="g">{c.hero.h1em[locale]}</span></h1>
             <p class="hero-sub">{c.hero.sub[locale]}</p>
             <div class="hero-cta-row">
-              <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hero.ctaPrimary[locale]} →</a>
+              <a class="btn btn-primary" href={dashboardUrl}>{c.hero.ctaPrimary[locale]} →</a>
               <a class="btn btn-ghost on-dark" href={`${base}/trust402/sell/model/`}>{c.hero.ctaSecondary[locale]}</a>
             </div>
             <div class="lede-note">
@@ -206,7 +207,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
           </div>
         </div>
         <div class="center-link reveal">
-          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.hands.cta[locale]} →</a>
+          <a class="btn btn-primary" href={dashboardUrl}>{c.hands.cta[locale]} →</a>
           <p class="cta-note">{c.hands.ctaNote[locale]}</p>
         </div>
       </div>
@@ -310,7 +311,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
         <h2>{c.closing.h2[locale]}</h2>
         <div class="rule"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" href={`${base}/trust402/sell/dashboard/`}>{c.closing.ctaPrimary[locale]} →</a>
+          <a class="btn btn-primary" href={dashboardUrl}>{c.closing.ctaPrimary[locale]} →</a>
           <a class="btn btn-ghost on-dark" href={T402_GITHUB}><svg class="ic btn-ic"><use href="#ic-github" /></svg> {c.closing.github[locale]}</a>
         </div>
       </div>
@@ -320,11 +321,11 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
     <nav class="t402-switch" aria-label="Trust402">
       <a class="t402-switch-btn" href={`${base}/trust402/`}>Pay</a>
       <a class="t402-switch-btn active" href={`${base}/trust402/sell/`} aria-current="page">Sell</a>
-      <a class="t402-switch-btn" href={`${base}/trust402/sell/dashboard/`}>Dashboard <span class="t402-switch-badge">demo</span></a>
+      <a class="t402-switch-btn" href={dashboardUrl}>Dashboard</a>
     </nav>
   </main>
 
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} dashboardUrl="https://trust402.lemma.workers.dev" />
 </Layout>
 
 <style>

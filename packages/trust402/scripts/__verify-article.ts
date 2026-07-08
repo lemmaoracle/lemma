@@ -80,6 +80,7 @@ if (live) {
 
   // Build getSigner if a private key is provided (Node.js + viem).
   let getSigner: (() => Promise<{ provider: unknown; address: string; signTypedData?: (params: unknown) => Promise<string> }>) | undefined;
+  let signerAddress = "0x0000000000000000000000000000000000000000";
   if (privateKey) {
     const { createWalletClient, http } = await import("viem");
     const { privateKeyToAccount } = await import("viem/accounts");
@@ -99,14 +100,12 @@ if (live) {
         walletClient.signTypedData(params as Parameters<typeof walletClient.signTypedData>[0]),
     });
     console.log(`\n=== Live publish (x402 via Trust402 proxy, ${account.address}) ===`);
+    signerAddress = account.address;
   } else {
     console.log(`\n=== Live publish (direct Lemma API, no x402) ===`);
   }
 
-  // PRIVATE_KEY → Trust402 proxy (default apiBase) with x402
-  //   Uses LEMMA_API_KEY if available (real API key), otherwise falls back
-  //   to the trust402-dashboard system key (must be seeded in D1).
-  // LEMMA_API_KEY → direct Lemma API with the provided key
+  // LEMMA_API_KEY only → Trust402 proxy (no x402 signer, skips S2 storefront)
   const proxyApiKey = apiKey ?? "trust402-dashboard";
   const client = create(
     privateKey !== undefined
@@ -116,25 +115,33 @@ if (live) {
           onPayment: (info) => console.log(`  paying ${info.amount} micro-USDC…`),
         }
       : {
-          apiBase: "https://workers.lemma.workers.dev",
           apiKey: apiKey!,
         },
   );
 
+  // Live publish uses a unique article body so each run produces a distinct
+  // docHash → distinct document in the bundle queue (threshold = 3).
+  const liveBody = `verify-article.ts · ${Date.now()}`;
+  const liveArticle = { ...article, body: liveBody, words: liveBody.split(/\\s+/).length };
+  const { witness: liveWitness, commitment: liveCommitment } = blogArticle(liveArticle);
+
   const listing = await publish(client, {
     circuitId: "blog-article-v1.2",
-    witness,
-    commitment: commitmentB,
+    witness: liveWitness,
+    commitment: liveCommitment,
     price: { amount: 10000, currency: "USDC" },
-    did: "did:pkh:eip155:84532:0x0000000000000000000000000000000000000000",
+    did: `did:pkh:eip155:84532:${signerAddress}`,
     metadata: { title: "verify-article.ts", version: "1.0" },
     environment: "sandbox",
-    // S2: auto-upload to storefront (Node.js: File constructor with name)
-    file: new File([article.body], "article.md", { type: "text/markdown" }),
-    category: "document",
-    payoutAddress: privateKey !== undefined
-      ? (await getSigner!()).address
-      : "0x0000000000000000000000000000000000000000",
+    // FileInput — only when PRIVATE_KEY is set (x402 required for proof submission
+    // through Trust402 proxy; without it, S2 storefront upload is skipped)
+    ...(privateKey !== undefined
+      ? {
+          file: { body: liveBody, name: "article.md", type: "text/markdown" } as const,
+          category: "document" as const,
+          payoutAddress: (await getSigner!()).address,
+        }
+      : {}),
   });
 
   console.log(`  listingRoot: ${listing.listingRoot}`);
