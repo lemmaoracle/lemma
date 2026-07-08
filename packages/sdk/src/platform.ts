@@ -30,14 +30,17 @@ const td = new TextDecoder();
  * In Node.js `Buffer` is already a global; in browsers it is not.
  * Call this before any code that depends on `@docknetwork/crypto-wasm`
  * or other Node-oriented packages.
+ *
+ * Imperative: polyfill injection into globalThis — no functional alternative.
  */
+/* eslint-disable functional/functional-parameters, functional/no-expression-statements, functional/immutable-data */
 export const ensureBufferPolyfill = (): void => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (typeof globalThis.Buffer === "undefined") {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
     (globalThis as Record<string, unknown>).Buffer = BufferPolyfill;
   }
 };
+/* eslint-enable functional/functional-parameters, functional/no-expression-statements, functional/immutable-data */
 
 // Auto-inject on import so that any consumer gets the polyfill
 // before third-party modules evaluate their top-level code.
@@ -63,7 +66,10 @@ ensureBufferPolyfill();
  *
  * In Node.js and browsers a real implementation exists and is left
  * untouched.
+ *
+ * Imperative: runtime polyfill probe via try-catch + global mutation.
  */
+/* eslint-disable functional/functional-parameters, functional/no-try-statements, functional/no-expression-statements, functional/immutable-data */
 export const ensureUrlCreateObjectUrlPolyfill = (): void => {
   // Detect a stub that exists as a function but throws when invoked
   // (notably Cloudflare Workers, where `typeof URL.createObjectURL` is
@@ -73,11 +79,11 @@ export const ensureUrlCreateObjectUrlPolyfill = (): void => {
     URL.createObjectURL(new Blob([""]));
     return;
   } catch {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
     (URL as unknown as { createObjectURL: () => string }).createObjectURL =
       () => "blob:snarkjs-shim";
   }
 };
+/* eslint-enable functional/functional-parameters, functional/no-try-statements, functional/no-expression-statements, functional/immutable-data */
 
 // Auto-inject on import so that any consumer gets the polyfill
 // before snarkjs evaluates its top-level code.

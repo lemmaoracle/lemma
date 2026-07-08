@@ -66,6 +66,45 @@ type SnarkjsModule = {
 /* ------------------------------------------------------------------ */
 
 /**
+ * Try a single IPFS gateway for an artifact CID.
+ * Returns the artifact bytes on success, undefined on any failure.
+ */
+const tryGateway = (
+  fetchFn: ReturnType<typeof resolveFetch>,
+  gatewayUrl: string,
+): Promise<Uint8Array | undefined> =>
+  fetchFn(gatewayUrl)
+    .then((res) =>
+      res.ok
+        ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+        : undefined,
+    )
+    // catch handler discards error — standard Promise API pattern
+    // eslint-disable-next-line functional/functional-parameters
+    .catch(() => undefined);
+
+/**
+ * Fetch an artifact from IPFS, trying gateways sequentially.
+ * Uses Promise-chained reduce for ordered fallback — each gateway
+ * is only tried if all previous ones failed.
+ */
+const fetchFromGateways = (
+  fetchFn: ReturnType<typeof resolveFetch>,
+  cid: string,
+): Promise<Uint8Array> =>
+  IPFS_GATEWAYS.reduce(
+    (acc: Promise<Uint8Array | undefined>, gateway: string) =>
+      acc.then((prev) => prev ?? tryGateway(fetchFn, `${gateway}${cid}`)),
+    Promise.resolve(undefined as Uint8Array | undefined),
+  ).then(
+    (result) =>
+      result ??
+      reject(
+        `Failed to fetch circuit artifact from all IPFS gateways: ipfs://${cid}`,
+      ),
+  );
+
+/**
  * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
  *
  * For IPFS URLs, tries multiple gateways in order until one succeeds.
@@ -73,38 +112,18 @@ type SnarkjsModule = {
  * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
  * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifact = async (
+const fetchArtifact = (
   client: LemmaClient,
   url: string,
 ): Promise<Uint8Array> => {
   const fetchFn = resolveFetch(client);
-
-  // Non-IPFS URLs: single fetch, no fallback.
-  if (!url.startsWith("ipfs://")) {
-    const res = await fetchFn(url);
-    return res.ok
-      ? new Uint8Array(await res.arrayBuffer())
-      : reject(`Failed to fetch circuit artifact: ${url}`);
-  }
-
-  const cid = url.slice("ipfs://".length);
-  const gatewayUrl = (g: string): string => `${g}${cid}`;
-
-  // Try each gateway in order; return the first OK response.
-  for (const gateway of IPFS_GATEWAYS) {
-    try {
-      const res = await fetchFn(gatewayUrl(gateway));
-      if (res.ok) {
-        return new Uint8Array(await res.arrayBuffer());
-      }
-    } catch {
-      // Network error — try next gateway.
-    }
-  }
-
-  return reject(
-    `Failed to fetch circuit artifact from all IPFS gateways: ${url}`,
-  );
+  return url.startsWith("ipfs://")
+    ? fetchFromGateways(fetchFn, url.slice("ipfs://".length))
+    : fetchFn(url).then((res) =>
+        res.ok
+          ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+          : reject(`Failed to fetch circuit artifact: ${url}`),
+      );
 };
 
 /**

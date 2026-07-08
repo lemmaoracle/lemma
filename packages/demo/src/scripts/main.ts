@@ -33,7 +33,6 @@ import { verifyCustom } from "../lib/verify";
 import {
   getTranslations,
   type Locale,
-  type SampleCopy,
   type Translations,
 } from "../i18n/translations";
 
@@ -128,7 +127,7 @@ export function mount(): void {
 
   // Seed stage times for the existing fixtures so the timeline doesn't
   // open with empty timestamps when the user inspects them.
-  state.rows.forEach((row) => seedStageTimes(state, row));
+  state.rows.forEach((row) => { seedStageTimes(state, row); });
 
   wireTheme();
   wireFilters(state, t);
@@ -188,7 +187,7 @@ function wireTheme(): void {
     document.documentElement.dataset.theme = next;
     try {
       window.localStorage.setItem(THEME_KEY, next);
-    } catch (_) {
+    } catch {
       /* private mode */
     }
   });
@@ -604,17 +603,17 @@ function wireCustomUpload(state: State, t: Translations): void {
       status.textContent = t.sampleStrip.uploadSuccess;
 
       window.setTimeout(
-        () => transitionRow(state, t, row.id, "verifying"),
+        () => { transitionRow(state, t, row.id, "verifying"); },
         700,
       );
       if (result.overall === "pass") {
         window.setTimeout(
-          () => transitionRow(state, t, row.id, "verified"),
+          () => { transitionRow(state, t, row.id, "verified"); },
           2000,
         );
       } else {
         window.setTimeout(
-          () => transitionRow(state, t, row.id, "rejected"),
+          () => { transitionRow(state, t, row.id, "rejected"); },
           2000,
         );
       }
@@ -645,7 +644,7 @@ function wireDetailClose(state: State): void {
     state.selectedId = null;
     document
       .querySelectorAll<HTMLTableRowElement>("#pipeline-tbody tr[data-doc-hash]")
-      .forEach((tr) => tr.classList.remove("is-selected"));
+      .forEach((tr) => { tr.classList.remove("is-selected"); });
     // Restore focus to whatever was focused before the panel opened.
     state.lastFocus?.focus();
     state.lastFocus = null;
@@ -685,7 +684,7 @@ function spawnSampleRow(
   state: State,
   t: Translations,
   sample: Sample,
-  locale: Locale,
+  _locale: Locale,
 ): void {
   const copy = t.samples[sample.id];
   const docHash = synthHash(sample.id);
@@ -728,13 +727,13 @@ function spawnSampleRow(
   // Animate Received → Verifying → (Verified → On-chain) or Rejected.
   const timers: ReturnType<typeof setTimeout>[] = [];
   timers.push(
-    setTimeout(() => transitionRow(state, t, row.id, "verifying"), 900),
+    setTimeout(() => { transitionRow(state, t, row.id, "verifying"); }, 900),
   );
   if (sample.expectedResult === "pass") {
-    timers.push(setTimeout(() => transitionRow(state, t, row.id, "verified"), 2700));
-    timers.push(setTimeout(() => transitionRow(state, t, row.id, "onchain"), 4500));
+    timers.push(setTimeout(() => { transitionRow(state, t, row.id, "verified"); }, 2700));
+    timers.push(setTimeout(() => { transitionRow(state, t, row.id, "onchain"); }, 4500));
   } else {
-    timers.push(setTimeout(() => transitionRow(state, t, row.id, "rejected"), 2700));
+    timers.push(setTimeout(() => { transitionRow(state, t, row.id, "rejected"); }, 2700));
   }
   state.animTimers.set(row.id, timers);
 }

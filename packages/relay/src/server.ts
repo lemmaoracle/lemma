@@ -158,18 +158,31 @@ const extractParams = (
     : undefined;
 };
 
+/** Attempt to match a compiled route against the request. */
+const tryMatch = (
+  compiled: Readonly<{
+    route: Route;
+    regex: RegExp;
+    paramNames: readonly string[];
+  }>,
+  request: EnhancedRequest,
+): Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined =>
+  compiled.route.method !== request.method
+    ? undefined
+    : (() => {
+        const params = extractParams(compiled, request.url);
+        return params !== undefined
+          ? { route: compiled.route, params }
+          : undefined;
+      })();
+
 /** Find matching route for a request, populating path params when present. */
 const findMatchingRoute = (
   request: EnhancedRequest,
 ): Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined =>
   COMPILED_ROUTES.reduce<
     Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined
-  >((acc, compiled) => {
-    if (acc) return acc;
-    if (compiled.route.method !== request.method) return undefined;
-    const params = extractParams(compiled, request.url);
-    return params !== undefined ? { route: compiled.route, params } : undefined;
-  }, undefined);
+  >((acc, compiled) => acc ?? tryMatch(compiled, request), undefined);
 
 /** Send HTTP response. */
 const sendResponse = (
