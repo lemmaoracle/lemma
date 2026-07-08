@@ -428,3 +428,76 @@ export const detectContentType = (file: {
 
   return "generic";
 };
+
+/* ------------------------------------------------------------------ */
+/*  list — upload listing to the Trust402 storefront (POST /api/cards) */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Input for `list()` — uploads the listing created by `publish()` to the
+ * Trust402 dashboard storefront, making it visible to buyers.
+ *
+ * The `file` is the content being sold (stored in R2). `listing` is the
+ * return value of `publish()`. `payoutAddress` is the seller's wallet
+ * address for receiving x402 payments.
+ */
+export type ListInput = Readonly<{
+  /** The listing object returned by `publish()`. */
+  listing: Listing;
+  /** Content file to upload (browser `File` or Node.js `Blob`). */
+  file: Blob | File;
+  /** Content category (e.g. "article", "code", "csv"). */
+  category: string;
+  /** Price in micro-USDC (6 decimals). Must match the listing price. */
+  priceUsdc: number;
+  /** Listing environment — determines billing network. */
+  environment: "sandbox" | "production";
+  /** Seller payout wallet address (0x-prefixed). Required when priceUsdc > 0. */
+  payoutAddress: string;
+}>;
+
+/**
+ * Upload a listing to the Trust402 storefront via `POST /api/cards`.
+ *
+ * `publish()` creates the ZK proof and computes `listingRoot` client-side;
+ * `list()` uploads the file + listing metadata to the server so buyers can
+ * discover and purchase it.
+ *
+ * Authentication: the client's `apiKey` is sent as `x-api-key` header.
+ * The server resolves the account from the API key, so no browser session
+ * is needed.
+ */
+export const list = async (
+  client: LemmaClient,
+  input: ListInput,
+): Promise<{ id: string }> => {
+  const url = `${client.apiBase}/api/cards`;
+  const form = new FormData();
+  form.append("file", input.file as File);
+  form.append("category", input.category);
+  form.append("price_usdc", String(input.priceUsdc));
+  form.append("environment", input.environment);
+  form.append("trust402_listing", JSON.stringify(input.listing));
+  form.append("payout_address", input.payoutAddress);
+
+  const headers: Record<string, string> = {};
+  if (client.apiKey !== undefined) {
+    headers["x-api-key"] = client.apiKey;
+  }
+
+  const res = await (client.fetcher ?? fetch)(url, {
+    method: "POST",
+    headers,
+    body: form,
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(
+      `HTTP ${String(res.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+    );
+  }
+
+  const body = (await res.json()) as { id: string };
+  return { id: body.id };
+};

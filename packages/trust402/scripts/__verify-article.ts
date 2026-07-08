@@ -134,7 +134,32 @@ if (live) {
   console.log(`  listingRoot: ${listing.listingRoot}`);
   console.log(`  schemaId:    ${listing.schemaId}`);
   console.log(`  createdAt:   ${new Date(listing.createdAt).toISOString()}`);
-  console.log(`\n✓ Live publish succeeded`);
+  console.log(`\n✓ Live publish succeeded (S1: proof + document + listingRoot)`);
+
+  // ── S2: Upload to storefront via list() ────────────────────────────
+  const { list } = await import("@trust402/sdk");
+
+  // Build a File from the article body (Node.js: Blob → File-compatible).
+  const fileContent = article.body;
+  const file = new Blob([fileContent], { type: "text/markdown" });
+
+  // payoutAddress: use the wallet address if available, else zero address.
+  const payoutAddress = privateKey !== undefined
+    ? (await getSigner!()).address
+    : "0x0000000000000000000000000000000000000000";
+
+  console.log(`\n=== S2: Upload to storefront (POST /api/cards) ===`);
+  const result = await list(client, {
+    listing,
+    file: file as File,
+    category: "article",
+    priceUsdc: 10000,
+    environment: "sandbox",
+    payoutAddress,
+  });
+
+  console.log(`  card id: ${result.id}`);
+  console.log(`\n✓ Storefront upload succeeded (S2: listing visible to buyers)`);
 } else {
   console.log("\n(skip live publish — set LEMMA_API_KEY or PRIVATE_KEY to enable)");
 }
