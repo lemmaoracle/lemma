@@ -129,37 +129,19 @@ if (live) {
     did: "did:pkh:eip155:84532:0x0000000000000000000000000000000000000000",
     metadata: { title: "verify-article.ts", version: "1.0" },
     environment: "sandbox",
+    // S2: auto-upload to storefront (Node.js: File constructor with name)
+    file: new File([article.body], "article.md", { type: "text/markdown" }),
+    category: "document",
+    payoutAddress: privateKey !== undefined
+      ? (await getSigner!()).address
+      : "0x0000000000000000000000000000000000000000",
   });
 
   console.log(`  listingRoot: ${listing.listingRoot}`);
   console.log(`  schemaId:    ${listing.schemaId}`);
+  console.log(`  cardId:      ${listing.cardId ?? "(not uploaded)"}`);
   console.log(`  createdAt:   ${new Date(listing.createdAt).toISOString()}`);
-  console.log(`\n✓ Live publish succeeded (S1: proof + document + listingRoot)`);
-
-  // ── S2: Upload to storefront via list() ────────────────────────────
-  const { list } = await import("@trust402/sdk");
-
-  // Build a File from the article body (Node.js: Blob → File-compatible).
-  const fileContent = article.body;
-  const file = new Blob([fileContent], { type: "text/markdown" });
-
-  // payoutAddress: use the wallet address if available, else zero address.
-  const payoutAddress = privateKey !== undefined
-    ? (await getSigner!()).address
-    : "0x0000000000000000000000000000000000000000";
-
-  console.log(`\n=== S2: Upload to storefront (POST /api/cards) ===`);
-  const result = await list(client, {
-    listing,
-    file: file as File,
-    category: "article",
-    priceUsdc: 10000,
-    environment: "sandbox",
-    payoutAddress,
-  });
-
-  console.log(`  card id: ${result.id}`);
-  console.log(`\n✓ Storefront upload succeeded (S2: listing visible to buyers)`);
+  console.log(`\n✓ publish() completed S1 (proof + document) + S2 (storefront upload)`);
 } else {
   console.log("\n(skip live publish — set LEMMA_API_KEY or PRIVATE_KEY to enable)");
 }

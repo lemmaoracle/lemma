@@ -116,6 +116,12 @@ export type PublishInput = Readonly<{
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
   /** Listing environment — determines billing network (sandbox → base-sepolia, production → base). */
   environment?: "sandbox" | "production";
+  /** Content file to upload to the storefront. If provided, publish() auto-uploads to /api/cards. */
+  file?: Blob | File;
+  /** Storefront category (e.g. "article", "code"). Required when `file` is set. */
+  category?: string;
+  /** Seller payout wallet (0x-prefixed). Required when `file` is set and price > 0. */
+  payoutAddress?: string;
 }>;
 
 /** Full listing returned after successful publish. */
@@ -134,6 +140,8 @@ export type Listing = Readonly<{
   metadata?: Readonly<{ title?: string; version?: string; description?: string }>;
   /** Listing environment the proof was billed under. */
   environment?: "sandbox" | "production";
+  /** Storefront card ID (present only when `file` was provided to publish()). */
+  cardId?: string;
   createdAt: number;
 }>;
 
@@ -358,7 +366,7 @@ export const publish = async (
   ]);
   const listingRootHex = bigintToHex(listingRoot);
 
-  return Object.freeze({
+  const listing: Listing = Object.freeze({
     listingRoot: listingRootHex,
     schemaId: input.circuitId,
     commitment: input.commitment,
@@ -374,6 +382,26 @@ export const publish = async (
     environment: input.environment,
     createdAt: Date.now(),
   });
+
+  // ── 6. Optional storefront upload (S2) ──
+  // If a file is provided, auto-upload to POST /api/cards so the listing
+  // is immediately visible to buyers. Skip when not provided (caller may
+  // use list() separately or the dashboard handles its own upload).
+  if (input.file !== undefined) {
+    const result = await list(client, {
+      listing,
+      file: input.file,
+      category: input.category ?? detectContentType(
+        input.file as { type: string; name: string },
+      ),
+      priceUsdc: input.price.amount,
+      environment: input.environment ?? "sandbox",
+      payoutAddress: input.payoutAddress ?? "",
+    });
+    return Object.freeze({ ...listing, cardId: result.id }) as Listing;
+  }
+
+  return listing;
 };
 
 /* ------------------------------------------------------------------ */
@@ -483,6 +511,13 @@ export const list = async (
   const headers: Record<string, string> = {};
   if (client.apiKey !== undefined) {
     headers["x-api-key"] = client.apiKey;
+  }
+  // Astro CSRF guard rejects cross-origin FormData POSTs without an
+  // Origin header. Set it to the apiBase origin so server-side calls pass.
+  try {
+    headers["Origin"] = new URL(client.apiBase).origin;
+  } catch {
+    // apiBase is not a URL — skip
   }
 
   const res = await (client.fetcher ?? fetch)(url, {
