@@ -101,7 +101,6 @@ export const T402_PRICING: Trust402Pricing = {
         { text: { ja: "本番の証明発行なし(コストゼロ)", en: "No production proof issuance (zero cost)" } },
       ],
       payment: { ja: "アカウントのみ (GitHub)", en: "account only (GitHub)" },
-      state: { ja: "近日公開", en: "Coming soon" },
     },
     {
       key: "builder",
@@ -118,7 +117,6 @@ export const T402_PRICING: Trust402Pricing = {
         { text: { ja: "出品ごとに来歴証明を発行し、その都度 x402 で決済（出品しなければ費用なし）", en: "Each listing issues its provenance proof, settled via x402 — no listing, no cost" } },
       ],
       payment: { ja: "x402 (USDC)", en: "x402 (USDC)" },
-      state: { ja: "近日公開", en: "Coming soon" },
     },
     {
       key: "pro",
