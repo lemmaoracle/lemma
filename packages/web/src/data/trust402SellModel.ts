@@ -72,7 +72,7 @@ export const T402_SELL_MODEL: SellModel = {
   eyebrow: { en: "trust402 · sell", ja: "trust402 · sell" },
   h2: { en: "The kind of people already selling to AI agents.", ja: "こんな人が、AI エージェントに売れる。" },
   sellsLabel: { en: "what they sell", ja: "売るもの" },
-  incomeLabel: { en: "monthly income", ja: "月の収入" },
+  incomeLabel: { en: "monthly income (example)", ja: "月の収入例" },
   per: { en: "/mo", ja: "/月" },
 
   personas: [
