@@ -24,16 +24,16 @@ describe("detectContentType", () => {
     );
   });
 
-  it("detects video from MIME prefix", () => {
+  it("maps video MIME to other", () => {
     expect(detectContentType({ type: "video/mp4", name: "vid.mp4" })).toBe(
-      "video",
+      "other",
     );
   });
 
-  it("detects CSV from exact MIME match", () => {
+  it("maps CSV MIME to dataset", () => {
     expect(
       detectContentType({ type: "text/csv", name: "data.csv" }),
-    ).toBe("csv");
+    ).toBe("dataset");
   });
 
   it("detects code from JSON MIME", () => {
@@ -45,13 +45,13 @@ describe("detectContentType", () => {
     ).toBe("code");
   });
 
-  it("detects code from markdown", () => {
+  it("maps markdown to document", () => {
     expect(
       detectContentType({
         type: "text/markdown",
         name: "readme.md",
       }),
-    ).toBe("code");
+    ).toBe("document");
   });
 
   it("falls back to extension detection when MIME is unknown", () => {
@@ -60,7 +60,7 @@ describe("detectContentType", () => {
         type: "application/octet-stream",
         name: "data.csv",
       }),
-    ).toBe("csv");
+    ).toBe("dataset");
     expect(
       detectContentType({
         type: "application/octet-stream",
@@ -69,13 +69,13 @@ describe("detectContentType", () => {
     ).toBe("code");
   });
 
-  it("returns generic for unknown types", () => {
+  it("returns other for unknown types", () => {
     expect(
       detectContentType({
         type: "application/octet-stream",
         name: "file.xyz",
       }),
-    ).toBe("generic");
+    ).toBe("other");
   });
 });
 
