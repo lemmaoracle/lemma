@@ -231,8 +231,8 @@ export async function renderPillarsOg(locale: Locale): Promise<Buffer> {
 /* ─────────────── AI 業務あんしん LP (/ai-gyomu-anshin/) ─────────────── */
 
 const AIANSHIN_TITLE: Copy = {
-  ja: "「AIは不安」を、\n<accent>「任せて安心」</accent>へ。",
-  en: 'From "AI feels risky"\nto <accent>"safe to delegate."</accent>',
+  ja: "<accent>本物</accent>のデータだけを、\nAIに。",
+  en: "Only <accent>authentic</accent> data,\nfor your AI.",
 };
 
 const AIANSHIN_LABEL: Copy = {
@@ -241,8 +241,8 @@ const AIANSHIN_LABEL: Copy = {
 };
 
 const AIANSHIN_TAGLINE: Copy = {
-  ja: "社内のデータは外に出さず、確かめた事実だけを AI へ。",
-  en: "Your data stays in-house — only verified facts reach the AI.",
+  ja: "中身を渡さず、「本物である」ことだけを証明する。",
+  en: "Hand over no data — prove only that it's authentic.",
 };
 
 export async function renderAiGyomuAnshinOg(locale: Locale): Promise<Buffer> {
