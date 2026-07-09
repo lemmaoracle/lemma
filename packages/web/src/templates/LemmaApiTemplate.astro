@@ -668,18 +668,6 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   }
   .la-section-sub { font-size: 15px; line-height: 1.85; color: var(--la-t2); max-width: 680px; margin: 0 0 24px; }
 
-  /* Flow band */
-  .la-flowband {
-    display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 14px;
-    background: var(--lemma-cream, #fcfaf5); border: 0.5px solid var(--lemma-line, #e6e1d6);
-    border-radius: 12px; padding: 16px 18px; margin: 0 0 22px;
-  }
-  .la-flowband-step { text-align: center; display: flex; flex-direction: column; gap: 2px; position: relative; }
-  .la-flowband-step:not(:first-child)::before { content: "→"; position: absolute; left: -21px; top: 50%; transform: translateY(-50%); color: var(--la-t4); font-size: 15px; }
-  .la-flowband-t { font-size: 14px; font-weight: 600; color: var(--la-t1); }
-  .la-flowband-step.is-free .la-flowband-t { color: var(--accent, #8b4513); }
-  .la-flowband-s { font-family: var(--la-mono); font-size: 11px; color: var(--la-t4); }
-
   /* Proof cards */
   .la-proofs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
   .la-proof {
@@ -703,24 +691,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   }
   .la-proofs-foot::before { content: "✓"; color: var(--accent, #8b4513); font-weight: 700; flex: none; }
 
-  /* How-it-works steps */
-  .la-how { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-  .la-how-step { display: flex; align-items: flex-start; gap: 16px; padding: 16px 4px; border-top: 0.5px solid var(--lemma-line, #e6e1d6); }
-  .la-how-step:first-child { border-top: none; }
-  .la-how-n { flex: none; font-family: var(--la-mono); font-weight: 700; font-size: 13px; color: var(--accent, #8b4513); margin-top: 2px; }
-  .la-how-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .la-how-t { font-family: var(--la-display); font-weight: 700; font-size: 15px; color: var(--la-t1); }
-  .la-how-d { font-size: 14px; line-height: 1.7; color: var(--la-t2); }
-  .la-how-tag { flex: none; font-family: var(--la-mono); font-size: 11px; color: var(--la-t4); margin-top: 3px; white-space: nowrap; }
   .la-note { margin: 18px 0 0; font-size: 13px; line-height: 1.75; color: var(--la-t3); max-width: 760px; }
-
-  /* Core cryptography columns */
-  .la-cores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .la-core { background: var(--white, #fff); border: 0.5px solid var(--lemma-line, #e6e1d6); border-radius: 16px; padding: 24px; }
-  .la-core-t { font-family: var(--la-display); font-weight: 700; font-size: 16px; color: var(--black, #1a1a1a); margin-bottom: 8px; }
-  .la-core-d { font-size: 13.5px; line-height: 1.7; color: var(--la-t2); margin: 0 0 14px; }
-  .la-core-s { font-size: 12.5px; line-height: 1.7; color: var(--la-t3); margin: 0; padding-top: 12px; border-top: 0.5px solid var(--lemma-line, #e6e1d6); }
-  .la-core-s-label { display: block; font-family: var(--la-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent, #8b4513); margin-bottom: 4px; }
 
   /* Footnote */
   .la-foot { border-top: 0.5px solid var(--lemma-line, #e6e1d6); }
@@ -860,7 +831,6 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
 
   @media (max-width: 900px) {
     .la-hero { grid-template-columns: 1fr; gap: 32px; }
-    .la-cores { grid-template-columns: 1fr; }
     .la-mech-flow { grid-template-columns: 1fr; }
     .la-mech-arrow { transform: rotate(90deg); padding: 6px 0; }
     .la-tech-grid { grid-template-columns: 1fr; }

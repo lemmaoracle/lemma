@@ -497,54 +497,13 @@ export interface Translations {
       readonly desc: string;
     }>;
   }>;
+  /** Only the use-case detail/index templates consume this (as `pillarT`);
+   * the retired pillars-hub copy was removed as dead strings. */
   readonly pillars: Readonly<{
-    readonly title: string;
-    readonly heroTitle: string;
-    readonly subtitle: string;
-    readonly categoryEyebrow: string;
-    readonly categoryAttribution: string;
-    readonly viewPillar: string;
-    readonly blockProblem: string;
-    readonly blockWhyNow: string;
-    readonly blockHowLemmaFits: string;
-    readonly blockUseCases: string;
-    readonly blockRecentThinking: string;
-    readonly blockOtherPillars: string;
     readonly viewUseCase: string;
-    readonly comingSoon: string;
     readonly ctaEyebrow: string;
     readonly ctaTitle: string;
     readonly ctaDesc: string;
-    /** v2 redesign — Index hero (replaces single heroTitle). Lines render
-     * stacked with a hard break between them. */
-    readonly heroH1Lines: ReadonlyArray<string>;
-    /** v2 redesign — Hero sub paragraph (4-question setup). */
-    readonly heroSub: string;
-    /** v2 redesign — Four-questions block under the hero. */
-    readonly questionsLabel: string;
-    readonly questions: ReadonlyArray<Readonly<{
-      readonly tag: string;
-      readonly stem: string;
-      readonly answer: string;
-    }>>;
-    /** v2 redesign — Composition diagram section. */
-    readonly compositionLabel: string;
-    readonly compositionH2: string;
-    readonly compositionCenterLabel: string;
-    readonly compositionCaption: string;
-    /** v2 redesign — Technical docs section (demoted). */
-    readonly technicalDocsLabel: string;
-    readonly technicalDocsH2: string;
-    /** v2 detail concept-hub — §1-§4 section labels and sub-headings. */
-    readonly conceptSec1Label: string;
-    readonly conceptSec2Label: string;
-    readonly conceptSec3Label: string;
-    readonly conceptSec4Label: string;
-    readonly conceptIncidentsHeading: string;
-    readonly conceptRegulatoryHeading: string;
-    readonly conceptReadBrief: string;
-    readonly conceptViewUseCase: string;
-    readonly conceptApproachLinksLabel: string;
   }>;
   readonly useCases: Readonly<{
     readonly title: string;
