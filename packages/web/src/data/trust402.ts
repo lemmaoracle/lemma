@@ -326,7 +326,7 @@ export const T402: Trust402Content = {
       h2: { en: "If you made it, an agent can cite it.", ja: "あなたが作ったなら、エージェントの出典になる。" },
       sub: {
         en: "Research work is exactly what AI agents are hungry for — real, structured, and verifiable. A few things people put up:",
-        ja: "研究成果こそ AI エージェントが求めているもの — 本物で、構造化され、検証可能。出品されている例をいくつか:",
+        ja: "研究成果こそ AI エージェントが求めているもの — 本物で、構造化され、検証可能。たとえば、こんなものが出品されています。",
       },
       cards: [
         {
@@ -453,7 +453,7 @@ export const T402: Trust402Content = {
       h2: { en: "What you actually do: pick a file, set a price — in the Dashboard.", ja: "やることは、ダッシュボードでファイルを選び、価格を決めるだけ。" },
       sub: {
         en: "Nothing to wire up, no code — and you can rehearse the whole thing for free before anything goes live.",
-        ja: "設定するものも、書くコードもなし — 本番前に、全体を無料で予行演習できます。",
+        ja: "設定するものも、書くコードもなし — まずは無料で試してみてください。",
       },
       sandboxTitle: { en: "① try it in the sandbox", ja: "① サンドボックスで試す" },
       sandboxBody: {
@@ -470,7 +470,7 @@ export const T402: Trust402Content = {
       cta: { en: "Open the Dashboard", ja: "ダッシュボードを開く" },
       ctaNote: {
         en: "Publish, price, and track your listings in the Dashboard. Sandbox is free — testnet only, no real money.",
-        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結。サンドボックスは無料 — テストネットのみ、実マネーは不要です。",
+        ja: "出品も価格設定も、売上の管理も、すべてダッシュボードで完結します。",
       },
     },
 
@@ -507,7 +507,7 @@ export const T402: Trust402Content = {
 
     faq: {
       eyebrow: { en: "common questions", ja: "よくある質問" },
-      h2: { en: "Good things to check.", ja: "確認しておきたいこと。" },
+      h2: { en: "Good things to check.", ja: "FAQ" },
       items: [
         {
           q: { en: "I've never done this — where do I start?", ja: "やったことがない — どこから始める?" },
