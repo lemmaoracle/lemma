@@ -141,7 +141,7 @@ export const T402_SELL_MODEL: SellModel = {
   ],
 
   catalogH: { en: "More you can put up for sale.", ja: "ほかにも、こんなものが出品できる。" },
-  catalogSub: { en: "Including items actually traded in the Bazaar.", ja: "Bazaar で実際に取引されている商品を含む。" },
+  catalogSub: { en: "Including examples in demand in the agent economy.", ja: "エージェント経済で需要のある例を含む。" },
   catalog: [
     {
       title: { en: "Research & data", ja: "研究・データ" },
@@ -214,8 +214,8 @@ export const T402_SELL_MODEL: SellModel = {
       icon: "ic-signed",
       title: { en: "You can prove it's real", ja: "本物だと証明できる" },
       text: {
-        en: "It carries \"whose, when, unaltered.\" AI prefers verified primary sources.",
-        ja: "「誰の・いつの・改竄なし」が付く。AI は検証済みの一次ソースを優先して選ぶ。",
+        en: "It carries \"whose, when, unaltered.\" AI prefers verified primary sources — and cites them as the source of its answer.",
+        ja: "「誰の・いつの・改竄なし」が付く。AI は検証済みの一次ソースを優先して選び、答えの出典として引用する。",
       },
     },
     {

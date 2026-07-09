@@ -245,8 +245,8 @@ export const T402: Trust402Content = {
       h1a: { en: "Made something good?", ja: "その研究も、作品も。" },
       h1em: { en: "Sell it to AI agents.", ja: "AI エージェントに売れる。" },
       sub: {
-        en: "Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof it came from you and hasn't been changed. A no-code way in: no servers, no code, and no one holding your money — you're paid directly in USDC to your own wallet. You keep everything; Lemma is just the tool.",
-        ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つきで、コードもサーバーも不要 — 売上は USDC で直接あなたのウォレットに届きます。",
+        en: "Turn a dataset, a paper, or any file into something AI agents can buy — with built-in proof it came from you and hasn't been changed, so AI cites you as a primary source it can verify. A no-code way in: no servers, no code, and no one holding your money — you're paid directly in USDC to your own wallet. You keep everything; Lemma is just the tool.",
+        ja: "あなたのデータや論文を、AI エージェントが買える形に。「本人が作った」「改ざんなし」の証明つき。AI はあなたを裏取りできる一次ソースとして引用し、売上は USDC で直接あなたのウォレットに届きます。コードもサーバーも不要。",
       },
       ctaPrimary: { en: "Try it free", ja: "無料で試す" },
       ctaSecondary: { en: "See what sells", ja: "何が売れるか見る" },
@@ -272,6 +272,7 @@ export const T402: Trust402Content = {
           { label: { en: "made by", ja: "作成者" }, value: { en: "the seller", ja: "本人" } },
           { label: { en: "untouched", ja: "改ざん" }, value: { en: "verified", ja: "なし" } },
           { label: { en: "provenance", ja: "来歴" }, value: { en: "recorded", ja: "記録済み" } },
+          { label: { en: "agent", ja: "エージェント" }, value: { en: "citable", ja: "引用可" } },
         ],
         priceBig: "0.30",
         priceRest: { en: "≈ $0.30 / use", ja: "≈ $0.30 / 回" },
@@ -308,8 +309,8 @@ export const T402: Trust402Content = {
           who: { en: "an agent does this", ja: "エージェントがやる" },
           title: { en: "It gets found, checked, and bought", ja: "発見され、検証され、購入される" },
           body: {
-            en: "An AI agent discovers your listing, checks the proof for free, and pays you automatically. You get paid; it gets a source it can cite.",
-            ja: "AI エージェントがあなたの出品を見つけ、証明を無料で検証し、自動で支払います。あなたは報酬を得て、相手は引用できる出典を得ます。",
+            en: "An AI agent discovers your listing, checks the proof for free, and pays you automatically. You become a source cited in its answers, and get paid.",
+            ja: "AI エージェントがあなたの出品を見つけ、証明を無料で検証し、自動で支払います。あなたは、AI の答えに引用される出典になり、対価を受け取ります。",
           },
         },
       ],
@@ -368,8 +369,8 @@ export const T402: Trust402Content = {
           icon: "ic-signed",
           title: { en: "Being real gets it chosen", ja: "本物だと、選ばれる" },
           text: {
-            en: "It carries who, when, and unaltered — and AI prefers sources it can verify.",
-            ja: "「誰が・いつ・無改変か」が証明つき。AI は裏取りできる一次ソースを優先します。",
+            en: "It carries who, when, and unaltered — AI prefers sources it can verify, and cites you as the source of its answer.",
+            ja: "「誰が・いつ・無改変か」が証明つき。AI は裏取りできる一次ソースを優先し、答えの出典としてあなたを引用します。",
           },
         },
         {
@@ -550,8 +551,8 @@ export const T402: Trust402Content = {
         {
           q: { en: "Is this a marketplace? Does Lemma resell my data?", ja: "これはマーケット? Lemma がデータを転売する?" },
           a: {
-            en: "No. You sell; Lemma is just the tool that makes it possible. Discovery happens in the open x402 Bazaar.",
-            ja: "いいえ。売るのはあなたで、Lemma はそれを可能にする道具にすぎません。発見はオープンな x402 Bazaar で行われます。",
+            en: "No. You sell; Lemma is just the tool that makes it possible. Discovery happens through both MCP and the x402 Bazaar.",
+            ja: "いいえ。売るのはあなたで、Lemma はそれを可能にする道具にすぎません。発見は MCP と x402 Bazaar の両方の経路で行われます。",
           },
         },
       ],
