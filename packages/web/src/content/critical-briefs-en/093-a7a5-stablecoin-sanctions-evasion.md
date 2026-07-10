@@ -21,7 +21,7 @@ gap_fix: "Attach verifiable regulatory attributes to the sender and the source o
 
 ## TL;DR
 
-CertiK reported that the ruble-backed stablecoin A7A5 had moved more than $110 billion on-chain even while under sanctions. A7A5 was created in 2025 with the involvement of Ilan Shor and Promsvyazbank, a Russian state-owned bank serving the defense sector; the UK government estimates its annual transaction volume at roughly $90 billion. Even though the transaction history is fully traceable by anyone on the public chain, there was no attribute layer to prove and block, at the moment of the transaction, whether the counterparty is a sanctioned entity or a designated source of funds — so it could only be stopped by after-the-fact measures like sanctions designations and chain analysis. Settlement had already completed; visibility (detection) did not substitute for blocking beforehand (proof). This is a case of the detection-versus-proof gap in KYC / AML.
+CertiK reported that the ruble-backed stablecoin A7A5 had moved more than $110 billion on-chain even while under sanctions. A7A5 was created in 2025 with the involvement of Ilan Shor and Promsvyazbank, a Russian state-owned bank serving the defense sector; the UK government estimates its annual transaction volume at roughly $90 billion. Even though the transaction history is fully traceable by anyone on the public chain, there was no attribute layer to prove and block, at the moment of the transaction, whether the counterparty is a sanctioned entity or a designated source of funds — so it could only be stopped by after-the-fact measures like sanctions designations and chain analysis. Settlement had already completed; after-the-fact visibility could not stop it. Detection and pre-execution proof are complements, not substitutes.
 
 ---
 
@@ -75,8 +75,6 @@ But visibility does not prove the parties' attributes. Without an attribute proo
 
 Pre-execution attestation and verifiable provenance invert this structure. If the sender and the source of funds carry a verifiable reference to sanctions status and legality, the counterparty and the settlement infrastructure can verify the attribute before execution and block what is out of scope. Visibility of flows (detection) and proof of the attribute (proof) are not substitutes but **complements** — only together does the effectiveness of sanctions advance from after-the-fact tracing to pre-execution blocking.
 
-On why after-the-fact tracing is not blocking beforehand, see [“The last layer left in AI-era cyber defense”](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05).
-
 ---
 
 ## 6. Response and industry context
@@ -98,8 +96,6 @@ This case shows that transparency (detection) alone cannot achieve regulatory ai
 - **Verifiability of pre-execution blocking**: leave verifiable evidence that an out-of-scope transaction stopped before execution, so responsibility and legality are settled by evidence rather than by after-the-fact tracing
 
 Against the design philosophy of the regulatory-attribute-proof category that "visibility of a transaction ≠ proof of a party's attribute," this case is one where the anticipated failure mode materialized at the scale of $110 billion cumulative under sanctions. Visibility of flows (after-the-fact detection) works for analysis and designation, and attribute proof (pre-execution blocking) works for the effectiveness of sanctions — each in a complementary way.
-
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
 
 ---
 
