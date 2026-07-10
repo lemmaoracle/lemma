@@ -3,8 +3,8 @@ brief_no: 100
 title: "Aptos：Move VM の型混同で、あるオンチェーン資源が別の資源として扱われ得た（約 3,000 ドルの検証環境で再現）"
 title_en: "Aptos: a Move VM type confusion could let one on-chain resource be treated as another (reproduced in a ~$3,000 test environment)"
 pillar: "01-verifiable-origin"
-primary_category: "bridge-config-trust"
-secondary_categories: ["code-provenance", "data-provenance"]
+primary_category: "code-provenance"
+secondary_categories: ["bridge-config-trust", "data-provenance"]
 incident_date: 2026-07-04
 published: 2026-07-10
 authors: ["Lemma Critical Team"]
@@ -61,7 +61,7 @@ gap_fix: "ブリッジの引き出しやステーブルコインの発行のよ�
 
 ## 4. 構造的論点
 
-本事案は Pillar 01（来歴証明）の `bridge-config-trust` カテゴリに、その隣接として位置づける。中心的な失敗 primitive は、レイヤー 1 の実行環境が資源の「型＝それが何であるか」の同一性を健全に保てず、**下流でその状態・資産を受け入れる側が、Aptos 側の状態の完全性を独立検証できないまま、それを前提に動く**点にある。type-confusion は Move VM 内部の欠陥だが、脅威インテリジェンスとして重要なのは、その欠陥が単一チェーンにとどまらず、ブリッジ・cross-chain メッセージング・ステーブルコイン・取引所という「相手チェーンで起きたこと」を前提に動く層へ、独立検証の層なしに波及し得る点である。secondary に、VM が資源の型・来歴を取り違えて実行した点で `code-provenance`、資源の同一性・裏づけという意味で `data-provenance` を併記する。
+本事案は Pillar 01（来歴証明）の `code-provenance` カテゴリに属する。中心的な失敗 primitive は、レイヤー 1 の実行環境が資源の「型＝それが何であるか」の同一性を健全に保てず、**下流でその状態・資産を受け入れる側が、Aptos 側の状態の完全性を独立検証できないまま、それを前提に動く**点にある。type-confusion は Move VM 内部の欠陥だが、脅威インテリジェンスとして重要なのは、その欠陥が単一チェーンにとどまらず、ブリッジ・cross-chain メッセージング・ステーブルコイン・取引所という「相手チェーンで起きたこと」を前提に動く層へ、独立検証の層なしに波及し得る点である。secondary に、下流のブリッジ・cross-chain が上流状態を前提に動く点で `bridge-config-trust`、資源の同一性・裏づけという意味で `data-provenance` を併記する。
 
 本事案は Brief No.067（Syscoin、パースの欠陥で偽の proof が「有効な burn の証明」として受理された）・Brief No.085（Secret Network、偽チャネルからの入金が検証されず無裏づけの発行に直結した）と、受信側が「相手側で実際に起きたこと」の一部だけを検証し、全体としての真正性・完全性を独立検証していない点で同型である。Brief No.016（Verus-Ethereum、Merkle Proof は有効でも入出力額の整合が未検証）とは、cross-chain で受け渡される状態の一部分だけが検証された点で連なる。Brief No.074（Taiko、proof は正しく検証されたのに署名者の正当性が独立検証されなかった）とは、資産移動を認可する根拠の真正性が独立検証されなかった点で通じる。差異は、本事案がブリッジの設定・鍵ではなく、レイヤー 1 の実行環境そのものの型健全性に根を持つ点、そして実被害のない研究開示である点だ。
 

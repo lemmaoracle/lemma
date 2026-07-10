@@ -3,8 +3,8 @@ brief_no: 100
 title: "Aptos：Move VM の型混同で、あるオンチェーン資源が別の資源として扱われ得た（約 3,000 ドルの検証環境で再現）"
 title_en: "Aptos: a Move VM type confusion could let one on-chain resource be treated as another (reproduced in a ~$3,000 test environment)"
 pillar: "01-verifiable-origin"
-primary_category: "bridge-config-trust"
-secondary_categories: ["code-provenance", "data-provenance"]
+primary_category: "code-provenance"
+secondary_categories: ["bridge-config-trust", "data-provenance"]
 incident_date: 2026-07-04
 published: 2026-07-10
 authors: ["Lemma Critical Team"]
@@ -61,7 +61,7 @@ The blockchain security firm Hexens disclosed a critical vulnerability in Aptos'
 
 ## 4. Structural analysis
 
-This case is positioned as adjacent within the `bridge-config-trust` category of Pillar 01 (Verifiable Origin). The central failure primitive is that the layer-1 execution environment could not soundly preserve the identity of a resource's "type = what it is," and **the downstream parties that accept that state and assets operate on that premise without being able to independently verify the integrity of the Aptos-side state**. The type confusion is a flaw internal to the Move VM, but what matters as threat intelligence is that the flaw does not stay confined to a single chain — it can cascade, without a layer of independent verification, into the layers that operate on the premise of "what happened on the other chain": bridges, cross-chain messaging, stablecoins, and exchanges. As secondaries, we add `code-provenance` in that the VM executed while misidentifying the resource's type and provenance, and `data-provenance` in the sense of the resource's identity and backing.
+This case falls in the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that the layer-1 execution environment could not soundly preserve the identity of a resource's "type = what it is," and **the downstream parties that accept that state and assets operate on that premise without being able to independently verify the integrity of the Aptos-side state**. The type confusion is a flaw internal to the Move VM, but what matters as threat intelligence is that the flaw does not stay confined to a single chain — it can cascade, without a layer of independent verification, into the layers that operate on the premise of "what happened on the other chain": bridges, cross-chain messaging, stablecoins, and exchanges. As secondaries, we add `bridge-config-trust` in that downstream bridges and cross-chain systems operate on the premise of the upstream state, and `data-provenance` in the sense of the resource's identity and backing.
 
 This case is isomorphic to Brief No.067 (Syscoin, where a parsing flaw let a fake proof be accepted as "proof of a valid burn") and Brief No.085 (Secret Network, where a deposit from a fake channel went unverified and led directly to unbacked issuance), in that the receiving side verifies only part of "what actually happened on the other side" and does not independently verify the authenticity and integrity of the whole. It is continuous with Brief No.016 (Verus-Ethereum, where the Merkle proof was valid but the consistency of input and output amounts was unverified), in that only a portion of the cross-chain-relayed state was verified. It connects to Brief No.074 (Taiko, where the proof was correctly verified but the signer's legitimacy was not independently verified), in that the authenticity of the basis authorizing an asset movement was not independently verified. The difference is that this case is rooted not in a bridge's configuration or keys but in the type soundness of the layer-1 execution environment itself, and that it is a research disclosure with no real-world harm.
 
