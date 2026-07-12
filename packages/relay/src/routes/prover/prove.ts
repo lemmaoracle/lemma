@@ -84,33 +84,33 @@ const insertJob = (id: string): void => {
 /** Replace a job by id with an evolved record. */
 const updateJob = (id: string, evolve: (j: Job) => Job): void => {
   const current = jobs.get(id);
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-  if (current) jobs.set(id, evolve(current));
+  // eslint-disable-next-line functional/immutable-data
+  const _ignored = current !== undefined ? jobs.set(id, evolve(current)) : undefined;
 };
 
 /** Garbage-collect jobs older than the TTL. Called on each GET/POST. */
-const gcJobs = (): void => {
-  const cutoff = Date.now() - JOB_TTL_MS;
-  // eslint-disable-next-line functional/no-expression-statements
+const gcJobs = (_now: number = Date.now()): void => {
+  const cutoff = _now - JOB_TTL_MS;
+  
   jobs.forEach((job, id) => {
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-    if (job.createdAt < cutoff) jobs.delete(id);
+    // eslint-disable-next-line functional/immutable-data
+    const _ignored = job.createdAt < cutoff ? jobs.delete(id) : undefined;
   });
 };
 
 /** Run the proof in the background, updating the job on completion. */
 const runProofInBackground = (body: RequestBody, jobId: string): void => {
-  void prover
+  const _proof: Promise<void> = prover
     .prove(create({ apiBase: body.apiBase, apiKey: body.apiKey }), body.input)
     .then((result: ProveOutput) =>
-      updateJob(jobId, (j) => ({ ...j, status: "done", result })),
+      { updateJob(jobId, (j) => ({ ...j, status: "done", result })); },
     )
     .catch((err: unknown) =>
-      updateJob(jobId, (j) => ({
+      { updateJob(jobId, (j) => ({
         ...j,
         status: "error",
         error: err instanceof Error ? err.message : String(err),
-      })),
+      })); },
     );
 };
 
@@ -201,12 +201,12 @@ const lookupJob = (
         (jobId: string) => jobs.get(jobId),
         (job: Job | undefined) =>
           job ? jobStatusResponse(job) : jobNotFoundResponse,
-      )(params!["jobId"]!)
+      )(params["jobId"])
     : jobNotFoundResponse;
 
 /** Main request handler. */
 export const proveHandler: RequestHandler = (request) => {
-  // eslint-disable-next-line functional/no-expression-statements
+   
   gcJobs();
   return R.cond([
     [

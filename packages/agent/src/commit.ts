@@ -37,11 +37,11 @@ const extractSection = (
   sectionKey: SectionKey,
 ): Record<string, unknown> => {
   const sectionMap: Readonly<Record<SectionKey, Record<string, unknown>>> = {
-    identityHash: normalized.identity as unknown as Record<string, unknown>,
-    authorityHash: normalized.authority as unknown as Record<string, unknown>,
-    financialHash: normalized.financial as unknown as Record<string, unknown>,
-    lifecycleHash: normalized.lifecycle as unknown as Record<string, unknown>,
-    provenanceHash: normalized.provenance as unknown as Record<string, unknown>,
+    identityHash: normalized.identity,
+    authorityHash: normalized.authority,
+    financialHash: normalized.financial,
+    lifecycleHash: normalized.lifecycle,
+    provenanceHash: normalized.provenance,
   };
   return sectionMap[sectionKey] ?? {};
 };
@@ -90,7 +90,7 @@ export const computeCredentialCommitment = (
 
   return {
     root: root.toString(),
-    sectionHashes: sectionHashes as Readonly<Record<string, string>>,
+    sectionHashes: sectionHashes,
     salt: `0x${saltHex}`,
   };
 };
@@ -104,7 +104,7 @@ export const computeCredentialCommitment = (
 export const commit = async (
   client: LemmaClient,
   credential: AgentCredential,
-): Promise<CommitOutput<NormalizedAgentCredential>> => {
+): Promise<CommitOutput> => {
   const { normalize } = await import("@lemmaoracle/sdk");
   const normalized = await normalize<AgentCredential, NormalizedAgentCredential>(
     client,
