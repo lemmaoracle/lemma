@@ -1,0 +1,38 @@
+{
+  "name": "@lemmaoracle/canonical-sort",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemmaoracle/lemma.git",
+    "directory": "packages/canonical-sort"
+  },
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/canonical-sort#readme",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "vitest run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^9.39.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-functional": "^9.0.4",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  }
+}
