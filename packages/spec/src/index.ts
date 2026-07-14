@@ -189,6 +189,23 @@ export type RegisterDocumentResponse = Readonly<{
   [k: string]: unknown;
 }>;
 
+/**
+ * Public registration record returned by `GET /v1/documents/:docHash`.
+ *
+ * A third party holding a docHash must be able to confirm that the document was
+ * registered and has not been altered. Without `status`, the caller cannot tell a
+ * registered document from an unregistered one — the AI業務日報 verification page
+ * branches on it, and today shows a registered report as "awaiting verification".
+ *
+ * status:
+ *   - `registered` — recorded in Lemma (off-chain)
+ *   - `anchored`   — a confirmed on-chain transaction exists
+ *   - `pending`    — an on-chain write was intended but no transaction is confirmed yet
+ *
+ * A document is never reported as `anchored` without a transaction hash to point at:
+ * claiming it is on-chain when nobody can check the transaction is the same as
+ * showing a ✓ nobody can verify.
+ */
 export type GetDocumentResponse = Readonly<{
   docHash: string;
   schemaId: string;
@@ -196,7 +213,9 @@ export type GetDocumentResponse = Readonly<{
   subjectId: string;
   commitmentRoot: string;
   chainId?: number;
-  createdAt: string;
+  status: "registered" | "anchored" | "pending";
+  onchainTxHash?: string | null;
+  registeredAt: string;
 }>;
 
 /* ── Proofs ─────────────────────────────────────────────────────────── */

@@ -183,9 +183,11 @@
           "subjectId": { "type": "string" },
           "commitmentRoot": { "type": "string" },
           "chainId": { "type": "integer" },
-          "createdAt": { "type": "string", "format": "date-time" }
+          "status": { "type": "string", "enum": ["registered", "anchored", "pending"] },
+          "onchainTxHash": { "type": ["string", "null"] },
+          "registeredAt": { "type": "string", "format": "date-time" }
         },
-        "required": ["docHash", "schemaId", "issuerId", "subjectId", "commitmentRoot", "createdAt"],
+        "required": ["docHash", "schemaId", "issuerId", "subjectId", "commitmentRoot", "status", "registeredAt"],
         "additionalProperties": false
       },
       "SelectiveDisclosure": {
