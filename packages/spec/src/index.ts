@@ -189,6 +189,31 @@ export type RegisterDocumentResponse = Readonly<{
   [k: string]: unknown;
 }>;
 
+/**
+ * Public registration record returned by `GET /v1/documents/:docHash`.
+ *
+ * Contains only the facts of registration — never the document contents.
+ * A third party holding a docHash must be able to confirm that the document
+ * was registered and has not been altered; without that, a ✓ cannot be checked
+ * by anyone but the issuer, and the claim is worthless.
+ *
+ * status:
+ *   - `registered` — recorded in Lemma (off-chain)
+ *   - `anchored`   — also written on-chain, transaction confirmed
+ *   - `pending`    — on-chain write intended but not yet confirmed
+ */
+export type DocumentRecord = Readonly<{
+  docHash: string;
+  schema: string;
+  status: "registered" | "anchored" | "pending";
+  issuerId: string;
+  subjectId: string;
+  registeredAt: string;
+  chainId?: number | null;
+  onchainTxHash?: string | null;
+  commitmentRoot?: string;
+}>;
+
 /* ── Proofs ─────────────────────────────────────────────────────────── */
 
 export type SelectiveDisclosure = Readonly<{
