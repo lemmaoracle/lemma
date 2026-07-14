@@ -218,6 +218,31 @@ export type GetDocumentResponse = Readonly<{
   registeredAt: string;
 }>;
 
+/* ── Counters ───────────────────────────────────────────────────────── */
+
+/**
+ * GET /v1/verification-count (V) and GET /v1/document-count (I / N).
+ *
+ * Both are public and both are totals. V counts only verifications that
+ * succeeded: the endpoints that produce it are unauthenticated, and a figure
+ * anyone can pad from outside is not one that can be published or anchored.
+ */
+export type CountResponse = Readonly<{
+  count: number;
+}>;
+
+/**
+ * GET /v1/documents/stats — issuance for the caller's own scope.
+ *
+ * The scope is resolved from the API key, never from a parameter: a scope the
+ * caller can name is a scope they can snoop.
+ */
+export type DocumentStatsResponse = Readonly<{
+  scopeId: string;
+  total: number;
+  bySchema: ReadonlyArray<Readonly<{ schemaId: string; count: number }>>;
+}>;
+
 /* ── Proofs ─────────────────────────────────────────────────────────── */
 
 export type SelectiveDisclosure = Readonly<{

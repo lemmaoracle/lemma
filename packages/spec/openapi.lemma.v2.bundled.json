@@ -301,6 +301,44 @@
         }
       }
     },
+    "/v1/documents/stats": {
+      "get": {
+        "summary": "Issuance stats for the caller's own scope",
+        "description": "Requires an API key. The scope is resolved from the key, never from a parameter — a scope the caller could name is a scope they could snoop. `schema` narrows the result to one proof class.",
+        "parameters": [
+          {
+            "name": "schema",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/documents/{docHash}": {
       "get": {
         "security": [],
@@ -403,6 +441,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/verification-count": {
+      "get": {
+        "summary": "Total proof verifications (V)",
+        "description": "Public. The running total of ZK proof verifications that succeeded, across every source: the public verification API and Seal sign-in (user registration and agent authentication). Verifications the relay rejected are not counted — the endpoint is unauthenticated, and a number that can be padded from outside is not one that can be published or anchored.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document-count": {
+      "get": {
+        "summary": "Total documents registered (I / N)",
+        "description": "Public. The number of proofs issued on Lemma, across every scope. The counterpart to /v1/verification-count. Per-scope figures require an API key — see /v1/documents/stats.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
                 }
               }
             }
@@ -1369,7 +1445,21 @@
           "chainId": {
             "type": "integer"
           },
-          "createdAt": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered",
+              "anchored",
+              "pending"
+            ]
+          },
+          "onchainTxHash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registeredAt": {
             "type": "string",
             "format": "date-time"
           }
@@ -1380,7 +1470,59 @@
           "issuerId",
           "subjectId",
           "commitmentRoot",
-          "createdAt"
+          "status",
+          "registeredAt"
+        ],
+        "additionalProperties": false
+      },
+      "CountResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "additionalProperties": false
+      },
+      "DocumentStatsResponse": {
+        "type": "object",
+        "properties": {
+          "scopeId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "bySchema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "schemaId": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "schemaId",
+                "count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "scopeId",
+          "total",
+          "bySchema"
         ],
         "additionalProperties": false
       },
