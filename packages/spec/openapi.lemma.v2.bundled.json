@@ -301,6 +301,43 @@
         }
       }
     },
+    "/v1/documents/{docHash}": {
+      "get": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "docHash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDocumentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/proofs": {
       "post": {
         "requestBody": {
@@ -1310,6 +1347,42 @@
           "docHash"
         ],
         "additionalProperties": true
+      },
+      "GetDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "docHash": {
+            "type": "string"
+          },
+          "schemaId": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "commitmentRoot": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "docHash",
+          "schemaId",
+          "issuerId",
+          "subjectId",
+          "commitmentRoot",
+          "createdAt"
+        ],
+        "additionalProperties": false
       },
       "SelectiveDisclosure": {
         "type": "object",

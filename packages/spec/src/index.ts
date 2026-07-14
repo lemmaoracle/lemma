@@ -189,6 +189,16 @@ export type RegisterDocumentResponse = Readonly<{
   [k: string]: unknown;
 }>;
 
+export type GetDocumentResponse = Readonly<{
+  docHash: string;
+  schemaId: string;
+  issuerId: string;
+  subjectId: string;
+  commitmentRoot: string;
+  chainId?: number;
+  createdAt: string;
+}>;
+
 /* ── Proofs ─────────────────────────────────────────────────────────── */
 
 export type SelectiveDisclosure = Readonly<{
