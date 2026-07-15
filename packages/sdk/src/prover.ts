@@ -23,12 +23,19 @@ import { sha256Base64, toBase64 } from "./platform.js";
 /* ------------------------------------------------------------------ */
 
 /**
- * IPFS gateways tried in order. ipfs.io is flaky for some CIDs;
- * dweb.link and w3s.link (Protocol Labs / web3.storage) are more reliable.
+ * IPFS gateways tried in order. Pinata is first because Lemma's circuit
+ * artifacts are uploaded via Pinata, so its gateway is the origin and
+ * avoids any cross-gateway propagation delay. ipfs.io / dweb.link are
+ * the IPFS Foundation's public gateways; trustless-gateway.link is the
+ * newer verifiable-response gateway. w3s.link is kept as a last resort
+ * — it 301-redirects cross-origin to dweb.link, which some browsers
+ * reject under CORS re-validation.
  */
 const IPFS_GATEWAYS: ReadonlyArray<string> = [
+  "https://gateway.pinata.cloud/ipfs/",
   "https://ipfs.io/ipfs/",
   "https://dweb.link/ipfs/",
+  "https://trustless-gateway.link/ipfs/",
   "https://w3s.link/ipfs/",
 ];
 
