@@ -21,7 +21,6 @@
     "circuits/scripts/build.sh"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
     "build:circuit": "cd circuits && npm run build",
     "type-check": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",

@@ -68,8 +68,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # The TS test job only needs workspace packages' compiled `dist/` so
+      # vitest can resolve cross-package imports (e.g. data-commitment → sdk).
+      # It does NOT need circuit/wasm artifacts, so exclude the packages whose
+      # build shells out to circom / wasm-pack (content, passthrough) — those
+      # need extra toolchains, are slow, and nothing under test imports them.
+      # attestation/roles have no `build` script and are skipped automatically.
       - name: Build workspace packages
-        run: pnpm -r build
+        run: pnpm -r --filter='!@lemmaoracle/content' --filter='!@lemmaoracle/passthrough' build
 
       - name: Build contracts dependencies
         working-directory: ./packages/contracts
