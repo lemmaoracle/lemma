@@ -84,23 +84,24 @@ const insertJob = (id: string): void => {
 /** Replace a job by id with an evolved record. */
 const updateJob = (id: string, evolve: (j: Job) => Job): void => {
   const current = jobs.get(id);
-  // eslint-disable-next-line functional/immutable-data
-  const _ignored = current !== undefined ? jobs.set(id, evolve(current)) : undefined;
+  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements
+  if (current) jobs.set(id, evolve(current));
 };
 
 /** Garbage-collect jobs older than the TTL. Called on each GET/POST. */
-const gcJobs = (_now: number = Date.now()): void => {
-  const cutoff = _now - JOB_TTL_MS;
+const gcJobs = (now: number): void => {
+  const cutoff = now - JOB_TTL_MS;
   
   jobs.forEach((job, id) => {
-    // eslint-disable-next-line functional/immutable-data
-    const _ignored = job.createdAt < cutoff ? jobs.delete(id) : undefined;
+    // imperative: in-memory Map cache mutation — no functional alternative
+    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements
+    if (job.createdAt < cutoff) jobs.delete(id);
   });
 };
 
 /** Run the proof in the background, updating the job on completion. */
 const runProofInBackground = (body: RequestBody, jobId: string): void => {
-  const _proof: Promise<void> = prover
+  const _proof = prover
     .prove(create({ apiBase: body.apiBase, apiKey: body.apiKey }), body.input)
     .then((result: ProveOutput) =>
       { updateJob(jobId, (j) => ({ ...j, status: "done", result })); },
@@ -207,7 +208,7 @@ const lookupJob = (
 /** Main request handler. */
 export const proveHandler: RequestHandler = (request) => {
    
-  gcJobs();
+  gcJobs(Date.now());
   return R.cond([
     [
       (req: typeof request) => req.method === "POST",

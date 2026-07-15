@@ -187,8 +187,7 @@ function wireTheme(): void {
     document.documentElement.dataset.theme = next;
     try {
       window.localStorage.setItem(THEME_KEY, next);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_e) {
+    } catch {
       /* private mode */
     }
   });

@@ -69,20 +69,23 @@ export type Route = Readonly<{
 export const compilePathPattern = (
   path: string,
 ): Readonly<{ regex: RegExp; paramNames: readonly string[] }> => {
-   
-  const paramNames: string[] = [];
-  const pattern = path
+  const segmentResults = path
     .split("/")
     .map((segment) =>
       segment.startsWith(":")
-        ? (() => {
-            // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-            paramNames.push(segment.slice(1));
-            return "([^/]+)";
-          })()
-        : segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-    )
-    .join("/");
+        ? ({ replacement: "([^/]+)", paramName: segment.slice(1) } as const)
+        : ({
+            replacement: segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+            paramName: undefined,
+          } as const),
+    );
+
+  const paramNames: readonly string[] = segmentResults.flatMap((r) =>
+    r.paramName !== undefined ? [r.paramName] : [],
+  );
+
+  const pattern = segmentResults.map((r) => r.replacement).join("/");
+
   return {
     regex: new RegExp(`^${pattern}$`),
     paramNames,
