@@ -145,9 +145,13 @@ export function reduceElements(
   if (elements.length === 0) {
     return 0n;
   }
-  let acc = elements[0];
+  // The length check above and the loop bound keep both index accesses in range,
+  // so neither is `undefined`; assert it for noUncheckedIndexedAccess. (The rest
+  // of this file already handles indexed access with explicit `undefined` guards;
+  // this branch was the one spot missing it, which broke `tsc`.)
+  let acc = elements[0]!;
   for (let i = 1; i < elements.length; i++) {
-    acc = poseidon2([acc, elements[i]]);
+    acc = poseidon2([acc, elements[i]!]);
   }
   return acc;
 }

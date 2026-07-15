@@ -12,7 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsc && cd circuits && bash scripts/build.sh",
+    "build": "tsc -p tsconfig.json",
+    "build:circuit": "cd circuits && bash scripts/build.sh",
     "test": "vitest run",
     "test:ts": "vitest run"
   },
