@@ -35,7 +35,7 @@ const LEMMA_API_BASE = process.env.LEMMA_API_BASE;
 const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
 
-const CIRCUIT_ID = "seal-identity-v1";
+const CIRCUIT_ID = "seal-identity-v2.1";
 const SCHEMA = "passthrough-v1";
 
 const WASM_PATH = path.join(
@@ -50,6 +50,12 @@ const ZKEY_PATH = path.join(
   "circuits",
   "build",
   "seal-identity_final.zkey",
+);
+const VKEY_PATH = path.join(
+  PKG_ROOT,
+  "circuits",
+  "build",
+  "seal-identity_vkey.json",
 );
 
 /* ── Pinata (IPFS) upload ─────────────────────────────────────────── */
@@ -94,14 +100,14 @@ const OFFCHAIN_VERIFIER: CircuitVerifier = {
   alg: "groth16-bn254-snarkjs",
 };
 
-const buildCircuitMeta = (wasmUrl: string, zkeyUrl: string): CircuitMeta => ({
+const buildCircuitMeta = (wasmUrl: string, zkeyUrl: string, vkeyUrl: string): CircuitMeta => ({
   circuitId: CIRCUIT_ID,
   schema: SCHEMA,
   description:
     "Seal — proves knowledge of a Lemma API key pre-image (SHA-256) without revealing the key. Powers Proof-based dashboard sign-in.",
   inputs: ["keyHash", "nonce"],
   verifiers: [OFFCHAIN_VERIFIER],
-  artifact: { location: { type: "ipfs", wasm: wasmUrl, zkey: zkeyUrl } },
+  artifact: { location: { type: "ipfs", wasm: wasmUrl, zkey: zkeyUrl, vkey: vkeyUrl } },
 });
 
 /* ── Pre-flight checks ────────────────────────────────────────────── */
@@ -117,13 +123,14 @@ const requireEnv = (): Promise<void> =>
       );
 
 const requireArtifacts = (): Promise<void> =>
-  fs.existsSync(WASM_PATH) && fs.existsSync(ZKEY_PATH)
+  fs.existsSync(WASM_PATH) && fs.existsSync(ZKEY_PATH) && fs.existsSync(VKEY_PATH)
     ? Promise.resolve()
     : Promise.reject(
         new Error(
           "Compiled circuit not found. Run `npm run build` in " +
             `packages/seal/circuits first.\n  expected: ${WASM_PATH}\n` +
-            `            ${ZKEY_PATH}`,
+            `            ${ZKEY_PATH}\n` +
+            `            ${VKEY_PATH}`,
         ),
       );
 
@@ -142,18 +149,20 @@ const main = async (): Promise<void> => {
   await requireArtifacts();
 
   console.log("1. Uploading artifacts to IPFS (Pinata)...");
-  const [wasmUrl, zkeyUrl] = await Promise.all([
+  const [wasmUrl, zkeyUrl, vkeyUrl] = await Promise.all([
     uploadToPinata(WASM_PATH, "seal-identity.wasm"),
     uploadToPinata(ZKEY_PATH, "seal-identity_final.zkey"),
+    uploadToPinata(VKEY_PATH, "seal-identity_vkey.json"),
   ]);
   console.log(`   wasm → ${wasmUrl}`);
   console.log(`   zkey → ${zkeyUrl}`);
+  console.log(`   vkey → ${vkeyUrl}`);
 
   console.log("2. Registering circuit with Lemma...");
   const client = createLemmaClient();
   const registered = await circuits.register(
     client,
-    buildCircuitMeta(wasmUrl, zkeyUrl),
+    buildCircuitMeta(wasmUrl, zkeyUrl, vkeyUrl),
   );
 
   console.log(
