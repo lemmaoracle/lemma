@@ -18,7 +18,7 @@ import vkey from "./vkey.js";
 import type { SealProof, SealProofInput } from "./types.js";
 
 /** The circuit id under which seal v2 is registered with the Lemma API. */
-export const SEAL_CIRCUIT_ID = "seal-identity-v1";
+export const SEAL_CIRCUIT_ID = "seal-identity-v2.2";
 
 type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
 
@@ -32,7 +32,7 @@ type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
  * expected nullifier until a match is found.
  *
  * Circuit artifacts (wasm, zkey) are resolved automatically via the
- * Lemma SDK from `circuitId: "seal-identity-v1"`. No local artifact
+ * Lemma SDK from `circuitId: "seal-identity-v2.2"`. No local artifact
  * paths are required.
  */
 export const prove = async (input: SealProofInput): Promise<SealProof> => {
