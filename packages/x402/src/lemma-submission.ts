@@ -51,14 +51,13 @@ const proveViaRelay = (
       apiKey,
       input: { circuitId, witness },
     }),
-  }).then(async (res) => {
-    if (!res.ok) {
-      const errBody = await res.text();
-      throw new Error(`Relay /prover/prove failed: ${String(res.status)} ${errBody}`);
-    }
-    const json = (await res.json()) as { proof: string; inputs: ReadonlyArray<string> };
-    return json;
-  });
+  }).then(async (res) =>
+    res.ok
+      ? (res.json() as Promise<{ proof: string; inputs: ReadonlyArray<string> }>)
+      : res.text().then((errBody) => {
+          throw new Error(`Relay /prover/prove failed: ${String(res.status)} ${errBody}`);
+        }),
+  );
 };
 
 /**
@@ -87,8 +86,8 @@ const createLemmaSubmissionHandler = (
       schema: ctx.schema,
       docHash: ctx.docHash,
       cid: ctx.cid ?? ctx.docHash,
-      issuerId: ctx.issuerId ?? "lemma-x402",
-      subjectId: (ctx.metadata?.payer as string) ?? "anonymous",
+      issuerId: ctx.issuerId,
+      subjectId: typeof ctx.metadata?.payer === "string" ? ctx.metadata.payer : "anonymous",
       attributes: ctx.attributes ?? {},
       commitments: {
         scheme: "poseidon",
