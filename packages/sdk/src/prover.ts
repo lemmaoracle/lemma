@@ -72,6 +72,31 @@ type SnarkjsModule = {
 /*  Artifact handling                                                  */
 /* ------------------------------------------------------------------ */
 
+/** IPFS gateway fetch with sequential fallback (functional: reduce + .catch chain). */
+const fetchArtifactIpfs = (
+  fetchFn: (url: string) => Promise<Response>,
+  gateways: ReadonlyArray<string>,
+  cid: string,
+  url: string,
+): Promise<Uint8Array> =>
+  gateways
+    .reduce(
+      (chain: Promise<Uint8Array>, gateway: string) =>
+        chain.catch((_err: unknown) =>
+          fetchFn(`${gateway}${cid}`).then((res) =>
+            res.ok
+              ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+              : Promise.reject(new Error("gateway-fail")),
+          ),
+        ),
+      Promise.reject(new Error("start")),
+    )
+    .catch((_err: unknown) =>
+      reject(
+        `Failed to fetch circuit artifact from all IPFS gateways: ${url}`,
+      ),
+    );
+
 /**
  * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
  *
@@ -85,33 +110,14 @@ const fetchArtifact = async (
   url: string,
 ): Promise<Uint8Array> => {
   const fetchFn = resolveFetch(client);
-
-  // Non-IPFS URLs: single fetch, no fallback.
-  if (!url.startsWith("ipfs://")) {
-    const res = await fetchFn(url);
-    return res.ok
-      ? new Uint8Array(await res.arrayBuffer())
-      : reject(`Failed to fetch circuit artifact: ${url}`);
-  }
-
-  const cid = url.slice("ipfs://".length);
-  const gatewayUrl = (g: string): string => `${g}${cid}`;
-
-  // Try each gateway in order; return the first OK response.
-  for (const gateway of IPFS_GATEWAYS) {
-    try {
-      const res = await fetchFn(gatewayUrl(gateway));
-      if (res.ok) {
-        return new Uint8Array(await res.arrayBuffer());
-      }
-    } catch {
-      // Network error — try next gateway.
-    }
-  }
-
-  return reject(
-    `Failed to fetch circuit artifact from all IPFS gateways: ${url}`,
-  );
+  const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
+  return cid !== null
+    ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
+    : fetchFn(url).then((res) =>
+        res.ok
+          ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+          : reject(`Failed to fetch circuit artifact: ${url}`),
+      );
 };
 
 /**

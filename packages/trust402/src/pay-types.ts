@@ -23,7 +23,7 @@ export type ExactEvmAuthorization = Readonly<{
 export type PaymentPayload = Readonly<{
   x402Version: number;
   scheme: string;
-  network: X402Network | string;
+  network: string;
   payload: Readonly<Record<string, unknown>>;
 }>;
 

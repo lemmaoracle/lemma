@@ -31,7 +31,7 @@ export const secretToBits = (secret: string): ReadonlyArray<Bit> => {
     ? [...bytes].flatMap(byteToBits)
     : (() => {
         throw new Error(
-          `seal: secret must be ${SEAL_SECRET_BYTES} bytes, got ${bytes.length}`,
+          `seal: secret must be ${String(SEAL_SECRET_BYTES)} bytes, got ${String(bytes.length)}`,
         );
       })();
 };
@@ -46,5 +46,5 @@ export const hashBitsToHex = (
   bits.length === 256
     ? BigInt(`0b${bits.map(String).join("")}`).toString(16).padStart(64, "0")
     : (() => {
-        throw new Error(`seal: keyHash must be 256 bits, got ${bits.length}`);
+        throw new Error(`seal: keyHash must be 256 bits, got ${String(bits.length)}`);
       })();
