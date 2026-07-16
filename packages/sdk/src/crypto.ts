@@ -220,6 +220,20 @@ const validateHolderKey = (holderKey: string): Uint8Array => {
   }
 };
 
+/**
+ * Encrypt a JSON payload to a holder's secp256k1 public key (ECIES).
+ *
+ * Generates a fresh ephemeral keypair per call (CSPRNG) and derives the
+ * shared encryption key via ECDH + HKDF-SHA256, then seals the payload
+ * with AES-256-GCM. This function performs no network I/O; it is a local
+ * cryptographic operation but is non-deterministic due to the ephemeral
+ * keypair and random nonce. The `_client` parameter is accepted for
+ * forward-compatibility of the public signature and is not read; it is
+ * retained so future versions may add client-bound behavior without a
+ * breaking change.
+ *
+ * Whitepaper §2.1 / §4.4.
+ */
 export const encrypt = (_client: LemmaClient, input: EncryptInput): Promise<EncryptOutput> => {
   const holderPubKeyHex = bytesToHex(validateHolderKey(input.holderKey));
   const payloadBytes = utf8ToBytes(JSON.stringify(input.payload));
