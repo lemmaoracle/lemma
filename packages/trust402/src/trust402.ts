@@ -11,7 +11,7 @@
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
-import { sha256 } from "@noble/hashes/sha256";
+import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes } from "@noble/hashes/utils";
 
 /* ------------------------------------------------------------------ */
@@ -28,28 +28,22 @@ const CHUNK_SIZE = 31;
 const bytesToFieldElements = (data: Uint8Array): bigint[] => {
   const len = data.length;
   const padLen = CHUNK_SIZE - (len % CHUNK_SIZE);
-  const paddedLen = len + padLen;
-
-  const padded = new Uint8Array(paddedLen);
-  padded.set(data);
-  for (let i = len; i < paddedLen; i++) {
-    padded[i] = padLen;
-  }
-
-  const numChunks = paddedLen / CHUNK_SIZE;
-  const elements: bigint[] = new Array(numChunks);
-
-  for (let i = 0; i < numChunks; i++) {
+  // PKCS7 padding: append padLen bytes of value padLen
+  const padded = Uint8Array.from([
+    ...data,
+    ...Uint8Array.from({ length: padLen }, (_: number) => padLen),
+  ]);
+  const numChunks = padded.length / CHUNK_SIZE;
+  return Array.from({ length: numChunks }, (_, i: number) => {
     const offset = i * CHUNK_SIZE;
-    let val = 0n;
-    for (let j = 0; j < CHUNK_SIZE; j++) {
-      const byte = padded[offset + j];
-      val = (val << 8n) | BigInt(byte ?? 0);
-    }
-    elements[i] = val;
-  }
-
-  return elements;
+    return Array.from(
+      { length: CHUNK_SIZE },
+      (_, j: number) => padded[offset + j] ?? 0,
+    ).reduce(
+      (acc: bigint, byte: number) => (acc << 8n) | BigInt(byte),
+      0n,
+    );
+  });
 };
 
 /**
@@ -59,16 +53,13 @@ const bytesToFieldElements = (data: Uint8Array): bigint[] => {
 const reduceElements = (
   elements: readonly bigint[],
   poseidon2Fn: (inputs: [bigint, bigint]) => bigint,
-): bigint => {
-  if (elements.length === 0) {
-    return 0n;
-  }
-  let acc = elements[0] ?? 0n;
-  for (let i = 1; i < elements.length; i++) {
-    acc = poseidon2Fn([acc, elements[i] ?? 0n]);
-  }
-  return acc;
-};
+): bigint =>
+  elements.length === 0
+    ? 0n
+    : elements.slice(1).reduce(
+        (acc: bigint, el: bigint) => poseidon2Fn([acc, el]),
+        elements[0] ?? 0n,
+      );
 
 /* ------------------------------------------------------------------ */
 /*  Hex / hash helpers                                                 */
@@ -344,10 +335,10 @@ export const publish = async (
     // Re-throw as Error so downstream catch blocks can inspect message/code.
     if (e instanceof Error) throw e;
     const msg = typeof e === "string" ? e
-      : typeof (e as Readonly<{ message?: unknown }>)?.message === "string"
-        ? String((e as Readonly<{ message: string }>).message)
+      : typeof (e as Readonly<{ message?: unknown }>).message === "string"
+        ? (e as Readonly<{ message: string }>).message
         : "Unknown error";
-    const code = (e as Readonly<{ code?: unknown }>)?.code;
+    const code = (e as Readonly<{ code?: unknown }>).code;
     const err = new Error(
       `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
     );
@@ -522,7 +513,7 @@ export const list = async (
       ? new Blob([input.file.body], { type: input.file.type ?? "application/octet-stream" })
       : input.file;
   const fileName =
-    "name" in input.file ? input.file.name : (fileBlob as File).name ?? "untitled";
+    "name" in input.file ? input.file.name : (fileBlob as File).name;
   form.append("file", fileBlob, fileName);
   form.append("category", input.category);
   form.append("price_usdc", String(input.priceUsdc));
