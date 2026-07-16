@@ -101,6 +101,8 @@ const requestUrl = (input: RequestInfo | URL): URL | null => {
       : input instanceof URL
         ? input.href
         : input.url;
+  // imperative: URL constructor can throw on malformed input — boundary
+  // eslint-disable-next-line functional/no-try-statements
   try {
     return new URL(
       raw,
@@ -128,13 +130,19 @@ const parseRequirements = async (
   res: Response,
 ): Promise<PaymentRequirements | null> => {
   const header = res.headers.get("X-PAYMENT-REQUIREMENTS");
+  // imperative: HTTP header presence guard — boundary
+  // eslint-disable-next-line functional/no-conditional-statements
   if (header !== null) {
+    // imperative: JSON.parse is a boundary operation — no functional alternative
+    // eslint-disable-next-line functional/no-try-statements
     try {
       return JSON.parse(header) as PaymentRequirements;
     } catch {
       // fall through to the body
     }
   }
+  // imperative: response body parsing is a boundary operation — no functional alternative
+  // eslint-disable-next-line functional/no-try-statements
   try {
     const body = (await res.clone().json()) as Readonly<{
       accepts?: ReadonlyArray<PaymentRequirements>;
@@ -155,10 +163,14 @@ const isKnownNetwork = (network: string): network is X402Network =>
  * apiBase — the Trust402 proxy origin — to serve the same guardrail.
  */
 const isPayableOrigin = (url: URL, apiBase: string): boolean => {
+  // imperative: environment detection guard — boundary
+  // eslint-disable-next-line functional/no-conditional-statements
   if (typeof location !== "undefined") {
     return url.origin === location.origin;
   }
   // Node.js / server-side: allow only the configured apiBase.
+  // imperative: URL constructor can throw — boundary
+  // eslint-disable-next-line functional/no-try-statements
   try {
     return url.origin === new URL(apiBase).origin;
   } catch {
@@ -184,8 +196,11 @@ const isPayable = (
   Boolean(reqs.extra?.name) &&
   Boolean(reqs.extra?.version);
 
+// imperative: crypto.getRandomValues mutates a pre-allocated buffer — boundary
+// eslint-disable-next-line functional/functional-parameters
 const randomNonce = (): string => {
   const bytes = new Uint8Array(32);
+  // eslint-disable-next-line functional/no-expression-statements -- crypto boundary
   crypto.getRandomValues(bytes);
   return `0x${Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
 };
@@ -205,17 +220,25 @@ const ensureChain = async (
 ): Promise<void> => {
   // viem WalletClient and other non-wallet providers don't implement
   // wallet_switchEthereumChain — skip and trust the configured chain.
+  // imperative: environment-based early return guard — boundary
+  // eslint-disable-next-line functional/no-conditional-statements
   if (typeof location === "undefined") return;
   const chainId = `0x${X402_CHAIN_IDS[network].toString(16)}`;
+  // imperative: wallet RPC calls are inherently imperative — boundary
+  // eslint-disable-next-line functional/no-try-statements
   try {
+    // eslint-disable-next-line functional/no-expression-statements -- RPC boundary
     await provider.request({
       method: "wallet_switchEthereumChain",
       params: [{ chainId }],
     });
   } catch (e: unknown) {
     const code = (e as Readonly<{ code?: unknown }> | null)?.code;
+    // imperative: error-code branching for wallet RPC — boundary
+    // eslint-disable-next-line functional/no-conditional-statements
     if (code === 4902 || code === -32603) {
       const meta = CHAIN_METADATA[network];
+      // eslint-disable-next-line functional/no-expression-statements -- RPC boundary
       await provider.request({
         method: "wallet_addEthereumChain",
         params: [{ chainId, ...meta }],
@@ -249,8 +272,8 @@ const transferWithAuthorizationTypedData = (
   },
   primaryType: "TransferWithAuthorization",
   domain: {
-    name: reqs.extra!.name,
-    version: reqs.extra!.version,
+    name: reqs.extra?.name ?? "",
+    version: reqs.extra?.version ?? "",
     chainId: X402_CHAIN_IDS[network],
     verifyingContract: reqs.asset,
   },
@@ -265,20 +288,31 @@ const transferWithAuthorizationTypedData = (
  * Wrap fetch with x402 payment handling: on a 402 challenge that passes all
  * guardrails, sign an EIP-3009 TransferWithAuthorization and retry exactly
  * once with the X-PAYMENT header. Anything else passes through untouched.
+ *
+ * This entire function is an HTTP gateway boundary with sequential guard
+ * clauses and wallet RPC interactions — inherently imperative.
  */
 export const payFetch = (options: PayFetchOptions): FetchLike =>
   async (input, init) => {
     const res = await fetch(input, init);
+    // imperative: HTTP status guard — sequential boundary
+    // eslint-disable-next-line functional/no-conditional-statements
     if (res.status !== 402) return res;
 
     const url = requestUrl(input);
+    // imperative: null guard after URL parse — boundary
+    // eslint-disable-next-line functional/no-conditional-statements
     if (url === null) return res;
 
     const reqs = await parseRequirements(res);
+    // imperative: null guard after parse — boundary
+    // eslint-disable-next-line functional/no-conditional-statements
     if (reqs === null) return res;
 
     const maxAmount =
       options.maxAmountMicroUsdc ?? DEFAULT_MAX_AMOUNT_MICRO_USDC;
+    // imperative: guard clause for payable check — boundary
+    // eslint-disable-next-line functional/no-conditional-statements
     if (
       !isPayable(url, requestMethod(input, init), init?.body, reqs, maxAmount, options.apiBase ?? "")
     ) {
@@ -286,12 +320,16 @@ export const payFetch = (options: PayFetchOptions): FetchLike =>
     }
     const network = reqs.network;
 
+    // imperative: callback side effect for payment notification — boundary
+    // eslint-disable-next-line functional/no-expression-statements
     options.onPayment?.({
       amount: reqs.maxAmountRequired,
       resource: reqs.resource,
     });
 
     const signer = await options.getSigner();
+    // imperative: wallet chain switch — sequential RPC boundary
+    // eslint-disable-next-line functional/no-expression-statements
     await ensureChain(signer.provider, network);
     // Re-resolve signer after chain switch — wallet providers (MetaMask)
     // may reset internal state during network transitions, making the
