@@ -352,7 +352,7 @@ export const publish = async (
       `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
     );
     throw typeof code === "number"
-      ? (Object.assign(err, { code }) as Error & { code: number })
+      ? (Object.assign(err, { code }))
       : err;
   }
   if (!proofRes.ok) {
@@ -409,7 +409,7 @@ export const publish = async (
       environment: input.environment ?? "sandbox",
       payoutAddress: input.payoutAddress ?? "",
     });
-    return Object.freeze({ ...listing, cardId: result.id }) as Listing;
+    return Object.freeze({ ...listing, cardId: result.id });
   }
 
   return listing;

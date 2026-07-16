@@ -164,12 +164,15 @@ const findMatchingRoute = (
 ): Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined =>
   COMPILED_ROUTES.reduce<
     Readonly<{ route: Route; params?: Readonly<Record<string, string>> }> | undefined
-  >((acc, compiled) => {
-    if (acc) return acc;
-    if (compiled.route.method !== request.method) return undefined;
-    const params = extractParams(compiled, request.url);
-    return params !== undefined ? { route: compiled.route, params } : undefined;
-  }, undefined);
+  >((acc, compiled) =>
+    acc !== undefined
+      ? acc
+      : compiled.route.method !== request.method
+        ? undefined
+        : ((params: ReturnType<typeof extractParams>) =>
+            params !== undefined ? { route: compiled.route, params } : undefined
+          )(extractParams(compiled, request.url)),
+    undefined);
 
 /** Send HTTP response. */
 const sendResponse = (

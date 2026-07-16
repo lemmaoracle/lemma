@@ -149,7 +149,7 @@ const validateSchema = (
   options?: CredentialOptions,
 ): ReadonlyArray<ValidationError> => {
   const expectedSchema = options?.schemaId ?? DEFAULT_SCHEMA_ID;
-  const actualSchema = R.prop("schema", input) as unknown;
+  const actualSchema = R.prop("schema", input);
 
   return actualSchema === expectedSchema
     ? []
