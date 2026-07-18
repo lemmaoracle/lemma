@@ -22,7 +22,6 @@
   ],
   "scripts": {
     "build:circuit": "cd circuits && npm run build",
-    "type-check": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:circuit": "cd circuits && npx vitest run"
   },
