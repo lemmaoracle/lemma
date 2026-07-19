@@ -22,6 +22,12 @@ export const SEAL_CIRCUIT_ID = "seal-identity-v2.2";
 
 type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
 
+// SDK types are imprecise — annotate at the boundary.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SdkClient = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SdkProveResult = any;
+
 /**
  * Generate a groth16 proof that the caller holds the secret behind a
  * registered `key_hash`, bound to the given challenge `nonce`.
@@ -36,19 +42,23 @@ type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
  * paths are required.
  */
 export const prove = async (input: SealProofInput): Promise<SealProof> => {
-  const client = create({});
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const client: SdkClient = create({});
   const witness = {
     keyBits: secretToBits(input.secret).map(Number),
     nonce: input.nonce,
   };
-  const { proof, inputs } = await prover.prove(client, {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  const { proof, inputs }: SdkProveResult = await prover.prove(client, {
     circuitId: SEAL_CIRCUIT_ID,
     witness,
   });
   return {
-    proof: JSON.parse(atob(proof)),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    proof: JSON.parse(atob(proof as string)),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     publicSignals: inputs,
-    nullifier: inputs[0] ?? "",
+    nullifier: (inputs as Array<string>)[0] ?? "",
   };
 };
 
@@ -61,6 +71,7 @@ export const prove = async (input: SealProofInput): Promise<SealProof> => {
 export const verify = async (
   proof: SealProof,
 ): Promise<VerifyResult | null> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const { ok } = await verifier.verify({
     alg: "groth16-bn254-snarkjs",
     inputs: {

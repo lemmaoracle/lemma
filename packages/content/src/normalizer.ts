@@ -69,6 +69,7 @@ export function bytesToFieldElements(data: Uint8Array): bigint[] {
  * Extract a bigint into CHUNK_SIZE bytes (big-endian) into a Uint8Array
  * at the given offset. Throws if the value is too large.
  */
+// imperative: byte-level buffer mutation — no functional alternative for Uint8Array writes
 function writeBigEndian(
   value: bigint,
   buf: Uint8Array,
@@ -79,12 +80,20 @@ function writeBigEndian(
     buf[offset + j] = Number(val & 0xffn);
     val >>= 8n;
   }
-  if (val !== 0n) {
-    throw new Error(
-      `Field element overflows ${CHUNK_SIZE} bytes at offset ${offset}`,
-    );
-  }
+  return val !== 0n
+    ? void raise(
+        `Field element overflows ${String(CHUNK_SIZE)} bytes at offset ${String(offset)}`,
+      )
+    : undefined;
 }
+
+/** Raise a validation error — used at API boundaries. */
+// imperative: pre-condition validation — no functional alternative for call-site abort
+/* eslint-disable functional/no-throw-statements */
+function raise(message: string): never {
+  throw new Error(message);
+}
+/* eslint-enable functional/no-throw-statements */
 
 /**
  * Convert field elements back to original bytes.
@@ -138,23 +147,18 @@ export function fieldElementsToBytes(elements: readonly bigint[]): Uint8Array {
  * The circuit itself is an identity check (commitment === fileHash) —
  * this reduction happens off-circuit in the SDK/normalizer.
  */
-export function reduceElements(
+export const reduceElements = (
   elements: readonly bigint[],
   poseidon2: (inputs: [bigint, bigint]) => bigint,
-): bigint {
-  if (elements.length === 0) {
-    return 0n;
-  }
-  // The length check above and the loop bound keep both index accesses in range,
-  // so neither is `undefined`; assert it for noUncheckedIndexedAccess. (The rest
-  // of this file already handles indexed access with explicit `undefined` guards;
-  // this branch was the one spot missing it, which broke `tsc`.)
-  let acc = elements[0]!;
-  for (let i = 1; i < elements.length; i++) {
-    acc = poseidon2([acc, elements[i]!]);
-  }
-  return acc;
-}
+): bigint => {
+  const first = elements[0];
+  return first === undefined || elements.length === 0
+    ? 0n
+    : elements.slice(1).reduce(
+        (acc: bigint, elem: bigint): bigint => poseidon2([acc, elem]),
+        first,
+      );
+};
 
 /**
  * Compute the fileHash for content-commitment-v1.

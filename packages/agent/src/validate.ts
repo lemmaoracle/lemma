@@ -22,13 +22,6 @@ const err =
   (kind: ValidationError["kind"], message: string): ValidationError =>
     ({ kind, message });
 
-const push = (
-  errors: ReadonlyArray<ValidationError>,
-  condition: boolean,
-  error: ValidationError,
-): ReadonlyArray<ValidationError> =>
-  condition ? [...errors, error] : errors;
-
 // ── Individual validators ───────────────────────────────────────────────
 
 /** Validate required identity fields are non-empty. */
@@ -71,7 +64,7 @@ export const validateSpendLimit = (
 
   const isTooLarge: ReadonlyArray<ValidationError> =
     typeof spendLimit === "number" && Number.isInteger(spendLimit) && spendLimit >= 0 && spendLimit > MAX_SPEND_LIMIT
-      ? [err("SpendLimitExceeded", `financial.spendLimit must not exceed ${MAX_SPEND_LIMIT}`)]
+      ? [err("SpendLimitExceeded", `financial.spendLimit must not exceed ${String(MAX_SPEND_LIMIT)}`)]
       : [];
 
   return [...isEmpty, ...isInvalid, ...isTooLarge];
@@ -104,34 +97,39 @@ export const validateTimestamps = (
     !Number.isInteger(val) ||
     val < 0;
 
-  let errors: ReadonlyArray<ValidationError> = [];
+  const issuedAtError: ReadonlyArray<ValidationError> = isInvalidU64(issuedAt)
+    ? [err("InvalidTimestamp", "lifecycle.issuedAt must be a non-negative integer")]
+    : [];
 
-  // issuedAt must be a non-negative integer
-  errors = push(errors, isInvalidU64(issuedAt),
-    err("InvalidTimestamp", "lifecycle.issuedAt must be a non-negative integer"));
+  const expiresAtInvalidError: ReadonlyArray<ValidationError> =
+    expiresAt !== undefined && expiresAt !== null && isInvalidU64(expiresAt)
+      ? [err("InvalidTimestamp", "lifecycle.expiresAt must be a non-negative integer when present")]
+      : [];
 
-  // expiresAt: when present, must be a non-negative integer
-  errors = push(errors, expiresAt !== undefined && expiresAt !== null && isInvalidU64(expiresAt),
-    err("InvalidTimestamp", "lifecycle.expiresAt must be a non-negative integer when present"));
-
-  // expiresAt must be > issuedAt when both are valid numbers
-  errors = push(errors,
+  const expiresBeforeIssuedError: ReadonlyArray<ValidationError> =
     typeof expiresAt === "number" && Number.isInteger(expiresAt) &&
     typeof issuedAt === "number" && Number.isInteger(issuedAt) &&
-    expiresAt <= issuedAt,
-    err("InvalidTimestamp", "lifecycle.expiresAt must be greater than lifecycle.issuedAt"));
+    expiresAt <= issuedAt
+      ? [err("InvalidTimestamp", "lifecycle.expiresAt must be greater than lifecycle.issuedAt")]
+      : [];
 
-  // expiresAt must be ≤ 4102444800
-  errors = push(errors,
-    typeof expiresAt === "number" && Number.isInteger(expiresAt) && expiresAt > MAX_EXPIRES_AT,
-    err("InvalidTimestamp", `lifecycle.expiresAt must not exceed ${MAX_EXPIRES_AT}`));
+  const expiresTooLargeError: ReadonlyArray<ValidationError> =
+    typeof expiresAt === "number" && Number.isInteger(expiresAt) && expiresAt > MAX_EXPIRES_AT
+      ? [err("InvalidTimestamp", `lifecycle.expiresAt must not exceed ${String(MAX_EXPIRES_AT)}`)]
+      : [];
 
-  // chainId must be a non-negative integer when present
-  errors = push(errors,
-    chainId !== undefined && chainId !== null && isInvalidU64(chainId),
-    err("InvalidTimestamp", "provenance.chainContext.chainId must be a non-negative integer when present"));
+  const chainIdError: ReadonlyArray<ValidationError> =
+    chainId !== undefined && chainId !== null && isInvalidU64(chainId)
+      ? [err("InvalidTimestamp", "provenance.chainContext.chainId must be a non-negative integer when present")]
+      : [];
 
-  return errors;
+  return [
+    ...issuedAtError,
+    ...expiresAtInvalidError,
+    ...expiresBeforeIssuedError,
+    ...expiresTooLargeError,
+    ...chainIdError,
+  ];
 };
 
 /** Validate provenance fields. */
