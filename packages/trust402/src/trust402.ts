@@ -282,7 +282,7 @@ export const publish = async (
   });
 
   // ── 3. Register document ──
-  await registerDocument(client, {
+  const _registerResult = await registerDocument(client, {
     docHash,
     schema: input.circuitId,
     cid: input.cid ?? "",
@@ -315,13 +315,10 @@ export const publish = async (
   const proofUrl = `${client.apiBase}${proofPath}`;
   const proofHeaders: Record<string, string> = {
     "content-type": "application/json",
+    ...(client.apiKey !== undefined ? { "x-api-key": client.apiKey } : {}),
   };
-  if (client.apiKey !== undefined) {
-    proofHeaders["x-api-key"] = client.apiKey;
-  }
-  let proofRes: Response;
-  try {
-    proofRes = await (client.fetcher ?? fetch)(proofUrl, {
+  const proofRes = await (
+    (client.fetcher ?? fetch)(proofUrl, {
       method: "POST",
       headers: proofHeaders,
       body: JSON.stringify({
@@ -330,24 +327,38 @@ export const publish = async (
         proof: proof.proof,
         inputs: [input.commitment],
       }),
-    });
-  } catch (e: unknown) {
-    // Re-throw as Error so downstream catch blocks can inspect message/code.
-    if (e instanceof Error) throw e;
-    const msg = typeof e === "string" ? e
-      : typeof (e as Readonly<{ message?: unknown }>).message === "string"
-        ? (e as Readonly<{ message: string }>).message
-        : "Unknown error";
-    const code = (e as Readonly<{ code?: unknown }>).code;
-    const err = new Error(
-      `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
-    );
-    throw typeof code === "number"
-      ? (Object.assign(err, { code }))
-      : err;
-  }
+      // imperative: catch block normalizes non-Error throws from wallet/x402
+      // fetcher into Error instances — downstream code expects instanceof Error
+    }).catch((e: unknown): never => {
+      throw e instanceof Error
+        ? e
+        : (() => {
+            const msg =
+              typeof e === "string"
+                ? e
+                : typeof (e as Readonly<{ message?: unknown }>).message ===
+                    "string"
+                  ? (e as Readonly<{ message: string }>).message
+                  : "Unknown error";
+            const code = (e as Readonly<{ code?: unknown }>).code;
+            const err = new Error(
+              `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+            );
+            // imperative: Object.assign mutates Error to add `code` property
+            // while preserving instanceof Error — spread would lose the prototype
+            return typeof code === "number"
+              ? // eslint-disable-next-line functional/immutable-data
+                Object.assign(err, { code })
+              : err;
+          })();
+    })
+  );
+  // imperative: guard clause with async body — no ternary can wrap await
+  // eslint-disable-next-line functional/no-conditional-statements
   if (!proofRes.ok) {
-    const errBody = await proofRes.json().catch(() => ({}));
+    const errBody = (await proofRes
+      .json()
+      .catch((_err: unknown): Record<string, unknown> => ({}))) as Record<string, unknown>;
     throw new Error(
       `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
     );
@@ -388,22 +399,26 @@ export const publish = async (
   // If a file is provided, auto-upload to POST /api/cards so the listing
   // is immediately visible to buyers. Skip when not provided (caller may
   // use list() separately or the dashboard handles its own upload).
-  if (input.file !== undefined) {
-    const result = await list(client, {
-      listing,
-      file: input.file,
-      category: input.category ?? detectContentType({
-        type: (input.file as { type?: string }).type ?? "",
-        name: (input.file as { name: string }).name,
-      }),
-      priceUsdc: input.price.amount,
-      environment: input.environment ?? "sandbox",
-      payoutAddress: input.payoutAddress ?? "",
-    });
-    return Object.freeze({ ...listing, cardId: result.id });
-  }
-
-  return listing;
+  return input.file === undefined
+    ? listing
+    : Object.freeze({
+        ...listing,
+        cardId: (
+          await list(client, {
+            listing,
+            file: input.file,
+            category:
+              input.category ??
+              detectContentType({
+                type: (input.file as { type?: string }).type ?? "",
+                name: (input.file as { name: string }).name,
+              }),
+            priceUsdc: input.price.amount,
+            environment: input.environment ?? "sandbox",
+            payoutAddress: input.payoutAddress ?? "",
+          })
+        ).id,
+      });
 };
 
 /* ------------------------------------------------------------------ */
@@ -425,6 +440,35 @@ const MIME_TO_CONTENT_TYPE: Readonly<Record<string, string>> = Object.freeze({
   "text/markdown": "document",
 });
 
+/** File extension → content type lookup. */
+const EXT_TO_CONTENT_TYPE: Readonly<Record<string, string>> = Object.freeze({
+  csv: "dataset",
+  json: "code",
+  jsonl: "code",
+  md: "document",
+  xml: "code",
+  html: "code",
+  htm: "code",
+  js: "code",
+  ts: "code",
+  jsx: "code",
+  tsx: "code",
+  py: "code",
+  rs: "code",
+  go: "code",
+  java: "code",
+  sol: "code",
+  vy: "code",
+  mp3: "audio",
+  wav: "audio",
+  ogg: "audio",
+  png: "image",
+  jpg: "image",
+  jpeg: "image",
+  webp: "image",
+  svg: "image",
+});
+
 /**
  * Detect content type from a browser File object.
  * Used by dashboard before publish to show a badge.
@@ -432,35 +476,14 @@ const MIME_TO_CONTENT_TYPE: Readonly<Record<string, string>> = Object.freeze({
 export const detectContentType = (file: {
   readonly type: string;
   readonly name: string;
-}): string => {
-  const exactMatch = Object.entries(MIME_TO_CONTENT_TYPE).find(([key]) =>
-    file.type === key,
-  );
-  if (exactMatch !== undefined) {
-    return exactMatch[1];
-  }
-
-  const prefixMatch = Object.entries(MIME_TO_CONTENT_TYPE).find(([key]) =>
-    key.endsWith("/") && file.type.startsWith(key),
-  );
-  if (prefixMatch !== undefined) {
-    return prefixMatch[1];
-  }
-
-  const ext = file.name.split(".").pop()?.toLowerCase();
-  if (ext === "csv") return "dataset";
-  if (ext === "json" || ext === "jsonl") return "code";
-  if (ext === "md") return "document";
-  if (ext === "xml") return "code";
-  if (ext === "html" || ext === "htm") return "code";
-  if (ext === "js" || ext === "ts" || ext === "jsx" || ext === "tsx") return "code";
-  if (ext === "py" || ext === "rs" || ext === "go" || ext === "java") return "code";
-  if (ext === "sol" || ext === "vy") return "code";
-  if (ext === "mp3" || ext === "wav" || ext === "ogg") return "audio";
-  if (ext === "png" || ext === "jpg" || ext === "jpeg" || ext === "webp" || ext === "svg") return "image";
-
-  return "other";
-};
+}): string =>
+  MIME_TO_CONTENT_TYPE[file.type] ??
+  Object.entries(MIME_TO_CONTENT_TYPE).find(
+    ([key]) => key.endsWith("/") && file.type.startsWith(key),
+  )?.[1] ??
+  (EXT_TO_CONTENT_TYPE[
+    file.name.split(".").at(-1)?.toLowerCase() ?? ""
+  ] ?? "other");
 
 /* ------------------------------------------------------------------ */
 /*  list — upload listing to the Trust402 storefront (POST /api/cards) */
@@ -521,17 +544,23 @@ export const list = async (
   form.append("trust402_listing", JSON.stringify(input.listing));
   form.append("payout_address", input.payoutAddress);
 
-  const headers: Record<string, string> = {};
-  if (client.apiKey !== undefined) {
-    headers["x-api-key"] = client.apiKey;
-  }
   // Astro CSRF guard rejects cross-origin FormData POSTs without an
   // Origin header. Set it to the apiBase origin so server-side calls pass.
-  try {
-    headers["Origin"] = new URL(client.apiBase).origin;
-  } catch {
-    // apiBase is not a URL — skip
-  }
+  // imperative: new URL() may throw synchronously — wrap in Promise to use
+  // functional .catch() pattern instead of try-catch
+  const origin = await new Promise<string | undefined>((resolve) => {
+    // eslint-disable-next-line functional/no-try-statements
+    try {
+      resolve(new URL(client.apiBase).origin);
+    } catch {
+      resolve(undefined);
+    }
+  });
+
+  const headers: Record<string, string> = {
+    ...(client.apiKey !== undefined ? { "x-api-key": client.apiKey } : {}),
+    ...(origin !== undefined ? { Origin: origin } : {}),
+  };
 
   const res = await (client.fetcher ?? fetch)(url, {
     method: "POST",
@@ -539,8 +568,12 @@ export const list = async (
     body: form,
   });
 
+  // imperative: guard clause with async body — no ternary can wrap await
+  // eslint-disable-next-line functional/no-conditional-statements
   if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
+    const errBody = (await res
+      .json()
+      .catch((_err: unknown): Record<string, unknown> => ({}))) as Record<string, unknown>;
     throw new Error(
       `HTTP ${String(res.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
     );
