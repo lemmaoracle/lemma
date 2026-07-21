@@ -87,48 +87,10 @@ export default {
 
     return json({ error: "Not found", path: url.pathname }, 404);
   },
-
-  async scheduled(
-    _controller: ScheduledController,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<void> {
-    const sources: string[] = env.SCHEDULED_SOURCES
-      ? (JSON.parse(env.SCHEDULED_SOURCES) as string[])
-      : ["https://api.frankfurter.app/latest"];
-
-    ctx.waitUntil(
-      (async () => {
-        for (const source of sources) {
-          // eslint-disable-next-line no-console
-          console.log(`[scheduled] fetching ${source}`);
-          const result: FetchResult = await fetchAndCommit(source, {
-            maxDepth: 16,
-          });
-          // eslint-disable-next-line no-console
-          console.log(
-            `[scheduled] ${source} → root=${result.commitment.root} leaves=${result.commitment.leaves.length}`,
-          );
-        }
-      })(),
-    );
-  },
 };
 
 // ── env types ────────────────────────────────────────────────────────────
 
 interface Env {
   FETCHER_API_KEY?: string;
-  SCHEDULED_SOURCES?: string;
-}
-
-interface ScheduledController {
-  scheduledTime: number;
-  cron: string;
-  noRetry(): void;
-}
-
-interface ExecutionContext {
-  waitUntil(promise: Promise<unknown>): void;
-  passThroughOnException(): void;
 }

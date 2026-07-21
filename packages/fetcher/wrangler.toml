@@ -4,22 +4,6 @@ main = "src/worker.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ── Triggers ────────────────────────────────────────────────────────────
-# Daily fetch at 17:35 UTC (matches the forex-proof-pipeline cron schedule)
-[triggers]
-crons = ["35 17 * * *"]
-
-# ── Secrets ──────────────────────────────────────────────────────────────
-# Set via: wrangler secret put FETCHER_API_KEY
-# Set via: wrangler secret put SCHEDULED_SOURCES  (JSON array of URLs)
-#
-# Example SCHEDULED_SOURCES value:
-#   ["https://api.frankfurter.app/latest"]
-
-# ── Vars (non-secret config) ─────────────────────────────────────────────
-[vars]
-# Add non-secret config here if needed
-
 # ── Build ────────────────────────────────────────────────────────────────
 # The fetcher depends on @lemmaoracle/sdk — ensure it's bundled.
 # wrangler bundles automatically; no external modules config needed.
