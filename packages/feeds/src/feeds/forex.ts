@@ -52,8 +52,8 @@ const buildUrl = (base: string, symbols?: string): string => {
  *   FOREX_BASE=JPY FOREX_SYMBOLS=USD,EUR tsx src/cli.ts forex/frankfurter
  */
 export const frankfurterForex: FeedSource = {
-  id: "forex/frankfurter",
-  label: "Frankfurter Forex (ECB reference rates)",
+  id: "forex/ecb",
+  label: "ECB Reference Exchange Rates (via Frankfurter)",
   category: "forex",
 
   getDocumentId: (data) => {

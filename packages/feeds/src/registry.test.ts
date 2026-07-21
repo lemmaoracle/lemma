@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { findFeed, listFeeds, runFeed } from "./registry.js";
 
 describe("feed registry", () => {
-  it("lists forex/frankfurter", () => {
+  it("lists forex/ecb", () => {
     const feeds = listFeeds();
     expect(feeds.length).toBeGreaterThanOrEqual(1);
-    expect(feeds.some((f) => f.id === "forex/frankfurter")).toBe(true);
+    expect(feeds.some((f) => f.id === "forex/ecb")).toBe(true);
   });
 
-  it("finds forex/frankfurter by ID", () => {
-    const feed = findFeed("forex/frankfurter");
+  it("finds forex/ecb by ID", () => {
+    const feed = findFeed("forex/ecb");
     expect(feed).toBeDefined();
-    expect(feed!.id).toBe("forex/frankfurter");
+    expect(feed!.id).toBe("forex/ecb");
     expect(feed!.category).toBe("forex");
   });
 
@@ -26,7 +26,7 @@ describe("feed registry", () => {
   });
 
   it("runFeed returns result for valid feed", async () => {
-    const result = await runFeed("forex/frankfurter");
+    const result = await runFeed("forex/ecb");
     expect(result.error).toBeNull();
     expect(result.result).not.toBeNull();
     expect(result.result!.commitment.root).toMatch(/^0x[0-9a-f]+$/);
