@@ -29,10 +29,12 @@
   },
   "dependencies": {
     "@lemmaoracle/fetcher": "workspace:*",
+    "@lemmaoracle/sdk": "workspace:*",
     "snarkjs": "^0.7.6"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
+    "@types/snarkjs": "^0.7.9",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
     "eslint": "^9.39.3",

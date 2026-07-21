@@ -10,8 +10,8 @@
  * into a single Merkle root.
  */
 
-import { fetchAndCommit } from "@lemmaoracle/fetcher";
-import type { FetcherConfig } from "@lemmaoracle/fetcher";
+import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
+import type { Json } from "@lemmaoracle/sdk";
 import type { FeedSource } from "../types.js";
 
 // ── configuration ─────────────────────────────────────────────────────────
@@ -21,6 +21,9 @@ const DEFAULT_BASE = "USD";
 
 /** Comma-separated list of symbols to fetch, or undefined for all. */
 const DEFAULT_SYMBOLS: string | undefined = undefined;
+
+/** Default fetcher Workers endpoint. */
+const DEFAULT_FETCHER_URL = "https://fetcher.lemma.workers.dev";
 
 // ── URL builder ───────────────────────────────────────────────────────────
 
@@ -40,10 +43,12 @@ const buildUrl = (base: string, symbols?: string): string => {
 /**
  * Frankfurter forex feed source.
  *
- * Fetches ECB reference rates.  The base currency and symbol filter
- * are read from environment variables at fetch time, so they can be
- * changed without modifying code:
+ * Fetches ECB reference rates via the deployed fetcher Workers
+ * (https://fetcher.lemma.workers.dev).  The base currency and symbol filter
+ * are read from environment variables at fetch time:
  *
+ *   FETCHER_URL=https://fetcher.lemma.workers.dev
+ *   FETCHER_API_KEY=...
  *   FOREX_BASE=JPY FOREX_SYMBOLS=USD,EUR tsx src/cli.ts forex/frankfurter
  */
 export const frankfurterForex: FeedSource = {
@@ -51,12 +56,35 @@ export const frankfurterForex: FeedSource = {
   label: "Frankfurter Forex (ECB reference rates)",
   category: "forex",
 
-  fetch: async (config?: FetcherConfig): ReturnType<FeedSource["fetch"]> => {
+  getDocumentId: (data) => {
+    const obj = data as Readonly<Record<string, Json>>;
+    return String(obj["date"] ?? "unknown");
+  },
+
+  getAttributes: (data) => {
+    const obj = data as Readonly<Record<string, Json>>;
+    return {
+      source: "frankfurter",
+      base: String(obj["base"] ?? ""),
+    };
+  },
+
+  fetch: async (_config?: FetcherConfig): Promise<FetchResult> => {
     const base: string = process.env["FOREX_BASE"] ?? DEFAULT_BASE;
     const symbols: string | undefined =
       process.env["FOREX_SYMBOLS"] ?? DEFAULT_SYMBOLS;
+    const fetcherUrl: string =
+      process.env["FETCHER_URL"] ?? DEFAULT_FETCHER_URL;
+    const fetcherKey: string = process.env["FETCHER_API_KEY"] ?? "";
 
-    const url = buildUrl(base, symbols);
-    return fetchAndCommit(url, config);
+    const sourceUrl = buildUrl(base, symbols);
+    const endpoint = `${fetcherUrl}/fetch?url=${encodeURIComponent(sourceUrl)}`;
+    const headers: Record<string, string> = {};
+    if (fetcherKey) headers["X-API-Key"] = fetcherKey;
+    const res = await fetch(endpoint, { headers });
+    if (!res.ok) {
+      throw new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`);
+    }
+    return (await res.json()) as FetchResult;
   },
 };

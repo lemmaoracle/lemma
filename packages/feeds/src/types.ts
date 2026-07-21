@@ -28,6 +28,10 @@ export type FeedSource = Readonly<{
   readonly category: string;
   /** Fetch data and return a committed result. */
   readonly fetch: (config?: FetcherConfig) => Promise<FetchResult>;
+  /** Extract a unique document identifier from fetched data (e.g. date string). */
+  readonly getDocumentId: (data: import("@lemmaoracle/sdk").Json) => string;
+  /** Extra attributes for document registration. */
+  readonly getAttributes?: (data: import("@lemmaoracle/sdk").Json) => Record<string, string>;
 }>;
 
 /**

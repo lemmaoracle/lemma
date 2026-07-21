@@ -25,3 +25,7 @@ export { findFeed, listFeeds, runFeed } from "./registry.js";
 
 // Individual feed sources
 export { frankfurterForex } from "./feeds/forex.js";
+
+// Pipeline
+export { runProofPipeline } from "./pipeline.js";
+export type { PipelineConfig, PipelineResult } from "./pipeline.js";
