@@ -14,8 +14,8 @@
  *   const result = await runFeed("forex/frankfurter");
  */
 
-// Re-export from fetch for convenience
-export type { FetchResult, FetcherConfig } from "@lemmaoracle/fetch";
+// Re-export from fetcher for convenience
+export type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 
 // Own types
 export type { FeedSource, FeedRunResult } from "./types.js";

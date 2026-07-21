@@ -35,7 +35,7 @@ const checkAuth = (request: Request, env: Env): boolean => {
 // ── routes ───────────────────────────────────────────────────────────────
 
 const handleHealth = (): Response =>
-  json({ ok: true, service: "fetch" });
+  json({ ok: true, service: "fetcher" });
 
 const handleFetch = async (request: Request, env: Env): Promise<Response> => {
   let url: string;

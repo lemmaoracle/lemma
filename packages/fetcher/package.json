@@ -1,13 +1,13 @@
 {
-  "name": "@lemmaoracle/fetch",
+  "name": "@lemmaoracle/fetcher",
   "version": "0.0.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lemmaoracle/lemma.git",
-    "directory": "packages/fetch"
+    "directory": "packages/fetcher"
   },
-  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/fetch#readme",
+  "homepage": "https://github.com/lemmaoracle/lemma/tree/main/packages/fetcher#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -7,7 +7,7 @@
  * their own feeds as npm packages that plug into the Lemma oracle.
  */
 
-import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetch";
+import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 
 /**
  * A single data feed source.

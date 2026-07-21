@@ -10,8 +10,8 @@
  * into a single Merkle root.
  */
 
-import { fetchAndCommit } from "@lemmaoracle/fetch";
-import type { FetcherConfig } from "@lemmaoracle/fetch";
+import { fetchAndCommit } from "@lemmaoracle/fetcher";
+import type { FetcherConfig } from "@lemmaoracle/fetcher";
 import type { FeedSource } from "../types.js";
 
 // ── configuration ─────────────────────────────────────────────────────────

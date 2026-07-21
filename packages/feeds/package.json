@@ -28,7 +28,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@lemmaoracle/fetch": "workspace:*",
+    "@lemmaoracle/fetcher": "workspace:*",
     "snarkjs": "^0.7.6"
   },
   "devDependencies": {
