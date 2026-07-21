@@ -35,12 +35,20 @@ export type PipelineConfig = Readonly<{
 }>;
 
 export type PipelineResult = Readonly<{
+  feedId: string;
   root: string;
   docHash: string;
   leafCount: number;
   proofsOk: number;
   proofsFail: number;
   durationMs: number;
+}>;
+
+export type MultiPipelineResult = Readonly<{
+  feeds: ReadonlyArray<PipelineResult>;
+  totalProofsOk: number;
+  totalProofsFail: number;
+  totalDurationMs: number;
 }>;
 
 // ── helpers ───────────────────────────────────────────────────────────────
@@ -53,6 +61,18 @@ const padToDepth = <T>(arr: readonly T[], depth: number, pad: T): T[] => {
 
 const sha256hex = (s: string): string =>
   "0x" + createHash("sha256").update(s).digest("hex");
+
+/**
+ * Normalise a hex string to exactly 64 hex digits (32 bytes).
+ * Poseidon hashes are 32 bytes but BigInt conversion strips leading
+ * zero nibbles (e.g. `0x01abcd...` → `0x1abcd...`), producing a
+ * different field element.  This pads to the canonical 64-hex form
+ * so the circuit sees the correct value.
+ */
+const toHex64 = (hex: string): string => {
+  const stripped = hex.startsWith("0x") ? hex.slice(2) : hex;
+  return "0x" + stripped.padStart(64, "0");
+};
 
 // ── pipeline ──────────────────────────────────────────────────────────────
 
@@ -116,11 +136,11 @@ export const runProofPipeline = async (
     const t0 = Date.now();
     try {
       const witness = {
-        root: BigInt(c.root),
-        randomness: BigInt(c.randomness),
-        pathHash: BigInt(pre.nameHash),
-        valueHash: BigInt(pre.valueHash),
-        siblings: padToDepth(inc.siblings, config.maxDepth, "0x0").map((s) => BigInt(s)),
+        root: BigInt(toHex64(c.root)),
+        randomness: BigInt(toHex64(c.randomness)),
+        pathHash: BigInt(toHex64(pre.nameHash)),
+        valueHash: BigInt(toHex64(pre.valueHash)),
+        siblings: padToDepth(inc.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
         indices: padToDepth(inc.indices, config.maxDepth, 0),
       };
 
@@ -154,5 +174,58 @@ export const runProofPipeline = async (
   console.log(`  Root: ${c.root}`);
   console.log(`  Doc:  ${docHash}`);
 
-  return { root: c.root, docHash, leafCount, proofsOk: ok, proofsFail: fail, durationMs };
+  return { feedId: feed.id, root: c.root, docHash, leafCount, proofsOk: ok, proofsFail: fail, durationMs };
+};
+
+// ── multi-pipeline ────────────────────────────────────────────────────────
+
+/**
+ * Run the proof pipeline against multiple feed sources sequentially.
+ *
+ * Each feed gets its own document registration and proof set,
+ * producing independent verification counters on the dashboard.
+ * Source feeds are processed first (so their proofs exist before
+ * the composite feed references them).
+ */
+export const runMultiPipeline = async (
+  feeds: ReadonlyArray<FeedSource>,
+  config: PipelineConfig,
+): Promise<MultiPipelineResult> => {
+  const feedResults: PipelineResult[] = [];
+  let totalOk = 0;
+  let totalFail = 0;
+  const totalStart = Date.now();
+
+  console.log(
+    `=== Multi-Pipeline: ${feeds.length} feed(s) ===\n`,
+  );
+
+  for (const feed of feeds) {
+    console.log(`\n── Feed: ${feed.id} ──`);
+    try {
+      const result = await runProofPipeline(feed, config);
+      feedResults.push(result);
+      totalOk += result.proofsOk;
+      totalFail += result.proofsFail;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`  ❌ Feed ${feed.id} FAILED: ${msg}`);
+      totalFail++;
+    }
+  }
+
+  const totalDurationMs = Date.now() - totalStart;
+  console.log(
+    `\n=== Multi-Pipeline Done ===\n` +
+      `  Feeds: ${feedResults.length}/${feeds.length} ok\n` +
+      `  Proofs: ✅ ${totalOk}  ❌ ${totalFail}\n` +
+      `  Total: ${(totalDurationMs / 1000).toFixed(1)}s`,
+  );
+
+  return {
+    feeds: feedResults,
+    totalProofsOk: totalOk,
+    totalProofsFail: totalFail,
+    totalDurationMs,
+  };
 };

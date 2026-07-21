@@ -8,6 +8,8 @@
 
 import type { FeedSource, FeedRunResult } from "./types.js";
 import { frankfurterForex } from "./feeds/forex.js";
+import { erApiForex } from "./feeds/forex-er-api.js";
+import { forexComposite } from "./feeds/forex-composite.js";
 
 // ── registry ──────────────────────────────────────────────────────────────
 
@@ -18,7 +20,11 @@ import { frankfurterForex } from "./feeds/forex.js";
  * index.ts.  Third-party feeds will register via a separate mechanism
  * (e.g. `registerFeed(source)`).
  */
-const feedMap = new Map<string, FeedSource>([[frankfurterForex.id, frankfurterForex]]);
+const feedMap = new Map<string, FeedSource>([
+  [frankfurterForex.id, frankfurterForex],
+  [erApiForex.id, erApiForex],
+  [forexComposite.id, forexComposite],
+]);
 
 // ── public API ────────────────────────────────────────────────────────────
 
