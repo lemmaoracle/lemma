@@ -1,0 +1,127 @@
+---
+brief_no: 105
+title: "芸能人・声優の肖像と声の無断利用が主要 SNS で 4 万件超、削除率 100% を達成したモデルも同じ人物で再投稿された（JAPRO 2025年度調査）"
+title_en: "Over 40,000 unauthorized likeness and voice posts across major platforms — and a 100% takedown rate did not stop the same person's models from reappearing (JAPRO FY2025 survey)"
+pillar: "01-verifiable-origin"
+primary_category: "data-provenance"
+secondary_categories: ["training-data-provenance", "attribute-proof-bypass"]
+incident_date: 2026-06-25
+published: 2026-07-21
+authors: ["Lemma Critical Team"]
+related_pack: ["A-incident-response"]
+related_briefs: ["053-youtube-deepfake-likeness-provenance", "054-sora2-ip-provenance-consent", "050-grok-deepfake-consent-provenance", "011-synthid-watermark-reverse-engineering", "036-commonpool-training-data-pii"]
+status: published
+version: "1.0"
+og_lead_ja: "JAPRO 2025年度調査 — 肖像・声の無断利用が4万件超、削除率100%でも同一人物のモデルが再投稿"
+og_lead_en: "JAPRO FY2025 — 40,000+ unauthorized likeness/voice posts, and a 100% takedown rate did not stop reappearance"
+gap_detected: "The detection chain worked — JAPRO's continuous field surveys, cross-cutting monitoring of major platforms and image-generation AI platforms, empirical takedown testing (a 100% takedown rate against 20 models), and a survey of 174 companies — making the harm visible; the takedown-request process is also an effective remedy for individual rights holders."
+gap_missing: "There is no layer that binds the question of permission — may this person's likeness and voice be used? — to a generated work at the moment it is created, so that a recipient can verify it independently; takedown is an after-the-fact per-item operation and does not keep the next generation from succeeding (models of the same person reappeared even after a 100% takedown rate)."
+gap_fix: "Before generation that uses a likeness or voice as source material, verify — decoupled from the default permission state, and independently through Lemma — that the use is within the range authorized by the rights holder and that the generated work carries a tamper-resistant proof of permission, and prevent it up front."
+---
+
+## TL;DR
+
+On 2026-06-25 the Japan Publicity Right Protection Organization (JAPRO; 特定非営利活動法人 肖像パブリシティ権擁護監視機構) published its FY2025 field survey. Between April 2025 and March 2026, posts suspected of infringing likeness and publicity rights across major platforms (TikTok, X, YouTube) exceeded 40,000 in total, reaching roughly 335 million views. For the unauthorized use of voices, numerous impersonation cases in multiple languages by overseas local accounts were also confirmed. On image-generation AI platforms (sea art AI, PixAI), the unauthorized creation and publication of models (such as LoRA) trained on the likenesses of entertainers and others continued to be observed. The heaviest finding of the survey is the empirical result on takedowns. With the cooperation of a talent agency, JAPRO filed takedown requests from January to February 2026 against 20 models using a certain actor's likeness and **achieved a 100% takedown rate (all 20 models). Even so, after the takedowns were completed, a new case was confirmed in which models of the same person were posted anew**. Detection and takedown both worked completely, yet the structure did not change. In a parallel industry survey, of 174 valid responses only about 28% of agencies said they "fully grasp" or "roughly grasp" suspected infringement cases; only 1.1% had drawn up response guidelines, while about 52% were "considering" them. On the other hand, about 51% of agencies answered that they "would allow use with prior review and consent," meaning that a majority of the industry is open to leveraging these assets under appropriate management. In short, the willingness to grant permission exists in the market, yet there is no means to show at the moment of generation that permission was granted. What was missing is a layer that binds the consent status of an attribute — a likeness or a voice — to a generated work at the moment it is created, so that a recipient can verify it independently. Detection and pre-action proof are complementary, not substitutes.
+
+---
+
+## 1. Incident Summary
+
+- **Subject**: the likenesses and voices of Japanese entertainers, voice actors, and others. The venues where suspected infringement was confirmed were major platforms (TikTok, X, YouTube) and image-generation AI platforms (sea art AI, PixAI).
+- **Reporter**: the Japan Publicity Right Protection Organization (JAPRO; 特定非営利活動法人 肖像パブリシティ権擁護監視機構). Its "FY2025 survey of the actual state of cases suspected of infringing likeness and publicity rights in the age of generative AI," published 2026-06-25. The survey was commissioned to and carried out by IPconnect, Inc. of the IPFORWARD group.
+- **Survey period**: April 2025 to March 2026.
+- **Survey methods**: internet survey, questionnaire and interview survey, and empirical testing of takedown responses.
+- **Scale of posts**: suspected infringing posts on major platforms exceeded 40,000 in total, reaching roughly 335 million views.
+- **Unauthorized use of voices**: numerous impersonation cases in multiple languages by overseas local accounts were confirmed.
+- **Unauthorized creation of trained models**: on image-generation AI platforms, the unauthorized creation and publication of models (such as LoRA) trained on the likenesses of entertainers and others continued to be observed.
+- **Takedown testing and reposting**: against 20 models (such as LoRA) using a certain actor's likeness, with the cooperation of a talent agency, takedown requests were filed from January to February 2026, achieving a 100% takedown rate (all 20 models taken down). **However, even after the takedowns were completed, a case was confirmed in which models of the same person were posted anew.** JAPRO concludes that a single round of takedowns is not the end, and that building a regular monitoring regime — including rapid response to reposting — is essential.
+- **State of industry response (174 valid responses)**: agencies that "fully grasp" or "roughly grasp" suspected infringement cases = about 28%. Response guidelines: 1.1% already drawn up, about 52% considering, 46.6% none planned. On the other hand, regarding policy on the use of likeness and publicity rights, about 51% answered that they "would allow use with prior review and consent." The challenges to leveraging these assets were the development of contractual rules and ethical guidelines (over 90%), the difficulty of setting compensation (about 76%), and the risk of alteration (about 74%).
+- **Root cause**: the consent status of an attribute — a likeness or a voice — is not bound to a generated work at the moment it is created. Whether permission exists can only be checked by hand after generation, and even when that checking and takedown succeed, they do not form a structure that prevents the next generation.
+
+---
+
+## 2. Timeline
+
+- 2025-06-24: JAPRO publishes the industry's first large-scale field survey (the prior-year survey).
+- 2025-04 to 2026-03: the FY2025 survey period. Suspected infringement cases on major platforms and image-generation AI platforms are continuously surveyed.
+- 2026-01 to 2026-02: empirical testing of takedown responses. Takedown requests are filed against 20 models (such as LoRA) using a certain actor's likeness, achieving a 100% takedown rate. Afterward, new postings of models of the same person are confirmed.
+- 2026-04: the Ministry of Justice establishes a "study group on the state of civil liability for the unauthorized use of likeness, voice, and the like."
+- 2026-06-25: JAPRO publishes the FY2025 survey results. It also signals a policy of working in earnest on the protection of voice actors' rights through a newly established voice-actor division for this fiscal year.
+
+> Note: the facts are based on JAPRO's publication (primary). JAPRO is an organization on the rights-holder side and is a survey body with a stake in the matter. As for the estimate of economic loss, JAPRO itself makes clear that it is a "conservative reference estimate" and "does not indicate the overall scale of likeness and publicity right infringement, nor the amount of damages in litigation," and lists what the calculation does not include: unconfirmed posts, already-deleted posts, reposts, services outside the survey's scope, unauthorized goods in physical space or on e-commerce, the whole of voice-actor and audio-AI-related harm, brand damage, survey-response costs, and so on. This Brief follows the same limitation. Some outlets have reported the survey period as "about two months from June," but the primary publication states April 2025 to March 2026. Consult the latest primary sources.
+
+---
+
+## 3. Chain of Events
+
+1. **Collection of likenesses and voices**: publicly available images, video, and audio of entertainers and voice actors are collected without any check on permission.
+2. **Creation and publication of trained models**: on image-generation AI platforms, models (such as LoRA) trained on a specific person's likeness are created and published without authorization. The model itself becomes an asset that can repeat generation without limit thereafter.
+3. **Generation and posting**: images and video generated from the model are posted to platforms. As for voices, they spread in forms that include multilingual impersonation by overseas local accounts.
+4. **Diffusion**: on major platforms, suspected infringing posts exceed 40,000 in total, reaching roughly 335 million views.
+5. **Detection and takedown**: the rights-holder side detects the posts and models and files takedown requests. In JAPRO's testing, all 20 target models were successfully taken down (100% takedown rate).
+6. **Reposting**: after the takedowns are completed, models of the same person are posted anew. The cycle returns to step 1 and continues.
+
+---
+
+## 4. Structural Analysis
+
+This incident belongs to the `data-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that **the consent status of an attribute — a likeness or a voice — is not bound to a generated work at the moment it is created, and whether permission exists can only be checked by hand after generation**. Even when that checking and takedown succeed, they merely remove individual posts and models; they do not form a structure that keeps the next generation from succeeding. As secondary categories we add `training-data-provenance`, for the unauthorized creation and publication of models (such as LoRA) trained on a specific person's likeness, and `attribute-proof-bypass`, for the rights attribute of consent going unverified before generation.
+
+This incident is a repetition — on the Japanese, TikTok side — of Brief No.053 ([YouTube deepfake likeness provenance](/critical/briefs/053-youtube-deepfake-likeness-provenance/), where a fake celebrity was viewed 200 million times yet no one had verified the provenance of the likeness). In both, the provenance of the likeness is not fixed at the moment of generation, so detection succeeds but proof does not. With Brief No.054 ([Sora 2 × Japanese IP](/critical/briefs/054-sora2-ip-provenance-consent/), which flipped from opt-out to opt-in about three days after launch), it shows the same direction — placing the verification layer before generation rather than after — from a different angle: one through a provider's design change, the other through a rights-holder-side field survey. With Brief No.050 ([Grok deepfake consent and age attributes](/critical/briefs/050-grok-deepfake-consent-provenance/)), it is linked by the structure in which consent and rights attributes are not proven in advance at generation time. With Brief No.011 ([reverse-engineering the SynthID watermark](/critical/briefs/011-synthid-watermark-reverse-engineering/)) and Brief No.036 ([CommonPool training-data PII](/critical/briefs/036-commonpool-training-data-pii/)), it shares the point that the provenance of generated works and training data cannot be fully guaranteed by after-the-fact detection.
+
+What is specific to this incident is that **the fact that detection and takedown succeeded 100% is on record**. In many cases, "detection could not keep up" is spoken of as the problem. Here it did keep up. All 20 targets were taken down. And still new models of the same person appeared. This is because takedown is an after-the-fact operation acting on individual generated works and models; it is not a mechanism that resolves, before the next generation, the question of permission — "may this person's likeness and voice be used?" Another point that is specific here is that the market's intent is made visible by the survey. About 51% of agencies answered that they "would allow use with prior review and consent." They do not want to prohibit; they want to grant permission. And yet guidelines already drawn up stood at just 1.1%, and the leading challenges were the development of contractual rules and ethical guidelines (over 90%) and the difficulty of setting compensation (about 76%). The shared primitive is the same: **the creation of a generated work is decoupled from the layer that verifies the consent status of its source material.**
+
+---
+
+## 5. The Detection–Proof Gap
+
+JAPRO's continuous field surveys, its cross-cutting monitoring of major platforms and image-generation AI platforms, its empirical testing of takedown responses, its estimate of economic loss, and its questionnaire and interview survey of 174 companies form a detection sequence that is indispensable as foundational data for making the harm visible and for designing policy, and this Brief does not deny that role. The operation of filing takedown requests is also a realistic and effective remedy for individual rights holders. Detection does play its part. In this case, within the scope covered, it worked completely.
+
+At the same time, the survey itself makes the limits of the detection layer explicit. After a 100% takedown rate was achieved, new models of the same person were posted. Detection works on "generated works and models that already exist." Even when those are removed, the question of permission — "may this person's likeness and voice be used?" — is not resolved before the next generation. That JAPRO itself concludes a single round of takedowns is not the end and building a regular monitoring regime is essential is the operational-side expression of this asymmetry. Monitoring keeps imposing costs on the rights-holder side and imposes none on the generation side. As material for an audit to establish "was this generated work made from permitted source material?", the facts "the takedown request did not go through" and "it has not yet been detected" are not an independent trail of permission. This is a gap in a structurally independent layer, outside the reach of the detection layer.
+
+Pre-action attestation fills this gap by inserting a proof of the consent attribute one step into the path by which a generated work is created. At the moment of generation, it verifies whether "the use of this likeness, this voice belongs to the range authorized by the rights holder," and blocks generation up front when no proof accompanies it. Alternatively, it binds the proof of permission to the generated work in a tamper-resistant form, so that recipients (platforms, advertisers, viewers) can verify it independently. The former acts on the generation side, the latter on the distribution side. Given that about 51% of agencies answered they "would allow use with prior review and consent," what is needed is not a prohibition of use but a form that can mechanically show that permission was granted. Pre-action attestation is a **complement** to detection, not a substitute, and the combination of the two layers establishes the trust boundary of likeness and voice use.
+
+---
+
+## 6. Response and Industry Context
+
+- **JAPRO's response**: it conducted the industry's first large-scale field survey in FY2024 and continued it in FY2025. This fiscal year it newly conducted empirical testing that makes the models at the root of infringement themselves the target of takedown. The survey is planned to continue annually. Through a newly established voice-actor division this fiscal year, it says it will work in earnest on the protection of voice actors' rights and, in cooperation with other related organizations, advance the shaping of the environment across the industry.
+- **Positioning of the takedown testing**: the 100% takedown rate against 20 targets showed that the operation of takedowns itself works. At the same time, the confirmation of reposting after takedown showed that takedown is not a mechanism that stops generation. JAPRO points to the necessity of a regular monitoring regime that includes rapid response to reposting.
+- **Industry response challenges**: in the responses of 174 companies, grasp of suspected infringement cases stood at about 28%, with many voices saying that full grasp is difficult in terms of resources. Response guidelines were 1.1% already drawn up, about 52% considering, 46.6% none planned, and, finding it hard to draw them up company by company, calls for an industry-wide set of guidelines are rising.
+- **A positive stance toward leveraging these assets**: about 51% of agencies answered that they "would allow use with prior review and consent." The challenges are the development of contractual rules and ethical guidelines (over 90%), the difficulty of setting compensation (about 76%), and the risk of alteration (about 74%). There is demand not for prohibition but for managed use.
+- **Institutional side**: in April 2026, the Ministry of Justice established a "study group on the state of civil liability for the unauthorized use of likeness, voice, and the like." On the voice-actor side there are also grassroots movements such as "NOMORE Unauthorized Generative AI," and the shape of voice rights is emerging as a point of contention.
+
+The absence of a layer that fixes the consent status of a likeness or voice, at the moment of generation, in an independently verifiable form is not an operational problem of a specific platform, but remains a challenge that spans the businesses, rights holders, and distributors that use generative AI.
+
+---
+
+## 7. Lemma's Analysis
+
+Against the detection–proof gap this event exposed (takedown succeeded 100%, yet the next generation is not prevented), Lemma proposes a design that requires, at the moment a generated work is created, the consent attribute of the source material as an independently verifiable cryptographic proof, and binds that proof to the generated work.
+
+- **Pre-generation consent-attribute proof**: before generation that uses a likeness or voice as source material, verify that "the use of this person's likeness and voice belongs to the range authorized by the rights holder." Do not make "it has not yet been taken down" or "it has not yet been detected" the condition for permitting generation.
+- **Binding provenance to the generated work**: bind the provenance and consent proof of the source material to the generated work in a tamper-resistant form, so that each stage of distribution (platforms, advertisers, viewers) can verify it independently. Judge by the presence of a consent proof, not by whether a watermark can be detected.
+- **Provenance of trained models**: for models (such as LoRA) trained on a specific person's likeness as well, verify the consent status of the training material at the moment of creation, so that an unauthorized model does not become an asset that can repeat generation without limit thereafter.
+- **Selective disclosure**: disclose at minimum only that "this use satisfies the range of permission," without disclosing contract terms, compensation, or the rights holder's internal information. This reconciles the non-disclosure of compensation setting — which about 76% of agencies raised as a challenge — with the provability of permission.
+
+With this, a proof fixed at the moment of generation makes "was this generated work made from permitted source material?" function as a trail that is independently verifiable at each stage of distribution. It also shifts the locus of the burden from a structure in which the rights-holder side keeps bearing monitoring costs to one in which the generation side and distribution side present proof. Detection (after-the-fact monitoring, takedown requests, field surveys) works on remediation after the fact, while pre-action proof (pre-generation consent verification and binding provenance to the generated work) works on the independent verification of use — the two work complementarily.
+
+---
+
+## 8. Sources
+
+- **JAPRO (primary)**: Japan Publicity Right Protection Organization (特定非営利活動法人 肖像パブリシティ権擁護監視機構), "FY2025 survey of the actual state of cases suspected of infringing likeness and publicity rights in the age of generative AI" (2026-06-25) — <https://prtimes.jp/main/html/rd/p/000000024.000164682.html>
+- **JAPRO (organization, primary)**: Japan Publicity Right Protection Organization (特定非営利活動法人 肖像パブリシティ権擁護監視機構) — <https://www.japrpo.or.jp/>
+- **JAPRO (prior-year survey, primary)**: "First survey of the actual state of cases suspected of infringing likeness and publicity rights in the age of generative AI" (2025-06-24, PDF) — <https://www.japrpo.or.jp/img/pressrelease20250624.pdf>
+- **IPconnect (survey contractor)**: IPconnect, Inc. — <https://ipconnect.co.jp/>
+- **Siliconera (developments over voice rights)**: "Japan May Introduce 'Voice Rights' to Protect Against Unauthorized AI Usage" — <https://www.siliconera.com/japan-may-introduce-voice-rights-to-protect-against-unauthorized-ai-usage/>
+
+---
+
+## 9. About this Brief's distribution
+
+This material is a structured analysis of public information and is not an audit, diagnosis, or recommendation for any specific organization.
+
+---
+
+(c) 2026 FRAME00, INC. — Built for decisions that matter.
