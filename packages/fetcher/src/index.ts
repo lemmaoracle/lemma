@@ -4,17 +4,15 @@
  * Fetches external data sources, canonicalises the response with
  * canonical-sort-v1, and commits to it with data-commitment-v1.
  *
- * The canonicaliser and commitment scheme live in separate packages:
- *  - @lemmaoracle/canonical-sort  — canonical-sort-v1 (deterministic JSON)
- *  - @lemmaoracle/data-commitment — data-commitment-v1 (Poseidon Merkle)
- *
- * This package is the fetcher worker that ties them together.
+ * canonical-sort-v1 is resolved via the Lemma SDK schema registry.
+ * data-commitment-v1.1 is resolved via the Lemma SDK circuit registry.
+ * This package depends only on @lemmaoracle/sdk — no separate
+ * canonical-sort or data-commitment packages are required.
  */
 export { fetchAndCommit, fetchBatch } from "./fetch.js";
-export type { FetchResult, FetcherConfig } from "./fetch.js";
+export type { FetchResult, FetcherConfig, FetchBatchResult } from "./fetch.js";
 
 // Re-export the underlying primitives for convenience
-export { canonicalSort, canonicalize } from "@lemmaoracle/canonical-sort";
-export { commitToData, verifyInclusion, extractPaths } from "@lemmaoracle/data-commitment";
-export type { CanonicalOutput, Json } from "@lemmaoracle/canonical-sort";
-export type { DataCommitment, DataLeafPreimage, PathValue } from "@lemmaoracle/data-commitment";
+export { commitToData, canonicalSort, canonicalize, toScalar } from "@lemmaoracle/sdk";
+export type { Json } from "@lemmaoracle/sdk";
+export type { CommitResult, CommitToDataOptions } from "@lemmaoracle/sdk";

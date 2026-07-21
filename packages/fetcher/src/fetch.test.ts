@@ -59,7 +59,7 @@ describe("fetchAndCommit", () => {
     expect(result.canonical).toBe(
       '{"data":{"items":[{"id":"x","value":42}],"timestamp":1234567890}}',
     );
-    expect(result.commitment.pathValues).toHaveLength(3);
+    expect(result.commitment.leaves).toHaveLength(3);
   });
 
   it("rejects on HTTP error", async () => {

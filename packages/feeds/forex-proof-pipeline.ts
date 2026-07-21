@@ -28,7 +28,7 @@ const API_BASE = process.env["LEMMA_API_BASE"] ?? "https://workers.lemma.workers
 const API_KEY = process.env["LEMMA_API_KEY"];
 const DRY_RUN = process.env["DRY_RUN"] === "1";
 const FOREX_BASE = process.env["FOREX_BASE"] ?? "USD";
-const CIRCUIT_ID = "data-commitment-v1";
+const CIRCUIT_ID = "data-commitment-v1.1";
 const MAX_DEPTH = 16;
 const SCHEMA = "clubs.nippo.v1";
 

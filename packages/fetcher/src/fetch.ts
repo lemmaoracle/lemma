@@ -10,14 +10,15 @@
  * The trust model is "Lemma fetched this data" — not self-attestation by
  * the data provider.
  *
- * canonical-sort-v1 and data-commitment-v1 live in separate packages
- * (@lemmaoracle/canonical-sort and @lemmaoracle/data-commitment) so they
- * can be reused independently of the fetcher.
+ * canonical-sort-v1 is registered as a schema with the Lemma API.
+ * data-commitment-v1.1 is registered as a circuit with the Lemma API.
+ * Both are resolved at runtime via the SDK, so this package has no
+ * dependency on @lemmaoracle/canonical-sort or @lemmaoracle/data-commitment.
  */
-import { canonicalSort } from "@lemmaoracle/canonical-sort";
-import { commitToData } from "@lemmaoracle/data-commitment";
-import type { Json } from "@lemmaoracle/canonical-sort";
-import type { DataCommitment } from "@lemmaoracle/data-commitment";
+import { canonicalSort } from "@lemmaoracle/sdk";
+import { commitToData } from "@lemmaoracle/sdk";
+import type { Json } from "@lemmaoracle/sdk";
+import type { CommitResult } from "@lemmaoracle/sdk";
 
 // ── types ────────────────────────────────────────────────────────────────
 
@@ -34,7 +35,7 @@ export type FetchResult = Readonly<{
   /** Canonical JSON string (canonical-sort-v1). */
   canonical: string;
   /** data-commitment-v1 output. */
-  commitment: DataCommitment;
+  commitment: CommitResult;
 }>;
 
 /**
@@ -45,6 +46,8 @@ export type FetcherConfig = Readonly<{
   fetch?: typeof fetch;
   /** Optional headers to include in the request. */
   headers?: Readonly<Record<string, string>>;
+  /** Optional maxDepth for the Merkle tree (e.g. 16 for data-commitment-v1.1 circuit). */
+  maxDepth?: number;
 }>;
 
 // ── implementation ──────────────────────────────────────────────────────
@@ -68,7 +71,7 @@ const parseResponse = async (response: Response): Promise<Json> => {
  * Fetch a single source, canonicalise, and commit.
  *
  * @param source  URL to fetch.
- * @param config  Optional configuration (custom fetch, headers).
+ * @param config  Optional configuration (custom fetch, headers, maxDepth).
  * @returns       FetchResult containing the raw data, canonical string,
  *                and data-commitment-v1 output.
  */
@@ -90,7 +93,7 @@ export const fetchAndCommit = async (
 
   const data = await parseResponse(response);
   const { canonical } = canonicalSort(data);
-  const commitment = commitToData(data);
+  const commitment = commitToData(data, { maxDepth: config?.maxDepth });
 
   return {
     source,

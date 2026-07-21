@@ -6,9 +6,5 @@
     "rootDir": "src",
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["src/**/*.ts"],
-  "references": [
-    { "path": "../canonical-sort" },
-    { "path": "../data-commitment" }
-  ]
+  "include": ["src/**/*.ts"]
 }

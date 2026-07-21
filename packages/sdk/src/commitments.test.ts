@@ -71,8 +71,16 @@ describe("commitments", () => {
       expect(toScalar(0)).toBe(0n);
     });
 
-    it("converts a numeric string directly to BigInt mod prime", () => {
-      expect(toScalar("123")).toBe(123n);
+    it("hashes a numeric string via SHA-256 (not BigInt) to prevent type collision", () => {
+      // After the fix: toScalar("123") ≠ toScalar(123)
+      // "123" is a string → SHA-256 path → large field element
+      // 123 is a number → BigInt path → 123n
+      const result = toScalar("123");
+      expect(result).not.toBe(123n);
+      expect(result).toBeGreaterThan(0n);
+      expect(result).toBeLessThan(BN254_PRIME);
+      // Deterministic
+      expect(toScalar("123")).toBe(result);
     });
 
     it("hashes a non-numeric string via SHA-256 mod prime", () => {

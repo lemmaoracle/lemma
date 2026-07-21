@@ -28,8 +28,12 @@ export type PrepareOutput<Norm> = Readonly<{
  * Convert an arbitrary value to a finite-field scalar.
  *
  * - `number` → `BigInt(value) % PRIME`
- * - numeric `string` (e.g. `"42"`) → `BigInt(value) % PRIME`
- * - other `string` → `SHA-256(value) mod PRIME`
+ * - `string` → `SHA-256(value) mod PRIME` (always — never BigInt)
+ *
+ * Strings are **always** hashed via SHA-256, even numeric strings like `"42"`.
+ * This prevents `toScalar(42)` and `toScalar("42")` from mapping to the same
+ * field element, which would break the binding property of commitments
+ * (e.g. `{"price": 42}` and `{"price": "42"}` would produce the same leaf).
  *
  * Circuits that expect the raw numeric value (e.g. `task_bucket == 1`) should
  * pass the original number to the witness, **not** the output of this function.
@@ -39,9 +43,7 @@ export type PrepareOutput<Norm> = Readonly<{
 export const toScalar = (value: string | number): bigint =>
   typeof value === "number"
     ? BigInt(value) % BN254_PRIME
-    : /^\d+$/.test(value)
-      ? BigInt(value) % BN254_PRIME
-      : BigInt(`0x${sha256Hex(utf8ToBytes(value))}`) % BN254_PRIME;
+    : BigInt(`0x${sha256Hex(utf8ToBytes(value))}`) % BN254_PRIME;
 
 const toHex = (n: bigint): string => `0x${n.toString(16)}`;
 
@@ -53,6 +55,34 @@ type LeafResult = Readonly<{
   leaves: ReadonlyArray<bigint>;
   preimages: ReadonlyArray<LeafPreimage>;
 }>;
+
+/**
+ * Convert a value to a hashable representation for `toScalar`.
+ *
+ * - `number` (integer) → the number itself (passes through `toScalar`'s BigInt path)
+ * - `number` (float)   → `f:${String(n)}` (goes through SHA-256 path, since `BigInt(3.14)` throws)
+ * - `string`           → `s:${value}` (forces SHA-256 even for numeric strings)
+ * - `null`             → `z:null`
+ * - `boolean`          → `b:true` / `b:false`
+ *
+ * Type tags prevent `toScalar(42)` and `toScalar("42")` from colliding —
+ * even after the `toScalar` fix, this keeps the preimage human-readable
+ * and the scheme self-documenting.
+ */
+const valueForHash = (value: Json): string | number =>
+  typeof value === "number"
+    ? Number.isInteger(value)
+      ? value
+      : `f:${String(value)}`
+    : typeof value === "string"
+      ? `s:${value}`
+      : value === null
+        ? "z:null"
+        : typeof value === "boolean"
+          ? `b:${String(value)}`
+          : JSON.stringify(value);
+
+// ── flat key-value extraction (existing behaviour) ─────────────────────
 
 const computeLeaves = (
   normalized: Readonly<Record<string, Json>>,
@@ -91,6 +121,92 @@ const computeLeaves = (
   };
 };
 
+// ── recursive path-value extraction (data-commitment-v1 compatible) ─────
+
+/**
+ * A single path-value pair extracted from nested JSON.
+ *
+ * Paths use bracket notation with JSON-escaped keys:
+ *   - Root:        `$`
+ *   - Property:    `$["foo"]["bar"]`
+ *   - Array index: `$["foo"][0]["bar"]`
+ */
+type PathValue = Readonly<{
+  path: string;
+  value: Json;
+}>;
+
+/** Append an object-key segment to a path prefix. */
+const appendKey = (prefix: string, key: string): string =>
+  `${prefix}[${JSON.stringify(key)}]`;
+
+/** Append an array-index segment to a path prefix. */
+const appendIndex = (prefix: string, index: number): string =>
+  `${prefix}[${String(index)}]`;
+
+/**
+ * Recursively extract path-value pairs from a JSON value.
+ *
+ * - Primitives (null, boolean, number, string): single pair at `prefix`.
+ * - Arrays: one pair per element with index appended; order preserved.
+ * - Objects: one pair per key (sorted) with key appended.
+ */
+const extractPathValues = (
+  value: Json,
+  prefix: string,
+): ReadonlyArray<PathValue> =>
+  value === null
+    ? [{ path: prefix, value }]
+    : typeof value === "boolean"
+      ? [{ path: prefix, value }]
+      : typeof value === "number"
+        ? [{ path: prefix, value }]
+        : typeof value === "string"
+          ? [{ path: prefix, value }]
+          : Array.isArray(value)
+            ? value.flatMap((item, i) => extractPathValues(item, appendIndex(prefix, i)))
+            : Object.keys(value as Readonly<Record<string, Json>>)
+                .sort()
+                .flatMap((k) => extractPathValues((value as Readonly<Record<string, Json>>)[k] as Json, appendKey(prefix, k)));
+
+/** Extract path-value pairs from the root JSON value. Paths start with `$`. */
+const extractPaths = (value: Json): ReadonlyArray<PathValue> =>
+  extractPathValues(value, "$");
+
+/**
+ * Build leaves from path-value pairs using data-commitment-v1 scheme:
+ * `leaf = Poseidon3([toScalar(path), toScalar(valueForHash(value)), randomness])`
+ */
+const computeDataLeaves = (
+  pathValues: ReadonlyArray<PathValue>,
+  randomness: string,
+): LeafResult => {
+  const blindingField = BigInt(`0x${randomness}`);
+
+  const computeLeaf = (pv: PathValue): Readonly<{ preimage: LeafPreimage; leaf: bigint }> => {
+    const vfHash = valueForHash(pv.value);
+    const pathField = toScalar(pv.path);
+    const valueField = toScalar(vfHash);
+
+    const preimage: LeafPreimage = {
+      name: pv.path,
+      value: vfHash,
+      nameHash: toHex(pathField),
+      valueHash: toHex(valueField),
+      blindingHash: toHex(blindingField),
+    };
+
+    const leaf = poseidon3([pathField, valueField, blindingField]);
+    return { preimage, leaf };
+  };
+
+  const results = R.map(computeLeaf, pathValues);
+  return {
+    leaves: R.map((r) => r.leaf, results),
+    preimages: R.map((r) => r.preimage, results),
+  };
+};
+
 // ---------------------------------------------------------------------------
 // Merkle tree — build tree and extract inclusion proofs
 // ---------------------------------------------------------------------------
@@ -104,25 +220,34 @@ type TreeResult = Readonly<{
 const buildMerkleTree = (
   leaves: ReadonlyArray<bigint>,
   _poseidon: unknown,
+  maxDepth?: number,
 ): TreeResult => {
   const leafCount = leaves.length;
 
-  // Single leaf — root equals the leaf, proof is empty
-  // Otherwise pad to next power of 2 and build tree
-  return leafCount === 1
-    ? {
-        root: leaves[0] ?? 0n,
-        depth: 0,
-        inclusionProofs: [{ siblings: [], indices: [] }],
-      }
-    : (() => {
-        const depth = Math.ceil(Math.log2(leafCount));
-        const size = Math.pow(2, depth);
-        const zero = 0n;
-        const padded: bigint[] = [...leaves, ...R.repeat(zero, size - leafCount)];
+  // Empty
+  if (leafCount === 0) {
+    return { root: 0n, depth: 0, inclusionProofs: [] };
+  }
 
-        // Build layers bottom-up, storing each level for proof extraction
-        const layers: bigint[][] = [padded];
+  // Single leaf — root equals the leaf, proof is empty
+  if (leafCount === 1 && (maxDepth === undefined || maxDepth === 0)) {
+    return {
+      root: leaves[0] ?? 0n,
+      depth: 0,
+      inclusionProofs: [{ siblings: [], indices: [] }],
+    };
+  }
+
+  // Otherwise pad to next power of 2 (or 2^maxDepth if specified) and build tree
+  return (() => {
+    const minDepth = Math.ceil(Math.log2(leafCount));
+    const depth = maxDepth !== undefined ? Math.max(minDepth, maxDepth) : minDepth;
+    const size = Math.pow(2, depth);
+    const zero = 0n;
+    const padded: bigint[] = [...leaves, ...R.repeat(zero, size - leafCount)];
+
+    // Build layers bottom-up, storing each level for proof extraction
+    const layers: bigint[][] = [padded];
 
         /* eslint-disable functional/immutable-data, functional/no-expression-statements, functional/no-let, functional/no-loop-statements --
          * Tree construction requires imperative mutation for perf-critical Merkle computation */
@@ -236,3 +361,59 @@ export const commit = (
       },
     ],
   ])(undefined);
+
+/**
+ * Options for {@link commitToData}.
+ */
+export type CommitToDataOptions = Readonly<{
+  /** 32-byte hex string (no `0x` prefix). If omitted, a new one is generated. */
+  randomness?: string;
+  /** Fixed tree depth. Pads the tree to `2^maxDepth` leaves with zero leaves. */
+  maxDepth?: number;
+}>;
+
+/**
+ * Compute a data-commitment-v1 commitment over arbitrary (possibly nested) JSON.
+ *
+ * Extracts path-value pairs recursively (e.g. `$["rates"]["JPY"] = 162.38`),
+ * builds a Poseidon Merkle tree, and returns the root with inclusion proofs.
+ *
+ * Each leaf is `Poseidon3([toScalar(path), toScalar(valueForHash(value)), randomness])`
+ * where `valueForHash` applies type tags (`s:`, `f:`, `z:`, `b:`) to prevent
+ * number/string collisions.
+ *
+ * @param value  Arbitrary JSON value (objects, arrays, primitives).
+ * @param options  Optional randomness and maxDepth.
+ */
+export const commitToData = (
+  value: Json,
+  options?: CommitToDataOptions,
+): CommitResult => {
+  const randomness = options?.randomness ?? randomHex(32);
+  const maxDepth = options?.maxDepth;
+
+  const pathValues = extractPaths(value);
+
+  if (pathValues.length === 0) {
+    return {
+      root: toHex(0n),
+      randomness: `0x${randomness}`,
+      depth: 0,
+      leaves: [],
+      inclusionProofs: [],
+      leafPreimages: [],
+    };
+  }
+
+  const leafResult = computeDataLeaves(pathValues, randomness);
+  const { root, depth, inclusionProofs } = buildMerkleTree(leafResult.leaves, null, maxDepth);
+
+  return {
+    root: toHex(root),
+    leaves: R.map((leaf: bigint) => toHex(leaf), leafResult.leaves),
+    randomness: `0x${randomness}`,
+    depth,
+    inclusionProofs,
+    leafPreimages: leafResult.preimages,
+  };
+};
