@@ -23,11 +23,10 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "build:worker": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "type-check": "tsc -p tsconfig.json --noEmit",
-    "type-check:worker": "tsc -p tsconfig.worker.json",
+    "type-check:worker": "tsc -p tsconfig.worker.json --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run"
   },
