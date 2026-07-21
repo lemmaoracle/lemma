@@ -4,10 +4,6 @@ main = "src/worker.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Build the workspace SDK dependency before bundling
-[build]
-command = "pnpm --filter @lemmaoracle/sdk run build"
-
-# ── Build ────────────────────────────────────────────────────────────────
-# The fetcher depends on @lemmaoracle/sdk — ensure it's bundled.
-# wrangler bundles automatically; no external modules config needed.
+# Resolve workspace SDK directly from source (no dist build needed)
+[alias]
+"@lemmaoracle/sdk" = "../sdk/src/index.ts"
