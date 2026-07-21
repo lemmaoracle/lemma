@@ -4,8 +4,8 @@
  * Given a FeedSource and pipeline config, this module:
  *   1. Calls the feed's `fetch()` (which hits the fetcher Workers)
  *   2. Registers a document on the Lemma API
- *   3. Loads ZK circuit artifacts (wasm + zkey)
- *   4. Generates a Groth16 proof per leaf and submits to Lemma API
+ *   3. Generates a Groth16 proof per leaf via SDK prover.prove()
+ *   4. Submits each proof to the Lemma API
  *
  * The feed-specific parts (document ID extraction, attributes) come from
  * the FeedSource itself.  Everything else is generic.
@@ -14,9 +14,7 @@
 import type { FeedSource } from "./types.js";
 import type { FetchResult } from "@lemmaoracle/fetcher";
 import type { CommitResult, Json } from "@lemmaoracle/sdk";
-import { create, proofs, documents } from "@lemmaoracle/sdk";
-import { groth16 } from "snarkjs";
-import fs from "node:fs";
+import { create, proofs, documents, prover } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
 
 // ── types ─────────────────────────────────────────────────────────────────
@@ -32,10 +30,6 @@ export type PipelineConfig = Readonly<{
   schema: string;
   /** Max depth for the Merkle tree (must match circuit). */
   maxDepth: number;
-  /** Path to the circuit wasm file. */
-  wasmPath: string;
-  /** Path to the circuit zkey file. */
-  zkeyPath: string;
   /** If true, skip document registration and proof submission. */
   dryRun?: boolean;
 }>;
@@ -106,18 +100,14 @@ export const runProofPipeline = async (
     console.log(`[2/4] [dry] Would register doc: ${docHash.slice(0, 24)}...`);
   }
 
-  // 3. Load artifacts
-  if (!fs.existsSync(config.wasmPath)) throw new Error(`WASM not found: ${config.wasmPath}`);
-  if (!fs.existsSync(config.zkeyPath)) throw new Error(`ZKEY not found: ${config.zkeyPath}`);
-  const wasmBuf = fs.readFileSync(config.wasmPath);
-  const zkeyBuf = fs.readFileSync(config.zkeyPath);
-
-  // 4. Generate + submit proofs
+  // 3. Generate + submit proofs via SDK prover (fetches artifacts from IPFS, cached)
   const leafCount = c.leafPreimages.length;
-  console.log(`[3/4] Generating ${leafCount} proofs...`);
+  console.log(`[3/4] Proving ${leafCount} leaves...`);
   let ok = 0;
   let fail = 0;
   const totalStart = Date.now();
+
+  const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
 
   for (let i = 0; i < leafCount; i++) {
     const pre = c.leafPreimages[i]!;
@@ -134,16 +124,17 @@ export const runProofPipeline = async (
         indices: padToDepth(inc.indices, config.maxDepth, 0),
       };
 
-      const { proof, publicSignals } = await groth16.fullProve(witness, wasmBuf, zkeyBuf);
-      const proofB64 = Buffer.from(JSON.stringify(proof)).toString("base64");
+      const { proof, inputs } = await prover.prove(client, {
+        circuitId: config.circuitId,
+        witness,
+      });
 
       if (!dryRun) {
-        const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
         const sr = await proofs.submit(client, {
           docHash,
           circuitId: config.circuitId,
-          proof: proofB64,
-          inputs: publicSignals as readonly string[],
+          proof,
+          inputs: inputs as readonly string[],
         });
         const ms = Date.now() - t0;
         console.log(`  ✅ [${i + 1}/${leafCount}] ${pre.name} = ${String(pre.value)} (${ms}ms) → ${sr.verificationId}`);

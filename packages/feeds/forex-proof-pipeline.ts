@@ -29,8 +29,6 @@ const result = await runProofPipeline(frankfurterForex, {
   circuitId: "data-commitment-v1.1",
   schema: "canonical-sort-v1",
   maxDepth: 16,
-  wasmPath: "../../packages/data-commitment/circuits/build/data-commitment-v1_js/data-commitment-v1.wasm",
-  zkeyPath: "../../packages/data-commitment/circuits/build/data-commitment-v1_final.zkey",
   dryRun: DRY_RUN,
 });
 

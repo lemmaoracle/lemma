@@ -69,6 +69,20 @@ type SnarkjsModule = {
 };
 
 /* ------------------------------------------------------------------ */
+/*  Artifact cache                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Module-level cache for circuit artifacts (wasm / zkey / params).
+ *
+ * Stores the Promise rather than the resolved value so concurrent calls
+ * for the same URL share a single in-flight fetch.  The cache lives for
+ * the lifetime of the module import — typical for batch proving (e.g.
+ * feeds pipeline looping over 32 leaves).
+ */
+const artifactCache = new Map<string, Promise<Uint8Array>>();
+
+/* ------------------------------------------------------------------ */
 /*  Artifact handling                                                  */
 /* ------------------------------------------------------------------ */
 
@@ -98,26 +112,35 @@ const fetchArtifactIpfs = (
     );
 
 /**
- * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL.
+ * Fetch an artifact (wasm or zkey) from an IPFS or HTTPS URL,
+ * with module-level caching so repeated calls for the same URL
+ * reuse the resolved buffer (e.g. batch proving over many leaves).
  *
  * For IPFS URLs, tries multiple gateways in order until one succeeds.
  * Returns a Uint8Array because snarkjs delegates to fastfile which
  * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
  * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifact = async (
+const fetchArtifactCached = async (
   client: LemmaClient,
   url: string,
 ): Promise<Uint8Array> => {
+  const cached = artifactCache.get(url);
+  if (cached) return cached;
+
   const fetchFn = resolveFetch(client);
   const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
-  return cid !== null
-    ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
-    : fetchFn(url).then((res) =>
-        res.ok
-          ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
-          : reject(`Failed to fetch circuit artifact: ${url}`),
-      );
+  const promise: Promise<Uint8Array> =
+    cid !== null
+      ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
+      : fetchFn(url).then((res) =>
+          res.ok
+            ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+            : reject(`Failed to fetch circuit artifact: ${url}`),
+        );
+
+  artifactCache.set(url, promise);
+  return promise;
 };
 
 /**
@@ -220,8 +243,8 @@ const proveWhir = (
   return typeof params === "string"
     ? (async () => {
         const [wasmBuf, paramsBuf] = await Promise.all([
-          fetchArtifact(client, location.wasm),
-          fetchArtifact(client, params),
+          fetchArtifactCached(client, location.wasm),
+          fetchArtifactCached(client, params),
         ]);
 
         const { proof, publicInputs } = await generateWhirProof(
@@ -270,8 +293,8 @@ export const prove = async (
       (async () => {
         const groth16Loc = location as CircuitArtifactLocation;
         const [wasmBuf, zkeyBuf] = await Promise.all([
-          fetchArtifact(client, groth16Loc.wasm),
-          fetchArtifact(client, groth16Loc.zkey),
+          fetchArtifactCached(client, groth16Loc.wasm),
+          fetchArtifactCached(client, groth16Loc.zkey),
         ]);
 
         const { proof, publicSignals } = await generateSnarkjsProof(
