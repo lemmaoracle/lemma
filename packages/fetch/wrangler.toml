@@ -1,9 +1,9 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "fetcher"
+name = "fetch"
 main = "src/worker.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 # ── Build ────────────────────────────────────────────────────────────────
-# The fetcher depends on @lemmaoracle/sdk — ensure it's bundled.
+# The fetch worker depends on @lemmaoracle/sdk — ensure it's bundled.
 # wrangler bundles automatically; no external modules config needed.
