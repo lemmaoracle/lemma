@@ -233,6 +233,9 @@ importers:
       '@lemmaoracle/fetcher':
         specifier: workspace:*
         version: link:../fetcher
+      snarkjs:
+        specifier: ^0.7.6
+        version: 0.7.6
     devDependencies:
       '@types/node':
         specifier: ^22.20.1
