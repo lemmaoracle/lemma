@@ -363,9 +363,9 @@ export const commit = (
   ])(undefined);
 
 /**
- * Options for {@link commitToData}.
+ * Options for {@link commitDeep}.
  */
-export type CommitToDataOptions = Readonly<{
+export type CommitDeepOptions = Readonly<{
   /** 32-byte hex string (no `0x` prefix). If omitted, a new one is generated. */
   randomness?: string;
   /** Fixed tree depth. Pads the tree to `2^maxDepth` leaves with zero leaves. */
@@ -385,9 +385,9 @@ export type CommitToDataOptions = Readonly<{
  * @param value  Arbitrary JSON value (objects, arrays, primitives).
  * @param options  Optional randomness and maxDepth.
  */
-export const commitToData = (
+export const commitDeep = (
   value: Json,
-  options?: CommitToDataOptions,
+  options?: CommitDeepOptions,
 ): CommitResult => {
   const randomness = options?.randomness ?? randomHex(32);
   const maxDepth = options?.maxDepth;

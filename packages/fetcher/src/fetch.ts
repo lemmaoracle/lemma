@@ -16,7 +16,7 @@
  * dependency on @lemmaoracle/canonical-sort or @lemmaoracle/data-commitment.
  */
 import { canonicalSort } from "@lemmaoracle/sdk";
-import { commitToData } from "@lemmaoracle/sdk";
+import { commitDeep } from "@lemmaoracle/sdk";
 import type { Json } from "@lemmaoracle/sdk";
 import type { CommitResult } from "@lemmaoracle/sdk";
 
@@ -93,7 +93,7 @@ export const fetchAndCommit = async (
 
   const data = await parseResponse(response);
   const { canonical } = canonicalSort(data);
-  const commitment = commitToData(data, { maxDepth: config?.maxDepth });
+  const commitment = commitDeep(data, { maxDepth: config?.maxDepth });
 
   return {
     source,

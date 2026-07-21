@@ -8,8 +8,8 @@
 export { create } from "./client.js";
 export { define } from "./schema.js";
 export { encrypt, decrypt, derivePublicKey } from "./crypto.js";
-export { commit, commitToData, poseidon, toScalar } from "./commitments.js";
-export type { CommitResult, CommitToDataOptions } from "./commitments.js";
+export { commit, commitDeep, poseidon, toScalar } from "./commitments.js";
+export type { CommitResult, CommitDeepOptions } from "./commitments.js";
 export { canonicalSort, canonicalize } from "./canonical.js";
 export type { CanonicalOutput } from "./canonical.js";
 export type { Json } from "./internal.js";

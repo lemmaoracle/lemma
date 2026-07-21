@@ -16,8 +16,7 @@
  *   DRY_RUN         — If "1", skip submission
  */
 
-import { commitToData } from "../data-commitment/dist/index.js";
-import { create, proofs, documents } from "../sdk/dist/index.js";
+import { commitDeep, create, proofs, documents } from "../sdk/dist/index.js";
 import { groth16 } from "snarkjs";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
@@ -69,7 +68,7 @@ async function main() {
 
   // 2. Create commitment
   console.log("[2/5] Creating data-commitment-v1...");
-  const c = commitToData(forexData, undefined, MAX_DEPTH);
+  const c = commitDeep(forexData, { maxDepth: MAX_DEPTH });
   console.log(`  Root: ${c.root}  Leaves: ${c.leaves.length}`);
 
   // 3. Register document (one per daily dataset)

@@ -13,6 +13,6 @@ export { fetchAndCommit, fetchBatch } from "./fetch.js";
 export type { FetchResult, FetcherConfig, FetchBatchResult } from "./fetch.js";
 
 // Re-export the underlying primitives for convenience
-export { commitToData, canonicalSort, canonicalize, toScalar } from "@lemmaoracle/sdk";
+export { commitDeep, canonicalSort, canonicalize, toScalar } from "@lemmaoracle/sdk";
 export type { Json } from "@lemmaoracle/sdk";
-export type { CommitResult, CommitToDataOptions } from "@lemmaoracle/sdk";
+export type { CommitResult, CommitDeepOptions } from "@lemmaoracle/sdk";
