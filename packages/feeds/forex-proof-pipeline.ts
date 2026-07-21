@@ -27,7 +27,7 @@ const result = await runProofPipeline(frankfurterForex, {
   apiBase: process.env["LEMMA_API_BASE"] ?? "https://workers.lemma.workers.dev",
   apiKey: API_KEY ?? "",
   circuitId: "data-commitment-v1.1",
-  schema: "lemma-feed-v1",
+  schema: "canonical-sort-v1",
   maxDepth: 16,
   wasmPath: "../../packages/data-commitment/circuits/build/data-commitment-v1_js/data-commitment-v1.wasm",
   zkeyPath: "../../packages/data-commitment/circuits/build/data-commitment-v1_final.zkey",
