@@ -15,10 +15,8 @@
  * Both are resolved at runtime via the SDK, so this package has no
  * dependency on @lemmaoracle/canonical-sort or @lemmaoracle/data-commitment.
  */
-import { canonicalSort } from "@lemmaoracle/sdk";
-import { commitDeep } from "@lemmaoracle/sdk";
-import type { Json } from "@lemmaoracle/sdk";
-import type { CommitResult } from "@lemmaoracle/sdk";
+import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
+import type { Json, CommitResult } from "@lemmaoracle/sdk";
 
 // ── types ────────────────────────────────────────────────────────────────
 

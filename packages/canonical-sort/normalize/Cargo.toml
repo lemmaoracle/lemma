@@ -1,0 +1,21 @@
+[package]
+name = "canonical-sort"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lemma Oracle"]
+description = "canonical-sort-v1 — deterministic JSON serialisation WASM for Lemma schemas"
+license = "MIT"
+repository = "https://github.com/lemmaoracle/lemma"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+serde_json = "1"
+ryu = "1"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
