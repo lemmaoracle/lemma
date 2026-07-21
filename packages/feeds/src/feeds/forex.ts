@@ -63,9 +63,15 @@ export const frankfurterForex: FeedSource = {
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
+    const rates = (obj["rates"] as Readonly<Record<string, Json>>) ?? {};
     return {
       source: "frankfurter",
       base: String(obj["base"] ?? ""),
+      date: String(obj["date"] ?? ""),
+      amount: String(obj["amount"] ?? "1"),
+      ...Object.fromEntries(
+        Object.entries(rates).map(([k, v]) => [`rates.${k}`, String(v)]),
+      ),
     };
   },
 
