@@ -1,25 +1,25 @@
 ---
 /**
- * 検証センター — 照合記録のアンカーページ。CLUBS 等の照合ページのフッター
- * クレジット（「独立した証明基盤 Lemma に固定されています」）が指す先。
- * `/verify/`（EN）と `/ja/verify/`（JA）。1つの共有テンプレを locale で分岐。
+ * 検証センター — 照合クレジット（「独立した証明基盤 Lemma に固定されています」）
+ * の受け皿。`/verify/`（EN）と `/ja/verify/`（JA）。
  *
- * 最小構成（照合ページ改修提案 改修3・Phase 2まで最小構成可）:
- *   1. 検証境界の説明（✓ が意味すること・しないこと）
- *   2. 照合／検証／証明 の3語の分業
- *   3. 独立した証明基盤（第三者性）
- *   4. 技術ドキュメント（四本柱）への導線
- * クラス別証明カウンター・ID別の証明記録カードは Phase 2（参照APIの配線後）。
+ * SSL 証明書モデル：「発行者は誰か・何を意味するか」を1枚のステータスカードで
+ * 即答し、詳細（検証境界の全文・独立性の論・技術根拠）はサイトの各ページへ
+ * 「詳しく →」で送る。第1層で受信者は完結し、第三者性を確認したい人だけ
+ * 1クリック奥へ、という照合ページ改修提案 改修3 の設計方針。
  *
- * 用語: 対外カテゴリ名は「AI証明基盤 / proof layer」。照合＝当事者の行為／
- * 検証＝第三者の行為／証明＝Lemma が発行・固定する物。web3・クロスチェーン語彙は使わない。
- * 文体: である/ですます調は JA ですます調・断定・前置きなし・冒頭で定義。
+ * 内訳カウンターは証明書には載せない。証明書は1件の来歴、内訳は Lemma 全体の
+ * 実績で別オブジェクト（SSL の証明書と Certificate Transparency ログの関係）
+ * なので、カード外の独立した「検証の透明性」セクションに置く。
+ *
+ * 用語・文体・非加飾の規律：対外名は「AI証明基盤 / proof layer」。照合＝当事者・
+ * 検証＝第三者・証明＝Lemma。JA ですます調。ロゴ/バッジ/ホロは使わない。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
-import { DASHBOARD_URL } from "../config/cta";
+import VerificationCounter from "../components/VerificationCounter.astro";
 
 export interface VerifyAnchorTemplateProps {
   locale: Locale;
@@ -36,115 +36,49 @@ const C = isJa
       metaTitle:
         "検証センター — 照合記録は独立した証明基盤 Lemma に固定されています｜Lemma",
       metaDescription:
-        "CLUBS 等の照合記録は、記録の当事者から独立した AI証明基盤 Lemma に固定されています。✓ が意味すること・しないこと、照合と検証と証明の違い、独立性の担保をまとめます。",
+        "CLUBS 等の照合記録は、記録の当事者から独立した AI証明基盤 Lemma に固定されています。発行者・検証境界を1枚で確認できます。",
       eyebrow: "検証センター",
-      h1: "検証について",
-      lead: "Lemma は、記録の当事者から独立した AI証明基盤です。CLUBS などのサービスで生まれた照合記録は、ここに固定され、誰でも来歴を検証できます。このページは、その ✓ が何を意味し、何を意味しないかを説明します。",
-      boundary: {
-        h2: "この ✓ が意味すること・意味しないこと",
-        means: {
-          label: "✓ が意味すること",
-          items: [
-            "記録が、発行された時点から改ざんされていないこと。",
-            "実行ログや入金データと、表示されている記録が一致していること。",
-          ],
-        },
-        notMeans: {
-          label: "✓ が意味しないこと",
-          items: [
-            "書かれた内容の品質や、判断の正しさそのもの。",
-            "その活動が有益だったか・成果が優れていたか、という評価。",
-          ],
-        },
-        note: "つまり ✓ は「本物で、後から書き換えられていない」ことの証明であり、中身の良し悪しを保証するものではありません。",
-      },
-      words: {
-        h2: "照合・検証・証明の分業",
-        items: [
-          {
-            k: "照合",
-            v: "当事者が、自分の画面で記録と実データの一致を確かめる行為。",
-          },
-          {
-            k: "検証",
-            v: "第三者が誰でも、記録の来歴を独立に確かめられる行為。このページはその入口です。",
-          },
-          {
-            k: "証明",
-            v: "Lemma が発行し、固定する物。✓ はその証（あかし）です。Lemma が証明します。",
-          },
-        ],
-      },
-      independence: {
-        h2: "独立した証明基盤",
-        body: "Lemma は、記録の当事者から独立した証明基盤です。記録を出した本人ではなく、独立した層が来歴を固定するため、照合が自己申告に閉じません。SSL 証明書の発行者表示と同じく、この位置に発行者が明記されていることが、信頼の条件になります。",
-      },
-      docs: {
-        h2: "仕組みを詳しく",
-        body: "証明が成り立つ技術的な根拠は、四本柱（5つの証明）にまとめています。",
-        links: [
-          { label: "四本柱（Lemma の証明）を見る", href: L("/pillars/") },
-          { label: "真正性とは（検証の前提）", href: L("/authenticity/") },
-          { label: "ダッシュボードで試す", href: DASHBOARD_URL, ext: true },
-        ],
-      },
+      status: "この記録は Lemma に固定されています",
+      statusSub: "独立した証明基盤（proof layer）が来歴を固定しています",
+      rows: [
+        { k: "発行者", v: "Lemma — 記録の当事者から独立した証明基盤" },
+        { k: "✓ が意味すること", v: "記録が発行時点から改ざんされていないこと" },
+        { k: "✓ が意味しないこと", v: "内容の品質や、判断の正しさそのもの" },
+        { k: "3語の分業", v: "照合＝当事者／検証＝第三者／証明＝Lemma" },
+      ],
+      note: "✓ は実行ログ・入金データとの一致のみを意味します。中身の良し悪しを保証するものではありません。",
+      moreLabel: "詳しく",
+      more: [
+        { label: "検証境界と独立性", href: L("/authenticity/") },
+        { label: "四本柱（5つの証明）", href: L("/pillars/") },
+      ],
+      transparencyHeading: "検証の透明性",
+      transparencyLead:
+        "個別の証明書ではなく、Lemma 全体でこれまでに検証・発行した記録の内訳です。合計ではなく、どこ由来かを多い順に開示します。数字は表示のたびにレジストリから取得しています。",
     }
   : {
       metaTitle:
         "Verification Center — verification records are anchored on Lemma, an independent proof layer | Lemma",
       metaDescription:
-        "Verification records from services like CLUBS are anchored on Lemma, a proof layer independent of the record's authors. What the check means and doesn't, how matching, verification, and proof differ, and how independence is kept.",
+        "Verification records from services like CLUBS are anchored on Lemma, a proof layer independent of the record's authors. See the issuer and the verification boundary at a glance.",
       eyebrow: "Verification Center",
-      h1: "About verification",
-      lead: "Lemma is a proof layer independent of the record's authors. Verification records created in services like CLUBS are anchored here, where anyone can verify their provenance. This page explains what that check means — and what it does not.",
-      boundary: {
-        h2: "What the check means, and what it does not",
-        means: {
-          label: "The check confirms",
-          items: [
-            "The record has not been tampered with since it was issued.",
-            "The displayed record matches the execution logs or settlement data.",
-          ],
-        },
-        notMeans: {
-          label: "The check does not confirm",
-          items: [
-            "The quality of the contents, or the correctness of the judgment itself.",
-            "Whether the activity was valuable or the outcome was good.",
-          ],
-        },
-        note: "In short, the check proves the record is genuine and unaltered — it does not guarantee the merit of its contents.",
-      },
-      words: {
-        h2: "Matching, verification, and proof",
-        items: [
-          {
-            k: "Matching",
-            v: "The party's own act of confirming, on their screen, that the record matches the real data.",
-          },
-          {
-            k: "Verification",
-            v: "Anyone's ability, as a third party, to independently confirm a record's provenance. This page is that entry point.",
-          },
-          {
-            k: "Proof",
-            v: "The artifact Lemma issues and anchors. The check is its mark. Lemma proves it.",
-          },
-        ],
-      },
-      independence: {
-        h2: "An independent proof layer",
-        body: "Lemma is a proof layer independent of the record's authors. Because an independent layer — not the party that produced the record — anchors the provenance, verification does not collapse into self-attestation. As with the issuer shown on an SSL certificate, having the issuer stated in this fixed place is what makes the trust signal hold.",
-      },
-      docs: {
-        h2: "How it works",
-        body: "The technical basis for these proofs is set out in the Four Pillars (five proofs).",
-        links: [
-          { label: "See the Four Pillars (Lemma's proofs)", href: L("/pillars/") },
-          { label: "What is authenticity (the premise of verification)", href: L("/authenticity/") },
-          { label: "Try it on the Dashboard", href: DASHBOARD_URL, ext: true },
-        ],
-      },
+      status: "This record is anchored on Lemma",
+      statusSub: "An independent proof layer anchors its provenance",
+      rows: [
+        { k: "Issued by", v: "Lemma — a proof layer independent of the record's authors" },
+        { k: "The check confirms", v: "the record has not been altered since it was issued" },
+        { k: "It does not confirm", v: "the quality of the contents or the correctness of the judgment" },
+        { k: "The three roles", v: "Matching = the party · Verification = any third party · Proof = Lemma" },
+      ],
+      note: "The check means only that the record matches the execution logs or settlement data. It does not guarantee the merit of the contents.",
+      moreLabel: "In depth",
+      more: [
+        { label: "The verification boundary and independence", href: L("/authenticity/") },
+        { label: "The Four Pillars (five proofs)", href: L("/pillars/") },
+      ],
+      transparencyHeading: "Verification transparency",
+      transparencyLead:
+        "Not a single certificate — the breakdown of everything Lemma has verified and issued, ranked by source rather than summed. Read from the registry on every view.",
     };
 ---
 
@@ -157,63 +91,51 @@ const C = isJa
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="vf-page">
-    <div class="vf-container">
-      <header class="vf-hero">
-        <div class="vf-eyebrow">{C.eyebrow}</div>
-        <h1 class="vf-h1">{C.h1}</h1>
-        <p class="vf-lead">{C.lead}</p>
-      </header>
+  <main class="vc-page">
+    <div class="vc-container">
+      <div class="vc-eyebrow">{C.eyebrow}</div>
 
-      <section class="vf-section" aria-labelledby="vf-boundary">
-        <h2 class="vf-h2" id="vf-boundary">{C.boundary.h2}</h2>
-        <div class="vf-two">
-          <div class="vf-card vf-yes">
-            <div class="vf-card-label">{C.boundary.means.label}</div>
-            <ul>{C.boundary.means.items.map((x) => <li>{x}</li>)}</ul>
-          </div>
-          <div class="vf-card vf-no">
-            <div class="vf-card-label">{C.boundary.notMeans.label}</div>
-            <ul>{C.boundary.notMeans.items.map((x) => <li>{x}</li>)}</ul>
+      <div class="vc-cert" role="group" aria-label={C.status}>
+        <div class="vc-cert-head">
+          <span class="vc-check" aria-hidden="true">✓</span>
+          <div>
+            <div class="vc-status">{C.status}</div>
+            <div class="vc-status-sub">{C.statusSub}</div>
           </div>
         </div>
-        <p class="vf-note">{C.boundary.note}</p>
-      </section>
-
-      <section class="vf-section" aria-labelledby="vf-words">
-        <h2 class="vf-h2" id="vf-words">{C.words.h2}</h2>
-        <dl class="vf-words">
-          {C.words.items.map((it) => (
-            <div class="vf-word">
-              <dt>{it.k}</dt>
-              <dd>{it.v}</dd>
+        <dl class="vc-rows">
+          {C.rows.map((r) => (
+            <div class="vc-row">
+              <dt>{r.k}</dt>
+              <dd>{r.v}</dd>
             </div>
           ))}
         </dl>
-      </section>
+      </div>
 
-      <section class="vf-section" aria-labelledby="vf-indep">
-        <h2 class="vf-h2" id="vf-indep">{C.independence.h2}</h2>
-        <p class="vf-p">{C.independence.body}</p>
-      </section>
+      <p class="vc-note">{C.note}</p>
 
-      <section class="vf-section vf-docs" aria-labelledby="vf-docs">
-        <h2 class="vf-h2" id="vf-docs">{C.docs.h2}</h2>
-        <p class="vf-p">{C.docs.body}</p>
-        <ul class="vf-links">
-          {C.docs.links.map((ln) => (
-            <li>
-              <a
-                href={ln.href}
-                {...(ln.ext
-                  ? { target: "_blank", rel: "noopener" }
-                  : {})}
-              >
-                {ln.label} →
-              </a>
-            </li>
+      {/* カードの主張を掘る導線。証明書とセットの「詳しく」で、透明性ログとは別。 */}
+      <nav class="vc-more" aria-label={C.moreLabel}>
+        <span class="vc-more-label">{C.moreLabel}</span>
+        <ul>
+          {C.more.map((m) => (
+            <li><a href={m.href}>{m.label} →</a></li>
           ))}
         </ul>
+      </nav>
+
+      {/*
+        透明性ログ。証明書（1件の来歴）とは別オブジェクトなので、カードの外の
+        独立セクションに置き、「個別の証明書ではなく Lemma 全体の実績」と明示する。
+        SSL でいう証明書と Certificate Transparency ログの関係。
+      */}
+      <section class="vc-transparency" aria-label={C.transparencyHeading}>
+        <VerificationCounter
+          locale={locale}
+          heading={C.transparencyHeading}
+          lead={C.transparencyLead}
+        />
       </section>
     </div>
   </main>
@@ -222,158 +144,126 @@ const C = isJa
 </Layout>
 
 <style>
-  .vf-page {
+  .vc-page {
     background: #f7f8fb;
     color: #161a26;
     padding: 56px 20px 72px;
   }
-  .vf-container {
-    max-width: 760px;
+  .vc-container {
+    max-width: 620px;
     margin: 0 auto;
   }
-  .vf-hero {
-    margin-bottom: 40px;
-  }
-  .vf-eyebrow {
+  .vc-eyebrow {
     font-size: 12.5px;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: #6a4cf0;
     text-transform: uppercase;
+    margin-bottom: 14px;
   }
-  .vf-h1 {
-    font-size: 34px;
+  .vc-cert {
+    background: #fff;
+    border: 1px solid #e2e5f0;
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: 0 1px 2px rgba(20, 26, 38, 0.04);
+  }
+  .vc-cert-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eef0f7;
+  }
+  .vc-check {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: #eae6fe;
+    color: #6a4cf0;
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: -0.01em;
-    margin: 8px 0 14px;
-    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .vf-lead {
-    font-size: 16px;
-    line-height: 1.85;
-    color: #3a4155;
-    margin: 0;
-  }
-  .vf-section {
-    margin-top: 40px;
-    padding-top: 32px;
-    border-top: 1px solid #e7e9f2;
-  }
-  .vf-h2 {
-    font-size: 21px;
+  .vc-status {
+    font-size: 17px;
     font-weight: 800;
-    margin: 0 0 16px;
     line-height: 1.35;
   }
-  .vf-p {
-    font-size: 15px;
-    line-height: 1.9;
-    color: #3a4155;
-    margin: 0;
-  }
-  .vf-two {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  @media (max-width: 620px) {
-    .vf-two {
-      grid-template-columns: 1fr;
-    }
-  }
-  .vf-card {
-    background: #fff;
-    border: 1px solid #e7e9f2;
-    border-radius: 14px;
-    padding: 18px 20px;
-  }
-  .vf-card-label {
+  .vc-status-sub {
     font-size: 13px;
-    font-weight: 800;
-    margin-bottom: 10px;
+    color: #5b6377;
+    margin-top: 2px;
   }
-  .vf-yes {
-    border-color: #bfe6d6;
-    background: #f2fbf7;
-  }
-  .vf-yes .vf-card-label {
-    color: #0a8f66;
-  }
-  .vf-no {
-    border-color: #e5e7eb;
-    background: #fafafb;
-  }
-  .vf-no .vf-card-label {
-    color: #6b7280;
-  }
-  .vf-card ul {
+  .vc-rows {
     margin: 0;
-    padding-left: 18px;
-  }
-  .vf-card li {
-    font-size: 14px;
-    line-height: 1.75;
-    color: #3a4155;
-    margin-bottom: 6px;
-  }
-  .vf-card li:last-child {
-    margin-bottom: 0;
-  }
-  .vf-note {
-    font-size: 14.5px;
-    line-height: 1.8;
-    color: #161a26;
-    background: #eef1fe;
-    border: 1px solid #dce3fb;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin: 16px 0 0;
-  }
-  .vf-words {
-    margin: 0;
-  }
-  .vf-word {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid #eef0f6;
-  }
-  .vf-word:last-child {
-    border-bottom: 0;
-  }
-  .vf-word dt {
-    font-weight: 800;
-    font-size: 15px;
-    color: #161a26;
-  }
-  .vf-word dd {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.85;
-    color: #3a4155;
-  }
-  @media (max-width: 620px) {
-    .vf-word {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-  }
-  .vf-links {
-    list-style: none;
-    margin: 16px 0 0;
     padding: 0;
   }
-  .vf-links li {
-    margin-bottom: 10px;
+  .vc-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f1f2f8;
   }
-  .vf-links a {
-    font-size: 15px;
+  .vc-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .vc-row dt {
+    font-size: 12.5px;
     font-weight: 700;
-    color: #4f6bf6;
+    color: #6b7285;
+    line-height: 1.6;
+  }
+  .vc-row dd {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #23283a;
+  }
+  @media (max-width: 520px) {
+    .vc-row {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+  }
+  .vc-note {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #6b7285;
+    margin: 14px 2px 0;
+  }
+  .vc-more {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #e7e9f2;
+  }
+  .vc-more-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7285;
+  }
+  .vc-more ul {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+  }
+  .vc-more a {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6a4cf0;
     text-decoration: none;
   }
-  .vf-links a:hover {
+  .vc-more a:hover {
     text-decoration: underline;
   }
 </style>
