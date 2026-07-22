@@ -85,8 +85,8 @@ export const runProofPipeline = async (
   // 1. Fetch via feed source (hits fetcher Workers)
   console.log(`[1/4] Fetching via feed: ${feed.id}...`);
   const result: FetchResult = await feed.fetch();
-  const data = result.data as Json;
-  const c = result.commitment as CommitResult;
+  const data = result.data;
+  const c = result.commitment;
   const docId = feed.getDocumentId(data);
   console.log(`  Doc ID: ${docId}  Leaves: ${c.leafPreimages.length}`);
   console.log(`  Root: ${c.root}`);

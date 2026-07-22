@@ -45,7 +45,8 @@ const escapeChar = (ch: string): string => {
 };
 
 const serializeString = (s: string): string =>
-  `"${s.replace(/["\\\u0000-\u001f]/g, escapeChar)}"`;
+  // eslint-disable-next-line no-control-regex -- intentionally matching control chars for JSON escape
+  `"${s.replace(/["\\\x00-\x1f]/g, escapeChar)}"`;
 
 // ── number serialisation ────────────────────────────────────────────────
 

@@ -179,7 +179,7 @@ export const forexComposite: FeedSource = {
       fetchedAt: Date.now(),
       data: merged,
       canonical,
-      commitment: commitment as unknown as FetchResult["commitment"],
+      commitment: commitment,
     };
   },
 };
