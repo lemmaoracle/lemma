@@ -20,9 +20,12 @@ import { COUNTERS_API_URL } from "../config/counters";
 
 export interface Props {
   locale: "ja" | "en";
+  /** 見出し・リードの差し替え（例: 証明書面では「透明性」フレームにする）。 */
+  heading?: string;
+  lead?: string;
 }
 
-const { locale } = Astro.props as Props;
+const { locale, heading, lead } = Astro.props as Props;
 const isJa = locale === "ja";
 
 const C = isJa
@@ -100,8 +103,8 @@ const labels = JSON.stringify({
 ---
 
 <section class="vc" aria-labelledby="vc-h2" data-counters-url={COUNTERS_API_URL} data-labels={labels}>
-  <h2 class="vc-h2" id="vc-h2">{C.h2}</h2>
-  <p class="vc-lead">{C.lead}</p>
+  <h2 class="vc-h2" id="vc-h2">{heading ?? C.h2}</h2>
+  <p class="vc-lead">{lead ?? C.lead}</p>
 
   <div class="vc-grid">
     <div class="vc-metric">
