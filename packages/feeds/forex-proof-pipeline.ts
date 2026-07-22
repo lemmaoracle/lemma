@@ -3,7 +3,7 @@
  * Forex Proof Pipeline — multi-source entry point.
  *
  * Runs three feeds sequentially:
- *   1. forex/ecb (Frankfurter)     — source proofs
+ *   1. forex/frankfurter           — source proofs
  *   2. forex/er-api (ExchangeRate) — source proofs
  *   3. forex/composite             — averaged rates, bound to source roots
  *
@@ -33,7 +33,7 @@ if (!DRY_RUN && !API_KEY) {
 
 console.log("=== Forex Multi-Source Proof Pipeline ===");
 console.log(`Mode: ${DRY_RUN ? "DRY RUN" : "LIVE"}`);
-console.log(`Feeds: forex/ecb, forex/er-api, forex/composite\n`);
+console.log(`Feeds: forex/frankfurter, forex/er-api, forex/composite\n`);
 
 const result = await runMultiPipeline(
   [

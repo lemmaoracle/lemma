@@ -16,11 +16,11 @@ import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
  * etc.) and return a FetchResult containing the canonicalised data and
  * data-commitment-v1 commitment.
  *
- * The `id` field uniquely identifies the feed (e.g. `"forex/ecb"`).
+ * The `id` field uniquely identifies the feed (e.g. "forex/frankfurter").
  * Feed IDs follow the pattern `{category}/{authority}` for namespace clarity.
  */
 export type FeedSource = Readonly<{
-  /** Unique feed identifier (e.g. `"forex/ecb"`). */
+  /** Unique feed identifier (e.g. "forex/frankfurter"). */
   readonly id: string;
   /** Human-readable label for logging / display. */
   readonly label: string;

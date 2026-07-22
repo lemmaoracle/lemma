@@ -4,8 +4,8 @@
  *
  * Usage:
  *   npx tsx src/cli.ts <feed-id> [--output <path>]
- *   npx tsx src/cli.ts forex/ecb
- *   npx tsx src/cli.ts forex/ecb --output /tmp/forex.json
+ *   npx tsx src/cli.ts forex/frankfurter
+ *   npx tsx src/cli.ts forex/frankfurter --output /tmp/forex.json
  *
  * Environment variables are passed through to the feed (e.g. FOREX_BASE).
  *
@@ -22,7 +22,7 @@ const parseArgs = (): Readonly<{ feedId: string; output: string | null }> => {
 
   if (args.length === 0) {
     console.error("Usage: feeds <feed-id> [--output <path>]");
-    console.error("Example: feeds forex/ecb");
+    console.error("Example: feeds forex/frankfurter");
     process.exit(2);
   }
 
