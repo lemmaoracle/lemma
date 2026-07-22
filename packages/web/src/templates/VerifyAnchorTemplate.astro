@@ -8,8 +8,9 @@
  *   1. 検証境界の説明（✓ が意味すること・しないこと）
  *   2. 照合／検証／証明 の3語の分業
  *   3. 独立した証明基盤（第三者性）
- *   4. 技術ドキュメント（四本柱）への導線
- * クラス別証明カウンター・ID別の証明記録カードは Phase 2（参照APIの配線後）。
+ *   4. 検証カウンター（VerificationCounter — GET /v1/counters を live 取得）
+ *   5. 技術ドキュメント（四本柱）への導線
+ * ID別の証明記録カードは、証明レコード参照APIの公開後。
  *
  * 用語: 対外カテゴリ名は「AI証明基盤 / proof layer」。照合＝当事者の行為／
  * 検証＝第三者の行為／証明＝Lemma が発行・固定する物。web3・クロスチェーン語彙は使わない。
@@ -19,6 +20,7 @@ import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import VerificationCounter from "../components/VerificationCounter.astro";
 import { DASHBOARD_URL } from "../config/cta";
 
 export interface VerifyAnchorTemplateProps {
@@ -196,6 +198,8 @@ const C = isJa
         <h2 class="vf-h2" id="vf-indep">{C.independence.h2}</h2>
         <p class="vf-p">{C.independence.body}</p>
       </section>
+
+      <VerificationCounter locale={locale} />
 
       <section class="vf-section vf-docs" aria-labelledby="vf-docs">
         <h2 class="vf-h2" id="vf-docs">{C.docs.h2}</h2>

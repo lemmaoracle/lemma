@@ -1,0 +1,359 @@
+---
+/**
+ * 検証カウンター — Lemma が実際に発行・検証した件数を live で出す。
+ *
+ * 「数字には、出典がある。」を掲げる面に、出典の無い数字は置けません。この
+ * コンポーネントは D1 の値を毎回 `GET /v1/counters` から取り、失敗したときは
+ * 古い値でも見込み値でもなく「取得できませんでした」を出します。
+ *
+ * 設計上の約束（提案書 P0b の実装仕様）:
+ *   1. 数字はビルド時に焼き込まない。埋め込んだ瞬間に自己申告になります。
+ *   2. カウンター自体に出典を付ける。「この数字を検証する」から参照APIへ。
+ *   3. 内訳を初日から分離する。後から行を足しても、混ざった数は割れません。
+ *   4. 最終更新時刻を併記する。cron が止まったら止まって見える必要があります。
+ *   5. 1カウントの定義を併記し、動かさない。
+ *
+ * ラベル: 「検証済み証明数」「発行された証明」。「利用件数」「リクエスト数」
+ * 「ユーザー数」は使いません（顧客需要と誤読されます）。
+ */
+import { COUNTERS_API_URL } from "../config/counters";
+
+export interface Props {
+  locale: "ja" | "en";
+}
+
+const { locale } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const C = isJa
+  ? {
+      h2: "いま Lemma が証明している数",
+      lead: "この面に出る数字は、すべて Lemma のレジストリから毎回取得しています。表示のたびに参照するので、止まれば止まったまま見えます。",
+      verified: {
+        label: "検証済み証明数",
+        note: "ゼロ知識証明の検証が成功した回数です。1回の検証を1と数えます。データ点数でもリクエスト数でもありません。",
+      },
+      issued: {
+        label: "発行された証明",
+        note: "レジストリに登録された証明の件数です。1件の登録を1と数えます。",
+      },
+      sources: {
+        feeds: "為替データフィード",
+        api_verify: "公開 API・その他",
+      },
+      buckets: {
+        feeds: "為替データフィード",
+        clubs: "CLUBS（日報・達成シール）",
+        other: "その他",
+      },
+      updatedAt: "最終更新",
+      unknown: "不明",
+      loading: "取得中",
+      failed: "取得できませんでした",
+      failedNote:
+        "参照APIに到達できませんでした。数字を推測で埋めることはしません。下のリンクから直接ご確認ください。",
+      verifyLink: "この数字を検証する",
+      verifyNote:
+        "参照API の生の応答です。証明レコードそのものへの導線と、証明束（Merkle）への固定は順次公開します。",
+    }
+  : {
+      h2: "What Lemma is proving right now",
+      lead: "Every figure here is read from Lemma's registry on each view. Nothing is baked in at build time, so if a number stops moving, it visibly stops.",
+      verified: {
+        label: "Proof verifications",
+        note: "Zero-knowledge proof verifications that succeeded. One verification counts as one — not one data point, not one request.",
+      },
+      issued: {
+        label: "Proofs issued",
+        note: "Proofs registered in the registry. One registration counts as one.",
+      },
+      sources: {
+        feeds: "Forex data feed",
+        api_verify: "Public API and others",
+      },
+      buckets: {
+        feeds: "Forex data feed",
+        clubs: "CLUBS (daily reports, achievement seals)",
+        other: "Others",
+      },
+      updatedAt: "Last updated",
+      unknown: "unknown",
+      loading: "Loading",
+      failed: "Could not be loaded",
+      failedNote:
+        "The counter API could not be reached. We do not fill the gap with an estimate. Check it directly at the link below.",
+      verifyLink: "Verify this number",
+      verifyNote:
+        "The raw response from the counter API. Links to the proof records themselves, and to the Merkle bundle anchoring them, follow.",
+    };
+
+/**
+ * ラベルは data 属性でスクリプトに渡します。スクリプトは locale を知らず、
+ * 文言を一切持ちません（翻訳の置き場所を1か所に保つため）。
+ */
+const labels = JSON.stringify({
+  sources: C.sources,
+  buckets: C.buckets,
+  unknown: C.unknown,
+  failed: C.failed,
+});
+---
+
+<section class="vc" aria-labelledby="vc-h2" data-counters-url={COUNTERS_API_URL} data-labels={labels}>
+  <h2 class="vc-h2" id="vc-h2">{C.h2}</h2>
+  <p class="vc-lead">{C.lead}</p>
+
+  <div class="vc-grid">
+    <div class="vc-metric">
+      <div class="vc-metric-label">{C.verified.label}</div>
+      {/* 初期値は数字ではなく「取得中」。0 を置くと、取得前と本当の 0 が区別できません。 */}
+      <div class="vc-metric-value" data-vc="verified-count">{C.loading}</div>
+      <ul class="vc-breakdown" data-vc="verified-breakdown"></ul>
+      <p class="vc-metric-note">{C.verified.note}</p>
+      <p class="vc-updated">
+        {C.updatedAt}: <span data-vc="verified-updated">{C.loading}</span>
+      </p>
+    </div>
+
+    <div class="vc-metric">
+      <div class="vc-metric-label">{C.issued.label}</div>
+      <div class="vc-metric-value" data-vc="issued-count">{C.loading}</div>
+      <ul class="vc-breakdown" data-vc="issued-breakdown"></ul>
+      <p class="vc-metric-note">{C.issued.note}</p>
+      <p class="vc-updated">
+        {C.updatedAt}: <span data-vc="issued-updated">{C.loading}</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="vc-error" data-vc="error" hidden>{C.failedNote}</p>
+
+  <p class="vc-verify">
+    <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.verifyLink} →</a>
+    <span class="vc-verify-note">{C.verifyNote}</span>
+  </p>
+</section>
+
+<script>
+  /**
+   * カウンターの読み込み。文言は data-labels 経由でのみ受け取ります。
+   *
+   * 失敗したときに値を残さないのが要件です。古い数字が画面に残ると、参照API が
+   * 落ちている間ずっと「その数字が現在値である」と主張し続けることになります。
+   */
+  type Row = { count: number; updatedAt?: string | null; lastIssuedAt?: string | null };
+  type SourceRow = Row & { source: string };
+  type BucketRow = Row & { bucket: string };
+
+  const root = document.querySelector<HTMLElement>(".vc[data-counters-url]");
+
+  if (root) {
+    const url = root.dataset.countersUrl as string;
+    const labels = JSON.parse(root.dataset.labels as string) as {
+      sources: Record<string, string>;
+      buckets: Record<string, string>;
+      unknown: string;
+      failed: string;
+    };
+
+    const el = (key: string) => root.querySelector<HTMLElement>(`[data-vc="${key}"]`);
+
+    const formatCount = (n: number) => n.toLocaleString();
+
+    const formatTime = (iso: string | null | undefined) => {
+      if (!iso) return labels.unknown;
+      // D1 の created_at は "YYYY-MM-DD HH:MM:SS"(UTC)。Safari は空白区切りを
+      // 解釈しないので、ISO に寄せてから渡します。
+      const d = new Date(iso.includes("T") ? iso : `${iso.replace(" ", "T")}Z`);
+      return Number.isNaN(d.getTime()) ? labels.unknown : d.toLocaleString();
+    };
+
+    const renderBreakdown = (
+      key: string,
+      rows: ReadonlyArray<{ label: string; count: number }>,
+    ) => {
+      const target = el(key);
+      if (!target) return;
+      target.innerHTML = "";
+      rows.forEach((r) => {
+        const li = document.createElement("li");
+        const name = document.createElement("span");
+        name.textContent = r.label;
+        const value = document.createElement("span");
+        value.textContent = formatCount(r.count);
+        li.append(name, value);
+        target.append(li);
+      });
+    };
+
+    const fail = () => {
+      ["verified-count", "issued-count"].forEach((k) => {
+        const target = el(k);
+        if (!target) return;
+        target.textContent = labels.failed;
+        // 数字用の字送りのままだと、失敗文が巨大な見出しとして出ます。
+        target.classList.add("is-failed");
+      });
+      ["verified-updated", "issued-updated"].forEach((k) => {
+        const target = el(k);
+        if (target) target.textContent = labels.unknown;
+      });
+      const err = el("error");
+      if (err) err.hidden = false;
+    };
+
+    fetch(url, { headers: { accept: "application/json" } })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .then((data: {
+        verified: { count: number; updatedAt: string | null; bySource: SourceRow[] };
+        issued: { count: number; updatedAt: string | null; byBucket: BucketRow[] };
+      }) => {
+        const vCount = el("verified-count");
+        if (vCount) vCount.textContent = formatCount(data.verified.count);
+        const vTime = el("verified-updated");
+        if (vTime) vTime.textContent = formatTime(data.verified.updatedAt);
+        renderBreakdown(
+          "verified-breakdown",
+          data.verified.bySource.map((r) => ({
+            label: labels.sources[r.source] ?? r.source,
+            count: r.count,
+          })),
+        );
+
+        const iCount = el("issued-count");
+        if (iCount) iCount.textContent = formatCount(data.issued.count);
+        const iTime = el("issued-updated");
+        if (iTime) iTime.textContent = formatTime(data.issued.updatedAt);
+        renderBreakdown(
+          "issued-breakdown",
+          data.issued.byBucket.map((r) => ({
+            label: labels.buckets[r.bucket] ?? r.bucket,
+            count: r.count,
+          })),
+        );
+      })
+      .catch(fail);
+  }
+</script>
+
+<style>
+  .vc {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #e7e9f2;
+  }
+  .vc-h2 {
+    font-size: 21px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 1.35;
+  }
+  .vc-lead {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #3a4155;
+    margin: 0 0 20px;
+  }
+  .vc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 620px) {
+    .vc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .vc-metric {
+    background: #fff;
+    border: 1px solid #e7e9f2;
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .vc-metric-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #6a4cf0;
+  }
+  .vc-metric-value {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 6px 0 12px;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  /* 失敗時。クラスはスクリプトが付けるので :global が要ります。 */
+  .vc-metric :global(.vc-metric-value.is-failed) {
+    font-size: 16px;
+    font-weight: 700;
+    color: #8a3b3b;
+    line-height: 1.6;
+  }
+  .vc-breakdown {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    border-top: 1px solid #eef0f7;
+  }
+  /*
+   * 内訳の行はスクリプトが生成するため、Astro のスコープ属性が付きません。
+   * :global() でだけ子孫に届かせます（親の .vc-breakdown はサーバー描画なので
+   * スコープが効いており、影響範囲はこのブロック内に閉じます）。
+   */
+  .vc-breakdown :global(li) {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #3a4155;
+    padding: 6px 0;
+    border-bottom: 1px solid #eef0f7;
+  }
+  .vc-breakdown :global(li span:last-child) {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .vc-metric-note {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #5b6377;
+    margin: 0 0 10px;
+  }
+  .vc-updated {
+    font-size: 12px;
+    color: #6b7285;
+    margin: 0;
+  }
+  .vc-error {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #8a3b3b;
+    background: #fdf3f3;
+    border: 1px solid #f2dede;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 14px 0 0;
+  }
+  .vc-verify {
+    margin: 16px 0 0;
+    font-size: 13.5px;
+    line-height: 1.8;
+  }
+  .vc-verify a {
+    font-weight: 700;
+    color: #6a4cf0;
+    text-decoration: none;
+  }
+  .vc-verify a:hover {
+    text-decoration: underline;
+  }
+  .vc-verify-note {
+    display: block;
+    font-size: 12.5px;
+    color: #6b7285;
+    margin-top: 4px;
+  }
+</style>
