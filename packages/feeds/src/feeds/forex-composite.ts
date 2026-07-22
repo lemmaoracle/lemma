@@ -171,7 +171,8 @@ export const forexComposite: FeedSource = {
     };
 
     const { canonical } = canonicalSort(merged);
-    const commitment = commitDeep(merged) as unknown as Record<string, unknown>;
+    const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
+    const commitment = commitDeep(merged, { maxDepth }) as unknown as Record<string, unknown>;
 
     return {
       source: "forex/composite",
