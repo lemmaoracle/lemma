@@ -27,8 +27,8 @@ const isJa = locale === "ja";
 
 const C = isJa
   ? {
-      h2: "いま Lemma が証明している数",
-      lead: "この面に出る数字は、すべて Lemma のレジストリから毎回取得しています。表示のたびに参照するので、止まれば止まったまま見えます。",
+      h2: "いま Lemma が証明している内訳",
+      lead: "合計ではなく内訳を、多い順に開示します。数字は Lemma のレジストリから表示のたびに取得しているので、止まれば止まったまま見えます。どこ由来の検証・発行かを隠さないことが、この面の中立性の条件です。",
       verified: {
         label: "検証済み証明数",
         note: "ゼロ知識証明の検証が成功した回数です。1回の検証を1と数えます。データ点数でもリクエスト数でもありません。",
@@ -57,8 +57,8 @@ const C = isJa
         "参照API の生の応答です。証明レコードそのものへの導線と、証明束（Merkle）への固定は順次公開します。",
     }
   : {
-      h2: "What Lemma is proving right now",
-      lead: "Every figure here is read from Lemma's registry on each view. Nothing is baked in at build time, so if a number stops moving, it visibly stops.",
+      h2: "What Lemma is proving, broken down",
+      lead: "The breakdown, ranked by volume — not a single headline total. Each figure is read from Lemma's registry on every view, so if one stops moving, it visibly stops. Not hiding where the verifications and issuances come from is what keeps this page neutral.",
       verified: {
         label: "Proof verifications",
         note: "Zero-knowledge proof verifications that succeeded. One verification counts as one — not one data point, not one request.",
@@ -106,10 +106,14 @@ const labels = JSON.stringify({
   <div class="vc-grid">
     <div class="vc-metric">
       <div class="vc-metric-label">{C.verified.label}</div>
-      {/* 初期値は数字ではなく「取得中」。0 を置くと、取得前と本当の 0 が区別できません。 */}
-      <div class="vc-metric-value" data-vc="verified-count">{C.loading}</div>
-      <ul class="vc-breakdown" data-vc="verified-breakdown"></ul>
       <p class="vc-metric-note">{C.verified.note}</p>
+      {/*
+        合計は出しません。この面は中立性を示す面（監査人・記者・投資家）で、
+        合算した大きな数字はトップページが担います。ここでは内訳をランキング
+        として開示します（OpenRouter のモデルランキングと同じ話法）。
+        初期は数字ではなく「取得中」。0 を置くと取得前と本当の 0 が混ざります。
+      */}
+      <ol class="vc-board" data-vc="verified-board"><li class="vc-loading">{C.loading}</li></ol>
       <p class="vc-updated">
         {C.updatedAt}: <span data-vc="verified-updated">{C.loading}</span>
       </p>
@@ -117,9 +121,8 @@ const labels = JSON.stringify({
 
     <div class="vc-metric">
       <div class="vc-metric-label">{C.issued.label}</div>
-      <div class="vc-metric-value" data-vc="issued-count">{C.loading}</div>
-      <ul class="vc-breakdown" data-vc="issued-breakdown"></ul>
       <p class="vc-metric-note">{C.issued.note}</p>
+      <ol class="vc-board" data-vc="issued-board"><li class="vc-loading">{C.loading}</li></ol>
       <p class="vc-updated">
         {C.updatedAt}: <span data-vc="issued-updated">{C.loading}</span>
       </p>
@@ -168,31 +171,57 @@ const labels = JSON.stringify({
       return Number.isNaN(d.getTime()) ? labels.unknown : d.toLocaleString();
     };
 
-    const renderBreakdown = (
+    /**
+     * 内訳をランキングとして描画する。合計は出さず、各行を件数の多い順に並べ、
+     * バーは行内の最大件数に対する相対長（＝合算した総数を露出しない）。
+     */
+    const renderBoard = (
       key: string,
       rows: ReadonlyArray<{ label: string; count: number }>,
     ) => {
       const target = el(key);
       if (!target) return;
+      const ranked = [...rows].sort((a, b) => b.count - a.count);
+      const max = ranked.reduce((m, r) => Math.max(m, r.count), 0);
       target.innerHTML = "";
-      rows.forEach((r) => {
+      ranked.forEach((r) => {
         const li = document.createElement("li");
+        li.className = "vc-row";
+
+        const head = document.createElement("div");
+        head.className = "vc-row-head";
         const name = document.createElement("span");
+        name.className = "vc-row-label";
         name.textContent = r.label;
         const value = document.createElement("span");
+        value.className = "vc-row-count";
         value.textContent = formatCount(r.count);
-        li.append(name, value);
+        head.append(name, value);
+
+        const bar = document.createElement("div");
+        bar.className = "vc-bar";
+        const fill = document.createElement("span");
+        fill.className = "vc-bar-fill";
+        // max=0（全て0）のときは幅0。0 件の行はバー無しで残す＝「外部顧客待ち」
+        // の行が存在していることは見せる。
+        fill.style.width = max > 0 ? `${(r.count / max) * 100}%` : "0%";
+        bar.append(fill);
+
+        li.append(head, bar);
         target.append(li);
       });
     };
 
     const fail = () => {
-      ["verified-count", "issued-count"].forEach((k) => {
+      ["verified-board", "issued-board"].forEach((k) => {
         const target = el(k);
         if (!target) return;
-        target.textContent = labels.failed;
-        // 数字用の字送りのままだと、失敗文が巨大な見出しとして出ます。
-        target.classList.add("is-failed");
+        // 数字も古いバーも残しません。失敗を1行のメッセージに置き換えます。
+        target.innerHTML = "";
+        const li = document.createElement("li");
+        li.className = "vc-failed";
+        li.textContent = labels.failed;
+        target.append(li);
       });
       ["verified-updated", "issued-updated"].forEach((k) => {
         const target = el(k);
@@ -208,24 +237,20 @@ const labels = JSON.stringify({
         verified: { count: number; updatedAt: string | null; bySource: SourceRow[] };
         issued: { count: number; updatedAt: string | null; byBucket: BucketRow[] };
       }) => {
-        const vCount = el("verified-count");
-        if (vCount) vCount.textContent = formatCount(data.verified.count);
         const vTime = el("verified-updated");
         if (vTime) vTime.textContent = formatTime(data.verified.updatedAt);
-        renderBreakdown(
-          "verified-breakdown",
+        renderBoard(
+          "verified-board",
           data.verified.bySource.map((r) => ({
             label: labels.sources[r.source] ?? r.source,
             count: r.count,
           })),
         );
 
-        const iCount = el("issued-count");
-        if (iCount) iCount.textContent = formatCount(data.issued.count);
         const iTime = el("issued-updated");
         if (iTime) iTime.textContent = formatTime(data.issued.updatedAt);
-        renderBreakdown(
-          "issued-breakdown",
+        renderBoard(
+          "issued-board",
           data.issued.byBucket.map((r) => ({
             label: labels.buckets[r.bucket] ?? r.bucket,
             count: r.count,
@@ -275,52 +300,63 @@ const labels = JSON.stringify({
     font-weight: 800;
     color: #6a4cf0;
   }
-  .vc-metric-value {
-    font-size: 34px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    line-height: 1.25;
-    margin: 6px 0 12px;
-    font-variant-numeric: tabular-nums;
-    overflow-wrap: anywhere;
-  }
-  /* 失敗時。クラスはスクリプトが付けるので :global が要ります。 */
-  .vc-metric :global(.vc-metric-value.is-failed) {
-    font-size: 16px;
-    font-weight: 700;
-    color: #8a3b3b;
-    line-height: 1.6;
-  }
-  .vc-breakdown {
-    list-style: none;
-    margin: 0 0 12px;
-    padding: 0;
-    border-top: 1px solid #eef0f7;
-  }
-  /*
-   * 内訳の行はスクリプトが生成するため、Astro のスコープ属性が付きません。
-   * :global() でだけ子孫に届かせます（親の .vc-breakdown はサーバー描画なので
-   * スコープが効いており、影響範囲はこのブロック内に閉じます）。
-   */
-  .vc-breakdown :global(li) {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: #3a4155;
-    padding: 6px 0;
-    border-bottom: 1px solid #eef0f7;
-  }
-  .vc-breakdown :global(li span:last-child) {
-    font-variant-numeric: tabular-nums;
-    font-weight: 700;
-  }
   .vc-metric-note {
     font-size: 12.5px;
     line-height: 1.75;
     color: #5b6377;
-    margin: 0 0 10px;
+    margin: 6px 0 14px;
+  }
+  /*
+   * ランキング。行はスクリプトが生成するため Astro のスコープ属性が付かず、
+   * 子孫は :global() でだけ届かせます（親の .vc-board はサーバー描画でスコープ
+   * が効いているので、影響範囲はこのブロック内に閉じます）。
+   */
+  .vc-board {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .vc-board :global(.vc-loading) {
+    font-size: 13px;
+    color: #6b7285;
+  }
+  .vc-board :global(.vc-failed) {
+    font-size: 15px;
+    font-weight: 700;
+    color: #8a3b3b;
+    line-height: 1.6;
+  }
+  .vc-board :global(.vc-row-head) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+  .vc-board :global(.vc-row-label) {
+    font-size: 13px;
+    color: #3a4155;
+  }
+  .vc-board :global(.vc-row-count) {
+    font-size: 14px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: #161a26;
+  }
+  .vc-board :global(.vc-bar) {
+    height: 6px;
+    border-radius: 999px;
+    background: #eef0f7;
+    overflow: hidden;
+  }
+  .vc-board :global(.vc-bar-fill) {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: #6a4cf0;
   }
   .vc-updated {
     font-size: 12px;
