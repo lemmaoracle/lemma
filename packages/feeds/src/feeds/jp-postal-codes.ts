@@ -55,7 +55,8 @@ const ZIP_LOCAL_HEADER_SIG = 0x04034b50;
  * Throws if no deflated entry is found.
  */
 export const extractFirstZipEntry = (buf: Buffer): Buffer => {
-  // eslint-disable-next-line functional/no-let
+  // imperative: byte-level ZIP scanning — no functional alternative
+  // eslint-disable-next-line functional/no-let, functional/no-loop-statements
   for (let i = 0; i < buf.length - 4; i++) {
     const sig = buf.readUInt32LE(i);
     // eslint-disable-next-line functional/no-conditional-statements
@@ -78,6 +79,8 @@ export const extractFirstZipEntry = (buf: Buffer): Buffer => {
     if (compression === 8) return inflateRawSync(raw); // deflated
   }
 
+  // imperative: unrecoverable error — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
   throw new Error("jp-postal-codes: no valid ZIP entry found");
 };
 
@@ -103,32 +106,24 @@ export const parsePostalCodes = (
     .map((l) => l.trim())
     .filter((l) => l.length > 0);
 
-  const records: PostalCodeRecord[] = [];
-
-  // eslint-disable-next-line functional/no-loop-statements
-  for (const line of lines) {
-    const cols = line.split(",").map(unquote);
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (cols.length < 9) continue;
-
-    const code = cols[2] ?? "";
-    // Skip header / non-data rows: code must be exactly 7 digits.
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (!/^\d{7}$/.test(code)) continue;
-
-    records.push({
-      code,
+  const records = lines
+    .map((line) => line.split(",").map(unquote))
+    .filter((cols) => cols.length >= 9)
+    .map((cols) => ({
+      code: cols[2] ?? "",
       prefecture: cols[6] ?? "",
       city: cols[7] ?? "",
       town: cols[8] ?? "",
       prefectureKana: cols[3] ?? "",
       cityKana: cols[4] ?? "",
       townKana: cols[5] ?? "",
-    });
-  }
+    }))
+    .filter((r) => /^\d{7}$/.test(r.code));
 
+  // imperative: guard clause with throw — no functional alternative
   // eslint-disable-next-line functional/no-conditional-statements
   if (records.length === 0)
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error("jp-postal-codes: no valid records parsed");
 
   return [...records].sort((a, b) => a.code.localeCompare(b.code));
@@ -172,6 +167,7 @@ export const buildSnapshot = (
 ): Snapshot => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (records.length === 0)
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error("jp-postal-codes: empty record set");
   const contentHash = sha256hex(canonicalPostalCodes(records));
   return {
@@ -192,12 +188,14 @@ export const jpPostalCodes: FeedSource = {
   label: "Japan postal codes (Japan Post)",
   category: "geo",
 
+  // imperative: FeedSource.fetch contract — zero params required by interface
+  // eslint-disable-next-line functional/functional-parameters
   fetch: async (): Promise<FetchResult> => {
     const url = process.env["JP_POSTAL_CODES_URL"] ?? DEFAULT_URL;
     const resp = await fetch(url);
     // eslint-disable-next-line functional/no-conditional-statements
     if (!resp.ok)
-      throw new Error(`jp-postal-codes: fetch ${url} → ${resp.status}`);
+      throw new Error(`jp-postal-codes: fetch ${url} → ${String(resp.status)}`);
 
     const zipBuf = Buffer.from(await resp.arrayBuffer());
     const csvBuf = extractFirstZipEntry(zipBuf);
@@ -211,14 +209,14 @@ export const jpPostalCodes: FeedSource = {
     const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
     const commitment = commitDeep(compactJson, {
       maxDepth,
-    }) as unknown as FetchResult["commitment"];
+    });
 
     return {
       source: "jp-postal-codes",
       fetchedAt: Date.now(),
       // Carry the full list alongside the compact fields so getAttributes can
       // emit it; only the compact fields were committed above.
-      data: { ...snap.compact, records } as unknown as Json,
+      data: { ...snap.compact, records },
       canonical,
       commitment,
     };
@@ -227,10 +225,10 @@ export const jpPostalCodes: FeedSource = {
   // Content-derived (contentHash), so an unchanged ZIP yields the same
   // docHash. When Japan Post publishes an update, contentHash changes and a
   // fresh snapshot registers.
-  getDocumentId: (data) =>
-    String(
-      (data as Readonly<Record<string, Json>>)["contentHash"] ?? "unknown",
-    ),
+  getDocumentId: (data) => {
+    const contentHash = (data as Readonly<Record<string, Json>>)["contentHash"];
+    return typeof contentHash === "string" ? contentHash : "unknown";
+  },
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
@@ -238,8 +236,8 @@ export const jpPostalCodes: FeedSource = {
       (obj["records"] as ReadonlyArray<PostalCodeRecord> | undefined)
         ?.length ?? 0;
     const attrs: Record<string, string> = {
-      "meta.type": String(obj["type"] ?? TYPE),
-      "meta.contentHash": `sha256:${String(obj["contentHash"] ?? "")}`,
+      "meta.type": typeof obj["type"] === "string" ? obj["type"] : TYPE,
+      "meta.contentHash": `sha256:${typeof obj["contentHash"] === "string" ? obj["contentHash"] : ""}`,
       "meta.count": String(obj["count"] ?? recordsCount),
       // Attribute only (never committed), so it does not affect idempotency.
       "meta.updatedAt": String(obj["updatedAt"] ?? new Date().toISOString()),

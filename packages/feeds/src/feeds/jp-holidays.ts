@@ -166,7 +166,7 @@ export const jpHolidays: FeedSource = {
               fetchedAt: Date.now(),
               // Carry the full list alongside the compact fields so getAttributes
               // can emit it; only the compact fields were committed above.
-              data: { ...snap.compact, holidays } as unknown as Json,
+              data: { ...snap.compact, holidays },
               canonical,
               commitment,
             };
