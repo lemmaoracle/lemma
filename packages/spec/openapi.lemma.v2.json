@@ -6,88 +6,181 @@
     "description": "REST surface derived from the Lemma v2 whitepaper SDK interface (§3, §4). v0.2 adds the 4 Bazaar Discovery Layer products under /v1/suites/* (see x-bazaar extension)."
   },
   "servers": [
-    { "url": "https://api.lemma.frame00.com", "description": "Production (Base mainnet)" },
-    { "url": "http://localhost:8787", "description": "Local development" }
+    {
+      "url": "https://api.lemma.frame00.com",
+      "description": "Production (Base mainnet)"
+    },
+    {
+      "url": "http://localhost:8787",
+      "description": "Local development"
+    }
   ],
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "x-api-key" }
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
     },
     "schemas": {
       "ErrorResponse": {
         "type": "object",
-        "properties": { "error": { "type": "string" } },
-        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
         "additionalProperties": false
       },
       "SchemaMeta": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "description": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
         },
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "additionalProperties": true
       },
       "CircuitArtifactLocation": {
         "type": "object",
         "properties": {
-          "type": { "type": "string", "enum": ["ipfs", "https"] },
-          "wasm": { "type": "string" },
-          "zkey": { "type": "string" }
+          "type": {
+            "type": "string",
+            "enum": [
+              "ipfs",
+              "https"
+            ]
+          },
+          "wasm": {
+            "type": "string"
+          },
+          "zkey": {
+            "type": "string"
+          }
         },
-        "required": ["type", "wasm", "zkey"],
+        "required": [
+          "type",
+          "wasm",
+          "zkey"
+        ],
         "additionalProperties": false
       },
       "CircuitMeta": {
         "type": "object",
         "properties": {
-          "circuitId": { "type": "string" },
-          "schema": { "type": "string" },
-          "description": { "type": "string" },
-          "inputs": { "type": "array", "items": { "type": "string" } },
+          "circuitId": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "verifier": {
             "type": "object",
             "properties": {
-              "type": { "type": "string", "enum": ["onchain", "offchain"] },
-              "address": { "type": "string" },
-              "chainId": { "type": "integer" }
+              "type": {
+                "type": "string",
+                "enum": [
+                  "onchain",
+                  "offchain"
+                ]
+              },
+              "address": {
+                "type": "string"
+              },
+              "chainId": {
+                "type": "integer"
+              }
             },
-            "required": ["type"],
+            "required": [
+              "type"
+            ],
             "additionalProperties": true
           },
           "artifact": {
             "type": "object",
             "properties": {
-              "location": { "$ref": "#/components/schemas/CircuitArtifactLocation" }
+              "location": {
+                "$ref": "#/components/schemas/CircuitArtifactLocation"
+              }
             },
-            "required": ["location"],
+            "required": [
+              "location"
+            ],
             "additionalProperties": false
           }
         },
-        "required": ["circuitId", "schema"],
+        "required": [
+          "circuitId",
+          "schema"
+        ],
         "additionalProperties": true
       },
       "GeneratorMeta": {
         "type": "object",
         "properties": {
-          "generatorId": { "type": "string" },
-          "schema": { "type": "string" },
-          "description": { "type": "string" },
-          "language": { "type": "string" },
+          "generatorId": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
           "source": {
             "type": "object",
             "properties": {
-              "type": { "type": "string", "enum": ["url"] },
-              "uri": { "type": "string" }
+              "type": {
+                "type": "string",
+                "enum": [
+                  "url"
+                ]
+              },
+              "uri": {
+                "type": "string"
+              }
             },
-            "required": ["type", "uri"],
+            "required": [
+              "type",
+              "uri"
+            ],
             "additionalProperties": false
           },
-          "inputsSpec": { "type": "object", "additionalProperties": true },
-          "outputsSpec": { "type": "object", "additionalProperties": true }
+          "inputsSpec": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "outputsSpec": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
-        "required": ["generatorId", "schema"],
+        "required": [
+          "generatorId",
+          "schema"
+        ],
         "additionalProperties": true
       },
       "DocumentCommitments": {
@@ -95,63 +188,139 @@
         "properties": {
           "scheme": {
             "type": "string",
-            "enum": ["poseidon", "poseidon2", "rescue-prime", "sha256-placeholder"]
+            "enum": [
+              "poseidon",
+              "poseidon2",
+              "rescue-prime",
+              "sha256-placeholder"
+            ]
           },
-          "root": { "type": "string" },
+          "root": {
+            "type": "string"
+          },
           "leaves": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "randomness": { "type": "string" }
+          "randomness": {
+            "type": "string"
+          }
         },
-        "required": ["scheme", "root", "leaves", "randomness"],
+        "required": [
+          "scheme",
+          "root",
+          "leaves",
+          "randomness"
+        ],
         "additionalProperties": false
       },
       "Revocation": {
         "type": "object",
         "properties": {
-          "scheme": { "type": "string" },
-          "root": { "type": "string" }
+          "scheme": {
+            "type": "string"
+          },
+          "root": {
+            "type": "string"
+          }
         },
-        "required": ["root"],
+        "required": [
+          "root"
+        ],
         "additionalProperties": true
       },
       "IssuerSignature": {
         "type": "object",
         "properties": {
-          "format": { "type": "string", "enum": ["bbs+", "opaque"] },
-          "payload": { "type": "string" },
-          "issuerId": { "type": "string" }
+          "format": {
+            "type": "string",
+            "enum": [
+              "bbs+",
+              "opaque"
+            ]
+          },
+          "payload": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          }
         },
-        "required": ["format", "payload", "issuerId"],
+        "required": [
+          "format",
+          "payload",
+          "issuerId"
+        ],
         "additionalProperties": false
       },
       "OnchainHook": {
         "type": "object",
         "properties": {
-          "chainId": { "type": "integer" },
-          "address": { "type": "string" },
-          "method": { "type": "string" },
-          "mode": { "type": "string", "enum": ["after-registry"] },
-          "payload": { "type": "string", "enum": ["registry-public-inputs"] }
+          "chainId": {
+            "type": "integer"
+          },
+          "address": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "after-registry"
+            ]
+          },
+          "payload": {
+            "type": "string",
+            "enum": [
+              "registry-public-inputs"
+            ]
+          }
         },
-        "required": ["chainId", "address", "method"],
+        "required": [
+          "chainId",
+          "address",
+          "method"
+        ],
         "additionalProperties": true
       },
       "RegisterDocumentRequest": {
         "type": "object",
         "properties": {
-          "schema": { "type": "string" },
-          "docHash": { "type": "string" },
-          "cid": { "type": "string" },
-          "issuerId": { "type": "string", "description": "Issuer identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage." },
-          "subjectId": { "type": "string", "description": "Subject/holder identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage." },
-          "commitments": { "$ref": "#/components/schemas/DocumentCommitments" },
-          "revocation": { "$ref": "#/components/schemas/Revocation" },
-          "signature": { "$ref": "#/components/schemas/IssuerSignature" },
+          "schema": {
+            "type": "string"
+          },
+          "docHash": {
+            "type": "string"
+          },
+          "cid": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string",
+            "description": "Issuer identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage."
+          },
+          "subjectId": {
+            "type": "string",
+            "description": "Subject/holder identifier (DID, address, or any string). Hashed to bytes32 via keccak256 for on-chain storage."
+          },
+          "commitments": {
+            "$ref": "#/components/schemas/DocumentCommitments"
+          },
+          "revocation": {
+            "$ref": "#/components/schemas/Revocation"
+          },
+          "signature": {
+            "$ref": "#/components/schemas/IssuerSignature"
+          },
           "hooks": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/OnchainHook" }
+            "items": {
+              "$ref": "#/components/schemas/OnchainHook"
+            }
           }
         },
         "required": [
@@ -168,78 +337,180 @@
       "RegisterDocumentResponse": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": ["registered"] },
-          "docHash": { "type": "string" }
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered"
+            ]
+          },
+          "docHash": {
+            "type": "string"
+          }
         },
-        "required": ["status", "docHash"],
+        "required": [
+          "status",
+          "docHash"
+        ],
         "additionalProperties": true
       },
       "GetDocumentResponse": {
         "type": "object",
         "properties": {
-          "docHash": { "type": "string" },
-          "schemaId": { "type": "string" },
-          "issuerId": { "type": "string" },
-          "subjectId": { "type": "string" },
-          "commitmentRoot": { "type": "string" },
-          "chainId": { "type": "integer" },
-          "status": { "type": "string", "enum": ["registered", "anchored", "pending"] },
-          "onchainTxHash": { "type": ["string", "null"] },
-          "registeredAt": { "type": "string", "format": "date-time" }
+          "docHash": {
+            "type": "string"
+          },
+          "schemaId": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "commitmentRoot": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered",
+              "anchored",
+              "pending"
+            ]
+          },
+          "onchainTxHash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         },
-        "required": ["docHash", "schemaId", "issuerId", "subjectId", "commitmentRoot", "status", "registeredAt"],
+        "required": [
+          "docHash",
+          "schemaId",
+          "issuerId",
+          "subjectId",
+          "commitmentRoot",
+          "status",
+          "registeredAt"
+        ],
         "additionalProperties": false
       },
       "CountResponse": {
         "type": "object",
         "properties": {
-          "count": { "type": "integer", "minimum": 0 }
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
-        "required": ["count"],
+        "required": [
+          "count"
+        ],
         "additionalProperties": false
       },
       "DocumentStatsResponse": {
         "type": "object",
         "properties": {
-          "scopeId": { "type": "string" },
-          "total": { "type": "integer", "minimum": 0 },
+          "scopeId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
           "bySchema": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "schemaId": { "type": "string" },
-                "count": { "type": "integer", "minimum": 0 }
+                "schemaId": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
               },
-              "required": ["schemaId", "count"],
+              "required": [
+                "schemaId",
+                "count"
+              ],
               "additionalProperties": false
             }
           }
         },
-        "required": ["scopeId", "total", "bySchema"],
+        "required": [
+          "scopeId",
+          "total",
+          "bySchema"
+        ],
         "additionalProperties": false
       },
       "SelectiveDisclosure": {
         "type": "object",
         "properties": {
-          "format": { "type": "string", "enum": ["bbs+", "opaque"] },
-          "attributes": { "type": "object", "additionalProperties": true },
-          "proof": { "type": "string" }
+          "format": {
+            "type": "string",
+            "enum": [
+              "bbs+",
+              "opaque"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "proof": {
+            "type": "string"
+          }
         },
-        "required": ["format", "attributes", "proof"],
+        "required": [
+          "format",
+          "attributes",
+          "proof"
+        ],
         "additionalProperties": false
       },
       "SubmitProofRequest": {
         "type": "object",
         "properties": {
-          "docHash": { "type": "string" },
-          "circuitId": { "type": "string" },
-          "proof": { "type": "string" },
-          "inputs": { "type": "array", "items": { "type": "string" } },
-          "disclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" },
-          "onchain": { "type": "boolean" }
+          "docHash": {
+            "type": "string"
+          },
+          "circuitId": {
+            "type": "string"
+          },
+          "proof": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "disclosure": {
+            "$ref": "#/components/schemas/SelectiveDisclosure"
+          },
+          "onchain": {
+            "type": "boolean"
+          }
         },
-        "required": ["docHash", "circuitId", "proof", "inputs"],
+        "required": [
+          "docHash",
+          "circuitId",
+          "proof",
+          "inputs"
+        ],
         "additionalProperties": false
       },
       "SubmitProofResponse": {
@@ -247,44 +518,94 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["received", "verified", "onchain-verified", "rejected"]
+            "enum": [
+              "received",
+              "verified",
+              "onchain-verified",
+              "rejected"
+            ]
           },
-          "verificationId": { "type": "string" }
+          "verificationId": {
+            "type": "string"
+          }
         },
-        "required": ["status", "verificationId"],
+        "required": [
+          "status",
+          "verificationId"
+        ],
         "additionalProperties": true
       },
       "VerifiedAttributesQueryRequest": {
         "type": "object",
         "properties": {
-          "docHash": { "type": "string", "description": "Filter by specific document hash (optional)." },
+          "docHash": {
+            "type": "string",
+            "description": "Filter by specific document hash (optional)."
+          },
           "attributes": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "name": { "type": "string" },
-                "operator": { "type": "string", "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"] },
+                "name": {
+                  "type": "string"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "in",
+                    "contains"
+                  ]
+                },
                 "value": {}
               },
-              "required": ["name", "value"],
+              "required": [
+                "name",
+                "value"
+              ],
               "additionalProperties": false
             }
           },
           "proof": {
             "type": "object",
             "properties": {
-              "required": { "type": "boolean" },
-              "type": { "type": "string", "enum": ["zk-snark", "opaque"] }
+              "required": {
+                "type": "boolean"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "zk-snark",
+                  "opaque"
+                ]
+              }
             },
-            "required": ["required"],
+            "required": [
+              "required"
+            ],
             "additionalProperties": true
           },
           "targets": {
             "type": "object",
             "properties": {
-              "schemas": { "type": "array", "items": { "type": "string" } },
-              "chainIds": { "type": "array", "items": { "type": "integer" } }
+              "schemas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "chainIds": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
             },
             "additionalProperties": true
           },
@@ -292,34 +613,81 @@
             "type": "object",
             "description": "Opt-in disclosure access. Provide a ZK proof satisfying any condition attached to stored disclosures. Without this field, disclosures are never returned (privacy-by-default).",
             "properties": {
-              "proof": { "type": "string" },
-              "inputs": { "type": "array", "items": { "type": "string" } }
+              "proof": {
+                "type": "string"
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             },
-            "required": ["proof", "inputs"],
+            "required": [
+              "proof",
+              "inputs"
+            ],
             "additionalProperties": false
           },
-          "limit": { "type": "integer", "minimum": 1, "maximum": 200, "description": "Maximum number of results per page (1–200, default 50)." },
-          "offset": { "type": "integer", "minimum": 0, "description": "Number of results to skip for pagination (default 0)." }
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "Maximum number of results per page (1–200, default 50)."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of results to skip for pagination (default 0)."
+          }
         },
-        "required": ["attributes"],
+        "required": [
+          "attributes"
+        ],
         "additionalProperties": false
       },
       "VerifiedAttributesQueryResponseItem": {
         "type": "object",
         "properties": {
-          "docHash": { "type": "string" },
-          "schema": { "type": "string" },
-          "issuerId": { "type": "string" },
-          "subjectId": { "type": "string" },
-          "attributes": { "type": "object", "additionalProperties": true },
-          "proof": {
+          "docHash": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "attributes": {
             "type": "object",
-            "properties": { "status": { "type": "string" }, "circuitId": { "type": "string" } },
             "additionalProperties": true
           },
-          "disclosure": { "$ref": "#/components/schemas/SelectiveDisclosure" }
+          "proof": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "circuitId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "disclosure": {
+            "$ref": "#/components/schemas/SelectiveDisclosure"
+          }
         },
-        "required": ["docHash", "schema", "issuerId", "subjectId", "attributes"],
+        "required": [
+          "docHash",
+          "schema",
+          "issuerId",
+          "subjectId",
+          "attributes"
+        ],
         "additionalProperties": true
       },
       "VerifiedAttributesQueryResponse": {
@@ -327,15 +695,121 @@
         "properties": {
           "results": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem" }
+            "items": {
+              "$ref": "#/components/schemas/VerifiedAttributesQueryResponseItem"
+            }
           }
         },
-        "required": ["results"],
+        "required": [
+          "results"
+        ],
+        "additionalProperties": false
+      },
+      "DataProvenance": {
+        "type": "object",
+        "description": "Provenance on a proof-variant dataset response. contentHash is the SHA-256 of the canonical JSON of `data`; a client re-hashes and compares. docHash/registeredAt/verifyUrl are optional (present once the snapshot is registered). verifyUrl resolves to GET /v1/documents/{docHash}.",
+        "properties": {
+          "contentHash": {
+            "type": "string",
+            "description": "sha256:<hex> of the canonical JSON of data"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "snapshotAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "docHash": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verifyUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "contentHash",
+          "issuerId",
+          "snapshotAt"
+        ],
+        "additionalProperties": false
+      },
+      "DatasetResponse": {
+        "type": "object",
+        "description": "A verified-provenance public dataset served under the feeds suite. data/source are byte-identical across the proof and plain variants; only provenance differs. source.attribution always present (licence requirement).",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "example": "jp-holidays"
+          },
+          "range": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "license": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "attribution",
+              "license"
+            ],
+            "additionalProperties": false
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/DataProvenance"
+          }
+        },
+        "required": [
+          "dataset",
+          "range",
+          "data",
+          "source"
+        ],
         "additionalProperties": false
       }
     }
   },
-  "security": [{ "ApiKeyAuth": [] }],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
   "paths": {
     "/v1/health": {
       "get": {
@@ -347,8 +821,14 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "ok": { "type": "boolean" } },
-                  "required": ["ok"]
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ]
                 }
               }
             }
@@ -361,20 +841,32 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaMeta"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Registered",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaMeta"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -384,19 +876,34 @@
       "get": {
         "security": [],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/SchemaMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaMeta"
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -407,20 +914,32 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CircuitMeta"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Registered",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CircuitMeta"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -430,19 +949,34 @@
       "get": {
         "security": [],
         "parameters": [
-          { "name": "circuitId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "circuitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/CircuitMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CircuitMeta"
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -453,20 +987,32 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneratorMeta"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Registered",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratorMeta"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -476,19 +1022,34 @@
       "get": {
         "security": [],
         "parameters": [
-          { "name": "generatorId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "generatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/GeneratorMeta" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratorMeta"
+                }
+              }
             }
           },
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -500,7 +1061,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RegisterDocumentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDocumentRequest"
+              }
             }
           }
         },
@@ -509,14 +1072,20 @@
             "description": "Registered",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/RegisterDocumentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterDocumentResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -531,7 +1100,9 @@
             "name": "schema",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -539,14 +1110,20 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/DocumentStatsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentStatsResponse"
+                }
               }
             }
           },
           "401": {
             "description": "Unauthorized",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -560,7 +1137,9 @@
             "name": "docHash",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -568,14 +1147,20 @@
             "description": "Found",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetDocumentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetDocumentResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Not Found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -586,7 +1171,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/SubmitProofRequest" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitProofRequest"
+              }
+            }
           }
         },
         "responses": {
@@ -594,14 +1183,20 @@
             "description": "Submitted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/SubmitProofResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitProofResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -613,7 +1208,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/VerifiedAttributesQueryRequest"
+              }
             }
           }
         },
@@ -622,20 +1219,25 @@
             "description": "Results",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VerifiedAttributesQueryResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/VerifiedAttributesQueryResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad Request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
       }
     },
-
     "/v1/verification-count": {
       "get": {
         "summary": "Total proof verifications (V)",
@@ -646,7 +1248,9 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CountResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
               }
             }
           }
@@ -663,7 +1267,9 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CountResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
               }
             }
           }
@@ -675,13 +1281,27 @@
         "operationId": "issueAgentIdentity",
         "summary": "Agent Identity Issuance — issue a W3C VC v2 credential with Poseidon Merkle inclusion proof",
         "description": "For AI agents that need to issue verifiable identity credentials to other agents or services, this endpoint mints a W3C VC v2 credential with Poseidon Merkle inclusion proof and Groth16 zero-knowledge verification.",
-        "tags": ["bazaar", "infrastructure", "agent-identity"],
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "agent-identity"
+        ],
         "x-bazaar": {
           "discoverable": true,
           "schema": "agent-identity-authority-v1",
           "category": "Infrastructure",
-          "subTags": ["agent-identity", "zk-proof", "did", "kya", "verifiable-credentials"],
-          "price": { "amount": "0.05", "currency": "USDC", "network": "base" }
+          "subTags": [
+            "agent-identity",
+            "zk-proof",
+            "did",
+            "kya",
+            "verifiable-credentials"
+          ],
+          "price": {
+            "amount": "0.05",
+            "currency": "USDC",
+            "network": "base"
+          }
         },
         "x-lemma-circuit": {
           "id": "agent-identity-v1",
@@ -692,51 +1312,134 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/suites/product-a-input.json" } }
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/suites/product-a-input.json"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Credential issued, anchored, and ready for downstream verification",
             "headers": {
-              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "agent-identity-authority-v1" } },
-              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "agent-identity-authority-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
               "EXTENSION-RESPONSES": {
-                "schema": { "type": "string" },
+                "schema": {
+                  "type": "string"
+                },
                 "description": "CDP facilitator processing status (status=accepted|processing|rejected). Returned only when settled via the CDP facilitator with discoverable: true."
               }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/suites/product-a-output.json" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/suites/product-a-output.json"
+                }
+              }
             }
           },
-          "400": { "description": "Validation error",          "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",    "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
           "402": {
             "description": "Payment required (x402 challenge)",
             "headers": {
-              "X-PAYMENT-RESPONSE": { "schema": { "type": "string" }, "description": "x402 payment challenge envelope." }
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "x402 payment challenge envelope."
+              }
             },
-            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true, "description": "x402 challenge body. See @x402/core spec for shape." } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "description": "x402 challenge body. See @x402/core spec for shape."
+                }
+              }
+            }
           },
-          "404": { "description": "Subject prerequisite missing", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
+          "404": {
+            "description": "Subject prerequisite missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          }
         }
       }
     },
-
     "/v1/suites/inference/attest": {
       "post": {
         "operationId": "attestInference",
         "summary": "Inference Attestation API — Groth16 attestation that a given model produced a given output",
         "description": "For AI agents and companies running their own inference (Bedrock, OpenAI, Anthropic, Ollama), this endpoint generates a Groth16 zero-knowledge attestation that proves which model produced which output, anchored on Base mainnet. Lemma never sees raw data.",
-        "tags": ["bazaar", "inference"],
+        "tags": [
+          "bazaar",
+          "inference"
+        ],
         "x-bazaar": {
           "discoverable": true,
           "schema": "inference-attestation-v1",
           "category": "Inference",
-          "subTags": ["verifiable-ai", "audit-trail", "zk-proof", "provenance", "inference-attestation", "claim-check", "model-tampering-detection"],
-          "price": { "amount": "0.07", "currency": "USDC", "network": "base" }
+          "subTags": [
+            "verifiable-ai",
+            "audit-trail",
+            "zk-proof",
+            "provenance",
+            "inference-attestation",
+            "claim-check",
+            "model-tampering-detection"
+          ],
+          "price": {
+            "amount": "0.07",
+            "currency": "USDC",
+            "network": "base"
+          }
         },
         "x-lemma-circuit": {
           "id": "attestation-commitment-v1",
@@ -747,47 +1450,137 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/suites/product-b-input.json" } }
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/suites/product-b-input.json"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Attestation generated, anchored, and ready for downstream verification",
             "headers": {
-              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "inference-attestation-v1" } },
-              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Inference" } },
-              "X-Lemma-Attestation": { "schema": { "type": "string" }, "description": "Compact attestation reference (id;verify=URL;circuit=name)." },
-              "X-Lemma-Attestation-Status": { "schema": { "type": "string", "enum": ["anchored", "deferred"] } },
-              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "inference-attestation-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Inference"
+                }
+              },
+              "X-Lemma-Attestation": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Compact attestation reference (id;verify=URL;circuit=name)."
+              },
+              "X-Lemma-Attestation-Status": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "anchored",
+                    "deferred"
+                  ]
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/suites/product-b-output.json" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/suites/product-b-output.json"
+                }
+              }
             }
           },
-          "400": { "description": "Validation error / timestamp skew", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",            "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "400": {
+            "description": "Validation error / timestamp skew",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
           "402": {
             "description": "Payment required (x402 challenge)",
-            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
-            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          }
         }
       }
     },
-
     "/v1/suites/compliance/bundle": {
       "post": {
         "operationId": "issueComplianceBundle",
         "summary": "Compliance Attestation Bundle (Basic) — BBS+ selective-disclosure proof for 2-3 standard attributes",
         "description": "For AI agents that need to present compliance claims (KYC status, jurisdiction, sanctions clearance) to gated endpoints without revealing underlying data, this Basic bundle returns a BBS+ selective-disclosure proof for 2-3 standard attributes per call.",
-        "tags": ["bazaar", "infrastructure", "compliance"],
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "compliance"
+        ],
         "x-bazaar": {
           "discoverable": true,
           "schema": "compliance-bundle-v1",
           "category": "Infrastructure",
-          "subTags": ["compliance", "mica", "kyc", "bbs", "selective-disclosure", "regulatory"],
-          "price": { "amount": "0.08", "currency": "USDC", "network": "base" }
+          "subTags": [
+            "compliance",
+            "mica",
+            "kyc",
+            "bbs",
+            "selective-disclosure",
+            "regulatory"
+          ],
+          "price": {
+            "amount": "0.08",
+            "currency": "USDC",
+            "network": "base"
+          }
         },
         "x-lemma-circuit": {
           "id": "bbs-bls12-381",
@@ -798,77 +1591,191 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/suites/product-c-input.json" } }
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/suites/product-c-input.json"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Bundle generated with the requested disclosure mode",
             "headers": {
-              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "compliance-bundle-v1" } },
-              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
-              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "compliance-bundle-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/suites/product-c-output.json" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/suites/product-c-output.json"
+                }
+              }
             }
           },
-          "400": { "description": "Validation / unsupported attribute (Basic plan)", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "401": { "description": "Authentication failure",                          "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "400": {
+            "description": "Validation / unsupported attribute (Basic plan)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
           "402": {
             "description": "Payment required (x402 challenge)",
-            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
-            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
           },
-          "404": { "description": "Subject onboarding missing", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "500": { "description": "Internal error",             "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
+          "404": {
+            "description": "Subject onboarding missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          }
         }
       }
     },
-
     "/v1/suites/auth/challenge": {
       "get": {
         "operationId": "issueAuthChallenge",
         "summary": "ZK Proof Sign-in challenge — issue a single-use nonce (free, no x402)",
         "description": "Companion to /v1/suites/auth/proof. Returns a fresh 60-second single-use nonce that the client uses when generating the Groth16 sign-in proof. Free — payment is only required for the proof submission itself.",
-        "tags": ["bazaar", "infrastructure", "auth"],
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "auth"
+        ],
         "responses": {
           "200": {
             "description": "Nonce issued",
             "headers": {
-              "Cache-Control": { "schema": { "type": "string", "const": "no-store" } }
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
             },
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["nonce", "expires_at"],
+                  "required": [
+                    "nonce",
+                    "expires_at"
+                  ],
                   "properties": {
-                    "nonce": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
-                    "expires_at": { "type": "string", "format": "date-time" }
+                    "nonce": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{32}$"
+                    },
+                    "expires_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
                   }
                 }
               }
             }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          }
         }
       }
     },
-
     "/v1/suites/auth/proof": {
       "post": {
         "operationId": "verifyAuthProof",
         "summary": "ZK Proof-as-Auth (Sign-in) — verify Groth16 proof of API key possession, mint short-lived JWT",
         "description": "For AI agents that need to call authenticated APIs without ever holding the API key — beyond the reach of prompt injection or context leaks — this endpoint accepts a Groth16 zero-knowledge proof of API key possession and returns a short-lived JWT.",
-        "tags": ["bazaar", "infrastructure", "auth"],
+        "tags": [
+          "bazaar",
+          "infrastructure",
+          "auth"
+        ],
         "x-bazaar": {
           "discoverable": true,
           "schema": "seal-identity-v1",
           "category": "Infrastructure",
-          "subTags": ["auth", "zk-proof", "sign-in", "proof-as-auth", "credential-free", "passwordless", "api-key", "prompt-injection-defense"],
-          "price": { "amount": "0.02", "currency": "USDC", "network": "base" }
+          "subTags": [
+            "auth",
+            "zk-proof",
+            "sign-in",
+            "proof-as-auth",
+            "credential-free",
+            "passwordless",
+            "api-key",
+            "prompt-injection-defense"
+          ],
+          "price": {
+            "amount": "0.02",
+            "currency": "USDC",
+            "network": "base"
+          }
         },
         "x-lemma-circuit": {
           "id": "seal-identity-v1",
@@ -879,29 +1786,228 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "./schemas/suites/product-d-input.json" } }
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas/suites/product-d-input.json"
+              }
+            }
           }
         },
         "responses": {
           "200": {
             "description": "Proof verified, JWT minted",
             "headers": {
-              "X-Lemma-Bazaar-Schema": { "schema": { "type": "string", "const": "seal-identity-v1" } },
-              "X-Lemma-Bazaar-Category": { "schema": { "type": "string", "const": "Infrastructure" } },
-              "EXTENSION-RESPONSES": { "schema": { "type": "string" }, "description": "CDP facilitator processing status." }
+              "X-Lemma-Bazaar-Schema": {
+                "schema": {
+                  "type": "string",
+                  "const": "seal-identity-v1"
+                }
+              },
+              "X-Lemma-Bazaar-Category": {
+                "schema": {
+                  "type": "string",
+                  "const": "Infrastructure"
+                }
+              },
+              "EXTENSION-RESPONSES": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "CDP facilitator processing status."
+              }
             },
             "content": {
-              "application/json": { "schema": { "$ref": "./schemas/suites/product-d-output.json" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/suites/product-d-output.json"
+                }
+              }
             }
           },
-          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
-          "401": { "description": "Nonce expired / proof verification failed", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Nonce expired / proof verification failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          },
           "402": {
             "description": "Payment required (x402 challenge)",
-            "headers": { "X-PAYMENT-RESPONSE": { "schema": { "type": "string" } } },
-            "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } }
+            "headers": {
+              "X-PAYMENT-RESPONSE": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
           },
-          "500": { "description": "Internal error", "content": { "application/json": { "schema": { "$ref": "./schemas/bazaar/canonical-error.json" } } } }
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas/bazaar/canonical-error.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/suites/feeds/{dataset}/latest": {
+      "get": {
+        "summary": "Latest dataset snapshot (proof variant)",
+        "description": "Public. Returns the latest verified snapshot of a public dataset with its provenance. Served no-cache: each read re-verifies the snapshot's proofs, advancing the public verification counter for this dataset's source. source.attribution is always present.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "dataset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "description": "Dataset id, e.g. jp-holidays"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Single year, e.g. 2026"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range start (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range end (YYYY-MM-DD)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/suites/feeds/{dataset}/latest/plain": {
+      "get": {
+        "summary": "Latest dataset snapshot (plain variant, no provenance)",
+        "description": "Public control variant. Byte-identical data/source to the proof variant, with the provenance block omitted and no proof re-verification. The A/B counterpart used to isolate the effect of provenance.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "dataset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "description": "Dataset id, e.g. jp-holidays"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Single year, e.g. 2026"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range start (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range end (YYYY-MM-DD)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
         }
       }
     }

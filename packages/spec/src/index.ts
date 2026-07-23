@@ -243,6 +243,52 @@ export type DocumentStatsResponse = Readonly<{
   bySchema: ReadonlyArray<Readonly<{ schemaId: string; count: number }>>;
 }>;
 
+/* ── Dataset feeds (verified public-data API) ────────────────────────── */
+
+/**
+ * Provenance block on a proof-variant dataset response.
+ *
+ * `contentHash` is the SHA-256 of the canonical JSON of `data` (keys sorted,
+ * LF, no trailing newline, UTF-8). A client re-hashes `data` and compares it —
+ * fetching the dataset is itself the minimal verification act.
+ *
+ * `docHash`, `registeredAt`, `verifyUrl` are optional: a freshly fetched
+ * snapshot whose Lemma document registration is still pending is served anyway
+ * (freshness first), carrying only `contentHash` until registration completes.
+ *
+ * `verifyUrl` resolves to GET /v1/documents/{docHash} — the public registration
+ * record (issuer, registered-at, revocation status), not a per-document page.
+ */
+export type DataProvenance = Readonly<{
+  contentHash: string;
+  issuerId: string;
+  snapshotAt: string;
+  docHash?: string;
+  registeredAt?: string;
+  verifyUrl?: string;
+}>;
+
+/**
+ * GET /v1/suites/feeds/{dataset}/latest        — proof variant (provenance present)
+ * GET /v1/suites/feeds/{dataset}/latest/plain  — plain variant (no provenance)
+ *
+ * A verified-provenance public dataset served under the feeds suite. `data` and
+ * `source` are byte-identical across both variants; only `provenance` differs,
+ * so the two form an A/B pair. The proof variant re-verifies the snapshot's
+ * proofs on each read (served no-cache), which is what advances the public
+ * verification counter for this dataset's source.
+ *
+ * `source.attribution` is always present: the upstream licence requires the
+ * attribution to travel with every copy, so it is guaranteed on the wire.
+ */
+export type DatasetResponse = Readonly<{
+  dataset: string;
+  range: Readonly<{ from: string; to: string }>;
+  data: ReadonlyArray<Readonly<Record<string, unknown>>>;
+  source: Readonly<{ url: string; attribution: string; license: string }>;
+  provenance?: DataProvenance;
+}>;
+
 /* ── Proofs ─────────────────────────────────────────────────────────── */
 
 export type SelectiveDisclosure = Readonly<{
