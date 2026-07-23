@@ -2,15 +2,18 @@
  * Forex data feed — Frankfurter API.
  *
  * Fetches ECB reference exchange rates from the Frankfurter API
- * (https://api.frankfurter.app).  Free, no API key required.
- * Rates are updated daily around 14:15 CET.
+ * (https://api.frankfurter.app) via the fetcher Workers (fetch primitive).
+ * Free, no API key required.  Rates are updated daily around 14:15 CET.
  *
- * The feed produces a data-commitment-v1 commitment over the full API
- * response (amount, base, date, rates), which binds all rate pairs
- * into a single Merkle root.
+ * The fetcher Workers returns raw JSON + its own commitment (float rates).
+ * This feed scales rates by 10^8 (via Math.round(rate * 1e8)) and re-commits
+ * with commitDeep({maxDepth: 16}) to match the forex-average-v1 circuit's
+ * 16-level Poseidon tree.  Scaling happens in the feeds layer, not in the
+ * fetcher — the fetcher is a pure fetch+commit primitive.
  */
 
 import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
+import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import type { Json } from "@lemmaoracle/sdk";
 import type { FeedSource } from "../types.js";
 
@@ -19,37 +22,41 @@ import type { FeedSource } from "../types.js";
 /** Default base currency. */
 const DEFAULT_BASE = "USD";
 
-/** Comma-separated list of symbols to fetch, or undefined for all. */
-const DEFAULT_SYMBOLS: string | undefined = undefined;
-
 /** Default fetcher Workers endpoint. */
 const DEFAULT_FETCHER_URL = "https://fetcher.lemma.workers.dev";
 
-// ── URL builder ───────────────────────────────────────────────────────────
+/** Scale factor for integer rates. */
+const SCALE = 1e8;
 
-const buildUrl = (base: string, symbols?: string): string => {
-  const url = new URL("https://api.frankfurter.app/latest");
-  url.searchParams.set("from", base);
-  if (symbols) {
-    for (const s of symbols.split(",").map((c) => c.trim())) {
-      url.searchParams.append("symbols", s);
-    }
-  }
-  return url.toString();
-};
+// ── helpers ───────────────────────────────────────────────────────────────
+
+const scaleRate = (rate: number): number => Math.round(rate * SCALE);
+
+const jsonString = (v: Json | undefined, fallback: string): string =>
+  typeof v === "string"
+    ? v
+    : typeof v === "number" || typeof v === "boolean"
+      ? String(v)
+      : fallback;
+
+const scaleRates = (
+  rawRates: Readonly<Record<string, Json>>,
+): Readonly<Record<string, number>> =>
+  Object.fromEntries(
+    Object.entries(rawRates).map(([ccy, rate]) => [ccy, scaleRate(Number(rate))]),
+  );
 
 // ── feed source ───────────────────────────────────────────────────────────
 
 /**
  * Frankfurter forex feed source.
  *
- * Fetches ECB reference rates via the deployed fetcher Workers
- * (https://fetcher.lemma.workers.dev).  The base currency and symbol filter
- * are read from environment variables at fetch time:
+ * Fetches ECB reference rates via the fetcher Workers (fetch primitive),
+ * scales rates by 10^8, and commits locally with commitDeep.
  *
+ * Environment variables:
  *   FETCHER_URL=https://fetcher.lemma.workers.dev
- *   FETCHER_API_KEY=...
- *   FOREX_BASE=JPY FOREX_SYMBOLS=USD,EUR tsx src/cli.ts forex/frankfurter
+ *   FOREX_BASE=USD tsx src/cli.ts forex/frankfurter
  */
 export const frankfurterForex: FeedSource = {
   id: "forex/frankfurter",
@@ -58,39 +65,69 @@ export const frankfurterForex: FeedSource = {
 
   getDocumentId: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    return String(obj["date"] ?? "unknown");
+    return jsonString(obj["date"], "unknown");
   },
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    const rates = (obj["rates"] as Readonly<Record<string, Json>>) ?? {};
+    const rates = (obj["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
     return {
       source: "frankfurter",
-      base: String(obj["base"] ?? ""),
-      date: String(obj["date"] ?? ""),
-      amount: String(obj["amount"] ?? "1"),
+      base: jsonString(obj["base"], ""),
+      date: jsonString(obj["date"], ""),
+      amount: jsonString(obj["amount"], "1"),
       ...Object.fromEntries(
-        Object.entries(rates).map(([k, v]) => [`rates.${k}`, String(v)]),
+        Object.entries(rates).map(([k, v]) => [`rates.${k}`, jsonString(v, "")]),
       ),
     };
   },
 
-  fetch: async (_config?: FetcherConfig): Promise<FetchResult> => {
+  fetch: (_config?: FetcherConfig): Promise<FetchResult> => {
     const base: string = process.env["FOREX_BASE"] ?? DEFAULT_BASE;
-    const symbols: string | undefined =
-      process.env["FOREX_SYMBOLS"] ?? DEFAULT_SYMBOLS;
     const fetcherUrl: string =
       process.env["FETCHER_URL"] ?? DEFAULT_FETCHER_URL;
-    const fetcherKey: string = process.env["FETCHER_API_KEY"] ?? "";
 
-    const sourceUrl = buildUrl(base, symbols);
+    // 1. Fetch raw data via fetcher Workers (fetch primitive)
+    const sourceUrl = `https://api.frankfurter.app/latest?from=${base}`;
     const endpoint = `${fetcherUrl}/fetch?url=${encodeURIComponent(sourceUrl)}`;
-    const headers: Record<string, string> = {};
-    if (fetcherKey) headers["X-API-Key"] = fetcherKey;
-    const res = await fetch(endpoint, { headers });
-    if (!res.ok) {
-      throw new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`);
-    }
-    return (await res.json()) as FetchResult;
+
+    return fetch(endpoint).then((res) =>
+      !res.ok
+        ? Promise.reject(
+            new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`),
+          )
+        : res.json().then((body: unknown) => {
+            const fetched = body as FetchResult;
+
+            // 2. Extract raw rates from fetched data (fetcher returns float rates)
+            const raw = fetched.data as Readonly<Record<string, Json>>;
+            const rawRates =
+              (raw["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
+            const date = jsonString(raw["date"], "");
+            const amount = Number(raw["amount"] ?? 1);
+
+            // 3. Scale rates ×10^8 (feeds-layer responsibility, not fetcher's)
+            const scaledRates = scaleRates(rawRates);
+
+            // 4. Build normalized JSON + commit locally with scaled integers
+            const normalized: Json = {
+              base,
+              date,
+              amount,
+              rates: scaledRates as unknown as Json,
+            };
+
+            const { canonical } = canonicalSort(normalized);
+            const commitment = commitDeep(normalized, { maxDepth: 16 });
+
+            return {
+              source: "forex/frankfurter",
+              fetchedAt: Date.now(),
+              data: normalized,
+              canonical,
+              commitment,
+            };
+          }),
+    );
   },
 };

@@ -72,11 +72,16 @@ const serializeString = (s: string): string =>
  * - Otherwise: `String(n)` which per ECMAScript already yields the shortest
  *   string that round-trips to the same number64.
  */
-const serializeNumber = (n: number): string => {
-  // eslint-disable-next-line functional/no-conditional-statements, functional/no-throw-statements -- invalid input
-  if (!Number.isFinite(n)) throw new Error(`canonical-sort: non-finite number: ${String(n)}`);
-  return Object.is(n, -0) ? "0" : String(n);
-};
+const serializeNumber = (n: number): string =>
+  !Number.isFinite(n)
+    ? (() => {
+        // Sync canonicalize API cannot return Promise.reject; invalid JSON numbers are a hard error.
+        // eslint-disable-next-line functional/no-throw-statements -- sync validation boundary
+        throw new Error(`canonical-sort: non-finite number: ${String(n)}`);
+      })()
+    : Object.is(n, -0)
+      ? "0"
+      : String(n);
 
 // ── recursive canonicalisation ──────────────────────────────────────────
 

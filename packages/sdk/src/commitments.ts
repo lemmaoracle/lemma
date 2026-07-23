@@ -164,12 +164,17 @@ const extractPathValues = (
         : typeof value === "string"
           ? [{ path: prefix, value }]
           : Array.isArray(value)
-            ? (value as readonly Json[]).flatMap((item: Json, i) =>
+            ? (value as ReadonlyArray<Json>).flatMap((item, i) =>
                 extractPathValues(item, appendIndex(prefix, i)),
               )
             : Object.keys(value as Readonly<Record<string, Json>>)
                 .sort()
-                .flatMap((k) => extractPathValues((value as Readonly<Record<string, Json>>)[k] as Json, appendKey(prefix, k)));
+                .flatMap((k) =>
+                  extractPathValues(
+                    (value as Readonly<Record<string, Json>>)[k] as Json,
+                    appendKey(prefix, k),
+                  ),
+                );
 
 /** Extract path-value pairs from the root JSON value. Paths start with `$`. */
 const extractPaths = (value: Json): ReadonlyArray<PathValue> =>
@@ -235,6 +240,7 @@ const buildMerkleTree = (
           inclusionProofs: [{ siblings: [], indices: [] }],
         }
       : (() => {
+  // Pad to next power of 2 (or 2^maxDepth if specified) and build tree
     const minDepth = Math.ceil(Math.log2(leafCount));
     const depth = maxDepth !== undefined ? Math.max(minDepth, maxDepth) : minDepth;
     const size = Math.pow(2, depth);
@@ -405,7 +411,6 @@ export const commitDeep = (
           null,
           maxDepth,
         );
-
         return {
           root: toHex(root),
           leaves: R.map((leaf: bigint) => toHex(leaf), leafResult.leaves),

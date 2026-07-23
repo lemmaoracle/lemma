@@ -202,20 +202,15 @@ const buildMerkleTree = (
 ): TreeResult => {
   const leafCount = leaves.length;
 
-  // eslint-disable-next-line functional/no-conditional-statements -- guard
-  if (leafCount === 0) {
-    return { root: 0n, depth: 0, inclusionProofs: [] };
-  }
-
-  // eslint-disable-next-line functional/no-conditional-statements -- guard
-  if (leafCount === 1 && (maxDepth === undefined || maxDepth === 0)) {
-    return {
-      root: leaves[0] ?? 0n,
-      depth: 0,
-      inclusionProofs: [{ siblings: [], indices: [] }],
-    };
-  }
-
+  return leafCount === 0
+    ? { root: 0n, depth: 0, inclusionProofs: [] }
+    : leafCount === 1 && (maxDepth === undefined || maxDepth === 0)
+      ? {
+          root: leaves[0] ?? 0n,
+          depth: 0,
+          inclusionProofs: [{ siblings: [], indices: [] }],
+        }
+      : (() => {
   const minDepth = Math.ceil(Math.log2(leafCount));
   const depth = maxDepth !== undefined ? Math.max(minDepth, maxDepth) : minDepth;
   const size = Math.pow(2, depth);
@@ -262,6 +257,7 @@ const buildMerkleTree = (
   });
 
   return { root, depth, inclusionProofs };
+      })();
 };
 
 // ── public API ──────────────────────────────────────────────────────────
@@ -287,35 +283,34 @@ export const commitToData = (
   const r = randomness ?? randomHex(32);
   const pathValues = extractPaths(value);
 
-  // eslint-disable-next-line functional/no-conditional-statements -- guard
-  if (pathValues.length === 0) {
-    // Empty object/array at root — still commit to an empty tree
-    return {
-      root: toHex(0n),
-      randomness: `0x${r}`,
-      depth: 0,
-      leaves: [],
-      inclusionProofs: [],
-      leafPreimages: [],
-      pathValues: [],
-    };
-  }
+  return pathValues.length === 0
+    ? {
+        // Empty object/array at root — still commit to an empty tree
+        root: toHex(0n),
+        randomness: `0x${r}`,
+        depth: 0,
+        leaves: [],
+        inclusionProofs: [],
+        leafPreimages: [],
+        pathValues: [],
+      }
+    : (() => {
+        const leafResults = pathValues.map((pv) => computeLeaf(pv, r));
+        const leaves = leafResults.map((res) => res.leaf);
+        const preimages = leafResults.map((res) => res.preimage);
 
-  const leafResults = pathValues.map((pv) => computeLeaf(pv, r));
-  const leaves = leafResults.map((res) => res.leaf);
-  const preimages = leafResults.map((res) => res.preimage);
+        const { root, depth, inclusionProofs } = buildMerkleTree(leaves, maxDepth);
 
-  const { root, depth, inclusionProofs } = buildMerkleTree(leaves, maxDepth);
-
-  return {
-    root: toHex(root),
-    randomness: `0x${r}`,
-    depth,
-    leaves: leaves.map((leaf) => toHex(leaf)),
-    inclusionProofs,
-    leafPreimages: preimages,
-    pathValues,
-  };
+        return {
+          root: toHex(root),
+          randomness: `0x${r}`,
+          depth,
+          leaves: leaves.map((leaf) => toHex(leaf)),
+          inclusionProofs,
+          leafPreimages: preimages,
+          pathValues,
+        };
+      })();
 };
 
 // ── verification (non-ZK, for Level 2) ──────────────────────────────────
