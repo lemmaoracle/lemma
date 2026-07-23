@@ -26,7 +26,8 @@
     "type-check": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run",
-    "seed:jp-holidays": "tsx scripts/seed-jp-holidays.ts"
+    "seed:jp-holidays": "tsx scripts/seed-jp-holidays.ts",
+    "seed:jp-postal-codes": "tsx scripts/seed-jp-postal-codes.ts"
   },
   "dependencies": {
     "@lemmaoracle/fetcher": "workspace:*",

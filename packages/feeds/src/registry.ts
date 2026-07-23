@@ -11,6 +11,7 @@ import { frankfurterForex } from "./feeds/forex.js";
 import { erApiForex } from "./feeds/forex-er-api.js";
 import { forexComposite } from "./feeds/forex-composite.js";
 import { jpHolidays } from "./feeds/jp-holidays.js";
+import { jpPostalCodes } from "./feeds/jp-postal-codes.js";
 
 // ── registry ──────────────────────────────────────────────────────────────
 
@@ -26,6 +27,7 @@ const feedMap = new Map<string, FeedSource>([
   [erApiForex.id, erApiForex],
   [forexComposite.id, forexComposite],
   [jpHolidays.id, jpHolidays],
+  [jpPostalCodes.id, jpPostalCodes],
 ]);
 
 // ── public API ────────────────────────────────────────────────────────────
