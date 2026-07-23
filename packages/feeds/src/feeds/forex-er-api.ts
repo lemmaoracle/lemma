@@ -13,7 +13,7 @@
 
 import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
-import type { CommitResult, Json } from "@lemmaoracle/sdk";
+import type { Json } from "@lemmaoracle/sdk";
 import type { FeedSource } from "../types.js";
 
 // ── configuration ─────────────────────────────────────────────────────────
@@ -30,6 +30,20 @@ const SCALE = 1e8;
 // ── helpers ───────────────────────────────────────────────────────────────
 
 const scaleRate = (rate: number): number => Math.round(rate * SCALE);
+
+const jsonString = (v: Json | undefined, fallback: string): string =>
+  typeof v === "string"
+    ? v
+    : typeof v === "number" || typeof v === "boolean"
+      ? String(v)
+      : fallback;
+
+const scaleRates = (
+  rawRates: Readonly<Record<string, Json>>,
+): Readonly<Record<string, number>> =>
+  Object.fromEntries(
+    Object.entries(rawRates).map(([ccy, rate]) => [ccy, scaleRate(Number(rate))]),
+  );
 
 // ── feed source ───────────────────────────────────────────────────────────
 
@@ -50,23 +64,23 @@ export const erApiForex: FeedSource = {
 
   getDocumentId: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    return String(obj["date"] ?? "unknown");
+    return jsonString(obj["date"], "unknown");
   },
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    const rates = (obj["rates"] as Readonly<Record<string, Json>>) ?? {};
+    const rates = (obj["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
     return {
       source: "exchangerate-api",
-      base: String(obj["base"] ?? ""),
-      date: String(obj["date"] ?? ""),
+      base: jsonString(obj["base"], ""),
+      date: jsonString(obj["date"], ""),
       ...Object.fromEntries(
-        Object.entries(rates).map(([k, v]) => [`rates.${k}`, String(v)]),
+        Object.entries(rates).map(([k, v]) => [`rates.${k}`, jsonString(v, "")]),
       ),
     };
   },
 
-  fetch: async (_config?: FetcherConfig): Promise<FetchResult> => {
+  fetch: (_config?: FetcherConfig): Promise<FetchResult> => {
     const base: string = process.env["FOREX_BASE"] ?? DEFAULT_BASE;
     const fetcherUrl: string =
       process.env["FETCHER_URL"] ?? DEFAULT_FETCHER_URL;
@@ -74,39 +88,42 @@ export const erApiForex: FeedSource = {
     // 1. Fetch raw data via fetcher Workers (fetch primitive)
     const sourceUrl = `https://open.er-api.com/v6/latest/${base}`;
     const endpoint = `${fetcherUrl}/fetch?url=${encodeURIComponent(sourceUrl)}`;
-    const res = await fetch(endpoint);
-    if (!res.ok) {
-      throw new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`);
-    }
-    const fetched = (await res.json()) as FetchResult;
 
-    // 2. Extract raw rates from fetched data
-    const raw = fetched.data as Readonly<Record<string, Json>>;
-    const rawRates = (raw["rates"] as Readonly<Record<string, Json>>) ?? {};
-    const date = String(raw["time_last_update_utc"] ?? "");
+    return fetch(endpoint).then((res) =>
+      !res.ok
+        ? Promise.reject(
+            new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`),
+          )
+        : res.json().then((body: unknown) => {
+            const fetched = body as FetchResult;
 
-    // 3. Scale rates ×10^8 (feeds-layer responsibility, not fetcher's)
-    const scaledRates: Record<string, number> = {};
-    for (const [ccy, rate] of Object.entries(rawRates)) {
-      scaledRates[ccy] = scaleRate(Number(rate));
-    }
+            // 2. Extract raw rates from fetched data
+            const raw = fetched.data as Readonly<Record<string, Json>>;
+            const rawRates =
+              (raw["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
+            const date = jsonString(raw["time_last_update_utc"], "");
 
-    // 4. Build normalized JSON + commit locally with scaled integers
-    const normalized: Json = {
-      base,
-      date,
-      rates: scaledRates as unknown as Json,
-    };
+            // 3. Scale rates ×10^8 (feeds-layer responsibility, not fetcher's)
+            const scaledRates = scaleRates(rawRates);
 
-    const { canonical } = canonicalSort(normalized);
-    const commitment = commitDeep(normalized, { maxDepth: 16 }) as CommitResult;
+            // 4. Build normalized JSON + commit locally with scaled integers
+            const normalized: Json = {
+              base,
+              date,
+              rates: scaledRates as unknown as Json,
+            };
 
-    return {
-      source: "forex/er-api",
-      fetchedAt: Date.now(),
-      data: normalized,
-      canonical,
-      commitment,
-    };
+            const { canonical } = canonicalSort(normalized);
+            const commitment = commitDeep(normalized, { maxDepth: 16 });
+
+            return {
+              source: "forex/er-api",
+              fetchedAt: Date.now(),
+              data: normalized,
+              canonical,
+              commitment,
+            };
+          }),
+    );
   },
 };

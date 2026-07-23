@@ -121,26 +121,29 @@ const fetchArtifactIpfs = (
  * only recognises Uint8Array | string (file path).  A raw ArrayBuffer
  * would cause "Invalid FastFile type: undefined".
  */
-const fetchArtifactCached = async (
+const fetchArtifactCached = (
   client: LemmaClient,
   url: string,
 ): Promise<Uint8Array> => {
   const cached = artifactCache.get(url);
-  if (cached) return cached;
-
-  const fetchFn = resolveFetch(client);
-  const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
-  const promise: Promise<Uint8Array> =
-    cid !== null
-      ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
-      : fetchFn(url).then((res) =>
-          res.ok
-            ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
-            : reject(`Failed to fetch circuit artifact: ${url}`),
-        );
-
-  artifactCache.set(url, promise);
-  return promise;
+  return cached !== undefined
+    ? cached
+    : (() => {
+        const fetchFn = resolveFetch(client);
+        const cid = url.startsWith("ipfs://") ? url.slice("ipfs://".length) : null;
+        const promise: Promise<Uint8Array> =
+          cid !== null
+            ? fetchArtifactIpfs(fetchFn, IPFS_GATEWAYS, cid, url)
+            : fetchFn(url).then((res) =>
+                res.ok
+                  ? res.arrayBuffer().then((buf) => new Uint8Array(buf))
+                  : reject(`Failed to fetch circuit artifact: ${url}`),
+              );
+        // imperative: Map in-memory artifact cache — no functional alternative
+        // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
+        artifactCache.set(url, promise);
+        return promise;
+      })();
 };
 
 /**

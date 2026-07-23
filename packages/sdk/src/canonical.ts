@@ -45,15 +45,21 @@ const escapeChar = (ch: string): string => {
 };
 
 const serializeString = (s: string): string =>
+  // eslint-disable-next-line no-control-regex -- JCS requires matching control chars
   `"${s.replace(/["\\\u0000-\u001f]/g, escapeChar)}"`;
 
 // ── number serialisation ────────────────────────────────────────────────
 
-const serializeNumber = (n: number): string => {
-  // eslint-disable-next-line functional/no-conditional-statements, functional/no-throw-statements
-  if (!Number.isFinite(n)) throw new Error(`canonical-sort: non-finite number: ${String(n)}`);
-  return Object.is(n, -0) ? "0" : String(n);
-};
+const serializeNumber = (n: number): string =>
+  !Number.isFinite(n)
+    ? (() => {
+        // Sync canonicalize API cannot return Promise.reject; invalid JSON numbers are a hard error.
+        // eslint-disable-next-line functional/no-throw-statements -- sync validation boundary
+        throw new Error(`canonical-sort: non-finite number: ${String(n)}`);
+      })()
+    : Object.is(n, -0)
+      ? "0"
+      : String(n);
 
 // ── recursive canonicalisation ──────────────────────────────────────────
 

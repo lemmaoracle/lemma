@@ -101,13 +101,12 @@ const requestUrl = (input: RequestInfo | URL): URL | null => {
       : input instanceof URL
         ? input.href
         : input.url;
-  // imperative: URL constructor can throw on malformed input — boundary
+  const base = typeof location !== "undefined" ? location.href : undefined;
+  // Sync URL parse: constructor throws on malformed input; catch via thenable would force async.
+  // imperative: URL constructor sync throw boundary — no functional alternative
   // eslint-disable-next-line functional/no-try-statements
   try {
-    return new URL(
-      raw,
-      typeof location !== "undefined" ? location.href : undefined,
-    );
+    return new URL(raw, base);
   } catch {
     return null;
   }
@@ -126,31 +125,33 @@ const requestMethod = (
 };
 
 /** Requirements come from the X-PAYMENT-REQUIREMENTS header, falling back to the body's accepts. */
-const parseRequirements = async (
+const parseRequirements = (
   res: Response,
 ): Promise<PaymentRequirements | null> => {
   const header = res.headers.get("X-PAYMENT-REQUIREMENTS");
-  // imperative: HTTP header presence guard — boundary
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (header !== null) {
-    // imperative: JSON.parse is a boundary operation — no functional alternative
-    // eslint-disable-next-line functional/no-try-statements
-    try {
-      return JSON.parse(header) as PaymentRequirements;
-    } catch {
-      // fall through to the body
-    }
-  }
-  // imperative: response body parsing is a boundary operation — no functional alternative
-  // eslint-disable-next-line functional/no-try-statements
-  try {
-    const body = (await res.clone().json()) as Readonly<{
-      accepts?: ReadonlyArray<PaymentRequirements>;
-    }>;
-    return body.accepts?.find((r) => r.scheme === "exact") ?? null;
-  } catch {
-    return null;
-  }
+  const fromHeader: Promise<PaymentRequirements | null> =
+    header === null
+      ? Promise.resolve(null)
+      : Promise.resolve(header)
+          .then((h) => JSON.parse(h) as PaymentRequirements)
+          .catch((_err: unknown) => null);
+
+  return fromHeader.then((parsed) =>
+    parsed !== null
+      ? parsed
+      : res
+          .clone()
+          .json()
+          .then(
+            (body: unknown) => {
+              const accepts = (body as Readonly<{
+                accepts?: ReadonlyArray<PaymentRequirements>;
+              }>).accepts;
+              return accepts?.find((r) => r.scheme === "exact") ?? null;
+            },
+            (_err: unknown) => null,
+          ),
+  );
 };
 
 const isKnownNetwork = (network: string): network is X402Network =>
@@ -162,21 +163,19 @@ const isKnownNetwork = (network: string): network is X402Network =>
  * Node.js (no `location`), the request URL must point at the client's
  * apiBase — the Trust402 proxy origin — to serve the same guardrail.
  */
-const isPayableOrigin = (url: URL, apiBase: string): boolean => {
-  // imperative: environment detection guard — boundary
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (typeof location !== "undefined") {
-    return url.origin === location.origin;
-  }
-  // Node.js / server-side: allow only the configured apiBase.
-  // imperative: URL constructor can throw — boundary
-  // eslint-disable-next-line functional/no-try-statements
-  try {
-    return url.origin === new URL(apiBase).origin;
-  } catch {
-    return false;
-  }
-};
+const isPayableOrigin = (url: URL, apiBase: string): boolean =>
+  typeof location !== "undefined"
+    ? url.origin === location.origin
+    : (() => {
+        // Node.js / server-side: allow only the configured apiBase.
+        // imperative: URL constructor sync throw boundary — no functional alternative
+        // eslint-disable-next-line functional/no-try-statements
+        try {
+          return url.origin === new URL(apiBase).origin;
+        } catch {
+          return false;
+        }
+      })();
 
 const isPayable = (
   url: URL,

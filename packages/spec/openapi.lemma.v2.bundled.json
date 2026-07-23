@@ -1084,6 +1084,142 @@
           }
         }
       }
+    },
+    "/v1/suites/feeds/{dataset}/latest": {
+      "get": {
+        "summary": "Latest dataset snapshot (proof variant)",
+        "description": "Public. Returns the latest verified snapshot of a public dataset with its provenance. Served no-cache: each read re-verifies the snapshot's proofs, advancing the public verification counter for this dataset's source. source.attribution is always present.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "dataset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "description": "Dataset id, e.g. jp-holidays"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Single year, e.g. 2026"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range start (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range end (YYYY-MM-DD)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/suites/feeds/{dataset}/latest/plain": {
+      "get": {
+        "summary": "Latest dataset snapshot (plain variant, no provenance)",
+        "description": "Public control variant. Byte-identical data/source to the proof variant, with the provenance block omitted and no proof re-verification. The A/B counterpart used to isolate the effect of provenance.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "dataset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "description": "Dataset id, e.g. jp-holidays"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Single year, e.g. 2026"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range start (YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Range end (YYYY-MM-DD)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1773,6 +1909,104 @@
         },
         "required": [
           "results"
+        ],
+        "additionalProperties": false
+      },
+      "DataProvenance": {
+        "type": "object",
+        "description": "Provenance on a proof-variant dataset response. contentHash is the SHA-256 of the canonical JSON of `data`; a client re-hashes and compares. docHash/registeredAt/verifyUrl are optional (present once the snapshot is registered). verifyUrl resolves to GET /v1/documents/{docHash}.",
+        "properties": {
+          "contentHash": {
+            "type": "string",
+            "description": "sha256:<hex> of the canonical JSON of data"
+          },
+          "issuerId": {
+            "type": "string"
+          },
+          "snapshotAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "docHash": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verifyUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "contentHash",
+          "issuerId",
+          "snapshotAt"
+        ],
+        "additionalProperties": false
+      },
+      "DatasetResponse": {
+        "type": "object",
+        "description": "A verified-provenance public dataset served under the feeds suite. data/source are byte-identical across the proof and plain variants; only provenance differs. source.attribution always present (licence requirement).",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "example": "jp-holidays"
+          },
+          "range": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "license": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "attribution",
+              "license"
+            ],
+            "additionalProperties": false
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/DataProvenance"
+          }
+        },
+        "required": [
+          "dataset",
+          "range",
+          "data",
+          "source"
         ],
         "additionalProperties": false
       },

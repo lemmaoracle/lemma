@@ -23,7 +23,7 @@
 
 import type { FetchResult } from "@lemmaoracle/fetcher";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
-import type { CommitResult, Json } from "@lemmaoracle/sdk";
+import type { Json } from "@lemmaoracle/sdk";
 import type { FeedSource, CompositeFetchResult } from "../types.js";
 import { frankfurterForex } from "./forex.js";
 import { erApiForex } from "./forex-er-api.js";
@@ -33,6 +33,13 @@ import { erApiForex } from "./forex-er-api.js";
 const DEFAULT_BASE = "USD";
 
 // ── helpers ───────────────────────────────────────────────────────────────
+
+const jsonString = (v: Json | undefined, fallback: string): string =>
+  typeof v === "string"
+    ? v
+    : typeof v === "number" || typeof v === "boolean"
+      ? String(v)
+      : fallback;
 
 const extractRates = (
   data: Json,
@@ -44,17 +51,30 @@ const extractRates = (
   );
 };
 
-const extractRoot = (result: FetchResult): string =>
-  (result.commitment as CommitResult).root;
+const averageRates = (
+  ratesA: Readonly<Record<string, number>>,
+  ratesB: Readonly<Record<string, number>>,
+  currencies: ReadonlyArray<string>,
+): Readonly<Record<string, number>> =>
+  Object.fromEntries(
+    currencies.map((ccy) => {
+      const v1 = ratesA[ccy] ?? 0;
+      const v2 = ratesB[ccy] ?? 0;
+      return [ccy, Math.round((v1 + v2) / 2)];
+    }),
+  );
 
-const extractRandomness = (result: FetchResult): string =>
-  (result.commitment as CommitResult).randomness;
-
-const extractLeafPreimages = (result: FetchResult) =>
-  (result.commitment as CommitResult).leafPreimages;
-
-const extractInclusionProofs = (result: FetchResult) =>
-  (result.commitment as CommitResult).inclusionProofs;
+const requireCommonCurrencies = (
+  ratesA: Readonly<Record<string, number>>,
+  ratesB: Readonly<Record<string, number>>,
+): Promise<ReadonlyArray<string>> => {
+  const currencies = Object.keys(ratesA).filter((c) => c in ratesB);
+  return currencies.length === 0
+    ? Promise.reject(
+        new Error("forex/composite: no common currencies between sources"),
+      )
+    : Promise.resolve(currencies);
+};
 
 // ── feed source ───────────────────────────────────────────────────────────
 
@@ -65,91 +85,81 @@ export const forexComposite: FeedSource = {
 
   getDocumentId: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    return String(obj["date"] ?? "unknown");
+    return jsonString(obj["date"], "unknown");
   },
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    const rates = (obj["rates"] as Readonly<Record<string, Json>>) ?? {};
+    const rates =
+      (obj["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
     const sourceRoots =
-      (obj["sourceRoots"] as Readonly<Record<string, Json>>) ?? {};
-    const date = String(obj["date"] ?? "");
+      (obj["sourceRoots"] as Readonly<Record<string, Json>> | undefined) ?? {};
+    const date = jsonString(obj["date"], "");
 
-    const attrs: Record<string, string> = {
+    return {
       source: "forex-composite",
-      base: String(obj["base"] ?? ""),
+      base: jsonString(obj["base"], ""),
       date,
       ...Object.fromEntries(
         Object.entries(sourceRoots).map(([k, v]) => [
           `sourceRoot.${k}`,
-          String(v),
+          jsonString(v, ""),
         ]),
       ),
+      ...Object.fromEntries(
+        Object.entries(rates).map(([ccy, val]) => [
+          `rates.${ccy}`,
+          jsonString(val, ""),
+        ]),
+      ),
+      // NOTE: src_* attributes removed — er-api ToS prohibits redistribution
+      // of raw source rates.  Only Merkle roots (hashes) are included.
     };
-
-    for (const [ccy, val] of Object.entries(rates)) {
-      attrs[`rates.${ccy}`] = String(val);
-    }
-
-    // NOTE: src_* attributes removed — er-api ToS prohibits redistribution
-    // of raw source rates.  Only Merkle roots (hashes) are included.
-
-    return attrs;
   },
 
-  fetch: async (): Promise<FetchResult> => {
+  fetch: (_config?: import("@lemmaoracle/fetcher").FetcherConfig): Promise<FetchResult> => {
     const base = process.env["FOREX_BASE"] ?? DEFAULT_BASE;
 
     // 1. Fetch both sources in parallel (each commits locally)
-    const [srcA, srcB] = await Promise.all([
-      frankfurterForex.fetch(),
-      erApiForex.fetch(),
-    ]) as [FetchResult, FetchResult];
+    return Promise.all([frankfurterForex.fetch(), erApiForex.fetch()]).then(
+      ([srcA, srcB]) => {
+        // 2. Extract rates and roots
+        const ratesA = extractRates(srcA.data);
+        const ratesB = extractRates(srcB.data);
+        const rootA = srcA.commitment.root;
+        const rootB = srcB.commitment.root;
 
-    // 2. Extract rates and roots
-    const ratesA = extractRates(srcA.data);
-    const ratesB = extractRates(srcB.data);
-    const rootA = extractRoot(srcA);
-    const rootB = extractRoot(srcB);
+        // 3–4. Currency intersection + average scaled rates
+        return requireCommonCurrencies(ratesA, ratesB).then((currencies) => {
+          const averagedRates = averageRates(ratesA, ratesB, currencies);
+          const date = jsonString(
+            (srcA.data as Readonly<Record<string, Json>>)["date"],
+            "",
+          );
 
-    // 3. Currency intersection
-    const currencies = Object.keys(ratesA).filter((c) => c in ratesB);
-    if (currencies.length === 0) {
-      throw new Error("forex/composite: no common currencies between sources");
-    }
+          // 5. Build merged JSON + commit via SDK
+          const merged: Json = {
+            type: "forex-composite-v1",
+            date,
+            base,
+            sourceRoots: { frankfurter: rootA, erApi: rootB },
+            rates: averagedRates as unknown as Json,
+          };
 
-    // 4. Average scaled rates (they're already scaled integers from source feeds)
-    const averagedRates: Record<string, number> = {};
-    for (const ccy of currencies) {
-      const v1 = ratesA[ccy]!;
-      const v2 = ratesB[ccy]!;
-      averagedRates[ccy] = Math.round((v1 + v2) / 2);
-    }
+          const { canonical } = canonicalSort(merged);
+          const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
+          const commitment = commitDeep(merged, { maxDepth });
 
-    const date = String(
-      (srcA.data as Readonly<Record<string, Json>>)["date"] ?? "",
+          return {
+            source: "forex/composite",
+            fetchedAt: Date.now(),
+            data: merged,
+            canonical,
+            commitment,
+          };
+        });
+      },
     );
-
-    // 5. Build merged JSON + commit via SDK
-    const merged: Json = {
-      type: "forex-composite-v1",
-      date,
-      base,
-      sourceRoots: { frankfurter: rootA, erApi: rootB },
-      rates: averagedRates as unknown as Json,
-    };
-
-    const { canonical } = canonicalSort(merged);
-    const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
-    const commitment = commitDeep(merged, { maxDepth }) as CommitResult;
-
-    return {
-      source: "forex/composite",
-      fetchedAt: Date.now(),
-      data: merged,
-      canonical,
-      commitment,
-    };
   },
 };
 
@@ -163,64 +173,56 @@ export const forexComposite: FeedSource = {
  * that verify `averageRate === (rateA + rateB) / 2` with Merkle inclusion
  * in both source trees.
  */
-export const fetchComposite = async (): Promise<CompositeFetchResult> => {
+export const fetchComposite = (
+  _?: undefined,
+): Promise<CompositeFetchResult> => {
   const base = process.env["FOREX_BASE"] ?? DEFAULT_BASE;
 
   // 1. Fetch both sources in parallel (each commits locally)
-  const [srcA, srcB] = await Promise.all([
-    frankfurterForex.fetch(),
-    erApiForex.fetch(),
-  ]) as [FetchResult, FetchResult];
+  return Promise.all([frankfurterForex.fetch(), erApiForex.fetch()]).then(
+    ([srcA, srcB]) => {
+      // 2. Extract rates and commitments
+      const ratesA = extractRates(srcA.data);
+      const ratesB = extractRates(srcB.data);
 
-  // 2. Extract rates and commitments
-  const ratesA = extractRates(srcA.data);
-  const ratesB = extractRates(srcB.data);
+      // 3–4. Currency intersection + average scaled rates
+      return requireCommonCurrencies(ratesA, ratesB).then((currencies) => {
+        const averagedRates = averageRates(ratesA, ratesB, currencies);
+        const date = jsonString(
+          (srcA.data as Readonly<Record<string, Json>>)["date"],
+          "",
+        );
 
-  // 3. Currency intersection
-  const currencies = Object.keys(ratesA).filter((c) => c in ratesB);
-  if (currencies.length === 0) {
-    throw new Error("forex/composite: no common currencies between sources");
-  }
+        // 5. Build source commitments
+        const sources = {
+          frankfurter: {
+            root: srcA.commitment.root,
+            randomness: srcA.commitment.randomness,
+            leafPreimages: srcA.commitment.leafPreimages,
+            inclusionProofs: srcA.commitment.inclusionProofs,
+          },
+          erApi: {
+            root: srcB.commitment.root,
+            randomness: srcB.commitment.randomness,
+            leafPreimages: srcB.commitment.leafPreimages,
+            inclusionProofs: srcB.commitment.inclusionProofs,
+          },
+        };
 
-  // 4. Average scaled rates
-  const averagedRates: Record<string, number> = {};
-  for (const ccy of currencies) {
-    const v1 = ratesA[ccy]!;
-    const v2 = ratesB[ccy]!;
-    averagedRates[ccy] = Math.round((v1 + v2) / 2);
-  }
+        const sourceRoots = {
+          frankfurter: srcA.commitment.root,
+          erApi: srcB.commitment.root,
+        };
 
-  const date = String(
-    (srcA.data as Readonly<Record<string, Json>>)["date"] ?? "",
+        return {
+          feedId: "forex/composite",
+          date,
+          base,
+          averagedRates,
+          sources,
+          sourceRoots,
+        };
+      });
+    },
   );
-
-  // 5. Build source commitments
-  const sources = {
-    frankfurter: {
-      root: extractRoot(srcA),
-      randomness: extractRandomness(srcA),
-      leafPreimages: extractLeafPreimages(srcA),
-      inclusionProofs: extractInclusionProofs(srcA),
-    },
-    erApi: {
-      root: extractRoot(srcB),
-      randomness: extractRandomness(srcB),
-      leafPreimages: extractLeafPreimages(srcB),
-      inclusionProofs: extractInclusionProofs(srcB),
-    },
-  };
-
-  const sourceRoots = {
-    frankfurter: extractRoot(srcA),
-    erApi: extractRoot(srcB),
-  };
-
-  return {
-    feedId: "forex/composite",
-    date,
-    base,
-    averagedRates,
-    sources,
-    sourceRoots,
-  };
 };

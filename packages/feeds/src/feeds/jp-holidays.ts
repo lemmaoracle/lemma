@@ -20,7 +20,7 @@
  */
 
 import type { FeedSource } from "../types.js";
-import type { FetchResult } from "@lemmaoracle/fetcher";
+import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import type { Json } from "@lemmaoracle/sdk";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
@@ -31,14 +31,30 @@ const TYPE = "jp-holidays-v1";
 
 export type Holiday = Readonly<{ date: string; name: string }>;
 
+// ── helpers ─────────────────────────────────────────────────────────────────
+
+const jsonString = (v: Json | undefined, fallback: string): string =>
+  typeof v === "string"
+    ? v
+    : typeof v === "number" || typeof v === "boolean"
+      ? String(v)
+      : fallback;
+
+/** Sync validation boundary for parsers — no Promise-returning alternative. */
+const fail = (message: string): never => {
+  // imperative: sync parser API must throw — no functional alternative
+  // eslint-disable-next-line functional/no-throw-statements
+  throw new Error(message);
+};
+
 // ── parsing / normalisation ─────────────────────────────────────────────────
 
 /** `YYYY/M/D` (no zero-pad) → ISO `YYYY-MM-DD`. Throws on anything else. */
 export const toIsoDate = (ymd: string): string => {
   const m = ymd.trim().match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!m) throw new Error(`jp-holidays: unparsable date "${ymd}"`);
-  return `${m[1]}-${m[2]!.padStart(2, "0")}-${m[3]!.padStart(2, "0")}`;
+  return m === null
+    ? fail(`jp-holidays: unparsable date "${ymd}"`)
+    : `${m[1] ?? ""}-${(m[2] ?? "").padStart(2, "0")}-${(m[3] ?? "").padStart(2, "0")}`;
 };
 
 /**
@@ -57,12 +73,12 @@ export const parseHolidays = (text: string): ReadonlyArray<Holiday> => {
 
   const holidays = rows.map((line): Holiday => {
     const comma = line.indexOf(",");
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (comma < 0) throw new Error(`jp-holidays: unparsable row "${line}"`);
-    return {
-      date: toIsoDate(line.slice(0, comma)),
-      name: line.slice(comma + 1).trim(),
-    };
+    return comma < 0
+      ? fail(`jp-holidays: unparsable row "${line}"`)
+      : {
+          date: toIsoDate(line.slice(0, comma)),
+          name: line.slice(comma + 1).trim(),
+        };
   });
 
   return [...holidays].sort((a, b) => a.date.localeCompare(b.date));
@@ -91,23 +107,27 @@ export type Snapshot = Readonly<{
 
 /** The committed compact structure (~5 leaves) plus the derived hashes. */
 export const buildSnapshot = (holidays: ReadonlyArray<Holiday>): Snapshot => {
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (holidays.length === 0) throw new Error("jp-holidays: empty holiday set");
-  const holidaysHash = sha256hex(canonicalHolidays(holidays));
-  const rangeFrom = holidays[0]!.date;
-  const rangeTo = holidays[holidays.length - 1]!.date;
-  return {
-    compact: {
-      type: TYPE,
-      holidaysHash,
-      count: holidays.length,
-      rangeFrom,
-      rangeTo,
-    },
-    holidaysHash,
-    rangeFrom,
-    rangeTo,
-  };
+  const first = holidays[0];
+  const last = holidays[holidays.length - 1];
+  return first === undefined || last === undefined
+    ? fail("jp-holidays: empty holiday set")
+    : (() => {
+        const holidaysHash = sha256hex(canonicalHolidays(holidays));
+        const rangeFrom = first.date;
+        const rangeTo = last.date;
+        return {
+          compact: {
+            type: TYPE,
+            holidaysHash,
+            count: holidays.length,
+            rangeFrom,
+            rangeTo,
+          },
+          holidaysHash,
+          rangeFrom,
+          rangeTo,
+        };
+      })();
 };
 
 // ── feed source ──────────────────────────────────────────────────────────────
@@ -117,59 +137,68 @@ export const jpHolidays: FeedSource = {
   label: "Japan public holidays (Cabinet Office)",
   category: "holidays",
 
-  fetch: async (): Promise<FetchResult> => {
+  fetch: (_config?: FetcherConfig): Promise<FetchResult> => {
     const url = process.env["JP_HOLIDAYS_URL"] ?? DEFAULT_URL;
-    const resp = await fetch(url);
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (!resp.ok) throw new Error(`jp-holidays: fetch ${url} → ${resp.status}`);
 
-    // Shift_JIS via Node's full-ICU TextDecoder. This feed runs in Node only
-    // (the seed drives snarkjs through the pipeline), so it does not rely on
-    // workerd's decoder support.
-    const text = new TextDecoder("shift_jis").decode(await resp.arrayBuffer());
-    const holidays = parseHolidays(text);
-    const snap = buildSnapshot(holidays);
+    return fetch(url).then((resp) =>
+      !resp.ok
+        ? Promise.reject(
+            new Error(
+              `jp-holidays: fetch ${url} → ${String(resp.status)}`,
+            ),
+          )
+        : resp.arrayBuffer().then((buf) => {
+            // Shift_JIS via Node's full-ICU TextDecoder. This feed runs in Node
+            // only (the seed drives snarkjs through the pipeline), so it does
+            // not rely on workerd's decoder support.
+            const text = new TextDecoder("shift_jis").decode(buf);
+            const holidays = parseHolidays(text);
+            const snap = buildSnapshot(holidays);
 
-    // Commit the COMPACT structure only (~5 leaves), not the full list.
-    const compactJson = snap.compact as unknown as Json;
-    const { canonical } = canonicalSort(compactJson);
-    const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
-    const commitment = commitDeep(compactJson, {
-      maxDepth,
-    }) as unknown as FetchResult["commitment"];
+            // Commit the COMPACT structure only (~5 leaves), not the full list.
+            const compactJson = snap.compact as unknown as Json;
+            const { canonical } = canonicalSort(compactJson);
+            const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
+            const commitment = commitDeep(compactJson, { maxDepth });
 
-    return {
-      source: "jp-holidays",
-      fetchedAt: Date.now(),
-      // Carry the full list alongside the compact fields so getAttributes can
-      // emit it; only the compact fields were committed above.
-      data: { ...snap.compact, holidays } as unknown as Json,
-      canonical,
-      commitment,
-    };
+            return {
+              source: "jp-holidays",
+              fetchedAt: Date.now(),
+              // Carry the full list alongside the compact fields so getAttributes
+              // can emit it; only the compact fields were committed above.
+              data: { ...snap.compact, holidays } as unknown as Json,
+              canonical,
+              commitment,
+            };
+          }),
+    );
   },
 
   // Content-derived (last covered date), so an unchanged CSV yields the same
   // docHash. When a new year is published, rangeTo moves and a fresh snapshot
   // registers.
   getDocumentId: (data) =>
-    String((data as Readonly<Record<string, Json>>)["rangeTo"] ?? "unknown"),
+    jsonString(
+      (data as Readonly<Record<string, Json>>)["rangeTo"],
+      "unknown",
+    ),
 
   getAttributes: (data) => {
     const obj = data as Readonly<Record<string, Json>>;
-    const holidays = (obj["holidays"] as ReadonlyArray<Holiday> | undefined) ?? [];
-    const attrs: Record<string, string> = {
-      "meta.type": String(obj["type"] ?? TYPE),
+    const holidays =
+      (obj["holidays"] as ReadonlyArray<Holiday> | undefined) ?? [];
+    return {
+      "meta.type": jsonString(obj["type"], TYPE),
       // Served as provenance.contentHash. `sha256:` form matches the spec.
-      "meta.contentHash": `sha256:${String(obj["holidaysHash"] ?? "")}`,
-      "meta.count": String(obj["count"] ?? holidays.length),
-      "meta.rangeFrom": String(obj["rangeFrom"] ?? ""),
-      "meta.rangeTo": String(obj["rangeTo"] ?? ""),
+      "meta.contentHash": `sha256:${jsonString(obj["holidaysHash"], "")}`,
+      "meta.count": jsonString(obj["count"], String(holidays.length)),
+      "meta.rangeFrom": jsonString(obj["rangeFrom"], ""),
+      "meta.rangeTo": jsonString(obj["rangeTo"], ""),
       // Attribute only (never committed), so it does not affect idempotency.
       "meta.snapshotAt": new Date().toISOString(),
+      ...Object.fromEntries(
+        holidays.map((h) => [`date.${h.date}`, h.name] as const),
+      ),
     };
-    // eslint-disable-next-line functional/no-loop-statements
-    for (const h of holidays) attrs[`date.${h.date}`] = h.name;
-    return attrs;
   },
 };

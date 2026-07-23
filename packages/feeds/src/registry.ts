@@ -35,7 +35,7 @@ export const findFeed = (id: string): FeedSource | undefined =>
   feedMap.get(id);
 
 /** List all registered feed sources. */
-export const listFeeds = (): ReadonlyArray<FeedSource> =>
+export const listFeeds = (_?: undefined): ReadonlyArray<FeedSource> =>
   Array.from(feedMap.values());
 
 /**
@@ -44,37 +44,34 @@ export const listFeeds = (): ReadonlyArray<FeedSource> =>
  * @param id  Feed identifier (e.g. `"forex/frankfurter"`).
  * @returns   FeedRunResult with the fetch result or error.
  */
-export const runFeed = async (id: string): Promise<FeedRunResult> => {
+export const runFeed = (id: string): Promise<FeedRunResult> => {
   const feed = findFeed(id);
-
-  if (!feed) {
-    return {
-      feedId: id,
-      startedAt: Date.now(),
-      completedAt: Date.now(),
-      result: null,
-      error: `Unknown feed: ${id}. Available: ${listFeeds().map((f) => f.id).join(", ")}`,
-    };
-  }
-
   const startedAt = Date.now();
 
-  try {
-    const result = await feed.fetch();
-    return {
-      feedId: id,
-      startedAt,
-      completedAt: Date.now(),
-      result,
-      error: null,
-    };
-  } catch (err: unknown) {
-    return {
-      feedId: id,
-      startedAt,
-      completedAt: Date.now(),
-      result: null,
-      error: err instanceof Error ? err.message : String(err),
-    };
-  }
+  return feed === undefined
+    ? Promise.resolve({
+        feedId: id,
+        startedAt,
+        completedAt: Date.now(),
+        result: null,
+        error: `Unknown feed: ${id}. Available: ${listFeeds()
+          .map((f) => f.id)
+          .join(", ")}`,
+      })
+    : feed.fetch().then(
+        (result) => ({
+          feedId: id,
+          startedAt,
+          completedAt: Date.now(),
+          result,
+          error: null,
+        }),
+        (err: unknown) => ({
+          feedId: id,
+          startedAt,
+          completedAt: Date.now(),
+          result: null,
+          error: err instanceof Error ? err.message : String(err),
+        }),
+      );
 };

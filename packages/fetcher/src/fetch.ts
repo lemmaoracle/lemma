@@ -53,17 +53,19 @@ export type FetcherConfig = Readonly<{
 /**
  * Parse a fetch Response into a Json value.
  *
- * Rejects if the body is not valid JSON.
+ * Rejects if the body is not valid JSON. JSON.parse throws are turned into
+ * promise rejections by the `.then` callback (no try/catch needed).
  */
-const parseResponse = async (response: Response): Promise<Json> => {
-  const text = await response.text();
-  // eslint-disable-next-line functional/no-try-statements -- JSON.parse is a boundary
-  try {
-    return JSON.parse(text) as Json;
-  } catch {
-    return Promise.reject(new Error(`fetcher: invalid JSON response from source`));
-  }
-};
+const parseResponse = (response: Response): Promise<Json> =>
+  response.text().then((text) =>
+    Promise.resolve(text)
+      .then((t) => JSON.parse(t) as Json)
+      .catch((_: unknown) =>
+        Promise.reject(
+          new Error(`fetcher: invalid JSON response from source`),
+        ),
+      ),
+  );
 
 /**
  * Fetch a single source, canonicalise, and commit.
@@ -82,24 +84,21 @@ export const fetchAndCommit = async (
 
   const response = await fetchFn(source, { headers });
 
-  // eslint-disable-next-line functional/no-conditional-statements -- HTTP boundary
-  if (!response.ok) {
-    return Promise.reject(
-      new Error(`fetcher: HTTP ${String(response.status)} from ${source}`),
-    );
-  }
-
-  const data = await parseResponse(response);
-  const { canonical } = canonicalSort(data);
-  const commitment = commitDeep(data, { maxDepth: config?.maxDepth });
-
-  return {
-    source,
-    fetchedAt: Date.now(),
-    data,
-    canonical,
-    commitment,
-  };
+  return !response.ok
+    ? Promise.reject(
+        new Error(`fetcher: HTTP ${String(response.status)} from ${source}`),
+      )
+    : parseResponse(response).then((data) => {
+        const { canonical } = canonicalSort(data);
+        const commitment = commitDeep(data, { maxDepth: config?.maxDepth });
+        return {
+          source,
+          fetchedAt: Date.now(),
+          data,
+          canonical,
+          commitment,
+        };
+      });
 };
 
 /**
@@ -111,21 +110,18 @@ export type FetchBatchResult = ReadonlyArray<
   Readonly<{ ok: true; value: FetchResult }> | Readonly<{ ok: false; error: Error }>
 >;
 
-export const fetchBatch = async (
+export const fetchBatch = (
   sources: ReadonlyArray<string>,
   config?: FetcherConfig,
 ): Promise<FetchBatchResult> =>
   Promise.all(
-    sources.map(async (source) => {
-      // eslint-disable-next-line functional/no-try-statements -- fetch boundary
-      try {
-        const result = await fetchAndCommit(source, config);
-        return { ok: true as const, value: result };
-      } catch (e) {
-        return {
+    sources.map((source) =>
+      fetchAndCommit(source, config).then(
+        (value) => ({ ok: true as const, value }),
+        (e: unknown) => ({
           ok: false as const,
           error: e instanceof Error ? e : new Error(String(e)),
-        };
-      }
-    }),
+        }),
+      ),
+    ),
   );

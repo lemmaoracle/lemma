@@ -11,14 +11,11 @@
  * the FeedSource itself.  Everything else is generic.
  */
 
-import type { FeedSource } from "./types.js";
-import type { CompositeFetchResult } from "./types.js";
-import type { FetchResult } from "@lemmaoracle/fetcher";
+import type { FeedSource, CompositeFetchResult, SourceCommitment } from "./types.js";
 import type { CommitResult, Json, LeafPreimage, InclusionProof } from "@lemmaoracle/sdk";
-import { create, proofs, documents, prover } from "@lemmaoracle/sdk";
+import { create, proofs, documents, prover, canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
 import { fetchComposite } from "./feeds/forex-composite.js";
-import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 
 // ── types ─────────────────────────────────────────────────────────────────
 
@@ -54,13 +51,33 @@ export type MultiPipelineResult = Readonly<{
   totalDurationMs: number;
 }>;
 
+type LeafOutcome = Readonly<{ ok: true }> | Readonly<{ ok: false }>;
+type LemmaClient = ReturnType<typeof create>;
+
 // ── helpers ───────────────────────────────────────────────────────────────
 
-const padToDepth = <T>(arr: readonly T[], depth: number, pad: T): T[] => {
-  const out = [...arr];
-  while (out.length < depth) out.push(pad);
-  return out;
+/**
+ * Logging IO boundary helper. Returns the message so callers can bind
+ * `const _ = await log(...)` without triggering expression-statement rules.
+ */
+const log = (message: string): Promise<string> => {
+  console.log(message);
+  return Promise.resolve(message);
 };
+
+const logError = (message: string): Promise<string> => {
+  console.error(message);
+  return Promise.resolve(message);
+};
+
+const padToDepth = <T>(
+  arr: readonly T[],
+  depth: number,
+  pad: T,
+): ReadonlyArray<T> =>
+  arr.length >= depth
+    ? arr
+    : [...arr, ...Array.from({ length: depth - arr.length }, (_i: number) => pad)];
 
 const sha256hex = (s: string): string =>
   "0x" + createHash("sha256").update(s).digest("hex");
@@ -77,107 +94,184 @@ const toHex64 = (hex: string): string => {
   return "0x" + stripped.padStart(64, "0");
 };
 
-// ── pipeline ──────────────────────────────────────────────────────────────
+const countOutcomes = (
+  outcomes: ReadonlyArray<LeafOutcome>,
+): Readonly<{ ok: number; fail: number }> => ({
+  ok: outcomes.filter((o) => o.ok).length,
+  fail: outcomes.filter((o) => !o.ok).length,
+});
 
-export const runProofPipeline = async (
+/**
+ * Fold async work sequentially (order-preserving), collecting results.
+ */
+const reduceSequential = <T, A>(
+  items: ReadonlyArray<T>,
+  initial: A,
+  step: (acc: A, item: T, index: number) => Promise<A>,
+): Promise<A> =>
+  items.reduce<Promise<A>>(
+    (chain, item, index) => chain.then((acc) => step(acc, item, index)),
+    Promise.resolve(initial),
+  );
+
+const registerDocument = (
+  client: LemmaClient,
   feed: FeedSource,
   config: PipelineConfig,
-): Promise<PipelineResult> => {
-  const { dryRun = false } = config;
-
-  // 1. Fetch via feed source (hits fetcher Workers)
-  console.log(`[1/4] Fetching via feed: ${feed.id}...`);
-  const result: FetchResult = await feed.fetch();
-  const data = result.data as Json;
-  const c = result.commitment as CommitResult;
-  const docId = feed.getDocumentId(data);
-  console.log(`  Doc ID: ${docId}  Leaves: ${c.leafPreimages.length}`);
-  console.log(`  Root: ${c.root}`);
-
-  // 2. Register document
-  const docHash = sha256hex(`${c.root}|${docId}`);
-  if (!dryRun) {
-    console.log("[2/4] Registering document...");
-    const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
-    const attrs = feed.getAttributes?.(data) ?? {};
-    await documents.register(client, {
+  data: Json,
+  docId: string,
+  docHash: string,
+  commitment: CommitResult,
+): Promise<void> =>
+  documents
+    .register(client, {
       schema: config.schema,
       docHash,
       cid: docHash,
       issuerId: `${feed.id}-pipeline`,
       subjectId: `${feed.id}-${docId}`,
-      attributes: attrs,
+      attributes: feed.getAttributes?.(data) ?? {},
       commitments: {
         scheme: "poseidon",
-        root: c.root,
-        leaves: c.leaves as readonly string[],
-        randomness: c.randomness,
+        root: commitment.root,
+        leaves: commitment.leaves,
+        randomness: commitment.randomness,
       },
       revocation: {
         scheme: "none",
         root: "0x" + "0".repeat(64),
       },
-    });
-    console.log(`  Doc registered: ${docHash.slice(0, 24)}...`);
-  } else {
-    console.log(`[2/4] [dry] Would register doc: ${docHash.slice(0, 24)}...`);
-  }
+    })
+    .then((_value: unknown) => undefined);
 
-  // 3. Generate + submit proofs via SDK prover (fetches artifacts from IPFS, cached)
+const maybeRegister = (
+  dryRun: boolean,
+  client: LemmaClient,
+  feed: FeedSource,
+  config: PipelineConfig,
+  data: Json,
+  docId: string,
+  docHash: string,
+  commitment: CommitResult,
+): Promise<string> =>
+  dryRun
+    ? log(`[2/4] [dry] Would register doc: ${docHash.slice(0, 24)}...`)
+    : log("[2/4] Registering document...")
+        .then((_value: unknown) =>
+          registerDocument(
+            client,
+            feed,
+            config,
+            data,
+            docId,
+            docHash,
+            commitment,
+          ),
+        )
+        .then((_value: unknown) => log(`  Doc registered: ${docHash.slice(0, 24)}...`));
+
+// ── pipeline ──────────────────────────────────────────────────────────────
+
+const proveLeaf = (
+  client: LemmaClient,
+  config: PipelineConfig,
+  dryRun: boolean,
+  docHash: string,
+  commitment: CommitResult,
+  index: number,
+  leafCount: number,
+): Promise<LeafOutcome> => {
+  const pre = commitment.leafPreimages[index];
+  const inc = commitment.inclusionProofs[index];
+  return pre === undefined || inc === undefined
+    ? Promise.resolve({ ok: false as const })
+    : ((_value?: unknown) => {
+        const t0 = Date.now();
+        const witness = {
+          root: BigInt(toHex64(commitment.root)),
+          randomness: BigInt(toHex64(commitment.randomness)),
+          pathHash: BigInt(toHex64(pre.nameHash)),
+          valueHash: BigInt(toHex64(pre.valueHash)),
+          siblings: padToDepth(inc.siblings, config.maxDepth, "0x0").map((s) =>
+            BigInt(toHex64(s)),
+          ),
+          indices: padToDepth(inc.indices, config.maxDepth, 0),
+        };
+
+        return prover
+          .prove(client, { circuitId: config.circuitId, witness })
+          .then(({ proof, inputs }) =>
+            dryRun
+              ? log(
+                  `  ✅ [${String(index + 1)}/${String(leafCount)}] ${pre.name} = ${String(pre.value)} (${String(Date.now() - t0)}ms) [dry]`,
+                )
+              : proofs
+                  .submit(client, {
+                    docHash,
+                    circuitId: config.circuitId,
+                    proof,
+                    inputs,
+                  })
+                  .then((sr) =>
+                    log(
+                      `  ✅ [${String(index + 1)}/${String(leafCount)}] ${pre.name} = ${String(pre.value)} (${String(Date.now() - t0)}ms) → ${sr.verificationId}`,
+                    ),
+                  ),
+          )
+          .then((_msg: string) => ({ ok: true as const }))
+          .catch((e: unknown) =>
+            log(
+              `  ❌ [${String(index + 1)}/${String(leafCount)}] ${pre.name}: ${e instanceof Error ? e.message : String(e)}`,
+            ).then((_msg: string) => ({ ok: false as const })),
+          );
+      })();
+};
+
+export const runProofPipeline = async (
+  feed: FeedSource,
+  config: PipelineConfig,
+): Promise<PipelineResult> => {
+  const dryRun = config.dryRun ?? false;
+
+  const _log1 = await log(`[1/4] Fetching via feed: ${feed.id}...`);
+  const result = await feed.fetch();
+  const data = result.data;
+  const c = result.commitment;
+  const docId = feed.getDocumentId(data);
+  const _log2 = await log(`  Doc ID: ${docId}  Leaves: ${String(c.leafPreimages.length)}`);
+  const _log3 = await log(`  Root: ${c.root}`);
+  const docHash = sha256hex(`${c.root}|${docId}`);
+  const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
+  const _reg = await maybeRegister(dryRun, client, feed, config, data, docId, docHash, c);
   const leafCount = c.leafPreimages.length;
-  console.log(`[3/4] Proving ${leafCount} leaves...`);
-  let ok = 0;
-  let fail = 0;
+  const _log4 = await log(`[3/4] Proving ${String(leafCount)} leaves...`);
   const totalStart = Date.now();
 
-  const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
+  const outcomes = await reduceSequential(
+    c.leafPreimages,
+    [] as ReadonlyArray<LeafOutcome>,
+    (acc, _pre, i) =>
+      proveLeaf(client, config, dryRun, docHash, c, i, leafCount).then(
+        (outcome) => [...acc, outcome],
+      ),
+  );
 
-  for (let i = 0; i < leafCount; i++) {
-    const pre = c.leafPreimages[i]!;
-    const inc = c.inclusionProofs[i]!;
-
-    const t0 = Date.now();
-    try {
-      const witness = {
-        root: BigInt(toHex64(c.root)),
-        randomness: BigInt(toHex64(c.randomness)),
-        pathHash: BigInt(toHex64(pre.nameHash)),
-        valueHash: BigInt(toHex64(pre.valueHash)),
-        siblings: padToDepth(inc.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
-        indices: padToDepth(inc.indices, config.maxDepth, 0),
-      };
-
-      const { proof, inputs } = await prover.prove(client, {
-        circuitId: config.circuitId,
-        witness,
-      });
-
-      if (!dryRun) {
-        const sr = await proofs.submit(client, {
-          docHash,
-          circuitId: config.circuitId,
-          proof,
-          inputs: inputs as readonly string[],
-        });
-        const ms = Date.now() - t0;
-        console.log(`  ✅ [${i + 1}/${leafCount}] ${pre.name} = ${String(pre.value)} (${ms}ms) → ${sr.verificationId}`);
-      } else {
-        const ms = Date.now() - t0;
-        console.log(`  ✅ [${i + 1}/${leafCount}] ${pre.name} = ${String(pre.value)} (${ms}ms) [dry]`);
-      }
-      ok++;
-    } catch (e) {
-      console.log(`  ❌ [${i + 1}/${leafCount}] ${pre.name}: ${e instanceof Error ? e.message : String(e)}`);
-      fail++;
-    }
-  }
-
+  const { ok, fail } = countOutcomes(outcomes);
   const durationMs = Date.now() - totalStart;
-  console.log(`[4/4] Done. ✅ ${ok}  ❌ ${fail}  Total: ${(durationMs / 1000).toFixed(1)}s`);
-  console.log(`  Root: ${c.root}`);
-  console.log(`  Doc:  ${docHash}`);
-
-  return { feedId: feed.id, root: c.root, docHash, leafCount, proofsOk: ok, proofsFail: fail, durationMs };
+  const _log5 = await log(
+    `[4/4] Done. ✅ ${String(ok)}  ❌ ${String(fail)}  Total: ${(durationMs / 1000).toFixed(1)}s`,
+  );
+  const _log6 = await log(`  Root: ${c.root}`);
+  const _log7 = await log(`  Doc:  ${docHash}`);
+  return {
+    feedId: feed.id,
+    root: c.root,
+    docHash,
+    leafCount,
+    proofsOk: ok,
+    proofsFail: fail,
+    durationMs,
+  };
 };
 
 // ── multi-pipeline ────────────────────────────────────────────────────────
@@ -194,37 +288,36 @@ export const runMultiPipeline = async (
   feeds: ReadonlyArray<FeedSource>,
   config: PipelineConfig,
 ): Promise<MultiPipelineResult> => {
-  const feedResults: PipelineResult[] = [];
-  let totalOk = 0;
-  let totalFail = 0;
   const totalStart = Date.now();
 
-  console.log(
-    `=== Multi-Pipeline: ${feeds.length} feed(s) ===\n`,
+  const _log8 = await log(`=== Multi-Pipeline: ${String(feeds.length)} feed(s) ===\n`);
+  const feedResults = await reduceSequential(
+    feeds,
+    [] as ReadonlyArray<PipelineResult>,
+    (acc, feed) =>
+      log(`\n── Feed: ${feed.id} ──`).then((_value: unknown) =>
+        runProofPipeline(feed, config).then(
+          (result) => [...acc, result],
+          (e: unknown) =>
+            logError(
+              `  ❌ Feed ${feed.id} FAILED: ${e instanceof Error ? e.message : String(e)}`,
+            ).then((_value: unknown) => acc),
+        ),
+      ),
   );
 
-  for (const feed of feeds) {
-    console.log(`\n── Feed: ${feed.id} ──`);
-    try {
-      const result = await runProofPipeline(feed, config);
-      feedResults.push(result);
-      totalOk += result.proofsOk;
-      totalFail += result.proofsFail;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error(`  ❌ Feed ${feed.id} FAILED: ${msg}`);
-      totalFail++;
-    }
-  }
-
+  const totalOk = feedResults.reduce((n, r) => n + r.proofsOk, 0);
+  const totalFail =
+    feedResults.reduce((n, r) => n + r.proofsFail, 0) +
+    (feeds.length - feedResults.length);
   const totalDurationMs = Date.now() - totalStart;
-  console.log(
+
+  const _log9 = await log(
     `\n=== Multi-Pipeline Done ===\n` +
-      `  Feeds: ${feedResults.length}/${feeds.length} ok\n` +
-      `  Proofs: ✅ ${totalOk}  ❌ ${totalFail}\n` +
+      `  Feeds: ${String(feedResults.length)}/${String(feeds.length)} ok\n` +
+      `  Proofs: ✅ ${String(totalOk)}  ❌ ${String(totalFail)}\n` +
       `  Total: ${(totalDurationMs / 1000).toFixed(1)}s`,
   );
-
   return {
     feeds: feedResults,
     totalProofsOk: totalOk,
@@ -243,13 +336,85 @@ const findLeaf = (
   leafPreimages: ReadonlyArray<LeafPreimage>,
   inclusionProofs: ReadonlyArray<InclusionProof>,
   ccy: string,
-): Readonly<{ preimage: LeafPreimage; proof: InclusionProof }> => {
+): Promise<Readonly<{ preimage: LeafPreimage; proof: InclusionProof }>> => {
   const targetPath = `$["rates"]["${ccy}"]`;
   const idx = leafPreimages.findIndex((p) => p.name === targetPath);
-  if (idx === -1) {
-    throw new Error(`Leaf not found for ${targetPath}`);
-  }
-  return { preimage: leafPreimages[idx]!, proof: inclusionProofs[idx]! };
+  const preimage = idx === -1 ? undefined : leafPreimages[idx];
+  const proof = idx === -1 ? undefined : inclusionProofs[idx];
+  return preimage === undefined || proof === undefined
+    ? Promise.reject(new Error(`Leaf not found for ${targetPath}`))
+    : Promise.resolve({ preimage, proof });
+};
+
+const proveAverageCurrency = (
+  client: LemmaClient,
+  config: PipelineConfig,
+  dryRun: boolean,
+  docHash: string,
+  srcA: SourceCommitment,
+  srcB: SourceCommitment,
+  ccy: string,
+  index: number,
+  leafCount: number,
+): Promise<LeafOutcome> => {
+  const t0 = Date.now();
+
+  return Promise.all([
+    findLeaf(srcA.leafPreimages, srcA.inclusionProofs, ccy),
+    findLeaf(srcB.leafPreimages, srcB.inclusionProofs, ccy),
+  ])
+    .then(([leafA, leafB]) => {
+      const rateA = BigInt(toHex64(leafA.preimage.valueHash));
+      const rateB = BigInt(toHex64(leafB.preimage.valueHash));
+      const averageRate = (rateA + rateB) / 2n;
+      const pathHash = BigInt(toHex64(leafA.preimage.nameHash));
+
+      const witness = {
+        sourceRootA: BigInt(toHex64(srcA.root)),
+        sourceRootB: BigInt(toHex64(srcB.root)),
+        randomnessA: BigInt(toHex64(srcA.randomness)),
+        randomnessB: BigInt(toHex64(srcB.randomness)),
+        pathHash,
+        averageRate,
+        rateA,
+        rateB,
+        siblingsA: padToDepth(leafA.proof.siblings, config.maxDepth, "0x0").map(
+          (s) => BigInt(toHex64(s)),
+        ),
+        indicesA: padToDepth(leafA.proof.indices, config.maxDepth, 0),
+        siblingsB: padToDepth(leafB.proof.siblings, config.maxDepth, "0x0").map(
+          (s) => BigInt(toHex64(s)),
+        ),
+        indicesB: padToDepth(leafB.proof.indices, config.maxDepth, 0),
+      };
+
+      return prover
+        .prove(client, { circuitId: config.circuitId, witness })
+        .then(({ proof, inputs }) =>
+          dryRun
+            ? log(
+                `  ✅ [${String(index + 1)}/${String(leafCount)}] ${ccy} avg=${averageRate.toString()} (${String(Date.now() - t0)}ms) [dry]`,
+              )
+            : proofs
+                .submit(client, {
+                  docHash,
+                  circuitId: config.circuitId,
+                  proof,
+                  inputs,
+                })
+                .then((sr) =>
+                  log(
+                    `  ✅ [${String(index + 1)}/${String(leafCount)}] ${ccy} avg=${averageRate.toString()} (${String(Date.now() - t0)}ms) → ${sr.verificationId}`,
+                  ),
+                ),
+        );
+    })
+    .then((_msg: string) => ({ ok: true as const }))
+    .catch((e: unknown) =>
+      log(
+        `  ❌ [${String(index + 1)}/${String(leafCount)}] ${ccy}: ${e instanceof Error ? e.message : String(e)}`,
+      ).then((_msg: string) => ({ ok: false as const })),
+    );
 };
 
 /**
@@ -270,136 +435,90 @@ export const runAverageProofPipeline = async (
   feed: FeedSource,
   config: PipelineConfig,
 ): Promise<PipelineResult> => {
-  const { dryRun = false } = config;
+  const dryRun = config.dryRun ?? false;
 
-  // 1. Fetch composite data with source commitments
-  console.log(`[1/4] Fetching composite via: ${feed.id}...`);
+  const _log10 = await log(`[1/4] Fetching composite via: ${feed.id}...`);
   const composite: CompositeFetchResult = await fetchComposite();
   const { averagedRates, sources, sourceRoots, date } = composite;
 
-  const srcA = sources["frankfurter"]!;
-  const srcB = sources["erApi"]!;
+  const srcA = sources["frankfurter"];
+  const srcB = sources["erApi"];
 
-  console.log(`  Date: ${date}  Currencies: ${Object.keys(averagedRates).length}`);
-  console.log(`  Root A (frankfurter): ${srcA.root}`);
-  console.log(`  Root B (erApi):       ${srcB.root}`);
-
-  // 2. Commit composite data and register document
-  const merged: Json = {
-    type: "forex-composite-v1",
-    date,
-    base: composite.base,
-    sourceRoots,
-    rates: averagedRates as unknown as Json,
-  };
-  canonicalSort(merged);
-  const compositeCommit = commitDeep(merged, { maxDepth: config.maxDepth }) as CommitResult;
-  const docId = date;
-  const docHash = sha256hex(`${compositeCommit.root}|${docId}`);
-
-  if (!dryRun) {
-    console.log("[2/4] Registering composite document...");
-    const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
-    const attrs = feed.getAttributes?.(merged) ?? {};
-    await documents.register(client, {
-      schema: config.schema,
-      docHash,
-      cid: docHash,
-      issuerId: `${feed.id}-pipeline`,
-      subjectId: `${feed.id}-${docId}`,
-      attributes: attrs,
-      commitments: {
-        scheme: "poseidon",
-        root: compositeCommit.root,
-        leaves: compositeCommit.leaves as readonly string[],
-        randomness: compositeCommit.randomness,
-      },
-      revocation: {
-        scheme: "none",
-        root: "0x" + "0".repeat(64),
-      },
-    });
-    console.log(`  Doc registered: ${docHash.slice(0, 24)}...`);
-  } else {
-    console.log(`[2/4] [dry] Would register doc: ${docHash.slice(0, 24)}...`);
-  }
-
-  // 3. Generate + submit forex-average-v1 proofs per currency
-  const currencies = Object.keys(averagedRates);
-  const leafCount = currencies.length;
-  console.log(`[3/4] Proving ${leafCount} currencies (forex-average-v1)...`);
-  let ok = 0;
-  let fail = 0;
-  const totalStart = Date.now();
-
-  const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
-
-  for (let i = 0; i < leafCount; i++) {
-    const ccy = currencies[i]!;
-    const t0 = Date.now();
-
-    try {
-      // Find leaf preimage + inclusion proof in each source tree
-      const leafA = findLeaf(srcA.leafPreimages, srcA.inclusionProofs, ccy);
-      const leafB = findLeaf(srcB.leafPreimages, srcB.inclusionProofs, ccy);
-
-      // Extract rates from valueHash (scaled integers → hex → BigInt)
-      const rateA = BigInt(toHex64(leafA.preimage.valueHash));
-      const rateB = BigInt(toHex64(leafB.preimage.valueHash));
-
-      // Compute average rate
-      const averageRate = (rateA + rateB) / 2n;
-
-      // pathHash is the nameHash (toScalar(path)) from the leaf preimage
-      const pathHash = BigInt(toHex64(leafA.preimage.nameHash));
-
-      // Build witness for forex-average-v1 circuit
-      const witness = {
-        // Public inputs
-        sourceRootA: BigInt(toHex64(srcA.root)),
-        sourceRootB: BigInt(toHex64(srcB.root)),
-        randomnessA: BigInt(toHex64(srcA.randomness)),
-        randomnessB: BigInt(toHex64(srcB.randomness)),
-        pathHash,
-        averageRate,
-        // Private inputs
-        rateA,
-        rateB,
-        siblingsA: padToDepth(leafA.proof.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
-        indicesA: padToDepth(leafA.proof.indices, config.maxDepth, 0),
-        siblingsB: padToDepth(leafB.proof.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
-        indicesB: padToDepth(leafB.proof.indices, config.maxDepth, 0),
-      };
-
-      const { proof, inputs } = await prover.prove(client, {
-        circuitId: config.circuitId,
-        witness,
-      });
-
-      if (!dryRun) {
-        const sr = await proofs.submit(client, {
-          docHash,
-          circuitId: config.circuitId,
-          proof,
-          inputs: inputs as readonly string[],
+  return srcA === undefined || srcB === undefined
+    ? Promise.reject(new Error("forex/composite: missing source commitments"))
+    : (async (_srcA: SourceCommitment, _srcB: SourceCommitment) => {
+        const _log11 = await log(
+          `  Date: ${date}  Currencies: ${String(Object.keys(averagedRates).length)}`,
+        );
+        const _log12 = await log(`  Root A (frankfurter): ${_srcA.root}`);
+        const _log13 = await log(`  Root B (erApi):       ${_srcB.root}`);
+        const merged: Json = {
+          type: "forex-composite-v1",
+          date,
+          base: composite.base,
+          sourceRoots,
+          rates: averagedRates as unknown as Json,
+        };
+        const _canonical = canonicalSort(merged);
+        const compositeCommit = commitDeep(merged, {
+          maxDepth: config.maxDepth,
         });
-        const ms = Date.now() - t0;
-        console.log(`  ✅ [${i + 1}/${leafCount}] ${ccy} avg=${averageRate.toString()} (${ms}ms) → ${sr.verificationId}`);
-      } else {
-        const ms = Date.now() - t0;
-        console.log(`  ✅ [${i + 1}/${leafCount}] ${ccy} avg=${averageRate.toString()} (${ms}ms) [dry]`);
-      }
-      ok++;
-    } catch (e) {
-      console.log(`  ❌ [${i + 1}/${leafCount}] ${ccy}: ${e instanceof Error ? e.message : String(e)}`);
-      fail++;
-    }
-  }
+        const docId = date;
+        const docHash = sha256hex(`${compositeCommit.root}|${docId}`);
+        const client = create({
+          apiBase: config.apiBase,
+          apiKey: config.apiKey,
+        });
 
-  const durationMs = Date.now() - totalStart;
-  console.log(`[4/4] Done. ✅ ${ok}  ❌ ${fail}  Total: ${(durationMs / 1000).toFixed(1)}s`);
-  console.log(`  Root: ${compositeCommit.root}`);
-  console.log(`  Doc:  ${docHash}`);
+        const _reg = await maybeRegister(
+          dryRun,
+          client,
+          feed,
+          config,
+          merged,
+          docId,
+          docHash,
+          compositeCommit,
+        );
+        const currencies = Object.keys(averagedRates);
+        const leafCount = currencies.length;
+        const _log14 = await log(
+          `[3/4] Proving ${String(leafCount)} currencies (forex-average-v1)...`,
+        );
+        const totalStart = Date.now();
 
-  return { feedId: feed.id, root: compositeCommit.root, docHash, leafCount, proofsOk: ok, proofsFail: fail, durationMs };
+        const outcomes = await reduceSequential(
+          currencies,
+          [] as ReadonlyArray<LeafOutcome>,
+          (acc, ccy, i) =>
+            proveAverageCurrency(
+              client,
+              config,
+              dryRun,
+              docHash,
+              _srcA,
+              _srcB,
+              ccy,
+              i,
+              leafCount,
+            ).then((outcome) => [...acc, outcome]),
+        );
+
+        const { ok, fail } = countOutcomes(outcomes);
+        const durationMs = Date.now() - totalStart;
+        const _log15 = await log(
+          `[4/4] Done. ✅ ${String(ok)}  ❌ ${String(fail)}  Total: ${(durationMs / 1000).toFixed(1)}s`,
+        );
+        const _log16 = await log(`  Root: ${compositeCommit.root}`);
+        const _log17 = await log(`  Doc:  ${docHash}`);
+        return {
+          feedId: feed.id,
+          root: compositeCommit.root,
+          docHash,
+          leafCount,
+          proofsOk: ok,
+          proofsFail: fail,
+          durationMs,
+        };
+      })(srcA, srcB);
 };

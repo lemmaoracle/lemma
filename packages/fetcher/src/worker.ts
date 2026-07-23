@@ -11,7 +11,13 @@
  * Scheduled triggers: configured sources in SCHEDULED_SOURCES (JSON array).
  * Each scheduled run fetches all sources and logs commitments.
  */
-import { fetchAndCommit, type FetchResult } from "./fetch.js";
+import { fetchAndCommit } from "./fetch.js";
+
+// ── env types ────────────────────────────────────────────────────────────
+
+type Env = Readonly<{
+  FETCHER_API_KEY?: string;
+}>;
 
 // ── helpers ──────────────────────────────────────────────────────────────
 
@@ -28,69 +34,64 @@ const json = (data: unknown, status = 200): Response =>
 
 const checkAuth = (request: Request, env: Env): boolean => {
   const key = env.FETCHER_API_KEY;
-  if (!key) return true; // no key configured = open (dev mode)
-  return request.headers.get("X-API-Key") === key;
+  return key === undefined || key === ""
+    ? true // no key configured = open (dev mode)
+    : request.headers.get("X-API-Key") === key;
+};
+
+type FetchParams = Readonly<{ url: string; maxDepth: number | undefined }>;
+
+const paramsFromGet = (request: Request): FetchParams => {
+  const u = new URL(request.url);
+  const d = u.searchParams.get("maxDepth");
+  return {
+    url: u.searchParams.get("url") ?? "",
+    maxDepth: d !== null ? Number(d) : 16,
+  };
+};
+
+const paramsFromPost = async (request: Request): Promise<FetchParams> => {
+  const body = (await request.json()) as { url?: string; maxDepth?: number };
+  return {
+    url: body.url ?? "",
+    maxDepth: body.maxDepth ?? 16,
+  };
 };
 
 // ── routes ───────────────────────────────────────────────────────────────
 
-const handleHealth = (): Response =>
+const handleHealth = (_?: undefined): Response =>
   json({ ok: true, service: "fetcher" });
 
-const handleFetch = async (request: Request, env: Env): Promise<Response> => {
-  let url: string;
-  let maxDepth: number | undefined;
+const handleFetch = async (request: Request, _env: Env): Promise<Response> => {
+  const params =
+    request.method === "GET"
+      ? paramsFromGet(request)
+      : await paramsFromPost(request);
 
-  if (request.method === "GET") {
-    const u = new URL(request.url);
-    url = u.searchParams.get("url") ?? "";
-    const d = u.searchParams.get("maxDepth");
-    maxDepth = d !== null ? Number(d) : 16;
-  } else {
-    const body = (await request.json()) as { url?: string; maxDepth?: number };
-    url = body.url ?? "";
-    maxDepth = body.maxDepth ?? 16;
-  }
+  return params.url === ""
+    ? json({ error: "Missing 'url' parameter" }, 400)
+    : fetchAndCommit(params.url, { maxDepth: params.maxDepth }).then((result) =>
+        json(result),
+      );
+};
 
-  if (!url) {
-    return json({ error: "Missing 'url' parameter" }, 400);
-  }
-
-  const result = await fetchAndCommit(url, { maxDepth });
-  return json(result);
+const routeRequest = (request: Request, env: Env): Promise<Response> | Response => {
+  const url = new URL(request.url);
+  return request.method === "OPTIONS"
+    ? new Response(null, { status: 204 })
+    : url.pathname === "/health"
+      ? handleHealth()
+      : !checkAuth(request, env)
+        ? json({ error: "Unauthorized" }, 401)
+        : url.pathname === "/fetch"
+          ? handleFetch(request, env)
+          : json({ error: "Not found", path: url.pathname }, 404);
 };
 
 // ── worker ───────────────────────────────────────────────────────────────
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // CORS preflight
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204 });
-    }
-
-    const url = new URL(request.url);
-
-    // Health is always open
-    if (url.pathname === "/health") {
-      return handleHealth();
-    }
-
-    // Auth check for all other routes
-    if (!checkAuth(request, env)) {
-      return json({ error: "Unauthorized" }, 401);
-    }
-
-    if (url.pathname === "/fetch") {
-      return handleFetch(request, env);
-    }
-
-    return json({ error: "Not found", path: url.pathname }, 404);
-  },
+  fetch: (request: Request, env: Env): Promise<Response> | Response =>
+    routeRequest(request, env),
 };
-
-// ── env types ────────────────────────────────────────────────────────────
-
-interface Env {
-  FETCHER_API_KEY?: string;
-}
