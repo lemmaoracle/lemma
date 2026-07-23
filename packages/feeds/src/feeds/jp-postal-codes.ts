@@ -27,7 +27,7 @@ import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 
 const DEFAULT_URL =
-  "https://www.post.japanpost.jp/zipcode/dl/utf/zip/utf_all.zip";
+  "https://www.post.japanpost.jp/service/search/zipcode/download/utf/zip/utf_ken_all.zip";
 const TYPE = "jp-postal-codes-v1";
 
 export type PostalCodeRecord = Readonly<{
@@ -55,7 +55,6 @@ const ZIP_LOCAL_HEADER_SIG = 0x04034b50;
  * Throws if no deflated entry is found.
  */
 export const extractFirstZipEntry = (buf: Buffer): Buffer => {
-  // Scan for local file header signature (PK\x03\x04) — little-endian.
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < buf.length - 4; i++) {
     const sig = buf.readUInt32LE(i);
@@ -84,14 +83,15 @@ export const extractFirstZipEntry = (buf: Buffer): Buffer => {
 
 // ── parsing / normalisation ─────────────────────────────────────────────────
 
+/** Strip surrounding double-quotes from a CSV field. */
+const unquote = (s: string): string => s.replace(/^"|"$/g, "").trim();
+
 /**
  * Parse the UTF-8 CSV into a canonical postal-code array.
  *
  * The CSV has one row per record.  Columns 2,6,7,8,3,4,5 are used
  * (code, prefecture, city, town, prefectureKana, cityKana, townKana).
- * The first row is skipped (it may or may not be a header in the Japan Post
- * format — the 1-record-per-row UTF-8 variant usually has no header, but
- * we skip any row whose column 2 does not look like a 7-digit code).
+ * All fields are quoted, so we strip quotes before matching.
  *
  * Results are sorted by code (7-digit postal code string).
  */
@@ -107,23 +107,23 @@ export const parsePostalCodes = (
 
   // eslint-disable-next-line functional/no-loop-statements
   for (const line of lines) {
-    const cols = line.split(",");
+    const cols = line.split(",").map(unquote);
     // eslint-disable-next-line functional/no-conditional-statements
     if (cols.length < 9) continue;
 
-    const code = cols[2]?.trim() ?? "";
+    const code = cols[2] ?? "";
     // Skip header / non-data rows: code must be exactly 7 digits.
     // eslint-disable-next-line functional/no-conditional-statements
     if (!/^\d{7}$/.test(code)) continue;
 
     records.push({
       code,
-      prefecture: (cols[6] ?? "").trim(),
-      city: (cols[7] ?? "").trim(),
-      town: (cols[8] ?? "").trim(),
-      prefectureKana: (cols[3] ?? "").trim(),
-      cityKana: (cols[4] ?? "").trim(),
-      townKana: (cols[5] ?? "").trim(),
+      prefecture: cols[6] ?? "",
+      city: cols[7] ?? "",
+      town: cols[8] ?? "",
+      prefectureKana: cols[3] ?? "",
+      cityKana: cols[4] ?? "",
+      townKana: cols[5] ?? "",
     });
   }
 
