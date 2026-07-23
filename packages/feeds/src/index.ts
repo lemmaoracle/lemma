@@ -8,6 +8,8 @@
  *
  * Current built-in feeds:
  *  - forex/frankfurter — ECB reference exchange rates
+ *  - forex/er-api      — ExchangeRate-API free tier
+ *  - forex/composite   — multi-source average
  *
  * Usage:
  *   import { feeds, runFeed } from "@lemmaoracle/feeds";
@@ -18,7 +20,7 @@
 export type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 
 // Own types
-export type { FeedSource, FeedRunResult } from "./types.js";
+export type { FeedSource, FeedRunResult, SourceCommitment, CompositeFetchResult } from "./types.js";
 
 // Feed registry
 export { findFeed, listFeeds, runFeed } from "./registry.js";
@@ -26,8 +28,8 @@ export { findFeed, listFeeds, runFeed } from "./registry.js";
 // Individual feed sources
 export { frankfurterForex } from "./feeds/forex.js";
 export { erApiForex } from "./feeds/forex-er-api.js";
-export { forexComposite } from "./feeds/forex-composite.js";
+export { forexComposite, fetchComposite } from "./feeds/forex-composite.js";
 
 // Pipeline
-export { runProofPipeline, runMultiPipeline } from "./pipeline.js";
+export { runProofPipeline, runMultiPipeline, runAverageProofPipeline } from "./pipeline.js";
 export type { PipelineConfig, PipelineResult, MultiPipelineResult } from "./pipeline.js";

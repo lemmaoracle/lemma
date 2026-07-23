@@ -8,6 +8,7 @@
  */
 
 import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
+import type { LeafPreimage, InclusionProof } from "@lemmaoracle/sdk";
 
 /**
  * A single data feed source.
@@ -48,4 +49,29 @@ export type FeedRunResult = Readonly<{
   result: FetchResult | null;
   /** Error message if the run failed. */
   error: string | null;
+}>;
+
+/**
+ * Subset of a source feed's CommitResult needed for composite proofs.
+ */
+export type SourceCommitment = Readonly<{
+  root: string;
+  randomness: string;
+  leafPreimages: ReadonlyArray<LeafPreimage>;
+  inclusionProofs: ReadonlyArray<InclusionProof>;
+}>;
+
+/**
+ * Result of fetching the composite feed with full source commitments.
+ */
+export type CompositeFetchResult = Readonly<{
+  feedId: string;
+  date: string;
+  base: string;
+  /** Averaged scaled rates (already ×10^8 integers). */
+  averagedRates: Readonly<Record<string, number>>;
+  /** Source commitments keyed by source name. */
+  sources: Readonly<Record<string, SourceCommitment>>;
+  /** Source Merkle roots keyed by source name. */
+  sourceRoots: Readonly<Record<string, string>>;
 }>;

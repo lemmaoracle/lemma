@@ -12,10 +12,13 @@
  */
 
 import type { FeedSource } from "./types.js";
+import type { CompositeFetchResult } from "./types.js";
 import type { FetchResult } from "@lemmaoracle/fetcher";
-import type { CommitResult, Json } from "@lemmaoracle/sdk";
+import type { CommitResult, Json, LeafPreimage, InclusionProof } from "@lemmaoracle/sdk";
 import { create, proofs, documents, prover } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
+import { fetchComposite } from "./feeds/forex-composite.js";
+import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 
 // ── types ─────────────────────────────────────────────────────────────────
 
@@ -228,4 +231,175 @@ export const runMultiPipeline = async (
     totalProofsFail: totalFail,
     totalDurationMs,
   };
+};
+
+// ── average proof pipeline (forex-average-v1 circuit) ─────────────────────
+
+/**
+ * Find the leaf preimage and inclusion proof for a given currency path
+ * (e.g. `$["rates"]["JPY"]`) within a source's leaf preimages.
+ */
+const findLeaf = (
+  leafPreimages: ReadonlyArray<LeafPreimage>,
+  inclusionProofs: ReadonlyArray<InclusionProof>,
+  ccy: string,
+): Readonly<{ preimage: LeafPreimage; proof: InclusionProof }> => {
+  const targetPath = `$["rates"]["${ccy}"]`;
+  const idx = leafPreimages.findIndex((p) => p.name === targetPath);
+  if (idx === -1) {
+    throw new Error(`Leaf not found for ${targetPath}`);
+  }
+  return { preimage: leafPreimages[idx]!, proof: inclusionProofs[idx]! };
+};
+
+/**
+ * Run the forex-average-v1 proof pipeline.
+ *
+ * 1. Calls fetchComposite() to get source commitments + averaged rates
+ * 2. Registers a composite document (attributes = source roots + averaged rates)
+ * 3. For each currency: builds witness with rateA, rateB, siblings, indices
+ *    from both source trees and generates a forex-average-v1 proof
+ * 4. Submits each proof to the Lemma API
+ *
+ * The circuit verifies:
+ *   - rateA is in source tree A (Merkle inclusion)
+ *   - rateB is in source tree B (Merkle inclusion)
+ *   - 2 * averageRate === rateA + rateB
+ */
+export const runAverageProofPipeline = async (
+  feed: FeedSource,
+  config: PipelineConfig,
+): Promise<PipelineResult> => {
+  const { dryRun = false } = config;
+
+  // 1. Fetch composite data with source commitments
+  console.log(`[1/4] Fetching composite via: ${feed.id}...`);
+  const composite: CompositeFetchResult = await fetchComposite();
+  const { averagedRates, sources, sourceRoots, date } = composite;
+
+  const srcA = sources["frankfurter"]!;
+  const srcB = sources["erApi"]!;
+
+  console.log(`  Date: ${date}  Currencies: ${Object.keys(averagedRates).length}`);
+  console.log(`  Root A (frankfurter): ${srcA.root}`);
+  console.log(`  Root B (erApi):       ${srcB.root}`);
+
+  // 2. Commit composite data and register document
+  const merged: Json = {
+    type: "forex-composite-v1",
+    date,
+    base: composite.base,
+    sourceRoots,
+    rates: averagedRates as unknown as Json,
+  };
+  canonicalSort(merged);
+  const compositeCommit = commitDeep(merged, { maxDepth: config.maxDepth }) as CommitResult;
+  const docId = date;
+  const docHash = sha256hex(`${compositeCommit.root}|${docId}`);
+
+  if (!dryRun) {
+    console.log("[2/4] Registering composite document...");
+    const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
+    const attrs = feed.getAttributes?.(merged) ?? {};
+    await documents.register(client, {
+      schema: config.schema,
+      docHash,
+      cid: docHash,
+      issuerId: `${feed.id}-pipeline`,
+      subjectId: `${feed.id}-${docId}`,
+      attributes: attrs,
+      commitments: {
+        scheme: "poseidon",
+        root: compositeCommit.root,
+        leaves: compositeCommit.leaves as readonly string[],
+        randomness: compositeCommit.randomness,
+      },
+      revocation: {
+        scheme: "none",
+        root: "0x" + "0".repeat(64),
+      },
+    });
+    console.log(`  Doc registered: ${docHash.slice(0, 24)}...`);
+  } else {
+    console.log(`[2/4] [dry] Would register doc: ${docHash.slice(0, 24)}...`);
+  }
+
+  // 3. Generate + submit forex-average-v1 proofs per currency
+  const currencies = Object.keys(averagedRates);
+  const leafCount = currencies.length;
+  console.log(`[3/4] Proving ${leafCount} currencies (forex-average-v1)...`);
+  let ok = 0;
+  let fail = 0;
+  const totalStart = Date.now();
+
+  const client = create({ apiBase: config.apiBase, apiKey: config.apiKey });
+
+  for (let i = 0; i < leafCount; i++) {
+    const ccy = currencies[i]!;
+    const t0 = Date.now();
+
+    try {
+      // Find leaf preimage + inclusion proof in each source tree
+      const leafA = findLeaf(srcA.leafPreimages, srcA.inclusionProofs, ccy);
+      const leafB = findLeaf(srcB.leafPreimages, srcB.inclusionProofs, ccy);
+
+      // Extract rates from valueHash (scaled integers → hex → BigInt)
+      const rateA = BigInt(toHex64(leafA.preimage.valueHash));
+      const rateB = BigInt(toHex64(leafB.preimage.valueHash));
+
+      // Compute average rate
+      const averageRate = (rateA + rateB) / 2n;
+
+      // pathHash is the nameHash (toScalar(path)) from the leaf preimage
+      const pathHash = BigInt(toHex64(leafA.preimage.nameHash));
+
+      // Build witness for forex-average-v1 circuit
+      const witness = {
+        // Public inputs
+        sourceRootA: BigInt(toHex64(srcA.root)),
+        sourceRootB: BigInt(toHex64(srcB.root)),
+        randomnessA: BigInt(toHex64(srcA.randomness)),
+        randomnessB: BigInt(toHex64(srcB.randomness)),
+        pathHash,
+        averageRate,
+        // Private inputs
+        rateA,
+        rateB,
+        siblingsA: padToDepth(leafA.proof.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
+        indicesA: padToDepth(leafA.proof.indices, config.maxDepth, 0),
+        siblingsB: padToDepth(leafB.proof.siblings, config.maxDepth, "0x0").map((s) => BigInt(toHex64(s))),
+        indicesB: padToDepth(leafB.proof.indices, config.maxDepth, 0),
+      };
+
+      const { proof, inputs } = await prover.prove(client, {
+        circuitId: config.circuitId,
+        witness,
+      });
+
+      if (!dryRun) {
+        const sr = await proofs.submit(client, {
+          docHash,
+          circuitId: config.circuitId,
+          proof,
+          inputs: inputs as readonly string[],
+        });
+        const ms = Date.now() - t0;
+        console.log(`  ✅ [${i + 1}/${leafCount}] ${ccy} avg=${averageRate.toString()} (${ms}ms) → ${sr.verificationId}`);
+      } else {
+        const ms = Date.now() - t0;
+        console.log(`  ✅ [${i + 1}/${leafCount}] ${ccy} avg=${averageRate.toString()} (${ms}ms) [dry]`);
+      }
+      ok++;
+    } catch (e) {
+      console.log(`  ❌ [${i + 1}/${leafCount}] ${ccy}: ${e instanceof Error ? e.message : String(e)}`);
+      fail++;
+    }
+  }
+
+  const durationMs = Date.now() - totalStart;
+  console.log(`[4/4] Done. ✅ ${ok}  ❌ ${fail}  Total: ${(durationMs / 1000).toFixed(1)}s`);
+  console.log(`  Root: ${compositeCommit.root}`);
+  console.log(`  Doc:  ${docHash}`);
+
+  return { feedId: feed.id, root: compositeCommit.root, docHash, leafCount, proofsOk: ok, proofsFail: fail, durationMs };
 };
