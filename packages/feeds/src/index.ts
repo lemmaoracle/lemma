@@ -29,6 +29,7 @@ export { findFeed, listFeeds, runFeed } from "./registry.js";
 export { frankfurterForex } from "./feeds/forex.js";
 export { erApiForex } from "./feeds/forex-er-api.js";
 export { forexComposite, fetchComposite } from "./feeds/forex-composite.js";
+export { jpHolidays } from "./feeds/jp-holidays.js";
 
 // Pipeline
 export { runProofPipeline, runMultiPipeline, runAverageProofPipeline } from "./pipeline.js";
