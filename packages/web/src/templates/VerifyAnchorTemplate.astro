@@ -697,16 +697,14 @@ const DOC = {
       0 2px 8px rgba(22, 30, 24, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
+  /* 右上からのライム環境光。パネル全面に広げた楕円のソフトウォッシュにして、
+     狭幅（モバイル）でも「くっきりした丸」にならないようにする。 */
   .v9 .panel.tech::before {
     content: "";
     position: absolute;
-    top: -30%;
-    right: -12%;
-    width: 64%;
-    height: 110%;
-    border-radius: 50%;
+    inset: 0;
     pointer-events: none;
-    background: radial-gradient(circle, rgba(168, 224, 16, 0.11), transparent 62%);
+    background: radial-gradient(125% 78% at 92% -18%, rgba(168, 224, 16, 0.14), transparent 60%);
   }
   .v9 .panel.tech::after {
     content: "";
