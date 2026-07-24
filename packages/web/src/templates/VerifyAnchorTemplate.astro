@@ -1,25 +1,25 @@
 ---
 /**
- * 検証センター — 照合クレジット（「独立した証明基盤 Lemma に固定されています」）
- * の受け皿。`/verify/`（EN）と `/ja/verify/`（JA）。
+ * 検証センター — `/verify/`（EN）と `/ja/verify/`（JA）。
  *
- * SSL 証明書モデル：「発行者は誰か・何を意味するか」を1枚のステータスカードで
- * 即答し、詳細（検証境界の全文・独立性の論・技術根拠）はサイトの各ページへ
- * 「詳しく →」で送る。第1層で受信者は完結し、第三者性を確認したい人だけ
- * 1クリック奥へ、という照合ページ改修提案 改修3 の設計方針。
+ * 2モード（実装指示 v1 2026-07-24）:
+ *   - `/verify/?doc=<docHash>` … 単票（その記録1件の判定）※次段で実装（API契約 CTO 確認待ち）
+ *   - `/verify/`（パラメータなし）… 全体（検証・発行の実数の内訳）← 本ファイルで実装
  *
- * 内訳カウンターは証明書には載せない。証明書は1件の来歴、内訳は Lemma 全体の
- * 実績で別オブジェクト（SSL の証明書と Certificate Transparency ログの関係）
- * なので、カード外の独立した「検証の透明性」セクションに置く。
+ * デザイン規律（モック v9）:
+ *   - ヘッダーはロゴのみ・フッターは © / 利用規約 / プライバシーのみ。検証面の
+ *     価値は第三者性そのものなので、この面で自社を売り込む導線は置かない。
+ *   - 蛍光グリーン（#A8E010）は「検証済み・稼働中」の状態にのみ使う。
+ *   - 濃い面（スレート）は実データが流れる面（REGISTRY パネル）にのみ使う。
+ *   - 数字はビルド時に焼き込まない。表示のたびに `GET /v1/counters` から読み直し、
+ *     失敗時は推定で埋めず `—` ＋ `OFFLINE` ＋ 生レスポンスへの直リンクを出す。
  *
- * 用語・文体・非加飾の規律：対外名は「AI証明基盤 / proof layer」。照合＝当事者・
- * 検証＝第三者・証明＝Lemma。JA ですます調。ロゴ/バッジ/ホロは使わない。
+ * 動的注入（board 行）にスコープCSSが効かないため、スタイルは `.v9` 名前空間の
+ * global 1ブロックにまとめている。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import Layout from "../layouts/Layout.astro";
-import Navigation from "../components/Navigation.astro";
-import Footer from "../components/Footer.astro";
-import VerificationCounter from "../components/VerificationCounter.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
 
 export interface VerifyAnchorTemplateProps {
   locale: Locale;
@@ -27,59 +27,128 @@ export interface VerifyAnchorTemplateProps {
   base: string;
 }
 
-const { locale, t, base } = Astro.props as VerifyAnchorTemplateProps;
+const { locale, base } = Astro.props as VerifyAnchorTemplateProps;
 const isJa = locale === "ja";
 const L = (path: string) => `${base}${path}`;
+
+const API_BASE = "https://workers.lemma.workers.dev/v1";
+const RAW_COUNTERS = `${API_BASE}/counters`;
 
 const C = isJa
   ? {
       metaTitle:
-        "検証センター — 照合記録は独立した証明基盤 Lemma に固定されています｜Lemma",
+        "検証センター — Lemma が検証・発行した記録の実数の内訳｜Lemma",
       metaDescription:
-        "CLUBS 等の照合記録は、記録の当事者から独立した AI証明基盤 Lemma に固定されています。発行者・検証境界を1枚で確認できます。",
-      eyebrow: "検証センター",
-      status: "この記録は Lemma に固定されています",
-      statusSub: "独立した証明基盤（proof layer）が来歴を固定しています",
-      rows: [
-        { k: "発行者", v: "Lemma — 記録の当事者から独立した証明基盤" },
-        { k: "✓ が意味すること", v: "記録が発行時点から改ざんされていないこと" },
-        { k: "✓ が意味しないこと", v: "内容の品質や、判断の正しさそのもの" },
-        { k: "3語の分業", v: "照合＝当事者／検証＝第三者／証明＝Lemma" },
-      ],
-      note: "✓ は実行ログ・入金データとの一致のみを意味します。中身の良し悪しを保証するものではありません。",
-      moreLabel: "詳しく",
-      more: [
-        { label: "検証境界と独立性", href: L("/authenticity/") },
-        { label: "四本柱（5つの証明）", href: L("/pillars/") },
-      ],
-      transparencyHeading: "検証の透明性",
-      transparencyLead:
-        "個別の証明書ではなく、Lemma 全体でこれまでに検証・発行した記録の内訳です。合計ではなく、どこ由来かを多い順に開示します。数字は表示のたびにレジストリから取得しています。",
+        "Lemma が検証・発行してきた記録の実数の内訳です。合計ではなく由来ごとに、レジストリから表示のたびに取得して開示します。推定値では埋めません。",
+      eyebrow: "Verification Center",
+      h2: "検証センター",
+      lede: "Lemma が検証・発行してきた記録の、実数の内訳です。1件の記録を確かめる場合は、その記録のリンク（?doc=…）から開いてください。",
+      registryNm: "LEMMA REGISTRY",
+      live: "LIVE",
+      offline: "OFFLINE",
+      verified: {
+        eyebrow: "Proof Verifications",
+        title: "検証済み証明数",
+        note: "1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。",
+      },
+      issued: {
+        eyebrow: "Proofs Issued",
+        title: "発行された証明",
+        note: "1件の登録を1と数えます。",
+      },
+      lastUpdated: "LAST UPDATED",
+      loading: "読み込み中…",
+      perr: "レジストリに到達できません。推定値では埋めません。",
+      perrLink: "レスポンスを直接確認する →",
+      verifyLink: "この数字を検証する →",
+      pfootNote:
+        "参照APIの生の応答です。証明レコードへの導線と、証明束（Merkle）への固定は順次公開します。",
+      bottomNote:
+        "個別の証明書ではなく、Lemma 全体の検証・発行記録の内訳です。実数のみを表示し、推定では埋めません。",
+      docsLink: "ドキュメント →",
+      docsHref: L("/guides/"),
+      terms: "利用規約",
+      privacy: "プライバシー",
     }
   : {
       metaTitle:
-        "Verification Center — verification records are anchored on Lemma, an independent proof layer | Lemma",
+        "Verification Center — the real breakdown of what Lemma has verified and issued | Lemma",
       metaDescription:
-        "Verification records from services like CLUBS are anchored on Lemma, a proof layer independent of the record's authors. See the issuer and the verification boundary at a glance.",
+        "The real breakdown of records Lemma has verified and issued — by source, read from the registry on every view. Never filled with estimates.",
       eyebrow: "Verification Center",
-      status: "This record is anchored on Lemma",
-      statusSub: "An independent proof layer anchors its provenance",
-      rows: [
-        { k: "Issued by", v: "Lemma — a proof layer independent of the record's authors" },
-        { k: "The check confirms", v: "the record has not been altered since it was issued" },
-        { k: "It does not confirm", v: "the quality of the contents or the correctness of the judgment" },
-        { k: "The three roles", v: "Matching = the party · Verification = any third party · Proof = Lemma" },
-      ],
-      note: "The check means only that the record matches the execution logs or settlement data. It does not guarantee the merit of the contents.",
-      moreLabel: "In depth",
-      more: [
-        { label: "The verification boundary and independence", href: L("/authenticity/") },
-        { label: "The Four Pillars (five proofs)", href: L("/pillars/") },
-      ],
-      transparencyHeading: "Verification transparency",
-      transparencyLead:
-        "Not a single certificate — the breakdown of everything Lemma has verified and issued, ranked by source rather than summed. Read from the registry on every view.",
+      h2: "Verification Center",
+      lede: "The real breakdown of records Lemma has verified and issued. To check a single record, open it from that record's link (?doc=…).",
+      registryNm: "LEMMA REGISTRY",
+      live: "LIVE",
+      offline: "OFFLINE",
+      verified: {
+        eyebrow: "Proof Verifications",
+        title: "Verified proofs",
+        note: "One successful verification counts as one — not one data point, not one request.",
+      },
+      issued: {
+        eyebrow: "Proofs Issued",
+        title: "Issued proofs",
+        note: "One registration counts as one.",
+      },
+      lastUpdated: "LAST UPDATED",
+      loading: "Loading…",
+      perr: "The registry is unreachable. We do not fill in estimates.",
+      perrLink: "Check the response directly →",
+      verifyLink: "Verify these numbers →",
+      pfootNote:
+        "The raw response of the reference API. Links to proof records and anchoring of proof bundles (Merkle) will follow.",
+      bottomNote:
+        "Not an individual certificate — the breakdown of everything Lemma has verified and issued. Real numbers only, never estimates.",
+      docsLink: "Documentation →",
+      docsHref: L("/guides/"),
+      terms: "Terms",
+      privacy: "Privacy",
     };
+
+// ソース/バケットのラベル訳（未知キーはキーをそのまま表示・クライアントで対応）。
+// フィードが増えたらここに追記する（spec §2.2）。
+const SRC_LABELS = isJa
+  ? {
+      feeds: "為替データフィード",
+      api_verify: "公開API・その他",
+      "jp-holidays": "祝日データフィード",
+      "jp-postal-codes": "郵便番号データフィード",
+      other: "その他",
+    }
+  : {
+      feeds: "FX data feed",
+      api_verify: "Public API & others",
+      "jp-holidays": "JP holidays feed",
+      "jp-postal-codes": "JP postal codes feed",
+      other: "Others",
+    };
+const BKT_LABELS = isJa
+  ? {
+      feeds: "為替データフィード",
+      clubs: "CLUBS",
+      "jp-holidays": "祝日データフィード",
+      "jp-postal-codes": "郵便番号データフィード",
+      other: "その他",
+    }
+  : {
+      feeds: "FX data feed",
+      clubs: "CLUBS",
+      "jp-holidays": "JP holidays feed",
+      "jp-postal-codes": "JP postal codes feed",
+      other: "Others",
+    };
+
+const STR = {
+  api: API_BASE,
+  loading: C.loading,
+  live: C.live,
+  offline: C.offline,
+  lastUpdated: C.lastUpdated,
+  timeLocale: isJa ? "ja-JP" : "en-US",
+  src: SRC_LABELS,
+  bkt: BKT_LABELS,
+};
 ---
 
 <Layout
@@ -89,181 +158,523 @@ const C = isJa
   metaType="page"
   pagePath="/verify/"
 >
-  <Navigation locale={locale} t={t.nav} base={base} />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Serif+JP:wght@500;600&family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@200;300;400;500&family=Space+Mono&display=swap"
+  />
 
-  <main class="vc-page">
-    <div class="vc-container">
-      <div class="vc-eyebrow">{C.eyebrow}</div>
+  <div class="v9">
+    <header class="v9-hd">
+      <a href={L("/")} class="v9-logo" aria-label="Lemma">
+        <LemmaOracle />
+      </a>
+    </header>
 
-      <div class="vc-cert" role="group" aria-label={C.status}>
-        <div class="vc-cert-head">
-          <span class="vc-check" aria-hidden="true">✓</span>
-          <div>
-            <div class="vc-status">{C.status}</div>
-            <div class="vc-status-sub">{C.statusSub}</div>
+    <main class="v9-main">
+      <div class="v9-wrap">
+        <div class="v9-kicker">{C.eyebrow}</div>
+        <h1 class="v9-h2">{C.h2}</h1>
+        <p class="v9-lede">{C.lede}</p>
+
+        <div class="panel tech" aria-label={C.h2}>
+          <div class="pgrid"></div>
+          <div class="phead" id="phead">
+            <span class="nm">{C.registryNm}</span>
+            <span class="livechip" id="plive">{C.live}</span>
+            <span class="ep">GET /v1/counters</span>
+          </div>
+          <div class="vboards">
+            <div class="vboard">
+              <div class="vb-label">{C.verified.eyebrow}</div>
+              <div class="vb-title">{C.verified.title}</div>
+              <div class="bignum vtotal" id="vtotal" aria-live="polite">———</div>
+              <p class="vb-note">{C.verified.note}</p>
+              <div id="vboard-verified"><div class="vb-note">{C.loading}</div></div>
+              <div class="vb-upd">{C.lastUpdated} <b id="vupd">—</b></div>
+            </div>
+            <div class="vboard">
+              <div class="vb-label">{C.issued.eyebrow}</div>
+              <div class="vb-title">{C.issued.title}</div>
+              <div class="bignum vtotal" id="itotal" aria-live="polite">———</div>
+              <p class="vb-note">{C.issued.note}</p>
+              <div id="vboard-issued"><div class="vb-note">{C.loading}</div></div>
+              <div class="vb-upd">{C.lastUpdated} <b id="iupd">—</b></div>
+            </div>
+          </div>
+          <div class="perr" id="perr" hidden>
+            {C.perr}
+            <a href={RAW_COUNTERS} target="_blank" rel="noopener">{C.perrLink}</a>
+          </div>
+          <div class="pfoot">
+            <a href={RAW_COUNTERS} target="_blank" rel="noopener">{C.verifyLink}</a>
+            <span>{C.pfootNote}</span>
           </div>
         </div>
-        <dl class="vc-rows">
-          {C.rows.map((r) => (
-            <div class="vc-row">
-              <dt>{r.k}</dt>
-              <dd>{r.v}</dd>
-            </div>
-          ))}
-        </dl>
+
+        <p class="v9-bottom">
+          {C.bottomNote}
+          <a href={C.docsHref} target="_blank" rel="noopener">{C.docsLink}</a>
+        </p>
       </div>
+    </main>
 
-      <p class="vc-note">{C.note}</p>
-
-      {/* カードの主張を掘る導線。証明書とセットの「詳しく」で、透明性ログとは別。 */}
-      <nav class="vc-more" aria-label={C.moreLabel}>
-        <span class="vc-more-label">{C.moreLabel}</span>
-        <ul>
-          {C.more.map((m) => (
-            <li><a href={m.href}>{m.label} →</a></li>
-          ))}
-        </ul>
-      </nav>
-
-      {/*
-        透明性ログ。証明書（1件の来歴）とは別オブジェクトなので、カードの外の
-        独立セクションに置き、「個別の証明書ではなく Lemma 全体の実績」と明示する。
-        SSL でいう証明書と Certificate Transparency ログの関係。
-      */}
-      <section class="vc-transparency" aria-label={C.transparencyHeading}>
-        <VerificationCounter
-          locale={locale}
-          heading={C.transparencyHeading}
-          lead={C.transparencyLead}
-        />
-      </section>
-    </div>
-  </main>
-
-  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+    <footer class="v9-ft">
+      <span>© FRAME00, Inc.</span>
+      <a href={L("/terms/")}>{C.terms}</a>
+      <a href={L("/privacy/")}>{C.privacy}</a>
+    </footer>
+  </div>
 </Layout>
 
-<style>
-  .vc-page {
-    background: #f7f8fb;
-    color: #161a26;
-    padding: 56px 20px 72px;
+<script is:inline define:vars={{ STR }}>
+  (function () {
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => Number(n).toLocaleString("en-US");
+
+    function fmtTime(s) {
+      if (!s) return "—";
+      const d = new Date(s.includes("T") ? s : s.replace(" ", "T") + "Z");
+      return Number.isNaN(d.getTime())
+        ? "—"
+        : d.toLocaleString(STR.timeLocale, {
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+    }
+
+    function board(el, rows, labels) {
+      const sorted = [...rows].sort((a, b) => b.count - a.count);
+      const mx = sorted.reduce((a, r) => Math.max(a, r.count), 0);
+      el.innerHTML = sorted
+        .map((r) => {
+          const key = r.source ?? r.bucket;
+          const label = labels[key] ?? key;
+          const w = mx > 0 ? (r.count / mx) * 100 : 0;
+          return `<div class="vrow"><div class="rh2"><span>${label}</span><span class="cnt">${fmt(
+            r.count,
+          )}</span></div><div class="vbar"><i data-w="${w}"></i></div></div>`;
+        })
+        .join("");
+      requestAnimationFrame(() =>
+        el.querySelectorAll(".vbar i").forEach((b) => {
+          b.style.width = b.dataset.w + "%";
+        }),
+      );
+    }
+
+    function countUp(el, to) {
+      if (reduced) {
+        el.textContent = fmt(to);
+        return;
+      }
+      const t0 = performance.now(),
+        dur = 1300,
+        from = Math.max(0, to - Math.min(to, 600));
+      (function f(t) {
+        const p = Math.min(1, (t - t0) / dur),
+          e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(from + (to - from) * e));
+        if (p < 1) requestAnimationFrame(f);
+      })(t0);
+    }
+
+    let first = true;
+    async function load() {
+      try {
+        const r = await fetch(STR.api + "/counters", {
+          headers: { accept: "application/json" },
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        const j = await r.json();
+        const vt = j.verified.bySource.reduce((a, b) => a + b.count, 0);
+        const it = j.issued.byBucket.reduce((a, b) => a + b.count, 0);
+        if (first) {
+          countUp($("vtotal"), vt);
+          countUp($("itotal"), it);
+          first = false;
+        } else {
+          $("vtotal").textContent = fmt(vt);
+          $("itotal").textContent = fmt(it);
+        }
+        board($("vboard-verified"), j.verified.bySource, STR.src);
+        board($("vboard-issued"), j.issued.byBucket, STR.bkt);
+        $("vupd").textContent = fmtTime(j.verified.updatedAt);
+        $("iupd").textContent = fmtTime(j.issued.updatedAt);
+        $("perr").hidden = true;
+        $("phead").classList.remove("offline");
+        $("plive").textContent = STR.live;
+      } catch (e) {
+        $("vboard-verified").innerHTML = "";
+        $("vboard-issued").innerHTML = "";
+        $("vtotal").textContent = "—";
+        $("itotal").textContent = "—";
+        $("vupd").textContent = "—";
+        $("iupd").textContent = "—";
+        $("perr").hidden = false;
+        $("phead").classList.add("offline");
+        $("plive").textContent = STR.offline;
+      }
+    }
+    load();
+    setInterval(load, 45000);
+  })();
+</script>
+
+<style is:global>
+  .v9 {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --err: #c25438;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --dline: #e7eae5;
+    --font-serif-jp: "Noto Serif JP", "Cormorant Garamond", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: "Space Mono", monospace;
+    background: var(--lite);
+    color: var(--tx);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
-  .vc-container {
+  .v9 *,
+  .v9 *::before,
+  .v9 *::after {
+    box-sizing: border-box;
+  }
+
+  /* header：ロゴのみ */
+  .v9-hd {
+    padding: 18px 6vw;
+    border-bottom: 1px solid rgba(15, 20, 18, 0.08);
+  }
+  .v9-logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--tx);
+  }
+  .v9-logo svg {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  .v9-main {
+    flex: 1;
+    padding: 52px 6vw 24px;
+  }
+  .v9-wrap {
     max-width: 620px;
     margin: 0 auto;
   }
-  .vc-eyebrow {
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #6a4cf0;
+  .v9-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
-  .vc-cert {
-    background: #fff;
-    border: 1px solid #e2e5f0;
-    border-radius: 16px;
-    padding: 22px 24px;
-    box-shadow: 0 1px 2px rgba(20, 26, 38, 0.04);
+  .v9-h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--tx);
+    margin: 0 0 10px;
   }
-  .vc-cert-head {
+  .v9-lede {
+    font-size: 13.5px;
+    line-height: 2;
+    color: var(--tx-soft);
+    margin: 0 0 30px;
+  }
+
+  /* REGISTRY パネル（スレート計器・実データ面のみ） */
+  .v9 .panel {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .v9 .panel.tech {
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow:
+      0 22px 52px rgba(22, 30, 24, 0.26),
+      0 2px 8px rgba(22, 30, 24, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .v9 .panel.tech::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    right: -12%;
+    width: 64%;
+    height: 110%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(168, 224, 16, 0.11), transparent 62%);
+  }
+  .v9 .panel.tech::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(118deg, rgba(255, 255, 255, 0.075) 0%, transparent 28%, transparent 100%);
+  }
+  .v9 .pgrid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .v9 .phead {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     gap: 14px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eef0f7;
+    padding: 16px 22px;
+    border-bottom: 1px solid #4a544b;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: #9ba296;
+    flex-wrap: wrap;
   }
-  .vc-check {
-    flex: none;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    background: #eae6fe;
-    color: #6a4cf0;
-    font-size: 18px;
-    font-weight: 800;
-    display: flex;
+  .v9 .phead .nm {
+    color: #d8ddd1;
+  }
+  .v9 .phead .livechip {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 7px;
+    color: var(--ok);
   }
-  .vc-status {
-    font-size: 17px;
-    font-weight: 800;
-    line-height: 1.35;
+  .v9 .phead .livechip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 8px rgba(168, 224, 16, 0.8);
+    animation: v9pulse 2s ease-in-out infinite;
   }
-  .vc-status-sub {
-    font-size: 13px;
-    color: #5b6377;
-    margin-top: 2px;
+  .v9 .phead.offline .livechip {
+    color: #e0906f;
   }
-  .vc-rows {
-    margin: 0;
-    padding: 0;
+  .v9 .phead.offline .livechip::before {
+    background: #e0906f;
+    box-shadow: none;
+    animation: none;
   }
-  .vc-row {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 16px;
-    padding: 11px 0;
-    border-bottom: 1px solid #f1f2f8;
+  .v9 .phead .ep {
+    margin-left: auto;
+    color: #9ba296;
   }
-  .vc-row:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-  }
-  .vc-row dt {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #6b7285;
-    line-height: 1.6;
-  }
-  .vc-row dd {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #23283a;
-  }
-  @media (max-width: 520px) {
-    .vc-row {
-      grid-template-columns: 1fr;
-      gap: 3px;
+  @keyframes v9pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
     }
   }
-  .vc-note {
-    font-size: 12.5px;
-    line-height: 1.75;
-    color: #6b7285;
-    margin: 14px 2px 0;
+  .v9 .vboards {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
   }
-  .vc-more {
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid #e7e9f2;
+  .v9 .vboard {
+    padding: 28px 30px 24px;
   }
-  .vc-more-label {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+  .v9 .vboard + .vboard {
+    border-left: 1px solid #4a544b;
+  }
+  .v9 .vb-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: #9ba296;
     text-transform: uppercase;
-    color: #6b7285;
+    margin-bottom: 10px;
   }
-  .vc-more ul {
-    list-style: none;
-    margin: 10px 0 0;
-    padding: 0;
+  .v9 .vb-title {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    color: #ebefe6;
+    margin: 0 0 4px;
+  }
+  .v9 .bignum {
+    font-family: var(--font-num);
+    font-weight: 200;
+    color: #ebefe6;
+    font-size: clamp(38px, 4vw, 56px);
+    letter-spacing: -0.015em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    margin: 4px 0 6px;
+  }
+  .v9 .vb-note {
+    font-size: 12px;
+    line-height: 1.95;
+    color: #9ba296;
+    margin: 0 0 20px;
+  }
+  .v9 .vrow {
+    margin-bottom: 16px;
+  }
+  .v9 .vrow .rh2 {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 22px;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 12.5px;
+    color: #d8ddd1;
+    margin-bottom: 7px;
   }
-  .vc-more a {
-    font-size: 14px;
-    font-weight: 700;
-    color: #6a4cf0;
+  .v9 .vrow .cnt {
+    font-family: var(--font-num);
+    font-weight: 300;
+    font-size: 19px;
+    color: #ebefe6;
+    font-variant-numeric: tabular-nums;
+  }
+  .v9 .vbar {
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+  .v9 .vbar i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #8cbe0e, var(--ok));
+    box-shadow: 0 0 10px rgba(168, 224, 16, 0.35);
+    width: 0;
+    transition: width 1s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .v9 .vb-upd {
+    margin-top: 18px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: #9ba296;
+  }
+  .v9 .vb-upd b {
+    color: #d8ddd1;
+    font-weight: 400;
+  }
+  .v9 .perr {
+    position: relative;
+    z-index: 2;
+    padding: 20px 22px;
+    font-size: 12.5px;
+    line-height: 2;
+    color: #ce9a85;
+    border-top: 1px solid #4a544b;
+  }
+  .v9 .perr a {
+    color: #e0b49a;
+  }
+  .v9 .pfoot {
+    position: relative;
+    z-index: 2;
+    padding: 13px 22px;
+    border-top: 1px solid #4a544b;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: #9ba296;
+    display: flex;
+    gap: 8px 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .v9 .pfoot a {
+    color: #d8ddd1;
+    text-decoration: none;
+    border-bottom: 1px solid #59645a;
+    padding-bottom: 2px;
+  }
+  .v9 .pfoot a:hover {
+    color: #ebefe6;
+  }
+
+  .v9-bottom {
+    font-size: 12.5px;
+    line-height: 2;
+    color: var(--muted);
+    margin: 18px 2px 0;
+  }
+  .v9-bottom a {
+    color: var(--ok-light);
     text-decoration: none;
   }
-  .vc-more a:hover {
+  .v9-bottom a:hover {
     text-decoration: underline;
+  }
+
+  .v9-ft {
+    padding: 32px 6vw 44px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .v9-ft a {
+    color: var(--ok-light);
+    text-decoration: none;
+  }
+  .v9-ft a:hover {
+    text-decoration: underline;
+  }
+
+  .v9 a:focus-visible,
+  .v9 button:focus-visible {
+    outline: 2px solid var(--ok-light);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 620px) {
+    .v9 .vboards {
+      grid-template-columns: 1fr;
+    }
+    .v9 .vboard + .vboard {
+      border-left: none;
+      border-top: 1px solid #4a544b;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v9 .vbar i {
+      transition: none;
+    }
+    .v9 .phead .livechip::before {
+      animation: none;
+    }
   }
 </style>
