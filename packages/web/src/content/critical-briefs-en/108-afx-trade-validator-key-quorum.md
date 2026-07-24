@@ -10,7 +10,7 @@ published: 2026-07-24
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response"]
 related_briefs: ["045-humanity-protocol-multisig-key-custody", "074-taiko-bridge-prover-key-leak", "103-ostium-oracle-signer-key-future-priced-data", "016-verus-ethereum-bridge", "001-kelpdao-rseth", "002-stakedao-vsdcrv"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "AFX Trade — 侵害された署名が 2/3 クォーラムを満たし $24.15M 流出"
 og_lead_en: "AFX Trade — compromised signatures met the 2/3 quorum, $24.15M gone"

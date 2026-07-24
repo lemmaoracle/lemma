@@ -10,7 +10,7 @@ published: 2026-07-24
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
 related_briefs: ["046-servicenow-unauthenticated-api", "088-kestra-auth-filter-bypass-rce", "094-cursor-duneslide-sandbox-escape", "003-starlette-badhost", "033-f5-bigip-edge-pivot"]
-status: draft
+status: published
 version: "1.0"
 og_lead_ja: "ServiceNow CVE-2026-6875 — 未認証の1リクエストが sandbox を抜け RCE"
 og_lead_en: "ServiceNow CVE-2026-6875 — one unauthenticated request escapes the sandbox to RCE"
