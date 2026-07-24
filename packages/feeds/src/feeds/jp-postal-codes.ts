@@ -235,12 +235,22 @@ export const jpPostalCodes: FeedSource = {
     const recordsCount =
       (obj["records"] as ReadonlyArray<PostalCodeRecord> | undefined)
         ?.length ?? 0;
+    const countRaw = obj["count"];
+    const countVal =
+      typeof countRaw === "number" || typeof countRaw === "string"
+        ? countRaw
+        : recordsCount;
+    const updatedAtRaw = obj["updatedAt"];
+    const updatedAtVal =
+      typeof updatedAtRaw === "string"
+        ? updatedAtRaw
+        : new Date().toISOString();
     const attrs: Record<string, string> = {
       "meta.type": typeof obj["type"] === "string" ? obj["type"] : TYPE,
       "meta.contentHash": `sha256:${typeof obj["contentHash"] === "string" ? obj["contentHash"] : ""}`,
-      "meta.count": String(obj["count"] ?? recordsCount),
+      "meta.count": String(countVal),
       // Attribute only (never committed), so it does not affect idempotency.
-      "meta.updatedAt": String(obj["updatedAt"] ?? new Date().toISOString()),
+      "meta.updatedAt": updatedAtVal,
     };
     // Per-record attributes are intentionally NOT emitted — 124K records
     // is too many for the KV attributes path.

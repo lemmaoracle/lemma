@@ -66,7 +66,6 @@ export const computeCredentialCommitment = (
   const sectionHashes = R.reduce(
     (acc: Record<string, string>, key: SectionKey) => {
       const sectionObj = extractSection(normalized, key);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const hash: { toString: () => string } = toScalar(JSON.stringify(sectionObj));
       return { ...acc, [key]: hash.toString() };
     },
@@ -106,13 +105,11 @@ export const commit = async (
   client: LemmaClient,
   credential: AgentCredential,
 ): Promise<CommitOutput> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { normalize } = await import("@lemmaoracle/sdk");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const normalized = await normalize<AgentCredential, NormalizedAgentCredential>(
     client,
     { schema: credential.schema, payload: credential },
-  ) as NormalizedAgentCredential;
+  );
 
   const commitment = computeCredentialCommitment(normalized);
 
