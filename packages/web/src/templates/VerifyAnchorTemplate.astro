@@ -149,6 +149,101 @@ const STR = {
   src: SRC_LABELS,
   bkt: BKT_LABELS,
 };
+
+// ── 単票モード（?doc=）─────────────────────────────────────────
+// サーバー描画のプロース（ロケール主）。証明書本体（#view）は日英併記でクライアント描画。
+const DOCPROSE = isJa
+  ? {
+      kicker: "検証センター / Verification",
+      attr: "この検証を行っているのは、記録の当事者から独立した証明基盤 Lemma です。",
+      attrDocs: "ドキュメント →",
+      attrAgg: "検証センター全体 →",
+      promo: "自社の記録にも証明を付けられます",
+      promoNocode: "ノーコードで発行 →",
+      promoApi: "API で発行 →",
+    }
+  : {
+      kicker: "Verification Center",
+      attr: "This verification is performed by Lemma — a proof layer independent of the record's parties.",
+      attrDocs: "Documentation →",
+      attrAgg: "Full verification center →",
+      promo: "Add proof to your own records.",
+      promoNocode: "Issue no-code →",
+      promoApi: "Issue via API →",
+    };
+const DLINK = {
+  docs: L("/guides/"),
+  agg: L("/verify/"),
+  nocode: L("/trust402/sell/"),
+  api: "https://dashboard.lemma.workers.dev",
+};
+
+// 発行者は「CLUBS」固定（生の issuerId は表示に使わない・CTO 方針）。subjectId は一切扱わない。
+// 証明クラス（来歴）は API が返さないため UI 固定ラベル。EXPLORER は Base 導入まで空＝無効表示。
+const DOC = {
+  issuer: "CLUBS",
+  rawBase: `${API_BASE}/documents/`,
+  explorer: "",
+  states: {
+    registered: { ja: "改ざんされていません", en: "Not tampered", subJa: null, subEn: null },
+    anchored: {
+      ja: "改ざんされていません",
+      en: "Not tampered",
+      subJa: "この証明はブロックチェーン上にも刻まれています。",
+      subEn: "Also anchored on-chain.",
+    },
+    pending: {
+      ja: "照合を待っています",
+      en: "Pending verification",
+      subJa: "まだ検証記録への登録が済んでいません。",
+      subEn: "Not yet registered in the verification record.",
+    },
+  },
+  notFound: {
+    ja: "記録が見つかりません",
+    en: "Record not found",
+    subJa: "この記録は登録されていないか、リンクが正しくない可能性があります。",
+    subEn: "This record has not been registered, or the link may be incorrect.",
+  },
+  f: {
+    issuerJa: "発行者",
+    issuerEn: "Issuer",
+    recAtJa: "記録日時",
+    recAtEn: "Recorded at",
+    recDateJa: "対象の日付",
+    recDateEn: "Record date",
+  },
+  checks: ["署名が一致", "改ざんなし", "発行者を確認"],
+  fold1Title: "この証明の意味 / What this proves",
+  provesYes: "✔ 証明が意味すること",
+  provesYesJa: "記録が、発行された時点から改ざんされていないこと。",
+  provesYesEn: "The record is unchanged since it was issued.",
+  provesNo: "✗ 証明が意味しないこと",
+  provesNoJa: "書かれた内容の良し悪しや、判断の正しさそのもの。",
+  provesNoEn: "Not the quality of the contents or the correctness of the judgment.",
+  roleMatch: "照合＝",
+  roleMatchB: "当事者",
+  roleVerify: "検証＝",
+  roleVerifyB: "第三者",
+  roleProof: "証明＝",
+  roleProofB: "Lemma",
+  fold2Title: "検証した対象 / What was verified",
+  classVal: "来歴 · Verifiable Origin",
+  recordType: "日次記録",
+  sourceJa: "記録の当事者",
+  sourceEn: "The party that issued the record",
+  scopeJa: "記録本文とタイムスタンプのハッシュのみ。本文そのものは Lemma に送られていません。",
+  scopeEn: "Only the hash — the body itself is never sent to Lemma.",
+  fold3Title: "DOC HASH とは / About the hash",
+  aboutJa: "記録ごとに固有のコードです。発行したときの記録と、いま照会している記録が一致していることを示します。あとから書き換えるとこのコードが変わり、一致しなくなります。",
+  aboutEn: "A code unique to each record. Editing the record afterwards would change it.",
+  raw: "生の照合レスポンスを見る / Raw response",
+  hashLabel: "DOC HASH",
+  copy: "コピー",
+  copied: "コピーしました",
+  chainVerify: "オンチェーンの記録を確認",
+  chainPending: "オンチェーン記録あり（エクスプローラ確定待ち）",
+};
 ---
 
 <Layout
@@ -172,6 +267,24 @@ const STR = {
 
     <main class="v9-main">
       <div class="v9-wrap">
+        {/* 単票モード（?doc=）。クライアントが URL を見て表示を切り替える。 */}
+        <div id="doc-mode" hidden>
+          <div class="v9-kicker">{DOCPROSE.kicker}</div>
+          <div id="view" aria-live="polite"></div>
+          <p class="attrfoot">
+            {DOCPROSE.attr}
+            <a href={DLINK.docs} target="_blank" rel="noopener">{DOCPROSE.attrDocs}</a>
+            <a href={DLINK.agg}>{DOCPROSE.attrAgg}</a>
+          </p>
+          <p class="promoline">
+            {DOCPROSE.promo}
+            <a href={DLINK.nocode} target="_blank" rel="noopener">{DOCPROSE.promoNocode}</a>
+            <a href={DLINK.api} target="_blank" rel="noopener">{DOCPROSE.promoApi}</a>
+          </p>
+        </div>
+
+        {/* 全体モード（?doc なし） */}
+        <div id="agg-mode" hidden>
         <div class="v9-kicker">{C.eyebrow}</div>
         <h1 class="v9-h2">{C.h2}</h1>
         <p class="v9-lede">{C.lede}</p>
@@ -215,6 +328,7 @@ const STR = {
           {C.bottomNote}
           <a href={C.docsHref} target="_blank" rel="noopener">{C.docsLink}</a>
         </p>
+        </div>
       </div>
     </main>
 
@@ -226,12 +340,161 @@ const STR = {
   </div>
 </Layout>
 
-<script is:inline define:vars={{ STR }}>
+<script is:inline define:vars={{ STR, DOC }}>
   (function () {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const $ = (id) => document.getElementById(id);
     const fmt = (n) => Number(n).toLocaleString("en-US");
+    const esc = (s) =>
+      String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c]);
+    const svg = (d) =>
+      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">${d}</svg>`;
+    const I = {
+      check: '<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>',
+      clock:
+        '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
+      q: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.88 9.5a2.12 2.12 0 1 1 3.04 2.02c-.7.34-1.42.9-1.42 1.73v.5M12 17h.01"/><circle cx="12" cy="12" r="9"/>',
+      ext: '<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5M15 3h6m0 0v6m0-6-9 9"/>',
+    };
 
+    // ── 単票モード（?doc=）─────────────────────────────────────
+    // registeredAt は API から ISO8601 UTC で来る。JST に整形して表示する。
+    function fmtJst(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "";
+      const s = d.toLocaleString("ja-JP", {
+        timeZone: "Asia/Tokyo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return s.replace(/\//g, "-") + " JST";
+    }
+
+    function renderDoc(doc) {
+      const view = $("view");
+      if (!doc || doc.status === "not_found") {
+        view.innerHTML = `<div class="cert2 not_found"><div class="pgrid"></div>
+          <div class="ch"><div class="seal">${svg(I.q)}</div>
+            <div><h1 class="verdict">${DOC.notFound.ja}</h1><div class="verdict-en">${DOC.notFound.en}</div></div></div>
+          <p class="sub2">${DOC.notFound.subJa}<span class="en">${DOC.notFound.subEn}</span></p></div>`;
+        return;
+      }
+      const st = DOC.states[doc.status] || DOC.states.pending;
+      const verified = doc.status === "registered" || doc.status === "anchored";
+      const recAt = fmtJst(doc.registeredAt);
+      // 発行者は CLUBS 固定。subjectId・生の issuerId は使わない。
+      const facts = [
+        [DOC.f.issuerJa, DOC.f.issuerEn, DOC.issuer],
+        recAt ? [DOC.f.recAtJa, DOC.f.recAtEn, recAt] : null,
+        doc.date ? [DOC.f.recDateJa, DOC.f.recDateEn, esc(doc.date)] : null,
+      ]
+        .filter(Boolean)
+        .map(
+          ([ja, en, v]) =>
+            `<div class="fr"><span class="k">${ja}<span class="en">${en}</span></span><span class="v">${v}</span></div>`,
+        )
+        .join("");
+
+      const checks = verified
+        ? `<div class="checks2">${DOC.checks
+            .map((c) => `<div class="chk2"><span class="ci">${svg(I.check)}</span>${c}</div>`)
+            .join("")}</div>`
+        : "";
+
+      const chain =
+        doc.status === "anchored" && doc.onchainTxHash
+          ? `<div class="chain">${
+              DOC.explorer
+                ? `<a href="${DOC.explorer}${esc(doc.onchainTxHash)}" target="_blank" rel="noopener">${svg(I.ext)} ${DOC.chainVerify}</a>`
+                : `<a class="disabled">${svg(I.ext)} ${DOC.chainPending}</a>`
+            }</div>`
+          : "";
+
+      const foldMeaning = verified
+        ? `<div class="fold"><details>
+            <summary><span class="sm-ic">${svg(I.q)}</span>${DOC.fold1Title}<span class="caret">▶</span></summary>
+            <div class="foldbody">
+              <div class="mrow2"><span class="ml yes">${DOC.provesYes}</span>${DOC.provesYesJa}<span class="en">${DOC.provesYesEn}</span></div>
+              <div class="mrow2" style="margin-top:12px"><span class="ml no">${DOC.provesNo}</span>${DOC.provesNoJa}<span class="en">${DOC.provesNoEn}</span></div>
+              <div class="roles"><span>${DOC.roleMatch}<b>${DOC.roleMatchB}</b></span><span>${DOC.roleVerify}<b>${DOC.roleVerifyB}</b></span><span>${DOC.roleProof}<b>${DOC.roleProofB}</b></span></div>
+            </div></details></div>`
+        : "";
+
+      const recordVal = DOC.recordType + (doc.date ? " · " + esc(doc.date) : "");
+      const foldTarget = verified
+        ? `<div class="fold"><details>
+            <summary><span class="sm-ic">${svg(I.ext)}</span>${DOC.fold2Title}<span class="caret">▶</span></summary>
+            <div class="foldbody">
+              <div class="trow"><span class="k">CLASS</span><span class="v">${DOC.classVal}</span></div>
+              <div class="trow"><span class="k">RECORD</span><span class="v">${recordVal}</span></div>
+              <div class="trow"><span class="k">SOURCE</span><span class="v">${DOC.sourceJa}<span class="en">${DOC.sourceEn}</span></span></div>
+              <div class="trow"><span class="k">SCOPE</span><span class="v">${DOC.scopeJa}<span class="en">${DOC.scopeEn}</span></span></div>
+            </div></details></div>`
+        : "";
+
+      const foldCode = `<div class="fold"><details>
+          <summary><span class="sm-ic">${svg(I.check)}</span>${DOC.fold3Title}<span class="caret">▶</span></summary>
+          <div class="foldbody">
+            <p class="meaningtxt" style="margin-top:0">${DOC.aboutJa}<span class="en">${DOC.aboutEn}</span></p>
+            <a class="rawlink" href="${DOC.rawBase}${encodeURIComponent(doc.docHash)}" target="_blank" rel="noopener">${svg(I.ext)} ${DOC.raw}</a>
+          </div></details></div>`;
+
+      const subHtml = st.subJa ? `<p class="sub2">${st.subJa}<span class="en">${st.subEn}</span></p>` : "";
+
+      view.innerHTML = `<div class="cert2 ${doc.status}"><div class="pgrid"></div>
+        <div class="ch"><div class="seal">${svg(st.icon || (doc.status === "pending" ? I.clock : I.check))}</div>
+          <div><h1 class="verdict">${st.ja}</h1><div class="verdict-en">${st.en}</div></div></div>
+        <div class="idline"><span class="idk">${DOC.hashLabel}</span><span class="idv">${esc(doc.docHash)}</span><button class="copybtn" id="copyBtn">${DOC.copy}</button></div>
+        ${subHtml}
+        <div class="facts">${facts}</div>
+        ${checks}${chain}
+        <div class="folds">${foldMeaning}${foldTarget}${foldCode}</div>
+      </div>`;
+
+      const btn = $("copyBtn");
+      if (btn)
+        btn.onclick = () => {
+          navigator.clipboard?.writeText(doc.docHash);
+          btn.textContent = DOC.copied;
+          setTimeout(() => (btn.textContent = DOC.copy), 1400);
+        };
+    }
+
+    async function loadDoc(hash, date) {
+      try {
+        const r = await fetch(DOC.rawBase + encodeURIComponent(hash), {
+          headers: { accept: "application/json" },
+        });
+        if (!r.ok) {
+          renderDoc({ status: "not_found" });
+          return;
+        }
+        const j = await r.json();
+        // 描画に使うフィールドだけを取り出す。subjectId・生の issuerId は取り込まない。
+        renderDoc({
+          status: j.status,
+          docHash: hash,
+          registeredAt: j.registeredAt,
+          onchainTxHash: j.onchainTxHash ?? null,
+          date,
+        });
+      } catch (e) {
+        renderDoc({ status: "not_found" });
+      }
+    }
+
+    // ── 全体モード（?doc なし）─────────────────────────────────
     function fmtTime(s) {
       if (!s) return "—";
       const d = new Date(s.includes("T") ? s : s.replace(" ", "T") + "Z");
@@ -318,8 +581,27 @@ const STR = {
         $("plive").textContent = STR.offline;
       }
     }
-    load();
-    setInterval(load, 45000);
+    // ── モード分岐 ─────────────────────────────────────────────
+    const params = new URLSearchParams(location.search);
+    const rawDoc = params.get("doc");
+    if (rawDoc !== null) {
+      // ?doc がある＝単票モード。形式不正はサーバ照会せず not_found 表示。
+      $("doc-mode").hidden = false;
+      $("agg-mode").hidden = true;
+      if (!/^0x[0-9a-fA-F]+$/.test(rawDoc)) {
+        renderDoc({ status: "not_found" });
+      } else {
+        const dq = params.get("date");
+        const date = dq && /^\d{4}-\d{2}-\d{2}$/.test(dq) ? dq : null;
+        loadDoc(rawDoc, date);
+      }
+    } else {
+      // 全体モード
+      $("agg-mode").hidden = false;
+      $("doc-mode").hidden = true;
+      load();
+      setInterval(load, 45000);
+    }
   })();
 </script>
 
@@ -660,6 +942,388 @@ const STR = {
     outline-offset: 3px;
   }
 
+  /* ── 単票モード（証明書カード・スレート）───────────────────── */
+  .v9 #view {
+    margin-top: 4px;
+  }
+  .v9 .cert2 {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    /* スレート面は .cert2 に直接持たせる（.panel.tech の ::before radial と競合させない）。 */
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow:
+      0 22px 52px rgba(22, 30, 24, 0.26),
+      0 2px 8px rgba(22, 30, 24, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .v9 .cert2::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(118deg, rgba(255, 255, 255, 0.075) 0%, transparent 28%, transparent 100%);
+  }
+  /* cert2 の ::before は上辺ライン。 */
+  .v9 .cert2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: var(--ok);
+    z-index: 6;
+  }
+  .v9 .cert2.pending::before {
+    background: #c9a227;
+  }
+  .v9 .cert2.not_found::before {
+    background: #6e7a6c;
+  }
+  .v9 .ch {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 28px 24px 20px;
+  }
+  .v9 .seal {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid rgba(168, 224, 16, 0.5);
+    background: rgba(168, 224, 16, 0.09);
+    color: var(--ok);
+  }
+  .v9 .cert2.pending .seal {
+    border-color: rgba(201, 162, 39, 0.55);
+    background: rgba(201, 162, 39, 0.1);
+    color: #d9b948;
+  }
+  .v9 .cert2.not_found .seal {
+    border-color: #59645a;
+    background: rgba(255, 255, 255, 0.04);
+    color: #9ba296;
+  }
+  .v9 .seal svg {
+    width: 28px;
+    height: 28px;
+  }
+  .v9 .verdict {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(19px, 2.2vw, 23px);
+    letter-spacing: 0.03em;
+    color: #ebefe6;
+    margin: 0;
+    line-height: 1.45;
+  }
+  .v9 .verdict-en {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: #9ba296;
+    margin-top: 6px;
+  }
+  .v9 .sub2 {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding: 0 24px 22px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #d8ddd1;
+  }
+  .v9 .en {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: #8b9285;
+    margin-top: 5px;
+    line-height: 1.6;
+  }
+  .v9 .idline {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px 20px;
+  }
+  .v9 .idk {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: #8b9285;
+    flex: none;
+  }
+  .v9 .idv {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #e3e8dc;
+    flex: 1;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .v9 .idv::-webkit-scrollbar {
+    display: none;
+  }
+  .v9 .copybtn {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: #c9cfc3;
+    background: transparent;
+    border: 1px solid #59645a;
+    border-radius: 5px;
+    padding: 4px 9px;
+    cursor: pointer;
+    flex: none;
+  }
+  .v9 .copybtn:hover {
+    border-color: #d8ddd1;
+  }
+  .v9 .facts {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #4a544b;
+  }
+  .v9 .fr {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px;
+    padding: 11px 24px;
+    border-bottom: 1px solid rgba(74, 84, 75, 0.5);
+    align-items: start;
+  }
+  .v9 .fr:last-child {
+    border-bottom: none;
+  }
+  .v9 .fr .k {
+    font-size: 11.5px;
+    color: #9ba296;
+    padding-top: 1px;
+  }
+  .v9 .fr .k .en {
+    margin-top: 2px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+  .v9 .fr .v {
+    font-size: 13.5px;
+    color: #ebefe6;
+    letter-spacing: 0.01em;
+  }
+  .v9 .checks2 {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #4a544b;
+    padding: 15px 24px;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .v9 .chk2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: #d8ddd1;
+  }
+  .v9 .chk2 .ci {
+    width: 16px;
+    height: 16px;
+    color: var(--ok);
+    display: grid;
+    place-items: center;
+  }
+  .v9 .chk2 .ci svg {
+    width: 16px;
+    height: 16px;
+  }
+  .v9 .chain {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #4a544b;
+    padding: 13px 24px;
+  }
+  .v9 .chain a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ok);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 224, 16, 0.35);
+    padding-bottom: 2px;
+  }
+  .v9 .chain a.disabled {
+    color: #9ba296;
+    border-color: #59645a;
+    pointer-events: none;
+  }
+  .v9 .chain svg {
+    width: 14px;
+    height: 14px;
+  }
+  .v9 .folds {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #4a544b;
+  }
+  .v9 .fold + .fold {
+    border-top: 1px solid rgba(74, 84, 75, 0.5);
+  }
+  .v9 .fold summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 13px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: #c3cabb;
+    transition: 0.15s;
+  }
+  .v9 .fold summary::-webkit-details-marker {
+    display: none;
+  }
+  .v9 .fold summary:hover {
+    color: #ebefe6;
+  }
+  .v9 .fold .sm-ic {
+    width: 15px;
+    height: 15px;
+    color: #9ba296;
+    flex: none;
+  }
+  .v9 .fold .sm-ic svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+  }
+  .v9 .fold .caret {
+    margin-left: auto;
+    font-size: 8px;
+    color: #9ba296;
+    transition: transform 0.18s;
+  }
+  .v9 .fold details[open] .caret {
+    transform: rotate(90deg);
+  }
+  .v9 .foldbody {
+    padding: 2px 24px 18px;
+  }
+  .v9 .mrow2 {
+    font-size: 13px;
+    line-height: 1.85;
+    color: #d8ddd1;
+  }
+  .v9 .ml {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-bottom: 4px;
+  }
+  .v9 .ml.yes {
+    color: var(--ok);
+  }
+  .v9 .ml.no {
+    color: #b0b7aa;
+  }
+  .v9 .roles {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(74, 84, 75, 0.5);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+    color: #9ba296;
+  }
+  .v9 .roles b {
+    color: #d8ddd1;
+    font-weight: 400;
+  }
+  .v9 .trow {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(74, 84, 75, 0.4);
+  }
+  .v9 .trow:last-child {
+    border-bottom: none;
+  }
+  .v9 .trow .k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: #9ba296;
+    padding-top: 3px;
+  }
+  .v9 .trow .v {
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #d8ddd1;
+  }
+  .v9 .meaningtxt {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.85;
+    color: #aeb5a9;
+  }
+  .v9 .rawlink {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    font-size: 11.5px;
+    color: #d8ddd1;
+    text-decoration: none;
+    border-bottom: 1px solid #59645a;
+    padding-bottom: 2px;
+  }
+  .v9 .rawlink svg {
+    width: 13px;
+    height: 13px;
+  }
+  .v9 .attrfoot {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin: 18px 2px 0;
+  }
+  .v9 .attrfoot a {
+    color: var(--ok-light);
+    text-decoration: none;
+    margin-left: 6px;
+  }
+  .v9 .promoline {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin: 10px 2px 0;
+  }
+  .v9 .promoline a {
+    color: var(--ok-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1px;
+    margin-left: 6px;
+  }
+  .v9 .promoline a:hover {
+    border-color: var(--ok-light);
+  }
+
   @media (max-width: 620px) {
     .v9 .vboards {
       grid-template-columns: 1fr;
@@ -667,6 +1331,13 @@ const STR = {
     .v9 .vboard + .vboard {
       border-left: none;
       border-top: 1px solid #4a544b;
+    }
+    .v9 .fr {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .v9 .fr .k {
+      padding-top: 0;
     }
   }
   @media (prefers-reduced-motion: reduce) {
