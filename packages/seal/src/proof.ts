@@ -13,6 +13,7 @@
  */
 
 import { create, prover, verifier } from "@lemmaoracle/sdk";
+import type { LemmaClient } from "@lemmaoracle/sdk";
 import { secretToBits } from "./bits.js";
 import vkey from "./vkey.js";
 import type { SealProof, SealProofInput } from "./types.js";
@@ -21,12 +22,6 @@ import type { SealProof, SealProofInput } from "./types.js";
 export const SEAL_CIRCUIT_ID = "seal-identity-v2.2";
 
 type VerifyResult = Readonly<{ nullifier: string; nonce: string }>;
-
-// SDK types are imprecise — annotate at the boundary.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SdkClient = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SdkProveResult = any;
 
 /**
  * Generate a groth16 proof that the caller holds the secret behind a
@@ -42,23 +37,19 @@ type SdkProveResult = any;
  * paths are required.
  */
 export const prove = async (input: SealProofInput): Promise<SealProof> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const client: SdkClient = create({});
+  const client: LemmaClient = create({});
   const witness = {
     keyBits: secretToBits(input.secret).map(Number),
     nonce: input.nonce,
   };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const { proof, inputs }: SdkProveResult = await prover.prove(client, {
+  const { proof, inputs } = await prover.prove(client, {
     circuitId: SEAL_CIRCUIT_ID,
     witness,
   });
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    proof: JSON.parse(atob(proof as string)),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    proof: JSON.parse(atob(proof)) as import("snarkjs").Groth16Proof,
     publicSignals: inputs,
-    nullifier: (inputs as Array<string>)[0] ?? "",
+    nullifier: inputs[0] ?? "",
   };
 };
 
@@ -71,7 +62,6 @@ export const prove = async (input: SealProofInput): Promise<SealProof> => {
 export const verify = async (
   proof: SealProof,
 ): Promise<VerifyResult | null> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const { ok } = await verifier.verify({
     alg: "groth16-bn254-snarkjs",
     inputs: {
