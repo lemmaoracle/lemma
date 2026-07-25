@@ -97,8 +97,7 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
           (s: string) => {
             // eslint-disable-next-line functional/no-try-statements
             try {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return JSON.parse(s);
+              return JSON.parse(s) as unknown;
             } catch {
               return undefined;
             }
@@ -278,8 +277,9 @@ const startServer = (_: unknown): void => {
   process.on("SIGINT", shutdown("SIGINT"));
 };
 
-// eslint-disable-next-line functional/no-expression-statements
-R.ifElse(
+// Bootstrap: start the server when this module is the entry point (not imported).
+// Capture the result to avoid expression-statement — startServer runs side effects (listen).
+const _ = R.ifElse(
   (url: string) => url === `file://${process.argv[1] ?? ""}`,
   startServer,
   R.always(undefined),
