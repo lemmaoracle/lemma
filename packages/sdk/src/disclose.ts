@@ -150,7 +150,7 @@ export type KeyGenOptions = Readonly<{
  */
 export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsKeyPair> => {
   // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
   await ensureWasmInitialized;
 
   const info = options.keyInfo ?? te.encode("lemma-bbs-key");
@@ -188,7 +188,7 @@ export const generateKeyPair = async (options: KeyGenOptions = {}): Promise<BbsK
  */
 export const sign = async (_client: LemmaClient, input: SignInput): Promise<SignOutput> => {
   // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
   await ensureWasmInitialized;
 
   return input.messages.length === 0
@@ -233,7 +233,7 @@ export const sign = async (_client: LemmaClient, input: SignInput): Promise<Sign
  */
 export const verify = async (_client: LemmaClient, signOutput: SignOutput): Promise<boolean> => {
   // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
   await ensureWasmInitialized;
 
   return R.pipe(encodeMessages, (scalars) => {
@@ -273,7 +273,7 @@ export const reveal = async (
   input: RevealInput,
 ): Promise<RevealOutput> => {
   // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
   await ensureWasmInitialized;
 
   return input.indexes.length === 0
@@ -337,7 +337,7 @@ export const verifyProof = async (
   input: VerifyProofInput,
 ): Promise<boolean> => {
   // Ensure WASM is initialized before any crypto operations
-  // eslint-disable-next-line functional/no-expression-statements
+  // eslint-disable-next-line functional/no-expression-statements -- Promise<void> awaited for side effects
   await ensureWasmInitialized;
 
   return R.pipe(encodeMessages, (disclosedScalars) => {
