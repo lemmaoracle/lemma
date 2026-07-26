@@ -35,3 +35,17 @@ export { jpPostalCodes } from "./feeds/jp-postal-codes.js";
 // Pipeline
 export { runProofPipeline, runMultiPipeline, runAverageProofPipeline } from "./pipeline.js";
 export type { PipelineConfig, PipelineResult, MultiPipelineResult } from "./pipeline.js";
+
+// Trust402 listing (forex/composite daily snapshot)
+export {
+  listForexCompositeTrust402,
+  listingTitle,
+  utcDate,
+  DEFAULT_LATEST_URL,
+  DEFAULT_FETCHER_URL,
+} from "./list-forex-composite-trust402.js";
+export type {
+  ListForexCompositeConfig,
+  ListForexCompositeResult,
+  ListingReceipt,
+} from "./list-forex-composite-trust402.js";

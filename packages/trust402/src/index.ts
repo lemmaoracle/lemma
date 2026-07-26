@@ -1,5 +1,6 @@
 export {
   publish,
+  list,
   blogArticle,
   contentCommitment,
   computeCid,
@@ -7,6 +8,7 @@ export {
 } from "./trust402.js";
 export type {
   PublishInput,
+  ListInput,
   Listing,
   PriceInput,
   FileInput,
