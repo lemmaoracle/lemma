@@ -21,4 +21,7 @@ typechain-types/
 # Sandbox tmp directories (Cowork etc — show up at repo root and inside packages/)
 _tmp_*
 
+# Local forex/composite Trust402 archives (envelope + listing receipts)
+**/.archives/
+
 # Note: broadcast/ directories are NOT ignored - they contain important deployment history

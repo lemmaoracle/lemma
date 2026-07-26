@@ -27,11 +27,14 @@
     "lint": "eslint 'src/**/*.ts'",
     "test": "vitest run",
     "seed:jp-holidays": "tsx scripts/seed-jp-holidays.ts",
-    "seed:jp-postal-codes": "tsx scripts/seed-jp-postal-codes.ts"
+    "seed:jp-postal-codes": "tsx scripts/seed-jp-postal-codes.ts",
+    "list:forex-composite-trust402": "tsx scripts/list-forex-composite-trust402.ts"
   },
   "dependencies": {
     "@lemmaoracle/fetcher": "workspace:*",
-    "@lemmaoracle/sdk": "workspace:*"
+    "@lemmaoracle/sdk": "workspace:*",
+    "@trust402/sdk": "workspace:*",
+    "poseidon-lite": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.1",
@@ -40,6 +43,7 @@
     "eslint": "^9.39.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-functional": "^9.0.4",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.0",
     "vitest": "^2.1.0"
   }

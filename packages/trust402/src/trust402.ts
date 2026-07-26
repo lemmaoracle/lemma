@@ -103,8 +103,8 @@ export type Category = "dataset" | "model" | "code" | "document" | "image" | "au
 export type PublishInput = Readonly<{
   /** Circuit ID registered with the Lemma API. */
   circuitId: string;
-  /** Witness fields passed to prover.prove(). */
-  witness: Readonly<Record<string, string>>;
+  /** Witness fields passed to prover.prove() (circuit-specific; may include arrays). */
+  witness: Readonly<Record<string, unknown>>;
   /** Commitment — the public output that ties the witness to content. */
   commitment: string;
   /** Price in USDC smallest unit (6 decimals). */
@@ -325,7 +325,9 @@ export const publish = async (
         docHash,
         circuitId: input.circuitId,
         proof: proof.proof,
-        inputs: [input.commitment],
+        // Prefer prover public signals (multi-input circuits). Fall back to the
+        // listing commitment when the SHA-256 prover path returns no signals.
+        inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
       }),
       // imperative: catch block normalizes non-Error throws from wallet/x402
       // fetcher into Error instances — downstream code expects instanceof Error
@@ -388,7 +390,7 @@ export const publish = async (
     perSchemaProof: {
       circuitId: input.circuitId,
       proof: proof.proof,
-      inputs: [input.commitment],
+      inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
     },
     metadata: input.metadata,
     environment: input.environment,
