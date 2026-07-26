@@ -13,35 +13,33 @@ OSS fetcher for Level 2 oracle data. Fetches external data sources, canonicalise
 ```
 External source → fetcher (OSS, this package)
                      │
-                     ├─ @lemmaoracle/canonical-sort   (canonical-sort-v1)
-                     ├─ @lemmaoracle/data-commitment  (data-commitment-v1)
+                     ├─ canonical-sort-v1 (via SDK)
+                     ├─ data-commitment-v1 (via SDK commitDeep)
                      │
-                     └─ Output: { data, canonical, commitment, randomness }
+                     └─ Output: { request, response, commitment }
 ```
 
-The canonicaliser and commitment scheme are separate packages so they can be reused independently of the fetcher.
+The commitment binds `{ request: { url, fetchedAt, date }, response: { body } }`
+so the upstream URL and fetch time (UTC ms + UTC `YYYY-MM-DD`) cannot be
+swapped after the fact. `response.canonical` is still a sort of the body only.
 
 ## Usage
 
 ```typescript
-import { fetchAndCommit, verifyInclusion } from "@lemmaoracle/fetcher";
+import { fetchAndCommit } from "@lemmaoracle/fetcher";
 
 // Fetch and commit
 const result = await fetchAndCommit("https://api.example.com/price/BTC");
 
-console.log(result.canonical);        // canonical JSON string
-console.log(result.commitment.root); // 0x... (Merkle root)
+console.log(result.request.url);            // upstream URL
+console.log(result.request.fetchedAt);      // Unix ms
+console.log(result.request.date);           // UTC YYYY-MM-DD
+console.log(result.response.canonical);     // canonical JSON string of body
+console.log(result.commitment.root);        // 0x... (Merkle root)
 
-// Verify a value is in the commitment (non-ZK)
-const { pathValues, inclusionProofs, root, randomness } = result.commitment;
-const idx = pathValues.findIndex(pv => pv.path === '$["data"]["price"]');
-const proof = inclusionProofs[idx];
-
-const ok = verifyInclusion(
-  root, randomness,
-  '$["data"]["price"]', 42000,
-  proof.siblings, proof.indices,
-);
+// Inclusion paths are under the commitment envelope, e.g.:
+//   $["request"]["url"]
+//   $["response"]["body"]["price"]
 ```
 
 ## License

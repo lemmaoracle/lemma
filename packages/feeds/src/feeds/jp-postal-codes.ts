@@ -210,14 +210,20 @@ export const jpPostalCodes: FeedSource = {
     const commitment = commitDeep(compactJson, {
       maxDepth,
     });
+    const fetchedAt = Date.now();
 
     return {
-      source: "jp-postal-codes",
-      fetchedAt: Date.now(),
+      request: {
+        url: "jp-postal-codes",
+        fetchedAt,
+        date: new Date(fetchedAt).toISOString().slice(0, 10),
+      },
       // Carry the full list alongside the compact fields so getAttributes can
       // emit it; only the compact fields were committed above.
-      data: { ...snap.compact, records },
-      canonical,
+      response: {
+        body: { ...snap.compact, records },
+        canonical,
+      },
       commitment,
     };
   },

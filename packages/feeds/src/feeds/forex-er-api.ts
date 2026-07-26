@@ -97,8 +97,8 @@ export const erApiForex: FeedSource = {
         : res.json().then((body: unknown) => {
             const fetched = body as FetchResult;
 
-            // 2. Extract raw rates from fetched data
-            const raw = fetched.data as Readonly<Record<string, Json>>;
+            // 2. Extract raw rates from fetched body
+            const raw = fetched.response.body as Readonly<Record<string, Json>>;
             const rawRates =
               (raw["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
             const date = jsonString(raw["time_last_update_utc"], "");
@@ -115,12 +115,15 @@ export const erApiForex: FeedSource = {
 
             const { canonical } = canonicalSort(normalized);
             const commitment = commitDeep(normalized, { maxDepth: 16 });
+            const fetchedAt = Date.now();
 
             return {
-              source: "forex/er-api",
-              fetchedAt: Date.now(),
-              data: normalized,
-              canonical,
+              request: {
+                url: "forex/er-api",
+                fetchedAt,
+                date: new Date(fetchedAt).toISOString().slice(0, 10),
+              },
+              response: { body: normalized, canonical },
               commitment,
             };
           }),
