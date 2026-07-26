@@ -21,18 +21,38 @@ import type { Json, CommitResult } from "@lemmaoracle/sdk";
 // ── types ────────────────────────────────────────────────────────────────
 
 /**
+ * Provenance of a single fetch — bound into the commitment under `request`.
+ */
+export type FetchRequest = Readonly<{
+  /** Upstream URL that was fetched. */
+  url: string;
+  /** Unix timestamp (ms, UTC instant) of the fetch. */
+  fetchedAt: number;
+  /** UTC calendar date (`YYYY-MM-DD`) derived from `fetchedAt`. */
+  date: string;
+}>;
+
+/**
+ * Parsed upstream payload — `data` is bound into the commitment under
+ * `response`; `canonical` is the canonical-sort-v1 string of `data` only.
+ */
+export type FetchResponse = Readonly<{
+  /** Parsed JSON from the source (the committed payload). */
+  data: Json;
+  /** Canonical JSON string (canonical-sort-v1) of `data`. */
+  canonical: string;
+}>;
+
+/**
  * Result of a fetch + canonicalise + commit cycle.
+ *
+ * The commitment covers `{ request, response: { data } }` so the upstream
+ * URL and fetch time are Merkle-bound alongside the payload.
  */
 export type FetchResult = Readonly<{
-  /** Source URL or identifier. */
-  source: string;
-  /** Unix timestamp (ms) of the fetch. */
-  fetchedAt: number;
-  /** Raw parsed JSON from the source. */
-  data: Json;
-  /** Canonical JSON string (canonical-sort-v1). */
-  canonical: string;
-  /** data-commitment-v1 output. */
+  request: FetchRequest;
+  response: FetchResponse;
+  /** data-commitment-v1 output over `{ request, response: { data } }`. */
   commitment: CommitResult;
 }>;
 
@@ -67,13 +87,17 @@ const parseResponse = (response: Response): Promise<Json> =>
       ),
   );
 
+/** UTC calendar date (`YYYY-MM-DD`) for a Unix-ms instant. */
+const utcDate = (fetchedAt: number): string =>
+  new Date(fetchedAt).toISOString().slice(0, 10);
+
 /**
  * Fetch a single source, canonicalise, and commit.
  *
  * @param source  URL to fetch.
  * @param config  Optional configuration (custom fetch, headers, maxDepth).
- * @returns       FetchResult containing the raw data, canonical string,
- *                and data-commitment-v1 output.
+ * @returns       FetchResult with request provenance, response data/canonical,
+ *                and data-commitment-v1 over `{ request, response: { data } }`.
  */
 export const fetchAndCommit = async (
   source: string,
@@ -90,12 +114,19 @@ export const fetchAndCommit = async (
       )
     : parseResponse(response).then((data) => {
         const { canonical } = canonicalSort(data);
-        const commitment = commitDeep(data, { maxDepth: config?.maxDepth });
+        const fetchedAt = Date.now();
+        const request: FetchRequest = {
+          url: source,
+          fetchedAt,
+          date: utcDate(fetchedAt),
+        };
+        const commitment = commitDeep(
+          { request, response: { data } },
+          { maxDepth: config?.maxDepth },
+        );
         return {
-          source,
-          fetchedAt: Date.now(),
-          data,
-          canonical,
+          request,
+          response: { data, canonical },
           commitment,
         };
       });

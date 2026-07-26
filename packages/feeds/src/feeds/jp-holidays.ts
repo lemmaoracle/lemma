@@ -160,14 +160,20 @@ export const jpHolidays: FeedSource = {
             const { canonical } = canonicalSort(compactJson);
             const maxDepth = Number(process.env["FEED_MAX_DEPTH"] ?? "16");
             const commitment = commitDeep(compactJson, { maxDepth });
+            const fetchedAt = Date.now();
 
             return {
-              source: "jp-holidays",
-              fetchedAt: Date.now(),
+              request: {
+                url: "jp-holidays",
+                fetchedAt,
+                date: new Date(fetchedAt).toISOString().slice(0, 10),
+              },
               // Carry the full list alongside the compact fields so getAttributes
               // can emit it; only the compact fields were committed above.
-              data: { ...snap.compact, holidays },
-              canonical,
+              response: {
+                data: { ...snap.compact, holidays },
+                canonical,
+              },
               commitment,
             };
           }),

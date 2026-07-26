@@ -15,6 +15,7 @@
 import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import type { Json } from "@lemmaoracle/sdk";
+import { fetcherPayload } from "../fetcher-payload.js";
 import type { FeedSource } from "../types.js";
 
 // ── configuration ─────────────────────────────────────────────────────────
@@ -97,36 +98,43 @@ export const frankfurterForex: FeedSource = {
             new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`),
           )
         : res.json().then((body: unknown) => {
-            const fetched = body as FetchResult;
+            const payload = fetcherPayload(body);
+            return payload === undefined
+              ? Promise.reject(new Error("fetcher: missing response data"))
+              : (() => {
+                  // 2. Extract raw rates (fetcher returns float rates)
+                  const raw = payload as Readonly<Record<string, Json>>;
+                  const rawRates =
+                    (raw["rates"] as Readonly<Record<string, Json>> | undefined) ??
+                    {};
+                  const date = jsonString(raw["date"], "");
+                  const amount = Number(raw["amount"] ?? 1);
 
-            // 2. Extract raw rates from fetched data (fetcher returns float rates)
-            const raw = fetched.data as Readonly<Record<string, Json>>;
-            const rawRates =
-              (raw["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
-            const date = jsonString(raw["date"], "");
-            const amount = Number(raw["amount"] ?? 1);
+                  // 3. Scale rates ×10^8 (feeds-layer responsibility, not fetcher's)
+                  const scaledRates = scaleRates(rawRates);
 
-            // 3. Scale rates ×10^8 (feeds-layer responsibility, not fetcher's)
-            const scaledRates = scaleRates(rawRates);
+                  // 4. Build normalized JSON + commit locally with scaled integers
+                  const normalized: Json = {
+                    base,
+                    date,
+                    amount,
+                    rates: scaledRates as unknown as Json,
+                  };
 
-            // 4. Build normalized JSON + commit locally with scaled integers
-            const normalized: Json = {
-              base,
-              date,
-              amount,
-              rates: scaledRates as unknown as Json,
-            };
+                  const { canonical } = canonicalSort(normalized);
+                  const commitment = commitDeep(normalized, { maxDepth: 16 });
+                  const fetchedAt = Date.now();
 
-            const { canonical } = canonicalSort(normalized);
-            const commitment = commitDeep(normalized, { maxDepth: 16 });
-
-            return {
-              source: "forex/frankfurter",
-              fetchedAt: Date.now(),
-              data: normalized,
-              canonical,
-              commitment,
-            };
+                  return {
+                    request: {
+                      url: "forex/frankfurter",
+                      fetchedAt,
+                      date: new Date(fetchedAt).toISOString().slice(0, 10),
+                    },
+                    response: { data: normalized, canonical },
+                    commitment,
+                  };
+                })();
           }),
     );
   },

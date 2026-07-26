@@ -11,7 +11,7 @@ const createMockResponse = (body: string, ok: boolean = true): Response => {
 };
 
 describe("fetchAndCommit", () => {
-  it("fetches, canonicalises, and commits to JSON response", async () => {
+  it("fetches, canonicalises, and commits to JSON response with request provenance", async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       createMockResponse(JSON.stringify({ price: 42000, currency: "USD" })),
     );
@@ -20,12 +20,23 @@ describe("fetchAndCommit", () => {
       fetch: mockFetch,
     });
 
-    expect(result.source).toBe("https://api.example.com/price");
-    expect(result.fetchedAt).toBeGreaterThan(0);
-    expect(result.data).toEqual({ price: 42000, currency: "USD" });
-    expect(result.canonical).toBe('{"currency":"USD","price":42000}');
+    expect(result.request.url).toBe("https://api.example.com/price");
+    expect(result.request.fetchedAt).toBeGreaterThan(0);
+    expect(result.request.date).toBe(
+      new Date(result.request.fetchedAt).toISOString().slice(0, 10),
+    );
+    expect(result.response.data).toEqual({ price: 42000, currency: "USD" });
+    expect(result.response.canonical).toBe('{"currency":"USD","price":42000}');
     expect(result.commitment.root).toMatch(/^0x[0-9a-f]+$/);
-    expect(result.commitment.leaves).toHaveLength(2);
+    // data fields (2) + request.url + request.fetchedAt + request.date
+    expect(result.commitment.leaves).toHaveLength(5);
+    expect(result.commitment.leafPreimages.map((p) => p.name).sort()).toEqual([
+      '$["request"]["date"]',
+      '$["request"]["fetchedAt"]',
+      '$["request"]["url"]',
+      '$["response"]["data"]["currency"]',
+      '$["response"]["data"]["price"]',
+    ]);
   });
 
   it("canonicalises regardless of key order in source", async () => {
@@ -37,7 +48,7 @@ describe("fetchAndCommit", () => {
       fetch: mockFetch,
     });
 
-    expect(result.canonical).toBe('{"a":1,"b":2}');
+    expect(result.response.canonical).toBe('{"a":1,"b":2}');
   });
 
   it("handles nested objects and arrays", async () => {
@@ -56,10 +67,11 @@ describe("fetchAndCommit", () => {
       fetch: mockFetch,
     });
 
-    expect(result.canonical).toBe(
+    expect(result.response.canonical).toBe(
       '{"data":{"items":[{"id":"x","value":42}],"timestamp":1234567890}}',
     );
-    expect(result.commitment.leaves).toHaveLength(3);
+    // nested data leaves (3) + request provenance (3)
+    expect(result.commitment.leaves).toHaveLength(6);
   });
 
   it("rejects on HTTP error", async () => {
@@ -97,7 +109,7 @@ describe("fetchAndCommit", () => {
     });
   });
 
-  it("produces deterministic commitment for same response and randomness", async () => {
+  it("produces consistent leaf structure for same response shape", async () => {
     const body = JSON.stringify({ price: 100 });
     const mockFetch1 = vi.fn().mockResolvedValue(createMockResponse(body));
     const mockFetch2 = vi.fn().mockResolvedValue(createMockResponse(body));
@@ -105,9 +117,24 @@ describe("fetchAndCommit", () => {
     const r1 = await fetchAndCommit("https://api.example.com", { fetch: mockFetch1 });
     const r2 = await fetchAndCommit("https://api.example.com", { fetch: mockFetch2 });
 
-    // Randomness is auto-generated, so roots differ. But with same randomness they'd match.
-    // Here we just verify structure is consistent.
-    expect(r1.commitment.leaves).toHaveLength(1);
-    expect(r2.commitment.leaves).toHaveLength(1);
+    // Randomness is auto-generated, so roots differ. Structure is consistent.
+    expect(r1.commitment.leaves).toHaveLength(4);
+    expect(r2.commitment.leaves).toHaveLength(4);
+  });
+
+  it("derives UTC date from fetchedAt", async () => {
+    const fixedNow = 1753531200000; // 2025-07-26T12:00:00.000Z
+    vi.spyOn(Date, "now").mockReturnValue(fixedNow);
+    const mockFetch = vi.fn().mockResolvedValue(
+      createMockResponse('{"ok":true}'),
+    );
+
+    const result = await fetchAndCommit("https://api.example.com", {
+      fetch: mockFetch,
+    });
+
+    expect(result.request.fetchedAt).toBe(fixedNow);
+    expect(result.request.date).toBe("2025-07-26");
+    vi.restoreAllMocks();
   });
 });

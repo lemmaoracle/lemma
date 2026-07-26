@@ -86,8 +86,8 @@ const formatSummary = (result: FeedRunResult): string =>
           root: result.result.commitment.root,
           leafCount: result.result.commitment.leaves.length,
           depth: result.result.commitment.depth,
-          source: result.result.source,
-          fetchedAt: new Date(result.result.fetchedAt).toISOString(),
+          source: result.result.request.url,
+          fetchedAt: new Date(result.result.request.fetchedAt).toISOString(),
           elapsedMs: result.completedAt - result.startedAt,
         });
 

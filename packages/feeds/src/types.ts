@@ -14,8 +14,8 @@ import type { LeafPreimage, InclusionProof } from "@lemmaoracle/sdk";
  * A single data feed source.
  *
  * Implementations fetch data from an external source (REST API, WebSocket,
- * etc.) and return a FetchResult containing the canonicalised data and
- * data-commitment-v1 commitment.
+ * etc.) and return a FetchResult (`request` / `response` / `commitment`)
+ * containing the canonicalised data and data-commitment-v1 commitment.
  *
  * The `id` field uniquely identifies the feed (e.g. "forex/frankfurter").
  * Feed IDs follow the pattern `{category}/{authority}` for namespace clarity.

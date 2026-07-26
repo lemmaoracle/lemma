@@ -10,7 +10,13 @@
  * canonical-sort or data-commitment packages are required.
  */
 export { fetchAndCommit, fetchBatch } from "./fetch.js";
-export type { FetchResult, FetcherConfig, FetchBatchResult } from "./fetch.js";
+export type {
+  FetchResult,
+  FetchRequest,
+  FetchResponse,
+  FetcherConfig,
+  FetchBatchResult,
+} from "./fetch.js";
 
 // Re-export the underlying primitives for convenience
 export { commitDeep, canonicalSort, canonicalize, toScalar } from "@lemmaoracle/sdk";
