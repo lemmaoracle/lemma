@@ -221,7 +221,7 @@ export const jpPostalCodes: FeedSource = {
       // Carry the full list alongside the compact fields so getAttributes can
       // emit it; only the compact fields were committed above.
       response: {
-        body: { ...snap.compact, records },
+        data: { ...snap.compact, records },
         canonical,
       },
       commitment,

@@ -124,8 +124,8 @@ export const forexComposite: FeedSource = {
     return Promise.all([frankfurterForex.fetch(), erApiForex.fetch()]).then(
       ([srcA, srcB]) => {
         // 2. Extract rates and roots
-        const ratesA = extractRates(srcA.response.body);
-        const ratesB = extractRates(srcB.response.body);
+        const ratesA = extractRates(srcA.response.data);
+        const ratesB = extractRates(srcB.response.data);
         const rootA = srcA.commitment.root;
         const rootB = srcB.commitment.root;
 
@@ -133,7 +133,7 @@ export const forexComposite: FeedSource = {
         return requireCommonCurrencies(ratesA, ratesB).then((currencies) => {
           const averagedRates = averageRates(ratesA, ratesB, currencies);
           const date = jsonString(
-            (srcA.response.body as Readonly<Record<string, Json>>)["date"],
+            (srcA.response.data as Readonly<Record<string, Json>>)["date"],
             "",
           );
 
@@ -157,7 +157,7 @@ export const forexComposite: FeedSource = {
               fetchedAt,
               date: new Date(fetchedAt).toISOString().slice(0, 10),
             },
-            response: { body: merged, canonical },
+            response: { data: merged, canonical },
             commitment,
           };
         });
@@ -185,14 +185,14 @@ export const fetchComposite = (
   return Promise.all([frankfurterForex.fetch(), erApiForex.fetch()]).then(
     ([srcA, srcB]) => {
       // 2. Extract rates and commitments
-      const ratesA = extractRates(srcA.response.body);
-      const ratesB = extractRates(srcB.response.body);
+      const ratesA = extractRates(srcA.response.data);
+      const ratesB = extractRates(srcB.response.data);
 
       // 3–4. Currency intersection + average scaled rates
       return requireCommonCurrencies(ratesA, ratesB).then((currencies) => {
         const averagedRates = averageRates(ratesA, ratesB, currencies);
         const date = jsonString(
-          (srcA.response.body as Readonly<Record<string, Json>>)["date"],
+          (srcA.response.data as Readonly<Record<string, Json>>)["date"],
           "",
         );
 

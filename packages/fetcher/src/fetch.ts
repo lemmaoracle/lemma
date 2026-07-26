@@ -33,26 +33,26 @@ export type FetchRequest = Readonly<{
 }>;
 
 /**
- * Parsed upstream payload — `body` is bound into the commitment under
- * `response`; `canonical` is the canonical-sort-v1 string of `body` only.
+ * Parsed upstream payload — `data` is bound into the commitment under
+ * `response`; `canonical` is the canonical-sort-v1 string of `data` only.
  */
 export type FetchResponse = Readonly<{
-  /** Raw parsed JSON from the source. */
-  body: Json;
-  /** Canonical JSON string (canonical-sort-v1) of `body`. */
+  /** Parsed JSON from the source (the committed payload). */
+  data: Json;
+  /** Canonical JSON string (canonical-sort-v1) of `data`. */
   canonical: string;
 }>;
 
 /**
  * Result of a fetch + canonicalise + commit cycle.
  *
- * The commitment covers `{ request, response: { body } }` so the upstream
+ * The commitment covers `{ request, response: { data } }` so the upstream
  * URL and fetch time are Merkle-bound alongside the payload.
  */
 export type FetchResult = Readonly<{
   request: FetchRequest;
   response: FetchResponse;
-  /** data-commitment-v1 output over `{ request, response: { body } }`. */
+  /** data-commitment-v1 output over `{ request, response: { data } }`. */
   commitment: CommitResult;
 }>;
 
@@ -96,8 +96,8 @@ const utcDate = (fetchedAt: number): string =>
  *
  * @param source  URL to fetch.
  * @param config  Optional configuration (custom fetch, headers, maxDepth).
- * @returns       FetchResult with request provenance, response body/canonical,
- *                and data-commitment-v1 over `{ request, response: { body } }`.
+ * @returns       FetchResult with request provenance, response data/canonical,
+ *                and data-commitment-v1 over `{ request, response: { data } }`.
  */
 export const fetchAndCommit = async (
   source: string,
@@ -112,8 +112,8 @@ export const fetchAndCommit = async (
     ? Promise.reject(
         new Error(`fetcher: HTTP ${String(response.status)} from ${source}`),
       )
-    : parseResponse(response).then((body) => {
-        const { canonical } = canonicalSort(body);
+    : parseResponse(response).then((data) => {
+        const { canonical } = canonicalSort(data);
         const fetchedAt = Date.now();
         const request: FetchRequest = {
           url: source,
@@ -121,12 +121,12 @@ export const fetchAndCommit = async (
           date: utcDate(fetchedAt),
         };
         const commitment = commitDeep(
-          { request, response: { body } },
+          { request, response: { data } },
           { maxDepth: config?.maxDepth },
         );
         return {
           request,
-          response: { body, canonical },
+          response: { data, canonical },
           commitment,
         };
       });

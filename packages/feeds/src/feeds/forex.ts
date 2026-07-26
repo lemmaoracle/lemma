@@ -99,8 +99,8 @@ export const frankfurterForex: FeedSource = {
         : res.json().then((body: unknown) => {
             const fetched = body as FetchResult;
 
-            // 2. Extract raw rates from fetched body (fetcher returns float rates)
-            const raw = fetched.response.body as Readonly<Record<string, Json>>;
+            // 2. Extract raw rates from fetched data (fetcher returns float rates)
+            const raw = fetched.response.data as Readonly<Record<string, Json>>;
             const rawRates =
               (raw["rates"] as Readonly<Record<string, Json>> | undefined) ?? {};
             const date = jsonString(raw["date"], "");
@@ -127,7 +127,7 @@ export const frankfurterForex: FeedSource = {
                 fetchedAt,
                 date: new Date(fetchedAt).toISOString().slice(0, 10),
               },
-              response: { body: normalized, canonical },
+              response: { data: normalized, canonical },
               commitment,
             };
           }),

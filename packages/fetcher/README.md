@@ -19,9 +19,9 @@ External source → fetcher (OSS, this package)
                      └─ Output: { request, response, commitment }
 ```
 
-The commitment binds `{ request: { url, fetchedAt, date }, response: { body } }`
+The commitment binds `{ request: { url, fetchedAt, date }, response: { data } }`
 so the upstream URL and fetch time (UTC ms + UTC `YYYY-MM-DD`) cannot be
-swapped after the fact. `response.canonical` is still a sort of the body only.
+swapped after the fact. `response.canonical` is still a sort of the data only.
 
 ## Usage
 
@@ -34,12 +34,12 @@ const result = await fetchAndCommit("https://api.example.com/price/BTC");
 console.log(result.request.url);            // upstream URL
 console.log(result.request.fetchedAt);      // Unix ms
 console.log(result.request.date);           // UTC YYYY-MM-DD
-console.log(result.response.canonical);     // canonical JSON string of body
+console.log(result.response.canonical);     // canonical JSON string of data
 console.log(result.commitment.root);        // 0x... (Merkle root)
 
 // Inclusion paths are under the commitment envelope, e.g.:
 //   $["request"]["url"]
-//   $["response"]["body"]["price"]
+//   $["response"]["data"]["price"]
 ```
 
 ## License

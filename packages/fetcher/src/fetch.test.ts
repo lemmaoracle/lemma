@@ -25,17 +25,17 @@ describe("fetchAndCommit", () => {
     expect(result.request.date).toBe(
       new Date(result.request.fetchedAt).toISOString().slice(0, 10),
     );
-    expect(result.response.body).toEqual({ price: 42000, currency: "USD" });
+    expect(result.response.data).toEqual({ price: 42000, currency: "USD" });
     expect(result.response.canonical).toBe('{"currency":"USD","price":42000}');
     expect(result.commitment.root).toMatch(/^0x[0-9a-f]+$/);
-    // body fields (2) + request.url + request.fetchedAt + request.date
+    // data fields (2) + request.url + request.fetchedAt + request.date
     expect(result.commitment.leaves).toHaveLength(5);
     expect(result.commitment.leafPreimages.map((p) => p.name).sort()).toEqual([
       '$["request"]["date"]',
       '$["request"]["fetchedAt"]',
       '$["request"]["url"]',
-      '$["response"]["body"]["currency"]',
-      '$["response"]["body"]["price"]',
+      '$["response"]["data"]["currency"]',
+      '$["response"]["data"]["price"]',
     ]);
   });
 
@@ -70,7 +70,7 @@ describe("fetchAndCommit", () => {
     expect(result.response.canonical).toBe(
       '{"data":{"items":[{"id":"x","value":42}],"timestamp":1234567890}}',
     );
-    // nested body leaves (3) + request provenance (3)
+    // nested data leaves (3) + request provenance (3)
     expect(result.commitment.leaves).toHaveLength(6);
   });
 

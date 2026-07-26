@@ -5,8 +5,8 @@ Fetcher commitments currently bind only the response body. Callers cannot prove 
 ## What Changes
 
 - **BREAKING**: `fetchAndCommit` return type (`FetchResult`) changes from `{ source, fetchedAt, data, canonical, commitment }` to `{ request, response, commitment }`
-- Commitment input becomes `{ request: { url, fetchedAt, date }, response: { body } }` where `date` is the UTC `YYYY-MM-DD` derived from `fetchedAt`
-- `canonical` remains a sort of the response body only (not the full commitment envelope)
+- Commitment input becomes `{ request: { url, fetchedAt, date }, response: { data } }` where `date` is the UTC `YYYY-MM-DD` derived from `fetchedAt`
+- `canonical` remains a sort of the response data only (not the full commitment envelope)
 - No new circuit — continue using `data-commitment-v1` / `commitDeep`
 - `packages/feeds` updated at the `FetchResult` boundary so typecheck and forex worker consumers keep working
 

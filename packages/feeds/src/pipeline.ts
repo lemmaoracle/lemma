@@ -235,7 +235,7 @@ export const runProofPipeline = async (
 
   const _log1 = await log(`[1/4] Fetching via feed: ${feed.id}...`);
   const result = await feed.fetch();
-  const data = result.response.body;
+  const data = result.response.data;
   const c = result.commitment;
   const docId = feed.getDocumentId(data);
   const _log2 = await log(`  Doc ID: ${docId}  Leaves: ${String(c.leafPreimages.length)}`);
