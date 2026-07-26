@@ -11,7 +11,8 @@
  * Environment:
  *   DATE              — UTC YYYY-MM-DD (default: today). Past dates require archive.
  *   ARCHIVE_DIR       — envelope + listing receipts (default: .archives/forex-composite)
- *   FETCHER_URL       — fetcher Workers base (default: https://fetcher.lemma.workers.dev)
+ *   FETCHER_URL       — fetcher Workers base (only if USE_FETCHER_WORKERS=1)
+ *   USE_FETCHER_WORKERS=1 — call Workers `/fetch` instead of local fetchAndCommit
  *   LATEST_URL        — suite latest URL to fetch via fetcher
  *   LEMMA_API_BASE    — Trust402 / Lemma API base (default: https://trust402.lemma.workers.dev)
  *   LEMMA_API_KEY     — required unless DRY_RUN=1
@@ -47,6 +48,7 @@ const main = async (): Promise<void> => {
           process.env["ARCHIVE_DIR"] ?? ".archives/forex-composite",
         fetcherUrl: process.env["FETCHER_URL"] ?? DEFAULT_FETCHER_URL,
         latestUrl: process.env["LATEST_URL"] ?? DEFAULT_LATEST_URL,
+        useFetcherWorkers: process.env["USE_FETCHER_WORKERS"] === "1",
         apiBase:
           process.env["LEMMA_API_BASE"] ?? "https://trust402.lemma.workers.dev",
         apiKey,

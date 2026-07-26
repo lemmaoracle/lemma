@@ -7,7 +7,7 @@ List a UTC-day representative of `forex/composite/latest` (fetched via fetcher) 
 ## Requirements
 
 ### Requirement: Fetch via fetcher produces a request-bound envelope
-The listing pipeline MUST obtain content by calling the fetcher Workers `/fetch` endpoint with the configured suite latest URL (default `https://workers.lemma.workers.dev/v1/suites/feeds/forex/composite/latest`). The returned body MUST be treated as a `FetchResult` envelope with `request.url`, `request.date`, `response.data`, and `commitment.root`.
+The listing pipeline MUST obtain content by calling `@lemmaoracle/fetcher` `fetchAndCommit` on the configured suite latest URL (default `https://workers.lemma.workers.dev/v1/suites/feeds/forex/composite/latest`), unless an operator explicitly opts into fetcher Workers `/fetch`. The returned body MUST be treated as a `FetchResult` envelope with `request.url`, `request.date`, `response.data`, and `commitment.root`.
 
 #### Scenario: Envelope binds the suite URL and UTC date
 - **WHEN** the pipeline fetches successfully

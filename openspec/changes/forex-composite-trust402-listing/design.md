@@ -21,9 +21,11 @@ Trust402 listings today are built for `blog-article-v1.2` / `content-commitment-
 
 ## Decisions
 
-### 1. Fetch via fetcher Workers (not local `fetchAndCommit`)
+### 1. Fetch via `@lemmaoracle/fetcher` (local `fetchAndCommit` by default)
 
-Call `GET {FETCHER_URL}/fetch?url={encodeURIComponent(LATEST_URL)}` with `maxDepth=16`, same pattern as frankfurter/er-api feeds. Trust model stays "Lemma fetcher fetched this."
+The listing script runs on Node (same host class as `forex-proof-pipeline.ts`). Default path calls in-process `fetchAndCommit(LATEST_URL)` so the commitment is the fetcher package's `data-commitment-v1` root with request binding.
+
+Optional `USE_FETCHER_WORKERS=1` routes through fetcher Workers `/fetch`. That path currently fails on the composite suite payload (~100 leaves / Worker CPU limit), so it is opt-in only.
 
 Default `LATEST_URL` = `https://workers.lemma.workers.dev/v1/suites/feeds/forex/composite/latest`.
 

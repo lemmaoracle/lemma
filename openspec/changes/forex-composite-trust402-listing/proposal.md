@@ -6,11 +6,12 @@ Fetcher request binding (#704) already puts those leaves in the tree. What remai
 
 ## What Changes
 
-- Add a feeds script (pipeline-independent) that fetches `…/forex/composite/latest` **via fetcher Workers**, archives the envelope by `request.date`, and creates a Trust402 listing
+- Add a feeds script (pipeline-independent) that fetches `…/forex/composite/latest` **via `@lemmaoracle/fetcher` `fetchAndCommit`**, archives the envelope by `request.date`, and creates a Trust402 listing
 - Listing content = fetcher envelope; listing commitment = envelope `commitment.root`
 - Per-schema proof uses `data-commitment-v1.1` inclusion of `$["request"]["date"]` (url leaf submitted alongside when live)
 - Idempotent: same UTC date re-run reuses archive and skips if a listing receipt already exists
 - Minor Trust402 SDK fix: submit `proof.inputs` (not hardcoded `[commitment]`) and export `list`; widen publish witness typing for data-commitment
+- Default fetch is in-process (Node); Workers `/fetch` remains opt-in (`USE_FETCHER_WORKERS=1`) because the suite payload currently exceeds Worker limits
 
 ## Capabilities
 

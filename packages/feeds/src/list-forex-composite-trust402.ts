@@ -7,6 +7,7 @@
  */
 import { create as createTrust402, publish } from "@trust402/sdk";
 import type { Listing } from "@trust402/sdk";
+import { fetchAndCommit } from "@lemmaoracle/fetcher";
 import type { FetchResult } from "@lemmaoracle/fetcher";
 import type { CommitResult, InclusionProof, Json, LeafPreimage } from "@lemmaoracle/sdk";
 import { create as createLemma, proofs, prover } from "@lemmaoracle/sdk";
@@ -44,8 +45,14 @@ export type ListForexCompositeConfig = Readonly<{
   /** UTC YYYY-MM-DD; defaults to today. */
   date: string;
   archiveDir: string;
+  /** Used only when `useFetcherWorkers` is true. */
   fetcherUrl: string;
   latestUrl: string;
+  /**
+   * When true, call fetcher Workers `/fetch`. Default false: local
+   * `fetchAndCommit` (Workers currently fails on ~100-leaf suite payloads).
+   */
+  useFetcherWorkers: boolean;
   apiBase: string;
   apiKey: string;
   circuitId: string;
@@ -212,21 +219,34 @@ export const loadEnvelopeArchive = (
 // ── fetch ─────────────────────────────────────────────────────────────────
 
 /**
- * Fetch the suite latest URL through fetcher Workers `/fetch`.
+ * Fetch the suite latest URL through `@lemmaoracle/fetcher`.
+ *
+ * Default path: in-process `fetchAndCommit` (Node cron / pipeline host).
+ * Optional: fetcher Workers `/fetch` when `useFetcherWorkers` is true — note
+ * Workers currently error on the large composite suite payload (~100 leaves).
  */
 export const fetchForexCompositeEnvelope = (
-  fetcherUrl: string,
   latestUrl: string,
   maxDepth: number = DEFAULT_MAX_DEPTH,
+  options: Readonly<{ useFetcherWorkers?: boolean; fetcherUrl?: string }> = {},
 ): Promise<FetchResult> => {
-  const endpoint = `${fetcherUrl.replace(/\/$/, "")}/fetch?url=${encodeURIComponent(latestUrl)}&maxDepth=${String(maxDepth)}`;
-  return fetch(endpoint).then((res) =>
-    !res.ok
-      ? Promise.reject(
-          new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`),
-        )
-      : res.json().then(parseEnvelope),
-  );
+  const useWorkers = options.useFetcherWorkers === true;
+  return useWorkers
+    ? (() => {
+        const fetcherUrl = (options.fetcherUrl ?? DEFAULT_FETCHER_URL).replace(
+          /\/$/,
+          "",
+        );
+        const endpoint = `${fetcherUrl}/fetch?url=${encodeURIComponent(latestUrl)}&maxDepth=${String(maxDepth)}`;
+        return fetch(endpoint).then((res) =>
+          !res.ok
+            ? Promise.reject(
+                new Error(`fetcher: HTTP ${String(res.status)} from ${endpoint}`),
+              )
+            : res.json().then(parseEnvelope),
+        );
+      })()
+    : fetchAndCommit(latestUrl, { maxDepth });
 };
 
 /**
@@ -240,6 +260,7 @@ export const resolveEnvelope = (
     latestUrl: string;
     maxDepth: number;
     today: string;
+    useFetcherWorkers: boolean;
   }>,
 ): Promise<Readonly<{ envelope: FetchResult; fromArchive: boolean }>> => {
   const paths = archivePaths(config.archiveDir, config.date);
@@ -258,11 +279,10 @@ export const resolveEnvelope = (
               `no archive for ${config.date} (historical fetch is out of scope; archive today's envelope first)`,
             ),
           )
-        : fetchForexCompositeEnvelope(
-            config.fetcherUrl,
-            config.latestUrl,
-            config.maxDepth,
-          ).then((envelope) =>
+        : fetchForexCompositeEnvelope(config.latestUrl, config.maxDepth, {
+            useFetcherWorkers: config.useFetcherWorkers,
+            fetcherUrl: config.fetcherUrl,
+          }).then((envelope) =>
             envelope.request.date !== config.date
               ? Promise.reject(
                   new Error(
@@ -403,6 +423,7 @@ export const listForexCompositeTrust402 = (
           latestUrl: config.latestUrl,
           maxDepth: config.maxDepth,
           today: utcDate(),
+          useFetcherWorkers: config.useFetcherWorkers,
         }).then(({ envelope }) =>
           publishEnvelope(config, envelope).then((listing) => {
             const nextReceipt: ListingReceipt = Object.freeze({
