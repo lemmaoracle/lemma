@@ -29,10 +29,9 @@ const entries = [...articles, ...changelog].sort((a, b) =>
 const featured = entries[0];
 const recent = entries.slice(1, 7);
 
-// Anything already surfaced above is dropped from the Changelog list so the
-// same post never renders twice on the same page.
-const promotedSlugs = new Set(entries.slice(0, 7).map((p) => p.slug));
-const changelogRest = changelog.filter((p) => !promotedSlugs.has(p.slug));
+// A release / Announcements post promoted into Featured or Recent stays in the
+// Changelog list as well — the list is the release history and should read as
+// complete, so the duplicate is intentional.
 ---
 
 <BlogIndexTemplate
@@ -43,5 +42,5 @@ const changelogRest = changelog.filter((p) => !promotedSlugs.has(p.slug));
   entries={entries}
   featured={featured}
   recent={recent}
-  changelog={changelogRest}
+  changelog={changelog}
 />
