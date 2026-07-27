@@ -6,7 +6,11 @@
  * `toScalar(JSON.stringify(sectionObj))`, and computes the root as
  * `poseidon([identityHash, authorityHash, financialHash, lifecycleHash,
  * provenanceHash, saltScalar])`.
+ *
+ * imperative: uses dynamic import and SDK types that eslint's projectService
+ * cannot resolve across workspace packages — no functional alternative.
  */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument */
 import { randomBytes } from "node:crypto";
 import * as R from "ramda";
 import { poseidon6 } from "poseidon-lite";

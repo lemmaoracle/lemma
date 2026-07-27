@@ -120,23 +120,29 @@ export const isLemmaRouteConfig = (
  * incoming request.
  */
 export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void => {
+  // imperative: validation with early return and throw — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (!config.discoverable) return;
 
-  const missing: string[] = [];
-  if (!config.schema) missing.push("schema");
-  if (!config.bazaarCategory) missing.push("bazaarCategory");
-  if (!config.bazaarDescription) missing.push("bazaarDescription");
+  const requiredFields = ["schema", "bazaarCategory", "bazaarDescription"] as const;
+  const missing = requiredFields.filter(
+    (field) => !config[field],
+  );
 
+  // eslint-disable-next-line functional/no-conditional-statements
   if (missing.length > 0) {
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error(
       `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
         `See packages/x402/src/README.md for the discoverable contract.`
     );
   }
 
+  // eslint-disable-next-line functional/no-conditional-statements
   if (config.bazaarDescription && config.bazaarDescription.length > 256) {
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error(
-      `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${config.bazaarDescription.length}). ` +
+      `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${String(config.bazaarDescription.length)}). ` +
         `Bazaar search hits favour concise descriptions; trim before deploy.`
     );
   }
