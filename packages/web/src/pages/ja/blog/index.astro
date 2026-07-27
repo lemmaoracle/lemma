@@ -21,8 +21,17 @@ const entries = [...articles, ...changelog].sort((a, b) =>
   a.date > b.date ? -1 : 1,
 );
 
-const featured = articles[0];
-const recent = articles.slice(1, 7);
+// Featured / Recent draw from *all* entries, not just the Essays section.
+// Announcements default to `section: Changelog` (see data/blog.ts), so
+// selecting from Essays alone kept the newest post off the top of the index
+// whenever it was an announcement — it only showed in the Changelog list.
+const featured = entries[0];
+const recent = entries.slice(1, 7);
+
+// Anything already surfaced above is dropped from the Changelog list so the
+// same post never renders twice on the same page.
+const promotedSlugs = new Set(entries.slice(0, 7).map((p) => p.slug));
+const changelogRest = changelog.filter((p) => !promotedSlugs.has(p.slug));
 ---
 
 <BlogIndexTemplate
@@ -33,5 +42,5 @@ const recent = articles.slice(1, 7);
   entries={entries}
   featured={featured}
   recent={recent}
-  changelog={changelog}
+  changelog={changelogRest}
 />
