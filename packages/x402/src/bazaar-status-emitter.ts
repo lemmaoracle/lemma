@@ -25,6 +25,8 @@ export interface BazaarStatusEmitter {
   emit(event: BazaarStatusEvent): void;
 }
 
+// imperative: interface implementation via classes — no functional alternative
+// eslint-disable-next-line functional/no-classes
 class ConsoleEmitter implements BazaarStatusEmitter {
   emit(event: BazaarStatusEvent): void {
     // Single line, JSON-parseable for log aggregation.
@@ -43,7 +45,9 @@ class ConsoleEmitter implements BazaarStatusEmitter {
   }
 }
 
+// eslint-disable-next-line functional/no-classes
 class NoopEmitter implements BazaarStatusEmitter {
+  // eslint-disable-next-line functional/functional-parameters
   emit(): void {
     /* intentionally empty */
   }
@@ -52,6 +56,8 @@ class NoopEmitter implements BazaarStatusEmitter {
 /**
  * Lazy singleton. Reads env at first call so tests can override before init.
  */
+// imperative: lazy singleton with mutable cache — no functional alternative
+// eslint-disable-next-line functional/no-let
 let cached: BazaarStatusEmitter | undefined;
 
 /**
@@ -59,38 +65,43 @@ let cached: BazaarStatusEmitter | undefined;
  * browser-like environments without taking a type-level dependency on
  * `@types/node`.
  */
+// imperative: env-accessing resolver — no functional alternative
+// eslint-disable-next-line functional/functional-parameters
 const readEmitterEnv = (): string | undefined => {
   const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
   const fromProcess = proc?.env?.["LEMMA_BAZAAR_EMITTER"];
+  // eslint-disable-next-line functional/no-conditional-statements
   if (typeof fromProcess === "string" && fromProcess.length > 0) return fromProcess;
 
   const fromGlobal = (globalThis as { LEMMA_BAZAAR_EMITTER?: string }).LEMMA_BAZAAR_EMITTER;
+  // eslint-disable-next-line functional/no-conditional-statements
   if (typeof fromGlobal === "string" && fromGlobal.length > 0) return fromGlobal;
 
   return undefined;
 };
 
+// imperative: lazy singleton getter with mutable state — no functional alternative
+// eslint-disable-next-line functional/functional-parameters
 export const getBazaarStatusEmitter = (): BazaarStatusEmitter => {
+  // eslint-disable-next-line functional/no-conditional-statements
   if (cached) return cached;
 
   const envValue = readEmitterEnv();
 
-  switch (envValue) {
-    case "noop":
-      cached = new NoopEmitter();
-      break;
-    case "console":
-    case undefined:
-      cached = new ConsoleEmitter();
-      break;
-    default:
-      // Unknown emitter name — log once and fall back to console so we never
-      // silently drop observability data due to a typo.
-      console.warn(
-        `[lemma:bazaar] unknown LEMMA_BAZAAR_EMITTER="${envValue}", falling back to console`
-      );
-      cached = new ConsoleEmitter();
-  }
+  // imperative: lazy singleton with mutable cache assignment — no functional alternative
+  // eslint-disable-next-line functional/no-expression-statements
+  cached = envValue === "noop"
+    ? new NoopEmitter()
+    : envValue === "console" || envValue === undefined
+      ? new ConsoleEmitter()
+      : (() => {
+          // Unknown emitter name — log once and fall back to console so we never
+          // silently drop observability data due to a typo.
+          console.warn(
+            `[lemma:bazaar] unknown LEMMA_BAZAAR_EMITTER="${envValue}", falling back to console`
+          );
+          return new ConsoleEmitter();
+        })();
 
   return cached;
 };
@@ -102,7 +113,17 @@ export const getBazaarStatusEmitter = (): BazaarStatusEmitter => {
 export const setBazaarStatusEmitterForTesting = (
   emitter: BazaarStatusEmitter | undefined
 ): void => {
+  // imperative: test-only mutable injection — no functional alternative
+  // eslint-disable-next-line functional/no-expression-statements
   cached = emitter;
+};
+
+const STATUS_MAP: Readonly<Record<string, BazaarStatusEvent["status"]>> = {
+  accepted: "accepted",
+  processing: "processing",
+  pending: "processing",
+  rejected: "rejected",
+  failed: "rejected",
 };
 
 /**
@@ -116,19 +137,8 @@ export const setBazaarStatusEmitterForTesting = (
 export const parseBazaarStatus = (
   headerValue: string
 ): BazaarStatusEvent["status"] => {
-  const match = /(?:^|[\s,;])status\s*=\s*"?([a-z_-]+)"?/i.exec(headerValue);
-  if (!match || !match[1]) return "unknown";
-
-  switch (match[1].toLowerCase()) {
-    case "accepted":
-      return "accepted";
-    case "processing":
-    case "pending":
-      return "processing";
-    case "rejected":
-    case "failed":
-      return "rejected";
-    default:
-      return "unknown";
-  }
+  const match = /(?:^|[\s,;])status\s*=\s*"?([a-z_-]+)?"?/i.exec(headerValue);
+  return match?.[1]
+    ? (STATUS_MAP[match[1].toLowerCase()] ?? "unknown")
+    : "unknown";
 };

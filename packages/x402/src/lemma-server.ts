@@ -48,6 +48,8 @@ const resolveLemmaConfig = (
 };
 
 /** Read LEMMA_CONFIG env var as JSON and parse it. */
+// imperative: env-accessing config resolver — no functional alternative
+// eslint-disable-next-line functional/functional-parameters
 const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
   const raw =
     typeof process !== "undefined"
@@ -59,6 +61,8 @@ const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
   return !jsonStr
     ? resolveFromIndividualEnvVars()
     : (() => {
+        // imperative: JSON.parse can throw on malformed config — no functional alternative
+        // eslint-disable-next-line functional/no-try-statements
         try {
           const parsed = JSON.parse(jsonStr) as Record<string, unknown>;
           const apiBase = parsed.apiBase as string | undefined;
@@ -67,6 +71,7 @@ const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
                 apiBase,
                 apiKey: parsed.apiKey as string | undefined,
                 circuitId:
+                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                   (parsed.circuitId as string) ?? DEFAULT_CIRCUIT_ID,
                 relayUrl: parsed.relayUrl as string | undefined,
                 discovery:
@@ -80,6 +85,8 @@ const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
 };
 
 /** Fallback to individual env vars. */
+// imperative: env-accessing config resolver — no functional alternative
+// eslint-disable-next-line functional/functional-parameters
 const resolveFromIndividualEnvVars = (): ResolvedLemmaConfig | undefined => {
   const env = typeof process !== "undefined" ? process.env : {};
   const apiBase = env.LEMMA_API_BASE;
@@ -101,7 +108,10 @@ const resolveFromIndividualEnvVars = (): ResolvedLemmaConfig | undefined => {
  *
  * @param facilitatorClient - x402 facilitator client(s)
  * @param lemmaConfig - Optional explicit Lemma configuration
+ *
+ * imperative: extends upstream OOP SDK class — no functional alternative
  */
+/* eslint-disable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions, functional/no-try-statements */
 class LemmaResourceServer extends BaseResourceServer {
   constructor(
     facilitatorClient?: FacilitatorClient | FacilitatorClient[],
@@ -128,17 +138,20 @@ class LemmaResourceServer extends BaseResourceServer {
           const settlementResult = context.result;
 
           // Build submission context from settlement data
-          const docHash =
-            (context.requirements.extra?.docHash as string) ??
+          const _docHash =
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            (context.requirements.extra?.docHash as string | undefined) ??
             settlementResult.transaction ??
             "unknown";
 
           const schema =
-            (context.requirements.extra?.schema as string) ??
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            (context.requirements.extra?.schema as string | undefined) ??
             "default";
 
           // Extract payment details for proof witness
           // The circuit expects specific inputs matching X402Payment circuit
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const txHash = (settlementResult.transaction ?? "").replace(/^0x/, "");
           const bn128Prime = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
           
@@ -151,11 +164,13 @@ class LemmaResourceServer extends BaseResourceServer {
             : (BigInt(`0x${txHash}`) % bn128Prime).toString();
           
           // Recipient address (payTo) - split into low/high
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const payTo = (context.requirements.payTo ?? "").replace(/^0x/, "").padStart(40, "0");
           const recipientLow = (BigInt(`0x${payTo.slice(-16)}`) % bn128Prime).toString();
           const recipientHigh = (BigInt(`0x${payTo.slice(0, -16) || "0"}`) % bn128Prime).toString();
           
           // Amount (USDC has 6 decimals, x402 uses smallest unit)
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const amount = context.requirements.amount ?? "1000";
           
           // Timestamp - use current time for freshness
@@ -189,7 +204,7 @@ class LemmaResourceServer extends BaseResourceServer {
 
           const proofOutput = await submissionHandler({
             docHash: txHash,
-            schema: String(schema),
+            schema: schema,
             issuerId: "lemma-x402",
             witness,
             metadata: {
@@ -215,5 +230,6 @@ class LemmaResourceServer extends BaseResourceServer {
     });
   }
 }
+/* eslint-enable functional/no-classes, functional/no-class-inheritance, functional/no-conditional-statements, functional/no-expression-statements, functional/no-this-expressions, functional/no-try-statements */
 
 export { LemmaResourceServer as x402ResourceServer };

@@ -20,7 +20,12 @@
  *   padding bytes (0x1f) is appended. This follows standard PKCS7.
  *
  * - Empty files (0 bytes) produce a single chunk of 31 × 0x1f.
+ *
+ * imperative: byte-level Uint8Array manipulation, PKCS7 padding, and
+ * big-endian encoding are inherently imperative operations — no
+ * functional alternative without unacceptable performance cost.
  */
+/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-conditional-statements, functional/no-expression-statements, functional/immutable-data, functional/no-throw-statements, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions */
 
 /** BN254 field prime (alt_bn128 curve order). */
 export const BN254_PRIME = BigInt(
@@ -88,12 +93,9 @@ function writeBigEndian(
 }
 
 /** Raise a validation error — used at API boundaries. */
-// imperative: pre-condition validation — no functional alternative for call-site abort
-/* eslint-disable functional/no-throw-statements */
 function raise(message: string): never {
   throw new Error(message);
 }
-/* eslint-enable functional/no-throw-statements */
 
 /**
  * Convert field elements back to original bytes.
