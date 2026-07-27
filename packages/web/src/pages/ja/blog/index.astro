@@ -29,7 +29,7 @@ const featured = entries[0];
 const recent = entries.slice(1, 7);
 
 // Anything already surfaced above is dropped from the Changelog list so the
-// same post never renders twice on one page.
+// same post never renders twice on the same page.
 const promotedSlugs = new Set(entries.slice(0, 7).map((p) => p.slug));
 const changelogRest = changelog.filter((p) => !promotedSlugs.has(p.slug));
 ---
