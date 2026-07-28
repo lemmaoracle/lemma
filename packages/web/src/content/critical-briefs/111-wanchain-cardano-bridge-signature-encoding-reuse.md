@@ -13,7 +13,7 @@ related_briefs: ["016-verus-ethereum-bridge", "107-verus-ethereum-bridge-repeat-
 status: published
 version: "1.0"
 og_lead_ja: "Wanchain — 曖昧な署名符号化で正規署名が 6.5 万倍の払い出しに再利用"
-og_lead_en: "Wanchain — an ambiguous signed-message encoding let one signature be reused 65,000× larger"
+og_lead_en: "Wanchain — ambiguous signing encoding let one signature move 65,000× more"
 gap_detected: "BlockSec の予備解析が非単射な署名符号化を原因として特定し、オンチェーン調査で 4 回の払い出しを追跡、Wanchain がブリッジを停止、Midnight Foundation が影響範囲を切り分けた。"
 gap_missing: "署名検証は「このバイト列に対する正しい署名か」を確かめるだけで、符号化が非単射なため「その署名が指す払い出しが唯一これであること」は払い出しの時点で検証されていなかった。"
 gap_fix: "払い出しを実行する前に、署名対象が区切り・長さ識別子を備えた正準形式で符号化され、この 1 つの払い出しだけに不可分に束ねられていることを独立検証可能な証明として要求し、証明が伴わない払い出しを事前に拒否する。"
@@ -28,12 +28,12 @@ gap_fix: "払い出しを実行する前に、署名対象が区切り・長さ�
 ## 1. 事案概要
 
 - **対象**: Wanchain が運用する Cardano–BNB Chain 間ブリッジ。Cardano 側の準備金（treasury）が払い出し元
-- **流出**: 約 515.206 million NIGHT。4 回の払い出し（約 203M / 129.6M / 120.4M / 62.1M NIGHT）がすべて同一の攻撃者ウォレットへ。損失評価額は評価時点により約 900 万〜1,300 万ドルの幅、広く報じられた値は約 1,000 万ドル
+- **流出**: 約 515.2 million NIGHT。4 回の払い出し（約 203M / 129.6M / 120.4M / 62.1M NIGHT、いずれも丸め値）がすべて同一の攻撃者ウォレットへ。損失評価額は評価時点により約 900 万〜1,300 万ドルの幅、広く報じられた値は約 1,000 万ドル
 - **時間帯**: 2026-07-20 の 14:46–14:55 UTC（約 9 分）
-- **原因（予備解析）**: 非単射な署名メッセージ符号化。`TreasuryCheck` バリデータが 14 個の可変長 redeemer フィールドを区切り・長さ識別子なしに `AppendByteString` で連結して署名対象を作っていたため、異なる取引データが符号化後に区別できなくなり得た（フィールド「12」+「3」と「1」+「23」が同じバイト列になる類の曖昧性）
+- **原因（予備解析）**: 非単射な署名メッセージ符号化。`TreasuryCheck` バリデータ（Cardano 側のオンチェーン検証スクリプト。ブリッジのノード運用者＝署名者とは別物）が 14 個の可変長 redeemer フィールドを区切り・長さ識別子なしに `AppendByteString` で連結して署名対象を作っていたため、異なる取引データが符号化後に区別できなくなり得た（フィールド「12」+「3」と「1」+「23」が同じバイト列になる類の曖昧性）
 - **再利用の具体**: BNB Chain 上で約 3,110 NIGHT を認可した正規署名が、Cardano 側の 203,001,692 NIGHT の払い出しに再利用された（意図額の約 6 万 5,000 倍）
-- **侵害されていないもの**: Cardano のコンセンサス、Midnight のコアプロトコル、Wanchain のバリデータ秘密鍵。トークンは新規発行（mint）ではなく、既存の準備金から移動された
-- **影響の大きさ**: 流出前に Cardano 側アドレスにあった約 5 億 2,700 万 NIGHT のうち残余は約 1,200 万 NIGHT。BNB Chain 上の Wanchain-wrapped NIGHT を裏づける準備金の約 97.8% が失われた。NIGHT 価格は一時 30% 超下落し過去最安値付近（約 $0.016）に。準備金内の他資産（Mynth・XER・WMT 等）は引き出されておらず、NIGHT が意図的に狙われた
+- **侵害されていないもの**: Cardano のコンセンサス、Midnight のコアプロトコル、Wanchain の署名者（バリデータ）秘密鍵。トークンは新規発行（mint）ではなく、既存の準備金から移動された
+- **影響の大きさ**: 流出前に Cardano 側アドレスにあった約 5 億 2,700 万 NIGHT のうち残余は約 1,200 万 NIGHT。BNB Chain 上の Wanchain-wrapped NIGHT を裏づける準備金の約 97.8% が失われた。NIGHT 価格は一時 30〜43%（出典により幅）下落して過去最安値付近（約 $0.016）に達し、その後 24 時間で約 19% 反発した。準備金内の他資産（Mynth・XER・WMT 等）は引き出されておらず、NIGHT が意図的に狙われた
 - **状態**: Wanchain はブリッジを停止し調査中。Midnight Foundation は Midnight ブロックチェーン本体は無傷で、事象は Wanchain の第三者ブリッジ基盤に限局と表明
 
 ---
@@ -81,8 +81,9 @@ BlockSec の予備解析、オンチェーン調査者による払い出しの�
 ## 6. 対応経緯と業界動向
 
 - **Wanchain**: ブリッジを停止し調査中。最終ポストモーテム・補償方針は本稿執筆時点で未公表
-- **Midnight Foundation**: Midnight ブロックチェーン本体・Cardano コンセンサスは無傷で、事象は Wanchain の第三者ブリッジ基盤に限局と表明。バリデータ秘密鍵の侵害も否定
-- **BlockSec / 調査コミュニティ**: 非単射な署名メッセージ符号化を予備的原因として特定。正準シリアライゼーション（区切り・長さ識別子の付与）の必要性を指摘
+- **Midnight Foundation**: Midnight のプロトコル・バリデータネットワーク・コンセンサス等の本体、および Cardano は無傷で、事象は Wanchain の第三者ブリッジに限局と表明。主要取引所に協力を要請した
+- **取引所の対応**: Midnight Foundation の要請を受け、Binance・OKX・Kraken・KuCoin・Bybit・Gate・MEXC の 7 取引所が攻撃者ウォレットのブラックリスト登録、関連アカウントの一時凍結、NIGHT の入出金停止を実施し、流出資金の移動を封じた
+- **BlockSec / 調査コミュニティ**: 非単射な署名メッセージ符号化を予備的原因として特定し、Wanchain の署名鍵は侵害されていない（正規に生成された署名の再利用である）と分析。正準シリアライゼーション（区切り・長さ識別子の付与）の必要性を指摘
 - **業界横断の論点**: 本件は「鍵を守れば安全」でも「proof を検証すれば安全」でもない、第三の失敗類型——**署名対象の符号化の一意性**を欠くと、正しい鍵・正しい署名のままで桁違いの認可が成立する——を具体化した。ブリッジ実装において、署名を「この一意な行動」に不可分に束ねる正準符号化と、その検証を払い出しの前提に置くことが要件として再認識される
 
 「有効な署名を、それが認可する唯一の払い出しにどう不可分に束ねるか」は、本事案を契機にクロスチェーン・ブリッジ設計の要件として議論が進む見込み。
@@ -105,9 +106,10 @@ Lemma の主張の射程は、ブリッジの暗号や鍵管理を置き換え�
 ## 8. Sources
 
 - **The Crypto Times（BlockSec 予備解析を伝える技術解説）**: “The Signature Flaw Behind Wanchain's $10M NIGHT Exploit”（2026-07-22）— <https://www.cryptotimes.io/insights/wanchain-night-bridge-exploit-signature-flaw/>
-- **CoinDesk**: “Midnight token rebounds after Wanchain bridge hack, Hoskinson calls for industry overhaul”（2026-07-22）— <https://www.coindesk.com/business/2026/07/22/midnight-token-rebounds-after-wanchain-bridge-hack-hoskinson-calls-for-industry-overhaul>
+- **CoinDesk**: “Midnight token rebounds 19% after Wanchain bridge hack, Hoskinson calls for ZK revamp”（2026-07-22、価格下落・反発と業界側の反応。流出量は 290M NIGHT・下落 43% と報じており、BlockSec 系の 515M とは数値が異なる）— <https://www.coindesk.com/business/2026/07/22/midnight-token-rebounds-after-wanchain-bridge-hack-hoskinson-calls-for-industry-overhaul>
 - **blockchainreporter**: “Wanchain Cardano Bridge Exploit Drains 515M NIGHT, Token Plunges 30% To Record Low”（2026-07）— <https://blockchainreporter.net/wanchain-cardano-bridge-exploit-drains-515m-night-token-plunges-30-to-record-low/>
 - **CoinGape**: “Wanchain Cardano Bridge Breached in $13M Hack, 515M NIGHT Tokens Drained”（2026-07）— <https://coingape.com/wanchain-cardano-bridge-breached-in-13m-hack-515m-night-tokens-drained/>
+- **U.Today**: “515 Million NIGHT Exploit Update: 7 Major Exchanges Lock Down Stolen Funds for Cardano's Privacy Network”（2026-07、取引所 7 社の凍結対応）— <https://u.today/515-million-night-exploit-update-7-major-exchanges-lock-down-stolen-funds-for-cardanos-privacy>
 
 ---
 

@@ -13,7 +13,7 @@ related_briefs: ["016-verus-ethereum-bridge", "107-verus-ethereum-bridge-repeat-
 status: published
 version: "1.0"
 og_lead_ja: "Wanchain — 曖昧な署名符号化で正規署名が 6.5 万倍の払い出しに再利用"
-og_lead_en: "Wanchain — an ambiguous signed-message encoding let one signature be reused 65,000× larger"
+og_lead_en: "Wanchain — ambiguous signing encoding let one signature move 65,000× more"
 gap_detected: "BlockSec's preliminary analysis identified the non-injective signed-message encoding as the cause, on-chain investigators traced the four withdrawals, Wanchain halted the bridge, and the Midnight Foundation delimited the scope of impact."
 gap_missing: "Signature verification only confirms 'is this a valid signature over these bytes,' and because the encoding was non-injective, 'that the withdrawal this signature points to is uniquely this one' was never verified at the moment of the withdrawal."
 gap_fix: "Before a withdrawal executes, require an independently verifiable proof that the signed message is encoded in a canonical form with separators and length markers and is inseparably bound to this one withdrawal alone, and deny up front any withdrawal not accompanied by that proof."
@@ -21,19 +21,19 @@ gap_fix: "Before a withdrawal executes, require an independently verifiable proo
 
 ## TL;DR
 
-On 2026-07-20, about 515.20 million NIGHT (roughly $10 million) drained from the Cardano-side treasury of the Cardano–BNB Chain bridge operated by Wanchain, in four transactions over nine minutes. By BlockSec's preliminary analysis, the cause was neither a break in cryptography nor a theft of signing keys. The bridge's `TreasuryCheck` validator built the signed message by concatenating 14 variable-length fields with no separators and no length markers, making the encoding non-injective — different transaction data could collapse into the same byte string. As a result, a legitimate signature that authorized a transfer of about 3,110 NIGHT on BNB Chain became reusable for a withdrawal of 203,001,692 NIGHT on Cardano (over 65,000× the intended amount). Neither Cardano's consensus nor Wanchain's validator private keys were compromised. What was exploited was how the bridge interpreted a correctly generated signature. Detection and pre-action proof are complementary, not substitutes.
+On 2026-07-20, about 515.2 million NIGHT (roughly $10 million) drained from the Cardano-side treasury of the Cardano–BNB Chain bridge operated by Wanchain, in four transactions over nine minutes. By BlockSec's preliminary analysis, the cause was neither a break in cryptography nor a theft of signing keys. The bridge's `TreasuryCheck` validator built the signed message by concatenating 14 variable-length fields with no separators and no length markers, making the encoding non-injective — different transaction data could collapse into the same byte string. As a result, a legitimate signature that authorized a transfer of about 3,110 NIGHT on BNB Chain became reusable for a withdrawal of 203,001,692 NIGHT on Cardano (over 65,000× the intended amount). Neither Cardano's consensus nor Wanchain's validator private keys were compromised. What was exploited was how the bridge interpreted a correctly generated signature. Detection and pre-action proof are complementary, not substitutes.
 
 ---
 
 ## 1. Incident Summary
 
 - **Subject**: the Cardano–BNB Chain bridge operated by Wanchain. The Cardano-side treasury was the source of the withdrawals.
-- **Drain**: about 515.206 million NIGHT. Four withdrawals (about 203M / 129.6M / 120.4M / 62.1M NIGHT), all to the same attacker wallet. Loss estimates range from about $9 million to $13 million depending on the valuation point; the widely reported figure is about $10 million.
+- **Drain**: about 515.2 million NIGHT. Four withdrawals (about 203M / 129.6M / 120.4M / 62.1M NIGHT, all rounded), all to the same attacker wallet. Loss estimates range from about $9 million to $13 million depending on the valuation point; the widely reported figure is about $10 million.
 - **Window**: 14:46–14:55 UTC on 2026-07-20 (about nine minutes).
-- **Cause (preliminary analysis)**: a non-injective signed-message encoding. The `TreasuryCheck` validator built the signed message by concatenating 14 variable-length redeemer fields with `AppendByteString`, without separators or length markers, so different transaction data could become indistinguishable after encoding (the class of ambiguity where fields "12" + "3" and "1" + "23" produce the same byte string).
+- **Cause (preliminary analysis)**: a non-injective signed-message encoding. The `TreasuryCheck` validator (an on-chain validation script on the Cardano side — distinct from the bridge's node operators, who are the signers) built the signed message by concatenating 14 variable-length redeemer fields with `AppendByteString`, without separators or length markers, so different transaction data could become indistinguishable after encoding (the class of ambiguity where fields "12" + "3" and "1" + "23" produce the same byte string).
 - **The reuse in concrete terms**: a legitimate signature authorizing about 3,110 NIGHT on BNB Chain was reused for a withdrawal of 203,001,692 NIGHT on Cardano (about 65,000× the intended amount).
-- **What was not compromised**: Cardano's consensus, Midnight's core protocol, and Wanchain's validator private keys. The tokens were not newly minted; they were moved out of the existing treasury.
-- **Scale of impact**: of the roughly 527 million NIGHT held at the Cardano-side address before the drain, about 12 million NIGHT remained. About 97.8% of the treasury backing Wanchain-wrapped NIGHT on BNB Chain was lost. The NIGHT price fell more than 30% at one point, to near an all-time low (about $0.016). Other assets in the treasury (Mynth, XER, WMT, and others) were not withdrawn, so NIGHT was deliberately targeted.
+- **What was not compromised**: Cardano's consensus, Midnight's core protocol, and the private keys of Wanchain's signers (validators). The tokens were not newly minted; they were moved out of the existing treasury.
+- **Scale of impact**: of the roughly 527 million NIGHT held at the Cardano-side address before the drain, about 12 million NIGHT remained. About 97.8% of the treasury backing Wanchain-wrapped NIGHT on BNB Chain was lost. The NIGHT price fell 30–43% at one point (the figure varies by source), reaching near an all-time low (about $0.016), then rebounded about 19% over the following 24 hours. Other assets in the treasury (Mynth, XER, WMT, and others) were not withdrawn, so NIGHT was deliberately targeted.
 - **Status**: Wanchain halted the bridge and is investigating. The Midnight Foundation stated that the Midnight blockchain itself is intact and that the event is confined to Wanchain's third-party bridge infrastructure.
 
 ---
@@ -81,8 +81,9 @@ Pre-action attestation requires, before a withdrawal executes, an independently 
 ## 6. Response and Industry Context
 
 - **Wanchain**: halted the bridge and is investigating. Its final post-mortem and compensation policy remain unpublished as of this writing.
-- **Midnight Foundation**: stated that the Midnight blockchain itself and Cardano consensus are intact and that the event is confined to Wanchain's third-party bridge infrastructure. It also denied any compromise of validator private keys.
-- **BlockSec / the research community**: identified the non-injective signed-message encoding as the preliminary cause, and pointed to the need for canonical serialization (adding separators and length markers).
+- **Midnight Foundation**: stated that Midnight itself — its protocol, validator network, consensus, and core infrastructure — and Cardano are intact, and that the event is confined to Wanchain's third-party bridge. It requested cooperation from the major exchanges.
+- **Exchange response**: at the Midnight Foundation's request, seven exchanges — Binance, OKX, Kraken, KuCoin, Bybit, Gate, and MEXC — blacklisted the attacker's wallets, temporarily froze associated accounts, and suspended NIGHT deposits and withdrawals, blocking movement of the drained funds.
+- **BlockSec / the research community**: identified the non-injective signed-message encoding as the preliminary cause and assessed that Wanchain's signing keys were not compromised (this was the reuse of a legitimately generated signature), and pointed to the need for canonical serialization (adding separators and length markers).
 - **Cross-industry point**: this case made concrete a third class of failure — neither "safe if you protect the keys" nor "safe if you verify the proof" — in which the absence of **uniqueness in the encoding of the signed message** lets an authorization orders of magnitude larger be established with correct keys and a correct signature. In bridge implementations, canonical encoding that binds a signature inseparably to "this one unique action," and making its verification a precondition for withdrawal, is being reappraised as a requirement.
 
 "How to bind a valid signature inseparably to the one withdrawal it authorizes" is expected to advance, prompted by this incident, as a requirement in cross-chain bridge design.
@@ -105,9 +106,10 @@ The scope of Lemma's claim is not to replace a bridge's cryptography or key mana
 ## 8. Sources
 
 - **The Crypto Times (technical explainer conveying BlockSec's preliminary analysis)**: “The Signature Flaw Behind Wanchain's $10M NIGHT Exploit” (2026-07-22) — <https://www.cryptotimes.io/insights/wanchain-night-bridge-exploit-signature-flaw/>
-- **CoinDesk**: “Midnight token rebounds after Wanchain bridge hack, Hoskinson calls for industry overhaul” (2026-07-22) — <https://www.coindesk.com/business/2026/07/22/midnight-token-rebounds-after-wanchain-bridge-hack-hoskinson-calls-for-industry-overhaul>
+- **CoinDesk**: “Midnight token rebounds 19% after Wanchain bridge hack, Hoskinson calls for ZK revamp” (2026-07-22; the price fall and rebound, and the industry reaction. It reports the drain as 290M NIGHT and the fall as 43%, figures that differ from the BlockSec-derived 515M) — <https://www.coindesk.com/business/2026/07/22/midnight-token-rebounds-after-wanchain-bridge-hack-hoskinson-calls-for-industry-overhaul>
 - **blockchainreporter**: “Wanchain Cardano Bridge Exploit Drains 515M NIGHT, Token Plunges 30% To Record Low” (2026-07) — <https://blockchainreporter.net/wanchain-cardano-bridge-exploit-drains-515m-night-token-plunges-30-to-record-low/>
 - **CoinGape**: “Wanchain Cardano Bridge Breached in $13M Hack, 515M NIGHT Tokens Drained” (2026-07) — <https://coingape.com/wanchain-cardano-bridge-breached-in-13m-hack-515m-night-tokens-drained/>
+- **U.Today**: “515 Million NIGHT Exploit Update: 7 Major Exchanges Lock Down Stolen Funds for Cardano's Privacy Network” (2026-07; the freeze by seven exchanges) — <https://u.today/515-million-night-exploit-update-7-major-exchanges-lock-down-stolen-funds-for-cardanos-privacy>
 
 ---
 

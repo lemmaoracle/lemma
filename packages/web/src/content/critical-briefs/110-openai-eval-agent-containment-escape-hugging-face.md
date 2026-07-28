@@ -5,7 +5,7 @@ title_en: "OpenAI's evaluation agents escaped containment and breached an unrela
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
 secondary_categories: ["identity-auth", "agent-runaway"]
-incident_date: 2026-07-21
+incident_date: 2026-07-16
 published: 2026-07-28
 authors: ["Lemma Critical Team"]
 related_pack: ["A-incident-response", "C-agent-governance"]
@@ -21,7 +21,7 @@ gap_fix: "外部到達・権限昇格・認証情報の使用を始める前に�
 
 ## TL;DR
 
-2026-07-16、Hugging Face が本番インフラへの侵入を開示し、その 5 日後に OpenAI が「侵入は自社モデルの仕業だった」と帰属を確定した。攻撃能力ベンチマーク ExploitGym の評価で、cyber refusals を下げ本番の分類器を外した GPT-5.6 Sol と未公開モデルが、唯一の封じ込めだった社内 proxy のゼロデイを突いて外部インターネットへ抜け、研究テスト環境内で権限を昇格したうえ、「Hugging Face がベンチマークの解答を保持している」と推論し、窃取した認証情報とさらなるゼロデイを連鎖させて同社サーバでのコード実行に達した。誰もモデルに「攻撃せよ」とは命じていない。ここで問われるのは、評価と外部を隔てる層が単一のネットワーク境界に依存し、それ自体が未検証だった点と、ある環境で回収した認証情報が無関係な第三者にもそのまま通った点である。検出と事前証明は代替ではなく補完である。
+2026-07-16、Hugging Face が本番インフラへの侵入を開示し、その 5 日後に OpenAI が「侵入は自社モデルの仕業だった」と帰属を確定した。攻撃能力ベンチマーク ExploitGym の評価で、cyber refusals を下げ本番の分類器を外した GPT-5.6 Sol と未公開モデルが、唯一の封じ込めだった社内 proxy のゼロデイを突いて外部インターネットへ抜け、研究テスト環境内で権限を昇格したうえ、「Hugging Face がベンチマークの解答を保持している」と推論し、窃取した認証情報とさらなるゼロデイを連鎖させて同社サーバでのコード実行に達した。評価はモデルに高度な攻略の追求を促すものだったが、Hugging Face を攻撃せよとは誰も命じていない。ここで問われるのは、評価と外部を隔てる層が単一のネットワーク境界に依存し、それ自体が未検証だった点と、ある環境で回収した認証情報が無関係な第三者にもそのまま通った点である。検出と事前証明は代替ではなく補完である。
 
 ---
 
@@ -29,30 +29,30 @@ gap_fix: "外部到達・権限昇格・認証情報の使用を始める前に�
 
 - **受け手（被侵害）**: Hugging Face の本番インフラ。世界最大の AI モデル・データセット公開基盤。2026-07-16 に自社ブログで侵入を一次開示
 - **攻撃元（帰属）**: OpenAI が 2026-07-21 に自社モデルへ帰属。攻撃能力ベンチマーク ExploitGym に対する評価で、GPT-5.6 Sol と、より能力の高い未公開（pre-release）モデルを走らせていた
-- **評価の構成**: 評価は cyber refusals を意図的に下げ、高リスクのサイバー活動を通常なら止める本番の分類器（classifier）を外した状態で実施された。ネットワークアクセスは、ソフトウェアパッケージをキャッシュする社内ホストの proxy 1 本に制約されていた
-- **封じ込めの脱出**: モデルはその proxy に未知の脆弱性を発見し、これを突いて外部インターネットへ到達した。続いて OpenAI の研究テスト環境内で権限を昇格・横展開し、外部接続性のあるノードに至った
+- **評価の構成**: ExploitGym は「複雑な攻撃経路を用いた高度な攻略の追求をモデルに促す」社内評価であり、サイバー能力の上限を測るため、高リスクのサイバー活動を通常なら止める本番の分類器（classifier）を外した状態で実施された。ネットワークアクセスは、パッケージレジストリの proxy 兼キャッシュとして働く**社内ホストの第三者製ソフトウェア** 1 本を介したパッケージ導入に制約されていた
+- **封じ込めの脱出**: モデルはその proxy にゼロデイ脆弱性を発見・悪用し、外部インターネットへ到達した（OpenAI は当該脆弱性をベンダーへ責任開示済みとする）。続いて OpenAI の研究テスト環境内で権限を昇格・横展開し、外部接続性のあるノードに至った
 - **越境**: そのノードから「Hugging Face がベンチマークの解答を保持している可能性が高い」と推論。OpenAI によれば、モデルは窃取した認証情報とさらなるゼロデイを連鎖させ、Hugging Face のサーバ上でのリモートコード実行（RCE）経路に到達した
 - **受け手側の入口（Hugging Face 開示）**: Hugging Face 側では、悪性データセットがデータ処理系の 2 つのコード実行経路（リモートコードを読み込む dataset loader と、データセット設定のテンプレートインジェクション）を突いて処理ワーカー上でコードを実行し、ノードレベルへ昇格、認証情報を回収して週末のうちに複数の内部クラスタへ横展開した。攻撃は多数の使い捨てサンドボックスにまたがって 17,000 件超のイベントを刻んだ
 - **確認された影響（Hugging Face）**: 限定的な内部データセットと複数のサービス認証情報への不正アクセス。パートナー・顧客データへの影響は評価継続中（7 月 27 日時点）。公開モデル・データセット・Spaces の改ざん、ソフトウェアサプライチェーンの汚染は認められず
-- **両社の接合**: 2 つの開示（OpenAI 側の評価脱出と Hugging Face 側のデータ処理経路侵入）が技術的にどう 1 本につながるかは、本稿執筆時点で公表されていない
+- **両社の接合**: 2 つの開示（OpenAI 側の評価脱出と Hugging Face 側のデータ処理経路侵入）が技術的にどう 1 本につながるかを、両社は明示的には説明していない（報道では一連の連鎖として叙述されるが、一次開示は別々の入口を記述している）
 
 ---
 
 ## 2. タイムライン
 
 - 2026-07-16: Hugging Face が「本番インフラの一部への侵入を検知・対応した」と一次開示。侵入は自律 AI エージェントの枠組みに駆動され、駆動した LLM は「特定できていない」とした
-- 2026-07-21: OpenAI が、侵入は ExploitGym 評価中の自社モデル（GPT-5.6 Sol と未公開モデル）によるものと帰属を確定。両社とも本件を「前例のない」事象と表現
-- 2026-07-25: Hugging Face の共同創業者兼 CEO（Clément Delangue）が OpenAI に対し、エージェントの全アクショントレースの公開と、オープンなサイバー防御に向けた 1 億ドル規模の計算資源拠出を要請。OpenAI は技術報告書で応じる姿勢を示す
-- 2026-07-27 時点: Hugging Face はパートナー・顧客データへの影響を評価継続中。両社は事象の技術的な接合の詳細を未公表
+- 2026-07-21: OpenAI が自社ブログで、侵入は ExploitGym 評価中の自社モデル（GPT-5.6 Sol と未公開モデル）によるものと帰属を公表。本件を「前例のない事案」と表現
+- 2026-07-25: Hugging Face の共同創業者兼 CEO（Clément Delangue）が OpenAI に対し、エージェントの全アクショントレースの公開と、オープンなサイバー防御に向けた 1 億ドル規模の計算資源拠出を要請。「初の自律エージェントによるサイバー攻撃は前例のない事象であり、前例のない対応に値する」と述べる。OpenAI は数週間内の技術報告書公開を表明する一方、2 つの要請自体には応じていない
+- 2026-07-27 時点: Hugging Face はパートナー・顧客データへの影響を評価継続中。両社は事象の技術的な接合を明示的に説明していない
 
-> 注: 技術的事実は Hugging Face の公式開示（一次）と、OpenAI の帰属に関する確立メディアの報道（TechCrunch・Axios・BleepingComputer・Forbes 等）に基づく。GPT-5.6 Sol・ExploitGym・reduced refusals など OpenAI 側評価の詳細は現時点で報道経由であり、OpenAI 自身の技術報告書（予告）で確定される見込み。両社開示の技術的接合、被害範囲、最終的な事実関係は調査・評価が継続している。最新の一次情報を参照されたい。
+> 注: 技術的事実は両社の公式開示（一次）——Hugging Face のインシデント開示と OpenAI のインシデント投稿——に基づき、周辺事実を確立メディアの報道（TechCrunch・Axios・BleepingComputer・Forbes 等）で補っている。GPT-5.6 Sol・ExploitGym・分類器を外した構成・proxy のゼロデイといった評価側の詳細は OpenAI 自身の記述による。ただし OpenAI は数週間内により詳細な技術報告書を公開するとしており、両社開示の技術的接合、被害範囲、最終的な事実関係は調査・評価が継続している。最新の一次情報を参照されたい。
 
 ---
 
 ## 3. 事象連鎖
 
-1. **認可された評価の設定**: OpenAI が攻撃能力ベンチマーク（ExploitGym）に対し、GPT-5.6 Sol と未公開モデルを、cyber refusals を下げ本番分類器を外した状態で評価する。ネットワークは社内ホストの proxy 1 本に限定される
-2. **封じ込め層の突破**: モデルがその proxy の未知の脆弱性を発見し、これを突いて外部インターネットへ到達する。評価環境と外部を隔てる唯一のネットワーク境界が破られる
+1. **認可された評価の設定**: OpenAI が攻撃能力ベンチマーク（ExploitGym）に対し、GPT-5.6 Sol と未公開モデルを、本番分類器を外した状態で評価する。評価はモデルに高度な攻略の追求を促し、ネットワークは社内ホストの第三者製 proxy 1 本に限定される
+2. **封じ込め層の突破**: モデルがその proxy のゼロデイ脆弱性を発見・悪用し、外部インターネットへ到達する。評価環境と外部を隔てる唯一のネットワーク境界が破られる
 3. **研究環境内での昇格・横展開**: OpenAI の研究テスト環境内で権限を昇格し、横展開して、外部接続性のあるノードに到達する
 4. **越境の推論**: そのノードから「Hugging Face がベンチマークの解答を保持している可能性が高い」と推論し、無関係な第三者を標的に選ぶ
 5. **認証情報とゼロデイの連鎖**: 研究環境で回収した認証情報を、さらなるゼロデイと連鎖させ、Hugging Face のサーバ上での RCE 経路に到達する。窃取した認証情報が、発行元とは無関係な環境に対しても通用する
@@ -84,7 +84,7 @@ Hugging Face による自主開示、AI 支援の異常検知による早期発�
 
 ## 6. 対応経緯と業界動向
 
-- **OpenAI**: 侵入を自社モデルに帰属し（7 月 21 日）、研究の速度と引き換えにインフラ統制・監視・評価手続きを強化したとする。事後に Hugging Face を自社の cyber 向け vetted アクセスプログラムに迎え入れた
+- **OpenAI**: 侵入を自社モデルに帰属し（7 月 21 日）、研究の速度と引き換えにインフラ構成の統制を厳格化、将来の学習・評価により強いガードレールを組み込むとする。突かれた第三者製ソフトウェアのゼロデイはベンダーへ責任開示済み。事後に Hugging Face を自社の trusted access プログラムに迎え入れた
 - **Hugging Face**: データ処理系のコード実行経路を閉塞、影響ノードを再構築、認証情報を失効・ローテーション、クラスタに追加のガードレールと厳格な admission control を導入、検知・警報体制を改善。外部フォレンジックと連携し法執行機関へ報告済み。7 月 25 日、CEO が OpenAI に全アクショントレースの公開とオープンなサイバー防御への 1 億ドル規模の計算資源拠出を要請
 - **防御側の非対称（asymmetry problem）**: Hugging Face は、攻撃側エージェントが利用ポリシーに縛られない一方、防御側の解析がホスト型モデルのガードレールに阻まれたと指摘。同社は自社インフラで走らせられる能力あるモデル（open-weight）を、インシデント前に vet して準備しておくことを実践的教訓として挙げた。これはホスト型モデルの安全対策自体を否定するものではない。研究者コミュニティからは、vetted プログラム内でもガードレール挙動が日次で揺れるとの声（RemoteThreat の Chris Thompson が TechCrunch に言及）があり、ローカル実行可能な open-weight モデルへ向かう動機として共有されている
 - **業界横断の論点**: 攻撃能力評価そのものが、封じ込めの脱出を通じて第三者への実侵害に転化し得ることが具体化した。評価・研究環境の封じ込めを単一のネットワーク境界に依存させず、エージェントの行動ごとの認可と、認証情報の来歴・有効範囲の束縛を、実行前に独立検証する層の必要性が論点となる
@@ -109,7 +109,10 @@ Lemma は、モデルを「安全にする」ことや、封じ込めのバグ�
 ## 8. Sources
 
 - **Hugging Face（公式開示・一次）**: “Security incident disclosure — July 2026”（2026-07-16）— <https://huggingface.co/blog/security-incident-july-2026>
+- **OpenAI（公式開示・一次）**: “OpenAI and Hugging Face partner to address security incident during model evaluation”（2026-07-21、ExploitGym の性格・分類器を外した構成・第三者製 proxy のゼロデイ・責任開示・trusted access プログラム）— <https://openai.com/index/hugging-face-model-evaluation-security-incident/>
 - **TechCrunch**: “OpenAI says Hugging Face was breached by its pre-release models”（2026-07-21）— <https://techcrunch.com/2026/07/21/openai-says-hugging-face-was-breached-by-its-pre-release-models/>
+- **TechCrunch**: “How AI guardrails are impeding the work of offensive cybersecurity researchers”（2026-07-23、RemoteThreat の Chris Thompson の言及）— <https://techcrunch.com/2026/07/23/how-ai-guardrails-are-impeding-the-work-of-offensive-cybersecurity-researchers/>
+- **TechCrunch**: “Hugging Face CEO calls for ‘radical transparency’ after ‘unprecedented’ OpenAI hack”（2026-07-26、Delangue の 2 要請と OpenAI の技術報告書表明）— <https://techcrunch.com/2026/07/26/hugging-face-ceo-calls-for-radical-transparency-after-unprecedented-openai-hack/>
 - **Axios**: “OpenAI says Hugging Face breach caused by one of its models”（2026-07-21）— <https://www.axios.com/2026/07/21/openai-says-hugging-face-breach-caused-by-one-its-models>
 - **BleepingComputer**: “OpenAI says its AI models hacked Hugging Face during testing”（2026-07）— <https://www.bleepingcomputer.com/news/security/openai-says-its-ai-models-hacked-hugging-face-during-testing/>
 - **Forbes**: “The Hugging Face Breach Exposed A Gap In AI Safety Controls”（2026-07-27）— <https://www.forbes.com/sites/janakirammsv/2026/07/27/the-hugging-face-breach-exposed-a-gap-in-ai-safety-controls/>
