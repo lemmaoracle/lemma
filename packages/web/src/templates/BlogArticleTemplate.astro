@@ -1,20 +1,24 @@
 ---
 /**
- * Lemma blog — article detail page, v24-aligned.
+ * Lemma blog — 記事詳細ページ。モック `lemma_article_mock_v10.html` の面。
  *
- * Migrated from the prior v22 dark-full-bleed-hero chrome to the v24
- * reading layout: cream page, container-narrow 760px reading column,
- * Sora display + Noto Sans JP body + Space Mono labels, saddle brown
- * accent on eyebrows / links / list markers / quote rules.
+ * #713 で slug 1本（`lemma-oracle-specs`）だけに入れていた面を、**全記事へ
+ * 展開した**もの。あのときの `DESIGN_V2_SLUGS` と `.blog-page:not(.v2)` の
+ * 旧スタイル（v24 のクリーム地・Sora・saddle brown）はここで消えている。
  *
- * Cover image is kept (blog content is image-heavy) but rendered as a
- * sized 16:9 frame above the meta strip, not as a full-bleed overlay
- * hero. Title and meta sit in the cream container that follows.
+ * トークンの値は /ja/preview/top/（PreviewTopTemplate の .pv）と同じ。
+ * フォントは **Layout が実際に読み込むもの**だけを指す（モックの
+ * Space Grotesk は読み込んでいない＝指定しても入っている端末でしか出ない）。
  *
- * Body styling, TOC, related-links, tags, CTA, prev/next, and related
- * posts are all reworked to v24. The body's rendered markdown HTML is
- * not touched — only the surrounding chrome and the .article-body CSS
- * are changed.
+ * v6 から v10 で変わったのは本文の組みで、他8記事の実測を反映したもの:
+ * h4 を追加／h2 の上罫を細いライムの線に変える／h2 直前の `hr` を消す
+ * （`---` のあとに `##` が来る書き方で線が二重になる）／表を主要素として
+ * 整備（見出しをモノスペースの小さいラベルから本文フォントへ）／入れ子の
+ * リスト・図（figure/figcaption）を追加。
+ *
+ * 本文の HTML（`post.body`）は触っていない。**モックにあるメガメニューと
+ * 新フッターはサイト共通のガラなので、ここでは入れない**（リニューアル本体
+ * の範囲。#713 と同じ線引き）。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
@@ -25,7 +29,6 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
-import defaultCover from "../assets/default-blog-cover.png";
 import ProofCover from "../components/ProofCover.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
@@ -70,17 +73,6 @@ const {
   readingTimeLabel,
 } = Astro.props as BlogArticleTemplateProps;
 
-/**
- * サイトリニューアル先行のデザイン移行を、**この slug の記事だけ**で試す。
- * モック `lemma_article_mock_v6.html` の面（トークンは /ja/preview/top/ と同じ）。
- *
- * 記事テンプレート全体の移行はリニューアル本体で行う。そのときは
- * この配列と `.blog-page:not(.v2)` の旧スタイルを消せば、新しい面が全記事に
- * 出る——**移行は「ここを外すだけ」**で済むようにしてある。
- */
-const DESIGN_V2_SLUGS: ReadonlyArray<string> = ["lemma-oracle-specs"];
-const isV2 = DESIGN_V2_SLUGS.includes(post.slug);
-
 const homeLabel = locale === "ja" ? "ホーム" : "Home";
 const isJa = locale === "ja";
 const builtForHeading = isJa
@@ -102,7 +94,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <main class:list={["blog-page", isV2 && "v2"]}>
+  <main class="blog-page">
     <div class="blog-container">
       <div class="blog-breadcrumb">
         <a href={base || "/"}>{homeLabel}</a>
@@ -119,33 +111,22 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
       </div>
 
       <section class="blog-hero">
-        {/* v2 はカテゴリがチップになり、日付・読了はモノスペースの間隔で
-            分かれるので、区切りの「·」を置かない。 */}
+        {/* カテゴリはチップ、日付・読了はモノスペースの間隔で分かれるので、
+            区切りの「·」は置かない。 */}
         <div class="blog-eyebrow">
           <span class="eyebrow-cat">{post.category}</span>
-          {!isV2 && <span class="eyebrow-sep">·</span>}
           <span class="eyebrow-date">{post.date}</span>
-          {!isV2 && <span class="eyebrow-sep">·</span>}
           <span class="eyebrow-time">{readingTimeLabel}</span>
         </div>
         <h1 class="blog-h1">{post.title}</h1>
         {post.abstract && <p class="blog-abstract">{post.abstract}</p>}
       </section>
 
-      {/* v2 は記事ごとの写真ではなく、真正性ページと同じ抽象カバーを出す
-          （リニューアルの面に揃える）。索引や OGP は記事の cover のままなので、
-          一覧のサムネイルとは絵が食い違う。 */}
-      {isV2 ? (
-        <ProofCover />
-      ) : (
-        <figure class="blog-cover">
-          <img
-            src={post.cover ?? defaultCover.src}
-            alt=""
-            loading="lazy"
-          />
-        </figure>
-      )}
+      {/* 記事ごとの写真ではなく、真正性ページと同じ抽象カバーを出す。
+          ⚠ ブログ索引のサムネイルと OGP は記事の `cover`（posts 側の
+          カテゴリ別 PNG）のままなので、一覧と記事で絵が食い違う。
+          slug 由来の生成カバーへ4面まとめて揃えるのは次の PR。 */}
+      <ProofCover />
 
       <div class="blog-body" set:html={post.body} />
 
@@ -271,689 +252,12 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
 </Layout>
 
 <style>
-  /* v24 typography palette — scoped to blog article pages. */
+  /* ─────────────────────────────────────────────────────────────
+     モック `lemma_article_mock_v10.html` の面。トークンの値は
+     /ja/preview/top/（PreviewTopTemplate の .pv）と同じものを使う——
+     リニューアル後に2種類の緑・2種類の紙色が並ばないようにするため。
+     ────────────────────────────────────────────────────────── */
   .blog-page {
-    --bl-display: "Sora", system-ui, -apple-system, sans-serif;
-    --bl-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
-    --bl-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --bl-text-1: #1a1a1a;
-    --bl-text-2: #3a3a3a;
-    --bl-text-3: #5a5a5a;
-    --bl-text-4: #9a9a9a;
-
-    background: var(--lemma-cream);
-    color: var(--bl-text-2);
-    font-family: var(--bl-body);
-    font-weight: 400;
-    line-height: 1.85;
-    padding: 0 0 96px;
-    margin-top: 64px;
-  }
-  :root[lang="en"] .blog-page {
-    --bl-body: "Sora", system-ui, sans-serif;
-  }
-
-  .blog-container {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-
-  /* ─── BREADCRUMB ─── */
-  .blog-breadcrumb {
-    font-family: var(--bl-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--bl-text-4);
-    padding: 36px 0 0;
-  }
-  .blog-breadcrumb a {
-    color: var(--bl-text-3);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .blog-breadcrumb a:hover {
-    color: var(--accent);
-  }
-  .blog-breadcrumb-sep {
-    color: var(--lemma-line);
-    margin: 0 8px;
-  }
-
-  /* ─── HERO ─── */
-  .blog-hero {
-    padding: 32px 0 32px;
-  }
-  .blog-eyebrow {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--bl-text-4);
-    margin: 0 0 22px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-  }
-  .eyebrow-cat {
-    color: var(--accent);
-    font-weight: 500;
-    letter-spacing: 0.22em;
-  }
-  .eyebrow-sep {
-    color: var(--lemma-line);
-  }
-  .blog-h1 {
-    font-family: var(--bl-display);
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.06;
-    margin: 0 0 22px;
-    color: var(--black);
-    letter-spacing: -0.03em;
-  }
-  :root[lang="ja"] .blog-h1 {
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-  }
-  .blog-abstract {
-    font-family: var(--bl-display);
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--bl-text-2);
-    margin: 0;
-    letter-spacing: -0.015em;
-  }
-
-  /* ─── COVER ─── */
-  .blog-cover {
-    margin: 24px 0 56px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--lemma-cream-deep);
-    aspect-ratio: 16 / 9;
-  }
-  .blog-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* ─── BODY (rendered markdown HTML) ─── */
-  .blog-body {
-    font-feature-settings: "palt" 1;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    font-size: 16px;
-    line-height: 1.85;
-    color: var(--bl-text-2);
-  }
-  .blog-body :global(h2[id]),
-  .blog-body :global(h3[id]) {
-    scroll-margin-top: 96px;
-  }
-  .blog-body :global(h2) {
-    font-family: var(--bl-display);
-    font-size: 30px;
-    font-weight: 700;
-    color: var(--black);
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    margin: 64px 0 24px;
-  }
-  :root[lang="ja"] .blog-body :global(h2) {
-    line-height: 1.35;
-  }
-  .blog-body :global(h2:first-child) {
-    margin-top: 0;
-  }
-  .blog-body :global(h3) {
-    font-family: var(--bl-display);
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.35;
-    margin: 40px 0 16px;
-  }
-  .blog-body :global(p) {
-    font-family: var(--bl-body);
-    font-size: 16px;
-    line-height: 1.85;
-    color: var(--bl-text-2);
-    margin: 0 0 24px;
-  }
-  .blog-body :global(> p:first-of-type) {
-    font-size: 17px;
-    color: var(--bl-text-1);
-  }
-  .blog-body :global(strong) {
-    color: var(--black);
-    font-weight: 500;
-  }
-  .blog-body :global(em) {
-    font-style: italic;
-    color: var(--bl-text-2);
-  }
-  .blog-body :global(a) {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
-    transition: border-color 0.15s, color 0.15s;
-    overflow-wrap: anywhere;
-  }
-  .blog-body :global(a:hover) {
-    border-bottom-color: var(--accent);
-    color: #6e3610;
-  }
-
-  /* Lists — brown diamond ul, mono brown ol */
-  .blog-body :global(ul) {
-    list-style: none;
-    margin: 0 0 24px;
-    padding: 0;
-  }
-  .blog-body :global(ul li) {
-    position: relative;
-    padding-left: 24px;
-    margin: 0 0 10px;
-    line-height: 1.75;
-    font-size: 16px;
-  }
-  .blog-body :global(ul li::before) {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 13px;
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 1px;
-    transform: rotate(45deg);
-  }
-  .blog-body :global(ol) {
-    list-style: none;
-    margin: 0 0 24px;
-    padding: 0 0 0 4px;
-    counter-reset: bloglist;
-  }
-  .blog-body :global(ol li) {
-    counter-increment: bloglist;
-    position: relative;
-    padding-left: 32px;
-    margin: 0 0 12px;
-    line-height: 1.75;
-    font-size: 16px;
-  }
-  .blog-body :global(ol li::before) {
-    content: counter(bloglist);
-    position: absolute;
-    left: 0;
-    top: 1px;
-    font-family: var(--bl-mono);
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  /* Pull-quote (single italic paragraph) */
-  .blog-body :global(p:has(> em:only-child)) {
-    font-family: var(--bl-display);
-    font-size: 20px;
-    font-style: italic;
-    line-height: 1.55;
-    color: var(--bl-text-1);
-    margin: 48px 0;
-    padding-left: 24px;
-    border-left: 2px solid var(--accent);
-    overflow-wrap: anywhere;
-  }
-  .blog-body :global(p:has(> em:only-child) em) {
-    font-style: italic;
-    color: inherit;
-  }
-  .blog-body :global(blockquote) {
-    border-left: 2px solid var(--accent);
-    padding: 4px 0 4px 24px;
-    margin: 40px 0;
-    font-style: italic;
-    color: var(--bl-text-1);
-  }
-  .blog-body :global(blockquote p) {
-    margin-bottom: 0;
-  }
-  .blog-body :global(hr) {
-    border: none;
-    border-top: 0.5px solid var(--lemma-line);
-    margin: 48px 0;
-  }
-
-  /* Tables */
-  .blog-body :global(table) {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    border-collapse: collapse;
-    font-family: var(--bl-body);
-    font-size: 14px;
-    margin: 32px 0;
-  }
-  .blog-body :global(thead tr) {
-    background: var(--lemma-cream-deep);
-  }
-  .blog-body :global(th) {
-    padding: 12px 14px;
-    font-family: var(--bl-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--bl-text-3);
-    text-align: left;
-    border-bottom: 0.5px solid var(--lemma-line);
-    white-space: nowrap;
-  }
-  .blog-body :global(td) {
-    padding: 12px 14px;
-    border-bottom: 0.5px solid var(--lemma-line);
-    color: var(--bl-text-2);
-    line-height: 1.65;
-    vertical-align: top;
-  }
-
-  /* Code */
-  .blog-body :global(code:not(pre code)) {
-    font-family: var(--bl-mono);
-    font-size: 0.86em;
-    background: var(--lemma-cream-deep);
-    padding: 0.1em 0.4em;
-    border-radius: 3px;
-    color: var(--bl-text-1);
-  }
-  .blog-body :global(pre) {
-    margin: 28px 0;
-    padding: 22px 24px;
-    background: #1a1a1a;
-    color: #e8e2d4;
-    border-radius: 12px;
-    overflow-x: auto;
-    font-family: var(--bl-mono);
-    font-size: 12.5px;
-    line-height: 1.75;
-  }
-  .blog-body :global(pre code) {
-    background: transparent;
-    padding: 0;
-    color: inherit;
-  }
-
-  /* Inline images */
-  .blog-body :global(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin: 32px 0;
-  }
-
-  /* ─── RESOURCES (related links) ─── */
-  .blog-resources {
-    margin: 64px 0 0;
-    padding: 32px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
-  }
-  .resources-label {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--bl-text-3);
-    margin: 0 0 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .resources-label::before {
-    content: "";
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-    display: inline-block;
-  }
-  .resources-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .resources-item {
-    padding: 0;
-  }
-  .resources-link {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 14px 16px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 10px;
-    margin: 0 0 10px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .resources-link:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    background: var(--lemma-cream-deep);
-  }
-  .resources-link-label {
-    font-family: var(--bl-display);
-    font-size: 14.5px;
-    font-weight: 500;
-    color: var(--black);
-    letter-spacing: -0.005em;
-  }
-  .resources-link-href {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    color: var(--accent);
-    word-break: break-all;
-  }
-
-  /* ─── TAGS ─── */
-  .blog-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 56px 0 0;
-    padding-top: 28px;
-    border-top: 0.5px solid var(--lemma-line);
-  }
-  .blog-tag {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--bl-text-3);
-    background: var(--lemma-cream-deep);
-    padding: 5px 10px;
-    border-radius: 999px;
-    text-decoration: none;
-    transition: color 0.15s, background 0.15s;
-  }
-  .blog-tag-link:hover {
-    color: var(--accent);
-    background: var(--lemma-brown-light);
-  }
-
-  /* ─── CTA (cream-deep card, no longer black hero) ─── */
-  .blog-cta {
-    margin: 80px 0 0;
-    background: var(--lemma-cream-deep);
-    border-radius: 16px;
-    padding: 48px 40px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .blog-cta::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 64px;
-    height: 3px;
-    background: var(--accent);
-    border-radius: 0 0 3px 0;
-  }
-  .cta-eyebrow {
-    font-family: var(--bl-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 18px;
-  }
-  .cta-h2 {
-    font-family: var(--bl-display);
-    font-size: clamp(28px, 4vw, 38px);
-    font-weight: 700;
-    color: var(--black);
-    line-height: 1.1;
-    margin: 0 0 18px;
-    letter-spacing: -0.025em;
-  }
-  .cta-h2 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  .cta-text {
-    font-family: var(--bl-body);
-    font-size: 14px;
-    color: var(--bl-text-2);
-    line-height: 1.75;
-    max-width: 460px;
-    margin: 0 auto 32px;
-  }
-  .cta-btns {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .btn-cta-main {
-    background: var(--accent);
-    color: var(--lemma-cream);
-    padding: 14px 32px;
-    font-family: var(--bl-display);
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-  }
-  .btn-cta-main:hover {
-    background: #6e3610;
-  }
-  .btn-cta-outline {
-    background: var(--white);
-    color: var(--accent);
-    padding: 14px 30px;
-    font-family: var(--bl-display);
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 999px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .btn-cta-outline:hover {
-    border-color: var(--accent);
-    background: var(--lemma-brown-light);
-  }
-
-  /* ─── PREV / NEXT ─── */
-  .blog-prevnext {
-    margin: 56px 0 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .prevnext-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 12px;
-    padding: 22px 24px;
-    text-decoration: none;
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  }
-  .prevnext-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(139, 69, 19, 0.06);
-  }
-  .prevnext-card.next {
-    text-align: right;
-  }
-  .prevnext-dir {
-    font-family: var(--bl-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .prevnext-title {
-    font-family: var(--bl-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.4;
-    margin: 0;
-  }
-  .prevnext-date {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    color: var(--bl-text-3);
-  }
-
-  /* ─── RELATED POSTS ─── */
-  .blog-related {
-    margin: 72px 0 0;
-    padding: 56px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
-  }
-  .related-label {
-    font-family: var(--bl-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--bl-text-3);
-    margin: 0 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .related-label::before {
-    content: "";
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-    display: inline-block;
-  }
-  .related-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .related-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 18px;
-    padding: 16px 18px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 12px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .related-item:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    background: var(--lemma-cream-deep);
-  }
-  .related-thumb {
-    width: 96px;
-    height: 64px;
-    flex-shrink: 0;
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-    background-color: var(--lemma-cream-deep);
-  }
-  .related-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .related-cat {
-    font-family: var(--bl-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .related-title {
-    font-family: var(--bl-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.4;
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 760px) {
-    .blog-container {
-      padding: 0 24px;
-    }
-    .blog-hero {
-      padding: 24px 0 24px;
-    }
-    .blog-h1 {
-      font-size: 36px;
-    }
-    .blog-abstract {
-      font-size: 17px;
-    }
-    .blog-cta {
-      padding: 36px 28px;
-    }
-    .blog-prevnext {
-      grid-template-columns: 1fr;
-    }
-  }
-  @media (max-width: 540px) {
-    .blog-h1 {
-      font-size: 30px;
-    }
-    .related-item {
-      flex-direction: column;
-      gap: 12px;
-    }
-    .related-thumb {
-      width: 100%;
-      height: 140px;
-    }
-  }
-</style>
-
-<!-- ─────────────────────────────────────────────────────────────
-     デザイン移行（サイトリニューアル先行）。DESIGN_V2_SLUGS の記事だけに
-     付く `.v2` の下でだけ効く。旧スタイルはそのまま残してあるので、
-     他の記事の見た目は1pxも変わらない。
-
-     トークンの値は /ja/preview/top/（PreviewTopTemplate の .pv）と同じ。
-     フォントは **Layout が実際に読み込むもの**だけを指す（モックの
-     Space Grotesk は読み込んでいない＝指定しても入っている端末でしか出ない）。
-     ────────────────────────────────────────────────────────── -->
-<style>
-  .blog-page.v2 {
     --ok: #a8e010;
     --ok-ink: #6f9c00;
     --ok-light: #4e7a00;
@@ -975,57 +279,54 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     font-size: 16px;
     line-height: 1.95;
     letter-spacing: 0.01em;
+    padding: 0 0 96px;
+    margin-top: 64px;
   }
-  .blog-page.v2 .blog-container {
+  .blog-container {
     max-width: calc(760px + 12vw);
+    margin: 0 auto;
     padding: 0 6vw;
   }
 
   /* ─── BREADCRUMB ─── */
-  .blog-page.v2 .blog-breadcrumb {
+  .blog-breadcrumb {
     display: flex;
     gap: 9px;
     flex-wrap: wrap;
     align-items: center;
     padding: 34px 0 0;
     font-size: 12px;
-    letter-spacing: normal;
-    text-transform: none;
-    font-family: var(--font-body);
     color: var(--muted);
   }
-  .blog-page.v2 .blog-breadcrumb a {
+  .blog-breadcrumb a {
     color: var(--muted);
+    text-decoration: none;
     border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .blog-page.v2 .blog-breadcrumb a:hover {
+  .blog-breadcrumb a:hover {
     color: var(--tx);
     border-color: var(--line);
   }
-  .blog-page.v2 .blog-breadcrumb-sep {
-    margin: 0;
+  .blog-breadcrumb-sep {
     opacity: 0.5;
     color: var(--muted);
   }
 
   /* ─── HERO ─── */
-  .blog-page.v2 .blog-hero {
+  .blog-hero {
     padding: 26px 0 0;
   }
-  .blog-page.v2 .blog-eyebrow {
+  .blog-eyebrow {
     display: flex;
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
     margin: 0 0 20px;
-    font-size: inherit;
-    letter-spacing: normal;
-    text-transform: none;
   }
-  .blog-page.v2 .eyebrow-cat {
+  .eyebrow-cat {
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 400;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ok-ink);
@@ -1034,14 +335,14 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     border-radius: 5px;
     padding: 4px 9px;
   }
-  .blog-page.v2 .eyebrow-date,
-  .blog-page.v2 .eyebrow-time {
+  .eyebrow-date,
+  .eyebrow-time {
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.08em;
     color: var(--muted);
   }
-  .blog-page.v2 .blog-h1 {
+  .blog-h1 {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: clamp(27px, 3.6vw, 40px);
@@ -1051,107 +352,175 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     margin: 0 0 22px;
     word-break: keep-all;
   }
-  .blog-page.v2 .blog-abstract {
-    font-family: var(--font-body);
-    font-weight: 400;
+  .blog-abstract {
     font-size: 15.5px;
     line-height: 2;
-    letter-spacing: 0.01em;
     color: var(--tx-soft);
     margin: 0 0 26px;
     padding-left: 20px;
     border-left: 2px solid var(--ok);
   }
 
-
-  /* ─── BODY ─── */
-  .blog-page.v2 .blog-body {
+  /* ─── BODY (rendered markdown HTML) ─── */
+  .blog-body {
     padding: 14px 0 0;
     font-size: 16px;
     line-height: 2.05;
     color: var(--tx-soft);
+    font-feature-settings: "palt" 1;
+    overflow-wrap: break-word;
   }
-  .blog-page.v2 .blog-body :global(h2) {
+  .blog-body :global(> *) {
+    max-width: 100%;
+  }
+  .blog-body :global(h2[id]),
+  .blog-body :global(h3[id]) {
+    scroll-margin-top: 96px;
+  }
+  /* h2 の上の線は罫ではなく、見出しの前に置く短いライムの線
+     （v6 の border-top は `hr` と重なって二重に見えたのでやめた）。 */
+  .blog-body :global(h2) {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: clamp(20px, 2.1vw, 24px);
     line-height: 1.6;
     letter-spacing: 0.04em;
     color: var(--tx);
-    margin: 56px 0 18px;
-    padding-top: 22px;
-    border-top: 1px solid var(--line);
-    position: relative;
+    margin: 68px 0 20px;
   }
-  .blog-page.v2 .blog-body :global(h2::before) {
+  .blog-body :global(h2::before) {
     content: "";
-    position: absolute;
-    top: -1px;
-    left: 0;
-    width: 36px;
+    display: block;
+    width: 28px;
     height: 2px;
+    border-radius: 2px;
     background: var(--ok);
+    margin-bottom: 18px;
   }
-  .blog-page.v2 .blog-body :global(h2:first-child) {
-    margin-top: 0;
+  .blog-body :global(> h2:first-child) {
+    margin-top: 44px;
   }
-  .blog-page.v2 .blog-body :global(h3) {
+  .blog-body :global(h3) {
     font-family: var(--font-serif-jp);
     font-weight: 600;
-    font-size: 17.5px;
+    font-size: 18px;
     letter-spacing: 0.04em;
+    line-height: 1.6;
     color: var(--tx);
-    margin: 36px 0 12px;
+    margin: 46px 0 14px;
+    padding-left: 16px;
+    position: relative;
   }
-  .blog-page.v2 .blog-body :global(p) {
+  .blog-body :global(h3::before) {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--ok-ink);
+  }
+  .blog-body :global(h2 + h3) {
+    margin-top: 30px;
+  }
+  .blog-body :global(h4) {
     font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 2.05;
-    color: var(--tx-soft);
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+    margin: 30px 0 10px;
+  }
+  .blog-body :global(p) {
     margin: 0 0 22px;
   }
-  .blog-page.v2 .blog-body :global(> p:first-of-type) {
-    font-size: 16px;
-    color: var(--tx-soft);
-  }
-  .blog-page.v2 .blog-body :global(strong) {
+  .blog-body :global(strong) {
     font-weight: 600;
     color: var(--tx);
   }
-  .blog-page.v2 .blog-body :global(a) {
+  .blog-body :global(li > strong:first-child) {
+    letter-spacing: 0.03em;
+  }
+  .blog-body :global(a) {
     color: var(--ok-light);
+    text-decoration: none;
     border-bottom: 1px solid rgba(78, 122, 0, 0.35);
+    transition: border-color 0.15s;
+    overflow-wrap: anywhere;
   }
-  .blog-page.v2 .blog-body :global(a:hover) {
+  .blog-body :global(a:hover) {
     border-bottom-color: var(--ok-light);
-    color: var(--ok-light);
   }
-  .blog-page.v2 .blog-body :global(li) {
-    padding-left: 22px;
-    margin: 0 0 10px;
-    line-height: 2.05;
-    font-size: 16px;
+
+  /* ─── LISTS ─── */
+  .blog-body :global(ul),
+  .blog-body :global(ol) {
+    margin: 0 0 24px;
+    padding-left: 0;
+    list-style: none;
   }
-  .blog-page.v2 .blog-body :global(ul li::before) {
+  .blog-body :global(ol) {
+    counter-reset: bloglist;
+  }
+  .blog-body :global(li) {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 15px;
+    line-height: 1.95;
+  }
+  .blog-body :global(li:last-child) {
+    margin-bottom: 0;
+  }
+  .blog-body :global(ul li::before) {
     content: "";
-    left: 2px;
-    top: 14px;
-    width: 8px;
+    position: absolute;
+    left: 3px;
+    top: 15px;
+    width: 10px;
     height: 2px;
     background: var(--ok-ink);
     border-radius: 2px;
-    transform: none;
   }
-  .blog-page.v2 .blog-body :global(ol li::before) {
+  .blog-body :global(ol li) {
+    counter-increment: bloglist;
+  }
+  .blog-body :global(ol li::before) {
+    content: counter(bloglist);
+    position: absolute;
     left: 0;
     top: 1px;
     font-family: var(--font-mono);
     font-size: 11px;
-    font-weight: 400;
     color: var(--ok-ink);
   }
-  .blog-page.v2 .blog-body :global(blockquote),
-  .blog-page.v2 .blog-body :global(p:has(> em:only-child)) {
+  /* 入れ子（実測で2〜3段まで出てくる）。段が下がるほど印を弱くする。 */
+  .blog-body :global(li > ul),
+  .blog-body :global(li > ol) {
+    margin: 14px 0 2px;
+  }
+  .blog-body :global(li:has(> ul)),
+  .blog-body :global(li:has(> ol)) {
+    margin-bottom: 22px;
+  }
+  .blog-body :global(li li) {
+    margin-bottom: 12px;
+    padding-left: 22px;
+  }
+  .blog-body :global(li li::before) {
+    left: 2px;
+    top: 14px;
+    width: 7px;
+    background: var(--muted);
+  }
+  .blog-body :global(li li li::before) {
+    width: 5px;
+    background: #a9afa4;
+  }
+
+  /* ─── QUOTES ─── */
+  .blog-body :global(blockquote),
+  .blog-body :global(p:has(> em:only-child)) {
     margin: 0 0 24px;
     padding: 2px 0 2px 22px;
     border-left: 2px solid var(--ok);
@@ -1161,35 +530,15 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     color: var(--tx);
     font-style: normal;
   }
-  .blog-page.v2 .blog-body :global(p:has(> em:only-child) em) {
+  .blog-body :global(p:has(> em:only-child) em) {
     font-style: normal;
   }
-  .blog-page.v2 .blog-body :global(hr) {
-    border-top: 1px solid var(--line);
-    margin: 44px 0;
+  .blog-body :global(blockquote p:last-child) {
+    margin-bottom: 0;
   }
-  .blog-page.v2 .blog-body :global(table) {
-    margin: 0 0 26px;
-    font-size: 14px;
-  }
-  .blog-page.v2 .blog-body :global(thead tr) {
-    background: var(--lite-2);
-  }
-  .blog-page.v2 .blog-body :global(th) {
-    padding: 13px 14px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    border-bottom: 1px solid var(--line);
-  }
-  .blog-page.v2 .blog-body :global(td) {
-    padding: 13px 14px;
-    border-bottom: 1px solid var(--line);
-    color: var(--tx-soft);
-  }
-  .blog-page.v2 .blog-body :global(code:not(pre code)) {
+
+  /* ─── CODE ─── */
+  .blog-body :global(code:not(pre code)) {
     font-family: var(--font-mono);
     font-size: 12.5px;
     color: var(--ok-ink);
@@ -1198,80 +547,217 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     border-radius: 5px;
     padding: 2px 6px;
   }
-  .blog-page.v2 .blog-body :global(pre) {
-    margin: 0 0 26px;
-    padding: 20px 22px;
+  .blog-body :global(pre) {
+    position: relative;
+    overflow-x: auto;
+    margin: 4px 0 28px;
+    padding: 22px 24px;
     border-radius: 12px;
     background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
     box-shadow: 0 16px 38px rgba(22, 30, 24, 0.2);
+  }
+  .blog-body :global(pre code) {
+    font-family: var(--font-mono);
     font-size: 12.5px;
     line-height: 1.9;
     color: #d8ddd1;
+    background: none;
+    border: none;
+    padding: 0;
   }
-  .blog-page.v2 .blog-body :global(img) {
+
+  /* ─── TABLES ─── */
+  /* 実測で表が主要素の記事が多いので、罫だけの表から囲みのある表にした。
+     幅の広い表は **狭い画面だけ**横スクロールに切り替える（`display:block`
+     を常に当てると、内容が短い表で囲みだけが余って見える）。 */
+  .blog-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 28px;
+    font-size: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .blog-body :global(th),
+  .blog-body :global(td) {
+    padding: 13px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .blog-body :global(th) {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--tx-soft);
+    background: var(--lite-2);
+    white-space: nowrap;
+  }
+  .blog-body :global(td) {
+    color: var(--tx-soft);
+    line-height: 1.8;
+  }
+  .blog-body :global(tbody tr:last-child td) {
+    border-bottom: none;
+  }
+  .blog-body :global(table code) {
+    font-size: 11.5px;
+  }
+
+  /* ─── FIGURES / IMAGES ─── */
+  .blog-body :global(figure) {
+    margin: 0 0 26px;
+  }
+  .blog-body :global(figure img) {
+    width: 100%;
+    display: block;
+    box-shadow: 0 14px 34px rgba(24, 36, 26, 0.11);
+  }
+  .blog-body :global(figcaption) {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .blog-body :global(img) {
+    max-width: 100%;
+    height: auto;
     border-radius: 12px;
     border: 1px solid var(--line);
   }
 
-  /* ─── RESOURCES / RELATED ラベル ─── */
-  .blog-page.v2 .blog-resources,
-  .blog-page.v2 .blog-related {
+  /* ─── RULES ─── */
+  /* `---` のあとに `##` が来る書き方が多く、線と h2 の印が二重に見える。
+     見出しが続く `hr` は消して、間隔だけ広げる。 */
+  .blog-body :global(hr) {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 52px 0 0;
+    opacity: 0.7;
+  }
+  .blog-body :global(hr:has(+ h2)),
+  .blog-body :global(hr:has(+ h3)) {
+    display: none;
+  }
+  .blog-body :global(hr + h2) {
+    margin-top: 56px;
+  }
+
+  /* ─── RESOURCES (related links) / RELATED POSTS ─── */
+  .blog-resources,
+  .blog-related {
     margin: 56px 0 0;
     padding: 26px 0 0;
     border-top: 1px solid var(--line);
   }
-  .blog-page.v2 .resources-label,
-  .blog-page.v2 .related-label {
+  .resources-label,
+  .related-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 400;
     letter-spacing: 0.16em;
     color: var(--muted);
     margin: 0 0 16px;
   }
-  .blog-page.v2 .resources-label::before,
-  .blog-page.v2 .related-label::before {
+  .resources-label::before,
+  .related-label::before {
+    content: "";
+    display: inline-block;
     width: 28px;
     height: 2px;
     background: var(--ok);
   }
-  .blog-page.v2 .resources-link,
-  .blog-page.v2 .related-item,
-  .blog-page.v2 .prevnext-card {
+  .resources-list,
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .resources-link,
+  .related-item,
+  .prevnext-card {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .blog-page.v2 .resources-link:hover,
-  .blog-page.v2 .related-item:hover,
-  .blog-page.v2 .prevnext-card:hover {
+  .resources-link:hover,
+  .related-item:hover,
+  .prevnext-card:hover {
     border-color: rgba(124, 175, 0, 0.45);
-    background: var(--card);
     transform: translateY(-2px);
     box-shadow: var(--sh-m);
   }
-  .blog-page.v2 .resources-link-label {
+  .resources-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    margin: 0 0 10px;
+  }
+  .resources-link-label {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: 14.5px;
     line-height: 1.7;
-    color: var(--tx);
     letter-spacing: 0.03em;
+    color: var(--tx);
   }
-  .blog-page.v2 .resources-link-href {
+  .resources-link-href {
     font-family: var(--font-mono);
     font-size: 10.5px;
     color: var(--muted);
+    word-break: break-all;
+  }
+  .related-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 16px 18px;
+  }
+  .related-thumb {
+    width: 96px;
+    height: 64px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--lite-2);
+    border-radius: 8px;
+  }
+  .related-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .related-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ok-ink);
   }
 
   /* ─── TAGS ─── */
-  .blog-page.v2 .blog-tags {
+  .blog-tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: 9px;
     margin: 48px 0 0;
     padding-top: 26px;
     border-top: 1px solid var(--line);
   }
-  .blog-page.v2 .blog-tag {
+  .blog-tag {
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.04em;
@@ -1280,27 +766,28 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     border: 1px solid var(--line);
     border-radius: 99px;
     padding: 6px 12px;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .blog-page.v2 .blog-tag-link:hover {
+  .blog-tag-link:hover {
     border-color: var(--ok-ink);
     color: var(--ok-ink);
-    background: transparent;
   }
 
   /* ─── CTA（暗いグロッシー面） ─── */
-  .blog-page.v2 .blog-cta {
+  .blog-cta {
+    position: relative;
+    overflow: hidden;
     margin: 56px 0 0;
     background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
     border-radius: 16px;
     padding: 38px 36px 34px;
     text-align: left;
   }
-  .blog-page.v2 .blog-cta::before {
+  .blog-cta::before {
+    content: "";
+    position: absolute;
     inset: 0;
-    top: auto;
-    left: auto;
-    width: auto;
-    height: auto;
     border-radius: inherit;
     pointer-events: none;
     background: radial-gradient(
@@ -1309,19 +796,18 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
       rgba(168, 224, 16, 0) 62%
     );
   }
-  .blog-page.v2 .blog-cta > * {
+  .blog-cta > * {
     position: relative;
     z-index: 2;
   }
-  .blog-page.v2 .cta-eyebrow {
+  .cta-eyebrow {
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 400;
     letter-spacing: 0.2em;
     color: #9ba296;
     margin: 0;
   }
-  .blog-page.v2 .cta-h2 {
+  .cta-h2 {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: clamp(20px, 2.2vw, 26px);
@@ -1330,96 +816,100 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     color: #ebefe6;
     margin: 12px 0 10px;
   }
-  .blog-page.v2 .cta-h2 em {
+  .cta-h2 em {
     font-style: normal;
     color: var(--ok);
   }
-  .blog-page.v2 .cta-text {
-    font-family: var(--font-body);
+  .cta-text {
     margin: 0 0 24px;
     font-size: 13.5px;
     line-height: 1.9;
     color: #bcc3b6;
     max-width: 52ch;
   }
-  .blog-page.v2 .cta-btns {
+  .cta-btns {
+    display: flex;
     justify-content: flex-start;
     gap: 12px;
+    flex-wrap: wrap;
   }
-  .blog-page.v2 .btn-cta-main {
+  .btn-cta-main,
+  .btn-cta-outline {
     font-family: var(--font-body);
     font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    background: var(--ok);
-    color: #0f1412;
     border-radius: 6px;
     padding: 12px 22px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.18s, border-color 0.18s, color 0.18s;
+  }
+  .btn-cta-main {
+    background: var(--ok);
+    color: #0f1412;
+    border: none;
     box-shadow: 0 4px 14px rgba(168, 224, 16, 0.35);
   }
-  .blog-page.v2 .btn-cta-main:hover {
-    background: var(--ok);
+  .btn-cta-main:hover {
     filter: brightness(1.06);
   }
-  .blog-page.v2 .btn-cta-outline {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
+  .btn-cta-outline {
     color: #d8ddd1;
     border: 1px solid #59645a;
     background: transparent;
-    border-radius: 6px;
-    padding: 12px 22px;
   }
-  .blog-page.v2 .btn-cta-outline:hover {
+  .btn-cta-outline:hover {
     border-color: #d8ddd1;
     color: #fff;
-    background: transparent;
   }
 
   /* ─── NEWSLETTER ─── */
   /* 共有コンポーネントなので、この面に落ちたときだけ枠を寄せる。**中の
      申込フォームは Tally の iframe** で、こちらからは色を変えられない。 */
-  .blog-page.v2 :global(.newsletter-embed) {
+  .blog-page :global(.newsletter-embed) {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 12px;
     margin: 34px 0 0;
   }
-  .blog-page.v2 :global(.newsletter-eyebrow) {
+  .blog-page :global(.newsletter-eyebrow) {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.16em;
     color: var(--ok-ink);
   }
-  .blog-page.v2 :global(.newsletter-lead) {
+  .blog-page :global(.newsletter-lead) {
     font-size: 13px;
     line-height: 1.9;
     color: var(--muted);
   }
 
   /* ─── PREV / NEXT ─── */
-  .blog-page.v2 .blog-prevnext {
+  .blog-prevnext {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin: 34px 0 0;
   }
-  .blog-page.v2 .prevnext-card {
+  .prevnext-card {
+    display: flex;
+    flex-direction: column;
     gap: 7px;
     padding: 20px 22px;
   }
-  .blog-page.v2 .prevnext-card.next {
+  .prevnext-card.next {
+    text-align: right;
     align-items: flex-end;
   }
-  .blog-page.v2 .prevnext-dir {
+  .prevnext-dir {
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 400;
     letter-spacing: 0.16em;
     color: var(--ok-ink);
   }
-  .blog-page.v2 .prevnext-title,
-  .blog-page.v2 .related-title {
+  .prevnext-title,
+  .related-title {
     font-family: var(--font-serif-jp);
     font-weight: 600;
     font-size: 14.5px;
@@ -1427,31 +917,47 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     letter-spacing: 0.03em;
     color: var(--tx);
   }
-  .blog-page.v2 .prevnext-date {
+  .prevnext-date {
     font-family: var(--font-mono);
     font-size: 10.5px;
     color: var(--muted);
   }
-  .blog-page.v2 .related-cat {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.16em;
-    color: var(--ok-ink);
-  }
-  .blog-page.v2 .related-thumb {
-    background-color: var(--lite-2);
-  }
 
+  /* ─── RESPONSIVE ─── */
   @media (max-width: 760px) {
-    .blog-page.v2 .blog-container {
+    .blog-container {
       padding: 0 24px;
     }
-    .blog-page.v2 .blog-cta {
+    .blog-cta {
       padding: 30px 24px 28px;
     }
-    .blog-page.v2 .prevnext-card.next {
+    .blog-prevnext {
+      grid-template-columns: 1fr;
+    }
+    .prevnext-card.next {
+      text-align: left;
       align-items: flex-start;
+    }
+  }
+  @media (max-width: 620px) {
+    .blog-body :global(table) {
+      display: block;
+      overflow-x: auto;
+      font-size: 12.5px;
+    }
+    .blog-body :global(th),
+    .blog-body :global(td) {
+      padding: 10px 11px;
+    }
+  }
+  @media (max-width: 540px) {
+    .related-item {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .related-thumb {
+      width: 100%;
+      height: 140px;
     }
   }
 </style>
