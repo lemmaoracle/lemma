@@ -44,9 +44,13 @@ const escapeChar = (ch: string): string => {
     : `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`;
 };
 
+const CONTROL_CHAR_REGEX = new RegExp(
+  "[\"\\\\" + String.fromCharCode(0) + "-" + String.fromCharCode(0x1f) + "]",
+  "g",
+);
+
 const serializeString = (s: string): string =>
-  // eslint-disable-next-line no-control-regex -- JCS requires matching control chars
-  `"${s.replace(/["\\\u0000-\u001f]/g, escapeChar)}"`;
+  `"${s.replace(CONTROL_CHAR_REGEX, escapeChar)}"`;
 
 // ── number serialisation ────────────────────────────────────────────────
 

@@ -65,19 +65,21 @@ let cached: BazaarStatusEmitter | undefined;
  * browser-like environments without taking a type-level dependency on
  * `@types/node`.
  */
+const isNonEmptyString = (val: unknown): val is string =>
+  typeof val === "string" && val.length > 0;
+
 // imperative: env-accessing resolver — no functional alternative
 // eslint-disable-next-line functional/functional-parameters
 const readEmitterEnv = (): string | undefined => {
   const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
   const fromProcess = proc?.env?.["LEMMA_BAZAAR_EMITTER"];
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (typeof fromProcess === "string" && fromProcess.length > 0) return fromProcess;
-
   const fromGlobal = (globalThis as { LEMMA_BAZAAR_EMITTER?: string }).LEMMA_BAZAAR_EMITTER;
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (typeof fromGlobal === "string" && fromGlobal.length > 0) return fromGlobal;
 
-  return undefined;
+  return isNonEmptyString(fromProcess)
+    ? fromProcess
+    : isNonEmptyString(fromGlobal)
+      ? fromGlobal
+      : undefined;
 };
 
 // imperative: lazy singleton getter with mutable state — no functional alternative

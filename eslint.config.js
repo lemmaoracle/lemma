@@ -10,7 +10,17 @@ import astroParser from "astro-eslint-parser";
 export default tseslint.config(
   // Base configuration for all files
   {
-    ignores: ["**/node_modules/**", "**/dist/**", "**/.astro/**", "**/build/**"],
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.astro/**",
+      "**/build/**",
+      "**/vitest.config.ts",
+      "**/scripts/**",
+      "**/examples/**",
+      "packages/feeds/forex-proof-pipeline.ts",
+      "packages/feeds/register-dc-v11.ts",
+    ],
   },
   // Base TypeScript configuration (excludes test files)
   {

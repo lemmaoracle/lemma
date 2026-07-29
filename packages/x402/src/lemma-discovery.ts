@@ -64,26 +64,25 @@ const resolveDiscoveryConfig = (): LemmaDiscoveryConfig | undefined => {
 const discoveryForRoute = (
   routePattern: string,
   config: LemmaDiscoveryConfig | undefined,
-): Record<string, unknown> | undefined => {
-  // imperative: early return guard — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!config) return undefined;
+): Record<string, unknown> | undefined =>
+  !config
+    ? undefined
+    : (() => {
+        const global: Record<string, unknown> = {
+          ...(config.schemas ? { schemas: config.schemas } : {}),
+          ...(config.hints ?? {}),
+        };
 
-  const global: Record<string, unknown> = {
-    ...(config.schemas ? { schemas: config.schemas } : {}),
-    ...(config.hints ?? {}),
-  };
+        const perRoute = config.routes?.[routePattern];
 
-  const perRoute = config.routes?.[routePattern];
+        const merged = {
+          ...global,
+          ...(perRoute?.schemas ? { schemas: perRoute.schemas } : {}),
+          ...(perRoute?.hints ?? {}),
+        };
 
-  const merged = {
-    ...global,
-    ...(perRoute?.schemas ? { schemas: perRoute.schemas } : {}),
-    ...(perRoute?.hints ?? {}),
-  };
-
-  return Object.keys(merged).length > 0 ? merged : undefined;
-};
+        return Object.keys(merged).length > 0 ? merged : undefined;
+      })();
 
 /**
  * Augmented paymentMiddleware.
@@ -108,63 +107,60 @@ const paymentMiddleware = (
 ): MiddlewareHandler => {
   const discoveryConfig = resolveDiscoveryConfig();
 
-  // If no discovery config, delegate directly (no enrichment)
-  // imperative: early return guard in middleware factory — no functional alternative
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!discoveryConfig) {
-    return basePaymentMiddleware(
-      routes,
-      server,
-      paywallConfig,
-      paywall,
-      syncFacilitatorOnStart,
-    );
-  }
+  return !discoveryConfig
+    ? basePaymentMiddleware(
+        routes,
+        server,
+        paywallConfig,
+        paywall,
+        syncFacilitatorOnStart,
+      )
+    : (() => {
+        // Enrich each route with discovery metadata
+        const enrichedRoutes = Object.keys(routes).reduce<Record<string, unknown>>(
+          (acc, routePattern) => {
+            const routeConfig = (routes as unknown as Record<string, Record<string, unknown>>)[
+              routePattern
+            ];
+            const discovery = discoveryForRoute(routePattern, discoveryConfig);
 
-  // Enrich each route with discovery metadata
-  const enrichedRoutes = Object.keys(routes).reduce<Record<string, unknown>>(
-    (acc, routePattern) => {
-      const routeConfig = (routes as unknown as Record<string, Record<string, unknown>>)[
-        routePattern
-      ];
-      const discovery = discoveryForRoute(routePattern, discoveryConfig);
+            const enrichedRouteConfig = discovery
+              ? {
+                  ...routeConfig,
+                  accepts: (
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                    (routeConfig?.accepts as ReadonlyArray<Record<string, unknown>>) ??
+                    []
+                  ).map((accept) => ({
+                    ...accept,
+                    extra: {
+                      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                      ...((accept?.extra as Record<string, unknown>) ?? {}),
+                      lemma: {
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                        ...(((accept?.extra as Record<string, unknown>)?.lemma as
+                          | Record<string, unknown>
+                          | undefined) ?? {}),
+                        ...discovery,
+                      },
+                    },
+                  })),
+                }
+              : routeConfig;
 
-      const enrichedRouteConfig = discovery
-        ? {
-            ...routeConfig,
-            accepts: (
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-              (routeConfig?.accepts as ReadonlyArray<Record<string, unknown>>) ??
-              []
-            ).map((accept) => ({
-              ...accept,
-              extra: {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                ...((accept?.extra as Record<string, unknown>) ?? {}),
-                lemma: {
-                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                  ...(((accept?.extra as Record<string, unknown>)?.lemma as
-                    | Record<string, unknown>
-                    | undefined) ?? {}),
-                  ...discovery,
-                },
-              },
-            })),
-          }
-        : routeConfig;
+            return { ...acc, [routePattern]: enrichedRouteConfig };
+          },
+          {},
+        );
 
-      return { ...acc, [routePattern]: enrichedRouteConfig };
-    },
-    {},
-  );
-
-  return basePaymentMiddleware(
-    enrichedRoutes as RoutesConfig,
-    server,
-    paywallConfig,
-    paywall,
-    syncFacilitatorOnStart,
-  );
+        return basePaymentMiddleware(
+          enrichedRoutes as RoutesConfig,
+          server,
+          paywallConfig,
+          paywall,
+          syncFacilitatorOnStart,
+        );
+      })();
 };
 
 export { paymentMiddleware };
