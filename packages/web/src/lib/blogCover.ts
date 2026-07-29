@@ -18,6 +18,9 @@
  * 埋まるマスが違う。乱数は使わないので、同じ記事は何度ビルドしても同じ絵に
  * なる（画像がビルドごとに差分として出ない）。
  *
+ * 選び方には**散らばりの下限**がある——1行・1列に入る数を `⌈枚数/4⌉` までに
+ * 抑えるので、枚数の少ないカテゴリでも片側に固まらない。
+ *
  * カバー（記事本文・索引のサムネイル）と OGP は同じ絵で、**OGP だけ**タイトル
  * とロゴを重ねる。重ねる側は `og/blogImage.ts`。
  */
@@ -60,14 +63,15 @@ const latticeOf = (cols: ReadonlyArray<number>): ReadonlyArray<Cell> =>
 const LEFT_CELLS = latticeOf(COLS_LEFT);
 
 /**
- * 右上の1マスは**空けておく**。OGP はそこにワードマークを置くので
- * （`og/blogImage.ts`・右から 80px / 上から 64px）、ブロックがあると
- * ロゴと枠が重なって読めない。カバーと OGP で同じ絵を出すため、ロゴが
- * 無いカバー側でもこのマスは使わない。
+ * 左右どちらも欠けのない 4×4。
+ *
+ * 一度は「OGP のワードマークと重なる右上の1マスを空ける」実装にしたが、
+ * **欠けを作ると散らばりの下限が満たせなくなる**——4個を1行1個・1列1個で
+ * 置くには4行4列の完全な組み合わせが要るので、右上が無いと 9.6% の slug で
+ * 上限を超えた（実測）。ロゴは上の余白（1行目より上）へ寄せて、格子は
+ * 欠けなしにしてある。`og/blogImage.ts` 側の配置と対応。
  */
-const RIGHT_CELLS = latticeOf(COLS_RIGHT).filter(
-  (cell) => !(cell.x === COLS_RIGHT[COLS_RIGHT.length - 1] && cell.y === ROWS[0]),
-);
+const RIGHT_CELLS = latticeOf(COLS_RIGHT);
 
 export interface CoverBlock {
   /** 左上の x。`verified` のとき、この点がライムのドットの中心にもなる。 */
@@ -91,7 +95,7 @@ interface CoverDensity {
   readonly glow: CoverGlow;
   /** 走査線の左（未検証）に埋めるマスの数。16マス中。 */
   readonly left: number;
-  /** 走査線の右（検証済み）に埋めるマスの数。15マス中（右上はロゴ用に空ける）。 */
+  /** 走査線の右（検証済み）に埋めるマスの数。16マス中。 */
   readonly right: number;
 }
 
@@ -180,25 +184,78 @@ const LEFT_SALT = 0;
 const RIGHT_SALT = 100;
 const GLOW_INDEX = 900;
 
-/**
- * 16マスから `count` マスを、slug から決まる順番で選ぶ。
- *
- * マスごとにシード由来の鍵を作って並べ替え、先頭から取る——これで偏りのない
- * 決定的な選び方になる。最後に上→左の順に並べ直すのは、出力の SVG を
- * 読みやすく・差分を安定させるため（描画結果は順番に依存しない）。
- */
-const chooseCells = (
+/** マスを slug 由来の鍵で並べ替える（偏りのない決定的な順番）。 */
+const shuffleCells = (
   cells: ReadonlyArray<Cell>,
-  count: number,
   seed: number,
   salt: number,
 ): ReadonlyArray<Cell> =>
   cells
     .map((cell, i) => ({ cell, key: randAt(seed, salt + i) }))
     .sort((a, b) => a.key - b.key)
-    .slice(0, count)
-    .map((picked) => picked.cell)
-    .sort((a, b) => a.y - b.y || a.x - b.x);
+    .map((picked) => picked.cell);
+
+interface SpreadState {
+  readonly picked: ReadonlyArray<Cell>;
+  /** 行・列ごとに何個入れたか（キーは y / x の座標）。 */
+  readonly rows: Readonly<Record<number, number>>;
+  readonly cols: Readonly<Record<number, number>>;
+}
+
+/**
+ * 散らばりの下限。**1つの行・1つの列に入れられる数を `⌈count / 4⌉` までに
+ * 抑える**（格子は4行4列）。少ない枚数のカテゴリで、選び方によって左下だけに
+ * 固まる回が出ていたのを防ぐ。
+ *
+ * - Announcements の未検証4個 → 1行1個・1列1個＝行も列も必ずばらける
+ * - Solutions の6個 → 1行2個まで
+ * - Industry の13個 → `⌈13/4⌉ = 4` なので実質無制限（13個は元から散る）
+ */
+const maxPerLine = (count: number, lines: number): number =>
+  Math.ceil(count / lines);
+
+/**
+ * 並べ替えた順に、行・列の上限を超えないマスだけを取る。
+ *
+ * 上限が厳しすぎて `count` に届かないことは 4×4 の格子では起きないが、
+ * **枚数は必ずカテゴリの定義どおりにしたい**ので、足りなければ残りから
+ * 順番に足す（上限だけ緩める）。
+ */
+const chooseSpreadCells = (
+  cells: ReadonlyArray<Cell>,
+  count: number,
+  seed: number,
+  salt: number,
+): ReadonlyArray<Cell> => {
+  const order = shuffleCells(cells, seed, salt);
+  const rowCap = maxPerLine(count, ROWS.length);
+  const colCap = maxPerLine(count, COLS_LEFT.length);
+  const spread = order.reduce<SpreadState>(
+    (acc, cell) =>
+      acc.picked.length >= count ||
+      (acc.rows[cell.y] ?? 0) >= rowCap ||
+      (acc.cols[cell.x] ?? 0) >= colCap
+        ? acc
+        : {
+            picked: [...acc.picked, cell],
+            rows: { ...acc.rows, [cell.y]: (acc.rows[cell.y] ?? 0) + 1 },
+            cols: { ...acc.cols, [cell.x]: (acc.cols[cell.x] ?? 0) + 1 },
+          },
+    { picked: [], rows: {}, cols: {} },
+  ).picked;
+  const filled =
+    spread.length >= count
+      ? spread
+      : [
+          ...spread,
+          ...order
+            .filter((cell) => !spread.some((p) => p.x === cell.x && p.y === cell.y))
+            .slice(0, count - spread.length),
+        ];
+  // 上→左の順に並べ直すのは、出力の SVG を読みやすく・差分を安定させるため
+  // （描画結果は順番に依存しない）。
+  return filled.slice().sort((a, b) => a.y - b.y || a.x - b.x);
+};
 
 /**
  * カテゴリと slug から、この記事の絵を決める。
@@ -219,12 +276,12 @@ export const coverPattern = (category: string, slug: string): CoverPattern => {
     },
     sweepX: SWEEP_X,
     blocks: [
-      ...chooseCells(LEFT_CELLS, base.left, seed, LEFT_SALT).map((cell) => ({
+      ...chooseSpreadCells(LEFT_CELLS, base.left, seed, LEFT_SALT).map((cell) => ({
         x: cell.x,
         y: cell.y,
         verified: false,
       })),
-      ...chooseCells(RIGHT_CELLS, base.right, seed, RIGHT_SALT).map((cell) => ({
+      ...chooseSpreadCells(RIGHT_CELLS, base.right, seed, RIGHT_SALT).map((cell) => ({
         x: cell.x,
         y: cell.y,
         verified: true,

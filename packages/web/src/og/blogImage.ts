@@ -67,8 +67,16 @@ const FONTS = [
 const LOGO_SCALE = 26 / 65;
 const LOGO_WIDTH = 142 * LOGO_SCALE;
 
+/**
+ * 指示書は上から 64px だが、そこは**ブロックの1行目（y=72〜）と重なる**位置で、
+ * ロゴとライムの枠が重なって読めなかった。1行目より上の余白へ寄せている。
+ * 格子側に穴を空ける手もあるが、それだと散らばりの下限が satisfy できない
+ * （`lib/blogCover.ts` の RIGHT_CELLS のコメント）。
+ */
+const LOGO_TOP = 22;
+
 const logoSvg = (): string =>
-  `<g transform="translate(${String(COVER_WIDTH - SIDE_PAD - LOGO_WIDTH)},64) scale(${String(LOGO_SCALE)})" fill="${TITLE_INK}">` +
+  `<g transform="translate(${String(COVER_WIDTH - SIDE_PAD - LOGO_WIDTH)},${String(LOGO_TOP)}) scale(${String(LOGO_SCALE)})" fill="${TITLE_INK}">` +
   LEMMA_LOGO_PATHS.map((d) => `<path d="${d}"/>`).join("") +
   "</g>";
 
