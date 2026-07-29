@@ -26,6 +26,7 @@ import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
 import defaultCover from "../assets/default-blog-cover.png";
+import ProofCover from "../components/ProofCover.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
@@ -131,13 +132,20 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         {post.abstract && <p class="blog-abstract">{post.abstract}</p>}
       </section>
 
-      <figure class="blog-cover">
-        <img
-          src={post.cover ?? defaultCover.src}
-          alt=""
-          loading="lazy"
-        />
-      </figure>
+      {/* v2 は記事ごとの写真ではなく、真正性ページと同じ抽象カバーを出す
+          （リニューアルの面に揃える）。索引や OGP は記事の cover のままなので、
+          一覧のサムネイルとは絵が食い違う。 */}
+      {isV2 ? (
+        <ProofCover />
+      ) : (
+        <figure class="blog-cover">
+          <img
+            src={post.cover ?? defaultCover.src}
+            alt=""
+            loading="lazy"
+          />
+        </figure>
+      )}
 
       <div class="blog-body" set:html={post.body} />
 
@@ -1055,15 +1063,6 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     border-left: 2px solid var(--ok);
   }
 
-  /* ─── COVER ─── */
-  .blog-page.v2 .blog-cover {
-    margin: 30px 0 0;
-    border-radius: 14px;
-    border: 1px solid var(--line);
-    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.12);
-    background: var(--lite-2);
-    aspect-ratio: 1200 / 630;
-  }
 
   /* ─── BODY ─── */
   .blog-page.v2 .blog-body {
