@@ -4,6 +4,7 @@
  *
  * 2モード（実装指示 v1 2026-07-24）:
  *   - `/verify/?doc=<docHash>` … 単票（その記録1件の判定）
+ *       + proof verify: GET /v1/proofs → POST /v1/proofs/verify
  *   - `/verify/`（パラメータなし）… 全体（検証・発行の実数の内訳）
  *
  * デザイン規律（モック v9）:
@@ -182,6 +183,7 @@ const DLINK = {
 // 証明クラス（来歴）は API が返さないため UI 固定ラベル。EXPLORER は Base 導入まで空＝無効表示。
 const DOC = {
   issuer: "CLUBS",
+  api: API_BASE,
   rawBase: `${API_BASE}/documents/`,
   explorer: "",
   states: {
@@ -214,6 +216,34 @@ const DOC = {
     recDateEn: "Record date",
   },
   checks: ["署名が一致", "改ざんなし", "発行者を確認"],
+  // proof verify UI（単票）
+  verifyBtn: "証明を検証",
+  verifyBtnEn: "Verify proof",
+  verifying: "検証中…",
+  verifyingEn: "Verifying…",
+  verifyOk: "✅ 検証成功",
+  verifyOkEn: "Verified",
+  verifyFail: "❌ 検証失敗",
+  verifyFailEn: "Verification failed",
+  verifyIdLabel: "verifyId",
+  noProof: "このドキュメントにはまだ proof が登録されていません",
+  noProofEn: "No proof has been registered for this document yet.",
+  verifyNetErr: "検証リクエストに失敗しました",
+  verifyNetErrEn: "The verification request failed.",
+  verifyInvalid: "証明は無効です",
+  verifyInvalidEn: "The proof is invalid.",
+  verifyLocally: "ローカルで検証するには / Verify locally",
+  // コードスニペット内の { } は HTML 実体参照（Astro/リンター回避）
+  verifySnippet:
+    "// 1. 最新の proof を取得\n" +
+    "const &#123; circuitId, proof, inputs &#125; = await proofs.getByDocHash(docHash);\n" +
+    "// GET /v1/proofs?docHash=...\n" +
+    "\n" +
+    "// 2. 検証を実行\n" +
+    'const &#123; valid, verifyId &#125; = await fetch("/v1/proofs/verify", &#123;\n' +
+    '  method: "POST",\n' +
+    "  body: JSON.stringify(&#123; circuitId, proof, publicSignals: inputs &#125;)\n" +
+    "&#125;).then(r => r.json());",
   fold1Title: "この証明の意味 / What this proves",
   provesYes: "✔ 証明が意味すること",
   provesYesJa: "記録が、発行された時点から改ざんされていないこと。",
@@ -412,6 +442,11 @@ const DOC = {
             .join("")}</div>`
         : "";
 
+      // proof verify（checks と chain の間）。登録済みのときのみ。
+      const proofVerify = verified
+        ? `<div class="proofverify" id="proofVerify" data-dochash="${esc(doc.docHash)}">${proofVerifyIdleHtml()}</div>`
+        : "";
+
       const chain =
         doc.status === "anchored" && doc.onchainTxHash
           ? `<div class="chain">${
@@ -458,7 +493,7 @@ const DOC = {
         <div class="idline"><span class="idk">${DOC.hashLabel}</span><span class="idv">${esc(doc.docHash)}</span><button class="copybtn" id="copyBtn">${DOC.copy}</button></div>
         ${subHtml}
         <div class="facts">${facts}</div>
-        ${checks}${chain}
+        ${checks}${proofVerify}${chain}
         <div class="folds">${foldMeaning}${foldTarget}${foldCode}</div>
       </div>`;
 
@@ -469,6 +504,119 @@ const DOC = {
           btn.textContent = DOC.copied;
           setTimeout(() => (btn.textContent = DOC.copy), 1400);
         };
+
+      const vbtn = $("verifyProofBtn");
+      if (vbtn) vbtn.onclick = () => verifyProof(doc.docHash);
+    }
+
+    function proofVerifyIdleHtml() {
+      return `<button type="button" class="pv-btn" id="verifyProofBtn">${DOC.verifyBtn}<span class="en">${DOC.verifyBtnEn}</span></button>`;
+    }
+
+    function setProofVerifyState(state, data) {
+      const el = $("proofVerify");
+      if (!el) return;
+      if (state === "idle") {
+        el.innerHTML = proofVerifyIdleHtml();
+        const vbtn = $("verifyProofBtn");
+        if (vbtn) vbtn.onclick = () => verifyProof(el.dataset.dochash);
+        return;
+      }
+      if (state === "verifying") {
+        el.innerHTML = `<div class="pv-status verifying" role="status">
+          <span class="pv-spin" aria-hidden="true"></span>
+          <span>${DOC.verifying}<span class="en">${DOC.verifyingEn}</span></span>
+        </div>`;
+        return;
+      }
+      if (state === "verified") {
+        const shortId = String(data.verifyId || "").slice(0, 12);
+        el.innerHTML = `<div class="pv-status ok" role="status">
+          <span class="pv-mark">${DOC.verifyOk}</span>
+          <span class="en">${DOC.verifyOkEn}</span>
+          <div class="pv-id"><span class="pv-idk">${DOC.verifyIdLabel}</span><code class="pv-idv">${esc(shortId)}</code></div>
+        </div>
+        <div class="pv-local"><details>
+          <summary>${DOC.verifyLocally}<span class="caret">▶</span></summary>
+          <pre class="pv-code"><code>${DOC.verifySnippet}</code></pre>
+        </details></div>`;
+        return;
+      }
+      // failed
+      const msg = data && data.message ? data.message : DOC.verifyNetErr;
+      const msgEn = data && data.messageEn ? data.messageEn : DOC.verifyNetErrEn;
+      el.innerHTML = `<div class="pv-status fail" role="status">
+        <span class="pv-mark">${DOC.verifyFail}</span>
+        <span class="en">${DOC.verifyFailEn}</span>
+        <p class="pv-err">${esc(msg)}<span class="en">${esc(msgEn)}</span></p>
+        <button type="button" class="pv-btn pv-retry" id="verifyProofBtn">${DOC.verifyBtn}<span class="en">${DOC.verifyBtnEn}</span></button>
+      </div>`;
+      const vbtn = $("verifyProofBtn");
+      if (vbtn) vbtn.onclick = () => verifyProof(el.dataset.dochash);
+    }
+
+    async function verifyProof(docHash) {
+      setProofVerifyState("verifying");
+      try {
+        const gr = await fetch(
+          DOC.api + "/proofs?docHash=" + encodeURIComponent(docHash),
+          { headers: { accept: "application/json" } },
+        );
+        if (gr.status === 404) {
+          setProofVerifyState("failed", {
+            message: DOC.noProof,
+            messageEn: DOC.noProofEn,
+          });
+          return;
+        }
+        if (!gr.ok) {
+          setProofVerifyState("failed", {
+            message: DOC.verifyNetErr + " (" + gr.status + ")",
+            messageEn: DOC.verifyNetErrEn,
+          });
+          return;
+        }
+        const rec = await gr.json();
+        const vr = await fetch(DOC.api + "/proofs/verify", {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            circuitId: rec.circuitId,
+            proof: rec.proof,
+            publicSignals: rec.inputs,
+          }),
+        });
+        if (!vr.ok) {
+          let detail = DOC.verifyNetErr + " (" + vr.status + ")";
+          try {
+            const errBody = await vr.json();
+            if (errBody && errBody.error) detail = String(errBody.error);
+          } catch (_) {}
+          setProofVerifyState("failed", {
+            message: detail,
+            messageEn: DOC.verifyNetErrEn,
+          });
+          return;
+        }
+        const result = await vr.json();
+        if (result && result.valid) {
+          setProofVerifyState("verified", { verifyId: result.verifyId });
+        } else {
+          setProofVerifyState("failed", {
+            message:
+              (result && result.error && String(result.error)) || DOC.verifyInvalid,
+            messageEn: DOC.verifyInvalidEn,
+          });
+        }
+      } catch (e) {
+        setProofVerifyState("failed", {
+          message: DOC.verifyNetErr,
+          messageEn: DOC.verifyNetErrEn,
+        });
+      }
     }
 
     async function loadDoc(hash, date) {
@@ -1171,6 +1319,160 @@ const DOC = {
     width: 14px;
     height: 14px;
   }
+  /* proof verify（checks と chain の間） */
+  .v9 .proofverify {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid #4a544b;
+    padding: 16px 24px;
+  }
+  .v9 .pv-btn {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: #12140e;
+    background: var(--ok);
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .v9 .pv-btn:hover {
+    filter: brightness(1.05);
+  }
+  .v9 .pv-btn .en {
+    display: inline;
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(18, 20, 14, 0.65);
+  }
+  .v9 .pv-btn.pv-retry {
+    margin-top: 12px;
+    background: transparent;
+    color: #d8ddd1;
+    border: 1px solid #59645a;
+  }
+  .v9 .pv-btn.pv-retry .en {
+    color: #8b9285;
+  }
+  .v9 .pv-btn.pv-retry:hover {
+    border-color: #d8ddd1;
+    filter: none;
+  }
+  .v9 .pv-status {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #d8ddd1;
+  }
+  .v9 .pv-status.verifying {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .v9 .pv-status.verifying .en {
+    display: inline;
+    margin: 0 0 0 6px;
+  }
+  .v9 .pv-spin {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid rgba(168, 224, 16, 0.25);
+    border-top-color: var(--ok);
+    border-radius: 50%;
+    animation: v9spin 0.7s linear infinite;
+    flex: none;
+  }
+  @keyframes v9spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .v9 .pv-status.ok .pv-mark {
+    color: var(--ok);
+    font-weight: 500;
+  }
+  .v9 .pv-status.fail .pv-mark {
+    color: #e0906f;
+    font-weight: 500;
+  }
+  .v9 .pv-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .v9 .pv-idk {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: #8b9285;
+  }
+  .v9 .pv-idv {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ok);
+    background: rgba(168, 224, 16, 0.08);
+    border: 1px solid rgba(168, 224, 16, 0.28);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .v9 .pv-err {
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #ce9a85;
+  }
+  .v9 .pv-local {
+    margin-top: 14px;
+    border-top: 1px solid rgba(74, 84, 75, 0.5);
+  }
+  .v9 .pv-local summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: #c3cabb;
+  }
+  .v9 .pv-local summary::-webkit-details-marker {
+    display: none;
+  }
+  .v9 .pv-local summary:hover {
+    color: #ebefe6;
+  }
+  .v9 .pv-local .caret {
+    margin-left: auto;
+    font-size: 8px;
+    color: #9ba296;
+    transition: transform 0.18s;
+  }
+  .v9 .pv-local details[open] .caret {
+    transform: rotate(90deg);
+  }
+  .v9 .pv-code {
+    margin: 8px 0 4px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid #4a544b;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.7;
+    color: #c9cfc3;
+    white-space: pre;
+  }
+  .v9 .pv-code code {
+    font-family: inherit;
+    color: inherit;
+  }
   .v9 .folds {
     position: relative;
     z-index: 2;
@@ -1344,6 +1646,11 @@ const DOC = {
     }
     .v9 .phead .livechip::before {
       animation: none;
+    }
+    .v9 .pv-spin {
+      animation: none;
+      border-top-color: var(--ok);
+      opacity: 0.7;
     }
   }
 </style>
