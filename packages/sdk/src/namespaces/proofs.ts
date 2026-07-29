@@ -1,5 +1,5 @@
 /**
- * Whitepaper §4.8 — proofs.submit / proofs.getByDocument
+ * Whitepaper §4.8 — proofs.submit / proofs.getByDocHash
  */
 import type {
   LemmaClient,
@@ -14,7 +14,7 @@ export const submit = (
   payload: SubmitProofRequest,
 ): Promise<SubmitProofResponse> => post<SubmitProofResponse>(client)("/v1/proofs")(payload);
 
-export const getByDocument = (
+export const getByDocHash = (
   client: LemmaClient,
   docHash: string,
 ): Promise<ProofRecord> =>
