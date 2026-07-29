@@ -63,20 +63,33 @@ const FONTS = [
   },
 ];
 
-/** ワードマークは viewBox 0 0 142 65。高さ 26px ＝ 0.4 倍で右上に置く。 */
-const LOGO_SCALE = 26 / 65;
-const LOGO_WIDTH = 142 * LOGO_SCALE;
+/**
+ * ワードマークの位置と大きさ。
+ *
+ * ⚠ viewBox（0 0 142 65）で指定すると**見た目より小さくなる**。パスが実際に
+ * 占めているのは x 6.4〜129.8 / y 10.2〜50.3 で、縦は 65 のうち 40 しかない
+ * ——指示書の「高さ 26px」を viewBox の高さと読むと、字の高さは 16px しか
+ * 出ず、1200px のキャンバスで存在感が無かった。**インクの実寸で指定する**。
+ */
+const LOGO_INK = { x1: 6.4, x2: 129.8, y1: 10.2, y2: 50.3 } as const;
+
+/** 出したい字の高さ。52px のタイトルに対してこれくらいが釣り合う。 */
+const LOGO_INK_HEIGHT = 32;
 
 /**
- * 指示書は上から 64px だが、そこは**ブロックの1行目（y=72〜）と重なる**位置で、
- * ロゴとライムの枠が重なって読めなかった。1行目より上の余白へ寄せている。
- * 格子側に穴を空ける手もあるが、それだと散らばりの下限が satisfy できない
- * （`lib/blogCover.ts` の RIGHT_CELLS のコメント）。
+ * 字の上端の y。ブロックの1行目は y=72 からで、検証済みのライムのドットは
+ * その 13px 上（y=59）まで来るので、そこに触らない高さに置く。
+ * （指示書の「上から 64px」は1行目のブロックに重なる位置だった。）
  */
-const LOGO_TOP = 22;
+const LOGO_INK_TOP = 20;
+
+const LOGO_SCALE = LOGO_INK_HEIGHT / (LOGO_INK.y2 - LOGO_INK.y1);
+/** 字の右端をタイトルと同じ 80px の余白に揃える。 */
+const LOGO_X = COVER_WIDTH - SIDE_PAD - LOGO_INK.x2 * LOGO_SCALE;
+const LOGO_Y = LOGO_INK_TOP - LOGO_INK.y1 * LOGO_SCALE;
 
 const logoSvg = (): string =>
-  `<g transform="translate(${String(COVER_WIDTH - SIDE_PAD - LOGO_WIDTH)},${String(LOGO_TOP)}) scale(${String(LOGO_SCALE)})" fill="${TITLE_INK}">` +
+  `<g transform="translate(${LOGO_X.toFixed(1)},${LOGO_Y.toFixed(1)}) scale(${LOGO_SCALE.toFixed(4)})" fill="${TITLE_INK}">` +
   LEMMA_LOGO_PATHS.map((d) => `<path d="${d}"/>`).join("") +
   "</g>";
 

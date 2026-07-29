@@ -302,15 +302,23 @@ const sanitizeId = (s: string): string => s.replace(/[^a-zA-Z0-9_-]/g, "-");
 const idPrefix = (category: string, slug: string): string =>
   `bc-${sanitizeId(slug)}-${sanitizeId(category.toLowerCase())}`;
 
+/**
+ * 検証済みの枠とドットの濃さ。**指示書の .78 / 不透明のままだと、右側の
+ * ライムが強すぎて絵の中で浮く**ので、どちらも少し薄くしている。
+ * 記号としての意味（ライム＝検証済み）は保つ範囲。
+ */
+const VERIFIED_STROKE_OPACITY = ".62";
+const VERIFIED_DOT_OPACITY = ".82";
+
 const blockSvg = (block: CoverBlock): string => {
   const rect =
     `<rect x="${String(block.x)}" y="${String(block.y)}" width="${String(BLOCK_SIZE)}"` +
     ` height="${String(BLOCK_SIZE)}" rx="${String(BLOCK_RADIUS)}" fill="#FFFFFF"` +
     (block.verified
-      ? ` fill-opacity=".09" stroke="${LIME}" stroke-opacity=".78" stroke-width="2"/>`
+      ? ` fill-opacity=".09" stroke="${LIME}" stroke-opacity="${VERIFIED_STROKE_OPACITY}" stroke-width="2"/>`
       : ` fill-opacity=".04" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="2"/>`);
   return block.verified
-    ? `${rect}<circle cx="${String(block.x)}" cy="${String(block.y)}" r="13" fill="${LIME}"/>`
+    ? `${rect}<circle cx="${String(block.x)}" cy="${String(block.y)}" r="13" fill="${LIME}" fill-opacity="${VERIFIED_DOT_OPACITY}"/>`
     : rect;
 };
 
