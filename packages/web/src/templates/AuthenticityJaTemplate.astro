@@ -1,7 +1,9 @@
 ---
 /**
  * 真正性ハブ（日本語）— サイトリニューアル先行のデザイン移行版。
- * モック `lemma_authenticity_mock_v4.html`（デザイン＋本文の改稿）を実装。
+ * モック `lemma_authenticity_mock_v8.html`（デザイン＋本文の改稿）を実装。
+ * 本文は v4 のときのまま。v8 で変わったのは節見出しの扱い（記事テンプレ v10
+ * と同じく、上罫をやめて見出しの前の短いライムの線だけにする）。
  *
  * **なぜ EN と別ファイルなのか**
  * 今回は日本語だけを先行させる判断（本文の改稿が JA のみ）。1つの
@@ -476,7 +478,33 @@ const breadcrumbJsonLd = {
           >——証明が示すのは「本物の出所から来て、変わっていない」ことだけです。この境界を理解しておくことが、真正性を業務に組み込むうえで重要になります。
         </p>
         <div class="verifybox">
-          <div class="vb-t">実物で確かめる</div>
+          {/* 検証マーク。装飾なので読み上げ対象にしない。 */}
+          <div class="vb-t">
+            <svg class="vmark" viewBox="0 0 24 24" aria-hidden="true">
+              <circle
+                cx="12"
+                cy="12"
+                r="11"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.1"></circle>
+              <circle
+                cx="12"
+                cy="12"
+                r="8.2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width=".7"
+                opacity=".45"></circle>
+              <path
+                d="M8 12.2l2.7 2.7L16.2 9.3"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>実物で確かめる
+          </div>
           <p>
             Lemmaが検証・発行してきた記録は、実数の内訳として公開しています。個別の記録は、そのリンク（<code
               >?doc=…</code
@@ -730,6 +758,9 @@ const breadcrumbJsonLd = {
   .artbody > * {
     max-width: 100%;
   }
+  /* 記事テンプレ v10 と同じ扱い。節の頭の上罫（border-top）はやめ、見出しの
+     前に置く短いライムの線だけにする——罫と `.seclabel` が重なって、節の
+     区切りの線が二重に見えていた。 */
   .artbody h2 {
     font-family: var(--font-serif-jp);
     font-weight: 600;
@@ -737,20 +768,17 @@ const breadcrumbJsonLd = {
     line-height: 1.6;
     letter-spacing: 0.04em;
     color: var(--tx);
-    margin: 56px 0 18px;
-    padding-top: 22px;
-    border-top: 1px solid var(--line);
-    position: relative;
+    margin: 68px 0 20px;
     scroll-margin-top: 96px;
   }
   .artbody h2::before {
     content: "";
-    position: absolute;
-    top: -1px;
-    left: 0;
-    width: 36px;
+    display: block;
+    width: 28px;
     height: 2px;
+    border-radius: 2px;
     background: var(--ok);
+    margin-bottom: 18px;
   }
   .seclabel {
     display: block;
@@ -841,12 +869,13 @@ const breadcrumbJsonLd = {
     color: var(--tx-soft);
   }
 
+  /* 三要件・検証の3点。h2 の上罫をやめたのに合わせて、この枠の上罫も外す
+     （線が連続すると節の区切りがどこか読めなくなる）。区切りは縦罫のみ。 */
   .reqs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
-    margin: 0 0 26px;
-    border-top: 1px solid var(--line);
+    margin: 6px 0 26px;
   }
   .req {
     padding: 20px 22px;
@@ -975,6 +1004,12 @@ const breadcrumbJsonLd = {
     letter-spacing: 0.04em;
     color: var(--tx);
     margin-bottom: 12px;
+  }
+  .vb-t .vmark {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--ok-ink);
   }
   .verifybox p {
     margin: 0 0 18px;
@@ -1127,11 +1162,11 @@ const breadcrumbJsonLd = {
     position: relative;
     z-index: 2;
   }
+  /* モックは "Enterprise" のまま。大文字化しない。 */
   .artcta .k {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
     color: #9ba296;
   }
   .artcta h2 {
@@ -1194,15 +1229,11 @@ const breadcrumbJsonLd = {
       grid-template-columns: 1fr;
     }
     .reqs {
-      border-top: none;
+      gap: 26px;
     }
     .req {
       border-left: none;
-      border-top: 1px solid var(--line);
-      padding: 18px 0;
-    }
-    .req:first-child {
-      border-top: none;
+      padding: 0;
     }
   }
   @media (max-width: 760px) {
