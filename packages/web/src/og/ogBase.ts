@@ -41,6 +41,19 @@ const spaceMonoRegular = readFileSync(
   resolve(cwd, "node_modules/@fontsource/space-mono/files/space-mono-latin-400-normal.woff"),
 );
 
+/**
+ * 生のフォントデータ。**この共通アートボードに乗らない OG**（ブログの
+ * 生成カバーのように、自前の SVG へ satori のテキストだけを重ねるもの）が
+ * 独自のフォントセットを組めるように出しておく。
+ */
+export const OG_FONT_DATA = {
+  jaRegular,
+  jaMedium,
+  jaBold,
+  soraBold,
+  spaceMonoRegular,
+} as const;
+
 export const SATORI_FONTS = [
   { name: "Display", data: soraBold, weight: 700 as const, style: "normal" as const },
   { name: "Display", data: jaBold, weight: 700 as const, style: "normal" as const },

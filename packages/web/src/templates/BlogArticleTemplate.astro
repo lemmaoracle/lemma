@@ -29,7 +29,7 @@ import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
 import SchemaOrg from "@/components/SchemaOrg";
-import ProofCover from "../components/ProofCover.astro";
+import BlogCover from "../components/BlogCover.astro";
 import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BlogArticleTemplateProps {
@@ -122,11 +122,11 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         {post.abstract && <p class="blog-abstract">{post.abstract}</p>}
       </section>
 
-      {/* 記事ごとの写真ではなく、真正性ページと同じ抽象カバーを出す。
-          ⚠ ブログ索引のサムネイルと OGP は記事の `cover`（posts 側の
-          カテゴリ別 PNG）のままなので、一覧と記事で絵が食い違う。
-          slug 由来の生成カバーへ4面まとめて揃えるのは次の PR。 */}
-      <ProofCover />
+      {/* カテゴリと slug から生成したカバー。索引のサムネイル・関連記事
+          カード・OGP も同じ絵なので、一覧と記事で食い違わない。 */}
+      <figure class="blog-cover">
+        <BlogCover category={post.category} slug={post.slug} />
+      </figure>
 
       <div class="blog-body" set:html={post.body} />
 
@@ -229,10 +229,9 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
             {related.map((r) => (
               <li>
                 <a href={`${blogPath}/${r.slug}`} class="related-item">
-                  <div
-                    class="related-thumb"
-                    style={`background-image:url('${r.cover ?? ""}')`}
-                  ></div>
+                  <div class="related-thumb">
+                    <BlogCover category={r.category} slug={r.slug} />
+                  </div>
                   <div class="related-body">
                     <div class="related-cat">
                       {r.category} · {r.date}
@@ -359,6 +358,19 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     margin: 0 0 26px;
     padding-left: 20px;
     border-left: 2px solid var(--ok);
+  }
+
+  /* ─── COVER ─── */
+  .blog-cover {
+    margin: 30px 0 0;
+  }
+  .blog-cover :global(svg) {
+    width: 100%;
+    aspect-ratio: 1200 / 630;
+    display: block;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.12);
   }
 
   /* ─── BODY (rendered markdown HTML) ─── */
@@ -730,10 +742,14 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     width: 96px;
     height: 64px;
     flex-shrink: 0;
-    background-size: cover;
-    background-position: center;
     background-color: var(--lite-2);
     border-radius: 8px;
+    overflow: hidden;
+  }
+  .related-thumb :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .related-body {
     flex: 1;

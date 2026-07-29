@@ -19,7 +19,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
-import defaultCover from "../assets/default-blog-cover.png";
+import BlogCover from "../components/BlogCover.astro";
 
 export interface BlogCategoryTemplateProps {
   locale: Locale;
@@ -99,10 +99,9 @@ const countLabel = isJa
         <section class="bc-grid" aria-label={category}>
           {posts.map((post) => (
             <a href={`${blogPath}/${post.slug}`} class="bc-card">
-              <div
-                class="bc-card-thumb"
-                style={`background-image:url('${post.cover ?? defaultCover.src}')`}
-              ></div>
+              <div class="bc-card-thumb">
+                <BlogCover category={post.category} slug={post.slug} />
+              </div>
               <div class="bc-card-body">
                 <div class="bc-card-meta">
                   <span class="bc-card-cat">{post.category}</span>
@@ -328,9 +327,13 @@ const countLabel = isJa
   }
   .bc-card-thumb {
     aspect-ratio: 16 / 9;
-    background-size: cover;
-    background-position: center;
     background-color: var(--lemma-cream-deep);
+    overflow: hidden;
+  }
+  .bc-card-thumb :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .bc-card-body {
     display: flex;

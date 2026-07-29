@@ -1,0 +1,31 @@
+---
+/**
+ * 記事の生成カバー（インライン SVG）。
+ *
+ * 絵はカテゴリと slug から決まる（`lib/blogCover.ts`）。記事本文・ブログ索引の
+ * サムネイル・関連記事カードで同じものを出し、OGP も同じ絵にタイトルを重ねた
+ * ものになる——**一覧と記事で絵が食い違わない**のがこの component の目的。
+ *
+ * ラスタライズしないので追加のネットワークリクエストは発生しない。装飾なので
+ * 読み上げ対象にしない（`aria-hidden`）。枠・角丸・影は使う側が持つ。
+ */
+import { coverArtwork, COVER_WIDTH, COVER_HEIGHT } from "../lib/blogCover";
+
+interface Props {
+  /** 記事のカテゴリ。4カテゴリ以外は Announcements に寄る。 */
+  readonly category: string;
+  /** ゆらぎのシード。同じ slug はいつも同じ絵になる。 */
+  readonly slug: string;
+  readonly class?: string;
+}
+
+const { category, slug, class: className } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox={`0 0 ${COVER_WIDTH} ${COVER_HEIGHT}`}
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  set:html={coverArtwork(category, slug)}
+/>
