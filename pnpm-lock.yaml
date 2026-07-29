@@ -3750,8 +3750,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  acorn@8.17.0:
-    resolution: {integrity: sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg==}
+  acorn@8.18.0:
+    resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -5968,8 +5968,8 @@ packages:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.5.24:
-    resolution: {integrity: sha512-8RyVklq0owXUTa4xlpzu4l9AaVKIdQvAcOHZWaMh98HgySsUtxRVf/chRe3dsSLqb6i40BzGRzEUddRaI+9TSw==}
+  postcss@8.5.25:
+    resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
     engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.6:
@@ -10351,9 +10351,9 @@ snapshots:
       mime-types: 3.0.2
       negotiator: 1.0.0
 
-  acorn-jsx@5.3.2(acorn@8.17.0):
+  acorn-jsx@5.3.2(acorn@8.18.0):
     dependencies:
-      acorn: 8.17.0
+      acorn: 8.18.0
 
   acorn-walk@8.3.2: {}
 
@@ -10361,7 +10361,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  acorn@8.17.0: {}
+  acorn@8.18.0: {}
 
   adm-zip@0.5.16: {}
 
@@ -11413,7 +11413,7 @@ snapshots:
       eslint: 9.39.5(jiti@2.6.1)
       eslint-compat-utils: 0.6.5(eslint@9.39.5(jiti@2.6.1))
       globals: 16.5.0
-      postcss: 8.5.24
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.4
     transitivePeerDependencies:
       - supports-color
@@ -11597,8 +11597,8 @@ snapshots:
 
   espree@10.4.0:
     dependencies:
-      acorn: 8.17.0
-      acorn-jsx: 5.3.2(acorn@8.17.0)
+      acorn: 8.18.0
+      acorn-jsx: 5.3.2(acorn@8.18.0)
       eslint-visitor-keys: 4.2.1
 
   esprima@1.2.5: {}
@@ -13242,7 +13242,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postcss@8.5.24:
+  postcss@8.5.25:
     dependencies:
       nanoid: 3.3.16
       picocolors: 1.1.1
