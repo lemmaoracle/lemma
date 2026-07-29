@@ -1,0 +1,2183 @@
+---
+/**
+ * 新トップページ案（プレビュー） — `/ja/preview/top/`
+ *
+ * 実装指示: Lemma_トップページ_プレビュー実装指示_v1（2026-07-29）
+ * 参照モック: lemma_top_mock_v5_8.html（デザインの正）
+ *
+ * 位置づけ:
+ *   - 本番トップ `/` `/ja/` の差し替えは行わない。社内が実機で触るためだけの面。
+ *   - `noindex,nofollow` ＋ sitemap 除外（astro.config.mjs の filter）＋
+ *     サイト内リンクなし。URL 直打ちのみで到達する。
+ *   - 本番差し替え時は、最上部の PREVIEW バーとこのファイルごと削除する。
+ *
+ * デザイン規律（検証センター `/verify/` = VerifyAnchorTemplate と同じ規律）:
+ *   - トークンは検証センターで公開済みのものと同じ値を使う。`.pv` 名前空間に
+ *     閉じ、グローバル CSS は汚さない。値の正は VerifyAnchorTemplate の `.v9`。
+ *   - 蛍光グリーン（--ok）は「検証済み・稼働中」の状態にのみ使う。
+ *   - スレート面は実データが流れる面（REGISTRY / Trust402 / API / ドキュメント帯）
+ *     にのみ使う。
+ *   - 数字はビルド時に焼き込まない。表示のたびに API から読み直し、失敗時は
+ *     推定で埋めず `—` ＋ `OFFLINE` ＋ 生レスポンスへの直リンクを出す。
+ *   - 大見出し（h1 / h2）はセリフ 500 で統一（モック v5.8 でヒーローと
+ *     次セクションの太さが揃っていなかったのを揃えた）。
+ *
+ * ヘッダー / フッター:
+ *   - ロゴは既存の `LemmaOracle` コンポーネント、フッターは既存の `Footer`。
+ *   - デスクトップのメガメニューは指示 §3.1 の新 IA（Seal を「製品」に置く案）
+ *     を評価するためこの面に固有。1020px 以下は既存 `Navigation` の
+ *     モバイルドロワーに委ねる（＝モバイルは現行 IA が出る）。
+ *
+ * スコープ CSS ではなく `.pv` 名前空間の global 1ブロックにしているのは、
+ * フィールドスイープのブロックをクライアントで生成するため（検証センターと同じ理由）。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import LemmaOracle from "../components/LemmaOracle.astro";
+import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
+import { SEGMENT_URLS } from "../config/navigation";
+
+export interface PreviewTopTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as PreviewTopTemplateProps;
+const L = (path: string) => `${base}${path}`;
+
+const API_BASE = "https://workers.lemma.workers.dev/v1";
+const RAW_COUNTERS = `${API_BASE}/counters`;
+const VERIFY_PATH = L("/verify/");
+/* 問い合わせ CTA には流入元を `?plan=` で付ける（PlanTemplate 等と同じ規約）。
+   Tally 側の隠しフィールド `plan` に入り、この面からの問い合わせを判別できる。
+   本番トップに昇格させるときは値を見直すこと。 */
+const CONTACT_URL = `${DISCOVERY_CALL_URL[locale]}?plan=top-preview`;
+
+/* 開発者向けドキュメント帯のリンク先（指示 §3.5）。slug は posts リポジトリに実在。 */
+const DOC_COLUMNS: ReadonlyArray<{
+  readonly heading: string;
+  readonly links: ReadonlyArray<{ readonly label: string; readonly slug: string }>;
+}> = [
+  {
+    heading: "生データを渡さない",
+    links: [
+      { label: "すべてを暗号化し、何も露出しない", slug: "encrypt-everything-expose-nothing" },
+      { label: "AI に必要なものだけを開示する", slug: "disclose-only-what-ai-needs" },
+    ],
+  },
+  {
+    heading: "検証は無料、何度でも",
+    links: [
+      { label: "ゼロ知識で事実を証明する", slug: "prove-facts-with-zero-knowledge" },
+      { label: "検証済み属性をクエリする", slug: "query-verified-attributes" },
+    ],
+  },
+  {
+    heading: "当事者から独立している",
+    links: [
+      { label: "消えることのない来歴", slug: "provenance-that-never-disappears" },
+      { label: "Lemma Oracle 仕様", slug: "lemma-oracle-specs" },
+    ],
+  },
+];
+
+/* 業種プラン3枚（指示 §3.4）。URL は既存の SEGMENT_URLS を参照。 */
+const PLANS: ReadonlyArray<{
+  readonly href: string;
+  readonly kicker: string;
+  readonly name: string;
+  readonly line: string;
+}> = [
+  {
+    href: SEGMENT_URLS.civic[locale],
+    kicker: "公共インフラ · B2B2G",
+    name: "Lemma Civic",
+    line: "自治体・公共事業の記録に、第三者検証を。",
+  },
+  {
+    href: SEGMENT_URLS.critical[locale],
+    kicker: "基幹インフラ · 製造業",
+    name: "Lemma Critical",
+    line: "計測値と検査記録を、改ざん検知つきで。",
+  },
+  {
+    href: SEGMENT_URLS.compliance[locale],
+    kicker: "金融 · KYC/AML · FinTech",
+    name: "Lemma Compliance",
+    line: "属性を、生データを渡さずに証明する。",
+  },
+];
+
+/* メガメニュー（指示 §3.1）。この面だけの新 IA — Seal を「製品」に置いた案を
+   プレビューで評価するため（指示 §8.3）。現行サイトの Navigation とは別物。 */
+const MEGA: ReadonlyArray<{
+  readonly label: string;
+  readonly href?: string;
+  readonly items?: ReadonlyArray<{
+    readonly label: string;
+    readonly sub?: string;
+    readonly href: string;
+  }>;
+  readonly foot?: { readonly label: string; readonly href: string };
+}> = [
+  {
+    label: "製品",
+    items: [
+      { label: "Lemma API", sub: "証明の発行・検証", href: L("/pricing#api") },
+      { label: "Trust402 · Pay", sub: "鍵を預けずに支払う", href: L("/trust402/") },
+      { label: "Trust402 · Sell", sub: "成果を AI エージェントに売る", href: L("/trust402/sell/") },
+      { label: "Seal", sub: "コンテンツに認証を付ける", href: L("/seal/") },
+    ],
+    foot: { label: "▸ 5つの証明と API ドキュメント", href: L("/pillars/") },
+  },
+  { label: "ユースケース", href: L("/solutions/use-cases") },
+  {
+    label: "料金",
+    items: [
+      { label: "Lemma API の料金", sub: "発行に課金、検証は無料", href: L("/pricing#api") },
+      { label: "Lemma Civic", sub: "公共インフラ · B2B2G", href: SEGMENT_URLS.civic[locale] },
+      { label: "Lemma Critical", sub: "基幹インフラ・製造業", href: SEGMENT_URLS.critical[locale] },
+      { label: "Lemma Compliance", sub: "金融 · KYC/AML", href: SEGMENT_URLS.compliance[locale] },
+    ],
+    foot: { label: "▸ プランページを見る", href: L("/pricing") },
+  },
+  {
+    label: "リソース",
+    items: [
+      { label: "Critical Brief", sub: "AI×信頼の最前線", href: L("/critical/briefs") },
+      { label: "ブログ", href: L("/blog") },
+      { label: "ドキュメント", href: L("/guides") },
+      { label: "検証センター", sub: "検証・発行の実数", href: VERIFY_PATH },
+    ],
+    foot: { label: "▸ 用語集・FAQ", href: L("/glossary") },
+  },
+];
+---
+
+<Layout
+  title="新トップページ案（社内プレビュー）｜Lemma"
+  description="社内確認用のプレビューです。検索エンジンには公開していません。"
+  locale={locale}
+  noindex={true}
+  bodyClass="pv-page"
+>
+  <div class="pv-bar">PREVIEW — 新トップページ案 v5.8 / 社内確認用</div>
+
+  {/* 1020px 以下でだけ出す既存ナビ（モバイルドロワーは既存実装に委ねる・指示 §3.1） */}
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <div class="pv">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="pv-vmark" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.1"
+          ></circle>
+          <circle
+            cx="12"
+            cy="12"
+            r="8.2"
+            fill="none"
+            stroke="currentColor"
+            stroke-width=".7"
+            opacity=".45"></circle>
+          <path
+            d="M8 12.2l2.7 2.7L16.2 9.3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <nav class="pv-nav">
+      <a class="pv-logo" href={base || "/"} aria-label="Lemma">
+        <LemmaOracle />
+      </a>
+      <div class="mm">
+        {
+          MEGA.map((m) =>
+            m.href ? (
+              <div class="mm-item">
+                <a class="mm-btn" href={m.href}>
+                  {m.label}
+                </a>
+              </div>
+            ) : (
+              <div class="mm-item">
+                <button class="mm-btn" type="button">
+                  {m.label}
+                  <i>▾</i>
+                </button>
+                <div class="mm-panel">
+                  <div class="mm-inner">
+                    <div class="mm-col">
+                      {m.items?.map((it) => (
+                        <a href={it.href}>
+                          <b>{it.label}</b>
+                          {it.sub && <span>{it.sub}</span>}
+                        </a>
+                      ))}
+                      {m.foot && (
+                        <a class="mm-foot" href={m.foot.href}>
+                          {m.foot.label}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ),
+          )
+        }
+      </div>
+      <a class="navlang" href="/">EN</a>
+      <a class="navcta" href={DASHBOARD_URL} target="_blank" rel="noopener">始める ↗</a>
+    </nav>
+
+    {/* ============ HERO ============ */}
+    <section class="hero">
+      <div class="hgrid"></div>
+      <div class="inner">
+        <div>
+          <div class="eyebrow">Cryptographic Proof Infrastructure</div>
+          <h1>AI時代に、<br />何が本物かを<span class="nb">証明する。</span></h1>
+          <p class="sub">
+            データの来歴も、エージェントの権限も。<br />発行は一度。検証は、無料で何度でも。
+          </p>
+          <div class="heroctas">
+            <a class="btn primary" href={CONTACT_URL} target="_blank" rel="noopener"
+              >エンタープライズ相談</a
+            >
+            <a class="btn ghostd" id="pv-herolink" href={VERIFY_PATH}>証明サンプルを検証する</a>
+          </div>
+          <div class="ticker">
+            <span class="tk">NEW</span>
+            {/* 郵便番号フィード公開の記事は未作成のため、暫定でブログ索引へ（指示 §8.4） */}
+            <a href={L("/blog/")}>郵便番号フィードを公開しました — 全国12万件超・証明付き →</a>
+          </div>
+          <div class="herofacts">
+            <div>生データは受け取らない</div>
+            <div>世界中のどこからでも、第三者が検証できる</div>
+            <div>検証にキーもアカウントも要らない</div>
+          </div>
+        </div>
+
+        <div class="panel tech" aria-label="Lemma公開レジストリのライブ表示">
+          <div class="pgrid"></div>
+          <div class="phead" id="pv-phead">
+            <span class="nm">LEMMA&nbsp;REGISTRY</span>
+            <span class="livechip" id="pv-plive">LIVE</span>
+            <span class="ep">GET /v1/counters</span>
+          </div>
+          <div class="pbody">
+            <div class="bignum" id="pv-vnum">———</div>
+            <div class="biglabel">検証実行（累計・実数）</div>
+            <div class="pmetrics">
+              <div>PROOFS ISSUED<b id="pv-inum">—</b></div>
+              <div>LAST UPDATED<b id="pv-pupd">—</b></div>
+              <div>VERIFY COST<b>¥0</b></div>
+            </div>
+          </div>
+          <div class="pstream" id="pv-pstream" hidden></div>
+          <div class="perr" id="pv-perr" hidden>
+            レジストリに到達できません。推定値では埋めません。
+            <a href={RAW_COUNTERS} target="_blank" rel="noopener">レスポンスを直接確認する →</a>
+          </div>
+          <div class="pfoot">
+            この数字も、証明されています。
+            <a href={VERIFY_PATH}>ソース別の内訳を見る →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ WHY PROOF ============ */}
+    <section class="gatesec" id="why">
+      <div class="wrap">
+        <div class="whywrap">
+          <div>
+            <div class="kicker">Why Proof</div>
+            <h2>偽物は無限に作れる。<br />本物だけが、<span class="mark">通る</span>仕組みを。</h2>
+            <p class="sec-lede">
+              生成AIで、コピーのコストはゼロになりました。見た目では、もう区別できません。<br />
+              Lemmaは、データやAIの実行に暗号技術で証明を付け、受け取った側が自分で確かめられるようにします。証明のあるものだけが、先へ進みます。
+            </p>
+          </div>
+          <div class="fieldpanel gpanel">
+            <div class="pgrid"></div>
+            <div class="fieldstage" id="pv-fieldstage" aria-label="検証で本物だけが残るイメージ">
+              <div class="sweep" id="pv-sweep"></div>
+            </div>
+            <div class="fieldfoot">
+              残った証明 <b id="pv-realcount">0</b>　／　通過した情報 <b id="pv-scancount">0</b>
+              <span class="sim">— イメージ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="whylabel">Lemmaが証明するもの</div>
+        <div class="targets">
+          <div class="tcol">
+            <b>データの来歴</b><span>オリジナルか。改ざんされていないか。</span>
+          </div>
+          <div class="tcol">
+            <b>エージェントの権限</b><span>誰の代理で、どこまで許されているか。</span>
+          </div>
+          <div class="tcol"><b>実行の記録</b><span>いつ、何が、ルールの中で行われたか。</span></div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ WHERE TO START ============ */}
+    <section class="light" id="start">
+      <div class="wrap">
+        <div class="kicker">Where to Start</div>
+        <h2>はじめ方は、3つ。</h2>
+        <p class="sec-lede">
+          証明という信頼レイヤーを、事業のどこに組み込むか。データの外部提供、プロダクトへの実装、業務プロセスへの適用——目的に近いところから着手できます。
+        </p>
+
+        <div class="startgrid">
+          <div class="startcard gpanel tech">
+            <div class="pgrid"></div>
+            <div class="sc-head">
+              <div>
+                <span class="sc-k"><i>01</i>データの外部提供</span>
+                <div class="sc-name">Trust402<small>x402 · USDC</small></div>
+              </div>
+              <span class="nowchip">サンドボックスで試す</span>
+            </div>
+            <p class="sc-p">
+              成果やデータに来歴証明を付けて、AIエージェントに売る。鍵を預けずに、権限内の支払いだけが通ります。ノーコードで出品でき、決済はステーブルコインで完結します。
+            </p>
+            <div class="fresp">
+              <span class="code200">200 LISTED</span>
+              <span class="livebox"
+                ><span class="dot"></span>provenance ✓ &nbsp;·&nbsp; settled in USDC</span
+              >
+            </div>
+            <div class="sc-links">
+              <a href={L("/trust402/sell/")}>サンドボックスで試す →</a>
+              <a href={L("/trust402/")}>Trust402を見る →</a>
+            </div>
+          </div>
+
+          <div class="startcard gpanel tech">
+            <div class="pgrid"></div>
+            <div class="sc-head">
+              <div>
+                <span class="sc-k"><i>02</i>プロダクトへの実装</span>
+                <div class="sc-name">Lemma API<small>発行 · 検証</small></div>
+              </div>
+              <span class="nowchip ghost">検証は無料</span>
+            </div>
+            <p class="sc-p">
+              1つのAPIで5種の証明を発行。稼働中の公開フィードは、キーもアカウントも要らずそのまま叩けます。
+            </p>
+            <div class="feedlist">
+              <div class="frow">
+                <span class="fn">為替レート</span>
+                <span class="livebox" id="pv-fxlive"><span class="dot"></span>接続中…</span>
+              </div>
+              <div class="frow">
+                <span class="fn">日本の祝日</span>
+                <span class="livebox" id="pv-hollive"><span class="dot"></span>接続中…</span>
+              </div>
+              <div class="frow">
+                <span class="fn">郵便番号</span>
+                <span class="livebox" id="pv-ziplive"><span class="dot"></span>接続中…</span>
+              </div>
+            </div>
+            <div class="fapi">
+              <span class="method">GET</span>
+              <span class="fpath" id="pv-zipcurl"
+                >workers.lemma.workers.dev<b>/v1/suites/feeds/jp-postal-codes/latest</b></span
+              >
+              <button class="fbtn" type="button" data-copy="pv-zipcurl">COPY</button>
+            </div>
+            {/* /feeds/ ハブは未作成のため、当面ドキュメントとダッシュボードへ（指示 §8.1） */}
+            <div class="sc-links">
+              <a href={L("/guides")}>ドキュメント →</a>
+              <a href={DASHBOARD_URL} target="_blank" rel="noopener">ダッシュボード →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="startcard wide">
+          <div class="sc-head">
+            <div>
+              <span class="sc-k"><i>03</i>業務プロセスへの適用</span>
+              <div class="sc-name">業種で選ぶ、3つのプラン</div>
+            </div>
+          </div>
+          <p class="sc-p">
+            証明対象の設計から本番運用まで、専任チームが伴走します。契約形態・請求書払い・SLA・監査対応は個別にご案内します。
+          </p>
+          <div class="planrows">
+            {
+              PLANS.map((p) => (
+                <a class="plancard" href={p.href}>
+                  <span class="pc-k">{p.kicker}</span>
+                  <span class="pc-n">
+                    <span class="lat">{p.name}</span>
+                  </span>
+                  <span class="pc-d">{p.line}</span>
+                  <span class="pc-a">プランを見る →</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ 開発者向けドキュメント ============ */}
+    <section class="advband" id="docs">
+      <div class="wrap">
+        <div class="advhead">
+          <h2>開発者向けドキュメント</h2>
+          <span class="advlinks">
+            <a href={L("/guides")}>ドキュメント一覧 →</a>
+            <a href={L("/pillars/")}>5つの証明と、その仕組み →</a>
+          </span>
+        </div>
+        <div class="edge">
+          {
+            DOC_COLUMNS.map((col) => (
+              <div class="edgecol">
+                <span class="ek">{col.heading}</span>
+                <div class="eklinks">
+                  {col.links.map((lk) => (
+                    <a href={L(`/blog/${lk.slug}`)}>{lk.label}</a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* ============ FINAL ============ */}
+    <section class="final">
+      <div class="inner">
+        <h2>本物だけが、通る世界へ。</h2>
+        <div class="ctaline" aria-hidden="true"><i class="bar"></i><i class="head"></i></div>
+        <p>最初の証明は、数分で発行できます。検証は、いつでも誰でも無料。</p>
+        <div class="ctas">
+          <a class="btn primary" href={CONTACT_URL} target="_blank" rel="noopener"
+            >エンタープライズ相談</a
+          >
+          <a class="btn ghostd" href={DASHBOARD_URL} target="_blank" rel="noopener"
+            >無料で発行をはじめる</a
+          >
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style is:global>
+  /* ============================================================
+     プレビュー面のスタイル。すべて `.pv` / `.pv-bar` / `.pv-page` に閉じる。
+     トークンの値は検証センター（VerifyAnchorTemplate の `.v9`）と同一。
+     本番差し替え時はこのブロックごと移設または削除する。
+     ============================================================ */
+  body.pv-page {
+    background: #f3f4f1;
+    overflow-x: hidden;
+  }
+
+  /* プレビュー識別バー（本番差し替え時に削除） */
+  .pv-bar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 5vw;
+    background: #eceee9;
+    color: #5c6156;
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  /* デスクトップは固有メガメニュー、1020px 以下は既存 Navigation に委ねる */
+  @media (min-width: 1021px) {
+    body.pv-page > nav.mega-nav {
+      display: none;
+    }
+  }
+  /* 既存ナビが nav の外に出す装飾レール（サドルブラウン）。この面の配色に
+     合わないため、モバイルでも出さない。機能（ドロワー）はそのまま使う。 */
+  body.pv-page > .lemma-brand-bar {
+    display: none;
+  }
+  /* 対になる `.pv .pv-nav { display:none }` は、後続の .pv-nav 定義に負けない
+     よう最後のレスポンシブブロックに置いている。 */
+
+  .pv {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --err: #c25438;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --panel: #fbfcfa;
+    --panel-2: #ffffff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --dline: #e7eae5;
+    --dline-2: #d9ddd7;
+    --slate-line: #4a544b;
+    --slate-tx: #ebefe6;
+    --slate-tx-soft: #bcc3b6;
+    --slate-tx-dim: #9ba296;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --sh-panel:
+      0 24px 60px rgba(24, 36, 26, 0.12), 0 2px 8px rgba(24, 36, 26, 0.05),
+      0 0 0 1px rgba(24, 36, 26, 0.04);
+    --sh-panel-s:
+      0 14px 38px rgba(24, 36, 26, 0.1), 0 2px 6px rgba(24, 36, 26, 0.04),
+      0 0 0 1px rgba(24, 36, 26, 0.04);
+    --font-serif-jp: "Noto Serif JP", "Cormorant Garamond", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: "Space Mono", monospace;
+    background: var(--lite);
+    color: var(--tx);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+  }
+  .pv *,
+  .pv *::before,
+  .pv *::after {
+    box-sizing: border-box;
+  }
+  .pv a:focus-visible,
+  .pv button:focus-visible {
+    outline: 2px solid var(--ok-light);
+    outline-offset: 3px;
+  }
+
+  /* ---------- nav（この面に固有・指示 §3.1） ---------- */
+  .pv .pv-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    padding: 16px 5vw;
+    background: rgba(245, 246, 244, 0.86);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(15, 20, 18, 0.08);
+  }
+  .pv .pv-logo {
+    display: flex;
+    align-items: center;
+    color: var(--tx);
+  }
+  .pv .pv-logo svg {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+  .pv .navcta {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    background: var(--ok);
+    color: var(--ink);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: 0.18s;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.35);
+  }
+  .pv .navcta:hover {
+    filter: brightness(1.06);
+  }
+  .pv .mm {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .pv .mm-item {
+    position: relative;
+    display: flex;
+  }
+  .pv .mm-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--tx);
+    letter-spacing: 0.04em;
+    padding: 10px 15px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: 0.15s;
+    position: relative;
+    text-decoration: none;
+  }
+  .pv .mm-btn::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 4px;
+    height: 2px;
+    background: var(--ok);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: 0.18s;
+  }
+  .pv .mm-item:hover .mm-btn::after,
+  .pv .mm-item:focus-within .mm-btn::after {
+    transform: scaleX(1);
+  }
+  .pv .mm-btn i {
+    font-style: normal;
+    font-size: 8px;
+    color: var(--muted);
+    transition: transform 0.18s;
+  }
+  .pv .mm-item:hover .mm-btn,
+  .pv .mm-item:focus-within .mm-btn {
+    background: rgba(15, 20, 18, 0.04);
+  }
+  .pv .mm-item:hover .mm-btn i {
+    transform: rotate(180deg);
+  }
+  .pv .mm-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: -8px;
+    z-index: 60;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: 0.16s;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 26px 60px rgba(24, 36, 26, 0.14);
+    padding: 14px;
+  }
+  .pv .mm-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -12px;
+    height: 12px;
+  }
+  .pv .mm-item:hover .mm-panel,
+  .pv .mm-item:focus-within .mm-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .pv .mm-item:nth-last-child(-n + 2) .mm-panel {
+    left: auto;
+    right: -8px;
+  }
+  .pv .mm-inner {
+    display: block;
+    width: 288px;
+  }
+  .pv .mm-col a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: 0.13s;
+  }
+  .pv .mm-col a:hover {
+    background: #f3f6f0;
+  }
+  .pv .mm-col a b {
+    display: block;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--tx);
+    letter-spacing: 0.02em;
+  }
+  .pv .mm-col a span {
+    display: block;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+  .pv .mm-col a.mm-foot {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ok-light);
+    margin-top: 6px;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    padding-top: 12px;
+  }
+  .pv .mm-col a.mm-foot:hover {
+    background: none;
+  }
+  .pv .navlang {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 16px;
+  }
+  .pv .navlang:hover {
+    color: var(--tx);
+  }
+
+  /* ---------- 共通 ---------- */
+  .pv .wrap {
+    max-width: calc(1180px + 12vw);
+    margin: 0 auto;
+    padding: 0 6vw;
+  }
+  .pv section {
+    padding: 96px 0;
+  }
+  .pv .kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  /* 大見出しはヒーロー h1 とセリフ 500 で統一 */
+  .pv h1,
+  .pv h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 500;
+    color: var(--tx);
+  }
+  .pv h2 {
+    font-size: clamp(26px, 3vw, 40px);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    margin: 0 0 18px;
+  }
+  .pv .sec-lede {
+    font-size: 15.5px;
+    line-height: 2;
+    color: var(--tx-soft);
+    max-width: 58ch;
+    margin: 0 0 46px;
+  }
+  .pv .btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 6px;
+    padding: 14px 30px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.18s;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
+  }
+  .pv .btn.primary {
+    background: var(--ok);
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35);
+  }
+  .pv .btn.primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+  .pv .btn.ghostd {
+    color: var(--tx-soft);
+    border-color: #d5dad3;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .pv .btn.ghostd:hover {
+    border-color: var(--ok-ink);
+    color: var(--tx);
+  }
+  .pv .vmark {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+  .pv .vmark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .pv .mark {
+    position: relative;
+    white-space: nowrap;
+  }
+  .pv .mark::after {
+    content: "";
+    position: absolute;
+    left: -3px;
+    right: -3px;
+    bottom: 5px;
+    height: 0.34em;
+    background: var(--ok);
+    border-radius: 2px;
+    z-index: -1;
+  }
+  .pv .nb {
+    white-space: nowrap;
+  }
+  @keyframes pv-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* ---------- パネル（グロッシー／スレート） ---------- */
+  .pv .panel,
+  .pv .gpanel {
+    background: linear-gradient(178deg, var(--panel-2), var(--panel));
+    border-radius: 14px;
+    box-shadow: var(--sh-panel-s);
+    overflow: hidden;
+    position: relative;
+  }
+  .pv .panel {
+    box-shadow: var(--sh-panel);
+  }
+  .pv .pgrid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background-image:
+      linear-gradient(rgba(15, 20, 18, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 20, 18, 0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .pv .panel.tech,
+  .pv .gpanel.tech {
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border: none;
+    box-shadow:
+      0 22px 52px rgba(22, 30, 24, 0.26),
+      0 2px 8px rgba(22, 30, 24, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .pv .panel.tech::before,
+  .pv .gpanel.tech::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    right: -12%;
+    width: 64%;
+    height: 110%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(168, 224, 16, 0.11), transparent 62%);
+  }
+  .pv .panel.tech::after,
+  .pv .gpanel.tech::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      118deg,
+      rgba(255, 255, 255, 0.075) 0%,
+      transparent 28%,
+      transparent 100%
+    );
+  }
+  .pv .tech .pgrid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  }
+  .pv .phead {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--slate-line);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--slate-tx-dim);
+  }
+  .pv .phead .nm {
+    color: #d8ddd1;
+  }
+  .pv .phead .livechip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--ok);
+  }
+  .pv .phead .livechip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 8px rgba(168, 224, 16, 0.8);
+    animation: pv-pulse 2s ease-in-out infinite;
+  }
+  .pv .phead.offline .livechip {
+    color: var(--err);
+  }
+  .pv .phead.offline .livechip::before {
+    background: var(--err);
+    box-shadow: none;
+    animation: none;
+  }
+  .pv .phead .ep {
+    margin-left: auto;
+  }
+  .pv .pbody {
+    position: relative;
+    z-index: 2;
+    padding: 36px 30px 26px;
+  }
+  .pv .bignum {
+    font-family: var(--font-num);
+    font-weight: 200;
+    color: var(--slate-tx);
+    font-size: clamp(58px, 6.2vw, 92px);
+    letter-spacing: -0.015em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  .pv .biglabel {
+    margin-top: 12px;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--slate-tx-soft);
+  }
+  .pv .pmetrics {
+    display: flex;
+    gap: 36px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid var(--slate-line);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--slate-tx-dim);
+    flex-wrap: wrap;
+  }
+  .pv .pmetrics b {
+    display: block;
+    color: #d8ddd1;
+    font-weight: 400;
+    font-size: 13px;
+    margin-top: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pv .pstream {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--slate-line);
+    padding: 14px 22px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .pv .ev {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--slate-tx-dim);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pv .ev .vmark {
+    width: 14px;
+    height: 14px;
+  }
+  .pv .pfoot {
+    position: relative;
+    z-index: 2;
+    padding: 13px 22px;
+    border-top: 1px solid var(--slate-line);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--slate-tx-dim);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pv .pfoot a {
+    color: #d8ddd1;
+    text-decoration: none;
+    border-bottom: 1px solid #59645a;
+  }
+  .pv .pfoot a:hover {
+    color: var(--slate-tx);
+  }
+  .pv .perr {
+    position: relative;
+    z-index: 2;
+    padding: 20px 22px;
+    font-size: 12.5px;
+    line-height: 2;
+    color: #ce9a85;
+  }
+  .pv .perr a {
+    color: #e0b49a;
+  }
+
+  /* ---------- HERO ---------- */
+  .pv .hero {
+    background:
+      radial-gradient(ellipse 70% 55% at 78% 8%, rgba(168, 224, 16, 0.14), transparent 60%),
+      linear-gradient(180deg, #f5f6f4, #eef0ed 70%, #f3f4f2);
+    padding: 88px 6vw 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pv .hero .hgrid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(15, 20, 18, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 20, 18, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, #000 30%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 30%, #000 30%, transparent 78%);
+  }
+  .pv .hero .inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 5fr 6fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .pv .hero .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  .pv .hero h1 {
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.65;
+    letter-spacing: 0.04em;
+    margin: 0 0 20px;
+  }
+  .pv .hero .sub {
+    color: var(--tx-soft);
+    font-size: 15px;
+    line-height: 2.05;
+    letter-spacing: 0.03em;
+    margin: 0 0 34px;
+  }
+  .pv .heroctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .pv .ticker {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12.5px;
+    flex-wrap: wrap;
+  }
+  .pv .tk {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    background: var(--ok);
+    border-radius: 4px;
+    padding: 3px 7px;
+    flex: none;
+  }
+  .pv .ticker a {
+    color: var(--tx-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+  }
+  .pv .ticker a:hover {
+    border-color: var(--tx-soft);
+  }
+  .pv .herofacts {
+    display: flex;
+    gap: 0;
+    margin-top: 46px;
+    border-top: 1px solid #d8dcd6;
+    flex-wrap: wrap;
+  }
+  .pv .herofacts div {
+    padding: 18px 22px 0 0;
+    margin-right: 22px;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    color: var(--tx-soft);
+  }
+
+  /* ---------- WHY PROOF ---------- */
+  .pv .gatesec {
+    background: var(--lite);
+    padding-bottom: 62px;
+  }
+  .pv .whywrap {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 52px;
+    align-items: center;
+  }
+  .pv .whywrap h2 {
+    word-break: keep-all;
+    position: relative;
+    z-index: 1;
+  }
+  .pv .whywrap .sec-lede {
+    margin-bottom: 22px;
+  }
+  .pv .whylabel {
+    margin: 56px 0 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .pv .targets {
+    margin-top: 20px;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .pv .tcol::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ok);
+    margin-bottom: 14px;
+  }
+  .pv .tcol b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16.5px;
+    letter-spacing: 0.05em;
+    color: var(--tx);
+    margin-bottom: 8px;
+  }
+  .pv .tcol span {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--tx-soft);
+  }
+
+  /* フィールドスイープ */
+  .pv .fieldpanel {
+    padding: 0 0 12px;
+  }
+  .pv .fieldstage {
+    position: relative;
+    height: 430px;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .pv .fitem {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: #eceee9;
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(24, 36, 26, 0.04);
+    transition:
+      opacity 0.5s,
+      border-color 0.3s,
+      background 0.3s,
+      transform 0.5s,
+      box-shadow 0.3s;
+  }
+  .pv .fitem::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 5px;
+    opacity: 0.75;
+    background-image:
+      linear-gradient(rgba(15, 20, 18, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 20, 18, 0.055) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  .pv .fitem.checked.fake {
+    opacity: 0.1;
+    transform: scale(0.92);
+  }
+  .pv .fitem.checked.real {
+    background: #ffffff;
+    border-color: rgba(124, 175, 0, 0.55);
+    box-shadow:
+      0 10px 26px rgba(124, 175, 0, 0.16),
+      0 1px 3px rgba(24, 36, 26, 0.06);
+  }
+  .pv .fitem.checked.real::after {
+    opacity: 0.28;
+  }
+  .pv .fmark {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 3;
+    width: 20px;
+    height: 20px;
+    display: none;
+    place-items: center;
+    color: var(--ink);
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 10px rgba(168, 224, 16, 0.45);
+  }
+  .pv .fitem.checked.real .fmark {
+    display: grid;
+  }
+  .pv .fmark svg {
+    width: 11px;
+    height: 11px;
+    display: block;
+  }
+  .pv .sweep {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    left: 0;
+    background: var(--ok);
+    box-shadow: 0 0 20px rgba(168, 224, 16, 0.85);
+    z-index: 4;
+  }
+  .pv .fieldfoot {
+    position: relative;
+    z-index: 5;
+    margin: 0 18px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .pv .fieldfoot b {
+    color: var(--ok-ink);
+    font-weight: 400;
+  }
+  .pv .fieldfoot .sim {
+    margin-left: 10px;
+  }
+
+  /* ---------- WHERE TO START ---------- */
+  .pv .light {
+    background: var(--lite);
+    color: var(--tx);
+    padding-top: 62px;
+  }
+  .pv .startgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .pv .startcard {
+    padding: 28px 30px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 14px;
+  }
+  .pv .startcard.wide {
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--sh-m);
+    margin-top: 20px;
+  }
+  .pv .sc-head {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .pv .sc-k {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: #c3cabb;
+    margin-bottom: 9px;
+  }
+  .pv .sc-k i {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ok);
+    font-weight: 400;
+  }
+  .pv .sc-name {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    color: var(--slate-tx);
+  }
+  .pv .sc-name small {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--slate-tx-dim);
+    margin-left: 11px;
+  }
+  .pv .nowchip {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    background: var(--ok);
+    border-radius: 4px;
+    padding: 3px 8px;
+    align-self: center;
+    margin-left: auto;
+  }
+  .pv .nowchip.ghost {
+    background: transparent;
+    color: var(--ok);
+    border: 1px solid rgba(168, 224, 16, 0.45);
+  }
+  .pv .sc-p {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    font-size: 13.8px;
+    line-height: 1.95;
+    color: var(--slate-tx-soft);
+  }
+  .pv .sc-links {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+  .pv .sc-links a {
+    font-size: 13px;
+    color: var(--ok);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 224, 16, 0.35);
+    padding-bottom: 2px;
+  }
+  .pv .sc-links a:hover {
+    border-color: var(--ok);
+  }
+  .pv .feedlist {
+    position: relative;
+    z-index: 2;
+  }
+  .pv .frow {
+    display: grid;
+    grid-template-columns: 104px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 0;
+    border-top: 1px solid rgba(74, 84, 75, 0.55);
+  }
+  .pv .frow:first-child {
+    border-top: none;
+  }
+  .pv .fn {
+    font-size: 13px;
+    color: var(--slate-tx);
+  }
+  .pv .fapi {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+    background: rgba(12, 16, 12, 0.34);
+    border: 1px solid var(--slate-line);
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+  .pv .method {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--ok);
+    border-radius: 4px;
+    padding: 3px 8px;
+    flex: none;
+  }
+  .pv .fpath {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--slate-tx-dim);
+    flex: 1;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .pv .fpath::-webkit-scrollbar {
+    display: none;
+  }
+  .pv .fpath b {
+    color: #e8ece2;
+    font-weight: 400;
+  }
+  .pv .fbtn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: #d8ddd1;
+    background: transparent;
+    border: 1px solid #59645a;
+    border-radius: 6px;
+    padding: 6px 11px;
+    cursor: pointer;
+    flex: none;
+    transition: 0.15s;
+  }
+  .pv .fbtn:hover {
+    border-color: #d8ddd1;
+    color: var(--slate-tx);
+  }
+  .pv .fresp {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+  .pv .code200 {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    color: var(--ok);
+    border: 1px solid rgba(168, 224, 16, 0.4);
+    border-radius: 4px;
+    padding: 3px 8px;
+    flex: none;
+  }
+  .pv .livebox {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    color: #b6bdb1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .pv .livebox b {
+    color: var(--slate-tx);
+    font-weight: 400;
+  }
+  .pv .livebox .ok {
+    color: var(--ok);
+  }
+  .pv .livebox .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+    flex: none;
+    box-shadow: 0 0 8px rgba(168, 224, 16, 0.7);
+    animation: pv-pulse 2s ease-in-out infinite;
+  }
+  .pv .livebox.err .dot {
+    background: var(--err);
+    box-shadow: none;
+    animation: none;
+  }
+  .pv .startcard.wide .sc-k {
+    color: var(--tx-soft);
+  }
+  .pv .startcard.wide .sc-k i {
+    color: var(--ok-ink);
+  }
+  .pv .startcard.wide .sc-name {
+    color: var(--tx);
+  }
+  .pv .startcard.wide .sc-p {
+    color: var(--tx-soft);
+  }
+  .pv .planrows {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .pv .plancard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 20px 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    background: var(--card);
+    position: relative;
+    overflow: hidden;
+    transition: 0.18s;
+  }
+  .pv .plancard::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 0;
+    background: var(--ok);
+    transition: width 0.3s;
+  }
+  .pv .plancard:hover {
+    transform: translateY(-3px);
+    border-color: rgba(124, 175, 0, 0.5);
+    box-shadow: 0 18px 40px rgba(24, 36, 26, 0.12);
+  }
+  .pv .plancard:hover::before {
+    width: 100%;
+  }
+  .pv .pc-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .pv .pc-n {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+  }
+  .pv .lat {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .pv .pc-d {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--tx-soft);
+    margin-bottom: 4px;
+  }
+  .pv .pc-a {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--ok-ink);
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------- 開発者向けドキュメント（ダークバー） ---------- */
+  .pv .advband {
+    position: relative;
+    overflow: hidden;
+    padding: 58px 0 54px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+  }
+  .pv .advband::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    right: -6%;
+    width: 52%;
+    height: 220%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(168, 224, 16, 0.12), transparent 62%);
+  }
+  .pv .advband .wrap {
+    position: relative;
+    z-index: 2;
+  }
+  .pv .advhead {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--slate-line);
+  }
+  .pv .advhead h2 {
+    margin: 0;
+    font-size: clamp(20px, 2vw, 25px);
+    color: var(--slate-tx);
+  }
+  .pv .advlinks {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .pv .advlinks a {
+    font-size: 12.5px;
+    color: var(--ok);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 224, 16, 0.35);
+    padding-bottom: 2px;
+    transition: 0.15s;
+  }
+  .pv .advlinks a:hover {
+    border-color: var(--ok);
+  }
+  .pv .edge {
+    margin: 26px 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 38px;
+  }
+  .pv .edgecol {
+    display: flex;
+    flex-direction: column;
+  }
+  .pv .edgecol::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--ok);
+    border-radius: 2px;
+  }
+  .pv .ek {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 15.5px;
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+    color: var(--slate-tx);
+    margin: 12px 0 14px;
+  }
+  .pv .eklinks {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    border-top: 1px solid var(--slate-line);
+  }
+  .pv .eklinks a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 2px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #d8ddd1;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(74, 84, 75, 0.7);
+    transition: 0.15s;
+  }
+  .pv .eklinks a::after {
+    content: "→";
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ok);
+    flex: none;
+    transition: transform 0.15s;
+  }
+  .pv .eklinks a:hover {
+    color: #ffffff;
+  }
+  .pv .eklinks a:hover::after {
+    transform: translateX(3px);
+  }
+
+  /* ---------- FINAL ---------- */
+  .pv .final {
+    background: var(--lite-2);
+    text-align: center;
+    padding: 110px 6vw;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(168, 224, 16, 0.5);
+  }
+  .pv .final::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 72% 62% at 50% 0%,
+      rgba(168, 224, 16, 0.3),
+      transparent 68%
+    );
+  }
+  .pv .final .inner {
+    position: relative;
+    z-index: 2;
+  }
+  .pv .final h2 {
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+  }
+  .pv .final p {
+    color: var(--tx-soft);
+    font-size: 13.5px;
+    letter-spacing: 0.05em;
+    margin: 0 0 40px;
+    line-height: 2;
+  }
+  .pv .final .ctas {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .pv .ctaline {
+    position: relative;
+    max-width: 680px;
+    margin: 24px auto 32px;
+    height: 2px;
+  }
+  .pv .ctaline .bar {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    transform-origin: left center;
+    transform: scaleX(0);
+    background: linear-gradient(90deg, rgba(168, 224, 16, 0.25), var(--ok));
+    box-shadow: 0 0 16px rgba(168, 224, 16, 0.45);
+    animation: pv-ctadraw 5.2s ease-in-out infinite;
+  }
+  .pv .ctaline .head {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 16px rgba(168, 224, 16, 0.95);
+    opacity: 0;
+    animation: pv-ctahead 5.2s ease-in-out infinite;
+  }
+  @keyframes pv-ctadraw {
+    0% {
+      transform: scaleX(0);
+      opacity: 1;
+    }
+    46% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+    84% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 0;
+    }
+  }
+  @keyframes pv-ctahead {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    6% {
+      opacity: 1;
+    }
+    46% {
+      left: 100%;
+      opacity: 1;
+    }
+    58% {
+      left: 100%;
+      opacity: 0;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* ---------- レスポンシブ（指示 §6） ---------- */
+  @media (max-width: 1020px) {
+    /* 1020px 以下はこの面固有のメガメニューを畳み、既存 Navigation の
+       ハンバーガー＋ドロワーに委ねる（指示 §3.1）。 */
+    .pv .pv-nav {
+      display: none;
+    }
+    .pv .hero .inner,
+    .pv .whywrap,
+    .pv .startgrid,
+    .pv .planrows,
+    .pv .targets,
+    .pv .edge {
+      grid-template-columns: 1fr;
+    }
+    .pv .hero .inner {
+      gap: 44px;
+    }
+    .pv .whywrap {
+      gap: 40px;
+    }
+    .pv .targets {
+      gap: 26px;
+    }
+    .pv .edge {
+      gap: 30px;
+    }
+    .pv section {
+      padding: 68px 0;
+    }
+    .pv .hero {
+      padding: 56px 6vw 72px;
+    }
+    .pv .fieldstage {
+      height: 330px;
+    }
+    .pv .fitem {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+    }
+    .pv .fmark {
+      width: 16px;
+      height: 16px;
+      top: -6px;
+      right: -6px;
+    }
+    .pv .fmark svg {
+      width: 9px;
+      height: 9px;
+    }
+  }
+
+  /* ---------- prefers-reduced-motion（指示 §5） ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .pv .ctaline .bar {
+      animation: none;
+      transform: scaleX(1);
+    }
+    .pv .ctaline .head {
+      display: none;
+    }
+    .pv .phead .livechip::before,
+    .pv .livebox .dot {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ API_BASE, VERIFY_PATH }}>
+  (function () {
+    var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var $ = function (id) {
+      return document.getElementById(id);
+    };
+    var fmt = function (n) {
+      return n.toLocaleString("en-US");
+    };
+    var MARK =
+      '<span class="vmark" style="color:var(--ok)"><svg><use href="#pv-vmark"/></svg></span>';
+    var shortHash = function (h) {
+      return h ? h.slice(0, 10) + "…" + h.slice(-4) : "";
+    };
+    var getJson = function (path) {
+      return fetch(API_BASE + path, { headers: { accept: "application/json" } }).then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      });
+    };
+
+    /* ---- REGISTRY パネル。失敗時は推定で埋めない ---- */
+    function countUp(el, to) {
+      if (reduced) {
+        el.textContent = fmt(to);
+        return;
+      }
+      var t0 = performance.now(),
+        dur = 1500,
+        from = Math.max(0, to - Math.min(to, 600));
+      (function f(t) {
+        var p = Math.min(1, (t - t0) / dur),
+          e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(from + (to - from) * e));
+        if (p < 1) requestAnimationFrame(f);
+      })(t0);
+    }
+    function fmtTime(s) {
+      if (!s) return "—";
+      var d = new Date(s.indexOf("T") >= 0 ? s : s.replace(" ", "T") + "Z");
+      return isNaN(d.getTime())
+        ? "—"
+        : d.toLocaleString("ja-JP", {
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+    }
+    var lastV = null;
+    function loadCounters(first) {
+      return getJson("/counters")
+        .then(function (j) {
+          var verified = j.verified.bySource.reduce(function (a, b) {
+            return a + b.count;
+          }, 0);
+          var issued = j.issued.byBucket.reduce(function (a, b) {
+            return a + b.count;
+          }, 0);
+          if (first) countUp($("pv-vnum"), verified);
+          else if (lastV !== verified) $("pv-vnum").textContent = fmt(verified);
+          lastV = verified;
+          $("pv-inum").textContent = fmt(issued);
+          $("pv-pupd").textContent = fmtTime(j.verified.updatedAt);
+          $("pv-perr").hidden = true;
+          $("pv-phead").classList.remove("offline");
+          $("pv-plive").textContent = "LIVE";
+        })
+        .catch(function () {
+          /* 2回目以降の失敗は直前の実数を残す（推定ではないため）。初回のみ OFFLINE 表示。 */
+          if (!first) return;
+          $("pv-vnum").textContent = "—";
+          $("pv-inum").textContent = "—";
+          $("pv-pupd").textContent = "—";
+          $("pv-perr").hidden = false;
+          $("pv-phead").classList.add("offline");
+          $("pv-plive").textContent = "OFFLINE";
+        });
+    }
+    loadCounters(true);
+    setInterval(function () {
+      loadCounters(false);
+    }, 45000);
+
+    /* ---- イベント行（為替・祝日の docHash 短縮） ---- */
+    var evs = [];
+    function renderStream() {
+      if (!evs.length) return;
+      $("pv-pstream").innerHTML = evs
+        .map(function (t) {
+          return '<div class="ev">' + MARK + "<span>" + t + "</span></div>";
+        })
+        .join("");
+      $("pv-pstream").hidden = false;
+    }
+
+    function liveErr(el) {
+      el.classList.add("err");
+      el.innerHTML =
+        '<span class="dot"></span>フィードに到達できません — レスポンスを直接確認してください';
+    }
+
+    /* ---- フィード3行 ＋「証明サンプルを検証する」の遷移先 ---- */
+    var fxP = getJson("/suites/feeds/forex/composite/latest");
+    fxP
+      .then(function (j) {
+        if (j.docHash) {
+          $("pv-herolink").href = VERIFY_PATH + "?doc=" + encodeURIComponent(j.docHash);
+        }
+        var a = j.attributes || {},
+          v = j.verification || {};
+        evs.push(
+          "feeds/forex/composite&nbsp; " +
+            (a.date || "") +
+            " — " +
+            (v.verified != null ? v.verified : "?") +
+            "/" +
+            (v.total != null ? v.total : "?") +
+            " sources verified — " +
+            shortHash(j.docHash),
+        );
+        renderStream();
+        var jpy = a["rates.JPY"];
+        $("pv-fxlive").innerHTML =
+          '<span class="dot"></span>' +
+          (jpy ? "USD/JPY <b>" + jpy.toFixed(3) + "</b>&nbsp;&nbsp;" : "") +
+          (v.total
+            ? '<span class="ok">' + v.verified + "/" + v.total + " verified</span>&nbsp;&nbsp;"
+            : "") +
+          (a.date || "");
+      })
+      .catch(function () {
+        liveErr($("pv-fxlive"));
+      });
+
+    getJson("/suites/feeds/jp-holidays/latest")
+      .then(function (j) {
+        var v = j.verification || {};
+        evs.push("feeds/jp-holidays&nbsp; proof issued — " + shortHash(j.docHash));
+        renderStream();
+        $("pv-hollive").innerHTML =
+          '<span class="dot"></span>' +
+          (v.total
+            ? '<span class="ok">' + v.verified + "/" + v.total + " verified</span>&nbsp;&nbsp;"
+            : "") +
+          "proof <b>" +
+          shortHash(j.docHash) +
+          "</b>";
+      })
+      .catch(function () {
+        liveErr($("pv-hollive"));
+      });
+
+    getJson("/suites/feeds/jp-postal-codes/latest")
+      .then(function (j) {
+        var a = j.attributes || {},
+          v = j.verification || {};
+        var n = a["meta.count"];
+        $("pv-ziplive").innerHTML =
+          '<span class="dot"></span>' +
+          (n ? "<b>" + Number(n).toLocaleString("en-US") + "</b> records&nbsp;&nbsp;" : "") +
+          (v.total
+            ? '<span class="ok">' + v.verified + "/" + v.total + " verified</span>&nbsp;&nbsp;"
+            : "") +
+          "proof <b>" +
+          shortHash(j.docHash) +
+          "</b>";
+      })
+      .catch(function () {
+        liveErr($("pv-ziplive"));
+      });
+
+    /* ---- フィールドスイープ（イメージ図） ---- */
+    var fstage = $("pv-fieldstage"),
+      sweep = $("pv-sweep");
+    var FCOLS = 9,
+      FROWS = 6,
+      items = [];
+    for (var r = 0; r < FROWS; r++) {
+      for (var c = 0; c < FCOLS; c++) {
+        var el = document.createElement("div");
+        var real = Math.random() < 0.2;
+        el.className = "fitem " + (real ? "real" : "fake");
+        if (real)
+          el.innerHTML =
+            '<span class="fmark"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.4 6.3 L4.9 8.8 L9.6 3.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+        var x = 4 + c * (90 / (FCOLS - 1));
+        el.style.left = x + "%";
+        el.style.top = 6 + r * (78 / (FROWS - 1)) + "%";
+        fstage.appendChild(el);
+        items.push({ el: el, real: real, x: x });
+      }
+    }
+    var sx = 0,
+      scanned = 0,
+      reals = 0;
+    function step() {
+      sx += 0.42;
+      if (sx > 104) {
+        sx = 0;
+        scanned = 0;
+        reals = 0;
+        items.forEach(function (i) {
+          i.el.classList.remove("checked");
+        });
+        $("pv-scancount").textContent = "0";
+        $("pv-realcount").textContent = "0";
+      }
+      sweep.style.left = sx + "%";
+      items.forEach(function (i) {
+        if (!i.el.classList.contains("checked") && i.x < sx) {
+          i.el.classList.add("checked");
+          scanned++;
+          if (i.real) {
+            reals++;
+            $("pv-realcount").textContent = String(reals);
+          }
+          $("pv-scancount").textContent = String(scanned);
+        }
+      });
+    }
+    if (!reduced) {
+      setInterval(step, 40);
+    } else {
+      items.forEach(function (i) {
+        i.el.classList.add("checked");
+        if (i.real) reals++;
+        scanned++;
+      });
+      $("pv-realcount").textContent = String(reals);
+      $("pv-scancount").textContent = String(scanned);
+      sweep.style.display = "none";
+    }
+
+    /* ---- GET 行の COPY ---- */
+    document.querySelectorAll("[data-copy]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        navigator.clipboard.writeText($(b.dataset.copy).textContent.trim()).then(function () {
+          var o = b.textContent;
+          b.textContent = "COPIED";
+          setTimeout(function () {
+            b.textContent = o;
+          }, 1200);
+        });
+      });
+    });
+  })();
+</script>

@@ -19,7 +19,9 @@ export default defineConfig({
       i18n: { defaultLocale: "en", locales: { en: "en-US", ja: "ja-JP" } },
       filter: (page) =>
         !page.includes("/thank-you/") &&
-        !page.includes("/pillars/agent-trust-chain/"),
+        !page.includes("/pillars/agent-trust-chain/") &&
+        // 社内プレビュー面（noindex）。sitemap には収載しない。
+        !page.includes("/preview/"),
     }),
   ],
   vite: {
