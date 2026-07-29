@@ -58,9 +58,13 @@ const escapeChar = (ch: string): string => {
  * Escapes `"`, `\`, and all control characters (U+0000–U+001F).
  * Does NOT escape `/` (forward slash) — JCS does not.
  */
+const CONTROL_CHAR_REGEX = new RegExp(
+  "[\"\\\\" + String.fromCharCode(0) + "-" + String.fromCharCode(0x1f) + "]",
+  "g",
+);
+
 const serializeString = (s: string): string =>
-  // eslint-disable-next-line no-control-regex -- JCS requires matching control chars
-  `"${s.replace(/["\\\u0000-\u001f]/g, escapeChar)}"`;
+  `"${s.replace(CONTROL_CHAR_REGEX, escapeChar)}"`;
 
 // ── number serialisation ────────────────────────────────────────────────
 
