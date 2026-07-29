@@ -69,6 +69,17 @@ const {
   readingTimeLabel,
 } = Astro.props as BlogArticleTemplateProps;
 
+/**
+ * サイトリニューアル先行のデザイン移行を、**この slug の記事だけ**で試す。
+ * モック `lemma_article_mock_v6.html` の面（トークンは /ja/preview/top/ と同じ）。
+ *
+ * 記事テンプレート全体の移行はリニューアル本体で行う。そのときは
+ * この配列と `.blog-page:not(.v2)` の旧スタイルを消せば、新しい面が全記事に
+ * 出る——**移行は「ここを外すだけ」**で済むようにしてある。
+ */
+const DESIGN_V2_SLUGS: ReadonlyArray<string> = ["lemma-oracle-specs"];
+const isV2 = DESIGN_V2_SLUGS.includes(post.slug);
+
 const homeLabel = locale === "ja" ? "ホーム" : "Home";
 const isJa = locale === "ja";
 const builtForHeading = isJa
@@ -90,7 +101,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <main class="blog-page">
+  <main class:list={["blog-page", isV2 && "v2"]}>
     <div class="blog-container">
       <div class="blog-breadcrumb">
         <a href={base || "/"}>{homeLabel}</a>
@@ -107,11 +118,13 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
       </div>
 
       <section class="blog-hero">
+        {/* v2 はカテゴリがチップになり、日付・読了はモノスペースの間隔で
+            分かれるので、区切りの「·」を置かない。 */}
         <div class="blog-eyebrow">
           <span class="eyebrow-cat">{post.category}</span>
-          <span class="eyebrow-sep">·</span>
+          {!isV2 && <span class="eyebrow-sep">·</span>}
           <span class="eyebrow-date">{post.date}</span>
-          <span class="eyebrow-sep">·</span>
+          {!isV2 && <span class="eyebrow-sep">·</span>}
           <span class="eyebrow-time">{readingTimeLabel}</span>
         </div>
         <h1 class="blog-h1">{post.title}</h1>
@@ -918,6 +931,528 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     .related-thumb {
       width: 100%;
       height: 140px;
+    }
+  }
+</style>
+
+<!-- ─────────────────────────────────────────────────────────────
+     デザイン移行（サイトリニューアル先行）。DESIGN_V2_SLUGS の記事だけに
+     付く `.v2` の下でだけ効く。旧スタイルはそのまま残してあるので、
+     他の記事の見た目は1pxも変わらない。
+
+     トークンの値は /ja/preview/top/（PreviewTopTemplate の .pv）と同じ。
+     フォントは **Layout が実際に読み込むもの**だけを指す（モックの
+     Space Grotesk は読み込んでいない＝指定しても入っている端末でしか出ない）。
+     ────────────────────────────────────────────────────────── -->
+<style>
+  .blog-page.v2 {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Noto Serif JP", "Cormorant Garamond", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
+
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+  }
+  .blog-page.v2 .blog-container {
+    max-width: calc(760px + 12vw);
+    padding: 0 6vw;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .blog-page.v2 .blog-breadcrumb {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 34px 0 0;
+    font-size: 12px;
+    letter-spacing: normal;
+    text-transform: none;
+    font-family: var(--font-body);
+    color: var(--muted);
+  }
+  .blog-page.v2 .blog-breadcrumb a {
+    color: var(--muted);
+    border-bottom: 1px solid transparent;
+  }
+  .blog-page.v2 .blog-breadcrumb a:hover {
+    color: var(--tx);
+    border-color: var(--line);
+  }
+  .blog-page.v2 .blog-breadcrumb-sep {
+    margin: 0;
+    opacity: 0.5;
+    color: var(--muted);
+  }
+
+  /* ─── HERO ─── */
+  .blog-page.v2 .blog-hero {
+    padding: 26px 0 0;
+  }
+  .blog-page.v2 .blog-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 0 0 20px;
+    font-size: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  .blog-page.v2 .eyebrow-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ok-ink);
+    border: 1px solid rgba(124, 175, 0, 0.45);
+    background: rgba(168, 224, 16, 0.09);
+    border-radius: 5px;
+    padding: 4px 9px;
+  }
+  .blog-page.v2 .eyebrow-date,
+  .blog-page.v2 .eyebrow-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .blog-page.v2 .blog-h1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(27px, 3.6vw, 40px);
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 0 0 22px;
+    word-break: keep-all;
+  }
+  .blog-page.v2 .blog-abstract {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 15.5px;
+    line-height: 2;
+    letter-spacing: 0.01em;
+    color: var(--tx-soft);
+    margin: 0 0 26px;
+    padding-left: 20px;
+    border-left: 2px solid var(--ok);
+  }
+
+  /* ─── COVER ─── */
+  .blog-page.v2 .blog-cover {
+    margin: 30px 0 0;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.12);
+    background: var(--lite-2);
+    aspect-ratio: 1200 / 630;
+  }
+
+  /* ─── BODY ─── */
+  .blog-page.v2 .blog-body {
+    padding: 14px 0 0;
+    font-size: 16px;
+    line-height: 2.05;
+    color: var(--tx-soft);
+  }
+  .blog-page.v2 .blog-body :global(h2) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.1vw, 24px);
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 56px 0 18px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .blog-page.v2 .blog-body :global(h2::before) {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 36px;
+    height: 2px;
+    background: var(--ok);
+  }
+  .blog-page.v2 .blog-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .blog-page.v2 .blog-body :global(h3) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17.5px;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 36px 0 12px;
+  }
+  .blog-page.v2 .blog-body :global(p) {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 2.05;
+    color: var(--tx-soft);
+    margin: 0 0 22px;
+  }
+  .blog-page.v2 .blog-body :global(> p:first-of-type) {
+    font-size: 16px;
+    color: var(--tx-soft);
+  }
+  .blog-page.v2 .blog-body :global(strong) {
+    font-weight: 600;
+    color: var(--tx);
+  }
+  .blog-page.v2 .blog-body :global(a) {
+    color: var(--ok-light);
+    border-bottom: 1px solid rgba(78, 122, 0, 0.35);
+  }
+  .blog-page.v2 .blog-body :global(a:hover) {
+    border-bottom-color: var(--ok-light);
+    color: var(--ok-light);
+  }
+  .blog-page.v2 .blog-body :global(li) {
+    padding-left: 22px;
+    margin: 0 0 10px;
+    line-height: 2.05;
+    font-size: 16px;
+  }
+  .blog-page.v2 .blog-body :global(ul li::before) {
+    content: "";
+    left: 2px;
+    top: 14px;
+    width: 8px;
+    height: 2px;
+    background: var(--ok-ink);
+    border-radius: 2px;
+    transform: none;
+  }
+  .blog-page.v2 .blog-body :global(ol li::before) {
+    left: 0;
+    top: 1px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ok-ink);
+  }
+  .blog-page.v2 .blog-body :global(blockquote),
+  .blog-page.v2 .blog-body :global(p:has(> em:only-child)) {
+    margin: 0 0 24px;
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid var(--ok);
+    font-family: var(--font-serif-jp);
+    font-size: 16px;
+    line-height: 1.95;
+    color: var(--tx);
+    font-style: normal;
+  }
+  .blog-page.v2 .blog-body :global(p:has(> em:only-child) em) {
+    font-style: normal;
+  }
+  .blog-page.v2 .blog-body :global(hr) {
+    border-top: 1px solid var(--line);
+    margin: 44px 0;
+  }
+  .blog-page.v2 .blog-body :global(table) {
+    margin: 0 0 26px;
+    font-size: 14px;
+  }
+  .blog-page.v2 .blog-body :global(thead tr) {
+    background: var(--lite-2);
+  }
+  .blog-page.v2 .blog-body :global(th) {
+    padding: 13px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .blog-page.v2 .blog-body :global(td) {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+    color: var(--tx-soft);
+  }
+  .blog-page.v2 .blog-body :global(code:not(pre code)) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ok-ink);
+    background: #eef2ea;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+  .blog-page.v2 .blog-body :global(pre) {
+    margin: 0 0 26px;
+    padding: 20px 22px;
+    border-radius: 12px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow: 0 16px 38px rgba(22, 30, 24, 0.2);
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #d8ddd1;
+  }
+  .blog-page.v2 .blog-body :global(img) {
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+
+  /* ─── RESOURCES / RELATED ラベル ─── */
+  .blog-page.v2 .blog-resources,
+  .blog-page.v2 .blog-related {
+    margin: 56px 0 0;
+    padding: 26px 0 0;
+    border-top: 1px solid var(--line);
+  }
+  .blog-page.v2 .resources-label,
+  .blog-page.v2 .related-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .blog-page.v2 .resources-label::before,
+  .blog-page.v2 .related-label::before {
+    width: 28px;
+    height: 2px;
+    background: var(--ok);
+  }
+  .blog-page.v2 .resources-link,
+  .blog-page.v2 .related-item,
+  .blog-page.v2 .prevnext-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .blog-page.v2 .resources-link:hover,
+  .blog-page.v2 .related-item:hover,
+  .blog-page.v2 .prevnext-card:hover {
+    border-color: rgba(124, 175, 0, 0.45);
+    background: var(--card);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .blog-page.v2 .resources-link-label {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--tx);
+    letter-spacing: 0.03em;
+  }
+  .blog-page.v2 .resources-link-href {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+
+  /* ─── TAGS ─── */
+  .blog-page.v2 .blog-tags {
+    gap: 9px;
+    margin: 48px 0 0;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+  .blog-page.v2 .blog-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 6px 12px;
+  }
+  .blog-page.v2 .blog-tag-link:hover {
+    border-color: var(--ok-ink);
+    color: var(--ok-ink);
+    background: transparent;
+  }
+
+  /* ─── CTA（暗いグロッシー面） ─── */
+  .blog-page.v2 .blog-cta {
+    margin: 56px 0 0;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border-radius: 16px;
+    padding: 38px 36px 34px;
+    text-align: left;
+  }
+  .blog-page.v2 .blog-cta::before {
+    inset: 0;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.18),
+      rgba(168, 224, 16, 0) 62%
+    );
+  }
+  .blog-page.v2 .blog-cta > * {
+    position: relative;
+    z-index: 2;
+  }
+  .blog-page.v2 .cta-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: #9ba296;
+    margin: 0;
+  }
+  .blog-page.v2 .cta-h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: #ebefe6;
+    margin: 12px 0 10px;
+  }
+  .blog-page.v2 .cta-h2 em {
+    font-style: normal;
+    color: var(--ok);
+  }
+  .blog-page.v2 .cta-text {
+    font-family: var(--font-body);
+    margin: 0 0 24px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #bcc3b6;
+    max-width: 52ch;
+  }
+  .blog-page.v2 .cta-btns {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+  .blog-page.v2 .btn-cta-main {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--ok);
+    color: #0f1412;
+    border-radius: 6px;
+    padding: 12px 22px;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.35);
+  }
+  .blog-page.v2 .btn-cta-main:hover {
+    background: var(--ok);
+    filter: brightness(1.06);
+  }
+  .blog-page.v2 .btn-cta-outline {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #d8ddd1;
+    border: 1px solid #59645a;
+    background: transparent;
+    border-radius: 6px;
+    padding: 12px 22px;
+  }
+  .blog-page.v2 .btn-cta-outline:hover {
+    border-color: #d8ddd1;
+    color: #fff;
+    background: transparent;
+  }
+
+  /* ─── NEWSLETTER ─── */
+  /* 共有コンポーネントなので、この面に落ちたときだけ枠を寄せる。**中の
+     申込フォームは Tally の iframe** で、こちらからは色を変えられない。 */
+  .blog-page.v2 :global(.newsletter-embed) {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin: 34px 0 0;
+  }
+  .blog-page.v2 :global(.newsletter-eyebrow) {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ok-ink);
+  }
+  .blog-page.v2 :global(.newsletter-lead) {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+  }
+
+  /* ─── PREV / NEXT ─── */
+  .blog-page.v2 .blog-prevnext {
+    gap: 16px;
+    margin: 34px 0 0;
+  }
+  .blog-page.v2 .prevnext-card {
+    gap: 7px;
+    padding: 20px 22px;
+  }
+  .blog-page.v2 .prevnext-card.next {
+    align-items: flex-end;
+  }
+  .blog-page.v2 .prevnext-dir {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: var(--ok-ink);
+  }
+  .blog-page.v2 .prevnext-title,
+  .blog-page.v2 .related-title {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+  }
+  .blog-page.v2 .prevnext-date {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .blog-page.v2 .related-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: var(--ok-ink);
+  }
+  .blog-page.v2 .related-thumb {
+    background-color: var(--lite-2);
+  }
+
+  @media (max-width: 760px) {
+    .blog-page.v2 .blog-container {
+      padding: 0 24px;
+    }
+    .blog-page.v2 .blog-cta {
+      padding: 30px 24px 28px;
+    }
+    .blog-page.v2 .prevnext-card.next {
+      align-items: flex-start;
     }
   }
 </style>
