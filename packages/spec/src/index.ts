@@ -326,6 +326,21 @@ export type SubmitProofResponse = Readonly<{
   [k: string]: unknown;
 }>;
 
+/**
+ * Public proof record returned by `GET /v1/proofs?docHash=`.
+ *
+ * The latest proof for a document hash (ORDER BY registered_at DESC).
+ * A third party holding a docHash uses this to fetch the proof for verification.
+ */
+export type ProofRecord = Readonly<{
+  docHash: string;
+  circuitId: string;
+  proof: string;
+  inputs: ReadonlyArray<string>;
+  status: string;
+  registeredAt: string;
+}>;
+
 /* ── Verified attributes query ─────────────────────────────────────── */
 
 export type VerifiedAttributesQueryRequest = Readonly<{

@@ -535,6 +535,44 @@
         ],
         "additionalProperties": true
       },
+      "ProofRecord": {
+        "type": "object",
+        "description": "Public proof record returned by GET /v1/proofs?docHash=. Latest proof for the given document hash.",
+        "properties": {
+          "docHash": {
+            "type": "string",
+            "description": "Document hash (0x-prefixed bytes32)"
+          },
+          "circuitId": {
+            "type": "string"
+          },
+          "proof": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "docHash",
+          "circuitId",
+          "proof",
+          "inputs",
+          "status",
+          "registeredAt"
+        ],
+        "additionalProperties": false
+      },
       "VerifiedAttributesQueryRequest": {
         "type": "object",
         "properties": {
@@ -1167,6 +1205,55 @@
       }
     },
     "/v1/proofs": {
+      "get": {
+        "summary": "Get latest proof by document hash",
+        "description": "Public. Returns the most recently registered proof for the given docHash.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "docHash",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{64}$"
+            },
+            "description": "Document hash (0x-prefixed bytes32)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProofRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "requestBody": {
           "required": true,
