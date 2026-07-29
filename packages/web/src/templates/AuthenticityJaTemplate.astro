@@ -1,0 +1,1221 @@
+---
+/**
+ * 真正性ハブ（日本語）— サイトリニューアル先行のデザイン移行版。
+ * モック `lemma_authenticity_mock_v4.html`（デザイン＋本文の改稿）を実装。
+ *
+ * **なぜ EN と別ファイルなのか**
+ * 今回は日本語だけを先行させる判断（本文の改稿が JA のみ）。1つの
+ * テンプレートにロケール分岐で2つのデザインを同居させると、どちらの面を
+ * 触っているのか分からなくなるので、**JA はこのファイル・EN は従来の
+ * `AuthenticityTemplate.astro`** に分けている。リニューアルで EN が追い
+ * ついたら、このファイルを共通テンプレートに戻して旧ファイルを畳む。
+ *
+ * トークンは /ja/preview/top/（`PreviewTopTemplate` の `.pv`）と同じ値。
+ * フォントは **Layout が実際に読み込むもの**だけを指す（モックの
+ * Space Grotesk は読み込んでいない）。
+ *
+ * 現行から引き継いだもの: メタタイトル・ディスクリプション、JSON-LD
+ * （Article / FAQPage / BreadcrumbList）、出典の一次情報 URL。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import ProofCover from "../components/ProofCover.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+
+export interface AuthenticityJaTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as AuthenticityJaTemplateProps;
+
+const SITE = "https://lemma.frame00.com";
+const pageUrl = `${SITE}${base}/authenticity/`;
+/** 問い合わせの経由面を Tally 側で拾うためのパラメータ（plan 隠しフィールド）。 */
+const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?plan=authenticity`;
+const newsletterUrl = "https://tally.so/r/EkMj82";
+const anshinUrl = `${SITE}/ai-gyomu-anshin/`;
+const L = (path: string) => `${base}${path}`;
+
+/** 本文を最後に見直した日。表示と JSON-LD の dateModified で同じ値を使う。 */
+const UPDATED = "2026-07-29";
+const updatedLabel = "2026.07.29 更新";
+
+const metaTitle =
+  "真正性とは — データ・コンテンツ・AIの「本物である」を来歴で検証する｜Lemma";
+const metaDescription =
+  "真正性とは、データやコンテンツが本物で、改ざんされておらず、出所（来歴）が確かであること。電子記録・報道コンテンツ・金融・AIまで、ジャンル別の意味と、来歴を暗号的に検証する方法をLemmaがまとめます。";
+
+const toc = [
+  { n: "01", id: "context", label: "AI時代の真正性" },
+  { n: "02", id: "def", label: "真正性・完全性・機密性の違い" },
+  { n: "03", id: "req", label: "電子記録に求められる三要件" },
+  { n: "04", id: "genre", label: "真正性が問われる場面" },
+  { n: "05", id: "lanes", label: "発行する側と、受け取る側" },
+  { n: "06", id: "verify", label: "真正性をどう検証するか" },
+  { n: "07", id: "lemma", label: "Lemmaの来歴証明" },
+  { n: "08", id: "faq", label: "よくある質問" },
+] as const;
+
+const definitions = [
+  {
+    en: "Authenticity",
+    ja: "真正性",
+    body: "本物であること。誰が作ったか、出所が確かか、なりすましでないか。",
+    main: true,
+  },
+  {
+    en: "Integrity",
+    ja: "完全性",
+    body: "改ざんされていないこと。作成時点から内容が変わっていないか。",
+    main: false,
+  },
+  {
+    en: "Confidentiality",
+    ja: "機密性",
+    body: "許可された者だけが見られること。",
+    main: false,
+  },
+] as const;
+
+const requirements = [
+  {
+    label: "真正性",
+    body: "記録が本物で、改ざん・消去の有無をたどれること。作成者の責任が明確であること。",
+  },
+  { label: "見読性", body: "必要なときに読める形で出力できること。" },
+  { label: "保存性", body: "保存期間を通じて読める状態を保つこと。" },
+] as const;
+
+/**
+ * 場面ごとの入口。リンク先は**ユースケース索引の業種フィルタ**
+ * （`#mfg` などのハッシュで実際に絞り込まれる）。
+ * 報道・メディアだけは業種フィルタが無いので、発行（来歴の付与）の面である
+ * Seal へ送る——存在しないフィルタに送って空振りさせないため。
+ */
+const scenes = [
+  {
+    title: "製造・基幹インフラ",
+    body: "検査記録と計測値が、計測した時点のままか。",
+    href: L("/solutions/use-cases/#mfg"),
+    cta: "ユースケース →",
+  },
+  {
+    title: "金融・FinTech",
+    body: "取引相手の属性を、生データを受け取らずに確かめる。",
+    href: L("/solutions/use-cases/#fin"),
+    cta: "ユースケース →",
+  },
+  {
+    title: "自治体・公共",
+    body: "台帳や統計が、公式に発行されたものと同一か。",
+    href: L("/solutions/use-cases/#pub"),
+    cta: "ユースケース →",
+  },
+  {
+    title: "報道・メディア",
+    body: "配信する前に、素材の出所をたどれるか。",
+    href: L("/seal/"),
+    cta: "Seal を見る →",
+  },
+  {
+    title: "調達・サプライチェーン",
+    body: "許認可や証書が、原本を渡さずに確認できるか。",
+    href: L("/solutions/use-cases/#sc"),
+    cta: "ユースケース →",
+  },
+  {
+    title: "AIエージェントの運用",
+    body: "実行の前に、入力データと権限の来歴を検証できるか。",
+    href: L("/solutions/use-cases/#ai"),
+    cta: "ユースケース →",
+  },
+] as const;
+
+const lanes = [
+  {
+    role: "発行する側",
+    items: [
+      "作成の時点で来歴を記録する",
+      "生データを渡さず、証明だけを配る",
+      "誰が発行したかを明示する",
+    ],
+  },
+  {
+    role: "受け取る側",
+    items: [
+      "発行者に問い合わせず独立に検証する",
+      "検証の範囲と限界を理解する",
+      "検証できないものを業務に入れない",
+    ],
+  },
+] as const;
+
+const checks = [
+  {
+    label: "署名の一致",
+    body: "発行者の鍵で署名されたものと、いま手元にあるものが一致するか。",
+  },
+  {
+    label: "改ざんの有無",
+    body: "発行された時点から、内容が1バイトも変わっていないか。",
+  },
+  {
+    label: "発行者の確認",
+    body: "その鍵が、名乗っている発行者のものとして登録されているか。",
+  },
+] as const;
+
+const faq = [
+  {
+    q: "真正性と完全性は何が違いますか？",
+    a: "完全性は「内容が改ざんされていない」ことを保証します。真正性はそれに加えて「出所が本物か（誰が作ったか、なりすましでないか）」までを含む、一段広い概念です。",
+  },
+  {
+    q: "電子帳簿保存法や電子カルテで求められる真正性とは何ですか？",
+    a: "記録が本物で、改ざん・消去の有無をたどれ、作成者の責任が明確であることです。電子署名・タイムスタンプ・操作履歴（来歴）の管理で確保します。日本の電子記録では真正性・見読性・保存性の三要件として定められています。",
+  },
+  {
+    q: "C2PA と来歴証明はどう関係しますか？",
+    a: "C2PA はコンテンツに来歴情報を付与する業界標準です。Lemmaの来歴証明はそれと並んで動き、付与された来歴を暗号的に検証する層を担います。置き換えではなく補完です。",
+  },
+  {
+    q: "検出ツールがあれば真正性は守れますか？",
+    a: "検出は異常を後から見つけるもので、被害の把握に不可欠です。ただし「実行前に、本物の出所から来たか」を立証はしません。真正性には、事前に来歴を独立検証する層が必要です。",
+  },
+] as const;
+
+/** 一次情報の URL は現行ページから引き継ぐ（モックには URL が無い）。 */
+const references = [
+  {
+    n: 1,
+    text: "国税庁「電子帳簿等保存制度特設サイト」（電子帳簿保存法）",
+    url: "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/tokusetsu/index.htm",
+  },
+  {
+    n: 2,
+    text: "厚生労働省「医療情報システムの安全管理に関するガイドライン 第6.0版」",
+    url: "https://www.mhlw.go.jp/stf/shingi/0000516275_00006.html",
+  },
+  {
+    n: 3,
+    text: "C2PA（Coalition for Content Provenance and Authenticity）公式・技術仕様",
+    url: "https://c2pa.org/",
+  },
+] as const;
+
+const ctaCards = [
+  {
+    label: "AIに業務を安全に任せるデータ基盤",
+    desc: "データを渡さず真正性を証明する仕組みと導入の進め方。",
+    href: anshinUrl,
+  },
+  {
+    label: "Discovery Call（30分）",
+    desc: "導入相談から。お問い合わせはこちら。",
+    href: discoveryUrl,
+  },
+  {
+    label: "Lemma Critical Weekly（週次）",
+    desc: "実際のリスク事案の構造分析を、毎週メールで。",
+    href: newsletterUrl,
+  },
+  {
+    label: "事案で見る — Critical Brief 一覧",
+    desc: "実際に起きた真正性の破れを構造で読み解く。",
+    href: L("/critical/briefs/"),
+  },
+] as const;
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "真正性とは",
+  description: metaDescription,
+  url: pageUrl,
+  inLanguage: locale,
+  dateModified: UPDATED,
+  author: { "@type": "Organization", name: "Lemma" },
+  publisher: {
+    "@type": "Organization",
+    name: "Lemma",
+    logo: { "@type": "ImageObject", url: `${SITE}/favicon.svg` },
+  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+  about: [
+    { "@type": "Thing", name: "真正性" },
+    { "@type": "Thing", name: "データ来歴" },
+  ],
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "ホーム",
+      item: `${SITE}${base || "/"}`,
+    },
+    { "@type": "ListItem", position: 2, name: "真正性", item: pageUrl },
+  ],
+};
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/authenticity/"
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(articleJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="au2-page">
+    <div class="au2-wrap">
+      <div class="crumb">
+        <a href={base || "/"}>ホーム</a>
+        <i>/</i>
+        <span>真正性とは</span>
+      </div>
+
+      <header class="arthead">
+        <div class="artmeta">
+          <span class="catchip">Explainer</span>
+          <time datetime={UPDATED}>{updatedLabel}</time>
+          <span class="rt">読了 9分</span>
+        </div>
+        <h1 class="arth1">真正性とは</h1>
+        <p class="abstract">
+          見た目では、もう本物とフェイクを見分けられません。真正性は、目で確かめるものから、証明で確かめるものへ変わりました。
+        </p>
+
+        <nav class="toc" aria-label="このページの内容">
+          <div class="toc-h">このページの内容</div>
+          <ol class="toc-list">
+            {
+              toc.map((s) => (
+                <li>
+                  <a href={`#${s.id}`}>
+                    <i>{s.n}</i>
+                    <span>{s.label}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </header>
+
+      <ProofCover />
+
+      <article class="artbody">
+        <p>
+          真正性とは、データやコンテンツが<strong
+            >本物であり、作られてから改ざんされていないこと</strong
+          >、そして<strong>出所（来歴）が確かであること</strong
+          >を指します。英語では Authenticity
+          と呼びます。「誰が・いつ・何を作り、その後どう扱われたか」をたどれる状態が、真正性が保たれている状態です。
+        </p>
+
+        <h2 id="context">
+          <span class="seclabel">01 — Context</span>AI時代の真正性
+        </h2>
+        <p>
+          生成AIによって、<strong>偽物は無限に作れる</strong
+          >ようになりました。文章も、画像も、音声も、コードも——本物と見分けのつかないコピーを作るコストは、実質ゼロです。同じ品質のものが際限なく増えていく世界では、「よくできているから本物だろう」という判断が成り立ちません。
+        </p>
+        <p>
+          これは、真正性の確かめ方が変わったということです。かつては、紙の質感、署名の筆跡、発行元の体裁——<strong
+            >目で見て判断できるもの</strong
+          >が真正性の手がかりでした。生成AIは、その手がかりのすべてを複製できます。
+        </p>
+        <p>
+          だから真正性は、<strong>目で確かめるものから、証明で確かめるものへ</strong
+          >移りました。作られた時点で暗号的な証明を付け、受け取った側が発行者に問い合わせることなく独立に検証する。見た目がどれだけ精巧でも、証明のないものは通らない——それが、コピーが無限に増える時代の前提です。
+        </p>
+        <blockquote>検出は、証明ではない。</blockquote>
+        <p>
+          異常を後から見つける検出は、被害の把握に欠かせません。ですが「いま扱うデータが本物か」を、事が起きる前には答えられません。真正性には、実行の前に来歴を確かめる層が必要です。
+        </p>
+
+        <h2 id="def">
+          <span class="seclabel">02 — Definitions</span>真正性・完全性・機密性の違い
+        </h2>
+        <p>
+          情報セキュリティでは、真正性は近い概念と並べて語られます。混同しやすいため、ここで切り分けます。
+        </p>
+        <div class="defgrid">
+          {
+            definitions.map((d) => (
+              <div class={d.main ? "defcard main" : "defcard"}>
+                <span class="en">{d.en}</span>
+                <b>{d.ja}</b>
+                <p>{d.body}</p>
+              </div>
+            ))
+          }
+        </div>
+        <p>
+          完全性は「中身が変わっていない」を保証しますが、それだけでは「そもそも本物の出所から来たのか」までは保証しません。真正性は、完全性に<strong
+            >出所（来歴）の検証</strong
+          >を加えた、一段広い概念です。
+        </p>
+
+        <h2 id="req">
+          <span class="seclabel">03 — Regulation</span>電子記録に求められる三要件
+        </h2>
+        <p>
+          日本の規制では、真正性は具体的な要件として定められています。電子帳簿保存法<sup
+            class="au2-ref"><a href="#ref-1">[1]</a></sup
+          >や、厚生労働省の医療情報システムに関するガイドライン<sup
+            class="au2-ref"><a href="#ref-2">[2]</a></sup
+          >では、電子記録に次の三要件が求められます。
+        </p>
+        <div class="reqs">
+          {
+            requirements.map((r) => (
+              <div class="req">
+                <b>{r.label}</b>
+                <span>{r.body}</span>
+              </div>
+            ))
+          }
+        </div>
+
+        <h2 id="genre">
+          <span class="seclabel">04 — Scenes</span>真正性が問われる場面
+        </h2>
+        <p>
+          真正性が業務上の要件になる場面は、業界ごとに形が違います。それぞれ、確かめたい対象も、確かめるタイミングも異なります。
+        </p>
+        <div class="scenes">
+          {
+            scenes.map((s) => (
+              <a class="scene" href={s.href}>
+                <b>{s.title}</b>
+                <span>{s.body}</span>
+                <i>{s.cta}</i>
+              </a>
+            ))
+          }
+        </div>
+
+        <h2 id="lanes">
+          <span class="seclabel">05 — Roles</span>発行する側と、受け取る側
+        </h2>
+        <p>真正性データは、発行する側と受け取る側で扱いが変わります。</p>
+        <div class="lanes">
+          {
+            lanes.map((ln) => (
+              <div class="lane">
+                <h4>{ln.role}</h4>
+                <ul>
+                  {ln.items.map((it) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+
+        <h2 id="verify">
+          <span class="seclabel">06 — Verification</span>真正性をどう検証するか
+        </h2>
+        <p>
+          検出は異常を後から見つけるもので、被害の把握に不可欠です。ただし「実行前に、本物の出所から来たか」を立証はしません。真正性には、事前に来歴を独立検証する層が必要です。
+        </p>
+        <p>
+          暗号的な証明を使う場合、検証は次の3点を機械的に確かめる作業になります。人が目視で判断する余地はありません。
+        </p>
+        <div class="reqs">
+          {
+            checks.map((c) => (
+              <div class="req">
+                <b>{c.label}</b>
+                <span>{c.body}</span>
+              </div>
+            ))
+          }
+        </div>
+        <p>
+          この3つがすべて一致したときだけ、検証は成功します。逆に、成功しても<strong
+            >内容の正しさや判断の妥当性は保証しません</strong
+          >——証明が示すのは「本物の出所から来て、変わっていない」ことだけです。この境界を理解しておくことが、真正性を業務に組み込むうえで重要になります。
+        </p>
+        <div class="verifybox">
+          <div class="vb-t">実物で確かめる</div>
+          <p>
+            Lemmaが検証・発行してきた記録は、実数の内訳として公開しています。個別の記録は、そのリンク（<code
+              >?doc=…</code
+            >）から誰でも・無料で検証できます。キーもアカウントも要りません。
+          </p>
+          <a class="au2-btn" href={L("/verify/")}>検証センターを見る</a>
+        </div>
+
+        <h2 id="lemma">
+          <span class="seclabel">07 — Lemma</span>Lemmaの来歴証明で、真正性を満たす
+        </h2>
+        <p>
+          Lemmaは、データやAIの実行に暗号技術で証明を付け、受け取った側が発行者に問い合わせることなく真正性を確認できるようにします。生データは外に出さず、必要な事実だけを開示します。<a
+            href={L("/pillars/")}>5つの証明</a
+          >も参照してください。
+        </p>
+
+        <h2 id="faq"><span class="seclabel">08 — FAQ</span>よくある質問</h2>
+        <div class="faq">
+          {
+            faq.map((item, i) => (
+              <details open={i === 0}>
+                <summary>{item.q}</summary>
+                <div class="a">{item.a}</div>
+              </details>
+            ))
+          }
+        </div>
+
+        <h2 id="references">
+          <span class="seclabel">09 — Sources</span>出典（一次情報）
+        </h2>
+        <ol class="refs">
+          {
+            references.map((r) => (
+              <li id={`ref-${r.n}`}>
+                <a href={r.url} target="_blank" rel="noopener">
+                  {r.text}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </article>
+
+      <div class="ctacards">
+        {
+          ctaCards.map((c) => (
+            <a
+              class="ctacard"
+              href={c.href}
+              target={c.href.startsWith("http") ? "_blank" : undefined}
+              rel={c.href.startsWith("http") ? "noopener" : undefined}
+            >
+              <span>
+                <b>{c.label}</b>
+                <span>{c.desc}</span>
+              </span>
+              <i>→</i>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="artcta">
+        <div class="k">Enterprise</div>
+        <h2>真正性を、本番の意思決定に組み込む。</h2>
+        <p>
+          証明対象の設計から本番運用まで、専任チームが伴走します。契約形態・請求書払い・SLA・監査対応は個別にご案内します。
+        </p>
+        <div class="row">
+          <a
+            class="au2-btn"
+            href={discoveryUrl}
+            target="_blank"
+            rel="noopener">エンタープライズ相談</a
+          >
+          <a class="au2-btn ghost" href={L("/pricing")}>料金を見る</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* トークンの値は PreviewTopTemplate の .pv と同じ（リニューアル後に
+     2種類の緑・2種類の紙色が並ばないように）。 */
+  .au2-page {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Noto Serif JP", "Cormorant Garamond", Georgia, serif;
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
+
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    padding: 0 0 96px;
+    margin-top: 64px;
+  }
+  .au2-wrap {
+    max-width: calc(760px + 12vw);
+    margin: 0 auto;
+    padding: 0 6vw;
+  }
+
+  .crumb {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 34px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .crumb a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb a:hover {
+    color: var(--tx);
+    border-color: var(--line);
+  }
+  .crumb i {
+    font-style: normal;
+    opacity: 0.5;
+  }
+
+  .arthead {
+    padding: 26px 0 0;
+  }
+  .artmeta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .catchip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ok-ink);
+    border: 1px solid rgba(124, 175, 0, 0.45);
+    background: rgba(168, 224, 16, 0.09);
+    border-radius: 5px;
+    padding: 4px 9px;
+  }
+  .artmeta time,
+  .artmeta .rt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .arth1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(27px, 3.6vw, 40px);
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 0 0 22px;
+    word-break: keep-all;
+  }
+  .abstract {
+    font-size: 15.5px;
+    line-height: 2;
+    color: var(--tx-soft);
+    margin: 0 0 26px;
+    padding-left: 20px;
+    border-left: 2px solid var(--ok);
+  }
+
+  .toc {
+    margin: 30px 0 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px 14px;
+    box-shadow: var(--sh-s);
+  }
+  .toc-h {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 6px;
+  }
+  .toc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    columns: 2;
+    column-gap: 32px;
+  }
+  .toc-list li {
+    break-inside: avoid;
+  }
+  .toc-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 0;
+    text-decoration: none;
+    font-size: 13.5px;
+    color: var(--tx-soft);
+    transition: color 0.15s;
+  }
+  .toc-list a i {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ok-ink);
+    flex: none;
+  }
+  .toc-list a:hover {
+    color: var(--ok-ink);
+  }
+  .toc-list a:hover span {
+    border-bottom: 1px solid var(--ok-ink);
+  }
+
+
+  .artbody {
+    padding: 14px 0 0;
+    font-size: 16px;
+    line-height: 2.05;
+    color: var(--tx-soft);
+  }
+  .artbody > * {
+    max-width: 100%;
+  }
+  .artbody h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.1vw, 24px);
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 56px 0 18px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    position: relative;
+    scroll-margin-top: 96px;
+  }
+  .artbody h2::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 36px;
+    height: 2px;
+    background: var(--ok);
+  }
+  .seclabel {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ok-ink);
+    margin-bottom: 10px;
+  }
+  .artbody p {
+    margin: 0 0 22px;
+  }
+  .artbody strong {
+    font-weight: 600;
+    color: var(--tx);
+  }
+  .artbody a {
+    color: var(--ok-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(78, 122, 0, 0.35);
+  }
+  .artbody a:hover {
+    border-color: var(--ok-light);
+  }
+  .artbody blockquote {
+    margin: 0 0 24px;
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid var(--ok);
+    font-family: var(--font-serif-jp);
+    font-size: 16px;
+    line-height: 1.95;
+    color: var(--tx);
+  }
+  .artbody code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ok-ink);
+    background: #eef2ea;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+  .au2-ref a {
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .defgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 0 26px;
+  }
+  .defcard {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 20px;
+  }
+  .defcard.main {
+    border-color: rgba(124, 175, 0, 0.5);
+    box-shadow: 0 12px 30px rgba(124, 175, 0, 0.08);
+  }
+  .defcard .en {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+  }
+  .defcard b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 7px 0 9px;
+  }
+  .defcard.main b {
+    color: var(--ok-ink);
+  }
+  .defcard p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--tx-soft);
+  }
+
+  .reqs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 0 0 26px;
+    border-top: 1px solid var(--line);
+  }
+  .req {
+    padding: 20px 22px;
+    border-left: 1px solid var(--line);
+  }
+  .req:first-child {
+    border-left: none;
+    padding-left: 0;
+  }
+  .req b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 15.5px;
+    color: var(--tx);
+    margin-bottom: 7px;
+  }
+  .req b::before {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ok);
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+  .req span {
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--tx-soft);
+  }
+
+  .scenes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 0 0 26px;
+  }
+  .scene {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 20px 17px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .scene:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .scene b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+  }
+  .scene span {
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--tx-soft);
+  }
+  .scene i {
+    margin-top: auto;
+    padding-top: 6px;
+    font-style: normal;
+    font-size: 11.5px;
+    color: var(--ok-ink);
+  }
+
+  .lanes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 0 0 26px;
+  }
+  .lane {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 22px 18px;
+  }
+  .lane h4 {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .lane ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lane li {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+    color: var(--tx-soft);
+  }
+  .lane li:last-child {
+    border-bottom: none;
+  }
+
+  .verifybox {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 24px 22px;
+    margin: 0 0 26px;
+    box-shadow: var(--sh-s);
+  }
+  .vb-t {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin-bottom: 12px;
+  }
+  .verifybox p {
+    margin: 0 0 18px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+  }
+
+  .faq {
+    margin: 0 0 10px;
+    border-top: 1px solid var(--line);
+  }
+  .faq details {
+    border-bottom: 1px solid var(--line);
+  }
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--tx);
+    transition: color 0.15s;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::before {
+    content: "+";
+    flex: none;
+    width: 16px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--ok-ink);
+    line-height: 1.6;
+  }
+  .faq details[open] summary::before {
+    content: "–";
+  }
+  .faq summary:hover {
+    color: var(--ok-ink);
+  }
+  .faq .a {
+    padding: 0 0 20px 28px;
+    font-size: 14px;
+    line-height: 1.95;
+    color: var(--tx-soft);
+  }
+
+  .refs {
+    margin: 0;
+    padding: 22px 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+    counter-reset: r;
+  }
+  .refs li {
+    counter-increment: r;
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 10px;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--tx-soft);
+    scroll-margin-top: 96px;
+  }
+  .refs li::before {
+    content: "[" counter(r) "]";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .refs a {
+    color: var(--ok-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(78, 122, 0, 0.3);
+  }
+
+  .ctacards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 26px 0 0;
+  }
+  .ctacard {
+    display: grid;
+    grid-template-columns: 1fr 18px;
+    gap: 12px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 20px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .ctacard:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .ctacard b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--tx);
+    margin-bottom: 5px;
+  }
+  .ctacard span span {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .ctacard i {
+    font-style: normal;
+    color: var(--ok-ink);
+  }
+
+  .artcta {
+    margin: 56px 0 0;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border-radius: 16px;
+    padding: 38px 36px 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .artcta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.18),
+      rgba(168, 224, 16, 0) 62%
+    );
+  }
+  .artcta > * {
+    position: relative;
+    z-index: 2;
+  }
+  .artcta .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9ba296;
+  }
+  .artcta h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.6;
+    color: #ebefe6;
+    margin: 12px 0 10px;
+  }
+  .artcta p {
+    margin: 0 0 24px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #bcc3b6;
+  }
+  .artcta .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .au2-btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--ok);
+    color: #0f1412;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 22px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.35);
+    transition: filter 0.18s;
+  }
+  .au2-btn:hover {
+    filter: brightness(1.06);
+  }
+  .au2-btn.ghost {
+    color: #d8ddd1;
+    border: 1px solid #59645a;
+    background: transparent;
+    box-shadow: none;
+  }
+  .au2-btn.ghost:hover {
+    border-color: #d8ddd1;
+    color: #fff;
+    filter: none;
+  }
+
+  @media (max-width: 1020px) {
+    .defgrid,
+    .reqs,
+    .lanes,
+    .ctacards,
+    .scenes {
+      grid-template-columns: 1fr;
+    }
+    .reqs {
+      border-top: none;
+    }
+    .req {
+      border-left: none;
+      border-top: 1px solid var(--line);
+      padding: 18px 0;
+    }
+    .req:first-child {
+      border-top: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .au2-wrap {
+      padding: 0 24px;
+    }
+    .artcta {
+      padding: 30px 24px 28px;
+    }
+  }
+  @media (max-width: 620px) {
+    .toc-list {
+      columns: 1;
+    }
+  }
+</style>

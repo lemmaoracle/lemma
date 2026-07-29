@@ -1,5 +1,7 @@
 ---
-import AuthenticityTemplate from "../../templates/AuthenticityTemplate.astro";
+/* 日本語はデザイン移行版（AuthenticityJaTemplate）。英語 /authenticity/ は
+   従来の AuthenticityTemplate のまま——今回は JA を先行させる判断のため。 */
+import AuthenticityJaTemplate from "../../templates/AuthenticityJaTemplate.astro";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "ja";
@@ -7,4 +9,4 @@ const t = getTranslations(locale);
 const base = "/ja";
 ---
 
-<AuthenticityTemplate locale={locale} t={t} base={base} />
+<AuthenticityJaTemplate locale={locale} t={t} base={base} />
