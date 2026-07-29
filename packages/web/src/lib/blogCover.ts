@@ -8,10 +8,14 @@
  * 絵の意味は全カテゴリで同じ——**走査線より左は証明の付いていないもの、右は
  * 付いたもの**。ライムの記号（走査線・枠・ドット）が「検証済み」のシグナルで、
  * これはカテゴリで変えない（変えると記号の意味がカテゴリ依存になる）。
- * カテゴリで変えるのは地の色相・環境光の位置・並びのリズムだけ。
+ * カテゴリで変えるのは地の色相・環境光の位置・**ブロックの密度**だけ。
  *
- * 同じカテゴリの記事が同じ絵にならないよう、**slug をシードにした決定的な
- * ゆらぎ**を入れる。乱数は使わないので、同じ記事は何度ビルドしても同じ絵に
+ * ■ ブロックは必ず格子の交点に置く
+ * 指示書 §4 は「各ブロックの位置を ±18/±22px 振る」だが、**px でずらすと
+ * 列と行が歪み、密なカテゴリ（Industry）で絵が塩基配列の図のように読めて
+ * しまう**。そこでブロックは格子に固定し、記事ごとに変えるのは
+ * **どのマスを埋めるか**だけにした。並びは常に整然としたまま、記事が違えば
+ * 埋まるマスが違う。乱数は使わないので、同じ記事は何度ビルドしても同じ絵に
  * なる（画像がビルドごとに差分として出ない）。
  *
  * カバー（記事本文・索引のサムネイル）と OGP は同じ絵で、**OGP だけ**タイトル
@@ -24,12 +28,46 @@ export const COVER_HEIGHT = 630;
 /** ライム。検証済みのシグナルで、カテゴリでは変えない。 */
 const LIME = "#A8E010";
 
-/** ブロックの一辺と角丸。ゆらぎでも動かさない。 */
+/** ブロックの一辺と角丸。記事によって変えない。 */
 const BLOCK_SIZE = 96;
 const BLOCK_RADIUS = 22;
 
-/** 走査線と、その左右に置くブロックの間に最低限あける距離。 */
-const SWEEP_GAP = 6;
+/* ── 格子 ─────────────────────────────────────────────────────────
+ * 96px のブロックを 130px 間隔（あき 34px）で置く。左右それぞれ 4列×4行の
+ * 16マス。上下の余白・左右の余白・走査線までの間は、どれも意図した値で
+ * 揃えてある——ここを崩すと「整然と並んでいる」が壊れる。 */
+
+/** 走査線の x。左のマスの右端から 54px、右のマスの左端まで 54px。 */
+const SWEEP_X = 600;
+
+/** 行の y（上余白 72px / 下余白 72px）。 */
+const ROWS: ReadonlyArray<number> = [72, 202, 332, 462];
+
+/** 未検証（走査線の左）の列。右端は 546 なので走査線まで 54px あく。 */
+const COLS_LEFT: ReadonlyArray<number> = [60, 190, 320, 450];
+
+/** 検証済み（走査線の右）の列。右端は 1140 で右余白 60px。 */
+const COLS_RIGHT: ReadonlyArray<number> = [654, 784, 914, 1044];
+
+interface Cell {
+  readonly x: number;
+  readonly y: number;
+}
+
+const latticeOf = (cols: ReadonlyArray<number>): ReadonlyArray<Cell> =>
+  cols.flatMap((x) => ROWS.map((y) => ({ x, y })));
+
+const LEFT_CELLS = latticeOf(COLS_LEFT);
+
+/**
+ * 右上の1マスは**空けておく**。OGP はそこにワードマークを置くので
+ * （`og/blogImage.ts`・右から 80px / 上から 64px）、ブロックがあると
+ * ロゴと枠が重なって読めない。カバーと OGP で同じ絵を出すため、ロゴが
+ * 無いカバー側でもこのマスは使わない。
+ */
+const RIGHT_CELLS = latticeOf(COLS_RIGHT).filter(
+  (cell) => !(cell.x === COLS_RIGHT[COLS_RIGHT.length - 1] && cell.y === ROWS[0]),
+);
 
 export interface CoverBlock {
   /** 左上の x。`verified` のとき、この点がライムのドットの中心にもなる。 */
@@ -47,106 +85,62 @@ interface CoverGlow {
   readonly opacity: number;
 }
 
-interface CoverPattern {
+interface CoverDensity {
   /** 地のグラデーション3ストップ（0% / 55% / 100%）。 */
+  readonly bg: readonly [string, string, string];
+  readonly glow: CoverGlow;
+  /** 走査線の左（未検証）に埋めるマスの数。16マス中。 */
+  readonly left: number;
+  /** 走査線の右（検証済み）に埋めるマスの数。15マス中（右上はロゴ用に空ける）。 */
+  readonly right: number;
+}
+
+interface CoverPattern {
   readonly bg: readonly [string, string, string];
   readonly glow: CoverGlow;
   readonly sweepX: number;
   readonly blocks: readonly CoverBlock[];
 }
 
-const unverified = (x: number, y: number): CoverBlock => ({ x, y, verified: false });
-const verified = (x: number, y: number): CoverBlock => ({ x, y, verified: true });
-
 /**
- * 4カテゴリの基準レイアウト。`data/blog.ts` の `BLOG_CATEGORIES` と同じ4つ。
- * これ以外のカテゴリ（Guides・Foundations・FAQ 等）は Announcements に寄せる。
+ * 4カテゴリ。`data/blog.ts` の `BLOG_CATEGORIES` と同じ4つで、これ以外
+ * （Guides・Foundations・FAQ 等）は Announcements に寄せる。
+ *
+ * カテゴリの性格は**密度**で出す。位置のゆらぎをやめたぶん、v5 の「ゆるい波」
+ * 「上下に揺れる流れ」のような並びの表情は出せないので、埋めるマスの数を
+ * v5 の個数から少し調整している（Technical は16マス全部＝完全に整列した格子
+ * のまま、Industry は欠けの位置が記事ごとに動くよう 13 に落とす）。
  */
 const PATTERNS = {
-  /** ゆるい波が右へ抜ける／緑スレート・光は右上。 */
+  /** ゆるく散る／緑スレート・光は右上。 */
   Announcements: {
     bg: ["#3C443D", "#333B34", "#2E362F"],
     glow: { cx: 88, cy: 4, r: 58, opacity: 0.3 },
-    sweepX: 660,
-    blocks: [
-      unverified(110, 300),
-      unverified(250, 220),
-      unverified(390, 270),
-      unverified(510, 180),
-      verified(720, 240),
-      verified(870, 300),
-      verified(1010, 210),
-    ],
+    left: 4,
+    right: 3,
   },
   /** 密なフィールドから、わずかが抜ける／青スレート・光は左上。 */
   Industry: {
     bg: ["#39424A", "#313943", "#2B333B"],
     glow: { cx: 8, cy: 10, r: 70, opacity: 0.18 },
-    sweepX: 600,
-    blocks: [
-      unverified(60, 70),
-      unverified(60, 200),
-      unverified(60, 330),
-      unverified(60, 460),
-      unverified(180, 120),
-      unverified(180, 250),
-      unverified(180, 380),
-      unverified(180, 505),
-      unverified(300, 70),
-      unverified(300, 200),
-      unverified(300, 330),
-      unverified(300, 460),
-      unverified(420, 120),
-      unverified(420, 250),
-      unverified(420, 380),
-      verified(680, 180),
-      verified(830, 300),
-      verified(980, 180),
-    ],
+    left: 13,
+    right: 3,
   },
   /** 整列した構造のうち、一部だけが通る／無彩スレート・光は中央上。 */
   Technical: {
     bg: ["#343A37", "#2C322F", "#262B29"],
     glow: { cx: 50, cy: -8, r: 72, opacity: 0.26 },
-    sweepX: 620,
-    blocks: [
-      unverified(110, 110),
-      unverified(240, 110),
-      unverified(370, 110),
-      unverified(500, 110),
-      unverified(110, 250),
-      unverified(240, 250),
-      unverified(370, 250),
-      unverified(500, 250),
-      unverified(110, 390),
-      unverified(240, 390),
-      unverified(370, 390),
-      unverified(500, 390),
-      verified(700, 110),
-      verified(830, 250),
-      verified(700, 390),
-      verified(960, 180),
-      verified(1090, 320),
-    ],
+    left: 16,
+    right: 5,
   },
-  /** 上下に揺れながら続く流れ／オリーブ・光は右下。 */
+  /** 中くらいの密度で続く流れ／オリーブ・光は右下。 */
   Solutions: {
     bg: ["#44463C", "#3A3C33", "#33352D"],
     glow: { cx: 88, cy: 94, r: 66, opacity: 0.26 },
-    sweepX: 620,
-    blocks: [
-      unverified(80, 150),
-      unverified(205, 265),
-      unverified(330, 170),
-      unverified(455, 330),
-      unverified(500, 60),
-      verified(690, 290),
-      verified(805, 175),
-      verified(940, 330),
-      verified(1065, 205),
-    ],
+    left: 6,
+    right: 4,
   },
-} as const satisfies Readonly<Record<string, CoverPattern>>;
+} as const satisfies Readonly<Record<string, CoverDensity>>;
 
 export type CoverCategory = keyof typeof PATTERNS;
 
@@ -155,7 +149,7 @@ const FALLBACK_CATEGORY: CoverCategory = "Announcements";
 const isCoverCategory = (c: string): c is CoverCategory =>
   Object.prototype.hasOwnProperty.call(PATTERNS, c);
 
-/* ── slug をシードにした決定的なゆらぎ ────────────────────────────
+/* ── slug をシードにした決定的な選び方 ──────────────────────────
  * 「同じ記事はいつも同じ絵／違う記事は違う絵」を、乱数なしで作る。
  * ハッシュは FNV-1a、そこから n 番目の値を取り出す。 */
 
@@ -176,65 +170,66 @@ const randAt = (seed: number, n: number): number => {
   return ((c ^ (c >>> 16)) >>> 0) / 0x1_0000_0000;
 };
 
-/** ±amp の整数のゆらぎ。 */
+/** ±amp の整数のゆらぎ。いまは環境光の位置にだけ使う。 */
 const wobble = (r: number, amp: number): number => Math.round((r * 2 - 1) * amp);
 
-const BLOCK_X_AMP = 18;
-const BLOCK_Y_AMP = 22;
-const SWEEP_AMP = 40;
 const GLOW_CX_AMP = 8;
 
-/** ゆらぎ用に予約したインデックス（ブロックは 0..2n-1 を使う）。 */
-const SWEEP_INDEX = 900;
-const GLOW_INDEX = 901;
-
-const clamp = (v: number, min: number, max: number): number =>
-  Math.min(Math.max(v, min), max);
+/** ゆらぎ／選び方に使うインデックス。マスの数（16）と重ならないように離す。 */
+const LEFT_SALT = 0;
+const RIGHT_SALT = 100;
+const GLOW_INDEX = 900;
 
 /**
- * 走査線をまたがないように x を寄せる。**未検証は線の左、検証済みは線の右**
- * ——これは絵の意味そのものなので、ゆらぎで崩さない。
+ * 16マスから `count` マスを、slug から決まる順番で選ぶ。
+ *
+ * マスごとにシード由来の鍵を作って並べ替え、先頭から取る——これで偏りのない
+ * 決定的な選び方になる。最後に上→左の順に並べ直すのは、出力の SVG を
+ * 読みやすく・差分を安定させるため（描画結果は順番に依存しない）。
  */
-const clampToSide = (x: number, block: CoverBlock, sweepX: number): number =>
-  block.verified
-    ? Math.max(x, sweepX + SWEEP_GAP)
-    : Math.min(x, sweepX - BLOCK_SIZE - SWEEP_GAP);
+const chooseCells = (
+  cells: ReadonlyArray<Cell>,
+  count: number,
+  seed: number,
+  salt: number,
+): ReadonlyArray<Cell> =>
+  cells
+    .map((cell, i) => ({ cell, key: randAt(seed, salt + i) }))
+    .sort((a, b) => a.key - b.key)
+    .slice(0, count)
+    .map((picked) => picked.cell)
+    .sort((a, b) => a.y - b.y || a.x - b.x);
 
 /**
  * カテゴリと slug から、この記事の絵を決める。
  *
- * ゆらぎを入れるのは各ブロックの位置・走査線の x・環境光の cx だけ。
- * ブロックの大きさ・角丸・色・個数・検証済みの数、左右の位置関係は動かさない。
- *
- * なお指示書は「検証済みフラグを1つだけ同じ側の未検証ブロックと交換してよい」
- * も許しているが、**4つの基準レイアウトはどれも検証済み＝線の右／未検証＝線の
- * 左に完全に分かれている**ため、交換の相手が同じ側に存在しない。実装しても
- * 常に空振りになるので入れていない。
+ * 記事ごとに変わるのは**どのマスを埋めるか**と環境光の cx だけ。ブロックの
+ * 大きさ・角丸・色・格子の位置・埋めるマスの数、左右の意味（左＝未検証／
+ * 右＝検証済み）は動かさない。ブロックは格子の交点にしか置かないので、
+ * 走査線をまたぐことも起きない。
  */
 export const coverPattern = (category: string, slug: string): CoverPattern => {
   const base = PATTERNS[isCoverCategory(category) ? category : FALLBACK_CATEGORY];
   const seed = seedFromSlug(slug);
-  const sweepX = clamp(
-    base.sweepX + wobble(randAt(seed, SWEEP_INDEX), SWEEP_AMP),
-    BLOCK_SIZE + SWEEP_GAP * 2,
-    COVER_WIDTH - BLOCK_SIZE - SWEEP_GAP * 2,
-  );
   return {
     bg: base.bg,
     glow: {
       ...base.glow,
       cx: base.glow.cx + wobble(randAt(seed, GLOW_INDEX), GLOW_CX_AMP),
     },
-    sweepX,
-    blocks: base.blocks.map((block, i) => ({
-      verified: block.verified,
-      x: clampToSide(
-        block.x + wobble(randAt(seed, i * 2), BLOCK_X_AMP),
-        block,
-        sweepX,
-      ),
-      y: block.y + wobble(randAt(seed, i * 2 + 1), BLOCK_Y_AMP),
-    })),
+    sweepX: SWEEP_X,
+    blocks: [
+      ...chooseCells(LEFT_CELLS, base.left, seed, LEFT_SALT).map((cell) => ({
+        x: cell.x,
+        y: cell.y,
+        verified: false,
+      })),
+      ...chooseCells(RIGHT_CELLS, base.right, seed, RIGHT_SALT).map((cell) => ({
+        x: cell.x,
+        y: cell.y,
+        verified: true,
+      })),
+    ],
   };
 };
 
