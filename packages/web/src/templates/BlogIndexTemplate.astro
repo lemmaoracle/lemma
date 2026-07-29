@@ -33,6 +33,7 @@ import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import BlogCover from "../components/BlogCover.astro";
 
 export interface BlogIndexTemplateProps {
   locale: Locale;
@@ -111,10 +112,9 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
               href={`${blogPath}/${featured.slug}`}
               class="bx-featured-card reveal"
             >
-              <div
-                class="bx-featured-thumb"
-                style={`background-image:url('${featured.cover ?? ""}')`}
-              ></div>
+              <div class="bx-featured-thumb">
+                <BlogCover category={featured.category} slug={featured.slug} />
+              </div>
               <div class="bx-featured-body">
                 <div class="bx-essay-meta">
                   <span class="bx-essay-cat">{featured.category}</span>
@@ -387,10 +387,14 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
     width: 100%;
   }
   .bx-featured-thumb {
-    background-size: cover;
-    background-position: center;
     background-color: var(--lemma-cream-deep);
     min-height: 200px;
+    overflow: hidden;
+  }
+  .bx-featured-thumb :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   .bx-featured-body {
     padding: 30px 36px;
