@@ -51,7 +51,10 @@ const L = (path: string) => `${base}${path}`;
 const API_BASE = "https://workers.lemma.workers.dev/v1";
 const RAW_COUNTERS = `${API_BASE}/counters`;
 const VERIFY_PATH = L("/verify/");
-const CONTACT_URL = DISCOVERY_CALL_URL[locale];
+/* 問い合わせ CTA には流入元を `?plan=` で付ける（PlanTemplate 等と同じ規約）。
+   Tally 側の隠しフィールド `plan` に入り、この面からの問い合わせを判別できる。
+   本番トップに昇格させるときは値を見直すこと。 */
+const CONTACT_URL = `${DISCOVERY_CALL_URL[locale]}?plan=top-preview`;
 
 /* 開発者向けドキュメント帯のリンク先（指示 §3.5）。slug は posts リポジトリに実在。 */
 const DOC_COLUMNS: ReadonlyArray<{
