@@ -11,13 +11,18 @@
  * すべての Brief（見出し行の右端に虫眼鏡の検索）→ 月見出し＋2列カード。
  *
  * やらないこと（§4.3）: カバー画像／冒頭の統計パネル／「読み方」ブロック。
- * 109件は1ページに全件出す（§4.4 現行踏襲。SEO と no-JS フォールバック）。
+ *
+ * 「すべての Brief」は SSR では全109件を出し（SEO と no-JS フォールバック、
+ * §4.4）、表示はクライアント側で PAGE_SIZE 件ずつの**ページ送り**にする
+ * （2026-07-30 レビューでの指示）。月見出しの件数はフィルタ後の月内総数、
+ * 月の表示はそのページに1件でもあるかで決める——ページを跨ぐ月は次ページ
+ * でも同じ見出しで続く。
  *
  * フィルタ・検索はクライアント側の progressive enhancement で、従来どおり
  * URL パラメータ（?category=<slug> / ?pillar=p1..p4 / ?q=<keyword>）を
  * 読み書きする——Brief 記事のタグや柱ページからの deep link を壊さない。
- * 旧デザインのソート／密度切替／ページングは、月見出しの時系列一覧に
- * 役割を吸収されたので持たない。
+ * 旧デザインのソート／密度切替は、月見出しの時系列一覧に役割を吸収された
+ * ので持たない。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
@@ -394,6 +399,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
             </div>
           </div>
         ))}
+
+        <nav class="cb-pager" data-pager hidden aria-label="Pagination"></nav>
 
         <div class="cb-no-results" hidden>{labels.noResults}</div>
       </section>
@@ -894,6 +901,51 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     margin-left: auto;
   }
 
+  /* ─── ページ送り ─── */
+  .cb-pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 30px 0 0;
+  }
+  .cb-pager[hidden] {
+    display: none;
+  }
+  .cb-pager :global(.cb-pager-btn) {
+    min-width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 8px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .cb-pager :global(.cb-pager-btn:hover:not([disabled])) {
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--tx);
+  }
+  /* 現在ページは蛍光地に墨文字（ピル・タブと同じ選択の言語）。 */
+  .cb-pager :global(.cb-pager-btn.is-active) {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: var(--ink);
+    font-weight: 700;
+    cursor: default;
+  }
+  .cb-pager :global(.cb-pager-btn[disabled]) {
+    opacity: 0.4;
+    cursor: default;
+  }
+
   .cb-no-results {
     margin: 26px 0 0;
     font-size: 13.5px;
@@ -1037,6 +1089,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     const fctx = root.querySelector<HTMLElement>("[data-filter-context]");
     const fctxLabel = root.querySelector<HTMLElement>("[data-fctx-label]");
     const fctxClear = root.querySelector<HTMLElement>("[data-fctx-clear]");
+    const pager = root.querySelector<HTMLElement>("[data-pager]");
+    const listHead = root.querySelector<HTMLElement>(".cb-listhead");
     const countUnit = (n: number) =>
       document.documentElement.lang === "ja"
         ? `${n} 件`
@@ -1047,6 +1101,8 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     let activeCat = "all";
     let activePillar = "";
     let query = "";
+    let currentPage = 1;
+    const PAGE_SIZE = 20;
 
     function cardMatches(card: HTMLElement): boolean {
       if (mode === "category")
@@ -1060,37 +1116,75 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     }
 
     function apply() {
-      let total = 0;
+      // DOM 順＝published 降順。マッチ集合を出してから現在ページ分だけ見せる。
+      const matching = cards.filter(cardMatches);
+      const totalPages = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const pageSet = new Set(matching.slice(start, start + PAGE_SIZE));
       cards.forEach((c) => {
-        const show = cardMatches(c);
-        c.hidden = !show;
-        if (show) total++;
+        c.hidden = !pageSet.has(c);
       });
-      // 空になった月はまるごと隠し、見出しの件数は可視分に更新する。
+      // 月見出しの件数は**フィルタ後の月内総数**（ページを跨ぐ月は次ページ
+      // でも同じ見出し・同じ件数で続く）。月の表示はこのページに1件でも
+      // あるかどうか。
       months.forEach((m) => {
-        const visible = Array.from(
-          m.querySelectorAll<HTMLElement>(".cb-bcd"),
-        ).filter((c) => !c.hidden).length;
+        const inMonth = Array.from(m.querySelectorAll<HTMLElement>(".cb-bcd"));
+        const matched = inMonth.filter(cardMatches).length;
+        const visible = inMonth.filter((c) => !c.hidden).length;
         m.hidden = visible === 0;
         const cnt = m.querySelector<HTMLElement>("[data-month-count]");
-        if (cnt) cnt.textContent = countUnit(visible);
+        if (cnt) cnt.textContent = countUnit(matched);
       });
-      if (noResults) noResults.hidden = total !== 0;
+      renderPager(totalPages);
+      if (noResults) noResults.hidden = matching.length !== 0;
       // フィルタ文脈行
       if (fctx && fctxLabel) {
         if (mode === "category") {
           const tile = dists.find((d) => d.dataset.cat === activeCat);
           const name =
             tile?.querySelector<HTMLElement>(".dn")?.textContent || activeCat;
-          fctxLabel.textContent = `${name} — ${countUnit(total)}`;
+          fctxLabel.textContent = `${name} — ${countUnit(matching.length)}`;
           fctx.hidden = false;
         } else if (mode === "pillar" || (mode === "search" && query)) {
-          fctxLabel.textContent = countUnit(total);
+          fctxLabel.textContent = countUnit(matching.length);
           fctx.hidden = false;
         } else {
           fctx.hidden = true;
         }
       }
+    }
+
+    function renderPager(totalPages: number) {
+      if (!pager) return;
+      if (totalPages <= 1) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+      }
+      let html =
+        '<button type="button" class="cb-pager-btn cb-pager-arrow" data-page="prev" aria-label="Previous"' +
+        (currentPage === 1 ? " disabled" : "") +
+        ">‹</button>";
+      for (let p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" class="cb-pager-btn' +
+          (p === currentPage ? " is-active" : "") +
+          '" data-page="' +
+          String(p) +
+          '"' +
+          (p === currentPage ? ' aria-current="page"' : "") +
+          ">" +
+          String(p) +
+          "</button>";
+      }
+      html +=
+        '<button type="button" class="cb-pager-btn cb-pager-arrow" data-page="next" aria-label="Next"' +
+        (currentPage === totalPages ? " disabled" : "") +
+        ">›</button>";
+      pager.innerHTML = html;
+      pager.hidden = false;
     }
 
     function syncPills() {
@@ -1114,6 +1208,7 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
     }
 
     function update(writeURL = true) {
+      currentPage = 1;
       syncPills();
       apply();
       if (writeURL) setURL();
@@ -1130,6 +1225,27 @@ const methodologyHref = `${base}/critical/briefs/methodology/`;
 
     if (allPill) allPill.addEventListener("click", reset);
     if (fctxClear) fctxClear.addEventListener("click", reset);
+
+    // ページ送り: ページを変えたら一覧の頭へ戻す（月見出しが変わるため）。
+    if (pager) {
+      pager.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-page]");
+        if (!btn || btn.hasAttribute("disabled")) return;
+        const totalPages = Math.max(
+          1,
+          Math.ceil(cards.filter(cardMatches).length / PAGE_SIZE),
+        );
+        const v = btn.dataset.page;
+        if (v === "prev") currentPage = Math.max(1, currentPage - 1);
+        else if (v === "next") currentPage = Math.min(totalPages, currentPage + 1);
+        else currentPage = Number(v) || 1;
+        apply();
+        if (listHead) {
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          listHead.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        }
+      });
+    }
 
     dists.forEach((d) => {
       d.addEventListener("click", () => {
