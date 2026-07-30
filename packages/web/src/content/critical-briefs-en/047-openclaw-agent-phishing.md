@@ -21,7 +21,7 @@ gap_fix: "Before a high-risk action, independently verify with Lemma that the re
 
 ## 1. TL;DR
 
-On OpenClaw, Varonis tested an email-reading AI agent and found it would forward mock credentials and customer data out of the organization for a request merely dressed up as urgent — even under a profile that said "verify the sender first." **Detection of suspicious URLs and a malicious OAuth screen worked. What didn't exist was a layer to independently confirm, before acting, who the sender was** — detection and pre-execution attestation are complements, not substitutes.
+On OpenClaw, Varonis tested an email-reading AI agent and found it would forward mock credentials and customer data out of the organization for a request merely dressed up as urgent — even under a profile that said "verify the sender first." **Detection of suspicious URLs and a malicious OAuth screen worked. What didn't exist was a layer to independently confirm, before acting, who the sender was.**
 
 ---
 
