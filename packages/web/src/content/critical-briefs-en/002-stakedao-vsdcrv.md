@@ -19,13 +19,13 @@ gap_missing: "The configuration of which senders to trust was itself rewritten w
 gap_fix: "Before minting assets, independently verify with Lemma that the message comes from a legitimate origin, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-On Stake DAO vsdCRV, the attacker used the compromised deployer private key to rewrite the LayerZero v2 trust source to a contract they controlled, then minted 5.4 trillion vsdCRV from a forged message. Blockaid detected the attack within minutes, enabling containment, but detection cannot change what the bridge will accept. The configuration that anchors trust was rewritable by a single key, and no layer independently verified message origin before acceptance. Detection and pre-execution attestation are complements, not substitutes.
+On Stake DAO vsdCRV, the attacker used the compromised deployer private key to rewrite the LayerZero v2 trust source to a contract they controlled, then minted 5.4 trillion vsdCRV from a forged message. Blockaid detected the attack within minutes, enabling containment, but detection cannot change what the bridge will accept. The configuration that anchors trust was rewritable by a single key, and no layer independently verified message origin before acceptance.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Impact**: 5.4 trillion vsdCRV unauthorizedly minted on Arbitrum. A portion swapped to 43.781 ETH (approx. $91K) and bridged to Ethereum
 - **Target protocol**: Stake DAO (vsdCRV governance derivative token)
@@ -34,23 +34,8 @@ On Stake DAO vsdCRV, the attacker used the compromised deployer private key to r
 - **Compromised asset**: The Stake DAO deployer private key
 - **Scope**: Contained to Arbitrum. Boosted Yields, Liquid Lockers, Votemarket, and Stake DAO lending on Morpho were not affected
 - **Ongoing matter**: The asdCRV Llamalend market on Arbitrum is being wound down
-- **Core**: The structural failure was that the trust configuration defining which senders the bridge trusts was itself rewritten with a single key without independent verification, so a forged message was accepted as the legitimate trusted source.
 
----
-
-## 2. Timeline
-
-- 2026-05-27 (early): The attacker uses the Stake DAO deployer private key to rewrite the LayerZero v2 configuration, then sends a forged message that mints 5.4 trillion vsdCRV on Arbitrum
-- 2026-05-27: Blockaid detects the ongoing exploit in real time and publishes the attack flow
-- 2026-05-27: PeckShield Alert analyzes the exfiltration path, including the swap and bridge
-- 2026-05-28: Stake DAO publishes an initial statement. Contributors protect the mainnet-side vsdCRV backing assets and pause the vsdCRV bridge
-- 2026-05-29: The Stake DAO team publishes preliminary investigation results, confirming that impact is contained to Arbitrum and that core protocols including Boosted Yields are not affected. Investigation continues in coordination with law enforcement and security partners
-
-> Note: Names, dates, and loss figures are based on primary sources — the official Stake DAO statements (X) and the independent analyses by Blockaid and PeckShield Alert. Each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Initial compromise**: The Stake DAO deployer private key is compromised. The exact path was not publicly disclosed at the time of writing
 2. **Trust source rewriting**: Using the compromised deployer key, the attacker modifies the LayerZero v2 configuration. By design, vsdCRV on Arbitrum trusts only cross-chain messages sent from the legitimate Ethereum-side contract; the attacker rewrites that trusted source pointer to a contract they themselves deployed
@@ -60,38 +45,17 @@ On Stake DAO vsdCRV, the attacker used the compromised deployer private key to r
 
 ---
 
-## 4. Structural Analysis
+## 3. Timeline — disclosure and response
 
-In this incident the central **failure primitive is "single-key rewritability of the trust configuration"** — a representative case of a structure in which, on a cross-chain bridge, the very configuration that anchors trust is left rewritable by a single key. The trusted source pointer for vsdCRV under LayerZero v2 is implemented as config that the contract owner — in this case, the holder of the deployer private key — can modify, and there is no independent verification layer over the config itself. The receiving contract (vsdCRV on Arbitrum) is designed to trust the legitimate sender that the config points to, so once the config was rewritten, the forged messages were accepted exactly as specified.
+- 2026-05-27 (early): The attacker uses the Stake DAO deployer private key to rewrite the LayerZero v2 configuration, then sends a forged message that mints 5.4 trillion vsdCRV on Arbitrum
+- 2026-05-27: Blockaid detects the ongoing exploit in real time and publishes the attack flow
+- 2026-05-27: PeckShield Alert analyzes the exfiltration path, including the swap and bridge
+- 2026-05-28: Stake DAO publishes an initial statement. Contributors protect the mainnet-side vsdCRV backing assets and pause the vsdCRV bridge
+- 2026-05-29: The Stake DAO team publishes preliminary investigation results, confirming that impact is contained to Arbitrum and that core protocols including Boosted Yields are not affected. Investigation continues in coordination with law enforcement and security partners
 
-A same-structure case is the April **KelpDAO / rsETH unauthorized unlock** (Brief 001). The two incidents compare as follows:
+> Note: Names, dates, and loss figures are based on primary sources — the official Stake DAO statements (X) and the independent analyses by Blockaid and PeckShield Alert. Each implementation's remediation status varies over time, so consult the latest information.
 
-| Aspect | KelpDAO / rsETH (2026-04) | Stake DAO (2026-05) |
-| --- | --- | --- |
-| Initial compromise | Intrusion into the LayerZero Labs operations environment (a social-engineering vector is cited) | Stake DAO deployer private key |
-| Manipulated layer | The DVN observation layer (the content of RPC responses) | The LayerZero v2 trust source configuration itself |
-| Form of tampering | Distorting observed results | Rewriting the trusted source pointer |
-| DVN signing key | Not compromised | Not applicable (the rewrite alone is sufficient) |
-| Bridge defense failure point | 1-of-1 DVN configuration | Single-key concentration over the trust source pointer |
-| Shared structure | Cross-chain message trust has a concentration point in config or the observation layer, and that point is controllable by a single entity | Same |
-
-Both incidents reach the same structure from different vectors. Following the KelpDAO incident, LayerZero Labs named the observation layer an independent category and announced policy changes including the DVN's refusal of 1-of-1 configurations and a move to 3-of-3 by default. Those defensive measures did not cut off the present incident's vector, which directly rewrites the LayerZero v2 configuration itself.
-
----
-
-## 5. The detection–proof gap
-
-In this incident, Blockaid detected the attack in real time within minutes, which enabled the Stake DAO team to act quickly on containment (protecting backing assets and pausing the vsdCRV bridge). The detection layer demonstrably worked to limit the spread of damage, and this Brief does not deny the role of detection vendors.
-
-That said, detection does not change what the bridge will accept. Once a forged message reaches vsdCRV on Arbitrum, the bridge accepts it in accordance with its config (the trusted source pointer the attacker rewrote). The structural layer boundary remains: detection cannot stop acceptance itself.
-
-For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — in cases like this one, where a configuration rewrite was carried out through a legitimate process (LayerZero v2 accepted a config change from the attacker's key) — an independent layer is required between detection scores and proof. Post-event detection and pre-execution attestation, which attaches independently verifiable evidence to the message itself before the event, are not substitutes but complements; a design that combines both layers to establish the trust boundary is the structural response required.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
+The response and industry movement after disclosure:
 
 Stake DAO (2026-05-28 to 29):
 
@@ -109,7 +73,32 @@ Industry response:
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+In this incident the central **failure primitive is "single-key rewritability of the trust configuration"** — a representative case of a structure in which, on a cross-chain bridge, the very configuration that anchors trust is left rewritable by a single key. The trusted source pointer for vsdCRV under LayerZero v2 is implemented as config that the contract owner — in this case, the holder of the deployer private key — can modify, and there is no independent verification layer over the config itself. The receiving contract (vsdCRV on Arbitrum) is designed to trust the legitimate sender that the config points to, so once the config was rewritten, the forged messages were accepted exactly as specified.
+
+A same-structure case is the April **KelpDAO / rsETH unauthorized unlock** ([Brief 001](/critical/briefs/001-kelpdao-rseth/)). The two incidents compare as follows:
+
+| Aspect | KelpDAO / rsETH (2026-04) | Stake DAO (2026-05) |
+| --- | --- | --- |
+| Initial compromise | Intrusion into the LayerZero Labs operations environment (a social-engineering vector is cited) | Stake DAO deployer private key |
+| Manipulated layer | The DVN observation layer (the content of RPC responses) | The LayerZero v2 trust source configuration itself |
+| Form of tampering | Distorting observed results | Rewriting the trusted source pointer |
+| DVN signing key | Not compromised | Not applicable (the rewrite alone is sufficient) |
+| Bridge defense failure point | 1-of-1 DVN configuration | Single-key concentration over the trust source pointer |
+| Shared structure | Cross-chain message trust has a concentration point in config or the observation layer, and that point is controllable by a single entity | Same |
+
+Both incidents reach the same structure from different vectors. Following the KelpDAO incident, LayerZero Labs named the observation layer an independent category and announced policy changes including the DVN's refusal of 1-of-1 configurations and a move to 3-of-3 by default. Those defensive measures did not cut off the present incident's vector, which directly rewrites the LayerZero v2 configuration itself.
+
+In this incident, Blockaid detected the attack in real time within minutes, which enabled the Stake DAO team to act quickly on containment (protecting backing assets and pausing the vsdCRV bridge). The detection layer demonstrably worked to limit the spread of damage, and this Brief does not deny the role of detection vendors.
+
+That said, detection does not change what the bridge will accept. Once a forged message reaches vsdCRV on Arbitrum, the bridge accepts it in accordance with its config (the trusted source pointer the attacker rewrote). The structural layer boundary remains: detection cannot stop acceptance itself.
+
+For the purposes of establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — in cases like this one, where a configuration rewrite was carried out through a legitimate process (LayerZero v2 accepted a config change from the attacker's key) — an independent layer is required between detection scores and proof. Post-event detection and pre-execution attestation, which attaches independently verifiable evidence to the message itself before the event, are not substitutes but complements; a design that combines both layers to establish the trust boundary is the structural response required.
+
+---
+
+## 5. What proof would have changed
 
 Lemma's design answers this incident's gap — a trust configuration concentrated in the config layer and controllable by a single entity — by embedding origin proof in the message itself and decoupling the accept decision from the config layer.
 
@@ -120,11 +109,9 @@ Lemma's design answers this incident's gap — a trust configuration concentrate
 
 This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Stake DAO official statement (initial)** (2026-05-27, Stake DAO official X post) — "We are aware of the ongoing situation. Please do not interact with vsdCRV." The first acknowledgment. There was no standalone official blog post; X served as the primary statement channel. https://x.com/StakeDAOHQ/status/2059586800255910039
 - **Stake DAO official statement (follow-up)** (2026-05-28, Stake DAO official X post) — Preliminary investigation; disclosure of the deployer private key compromise; protection of mainnet-side backing assets; pause of the vsdCRV bridge; containment to Arbitrum; confirmation that Boosted Yields, Liquid Lockers, Votemarket, and Stake DAO lending on Morpho were not affected. https://x.com/StakeDAOHQ/status/2059938235724320959
@@ -132,12 +119,4 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 - **PeckShield Alert analysis** (2026-05-27, PeckShield Alert official X post) — Independent confirmation of the 5.4 trillion vsdCRV mint and the swap to 43.781 ETH (approx. $91K); analysis of the swap path via Curve / KyberSwap and the bridge to Ethereum. There was no standalone official blog post; X served as the primary statement channel. https://x.com/PeckShieldAlert/status/2059578749352640679
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

@@ -19,13 +19,13 @@ gap_missing: "There was no layer to independently verify before receipt whether 
 gap_fix: "Before receipt, independently verify the certificate's provenance (issuer, subject, authenticity) with Lemma, and block acceptance if provenance cannot be confirmed — preventing it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Parts trader AOG Technics, between 2019 and 2023, sold more than 60,000 aircraft engine parts (worth roughly GBP 6.9 million) accompanied by forged Authorised Release Certificates (ARCs) attesting airworthiness. Many were for CFM International's CFM56 engine (widely fitted on the Boeing 737 / Airbus A320). The discovery began when an airline queried Safran about a part's authenticity and the certificate was found to be fake. The UK CAA, US FAA, and Europe's EASA issued safety warnings, and many airlines — Delta, American, Southwest, and others — grounded affected aircraft. The regulatory attribute of airworthiness circulated for more than four years under a structure in which the provenance of the certificate asserting it cannot be independently verified before receipt. The existence of a certificate was severed from whether that certificate was genuine and actually backed the airworthiness of the subject part. Detection (after-the-fact inquiry, grounding, regulatory warning) and pre-receipt attribute proof are complements, not substitutes.
+Parts trader AOG Technics, between 2019 and 2023, sold more than 60,000 aircraft engine parts (worth roughly GBP 6.9 million) accompanied by forged Authorised Release Certificates (ARCs) attesting airworthiness. Many were for CFM International's CFM56 engine (widely fitted on the Boeing 737 / Airbus A320). The discovery began when an airline queried Safran about a part's authenticity and the certificate was found to be fake. The UK CAA, US FAA, and Europe's EASA issued safety warnings, and many airlines — Delta, American, Southwest, and others — grounded affected aircraft. The regulatory attribute of airworthiness circulated for more than four years under a structure in which the provenance of the certificate asserting it cannot be independently verified before receipt. The existence of a certificate was severed from whether that certificate was genuine and actually backed the airworthiness of the subject part.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Subjects**: AOG Technics (a UK-based aircraft-parts trader) and the airlines and maintenance operators that purchased parts with forged certificates from it
 - **Scale**: between January 2019 and July 2023, sold more than 60,000 aircraft engine parts (worth roughly GBP 6.9 million) accompanied by forged ARCs. Many were for the CFM56 engine (737 / A320)
@@ -34,23 +34,9 @@ Parts trader AOG Technics, between 2019 and 2023, sold more than 60,000 aircraft
 - **Regulatory response**: the UK CAA, US FAA, and Europe's EASA issued safety warnings about AOG Technics parts. Delta, American, Southwest, TAP, Ryanair, WestJet, Virgin Australia, and others grounded affected aircraft
 - **Damage**: estimated at over GBP 39.3 million in losses across airlines and manufacturers
 - **Justice**: the UK SFO (Serious Fraud Office) investigated. Defendant Zamora pleaded guilty at Southwark Crown Court on 2025-12-01 and was sentenced on 2026-02-23 to 4 years and 8 months' imprisonment
-- **Context**: a case of the structure in which regulatory attributes such as airworthiness, conformity, and qualification are accepted while the provenance of the documents asserting them cannot be independently verified at the point of receipt (same family as Brief 019 / 020 / 021 / 035)
-- **Core**: the provenance of the ARC asserting the regulatory attribute of airworthiness was not independently verified before receipt, so the attribute was accepted on the mere fact that a certificate existed
+- **Context**: a case of the structure in which regulatory attributes such as airworthiness, conformity, and qualification are accepted while the provenance of the documents asserting them cannot be independently verified at the point of receipt (same family as [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/) / 020 / 021 / 035)
 
----
-
-## 2. Timeline
-
-- 2019-01 to 2023-07: AOG Technics sells more than 60,000 engine parts (worth roughly GBP 6.9 million) accompanied by forged ARCs
-- 2023: an airline queries Safran about a part's authenticity and the certificate is found to be fake. Safran reports it to the authorities; CAA/FAA/EASA issue safety warnings. Many airlines ground affected aircraft
-- 2025-12-01: defendant Zamora pleads guilty at Southwark Crown Court
-- 2026-02-23: the SFO announces a sentence of 4 years and 8 months' imprisonment
-
-> Note: the facts in this Brief are based on the UK SFO's announcements and established media reporting. This Brief does not condemn the individual defendant's motives; it focuses on the structure in which the provenance of the certificate asserting the regulatory attribute of airworthiness is not independently verified before receipt. Amounts and part counts rely on, and cite, the authorities and reporting.
-
----
-
-## 3. Event Chain (Decomposing the Failure)
+The incident came together as the following chain.
 
 1. **Documenting the regulatory attribute**: a part's airworthiness is attested by a document, the Authorised Release Certificate (ARC). The receiving side trusts the attribute of airworthiness on the strength of this certificate
 2. **Forging the certificate**: AOG altered legitimate ARCs and attached fake shipping records and signatures of fictitious employees, as if bought directly from OEMs, to mimic a legitimate supply route
@@ -60,29 +46,16 @@ Parts trader AOG Technics, between 2019 and 2023, sold more than 60,000 aircraft
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-This case belongs to the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof). The central **failure primitive is "the provenance of the certificate (ARC) asserting the regulatory attribute of airworthiness is not independently verified before receipt, and the attribute is accepted on the existence of the certificate alone"**. The existence of a certificate was severed from whether that certificate was genuine and actually backed the airworthiness of the subject part. As a secondary category, `data-provenance` is noted, in that the origin of the documents (certificates, shipping records) goes unverified.
+- 2019-01 to 2023-07: AOG Technics sells more than 60,000 engine parts (worth roughly GBP 6.9 million) accompanied by forged ARCs
+- 2023: an airline queries Safran about a part's authenticity and the certificate is found to be fake. Safran reports it to the authorities; CAA/FAA/EASA issue safety warnings. Many airlines ground affected aircraft
+- 2025-12-01: defendant Zamora pleads guilty at Southwark Crown Court
+- 2026-02-23: the SFO announces a sentence of 4 years and 8 months' imprisonment
 
-This is the same `attribute-proof-bypass` as Brief 020 (type designation: falsified certification test data, regulatory-conformance attribute flowing straight to shipment unverified), Brief 019 (national qualification: an engineer not meeting the practical-experience requirement deployed on site as qualified), and Brief 021 (Wirecard: a balance confirmation that falsely asserted "the balance exists at the bank" for a balance that did not exist) — all isomorphic in the structure where **a regulatory attribute (conformity, qualification, finances, airworthiness) is accepted while the provenance of the document or evidence asserting it goes unverified.** It connects directly to Brief 035 (Boeing 787: inspections recorded as "complete" that had not been performed) in that **the existence of a record or certificate is not proof of the reality it points to (the inspection being performed, the part being airworthy).**
+> Note: the facts in this Brief are based on the UK SFO's announcements and established media reporting. This Brief does not condemn the individual defendant's motives; it focuses on the structure in which the provenance of the certificate asserting the regulatory attribute of airworthiness is not independently verified before receipt. Amounts and part counts rely on, and cite, the authorities and reporting.
 
-This structure holds regardless of whether anyone maliciously forges a document — if the provenance of the certificate asserting the attribute cannot be independently verified at the point of receipt, then whether by forgery or by clerical error, an unverified attribute flows into an irreversible domain (operating aircraft, live practice, the market). The reason the forgery went unnoticed for more than four years in this case is precisely that this layer of independent verification was absent. The more an attribute is directly tied to safety, like airworthiness, the more the independent verification of the certificate's provenance — not the certificate's existence — is required as a precondition of circulation.
-
----
-
-## 5. The detection–proof gap
-
-The authenticity inquiry, Safran's report, the CAA/FAA/EASA safety warnings, the grounding of affected aircraft, and the SFO's investigation and prosecution were essential to grasping, containing, and deterring the harm, and this Brief does not dispute that role. Through them, the fraud was stopped and accountability was imposed.
-
-These detection and remediation steps, however, do not change the design itself of whether the receiving side "accepts the airworthiness attribute only after independently verifying the certificate's provenance." In this case, because the forged certificates bore a legitimate appearance, the attribute was accepted on the existence of the certificate and went structurally unnoticed for more than four years. What was missing was a layer to independently verify, before receipt, "is this certificate a genuine one, issued by the legitimate issuer for this part?" — verification of a different lineage from after-the-fact authenticity inquiry or grounding. That discovery depended on a manual, accidental inquiry shows its absence. As material to prove, in regulatory reporting or safety audits, "was this part backed by a genuine airworthiness certificate?", the mere fact that a certificate is in hand is not an independent trail of provenance — that certificate was itself a forgery.
-
-Pre-execution attestation and provenance proof treat the regulatory attribute without severing it from the provenance of the document asserting it. Rather than "does the certificate exist," they confirm "is it a genuine one, issued by the legitimate issuer for this subject" as an independently verifiable proof before receipt, and block acceptance if provenance cannot be confirmed. Detection (after-the-fact inquiry, grounding, regulatory warning) and pre-receipt provenance proof of the attribute are a **complementary** relationship, not substitutes; only when the two overlap can safety-critical parts circulation be put into practice.
-
-For the thesis that after-the-fact detection is not proof, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for the design that independently verifies provenance, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **UK SFO**: investigated and prosecuted AOG Technics' sale of parts with forged certificates. Defendant Zamora pleaded guilty (2025-12-01) and was sentenced to 4 years and 8 months' imprisonment (announced 2026-02-23)
 - **Regulators (CAA/FAA/EASA)**: issued safety warnings about AOG Technics parts and prompted cross-industry identification and removal of affected parts
@@ -93,7 +66,23 @@ For the thesis that after-the-fact detection is not proof, see ["The last layer 
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the provenance of the certificate (ARC) asserting the regulatory attribute of airworthiness is not independently verified before receipt, and the attribute is accepted on the existence of the certificate alone"**. The existence of a certificate was severed from whether that certificate was genuine and actually backed the airworthiness of the subject part. As a secondary category, `data-provenance` is noted, in that the origin of the documents (certificates, shipping records) goes unverified.
+
+This is the same `attribute-proof-bypass` as [Brief 020](/critical/briefs/020-type-designation-conformity-fraud/) (type designation: falsified certification test data, regulatory-conformance attribute flowing straight to shipment unverified), [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/) (national qualification: an engineer not meeting the practical-experience requirement deployed on site as qualified), and [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (Wirecard: a balance confirmation that falsely asserted "the balance exists at the bank" for a balance that did not exist) — all isomorphic in the structure where **a regulatory attribute (conformity, qualification, finances, airworthiness) is accepted while the provenance of the document or evidence asserting it goes unverified.** It connects directly to [Brief 035](/critical/briefs/035-boeing-787-inspection-records/) (Boeing 787: inspections recorded as "complete" that had not been performed) in that **the existence of a record or certificate is not proof of the reality it points to (the inspection being performed, the part being airworthy).**
+
+This structure holds regardless of whether anyone maliciously forges a document — if the provenance of the certificate asserting the attribute cannot be independently verified at the point of receipt, then whether by forgery or by clerical error, an unverified attribute flows into an irreversible domain (operating aircraft, live practice, the market). The reason the forgery went unnoticed for more than four years in this case is precisely that this layer of independent verification was absent. The more an attribute is directly tied to safety, like airworthiness, the more the independent verification of the certificate's provenance — not the certificate's existence — is required as a precondition of circulation.
+
+The authenticity inquiry, Safran's report, the CAA/FAA/EASA safety warnings, the grounding of affected aircraft, and the SFO's investigation and prosecution were essential to grasping, containing, and deterring the harm, and this Brief does not dispute that role. Through them, the fraud was stopped and accountability was imposed.
+
+These detection and remediation steps, however, do not change the design itself of whether the receiving side "accepts the airworthiness attribute only after independently verifying the certificate's provenance." In this case, because the forged certificates bore a legitimate appearance, the attribute was accepted on the existence of the certificate and went structurally unnoticed for more than four years. What was missing was a layer to independently verify, before receipt, "is this certificate a genuine one, issued by the legitimate issuer for this part?" — verification of a different lineage from after-the-fact authenticity inquiry or grounding. That discovery depended on a manual, accidental inquiry shows its absence. As material to prove, in regulatory reporting or safety audits, "was this part backed by a genuine airworthiness certificate?", the mere fact that a certificate is in hand is not an independent trail of provenance — that certificate was itself a forgery.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation and provenance proof treat the regulatory attribute without severing it from the provenance of the document asserting it. Rather than "does the certificate exist," they confirm "is it a genuine one, issued by the legitimate issuer for this subject" as an independently verifiable proof before receipt, and block acceptance if provenance cannot be confirmed. Detection (after-the-fact inquiry, grounding, regulatory warning) and pre-receipt provenance proof of the attribute are a **complementary** relationship, not substitutes; only when the two overlap can safety-critical parts circulation be put into practice.
 
 For the detection–proof gap exposed here (the provenance of the certificate asserting a regulatory attribute is not independently verified before receipt), Lemma offers a design that treats the confirmation of the attribute by tying it to the provenance of the document asserting it.
 
@@ -104,23 +93,13 @@ For the detection–proof gap exposed here (the provenance of the certificate as
 
 Against the regulatory-attribute-proof category's design thesis that "the existence of a certificate ≠ proof of the attribute's provenance," this case is an instance in which its anticipated failure mode materialized as more than four years of forged circulation in a safety-critical aircraft-parts supply chain. Detection (after-the-fact inquiry, grounding, regulatory warning, prosecution) serves remediation of harm; pre-receipt provenance proof (proof) of the attribute serves the establishment of supply-chain trust — each working complementarily.
 
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Seal](https://lemma.frame00.com/seal/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **UK SFO (GOV.UK, primary)**: "SFO secures 4-year prison sentence for aircraft parts fraud" (2026-02-23) — <https://www.gov.uk/government/news/sfo-secures-4-year-prison-sentence-for-aircraft-parts-fraud>
 - **AeroTime**: "Fake aircraft parts fraudster jailed for $52M scam that grounded airline fleets" (2026-02) — <https://www.aerotime.aero/articles/fake-aircraft-parts-aog-technics>
 - **Simple Flying**: "60,000 Fake Parts Sold: The True Scale Of The AOG Technics Fraud" — <https://simpleflying.com/60000-fake-parts-sold-true-scale-aog-technics-fraud/>
 - **Reference implementation (GitHub)**: regulatory-attribute proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Seal](https://lemma.frame00.com/seal/)

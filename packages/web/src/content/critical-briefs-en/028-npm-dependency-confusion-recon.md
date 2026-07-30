@@ -19,15 +19,14 @@ gap_missing: "There was no layer to confirm before ingestion whether each packag
 gap_fix: "Before the build ingests a dependency, independently verify with Lemma that the artifact carries provenance showing it was issued by a legitimate publisher, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-A single operator published 33+ malicious npm packages impersonating real companies' internal namespaces. Using dependency confusion, the packages forged enterprise URLs in `package.json`, and a `postinstall` hook launched an obfuscated stager that sends environment variables and credentials to C2. What is missing is a layer that verifies, before ingestion, whether each package was actually issued by the internal publisher it claims — the internal-looking name and metadata were used in place of provenance. Detection and pre-execution attestation are complements, not substitutes.
-
+A single operator published 33+ malicious npm packages impersonating real companies' internal namespaces. Using dependency confusion, the packages forged enterprise URLs in `package.json`, and a `postinstall` hook launched an obfuscated stager that sends environment variables and credentials to C2. What is missing is a layer that verifies, before ingestion, whether each package was actually issued by the internal publisher it claims — the internal-looking name and metadata were used in place of provenance.
 Name matches the internal scope ≠ issued by the internal publisher
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Target**: the npm public registry (victims were development and build environments susceptible to dependency confusion)
 - **Scale**: 3 accounts (mr.4nd3r50n / ce-rwb / t-in-one), 33+ scoped packages, 9 organization scopes
@@ -37,11 +36,6 @@ Name matches the internal scope ≠ issued by the internal publisher
 - **Staging design**: locked to `RECON_ONLY=1` reconnaissance mode (collects environment info, hostname, environment variables, development context). A server-side flag switch transitions to full credential theft and backdoor installation
 - **Attribution**: a common X-Secret header value across all accounts, identical C2, identical template generator, and matching publishing toolchain strongly point to a single operator. One account showed prior activity as a bug-bounty researcher in 2024
 - **Response**: Microsoft Threat Intelligence investigated and fed back to npm; the affected repos and users were removed
-- **Core**: package resolution used "name match" and "internal-looking metadata" in place of the provenance of whether it came from the legitimate publisher, and no pre-ingestion publisher verification existed
-
----
-
-## 2. Chain of Events
 
 (Organized as a chain of events since victim organizations are not publicly identified and the campaign is at the reconnaissance stage. Times are UTC, based on Microsoft Threat Intelligence's disclosure.)
 
@@ -54,9 +48,7 @@ Name matches the internal scope ≠ issued by the internal publisher
 
 > Note: proper nouns, package names, and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Namespace squatting**: registered packages under scopes impersonating real companies' internal names (`@cloudplatform-single-spa`, `@payments-widget`, `@sber-ecom-core`, etc.)
 2. **Metadata forgery**: set `package.json` homepage / repository / bugs / author fields to plausible-looking internal GitHub Enterprise, Jira, and docs portal URLs to create superficial legitimacy during code review
@@ -67,29 +59,9 @@ Name matches the internal scope ≠ issued by the internal publisher
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-This campaign belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that **package resolution uses "name match" and "metadata that looks internal" as a substitute for the provenance of whether the package actually originated from the claimed internal publisher.** `identity-auth` is noted as secondary.
-
-Brief 004 (Megalodon), Brief 014 (TanStack OIDC), and Brief 015 (VS Code extension) share the supply-chain cluster but differ in primitive. Brief 004 was mass contamination via stolen CI/CD credentials; Brief 014 was a takeover of a legitimate trusted publisher to publish maliciously **under a valid signature**; Brief 015 was placement of poisoned extensions that passed review. This campaign involves neither signature compromise nor legitimate-publisher takeover — it publishes **brand-new packages whose publisher is the attacker** and resolves them purely through internal-name impersonation. Where 014/015 "seize legitimate provenance," this campaign "exploits the gap where provenance is never checked in the first place (dependency confusion)." Both share the root: "the publisher provenance of the artifacts a build consumes is not independently verified."
-
-The `@sber-ecom-core/sberpay-widget` impersonation of Sberbank's payment widget demonstrates explicit targeting of the financial sector, and combined with the two-stage design — reconnaissance data feeding subsequent targeted exploitation — the campaign's reach is longer than a one-off typosquat.
-
----
-
-## 5. The detection–proof gap
-
-Quarantine of the stager by Microsoft Defender and others, IOC-based egress blocking, and registry reporting and takedown functioned effectively to contain this campaign (the package set has been removed). This Brief does not dispute their role.
-
-Detection, however, does not change the decision of which packages a build accepts as originating from a legitimate internal publisher. The stager in this campaign goes silent on CI, avoids re-execution via cache, and disguises itself with obfuscation and innocuous build/test scripts — all designed to delay detection. By the time detection fires, the `npm install`-time reconnaissance payload has already run and environment variables and development context may have been sent to C2. What was absent was pre-ingestion provenance verification of "was this package actually issued by the legitimate publisher of the internal scope it claims?" — and this is separate from malware detection. For regulatory reporting and audit, a post-hoc scan result does not, on its own, serve as an independent provenance trail proving that "the dependencies the build consumed carry legitimate provenance."
-
-Pre-execution attestation adopts a design that requires, before a build consumes a dependency, an independently verifiable cryptographic proof of the package's publisher provenance (is it the legitimate publisher of the claimed scope? was it published through the expected path?). If the proof reports that "this `@sber-ecom-core` package carries no provenance from the legitimate publisher," resolution and installation are blocked before they occur. Malware detection ("this payload is malicious" — a detection-style judgment) and publisher-provenance pre-execution attestation ("this artifact arrived from the legitimate publisher") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **Microsoft Threat Intelligence**: identified and disclosed the campaign as active; provided IOCs (C2 domain, X-Secret value, dropped payload patterns), hunting queries, and mitigations (`--ignore-scripts`, scope locking, credential rotation). Feedback to npm led to removal of the package set
 - **Cross-industry point**: a contemporaneous Mini Shai-Hulud typosquat campaign (the TeamPCP cluster, sharing roots with Briefs 014/015) was also observed, confirming that the npm ecosystem became a supply-chain-attack concentration area in 2026. With dependency confusion, typosquat, and trusted-publisher takeover operating as parallel primitives, "how to independently verify the provenance of the artifacts a build consumes" is solidifying as a shared challenge
@@ -98,7 +70,23 @@ Scope locking (pinning internal scopes to a private registry in `.npmrc`) and di
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **package resolution uses "name match" and "metadata that looks internal" as a substitute for the provenance of whether the package actually originated from the claimed internal publisher.**
+
+[Brief 004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon), [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (TanStack OIDC), and [Brief 015](/critical/briefs/015-github-vscode-extension-breach/) (VS Code extension) share the supply-chain cluster but differ in primitive. [Brief 004](/critical/briefs/004-megalodon-github-supply-chain/) was mass contamination via stolen CI/CD credentials; [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) was a takeover of a legitimate trusted publisher to publish maliciously **under a valid signature**; [Brief 015](/critical/briefs/015-github-vscode-extension-breach/) was placement of poisoned extensions that passed review. This campaign involves neither signature compromise nor legitimate-publisher takeover — it publishes **brand-new packages whose publisher is the attacker** and resolves them purely through internal-name impersonation. Where 014/015 "seize legitimate provenance," this campaign "exploits the gap where provenance is never checked in the first place (dependency confusion)." Both share the root: "the publisher provenance of the artifacts a build consumes is not independently verified."
+
+The `@sber-ecom-core/sberpay-widget` impersonation of Sberbank's payment widget demonstrates explicit targeting of the financial sector, and combined with the two-stage design — reconnaissance data feeding subsequent targeted exploitation — the campaign's reach is longer than a one-off typosquat.
+
+Quarantine of the stager by Microsoft Defender and others, IOC-based egress blocking, and registry reporting and takedown functioned effectively to contain this campaign (the package set has been removed). This Brief does not dispute their role.
+
+Detection, however, does not change the decision of which packages a build accepts as originating from a legitimate internal publisher. The stager in this campaign goes silent on CI, avoids re-execution via cache, and disguises itself with obfuscation and innocuous build/test scripts — all designed to delay detection. By the time detection fires, the `npm install`-time reconnaissance payload has already run and environment variables and development context may have been sent to C2. What was absent was pre-ingestion provenance verification of "was this package actually issued by the legitimate publisher of the internal scope it claims?" — and this is separate from malware detection. For regulatory reporting and audit, a post-hoc scan result does not, on its own, serve as an independent provenance trail proving that "the dependencies the build consumed carry legitimate provenance."
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation adopts a design that requires, before a build consumes a dependency, an independently verifiable cryptographic proof of the package's publisher provenance (is it the legitimate publisher of the claimed scope? was it published through the expected path?). If the proof reports that "this `@sber-ecom-core` package carries no provenance from the legitimate publisher," resolution and installation are blocked before they occur. Malware detection ("this payload is malicious" — a detection-style judgment) and publisher-provenance pre-execution attestation ("this artifact arrived from the legitimate publisher") are not substitutes but **complements**.
 
 For the detection–proof gap exposed here — package resolution uses name and metadata "internal-ness" in place of provenance, without independently verifying publisher provenance — Lemma offers a design that verifies, before a build consumes a dependency, the artifact's publisher provenance as an independently verifiable cryptographic proof.
 
@@ -108,22 +96,12 @@ For the detection–proof gap exposed here — package resolution uses name and 
 
 This closes the gap that dependency confusion exploits — "provenance never checked in the first place" — as a mandatory pre-ingestion step. On the "name looks internal ≠ it arrived from the legitimate publisher" design of the Verifiable Origin category, malware detection (detection) and publisher-provenance pre-execution attestation work as complements.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Microsoft Security Blog (Microsoft Defender Security Research Team)**: "Malicious npm packages abuse dependency confusion to profile developer environments" (2026-05-29, attack chain, attribution, IOCs, mitigations) — https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/
 - **Microsoft Security Blog**: "Typosquatted npm packages used to steal cloud and CI/CD secrets" (2026-05-28, contemporaneous Mini Shai-Hulud campaign, adjacent incident) — https://www.microsoft.com/en-us/security/blog/2026/05/28/typosquatted-npm-packages-used-steal-cloud-ci-cd-secrets/
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

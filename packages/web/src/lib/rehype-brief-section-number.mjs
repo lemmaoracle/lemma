@@ -40,6 +40,24 @@ function visitElements(node, fn) {
   }
 }
 
+/**
+ * 参照カード（6章化 2026-07-30、レビューで段落バナー→1リンク=1カードへ）:
+ * 「参照:」/「References:」で始まる段落から**リンクだけ**を取り出し、
+ * `div[data-brief-refs]` に組み替える。地のテキストと区切りは落ちる。
+ * 各リンクには href から種別（blog / pillar / product）を `data-ref-kind`
+ * として付け、BriefTemplate の CSS が小さなカードの列として描画する。
+ * 記事末尾（Sources の後）に置く定型——md 側はプレーンな markdown の
+ * リンク列を書くだけでよい。
+ */
+const REFS_MARKER_RE = /^(参照|References):\s*/;
+
+function refKind(href) {
+  if (typeof href !== "string") return "product";
+  if (href.includes("/blog/")) return "blog";
+  if (href.includes("/pillars/")) return "pillar";
+  return "product";
+}
+
 export function rehypeBriefSectionNumber() {
   return (tree, file) => {
     const path = file?.history?.[0] ?? file?.path ?? "";
@@ -47,15 +65,34 @@ export function rehypeBriefSectionNumber() {
     if (!inScope) return;
 
     visitElements(tree, (node) => {
-      if (node.tagName !== "h2") return;
-      const first = node.children?.[0];
-      if (!first || first.type !== "text") return;
-      const match = first.value.match(SECTION_NUMBER_RE);
-      if (!match) return;
-      const [, num, title] = match;
-      first.value = title;
-      node.properties = node.properties || {};
-      node.properties["dataSectionNum"] = num;
+      if (node.tagName === "h2") {
+        const first = node.children?.[0];
+        if (!first || first.type !== "text") return;
+        const match = first.value.match(SECTION_NUMBER_RE);
+        if (!match) return;
+        const [, num, title] = match;
+        first.value = title;
+        node.properties = node.properties || {};
+        node.properties["dataSectionNum"] = num;
+        return;
+      }
+      if (node.tagName === "p") {
+        const first = node.children?.[0];
+        if (!first || first.type !== "text") return;
+        if (!REFS_MARKER_RE.test(first.value)) return;
+        const links = (node.children ?? []).filter(
+          (c) => c.type === "element" && c.tagName === "a",
+        );
+        if (links.length === 0) return;
+        for (const link of links) {
+          link.properties = link.properties || {};
+          link.properties["dataRefKind"] = refKind(link.properties.href);
+        }
+        node.tagName = "div";
+        node.children = links;
+        node.properties = node.properties || {};
+        node.properties["dataBriefRefs"] = "";
+      }
     });
   };
 }

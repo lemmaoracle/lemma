@@ -19,13 +19,13 @@ gap_missing: "Because the AI builds new attack tools per target, detection that 
 gap_fix: "Even for an unknown tool, independently verify with Lemma that the operation carries legitimately authorized provenance, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / 064) in which AI agents drove intrusions from initial access through exfiltration against government and financial organizations in Latin America; one hit six Mexican agencies from late 2025. The decisive detail: the AI generated attack tools per target rather than using off-the-shelf tooling, so they carry no stable signature and post-hoc detection stays inherently reactive. What is missing is a layer that verifies, before the action, whether the operation carries legitimately authorized provenance. Detection and pre-execution attestation are complements, not substitutes.
+Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / 064) in which AI agents drove intrusions from initial access through exfiltration against government and financial organizations in Latin America; one hit six Mexican agencies from late 2025. The decisive detail: the AI generated attack tools per target rather than using off-the-shelf tooling, so they carry no stable signature and post-hoc detection stays inherently reactive. What is missing is a layer that verifies, before the action, whether the operation carries legitimately authorized provenance.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Targets**: government and financial-sector organizations in Latin America (also aviation and retail)
 - **Disclosure**: 2026-05-11, Trend Micro (TrendAI Research)
@@ -37,20 +37,7 @@ Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / 064) in which AI 
 - **How the agent was used**: SHADOW-AETHER-040 did not fully delegate to the AI but used it as a supervised assistant (pausing and correcting on deviation). Shodan and VulDB were connected to the AI to obtain attack-surface and vulnerability information. A dedicated folder per victim documented attack steps and collected intelligence in Markdown, serving as the AI's operational knowledge base so it could restore context and continue work.
 - **Attribution**: the two are near-identical in tooling and tactics, but the language of scripts and binaries (Spanish vs. Portuguese) points to separate groups — a sign that AI-assisted attacks are spreading across multiple groups, not a single actor.
 
----
-
-## 2. Timeline
-
-- Late 2025: SHADOW-AETHER-040 begins operations (tracked by Trend Micro)
-- 2025-12-27 to 2026-01-04: SHADOW-AETHER-040 compromises six Mexican government agencies, including cases reaching data theft with AI-agent assistance
-- From 2026-04: SHADOW-AETHER-064 observed targeting Brazilian financial institutions
-- 2026-05-11: Trend Micro (TrendAI Research) discloses both campaigns
-
-> Note: proper nouns, campaign names, and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack vector
+The incident came together as the following chain.
 
 1. **Initial access**: compromise a vulnerable public-facing server (JBoss AS for SHADOW-AETHER-064) and plant a webshell. Identify attack surface and vulnerabilities via Shodan / VulDB.
 2. **Tunnel establishment**: build SOCKS5 tunnels with tools such as Chisel plus ProxyChains + SSH, so the AI agent reaches the victim's internal network directly.
@@ -60,37 +47,40 @@ Trend Micro disclosed two field campaigns (SHADOW-AETHER-040 / 064) in which AI 
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This case belongs to the `agent-runaway` category of Pillar 03 (Agent Authority Proof). The central failure primitive is that **the tools and operations used in the attack are AI-generated per target and carry no stable signature, so the premise of detection — "match against known malicious artifacts" — breaks down.** Secondary categories are `agent-infrastructure` (the Shodan/VulDB and tunneling infrastructure wired into the AI) and `identity-auth`.
+- Late 2025: SHADOW-AETHER-040 begins operations (tracked by Trend Micro)
+- 2025-12-27 to 2026-01-04: SHADOW-AETHER-040 compromises six Mexican government agencies, including cases reaching data theft with AI-agent assistance
+- From 2026-04: SHADOW-AETHER-064 observed targeting Brazilian financial institutions
+- 2026-05-11: Trend Micro (TrendAI Research) discloses both campaigns
 
-This is the same lineage as Brief 009 (GTG-1002) and 026 (the adaptive AI worm), in which the AI becomes the executing actor of the attack. 009 is Anthropic's disclosure of a state-sponsored actor abusing Claude Code (running 80–90% of the attack autonomously); 026 is a threat model that generates attack strategy at runtime. This case confirms that primitive **as multiple independent campaigns observed in the field by Trend Micro**, grounding 009/026 in real loss and compromise. In particular, the practice of generating tooling per target rather than reusing it undermines the very stability that detection relies on — IOCs, tool signatures, known TTPs — showing that defenders cannot enumerate "what is malicious" in advance.
+> Note: proper nouns, campaign names, and IOCs are based on primary sources (research institutions, GitHub Advisory, NVD, vendor threat intelligence, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
-The fact that SHADOW-AETHER-040 and 064 were near-identical apart from language also shows that AI-assisted attacks are not the exclusive province of a single advanced actor but are **spreading as an isomorphic operating model across distinct groups.** This is a signal that AI has changed the cost and reproducibility of attacks — a longer-reaching one than any single-vulnerability news item.
+The response and industry movement after disclosure:
+
+- **Trend Micro (TrendAI Research)**: identified and disclosed both campaigns, presented MITRE ATT&CK TTPs and IOCs, and committed to continued tracking. Framed them as among the earliest observed cases of AI agents executing the chain from initial access through exfiltration.
+- **Cross-industry**: attackers' use of AI has long been predicted, but this case marks a turn from "prediction" to "observed as multiple independent campaigns." Evasion of signature detection via dynamic tool generation demonstrates, in the field, the limits of an IOC- and signature-centric defense model, and pushes the argument to shift defensive weight toward runtime authorization and provenance verification.
+- **A note on positioning**: this case is a separate campaign from the state-sponsored AI-autonomous attack disclosed elsewhere ([Brief 009](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/) = GTG-1002). The two share the root of "the AI becoming the executing actor of the attack," but differ in actor, target, and disclosing party, so we link them as related.
 
 ---
 
-## 5. The detection–proof gap
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **the tools and operations used in the attack are AI-generated per target and carry no stable signature, so the premise of detection — "match against known malicious artifacts" — breaks down.**
+
+This is the same lineage as [Brief 009](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/) (GTG-1002) and 026 (the adaptive AI worm), in which the AI becomes the executing actor of the attack. 009 is Anthropic's disclosure of a state-sponsored actor abusing Claude Code (running 80–90% of the attack autonomously); 026 is a threat model that generates attack strategy at runtime. This case confirms that primitive **as multiple independent campaigns observed in the field by Trend Micro**, grounding 009/026 in real loss and compromise. In particular, the practice of generating tooling per target rather than reusing it undermines the very stability that detection relies on — IOCs, tool signatures, known TTPs — showing that defenders cannot enumerate "what is malicious" in advance.
+
+The fact that SHADOW-AETHER-040 and 064 were near-identical apart from language also shows that AI-assisted attacks are not the exclusive province of a single advanced actor but are **spreading as an isomorphic operating model across distinct groups.** This is a signal that AI has changed the cost and reproducibility of attacks — a longer-reaching one than any single-vulnerability news item.
 
 Campaign identification, IOC provision, and MITRE ATT&CK mapping by threat researchers like Trend Micro are indispensable for understanding, containing, and hardening against the damage; this Brief does not dispute that role. Detailed TTPs and IOCs were published for this case as well.
 
 But detection does not change "what is allowed to run in the environment" itself. The core of this case is that the tools the AI generates per target carry no stable signature, so IOCs and known-tool matching are inherently reactive. A generated backdoor or script becomes an IOC only once observed and analyzed — and a different one is generated for the next target. What was missing is independent, pre-execution verification of "is the operation or tool about to run in this environment one that is legitimately authorized and has confirmed provenance?" — a different track from detecting known artifacts. For audit, too, after a compromise there is little independent trail beyond reconciling logs with forensics to prove "which operation ran, under whose authorization, by which path."
 
+---
+
+## 5. What proof would have changed
+
 Pre-execution attestation inverts detection from "matching known malicious artifacts" to "verifying, before execution, whether the operation or code about to run is authorized and carries provenance." Even when a tool is unknown or freshly generated, if the proof reports "this operation has no legitimately authorized provenance," execution is blocked in advance. Signature-based detection (the detection-style "is this known-malicious?") and pre-execution proof of operations (the "is this an authorized, provenanced execution?") are not substitutes but **complements** — and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry context
-
-- **Trend Micro (TrendAI Research)**: identified and disclosed both campaigns, presented MITRE ATT&CK TTPs and IOCs, and committed to continued tracking. Framed them as among the earliest observed cases of AI agents executing the chain from initial access through exfiltration.
-- **Cross-industry**: attackers' use of AI has long been predicted, but this case marks a turn from "prediction" to "observed as multiple independent campaigns." Evasion of signature detection via dynamic tool generation demonstrates, in the field, the limits of an IOC- and signature-centric defense model, and pushes the argument to shift defensive weight toward runtime authorization and provenance verification.
-- **A note on positioning**: this case is a separate campaign from the state-sponsored AI-autonomous attack disclosed elsewhere (Brief 009 = GTG-1002). The two share the root of "the AI becoming the executing actor of the attack," but differ in actor, target, and disclosing party, so we link them as related.
-
----
-
-## 7. Lemma's analysis
 
 Against the structural problem exposed here (attack tools are AI-generated per target and carry no stable signature, so detection that relies on matching known artifacts is left reactive), Lemma proposes a design that inverts detection from "matching known malicious artifacts" to "pre-execution verification of the authorization and provenance of the operation or code about to run."
 
@@ -100,21 +90,11 @@ Against the structural problem exposed here (attack tools are AI-generated per t
 
 This replaces the premise that detection undermines — "enumerate what is malicious in advance" — with pre-execution authorization and provenance verification. Signature-based detection (detection) and pre-execution proof of operations work as complements, and in a world where attack tooling is AI-generated and carries no signature, the weight shifts toward the latter.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Trend Micro (TrendAI Research)**: "Vibe Hacking: Two AI-Augmented Campaigns Target Government and Financial Sectors in Latin America" (2026-05-11; campaign details, TTPs, IOCs, MITRE ATT&CK) — https://www.trendmicro.com/en_us/research/26/e/vibe-hacking-two-ai-augmented-campaigns-target-government-and-financial-sectors-in-latin-america.html
 - **Dark Reading**: "LatAm Vibe Hackers Generate Custom Hacking Tools on the Fly" (2026-05) — https://www.darkreading.com/cloud-security/ai-agents-generate-custom-hacking-tools
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

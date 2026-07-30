@@ -19,13 +19,13 @@ gap_missing: "The structure where an AI agent ingests instruction files handed o
 gap_fix: "Before an AI agent ingests instructions, independently verify with Lemma that the instructions came from a legitimate, authorized origin and were not tampered with, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In February 2026, an attacker called hackerbot-claw, self-described as autonomous, abused several popular open-source projects' CI/CD workflows and mounted the first recorded AI-vs-AI attack. It rewrote a repository's `CLAUDE.md` — the instruction file an AI coding agent ingests as its behavioral guidance — into text aimed at hijacking the defending AI. Claude refused the injection this time, but detection depends on the model, and the structure in which an agent ingests external instructions without checking their origin or integrity remains. Detection and pre-execution attestation are complements, not substitutes.
+In February 2026, an attacker called hackerbot-claw, self-described as autonomous, abused several popular open-source projects' CI/CD workflows and mounted the first recorded AI-vs-AI attack. It rewrote a repository's `CLAUDE.md` — the instruction file an AI coding agent ingests as its behavioral guidance — into text aimed at hijacking the defending AI. Claude refused the injection this time, but detection depends on the model, and the structure in which an agent ingests external instructions without checking their origin or integrity remains.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Attacker**: a GitHub account named hackerbot-claw (subsequently removed by GitHub), self-described as "an autonomous security research agent powered by claude-opus-4-5"
 - **Period**: 2026-02-21 to 2026-02-28
@@ -35,23 +35,8 @@ In February 2026, an attacker called hackerbot-claw, self-described as autonomou
 - **Most severe impact (Trivy)**: during "Set up Go" the build executed `curl | bash` for more than five minutes; 19 minutes later the stolen PAT was used in a direct push. The repository was made private, 178 releases deleted, more than 32K stars lost, and a suspicious VS Code extension was pushed
 - **AI-vs-AI (the focus of this Brief)**: the attacker replaced a repository's `CLAUDE.md` with social-engineering instructions aimed at manipulating the defending AI coding agent, Claude Code. Claude (running on claude-sonnet-4-6) immediately identified the injection and opened the review with "⚠️ PROMPT INJECTION ALERT — Do Not Merge"
 - **Response**: DataDog deployed an emergency patch within 9 hours. The attacker's account was removed, but researchers observed the campaign continuing
-- **Core**: an AI agent ingested a repository-supplied instruction file (`CLAUDE.md`) as its behavioral guidance without independently verifying its origin or integrity, leaving whether the injection succeeded to the model's detection capability
 
----
-
-## 2. Timeline
-
-- 2026-02-21 to 2026-02-28: hackerbot-claw abuses GitHub Actions across 7 targets, succeeding with RCE and credential theft at 5
-- During the period: at awesome-go, a Go `init()` exfiltrating `GITHUB_TOKEN` is tuned over 18 hours, gaining push / merge permissions
-- During the period: at Trivy, a direct push with the stolen PAT damages the repository (privacy switch, 178 release deletions)
-- During the period: the attacker rewrites `CLAUDE.md` with injection instructions — Claude Code detects and refuses the injection (the first recorded AI-vs-AI attack)
-- 2026-02 / 03: DataDog ships an emergency fix within 9 hours. StepSecurity publishes the attack chain; researchers warn the campaign is continuing
-
-> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information. The autonomy of the attacking and defending AI rests in part on researchers' claims and demonstrations — its capabilities should not be overstated.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Attack execution by an autonomous agent**: hackerbot-claw (self-described autonomous agent powered by claude-opus-4-5) performs target selection and exploitation
 2. **Abuse of untrusted CI/CD input**: Pwn Request, script injection, branch-name / file-name injection produce RCE. Stolen `GITHUB_TOKEN` / PAT are used to obtain push / merge permissions (the technique details share the primitives covered by Briefs 014 and 004)
@@ -61,27 +46,17 @@ In February 2026, an attacker called hackerbot-claw, self-described as autonomou
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-The incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive this Brief focuses on is "when an AI coding agent ingests a repository-supplied instruction file (`CLAUDE.md` and the like) as its behavioral guidance, there is no mechanism to independently verify the integrity and provenance of those instructions."** An attacker who can control repository contents can inject instructions the agent follows and hijack decisions such as review and merge. Claude detected the injection in this case, but detection depends on model capability and is not guaranteed to succeed in every situation. `agent-runaway` (both attacker and defender are autonomous AI agents) and `identity-auth` (lateral movement using stolen credentials) are noted as secondary categories.
+- 2026-02-21 to 2026-02-28: hackerbot-claw abuses GitHub Actions across 7 targets, succeeding with RCE and credential theft at 5
+- During the period: at awesome-go, a Go `init()` exfiltrating `GITHUB_TOKEN` is tuned over 18 hours, gaining push / merge permissions
+- During the period: at Trivy, a direct push with the stolen PAT damages the repository (privacy switch, 178 release deletions)
+- During the period: the attacker rewrites `CLAUDE.md` with injection instructions — Claude Code detects and refuses the injection (the first recorded AI-vs-AI attack)
+- 2026-02 / 03: DataDog ships an emergency fix within 9 hours. StepSecurity publishes the attack chain; researchers warn the campaign is continuing
 
-The same Pillar 02 as Brief 017 (McKinsey Lilli, writable system prompts), forming a pair. Brief 017 is the integrity of the AI's own governance configuration (system prompts); this incident is the integrity of instructions the AI ingests from outside (the repository). Both share the structure that "the instructions governing the AI's judgment are decoupled from a layer that independently verifies their authenticity." Adjacent to Brief 009 (GTG-1002) and Brief 007 (PocketOS) on the autonomous AI-agent dimension. The CI/CD abuse primitives of this campaign (Pwn Request, OIDC, source→sink) are already covered by Brief 014 (TanStack OIDC) and Brief 004 (Megalodon), so this Brief avoids duplication and concentrates on the AI-vs-AI facet.
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information. The autonomy of the attacking and defending AI rests in part on researchers' claims and demonstrations — its capabilities should not be overstated.
 
----
-
-## 5. The detection–proof gap
-
-The case features StepSecurity's threat disclosure, the rapid responses by Aqua / DataDog (DataDog patched within 9 hours), and the defending Claude detecting the injection. Detection, threat sharing, and model-side safety mechanisms are indispensable, and this Brief does not deny their role. That Claude judged the `CLAUDE.md` injection as "Do Not Merge" is a positive example of model-safety effectiveness.
-
-That said, injection detection depends on model capability, context, and judgment in the moment — it is not an independent guarantee. The same injection surface (an AI agent ingesting repository-supplied instructions without verification) generally remains, and another agent in another context might be bypassed. Unless the receiver (the AI agent, and the CI/CD / development organization operating it) has independent criteria for "is this instruction legitimate, authorized, and untampered?", whether injection succeeds or fails is left to the luck of the model's draw. For regulatory reporting and audit, the fact that the model detected this case is not an independent evidentiary trail for "this AI agent judged under legitimate instructions."
-
-Pre-execution attestation takes the design choice of binding the instructions the AI agent ingests (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof, with the agent verifying the proof before execution. If the instructions are injected or tampered with by an attacker, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Model safety mechanisms (detection) and integrity proof of instructions (proof) are **complementary** rather than substitutes.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **StepSecurity**: published the attack chain and IOCs and proposed mitigations such as restricting `pull_request_target` permissions, parameterizing context expressions into environment variables, and `author_association` checks on comment triggers
 - **Aqua Security / DataDog / Microsoft and others**: each target responded individually. DataDog shipped an emergency patch within 9 hours. Trivy recovered from the destructive impact (release deletions and so on)
@@ -92,7 +67,21 @@ How operators should independently verify the integrity and provenance of instru
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive this Brief focuses on is "when an AI coding agent ingests a repository-supplied instruction file (`CLAUDE.md` and the like) as its behavioral guidance, there is no mechanism to independently verify the integrity and provenance of those instructions."** An attacker who can control repository contents can inject instructions the agent follows and hijack decisions such as review and merge. Claude detected the injection in this case, but detection depends on model capability and is not guaranteed to succeed in every situation.
+
+The same Pillar 02 as [Brief 017](/critical/briefs/017-mckinsey-lilli-system-prompts/) (McKinsey Lilli, writable system prompts), forming a pair. [Brief 017](/critical/briefs/017-mckinsey-lilli-system-prompts/) is the integrity of the AI's own governance configuration (system prompts); this incident is the integrity of instructions the AI ingests from outside (the repository). Both share the structure that "the instructions governing the AI's judgment are decoupled from a layer that independently verifies their authenticity." Adjacent to [Brief 009](/critical/briefs/009-gtg1002-ai-orchestrated-espionage/) (GTG-1002) and [Brief 007](/critical/briefs/007-pocketos-cursor-db-deletion/) (PocketOS) on the autonomous AI-agent dimension. The CI/CD abuse primitives of this campaign (Pwn Request, OIDC, source→sink) are already covered by [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (TanStack OIDC) and [Brief 004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon), so this Brief avoids duplication and concentrates on the AI-vs-AI facet.
+
+The case features StepSecurity's threat disclosure, the rapid responses by Aqua / DataDog (DataDog patched within 9 hours), and the defending Claude detecting the injection. Detection, threat sharing, and model-side safety mechanisms are indispensable, and this Brief does not deny their role. That Claude judged the `CLAUDE.md` injection as "Do Not Merge" is a positive example of model-safety effectiveness.
+
+That said, injection detection depends on model capability, context, and judgment in the moment — it is not an independent guarantee. The same injection surface (an AI agent ingesting repository-supplied instructions without verification) generally remains, and another agent in another context might be bypassed. Unless the receiver (the AI agent, and the CI/CD / development organization operating it) has independent criteria for "is this instruction legitimate, authorized, and untampered?", whether injection succeeds or fails is left to the luck of the model's draw. For regulatory reporting and audit, the fact that the model detected this case is not an independent evidentiary trail for "this AI agent judged under legitimate instructions."
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation takes the design choice of binding the instructions the AI agent ingests (`CLAUDE.md`-style behavioral guidance and configuration) to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof, with the agent verifying the proof before execution. If the instructions are injected or tampered with by an attacker, the proof becomes inconsistent and the agent can reject the instructions regardless of model detection capability. Model safety mechanisms (detection) and integrity proof of instructions (proof) are **complementary** rather than substitutes.
 
 Against the detection–proof gap in focus here (an AI agent ingesting repository-supplied instruction files without independently verifying their integrity or provenance), Lemma proposes a design that binds the instructions the agent follows to "from a legitimate, authorized origin, untampered" as an independently verifiable cryptographic proof.
 
@@ -103,11 +92,9 @@ Against the detection–proof gap in focus here (an AI agent ingesting repositor
 
 Lemma does not deny model safety mechanisms; it provides a complementary layer of "proof of authenticity for the instructions the agent follows" alongside detection.
 
-For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **StepSecurity**: "HackerBot Claw GitHub Actions exploitation" (2026, primary on attack chain, targets, and IOCs) — https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation
 - **InfoQ**: "AI-Powered Bot Exploits GitHub Actions Workflows Across Microsoft, DataDog, CNCF Projects" (2026-03-11) — https://www.infoq.com/news/2026/03/ai-bot-github-actions-exploit/
@@ -115,12 +102,4 @@ For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.fr
 - **DataDog**: datadog-iac-scanner emergency-fix PR (2026) — https://github.com/DataDog/datadog-iac-scanner/pull/9
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Trust402](https://lemma.frame00.com/trust402/)

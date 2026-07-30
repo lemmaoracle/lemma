@@ -19,13 +19,13 @@ gap_missing: "There was no layer to check before action whether the party that t
 gap_fix: "Before an agent acts with privilege, independently verify with Lemma that this trigger comes from a party with legitimate authority and this input originates from a trusted source, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code GitHub Action: the trigger check unconditionally trusted any actor whose name ends in `[bot]`, so a single malicious issue could spoof the trigger, prompt-inject to exfiltrate credentials, and hijack the repository. Disclosure and a four-day patch cannot establish, before execution, whether the launcher holds legitimate authority or where the input comes from. What is structurally missing is a layer verifying the launcher's authority and the input's provenance before privileged execution.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Target**: Anthropic's Claude Code GitHub Action (claude-code-action), which embeds Claude in CI/CD to triage issues, apply labels, review pull requests, and run slash commands. By default it has read/write access to the repository's code, issues, PRs, discussions, and workflow files.
 - **Identifier and severity**: 7.8 under CVSS 4.0. Fixed in claude-code-action v1.0.94. Anthropic paid a bug bounty.
@@ -33,21 +33,6 @@ In June 2026, RyotaK (GMO Flatt Security) disclosed a flaw in the Claude Code Gi
 - **The core flaw (launcher authority)**: The trigger check (`checkWritePermissions`) **unconditionally trusted any actor whose name ends in `[bot]`** (on the assumption that a GitHub App is trusted, installed by an admin). But anyone can register a GitHub App, install it on their own repo, and use its installation token to create issues / PRs on any public repository. The Action saw "it's a bot" and let the attacker's content through. Tag mode had an extra human-confirmation check; agent mode did not, and was exposed.
 - **The chain (input provenance)**: The attacker uses indirect prompt injection — planting instructions in an issue body disguised as an error message, tuned so Claude executes them while trying to "recover." The target is `/proc/self/environ` (environment variables containing secrets). Claude blocks a naive read, but the attacker routes around it and has the values written back into the issue to be retrieved.
 - **Final reach**: The prize among the environment variables is the credential set that GitHub Actions requires for an OIDC token (a signed token proving "I am this workflow running in this repo"). Claude Code exchanges it with Anthropic's backend for an installation token for the Claude GitHub App, which has write access. Steal that credential and replay the exchange, and you hold write access to the target's code, issues, and workflows. Aim at the claude-code-action repository itself, and you can poison the Action that downstream consumers pull in.
-- **Core**: There was no layer to independently verify the launcher's authority and the input's provenance before the agent acted with privilege, so a `[bot]` name and an issue body disguised as a request passed straight through as proof of authority and as trusted input.
-
----
-
-## 2. Timeline
-
-- 2026-01: RyotaK reports the core bypass to Anthropic. Anthropic fixes it within four days.
-- 2026 spring: Additional hardening continues. The fixes converge in claude-code-action v1.0.94.
-- 2026-06-04: The vulnerability details are published (GMO Flatt Security's research post, The Hacker News, and others).
-
-> Note: This was handled as a coordinated disclosure (published after a fix was available). There is no public trace of "this exact path" poisoning Anthropic's own Action being used against a real-world target; RyotaK demonstrated it only on his own test repositories. That said, the same shape (AI issue triage + broad permissions + prompt injection) has produced real-world damage by other routes — e.g., the February 2026 case in which an npm publish token was stolen via Cline's claude-code-action workflow and a malicious version published. RyotaK has said he reported roughly 50 techniques for circumventing the permission system.
-
----
-
-## 3. Attack vector
 
 This incident stems from the launching actor's authority and the input's provenance not being independently verified before a privileged action. The path is as follows.
 
@@ -61,29 +46,15 @@ As a secondary path, Anthropic's example workflow shipped `allowed_non_write_use
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `agent-infrastructure` category of Pillar 03 (Agent Authority Proof). The central failure primitive is that **before the agent takes a privileged action (a broadly permissioned CI run), it does not independently verify "who launched the agent, and whether that launcher holds legitimate authority" or "whether the provenance of the input it loaded is trustworthy."** It mistook the `[bot]` name suffix for proof of authority and executed an unverified input (the issue body) as instructions in a privileged context. We note `identity-auth` (authentication of the launcher) and `ai-decision-integrity` (integrity of the input the AI reads) as secondary categories.
+- 2026-01: RyotaK reports the core bypass to Anthropic. Anthropic fixes it within four days.
+- 2026 spring: Additional hardening continues. The fixes converge in claude-code-action v1.0.94.
+- 2026-06-04: The vulnerability details are published (GMO Flatt Security's research post, The Hacker News, and others).
 
-This is the same shape as Brief 037 (an AI coding agent auto-executed a repo-bundled config file without verification): **the agent acts with broad permissions without verifying the provenance of its launch or its input.** Where 037 was auto-execution of a bundled config and this is launch by an external issue, both share that "the authority to make the agent act is decoupled from independent verification of the launcher's and the input's legitimacy." It connects to Brief 048 (invisible instructions in AI instruction files) and Brief 024 (invisible-Unicode instruction injection) through the primitive of divergence between what the human sees and what the AI reads as instructions. It connects to Brief 029 (theft of an over-scoped OAuth token) in that the stolen token is not scoped to the action.
+> Note: This was handled as a coordinated disclosure (published after a fix was available). There is no public trace of "this exact path" poisoning Anthropic's own Action being used against a real-world target; RyotaK demonstrated it only on his own test repositories. That said, the same shape (AI issue triage + broad permissions + prompt injection) has produced real-world damage by other routes — e.g., the February 2026 case in which an npm publish token was stolen via Cline's claude-code-action workflow and a malicious version published. RyotaK has said he reported roughly 50 techniques for circumventing the permission system.
 
-The point is not using AI as such. Embedding AI in CI is a productivity gain. What was missing is **a layer that, before the agent acts, independently verifies the launcher's authority and the input's provenance.** An agent holding real tokens and real tools can be pushed as far as its permissions allow. As long as prompt injection is unsolved, a design that presumes the input is trustworthy collapses at a single entry point.
-
----
-
-## 5. The gap between detection and proof
-
-Discovery of the vulnerability and coordinated disclosure, the rapid patch, and CI-log auditing all functioned here and are indispensable for deterring recurrence; this Brief does not negate that role. Anthropic fixed the core within four days and continued hardening.
-
-At the same time, detection provides no material to independently establish — **before the action** — whether the actor that just launched the agent holds legitimate authority, or whether the input just loaded comes from a trustworthy source. A launch by an actor calling itself `[bot]` and an issue disguised as an error message are indistinguishable, to the system, from a legitimate trigger and legitimate input. After-the-fact log analysis reconstructs "what was executed," but not "was that execution authorized after independently verifying the launcher's authority and the input's provenance." A patch closes a specific hole, but the input-trust problem that is prompt injection remains unsolved.
-
-Pre-execution attestation treats the agent's action as a privileged act and requires, before execution, an independently verifiable proof of "does the launcher hold legitimate authority" and "what source does the input derive from, and is it untampered." Make the launcher's authority attributes — not the `[bot]` name — and the input's provenance — not the look of the issue body — verifiable at the moment of the act, and privileged execution based on an unverified launch or input is blocked before the action. Further, an authorization like the OIDC token exchange can be replaced with a per-action-scoped proof that a replayed stolen credential cannot satisfy. Detecting the vulnerability (the detection-style "where is the hole") and proving authority and input ("was the action authorized after independently verifying the launcher's authority and the input's provenance") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Anthropic**: Fixed the core within four days of the report and hardened through the spring; the fixes converge in claude-code-action v1.0.94. It advises users to audit workflows where non-write users or bots can launch Claude, to pass no secrets beyond the Anthropic API key and `GITHUB_TOKEN` when handling unverified input, and to remove tools and permissions usable for exfiltration.
 - **Permission design for AI coding agents**: A setup where an agent holding real tokens and real tools runs on unverified input leads directly to privileged execution when independent verification of the launcher and the input is absent — for as long as prompt injection is unsolved. Casually copying the example config (`allowed_non_write_users: "*"`, output to the public summary field) widens the hole.
@@ -93,7 +64,23 @@ The absence of a layer that independently verifies, before action, an agent's pr
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **before the agent takes a privileged action (a broadly permissioned CI run), it does not independently verify "who launched the agent, and whether that launcher holds legitimate authority" or "whether the provenance of the input it loaded is trustworthy."** It mistook the `[bot]` name suffix for proof of authority and executed an unverified input (the issue body) as instructions in a privileged context.
+
+This is the same shape as [Brief 037](/critical/briefs/037-agent-config-auto-execution/) (an AI coding agent auto-executed a repo-bundled config file without verification): **the agent acts with broad permissions without verifying the provenance of its launch or its input.** Where 037 was auto-execution of a bundled config and this is launch by an external issue, both share that "the authority to make the agent act is decoupled from independent verification of the launcher's and the input's legitimacy." It connects to [Brief 048](/critical/briefs/048-trapdoor-ai-instruction-provenance/) (invisible instructions in AI instruction files) and [Brief 024](/critical/briefs/024-invisible-unicode-instruction-injection/) (invisible-Unicode instruction injection) through the primitive of divergence between what the human sees and what the AI reads as instructions. It connects to [Brief 029](/critical/briefs/029-github-dev-oauth-token/) (theft of an over-scoped OAuth token) in that the stolen token is not scoped to the action.
+
+The point is not using AI as such. Embedding AI in CI is a productivity gain. What was missing is **a layer that, before the agent acts, independently verifies the launcher's authority and the input's provenance.** An agent holding real tokens and real tools can be pushed as far as its permissions allow. As long as prompt injection is unsolved, a design that presumes the input is trustworthy collapses at a single entry point.
+
+Discovery of the vulnerability and coordinated disclosure, the rapid patch, and CI-log auditing all functioned here and are indispensable for deterring recurrence; this Brief does not negate that role. Anthropic fixed the core within four days and continued hardening.
+
+At the same time, detection provides no material to independently establish — **before the action** — whether the actor that just launched the agent holds legitimate authority, or whether the input just loaded comes from a trustworthy source. A launch by an actor calling itself `[bot]` and an issue disguised as an error message are indistinguishable, to the system, from a legitimate trigger and legitimate input. After-the-fact log analysis reconstructs "what was executed," but not "was that execution authorized after independently verifying the launcher's authority and the input's provenance." A patch closes a specific hole, but the input-trust problem that is prompt injection remains unsolved.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation treats the agent's action as a privileged act and requires, before execution, an independently verifiable proof of "does the launcher hold legitimate authority" and "what source does the input derive from, and is it untampered." Make the launcher's authority attributes — not the `[bot]` name — and the input's provenance — not the look of the issue body — verifiable at the moment of the act, and privileged execution based on an unverified launch or input is blocked before the action. Further, an authorization like the OIDC token exchange can be replaced with a per-action-scoped proof that a replayed stolen credential cannot satisfy. Detecting the vulnerability (the detection-style "where is the hole") and proving authority and input ("was the action authorized after independently verifying the launcher's authority and the input's provenance") are not substitutes but **complements**.
 
 Against the gap this incident exposed (the agent's launcher authority and input provenance are not independently verified before the action), Lemma proposes a design that records the agent's action as a privileged act and, before execution, verifies "who launched it, under what authority, and on what source of input" as an independently verifiable cryptographic proof.
 
@@ -104,22 +91,12 @@ Against the gap this incident exposed (the agent's launcher authority and input 
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this agent's action rests on a launcher with legitimate authority and input from a trustworthy source," without depending on after-the-fact log reconciliation. Detection (after-the-fact vulnerability discovery and patching) works on closing holes; attestation (independent verification of authority and input at the moment of the act) works on establishing trust in agent execution — each complementary to the other.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **GMO Flatt Security (primary, researcher)**: RyotaK, "Poisoning Claude Code: One GitHub Issue to Break the Supply Chain" — <https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/>
 - **The Hacker News**: "Claude Code GitHub Action Flaw Let One Malicious Issue Hijack Repositories" (2026-06-04) — <https://thehackernews.com/2026/06/claude-code-github-action-flaw-let-one.html>
 - **Anthropic (primary, fix commit)**: claude-code-action fix commit (converging in v1.0.94) — <https://github.com/anthropics/claude-code-action/commit/1bbc9e7ff7d48e1299f7fa9698273d248e0cafea>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

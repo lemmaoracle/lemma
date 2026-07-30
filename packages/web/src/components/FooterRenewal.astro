@@ -1,0 +1,238 @@
+---
+/**
+ * リニューアルのフッター（`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §1.2）。
+ *
+ * スレート地＋ライムの環境光、5カラム。モック `lemma_article_mock_v10.html` /
+ * `lemma_blog_index_mock_v4.html` / `lemma_brief_index_mock_v5.html` /
+ * `lemma_brief_article_mock_v5.html` の `footer.site` の面。
+ *
+ * **旧 `Footer.astro`（v28 のクリーム＋Sora＋saddle brown）は残してある。**
+ * リニューアルは面ごとに出していて、トップページとユースケースページは
+ * 今回の範囲外なので、サイト全体を差し替えると範囲外の面が動く。この
+ * コンポーネントは今回の4テンプレート（ブログ記事・ブログ一覧・Brief 一覧・
+ * Brief 記事）だけが読む。全面がリニューアルに乗ったら `Footer.astro` を
+ * これで置き換えて、片方を消す。
+ *
+ * ロゴはインライン SVG を複製せず既存の `LemmaOracle` を使う（指示書 §1.2）。
+ * 環境光は `inset:0` ＋楕円グラデで、`border-radius:50%` の円は使わない
+ * （円は縮小したときに輪郭が出る）。
+ *
+ * 下段右端の「この記事も、証明付きで配信しています」は**保留**。記事ごとの
+ * 証明が実在しないうちは事実でない表示になるため、可否を確定してから足す
+ * （検証センター自体は「読む・確かめる」列から辿れる）。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import LemmaOracle from "./LemmaOracle.astro";
+import { SEGMENT_URLS } from "../config/navigation";
+
+interface Props {
+  locale: Locale;
+  t: Translations["nav"];
+  footerT: Translations["footer"];
+  base: string;
+}
+
+const { locale, t, footerT, base } = Astro.props;
+const isJa = locale === "ja";
+const L = (path: string) => (base ? `${base}${path}` : path);
+
+const currentPath = Astro.url.pathname;
+const languageSwitchHref = isJa
+  ? currentPath.replace(/^\/ja/, "") || "/"
+  : `/ja${currentPath}`;
+const languageSwitchLabel = isJa ? "EN" : "日本語";
+
+/**
+ * ブランドの2行はサイトの主張そのもので、`footerT.tagline`（「AI のための
+ * 信頼インフラ。」）とは別の文。指示書 §1.2 の文面をそのまま持つ。
+ */
+const brandLines = isJa
+  ? ["AI時代に、何が本物かを証明する。", "発行は一度。検証は、無料で何度でも。"]
+  : ["Prove what's real in the age of AI.", "Issue once. Verify free, any number of times."];
+
+/**
+ * 「Lemma API」はモックどおり料金の API セクションへ、「5つの証明」は
+ * `/pillars` へ送る。`/pillars` が Lemma API の製品ページ（ナビの
+ * 「Lemma API」もここ）なので、両方を `/pillars` にすると同じ行が2つ並ぶ。
+ */
+const columns = [
+  {
+    heading: isJa ? "製品" : "Products",
+    links: [
+      { label: "Lemma API", href: L("/pricing#api") },
+      { label: "Trust402 · Pay", href: L("/trust402/") },
+      { label: "Trust402 · Sell", href: L("/trust402/sell/") },
+      { label: "Seal", href: L("/seal/") },
+    ],
+  },
+  {
+    heading: isJa ? "プラン" : "Plans",
+    links: [
+      { label: t.mega.products.civic, href: SEGMENT_URLS.civic[locale] },
+      { label: t.mega.products.critical, href: SEGMENT_URLS.critical[locale] },
+      { label: t.mega.products.compliance, href: SEGMENT_URLS.compliance[locale] },
+      { label: t.mega.products.pricing, href: L("/pricing") },
+    ],
+  },
+  {
+    heading: isJa ? "知る" : "Learn",
+    links: [
+      { label: isJa ? "5つの証明" : "The five proofs", href: L("/pillars") },
+      { label: isJa ? "ユースケース" : "Use cases", href: L("/solutions/use-cases") },
+      { label: isJa ? "ドキュメント" : "Docs", href: L("/guides") },
+      { label: t.mega.resources.glossary, href: L("/glossary") },
+    ],
+  },
+  {
+    heading: isJa ? "読む・確かめる" : "Read & verify",
+    links: [
+      { label: "Critical Brief", href: L("/critical/briefs") },
+      { label: t.mega.resources.blog, href: L("/blog") },
+      { label: isJa ? "検証センター" : "Verification center", href: L("/verify/") },
+      { label: t.mega.resources.faq, href: L("/faq") },
+    ],
+  },
+];
+---
+
+<footer class="rfooter">
+  <div class="rfooter-wrap">
+    <div class="rfooter-top">
+      <div class="rfooter-brand">
+        <a href={base || "/"} class="rfooter-logo" aria-label="Lemma">
+          <LemmaOracle class="rfooter-mark" />
+        </a>
+        <p>
+          {brandLines[0]}<br />{brandLines[1]}
+        </p>
+      </div>
+      {columns.map((col) => (
+        <div class="rfooter-col">
+          <h4>{col.heading}</h4>
+          {col.links.map((link) => <a href={link.href}>{link.label}</a>)}
+        </div>
+      ))}
+    </div>
+    <div class="rfooter-bottom">
+      <span>© FRAME00, Inc.</span>
+      <a href={L("/terms")}>{footerT.terms}</a>
+      <a href={L("/privacy")}>{footerT.privacy}</a>
+      <a href={languageSwitchHref}>{languageSwitchLabel}</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* トークンの値は記事テンプレート（BlogArticleTemplate）と同じもの。 */
+  .rfooter {
+    --ok: #a8e010;
+    --font-mono: "Space Mono", monospace;
+
+    position: relative;
+    overflow: hidden;
+    margin-top: 80px;
+    padding: 56px 0 30px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    font-family: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  }
+  /* 環境光。`inset:0` の楕円グラデなので輪郭が出ない。 */
+  .rfooter::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      90% 130% at 8% -30%,
+      rgba(168, 224, 16, 0.14),
+      rgba(168, 224, 16, 0) 60%
+    );
+  }
+  .rfooter-wrap {
+    position: relative;
+    z-index: 2;
+    max-width: calc(1180px + 12vw);
+    margin: 0 auto;
+    padding: 0 6vw;
+  }
+  .rfooter-top {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.1fr) repeat(4, 1fr);
+    gap: 36px;
+  }
+
+  .rfooter-logo {
+    display: inline-flex;
+    color: #ebefe6;
+    text-decoration: none;
+  }
+  .rfooter-mark {
+    height: 26px;
+    width: auto;
+    display: block;
+    color: currentColor;
+  }
+  .rfooter-brand p {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #9ba296;
+  }
+
+  .rfooter-col h4 {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8b9285;
+  }
+  .rfooter-col a {
+    display: block;
+    padding: 6px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c3cabb;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .rfooter-col a:hover {
+    color: #ffffff;
+  }
+
+  .rfooter-bottom {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    padding-top: 22px;
+    border-top: 1px solid #4a544b;
+    font-size: 11.5px;
+    color: #8b9285;
+  }
+  .rfooter-bottom a {
+    color: #b6bdb1;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .rfooter-bottom a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 1020px) {
+    .rfooter-top {
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+  }
+  @media (max-width: 560px) {
+    .rfooter {
+      padding: 44px 0 26px;
+    }
+    .rfooter-top {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+  }
+</style>

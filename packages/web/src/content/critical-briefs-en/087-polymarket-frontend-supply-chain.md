@@ -19,13 +19,13 @@ gap_missing: "There was no layer that independently verified, before execution, 
 gap_fix: "Independently verify the provenance of the front-end code and the transaction being approved with Lemma before execution and approval, and do not start an approval session unless legitimate provenance is confirmed."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-A user of the prediction-market platform Polymarket opened the legitimate site as usual, approved a transaction, and lost about $3 million worth of assets. Neither the smart contracts nor the backend were compromised. The attacker compromised a third-party vendor dependency component loaded by the front end and injected malicious JavaScript into Polymarket's legitimate site. That script ran in the user's browser and requested a fraudulent wallet approval in a form that looked, to the user, like a "legitimate operation." What was stolen was the platform's settlement stablecoin pUSD (Polymarket USD, USDC-collateralized), which was swapped into about 1,893 ETH and bridged from Polygon to Ethereum. The damage was confined to fewer than 15 accounts, but users had no means to confirm, before execution, whether "the front-end code now running in my browser is the legitimate one distributed by Polymarket." The post-discovery removal of the site dependency, user notification, and pledge of full reimbursement all functioned, but there was no layer that independently verified the provenance of the code before execution. Detection and pre-execution proof are not substitutes but complements.
+A user of the prediction-market platform Polymarket opened the legitimate site as usual, approved a transaction, and lost about $3 million worth of assets. Neither the smart contracts nor the backend were compromised. The attacker compromised a third-party vendor dependency component loaded by the front end and injected malicious JavaScript into Polymarket's legitimate site. That script ran in the user's browser and requested a fraudulent wallet approval in a form that looked, to the user, like a "legitimate operation." What was stolen was the platform's settlement stablecoin pUSD (Polymarket USD, USDC-collateralized), which was swapped into about 1,893 ETH and bridged from Polygon to Ethereum. The damage was confined to fewer than 15 accounts, but users had no means to confirm, before execution, whether "the front-end code now running in my browser is the legitimate one distributed by Polymarket." The post-discovery removal of the site dependency, user notification, and pledge of full reimbursement all functioned, but there was no layer that independently verified the provenance of the code before execution.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Subject**: The web front end of Polymarket (a crypto-based prediction-market platform) and its users' wallets
 - **Scale of loss**: About $3 million worth of crypto assets. Fewer than 15 accounts were affected
@@ -36,22 +36,8 @@ A user of the prediction-market platform Polymarket opened the legitimate site a
 - **Scope not compromised**: Polymarket's backend, servers, and smart contracts were not compromised. The damage was confined to the front end and user operations
 - **Response**: Polymarket promptly removed the affected dependency from its systems and notified affected users. It pledged full reimbursement
 - **Context**: The method is of the same type as Magecart-style JavaScript injection targeting e-commerce and crypto platforms, and no high-confidence attribution to a specific threat actor has been made
-- **Core**: What the user approved was "a UI displayed on a legitimate domain," while "whether that front-end code was the legitimate one distributed by Polymarket (its provenance)" was not verified before execution — the legitimacy of the domain and the provenance of the code were separated
 
----
-
-## 2. Timeline
-
-- Before 2026-06-26 (estimated): The third-party vendor dependency loaded by the front end is compromised, and malicious JavaScript is injected into the legitimate site
-- 2026-06-26: The injected script runs in users' browsers, fewer than 15 accounts perform fraudulent wallet approvals, and about $3 million worth is drained. The pUSD is swapped into about 1,893 ETH and bridged Polygon→Ethereum
-- 2026-06-26: Polymarket discloses the case. BleepingComputer and OffSeq Radar report it. Polymarket pledges removal of the affected dependency and full reimbursement
-- Late June 2026: Rescana publishes a supply-chain structural analysis (citing the tracing by PeckShield and Bubblemaps)
-
-> Note: The scale and attribution draw on Polymarket's disclosure and external analyses (Rescana, BleepingComputer, PeckShield, Bubblemaps). This Brief records the values confirmable as of the time of investigation, avoids assertion, and makes the sources explicit. The stablecoin stolen is Polymarket's settlement pUSD (Polymarket USD, USDC-collateralized); ParionUSD/ParyonUSD in some reporting is a naming variation referring to the same token.
-
----
-
-## 3. Attack vector
+The incident came together as the following chain.
 
 1. **Compromise of a third-party dependency**: A vendor-provided dependency component loaded by Polymarket's front end is compromised by the attacker. Polymarket's own codebase and servers are not compromised
 2. **JS injection into the legitimate site**: Via the compromised dependency, malicious JavaScript is delivered onto Polymarket's legitimate domain. From the user's perspective, the site remains legitimate
@@ -63,29 +49,16 @@ A user of the prediction-market platform Polymarket opened the legitimate site a
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `code-provenance` category under Pillar 01 (Verifiable Origin). The central failure primitive is that **while it could be confirmed that the front-end code running in the user's browser was "delivered from the legitimate domain," whether "that code was the legitimate one distributed by Polymarket (its provenance)" was not independently verified before execution**. The legitimacy of the domain (TLS, the look of the URL) does not guarantee the provenance of the code riding on it. The attacker did not need to break the cryptography or Polymarket's servers, and instead intervened in "the provenance of the delivered code" — the third-party dependency mixed into the front end.
+- Before 2026-06-26 (estimated): The third-party vendor dependency loaded by the front end is compromised, and malicious JavaScript is injected into the legitimate site
+- 2026-06-26: The injected script runs in users' browsers, fewer than 15 accounts perform fraudulent wallet approvals, and about $3 million worth is drained. The pUSD is swapped into about 1,893 ETH and bridged Polygon→Ethereum
+- 2026-06-26: Polymarket discloses the case. BleepingComputer and OffSeq Radar report it. Polymarket pledges removal of the affected dependency and full reimbursement
+- Late June 2026: Rescana publishes a supply-chain structural analysis (citing the tracing by PeckShield and Bubblemaps)
 
-This incident shares its root with Brief No.030 (the Magecart case in which Stripe's trusted API infrastructure was repurposed for the delivery and storage of card-skimming code). In both, "the provenance of the code riding on a trusted channel" was contaminated, and malicious code reached users via a route that looked legitimate. With Brief No.081 (Bybit, where JS injection into the Safe{Wallet} front end left signers unable to confirm "what they were signing"), it forms two sides of the same coin: the content displayed in the signing/approval UI and the object actually signed/approved diverged without being independently verified on the user's side. With Brief No.004 (Megalodon, where malicious code was mixed into legitimate distribution artifacts via the GitHub supply chain), it connects through the structure of mixing malicious code into legitimate artifacts from the development/distribution upstream. With Brief No.059 (where OAuth handed to an AI tool became a direct intrusion path through a vendor compromise), it is adjacent in that trust in a third-party vendor became the propagation path of the compromise.
+> Note: The scale and attribution draw on Polymarket's disclosure and external analyses (Rescana, BleepingComputer, PeckShield, Bubblemaps). This Brief records the values confirmable as of the time of investigation, avoids assertion, and makes the sources explicit. The stablecoin stolen is Polymarket's settlement pUSD (Polymarket USD, USDC-collateralized); ParionUSD/ParyonUSD in some reporting is a naming variation referring to the same token.
 
-As secondary categories we note `identity-auth`, since the user's transaction approval is not independently verified as a "legitimate operation," and `data-provenance`, in terms of the provenance of the delivered front-end code.
-
----
-
-## 5. The gap between detection and proof
-
-Polymarket's rapid disclosure, removal of the affected dependency, user notification and pledge of full reimbursement, and the fund tracing by PeckShield and Bubblemaps are indispensable for grasping, containing, and remediating the harm, and this Brief does not deny that role. In fact, the scoping of the damage and the per-account reimbursement were carried forward by this detection and analysis. Detection did indeed function.
-
-At the same time, detection does not change "what is executed and what is approved" on the receiving side (the user's browser that runs the front-end code, the person being asked to approve). The user operated a legitimate-looking UI on a legitimate domain, but had no means to confirm, before execution, whether "the front-end code now running is the legitimate one distributed by Polymarket." The malicious JS swapped the approval target from inside the legitimate site, outside the user's confirmation actions. The legitimacy of the domain proves "where the site is," but not "the provenance of the code riding on it." What was missing is a layer that, before the front-end code executes, independently verifies "whether this code carries the legitimate provenance distributed by Polymarket." Even if after-the-fact detection fires for fund tracing and reimbursement, it does not stop the withdrawal at the moment the approval goes through.
-
-Pre-execution attestation fixes the provenance of the front-end code running in the user's browser and of the transaction being signed/approved, before execution and approval, as cryptographic proof that can be independently verified. It attests in advance that the delivered code "carries legitimate provenance," and does not start an approval session unless that provenance is confirmed. Without separating the confirmation of the legitimate domain (the detection-style "the site looks real") from the pre-execution attestation of the delivered code's provenance ("the code I am executing is the legitimate artifact"), and only when the two overlap, can asset operations across a web front end be placed on practical footing with confidence. Detection and pre-execution proof are not substitutes but **complements**.
-
-For the thesis that after-the-fact detection is not proof, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for design that verifies independently before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). Detection and proof are complementary, not substitutes.
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Polymarket**: Disclosed the case and removed the affected third-party dependency from its systems. Notified affected users and pledged full reimbursement. Confirmed that the backend and smart contracts were not compromised
 - **Rescana**: Published a supply-chain structural analysis, presenting a mapping to MITRE ATT&CK (T1195.002 and others) and a generalization of third-party dependency risk
@@ -96,7 +69,21 @@ For the thesis that after-the-fact detection is not proof, see ["The last layer 
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **while it could be confirmed that the front-end code running in the user's browser was "delivered from the legitimate domain," whether "that code was the legitimate one distributed by Polymarket (its provenance)" was not independently verified before execution**. The legitimacy of the domain (TLS, the look of the URL) does not guarantee the provenance of the code riding on it. The attacker did not need to break the cryptography or Polymarket's servers, and instead intervened in "the provenance of the delivered code" — the third-party dependency mixed into the front end.
+
+This incident shares its root with [Brief No.030](/critical/briefs/030-stripe-trusted-channel-skimmer/) (the Magecart case in which Stripe's trusted API infrastructure was repurposed for the delivery and storage of card-skimming code). In both, "the provenance of the code riding on a trusted channel" was contaminated, and malicious code reached users via a route that looked legitimate. With [Brief No.081](/critical/briefs/081-bybit-safe-wallet-ui-injection/) (Bybit, where JS injection into the Safe{Wallet} front end left signers unable to confirm "what they were signing"), it forms two sides of the same coin: the content displayed in the signing/approval UI and the object actually signed/approved diverged without being independently verified on the user's side. With [Brief No.004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon, where malicious code was mixed into legitimate distribution artifacts via the GitHub supply chain), it connects through the structure of mixing malicious code into legitimate artifacts from the development/distribution upstream. With [Brief No.059](/critical/briefs/059-vercel-contextai-oauth/) (where OAuth handed to an AI tool became a direct intrusion path through a vendor compromise), it is adjacent in that trust in a third-party vendor became the propagation path of the compromise.
+
+Polymarket's rapid disclosure, removal of the affected dependency, user notification and pledge of full reimbursement, and the fund tracing by PeckShield and Bubblemaps are indispensable for grasping, containing, and remediating the harm, and this Brief does not deny that role. In fact, the scoping of the damage and the per-account reimbursement were carried forward by this detection and analysis. Detection did indeed function.
+
+At the same time, detection does not change "what is executed and what is approved" on the receiving side (the user's browser that runs the front-end code, the person being asked to approve). The user operated a legitimate-looking UI on a legitimate domain, but had no means to confirm, before execution, whether "the front-end code now running is the legitimate one distributed by Polymarket." The malicious JS swapped the approval target from inside the legitimate site, outside the user's confirmation actions. The legitimacy of the domain proves "where the site is," but not "the provenance of the code riding on it." What was missing is a layer that, before the front-end code executes, independently verifies "whether this code carries the legitimate provenance distributed by Polymarket." Even if after-the-fact detection fires for fund tracing and reimbursement, it does not stop the withdrawal at the moment the approval goes through.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation fixes the provenance of the front-end code running in the user's browser and of the transaction being signed/approved, before execution and approval, as cryptographic proof that can be independently verified. It attests in advance that the delivered code "carries legitimate provenance," and does not start an approval session unless that provenance is confirmed. Without separating the confirmation of the legitimate domain (the detection-style "the site looks real") from the pre-execution attestation of the delivered code's provenance ("the code I am executing is the legitimate artifact"), and only when the two overlap, can asset operations across a web front end be placed on practical footing with confidence. Detection and pre-execution proof are not substitutes but **complements**.
 
 Against the gap between detection and proof this case exposed (even on a legitimate domain, the provenance of the delivered front-end code is not independently verified before execution and approval), Lemma proposes the following design.
 
@@ -107,11 +94,9 @@ Against the gap between detection and proof this case exposed (even on a legitim
 
 Detection (after-the-fact dependency removal, fund tracing, reimbursement) works toward remediation of harm, and pre-execution attestation (independent verification, before execution and approval, of the provenance of the code and the approval target) works toward establishing trust in asset operations across a web front end; the two operate complementarily.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Rescana**: “Polymarket Supply-Chain Attack Analysis: $3 Million Cryptocurrency Theft via Compromised Third-Party Dependency” (2026-06-29) — <https://www.rescana.com/post/polymarket-supply-chain-attack-analysis-3-million-cryptocurrency-theft-via-compromised-third-party-dependency>
 - **BleepingComputer**: “Polymarket customers lose $3 million in supply chain attack” (2026-06-26) — <https://www.bleepingcomputer.com/news/security/polymarket-customers-lose-3-million-in-supply-chain-attack/>
@@ -119,12 +104,4 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 - **The Next Web**: “Polymarket confirms hackers stole $3 million from users after third-party vendor was compromised” (2026-06) — <https://thenextweb.com/news/polymarket-hack-3-million-stolen-third-party-breach>
 - **TechRadar Pro**: “Prediction market giant Polymarket hit by cyberattack…” (2026-06) — <https://www.techradar.com/pro/security/prediction-market-giant-polymarket-hit-by-cyberattack-with-company-confirming-user-funds-stolen-here-is-what-we-know>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Seal](https://lemma.frame00.com/seal/)

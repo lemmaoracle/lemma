@@ -19,13 +19,13 @@ gap_missing: "「正規の発行元が署名した＝信頼できる成果物」
 gap_fix: "高リスクな成果物の取り込み前に「この成果物が、意図されたソースとビルド経路から生成されている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-2026 年 5 月、`@tanstack/*` に悪性バージョンが公開された。攻撃者は認証情報窃取ではなく、TanStack 正規の OIDC trusted publisher 連携をビルド実行中に乗っ取り、本物の発行元として署名された悪性成果物を正規経路から配った。署名は「誰が公開したか」を証すが「中身が意図されたビルド出力か」は証さず、検出公表前に取得した環境は署名が有効であるがゆえに警戒しにくい。検出と事前証明は代替でなく補完である。
+2026 年 5 月、`@tanstack/*` に悪性バージョンが公開された。攻撃者は認証情報窃取ではなく、TanStack 正規の OIDC trusted publisher 連携をビルド実行中に乗っ取り、本物の発行元として署名された悪性成果物を正規経路から配った。署名は「誰が公開したか」を証すが「中身が意図されたビルド出力か」は証さず、検出公表前に取得した環境は署名が有効であるがゆえに警戒しにくい。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **対象**: npm 上の `@tanstack/*` 名前空間 42 パッケージ、計 84 悪性バージョン（CVE-2026-45321、CVSS 9.6）
 - **公開時刻**: 2026-05-11 19:20–19:26 UTC（約 6 分間）
@@ -34,23 +34,9 @@ gap_fix: "高リスクな成果物の取り込み前に「この成果物が、�
 - **ペイロード**: 約 2.3MB の難読化 `router_init.js`。AWS / GCP / Kubernetes / HashiCorp Vault / npm / GitHub トークン / SSH 秘密鍵 / `.npmrc` を窃取。GitHub トークンを 60 秒ごとに監視し、失効を検知すると `rm -rf ~/`（ホームディレクトリ全削除）を実行
 - **攻撃主体**: TeamPCP（StepSecurity による帰属）。同日中に npm / PyPI で 170 以上のパッケージ（Mistral AI、UiPath、OpenSearch、Guardrails AI 等）を汚染した "Mini Shai-Hulud" ワームの一部
 - **検出**: 外部研究者（StepSecurity の ashishkurmi）が公開後 20–26 分で公的に検知
-- **関連**: TeamPCP は Aqua Trivy（2026-03）、Bitwarden CLI npm（2026-04）等も汚染。同時期の GitHub 内部リポジトリ侵害（Brief 015）と同一アクター
+- **関連**: TeamPCP は Aqua Trivy（2026-03）、Bitwarden CLI npm（2026-04）等も汚染。同時期の GitHub 内部リポジトリ侵害（[Brief 015](https://lemma.frame00.com/ja/critical/briefs/015-github-vscode-extension-breach/)）と同一アクター
 
----
-
-## 2. タイムライン
-
-- 2026-03 / 2026-04: TeamPCP が Aqua Trivy、Bitwarden CLI npm 等を汚染(前段のキャンペーン)
-- 2026-05-11 19:20–19:26 UTC: `@tanstack/*` 42 パッケージに 84 悪性バージョンが、正規 OIDC 公開経路から公開
-- 2026-05-11 公開後 20–26 分: StepSecurity の研究者が公的に検知・公表
-- 2026-05-11 同日中: 同一アクターが npm / PyPI 横断で 170 以上のパッケージを汚染(Mini Shai-Hulud)
-- 2026-05 以降: CVE-2026-45321 採番、TanStack が postmortem を公開、各社が IOC・対応を整理
-
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
-
----
-
-## 3. 攻撃ベクター
+事象は次の連鎖で成立している。
 
 1. **Pwn Request の悪用**: `pull_request_target` の設定不備を突き、fork からの PR で base リポジトリの信頼コンテキストにコードを差し込む足がかりを得る
 2. **キャッシュ汚染**: GitHub Actions のキャッシュを fork↔base の信頼境界をまたいで汚染し、ワークフロー実行中に攻撃者制御コードを runner 上で実行
@@ -61,27 +47,17 @@ gap_fix: "高リスクな成果物の取り込み前に「この成果物が、�
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事案は Pillar 01(来歴証明)の `code-provenance` カテゴリに属する。中心的な**失敗 primitive は「来歴の保証が publisher アイデンティティの署名（OIDC trusted publisher）に依拠し、実行時にそのアイデンティティが乗っ取られると有効署名のまま悪性成果物が正規経路から流通する」**点にある。署名は「誰が公開したか」を attest するが、「この成果物の内容が、意図された・レビュー済みのビルド出力か」を attest しない。secondary に `identity-auth`(OIDC アイデンティティの乗っ取り)を併記する。
+- 2026-03 / 2026-04: TeamPCP が Aqua Trivy、Bitwarden CLI npm 等を汚染(前段のキャンペーン)
+- 2026-05-11 19:20–19:26 UTC: `@tanstack/*` 42 パッケージに 84 悪性バージョンが、正規 OIDC 公開経路から公開
+- 2026-05-11 公開後 20–26 分: StepSecurity の研究者が公的に検知・公表
+- 2026-05-11 同日中: 同一アクターが npm / PyPI 横断で 170 以上のパッケージを汚染(Mini Shai-Hulud)
+- 2026-05 以降: CVE-2026-45321 採番、TanStack が postmortem を公開、各社が IOC・対応を整理
 
-Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primitive が異なる。Brief 004 は窃取した開発者 credential での直接 push、本事案は正規 OIDC trusted publisher の実行時乗っ取り。両者は「成果物の origin が、それを独立検証する layer と切り離されたまま accept される」という構造で同根。Brief 015(GitHub 内部リポジトリ侵害、毒入り VS Code 拡張)とは同一アクター(TeamPCP)による開発者信頼面キャンペーンであり、Brief 010(Claude Code 偽装配布)とも「信頼シグナルの悪用」という論点で隣接する。本事案は「有効な署名付き provenance を伴った初のサプライチェーンワーム」とされ、署名の有効性と成果物の完全性の橋渡し不能性を最も鋭く示す。
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
----
-
-## 5. 検出と証明の落差
-
-本事案では、外部研究者が公開後 20–26 分という短時間で悪性公開を検知・公表し、CVE 採番・postmortem・IOC 整理が続いた。検出・脅威共有の層は被害範囲の把握と封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。
-
-一方で、検出は受信側(npm registry、依存パッケージを取得する CI/CD・開発者環境)が「何を accept するか」自体を変えない。本事案では、悪性成果物が **有効な OIDC provenance 署名を伴って** 正規経路から公開されたため、署名検証は通過した。「trusted publisher が署名した＝信頼できる成果物」という前提が、ワークフロー実行中のアイデンティティ乗っ取りで崩れた。検出が公表されるまでの数十分の窓で取得した環境は、署名が有効であるがゆえに警戒しにくい。規制報告・監査で「この成果物は正規のビルド出力か」を立証する材料として、publisher アイデンティティの署名だけでは独立した証跡にならない。
-
-事前証明(pre-execution attestation)は、来歴を publisher アイデンティティの署名にとどめず、「この成果物が、意図されたソース・ビルド入力・レビュー経路から生成された」ことをビルド来歴に紐づく独立検証可能な暗号証明として固定する設計を採る。ワークフロー実行中に runner が乗っ取られれば、ビルド来歴の proof は不整合となり、受信側は署名が形式上有効でも reject できる。検出(IOC・異常監視)と事前証明(build provenance proof)は代替ではなく **補完** の関係にある。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
+公表後の対応と業界の動きは次のとおり。
 
 - **TanStack**: postmortem を公開し、ワークフロー設定(`pull_request_target` の扱い)・OIDC 公開経路の見直しを整理
 - **StepSecurity / 研究者**: 公開後 20–26 分で検知・公表し、IOC と影響パッケージを共有
@@ -92,7 +68,21 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+中心的な<strong>失敗 primitive は「来歴の保証が publisher アイデンティティの署名（OIDC trusted publisher）に依拠し、実行時にそのアイデンティティが乗っ取られると有効署名のまま悪性成果物が正規経路から流通する」</strong>点にある。署名は「誰が公開したか」を attest するが、「この成果物の内容が、意図された・レビュー済みのビルド出力か」を attest しない。
+
+Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primitive が異なる。[Brief 004](https://lemma.frame00.com/ja/critical/briefs/004-megalodon-github-supply-chain/) は窃取した開発者 credential での直接 push、本事案は正規 OIDC trusted publisher の実行時乗っ取り。両者は「成果物の origin が、それを独立検証する layer と切り離されたまま accept される」という構造で同根。Brief 015(GitHub 内部リポジトリ侵害、毒入り VS Code 拡張)とは同一アクター(TeamPCP)による開発者信頼面キャンペーンであり、Brief 010(Claude Code 偽装配布)とも「信頼シグナルの悪用」という論点で隣接する。本事案は「有効な署名付き provenance を伴った初のサプライチェーンワーム」とされ、署名の有効性と成果物の完全性の橋渡し不能性を最も鋭く示す。
+
+本事案では、外部研究者が公開後 20–26 分という短時間で悪性公開を検知・公表し、CVE 採番・postmortem・IOC 整理が続いた。検出・脅威共有の層は被害範囲の把握と封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。
+
+一方で、検出は受信側(npm registry、依存パッケージを取得する CI/CD・開発者環境)が「何を accept するか」自体を変えない。本事案では、悪性成果物が **有効な OIDC provenance 署名を伴って** 正規経路から公開されたため、署名検証は通過した。「trusted publisher が署名した＝信頼できる成果物」という前提が、ワークフロー実行中のアイデンティティ乗っ取りで崩れた。検出が公表されるまでの数十分の窓で取得した環境は、署名が有効であるがゆえに警戒しにくい。規制報告・監査で「この成果物は正規のビルド出力か」を立証する材料として、publisher アイデンティティの署名だけでは独立した証跡にならない。
+
+---
+
+## 5. 証明があれば、何が変わるか
+
+事前証明(pre-execution attestation)は、来歴を publisher アイデンティティの署名にとどめず、「この成果物が、意図されたソース・ビルド入力・レビュー経路から生成された」ことをビルド来歴に紐づく独立検証可能な暗号証明として固定する設計を採る。ワークフロー実行中に runner が乗っ取られれば、ビルド来歴の proof は不整合となり、受信側は署名が形式上有効でも reject できる。検出(IOC・異常監視)と事前証明(build provenance proof)は代替ではなく **補完** の関係にある。
 
 本事案で露呈した検出と証明の落差(来歴の保証が publisher アイデンティティの署名にとどまり、ワークフロー実行中の乗っ取りで有効署名のまま悪性成果物が流通する)に対して、Lemma は来歴を「誰が公開したか」の署名ではなく「この成果物がどのソース・ビルド入力・経路から生成されたか」を独立検証可能な暗号証明としてビルド来歴に固定する設計を提示している。
 
@@ -103,11 +93,9 @@ Brief 004(Megalodon GitHub supply chain)と同じ `code-provenance` だが primi
 
 Lemma は既存の署名・trusted publisher を否定するものではなく、署名(publisher の同定)に対してビルド来歴の証明(成果物の origin)を補完する層を提供する。
 
-設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Snyk**: "TanStack npm Packages Hit by Mini Shai-Hulud"(2026-05、攻撃概要・OIDC 乗っ取り・ペイロード)— https://snyk.io/blog/tanstack-npm-packages-compromised/
 - **TanStack 公式 postmortem**: "Postmortem: TanStack npm supply-chain compromise"(2026-05)— https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
@@ -115,12 +103,4 @@ Lemma は既存の署名・trusted publisher を否定するものではなく�
 - **The Hacker News**: "Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages"(2026-05)— https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Trust402](https://lemma.frame00.com/ja/trust402/)

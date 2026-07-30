@@ -19,13 +19,13 @@ gap_missing: "The raw personal data collected and stored for regulatory complian
 gap_fix: "When performing the identity verification regulators require, independently verify with Lemma that the user is verified without hoarding raw personal data, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Coinbase disclosed that bribed overseas-outsourced support personnel in India had exfiltrated and sold the KYC data of at least 69,461 customers — names, addresses, masked SSNs, bank account identifiers, and government-issued ID images. Passwords, private keys, and funds were not taken. The attackers demanded a $20M ransom; Coinbase refused. Detection and response functioned, but the raw PII that KYC/AML regulation requires operators to store was always within reach of insiders holding legitimate access — a standing breach surface. Detection and pre-execution attestation are complements, not substitutes.
+Coinbase disclosed that bribed overseas-outsourced support personnel in India had exfiltrated and sold the KYC data of at least 69,461 customers — names, addresses, masked SSNs, bank account identifiers, and government-issued ID images. Passwords, private keys, and funds were not taken. The attackers demanded a $20M ransom; Coinbase refused. Detection and response functioned, but the raw PII that KYC/AML regulation requires operators to store was always within reach of insiders holding legitimate access — a standing breach surface.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Affected organization**: Coinbase (a US-regulated cryptocurrency exchange)
 - **Attacker**: Attackers who bribed overseas-outsourced customer-support personnel (primarily in India). Accessed via internal support tools
@@ -36,23 +36,8 @@ Coinbase disclosed that bribed overseas-outsourced support personnel in India ha
 - **Extortion**: On 2025-05-11, the attackers demanded a $20M ransom (in BTC). Coinbase refused payment and offered a $20M bounty
 - **Regulatory disclosure / costs**: On 2025-05-15, filed Form 8-K with the SEC. Estimated remediation and reimbursement costs at $180M–$400M
 - **Response**: Reimbursement of defrauded customers, establishment of new US-based support facilities, identity-theft protection and credit monitoring offered to affected customers
-- **Core**: Regulation-mandated collection and storage of raw PII turns into a breach surface that is always reachable to insiders holding legitimate access permissions.
 
----
-
-## 2. Timeline
-
-- 2024-09 to 2024-12: Unauthorized acquisition of customer data by outsourced support personnel begins (the Maine breach notification records the breach date as 2024-12-26)
-- 2024-12 to 2025-05: Data continues to be acquired and sold over several months
-- 2025-05-11: The attackers demand a $20M ransom. Coinbase recognizes the insider abuse
-- 2025-05-15: Coinbase publishes an official statement (refusing payment, offering a $20M bounty). On the same day, files Form 8-K with the SEC, disclosing the $180M–$400M remediation cost estimate
-- Around 2025-05-21: The affected count (at least 69,461) and the categories of exfiltrated data are confirmed in reporting
-
-> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Regulatory data accumulation (premise)**: In compliance with KYC / AML regulation, Coinbase collected and stored customers' raw PII (government-issued ID images, SSNs, bank information, etc.). This accumulated as a byproduct of attribute verification required by regulation
 2. **Insider recruitment**: The attackers bribed outsourced support personnel (overseas) with money. Insiders with legitimate operational access permissions were selected as the path
@@ -63,27 +48,17 @@ Coinbase disclosed that bribed overseas-outsourced support personnel in India ha
 
 ---
 
-## 4. Structural Analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `kyc-aml-disclosure` category of Pillar 04 (Regulatory Attribute Proof). The central **failure primitive is "regulation-mandated storage of raw PII itself turning into a breach surface via insiders with legitimate access permissions."** The attack did not exploit a vulnerability; it exploited legitimate operational access and the fact of "data existing" itself. Secondary tagging is `identity-auth`.
+- 2024-09 to 2024-12: Unauthorized acquisition of customer data by outsourced support personnel begins (the Maine breach notification records the breach date as 2024-12-26)
+- 2024-12 to 2025-05: Data continues to be acquired and sold over several months
+- 2025-05-11: The attackers demand a $20M ransom. Coinbase recognizes the insider abuse
+- 2025-05-15: Coinbase publishes an official statement (refusing payment, offering a $20M bounty). On the same day, files Form 8-K with the SEC, disclosing the $180M–$400M remediation cost estimate
+- Around 2025-05-21: The affected count (at least 69,461) and the categories of exfiltrated data are confirmed in reporting
 
-It shares Pillar 04 with Brief 006 (Google API key revocation lag) but has a different primitive. Brief 006 was the lag problem in which an attribute proof (credential) is not revoked when it should be; this incident is the leakage at storage of raw data collected for attribute verification. Both share the point that "the trust of a regulatory attribute breaks at structural weaknesses in the layer that secures it." It is also adjacent to Brief 002 (Stake DAO, identity / authority in the cryptocurrency domain) on the context of the trust boundary in regulated operators. This incident is an attack incident and shows the limits of a design that operates KYC as a "promise" — collecting raw PII and protecting it.
+> Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
----
-
-## 5. The detection–proof gap
-
-Insider threat detection, anomalous access detection, DLP, and third-party governance are essential for early discovery and containment of leakage via insiders such as in this incident, and this Brief does not deny that role. Coinbase recognized the wrongdoing and moved on disclosure, the bounty, and reorganization of its support setup — outcomes of detection and response functioning as well.
-
-That said, detection does not change the fact that "data is stored." Under a design that satisfies KYC / AML by collecting and storing raw PII, that attribute data is always reachable to insiders with legitimate access permissions, and once bribery or misuse succeeds, detection can only contain after the fact. As long as regulatory compliance is operated as a promise that "the operator collects raw PII and protects it properly," the very existence of the data to be protected continues to be the breach surface. As material for establishing in regulatory reporting and audit that "attribute verification was performed appropriately and completed with minimal disclosure," logs of raw PII storage are inseparable from leakage risk.
-
-Attribute attestation adopts a design in which attribute verification (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) is received by the verifying party as an independently verifiable cryptographic proof (a ZK attribute proof) without retaining raw PII. The verifying party can confirm "this user satisfies KYC / holds the permitted attribute" via the proof, without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that would constitute the breach surface, even when insider bribery succeeds, the data that can leak is structurally reduced. Detection (insider monitoring and the like) and attribute attestation (attribute proof) are in a **complementary**, not substitutive, relationship.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
+The response and industry movement after disclosure:
 
 - **Coinbase**: Refused to pay the ransom and offered a $20M bounty to identify the attackers. Filed Form 8-K with the SEC, disclosing the $180M–$400M remediation cost estimate. Reimbursed defrauded customers, established new US-based support facilities, and offered identity-theft protection and credit monitoring to affected customers
 - **Regulatory and legal developments**: Disclosure under US securities and data-protection regulation (8-K) and state-level breach notifications (Maine, etc.) proceeded in parallel. Multiple class-action suits have been filed, with the KYC data storage responsibility of regulated operators emerging as a point of dispute
@@ -93,7 +68,21 @@ How "to satisfy regulatory attribute verification without storing raw PII" is ex
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "regulation-mandated storage of raw PII itself turning into a breach surface via insiders with legitimate access permissions."** The attack did not exploit a vulnerability; it exploited legitimate operational access and the fact of "data existing" itself.
+
+It shares Pillar 04 with [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (Google API key revocation lag) but has a different primitive. [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) was the lag problem in which an attribute proof (credential) is not revoked when it should be; this incident is the leakage at storage of raw data collected for attribute verification. Both share the point that "the trust of a regulatory attribute breaks at structural weaknesses in the layer that secures it." It is also adjacent to [Brief 002](/critical/briefs/002-stakedao-vsdcrv/) (Stake DAO, identity / authority in the cryptocurrency domain) on the context of the trust boundary in regulated operators. This incident is an attack incident and shows the limits of a design that operates KYC as a "promise" — collecting raw PII and protecting it.
+
+Insider threat detection, anomalous access detection, DLP, and third-party governance are essential for early discovery and containment of leakage via insiders such as in this incident, and this Brief does not deny that role. Coinbase recognized the wrongdoing and moved on disclosure, the bounty, and reorganization of its support setup — outcomes of detection and response functioning as well.
+
+That said, detection does not change the fact that "data is stored." Under a design that satisfies KYC / AML by collecting and storing raw PII, that attribute data is always reachable to insiders with legitimate access permissions, and once bribery or misuse succeeds, detection can only contain after the fact. As long as regulatory compliance is operated as a promise that "the operator collects raw PII and protects it properly," the very existence of the data to be protected continues to be the breach surface. As material for establishing in regulatory reporting and audit that "attribute verification was performed appropriately and completed with minimal disclosure," logs of raw PII storage are inseparable from leakage risk.
+
+---
+
+## 5. What proof would have changed
+
+Attribute attestation adopts a design in which attribute verification (KYC passage, permitted jurisdiction, non-sanctioned status, age, etc.) is received by the verifying party as an independently verifiable cryptographic proof (a ZK attribute proof) without retaining raw PII. The verifying party can confirm "this user satisfies KYC / holds the permitted attribute" via the proof, without warehousing government-issued ID images or SSNs themselves. By structurally reducing the accumulation of raw PII that would constitute the breach surface, even when insider bribery succeeds, the data that can leak is structurally reduced. Detection (insider monitoring and the like) and attribute attestation (attribute proof) are in a **complementary**, not substitutive, relationship.
 
 Against the detection–proof gap exposed by this incident (raw PII collected and stored for KYC / AML compliance becomes the breach surface via legitimate-access insider threats), Lemma proposes the following design elements.
 
@@ -104,11 +93,9 @@ Against the detection–proof gap exposed by this incident (raw PII collected an
 
 Lemma does not substitute for regulatory compliance; it provides the layer that operates compliance not as a "promise" but as a "proof."
 
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Coinbase official statement**: "Protecting Our Customers - Standing Up to Extortionists" (2025-05-15, refusing the ransom, offering the $20M bounty) — https://www.coinbase.com/blog/protecting-our-customers-standing-up-to-extortionists
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers" (2025-05-21, affected count and exfiltrated data categories) — https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
@@ -116,12 +103,4 @@ For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](htt
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost" (2025-05, Form 8-K and remediation cost estimate) — https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Trust402](https://lemma.frame00.com/trust402/)

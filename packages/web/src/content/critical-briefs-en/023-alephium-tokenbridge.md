@@ -19,26 +19,34 @@ gap_missing: "There was no layer to confirm before signing whether the event bei
 gap_fix: "Before the bridge signs and disburses, independently verify with Lemma that the event was emitted from a registered, legitimate source without tampering, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K. The guardians' keys were intact and no smart-contract bug was exploited. The attacker forged the very events the bridge treats as legitimate transactions and had the guardians sign them. The signing worked and the VAAs were formally valid, but no layer verified whether the signed event came from a legitimate contract. Detection does not change which events guardians sign, and by the time it fires the main drain is complete. Detection and pre-execution attestation are complements, not substitutes.
+On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for ~$815K. The guardians' keys were intact and no smart-contract bug was exploited. The attacker forged the very events the bridge treats as legitimate transactions and had the guardians sign them. The signing worked and the VAAs were formally valid, but no layer verified whether the signed event came from a legitimate contract. Detection does not change which events guardians sign, and by the time it fires the main drain is complete.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Target**: Alephium TokenBridge (Wormhole fork, Ethereum / BNB Chain ↔ Alephium)
 - **Loss**: approx. $815K (USDT / USDC / WETH / WBTC / WBNB) + 13.757M wALPH minted unbacked
 - **Date**: 2026-05-30 (main drain 09:16:59–09:18:02 UTC, approx. 64 seconds)
-- **Root cause**: per Alephium's post-incident statement, "an off-chain vulnerability in the bridge backend that could be triggered under specific edge cases." Neither guardian key compromise nor a smart-contract bug
 - **Core exploitation**: a contract deployed by the attacker emitted forged Wormhole messages via the LOG7 instruction; the guardians observed and signed them as legitimate events. Six forged VAAs were used to execute `completeTransfer(bytes)`
 - **Structural context**: the Alephium fork's guardian set is 4 nodes with quorum 3 (Wormhole proper: 19 nodes, quorum 13). The number of guardians that need to be made to observe forged events is structurally smaller
 - **Detection**: Blockaid first detected and disclosed on May 30. SEAL 911 assisted the investigation
 - **Aftermath**: on June 2, approx. 96.4% of unbacked wALPH (13.257M) was burned via a governance upgrade function. Roughly 500K wALPH had already entered liquidity pools before the burn and were unrecoverable. The bridge is paused; a compensation plan and full technical postmortem are forthcoming
 
+The incident came together as the following chain.
+
+1. **Preparation as a legitimate user**: the attacker acquired wALPH from 0.01 ETH and moved it to the Alephium side via the legitimate bridge procedure. Nothing at this stage would trigger any check
+2. **Installation of forged event source**: deployed a contract that emits Wormhole-format forged messages via the LOG7 instruction. The "format" of the event is indistinguishable from a legitimate one
+3. **Backend degraded state**: the 07:00–09:00 connectivity failure caused the bridge system to switch to backup verification. Alephium's "specific edge case" is presumed to lie in this degraded path
+4. **Guardian observation and signing**: the forged events were observed by the guardians as legitimate events, and quorum 3/4 signatures were achieved. Six forged VAAs were issued
+5. **Execution of `completeTransfer`**: the formally valid VAAs were used to execute asset payouts on both Ethereum and BNB Chain, plus unbacked minting — all in roughly 64 seconds
+6. **Laundering**: DEX swaps, cross-chain bridges, and Tornado Cash were combined to disperse and obfuscate the assets
+
 ---
 
-## 2. Timeline
+## 3. Timeline — disclosure and response
 
 (All times 2026-05-30 UTC, based on Alephium's official on-chain report)
 
@@ -57,42 +65,7 @@ On 2026-05-30, Alephium's TokenBridge — a Wormhole fork — was exploited for 
 
 > Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
----
-
-## 3. Attack Vector
-
-1. **Preparation as a legitimate user**: the attacker acquired wALPH from 0.01 ETH and moved it to the Alephium side via the legitimate bridge procedure. Nothing at this stage would trigger any check
-2. **Installation of forged event source**: deployed a contract that emits Wormhole-format forged messages via the LOG7 instruction. The "format" of the event is indistinguishable from a legitimate one
-3. **Backend degraded state**: the 07:00–09:00 connectivity failure caused the bridge system to switch to backup verification. Alephium's "specific edge case" is presumed to lie in this degraded path
-4. **Guardian observation and signing**: the forged events were observed by the guardians as legitimate events, and quorum 3/4 signatures were achieved. Six forged VAAs were issued
-5. **Execution of `completeTransfer`**: the formally valid VAAs were used to execute asset payouts on both Ethereum and BNB Chain, plus unbacked minting — all in roughly 64 seconds
-6. **Laundering**: DEX swaps, cross-chain bridges, and Tornado Cash were combined to disperse and obfuscate the assets
-
----
-
-## 4. Structural Argument
-
-This incident belongs to the `bridge-config-trust` category of Pillar 01 (Verifiable Origin). The central failure primitive is that the guardian signature proves only "this event was observed" — it does not independently verify, as a precondition to signing, **which contract emitted the observed event and through which legitimate path.** `identity-auth` is noted as secondary.
-
-Brief 001 (KelpDAO / rsETH), Brief 002 (Stake DAO / vsdCRV), and Brief 016 (Verus-Ethereum) share the same `bridge-config-trust` category but differ in primitive. Brief 001 injected forged data into the DVN observation layer (RPC manipulation); Brief 002 rewrote the trust source itself via the deployer key; Brief 016 passed cryptographically valid Proofs behind which value integrity was unverified; this incident involves **the observation target event itself being forged before the signers.** All four share the root structure: "claims passed between chains are accepted while decoupled from a layer that independently verifies them."
-
-The contrast with Brief 001 is especially important. In Brief 001, the attacker DDoSed external nodes to force the observation system into a single point of failure. In this incident, the 07:00–09:00 connectivity failure likewise triggered a switch to backup verification — the same pattern of **the observation layer's trust collapsing at the moment the verification system degrades.** Additionally, a guardian set of 4 nodes with quorum 3 means, structurally, that a single backend bug needs to persuade fewer signers than Wormhole proper (19 nodes, quorum 13) — a textbook case of a fork not inheriting the upstream security assumptions.
-
----
-
-## 5. The detection–proof gap
-
-Blockaid's real-time detection and SEAL 911's investigation support were indispensable for damage assessment, bridge shutdown, unbacked-token burn, and fund tracing, and this Brief does not dispute their role. In this incident, detection-to-burn (96.4%) was achieved in three days.
-
-Detection, however, does not change which events the guardians sign. In this incident, the guardian keys were intact, the signing process functioned normally, and the VAA format verification passed. What was absent was verification of the provenance of the event being signed — whether the event originated from a legitimate contract via a legitimate path — and this is separate from signature-validity verification. By the time detection fired, the main drain (64 seconds) was already complete, and roughly 500K wALPH had entered liquidity pools before the burn. For regulatory reporting and audit, the validity of a guardian signature alone does not, on its own, serve as an independent trail of event provenance.
-
-Pre-execution attestation adopts a design that requires, before the guardian signs, an independently verifiable cryptographic proof of the observed event's emitter, path, and integrity. If the proof reports that "this event's source is not a registered legitimate contract," signing is blocked before it occurs. Signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **Alephium**: paused the bridge on the day of the attack; burned 96.4% of unbacked wALPH on June 2 via governance upgrade; published a complete on-chain breakdown on June 3 and announced a compensation plan, a technical postmortem, and a restart timeline after an external security review. The root cause was identified as "an off-chain vulnerability in the bridge backend," and the vulnerability was stated to be fixed
 - **Blockaid**: handled the initial detection and disclosure, and subsequently corrected the initial "guardian key compromise" framing to "observation and signing of forged events" after further forensics. The divergence between initial reporting and the confirmed cause illustrated that bridge-incident root-cause determination requires investigation of both on-chain data and off-chain systems
@@ -102,7 +75,23 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that the guardian signature proves only "this event was observed" — it does not independently verify, as a precondition to signing, **which contract emitted the observed event and through which legitimate path.**
+
+[Brief 001](/critical/briefs/001-kelpdao-rseth/) (KelpDAO / rsETH), [Brief 002](/critical/briefs/002-stakedao-vsdcrv/) (Stake DAO / vsdCRV), and [Brief 016](/critical/briefs/016-verus-ethereum-bridge/) (Verus-Ethereum) share the same `bridge-config-trust` category but differ in primitive. [Brief 001](/critical/briefs/001-kelpdao-rseth/) injected forged data into the DVN observation layer (RPC manipulation); [Brief 002](/critical/briefs/002-stakedao-vsdcrv/) rewrote the trust source itself via the deployer key; [Brief 016](/critical/briefs/016-verus-ethereum-bridge/) passed cryptographically valid Proofs behind which value integrity was unverified; this incident involves **the observation target event itself being forged before the signers.** All four share the root structure: "claims passed between chains are accepted while decoupled from a layer that independently verifies them."
+
+The contrast with [Brief 001](/critical/briefs/001-kelpdao-rseth/) is especially important. In [Brief 001](/critical/briefs/001-kelpdao-rseth/), the attacker DDoSed external nodes to force the observation system into a single point of failure. In this incident, the 07:00–09:00 connectivity failure likewise triggered a switch to backup verification — the same pattern of **the observation layer's trust collapsing at the moment the verification system degrades.** Additionally, a guardian set of 4 nodes with quorum 3 means, structurally, that a single backend bug needs to persuade fewer signers than Wormhole proper (19 nodes, quorum 13) — a textbook case of a fork not inheriting the upstream security assumptions.
+
+Blockaid's real-time detection and SEAL 911's investigation support were indispensable for damage assessment, bridge shutdown, unbacked-token burn, and fund tracing, and this Brief does not dispute their role. In this incident, detection-to-burn (96.4%) was achieved in three days.
+
+Detection, however, does not change which events the guardians sign. In this incident, the guardian keys were intact, the signing process functioned normally, and the VAA format verification passed. What was absent was verification of the provenance of the event being signed — whether the event originated from a legitimate contract via a legitimate path — and this is separate from signature-validity verification. By the time detection fired, the main drain (64 seconds) was already complete, and roughly 500K wALPH had entered liquidity pools before the burn. For regulatory reporting and audit, the validity of a guardian signature alone does not, on its own, serve as an independent trail of event provenance.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation adopts a design that requires, before the guardian signs, an independently verifiable cryptographic proof of the observed event's emitter, path, and integrity. If the proof reports that "this event's source is not a registered legitimate contract," signing is blocked before it occurs. Signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") are not substitutes but **complements**.
 
 For the detection–proof gap exposed here — the validity of guardian signatures is verified, but the provenance of the events they sign is not independently verified — Lemma offers a design that verifies, before signing, the emitter and path of the events the bridge's observation layer receives, as independently verifiable cryptographic proofs.
 
@@ -113,11 +102,9 @@ For the detection–proof gap exposed here — the validity of guardian signatur
 
 Through this, signature-validity verification ("this guardian signed") and event-provenance pre-execution attestation ("the target of the signature arrived from a legitimate source") work as complements. This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Alephium**: "The Alephium Bridge Exploit: On-Chain Report" (2026-06-03, official on-chain breakdown, timeline, burn action) — https://alephium.org/news/post/the-alephium-bridge-exploit-on-chain-report/
 - **The Defiant**: "Alephium Bridge Loses $815K to Forged Guardian Messages, Not Stolen Keys" (2026-05/06, cause-correction narrative, guardian-set comparison) — https://thedefiant.io/news/hacks/alephium-bridge-815k-forged-guardian-messages
@@ -125,12 +112,4 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 - **AMBCrypto**: "$815K gone in 7 minutes – Inside Ethereum's Alephium TokenBridge exploit" (2026-05/06) — https://ambcrypto.com/815k-gone-in-7-minutes-inside-ethereums-alephium-tokenbridge-exploit/
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

@@ -19,13 +19,13 @@ gap_missing: "At publish and commit time there was no layer to confirm whether t
 gap_fix: "Before publishing or committing, independently verify with Lemma that the artifact is authorized by a legitimate author and carries legitimate provenance, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer environment's credentials, then uses the stolen keys to commit itself into the victim's repository and republish through the developer's own legitimate workflow. Registry disablement and vendor analysis act only after publication and credential theft — after-the-fact detection. What is structurally missing is a layer that verifies, at publish, whether the publisher is truly the artifact's legitimate author; a valid token alone is the grounds for publication. Detection and pre-execution attestation are complements, not substitutes.
+JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer environment's credentials, then uses the stolen keys to commit itself into the victim's repository and republish through the developer's own legitimate workflow. Registry disablement and vendor analysis act only after publication and credential theft — after-the-fact detection. What is structurally missing is a layer that verifies, at publish, whether the publisher is truly the artifact's legitimate author; a valid token alone is the grounds for publication.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Report**: On 2026-06-04, JFrog Security Research reported "IronWorm," a self-propagating malware on npm. Roughly 37 packages were infected.
 - **Implementation**: A ~976 KB Rust-written ELF executed from a preinstall hook. It ships a modified UPX stub that defeats signature-based unpacking, encrypts strings with a unique key per call site, and includes an eBPF-based rootkit capability (the eBPF rootkit technical detail is from Phoenix Security's analysis).
@@ -33,22 +33,6 @@ JFrog reported "IronWorm," a self-propagating npm worm that harvests a developer
 - **Self-propagation**: Using the stolen credentials, it commits itself into the victim's GitHub repository and republishes to npm through the developer's legitimate workflow. The compromise of a single environment chains outward to every repository and package reachable from it.
 - **C2**: It fetches the Tor expert bundle, writes its own torrc, and beacons to `/api/agent` on a hidden service.
 - **Assessment**: From the combination of capability and encryption, JFrog characterized it as a "carefully built, purpose-made implementation" and suggested it may be a dress rehearsal rather than the campaign's final form. It belongs to the Shai-Hulud lineage (the same family includes TeamPCP's Mini Shai-Hulud / Miasma).
-- **Core**: Stolen credentials convert directly into publishing authority, and because the publishing workflow never verifies at publish time whether the publisher is the legitimate author, the worm self-propagates as a "legitimate publication."
-
----
-
-## 2. Timeline
-
-- 2026-05: TeamPCP open-sources Mini Shai-Hulud (the lineage of self-propagating npm worms spreads).
-- 2026-06-01 onward: A relative, Miasma, is deployed across the Red Hat and Microsoft ecosystems (a separate implementation; the Brief 014 family).
-- 2026-06-04: JFrog reports IronWorm (Rust-built, eBPF rootkit, Tor C2, ~37 packages).
-- 2026-06: Identification and disablement of affected packages proceeds. JFrog notes the campaign may continue and evolve.
-
-> Note: The exact total number of affected packages, the download scale, and attribution depend on the progress of the investigation, so this text does not assert them.
-
----
-
-## 3. The attack path: how stolen credentials convert into publishing authority
 
 This incident stems from a structure in which the publishing workflow never verifies the publisher's authorship at runtime. The path by which the failure propagates into self-propagation is as follows.
 
@@ -60,27 +44,16 @@ This incident stems from a structure in which the publishing workflow never veri
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central failure primitive is that **stolen credentials convert directly into publishing authority, and the publishing workflow never verifies — at the moment of publication — whether the publisher is truly the legitimate author of the artifact.** As long as presenting a valid token is the grounds for publication, a worm that steals a token can distribute itself as a "legitimate publication," indistinguishable from an ordinary package downstream. We note `identity-auth` (authentication of the publishing party) as a secondary category.
+- 2026-05: TeamPCP open-sources Mini Shai-Hulud (the lineage of self-propagating npm worms spreads).
+- 2026-06-01 onward: A relative, Miasma, is deployed across the Red Hat and Microsoft ecosystems (a separate implementation; the [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) family).
+- 2026-06-04: JFrog reports IronWorm (Rust-built, eBPF rootkit, Tor C2, ~37 packages).
+- 2026-06: Identification and disablement of affected packages proceeds. JFrog notes the campaign may continue and evolve.
 
-Brief 014 (an artifact signed by a legitimate OIDC trusted publisher is still malicious), Brief 028 (dependency confusion that spoofs an internal scope), and Brief 004 (supply-chain contamination via CI/CD credential theft) differ in their subjects, but the shared primitive is the same: **the publication and distribution of an artifact is decoupled from the layer that verifies its authorship and provenance.** What IronWorm makes vivid is that the stolen credentials drive a self-propagating loop of "theft → republication → further theft," and the damage chains for as long as credential revocation and rotation cannot keep up (the absence of independent verification of a credential's revocation attribute connects to Brief 006).
+> Note: The exact total number of affected packages, the download scale, and attribution depend on the progress of the investigation, so this text does not assert them.
 
----
-
-## 5. The gap between detection and proof
-
-In this incident, the detection chain — vendor research (JFrog and others) and the registry's disablement — functioned, and the implementation and infection were made visible from the outside. This is a typical success of detection, and this Brief does not negate the role of the detection layer. Detection is indispensable for analyzing the implementation, identifying the scope of infection, and disabling and remediating it.
-
-At the same time, detection provides no material to independently establish — **at the moment of publication** — whether the artifact about to be published was authorized by a legitimate author. The registry sees only "a publication by a valid token," and IronWorm is built to slip past signature and pattern inspection with encryption and the modified UPX. Both vendor research and the registry's disablement are after-the-fact chains that act once the artifact has been published and the credentials stolen. This is a structurally independent layer gap, outside the reach of the detection layer.
-
-As things stand, across the package ecosystem as a whole, independent verification of a publisher's authorship still depends on trust in "a valid token was presented," and is not yet treated as an independent layer (mechanisms in which a leaked token alone cannot publish — such as npm's staged publishing — are beginning to be adopted, but they do not amount to proof of authorship itself). Pre-execution attestation closes this gap by inserting one step of authorship proof into the publish/commit path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the artifact's trust boundary.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Registries and vendors**: Identification and disablement of infected packages is proceeding, and npm has introduced measures such as staged publishing in which a leaked token alone cannot publish. These, however, strengthen post-publication detection and pre-publication gating; they do not reach independent verification of the publisher's authorship itself.
 - **Credential operations**: Because stolen credentials are the fuel for propagation, the immediacy of revocation and rotation becomes the issue. A chain that could be severed by fully rotating credentials after the first infection persists because of operational lag.
@@ -91,7 +64,21 @@ The absence of a layer that independently verifies an artifact's authorship and 
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **stolen credentials convert directly into publishing authority, and the publishing workflow never verifies — at the moment of publication — whether the publisher is truly the legitimate author of the artifact.** As long as presenting a valid token is the grounds for publication, a worm that steals a token can distribute itself as a "legitimate publication," indistinguishable from an ordinary package downstream.
+
+[Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (an artifact signed by a legitimate OIDC trusted publisher is still malicious), [Brief 028](/critical/briefs/028-npm-dependency-confusion-recon/) (dependency confusion that spoofs an internal scope), and [Brief 004](/critical/briefs/004-megalodon-github-supply-chain/) (supply-chain contamination via CI/CD credential theft) differ in their subjects, but the shared primitive is the same: **the publication and distribution of an artifact is decoupled from the layer that verifies its authorship and provenance.** What IronWorm makes vivid is that the stolen credentials drive a self-propagating loop of "theft → republication → further theft," and the damage chains for as long as credential revocation and rotation cannot keep up (the absence of independent verification of a credential's revocation attribute connects to [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/)).
+
+In this incident, the detection chain — vendor research (JFrog and others) and the registry's disablement — functioned, and the implementation and infection were made visible from the outside. This is a typical success of detection, and this Brief does not negate the role of the detection layer. Detection is indispensable for analyzing the implementation, identifying the scope of infection, and disabling and remediating it.
+
+At the same time, detection provides no material to independently establish — **at the moment of publication** — whether the artifact about to be published was authorized by a legitimate author. The registry sees only "a publication by a valid token," and IronWorm is built to slip past signature and pattern inspection with encryption and the modified UPX. Both vendor research and the registry's disablement are after-the-fact chains that act once the artifact has been published and the credentials stolen. This is a structurally independent layer gap, outside the reach of the detection layer.
+
+As things stand, across the package ecosystem as a whole, independent verification of a publisher's authorship still depends on trust in "a valid token was presented," and is not yet treated as an independent layer (mechanisms in which a leaked token alone cannot publish — such as npm's staged publishing — are beginning to be adopted, but they do not amount to proof of authorship itself). Pre-execution attestation closes this gap by inserting one step of authorship proof into the publish/commit path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the artifact's trust boundary.
+
+---
+
+## 5. What proof would have changed
 
 Against the gap this incident exposed (stolen credentials convert directly into publishing authority, and a publisher's authorship is not independently verified at the moment of publication), Lemma proposes a design that requires, at the moment of publication and commit, an independently verifiable cryptographic proof that "this artifact is authorized by a legitimate author."
 
@@ -102,23 +89,13 @@ Against the gap this incident exposed (stolen credentials convert directly into 
 
 In this way, a proof fixed at the moment of publication functions as an independently verifiable trail of whether "this artifact is legitimately authorized and carries legitimate provenance," before downstream consumes it. Detection (after-the-fact vendor research and disablement) works on remediation after discovery; attestation (authorship and provenance verification at the moment of publication) works on the independent verification of the supply chain — each complementary to the other.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **JFrog Security Research (primary)**: "IronWorm: Shai-Hulud's rustier cousin" (2026-06-04; Rust implementation, eBPF rootkit, Tor C2, credential theft and self-propagation) — <https://research.jfrog.com/post/iron-worm-shai-hulud-rustier-cousin/>
 - **Dark Reading (secondary)**: "Rust-Written IronWorm Hits NPM Supply Chain" — <https://www.darkreading.com/cyberattacks-data-breaches/rust-written-ironworm-npm-supply-chain>
 - **BleepingComputer (secondary)**: "New IronWorm malware hits 36 packages in npm supply-chain attack" — <https://www.bleepingcomputer.com/news/security/new-ironworm-malware-hits-36-packages-in-npm-supply-chain-attack/>
 - **Phoenix Security (secondary, technical detail)**: "IronWorm (No CVE): Rust-Built npm Worm Ships an eBPF Rootkit, Tor C2, and a Self-Propagating Supply Chain Implant Across 37 Packages" — <https://phoenix.security/ironworm-npm-supply-chain-worm-rust-ebpf-rootkit-tor/>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

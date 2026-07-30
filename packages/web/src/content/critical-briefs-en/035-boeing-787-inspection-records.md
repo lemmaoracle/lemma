@@ -19,13 +19,13 @@ gap_missing: "There was no layer to confirm before shipment whether the inspecti
 gap_fix: "Before moving downstream, independently verify with Lemma that the inspected attribute is backed by a provenance of who actually inspected it and when, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory wing-to-body-join safety inspections were recorded as complete while workers had never performed them. The records were in order, so document audits and system checks passed; the divergence surfaced only in a later investigation. What was missing was independent verification, when the record was generated, that it was backed by an actual inspection act; records with no underlying work passed downstream as "inspected." Detection and pre-execution attestation are complements, not substitutes.
+Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory wing-to-body-join safety inspections were recorded as complete while workers had never performed them. The records were in order, so document audits and system checks passed; the divergence surfaced only in a later investigation. What was missing was independent verification, when the record was generated, that it was backed by an actual inspection act; records with no underlying work passed downstream as "inspected."
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Target**: the bonding/grounding-confirmation inspection at the wing-to-body join of the Boeing 787 Dreamliner
 - **Disclosure**: Boeing voluntarily reported to the FAA in April 2024; the FAA announced the opening of an investigation on 2024-05-06
@@ -34,21 +34,8 @@ Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory 
 - **Scale**: per sources, roughly 450 aircraft were affected (about 60 of them within Boeing's production line)
 - **Response**: the FAA required Boeing to re-inspect all 787s on the production line and to develop a plan for the in-service fleet
 - **Positioning**: a textbook case of "the existence of a record ≠ proof of the act" in the high-assurance domain of aviation safety
-- **Core**: "inspected," a safety/regulatory attribute, was established on the existence of a record alone without independent evidence of the act of performance, so records with no underlying work passed straight downstream
 
----
-
-## 2. Timeline
-
-- 2024-04: Boeing voluntarily reports to the FAA that some 787 inspections recorded as complete may not have been performed
-- 2024-05-06: the FAA announces the opening of an investigation; Boeing also acknowledges the falsification of inspection records by employees
-- From 2024-05: Boeing re-inspects all 787s on the production line; a plan for the in-service fleet is required
-
-> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
-
----
-
-## 3. Chain of events
+The incident came together as the following chain.
 
 1. **Mandatory inspection specified**: a mandatory inspection confirming bonding/grounding is specified at the 787's wing-to-body join
 2. **Act omitted**: some workers did not perform the inspection
@@ -58,38 +45,38 @@ Boeing voluntarily reported to the FAA that, on some 787 Dreamliners, mandatory 
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This case is anchored in the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof) and also intersects Pillar 01 (Verifiable Origin). Secondary categories are `data-provenance` (the provenance and authenticity of the inspection record) and `identity-auth`.
+- 2024-04: Boeing voluntarily reports to the FAA that some 787 inspections recorded as complete may not have been performed
+- 2024-05-06: the FAA announces the opening of an investigation; Boeing also acknowledges the falsification of inspection records by employees
+- From 2024-05: Boeing re-inspects all 787s on the production line; a plan for the in-service fleet is required
 
-The central failure primitive is that **"inspected" — a safety/regulatory attribute — passed on the existence of a record alone, without independent evidence of the act (the actual performance) that establishes the attribute.** The record asserts "the inspection was completed," but whether that assertion is backed by actual performance cannot be verified from within the record. The authenticity of the attribute (inspected) is decoupled from the provenance of the act that produces it (who actually inspected, and when).
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
-This is the same lineage as Brief 020 (falsification of type-designation conformity-test data), 021 (forgery of Wirecard's balance confirmation), and 019 (misrepresentation of practical experience for a national qualification). All share the structure in which "an attribute required by regulation (conformity, asset existence, qualification, inspected) feeds directly downstream (shipment, disclosure, placement, operation) on the existence of a record or document alone, without independent verification." The weight of this case is that the primitive surfaced in **the extremely high-assurance domain of aviation safety**, at a scale of some 450 aircraft. The gap between an inspection record being electronically and formally in order, and the physical act of inspection having been performed, broke the premise of safety.
-
----
-
-## 5. The detection–proof gap
-
-The FAA's investigation, Boeing's voluntary report and re-inspection, and the plan for the in-service fleet are indispensable for restoring safety; this Brief does not dispute that role. The response that, starting from a voluntary report, led to re-inspection of all aircraft on the line is important.
-
-But detection/audit does not guarantee "whether a record is accompanied by performance" itself. On the record the inspection was complete, and it passed document audits and system checks. Only a later investigation revealed the divergence between record and performance. What was missing is independent verification, at the moment the record is generated, that "this inspection record is backed by an actual inspection act" — a different track from after-the-fact audit. For regulatory reporting, too, there is little independent trail beyond the record itself to later prove "was this aircraft actually inspected?"
-
-Pre-execution attestation proves the "inspected" attribute not by the existence of a record but as "the provenance of when, by whom, and that the inspection act was actually performed." Before proceeding downstream (shipment, operation), if the attribute's proof is not backed by the provenance of performance, the attribute does not hold even when the record is formally in order. Audit of records (the detection-style "are the records all there?") and pre-execution proof of performance ("is the record backed by the actual act?") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry context
+The response and industry movement after disclosure:
 
 - **Boeing / FAA**: starting from Boeing's voluntary report, the FAA opened an investigation; re-inspection of all 787s on the production line and a plan for the in-service fleet were required
-- **Cross-industry**: across manufacturing, safety, and regulation, the structure of mistaking "the existence of a record" for "proof of performance/conformity" surfaces repeatedly (see Brief 019/020/021). The more electronic records and traceability advance, the more the question becomes how to independently prove both the integrity of the record and the actuality of the act the record represents. In high-assurance domains (aviation, critical infrastructure, medical devices), the need for a mechanism that ties attributes to the provenance of the act is high.
+- **Cross-industry**: across manufacturing, safety, and regulation, the structure of mistaking "the existence of a record" for "proof of performance/conformity" surfaces repeatedly (see [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/)/020/021). The more electronic records and traceability advance, the more the question becomes how to independently prove both the integrity of the record and the actuality of the act the record represents. In high-assurance domains (aviation, critical infrastructure, medical devices), the need for a mechanism that ties attributes to the provenance of the act is high.
 
 The need to "prove the inspected/conformant attribute as the provenance of performance rather than the existence of a record" is gaining weight through this case and the broader run of falsification incidents.
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **"inspected" — a safety/regulatory attribute — passed on the existence of a record alone, without independent evidence of the act (the actual performance) that establishes the attribute.** The record asserts "the inspection was completed," but whether that assertion is backed by actual performance cannot be verified from within the record. The authenticity of the attribute (inspected) is decoupled from the provenance of the act that produces it (who actually inspected, and when).
+
+This is the same lineage as [Brief 020](/critical/briefs/020-type-designation-conformity-fraud/) (falsification of type-designation conformity-test data), 021 (forgery of Wirecard's balance confirmation), and 019 (misrepresentation of practical experience for a national qualification). All share the structure in which "an attribute required by regulation (conformity, asset existence, qualification, inspected) feeds directly downstream (shipment, disclosure, placement, operation) on the existence of a record or document alone, without independent verification." The weight of this case is that the primitive surfaced in **the extremely high-assurance domain of aviation safety**, at a scale of some 450 aircraft. The gap between an inspection record being electronically and formally in order, and the physical act of inspection having been performed, broke the premise of safety.
+
+The FAA's investigation, Boeing's voluntary report and re-inspection, and the plan for the in-service fleet are indispensable for restoring safety; this Brief does not dispute that role. The response that, starting from a voluntary report, led to re-inspection of all aircraft on the line is important.
+
+But detection/audit does not guarantee "whether a record is accompanied by performance" itself. On the record the inspection was complete, and it passed document audits and system checks. Only a later investigation revealed the divergence between record and performance. What was missing is independent verification, at the moment the record is generated, that "this inspection record is backed by an actual inspection act" — a different track from after-the-fact audit. For regulatory reporting, too, there is little independent trail beyond the record itself to later prove "was this aircraft actually inspected?"
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation proves the "inspected" attribute not by the existence of a record but as "the provenance of when, by whom, and that the inspection act was actually performed." Before proceeding downstream (shipment, operation), if the attribute's proof is not backed by the provenance of performance, the attribute does not hold even when the record is formally in order. Audit of records (the detection-style "are the records all there?") and pre-execution proof of performance ("is the record backed by the actual act?") are not substitutes but **complements**.
 
 Against the structure exposed here (regulatory/safety attributes pass on the existence of a record alone, without the provenance of performance), Lemma proposes a design that treats an attribute (inspected, conformant) not as the presence or absence of a record but as an independently verifiable proof of "the provenance that the act producing the attribute was actually performed."
 
@@ -98,25 +85,15 @@ Against the structure exposed here (regulatory/safety attributes pass on the exi
 - **Block before proceeding downstream**: even when a record is formally in order, if a proof backed by the provenance of performance does not hold, do not establish the attribute and reject progression to shipment/operation in advance.
 - **Complement to audit**: place audit of records (are they all there?) and pre-execution proof of performance (is it backed by the actual act?) side by side as separate tracks.
 
-If a proof backed by the provenance of performance does not hold, the attribute is not established, and after-the-fact audit is complemented by proof beforehand. Read together with Brief 019/020/021 as the "existence of a record ≠ proof of the reality" lineage.
-
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
+If a proof backed by the provenance of performance does not hold, the attribute is not established, and after-the-fact audit is complemented by proof beforehand. Read together with [Brief 019](/critical/briefs/019-construction-engineer-qualification-fraud/)/020/021 as the "existence of a record ≠ proof of the reality" lineage.
 
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **The Seattle Times**: "FAA opens new investigation into Boeing 787 wing-to-body join work" (2024-05; inspection content, scale, FAA response) — https://www.seattletimes.com/business/boeing-aerospace/faa-opens-new-investigation-into-boeing-787-wing-to-body-join-work/
 - **The Washington Post**: "FAA investigating whether Boeing falsified 787 inspections" (2024-05-06) — https://www.washingtonpost.com/transportation/2024/05/06/faa-boeing-787-inspections/
 - **NPR**: "FAA is investigating Boeing for apparent missed inspections on 787 Dreamliner" (2024-05-06) — https://www.npr.org/2024/05/06/1249432229/faa-investigation-boeing-787-dreamliner
 - **CBS News**: "FAA investigates Boeing for falsified records on some 787 Dreamliners" (2024-05) — https://www.cbsnews.com/news/boeing-787-dreamliners-faa-falsified-records/
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Trust402](https://lemma.frame00.com/trust402/)

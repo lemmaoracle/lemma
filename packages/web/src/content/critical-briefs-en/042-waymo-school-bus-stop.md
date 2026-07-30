@@ -19,36 +19,19 @@ gap_missing: "Before taking the action of driving past, there was no layer to in
 gap_fix: "Before taking a safety-critical action such as a stopping obligation, independently verify with Lemma that the driving decision satisfies the safety rules, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment. Detection and pre-execution attestation are complements, not substitutes.
+A Waymo robotaxi drove past a stopped school bus with red lights on and stop arm out, and NHTSA opened a probe. Footage, district reports, and crash reports made incidents visible, but all act after the action — and continued even after Waymo's fix and recall. What is structurally missing is a layer that verifies, before the car passes, that the bus is stopped and the duty to stop is met. That was left to the system's judgment.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Subject**: Waymo's self-driving vehicles (ADS-equipped robotaxis, operating in Atlanta, Austin, and elsewhere).
 - **What happened**: Against a stopped school bus (red lights on, stop arm deployed), Waymo vehicles failed to stop and drove past, or did not remain stopped. In the U.S., passing a stopped school bus is illegal — a safety rule tied directly to children boarding and alighting.
 - **Scale**: The Austin school district logged 19 instances this school year, one just after a child had crossed in front of the car; at least 6 more occurred in Atlanta in 2025. NHTSA ODI is also examining 22 reports including collisions with fixed and semi-fixed objects (gates, chains) and parked vehicles, and disregard of signal controls.
 - **Response**: Waymo identified the software fault and deployed an update by 2025-11-17. In December 2025 it conducted a voluntary software recall (3,067 fifth-generation ADS vehicles) with NHTSA. The district reported, however, that incidents continued after the update.
 - **The core**: The recall and software update are after-the-fact remediation. The issue is that **the safety-critical driving judgment — "the bus ahead is stopped and I am obligated to stop" — was not satisfied in an independently verifiable form before the car took the action of passing.**
-
----
-
-## 2. Timeline
-
-- 2025-10: NHTSA ODI opens a probe after footage (media reporting) of a Waymo vehicle passing a stopped school bus in Atlanta.
-- 2025-11-17: Waymo says it identified the software fault and deployed an update.
-- 2025-12-03: NHTSA sends Waymo a letter requesting answers to a set of questions by 2026-01-20.
-- 2025-12: Waymo conducts a voluntary software recall (3,067 fifth-generation ADS vehicles) with NHTSA.
-- After 2025-12: The Austin district reports incidents continued after the update.
-- 2026: NHTSA expands the probe to 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, and collisions with fixed objects / running signals. Zoox is separately under investigation over two rear-end crashes from unexpected hard braking.
-
-> Note: The recall count (3,067) and incident counts are based on the NHTSA recall document and reporting. To avoid confusion with Waymo's separate recall (~3,800 vehicles, over driving through flooded roads), this Brief is limited to the school-bus recall.
-
----
-
-## 3. The chain: a safety-rule judgment unverified before the action
 
 This incident stems from a self-driving system's driving decision not being independently verified before a safety-critical action. The path by which the failure propagates into a public-space event is as follows.
 
@@ -60,29 +43,18 @@ This incident stems from a self-driving system's driving decision not being inde
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "a safety-critical driving decision is not fixed as an independently verifiable trail before the action, and rule-satisfaction is left to the system's internal judgment and its after-the-fact detection."** Applying the safety rule "the duty to stop for a stopped school bus," too, was not independently verified from outside before the car acted. We note `data-provenance` (the provenance of driving decisions and telemetry as a trail) as a secondary category.
+- 2025-10: NHTSA ODI opens a probe after footage (media reporting) of a Waymo vehicle passing a stopped school bus in Atlanta.
+- 2025-11-17: Waymo says it identified the software fault and deployed an update.
+- 2025-12-03: NHTSA sends Waymo a letter requesting answers to a set of questions by 2026-01-20.
+- 2025-12: Waymo conducts a voluntary software recall (3,067 fifth-generation ADS vehicles) with NHTSA.
+- After 2025-12: The Austin district reports incidents continued after the update.
+- 2026: NHTSA expands the probe to 22 reports, including failures to remain stopped for buses with red lights and stop/crossing arms deployed, and collisions with fixed objects / running signals. Zoox is separately under investigation over two rear-end crashes from unexpected hard braking.
 
-This incident is in the same self-driving cluster as Brief 049 (Tesla Robotaxi), but a different cross-section. 049 addressed **control attribution and the provenance of records** at the time of a crash (who/what was in control, are the records authentic). This incident addresses a case where the controlling agent is clearly the ADS, yet **the driving decision itself is not independently verified, before the action, against the safety rule.** It is the same shape as Brief 012 (a facial-recognition determination led directly to a coercive administrative disposition without independent verification), moving "an AI decision leads directly to an irreversible public-space action without independent verification" into self-driving. It connects to Brief 043 (a safety attribute left as self-attestation, unverified) in that the safety claim/decision sits outside independent verification.
+> Note: The recall count (3,067) and incident counts are based on the NHTSA recall document and reporting. To avoid confusion with Waymo's separate recall (~3,800 vehicles, over driving through flooded roads), this Brief is limited to the school-bus recall.
 
-That incidents continued after the software update sharpens the point. Remediation is an after-the-fact correction of the decision model — a separate chain from a layer that independently verifies, before each action, that "this action now satisfies the safety rule." An update may improve the decision distribution, but without independent verification before each action, the residual incidents can only be caught inside the detect-and-remediate loop.
-
----
-
-## 5. The gap between detection and proof
-
-NHTSA ODI's investigation, the district's reports, analysis of onboard telemetry, and Waymo's software update and recall are indispensable for grasping the harm, evaluating safety, and preventing recurrence, and this Brief does not negate that role. Making incidents visible and remediating them is the basis on which society evaluates self-driving safety.
-
-At the same time, detection provides no material to independently establish — **before the action** — whether the driving decision about to be taken satisfies the safety rule. Passing a stopped school bus is an action the system executed as a legitimate driving decision, indistinguishable in its communications and controls from normal operation. After-the-fact telemetry analysis reconstructs "what happened," but not "was that decision independently verified to satisfy the rule before the action." A recall and a model update also correct the decision distribution after the fact, not independently before each action. That incidents continued after the update shows the detect-and-remediate loop alone cannot stop residual risk before the action.
-
-Pre-execution attestation flips a safety-critical driving decision from "verify it by telemetry after the fact" to "fix the satisfaction of the safety rule to an independently verifiable trail before the action." Bind the judgment "I satisfied the duty to stop for a stopped school bus" to a tamper-resistant provenance at the moment of the act, so that whether each action satisfied the rule can be independently verified without depending on after-the-fact record-keeping or remediation. Detecting crashes/violations (the detection-style "what happened") and proving the driving decision ("was that action independently verified to satisfy the safety rule before the action") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Waymo / NHTSA**: Waymo identified the software fault and issued an update and a voluntary recall. NHTSA ODI expanded its probe in 2026, continuing to cover failures to remain stopped for school buses and collisions with fixed objects / running signals. Zoox is separately under investigation over rear-end crashes from unexpected hard braking.
 - **The limits-of-remediation question**: That incidents were reported after the software update raises the need to distinguish after-the-fact correction of the decision model from independent verification before each action.
@@ -92,7 +64,23 @@ The structure in which an AI's driving decision leads directly to action without
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "a safety-critical driving decision is not fixed as an independently verifiable trail before the action, and rule-satisfaction is left to the system's internal judgment and its after-the-fact detection."** Applying the safety rule "the duty to stop for a stopped school bus," too, was not independently verified from outside before the car acted.
+
+This incident is in the same self-driving cluster as [Brief 049](/critical/briefs/049-tesla-robotaxi-control-attribution/) (Tesla Robotaxi), but a different cross-section. 049 addressed **control attribution and the provenance of records** at the time of a crash (who/what was in control, are the records authentic). This incident addresses a case where the controlling agent is clearly the ADS, yet **the driving decision itself is not independently verified, before the action, against the safety rule.** It is the same shape as [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition determination led directly to a coercive administrative disposition without independent verification), moving "an AI decision leads directly to an irreversible public-space action without independent verification" into self-driving. It connects to [Brief 043](/critical/briefs/043-tesla-fsd-self-reported-safety/) (a safety attribute left as self-attestation, unverified) in that the safety claim/decision sits outside independent verification.
+
+That incidents continued after the software update sharpens the point. Remediation is an after-the-fact correction of the decision model — a separate chain from a layer that independently verifies, before each action, that "this action now satisfies the safety rule." An update may improve the decision distribution, but without independent verification before each action, the residual incidents can only be caught inside the detect-and-remediate loop.
+
+NHTSA ODI's investigation, the district's reports, analysis of onboard telemetry, and Waymo's software update and recall are indispensable for grasping the harm, evaluating safety, and preventing recurrence, and this Brief does not negate that role. Making incidents visible and remediating them is the basis on which society evaluates self-driving safety.
+
+At the same time, detection provides no material to independently establish — **before the action** — whether the driving decision about to be taken satisfies the safety rule. Passing a stopped school bus is an action the system executed as a legitimate driving decision, indistinguishable in its communications and controls from normal operation. After-the-fact telemetry analysis reconstructs "what happened," but not "was that decision independently verified to satisfy the rule before the action." A recall and a model update also correct the decision distribution after the fact, not independently before each action. That incidents continued after the update shows the detect-and-remediate loop alone cannot stop residual risk before the action.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation flips a safety-critical driving decision from "verify it by telemetry after the fact" to "fix the satisfaction of the safety rule to an independently verifiable trail before the action." Bind the judgment "I satisfied the duty to stop for a stopped school bus" to a tamper-resistant provenance at the moment of the act, so that whether each action satisfied the rule can be independently verified without depending on after-the-fact record-keeping or remediation. Detecting crashes/violations (the detection-style "what happened") and proving the driving decision ("was that action independently verified to satisfy the safety rule before the action") are not substitutes but **complements**.
 
 Against the gap this incident exposed (a self-driving system's driving decision is not independently verified before a safety-critical action), Lemma proposes a design that fixes, at the moment of the decision/act, its satisfaction and authorization as an independently verifiable cryptographic proof.
 
@@ -103,23 +91,13 @@ Against the gap this incident exposed (a self-driving system's driving decision 
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this driving decision satisfied the safety rule before the action," without depending on after-the-fact remediation. Detection (after-the-fact reports, telemetry, recalls) works on social evaluation and remediation; attestation (independent verification of the decision at the moment of the act) works on proving rule-satisfaction — each complementary to the other.
 
-For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **TechCrunch**: "Waymo to issue software recall over how robotaxis behave around school buses" (2025-12-05) — <https://techcrunch.com/2025/12/05/waymo-to-issue-software-recall-over-how-robotaxis-behave-around-school-buses>
 - **CBS News**: "Waymo recalls more than 3,000 vehicles over faulty software following school bus violations" — <https://www.cbsnews.com/news/waymo-recall-3000-vehicles-software-school-bus/>
 - **CBS News**: "U.S. expands investigation into Waymo over robotaxis driving around stopped school buses" — <https://www.cbsnews.com/news/waymo-investigation-nhtsa-robotaxis-passing-school-bus>
 - **NHTSA**: Standing General Order ADS Incident Reports (primary data of the ADS crash-reporting program) — <https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Trust402](https://lemma.frame00.com/trust402/)

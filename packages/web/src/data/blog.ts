@@ -15,6 +15,7 @@ import matter from "gray-matter";
 import { marked } from "marked";
 import type { Tokens } from "marked";
 import { createHighlighter } from "shiki";
+import { LEMMA_CODE_THEME } from "../lib/codeTheme";
 
 export type BlogLocale = "en" | "ja";
 
@@ -268,7 +269,8 @@ function localeAndSlugFromFilename(
       : undefined;
 }
 
-const BLOG_CODE_THEME = "github-dark";
+/** モックの配色（keyword=ライム／comment=グレー／string=セージ）。§2.2。 */
+const BLOG_CODE_THEME = LEMMA_CODE_THEME;
 
 const BLOG_CODE_LANGS = [
   "bash",
@@ -431,7 +433,7 @@ const loadPosts = (() => {
                 const tryHighlight = (): string =>
                   highlighter.codeToHtml(safeText, {
                     lang: safeLang,
-                    theme: BLOG_CODE_THEME,
+                    theme: BLOG_CODE_THEME.name,
                   });
                 return tryHighlight() || `<pre><code>${escapeCodeHtml(safeText)}</code></pre>`;
               },

@@ -1,37 +1,27 @@
 ---
 /**
- * Lemma blog — index page, compact v24 structure.
+ * Lemma blog — 一覧ページ。モック `lemma_blog_index_mock_v4.html` の面
+ * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §3）。
  *
- * After the v24 chrome migration (PR #282) the page still followed the
- * prior taxonomy with 9 stacked sections (Featured / Recent / Archive /
- * Changelog / Guides / Foundations / Filtered ...). This pass rebuilds
- * the index as a curated landing surface:
+ * 構成: ヒーロー → フィルタピル → 注目の記事（7:5・カード装飾なし）→
+ * 最近の記事6件（3列・16:9サムネ）→ すべての記事（72pxミニカバーの行）→
+ * 変更履歴（3カラム行・カバーなし）→ カテゴリ4枚。
  *
- *   Hero → Filter pills → Featured (compact) → Recent → Changelog → Categories
+ * カバーは「選ばれたもの」に付け、網羅リストはテキスト寄りに——大（注目）→
+ * 中（最近）→ 小（すべて）→ 行（変更履歴）と重みを落とす（§3.2）。
+ * フィルタで単一カテゴリを選ぶと全件が同じ色相になり情報量が消えるため、
+ * フィルタ結果もカードでなく**行**で出す。
  *
- * Guides and Foundations are removed from the index — they're being
- * routed to dedicated surfaces (Guides → cookbook / dedicated page TBD;
- * Foundations → separate spec page TBD). Their posts remain accessible
- * via their /blog/<slug>/ direct URLs.
- *
- * The dense "Archive" list (post-by-post) is replaced by a Categories
- * navigation strip — each chip links to /blog/category/<slug>/ with a
- * count badge, making the per-category archive pages first-class
- * destinations.
- *
- * Filter pills (in-page JS filter) are kept for the quick "Industry
- * only" UX; they serve a different action than the Categories nav
- * strip (in-page hide/show vs. navigate to deeper archive).
- *
- * "Essay" terminology is replaced site-wide with "Articles" / "記事"
- * per Mayumi review. CTA copy reduced to "Read →" / "読む →".
+ * v24 のスクロール reveal は落とした（`prefers-reduced-motion` でホバー以外の
+ * アニメーションを無効にする受け入れ基準に対し、消してしまうのが最も確実。
+ * テキスト寄りの一覧では出現アニメーションの意味も薄い）。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import type { BlogPost } from "../data/blog";
 import { BLOG_CATEGORIES, categorySlug } from "../data/blog";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
-import Footer from "../components/Footer.astro";
+import Footer from "../components/FooterRenewal.astro";
 import HubSpotDrawer from "../components/HubSpotDrawer.astro";
 import BlogCover from "../components/BlogCover.astro";
 
@@ -70,7 +60,52 @@ const categories = BLOG_CATEGORIES.filter(
 );
 
 const readCta = isJa ? "読む →" : "Read →";
-const categoriesLabel = isJa ? "カテゴリ" : "Categories";
+
+/** カテゴリカードの説明1行（§3.1-7）。 */
+const CATEGORY_DESC: Record<string, Record<Locale, string>> = {
+  Announcements: {
+    ja: "新機能・フィード・公開のお知らせ",
+    en: "New features, feeds, and release notes",
+  },
+  Industry: {
+    ja: "AIと信頼をめぐる業界の論点",
+    en: "Industry debates on AI and trust",
+  },
+  Solutions: {
+    ja: "業務への組み込み方と検証結果",
+    en: "Integration patterns and verification results",
+  },
+  Technical: {
+    ja: "設計・仕様・実装の詳細",
+    en: "Design, specs, and implementation detail",
+  },
+};
+
+const C = isJa
+  ? {
+      lead: "証明基盤の設計と実装、AI時代の信頼をめぐる論点。新機能のアナウンスから技術仕様まで。",
+      featured: "注目の記事",
+      featuredEn: "Featured",
+      recent: "最近の記事",
+      recentEn: "Recent",
+      all: "すべての記事",
+      changelog: "変更履歴",
+      changelogEn: "Changelog",
+      categories: "カテゴリ",
+      categoriesEn: "Categories",
+    }
+  : {
+      lead: "Design and implementation of proof infrastructure, and the questions of trust in the AI era — from announcements to technical specs.",
+      featured: "Featured",
+      featuredEn: "Featured",
+      recent: "Recent",
+      recentEn: "Recent",
+      all: "All articles",
+      changelog: "Changelog",
+      changelogEn: "Changelog",
+      categories: "Categories",
+      categoriesEn: "Categories",
+    };
 ---
 
 <Layout
@@ -83,68 +118,90 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
   <Navigation locale={locale} t={t.nav} base={base} />
   <HubSpotDrawer />
 
-  <main class="bx-page">
-    <div class="bx-container">
-      <section class="bx-hero">
-        <h1 class="bx-h1">{t.blog.title}</h1>
+  <main class="bi-page">
+    <div class="bi-container">
+      <section class="bi-hero">
+        <div class="bi-kicker">Blog</div>
+        <h1 class="bi-h1">{t.blog.title}</h1>
+        <p class="bi-lead">{C.lead}</p>
+        {categories.length > 0 && (
+          <nav class="bi-filter" aria-label={t.blog.index.categoriesLabel}>
+            <button class="bi-pill on" data-filter="all" type="button">
+              {t.blog.index.allTag} <i>{entries.length}</i>
+            </button>
+            {categories.map((c) => (
+              <button class="bi-pill" data-filter={c} type="button">
+                {c} <i>{categoryCounts[c]}</i>
+              </button>
+            ))}
+          </nav>
+        )}
       </section>
 
-      {categories.length > 0 && (
-        <nav class="bx-filter" aria-label={t.blog.index.categoriesLabel}>
-          <button class="bx-pill is-active" data-filter="all" type="button">
-            {t.blog.index.allTag}
-            <span class="bx-pill-count">{entries.length}</span>
-          </button>
-          {categories.map((c) => (
-            <button class="bx-pill" data-filter={c} type="button">
-              {c}
-              <span class="bx-pill-count">{categoryCounts[c]}</span>
-            </button>
-          ))}
-        </nav>
-      )}
-
-      <div class="bx-view-all">
+      <div class="bi-view-all">
         {featured && (
-          <section class="bx-featured-section">
-            <div class="bx-section-label">{t.blog.index.featuredTag}</div>
-            <a
-              href={`${blogPath}/${featured.slug}`}
-              class="bx-featured-card reveal"
-            >
-              <div class="bx-featured-thumb">
+          <section>
+            <div class="bi-label">
+              <b>{C.featured}</b><span>{C.featuredEn}</span>
+            </div>
+            {/* カード装飾は付けない — サムネイル＋テキストのみ（§3.1-3）。 */}
+            <a class="bi-feat" href={`${blogPath}/${featured.slug}`}>
+              <div class="bi-thumb">
                 <BlogCover category={featured.category} slug={featured.slug} />
               </div>
-              <div class="bx-featured-body">
-                <div class="bx-essay-meta">
-                  <span class="bx-essay-cat">{featured.category}</span>
-                  <span class="bx-essay-sep">·</span>
-                  <span class="bx-essay-date">{featured.date}</span>
+              <div>
+                <div class="bi-meta">
+                  <span class="bi-cat">{featured.category}</span>
+                  <span class="bi-sep">·</span>
+                  <time>{featured.date}</time>
                 </div>
-                <h2 class="bx-featured-title">{featured.title}</h2>
-                <span class="bx-featured-cta">{t.blog.index.featuredCta}</span>
+                <h2 class="bi-feat-title">{featured.title}</h2>
+                {featured.abstract && <p class="bi-feat-ex">{featured.abstract}</p>}
+                <span class="bi-cta">{readCta}</span>
               </div>
             </a>
           </section>
         )}
 
         {recent.length > 0 && (
-          <section class="bx-recent-section">
-            <div class="bx-section-label">{t.blog.index.recentTag}</div>
-            <div class="bx-card-grid">
-              {recent.map((post, i) => (
-                <a
-                  href={`${blogPath}/${post.slug}`}
-                  class="bx-card reveal"
-                  style={`transition-delay:${i * 0.04}s`}
-                >
-                  <div class="bx-essay-meta">
-                    <span class="bx-essay-cat">{post.category}</span>
-                    <span class="bx-essay-sep">·</span>
-                    <span class="bx-essay-date">{post.date}</span>
+          <section>
+            <div class="bi-label">
+              <b>{C.recent}</b><span>{C.recentEn}</span>
+            </div>
+            <div class="bi-grid">
+              {recent.map((post) => (
+                <a class="bi-card" href={`${blogPath}/${post.slug}`}>
+                  <div class="bi-thumb">
+                    <BlogCover category={post.category} slug={post.slug} />
                   </div>
-                  <h3 class="bx-card-title">{post.title}</h3>
-                  <span class="bx-card-cta">{readCta}</span>
+                  <div class="bi-meta">
+                    <span class="bi-cat">{post.category}</span>
+                    <span class="bi-sep">·</span>
+                    <time>{post.date}</time>
+                  </div>
+                  <h3 class="bi-card-title">{post.title}</h3>
+                  {post.abstract && <p class="bi-card-ex">{post.abstract}</p>}
+                  <span class="bi-cta">{readCta}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {entries.length > 0 && (
+          <section>
+            <div class="bi-label">
+              <b>{C.all}</b><span>All — {entries.length}</span>
+            </div>
+            <div class="bi-alist">
+              {entries.map((post) => (
+                <a class="bi-arow" href={`${blogPath}/${post.slug}`}>
+                  <span class="bi-athumb">
+                    <BlogCover category={post.category} slug={post.slug} />
+                  </span>
+                  <span class="bi-acat">{post.category}</span>
+                  <span class="bi-atitle">{post.title}</span>
+                  <span class="bi-adate">{post.date}</span>
                 </a>
               ))}
             </div>
@@ -152,38 +209,32 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
         )}
 
         {changelog.length > 0 && (
-          <section class="bx-changelog-section">
-            <div class="bx-section-label">
-              {t.blog.sections["Changelog"] ?? "Changelog"}
+          <section class="bi-narrow">
+            <div class="bi-label">
+              <b>{C.changelog}</b><span>{C.changelogEn}</span>
             </div>
-            <ul class="bx-archive-list">
+            <div>
               {changelog.map((post) => (
-                <li class="bx-archive-row reveal">
-                  <a
-                    href={`${blogPath}/${post.slug}`}
-                    class="bx-archive-link"
-                  >
-                    <span class="bx-archive-cat">{post.category}</span>
-                    <span class="bx-archive-title">{post.title}</span>
-                    <span class="bx-archive-date">{post.date}</span>
-                  </a>
-                </li>
+                <a class="bi-crow" href={`${blogPath}/${post.slug}`}>
+                  <span class="bi-acat">{post.category}</span>
+                  <span class="bi-ctitle">{post.title}</span>
+                  <span class="bi-adate">{post.date}</span>
+                </a>
               ))}
-            </ul>
+            </div>
           </section>
         )}
 
         {categories.length > 0 && (
-          <section class="bx-categories-section">
-            <div class="bx-section-label">{categoriesLabel}</div>
-            <div class="bx-categories-grid">
+          <section>
+            <div class="bi-label">
+              <b>{C.categories}</b><span>{C.categoriesEn}</span>
+            </div>
+            <div class="bi-cats">
               {categories.map((c) => (
-                <a
-                  href={`${blogPath}/category/${categorySlug(c)}`}
-                  class="bx-category-chip"
-                >
-                  <span class="bx-category-label">{c}</span>
-                  <span class="bx-category-count">{categoryCounts[c]}</span>
+                <a class="bi-cat-card" href={`${blogPath}/category/${categorySlug(c)}`}>
+                  <b>{c}</b>
+                  <span>{CATEGORY_DESC[c]?.[locale] ?? ""}</span>
                 </a>
               ))}
             </div>
@@ -191,25 +242,25 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
         )}
       </div>
 
-      <section class="bx-filtered-section" hidden>
-        <div
-          class="bx-section-label bx-filtered-label"
-          data-filtered-label
-        ></div>
-        <div class="bx-card-grid bx-filtered-grid">
+      {/* フィルタ結果はカードでなく行（§3.2 — 単一カテゴリでは色相の情報量が
+          消えるため、テキスト寄りにする）。 */}
+      <section class="bi-filtered" hidden>
+        <div class="bi-label">
+          <b data-filtered-label></b><span data-filtered-count></span>
+        </div>
+        <div class="bi-alist">
           {entries.map((post) => (
             <a
+              class="bi-arow bi-filtered-row"
               href={`${blogPath}/${post.slug}`}
-              class="bx-card bx-filtered-card"
               data-category={[post.category, ...(post.secondaryCategories ?? [])].join("|")}
             >
-              <div class="bx-essay-meta">
-                <span class="bx-essay-cat">{post.category}</span>
-                <span class="bx-essay-sep">·</span>
-                <span class="bx-essay-date">{post.date}</span>
-              </div>
-              <h3 class="bx-card-title">{post.title}</h3>
-              <span class="bx-card-cta">{readCta}</span>
+              <span class="bi-athumb">
+                <BlogCover category={post.category} slug={post.slug} />
+              </span>
+              <span class="bi-acat">{post.category}</span>
+              <span class="bi-atitle">{post.title}</span>
+              <span class="bi-adate">{post.date}</span>
             </a>
           ))}
         </div>
@@ -221,537 +272,447 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
 </Layout>
 
 <style>
-  .bx-page {
-    --bx-display: "Sora", system-ui, sans-serif;
-    --bx-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
-    --bx-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --bx-text-1: #1a1a1a;
-    --bx-text-2: #3a3a3a;
-    --bx-text-3: #5a5a5a;
-    --bx-text-4: #9a9a9a;
+  /* トークンの値は記事テンプレート（BlogArticleTemplate）と同じもの。 */
+  .bi-page {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
 
-    background: var(--lemma-cream);
-    color: var(--bx-text-2);
-    font-family: var(--bx-body);
-    font-weight: 400;
-    line-height: 1.65;
-    padding: 0 0 96px;
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    padding: 0;
     margin-top: 64px;
   }
-  :root[lang="en"] .bx-page {
-    --bx-body: "Sora", system-ui, sans-serif;
-  }
-
-  .bx-container {
-    max-width: 1100px;
+  .bi-container {
+    max-width: calc(1180px + 12vw);
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 6vw;
   }
-
-  a {
+  .bi-page a {
     text-decoration: none;
     color: inherit;
   }
 
-  /* ─── HERO ─── */
-  .bx-hero {
-    padding: 60px 0 48px;
+  /* ─── HERO + FILTER ─── */
+  .bi-hero {
+    padding: 46px 0 0;
   }
-  .bx-eyebrow {
-    font-family: var(--bx-mono);
+  .bi-kicker {
+    font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--bx-text-3);
-    margin: 0 0 24px;
+    color: var(--muted);
+  }
+  .bi-h1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(28px, 3.2vw, 38px);
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 14px 0 12px;
+  }
+  .bi-lead {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.95;
+    color: var(--tx-soft);
+    max-width: 62ch;
+  }
+  .bi-filter {
     display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .bx-eyebrow::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .bx-h1 {
-    font-family: var(--bx-display);
-    font-size: 64px;
-    font-weight: 700;
-    line-height: 1;
-    margin: 0 0 22px;
-    color: var(--black);
-    letter-spacing: -0.04em;
-    max-width: 920px;
-  }
-  :root[lang="ja"] .bx-h1 {
-    font-size: 52px;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
-  }
-
-  /* ─── FILTER BAR ─── */
-  .bx-filter {
-    display: flex;
+    gap: 9px;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 0 0 48px;
-    padding: 22px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
+    margin: 30px 0 0;
   }
-  .bx-pill {
-    font-family: var(--bx-display);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--bx-text-3);
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 999px;
-    padding: 8px 14px;
-    cursor: pointer;
+  .bi-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: color 0.18s, border-color 0.18s, background 0.18s;
+    gap: 9px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--tx-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
-  .bx-pill:hover {
-    color: var(--accent);
-    border-color: rgba(139, 69, 19, 0.4);
+  .bi-pill:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--tx);
   }
-  .bx-pill.is-active {
-    color: var(--lemma-cream);
-    background: var(--accent);
-    border-color: var(--accent);
+  /* 選択中は蛍光地に墨文字（§3.1-2）。 */
+  .bi-pill.on {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: var(--ink);
+    font-weight: 600;
   }
-  .bx-pill-count {
-    font-family: var(--bx-mono);
-    font-size: 10px;
-    opacity: 0.7;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ─── SECTION LABEL ─── */
-  .bx-section-label {
-    font-family: var(--bx-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .bx-section-label::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  /* ─── FEATURED (compact) ─── */
-  .bx-featured-section {
-    margin: 0 0 56px;
-  }
-  .bx-featured-card {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
-    position: relative;
-  }
-  .bx-featured-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 3px;
-    width: 64px;
-    background: var(--accent);
-    z-index: 1;
-    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .bx-featured-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    box-shadow: 0 16px 40px rgba(139, 69, 19, 0.08);
-    transform: translateY(-2px);
-  }
-  .bx-featured-card:hover::before {
-    width: 100%;
-  }
-  .bx-featured-thumb {
-    background-color: var(--lemma-cream-deep);
-    min-height: 200px;
-    overflow: hidden;
-  }
-  .bx-featured-thumb :global(svg) {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .bx-featured-body {
-    padding: 30px 36px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
-  }
-  .bx-featured-title {
-    font-family: var(--bx-display);
-    font-size: clamp(20px, 2.4vw, 26px);
-    font-weight: 700;
-    line-height: 1.22;
-    color: var(--black);
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
-  :root[lang="ja"] .bx-featured-title {
-    line-height: 1.4;
-  }
-  .bx-featured-cta {
-    font-family: var(--bx-mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin-top: 4px;
-    transition: transform 0.2s;
-  }
-  .bx-featured-card:hover .bx-featured-cta {
-    transform: translateX(4px);
-  }
-
-  /* ─── ESSAY META (shared) ─── */
-  .bx-essay-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--bx-mono);
+  .bi-pill i {
+    font-style: normal;
+    font-family: var(--font-mono);
     font-size: 10.5px;
-    letter-spacing: 0.05em;
-    color: var(--bx-text-3);
+    color: var(--muted);
   }
-  .bx-essay-cat {
-    color: var(--accent);
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-  .bx-essay-sep {
-    color: var(--lemma-line);
-  }
-  .bx-essay-date {
-    font-variant-numeric: tabular-nums;
+  .bi-pill.on i {
+    color: var(--ink);
+    opacity: 0.65;
   }
 
-  /* ─── RECENT / FILTERED — shared card grid ─── */
-  .bx-recent-section,
-  .bx-filtered-section {
-    margin: 0 0 56px;
+  /* ─── SECTION LABEL ───
+     ラベル行の罫線が上境界を兼ねる。直下に別の全幅罫線は置かない（§6-2）。 */
+  .bi-label {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 60px 0 22px;
   }
-  .bx-card-grid {
+  .bi-label b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+  }
+  .bi-label span {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .bi-label::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ─── サムネイル（共通・16:9） ───
+     4:3 は縦が伸びて抽象カバーの存在感が過剰になる（§3.2）。 */
+  .bi-thumb :global(svg) {
+    width: 100%;
+    aspect-ratio: 1200 / 630;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(24, 36, 26, 0.11);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+
+  /* ─── FEATURED（7:5・装飾なし） ─── */
+  .bi-feat {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 38px;
+    align-items: center;
+  }
+  .bi-feat .bi-thumb :global(svg) {
+    border-radius: 14px;
+  }
+  .bi-feat:hover .bi-thumb :global(svg) {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 48px rgba(24, 36, 26, 0.17);
+  }
+  .bi-feat-title {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(19px, 2.1vw, 25px);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 12px 0 12px;
+  }
+  .bi-feat-ex {
+    margin: 0 0 18px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ─── META（共通） ─── */
+  .bi-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .bi-cat {
+    color: var(--ok-ink);
+  }
+  .bi-sep {
+    opacity: 0.5;
+  }
+  .bi-cta {
+    font-size: 12.5px;
+    color: var(--ok-ink);
+  }
+
+  /* ─── RECENT（3列・ホバーはサムネイルだけが浮く） ─── */
+  .bi-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 26px;
   }
-  .bx-card {
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    padding: 22px 24px 20px;
+  .bi-card {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
-    position: relative;
-    overflow: hidden;
   }
-  .bx-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 40px;
-    background: var(--accent);
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .bi-card .bi-meta {
+    margin: 16px 0 8px;
   }
-  .bx-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
-    transform: translateY(-2px);
+  .bi-card:hover .bi-thumb :global(svg) {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(24, 36, 26, 0.16);
   }
-  .bx-card:hover::before {
-    width: 100%;
-  }
-  .bx-card-title {
-    font-family: var(--bx-display);
-    font-size: 16px;
+  .bi-card-title {
+    font-family: var(--font-serif-jp);
     font-weight: 600;
-    line-height: 1.35;
-    color: var(--black);
-    letter-spacing: -0.015em;
-    margin: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 0 0 10px;
   }
-  :root[lang="ja"] .bx-card-title {
-    line-height: 1.5;
-  }
-  .bx-card-cta {
-    font-family: var(--bx-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 0.5px solid var(--lemma-line);
-    transition: transform 0.2s;
-  }
-  .bx-card:hover .bx-card-cta {
-    transform: translateX(3px);
-  }
-
-  /* ─── CHANGELOG (compact list) ─── */
-  .bx-changelog-section {
-    margin: 0 0 56px;
-  }
-  .bx-archive-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
+  .bi-card-ex {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--tx-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .bx-archive-row {
-    border-bottom: 0.5px solid var(--lemma-line);
-  }
-  .bx-archive-row:last-child {
-    border-bottom: 0;
-  }
-  .bx-archive-link {
-    display: grid;
-    grid-template-columns: 160px 1fr 100px;
-    gap: 20px;
-    align-items: baseline;
-    padding: 16px 22px;
-    transition: background 0.18s;
-  }
-  .bx-archive-link:hover {
-    background: var(--lemma-cream-deep);
-  }
-  .bx-archive-cat {
-    font-family: var(--bx-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .bx-archive-title {
-    font-family: var(--bx-display);
-    font-size: 14.5px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--black);
-    letter-spacing: -0.005em;
-  }
-  .bx-archive-date {
-    font-family: var(--bx-mono);
-    font-size: 10.5px;
-    color: var(--bx-text-3);
-    letter-spacing: 0.05em;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
+  .bi-card .bi-cta {
+    margin-top: auto;
   }
 
-  /* ─── CATEGORIES nav strip ─── */
-  .bx-categories-section {
-    margin: 0;
-  }
-  .bx-categories-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .bx-category-chip {
-    display: inline-flex;
+  /* ─── ALL（72pxミニカバーの行リスト） ─── */
+  .bi-arow {
+    display: grid;
+    grid-template-columns: 72px 118px 1fr auto;
+    gap: 18px;
     align-items: center;
-    gap: 8px;
-    padding: 11px 18px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 999px;
-    transition: border-color 0.2s, background 0.2s;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.15s;
   }
-  .bx-category-chip:hover {
-    border-color: var(--accent);
-    background: var(--lemma-brown-light);
+  .bi-arow:hover .bi-atitle {
+    color: var(--ok-ink);
   }
-  .bx-category-label {
-    font-family: var(--bx-display);
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--bx-text-2);
-    letter-spacing: -0.005em;
+  .bi-athumb :global(svg) {
+    width: 72px;
+    aspect-ratio: 1200 / 630;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(24, 36, 26, 0.1);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .bx-category-chip:hover .bx-category-label {
-    color: var(--accent);
+  .bi-arow:hover .bi-athumb :global(svg) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(24, 36, 26, 0.16);
   }
-  .bx-category-count {
-    font-family: var(--bx-mono);
+  .bi-acat {
+    font-family: var(--font-mono);
     font-size: 10.5px;
-    color: var(--accent);
-    font-weight: 500;
-    padding: 2px 8px;
-    background: var(--lemma-brown-light);
-    border-radius: 999px;
+    letter-spacing: 0.1em;
+    color: var(--ok-ink);
+  }
+  .bi-atitle {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--tx);
+    transition: color 0.15s;
+  }
+  .bi-adate {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ─── CHANGELOG（3カラム行・カバーなし） ─── */
+  .bi-narrow {
+    max-width: 980px;
+  }
+  .bi-crow {
+    display: grid;
+    grid-template-columns: 112px 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .bi-crow:hover .bi-ctitle {
+    color: var(--ok-ink);
+  }
+  .bi-ctitle {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--tx);
+    transition: color 0.15s;
+  }
+
+  /* ─── CATEGORIES ─── */
+  .bi-cats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .bi-cat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 18px 16px;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .bi-cat-card:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .bi-cat-card b {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--tx);
+  }
+  .bi-cat-card span {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
   }
 
   /* ─── FILTERED VIEW ─── */
-  .bx-view-all[hidden],
-  .bx-filtered-section[hidden] {
+  .bi-view-all[hidden],
+  .bi-filtered[hidden],
+  .bi-filtered-row[hidden] {
     display: none;
   }
-  .bx-filtered-card[hidden] {
-    display: none;
-  }
-  .bx-filtered-label::before {
-    background: var(--accent);
-  }
-
-  /* ─── REVEAL (faster than v22 0.6s — feels less laggy on long pages) ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  .reveal.on {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .bx-featured-card.reveal,
-  .bx-card.reveal {
-    transition:
-      opacity 0.35s ease,
-      transform 0.35s ease,
-      border-color 0.2s,
-      background 0.2s,
-      box-shadow 0.2s;
-  }
-  .bx-archive-row.reveal {
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
+  /* フッターの margin-top:80px が下端の余白を持つ。最後のセクションの
+     行リストで途切れないよう最低限だけ足す。 */
+  .bi-view-all > section:last-child,
+  .bi-filtered {
+    padding-bottom: 8px;
   }
 
   /* ─── RESPONSIVE ─── */
-  @media (max-width: 960px) {
-    .bx-h1 {
-      font-size: 52px;
+  @media (max-width: 1020px) {
+    .bi-grid {
+      grid-template-columns: 1fr 1fr;
     }
-    :root[lang="ja"] .bx-h1 {
-      font-size: 42px;
-    }
-    .bx-featured-card {
+    .bi-feat {
       grid-template-columns: 1fr;
+      gap: 20px;
     }
-    .bx-featured-thumb {
-      min-height: 180px;
+    .bi-cats {
+      grid-template-columns: 1fr 1fr;
     }
-    .bx-featured-body {
-      padding: 24px 28px 28px;
-    }
-    .bx-card-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .bx-archive-link {
-      grid-template-columns: 140px 1fr 80px;
-      gap: 14px;
+    .bi-crow {
+      grid-template-columns: 1fr;
+      gap: 5px;
     }
   }
-  @media (max-width: 720px) {
-    .bx-container {
+  @media (max-width: 820px) {
+    .bi-arow {
+      grid-template-columns: 56px 1fr;
+      gap: 14px;
+      row-gap: 4px;
+    }
+    .bi-athumb {
+      grid-row: 1 / span 2;
+    }
+    .bi-athumb :global(svg) {
+      width: 56px;
+    }
+    .bi-acat,
+    .bi-atitle,
+    .bi-adate {
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 640px) {
+    .bi-container {
       padding: 0 24px;
     }
-    .bx-h1 {
-      font-size: 40px;
-    }
-    :root[lang="ja"] .bx-h1 {
-      font-size: 32px;
-    }
-    .bx-hero {
-      padding: 40px 0 32px;
-    }
-    .bx-card-grid {
+    .bi-grid {
       grid-template-columns: 1fr;
     }
-    .bx-archive-link {
-      grid-template-columns: 1fr;
-      gap: 4px;
-      padding: 14px 18px;
-    }
-    .bx-archive-date {
-      text-align: left;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bi-thumb :global(svg),
+    .bi-athumb :global(svg),
+    .bi-cat-card {
+      transition: none;
     }
   }
 </style>
 
 <script is:inline>
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("on");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
-  );
-  document.querySelectorAll(".reveal").forEach(function (el) {
-    io.observe(el);
-  });
-
-  // ─── Category filter ───
+  // ─── Category filter（一覧の面はそのまま、フィルタ時だけ行リストへ） ───
   (function () {
-    var pills = document.querySelectorAll(".bx-pill");
+    var pills = document.querySelectorAll(".bi-pill");
     if (!pills.length) return;
-    var viewAll = document.querySelector(".bx-view-all");
-    var filtered = document.querySelector(".bx-filtered-section");
+    var viewAll = document.querySelector(".bi-view-all");
+    var filtered = document.querySelector(".bi-filtered");
     var label = document.querySelector("[data-filtered-label]");
-    var cards = filtered ? filtered.querySelectorAll(".bx-filtered-card") : [];
+    var count = document.querySelector("[data-filtered-count]");
+    var rows = filtered ? filtered.querySelectorAll(".bi-filtered-row") : [];
 
     function apply(filter) {
       var isAll = !filter || filter.toLowerCase() === "all";
       pills.forEach(function (p) {
         var pf = (p.getAttribute("data-filter") || "").toLowerCase();
-        p.classList.toggle(
-          "is-active",
-          isAll ? pf === "all" : pf === filter.toLowerCase(),
-        );
+        p.classList.toggle("on", isAll ? pf === "all" : pf === filter.toLowerCase());
       });
       if (viewAll) viewAll.hidden = !isAll;
       if (filtered) filtered.hidden = isAll;
-      if (!isAll && label) {
+      if (!isAll) {
         var labelText = filter;
-        cards.forEach(function (c) {
-          // data-category is "Primary|Secondary1|Secondary2" — match if the
-          // filter equals the primary category or any secondary category.
-          var raw = c.getAttribute("data-category") || "";
-          var cats = raw.split("|");
+        var n = 0;
+        rows.forEach(function (r) {
+          // data-category is "Primary|Secondary1|…" — match primary or any
+          // secondary category.
+          var cats = (r.getAttribute("data-category") || "").split("|");
           var match = cats.some(function (cat) {
             return cat.toLowerCase() === filter.toLowerCase();
           });
-          c.hidden = !match;
-          if (match) labelText = cats[0] || filter;
+          r.hidden = !match;
+          if (match) {
+            n++;
+            labelText = cats[0] || filter;
+          }
         });
-        label.textContent = labelText;
+        if (label) label.textContent = labelText;
+        if (count) count.textContent = String(n);
       }
     }
 
@@ -774,9 +735,7 @@ const categoriesLabel = isJa ? "カテゴリ" : "Categories";
     var initial = (location.hash || "").replace(/^#/, "").toLowerCase();
     if (initial) {
       pills.forEach(function (p) {
-        if (
-          (p.getAttribute("data-filter") || "").toLowerCase() === initial
-        ) {
+        if ((p.getAttribute("data-filter") || "").toLowerCase() === initial) {
           apply(p.getAttribute("data-filter"));
         }
       });

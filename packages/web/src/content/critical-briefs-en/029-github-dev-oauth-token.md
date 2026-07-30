@@ -19,13 +19,13 @@ gap_missing: "There was no layer to confirm before execution under whose authori
 gap_fix: "Before a privileged act such as installing an extension, independently verify with Lemma that the act falls within the range of delegated authority, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Ammar Askar published a one-click attack and PoC in github.dev, the browser build of VS Code. Clicking an attacker's link lets a webview script use synthetic key events (not real user actions) to install a malicious extension that steals github.dev's OAuth token. That token was valid for every repo the user can access, not just the open one. What is missing is a layer that verifies, before the action, under whose authorization the install runs and how far the token is delegated. Detection and pre-execution attestation are complements, not substitutes.
+Ammar Askar published a one-click attack and PoC in github.dev, the browser build of VS Code. Clicking an attacker's link lets a webview script use synthetic key events (not real user actions) to install a malicious extension that steals github.dev's OAuth token. That token was valid for every repo the user can access, not just the open one. What is missing is a layer that verifies, before the action, under whose authorization the install runs and how far the token is delegated.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Target**: github.dev — the browser VS Code editor opened by pressing `.` on a github.com repo, or by swapping github.com → github.dev in the URL.
 - **Disclosure**: 2026-06-02, by researcher Ammar Askar via a blog post, a PoC repo, and a GitHub issue (microsoft/vscode #319593).
@@ -36,21 +36,8 @@ Ammar Askar published a one-click attack and PoC in github.dev, the browser buil
 - **A very short entry**: desktop VS Code has a similar issue, but it requires cloning a repo and opening a Notebook. github.dev opens an editor on a single link click, so the attack's entry is extremely short.
 - **Fixes**: Microsoft added a trust prompt for opening browser Notebooks and rejected arbitrary callers of the extension-install command on 6-03, and stopped forwarding some synthetic events from the webview on 6-04. Microsoft stated desktop VS Code is unaffected.
 - **CVE**: unassigned at the time of writing.
-- **Core**: the delegated OAuth token was not scoped to the least range (the open repo), and the privileged act of installing an extension proceeded without independently verifying under whose authorization it ran.
 
----
-
-## 2. Timeline
-
-- 2026-06-02: ~1 hour after notifying GitHub, Ammar Askar did a full disclosure via blog, PoC, and GitHub issue #319593 — bypassing MSRC, citing a past VS Code bug report that was silently fixed without credit.
-- 2026-06-03: Microsoft shipped interim fixes (trust prompt on opening Notebooks, caller checks on the extension-install command). BleepingComputer and others reported; Microsoft issued a statement.
-- 2026-06-04: Microsoft shipped a further fix (stopping some synthetic-event forwarding from the webview).
-
-> Note: proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case is CVE-unassigned and mid-way through staged fixes, so its remediation status may be updated.
-
----
-
-## 3. Attack vector
+The incident came together as the following chain.
 
 1. **Distribute the malicious link**: the attacker prepares a github.dev link to a repo containing a Jupyter Notebook and gets the victim to click it.
 2. **JavaScript runs in the webview**: through Notebook rendering, a script executes inside the webview's isolated surface.
@@ -60,29 +47,15 @@ Ammar Askar published a one-click attack and PoC in github.dev, the browser buil
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This belongs to Pillar 03 (Agent Authority Proof), category `agent-infrastructure`. The central **failure primitive is "the OAuth token delegated to github.dev was not scoped to the least range (the open repo), and the privileged act of installing an extension proceeded without independently verifying on whose authorization it ran."** We mark `identity-auth` as secondary.
+- 2026-06-02: ~1 hour after notifying GitHub, Ammar Askar did a full disclosure via blog, PoC, and GitHub issue #319593 — bypassing MSRC, citing a past VS Code bug report that was silently fixed without credit.
+- 2026-06-03: Microsoft shipped interim fixes (trust prompt on opening Notebooks, caller checks on the extension-install command). BleepingComputer and others reported; Microsoft issued a statement.
+- 2026-06-04: Microsoft shipped a further fix (stopping some synthetic-event forwarding from the webview).
 
-Like Briefs 027 (LibreChat MCP URL) and 003 (Starlette/BadHost), this is an agent-infrastructure trust-boundary problem. 027 was an "exit" where the connection target config referenced the server's privilege context; 003 was an "entry" where Host-header manipulation bypassed auth. This case sits between them — the **scope of a delegated token and the authorization of a privileged action** were missing — and the three share a root: agent infrastructure that acts without independently verifying the range and exercise of a permission. In particular, "had the token been least-scoped to the target, theft would have been limited to that one repo" plainly states the core of the authority-proof category: over-delegation turns a single leak into a total compromise.
+> Note: proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This case is CVE-unassigned and mid-way through staged fixes, so its remediation status may be updated.
 
-Secondarily, this is also an input-integrity problem — **synthetic events crossed a trust boundary**. The webview failed to distinguish "a key the real user pressed" from "a key a script created," exactly where it should have. That belongs to the same family as Brief 018 (the integrity / missing provenance of the CLAUDE.md instructions a defending Claude Code ingests): "the origin of an ingested action or instruction is not verified." Still, this Brief's main axis is the scope and authorization of delegated permissions.
-
----
-
-## 5. The detection–proof gap
-
-The near-coordinated disclosure (advance notice to GitHub) and Microsoft's next-day fix worked well to prevent harm and protect users; this Brief does not dispute that role. Users can also clear github.dev cookies / site data, which re-surfaces a sign-in warning when a malicious link is clicked.
-
-But detection does not change "what range of token github.dev holds, and which actions it can execute without authorization." Use of a stolen OAuth token via the GitHub API is indistinguishable from github.dev's legitimate token use, and the extension install follows the legitimate flow. What was missing is the pre-execution, independent verification of "on whose authorization does this extension install run" and "to what range is this token delegated" — a different track from anomaly detection. For audit, too, after a leak there is little independent trail beyond reconciling API access logs to prove "which private repo, on whose delegation, was accessed when."
-
-Pre-execution attestation embeds a verifiable scope (target repo, valid range) into the delegated token and independently verifies privileged actions like extension installs against "the registrant's authorization" and "the delegated range" before they run. If the proof says "this action exceeds the delegated range" or "this token must not be valid outside this repo," the action is blocked before execution. Detection of privileged actions ("a suspicious extension ran") and pre-execution proof of delegated authority ("is this action within the authorized range") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry context
+The response and industry movement after disclosure:
 
 - **Microsoft / GitHub**: shipped interim fixes in stages (6-03, 6-04) before a CVE assignment — a trust prompt on opening Notebooks, caller checks on the extension-install command, and stopping some synthetic-event forwarding from the webview — touching both the trust boundary and event provenance.
 - **The disclosure-process debate**: the researcher chose full disclosure bypassing MSRC, citing a past VS Code bug that was silently fixed without credit. Around the same time, another researcher (handle Nightmare Eclipse) published several zero-days out of dissatisfaction with MSRC's disclosure handling — making the disclosure and patch cycle for browser/editor platforms an industry talking point.
@@ -90,7 +63,23 @@ For the detection-vs-attestation thesis, see ["The last layer left for cyber def
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the OAuth token delegated to github.dev was not scoped to the least range (the open repo), and the privileged act of installing an extension proceeded without independently verifying on whose authorization it ran."**
+
+Like Briefs 027 (LibreChat MCP URL) and 003 (Starlette/BadHost), this is an agent-infrastructure trust-boundary problem. 027 was an "exit" where the connection target config referenced the server's privilege context; 003 was an "entry" where Host-header manipulation bypassed auth. This case sits between them — the **scope of a delegated token and the authorization of a privileged action** were missing — and the three share a root: agent infrastructure that acts without independently verifying the range and exercise of a permission. In particular, "had the token been least-scoped to the target, theft would have been limited to that one repo" plainly states the core of the authority-proof category: over-delegation turns a single leak into a total compromise.
+
+Secondarily, this is also an input-integrity problem — **synthetic events crossed a trust boundary**. The webview failed to distinguish "a key the real user pressed" from "a key a script created," exactly where it should have. That belongs to the same family as [Brief 018](/critical/briefs/018-hackerbot-claw-ai-vs-ai/) (the integrity / missing provenance of the CLAUDE.md instructions a defending Claude Code ingests): "the origin of an ingested action or instruction is not verified." Still, this Brief's main axis is the scope and authorization of delegated permissions.
+
+The near-coordinated disclosure (advance notice to GitHub) and Microsoft's next-day fix worked well to prevent harm and protect users; this Brief does not dispute that role. Users can also clear github.dev cookies / site data, which re-surfaces a sign-in warning when a malicious link is clicked.
+
+But detection does not change "what range of token github.dev holds, and which actions it can execute without authorization." Use of a stolen OAuth token via the GitHub API is indistinguishable from github.dev's legitimate token use, and the extension install follows the legitimate flow. What was missing is the pre-execution, independent verification of "on whose authorization does this extension install run" and "to what range is this token delegated" — a different track from anomaly detection. For audit, too, after a leak there is little independent trail beyond reconciling API access logs to prove "which private repo, on whose delegation, was accessed when."
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation embeds a verifiable scope (target repo, valid range) into the delegated token and independently verifies privileged actions like extension installs against "the registrant's authorization" and "the delegated range" before they run. If the proof says "this action exceeds the delegated range" or "this token must not be valid outside this repo," the action is blocked before execution. Detection of privileged actions ("a suspicious extension ran") and pre-execution proof of delegated authority ("is this action within the authorized range") are not substitutes but **complements**.
 
 Against the detection–proof gap exposed here (a delegated token not scoped to least privilege, and a privileged action executed without independent authorization), Lemma proposes a design that records delegations and privileged actions against agent infrastructure and verifies, before execution, "who authorized what, within which range" as an independently verifiable proof.
 
@@ -100,11 +89,9 @@ Against the detection–proof gap exposed here (a delegated token not scoped to 
 
 This closes — through least-scope enforcement and pre-execution authorization of privileged actions — the structure in which over-delegation turns a single leak into a total compromise. Detection of privileged actions (detection) and pre-execution proof of delegated authority work as complements.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Ammar Askar**: "1-Click GitHub Token Stealing via a VSCode Bug" (2026-06-02, the researcher's own technical write-up) — http://blog.ammaraskar.com/github-token-stealing/
 - **PoC repository**: ammaraskar/github-dev-token-steal-poc (2026-06-02) — https://github.com/ammaraskar/github-dev-token-steal-poc/
@@ -112,12 +99,4 @@ For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://
 - **BleepingComputer**: "VS Code zero-day lets hackers steal GitHub tokens in one click" (2026-06-03, Microsoft statement and fix history) — https://www.bleepingcomputer.com/news/security/vs-code-zero-day-lets-hackers-steal-github-tokens-in-one-click/
 - **The Hacker News**: "One-Click GitHub Dev Attack Lets Attackers Steal Full GitHub OAuth Tokens" (2026-06) — https://thehackernews.com/2026/06/one-click-github-dev-attack-lets.html
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

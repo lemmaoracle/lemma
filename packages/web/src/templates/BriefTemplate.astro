@@ -3,37 +3,37 @@
  * Lemma Critical Brief page template — used by both
  * /critical/briefs/[slug].astro (EN) and /ja/critical/briefs/[slug].astro (JA).
  *
- * Phase 1 detail redesign (mockup: Lemma_brief_detail_phase1):
- *   - Clickable hero tags (Pillar → Pillar page, categories → index ?category=)
- *   - 4-col key-facts card (BriefMetaStrip, inside BriefHero)
- *   - 2-col layout: reading column + sticky TOC sidebar w/ scrollspy
- *   - Section H2 anchor links (hover ⌗, click-to-copy URL)
- *   - Inline CTA injected after §4
- *   - Pillar-aware end CTA (BriefNextSteps, JA) — retained
- *   - Prev / Next Brief navigation (by brief_no)
- *   - Related Briefs: 6 cards, auto-derived (same category → pillar → latest),
- *     index card design
- *   - Newsletter mini banner
- *   - Citation tabs + copy (CiteBriefBox) — retained
+ * モック `lemma_brief_article_mock_v5.html` の面
+ * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §5）。
  *
- * The markdown body stays the single source of truth; §N badges are injected
- * by the `rehype-brief-section-number` plugin and styled via `.brief-body`.
- * The sticky TOC, anchors, and inline-CTA placement are progressive
- * enhancement (inline <script> at the bottom).
+ * 本文（minmax(0,1fr)）＋右レール 268px の2カラム。右レールは3段:
+ *   1. 白カード — 読了プログレス＋Contents（scrollspy）
+ *   2. スレート小箱 — 「この Brief の核心」（frontmatter の gap_* 3文。
+ *      旧 BriefGapModule が本文中で担っていた役割の常設化）
+ *   3. 白＋ライム縁 — 脅威タイプ別バナー（primary_category で文言を
+ *      出し分け。config/briefThreatBanner.ts）
+ *
+ * 末尾CTAは**証明の訴求**に一本化（「確かめられないものを、業務に入れない。」
+ * ＋エンタープライズ相談／検証センター／Critical Weekly）。なりすまし等の
+ * 脅威別訴求は右レールのバナーだけが持つ（§5.5）。旧 BriefAttackCta の
+ * バナー／オープンループ／テールと BriefGapModule の本文挿入はここで退役。
+ *
+ * 章立ては §5.4 の6章（1. TL;DR〜6. Sources）へ移行中（2026-07-30 可否確定・
+ * パイロットから順次）。目次は記事の h2 から動的に生成するので、9章の旧本文
+ * も6章の新本文も同じテンプレートを通る。markdown 本文が single source of
+ * truth である点は変わらない（番号の剥がしは rehype-brief-section-number）。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Navigation from "../components/Navigation.astro";
-import Footer from "../components/Footer.astro";
+import Footer from "../components/FooterRenewal.astro";
 import CiteBriefBox from "../components/CiteBriefBox.astro";
-import BriefHero from "../components/BriefHero.astro";
 import BriefRevisionNote from "../components/BriefRevisionNote.astro";
-import BriefAttackCta from "../components/BriefAttackCta.astro";
-import BriefGapModule from "../components/BriefGapModule.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import { getEnBriefMap } from "../data/getEnBriefMap";
-import { extractTldr } from "../data/extractTldr";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+import { threatBannerCopy } from "../config/briefThreatBanner";
 import {
   categoryLabel,
   type CategorySlug,
@@ -69,8 +69,8 @@ const ogImage = `https://lemma.frame00.com/og/critical-briefs/${locale}/${brief.
 
 const { Content, headings } = await render(brief);
 
-// First-screen gap module (Brief restructure 2026-06): renders only when all
-// three sentences are authored; briefs without them are unchanged.
+// 右レール2段目「この Brief の核心」— frontmatter の3文が揃うときだけ出す
+// （旧 BriefGapModule と同じ条件。無い Brief はレールが2段になるだけ）。
 const gap =
   brief.data.gap_detected && brief.data.gap_missing && brief.data.gap_fix
     ? {
@@ -106,12 +106,6 @@ const PILLAR_PAGE_SLUG: Record<PillarSlug, string> = {
   "03-agent-authority": "agent-authority-proof",
   "04-regulatory-attribute": "regulatory-attribute-proof",
 };
-const PILLAR_SHORT: Record<PillarSlug, string> = {
-  "01-verifiable-origin": "P1",
-  "02-verifiable-ai": "P2",
-  "03-agent-authority": "P3",
-  "04-regulatory-attribute": "P4",
-};
 
 const pillar = brief.data.pillar as PillarSlug;
 const pillarLabel = PILLAR_LABELS[pillar][isJa ? "ja" : "en"];
@@ -142,7 +136,7 @@ const relatedSet = new Map<string, AnyBrief>();
 const addCandidates = (pool: ReadonlyArray<AnyBrief>) => {
   for (const b of pool) {
     if (b.id === brief.id || relatedSet.has(b.id)) continue;
-    if (relatedSet.size >= 6) break;
+    if (relatedSet.size >= 3) break;
     relatedSet.set(b.id, b);
   }
 };
@@ -151,29 +145,20 @@ addCandidates(byNewest.filter((b) => b.data.pillar === pillar));
 addCandidates(byNewest);
 const relatedBriefs = Array.from(relatedSet.values()).slice(0, 3);
 
-// Count of Briefs in the primary category (for the "see all N" link).
-const primaryCategoryCount = allLocale.filter(
-  (b) =>
-    b.data.primary_category === primarySlug ||
-    (b.data.secondary_categories as string[]).includes(primarySlug),
-).length;
 const primaryCatLabel = categoryLabel(primarySlug, locale);
+const secondaryCats = (brief.data.secondary_categories as CategorySlug[]).map(
+  (c) => ({ slug: c, label: categoryLabel(c, locale) }),
+);
+const categoryHref = (slug: string) =>
+  `${base}/critical/briefs/?category=${slug}`;
 
 function relatedCardData(b: AnyBrief) {
   const titleLoc = isJa ? b.data.title : b.data.title_en;
-  const parts = titleLoc.split(" — ");
-  const main = parts[0];
-  const sub = parts.length > 1 ? parts.slice(1).join(" — ") : extractTldr(b.body, 120);
   return {
     href: `${base}/critical/briefs/${b.id}/`,
     no: String(b.data.brief_no).padStart(3, "0"),
-    date: b.data.published.toISOString().slice(0, 10),
-    title: main,
-    sub,
-    primaryLabel: categoryLabel(b.data.primary_category as CategorySlug, locale),
-    secondaryLabels: (b.data.secondary_categories as CategorySlug[]).map((c) =>
-      categoryLabel(c, locale),
-    ),
+    title: titleLoc.split(" — ")[0],
+    catLabel: categoryLabel(b.data.primary_category as CategorySlug, locale),
   };
 }
 
@@ -182,24 +167,47 @@ function pnCardData(b: AnyBrief) {
   return {
     href: `${base}/critical/briefs/${b.id}/`,
     no: String(b.data.brief_no).padStart(3, "0"),
-    pillarShort: PILLAR_SHORT[b.data.pillar as PillarSlug],
+    date: b.data.published.toISOString().slice(0, 10).replace(/-/g, "."),
     title: titleLoc.split(" — ")[0],
   };
 }
 const prevData = prevBrief ? pnCardData(prevBrief) : null;
 const nextData = nextBrief ? pnCardData(nextBrief) : null;
 
-// TOC: TL;DR + numbered §1..§8 (drop §9 distribution + brief* helper anchors).
-const tldrHeading = headings.find((h) => h.depth === 2 && h.slug === "tldr");
+// TOC: 記事の h2 から動的に生成し、TL;DR を含めて §1 から通しで振る
+// （モック v5 の面。6章化後の md は「1. TL;DR」〜「6. Sources」なので md の
+// 番号と一致する。9章の旧本文では md 内部の番号と 1 ずれるが、番号は本文に
+// 表示していないので目次内で自己完結する）。配布定型文（旧 §9）と brief*
+// 補助アンカーは出さない。
 const tocSections = headings
   .filter((h) => h.depth === 2)
-  .filter((h) => h.slug !== "tldr")
-  .filter((h) => !/^brief/i.test(h.slug))
-  .filter((h) => h.slug !== "about-distribution")
+  .filter((h) => !/^brief/i.test(h.slug) || h.slug === "tldr")
+  .filter((h) => !/配布について|distribution/i.test(h.text))
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
+
+// 核心パネルの「§N … →」— 落差を扱う章へ（9章=検出と証明の落差／
+// 6章=なぜ止まらなかったか。無ければ出さない）。
+const gapSection = tocSections.find((s) =>
+  /落差|なぜ止まらなかった|detection|gap|why it wasn/i.test(s.text),
+);
+
+// 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
+// 短い注記を描画する（6章化で md から定型文を落とすため。移行中の旧本文
+// と二重にならないように本文側を検出してゲート）。
+const bodyHasDistribution = /配布について|About (this )?(Brief'?s? )?distribution/i.test(
+  brief.body ?? "",
+);
 
 const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
 const publishedStr = brief.data.published.toISOString().slice(0, 10);
+
+const PACK_LABELS: Record<string, string> = {
+  "A-incident-response": "Pack A · Incident Response",
+  "B-regulatory": "Pack B · Regulatory",
+  "C-agent-governance": "Pack C · Agent Governance",
+};
+const firstPack = (brief.data.related_pack as string[])[0];
+const packLabel = firstPack ? (PACK_LABELS[firstPack] ?? firstPack) : null;
 
 const ogLead = (isJa ? brief.data.og_lead_ja : brief.data.og_lead_en) ?? mainTitle;
 const seriesSep = isJa ? "｜" : " | ";
@@ -213,90 +221,81 @@ const seoTitle = isJa
   ? `${mainTitle}｜Lemma Critical Brief No.${briefNoPad}`
   : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
 
+// 章数はうたわない（9章→6章の移行中で、どちらの本文も通る）。
 const metaDescription = isJa
-  ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
+  ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
+
+const banner = threatBannerCopy(primarySlug, locale);
+const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
+const bannerDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
+const NEWSLETTER_URL: Record<Locale, string> = {
+  ja: "https://tally.so/r/EkMj82",
+  en: "https://tally.so/r/rjvN2X",
+};
 
 const labels = isJa
   ? {
-      briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
       incidentDate: "事案日",
       published: "公開日",
       authors: "発行",
       pack: "関連 Pack",
       tocLabel: "Contents",
-      tldr: "TL;DR",
-      relatedHeading: "関連 Brief",
-      relatedMore: `${primaryCatLabel}の全 ${primaryCategoryCount} 件を見る`,
+      progress: "読了",
+      coreLabel: "この Brief の核心",
+      bannerLabel: "この脅威タイプへの対策",
+      bannerBtn: "デモをリクエスト",
+      relatedHeading: "関連する Brief",
+      relatedHeadingEn: "Related",
       revisionHeading: "改訂履歴",
       home: "ホーム",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
-      prevDir: "← 前の Brief",
-      nextDir: "次の Brief →",
+      prevDir: "← PREVIOUS",
+      nextDir: "NEXT →",
       copyToast: "URL をコピーしました",
-      anchorAria: "このセクションへのリンクをコピー",
+      ctaKicker: "Lemma",
+      ctaHead1: "確かめられないものを、",
+      ctaHead2: "業務に入れない。",
+      ctaBody:
+        "Lemma は、データや AI の実行に暗号技術で証明を付け、受け取った側が発行者に問い合わせることなく真正性を確認できるようにします。検出はそのままに、その前段へ一層を足す構成です。",
+      ctaMain: "エンタープライズ相談",
+      ctaVerify: "検証センターを見る",
+      ctaSub: "Critical Weekly を購読する →",
     }
   : {
-      briefId: `Lemma Critical Brief · No. ${briefNoPad}`,
       incidentDate: "Incident date",
       published: "Published",
       authors: "Authors",
       pack: "Related Pack",
       tocLabel: "Contents",
-      tldr: "TL;DR",
+      progress: "Read",
+      coreLabel: "The core of this Brief",
+      bannerLabel: "Against this threat type",
+      bannerBtn: "Request a demo",
       relatedHeading: "Related Briefs",
-      relatedMore: `See all ${primaryCategoryCount} in ${primaryCatLabel}`,
+      relatedHeadingEn: "Related",
       revisionHeading: "Revision History",
       home: "Home",
       breadcrumbBriefs: "Critical Brief",
       briefNoPrefix: "No.",
-      prevDir: "← Previous Brief",
-      nextDir: "Next Brief →",
+      prevDir: "← PREVIOUS",
+      nextDir: "NEXT →",
       copyToast: "Link copied",
-      anchorAria: "Copy link to this section",
+      ctaKicker: "Lemma",
+      ctaHead1: "If it can't be verified,",
+      ctaHead2: "it doesn't enter your operation.",
+      ctaBody:
+        "Lemma attaches cryptographic proofs to data and AI execution, so the receiving side can confirm authenticity without asking the issuer. Detection stays; a proof layer is added in front of it.",
+      ctaMain: "Talk to enterprise",
+      ctaVerify: "See the verification center",
+      ctaSub: "Subscribe to Critical Weekly →",
     };
 
-// ── 回遊・転換レール／モバイルバー（JA のみ・spec: brief_engagement_rail）──
-const railCats = Array.from(
-  new Set<CategorySlug>([
-    brief.data.primary_category as CategorySlug,
-    ...(brief.data.secondary_categories as CategorySlug[]),
-  ]),
-).slice(0, 4);
-const railChips = railCats.map((slug) => ({
-  label: categoryLabel(slug, locale),
-  href: `${base}/critical/briefs/?category=${slug}`,
-}));
-const lpBase = `${base}/compare/ai-models-attack-resistance/`;
-const briefsIndexHref = `${base}/critical/briefs/`;
-const utmTerm = isJa ? "ja" : "en";
-const demoFormId = isJa ? "EkBqDX" : "Pd2Rl5"; // Discovery Call form (JA / EN)
-const railLpHref = `${lpBase}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
-const railDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_rail&utm_medium=cta&utm_campaign=brief_to_demo`;
-const barLpHref = `${lpBase}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_lp&utm_term=${utmTerm}`;
-const barDemoHref = `https://tally.so/r/${demoFormId}?utm_source=brief_bar&utm_medium=cta&utm_campaign=brief_to_demo`;
-const railCopy = isJa
-  ? {
-      progress: "読了",
-      explore: "カテゴリで探す",
-      index: "Brief 一覧を見る",
-      lp: "AI攻撃実験を見る",
-      demo: "30分デモを予約",
-      barIndex: "一覧",
-      barLp: "攻撃実験",
-      barDemo: "デモ予約",
-    }
-  : {
-      progress: "Read",
-      explore: "Explore by category",
-      index: "See all Briefs",
-      lp: "See the AI attack test",
-      demo: "Book a 30-min demo",
-      barIndex: "All",
-      barLp: "Attack test",
-      barDemo: "Demo",
-    };
+// 核心パネル（レール2段目）の行ラベル。
+const gapRowLabels = isJa
+  ? { detected: "検出は効いた", missing: "証明が無かった", fix: "Lemma で変わる" }
+  : { detected: "Detection worked", missing: "No proof existed", fix: "What Lemma changes" };
 ---
 
 <Layout
@@ -312,245 +311,229 @@ const railCopy = isJa
 
   <main class="brief-page">
     <div class="bd-shell">
-      <div class="brief-breadcrumb">
-        <a href={base || "/"}>{labels.home}</a>
-        <span class="brief-breadcrumb-sep">/</span>
-        <a href={`${base}/critical/briefs/`}>{labels.breadcrumbBriefs}</a>
-        <span class="brief-breadcrumb-sep">/</span>
-        <span>{labels.briefNoPrefix} {briefNoPad}</span>
-      </div>
-
-      <BriefHero
-        locale={locale}
-        brief={brief}
-        labels={labels}
-        mainTitle={mainTitle}
-        subtitle={subtitle}
-        pillarLabel={pillarLabel}
-        pillarHref={pillarHref}
-        base={base}
-        incidentDateStr={incidentDateStr}
-        publishedStr={publishedStr}
-      />
-
-      <div class="bd-layout">
-        <div class="bd-content">
-          {/* 第1スクリーン改修 §1: theme banner above the TL;DR (top of body). */}
-          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="banner" />
-
-          <article class="brief-body">
-            <Content />
-          </article>
-
-          {/* 第1スクリーン改修 §3/§4: gap module + open-loop CTA — rendered here,
-              JS-moved to just after the TL;DR by the inline script below. The
-              gap module renders only when its frontmatter fields are authored. */}
-          {gap && (
-            <div data-firstscreen>
-              <BriefGapModule
-                locale={locale}
-                detected={gap.detected}
-                missing={gap.missing}
-                fix={gap.fix}
-              />
-              <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="loop" />
-            </div>
-          )}
-
-          {/* §2 tail CTA — article-end, single path to the LP. */}
-          <BriefAttackCta locale={locale} base={base} slug={brief.id} placement="tail" />
+      <div class="bd-main">
+        <div class="brief-breadcrumb">
+          <a href={base || "/"}>{labels.home}</a>
+          <span class="brief-breadcrumb-sep">/</span>
+          <a href={`${base}/critical/briefs/`}>{labels.breadcrumbBriefs}</a>
+          <span class="brief-breadcrumb-sep">/</span>
+          <span>{labels.briefNoPrefix} {briefNoPad}</span>
         </div>
 
-        <aside class="bd-toc" aria-label={labels.tocLabel}>
-          <div class="bd-toc__inner">
-            <div class="bd-rail__progress">
-              <div class="bd-rail__progress-top">
-                <span class="bd-rail__progress-label">{railCopy.progress}</span>
-                <span class="bd-rail__pct"><span data-rail-pct>0</span>%</span>
-              </div>
-              <div class="bd-rail__track"><div class="bd-rail__bar" data-rail-bar></div></div>
-            </div>
-            <div class="bd-toc__label">{labels.tocLabel}</div>
-            <ul class="bd-toc__list">
-              {tldrHeading && (
-                <li>
-                  <a href="#tldr" data-toc-link>
-                    <span class="bd-toc__num">—</span>{labels.tldr}
-                  </a>
-                </li>
-              )}
-              {tocSections.map((s) => (
-                <li>
-                  <a href={`#${s.slug}`} data-toc-link>
-                    <span class="bd-toc__num">§{s.num}</span>{s.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <div class="bd-rail__block">
-              <div class="bd-rail__h">{railCopy.explore}</div>
-              <div class="bd-rail__chips">
-                {railChips.map((c) => (
-                  <a class="bd-rail__chip" href={c.href}>{c.label}</a>
-                ))}
-              </div>
-              <a class="bd-rail__index" href={briefsIndexHref}>{railCopy.index} →</a>
-            </div>
-            <div class="bd-rail__block bd-rail__convert">
-              <a
-                class="bd-rail__cta bd-rail__cta--solid"
-                href={railLpHref}
-                data-brief-cta-ev="brief_rail_lp"
-                data-cta="rail_lp"
-              >{railCopy.lp}</a>
-              <a
-                class="bd-rail__cta bd-rail__cta--outline"
-                href={railDemoHref}
-                data-brief-cta-ev="brief_rail_demo"
-                data-cta="rail_demo"
-              >{railCopy.demo}</a>
-            </div>
+        <header class="bd-head">
+          <div class="bd-meta">
+            <span class="bd-no">No. {briefNoPad}</span>
+            <a class="bd-pillar" href={pillarHref}>{pillarLabel}</a>
           </div>
-        </aside>
-      </div>
+          <h1 class="bd-h1">{mainTitle}</h1>
+          {subtitle && <p class="bd-sub">{subtitle}</p>}
+          <div class="bd-tags">
+            <a href={categoryHref(primarySlug)}>{primaryCatLabel}</a>
+            {secondaryCats.map((c) => (
+              <a href={categoryHref(c.slug)}>{c.label}</a>
+            ))}
+          </div>
+          {/* メタ4項目は flex の1行並び。上下の罫線のみで縦罫は使わない（§5.2）。 */}
+          <div class="bd-facts">
+            <div>
+              <div class="k">{labels.incidentDate}</div>
+              <div class="v">{incidentDateStr}</div>
+            </div>
+            <div>
+              <div class="k">{labels.published}</div>
+              <div class="v">{publishedStr}</div>
+            </div>
+            <div>
+              <div class="k">{labels.authors}</div>
+              <div class="v">{brief.data.authors.join(", ")}</div>
+            </div>
+            {packLabel && (
+              <div>
+                <div class="k">{labels.pack}</div>
+                <div class="v">{packLabel}</div>
+              </div>
+            )}
+          </div>
+        </header>
 
-      {(prevData || nextData) && (
-        <nav class="bd-prevnext" aria-label="Prev / Next Brief">
-          {prevData ? (
-            <a href={prevData.href} class="bd-pn prev">
-              <span class="bd-pn__dir">{labels.prevDir}</span>
-              <span class="bd-pn__meta">No. {prevData.no} · Pillar {prevData.pillarShort.slice(1)}</span>
-              <span class="bd-pn__title">{prevData.title}</span>
-            </a>
-          ) : (
-            <span class="bd-pn bd-pn--empty"></span>
-          )}
-          {nextData ? (
-            <a href={nextData.href} class="bd-pn next">
-              <span class="bd-pn__dir">{labels.nextDir}</span>
-              <span class="bd-pn__meta">No. {nextData.no} · Pillar {nextData.pillarShort.slice(1)}</span>
-              <span class="bd-pn__title">{nextData.title}</span>
-            </a>
-          ) : (
-            <span class="bd-pn bd-pn--empty"></span>
-          )}
-        </nav>
-      )}
+        <article class="brief-body">
+          <Content />
+        </article>
 
-      {relatedBriefs.length > 0 && (
-        <section class="bd-related">
-          <div class="bd-related__head">
-            <div class="bd-related__tag">{labels.relatedHeading}</div>
+        {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
+            無いので、ここで一律に描画する（文言の個体差が要る Brief —
+            係争中注記など — は md 側に残す前提で、本文にあれば出さない）。
+            © はフッターが持つので繰り返さない。 */}
+        {!bodyHasDistribution && (
+          <p class="bd-distribution">
+            {isJa
+              ? "本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。"
+              : "This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization."}
+          </p>
+        )}
+
+        {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
+        <CiteBriefBox
+          locale={locale}
+          briefNo={briefNoPad}
+          titleForCitation={localizedTitle}
+          year={brief.data.published.getFullYear()}
+          briefUrl={briefUrl}
+          briefSlug={brief.id}
+        />
+
+        {relatedBriefs.length > 0 && (
+          <section class="bd-related">
+            <div class="bd-label">
+              <b>{labels.relatedHeading}</b><span>{labels.relatedHeadingEn}</span>
+            </div>
+            <div class="bd-rcards">
+              {relatedBriefs.map((b) => {
+                const c = relatedCardData(b);
+                return (
+                  <a class="bd-rcard" href={c.href}>
+                    <span class="n">No. {c.no}</span>
+                    <span class="t">{c.title}</span>
+                    <span class="g">{c.catLabel}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {(prevData || nextData) && (
+          <nav class="bd-prevnext" aria-label="Prev / Next Brief">
+            {prevData ? (
+              <a href={prevData.href} class="bd-pn prev">
+                <span class="dir">{labels.prevDir}</span>
+                <span class="t">No. {prevData.no} — {prevData.title}</span>
+                <span class="d">{prevData.date}</span>
+              </a>
+            ) : (
+              <span class="bd-pn bd-pn--empty"></span>
+            )}
+            {nextData ? (
+              <a href={nextData.href} class="bd-pn next">
+                <span class="dir">{labels.nextDir}</span>
+                <span class="t">No. {nextData.no} — {nextData.title}</span>
+                <span class="d">{nextData.date}</span>
+              </a>
+            ) : (
+              <span class="bd-pn bd-pn--empty"></span>
+            )}
+          </nav>
+        )}
+
+        {showRevisionHistory && (
+          <BriefRevisionNote
+            locale={locale}
+            heading={labels.revisionHeading}
+            version={brief.data.version}
+          />
+        )}
+
+        {/* 末尾CTA（スレート）— 証明の訴求。脅威別訴求は右レールのバナーが
+            担当し、ここには置かない（§5.5）。 */}
+        <section class="bd-cta">
+          <div class="k">{labels.ctaKicker}</div>
+          <h2>{labels.ctaHead1}<br />{labels.ctaHead2}</h2>
+          <p>{labels.ctaBody}</p>
+          <div class="row">
             <a
-              class="bd-related__more"
-              href={`${base}/critical/briefs/?category=${primarySlug}`}
-            >{labels.relatedMore}</a>
-          </div>
-          <div class="bd-related__grid">
-            {relatedBriefs.map((b) => {
-              const c = relatedCardData(b);
-              return (
-                <a href={c.href} class="bd-rcard">
-                  <div class="bd-rcard__meta">
-                    <span class="bd-rcard__no">No. {c.no}</span>
-                    <span class="bd-rcard__sep">·</span>
-                    <span>{c.date}</span>
-                  </div>
-                  <h3 class="bd-rcard__title">{c.title}</h3>
-                  {c.sub && <p class="bd-rcard__sub">{c.sub}</p>}
-                  <div class="bd-rcard__foot">
-                    <div class="bd-rcard__tags">
-                      <span class="bd-rcard__tag">{c.primaryLabel}</span>
-                      {c.secondaryLabels.slice(0, 2).map((lab) => (
-                        <span class="bd-rcard__tag">{lab}</span>
-                      ))}
-                    </div>
-                    <span class="bd-rcard__read">Brief →</span>
-                  </div>
-                </a>
-              );
-            })}
+              class="btn primary"
+              href={DISCOVERY_CALL_URL[locale]}
+              target="_blank"
+              rel="noopener"
+              data-brief-cta-ev="brief_detail_call_click"
+              data-cta="cta_tail"
+            >{labels.ctaMain}</a>
+            <a class="btn ghost" href={`${base}/verify/`}>{labels.ctaVerify}</a>
+            <a
+              class="ctasub"
+              href={NEWSLETTER_URL[locale]}
+              target="_blank"
+              rel="noopener"
+            >{labels.ctaSub}</a>
           </div>
         </section>
-      )}
+      </div>
 
-      {/* 導線 v2 §7: newsletter consolidated to the footer. Cite kept expanded. */}
-      <CiteBriefBox
-        locale={locale}
-        briefNo={briefNoPad}
-        titleForCitation={localizedTitle}
-        year={brief.data.published.getFullYear()}
-        briefUrl={briefUrl}
-        briefSlug={brief.id}
-      />
+      <aside class="bd-rail" aria-label={labels.tocLabel}>
+        {/* 1段目: 白カード — 読了プログレス＋Contents。 */}
+        <div class="bd-railbox">
+          <div class="bd-prog">
+            <span>{labels.progress}</span>
+            <span class="bar"><i data-rail-bar></i></span>
+            <span><span data-rail-pct>0</span>%</span>
+          </div>
+          <div class="bd-railh">{labels.tocLabel}</div>
+          <ul class="bd-toc">
+            {tocSections.map((s) => (
+              <li>
+                <a href={`#${s.slug}`} data-toc-link>
+                  <i>§{s.num}</i><span>{s.text}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      {showRevisionHistory && (
-        <BriefRevisionNote
-          locale={locale}
-          heading={labels.revisionHeading}
-          version={brief.data.version}
-        />
-      )}
+        {/* 2段目: スレート小箱 — この Brief の核心。 */}
+        {gap && (
+          <div class="bd-railgap">
+            <div class="rg-h">{labels.coreLabel}</div>
+            <div class="rg-row">
+              <span class="mk ok">✓</span>
+              <div><b>{gapRowLabels.detected}</b><span>{gap.detected}</span></div>
+            </div>
+            <div class="rg-row">
+              <span class="mk ng">✕</span>
+              <div><b>{gapRowLabels.missing}</b><span>{gap.missing}</span></div>
+            </div>
+            <div class="rg-row">
+              <span class="mk ar">→</span>
+              <div><b>{gapRowLabels.fix}</b><span>{gap.fix}</span></div>
+            </div>
+            {gapSection && (
+              <a class="rg-more" href={`#${gapSection.slug}`}>
+                §{gapSection.num} {gapSection.text} →
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* 3段目: 白＋ライム縁 — 脅威タイプ別バナー。 */}
+        <div class="bd-railad" data-catkey={primarySlug}>
+          <div class="ra-k">{labels.bannerLabel}</div>
+          <div class="ra-t">{banner.head}</div>
+          <p>{banner.desc}</p>
+          <a
+            class="ra-btn"
+            href={bannerDemoHref}
+            target="_blank"
+            rel="noopener"
+            data-brief-cta-ev="brief_rail_demo"
+            data-cta="rail_demo"
+          >{labels.bannerBtn}</a>
+        </div>
+      </aside>
     </div>
 
     <div class="bd-toast" data-toast hidden>{labels.copyToast}</div>
-
-    <nav class="bd-mbar" aria-label="Brief navigation">
-        <div class="bd-mbar__progress" data-bar-bar></div>
-        <a class="bd-mbar__btn bd-mbar__btn--ghost" href={briefsIndexHref}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-          <span>{railCopy.barIndex}</span>
-        </a>
-        <a
-          class="bd-mbar__btn bd-mbar__btn--outline"
-          href={barLpHref}
-          data-brief-cta-ev="brief_bar_lp"
-          data-cta="bar_lp"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
-          <span>{railCopy.barLp}</span>
-        </a>
-        <a
-          class="bd-mbar__btn bd-mbar__btn--solid"
-          href={barDemoHref}
-          data-brief-cta-ev="brief_bar_demo"
-          data-cta="bar_demo"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <span>{railCopy.barDemo}</span>
-        </a>
-    </nav>
   </main>
 
   <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
 </Layout>
 
-<script is:inline>
-  (function () {
-    var body = document.querySelector('.brief-body');
-    if (!body) return;
-
-    // Move the first-screen block (gap module + open-loop CTA) to just after
-    // the TL;DR para. The theme banner now renders statically above the TL;DR.
-    var firstH2 = body.querySelector(':scope > h2');
-    var tldrP = null;
-    if (firstH2) {
-      tldrP = firstH2.nextElementSibling;
-      while (tldrP && tldrP.nodeName !== 'P') tldrP = tldrP.nextElementSibling;
-    }
-    var fs = document.querySelector('[data-firstscreen]');
-    if (fs && tldrP) tldrP.parentNode.insertBefore(fs, tldrP.nextSibling);
-  })();
-</script>
-
-<!-- 回遊・転換レール／バー: 読了プログレス（本文領域基準）. -->
+<!-- 読了プログレス（本文領域基準）。 -->
 <script is:inline>
   (function () {
     function compute() {
       var art = document.querySelector(".brief-body");
       if (!art) return;
-      var bars = document.querySelectorAll("[data-rail-bar],[data-bar-bar]");
-      if (!bars.length) return;
+      var bar = document.querySelector("[data-rail-bar]");
+      if (!bar) return;
       var y = window.scrollY || document.documentElement.scrollTop;
       var top = art.getBoundingClientRect().top + y;
       var denom = art.offsetHeight - window.innerHeight;
@@ -559,7 +542,7 @@ const railCopy = isJa
       var n = Math.round(p * 100);
       var pctEl = document.querySelector("[data-rail-pct]");
       if (pctEl) pctEl.textContent = n;
-      for (var i = 0; i < bars.length; i++) bars[i].style.width = n + "%";
+      bar.style.width = n + "%";
     }
     var ticking = false;
     function onScroll() {
@@ -574,7 +557,7 @@ const railCopy = isJa
   })();
 </script>
 
-<!-- 導線 v1: forward Brief→LP/Call CTA clicks to GA4 (surface=brief_detail). -->
+<!-- CTA クリックを GA4 へ（surface=brief_detail）。 -->
 <script is:inline>
   (function () {
     function wire() {
@@ -678,396 +661,258 @@ const railCopy = isJa
 </script>
 
 <style>
-  /* v24 typography palette — scoped to Brief detail pages. */
+  /* トークンの値は記事テンプレート（BlogArticleTemplate）と同じもの。 */
   .brief-page {
-    --brief-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
-    --brief-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --brief-display: "Sora", system-ui, sans-serif;
-    --brief-text-1: #1a1a1a;
-    --brief-text-2: #3a3a3a;
-    --brief-text-3: #5a5a5a;
-    --brief-text-4: #9a9a9a;
-    --bd-brown-soft: #f4e8dc;
-    --bd-brown-dark: #6b2f0a;
-    --bd-brown-mid: #c18b5c;
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
 
-    background: var(--lemma-cream);
-    color: var(--brief-text-2);
-    font-family: var(--brief-body);
-    font-weight: 400;
-    line-height: 1.75;
-    padding: 0 0 96px;
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    padding: 0;
     margin-top: 64px;
   }
-  :root[lang="en"] .brief-page {
-    --brief-body: "Sora", system-ui, sans-serif;
-  }
 
+  /* ─── 2カラム: 本文＋右レール 268px（§5.1） ─── */
   .bd-shell {
-    max-width: 1120px;
+    max-width: calc(1180px + 12vw);
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 6vw;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 268px;
+    gap: 56px;
+    align-items: start;
+  }
+  .bd-main {
+    min-width: 0;
   }
 
   /* ─── BREADCRUMB ─── */
   .brief-breadcrumb {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--brief-text-4);
-    padding: 36px 0 0;
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 34px 0 0;
+    font-size: 12px;
+    color: var(--muted);
   }
   .brief-breadcrumb a {
-    color: var(--brief-text-3);
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .brief-breadcrumb a:hover {
+    color: var(--tx);
+    border-color: var(--line);
+  }
+  .brief-breadcrumb-sep {
+    opacity: 0.5;
+  }
+
+  /* ─── HERO（§5.2） ─── */
+  .bd-head {
+    padding: 34px 0 0;
+  }
+  .bd-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .bd-no {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ok-ink);
+    border: 1px solid rgba(124, 175, 0, 0.45);
+    background: rgba(168, 224, 16, 0.09);
+    border-radius: 5px;
+    padding: 4px 10px;
+  }
+  .bd-pillar {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
     text-decoration: none;
     transition: color 0.15s;
   }
-  .brief-breadcrumb a:hover {
-    color: var(--accent);
+  .bd-pillar:hover {
+    color: var(--ok-ink);
   }
-  .brief-breadcrumb-sep {
-    color: var(--lemma-line);
-    margin: 0 8px;
+  .bd-h1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(24px, 3.1vw, 34px);
+    line-height: 1.55;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 0 0 14px;
   }
-
-  /* ─── 2-COL LAYOUT ─── */
-  .bd-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 64px;
-    align-items: start;
-    margin-top: 8px;
+  .bd-sub {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+    margin: 0 0 24px;
+    padding-left: 20px;
+    border-left: 2px solid var(--ok);
   }
-  .bd-content {
-    min-width: 0;
-    max-width: 820px;
-  }
-
-  /* ─── STICKY TOC SIDEBAR ─── */
-  .bd-toc {
-    position: sticky;
-    top: 96px;
-    align-self: start;
-  }
-  .bd-toc__label {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    color: var(--accent);
-    letter-spacing: 0.14em;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin: 0 0 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--lemma-line);
-  }
-  .bd-toc__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .bd-toc__list a {
+  .bd-tags {
     display: flex;
     gap: 8px;
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-family: var(--brief-mono);
-    font-size: 12px;
-    color: var(--brief-text-3);
-    font-weight: 700;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .bd-tags a {
+    font-size: 11.5px;
+    color: var(--tx-soft);
+    background: var(--lite-2);
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 5px 12px;
     text-decoration: none;
-    letter-spacing: 0.02em;
-    line-height: 1.4;
-    transition: background 0.15s, color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
   }
-  .bd-toc__list a:hover {
-    background: var(--bd-brown-soft);
-    color: var(--accent);
+  .bd-tags a:hover {
+    color: var(--ok-ink);
+    border-color: rgba(124, 175, 0, 0.45);
   }
-  .bd-toc__list a.is-active {
-    background: var(--accent);
-    color: var(--lemma-cream);
-  }
-  .bd-toc__num {
-    opacity: 0.7;
-    font-size: 10px;
-    flex-shrink: 0;
-    font-weight: 400;
-  }
-
-  /* ─── ENGAGEMENT RAIL (JA): progress + explore + convert ─── */
-  .bd-rail__progress {
-    margin: 0 0 18px;
-  }
-  .bd-rail__progress-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    margin: 0 0 7px;
-  }
-  .bd-rail__progress-label {
-    color: var(--brief-text-3);
-    text-transform: uppercase;
-  }
-  .bd-rail__pct {
-    color: var(--accent);
-  }
-  .bd-rail__track {
-    height: 6px;
-    background: var(--lemma-line);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .bd-rail__bar {
-    height: 100%;
-    width: 0;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 0.15s linear;
-  }
-  .bd-rail__block {
-    margin-top: 18px;
-    padding-top: 18px;
-    border-top: 1px solid var(--lemma-line);
-  }
-  .bd-rail__h {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 12px;
-  }
-  .bd-rail__chips {
+  .bd-facts {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin: 0 0 12px;
+    gap: 10px 40px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
-  .bd-rail__chip {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    font-weight: 700;
-    background: rgba(139, 69, 19, 0.1);
-    color: var(--accent);
-    padding: 5px 10px;
-    border-radius: 6px;
-    text-decoration: none;
-    line-height: 1.3;
-    transition: background 0.15s;
-  }
-  .bd-rail__chip:hover {
-    background: rgba(139, 69, 19, 0.18);
-  }
-  .bd-rail__index {
-    display: block;
-    text-align: center;
-    font-family: var(--brief-mono);
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--accent);
-    text-decoration: none;
-    padding: 9px 12px;
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    transition: background 0.15s, color 0.15s;
-  }
-  .bd-rail__index:hover {
-    background: var(--accent);
-    color: var(--lemma-cream);
-  }
-  .bd-rail__convert {
+  .bd-facts > div {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: baseline;
+    gap: 10px;
   }
-  .bd-rail__cta {
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    font-family: var(--brief-body);
-    font-size: 13px;
-    font-weight: 700;
-    padding: 11px 12px;
-    border-radius: 8px;
-    line-height: 1.3;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  .bd-facts .k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
   }
-  .bd-rail__cta--solid {
-    background: var(--accent);
-    color: #fff;
-    border: 1px solid var(--accent);
-  }
-  .bd-rail__cta--solid:hover {
-    background: #743a10;
-    border-color: #743a10;
-  }
-  .bd-rail__cta--outline {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-  }
-  .bd-rail__cta--outline:hover {
-    background: rgba(139, 69, 19, 0.08);
+  .bd-facts .v {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--tx);
   }
 
-  /* ─── MOBILE ENGAGEMENT BAR (JA, shown < 1024px) ─── */
-  .bd-mbar {
-    display: none;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 90;
-    align-items: stretch;
-    gap: 8px;
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
-    background: rgba(252, 250, 245, 0.96);
-    backdrop-filter: saturate(1.1) blur(6px);
-    border-top: 1px solid var(--lemma-line);
-  }
-  .bd-mbar__progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 4px;
-    width: 0;
-    background: var(--accent);
-  }
-  .bd-mbar__btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-height: 44px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-family: var(--brief-body);
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    line-height: 1;
-    white-space: nowrap;
-  }
-  .bd-mbar__btn--ghost {
-    flex: 0 0 auto;
-    color: var(--brief-text-3);
-  }
-  .bd-mbar__btn--outline {
-    flex: 1;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-  }
-  .bd-mbar__btn--solid {
-    flex: 1;
-    color: #fff;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-  }
-
-  /* ─── Rail ≥1024 / mobile bar < 1024 (JA + EN; overrides shared 960 layout) ─── */
-  @media (max-width: 1023px) {
-    .bd-layout {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-    .bd-content {
-      max-width: none;
-    }
-    .bd-toc {
-      display: none;
-    }
-    .bd-mbar {
-      display: flex;
-    }
-    .brief-page {
-      padding-bottom: calc(76px + env(safe-area-inset-bottom));
-    }
-  }
-
-  /* ─── BODY (rendered markdown) ─── */
+  /* ─── BODY (rendered markdown) — 記事テンプレートと同じ組み ─── */
   .brief-body {
-    font-size: 15px;
-    line-height: 1.85;
-    color: var(--brief-text-2);
-    margin: 0;
+    padding: 14px 0 0;
+    font-size: 16px;
+    line-height: 2.05;
+    color: var(--tx-soft);
+    font-feature-settings: "palt" 1;
+    overflow-wrap: break-word;
+  }
+  .brief-body :global(> *) {
+    max-width: 100%;
+  }
+  .brief-body :global(h2[id]),
+  .brief-body :global(h3[id]) {
+    scroll-margin-top: 96px;
   }
   .brief-body :global(p) {
-    margin: 0 0 18px;
-  }
-  .brief-body :global(p:last-child) {
-    margin-bottom: 0;
+    margin: 0 0 22px;
   }
   .brief-body :global(strong) {
-    color: var(--black);
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--tx);
   }
   .brief-body :global(em) {
     font-style: italic;
   }
   .brief-body :global(a) {
-    color: var(--accent);
+    color: var(--ok-light);
     text-decoration: none;
-    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
-    transition: border-color 0.15s, color 0.15s;
+    border-bottom: 1px solid rgba(78, 122, 0, 0.35);
+    transition: border-color 0.15s;
     overflow-wrap: anywhere;
   }
   .brief-body :global(a:hover) {
-    border-bottom-color: var(--accent);
-    color: #6e3610;
-  }
-  /* 第1スクリーン改修: the gap module + open-loop CTA are JS-moved into
-     .brief-body after the TL;DR. Keep the open-loop button from inheriting the
-     generic body link color/underline (it has its own dark-on-amber styling). */
-  .brief-body :global(.bac-loop__btn),
-  .brief-body :global(.bac-loop__btn:hover) {
-    color: #1d1710;
-    border-bottom: none;
+    border-bottom-color: var(--ok-light);
   }
 
   .brief-body :global(h2) {
-    font-family: var(--brief-display);
-    font-size: 30px;
-    font-weight: 700;
-    color: var(--black);
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    margin: 56px 0 24px;
-    scroll-margin-top: 88px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.1vw, 24px);
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--tx);
+    margin: 68px 0 20px;
     position: relative;
   }
-  :root[lang="ja"] .brief-body :global(h2) {
-    line-height: 1.35;
+  .brief-body :global(h2::before) {
+    content: "";
+    display: block;
+    width: 28px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ok);
+    margin-bottom: 18px;
   }
-  .brief-body :global(h2[data-section-num])::before {
-    content: "§ " attr(data-section-num);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 12px;
+  /* モックの見出しは § 無しの素の h2（§ は目次だけが持つ）。
+     rehype の data-section-num は目次との対応にだけ使い、表示しない。 */
+  .brief-body :global(> h2:first-child) {
+    margin-top: 44px;
   }
-  .brief-body :global(h2:first-child) {
-    margin-top: 0;
+  .brief-body :global(h3) {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    color: var(--tx);
+    margin: 46px 0 14px;
+    padding-left: 16px;
+    position: relative;
   }
+  .brief-body :global(h3::before) {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--ok-ink);
+  }
+  .brief-body :global(h2 + h3) {
+    margin-top: 30px;
+  }
+
   /* Section anchor (⌗) injected by script — visible on h2 hover. */
   .brief-body :global(h2 .brief-anchor) {
     margin-left: 10px;
     font-size: 0.62em;
-    color: var(--bd-brown-mid);
+    color: var(--muted);
     text-decoration: none;
     border: none;
     opacity: 0;
@@ -1077,364 +922,724 @@ const railCopy = isJa
     opacity: 1;
   }
   .brief-body :global(h2 .brief-anchor:hover) {
-    color: var(--accent);
-  }
-  .brief-body :global(h3) {
-    font-family: var(--brief-display);
-    font-size: 19px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.35;
-    margin: 32px 0 14px;
-  }
-
-  /* ─── TL;DR card via first-child targeting ─── */
-  .brief-body :global(h2:first-child) {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0;
-    background: var(--lemma-cream-deep);
-    padding: 36px 40px 16px;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    position: relative;
-  }
-  .brief-body :global(h2:first-child)::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 3px;
-    width: 64px;
-    background: var(--accent);
-    border-radius: 0 0 3px 0;
-  }
-  .brief-body :global(h2:first-child + p) {
-    background: var(--lemma-cream-deep);
-    padding: 0 40px 32px;
-    margin: 0 0 56px;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    font-size: 15.5px;
-    line-height: 1.85;
-    color: var(--brief-text-1);
+    color: var(--ok-ink);
   }
 
   /* ─── LISTS ─── */
-  .brief-body :global(ul) {
-    margin: 0 0 18px;
-    padding: 0;
+  .brief-body :global(ul),
+  .brief-body :global(ol) {
+    margin: 0 0 24px;
+    padding-left: 0;
     list-style: none;
   }
-  .brief-body :global(ul li) {
+  .brief-body :global(ol) {
+    counter-reset: brieflist;
+  }
+  .brief-body :global(li) {
     position: relative;
-    padding-left: 22px;
-    margin: 0 0 10px;
-    line-height: 1.7;
+    padding-left: 26px;
+    margin-bottom: 15px;
+    line-height: 1.95;
+  }
+  .brief-body :global(li:last-child) {
+    margin-bottom: 0;
   }
   .brief-body :global(ul li::before) {
     content: "";
     position: absolute;
-    left: 4px;
-    top: 12px;
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 1px;
-    transform: rotate(45deg);
-  }
-  .brief-body :global(ol) {
-    margin: 0 0 18px;
-    padding: 0 0 0 4px;
-    counter-reset: brieflist;
-    list-style: none;
+    left: 3px;
+    top: 15px;
+    width: 10px;
+    height: 2px;
+    background: var(--ok-ink);
+    border-radius: 2px;
   }
   .brief-body :global(ol li) {
     counter-increment: brieflist;
-    position: relative;
-    padding-left: 32px;
-    margin: 0 0 14px;
-    line-height: 1.7;
   }
   .brief-body :global(ol li::before) {
     content: counter(brieflist);
     position: absolute;
     left: 0;
-    top: 0;
-    font-family: var(--brief-mono);
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
+    top: 1px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ok-ink);
+  }
+  .brief-body :global(li > ul),
+  .brief-body :global(li > ol) {
+    margin: 14px 0 2px;
+  }
+  .brief-body :global(li:has(> ul)),
+  .brief-body :global(li:has(> ol)) {
+    margin-bottom: 22px;
+  }
+  .brief-body :global(li li) {
+    margin-bottom: 12px;
+    padding-left: 22px;
+  }
+  .brief-body :global(li li::before) {
+    left: 2px;
+    top: 14px;
+    width: 7px;
+    background: var(--muted);
   }
 
-  /* ─── HR ─── */
-  .brief-body :global(hr) {
+  /* ─── タイムライン（§3 時系列）— 縦線＋ライム縁ドット（§5.4）。
+     見出し id で当てるので、当たらない章立てでは通常のリストのまま。 ─── */
+  .brief-body :global(h2[id*="タイムライン"] + ul),
+  .brief-body :global(h2[id*="timeline"] + ul),
+  .brief-body :global(h2[id*="時系列"] + ul) {
+    position: relative;
+    margin: 0 0 26px;
+  }
+  .brief-body :global(h2[id*="タイムライン"] + ul::before),
+  .brief-body :global(h2[id*="timeline"] + ul::before),
+  .brief-body :global(h2[id*="時系列"] + ul::before) {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--line);
+  }
+  .brief-body :global(h2[id*="タイムライン"] + ul > li),
+  .brief-body :global(h2[id*="timeline"] + ul > li),
+  .brief-body :global(h2[id*="時系列"] + ul > li) {
+    padding-left: 28px;
+    margin-bottom: 16px;
+  }
+  .brief-body :global(h2[id*="タイムライン"] + ul > li::before),
+  .brief-body :global(h2[id*="timeline"] + ul > li::before),
+  .brief-body :global(h2[id*="時系列"] + ul > li::before) {
+    left: 0;
+    top: 9px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--lite);
+    border: 2px solid var(--ok-ink);
+  }
+
+  /* ─── QUOTES ─── */
+  .brief-body :global(blockquote) {
+    margin: 0 0 24px;
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid var(--ok);
+    font-family: var(--font-serif-jp);
+    font-size: 16px;
+    line-height: 1.95;
+    color: var(--tx);
+    font-style: normal;
+  }
+  .brief-body :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* ─── CODE ─── */
+  .brief-body :global(code:not(pre code)) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ok-ink);
+    background: #eef2ea;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 6px;
+  }
+  .brief-body :global(pre) {
+    position: relative;
+    overflow-x: auto;
+    margin: 4px 0 28px;
+    padding: 22px 24px;
+    border-radius: 12px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow: 0 16px 38px rgba(22, 30, 24, 0.2);
+  }
+  .brief-body :global(pre code) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #d8ddd1;
+    background: none;
     border: none;
-    border-top: 0.5px solid var(--lemma-line);
-    margin: 48px 0;
+    padding: 0;
   }
 
   /* ─── TABLES ─── */
   .brief-body :global(table) {
     width: 100%;
     border-collapse: collapse;
-    font-family: var(--brief-body);
-    font-size: 13.5px;
-    margin: 28px 0;
+    margin: 4px 0 28px;
+    font-size: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
   }
-  .brief-body :global(thead tr) {
-    background: var(--lemma-cream-deep);
-  }
-  .brief-body :global(th) {
-    padding: 12px 14px;
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--brief-text-3);
-    text-align: left;
-    border-bottom: 0.5px solid var(--lemma-line);
-  }
+  .brief-body :global(th),
   .brief-body :global(td) {
-    padding: 12px 14px;
-    border-bottom: 0.5px solid var(--lemma-line);
-    color: var(--brief-text-2);
-    line-height: 1.6;
+    padding: 13px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
     vertical-align: top;
   }
-
-  .brief-body :global(code:not(pre code)) {
-    font-family: var(--brief-mono);
-    font-size: 0.86em;
-    background: var(--lemma-cream-deep);
-    padding: 0.1em 0.4em;
-    border-radius: 3px;
-    color: var(--brief-text-1);
+  .brief-body :global(th) {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--tx-soft);
+    background: var(--lite-2);
+    white-space: nowrap;
   }
-  .brief-body :global(pre) {
-    margin: 24px 0;
-    padding: 18px 20px;
-    background: #1a1a1a;
-    color: #e8e2d4;
-    border-radius: 12px;
-    overflow-x: auto;
-    font-family: var(--brief-mono);
-    font-size: 12.5px;
-    line-height: 1.75;
+  .brief-body :global(td) {
+    color: var(--tx-soft);
+    line-height: 1.8;
   }
-  .brief-body :global(pre code) {
-    background: transparent;
-    padding: 0;
-    color: inherit;
+  .brief-body :global(tbody tr:last-child td) {
+    border-bottom: none;
   }
 
-  /* ─── PREV / NEXT ─── */
-  .bd-prevnext {
+  /* ─── 参照カード ───
+     「参照:」/「References:」で始まる段落から rehype がリンクだけを取り出し
+     div[data-brief-refs] に組み替える。1リンク=1カードの小さな列として、
+     記事末尾（Sources の後）にさりげなく置く。種別ラベル（BLOG / PILLAR /
+     PRODUCT）は href から自動判定した data-ref-kind。 */
+  .brief-body :global(div[data-brief-refs]) {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin: 80px 0 0;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin: 44px 0 0;
   }
-  .bd-pn {
-    background: var(--white);
-    border: 1px solid var(--lemma-line);
+  .brief-body :global(div[data-brief-refs] a) {
+    position: relative;
+    display: block;
+    padding: 32px 16px 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 24px 26px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    color: var(--tx);
     text-decoration: none;
-    color: var(--black);
+    overflow-wrap: break-word;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .brief-body :global(div[data-brief-refs] a:hover) {
+    border-color: rgba(124, 175, 0, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .brief-body :global(div[data-brief-refs] a)::before {
+    position: absolute;
+    top: 13px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    transition: color 0.18s;
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="blog"])::before {
+    content: "BLOG";
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="pillar"])::before {
+    content: "PILLAR";
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="product"])::before {
+    content: "PRODUCT";
+  }
+  .brief-body :global(div[data-brief-refs] a:hover)::before {
+    color: var(--ok-ink);
+  }
+
+  /* ─── RULES ─── */
+  .brief-body :global(hr) {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 52px 0 0;
+    opacity: 0.7;
+  }
+  .brief-body :global(hr:has(+ h2)),
+  .brief-body :global(hr:has(+ h3)) {
+    display: none;
+  }
+  .brief-body :global(hr + h2) {
+    margin-top: 56px;
+  }
+
+  /* ─── 配布についての注記（旧 §9 の定型文・テンプレート描画） ─── */
+  .bd-distribution {
+    margin: 40px 0 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+  }
+
+  /* ─── SECTION LABEL（関連 Brief） ─── */
+  .bd-label {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 48px 0 0;
+  }
+  .bd-label b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+  }
+  .bd-label span {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .bd-label::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ─── RELATED 3枚（No.＋3行クランプ） ─── */
+  .bd-rcards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0 0;
+  }
+  .bd-rcard {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .bd-rcard:hover {
+    border-color: rgba(124, 175, 0, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .bd-rcard .n {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ok-ink);
+  }
+  .bd-rcard .t {
+    font-size: 13.2px;
+    line-height: 1.7;
+    color: var(--tx);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .bd-rcard .g {
+    margin-top: auto;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ─── PREV / NEXT（No. 付き） ─── */
+  .bd-prevnext {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 26px 0 0;
+  }
+  .bd-pn {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
   }
   .bd-pn:hover {
-    border-color: var(--bd-brown-mid);
-    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.05);
+    border-color: rgba(124, 175, 0, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
   }
   .bd-pn.next {
     text-align: right;
+    align-items: flex-end;
   }
   .bd-pn--empty {
     background: transparent;
     border: none;
     box-shadow: none;
+    pointer-events: none;
   }
-  .bd-pn__dir {
-    font-family: var(--brief-mono);
+  .bd-pn .dir {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ok-ink);
+  }
+  .bd-pn .t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+  }
+  .bd-pn .d {
+    font-family: var(--font-mono);
     font-size: 10.5px;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .bd-pn__meta {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    color: var(--brief-text-4);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-  .bd-pn__title {
-    font-family: var(--brief-display);
-    font-weight: 700;
-    font-size: 15.5px;
-    color: var(--black);
-    line-height: 1.4;
-    letter-spacing: -0.005em;
-  }
-  :root[lang="ja"] .bd-pn__title {
-    line-height: 1.5;
+    color: var(--muted);
   }
 
-  /* ─── RELATED (index card design) ─── */
-  .bd-related {
-    margin: 80px 0 0;
-  }
-  .bd-related__head {
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--lemma-line);
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-  .bd-related__tag {
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    padding-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .bd-related__tag::before {
-    content: "";
-    display: inline-block;
-    width: 24px;
-    height: 1.5px;
-    background: var(--accent);
-  }
-  .bd-related__more {
-    margin-left: auto;
-    font-family: var(--brief-mono);
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .bd-related__more::after {
-    content: " →";
-  }
-  .bd-related__more:hover {
-    text-decoration: underline;
-  }
-  .bd-related__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-  .bd-rcard {
-    background: var(--white);
-    border: 1px solid var(--lemma-line);
-    border-radius: 8px;
-    padding: 28px 26px;
-    text-decoration: none;
-    color: var(--black);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  /* ─── 末尾CTA（スレート・証明の訴求） ─── */
+  .bd-cta {
     position: relative;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    overflow: hidden;
+    margin: 44px 0 0;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border-radius: 16px;
+    padding: 38px 36px 34px;
   }
-  .bd-rcard::before {
+  .bd-cta::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: var(--accent);
-    border-radius: 8px 0 0 0;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.18),
+      rgba(168, 224, 16, 0) 62%
+    );
   }
-  .bd-rcard:hover {
-    border-color: var(--bd-brown-mid);
-    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.06);
+  .bd-cta > * {
+    position: relative;
+    z-index: 2;
   }
-  .bd-rcard__meta {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    color: var(--brief-text-4);
-    letter-spacing: 0.06em;
-    font-weight: 700;
+  .bd-cta .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #9ba296;
+  }
+  .bd-cta h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: #ebefe6;
+    margin: 12px 0 10px;
+  }
+  .bd-cta p {
+    margin: 0 0 24px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #bcc3b6;
+    max-width: 58ch;
+  }
+  .bd-cta .row {
+    display: flex;
+    gap: 12px 18px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .bd-cta .btn {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: 6px;
+    padding: 12px 22px;
+    text-decoration: none;
+    transition: filter 0.18s, border-color 0.18s, color 0.18s;
+  }
+  .bd-cta .btn.primary {
+    background: var(--ok);
+    color: #0f1412;
+    box-shadow: 0 4px 14px rgba(168, 224, 16, 0.35);
+  }
+  .bd-cta .btn.primary:hover {
+    filter: brightness(1.06);
+  }
+  .bd-cta .btn.ghost {
+    color: #d8ddd1;
+    border: 1px solid #59645a;
+  }
+  .bd-cta .btn.ghost:hover {
+    border-color: #d8ddd1;
+    color: #fff;
+  }
+  .bd-cta .ctasub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: #9ba296;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .bd-cta .ctasub:hover {
+    color: var(--ok);
+  }
+
+  /* ─── 右レール（§5.1/§5.3） ───
+     レールがビューポートより背が高いと、sticky の一枚板では下段（核心・
+     バナー）が本文の読了までずっと画面外に取り残される。ビューポートに
+     収めて超過分は**レール内スクロール**にする（目次レールの定石）。
+     横 padding＋負マージンは、overflow でカードの影が切れないための逃げ。 */
+  .bd-rail {
+    position: sticky;
+    top: 96px;
+    margin-top: 46px;
+    max-height: calc(100vh - 96px - 24px);
+    overflow-y: auto;
+    padding: 2px 8px 24px;
+    margin-left: -8px;
+    margin-right: -8px;
+    scrollbar-width: thin;
+    scrollbar-color: #cfd4cc transparent;
+  }
+  .bd-rail::-webkit-scrollbar {
+    width: 6px;
+  }
+  .bd-rail::-webkit-scrollbar-thumb {
+    background: #cfd4cc;
+    border-radius: 99px;
+  }
+  .bd-rail::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .bd-railbox {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: var(--sh-s);
+  }
+  .bd-prog {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 12px;
   }
-  .bd-rcard__no {
-    color: var(--accent);
-  }
-  .bd-rcard__sep {
-    color: var(--lemma-line);
-  }
-  .bd-rcard__title {
-    font-family: var(--brief-display);
-    font-weight: 700;
-    font-size: 15.5px;
-    color: var(--black);
-    line-height: 1.45;
-    letter-spacing: -0.005em;
-    margin: 0;
-  }
-  :root[lang="ja"] .bd-rcard__title {
-    line-height: 1.55;
-  }
-  .bd-rcard__sub {
-    font-size: 12.5px;
-    color: var(--brief-text-3);
-    line-height: 1.7;
-    margin: 0;
+  .bd-prog .bar {
     flex: 1;
+    height: 3px;
+    border-radius: 99px;
+    background: #e4e7e1;
+    overflow: hidden;
   }
-  .bd-rcard__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--lemma-line);
-    flex-wrap: wrap;
-    margin-top: auto;
+  .bd-prog .bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--ok);
   }
-  .bd-rcard__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  .bd-rcard__tag {
-    font-family: var(--brief-mono);
+  .bd-railh {
+    font-family: var(--font-mono);
     font-size: 9.5px;
-    background: var(--bd-brown-soft);
-    color: var(--bd-brown-dark);
-    padding: 3px 8px;
-    border-radius: 50px;
-    letter-spacing: 0.04em;
-    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 6px;
   }
-  .bd-rcard__read {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    color: var(--accent);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
+  .bd-toc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bd-toc a {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    padding: 7px 0;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--tx-soft);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .bd-toc a i {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .bd-toc a:hover {
+    color: var(--ok-ink);
+  }
+  /* 現在地は墨字太字・番号が濃ライム（§5.3）。 */
+  .bd-toc a.is-active {
+    color: var(--tx);
+    font-weight: 600;
+  }
+  .bd-toc a.is-active i {
+    color: var(--ok-ink);
+  }
+
+  /* 2段目: スレート小箱。 */
+  .bd-railgap {
+    margin-top: 14px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow: 0 14px 32px rgba(22, 30, 24, 0.2);
+    padding: 15px 17px 13px;
+  }
+  .bd-railgap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.16),
+      rgba(168, 224, 16, 0) 62%
+    );
+  }
+  .bd-railgap > * {
+    position: relative;
+    z-index: 2;
+  }
+  .rg-h {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: #8b9285;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #4a544b;
+    margin-bottom: 4px;
+  }
+  .rg-row {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 9px;
+    padding: 9px 0;
+  }
+  .rg-row .mk {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .rg-row .ok {
+    color: var(--ok);
+  }
+  .rg-row .ng {
+    color: #e0906f;
+  }
+  .rg-row .ar {
+    color: #9ba296;
+  }
+  .rg-row b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 12.5px;
+    color: #ebefe6;
+    margin-bottom: 2px;
+  }
+  /* gap_* frontmatter は旧・本文内モジュール向けに長文で書かれているものが
+     ある。このパネルはダイジェスト（全文は §4/§5 と下の「§N →」リンクが
+     担う）なので 4 行でクランプして、レールの背丈を抑える。 */
+  .rg-row span {
+    font-size: 11.2px;
+    line-height: 1.65;
+    color: #aeb5a9;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .rg-more {
+    display: block;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #4a544b;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ok);
+    text-decoration: none;
+  }
+
+  /* 3段目: 脅威タイプ別バナー（白＋ライム縁・上辺3pxのライムバー）。 */
+  .bd-railad {
+    margin-top: 14px;
+    padding: 16px 17px 15px;
+    background: var(--card);
+    border: 1px solid rgba(124, 175, 0, 0.45);
+    border-radius: 12px;
+    box-shadow: var(--sh-s);
+    position: relative;
+    overflow: hidden;
+  }
+  .bd-railad::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: var(--ok);
+  }
+  .ra-k {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--ok-ink);
+    margin: 4px 0 9px;
+  }
+  .ra-t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.65;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin-bottom: 9px;
+  }
+  .bd-railad p {
+    margin: 0 0 13px;
+    font-size: 11.5px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+  .ra-btn {
+    display: block;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--ok);
+    border-radius: 7px;
+    padding: 9px 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(168, 224, 16, 0.3);
+    transition: filter 0.15s;
+  }
+  .ra-btn:hover {
+    filter: brightness(1.06);
   }
 
   /* ─── COPY TOAST ─── */
@@ -1443,9 +1648,9 @@ const railCopy = isJa
     bottom: 28px;
     left: 50%;
     transform: translateX(-50%) translateY(10px);
-    background: var(--black);
-    color: var(--lemma-cream);
-    font-family: var(--brief-mono);
+    background: var(--ink);
+    color: var(--lite);
+    font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.04em;
     padding: 11px 22px;
@@ -1460,68 +1665,59 @@ const railCopy = isJa
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 960px) {
-    .bd-layout {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-    .bd-content {
-      max-width: none;
-      order: 1;
-    }
-    .bd-toc {
-      position: relative;
-      top: auto;
-      order: 0;
-      padding: 0 0 24px;
-      margin: 8px 0 28px;
-      border-bottom: 1px solid var(--lemma-line);
-    }
-    .bd-toc__label {
-      border-bottom: none;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-    .bd-toc__list {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .bd-related__grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  @media (max-width: 760px) {
-    .brief-page {
-      margin-top: 8px;
-    }
-    .brief-breadcrumb {
-      padding: 16px 0 0;
-    }
+  /* ─── RESPONSIVE（1020px 以下で1カラム・レールは本文の下へ） ─── */
+  @media (max-width: 1020px) {
     .bd-shell {
-      padding: 0 24px;
+      grid-template-columns: 1fr;
+      gap: 34px;
     }
-    .brief-body :global(h2) {
-      font-size: 24px;
+    .bd-rail {
+      position: static;
+      margin-top: 0;
+      max-height: none;
+      overflow: visible;
+      padding: 0;
+      margin-left: 0;
+      margin-right: 0;
     }
-    .brief-body :global(h2:first-child) {
-      padding: 28px 24px 16px;
-    }
-    .brief-body :global(h2:first-child + p) {
-      padding: 0 24px 24px;
+    .bd-rcards {
+      grid-template-columns: 1fr;
     }
     .bd-prevnext {
       grid-template-columns: 1fr;
     }
     .bd-pn.next {
       text-align: left;
+      align-items: flex-start;
     }
     .bd-pn--empty {
       display: none;
     }
-    .bd-related__grid {
-      grid-template-columns: 1fr;
+  }
+  @media (max-width: 760px) {
+    .bd-shell {
+      padding: 0 24px;
+    }
+    .bd-cta {
+      padding: 30px 24px 28px;
+    }
+  }
+  @media (max-width: 620px) {
+    .brief-body :global(table) {
+      display: block;
+      overflow-x: auto;
+      font-size: 12.5px;
+    }
+    .brief-body :global(th),
+    .brief-body :global(td) {
+      padding: 10px 11px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bd-rcard,
+    .bd-pn,
+    .bd-prog .bar i {
+      transition: none;
     }
   }
 </style>

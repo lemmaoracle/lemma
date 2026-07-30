@@ -19,13 +19,13 @@ gap_missing: "配布の前に「このデータは規約に沿った範囲で集
 gap_fix: "配布や AI 学習への取り込みの前に「このデータは、どこから、どの利用条件で集められたか」を Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-ある研究チームが Discord の公開 API で 20.52 億メッセージ（3,167 サーバー）を一括収集し、arXiv 論文と JSON dataset として誰でも入手できる形で公開した。だが Discord の規約は、API 取得メッセージの AI 学習利用も一括 scraping・再配布も明確に禁じている。技術的なアクセス可否と規約が許す範囲は別物だが、配布前に「適法 scope で収集されたか」を独立検証する層が無く、禁じられた用途のデータが下流の AI 学習へ流れ得た。検出と事前証明は代替でなく補完である。
+ある研究チームが Discord の公開 API で 20.52 億メッセージ（3,167 サーバー）を一括収集し、arXiv 論文と JSON dataset として誰でも入手できる形で公開した。だが Discord の規約は、API 取得メッセージの AI 学習利用も一括 scraping・再配布も明確に禁じている。技術的なアクセス可否と規約が許す範囲は別物だが、配布前に「適法 scope で収集されたか」を独立検証する層が無く、禁じられた用途のデータが下流の AI 学習へ流れ得た。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **規模**: 20.52 億メッセージ(20,520,206,308)、3,167 サーバー、473 万 5,057 人、2015-2024 年分
 - **発見スコープ**: Discord 「発見」機能による 31,673 公開サーバーの 10% を無作為選択(2024-11-17 時点)
@@ -38,26 +38,10 @@ gap_fix: "配布や AI 学習への取り込みの前に「このデータは、
   - Discord 利用規約: スクレイピング禁止条項を含む
 - **配布範囲**: arXiv 経由で誰でもダウンロード可能、下流の研究者・AI 企業への流通経路が成立
 - **Discord プラットフォーム側 response**: 公開時点で公式 statement は未確認(同社は過去に類似事案 Spy Pet に対して 2024-04 時点で法的措置を検討した経緯あり)
-- **核心**: 公開アクセス可能という属性と規約上の利用 scope 属性が、配布前に独立検証されないまま dataset が下流の AI 学習へ流通する構造である。
 
 本事案は cybersecurity attack incident ではなく、研究目的の規約違反を契機とする「信頼層に関わるリスク事象」として扱う。Lemma Critical Brief の射程を、攻撃 incident に加え、AI 時代の信頼層に関わるリスク事象一般に拡張する第 1 事例として位置付ける。
 
----
-
-## 2. タイムライン
-
-- 2015-2024(対象期間): scraping 対象となるメッセージが Discord 公開サーバー上に蓄積
-- 2024-11-17: 研究チームが Discord 「発見」機能を使用、合計 31,673 の公開サーバーを発見、10% を無作為選択
-- 2024-11-17 以降(推定): 公開 API 経由の scraping を実施
-- 2025-05: arXiv 論文(2502.00627)と JSON dataset をオンライン公開
-- 2025-05-22: 404 Media が一次報道、Discord 利用規約・開発者ポリシー違反を明示。同日、日本語メディアでも続報
-- 2025-05 以降: GenAI 業界横断で training data provenance の論点として議論
-
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本 Brief は実証された構造的欠陥として扱い、被害規模を誇張しない。
-
----
-
-## 3. 事象連鎖
+事象は次の連鎖で成立している。
 
 1. **Research design**: ブラジル ミナス・ジェライス連邦大学の 15 名の研究者チームが、Discord 公開コミュニケーションを大規模 dataset として配布する研究プロジェクトを策定
 2. **Discovery scope mapping**: Discord 「発見」機能により 2024-11-17 時点で公開サーバー 31,673 を発見、10%(3,167 サーバー)を無作為選択
@@ -69,29 +53,18 @@ gap_fix: "配布や AI 学習への取り込みの前に「このデータは、
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事案は、chat プラットフォームの公開チャンネルデータについて、**「サーバーが公開設定である」という属性表明と、規約で定められた「利用 scope」属性表明が独立に attestation されないまま、配布層を経由して下流に流通する** という構造の代表事例である。技術的にはアクセス可能な公開 API、規約上禁止された利用 scope(ML / AI training 用途、再配布、scraping)、そして dataset 配布時点で「収集 scope が規約遵守か」を独立検証する layer の不在が同時に成立している。中心的な**失敗 primitive は「dataset 配布時点で、収集 scope が規約上の利用 scope に整合するかを独立検証する layer の不在」**である。
+- 2015-2024(対象期間): scraping 対象となるメッセージが Discord 公開サーバー上に蓄積
+- 2024-11-17: 研究チームが Discord 「発見」機能を使用、合計 31,673 の公開サーバーを発見、10% を無作為選択
+- 2024-11-17 以降(推定): 公開 API 経由の scraping を実施
+- 2025-05: arXiv 論文(2502.00627)と JSON dataset をオンライン公開
+- 2025-05-22: 404 Media が一次報道、Discord 利用規約・開発者ポリシー違反を明示。同日、日本語メディアでも続報
+- 2025-05 以降: GenAI 業界横断で training data provenance の論点として議論
 
-Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構造、Brief 006(Google API キー失効遅延)は credential の **失効属性** が独立検証されない構造、本事案は dataset の **来歴・利用 scope 属性** が独立検証されない構造として位置する。3 件はいずれも「信頼の assertion(本事案では『この dataset は適法 scope で収集された』)が、それを検証する layer と切り離されている」という共通構造を持つ。
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本 Brief は実証された構造的欠陥として扱い、被害規模を誇張しない。
 
-本事案が他 Brief と異なるのは、cybersecurity attack incident ではなく、研究目的の規約違反による信頼層リスク事象である点。Lemma Critical Brief の射程を、攻撃 incident に加え、AI 時代の信頼層に関わるリスク事象一般に拡張する第 1 事例として位置付ける。同型の構造は今後、Slack / Teams / Notion 等の enterprise SaaS の公開チャンネル設定における data perimeter リスクや、GenAI 企業の training data provenance 説明責任の議論において、繰り返し参照されることが予想される。
-
----
-
-## 5. 検出と証明の落差
-
-本事案では、404 Media を中心とする技術メディアが scraping と dataset 公開の存在を検出し、業界横断議論を喚起した。これは検出層の典型的な機能であり、検出メディア・研究者の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
-
-一方で、検出は dataset が **すでに arXiv に投稿され JSON として配布されている状態を取り消せない**。下流の研究者・AI 企業は dataset をダウンロード可能であり、AI training への流入経路は検出のみでは閉じない。Discord の利用規約と開発者ポリシー違反であっても、技術的なアクセス制御は存在せず、配布後の dataset を撤回する mechanism も成立しない。匿名化措置が施されていても、収集 scope の規約適合性は dataset 単体からは検証できない。
-
-規制報告・行政手続き・企業の AI 採用 due diligence で「training data が適法 scope で収集された」と立証する材料として、本事案のような dataset が下流の AI training に流入した場合、検出スコアと dataset origin / scope 証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで AI training data の trust boundary が確立される。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
+公表後の対応と業界の動きは次のとおり。
 
 - **404 Media**(2025-05-22 一次報道): Discord 利用規約・開発者ポリシー違反を明示し、業界に問題を提示。「研究者たちはデータを匿名化したと主張しているが、自分の Discord メッセージがオンライン上の公開ファイルに保存されていることを快く思う人はいない」「Discord ユーザーの多くは子どもであることに留意すべき」と論点を提起
 - **研究チーム(ミナス・ジェライス連邦大学)**: dataset 配布目的を「他の研究チームがメンタルヘルスや政治について研究したり、ボットを訓練したりする際に使用できるようにするため」と表明、匿名化措置を実施したと主張
@@ -104,7 +77,23 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+本事案は、chat プラットフォームの公開チャンネルデータについて、**「サーバーが公開設定である」という属性表明と、規約で定められた「利用 scope」属性表明が独立に attestation されないまま、配布層を経由して下流に流通する** という構造の代表事例である。技術的にはアクセス可能な公開 API、規約上禁止された利用 scope(ML / AI training 用途、再配布、scraping)、そして dataset 配布時点で「収集 scope が規約遵守か」を独立検証する layer の不在が同時に成立している。中心的な<strong>失敗 primitive は「dataset 配布時点で、収集 scope が規約上の利用 scope に整合するかを独立検証する layer の不在」</strong>である。
+
+Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構造、Brief 006(Google API キー失効遅延)は credential の **失効属性** が独立検証されない構造、本事案は dataset の **来歴・利用 scope 属性** が独立検証されない構造として位置する。3 件はいずれも「信頼の assertion(本事案では『この dataset は適法 scope で収集された』)が、それを検証する layer と切り離されている」という共通構造を持つ。
+
+本事案が他 Brief と異なるのは、cybersecurity attack incident ではなく、研究目的の規約違反による信頼層リスク事象である点。Lemma Critical Brief の射程を、攻撃 incident に加え、AI 時代の信頼層に関わるリスク事象一般に拡張する第 1 事例として位置付ける。同型の構造は今後、Slack / Teams / Notion 等の enterprise SaaS の公開チャンネル設定における data perimeter リスクや、GenAI 企業の training data provenance 説明責任の議論において、繰り返し参照されることが予想される。
+
+本事案では、404 Media を中心とする技術メディアが scraping と dataset 公開の存在を検出し、業界横断議論を喚起した。これは検出層の典型的な機能であり、検出メディア・研究者の役割を本 Brief が否定するものではない。検出は事象の輪郭把握、業界横断の論点提起、組織横断の運用見直しに不可欠な層として引き続き重要である。
+
+一方で、検出は dataset が **すでに arXiv に投稿され JSON として配布されている状態を取り消せない**。下流の研究者・AI 企業は dataset をダウンロード可能であり、AI training への流入経路は検出のみでは閉じない。Discord の利用規約と開発者ポリシー違反であっても、技術的なアクセス制御は存在せず、配布後の dataset を撤回する mechanism も成立しない。匿名化措置が施されていても、収集 scope の規約適合性は dataset 単体からは検証できない。
+
+規制報告・行政手続き・企業の AI 採用 due diligence で「training data が適法 scope で収集された」と立証する材料として、本事案のような dataset が下流の AI training に流入した場合、検出スコアと dataset origin / scope 証明の間に独立した層が必要となる。事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にあり、両層の組み合わせで AI training data の trust boundary が確立される。
+
+---
+
+## 5. 証明があれば、何が変わるか
 
 本事案で露呈した検出と証明の落差(dataset の来歴と利用 scope 属性が独立検証されないまま下流に流通する)に対して、Lemma は次の 2 層の設計要素を提示する。
 
@@ -115,23 +104,13 @@ Brief 005(Noroboto)は AI 判断の **入力 integrity** が偽装される構�
 
 2 層の組み合わせは、検出に対する代替ではなく補完の関係にある。検出は scraping の発生と dataset 配布を後追いで把握できるが、配布済み dataset の下流流通を制御できない。事前証明は dataset 配布時点と AI training audit 時点の 2 層で trust boundary を確立する。
 
-設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **404 Media**: "Researchers Scrape 2 Billion Discord Messages and Publish Them Online"(2025-05-22、一次報道、Discord 利用規約・開発者ポリシー違反を含む技術記述)— https://www.404media.co/researchers-scrape-2-billion-discord-messages-and-publish-them-online/
 - **arXiv 研究チーム論文**: "Discord Unveiled: A Comprehensive Dataset of Public Communication (2015-2024)"(2025、ブラジル ミナス・ジェライス連邦大学 15 名研究者チーム、dataset 配布の一次資料)— https://arxiv.org/pdf/2502.00627
 - **Discord 開発者ポリシー** 公式(ML / AI training 用途禁止条項とスクレイピング禁止条項の根拠)— https://support-dev.discord.com/hc/ja/articles/8563934450327
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Trust402](https://lemma.frame00.com/ja/trust402/)
