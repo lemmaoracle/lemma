@@ -18,10 +18,10 @@
  * 脅威別訴求は右レールのバナーだけが持つ（§5.5）。旧 BriefAttackCta の
  * バナー／オープンループ／テールと BriefGapModule の本文挿入はここで退役。
  *
- * 章立ては現行9章のまま（§5.4 の6章化は**別途可否を確定してから**）。
- * 目次は記事の h2 から動的に生成するので、章立てが変わっても追随する。
- * markdown 本文が single source of truth である点は変わらない（§ バッジは
- * rehype-brief-section-number が付与）。
+ * 章立ては §5.4 の6章（1. TL;DR〜6. Sources）へ移行中（2026-07-30 可否確定・
+ * パイロットから順次）。目次は記事の h2 から動的に生成するので、9章の旧本文
+ * も6章の新本文も同じテンプレートを通る。markdown 本文が single source of
+ * truth である点は変わらない（番号の剥がしは rehype-brief-section-number）。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import { render } from "astro:content";
@@ -174,19 +174,28 @@ function pnCardData(b: AnyBrief) {
 const prevData = prevBrief ? pnCardData(prevBrief) : null;
 const nextData = nextBrief ? pnCardData(nextBrief) : null;
 
-// TOC: TL;DR + numbered §1..（§9 配布・brief* 補助アンカーは出さない）。
-// 記事の h2 から動的に生成するので、章立てが 9→6 に変わっても追随する。
-const tldrHeading = headings.find((h) => h.depth === 2 && h.slug === "tldr");
+// TOC: 記事の h2 から動的に生成し、TL;DR を含めて §1 から通しで振る
+// （モック v5 の面。6章化後の md は「1. TL;DR」〜「6. Sources」なので md の
+// 番号と一致する。9章の旧本文では md 内部の番号と 1 ずれるが、番号は本文に
+// 表示していないので目次内で自己完結する）。配布定型文（旧 §9）と brief*
+// 補助アンカーは出さない。
 const tocSections = headings
   .filter((h) => h.depth === 2)
-  .filter((h) => h.slug !== "tldr")
-  .filter((h) => !/^brief/i.test(h.slug))
-  .filter((h) => h.slug !== "about-distribution")
+  .filter((h) => !/^brief/i.test(h.slug) || h.slug === "tldr")
+  .filter((h) => !/配布について|distribution/i.test(h.text))
   .map((h, i) => ({ num: i + 1, text: h.text, slug: h.slug }));
 
-// 核心パネルの「§N … →」— 「検出と証明の落差」章へ（無ければ出さない）。
+// 核心パネルの「§N … →」— 落差を扱う章へ（9章=検出と証明の落差／
+// 6章=なぜ止まらなかったか。無ければ出さない）。
 const gapSection = tocSections.find((s) =>
-  /落差|detection|gap/i.test(s.text),
+  /落差|なぜ止まらなかった|detection|gap|why it wasn/i.test(s.text),
+);
+
+// 配布定型文（旧 §9）が本文に残っていない Brief には、テンプレート側で
+// 短い注記を描画する（6章化で md から定型文を落とすため。移行中の旧本文
+// と二重にならないように本文側を検出してゲート）。
+const bodyHasDistribution = /配布について|About (this )?(Brief'?s? )?distribution/i.test(
+  brief.body ?? "",
 );
 
 const incidentDateStr = brief.data.incident_date.toISOString().slice(0, 10);
@@ -212,8 +221,9 @@ const seoTitle = isJa
   ? `${mainTitle}｜Lemma Critical Brief No.${briefNoPad}`
   : `${mainTitle} | Lemma Critical Brief No.${briefNoPad}`;
 
+// 章数はうたわない（9章→6章の移行中で、どちらの本文も通る）。
 const metaDescription = isJa
-  ? `${publishedStr}公開の${mainTitle}を9セクションで構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
+  ? `${publishedStr}公開の${mainTitle}を構造分析。何が起きたか、なぜ検出側の強化では届かないか、事前に何を証明していれば防げたか。AI のための、信頼インフラ — Lemma Critical Brief。`
   : `Structural analysis of ${mainTitle}: what happened, why better detection doesn't close the gap, and what should have been provable beforehand. The Trust Layer for AI — Lemma Critical Brief.`;
 
 const banner = threatBannerCopy(primarySlug, locale);
@@ -231,7 +241,6 @@ const labels = isJa
       authors: "発行",
       pack: "関連 Pack",
       tocLabel: "Contents",
-      tldr: "TL;DR",
       progress: "読了",
       coreLabel: "この Brief の核心",
       bannerLabel: "この脅威タイプへの対策",
@@ -260,7 +269,6 @@ const labels = isJa
       authors: "Authors",
       pack: "Related Pack",
       tocLabel: "Contents",
-      tldr: "TL;DR",
       progress: "Read",
       coreLabel: "The core of this Brief",
       bannerLabel: "Against this threat type",
@@ -351,6 +359,18 @@ const gapRowLabels = isJa
         <article class="brief-body">
           <Content />
         </article>
+
+        {/* 配布についての注記（旧 §9 の定型文）。6章化した md には定型文が
+            無いので、ここで一律に描画する（文言の個体差が要る Brief —
+            係争中注記など — は md 側に残す前提で、本文にあれば出さない）。
+            © はフッターが持つので繰り返さない。 */}
+        {!bodyHasDistribution && (
+          <p class="bd-distribution">
+            {isJa
+              ? "本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。"
+              : "This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization."}
+          </p>
+        )}
 
         {/* 引用パネル — Plain text / BibTeX / APA のタブ＋モノスペース本文。 */}
         <CiteBriefBox
@@ -449,12 +469,6 @@ const gapRowLabels = isJa
           </div>
           <div class="bd-railh">{labels.tocLabel}</div>
           <ul class="bd-toc">
-            {/* 番号は本文の §（data-section-num）と揃える: TL;DR は無番号。 */}
-            {tldrHeading && (
-              <li>
-                <a href="#tldr" data-toc-link><i>—</i><span>{labels.tldr}</span></a>
-              </li>
-            )}
             {tocSections.map((s) => (
               <li>
                 <a href={`#${s.slug}`} data-toc-link>
@@ -1100,6 +1114,16 @@ const gapRowLabels = isJa
   }
   .brief-body :global(hr + h2) {
     margin-top: 56px;
+  }
+
+  /* ─── 配布についての注記（旧 §9 の定型文・テンプレート描画） ─── */
+  .bd-distribution {
+    margin: 40px 0 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
   }
 
   /* ─── SECTION LABEL（関連 Brief） ─── */

@@ -19,13 +19,13 @@ gap_missing: "Because both the signing key and the procedure were legitimate, th
 gap_fix: "Before moving assets, independently verify with Lemma that the message comes from a legitimate origin, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the DVN signed forged observations, unlocking 116,500 rsETH (approx. ¥46B). The signing keys were never stolen; only the observation-layer inputs the approval relied on were swapped. Because the signature and process were legitimate, detection that watches for anomalous key use is unlikely to fire. What was missing was a layer to independently verify those inputs before approval. Detection and pre-execution attestation are complements, not substitutes.
+On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the DVN signed forged observations, unlocking 116,500 rsETH (approx. ¥46B). The signing keys were never stolen; only the observation-layer inputs the approval relied on were swapped. Because the signature and process were legitimate, detection that watches for anomalous key use is unlikely to fire. What was missing was a layer to independently verify those inputs before approval — detection and pre-execution attestation are complements, not substitutes.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Impact**: 116,500 rsETH ($292M, approx. ¥46B) unauthorizedly unlocked
 - **Target protocol**: KelpDAO (rsETH liquid restaking)
@@ -35,24 +35,8 @@ On KelpDAO / rsETH, LayerZero Labs' internal RPC nodes were manipulated so the D
 - **Manipulated assets**: LayerZero Labs' internal RPC cloud environment (multiple internal RPC nodes)
 - **Assets NOT compromised**: The LayerZero Labs DVN signing keys themselves
 - **Official disclosures**: The LayerZero Labs incident statement and the May follow-up update. These name the observation layer as an independent category, and announce that the LayerZero Labs DVN will refuse 1-of-1 signing configurations and that the v2 default will move to 3-of-3
-- **Core**: The structural failure was that the observation-layer inputs the DVN relies on to judge message origin were accepted as the basis for a legitimate signature without ever being independently verified.
 
----
-
-## 2. Timeline
-
-- 2026-03 (per LayerZero Labs' disclosure, estimated): The period in which intrusion into the LayerZero Labs operations environment, originating from a social-engineering vector, is cited
-- 2026-04-18: 116,500 rsETH on KelpDAO unauthorizedly unlocked
-- Around 2026-04-22: Industry incident response begins
-- 2026-05: LayerZero Labs publishes its incident statement and follow-up update. Announces the observation layer as an independent category, the LayerZero Labs DVN's refusal of 1-of-1 configurations, and a default move to ≥3-of-3
-
-> Note: Names, dates, and loss figures are based on primary sources — the official LayerZero Labs incident statement and the independent analyses (Chainalysis, Halborn, Galaxy Research, etc.). Each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack Vector
-
-Chain of events, per LayerZero Labs' disclosure:
+The attack came together as the following chain, per LayerZero Labs' disclosure.
 
 1. **Initial compromise**: Intrusion into the LayerZero Labs operations environment (a social-engineering vector is cited as the entry point)
 2. **Lateral movement**: The intruder manipulates internal RPC nodes inside the LayerZero Labs RPC cloud environment
@@ -63,31 +47,14 @@ Chain of events, per LayerZero Labs' disclosure:
 
 ---
 
-## 4. Structural Analysis
+## 3. Timeline — disclosure and response
 
-In this incident the central **failure primitive is "absent independent verification of observation-layer inputs"** — a representative case of a structure in which, on a cross-chain bridge, the verifier had no independent means of verifying the observation layer inputs it relies on to determine message origin. The inputs to the observation layer — the RPC responses referenced by the LayerZero Labs DVN — were left in a state where they could be manipulated by a single entity, namely the RPC nodes inside the compromised operations environment.
+- 2026-03 (per LayerZero Labs' disclosure, estimated): The period in which intrusion into the LayerZero Labs operations environment, originating from a social-engineering vector, is cited
+- 2026-04-18: 116,500 rsETH on KelpDAO unauthorizedly unlocked
+- Around 2026-04-22: Industry incident response begins
+- 2026-05: LayerZero Labs publishes its incident statement and follow-up update. Announces the observation layer as an independent category, the LayerZero Labs DVN's refusal of 1-of-1 configurations, and a default move to ≥3-of-3
 
-The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** (Brief 002). The shared structure is that the trust configuration of a cross-chain bridge sits under the control of a single entity. The difference is that this incident distorted trust by manipulating the RPC observation layer the DVN reads from, while the Stake DAO incident distorted trust by directly rewriting the LayerZero v2 trust source via a deployer private key. Both reach the same structure from different vectors.
-
-In its incident statement, LayerZero Labs signaled its intent to treat this structure as an independent operational category — the observation layer. Hardening the observation layer (quorum, redundancy, human review) and embedding independently verifiable cryptographic proof into the message itself are not opposing approaches but complementary ones.
-
----
-
-## 5. The detection–proof gap
-
-In this incident, the DVN signing keys themselves were not compromised, and the signing process was legitimate. The typical observation points on the detection side (anomalous use of signing keys, misbehavior of the signing service) are difficult to fire under this structure. The attack succeeded because the input data to the observation layer was manipulated; the signing process itself operated as specified.
-
-This incident exposed a detection–proof gap that hardening the detection layer alone cannot close. A 99.7% anomalous confidence score is unlikely to fire in a case where, as here, a legitimate process produced a legitimate signature over manipulated inputs. This is not a deficiency in the detection tools or vendors; it indicates that between detection and proof — that is, establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — an independent layer is required. Detection remains an important layer, and in this incident it narrowed the post-event blast window and contributed to scoping the impact.
-
-Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
-
-LayerZero Labs (as of the 2026-05 incident statement):
+LayerZero Labs' published response (as of the 2026-05 incident statement):
 
 - The LayerZero Labs DVN will, going forward, refuse to sign under a 1-of-1 configuration
 - The LayerZero v2 default moves to ≥3-of-3 DVN configurations
@@ -95,9 +62,25 @@ LayerZero Labs (as of the 2026-05 incident statement):
 - Independent RPC source quorum mandated; redundancy across RPC providers, hosting environments, and regions
 - Over four weeks, hands-on security-posture hardening was provided to several hundred industry partners, with further engagement planned
 
+> Note: Names, dates, and loss figures are based on primary sources — the official LayerZero Labs incident statement and the independent analyses (Chainalysis, Halborn, Galaxy Research, etc.). Each implementation's remediation status varies over time, so consult the latest information.
+
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+In this incident the central **failure primitive is "absent independent verification of observation-layer inputs"** — a representative case of a structure in which, on a cross-chain bridge, the verifier had no independent means of verifying the observation layer inputs it relies on to determine message origin. The inputs to the observation layer — the RPC responses referenced by the LayerZero Labs DVN — were left in a state where they could be manipulated by a single entity, namely the RPC nodes inside the compromised operations environment.
+
+Detection did not fail for lack of good design. The DVN signing keys themselves were not compromised, and the signing process was legitimate, so the typical observation points on the detection side (anomalous use of signing keys, misbehavior of the signing service) are difficult to fire under this structure. A 99.7% anomalous confidence score is unlikely to fire in a case where a legitimate process produced a legitimate signature over manipulated inputs. Detection remains an important layer, and in this incident it narrowed the post-event blast window and contributed to scoping the impact. What was missing sits in front of it: between detection and proof — establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised — an independent layer that verifies the genuineness of the inputs before approval.
+
+The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** (Brief 002). The shared structure is that the trust configuration of a cross-chain bridge sits under the control of a single entity. The difference is that this incident distorted trust by manipulating the RPC observation layer the DVN reads from, while the Stake DAO incident distorted trust by directly rewriting the LayerZero v2 trust source via a deployer private key. Both reach the same structure from different vectors.
+
+In its incident statement, LayerZero Labs signaled its intent to treat this structure as an independent operational category — the observation layer. Hardening the observation layer (quorum, redundancy, human review) and embedding independently verifiable cryptographic proof into the message itself are not opposing approaches but complementary ones.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation is in a **complementary**, not competing, relationship with detection. By committing message origin in an independently verifiable form before a transaction, a two-stage configuration of detection + pre-execution attestation can establish the trust boundary. Even when the observation layer has been manipulated, an origin proof embedded in the message can tell the verifier through a separate channel whether the message came from a legitimate origin or not.
 
 Lemma's design answers this incident's gap — absent independent verification of observation-layer inputs — by embedding origin proof in the message itself and decoupling the accept decision from the observation layer.
 
@@ -108,23 +91,13 @@ Lemma's design answers this incident's gap — absent independent verification o
 
 This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
+For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026" (independent analysis by a leading blockchain analytics firm, including on-chain traces) — https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026" (technical analysis by a security audit firm, independent breakdown of the attack path) — https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights" (independent analysis) — https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
-
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.

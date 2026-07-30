@@ -19,13 +19,13 @@ gap_missing: "署名の鍵も手続きも正規だったため「署名対象の
 gap_fix: "資産を動かす前に「このメッセージは正規の出所から来ている」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-KelpDAO / rsETH で、LayerZero Labs の内部 RPC が改ざんされ、DVN が改ざんデータに正規署名を下し、116,500 rsETH（約 460 億円相当）が不正アンロックされた。盗まれたのは署名鍵ではなく、承認が参照する観測層の入力である。署名も手続きも正規だったため、署名鍵の異常使用を見る事後の検出は発火しにくい。検出と事前証明は代替でなく補完である。
+KelpDAO / rsETH で、LayerZero Labs の内部 RPC が改ざんされ、DVN が改ざんデータに正規署名を下し、116,500 rsETH（約 460 億円相当）が不正アンロックされた。盗まれたのは署名鍵ではなく、承認が参照する観測層の入力である。署名も手続きも正規だったため、署名鍵の異常使用を見る事後の検出は発火しにくい構造だった。効かなかったのは、承認の前に「署名対象のデータが本物か」を独立に確かめる層である——検出と事前証明は代替でなく、補完の関係にある。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **被害規模**: 116,500 rsETH(約 $292M、当時レート約 ¥460 億)が不正アンロック
 - **対象プロトコル**: KelpDAO(rsETH リキッドリステーキング)
@@ -35,24 +35,8 @@ KelpDAO / rsETH で、LayerZero Labs の内部 RPC が改ざんされ、DVN が�
 - **改ざんされた資産**: LayerZero Labs の内部 RPC クラウド環境(複数の内部 RPC ノード)
 - **侵害されなかった資産**: LayerZero Labs DVN 署名鍵そのもの
 - **公式情報**: LayerZero Labs incident statement および 5 月の続報 update。「observation layer」の独立カテゴリ化と、LayerZero Labs DVN の 1-of-1 構成署名拒否・3-of-3 default 化を含む
-- **核心**: 本事案の構造的失敗は、DVN が「メッセージの出所」を判断する際に参照する観測層の入力が、独立検証されないまま正規署名の根拠として受理された点にある。
 
----
-
-## 2. タイムライン
-
-- 2026-03 期(LayerZero Labs 公表に基づく推定): 社会工学を起点とする LayerZero Labs オペレーション環境への侵入が指摘されている期間
-- 2026-04-18: KelpDAO の rsETH 116,500 が不正アンロック
-- 2026-04-22 前後: 業界 incident response 開始
-- 2026-05 月: LayerZero Labs が incident statement と続報 update を公開。「observation layer」の独立カテゴリ化、LayerZero Labs DVN の 1-of-1 構成署名拒否ポリシー、3-of-3 default 化を発表
-
-> 注: 固有名・日付・被害額は LayerZero Labs の公式 incident statement および各社の独立解析（Chainalysis・Halborn・Galaxy Research 等）の一次情報に基づき、各実装の対応状況は時点により異なるため最新情報を参照のこと。
-
----
-
-## 3. 攻撃ベクター
-
-LayerZero Labs 公表に基づく chain:
+攻撃は次の連鎖で成立している(LayerZero Labs 公表に基づく)。
 
 1. **Initial compromise**: LayerZero Labs オペレーション環境への侵入(社会工学を起点とする経路が指摘されている)
 2. **Lateral movement**: 侵入した攻撃者が LayerZero Labs の RPC クラウド環境内の内部 RPC ノードを改ざん
@@ -63,31 +47,14 @@ LayerZero Labs 公表に基づく chain:
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事案における中心的な**失敗 primitive は「観測層入力の独立検証不在」**であり、cross-chain bridge において verifier が「メッセージの origin」を判断する際に参照する入力(観測層)に対する独立検証手段が欠落していた、という構造の代表事例である。Observation layer の入力(本事案では LayerZero Labs DVN が参照する RPC 応答)が、単一の主体(侵害されたオペレーション環境内の RPC ノード)で操作可能な状態に置かれていた。
+- 2026-03 期(LayerZero Labs 公表に基づく推定): 社会工学を起点とする LayerZero Labs オペレーション環境への侵入が指摘されている期間
+- 2026-04-18: KelpDAO の rsETH 116,500 が不正アンロック
+- 2026-04-22 前後: 業界 incident response 開始
+- 2026-05 月: LayerZero Labs が incident statement と続報 update を公開。「observation layer」の独立カテゴリ化、LayerZero Labs DVN の 1-of-1 構成署名拒否ポリシー、3-of-3 default 化を発表
 
-同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**(Brief 002)がある。共通する構造は cross-chain bridge の信頼設定が単一主体の支配下にある点。差異は、本事案が DVN 観測層への RPC 改ざんを通じて trust を歪めたのに対し、Stake DAO 事案はデプロイヤー秘密鍵による LayerZero v2 trust source 直接書き換えを通じて trust を歪めた点にある。両事案は別ベクターから同一構造に到達している。
-
-LayerZero Labs は incident statement で本構造を「observation layer」として独立した運用カテゴリと位置付ける方針を示した。観測層を硬化させる方針(quorum・多重化・人手 review)と、message 自体に独立検証可能な暗号証明を埋め込む方針は、対立軸ではなく補完関係にある。
-
----
-
-## 5. 検出と証明の落差
-
-本事案では、DVN 署名鍵そのものは侵害されておらず、署名プロセスも正規であった。検出側の典型的観測点(署名鍵の異常使用、署名サービスの誤動作)は機能しにくい構造であった。攻撃が成立したのは観測層の入力データが操作されたためであり、署名プロセス自体は仕様通りに動作していた。
-
-検出層強化のみでは構造的に届きにくい gap が本事案で露呈した。「99.7% で異常」型の信頼度スコアは、本事案のように「正規プロセスが操作された入力に対して正規署名を出した」事案では発火しにくい。これは検出ツール / 検出ベンダーの設計が劣っているのではなく、検出と立証(規制報告・行政手続き・訴訟での「許可されていない権限行使があった」立証)の間に独立した層が必要であることを示している。検出は依然として重要な層であり、本事案でも事象後の blast window を狭め、影響範囲の同定に貢献した。
-
-事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にある。取引前に「メッセージの出所」を独立に検証可能な形で証跡化することで、検出 + 事前証明の二段構成で trust boundary を確立する設計が成立する。Observation layer に改ざんが入っていても、message に埋め込まれた origin proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
-
-LayerZero Labs(2026-05 月 incident statement 公開時):
+LayerZero Labs が公表した対応(2026-05 incident statement 時点)は次のとおり。
 
 - LayerZero Labs DVN は今後、1-of-1 構成での署名を拒否
 - LayerZero v2 default は ≥3-of-3 DVN 構成
@@ -95,9 +62,25 @@ LayerZero Labs(2026-05 月 incident statement 公開時):
 - 独立 RPC ソース quorum を必須化、RPC プロバイダー・ホスティング環境・地域の多重化
 - 業界パートナー数百社に対して 4 週間にわたり security posture 強化の支援を実施、継続予定
 
+> 注: 固有名・日付・被害額は LayerZero Labs の公式 incident statement および各社の独立解析（Chainalysis・Halborn・Galaxy Research 等）の一次情報に基づき、各実装の対応状況は時点により異なるため最新情報を参照のこと。
+
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+本事案における中心的な**失敗 primitive は「観測層入力の独立検証不在」**であり、cross-chain bridge において verifier が「メッセージの origin」を判断する際に参照する入力(観測層)に対する独立検証手段が欠落していた、という構造の代表事例である。Observation layer の入力(本事案では LayerZero Labs DVN が参照する RPC 応答)が、単一の主体(侵害されたオペレーション環境内の RPC ノード)で操作可能な状態に置かれていた。
+
+検出が止められなかったのは、設計が劣っていたからではない。DVN 署名鍵そのものは侵害されておらず、署名プロセスも正規であったため、検出側の典型的観測点(署名鍵の異常使用、署名サービスの誤動作)が機能しにくい構造だった。「99.7% で異常」型の信頼度スコアは、本事案のように「正規プロセスが操作された入力に対して正規署名を出した」事案では発火しにくい。検出は依然として重要な層であり、本事案でも事象後の blast window を狭め、影響範囲の同定に貢献した。効かなかったのはその手前——検出と立証(規制報告・行政手続き・訴訟での「許可されていない権限行使があった」立証)の間に必要な、承認の前に入力の真正性を独立に確かめる層である。
+
+同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**(Brief 002)がある。共通する構造は cross-chain bridge の信頼設定が単一主体の支配下にある点。差異は、本事案が DVN 観測層への RPC 改ざんを通じて trust を歪めたのに対し、Stake DAO 事案はデプロイヤー秘密鍵による LayerZero v2 trust source 直接書き換えを通じて trust を歪めた点にある。両事案は別ベクターから同一構造に到達している。
+
+LayerZero Labs は incident statement で本構造を「observation layer」として独立した運用カテゴリと位置付ける方針を示した。観測層を硬化させる方針(quorum・多重化・人手 review)と、message 自体に独立検証可能な暗号証明を埋め込む方針は、対立軸ではなく補完関係にある。
+
+---
+
+## 5. 証明があれば、何が変わるか
+
+事前証明(pre-execution attestation)は、検出に対する代替ではなく **補完** の関係にある。取引前に「メッセージの出所」を独立に検証可能な形で証跡化することで、検出 + 事前証明の二段構成で trust boundary を確立する設計が成立する。Observation layer に改ざんが入っていても、message に埋め込まれた origin proof は別系統で「この message は正規の origin から来た / 来ていない」を verifier に告げる。
 
 Lemma の設計は、observation layer 入力の独立検証不在という本事案の gap に対し、message 自体に来歴証明を埋め込んで accept 判定を観測層から切り離す点で対置される。
 
@@ -108,23 +91,13 @@ Lemma の設計は、observation layer 入力の独立検証不在という本�
 
 これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想であり、検出層を置き換えるものではなく補完する。
 
-設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
+事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
 
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Chainalysis blog**: "KelpDAO Bridge Exploit, April 2026"(blockchain analytics 大手による独立解析、onchain trace を含む)— https://www.chainalysis.com/blog/kelpdao-bridge-exploit-april-2026/
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026"(security audit 企業による技術解説、攻撃経路の独立分析)— https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights"(独立解析)— https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
-
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
