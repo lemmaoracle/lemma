@@ -2,22 +2,22 @@
 /**
  * Lemma Critical Brief — shared Index template for /ja/ and /en/.
  *
- * Phase 1 search & discovery redesign (mockup: Lemma_brief_index_phase1):
- *   - Simplified hero ("信頼インフラ" / "trust infrastructure") + search bar
- *   - Meta strip (RSS · Methodology · Newsletter)
- *   - Sticky Category filter bar (chips, dynamic counts)
- *   - Sort (newest / oldest / category) + density (grid / list) controls
- *   - Pillar sections × 4: capped 2-col white-card grid + "もっと見る" link
- *   - White corner-accent Brief cards
+ * モック `lemma_brief_index_mock_v5.html` の面
+ * （`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §4）。
  *
- * Filter / sort / search / density are client-side (progressive enhancement):
- * every Brief is rendered server-side (SEO + no-JS fallback), and a small
- * inline script toggles visibility, reorders, and reads/writes URL params
- * (?category=<slug>, ?pillar=p1..p4, ?q=<keyword>). The default (no param)
- * view is Pillar-grouped, capped to CARDS_PER_PILLAR per section.
+ * 構成: ヒーロー（h1／リード／RSS・メソドロジー・ニュースレター）→
+ * 脅威タイプで探す（最上部・2列。ラインアイコン＋名称＋件数の横バー＋件数、
+ * 先頭に「すべて 109」のピル）→ よく見られている（2列・1行クランプ）→
+ * すべての Brief（見出し行の右端に虫眼鏡の検索）→ 月見出し＋2列カード。
  *
- * Card markup is inline here (not BriefCard.astro, which still serves the
- * archive pages) — the card spec differs (corner accent, foot divider).
+ * やらないこと（§4.3）: カバー画像／冒頭の統計パネル／「読み方」ブロック。
+ * 109件は1ページに全件出す（§4.4 現行踏襲。SEO と no-JS フォールバック）。
+ *
+ * フィルタ・検索はクライアント側の progressive enhancement で、従来どおり
+ * URL パラメータ（?category=<slug> / ?pillar=p1..p4 / ?q=<keyword>）を
+ * 読み書きする——Brief 記事のタグや柱ページからの deep link を壊さない。
+ * 旧デザインのソート／密度切替／ページングは、月見出しの時系列一覧に
+ * 役割を吸収されたので持たない。
  */
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
@@ -26,15 +26,12 @@ import Footer from "../components/FooterRenewal.astro";
 import { getTranslations, type Locale } from "../i18n/translations";
 import {
   categoryLabel,
-  categoryDescription,
   type PillarSlug,
   type CategorySlug,
 } from "../data/criticalBriefs";
-import { extractTldr } from "../data/extractTldr";
 import { getEnBriefMap } from "../data/getEnBriefMap";
 import { POPULAR_BRIEF_SLUGS } from "../data/popularBriefs";
 import NewsletterEmbed from "../components/NewsletterEmbed.astro";
-import { DISCOVERY_CALL_URL } from "../config/cta";
 
 export interface BriefIndexTemplateProps {
   locale: Locale;
@@ -51,12 +48,6 @@ const PILLAR_PARAM: Record<PillarSlug, string> = {
   "02-verifiable-ai": "p2",
   "03-agent-authority": "p3",
   "04-regulatory-attribute": "p4",
-};
-const PILLAR_SHORT: Record<PillarSlug, string> = {
-  "01-verifiable-origin": "P1",
-  "02-verifiable-ai": "P2",
-  "03-agent-authority": "P3",
-  "04-regulatory-attribute": "P4",
 };
 
 type AnyBrief =
@@ -79,6 +70,29 @@ const briefsByPublishedDesc: ReadonlyArray<AnyBrief> = [...allBriefs].sort(
   },
 );
 
+// 月見出し（`2026年7月 · 6件`）ごとのグループ。published の降順のまま切る。
+interface MonthGroup {
+  key: string; // "2026-07"
+  label: string;
+  briefs: AnyBrief[];
+}
+const monthGroups: MonthGroup[] = [];
+for (const b of briefsByPublishedDesc) {
+  const d = b.data.published;
+  const key = d.toISOString().slice(0, 7);
+  let group = monthGroups[monthGroups.length - 1];
+  if (!group || group.key !== key) {
+    const y = d.getUTCFullYear();
+    const m = d.getUTCMonth();
+    const label = isJa
+      ? `${y}年${m + 1}月`
+      : `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][m]} ${y}`;
+    group = { key, label, briefs: [] };
+    monthGroups.push(group);
+  }
+  group.briefs.push(b);
+}
+
 // Manually-curated "most-read" ranking (src/data/popularBriefs.ts), resolved to
 // Brief entries in listed order; unknown slugs are dropped.
 const briefById = new Map(allBriefs.map((b) => [b.id, b]));
@@ -99,18 +113,47 @@ for (const b of allBriefs) {
 const sortedCategories = Array.from(categoryUsage.entries()).sort(
   (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
 );
+const maxCategoryCount = sortedCategories[0]?.[1] ?? 1;
 
 const briefsCount = allBriefs.length;
+
+/**
+ * 脅威タイプの 16px ラインアイコン（モックのものをカテゴリ slug に対応）。
+ * `model-supply-chain` と `agent-payment-abuse` はモックの一覧に無いので
+ * 同じ線の言語（1.3px・round）で補作。未登録は既定の円。
+ */
+const CATEGORY_ICONS: Partial<Record<CategorySlug, string>> = {
+  "identity-auth": '<circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.4"/>',
+  "agent-infrastructure":
+    '<circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="8" cy="12" r="1.8"/><path d="M5.4 6.2 7 10.4M10.6 6.2 9 10.4M5.8 5h4.4"/>',
+  "attribute-proof-bypass":
+    '<rect x="2.5" y="3.5" width="11" height="9" rx="2.5" stroke-dasharray="2.6 2.2"/><path d="M4 12.5 12 3.5"/>',
+  "data-provenance":
+    '<circle cx="3" cy="8" r="1.6"/><circle cx="8" cy="8" r="1.6"/><path d="M4.8 8h1.4M9.8 8h1.6"/><path d="M11.6 5.6 14 8l-2.4 2.4"/>',
+  "ai-decision-integrity":
+    '<path d="M2 8.5c1.6 0 1.6-4 3.2-4s1.6 7 3.2 7 1.6-5 3.2-5 1.6 2 2.4 2"/>',
+  "code-provenance": '<path d="M5.6 4.5 2.5 8l3.1 3.5M10.4 4.5 13.5 8l-3.1 3.5"/>',
+  "bridge-config-trust":
+    '<circle cx="3" cy="8" r="1.7"/><circle cx="13" cy="8" r="1.7"/><path d="M4.9 8h6.2" stroke-dasharray="2.4 2"/>',
+  "agent-runaway":
+    '<rect x="2.5" y="4" width="7" height="8" rx="2"/><path d="M9.6 8h4M11.8 6.2 13.8 8l-2 1.8"/>',
+  "training-data-provenance":
+    '<path d="M2.6 5.4 8 3l5.4 2.4L8 7.8z"/><path d="M2.6 8.6 8 11l5.4-2.4M2.6 11.4 8 13.8l5.4-2.4"/>',
+  "kyc-aml-disclosure":
+    '<circle cx="8" cy="8" r="5.6"/><path d="M8 2.4v11.2"/><path d="M8 2.4a5.6 5.6 0 0 1 0 11.2z" fill="currentColor" stroke="none" opacity=".22"/>',
+  "ai-bias-harm":
+    '<path d="M8 2.6v10.8M3 6.4h10"/><path d="M3 6.4 1.4 10h3.2zM13 6.4 11.4 10h3.2z"/>',
+  "model-supply-chain":
+    '<rect x="2.5" y="2.5" width="4.6" height="4.6" rx="1.2"/><rect x="8.9" y="8.9" width="4.6" height="4.6" rx="1.2"/><path d="M7.1 4.8h4.1v4.1M8.9 11.2H4.8V7.1"/>',
+  "agent-payment-abuse":
+    '<circle cx="6.5" cy="8" r="4.5"/><path d="M4.7 6.6 6.5 8.6l1.8-2M6.5 8.6v2.4M5 9.8h3M12 5.5 14.5 8 12 10.5"/>',
+};
+const DEFAULT_ICON = '<circle cx="8" cy="8" r="6"/>';
 
 // Per-card derived data (one source of truth)
 function briefCardData(b: AnyBrief) {
   const titleLoc = isJa ? b.data.title : b.data.title_en;
-  const titleParts = titleLoc.split(" — ");
-  const mainTitle = titleParts[0];
-  const subFromTitle =
-    titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "";
-  const tldr = extractTldr(b.body, 140);
-  const subText = subFromTitle || tldr;
+  const mainTitle = titleLoc.split(" — ")[0];
   const publishedStr = b.data.published.toISOString().slice(0, 10);
   const briefNoPad = String(b.data.brief_no).padStart(3, "0");
   const pillar = b.data.pillar as PillarSlug;
@@ -123,7 +166,6 @@ function briefCardData(b: AnyBrief) {
   const cats = [primarySlug, ...secondarySlugs].join(",");
   const searchBlob = [
     mainTitle,
-    subText,
     primaryCatLabel,
     ...secondaryCatLabels,
     `no${briefNoPad}`,
@@ -134,18 +176,13 @@ function briefCardData(b: AnyBrief) {
   return {
     href: `${base}/critical/briefs/${b.id}/`,
     briefNoPad,
-    publishedStr,
-    ts: b.data.published.getTime(),
     briefNo: b.data.brief_no,
-    pillar,
+    publishedStr,
+    dateShort: publishedStr.slice(5), // "07-28"
     pillarParam: PILLAR_PARAM[pillar],
-    pillarShort: PILLAR_SHORT[pillar],
     mainTitle,
-    subText,
-    shortLede: extractTldr(b.body, 96),
     primarySlug,
     primaryCatLabel,
-    secondaryCatLabels,
     cats,
     searchBlob,
   };
@@ -163,24 +200,17 @@ const labels = isJa
       rssLabel: "RSS フィード",
       methodologyLabel: "メソドロジー",
       newsletterLabel: "ニュースレター",
-      searchPlaceholder: "Brief を検索 — タイトル / 概要 / タグ から探す",
-      searchBtn: "検索",
-      searchAria: "Brief を検索",
-      featuredHead: "注目 · 最新の Brief",
-      prevLabel: "前へ",
-      nextLabel: "次へ",
-      filterCategoryLabel: "脅威タイプ",
+      threatTypes: "脅威タイプで探す",
+      threatTypesEn: `Threat Types · ${sortedCategories.length}`,
+      popular: "よく見られている",
+      popularEn: "Popular",
+      allBriefs: "すべての Brief",
       allChip: "すべて",
-      resultsAllDesc: "すべての Brief",
-      resultsFilteredDesc: "件の Brief",
-      sortNewest: "新しい順",
-      sortOldest: "古い順",
-      sortCategory: "脅威タイプ順",
-      gridViewAria: "グリッド表示",
-      listViewAria: "リスト表示",
+      searchPlaceholder: "絞り込む",
+      searchAria: "Brief を絞り込む",
       countUnit: (n: number) => `${n} 件`,
-      briefReadCta: "Brief →",
-      featuredReadCta: "Brief を読む →",
+      noResults: "該当する Brief が見つかりませんでした。",
+      showAll: "すべて表示",
       pageTitle:
         "Lemma Critical Brief — 脅威インテリジェンス × 信頼インフラ",
       description:
@@ -198,24 +228,17 @@ const labels = isJa
       rssLabel: "RSS feed",
       methodologyLabel: "Methodology",
       newsletterLabel: "Newsletter",
-      searchPlaceholder: "Search Briefs — by title, summary, or tag",
-      searchBtn: "Search",
-      searchAria: "Search Briefs",
-      featuredHead: "Featured · Latest Briefs",
-      prevLabel: "Previous",
-      nextLabel: "Next",
-      filterCategoryLabel: "Threat type",
+      threatTypes: "Browse by threat type",
+      threatTypesEn: `Threat Types · ${sortedCategories.length}`,
+      popular: "Most-read",
+      popularEn: "Popular",
+      allBriefs: "All Briefs",
       allChip: "All",
-      resultsAllDesc: "All Briefs",
-      resultsFilteredDesc: "Briefs",
-      sortNewest: "Newest",
-      sortOldest: "Oldest",
-      sortCategory: "By category",
-      gridViewAria: "Grid view",
-      listViewAria: "List view",
+      searchPlaceholder: "Filter",
+      searchAria: "Filter Briefs",
       countUnit: (n: number) => `${n} brief${n === 1 ? "" : "s"}`,
-      briefReadCta: "Brief →",
-      featuredReadCta: "Read Brief →",
+      noResults: "No Briefs matched your filters.",
+      showAll: "Show all",
       pageTitle:
         "Lemma Critical Brief — threat intelligence × trust infrastructure",
       description:
@@ -224,51 +247,6 @@ const labels = isJa
 
 const rssHref = `${base}/critical/briefs/feed.xml`;
 const methodologyHref = `${base}/critical/briefs/methodology/`;
-
-// ── Brief → Lemma conversion path (BizDev 導線モジュール v1) ──
-// Active path (banner + tail CTA) → AI-attack-resistance LP, with the
-// Discovery Call as the quiet secondary. Index uses the default (共通)
-// copy variant; per-Brief theme swaps live on the detail page. Neutral
-// hero/analysis above stays untouched; UTM + GA4 tag the Brief→LP→Call route.
-const LP_PATH = `${base}/compare/ai-models-attack-resistance/`;
-function lpUrl(medium: string): string {
-  const p = new URLSearchParams({
-    utm_source: "brief_index",
-    utm_medium: medium,
-    utm_campaign: "brief_to_lp",
-    utm_term: locale,
-  });
-  return `${LP_PATH}?${p.toString()}`;
-}
-const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?${new URLSearchParams({
-  utm_source: "brief_index",
-  utm_medium: "cta_tail",
-  utm_campaign: "brief_to_lp",
-  utm_term: locale,
-}).toString()}`;
-
-const cta = isJa
-  ? {
-      bannerTag: "最新AI攻撃実験",
-      bannerLine: "最強AIが企業システムを突破。Lemma 導入後は？",
-      bannerBtn: "結果を見る →",
-      tailHead: "AI 時代のサイバー攻撃に、備えはできていますか？",
-      tailMainBtn: "最新AI攻撃実験を見る →",
-      tailSubLink: "デモをリクエスト →",
-      tailNote:
-        "※ セキュリティ評価（システム監査）は別途・規模に応じて設計します。",
-    }
-  : {
-      bannerTag: "AI ATTACK LAB",
-      bannerLine:
-        "The strongest AI broke into enterprise systems. What changes after Lemma?",
-      bannerBtn: "See the results →",
-      tailHead: "Are you ready for cyberattacks in the age of AI?",
-      tailMainBtn: "See the latest AI attack experiments →",
-      tailSubLink: "Request a demo →",
-      tailNote:
-        "* Security assessment (system audit) is scoped separately, sized to the engagement.",
-    };
 ---
 
 <Layout
@@ -280,259 +258,166 @@ const cta = isJa
 >
   <Navigation locale={locale} t={t.nav} base={base} />
 
-  <main class="bi-page">
-    <!-- Hero -->
-    <section class="bi-hero">
-      <div class="bi-container">
-        <div class="bi-eyebrow">{labels.eyebrow}</div>
-        <h1 class="bi-h1">
-          {labels.h1Lead}{" "}
-          <span class="bi-accent">{labels.h1Accent}</span>
-        </h1>
-        <p class="bi-hero-desc">
+  <main class="cb-page">
+    <div class="cb-wrap">
+      <!-- Hero -->
+      <section class="cb-hero">
+        <div class="cb-kicker">{labels.eyebrow}</div>
+        <h1>{labels.h1Lead}<br />{labels.h1Accent}</h1>
+        <p>
           {labels.descLead}<strong>{labels.descStrong}</strong>{labels.descEnd}
         </p>
-
-        <div class="bi-meta-strip">
+        <div class="cb-acts">
           <a href={rssHref}>{labels.rssLabel}</a>
-          <span class="bi-sep">·</span>
           <a href={methodologyHref}>{labels.methodologyLabel}</a>
-          <span class="bi-sep">·</span>
           <a href="#newsletter">{labels.newsletterLabel}</a>
         </div>
-
-        <form class="bi-search" role="search" aria-label={labels.searchAria}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7"></circle>
-            <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-linecap="round"
-            ></line>
-          </svg>
-          <input
-            type="text"
-            name="q"
-            placeholder={labels.searchPlaceholder}
-            aria-label={labels.searchAria}
-            autocomplete="off"
-          />
-          <button type="submit">{labels.searchBtn}</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- Brief → Lemma banner (導線 v1 §1) — active path to the attack-resistance LP -->
-    <section class="bi-cta-banner-wrap">
-      <div class="bi-container">
-        <div class="bi-cta-banner">
-          <div class="bi-cta-banner-text">
-            <div class="bi-cta-tag">{cta.bannerTag}</div>
-            <p class="bi-cta-line">{cta.bannerLine}</p>
-          </div>
-          <a
-            class="bi-cta-btn"
-            href={lpUrl("banner")}
-            data-ev="brief_index_lp_click"
-            data-cta="banner"
-          >{cta.bannerBtn}</a>
-        </div>
-      </div>
-    </section>
-
-
-    {/* よく見られている Brief: manually-curated ranking (popularBriefs.ts) */}
-    {popularBriefs.length > 0 && (
-      <section class="bi-popular-section">
-        <div class="bi-container">
-          <div class="bi-popular-head">
-            <h2 class="bi-popular-title">
-              {isJa ? "よく見られている Brief" : "Most-read Briefs"}
-            </h2>
-          </div>
-          <ol class="bi-popular-list">
-            {popularBriefs.map((b, i) => {
-              const c = briefCardData(b);
-              return (
-                <li class="bi-popular-li">
-                  <a href={c.href} class="bi-popular-item">
-                    <span class="bi-popular-rank">{i + 1}</span>
-                    <span class="bi-popular-main">
-                      <span class="bi-popular-name">{c.mainTitle}</span>
-                      <span class="bi-popular-meta">{c.primaryCatLabel} · No. {c.briefNoPad}</span>
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
       </section>
-    )}
 
-    <!-- 脅威タイプで探す: category tile grid (filter) -->
-    <section class="bi-tiles-section">
-      <div class="bi-container">
-        <div class="bi-tiles-head">
-          <h2 class="bi-tiles-title">
-            {isJa ? "脅威タイプで探す" : "Browse by threat type"}
-          </h2>
+      <!-- 脅威タイプで探す（最上部・2列・件数の横バー） -->
+      <section aria-label={labels.threatTypes}>
+        <div class="cb-label">
+          <b>{labels.threatTypes}</b><span>{labels.threatTypesEn}</span>
         </div>
-        <div class="bi-tiles">
-          <button type="button" class="bi-tile bi-tile--all is-active" data-cat="all">
-            <span class="bi-tile-label">{labels.allChip}</span>
-            <span class="bi-tile-count">{labels.countUnit(briefsCount)}</span>
-          </button>
+        <button type="button" class="cb-allpill is-active" data-cat="all">
+          {labels.allChip} <i>{briefsCount}</i>
+        </button>
+        <div class="cb-distwrap">
           {sortedCategories.map(([cat, count]) => (
-            <button
-              type="button"
-              class="bi-tile"
-              data-cat={cat}
-              data-label={categoryLabel(cat, locale)}
-              data-desc={categoryDescription(cat, locale)}
-            >
-              <span class="bi-tile-label">{categoryLabel(cat, locale)}</span>
-              <span class="bi-tile-count">{labels.countUnit(count)}</span>
+            <button type="button" class="cb-dist" data-cat={cat}>
+              <span class="di">
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={CATEGORY_ICONS[cat] ?? DEFAULT_ICON}
+                />
+              </span>
+              <span class="dn">{categoryLabel(cat, locale)}</span>
+              <span class="db">
+                <i style={`width:${Math.round((count / maxCategoryCount) * 100)}%`}></i>
+              </span>
+              <span class="dc">{count}</span>
             </button>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Pillar-grouped grid -->
-    <section class="bi-grid-section">
-      <div class="bi-container">
-        <div class="bi-grid-head">
-          <div class="bi-results-count">
-            <strong class="bi-results-strong">{briefsCount}</strong>
-            <span class="bi-results-desc">{labels.resultsAllDesc}</span>
+      {/* よく見られている: manually-curated ranking (popularBriefs.ts) */}
+      {popularBriefs.length > 0 && (
+        <section aria-label={labels.popular}>
+          <div class="cb-label">
+            <b>{labels.popular}</b><span>{labels.popularEn}</span>
           </div>
-          <div class="bi-grid-controls">
-            <select class="bi-sort" aria-label="Sort">
-              <option value="newest">{labels.sortNewest}</option>
-              <option value="oldest">{labels.sortOldest}</option>
-              <option value="category">{labels.sortCategory}</option>
-            </select>
-            <div class="bi-density">
-              <button type="button" class="is-active" data-density="grid" aria-label={labels.gridViewAria}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="8" height="8" rx="1"></rect>
-                  <rect x="13" y="3" width="8" height="8" rx="1"></rect>
-                  <rect x="3" y="13" width="8" height="8" rx="1"></rect>
-                  <rect x="13" y="13" width="8" height="8" rx="1"></rect>
-                </svg>
-              </button>
-              <button type="button" data-density="list" aria-label={labels.listViewAria}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <line x1="3" y1="12" x2="21" y2="12"></line>
-                  <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-              </button>
+          <div class="cb-popwrap">
+            {popularBriefs.map((b, i) => {
+              const c = briefCardData(b);
+              return (
+                <a class="cb-poprow" href={c.href}>
+                  <span class="rk">{i + 1}</span>
+                  <span class="pt">{c.mainTitle}</span>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <!-- すべての Brief（見出し行の右端に虫眼鏡の検索） -->
+      <section aria-label={labels.allBriefs}>
+        <div class="cb-listhead">
+          <b>{labels.allBriefs}</b>
+          <span class="lh-en">All — {briefsCount}</span>
+          <span class="lh-rule"></span>
+          <label class="cb-search">
+            <span class="mg">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <circle cx="7" cy="7" r="4.6"></circle>
+                <path d="m10.4 10.4 3.2 3.2"></path>
+              </svg>
+            </span>
+            <input
+              type="text"
+              name="q"
+              placeholder={labels.searchPlaceholder}
+              aria-label={labels.searchAria}
+              autocomplete="off"
+            />
+          </label>
+        </div>
+
+        {/* フィルタ中の件数と解除（月見出しの一覧はフィルタで隠れる）。 */}
+        <div class="cb-fctx" data-filter-context hidden>
+          <span data-fctx-label></span>
+          <button type="button" data-fctx-clear>{labels.showAll}</button>
+        </div>
+
+        {monthGroups.map((g) => (
+          <div class="cb-month" data-month>
+            <div class="cb-mhead">
+              <b>{g.label}</b>
+              <span data-month-count>{labels.countUnit(g.briefs.length)}</span>
+            </div>
+            <div class="cb-bcdgrid">
+              {g.briefs.map((b) => {
+                const c = briefCardData(b);
+                return (
+                  <a
+                    href={c.href}
+                    class="cb-bcd"
+                    data-pillar={c.pillarParam}
+                    data-cats={c.cats}
+                    data-search={c.searchBlob}
+                  >
+                    <div class="cb-bcd-no">{c.briefNo}</div>
+                    <div>
+                      <div class="cb-bcd-t">{c.mainTitle}</div>
+                      <div class="cb-bcd-foot">
+                        <span class="cb-bcd-tag">{c.primaryCatLabel}</span>
+                        <span class="cb-bcd-d">{c.dateShort}</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
-        </div>
+        ))}
 
-        {/* Shown only while a threat-type tile is active (filter context). */}
-        <div class="bi-filter-context" data-filter-context hidden>
-          <div class="bi-fctx-text">
-            <span class="bi-fctx-label" data-fctx-label></span>
-            <span class="bi-fctx-desc" data-fctx-desc></span>
-          </div>
-          <button type="button" class="bi-fctx-clear" data-fctx-clear>
-            {isJa ? "すべて表示" : "Show all"}
-          </button>
-        </div>
+        <div class="cb-no-results" hidden>{labels.noResults}</div>
+      </section>
 
-        <div class="bi-brief-grid">
-          {briefsByPublishedDesc.map((b) => {
-            const c = briefCardData(b);
-            return (
-              <a
-                href={c.href}
-                class="bi-brief-card"
-                data-pillar={c.pillarParam}
-                data-cats={c.cats}
-                data-catkey={c.primarySlug}
-                data-ts={c.ts}
-                data-no={c.briefNo}
-                data-search={c.searchBlob}
-              >
-                <div class="bi-brief-meta">
-                  <span class="bi-brief-no">No. {c.briefNoPad}</span>
-                  <span class="bi-brief-sep">·</span>
-                  <span>{c.publishedStr}</span>
-                </div>
-                <h3 class="bi-brief-title">{c.mainTitle}</h3>
-                <div class="bi-brief-foot">
-                  <span class="bi-brief-tag primary">{c.primaryCatLabel}</span>
-                  <span class="bi-brief-read">{labels.briefReadCta}</span>
-                </div>
-              </a>
-            );
-          })}
-        </div>
-
-        <nav class="bi-pager" data-pager hidden aria-label="Pagination"></nav>
-
-        <div class="bi-no-results" hidden>
-          {isJa
-            ? "該当する Brief が見つかりませんでした。"
-            : "No Briefs matched your filters."}
-        </div>
-      </div>
-    </section>
-
-    <!-- Brief → Lemma tail CTA (導線 v1 §2) — single path; newsletter stays below as the quiet option -->
-    <section class="bi-cta-tail">
-      <div class="bi-container">
-        <div class="bi-cta-tail-card">
-          <h2 class="bi-cta-tail-head">{cta.tailHead}</h2>
-          <div class="bi-cta-tail-actions">
-            <a
-              class="bi-cta-tail-main"
-              href={lpUrl("cta_tail")}
-              data-ev="brief_index_lp_click"
-              data-cta="cta_tail"
-            >{cta.tailMainBtn}</a>
-            <a
-              class="bi-cta-tail-sub"
-              href={discoveryUrl}
-              target="_blank"
-              rel="noopener"
-              data-ev="brief_index_call_click"
-              data-cta="cta_tail"
-            >{cta.tailSubLink}</a>
-          </div>
-          <p class="bi-cta-tail-note">{cta.tailNote}</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="newsletter" class="bi-newsletter">
-      <div class="bi-container">
+      <section id="newsletter" class="cb-newsletter">
         <NewsletterEmbed locale={locale} placement="briefs-index" />
-      </div>
-    </section>
+      </section>
+    </div>
 
     {/* Dismissible sticky newsletter bar — tucks away at the footer #newsletter. */}
-    <div class="bi-nlbar" data-nlbar>
-      <div class="bi-nlbar-inner">
-        <div class="bi-nlbar-text">
-          <span class="bi-nlbar-title">Lemma Critical Weekly</span>
-          <span class="bi-nlbar-lead">
+    <div class="cb-nlbar" data-nlbar>
+      <div class="cb-nlbar-inner">
+        <div class="cb-nlbar-text">
+          <span class="cb-nlbar-title">Lemma Critical Weekly</span>
+          <span class="cb-nlbar-lead">
             {isJa
               ? "重大リスク事案の構造分析を、毎週メールで。"
               : "Structural analysis of major risk incidents — weekly, by email."}
           </span>
         </div>
-        <div class="bi-nlbar-actions">
+        <div class="cb-nlbar-actions">
           <button
             type="button"
-            class="bi-nlbar-cta"
+            class="cb-nlbar-cta"
             data-tally-open={isJa ? "EkMj82" : "rjvN2X"}
             data-tally-layout="modal"
             data-tally-width="540"
@@ -540,7 +425,7 @@ const cta = isJa
           >{isJa ? "メールで購読" : "Subscribe"}</button>
           <button
             type="button"
-            class="bi-nlbar-close"
+            class="cb-nlbar-close"
             data-nlbar-close
             aria-label={isJa ? "閉じる" : "Dismiss"}
           >✕</button>
@@ -553,1035 +438,615 @@ const cta = isJa
 </Layout>
 
 <style>
-  .bi-page {
-    --bi-display: "Sora", system-ui, -apple-system, sans-serif;
-    --bi-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
-    --bi-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --bi-brown: #8b4513;
-    --bi-brown-dark: #6b2f0a;
-    --bi-brown-soft: #f4e8dc;
-    --bi-brown-mid: #c18b5c;
-    --bi-cream: #fcfaf5;
-    --bi-cream-deep: #f2eedf;
-    --bi-line: #e8dfc8;
-    --bi-ink: #2a1f14;
-    --bi-ink-soft: #5c4a38;
-    --bi-ink-faint: #8b7b68;
-    --bi-rust: #b8501f;
+  /* トークンの値は記事テンプレート（BlogArticleTemplate）と同じもの。 */
+  .cb-page {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+    --font-mono: "Space Mono", monospace;
 
-    background: var(--bi-cream);
-    color: var(--bi-ink);
-    font-family: var(--bi-body);
-    font-weight: 400;
-    line-height: 1.65;
-    padding: 0 0 0;
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    padding: 0;
     margin-top: 64px;
-    font-feature-settings: "palt";
   }
-  :root[lang="en"] .bi-page {
-    --bi-body: "Sora", system-ui, sans-serif;
-  }
-
-  .bi-page .is-hidden {
-    display: none !important;
-  }
-
-  .bi-container {
-    max-width: 1200px;
+  .cb-wrap {
+    max-width: calc(1180px + 12vw);
     margin: 0 auto;
-    padding: 0 56px;
+    padding: 0 6vw;
   }
 
   /* ─── HERO ─── */
-  .bi-hero {
-    padding: 64px 0 48px;
-    background: var(--bi-cream);
+  .cb-hero {
+    padding: 44px 0 0;
+    max-width: 70ch;
   }
-  .bi-eyebrow {
-    font-family: var(--bi-mono);
+  .cb-kicker {
+    font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.14em;
-    color: var(--bi-brown);
-    font-weight: 700;
-    margin: 0 0 14px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cb-hero h1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.55;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 14px 0 14px;
+  }
+  .cb-hero p {
+    margin: 0 0 18px;
+    font-size: 14.5px;
+    line-height: 1.95;
+    color: var(--tx-soft);
+  }
+  .cb-hero strong {
+    font-weight: 600;
+    color: var(--tx);
+  }
+  .cb-acts {
     display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .bi-eyebrow::before {
-    content: "●";
-    color: var(--bi-rust);
-    font-size: 13px;
-  }
-  .bi-h1 {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 54px;
-    line-height: 1.1;
-    color: var(--bi-ink);
-    letter-spacing: -0.025em;
-    margin: 0 0 20px;
-    max-width: 940px;
-  }
-  :root[lang="ja"] .bi-h1 {
-    font-size: 46px;
-  }
-  .bi-accent {
-    color: var(--bi-brown);
-  }
-  .bi-hero-desc {
-    font-size: 15.5px;
-    color: var(--bi-ink-soft);
-    line-height: 1.85;
-    max-width: 780px;
-    margin: 0 0 32px;
-  }
-  .bi-hero-desc strong {
-    color: var(--bi-ink);
-    font-weight: 700;
-  }
-  .bi-meta-strip {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--bi-mono);
-    font-size: 12px;
-    color: var(--bi-ink-soft);
-    margin: 0 0 26px;
+    gap: 20px;
     flex-wrap: wrap;
-  }
-  .bi-meta-strip a {
-    color: var(--bi-brown);
-    text-decoration: none;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-  .bi-meta-strip a:hover {
-    text-decoration: underline;
-  }
-  .bi-meta-strip .bi-sep {
-    color: var(--bi-ink-faint);
-    opacity: 0.5;
-  }
-  .bi-search {
-    display: flex;
-    align-items: center;
-    background: var(--bi-cream);
-    border: 1px solid var(--bi-line);
-    border-radius: 50px;
-    padding: 6px 6px 6px 24px;
-    max-width: 680px;
-    box-shadow: 0 1px 3px rgba(139, 69, 19, 0.04);
-  }
-  .bi-search svg {
-    width: 18px;
-    height: 18px;
-    color: var(--bi-ink-faint);
-    flex-shrink: 0;
-  }
-  .bi-search input {
-    flex: 1;
-    min-width: 0;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: var(--bi-body);
-    font-size: 15px;
-    color: var(--bi-ink);
-    padding: 14px;
-  }
-  .bi-search input::placeholder {
-    color: var(--bi-ink-faint);
-  }
-  .bi-search button {
-    background: var(--bi-ink);
-    color: var(--bi-cream);
-    border: none;
-    border-radius: 50px;
-    padding: 12px 24px;
-    font-family: var(--bi-mono);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .bi-search button:hover {
-    background: var(--bi-brown-dark);
-  }
-
-  /* ─── よく見られている Brief: curated ranking ─── */
-  .bi-popular-section {
-    padding: 28px 0 4px;
-  }
-  .bi-popular-head {
-    margin: 0 0 10px;
-  }
-  .bi-popular-title {
-    font-family: var(--bi-display);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-  .bi-popular-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 0 32px;
-  }
-  .bi-popular-li {
-    border-bottom: 1px solid var(--bi-line);
-  }
-  .bi-popular-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 13px 4px;
-    text-decoration: none;
-  }
-  .bi-popular-rank {
-    font-family: var(--bi-display);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--bi-brown);
-    min-width: 22px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-  .bi-popular-main {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-  }
-  .bi-popular-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: color 0.15s;
-  }
-  .bi-popular-item:hover .bi-popular-name {
-    color: var(--bi-brown);
-  }
-  .bi-popular-meta {
-    font-family: var(--bi-mono);
-    font-size: 10.5px;
-    color: var(--bi-ink-soft);
-    letter-spacing: 0.02em;
-  }
-  @media (max-width: 700px) {
-    .bi-popular-list {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  /* ─── 脅威タイプ tile grid (filter) ─── */
-  .bi-tiles-section {
-    padding: 32px 0 4px;
-  }
-  .bi-tiles-head {
-    margin: 0 0 14px;
-  }
-  .bi-tiles-title {
-    font-family: var(--bi-display);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-  .bi-tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(186px, 1fr));
-    gap: 10px;
-  }
-  .bi-tile {
-    text-align: left;
-    background: var(--bi-cream);
-    border: 1px solid var(--bi-line);
-    border-radius: 10px;
-    padding: 14px 16px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-family: inherit;
-    min-height: 60px;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .bi-tile:hover {
-    border-color: var(--bi-brown-mid);
-    background: var(--bi-brown-soft);
-  }
-  .bi-tile.is-active {
-    background: var(--bi-brown);
-    border-color: var(--bi-brown);
-  }
-  .bi-tile--all {
-    background: var(--bi-cream-deep);
-  }
-  .bi-tile-label {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    line-height: 1.4;
-  }
-  .bi-tile-count {
-    font-family: var(--bi-mono);
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--bi-brown);
-    letter-spacing: 0.04em;
-    margin-top: auto;
-  }
-  .bi-tile.is-active .bi-tile-label,
-  .bi-tile.is-active .bi-tile-count {
-    color: var(--bi-cream);
-  }
-
-  /* ─── GRID SECTION ─── */
-  .bi-grid-section {
-    padding: 44px 0 88px;
-  }
-  .bi-grid-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 0 28px;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-  .bi-results-count {
-    font-family: var(--bi-mono);
     font-size: 12.5px;
-    color: var(--bi-ink-soft);
-    font-weight: 700;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
   }
-  .bi-results-count strong {
-    color: var(--bi-ink);
-    font-size: 14px;
-  }
-  .bi-grid-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .bi-sort {
-    font-family: var(--bi-mono);
-    font-size: 12px;
-    color: var(--bi-ink);
-    font-weight: 700;
-    background: transparent;
-    border: 1px solid var(--bi-line);
-    border-radius: 50px;
-    padding: 8px 32px 8px 16px;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 4 L5 7 L8 4' stroke='%238B4513' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
+  .cb-acts a {
+    color: var(--ok-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(78, 122, 0, 0.3);
+    padding-bottom: 2px;
     transition: border-color 0.15s;
   }
-  .bi-sort:hover {
-    border-color: var(--bi-brown-mid);
-  }
-  .bi-density {
-    display: flex;
-    background: transparent;
-    border: 1px solid var(--bi-line);
-    border-radius: 50px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .bi-density button {
-    padding: 6px 12px;
-    background: transparent;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    color: var(--bi-ink-soft);
-    display: flex;
-    align-items: center;
-    transition: all 0.15s;
-  }
-  .bi-density button.is-active {
-    background: var(--bi-brown);
-    color: var(--bi-cream);
+  .cb-acts a:hover {
+    border-color: var(--ok-light);
   }
 
-  /* ─── PILLAR SECTION ─── */
-  .bi-pillar-section {
-    margin: 0 0 60px;
-  }
-  .bi-pillar-head {
+  /* ─── SECTION LABEL ───
+     ラベル行の罫線が上境界を兼ねる。直下に別の全幅罫線は置かない（§6-2）。 */
+  .cb-label {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     gap: 16px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--bi-line);
-    margin: 0 0 18px;
+    margin: 44px 0 18px;
   }
-  .bi-pillar-no {
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    color: var(--bi-brown);
-    letter-spacing: 0.12em;
-    font-weight: 700;
+  .cb-label b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+  }
+  .cb-label span {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 4px;
-    flex-shrink: 0;
+    color: var(--muted);
   }
-  .bi-pillar-no::before {
+  .cb-label::after {
     content: "";
-    display: inline-block;
-    width: 24px;
-    height: 1.5px;
-    background: var(--bi-brown);
-  }
-  .bi-pillar-title {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 32px;
-    color: var(--bi-ink);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0;
-  }
-  :root[lang="ja"] .bi-pillar-title {
-    line-height: 1.25;
-  }
-  .bi-pillar-count {
-    margin-left: auto;
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    color: var(--bi-ink-faint);
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    padding-bottom: 4px;
-    flex-shrink: 0;
-  }
-  .bi-pillar-sub {
-    font-size: 14px;
-    color: var(--bi-ink-soft);
-    line-height: 1.7;
-    margin: 0 0 26px;
-    max-width: 680px;
+    flex: 1;
+    border-top: 1px solid var(--line);
   }
 
-  /* ─── BRIEF CARD GRID ─── */
-  .bi-brief-grid {
+  /* ─── 脅威タイプで探す ─── */
+  .cb-allpill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--tx-soft);
+    border-radius: 99px;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    font-weight: 400;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .cb-allpill:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--tx);
+  }
+  .cb-allpill.is-active {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .cb-allpill i {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .cb-allpill.is-active i {
+    color: var(--ink);
+    opacity: 0.65;
+  }
+  .cb-distwrap {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 40px;
   }
-  .bi-brief-card {
-    background: #ffffff;
-    border: 1px solid var(--bi-line);
-    border-radius: 8px;
-    padding: 32px;
+  .cb-dist {
+    display: grid;
+    grid-template-columns: 16px 118px 1fr 30px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    transition: color 0.15s;
+  }
+  .cb-dist .di {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    flex: none;
+    display: grid;
+    place-items: center;
+  }
+  .cb-dist .di svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+  .cb-dist:hover .di,
+  .cb-dist.is-active .di {
+    color: var(--ok-ink);
+  }
+  .cb-dist .dn {
+    font-size: 12.5px;
+    color: var(--tx-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+  }
+  .cb-dist:hover .dn {
+    color: var(--ok-ink);
+  }
+  .cb-dist.is-active .dn {
+    color: var(--ok-ink);
+    font-weight: 600;
+  }
+  .cb-dist .db {
+    height: 6px;
+    border-radius: 99px;
+    background: #e4e7e1;
+    overflow: hidden;
+  }
+  .cb-dist .db i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #8cbe0e, var(--ok));
+  }
+  .cb-dist .dc {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* ─── よく見られている（2列・1行クランプ） ─── */
+  .cb-popwrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+  }
+  .cb-poprow {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
     text-decoration: none;
-    color: var(--bi-ink);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    position: relative;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: color 0.15s;
   }
-  .bi-brief-card::before {
+  .cb-poprow .rk {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ok-ink);
+  }
+  .cb-poprow .pt {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--tx);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.15s;
+  }
+  .cb-poprow:hover .pt {
+    color: var(--ok-ink);
+  }
+
+  /* ─── すべての Brief: 見出し行＋検索 ─── */
+  .cb-listhead {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 40px 0 10px;
+  }
+  .cb-listhead b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+  }
+  .lh-en {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lh-rule {
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+  .cb-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 7px 14px;
+    width: 196px;
+    transition: border-color 0.15s, width 0.15s;
+  }
+  .cb-search:focus-within {
+    border-color: rgba(124, 175, 0, 0.55);
+    width: 260px;
+  }
+  .cb-search .mg {
+    width: 15px;
+    height: 15px;
+    color: var(--muted);
+    flex: none;
+    display: grid;
+    place-items: center;
+  }
+  .cb-search .mg svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+  }
+  .cb-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: none;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--tx);
+  }
+  .cb-search input::placeholder {
+    color: var(--muted);
+  }
+
+  /* ─── フィルタ中の文脈行 ─── */
+  .cb-fctx {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 10px 0 0;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .cb-fctx[hidden] {
+    display: none;
+  }
+  .cb-fctx button {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--ok-ink);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 4px 11px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .cb-fctx button:hover {
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--tx);
+  }
+
+  /* ─── 月見出し＋2列カード ─── */
+  .cb-mhead {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: 22px 0 14px;
+  }
+  .cb-mhead b {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.06em;
+    color: var(--tx);
+  }
+  .cb-mhead span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .cb-mhead::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+  .cb-month[hidden] {
+    display: none;
+  }
+  .cb-bcdgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .cb-bcd {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px 16px;
+    text-decoration: none;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cb-bcd[hidden] {
+    display: none;
+  }
+  /* ホバーで左辺にライムのバーが上から伸びる（§4.2）。 */
+  .cb-bcd::before {
     content: "";
     position: absolute;
-    top: 0;
     left: 0;
-    width: 40px;
-    height: 3px;
-    background: var(--bi-brown);
-    border-radius: 8px 0 0 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--ok);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.25s;
   }
-  .bi-brief-card:hover {
-    border-color: var(--bi-brown-mid);
-    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.06);
+  .cb-bcd:hover {
+    border-color: rgba(124, 175, 0, 0.45);
+    box-shadow: var(--sh-m);
+    transform: translateY(-2px);
   }
-  .bi-brief-meta {
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    color: var(--bi-ink-faint);
-    letter-spacing: 0.06em;
-    font-weight: 700;
+  .cb-bcd:hover::before {
+    transform: scaleY(1);
+  }
+  .cb-bcd-no {
+    font-family: var(--font-num);
+    font-weight: 200;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    padding-top: 2px;
+    transition: color 0.18s;
+  }
+  .cb-bcd:hover .cb-bcd-no {
+    color: var(--ok-ink);
+  }
+  .cb-bcd-t {
+    font-size: 13.8px;
+    line-height: 1.75;
+    color: var(--tx);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cb-bcd-foot {
     display: flex;
     align-items: center;
     gap: 14px;
-  }
-  .bi-brief-no {
-    color: var(--bi-brown);
-  }
-  .bi-brief-sep {
-    color: var(--bi-line);
-  }
-  .bi-brief-title {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 17px;
-    color: var(--bi-ink);
-    line-height: 1.5;
-    letter-spacing: -0.005em;
-    margin: 0;
-  }
-  .bi-brief-sub {
-    font-size: 13px;
-    color: var(--bi-ink-soft);
-    line-height: 1.7;
-    flex: 1;
-    margin: 0;
-  }
-  .bi-brief-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--bi-line);
     flex-wrap: wrap;
-    margin-top: auto;
-  }
-  .bi-brief-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .bi-brief-tag {
-    font-family: var(--bi-mono);
+    margin-top: 12px;
+    font-family: var(--font-mono);
     font-size: 10.5px;
-    background: var(--bi-brown-soft);
-    color: var(--bi-brown-dark);
-    padding: 5px 10px;
-    border-radius: 50px;
-    letter-spacing: 0.04em;
-    font-weight: 700;
+    color: var(--muted);
   }
-  .bi-brief-read {
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    color: var(--bi-brown);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
+  .cb-bcd-tag {
+    color: var(--ok-ink);
   }
-  .bi-pillar-empty {
-    background: #ffffff;
-    border: 1px dashed var(--bi-line);
-    border-radius: 8px;
-    padding: 28px;
-    text-align: center;
-    font-family: var(--bi-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--bi-ink-faint);
+  .cb-bcd-d {
+    margin-left: auto;
   }
 
-  /* "もっと見る" link */
-  .bi-pillar-more {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 18px;
-    padding: 18px 24px;
-    background: #ffffff;
-    border: 1px solid var(--bi-line);
-    border-radius: 8px;
-    text-decoration: none;
-    font-family: var(--bi-mono);
-    font-size: 12.5px;
-    color: var(--bi-brown);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: border-color 0.15s, background 0.15s;
+  .cb-no-results {
+    margin: 26px 0 0;
+    font-size: 13.5px;
+    color: var(--muted);
   }
-  .bi-pillar-more:hover {
-    background: var(--bi-brown-soft);
-    border-color: var(--bi-brown-mid);
-  }
-  .bi-pillar-more::after {
-    content: "→";
-  }
-  .bi-pillar-more strong {
-    color: var(--bi-ink);
-    font-weight: 700;
-    margin: 0 4px;
-  }
-
-  /* List density variant */
-  .bi-brief-grid.list {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .bi-brief-grid.list .bi-brief-card {
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    padding: 18px 24px 18px 32px;
-  }
-  .bi-brief-grid.list .bi-brief-meta {
-    flex-shrink: 0;
-    min-width: 150px;
-  }
-  .bi-brief-grid.list .bi-brief-title {
-    font-size: 15px;
-    flex: 1;
-    margin: 0;
-  }
-  .bi-brief-grid.list .bi-brief-sub,
-  .bi-brief-grid.list .bi-brief-foot {
+  .cb-no-results[hidden] {
     display: none;
   }
 
-  /* Active threat-type filter banner (shown only when a tile is selected) */
-  .bi-filter-context {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 14px 18px;
-    margin: 0 0 20px;
-    background: var(--bi-brown-soft);
-    border: 1px solid var(--bi-brown-mid);
-    border-radius: 10px;
+  /* ─── NEWSLETTER ─── */
+  .cb-newsletter {
+    margin-top: 64px;
   }
-  .bi-filter-context[hidden] {
-    display: none;
-  }
-  .bi-fctx-text {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-  }
-  .bi-fctx-label {
-    font-family: var(--bi-display);
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    line-height: 1.4;
-  }
-  .bi-fctx-desc {
-    font-size: 12.5px;
-    color: var(--bi-ink-soft);
-    line-height: 1.55;
-  }
-  .bi-fctx-clear {
-    flex-shrink: 0;
-    font-family: var(--bi-mono);
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--bi-brown);
-    background: transparent;
-    border: 1px solid var(--bi-brown-mid);
-    border-radius: 50px;
-    padding: 7px 16px;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: background 0.15s, color 0.15s;
-  }
-  .bi-fctx-clear:hover {
-    background: var(--bi-brown);
-    color: var(--bi-cream);
+  .cb-page :global(.newsletter-embed) {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
   }
 
-  /* ─── Pagination ─── */
-  .bi-pager {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin: 36px 0 0;
-    flex-wrap: wrap;
-  }
-  .bi-pager[hidden] {
-    display: none;
-  }
-  .bi-pager-btn {
-    min-width: 38px;
-    height: 38px;
-    padding: 0 10px;
-    font-family: var(--bi-mono);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--bi-ink-soft);
-    background: #ffffff;
-    border: 1px solid var(--bi-line);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, color 0.15s;
-  }
-  .bi-pager-btn:hover:not([disabled]):not(.is-active) {
-    border-color: var(--bi-brown-mid);
-    color: var(--bi-ink);
-  }
-  .bi-pager-btn.is-active {
-    background: var(--bi-brown);
-    border-color: var(--bi-brown);
-    color: var(--bi-cream);
-    cursor: default;
-  }
-  .bi-pager-btn[disabled] {
-    opacity: 0.4;
-    cursor: default;
-  }
-  .bi-pager-arrow {
-    font-size: 16px;
-  }
-
-  /* ─── Sticky newsletter bar ─── */
-  .bi-nlbar {
+  /* ─── STICKY NEWSLETTER BAR ─── */
+  .cb-nlbar {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 80;
+    z-index: 90;
     transform: translateY(110%);
     transition: transform 0.3s ease;
-    background: #211a14;
-    border-top: 1px solid var(--bi-brown);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
   }
-  .bi-nlbar.is-visible {
+  .cb-nlbar.is-visible {
     transform: translateY(0);
+    pointer-events: auto;
   }
-  .bi-nlbar-inner {
-    max-width: 1120px;
-    margin: 0 auto;
+  .cb-nlbar-inner {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 12px 40px calc(12px + env(safe-area-inset-bottom));
+    gap: 14px 22px;
+    flex-wrap: wrap;
+    max-width: 860px;
+    margin: 0 auto 14px;
+    padding: 13px 20px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border-radius: 12px;
+    box-shadow: 0 18px 44px rgba(22, 30, 24, 0.3);
   }
-  .bi-nlbar-text {
+  .cb-nlbar-text {
+    flex: 1;
+    min-width: 220px;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 0;
-    flex: 1;
   }
-  .bi-nlbar-title {
-    font-family: var(--bi-display);
-    font-weight: 700;
-    font-size: 14px;
-    color: #ffffff;
+  .cb-nlbar-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: #a8e010;
   }
-  .bi-nlbar-lead {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .cb-nlbar-lead {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #d8ddd1;
   }
-  .bi-nlbar-actions {
+  .cb-nlbar-actions {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
   }
-  .bi-nlbar-cta {
-    font-family: var(--bi-body);
-    font-size: 13px;
-    font-weight: 700;
-    background: var(--bi-brown);
-    color: #ffffff;
-    border: 1px solid var(--bi-brown);
-    border-radius: 8px;
-    padding: 10px 18px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.15s;
-  }
-  .bi-nlbar-cta:hover {
-    background: #743a10;
-  }
-  .bi-nlbar-close {
-    background: transparent;
+  .cb-nlbar-cta {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #0f1412;
+    background: #a8e010;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 15px;
+    border-radius: 7px;
+    padding: 9px 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(168, 224, 16, 0.3);
+    transition: filter 0.15s;
+  }
+  .cb-nlbar-cta:hover {
+    filter: brightness(1.06);
+  }
+  .cb-nlbar-close {
+    background: none;
+    border: none;
+    color: #9ba296;
+    font-size: 13px;
     cursor: pointer;
     padding: 6px;
-    line-height: 1;
     transition: color 0.15s;
   }
-  .bi-nlbar-close:hover {
-    color: #ffffff;
-  }
-  @media (max-width: 720px) {
-    .bi-nlbar-inner {
-      padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
-      gap: 12px;
-    }
-    .bi-nlbar-lead {
-      display: none;
-    }
-  }
-
-  .bi-no-results {
-    padding: 48px 0;
-    text-align: center;
-    font-family: var(--bi-mono);
-    font-size: 13px;
-    color: var(--bi-ink-faint);
-    letter-spacing: 0.04em;
-  }
-
-  /* ─── BRIEF → LEMMA CONVERSION (導線 v1) ─── */
-  /* §1 banner — after hero, before featured. Visually set off from the
-     neutral analysis above (cream-deep card + brown top-bar). */
-  .bi-cta-banner-wrap {
-    padding: 8px 0 12px;
-    background: var(--bi-cream);
-  }
-  .bi-cta-banner {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px 28px;
-    flex-wrap: wrap;
-    background: var(--bi-cream-deep);
-    border-radius: 14px;
-    padding: 22px 28px;
-  }
-  .bi-cta-banner::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 64px;
-    height: 3px;
-    background: var(--bi-brown);
-    border-radius: 0 0 3px 0;
-  }
-  .bi-cta-banner-text {
-    min-width: 0;
-  }
-  .bi-cta-tag {
-    font-family: var(--bi-mono);
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--bi-brown);
-    margin: 0 0 8px;
-  }
-  .bi-cta-line {
-    font-family: var(--bi-display);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-    margin: 0;
-  }
-  .bi-cta-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    background: var(--bi-brown);
-    color: var(--bi-cream);
-    padding: 12px 26px;
-    border-radius: 999px;
-    font-family: var(--bi-mono);
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
-  .bi-cta-btn:hover {
-    background: var(--bi-brown-dark);
-  }
-
-  /* §2 tail CTA — before newsletter. Single path: LP primary, Call quiet
-     secondary, but-honest note. No columns/numbers (one straight line). */
-  .bi-cta-tail {
-    padding: 24px 0 8px;
-  }
-  .bi-cta-tail-card {
-    background: var(--bi-cream-deep);
-    border: 1px solid var(--bi-line);
-    border-radius: 14px;
-    padding: 44px 32px;
-    text-align: center;
-  }
-  .bi-cta-tail-head {
-    font-family: var(--bi-display);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--bi-ink);
-    line-height: 1.4;
-    letter-spacing: -0.015em;
-    margin: 0 0 24px;
-  }
-  .bi-cta-tail-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px 24px;
-    flex-wrap: wrap;
-  }
-  .bi-cta-tail-main {
-    display: inline-flex;
-    align-items: center;
-    background: var(--bi-brown);
-    color: var(--bi-cream);
-    padding: 14px 30px;
-    border-radius: 999px;
-    font-family: var(--bi-mono);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
-  .bi-cta-tail-main:hover {
-    background: var(--bi-brown-dark);
-  }
-  .bi-cta-tail-sub {
-    font-family: var(--bi-mono);
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: var(--bi-brown);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
-    padding-bottom: 1px;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .bi-cta-tail-sub:hover {
-    color: var(--bi-brown-dark);
-    border-bottom-color: var(--bi-brown);
-  }
-  .bi-cta-tail-note {
-    font-size: 11.5px;
-    color: var(--bi-ink-faint);
-    line-height: 1.6;
-    margin: 20px 0 0;
-  }
-
-  /* ─── NEWSLETTER ─── */
-  .bi-newsletter {
-    padding: 0 0 96px;
+  .cb-nlbar-close:hover {
+    color: #fff;
   }
 
   /* ─── RESPONSIVE ─── */
-  @media (max-width: 880px) {
-    .bi-container {
+  @media (max-width: 1020px) {
+    .cb-distwrap,
+    .cb-popwrap,
+    .cb-bcdgrid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .cb-wrap {
       padding: 0 24px;
     }
-    .bi-hero {
-      padding: 26px 0 24px;
-    }
-    .bi-hero-desc {
-      display: none;
-    }
-    .bi-h1 {
-      font-size: 34px;
-    }
-    :root[lang="ja"] .bi-h1 {
-      font-size: 30px;
-    }
-    .bi-tiles {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    .bi-brief-grid {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    .bi-pillar-head {
+    .cb-listhead {
       flex-wrap: wrap;
-      gap: 8px;
     }
-    .bi-pillar-title {
-      font-size: 22px;
+    .cb-search,
+    .cb-search:focus-within {
+      width: 100%;
     }
-    .bi-pillar-count {
-      margin-left: 0;
-    }
-    .bi-brief-card {
-      padding: 24px;
-    }
-    .bi-brief-grid.list .bi-brief-card {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 18px;
-    }
-    .bi-brief-grid.list .bi-brief-meta {
-      min-width: 0;
-    }
-    .bi-cta-banner {
-      padding: 20px 22px;
-    }
-    .bi-cta-line {
-      font-size: 16px;
-    }
-    .bi-cta-tail-card {
-      padding: 32px 22px;
-    }
-    .bi-cta-tail-head {
-      font-size: 20px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cb-bcd,
+    .cb-bcd::before,
+    .cb-nlbar {
+      transition: none;
     }
   }
 </style>
 
 <script>
-  (() => {
-    const root = document.querySelector<HTMLElement>(".bi-page");
+  // フィルタ／検索 — progressive enhancement。SSR で全件出したうえで
+  // 表示だけを切り替え、URL パラメータ（?category / ?pillar / ?q）を
+  // 従来どおり読み書きする。
+  (function () {
+    const root = document.querySelector<HTMLElement>(".cb-page");
     if (!root) return;
-
-    const gridSection = root.querySelector<HTMLElement>(".bi-grid-section");
-    const filterContext = root.querySelector<HTMLElement>("[data-filter-context]");
+    const cards = Array.from(root.querySelectorAll<HTMLElement>(".cb-bcd"));
+    const months = Array.from(root.querySelectorAll<HTMLElement>("[data-month]"));
+    const allPill = root.querySelector<HTMLElement>(".cb-allpill");
+    const dists = Array.from(root.querySelectorAll<HTMLElement>(".cb-dist"));
+    const searchInput = root.querySelector<HTMLInputElement>(".cb-search input");
+    const noResults = root.querySelector<HTMLElement>(".cb-no-results");
+    const fctx = root.querySelector<HTMLElement>("[data-filter-context]");
     const fctxLabel = root.querySelector<HTMLElement>("[data-fctx-label]");
-    const fctxDesc = root.querySelector<HTMLElement>("[data-fctx-desc]");
     const fctxClear = root.querySelector<HTMLElement>("[data-fctx-clear]");
-    const allCards = Array.from(
-      root.querySelectorAll<HTMLElement>(".bi-brief-card"),
-    );
-    const chips = Array.from(root.querySelectorAll<HTMLElement>(".bi-tile"));
-    const sortSel = root.querySelector<HTMLSelectElement>(".bi-sort");
-    const densityBtns = Array.from(
-      root.querySelectorAll<HTMLElement>(".bi-density button"),
-    );
-    const grids = Array.from(
-      root.querySelectorAll<HTMLElement>(".bi-brief-grid"),
-    );
-    const search = root.querySelector<HTMLFormElement>(".bi-search");
-    const searchInput = root.querySelector<HTMLInputElement>(".bi-search input");
-    const resultsStrong = root.querySelector<HTMLElement>(".bi-results-strong");
-    const noResults = root.querySelector<HTMLElement>(".bi-no-results");
-    const pager = root.querySelector<HTMLElement>("[data-pager]");
-    if (!gridSection) return;
+    const countUnit = (n: number) =>
+      document.documentElement.lang === "ja"
+        ? `${n} 件`
+        : `${n} brief${n === 1 ? "" : "s"}`;
 
-    // mode: "grouped" | "category" | "pillar" | "search"
-    let mode = "grouped";
+    // mode: "all" | "category" | "pillar" | "search"
+    let mode = "all";
     let activeCat = "all";
     let activePillar = "";
     let query = "";
-    let currentPage = 1;
-    const PAGE_SIZE = 12;
 
     function cardMatches(card: HTMLElement): boolean {
       if (mode === "category")
@@ -1594,96 +1059,47 @@ const cta = isJa
       return true;
     }
 
-    function sortCards() {
-      const order = sortSel ? sortSel.value : "newest";
-      grids.forEach((grid) => {
-        const cards = Array.from(grid.children) as HTMLElement[];
-        cards.sort((a, b) => {
-          const tsA = Number(a.dataset.ts || 0);
-          const tsB = Number(b.dataset.ts || 0);
-          const noA = Number(a.dataset.no || 0);
-          const noB = Number(b.dataset.no || 0);
-          if (order === "oldest") return tsA - tsB || noA - noB;
-          if (order === "category")
-            return (
-              (a.dataset.catkey || "").localeCompare(b.dataset.catkey || "") ||
-              tsB - tsA
-            );
-          return tsB - tsA || noB - noA; // newest
-        });
-        cards.forEach((c) => grid.appendChild(c));
-      });
-    }
-
     function apply() {
-      sortCards();
-      const grid = grids[0];
-      const ordered = grid
-        ? (Array.from(grid.children) as HTMLElement[])
-        : allCards;
-      const matching = ordered.filter(cardMatches);
-      const totalPages = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
-      if (currentPage > totalPages) currentPage = totalPages;
-      if (currentPage < 1) currentPage = 1;
-      const start = (currentPage - 1) * PAGE_SIZE;
-      allCards.forEach((c) => c.classList.add("is-hidden"));
-      matching
-        .slice(start, start + PAGE_SIZE)
-        .forEach((c) => c.classList.remove("is-hidden"));
-      renderPagination(totalPages);
-      updateFilterContext();
-      if (resultsStrong) resultsStrong.textContent = String(matching.length);
-      if (noResults) noResults.hidden = matching.length !== 0;
-    }
-
-    function renderPagination(totalPages: number) {
-      if (!pager) return;
-      if (totalPages <= 1) {
-        pager.innerHTML = "";
-        pager.hidden = true;
-        return;
-      }
-      let html =
-        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="prev" aria-label="Previous"' +
-        (currentPage === 1 ? " disabled" : "") +
-        ">‹</button>";
-      for (let p = 1; p <= totalPages; p++) {
-        html +=
-          '<button type="button" class="bi-pager-btn' +
-          (p === currentPage ? " is-active" : "") +
-          '" data-page="' +
-          p +
-          '">' +
-          p +
-          "</button>";
-      }
-      html +=
-        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="next" aria-label="Next"' +
-        (currentPage === totalPages ? " disabled" : "") +
-        ">›</button>";
-      pager.innerHTML = html;
-      pager.hidden = false;
-    }
-
-    function updateFilterContext() {
-      if (!filterContext) return;
-      if (mode === "category") {
-        const tile = chips.find((c) => c.dataset.cat === activeCat);
-        if (fctxLabel) fctxLabel.textContent = tile?.dataset.label || "";
-        if (fctxDesc) fctxDesc.textContent = tile?.dataset.desc || "";
-        filterContext.hidden = false;
-      } else {
-        filterContext.hidden = true;
+      let total = 0;
+      cards.forEach((c) => {
+        const show = cardMatches(c);
+        c.hidden = !show;
+        if (show) total++;
+      });
+      // 空になった月はまるごと隠し、見出しの件数は可視分に更新する。
+      months.forEach((m) => {
+        const visible = Array.from(
+          m.querySelectorAll<HTMLElement>(".cb-bcd"),
+        ).filter((c) => !c.hidden).length;
+        m.hidden = visible === 0;
+        const cnt = m.querySelector<HTMLElement>("[data-month-count]");
+        if (cnt) cnt.textContent = countUnit(visible);
+      });
+      if (noResults) noResults.hidden = total !== 0;
+      // フィルタ文脈行
+      if (fctx && fctxLabel) {
+        if (mode === "category") {
+          const tile = dists.find((d) => d.dataset.cat === activeCat);
+          const name =
+            tile?.querySelector<HTMLElement>(".dn")?.textContent || activeCat;
+          fctxLabel.textContent = `${name} — ${countUnit(total)}`;
+          fctx.hidden = false;
+        } else if (mode === "pillar" || (mode === "search" && query)) {
+          fctxLabel.textContent = countUnit(total);
+          fctx.hidden = false;
+        } else {
+          fctx.hidden = true;
+        }
       }
     }
 
-    function syncChips() {
-      chips.forEach((chip) =>
-        chip.classList.toggle(
+    function syncPills() {
+      if (allPill)
+        allPill.classList.toggle("is-active", mode === "all");
+      dists.forEach((d) =>
+        d.classList.toggle(
           "is-active",
-          mode === "category"
-            ? chip.dataset.cat === activeCat
-            : chip.dataset.cat === "all",
+          mode === "category" && d.dataset.cat === activeCat,
         ),
       );
     }
@@ -1694,31 +1110,36 @@ const cta = isJa
       else if (mode === "pillar") params.set("pillar", activePillar);
       else if (mode === "search" && query) params.set("q", query);
       const qs = params.toString();
-      history.replaceState(
-        null,
-        "",
-        location.pathname + (qs ? `?${qs}` : ""),
-      );
+      history.replaceState(null, "", location.pathname + (qs ? `?${qs}` : ""));
     }
 
     function update(writeURL = true) {
-      currentPage = 1;
-      syncChips();
+      syncPills();
       apply();
       if (writeURL) setURL();
     }
 
-    // Chips → category filter
-    chips.forEach((chip) => {
-      chip.addEventListener("click", () => {
-        const cat = chip.dataset.cat || "all";
-        if (cat === "all") {
-          mode = "grouped";
-          activeCat = "all";
-        } else {
-          mode = "category";
-          activeCat = cat;
+    function reset() {
+      mode = "all";
+      activeCat = "all";
+      activePillar = "";
+      query = "";
+      if (searchInput) searchInput.value = "";
+      update();
+    }
+
+    if (allPill) allPill.addEventListener("click", reset);
+    if (fctxClear) fctxClear.addEventListener("click", reset);
+
+    dists.forEach((d) => {
+      d.addEventListener("click", () => {
+        const cat = d.dataset.cat || "";
+        if (mode === "category" && activeCat === cat) {
+          reset();
+          return;
         }
+        mode = "category";
+        activeCat = cat;
         activePillar = "";
         query = "";
         if (searchInput) searchInput.value = "";
@@ -1726,19 +1147,6 @@ const cta = isJa
       });
     });
 
-    // Filter-context "show all" → clear the active category filter
-    if (fctxClear) {
-      fctxClear.addEventListener("click", () => {
-        mode = "grouped";
-        activeCat = "all";
-        activePillar = "";
-        query = "";
-        if (searchInput) searchInput.value = "";
-        update();
-      });
-    }
-
-    // Search
     if (searchInput) {
       searchInput.addEventListener("input", () => {
         query = searchInput.value.trim().toLowerCase();
@@ -1747,63 +1155,18 @@ const cta = isJa
           activeCat = "all";
           activePillar = "";
         } else {
-          mode = "grouped";
+          mode = "all";
         }
         update();
       });
     }
-    if (search) {
-      search.addEventListener("submit", (e) => {
-        e.preventDefault();
-        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-
-    // Sort
-    if (sortSel)
-      sortSel.addEventListener("change", () => {
-        currentPage = 1;
-        apply();
-      });
-
-    // Pagination
-    if (pager) {
-      pager.addEventListener("click", (e) => {
-        const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-page]");
-        if (!btn || btn.hasAttribute("disabled")) return;
-        const grid = grids[0];
-        const matchCount = grid
-          ? (Array.from(grid.children) as HTMLElement[]).filter(cardMatches)
-              .length
-          : 0;
-        const totalPages = Math.max(1, Math.ceil(matchCount / PAGE_SIZE));
-        const v = btn.dataset.page;
-        if (v === "prev") currentPage = Math.max(1, currentPage - 1);
-        else if (v === "next")
-          currentPage = Math.min(totalPages, currentPage + 1);
-        else currentPage = Number(v) || 1;
-        apply();
-        gridSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-
-    // Density
-    densityBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        densityBtns.forEach((b) =>
-          b.classList.toggle("is-active", b === btn),
-        );
-        const list = btn.dataset.density === "list";
-        grids.forEach((g) => g.classList.toggle("list", list));
-      });
-    });
 
     // Initial state from URL
     const params = new URLSearchParams(location.search);
     const urlCat = params.get("category");
     const urlPillar = params.get("pillar");
     const urlQ = params.get("q");
-    if (urlCat && chips.some((c) => c.dataset.cat === urlCat)) {
+    if (urlCat && dists.some((d) => d.dataset.cat === urlCat)) {
       mode = "category";
       activeCat = urlCat;
     } else if (urlPillar && /^p[1-4]$/.test(urlPillar)) {
@@ -1815,32 +1178,6 @@ const cta = isJa
       if (searchInput) searchInput.value = urlQ;
     }
     update(false);
-  })();
-</script>
-
-<!-- 導線 v1: forward Brief→LP/Call CTA clicks to GA4 (surface=brief_index). -->
-<script is:inline>
-  (function () {
-    function wire() {
-      var root = document.querySelector(".bi-page");
-      if (!root) return;
-      var sel = ".bi-cta-banner-wrap [data-ev], .bi-cta-tail [data-ev]";
-      root.querySelectorAll(sel).forEach(function (el) {
-        el.addEventListener("click", function () {
-          if (typeof window.gtag !== "function") return;
-          window.gtag("event", el.getAttribute("data-ev"), {
-            surface: "brief_index",
-            cta_label: el.getAttribute("data-cta"),
-            destination: el.getAttribute("href"),
-          });
-        });
-      });
-    }
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", wire);
-    } else {
-      wire();
-    }
   })();
 </script>
 
