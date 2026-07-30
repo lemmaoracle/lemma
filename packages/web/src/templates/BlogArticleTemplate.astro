@@ -164,35 +164,6 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
         </nav>
       )}
 
-      <section class="blog-cta">
-        <div class="cta-eyebrow">{partnerCtaTitle}</div>
-        <h2 class="cta-h2">
-          {builtForHeading}<br />
-          <em>{builtForHeadingItalic}</em>
-        </h2>
-        <p class="cta-text">{partnerCtaDesc}</p>
-        <div class="cta-btns">
-          <button
-            type="button"
-            class="btn-cta-main"
-            data-tally-open={isJa ? "xX0VYv" : "7RJXdR"}
-            data-tally-emoji-text=""
-          >
-            {t.ctaSection.finalWpText}
-          </button>
-          <a
-            href={DISCOVERY_CALL_URL[locale]}
-            class="btn-cta-outline"
-            target="_blank"
-            rel="noopener"
-          >
-            {partnerCtaButton}
-          </a>
-        </div>
-      </section>
-
-      <NewsletterEmbed locale={locale} placement="blog-footer" />
-
       {(navigation.prev || navigation.next) && (
         <section class="blog-prevnext">
           {navigation.prev && (
@@ -244,6 +215,38 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
           </ul>
         </section>
       )}
+
+      <NewsletterEmbed locale={locale} placement="blog-footer" />
+
+      {/* CTA は本文のいちばん外側＝フッターの直前（指示書 §2.1 の 9 番）。
+          v10 までは タグ → CTA → 前後記事 の順で、記事の続きが CTA の
+          あとに来ていた。 */}
+      <section class="blog-cta">
+        <div class="cta-eyebrow">{partnerCtaTitle}</div>
+        <h2 class="cta-h2">
+          {builtForHeading}<br />
+          <em>{builtForHeadingItalic}</em>
+        </h2>
+        <p class="cta-text">{partnerCtaDesc}</p>
+        <div class="cta-btns">
+          <button
+            type="button"
+            class="btn-cta-main"
+            data-tally-open={isJa ? "xX0VYv" : "7RJXdR"}
+            data-tally-emoji-text=""
+          >
+            {t.ctaSection.finalWpText}
+          </button>
+          <a
+            href={DISCOVERY_CALL_URL[locale]}
+            class="btn-cta-outline"
+            target="_blank"
+            rel="noopener"
+          >
+            {partnerCtaButton}
+          </a>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -268,8 +271,11 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     --muted: #5c6156;
     --line: #e1e3dd;
     --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
-    --font-serif-jp: "Noto Serif JP", "Cormorant Garamond", Georgia, serif;
-    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    /* Latin は Space Grotesk、和文はその後ろの Noto に落ちる。数字は Inter、
+       ラベルは Space Mono（指示書 §2.3。Cormorant Garamond は使わない）。 */
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
     --font-mono: "Space Mono", monospace;
 
     background: var(--lite);
@@ -278,7 +284,8 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
     font-size: 16px;
     line-height: 1.95;
     letter-spacing: 0.01em;
-    padding: 0 0 96px;
+    /* 下の余白は新フッターの `margin-top:80px` が持つ（モックと同じ）。 */
+    padding: 0;
     margin-top: 64px;
   }
   .blog-container {
@@ -364,13 +371,13 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   .blog-cover {
     margin: 30px 0 0;
   }
+  /* 濃い面には枠線を付けず、輪郭は影で出す（指示書 §6-4）。 */
   .blog-cover :global(svg) {
     width: 100%;
     aspect-ratio: 1200 / 630;
     display: block;
     border-radius: 14px;
-    border: 1px solid var(--line);
-    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.12);
+    box-shadow: 0 18px 44px rgba(24, 36, 26, 0.13);
   }
 
   /* ─── BODY (rendered markdown HTML) ─── */
@@ -626,6 +633,7 @@ const builtForHeadingItalic = isJa ? "つくられている。" : "that matter."
   .blog-body :global(figure img) {
     width: 100%;
     display: block;
+    border: none;
     box-shadow: 0 14px 34px rgba(24, 36, 26, 0.11);
   }
   .blog-body :global(figcaption) {
