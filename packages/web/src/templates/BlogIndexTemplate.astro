@@ -189,7 +189,7 @@ const C = isJa
         )}
 
         {entries.length > 0 && (
-          <section>
+          <section data-all-section>
             <div class="bi-label">
               <b>{C.all}</b><span>All — {entries.length}</span>
             </div>
@@ -205,6 +205,7 @@ const C = isJa
                 </a>
               ))}
             </div>
+            <nav class="bi-pager" data-pager hidden aria-label="Pagination"></nav>
           </section>
         )}
 
@@ -264,6 +265,7 @@ const C = isJa
             </a>
           ))}
         </div>
+        <nav class="bi-pager" data-pager-filtered hidden aria-label="Pagination"></nav>
       </section>
     </div>
   </main>
@@ -611,10 +613,55 @@ const C = isJa
     color: var(--muted);
   }
 
+  /* ─── ページ送り（Brief 一覧と同じ言語: 現在ページ=蛍光地に墨文字） ─── */
+  .bi-pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 26px 0 0;
+  }
+  .bi-pager[hidden] {
+    display: none;
+  }
+  .bi-pager :global(.bi-pager-btn) {
+    min-width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 8px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .bi-pager :global(.bi-pager-btn:hover:not([disabled])) {
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--tx);
+  }
+  .bi-pager :global(.bi-pager-btn.is-active) {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: var(--ink);
+    font-weight: 700;
+    cursor: default;
+  }
+  .bi-pager :global(.bi-pager-btn[disabled]) {
+    opacity: 0.4;
+    cursor: default;
+  }
+
   /* ─── FILTERED VIEW ─── */
   .bi-view-all[hidden],
   .bi-filtered[hidden],
-  .bi-filtered-row[hidden] {
+  .bi-filtered-row[hidden],
+  .bi-arow[hidden] {
     display: none;
   }
   /* フッターの margin-top:80px が下端の余白を持つ。最後のセクションの
@@ -686,6 +733,88 @@ const C = isJa
     var label = document.querySelector("[data-filtered-label]");
     var count = document.querySelector("[data-filtered-count]");
     var rows = filtered ? filtered.querySelectorAll(".bi-filtered-row") : [];
+    var allSection = document.querySelector("[data-all-section]");
+    var allRows = allSection
+      ? allSection.querySelectorAll(".bi-arow")
+      : [];
+    var pagerAll = document.querySelector("[data-pager]");
+    var pagerFiltered = document.querySelector("[data-pager-filtered]");
+
+    // ページ送り: SSR は全件のまま、表示だけを PAGE_SIZE 行ずつに切る
+    // （Brief 一覧と同じ方式）。「すべての記事」とフィルタ結果の両方に効き、
+    // 1ページに収まるときはページャー自体を出さない。
+    var PAGE_SIZE = 12;
+    var pageAll = 1;
+    var pageFiltered = 1;
+
+    function renderPager(pager, current, totalPages) {
+      if (!pager) return;
+      if (totalPages <= 1) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+      }
+      var html =
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="prev" aria-label="Previous"' +
+        (current === 1 ? " disabled" : "") +
+        ">‹</button>";
+      for (var p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" class="bi-pager-btn' +
+          (p === current ? " is-active" : "") +
+          '" data-page="' +
+          p +
+          '"' +
+          (p === current ? ' aria-current="page"' : "") +
+          ">" +
+          p +
+          "</button>";
+      }
+      html +=
+        '<button type="button" class="bi-pager-btn bi-pager-arrow" data-page="next" aria-label="Next"' +
+        (current === totalPages ? " disabled" : "") +
+        ">›</button>";
+      pager.innerHTML = html;
+      pager.hidden = false;
+    }
+
+    function paginate(list, matches, current, pager) {
+      var visible = [];
+      list.forEach(function (r) {
+        if (matches(r)) visible.push(r);
+      });
+      var totalPages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+      if (current > totalPages) current = totalPages;
+      var start = (current - 1) * PAGE_SIZE;
+      list.forEach(function (r) {
+        r.hidden = true;
+      });
+      visible.slice(start, start + PAGE_SIZE).forEach(function (r) {
+        r.hidden = false;
+      });
+      renderPager(pager, current, totalPages);
+      return { current: current, count: visible.length, totalPages: totalPages };
+    }
+
+    function applyAllPage() {
+      var st = paginate(
+        allRows,
+        function () {
+          return true;
+        },
+        pageAll,
+        pagerAll,
+      );
+      pageAll = st.current;
+    }
+
+    var activeFilter = "";
+    function matchesFilter(r) {
+      var cats = (r.getAttribute("data-category") || "").split("|");
+      return cats.some(function (cat) {
+        return cat.toLowerCase() === activeFilter.toLowerCase();
+      });
+    }
 
     function apply(filter) {
       var isAll = !filter || filter.toLowerCase() === "all";
@@ -696,25 +825,85 @@ const C = isJa
       if (viewAll) viewAll.hidden = !isAll;
       if (filtered) filtered.hidden = isAll;
       if (!isAll) {
+        activeFilter = filter;
+        pageFiltered = 1;
         var labelText = filter;
-        var n = 0;
         rows.forEach(function (r) {
-          // data-category is "Primary|Secondary1|…" — match primary or any
-          // secondary category.
           var cats = (r.getAttribute("data-category") || "").split("|");
-          var match = cats.some(function (cat) {
-            return cat.toLowerCase() === filter.toLowerCase();
-          });
-          r.hidden = !match;
-          if (match) {
-            n++;
+          if (
+            cats.some(function (cat) {
+              return cat.toLowerCase() === filter.toLowerCase();
+            })
+          ) {
             labelText = cats[0] || filter;
           }
         });
+        var st = paginate(rows, matchesFilter, pageFiltered, pagerFiltered);
+        pageFiltered = st.current;
         if (label) label.textContent = labelText;
-        if (count) count.textContent = String(n);
+        if (count) count.textContent = String(st.count);
       }
     }
+
+    function scrollToHead(section) {
+      if (!section) return;
+      var head = section.querySelector(".bi-label") || section;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      head.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+
+    function wirePager(pager, getState, setPage, rerender, section) {
+      if (!pager) return;
+      pager.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-page]");
+        if (!btn || btn.hasAttribute("disabled")) return;
+        var st = getState();
+        var v = btn.getAttribute("data-page");
+        var next = st.current;
+        if (v === "prev") next = Math.max(1, st.current - 1);
+        else if (v === "next") next = Math.min(st.totalPages, st.current + 1);
+        else next = Number(v) || 1;
+        setPage(next);
+        rerender();
+        scrollToHead(section);
+      });
+    }
+
+    wirePager(
+      pagerAll,
+      function () {
+        return {
+          current: pageAll,
+          totalPages: Math.max(1, Math.ceil(allRows.length / PAGE_SIZE)),
+        };
+      },
+      function (p) {
+        pageAll = p;
+      },
+      applyAllPage,
+      allSection,
+    );
+    wirePager(
+      pagerFiltered,
+      function () {
+        var n = 0;
+        rows.forEach(function (r) {
+          if (matchesFilter(r)) n++;
+        });
+        return {
+          current: pageFiltered,
+          totalPages: Math.max(1, Math.ceil(n / PAGE_SIZE)),
+        };
+      },
+      function (p) {
+        pageFiltered = p;
+      },
+      function () {
+        var st = paginate(rows, matchesFilter, pageFiltered, pagerFiltered);
+        pageFiltered = st.current;
+      },
+      filtered,
+    );
 
     pills.forEach(function (p) {
       p.addEventListener("click", function () {
@@ -740,5 +929,6 @@ const C = isJa
         }
       });
     }
+    applyAllPage();
   })();
 </script>
