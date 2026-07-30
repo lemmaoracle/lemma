@@ -19,13 +19,13 @@ gap_missing: "There was no layer to check before reconstruction whether the stat
 gap_fix: "Before a high-risk action, independently verify with Lemma that this checkpoint originates from authorized execution and is free of tampering, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabilities: chaining CVE-2025-67644 (SQL injection in the SQLite checkpointer) with CVE-2026-28277 (unsafe msgpack deserialization) achieves remote code execution. The attacker slips a forged row into the checkpoint (the agent's "memory"), and the moment the agent deserializes that state back unverified, arbitrary code runs. Vulnerability scanners and patching cannot reach a structure in which the agent reconstructs its own persistent state in a privileged context without verifying provenance or integrity. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabilities: chaining CVE-2025-67644 (SQL injection in the SQLite checkpointer) with CVE-2026-28277 (unsafe msgpack deserialization) achieves remote code execution. The attacker slips a forged row into the checkpoint (the agent's "memory"), and the moment the agent deserializes that state back unverified, arbitrary code runs. Vulnerability scanners and patching cannot reach a structure in which the agent reconstructs its own persistent state in a privileged context without verifying provenance or integrity.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Subject**: Self-hosted LangGraph (LangChain's stateful / multi-agent platform). Deployments using the SQLite or Redis checkpointer that accept a user-supplied `filter` input are affected
 - **Identifiers and severity**:
@@ -36,21 +36,6 @@ In June 2026, Yarden Porat (Check Point Research) disclosed LangGraph vulnerabil
 - **Bounded scope**: LangChain's managed platform (LangSmith Deployment, on PostgreSQL) is not affected. The vulnerabilities are limited to self-hosted deployments
 - **Exfiltration / reachable targets**: On success — the LLM API keys, customer data, conversation history the agent handles, and credentials for external systems (CRM, internal APIs). LangGraph frames CVE-2026-28277 as "post-exploitation," a threat model that presumes write access to the checkpoint store
 - **Exploitation status**: All three patched. Fixed in `langgraph-checkpoint-sqlite` 3.0.1+, `langgraph` 1.0.10+, and `@langchain/langgraph-checkpoint-redis` 1.0.2+
-- **Core**: The agent reads back its own persistent state (the checkpoint) in a privileged context without independently verifying its provenance or integrity before acting, so an injected forged state converts straight into code execution
-
----
-
-## 2. Timeline
-
-- 2026-06-12: Check Point Research's Yarden Porat discloses the three vulnerabilities, with a same-day technical write-up including a proof-of-concept of the chained RCE
-- Same day: The Hacker News and others report. LangGraph maintainers frame CVE-2026-28277 as post-exploitation and note the managed (LangSmith) configuration is unaffected
-- All handled as coordinated disclosure with patches available
-
-> Note: Some aggregator databases vary on related CVE numbers (e.g. pickle deserialization in a checkpoint caching layer). This text follows the primary GitHub Security Advisories and Check Point Research.
-
----
-
-## 3. Attack vector
 
 The chained RCE works on self-hosted deployments that expose `get_state_history()` and accept a user-controlled filter. The path:
 
@@ -64,41 +49,43 @@ Check Point's point is that a classic vulnerability class — SQL injection — 
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `agent-infrastructure` category under Pillar 03 (Agent Authority Proof). The central **failure primitive is "the agent interprets its own persistent state (the checkpoint) in a privileged runtime context without verifying its provenance and integrity."** A checkpoint is the agent's "memory," and on resume the agent reads it back as legitimate self-state. But with no layer that verifies, before execution, "when, under whose authority, and tamper-free this state was written," a forged row injected into the state store converts straight into code execution. As secondary we note `identity-auth` (authorization of the state write) and `ai-decision-integrity` (the integrity of the state that underpins the agent's decisions).
+- 2026-06-12: Check Point Research's Yarden Porat discloses the three vulnerabilities, with a same-day technical write-up including a proof-of-concept of the chained RCE
+- Same day: The Hacker News and others report. LangGraph maintainers frame CVE-2026-28277 as post-exploitation and note the managed (LangSmith) configuration is unaffected
+- All handled as coordinated disclosure with patches available
 
-As in Brief 027 (LibreChat), it is a structure in which "data that describes config/state is interpreted unverified in a privileged context" on an agent platform. In 027, a user-specified **connection config** was expanded in a privileged context (`process.env`); here, the agent's own **persistent state** is reconstructed into the runtime without verification — both cases share that "a data layer specific to agent platforms (config / state) passes straight through the input-validation boundary that traditional web apps had established, wearing the agent's skin." Where Brief 003 (Starlette/BadHost) addressed the **entrance** of a connection (auth bypass) and Brief 025 (the MCP SDK design) an RCE path inherent in the reference implementation, this case highlights that no trust boundary is drawn around the **origin of the agent's state.**
+> Note: Some aggregator databases vary on related CVE numbers (e.g. pickle deserialization in a checkpoint caching layer). This text follows the primary GitHub Security Advisories and Check Point Research.
 
-In the agent-platform context, writing and reading back a checkpoint is equivalent to "handing the agent its past decisions and privilege context." When that hand-off happens without verifying the state's authorship and integrity, a single state-store layer collapses the authority boundary.
-
----
-
-## 5. The gap between detection and proof
-
-Vulnerability scanners, dependency audits, egress monitoring, and prompt CVE patching all functioned here. All three were handled as coordinated disclosure with patches available, and this Brief does not deny the role of the detection layer or patch operations.
-
-At the same time, detection does not change the judgment of "may the agent trust the state it is reading back right now as legitimate self-state." The exploitation happens inside the agent's own legitimate query and deserialization against its checkpoint store. As traffic, it is indistinguishable from the agent's normal operation, and the injected forged row is read back via the same path as "correctly saved state." Pattern-matching for SQL injection plugs individual entrances, but it provides no material to establish the provenance and integrity of the state — "under whose authority, and tamper-free, was this state written." From an audit standpoint, too, evidence that independently shows "which state was reconstructed into the runtime, when, by whose write" rarely survives beyond reconciling app logs.
-
-Pre-execution attestation treats reading the agent's state back as an authority-bearing action, and requires, before the state is reconstructed, an independently verifiable proof of the state's authorship (which agent / run wrote it) and integrity (no tampering). If the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," the state load is blocked before execution.
-
-After-the-fact detection and remediation by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of the state before the checkpoint is read back (pre-execution attestation), are **complements**, not substitutes: the former works on discovering known vulnerabilities and applying patches, the latter on breaking the chain by which an injected forged state is read back as legitimate self-state and converts into code execution.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **LangChain / LangGraph**: Disclosed all three with patches and provided fixed versions. Frames CVE-2026-28277 as post-exploitation (presuming write access to the checkpoint store) and notes the managed configuration (LangSmith Deployment) is unaffected
 - **Recommended mitigations**: Apply the latest patches, implement authentication on self-hosted LangGraph servers, avoid long-lived static secrets, segment the network, and **treat AI agents as privileged identities under least privilege (PoLP)**
-- **Cross-industry point**: MCP and agent platforms have become a CVE-dense area in 2026 (Brief 003 Starlette/BadHost, Brief 025 the MCP reference SDK, Brief 027 LibreChat), and "at what trust level to handle the data layer specific to agent platforms (connection config, persistent state, memory)" has surfaced as a shared design problem
+- **Cross-industry point**: MCP and agent platforms have become a CVE-dense area in 2026 ([Brief 003](/critical/briefs/003-starlette-badhost/) Starlette/BadHost, [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) the MCP reference SDK, [Brief 027](/critical/briefs/027-librechat-mcp-url-secrets/) LibreChat), and "at what trust level to handle the data layer specific to agent platforms (connection config, persistent state, memory)" has surfaced as a shared design problem
 
 With the spread of self-hosted agent platforms, "verifying the provenance and integrity of the state/memory store" is becoming a verification item for stateful agent implementations in general, not specific to LangGraph.
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the agent interprets its own persistent state (the checkpoint) in a privileged runtime context without verifying its provenance and integrity."** A checkpoint is the agent's "memory," and on resume the agent reads it back as legitimate self-state. But with no layer that verifies, before execution, "when, under whose authority, and tamper-free this state was written," a forged row injected into the state store converts straight into code execution.
+
+As in [Brief 027](/critical/briefs/027-librechat-mcp-url-secrets/) (LibreChat), it is a structure in which "data that describes config/state is interpreted unverified in a privileged context" on an agent platform. In 027, a user-specified **connection config** was expanded in a privileged context (`process.env`); here, the agent's own **persistent state** is reconstructed into the runtime without verification — both cases share that "a data layer specific to agent platforms (config / state) passes straight through the input-validation boundary that traditional web apps had established, wearing the agent's skin." Where [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette/BadHost) addressed the **entrance** of a connection (auth bypass) and [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) (the MCP SDK design) an RCE path inherent in the reference implementation, this case highlights that no trust boundary is drawn around the **origin of the agent's state.**
+
+In the agent-platform context, writing and reading back a checkpoint is equivalent to "handing the agent its past decisions and privilege context." When that hand-off happens without verifying the state's authorship and integrity, a single state-store layer collapses the authority boundary.
+
+Vulnerability scanners, dependency audits, egress monitoring, and prompt CVE patching all functioned here. All three were handled as coordinated disclosure with patches available, and this Brief does not deny the role of the detection layer or patch operations.
+
+At the same time, detection does not change the judgment of "may the agent trust the state it is reading back right now as legitimate self-state." The exploitation happens inside the agent's own legitimate query and deserialization against its checkpoint store. As traffic, it is indistinguishable from the agent's normal operation, and the injected forged row is read back via the same path as "correctly saved state." Pattern-matching for SQL injection plugs individual entrances, but it provides no material to establish the provenance and integrity of the state — "under whose authority, and tamper-free, was this state written." From an audit standpoint, too, evidence that independently shows "which state was reconstructed into the runtime, when, by whose write" rarely survives beyond reconciling app logs.
+
+After-the-fact detection and remediation by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of the state before the checkpoint is read back (pre-execution attestation), are **complements**, not substitutes: the former works on discovering known vulnerabilities and applying patches, the latter on breaking the chain by which an injected forged state is read back as legitimate self-state and converts into code execution.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation treats reading the agent's state back as an authority-bearing action, and requires, before the state is reconstructed, an independently verifiable proof of the state's authorship (which agent / run wrote it) and integrity (no tampering). If the proof does not satisfy "this checkpoint derives from an authorized run and is untampered," the state load is blocked before execution.
 
 Against the gap this incident exposed — the agent reconstructs its own persistent state into a privileged context without verifying provenance and integrity — Lemma proposes a design that records the writing and reading-back of state as authority-bearing actions and requires an independently verifiable proof before reconstruction.
 
@@ -109,11 +96,9 @@ Against the gap this incident exposed — the agent reconstructs its own persist
 
 After-the-fact detection by vulnerability scanners and dependency audits (detection), and independently verifying the authorship and integrity of state before it is read back (pre-execution attestation), work as complements, not substitutes.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Check Point Research (primary, researcher write-up)**: "From SQLi to RCE: Exploiting LangGraph's Checkpointer" (Yarden Porat, 2026-06) — <https://research.checkpoint.com/2026/from-sqli-to-rce-exploiting-langgraphs-checkpointer/>
 - **Check Point Blog (primary, vendor)**: "When Your AI Agent's Memory Becomes a Security Liability" — <https://blog.checkpoint.com/research/when-your-ai-agents-memory-becomes-a-security-liability/>
@@ -121,12 +106,4 @@ For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://
 - **GitHub Security Advisory**: CVE-2026-28277 (GHSA-g48c-2wqr-h844) — <https://github.com/langchain-ai/langgraph/security/advisories/GHSA-g48c-2wqr-h844>
 - **The Hacker News**: "LangGraph Flaw Chain Exposes Self-Hosted AI Agents to Remote Code Execution" (2026-06-12) — <https://thehackernews.com/2026/06/langgraph-flaw-chain-exposes-self.html>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

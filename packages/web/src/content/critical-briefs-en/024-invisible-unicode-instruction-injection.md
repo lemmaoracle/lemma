@@ -18,34 +18,19 @@ gap_missing: "There was no layer to confirm before passing input to the model wh
 gap_fix: "Before passing input to the model, independently verify with Lemma that the input arrived from a legitimate distribution source identical to the human-reviewed version and without tampering, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In 2026, the CSA disclosed a technique that hides invisible Unicode characters in AI-agent skills and tool definitions to steer the model. Characters that render as blank space to humans are read as meaningful instructions, so an attacker can embed commands that pass human review unseen. Without a verification layer there is no guarantee that what a human sees equals what the model reads. Detection and pre-execution attestation are complements, not substitutes.
+In 2026, the CSA disclosed a technique that hides invisible Unicode characters in AI-agent skills and tool definitions to steer the model. Characters that render as blank space to humans are read as meaningful instructions, so an attacker can embed commands that pass human review unseen. Without a verification layer there is no guarantee that what a human sees equals what the model reads.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Disclosure**: 2026, CSA AI Safety Initiative disclosed "Hidden Unicode Instruction Injection in AI Agent Skills." The researcher community (Embrace The Red, and others) reported the same class of technique
 - **Technical nature**: Unicode Tag characters (U+E0000–U+E007F) are invisible to the human eye and to most editors, yet LLMs process them as semantic content. Arbitrary instructions are encoded in these invisible characters and embedded into skill files, tool descriptions, MCP metadata, and documents
 - **Embedding locations**: headings, line endings, inside whitespace — positions undetectable during human review
 - **Supply-chain corroboration (related investigation)**: Snyk ToxicSkills (2026-02) audited 3,984 skills, confirming 36.82% with issues, 13.4% with critical issues, and 76 malicious payloads. The audit quantified skills — reusable capability packages — as a supply-chain attack surface
 - **Posture**: Not a specific incident of realized harm, but a technique disclosure and ecosystem audit. Demonstrates the limits of safety assurance predicated on human review
-- **Core**: the identity between what a human reads and what a model reads cannot be guaranteed without a layer that independently verifies the input's origin and integrity, so invisible Unicode undetectable to the eye passed human review and reached the model
-
----
-
-## 2. Timeline
-
-- **2026-02-05**: Snyk published the ToxicSkills audit — 3,984 skills, 36.82% with some security issue, 13.4% critical, 76 malicious payloads confirmed
-- **2026-03-10**: CSA AI Safety Initiative published the invisible Unicode instruction injection as a Research Note. Detection hooks (claude-hooks etc.) and mitigations began circulating in parallel
-- **2026, ongoing**: Indirect prompt injection via skills / tool definitions / MCP metadata is taking shape as a principal input-integrity problem of the agent era
-
-> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This is a research/lab technique demonstration, not a specific incident of realized harm — do not overstate it.
-
----
-
-## 3. Attack Vector
 
 This Brief does not provide reproducible payloads. The structural outline below is for understanding the threat model only.
 
@@ -57,29 +42,15 @@ This Brief does not provide reproducible payloads. The structural outline below 
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-This incident is a representative case of a structure in which **the identity between what a human reads and what a model reads cannot be guaranteed without a verification layer.** Much AI safety assurance relies on "a human reviewed it," but if a gap can be manufactured between human perception and model interpretation, review ceases to function as a safety guarantee. The problem is not how the characters look; it is that the origin (where did this input come from?) and integrity (what was injected along the way?) of inputs reaching the AI are not independently verified.
+- **2026-02-05**: Snyk published the ToxicSkills audit — 3,984 skills, 36.82% with some security issue, 13.4% critical, 76 malicious payloads confirmed
+- **2026-03-10**: CSA AI Safety Initiative published the invisible Unicode instruction injection as a Research Note. Detection hooks (claude-hooks etc.) and mitigations began circulating in parallel
+- **2026, ongoing**: Indirect prompt injection via skills / tool definitions / MCP metadata is taking shape as a principal input-integrity problem of the agent era
 
-Invisible ≠ absent
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information. This is a research/lab technique demonstration, not a specific incident of realized harm — do not overstate it.
 
-Brief 005 (Noroboto, lying fonts that decouple "on-screen text" from "the string the AI processes") belongs to the same primitive; this case realizes it through **invisible Unicode** — a different mechanism. Together they form a linked pair in the input-integrity cluster. Through the skills/metadata vector, this case also sits adjacent to Brief 003 (BadHost) and the MCP design issue (separate Brief) at the agent-infrastructure input boundary.
-
----
-
-## 5. The detection–proof gap
-
-For this class of technique, detection-side measures — invisible-character stripping, programmatic flagging of decode behavior, skill audits — have been proposed and shared alongside the research. These measures raise attacker cost and block known patterns, and this Brief does not dispute their role.
-
-Detection, however, cannot itself independently prove, after the fact, that "the input the human reviewed and the input the model actually interpreted were identical." Stripping invisible characters is effective against known encodings, but it is not a layer that guarantees the origin and integrity of the input. When a new encoding or obfuscation emerges, detection is again reactive. This is a structurally independent gap beyond detection's reach.
-
-As things stand, across the operational model for AI input verification, a layer that independently fixes the origin and integrity of the input the model interprets is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of provenance and integrity proof into the input ingestion path. Detection finds and removes dangerous inputs; pre-execution attestation fixes, independently of content inspection, that "the input the model processed reached it from a legitimate origin, unaltered." The two are complementary.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **Research / industry bodies**: CSA and the researcher community disclosed the technique and shared mitigations — invisible-character stripping, input sanitization, skill audits
 - **Supply-chain awareness**: skills / tool definitions / MCP metadata were quantitatively confirmed (ToxicSkills and others) as a supply-chain attack surface in the form of reusable "context." Demand for distribution-source verification and skill origin management is rising
@@ -89,7 +60,23 @@ The absence of a layer that independently verifies the origin and integrity of i
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+This incident is a representative case of a structure in which **the identity between what a human reads and what a model reads cannot be guaranteed without a verification layer.** Much AI safety assurance relies on "a human reviewed it," but if a gap can be manufactured between human perception and model interpretation, review ceases to function as a safety guarantee. The problem is not how the characters look; it is that the origin (where did this input come from?) and integrity (what was injected along the way?) of inputs reaching the AI are not independently verified.
+
+Invisible ≠ absent
+
+[Brief 005](/critical/briefs/005-noroboto-lying-fonts/) (Noroboto, lying fonts that decouple "on-screen text" from "the string the AI processes") belongs to the same primitive; this case realizes it through **invisible Unicode** — a different mechanism. Together they form a linked pair in the input-integrity cluster. Through the skills/metadata vector, this case also sits adjacent to [Brief 003](/critical/briefs/003-starlette-badhost/) (BadHost) and the MCP design issue (separate Brief) at the agent-infrastructure input boundary.
+
+For this class of technique, detection-side measures — invisible-character stripping, programmatic flagging of decode behavior, skill audits — have been proposed and shared alongside the research. These measures raise attacker cost and block known patterns, and this Brief does not dispute their role.
+
+Detection, however, cannot itself independently prove, after the fact, that "the input the human reviewed and the input the model actually interpreted were identical." Stripping invisible characters is effective against known encodings, but it is not a layer that guarantees the origin and integrity of the input. When a new encoding or obfuscation emerges, detection is again reactive. This is a structurally independent gap beyond detection's reach.
+
+As things stand, across the operational model for AI input verification, a layer that independently fixes the origin and integrity of the input the model interprets is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of provenance and integrity proof into the input ingestion path. Detection finds and removes dangerous inputs; pre-execution attestation fixes, independently of content inspection, that "the input the model processed reached it from a legitimate origin, unaltered." The two are complementary.
+
+---
+
+## 5. What proof would have changed
 
 For the detection–proof gap exposed here — the identity between human-read and model-read input cannot be guaranteed without a verification layer — Lemma offers a design in which the origin and integrity of inputs reaching the AI are committed as independently verifiable cryptographic proofs.
 
@@ -101,11 +88,9 @@ Under this design, even invisible tampering like Unicode injections surfaces as 
 
 Models change. Proofs remain.
 
-For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 Sources are drawn from published research and industry-body materials. Specific payloads that would aid reproduction are omitted.
 
@@ -113,12 +98,4 @@ Sources are drawn from published research and industry-body materials. Specific 
 - **Researcher disclosure (secondary)**: Embrace The Red "Scary Agent Skills: Hidden Unicode Instructions in Skills" (2026) — https://embracethered.com/blog/posts/2026/scary-agent-skills/
 - **Supply-chain audit (primary)**: Snyk "ToxicSkills: Comprehensive Security Audit of AI Agent Skills" (2026-02-05, 3,984 skills, 36.82%, 13.4% CRITICAL, 76 malicious payloads) — https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Trust402](https://lemma.frame00.com/trust402/)

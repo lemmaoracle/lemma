@@ -19,13 +19,13 @@ gap_missing: "At the point of execution there was no layer to confirm whether th
 gap_fix: "Before executing a fund movement or contract change, independently verify with Lemma that the approval is authorized by separate legitimate subjects at this scope, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-At Humanity Protocol, one developer's malware-infected laptop was enough for the seven private keys co-located on that device to be stolen at once, clearing the multisig threshold and draining over $32M. Onchain analysis, attribution scrutiny, and exchange response act only after funds move — after-the-fact detection. (This Brief makes no attribution.) What is structurally missing is a layer that verifies, at execution, whether the threshold-meeting signatures are a deliberate approval by separate legitimate parties; the threshold alone sufficed. Detection and pre-execution attestation are complements, not substitutes.
+At Humanity Protocol, one developer's malware-infected laptop was enough for the seven private keys co-located on that device to be stolen at once, clearing the multisig threshold and draining over $32M. Onchain analysis, attribution scrutiny, and exchange response act only after funds move — after-the-fact detection. (This Brief makes no attribution.) What is structurally missing is a layer that verifies, at execution, whether the threshold-meeting signatures are a deliberate approval by separate legitimate parties; the threshold alone sufficed.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **The event**: On 2026-06-08 to 09, funds were drained from wallets associated with Humanity Protocol. Losses exceeded $32 million (reported as $32–36M), with roughly 17 wallets emptied.
 - **Intrusion path (official account)**: According to founder Terence Kwok, the private keys of wallets managed by foundation members were compromised. The starting point was a malware infection on a developer's work laptop, from which seven valid private keys stored on a single device were stolen.
@@ -33,22 +33,6 @@ At Humanity Protocol, one developer's malware-infected laptop was enough for the
 - **What was lost**: 141.2M H was drained from the Ethereum bridge. A malicious contract upgrade minted over 100M new H (the mint chain varies across reports). H fell from about $0.70 to briefly $0.05 — an 80–90% drop within hours.
 - **Attribution held open**: Onchain investigator ZachXBT noted the incident may have been staged. Whether it was an external attack or an inside job is unconfirmed, and this Brief does not assert one.
 - **Response**: The project urged users to pause use of the cross-chain bridge and liquidity pools, and said it was working with security firms and exchanges.
-- **Core**: distributed approval flowed straight into execution on the formal satisfaction of the threshold alone — never verifying each signature as a deliberate approval by a separate legitimate party before execution — so compromising a single custody point collapsed the multi-party approval all at once.
-
----
-
-## 2. Timeline
-
-- 2026-06-08: A developer's work laptop is infected with malware; seven private keys are reportedly stolen from a single device.
-- 2026-06-08 to 09: Funds are drained across Ethereum and BSC. ProxyAdmin is seized, the bridge is drained, and new tokens are minted via a malicious upgrade.
-- 2026-06-09: The H token falls more than 80% within hours (briefly near $0.05). Roughly 17 wallets are emptied.
-- Around 2026-06-09: The founder states the private keys were compromised. ZachXBT flags a possible staged incident. The project urges pausing the bridge and liquidity pools.
-
-> Note: The total loss, the amount minted, and attribution (external attack vs. inside job) depend on the progress of the investigation, so this text gives ranges and asserts none of them.
-
----
-
-## 3. The path from key compromise to fund movement
 
 This incident stems from a structure in which the independence of distributed approval is never verified before execution. The path by which the failure propagates into a fund drain is as follows.
 
@@ -60,27 +44,16 @@ This incident stems from a structure in which the independence of distributed ap
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `bridge-config-trust` category of Pillar 01 (Verifiable Origin). The central failure primitive is that **M-of-N distributed approval flows straight into execution on the formal satisfaction of the threshold alone, without independently proving each signature to be "a deliberate approval of this operation by a separate legitimate party."** If a threshold number of keys has collapsed onto a single custody point, whoever compromises that one point (or seizes it from the inside) can establish a "legitimate multi-party approval" all at once. We note `identity-auth` (authentication of the independence of the approving parties) as a secondary category.
+- 2026-06-08: A developer's work laptop is infected with malware; seven private keys are reportedly stolen from a single device.
+- 2026-06-08 to 09: Funds are drained across Ethereum and BSC. ProxyAdmin is seized, the bridge is drained, and new tokens are minted via a malicious upgrade.
+- 2026-06-09: The H token falls more than 80% within hours (briefly near $0.05). Roughly 17 wallets are emptied.
+- Around 2026-06-09: The founder states the private keys were compromised. ZachXBT flags a possible staged incident. The project urges pausing the bridge and liquidity pools.
 
-Brief 002 (rewriting trust configuration with the deployer key), Brief 001 (tampering with KelpDAO's observation layer), Brief 023 (the guardian's key is intact, but the provenance of the signed event is unverified), and Brief 016 (the Merkle proof is valid, but the consistency of input/output amounts is unverified) differ in their subjects, but the shared primitive is the same: **the formal establishment of some approval or proof is decoupled from the layer that verifies the legitimacy behind it (who, what, with which authority).** What is distinctive here is that this gap occurred inside the very safety mechanism called "distributed approval." And whether attribution is an external attack or an inside job, the gap is the same: in an external attack, one compromised device collapses the threshold; in an inside job, the fact that the threshold does not guarantee independent agency is what gets exploited.
+> Note: The total loss, the amount minted, and attribution (external attack vs. inside job) depend on the progress of the investigation, so this text gives ranges and asserts none of them.
 
----
-
-## 5. The gap between detection and proof
-
-In this incident, the detection chain — onchain analysis (The Block and others), an investigator re-examining attribution (ZachXBT), and the response of exchanges and security firms — functioned, and the movement of funds and the structure were made visible from the outside. This is a typical success of detection, and this Brief does not negate the role of the detection layer. Detection is indispensable for tracing the drain, scrutinizing attribution, and identifying the scope of post-discovery remediation.
-
-At the same time, detection provides no material to independently establish — **at the moment the approval executes** — whether the signatures that just met the threshold are a deliberate approval by separate legitimate parties. From onchain, it looks only like "a legitimately threshold-met approval"; whether the keys had collapsed onto a single custody point, and whether the signing parties were independent, can only be learned through after-the-fact offchain investigation. The price collapse and the exchange response, too, are after-the-fact chains that act once funds have moved. This is a structurally independent layer gap, outside the reach of the detection layer.
-
-As things stand, across multisig operations as a whole, verification of the independence of approving parties still depends on trust in "a threshold of signatures was gathered," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by inserting one step of proof — of party independence and operation scope — into the approval/execution path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of approval authority.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Project response**: The project urged a pause of the bridge and liquidity pools and worked with security firms and exchanges. Private-key custody and multisig design became the points of contention.
 - **Key management and operations**: The large losses of 2026 show a conspicuous pattern of stemming from key theft rather than code defects (e.g., the same year's Drift admin-key compromise that drained roughly $285 million). The very practice of concentrating a threshold number of keys onto a single custody point is being debated as a source of risk.
@@ -90,7 +63,21 @@ The absence of a layer that independently verifies, at the moment of execution, 
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **M-of-N distributed approval flows straight into execution on the formal satisfaction of the threshold alone, without independently proving each signature to be "a deliberate approval of this operation by a separate legitimate party."** If a threshold number of keys has collapsed onto a single custody point, whoever compromises that one point (or seizes it from the inside) can establish a "legitimate multi-party approval" all at once.
+
+[Brief 002](/critical/briefs/002-stakedao-vsdcrv/) (rewriting trust configuration with the deployer key), [Brief 001](/critical/briefs/001-kelpdao-rseth/) (tampering with KelpDAO's observation layer), [Brief 023](/critical/briefs/023-alephium-tokenbridge/) (the guardian's key is intact, but the provenance of the signed event is unverified), and [Brief 016](/critical/briefs/016-verus-ethereum-bridge/) (the Merkle proof is valid, but the consistency of input/output amounts is unverified) differ in their subjects, but the shared primitive is the same: **the formal establishment of some approval or proof is decoupled from the layer that verifies the legitimacy behind it (who, what, with which authority).** What is distinctive here is that this gap occurred inside the very safety mechanism called "distributed approval." And whether attribution is an external attack or an inside job, the gap is the same: in an external attack, one compromised device collapses the threshold; in an inside job, the fact that the threshold does not guarantee independent agency is what gets exploited.
+
+In this incident, the detection chain — onchain analysis (The Block and others), an investigator re-examining attribution (ZachXBT), and the response of exchanges and security firms — functioned, and the movement of funds and the structure were made visible from the outside. This is a typical success of detection, and this Brief does not negate the role of the detection layer. Detection is indispensable for tracing the drain, scrutinizing attribution, and identifying the scope of post-discovery remediation.
+
+At the same time, detection provides no material to independently establish — **at the moment the approval executes** — whether the signatures that just met the threshold are a deliberate approval by separate legitimate parties. From onchain, it looks only like "a legitimately threshold-met approval"; whether the keys had collapsed onto a single custody point, and whether the signing parties were independent, can only be learned through after-the-fact offchain investigation. The price collapse and the exchange response, too, are after-the-fact chains that act once funds have moved. This is a structurally independent layer gap, outside the reach of the detection layer.
+
+As things stand, across multisig operations as a whole, verification of the independence of approving parties still depends on trust in "a threshold of signatures was gathered," and is not yet treated as an independent layer. Pre-execution attestation closes this gap by inserting one step of proof — of party independence and operation scope — into the approval/execution path. Attestation is not a replacement for detection but its **complement**; the combination of the two layers establishes the trust boundary of approval authority.
+
+---
+
+## 5. What proof would have changed
 
 Against the gap this incident exposed (the formal establishment of distributed approval flows straight into execution, decoupled from independent verification of party independence and operation legitimacy), Lemma proposes a design that requires, at the moment of approval and execution, an independently verifiable cryptographic proof that "this operation is authorized, with this scope, by separate legitimate parties."
 
@@ -101,11 +88,9 @@ Against the gap this incident exposed (the formal establishment of distributed a
 
 In this way, a proof fixed at the moment of execution functions as an independently verifiable trail of whether "this approval is an authorized operation by separate legitimate parties," before funds move. Detection (after-the-fact onchain analysis and attribution scrutiny) works on remediation after discovery; attestation (verification of party independence and operation authorization at the moment of approval) works on the independent verification of approval authority — each complementary to the other.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **CoinDesk (primary reporting, onchain)**: "Humanity Protocol token crashes more than 80% after a $32 million private-key hack" (2026-06-09; loss scale, threshold breach, ProxyAdmin seizure) — <https://www.coindesk.com/tech/2026/06/09/humanity-protocol-token-crashes-more-than-80-after-a-usd32-million-private-key-hack>
 - **The Block (onchain analysis)**: "Wallets linked to Humanity Protocol drained for over $32 million, token plunges 89%: onchain analyst" — <https://www.theblock.co/post/404053/humanity-protocol-exploit>
@@ -114,12 +99,4 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 - **Bitcoin.com News (secondary, attribution held open)**: "Humanity Protocol Loses $32M in Private Key Hack as ZachXBT Calls Incident 'Possibly Staged'" — <https://news.bitcoin.com/humanity-protocol-exploit-zachxbt-staged/>
 - **Chainalysis (reference, comparison case — Drift in §6)**: "Lessons from the Drift hack" (one of 2026's largest; admin-key compromise draining ~$285M; noted DPRK link) — <https://www.chainalysis.com/blog/lessons-from-the-drift-hack/>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

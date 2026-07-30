@@ -19,13 +19,13 @@ gap_missing: "Because the payload was injected with stolen legitimate credential
 gap_fix: "Before pulling in and publishing code, independently verify with Lemma that the change was issued by a legitimate developer with legitimate authority, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate developer credentials to push spoofed commits to 5,561 GitHub repositories within 6 hours. Three firms pinpointed the origin and scope within five days, but detection cannot change what the receiving sides accept. The spoofed commits passed through legitimate processes and were accepted as legitimate. The gap is that commit author and repo owner authentication form a chain never independently verified at each stage. Detection and pre-execution attestation are complements, not substitutes.
+Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate developer credentials to push spoofed commits to 5,561 GitHub repositories within 6 hours. Three firms pinpointed the origin and scope within five days, but detection cannot change what the receiving sides accept. The spoofed commits passed through legitimate processes and were accepted as legitimate. The gap is that commit author and repo owner authentication form a chain never independently verified at each stage.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Campaign name**: Megalodon
 - **Disclosure / reporting**: Safe Dep, Ox Security, Hudson Rock
@@ -34,22 +34,8 @@ Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate dev
 - **Exfiltrated**: AWS secret keys, Google Cloud access tokens, AWS / GCP / Azure metadata, instance role credentials, SSH private keys, Docker / Kubernetes configurations, Vault tokens, GitHub tokens, Bitbucket tokens
 - **Attacker GitHub account characteristics**: Random usernames (rkb8el9r, bhlru9nr, and similar), pushing via compromised PATs or deploy keys
 - **Spoofing characteristics**: Reuse of four author names — build-bot / auto-ci / ci-bot / pipeline-bot — paired with seven kinds of commit messages dressed up as routine CI maintenance
-- **Core**: The structural failure was that commit author identity and repository owner authentication form a chain of trust never independently verified at each stage, so spoofed commits made with stolen legitimate credentials were accepted as "a legitimate developer's legitimate commit."
 
----
-
-## 2. Timeline
-
-- 2026-05-19: tiledesk-server 2.18.6 (the first backdoored release) is published to npm
-- 2026-05-19 to 2026-05-21: 2.18.7 through 2.18.12 are released in succession, all backdoored
-- 2026-05-22: Safe Dep and Ox Security each publish independent technical analyses
-- Around 2026-05-22: Hudson Rock reports the infostealer-origin path. The attacker GitHub usernames associated with affected repositories match infostealer-infected machines in 33% of cases directly, with additional matches via email address
-
-> Note: Names, package names, and versions are based on the primary analyses by Safe Dep, Ox Security, and Hudson Rock and on public npm registry information. Each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Initial compromise**: Infostealer infection. GitHub credentials (PATs, deploy keys, session tokens) are stolen from individual developers' personal machines
 2. **Credential routing**: Using the stolen credentials, the infected developer's direct push access into the GitHub repositories they hold permission to is taken over
@@ -60,29 +46,16 @@ Megalodon is a CI/CD credential-theft campaign that abused stolen legitimate dev
 
 ---
 
-## 4. Structural Analysis
+## 3. Timeline — disclosure and response
 
-This incident is a representative case of a structure in which, across commit / release / CI/CD pipeline stages, **commit author identity and repository owner authentication are not independently verified, yet form a chain**. The attacker had only to seize one stage (an individual developer's credentials) for all downstream stages (npm publication, CI/CD execution, malicious distribution with no obvious culprit) to follow legitimate processes.
+- 2026-05-19: tiledesk-server 2.18.6 (the first backdoored release) is published to npm
+- 2026-05-19 to 2026-05-21: 2.18.7 through 2.18.12 are released in succession, all backdoored
+- 2026-05-22: Safe Dep and Ox Security each publish independent technical analyses
+- Around 2026-05-22: Hudson Rock reports the infostealer-origin path. The attacker GitHub usernames associated with affected repositories match infostealer-infected machines in 33% of cases directly, with additional matches via email address
 
-The primitive differs from Brief 001 and Brief 002 (cross-chain message trust on bridges) — the target here is a code commit, not a cross-chain message — but the underlying structure is shared: **the chain of trust is not independently verified at each stage**. The earlier Briefs concerned the config and observation layers; this incident concerns the authentication layer of commit author and repo owner. Both share the structure of absent trust-boundary verification.
+> Note: Names, package names, and versions are based on the primary analyses by Safe Dep, Ox Security, and Hudson Rock and on public npm registry information. Each implementation's remediation status varies over time, so consult the latest information.
 
-The structure differs from Brief 003 (Starlette / BadHost) in that the present case concerns the origin of code commits while Brief 003 concerns the authentication of HTTP requests, but the two are adjacent: credential concentration and authentication bypass are shared points of discussion.
-
----
-
-## 5. The detection–proof gap
-
-In this incident, three firms — Safe Dep, Ox Security, and Hudson Rock — independently analyzed the campaign and identified the cause (infostealer origin) and the scope (5,561 repositories, four spoofed author names) within five days. The detection layer contributed to shaping the contours of the event and made the problem visible across the industry. This Brief does not deny the role of detection vendors.
-
-But detection does not change what the receiving sides (GitHub, npm registry, CI/CD pipelines) accept. The attacker's spoofed commits were pushed through the legitimate commit signing process, and the registry accepted publication under what looked like a legitimate maintainer account. Detection limited the spread of damage, but it could not stop acceptance itself.
-
-For the purposes of establishing in regulatory filings or administrative proceedings whether "the commit was legitimate / the publication was legitimate," detection scores carry no independent attribution residue. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection. The requirement is a design that embeds, on each commit, an independently verifiable cryptographic proof that "this was generated by a legitimate individual developer under legitimate authority" — and that the CI/CD pipeline verifies the proof before building the commit. GitHub's signing commits (GPG signing) is conceptually in this direction, but as long as the key itself sits on the machine, the structure of seizure via infostealer remains. What is required is the direction of fixing commit author identity as a ZK proof without exposing the key.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
+The response and industry movement after disclosure:
 
 - **Safe Dep**: Identified and disclosed the Megalodon payload path in tiledesk-server
 - **Ox Security**: Independent analysis of the Megalodon CI/CD malware (lead researcher: Bustan)
@@ -94,7 +67,23 @@ On the relationship with TeamPCP: Just before Megalodon surfaced, TeamPCP had an
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+This incident is a representative case of a structure in which, across commit / release / CI/CD pipeline stages, **commit author identity and repository owner authentication are not independently verified, yet form a chain**. The attacker had only to seize one stage (an individual developer's credentials) for all downstream stages (npm publication, CI/CD execution, malicious distribution with no obvious culprit) to follow legitimate processes.
+
+The primitive differs from [Brief 001](/critical/briefs/001-kelpdao-rseth/) and [Brief 002](/critical/briefs/002-stakedao-vsdcrv/) (cross-chain message trust on bridges) — the target here is a code commit, not a cross-chain message — but the underlying structure is shared: **the chain of trust is not independently verified at each stage**. The earlier Briefs concerned the config and observation layers; this incident concerns the authentication layer of commit author and repo owner. Both share the structure of absent trust-boundary verification.
+
+The structure differs from [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette / BadHost) in that the present case concerns the origin of code commits while [Brief 003](/critical/briefs/003-starlette-badhost/) concerns the authentication of HTTP requests, but the two are adjacent: credential concentration and authentication bypass are shared points of discussion.
+
+In this incident, three firms — Safe Dep, Ox Security, and Hudson Rock — independently analyzed the campaign and identified the cause (infostealer origin) and the scope (5,561 repositories, four spoofed author names) within five days. The detection layer contributed to shaping the contours of the event and made the problem visible across the industry. This Brief does not deny the role of detection vendors.
+
+But detection does not change what the receiving sides (GitHub, npm registry, CI/CD pipelines) accept. The attacker's spoofed commits were pushed through the legitimate commit signing process, and the registry accepted publication under what looked like a legitimate maintainer account. Detection limited the spread of damage, but it could not stop acceptance itself.
+
+For the purposes of establishing in regulatory filings or administrative proceedings whether "the commit was legitimate / the publication was legitimate," detection scores carry no independent attribution residue. Pre-execution attestation stands in a **complementary**, not substitutive, relationship to detection. The requirement is a design that embeds, on each commit, an independently verifiable cryptographic proof that "this was generated by a legitimate individual developer under legitimate authority" — and that the CI/CD pipeline verifies the proof before building the commit. GitHub's signing commits (GPG signing) is conceptually in this direction, but as long as the key itself sits on the machine, the structure of seizure via infostealer remains. What is required is the direction of fixing commit author identity as a ZK proof without exposing the key.
+
+---
+
+## 5. What proof would have changed
 
 Lemma's design answers this incident's gap — absent independent verification of commit author and repo origin — by verifying each commit's provenance as a proof before the CI/CD pipeline builds it.
 
@@ -105,23 +94,13 @@ Lemma's design answers this incident's gap — absent independent verification o
 
 This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Safe Dep technical analysis**: "Megalodon mass GitHub repo backdooring of CI workflows" (2026-05, Safe Dep official blog) — https://safedep.io/megalodon-mass-github-repo-backdooring-ci-workflows/
 - **Ox Security technical analysis**: "Megalodon CI/CD malware on GitHub" (2026-05, Ox Security official blog, lead researcher: Bustan) — https://www.ox.security/blog/megalodon-cicd-malware-github/
 - **Hudson Rock analysis**: "Infostealers just spawned a 5,000-repo GitHub supply chain attack" (2026-05, Hudson Rock official blog) — Confirmation of the infostealer-origin path with empirical data. https://www.hudsonrock.com/blog/infostealers-just-spawned-a-5000-repo-github-supply-chain-attack
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

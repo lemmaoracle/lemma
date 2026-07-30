@@ -19,13 +19,13 @@ gap_missing: "There was no layer to independently check before the act of filing
 gap_fix: "Before filing, independently verify with Lemma that the basis for this claim actually exists and its provenance traces to a correct source, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides filed AI-generated cases that do not exist, and Judge Aycock (N.D. Miss.) sanctioned all four under Rule 11. Catching the hallucinated citations after filing cannot establish that the cited authorities exist and carry a legitimate origin; a Rule 11 signature only self-certifies and guarantees nothing. What is structurally missing is a layer that, before the act, fixes the existence and provenance of cited sources to a verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides filed AI-generated cases that do not exist, and Judge Aycock (N.D. Miss.) sanctioned all four under Rule 11. Catching the hallucinated citations after filing cannot establish that the cited authorities exist and carry a legitimate origin; a Rule 11 signature only self-certifies and guarantees nothing. What is structurally missing is a layer that, before the act, fixes the existence and provenance of cited sources to a verifiable trail.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Case**: Withers v. City of Aberdeen (a civil action over unpaid attorney's fees), U.S. District Court for the Northern District of Mississippi (Case No. 1:24-cv-00218)
 - **Judge**: Sharion Aycock, Senior U.S. District Judge
@@ -34,21 +34,6 @@ In June 2026, in Withers v. City of Aberdeen, counsel on both opposing sides fil
 - **Sanctions**: All four attorneys were removed from the case and the trial was vacated. Kathleen M. Wilson (plaintiff's side, out-of-state pro hac vice / admission revoked, barred from appearing in the district for two years, fined $2,500); Kathryn Y. Williams (defendant's side, out-of-state pro hac vice / revoked, two-year bar, fined $3,500); and the local attorneys who sponsored their pro hac vice admission and signed the filings, Shauncey Hunter Ridgeway and Mark McClinton (fined $1,000 each, disqualified from the case).
 - **The court's framing**: The judge placed the local counsel's "rubberstamp[ing]" of the out-of-state attorneys' briefs at the heart of the problem. Under Rule 11, a signature certifies the accuracy of the filing's contents — yet that certification was made without independently confirming the existence of the underlying authorities.
 - **The core**: Whether the cases cited in the briefs "exist and carry a legitimate origin" was not independently verified before the act of filing. Verification did not engage until the judge and opposing party noticed and sanctioned the conduct after the fact.
-
----
-
-## 2. Timeline
-
-- 2024: Withers v. City of Aberdeen is pending (a dispute over unpaid attorney's fees).
-- Early 2026: The out-of-state attorneys on both sides file briefs drafted with AI. The briefs contain citations to cases that do not exist. Local counsel signed each filing.
-- 2026-01-20: A hearing is held. Wilson and Williams admit to using AI and to not verifying the existence of the citations before filing.
-- 2026-06-08: Judge Aycock signs the sanctions order, sanctioning all four attorneys for Rule 11 violations and vacating the trial (reported June 9). The matter was widely reported as an unusual situation in which a federal court sanctioned both opposing parties for the same AI misuse at once.
-
-> Note: The fine amounts, who was barred from appearing, and the disposition categories are based on the sanctions order (the Withers v. City of Aberdeen, No. 1:24-cv-00218 docket on CourtListener). This Brief is not intended to censure individual attorneys; it addresses the structure in which the grounds for an AI output go independently unverified before action.
-
----
-
-## 3. The chain: how the grounds an AI surfaced become action without being verified
 
 This incident stems from a structure in which the existence and provenance of the authorities surfaced by AI are not independently verified before they are acted upon (the act of filing). The path by which the failure propagates into sanction is as follows.
 
@@ -61,31 +46,16 @@ This incident stems from a structure in which the existence and provenance of th
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "the existence and provenance of the authorities (grounds) surfaced by AI are not fixed as an independently verifiable trail before they are acted upon, and the look of the output is equated with the authenticity of the grounds."** We note `data-provenance` (the origin and provenance of the cited authority as the ground) as a secondary category.
+- 2024: Withers v. City of Aberdeen is pending (a dispute over unpaid attorney's fees).
+- Early 2026: The out-of-state attorneys on both sides file briefs drafted with AI. The briefs contain citations to cases that do not exist. Local counsel signed each filing.
+- 2026-01-20: A hearing is held. Wilson and Williams admit to using AI and to not verifying the existence of the citations before filing.
+- 2026-06-08: Judge Aycock signs the sanctions order, sanctioning all four attorneys for Rule 11 violations and vacating the trial (reported June 9). The matter was widely reported as an unusual situation in which a federal court sanctioned both opposing parties for the same AI misuse at once.
 
-The point is not "that the lawyers used AI" as such. AI-assisted research and drafting is settling into practice and is itself a productivity gain. What was missing is a layer that, **before the work enters practice**, independently confirms the existence and origin of the grounds the AI surfaced. With that layer, using AI is not itself the problem; indeed, if the authenticity of the grounds is independently verified before action, AI use and practical trust can coexist. The judge's decision to center "rubberstamp[ing]" reinforces this: certification by signature, absent a layer that independently confirms the existence of the grounds, leaves only the form and lets faulty grounds pass through.
+> Note: The fine amounts, who was barred from appearing, and the disposition categories are based on the sanctions order (the Withers v. City of Aberdeen, No. 1:24-cv-00218 docket on CourtListener). This Brief is not intended to censure individual attorneys; it addresses the structure in which the grounds for an AI output go independently unverified before action.
 
-This is the same shape as Brief 005 (Noroboto / font spoofing that splits what the AI reads from what the human sees): **the authenticity of an AI judgment's inputs and outputs is not verified as an independent layer.** Where 005 concerns the integrity of the "input" to the AI, this incident concerns the existence and provenance of the "output" from the AI (its cited grounds) — two cross-sections of the same thesis. It connects to Brief 011 (SynthID / provenance marks on AI artifacts can be stripped) in that the provenance of an AI artifact is not fixed in an independently verifiable form. It is the same shape as Brief 012 (a facial-recognition AI determination led directly to a coercive administrative disposition without independent verification), in that an AI output leads directly into a legal process or disposition without independent verification — and this incident moves that into the grounds of a judicial proceeding (the case law). It also connects to Brief 017 (McKinsey Lilli / the layer governing AI has neither integrity nor provenance) through the absence of a provenance layer that would underwrite trust in an AI output.
-
-That "both opposing sides committed the same misuse at once" sharpens the point. It cannot be reduced to the inattention of individual counsel. When a layer to independently verify the grounds an AI surfaced is absent across the whole proceeding, the misuse appears not as one party's fault but as a structural precondition shared by both.
-
----
-
-## 5. The gap between detection and proof
-
-The judge's scrutiny, the opposing party's flagging, and the Rule 11 sanction are indispensable for correcting the faulty filings and deterring recurrence, and this Brief does not negate that role. After-the-fact detection and sanction in a judicial process are an important check on AI misuse.
-
-At the same time, detection provides no material to independently establish — **before the action** — whether the grounds of the brief about to be filed exist and carry a legitimate origin. A citation to a nonexistent case looks authentic on the page and is indistinguishable from a legitimate argument at the moment of filing. The judge and the opposing party notice only after the brief has been filed and brought into the proceeding. Rule 11 requires counsel to certify accuracy, but that is the filer's self-certification, not an external layer that independently underwrites the existence of the grounds. That even a local counsel's signature can become a "rubberstamp" shows that self-certification alone cannot guarantee the existence of the grounds. What was missing is a mechanism to fix, before the action, an independently verifiable trail that "this authority exists and the citation derives from that source" — a chain separate from after-the-fact scrutiny and sanction.
-
-The idea of pre-execution attestation flips the grounds an AI surfaces from "reconcile them by hand after the fact" to "fix, before the action, an independently verifiable trail of their existence and provenance." Bind the authorities an AI cites (cases, statutes, sources) to their actual origins as provenance, and make their existence and the consistency of the citation independently verifiable at the moment of the act — and an output that lacks grounds is screened out before the act of filing. Detecting the error (the detection-style "what was wrong") and proving the grounds ("were these grounds independently verified to exist and to derive from their source") are not substitutes but **complements**. Independently verifying the origin of the grounds an AI used connects directly to designs that attest the sources of RAG (retrieval-augmented generation).
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **The court / Rule 11**: Judge Aycock sanctioned counsel on both sides and vacated the trial. Rule 11 is the framework that has counsel certify the accuracy of filed papers, but this incident showed that self-certification alone cannot independently guarantee the existence of AI-generated grounds — and that a local counsel's signature in particular can become a "rubberstamp."
 - **AI guidance in the judiciary**: Across jurisdictions, guidance is developing on the use of generative AI in courts and legal practice and on the duty to verify citations. The debate is moving not toward banning AI use but toward building verification of outputs (especially cited sources) into practice procedures.
@@ -95,7 +65,25 @@ The absence of a layer that independently verifies, before action, the grounds a
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the existence and provenance of the authorities (grounds) surfaced by AI are not fixed as an independently verifiable trail before they are acted upon, and the look of the output is equated with the authenticity of the grounds."**
+
+The point is not "that the lawyers used AI" as such. AI-assisted research and drafting is settling into practice and is itself a productivity gain. What was missing is a layer that, **before the work enters practice**, independently confirms the existence and origin of the grounds the AI surfaced. With that layer, using AI is not itself the problem; indeed, if the authenticity of the grounds is independently verified before action, AI use and practical trust can coexist. The judge's decision to center "rubberstamp[ing]" reinforces this: certification by signature, absent a layer that independently confirms the existence of the grounds, leaves only the form and lets faulty grounds pass through.
+
+This is the same shape as [Brief 005](/critical/briefs/005-noroboto-lying-fonts/) (Noroboto / font spoofing that splits what the AI reads from what the human sees): **the authenticity of an AI judgment's inputs and outputs is not verified as an independent layer.** Where 005 concerns the integrity of the "input" to the AI, this incident concerns the existence and provenance of the "output" from the AI (its cited grounds) — two cross-sections of the same thesis. It connects to [Brief 011](/critical/briefs/011-synthid-watermark-reverse-engineering/) (SynthID / provenance marks on AI artifacts can be stripped) in that the provenance of an AI artifact is not fixed in an independently verifiable form. It is the same shape as [Brief 012](/critical/briefs/012-williams-frt-wrongful-arrest/) (a facial-recognition AI determination led directly to a coercive administrative disposition without independent verification), in that an AI output leads directly into a legal process or disposition without independent verification — and this incident moves that into the grounds of a judicial proceeding (the case law). It also connects to [Brief 017](/critical/briefs/017-mckinsey-lilli-system-prompts/) (McKinsey Lilli / the layer governing AI has neither integrity nor provenance) through the absence of a provenance layer that would underwrite trust in an AI output.
+
+That "both opposing sides committed the same misuse at once" sharpens the point. It cannot be reduced to the inattention of individual counsel. When a layer to independently verify the grounds an AI surfaced is absent across the whole proceeding, the misuse appears not as one party's fault but as a structural precondition shared by both.
+
+The judge's scrutiny, the opposing party's flagging, and the Rule 11 sanction are indispensable for correcting the faulty filings and deterring recurrence, and this Brief does not negate that role. After-the-fact detection and sanction in a judicial process are an important check on AI misuse.
+
+At the same time, detection provides no material to independently establish — **before the action** — whether the grounds of the brief about to be filed exist and carry a legitimate origin. A citation to a nonexistent case looks authentic on the page and is indistinguishable from a legitimate argument at the moment of filing. The judge and the opposing party notice only after the brief has been filed and brought into the proceeding. Rule 11 requires counsel to certify accuracy, but that is the filer's self-certification, not an external layer that independently underwrites the existence of the grounds. That even a local counsel's signature can become a "rubberstamp" shows that self-certification alone cannot guarantee the existence of the grounds. What was missing is a mechanism to fix, before the action, an independently verifiable trail that "this authority exists and the citation derives from that source" — a chain separate from after-the-fact scrutiny and sanction.
+
+The idea of pre-execution attestation flips the grounds an AI surfaces from "reconcile them by hand after the fact" to "fix, before the action, an independently verifiable trail of their existence and provenance." Bind the authorities an AI cites (cases, statutes, sources) to their actual origins as provenance, and make their existence and the consistency of the citation independently verifiable at the moment of the act — and an output that lacks grounds is screened out before the act of filing. Detecting the error (the detection-style "what was wrong") and proving the grounds ("were these grounds independently verified to exist and to derive from their source") are not substitutes but **complements**. Independently verifying the origin of the grounds an AI used connects directly to designs that attest the sources of RAG (retrieval-augmented generation).
+
+---
+
+## 5. What proof would have changed
 
 Against the gap this incident exposed (the existence and provenance of the authorities an AI surfaces are not independently verified before they enter practice), Lemma proposes a design that fixes the grounds an AI used for a judgment or claim as an independently verifiable cryptographic proof at the moment of the act.
 
@@ -106,11 +94,9 @@ Against the gap this incident exposed (the existence and provenance of the autho
 
 In this way, a proof fixed at the moment of the act functions as an independently verifiable trail of whether "this claim rests on grounds that exist, and their provenance is verifiable," without depending on after-the-fact human reconciliation. Detection (after-the-fact scrutiny and sanction) works on correcting errors; attestation (independent verification of the grounds at the moment of the act) works on establishing trust in AI outputs — each complementary to the other. Rather than rejecting AI use itself, making the grounds checkable in layers lets AI use and practical trust coexist.
 
-For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Sanctions order (primary, court document)**: U.S. District Court, N.D. Mississippi, Withers v. City of Aberdeen (Case No. 1:24-cv-00218) Sanctions Order (CourtListener docket) — <https://www.courtlistener.com/docket/69485760/withers-v-city-of-aberdeen/>
 - **Bloomberg Law**: "Lawyers on Both Sides in Mississippi Case Punished for AI Errors" — <https://news.bloomberglaw.com/litigation/lawyers-on-both-sides-in-mississippi-case-punished-for-ai-errors>
@@ -118,12 +104,4 @@ For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.fr
 - **ABA Journal**: "Federal judge removes 4 plaintiff and defense attorneys over AI errors" — <https://www.abajournal.com/news/article/federal-judge-terminates-4-plaintiff-and-defense-attorneys-over-ai-errors>
 - **Reason (The Volokh Conspiracy)**: "Nonexistent Case Citations on Both Sides + 'Rubberstamp[ing]' by 'Local Counsel'" (2026-06-09) — <https://reason.com/volokh/2026/06/09/nonexistent-case-citations-on-both-sides-rubberstamping-by-local-counsel/>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Trust402](https://lemma.frame00.com/trust402/)

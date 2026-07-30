@@ -19,37 +19,23 @@ gap_missing: "送金データの暗号的な証明はすべて有効だったた
 gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際に拠出された価値と一致している」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-2026 年 5 月、Verus-Ethereum ブリッジから約 $11.58M が流出した。攻撃者は $0.01 相当の入金に対し巨額払出を指示する blob を構成したが、state root・Merkle Proof 等は有効で署名検証は通過した。欠けていたのは入出力額の整合検証で、異常検知が払出後に発火しても受理済みの払出は止まらない。Merkle Proof は包含しか証さず、整合は別系統で独立検証するほかない。検出と事前証明は代替でなく補完である。
+2026 年 5 月、Verus-Ethereum ブリッジから約 $11.58M が流出した。攻撃者は $0.01 相当の入金に対し巨額払出を指示する blob を構成したが、state root・Merkle Proof 等は有効で署名検証は通過した。欠けていたのは入出力額の整合検証で、異常検知が払出後に発火しても受理済みの払出は止まらない。Merkle Proof は包含しか証さず、整合は別系統で独立検証するほかない。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **対象**: Verus Protocol の Verus-Ethereum クロスチェーンブリッジ
 - **被害額**: 約 1,158 万ドル（ETH / tBTC / USDC）
 - **発生日**: 2026-05-18
-- **根本原因**: ブリッジの両側がそれぞれ検証を行っていたが、「source-chain の入力額が Ethereum 側の払出額と一致するか」を検証する必須ステップが存在せず、Ethereum 側 `checkCCEValues` 関数に当該検証が欠落していた
 - **悪用の核心**: 攻撃の transfer blob は入出力の根本的な不整合（$0.01 相当の VRSC 入力 vs $11.58M 相当の ETH / tBTC / USDC 払出）を持っていた。しかし blob の構成要素（state root・関連ハッシュ・Merkle Proof）はすべて有効であり、Verus notary は受理・承認した
 - **解析**: Halborn が技術的な root cause 解説を公開
 - **事後**: 攻撃者は交渉による bounty 取り決めの下で約 75%（4,052.4 ETH）を返還し、約 1,350 ETH（約 280 万ドル相当）を bounty として保持
 - **文脈**: 2026 年のブリッジ関連 exploit は累計で 3 億ドル規模に達しているとの集計
 
----
-
-## 2. タイムライン
-
-- 2026-05-18: Verus-Ethereum ブリッジから約 $11.58M が流出。攻撃者は $0.01 相当の入力に対し巨額払出を構成
-- 2026-05-18 以降: 攻撃者が窃取資産を ETH へスワップ（報道では計約 5,402 ETH 相当）。攻撃が継続中と報じられる
-- 2026-05-22 前後: 交渉による bounty 取り決めが成立。攻撃者が約 4,052.4 ETH（約 75%）を返還、約 1,350 ETH を保持
-- 2026-05（同時期）: Halborn が root cause の技術解説を公開
-
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
-
----
-
-## 3. 攻撃ベクター
+事象は次の連鎖で成立している。
 
 1. **不整合 payload の構成**: 攻撃者は cross-chain import payload を、$0.01 相当の VRSC 入力に対し $11.58M 相当の払出を指示する形で構成
 2. **有効な暗号構成要素**: 当該 blob に対応する state root・ハッシュ・Merkle Proof はいずれも有効であった。暗号的検証は通過する
@@ -60,27 +46,16 @@ gap_fix: "高額な払出の前に「払出額が、相手チェーンで実際�
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事案は Pillar 01（来歴証明）の `bridge-config-trust` カテゴリに属する。中心的な**失敗 primitive は「cross-chain の value claim が、暗号的構成要素（Merkle Proof 等）の有効性検証とは別に、入出力額の整合として独立検証されていなかった」**点にある。Merkle Proof が有効であることは「この blob が state root に含まれる」ことを示すが、「払出額が source 側の入力額と一致する」ことを示さない。secondary に `identity-auth` を併記する。
+- 2026-05-18: Verus-Ethereum ブリッジから約 $11.58M が流出。攻撃者は $0.01 相当の入力に対し巨額払出を構成
+- 2026-05-18 以降: 攻撃者が窃取資産を ETH へスワップ（報道では計約 5,402 ETH 相当）。攻撃が継続中と報じられる
+- 2026-05-22 前後: 交渉による bounty 取り決めが成立。攻撃者が約 4,052.4 ETH（約 75%）を返還、約 1,350 ETH を保持
+- 2026-05（同時期）: Halborn が root cause の技術解説を公開
 
-Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-config-trust` だが primitive が異なる。Brief 001 は DVN 観測層の RPC 改ざん、Brief 002 はデプロイヤー鍵による trust source の書き換え、本事案は value claim の整合検証の欠落。三者は「cross-chain で受け渡される主張が、それを独立検証する layer と切り離されたまま accept される」という構造で同根。本事案は「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの核心を、$0.01 入力 → $11.58M 払出という極端なギャップで具体的に示している。
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
----
-
-## 5. 検出と証明の落差
-
-ブリッジの監視・異常検知や、Halborn のような事後の root cause 解析は、被害の把握・封じ込め・再発防止議論・交渉による資産回収に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも事後解析と交渉により約 75% が回収された。
-
-一方で、検出は受信側（Ethereum 側コントラクト、notary）が「どの payload を accept するか」自体を変えない。本事案では、blob の暗号構成要素がすべて有効だったため、署名・Merkle Proof の検証は通過した。欠けていたのは「value claim が意味的に正しいか（入力額と払出額が一致するか）」の検証であり、これは暗号的有効性とは別系統の検証である。異常検知が払出後に発火しても、`checkCCEValues` が accept した時点での払出は止まらない。規制報告・監査で「この cross-chain import は正規の value claim だったか」を立証する材料として、Merkle Proof の有効性だけでは入出力整合の独立した証跡にならない。
-
-事前証明（pre-execution attestation）は、cross-chain の value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を採る。proof が「入力額と払出額が不整合」と告げれば、払出は事前に block される。Merkle Proof による包含証明（detection 的な「この blob は存在する」）と、value claim の事前証明（「この払出額は source の入力と整合する」）は代替ではなく **補完** の関係にある。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
+公表後の対応と業界の動きは次のとおり。
 
 - **Verus Protocol**: 流出後、攻撃者との交渉により bounty 取り決めを成立させ、約 4,052.4 ETH（約 75%）の返還を受けた。攻撃者は約 1,350 ETH を bounty として保持
 - **Halborn**: root cause（`checkCCEValues` の source-amount 検証欠如）と悪用手順の技術解説を公開し、業界横断で問題を可視化
@@ -90,7 +65,21 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+中心的な<strong>失敗 primitive は「cross-chain の value claim が、暗号的構成要素（Merkle Proof 等）の有効性検証とは別に、入出力額の整合として独立検証されていなかった」</strong>点にある。Merkle Proof が有効であることは「この blob が state root に含まれる」ことを示すが、「払出額が source 側の入力額と一致する」ことを示さない。
+
+[Brief 001](https://lemma.frame00.com/ja/critical/briefs/001-kelpdao-rseth/)（KelpDAO/rsETH）・[Brief 002](https://lemma.frame00.com/ja/critical/briefs/002-stakedao-vsdcrv/)（Stake DAO/vsdCRV）と同じ `bridge-config-trust` だが primitive が異なる。[Brief 001](https://lemma.frame00.com/ja/critical/briefs/001-kelpdao-rseth/) は DVN 観測層の RPC 改ざん、[Brief 002](https://lemma.frame00.com/ja/critical/briefs/002-stakedao-vsdcrv/) はデプロイヤー鍵による trust source の書き換え、本事案は value claim の整合検証の欠落。三者は「cross-chain で受け渡される主張が、それを独立検証する layer と切り離されたまま accept される」という構造で同根。本事案は「暗号論理的に有効 ≠ 意味的に正しい」という来歴証明カテゴリの核心を、$0.01 入力 → $11.58M 払出という極端なギャップで具体的に示している。
+
+ブリッジの監視・異常検知や、Halborn のような事後の root cause 解析は、被害の把握・封じ込め・再発防止議論・交渉による資産回収に不可欠であり、本 Brief がその役割を否定するものではない。本事案でも事後解析と交渉により約 75% が回収された。
+
+一方で、検出は受信側（Ethereum 側コントラクト、notary）が「どの payload を accept するか」自体を変えない。本事案では、blob の暗号構成要素がすべて有効だったため、署名・Merkle Proof の検証は通過した。欠けていたのは「value claim が意味的に正しいか（入力額と払出額が一致するか）」の検証であり、これは暗号的有効性とは別系統の検証である。異常検知が払出後に発火しても、`checkCCEValues` が accept した時点での払出は止まらない。規制報告・監査で「この cross-chain import は正規の value claim だったか」を立証する材料として、Merkle Proof の有効性だけでは入出力整合の独立した証跡にならない。
+
+---
+
+## 5. 証明があれば、何が変わるか
+
+事前証明（pre-execution attestation）は、cross-chain の value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、「source 側で実際に拠出された価値」と「払出額」の整合を proof として検証する設計を採る。proof が「入力額と払出額が不整合」と告げれば、払出は事前に block される。Merkle Proof による包含証明（detection 的な「この blob は存在する」）と、value claim の事前証明（「この払出額は source の入力と整合する」）は代替ではなく **補完** の関係にある。
 
 本事案で露呈した検出と証明の落差（cross-chain の value claim が、Merkle Proof 等の暗号的有効性とは別に、入出力額の整合として独立検証されていない）に対して、Lemma は、cross-chain で受け渡される value claim を、受信側が実行前に独立検証可能な暗号証明として受け取り、整合を proof として検証する設計を提示している。
 
@@ -101,11 +90,9 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 
 本事案は、既存の reference 実装（ブリッジ来歴の事前証明）が想定する failure mode が直近の現実の損失として顕在化した事例である。
 
-設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Halborn**: "Explained: The Verus-Ethereum Bridge Hack (May 2026)"（2026-05、root cause・悪用手順の技術解説）— https://www.halborn.com/blog/post/explained-the-verus-ethereum-bridge-hack-may-2026
 - **CoinDesk**: "Verus-Ethereum bridge loses $11 million as hackers keep targeting cross-chain infrastructure"（2026-05-18）— https://www.coindesk.com/markets/2026/05/18/yet-another-crypto-bridge-falls-victim-to-an-usd11-million-hack
@@ -113,12 +100,4 @@ Brief 001（KelpDAO/rsETH）・Brief 002（Stake DAO/vsdCRV）と同じ `bridge-
 - **Crypto Times**: "Verus Hacker Returns $8.5M After Bridge Exploit Deal"（2026-05-22、bounty 取り決め・返還）— https://www.cryptotimes.io/2026/05/22/verus-hacker-returns-8-5m-after-bridge-exploit-deal/
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/)、[Trust402](https://lemma.frame00.com/ja/trust402/)

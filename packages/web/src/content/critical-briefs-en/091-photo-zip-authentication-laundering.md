@@ -21,35 +21,20 @@ gap_missing: "Authentication confirmed only the legitimacy of the sending path; 
 gap_fix: "Attach a cryptographic provenance proof of authorship to legitimate booking and guest communications, and independently verify with Lemma any message that lacks it, to prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-On 2026-06-25, Microsoft threat intelligence disclosed "Photo ZIP," a multi-stage campaign targeting the hotel and hospitality industry across Europe and Asia. The technical core is "authentication laundering": by routing messages through the notification infrastructure of a legitimate scheduling SaaS (Calendly) and a Google redirect, all three email authentication checks — SPF, DKIM, and DMARC — pass as legitimate. The sender display name shown to recipients is "Booking Manager (via Calendly)." When front-desk staff open an LNK file disguised as a PNG image (inside `photo-<random>.zip`), a legitimate Node.js runtime is dropped via PowerShell and the implant TonRAT establishes dual registry persistence and C2. Japanese lures (guest complaints, bedbug reports) were the most prevalent, putting Japanese accommodations in range. Email authentication completed — but, ironically, that only endorsed the attack as "legitimate." Authentication verifies the sending path, not authorship. Detection and pre-execution proof are complements, not substitutes.
+On 2026-06-25, Microsoft threat intelligence disclosed "Photo ZIP," a multi-stage campaign targeting the hotel and hospitality industry across Europe and Asia. The technical core is "authentication laundering": by routing messages through the notification infrastructure of a legitimate scheduling SaaS (Calendly) and a Google redirect, all three email authentication checks — SPF, DKIM, and DMARC — pass as legitimate. The sender display name shown to recipients is "Booking Manager (via Calendly)." When front-desk staff open an LNK file disguised as a PNG image (inside `photo-<random>.zip`), a legitimate Node.js runtime is dropped via PowerShell and the implant TonRAT establishes dual registry persistence and C2. Japanese lures (guest complaints, bedbug reports) were the most prevalent, putting Japanese accommodations in range. Email authentication completed — but, ironically, that only endorsed the attack as "legitimate." Authentication verifies the sending path, not authorship.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Research party**: Microsoft Defender Security Research Team (Parth Jomadkar). Published a technical report and IoCs (C2 domains, hashes, etc.) on 2026-06-25
 - **Subject**: The hotel and hospitality industry across Europe and Asia. Reservation and front-desk staff were selectively targeted (accounts whose device names included `reception-`, `frontdesk-`, `accueil`, `recepcja`, etc.)
 - **Scale**: Microsoft confirmed intrusions at multiple organizations. The ultimate objective is unknown at this time; the investment in obfuscation and persistence is assessed as a staging phase for follow-on activity. There is no attribution to a known threat actor (to be confirmed: number of victim organizations, country breakdown)
-- **Root cause**: A structural blind spot in which email authentication (SPF, DKIM, DMARC) verifies only the legitimacy of the sending path, not the authorship — who wrote the message and with what authority. The attacker exploited this blind spot via "authentication laundering," routing through the sending infrastructure of a legitimate SaaS
 - **Structural points**: (i) using the "true attribute" of a trusted SaaS sender as a cover for the "false authorship" of the attacker's text; (ii) hiding the executable's provenance behind a PNG-disguised LNK; (iii) evading detection by masquerading as a legitimate runtime (Node.js)
-- **Core**: The message's transport path was verified, but the provenance of the author (who wrote it, with what authority) was not; a backdoor reached the front-desk endpoint while passing every authentication check
 
----
-
-## 2. Timeline
-
-- 2026-04: The "Photo ZIP" campaign begins (Wave 1), using `IMG-<random>.png.lnk` as the initial technique
-- Late 2026-05: The delivery technique evolves. "Authentication laundering" via the Calendly notification infrastructure plus a Google redirect is introduced. Sender display name "Booking Manager (via Calendly)"
-- Wave 2: The filename prefix changes from `IMG-` to `PHOTO-`. A stage that dynamically compiles a .NET DLL via `csc.exe` from PowerShell is added. `photo-<number>.cfd` domains behind Cloudflare are added
-- 2026-06-25: The Microsoft Defender Security Research Team publishes the technical report and IoCs
-
-> Note: This case is based on research and observation disclosed by Microsoft threat intelligence; the ultimate objective is unconfirmed as of this Brief's writing (assessed as a staging phase for follow-on activity). There is no attribution to a known threat actor. The lure languages observed were Japanese (most prevalent), Danish, and Dutch; `accueil`, `recepcja`, etc., are reported as device-name patterns. The implant is tracked as TonRAT, but we make no claims about its C2 resolution beyond what was disclosed (paths other than domains). Refer to the latest primary source (Microsoft's official post) for scale, country breakdown, and IoCs (domains/hashes). We do not exaggerate.
-
----
-
-## 3. Attack vector (authentication laundering → Node.js implant)
+The incident came together as the following chain.
 
 1. **Routing through a legitimate SaaS**: The attacker generates an email notification in Calendly's system and embeds a multi-hop link in the body: Calendly's `/url` redirect → Google's share redirect → `photo-<number>.cfd`
 2. **Passing every email check**: Because the email is actually sent from Calendly's infrastructure, it passes the recipient's SPF, DKIM, and DMARC and lands in the inbox as "Booking Manager (via Calendly)." Authentication confirms "did it go through legitimate sending infrastructure," not "who wrote it"
@@ -61,29 +46,16 @@ This is a case of **authentication laundering** that exploits a blind spot in em
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This case belongs to the `identity-auth` category under Pillar 01 (Verifiable Origin). The central failure primitive is that **"the channel is legitimate" (channel_is_legitimate) was mistaken for "the message is authentic" (message_is_authentic)**. The unit of trust was placed on the transport path, not on authorship. Email authentication did fire, but what it proved was only that the message "went through a legitimate SaaS sending infrastructure," not that "the claimed counterparty wrote this booking/complaint message with that authority." The moment a legitimate SaaS was used as a relay, detection instead endorsed the attack as "authenticated."
+- 2026-04: The "Photo ZIP" campaign begins (Wave 1), using `IMG-<random>.png.lnk` as the initial technique
+- Late 2026-05: The delivery technique evolves. "Authentication laundering" via the Calendly notification infrastructure plus a Google redirect is introduced. Sender display name "Booking Manager (via Calendly)"
+- Wave 2: The filename prefix changes from `IMG-` to `PHOTO-`. A stage that dynamically compiles a .NET DLL via `csc.exe` from PowerShell is added. `photo-<number>.cfd` domains behind Cloudflare are added
+- 2026-06-25: The Microsoft Defender Security Research Team publishes the technical report and IoCs
 
-This case connects, in the same lineage, with a series of Briefs where a trusted path or sender was repurposed for attack. Brief No.030 (Stripe, where trusted API infrastructure was repurposed for delivering and storing card theft) is the same shape as this case in that a trusted path itself does not vouch for the authenticity of content. Brief No.064 (Salesloft Drift, where a trusted integration's OAuth was abused) connects in that an established trust relationship became cover for malicious operations. Brief No.062 (Claude Code GitHub Action, where a `[bot]` claim was trusted into privileged execution) shares the same failure primitive of trusting a "claimed identity" without verifying it. Brief No.047 (OpenClaw, where credentials were sent out before the sender was verified) is adjacent in the absence of authorship verification around booking and accommodation. In all of them, **the basis of trust was placed on a "path or claimed name," and the "provenance of the author" was not independently verified**.
+> Note: This case is based on research and observation disclosed by Microsoft threat intelligence; the ultimate objective is unconfirmed as of this Brief's writing (assessed as a staging phase for follow-on activity). There is no attribution to a known threat actor. The lure languages observed were Japanese (most prevalent), Danish, and Dutch; `accueil`, `recepcja`, etc., are reported as device-name patterns. The implant is tracked as TonRAT, but we make no claims about its C2 resolution beyond what was disclosed (paths other than domains). Refer to the latest primary source (Microsoft's official post) for scale, country breakdown, and IoCs (domains/hashes). We do not exaggerate.
 
-As a secondary category, we note `code-provenance` (the executable's provenance was hidden behind a PNG-disguised LNK and a masquerade as legitimate Node.js). Email authentication and sender reputation are useful as a precondition, but only once a message's author is independently verified as provenance — "is this the claimed party?" — can booking and guest communications be handled with confidence on the front-desk front line.
-
----
-
-## 5. The gap between detection and proof
-
-That all three checks — SPF, DKIM, and DMARC — fired and completed is indispensable for countering spoofed email, and this Brief does not deny that role. That the email was sent from legitimate infrastructure (Calendly) was indeed verified. Detection (authentication of the sending domain/path) did work.
-
-At the same time, what email authentication confirmed was only "was it sent from Calendly (the legitimacy of the path)," and no one could prove "did a legitimate counterparty write this booking/complaint message (authorship)." What was missing was a layer that, before execution (the front-desk staff's opening and clicking), independently verifies whether a message's author is "the claimed party, with legitimate authority" — a verification on a separate track from authentication of the path. The moment a legitimate SaaS was used as a relay, authentication instead endorsed the attack as "authenticated" and lowered the recipient's guard. Even if the email is re-judged malicious after the fact, the backdoor that has already reached opening and execution is not stopped.
-
-Pre-execution attestation proves, before execution, not the "legitimacy of the path" but the "legitimacy of authorship," in an independently verifiable form. By attaching a cryptographic provenance proof of authorship (such as Seal) to legitimate booking and guest communications, front-desk staff and the email infrastructure can immediately identify "a message lacking the expected authorship proof." Only by not separating authentication of the path (the detection-style "it arrived from legitimate infrastructure") from pre-execution attestation of the author's provenance ("the claimed party wrote it"), and by letting the two overlap, can booking and guest communications be handled with confidence in real operations. The unit of trust moves from "path" to "author," and authentication laundering no longer works. Detection and pre-execution proof are complements, not substitutes.
-
-For the thesis that after-the-fact detection is not proof, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for design that verifies independently before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Microsoft (research party)**: As mitigations, recommends staff-wide awareness of emails whose sender name is "Booking Manager (via Calendly)," checking the final destination of redirect URLs, enabling display of known file extensions, LNK execution restrictions and ASR rules, adding SIEM/EDR rules that detect non-standard placement of a legitimate runtime (Node.js) and its external communication, and registering the published IoCs. Points to related Microsoft Defender alerts
 - **Abuse of business characteristics**: This case is an extension of a series of phishing campaigns targeting the hotel industry (Booking.com impersonation, repeated advisories for the hospitality sector), exploiting the hospitality trait of "a front desk that routinely handles photo and document attachments" for target selection. Japanese lures were the most prevalent, putting Japanese accommodations among the targets
@@ -93,7 +65,23 @@ How to independently verify, before opening and execution, the provenance of a m
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **"the channel is legitimate" (channel_is_legitimate) was mistaken for "the message is authentic" (message_is_authentic)**. The unit of trust was placed on the transport path, not on authorship. Email authentication did fire, but what it proved was only that the message "went through a legitimate SaaS sending infrastructure," not that "the claimed counterparty wrote this booking/complaint message with that authority." The moment a legitimate SaaS was used as a relay, detection instead endorsed the attack as "authenticated."
+
+This case connects, in the same lineage, with a series of Briefs where a trusted path or sender was repurposed for attack. [Brief No.030](/critical/briefs/030-stripe-trusted-channel-skimmer/) (Stripe, where trusted API infrastructure was repurposed for delivering and storing card theft) is the same shape as this case in that a trusted path itself does not vouch for the authenticity of content. [Brief No.064](/critical/briefs/064-salesloft-drift-oauth-salesforce/) (Salesloft Drift, where a trusted integration's OAuth was abused) connects in that an established trust relationship became cover for malicious operations. [Brief No.062](/critical/briefs/062-claude-code-github-action-bot-trust/) (Claude Code GitHub Action, where a `[bot]` claim was trusted into privileged execution) shares the same failure primitive of trusting a "claimed identity" without verifying it. [Brief No.047](/critical/briefs/047-openclaw-agent-phishing/) (OpenClaw, where credentials were sent out before the sender was verified) is adjacent in the absence of authorship verification around booking and accommodation. In all of them, **the basis of trust was placed on a "path or claimed name," and the "provenance of the author" was not independently verified**.
+
+Email authentication and sender reputation are useful as a precondition, but only once a message's author is independently verified as provenance — "is this the claimed party?" — can booking and guest communications be handled with confidence on the front-desk front line.
+
+That all three checks — SPF, DKIM, and DMARC — fired and completed is indispensable for countering spoofed email, and this Brief does not deny that role. That the email was sent from legitimate infrastructure (Calendly) was indeed verified. Detection (authentication of the sending domain/path) did work.
+
+At the same time, what email authentication confirmed was only "was it sent from Calendly (the legitimacy of the path)," and no one could prove "did a legitimate counterparty write this booking/complaint message (authorship)." What was missing was a layer that, before execution (the front-desk staff's opening and clicking), independently verifies whether a message's author is "the claimed party, with legitimate authority" — a verification on a separate track from authentication of the path. The moment a legitimate SaaS was used as a relay, authentication instead endorsed the attack as "authenticated" and lowered the recipient's guard. Even if the email is re-judged malicious after the fact, the backdoor that has already reached opening and execution is not stopped.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation proves, before execution, not the "legitimacy of the path" but the "legitimacy of authorship," in an independently verifiable form. By attaching a cryptographic provenance proof of authorship (such as Seal) to legitimate booking and guest communications, front-desk staff and the email infrastructure can immediately identify "a message lacking the expected authorship proof." Only by not separating authentication of the path (the detection-style "it arrived from legitimate infrastructure") from pre-execution attestation of the author's provenance ("the claimed party wrote it"), and by letting the two overlap, can booking and guest communications be handled with confidence in real operations. The unit of trust moves from "path" to "author," and authentication laundering no longer works. Detection and pre-execution proof are complements, not substitutes.
 
 Against the gap this case exposed (the message's path was authenticated, but the author's provenance is not independently verified before execution), Lemma proposes the following design.
 
@@ -106,19 +94,11 @@ Detection (email authentication, the after-the-fact malicious verdict) works tow
 
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Microsoft Security Blog (research, primary)**: "Photo ZIP campaign targeting hospitality industry delivers Node.js implant for persistent access" (Microsoft Defender Security Research Team / Parth Jomadkar, 2026-06-25) — <https://www.microsoft.com/en-us/security/blog/2026/06/25/photo-zip-campaign-targeting-hospitality-industry-delivers-node-js-implant-persistent-access/>
 - **The Hacker News**: "Microsoft Warns of Photo ZIP Phishing Campaign Targeting Hotels with Node.js Implant" — <https://thehackernews.com/2026/06/microsoft-warns-of-photo-zip-phishing.html>
 - **SC Media**: "Photo-themed phishing campaign targets European and Asian hotels with Node.js implant" — <https://www.scworld.com/brief/photo-themed-phishing-campaign-targets-european-and-asian-hotels-with-node-js-implant>
 - **Security Measures Lab (Japanese commentary)**: "Microsoft discloses the 'Photo ZIP campaign'" (2026-06-30) — <https://rocket-boys.co.jp/security-measures-lab/hotel-frontdesk-phishing-node-backdoor/>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/)

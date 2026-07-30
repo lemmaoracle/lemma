@@ -19,13 +19,13 @@ gap_missing: "There was no layer to confirm before placement whether each engine
 gap_fix: "Before placement, independently verify with Lemma that the engineer validly holds the required national license and meets the requirements, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In December 2024, Japan's MLIT issued an administrative instruction against a construction operator for placing employees who held national construction-management licenses obtained without the required practical experience on sites that mandate qualified workers. Self-reported experience is not re-verified at issuance, and with no layer to confirm qualification before placement, the gap between the asserted attribute and reality surfaces only through after-the-fact detection — internal review or audit — years late, which cannot change whether the engineer was properly qualified at assignment. Detection and pre-execution attestation are complements, not substitutes.
+In December 2024, Japan's MLIT issued an administrative instruction against a construction operator for placing employees who held national construction-management licenses obtained without the required practical experience on sites that mandate qualified workers. Self-reported experience is not re-verified at issuance, and with no layer to confirm qualification before placement, the gap between the asserted attribute and reality surfaces only through after-the-fact detection — internal review or audit — years late, which cannot change whether the engineer was properly qualified at assignment.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Most recent action**: December 2024, an administrative instruction by an MLIT regional bureau under Article 28(1) of the Construction Business Act (a mid-to-large road-paving contractor)
 - **Grounds**: violation of Article 15(2) — placing a person who did not meet qualification requirements as a dedicated engineer at a business office
@@ -33,24 +33,6 @@ In December 2024, Japan's MLIT issued an administrative instruction against a co
 - **The company's account**: described as a misunderstanding of the practical-experience requirements rather than intentional fraud
 - **Landmark precedent**: group companies of a major electronics maker (disclosed by MLIT, August 2021). 390 employees took the examination and obtained construction management licenses without sufficient experience; 13 obtained the supervising-engineer certificate. Unqualified employees may have been placed as chief engineers and the like on up to 2,422 projects (150 of them with contract value of ¥5M or more), and 58 as dedicated engineers at business offices. The improper acquisitions ran from around 2000 to 2021
 - **Regulatory frame**: in July 2021 MLIT amended the "Standards for Disciplinary Action against Improper Conduct by Construction Operators," setting a business-suspension order of 30 days or more for placing a fraudulently qualified person as a chief or supervising engineer
-- **Core**: a regulatory attribute (a national license) flowed straight to on-site assignment while severed from independent verification of its basis, the practical experience
-
----
-
-## 2. Timeline
-
-- 2020-08: MLIT establishes a study group on preventing examination fraud
-- 2020-11: the study group issues recommendations, including stricter disciplinary action
-- 2021-07-26: amendment to the disciplinary-action standards published, strengthening business-suspension orders for contractors placing fraudulently qualified persons
-- 2021-08-31: MLIT discloses the major electronics maker's group self-investigation (390 / 13, up to 2,422 placements) and its own response (license revocation, 3-year examination ban, disciplinary action, designation suspension)
-- 2024-12-20: a regional bureau issues an administrative instruction against a mid-to-large road-paving contractor under Article 28(1)
-- 2025-01: trade media report the recent case, framing national-license fraud as an ongoing structural problem
-
-> Note: proper nouns and the details of disciplinary actions are based on primary sources (MLIT's published materials and press releases, and the like); the status of actions and operations varies over time, so consult the latest information.
-
----
-
-## 3. From Acquisition to Assignment
 
 This is not an external attack; it stems from an operating structure in which a regulatory attribute is never independently verified. The failure propagates to on-site assignment as follows.
 
@@ -62,27 +44,18 @@ This is not an external attack; it stems from an operating structure in which a 
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-The incident belongs to the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof). The central failure primitive is that **a regulatory attribute (a national license) is accepted while severed from independent verification of its basis.** The attribute "holds a license" is presented as a roster entry, a certificate, an application form — but the actual existence of its basis, the practical experience, is not connected to a verification layer at the point of assignment. The divergence between the asserted attribute and reality cannot be made visible without that layer. `identity-auth` (the binding between the person and the asserted attribute) is noted as a secondary category.
+- 2020-08: MLIT establishes a study group on preventing examination fraud
+- 2020-11: the study group issues recommendations, including stricter disciplinary action
+- 2021-07-26: amendment to the disciplinary-action standards published, strengthening business-suspension orders for contractors placing fraudulently qualified persons
+- 2021-08-31: MLIT discloses the major electronics maker's group self-investigation (390 / 13, up to 2,422 placements) and its own response (license revocation, 3-year examination ban, disciplinary action, designation suspension)
+- 2024-12-20: a regional bureau issues an administrative instruction against a mid-to-large road-paving contractor under Article 28(1)
+- 2025-01: trade media report the recent case, framing national-license fraud as an ongoing structural problem
 
-The primitive differs from Brief 006 (Google API key revocation lag) — here the attribute is "is qualified," there it is "has been revoked" — but the underlying structure is the same: **an attribute assertion is decoupled from the layer that would verify it.** It is also adjacent to Brief 003 (Starlette/BadHost) and Brief 005 (Noroboto), which concern authentication and input-integrity assertions left unverified, across the cross-cutting layer of regulatory-attribute lifecycle.
+> Note: proper nouns and the details of disciplinary actions are based on primary sources (MLIT's published materials and press releases, and the like); the status of actions and operations varies over time, so consult the latest information.
 
----
-
-## 5. The detection–proof gap
-
-Here, the detection chain — internal review, third-party committee, regulatory audit — worked, and the scope of fraudulent acquisition and the placement record were made visible. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection remains essential for scoping remediation after disclosure, designing preventive measures, and driving cross-industry operational review.
-
-Detection, however, cannot change whether, at the point of assignment, this engineer met the requirements. Self-investigation and audit are both after-the-fact; the projects carried out between assignment and discovery are already complete. Detection and audit results do not, on their own, serve as material to prove "was properly qualified at the time of assignment" in regulatory reporting, administrative procedure, or litigation. This is a gap in a structurally independent layer, beyond detection's reach.
-
-As things stand, across the operating model for qualification checks, independent verification of the attribute at the point of assignment is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the assignment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for qualified-worker placement.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **MLIT**: following the study group on examination fraud (established August 2020, recommendations November 2020), it amended the disciplinary standards in July 2021, setting a business-suspension order of 30 days or more for contractors placing fraudulently qualified persons as chief or supervising engineers. In the landmark case it responded with license revocation, a 3-year examination ban, disciplinary action, and designation suspension; in the most recent case, an administrative instruction was issued in December 2024
 - **Industry recognition**: national-license fraud is not confined to a single company but is reported on an ongoing basis as a structural problem spanning multiple operators. Much of the discovery traces to a misunderstanding of the practical-experience requirements, or to preventive measures not being shared across group companies
@@ -91,7 +64,21 @@ The absence of a layer that independently verifies the certainty of an attribute
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **a regulatory attribute (a national license) is accepted while severed from independent verification of its basis.** The attribute "holds a license" is presented as a roster entry, a certificate, an application form — but the actual existence of its basis, the practical experience, is not connected to a verification layer at the point of assignment. The divergence between the asserted attribute and reality cannot be made visible without that layer.
+
+The primitive differs from [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (Google API key revocation lag) — here the attribute is "is qualified," there it is "has been revoked" — but the underlying structure is the same: **an attribute assertion is decoupled from the layer that would verify it.** It is also adjacent to [Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette/BadHost) and [Brief 005](/critical/briefs/005-noroboto-lying-fonts/) (Noroboto), which concern authentication and input-integrity assertions left unverified, across the cross-cutting layer of regulatory-attribute lifecycle.
+
+Here, the detection chain — internal review, third-party committee, regulatory audit — worked, and the scope of fraudulent acquisition and the placement record were made visible. This is a textbook detection success, and this Brief does not dispute the role of the detection layer. Detection remains essential for scoping remediation after disclosure, designing preventive measures, and driving cross-industry operational review.
+
+Detection, however, cannot change whether, at the point of assignment, this engineer met the requirements. Self-investigation and audit are both after-the-fact; the projects carried out between assignment and discovery are already complete. Detection and audit results do not, on their own, serve as material to prove "was properly qualified at the time of assignment" in regulatory reporting, administrative procedure, or litigation. This is a gap in a structurally independent layer, beyond detection's reach.
+
+As things stand, across the operating model for qualification checks, independent verification of the attribute at the point of assignment is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of attribute proof into the assignment path. It is a complement to detection, not a substitute; together the two establish the trust boundary for qualified-worker placement.
+
+---
+
+## 5. What proof would have changed
 
 For the detection–proof gap exposed here — a regulatory attribute claim flowing straight to on-site assignment while severed from independent verification of its basis — Lemma offers a design in which an engineer's qualification attribute is committed as an independently verifiable cryptographic proof, so that a prime contractor, client, or auditor can independently verify "was placed as a qualified person meeting the requirements" without seeing the person's full history.
 
@@ -101,23 +88,13 @@ For the detection–proof gap exposed here — a regulatory attribute claim flow
 
 A proof fixed at the point of assignment then functions, years later when "was a qualified person placed at the time?" is asked, as an independently verifiable trail that discloses no sensitive personal information. Detection (after-the-fact audit) serves remediation after disclosure; pre-execution attestation (attribute verification at assignment) serves independent verification of the legitimacy of placement — complementary layers.
 
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **MLIT (Kanto Regional Bureau)**: "Disciplinary action against a construction operator" (2024-12-20, administrative instruction under Article 28(1) of the Construction Business Act; grounds: violation of Article 15(2)) — https://www.ktr.mlit.go.jp/kisha/kisha_01991.pdf
 - **MLIT**: disclosure on deficiencies in practical experience for the skills examination (2021-08-31; self-investigation results 390 / 13, up to 2,422 placements; MLIT's response) — https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo13_hh_000001_00068.html
 - **MLIT**: "Amendment of the Standards for Disciplinary Action against Improper Conduct by Construction Operators" (2021-07-26; business-suspension order of 30 days or more for contractors placing fraudulently qualified persons) — https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo13_hh_000001_00064.html
 - **Trade media (secondary)**: ongoing reporting on national-license fraud in construction (January 2025 and after) — Nikkei xTECH
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Trust402](https://lemma.frame00.com/trust402/)

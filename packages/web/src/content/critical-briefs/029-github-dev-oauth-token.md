@@ -19,13 +19,13 @@ gap_missing: "「この拡張インストールは誰の認可で実行される
 gap_fix: "拡張インストールのような特権行為の前に「この行為は、委任された権限の範囲内にある」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-研究者 Ammar Askar が、ブラウザ版 VS Code である github.dev の 1 クリック攻撃と PoC を公開した。攻撃者のリンクを踏むと、webview 内のスクリプトが利用者になりすました合成イベントで悪性拡張をインストールさせ、github.dev の OAuth トークンを盗む。トークンは閲覧中リポジトリにスコープされず全リポジトリに有効だった。欠けていたのは、その拡張インストールが誰の認可で実行されトークンがどの範囲に委任されているかを行動前に確かめる層である。検出と事前証明は代替でなく補完である。
+研究者 Ammar Askar が、ブラウザ版 VS Code である github.dev の 1 クリック攻撃と PoC を公開した。攻撃者のリンクを踏むと、webview 内のスクリプトが利用者になりすました合成イベントで悪性拡張をインストールさせ、github.dev の OAuth トークンを盗む。トークンは閲覧中リポジトリにスコープされず全リポジトリに有効だった。欠けていたのは、その拡張インストールが誰の認可で実行されトークンがどの範囲に委任されているかを行動前に確かめる層である。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **対象**: github.dev(github.com のリポジトリ画面で `.` キー、または URL の github.com → github.dev で開くブラウザ版 VS Code 編集環境)
 - **公開**: 2026-06-02、研究者 Ammar Askar が blog と PoC repo・GitHub issue(microsoft/vscode #319593)で公開
@@ -36,21 +36,8 @@ gap_fix: "拡張インストールのような特権行為の前に「この行�
 - **入口の短さ**: デスクトップ版 VS Code にも同種の問題はあるが、リポジトリのクローンと Notebook を開く操作が必要。github.dev はリンク 1 クリックで編集環境が開くため攻撃の入口が極端に短い
 - **修正**: Microsoft が 6-03 にブラウザ版 Notebook を開く際の信頼確認追加・拡張インストールコマンドの任意呼び出し元拒否、6-04 に webview からの一部の合成イベント転送停止を投入。Microsoft はデスクトップ版 VS Code への影響を否定
 - **CVE**: 本稿執筆時点で未割当
-- **核心**: 委任された OAuth トークンが最小範囲(閲覧リポジトリ)にスコープされず、拡張インストールという特権行為が「誰の認可で実行されるか」を独立検証されないまま進んだ
 
----
-
-## 2. タイムライン
-
-- 2026-06-02: Ammar Askar が GitHub に通知の約 1 時間後、blog・PoC・GitHub issue #319593 で full disclosure。MSRC を経由しない即時公開(過去の VS Code バグ報告で credit なく silent fix された経緯を理由として明示)
-- 2026-06-03: Microsoft が暫定修正(Notebook を開く際の信頼確認、拡張インストールコマンドの呼び出し元検証)を投入。BleepingComputer 等が報道、Microsoft が声明
-- 2026-06-04: Microsoft が追加修正(webview からの合成イベント転送の一部停止)を投入
-
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本件は CVE 未割当・段階的修正の途上であり、対応状況は更新されうる。
-
----
-
-## 3. 攻撃ベクター
+事象は次の連鎖で成立している。
 
 1. **悪性リンクの配布**: 攻撃者が Jupyter Notebook を含むリポジトリの github.dev リンクを用意し、被害者にクリックさせる
 2. **webview での JavaScript 実行**: Notebook の表示処理を通じて、webview の隔離領域内でスクリプトが動作
@@ -60,37 +47,39 @@ gap_fix: "拡張インストールのような特権行為の前に「この行�
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事象は Pillar 03(エージェント権限証明)の `agent-infrastructure` カテゴリに属する。中心的な**失敗 primitive は「github.dev に委任された OAuth トークンが最小範囲(閲覧リポジトリ)にスコープされず、拡張インストールという特権行為が誰の認可で実行されるかを独立検証されないまま進んだ」**点にある。secondary に `identity-auth` を併記する。
+- 2026-06-02: Ammar Askar が GitHub に通知の約 1 時間後、blog・PoC・GitHub issue #319593 で full disclosure。MSRC を経由しない即時公開(過去の VS Code バグ報告で credit なく silent fix された経緯を理由として明示)
+- 2026-06-03: Microsoft が暫定修正(Notebook を開く際の信頼確認、拡張インストールコマンドの呼び出し元検証)を投入。BleepingComputer 等が報道、Microsoft が声明
+- 2026-06-04: Microsoft が追加修正(webview からの合成イベント転送の一部停止)を投入
+
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。本件は CVE 未割当・段階的修正の途上であり、対応状況は更新されうる。
+
+公表後の対応と業界の動きは次のとおり。
+
+- **Microsoft / GitHub**: CVE 割当前に 6-03・6-04 と段階的に暫定修正を投入。Notebook を開く際の信頼確認、拡張インストールコマンドの呼び出し元検証、webview からの合成イベント転送の一部停止という、信頼境界とイベント来歴の両面に触れる修正
+- **開示プロセスの論点**: 研究者は MSRC を経由しない full disclosure を選び、過去に VS Code バグが credit なく silent fix された経緯を理由に挙げた。同時期に別の研究者(Nightmare Eclipse handle)も MSRC の開示対応への不満から複数のゼロデイを公開しており、ブラウザ/エディタ基盤のゼロデイ開示と修正サイクルのあり方が業界の論点になっている
+- **業界横断の論点**: ブラウザ内開発環境・AI コーディング基盤・MCP クライアントは、いずれも「外部から読み込むコンテンツ」と「特権操作・委任トークン」が同一プロセスに同居する。委任の最小スコープ化と特権行為の認可検証を基盤の必須要件とする議論が、本事象と [Brief 003](https://lemma.frame00.com/ja/critical/briefs/003-starlette-badhost/)/027 を通じて重みを増している
+
+---
+
+## 4. なぜ止まらなかったか
+
+中心的な<strong>失敗 primitive は「github.dev に委任された OAuth トークンが最小範囲(閲覧リポジトリ)にスコープされず、拡張インストールという特権行為が誰の認可で実行されるかを独立検証されないまま進んだ」</strong>点にある。
 
 Brief 027(LibreChat MCP URL)・003(Starlette/BadHost)と同じくエージェント基盤の信頼境界の問題である。027 は接続先設定がサーバーの特権文脈を参照した「出口」、003 は Host ヘッダー操作で認証を回避した「入口」。本事象は、その中間にある**委任トークンのスコープと特権行為の認可**が欠けた事例で、3 件は「エージェント基盤が、権限の範囲と行使を独立検証せずに実行する」という構造で同根である。とりわけ「トークンが操作対象に最小スコープされていれば、窃取されても被害は当該リポジトリに限定された」点は、権限証明カテゴリの核心(過剰委任は単一の漏洩を全面侵害に変える)を端的に示す。
 
 副次的に、本事象は**合成イベントが信頼境界を越えた**という入力完全性の問題でもある。webview は「実ユーザーが押したキー」と「スクリプトが作ったキー」を区別すべきところで区別しなかった。これは Brief 018(防御側 Claude Code が取り込む指示 CLAUDE.md の完全性/来歴不在)と同じ「取り込む操作・指示の出所が検証されない」系統に属する。ただし本 Brief の主軸は委任権限のスコープと認可に置く。
 
----
-
-## 5. 検出と証明の落差
-
 研究者による coordinated に近い公開(GitHub への事前通知)と Microsoft の翌日修正は、被害の予防と利用者保護に有効に機能した。本 Brief がその役割を否定するものではない。利用者側も github.dev の Cookie / サイトデータを消去すれば、悪用リンク click 時にサインイン警告が再表示される緩和が示されている。
 
 一方で、検出は「github.dev がどの範囲のトークンを保持し、どの行為を認可なく実行できるか」自体を変えない。窃取された OAuth トークンによる GitHub API 利用は、github.dev が行う正規のトークン利用と区別がつかず、拡張インストールも正規フローを辿る。欠けていたのは「この拡張インストールは誰の認可で実行されるか」「このトークンはどの範囲に委任されているか」という実行前の独立検証であり、これは異常検知とは別系統である。監査の観点でも、流出後に「どの非公開リポジトリへ・誰の委任で・いつアクセスされたか」を立証する独立した証跡は、API アクセスログの突合以上には残りにくい。
 
+---
+
+## 5. 証明があれば、何が変わるか
+
 事前証明(pre-execution attestation)は、委任トークンに検証可能なスコープ(対象リポジトリ・有効範囲)を埋め込み、拡張インストールのような特権行為を実行前に「登録者の認可」と「委任範囲」に照らして独立検証する設計を採る。proof が「この行為は委任範囲を超える」「このトークンは当該リポジトリ外に有効であってはならない」と告げれば、行為は実行前に block される。特権行為の検出(detection 的な「不審な拡張が動いた」)と委任権限の事前証明(「この行為は認可された範囲内か」)は代替ではなく**補完**の関係にある。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
-
-- **Microsoft / GitHub**: CVE 割当前に 6-03・6-04 と段階的に暫定修正を投入。Notebook を開く際の信頼確認、拡張インストールコマンドの呼び出し元検証、webview からの合成イベント転送の一部停止という、信頼境界とイベント来歴の両面に触れる修正
-- **開示プロセスの論点**: 研究者は MSRC を経由しない full disclosure を選び、過去に VS Code バグが credit なく silent fix された経緯を理由に挙げた。同時期に別の研究者(Nightmare Eclipse handle)も MSRC の開示対応への不満から複数のゼロデイを公開しており、ブラウザ/エディタ基盤のゼロデイ開示と修正サイクルのあり方が業界の論点になっている
-- **業界横断の論点**: ブラウザ内開発環境・AI コーディング基盤・MCP クライアントは、いずれも「外部から読み込むコンテンツ」と「特権操作・委任トークン」が同一プロセスに同居する。委任の最小スコープ化と特権行為の認可検証を基盤の必須要件とする議論が、本事象と Brief 003/027 を通じて重みを増している
-
----
-
-## 7. Lemma による分析
 
 本事象で露呈した検出と証明の落差(委任トークンが最小権限にスコープされず、特権行為が独立認可なく実行される)に対して、Lemma は、エージェント基盤への権限委任・特権行為を証跡化し、実行前に「誰が・何を・どの範囲で」認可したかを独立検証可能な証明として検証する設計を提示している。
 
@@ -100,11 +89,9 @@ Brief 027(LibreChat MCP URL)・003(Starlette/BadHost)と同じくエージェン
 
 これにより、過剰委任が単一の漏洩を全面侵害に変える構造を、最小スコープの強制と特権行為の実行前認可で塞ぐ。特権行為の検出(detection)と委任権限の事前証明は相補的に働く。
 
-設計と適用範囲は、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Ammar Askar**: "1-Click GitHub Token Stealing via a VSCode Bug"(2026-06-02、研究者本人による技術解説)— http://blog.ammaraskar.com/github-token-stealing/
 - **PoC repository**: ammaraskar/github-dev-token-steal-poc(2026-06-02)— https://github.com/ammaraskar/github-dev-token-steal-poc/
@@ -112,12 +99,4 @@ Brief 027(LibreChat MCP URL)・003(Starlette/BadHost)と同じくエージェン
 - **BleepingComputer**: "VS Code zero-day lets hackers steal GitHub tokens in one click"(2026-06-03、Microsoft 声明・修正経緯)— https://www.bleepingcomputer.com/news/security/vs-code-zero-day-lets-hackers-steal-github-tokens-in-one-click/
 - **The Hacker News**: "One-Click GitHub Dev Attack Lets Attackers Steal Full GitHub OAuth Tokens"(2026-06)— https://thehackernews.com/2026/06/one-click-github-dev-attack-lets.html
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)

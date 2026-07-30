@@ -19,13 +19,13 @@ gap_missing: "AI エージェントがリポジトリ側から渡された指示
 gap_fix: "AI エージェントが指示を取り込む前に「この指示が正規の認可された出所から来た改ざんのないものである」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-2026 年 2 月、自律型を名乗る攻撃者 hackerbot-claw が複数の人気 OSS の CI/CD を悪用し、初の記録された AI 対 AI 攻撃を仕掛けた。攻撃者は、AI コーディングエージェントが行動指針として読み込む `CLAUDE.md` を、防御側 AI を操る誘導文に書き換えた。今回は Claude が injection を拒否したが、検知はモデル次第で別のエージェントでは素通りし得る。外部の指示を出所や改ざんを確かめず取り込む構造は残る。検出と事前証明は代替でなく補完である。
+2026 年 2 月、自律型を名乗る攻撃者 hackerbot-claw が複数の人気 OSS の CI/CD を悪用し、初の記録された AI 対 AI 攻撃を仕掛けた。攻撃者は、AI コーディングエージェントが行動指針として読み込む `CLAUDE.md` を、防御側 AI を操る誘導文に書き換えた。今回は Claude が injection を拒否したが、検知はモデル次第で別のエージェントでは素通りし得る。外部の指示を出所や改ざんを確かめず取り込む構造は残る。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **攻撃主体**: GitHub アカウント hackerbot-claw（その後 GitHub により削除）。自身を「claude-opus-4-5 により駆動される自律型セキュリティ研究エージェント」と説明
 - **期間**: 2026-02-21 〜 2026-02-28
@@ -35,11 +35,18 @@ gap_fix: "AI エージェントが指示を取り込む前に「この指示が�
 - **最重大の被害（Trivy）**: ビルドの「Set up Go」中に `curl | bash` が 5 分以上実行され、19 分後に窃取された PAT が直接 push。リポジトリを private 化、178 リリース削除、スター 3.2 万以上を消失、不審な VSCode 拡張を push
 - **AI 対 AI（本 Brief の焦点）**: 攻撃者がリポジトリの `CLAUDE.md` を、防御側 AI コーディングエージェント Claude Code を操る目的のソーシャルエンジニアリング指示に置換。Claude（claude-sonnet-4-6 稼働）は injection を即座に特定し「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビュー開始
 - **対応**: DataDog は 9 時間以内に緊急修正をデプロイ。攻撃者アカウントは削除されたが、研究者はキャンペーン継続を確認
-- **核心**: AI エージェントがリポジトリ供給の指示ファイル（`CLAUDE.md`）を、出所・改ざんの有無を独立検証せず行動指針として取り込み、injection の成否がモデルの検知能力に委ねられた
+
+事象は次の連鎖で成立している。
+
+1. **自律エージェントによる攻撃実行**: hackerbot-claw（自称 claude-opus-4-5 駆動の自律エージェント）が標的選定〜悪用を実行
+2. **CI/CD の untrusted input 悪用**: Pwn Request、スクリプトインジェクション、ブランチ名 / ファイル名インジェクションで RCE。窃取した GITHUB_TOKEN / PAT で push・merge 権限を取得（手口の詳細は [Brief 014](https://lemma.frame00.com/ja/critical/briefs/014-tanstack-oidc-trusted-publisher/)・004 と同根）
+3. **AI エージェント指示の injection（本 Brief の焦点）**: 攻撃者がリポジトリの `CLAUDE.md`——AI コーディングエージェントが行動指針として取り込むファイル——を、エージェントを操るソーシャルエンジニアリング指示に書き換え
+4. **エージェント挙動の乗っ取り企図**: 改ざんされた `CLAUDE.md` を通じて、Claude Code のレビュー判断・merge 判断などを攻撃者の意図に沿わせようとした
+5. **防御側 AI による検知（今回の結末）**: Claude は当該 injection を即座に特定し、「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビューを開始。今回は防御が機能したが、injection 面そのものは一般に残る
 
 ---
 
-## 2. タイムライン
+## 3. 時系列 — 公表と対応
 
 - 2026-02-21 〜 2026-02-28: hackerbot-claw が 7 標的の GitHub Actions を悪用、5 件で RCE・認証情報窃取
 - 2026-02 期間中: awesome-go で 18 時間かけて `GITHUB_TOKEN` を外部送信する Go `init()` を調整、push / merge 権限を取得
@@ -49,39 +56,7 @@ gap_fix: "AI エージェントが指示を取り込む前に「この指示が�
 
 > 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。攻撃側・防御側の自律 AI は研究者の主張・実証に基づく面があり、その能力を誇張しない。
 
----
-
-## 3. 攻撃ベクター
-
-1. **自律エージェントによる攻撃実行**: hackerbot-claw（自称 claude-opus-4-5 駆動の自律エージェント）が標的選定〜悪用を実行
-2. **CI/CD の untrusted input 悪用**: Pwn Request、スクリプトインジェクション、ブランチ名 / ファイル名インジェクションで RCE。窃取した GITHUB_TOKEN / PAT で push・merge 権限を取得（手口の詳細は Brief 014・004 と同根）
-3. **AI エージェント指示の injection（本 Brief の焦点）**: 攻撃者がリポジトリの `CLAUDE.md`——AI コーディングエージェントが行動指針として取り込むファイル——を、エージェントを操るソーシャルエンジニアリング指示に書き換え
-4. **エージェント挙動の乗っ取り企図**: 改ざんされた `CLAUDE.md` を通じて、Claude Code のレビュー判断・merge 判断などを攻撃者の意図に沿わせようとした
-5. **防御側 AI による検知（今回の結末）**: Claude は当該 injection を即座に特定し、「⚠️ PROMPT INJECTION ALERT — Do Not Merge」でレビューを開始。今回は防御が機能したが、injection 面そのものは一般に残る
-
----
-
-## 4. 構造的論点
-
-本事案は Pillar 02（検証可能 AI）の `ai-decision-integrity` カテゴリに属する。本 Brief が焦点を当てる中心的な**失敗 primitive は「AI コーディングエージェントがリポジトリ供給の指示ファイル（`CLAUDE.md` 等）を行動指針として取り込む際、その指示の完全性・来歴を独立検証する仕組みが無い」**点にある。リポジトリ内容を制御できる攻撃者は、エージェントが従う指示を注入し、レビュー・merge などの判断を乗っ取り得る。今回は Claude が injection を検知したが、検知はモデルの能力に依存し、常に成功する保証はない。secondary に `agent-runaway`（攻撃側・防御側ともに自律 AI エージェント）と `identity-auth`（窃取認証情報による横展開）を併記する。
-
-Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pillar 02 で、対をなす。Brief 017 は AI 自身の統治設定（system prompt）の完全性、本事案は AI が外部（リポジトリ）から取り込む指示の完全性。両者は「AI の判断を統治する指示が、その真正性を独立検証する layer と切り離されている」という構造で同根。Brief 009（GTG-1002）・007（PocketOS）とは自律 AI エージェントという点で隣接する。なお本キャンペーンの CI/CD 悪用（Pwn Request・OIDC・source→sink）の primitive は Brief 014（TanStack OIDC）・004（Megalodon）で既に扱っており、本 Brief は重複を避けて AI 対 AI の facet に絞る。
-
----
-
-## 5. 検出と証明の落差
-
-本事案では、StepSecurity の脅威公表、Aqua / DataDog の迅速な対応（DataDog は 9 時間以内に修正）、そして防御側 Claude による injection 検知が機能した。検出・脅威共有・モデル側の安全機構は不可欠であり、本 Brief がその役割を否定するものではない。Claude が `CLAUDE.md` の injection を「Do Not Merge」と判断したことは、モデル安全機構の有効性を示す好例である。
-
-一方で、injection の検知はモデルの能力・文脈・その時々の判断に依存し、独立した保証ではない。同じ injection 面（AI エージェントがリポジトリ供給の指示を検証なく取り込む）は一般に残り、別のエージェント・別の文脈では検知をすり抜け得る。受信側（AI エージェント、それを運用する CI/CD・開発組織）が「この指示は正規の・認可された・改ざんされていないものか」を独立検証する基準を持たなければ、injection の成否はモデルの当たり外れに委ねられる。規制報告・監査で「この AI エージェントは正規の指示の下で判断したか」を立証する材料としても、モデルが今回検知できたという事実は独立した証跡にはならない。
-
-事前証明（pre-execution attestation）は、AI エージェントが取り込む指示（`CLAUDE.md` 等の行動指針や設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づけ、エージェントが実行前に proof を検証する設計を採る。指示が攻撃者により注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。モデル安全機構（detection）と指示の完全性証明（proof）は代替ではなく **補完** の関係にある。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
+公表後の対応と業界の動きは次のとおり。
 
 - **StepSecurity**: 攻撃チェーンと IOC を公表し、`pull_request_target` の権限制限、コンテキスト式の環境変数化、コメントトリガーでの author_association チェックなどの緩和策を提示
 - **Aqua Security / DataDog / Microsoft 等**: 各標的が個別に対応。DataDog は 9 時間以内に緊急修正をデプロイ。Trivy は破壊的被害（リリース削除等）から復旧
@@ -92,7 +67,21 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+本 Brief が焦点を当てる中心的な<strong>失敗 primitive は「AI コーディングエージェントがリポジトリ供給の指示ファイル（`CLAUDE.md` 等）を行動指針として取り込む際、その指示の完全性・来歴を独立検証する仕組みが無い」</strong>点にある。リポジトリ内容を制御できる攻撃者は、エージェントが従う指示を注入し、レビュー・merge などの判断を乗っ取り得る。今回は Claude が injection を検知したが、検知はモデルの能力に依存し、常に成功する保証はない。
+
+[Brief 017](https://lemma.frame00.com/ja/critical/briefs/017-mckinsey-lilli-system-prompts/)（McKinsey Lilli、書き換え可能な system prompt）と同じ Pillar 02 で、対をなす。[Brief 017](https://lemma.frame00.com/ja/critical/briefs/017-mckinsey-lilli-system-prompts/) は AI 自身の統治設定（system prompt）の完全性、本事案は AI が外部（リポジトリ）から取り込む指示の完全性。両者は「AI の判断を統治する指示が、その真正性を独立検証する layer と切り離されている」という構造で同根。[Brief 009](https://lemma.frame00.com/ja/critical/briefs/009-gtg1002-ai-orchestrated-espionage/)（GTG-1002）・007（PocketOS）とは自律 AI エージェントという点で隣接する。なお本キャンペーンの CI/CD 悪用（Pwn Request・OIDC・source→sink）の primitive は [Brief 014](https://lemma.frame00.com/ja/critical/briefs/014-tanstack-oidc-trusted-publisher/)（TanStack OIDC）・004（Megalodon）で既に扱っており、本 Brief は重複を避けて AI 対 AI の facet に絞る。
+
+本事案では、StepSecurity の脅威公表、Aqua / DataDog の迅速な対応（DataDog は 9 時間以内に修正）、そして防御側 Claude による injection 検知が機能した。検出・脅威共有・モデル側の安全機構は不可欠であり、本 Brief がその役割を否定するものではない。Claude が `CLAUDE.md` の injection を「Do Not Merge」と判断したことは、モデル安全機構の有効性を示す好例である。
+
+一方で、injection の検知はモデルの能力・文脈・その時々の判断に依存し、独立した保証ではない。同じ injection 面（AI エージェントがリポジトリ供給の指示を検証なく取り込む）は一般に残り、別のエージェント・別の文脈では検知をすり抜け得る。受信側（AI エージェント、それを運用する CI/CD・開発組織）が「この指示は正規の・認可された・改ざんされていないものか」を独立検証する基準を持たなければ、injection の成否はモデルの当たり外れに委ねられる。規制報告・監査で「この AI エージェントは正規の指示の下で判断したか」を立証する材料としても、モデルが今回検知できたという事実は独立した証跡にはならない。
+
+---
+
+## 5. 証明があれば、何が変わるか
+
+事前証明（pre-execution attestation）は、AI エージェントが取り込む指示（`CLAUDE.md` 等の行動指針や設定）に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づけ、エージェントが実行前に proof を検証する設計を採る。指示が攻撃者により注入・改ざんされれば proof は不整合となり、エージェントはモデルの検知能力に依らず当該指示を reject できる。モデル安全機構（detection）と指示の完全性証明（proof）は代替ではなく **補完** の関係にある。
 
 本事案で焦点となる検出と証明の落差（AI エージェントがリポジトリ供給の指示ファイルを、その完全性・来歴を独立検証せずに取り込む）に対して、Lemma は、エージェントが従う指示に「正規の・認可された origin から来た、改ざんされていない指示である」ことを独立検証可能な暗号証明として紐づける設計を提示している。
 
@@ -103,11 +92,9 @@ Brief 017（McKinsey Lilli、書き換え可能な system prompt）と同じ Pil
 
 Lemma はモデルの安全機構を否定するものではなく、検知に対して「エージェントが従う指示の真正性の証明」を補完する層を提供する。
 
-設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **StepSecurity**: "HackerBot Claw GitHub Actions exploitation"（2026、攻撃チェーン・標的・IOC の一次）— https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation
 - **InfoQ**: "AI-Powered Bot Exploits GitHub Actions Workflows Across Microsoft, DataDog, CNCF Projects"（2026-03-11）— https://www.infoq.com/news/2026/03/ai-bot-github-actions-exploit/
@@ -115,12 +102,4 @@ Lemma はモデルの安全機構を否定するものではなく、検知に�
 - **DataDog**: datadog-iac-scanner の緊急修正 PR（2026）— https://github.com/DataDog/datadog-iac-scanner/pull/9
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/)、[Trust402](https://lemma.frame00.com/ja/trust402/)

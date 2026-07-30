@@ -19,13 +19,13 @@ gap_missing: "There was no way to tell a poisoned version listed as a legitimate
 gap_fix: "Before pulling in a development tool, independently verify with Lemma that the extension is an untampered artifact produced from a legitimate build path, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code extension on the official marketplace for just 18 minutes, exfiltrated credentials from GitHub employee endpoints that installed it, and cloned about 3,800 internal repositories. It sat there as a legitimate extension and passed the trust signals of signing and listing, so there was no way to tell it apart before install — a trusted distribution path does not guarantee an untampered build output. Detection and pre-execution attestation are complements, not substitutes.
+In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code extension on the official marketplace for just 18 minutes, exfiltrated credentials from GitHub employee endpoints that installed it, and cloned about 3,800 internal repositories. It sat there as a legitimate extension and passed the trust signals of signing and listing, so there was no way to tell it apart before install — a trusted distribution path does not guarantee an untampered build output.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Affected**: GitHub (its own internal repositories)
 - **Attacker**: TeamPCP (also tracked as UNC6780), a supply-chain attack group targeting open-source security utilities and AI middleware
@@ -34,24 +34,9 @@ In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code ext
 - **Impact**: approximately 3,800 GitHub internal repositories cloned and exfiltrated. The data was posted for sale on criminal forums for over $50,000
 - **Scope (per GitHub)**: customer repositories, Enterprise accounts, and user data unaffected. Exfiltration limited to GitHub internal repositories, with the ~3,800-count claim consistent with the investigation
 - **Detection and response**: GitHub detected the intrusion on 2026-05-19, immediately initiated IR and rotated critical secrets. On 2026-05-26, released GHES 3.20.3 with a precautionary signing-key rotation
-- **Adjacent activity**: TeamPCP also compromised Aqua Trivy, Checkmarx KICS, LiteLLM, Telnyx SDK, TanStack (Brief 014), and Mistral AI. Same actor as Brief 014, part of one developer-trust-surface campaign
-- **Core**: the trust signals of legitimate-marketplace listing and signing did not guarantee artifact integrity, so a poisoned extension reached straight into the local secrets of the developer environment
+- **Adjacent activity**: TeamPCP also compromised Aqua Trivy, Checkmarx KICS, LiteLLM, Telnyx SDK, TanStack ([Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/)), and Mistral AI. Same actor as [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/), part of one developer-trust-surface campaign
 
----
-
-## 2. Timeline
-
-- 2026-05-18 12:30–12:48 UTC: trojanized Nx Console v18.95.0 listed on the VS Code Marketplace (~18 minutes). Employee endpoints are compromised during this window and credentials exfiltrated
-- 2026-05-18 onward: exfiltrated credentials are used to clone approximately 3,800 GitHub internal repositories
-- 2026-05-19: GitHub detects the unauthorized access, opens IR, and rotates critical secrets the same day
-- 2026-05-20 around: GitHub publicly states it "detected and contained an employee-endpoint compromise via a malicious VS Code extension." TeamPCP posts the internal repository data for sale on the dark web / criminal forums (over $50,000)
-- 2026-05-26: GHES 3.20.3 released, precautionary signing-key rotation
-
-> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Poison the trust surface**: publish a trojanized version of the legitimate Nx Console extension to the VS Code Marketplace, exploiting the everyday trust developers place in the marketplace and the extension itself
 2. **Short listing window**: keep the malicious version live for only ~18 minutes, creating a window that review / takedown is unlikely to catch
@@ -62,27 +47,17 @@ In May 2026, the attack group TeamPCP listed a trojanized Nx Console VS Code ext
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-The incident belongs to the `code-provenance` category of Pillar 01 (Verifiable Origin). The central **failure primitive is "the legitimate-marketplace listing and distribution path for a developer tool (an IDE extension) functioned as a trust premise without guaranteeing that this extension version is a safe, intended artifact."** That extensions have broad access to local secrets inside the IDE turned the breach directly into credential exfiltration. `identity-auth` (lateral movement using exfiltrated GitHub credentials) is noted as a secondary category.
+- 2026-05-18 12:30–12:48 UTC: trojanized Nx Console v18.95.0 listed on the VS Code Marketplace (~18 minutes). Employee endpoints are compromised during this window and credentials exfiltrated
+- 2026-05-18 onward: exfiltrated credentials are used to clone approximately 3,800 GitHub internal repositories
+- 2026-05-19: GitHub detects the unauthorized access, opens IR, and rotates critical secrets the same day
+- 2026-05-20 around: GitHub publicly states it "detected and contained an employee-endpoint compromise via a malicious VS Code extension." TeamPCP posts the internal repository data for sale on the dark web / criminal forums (over $50,000)
+- 2026-05-26: GHES 3.20.3 released, precautionary signing-key rotation
 
-This sits alongside Brief 014 (the TanStack OIDC trusted-publisher compromise) as the same actor's (TeamPCP) developer-trust-surface campaign — the two should be read together. Brief 014 is a hijack of the package-publishing path (the OIDC identity); this incident is abuse of an IDE extension as a distribution path. Both share the structure that "the distribution and publishing paths developers trust are decoupled from any layer that independently verifies artifact integrity." It is also adjacent to Brief 004 (Megalodon, falsifying commit author origins) and Brief 010 (Claude Code impersonation, abusing a brand trust signal).
+> Note: proper nouns and CVE identifiers are based on primary sources (research labs, the GitHub Advisory Database, NVD, and the like); each implementation's remediation status varies over time, so consult the latest information.
 
----
-
-## 5. The detection–proof gap
-
-GitHub detected on the following day and moved that same day to IR and secret rotation, identifying the scope (internal repositories only; no customer impact) and publishing it. The detection / containment layer is indispensable for scoping and bounding impact, and this Brief does not deny that role.
-
-But detection does not change "which extension version the receiver accepts and installs" or "how broadly an installed extension can reach local secrets." The malicious version was listed in the legitimate marketplace as a legitimate extension and passed through trust signals — listing and signing. The 18-minute listing window let installations complete before review and takedown caught up. Worse, many of the exfiltrated credentials were reusable static tokens — once pulled from the endpoint, they could be replayed from a different environment. For regulatory reporting and audit, a marketplace listing or a signature alone is not an independent evidentiary trail that "this extension was a legitimate, untampered artifact."
-
-Pre-execution attestation changes the structure in two directions: (1) attach an independently verifiable build-provenance proof — "produced from a legitimate origin and build path" — to the extension or tool artifact, and verify it on the receiving side **before installation**; (2) replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint. The first rejects the trojanized version on proof inconsistency at install time rather than after the fact; the second makes "credentials" exfiltrated from an endpoint non-replayable from another environment. Detection (post-hoc extension takedown, IR) and pre-execution attestation (artifact provenance + key-less authentication) are **complementary** rather than substitutes.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **GitHub**: detection and IR on 2026-05-19, critical secrets rotated same day. Stated that exfiltration was limited to internal repositories with no customer impact. On 2026-05-26, GHES 3.20.3 released with a precautionary signing-key rotation
 - **VS Code / extensions ecosystem**: marketplace listing review / takedown processes, and the access scope extensions have to local IDE secrets, surfaced as topics. Organizational extension-installation policies emerge as an urgent gap
@@ -92,7 +67,21 @@ How distribution and publishing paths that developers trust (extensions, package
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the legitimate-marketplace listing and distribution path for a developer tool (an IDE extension) functioned as a trust premise without guaranteeing that this extension version is a safe, intended artifact."** That extensions have broad access to local secrets inside the IDE turned the breach directly into credential exfiltration.
+
+This sits alongside [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) (the TanStack OIDC trusted-publisher compromise) as the same actor's (TeamPCP) developer-trust-surface campaign — the two should be read together. [Brief 014](/critical/briefs/014-tanstack-oidc-trusted-publisher/) is a hijack of the package-publishing path (the OIDC identity); this incident is abuse of an IDE extension as a distribution path. Both share the structure that "the distribution and publishing paths developers trust are decoupled from any layer that independently verifies artifact integrity." It is also adjacent to [Brief 004](/critical/briefs/004-megalodon-github-supply-chain/) (Megalodon, falsifying commit author origins) and [Brief 010](/critical/briefs/010-claude-code-leak-lure/) (Claude Code impersonation, abusing a brand trust signal).
+
+GitHub detected on the following day and moved that same day to IR and secret rotation, identifying the scope (internal repositories only; no customer impact) and publishing it. The detection / containment layer is indispensable for scoping and bounding impact, and this Brief does not deny that role.
+
+But detection does not change "which extension version the receiver accepts and installs" or "how broadly an installed extension can reach local secrets." The malicious version was listed in the legitimate marketplace as a legitimate extension and passed through trust signals — listing and signing. The 18-minute listing window let installations complete before review and takedown caught up. Worse, many of the exfiltrated credentials were reusable static tokens — once pulled from the endpoint, they could be replayed from a different environment. For regulatory reporting and audit, a marketplace listing or a signature alone is not an independent evidentiary trail that "this extension was a legitimate, untampered artifact."
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation changes the structure in two directions: (1) attach an independently verifiable build-provenance proof — "produced from a legitimate origin and build path" — to the extension or tool artifact, and verify it on the receiving side **before installation**; (2) replace developer-environment authentication with key-less proofs that leave no reusable static tokens on the endpoint. The first rejects the trojanized version on proof inconsistency at install time rather than after the fact; the second makes "credentials" exfiltrated from an endpoint non-replayable from another environment. Detection (post-hoc extension takedown, IR) and pre-execution attestation (artifact provenance + key-less authentication) are **complementary** rather than substitutes.
 
 Against the detection–proof gap exposed here (the legitimate distribution path for developer tools does not guarantee artifact integrity, and reusable tokens on the endpoint are exfiltrated and replayed), Lemma proposes a two-direction design.
 
@@ -103,11 +92,9 @@ Against the detection–proof gap exposed here (the legitimate distribution path
 
 Lemma does not substitute for marketplace review or detection; it provides a complementary layer of artifact-provenance proof and key-less authentication alongside the distribution-path trust signals.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Help Net Security**: "TeamPCP breached GitHub's internal codebase via poisoned VS Code extension" (2026-05-20) — https://www.helpnetsecurity.com/2026/05/20/github-breached-teampcp/
 - **The Hacker News**: "GitHub Internal Repositories Breached via Malicious Nx Console VS Code Extension" (2026-05, extension name, listing window, exfiltration targets) — https://thehackernews.com/2026/05/github-internal-repositories-breached.html
@@ -115,12 +102,4 @@ For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemm
 - **Infosecurity Magazine**: "GitHub Confirms Breach of Internal Repositories Via Malicious VS Code Extension" (2026-05, GitHub's public statement and scope) — https://www.infosecurity-magazine.com/news/github-confirms-breach-vs-code/
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

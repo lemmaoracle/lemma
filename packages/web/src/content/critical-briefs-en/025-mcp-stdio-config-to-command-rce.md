@@ -18,35 +18,19 @@ gap_missing: "There was no layer to confirm before execution whether the receive
 gap_fix: "Before moving from configuration to execution, independently verify with Lemma that the configuration falls within the range of permitted authority, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows externally supplied configuration directly into command execution, enabling RCE. It is not a single-language bug but inherent in the reference SDK's design, so it propagates at supply-chain scale. The vendor reportedly called the behavior "expected" and did not alter the core design, and detection cannot change the design itself. What is missing is a layer that separates accepting a configuration from authorizing it as execution, verifying authority before execution. Detection and pre-execution attestation are complements, not substitutes.
+In April 2026, OX Security disclosed that Anthropic's MCP official SDK flows externally supplied configuration directly into command execution, enabling RCE. It is not a single-language bug but inherent in the reference SDK's design, so it propagates at supply-chain scale. The vendor reportedly called the behavior "expected" and did not alter the core design, and detection cannot change the design itself. What is missing is a layer that separates accepting a configuration from authorizing it as execution, verifying authority before execution.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Disclosure**: 2026-04, OX Security disclosed a design-level issue in the MCP official SDK ("The Mother of All AI Supply Chains"). CSA and multiple media outlets followed
 - **Technical nature**: Not an implementation-specific bug, but an issue described as inherent in the MCP STDIO interface's design of "configuration flowing directly into command execution." Cross-cutting across supported languages (Python / TS / Java / Rust)
 - **Reported impact**: Over 150M cumulative downloads, 7,000+ publicly listed servers, up to ~200,000 instances
 - **Related CVEs (independently reported)**: MCP SDK command injection CVE-2026-30623, MCP Inspector CVE-2025-49596, LibreChat CVE-2026-22252, Cursor CVE-2025-54136, and others — organized as the same core issue series
 - **Vendor response**: Anthropic did not alter the core architecture, and the behavior was reported to be characterized as "expected." The result: the reference implementation continues to propagate the same pattern
-- **Core**: there was no layer to independently verify before execution whether an accepted configuration rested on legitimate authority, and the design of configuration flowing directly into command execution over STDIO was inherent in the reference SDK
-
----
-
-## 2. Timeline
-
-- **2025–2026**: MCP spread rapidly as the de facto standard for agent interoperability. Individual vulnerabilities (Inspector, various server implementations) were reported intermittently
-- **~2026-04-20**: OX Security disclosed the core SDK design issue. CSA consolidated the picture under "MCP by Design: RCE Across the AI Agent Ecosystem"
-- **2026-04**: The Hacker News, Infosecurity Magazine, and others reported ("150M DL," "7,000+ servers," "up to 200,000 instances")
-- **Thereafter**: CVEs rooted in the same core issue continued to be reported across implementations
-
-> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
-
----
-
-## 3. Attack Vector
 
 This Brief does not provide reproducible procedures. The structural outline below is for understanding the trust-boundary model only.
 
@@ -58,29 +42,16 @@ This Brief does not provide reproducible procedures. The structural outline belo
 
 ---
 
-## 4. Structural Argument
+## 3. Timeline — disclosure and response
 
-This incident is a representative case of a structure in which **agent-infrastructure trust boundaries are not independently verified at the reference-implementation design level.** "A configuration was accepted" and "that configuration is authorized for execution" are distinct judgments, but the direct config-to-execution coupling treats them as identical. Because the verification layer exists only outside the design, whether a given configuration rests on legitimate authority is never asked at the point of execution.
+- **2025–2026**: MCP spread rapidly as the de facto standard for agent interoperability. Individual vulnerabilities (Inspector, various server implementations) were reported intermittently
+- **~2026-04-20**: OX Security disclosed the core SDK design issue. CSA consolidated the picture under "MCP by Design: RCE Across the AI Agent Ecosystem"
+- **2026-04**: The Hacker News, Infosecurity Magazine, and others reported ("150M DL," "7,000+ servers," "up to 200,000 instances")
+- **Thereafter**: CVEs rooted in the same core issue continued to be reported across implementations
 
-Accepted ≠ authorized
+> Note: proper names and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies over time, so consult the latest information.
 
-Brief 003 (Starlette/BadHost, HTTP Host header manipulation bypassing MCP server authentication) belongs to the same Agent Infrastructure primitive; this case sits at the cluster's center because the trust-boundary issue manifests **not in an individual implementation but at the reference-design level.** The pattern seen in Brief 006 (Google API key revocation lag) — a vendor characterizing the behavior as "expected" — reappears here, underscoring the need for a layer on the consumer side that independently verifies trust boundaries.
-
----
-
-## 5. The detection–proof gap
-
-In this case, detection and disclosure by OX Security, CSA, and individual CVE reporters functioned effectively, making the supply-chain-wide issue visible. Vulnerability scanning, runtime monitoring, and supply-chain SBOMs are indispensable for impact scoping and remediation, and this Brief does not dispute their role.
-
-Detection, however, cannot change the design itself — the direct config-to-execution coupling. When the vendor characterizes the behavior as "expected," consumers are left operating atop the vulnerable design. Runtime monitoring may catch indicators of abuse, but it does not provide material that independently proves, at the point of execution, that "this configuration rests on legitimate authority." This is a structurally independent gap beyond detection's reach.
-
-As things stand, across the operational model for agent infrastructure, a layer that independently verifies configuration and composition against authority before execution is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of authority proof into the config-to-execution path. Pre-execution attestation is not a replacement for detection but a **complement**; together the two layers establish the trust boundary for agent infrastructure.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Response
+The response and industry movement after disclosure:
 
 - **Research / industry bodies**: OX Security's disclosure and CSA's consolidation positioned the MCP design-level issue as a supply-chain-wide topic. Multiple independent CVE reports corroborated the breadth of the same core issue
 - **Vendor response**: The core architecture was not altered, and the behavior was reported to be characterized as "expected." The structure in which the reference implementation continues to propagate the same pattern remains
@@ -90,7 +61,23 @@ The absence of a layer that independently verifies agent-infrastructure trust bo
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+This incident is a representative case of a structure in which **agent-infrastructure trust boundaries are not independently verified at the reference-implementation design level.** "A configuration was accepted" and "that configuration is authorized for execution" are distinct judgments, but the direct config-to-execution coupling treats them as identical. Because the verification layer exists only outside the design, whether a given configuration rests on legitimate authority is never asked at the point of execution.
+
+Accepted ≠ authorized
+
+[Brief 003](/critical/briefs/003-starlette-badhost/) (Starlette/BadHost, HTTP Host header manipulation bypassing MCP server authentication) belongs to the same Agent Infrastructure primitive; this case sits at the cluster's center because the trust-boundary issue manifests **not in an individual implementation but at the reference-design level.** The pattern seen in [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (Google API key revocation lag) — a vendor characterizing the behavior as "expected" — reappears here, underscoring the need for a layer on the consumer side that independently verifies trust boundaries.
+
+In this case, detection and disclosure by OX Security, CSA, and individual CVE reporters functioned effectively, making the supply-chain-wide issue visible. Vulnerability scanning, runtime monitoring, and supply-chain SBOMs are indispensable for impact scoping and remediation, and this Brief does not dispute their role.
+
+Detection, however, cannot change the design itself — the direct config-to-execution coupling. When the vendor characterizes the behavior as "expected," consumers are left operating atop the vulnerable design. Runtime monitoring may catch indicators of abuse, but it does not provide material that independently proves, at the point of execution, that "this configuration rests on legitimate authority." This is a structurally independent gap beyond detection's reach.
+
+As things stand, across the operational model for agent infrastructure, a layer that independently verifies configuration and composition against authority before execution is not yet treated as a distinct layer. Pre-execution attestation closes the gap by inserting one step of authority proof into the config-to-execution path. Pre-execution attestation is not a replacement for detection but a **complement**; together the two layers establish the trust boundary for agent infrastructure.
+
+---
+
+## 5. What proof would have changed
 
 Lemma itself participates in the MCP ecosystem and offers an MCP server (publicly listed on Smithery); this Brief does not repudiate MCP. The point is that the "agent-interoperability convenience" MCP spread has **not, as a standard, been accompanied by a layer that independently verifies trust boundaries.** Lemma offers a design that supplements that layer as Agent Authority Proof (Pillar 03).
 
@@ -104,11 +91,9 @@ Data doesn't move. Proofs do.
 
 Models change. Proofs remain.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 Sources are drawn from published research, industry-body materials, and regulatory reports. Details that would aid reproduction are omitted.
 
@@ -117,12 +102,4 @@ Sources are drawn from published research, industry-body materials, and regulato
 - **Press (secondary)**: The Hacker News "Anthropic MCP Design Vulnerability Enables RCE" (2026-04) — https://thehackernews.com/2026/04/anthropic-mcp-design-vulnerability.html / Infosecurity Magazine "Systemic Flaw in MCP Protocol Could Expose 150 Million Downloads"
 - **CVE references (primary)**: CVE-2026-30623 (MCP SDK command injection, liteLLM advisory), and other CVEs in the same series
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

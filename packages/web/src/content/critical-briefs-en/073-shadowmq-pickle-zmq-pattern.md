@@ -19,37 +19,21 @@ gap_missing: "There was only a layer that restored pickle arriving on an unauthe
 gap_fix: "Before deserializing, independently verify with Lemma that the input was legitimately brought across the trust boundary, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
 Inference stacks that serve LLMs fast often connect internal processes with ZeroMQ (ZMQ) and exchange data via Python pickle — and if the socket is unauthenticated and the pickle is restored immediately, anyone who can reach it can execute code. In November 2025, Oligo Security disclosed, as "ShadowMQ," that this same implementation had been copied from Meta's Llama Stack across NVIDIA, Microsoft, Modular, vLLM, and SGLang. More than individual bugs, one trust-boundary-less implementation, reused across frameworks, spread the same flaw at ecosystem scale.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Target**: OSS frameworks that accelerate LLM inference, using ZeroMQ (ZMQ) for inter-process communication and passing data via Python pickle.
 - **Disclosure**: Oligo Security systematized a set of same-shape vulnerabilities as "ShadowMQ" on 2025-11-14 (reported by The Hacker News and others). Same-shape CVEs have continued to be assigned since.
 - **The shared failure primitive**: a ZMQ socket binds (often to all interfaces) with no authentication, and received data is immediately restored with `pickle.loads()`. Since pickle can execute arbitrary code on restore, an **unauthenticated attacker** who can reach the socket reaches RCE.
-- **Spread (reuse of a same-shape implementation)**: from the attributed origin, Meta Llama Stack, a nearly identical unsafe implementation propagated to NVIDIA TensorRT-LLM, Microsoft Sarathi-Serve, Modular Max Server, vLLM, and SGLang. Brief 072's LeRobot (the same shape over gRPC) is the same lineage.
+- **Spread (reuse of a same-shape implementation)**: from the attributed origin, Meta Llama Stack, a nearly identical unsafe implementation propagated to NVIDIA TensorRT-LLM, Microsoft Sarathi-Serve, Modular Max Server, vLLM, and SGLang. [Brief 072](/critical/briefs/072-lerobot-pickle-grpc-rce/)'s LeRobot (the same shape over gRPC) is the same lineage.
 - **ShadowMQ CVEs (Oligo)**: Llama Stack **CVE-2024-50050**, vLLM **CVE-2025-30165**, NVIDIA TensorRT-LLM **CVE-2025-23254** (CVSS 9.3), Modular Max Server **CVE-2025-60455** (Sarathi-Serve: no CVE assigned). All are the same unauthenticated-ZMQ + `pickle.loads()` shape.
 - **Distinguishing later / separate issues**: the same ZMQ/pickle RCE later appeared in SGLang as **CVE-2026-3059 / 3060** (CVSS 9.8, a separate Orca disclosure, 2026-03). By contrast, vLLM **CVE-2026-22778** (a video-processing heap overflow) and **CVE-2025-62164** (a `torch.load` tensor corruption, CVSS 8.8) are different-lineage vulnerabilities, not the ShadowMQ ZMQ/pickle pattern.
 - **Blast radius**: inference foundations touch GPU, high privilege, model assets, and internal networks. RCE can lead to full compromise of the foundation, theft of models/data, and lateral movement.
-- **Core**: more than an individual bug — **a trust-boundary-less implementation copied across frameworks spread the same flaw at ecosystem scale.** The assumption "received data = OK to execute" propagated through reuse.
-
----
-
-## 2. Timeline
-
-- (prior): multiple inference frameworks adopt the same-shape implementation of restoring data received over an unauthenticated ZMQ socket with `pickle.loads()` (origin attributed to Meta Llama Stack).
-- 2025-11-14: Oligo Security discloses the set of same-shape vulnerabilities as "ShadowMQ," showing the same pattern reaching NVIDIA, Microsoft, Modular, and vLLM from the Llama Stack origin (CVE-2024-50050).
-- 2026-03: the same ZMQ/pickle RCE is separately disclosed in SGLang as CVE-2026-3059 / 3060 (CVSS 9.8, Orca Security). The reuse pattern keeps materializing.
-- After: replacing pickle with safe alternatives, minimizing ZMQ socket authentication / bind scope, and making the untrusted boundary explicit are shared among inference-foundation operators.
-
-> Note: This Brief analyzes the "pattern" of the same-shape vulnerabilities bundled as ShadowMQ, not a condemnation of any individual framework's actors. Names and CVEs are based on primary sources (research bodies, GitHub Advisory, NVD); each implementation's patch status varies by time, so consult the latest per-vendor information.
-
----
-
-## 3. Attack vector: a pickle received on an unauthenticated socket runs the instant it arrives
 
 This incident has the same path shared across multiple frameworks. The representative path — unauthenticated ZMQ + pickle — is shown.
 
@@ -61,27 +45,16 @@ This incident has the same path shared across multiple frameworks. The represent
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `agent-infrastructure` category of Pillar 03 (Agent Authority Proof). The central failure primitive is that **a trust-boundary-less implementation — restoring data received over an unauthenticated ZMQ socket with `pickle.loads()` without verifying it — was copied across frameworks and spread the same flaw at ecosystem scale.** Pickle makes "restore" and "execute" inseparable, so using it at an untrusted boundary ties socket reach directly to code execution. We note `code-provenance` (the origin of the reused code / received data is not verified) and `identity-auth` (the unauthenticated channel) as secondary.
+- (prior): multiple inference frameworks adopt the same-shape implementation of restoring data received over an unauthenticated ZMQ socket with `pickle.loads()` (origin attributed to Meta Llama Stack).
+- 2025-11-14: Oligo Security discloses the set of same-shape vulnerabilities as "ShadowMQ," showing the same pattern reaching NVIDIA, Microsoft, Modular, and vLLM from the Llama Stack origin (CVE-2024-50050).
+- 2026-03: the same ZMQ/pickle RCE is separately disclosed in SGLang as CVE-2026-3059 / 3060 (CVSS 9.8, Orca Security). The reuse pattern keeps materializing.
+- After: replacing pickle with safe alternatives, minimizing ZMQ socket authentication / bind scope, and making the untrusted boundary explicit are shared among inference-foundation operators.
 
-Brief 072 (LeRobot — the same "unauthenticated + pickle" shape over gRPC) is the robot-framework version of this pattern; this Brief is its inference-foundation, cross-cutting version. It shares a root with Brief 058 (LangGraph — deserializing persistent state without verifying provenance or integrity) in the **deserialize-of-unverified-data = code-execution** primitive. It is nearly identical to Brief 025 (MCP's default design becoming a broad RCE route — inherent in the reference design, not a single implementation) in the structure where **a design/implementation pattern spreads the same flaw across products.** It connects to Brief 028 (a dependency impersonating an internal scope that exploited the build environment's provenance assumption) in that a flaw propagates through reuse/dependency, and to Brief 003 (authentication bypassed via Host-header manipulation) in that an input path passes to the privileged side without verification.
+> Note: This Brief analyzes the "pattern" of the same-shape vulnerabilities bundled as ShadowMQ, not a condemnation of any individual framework's actors. Names and CVEs are based on primary sources (research bodies, GitHub Advisory, NVD); each implementation's patch status varies by time, so consult the latest per-vendor information.
 
-What this incident shows in particular is that **an OSS foundation's absent trust boundary is amplified through "reuse."** Every time a convenient implementation is copied, its assumption (received data = OK to execute) travels with it. Only once a foundation has a design that independently verifies "is the received data of legitimate origin/content" before execution can inference foundations be safely built on at ecosystem scale.
-
----
-
-## 5. The gap between detection and proof
-
-Publishing each CVE, replacing pickle, reviewing ZMQ authentication / bind scope, and network segmentation are indispensable for deterring exposure, and this Brief does not negate that role. Patching and least privilege are an important check that severs the unauthenticated reach.
-
-At the same time, network monitoring and patches are no material for the foundation to independently verify — **before execution** — "is the data just received from a legitimate sender, with legitimate contents." The core of this incident is that no layer verified the origin or authorization of received data, the deserialize was itself code execution, and — moreover — this **spread cross-cuttingly through reuse.** After-the-fact log analysis reconstructs "what arrived on which socket," but is no material to independently verify, before execution, "was that payload of legitimate origin and content." Because the same-shape implementation reaches multiple foundations, a single detection pattern cannot cover the whole.
-
-Pre-execution attestation takes the design choice of treating the input a foundation receives not as "it arrived on the socket" but as "something of legitimate origin/authorization, independently verifiable," and at an untrusted boundary receiving it in a safe, no-execution format. Shared as a foundation's standard pattern, the unsafe assumption is not carried even when reused. Detecting reach (the detection-style "what arrived") and proving the input's origin/authorization ("is it a legitimate sender's legitimate content") are **complements**, not substitutes; only where the two overlap can inference foundations be safely built on at ecosystem scale (for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying origin/authorization before processing, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Each framework / community**: the recommended direction is to replace pickle with safe formats and review ZMQ socket authentication / bind scope (avoiding all-interface exposure). Fixes to individual CVEs continue in SGLang, vLLM, and others.
 - **Oligo Security**: systematized the same-shape vulnerabilities as ShadowMQ and made the pattern reaching Meta, NVIDIA, Microsoft, and others visible, showing the problem is "the assumption of a reused design," not "an individual bug."
@@ -92,7 +65,23 @@ The structure in which the assumption "execute received data without verifying i
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **a trust-boundary-less implementation — restoring data received over an unauthenticated ZMQ socket with `pickle.loads()` without verifying it — was copied across frameworks and spread the same flaw at ecosystem scale.** Pickle makes "restore" and "execute" inseparable, so using it at an untrusted boundary ties socket reach directly to code execution.
+
+[Brief 072](/critical/briefs/072-lerobot-pickle-grpc-rce/) (LeRobot — the same "unauthenticated + pickle" shape over gRPC) is the robot-framework version of this pattern; this Brief is its inference-foundation, cross-cutting version. It shares a root with [Brief 058](/critical/briefs/058-langgraph-checkpoint-rce/) (LangGraph — deserializing persistent state without verifying provenance or integrity) in the **deserialize-of-unverified-data = code-execution** primitive. It is nearly identical to [Brief 025](/critical/briefs/025-mcp-stdio-config-to-command-rce/) (MCP's default design becoming a broad RCE route — inherent in the reference design, not a single implementation) in the structure where **a design/implementation pattern spreads the same flaw across products.** It connects to [Brief 028](/critical/briefs/028-npm-dependency-confusion-recon/) (a dependency impersonating an internal scope that exploited the build environment's provenance assumption) in that a flaw propagates through reuse/dependency, and to [Brief 003](/critical/briefs/003-starlette-badhost/) (authentication bypassed via Host-header manipulation) in that an input path passes to the privileged side without verification.
+
+What this incident shows in particular is that **an OSS foundation's absent trust boundary is amplified through "reuse."** Every time a convenient implementation is copied, its assumption (received data = OK to execute) travels with it. Only once a foundation has a design that independently verifies "is the received data of legitimate origin/content" before execution can inference foundations be safely built on at ecosystem scale.
+
+Publishing each CVE, replacing pickle, reviewing ZMQ authentication / bind scope, and network segmentation are indispensable for deterring exposure, and this Brief does not negate that role. Patching and least privilege are an important check that severs the unauthenticated reach.
+
+At the same time, network monitoring and patches are no material for the foundation to independently verify — **before execution** — "is the data just received from a legitimate sender, with legitimate contents." The core of this incident is that no layer verified the origin or authorization of received data, the deserialize was itself code execution, and — moreover — this **spread cross-cuttingly through reuse.** After-the-fact log analysis reconstructs "what arrived on which socket," but is no material to independently verify, before execution, "was that payload of legitimate origin and content." Because the same-shape implementation reaches multiple foundations, a single detection pattern cannot cover the whole.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation takes the design choice of treating the input a foundation receives not as "it arrived on the socket" but as "something of legitimate origin/authorization, independently verifiable," and at an untrusted boundary receiving it in a safe, no-execution format. Shared as a foundation's standard pattern, the unsafe assumption is not carried even when reused. Detecting reach (the detection-style "what arrived") and proving the input's origin/authorization ("is it a legitimate sender's legitimate content") are **complements**, not substitutes; only where the two overlap can inference foundations be safely built on at ecosystem scale (for the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying origin/authorization before processing, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05)).
 
 Against the detection–proof gap this incident exposed (a trust-boundary-less implementation spreading through reuse, with deserialize-of-unverified-data = code-execution present cross-cuttingly), Lemma proposes a design that backs the input a foundation receives not with "it arrived" but with "something of legitimate origin/authorization, independently verifiable."
 
@@ -105,19 +94,9 @@ In this way, a proof fixed at the moment of the act functions as an independentl
 
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Oligo Security (primary, pattern disclosure)**: "ShadowMQ: How Code Reuse Spread Critical Vulnerabilities Across the AI Ecosystem" (2025-11; Llama Stack origin, propagation to 5 frameworks, CVE-2024-50050 / 2025-30165 / 2025-23254 / 2025-60455) — <https://www.oligo.security/blog/shadowmq-how-code-reuse-spread-critical-vulnerabilities-across-the-ai-ecosystem>
 - **The Hacker News**: "Researchers Find Serious AI Bugs Exposing Meta, Nvidia, and Microsoft Inference Frameworks" (2025-11) — <https://thehackernews.com/2025/11/researchers-find-serious-ai-bugs.html>
 - **NVD**: CVE-2025-23254 (NVIDIA TensorRT-LLM, ShadowMQ, CVSS 9.3) — <https://nvd.nist.gov/vuln/detail/CVE-2025-23254>
 - **Orca Security (later / separate disclosure)**: "Pickle in the Pipeline: Critical RCE Vulnerabilities in SGLang's LLM Serving Framework" (SGLang CVE-2026-3059 / 3060, 2026-03) — <https://orca.security/resources/blog/sglang-llm-framework-rce-vulnerabilities/>
-
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.

@@ -19,13 +19,13 @@ gap_missing: "For each individual match there was no layer to confirm whether in
 gap_fix: "Before using an AI judgment in a decision such as a coercive enforcement action, independently verify with Lemma under what reliability conditions and with what independent corroboration and authorization the output is being used, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-The Detroit Police Department wrongfully arrested Robert Williams, a Black American, and held him roughly 30 hours on a false facial-recognition (FRT) match. The AI match — a probabilistic candidate from a surveillance still and a driver's-license photo — was treated as identification of the suspect without independent corroboration and drove the arrest directly: the first publicly confirmed FRT-induced wrongful arrest in the US. Accuracy and bias evaluations such as NIST's inform technology selection but cannot change whether each match was independently corroborated and authorized before action. Detection and pre-execution attestation are complements, not substitutes.
+The Detroit Police Department wrongfully arrested Robert Williams, a Black American, and held him roughly 30 hours on a false facial-recognition (FRT) match. The AI match — a probabilistic candidate from a surveillance still and a driver's-license photo — was treated as identification of the suspect without independent corroboration and drove the arrest directly: the first publicly confirmed FRT-induced wrongful arrest in the US. Accuracy and bias evaluations such as NIST's inform technology selection but cannot change whether each match was independently corroborated and authorized before action.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Affected party**: Robert Williams (a Black American, Michigan resident)
 - **Government party**: Detroit Police Department
@@ -35,11 +35,18 @@ The Detroit Police Department wrongfully arrested Robert Williams, a Black Ameri
 - **Historical position**: Regarded as the first publicly confirmed FRT-induced wrongful arrest in the United States. Several similar wrongful arrests have since been reported
 - **Technical background**: NIST's large-scale evaluation (NISTIR 8280, 2019-12) had quantitatively shown bias in false positives across some race, age, and sex groups in many algorithms
 - **Legal outcome**: The ACLU filed Williams v. City of Detroit. The case was settled on 2024-06-28, with the Detroit Police Department accepting what is considered the most stringent FRT restriction policy in the country
-- **Core**: An AI's probabilistic judgment output was accepted as the basis for a government enforcement action without passing through any layer verifying its grounds, reliability, independent corroboration, and authorization.
+
+The incident came together as the following chain.
+
+1. **AI output generation**: FRT matches the surveillance still frame against the license photograph and outputs Williams as a candidate. The match is a probabilistic score, not a definitive identification
+2. **Opacity of grounds**: The grounds for the match (score, image quality, reliability-degrading factors) were not structured to be sufficiently disclosed and verified at each stage of investigation, photo lineup, and judicial process
+3. **Absence of independent verification**: The FRT output was carried into the photo lineup without independent corroborating evidence, and the AI's candidate presentation was treated as de facto identification
+4. **Direct path to enforcement action**: An unverified AI output functioned as the basis for arrest — an irreversible government enforcement action. No independent human confirmation intervened before the action
+5. **Amplification of structural bias**: The bias in false positives across groups that NIST had shown structurally raised the wrongful-arrest risk against specific populations
 
 ---
 
-## 2. Timeline
+## 3. Timeline — disclosure and response
 
 - 2019-12: NIST publishes FRVT Part 3: Demographic Effects (NISTIR 8280). Evaluates approximately 100 developers and approximately 200 algorithms against over 18 million images and quantifies bias in false positives across some groups
 - 2018: A theft occurs at the Shinola store; surveillance footage is recorded
@@ -50,41 +57,7 @@ The Detroit Police Department wrongfully arrested Robert Williams, a Black Ameri
 
 > Note: Proper nouns and CVEs are based on primary sources (research institutions, GitHub Advisory, NVD, etc.); each implementation's remediation status varies by point in time, so consult the latest information.
 
----
-
-## 3. Event Chain
-
-1. **AI output generation**: FRT matches the surveillance still frame against the license photograph and outputs Williams as a candidate. The match is a probabilistic score, not a definitive identification
-2. **Opacity of grounds**: The grounds for the match (score, image quality, reliability-degrading factors) were not structured to be sufficiently disclosed and verified at each stage of investigation, photo lineup, and judicial process
-3. **Absence of independent verification**: The FRT output was carried into the photo lineup without independent corroborating evidence, and the AI's candidate presentation was treated as de facto identification
-4. **Direct path to enforcement action**: An unverified AI output functioned as the basis for arrest — an irreversible government enforcement action. No independent human confirmation intervened before the action
-5. **Amplification of structural bias**: The bias in false positives across groups that NIST had shown structurally raised the wrongful-arrest risk against specific populations
-
----
-
-## 4. Structural Analysis
-
-This incident belongs to the `ai-decision-integrity` category of Pillar 02 (Verifiable AI). The central **failure primitive is "the AI's judgment output (a probabilistic face match) being accepted as the de facto basis for a government enforcement action without an accompanying record that could independently prove its grounds, reliability, and verification state."** Secondary tagging is `identity-auth` (false identification of personhood) and `ai-bias-harm` (bias in false positives across groups).
-
-It shares Pillar 02 with Brief 005 (Noroboto, font-impersonation-induced misdirection of AI document review) but addresses a different target. Brief 005 was a case in which AI **input** was tampered with and judgment was distorted; this incident is a case in which AI **output** flowed directly into downstream decisions without verification. Both share the structure that "an AI judgment is detached from the layer that independently verifies its grounds." It is also adjacent to Brief 011 (SynthID) on the point that authenticity of AI-related content or judgment is not independently verified (011 is the stripping of provenance marks; this incident is the absence of verification of judgment grounds).
-
-This incident is not an attack incident; it is a trust-layer risk event in the public sector's use of AI (per the Methodology's scope expansion, in line with Brief 008's position). As government use of AI outputs in decision-making expands, the case sits as a representative one in which the verifiability of judgment is being called into question as an institutional requirement.
-
----
-
-## 5. The detection–proof gap
-
-FRT and its accuracy evaluation (NIST and others) have a certain role as a means of initial narrowing in government and investigation, and this Brief does not deny that role. Measurement of accuracy and bias (detection-style evaluation) is essential as a basis for technology selection and operational restrictions.
-
-That said, accuracy scores and bias measurements do not change whether each individual judgment was "independently corroborated and authorized before action." In this incident, the fact that the FRT output was no more than a probabilistic candidate, its reliability-degrading factors, and the presence or absence of independent corroboration were not fixed as a verifiable record before the enforcement action. The remedies the settlement imposed — a ban on arrests based on FRT alone, mandatory independent corroboration, an obligation to disclose reliability factors — are precisely the requirement that "the use of AI outputs requires an independent record of verification and authorization." As material for establishing in regulatory reporting, judicial proceedings, or administrative audit that "this AI output was independently verified and authorized before action," accuracy scores themselves carry no independent attribution residue.
-
-Pre-execution attestation adopts a design in which, before an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it is used are fixed as an independently verifiable record. If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance. Accuracy evaluation (detection) and the record of verification and authorization (proof) are in a **complementary**, not substitutive, relationship.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
+The response and industry movement after disclosure:
 
 - **Detroit Police Department / settlement**: In the 2024-06-28 settlement, the department accepted a ban on arrests or photo lineups based on FRT results alone; mandatory independent corroborating evidence; an obligation to disclose reliability-degrading factors of FRT searches to investigation, the court, and defense counsel; and training on racial disparities in misidentification. It is considered the most stringent FRT restriction policy in the country, and subsequent operations have been significantly scaled back
 - **ACLU / University of Michigan Law**: Led and recorded the litigation and settlement. Established the operational principle that FRT be kept to a "lead" and that corroboration by independent evidence be a precondition
@@ -95,7 +68,23 @@ How government, when using AI outputs in enforcement actions, benefit decisions,
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+The central **failure primitive is "the AI's judgment output (a probabilistic face match) being accepted as the de facto basis for a government enforcement action without an accompanying record that could independently prove its grounds, reliability, and verification state."**
+
+It shares Pillar 02 with [Brief 005](/critical/briefs/005-noroboto-lying-fonts/) (Noroboto, font-impersonation-induced misdirection of AI document review) but addresses a different target. [Brief 005](/critical/briefs/005-noroboto-lying-fonts/) was a case in which AI **input** was tampered with and judgment was distorted; this incident is a case in which AI **output** flowed directly into downstream decisions without verification. Both share the structure that "an AI judgment is detached from the layer that independently verifies its grounds." It is also adjacent to [Brief 011](/critical/briefs/011-synthid-watermark-reverse-engineering/) (SynthID) on the point that authenticity of AI-related content or judgment is not independently verified (011 is the stripping of provenance marks; this incident is the absence of verification of judgment grounds).
+
+This incident is not an attack incident; it is a trust-layer risk event in the public sector's use of AI (per the Methodology's scope expansion, in line with [Brief 008](/critical/briefs/008-discord-scraping/)'s position). As government use of AI outputs in decision-making expands, the case sits as a representative one in which the verifiability of judgment is being called into question as an institutional requirement.
+
+FRT and its accuracy evaluation (NIST and others) have a certain role as a means of initial narrowing in government and investigation, and this Brief does not deny that role. Measurement of accuracy and bias (detection-style evaluation) is essential as a basis for technology selection and operational restrictions.
+
+That said, accuracy scores and bias measurements do not change whether each individual judgment was "independently corroborated and authorized before action." In this incident, the fact that the FRT output was no more than a probabilistic candidate, its reliability-degrading factors, and the presence or absence of independent corroboration were not fixed as a verifiable record before the enforcement action. The remedies the settlement imposed — a ban on arrests based on FRT alone, mandatory independent corroboration, an obligation to disclose reliability factors — are precisely the requirement that "the use of AI outputs requires an independent record of verification and authorization." As material for establishing in regulatory reporting, judicial proceedings, or administrative audit that "this AI output was independently verified and authorized before action," accuracy scores themselves carry no independent attribution residue.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation adopts a design in which, before an AI output is used in downstream decision-making, "which output," "under which reliability conditions," and "under which independent corroboration and authorization" it is used are fixed as an independently verifiable record. If the proof says "no independent corroboration" or "no authorization," the enforcement action based on that output is held off in advance. Accuracy evaluation (detection) and the record of verification and authorization (proof) are in a **complementary**, not substitutive, relationship.
 
 Against the detection–proof gap exposed by this incident (an AI judgment output functions as the basis for a government enforcement action without being able to independently prove its grounds, verification state, and authorization), Lemma proposes the following design elements.
 
@@ -106,11 +95,9 @@ Against the detection–proof gap exposed by this incident (an AI judgment outpu
 
 This corresponds to an audit and attribution layer for the institutional fulfillment of accountability in government AI use, and combined with accuracy evaluation (detection) it establishes the trust boundary for the use of AI outputs.
 
-For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **ACLU**: "Williams v. City of Detroit" (case summary) — https://www.aclu.org/cases/williams-v-city-of-detroit-face-recognition-false-arrest
 - **ACLU**: "Summary of Detroit Facial Recognition Settlement Agreement (Williams v. City of Detroit)" (2024, summary of settlement terms) — https://www.aclu.org/documents/summary-of-detroit-facial-recognition-settlement-agreement-williams-v-city-of-detroit
@@ -119,12 +106,4 @@ For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.fr
 - **NIST**: "Face Recognition Vendor Test (FRVT) Part 3: Demographic Effects" (NISTIR 8280, 2019-12) — https://nvlpubs.nist.gov/nistpubs/ir/2019/nist.ir.8280.pdf
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/), [Trust402](https://lemma.frame00.com/trust402/)

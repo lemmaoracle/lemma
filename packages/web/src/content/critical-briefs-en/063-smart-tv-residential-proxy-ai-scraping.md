@@ -19,13 +19,13 @@ gap_missing: "There was no layer at collection time to check whether a relay tru
 gap_fix: "Before ingesting data into AI training, independently verify with Lemma that this data was gathered under a verifiable source and consent, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-In June 2026, researchers reverse-engineered the SDK that data broker Bright Data embeds in free apps, showing it turns devices, including always-on smart TVs, into exit nodes relaying AI-scraping traffic from a household's IP. After-the-fact analysis, DNS blocking, and platform restrictions cannot establish under what source and consent the data was gathered; the opt-in ("used sometimes") and the behavior (200 GB/month) do not match. What is missing is a layer that fixes origin and consent to a verifiable trail at collection. Detection and pre-execution attestation are complements, not substitutes.
+In June 2026, researchers reverse-engineered the SDK that data broker Bright Data embeds in free apps, showing it turns devices, including always-on smart TVs, into exit nodes relaying AI-scraping traffic from a household's IP. After-the-fact analysis, DNS blocking, and platform restrictions cannot establish under what source and consent the data was gathered; the opt-in ("used sometimes") and the behavior (200 GB/month) do not match. What is missing is a layer that fixes origin and consent to a verifiable trail at collection.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **What was shown**: Researchers reverse-engineered the iOS SDK that Bright Data embeds in consumer apps and documented the mechanism that turns devices (including always-on smart TVs) into exit nodes for the web-scraping business Bright Data sells to the AI industry.
 - **Disclosure**: 2026-06-05, Include Security and the independent researcher Buchodi. The smart-TV angle was reported earlier (2026-02) by Lowpass (distributed by The Verge); this is the technical analysis of it.
@@ -35,23 +35,6 @@ In June 2026, researchers reverse-engineered the SDK that data broker Bright Dat
   - The peer channel carrying relay jobs lacks meaningful authentication (described as "weaker than most malware"). The analysis targeted iOS `brdsdk.framework` v1.532.120, including 30 days of observation via TLS interception.
   - On iOS, that traffic bypasses a configured VPN and largely does not appear in ordinary app-monitoring tools. Unless the battery is low, it keeps relaying in the background even while you are watching or on a call.
   - **The consent gap**: The opt-in screen and what the SDK allows do not match. The Roku app Petflix shows it will be used "sometimes," while the SDK is configured to permit up to 200 GB/month (with even higher caps in some countries, such as Uzbekistan and Oman). The SDK can bundle the same vendor's apps on one person's phone and PC as a single user.
-
----
-
-## 2. Timeline
-
-- 2015: Bright Data's predecessor Luminati (out of Hola VPN) is noted to have sold free users' bandwidth as exit nodes at $20/GB (the origin of the same model).
-- 2025-10: Krebs on Security reports that botnet-sourced proxies such as Aisuru underpin large-scale AI data collection (the device-hijacking side).
-- 2026-01: Google dismantles the criminal proxy network IPIDEA.
-- 2026-02: Lowpass (distributed by The Verge) reports the smart-TV angle first.
-- 2026-06-05: Include Security and Buchodi publish the technical analysis of the iOS SDK.
-- After: Google, Amazon, and Roku restrict background proxy SDKs and Bright Data withdraws from those platforms. Samsung's Tizen and LG's webOS, however, remain listed as targets.
-
-> Note: The reach to smart TVs is based on Bright Data's platform support, public partner list, and prior reporting (the deepest technical evidence is for the iOS SDK). Bright Data publishes a partner list, but the researchers caution that "being listed only indicates a past collaboration and does not mean the app currently contains the SDK." This text makes no assertion about individual apps.
-
----
-
-## 3. The chain: collected data and relay, their origin and consent unverified
 
 This incident stems from the origin and consent of the collected data — and of the relay traffic carrying it — not being independently verified at the moment of collection. The path is as follows.
 
@@ -63,29 +46,18 @@ This incident stems from the origin and consent of the collected data — and of
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `data-provenance` category of Pillar 01 (Verifiable Origin), with `training-data-provenance` (provenance of AI training data) as a secondary category. The central failure primitive is that **the origin and consent of the collected data headed for AI training, and of the relay traffic that carries out the collection, are not fixed as an independently verifiable trail at the moment of collection.** Consent is taken as the wording "used sometimes," but is not tied to the SDK's actual behavior (200 GB/month of relay), so the consent attribute cannot be verified against the actual action.
+- 2015: Bright Data's predecessor Luminati (out of Hola VPN) is noted to have sold free users' bandwidth as exit nodes at $20/GB (the origin of the same model).
+- 2025-10: Krebs on Security reports that botnet-sourced proxies such as Aisuru underpin large-scale AI data collection (the device-hijacking side).
+- 2026-01: Google dismantles the criminal proxy network IPIDEA.
+- 2026-02: Lowpass (distributed by The Verge) reports the smart-TV angle first.
+- 2026-06-05: Include Security and Buchodi publish the technical analysis of the iOS SDK.
+- After: Google, Amazon, and Roku restrict background proxy SDKs and Bright Data withdraws from those platforms. Samsung's Tizen and LG's webOS, however, remain listed as targets.
 
-This is the same shape as Brief 008 (Discord scraping via a public API redistributed as AI-training data): **the look of "public / consented" is decoupled from independently verifiable provenance.** Where 008 is "public ≠ consent," this is "the opt-in display ≠ consent to the actual behavior" — two cross-sections of the same thesis. It connects directly to Brief 036 (13.8 billion AI-training images with passports, résumés, and faces mixed in, whose provenance and consent were not verified at collection) through the primitive of absent provenance verification at the moment of collection. It connects to Brief 011 (provenance marks on AI artifacts can be stripped) in that provenance is not fixed in an independently verifiable form.
+> Note: The reach to smart TVs is based on Bright Data's platform support, public partner list, and prior reporting (the deepest technical evidence is for the iOS SDK). Bright Data publishes a partner list, but the researchers caution that "being listed only indicates a past collaboration and does not mean the app currently contains the SDK." This text makes no assertion about individual apps.
 
-What this incident foregrounds is the layer of **the provenance of the collection infrastructure.** When not just the data's content but the collection provenance — "from which IP, under which consent, over which path the data was gathered" — goes unverified, residential IPs become a third party's scraping infrastructure without the owner's knowledge, and AI-training data circulates with its origin unquestioned. After-the-fact blocking and platform restrictions are a separate chain from a layer that fixes provenance before the action.
-
----
-
-## 5. The gap between detection and proof
-
-The researchers' reverse engineering, the DNS-level blocking they offered, and the platform vendors' restriction of background proxy SDKs are indispensable for making the harm visible and deterring it, and this Brief does not negate that role. Technical analysis and blocking are an important check on household devices being used as relays.
-
-At the same time, detection provides no material to independently establish — **at the moment of collection** — whether this relay traffic originates from a genuinely consented source, or whether this AI-training data was collected under verifiable provenance and consent. Scraping from a residential IP is hard to distinguish from ordinary household use (which is exactly how it evades measures that reject datacenter IPs), and the origin of the collected data is invisible to the receiving side. Even if blocking addresses can be shown after the fact, the provenance of the relay that already ran and the data that already circulated cannot be fixed retroactively. What was missing is a mechanism to fix, at the moment of collection, an independently verifiable trail that "this relay derives from a consented device, and this data was collected under this origin and consent" — a chain separate from after-the-fact blocking and restriction.
-
-Pre-execution attestation flips data collection from "infer the origin after the fact" to "bind origin and consent to an independently verifiable trail at the moment of collection." Tie relay traffic to a proof of a genuinely consented device, and bind collected data to the provenance of its origin and consent — and data lacking proof of provenance and consent can be screened out before it is taken into AI training. Detecting the collection infrastructure (the detection-style "which devices are relaying") and proving provenance ("under which origin and consent can this data be independently verified to have been gathered") are not substitutes but **complements.**
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **Platforms / the vendor**: Google, Amazon, and Roku restricted background proxy SDKs and Bright Data withdrew from those platforms (Samsung Tizen and LG webOS remain listed). Researchers offered DNS-level blocking. But on a mobile connection the traffic bypasses office Wi-Fi, so network blocking alone cannot fully catch it.
 - **The meaning-of-consent question**: The difference between device-hijacking botnet proxies (Aisuru, IPIDEA, etc.) and vendor proxies that claim opt-in consent lies in "consent" — but when the display and the actual behavior do not match, whether that consent is meaningful remains an open question.
@@ -95,7 +67,23 @@ The absence of a layer that independently verifies, at the moment of collection,
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **the origin and consent of the collected data headed for AI training, and of the relay traffic that carries out the collection, are not fixed as an independently verifiable trail at the moment of collection.** Consent is taken as the wording "used sometimes," but is not tied to the SDK's actual behavior (200 GB/month of relay), so the consent attribute cannot be verified against the actual action.
+
+This is the same shape as [Brief 008](/critical/briefs/008-discord-scraping/) (Discord scraping via a public API redistributed as AI-training data): **the look of "public / consented" is decoupled from independently verifiable provenance.** Where 008 is "public ≠ consent," this is "the opt-in display ≠ consent to the actual behavior" — two cross-sections of the same thesis. It connects directly to [Brief 036](/critical/briefs/036-commonpool-training-data-pii/) (13.8 billion AI-training images with passports, résumés, and faces mixed in, whose provenance and consent were not verified at collection) through the primitive of absent provenance verification at the moment of collection. It connects to [Brief 011](/critical/briefs/011-synthid-watermark-reverse-engineering/) (provenance marks on AI artifacts can be stripped) in that provenance is not fixed in an independently verifiable form.
+
+What this incident foregrounds is the layer of **the provenance of the collection infrastructure.** When not just the data's content but the collection provenance — "from which IP, under which consent, over which path the data was gathered" — goes unverified, residential IPs become a third party's scraping infrastructure without the owner's knowledge, and AI-training data circulates with its origin unquestioned. After-the-fact blocking and platform restrictions are a separate chain from a layer that fixes provenance before the action.
+
+The researchers' reverse engineering, the DNS-level blocking they offered, and the platform vendors' restriction of background proxy SDKs are indispensable for making the harm visible and deterring it, and this Brief does not negate that role. Technical analysis and blocking are an important check on household devices being used as relays.
+
+At the same time, detection provides no material to independently establish — **at the moment of collection** — whether this relay traffic originates from a genuinely consented source, or whether this AI-training data was collected under verifiable provenance and consent. Scraping from a residential IP is hard to distinguish from ordinary household use (which is exactly how it evades measures that reject datacenter IPs), and the origin of the collected data is invisible to the receiving side. Even if blocking addresses can be shown after the fact, the provenance of the relay that already ran and the data that already circulated cannot be fixed retroactively. What was missing is a mechanism to fix, at the moment of collection, an independently verifiable trail that "this relay derives from a consented device, and this data was collected under this origin and consent" — a chain separate from after-the-fact blocking and restriction.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation flips data collection from "infer the origin after the fact" to "bind origin and consent to an independently verifiable trail at the moment of collection." Tie relay traffic to a proof of a genuinely consented device, and bind collected data to the provenance of its origin and consent — and data lacking proof of provenance and consent can be screened out before it is taken into AI training. Detecting the collection infrastructure (the detection-style "which devices are relaying") and proving provenance ("under which origin and consent can this data be independently verified to have been gathered") are not substitutes but **complements.**
 
 Against the gap this incident exposed (the origin and consent of the collected data headed for AI training, and of the relay traffic, are not independently verified at the moment of collection), Lemma proposes a design that binds data and its collection path to provenance as an independently verifiable cryptographic proof at the moment of collection.
 
@@ -106,23 +94,13 @@ Against the gap this incident exposed (the origin and consent of the collected d
 
 In this way, a proof fixed at the moment of collection functions as an independently verifiable trail of whether "this training data was gathered under verifiable origin and consent," without depending on after-the-fact blocking and restriction. Detection (after-the-fact analysis, blocking, platform restriction) works on correcting harm; attestation (independent verification of provenance and consent at collection) works on establishing trust in AI-training data — each complementary to the other.
 
-For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Include Security (primary, technical analysis)**: "The Smart TV in Your Living Room Is a Node in the AI-Scraping Economy" (2026-06-05, reverse engineering of the iOS SDK) — <https://blog.includesecurity.com/2026/06/the-smart-tv-in-your-livingroom-is-a-node-in-the-aiscraping-economy/>
 - **The Hacker News**: "Free Apps Are Quietly Turning Smart TVs Into Web-Scraping Proxies for AI" (2026-06-06) — <https://thehackernews.com/2026/06/free-apps-are-quietly-turning-smart-tvs.html>
 - **Lowpass (distributed by The Verge)**: prior reporting on smart TVs × web-scraping proxy networks (2026-02) — <https://www.lowpass.cc/p/smart-tv-web-scraping-ai-bright-data-proxy-networks>
 - **Krebs on Security**: "Aisuru Botnet Shifts from DDoS to Residential Proxies" (2025-10, the context of residential proxies underpinning AI data collection) — <https://krebsonsecurity.com/2025/10/aisuru-botnet-shifts-from-ddos-to-residential-proxies/>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/), [Trust402](https://lemma.frame00.com/trust402/)

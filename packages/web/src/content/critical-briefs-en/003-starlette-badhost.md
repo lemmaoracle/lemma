@@ -19,13 +19,13 @@ gap_missing: "Altering a single character in the request's destination informati
 gap_fix: "Before accessing an external resource, independently verify with Lemma who issued the request, with what authority, and to what extent, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion in the HTTP Host header diverges the router's resolved path from the path the middleware sees, slipping past path-based authentication. It propagates across most of the Python AI ecosystem — FastAPI, MCP servers, and more. A scanner for vulnerable versions is useful, but the path-based auth scheme itself never independently verifies the trust boundary, so a framework patch alone falls short. Missing was a layer verifying request origin and authority before the action. Detection and pre-execution attestation are complements, not substitutes.
+Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion in the HTTP Host header diverges the router's resolved path from the path the middleware sees, slipping past path-based authentication. It propagates across most of the Python AI ecosystem — FastAPI, MCP servers, and more. A scanner for vulnerable versions is useful, but the path-based auth scheme itself never independently verifies the trust boundary, so a framework patch alone falls short. Missing was a layer verifying request origin and authority before the action.
 
 ---
 
-## 1. Incident Overview
+## 2. What happened
 
 - **Vulnerability ID**: CVE-2026-48710 (also known as BadHost)
 - **Disclosure date**: 2026-05-27
@@ -37,22 +37,8 @@ Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion i
 - **CVSS score**: 7/10. Both X41 D-Sec and Secwest assess this as significantly underestimating the severity
 - **Fix release**: Patched in Starlette 1.0.1
 - **Detection tool**: An online scanner for identifying affected servers is available at mcp-scan.nemesis.services
-- **Core**: The structural failure was that the divergence between the path the router resolves and the path path-based authentication sees was left in place, detached from the auth layer and never independently verified, so a single Host-header manipulation let the "authenticated" assertion slip through without prior verification.
 
----
-
-## 2. Timeline
-
-- 2026-05-27: X41 D-Sec discloses CVE-2026-48710; Starlette 1.0.1 ships the same day
-- 2026-05-27: Ars Technica publishes first reporting; GIGAZINE follows up in Japanese
-- 2026-05-27: X41 D-Sec publishes the mcp-scan.nemesis.services online scanner
-- 2026-05-27: Secwest publishes a comment noting that the CVSS rating is underestimated
-
-> Note: Names and the CVE are based on primary sources (the X41 D-Sec advisory, the MITRE CVE record, the Starlette GitHub release, etc.). Each implementation's remediation status varies over time, so consult the latest information. This Brief treats the matter as a demonstrated structural defect (CVE-2026-48710) and does not exaggerate real-world impact.
-
----
-
-## 3. Attack Vector
+The incident came together as the following chain.
 
 1. **Initial compromise**: The attacker sends a normal HTTP request to a public endpoint of a target MCP server or Starlette-based application, intentionally inserting a single character into the Host header
 2. **Routing divergence**: Starlette's routing algorithm resolves endpoints based on the HTTP path. The `request.url.path` attribute provided to middleware and endpoints, however, is based on a "reconstructed URL" and does not match the path actually requested over HTTP
@@ -62,29 +48,16 @@ Starlette CVE-2026-48710 (BadHost) was disclosed: a single-character insertion i
 
 ---
 
-## 4. Structural Analysis
+## 3. Timeline — disclosure and response
 
-This incident is a representative case of a structure in which, in the HTTP layer (Starlette) that powers AI agents, **the divergence between "the path the router resolves" and "the path the middleware sees" was left in place, detached from the authentication layer**. A design that does not independently verify the trust boundary inside the framework is broken by the minimal input manipulation of inserting a single character into the HTTP Host header.
+- 2026-05-27: X41 D-Sec discloses CVE-2026-48710; Starlette 1.0.1 ships the same day
+- 2026-05-27: Ars Technica publishes first reporting; GIGAZINE follows up in Japanese
+- 2026-05-27: X41 D-Sec publishes the mcp-scan.nemesis.services online scanner
+- 2026-05-27: Secwest publishes a comment noting that the CVSS rating is underestimated
 
-The primitive differs from Brief 001 (KelpDAO / rsETH) and Brief 002 (Stake DAO) — the target here is an HTTP request rather than a cross-chain message — but the underlying structure is the same: **a trust assertion (path-based authentication in this case) is detached from the layer that verifies it**. The earlier Briefs concerned the trust source for cross-chain messages; this incident concerns the trust source for HTTP paths. Both share the structure of absent independent verification at the trust boundary.
+> Note: Names and the CVE are based on primary sources (the X41 D-Sec advisory, the MITRE CVE record, the Starlette GitHub release, etc.). Each implementation's remediation status varies over time, so consult the latest information. This Brief treats the matter as a demonstrated structural defect (CVE-2026-48710) and does not exaggerate real-world impact.
 
----
-
-## 5. The detection–proof gap
-
-The mcp-scan.nemesis.services scanner X41 D-Sec released identifies affected servers by detecting the vulnerable version. This is detection of "whether the vulnerability is present," and it is operationally useful. This Brief does not deny the role of detection vendors.
-
-That said, the root cause is that the path-based authentication scheme itself does not independently verify the trust boundary. The Starlette 1.0.1 patch corrects the specific divergence, but in a world where AI agents access external resources over HTTP, a higher-level trust-boundary verification — one that does not rely on framework-side bug fixes — is essential.
-
-Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence.
-
-In a case like this Host-header authentication bypass, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — are **complements**, not substitutes. Proving that an MCP server's request is legitimate before it reaches an external resource does not replace the work of detecting vulnerable versions; it functions alongside it.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and Industry Developments
+The response and industry movement after disclosure:
 
 - **Starlette**: Released version 1.0.1 with the BadHost fix. Restores consistency between `request.url.path` and the actual HTTP path
 - **X41 D-Sec**: Released mcp-scan.nemesis.services, providing a cross-AI-agent-ecosystem scanning channel
@@ -95,7 +68,23 @@ The "data at risk" categories X41 D-Sec enumerated illustrate the reach of this 
 
 ---
 
-## 7. Lemma's Analysis
+## 4. Why it wasn't stopped
+
+This incident is a representative case of a structure in which, in the HTTP layer (Starlette) that powers AI agents, **the divergence between "the path the router resolves" and "the path the middleware sees" was left in place, detached from the authentication layer**. A design that does not independently verify the trust boundary inside the framework is broken by the minimal input manipulation of inserting a single character into the HTTP Host header.
+
+The primitive differs from [Brief 001](/critical/briefs/001-kelpdao-rseth/) (KelpDAO / rsETH) and [Brief 002](/critical/briefs/002-stakedao-vsdcrv/) (Stake DAO) — the target here is an HTTP request rather than a cross-chain message — but the underlying structure is the same: **a trust assertion (path-based authentication in this case) is detached from the layer that verifies it**. The earlier Briefs concerned the trust source for cross-chain messages; this incident concerns the trust source for HTTP paths. Both share the structure of absent independent verification at the trust boundary.
+
+The mcp-scan.nemesis.services scanner X41 D-Sec released identifies affected servers by detecting the vulnerable version. This is detection of "whether the vulnerability is present," and it is operationally useful. This Brief does not deny the role of detection vendors.
+
+That said, the root cause is that the path-based authentication scheme itself does not independently verify the trust boundary. The Starlette 1.0.1 patch corrects the specific divergence, but in a world where AI agents access external resources over HTTP, a higher-level trust-boundary verification — one that does not rely on framework-side bug fixes — is essential.
+
+Reframed in pre-execution attestation terms, the requirement is a design that embeds "agent / authenticated subject / delegated scope" into the HTTP request itself as an independently verifiable cryptographic proof. Rather than letting the framework determine what to accept, a separate channel proves what should be accepted. The severity X41 D-Sec characterized as "underestimated at CVSS 7" derives, essentially, from the scale of this structural absence.
+
+In a case like this Host-header authentication bypass, after-the-fact detection and correction (detection) and pre-execution attestation — independently verifying origin and authorization before the action — are **complements**, not substitutes. Proving that an MCP server's request is legitimate before it reaches an external resource does not replace the work of detecting vulnerable versions; it functions alongside it.
+
+---
+
+## 5. What proof would have changed
 
 Lemma's design answers this incident's gap — the absence of a layer that places agent / authenticated subject / delegated scope onto the HTTP request itself as a proof — by having the receiver decide on the proof rather than the path.
 
@@ -106,11 +95,9 @@ Lemma's design answers this incident's gap — the absence of a layer that place
 
 This is the design philosophy of proving through a separate channel what should be accepted — a higher-level trust-boundary verification that does not depend on framework-side bug fixes, and that complements, rather than replaces, the detection layer.
 
-For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **CVE-2026-48710 official record** (MITRE CVE) — Description of the BadHost vulnerability and CVSS rating. https://www.cve.org/CVERecord?id=CVE-2026-48710
 - **X41 D-Sec advisory and MCP scanner** (X41 D-Sec official) — The public mcp-scan.nemesis.services scanner and the technical advisory. https://mcp-scan.nemesis.services/
@@ -118,12 +105,4 @@ For the design and its scope, see [Pillar 03 — Agent Authority Proof](https://
 - **Ars Technica analysis**: "Millions of AI agents imperiled by critical vulnerability in open source package" (2026-05-27, independent reporting) — https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. About distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 03 — Agent Authority Proof](https://lemma.frame00.com/pillars/agent-authority-proof/), [Trust402](https://lemma.frame00.com/trust402/)

@@ -19,13 +19,13 @@ gap_missing: "規制対応で集めて保管している生の個人情報その
 gap_fix: "規制が求める本人確認を、生の個人情報を抱え込まず「この利用者は確認済みである」ことを Lemma で独立検証して、事前に防ぐ。"
 ---
 
-## TL;DR
+## 1. TL;DR
 
-2025 年 5 月、Coinbase は、買収された海外（インド）の委託先サポート要員が少なくとも 69,461 名分の KYC データ（氏名・住所・SSN 下 4 桁・銀行口座情報・政府発行 ID 画像等）を社外へ持ち出し売却していたと公表した。パスワード・秘密鍵・資金は流出していない。検出と対応は機能したが、KYC/AML 規制上保管する生 PII そのものが、正規アクセス権を持つ内部者に常に手の届く漏洩面であり続けた。検出と事前証明は代替でなく補完である。
+2025 年 5 月、Coinbase は、買収された海外（インド）の委託先サポート要員が少なくとも 69,461 名分の KYC データ（氏名・住所・SSN 下 4 桁・銀行口座情報・政府発行 ID 画像等）を社外へ持ち出し売却していたと公表した。パスワード・秘密鍵・資金は流出していない。検出と対応は機能したが、KYC/AML 規制上保管する生 PII そのものが、正規アクセス権を持つ内部者に常に手の届く漏洩面であり続けた。
 
 ---
 
-## 1. 事案概要
+## 2. 何が起きたか
 
 - **影響を受けた組織**: Coinbase（米国の規制対象暗号資産取引所）
 - **攻撃主体**: 外部委託のカスタマーサポート要員（主にインド）を買収した攻撃者。内部サポートツールへのアクセスを経由
@@ -36,23 +36,8 @@ gap_fix: "規制が求める本人確認を、生の個人情報を抱え込ま�
 - **恐喝**: 2025-05-11 に攻撃者が 2,000 万ドル（BTC）の身代金を要求。Coinbase は支払いを拒否し、同額の懸賞金を設定
 - **規制開示・費用**: 2025-05-15 に SEC へ Form 8-K を提出。復旧・補償費用を 1.8 億〜4 億ドルと見積もり
 - **対応**: 詐取された顧客への返金、米国内サポート拠点の新設、影響顧客への ID 盗難保護・信用監視の提供
-- **核心**: 規制が要求する生 PII の収集・保管が、正規アクセス権を持つ内部者にとって常に到達可能な漏洩面に転化する構造である。
 
----
-
-## 2. タイムライン
-
-- 2024-09 〜 2024-12: 委託先サポート要員による顧客データの不正取得が開始（Maine への届出では侵害日を 2024-12-26 と記載）
-- 2024-12 〜 2025-05: 数か月にわたり継続的にデータが取得・売却される
-- 2025-05-11: 攻撃者が 2,000 万ドルの身代金を要求。Coinbase が内部不正を認識
-- 2025-05-15: Coinbase が公式声明（支払い拒否・2,000 万ドルの懸賞金設定）を公表。同日 SEC へ Form 8-K を提出、復旧費用 1.8 億〜4 億ドルを開示
-- 2025-05-21 前後: 影響者数（少なくとも 69,461 名）と流出データ種別が報道で確認される
-
-> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
-
----
-
-## 3. 攻撃ベクター
+事象は次の連鎖で成立している。
 
 1. **Regulatory data accumulation（前提）**: KYC/AML 規制の遵守として、Coinbase は顧客の生 PII（政府発行 ID 画像、SSN、銀行情報等）を収集・保管していた。これは規制上要求される属性確認の副産物として蓄積された
 2. **Insider recruitment**: 攻撃者が外部委託のサポート要員（海外）を金銭で買収。正規の業務アクセス権を持つ内部者を経路に選択
@@ -63,27 +48,17 @@ gap_fix: "規制が求める本人確認を、生の個人情報を抱え込ま�
 
 ---
 
-## 4. 構造的論点
+## 3. 時系列 — 公表と対応
 
-本事案は Pillar 04（規制属性証明）の `kyc-aml-disclosure` カテゴリに属する。中心的な**失敗 primitive は「規制が要求する生 PII の保管そのものが、正規アクセス権を持つ内部者を経由して漏洩する攻撃面に転化する点」**である。攻撃は脆弱性ではなく、正規の業務アクセスと「データが存在すること」自体を突いた。secondary に `identity-auth` を併記する。
+- 2024-09 〜 2024-12: 委託先サポート要員による顧客データの不正取得が開始（Maine への届出では侵害日を 2024-12-26 と記載）
+- 2024-12 〜 2025-05: 数か月にわたり継続的にデータが取得・売却される
+- 2025-05-11: 攻撃者が 2,000 万ドルの身代金を要求。Coinbase が内部不正を認識
+- 2025-05-15: Coinbase が公式声明（支払い拒否・2,000 万ドルの懸賞金設定）を公表。同日 SEC へ Form 8-K を提出、復旧費用 1.8 億〜4 億ドルを開示
+- 2025-05-21 前後: 影響者数（少なくとも 69,461 名）と流出データ種別が報道で確認される
 
-Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitive が異なる。Brief 006 は属性証明（credential）が失効すべき時に失効されない遅延の問題、本事案は属性確認のために収集された生データが保管段階で漏洩する問題。両者は「規制属性の trust が、それを担保する layer の構造的弱点で破れる」という点で同根。Brief 002（Stake DAO、暗号資産領域の identity / 権限）とも、規制対象事業者における trust boundary という文脈で隣接する。本事案は攻撃 incident であり、KYC を「約束」として運用する設計（生 PII を集めて守る）の限界を示す。
+> 注: 固有名・CVE は一次（研究機関・GitHub Advisory・NVD 等）に基づき、各実装の対応状況は時点により異なるため最新情報を参照。
 
----
-
-## 5. 検出と証明の落差
-
-内部脅威検知、アクセス異常検知、DLP、委託先ガバナンスは、本事案のような insider 経由の漏洩の早期発見・封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。Coinbase が不正を認識し、開示・懸賞金・サポート体制の見直しに動いたことも、検出と対応の機能が働いた結果である。
-
-一方で、検出は「データが保管されていること」自体を変えない。KYC/AML を生 PII の収集・保管で満たす設計では、その属性データは正規アクセス権を持つ内部者にとって常に到達可能であり、買収・誤用が成立すれば検出は事後の封じ込めにしかならない。規制遵守を「事業者が生 PII を集めて適切に守る」という約束として運用する限り、守るべきデータの存在そのものが漏洩面であり続ける。規制報告・監査で「属性確認は適正に行われ、かつ最小限の開示で完結したか」を立証する材料としても、生 PII の保管ログは漏洩リスクと不可分である。
-
-事前証明（attribute attestation）は、属性確認（KYC 通過・許可された jurisdiction・サンクション非該当・年齢等）を、検証側が生 PII を保管しないまま独立検証可能な暗号証明（ZK 属性証明）として受け取る設計を採る。検証側は「この利用者は KYC を満たす / 許可属性を持つ」を proof で確認でき、政府発行 ID 画像や SSN そのものを warehouse しない。漏洩面となる生 PII の蓄積を最小化することで、内部買収が成立しても流出し得るデータが構造的に縮小する。検出（insider monitoring 等）と事前証明（attribute proof）は代替ではなく **補完** の関係にある。
-
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。
-
----
-
-## 6. 対応経緯と業界動向
+公表後の対応と業界の動きは次のとおり。
 
 - **Coinbase**: 身代金の支払いを拒否し、攻撃者特定のため 2,000 万ドルの懸賞金を設定。SEC へ Form 8-K を提出して復旧費用 1.8 億〜4 億ドルを開示。詐取された顧客への返金、米国内サポート拠点の新設、影響顧客への ID 盗難保護・信用監視を提供
 - **規制・法務動向**: 米国の証券・データ保護規制下での開示（8-K）と、州レベルの breach 通知（Maine 等）が並行。複数の集団訴訟が提起され、規制対象事業者の KYC データ保管責任が争点化
@@ -93,7 +68,21 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 ---
 
-## 7. Lemma による分析
+## 4. なぜ止まらなかったか
+
+中心的な<strong>失敗 primitive は「規制が要求する生 PII の保管そのものが、正規アクセス権を持つ内部者を経由して漏洩する攻撃面に転化する点」</strong>である。攻撃は脆弱性ではなく、正規の業務アクセスと「データが存在すること」自体を突いた。
+
+[Brief 006](https://lemma.frame00.com/ja/critical/briefs/006-google-api-key-revocation-lag/)（Google API key の失効遅延）と同じ Pillar 04 だが primitive が異なる。[Brief 006](https://lemma.frame00.com/ja/critical/briefs/006-google-api-key-revocation-lag/) は属性証明（credential）が失効すべき時に失効されない遅延の問題、本事案は属性確認のために収集された生データが保管段階で漏洩する問題。両者は「規制属性の trust が、それを担保する layer の構造的弱点で破れる」という点で同根。[Brief 002](https://lemma.frame00.com/ja/critical/briefs/002-stakedao-vsdcrv/)（Stake DAO、暗号資産領域の identity / 権限）とも、規制対象事業者における trust boundary という文脈で隣接する。本事案は攻撃 incident であり、KYC を「約束」として運用する設計（生 PII を集めて守る）の限界を示す。
+
+内部脅威検知、アクセス異常検知、DLP、委託先ガバナンスは、本事案のような insider 経由の漏洩の早期発見・封じ込めに不可欠であり、本 Brief がその役割を否定するものではない。Coinbase が不正を認識し、開示・懸賞金・サポート体制の見直しに動いたことも、検出と対応の機能が働いた結果である。
+
+一方で、検出は「データが保管されていること」自体を変えない。KYC/AML を生 PII の収集・保管で満たす設計では、その属性データは正規アクセス権を持つ内部者にとって常に到達可能であり、買収・誤用が成立すれば検出は事後の封じ込めにしかならない。規制遵守を「事業者が生 PII を集めて適切に守る」という約束として運用する限り、守るべきデータの存在そのものが漏洩面であり続ける。規制報告・監査で「属性確認は適正に行われ、かつ最小限の開示で完結したか」を立証する材料としても、生 PII の保管ログは漏洩リスクと不可分である。
+
+---
+
+## 5. 証明があれば、何が変わるか
+
+事前証明（attribute attestation）は、属性確認（KYC 通過・許可された jurisdiction・サンクション非該当・年齢等）を、検証側が生 PII を保管しないまま独立検証可能な暗号証明（ZK 属性証明）として受け取る設計を採る。検証側は「この利用者は KYC を満たす / 許可属性を持つ」を proof で確認でき、政府発行 ID 画像や SSN そのものを warehouse しない。漏洩面となる生 PII の蓄積を最小化することで、内部買収が成立しても流出し得るデータが構造的に縮小する。検出（insider monitoring 等）と事前証明（attribute proof）は代替ではなく **補完** の関係にある。
 
 本事案で露呈した検出と証明の落差（KYC/AML 遵守のために収集・保管された生 PII が、正規アクセス経由の内部脅威で漏洩面に転化する）に対して、Lemma は次の設計要素を提示している。
 
@@ -104,11 +93,9 @@ Brief 006（Google API key の失効遅延）と同じ Pillar 04 だが primitiv
 
 Lemma は規制遵守を代替するものではなく、遵守を「約束」ではなく「証明」として運用するための層を提供する。
 
-設計と適用範囲は、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **Coinbase 公式声明**: "Protecting Our Customers - Standing Up to Extortionists"（2025-05-15、身代金拒否・2,000 万ドル懸賞金）— https://www.coinbase.com/blog/protecting-our-customers-standing-up-to-extortionists
 - **TechCrunch**: "Coinbase says its data breach affects at least 69,000 customers"（2025-05-21、影響者数・流出データ種別）— https://techcrunch.com/2025/05/21/coinbase-says-its-data-breach-affects-at-least-69000-customers/
@@ -116,12 +103,4 @@ Lemma は規制遵守を代替するものではなく、遵守を「約束」�
 - **SecurityInfoWatch**: "Coinbase Reveals Insider Bribery Scheme Led to Data Breach, Potential $400M Cost"（2025-05、Form 8-K・復旧費用見積もり）— https://www.securityinfowatch.com/cybersecurity/article/55290995/coinbase-reveals-insider-bribery-scheme-led-to-data-breach-potential-400m-cost
 - **reference 実装（GitHub）**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
 
----
-
-## 9. Brief 配布について
-
-本資料は公開情報の構造化分析であり、特定組織への監査・診断・推奨ではありません。
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+参照: [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)、[Pillar 04 — 規制属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/)、[Trust402](https://lemma.frame00.com/ja/trust402/)

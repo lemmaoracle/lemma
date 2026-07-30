@@ -19,13 +19,13 @@ gap_missing: "There was no layer at disposal time to check whether the media had
 gap_fix: "Before a high-risk disposal, independently verify with Lemma that this sensitive media has actually been destroyed, and prevent it up front."
 ---
 
-## TL;DR
+## 1. TL;DR
 
-HDDs that NHO's Hokkaido Medical Center and Hokkaido Cancer Center entrusted to a disposal vendor reached the secondhand market unshredded, still holding names and medical conditions for roughly 186,900 patients and staff. A buyer's report, recovery, and a criminal complaint cannot confirm, at the moment of disposal, whether the media were actually destroyed. A paper certificate can be issued even when nothing was shredded, so the destruction attribute was never fixed as an independently verifiable trail. Detection and pre-execution attestation are complements, not substitutes.
+HDDs that NHO's Hokkaido Medical Center and Hokkaido Cancer Center entrusted to a disposal vendor reached the secondhand market unshredded, still holding names and medical conditions for roughly 186,900 patients and staff. A buyer's report, recovery, and a criminal complaint cannot confirm, at the moment of disposal, whether the media were actually destroyed. A paper certificate can be issued even when nothing was shredded, so the destruction attribute was never fixed as an independently verifiable trail.
 
 ---
 
-## 1. Incident overview
+## 2. What happened
 
 - **Subject**: NHO Hokkaido Medical Center and Hokkaido Cancer Center (Sapporo). An incident over the disposal of HDDs that had stored electronic medical records and the like.
 - **Entrustment**: In March 2024, alongside an electronic-medical-record system upgrade at the two hospitals, NHO entrusted destruction and disposal of roughly 750 HDDs containing personal data to "Reprowork," a waste-disposal vendor in Ishikari.
@@ -34,20 +34,6 @@ HDDs that NHO's Hokkaido Medical Center and Hokkaido Cancer Center entrusted to 
 - **Scale**: 33 HDDs were recovered (31 from the Medical Center, 2 from the Cancer Center). The personal data — names, addresses, medical conditions — covered at least 186,900 patients and staff collected up to 2024, with potential impact up to 510,000. During recovery, a separate leak of Hokkaido prefectural government HDDs also came to light.
 - **Response**: On June 8, 2026, NHO filed a criminal complaint against the vendor with Hokkaido Police for suspected violation of the Waste Management Act. No misuse of the data has been confirmed.
 - **The core**: Having entrusted disposal, and that the drives were contractually due to be destroyed, **does not mean it was independently verified that they were actually shredded.** The destruction attribute depended on the vendor's self-report and a presumption, and — never independently confirmed from outside — the data-laden drives converted into a circulation surface.
-
----
-
-## 2. Timeline
-
-- 2024-03: Alongside an electronic-medical-record upgrade at the two hospitals, NHO entrusts destruction/disposal of roughly 750 HDDs containing personal data to the Ishikari waste-disposal vendor "Reprowork." The personal data was collected up to 2024.
-- 2025-06: A member of the public who won an HDD at online auction reports that it appears to hold Hokkaido Medical Center's data — the trigger for discovery.
-- 2026-06-08: NHO discloses the incident, identifying 33 recovered drives and at least 186,900 affected people (up to 510,000), and files a criminal complaint against the vendor with Hokkaido Police for suspected Waste Management Act violation. No misuse confirmed.
-
-> Note: The affected counts (≈186,900 / up to 510,000), the number of drives (33), the vendor (Reprowork), the sequence, and the criminal complaint are based on NHO's disclosure and reporting (HTB, Hokkaido Shimbun, UHB, Yomiuri, Kyodo; in English, DataBreaches.Net / The Star / Japan Today / Xinhua). This Brief does not aim to assign degrees of fault; it addresses the absence of independent verification of destruction.
-
----
-
-## 3. The chain: an "assumed destroyed" premise converts, unverified, into circulation
 
 This incident stems from the destruction attribute of sensitive media not being fixed as an independently verifiable trail at the moment of disposal. The path is as follows.
 
@@ -59,29 +45,15 @@ This incident stems from the destruction attribute of sensitive media not being 
 
 ---
 
-## 4. Structural analysis
+## 3. Timeline — disclosure and response
 
-This incident belongs to the `attribute-proof-bypass` category of Pillar 04 (Regulatory Attribute Proof). The central failure primitive is that **the "destroyed (disposal complete)" attribute of sensitive media is not fixed as an independently verifiable trail at the moment of disposal, and depends on the vendor's work and self-report.** We note `data-provenance` (the provenance of the media and data through the disposal chain) as a secondary category. The existence of a disposal contract or a destruction certificate is not independent proof that the drives "were actually shredded." Trust is placed not in the claim "we shredded it" but in the claimant, with no means to verify the claim independently. A paper destruction certificate is no substitute, since it can be issued even when nothing was shredded — the absence of "trust in the claim, not the claimant."
+- 2024-03: Alongside an electronic-medical-record upgrade at the two hospitals, NHO entrusts destruction/disposal of roughly 750 HDDs containing personal data to the Ishikari waste-disposal vendor "Reprowork." The personal data was collected up to 2024.
+- 2025-06: A member of the public who won an HDD at online auction reports that it appears to hold Hokkaido Medical Center's data — the trigger for discovery.
+- 2026-06-08: NHO discloses the incident, identifying 33 recovered drives and at least 186,900 affected people (up to 510,000), and files a criminal complaint against the vendor with Hokkaido Police for suspected Waste Management Act violation. No misuse confirmed.
 
-This incident is the same shape as Brief 035 (on the Boeing 787, inspections were recorded as "complete" but had not been performed). Where 035 is "the existence of a record ≠ proof of performance," this is "entrusting disposal / the premise of destruction ≠ the act of shredding" — two cross-sections of the same primitive. In both, **the record or premise of a fact (an inspection performed / media destroyed) is mistaken for genuine independent verification of that fact.** It connects to Brief 013 (regulation-mandated storage of raw personal data turned into a leak surface via an insider) in that highly sensitive personal data turns into a leak surface somewhere in its lifecycle without independent verification. It connects to Brief 006 (credential revocation not independently verified, valid even after deletion) through the primitive that "the end of the lifecycle (revocation / destruction) is not independently verified." It is the same shape as Brief 021 (the existence of a balance-confirmation certificate mistaken for independent verification of the assets' existence) in the gap between a certificate/premise and independent verification.
+> Note: The affected counts (≈186,900 / up to 510,000), the number of drives (33), the vendor (Reprowork), the sequence, and the criminal complaint are based on NHO's disclosure and reporting (HTB, Hokkaido Shimbun, UHB, Yomiuri, Kyodo; in English, DataBreaches.Net / The Star / Japan Today / Xinhua). This Brief does not aim to assign degrees of fault; it addresses the absence of independent verification of destruction.
 
-What this incident foregrounds is the layer of **the end of the data lifecycle.** Organizations focus on controlling collection, storage, and access, while independent verification of "it was destroyed" tends to be left to trust in the vendor and a paper certificate. When destruction is not independently verified, the sensitive information that was supposed to be protected converts into a circulation surface at the very end of the lifecycle — even when no one attacked it. This absence of end-of-lifecycle verification was exposed in the most sensitive data of all: medical information.
-
----
-
-## 5. The gap between detection and proof
-
-The buyer's report, recovery, the criminal complaint, and scoping of the impact are indispensable for grasping and deterring the damage, and this Brief does not negate that role. Response after discovery and root-cause analysis are an important check on similar incidents.
-
-At the same time, detection provides no material to independently establish — **at the moment of disposal** — whether the media just entrusted were actually destroyed. A disposal contract and a destruction certificate record the premise that destruction took place, but do not independently underwrite the act of shredding itself. Here, the absence of destruction was learned only after the data-laden drives surfaced on the market and a buyer reported it — and disclosure took about a year after that report. What was missing is a mechanism to fix, at the moment of disposal, an independently verifiable trail that "this medium was indeed destroyed," and to carry it forward through each link of the disposal chain — a chain separate from after-the-fact discovery and the complaint. Once media have circulated, neither the absence of destruction nor the provenance of which medium leaked, when, and where can be fixed retroactively.
-
-Pre-execution attestation flips the disposal of sensitive media from "trust the vendor" to "bind the fact of destruction to an independently verifiable trail at the moment of disposal." Fix each medium's destruction as a tamper-resistant trail (proof-of-destruction) tied to its time, place, and target, and make it verifiable at each handoff in the disposal chain (hospital → disposal vendor → recycler), and the circulation of a medium lacking a "destroyed" trail can be detected before the handoff. Detecting the absence of destruction (the detection-style "did it surface on the market") and proving destruction ("can this medium be independently verified to have been destroyed") are not substitutes but **complements**.
-
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05).
-
----
-
-## 6. Response and industry trends
+The response and industry movement after disclosure:
 
 - **NHO / the two hospitals**: Disclosed the incident and scoped the impact (33 recovered drives, ≈186,900 people, up to 510,000). Filed a criminal complaint against the vendor with Hokkaido Police for suspected Waste Management Act violation. No misuse confirmed so far.
 - **Separating "the claim" from "the claimant"**: The essence is that the entruster had no means to independently verify the claim "we shredded it" — whether destruction actually happened came down to trusting the vendor (the claimant). What is needed is not trust in the claimant but a trail that verifies the claim itself.
@@ -94,7 +66,23 @@ The absence of a layer that fixes the destruction of sensitive media as an indep
 
 ---
 
-## 7. Lemma's analysis
+## 4. Why it wasn't stopped
+
+The central failure primitive is that **the "destroyed (disposal complete)" attribute of sensitive media is not fixed as an independently verifiable trail at the moment of disposal, and depends on the vendor's work and self-report.**  The existence of a disposal contract or a destruction certificate is not independent proof that the drives "were actually shredded." Trust is placed not in the claim "we shredded it" but in the claimant, with no means to verify the claim independently. A paper destruction certificate is no substitute, since it can be issued even when nothing was shredded — the absence of "trust in the claim, not the claimant."
+
+This incident is the same shape as [Brief 035](/critical/briefs/035-boeing-787-inspection-records/) (on the Boeing 787, inspections were recorded as "complete" but had not been performed). Where 035 is "the existence of a record ≠ proof of performance," this is "entrusting disposal / the premise of destruction ≠ the act of shredding" — two cross-sections of the same primitive. In both, **the record or premise of a fact (an inspection performed / media destroyed) is mistaken for genuine independent verification of that fact.** It connects to [Brief 013](/critical/briefs/013-coinbase-kyc-insider-breach/) (regulation-mandated storage of raw personal data turned into a leak surface via an insider) in that highly sensitive personal data turns into a leak surface somewhere in its lifecycle without independent verification. It connects to [Brief 006](/critical/briefs/006-google-api-key-revocation-lag/) (credential revocation not independently verified, valid even after deletion) through the primitive that "the end of the lifecycle (revocation / destruction) is not independently verified." It is the same shape as [Brief 021](/critical/briefs/021-wirecard-balance-attestation/) (the existence of a balance-confirmation certificate mistaken for independent verification of the assets' existence) in the gap between a certificate/premise and independent verification.
+
+What this incident foregrounds is the layer of **the end of the data lifecycle.** Organizations focus on controlling collection, storage, and access, while independent verification of "it was destroyed" tends to be left to trust in the vendor and a paper certificate. When destruction is not independently verified, the sensitive information that was supposed to be protected converts into a circulation surface at the very end of the lifecycle — even when no one attacked it. This absence of end-of-lifecycle verification was exposed in the most sensitive data of all: medical information.
+
+The buyer's report, recovery, the criminal complaint, and scoping of the impact are indispensable for grasping and deterring the damage, and this Brief does not negate that role. Response after discovery and root-cause analysis are an important check on similar incidents.
+
+At the same time, detection provides no material to independently establish — **at the moment of disposal** — whether the media just entrusted were actually destroyed. A disposal contract and a destruction certificate record the premise that destruction took place, but do not independently underwrite the act of shredding itself. Here, the absence of destruction was learned only after the data-laden drives surfaced on the market and a buyer reported it — and disclosure took about a year after that report. What was missing is a mechanism to fix, at the moment of disposal, an independently verifiable trail that "this medium was indeed destroyed," and to carry it forward through each link of the disposal chain — a chain separate from after-the-fact discovery and the complaint. Once media have circulated, neither the absence of destruction nor the provenance of which medium leaked, when, and where can be fixed retroactively.
+
+---
+
+## 5. What proof would have changed
+
+Pre-execution attestation flips the disposal of sensitive media from "trust the vendor" to "bind the fact of destruction to an independently verifiable trail at the moment of disposal." Fix each medium's destruction as a tamper-resistant trail (proof-of-destruction) tied to its time, place, and target, and make it verifiable at each handoff in the disposal chain (hospital → disposal vendor → recycler), and the circulation of a medium lacking a "destroyed" trail can be detected before the handoff. Detecting the absence of destruction (the detection-style "did it surface on the market") and proving destruction ("can this medium be independently verified to have been destroyed") are not substitutes but **complements**.
 
 Against the gap this incident exposed (the destruction attribute of sensitive media is not independently verified at the moment of disposal), Lemma proposes a design that fixes the fact of disposal — the end of the lifecycle — as an independently verifiable cryptographic proof at the moment of the act.
 
@@ -106,23 +94,13 @@ Against the gap this incident exposed (the destruction attribute of sensitive me
 
 In this way, a proof fixed at the moment of disposal functions as an independently verifiable trail of whether "this sensitive medium was indeed destroyed," without depending on after-the-fact discovery. Detection (after-the-fact reporting, recovery, the complaint) works on correcting the damage; attestation (independent verification of destruction at the moment of disposal) works on establishing trust at the end of the data lifecycle — each complementary to the other.
 
-For the design and its scope, see [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
-## 8. Sources
+## 6. Sources
 
 - **NHO Hokkaido Medical Center (primary, official)**: "Apology and report on the handling of personal information" (June 8, 2026) — <https://hokkaido-mc.hosp.go.jp/common/img/index/202608.pdf>
 - **DataBreaches.Net**: "JP: Hokkaido hospitals data leak may hit 510k, HDDs sold online blamed" (2026-06-08) — <https://databreaches.net/2026/06/08/jp-hokkaido-hospitals-data-leak-may-hit-510k-hdds-sold-online-blamed/>
 - **The Star (Malaysia)**: "Improper hard drive disposal triggers major data breach at Hokkaido hospitals" (2026-06-09) — <https://www.thestar.com.my/aseanplus/aseanplus-news/2026/06/09/improper-hard-drive-disposal-triggers-major-data-breach-at-hokkaido-hospitals>
 - **Japan Today (English)**: "Data on 510,000 people linked to Hokkaido hospitals possibly leaked online" — <https://japantoday.com/category/national/data-on-510-000-people-linked-to-hokkaido-hospitals-possibly-leaked-online>
 
----
-
-## 9. About Brief distribution
-
-This material is a structured analysis of public information; it is not an audit, diagnosis, or recommendation for any specific organization.
-
----
-
-(c) 2026 FRAME00, INC. — Built for decisions that matter.
+References: ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/), ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/), [Pillar 04 — Regulatory Attribute Proof](https://lemma.frame00.com/pillars/regulatory-attribute-proof/), [Trust402](https://lemma.frame00.com/trust402/)
