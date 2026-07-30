@@ -70,55 +70,54 @@ const id = `cite-${briefSlug}`;
 ---
 
 <section class="cite-box" data-cite-box aria-labelledby={`${id}-heading`}>
-  <div class="cite-eyebrow">{labels.eyebrow}</div>
-  <h2 id={`${id}-heading`} class="cite-heading">{labels.heading}</h2>
-
-  <div class="cite-tabs" role="tablist">
-    <button
-      type="button"
-      role="tab"
-      aria-selected="true"
-      data-cite-tab="plain"
-      class="cite-tab cite-tab-active"
-    >
-      Plain text
-    </button>
-    <button
-      type="button"
-      role="tab"
-      aria-selected="false"
-      data-cite-tab="bibtex"
-      class="cite-tab"
-    >
-      BibTeX
-    </button>
-    <button
-      type="button"
-      role="tab"
-      aria-selected="false"
-      data-cite-tab="apa"
-      class="cite-tab"
-    >
-      APA
-    </button>
+  <div class="cite-head">
+    <h2 id={`${id}-heading`} class="cite-heading">{labels.heading}</h2>
+    <div class="cite-tabs" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-cite-tab="plain"
+        class="cite-tab cite-tab-active"
+      >
+        Plain text
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-cite-tab="bibtex"
+        class="cite-tab"
+      >
+        BibTeX
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-cite-tab="apa"
+        class="cite-tab"
+      >
+        APA
+      </button>
+    </div>
   </div>
 
   <div class="cite-panels">
     <pre class="cite-panel" data-cite-panel="plain" aria-live="polite"><code>{plainText}</code></pre>
     <pre class="cite-panel" data-cite-panel="bibtex" hidden><code>{bibtex}</code></pre>
     <pre class="cite-panel" data-cite-panel="apa" hidden><code>{apa}</code></pre>
+    <button
+      type="button"
+      class="cite-copy"
+      data-cite-copy
+      aria-label={labels.copyAria}
+      data-copy-label={labels.copy}
+      data-copied-label={labels.copied}
+    >
+      <span class="cite-copy-text">{labels.copy}</span>
+    </button>
   </div>
-
-  <button
-    type="button"
-    class="cite-copy"
-    data-cite-copy
-    aria-label={labels.copyAria}
-    data-copy-label={labels.copy}
-    data-copied-label={labels.copied}
-  >
-    <span class="cite-copy-text">{labels.copy}</span>
-  </button>
 </section>
 
 <script>
@@ -186,88 +185,82 @@ const id = `cite-${briefSlug}`;
 </script>
 
 <style>
-  /* v24 mockup detail v1 — Cite block:
-     - Mono eyebrow + Sora 24/700 heading
-     - Pill-shaped tab container (white card, brown active fill, cream text)
-     - Dark cite-pre code block (#1a1a1a bg, cream text, Space Mono)
-     - Pill copy button with brown hover */
+  /* モック `lemma_brief_article_mock_v5.html` の `.cite` の面:
+     白カード（1px枠＋角丸12px）／ヘッダー行に見出し＋右へタブ（選択中は
+     蛍光地に墨文字）／本文はモノスペース。トークンの値は BriefTemplate と
+     同じもの。 */
   .cite-box {
-    --brief-display: "Sora", system-ui, sans-serif;
-    --brief-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
-    margin: 64px 0 0;
-    padding: 48px 0 0;
-    border-top: 0.5px solid var(--lemma-line);
+    --cite-serif: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --cite-mono: "Space Mono", monospace;
+    --cite-ok: #a8e010;
+    --cite-ok-ink: #6f9c00;
+    --cite-ink: #0f1412;
+    --cite-tx: #12140e;
+    --cite-tx-soft: #2f332b;
+    --cite-muted: #5c6156;
+    --cite-line: #e1e3dd;
+    margin: 40px 0 0;
+    background: #fff;
+    border: 1px solid var(--cite-line);
+    border-radius: 12px;
+    overflow: hidden;
   }
-  .cite-eyebrow {
-    font-family: var(--brief-mono);
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--gray-700, #5a5a5a);
-    margin: 0 0 14px;
+  .cite-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cite-line);
   }
   .cite-heading {
-    font-family: var(--brief-display);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--black);
-    margin: 0 0 24px;
-    letter-spacing: -0.02em;
-  }
-  :root[lang="ja"] .cite-heading {
-    line-height: 1.35;
+    font-family: var(--cite-serif);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--cite-tx);
+    margin: 0;
+    letter-spacing: 0.03em;
   }
 
-  /* Pill tab strip */
   .cite-tabs {
+    margin-left: auto;
     display: flex;
-    gap: 4px;
-    margin: 0 0 16px;
-    padding: 4px;
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 12px;
-    width: fit-content;
+    gap: 6px;
   }
   .cite-tab {
-    font-family: var(--brief-display);
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--gray-700, #5a5a5a);
-    background: transparent;
-    border: none;
-    padding: 9px 16px;
-    border-radius: 8px;
+    font-family: var(--cite-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--cite-muted);
+    border: 1px solid var(--cite-line);
+    border-radius: 99px;
+    padding: 4px 11px;
     cursor: pointer;
-    transition: color 0.2s, background 0.2s;
-    letter-spacing: -0.005em;
+    background: none;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
   .cite-tab:hover {
-    color: var(--black);
+    color: var(--cite-tx);
+    border-color: rgba(124, 175, 0, 0.5);
   }
-  .cite-tab-active {
-    background: var(--accent);
-    color: var(--lemma-cream);
-  }
+  .cite-tab-active,
   .cite-tab-active:hover {
-    color: var(--lemma-cream);
+    background: var(--cite-ok);
+    border-color: var(--cite-ok);
+    color: var(--cite-ink);
   }
 
-  .cite-panels {
-    margin: 0 0 12px;
-  }
   .cite-panel {
     margin: 0;
-    padding: 22px 26px;
-    background: #1a1a1a;
-    color: #e8e2d4;
-    border-radius: 12px;
+    padding: 16px 18px 6px;
+    background: none;
+    color: var(--cite-tx-soft);
     overflow-x: auto;
-    white-space: pre;
-    font-family: var(--brief-mono);
-    font-size: 12.5px;
-    line-height: 1.75;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-family: var(--cite-mono);
+    font-size: 11.5px;
+    line-height: 1.85;
   }
   .cite-panel code {
     background: transparent;
@@ -275,41 +268,37 @@ const id = `cite-${briefSlug}`;
     font-family: inherit;
     font-size: inherit;
     padding: 0;
+    border: none;
   }
 
   .cite-copy {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 4px;
-    font-family: var(--brief-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    background: var(--white);
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 999px;
-    padding: 8px 14px;
+    margin: 4px 18px 14px;
+    font-family: var(--cite-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--cite-ok-ink);
+    background: none;
+    border: 1px solid var(--cite-line);
+    border-radius: 99px;
+    padding: 5px 12px;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    transition: border-color 0.15s, color 0.15s;
   }
-  .cite-copy:hover {
-    border-color: var(--accent);
-    background: var(--lemma-brown-light);
-  }
+  .cite-copy:hover,
   .cite-copy-active {
-    border-color: var(--accent);
-    background: var(--lemma-brown-light);
+    border-color: rgba(124, 175, 0, 0.5);
+    color: var(--cite-tx);
   }
 
   @media (max-width: 560px) {
-    .cite-tab {
-      padding: 8px 12px;
-      font-size: 11.5px;
+    .cite-tabs {
+      margin-left: 0;
     }
     .cite-panel {
-      font-size: 11.5px;
-      padding: 18px 20px;
+      font-size: 10.5px;
     }
   }
 </style>
