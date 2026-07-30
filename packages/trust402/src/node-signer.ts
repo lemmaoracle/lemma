@@ -19,23 +19,34 @@ export const nodeSigner = (privateKey: string): Signer => {
   return {
     address: account.address,
     provider: {
-      request: async ({ method, params }) => {
-        if (method === "eth_signTypedData_v4") {
-          // payFetch uses signTypedData instead — this path shouldn't be hit
-          throw new Error("eth_signTypedData_v4 not available (use signTypedData)");
-        }
-        if (method === "eth_chainId") return "0x14a34"; // base-sepolia (84532)
-        if (method === "eth_accounts") return [account.address];
-        throw new Error(`Unsupported RPC method: ${method}`);
-      },
+      request: async ({
+        method,
+        params: _params,
+      }: {
+        method: string;
+        params: unknown;
+      }) =>
+        method === "eth_signTypedData_v4"
+          ? await Promise.reject(
+              new Error(
+                "eth_signTypedData_v4 not available (use signTypedData)"
+              )
+            )
+          : method === "eth_chainId"
+            ? "0x14a34" // base-sepolia (84532)
+            : method === "eth_accounts"
+              ? [account.address]
+              : await Promise.reject(
+                  new Error(`Unsupported RPC method: ${method}`)
+                ),
     },
     signTypedData: async (params) => {
       const { domain, types, primaryType, message } = params;
       return account.signTypedData({
-        domain: domain as Parameters<typeof account.signTypedData>[0]["domain"],
-        types: types as Parameters<typeof account.signTypedData>[0]["types"],
+        domain,
+        types,
         primaryType,
-        message: message as Parameters<typeof account.signTypedData>[0]["message"],
+        message,
       });
     },
   };

@@ -119,30 +119,33 @@ export const isLemmaRouteConfig = (
  * on misconfiguration so the failure surfaces at deploy time, not on first
  * incoming request.
  */
-export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void =>
-  !config.discoverable
-    ? undefined
-    : (() => {
-        const requiredFields = ["schema", "bazaarCategory", "bazaarDescription"] as const;
-        const missing = requiredFields.filter(
-          (field) => !config[field],
-        );
+export const assertDiscoverableConfigured = (config: LemmaRouteConfig): void => {
+  // imperative: early-return guard — deploy-time validation, no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
+  if (!config.discoverable) return;
 
-        return missing.length > 0
-          ? ((): never => {
-              // eslint-disable-next-line functional/no-throw-statements
-              throw new Error(
-                `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
-                  `See packages/x402/src/README.md for the discoverable contract.`
-              );
-            })()
-          : config.bazaarDescription && config.bazaarDescription.length > 256
-            ? ((): never => {
-                // eslint-disable-next-line functional/no-throw-statements
-                throw new Error(
-                  `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${String(config.bazaarDescription.length)}). ` +
-                    `Bazaar search hits favour concise descriptions; trim before deploy.`
-                );
-              })()
-            : undefined;
-      })();
+  const requiredFields = ["schema", "bazaarCategory", "bazaarDescription"] as const;
+  const missing = requiredFields.filter(
+    (field) => !config[field],
+  );
+
+  // imperative: deploy-time validation with throw — synchronous guard
+  // eslint-disable-next-line functional/no-conditional-statements
+  if (missing.length > 0) {
+    // eslint-disable-next-line functional/no-throw-statements
+    throw new Error(
+      `[LemmaRouteConfig] discoverable: true requires ${missing.join(", ")}. ` +
+        `See packages/x402/src/README.md for the discoverable contract.`
+    );
+  }
+
+  // imperative: deploy-time validation with throw — synchronous guard
+  // eslint-disable-next-line functional/no-conditional-statements
+  if (config.bazaarDescription && config.bazaarDescription.length > 256) {
+    // eslint-disable-next-line functional/no-throw-statements
+    throw new Error(
+      `[LemmaRouteConfig] bazaarDescription exceeds 256 chars (got ${String(config.bazaarDescription.length)}). ` +
+        `Bazaar search hits favour concise descriptions; trim before deploy.`
+    );
+  }
+};
