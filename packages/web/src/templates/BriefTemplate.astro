@@ -1316,11 +1316,32 @@ const gapRowLabels = isJa
     color: var(--ok);
   }
 
-  /* ─── 右レール（§5.1/§5.3） ─── */
+  /* ─── 右レール（§5.1/§5.3） ───
+     レールがビューポートより背が高いと、sticky の一枚板では下段（核心・
+     バナー）が本文の読了までずっと画面外に取り残される。ビューポートに
+     収めて超過分は**レール内スクロール**にする（目次レールの定石）。
+     横 padding＋負マージンは、overflow でカードの影が切れないための逃げ。 */
   .bd-rail {
     position: sticky;
     top: 96px;
     margin-top: 46px;
+    max-height: calc(100vh - 96px - 24px);
+    overflow-y: auto;
+    padding: 2px 8px 24px;
+    margin-left: -8px;
+    margin-right: -8px;
+    scrollbar-width: thin;
+    scrollbar-color: #cfd4cc transparent;
+  }
+  .bd-rail::-webkit-scrollbar {
+    width: 6px;
+  }
+  .bd-rail::-webkit-scrollbar-thumb {
+    background: #cfd4cc;
+    border-radius: 99px;
+  }
+  .bd-rail::-webkit-scrollbar-track {
+    background: transparent;
   }
   .bd-railbox {
     background: var(--card);
@@ -1457,10 +1478,17 @@ const gapRowLabels = isJa
     color: #ebefe6;
     margin-bottom: 2px;
   }
+  /* gap_* frontmatter は旧・本文内モジュール向けに長文で書かれているものが
+     ある。このパネルはダイジェスト（全文は §4/§5 と下の「§N →」リンクが
+     担う）なので 4 行でクランプして、レールの背丈を抑える。 */
   .rg-row span {
     font-size: 11.2px;
     line-height: 1.65;
     color: #aeb5a9;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .rg-more {
     display: block;
@@ -1565,6 +1593,11 @@ const gapRowLabels = isJa
     .bd-rail {
       position: static;
       margin-top: 0;
+      max-height: none;
+      overflow: visible;
+      padding: 0;
+      margin-left: 0;
+      margin-right: 0;
     }
     .bd-rcards {
       grid-template-columns: 1fr;
