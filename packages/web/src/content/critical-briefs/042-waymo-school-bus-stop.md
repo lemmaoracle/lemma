@@ -4,7 +4,7 @@ title: "Waymo：自動運転車が、停止中のスクールバスを止まら�
 title_en: "Waymo: the robotaxi drove past a stopped school bus — a driving decision not independently verified before a safety-critical action"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
-secondary_categories: ["data-provenance"]
+secondary_categories: ["data-provenance", "ai-bias-harm"]
 incident_date: 2025-12-05
 published: 2026-06-17
 authors: ["Lemma Critical Team"]

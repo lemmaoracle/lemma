@@ -4,7 +4,7 @@ title: "Photo ZIP：認証ランダリングで SPF・DKIM・DMARC を全通過�
 title_en: "Photo ZIP: 'Authentication Laundering' Cleared SPF/DKIM/DMARC So a Fake 'via Calendly' Email Looked Legitimate — a Node.js Backdoor (TonRAT) at Hotel Front Desks"
 pillar: "01-verifiable-origin"
 primary_category: "identity-auth"
-secondary_categories: ["code-provenance"]
+secondary_categories: ["code-provenance", "attribute-proof-bypass"]
 incident_date: 2026-06-25
 published: 2026-06-30
 authors: ["Lemma Critical Team"]

@@ -4,7 +4,7 @@ title: "AI コーディングアシスタント宛ての指示ファイルに、
 title_en: "TrapDoor Plants Hidden Directives in AI Assistant Instruction Files Across npm, PyPI, and Crates.io"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
-secondary_categories: ["agent-infrastructure", "ai-decision-integrity"]
+secondary_categories: ["agent-infrastructure", "ai-decision-integrity", "model-supply-chain"]
 incident_date: 2026-05-24
 published: 2026-06-12
 authors: ["Lemma Critical Team"]

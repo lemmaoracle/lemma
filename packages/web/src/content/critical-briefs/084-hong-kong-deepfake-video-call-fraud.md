@@ -4,7 +4,7 @@ title: "香港 Deepfake ビデオ会議詐欺：CFO・同僚全員をリアル�
 title_en: "Hong Kong deepfake video-call fraud: a real-time deepfake of the CFO and every colleague drove a ~$25.6M transfer — seeing a face and hearing a voice no longer proves the person is actually present (Hong Kong Police / Arup)"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
-secondary_categories: ["identity-auth"]
+secondary_categories: ["identity-auth", "data-provenance"]
 incident_date: 2024-02-04
 published: 2026-06-26
 authors: ["Lemma Critical Team"]
