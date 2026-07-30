@@ -4,7 +4,7 @@ title: "非同意の画像が、生成の時点で誰の同意も年齢も確か
 title_en: "Generated Without Consent or Age Verification — The Provenance Gap Behind the Grok Deepfake Controversy"
 pillar: "04-regulatory-attribute"
 primary_category: "attribute-proof-bypass"
-secondary_categories: ["data-provenance", "ai-decision-integrity"]
+secondary_categories: ["data-provenance", "ai-decision-integrity", "ai-bias-harm"]
 incident_date: 2026-01-26
 published: 2026-06-12
 authors: ["Lemma Critical Team"]

@@ -4,7 +4,7 @@ title: "ShadowMQ：未認証 pickle を即実行する同一実装が AI 推論�
 title_en: "ShadowMQ: one unsafe pattern (unauthenticated ZMQ + pickle) copied across AI inference frameworks — the same flaw spread at ecosystem scale through reuse (Oligo Security)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
-secondary_categories: ["code-provenance", "identity-auth"]
+secondary_categories: ["code-provenance", "identity-auth", "model-supply-chain"]
 incident_date: 2025-11-14
 published: 2026-06-19
 authors: ["Lemma Critical Team"]

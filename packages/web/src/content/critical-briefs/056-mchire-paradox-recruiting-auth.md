@@ -4,7 +4,7 @@ title: "採用 AI の「誰が正当か」を検証しないまま、6,400 万�
 title_en: "No Check on Who Was Authorized — 64 Million Records Within Reach in McDonald's McHire (Paradox.ai)"
 pillar: "03-agent-authority"
 primary_category: "identity-auth"
-secondary_categories: ["attribute-proof-bypass", "data-provenance"]
+secondary_categories: ["attribute-proof-bypass", "data-provenance", "ai-bias-harm"]
 incident_date: 2025-06-30
 published: 2026-06-15
 authors: ["Lemma Critical Team"]
