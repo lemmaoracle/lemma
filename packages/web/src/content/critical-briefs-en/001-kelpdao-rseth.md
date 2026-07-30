@@ -72,7 +72,7 @@ The failure here is neither signing-key management nor detection accuracy. **The
 
 Detection worked — post-incident monitoring narrowed the blast window and helped scope the impact. What didn't work sits in front of it. The signing keys were not compromised and the signing process was legitimate, so the typical detection observation points (anomalous key use, signing-service misbehavior) see nothing. A "99.7% anomalous" confidence score is unlikely to fire when a legitimate process signs manipulated inputs. This is not a deficiency of the detection tools; it means the layer that independently confirms "is the data being signed genuine?" before approval was missing — between detection and proof (establishing in regulatory filings, administrative proceedings, or litigation that an unauthorized authority was exercised).
 
-The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** (Brief 002). What they share is a cross-chain bridge whose trust configuration sits under a single entity's control; this incident reached that structure via RPC manipulation of the DVN observation layer, the Stake DAO incident via direct rewriting of the trust source with a deployer private key.
+The adjacent case of the same structure is the May **Stake DAO vsdCRV unauthorized mint** ([Brief 002](/critical/briefs/002-stakedao-vsdcrv/)). What they share is a cross-chain bridge whose trust configuration sits under a single entity's control; this incident reached that structure via RPC manipulation of the DVN observation layer, the Stake DAO incident via direct rewriting of the trust source with a deployer private key.
 
 In its incident statement, LayerZero Labs positioned this structure as an independent operational category — the observation layer. Hardening it (quorum, redundancy, human review) and embedding independently verifiable cryptographic proof into the message itself are complementary, not opposing, approaches.
 
@@ -91,7 +91,7 @@ Lemma's design answers this incident's gap — absent independent verification o
 
 This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). For the design and its scope, see [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

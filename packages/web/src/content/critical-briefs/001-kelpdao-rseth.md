@@ -72,7 +72,7 @@ LayerZero Labs が公表した対応(2026-05 incident statement 時点)は次の
 
 検出は効いていた——事象後の監視は blast window を狭め、影響範囲の同定に貢献した。効かなかったのは、その手前である。署名鍵は侵害されず署名プロセスも正規だったため、検出側の典型的観測点（署名鍵の異常使用、署名サービスの誤動作）には映らない。「99.7% で異常」型の信頼度スコアは、正規プロセスが操作された入力に正規署名を出す事案では発火しにくい。これは検出ツールの設計が劣っているのではなく、承認の前に「署名対象のデータが本物か」を独立に確かめる層が、検出と立証（規制報告・行政手続き・訴訟での「許可されていない権限行使があった」立証）の間に欠けていたということである。
 
-同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**（Brief 002）がある。共通するのは cross-chain bridge の信頼設定が単一主体の支配下にある点で、本事案は DVN 観測層への RPC 改ざん、Stake DAO 事案はデプロイヤー秘密鍵による trust source 直接書き換えと、別ベクターから同一構造に到達している。
+同じ構造の隣接事案として、5 月の **Stake DAO vsdCRV 不正ミント**（[Brief 002](https://lemma.frame00.com/ja/critical/briefs/002-stakedao-vsdcrv/)）がある。共通するのは cross-chain bridge の信頼設定が単一主体の支配下にある点で、本事案は DVN 観測層への RPC 改ざん、Stake DAO 事案はデプロイヤー秘密鍵による trust source 直接書き換えと、別ベクターから同一構造に到達している。
 
 LayerZero Labs は incident statement で本構造を「observation layer」として独立した運用カテゴリと位置付けた。観測層を硬化させる方針（quorum・多重化・人手 review）と、message 自体に独立検証可能な暗号証明を埋め込む方針は、対立軸ではなく補完関係にある。
 
@@ -91,7 +91,7 @@ Lemma の設計は、observation layer 入力の独立検証不在という本�
 
 これは「暗号論理的に有効 ≠ 来歴が正しい」という来歴証明カテゴリの設計思想であり、検出層を置き換えるものではなく補完する。
 
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。設計と適用範囲は、[Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、行動前に独立検証する設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（いずれも Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Trust402](https://lemma.frame00.com/ja/trust402/)。
 
 ---
 

@@ -95,6 +95,8 @@ Lemma proposes a design that requires, at the moment a generated work is created
 
 With this, a proof fixed at the moment of generation makes "was this generated work made from permitted source material?" function as a trail that is independently verifiable at each stage of distribution. It also shifts the locus of the burden from a structure in which the rights-holder side keeps bearing monitoring costs to one in which the generation side and distribution side present proof. Detection (after-the-fact monitoring, takedown requests, field surveys) works on remediation after the fact, while pre-action proof (pre-generation consent verification and binding provenance to the generated work) works on the independent verification of use — the two work complementarily.
 
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Seal](https://lemma.frame00.com/seal/).
+
 ---
 
 ## 6. Sources

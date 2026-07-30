@@ -40,6 +40,15 @@ function visitElements(node, fn) {
   }
 }
 
+/**
+ * 参照バナー（6章化 2026-07-30）: 「参照:」/「References:」で始まる段落を
+ * `data-brief-refs` 付きに変えて、マーカーは剥がす。BriefTemplate の CSS が
+ * この段落をカード（ライム縁＋上辺バー＋モノスペースのラベル）として描画
+ * する。§5 末尾の blog / Pillar / Trust402 リンク段落の定型に使う——md 側は
+ * プレーンな markdown のままで、見た目だけがテンプレート側の規約に乗る。
+ */
+const REFS_MARKER_RE = /^(参照|References):\s*/;
+
 export function rehypeBriefSectionNumber() {
   return (tree, file) => {
     const path = file?.history?.[0] ?? file?.path ?? "";
@@ -47,15 +56,26 @@ export function rehypeBriefSectionNumber() {
     if (!inScope) return;
 
     visitElements(tree, (node) => {
-      if (node.tagName !== "h2") return;
-      const first = node.children?.[0];
-      if (!first || first.type !== "text") return;
-      const match = first.value.match(SECTION_NUMBER_RE);
-      if (!match) return;
-      const [, num, title] = match;
-      first.value = title;
-      node.properties = node.properties || {};
-      node.properties["dataSectionNum"] = num;
+      if (node.tagName === "h2") {
+        const first = node.children?.[0];
+        if (!first || first.type !== "text") return;
+        const match = first.value.match(SECTION_NUMBER_RE);
+        if (!match) return;
+        const [, num, title] = match;
+        first.value = title;
+        node.properties = node.properties || {};
+        node.properties["dataSectionNum"] = num;
+        return;
+      }
+      if (node.tagName === "p") {
+        const first = node.children?.[0];
+        if (!first || first.type !== "text") return;
+        const match = first.value.match(REFS_MARKER_RE);
+        if (!match) return;
+        first.value = first.value.replace(REFS_MARKER_RE, "");
+        node.properties = node.properties || {};
+        node.properties["dataBriefRefs"] = "";
+      }
     });
   };
 }

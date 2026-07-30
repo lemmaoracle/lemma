@@ -70,7 +70,7 @@ The agent outperforms humans at detecting "malicious URLs / fake login screens,"
 
 > The agent should be treated as "a new hire with system access but no instinct for what is unnatural." (Varonis)
 
-The same primitive — **the execution of an action decoupled from the layer that authorizes and verifies it** — runs through Brief 018 (hijacking a defending agent's instructions), Brief 024 (invisible Unicode splitting what humans see from what the AI reads), Brief 037 (executing bundled config without verification), and Brief 029, where authorization is not bound to scope.
+The same primitive — **the execution of an action decoupled from the layer that authorizes and verifies it** — runs through [Brief 018](/critical/briefs/018-hackerbot-claw-ai-vs-ai/) (hijacking a defending agent's instructions), [Brief 024](/critical/briefs/024-invisible-unicode-instruction-injection/) (invisible Unicode splitting what humans see from what the AI reads), [Brief 037](/critical/briefs/037-agent-config-auto-execution/) (executing bundled config without verification), and [Brief 029](/critical/briefs/029-github-dev-oauth-token/), where authorization is not bound to scope.
 
 ---
 
@@ -87,7 +87,7 @@ Lemma proposes a design that requires, before the agent acts, an independently v
 
 In this way, a proof fixed at the moment of action functions as an independently verifiable trail of whether "this request is legitimately authorized and has a legitimate origin," before the agent takes a high-risk action. Detection (after-the-fact detection, patches, warnings) works on remediation after discovery; attestation (pre-action authorization and origin verification) works on the independent verification of agent actions — each complementary to the other.
 
-For the detection-vs-attestation thesis, see ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/) (Lemma, 2026-05); for verifying before the action, see ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (Lemma, 2026-05). For the design and its scope, see [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
 
 ---
 

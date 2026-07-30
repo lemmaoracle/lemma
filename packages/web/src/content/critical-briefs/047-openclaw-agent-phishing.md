@@ -70,7 +70,7 @@ OpenClaw 上で Varonis が検証したメール処理 AI エージェントが�
 
 > エージェントは「システムアクセスを持つが、何が不自然かの直感を持たない新人」として扱うべきである。（Varonis）
 
-同じ primitive——**行動の実行が、それを認可・検証する層から切り離されている**——は、Brief 018（防御側エージェントの指示の乗っ取り）、Brief 024（不可視 Unicode による目視と AI 入力の乖離）、Brief 037（同梱設定の無検証実行）、そして認可が範囲へ縛られない Brief 029 にも通底する。
+同じ primitive——**行動の実行が、それを認可・検証する層から切り離されている**——は、[Brief 018](https://lemma.frame00.com/ja/critical/briefs/018-hackerbot-claw-ai-vs-ai/)（防御側エージェントの指示の乗っ取り）、[Brief 024](https://lemma.frame00.com/ja/critical/briefs/024-invisible-unicode-instruction-injection/)（不可視 Unicode による目視と AI 入力の乖離）、[Brief 037](https://lemma.frame00.com/ja/critical/briefs/037-agent-config-auto-execution/)（同梱設定の無検証実行）、そして認可が範囲へ縛られない [Brief 029](https://lemma.frame00.com/ja/critical/briefs/029-github-dev-oauth-token/) にも通底する。
 
 ---
 
@@ -87,7 +87,7 @@ Lemma は、エージェントが行動を取る前に、その依頼が認可�
 
 これにより、行動の時点で固定された証明が、「この依頼は正規に認可され、正規の発信元を持つか」を、エージェントが高リスク行動を取る前に独立検証可能なトレイルとして機能させる。検出（事後の検知・パッチ・注意喚起）は発覚後の是正に、事前証明（行動前の認可・発信元検証）はエージェント行動の独立検証に、それぞれ相補的に働く。
 
-事後の検知が証明にならない論点は [「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）、行動前に独立検証する設計は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）を参照。設計と適用範囲は、[Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/) を参照のこと。
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、行動前に独立検証する設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（いずれも Lemma、2026-05）。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/)。
 
 ---
 
