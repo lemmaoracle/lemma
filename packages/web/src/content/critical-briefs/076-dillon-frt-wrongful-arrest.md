@@ -3,8 +3,8 @@ brief_no: 76
 title: "顔認証の「93% 一致」が、独立検証のないまま逮捕に直結した（Robert Dillon 誤認逮捕訴訟） — FRT の確率的一致が、逮捕という強制処分の前に独立裏付け・認可されなかった構造（ACLU 提訴）"
 title_en: "A 93% Facial-Recognition 'Match' Led Straight to Arrest Without Independent Verification (Robert Dillon Wrongful Arrest Suit) — a probabilistic FRT match that was never independently corroborated or authorized before the coercive act of arrest (ACLU suit)"
 pillar: "02-verifiable-ai"
-primary_category: "ai-decision-integrity"
-secondary_categories: ["ai-bias-harm", "identity-auth"]
+primary_category: "ai-bias-harm"
+secondary_categories: ["ai-decision-integrity", "identity-auth"]
 incident_date: 2026-06-10
 published: 2026-06-23
 authors: ["Lemma Critical Team"]

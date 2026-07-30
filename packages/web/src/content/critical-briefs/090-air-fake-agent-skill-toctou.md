@@ -4,7 +4,7 @@ title: "AIR：偽のエージェントスキルが全スキャナーを通過し
 title_en: "AIR: A Fake Agent Skill Cleared Every Scanner and Reached ~26,000 Agents — the Blind Spot Was an External Link Mutable After the Scan"
 pillar: "01-verifiable-origin"
 primary_category: "code-provenance"
-secondary_categories: ["agent-infrastructure", "identity-auth"]
+secondary_categories: ["agent-infrastructure", "identity-auth", "model-supply-chain"]
 incident_date: 2026-06-29
 published: 2026-06-30
 authors: ["Lemma Critical Team"]

@@ -4,7 +4,7 @@ title: "Hyundai：AI の自動ブレーキが、危険がないのに勝手に�
 title_en: "Hyundai: driver-assist AI braked on a threat that wasn't there — an AI decision overriding the driver, not independently verified before acting (NHTSA)"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
-secondary_categories: ["data-provenance"]
+secondary_categories: ["data-provenance", "ai-bias-harm"]
 incident_date: 2026-05-22
 published: 2026-06-17
 authors: ["Lemma Critical Team"]

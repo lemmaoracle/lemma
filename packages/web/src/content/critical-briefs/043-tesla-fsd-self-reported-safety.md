@@ -4,7 +4,7 @@ title: "自動運転の事故データと「人間より安全」の根拠が、
 title_en: "Self-Reported Autonomous-Driving Safety, Unverified — Tesla FSD Crash Data and Safety-Stat Methodology"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
-secondary_categories: ["attribute-proof-bypass"]
+secondary_categories: ["attribute-proof-bypass", "ai-bias-harm"]
 incident_date: 2026-03-18
 published: 2026-06-09
 authors: ["Lemma Critical Team"]

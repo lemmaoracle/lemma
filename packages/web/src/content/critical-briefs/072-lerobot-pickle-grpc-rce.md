@@ -4,7 +4,7 @@ title: "Hugging Face LeRobot：未認証の通信で受け取ったデータを�
 title_en: "Hugging Face LeRobot: a robotics framework executed untrusted data received over an unauthenticated channel — deserializing (pickle) unverified data leads straight to code execution (CVE-2026-25874)"
 pillar: "03-agent-authority"
 primary_category: "agent-infrastructure"
-secondary_categories: ["identity-auth", "code-provenance"]
+secondary_categories: ["identity-auth", "code-provenance", "model-supply-chain"]
 incident_date: 2026-04-28
 published: 2026-06-19
 authors: ["Lemma Critical Team"]

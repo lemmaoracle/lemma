@@ -3,8 +3,8 @@ brief_no: 12
 title: "Robert Williams 誤認逮捕 — 顔認識の AI 判定が独立検証なく行政の強制処分に直結した構造"
 title_en: "The Robert Williams Wrongful Arrest — When an AI Face-Match Drove a Government Enforcement Action Without Independent Verification"
 pillar: "02-verifiable-ai"
-primary_category: "ai-decision-integrity"
-secondary_categories: ["identity-auth", "ai-bias-harm"]
+primary_category: "ai-bias-harm"
+secondary_categories: ["ai-decision-integrity", "identity-auth"]
 incident_date: 2020-01-09
 published: 2026-05-31
 authors: ["Lemma Critical Team"]

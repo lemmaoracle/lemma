@@ -4,7 +4,7 @@ title: "「自律走行」の事故記録が、自社の黒塗りと自己申告
 title_en: "Tesla Robotaxi Crash Records — Control Attribution and Narrative Provenance Left Self-Reported"
 pillar: "02-verifiable-ai"
 primary_category: "ai-decision-integrity"
-secondary_categories: ["data-provenance", "attribute-proof-bypass"]
+secondary_categories: ["data-provenance", "attribute-proof-bypass", "ai-bias-harm"]
 incident_date: 2026-05-15
 published: 2026-06-12
 authors: ["Lemma Critical Team"]
