@@ -87,8 +87,6 @@ Lemma は、エージェントが行動を取る前に、その依頼が認可�
 
 これにより、行動の時点で固定された証明が、「この依頼は正規に認可され、正規の発信元を持つか」を、エージェントが高リスク行動を取る前に独立検証可能なトレイルとして機能させる。検出（事後の検知・パッチ・注意喚起）は発覚後の是正に、事前証明（行動前の認可・発信元検証）はエージェント行動の独立検証に、それぞれ相補的に働く。
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、行動前に独立検証する設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（いずれも Lemma、2026-05）。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/)。
-
 ---
 
 ## 6. Sources
@@ -97,3 +95,5 @@ Lemma は、エージェントが行動を取る前に、その依頼が認可�
 - **Imperva（研究・一次）**: “Compromise OpenClaw with Prompt Injections in Message Objects”（共有連絡先・vCard・位置ピン経由の injection、2026.4.23 で修正） — <https://www.imperva.com/blog/compromise-openclaw-with-prompt-injections-in-message-objects/>
 - **The Hacker News**: “New Attacks Trick OpenClaw AI Agent Into Running Code and Leaking Secrets”（2026-06-11、両研究の整理・lethal trifecta・規制当局警告） — <https://thehackernews.com/2026/06/new-attacks-trick-openclaw-ai-agent.html>
 - **BleepingComputer**: “OpenClaw AI agent found falling for phishing attacks, spills user data”（2026-06） — <https://www.bleepingcomputer.com/news/security/openclaw-ai-agent-found-falling-for-phishing-attacks-spills-user-data/>
+
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)、行動前に独立検証する設計は[「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（いずれも Lemma、2026-05）。設計と適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) および [Trust402](https://lemma.frame00.com/ja/trust402/)。

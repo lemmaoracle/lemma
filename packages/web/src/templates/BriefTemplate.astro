@@ -1101,48 +1101,61 @@ const gapRowLabels = isJa
     border-bottom: none;
   }
 
-  /* ─── 参照バナー ───
-     「参照:」/「References:」で始まる段落を rehype が data-brief-refs 付きに
-     変える（マーカーは剥がれる）。§5 末尾の blog / Pillar / Trust402 リンク
-     段落を、地の文でなくカードとして立たせるための定型。 */
-  .brief-body :global(p[data-brief-refs]) {
+  /* ─── 参照カード ───
+     「参照:」/「References:」で始まる段落から rehype がリンクだけを取り出し
+     div[data-brief-refs] に組み替える。1リンク=1カードの小さな列として、
+     記事末尾（Sources の後）にさりげなく置く。種別ラベル（BLOG / PILLAR /
+     PRODUCT）は href から自動判定した data-ref-kind。 */
+  .brief-body :global(div[data-brief-refs]) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin: 44px 0 0;
+  }
+  .brief-body :global(div[data-brief-refs] a) {
     position: relative;
-    overflow: hidden;
-    margin: 36px 0 24px;
-    padding: 22px 22px 18px;
-    background: var(--card);
-    border: 1px solid rgba(124, 175, 0, 0.45);
-    border-radius: 12px;
-    box-shadow: var(--sh-s);
-    font-size: 13.5px;
-    line-height: 2;
-  }
-  .brief-body :global(p[data-brief-refs])::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 3px;
-    background: var(--ok);
-  }
-  .brief-body :global(p[data-brief-refs])::after {
-    content: "参照";
     display: block;
-    order: -1;
+    padding: 32px 16px 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    color: var(--tx);
+    text-decoration: none;
+    overflow-wrap: break-word;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .brief-body :global(div[data-brief-refs] a:hover) {
+    border-color: rgba(124, 175, 0, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-m);
+  }
+  .brief-body :global(div[data-brief-refs] a)::before {
     position: absolute;
     top: 13px;
-    left: 22px;
+    left: 16px;
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: 8.5px;
+    font-weight: 400;
     letter-spacing: 0.18em;
+    color: var(--muted);
+    transition: color 0.18s;
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="blog"])::before {
+    content: "BLOG";
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="pillar"])::before {
+    content: "PILLAR";
+  }
+  .brief-body :global(div[data-brief-refs] a[data-ref-kind="product"])::before {
+    content: "PRODUCT";
+  }
+  .brief-body :global(div[data-brief-refs] a:hover)::before {
     color: var(--ok-ink);
-  }
-  :root[lang="en"] .brief-body :global(p[data-brief-refs])::after {
-    content: "SEE ALSO";
-  }
-  .brief-body :global(p[data-brief-refs]) {
-    padding-top: 34px;
   }
 
   /* ─── RULES ─── */

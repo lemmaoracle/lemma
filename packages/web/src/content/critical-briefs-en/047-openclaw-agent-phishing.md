@@ -87,8 +87,6 @@ Lemma proposes a design that requires, before the agent acts, an independently v
 
 In this way, a proof fixed at the moment of action functions as an independently verifiable trail of whether "this request is legitimately authorized and has a legitimate origin," before the agent takes a high-risk action. Detection (after-the-fact detection, patches, warnings) works on remediation after discovery; attestation (pre-action authorization and origin verification) works on the independent verification of agent actions — each complementary to the other.
 
-References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
 ## 6. Sources
@@ -97,3 +95,5 @@ References: for the detection-vs-attestation thesis, ["The last layer left for c
 - **Imperva (research, primary)**: "Compromise OpenClaw with Prompt Injections in Message Objects" (injection via shared contacts, vCards, location pins; fixed in 2026.4.23) — <https://www.imperva.com/blog/compromise-openclaw-with-prompt-injections-in-message-objects/>
 - **The Hacker News**: "New Attacks Trick OpenClaw AI Agent Into Running Code and Leaking Secrets" (2026-06-11; synthesis of both research efforts, lethal trifecta, regulator warning) — <https://thehackernews.com/2026/06/new-attacks-trick-openclaw-ai-agent.html>
 - **BleepingComputer**: "OpenClaw AI agent found falling for phishing attacks, spills user data" (2026-06) — <https://www.bleepingcomputer.com/news/security/openclaw-ai-agent-found-falling-for-phishing-attacks-spills-user-data/>
+
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 02 — Verifiable AI](https://lemma.frame00.com/pillars/verifiable-ai/) and [Trust402](https://lemma.frame00.com/trust402/).

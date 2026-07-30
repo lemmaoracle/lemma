@@ -95,8 +95,6 @@ Lemma は、生成物が作られる時点で素材の許諾属性を独立検�
 
 これにより、生成の時点で固定された証明が、「この生成物は許諾された素材から作られたか」を、流通の各段階で独立検証可能なトレイルとして機能させる。権利者側が監視コストを負担し続ける構図から、生成側・流通側が証明を提示する構図へ、負担の所在を移すことにもつながる。検出（事後の監視・削除申請・実態調査）は発覚後の是正に、事前証明（生成前の許諾検証と生成物への来歴バインド）は利用の独立検証に、それぞれ相補的に働く。
 
-参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Seal](https://lemma.frame00.com/ja/seal/)。
-
 ---
 
 ## 6. Sources
@@ -106,3 +104,5 @@ Lemma は、生成物が作られる時点で素材の許諾属性を独立検�
 - **JAPRO（前年度調査・一次）**: 「生成AI時代における肖像権・パブリシティ権等における侵害疑義事案の実態を初調査」（2025-06-24, PDF）— <https://www.japrpo.or.jp/img/pressrelease20250624.pdf>
 - **IPconnect（調査受託）**: IPconnect 株式会社 — <https://ipconnect.co.jp/>
 - **Siliconera（声の権利をめぐる動向）**: “Japan May Introduce ‘Voice Rights’ to Protect Against Unauthorized AI Usage” — <https://www.siliconera.com/japan-may-introduce-voice-rights-to-protect-against-unauthorized-ai-usage/>
+
+参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) および [Seal](https://lemma.frame00.com/ja/seal/)。

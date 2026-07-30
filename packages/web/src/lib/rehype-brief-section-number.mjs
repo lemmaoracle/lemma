@@ -41,13 +41,22 @@ function visitElements(node, fn) {
 }
 
 /**
- * 参照バナー（6章化 2026-07-30）: 「参照:」/「References:」で始まる段落を
- * `data-brief-refs` 付きに変えて、マーカーは剥がす。BriefTemplate の CSS が
- * この段落をカード（ライム縁＋上辺バー＋モノスペースのラベル）として描画
- * する。§5 末尾の blog / Pillar / Trust402 リンク段落の定型に使う——md 側は
- * プレーンな markdown のままで、見た目だけがテンプレート側の規約に乗る。
+ * 参照カード（6章化 2026-07-30、レビューで段落バナー→1リンク=1カードへ）:
+ * 「参照:」/「References:」で始まる段落から**リンクだけ**を取り出し、
+ * `div[data-brief-refs]` に組み替える。地のテキストと区切りは落ちる。
+ * 各リンクには href から種別（blog / pillar / product）を `data-ref-kind`
+ * として付け、BriefTemplate の CSS が小さなカードの列として描画する。
+ * 記事末尾（Sources の後）に置く定型——md 側はプレーンな markdown の
+ * リンク列を書くだけでよい。
  */
 const REFS_MARKER_RE = /^(参照|References):\s*/;
+
+function refKind(href) {
+  if (typeof href !== "string") return "product";
+  if (href.includes("/blog/")) return "blog";
+  if (href.includes("/pillars/")) return "pillar";
+  return "product";
+}
 
 export function rehypeBriefSectionNumber() {
   return (tree, file) => {
@@ -70,9 +79,17 @@ export function rehypeBriefSectionNumber() {
       if (node.tagName === "p") {
         const first = node.children?.[0];
         if (!first || first.type !== "text") return;
-        const match = first.value.match(REFS_MARKER_RE);
-        if (!match) return;
-        first.value = first.value.replace(REFS_MARKER_RE, "");
+        if (!REFS_MARKER_RE.test(first.value)) return;
+        const links = (node.children ?? []).filter(
+          (c) => c.type === "element" && c.tagName === "a",
+        );
+        if (links.length === 0) return;
+        for (const link of links) {
+          link.properties = link.properties || {};
+          link.properties["dataRefKind"] = refKind(link.properties.href);
+        }
+        node.tagName = "div";
+        node.children = links;
         node.properties = node.properties || {};
         node.properties["dataBriefRefs"] = "";
       }

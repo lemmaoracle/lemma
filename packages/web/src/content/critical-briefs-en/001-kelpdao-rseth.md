@@ -91,8 +91,6 @@ Lemma's design answers this incident's gap — absent independent verification o
 
 This is the design philosophy of "cryptographically valid ≠ provenance correct" — the core of the verifiable-origin category — and it complements, rather than replaces, the detection layer.
 
-References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
-
 ---
 
 ## 6. Sources
@@ -101,3 +99,5 @@ References: for the detection-vs-attestation thesis, ["The last layer left for c
 - **Halborn blog**: "Explained: The Kelp DAO Hack, April 2026" (technical analysis by a security audit firm, independent breakdown of the attack path) — https://www.halborn.com/blog/post/explained-the-kelp-dao-hack-april-2026
 - **Galaxy Research analytical brief**: "KelpDAO LayerZero Exploit — DeFi Insights" (independent analysis) — https://www.galaxy.com/insights/research/kelpdao-layerzero-exploit-defi
 - **Reference implementation (GitHub)**: verifiable-origin proof sample — <https://github.com/lemmaoracle/example-origin>
+
+References: for the detection-vs-attestation thesis, ["The last layer left for cyber defense in the age of AI"](https://lemma.frame00.com/blog/detection-is-not-proof/); for verifying before the action, ["Proof-as-Auth: sign in without ever sending your key"](https://lemma.frame00.com/blog/proof-as-auth-sign-in-without-sending-your-key/) (both Lemma, 2026-05). For the design and its scope, [Pillar 01 — Verifiable Origin](https://lemma.frame00.com/pillars/verifiable-origin/) and [Trust402](https://lemma.frame00.com/trust402/).
