@@ -57,17 +57,16 @@ const buildBazaarExtensionInput = (
 ): BazaarExtensionInput => {
   // assertDiscoverableConfigured has already guaranteed these are present
   // when discoverable: true; non-null assertions are safe here.
+  /* eslint-disable @typescript-eslint/no-non-null-assertion -- guaranteed by assertDiscoverableConfigured */
   return {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     name: config.schema!,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     description: config.bazaarDescription!,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     category: config.bazaarCategory!,
     tags: config.bazaarSubTags ?? [],
     inputSchema: config.bazaarInputSchemaRef,
     outputSchema: config.bazaarOutputSchemaRef,
   };
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 };
 
 /**
@@ -138,8 +137,7 @@ export const bazaarPaymentMiddleware = (
   const upstream = upstreamPaymentMiddleware(enrichedConfig);
 
   return async (c: Context, next: Next) => {
-    // imperative: Hono middleware with request/response lifecycle — no functional alternative
-    // eslint-disable-next-line functional/no-conditional-statements
+    /* eslint-disable functional/no-conditional-statements, functional/no-expression-statements, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unsafe-argument -- imperative Hono middleware request/response lifecycle */
     if (config.discoverable) {
       c.set(
         "lemma:bazaar:discoverable",
@@ -159,16 +157,13 @@ export const bazaarPaymentMiddleware = (
       );
     }
 
-    // eslint-disable-next-line functional/no-expression-statements, @typescript-eslint/no-unsafe-argument
     await upstream(c, next);
 
-    // eslint-disable-next-line functional/no-conditional-statements, @typescript-eslint/no-unnecessary-condition
     if (config.discoverable && c.res) {
       // CDP returns Bazaar metadata processing status in EXTENSION-RESPONSES.
       // The header is absent for non-CDP facilitators (e.g. x402.org), in
       // which case we skip emission silently.
       const headerValue = c.res.headers.get("EXTENSION-RESPONSES");
-      // eslint-disable-next-line functional/no-conditional-statements
       if (headerValue) {
         getBazaarStatusEmitter().emit({
           routePath: c.req.path,
@@ -182,12 +177,11 @@ export const bazaarPaymentMiddleware = (
 
       // Always surface Bazaar metadata to clients via response headers for
       // transparent downstream consumption (`agentic.market` curated tooling).
-      // eslint-disable-next-line functional/no-conditional-statements
       if (config.schema) c.header("X-Lemma-Bazaar-Schema", config.schema);
-      // eslint-disable-next-line functional/no-conditional-statements
       if (config.bazaarCategory) {
         c.header("X-Lemma-Bazaar-Category", config.bazaarCategory);
       }
     }
+    /* eslint-enable functional/no-conditional-statements, functional/no-expression-statements, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unsafe-argument */
   };
 };

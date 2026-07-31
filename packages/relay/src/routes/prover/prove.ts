@@ -75,29 +75,27 @@ const JOB_TTL_MS = 60 * 60 * 1000;
  */
 const jobs: Map<string, Job> = new Map();
 
+/* eslint-disable functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements -- in-memory Map cache mutation, inherently imperative */
 /** Insert a fresh job. */
 const insertJob = (id: string): void => {
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
   jobs.set(id, { id, status: "pending", createdAt: Date.now() });
 };
 
 /** Replace a job by id with an evolved record. */
 const updateJob = (id: string, evolve: (j: Job) => Job): void => {
   const current = jobs.get(id);
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements
   if (current) jobs.set(id, evolve(current));
 };
 
 /** Garbage-collect jobs older than the TTL. Called on each GET/POST. */
 const gcJobs = (now: number): void => {
   const cutoff = now - JOB_TTL_MS;
-  
+
   jobs.forEach((job, id) => {
-    // imperative: in-memory Map cache mutation — no functional alternative
-    // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements
     if (job.createdAt < cutoff) jobs.delete(id);
   });
 };
+/* eslint-enable functional/no-expression-statements, functional/immutable-data, functional/no-conditional-statements */
 
 /** Run the proof in the background, updating the job on completion. */
 const runProofInBackground = (body: RequestBody, jobId: string): void => {
