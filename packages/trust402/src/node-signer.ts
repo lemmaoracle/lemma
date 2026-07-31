@@ -19,7 +19,7 @@ export const nodeSigner = (privateKey: string): Signer => {
   return {
     address: account.address,
     provider: {
-      request: async ({ method, params }) => {
+      request: async ({ method }) => {
         if (method === "eth_signTypedData_v4") {
           // payFetch uses signTypedData instead — this path shouldn't be hit
           throw new Error("eth_signTypedData_v4 not available (use signTypedData)");
