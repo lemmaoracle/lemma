@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   parsePostalCodes,
   canonicalPostalCodes,
@@ -133,9 +133,14 @@ describe("buildSnapshot", () => {
   });
 
   it("is deterministic — same input, same snapshot (idempotency)", () => {
-    expect(buildSnapshot(parsePostalCodes(CSV)).compact).toEqual(
-      buildSnapshot(parsePostalCodes(CSV)).compact,
-    );
+    // updatedAt uses new Date().toISOString(); freeze the clock so both
+    // buildSnapshot calls share the same timestamp (ms-precision flake fix).
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
+    const a = buildSnapshot(parsePostalCodes(CSV)).compact;
+    const b = buildSnapshot(parsePostalCodes(CSV)).compact;
+    vi.useRealTimers();
+    expect(a).toEqual(b);
   });
 
   it("rejects an empty record set", () => {
