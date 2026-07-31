@@ -79,15 +79,13 @@ const COMPILED_ROUTES: readonly CompiledRoute[] = ROUTES.map((route) => {
 /** Parse request body as JSON. */
 const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
   new Promise<unknown>((resolve) => {
+    /* eslint-disable functional/no-expression-statements, functional/immutable-data, functional/no-try-statements -- imperative Node.js stream handling */
     const chunks: Buffer[] = [];
 
-    // eslint-disable-next-line functional/no-expression-statements
     req.on("data", (chunk: Buffer) => {
-      // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
       chunks.push(chunk);
     });
 
-    // eslint-disable-next-line functional/no-expression-statements
     req.on("end", (_: unknown) => {
       const body = Buffer.concat(chunks).toString();
       resolve(
@@ -95,7 +93,6 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
           (s: string) => s === "",
           R.always(undefined),
           (s: string) => {
-            // eslint-disable-next-line functional/no-try-statements
             try {
               return JSON.parse(s) as unknown;
             } catch {
@@ -106,10 +103,10 @@ const parseRequestBody = (req: NodeJS.ReadableStream): Promise<unknown> =>
       );
     });
 
-    // eslint-disable-next-line functional/no-expression-statements
     req.on("error", (_err: unknown) => {
       resolve(undefined);
     });
+    /* eslint-enable functional/no-expression-statements, functional/immutable-data, functional/no-try-statements */
   });
 
 /** Convert headers object to record. */
@@ -179,27 +176,24 @@ const sendResponse = (
   headers: HttpHeaders = {},
   body?: unknown,
 ): void => {
-  // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
+  /* eslint-disable functional/no-expression-statements, functional/immutable-data -- imperative Node.js HTTP response */
   res.statusCode = status;
 
   Object.entries(headers).forEach(([key, value]) => {
-    // eslint-disable-next-line functional/no-expression-statements
     res.setHeader(key, value);
   });
 
   R.ifElse(
     (b: unknown) => b !== undefined,
     (b: unknown) => {
-      // eslint-disable-next-line functional/no-expression-statements
       res.setHeader("Content-Type", "application/json");
-      // eslint-disable-next-line functional/no-expression-statements
       res.end(JSON.stringify(b));
     },
     (_: unknown) => {
-      // eslint-disable-next-line functional/no-expression-statements
       res.end();
     },
   )(body);
+  /* eslint-enable functional/no-expression-statements, functional/immutable-data */
 };
 
 /** Handle incoming request. */
@@ -237,12 +231,11 @@ const handleRequest = (
 
 /** Create and start HTTP server. */
 const startServer = (_: unknown): void => {
+  /* eslint-disable functional/no-expression-statements -- imperative Node.js server lifecycle */
   const server = createServer((req, res) => {
-    // eslint-disable-next-line functional/no-expression-statements
     void handleRequest(req, res);
   });
 
-  // eslint-disable-next-line functional/no-expression-statements
   server.listen({ port: CONFIG.port, host: CONFIG.host }, (_?: undefined) => {
     console.log(
       `Lemma Relay server running at http://${CONFIG.host}:${CONFIG.port.toString()}`,
@@ -256,25 +249,20 @@ const startServer = (_: unknown): void => {
   const shutdown = (signal: string) => (_: unknown) => {
     console.log(`Received ${signal}, shutting down gracefully...`);
 
-    // eslint-disable-next-line functional/no-expression-statements
     server.close((_err: unknown) => {
       console.log("Server closed");
-      // eslint-disable-next-line functional/no-expression-statements
       process.exit(0);
     });
 
-    // eslint-disable-next-line functional/no-expression-statements
     setTimeout((_timer: unknown) => {
       console.error("Force shutdown after timeout");
-      // eslint-disable-next-line functional/no-expression-statements
       process.exit(1);
     }, 5000);
   };
 
-  // eslint-disable-next-line functional/no-expression-statements
   process.on("SIGTERM", shutdown("SIGTERM"));
-  // eslint-disable-next-line functional/no-expression-statements
   process.on("SIGINT", shutdown("SIGINT"));
+  /* eslint-enable functional/no-expression-statements */
 };
 
 // Bootstrap: start the server when this module is the entry point (not imported).
