@@ -1,0 +1,1362 @@
+---
+/**
+ * 「他の手段との違い」比較ページ（日本語）。
+ * モック `lemma_comparison_mock_v12.html` ＋実装指示 v1（2026-08-01）を実装。
+ *
+ * 書き方の原則: 他社サービスを名指ししない。カテゴリ（電子署名・
+ * タイムスタンプ）として書き、「仕様はサービス・事業者により異なります」の
+ * 注記を必ず残す。比較表の記述は 2026-08-01 の事実レビューを反映
+ * （タイムスタンプの検証は TSA への問い合わせを要しないため、
+ * 「受け取った側だけで検証」は ✕ でなく △ とし、FAQ の文言も
+ * 「対応ソフト・検証ツールが必要」に改めた）。
+ *
+ * EN 版は未実装（残タスク）。/authenticity/ の JA 先行と同じ判断で、
+ * EN が追いついたらロケール分岐か EN テンプレートを足す。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import { DISCOVERY_CALL_URL } from "../config/cta";
+
+export interface CompareJaTemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as CompareJaTemplateProps;
+
+const SITE = "https://lemma.frame00.com";
+const pageUrl = `${SITE}${base}/compare/`;
+/** 問い合わせの経由面を Tally 側で拾うためのパラメータ（plan 隠しフィールド）。 */
+const discoveryUrl = `${DISCOVERY_CALL_URL[locale]}?plan=compare`;
+const L = (path: string) => `${base}${path}`;
+
+const metaTitle = "電子署名・タイムスタンプとの違い ｜ Lemma";
+const metaDescription =
+  "署名の手続きに乗らない大量の記録に証明を付ける。電子署名・タイムスタンプ・ブロックチェーン記録・検出AIとの違いを整理します。";
+
+/**
+ * FAQ 7問。画面表示と FAQPage JSON-LD の両方をこの配列から作る
+ * （受け入れ基準:「JSON-LD が全7問を含み、画面にも同じ内容が表示されている」）。
+ */
+const faq = [
+  {
+    q: "すでに電子署名を導入しています。置き換えが必要ですか？",
+    a: "不要です。<strong>法的効力が必要な文書は、これまでどおり電子署名で扱ってください。</strong>Lemma が向くのは、契約書のような少数の重要文書ではなく、検査記録・計測値・実行ログのように<strong>数が多く、渡した先で確かめてもらいたい記録</strong>です。",
+  },
+  {
+    q: "タイムスタンプとの違いは？",
+    a: "タイムスタンプは「その時刻に存在した」ことを示しますが、<strong>その記録を誰が発行したかまでは示しません。</strong>また検証には対応ソフトや検証ツールでの確認が必要です。Lemma は発行者の確認まで含み、検証は受け取った側が URL を開くだけで完結します。",
+  },
+  {
+    q: "ブロックチェーンに記録するのとは？",
+    a: "ハッシュを台帳に載せる点は似ています。違いは<strong>「誰が発行したか」と「どんな条件を満たすか」まで扱えること</strong>、そして検証に専用のノードやエクスプローラを必要としないことです。",
+  },
+  {
+    q: "AIによる偽造検出では足りませんか？",
+    a: "検出は<strong>事後に、確率で</strong>判定します。通ってしまったあとに異常を見つける仕組みなので、実行そのものは止められません。証明は<strong>実行の前に</strong>効きます。検出を外す必要はなく、その前段に一層を足す構成になります。",
+  },
+  {
+    q: "Lemma に法的な効力はありますか？",
+    a: "Lemma が示すのは、<strong>発行された時点から記録が変わっていないこと</strong>と、<strong>発行者が名乗るとおりであること</strong>です。受け取った側は、これを自分で確かめられます。<br/>一方で、記録の内容の正しさや判断の妥当性は保証しません。また<strong>電子署名法のような法定の推定効は持たない</strong>ため、法的効力が争点になる文書では電子署名と併用してください。",
+  },
+  {
+    q: "なりすまして証明を発行される心配はありませんか？",
+    a: "発行には API キーが必要で、発行された証明には<strong>発行者の識別子が記録されます</strong>。第三者が御社を名乗って証明を発行することはできません。<br/>受け取った側の画面には発行者が表示されるため、<strong>「誰が出したか」まで含めて確認できます</strong>。証明のない記録は、そもそも確かめられないものとして扱われます。",
+  },
+  {
+    q: "データを預ける必要はありますか？",
+    a: "ありません。Lemma が受け取るのはハッシュだけで、記録の本文は保持しません。データは御社の手元に残ります。",
+  },
+] as const;
+
+const stripTags = (html: string) => html.replace(/<[^>]+>/g, "");
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: stripTags(item.a) },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "ホーム",
+      item: `${SITE}${base || "/"}`,
+    },
+    { "@type": "ListItem", position: 2, name: "他の手段との違い", item: pageUrl },
+  ],
+};
+
+/**
+ * 比較表（記号中心・3列）。
+ * △=条件つき ✕=該当しない。個別サービスでなくカテゴリとしての整理で、
+ * 凡例の「仕様はサービス・事業者により異なります」が全行にかかる。
+ */
+const cmpRows = [
+  {
+    label: "原本を預けずに済む",
+    esig: "t",
+    ts: "o",
+    lemma: "ハッシュのみ",
+  },
+  {
+    label: "受け取った側だけで検証",
+    esig: "t",
+    ts: "t",
+    lemma: "URLを開くだけ",
+  },
+  {
+    label: "検証が無料・何度でも",
+    esig: "t",
+    ts: "t",
+    lemma: "回数の上限なし",
+  },
+  {
+    label: "文書以外にも付けられる",
+    esig: "x",
+    ts: "t",
+    lemma: "実行・権限・属性も",
+  },
+  {
+    label: "大量の記録を自動で扱える",
+    esig: "x",
+    ts: "t",
+    lemma: "APIで自動発行",
+  },
+] as const;
+
+const mk = (v: "o" | "t" | "x") => (v === "o" ? "○" : v === "t" ? "△" : "✕");
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/compare/"
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(faqJsonLd)}
+  />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="cmp-page">
+    <div class="iwrap">
+      <div class="crumb">
+        <a href={base || "/"}>ホーム</a>
+        <i>/</i>
+        <span>知る</span>
+        <i>/</i>
+        <span>他の手段との違い</span>
+      </div>
+
+      <div class="ihero">
+        <div>
+          <h1 class="ih1">
+            署名できない記録にも、<span class="nb">証明は付けられる。</span>
+          </h1>
+          <p class="ilead">
+            契約書には電子署名があります。では、毎日出力される検査記録や計測値、AIの実行ログはどうでしょうか。<strong
+              >Lemma は、署名の手続きに乗らない大量の記録に証明を付け、受け取った相手がその場で確かめられるようにします。</strong
+            >電子署名を置き換えるものではありません。
+          </p>
+        </div>
+        <aside class="cmppeek">
+          <div class="cp-k">このページで比べるもの</div>
+          <div class="cp-list">
+            <span class="cp-i"
+              ><svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                  d="M3 17.5c2.6-.6 3.6-2 5.4-6.2C10.2 7.1 11.4 4 13.2 4c1.3 0 1.9 1 1.9 2.2 0 2.6-3.4 4.6-6.6 5.6C5.6 12.7 3.6 13 2.5 13"
+                ></path><path d="M12.5 15.5h5"></path></svg
+              >電子署名</span
+            >
+            <span class="cp-i"
+              ><svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="10" cy="10" r="7"></circle><path
+                  d="M10 6v4.3l2.8 1.7"></path></svg
+              >タイムスタンプ</span
+            >
+            <span class="cp-i"
+              ><svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="1.8" y="7" width="7.6" height="6" rx="2"></rect><rect
+                  x="10.6"
+                  y="7"
+                  width="7.6"
+                  height="6"
+                  rx="2"></rect><path d="M8 10h4"></path></svg
+              >ブロックチェーン記録</span
+            >
+            <span class="cp-i"
+              ><svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="8.6" cy="8.6" r="5.4"></circle><path
+                  d="M12.6 12.6 17.5 17.5"></path><path
+                  d="M6 8.8c.9 0 .9-1.8 1.8-1.8s.9 3.2 1.8 3.2.9-2.2 1.8-2.2"
+                ></path></svg
+              >検出AI</span
+            >
+          </div>
+          <div class="cp-vs">
+            <span class="cp-lem"
+              ><svg
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="10" cy="10" r="7"></circle><circle
+                  cx="10"
+                  cy="10"
+                  r="4.6"></circle><path d="M7.8 10.2 9.3 11.8 12.3 8.4"
+                ></path></svg
+              >Lemma</span
+            >
+          </div>
+        </aside>
+      </div>
+
+      <!-- 01 一言で -->
+      <section class="isec">
+        <div class="isec-h">
+          <span>01 — In short</span><b
+            ><span class="nb">電子署名は、署名した人を証明する。</span><br /><span
+              class="nb"
+              ><span class="lat">Lemma</span> は、記録そのものを証明する。</span
+            ></b
+          >
+        </div>
+        <div class="split">
+          <div class="splitcol">
+            <div class="cardhead">
+              <span class="cardic"
+                ><svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path
+                    d="M3 17.5c2.6-.6 3.6-2 5.4-6.2C10.2 7.1 11.4 4 13.2 4c1.3 0 1.9 1 1.9 2.2 0 2.6-3.4 4.6-6.6 5.6C5.6 12.7 3.6 13 2.5 13"
+                  ></path><path d="M12.5 15.5h5"></path></svg
+                ></span
+              >
+              <div class="tt">
+                <div class="k">電子署名・タイムスタンプ</div>
+                <div class="t">署名した人を、証明する。</div>
+              </div>
+            </div>
+            <ul>
+              <li>誰が署名したかを、法制度の裏づけつきで示す</li>
+              <li>契約・申請・届出のように、法的効力が要る場面に向く</li>
+              <li>1件ずつ手続きを踏む。対象は文書</li>
+            </ul>
+          </div>
+          <div class="splitcol on">
+            <div class="cardhead">
+              <span class="cardic"
+                ><svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><circle cx="10" cy="10" r="7"></circle><circle
+                    cx="10"
+                    cy="10"
+                    r="4.6"></circle><path d="M7.8 10.2 9.3 11.8 12.3 8.4"
+                  ></path></svg
+                ></span
+              >
+              <div class="tt">
+                <div class="k">Lemma</div>
+                <div class="t">記録そのものを、証明する。</div>
+              </div>
+            </div>
+            <ul>
+              <li>
+                発行された時点から変わっていないことを、受け取った側が自分で確認できる
+              </li>
+              <li>文書に限らず、データ・AIの実行・権限・属性にも付く</li>
+              <li>発行は自動化でき、検証は無料・何度でも・キー不要</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cmpnote">
+          法的効力が要る少数の文書には電子署名を、<strong
+            >数が多く、渡した先で確かめてもらいたい記録には Lemma を。</strong
+          >併用できます。
+        </p>
+      </section>
+
+      <!-- 02 比較表 -->
+      <section class="isec band alt">
+        <div class="isec-h">
+          <span>02 — Comparison</span><b
+            ><span class="nb">電子署名・タイムスタンプと、</span><br /><span
+              class="nb">並べてみる。</span
+            ></b
+          >
+        </div>
+        <div class="cmpwrap">
+          <table class="cmp2">
+            <thead>
+              <tr>
+                <th></th><th>電子署名</th><th>タイムスタンプ</th><th class="lem"
+                  >Lemma</th
+                >
+              </tr>
+            </thead>
+            <tbody>
+              {
+                cmpRows.map((r) => (
+                  <tr>
+                    <th>{r.label}</th>
+                    <td>
+                      <span class="mk2">
+                        <i class={r.esig}>{mk(r.esig)}</i>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="mk2">
+                        <i class={r.ts}>{mk(r.ts)}</i>
+                      </span>
+                    </td>
+                    <td class="lem">
+                      <span class="mk2">
+                        <i class="o">○</i>
+                        <span>{r.lemma}</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="legend">
+          <span><b>○ 該当する　／　△ 条件つき　／　✕ 該当しない</b></span>
+          <span>※ 仕様はサービス・事業者により異なります</span>
+        </div>
+        <div class="usecall">
+          <div class="uc-k">使い分け</div>
+          <p>
+            <strong>法的効力が争点になる文書は、電子署名の領域です。</strong
+            >契約・申請・届出のように、1件ずつ手続きを踏む価値があるもの。<br />
+            Lemma が引き受けるのは、<strong>その手続きに乗らない大量の記録</strong
+            >——検査記録、計測値、承認履歴、AIの実行ログ。併用できます。
+          </p>
+        </div>
+      </section>
+
+      <!-- 03 そのほかの手段 -->
+      <section class="isec">
+        <div class="isec-h">
+          <span>03 — Other approaches</span><b>よく並べて語られる、2つの手段。</b>
+        </div>
+        <div class="others">
+          <div class="other">
+            <div class="cardhead">
+              <span class="cardic"
+                ><svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><rect x="1.8" y="7" width="7.6" height="6" rx="2"
+                  ></rect><rect x="10.6" y="7" width="7.6" height="6" rx="2"
+                  ></rect><path d="M8 10h4"></path></svg
+                ></span
+              >
+              <div class="tt">
+                <div class="k">Blockchain</div>
+                <div class="t">ブロックチェーンに記録する</div>
+              </div>
+            </div>
+            <p>ハッシュを台帳に載せて改ざんを防ぐ点は、Lemma と同じ発想です。</p>
+            <p>
+              違いは<strong
+                >「誰が発行したか」と「どんな条件を満たすか」まで扱えること</strong
+              >、そして検証に専用のノードやエクスプローラを必要としないことです。受け取った側は
+              URL を開くだけで済みます。
+            </p>
+          </div>
+          <div class="other">
+            <div class="cardhead">
+              <span class="cardic"
+                ><svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><circle cx="8.6" cy="8.6" r="5.4"></circle><path
+                    d="M12.6 12.6 17.5 17.5"></path><path
+                    d="M6 8.8c.9 0 .9-1.8 1.8-1.8s.9 3.2 1.8 3.2.9-2.2 1.8-2.2"
+                  ></path></svg
+                ></span
+              >
+              <div class="tt">
+                <div class="k">Detection</div>
+                <div class="t">AIで偽造を検出する</div>
+              </div>
+            </div>
+            <p>
+              検出は<strong>事後に、確率で</strong
+              >判定します。通ってしまったあとに異常を見つける仕組みです。
+            </p>
+            <p>
+              証明は<strong>実行の前に</strong
+              >効きます。両者は競合しません——検出を外す必要はなく、その前段に一層を足す構成になります。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 なぜ検証が無料にできるのか -->
+      <section class="isec">
+        <div class="isec-h">
+          <span>04 — Why free</span><b>課金しているのは、発行のときだけ。</b>
+        </div>
+        <div class="freewrap">
+          <div>
+            <p class="itext">
+              証明は一度作れば、そのあと誰が何度確かめても、Lemma
+              側で新しい計算は起きません。だから検証を無料にできます。<strong
+                >SSL 証明書と同じ構造</strong
+              >です——サイトの運営者が証明書を買い、訪問者は無料で検証しています。
+            </p>
+            <p class="itext">
+              だから、<strong>渡す相手が何社に増えても費用は変わりません。</strong
+              >取引先にも、監督官庁にも、その先の再委託先にも、同じ証明をそのまま渡せます。確かめるかどうかを、相手の負担で止めなくて済みます。
+            </p>
+          </div>
+          <figure class="motif">
+            <svg
+              viewBox="0 0 320 210"
+              preserveAspectRatio="xMidYMid meet"
+              aria-label="発行は一度、検証は何度でも"
+            >
+              <text
+                x="10"
+                y="16"
+                fill="#8B9285"
+                font-family="Space Mono,monospace"
+                font-size="8.5"
+                letter-spacing="2">ISSUE ONCE</text
+              >
+              <text
+                x="238"
+                y="16"
+                fill="#8B9285"
+                font-family="Space Mono,monospace"
+                font-size="8.5"
+                letter-spacing="2">VERIFY ∞</text
+              >
+              <rect
+                x="126"
+                y="76"
+                width="64"
+                height="64"
+                rx="15"
+                fill="#FFFFFF"
+                fill-opacity=".07"
+                stroke="#A8E010"
+                stroke-opacity=".7"
+                stroke-width="1.6"></rect>
+              <circle
+                cx="158"
+                cy="108"
+                r="18"
+                fill="none"
+                stroke="#A8E010"
+                stroke-opacity=".85"
+                stroke-width="1.5"></circle>
+              <circle
+                cx="158"
+                cy="108"
+                r="12.5"
+                fill="none"
+                stroke="#A8E010"
+                stroke-opacity=".45"
+                stroke-width="1.1"></circle>
+              <path
+                d="M152 108.5 L156.5 113 L164.5 104"
+                fill="none"
+                stroke="#A8E010"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path d="M46 108 L120 108" stroke="#A8E010" stroke-width="1.8"
+              ></path>
+              <path
+                d="M112 103 L121 108 L112 113"
+                fill="none"
+                stroke="#A8E010"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <text
+                x="46"
+                y="98"
+                fill="#9BA296"
+                font-family="Noto Sans JP,sans-serif"
+                font-size="9.5">発行</text
+              >
+              <path
+                d="M193 57 L212 28"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.35"></path><circle
+                cx="212"
+                cy="28"
+                r="3"
+                fill="#A8E010"
+                opacity="0.5"></circle><path
+                d="M207 70 L234 50"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.45"></path><circle
+                cx="234"
+                cy="50"
+                r="3"
+                fill="#A8E010"
+                opacity="0.6"></circle><path
+                d="M217 88 L249 77"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.55"></path><circle
+                cx="249"
+                cy="77"
+                r="3"
+                fill="#A8E010"
+                opacity="0.7"></circle><path
+                d="M220 108 L254 108"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.35"></path><circle
+                cx="254"
+                cy="108"
+                r="3"
+                fill="#A8E010"
+                opacity="0.5"></circle><path
+                d="M217 128 L249 139"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.45"></path><circle
+                cx="249"
+                cy="139"
+                r="3"
+                fill="#A8E010"
+                opacity="0.6"></circle><path
+                d="M207 146 L234 166"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.55"></path><circle
+                cx="234"
+                cy="166"
+                r="3"
+                fill="#A8E010"
+                opacity="0.7"></circle><path
+                d="M193 159 L212 188"
+                stroke="#A8E010"
+                stroke-width="1.4"
+                opacity="0.35"></path><circle
+                cx="212"
+                cy="188"
+                r="3"
+                fill="#A8E010"
+                opacity="0.5"></circle>
+              <text
+                x="160"
+                y="196"
+                text-anchor="middle"
+                fill="#9BA296"
+                font-family="Noto Sans JP,sans-serif"
+                font-size="9.5">検証は、何度でも</text
+              >
+            </svg>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 05 よくある質問 -->
+      <section class="isec">
+        <div class="isec-h"><span>05 — Questions</span><b>よく聞かれること</b></div>
+        <div class="qa">
+          {
+            faq.map((item, i) => (
+              <details open={i === 0}>
+                <summary>{item.q}</summary>
+                <div class="a" set:html={item.a} />
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      <div class="artcta">
+        <div class="k">Get Started</div>
+        <h2>まず、動いている証明を<br />1件だけ確かめてください。</h2>
+        <p>
+          キーもアカウントも要りません。稼働中の証明を、その場で検証できます。自社の記録にどう当てはまるかは、専任チームと一緒に洗い出します。
+        </p>
+        <div class="row">
+          <a class="btn primary" href={discoveryUrl} target="_blank" rel="noopener"
+            >導入を相談する</a
+          >
+          <a class="btn ghostd" href={L("/verify/")}>検証センターを見る</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  .cmp-page {
+    --ok: #a8e010;
+    --ok-ink: #6f9c00;
+    --ok-light: #4e7a00;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #fff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --line: #e1e3dd;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.09), 0 2px 6px rgba(14, 18, 16, 0.05);
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
+
+    background: var(--lite);
+    color: var(--tx);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    padding: 0 0 96px;
+    margin-top: 64px;
+    /* 帯（100vw フルブリード）の横はみ出しをページ側で抑える */
+    overflow-x: hidden;
+  }
+  .iwrap {
+    max-width: calc(1180px + 12vw);
+    margin: 0 auto;
+    padding: 0 6vw;
+  }
+
+  .crumb {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 34px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .crumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .crumb a:hover {
+    color: var(--tx);
+  }
+  .crumb i {
+    font-style: normal;
+    color: #b7bcb2;
+  }
+
+  /* ---- ヒーロー ---- */
+  .ihero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 44px;
+    align-items: center;
+    padding: 22px 0 0;
+  }
+  .ih1 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(28px, 3.6vw, 42px);
+    line-height: 1.45;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    margin: 20px 0 16px;
+    word-break: keep-all;
+  }
+  .nb {
+    display: inline-block;
+  }
+  .ilead {
+    font-size: 15px;
+    line-height: 2;
+    color: var(--tx-soft);
+    margin: 0;
+    max-width: 52ch;
+  }
+  .ilead strong {
+    color: var(--tx);
+    font-weight: 600;
+  }
+
+  .cmppeek {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: var(--sh-s);
+  }
+  .cp-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .cp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .cp-i {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 13.5px;
+    color: var(--tx-soft);
+  }
+  .cp-i svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--muted);
+  }
+  .cp-vs {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .cp-vs::before {
+    content: "vs";
+    position: absolute;
+    top: -9px;
+    left: 0;
+    background: var(--card);
+    padding-right: 9px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .cp-lem {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--tx);
+  }
+  .cp-lem svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    color: var(--ok-ink);
+  }
+
+  /* ---- セクション見出し ----
+     `.isec-h span` と書くと見出し内の .nb/.lat に当たり、見出しが
+     9.5px のモノスペース大文字ブロックになる。直下のみに限定する。 */
+  .isec {
+    margin: 16px 0 0;
+  }
+  .band + .isec {
+    margin-top: 12px;
+  }
+  .isec + .band {
+    margin-top: 14px;
+  }
+  .isec-h {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .isec-h > span {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .isec-h b {
+    display: block;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(23px, 2.7vw, 32px);
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+    color: var(--tx);
+    max-width: none;
+  }
+  .isec-h b span {
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+    color: inherit;
+    margin: 0;
+  }
+  .isec-h b .nb {
+    display: inline-block;
+  }
+  .isec-h b .lat {
+    font-family: "Space Grotesk", sans-serif;
+  }
+
+  /* ---- 01 一言で ---- */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 6px;
+  }
+  .splitcol {
+    border-radius: 13px;
+    padding: 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .splitcol.on {
+    border-color: rgba(124, 175, 0, 0.5);
+  }
+  .splitcol .k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .splitcol.on .k {
+    color: var(--ok-ink);
+  }
+  .splitcol .t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--tx);
+    margin-bottom: 0;
+  }
+  .splitcol ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .splitcol li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 9px;
+    font-size: 13.2px;
+    line-height: 1.75;
+    color: var(--tx-soft);
+  }
+  .splitcol li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 11px;
+    width: 9px;
+    height: 2px;
+    border-radius: 2px;
+    background: #c3c9be;
+  }
+  .splitcol.on li::before {
+    background: var(--ok-ink);
+  }
+  .cardhead {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 13px;
+  }
+  .cardhead .tt {
+    min-width: 0;
+  }
+  .cardic {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    background: var(--lite-2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .cardic svg {
+    width: 19px;
+    height: 19px;
+    display: block;
+  }
+  .splitcol.on .cardic {
+    background: rgba(168, 224, 16, 0.12);
+    border-color: rgba(124, 175, 0, 0.4);
+    color: var(--ok-ink);
+  }
+  .cmpnote {
+    margin: 14px 0 0;
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--muted);
+  }
+  .cmpnote strong,
+  .usecall strong,
+  .other strong,
+  .itext strong {
+    color: var(--tx);
+    font-weight: 600;
+  }
+
+  /* ---- 帯（フルブリード） ---- */
+  .band {
+    position: relative;
+    padding: 24px 0 26px;
+    margin-top: 14px;
+  }
+  .band::before {
+    content: "";
+    position: absolute;
+    left: calc(-50vw + 50%);
+    width: 100vw;
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+  }
+  .band > * {
+    position: relative;
+    z-index: 1;
+  }
+  .band.alt::before {
+    background: var(--lite-2);
+  }
+
+  /* ---- 02 比較表（記号中心） ---- */
+  .cmpwrap {
+    overflow-x: auto;
+    margin-top: 6px;
+  }
+  .cmp2 {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+  }
+  .cmp2 th,
+  .cmp2 td {
+    padding: 13px 16px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmp2 thead th {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--tx-soft);
+    padding: 12px 16px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmp2 thead th.lem {
+    background: var(--ok);
+    color: var(--ink);
+    font-weight: 700;
+    border-radius: 9px 9px 0 0;
+  }
+  .cmp2 tbody th {
+    font-weight: 500;
+    color: var(--tx);
+    width: 200px;
+  }
+  .cmp2 td {
+    text-align: center;
+    width: 150px;
+  }
+  .cmp2 td.lem {
+    background: rgba(168, 224, 16, 0.07);
+  }
+  .cmp2 tbody tr:last-child td.lem {
+    border-radius: 0 0 9px 9px;
+  }
+  .mk2 {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .cmp2 td:not(.lem) .mk2 i {
+    font-size: 19px;
+  }
+  .mk2 i {
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1;
+  }
+  .mk2 .o {
+    color: var(--ok-ink);
+  }
+  .mk2 .t {
+    color: #b99a4e;
+  }
+  .mk2 .x {
+    color: #b0684f;
+  }
+  .mk2 span {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .cmp2 td.lem .mk2 span {
+    color: var(--tx-soft);
+  }
+  .legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .legend b {
+    font-weight: 400;
+  }
+  .usecall {
+    margin: 16px 0 0;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid rgba(124, 175, 0, 0.4);
+    border-left: 3px solid var(--ok);
+    border-radius: 11px;
+  }
+  .uc-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--ok-ink);
+    margin-bottom: 8px;
+  }
+  .usecall p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+  }
+
+  /* ---- 03 そのほかの手段 ---- */
+  .others {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 0;
+  }
+  .other {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    padding: 18px 20px;
+  }
+  .other .k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .other .t {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 16.5px;
+    color: var(--tx);
+    margin-bottom: 0;
+  }
+  .other p {
+    margin: 0;
+    font-size: 13.2px;
+    line-height: 1.85;
+    color: var(--tx-soft);
+  }
+  .other p + p {
+    margin-top: 10px;
+  }
+
+  /* ---- 04 無料の理由 ----
+     freewrap は上揃え（図が本文より背が高いとき、center だと本文の
+     上下に大きな空きが出る）。figure はブラウザ既定 margin を潰す。 */
+  .freewrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 34px;
+    align-items: start;
+    margin-top: 0;
+  }
+  .freewrap > div {
+    padding-top: 2px;
+  }
+  .itext {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+    max-width: 62ch;
+    margin: 0 0 10px;
+  }
+  .freewrap .itext:last-child {
+    margin-bottom: 0;
+  }
+  .motif {
+    margin: 0;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    padding: 12px 14px;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    box-shadow: 0 22px 52px rgba(22, 30, 24, 0.26);
+  }
+  .motif::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.16),
+      rgba(168, 224, 16, 0) 62%
+    );
+  }
+  .motif svg {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-height: 220px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ---- 05 FAQ ---- */
+  .qa {
+    border-top: 1px solid var(--line);
+    margin-top: 2px;
+  }
+  .qa details {
+    border-bottom: 1px solid var(--line);
+  }
+  .qa summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 15px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--tx);
+  }
+  .qa summary::-webkit-details-marker {
+    display: none;
+  }
+  .qa summary::before {
+    content: "+";
+    flex: none;
+    width: 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ok-ink);
+  }
+  .qa details[open] summary::before {
+    content: "–";
+  }
+  .qa .a {
+    padding: 0 0 16px 26px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--tx-soft);
+    max-width: 64ch;
+  }
+  .qa .a :global(strong) {
+    color: var(--tx);
+    font-weight: 600;
+  }
+
+  /* ---- CTA ---- */
+  .artcta {
+    margin: 26px 0 0;
+    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
+    border-radius: 16px;
+    padding: 38px 36px 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .artcta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(
+      125% 78% at 92% -18%,
+      rgba(168, 224, 16, 0.18),
+      rgba(168, 224, 16, 0) 62%
+    );
+  }
+  .artcta > * {
+    position: relative;
+    z-index: 2;
+  }
+  .artcta .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #9ba296;
+  }
+  .artcta h2 {
+    font-family: var(--font-serif-jp);
+    font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 26px);
+    line-height: 1.6;
+    color: #ebefe6;
+    margin: 12px 0 10px;
+  }
+  .artcta p {
+    margin: 0 0 24px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #bcc3b6;
+  }
+  .artcta .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 6px;
+    padding: 14px 30px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.18s;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
+  }
+  .btn.primary {
+    background: var(--ok);
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35);
+  }
+  .btn.primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+  .btn.ghostd {
+    color: #d8ddd1;
+    border-color: #59645a;
+    background: transparent;
+  }
+  .btn.ghostd:hover {
+    border-color: #d8ddd1;
+    color: #ebefe6;
+  }
+
+  /* ---- レスポンシブ ---- */
+  @media (max-width: 1020px) {
+    .ihero {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+    .split,
+    .others,
+    .freewrap {
+      grid-template-columns: 1fr;
+    }
+    .cmp2 tbody th {
+      width: auto;
+    }
+    .cmp2 td {
+      width: auto;
+    }
+  }
+  @media (max-width: 760px) {
+    .iwrap {
+      padding: 0 24px;
+    }
+    .cmp2 {
+      min-width: 620px;
+    }
+    .artcta {
+      padding: 30px 24px 28px;
+    }
+  }
+</style>
