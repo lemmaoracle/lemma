@@ -4,6 +4,7 @@ import {
   detectContentType,
   blogArticle,
   contentCommitment,
+  listingBindingV2,
   computeCid,
 } from "./trust402.js";
 import type { PublishInput, Article } from "./trust402.js";
@@ -154,6 +155,66 @@ describe("contentCommitment", () => {
     expect(contentCommitment(bytes).commitment).not.toBe(
       contentCommitment(different).commitment,
     );
+  });
+});
+
+describe("listingBindingV2", () => {
+  const TREE_DEPTH = 20;
+  const zeroPath = Object.freeze(
+    Array.from({ length: TREE_DEPTH }, () => "0x0"),
+  );
+  const zeroIndices = Object.freeze(
+    Array.from({ length: TREE_DEPTH }, () => 0),
+  );
+
+  const baseInput = Object.freeze({
+    commitment: "0x1a2b3c4d5e6f7890abcdef012345678901234567890abcdef012345678901234",
+    orgDid: "did:web:example.edu",
+    individualDid: "did:example:alice",
+    priceUsdc: 42000000,
+    schemaId: "content-commitment-v1.2",
+    memberRoot: "0xabc123",
+    merklePath: zeroPath,
+    merkleIndices: zeroIndices,
+    memberSalt: "0xdeadbeef",
+    salt: "0x1111111111111111111111111111111111111111111111111111111111111111",
+  });
+
+  it("returns witness with listingRoot and public fields", () => {
+    const result = listingBindingV2(baseInput);
+    expect(result.listingRoot).toMatch(/^0x[0-9a-f]+$/);
+    expect(result.witness.listingRoot).toBe(result.listingRoot);
+    expect(result.witness.commitment).toBeDefined();
+    expect(result.witness.orgDid).toBeDefined();
+    expect(result.witness.memberRoot).toBeDefined();
+    expect(result.witness.merklePath).toHaveLength(TREE_DEPTH);
+    expect(result.witness.merkleIndices).toHaveLength(TREE_DEPTH);
+  });
+
+  it("is deterministic when salt is provided", () => {
+    expect(listingBindingV2(baseInput).listingRoot).toBe(
+      listingBindingV2(baseInput).listingRoot,
+    );
+  });
+
+  it("produces different listingRoots for different orgs", () => {
+    const other = listingBindingV2({
+      ...baseInput,
+      orgDid: "did:web:other.edu",
+    });
+    expect(other.listingRoot).not.toBe(listingBindingV2(baseInput).listingRoot);
+  });
+
+  it("computes listingRoot as Poseidon5(schemaId, commitment, price, orgDid, salt)", () => {
+    const result = listingBindingV2(baseInput);
+    const expected = `0x${poseidon5([
+      toScalar(baseInput.schemaId),
+      BigInt(baseInput.commitment),
+      toScalar(baseInput.priceUsdc),
+      toScalar(baseInput.orgDid),
+      BigInt(baseInput.salt),
+    ]).toString(16)}`;
+    expect(result.listingRoot).toBe(expected);
   });
 });
 
@@ -379,6 +440,88 @@ describe("trust402.publish", () => {
       expect(listing.schemaId).toBe("blog-article-v1");
       expect(listing.commitment).toBe("0xabc");
       expect(listing.perSchemaProof!.circuitId).toBe("blog-article-v1");
+    });
+  });
+
+  // ── Institutional binding (listing-binding-v2) ─────────────────────
+
+  describe("institutionalBinding", () => {
+    const TREE_DEPTH = 20;
+    const zeroPath = Object.freeze(
+      Array.from({ length: TREE_DEPTH }, () => "0x0"),
+    );
+    const zeroIndices = Object.freeze(
+      Array.from({ length: TREE_DEPTH }, () => 0),
+    );
+
+    it("submits content proof then listing-binding-v2 proof", async () => {
+      const client = setupMocks();
+      const { witness, commitment } = contentCommitment(
+        new Uint8Array([1, 2, 3]),
+      );
+
+      const listing = await publish(
+        client,
+        Object.freeze({
+          circuitId: "content-commitment-v1.2",
+          witness,
+          commitment,
+          price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
+          did: "did:example:alice",
+          institutionalBinding: Object.freeze({
+            orgDid: "did:web:example.edu",
+            memberRoot: "0xabc",
+            individualDid: "did:example:alice",
+            merklePath: zeroPath,
+            merkleIndices: zeroIndices,
+            memberSalt: "0x1",
+          }),
+        }),
+      );
+
+      expect(listing.listingRoot).toMatch(/^0x[0-9a-f]+$/);
+      expect(listing.commitment).toBe(commitment);
+
+      const mockFetch = client.fetcher as ReturnType<typeof vi.fn>;
+      const proofCalls = mockFetch.mock.calls.filter(
+        (call) =>
+          String(call[0]).includes("/v1/proofs") &&
+          (call[1] as RequestInit | undefined)?.method === "POST",
+      );
+      expect(proofCalls).toHaveLength(2);
+
+      const body0 = JSON.parse((proofCalls[0]![1] as RequestInit).body as string);
+      const body1 = JSON.parse((proofCalls[1]![1] as RequestInit).body as string);
+      expect(body0.circuitId).toBe("content-commitment-v1.2");
+      expect(body1.circuitId).toBe("listing-binding-v2");
+    });
+
+    it("does not submit listing-binding-v2 when institutionalBinding is omitted", async () => {
+      const client = setupMocks();
+      const { witness, commitment } = contentCommitment(
+        new Uint8Array([1, 2, 3]),
+      );
+
+      await publish(
+        client,
+        Object.freeze({
+          circuitId: "content-commitment-v1.2",
+          witness,
+          commitment,
+          price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
+          did: "did:example:alice",
+        }),
+      );
+
+      const mockFetch = client.fetcher as ReturnType<typeof vi.fn>;
+      const proofCalls = mockFetch.mock.calls.filter(
+        (call) =>
+          String(call[0]).includes("/v1/proofs") &&
+          (call[1] as RequestInit | undefined)?.method === "POST",
+      );
+      expect(proofCalls).toHaveLength(1);
+      const body = JSON.parse((proofCalls[0]![1] as RequestInit).body as string);
+      expect(body.circuitId).toBe("content-commitment-v1.2");
     });
   });
 

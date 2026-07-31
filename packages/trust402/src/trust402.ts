@@ -94,6 +94,20 @@ export type FileInput = Readonly<{
 export type Category = "dataset" | "model" | "code" | "document" | "image" | "audio" | "other";
 
 /**
+ * Optional institutional binding for listing-binding-v2.
+ * When set on PublishInput, publish() generates a membership+listing proof
+ * in addition to the content proof.
+ */
+export type InstitutionalBinding = Readonly<{
+  orgDid: string;
+  memberRoot: string;
+  individualDid: string;
+  merklePath: ReadonlyArray<string>;
+  merkleIndices: ReadonlyArray<number>;
+  memberSalt: string;
+}>;
+
+/**
  * Publish input — circuit-agnostic.
  *
  * The caller is responsible for building the witness according to
@@ -123,6 +137,8 @@ export type PublishInput = Readonly<{
   category?: Category;
   /** Seller payout wallet (0x-prefixed). Required when `file` is set and price > 0. */
   payoutAddress?: string;
+  /** Optional institutional binding — when set, publish() generates a listing-binding-v2 proof. */
+  institutionalBinding?: InstitutionalBinding;
 }>;
 
 /** Full listing returned after successful publish. */
@@ -232,6 +248,99 @@ export const contentCommitment = (
 };
 
 /* ------------------------------------------------------------------ */
+/*  listing-binding-v2 witness builder                                 */
+/* ------------------------------------------------------------------ */
+
+const LISTING_BINDING_V2_CIRCUIT_ID = "listing-binding-v2";
+
+/** Parse a hex string (with or without 0x) to bigint. */
+const hexToBigInt = (hex: string): bigint =>
+  BigInt(hex.startsWith("0x") || hex.startsWith("0X") ? hex : `0x${hex}`);
+
+export type ListingBindingV2Input = Readonly<{
+  commitment: string;
+  orgDid: string;
+  individualDid: string;
+  priceUsdc: number;
+  schemaId: string;
+  memberRoot: string;
+  merklePath: ReadonlyArray<string>;
+  merkleIndices: ReadonlyArray<number>;
+  memberSalt: string;
+  /** Optional salt (hex). When omitted, a random Poseidon1 salt is generated. */
+  salt?: string;
+}>;
+
+export type ListingBindingV2Witness = Readonly<{
+  witness: Readonly<{
+    individualDid: string;
+    salt: string;
+    merklePath: ReadonlyArray<string>;
+    merkleIndices: ReadonlyArray<string>;
+    memberSalt: string;
+    listingRoot: string;
+    commitment: string;
+    orgDid: string;
+    memberRoot: string;
+    schemaId: string;
+    priceUsdc: string;
+  }>;
+  listingRoot: string;
+}>;
+
+/**
+ * Build witness for listing-binding-v2 circuit.
+ *
+ * Computes listingRoot = Poseidon5(schemaId, commitment, priceUsdc, orgDid, salt)
+ * and returns all circuit signals as hex strings (indices as decimal "0"/"1").
+ */
+export const listingBindingV2 = (
+  input: ListingBindingV2Input,
+): ListingBindingV2Witness => {
+  const schemaId = toScalar(input.schemaId);
+  const commitment = hexToBigInt(input.commitment);
+  const priceUsdc = toScalar(input.priceUsdc);
+  const orgDid = toScalar(input.orgDid);
+  const individualDid = toScalar(input.individualDid);
+  const memberRoot = hexToBigInt(input.memberRoot);
+  const memberSalt = hexToBigInt(input.memberSalt);
+  const salt =
+    input.salt !== undefined
+      ? hexToBigInt(input.salt)
+      : poseidon1([hexToBigInt(randomHex(32))]);
+
+  const listingRoot = poseidon5([
+    schemaId,
+    commitment,
+    priceUsdc,
+    orgDid,
+    salt,
+  ]);
+  const listingRootHex = bigintToHex(listingRoot);
+
+  return Object.freeze({
+    witness: Object.freeze({
+      individualDid: bigintToHex(individualDid),
+      salt: bigintToHex(salt),
+      merklePath: Object.freeze(input.merklePath.map((p) =>
+        p.startsWith("0x") || p.startsWith("0X") ? p : `0x${p}`,
+      )),
+      merkleIndices: Object.freeze(
+        input.merkleIndices.map((i) => String(i)),
+      ),
+      memberSalt: bigintToHex(memberSalt),
+      listingRoot: listingRootHex,
+      commitment: bigintToHex(commitment),
+      orgDid: bigintToHex(orgDid),
+      memberRoot: bigintToHex(memberRoot),
+      schemaId: bigintToHex(schemaId),
+      priceUsdc: bigintToHex(priceUsdc),
+    }),
+    listingRoot: listingRootHex,
+  });
+};
+
+/* ------------------------------------------------------------------ */
 /*  CID helper                                                         */
 /* ------------------------------------------------------------------ */
 
@@ -243,6 +352,63 @@ export const computeCid = (bytes: Uint8Array): string =>
 /*  Main publish function                                              */
 /* ------------------------------------------------------------------ */
 
+type ProofSubmission = Readonly<{
+  docHash: string;
+  circuitId: string;
+  proof: string;
+  inputs: ReadonlyArray<string>;
+}>;
+
+/**
+ * Submit a single proof to POST /v1/proofs.
+ * Trust402-specific: environment rides as a query param for billing.
+ */
+const submitProof = async (
+  client: LemmaClient,
+  submission: ProofSubmission,
+  environment: "sandbox" | "production" | undefined,
+): Promise<void> => {
+  const proofPath =
+    environment !== undefined
+      ? `/v1/proofs?environment=${encodeURIComponent(environment)}`
+      : "/v1/proofs";
+  const proofUrl = `${client.apiBase}${proofPath}`;
+  const proofHeaders: Record<string, string> = {
+    "content-type": "application/json",
+  };
+  if (client.apiKey !== undefined) {
+    proofHeaders["x-api-key"] = client.apiKey;
+  }
+
+  let proofRes: Response;
+  try {
+    proofRes = await (client.fetcher ?? fetch)(proofUrl, {
+      method: "POST",
+      headers: proofHeaders,
+      body: JSON.stringify(submission),
+    });
+  } catch (e: unknown) {
+    if (e instanceof Error) throw e;
+    const msg = typeof e === "string" ? e
+      : typeof (e as Readonly<{ message?: unknown }>)?.message === "string"
+        ? String((e as Readonly<{ message: string }>).message)
+        : "Unknown error";
+    const code = (e as Readonly<{ code?: unknown }>)?.code;
+    const err = new Error(
+      `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+    );
+    throw typeof code === "number"
+      ? (Object.assign(err, { code }) as Error & { code: number })
+      : err;
+  }
+  if (!proofRes.ok) {
+    const errBody = await proofRes.json().catch(() => ({}));
+    throw new Error(
+      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+    );
+  }
+};
+
 /**
  * Publish a Trust402 listing.
  *
@@ -250,6 +416,10 @@ export const computeCid = (bytes: Uint8Array): string =>
  * document, submits the proof, and returns a full listing with a
  * deterministic listingRoot identifier (Poseidon5 of schemaId,
  * commitment, price, did, salt).
+ *
+ * When `institutionalBinding` is set, also generates and submits a
+ * listing-binding-v2 proof (listing integrity + membership). The API
+ * accepts one proof per POST, so proofs are submitted sequentially.
  *
  * Circuit-agnostic: the caller chooses the circuitId and builds the
  * witness. Use the exported witness builders for known circuits.
@@ -275,11 +445,35 @@ export const publish = async (
     poseidon2([BigInt(input.commitment), BigInt(chainId)]),
   );
 
-  // ── 2. Generate per-schema proof ──
+  // ── 2. Generate per-schema (content) proof ──
   const proof = await prove(client, {
     circuitId: input.circuitId,
     witness: input.witness,
   });
+
+  // ── 2b. Optional listing-binding-v2 proof ──
+  const binding =
+    input.institutionalBinding !== undefined
+      ? listingBindingV2({
+          commitment: input.commitment,
+          orgDid: input.institutionalBinding.orgDid,
+          individualDid: input.institutionalBinding.individualDid,
+          priceUsdc: input.price.amount,
+          schemaId: input.circuitId,
+          memberRoot: input.institutionalBinding.memberRoot,
+          merklePath: input.institutionalBinding.merklePath,
+          merkleIndices: input.institutionalBinding.merkleIndices,
+          memberSalt: input.institutionalBinding.memberSalt,
+        })
+      : undefined;
+
+  const listingProof =
+    binding !== undefined
+      ? await prove(client, {
+          circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
+          witness: binding.witness,
+        })
+      : undefined;
 
   // ── 3. Register document ──
   const _registerResult = await registerDocument(client, {
@@ -298,87 +492,65 @@ export const publish = async (
     revocation: { root: "" },
   });
 
-  // ── 4. Submit proof ──
-  // Trust402-specific HTTP call: environment rides as a query param so the
-  // proof body stays a clean SubmitProofRequest and the Trust402 proxy uses
-  // it for billing network selection. We call the proxy directly rather than
-  // going through the SDK's proofs.submit() primitive, which is typed for
-  // the bare API Worker endpoint and has no concept of listing environment.
-  //
-  // Errors are normalized to Error instances — the x402 fetcher may throw
-  // non-Error objects (e.g. wallet provider errors like { code: 4001 }) and
-  // the catch block in PublishForm expects Error instances for message checks.
-  const proofPath =
-    input.environment !== undefined
-      ? `/v1/proofs?environment=${encodeURIComponent(input.environment)}`
-      : "/v1/proofs";
-  const proofUrl = `${client.apiBase}${proofPath}`;
-  const proofHeaders: Record<string, string> = {
-    "content-type": "application/json",
-    ...(client.apiKey !== undefined ? { "x-api-key": client.apiKey } : {}),
-  };
-  const proofRes = await (
-    (client.fetcher ?? fetch)(proofUrl, {
-      method: "POST",
-      headers: proofHeaders,
-      body: JSON.stringify({
-        docHash,
-        circuitId: input.circuitId,
-        proof: proof.proof,
-        // Prefer prover public signals (multi-input circuits). Fall back to the
-        // listing commitment when the SHA-256 prover path returns no signals.
-        inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
-      }),
-      // imperative: catch block normalizes non-Error throws from wallet/x402
-      // fetcher into Error instances — downstream code expects instanceof Error
-    }).catch((e: unknown): never => {
-      throw e instanceof Error
-        ? e
-        : (() => {
-            const msg =
-              typeof e === "string"
-                ? e
-                : typeof (e as Readonly<{ message?: unknown }>).message ===
-                    "string"
-                  ? (e as Readonly<{ message: string }>).message
-                  : "Unknown error";
-            const code = (e as Readonly<{ code?: unknown }>).code;
-            const err = new Error(
-              `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
-            );
-            // imperative: Object.assign mutates Error to add `code` property
-            // while preserving instanceof Error — spread would lose the prototype
-            return typeof code === "number"
-              ? // eslint-disable-next-line functional/immutable-data
-                Object.assign(err, { code })
-              : err;
-          })();
-    })
+  // ── 4. Submit proof(s) sequentially ──
+  // Content proof first, then listing-binding-v2 when institutional.
+  // SubmitProofRequest is one proof per call (spec unchanged).
+  await submitProof(
+    client,
+    {
+      docHash,
+      circuitId: input.circuitId,
+      proof: proof.proof,
+      // Prefer prover public signals (multi-input circuits). Fall back to the
+      // listing commitment when the SHA-256 prover path returns no signals.
+      inputs: proof.inputs.length > 0 ? proof.inputs : [input.commitment],
+    },
+    input.environment,
   );
-  // imperative: guard clause with async body — no ternary can wrap await
-  // eslint-disable-next-line functional/no-conditional-statements
-  if (!proofRes.ok) {
-    const errBody = (await proofRes
-      .json()
-      .catch((_err: unknown): Record<string, unknown> => ({}))) as Record<string, unknown>;
-    throw new Error(
-      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+
+  if (listingProof !== undefined && binding !== undefined) {
+    await submitProof(
+      client,
+      {
+        docHash,
+        circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
+        proof: listingProof.proof,
+        inputs: listingProof.inputs.length > 0
+          ? listingProof.inputs
+          : [
+              binding.listingRoot,
+              binding.witness.commitment,
+              binding.witness.orgDid,
+              binding.witness.memberRoot,
+              binding.witness.schemaId,
+              binding.witness.priceUsdc,
+            ],
+      },
+      input.environment,
     );
   }
 
-  // ── 5. Compute listingRoot (deterministic identifier, no ZK proof) ──
-  const schemaIdScalar = toScalar(input.circuitId);
-  const priceUsdc = toScalar(input.price.amount);
-  const didScalar = toScalar(input.did);
-  const salt = toScalar(randomHex(32));
-  const listingRoot = poseidon5([
-    schemaIdScalar,
-    BigInt(input.commitment),
-    priceUsdc,
-    didScalar,
-    salt,
-  ]);
-  const listingRootHex = bigintToHex(listingRoot);
+  // ── 5. Compute listingRoot ──
+  // With institutional binding: use the ZK-bound listingRoot (orgDid).
+  // Without: client-side Poseidon5 with seller did (unchanged).
+  const listingRootHex =
+    binding !== undefined
+      ? binding.listingRoot
+      : (() => {
+          const schemaIdScalar = toScalar(input.circuitId);
+          const priceUsdc = toScalar(input.price.amount);
+          const didScalar = toScalar(input.did);
+          const salt = toScalar(randomHex(32));
+          return bigintToHex(
+            poseidon5([
+              schemaIdScalar,
+              BigInt(input.commitment),
+              priceUsdc,
+              didScalar,
+              salt,
+            ]),
+          );
+        })();
 
   const listing: Listing = Object.freeze({
     listingRoot: listingRootHex,
