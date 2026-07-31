@@ -8,7 +8,7 @@ secondary_categories: ["ai-decision-integrity", "identity-auth"]
 incident_date: 2026-06-22
 published: 2026-07-31
 authors: ["Lemma Critical Team"]
-related_pack: []
+related_pack: ["B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "076-dillon-frt-wrongful-arrest", "078-tenncare-connect-medicaid-eligibility", "056-mchire-paradox-recruiting-auth"]
 status: published
 version: "1.0"
@@ -27,7 +27,7 @@ Mobley v. Workday, Inc.（米カリフォルニア州北部地区連邦地裁、
 
 - 訴訟は Workday の AI 応募者スクリーニングが、その顧客企業の採用過程で応募者を人種・年齢・障害に基づいて不利に扱ったとする集団訴訟である。筆頭原告は Derek Mobley 氏。
 - 原告側は、就業ギャップなどの proxy（代理指標）を通じて応募者が選別され、防御対象の属性と相関する形で不利益が生じたと主張する。数値（100 件超の落選、応募から 1 時間以内や深夜の自動不採用）は原告側の申立てである。
-- 2026 年 6 月 22 日、Lin 判事は Workday の抗弁を一部斥け、Workday が「単なるツール提供者」ではなく差別責任の射程に入り得るとして、FEHA（カリフォルニア公正雇用住宅法）に基づく主張と、一部原告の ADA（米国障害者法）に基づく proxy 差別主張の続行を許可した。
+- 2026 年 6 月 22 日、Lin 判事は Workday の抗弁を一部斥け、Workday が「単なるツール提供者」ではなく差別責任の射程に入り得るとして、FEHA（カリフォルニア公正雇用住宅法）に基づく主張と、ADA（米国障害者法）に基づく proxy 差別主張の一部の続行を許可した。
 
 事案は次の連鎖で成立している。
 
@@ -42,7 +42,7 @@ Mobley v. Workday, Inc.（米カリフォルニア州北部地区連邦地裁、
 - 2024（前後）: 早期の申立て段階で、Workday の「agent（代理人）」該当性をめぐる判断が示され、原告に補正の機会が与えられた。
 - 2025-05: ADEA（年齢差別禁止法）に基づく全国規模の集団（collective）の暫定認証が認められる。
 - 2026-05-29（前後）: Laurel Beeler 治安判事が、Workday のバイアス検査データの開示強制を却下。弁護士・依頼者間の秘匿特権が当該データを保護すると判断（同時に、顧客の応募者データも Rule 34 の「支配」要件を満たさないとして開示強制を却下）。
-- 2026-06-22: Rita F. Lin 判事が、Workday の抗弁を一部斥け、FEHA 主張および一部の ADA proxy 差別主張の続行を許可。
+- 2026-06-22: Rita F. Lin 判事が、Workday の抗弁を一部斥け、FEHA 主張および ADA proxy 差別主張の一部の続行を許可。
 
 > 注：本 Brief の事実は連邦地裁の命令・法律事務所の分析・確立メディアの報道に基づく。訴訟は係争中であり、応募者が受けた不利益や自動不採用の態様に関する記述は原告側の申立てを含む。集団認証の範囲や数値の細部には未確定の要検証事項がある。本 Brief は当事者の断罪ではなく、不利益処分の前にその判定が独立に検証・認可されたかを証明できる層が欠けているという構造に焦点を当てる。
 
@@ -72,7 +72,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **独立検証の証跡化**：判定が人間または独立の層によって検証・認可されたか（あるいはされなかったか）を、当事者・監査・司法手続きが後から独立に立証できる証跡として残す。検証材料が手続き上も届かない状態を、設計として塞ぐ。
 - **選択的な処分記録**：誰の・どの判定が・どの認可の下で不利益処分に用いられたかを、改ざんできない記録として保持する。争いが生じた場合に、処分の経路と認可の状態を独立に示せる。
 
-Lemma は判定の公平性そのものを保証する製品ではない。射程は、判定が不利益処分に用いられる前に独立に検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残すことにある。差別の有無や適否の判断は、あくまで手続きと法が行う。検出（差別の疑いの把握、統計的分析、係争を通じた事後の救済）と、事前証明（処分の前に判定の裏付けと認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた不利益の把握と回復に、後者は不利益が確定する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [検証可能 AI · Verifiable AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) を参照。
+Lemma は判定の公平性そのものを保証する製品ではない。射程は、判定が不利益処分に用いられる前に独立に検証・認可された事実（あるいはされなかった事実）を、後から改ざんできない証跡として残すことにある。差別の有無や適否の判断は、あくまで手続きと法が行う。検出（差別の疑いの把握、統計的分析、係争を通じた事後の救済）と、事前証明（処分の前に判定の裏付けと認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた不利益の把握と回復に、後者は不利益が確定する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) を参照。
 
 ## 6. Sources
 
@@ -83,4 +83,4 @@ Lemma は判定の公平性そのものを保証する製品ではない。射�
 - Norton Rose Fulbright, “Behind the privilege shield: Safeguarding AI bias-testing data in employment decisions”（Inside Tech Law、2026-06）— <https://www.insidetechlaw.com/blog/2026/06/behind-the-privilege-shield-safeguarding-ai-bias-testing-data-in-employment-decisions>
 - Mobley v. Workday, Inc., No. 3:23-cv-00770（N.D. Cal.）— 事件ドケット（一次） — <https://www.courtlistener.com/docket/66831340/mobley-v-workday-inc/>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [検証可能 AI · Verifiable AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) · [Brief 012（Robert Williams 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076（Robert Dillon 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/076-dillon-frt-wrongful-arrest/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 02 — 検証可能 AI](https://lemma.frame00.com/ja/pillars/verifiable-ai/) · [Brief 012（Robert Williams 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076（Robert Dillon 誤認逮捕）](https://lemma.frame00.com/ja/critical/briefs/076-dillon-frt-wrongful-arrest/)

@@ -8,7 +8,7 @@ secondary_categories: ["ai-decision-integrity", "identity-auth"]
 incident_date: 2026-06-22
 published: 2026-07-31
 authors: ["Lemma Critical Team"]
-related_pack: []
+related_pack: ["B-regulatory"]
 related_briefs: ["012-williams-frt-wrongful-arrest", "076-dillon-frt-wrongful-arrest", "078-tenncare-connect-medicaid-eligibility", "056-mchire-paradox-recruiting-auth"]
 status: published
 version: "1.0"
@@ -27,7 +27,7 @@ Mobley v. Workday, Inc. (N.D. Cal., No. 3:23-cv-00770) is a class action allegin
 
 - The suit is a class action alleging that Workday's AI applicant screening treated candidates unfavorably on the basis of race, age, and disability across its customers' hiring processes. The lead plaintiff is Derek Mobley.
 - Plaintiffs allege that applicants were sorted through proxies — such as employment gaps — in ways that produced disadvantage correlated with protected attributes. The figures (over 100 rejections; automated rejections within an hour or late at night) are the plaintiff's allegations.
-- On June 22, 2026, Judge Lin rejected part of Workday's defense, holding that Workday is not merely a "tool provider" but may fall within the reach of discrimination liability, and allowed the FEHA (California Fair Employment and Housing Act) claims and one plaintiff's ADA (Americans with Disabilities Act) proxy-discrimination claim to proceed.
+- On June 22, 2026, Judge Lin rejected part of Workday's defense, holding that Workday is not merely a "tool provider" but may fall within the reach of discrimination liability, and allowed the FEHA (California Fair Employment and Housing Act) claims and part of the ADA (Americans with Disabilities Act) proxy-discrimination claims to proceed.
 
 The matter takes shape through the following chain.
 
@@ -42,7 +42,7 @@ The matter takes shape through the following chain.
 - 2024 (around): at an early pleading stage, a ruling addresses whether Workday qualifies as an "agent," and plaintiffs are given leave to amend.
 - May 2025: preliminary certification of a nationwide ADEA (Age Discrimination in Employment Act) collective is granted.
 - 2026-05-29 (around): Magistrate Judge Laurel Beeler denies the motion to compel production of Workday's bias-testing data, finding it protected by attorney-client privilege (and separately denies compelling customers' applicant data as failing Rule 34's "control" requirement).
-- 2026-06-22: Judge Rita F. Lin rejects part of Workday's defense and allows the FEHA claims and one plaintiff's ADA proxy-discrimination claim to proceed.
+- 2026-06-22: Judge Rita F. Lin rejects part of Workday's defense and allows the FEHA claims and part of the ADA proxy-discrimination claims to proceed.
 
 > Note: the facts here rest on federal-court orders, law-firm analyses, and established media reporting. The litigation is ongoing, and statements about the disadvantage applicants experienced and the manner of automated rejection include the plaintiff's allegations. The scope of any collective certification and the details of the figures include unsettled items to be verified. This Brief does not condemn any party; it focuses on the structure in which there is no way to prove, before the adverse action, that the decision was independently verified and authorized.
 
@@ -82,6 +82,5 @@ Lemma is not a product that guarantees the fairness of a decision. Its scope is 
 - HR Executive, “Judge refuses to dismiss most Workday hiring bias allegations” (2026-06) — <https://hrexecutive.com/judge-refuses-to-dismiss-most-workday-hiring-bias-allegations/>
 - Norton Rose Fulbright, “Behind the privilege shield: Safeguarding AI bias-testing data in employment decisions” (Inside Tech Law, 2026-06) — <https://www.insidetechlaw.com/blog/2026/06/behind-the-privilege-shield-safeguarding-ai-bias-testing-data-in-employment-decisions>
 - Mobley v. Workday, Inc., No. 3:23-cv-00770 (N.D. Cal.) — case docket (primary) — <https://www.courtlistener.com/docket/66831340/mobley-v-workday-inc/>
-- Note: before publication, obtain and add as primary sources the originals of Judge Lin's 2026-06-22 order and Magistrate Judge Beeler's discovery order (PACER / court documents), and reconcile the scope of any collective certification and the status of the numerical allegations.
 
 References: [Proof-as-Auth: sign in without sending your key](/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Verifiable AI](/pillars/verifiable-ai/) · [Brief 012 (Robert Williams wrongful arrest)](/critical/briefs/012-williams-frt-wrongful-arrest/) · [Brief 076 (Robert Dillon wrongful arrest)](/critical/briefs/076-dillon-frt-wrongful-arrest/)

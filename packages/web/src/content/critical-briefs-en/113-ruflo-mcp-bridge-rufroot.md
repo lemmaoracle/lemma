@@ -12,8 +12,8 @@ related_pack: ["A-incident-response"]
 related_briefs: ["066-litellm-ai-gateway-privilege-escalation", "088-kestra-auth-filter-bypass-rce", "046-servicenow-unauthenticated-api", "095-amazon-q-mcp-auto-execution", "073-shadowmq-pickle-zmq-pattern"]
 status: published
 version: "1.0"
-og_lead_ja: "Ruflo の MCP Bridge に無認証 RCE（CVE-2026-59726）、被害者の鍵で不正 swarm・記憶汚染が永続化"
-og_lead_en: "Ruflo MCP Bridge unauthenticated RCE (CVE-2026-59726): rogue swarms on the victim's keys, memory poisoning that persists"
+og_lead_ja: "Ruflo MCP Bridge に無認証 RCE（CVE-2026-59726）、記憶汚染はパッチ後も残る"
+og_lead_en: "Ruflo MCP Bridge unauthenticated RCE: memory poisoning survives the patch"
 gap_detected: "The flaw was found through responsible disclosure and the maintainer shipped a patch and advisory within 24 hours."
 gap_missing: "A layer that independently verifies, before execution, per-call tool-call authorization and the provenance and integrity of the agent's memory (learning store)."
 gap_fix: "Prove tool-call authorization before execution and independently verify agent-memory provenance and integrity, excluding unauthenticated execution and the persistence of poisoning."

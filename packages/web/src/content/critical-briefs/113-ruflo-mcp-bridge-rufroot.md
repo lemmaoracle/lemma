@@ -12,8 +12,8 @@ related_pack: ["A-incident-response"]
 related_briefs: ["066-litellm-ai-gateway-privilege-escalation", "088-kestra-auth-filter-bypass-rce", "046-servicenow-unauthenticated-api", "095-amazon-q-mcp-auto-execution", "073-shadowmq-pickle-zmq-pattern"]
 status: published
 version: "1.0"
-og_lead_ja: "Ruflo の MCP Bridge に無認証 RCE（CVE-2026-59726）、被害者の鍵で不正 swarm・記憶汚染が永続化"
-og_lead_en: "Ruflo MCP Bridge unauthenticated RCE (CVE-2026-59726): rogue swarms on the victim's keys, memory poisoning that persists"
+og_lead_ja: "Ruflo MCP Bridge に無認証 RCE（CVE-2026-59726）、記憶汚染はパッチ後も残る"
+og_lead_en: "Ruflo MCP Bridge unauthenticated RCE: memory poisoning survives the patch"
 gap_detected: "脆弱性は責任開示で発見され、メンテナが 24 時間以内にパッチと勧告を公開した。"
 gap_missing: "ツール呼び出しごとの認可と、エージェントの記憶（学習ストア）の来歴・完全性を、実行の前に独立に確かめる層。"
 gap_fix: "実行前にツール呼び出しを認可で証明し、エージェント記憶の来歴・完全性を独立検証して、無認証実行と汚染の永続化を排除する。"
@@ -36,7 +36,7 @@ Ruflo（旧 Claude Flow。Codex や Claude Code 向けに AI エージェント�
 3. API 鍵の窃取：docker-compose が各プロバイダの鍵を環境変数として渡すため、コンテナ環境変数を読み取って鍵を収集する。
 4. エージェントの武器化：被害者の鍵で `swarm_init`・`agent_spawn` を呼び、攻撃者制御の swarm を起動する。
 5. 記憶の汚染：`agentdb_pattern-store` を通じて学習パイプラインへ汚染パターンを注入し、将来の応答を攻撃者の指示へ誘導する。汚染はパッチ後も学習ストアに残り得る。
-6. 永続化：内部ネットワーク上の DB からの会話データ持ち出し、コンテナへのバックドア書き込みにより、再起動をまたいで足場を維持する。
+6. 永続化：内部ネットワーク上の認証なしの DB からの会話データ持ち出し、コンテナへのバックドア書き込みにより、再起動をまたいで足場を維持する。
 
 ## 3. 時系列 — 公表と対応
 
@@ -72,7 +72,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **最小権限と秘密の分離**：シェル実行・鍵・DB へのアクセスを、単一のブリッジに束ねず、行動ごとの認可の下で分離する。一つの無認証リクエストが全権限に到達する経路を、設計として断つ。
 - **選択的な実行記録**：どのツールが・どの認可の下で呼ばれ、どのパターンが・どの来歴で記憶に入ったかを、後から改ざんできない証跡として残す。事後に、実行経路と記憶の来歴を独立に立証できる。
 
-Lemma は脆弱性そのものをパッチする製品ではなく、露出したエンドポイントを塞ぐものでもない。射程は、ツール呼び出しと記憶の書き込みが起きる前に、認可と来歴を独立に検証し、無認証実行と汚染パターンの通過を実行前に排除することにある。検出（脆弱性の発見、パッチ、経路の閉鎖）と、事前証明（実行の前に認可と記憶の来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は露出した経路の把握と閉鎖に、後者はパッチ後も残る記憶の汚染を実行前に断つことに働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [エージェント権限 · Agent Authority](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) を参照。
+Lemma は脆弱性そのものをパッチする製品ではなく、露出したエンドポイントを塞ぐものでもない。射程は、ツール呼び出しと記憶の書き込みが起きる前に、認可と来歴を独立に検証し、無認証実行と汚染パターンの通過を実行前に排除することにある。検出（脆弱性の発見、パッチ、経路の閉鎖）と、事前証明（実行の前に認可と記憶の来歴を独立検証する証跡）は、代替ではなく補完の関係にある。前者は露出した経路の把握と閉鎖に、後者はパッチ後も残る記憶の汚染を実行前に断つことに働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) を参照。
 
 ## 6. Sources
 
@@ -82,4 +82,4 @@ Lemma は脆弱性そのものをパッチする製品ではなく、露出し�
 - SecurityWeek, “Critical Ruflo Flaw Lets Attackers Spawn Rogue AI Swarms”（2026-07）— <https://www.securityweek.com/critical-ruflo-flaw-lets-attackers-spawn-rogue-ai-swarms/>
 - NVD, “CVE-2026-59726”（2026-07）— <https://nvd.nist.gov/vuln/detail/CVE-2026-59726>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [エージェント権限 · Agent Authority](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) · [Brief 095（Amazon Q の MCP 自動実行）](https://lemma.frame00.com/ja/critical/briefs/095-amazon-q-mcp-auto-execution/) · [Brief 066（LiteLLM の権限昇格）](https://lemma.frame00.com/ja/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) · [Brief 095（Amazon Q の MCP 自動実行）](https://lemma.frame00.com/ja/critical/briefs/095-amazon-q-mcp-auto-execution/) · [Brief 066（LiteLLM の権限昇格）](https://lemma.frame00.com/ja/critical/briefs/066-litellm-ai-gateway-privilege-escalation/)

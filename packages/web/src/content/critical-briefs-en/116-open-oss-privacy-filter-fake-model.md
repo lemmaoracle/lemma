@@ -39,7 +39,7 @@ The attack succeeds through the following chain.
 
 ## 3. Timeline — disclosure and response
 
-- 2026-05-07: HiddenLayer identifies malicious code in `Open-OSS/privacy-filter` and discloses. At the time the repository sat among the platform's top trending, with over 200K downloads.
+- 2026-05-07: HiddenLayer identifies malicious code in `Open-OSS/privacy-filter` and discloses. At the time the repository sat among the platform's top trending, with over 240,000 downloads.
 - 2026-05-07: HiddenLayer reports its findings to Hugging Face's security team.
 - 2026-05-08: Hugging Face confirms a terms-of-service violation and removes the repository.
 

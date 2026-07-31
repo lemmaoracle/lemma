@@ -12,8 +12,8 @@ related_pack: ["A-incident-response"]
 related_briefs: ["095-amazon-q-mcp-auto-execution", "094-cursor-duneslide-sandbox-escape", "037-agent-config-auto-execution", "099-agentjacking-sentry-mcp", "098-bioshocking-agentic-browser-context"]
 status: published
 version: "1.0"
-og_lead_ja: "AWS Kiro に RCE（CVE-2026-10591）：エージェントが自らの MCP 設定を実行前検証なしに書き換える"
-og_lead_en: "RCE in AWS Kiro (CVE-2026-10591): the agent rewrites its own MCP config with no pre-execution check"
+og_lead_ja: "AWS Kiro に RCE：エージェントが自らの MCP 設定を書き換える"
+og_lead_en: "RCE in AWS Kiro: the agent rewrites its own MCP config"
 gap_detected: "プロンプトインジェクションの検知と承認ダイアログは設計上存在し、脆弱性は責任ある開示を経て修正された。"
 gap_missing: "エージェントが自らの認可設定を書き換える行動を、実行の前に来歴と権限で独立に確かめる層。"
 gap_fix: "設定＝認可の書き込みと、それに基づく実行を、実行前に来歴と権限で独立検証し、自己改変された設定に基づく実行を認可の欠如として排除する。"
@@ -71,7 +71,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **実行パスの分離・最小環境**：実行に直結する設定への書き込みを、通常のファイル編集から分離し、最小権限の環境に閉じる。書き込みが起きても、認可のない実行に直結させない。
 - **改変の選択的記録**：どの設定が・どの来歴と認可の下で・いつ書き換えられ実行に至ったかを、後から改ざんできない証跡として残す。事後に、実行の起点と認可の状態を独立に立証できる。
 
-Lemma はプロンプトインジェクションそのものを消す製品ではなく、モデルの判断を代替するものでもない。射程は、設定の書き込みとそれに基づく実行が起きる前に、来歴と認可を独立に検証し、自己改変された設定に基づく実行を実行前に排除することにある。検出（インジェクションの検知、承認ダイアログ、事後の修正）と、事前証明（設定の書き込みと実行の前に来歴と認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた事象の把握と修正に、後者は被害が成立する前の認可確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [エージェント権限 · Agent Authority](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) を参照。
+Lemma はプロンプトインジェクションそのものを消す製品ではなく、モデルの判断を代替するものでもない。射程は、設定の書き込みとそれに基づく実行が起きる前に、来歴と認可を独立に検証し、自己改変された設定に基づく実行を実行前に排除することにある。検出（インジェクションの検知、承認ダイアログ、事後の修正）と、事前証明（設定の書き込みと実行の前に来歴と認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた事象の把握と修正に、後者は被害が成立する前の認可確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) を参照。
 
 ## 6. Sources
 
@@ -80,4 +80,4 @@ Lemma はプロンプトインジェクションそのものを消す製品で�
 - Kodem Security, “AWS Kiro Agentic IDE RCE via Prompt Injection and MCP Config”（2026-07）— <https://www.kodemsecurity.com/resources/aws-kiro-agentic-ide-rce-prompt-injection-mcp-config-vulnerability>
 - The Hacker News, “AWS Kiro Flaw Let Poisoned Web Page Trigger Remote Code Execution”（2026-07）— <https://thehackernews.com/2026/07/aws-kiro-flaw-let-poisoned-web-page.html>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [エージェント権限 · Agent Authority](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) · [Brief 095（Amazon Q の MCP 自動実行）](https://lemma.frame00.com/ja/critical/briefs/095-amazon-q-mcp-auto-execution/) · [Brief 037（エージェント設定の自動実行）](https://lemma.frame00.com/ja/critical/briefs/037-agent-config-auto-execution/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 03 — エージェント権限証明](https://lemma.frame00.com/ja/pillars/agent-authority-proof/) · [Brief 095（Amazon Q の MCP 自動実行）](https://lemma.frame00.com/ja/critical/briefs/095-amazon-q-mcp-auto-execution/) · [Brief 037（エージェント設定の自動実行）](https://lemma.frame00.com/ja/critical/briefs/037-agent-config-auto-execution/)

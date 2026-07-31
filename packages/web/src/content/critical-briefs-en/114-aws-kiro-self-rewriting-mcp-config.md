@@ -12,8 +12,8 @@ related_pack: ["A-incident-response"]
 related_briefs: ["095-amazon-q-mcp-auto-execution", "094-cursor-duneslide-sandbox-escape", "037-agent-config-auto-execution", "099-agentjacking-sentry-mcp", "098-bioshocking-agentic-browser-context"]
 status: published
 version: "1.0"
-og_lead_ja: "AWS Kiro に RCE（CVE-2026-10591）：エージェントが自らの MCP 設定を実行前検証なしに書き換える"
-og_lead_en: "RCE in AWS Kiro (CVE-2026-10591): the agent rewrites its own MCP config with no pre-execution check"
+og_lead_ja: "AWS Kiro に RCE：エージェントが自らの MCP 設定を書き換える"
+og_lead_en: "RCE in AWS Kiro: the agent rewrites its own MCP config"
 gap_detected: "Prompt-injection detection and an approval dialog existed by design, and the vulnerability was fixed through responsible disclosure."
 gap_missing: "A layer that independently verifies, by provenance and authorization, the agent's act of rewriting its own authorization settings before execution."
 gap_fix: "Verify the write to settings-as-authorization, and the execution based on them, by provenance and authorization before execution — excluding execution based on self-modified settings as lacking authorization."
