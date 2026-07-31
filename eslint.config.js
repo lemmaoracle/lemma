@@ -20,6 +20,8 @@ export default tseslint.config(
       "**/examples/**",
       "packages/feeds/forex-proof-pipeline.ts",
       "packages/feeds/register-dc-v11.ts",
+      "packages/feeds/test-composite-pipeline.ts",
+      "packages/feeds/test-composite.ts",
     ],
   },
   // Base TypeScript configuration (excludes test files)
