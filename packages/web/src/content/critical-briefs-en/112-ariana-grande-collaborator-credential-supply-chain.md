@@ -25,7 +25,7 @@ On July 27, 2026, Ariana Grande sued a set of unidentified attackers (John Doe 1
 
 ## 2. What happened
 
-- The suit was filed on July 27, 2026 in Los Angeles Superior Court against John Doe 1 and Does 2–100, alleging invasion of privacy, violation of California's Comprehensive Data Access and Fraud Act (CDAFA), and conversion.
+- The suit was filed on July 27, 2026 in Los Angeles Superior Court against John Doe 1 and Does 2–100, alleging invasion of privacy, violation of California's Comprehensive Computer Data Access and Fraud Act (CDAFA), and conversion.
 - The leaks are described as recurring since Grande's 2011 debut. In 2023 alone, 45 unreleased songs were stolen and leaked. The material spans unreleased masters and demos, recording-session footage, music videos, behind-the-scenes photos and videos, and album and photoshoot outtakes.
 - The common method was not to breach Grande herself, but to compromise the personal accounts and devices of close collaborators, then resell the material on the dark web.
 
@@ -55,7 +55,7 @@ Response and industry movement after disclosure are as follows.
 
 ## 4. Why it wasn't stopped
 
-The failure here is not that Grande's own security was weak, nor that any single attacker was exceptionally sophisticated. It is that the collaborators who connect her to the material — photographers, producers, a technician — had accounts and devices whose access and hand-offs were never independently verified as legitimate at the moment they occurred. Detection worked: the leaks were caught, the resale is traceable, and the attackers may be identified through discovery. What was missing sits earlier — verification at the instant access and hand-off happen.
+The failure here is not that Grande's own security was weak, nor that any single attacker was exceptionally sophisticated. It is that the collaborators who connect her to the material — photographers, producers, a technician — had accounts and devices whose access and hand-offs were never independently verified as legitimate at the moment they occurred. Detection worked: the leaks were caught, the resale is traceable, and the attackers may be identified through discovery. What was missing sits earlier — verification at the instant access and hand-off happen. This is a gap in a structurally independent layer, outside the reach of the detection layer.
 
 However robust the protected party is, the circle of trust is only as strong as the weakest collaborator endpoint. The 2019 Dropbox credentials, the 2020 device, and the 2024 impersonation all looked like "legitimate access by a legitimate collaborator." The stolen credentials were real, the impersonating domain looked real, and the party receiving the hand-off looked like a trusted associate. The appearance of a presented credential or sender stood in for trust, and whether that credential was actually authorized for this action, right now, was never asked before the action.
 

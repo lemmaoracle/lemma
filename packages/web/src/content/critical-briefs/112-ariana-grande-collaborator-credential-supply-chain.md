@@ -25,7 +25,7 @@ gap_fix: "アクセスと受け渡しの前に、認証情報の来歴と認可�
 
 ## 2. 何が起きたか
 
-- 提訴は 2026 年 7 月 27 日、ロサンゼルス郡上級裁判所。被告は John Doe 1 と Does 2–100。主張はプライバシー侵害、カリフォルニア州包括的データアクセス・詐欺法（CDAFA）違反、および conversion（動産の不法領得）。
+- 提訴は 2026 年 7 月 27 日、ロサンゼルス郡上級裁判所。被告は John Doe 1 と Does 2–100。主張はプライバシー侵害、カリフォルニア州包括的コンピュータデータアクセス・詐欺法（CDAFA）違反、および conversion（動産の不法領得）。
 - 漏洩は 2011 年のデビュー以降、断続的に続いてきたとされる。2023 年だけで未発表曲 45 曲が窃取・流出した。対象素材は未発表マスターとデモ、録音セッションの映像、ミュージックビデオ、舞台裏の写真・動画、アルバムや撮影のアウトテイクを含む。
 - 手口の共通点は、本人ではなく、近しく働く協力者の個人アカウント・端末を侵害し、得た素材をダークウェブで転売した点にある。
 
@@ -55,7 +55,7 @@ gap_fix: "アクセスと受け渡しの前に、認証情報の来歴と認可�
 
 ## 4. なぜ止まらなかったか
 
-この事案の失敗は、グランデ本人のセキュリティが弱かったことでも、個々の攻撃者が突出して巧妙だったことでもない。本人と素材をつなぐ協力者——フォトグラファー、プロデューサー、技師——のアカウントと端末が、そこを通るアクセスと受け渡しのたびに正規かを独立に確かめられなかったことにある。検出は効いていた。漏洩は把握され、転売は追跡され得るし、攻撃者は開示手続きで特定され得る。効かなかったのは、その手前——アクセスと受け渡しが起きる瞬間の検証である。
+この事案の失敗は、グランデ本人のセキュリティが弱かったことでも、個々の攻撃者が突出して巧妙だったことでもない。本人と素材をつなぐ協力者——フォトグラファー、プロデューサー、技師——のアカウントと端末が、そこを通るアクセスと受け渡しのたびに正規かを独立に確かめられなかったことにある。検出は効いていた。漏洩は把握され、転売は追跡され得るし、攻撃者は開示手続きで特定され得る。効かなかったのは、その手前——アクセスと受け渡しが起きる瞬間の検証である。これは検出層の射程外にある、構造的に独立した層の落差である。
 
 守るべき対象がどれだけ堅牢でも、信頼の輪は最も弱い協力者のエンドポイントの強度で決まる。2019 年の Dropbox 認証情報、2020 年の端末、2024 年のなりすましは、いずれも「正規の協力者による正規のアクセス」に見えた。盗まれた認証情報は本物であり、なりすましのドメインは本物らしく、受け渡しの相手は信頼された関係者に見えた。差し出された資格情報や送信元の見た目が信頼の代用として通り、その資格情報がいまこの行動を本当に認可されているかは、行動の前に問われなかった。
 
@@ -74,7 +74,7 @@ Lemma がこの primitive に対して提示する設計は次の通りである
 - **認証情報のライフサイクル検証**：古い・失効すべき・共有された認証情報が「正規」として通り続けない設計。認証情報の発行から失効までの状態を、行動のたびに独立に確認する。
 - **選択的な受け渡し記録**：誰が・どの範囲で・どの認可の下で素材にアクセスし受け渡したかを、後から改ざんできない証跡として残す。漏洩が起きた場合に、経路と認可の状態を独立に立証できる。
 
-Lemma は素材の窃盗そのものを防ぐ製品ではなく、闇市場での価値を左右するものでもない。射程は、アクセスと受け渡しが起きる前に、認証情報の来歴と認可を独立に検証し、なりすましと失効済み認証情報の通過を実行前に排除することにある。検出（漏洩の把握、転売の追跡、提訴による事後の救済）と、事前証明（アクセスと受け渡しが起きる前に認証情報の来歴と認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と回復に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [来歴 · Verifiable Origin](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照。
+Lemma は素材の窃盗そのものを防ぐ製品ではなく、闇市場での価値を左右するものでもない。射程は、アクセスと受け渡しが起きる前に、認証情報の来歴と認可を独立に検証し、なりすましと失効済み認証情報の通過を実行前に排除することにある。検出（漏洩の把握、転売の追跡、提訴による事後の救済）と、事前証明（アクセスと受け渡しが起きる前に認証情報の来歴と認可を独立検証する証跡）は、代替ではなく補完の関係にある。前者は起きた被害の把握と回復に、後者は被害が成立する前の信頼確立に働く。設計の詳細は [「Proof-as-Auth: 鍵を一度も送らずにサインインする」](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/)（Lemma、2026-05）、適用範囲は [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) を参照。
 
 ## 6. Sources
 
@@ -84,4 +84,4 @@ Lemma は素材の窃盗そのものを防ぐ製品ではなく、闇市場で�
 - CBC News, “Ariana Grande sues hackers for leaking and selling her unreleased music for years”（2026-07）— <https://www.cbc.ca/news/entertainment/ariana-grande-sues-hackers-leaking-music-9.7287374>
 - IBTimes UK, “Ariana Grande Sues Dark Web Hackers Over Theft of 45 Unreleased Songs”（2026-07）— <https://www.ibtimes.co.uk/ariana-grande-lawsuit-unreleased-songs-dark-web-1811135>
 
-参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [来歴 · Verifiable Origin](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 047（OpenClaw のエージェント・フィッシング）](https://lemma.frame00.com/ja/critical/briefs/047-openclaw-agent-phishing/) · [Brief 075（Klue→Salesforce）](https://lemma.frame00.com/ja/critical/briefs/075-klue-oauth-salesforce-credential-lifecycle/)
+参照: [Proof-as-Auth: 鍵を一度も送らずにサインインする](https://lemma.frame00.com/ja/blog/proof-as-auth-sign-in-without-sending-your-key/) · [Pillar 01 — 来歴証明](https://lemma.frame00.com/ja/pillars/verifiable-origin/) · [Brief 047（OpenClaw のエージェント・フィッシング）](https://lemma.frame00.com/ja/critical/briefs/047-openclaw-agent-phishing/) · [Brief 075（Klue→Salesforce）](https://lemma.frame00.com/ja/critical/briefs/075-klue-oauth-salesforce-credential-lifecycle/)
