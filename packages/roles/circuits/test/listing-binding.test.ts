@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { poseidon2, poseidon5 } from "poseidon-lite";
+import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BUILD_DIR = path.resolve(__dirname, "../build");
@@ -115,7 +115,7 @@ const buildValidInput = (
     "0x1a2b3c4d5e6f7890abcdef012345678901234567890abcdef01234567890123456",
   );
   const priceUsdc = toScalar(42000000);
-  const orgDid = toScalar("did:web:example.edu");
+  const orgDid = poseidon1([toScalar("org-secret-test-key")]);
   const individualDid =
     overrides.individualDid ?? toScalar("did:example:alice-402");
   const salt = toScalar("listing-binding-v2-test-salt");

@@ -101,6 +101,7 @@ export type Category = "dataset" | "model" | "code" | "document" | "image" | "au
  * in addition to the content proof.
  */
 export type InstitutionalBinding = Readonly<{
+  /** Hex field element — Poseidon1(orgSecret), from deriveOrgDid(). NOT a DID string. */
   orgDid: string;
   memberRoot: string;
   individualDid: string;
@@ -271,6 +272,7 @@ const hexToBigInt = (hex: string): bigint =>
 
 export type ListingBindingV2Input = Readonly<{
   commitment: string;
+  /** Hex field element — Poseidon1(orgSecret), the institution's public key. Use deriveOrgDid() to generate. */
   orgDid: string;
   individualDid: string;
   priceUsdc: number;
@@ -312,7 +314,7 @@ export const listingBindingV2 = (
   const schemaId = toScalar(input.schemaId);
   const commitment = hexToBigInt(input.commitment);
   const priceUsdc = toScalar(input.priceUsdc);
-  const orgDid = toScalar(input.orgDid);
+  const orgDid = hexToBigInt(input.orgDid);
   const individualDid = toScalar(input.individualDid);
   const memberRoot = hexToBigInt(input.memberRoot);
   const memberSalt = hexToBigInt(input.memberSalt);
@@ -334,9 +336,10 @@ export const listingBindingV2 = (
     witness: Object.freeze({
       individualDid: bigintToHex(individualDid),
       salt: bigintToHex(salt),
-      merklePath: Object.freeze(input.merklePath.map((p) =>
-        p.startsWith("0x") || p.startsWith("0X") ? p : `0x${p}`,
-      )),
+      merklePath: Object.freeze(input.merklePath.map((p) => {
+        const bigVal = BigInt(p);
+        return `0x${bigVal.toString(16)}`;
+      })),
       merkleIndices: Object.freeze(
         input.merkleIndices.map((i) => String(i)),
       ),
@@ -543,6 +546,12 @@ export const publish = async (
       ? await signCommitment(input.commitmentSigner, input.commitment)
       : undefined;
   const randomness = signed?.randomness ?? "0x0";
+
+  if (input.institutionalBinding !== undefined && input.commitmentSigner === undefined) {
+    throw new Error(
+      "publish: commitmentSigner is required when institutionalBinding is set — wallet signature must bind to the listing salt",
+    );
+  }
 
   // ── 1. Compute docHash = Poseidon2(commitment, chainId) ──
   // Binding chainId into docHash makes Sandbox/Production documents distinct,
