@@ -265,6 +265,15 @@ describe("listingBindingV2", () => {
     ]).toString(16)}`;
     expect(result.listingRoot).toBe(expected);
   });
+
+  it("normalizes merklePath hex values correctly", () => {
+    const result = listingBindingV2({
+      ...baseInput,
+      merklePath: Array.from({ length: 20 }, () => "0x0"),
+    });
+    expect(result.witness.merklePath).toHaveLength(20);
+    expect(result.witness.merklePath.every((p) => p === "0x0")).toBe(true);
+  });
 });
 
 describe("orgIdentity", () => {

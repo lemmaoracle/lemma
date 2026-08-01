@@ -105,6 +105,7 @@ export type InstitutionalBinding = Readonly<{
   orgDid: string;
   memberRoot: string;
   individualDid: string;
+  /** Merkle siblings as hex field elements (0x-prefixed). Use "0x0" for zero siblings. */
   merklePath: ReadonlyArray<string>;
   merkleIndices: ReadonlyArray<number>;
   memberSalt: string;
@@ -337,7 +338,7 @@ export const listingBindingV2 = (
       individualDid: bigintToHex(individualDid),
       salt: bigintToHex(salt),
       merklePath: Object.freeze(input.merklePath.map((p) => {
-        const bigVal = BigInt(p);
+        const bigVal = hexToBigInt(p);
         return `0x${bigVal.toString(16)}`;
       })),
       merkleIndices: Object.freeze(
@@ -573,14 +574,13 @@ export const publish = async (
       : undefined;
 
   // Reject fallback (SHA-256) proofs for security-bearing circuits.
-  // The fallback returns a short base64 string; real Groth16 proofs are
-  // base64-encoded JSON objects (much longer, start with "ey").
-  if (listingProof !== undefined && !listingProof.proof.startsWith("ey")) {
+  // The fallback returns empty inputs; real Groth16 proofs return public signals.
+  if (listingProof !== undefined && listingProof.inputs.length === 0) {
     throw new Error(
       "publish: listing-binding-v2 proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional binding.",
     );
   }
-  if (input.institutionalBinding !== undefined && !proof.proof.startsWith("ey")) {
+  if (input.institutionalBinding !== undefined && proof.inputs.length === 0) {
     throw new Error(
       "publish: content proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional listing.",
     );
@@ -626,16 +626,7 @@ export const publish = async (
         docHash,
         circuitId: LISTING_BINDING_V2_CIRCUIT_ID,
         proof: listingProof.proof,
-        inputs: listingProof.inputs.length > 0
-          ? listingProof.inputs
-          : [
-              binding.listingRoot,
-              binding.witness.commitment,
-              binding.witness.orgDid,
-              binding.witness.memberRoot,
-              binding.witness.schemaId,
-              binding.witness.priceUsdc,
-            ],
+        inputs: listingProof.inputs,
       },
       input.environment,
     );

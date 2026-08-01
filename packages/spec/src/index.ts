@@ -331,13 +331,19 @@ export type SubmitProofRequest = Readonly<{
  *   `commitment` public input in the listing-binding-v2 proof for the same
  *   docHash.
  *
- * - For listing-binding-v2, the server SHOULD verify that `listingRoot`
+ * - For listing-binding-v2, the server MUST verify that `listingRoot`
  *   (public input) matches Poseidon5(schemaId, commitment, priceUsdc, orgDid,
  *   salt) using the public inputs from the proof.
  *
  * - For org-identity-v1, the server SHOULD reject stale timestamps
  *   (e.g., timestamp older than 24 hours) and duplicate commitmentHashes
  *   to prevent replay.
+ *
+ * - For listing-binding-v2, the server MUST verify that the `(orgDid, memberRoot)`
+ *   pair matches a registered org-identity-v1 commitment for a DNS-verified
+ *   domain. Without this check, any seller can mint a random orgSecret,
+ *   derive orgDid = Poseidon1(orgSecret), build a self-membership tree, and
+ *   produce a valid listing-binding-v2 proof claiming institutional backing.
  *
  * These obligations are normative — clients that bypass the SDK and call
  * the API directly can submit proofs with inconsistent public inputs unless
