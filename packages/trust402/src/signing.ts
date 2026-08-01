@@ -5,7 +5,7 @@
  *
  * This creates a chain of trust:
  *   wallet (EIP-1193) → sign(commitment) → randomness → listing-binding-v2 salt
- *   → listingRoot includes orgDid → memberRoot → org-identity-v1 → DNS TXT
+ *   → listingRoot includes orgDid → memberRoot (documents.register) → DNS TXT
  */
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";

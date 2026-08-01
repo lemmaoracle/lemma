@@ -33,14 +33,14 @@ const WASM_PATH = path.join(
   PKG_ROOT,
   "circuits",
   "build",
-  "listing-binding-v2_js",
-  "listing-binding-v2.wasm",
+  "listing-binding_js",
+  "listing-binding.wasm",
 );
 const ZKEY_PATH = path.join(
   PKG_ROOT,
   "circuits",
   "build",
-  "listing-binding-v2_final.zkey",
+  "listing-binding_final.zkey",
 );
 
 type PinataResponse = Readonly<{ IpfsHash: string; PinSize: number }>;
@@ -107,8 +107,8 @@ const main = async (): Promise<void> => {
 
   console.log("1. Uploading artifacts to IPFS (Pinata)...");
   const [wasmUrl, zkeyUrl] = await Promise.all([
-    uploadToPinata(WASM_PATH, "listing-binding-v2.wasm"),
-    uploadToPinata(ZKEY_PATH, "listing-binding-v2_final.zkey"),
+    uploadToPinata(WASM_PATH, "listing-binding.wasm"),
+    uploadToPinata(ZKEY_PATH, "listing-binding_final.zkey"),
   ]);
   console.log(`   wasm → ${wasmUrl}`);
   console.log(`   zkey → ${zkeyUrl}`);

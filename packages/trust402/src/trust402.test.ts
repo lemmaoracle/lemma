@@ -5,7 +5,6 @@ import {
   blogArticle,
   contentCommitment,
   listingBindingV2,
-  orgIdentity,
   computeCid,
 } from "./trust402.js";
 import type { PublishInput, Article } from "./trust402.js";
@@ -216,40 +215,6 @@ describe("listingBindingV2", () => {
       BigInt(baseInput.salt),
     ]).toString(16)}`;
     expect(result.listingRoot).toBe(expected);
-  });
-});
-
-describe("orgIdentity", () => {
-  const baseInput = Object.freeze({
-    orgDid: "did:web:frame00.com",
-    memberRoot: "0xabc123",
-    domain: "frame00.com",
-    timestamp: 1714069800,
-    orgSalt: "0xdeadbeef",
-  });
-
-  it("returns witness with commitmentHash", () => {
-    const result = orgIdentity(baseInput);
-    expect(result.commitmentHash).toMatch(/^0x[0-9a-f]+$/);
-    expect(result.witness.commitmentHash).toBe(result.commitmentHash);
-    expect(result.witness.orgDid).toBeDefined();
-    expect(result.witness.memberRoot).toBeDefined();
-    expect(result.witness.domain).toBeDefined();
-    expect(result.witness.timestamp).toBe(String(baseInput.timestamp));
-    expect(result.witness.orgSalt).toBeDefined();
-  });
-
-  it("is deterministic", () => {
-    expect(orgIdentity(baseInput).commitmentHash).toBe(
-      orgIdentity(baseInput).commitmentHash,
-    );
-  });
-
-  it("produces different hashes for different domains", () => {
-    const other = orgIdentity({ ...baseInput, domain: "other.com" });
-    expect(other.commitmentHash).not.toBe(
-      orgIdentity(baseInput).commitmentHash,
-    );
   });
 });
 

@@ -353,58 +353,6 @@ export const listingBindingV2 = (
 };
 
 /* ------------------------------------------------------------------ */
-/*  org-identity-v1 witness builder                                    */
-/* ------------------------------------------------------------------ */
-
-export type OrgIdentityInput = Readonly<{
-  orgDid: string;
-  memberRoot: string;
-  domain: string; // e.g. "frame00.com"
-  timestamp: number; // unix seconds
-  orgSalt: string; // hex
-}>;
-
-/**
- * Build witness for org-identity-v1 circuit.
- *
- * Computes commitmentHash = Poseidon5(orgDid, memberRoot, domain, timestamp, orgSalt)
- * and returns all circuit signals as hex/decimal strings.
- */
-export const orgIdentity = (
-  input: OrgIdentityInput,
-): Readonly<{
-  witness: Readonly<Record<string, string>>;
-  commitmentHash: string;
-}> => {
-  const orgDid = toScalar(input.orgDid);
-  const memberRoot = hexToBigInt(input.memberRoot);
-  const domain = toScalar(input.domain);
-  const timestamp = BigInt(input.timestamp);
-  const orgSalt = hexToBigInt(input.orgSalt);
-
-  const commitmentHash = poseidon5([
-    orgDid,
-    memberRoot,
-    domain,
-    timestamp,
-    orgSalt,
-  ]);
-  const commitmentHashHex = bigintToHex(commitmentHash);
-
-  return Object.freeze({
-    witness: Object.freeze({
-      orgSalt: bigintToHex(orgSalt),
-      commitmentHash: commitmentHashHex,
-      orgDid: bigintToHex(orgDid),
-      memberRoot: bigintToHex(memberRoot),
-      domain: bigintToHex(domain),
-      timestamp: timestamp.toString(),
-    }),
-    commitmentHash: commitmentHashHex,
-  });
-};
-
-/* ------------------------------------------------------------------ */
 /*  CID helper                                                         */
 /* ------------------------------------------------------------------ */
 

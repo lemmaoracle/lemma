@@ -4,7 +4,6 @@ export {
   blogArticle,
   contentCommitment,
   listingBindingV2,
-  orgIdentity,
   computeCid,
   detectContentType,
 } from "./trust402.js";
@@ -20,7 +19,6 @@ export type {
   InstitutionalBinding,
   ListingBindingV2Input,
   ListingBindingV2Witness,
-  OrgIdentityInput,
 } from "./trust402.js";
 export {
   signCommitment,
