@@ -104,7 +104,7 @@ export type InstitutionalBinding = Readonly<{
   /** Hex field element — Poseidon1(orgSecret), from deriveOrgDid(). NOT a DID string. */
   orgDid: string;
   memberRoot: string;
-  individualDid: string;
+  authorDid: string;
   /** Merkle siblings as hex field elements (0x-prefixed). Use "0x0" for zero siblings. */
   merklePath: ReadonlyArray<string>;
   merkleIndices: ReadonlyArray<number>;
@@ -271,11 +271,11 @@ const LISTING_BINDING_V2_CIRCUIT_ID = "listing-binding-v2";
 const hexToBigInt = (hex: string): bigint =>
   BigInt(hex.startsWith("0x") || hex.startsWith("0X") ? hex : `0x${hex}`);
 
-export type ListingBindingV2Input = Readonly<{
+export type ListingBindingInput = Readonly<{
   commitment: string;
   /** Hex field element — Poseidon1(orgSecret), the institution's public key. Use deriveOrgDid() to generate. */
   orgDid: string;
-  individualDid: string;
+  authorDid: string;
   priceUsdc: number;
   schemaId: string;
   memberRoot: string;
@@ -286,9 +286,9 @@ export type ListingBindingV2Input = Readonly<{
   salt?: string;
 }>;
 
-export type ListingBindingV2Witness = Readonly<{
+export type ListingBindingWitness = Readonly<{
   witness: Readonly<{
-    individualDid: string;
+    authorDid: string;
     salt: string;
     merklePath: ReadonlyArray<string>;
     merkleIndices: ReadonlyArray<string>;
@@ -309,14 +309,14 @@ export type ListingBindingV2Witness = Readonly<{
  * Computes listingRoot = Poseidon5(schemaId, commitment, priceUsdc, orgDid, salt)
  * and returns all circuit signals as hex strings (indices as decimal "0"/"1").
  */
-export const listingBindingV2 = (
-  input: ListingBindingV2Input,
-): ListingBindingV2Witness => {
+export const listingBinding = (
+  input: ListingBindingInput,
+): ListingBindingWitness => {
   const schemaId = toScalar(input.schemaId);
   const commitment = hexToBigInt(input.commitment);
   const priceUsdc = toScalar(input.priceUsdc);
   const orgDid = hexToBigInt(input.orgDid);
-  const individualDid = toScalar(input.individualDid);
+  const authorDid = toScalar(input.authorDid);
   const memberRoot = hexToBigInt(input.memberRoot);
   const memberSalt = hexToBigInt(input.memberSalt);
   const salt =
@@ -335,7 +335,7 @@ export const listingBindingV2 = (
 
   return Object.freeze({
     witness: Object.freeze({
-      individualDid: bigintToHex(individualDid),
+      authorDid: bigintToHex(authorDid),
       salt: bigintToHex(salt),
       merklePath: Object.freeze(input.merklePath.map((p) => {
         const bigVal = hexToBigInt(p);
@@ -551,10 +551,10 @@ export const publish = async (
   // ── 2b. Optional listing-binding-v2 proof ──
   const binding =
     input.institutionalBinding !== undefined
-      ? listingBindingV2({
+      ? listingBinding({
           commitment: input.commitment,
           orgDid: input.institutionalBinding.orgDid,
-          individualDid: input.institutionalBinding.individualDid,
+          authorDid: input.institutionalBinding.authorDid,
           priceUsdc: input.price.amount,
           schemaId: input.circuitId,
           memberRoot: input.institutionalBinding.memberRoot,

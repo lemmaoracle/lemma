@@ -20,7 +20,7 @@ include "circomlib/circuits/poseidon.circom";
  *   priceUsdc     — price in micro-USDC
  *
  * Private inputs:
- *   individualDid — seller's personal DID (field element)
+ *   authorDid — seller's personal DID (field element)
  *   salt          — binding randomness
  *   merklePath    — Merkle siblings (leaf → root)
  *   merkleIndices — direction bits (0 = left, 1 = right)
@@ -28,7 +28,7 @@ include "circomlib/circuits/poseidon.circom";
  *
  * Constraints:
  *   (1) listingRoot === Poseidon5(schemaId, commitment, priceUsdc, orgDid, salt)
- *   (2) memberRoot === MerkleVerify(Poseidon2(individualDid, memberSalt), ...)
+ *   (2) memberRoot === MerkleVerify(Poseidon2(authorDid, memberSalt), ...)
  *   (3) No constraint on commitment contents — content circuit's job
  *
  * Tree depth nLevels is a compile-time parameter (default 20 = 2^20 leaves).
@@ -72,7 +72,7 @@ template MerkleProofChecker(nLevels) {
 
 template ListingBindingV2(nLevels) {
     // ── Private inputs ──────────────────────────────────────────────
-    signal input individualDid;
+    signal input authorDid;
     signal input salt;
     signal input merklePath[nLevels];
     signal input merkleIndices[nLevels];
@@ -98,7 +98,7 @@ template ListingBindingV2(nLevels) {
 
     // ── (2) Membership inclusion ────────────────────────────────────
     component leafHasher = Poseidon(2);
-    leafHasher.inputs[0] <== individualDid;
+    leafHasher.inputs[0] <== authorDid;
     leafHasher.inputs[1] <== memberSalt;
 
     component merkle = MerkleProofChecker(nLevels);

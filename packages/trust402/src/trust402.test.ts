@@ -4,7 +4,7 @@ import {
   detectContentType,
   blogArticle,
   contentCommitment,
-  listingBindingV2,
+  listingBinding,
   orgIdentity,
   computeCid,
 } from "./trust402.js";
@@ -207,7 +207,7 @@ describe("contentCommitment", () => {
   });
 });
 
-describe("listingBindingV2", () => {
+describe("listingBinding", () => {
   const TREE_DEPTH = 20;
   const zeroPath = Object.freeze(
     Array.from({ length: TREE_DEPTH }, () => "0x0"),
@@ -219,7 +219,7 @@ describe("listingBindingV2", () => {
   const baseInput = Object.freeze({
     commitment: "0x1a2b3c4d5e6f7890abcdef012345678901234567890abcdef012345678901234",
     orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
-    individualDid: "did:example:alice",
+    authorDid: "did:example:alice",
     priceUsdc: 42000000,
     schemaId: "content-commitment-v1.2",
     memberRoot: "0xabc123",
@@ -230,7 +230,7 @@ describe("listingBindingV2", () => {
   });
 
   it("returns witness with listingRoot and public fields", () => {
-    const result = listingBindingV2(baseInput);
+    const result = listingBinding(baseInput);
     expect(result.listingRoot).toMatch(/^0x[0-9a-f]+$/);
     expect(result.witness.listingRoot).toBe(result.listingRoot);
     expect(result.witness.commitment).toBeDefined();
@@ -241,21 +241,21 @@ describe("listingBindingV2", () => {
   });
 
   it("is deterministic when salt is provided", () => {
-    expect(listingBindingV2(baseInput).listingRoot).toBe(
-      listingBindingV2(baseInput).listingRoot,
+    expect(listingBinding(baseInput).listingRoot).toBe(
+      listingBinding(baseInput).listingRoot,
     );
   });
 
   it("produces different listingRoots for different orgs", () => {
-    const other = listingBindingV2({
+    const other = listingBinding({
       ...baseInput,
       orgDid: "0x" + poseidon1([toScalar("org-secret-other-key")]).toString(16),
     });
-    expect(other.listingRoot).not.toBe(listingBindingV2(baseInput).listingRoot);
+    expect(other.listingRoot).not.toBe(listingBinding(baseInput).listingRoot);
   });
 
   it("computes listingRoot as Poseidon5(schemaId, commitment, price, orgDid, salt)", () => {
-    const result = listingBindingV2(baseInput);
+    const result = listingBinding(baseInput);
     const expected = `0x${poseidon5([
       toScalar(baseInput.schemaId),
       BigInt(baseInput.commitment),
@@ -267,7 +267,7 @@ describe("listingBindingV2", () => {
   });
 
   it("normalizes merklePath hex values correctly", () => {
-    const result = listingBindingV2({
+    const result = listingBinding({
       ...baseInput,
       merklePath: Array.from({ length: 20 }, () => "0x0"),
     });
@@ -600,7 +600,7 @@ describe("trust402.publish", () => {
             institutionalBinding: Object.freeze({
               orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
               memberRoot: "0xabc",
-              individualDid: "did:example:alice",
+              authorDid: "did:example:alice",
               merklePath: zeroPath,
               merkleIndices: zeroIndices,
               memberSalt: "0x1",
@@ -644,7 +644,7 @@ describe("trust402.publish", () => {
             institutionalBinding: Object.freeze({
               orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
               memberRoot: "0xabc",
-              individualDid: "did:example:alice",
+              authorDid: "did:example:alice",
               merklePath: zeroPath,
               merkleIndices: zeroIndices,
               memberSalt: "0x1",
@@ -673,7 +673,7 @@ describe("trust402.publish", () => {
             institutionalBinding: Object.freeze({
               orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
               memberRoot: "0xabc",
-              individualDid: "did:example:alice",
+              authorDid: "did:example:alice",
               merklePath: zeroPath,
               merkleIndices: zeroIndices,
               memberSalt: "0x1",
@@ -703,7 +703,7 @@ describe("trust402.publish", () => {
             institutionalBinding: Object.freeze({
               orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
               memberRoot: "0xabc",
-              individualDid: "did:example:alice",
+              authorDid: "did:example:alice",
               merklePath: zeroPath,
               merkleIndices: zeroIndices,
               memberSalt: "0x1",

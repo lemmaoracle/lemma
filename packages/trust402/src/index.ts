@@ -3,8 +3,6 @@ export {
   list,
   blogArticle,
   contentCommitment,
-  listingBindingV2,
-  orgIdentity,
   computeCid,
   detectContentType,
 } from "./trust402.js";
@@ -18,15 +16,10 @@ export type {
   Article,
   Witness,
   InstitutionalBinding,
-  ListingBindingV2Input,
-  ListingBindingV2Witness,
-  OrgIdentityInput,
-  OrgIdentityWitness,
 } from "./trust402.js";
 export {
   signCommitment,
-  verifyCommitmentSignature,
-  signatureToRandomness,
+  verifyCommitment,
   generateOrgSecret,
   deriveOrgDid,
 } from "./signing.js";

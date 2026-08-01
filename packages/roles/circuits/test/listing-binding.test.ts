@@ -61,9 +61,9 @@ const calculateWitness = async (
 
 // ── Sparse Merkle helpers (zero-padded Poseidon2 tree) ──────────────
 
-/** Compute member leaf = Poseidon2(individualDid, memberSalt). */
-const memberLeaf = (individualDid: bigint, memberSalt: bigint): bigint =>
-  poseidon2([individualDid, memberSalt]);
+/** Compute member leaf = Poseidon2(authorDid, memberSalt). */
+const memberLeaf = (authorDid: bigint, memberSalt: bigint): bigint =>
+  poseidon2([authorDid, memberSalt]);
 
 /**
  * Build a depth-20 inclusion proof for a leaf at the given index.
@@ -105,7 +105,7 @@ const buildMembershipProof = (
 
 const buildValidInput = (
   overrides: Partial<{
-    individualDid: bigint;
+    authorDid: bigint;
     listingRoot: bigint;
     memberRoot: bigint;
   }> = {},
@@ -116,12 +116,12 @@ const buildValidInput = (
   );
   const priceUsdc = toScalar(42000000);
   const orgDid = poseidon1([toScalar("org-secret-test-key")]);
-  const individualDid =
-    overrides.individualDid ?? toScalar("did:example:alice-402");
+  const authorDid =
+    overrides.authorDid ?? toScalar("did:example:alice-402");
   const salt = toScalar("listing-binding-v2-test-salt");
   const memberSalt = toScalar("member-leaf-salt");
 
-  const leaf = memberLeaf(individualDid, memberSalt);
+  const leaf = memberLeaf(authorDid, memberSalt);
   const membership = buildMembershipProof(leaf, 0);
 
   const listingRoot =
@@ -129,7 +129,7 @@ const buildValidInput = (
     poseidon5([schemaId, commitment, priceUsdc, orgDid, salt]);
 
   return {
-    individualDid: individualDid.toString(),
+    authorDid: authorDid.toString(),
     salt: salt.toString(),
     merklePath: membership.merklePath,
     merkleIndices: membership.merkleIndices,
@@ -242,14 +242,14 @@ describe.runIf(circuitBuilt)(
       await expect(calculateWitness(input)).rejects.toThrow();
     }, 60000);
 
-    it("rejects a non-member (wrong individualDid)", async () => {
-      // Build membership for Alice, then swap individualDid to Bob
+    it("rejects a non-member (wrong authorDid)", async () => {
+      // Build membership for Alice, then swap authorDid to Bob
       // without recomputing the Merkle path → membership fails.
       const aliceInput = buildValidInput();
       const bobDid = toScalar("did:example:bob-402");
       const tampered = {
         ...aliceInput,
-        individualDid: bobDid.toString(),
+        authorDid: bobDid.toString(),
       };
       await expect(calculateWitness(tampered)).rejects.toThrow();
     }, 60000);

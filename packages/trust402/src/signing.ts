@@ -196,7 +196,7 @@ export const signCommitment = async (
  * @param expectedAddress - The address that should have signed
  * @returns true if the signature is valid and matches the expected address
  */
-export const verifyCommitmentSignature = (
+export const verifyCommitment = (
   signed: SignedCommitment,
   expectedAddress: string,
 ): Promise<boolean> =>

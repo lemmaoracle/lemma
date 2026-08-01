@@ -9,7 +9,7 @@ import {
 import { poseidon1 } from "poseidon-lite";
 import {
   signCommitment,
-  verifyCommitmentSignature,
+  verifyCommitment,
   signatureToRandomness,
   generateOrgSecret,
   deriveOrgDid,
@@ -122,18 +122,18 @@ describe("signCommitment", () => {
   });
 });
 
-describe("verifyCommitmentSignature", () => {
+describe("verifyCommitment", () => {
   it("returns true for a valid signature", async () => {
     const { signer, address } = createMockSigner();
     const signed = await signCommitment(signer, COMMITMENT);
-    expect(await verifyCommitmentSignature(signed, address)).toBe(true);
+    expect(await verifyCommitment(signed, address)).toBe(true);
   });
 
   it("returns false for a wrong expected address", async () => {
     const { signer } = createMockSigner();
     const signed = await signCommitment(signer, COMMITMENT);
     expect(
-      await verifyCommitmentSignature(
+      await verifyCommitment(
         signed,
         "0x0000000000000000000000000000000000000001",
       ),
@@ -147,7 +147,7 @@ describe("verifyCommitmentSignature", () => {
       ...signed,
       randomness: "0xdeadbeef",
     });
-    expect(await verifyCommitmentSignature(tampered, address)).toBe(false);
+    expect(await verifyCommitment(tampered, address)).toBe(false);
   });
 
   it("returns false for an invalid signature", async () => {
@@ -158,7 +158,7 @@ describe("verifyCommitmentSignature", () => {
       recoveredAddress: address,
       randomness: "0x0",
     });
-    expect(await verifyCommitmentSignature(bogus, address)).toBe(false);
+    expect(await verifyCommitment(bogus, address)).toBe(false);
   });
 });
 
