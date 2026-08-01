@@ -10,7 +10,7 @@
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
-import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
+import { poseidon1, poseidon2, poseidon3, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes } from "@noble/hashes/utils";
 import type { CommitmentSigner } from "./signing.js";
@@ -349,6 +349,94 @@ export const listingBindingV2 = (
       priceUsdc: bigintToHex(priceUsdc),
     }),
     listingRoot: listingRootHex,
+  });
+};
+
+/* ------------------------------------------------------------------ */
+/*  org-identity-v1 witness builder                                    */
+/* ------------------------------------------------------------------ */
+
+export type OrgIdentityInput = Readonly<{
+  /** Hex field element — institution's secret key (private). */
+  orgSecret: string;
+  /** Hex field element — blinding factor for commitmentHash. */
+  orgSalt: string;
+  /** Hex field element — Poseidon1(orgSecret) public key. */
+  orgDid: string;
+  /** Hex field element — Poseidon Merkle root of members. */
+  memberRoot: string;
+  /** Domain string (e.g. "frame00.com") — converted via toScalar. */
+  domain: string;
+  /** Unix seconds — when the membership tree was committed. */
+  timestamp: number;
+  /** Hex field element — signature randomness component. */
+  signatureR: string;
+  /** Hex field element — Poseidon3(orgSecret, message, signatureR). */
+  signatureS: string;
+}>;
+
+export type OrgIdentityWitness = Readonly<{
+  witness: Readonly<Record<string, string>>;
+  commitmentHash: string;
+}>;
+
+/**
+ * Build witness for org-identity-v1 circuit.
+ *
+ * Verifies locally that:
+ *   Poseidon1(orgSecret) === orgDid
+ *   Poseidon3(orgSecret, message, signatureR) === signatureS
+ * where message = Poseidon3(memberRoot, domain, timestamp).
+ *
+ * commitmentHash = Poseidon5(orgDid, memberRoot, domain, timestamp, orgSalt).
+ */
+export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
+  const orgSecret = hexToBigInt(input.orgSecret);
+  const orgSalt = hexToBigInt(input.orgSalt);
+  const orgDid = hexToBigInt(input.orgDid);
+  const memberRoot = hexToBigInt(input.memberRoot);
+  const domain = toScalar(input.domain);
+  const timestamp = BigInt(input.timestamp);
+  const signatureR = hexToBigInt(input.signatureR);
+  const signatureS = hexToBigInt(input.signatureS);
+
+  const derivedPk = poseidon1([orgSecret]);
+  if (derivedPk !== orgDid) {
+    throw new Error(
+      "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
+    );
+  }
+
+  const message = poseidon3([memberRoot, domain, timestamp]);
+  const derivedSig = poseidon3([orgSecret, message, signatureR]);
+  if (derivedSig !== signatureS) {
+    throw new Error(
+      "orgIdentity: signatureS does not match Poseidon3(orgSecret, message, signatureR)",
+    );
+  }
+
+  const commitmentHash = poseidon5([
+    orgDid,
+    memberRoot,
+    domain,
+    timestamp,
+    orgSalt,
+  ]);
+  const commitmentHashHex = bigintToHex(commitmentHash);
+
+  return Object.freeze({
+    witness: Object.freeze({
+      orgSecret: bigintToHex(orgSecret),
+      orgSalt: bigintToHex(orgSalt),
+      commitmentHash: commitmentHashHex,
+      orgDid: bigintToHex(orgDid),
+      memberRoot: bigintToHex(memberRoot),
+      domain: bigintToHex(domain),
+      timestamp: timestamp.toString(),
+      signatureR: bigintToHex(signatureR),
+      signatureS: bigintToHex(signatureS),
+    }),
+    commitmentHash: commitmentHashHex,
   });
 };
 

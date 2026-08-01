@@ -112,3 +112,51 @@ $SNARKJS zkey export verificationkey \
   "$BUILD_DIR/${CIRCUIT2_NAME}_vkey.json"
 
 echo "✓ $CIRCUIT2_NAME built → $BUILD_DIR"
+
+# ── org-identity circuit (circuit ID: org-identity-v1) ───────────
+# Poseidon1 + Poseidon3×2 + Poseidon5 ≈ 600 R1CS constraints.
+# Use 2^15 ptau (same as listing-binding) for headroom.
+
+CIRCUIT3_NAME="org-identity"
+PTAU3_POWER=15
+PTAU3="$PTAU_DIR/pot${PTAU3_POWER}_final.ptau"
+PTAU3_URL="https://storage.googleapis.com/zkevm/ptau/powersOfTau28_hez_final_${PTAU3_POWER}.ptau"
+
+echo "→ compiling $CIRCUIT3_NAME"
+circom "$SRC_DIR/$CIRCUIT3_NAME.circom" \
+  --r1cs \
+  --wasm \
+  --sym \
+  -l "$CIRCOMLIB_DIR" \
+  -o "$BUILD_DIR"
+
+echo "→ constraint info"
+$SNARKJS r1cs info "$BUILD_DIR/$CIRCUIT3_NAME.r1cs"
+
+if [ ! -f "$PTAU3" ]; then
+  echo "→ downloading powers of tau (2^${PTAU3_POWER})"
+  curl -fL "$PTAU3_URL" -o "$PTAU3" || {
+    echo "→ downloading failed, generating locally"
+    $SNARKJS powersoftau new bn128 ${PTAU3_POWER} "$PTAU_DIR/pot${PTAU3_POWER}_0000.ptau" -v
+    $SNARKJS powersoftau contribute "$PTAU_DIR/pot${PTAU3_POWER}_0000.ptau" "$PTAU_DIR/pot${PTAU3_POWER}_0001.ptau" --name="First contribution" -v -e="random entropy"
+    $SNARKJS powersoftau prepare phase2 "$PTAU_DIR/pot${PTAU3_POWER}_0001.ptau" "$PTAU3" -v
+  }
+fi
+
+echo "→ groth16 setup"
+$SNARKJS groth16 setup \
+  "$BUILD_DIR/$CIRCUIT3_NAME.r1cs" \
+  "$PTAU3" \
+  "$BUILD_DIR/${CIRCUIT3_NAME}_0000.zkey"
+
+$SNARKJS zkey contribute \
+  "$BUILD_DIR/${CIRCUIT3_NAME}_0000.zkey" \
+  "$BUILD_DIR/${CIRCUIT3_NAME}_final.zkey" \
+  --name="lemma org-identity" -v -e="lemma org-identity $(date +%s)"
+
+echo "→ exporting verification key"
+$SNARKJS zkey export verificationkey \
+  "$BUILD_DIR/${CIRCUIT3_NAME}_final.zkey" \
+  "$BUILD_DIR/${CIRCUIT3_NAME}_vkey.json"
+
+echo "✓ $CIRCUIT3_NAME built → $BUILD_DIR"

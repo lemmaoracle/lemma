@@ -9,8 +9,15 @@
  */
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
-import { bytesToHex, hexToBytes, utf8ToBytes, concatBytes } from "@noble/hashes/utils";
-import { poseidon2 } from "poseidon-lite";
+import {
+  bytesToHex,
+  hexToBytes,
+  utf8ToBytes,
+  concatBytes,
+  randomBytes,
+} from "@noble/hashes/utils";
+import { poseidon1, poseidon2, poseidon3 } from "poseidon-lite";
+import { toScalar } from "@lemmaoracle/sdk";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -201,3 +208,66 @@ export const verifyCommitmentSignature = (
       signatureToRandomness(signed.signature) === signed.randomness,
     (_err: unknown) => false,
   );
+
+/* ------------------------------------------------------------------ */
+/*  Org-identity Poseidon keypair + signature                          */
+/* ------------------------------------------------------------------ */
+
+/** Parse a hex string (with or without 0x) to bigint. */
+const hexToBigInt = (hex: string): bigint =>
+  BigInt(hex.startsWith("0x") || hex.startsWith("0X") ? hex : `0x${hex}`);
+
+const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
+
+/**
+ * Generate a random field element suitable as an org secret key.
+ *
+ * Uses the bias-free split+Poseidon2 approach from signatureToRandomness:
+ * 32 random bytes → two 128-bit halves → Poseidon2 → uniform field element.
+ */
+export const generateOrgSecret = (): string => {
+  const bytes = randomBytes(32);
+  const lo = BigInt(`0x${bytesToHex(bytes.slice(0, 16))}`);
+  const hi = BigInt(`0x${bytesToHex(bytes.slice(16, 32))}`);
+  return bigintToHex(poseidon2([lo, hi]));
+};
+
+/**
+ * Derive the public key (orgDid) from an org secret key.
+ * pk = Poseidon1(secret) — the orgDid is this field element as hex.
+ */
+export const deriveOrgDid = (orgSecret: string): string =>
+  bigintToHex(poseidon1([hexToBigInt(orgSecret)]));
+
+/**
+ * Sign a message (memberRoot + domain + timestamp) with an org secret key.
+ *
+ * Returns (signatureR, signatureS) where:
+ *   message = Poseidon3(memberRoot, domain, timestamp)
+ *   signatureS = Poseidon3(orgSecret, message, signatureR)
+ */
+export const signOrgIdentity = (
+  params: Readonly<{
+    orgSecret: string;
+    memberRoot: string;
+    domain: string;
+    timestamp: number;
+  }>,
+): Readonly<{ signatureR: string; signatureS: string; message: string }> => {
+  const message = poseidon3([
+    hexToBigInt(params.memberRoot),
+    toScalar(params.domain),
+    BigInt(params.timestamp),
+  ]);
+  const signatureR = generateOrgSecret();
+  const signatureS = poseidon3([
+    hexToBigInt(params.orgSecret),
+    message,
+    hexToBigInt(signatureR),
+  ]);
+  return Object.freeze({
+    signatureR,
+    signatureS: bigintToHex(signatureS),
+    message: bigintToHex(message),
+  });
+};

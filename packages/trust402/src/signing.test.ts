@@ -6,10 +6,15 @@ import {
   utf8ToBytes,
   concatBytes,
 } from "@noble/hashes/utils";
+import { poseidon1, poseidon3 } from "poseidon-lite";
+import { toScalar } from "@lemmaoracle/sdk";
 import {
   signCommitment,
   verifyCommitmentSignature,
   signatureToRandomness,
+  generateOrgSecret,
+  deriveOrgDid,
+  signOrgIdentity,
   type CommitmentSigner,
   type SignedCommitment,
 } from "./signing.js";
@@ -156,5 +161,63 @@ describe("verifyCommitmentSignature", () => {
       randomness: "0x0",
     });
     expect(await verifyCommitmentSignature(bogus, address)).toBe(false);
+  });
+});
+
+describe("generateOrgSecret", () => {
+  it("returns a valid 0x-prefixed field element", () => {
+    const secret = generateOrgSecret();
+    expect(secret).toMatch(/^0x[0-9a-f]+$/);
+    expect(BigInt(secret) < FIELD_PRIME).toBe(true);
+    expect(BigInt(secret) > 0n).toBe(true);
+  });
+
+  it("produces different secrets on each call", () => {
+    expect(generateOrgSecret()).not.toBe(generateOrgSecret());
+  });
+});
+
+describe("deriveOrgDid", () => {
+  it("equals Poseidon1(orgSecret)", () => {
+    const orgSecret = generateOrgSecret();
+    const orgDid = deriveOrgDid(orgSecret);
+    expect(orgDid).toBe(`0x${poseidon1([BigInt(orgSecret)]).toString(16)}`);
+  });
+
+  it("is deterministic", () => {
+    const orgSecret = generateOrgSecret();
+    expect(deriveOrgDid(orgSecret)).toBe(deriveOrgDid(orgSecret));
+  });
+});
+
+describe("signOrgIdentity", () => {
+  it("produces a valid Poseidon3 signature", () => {
+    const orgSecret = generateOrgSecret();
+    const memberRoot = generateOrgSecret();
+    const domain = "frame00.com";
+    const timestamp = 1_700_000_000;
+
+    const { signatureR, signatureS, message } = signOrgIdentity({
+      orgSecret,
+      memberRoot,
+      domain,
+      timestamp,
+    });
+
+    const expectedMessage = poseidon3([
+      BigInt(memberRoot),
+      toScalar(domain),
+      BigInt(timestamp),
+    ]);
+    expect(message).toBe(`0x${expectedMessage.toString(16)}`);
+
+    const expectedS = poseidon3([
+      BigInt(orgSecret),
+      expectedMessage,
+      BigInt(signatureR),
+    ]);
+    expect(signatureS).toBe(`0x${expectedS.toString(16)}`);
+    expect(BigInt(signatureR) < FIELD_PRIME).toBe(true);
+    expect(BigInt(signatureS) < FIELD_PRIME).toBe(true);
   });
 });
