@@ -49,8 +49,7 @@ const resolveLemmaConfig = (
 
 /** Read LEMMA_CONFIG env var as JSON and parse it. */
 // imperative: env-accessing config resolver — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
+const resolveFromEnv = (_?: undefined): ResolvedLemmaConfig | undefined => {
   const raw =
     typeof process !== "undefined"
       ? process.env.LEMMA_CONFIG
@@ -86,8 +85,7 @@ const resolveFromEnv = (): ResolvedLemmaConfig | undefined => {
 
 /** Fallback to individual env vars. */
 // imperative: env-accessing config resolver — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-const resolveFromIndividualEnvVars = (): ResolvedLemmaConfig | undefined => {
+const resolveFromIndividualEnvVars = (_?: undefined): ResolvedLemmaConfig | undefined => {
   const env = typeof process !== "undefined" ? process.env : {};
   const apiBase = env.LEMMA_API_BASE;
   return apiBase

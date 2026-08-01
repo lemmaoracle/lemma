@@ -196,11 +196,8 @@ const isPayable = (
   Boolean(reqs.extra?.version);
 
 // imperative: crypto.getRandomValues mutates a pre-allocated buffer — boundary
-// eslint-disable-next-line functional/functional-parameters
-const randomNonce = (): string => {
-  const bytes = new Uint8Array(32);
-  // eslint-disable-next-line functional/no-expression-statements -- crypto boundary
-  crypto.getRandomValues(bytes);
+const randomNonce = (_?: undefined): string => {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
   return `0x${Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
 };
 

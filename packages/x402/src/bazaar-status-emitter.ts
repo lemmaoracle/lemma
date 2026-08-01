@@ -47,8 +47,7 @@ class ConsoleEmitter implements BazaarStatusEmitter {
 
 // eslint-disable-next-line functional/no-classes
 class NoopEmitter implements BazaarStatusEmitter {
-  // eslint-disable-next-line functional/functional-parameters
-  emit(): void {
+  emit(_event: BazaarStatusEvent): void {
     /* intentionally empty */
   }
 }
