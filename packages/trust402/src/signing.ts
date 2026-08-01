@@ -16,8 +16,7 @@ import {
   concatBytes,
   randomBytes,
 } from "@noble/hashes/utils";
-import { poseidon1, poseidon2, poseidon3 } from "poseidon-lite";
-import { toScalar } from "@lemmaoracle/sdk";
+import { poseidon1, poseidon2 } from "poseidon-lite";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -210,7 +209,7 @@ export const verifyCommitmentSignature = (
   );
 
 /* ------------------------------------------------------------------ */
-/*  Org-identity Poseidon keypair + signature                          */
+/*  Org-identity Poseidon keypair                                      */
 /* ------------------------------------------------------------------ */
 
 /** Parse a hex string (with or without 0x) to bigint. */
@@ -238,36 +237,3 @@ export const generateOrgSecret = (): string => {
  */
 export const deriveOrgDid = (orgSecret: string): string =>
   bigintToHex(poseidon1([hexToBigInt(orgSecret)]));
-
-/**
- * Sign a message (memberRoot + domain + timestamp) with an org secret key.
- *
- * Returns (signatureR, signatureS) where:
- *   message = Poseidon3(memberRoot, domain, timestamp)
- *   signatureS = Poseidon3(orgSecret, message, signatureR)
- */
-export const signOrgIdentity = (
-  params: Readonly<{
-    orgSecret: string;
-    memberRoot: string;
-    domain: string;
-    timestamp: number;
-  }>,
-): Readonly<{ signatureR: string; signatureS: string; message: string }> => {
-  const message = poseidon3([
-    hexToBigInt(params.memberRoot),
-    toScalar(params.domain),
-    BigInt(params.timestamp),
-  ]);
-  const signatureR = generateOrgSecret();
-  const signatureS = poseidon3([
-    hexToBigInt(params.orgSecret),
-    message,
-    hexToBigInt(signatureR),
-  ]);
-  return Object.freeze({
-    signatureR,
-    signatureS: bigintToHex(signatureS),
-    message: bigintToHex(message),
-  });
-};

@@ -10,7 +10,7 @@
  */
 import type { LemmaClient } from "@lemmaoracle/spec";
 import { toScalar } from "@lemmaoracle/sdk";
-import { poseidon1, poseidon2, poseidon3, poseidon5 } from "poseidon-lite";
+import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes } from "@noble/hashes/utils";
 import type { CommitmentSigner } from "./signing.js";
@@ -372,10 +372,6 @@ export type OrgIdentityInput = Readonly<{
   domain: string;
   /** Unix seconds — when the membership tree was committed. */
   timestamp: number;
-  /** Hex field element — signature randomness component. */
-  signatureR: string;
-  /** Hex field element — Poseidon3(orgSecret, message, signatureR). */
-  signatureS: string;
 }>;
 
 export type OrgIdentityWitness = Readonly<{
@@ -386,11 +382,7 @@ export type OrgIdentityWitness = Readonly<{
 /**
  * Build witness for org-identity-v1 circuit.
  *
- * Verifies locally that:
- *   Poseidon1(orgSecret) === orgDid
- *   Poseidon3(orgSecret, message, signatureR) === signatureS
- * where message = Poseidon3(memberRoot, domain, timestamp).
- *
+ * Verifies locally that Poseidon1(orgSecret) === orgDid.
  * commitmentHash = Poseidon5(orgDid, memberRoot, domain, timestamp, orgSalt).
  */
 export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
@@ -400,21 +392,11 @@ export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
   const memberRoot = hexToBigInt(input.memberRoot);
   const domain = toScalar(input.domain);
   const timestamp = BigInt(input.timestamp);
-  const signatureR = hexToBigInt(input.signatureR);
-  const signatureS = hexToBigInt(input.signatureS);
 
   const derivedPk = poseidon1([orgSecret]);
   if (derivedPk !== orgDid) {
     throw new Error(
       "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
-    );
-  }
-
-  const message = poseidon3([memberRoot, domain, timestamp]);
-  const derivedSig = poseidon3([orgSecret, message, signatureR]);
-  if (derivedSig !== signatureS) {
-    throw new Error(
-      "orgIdentity: signatureS does not match Poseidon3(orgSecret, message, signatureR)",
     );
   }
 
@@ -436,8 +418,6 @@ export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
       memberRoot: bigintToHex(memberRoot),
       domain: bigintToHex(domain),
       timestamp: timestamp.toString(),
-      signatureR: bigintToHex(signatureR),
-      signatureS: bigintToHex(signatureS),
     }),
     commitmentHash: commitmentHashHex,
   });
@@ -591,6 +571,20 @@ export const publish = async (
           witness: binding.witness,
         })
       : undefined;
+
+  // Reject fallback (SHA-256) proofs for security-bearing circuits.
+  // The fallback returns a short base64 string; real Groth16 proofs are
+  // base64-encoded JSON objects (much longer, start with "ey").
+  if (listingProof !== undefined && !listingProof.proof.startsWith("ey")) {
+    throw new Error(
+      "publish: listing-binding-v2 proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional binding.",
+    );
+  }
+  if (input.institutionalBinding !== undefined && !proof.proof.startsWith("ey")) {
+    throw new Error(
+      "publish: content proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional listing.",
+    );
+  }
 
   // ── 3. Register document ──
   const _registerResult = await registerDocument(client, {

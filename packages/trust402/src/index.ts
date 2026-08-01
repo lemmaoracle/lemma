@@ -29,7 +29,6 @@ export {
   signatureToRandomness,
   generateOrgSecret,
   deriveOrgDid,
-  signOrgIdentity,
 } from "./signing.js";
 export type {
   CommitmentSigner,

@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { poseidon1, poseidon3, poseidon5 } from "poseidon-lite";
+import { poseidon1, poseidon5 } from "poseidon-lite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BUILD_DIR = path.resolve(__dirname, "../build");
@@ -63,8 +63,6 @@ const buildValidInput = (
     memberRoot: bigint;
     domain: bigint;
     timestamp: bigint;
-    signatureR: bigint;
-    signatureS: bigint;
     orgSalt: bigint;
     commitmentHash: bigint;
   }> = {},
@@ -75,13 +73,8 @@ const buildValidInput = (
     overrides.memberRoot ?? toScalar("member-root-test-value");
   const domain = overrides.domain ?? toScalar("frame00.com");
   const timestamp = overrides.timestamp ?? BigInt(1_700_000_000);
-  const signatureR =
-    overrides.signatureR ?? toScalar("signature-r-randomness");
   const orgSalt = overrides.orgSalt ?? toScalar("org-salt-blinding");
 
-  const message = poseidon3([memberRoot, domain, timestamp]);
-  const signatureS =
-    overrides.signatureS ?? poseidon3([orgSecret, message, signatureR]);
   const commitmentHash =
     overrides.commitmentHash ??
     poseidon5([orgDid, memberRoot, domain, timestamp, orgSalt]);
@@ -94,8 +87,6 @@ const buildValidInput = (
     memberRoot: memberRoot.toString(),
     domain: domain.toString(),
     timestamp: timestamp.toString(),
-    signatureR: signatureR.toString(),
-    signatureS: signatureS.toString(),
   };
 };
 
@@ -154,8 +145,8 @@ describe.runIf(circuitBuilt)("org-identity circuit build artifacts", () => {
     const vkey = JSON.parse(fs.readFileSync(vkeyPath, "utf8"));
     expect(vkey.protocol).toBe("groth16");
     expect(vkey.curve).toBe("bn128");
-    // IC: 1 constant + 7 public inputs = 8
-    expect(vkey.IC.length).toBe(8);
+    // IC: 1 constant + 5 public inputs = 6
+    expect(vkey.IC.length).toBe(6);
   });
 });
 
@@ -178,22 +169,20 @@ describe.runIf(circuitBuilt)(
       expect(witness[3]).toBe(input.memberRoot.toString());
       expect(witness[4]).toBe(input.domain.toString());
       expect(witness[5]).toBe(input.timestamp.toString());
-      expect(witness[6]).toBe(input.signatureR.toString());
-      expect(witness[7]).toBe(input.signatureS.toString());
     }, 60000);
 
     it("rejects an invalid orgSecret (wrong pk)", async () => {
       const input = buildValidInput({
         orgSecret: toScalar("wrong-org-secret"),
-        // Keep original orgDid / signature from a different secret → pk fails
+        // Keep original orgDid from a different secret → pk fails
         orgDid: poseidon1([toScalar("org-secret-test-key")]),
       });
       await expect(calculateWitness(input)).rejects.toThrow();
     }, 60000);
 
     it("rejects an invalid memberRoot", async () => {
-      // Tamper memberRoot while keeping the original signature/commitment —
-      // message mismatch → signature (and commitment) invalid.
+      // Tamper memberRoot while keeping the original commitment —
+      // commitment mismatch → invalid.
       const valid = buildValidInput();
       const tampered = {
         ...valid,
@@ -211,26 +200,17 @@ describe.runIf(circuitBuilt)(
       await expect(calculateWitness(tampered)).rejects.toThrow();
     }, 60000);
 
-    it("rejects an invalid signature", async () => {
-      const input = buildValidInput({
-        signatureS: toScalar("bogus-signature-s"),
-      });
-      await expect(calculateWitness(input)).rejects.toThrow();
-    }, 60000);
-
     it("generates and verifies a valid Groth16 proof", async () => {
       const input = buildValidInput();
       const result = await generateProof(input);
       expect(result.isValid).toBe(true);
       expect(result.proof).toBeDefined();
-      expect(result.publicSignals.length).toBe(7);
+      expect(result.publicSignals.length).toBe(5);
       expect(result.publicSignals[0]).toBe(input.commitmentHash.toString());
       expect(result.publicSignals[1]).toBe(input.orgDid.toString());
       expect(result.publicSignals[2]).toBe(input.memberRoot.toString());
       expect(result.publicSignals[3]).toBe(input.domain.toString());
       expect(result.publicSignals[4]).toBe(input.timestamp.toString());
-      expect(result.publicSignals[5]).toBe(input.signatureR.toString());
-      expect(result.publicSignals[6]).toBe(input.signatureS.toString());
     }, 120000);
   },
 );

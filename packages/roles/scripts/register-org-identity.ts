@@ -72,15 +72,13 @@ const buildCircuitMeta = (wasmUrl: string, zkeyUrl: string): CircuitMeta => ({
   circuitId: CIRCUIT_ID,
   schema: SCHEMA,
   description:
-    "Trust402 org-identity v1 — proves an institution's Poseidon secret-key holder signed a memberRoot+domain+timestamp binding. Uses a field-native Poseidon signature (no elliptic curve). Complements listing-binding-v2 by proving memberRoot authorship.",
+    "Trust402 org-identity v1 — proves an institution's Poseidon secret-key holder committed a memberRoot for a verified domain at a specific timestamp. ZK proof of knowledge (PoK). Complements listing-binding-v2 by anchoring memberRoot to the org's Poseidon public key.",
   inputs: [
     "commitmentHash",
     "orgDid",
     "memberRoot",
     "domain",
     "timestamp",
-    "signatureR",
-    "signatureS",
   ],
   verifiers: [OFFCHAIN_VERIFIER],
   artifact: { location: { type: "ipfs", wasm: wasmUrl, zkey: zkeyUrl } },

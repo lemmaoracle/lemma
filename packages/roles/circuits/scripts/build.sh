@@ -114,7 +114,7 @@ $SNARKJS zkey export verificationkey \
 echo "✓ $CIRCUIT2_NAME built → $BUILD_DIR"
 
 # ── org-identity circuit (circuit ID: org-identity-v1) ───────────
-# Poseidon1 + Poseidon3×2 + Poseidon5 ≈ 600 R1CS constraints.
+# Poseidon1 + Poseidon5 ≈ 200 R1CS constraints.
 # Use 2^15 ptau (same as listing-binding) for headroom.
 
 CIRCUIT3_NAME="org-identity"

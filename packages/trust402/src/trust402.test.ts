@@ -10,7 +10,7 @@ import {
 } from "./trust402.js";
 import type { PublishInput, Article } from "./trust402.js";
 import { create, toScalar } from "@lemmaoracle/sdk";
-import { poseidon1, poseidon3, poseidon5 } from "poseidon-lite";
+import { poseidon1, poseidon5 } from "poseidon-lite";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import {
@@ -274,9 +274,6 @@ describe("orgIdentity", () => {
     const memberRoot = "0x" + "bb".repeat(31);
     const domain = "frame00.com";
     const timestamp = 1700000000;
-    const signatureR = "0x" + "cc".repeat(31);
-    const message = poseidon3([BigInt(memberRoot), toScalar(domain), BigInt(timestamp)]);
-    const signatureS = `0x${poseidon3([BigInt(orgSecret), message, BigInt(signatureR)]).toString(16)}`;
     const orgSalt = "0x" + "dd".repeat(31);
 
     const result = orgIdentity({
@@ -286,8 +283,6 @@ describe("orgIdentity", () => {
       memberRoot,
       domain,
       timestamp,
-      signatureR,
-      signatureS,
     });
 
     const expectedCommitmentHash = `0x${poseidon5([
@@ -311,27 +306,8 @@ describe("orgIdentity", () => {
         memberRoot: "0x" + "bb".repeat(31),
         domain: "frame00.com",
         timestamp: 1700000000,
-        signatureR: "0x" + "cc".repeat(31),
-        signatureS: "0x" + "ff".repeat(31),
       }),
     ).toThrow("orgDid does not match");
-  });
-
-  it("throws when signatureS is invalid", () => {
-    const orgSecret = "0x" + "aa".repeat(31);
-    const orgDid = `0x${poseidon1([BigInt(orgSecret)]).toString(16)}`;
-    expect(() =>
-      orgIdentity({
-        orgSecret,
-        orgSalt: "0x" + "dd".repeat(31),
-        orgDid,
-        memberRoot: "0x" + "bb".repeat(31),
-        domain: "frame00.com",
-        timestamp: 1700000000,
-        signatureR: "0x" + "cc".repeat(31),
-        signatureS: "0x" + "00".repeat(31), // bogus
-      }),
-    ).toThrow("signatureS does not match");
   });
 });
 
@@ -571,30 +547,57 @@ describe("trust402.publish", () => {
       Array.from({ length: TREE_DEPTH }, () => 0),
     );
 
+    /** Groth16-like proof string (base64 JSON starts with "ey"). */
+    const groth16Proof = Buffer.from(
+      JSON.stringify({
+        pi_a: ["1", "2"],
+        pi_b: [["3", "4"], ["5", "6"]],
+        pi_c: ["7", "8"],
+        protocol: "groth16",
+      }),
+    ).toString("base64");
+
+    const withMockedProve = async <T,>(
+      fn: () => Promise<T>,
+    ): Promise<T> => {
+      const sdk = await import("@lemmaoracle/sdk");
+      const spy = vi.spyOn(sdk.prover, "prove").mockResolvedValue({
+        proof: groth16Proof,
+        inputs: ["0x1"],
+      });
+      try {
+        return await fn();
+      } finally {
+        spy.mockRestore();
+      }
+    };
+
     it("submits content proof then listing-binding-v2 proof", async () => {
       const client = setupMocks();
       const { witness, commitment } = contentCommitment(
         new Uint8Array([1, 2, 3]),
       );
 
-      const listing = await publish(
-        client,
-        Object.freeze({
-          circuitId: "content-commitment-v1.2",
-          witness,
-          commitment,
-          price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
-          did: "did:example:alice",
-          commitmentSigner: createMockSigner(),
-          institutionalBinding: Object.freeze({
-            orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
-            memberRoot: "0xabc",
-            individualDid: "did:example:alice",
-            merklePath: zeroPath,
-            merkleIndices: zeroIndices,
-            memberSalt: "0x1",
+      const listing = await withMockedProve(() =>
+        publish(
+          client,
+          Object.freeze({
+            circuitId: "content-commitment-v1.2",
+            witness,
+            commitment,
+            price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
+            did: "did:example:alice",
+            commitmentSigner: createMockSigner(),
+            institutionalBinding: Object.freeze({
+              orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
+              memberRoot: "0xabc",
+              individualDid: "did:example:alice",
+              merklePath: zeroPath,
+              merkleIndices: zeroIndices,
+              memberSalt: "0x1",
+            }),
           }),
-        }),
+        ),
       );
 
       expect(listing.listingRoot).toMatch(/^0x[0-9a-f]+$/);
@@ -642,6 +645,35 @@ describe("trust402.publish", () => {
       ).rejects.toThrow("commitmentSigner is required when institutionalBinding is set");
     });
 
+    it("throws when proof generation falls back to SHA-256 mode", async () => {
+      const client = setupMocks();
+      const { witness, commitment } = contentCommitment(
+        new Uint8Array([1, 2, 3]),
+      );
+
+      await expect(
+        publish(
+          client,
+          Object.freeze({
+            circuitId: "content-commitment-v1.2",
+            witness,
+            commitment,
+            price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
+            did: "did:example:alice",
+            commitmentSigner: createMockSigner(),
+            institutionalBinding: Object.freeze({
+              orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
+              memberRoot: "0xabc",
+              individualDid: "did:example:alice",
+              merklePath: zeroPath,
+              merkleIndices: zeroIndices,
+              memberSalt: "0x1",
+            }),
+          }),
+        ),
+      ).rejects.toThrow("fell back to SHA-256 mode");
+    });
+
     it("uses signed randomness as salt when commitmentSigner is set", async () => {
       const client = setupMocks();
       const { witness, commitment } = contentCommitment(
@@ -649,24 +681,26 @@ describe("trust402.publish", () => {
       );
       const signer = createMockSigner();
 
-      const listing = await publish(
-        client,
-        Object.freeze({
-          circuitId: "content-commitment-v1.2",
-          witness,
-          commitment,
-          price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
-          did: "did:example:alice",
-          commitmentSigner: signer,
-          institutionalBinding: Object.freeze({
-            orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
-            memberRoot: "0xabc",
-            individualDid: "did:example:alice",
-            merklePath: zeroPath,
-            merkleIndices: zeroIndices,
-            memberSalt: "0x1",
+      const listing = await withMockedProve(() =>
+        publish(
+          client,
+          Object.freeze({
+            circuitId: "content-commitment-v1.2",
+            witness,
+            commitment,
+            price: Object.freeze({ amount: 1000000, currency: "USDC" as const }),
+            did: "did:example:alice",
+            commitmentSigner: signer,
+            institutionalBinding: Object.freeze({
+              orgDid: "0x" + poseidon1([toScalar("org-secret-test-key")]).toString(16),
+              memberRoot: "0xabc",
+              individualDid: "did:example:alice",
+              merklePath: zeroPath,
+              merkleIndices: zeroIndices,
+              memberSalt: "0x1",
+            }),
           }),
-        }),
+        ),
       );
 
       expect(listing.signedCommitment).toBeDefined();
