@@ -12,6 +12,7 @@
     "src/node-signer.ts",
     "src/pay-fetch.ts",
     "src/pay-types.ts",
+    "src/signing.ts",
     "src/trust402.ts"
   ],
   "references": [

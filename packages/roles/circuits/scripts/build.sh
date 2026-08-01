@@ -145,3 +145,37 @@ $SNARKJS zkey export verificationkey \
   "$BUILD_DIR/${CIRCUIT3_NAME}_vkey.json"
 
 echo "✓ $CIRCUIT3_NAME built → $BUILD_DIR"
+
+# ── org-identity circuit ─────────────────────────────────────────
+# Poseidon5 commitment ≈ < 1k R1CS → reuses 2^12 ptau from role-spend-limit.
+
+CIRCUIT4_NAME="org-identity"
+
+echo "→ compiling $CIRCUIT4_NAME"
+circom "$SRC_DIR/$CIRCUIT4_NAME.circom" \
+  --r1cs \
+  --wasm \
+  --sym \
+  -l "$CIRCOMLIB_DIR" \
+  -o "$BUILD_DIR"
+
+echo "→ constraint info"
+$SNARKJS r1cs info "$BUILD_DIR/$CIRCUIT4_NAME.r1cs"
+
+echo "→ groth16 setup"
+$SNARKJS groth16 setup \
+  "$BUILD_DIR/$CIRCUIT4_NAME.r1cs" \
+  "$PTAU" \
+  "$BUILD_DIR/${CIRCUIT4_NAME}_0000.zkey"
+
+$SNARKJS zkey contribute \
+  "$BUILD_DIR/${CIRCUIT4_NAME}_0000.zkey" \
+  "$BUILD_DIR/${CIRCUIT4_NAME}_final.zkey" \
+  --name="lemma org-identity" -v -e="lemma org-identity $(date +%s)"
+
+echo "→ exporting verification key"
+$SNARKJS zkey export verificationkey \
+  "$BUILD_DIR/${CIRCUIT4_NAME}_final.zkey" \
+  "$BUILD_DIR/${CIRCUIT4_NAME}_vkey.json"
+
+echo "✓ $CIRCUIT4_NAME built → $BUILD_DIR"

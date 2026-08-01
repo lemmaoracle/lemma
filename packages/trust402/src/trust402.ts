@@ -13,6 +13,8 @@ import { toScalar } from "@lemmaoracle/sdk";
 import { poseidon1, poseidon2, poseidon5 } from "poseidon-lite";
 import { sha256 } from "@noble/hashes/sha2";
 import { randomBytes } from "@noble/hashes/utils";
+import type { CommitmentSigner } from "./signing.js";
+import { signCommitment } from "./signing.js";
 
 /* ------------------------------------------------------------------ */
 /*  Normalizer helpers (for content-commitment witness builder)        */
@@ -139,6 +141,10 @@ export type PublishInput = Readonly<{
   payoutAddress?: string;
   /** Optional institutional binding — when set, publish() generates a listing-binding-v2 proof. */
   institutionalBinding?: InstitutionalBinding;
+  /** Optional commitment signer. When set, the commitment is signed via EIP-191
+   * and the signature becomes the `randomness` in documents.register and the
+   * `salt` in listing-binding-v2. Required for institutional bindings. */
+  commitmentSigner?: CommitmentSigner;
 }>;
 
 /** Full listing returned after successful publish. */
@@ -159,6 +165,12 @@ export type Listing = Readonly<{
   environment?: "sandbox" | "production";
   /** Storefront card ID (present only when `file` was provided to publish()). */
   cardId?: string;
+  /** Signed commitment data (present when commitmentSigner was provided). */
+  signedCommitment?: Readonly<{
+    signature: string;
+    recoveredAddress: string;
+    randomness: string;
+  }>;
   createdAt: number;
 }>;
 
@@ -341,6 +353,58 @@ export const listingBindingV2 = (
 };
 
 /* ------------------------------------------------------------------ */
+/*  org-identity-v1 witness builder                                    */
+/* ------------------------------------------------------------------ */
+
+export type OrgIdentityInput = Readonly<{
+  orgDid: string;
+  memberRoot: string;
+  domain: string; // e.g. "frame00.com"
+  timestamp: number; // unix seconds
+  orgSalt: string; // hex
+}>;
+
+/**
+ * Build witness for org-identity-v1 circuit.
+ *
+ * Computes commitmentHash = Poseidon5(orgDid, memberRoot, domain, timestamp, orgSalt)
+ * and returns all circuit signals as hex/decimal strings.
+ */
+export const orgIdentity = (
+  input: OrgIdentityInput,
+): Readonly<{
+  witness: Readonly<Record<string, string>>;
+  commitmentHash: string;
+}> => {
+  const orgDid = toScalar(input.orgDid);
+  const memberRoot = hexToBigInt(input.memberRoot);
+  const domain = toScalar(input.domain);
+  const timestamp = BigInt(input.timestamp);
+  const orgSalt = hexToBigInt(input.orgSalt);
+
+  const commitmentHash = poseidon5([
+    orgDid,
+    memberRoot,
+    domain,
+    timestamp,
+    orgSalt,
+  ]);
+  const commitmentHashHex = bigintToHex(commitmentHash);
+
+  return Object.freeze({
+    witness: Object.freeze({
+      orgSalt: bigintToHex(orgSalt),
+      commitmentHash: commitmentHashHex,
+      orgDid: bigintToHex(orgDid),
+      memberRoot: bigintToHex(memberRoot),
+      domain: bigintToHex(domain),
+      timestamp: timestamp.toString(),
+    }),
+    commitmentHash: commitmentHashHex,
+  });
+};
+
+/* ------------------------------------------------------------------ */
 /*  CID helper                                                         */
 /* ------------------------------------------------------------------ */
 
@@ -437,6 +501,13 @@ export const publish = async (
 
   const chainId = input.environment === "production" ? 8453 : 84532;
 
+  // ── 0. Optional commitment signing (EIP-191 → randomness / salt) ──
+  const signed =
+    input.commitmentSigner !== undefined
+      ? await signCommitment(input.commitmentSigner, input.commitment)
+      : undefined;
+  const randomness = signed?.randomness ?? "0x0";
+
   // ── 1. Compute docHash = Poseidon2(commitment, chainId) ──
   // Binding chainId into docHash makes Sandbox/Production documents distinct,
   // preventing INSERT OR IGNORE collisions when the same content is registered
@@ -464,6 +535,7 @@ export const publish = async (
           merklePath: input.institutionalBinding.merklePath,
           merkleIndices: input.institutionalBinding.merkleIndices,
           memberSalt: input.institutionalBinding.memberSalt,
+          ...(signed !== undefined ? { salt: signed.randomness } : {}),
         })
       : undefined;
 
@@ -487,7 +559,7 @@ export const publish = async (
       scheme: "poseidon" as const,
       root: docHash,
       leaves: [docHash],
-      randomness: "0x0",
+      randomness,
     },
     revocation: { root: "" },
   });
@@ -566,6 +638,15 @@ export const publish = async (
     },
     metadata: input.metadata,
     environment: input.environment,
+    ...(signed !== undefined
+      ? {
+          signedCommitment: Object.freeze({
+            signature: signed.signature,
+            recoveredAddress: signed.recoveredAddress,
+            randomness: signed.randomness,
+          }),
+        }
+      : {}),
     createdAt: Date.now(),
   });
 
