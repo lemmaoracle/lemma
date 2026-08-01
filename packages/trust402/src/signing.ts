@@ -10,6 +10,7 @@
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { bytesToHex, hexToBytes, utf8ToBytes, concatBytes } from "@noble/hashes/utils";
+import { poseidon2 } from "poseidon-lite";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -122,13 +123,19 @@ const recoverPersonalSignAddress = (
  * Convert an EIP-191 signature (65 bytes hex) to a BN254 field element
  * suitable for use as `randomness` in circuits.
  *
- * Uses keccak256(signature_bytes) reduced mod FIELD_PRIME so the result
- * is deterministic and uniformly distributed in the BN254 scalar field.
+ * Splits keccak256(signature) into two 128-bit halves, each well below
+ * the BN254 field prime (~254 bit), so no modular reduction bias occurs.
+ * Poseidon2 uniformly maps the pair to a single field element.
  */
 export const signatureToRandomness = (signature: string): string => {
   const sigBytes = hexToBytes(strip0x(signature));
-  const hash = keccak_256(sigBytes);
-  const fieldElement = BigInt(`0x${bytesToHex(hash)}`) % FIELD_PRIME;
+  const hash = keccak_256(sigBytes); // 32 bytes = 256 bits
+
+  // Split into two 128-bit halves — each < 2^128 << FIELD_PRIME (~2^254),
+  // so no modular reduction bias. Poseidon2 uniformly combines them.
+  const lo = BigInt(`0x${bytesToHex(hash.slice(0, 16))}`);
+  const hi = BigInt(`0x${bytesToHex(hash.slice(16, 32))}`);
+  const fieldElement = poseidon2([lo, hi]);
   return `0x${fieldElement.toString(16)}`;
 };
 
