@@ -1430,7 +1430,7 @@
 .ucx details.augrp, .ucx details.auorph{border-top:1px solid var(--line,#e1e3dd);}
 .ucx details.augrp summary, .ucx details.auorph summary{cursor:pointer;list-style:none;padding:13px 4px;display:block;position:relative;}
 .ucx details.augrp summary::-webkit-details-marker, .ucx details.auorph summary::-webkit-details-marker{display:none;}
-.ucx details.augrp summary > b{margin-bottom:2px;}
+.ucx details.augrp summary > b{margin:0 10px 0 0;}
 .ucx details.augrp summary > i{margin-bottom:0;}
 .ucx details.augrp summary::after, .ucx details.auorph summary::after{content:"";position:absolute;right:8px;top:50%;width:7px;height:7px;margin-top:-5px;border-right:1.6px solid #9aa197;border-bottom:1.6px solid #9aa197;transform:rotate(45deg);transition:transform .18s;}
 .ucx details.augrp[open] summary::after, .ucx details.auorph[open] summary::after{transform:rotate(225deg);margin-top:-1px;}
