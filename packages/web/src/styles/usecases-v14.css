@@ -1426,3 +1426,15 @@
     font-family:var(--font-serif-jp,"Noto Serif JP",serif);font-weight:600;
     font-size:16.5px;line-height:1.62;color:var(--tx);word-break:keep-all;}
 .ucx .ilead{margin-top:14px;}
+/* --- 業務から探す: 折りたたみ（実装時追加・2026-08-02） --- */
+.ucx details.augrp, .ucx details.auorph{border-top:1px solid var(--line,#e1e3dd);}
+.ucx details.augrp summary, .ucx details.auorph summary{cursor:pointer;list-style:none;padding:13px 4px;display:block;position:relative;}
+.ucx details.augrp summary::-webkit-details-marker, .ucx details.auorph summary::-webkit-details-marker{display:none;}
+.ucx details.augrp summary > b{margin-bottom:2px;}
+.ucx details.augrp summary > i{margin-bottom:0;}
+.ucx details.augrp summary::after, .ucx details.auorph summary::after{content:"";position:absolute;right:8px;top:50%;width:7px;height:7px;margin-top:-5px;border-right:1.6px solid #9aa197;border-bottom:1.6px solid #9aa197;transform:rotate(45deg);transition:transform .18s;}
+.ucx details.augrp[open] summary::after, .ucx details.auorph[open] summary::after{transform:rotate(225deg);margin-top:-1px;}
+.ucx details.augrp summary:hover > i{color:var(--ok-ink,#4e7a00);}
+.ucx .aucnt{font-style:normal;font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.14em;color:#9aa197;margin-left:10px;}
+.ucx .aubody{padding:2px 0 14px;}
+.ucx details.auorph summary > b{display:inline;}
