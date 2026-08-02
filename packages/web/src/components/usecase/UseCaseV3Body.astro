@@ -77,13 +77,20 @@ const C = isJa
       bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
       hpAria: "HIDE と PROVE の対比", hpHide: "Hide ── 隠す", hpProve: "Prove ── 証明する",
-      ariaReaders: "読者", ariaApproach: "アプローチ", ariaCriteria: "選定基準",
+      ariaReaders: "課題認識", ariaApproach: "変化", ariaCriteria: "選定基準",
       ariaSteps: "進め方", ariaRelated: "関連ユースケース",
       s1Eye: "01 · 想定読者", s1H2: "このページは、こんな方のために。",
       s1AuthEye: "01 · 課題認識", s1AuthH2: "推進担当の、3 つの声。",
       s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
       s2H2: "原本を渡すか、事実だけを渡すか。",
       s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
+      s2NowTitle: "いまの運用", s2NowHand: "渡すもの", s2NowHandFallback: "原本・中身",
+      s2NowCheckLab: "相手の確認", s2NowCheckVal: "発行元への照会・原本の突き合わせ",
+      s2NowDoubtLab: "疑義のとき", s2NowDoubtVal: "「変えていない」と説明する側にまわる",
+      s2NowFlow: "↓ 中身がそのまま外へ渡る",
+      s2AfterTitle: "受け取った側の判定画面", s2AfterFact: "証明された事実",
+      s2AfterRt: "発行元への照会", s2AfterRtVal: "不要",
+      s2AfterFlow: "↓ 渡るのは事実と証明だけ",
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
       baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
@@ -117,13 +124,20 @@ const C = isJa
       bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
       credMid: "Public-infrastructure PoC in production",
       hpAria: "HIDE versus PROVE", hpHide: "Hide", hpProve: "Prove",
-      ariaReaders: "Who it's for", ariaApproach: "Approach", ariaCriteria: "How to choose",
+      ariaReaders: "The problem", ariaApproach: "The shift", ariaCriteria: "How to choose",
       ariaSteps: "How it works", ariaRelated: "Related use cases",
       s1Eye: "01 · WHO IT'S FOR", s1H2: "Who this is for.",
       s1AuthEye: "01 · THE PROBLEM", s1AuthH2: "Three voices from the front line.",
       s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
       s2H2: "Hand over the source, or just the facts?",
       s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
+      s2NowTitle: "How it works today", s2NowHand: "You hand over", s2NowHandFallback: "the originals",
+      s2NowCheckLab: "How they check", s2NowCheckVal: "They call the issuer and compare originals",
+      s2NowDoubtLab: "When challenged", s2NowDoubtVal: "You do the explaining",
+      s2NowFlow: "↓ the contents leave your hands",
+      s2AfterTitle: "The verifier's screen", s2AfterFact: "Proven fact",
+      s2AfterRt: "Issuer round-trip", s2AfterRtVal: "Not needed",
+      s2AfterFlow: "↓ only the fact and its proof travel",
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
       baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
@@ -153,10 +167,6 @@ const C = isJa
       bridgeH2: "The bigger picture this use case belongs to.",
       bridgeSub: "We map use scenarios across industries and workflows by the five proofs.",
     };
-
-// Resolve a Before/After data value for the active locale (vEn overrides v).
-const rv = (row: { v: string; vEn?: string }): string =>
-  !isJa && row.vEn ? row.vEn : row.v;
 
 const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
@@ -225,21 +235,16 @@ const audienceIntro = audienceHtml.match(/<p>([\s\S]*?)<\/p>/)?.[1]?.trim() ?? "
 const audienceBullets = [...audienceHtml.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) =>
   m[1].trim(),
 );
-// §2 Before/After key:value table data: from the authored config, or — for
-// derived UCs — the data-only map. Either renders the same table.
-const baData = v3 ?? beforeAfter;
-const showDataBa = !!baData;
-// Hero HIDE→PROVE device shows whenever §2 renders the data table (the chip
-// pair and the table never duplicate the same surface). Concept-card fallback
-// only for UCs that have a HIDE→PROVE pair but no Before/After data.
-const showHeroHp = !!hideProve && showDataBa;
-const showDerivedBa = !showDataBa && !!hideProve;
 
 /** Trim an abstract to its first sentence for related cards. */
 function firstSentence(text: string): string {
   const m = text.match(/^([^。.!?！？]+[。.!?！？])/);
   return (m?.[1] ?? text).trim();
 }
+// 「業務から探す」— §5 関連カードに出した slug は除外して重複を避ける。
+const bytaskMembers = taskGroupMembers.filter(
+  (m) => !relatedUseCases.some((r) => r.slug === m.slug),
+);
 ---
 
 <main class="ucv-page">
@@ -267,9 +272,7 @@ function firstSentence(text: string): string {
           )}
         </div>
         <div class="ucv-hero-ctas">
-          {isJa && (
-            <a class="ucv-btn ucv-btn--primary" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">このユースケースについて、問い合わせる</a>
-          )}
+          <a class="ucv-btn ucv-btn--primary" href={isJa ? `https://tally.so/r/EkBqDX?uc=${useCase.slug}` : `https://tally.so/r/Pd2Rl5?uc=${useCase.slug}`} target="_blank" rel="noopener">{isJa ? "このユースケースについて、問い合わせる" : "Talk to us about this use case"}</a>
           <a class="ucv-btn ucv-btn--ghost" href={`${base}/verify/`}>{isJa ? "証明を1件、検証してみる" : "Verify a proof"}</a>
         </div>
       </div>
@@ -361,72 +364,46 @@ function firstSentence(text: string): string {
     <section class="ucv-band" aria-label={C.ariaApproach}>
       <div class="ucv-container">
         <div class="ucv-emph">
-          <div class="ucv-eye">{showDataBa || showDerivedBa ? C.s2EyeShift : C.s2EyeApproach}</div>
+          <div class="ucv-eye">{C.s2EyeShift}</div>
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
-          {showDerivedBa && hideProve && (
-            <div class="ucv-ba ucv-ba--concept">
-              <div class="ucv-ba-card ucv-ba-card--before">
-                <div class="ucv-ba-label">Without Lemma</div>
-                <div class="ucv-ba-title">{C.baBeforeTitle}</div>
-                <p class="ucv-ba-claim">{hideProve.hide}</p>
-                <div class="ucv-ba-flow">{C.baFlowBefore}</div>
-              </div>
-
-              <div class="ucv-ba-arrow" aria-hidden="true">→</div>
-
-              <div class="ucv-ba-card ucv-ba-card--after">
-                <div class="ucv-ba-label">With Lemma</div>
-                <div class="ucv-ba-title">{C.baAfterTitle}</div>
-                <p class="ucv-ba-claim ucv-ba-claim--prove">{hideProve.prove}</p>
-                <div><span class="ucv-ba-badge">✓ ZK VALID</span></div>
-                <div class="ucv-ba-flow ucv-ba-flow--after">{C.baFlowAfter}</div>
-              </div>
+          <div class="ucv-ba">
+            <div class="ucv-ba-card ucv-ba-card--before">
+              <div class="ucv-ba-label">Without Lemma</div>
+              <div class="ucv-ba-title">{C.s2NowTitle}</div>
+              <dl class="ucv-ba-rows">
+                <div class="ucv-ba-row"><dt>{C.s2NowHand}</dt><dd>{hideProve ? hideProve.hide : C.s2NowHandFallback}</dd></div>
+                <div class="ucv-ba-row"><dt>{C.s2NowCheckLab}</dt><dd>{C.s2NowCheckVal}</dd></div>
+                <div class="ucv-ba-row"><dt>{C.s2NowDoubtLab}</dt><dd>{C.s2NowDoubtVal}</dd></div>
+              </dl>
+              <div class="ucv-ba-flow">{C.s2NowFlow}</div>
             </div>
-          )}
 
-          {showDataBa && baData && (
-            <Fragment>
-              <p class="ucv-band-lead">{C.s2Lead}</p>
-              <div class="ucv-ba">
-                <div class="ucv-ba-card ucv-ba-card--before">
-                  <div class="ucv-ba-label">Without Lemma</div>
-                  <div class="ucv-ba-title">{C.baDataBeforeTitle}</div>
-                  <dl class="ucv-ba-rows">
-                    {baData.without.map((row) => (
-                      <div class="ucv-ba-row">
-                        <dt>{row.k}:</dt>
-                        <dd>{rv(row)}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <div class="ucv-ba-flow">{C.baDataFlowBefore}</div>
+            <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+
+            <div class="ucv-ba-card ucv-ba-card--after">
+              <div class="ucv-ba-label">With Lemma</div>
+              <div class="ucv-ba-title">{C.s2AfterTitle}</div>
+              <div class="ucv-mini-verdict">
+                <div class="seal">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                    <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
                 </div>
-
-                <div class="ucv-ba-arrow" aria-hidden="true">→</div>
-
-                <div class="ucv-ba-card ucv-ba-card--after">
-                  <div class="ucv-ba-label">With Lemma</div>
-                  <div class="ucv-ba-title">{C.baDataAfterTitle}</div>
-                  <dl class="ucv-ba-rows">
-                    {baData.withProof.map((row) => (
-                      <div class={`ucv-ba-row${row.strong || row.badge ? " is-key" : ""}`}>
-                        <dt>{row.k}:</dt>
-                        <dd>
-                          {row.badge ? (
-                            <span class="ucv-ba-badge">{rv(row)}</span>
-                          ) : (
-                            <span class={row.strong ? "ucv-ba-strong" : ""}>{rv(row)}</span>
-                          )}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <div class="ucv-ba-flow ucv-ba-flow--after">{C.baDataFlowAfter}</div>
-                </div>
+                <div class="t">{C.hiwVerdict}</div>
+                {isJa && <div class="en">NOT TAMPERED</div>}
               </div>
-            </Fragment>
-          )}
+              <dl class="ucv-ba-rows">
+                {hideProve && (
+                  <div class="ucv-ba-row"><dt>{C.s2AfterFact}</dt><dd><span class="ucv-ba-strong">{hideProve.prove}</span></dd></div>
+                )}
+                <div class="ucv-ba-row"><dt>{C.s2AfterRt}</dt><dd>{C.s2AfterRtVal}</dd></div>
+              </dl>
+              <div class="ucv-ba-flow ucv-ba-flow--after">{C.s2AfterFlow}</div>
+            </div>
+          </div>
 
           <div class="ucv-approach">
             {v3 ? (
@@ -543,13 +520,11 @@ function firstSentence(text: string): string {
       </div>
       <p class="ucv-steps-note">{C.s4Note}</p>
       {invite && <div class="ucv-steps-invite" set:html={invite} />}
-      {isJa && (
-        <div class="ucv-uc-cta">
-          <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
-            このユースケースについて、問い合わせる →
-          </a>
-        </div>
-      )}
+      <div class="ucv-uc-cta">
+        <a class="ucv-uc-cta-btn" href={isJa ? `https://tally.so/r/EkBqDX?uc=${useCase.slug}` : `https://tally.so/r/Pd2Rl5?uc=${useCase.slug}`} target="_blank" rel="noopener">
+          {isJa ? "このユースケースについて、問い合わせる →" : "Talk to us about this use case →"}
+        </a>
+      </div>
     </div>
   </section>
 
@@ -582,14 +557,14 @@ function firstSentence(text: string): string {
     </div>
   </section>
 
-  {taskGroup && taskGroupMembers.length > 0 && (
+  {taskGroup && bytaskMembers.length > 0 && (
     <section class="ucv-bytask" aria-labelledby="ucv-bytask-h">
       <div class="ucv-bytask-inner">
         <div class="ucv-bytask-k">Use cases — by task</div>
         <h2 class="ucv-bytask-h" id="ucv-bytask-h">業務から探す</h2>
         <p class="ucv-bytask-sub">{taskGroup.id}｜{taskGroup.heading} — 同じ課題のユースケース</p>
         <div class="ucv-bytask-list">
-          {taskGroupMembers.map((m) => (
+          {bytaskMembers.map((m) => (
             <a class="ucv-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
           ))}
         </div>
@@ -615,13 +590,14 @@ function firstSentence(text: string): string {
   )}
 
   {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
-  <div class="ucv-footlinks">
+  <nav class="ucv-footlinks" aria-label={isJa ? "関連リンク" : "Related links"}>
     {pillar && (
       <a href={`${pillarsPath}/${pillar.slug}`}>{C.footHow} — {pillar.title[locale]} →</a>
     )}
+    <a href={`${base}/pricing/#api`}>{isJa ? "料金" : "Pricing"} →</a>
     <a href={faqHref}>{C.footFaq} →</a>
     <a href={ucBridgeHref}>{C.footBridge} →</a>
-  </div>
+  </nav>
 </main>
 
 <style>
@@ -727,8 +703,6 @@ function firstSentence(text: string): string {
   .ucv-ba-label { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 12px 18px 2px; }
   .ucv-ba-card--after .ucv-ba-label { color: var(--ok-light); }
   .ucv-ba-title { font-family: var(--font-serif-jp); font-weight: 600; font-size: 15.5px; color: var(--tx); padding: 0 18px 12px; border-bottom: 1px solid var(--line); }
-  .ucv-ba-claim { font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); padding: 14px 18px 0; margin: 0; }
-  .ucv-ba-claim--prove { color: var(--tx); font-weight: 600; }
   .ucv-ba-rows { margin: 4px 0 0; padding: 0 18px; flex: 1; }
   .ucv-ba-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); }
   .ucv-ba-row:first-child { border-top: none; }
@@ -736,9 +710,9 @@ function firstSentence(text: string): string {
   .ucv-ba-row dd { font-size: 13px; color: var(--tx); margin: 0; text-align: right; }
   .ucv-ba-strong { color: var(--ok-light); font-weight: 600; }
   .ucv-ba-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ok-light); border: 1px solid rgba(124, 175, 0, 0.45); background: rgba(168, 224, 16, 0.1); border-radius: 999px; padding: 2px 10px; }
+  .ucv-ba-card .ucv-mini-verdict { padding: 16px 18px 4px; }
   .ucv-ba-flow { padding: 9px 18px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); margin-top: 12px; }
   .ucv-ba-flow--after { color: var(--ok-light); }
-  .ucv-ba--concept .ucv-ba-card > div:last-child { margin-top: auto; }
 
   .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
   .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
