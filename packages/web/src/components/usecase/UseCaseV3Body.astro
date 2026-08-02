@@ -30,6 +30,8 @@ import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
 import { SEGMENT_URLS } from "../../config/navigation";
 
 export interface UseCaseV3BodyProps {
+  taskGroup?: { readonly id: string; readonly heading: string } | undefined;
+  taskGroupMembers?: ReadonlyArray<{ readonly slug: string; readonly title: string }>;
   locale: Locale;
   base: string;
   useCase: UseCase;
@@ -63,8 +65,7 @@ const {
   beforeAfter,
   compareRow,
   ucBridgeHref,
-  ucBridgeCta,
-} = Astro.props as UseCaseV3BodyProps;
+  ucBridgeCta, taskGroup, taskGroupMembers = [] } = Astro.props as UseCaseV3BodyProps;
 
 const isJa = locale === "ja";
 const sealHref = `${base}/seal/`;
@@ -530,6 +531,21 @@ function firstSentence(text: string): string {
         {locale === "ja" ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
       </a>
     </div>
+  )}
+  {taskGroup && taskGroupMembers.length > 0 && (
+    <section class="ucv-bytask" aria-labelledby="ucv-bytask-h">
+      <div class="ucv-bytask-inner">
+        <div class="ucv-bytask-k">Use cases — by task</div>
+        <h2 class="ucv-bytask-h" id="ucv-bytask-h">業務から探す</h2>
+        <p class="ucv-bytask-sub">{taskGroup.id}｜{taskGroup.heading} — 同じ課題のユースケース</p>
+        <div class="ucv-bytask-list">
+          {taskGroupMembers.map((m) => (
+            <a class="ucv-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
+          ))}
+        </div>
+        <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧 — 業務から探す（全36件） →</a>
+      </div>
+    </section>
   )}
 </main>
 
@@ -1242,5 +1258,21 @@ function firstSentence(text: string): string {
     .ucv-emph { padding-left: 18px; }
     .ucv-closing { padding: 60px 0 56px; }
     .ucv-closing-inner { padding: 0 24px; }
+  }
+</style>
+
+<style>
+  /* 「業務から探す」 — 索引の全件リストと同じ行の形 (実装指示 v1 §4) */
+  .ucv-bytask { border-top: 1px solid rgba(60, 52, 31, 0.14); padding: 44px 0 64px; }
+  .ucv-bytask-inner { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  .ucv-bytask-k { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #8b8674; margin-bottom: 6px; }
+  .ucv-bytask-h { font-size: 1.2rem; margin: 0 0 4px; }
+  .ucv-bytask-sub { font-size: 0.8rem; color: #6f6a58; margin: 0 0 14px; }
+  .ucv-bytask-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 32px; }
+  .ucv-bytask-row { display: block; font-size: 0.84rem; line-height: 1.6; color: inherit; text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid transparent; }
+  .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); }
+  .ucv-bytask-all { display: inline-block; margin-top: 14px; font-size: 0.8rem; }
+  @media (max-width: 860px) {
+    .ucv-bytask-list { grid-template-columns: 1fr; }
   }
 </style>
