@@ -22,11 +22,6 @@ import { poseidon1, poseidon2 } from "poseidon-lite";
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-/** BN254 scalar field prime. */
-const FIELD_PRIME = BigInt(
-  "21888242871839275222246405745257275088548364400416034343698204186575808495617",
-);
-
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
@@ -224,10 +219,11 @@ const bigintToHex = (n: bigint): string => `0x${n.toString(16)}`;
  * Uses the bias-free split+Poseidon2 approach from signatureToRandomness:
  * 32 random bytes → two 128-bit halves → Poseidon2 → uniform field element.
  */
-export const generateOrgSecret = (): string => {
-  const bytes = randomBytes(32);
-  const lo = BigInt(`0x${bytesToHex(bytes.slice(0, 16))}`);
-  const hi = BigInt(`0x${bytesToHex(bytes.slice(16, 32))}`);
+export const generateOrgSecret = (
+  entropy: Uint8Array = randomBytes(32),
+): string => {
+  const lo = BigInt(`0x${bytesToHex(entropy.slice(0, 16))}`);
+  const hi = BigInt(`0x${bytesToHex(entropy.slice(16, 32))}`);
   return bigintToHex(poseidon2([lo, hi]));
 };
 

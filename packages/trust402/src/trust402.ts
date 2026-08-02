@@ -395,7 +395,10 @@ export const orgIdentity = (input: OrgIdentityInput): OrgIdentityWitness => {
   const timestamp = BigInt(input.timestamp);
 
   const derivedPk = poseidon1([orgSecret]);
+  // imperative: input-validation guard that throws — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (derivedPk !== orgDid) {
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error(
       "orgIdentity: orgDid does not match Poseidon1(orgSecret)",
     );
@@ -459,36 +462,40 @@ const submitProof = async (
   const proofUrl = `${client.apiBase}${proofPath}`;
   const proofHeaders: Record<string, string> = {
     "content-type": "application/json",
+    ...(client.apiKey !== undefined ? { "x-api-key": client.apiKey } : {}),
   };
-  if (client.apiKey !== undefined) {
-    proofHeaders["x-api-key"] = client.apiKey;
-  }
 
-  let proofRes: Response;
-  try {
-    proofRes = await (client.fetcher ?? fetch)(proofUrl, {
-      method: "POST",
-      headers: proofHeaders,
-      body: JSON.stringify(submission),
-    });
-  } catch (e: unknown) {
+  const proofRes = await (client.fetcher ?? fetch)(proofUrl, {
+    method: "POST",
+    headers: proofHeaders,
+    body: JSON.stringify(submission),
+  }).catch((e: unknown): never => {
+    // imperative: preserve Error instances verbatim — no functional alternative
+    // eslint-disable-next-line functional/no-conditional-statements
     if (e instanceof Error) throw e;
-    const msg = typeof e === "string" ? e
-      : typeof (e as Readonly<{ message?: unknown }>)?.message === "string"
-        ? String((e as Readonly<{ message: string }>).message)
-        : "Unknown error";
-    const code = (e as Readonly<{ code?: unknown }>)?.code;
+    const message =
+      typeof e === "string"
+        ? e
+        : (e as Readonly<{ message?: unknown }>).message === "string"
+          ? (e as Readonly<{ message: string }>).message
+          : "Unknown error";
+    const code = (e as Readonly<{ code?: unknown }>).code;
     const err = new Error(
-      `${msg} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+      `${message} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
     );
-    throw typeof code === "number"
-      ? (Object.assign(err, { code }) as Error & { code: number })
-      : err;
-  }
-  if (!proofRes.ok) {
-    const errBody = await proofRes.json().catch(() => ({}));
+    // imperative: attach structured code to Error — no functional alternative
+    // eslint-disable-next-line functional/immutable-data
+    throw typeof code === "number" ? Object.assign(err, { code }) : err;
+  });
+
+  const errBody: unknown = proofRes.ok
+    ? undefined
+    : await proofRes.json().catch((_e: unknown) => ({}));
+  // imperative: HTTP non-2xx rejection — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
+  if (errBody !== undefined) {
     throw new Error(
-      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: ${client.apiKey ? "set" : "unset"})`,
+      `HTTP ${String(proofRes.status)}: ${JSON.stringify(errBody)} (apiBase: ${client.apiBase}; apiKey: *** ? "set" : "unset"})`,
     );
   }
 };
@@ -528,7 +535,10 @@ export const publish = async (
       : undefined;
   const randomness = signed?.randomness ?? "0x0";
 
+  // imperative: pre-condition guard that throws — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (input.institutionalBinding !== undefined && input.commitmentSigner === undefined) {
+     
     throw new Error(
       "publish: commitmentSigner is required when institutionalBinding is set — wallet signature must bind to the listing salt",
     );
@@ -575,12 +585,18 @@ export const publish = async (
 
   // Reject fallback (SHA-256) proofs for security-bearing circuits.
   // The fallback returns empty inputs; real Groth16 proofs return public signals.
+  // imperative: security guard rejecting fallback proofs — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (listingProof !== undefined && listingProof.inputs.length === 0) {
+     
     throw new Error(
       "publish: listing-binding-v2 proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional binding.",
     );
   }
+  // imperative: security guard rejecting fallback proofs — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (input.institutionalBinding !== undefined && proof.inputs.length === 0) {
+     
     throw new Error(
       "publish: content proof generation fell back to SHA-256 mode — circuit artifacts unavailable. Cannot submit non-cryptographic proof for institutional listing.",
     );
@@ -606,6 +622,8 @@ export const publish = async (
   // ── 4. Submit proof(s) sequentially ──
   // Content proof first, then listing-binding-v2 when institutional.
   // SubmitProofRequest is one proof per call (spec unchanged).
+  // imperative: sequential HTTP side-effect — no functional alternative
+  // eslint-disable-next-line functional/no-expression-statements
   await submitProof(
     client,
     {
@@ -619,7 +637,11 @@ export const publish = async (
     input.environment,
   );
 
+  // imperative: conditional sequential HTTP side-effect — no functional alternative
+  // eslint-disable-next-line functional/no-conditional-statements
   if (listingProof !== undefined && binding !== undefined) {
+    // imperative: sequential HTTP side-effect — no functional alternative
+    // eslint-disable-next-line functional/no-expression-statements
     await submitProof(
       client,
       {
