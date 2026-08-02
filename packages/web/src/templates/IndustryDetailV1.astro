@@ -1,0 +1,41 @@
+---
+/**
+ * Industry detail — v1 (業界ページ).
+ *
+ * Renders the site chrome (Layout + Navigation + Footer) around a per-industry
+ * body fragment (config/industriesV1.ts), injected inside `<main class="indv1">`.
+ * Shared, namespaced styles come from `styles/industry-v1.css`.
+ * Fragments are ported from the approved mockups (lemma_業界ページ_モック, 2026-08-02).
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import type { IndustryEntry } from "../config/industriesV1";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import "../styles/industry-v1.css";
+
+export interface IndustryDetailV1Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  entry: IndustryEntry;
+}
+
+const { locale, t, base, entry } = Astro.props as IndustryDetailV1Props;
+
+const metaTitle = `${entry.name}のユースケース — ${entry.h1} | Lemma`;
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={entry.description}
+  metaType="page"
+  pagePath={`/solutions/use-cases/${entry.slug}/`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="indv1" set:html={entry.body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
