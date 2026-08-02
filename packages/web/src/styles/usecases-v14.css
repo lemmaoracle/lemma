@@ -1399,7 +1399,7 @@
 .ucx .ux-thc{font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.1em;
     color:#8b9188;text-align:center;padding:0 14px;line-height:1.7;}
 .ucx .ux:hover .ux-thi{transform:scale(1.02);transition:transform .5s ease;}
-.ucx{display:none;}
+.ucx.nothumb .ux-th{display:none;}
 .ucx /* --- 全件リスト（A案） --- */
   .allux{margin-top:22px;}
 .ucx .allux-k{font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.2em;
