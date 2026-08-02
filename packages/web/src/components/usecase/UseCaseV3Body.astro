@@ -24,8 +24,6 @@ import type { Pillar } from "../../data/pillars";
 import type { HideProvePair } from "../../config/useCaseHideProve";
 import type { UseCaseV3 } from "../../config/useCaseV3";
 import type { UseCaseBeforeAfter } from "../../config/useCaseBeforeAfter";
-import SolutionsBridge from "../SolutionsBridge.astro";
-import { DISCOVERY_CALL_URL } from "../../config/cta";
 import { USE_CASE_PLAN } from "../../data/useCasePlanMap";
 import { SEGMENT_URLS } from "../../config/navigation";
 
@@ -97,6 +95,13 @@ const C = isJa
       rowAccess: "アクセス制御のみ", rowMask: "マスキング / 匿名化", rowEnc: "暗号化のみ",
       lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
       s4Eye: "04 · 進め方", s4Title: "進め方",
+      s4Steps: [
+        { t: "証明する記録を決める", d: "提出のたびに説明や照会が生まれている記録・フローを、まず1つ選びます。" },
+        { t: "発行を組み込む", d: "記録が確定した時点で API を1回呼びます。記録の本文は送りません。" },
+        { t: "相手が確かめる", d: "受け取った側はリンクを開くだけ。アカウントもキーも要りません。" },
+      ],
+      s4Note: "開示範囲・保存期間の設計から PoC、本番運用まで伴走します。",
+      footHow: "仕組みについて知る", footFaq: "よくある質問", footBridge: "活用シーンの全体像",
       s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
       faqLead: "残った疑問は、", faqLinkLabel: "よくある質問（FAQ）→",
       bridgeEye: "より広い活用シーン",
@@ -125,6 +130,13 @@ const C = isJa
       rowAccess: "Access control only", rowMask: "Masking / anonymization", rowEnc: "Encryption only",
       lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
       s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
+      s4Steps: [
+        { t: "Choose the record to prove", d: "Start with the one flow where hand-offs cost you the most explaining." },
+        { t: "Add issuance", d: "Call the API once when the record is finalized. The document itself is never sent." },
+        { t: "Let the receiver verify", d: "They open a link — no account, no keys." },
+      ],
+      s4Note: "We help design disclosure scope and retention, run the PoC, and support production.",
+      footHow: "How it works", footFaq: "FAQ", footBridge: "The bigger picture",
       s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
       faqLead: "Still have questions?", faqLinkLabel: "See the FAQ →",
       bridgeEye: "The bigger picture",
@@ -147,8 +159,6 @@ const planName: Readonly<Record<string, string>> = {
   compliance: "Lemma Compliance",
 };
 const faqHref = `${base}/faq/`;
-// v3 is JA only, so the closing books the JA Discovery Call.
-const discoveryUrl = DISCOVERY_CALL_URL.ja;
 
 // §4 / §5 reuse the existing markdown sections by key.
 // The 進め方 section is "next" on ai-document-isolation (a 5-step list) but
@@ -162,17 +172,14 @@ const nextSection =
 // at the level of ai-document-isolation's closing line. The follow-up
 // paragraph (NDA 締結・規制マッピング・参照アーキテクチャ・PoC 設計) over-claims
 // for this surface, and the trailing link row duplicates the TALK button.
-const nextBody = (() => {
+// §4 の「個別の一行」— cta 変種は先頭の控えめな誘い文、next 変種（ol 主体）は
+// 末尾の締め段落を使う。どちらも無ければ共通3ステップ＋補足のみで閉じる。
+const invite = (() => {
   if (!nextSection) return "";
-  if (nextSection.key !== "cta") return nextSection.body;
-  const firstPara = nextSection.body.match(/<p>[\s\S]*?<\/p>/);
-  return firstPara ? firstPara[0] : nextSection.body;
+  const paras = nextSection.body.match(/<p>[\s\S]*?<\/p>/g) ?? [];
+  if (paras.length === 0) return "";
+  return nextSection.key === "cta" ? paras[0] : paras[paras.length - 1];
 })();
-// Normalize the §4 heading to 「進め方」 — the "cta" section title is a
-// Discovery-Call headline that reads oddly here; ai-document-isolation's is
-// already "進め方".
-const nextTitle =
-  nextSection && nextSection.key === "next" ? nextSection.title : C.s4Title;
 const relatedSection = useCase.sections.find((s) => s.key === "related");
 
 // ── Authored vs derived mode ──────────────────────────────────────────
@@ -459,25 +466,29 @@ function firstSentence(text: string): string {
     </div>
   </section>
 
-  <!-- §4 進め方 — existing markdown (ORIGINAL numbered list) -->
-  {nextSection && (
-    <section class="ucv-band" aria-label={C.ariaSteps}>
-      <div class="ucv-container">
-        <div class="ucv-eye">{C.s4Eye}</div>
-        <h2 class="ucv-h2">{nextTitle}</h2>
-        <div class="ucv-steps-body" set:html={nextBody} />
-        {/* UC-specific TALK CTA — JA only. The form books a Discovery Call;
-            EN has no call staff, so EN closes on the product CTAs instead. */}
-        {isJa && (
-          <div class="ucv-uc-cta">
-            <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
-              このユースケースについて、問い合わせる →
-            </a>
-          </div>
-        )}
+  <!-- §4 進め方 — 共通3ステップ（再構成提案 v1）＋個別の一行＋唯一の主CTA -->
+  <section class="ucv-band" aria-label={C.ariaSteps}>
+    <div class="ucv-container">
+      <div class="ucv-eye">{C.s4Eye}</div>
+      <h2 class="ucv-h2">{C.s4Title}</h2>
+      <div class="ucv-steps-body">
+        <ol>
+          {C.s4Steps.map((st) => (
+            <li><strong>{st.t}</strong> — {st.d}</li>
+          ))}
+        </ol>
+        <p class="ucv-steps-note">{C.s4Note}</p>
+        {invite && <div class="ucv-steps-invite" set:html={invite} />}
       </div>
-    </section>
-  )}
+      {isJa && (
+        <div class="ucv-uc-cta">
+          <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
+            このユースケースについて、問い合わせる →
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
 
   <!-- §5 関連ユースケース -->
   <section class="ucv-band ucv-band--deep" aria-label={C.ariaRelated}>
@@ -505,53 +516,9 @@ function firstSentence(text: string): string {
           ))}
         </ul>
       )}
-      <p class="ucv-faq-link">{C.faqLead} <a href={faqHref}>{C.faqLinkLabel}</a></p>
     </div>
   </section>
 
-  <SolutionsBridge
-    href={ucBridgeHref}
-    eyebrow={C.bridgeEye}
-    h2={C.bridgeH2}
-    sub={C.bridgeSub}
-    ctaLabel={ucBridgeCta}
-  />
-
-  {/* Closing — JA books a Discovery Call; EN has no call staff, so it sends
-      visitors to the products to try them hands-on (Seal + Trust402). */}
-  {isJa ? (
-    <section class="ucv-closing" aria-label="Discovery Call">
-      <div class="ucv-closing-inner">
-        <p class="ucv-closing-eyebrow">DISCOVERY CALL</p>
-        <h2 class="ucv-closing-h">まずは、<span class="accent">30 分の対話</span>から。</h2>
-        <p class="ucv-closing-sub">Lemma の機能や活用場面について、ご質問にお答えします。技術的な詳細や機微情報（個人情報や機密情報など）の開示は不要です。</p>
-        <div class="ucv-closing-ctas">
-          <a href={discoveryUrl} class="ucv-closing-pill" target="_blank" rel="noopener">Discovery Call を予約 →</a>
-          <button type="button" class="ucv-closing-link" data-tally-open="xX0VYv" data-tally-emoji-text="">ホワイトペーパー DL →</button>
-        </div>
-      </div>
-    </section>
-  ) : (
-    <section class="ucv-closing" aria-label="Try Lemma">
-      <div class="ucv-closing-inner">
-        <p class="ucv-closing-eyebrow">TRY LEMMA</p>
-        <h2 class="ucv-closing-h">Run it <span class="accent">yourself</span>.</h2>
-        <p class="ucv-closing-sub">No sales call needed — start hands-on with Lemma's products.</p>
-        <div class="ucv-closing-ctas">
-          <a href={sealHref} class="ucv-closing-pill">Try Seal →</a>
-          <a href={trust402Href} class="ucv-closing-link">Trust402 reference implementation →</a>
-        </div>
-      </div>
-    </section>
-  )}
-
-  {pillar && (
-    <div class="ucv-pillar-foot-wrap">
-      <a class="ucv-pillar-foot" href={`${pillarsPath}/${pillar.slug}`}>
-        {locale === "ja" ? "仕組みについて知る" : "Learn how it works"} — {pillar.title[locale]} →
-      </a>
-    </div>
-  )}
   {taskGroup && taskGroupMembers.length > 0 && (
     <section class="ucv-bytask" aria-labelledby="ucv-bytask-h">
       <div class="ucv-bytask-inner">
@@ -567,6 +534,31 @@ function firstSentence(text: string): string {
       </div>
     </section>
   )}
+
+  {/* EN のみ製品クロージングを残す（§4 の主CTAが JA 限定のため）。
+      JA の Discovery Call 帯は §4 の問い合わせと同一行動につき統合・撤去。 */}
+  {!isJa && (
+    <section class="ucv-closing" aria-label="Try Lemma">
+      <div class="ucv-closing-inner">
+        <p class="ucv-closing-eyebrow">TRY LEMMA</p>
+        <h2 class="ucv-closing-h">Run it <span class="accent">yourself</span>.</h2>
+        <p class="ucv-closing-sub">No sales call needed — start hands-on with Lemma's products.</p>
+        <div class="ucv-closing-ctas">
+          <a href={sealHref} class="ucv-closing-pill">Try Seal →</a>
+          <a href={trust402Href} class="ucv-closing-link">Trust402 reference implementation →</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
+  <div class="ucv-footlinks">
+    {pillar && (
+      <a href={`${pillarsPath}/${pillar.slug}`}>{C.footHow} — {pillar.title[locale]} →</a>
+    )}
+    <a href={faqHref}>{C.footFaq} →</a>
+    <a href={ucBridgeHref}>{C.footBridge} →</a>
+  </div>
 </main>
 
 <style>
@@ -715,7 +707,10 @@ function firstSentence(text: string): string {
   .ucv-steps-body :global(ol > li)::before { content: counter(ucstep, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono); font-size: 11px; color: var(--ok-light); }
   .ucv-steps-body :global(li strong) { color: var(--tx); font-weight: 600; }
   .ucv-steps-body :global(a) { color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
-  .ucv-uc-cta { margin-top: 30px; }
+  .ucv-steps-note { font-size: 12.5px; color: var(--muted); margin: 14px 0 0; }
+  .ucv-steps-invite { margin-top: 18px; }
+  .ucv-steps-invite :global(p) { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
+  .ucv-uc-cta { margin-top: 26px; }
   .ucv-uc-cta-btn { display: inline-block; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; padding: 14px 30px; border: 1px solid transparent; transition: 0.18s; letter-spacing: 0.05em; background: var(--ok); color: var(--ink); box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35); }
   .ucv-uc-cta-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
@@ -731,8 +726,6 @@ function firstSentence(text: string): string {
   .ucv-related-abstract { font-size: 12.5px; line-height: 1.8; color: var(--muted); margin: 0 0 10px; }
   .ucv-related-cta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--ok-light); display: inline-block; transition: transform 0.18s; }
   .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
-  .ucv-faq-link { margin: 26px 0 0; font-size: 12.5px; color: var(--muted); }
-  .ucv-faq-link a { color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
 
   /* ---------- closing ---------- */
   .ucv-closing { position: relative; overflow: hidden; background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%); padding: 72px 0 68px; text-align: center; }
@@ -748,10 +741,10 @@ function firstSentence(text: string): string {
   .ucv-closing-link { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.04em; color: #bcc3b6; border-bottom: 1px solid rgba(168, 224, 16, 0.35); padding: 0 0 2px; transition: 0.18s; }
   .ucv-closing-link:hover { color: var(--ok); }
 
-  /* ---------- pillar foot ---------- */
-  .ucv-pillar-foot-wrap { text-align: center; padding: 30px 6vw; border-bottom: 1px solid var(--line); }
-  .ucv-pillar-foot { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
-  .ucv-pillar-foot:hover { color: var(--ok-light); }
+  /* ---------- footer 直上の細いリンク行 ---------- */
+  .ucv-footlinks { display: flex; gap: 12px 34px; justify-content: center; align-items: baseline; flex-wrap: wrap; padding: 26px 6vw; border-top: 1px solid var(--line); }
+  .ucv-footlinks a { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+  .ucv-footlinks a:hover { color: var(--ok-light); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
@@ -765,7 +758,7 @@ function firstSentence(text: string): string {
 
 <style>
   /* 「業務から探す」 — 索引の全件リストと同じ行の形 (実装指示 v1 §4) */
-  .ucv-bytask { background: var(--lite-2); border-top: 1px solid var(--line); padding: 44px 0 64px; }
+  .ucv-bytask { border-top: 1px solid #e1e3dd; padding: 44px 0 56px; }
   .ucv-bytask-inner { max-width: 880px; margin: 0 auto; padding: 0 6vw; }
   .ucv-bytask-k { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #5c6156; margin-bottom: 10px; }
   .ucv-bytask-h { font-family: "Space Grotesk", "Noto Serif JP", Georgia, serif; font-weight: 600; font-size: clamp(19px, 2.1vw, 24px); letter-spacing: 0.03em; color: #12140e; margin: 0 0 4px; }
