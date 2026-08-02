@@ -1439,6 +1439,3 @@
 .ucx details.augrp summary::after, .ucx details.auorph summary::after{content:"";position:absolute;right:18px;top:50%;width:7px;height:7px;margin-top:-6px;border-right:2px solid var(--ok-ink,#4e7a00);border-bottom:2px solid var(--ok-ink,#4e7a00);transform:rotate(45deg);transition:transform .18s;}
 .ucx details.augrp[open] summary::after, .ucx details.auorph[open] summary::after{transform:rotate(225deg);margin-top:-2px;}
 .ucx .aubody{padding:10px 8px 20px;}
-
-/* 末尾CTAとサイトフッターの間隔（実装時追加・2026-08-02） */
-.ucx{padding-bottom:96px;}
