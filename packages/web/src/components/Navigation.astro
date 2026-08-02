@@ -39,23 +39,25 @@ const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
 const getStartedHref = DASHBOARD_URL;
 const homePath = base || "/";
 
-/* Solutions mega-panel — industry headers only (JA).
-   The earlier draft listed every use case under each industry; the resulting
-   panel was wide enough to overlap the neighbouring Products panel and too
-   dense to scan. We now show industry names only, deep-linking to the
-   listing's industry filter (`#<key>`), and let the listing carry the
-   per-use-case detail. Order mirrors the listing's INDUSTRY_ORDER. */
+/* 9 industry solutions — links go straight to the industry pages
+   (/ja/solutions/use-cases/<slug>/). The old `#<key>` anchors had no
+   matching targets and dropped visitors at the top of the listing
+   (実装指示 v1 §3 — フラグメントは301できないためリンク元を直す).
+   大きい方が業界名、小さい方がソリューション名（ナビは探す場所のため）。 */
 const SOLUTIONS_INDUSTRIES_JA: ReadonlyArray<{
-  readonly key: string;
+  readonly slug: string;
   readonly heading: string;
+  readonly solution: string;
 }> = [
-  { key: "mfg", heading: "製造・基幹インフラ" },
-  { key: "fin", heading: "金融・FinTech" },
-  { key: "pub", heading: "自治体・公共" },
-  { key: "sc", heading: "調達・サプライチェーン" },
-  { key: "svc", heading: "サービス・小売" },
-  { key: "ai", heading: "AI 導入（業種横断）" },
-  { key: "dev", heading: "開発者" },
+  { slug: "manufacturing", heading: "製造・基幹インフラ", solution: "検査記録アシュアランス" },
+  { slug: "public-sector", heading: "自治体・公共", solution: "証明書レス手続き" },
+  { slug: "finance", heading: "金融・FinTech", solution: "取引先レコード検証" },
+  { slug: "healthcare", heading: "医療・ヘルスケア", solution: "有資格者アシュアランス" },
+  { slug: "supply-chain", heading: "調達・サプライチェーン", solution: "仕入先資格モニタリング" },
+  { slug: "media", heading: "メディア・コンテンツ", solution: "コンテンツ真正性" },
+  { slug: "retail", heading: "サービス・小売", solution: "グループ横断アイデンティティ" },
+  { slug: "ai", heading: "AI導入（業種横断）", solution: "AI実行ガバナンス" },
+  { slug: "developers", heading: "開発者・エージェント運用", solution: "エージェント権限統制" },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -184,20 +186,18 @@ const isResourcesActive =
     <li class="mega-nav-item">
       <a href={useCasesPath} class:list={["mega-nav-link has-mega", { active: isSolutionsActive }]}>{t.solutions}</a>
       {locale === "ja" ? (
-        <div class="mega-panel">
+        <div class="mega-panel mega-panel-wide">
           <div class="mega-section">
-            <div class="mega-section-label">業界別</div>
-            <div class="mega-links">
-              <a href={useCasesPath} class="mega-link">
-                <span class="mega-link-title">ユースケース一覧</span>
-                <span class="mega-link-sub">業界・タスク横断で全件を見る</span>
-              </a>
+            <div class="mega-section-label">業界別ソリューション</div>
+            <div class="mega-links mega-links-cols">
               {SOLUTIONS_INDUSTRIES_JA.map((g) => (
-                <a href={`${useCasesPath}/#${g.key}`} class="mega-link">
+                <a href={`${useCasesPath}/${g.slug}/`} class="mega-link">
                   <span class="mega-link-title">{g.heading}</span>
+                  <span class="mega-link-sub">{g.solution}</span>
                 </a>
               ))}
             </div>
+            <a href={useCasesPath} class="mega-foot-link">▸ ユースケース一覧 — 業務から探す（全36件）</a>
           </div>
         </div>
       ) : (
@@ -314,10 +314,10 @@ const isResourcesActive =
       <div class="mob-section-body">
         {locale === "ja" ? (
           <>
-            <a href={useCasesPath} class="mob-link">ユースケース一覧<small>業界・タスク横断で全件を見る</small></a>
             {SOLUTIONS_INDUSTRIES_JA.map((g) => (
-              <a href={`${useCasesPath}/#${g.key}`} class="mob-link">{g.heading}</a>
+              <a href={`${useCasesPath}/${g.slug}/`} class="mob-link">{g.heading}<small>{g.solution}</small></a>
             ))}
+            <a href={useCasesPath} class="mob-link">ユースケース一覧<small>業務から探す — 全36件</small></a>
           </>
         ) : (
           <>
@@ -507,6 +507,8 @@ const isResourcesActive =
     color: var(--accent); margin-bottom: 14px;
   }
   .mega-links { display: flex; flex-direction: column; gap: 2px; }
+  /* 業界別ソリューション（JA）— 9件を2列で */
+  .mega-links-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px; }
   .mega-link {
     display: flex; flex-direction: column;
     padding: 10px 14px;

@@ -5,7 +5,7 @@
     "changelog": "Changelog",
     "essays": "Articles",
     "blog": "Blog",
-    "pillars": "Lemma API",
+    "pillars": "Lemma",
     "faq": "FAQ",
     "services": "Plans",
     "pricing": "Pricing",
@@ -21,7 +21,7 @@
     "mega": {
       "pillars": {
         "label": "Five proofs",
-        "overview": "Lemma API overview",
+        "overview": "Lemma overview",
         "overviewSub": "Five proofs, one API — the full picture",
         "pillar01": "Provenance · Verifiable Origin",
         "auth": "Authentication · Seal",
@@ -39,7 +39,7 @@
         "complianceSub": "Finance · KYC/AML · FinTech",
         "developer": "For developers",
         "agentDeveloper": "For agents",
-        "lemmaApi": "Lemma API",
+        "lemmaApi": "Lemma",
         "lemmaApiSub": "The ZK proof issuance API",
         "trust402Pay": "Trust402 · Pay",
         "trust402PaySub": "Run agents without holding the keys",

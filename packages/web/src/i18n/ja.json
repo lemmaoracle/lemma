@@ -5,7 +5,7 @@
     "changelog": "変更履歴",
     "essays": "記事",
     "blog": "ブログ",
-    "pillars": "Lemma API",
+    "pillars": "Lemma",
     "faq": "FAQ",
     "services": "プラン",
     "pricing": "料金プラン",
@@ -21,7 +21,7 @@
     "mega": {
       "pillars": {
         "label": "5つの証明",
-        "overview": "Lemma API 全体像",
+        "overview": "Lemma 全体像",
         "overviewSub": "5つの証明を、1つの API で",
         "pillar01": "来歴 · Verifiable Origin",
         "auth": "認証 · Seal",
@@ -39,7 +39,7 @@
         "complianceSub": "金融 · KYC/AML · FinTech",
         "developer": "開発者向け",
         "agentDeveloper": "エージェント向け",
-        "lemmaApi": "Lemma API",
+        "lemmaApi": "Lemma",
         "lemmaApiSub": "ZK 証明の発行 API",
         "trust402Pay": "Trust402 · Pay",
         "trust402PaySub": "鍵を預けずにエージェントを動かす",
