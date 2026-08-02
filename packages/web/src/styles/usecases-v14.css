@@ -1427,14 +1427,15 @@
     font-size:16.5px;line-height:1.62;color:var(--tx);word-break:keep-all;}
 .ucx .ilead{margin-top:14px;}
 /* --- 業務から探す: 折りたたみ（実装時追加・2026-08-02） --- */
-.ucx details.augrp, .ucx details.auorph{border-top:1px solid var(--line,#e1e3dd);}
-.ucx details.augrp summary, .ucx details.auorph summary{cursor:pointer;list-style:none;padding:13px 4px;display:block;position:relative;}
+.ucx details.augrp, .ucx details.auorph{margin:0;}
+.ucx details.augrp summary, .ucx details.auorph summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:12px;position:relative;padding:13px 44px 13px 16px;background:#fff;border:1px solid var(--line,#e1e3dd);border-radius:9px;box-shadow:0 1px 3px rgba(24,36,26,.04);transition:border-color .15s,background .15s;}
 .ucx details.augrp summary::-webkit-details-marker, .ucx details.auorph summary::-webkit-details-marker{display:none;}
-.ucx details.augrp summary > b{margin:0 10px 0 0;}
-.ucx details.augrp summary > i{margin-bottom:0;}
-.ucx details.augrp summary::after, .ucx details.auorph summary::after{content:"";position:absolute;right:8px;top:50%;width:7px;height:7px;margin-top:-5px;border-right:1.6px solid #9aa197;border-bottom:1.6px solid #9aa197;transform:rotate(45deg);transition:transform .18s;}
-.ucx details.augrp[open] summary::after, .ucx details.auorph[open] summary::after{transform:rotate(225deg);margin-top:-1px;}
-.ucx details.augrp summary:hover > i{color:var(--ok-ink,#4e7a00);}
-.ucx .aucnt{font-style:normal;font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.14em;color:#9aa197;margin-left:10px;}
-.ucx .aubody{padding:2px 0 14px;}
-.ucx details.auorph summary > b{display:inline;}
+.ucx details.augrp summary:hover, .ucx details.auorph summary:hover{border-color:var(--ok-ink,#4e7a00);background:rgba(168,224,16,.05);}
+.ucx details.augrp[open] summary, .ucx details.auorph[open] summary{border-color:var(--ok-ink,#4e7a00);}
+.ucx details.augrp summary > b{font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.18em;color:var(--ok-ink,#4e7a00);font-weight:400;flex:none;}
+.ucx details.augrp summary > i{font-style:normal;font-size:13px;font-weight:700;color:var(--tx,#12140e);line-height:1.6;}
+.ucx details.auorph summary > b{font-style:normal;font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.18em;color:#8b9188;font-weight:400;}
+.ucx .aucnt{font-style:normal;font-family:var(--font-mono,"Space Mono",monospace);font-size:9.5px;letter-spacing:.14em;color:#9aa197;margin-left:auto;flex:none;}
+.ucx details.augrp summary::after, .ucx details.auorph summary::after{content:"";position:absolute;right:18px;top:50%;width:7px;height:7px;margin-top:-6px;border-right:2px solid var(--ok-ink,#4e7a00);border-bottom:2px solid var(--ok-ink,#4e7a00);transform:rotate(45deg);transition:transform .18s;}
+.ucx details.augrp[open] summary::after, .ucx details.auorph[open] summary::after{transform:rotate(225deg);margin-top:-2px;}
+.ucx .aubody{padding:10px 8px 20px;}
