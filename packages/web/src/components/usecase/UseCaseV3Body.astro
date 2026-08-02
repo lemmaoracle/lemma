@@ -84,13 +84,17 @@ const C = isJa
       s2EyeShift: "02 · 変化", s2EyeApproach: "02 · アプローチ",
       s2H2: "原本を渡すか、事実だけを渡すか。",
       s2Lead: "AI に渡すものが変われば、漏洩のリスクごと消える。",
-      s2NowTitle: "いまの運用", s2NowHand: "渡すもの", s2NowHandFallback: "原本・中身",
-      s2NowCheckLab: "相手の確認", s2NowCheckVal: "発行元への照会・原本の突き合わせ",
-      s2NowDoubtLab: "疑義のとき", s2NowDoubtVal: "「変えていない」と説明する側にまわる",
-      s2NowFlow: "↓ 中身がそのまま外へ渡る",
-      s2AfterTitle: "受け取った側の判定画面", s2AfterFact: "証明された事実",
-      s2AfterRt: "発行元への照会", s2AfterRtVal: "不要",
-      s2AfterFlow: "↓ 渡るのは事実と証明だけ",
+      s2Catch: "現場の手は増えない。相手の確認が変わる。",
+      s2OpBar: "自社・現場の記録画面（既存システムのまま）",
+      s2OpRow1: "いつもの操作", s2OpRow1v: "記録を入力して、保存",
+      s2OpRow2: "保存と同時に", s2OpRow2v: "証明が付く（裏で API 連携）",
+      s2OpRow3: "記録の本文", s2OpRow3v: "送信されない",
+      s2OpCap: "現場は、保存するだけ。",
+      s2Link: "証明リンク",
+      s2VfBar: "相手のブラウザ — 検証画面",
+      s2AfterFact: "証明された事実", s2VfHidden: "表示されない",
+      s2VfKey: "ログイン・キー", s2VfKeyVal: "不要",
+      s2VfCap: "相手は、リンクを開くだけ。",
       baBeforeTitle: "原本・中身をそのまま渡す", baAfterTitle: "事実だけを証明付きで渡す",
       baFlowBefore: "↓ すべて外部・AI へ渡る", baFlowAfter: "↓ 必要な事実だけ",
       baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
@@ -99,13 +103,19 @@ const C = isJa
       s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
       s3Lead: "「中身を出さず渡す」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
       thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "書き換えを検知",
-      rowAccess: "アクセス制御のみ", rowMask: "マスキング / 匿名化", rowEnc: "暗号化のみ",
+      rowAccess: "アクセス制御・権限管理", rowMask: "マスキング / 黒塗りで提出", rowEnc: "暗号化して保管・送付",
+      thWhy: "そのままだと",
+      rowAccessWhy: "社内の誰かが直せた、という疑いが残る",
+      rowMaskWhy: "黒塗りの手間が増え、元の記録の真正性は示せない",
+      rowEncWhy: "相手が確かめるには、結局開示が要る",
+      rowExtraWhy: "検知・記録止まりで、相手が独立に確かめられない",
+      rowLemmaWhy: "相手がリンクを開くだけで確かめられる",
       lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
       s4Eye: "04 · 進め方", s4Title: "進め方",
       s4Steps: [
-        { t: "証明する記録を決める", d: "提出のたびに説明や照会が生まれている記録・フローを、まず1つ選びます。" },
-        { t: "発行を組み込む", d: "記録が確定した時点で API を1回呼びます。記録の本文は送りません。" },
-        { t: "相手が確かめる", d: "受け取った側はリンクを開くだけ。アカウントもキーも要りません。" },
+        { a: "自社", t: "証明する記録を決める", d: "提出のたびに説明や照会が生まれている記録・フローを、まず1つ選びます。" },
+        { a: "自社 → 相手", t: "発行を組み込む", d: "記録が確定した時点で API を1回呼びます。記録の本文は送りません。" },
+        { a: "相手・第三者", t: "相手が確かめる", d: "受け取った側はリンクを開くだけ。アカウントもキーも要りません。" },
       ],
       s4Note: "開示範囲・保存期間の設計から PoC、本番運用まで伴走します。",
       hiw1Bar: "何を証明するか", hiwProveLab: "示すこと", hiwHideLab: "出さないもの",
@@ -131,13 +141,17 @@ const C = isJa
       s2EyeShift: "02 · THE SHIFT", s2EyeApproach: "02 · APPROACH",
       s2H2: "Hand over the source, or just the facts?",
       s2Lead: "Change what reaches the AI, and the leakage risk goes with it.",
-      s2NowTitle: "How it works today", s2NowHand: "You hand over", s2NowHandFallback: "the originals",
-      s2NowCheckLab: "How they check", s2NowCheckVal: "They call the issuer and compare originals",
-      s2NowDoubtLab: "When challenged", s2NowDoubtVal: "You do the explaining",
-      s2NowFlow: "↓ the contents leave your hands",
-      s2AfterTitle: "The verifier's screen", s2AfterFact: "Proven fact",
-      s2AfterRt: "Issuer round-trip", s2AfterRtVal: "Not needed",
-      s2AfterFlow: "↓ only the fact and its proof travel",
+      s2Catch: "Nothing changes on the floor. Everything changes for the receiver.",
+      s2OpBar: "Your team's screen — the system you already use",
+      s2OpRow1: "The usual action", s2OpRow1v: "Enter the record, hit save",
+      s2OpRow2: "On save", s2OpRow2v: "a proof is attached (one API call behind the scenes)",
+      s2OpRow3: "The document", s2OpRow3v: "never sent",
+      s2OpCap: "Your team just saves, as always.",
+      s2Link: "Proof link",
+      s2VfBar: "Their browser — the verification screen",
+      s2AfterFact: "Proven fact", s2VfHidden: "not shown",
+      s2VfKey: "Login / keys", s2VfKeyVal: "not needed",
+      s2VfCap: "They just open a link.",
       baBeforeTitle: "Hand over the raw source", baAfterTitle: "Share only the proven facts",
       baFlowBefore: "↓ all of it reaches the AI / outside", baFlowAfter: "↓ only the necessary facts",
       baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
@@ -146,13 +160,19 @@ const C = isJa
       s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
       s3Lead: "Only work that needs all three at once — pass without exposing, independent verification, tamper-evidence — is Lemma's domain.",
       thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-evident",
-      rowAccess: "Access control only", rowMask: "Masking / anonymization", rowEnc: "Encryption only",
+      rowAccess: "Access control / permissions", rowMask: "Masking / redacted copies", rowEnc: "Encrypt and store / send",
+      thWhy: "What happens",
+      rowAccessWhy: "\u201CSomeone inside could have edited it\u201D remains possible",
+      rowMaskWhy: "Redaction work grows; the original is still unproven",
+      rowEncWhy: "To verify, the receiver needs it disclosed after all",
+      rowExtraWhy: "Detection only — the receiver still cannot verify independently",
+      rowLemmaWhy: "The receiver just opens a link",
       lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
       s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
       s4Steps: [
-        { t: "Choose the record to prove", d: "Start with the one flow where hand-offs cost you the most explaining." },
-        { t: "Add issuance", d: "Call the API once when the record is finalized. The document itself is never sent." },
-        { t: "Let the receiver verify", d: "They open a link — no account, no keys." },
+        { a: "you", t: "Choose the record to prove", d: "Start with the one flow where hand-offs cost you the most explaining." },
+        { a: "you → them", t: "Add issuance", d: "Call the API once when the record is finalized. The document itself is never sent." },
+        { a: "them", t: "Let the receiver verify", d: "They open a link — no account, no keys." },
       ],
       s4Note: "We help design disclosure scope and retention, run the PoC, and support production.",
       hiw1Bar: "What you prove", hiwProveLab: "Prove", hiwHideLab: "Keep hidden",
@@ -367,41 +387,47 @@ const bytaskMembers = taskGroupMembers.filter(
           <div class="ucv-eye">{C.s2EyeShift}</div>
           <h2 class="ucv-h2">{C.s2H2}</h2>
 
+          <p class="ucv-band-lead">{C.s2Catch}</p>
           <div class="ucv-ba">
-            <div class="ucv-ba-card ucv-ba-card--before">
-              <div class="ucv-ba-label">Without Lemma</div>
-              <div class="ucv-ba-title">{C.s2NowTitle}</div>
-              <dl class="ucv-ba-rows">
-                <div class="ucv-ba-row"><dt>{C.s2NowHand}</dt><dd>{hideProve ? hideProve.hide : C.s2NowHandFallback}</dd></div>
-                <div class="ucv-ba-row"><dt>{C.s2NowCheckLab}</dt><dd>{C.s2NowCheckVal}</dd></div>
-                <div class="ucv-ba-row"><dt>{C.s2NowDoubtLab}</dt><dd>{C.s2NowDoubtVal}</dd></div>
-              </dl>
-              <div class="ucv-ba-flow">{C.s2NowFlow}</div>
+            <div class="ucv-ba-col">
+              <div class="ucv-ba-card">
+                <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2OpBar}</div>
+                <dl class="ucv-ba-rows">
+                  <div class="ucv-ba-row"><dt>{C.s2OpRow1}</dt><dd>{C.s2OpRow1v}</dd></div>
+                  <div class="ucv-ba-row"><dt>{C.s2OpRow2}</dt><dd><span class="ucv-ba-strong">{C.s2OpRow2v}</span></dd></div>
+                  <div class="ucv-ba-row"><dt>{C.s2OpRow3}</dt><dd>{C.s2OpRow3v}</dd></div>
+                </dl>
+              </div>
+              <p class="ucv-ba-cap">① {C.s2OpCap}</p>
             </div>
 
-            <div class="ucv-ba-arrow" aria-hidden="true">→</div>
+            <div class="ucv-ba-arrow" aria-hidden="true"><span class="lab">{C.s2Link}</span><span>→</span></div>
 
-            <div class="ucv-ba-card ucv-ba-card--after">
-              <div class="ucv-ba-label">With Lemma</div>
-              <div class="ucv-ba-title">{C.s2AfterTitle}</div>
-              <div class="ucv-mini-verdict">
-                <div class="seal">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="11" stroke-width="1.1" />
-                    <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
-                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
+            <div class="ucv-ba-col">
+              <div class="ucv-ba-card ucv-ba-card--after">
+                <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2VfBar}</div>
+                <div class="ucv-mini-verdict">
+                  <div class="seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                      <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                      <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="t">{C.hiwVerdict}</div>
+                  {isJa && <div class="en">NOT TAMPERED</div>}
                 </div>
-                <div class="t">{C.hiwVerdict}</div>
-                {isJa && <div class="en">NOT TAMPERED</div>}
+                <dl class="ucv-ba-rows">
+                  {hideProve && (
+                    <div class="ucv-ba-row"><dt>{C.s2AfterFact}</dt><dd><span class="ucv-ba-strong">{hideProve.prove}</span></dd></div>
+                  )}
+                  {hideProve && (
+                    <div class="ucv-ba-row"><dt>{hideProve.hide}</dt><dd>{C.s2VfHidden}</dd></div>
+                  )}
+                  <div class="ucv-ba-row"><dt>{C.s2VfKey}</dt><dd>{C.s2VfKeyVal}</dd></div>
+                </dl>
               </div>
-              <dl class="ucv-ba-rows">
-                {hideProve && (
-                  <div class="ucv-ba-row"><dt>{C.s2AfterFact}</dt><dd><span class="ucv-ba-strong">{hideProve.prove}</span></dd></div>
-                )}
-                <div class="ucv-ba-row"><dt>{C.s2AfterRt}</dt><dd>{C.s2AfterRtVal}</dd></div>
-              </dl>
-              <div class="ucv-ba-flow ucv-ba-flow--after">{C.s2AfterFlow}</div>
+              <p class="ucv-ba-cap">② {C.s2VfCap}</p>
             </div>
           </div>
 
@@ -432,20 +458,22 @@ const bytaskMembers = taskGroupMembers.filter(
               <th>{C.thPass}</th>
               <th>{C.thVerify}</th>
               <th>{C.thTamper}</th>
+              <th class="why">{C.thWhy}</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>{C.rowAccess}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
-            <tr><td>{C.rowMask}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
-            <tr><td>{C.rowEnc}</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+            <tr><td>{C.rowAccess}</td><td>△</td><td class="no">✗</td><td class="no">✗</td><td class="why">{C.rowAccessWhy}</td></tr>
+            <tr><td>{C.rowMask}</td><td>△</td><td class="no">✗</td><td class="no">✗</td><td class="why">{C.rowMaskWhy}</td></tr>
+            <tr><td>{C.rowEnc}</td><td class="ok">✓</td><td class="no">✗</td><td class="no">✗</td><td class="why">{C.rowEncWhy}</td></tr>
             {compareRow && (
-              <tr><td>{compareRow}</td><td>△</td><td class="no">✗</td><td class="no">✗</td></tr>
+              <tr><td>{compareRow}</td><td>△</td><td class="no">✗</td><td class="no">✗</td><td class="why">{C.rowExtraWhy}</td></tr>
             )}
             <tr class="is-lemma">
               <td><span class="ucv-lemma-name">{C.lemmaName}</span><span class="ucv-only">{C.onlyTag}</span></td>
               <td><span class="ucv-check">✓</span></td>
               <td><span class="ucv-check">✓</span></td>
               <td><span class="ucv-check">✓</span></td>
+              <td class="why">{C.rowLemmaWhy}</td>
             </tr>
           </tbody>
         </table>
@@ -470,7 +498,7 @@ const bytaskMembers = taskGroupMembers.filter(
               </div>
             </div>
           </div>
-          <span class="ucv-hiw-n">01</span><span class="ucv-hiw-t">{C.s4Steps[0].t}</span>
+          <span class="ucv-hiw-n">01 — {C.s4Steps[0].a}</span><span class="ucv-hiw-t">{C.s4Steps[0].t}</span>
           <span class="ucv-hiw-d">{C.s4Steps[0].d}</span>
         </div>
 
@@ -491,7 +519,7 @@ const bytaskMembers = taskGroupMembers.filter(
               </div>
             </div>
           </div>
-          <span class="ucv-hiw-n">02</span><span class="ucv-hiw-t">{C.s4Steps[1].t}</span>
+          <span class="ucv-hiw-n">02 — {C.s4Steps[1].a}</span><span class="ucv-hiw-t">{C.s4Steps[1].t}</span>
           <span class="ucv-hiw-d">{C.s4Steps[1].d}</span>
         </div>
 
@@ -513,7 +541,7 @@ const bytaskMembers = taskGroupMembers.filter(
               </div>
             </div>
           </div>
-          <span class="ucv-hiw-n">03</span><span class="ucv-hiw-t">{C.s4Steps[2].t}</span>
+          <span class="ucv-hiw-n">03 — {C.s4Steps[2].a}</span><span class="ucv-hiw-t">{C.s4Steps[2].t}</span>
           <span class="ucv-hiw-d">{C.s4Steps[2].d}</span>
         </div>
 
@@ -697,13 +725,16 @@ const bytaskMembers = taskGroupMembers.filter(
   /* ---------- §2 before/after ---------- */
   .ucv-emph { border-left: 3px solid var(--ok); padding-left: clamp(18px, 3vw, 34px); }
   .ucv-ba { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; margin: 26px 0 0; }
-  .ucv-ba-arrow { display: grid; place-items: center; color: var(--ok-light); font-size: 17px; }
-  .ucv-ba-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); overflow: hidden; display: flex; flex-direction: column; }
+  .ucv-ba-arrow { display: grid; place-items: center; align-content: center; gap: 4px; color: var(--ok-light); font-size: 17px; }
+  .ucv-ba-arrow .lab { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; }
+  .ucv-ba-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); overflow: hidden; display: flex; flex-direction: column; flex: 1; }
   .ucv-ba-card--after { border-color: rgba(124, 175, 0, 0.45); }
-  .ucv-ba-label { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 12px 18px 2px; }
-  .ucv-ba-card--after .ucv-ba-label { color: var(--ok-light); }
-  .ucv-ba-title { font-family: var(--font-serif-jp); font-weight: 600; font-size: 15.5px; color: var(--tx); padding: 0 18px 12px; border-bottom: 1px solid var(--line); }
-  .ucv-ba-rows { margin: 4px 0 0; padding: 0 18px; flex: 1; }
+  .ucv-ba-col { display: flex; flex-direction: column; }
+  .ucv-ba-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--muted); }
+  .ucv-ba-bar .d { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
+  .ucv-ba-card--after .ucv-ba-bar { color: var(--ok-light); }
+  .ucv-ba-cap { margin: 12px 0 0; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; color: var(--tx); text-align: center; }
+  .ucv-ba-rows { margin: 4px 0 0; padding: 6px 18px 14px; flex: 1; }
   .ucv-ba-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); }
   .ucv-ba-row:first-child { border-top: none; }
   .ucv-ba-row dt { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin: 0; flex: none; }
@@ -711,8 +742,6 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-ba-strong { color: var(--ok-light); font-weight: 600; }
   .ucv-ba-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ok-light); border: 1px solid rgba(124, 175, 0, 0.45); background: rgba(168, 224, 16, 0.1); border-radius: 999px; padding: 2px 10px; }
   .ucv-ba-card .ucv-mini-verdict { padding: 16px 18px 4px; }
-  .ucv-ba-flow { padding: 9px 18px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); margin-top: 12px; }
-  .ucv-ba-flow--after { color: var(--ok-light); }
 
   .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
   .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
@@ -727,6 +756,7 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--sh-s); }
   .ucv-table th { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; font-weight: 400; color: var(--muted); text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--dline-2); background: var(--card); }
   .ucv-table th:not(:first-child), .ucv-table td:not(:first-child) { text-align: center; }
+  .ucv-table th.why, .ucv-table td.why { text-align: left; font-size: 12px; color: var(--muted); }
   .ucv-table td { padding: 13px 14px; border-bottom: 1px solid var(--line); color: var(--tx-soft); line-height: 1.6; }
   .ucv-table tr:last-child td { border-bottom: none; }
   .ucv-table td.no { color: var(--err); }
