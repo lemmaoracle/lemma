@@ -559,36 +559,35 @@ const bytaskMembers = taskGroupMembers.filter(
     </div>
   </section>
 
-  <!-- §5 関連ユースケース -->
+  <!-- §5 関連 + §6 業務から探す — 1帯2カラム -->
   <section class="ucv-band ucv-band--deep" aria-label={C.ariaRelated}>
-    <div class="ucv-container">
-      <div class="ucv-eye">{C.s5Eye}</div>
-      <h2 class="ucv-h2">{relatedSection?.title ?? C.s5H2}</h2>
-      {relatedUseCases.length > 0 && (
-        <div class="ucv-bytask-list">
-          {relatedUseCases.map((r) => (
-            <a class="ucv-bytask-row" href={`${useCasesPath}/${r.slug}/`}>{r.title}</a>
-          ))}
+    <div class="ucv-container ucv-crossnav">
+      <div>
+        <div class="ucv-eye">{C.s5Eye}</div>
+        <h2 class="ucv-h3">{relatedSection?.title ?? C.s5H2}</h2>
+        {relatedUseCases.length > 0 && (
+          <div class="ucv-bytask-list">
+            {relatedUseCases.map((r) => (
+              <a class="ucv-bytask-row" href={`${useCasesPath}/${r.slug}/`}>{r.title}</a>
+            ))}
+          </div>
+        )}
+      </div>
+      {taskGroup && bytaskMembers.length > 0 && (
+        <div>
+          <div class="ucv-eye">06 · Use cases — by task</div>
+          <h2 class="ucv-h3" id="ucv-bytask-h">業務から探す</h2>
+          <p class="ucv-bytask-sub">{taskGroup.id}｜{taskGroup.heading}</p>
+          <div class="ucv-bytask-list">
+            {bytaskMembers.map((m) => (
+              <a class="ucv-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
+            ))}
+          </div>
+          <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧（全36件） →</a>
         </div>
       )}
     </div>
   </section>
-
-  {taskGroup && bytaskMembers.length > 0 && (
-    <section class="ucv-band ucv-bytask" aria-labelledby="ucv-bytask-h">
-      <div class="ucv-container">
-        <div class="ucv-eye">Use cases — by task</div>
-        <h2 class="ucv-h2" id="ucv-bytask-h">業務から探す</h2>
-        <p class="ucv-bytask-sub">{taskGroup.id}｜{taskGroup.heading} — 同じ課題のユースケース</p>
-        <div class="ucv-bytask-list">
-          {bytaskMembers.map((m) => (
-            <a class="ucv-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
-          ))}
-        </div>
-        <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧 — 業務から探す（全36件） →</a>
-      </div>
-    </section>
-  )}
 
   {/* EN のみ製品クロージングを残す（§4 の主CTAが JA 限定のため）。
       JA の Discovery Call 帯は §4 の問い合わせと同一行動につき統合・撤去。 */}
@@ -836,12 +835,14 @@ const bytaskMembers = taskGroupMembers.filter(
 <style>
   /* 「業務から探す」/ §5 関連 — 索引の全件リストと同じ行の形 */
   .ucv-bytask-sub { font-size: 12.5px; color: #5c6156; margin: 0 0 14px; }
-  .ucv-bytask-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 32px; max-width: 980px; margin-top: 18px; }
+  .ucv-crossnav { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 56px; align-items: start; }
+  .ucv-h3 { font-family: var(--font-serif-jp); font-weight: 600; font-size: 19px; letter-spacing: 0.03em; color: #12140e; margin: 0 0 10px; }
+  .ucv-bytask-list { display: grid; grid-template-columns: 1fr; gap: 2px; margin-top: 12px; }
   .ucv-bytask-row { display: block; font-size: 13.5px; line-height: 1.7; color: #2f332b; text-decoration: none; padding: 8px 0 8px 12px; border-left: 2px solid transparent; border-bottom: 1px solid #d9ddd7; transition: 0.15s; }
   .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); color: #12140e; }
   .ucv-bytask-all { display: inline-block; margin-top: 16px; font-size: 12.5px; color: #4e7a00; text-decoration: none; }
   .ucv-bytask-all:hover { text-decoration: underline; }
   @media (max-width: 860px) {
-    .ucv-bytask-list { grid-template-columns: 1fr; }
+    .ucv-crossnav { grid-template-columns: 1fr; }
   }
 </style>
