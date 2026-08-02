@@ -101,6 +101,11 @@ const C = isJa
         { t: "相手が確かめる", d: "受け取った側はリンクを開くだけ。アカウントもキーも要りません。" },
       ],
       s4Note: "開示範囲・保存期間の設計から PoC、本番運用まで伴走します。",
+      hiw1Bar: "何を証明するか", hiwProveLab: "示すこと", hiwHideLab: "出さないもの",
+      hiw2Bar: "証明の発行", hiwSentLab: "送るもの", hiwSentVal: "ハッシュのみ",
+      hiwDocLab: "記録の本文", hiwDocVal: "送信されません", hiwIssued: "発行しました　0x68d4…9f01",
+      hiw3Bar: "受け取った側の画面", hiwVerdict: "改ざんされていません",
+      hiwChk1: "署名の一致", hiwChk2: "改ざんの有無", hiwChk3: "発行者",
       footHow: "仕組みについて知る", footFaq: "よくある質問", footBridge: "活用シーンの全体像",
       s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
       faqLead: "残った疑問は、", faqLinkLabel: "よくある質問（FAQ）→",
@@ -136,6 +141,11 @@ const C = isJa
         { t: "Let the receiver verify", d: "They open a link — no account, no keys." },
       ],
       s4Note: "We help design disclosure scope and retention, run the PoC, and support production.",
+      hiw1Bar: "What you prove", hiwProveLab: "Prove", hiwHideLab: "Keep hidden",
+      hiw2Bar: "Issue the proof", hiwSentLab: "Sent", hiwSentVal: "hash only",
+      hiwDocLab: "The document", hiwDocVal: "never sent", hiwIssued: "Issued 0x68d4…9f01",
+      hiw3Bar: "The verifier's screen", hiwVerdict: "Not tampered",
+      hiwChk1: "Signature", hiwChk2: "Integrity", hiwChk3: "Issuer",
       footHow: "How it works", footFaq: "FAQ", footBridge: "The bigger picture",
       s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
       faqLead: "Still have questions?", faqLinkLabel: "See the FAQ →",
@@ -466,20 +476,73 @@ function firstSentence(text: string): string {
     </div>
   </section>
 
-  <!-- §4 進め方 — 共通3ステップ（再構成提案 v1）＋個別の一行＋唯一の主CTA -->
-  <section class="ucv-band" aria-label={C.ariaSteps}>
+  <!-- §4 進め方 — 業界ページ HIW と同型のスレート帯・3カラム -->
+  <section class="ucv-band ucv-band--slate" aria-label={C.ariaSteps}>
     <div class="ucv-container">
       <div class="ucv-eye">{C.s4Eye}</div>
       <h2 class="ucv-h2">{C.s4Title}</h2>
-      <div class="ucv-steps-body">
-        <ol>
-          {C.s4Steps.map((st) => (
-            <li><strong>{st.t}</strong> — {st.d}</li>
-          ))}
-        </ol>
-        <p class="ucv-steps-note">{C.s4Note}</p>
-        {invite && <div class="ucv-steps-invite" set:html={invite} />}
+      <div class="ucv-hiw">
+
+        <div class="ucv-hiw-step">
+          <div class="ucv-hiw-shot">
+            <div class="ucv-mini">
+              <div class="ucv-mini-bar">{C.hiw1Bar}</div>
+              <div class="ucv-mini-body">
+                <div class="ucv-mini-row"><span>{C.hiwProveLab}</span><b>{hideProve ? hideProve.prove : useCase.title}</b></div>
+                {hideProve && <div class="ucv-mini-row"><span>{C.hiwHideLab}</span><b>{hideProve.hide}</b></div>}
+              </div>
+            </div>
+          </div>
+          <span class="ucv-hiw-n">01</span><span class="ucv-hiw-t">{C.s4Steps[0].t}</span>
+          <span class="ucv-hiw-d">{C.s4Steps[0].d}</span>
+        </div>
+
+        <div class="ucv-hiw-step">
+          <div class="ucv-hiw-shot">
+            <div class="ucv-mini">
+              <div class="ucv-mini-bar">{C.hiw2Bar}</div>
+              <div class="ucv-mini-body">
+                <div class="ucv-mini-row"><span>{C.hiwSentLab}</span><b>{C.hiwSentVal}</b></div>
+                <div class="ucv-mini-row"><span>{C.hiwDocLab}</span><b>{C.hiwDocVal}</b></div>
+                <div class="ucv-mini-ok">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="11" stroke-width="1.4" />
+                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  {C.hiwIssued}
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="ucv-hiw-n">02</span><span class="ucv-hiw-t">{C.s4Steps[1].t}</span>
+          <span class="ucv-hiw-d">{C.s4Steps[1].d}</span>
+        </div>
+
+        <div class="ucv-hiw-step">
+          <div class="ucv-hiw-shot">
+            <div class="ucv-mini">
+              <div class="ucv-mini-bar">{C.hiw3Bar}</div>
+              <div class="ucv-mini-verdict">
+                <div class="seal">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                    <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                    <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="t">{C.hiwVerdict}</div>
+                {isJa && <div class="en">NOT TAMPERED</div>}
+                <div class="chk"><span>{C.hiwChk1}</span><span>{C.hiwChk2}</span><span>{C.hiwChk3}</span></div>
+              </div>
+            </div>
+          </div>
+          <span class="ucv-hiw-n">03</span><span class="ucv-hiw-t">{C.s4Steps[2].t}</span>
+          <span class="ucv-hiw-d">{C.s4Steps[2].d}</span>
+        </div>
+
       </div>
+      <p class="ucv-steps-note">{C.s4Note}</p>
+      {invite && <div class="ucv-steps-invite" set:html={invite} />}
       {isJa && (
         <div class="ucv-uc-cta">
           <a class="ucv-uc-cta-btn" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">
@@ -699,6 +762,35 @@ function firstSentence(text: string): string {
   .ucv-lemma-name { font-weight: 600; color: var(--ok-light); }
   .ucv-only { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: #fff; background: var(--ok-light); border-radius: 999px; padding: 2px 8px; vertical-align: middle; }
 
+  /* ---------- §4 HIW（業界ページと同型・スレート帯） ---------- */
+  .ucv-band--slate { position: relative; overflow: hidden; background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%); }
+  .ucv-band--slate::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 88% -20%, rgba(168, 224, 16, 0.16), rgba(168, 224, 16, 0) 62%); }
+  .ucv-band--slate > * { position: relative; z-index: 2; }
+  .ucv-band--slate .ucv-eye { color: #8b9285; }
+  .ucv-band--slate .ucv-h2 { color: #ebefe6; }
+  .ucv-hiw { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 26px; }
+  .ucv-hiw-step { display: flex; flex-direction: column; gap: 9px; }
+  .ucv-hiw-shot { border-radius: 12px; overflow: hidden; background: rgba(255, 255, 255, 0.05); border: 1px solid #4a544b; margin-bottom: 14px; aspect-ratio: 4 / 3; display: grid; place-items: center; padding: 18px; }
+  .ucv-hiw-n { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--ok); }
+  .ucv-hiw-t { font-family: var(--font-serif-jp); font-weight: 600; font-size: 16px; color: #ebefe6; }
+  .ucv-hiw-t::before { content: ""; display: block; width: 22px; height: 2px; border-radius: 2px; background: var(--ok); margin-bottom: 10px; }
+  .ucv-hiw-d { font-size: 12.8px; line-height: 1.85; color: #bcc3b6; }
+  .ucv-mini { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; box-shadow: 0 8px 22px rgba(24, 36, 26, 0.1); }
+  .ucv-mini-bar { padding: 8px 12px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--muted); }
+  .ucv-mini-body { padding: 12px; }
+  .ucv-mini-row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--line); font-size: 11px; line-height: 1.7; }
+  .ucv-mini-row:first-child { border-top: none; }
+  .ucv-mini-row span { color: var(--muted); flex: none; }
+  .ucv-mini-row b { font-weight: 400; color: var(--tx); text-align: right; }
+  .ucv-mini-ok { margin-top: 9px; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; color: var(--ok-ink); background: rgba(168, 224, 16, 0.1); border: 1px solid rgba(124, 175, 0, 0.4); border-radius: 99px; padding: 4px 9px; }
+  .ucv-mini-verdict { padding: 14px; text-align: center; }
+  .ucv-mini-verdict .seal { width: 34px; height: 34px; border-radius: 50%; margin: 2px auto 9px; display: grid; place-items: center; border: 1.4px solid rgba(124, 175, 0, 0.5); background: rgba(168, 224, 16, 0.09); color: var(--ok-ink); }
+  .ucv-mini-verdict .t { font-family: var(--font-serif-jp); font-weight: 600; font-size: 13px; color: var(--tx); }
+  .ucv-mini-verdict .en { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.16em; color: var(--muted); margin-top: 3px; }
+  .ucv-mini-verdict .chk { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 9px; color: var(--muted); }
+  .ucv-band--slate .ucv-steps-note { color: #9ba296; }
+  .ucv-band--slate .ucv-steps-invite :global(p) { color: #bcc3b6; }
+
   /* ---------- §4 steps ---------- */
   .ucv-steps-body { max-width: 76ch; }
   .ucv-steps-body :global(p) { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); margin: 0 0 14px; }
@@ -749,6 +841,7 @@ function firstSentence(text: string): string {
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
+    .ucv-hiw { grid-template-columns: 1fr; }
     .ucv-personas { grid-template-columns: 1fr; }
     .ucv-ba { grid-template-columns: 1fr; }
     .ucv-ba-arrow { display: none; }
