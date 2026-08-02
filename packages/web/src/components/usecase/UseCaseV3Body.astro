@@ -92,8 +92,8 @@ const C = isJa
       baDataFlowBefore: "↓ すべて AI・外部へ渡る", baDataFlowAfter: "↓ 必要な事実だけ AI へ渡る",
       approachLink: "技術詳細を見る ↗",
       s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
-      s3Lead: "「中身を出さず渡す」「独立検証」「改ざん不能」の<strong>3 つが同時に要る</strong>業務こそが Lemma の領域です。",
-      thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "改ざん不能",
+      s3Lead: "「中身を出さず渡す」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
+      thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "書き換えを検知",
       rowAccess: "アクセス制御のみ", rowMask: "マスキング / 匿名化", rowEnc: "暗号化のみ",
       lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
       s4Eye: "04 · 進め方", s4Title: "進め方",
@@ -120,8 +120,8 @@ const C = isJa
       baDataFlowBefore: "↓ all of it goes to the AI / outside", baDataFlowAfter: "↓ only the necessary facts to the AI",
       approachLink: "See the technical details ↗",
       s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
-      s3Lead: "Only work that needs <strong>all three at once</strong> — pass without exposing, independent verification, tamper-proof — is Lemma's domain.",
-      thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-proof",
+      s3Lead: "Only work that needs all three at once — pass without exposing, independent verification, tamper-evidence — is Lemma's domain.",
+      thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-evident",
       rowAccess: "Access control only", rowMask: "Masking / anonymization", rowEnc: "Encryption only",
       lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
       s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
@@ -232,39 +232,59 @@ function firstSentence(text: string): string {
       <span class="ucv-bc-sep">/</span>
       <a href={useCasesPath}>{C.bcUC}</a>
       <span class="ucv-bc-sep">/</span>
-      <span>{useCaseTitle}</span>
+      <span>{useCase.title}</span>
     </nav>
 
     <header class="ucv-hero">
-      <h1 class="ucv-h1">{useCase.title}</h1>
+      <div class="ucv-hero-tx">
+        <div class="ucv-uc-label">{isJa ? "ユースケース" : "Use case"}{pillar && ` — ${pillar.title[locale]}`}</div>
+        <h1 class="ucv-h1">{useCase.title}</h1>
+        <p class="ucv-lead">{useCase.abstract}</p>
 
-      {showHeroHp && (
-        <div class="ucv-hp" aria-label={C.hpAria}>
-          <div class="ucv-hp__cell ucv-hp__cell--hide">
-            <span class="ucv-hp__lab">{C.hpHide}</span>
-            <span class="ucv-hp__val">{hideProve.hide}</span>
+        <div class="ucv-meta">
+          {useCase.targetVerticals.length > 0 && (
+            <span class="ucv-verticals">{useCase.targetVerticals.join(" · ")}</span>
+          )}
+          {planKey && (
+            <a class="ucv-plan" href={SEGMENT_URLS[planKey][locale]}>{isJa ? "対応プラン" : "Plan"} <b>{planName[planKey]}</b></a>
+          )}
+        </div>
+        <div class="ucv-hero-ctas">
+          {isJa && (
+            <a class="ucv-btn ucv-btn--primary" href={`https://tally.so/r/EkBqDX?uc=${useCase.slug}`} target="_blank" rel="noopener">このユースケースについて、問い合わせる</a>
+          )}
+          <a class="ucv-btn ucv-btn--ghost" href={`${base}/verify/`}>{isJa ? "証明を1件、検証してみる" : "Verify a proof"}</a>
+        </div>
+      </div>
+
+      {/* 受け取った側の見え方 — 汎用の検証画面カード（データはラベルのみ。
+          開示された事実は HIDE→PROVE の prove 文をそのまま使う）。 */}
+      <div class="ucv-ui" aria-hidden="true">
+        <div class="ucv-ui-bar"><span class="ucv-ui-dot"></span><span class="ucv-ui-dot"></span><span class="ucv-ui-dot"></span>
+          <span class="ucv-ui-url">{isJa ? "受け取った側の検証画面" : "The verifier's screen"}</span></div>
+        <div class="ucv-ui-body">
+          <div class="ucv-uv-head">
+            <span class="ucv-uv-seal">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="11" stroke-width="1.1" />
+                <circle cx="12" cy="12" r="8.2" stroke-width=".7" opacity=".45" />
+                <path d="M8 12.2l2.7 2.7L16.2 9.3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <div><div class="ucv-uv-t">{isJa ? "改ざんされていません" : "Not tampered"}</div>{isJa && <div class="ucv-uv-en">NOT TAMPERED</div>}</div>
           </div>
-          <div class="ucv-hp__arrow" aria-hidden="true">→</div>
-          <div class="ucv-hp__cell ucv-hp__cell--prove">
-            <span class="ucv-hp__lab">{C.hpProve}</span>
-            <span class="ucv-hp__val">{hideProve.prove}</span>
+          {hideProve && (
+            <div class="ucv-uv-row"><span class="l">{isJa ? "証明された事実" : "Proven fact"}</span><span class="r">{hideProve.prove}</span></div>
+          )}
+          <div class="ucv-uv-row"><span class="l">{isJa ? "発行元への照会" : "Issuer round-trip"}</span><span class="r">{isJa ? "不要" : "Not needed"}</span></div>
+          <div class="ucv-uv-row"><span class="l">{isJa ? "証明のサイズ" : "Proof size"}</span><span class="r">{isJa ? "約200バイト" : "~200 bytes"}</span></div>
+          <div class="ucv-uv-chk">
+            <span>{isJa ? "署名の一致" : "Signature"}</span>
+            <span>{isJa ? "改ざんの有無" : "Integrity"}</span>
+            <span>{isJa ? "発行者の確認" : "Issuer"}</span>
           </div>
         </div>
-      )}
-
-      <p class="ucv-lead">{useCase.abstract}</p>
-
-      <div class="ucv-meta">
-        {useCase.targetVerticals.length > 0 && (
-          <span class="ucv-verticals">{useCase.targetVerticals.join(" · ")}</span>
-        )}
-        <span class="ucv-rt">{useCase.readingTime} {C.readUnit}</span>
       </div>
-      {planKey && (
-        <a class="ucv-plan" href={SEGMENT_URLS[planKey][locale]}>
-          <span class="ucv-plan-pill">🔔 {locale === "ja" ? "対応プラン" : "Plan"} · {planName[planKey]} →</span>
-        </a>
-      )}
     </header>
   </div>
 
@@ -550,740 +570,211 @@ function firstSentence(text: string): string {
 </main>
 
 <style>
+  /* ============================================================
+     UC 詳細 v4 — 業界ページ (indv1 / usecases-index v14) と同一の
+     デザインシステム。トークン・字組み・部品の値は
+     industry-v1.css / 業界モック確定版から写している。
+     上書きは .ucv-page 内に限定。
+     ============================================================ */
   .ucv-page {
-    /* 新デザイン共通レイヤー（2026-08-02, 実装指示 v1 §4）:
-       v24（茶・暖クリーム・ゴシック見出し）→ 索引/業界ページと同じ
-       ライム・寒色ライト・セリフ見出しへ。上書きは .ucv-page 内に限定。 */
-    --ucv-display: "Space Grotesk", "Noto Serif JP", Georgia, serif;
-    --ucv-body: "Noto Sans JP", "Hiragino Sans", system-ui, sans-serif;
-    --ucv-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --ucv-text-1: #12140e;
-    --ucv-text-2: #2f332b;
-    --ucv-text-3: #5c6156;
-    --ucv-text-4: #9aa197;
-    --ucv-green: #4e7a00;
-    --accent: #4e7a00;
-    --accent-lt: #6f9c00;
-    --accent-bg: #eef3e0;
-    --lemma-cream: #f3f4f1;
-    --lemma-cream-deep: #eceee9;
-    --lemma-brown-light: #e9eee0;
-    --lemma-line: #e1e3dd;
-
-    background: var(--lemma-cream);
-    color: var(--ucv-text-2);
-    font-family: var(--ucv-body);
+    --font-serif-jp: "Space Grotesk", "Noto Serif JP", Georgia, serif;
+    --font-body: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ink: #0f1412;
+    --lite: #f3f4f1;
+    --lite-2: #eceee9;
+    --card: #ffffff;
+    --tx: #12140e;
+    --tx-soft: #2f332b;
+    --muted: #5c6156;
+    --ok: #a8e010;
+    --ok-light: #4e7a00;
+    --ok-ink: #6f9c00;
+    --err: #c25438;
+    --line: #e1e3dd;
+    --dline-2: #d9ddd7;
+    --sh-s: 0 4px 14px rgba(14, 18, 16, 0.06);
+    --sh-m: 0 14px 40px rgba(14, 18, 16, 0.1);
+    background: var(--lite);
+    color: var(--tx-soft);
+    font-family: var(--font-body);
+    font-size: 14.5px;
     font-weight: 400;
-    line-height: 1.75;
+    line-height: 1.9;
     margin-top: 64px;
-    /* No bottom padding — the dark closing band sits flush against the
-       footer (any padding here shows as a cream strip above it). */
     padding: 0;
   }
+  .ucv-container { max-width: calc(1180px + 12vw); margin: 0 auto; padding: 0 6vw; }
+  a { text-decoration: none; color: inherit; }
 
-  .ucv-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
+  /* ---------- breadcrumb ---------- */
+  .ucv-breadcrumb { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; padding: 34px 0 0; font-size: 12px; color: var(--muted); }
+  .ucv-breadcrumb a { color: var(--muted); }
+  .ucv-breadcrumb a:hover { color: var(--ok-light); }
+  .ucv-bc-sep { color: var(--dline-2); margin: 0 2px; }
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
+  /* ---------- hero ---------- */
+  .ucv-hero { display: grid; grid-template-columns: minmax(0, 1fr) 470px; gap: 42px; align-items: center; padding: 22px 0 44px; }
+  .ucv-uc-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ok-ink); margin: 20px 0 12px; }
+  .ucv-h1 { font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(26px, 3.2vw, 38px); line-height: 1.5; letter-spacing: 0.03em; color: var(--tx); margin: 0 0 16px; overflow-wrap: anywhere; }
+  .ucv-lead { font-size: 15px; line-height: 2; color: var(--tx-soft); margin: 0 0 18px; max-width: 52ch; }
+  .ucv-meta { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; margin: 0 0 20px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--muted); }
+  .ucv-plan { color: var(--muted); }
+  .ucv-plan b { color: var(--ok-light); font-weight: 400; }
+  .ucv-plan:hover b { text-decoration: underline; }
+  .ucv-hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .ucv-btn { display: inline-block; text-decoration: none; font-weight: 500; font-size: 14px; border-radius: 6px; padding: 14px 30px; cursor: pointer; border: 1px solid transparent; transition: 0.18s; font-family: var(--font-body); letter-spacing: 0.05em; }
+  .ucv-btn--primary { background: var(--ok); color: var(--ink); font-weight: 600; box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35); }
+  .ucv-btn--primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .ucv-btn--ghost { color: var(--tx-soft); border-color: #d5dad3; background: rgba(255, 255, 255, 0.5); }
+  .ucv-btn--ghost:hover { border-color: var(--ok-ink); color: var(--tx); }
 
-  /* ─── BREADCRUMB ─── */
-  .ucv-breadcrumb {
-    font-family: var(--ucv-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ucv-text-4);
-    padding: 36px 0 0;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .ucv-breadcrumb a {
-    color: var(--ucv-text-3);
-    transition: color 0.15s;
-  }
-  .ucv-breadcrumb a:hover { color: var(--accent); }
-  .ucv-bc-sep { color: var(--lemma-line); margin: 0 8px; }
+  /* hero 右 — 検証画面カード（スレート） */
+  .ucv-ui { position: relative; overflow: hidden; border-radius: 14px; background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%); box-shadow: 0 26px 60px rgba(22, 30, 24, 0.28); }
+  .ucv-ui::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(125% 78% at 92% -18%, rgba(168, 224, 16, 0.16), rgba(168, 224, 16, 0) 62%); }
+  .ucv-ui > * { position: relative; z-index: 2; }
+  .ucv-ui-bar { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid #4a544b; }
+  .ucv-ui-dot { width: 8px; height: 8px; border-radius: 50%; background: #4a544b; }
+  .ucv-ui-url { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; color: #8b9285; margin-left: 6px; }
+  .ucv-ui-body { padding: 20px 20px 18px; }
+  .ucv-uv-head { display: flex; align-items: center; gap: 13px; margin-bottom: 16px; }
+  .ucv-uv-seal { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none; border: 1.5px solid rgba(168, 224, 16, 0.55); background: rgba(168, 224, 16, 0.09); color: var(--ok); }
+  .ucv-uv-t { font-family: var(--font-serif-jp); font-weight: 600; font-size: 17px; line-height: 1.45; color: #ebefe6; }
+  .ucv-uv-en { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.16em; color: #8b9285; margin-top: 4px; }
+  .ucv-uv-row { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-top: 1px solid rgba(74, 84, 75, 0.6); }
+  .ucv-uv-row .l { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; color: #8b9285; flex: none; }
+  .ucv-uv-row .r { font-size: 11.5px; line-height: 1.7; color: #e3e8dc; }
+  .ucv-uv-chk { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; padding-top: 11px; border-top: 1px solid #4a544b; font-size: 10.5px; color: #bcc3b6; }
+  .ucv-uv-chk span::before { content: "✓ "; color: var(--ok); }
 
-  /* ─── HERO ─── */
-  .ucv-hero {
-    padding: 28px 0 44px;
-    max-width: 820px;
-  }
-  /* Footer pillar link — light "learn how it works" route to the pillar page,
-     placed at the very end (the pillar tag was removed from the hero). */
-  .ucv-pillar-foot-wrap {
-    text-align: center;
-    padding: 44px 24px;
-  }
-  .ucv-pillar-foot {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ucv-text-3);
-    transition: color 0.15s;
-  }
-  .ucv-pillar-foot:hover { color: var(--accent); }
-  .ucv-h1 {
-    font-family: var(--ucv-display);
-    font-size: clamp(34px, 4.4vw, 52px);
-    font-weight: 700;
-    color: var(--black);
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-    margin: 0 0 24px;
-  }
-  .ucv-lead {
-    font-size: 16px;
-    color: var(--ucv-text-1);
-    line-height: 1.9;
-    margin: 24px 0 24px;
-    max-width: 720px;
-    padding: 2px 0 2px 16px;
-    border-left: 2px solid var(--accent);
-  }
-  .ucv-meta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    font-family: var(--ucv-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ucv-text-4);
-  }
-  .ucv-verticals { color: var(--ucv-text-3); }
-  .ucv-rt::before {
-    content: "·";
-    margin-right: 12px;
-    color: var(--lemma-line);
-  }
+  /* ---------- section chrome ---------- */
+  .ucv-band { padding: 52px 0 56px; }
+  .ucv-band--deep { background: var(--lite-2); }
+  .ucv-eye { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .ucv-h2 { display: block; font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(23px, 2.7vw, 32px); line-height: 1.5; letter-spacing: 0.03em; color: var(--tx); margin: 0 0 18px; word-break: keep-all; }
+  .ucv-band-lead { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); max-width: 62ch; margin: 0 0 22px; }
+  .ucv-band-lead strong { color: var(--tx); font-weight: 600; }
 
-  /* 対応プラン — links to the matching plan page. */
-  .ucv-plan {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 22px 0 0;
-    text-decoration: none;
-  }
-  .ucv-plan-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--ucv-display);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: #fff;
-    background: var(--accent);
-    border-radius: 999px;
-    padding: 5px 14px;
-    white-space: nowrap;
-  }
+  /* ---------- §1 personas ---------- */
+  .ucv-personas { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0 0; padding: 0; }
+  .ucv-persona { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); padding: 20px 20px 18px; margin: 0; }
+  .ucv-persona-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--lite-2); color: var(--ok-light); margin-bottom: 12px; }
+  .ucv-persona-role { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--ok-ink); margin-bottom: 8px; }
+  .ucv-persona-quote { font-size: 13.5px; line-height: 1.85; color: var(--tx-soft); margin: 0; }
+  .ucv-audience { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); max-width: 62ch; }
 
-  /* HIDE → PROVE device (live format — 2 cells + arrow). */
-  .ucv-hp {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: stretch;
-    margin: 0 0 8px;
-    max-width: 720px;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    overflow: hidden;
-    background: #fff;
-  }
-  .ucv-hp__cell {
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .ucv-hp__cell--hide { background: var(--lemma-cream-deep); }
-  .ucv-hp__lab {
-    font-family: var(--ucv-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .ucv-hp__cell--hide .ucv-hp__lab { color: var(--ucv-text-3); }
-  .ucv-hp__cell--prove .ucv-hp__lab { color: var(--accent); }
-  .ucv-hp__val { font-size: 13.5px; line-height: 1.55; }
-  .ucv-hp__cell--hide .ucv-hp__val { color: var(--ucv-text-3); }
-  .ucv-hp__cell--prove .ucv-hp__val { color: var(--black); font-weight: 600; }
-  .ucv-hp__arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    color: var(--accent);
-    font-family: var(--ucv-mono);
-    font-size: 16px;
-  }
-  @media (max-width: 620px) {
-    .ucv-hp { grid-template-columns: 1fr; }
-    .ucv-hp__arrow { width: auto; padding: 6px 0; transform: rotate(90deg); }
-  }
+  /* ---------- §2 before/after ---------- */
+  .ucv-emph { border-left: 3px solid var(--ok); padding-left: clamp(18px, 3vw, 34px); }
+  .ucv-ba { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; margin: 26px 0 0; }
+  .ucv-ba-arrow { display: grid; place-items: center; color: var(--ok-light); font-size: 17px; }
+  .ucv-ba-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); overflow: hidden; display: flex; flex-direction: column; }
+  .ucv-ba-card--after { border-color: rgba(124, 175, 0, 0.45); }
+  .ucv-ba-label { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 12px 18px 2px; }
+  .ucv-ba-card--after .ucv-ba-label { color: var(--ok-light); }
+  .ucv-ba-title { font-family: var(--font-serif-jp); font-weight: 600; font-size: 15.5px; color: var(--tx); padding: 0 18px 12px; border-bottom: 1px solid var(--line); }
+  .ucv-ba-claim { font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); padding: 14px 18px 0; margin: 0; }
+  .ucv-ba-claim--prove { color: var(--tx); font-weight: 600; }
+  .ucv-ba-rows { margin: 4px 0 0; padding: 0 18px; flex: 1; }
+  .ucv-ba-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .ucv-ba-row:first-child { border-top: none; }
+  .ucv-ba-row dt { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin: 0; flex: none; }
+  .ucv-ba-row dd { font-size: 13px; color: var(--tx); margin: 0; text-align: right; }
+  .ucv-ba-strong { color: var(--ok-light); font-weight: 600; }
+  .ucv-ba-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ok-light); border: 1px solid rgba(124, 175, 0, 0.45); background: rgba(168, 224, 16, 0.1); border-radius: 999px; padding: 2px 10px; }
+  .ucv-ba-flow { padding: 9px 18px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); margin-top: 12px; }
+  .ucv-ba-flow--after { color: var(--ok-light); }
+  .ucv-ba--concept .ucv-ba-card > div:last-child { margin-top: auto; }
 
-  /* ─── BANDS ─── */
-  .ucv-band { padding: 72px 0; }
-  .ucv-band--deep { background: var(--lemma-cream-deep); }
-  .ucv-eye {
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 14px;
-  }
-  .ucv-h2 {
-    font-family: var(--ucv-display);
-    font-size: clamp(26px, 3.2vw, 36px);
-    font-weight: 700;
-    color: var(--black);
-    letter-spacing: -0.025em;
-    line-height: 1.35;
-    margin: 0 0 20px;
-  }
-  .ucv-band-lead {
-    font-size: 15.5px;
-    color: var(--ucv-text-2);
-    line-height: 1.85;
-    margin: 0 0 32px;
-    max-width: 720px;
-  }
-  .ucv-band-lead strong { color: var(--accent); font-weight: 600; }
+  .ucv-approach { margin: 30px 0 0; background: var(--lite-2); border-left: 3px solid var(--ok); border-radius: 0 10px 10px 0; padding: 20px 24px; }
+  .ucv-band--deep .ucv-approach { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--ok); }
+  .ucv-approach p, .ucv-approach-body { font-size: 14px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
+  .ucv-approach-body :global(p) { margin: 0 0 10px; }
+  .ucv-approach-body :global(p:last-child) { margin-bottom: 0; }
+  .ucv-approach-link { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
+  .ucv-approach-link:hover { border-bottom-color: var(--ok-light); }
 
-  /* ─── §1 PERSONAS ─── */
-  .ucv-personas {
-    list-style: none;
-    margin: 28px 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-  .ucv-persona {
-    background: #fff;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    padding: 26px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .ucv-persona-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--lemma-cream-deep);
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ucv-persona-role {
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .ucv-persona-quote {
-    font-size: 14.5px;
-    line-height: 1.8;
-    color: var(--ucv-text-1);
-    margin: 0;
-  }
+  /* ---------- §3 table ---------- */
+  .ucv-table-wrap { overflow-x: auto; margin: 22px 0 0; }
+  .ucv-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--sh-s); }
+  .ucv-table th { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; font-weight: 400; color: var(--muted); text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--dline-2); background: var(--card); }
+  .ucv-table th:not(:first-child), .ucv-table td:not(:first-child) { text-align: center; }
+  .ucv-table td { padding: 13px 14px; border-bottom: 1px solid var(--line); color: var(--tx-soft); line-height: 1.6; }
+  .ucv-table tr:last-child td { border-bottom: none; }
+  .ucv-table td.no { color: var(--err); }
+  .ucv-table td.ok, .ucv-check { color: var(--ok-light); font-weight: 700; }
+  .ucv-table .is-lemma td { background: var(--lite-2); }
+  .ucv-table .is-lemma td:first-child { border-left: 3px solid var(--ok); }
+  .ucv-lemma-name { font-weight: 600; color: var(--ok-light); }
+  .ucv-only { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: #fff; background: var(--ok-light); border-radius: 999px; padding: 2px 8px; vertical-align: middle; }
 
-  /* ─── §2 EMPHASIZED + BEFORE/AFTER ─── */
-  .ucv-emph {
-    border-left: 4px solid var(--accent);
-    padding-left: 28px;
-  }
-  .ucv-ba {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: stretch;
-    gap: 0;
-    margin: 0 0 28px;
-  }
-  .ucv-ba-card {
-    border-radius: 14px;
-    padding: 24px 24px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .ucv-ba-card--before {
-    background: #fff;
-    border: 0.5px solid var(--lemma-line);
-  }
-  .ucv-ba-card--after {
-    background: #fff;
-    border: 1px solid rgba(139, 69, 19, 0.35);
-    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.06);
-  }
-  .ucv-ba-label {
-    font-family: var(--ucv-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ucv-text-4);
-  }
-  .ucv-ba-card--after .ucv-ba-label { color: var(--accent); }
-  .ucv-ba-title {
-    font-family: var(--ucv-display);
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--black);
-  }
-  .ucv-ba-rows {
-    margin: 0;
-    padding: 14px 0;
-    border-top: 0.5px solid var(--lemma-line);
-    border-bottom: 0.5px solid var(--lemma-line);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-family: var(--ucv-mono);
-    font-size: 12.5px;
-  }
-  .ucv-ba-row {
-    display: flex;
-    gap: 8px;
-    line-height: 1.5;
-  }
-  .ucv-ba-row dt {
-    color: var(--ucv-text-4);
-    flex-shrink: 0;
-    margin: 0;
-  }
-  .ucv-ba-row dd {
-    margin: 0;
-    color: var(--ucv-text-2);
-    overflow-wrap: anywhere;
-  }
-  .ucv-ba-card--before .ucv-ba-row dd { color: var(--ucv-text-3); }
-  .ucv-ba-strong { color: var(--accent); font-weight: 700; }
-  .ucv-ba-badge {
-    display: inline-flex;
-    align-items: center;
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--ucv-green);
-    background: rgba(92, 122, 74, 0.12);
-    border: 0.5px solid rgba(92, 122, 74, 0.4);
-    border-radius: 6px;
-    padding: 2px 8px;
-  }
-  /* Derived (concept) Before/After — a phrase from HIDE→PROVE rather than a
-     key:value data row. */
-  .ucv-ba-claim {
-    font-size: 13.5px;
-    line-height: 1.7;
-    color: var(--ucv-text-3);
-    margin: 0;
-    padding: 14px 0;
-    border-top: 0.5px solid var(--lemma-line);
-    border-bottom: 0.5px solid var(--lemma-line);
-  }
-  .ucv-ba-claim--prove { color: var(--black); font-weight: 600; }
-  .ucv-ba-flow {
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: var(--ucv-text-3);
-  }
-  .ucv-ba-flow--after { color: var(--accent); font-weight: 500; }
-  .ucv-ba-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 56px;
-    color: var(--accent);
-    font-family: var(--ucv-mono);
-    font-size: 22px;
-  }
-  @media (max-width: 720px) {
-    .ucv-ba { grid-template-columns: 1fr; gap: 0; }
-    .ucv-ba-arrow { width: auto; padding: 10px 0; transform: rotate(90deg); }
-  }
+  /* ---------- §4 steps ---------- */
+  .ucv-steps-body { max-width: 76ch; }
+  .ucv-steps-body :global(p) { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); margin: 0 0 14px; }
+  .ucv-steps-body :global(ol) { list-style: none; counter-reset: ucstep; margin: 8px 0 0; padding: 0; }
+  .ucv-steps-body :global(ol > li) { counter-increment: ucstep; position: relative; padding: 14px 0 14px 46px; border-bottom: 1px solid var(--line); font-size: 13.5px; line-height: 1.8; color: var(--tx-soft); }
+  .ucv-steps-body :global(ol > li)::before { content: counter(ucstep, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono); font-size: 11px; color: var(--ok-light); }
+  .ucv-steps-body :global(li strong) { color: var(--tx); font-weight: 600; }
+  .ucv-steps-body :global(a) { color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
+  .ucv-uc-cta { margin-top: 30px; }
+  .ucv-uc-cta-btn { display: inline-block; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; padding: 14px 30px; border: 1px solid transparent; transition: 0.18s; letter-spacing: 0.05em; background: var(--ok); color: var(--ink); box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35); }
+  .ucv-uc-cta-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
-  .ucv-approach {
-    background: var(--lemma-cream-deep);
-    border-radius: 12px;
-    padding: 22px 24px;
-    border-left: 3px solid var(--accent);
-  }
-  .ucv-approach p,
-  .ucv-approach-body :global(p) {
-    font-size: 14px;
-    line-height: 1.85;
-    color: var(--ucv-text-1);
-    margin: 0 0 12px;
-  }
-  .ucv-approach-body :global(strong) { color: var(--accent); font-weight: 600; }
-  .ucv-approach-body :global(em) { font-style: normal; color: var(--accent); font-weight: 500; }
-  .ucv-approach-link {
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    border-bottom: 0.5px solid rgba(139, 69, 19, 0.4);
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .ucv-approach-link:hover { color: #3e6300; border-bottom-color: var(--accent); }
-
-  /* ─── §3 COMPARE TABLE ─── */
-  .ucv-table-wrap { overflow-x: auto; }
-  .ucv-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    overflow: hidden;
-    font-size: 13.5px;
-    min-width: 520px;
-  }
-  .ucv-table thead tr { background: var(--lemma-cream); }
-  .ucv-table th {
-    padding: 12px 14px;
-    font-family: var(--ucv-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ucv-text-3);
-    text-align: center;
-    border-bottom: 0.5px solid var(--lemma-line);
-  }
-  .ucv-table th:first-child { text-align: left; }
-  .ucv-table td {
-    padding: 13px 14px;
-    border-bottom: 0.5px solid var(--lemma-line);
-    text-align: center;
-    color: var(--ucv-text-2);
-  }
-  .ucv-table td:first-child {
-    text-align: left;
-    font-weight: 500;
-    color: var(--ucv-text-1);
-  }
-  .ucv-table td.ok { color: var(--ucv-green); font-weight: 700; }
-  .ucv-table td.no { color: #c0392b; }
-  .ucv-table tbody tr:last-child td { border-bottom: none; }
-
-  /* Lemma row — the only row that satisfies all three criteria. Make that
-     unmistakable: stronger brown wash, a 3px accent left bar, and the three
-     ✓ rendered as filled green check badges (a solid green row vs. scattered
-     plain marks elsewhere). */
-  .ucv-table tbody tr.is-lemma td {
-    background: rgba(139, 69, 19, 0.10);
-    border-top: 1px solid rgba(139, 69, 19, 0.28);
-    border-bottom: 1px solid rgba(139, 69, 19, 0.28);
-    padding-top: 16px;
-    padding-bottom: 16px;
-  }
-  .ucv-table tbody tr.is-lemma td:first-child {
-    box-shadow: inset 3px 0 0 var(--accent);
-  }
-  .ucv-lemma-name { color: var(--accent); font-weight: 700; }
-  .ucv-only {
-    display: inline-block;
-    margin-left: 8px;
-    font-family: var(--ucv-mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: #fff;
-    background: var(--accent);
-    padding: 2px 8px;
-    border-radius: 999px;
-    vertical-align: middle;
-    white-space: nowrap;
-  }
-  .ucv-check {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--ucv-green);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: 0 2px 6px rgba(92, 122, 74, 0.35);
-  }
-
-  /* ─── §4 STEPS (ORIGINAL numbered list from markdown) ─── */
-  .ucv-steps-body {
-    font-size: 15px;
-    line-height: 1.85;
-    color: var(--ucv-text-2);
-  }
-  .ucv-steps-body :global(> p:first-child) {
-    font-size: 16px;
-    line-height: 1.9;
-    color: var(--ucv-text-1);
-    padding: 2px 0 2px 16px;
-    border-left: 2px solid var(--accent);
-    margin: 0 0 24px;
-  }
-  .ucv-steps-body :global(p) { margin: 0 0 18px; }
-  .ucv-steps-body :global(strong) {
-    font-family: var(--ucv-display);
-    font-weight: 600;
-    color: var(--black);
-  }
-  .ucv-steps-body :global(em) { font-style: normal; color: var(--accent); font-weight: 500; }
-  .ucv-steps-body :global(ol) {
-    counter-reset: ucvstep;
-    list-style: none;
-    padding: 0;
-    margin: 18px 0;
-  }
-  .ucv-steps-body :global(ol li) {
-    counter-increment: ucvstep;
-    position: relative;
-    padding: 14px 0 14px 44px;
-    border-bottom: 0.5px solid var(--lemma-line);
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.7;
-  }
-  .ucv-steps-body :global(ol li:last-child) { border-bottom: none; }
-  .ucv-steps-body :global(ol li::before) {
-    content: counter(ucvstep);
-    position: absolute;
-    left: 0;
-    top: 14px;
-    width: 24px;
-    height: 24px;
-    border: 0.5px solid var(--accent);
-    color: var(--accent);
-    border-radius: 50%;
-    font-family: var(--ucv-mono);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ucv-uc-cta {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px dashed var(--lemma-line);
-    text-align: center;
-  }
-  .ucv-uc-cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #a8e010;
-    color: #12140e;
-    padding: 14px 28px;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35);
-    font-family: var(--ucv-display);
-    font-weight: 600;
-    font-size: 14px;
-    transition: background 0.15s;
-  }
-  .ucv-uc-cta-btn:hover { background: #b9ef34; }
-
-  /* ─── §5 RELATED CARDS ─── */
-  .ucv-related {
-    list-style: none;
-    margin: 28px 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
+  /* ---------- §5 related ---------- */
+  .ucv-related { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0 0; padding: 0; max-width: 900px; }
   .ucv-related > li { margin: 0; padding: 0; }
-  .ucv-related-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #fff;
-    border: 0.5px solid var(--lemma-line);
-    border-radius: 14px;
-    padding: 24px 24px 20px;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
-  }
-  .ucv-related-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 40px;
-    background: var(--accent);
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .ucv-related-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
-    box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
-    transform: translateY(-2px);
-  }
+  .ucv-related-card { position: relative; display: block; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-s); padding: 20px 22px 18px; transition: 0.18s; overflow: hidden; }
+  .ucv-related-card::before { content: ""; position: absolute; top: 0; left: 0; width: 26px; height: 3px; background: var(--ok); transition: width 0.35s; }
+  .ucv-related-card:hover { border-color: rgba(124, 175, 0, 0.45); transform: translateY(-2px); box-shadow: var(--sh-m); }
   .ucv-related-card:hover::before { width: 100%; }
-  .ucv-related-icon { color: var(--accent); }
-  .ucv-related-title {
-    font-family: var(--ucv-display);
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.45;
-    margin: 0;
-  }
-  .ucv-related-abstract {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--ucv-text-3);
-    margin: 0;
-    flex: 1;
-  }
-  .ucv-related-cta {
-    font-family: var(--ucv-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin-top: auto;
-    padding-top: 14px;
-    border-top: 0.5px solid var(--lemma-line);
-    transition: transform 0.2s;
-  }
+  .ucv-related-icon { color: var(--ok-light); }
+  .ucv-related-title { font-family: var(--font-serif-jp); font-weight: 600; font-size: 15px; line-height: 1.6; color: var(--tx); margin: 10px 0 6px; }
+  .ucv-related-abstract { font-size: 12.5px; line-height: 1.8; color: var(--muted); margin: 0 0 10px; }
+  .ucv-related-cta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--ok-light); display: inline-block; transition: transform 0.18s; }
   .ucv-related-card:hover .ucv-related-cta { transform: translateX(3px); }
+  .ucv-faq-link { margin: 26px 0 0; font-size: 12.5px; color: var(--muted); }
+  .ucv-faq-link a { color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
 
-  .ucv-faq-link {
-    margin: 28px 0 0;
-    font-size: 13.5px;
-    color: var(--ucv-ink-soft, #5a544d);
-  }
-  .ucv-faq-link a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .ucv-faq-link a:hover { text-decoration: underline; }
+  /* ---------- closing ---------- */
+  .ucv-closing { position: relative; overflow: hidden; background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%); padding: 72px 0 68px; text-align: center; }
+  .ucv-closing::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 88% -20%, rgba(168, 224, 16, 0.16), rgba(168, 224, 16, 0) 62%); }
+  .ucv-closing-inner { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; padding: 0 6vw; }
+  .ucv-closing-eyebrow { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.22em; color: #8b9285; margin: 0 0 14px; }
+  .ucv-closing-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: clamp(24px, 3vw, 34px); line-height: 1.5; letter-spacing: 0.03em; color: #ebefe6; margin: 0 0 14px; word-break: keep-all; }
+  .ucv-closing-h .accent { color: var(--ok); }
+  .ucv-closing-sub { font-size: 13.5px; line-height: 2; color: #bcc3b6; margin: 0 0 26px; }
+  .ucv-closing-ctas { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .ucv-closing-pill { display: inline-block; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; padding: 14px 30px; letter-spacing: 0.05em; background: var(--ok); color: var(--ink); box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35); transition: 0.18s; }
+  .ucv-closing-pill:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .ucv-closing-link { background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.04em; color: #bcc3b6; border-bottom: 1px solid rgba(168, 224, 16, 0.35); padding: 0 0 2px; transition: 0.18s; }
+  .ucv-closing-link:hover { color: var(--ok); }
 
-  /* ─── CLOSING (Discovery Call) ─── */
-  .ucv-closing {
-    background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
-    padding: 88px 0 80px;
-    text-align: center;
-  }
-  .ucv-closing-inner {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-  .ucv-closing-eyebrow {
-    font-family: var(--ucv-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: rgba(252, 250, 245, 0.5);
-    margin: 0 0 22px;
-  }
-  .ucv-closing-h {
-    font-family: var(--ucv-display);
-    font-size: clamp(30px, 4vw, 44px);
-    font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-    color: var(--lemma-cream);
-    margin: 0 0 24px;
-  }
-  .ucv-closing-h .accent { color: var(--accent); }
-  .ucv-closing-sub {
-    font-size: 15px;
-    color: rgba(252, 250, 245, 0.7);
-    max-width: 560px;
-    margin: 0 auto 36px;
-    line-height: 1.7;
-  }
-  .ucv-closing-ctas {
-    display: flex;
-    gap: 22px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .ucv-closing-pill {
-    background: #a8e010;
-    color: #12140e;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(168, 224, 16, 0.25);
-    font-family: var(--ucv-display);
-    font-size: 14px;
-    font-weight: 500;
-    transition: background 0.15s;
-  }
-  .ucv-closing-pill:hover { background: #b9ef34; }
-  .ucv-closing-link {
-    color: rgba(252, 250, 245, 0.7);
-    font-family: var(--ucv-display);
-    font-size: 14px;
-    padding: 12px 16px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.15s;
-  }
-  .ucv-closing-link:hover { color: var(--lemma-cream); }
+  /* ---------- pillar foot ---------- */
+  .ucv-pillar-foot-wrap { text-align: center; padding: 30px 6vw; border-bottom: 1px solid var(--line); }
+  .ucv-pillar-foot { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+  .ucv-pillar-foot:hover { color: var(--ok-light); }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 960px) {
+  /* ---------- responsive ---------- */
+  @media (max-width: 1020px) {
+    .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-personas { grid-template-columns: 1fr; }
+    .ucv-ba { grid-template-columns: 1fr; }
+    .ucv-ba-arrow { display: none; }
     .ucv-related { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 720px) {
-    .ucv-page { margin-top: 8px; }
-    .ucv-breadcrumb { padding: 16px 0 0; }
-    .ucv-container { padding: 0 24px; }
-    .ucv-band { padding: 48px 0; }
-    .ucv-hero { padding: 18px 0 32px; }
-    .ucv-emph { padding-left: 18px; }
-    .ucv-closing { padding: 60px 0 56px; }
-    .ucv-closing-inner { padding: 0 24px; }
   }
 </style>
 
 <style>
   /* 「業務から探す」 — 索引の全件リストと同じ行の形 (実装指示 v1 §4) */
-  .ucv-bytask { border-top: 1px solid rgba(60, 52, 31, 0.14); padding: 44px 0 64px; }
-  .ucv-bytask-inner { max-width: 880px; margin: 0 auto; padding: 0 24px; }
-  .ucv-bytask-k { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #8b8674; margin-bottom: 6px; }
-  .ucv-bytask-h { font-size: 1.2rem; margin: 0 0 4px; }
-  .ucv-bytask-sub { font-size: 0.8rem; color: #6f6a58; margin: 0 0 14px; }
+  .ucv-bytask { background: var(--lite-2); border-top: 1px solid var(--line); padding: 44px 0 64px; }
+  .ucv-bytask-inner { max-width: 880px; margin: 0 auto; padding: 0 6vw; }
+  .ucv-bytask-k { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #5c6156; margin-bottom: 10px; }
+  .ucv-bytask-h { font-family: "Space Grotesk", "Noto Serif JP", Georgia, serif; font-weight: 600; font-size: clamp(19px, 2.1vw, 24px); letter-spacing: 0.03em; color: #12140e; margin: 0 0 4px; }
+  .ucv-bytask-sub { font-size: 12.5px; color: #5c6156; margin: 0 0 14px; }
   .ucv-bytask-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 32px; }
-  .ucv-bytask-row { display: block; font-size: 0.84rem; line-height: 1.6; color: inherit; text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid transparent; }
+  .ucv-bytask-row { display: block; font-size: 13.5px; line-height: 1.7; color: #2f332b; text-decoration: none; padding: 8px 0 8px 12px; border-left: 2px solid transparent; border-bottom: 1px solid #e1e3dd; transition: 0.15s; }
   .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); }
-  .ucv-bytask-all { display: inline-block; margin-top: 14px; font-size: 0.8rem; }
+  .ucv-bytask-all { display: inline-block; margin-top: 16px; font-size: 12.5px; color: #4e7a00; text-decoration: none; }
+  .ucv-bytask-all:hover { text-decoration: underline; }
   @media (max-width: 860px) {
     .ucv-bytask-list { grid-template-columns: 1fr; }
   }
