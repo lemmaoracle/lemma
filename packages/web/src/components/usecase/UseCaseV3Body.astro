@@ -100,7 +100,7 @@ const C = isJa
       baDataBeforeTitle: "原本をそのまま渡す", baDataAfterTitle: "事実だけを渡す",
       baDataFlowBefore: "↓ すべて AI・外部へ渡る", baDataFlowAfter: "↓ 必要な事実だけ AI へ渡る",
       approachLink: "技術詳細を見る ↗",
-      s3Eye: "03 · 選定基準", s3H2: "3 つの基準で、選ぶ。",
+      s3Eye: "03 · 選定基準", s3H2: "なぜ、いままでのやり方では足りないのか。",
       s3Lead: "「中身を出さず渡す」「独立検証」「書き換えの検知」の 3 つが同時に要る業務こそが Lemma の領域です。",
       thMethod: "手段", thPass: "中身を出さず渡す", thVerify: "独立検証", thTamper: "書き換えを検知",
       rowAccess: "アクセス制御・権限管理", rowMask: "マスキング / 黒塗りで提出", rowEnc: "暗号化して保管・送付",
@@ -111,7 +111,8 @@ const C = isJa
       rowExtraWhy: "検知・記録止まりで、相手が独立に確かめられない",
       rowLemmaWhy: "相手がリンクを開くだけで確かめられる",
       lemmaName: "Lemma（ZK 証明）", onlyTag: "唯一 3 つ揃う",
-      s4Eye: "04 · 進め方", s4Title: "進め方",
+      s4Eye: "04 · 進め方", s4Title: "実装イメージと、導入の流れ。",
+      ctaCardH: "まずは、30分のヒアリングから。",
       s4Steps: [
         { a: "自社", t: "証明する記録を決める", d: "提出のたびに説明や照会が生まれている記録・フローを、まず1つ選びます。" },
         { a: "自社 → 相手", t: "発行を組み込む", d: "記録が確定した時点で API を1回呼びます。記録の本文は送りません。" },
@@ -157,7 +158,7 @@ const C = isJa
       baDataBeforeTitle: "Hand over the original", baDataAfterTitle: "Hand over just the facts",
       baDataFlowBefore: "↓ all of it goes to the AI / outside", baDataFlowAfter: "↓ only the necessary facts to the AI",
       approachLink: "See the technical details ↗",
-      s3Eye: "03 · HOW TO CHOOSE", s3H2: "Choose on three criteria.",
+      s3Eye: "03 · HOW TO CHOOSE", s3H2: "Why the usual methods fall short.",
       s3Lead: "Only work that needs all three at once — pass without exposing, independent verification, tamper-evidence — is Lemma's domain.",
       thMethod: "Method", thPass: "Pass without exposing", thVerify: "Independent verification", thTamper: "Tamper-evident",
       rowAccess: "Access control / permissions", rowMask: "Masking / redacted copies", rowEnc: "Encrypt and store / send",
@@ -168,7 +169,8 @@ const C = isJa
       rowExtraWhy: "Detection only — the receiver still cannot verify independently",
       rowLemmaWhy: "The receiver just opens a link",
       lemmaName: "Lemma (ZK proof)", onlyTag: "the only one with all 3",
-      s4Eye: "04 · HOW IT WORKS", s4Title: "How it works",
+      s4Eye: "04 · HOW IT WORKS", s4Title: "How it works — and how to start.",
+      ctaCardH: "Start with a 30-minute call.",
       s4Steps: [
         { a: "you", t: "Choose the record to prove", d: "Start with the one flow where hand-offs cost you the most explaining." },
         { a: "you → them", t: "Add issuance", d: "Call the API once when the record is finalized. The document itself is never sent." },
@@ -390,6 +392,7 @@ const bytaskMembers = taskGroupMembers.filter(
           <p class="ucv-band-lead">{C.s2Catch}</p>
           <div class="ucv-ba">
             <div class="ucv-ba-col">
+              <p class="ucv-ba-cap">① {C.s2OpCap}</p>
               <div class="ucv-ba-card">
                 <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2OpBar}</div>
                 <dl class="ucv-ba-rows">
@@ -398,12 +401,12 @@ const bytaskMembers = taskGroupMembers.filter(
                   <div class="ucv-ba-row"><dt>{C.s2OpRow3}</dt><dd>{C.s2OpRow3v}</dd></div>
                 </dl>
               </div>
-              <p class="ucv-ba-cap">① {C.s2OpCap}</p>
             </div>
 
             <div class="ucv-ba-arrow" aria-hidden="true"><span class="lab">{C.s2Link}</span><span>→</span></div>
 
             <div class="ucv-ba-col">
+              <p class="ucv-ba-cap">② {C.s2VfCap}</p>
               <div class="ucv-ba-card ucv-ba-card--after">
                 <div class="ucv-ba-bar"><span class="d"></span><span class="d"></span><span class="d"></span>{C.s2VfBar}</div>
                 <div class="ucv-mini-verdict">
@@ -427,7 +430,6 @@ const bytaskMembers = taskGroupMembers.filter(
                   <div class="ucv-ba-row"><dt>{C.s2VfKey}</dt><dd>{C.s2VfKeyVal}</dd></div>
                 </dl>
               </div>
-              <p class="ucv-ba-cap">② {C.s2VfCap}</p>
             </div>
           </div>
 
@@ -547,8 +549,9 @@ const bytaskMembers = taskGroupMembers.filter(
 
       </div>
       <p class="ucv-steps-note">{C.s4Note}</p>
-      {invite && <div class="ucv-steps-invite" set:html={invite} />}
-      <div class="ucv-uc-cta">
+      <div class="ucv-cta-card">
+        <p class="ucv-cta-card-h">{C.ctaCardH}</p>
+        {invite && <div class="ucv-steps-invite" set:html={invite} />}
         <a class="ucv-uc-cta-btn" href={isJa ? `https://tally.so/r/EkBqDX?uc=${useCase.slug}` : `https://tally.so/r/Pd2Rl5?uc=${useCase.slug}`} target="_blank" rel="noopener">
           {isJa ? "このユースケースについて、問い合わせる →" : "Talk to us about this use case →"}
         </a>
@@ -733,7 +736,7 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-ba-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--muted); }
   .ucv-ba-bar .d { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
   .ucv-ba-card--after .ucv-ba-bar { color: var(--ok-light); }
-  .ucv-ba-cap { margin: 12px 0 0; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; color: var(--tx); text-align: center; }
+  .ucv-ba-cap { margin: 0 0 12px; font-family: var(--font-serif-jp); font-weight: 600; font-size: 14px; color: var(--tx); text-align: center; }
   .ucv-ba-rows { margin: 4px 0 0; padding: 6px 18px 14px; flex: 1; }
   .ucv-ba-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); }
   .ucv-ba-row:first-child { border-top: none; }
@@ -793,7 +796,6 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-mini-verdict .en { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.16em; color: var(--muted); margin-top: 3px; }
   .ucv-mini-verdict .chk { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 9px; color: var(--muted); }
   .ucv-band--slate .ucv-steps-note { color: #9ba296; }
-  .ucv-band--slate .ucv-steps-invite :global(p) { color: #bcc3b6; }
 
   /* ---------- §4 steps ---------- */
   .ucv-steps-body { max-width: 76ch; }
@@ -804,9 +806,12 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-steps-body :global(li strong) { color: var(--tx); font-weight: 600; }
   .ucv-steps-body :global(a) { color: var(--ok-light); border-bottom: 1px solid rgba(124, 175, 0, 0.35); }
   .ucv-steps-note { font-size: 12.5px; color: var(--muted); margin: 14px 0 0; }
-  .ucv-steps-invite { margin-top: 18px; }
+  .ucv-steps-invite { margin-top: 0; }
   .ucv-steps-invite :global(p) { font-size: 14.5px; line-height: 1.9; color: var(--tx-soft); margin: 0; }
-  .ucv-uc-cta { margin-top: 26px; }
+  .ucv-cta-card { margin-top: 28px; max-width: 780px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px 30px 28px; box-shadow: var(--sh-m); }
+  .ucv-cta-card-h { font-family: var(--font-serif-jp); font-weight: 600; font-size: 17px; color: var(--tx); margin: 0 0 8px; }
+  .ucv-cta-card .ucv-steps-invite :global(p) { color: var(--tx-soft); font-size: 13.5px; }
+  .ucv-cta-card .ucv-uc-cta-btn { margin-top: 18px; }
   .ucv-uc-cta-btn { display: inline-block; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; padding: 14px 30px; border: 1px solid transparent; transition: 0.18s; letter-spacing: 0.05em; background: var(--ok); color: var(--ink); box-shadow: 0 6px 18px rgba(168, 224, 16, 0.35); }
   .ucv-uc-cta-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
@@ -846,6 +851,7 @@ const bytaskMembers = taskGroupMembers.filter(
   @media (max-width: 1020px) {
     .ucv-hero { grid-template-columns: 1fr; gap: 30px; }
     .ucv-hiw { grid-template-columns: 1fr; }
+    .ucv-hiw-shot { aspect-ratio: auto; padding: 16px; }
     .ucv-personas { grid-template-columns: 1fr; }
     .ucv-ba { grid-template-columns: 1fr; }
     .ucv-ba-arrow { display: none; }
