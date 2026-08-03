@@ -1,0 +1,11 @@
+---
+import IndustryDetailV1 from "../../../../templates/IndustryDetailV1.astro";
+import { getIndustryBySlug } from "../../../../config/industriesV1";
+import { getTranslations } from "../../../../i18n/translations";
+
+const entry = getIndustryBySlug("supply-chain");
+if (!entry) throw new Error("industry entry not found: supply-chain");
+const t = getTranslations("ja");
+---
+
+<IndustryDetailV1 locale="ja" t={t} base="/ja" entry={entry} />
