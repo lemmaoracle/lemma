@@ -56,17 +56,19 @@ const buildBazaarExtensionInput = (
   config: LemmaRouteConfig
 ): BazaarExtensionInput => {
   // assertDiscoverableConfigured has already guaranteed these are present
-  // when discoverable: true; non-null assertions are safe here.
-  /* eslint-disable @typescript-eslint/no-non-null-assertion -- guaranteed by assertDiscoverableConfigured */
+  // when discoverable: true; destructure with explicit type narrowing
+  const { schema, bazaarDescription, bazaarCategory } = config;
+  const narrowSchema = schema ?? "";
+  const narrowDescription = bazaarDescription ?? "";
+  const narrowCategory = bazaarCategory ?? "Infrastructure";
   return {
-    name: config.schema!,
-    description: config.bazaarDescription!,
-    category: config.bazaarCategory!,
+    name: narrowSchema,
+    description: narrowDescription,
+    category: narrowCategory,
     tags: config.bazaarSubTags ?? [],
     inputSchema: config.bazaarInputSchemaRef,
     outputSchema: config.bazaarOutputSchemaRef,
   };
-  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 };
 
 /**

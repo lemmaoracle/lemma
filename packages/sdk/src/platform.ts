@@ -80,9 +80,9 @@ export const ensureUrlCreateObjectUrlPolyfill = (): void => {
     return;
   } catch {
     // eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
-    (URL as unknown as { createObjectURL: () => string }).createObjectURL =
-      // eslint-disable-next-line functional/functional-parameters -- polyfill placeholder
-      () => "blob:snarkjs-shim";
+    (URL as unknown as { createObjectURL: (blob: Blob) => string }).createObjectURL =
+      // imperative: polyfill placeholder for Cloudflare Workers stub
+      (_blob?: Blob) => "blob:snarkjs-shim";
   }
 };
 
