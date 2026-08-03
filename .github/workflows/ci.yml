@@ -32,10 +32,14 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
+      # foundry の nightly は「git タグが先に push され、バイナリの公開が
+      # 1〜2 時間遅れる」窓があり、その間 foundryup が資産の無いタグを掴んで
+      # HTTP 404 で失敗する（foundry-rs/foundry-toolchain#159）。窓の中では
+      # 再実行しても同じタグを引くため復旧しない。安定版にピン留めして回避する。
       - name: Setup Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly
+          version: v1.7.1
 
       - name: Cache Foundry dependencies
         uses: actions/cache@v4
