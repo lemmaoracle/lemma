@@ -574,9 +574,9 @@ export const PRICING: PricingContent = {
         audience: "developer",
         q: { ja: "Lemma の API はいつ使えますか? いくらですか?", en: "When can I use Lemma's API, and how much?" },
         a: {
-          // 「近日公開」の重複は §api の注記1箇所に集約（事実修正 2026-08-02）
-          ja: "発行単価はクラス別に確定しています（来歴 0.005 / 認証 0.01–0.05 / 権限 0.05 / 推論 0.07 / 属性 0.20 USD）。検証は常に無料です。本番課金の開始前のため、testnet の Sandbox で無料でお試しいただけます。定額の quota / grade プランも準備しています。",
-          en: "Issuance rates are fixed per proof class (provenance 0.005 / authentication 0.01–0.05 / authority 0.05 / inference 0.07 / attribute 0.20 USD). Verification is always free. Production billing hasn't opened yet, so you can try it free on the testnet Sandbox. Flat-rate quota / grade plans are in preparation.",
+          // 単価非公開 (2026-08-03): 課金の受け取り手段が未設計のため、数字は出さない
+          ja: "単価と課金は準備中のため、現在は公開していません。検証は常に無料で、testnet の Sandbox では発行も無料で試せます。課金の提供が整い次第、料金ページで公開します。",
+          en: "Rates and billing are not public yet — payment collection is still being built. Verification is always free, and you can issue proofs free on the testnet Sandbox. Rates will be published on the pricing page once billing is ready.",
         },
       },
       // — エージェント（Trust402） —
@@ -584,8 +584,8 @@ export const PRICING: PricingContent = {
         audience: "agent",
         q: { ja: "Trust402 はいつ使えますか?", en: "When can I use Trust402?" },
         a: {
-          ja: "Trust402 の4プラン（Explorer / Builder / Pro / Institutional ID）は、本ページに掲載しています。本番課金の開始前のため、Explorer の Sandbox で無料でお試しいただけます。",
-          en: "The four Trust402 plans (Explorer / Builder / Pro / Institutional ID) are listed on this page. Production billing hasn't opened yet, so you can try it free on the Explorer Sandbox.",
+          ja: "Trust402 の4プラン（Explorer / Builder / Pro / Institutional ID）は、Trust402 の製品ページに掲載しています。Explorer の Sandbox で無料でお試しいただけます。",
+          en: "The four Trust402 plans (Explorer / Builder / Pro / Institutional ID) are listed on the Trust402 product pages. You can try it free on the Explorer Sandbox.",
         },
       },
       {
