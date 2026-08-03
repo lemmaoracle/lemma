@@ -1,0 +1,52 @@
+---
+/**
+ * /ja/seal/ ・ /seal/ — Seal 製品ページ v4（製品ページ移行 実装指示 v2.1 §2）.
+ *
+ * 正典モック: lemma_seal_page_mock_v4.html。索引 v14・料金 v12 と同じ
+ * fragment（config/seal-v4.{ja,en}.html）＋ scoped CSS（styles/seal-v4.css,
+ * .sealx）方式。旧 SealTemplate（クリーム＋ブラウン・攻撃耐性LPのCSS共有）は退役。
+ *
+ * 事実面 (§2.4): コード例は seal.prove({secret, nonce})・C2PA チップなし・
+ * 0.4s / Monad / SDK1行 / circuitId は不掲載。02 Unlinkable の限定注記
+ * （サービス側が登録済み鍵と突き合わせて本人を解決する旨）を必ず残す。
+ * Before/After のアニメーションは prefers-reduced-motion で静止 (§2.5)。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import bodyJa from "../config/seal-v4.ja.html?raw";
+import bodyEn from "../config/seal-v4.en.html?raw";
+import "../styles/seal-v4.css";
+
+export interface SealV4TemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as SealV4TemplateProps;
+const isJa = locale === "ja";
+const body = isJa ? bodyJa : bodyEn;
+
+const metaTitle = isJa
+  ? "Seal — 鍵ではなく、証明を送る | Lemma"
+  : "Seal — Send a proof, not your key | Lemma";
+const metaDescription = isJa
+  ? "サインインのとき、端末から出ていくのは鍵ではなく証明です。サーバーは鍵を受け取らず、保管もしません。どの鍵を使ったのかも渡さない、エージェント時代のサインイン。"
+  : "At sign-in, what leaves the device is a proof — not a key. The server never receives or stores your key. Sign-in for the agent era.";
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/seal/"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="sealx" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>

@@ -263,6 +263,10 @@ const faqJsonLd = {
 
 <style>
   .fq-page {
+    /* 新DS移行: アクセントをブラウン→オリーブ系へ (製品ページ移行 v2.1 追補) */
+    --accent: #4e7a00;
+    --accent-lt: #6f9c00;
+
     --fq-display: var(--font-display);
     --fq-body: "Noto Sans JP", system-ui, sans-serif;
     --fq-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -706,7 +710,7 @@ const faqJsonLd = {
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .fq-a p a:hover { color: #6e3610; }
+  .fq-a p a:hover { color: #3f6300; }
   /* Related links rendered below the answer when item.links is set. */
   .fq-a-links {
     display: flex;
@@ -735,7 +739,7 @@ const faqJsonLd = {
   }
   .fq-a-link:hover {
     border-bottom-color: var(--accent);
-    color: #6e3610;
+    color: #3f6300;
   }
   .fq-no-results {
     padding: 24px;
@@ -904,7 +908,7 @@ const faqJsonLd = {
     border: 0;
   }
   .fq-partner-primary:hover {
-    background: #6e3610;
+    background: #3f6300;
   }
   .fq-partner-secondary {
     background: var(--white);
