@@ -28,10 +28,10 @@ const { locale, t, base, kind } = Astro.props as PricingSubpageV12Props;
 const isApi = kind === "api";
 
 const metaTitle = isApi
-  ? "Lemma の発行単価 — 開発者向け | Lemma"
+  ? "Lemma の API — 開発者向け | Lemma"
   : "Trust402 の料金 — エージェント向け | Lemma";
 const metaDescription = isApi
-  ? "ZK 証明の発行 API の証明クラス別単価。従量課金で、検証は常に無料。testnet の Sandbox から無料で試せます。"
+  ? "ZK 証明の発行 API。検証は常に無料。単価と課金は準備中のため非公開です。testnet の Sandbox から無料で試せます。"
   : "x402 / MCP エコシステム向け Trust402 の4プラン。Pay と Sell は1つの発行枠を共有。検証は常に無料。";
 const pagePath = isApi ? "/pricing/api/" : "/pricing/trust402/";
 const crumbLabel = isApi ? "開発者向け" : "Trust402";
