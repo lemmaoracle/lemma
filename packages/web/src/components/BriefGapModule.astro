@@ -52,8 +52,8 @@ const t = isJa
 
 <style>
   .bgap {
-    --bg-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --bg-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bg-display: var(--font-display);
+    --bg-body: "Noto Sans JP", system-ui, sans-serif;
     --bg-mono: "Space Mono", ui-monospace, monospace;
     --bg-green: #3f7a4d;
     --bg-red: #b23c2e;
@@ -66,7 +66,7 @@ const t = isJa
     font-family: var(--bg-body);
   }
   :root[lang="en"] .bgap {
-    --bg-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --bg-body: "Noto Sans JP", system-ui, sans-serif;
   }
   .bgap__h {
     background: #f3e7d2;

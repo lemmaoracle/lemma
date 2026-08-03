@@ -380,8 +380,8 @@ const breadcrumbJsonLd = {
   .ucd-page {
     /* Sora carries Latin; Noto Sans JP backs JA characters so they don't
        cascade into the Layout-level Cormorant / Noto Serif JP stack. */
-    --ucd-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --ucd-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ucd-display: var(--font-display);
+    --ucd-body: "Noto Sans JP", system-ui, sans-serif;
     --ucd-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --ucd-text-1: #1a1a1a;
     --ucd-text-2: #3a3a3a;
@@ -397,7 +397,7 @@ const breadcrumbJsonLd = {
     margin-top: 64px;
   }
   :root[lang="en"] .ucd-page {
-    --ucd-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --ucd-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   .ucd-container {
@@ -601,7 +601,7 @@ const breadcrumbJsonLd = {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--ucd-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.02em;

@@ -821,8 +821,8 @@ const panes = [
     --hp-green: #5c7a4a;
     --hp-code-bg: #1a1612;
     --hp-code-text: #d4cfc4;
-    --hp-display: "Sora", system-ui, sans-serif;
-    --hp-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --hp-display: var(--font-display);
+    --hp-body: "Noto Sans JP", system-ui, sans-serif;
     --hp-mono: "Space Mono", ui-monospace, monospace;
 
     background: var(--hp-cream);
@@ -841,9 +841,9 @@ const panes = [
   .hp-hero-sub { font-size: 17px; line-height: 1.8; color: var(--hp-text-2); margin: 0 0 40px; max-width: 520px; }
   .hp-hero-sub-chord { color: var(--hp-text-3); }
   .hp-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-  .hp-btn-primary { background: #000; color: var(--hp-cream); padding: 14px 26px; border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: background 0.15s; }
+  .hp-btn-primary { background: #000; color: var(--hp-cream); padding: 14px 26px; border-radius: 999px; font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 14px; font-weight: 500; transition: background 0.15s; }
   .hp-btn-primary:hover { background: var(--hp-brown); }
-  .hp-btn-secondary { background: transparent; color: var(--hp-text-1); padding: 14px 26px; border: 0.5px solid var(--hp-text-1); border-radius: 999px; font-family: var(--hp-display); font-size: 14px; font-weight: 500; transition: all 0.15s; }
+  .hp-btn-secondary { background: transparent; color: var(--hp-text-1); padding: 14px 26px; border: 0.5px solid var(--hp-text-1); border-radius: 999px; font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 14px; font-weight: 500; transition: all 0.15s; }
   .hp-btn-secondary:hover { background: var(--hp-cream-d); border-color: var(--hp-brown); color: var(--hp-brown); }
 
   /* ─── §プラン3枚（エンタープライズ・ブラウン） ─── */
@@ -883,7 +883,7 @@ const panes = [
   .hp-devzone-link { font-family: var(--hp-mono); font-size: 12.5px; font-weight: 700; color: var(--dz-green-deep); display: inline-flex; align-items: center; gap: 6px; }
   .hp-devzone-link:hover { color: var(--dz-ink); }
   .hp-devzone-arr { color: var(--dz-green-deep); font-weight: 700; }
-  .hp-devzone-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--dz-green); color: var(--dz-ink); font-family: var(--hp-display); font-size: 14.5px; font-weight: 700; padding: 14px 30px; border-radius: 999px; transition: filter 0.15s; }
+  .hp-devzone-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--dz-green); color: var(--dz-ink); font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 14.5px; font-weight: 700; padding: 14px 30px; border-radius: 999px; transition: filter 0.15s; }
   .hp-devzone-cta:hover { filter: brightness(0.94); }
   .hp-devzone-cta .hp-devzone-arr { color: var(--dz-ink); }
 
@@ -1113,12 +1113,12 @@ const panes = [
   .hp-mech-stack { display: flex; gap: 28px; flex-wrap: wrap; }
   .hp-mech-stack-item { font-family: var(--hp-mono); font-size: 11.5px; color: var(--hp-brown-light); letter-spacing: 0.06em; }
   .hp-mech-stack-meta { color: var(--hp-text-4); margin-left: 4px; }
-  .hp-mech-cta { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown-light); }
+  .hp-mech-cta { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; color: var(--hp-brown-light); }
   .hp-mech-cta:hover { color: var(--hp-cream); }
 
   /* SCHEMA TABS */
   .hp-schema-tabs { display: flex; gap: 6px; padding: 6px; background: #fff; border: 0.5px solid var(--hp-line); border-radius: 12px; flex-wrap: wrap; margin-top: 16px; }
-  .hp-schema-tab { font-family: var(--hp-display); font-size: 11px; letter-spacing: 0.1em; color: var(--hp-text-3); background: transparent; border: 0; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .hp-schema-tab { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 11px; letter-spacing: 0.1em; color: var(--hp-text-3); background: transparent; border: 0; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
   .hp-schema-tab:hover { background: var(--hp-cream-d); color: var(--hp-brown); }
   .hp-schema-tab.is-active { background: var(--hp-brown); color: var(--hp-cream); }
   .hp-tab-pill { opacity: 0.7; margin-right: 6px; font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.1em; }
@@ -1185,7 +1185,7 @@ const panes = [
     font-size: 14px; line-height: 1.7; color: var(--hp-text-3); margin: 0 0 18px;
   }
   .hp-spotlight-uc-cta {
-    font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown); font-weight: 500;
+    font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; color: var(--hp-brown); font-weight: 500;
     margin-top: auto;
   }
   .hp-spotlight-uc:hover .hp-spotlight-uc-cta { color: var(--hp-brown-deep); }
@@ -1210,7 +1210,7 @@ const panes = [
   .hp-brief-feat-meta { font-family: var(--hp-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hp-brown-light); }
   .hp-brief-feat-h { font-family: var(--hp-display); font-size: 26px; font-weight: 600; line-height: 1.35; letter-spacing: -0.018em; color: var(--hp-cream); }
   .hp-brief-feat-tldr { font-size: 14px; line-height: 1.8; color: #b8b3a9; max-width: 720px; }
-  .hp-brief-feat-cta { font-family: var(--hp-display); font-size: 13.5px; color: var(--hp-brown-light); white-space: nowrap; }
+  .hp-brief-feat-cta { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; color: var(--hp-brown-light); white-space: nowrap; }
 
   .hp-brief-bottom { margin-top: 28px; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 16px; }
   .hp-brief-wp { font-size: 13px; color: var(--hp-text-3); }
@@ -1226,7 +1226,7 @@ const panes = [
   .hp-closing-foot a { color: var(--hp-brown-light); text-decoration: none; border-bottom: 1px solid rgba(245, 235, 220, 0.5); padding-bottom: 1px; }
   .hp-closing-foot a:hover { color: var(--hp-cream); }
   .hp-closing-ctas { display: flex; gap: 28px; justify-content: center; align-items: center; flex-wrap: wrap; }
-  .hp-btn-brown-pill { background: var(--hp-brown); color: var(--hp-cream); padding: 16px 32px; border-radius: 999px; font-family: var(--hp-display); font-size: 15px; font-weight: 500; box-shadow: 0 8px 28px rgba(139, 69, 19, 0.4); transition: background 0.15s; }
+  .hp-btn-brown-pill { background: var(--hp-brown); color: var(--hp-cream); padding: 16px 32px; border-radius: 999px; font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 15px; font-weight: 500; box-shadow: 0 8px 28px rgba(139, 69, 19, 0.4); transition: background 0.15s; }
   .hp-btn-brown-pill:hover { background: var(--hp-brown-deep); }
   .hp-closing-link { font-family: var(--hp-display); font-size: 15px; color: var(--hp-brown-light); transition: color 0.15s; }
   .hp-closing-link:hover { color: var(--hp-cream); }
@@ -1242,9 +1242,9 @@ const panes = [
   .hp-cap-h2 .hp-accent { color: var(--hp-brown); }
   /* workflow strip — Input → Inference → Decision → Delegation */
   .hp-wf-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0 0 32px; }
-  .hp-wf-pill { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--hp-cream-d); border: 1px solid var(--hp-line); border-radius: 50px; padding: 12px 24px; font-family: var(--hp-display); font-weight: 700; font-size: 16px; color: var(--hp-brown); letter-spacing: -0.005em; }
+  .hp-wf-pill { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--hp-cream-d); border: 1px solid var(--hp-line); border-radius: 50px; padding: 12px 24px; font-family: "Noto Sans JP", system-ui, sans-serif; font-weight: 700; font-size: 16px; color: var(--hp-brown); letter-spacing: -0.005em; }
   .hp-wf-num { font-family: var(--hp-mono); font-size: 11px; color: #c18b5c; letter-spacing: 0.06em; font-weight: 700; }
-  .hp-wf-pill:not(:first-child)::before { content: "→"; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); font-family: var(--hp-display); font-size: 14px; font-weight: 700; color: #c18b5c; background: var(--hp-cream); padding: 0 4px; }
+  .hp-wf-pill:not(:first-child)::before { content: "→"; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #c18b5c; background: var(--hp-cream); padding: 0 4px; }
   /* phase cards */
   .hp-phase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
   .hp-phase-card { background: var(--hp-cream); border: 1px solid var(--hp-line); border-top: 3px solid var(--hp-brown); border-radius: 8px; padding: 32px 28px; text-decoration: none; color: var(--hp-text-1); display: flex; flex-direction: column; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }

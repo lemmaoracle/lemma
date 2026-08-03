@@ -67,8 +67,8 @@ const { locale, t, base } = Astro.props as Props;
     /* Sora carries Latin; Noto Sans JP backs JA so they don't fall
        through to the Layout-level Cormorant / Noto Serif JP stack.
        Exposed as --so-* variables for child solution components. */
-    --so-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --so-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --so-display: var(--font-display);
+    --so-body: "Noto Sans JP", system-ui, sans-serif;
     --so-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --so-text-1: #1a1a1a;
     --so-text-2: #3a3a3a;
@@ -87,7 +87,7 @@ const { locale, t, base } = Astro.props as Props;
     margin-top: 64px;
   }
   :root[lang="en"] .so-page {
-    --so-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --so-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   .so-container {

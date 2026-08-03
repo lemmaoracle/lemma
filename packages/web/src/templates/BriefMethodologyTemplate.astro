@@ -101,8 +101,8 @@ const indexHref = `${base}/critical/briefs/`;
 
 <style>
   .mth-page {
-    --mth-display: "Sora", system-ui, sans-serif;
-    --mth-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --mth-display: var(--font-display);
+    --mth-body: "Noto Sans JP", system-ui, sans-serif;
     --mth-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --mth-text-1: #1a1a1a;
     --mth-text-2: #3a3a3a;
@@ -118,7 +118,7 @@ const indexHref = `${base}/critical/briefs/`;
     margin-top: 64px;
   }
   :root[lang="en"] .mth-page {
-    --mth-body: "Sora", system-ui, sans-serif;
+    --mth-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   .mth-container {

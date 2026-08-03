@@ -263,8 +263,8 @@ const faqJsonLd = {
 
 <style>
   .fq-page {
-    --fq-display: "Sora", system-ui, sans-serif;
-    --fq-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --fq-display: var(--font-display);
+    --fq-body: "Noto Sans JP", system-ui, sans-serif;
     --fq-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --fq-text-1: #1a1a1a;
     --fq-text-2: #3a3a3a;
@@ -290,7 +290,7 @@ const faqJsonLd = {
     margin-top: 64px;
   }
   :root[lang="en"] .fq-page {
-    --fq-body: "Sora", system-ui, sans-serif;
+    --fq-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   .fq-container {
@@ -482,7 +482,7 @@ const faqJsonLd = {
   }
   .fq-jump-pill {
     flex-shrink: 0;
-    font-family: var(--fq-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 12px;
     font-weight: 500;
     letter-spacing: -0.005em;

@@ -148,8 +148,8 @@ const breadcrumbJsonLd = {
 
 <style>
   .gt-page {
-    --gt-display: "Sora", system-ui, sans-serif;
-    --gt-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --gt-display: var(--font-display);
+    --gt-body: "Noto Sans JP", system-ui, sans-serif;
     --gt-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --gt-text-1: #1a1a1a;
     --gt-text-2: #3a3a3a;
@@ -399,7 +399,7 @@ const breadcrumbJsonLd = {
   }
   .gt-cta-primary,
   .gt-cta-secondary {
-    font-family: var(--gt-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 12.5px;
     font-weight: 500;
     letter-spacing: 0.06em;
