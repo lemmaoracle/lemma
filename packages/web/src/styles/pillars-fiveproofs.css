@@ -1,7 +1,17 @@
 /* Five proofs 統合節 — lemma_pillars_fiveproofs_mock_v5.html から抽出, .fpx スコープ */
+.fpx{
+  --ok:#a8e010; --ok-light:#4e7a00; --ok-ink:#6f9c00; --err:#c25438;
+  --tx:#12140e; --tx-soft:#2f332b; --muted:#5c6156;
+  --line:#e1e3dd; --dline:#e7eae5; --lite:#f3f4f1; --lite-2:#eceee9; --card:#ffffff;
+  --pad:clamp(52px,5.4vw,78px);
+  --serif:"Space Grotesk","Noto Serif JP",Georgia,serif;
+  --sans:"Space Grotesk","Noto Sans JP","Hiragino Sans",sans-serif;
+  --mono:"Space Mono",monospace;
+  --num:"Inter","Noto Sans JP",sans-serif;
+}
 .fpx .nb{display:inline-block}
 .fpx .band{position:relative;padding:var(--pad) 0;margin:0}
-.fpx .band::before{content:"";position:absolute;inset:0;left:50%;width:100vw;transform:translateX(-50%);
+.fpx .band::before{content:"";position:absolute;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);
   background:var(--lite-2);z-index:0}
 .fpx .band > *{position:relative;z-index:1}
 .fpx .isec-h{margin:0 0 18px}
