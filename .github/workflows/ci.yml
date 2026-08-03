@@ -32,26 +32,6 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
-      # foundry の nightly は「git タグが先に push され、バイナリの公開が
-      # 1〜2 時間遅れる」窓があり、その間 foundryup が資産の無いタグを掴んで
-      # HTTP 404 で失敗する（foundry-rs/foundry-toolchain#159）。窓の中では
-      # 再実行しても同じタグを引くため復旧しない。安定版にピン留めして回避する。
-      - name: Setup Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.7.1
-
-      - name: Cache Foundry dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.foundry
-            packages/contracts/lib
-            packages/x402/lib
-          key: ${{ runner.os }}-foundry-${{ hashFiles('packages/contracts/foundry.toml', 'packages/x402/foundry.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-foundry-
-
       - name: Get pnpm store path
         id: pnpm-cache
         shell: bash
@@ -72,22 +52,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # The TS test job needs workspace packages' compiled `dist/` so vitest can
-      # resolve cross-package imports (e.g. data-commitment → sdk). It does NOT
-      # need circuit/wasm artifacts. `content`'s `build` is now TS-only (its
-      # circom step moved to `build:circuit`), so it builds here. `passthrough`
-      # is pure wasm (needs rust + wasm-pack, not set up in this job), so it stays
-      # excluded — nothing under test imports it. attestation/roles have no
-      # `build` script and are skipped automatically.
+      # This job is TypeScript-only and deliberately does NOT set up Foundry.
+      # Contracts (forge build/test) run in their own `contracts` job below —
+      # they are the only package that needs forge, and they depend on nothing
+      # else in the monorepo, so decoupling them keeps a foundry-nightly-style
+      # upstream flake from blocking unrelated TS/HTML PRs.
+      # `content`'s `build` is now TS-only (its circom step moved to
+      # `build:circuit`), so it builds here. `passthrough` is pure wasm (needs
+      # rust + wasm-pack, not set up here), so it stays excluded.
       - name: Build workspace packages
-        run: pnpm -r --filter='!@lemmaoracle/passthrough' build
-
-      - name: Build contracts dependencies
-        working-directory: ./packages/contracts
-        run: forge build
+        run: pnpm -r --filter='!@lemmaoracle/contracts' --filter='!@lemmaoracle/passthrough' build
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm -r --filter='!@lemmaoracle/contracts' test
 
       # Bazaar middleware unit tests. packages/x402's `test` script runs
       # the circuit test (needs WASM build); the vitest suite has to be
@@ -116,6 +93,47 @@ jobs:
         if: always()
         run: |
           echo "## Test Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- All tests executed via pnpm test" >> $GITHUB_STEP_SUMMARY
-          echo "- Contracts tested with Forge" >> $GITHUB_STEP_SUMMARY
-          echo "- TypeScript packages tested with Vitest" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript package tests executed via pnpm test" >> $GITHUB_STEP_SUMMARY
+          echo "- Contracts tested with Forge in the dedicated \`contracts\` job" >> $GITHUB_STEP_SUMMARY
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # foundry の nightly は「git タグが先に push され、バイナリの公開が
+      # 1〜2 時間遅れる」窓があり、その間 foundryup が資産の無いタグを掴んで
+      # HTTP 404 で失敗する（foundry-rs/foundry-toolchain#159）。窓の中では
+      # 再実行しても同じタグを引くため復旧しない。安定版にピン留めして回避する。
+      - name: Setup Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.7.1
+
+      - name: Cache Foundry dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.foundry
+            packages/contracts/lib
+            packages/x402/lib
+          key: ${{ runner.os }}-foundry-${{ hashFiles('packages/contracts/foundry.toml', 'packages/x402/foundry.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-foundry-
+
+      - name: Build contracts
+        working-directory: ./packages/contracts
+        run: forge build
+
+      - name: Test contracts
+        working-directory: ./packages/contracts
+        run: forge test
+
+      - name: Display contract test summary
+        if: always()
+        run: |
+          echo "## Contracts Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Contracts built and tested with Forge" >> $GITHUB_STEP_SUMMARY
