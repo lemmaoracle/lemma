@@ -36,7 +36,7 @@ const classes = PROOF_CLASSES.map((c) => ({
 
 const t = isJa
   ? {
-      eyebrow: "Lemma API — 開発者向け",
+      eyebrow: "Lemma — 開発者向け",
       h2: "ZK 証明の発行 API。従量課金、検証は無料。",
       sub: "来歴・認証・権限・推論・属性の証明を、生の API で発行。検証は常に無料 — 支払うのは発行のときだけ。",
       devName: "Developer",
@@ -46,20 +46,19 @@ const t = isJa
       devDesc: "月額なし。証明の発行ごとに x402 で都度決済。検証は常に無料。",
       tableH: "証明クラス別 発行単価",
       freeNote: "検証は常に無料",
-      refPrice: "参考価格。API 正式公開時に確定します。",
+      refPrice: "参考価格です。",
       colClass: "証明クラス",
       colRate: "発行単価 (USD)",
       colLink: "詳細（証明ページ）",
-      soonH: "定額プラン",
+      soonH: "定額プラン（準備中）",
       quota: "quota（発行枠）: Builder $49 / Studio 〜$499・tier 割引",
       grade: "grade（managed）: G1 ¥30–50k / G2 ¥100–300k",
-      soonBadge: "近日公開",
       ctaSandbox: "Sandbox で試す（testnet・無料）",
       ctaSpecs: "仕様書を読む →",
-      note: "本番課金は近日公開。まずは testnet の Sandbox で無料でお試しいただけます。単価・概念・発行手順の詳細は各証明ページに集約しています。",
+      note: "本番課金は近日公開 — 単価は正式公開時に確定します。まずは testnet の Sandbox で無料でお試しいただけます。単価・概念・発行手順の詳細は各証明ページに集約しています。導入のご相談はエンタープライズの Discovery からどうぞ。",
     }
   : {
-      eyebrow: "Lemma API — for developers",
+      eyebrow: "Lemma — for developers",
       h2: "The ZK proof issuance API. Usage-based, verification free.",
       sub: "Issue proofs of provenance, authentication, authority, inference, and attributes from the raw API. Verification is always free — you pay only to issue.",
       devName: "Developer",
@@ -69,17 +68,16 @@ const t = isJa
       devDesc: "No monthly fee. Each proof settles per issuance via x402. Verification is always free.",
       tableH: "Per-proof-class issuance rates",
       freeNote: "Verification is always free",
-      refPrice: "Reference pricing — final rates are set at the API's public launch.",
+      refPrice: "Reference pricing.",
       colClass: "Proof class",
       colRate: "Rate (USD)",
       colLink: "Detail (proof)",
-      soonH: "Flat-rate plans",
+      soonH: "Flat-rate plans (in preparation)",
       quota: "quota: Builder $49 / Studio up to $499 · tiered discounts",
       grade: "grade (managed): G1 ¥30–50k / G2 ¥100–300k",
-      soonBadge: "Coming soon",
       ctaSandbox: "Try the Sandbox (testnet · free)",
       ctaSpecs: "Read the specs →",
-      note: "Production billing is coming soon — start free on the testnet Sandbox. Rates, concepts, and issuance steps are consolidated on each proof page.",
+      note: "Production billing is coming soon — final rates are set at public launch. Start free on the testnet Sandbox. Rates, concepts, and issuance steps are consolidated on each proof page. For guided rollouts, start from the enterprise Discovery call.",
     };
 ---
 
@@ -126,7 +124,6 @@ const t = isJa
   <div class="api-soon">
     <div class="api-soon-head">
       <span>{t.soonH}</span>
-      <span class="api-soon-badge">{t.soonBadge}</span>
     </div>
     <ul class="api-soon-list">
       <li>{t.quota}</li>
@@ -187,10 +184,6 @@ const t = isJa
     border-radius: 14px;
   }
   .api-soon-head { display: flex; align-items: center; gap: 10px; font-family: var(--pr-display); font-weight: 700; font-size: 15px; color: var(--black, #1a1a1a); }
-  .api-soon-badge {
-    font-family: var(--api-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
-    color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 2px 9px;
-  }
   .api-soon-list { margin: 12px 0 0; padding-left: 18px; }
   .api-soon-list li { font-size: 13.5px; line-height: 1.9; color: var(--pr-text-2, #3a3a3a); }
 
