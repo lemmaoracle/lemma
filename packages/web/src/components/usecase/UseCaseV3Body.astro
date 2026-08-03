@@ -592,8 +592,9 @@ const bytaskMembers = taskGroupMembers.filter(
         </div>
       )}
     </div>
-    <div class="ucv-container" style="text-align:center;">
-      <a class="ucv-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧（全36件） →</a>
+    <div class="ucv-container ucv-ucnav">
+      <p class="ucv-ucnav-lead">{isJa ? "お探しの業界・課題に合わせた事例が見つかります" : "Find the case that matches your industry and problem"}</p>
+      <a class="ucv-btn ucv-btn--ghost" href={`${useCasesPath}/`}>{isJa ? "課題や業種からユースケースを探す（全36件） →" : "Browse all 36 use cases →"}</a>
     </div>
   </section>
 
@@ -841,8 +842,8 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-bytask-list { display: grid; grid-template-columns: 1fr; gap: 2px; margin-top: 12px; }
   .ucv-bytask-row { display: block; font-size: 13.5px; line-height: 1.7; color: #2f332b; text-decoration: none; padding: 8px 0 8px 12px; border-left: 2px solid transparent; border-bottom: 1px solid #d9ddd7; transition: 0.15s; }
   .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); color: #12140e; }
-  .ucv-bytask-all { display: inline-block; margin-top: 16px; font-size: 12.5px; color: #4e7a00; text-decoration: none; }
-  .ucv-bytask-all:hover { text-decoration: underline; }
+  .ucv-ucnav { text-align: center; margin-top: 34px; }
+  .ucv-ucnav-lead { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
   @media (max-width: 860px) {
     .ucv-crossnav { grid-template-columns: 1fr; }
   }
