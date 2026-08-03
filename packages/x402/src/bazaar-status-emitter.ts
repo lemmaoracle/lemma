@@ -25,10 +25,8 @@ export interface BazaarStatusEmitter {
   emit(event: BazaarStatusEvent): void;
 }
 
-// imperative: interface implementation via classes — no functional alternative
-// eslint-disable-next-line functional/no-classes
-class ConsoleEmitter implements BazaarStatusEmitter {
-  emit(event: BazaarStatusEvent): void {
+const createConsoleEmitter = (_opts?: undefined): BazaarStatusEmitter => ({
+  emit: (event: BazaarStatusEvent): void => {
     // Single line, JSON-parseable for log aggregation.
     console.info(
       JSON.stringify({
@@ -42,15 +40,14 @@ class ConsoleEmitter implements BazaarStatusEmitter {
         raw: event.rawHeader,
       })
     );
-  }
-}
+  },
+});
 
-// eslint-disable-next-line functional/no-classes
-class NoopEmitter implements BazaarStatusEmitter {
-  emit(_event: BazaarStatusEvent): void {
+const createNoopEmitter = (_opts?: undefined): BazaarStatusEmitter => ({
+  emit: (_event: BazaarStatusEvent): void => {
     /* intentionally empty */
-  }
-}
+  },
+});
 
 /**
  * Lazy singleton. Reads env at first call so tests can override before init.
@@ -68,8 +65,7 @@ const isNonEmptyString = (val: unknown): val is string =>
   typeof val === "string" && val.length > 0;
 
 // imperative: env-accessing resolver — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-const readEmitterEnv = (): string | undefined => {
+const readEmitterEnv = (_opts?: undefined): string | undefined => {
   const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
   const fromProcess = proc?.env?.["LEMMA_BAZAAR_EMITTER"];
   const fromGlobal = (globalThis as { LEMMA_BAZAAR_EMITTER?: string }).LEMMA_BAZAAR_EMITTER;
@@ -82,8 +78,7 @@ const readEmitterEnv = (): string | undefined => {
 };
 
 // imperative: lazy singleton getter with mutable state — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-export const getBazaarStatusEmitter = (): BazaarStatusEmitter => {
+export const getBazaarStatusEmitter = (_opts?: undefined): BazaarStatusEmitter => {
   // eslint-disable-next-line functional/no-conditional-statements
   if (cached) return cached;
 
@@ -92,16 +87,16 @@ export const getBazaarStatusEmitter = (): BazaarStatusEmitter => {
   // imperative: lazy singleton with mutable cache assignment — no functional alternative
   // eslint-disable-next-line functional/no-expression-statements
   cached = envValue === "noop"
-    ? new NoopEmitter()
+    ? createNoopEmitter()
     : envValue === "console" || envValue === undefined
-      ? new ConsoleEmitter()
+      ? createConsoleEmitter()
       : (() => {
           // Unknown emitter name — log once and fall back to console so we never
           // silently drop observability data due to a typo.
           console.warn(
             `[lemma:bazaar] unknown LEMMA_BAZAAR_EMITTER="${envValue}", falling back to console`
           );
-          return new ConsoleEmitter();
+          return createConsoleEmitter();
         })();
 
   return cached;

@@ -23,8 +23,7 @@ import type {
 
 /** Resolve discovery config from env. */
 // imperative: env-accessing config resolver — no functional alternative
-// eslint-disable-next-line functional/functional-parameters
-const resolveDiscoveryConfig = (): LemmaDiscoveryConfig | undefined => {
+const resolveDiscoveryConfig = (_opts?: undefined): LemmaDiscoveryConfig | undefined => {
   const raw =
     typeof process !== "undefined"
       ? (process.env.LEMMA_DISCOVERY_CONFIG ?? process.env.LEMMA_CONFIG)

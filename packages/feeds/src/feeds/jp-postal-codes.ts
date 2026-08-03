@@ -20,7 +20,7 @@
  */
 
 import type { FeedSource } from "../types.js";
-import type { FetchResult } from "@lemmaoracle/fetcher";
+import type { FetchResult, FetcherConfig } from "@lemmaoracle/fetcher";
 import type { Json } from "@lemmaoracle/sdk";
 import { canonicalSort, commitDeep } from "@lemmaoracle/sdk";
 import { createHash } from "node:crypto";
@@ -188,9 +188,8 @@ export const jpPostalCodes: FeedSource = {
   label: "Japan postal codes (Japan Post)",
   category: "geo",
 
-  // imperative: FeedSource.fetch contract — zero params required by interface
-  // eslint-disable-next-line functional/functional-parameters
-  fetch: async (): Promise<FetchResult> => {
+  // imperative: FeedSource.fetch contract — parameter present for interface compatibility
+  fetch: async (_config?: FetcherConfig): Promise<FetchResult> => {
     const url = process.env["JP_POSTAL_CODES_URL"] ?? DEFAULT_URL;
     const resp = await fetch(url);
     // eslint-disable-next-line functional/no-conditional-statements
