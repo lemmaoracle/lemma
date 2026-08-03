@@ -1,5 +1,6 @@
 ---
 import GuidesIndexTemplate from "../../../templates/GuidesIndexTemplate.astro";
+import CoreCryptoSections from "../../../components/CoreCryptoSections.astro";
 import { getBlogSections } from "../../../data/blog";
 import { getTranslations } from "../../../i18n/translations";
 
@@ -16,10 +17,26 @@ const foundations = sections
   .filter((p) => p.category === "基盤" || p.category === "Foundations");
 ---
 
-<GuidesIndexTemplate
-  locale={locale}
-  t={t}
-  base={base}
-  guides={guides}
-  foundations={foundations}
-/>
+<GuidesIndexTemplate locale={locale} t={t} base={base} guides={guides} foundations={foundations}>
+  {
+    /*
+    製品ページ（/ja/pillars/）の「仕組み」と「独自の暗号技術、3つの中核」を
+    そのまま移設した帯。図（インライン SVG）が本体なので、リンクに置き換えず
+    丸ごと持ってくる。3つの中核側は #core-crypto を維持（既存の被リンク先）。
+  */
+  }
+  {
+    /*
+    「仕組み」「3つの中核」を /ja/pillars/ からまるまる移植したもの（図版込み）。
+    仕様書 CTA は既定だと /ja/guides（このページ自身）を指してしまうため、
+    実体である仕様ドキュメントへ向ける。
+  */
+  }
+  <CoreCryptoSections
+    slot="feature"
+    locale={locale}
+    base={base}
+    coresId="core-crypto"
+    specsHref={`${base}/blog/lemma-oracle-specs`}
+  />
+</GuidesIndexTemplate>

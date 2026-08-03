@@ -1,0 +1,1132 @@
+---
+/**
+ * 製品ページ v18 — `/pillars/`（EN）と `/ja/pillars/`（JA）。
+ *
+ * デザイナーのモック `lemma_product_page_mock_v18.html` と実装指示書
+ * `Lemma_製品ページ_実装指示_v1_2026-08-03.md` の機械的な移植。節の並びは
+ * 指示書 §2 のとおり：
+ *
+ *   ヒーロー → Why proof → Five proofs → How it works → Registry → Custom → CTA
+ *
+ * 中核暗号 3 節（ゼロ知識証明・選択的開示・オンチェーン来歴）は指示書 §7 に従い
+ * `/guides/#core-crypto` へ移設済み。ここからは How it works 末尾の 1 行で送る。
+ * §7-3 の順序どおり、受け皿を作ってからこの節を落としている。
+ *
+ * 文言はすべて `C = isJa ? {…} : {…}` に集約する（LemmaApiTemplate /
+ * VerifyAnchorTemplate と同じ型）。マークアップは両ロケール共通で、差し込む
+ * 文字列だけがロケールで変わる。`/ja/pillars/` の出力は英語化の前後で
+ * バイト一致していなければならないため、テキストノードを式に置き換える際は
+ * 前後の空白を変えないこと。
+ *
+ * 英語コピーの禁則（クライアント仕様）:
+ *   - 説明責任を「果たす」とは言わない。根拠として「示せる」までにとどめる。
+ *   - 防止・検知は主張しない。言えるのは「自己申告を証明に変える」まで。
+ *   - 証明が「永続する」とは言わない。「そのまま残る」と言う。
+ *   - 開発工数・期間には触れない。
+ *   - 導入実績は「自治体・個人情報を出さず・個別構成」を上限とする。
+ *
+ * スタイルは `../styles/product-v18.css`（全規則が `.pv18` 配下）。共有シート
+ * （global.css / pillar-v4.css 等）は触らない。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import { DISCOVERY_CALL_URL, DASHBOARD_URL } from "../config/cta";
+import { COUNTERS_API_URL } from "../config/counters";
+import "../styles/product-v18.css";
+
+interface Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  /** 正規パス。既定は `/pillars/`。 */
+  pagePath?: string;
+  /** OG 画像（/pillars と /ja/pillars は専用カードを持っている）。 */
+  ogImage?: string;
+}
+const { locale, t, base, pagePath = "/pillars/", ogImage } = Astro.props as Props;
+const isJa = locale === "ja";
+
+const L = (path: string) => `${base}${path}`;
+
+// リンク先はすべて実在する面へ（指示書 §6）。Sandbox / 仕様書 / ドキュメント /
+// 相談フォームは、これまで同じ URL で運用してきた既存の定数をそのまま使う。
+// 相談フォームは locale 別（JA と EN で Tally のフォーム ID が違う）。
+const sandboxUrl = DASHBOARD_URL;
+const guidesHref = L("/guides/");
+// 中核暗号 3 本の着地点。製品ページからこの1行で送るため、群のアンカーを直接指す。
+const coreDocsHref = L("/guides/#core-crypto");
+const pricingHref = L("/pricing/");
+const verifyHref = L("/verify/");
+const contactUrl = `${DISCOVERY_CALL_URL[locale]}?source=lemma-api`;
+
+// 5つの証明 → 既存の個別ページ（外すとこの5ページがどこからも辿れなくなる）。
+const PROOF_HREF = {
+  origin: L("/pillars/verifiable-origin/"),
+  auth: L("/seal/"),
+  authority: L("/pillars/agent-authority-proof/"),
+  inference: L("/pillars/verifiable-ai/"),
+  attribute: L("/pillars/regulatory-attribute-proof/"),
+};
+
+const C = isJa
+  ? {
+      // メタは現行 /ja/pillars（LemmaApiTemplate）の文言をそのまま引き継ぐ。
+      metaTitle: "Lemma API — 来歴・認証・権限・推論・属性をひとつの API で | Lemma",
+      metaDesc:
+        "生データを渡さずに証明を発行する ZK 証明の発行 API。来歴・認証・権限・推論・属性の5つの証明を、ひとつの API で。検証はいつでも無料。MCP / A2A / x402 / C2PA / W3C VC 対応。",
+
+      crumbHome: "ホーム",
+      crumbProduct: "製品",
+
+      heroEyebrow: "製品 — Lemma API",
+      heroH1a: "5つの証明を、",
+      heroH1b: "ひとつの API で。",
+      heroSub: "モデルは変わる。証明は残る。",
+      heroLeadA: "記録・データ・AIの実行に証明を付けて発行します。",
+      heroLeadStrong: "生データは渡さず、証明だけを送ります。",
+      heroLeadB: "検証は無料で、何度でも、キーも要りません。",
+      stdsLabel: "国際標準に対応しています",
+      ctaEnterprise: "エンタープライズ相談",
+      ctaSandbox: "Sandbox で試す（testnet・無料）",
+      heroDocs: "ドキュメントを見る →",
+      heroSpecs: "仕様書 →",
+
+      uiUrl: "lemma.frame00.com/ja/verify/?doc=0x68d4…9f01",
+      verdict: "改ざんされていません",
+      chk1: "署名の一致",
+      chk2: "改ざんの有無",
+      chk3: "発行者の確認",
+      miniIssuerK: "発行者",
+      miniIssuerV: "株式会社◯◯",
+      miniSubjectK: "対象",
+      miniSubjectV: "検査記録",
+
+      whyH2: "なぜ、証明なのか。",
+      whyLedeA: "検知でもなく、目視でもなく。",
+      whyLedeB: "AI時代に、確認のコストを増やさずに信用をつくる、3つの理由。",
+      wWas: "これまで",
+      wNow: "証明なら",
+      w1: {
+        b: "AIが進化しても、崩れない。",
+        was: "検知モデルは、AIが進化するたびに作り直しが必要でした。",
+        nowA: "暗号技術で発行するので、AIが何世代進んでも",
+        nowU: "そのまま残ります",
+        nowB: "。",
+      },
+      w2: {
+        b: "AI 対 AI でも、そのまま成立する。",
+        was: "人の目視に頼っていて、エージェント同士の取引には使えませんでした。",
+        nowA: "",
+        nowU: "人を挟まずに、機械が機械を確かめられます",
+        nowB: "。キーも要らず、発行元への問い合わせも起きません。",
+      },
+      w3: {
+        b: "自己申告を、証明に変える。",
+        was: "「うちが本物です」と言うだけの、確かめようのない自己申告でした。",
+        nowA: "",
+        nowU: "受け取った側が独立に確かめられます",
+        nowB: "。監査や取引先にも、根拠として示せます。",
+      },
+      whyFootA: "どの記録に証明を付けると確認が短くなるかは、",
+      whyFootLink: "構成相談",
+      whyFootB: "でご一緒に設計します。",
+
+      fpH2a: "ひとつの API で、",
+      fpH2b: "5種の証明。",
+      fpLede: "証明できるのは、この5種類です。用途に応じて組み合わせて使います。",
+      pf1: {
+        h: "来歴 ",
+        sub: "Provenance",
+        t: "原本を渡さず、出所を証明する。",
+        d: "データの出所と非改ざんを、中身を出さずに示せます。",
+        u: "検査記録・計測値／公開した記事や写真",
+      },
+      pf2: {
+        h: "認証 ",
+        sub: "Authentication",
+        t: "鍵を送らず、本人だと証明する。",
+        d: "秘密は端末から一歩も出ません。鍵を AI に渡さないサインイン。",
+        u: "社内システムへのサインイン／エージェントの本人性",
+      },
+      pf3: {
+        h: "権限 ",
+        sub: "Authority",
+        t: "鍵を渡さず、権限だけを委ねる。",
+        d: "範囲の内側だけが実行され、外側は止まります。",
+        u: "エージェントへの委任／承認フロー",
+      },
+      pf4: {
+        h: "推論 ",
+        sub: "Inference",
+        t: "モデルを開示せず、推論を証明する。",
+        d: "何を根拠に動いたかを、あとから提示できます。",
+        u: "AI の実行記録／判断の根拠",
+      },
+      pf5: {
+        h: "属性 ",
+        sub: "Attribute",
+        t: "属性を明かさず、要件を満たすと証明する。",
+        d: "健康状態を出さずに就業適格だけを示す、といった形。",
+        u: "資格・適格の提示／年齢や条件の確認",
+        badge: "個別構成で提供",
+      },
+      pfMore: "詳しく →",
+      fpNoteA: "発行に課金し、検証はいつでも無料です。認証の入口ページは ",
+      fpNoteB: "、エージェント向けのラッパーは ",
+      fpNoteC: " です。",
+
+      hwH2a: "データは出ない。",
+      hwH2b: "証明だけが流通する。",
+      figSource1: "記録・データ",
+      figSource2: "AI の実行",
+      figSourceNote: "生データはここに残る",
+      figWire: "HASH ONLY · 約200B",
+      hw1t: "発行",
+      hw1d: "ソース側で証明を作ります。Lemma が受け取るのはハッシュだけで、記録そのものは御社の手元に残ります。",
+      hw2t: "提示",
+      hw2d: "証明を記録と一緒に渡します。受け取った側に、専用のソフトもアカウントも要りません。",
+      hw3t: "検証",
+      hw3d: "公開鍵で誰でも確かめられます。発行元に問い合わせないので、確認が何度起きても費用は増えません。",
+      hwFootA: "発行は ",
+      hwFootStrong: "API を1回",
+      hwFootB: "。Sandbox（testnet）は無料で今すぐ試せます。",
+      hwFootC: "ゼロ知識証明・選択的開示・オンチェーン来歴の詳細は ",
+      hwFootLink: "ドキュメント →",
+
+      regH2a: "動いているものを、",
+      regH2b: "その場で確かめられます。",
+      regLedeA: "右は、Lemma が検証・発行してきた記録の実数です。",
+      regLedeB: "推定では埋めません。",
+      regLedeC: "取得できないときは OFFLINE と表示します。",
+      regTryGo: "この証明を検証する",
+      regNoteA: "上の ID は、為替データフィードに実際に発行された証明のものです。",
+      regNoteB: "自分で発行した証明のIDを貼っても、同じように確かめられます。",
+      regl1b: "検証は無料。",
+      regl1t: "キーもアカウントも要りません。回数の上限もありません。",
+      regl2b: "発行元に問い合わせません。",
+      regl2t: "受け取った側だけで判定が完結します。",
+      regl3b: "数えているのは実数だけ。",
+      regl3t: "データ点数でもリクエスト数でもなく、1回の検証を1と数えます。",
+      regCenterLink: "検証センターを見る →",
+      regRawLink: "レスポンスを直接確認する →",
+      rpVerifiedJ: "検証済み証明数",
+      rpVerifiedD: "1回の検証を1と数えます。データ点数でも、リクエスト数でもありません。",
+      rpIssuedJ: "発行された証明",
+      rpIssuedD: "1件の登録を1と数えます。",
+      perr: "レジストリに到達できません。推定値では埋めません。",
+
+      cuH2a: "標準で出るもの、",
+      cuH2b: "個別構成で提供するもの。",
+      cuStdK: "標準で提供",
+      cuStd1: "証明の発行と検証（来歴・認証・権限・推論）",
+      cuStd2: "検証ページへのリンクとバッジの設置",
+      cuStd3: "対応標準への接続（MCP / A2A / x402 / C2PA / W3C VC）",
+      cuAskK: "個別構成で提供",
+      cuAsk1: "項目を選んで出し分ける（選択的開示）",
+      cuAsk2: "チェーン上での直接検証（専用の検証コントラクト）",
+      cuAsk3: "自社の画面への埋め込み、基幹システムとの連携",
+      cuProofB: "自治体で、個人情報を出さずに、実際に動いています。",
+      cuProofT: "個別構成での導入実績があります。",
+      cuProofLink: "導入について相談する →",
+
+      ctaH2a: "どの記録に証明を付けると、",
+      ctaH2b: "確認が短くなりますか。",
+      ctaBody:
+        "30〜60分で、証明の対象と構成を一緒に設計します。標準構成で足りるかも、その場で分かります。",
+      ctaTalk: "相談する",
+      ctaPricing: "料金を見る",
+    }
+  : {
+      metaTitle:
+        "Lemma API — Provenance, Authentication, Authority, Inference, and Attribute proofs in one API | Lemma",
+      metaDesc:
+        "The ZK proof issuance API — issue proofs without handing over raw data. Provenance, Authentication, Authority, Inference, and Attribute — five proofs in one API. Verification is always free. Supports MCP / A2A / x402 / C2PA / W3C VC.",
+
+      crumbHome: "Home",
+      crumbProduct: "Product",
+
+      heroEyebrow: "Product — Lemma API",
+      heroH1a: "Five proofs,",
+      heroH1b: "one API.",
+      heroSub: "Models change. Proofs remain.",
+      heroLeadA: "Issue proofs for your records, your data, and your AI runs. ",
+      heroLeadStrong: "Raw data never leaves your systems; only the proof is sent.",
+      heroLeadB: " Verification is free and unlimited, and needs no key.",
+      stdsLabel: "Supports international standards",
+      ctaEnterprise: "Talk to our enterprise team",
+      ctaSandbox: "Try the Sandbox (free testnet)",
+      heroDocs: "Read the documentation →",
+      heroSpecs: "Specs →",
+
+      uiUrl: "lemma.frame00.com/verify/?doc=0x68d4…9f01",
+      verdict: "Unaltered",
+      chk1: "Signature matches",
+      chk2: "Contents unaltered",
+      chk3: "Issuer confirmed",
+      miniIssuerK: "Issuer",
+      miniIssuerV: "Example Corp.",
+      miniSubjectK: "Subject",
+      miniSubjectV: "Inspection record",
+
+      whyH2: "Why it has to be proof.",
+      whyLedeA: "Not detection. Not human inspection. ",
+      whyLedeB:
+        "Three reasons proof builds trust in the AI era without adding to the cost of checking.",
+      wWas: "Before",
+      wNow: "With proof",
+      w1: {
+        b: "Proof holds as AI advances.",
+        was: "Detection models had to be rebuilt with every advance in AI.",
+        nowA: "Because the proof is issued cryptographically, it ",
+        nowU: "remains as it is",
+        nowB: ".",
+      },
+      w2: {
+        b: "Proof still holds, AI to AI.",
+        was: "Checking relied on human inspection, so it did not carry over to agent-to-agent transactions.",
+        nowA: "",
+        nowU: "Machines check machines, with no person in between",
+        nowB: ". No key required, and no round trip to the issuer.",
+      },
+      w3: {
+        b: "Turn self-declaration into proof.",
+        was: "It was self-declaration — “we are who we say we are” — with no way to check it.",
+        nowA: "",
+        nowU: "The receiving side can check it independently",
+        nowB: ". It can be shown to auditors and counterparties as supporting evidence.",
+      },
+      whyFootA:
+        "We work with you to decide which records should carry proof — and where that shortens checking — in a ",
+      whyFootLink: "configuration session",
+      whyFootB: ".",
+
+      fpH2a: "One API, ",
+      fpH2b: "five kinds of proof.",
+      fpLede: "Combine them as the use case requires.",
+      pf1: {
+        h: "Provenance",
+        sub: null,
+        t: "Prove origin without handing over the original.",
+        d: "Show where data came from, and that it is unchanged, without exposing the contents.",
+        u: "Inspection records and measurements / published articles and photos",
+      },
+      pf2: {
+        h: "Authentication",
+        sub: null,
+        t: "Prove identity without sending a key.",
+        d: "Your secret never leaves the device. Sign-in that hands no key to an AI.",
+        u: "Sign-in to internal systems / the identity of an agent",
+      },
+      pf3: {
+        h: "Authority",
+        sub: null,
+        t: "Delegate authority without handing over a key.",
+        d: "Inside the scope, actions run. Outside it, they stop.",
+        u: "Delegation to agents / approval flows",
+      },
+      pf4: {
+        h: "Inference",
+        sub: null,
+        t: "Prove inference without disclosing the model.",
+        d: "Show after the fact what a run was based on.",
+        u: "AI run records / the grounds for a decision",
+      },
+      pf5: {
+        h: "Attribute",
+        sub: null,
+        t: "Prove you meet a requirement without revealing the attribute.",
+        d: "Show, for example, that someone is fit for work without disclosing the health data behind it.",
+        u: "Presenting a qualification or eligibility / checking age or conditions",
+        badge: "Under custom configuration",
+      },
+      pfMore: "Learn more →",
+      fpNoteA: "Issuance is billed; verification is always free. ",
+      fpNoteB: " is the entry point for authentication, and ",
+      fpNoteC: " is the wrapper for agents.",
+
+      hwH2a: "Data stays in place. ",
+      hwH2b: "Only proofs travel.",
+      figSource1: "Records · data",
+      figSource2: "AI runs",
+      figSourceNote: "raw data stays here",
+      figWire: "HASH ONLY · ~200B",
+      hw1t: "Issue",
+      hw1d: "The proof is created at the source. Lemma receives only a hash; the record itself stays with you.",
+      hw2t: "Present",
+      hw2d: "You hand over the proof together with the record. The recipient needs no special software and no account.",
+      hw3t: "Verify",
+      hw3d: "Anyone can check it with a public key. There is no round trip back to the issuer, so your costs do not rise no matter how often it is verified.",
+      hwFootA: "Issuing is ",
+      hwFootStrong: "one API call",
+      hwFootB: ". The Sandbox (testnet) is free to try.",
+      hwFootC:
+        "Zero-knowledge proofs, selective disclosure, and on-chain provenance records are covered in the ",
+      hwFootLink: "documentation →",
+
+      regH2a: "What is running, ",
+      regH2b: "verifiable on the spot.",
+      regLedeA: "The panel shows the real counts of what Lemma has verified and issued.",
+      regLedeB: "We do not fill in estimates.",
+      regLedeC: " If the counts cannot be read, the panel shows OFFLINE.",
+      regTryGo: "Verify this proof",
+      regNoteA: "The ID above belongs to a proof actually issued for the forex data feed. ",
+      regNoteB: "Paste the ID of a proof you issued yourself and it will be checked the same way.",
+      regl1b: "Verification is free.",
+      regl1t: " No key, no account. No limit on the number of verifications.",
+      regl2b: "There is no round trip back to the issuer.",
+      regl2t: " The recipient reaches its own verdict.",
+      regl3b: "Only real counts.",
+      regl3t: " Not data points, not requests — one verification counts as one.",
+      regCenterLink: "See the Verification Center →",
+      regRawLink: "Check the response directly →",
+      rpVerifiedJ: "Total verifications performed",
+      rpVerifiedD: "One verification counts as one — not one data point, not one request.",
+      rpIssuedJ: "Total proofs registered",
+      rpIssuedD: "One registration counts as one.",
+      perr: "The registry is unreachable. We do not fill in estimates.",
+
+      cuH2a: "What ships as standard, ",
+      cuH2b: "what comes under custom configuration.",
+      cuStdK: "Standard",
+      cuStd1: "Issuing and verifying proofs (Provenance, Authentication, Authority, Inference)",
+      cuStd2: "Links and badges that point to the verification page",
+      cuStd3: "Integration with the supported standards (MCP / A2A / x402 / C2PA / W3C VC)",
+      cuAskK: "Under custom configuration",
+      cuAsk1: "Choosing which fields to reveal (selective disclosure)",
+      cuAsk2: "Direct on-chain verification (a dedicated verifier contract)",
+      cuAsk3: "Embedding in your own screens and integration with core systems",
+      cuProofB: "Lemma is running in production at a municipality, without exposing personal data.",
+      cuProofT: " It has also been deployed under custom configuration. ",
+      cuProofLink: "Talk to us about deployment →",
+
+      ctaH2a: "Which records would shorten checking",
+      ctaH2b: "once they carry proof?",
+      ctaBody:
+        "In a 30-to-60-minute session, we work with you on what to prove and how to configure it. You will also see on the spot whether the standard configuration is enough.",
+      ctaTalk: "Talk to us",
+      ctaPricing: "See pricing",
+    };
+
+// Registry 節のクライアント側取得に渡す文字列（検証センターと同じ文言）。
+// 単票検証のサンプルに使う、実在する証明。為替データフィードの日次 composite で、
+// GET /v1/suites/feeds/forex/composite/latest が返す docHash をそのまま使う。
+// ここを架空のハッシュにすると「実際に発行された証明」という説明が嘘になるため、
+// 既定値も実在するものを焼き込み、クライアント側で最新へ差し替える。
+const SAMPLE_FEED_API = "https://workers.lemma.workers.dev/v1/suites/feeds/forex/composite/latest";
+const SAMPLE_DOC_HASH = "0x6374a166e9b8f1b9090d6d5cf325771c49148239f6969d8c7e796a3b87514590";
+const shortHash = (h: string) => `${h.slice(0, 18)}…${h.slice(-4)}`;
+
+const REG = {
+  api: COUNTERS_API_URL,
+  sampleApi: SAMPLE_FEED_API,
+  verifyBase: L("/verify/"),
+  live: "LIVE",
+  offline: "OFFLINE",
+  perr: C.perr,
+  // 数値の桁区切り。整数なので ja-JP と en-US で出力は同じだが、
+  // ページのロケールと取り違えないよう明示的に渡す。
+  numLocale: isJa ? "ja-JP" : "en-US",
+};
+---
+
+<Layout
+  locale={locale}
+  metaType="page"
+  pagePath={pagePath}
+  ogImage={ogImage}
+  title={C.metaTitle}
+  description={C.metaDesc}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+
+  <main class="pv18">
+    <div class="iwrap">
+      <div class="crumb">
+        <a href={L("/")}>{C.crumbHome}</a><i>/</i><span>{C.crumbProduct}</span><i>/</i><span
+          >Lemma API</span
+        >
+      </div>
+
+      {/* ── ヒーロー ───────────────────────────────────────────── */}
+      <div class="phero">
+        <div>
+          <div class="ind-label">{C.heroEyebrow}</div>
+          <h1 class="ih1" style="margin-top:14px;">
+            <span class="nb">{C.heroH1a}</span><br /><span class="nb">{C.heroH1b}</span>
+          </h1>
+          <p class="isub">{C.heroSub}</p>
+          <p class="ilead">
+            {C.heroLeadA}<strong>{C.heroLeadStrong}</strong>{C.heroLeadB}
+          </p>
+          <div class="stdswrap">
+            <div class="stds-k">{C.stdsLabel}</div>
+            <div class="stds">
+              <span>MCP</span><span>A2A</span><span>x402</span><span>C2PA</span><span>W3C VC</span>
+            </div>
+          </div>
+          <div class="ictas">
+            <a class="btn primary" href={contactUrl} target="_blank" rel="noopener"
+              >{C.ctaEnterprise}</a
+            >
+            <a class="btn ghostd" href={sandboxUrl} target="_blank" rel="noopener">{C.ctaSandbox}</a
+            >
+          </div>
+          <div class="herolink">
+            <a href={guidesHref}>{C.heroDocs}</a><a href={guidesHref}>{C.heroSpecs}</a>
+          </div>
+        </div>
+        <div class="ui" aria-hidden="true">
+          <div class="ui-bar">
+            <span class="ui-dot"></span><span class="ui-dot"></span><span class="ui-dot"></span>
+            <span class="ui-url">{C.uiUrl}</span>
+          </div>
+          <div class="uipane">
+            <div class="mini-verdict" style="padding:22px 20px 20px;">
+              <div class="seal">
+                <span class="vmark"
+                  ><svg viewBox="0 0 24 24" fill="none"
+                    ><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"
+                    ></circle><circle
+                      cx="12"
+                      cy="12"
+                      r="6.4"
+                      stroke="currentColor"
+                      stroke-width="1.6"></circle><path
+                      d="M9 12.1l2.2 2.2 4-4.6"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"></path></svg
+                  ></span
+                >
+              </div>
+              <div class="t">{C.verdict}</div>
+              {isJa && <div class="en">NOT TAMPERED</div>}
+              <div class="chk">
+                <span>{C.chk1}</span><span>{C.chk2}</span><span>{C.chk3}</span>
+              </div>
+            </div>
+            <div class="mini-body">
+              <div class="mini-row"><span>DOC HASH</span><b>0x68d4…9f01</b></div>
+              <div class="mini-row"><span>{C.miniIssuerK}</span><b>{C.miniIssuerV}</b></div>
+              <div class="mini-row"><span>{C.miniSubjectK}</span><b>{C.miniSubjectV}</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Why proof ── 囲み3列。各列で「これまで」→「証明なら」を縦に流す ── */}
+      <section class="isec whysec">
+        <h2 class="isec-h"><span>Why proof</span><b>{C.whyH2}</b></h2>
+        <p class="sec-lede" style="max-width:62ch;margin-top:4px;">
+          {C.whyLedeA}<b>{C.whyLedeB}</b>
+        </p>
+        <div class="why3col">
+          <div class="wcol">
+            <span class="w-n">01</span>
+            <div class="w-b">{C.w1.b}</div>
+            <div class="w-was">
+              <span>{C.wWas}</span>{C.w1.was}
+            </div>
+            <div class="w-arw">
+              <svg
+                viewBox="0 0 14 22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg
+              >
+            </div>
+            <div class="w-now">
+              <span>{C.wNow}</span>{C.w1.nowA}<u>{C.w1.nowU}</u>{C.w1.nowB}
+            </div>
+          </div>
+          <div class="wcol">
+            <span class="w-n">02</span>
+            <div class="w-b">{C.w2.b}</div>
+            <div class="w-was">
+              <span>{C.wWas}</span>{C.w2.was}
+            </div>
+            <div class="w-arw">
+              <svg
+                viewBox="0 0 14 22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg
+              >
+            </div>
+            <div class="w-now">
+              <span>{C.wNow}</span>{C.w2.nowA}<u>{C.w2.nowU}</u>{C.w2.nowB}
+            </div>
+          </div>
+          <div class="wcol">
+            <span class="w-n">03</span>
+            <div class="w-b">{C.w3.b}</div>
+            <div class="w-was">
+              <span>{C.wWas}</span>{C.w3.was}
+            </div>
+            <div class="w-arw">
+              <svg
+                viewBox="0 0 14 22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="M7 2v16M2.6 13.6L7 18l4.4-4.4"></path></svg
+              >
+            </div>
+            <div class="w-now">
+              <span>{C.wNow}</span>{C.w3.nowA}<u>{C.w3.nowU}</u>{C.w3.nowB}
+            </div>
+          </div>
+        </div>
+        <div class="hiwfoot" style="margin-top:14px;">
+          {C.whyFootA}<a href={contactUrl} target="_blank" rel="noopener">{C.whyFootLink}</a>{
+            C.whyFootB
+          }
+        </div>
+      </section>
+
+      {/* ── Five proofs ── アイコン付き5カード（Why proof とレイアウトを変える） ── */}
+      <div class="band alt">
+        <h2 class="isec-h">
+          <span>Five proofs</span><b>{C.fpH2a}<span class="nb">{C.fpH2b}</span></b>
+        </h2>
+        <p class="sec-lede" style="max-width:58ch;margin-top:4px;">
+          {C.fpLede}
+        </p>
+        <div class="pfgrid">
+          <a class="pf" href={PROOF_HREF.origin}>
+            <span class="pf-g"
+              ><svg
+                viewBox="0 0 21 21"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M4 16.5h5M4 16.5l7-9M11 7.5h5"></path><circle cx="4" cy="16.5" r="1.6"
+                ></circle><circle cx="16" cy="7.5" r="1.6"></circle></svg
+              ></span
+            >
+            <span class="pf-n">01</span>
+            <span class="pf-h">{C.pf1.h}{C.pf1.sub && <i>{C.pf1.sub}</i>}</span>
+            <span class="pf-t">{C.pf1.t}</span>
+            <span class="pf-d">{C.pf1.d}</span>
+            <span class="pf-u">{C.pf1.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.auth}>
+            <span class="pf-g"
+              ><svg
+                viewBox="0 0 21 21"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="10.5" cy="10.5" r="7.4"></circle><circle cx="10.5" cy="10.5" r="3.4"
+                ></circle></svg
+              ></span
+            >
+            <span class="pf-n">02</span>
+            <span class="pf-h">{C.pf2.h}{C.pf2.sub && <i>{C.pf2.sub}</i>}</span>
+            <span class="pf-t">{C.pf2.t}</span>
+            <span class="pf-d">{C.pf2.d}</span>
+            <span class="pf-u">{C.pf2.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.authority}>
+            <span class="pf-g"
+              ><svg
+                viewBox="0 0 21 21"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="3" y="4.5" width="15" height="12" rx="2"></rect><rect
+                  x="6.6"
+                  y="7.6"
+                  width="7.8"
+                  height="5.8"
+                  rx="1.2"
+                  stroke-dasharray="2.6 2.4"></rect></svg
+              ></span
+            >
+            <span class="pf-n">03</span>
+            <span class="pf-h">{C.pf3.h}{C.pf3.sub && <i>{C.pf3.sub}</i>}</span>
+            <span class="pf-t">{C.pf3.t}</span>
+            <span class="pf-d">{C.pf3.d}</span>
+            <span class="pf-u">{C.pf3.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.inference}>
+            <span class="pf-g"
+              ><svg
+                viewBox="0 0 21 21"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="M2.5 10.5h3l2-5 3 10 2.5-7 2 4h3"></path></svg
+              ></span
+            >
+            <span class="pf-n">04</span>
+            <span class="pf-h">{C.pf4.h}{C.pf4.sub && <i>{C.pf4.sub}</i>}</span>
+            <span class="pf-t">{C.pf4.t}</span>
+            <span class="pf-d">{C.pf4.d}</span>
+            <span class="pf-u">{C.pf4.u}</span>
+            <span class="pf-go">{C.pfMore}</span>
+          </a>
+          <a class="pf" href={PROOF_HREF.attribute}>
+            <span class="pf-g"
+              ><svg
+                viewBox="0 0 21 21"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="10.5" cy="10.5" r="7.4"></circle><path
+                  d="M10.5 3.1a7.4 7.4 0 010 14.8z"
+                  fill="currentColor"
+                  stroke="none"></path></svg
+              ></span
+            >
+            <span class="pf-n">05</span>
+            <span class="pf-h">{C.pf5.h}{C.pf5.sub && <i>{C.pf5.sub}</i>}</span>
+            <span class="pf-t">{C.pf5.t}</span>
+            <span class="pf-d">{C.pf5.d}</span>
+            <span class="pf-u">{C.pf5.u}</span>
+            <span class="pf-b">{C.pf5.badge}</span>
+            <span class="pf-go">{C.pfMore}</span>
+          </a>
+        </div>
+        <p class="plnote" style="margin-top:14px;">
+          {C.fpNoteA}<a href={L("/seal/")}>Seal</a>{C.fpNoteB}<a href={L("/trust402/")}>Trust402</a
+          >{C.fpNoteC}
+        </p>
+      </div>
+
+      {/* ── How it works ── 境界図＋発行／提示／検証 ────────────── */}
+      <div class="band alt">
+        <h2 class="isec-h">
+          <span>How it works</span><b>{C.hwH2a}<span class="nb">{C.hwH2b}</span></b>
+        </h2>
+        <div class="hwwrap">
+          <div class="hwfig">
+            <svg
+              viewBox="0 0 560 260"
+              style="display:block;width:100%;height:auto;"
+              aria-hidden="true"
+            >
+              <g
+                font-family="Space Mono, monospace"
+                font-size="9"
+                letter-spacing="1.6"
+                fill="#9aa197"
+              >
+                <text x="8" y="16">YOUR SIDE</text><text x="330" y="16">ANYONE</text></g
+              >
+              <rect x="8" y="34" width="180" height="190" rx="6" fill="#fff" stroke="#C7CCC2"
+              ></rect>
+              <g font-family="Noto Sans JP, sans-serif" font-size="11" fill="#2f332b">
+                <text x="26" y="66">{C.figSource1}</text><text x="26" y="90">{C.figSource2}</text
+                ></g
+              >
+              <g font-family="Space Mono, monospace" font-size="8" fill="#9aa197">
+                <text x="26" y="112">{C.figSourceNote}</text></g
+              >
+              <path d="M232 129h0" stroke="#C7CCC2"></path>
+              <path d="M232 34v190" stroke="#C7CCC2" stroke-dasharray="3 4"></path>
+              <path d="M188 129h130" stroke="#a8e010" stroke-width="2"></path>
+              <circle cx="318" cy="129" r="3.4" fill="#a8e010"></circle>
+              <g font-family="Space Mono, monospace" font-size="8" fill="#6f9c00">
+                <text x="196" y="120">{C.figWire}</text></g
+              >
+              <rect x="330" y="86" width="120" height="86" rx="6" fill="#333b34"></rect>
+              <g font-family="Space Mono, monospace" font-size="9" fill="#EBEFE6"
+                ><text x="352" y="134">LEMMA</text></g
+              >
+              <g stroke="#a8e010" stroke-width="1.2" opacity=".85">
+                <path d="M450 129L548 74"></path><path d="M450 129h98"></path><path
+                  d="M450 129L548 184"></path></g
+              >
+              <g fill="#a8e010"
+                ><circle cx="548" cy="74" r="2.6"></circle><circle cx="548" cy="129" r="2.6"
+                ></circle><circle cx="548" cy="184" r="2.6"></circle></g
+              >
+              <g font-family="Space Mono, monospace" font-size="8" fill="#9aa197">
+                <text x="470" y="212">VERIFY · FREE · NO KEY</text></g
+              >
+            </svg>
+          </div>
+          <div class="hwtxt">
+            <div class="hw3">
+              <span class="hw-n">01</span><b>{C.hw1t}</b><p>
+                {C.hw1d}
+              </p>
+            </div>
+            <div class="hw3">
+              <span class="hw-n">02</span><b>{C.hw2t}</b><p>
+                {C.hw2d}
+              </p>
+            </div>
+            <div class="hw3">
+              <span class="hw-n">03</span><b>{C.hw3t}</b><p>
+                {C.hw3d}
+              </p>
+            </div>
+            <div class="hiwfoot" style="margin-top:14px;">
+              {C.hwFootA}<b>{C.hwFootStrong}</b>{C.hwFootB}<br />{C.hwFootC}<a href={coreDocsHref}
+                >{C.hwFootLink}</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Registry ── 左に説明＋単票検証、右にダークの計器パネル ── */}
+      <section class="isec regsec">
+        <h2 class="isec-h">
+          <span>Registry</span><b>{C.regH2a}<span class="nb">{C.regH2b}</span></b>
+        </h2>
+        <div class="regwrap">
+          <div class="regtxt">
+            <p class="sec-lede">
+              {C.regLedeA}<br /><b>{C.regLedeB}</b>{C.regLedeC}
+            </p>
+            <div class="rb-try">
+              <div class="rt-f">
+                <span class="rt-k">DOC HASH</span><span class="rt-v" data-sample-hash
+                  >{shortHash(SAMPLE_DOC_HASH)}</span
+                >
+              </div>
+              <a class="rt-go" data-sample-link href={`${L("/verify/")}?doc=${SAMPLE_DOC_HASH}`}
+                >{C.regTryGo}</a
+              >
+              <div class="rt-res">
+                <span class="vmark"
+                  ><svg viewBox="0 0 24 24" fill="none"
+                    ><circle cx="12" cy="12" r="9.6" stroke="currentColor" stroke-width="1.2"
+                    ></circle><circle
+                      cx="12"
+                      cy="12"
+                      r="6.4"
+                      stroke="currentColor"
+                      stroke-width="1.6"></circle><path
+                      d="M9 12.1l2.2 2.2 4-4.6"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"></path></svg
+                  ></span
+                ><b>{C.verdict}</b>{isJa && <i>NOT TAMPERED</i>}
+              </div>
+            </div>
+            <p class="plnote" style="margin-top:11px;">
+              {C.regNoteA}<b>{C.regNoteB}</b>
+            </p>
+            <ul class="reglist">
+              <li>
+                <span class="rl-c"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span><b>{C.regl1b}</b>{C.regl1t}</span>
+              </li>
+              <li>
+                <span class="rl-c"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span><b>{C.regl2b}</b>{C.regl2t}</span>
+              </li>
+              <li>
+                <span class="rl-c"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span><b>{C.regl3b}</b>{C.regl3t}</span>
+              </li>
+            </ul>
+            <div class="hiwfoot" style="margin-top:14px;">
+              <a href={verifyHref}>{C.regCenterLink}</a>
+              <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.regRawLink}</a>
+            </div>
+          </div>
+          <div class="regpanel">
+            <div class="rp-head">
+              <span class="rp-t">LEMMA REGISTRY</span>
+              {
+                /*
+                既定は OFFLINE。JS 無効・fetch 失敗・応答待ちのいずれでも
+                「LIVE と表示しているのに数字が無い」状態を作らないため、
+                成功したときだけ LIVE に切り替える。
+              */
+              }
+              <span class="rp-live offline" id="pv18-live"
+                ><i></i><span id="pv18-live-label">{REG.offline}</span></span
+              >
+              <span class="rp-ep">GET /v1/counters</span>
+            </div>
+            <div class="rp-blk">
+              <div class="rp-k">Proof Verifications</div>
+              <div class="rp-j">{C.rpVerifiedJ}</div>
+              <div class="rp-n" id="pv18-verified" aria-live="polite">———</div>
+              <div class="rp-d">
+                {C.rpVerifiedD}
+              </div>
+              <div class="rb-bars" id="pv18-bars">
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+                <span class="rb-bar"><span>—</span><i><b style="width:0%"></b></i><u>—</u></span>
+              </div>
+            </div>
+            <div class="rp-blk">
+              <div class="rp-k">Proofs Issued</div>
+              <div class="rp-j">{C.rpIssuedJ}</div>
+              <div class="rp-n sm" id="pv18-issued" aria-live="polite">———</div>
+              <div class="rp-d">{C.rpIssuedD}</div>
+            </div>
+            <div class="rp-err" id="pv18-err">
+              {REG.perr}
+              <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.regRawLink}</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Custom ── チェックリスト2列 ──────────────────────── */}
+      <section class="isec">
+        <h2 class="isec-h">
+          <span>Custom</span><b>{C.cuH2a}<span class="nb">{C.cuH2b}</span></b>
+        </h2>
+        <div class="ckwrap">
+          <div class="ckcol">
+            <div class="ck-k">{C.cuStdK}</div>
+            <ul>
+              <li class="on">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span>{C.cuStd1}</span>
+              </li>
+              <li class="on">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span>{C.cuStd2}</span>
+              </li>
+              <li class="on">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M3 8.4l3 3 6.8-7.4"></path></svg
+                  ></span
+                ><span>{C.cuStd3}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="ckcol ask">
+            <div class="ck-k">{C.cuAskK}</div>
+            <ul>
+              <li class="ad">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
+                  ></span
+                ><span>{C.cuAsk1}</span>
+              </li>
+              <li class="ad">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
+                  ></span
+                ><span>{C.cuAsk2}</span>
+              </li>
+              <li class="ad">
+                <span class="ck"
+                  ><svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"><path d="M8 3.4v9.2M3.4 8h9.2"></path></svg
+                  ></span
+                ><span>{C.cuAsk3}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="plnote" style="margin-top:14px;">
+          <b>{C.cuProofB}</b>{C.cuProofT}<a href={contactUrl} target="_blank" rel="noopener"
+            >{C.cuProofLink}</a
+          >
+        </p>
+      </section>
+
+      {/* ── CTA ────────────────────────────────────────────── */}
+      <div class="artcta">
+        <div class="k">Enterprise</div>
+        <h2>{C.ctaH2a}<br />{C.ctaH2b}</h2>
+        <p>
+          {C.ctaBody}
+        </p>
+        <div class="row">
+          <a class="btn primary" href={contactUrl} target="_blank" rel="noopener">{C.ctaTalk}</a><a
+            class="btn ghost"
+            href={pricingHref}>{C.ctaPricing}</a
+          >
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+{
+  /*
+  Registry 節のデータ接続。検証センター（VerifyAnchorTemplate）と同じ
+  `is:inline` + `define:vars` の型で、同じ `GET /v1/counters` を叩く。
+  失敗時は OFFLINE と定義文を出すだけで、推定値では埋めない。
+*/
+}
+<script is:inline define:vars={{ REG }}>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => Number(n).toLocaleString(REG.numLocale);
+    const esc = (s) =>
+      String(s ?? "").replace(
+        /[&<>"']/g,
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+      );
+
+    // サンプル証明を最新へ差し替える。取得できなければ焼き込み済みの
+    // 実在ハッシュのまま（どちらも実際に発行された証明なので説明は成立する）。
+    async function refreshSample() {
+      try {
+        const r = await fetch(REG.sampleApi, {
+          headers: { accept: "application/json" },
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!r.ok) return;
+        const j = await r.json();
+        const h = String(j.docHash || "");
+        if (!/^0x[0-9a-f]{64}$/i.test(h)) return;
+        const el = document.querySelector("[data-sample-hash]");
+        const link = document.querySelector("[data-sample-link]");
+        if (el) el.textContent = h.slice(0, 18) + "\u2026" + h.slice(-4);
+        if (link) link.setAttribute("href", REG.verifyBase + "?doc=" + h);
+      } catch (e) {
+        /* 焼き込み値のまま */
+      }
+    }
+
+    async function load() {
+      try {
+        const r = await fetch(REG.api, {
+          headers: { accept: "application/json" },
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        const j = await r.json();
+        // 壊れた応答で 0 や NaN を出さない。`|| 0` は「取得前」と「本当の 0」を
+        // 混ぜてしまうので使わず、数値でなければ OFFLINE 側へ倒す。
+        const total = Number(j?.verified?.count);
+        const issued = Number(j?.issued?.count);
+        if (!Number.isFinite(total) || !Number.isFinite(issued)) {
+          throw new Error("bad payload");
+        }
+        $("pv18-verified").textContent = fmt(total);
+        $("pv18-issued").textContent = fmt(issued);
+
+        const top = (j.verified.bySource || []).slice(0, 3);
+        if (top.length) {
+          $("pv18-bars").innerHTML = top
+            .filter(function (x) {
+              return Number.isFinite(Number(x && x.count));
+            })
+            .map(function (x) {
+              const p = total ? Math.round((Number(x.count) / total) * 100) : 0;
+              return (
+                '<span class="rb-bar"><span>' +
+                esc(String(x.source).toUpperCase()) +
+                '</span><i><b style="width:' +
+                p +
+                '%"></b></i><u>' +
+                p +
+                "%</u></span>"
+              );
+            })
+            .join("");
+        }
+        $("pv18-err").hidden = true;
+        $("pv18-live-label").textContent = REG.live;
+        $("pv18-live").classList.remove("offline");
+      } catch (e) {
+        // 推定値では埋めない。数字は OFFLINE、内訳バーはプレースホルダのまま。
+        $("pv18-verified").textContent = REG.offline;
+        $("pv18-issued").textContent = REG.offline;
+        $("pv18-err").hidden = false;
+        $("pv18-live-label").textContent = REG.offline;
+        $("pv18-live").classList.add("offline");
+      }
+    }
+    load();
+    refreshSample();
+  })();
+</script>
+
+<style>
+  @media (max-width: 900px) {
+  }
+  @media (max-width: 720px) {
+  }
+</style>

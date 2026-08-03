@@ -1,0 +1,701 @@
+---
+/**
+ * 仕組み（mechanism）＋ 独自の暗号技術、3つの中核（core cryptography）。
+ *
+ * `/pillars`（LemmaApiTemplate）の §仕組み / §中核暗号 をそのまま切り出した
+ * 自己完結コンポーネント。図（インライン SVG）・コピー・CSS を全部このファイル
+ * が持つので、置き先のページは import して差し込むだけでよい。
+ *
+ * LemmaApiTemplate 側は「コピー」であって「移動」ではない（英語版 /pillars/ が
+ * まだあの 2 節を使っている）。文言・SVG・CSS を直すときは両方を直すこと。
+ *
+ * 置き先が narrower なコンテナ（例: /guides の 1100px）の中でも、元ページと
+ * 同じ全幅の暗色帯になるよう、ラッパーで 100vw に抜ける（body は
+ * overflow-x: hidden なのでスクロールバーは出ない）。
+ */
+import type { Locale } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+  /** "" for EN, "/ja" for JA — used for the technical-spec CTA. */
+  base: string;
+  /** 技術仕様書 CTA の行き先。既定は /pillars と同じ `${base}/guides`。 */
+  specsHref?: string;
+  /** 仕組み節の id（既定 "mechanism"）。 */
+  mechId?: string;
+  /** 中核暗号節の id（既定 "cores"）。 */
+  coresId?: string;
+}
+const {
+  locale,
+  base,
+  specsHref = `${base}/guides`,
+  mechId = "mechanism",
+  coresId = "cores",
+} = Astro.props as Props;
+const isJa = locale === "ja";
+
+const C = isJa
+  ? {
+      mechEyebrow: "仕組み",
+      mechH2a: "データは出ない。",
+      mechH2accent: "証明だけが流通する",
+      mechH2tail: "。",
+      mechSub:
+        "ソース側で証明を作り、必要な分だけ選択的に開示し、検証者が公開鍵で確かめる。3 フェーズの間、生データは一度も移動しません。",
+      mechPhases: [
+        {
+          step: "フェーズ 01 · 発行",
+          title: "ソースで証明を作る",
+          desc: "ソース側に Lemma SDK を組み込み、データ・モデル・権限の属性証明を発行。元データは一切外に出ない。",
+        },
+        {
+          step: "フェーズ 02 · 証明",
+          title: "必要な分だけを示す",
+          desc: "検証者が必要とする最小限の事実(権限・属性・整合性)だけを ZK で選択的に開示。生データは触らない。",
+        },
+        {
+          step: "フェーズ 03 · 検証",
+          title: "誰でも確かめられる",
+          desc: "公開検証鍵で誰でも・いつでも証明の真正性を確認。必要なら改ざん耐性のある監査 attestation として記録。",
+        },
+      ],
+      mechStackLabels: ["ZK", "署名", "ハッシュ", "識別子", "監査アンカー"],
+      mechCta: "技術仕様書を読む",
+
+      coreEyebrow: "中核暗号",
+      coreH2a: "独自の暗号技術、",
+      coreH2b: "3つの中核。",
+      coreLead:
+        "信頼インフラを成立させている、3 つの中核技術。原本データに触れずに「同じものだ」「これだけ開示する」「書き換えられない」を成立させます。",
+      coreStrengthLabel: "Lemma の強み",
+      coreDocLink: "技術ドキュメントを読む",
+      cores: [
+        {
+          nameEn: "Zero-Knowledge<br>Proof",
+          nameJa: "ゼロ知識証明",
+          desc: "「<strong>18 歳以上</strong>」「<strong>収益が閾値超</strong>」などのビジネスルールを、機械検証可能な暗号事実に変換。原本に触れずに命題の真偽だけを証明する。",
+          strength:
+            "各証明は <strong>回路（Circom）とジェネレーター</strong>とともに永続記録され、後から第三者が再現可能。",
+          docHref: "/ja/blog/prove-facts-with-zero-knowledge/",
+          valueMap: "<strong>渡さず任せる</strong> の中核",
+        },
+        {
+          nameEn: "Selective<br>Disclosure",
+          nameJa: "選択的開示",
+          desc: "元の発行者署名との<strong>紐づけを維持しながら</strong>、ホルダーがモデルに必要な属性だけを選んで公開する技術。AI への入力を最小化できる。",
+          strength:
+            "<strong>1 発行物から、相手・用途ごとに開示範囲を可変</strong>。Hide / Reveal を発行後にも制御できる。",
+          docHref: "/ja/blog/disclose-only-what-ai-needs/",
+          valueMap: "<strong>選んで渡す</strong> の中核",
+        },
+        {
+          nameEn: "On-chain<br>Provenance",
+          nameJa: "オンチェーン来歴",
+          desc: "ドキュメントコミット・スキーマ・発行者・ZK 検証結果をオンチェーンにアンカー。改ざんも消去もできない来歴として固定する。",
+          strength:
+            "<strong>docHash と CID だけが公開</strong>、本体は AES-GCM で暗号化されたまま。中身を晒さずに来歴を残せる。",
+          docHref: "/ja/blog/provenance-that-never-disappears/",
+          valueMap: "<strong>後から証明</strong> の中核",
+        },
+      ],
+    }
+  : {
+      mechEyebrow: "How it works",
+      mechH2a: "Data stays in place.",
+      mechH2accent: "Only proofs travel",
+      mechH2tail: ".",
+      mechSub:
+        "The source mints a proof, only the necessary parts are selectively disclosed, and a verifier checks them with a public key. Through all three phases, raw data never moves.",
+      mechPhases: [
+        {
+          step: "Phase 01 · Issue",
+          title: "Mint the proof at the source",
+          desc: "Embed the Lemma SDK at the source. Issue attribute proofs for data, models, and authority. Raw data never leaves.",
+        },
+        {
+          step: "Phase 02 · Prove",
+          title: "Reveal just enough",
+          desc: "Selectively disclose only the facts a verifier needs — authority, attribute, integrity. Raw data is never touched.",
+        },
+        {
+          step: "Phase 03 · Verify",
+          title: "Anyone can confirm",
+          desc: "Anyone, anytime, verifies authenticity with a public key. Optionally anchor as tamper-evident audit attestations.",
+        },
+      ],
+      mechStackLabels: ["ZK", "Signing", "Hash", "Identifier", "Audit anchor"],
+      mechCta: "Read the technical spec",
+
+      coreEyebrow: "Core cryptography",
+      coreH2a: "Proprietary cryptography,",
+      coreH2b: "three cores.",
+      coreLead:
+        "Three core technologies make the trust infrastructure work — establishing “it’s the same thing,” “disclose only this,” and “no one can rewrite it,” all without touching the original data.",
+      coreStrengthLabel: "Lemma’s edge",
+      coreDocLink: "Read the technical docs",
+      cores: [
+        {
+          nameEn: "Zero-Knowledge<br>Proof",
+          nameJa: "Zero-Knowledge Proof",
+          desc: "Turn business rules like “<strong>18 or older</strong>” or “<strong>revenue over threshold</strong>” into machine-verifiable cryptographic facts. Prove a statement’s truth without touching the original.",
+          strength:
+            "Each proof is recorded permanently with its <strong>circuit (Circom) and generator</strong>, so a third party can reproduce it later.",
+          docHref: "/blog/prove-facts-with-zero-knowledge/",
+          valueMap: "core of <strong>delegate without sharing</strong>",
+        },
+        {
+          nameEn: "Selective<br>Disclosure",
+          nameJa: "Selective Disclosure",
+          desc: "<strong>Keeping the binding to the original issuer signature</strong>, the holder reveals only the attributes a model needs. Minimize what AI receives as input.",
+          strength:
+            "<strong>From one issued credential, vary the disclosure per counterparty and use</strong>. Hide / Reveal stays controllable after issuance.",
+          docHref: "/blog/disclose-only-what-ai-needs/",
+          valueMap: "core of <strong>disclose selectively</strong>",
+        },
+        {
+          nameEn: "On-chain<br>Provenance",
+          nameJa: "On-chain Provenance",
+          desc: "Anchor the document commitment, schema, issuer, and ZK verification result on-chain. Fix it as provenance that can be neither rewritten nor erased.",
+          strength:
+            "<strong>Only the docHash and CID are public</strong>; the body stays AES-GCM encrypted. Keep provenance without exposing the contents.",
+          docHref: "/blog/provenance-that-never-disappears/",
+          valueMap: "core of <strong>prove after the fact</strong>",
+        },
+      ],
+    };
+
+// Mechanism diagram (発行→証明→検証) — per-phase mini SVGs (locale-neutral),
+// ported from the retired pillars hub. Crypto primitives are English tokens.
+const MECH_PRIMS = [
+  ["BBS+ Signature", "Poseidon Hash", "DID / VC (W3C)"],
+  ["Groth16 / BN254", "Circom 2.x Circuit", "Selective Disclosure"],
+  ["Public verify (no trust)", "EIP-712 attestation", "audit anchor (optional)"],
+];
+const MECH_STACK_META = [
+  "Groth16 / BN254",
+  "BBS+ / EdDSA",
+  "Poseidon / Keccak",
+  "W3C DID/VC",
+  "EIP-712 / x402",
+];
+const MECH_SVG = [
+  `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="22" y="22" width="76" height="46" rx="3" stroke="#d4a574" stroke-width="1.2" fill="none"/><line x1="32" y1="32" x2="88" y2="32" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="40" x2="88" y2="40" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="48" x2="88" y2="48" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="56" x2="88" y2="56" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><text x="60" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SOURCE</text><path class="la-mech-dashflow" d="M 115 45 L 175 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 170 41 L 175 45 L 170 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="145" y="36" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#d4a574" letter-spacing="0.1em">ISSUE</text><circle class="la-mech-halo" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle class="la-mech-token-pulse" cx="225" cy="45" r="10" stroke="#FCFAF5" stroke-width="1.2" fill="none" opacity="0.5"/><circle cx="225" cy="27" r="2.5" fill="#FCFAF5"/><circle cx="225" cy="63" r="2.5" fill="#FCFAF5"/><circle cx="207" cy="45" r="2.5" fill="#FCFAF5"/><circle cx="243" cy="45" r="2.5" fill="#FCFAF5"/><text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text></svg>`,
+  `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="50" cy="29" r="2.5" fill="#FCFAF5"/><circle cx="50" cy="61" r="2.5" fill="#FCFAF5"/><circle cx="34" cy="45" r="2.5" fill="#FCFAF5"/><circle cx="66" cy="45" r="2.5" fill="#FCFAF5"/><text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text><rect class="la-mech-zk-pulse" x="105" y="28" width="70" height="34" rx="4" stroke="#d4a574" stroke-width="1.2" stroke-dasharray="3,2" fill="none"/><text x="140" y="49" text-anchor="middle" font-family="Space Grotesk" font-size="11" fill="#d4a574" font-weight="600" letter-spacing="0.08em">ZK</text><text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SELECT</text><circle class="la-mech-halo" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="225" cy="29" r="2.5" fill="#FCFAF5"/><circle class="la-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">DISCLOSED</text></svg>`,
+  `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle class="la-mech-halo" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="40" cy="31" r="2" fill="#FCFAF5"/><circle cx="40" cy="59" r="2" fill="#FCFAF5" opacity="0.18"/><circle cx="26" cy="45" r="2" fill="#FCFAF5" opacity="0.18"/><circle cx="54" cy="45" r="2" fill="#FCFAF5" opacity="0.18"/><text x="40" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text><path class="la-mech-dashflow" d="M 70 45 L 105 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 100 41 L 105 45 L 100 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="110" y="28" width="60" height="34" rx="4" stroke="#d4a574" stroke-width="1.5" fill="none"/><circle cx="124" cy="45" r="6" stroke="#d4a574" stroke-width="1.4" fill="none"/><line x1="130" y1="45" x2="162" y2="45" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><line x1="155" y1="45" x2="155" y2="51" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><line x1="162" y1="45" x2="162" y2="53" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PUBKEY</text><path class="la-mech-dashflow" d="M 178 45 L 210 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 205 41 L 210 45 L 205 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle class="la-mech-check-glow" cx="240" cy="45" r="20" stroke="#6ec27a" stroke-width="1.5" fill="none"/><path d="M 228 45 L 237 53 L 252 36" stroke="#6ec27a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="240" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#6ec27a" letter-spacing="0.1em">VERIFIED</text></svg>`,
+];
+const mechPhases = C.mechPhases.map((p, i) => ({ ...p, svg: MECH_SVG[i], prims: MECH_PRIMS[i] }));
+const mechStack = C.mechStackLabels.map((label, i) => ({ label, meta: MECH_STACK_META[i] }));
+// Interleave phases with arrow cells for the 5-column flow grid (no JSX fragments).
+const mechCells: Array<{ arrow?: boolean; phase?: (typeof mechPhases)[number] }> = [];
+mechPhases.forEach((p, i) => {
+  if (i > 0) mechCells.push({ arrow: true });
+  mechCells.push({ phase: p });
+});
+
+// Core-cryptography cards — icon SVGs (locale-neutral), ported from the hub.
+const CORE_SVG = [
+  `<svg viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="22" cy="32" r="20" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="22" cy="32" r="13" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/><circle cx="22" cy="32" r="3" fill="currentColor"/><line x1="46" y1="32" x2="58" y2="32" stroke="currentColor" stroke-width="1.5"/><polygon points="58,32 53,28 53,36" fill="currentColor"/><circle cx="68" cy="32" r="9" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M63 32 L67 36 L73 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  `<svg viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 8 H50 L60 18 V58 H18 Z" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M50 8 V18 H60" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="25" y="22" width="22" height="3" fill="currentColor"/><circle cx="51" cy="23.5" r="2" fill="currentColor"/><line x1="25" y1="32" x2="47" y2="32" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/><rect x="25" y="40" width="22" height="3" fill="currentColor"/><circle cx="51" cy="41.5" r="2" fill="currentColor"/><line x1="25" y1="50" x2="47" y2="50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`,
+  `<svg viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><line x1="10" y1="20" x2="20" y2="20" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="25" x2="18" y2="25" stroke="currentColor" stroke-width="1.2"/><line x1="24" y1="25" x2="30" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/><rect x="30" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><line x1="34" y1="20" x2="44" y2="20" stroke="currentColor" stroke-width="1.2"/><line x1="34" y1="25" x2="42" y2="25" stroke="currentColor" stroke-width="1.2"/><line x1="48" y1="25" x2="54" y2="25" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/><rect x="54" y="14" width="18" height="22" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><line x1="58" y1="20" x2="68" y2="20" stroke="currentColor" stroke-width="1.2"/><line x1="58" y1="25" x2="66" y2="25" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="50" x2="76" y2="50" stroke="currentColor" stroke-width="2"/><line x1="15" y1="36" x2="15" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/><line x1="39" y1="36" x2="39" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/><line x1="63" y1="36" x2="63" y2="50" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="40" cy="56" r="2.5" fill="currentColor"/></svg>`,
+];
+const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
+---
+
+<div class="ccs">
+  {/* HOW IT WORKS — mechanism diagram (発行→証明→検証), full-width dark */}
+  <section class="la-mech" id={mechId}>
+    <div class="la-mech-inner">
+      <div class="la-eyebrow on-dark">{C.mechEyebrow}</div>
+      <h2 class="la-mech-h2">
+        {C.mechH2a}<br /><span class="la-mech-accent">{C.mechH2accent}</span>{C.mechH2tail}
+      </h2>
+      <p class="la-mech-sub">{C.mechSub}</p>
+      <div class="la-mech-flow">
+        {
+          mechCells.map((cell) =>
+            cell.arrow ? (
+              <div class="la-mech-arrow" aria-hidden="true">
+                →
+              </div>
+            ) : (
+              <div class="la-mech-phase">
+                <div class="la-mech-viz">
+                  <Fragment set:html={cell.phase.svg} />
+                </div>
+                <div class="la-mech-step">{cell.phase.step}</div>
+                <h3 class="la-mech-title">{cell.phase.title}</h3>
+                <p class="la-mech-desc">{cell.phase.desc}</p>
+                <div class="la-mech-prims">
+                  {cell.phase.prims.map((pr) => (
+                    <div class="la-mech-prim">{pr}</div>
+                  ))}
+                </div>
+              </div>
+            ),
+          )
+        }
+      </div>
+      <div class="la-mech-bottom">
+        <div class="la-mech-stack">
+          {
+            mechStack.map((s) => (
+              <div class="la-mech-stack-item">
+                {s.label} <span class="la-mech-stack-meta">{s.meta}</span>
+              </div>
+            ))
+          }
+        </div>
+        <a href={specsHref} class="la-mech-cta">{C.mechCta} →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* CORE CRYPTOGRAPHY — 3 cards, full-width dark */}
+  <section class="la-tech" id={coresId}>
+    <div class="la-tech-inner">
+      <h2 class="la-tech-h2">
+        <span class="la-tech-accent">{C.coreH2a}</span><br />{C.coreH2b}
+      </h2>
+      <p class="la-tech-lead">{C.coreLead}</p>
+      <div class="la-tech-grid">
+        {
+          cores.map((c) => (
+            <div class="la-tech-card">
+              <span class="la-tech-icon">
+                <Fragment set:html={c.svg} />
+              </span>
+              <div class="la-tech-name-en" set:html={c.nameEn} />
+              <div class="la-tech-name-ja">{c.nameJa}</div>
+              <p class="la-tech-desc" set:html={c.desc} />
+              <div class="la-tech-strength">
+                <div class="la-tech-strength-lbl">{C.coreStrengthLabel}</div>
+                <div class="la-tech-strength-txt" set:html={c.strength} />
+              </div>
+              <a href={c.docHref} class="la-tech-doclink">
+                {C.coreDocLink} →
+              </a>
+              <div class="la-tech-valuemap" set:html={c.valueMap} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  /* Break out of whatever container the host page uses so the dark bands stay
+     full-bleed, exactly as on /pillars. body has overflow-x: hidden, so the
+     100vw width never introduces a horizontal scrollbar. */
+  .ccs {
+    --la-display: var(--font-display);
+    --la-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-bottom: 56px;
+  }
+  .ccs a {
+    text-decoration: none;
+  }
+  /* Fixed top nav is 64px — keep #core-crypto deep links off the header. */
+  .la-mech,
+  .la-tech {
+    scroll-margin-top: 84px;
+  }
+
+  .la-eyebrow {
+    font-family: var(--la-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent, #8b4513);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+  }
+  .la-eyebrow::before {
+    content: "";
+    width: 16px;
+    height: 2px;
+    background: var(--accent, #8b4513);
+    flex: none;
+  }
+  .la-eyebrow.on-dark {
+    color: #d8b48c;
+  }
+  .la-eyebrow.on-dark::before {
+    background: #d8b48c;
+  }
+
+  /* MECHANISM — 3-phase proof-flow diagram (ported from the hub) */
+  .la-mech {
+    background: #1a1612;
+    color: #d4cfc4;
+    padding: 96px 0;
+  }
+  .la-mech-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .la-mech-h2 {
+    font-family: var(--la-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: #fcfaf5;
+    margin: 0 0 18px;
+  }
+  .la-mech-accent {
+    color: #d4a574;
+  }
+  .la-mech-sub {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #c8c2b6;
+    max-width: 720px;
+    margin: 0;
+  }
+  .la-mech-flow {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr 32px 1fr;
+    gap: 0;
+    align-items: stretch;
+    margin-top: 48px;
+  }
+  .la-mech-phase {
+    background: #2a2118;
+    border: 0.5px solid #3a3025;
+    border-radius: 16px;
+    padding: 26px 26px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .la-mech-viz {
+    padding-bottom: 16px;
+    border-bottom: 0.5px solid #3a3025;
+  }
+  .la-mech-viz :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .la-mech-step {
+    font-family: var(--la-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    color: #d4a574;
+  }
+  .la-mech-title {
+    font-family: var(--la-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: #fcfaf5;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    margin: 0;
+  }
+  .la-mech-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #c8c2b6;
+    margin: 0;
+  }
+  .la-mech-prims {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 0.5px solid #3a3025;
+    margin-top: auto;
+  }
+  .la-mech-prim {
+    font-family: var(--la-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: #d4a574;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .la-mech-prim::before {
+    content: "›";
+    font-size: 12px;
+    color: #8b5e34;
+  }
+  .la-mech-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b5e34;
+    font-family: var(--la-mono);
+    font-size: 18px;
+  }
+  .la-mech-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 0.5px solid #3a3025;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .la-mech-stack {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .la-mech-stack-item {
+    font-family: var(--la-mono);
+    font-size: 11.5px;
+    color: #d4a574;
+    letter-spacing: 0.06em;
+  }
+  .la-mech-stack-meta {
+    color: #8a857d;
+    margin-left: 4px;
+  }
+  .la-mech-cta {
+    font-family: "Noto Sans JP", system-ui, sans-serif;
+    font-size: 13.5px;
+    color: #d4a574;
+  }
+  .la-mech-cta:hover {
+    color: #fcfaf5;
+  }
+
+  /* Per-phase SVG animations — subtle, on-loop, motion-safe */
+  .la-mech-dashflow {
+    stroke-dasharray: 3 3;
+    animation: la-mech-dashflow 1.4s linear infinite;
+  }
+  @keyframes la-mech-dashflow {
+    to {
+      stroke-dashoffset: -12;
+    }
+  }
+  .la-mech-token-pulse {
+    animation: la-mech-tokenpulse 2.6s ease-in-out infinite;
+  }
+  @keyframes la-mech-tokenpulse {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+  .la-mech-halo {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: la-mech-halo 3s ease-out infinite;
+  }
+  .la-mech-halo--delay {
+    animation-delay: 1.5s;
+  }
+  @keyframes la-mech-halo {
+    0% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    80%,
+    100% {
+      opacity: 0;
+      transform: scale(1.7);
+    }
+  }
+  .la-mech-zk-pulse {
+    animation: la-mech-zkpulse 2.4s ease-in-out infinite;
+  }
+  @keyframes la-mech-zkpulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.65;
+    }
+  }
+  .la-mech-dot-fade {
+    animation: la-mech-dotfade 2.6s ease-in-out infinite;
+  }
+  .la-mech-dot-fade:nth-of-type(2n) {
+    animation-delay: 0.6s;
+  }
+  @keyframes la-mech-dotfade {
+    0%,
+    100% {
+      opacity: 0.18;
+    }
+    50% {
+      opacity: 0.38;
+    }
+  }
+  .la-mech-check-glow {
+    animation: la-mech-checkglow 2.6s ease-in-out infinite;
+  }
+  @keyframes la-mech-checkglow {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .la-mech-dashflow,
+    .la-mech-token-pulse,
+    .la-mech-zk-pulse,
+    .la-mech-dot-fade,
+    .la-mech-check-glow,
+    .la-mech-halo {
+      animation: none;
+    }
+    .la-mech-halo {
+      opacity: 0;
+    }
+  }
+
+  /* CORE CRYPTOGRAPHY — 3 tech cards (ported from the hub) */
+  .la-tech {
+    background: #1f1a15;
+    color: #d4cfc4;
+    padding: 96px 0;
+    border-top: 0.5px solid #3a3025;
+  }
+  .la-tech-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .la-tech-h2 {
+    font-family: var(--la-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: #fcfaf5;
+    margin: 0 0 18px;
+  }
+  .la-tech-accent {
+    color: #d4a574;
+  }
+  .la-tech-lead {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #c8c2b6;
+    max-width: 760px;
+    margin: 0 0 44px;
+  }
+  .la-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .la-tech-card {
+    background: #2a2118;
+    border: 0.5px solid #3a3025;
+    border-radius: 16px;
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .la-tech-icon {
+    color: #d4a574;
+    display: block;
+    width: 80px;
+    height: 64px;
+    margin-bottom: 18px;
+  }
+  .la-tech-icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .la-tech-name-en {
+    font-family: var(--la-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: #fcfaf5;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .la-tech-name-ja {
+    font-family: var(--la-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #d4a574;
+    margin: 8px 0 16px;
+  }
+  .la-tech-desc {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #c8c2b6;
+    margin: 0 0 18px;
+  }
+  .la-tech-desc :global(strong),
+  .la-tech-strength-txt :global(strong) {
+    color: #fcfaf5;
+    font-weight: 700;
+  }
+  .la-tech-strength {
+    background: rgba(212, 165, 116, 0.08);
+    border-left: 2px solid #8b5e34;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .la-tech-strength-lbl {
+    font-family: var(--la-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4a574;
+    margin-bottom: 6px;
+  }
+  .la-tech-strength-txt {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #c8c2b6;
+  }
+  .la-tech-doclink {
+    font-family: var(--la-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: #d4a574;
+    margin-bottom: 18px;
+  }
+  .la-tech-doclink:hover {
+    color: #fcfaf5;
+  }
+  .la-tech-valuemap {
+    font-size: 12px;
+    color: #8a857d;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 0.5px solid #3a3025;
+  }
+  .la-tech-valuemap :global(strong) {
+    color: #d4a574;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .la-mech-flow {
+      grid-template-columns: 1fr;
+    }
+    .la-mech-arrow {
+      transform: rotate(90deg);
+      padding: 6px 0;
+    }
+    .la-tech-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

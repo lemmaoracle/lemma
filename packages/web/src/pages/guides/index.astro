@@ -1,5 +1,6 @@
 ---
 import GuidesIndexTemplate from "../../templates/GuidesIndexTemplate.astro";
+import CoreCryptoSections from "../../components/CoreCryptoSections.astro";
 import { getBlogSections } from "../../data/blog";
 import { getTranslations } from "../../i18n/translations";
 
@@ -16,10 +17,18 @@ const foundations = sections
   .filter((p) => p.category === "基盤" || p.category === "Foundations");
 ---
 
-<GuidesIndexTemplate
-  locale={locale}
-  t={t}
-  base={base}
-  guides={guides}
-  foundations={foundations}
-/>
+<GuidesIndexTemplate locale={locale} t={t} base={base} guides={guides} foundations={foundations}>
+  {
+    /*
+    「仕組み」「3つの中核」の英語面。製品ページ（/pillars/）が
+    /guides/#core-crypto へ送るので、JA と同じく受け皿を必ず置く。
+  */
+  }
+  <CoreCryptoSections
+    slot="feature"
+    locale={locale}
+    base={base}
+    coresId="core-crypto"
+    specsHref={`${base}/blog/lemma-oracle-specs`}
+  />
+</GuidesIndexTemplate>

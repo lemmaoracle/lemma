@@ -1,7 +1,9 @@
 ---
-// /pillars — the canonical "Lemma API 全体像" hub (code納品 20260707). The old
-// pillars/4-axes hub was retired; the short-lived /lemma-api route was removed.
-import LemmaApiTemplate from "../../templates/LemmaApiTemplate.astro";
+// /pillars — the canonical product page for the Lemma API (製品ページ実装指示 v1 /
+// モック v18). Shares ProductPageTemplate with /ja/pillars; the old
+// LemmaApiTemplate design was retired from this route. The short-lived
+// /lemma-api route was removed earlier.
+import ProductPageTemplate from "../../templates/ProductPageTemplate.astro";
 import { getTranslations } from "../../i18n/translations";
 
 const locale = "en";
@@ -9,7 +11,7 @@ const t = getTranslations(locale);
 const base = "";
 ---
 
-<LemmaApiTemplate
+<ProductPageTemplate
   locale={locale}
   t={t}
   base={base}
