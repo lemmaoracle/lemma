@@ -1447,3 +1447,28 @@
 /* --- 業界カード: 業界名を主役に（2026-08-02 ユーザー指示） --- */
 .ucx .ux-n{font-family:var(--font-serif-jp,serif);font-size:17px;font-weight:600;letter-spacing:.03em;color:var(--tx,#12140e);margin-bottom:2px;line-height:1.5;}
 .ucx .ux-sol{font-family:var(--font-mono,"Space Mono",monospace);font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--ok-ink,#4e7a00);margin-bottom:8px;}
+/* --- 業務から探す: スレートヘッダーカード化＋行の中黒（2026-08-03） --- */
+.ucx details.augrp summary{flex-direction:column;align-items:stretch;gap:10px;
+    background:linear-gradient(172deg,#3c443d,#333b34 55%,#2e362f);
+    border:1px solid #2e362f;border-radius:12px;padding:22px 24px 18px;
+    box-shadow:0 12px 28px rgba(24,36,26,.12);overflow:hidden;}
+.ucx details.augrp summary::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 95% at 100% 0%,rgba(168,224,16,.17),transparent 55%);}
+.ucx details.augrp summary > b{position:absolute;top:10px;right:20px;margin:0;
+    font-size:58px;line-height:1;letter-spacing:0;color:rgba(168,224,16,.15);font-weight:400;}
+.ucx details.augrp summary .aug-ic{width:26px;height:26px;color:var(--ok,#a8e010);
+    align-self:flex-start;position:relative;}
+.ucx details.augrp summary > i{font-family:var(--font-serif-jp,"Noto Serif JP",serif);
+    font-size:16.5px;font-weight:600;color:#f4f6f1;line-height:1.55;padding-right:72px;
+    position:relative;word-break:keep-all;overflow-wrap:anywhere;}
+.ucx details.augrp summary .aucnt{margin-left:0;color:rgba(244,246,241,.55);position:relative;}
+.ucx details.augrp summary::after{border-right-color:var(--ok,#a8e010);
+    border-bottom-color:var(--ok,#a8e010);top:auto;bottom:22px;margin-top:0;}
+.ucx details.augrp[open] summary::after{bottom:16px;margin-top:0;}
+.ucx details.augrp summary:hover{border-color:rgba(168,224,16,.45);
+    background:linear-gradient(172deg,#414a42,#38403a 55%,#333b34);}
+.ucx details.augrp[open] summary{border-color:rgba(168,224,16,.45);border-radius:12px 12px 0 0;}
+.ucx details.augrp .aubody{border:1px solid var(--line,#e1e3dd);border-top:none;
+    border-radius:0 0 12px 12px;background:#fff;padding:14px 18px 18px;}
+.ucx .augrid{gap:22px 26px;}
+.ucx .aubody .aurow::before{content:"・";color:#9aa197;margin-right:4px;}
