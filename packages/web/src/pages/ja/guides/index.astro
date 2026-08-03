@@ -9,9 +9,28 @@ const t = getTranslations(locale);
 const base = "/ja";
 
 const sections = await getBlogSections(locale);
+
+/* 並び順: 実装ジャーニー順 (まず触る→定義→暗号化→証明→開示→クエリ→来歴)。
+   上の「仕組み」3フェーズ (発行→開示→検証) と同じ流れに揃える。
+   未知の slug は末尾に日付順で落ちる。 */
+const GUIDE_ORDER = [
+  "dashboard-quickstart",
+  "define-your-domain-as-a-schema",
+  "encrypt-everything-expose-nothing",
+  "prove-facts-with-zero-knowledge",
+  "disclose-only-what-ai-needs",
+  "query-verified-attributes",
+  "provenance-that-never-disappears",
+];
+const orderOf = (slug: string) => {
+  const i = GUIDE_ORDER.indexOf(slug);
+  return i === -1 ? GUIDE_ORDER.length : i;
+};
 const guides = sections
   .flatMap((s) => s.posts)
-  .filter((p) => p.category === "ガイド" || p.category === "Guides");
+  .filter((p) => p.category === "ガイド" || p.category === "Guides")
+  .slice()
+  .sort((a, b) => orderOf(a.slug) - orderOf(b.slug));
 const foundations = sections
   .flatMap((s) => s.posts)
   .filter((p) => p.category === "基盤" || p.category === "Foundations");
