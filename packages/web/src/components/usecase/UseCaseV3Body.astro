@@ -569,7 +569,6 @@ const bytaskMembers = taskGroupMembers.filter(
   <section class="ucv-band ucv-band--deep" aria-label={C.ariaRelated}>
     <div class="ucv-container ucv-crossnav">
       <div>
-        <div class="ucv-eye">{C.s5Eye}</div>
         <h2 class="ucv-h3">{relatedSection?.title ?? C.s5H2}</h2>
         {relatedUseCases.length > 0 && (
           <div class="ucv-bytask-list">
@@ -581,7 +580,6 @@ const bytaskMembers = taskGroupMembers.filter(
       </div>
       {taskGroup && bytaskMembers.length > 0 && (
         <div>
-          <div class="ucv-eye">06 · 業務から探す</div>
           <h2 class="ucv-h3" id="ucv-bytask-h">業務から探す</h2>
           <p class="ucv-bytask-sub">同じ課題｜{taskGroup.heading}</p>
           <div class="ucv-bytask-list">
@@ -842,7 +840,7 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-bytask-list { display: grid; grid-template-columns: 1fr; gap: 2px; margin-top: 12px; }
   .ucv-bytask-row { display: block; font-size: 13.5px; line-height: 1.7; color: #2f332b; text-decoration: none; padding: 8px 0 8px 12px; border-left: 2px solid transparent; border-bottom: 1px solid #d9ddd7; transition: 0.15s; }
   .ucv-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); color: #12140e; }
-  .ucv-ucnav { text-align: center; margin-top: 64px; }
+  .ucv-ucnav { text-align: center; margin-top: 96px; }
   .ucv-ucnav-lead { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
   @media (max-width: 860px) {
     .ucv-crossnav { grid-template-columns: 1fr; }
