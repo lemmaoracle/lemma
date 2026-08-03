@@ -204,7 +204,7 @@ export async function renderPricingOg(locale: Locale): Promise<Buffer> {
 /* ───────────────────────── Pillars ───────────────────────── */
 
 const PILLARS_TITLE: Copy = {
-  ja: "<accent>Lemma API</accent>、\n5つの証明を1つの API で。",
+  ja: "<accent>Lemma API</accent>、\n5つの証明をひとつの API で。",
   en: "<accent>The Lemma API</accent>,\nfive proofs in one API.",
 };
 
@@ -302,10 +302,7 @@ const COMPARE_COPY: Record<string, { title: Copy; label: Copy; tagline: Copy }> 
   },
 };
 
-export async function renderCompareOg(
-  slug: string,
-  locale: Locale,
-): Promise<Buffer> {
+export async function renderCompareOg(slug: string, locale: Locale): Promise<Buffer> {
   const c = COMPARE_COPY[slug] ?? COMPARE_COPY["ai-models-attack-resistance"];
   const node = buildOgArtboard({
     title: localize(c.title, locale),
