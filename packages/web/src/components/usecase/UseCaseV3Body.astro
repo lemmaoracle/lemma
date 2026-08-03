@@ -74,7 +74,7 @@ const trust402Href = `${base}/trust402/`;
 // render in derived mode, so only the common + derived strings are localized.
 const C = isJa
   ? {
-      bcHome: "ホーム", bcUC: "活用シーン", readUnit: "分",
+      bcHome: "ホーム", bcUC: "ユースケース", readUnit: "分",
       credMid: "公共インフラ PoC 稼働中",
       hpAria: "HIDE と PROVE の対比", hpHide: "Hide ── 隠す", hpProve: "Prove ── 証明する",
       ariaReaders: "課題認識", ariaApproach: "変化", ariaCriteria: "選定基準",
@@ -124,12 +124,7 @@ const C = isJa
       hiwDocLab: "記録の本文", hiwDocVal: "送信されません", hiwIssued: "発行しました　0x68d4…9f01",
       hiw3Bar: "受け取った側の画面", hiwVerdict: "改ざんされていません",
       hiwChk1: "署名の一致", hiwChk2: "改ざんの有無", hiwChk3: "発行者",
-      footHow: "仕組みについて知る", footFaq: "よくある質問", footBridge: "活用シーンの全体像",
-      s5Eye: "05 · 関連ユースケース", s5H2: "関連ユースケース", relatedCta: "ユースケースを見る →",
-      faqLead: "残った疑問は、", faqLinkLabel: "よくある質問（FAQ）→",
-      bridgeEye: "より広い活用シーン",
-      bridgeH2: "このユースケースを含む、活用シーンの全体像。",
-      bridgeSub: "業界・業務領域ごとの活用シーンと、5つの証明で整理しています。",
+      s5H2: "関連ユースケース",
     }
   : {
       bcHome: "Home", bcUC: "Use Cases", readUnit: "min read",
@@ -182,12 +177,7 @@ const C = isJa
       hiwDocLab: "The document", hiwDocVal: "never sent", hiwIssued: "Issued 0x68d4…9f01",
       hiw3Bar: "The verifier's screen", hiwVerdict: "Not tampered",
       hiwChk1: "Signature", hiwChk2: "Integrity", hiwChk3: "Issuer",
-      footHow: "How it works", footFaq: "FAQ", footBridge: "The bigger picture",
-      s5Eye: "05 · RELATED", s5H2: "Related use cases", relatedCta: "View use case →",
-      faqLead: "Still have questions?", faqLinkLabel: "See the FAQ →",
-      bridgeEye: "The bigger picture",
-      bridgeH2: "The bigger picture this use case belongs to.",
-      bridgeSub: "We map use scenarios across industries and workflows by the five proofs.",
+      s5H2: "Related use cases",
     };
 
 const useCasesPath = `${base}/solutions/use-cases`;
@@ -281,7 +271,7 @@ const bytaskMembers = taskGroupMembers.filter(
 
     <header class="ucv-hero">
       <div class="ucv-hero-tx">
-        <div class="ucv-uc-label">{isJa ? "ユースケース" : "Use case"}{pillar && ` — ${pillar.title[locale]}`}</div>
+        <div class="ucv-uc-label">{isJa ? "業務ユースケース" : "Use case"}{pillar && ` — ${pillar.title[locale]}`}</div>
         <h1 class="ucv-h1">{useCase.title}</h1>
         <p class="ucv-lead">{useCase.abstract}</p>
 
@@ -592,7 +582,7 @@ const bytaskMembers = taskGroupMembers.filter(
     </div>
     <div class="ucv-container ucv-ucnav">
       <p class="ucv-ucnav-lead">{isJa ? "お探しの業界・課題に合わせた事例が見つかります" : "Find the case that matches your industry and problem"}</p>
-      <a class="ucv-btn ucv-btn--ghost" href={`${useCasesPath}/`}>{isJa ? "課題や業種からユースケースを探す（全36件） →" : "Browse all 36 use cases →"}</a>
+      <a class="ucv-btn ucv-btn--ghost" href={`${useCasesPath}/`}>{isJa ? "課題や業種から業務ユースケースを探す（全36件） →" : "Browse all 36 use cases →"}</a>
     </div>
   </section>
 
@@ -611,8 +601,6 @@ const bytaskMembers = taskGroupMembers.filter(
       </div>
     </section>
   )}
-
-  {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
 </main>
 
 <style>
