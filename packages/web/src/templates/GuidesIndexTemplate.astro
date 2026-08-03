@@ -127,10 +127,16 @@ const collectionJsonLd = {
     --gd-display: var(--font-display);
     --gd-body: "Noto Sans JP", system-ui, sans-serif;
     --gd-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --gd-text-1: #1a1a1a;
-    --gd-text-2: #3a3a3a;
-    --gd-text-3: #5a5a5a;
-    --gd-text-4: #9a9a9a;
+    --gd-text-1: #12140e;
+    --gd-text-2: #2f332b;
+    --gd-text-3: #5c6156;
+    --gd-text-4: #9aa197;
+    /* 新DS移行: アクセントをブラウン→オリーブ、地を lite 系へ (色のみ変更) */
+    --accent: #4e7a00;
+    --accent-lt: #6f9c00;
+    --lemma-cream: #f3f4f1;
+    --lemma-cream-deep: #eceee9;
+    --lemma-line: #e1e3dd;
 
     background: var(--lemma-cream);
     color: var(--gd-text-2);
@@ -240,7 +246,7 @@ const collectionJsonLd = {
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .gd-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
+    border-color: rgba(78, 122, 0, 0.4);
     box-shadow: 0 10px 28px rgba(139, 69, 19, 0.06);
     transform: translateY(-2px);
   }
@@ -362,7 +368,7 @@ const collectionJsonLd = {
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .gd-foundations-card:hover {
-    border-color: rgba(139, 69, 19, 0.4);
+    border-color: rgba(78, 122, 0, 0.4);
     box-shadow: 0 10px 24px rgba(139, 69, 19, 0.05);
   }
   .gd-foundations-card:hover::before {
@@ -393,14 +399,14 @@ const collectionJsonLd = {
     font-weight: 500;
     letter-spacing: 0.06em;
     padding: 12px 26px;
-    background: var(--accent);
-    color: var(--lemma-cream);
+    background: #a8e010;
+    color: #12140e;
     border-radius: 999px;
     transition: background 0.2s;
     white-space: nowrap;
   }
   .gd-foundations-card:hover .gd-foundations-cta {
-    background: #6e3610;
+    background: #96c90e;
   }
 
   /* ─── RESPONSIVE ─── */
