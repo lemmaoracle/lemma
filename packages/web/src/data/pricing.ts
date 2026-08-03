@@ -584,8 +584,8 @@ export const PRICING: PricingContent = {
         audience: "agent",
         q: { ja: "Trust402 はいつ使えますか?", en: "When can I use Trust402?" },
         a: {
-          ja: "Trust402 の4プラン（Explorer / Builder / Pro / Institutional ID）は、本ページに掲載しています。本番課金の開始前のため、Explorer の Sandbox で無料でお試しいただけます。",
-          en: "The four Trust402 plans (Explorer / Builder / Pro / Institutional ID) are listed on this page. Production billing hasn't opened yet, so you can try it free on the Explorer Sandbox.",
+          ja: "Trust402 の4プラン（Explorer / Builder / Pro / Institutional ID）は、Trust402 の製品ページに掲載しています。Explorer の Sandbox で無料でお試しいただけます。",
+          en: "The four Trust402 plans (Explorer / Builder / Pro / Institutional ID) are listed on the Trust402 product pages. You can try it free on the Explorer Sandbox.",
         },
       },
       {
