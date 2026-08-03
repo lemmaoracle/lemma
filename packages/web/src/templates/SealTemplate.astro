@@ -283,7 +283,7 @@ const compareRows = [
                   <line x1="11" y1="8" x2="22" y2="8" stroke="#6E6957" stroke-width="1.5" />
                   <line x1="18" y1="8" x2="18" y2="12" stroke="#6E6957" stroke-width="1.5" />
                 </g>
-                <text x="32.5" y="86" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">{C.diagDeviceBefore}</text>
+                <text x="32.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="9" fill="#6E6957">{C.diagDeviceBefore}</text>
               </g>
               <g transform="translate(95, 105)">
                 <line x1="0" y1="0" x2="110" y2="0" stroke="#6E6957" stroke-width="1.5" />
@@ -311,7 +311,7 @@ const compareRows = [
                 <g class="seal-server-key-flicker" transform="translate(68, 42)"><circle cx="4" cy="4" r="2.5" stroke="#6E6957" stroke-width="1.2" fill="none" /><line x1="6" y1="4" x2="12" y2="4" stroke="#6E6957" stroke-width="1.2" /></g>
                 <g class="seal-server-key-flicker" transform="translate(30, 62)"><circle cx="4" cy="4" r="2.5" stroke="#6E6957" stroke-width="1.2" fill="none" /><line x1="6" y1="4" x2="12" y2="4" stroke="#6E6957" stroke-width="1.2" /></g>
                 <g class="seal-server-key-flicker" transform="translate(58, 62)"><circle cx="4" cy="4" r="2.5" stroke="#6E6957" stroke-width="1.2" fill="none" /><line x1="6" y1="4" x2="12" y2="4" stroke="#6E6957" stroke-width="1.2" /></g>
-                <text x="55" y="104" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#6E6957">{C.diagServerBefore1}</text>
+                <text x="55" y="104" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="9" fill="#6E6957">{C.diagServerBefore1}</text>
                 <text x="55" y="118" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#6E6957" letter-spacing="1">{C.diagServerBefore2}</text>
               </g>
             </svg>
@@ -338,7 +338,7 @@ const compareRows = [
                   <path d="M 22 3 Q 22 -1 26 -1 Q 30 -1 30 3" stroke="#8B4513" stroke-width="1.3" fill="none" />
                   <rect x="23" y="3" width="8" height="6" rx="1" fill="#8B4513" />
                 </g>
-                <text x="32.5" y="86" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">{C.diagDeviceAfter}</text>
+                <text x="32.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="9" fill="#8B4513" font-weight="500">{C.diagDeviceAfter}</text>
               </g>
               <g transform="translate(95, 105)">
                 <line x1="0" y1="0" x2="110" y2="0" stroke="#8B4513" stroke-width="1.5" />
@@ -360,7 +360,7 @@ const compareRows = [
                   <circle cx="12" cy="12" r="11" fill="#8B4513" />
                   <path d="M 6 12 L 10.5 16.5 L 18 8" stroke="#FCFAF5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
                 </g>
-                <text x="55" y="104" text-anchor="middle" font-family="Sora, sans-serif" font-size="9" fill="#8B4513" font-weight="500">{C.diagServerAfter1}</text>
+                <text x="55" y="104" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="9" fill="#8B4513" font-weight="500">{C.diagServerAfter1}</text>
                 <text x="55" y="118" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#8B4513" letter-spacing="1">{C.diagServerAfter2}</text>
               </g>
             </svg>
@@ -432,8 +432,8 @@ const compareRows = [
     --legacy-bg: #ECEBE5;
     --legacy-border: #B5AFA0;
     --legacy-text: #6E6957;
-    --hp-display: "Sora", system-ui, sans-serif;
-    --hp-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --hp-display: var(--font-display);
+    --hp-body: "Noto Sans JP", system-ui, sans-serif;
     --hp-mono: "Space Mono", ui-monospace, monospace;
 
     background: var(--hp-cream);
@@ -494,7 +494,7 @@ const compareRows = [
   .seal-card-eyebrow { font-family: var(--hp-mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--hp-brown); margin: 0 0 10px; }
   .seal-card-h3 { font-family: var(--hp-display); font-size: 17px; font-weight: 600; color: #000; margin: 0 0 10px; letter-spacing: -0.015em; line-height: 1.35; }
   .seal-card-copy { font-size: 13px; color: var(--hp-text-3); margin: 0 0 18px; line-height: 1.75; }
-  .seal-card-btn { display: inline-block; padding: 10px 22px; border-radius: 999px; font-size: 12px; font-weight: 500; font-family: var(--hp-display); }
+  .seal-card-btn { display: inline-block; padding: 10px 22px; border-radius: 999px; font-size: 12px; font-weight: 500; font-family: "Noto Sans JP", system-ui, sans-serif; }
   .seal-card-btn.muted { background: var(--hp-cream-d); color: #000; }
   .seal-card-btn.muted:hover { background: var(--hp-brown-light); }
   .seal-card-btn.primary { background: var(--hp-brown); color: var(--hp-cream); }
@@ -591,11 +591,11 @@ const compareRows = [
   .seal-cta-primary {
     background: #000; color: var(--hp-cream);
     padding: 13px 28px; border-radius: 999px;
-    font-size: 13.5px; font-weight: 500; font-family: var(--hp-display);
+    font-size: 13.5px; font-weight: 500; font-family: "Noto Sans JP", system-ui, sans-serif;
     transition: background 0.15s;
   }
   .seal-cta-primary:hover { background: var(--hp-brown); }
-  .seal-cta-link { font-size: 13.5px; color: var(--hp-text-3); font-family: var(--hp-display); transition: color 0.15s; }
+  .seal-cta-link { font-size: 13.5px; color: var(--hp-text-3); font-family: "Noto Sans JP", system-ui, sans-serif; transition: color 0.15s; }
   .seal-cta-link:hover { color: var(--hp-brown); }
   .seal-cta-meta { font-family: var(--hp-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--hp-brown); margin-left: 4px; }
 
@@ -615,7 +615,7 @@ const compareRows = [
   .seal-btn-brown-pill {
     background: var(--hp-brown); color: var(--hp-cream);
     padding: 16px 32px; border-radius: 999px;
-    font-family: var(--hp-display); font-size: 15px; font-weight: 500;
+    font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 15px; font-weight: 500;
     transition: background 0.15s; box-shadow: 0 8px 28px rgba(139,69,19,0.4);
   }
   .seal-btn-brown-pill:hover { background: var(--hp-brown-deep); }

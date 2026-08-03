@@ -104,8 +104,8 @@ const loopRest = qIdx >= 0 ? c.loopLine.slice(qIdx + 1) : "";
   .bac-banner,
   .bac-tail,
   .bac-loop {
-    --bac-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --bac-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --bac-display: var(--font-display);
+    --bac-body: "Noto Sans JP", system-ui, sans-serif;
     --bac-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --bac-accent: var(--accent, #8b4513);
     --bac-accent-dark: #6b2f0a;
@@ -119,7 +119,7 @@ const loopRest = qIdx >= 0 ? c.loopLine.slice(qIdx + 1) : "";
   :root[lang="en"] .bac-banner,
   :root[lang="en"] .bac-tail,
   :root[lang="en"] .bac-loop {
-    --bac-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --bac-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   /* ─── open-loop CTA (§1-screen, after the gap module) ─── */

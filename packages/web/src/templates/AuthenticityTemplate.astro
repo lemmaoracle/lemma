@@ -724,8 +724,8 @@ const breadcrumbJsonLd = {
 
 <style>
   .au-page {
-    --au-display: "Sora", system-ui, sans-serif;
-    --au-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --au-display: var(--font-display);
+    --au-body: "Noto Sans JP", system-ui, sans-serif;
     --au-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --au-text-1: #1a1a1a;
     --au-text-2: #3a3a3a;
@@ -739,7 +739,7 @@ const breadcrumbJsonLd = {
     margin-top: 64px;
   }
   :root[lang="en"] .au-page {
-    --au-body: "Sora", system-ui, sans-serif;
+    --au-body: "Noto Sans JP", system-ui, sans-serif;
   }
   .au-container {
     max-width: 820px;
@@ -853,7 +853,7 @@ const breadcrumbJsonLd = {
   }
   .au-jump-pill {
     flex-shrink: 0;
-    font-family: var(--au-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: var(--au-text-3);
@@ -1067,7 +1067,7 @@ const breadcrumbJsonLd = {
     text-underline-offset: 2px;
   }
   .au-lane-cta {
-    font-family: var(--au-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: var(--accent);

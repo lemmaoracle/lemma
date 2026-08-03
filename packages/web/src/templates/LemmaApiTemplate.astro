@@ -333,7 +333,7 @@ const MECH_PRIMS = [
 const MECH_STACK_META = ["Groth16 / BN254", "BBS+ / EdDSA", "Poseidon / Keccak", "W3C DID/VC", "EIP-712 / x402"];
 const MECH_SVG = [
   `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="22" y="22" width="76" height="46" rx="3" stroke="#d4a574" stroke-width="1.2" fill="none"/><line x1="32" y1="32" x2="88" y2="32" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="40" x2="88" y2="40" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="48" x2="88" y2="48" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><line x1="32" y1="56" x2="88" y2="56" stroke="#d4a574" stroke-width="0.8" opacity="0.45"/><text x="60" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SOURCE</text><path class="la-mech-dashflow" d="M 115 45 L 175 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 170 41 L 175 45 L 170 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="145" y="36" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#d4a574" letter-spacing="0.1em">ISSUE</text><circle class="la-mech-halo" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="225" cy="45" r="24" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle class="la-mech-token-pulse" cx="225" cy="45" r="10" stroke="#FCFAF5" stroke-width="1.2" fill="none" opacity="0.5"/><circle cx="225" cy="27" r="2.5" fill="#FCFAF5"/><circle cx="225" cy="63" r="2.5" fill="#FCFAF5"/><circle cx="207" cy="45" r="2.5" fill="#FCFAF5"/><circle cx="243" cy="45" r="2.5" fill="#FCFAF5"/><text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text></svg>`,
-  `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="50" cy="29" r="2.5" fill="#FCFAF5"/><circle cx="50" cy="61" r="2.5" fill="#FCFAF5"/><circle cx="34" cy="45" r="2.5" fill="#FCFAF5"/><circle cx="66" cy="45" r="2.5" fill="#FCFAF5"/><text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text><rect class="la-mech-zk-pulse" x="105" y="28" width="70" height="34" rx="4" stroke="#d4a574" stroke-width="1.2" stroke-dasharray="3,2" fill="none"/><text x="140" y="49" text-anchor="middle" font-family="Sora" font-size="11" fill="#d4a574" font-weight="600" letter-spacing="0.08em">ZK</text><text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SELECT</text><circle class="la-mech-halo" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="225" cy="29" r="2.5" fill="#FCFAF5"/><circle class="la-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">DISCLOSED</text></svg>`,
+  `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="50" cy="29" r="2.5" fill="#FCFAF5"/><circle cx="50" cy="61" r="2.5" fill="#FCFAF5"/><circle cx="34" cy="45" r="2.5" fill="#FCFAF5"/><circle cx="66" cy="45" r="2.5" fill="#FCFAF5"/><text x="50" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text><rect class="la-mech-zk-pulse" x="105" y="28" width="70" height="34" rx="4" stroke="#d4a574" stroke-width="1.2" stroke-dasharray="3,2" fill="none"/><text x="140" y="49" text-anchor="middle" font-family="Space Grotesk" font-size="11" fill="#d4a574" font-weight="600" letter-spacing="0.08em">ZK</text><text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">SELECT</text><circle class="la-mech-halo" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="225" cy="45" r="22" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="225" cy="29" r="2.5" fill="#FCFAF5"/><circle class="la-mech-dot-fade" cx="225" cy="61" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="209" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><circle class="la-mech-dot-fade" cx="241" cy="45" r="2.5" fill="#FCFAF5" opacity="0.18"/><text x="225" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">DISCLOSED</text></svg>`,
   `<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle class="la-mech-halo" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle class="la-mech-halo la-mech-halo--delay" cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1" fill="none"/><circle cx="40" cy="45" r="20" stroke="#FCFAF5" stroke-width="1.6" fill="none"/><circle cx="40" cy="31" r="2" fill="#FCFAF5"/><circle cx="40" cy="59" r="2" fill="#FCFAF5" opacity="0.18"/><circle cx="26" cy="45" r="2" fill="#FCFAF5" opacity="0.18"/><circle cx="54" cy="45" r="2" fill="#FCFAF5" opacity="0.18"/><text x="40" y="82" text-anchor="middle" font-family="Space Mono" font-size="9.5" fill="#FCFAF5" font-weight="700" letter-spacing="0.18em">PROOF</text><path class="la-mech-dashflow" d="M 70 45 L 105 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 100 41 L 105 45 L 100 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="110" y="28" width="60" height="34" rx="4" stroke="#d4a574" stroke-width="1.5" fill="none"/><circle cx="124" cy="45" r="6" stroke="#d4a574" stroke-width="1.4" fill="none"/><line x1="130" y1="45" x2="162" y2="45" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><line x1="155" y1="45" x2="155" y2="51" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><line x1="162" y1="45" x2="162" y2="53" stroke="#d4a574" stroke-width="1.4" stroke-linecap="round"/><text x="140" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#8a857d" letter-spacing="0.1em">PUBKEY</text><path class="la-mech-dashflow" d="M 178 45 L 210 45" stroke="#d4a574" stroke-width="1.2" fill="none"/><path d="M 205 41 L 210 45 L 205 49" stroke="#d4a574" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle class="la-mech-check-glow" cx="240" cy="45" r="20" stroke="#6ec27a" stroke-width="1.5" fill="none"/><path d="M 228 45 L 237 53 L 252 36" stroke="#6ec27a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="240" y="82" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#6ec27a" letter-spacing="0.1em">VERIFIED</text></svg>`,
 ];
 const mechPhases = C.mechPhases.map((p, i) => ({ ...p, svg: MECH_SVG[i], prims: MECH_PRIMS[i] }));
@@ -588,8 +588,8 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
 
 <style>
   .la {
-    --la-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --la-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --la-display: var(--font-display);
+    --la-body: "Noto Sans JP", system-ui, sans-serif;
     --la-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --la-t1: #1a1a1a;
     --la-t2: #3a3a3a;
@@ -601,7 +601,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
     line-height: 1.7;
     margin-top: 64px;
   }
-  :root[lang="en"] .la { --la-body: "Sora", "Noto Sans JP", system-ui, sans-serif; }
+  :root[lang="en"] .la { --la-body: "Noto Sans JP", system-ui, sans-serif; }
   .la-container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
   /* Links style their own color via their class; don't force-inherit the body
      grey (that clobbered .la-btn cream text → grey-on-brown, unreadable). */
@@ -702,7 +702,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   .la-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     background: var(--accent, #8b4513); color: var(--lemma-cream, #fcfaf5);
-    font-family: var(--la-display); font-size: 14px; font-weight: 700;
+    font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 14px; font-weight: 700;
     padding: 14px 28px; border-radius: 999px; transition: background 0.2s, transform 0.2s, border-color 0.2s;
   }
   .la-btn:hover { background: #6e3610; transform: translateY(-1px); }
@@ -718,7 +718,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   .la-secnav-inner { max-width: 1000px; margin: 0 auto; padding: 10px 40px; display: flex; align-items: center; gap: 16px; }
   .la-secnav-label { font-family: var(--la-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--la-t4); white-space: nowrap; }
   .la-secnav-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-  .la-secnav-pill { font-family: var(--la-display); font-size: 13px; font-weight: 600; color: var(--la-t2); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--lemma-line, #e6e1d6); background: var(--white, #fff); transition: background 0.15s, border-color 0.15s, color 0.15s; }
+  .la-secnav-pill { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13px; font-weight: 600; color: var(--la-t2); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--lemma-line, #e6e1d6); background: var(--white, #fff); transition: background 0.15s, border-color 0.15s, color 0.15s; }
   .la-secnav-pill:hover { border-color: var(--accent, #8b4513); color: var(--accent, #8b4513); }
   .la-secnav-pill.active { background: var(--accent, #8b4513); border-color: var(--accent, #8b4513); color: var(--lemma-cream, #fcfaf5); }
   .la-band, .la-wf, .la-int, .la-mech, .la-tech, #pricing { scroll-margin-top: 118px; }
@@ -774,7 +774,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   .la-mech-stack { display: flex; gap: 24px; flex-wrap: wrap; }
   .la-mech-stack-item { font-family: var(--la-mono); font-size: 11.5px; color: #d4a574; letter-spacing: 0.06em; }
   .la-mech-stack-meta { color: #8a857d; margin-left: 4px; }
-  .la-mech-cta { font-family: var(--la-display); font-size: 13.5px; color: #d4a574; }
+  .la-mech-cta { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; color: #d4a574; }
   .la-mech-cta:hover { color: #fcfaf5; }
 
   /* Per-phase SVG animations — subtle, on-loop, motion-safe */
@@ -827,7 +827,7 @@ const cores = C.cores.map((c, i) => ({ ...c, svg: CORE_SVG[i] }));
   .la-cta-label { font-family: var(--la-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #d8b48c; margin: 0 0 14px; }
   .la-cta-lead { font-size: 13.5px; line-height: 1.7; color: #c9c5ba; margin: 0 0 16px; }
   .la-cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-  .la-cta-link { font-family: var(--la-display); font-size: 13.5px; font-weight: 600; color: #d8b48c; }
+  .la-cta-link { font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; font-weight: 600; color: #d8b48c; }
 
   @media (max-width: 900px) {
     .la-hero { grid-template-columns: 1fr; gap: 32px; }

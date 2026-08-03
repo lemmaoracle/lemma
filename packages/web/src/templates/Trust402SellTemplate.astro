@@ -344,10 +344,10 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
     --border: #d8d6cc;
     --border-dk: rgba(236, 235, 227, 0.12);
     --term-fg: #ecebe3;
-    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --font-body: "DM Sans", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-display: var(--font-display);
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
     --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --font-serif: "Cormorant Garamond", Georgia, serif;
+    --font-serif: "Noto Serif JP", Georgia, serif;
 
     font-family: var(--font-body);
     color: var(--ink);
@@ -370,7 +370,7 @@ const shareUrl = `https://lemma.frame00.com${base}/trust402/sell/?source=share#i
   .t402 .eyebrow-plain.on-dark { color: var(--green); }
 
   /* buttons */
-  .t402 .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; padding: 14px 30px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s; }
+  .t402 .btn { display: inline-flex; align-items: center; gap: 8px; font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; padding: 14px 30px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s; }
   .t402 .btn-primary { background: var(--green); color: var(--ink); }
   .t402 .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
   .t402 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }

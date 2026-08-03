@@ -13,7 +13,7 @@
   --ink:#2A1F14;
   --ink-soft:#5C4A38;
   --ink-faint:#8B7B68;
-  --font-sora:'Sora',sans-serif;
+  --font-sora:'Space Grotesk','Noto Sans JP',sans-serif;
   --font-jp:'Noto Sans JP',sans-serif;
   --font-mono:'Space Mono',monospace;}
 .pv4 *{margin:0;padding:0;box-sizing:border-box}

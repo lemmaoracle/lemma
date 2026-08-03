@@ -148,8 +148,8 @@ const sellHref = `${base}/trust402/sell/`;
     --card: #fff;
     --border: #d8d6cc;
     --term-fg: #ecebe3;
-    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --font-body: "DM Sans", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-display: var(--font-display);
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
     --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-family: var(--font-body);
     color: var(--ink);
@@ -223,7 +223,7 @@ const sellHref = `${base}/trust402/sell/`;
   .t402 .pm-chip.key { background: var(--green); border-color: var(--green-deep); color: var(--ink); font-weight: 700; }
   .t402 .pm-note { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
   .t402 .pm-cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-  .t402 .pm-btn { font-family: var(--font-display); font-weight: 700; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 13px 26px; display: inline-block; }
+  .t402 .pm-btn { font-family: "Noto Sans JP", system-ui, sans-serif; font-weight: 700; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 13px 26px; display: inline-block; }
   .t402 .pm-btn.primary { background: var(--green); color: var(--ink); }
   .t402 .pm-btn.primary:hover { background: var(--green-deep); }
   .t402 .pm-btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }

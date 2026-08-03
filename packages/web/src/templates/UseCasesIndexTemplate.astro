@@ -336,8 +336,8 @@ const collectionJsonLd = {
 
 <style>
   .uc-page {
-    --uc-display: "Sora", system-ui, sans-serif;
-    --uc-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --uc-display: var(--font-display);
+    --uc-body: "Noto Sans JP", system-ui, sans-serif;
     --uc-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --uc-text-1: #1a1a1a;
     --uc-text-2: #3a3a3a;
@@ -534,7 +534,7 @@ const collectionJsonLd = {
     gap: 10px;
   }
   .uc-chip {
-    font-family: var(--uc-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
     color: var(--uc-text-2);
@@ -639,7 +639,7 @@ const collectionJsonLd = {
     align-items: center;
     gap: 5px;
     align-self: flex-start;
-    font-family: var(--uc-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.02em;

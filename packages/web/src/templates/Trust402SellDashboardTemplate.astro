@@ -342,8 +342,8 @@ const md = {
     --card: #fff;
     --border: #d8d6cc;
     --term-fg: #ecebe3;
-    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --font-body: "DM Sans", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font-display: var(--font-display);
+    --font-body: "Noto Sans JP", "Hiragino Sans", sans-serif;
     --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-family: var(--font-body);
     color: var(--ink);
@@ -358,7 +358,7 @@ const md = {
   .t402 .eyebrow-plain { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: lowercase; color: var(--green-link); margin-bottom: 20px; }
   .t402 .eyebrow-plain::before { content: ""; width: 16px; height: 2px; background: currentColor; display: block; }
 
-  .t402 .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; padding: 14px 30px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; transition: background .2s, color .2s, border-color .2s, transform .2s; }
+  .t402 .btn { display: inline-flex; align-items: center; gap: 8px; font-family: "Noto Sans JP", system-ui, sans-serif; font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; padding: 14px 30px; border-radius: 999px; cursor: pointer; border: 1.5px solid transparent; transition: background .2s, color .2s, border-color .2s, transform .2s; }
   .t402 .btn-primary { background: var(--green); color: var(--ink); }
   .t402 .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
 

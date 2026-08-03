@@ -55,7 +55,7 @@ const { locale } = Astro.props as Props;
     --surface: #ecebe3;
     --card: #fff;
     --border: #d8d6cc;
-    --font-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --font-display: var(--font-display);
     --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   .t402-tiers .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }

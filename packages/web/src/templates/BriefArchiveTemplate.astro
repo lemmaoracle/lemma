@@ -202,8 +202,8 @@ function cardData(card: ArchiveCard) {
 <style>
   /* v24 type scope, mirroring Brief detail / index templates */
   .ar-page {
-    --ar-display: "Sora", system-ui, -apple-system, sans-serif;
-    --ar-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --ar-display: var(--font-display);
+    --ar-body: "Noto Sans JP", system-ui, sans-serif;
     --ar-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --ar-text-1: #1a1a1a;
     --ar-text-2: #3a3a3a;
@@ -219,7 +219,7 @@ function cardData(card: ArchiveCard) {
     margin-top: 64px;
   }
   :root[lang="en"] .ar-page {
-    --ar-body: "Sora", system-ui, sans-serif;
+    --ar-body: "Noto Sans JP", system-ui, sans-serif;
   }
 
   .ar-container {

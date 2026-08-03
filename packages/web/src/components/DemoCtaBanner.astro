@@ -45,8 +45,8 @@ const pairHref = pairSampleId ? buildDemoUrl(pairSampleId, locale, source) : nul
      JA glyphs stay in Noto Sans JP (Layout's --font-display falls back to
      Noto Serif JP = 明朝, which leaked here in the previous version). */
   .demo-cta-banner {
-    --dcb-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
-    --dcb-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --dcb-display: var(--font-display);
+    --dcb-body: "Noto Sans JP", system-ui, sans-serif;
     --dcb-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
     margin: 48px 0 8px;
@@ -58,7 +58,7 @@ const pairHref = pairSampleId ? buildDemoUrl(pairSampleId, locale, source) : nul
     font-family: var(--dcb-body);
   }
   :root[lang="en"] .demo-cta-banner {
-    --dcb-body: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --dcb-body: "Noto Sans JP", system-ui, sans-serif;
   }
   .demo-cta-banner::before {
     content: "";
@@ -113,7 +113,7 @@ const pairHref = pairSampleId ? buildDemoUrl(pairSampleId, locale, source) : nul
     background: var(--accent, #8b4513);
     color: var(--lemma-cream, #fcfaf5);
     padding: 12px 26px;
-    font-family: var(--dcb-display);
+    font-family: "Noto Sans JP", system-ui, sans-serif;
     font-size: 12.5px;
     font-weight: 500;
     letter-spacing: 0.06em;
