@@ -95,9 +95,9 @@ const isResourcesActive =
 
   <!-- DESKTOP LINKS -->
   <ul class="mega-nav-links">
-    <!-- 1. プラン — single hub: one engine, audience-tagged columns.
-         Absorbs the former "Developers" lane; Seal is folded into Lemma API
-         (its /seal LP stays reachable but is not listed). -->
+    {/* 1. プラン — single hub: one engine, audience-tagged columns.
+        Absorbs the former "Developers" lane; Seal is folded into Lemma
+        (its /seal LP stays reachable but is not listed). */}
     <li class="mega-nav-item">
       <a href={pricingPath} class:list={["mega-nav-link has-mega", { active: isPlansActive }]}>{t.services}</a>
       <div class="mega-panel mega-panel-plans">
@@ -150,8 +150,8 @@ const isResourcesActive =
       </div>
     </li>
 
-    <!-- 2. Lemma API — overview + the five proofs (elevated above use-cases:
-         /pillars is now the Lemma API product page) -->
+    {/* 2. Lemma — overview + the five proofs (elevated above use-cases:
+         /pillars is now the Lemma product page) */}
     <li class="mega-nav-item">
       <a href={pillarsPath} class:list={["mega-nav-link has-mega", { active: isPillarsActive }]}>{t.pillars}</a>
       <div class="mega-panel">

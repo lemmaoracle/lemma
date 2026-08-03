@@ -52,6 +52,13 @@ const planCols = c.planColLabels.filter((l) => l !== "Trust402");
         </tbody>
       </table>
     </div>
+    {/* 凡例 — 「カスタム開発」の定義は商談での工数説明が変わるため省略しない
+        （事実修正 2026-08-02） */}
+    <p class="pc-legend">
+      {isJa
+        ? "凡例: ◆ = 標準対応 ／ カスタム開発 = 共通回路（data-commitment）＋開示選択レイヤの実装 ／ SCHEDULED = 提供予定（時期未確定）"
+        : "Legend: ◆ = standard. Custom build = the shared data-commitment circuit plus a disclosure-selection layer. SCHEDULED = planned, timing not yet fixed."}
+    </p>
   </div>
 </details>
 
@@ -104,6 +111,12 @@ const planCols = c.planColLabels.filter((l) => l !== "Trust402");
   .pc-none {
     color: var(--pr-text-4);
     font-size: 13px;
+  }
+  .pc-legend {
+    margin: 12px 2px 0;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--pr-text-3, #7a7568);
   }
   .pc-tier {
     font-family: var(--pr-display);
