@@ -34,6 +34,8 @@ import { DISCOVERY_CALL, DISCOVERY_CALL_URL } from "../config/cta";
 import { getDemoSampleForUseCase, getUseCasePairSample } from "../config/demoSamples";
 import { USE_CASE_PLAN } from "../data/useCasePlanMap";
 import { SEGMENT_URLS } from "../config/navigation";
+import { USE_CASE_TASK_GROUPS_JA } from "../config/useCaseTaskGroups";
+import { getAllUseCases } from "../data/useCases";
 
 const resolveCTA = (cta: CTA, lc: Locale): { readonly label: string; readonly href: string } =>
   cta.type === "talk-to-us"
@@ -81,6 +83,23 @@ const useCasesPath = `${base}/solutions/use-cases`;
 const pillarsPath = `${base}/pillars`;
 const pricingPath = `${base}/pricing`;
 const isJa = locale === "ja";
+
+// 「業務から探す」(Use cases — by task) — 索引と同じ課題グループの他ユースケースを
+// 末尾に並べる (実装指示 v1 §4)。JA のみ。グループは config/useCaseTaskGroups.ts を共有。
+const taskGroup = isJa
+  ? USE_CASE_TASK_GROUPS_JA.find((g) => g.slugs.includes(useCase.slug))
+  : undefined;
+let taskGroupMembers: ReadonlyArray<{ slug: string; title: string }> = [];
+if (taskGroup) {
+  const allJa = await getAllUseCases("ja");
+  const bySlug = new Map(allJa.map((u) => [u.slug, u]));
+  taskGroupMembers = taskGroup.slugs
+    .filter((slug) => slug !== useCase.slug)
+    .map((slug) => bySlug.get(slug))
+    .filter((u): u is UseCase => u !== undefined)
+    .slice(0, 5)
+    .map((u) => ({ slug: u.slug, title: u.title }));
+}
 
 // 対応プラン — links to the matching plan page (clickable here; detail page is
 // not nested inside a card anchor). DRAFT mapping in data/useCasePlanMap.ts.
@@ -160,6 +179,8 @@ const breadcrumbJsonLd = {
       compareRow={compareRow}
       ucBridgeHref={ucBridgeHref}
       ucBridgeCta={ucBridgeCta}
+      taskGroup={taskGroup}
+      taskGroupMembers={taskGroupMembers}
     />
   ) : (
   <main class="ucd-page">
@@ -333,6 +354,19 @@ const breadcrumbJsonLd = {
               {isJa ? "料金・API 仕様" : "Pricing & API"} →
             </a>
           </nav>
+        )}
+        {taskGroup && taskGroupMembers.length > 0 && (
+          <section class="ucd-bytask" aria-labelledby="ucd-bytask-h">
+            <div class="ucd-bytask-k">Use cases — by task</div>
+            <h2 class="ucd-bytask-h" id="ucd-bytask-h">業務から探す</h2>
+            <p class="ucd-bytask-sub">{taskGroup.id}｜{taskGroup.heading} — 同じ課題のユースケース</p>
+            <div class="ucd-bytask-list">
+              {taskGroupMembers.map((m) => (
+                <a class="ucd-bytask-row" href={`${useCasesPath}/${m.slug}/`}>{m.title}</a>
+              ))}
+            </div>
+            <a class="ucd-bytask-all" href={`${useCasesPath}/`}>ユースケース一覧 — 業務から探す（全36件） →</a>
+          </section>
         )}
       </div>
     </div>
@@ -1240,5 +1274,20 @@ const breadcrumbJsonLd = {
     .ucd-partner {
       padding: 36px 24px;
     }
+  }
+</style>
+
+<style>
+  /* 「業務から探す」 — 索引の全件リストと同じ行の形 (実装指示 v1 §4) */
+  .ucd-bytask { margin: 56px 0 0; border-top: 1px solid rgba(60, 52, 31, 0.14); padding-top: 28px; }
+  .ucd-bytask-k { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #8b8674; margin-bottom: 6px; }
+  .ucd-bytask-h { font-size: 1.15rem; margin: 0 0 4px; }
+  .ucd-bytask-sub { font-size: 0.8rem; color: #6f6a58; margin: 0 0 14px; }
+  .ucd-bytask-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 32px; }
+  .ucd-bytask-row { display: block; font-size: 0.84rem; line-height: 1.6; color: inherit; text-decoration: none; padding: 6px 0 6px 12px; border-left: 2px solid transparent; }
+  .ucd-bytask-row:hover { border-left-color: #a8e010; background: rgba(168, 224, 16, 0.06); }
+  .ucd-bytask-all { display: inline-block; margin-top: 14px; font-size: 0.8rem; }
+  @media (max-width: 860px) {
+    .ucd-bytask-list { grid-template-columns: 1fr; }
   }
 </style>

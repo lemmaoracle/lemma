@@ -1,0 +1,44 @@
+---
+/**
+ * Use cases index — v14 (業界別ソリューション索引).
+ *
+ * Renders the site chrome around the curated index fragment
+ * (config/usecases-index-v14.ja.html), injected inside `<main class="ucx">`.
+ * Two-axis IA: "Solutions — by industry" (9 cards) / "Use cases — by task"
+ * (36-row curated list, 課題別01〜04 preserved). Card thumbnails are OFF
+ * (実装指示 v1 §2.4 — 写真9枚が揃うまでONにしない).
+ * Spec: Lemma_ユースケース部分_実装指示_v1_2026-08-02.md / mock v14_1.
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import body from "../config/usecases-index-v14.ja.html?raw";
+import "../styles/usecases-v14.css";
+
+export interface UseCasesIndexV14Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as UseCasesIndexV14Props;
+
+const metaTitle = "ユースケース — 業界別ソリューションと業務から探す | Lemma";
+const metaDescription =
+  "待たせる確認から、その場で完結する信頼へ。発行は一度、検証は無料で何度でも。9つの業界別ソリューションと、業界をまたいで使われる36の業務ユースケース。";
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/solutions/use-cases/"
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="ucx artpage" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
