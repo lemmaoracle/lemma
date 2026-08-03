@@ -51,15 +51,15 @@
 .prx .iwrap{max-width:calc(1180px + 12vw);margin:0 auto;padding:0 6vw;}
 .prx .ih1{font-family:var(--font-serif-jp);font-weight:600;font-size:clamp(28px,3.6vw,42px);
     line-height:1.45;letter-spacing:.03em;color:var(--tx);margin:0 0 16px;word-break:keep-all;}
-.prx .isec{margin:16px 0 0;}
-.prx .band + .isec{margin-top:12px;}
-.prx .isec + .band{margin-top:14px;}
-.prx .isec-h{display:block;margin-bottom:12px;}
+.prx .isec{margin:72px 0 0;}
+.prx .band + .isec{margin-top:72px;}
+.prx .isec + .band{margin-top:72px;}
+.prx .isec-h{display:block;margin-bottom:20px;}
 .prx .isec-h > span{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .prx .isec-h b{display:block;font-family:var(--font-serif-jp);font-weight:600;
     font-size:clamp(23px,2.7vw,32px);line-height:1.5;letter-spacing:.03em;color:var(--tx);max-width:none;}
-.prx .band{position:relative;padding:24px 0 26px;margin-top:14px;}
+.prx .band{position:relative;padding:56px 0 60px;margin-top:72px;}
 .prx .band::before{content:"";position:absolute;left:calc(-50vw + 50%);width:100vw;top:0;bottom:0;z-index:0;}
 .prx .band > *{position:relative;z-index:1;}
 .prx .band.alt::before{background:var(--lite-2);}
@@ -158,3 +158,6 @@
     border-top:1px dashed var(--dline-2);padding-top:12px;}
 .prx .fitfoot b{color:var(--tx);}
 @media(max-width:860px){.prx .fit2{grid-template-columns:1fr;}}
+
+/* セクション最下部とフッターの間 (2026-08-03 余白調整) */
+.prx{padding-bottom:96px;}
