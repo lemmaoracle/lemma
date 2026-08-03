@@ -1,0 +1,219 @@
+<div class="wrap">
+  <div class="crumb"><a href="/ja/pillars">製品</a> — Seal</div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Product — Seal</span>
+      <h1><span class="nb">鍵ではなく、</span><span class="nb">証明を送る。</span></h1>
+      <p class="sub"><span class="nb">秘密は端末から</span><span class="nb">一歩も出ません。</span></p>
+      <p class="lead">サインインのとき、端末から出ていくのは鍵ではなく証明です。サーバーは鍵を受け取らず、保管もしません。<span class="hi">どの鍵を使ったのかも、渡していません。</span></p>
+      <div class="btnrow">
+        <a class="btn solid" href="/ja/guides">ドキュメントを読む</a>
+        <a class="btn ghostd" href="https://dashboard.lemma.workers.dev" target="_blank" rel="noopener">Sandbox で試す</a>
+        <a class="tlink" href="/ja/guides">仕様書 →</a>
+      </div>
+      <div style="margin-top:16px">
+        <p class="stdnote">国際標準に対応しています</p>
+        <div class="chips">
+          <span class="chip">MCP</span><span class="chip">A2A</span><span class="chip">x402</span><span class="chip">W3C VC</span>
+        </div>
+      </div>
+    </div>
+
+    <figure class="tech">
+      <div class="pgrid"></div>
+      <div class="tin">
+        <div class="tlab" style="margin-bottom:10px">@lemmaoracle/seal — v0.3.8</div>
+<pre class="code"><span class="k">import</span> * <span class="k">as</span> seal <span class="k">from</span> <span class="s">"@lemmaoracle/seal"</span>;
+
+<span class="k">const</span> { proof, publicSignals, nullifier } =
+  <span class="k">await</span> seal.prove({
+    secret: process.env.LEMMA_API_KEY,
+    nonce:  challengeNonce,
+  });
+
+<span class="c">// 鍵は端末に残る。送るのは proof だけ。</span></pre>
+      </div>
+    </figure>
+  </section>
+
+  <!-- SIGNATURE: unlinkable stamps -->
+  <div class="band">
+    <div class="wrap" style="padding:0 28px">
+      <div class="isec-h">
+        <span>Unlinkable</span>
+        <b><span class="nb">同じ鍵でも、</span><span class="nb">毎回ちがう印が押されます。</span></b>
+      </div>
+      <p class="lead">Seal が出すのは、鍵そのものでも鍵のハッシュでもなく、そのセッションだけの値（nullifier）です。サインインのたびに値が変わるため、<span class="hi">証明を並べても同じ人のものだと突き合わせられません。</span></p>
+
+      <div class="stamps">
+        <div class="card fig stamp">
+          <div class="st">Session 01</div>
+          <svg class="ring" viewBox="0 0 74 74" aria-hidden="true">
+            <circle cx="37" cy="37" r="30" fill="none" stroke="#c7ccc2" stroke-width="1"/>
+            <circle cx="37" cy="37" r="24" fill="none" stroke="#a8e010" stroke-width="2"/>
+            <path d="M28 37.5 L34.5 44 L46.5 30" fill="none" stroke="#6f9c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="sn">0x4c1e…9ab3</div>
+        </div>
+        <div class="card fig stamp">
+          <div class="st">Session 02</div>
+          <svg class="ring" viewBox="0 0 74 74" aria-hidden="true">
+            <circle cx="37" cy="37" r="30" fill="none" stroke="#c7ccc2" stroke-width="1"/>
+            <circle cx="37" cy="37" r="24" fill="none" stroke="#a8e010" stroke-width="2"/>
+            <path d="M28 37.5 L34.5 44 L46.5 30" fill="none" stroke="#6f9c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="sn">0xd07a…21f6</div>
+        </div>
+        <div class="card fig stamp">
+          <div class="st">Session 03</div>
+          <svg class="ring" viewBox="0 0 74 74" aria-hidden="true">
+            <circle cx="37" cy="37" r="30" fill="none" stroke="#c7ccc2" stroke-width="1"/>
+            <circle cx="37" cy="37" r="24" fill="none" stroke="#a8e010" stroke-width="2"/>
+            <path d="M28 37.5 L34.5 44 L46.5 30" fill="none" stroke="#6f9c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="sn">0x91b4…5c08</div>
+        </div>
+      </div>
+      <p class="lead mut" style="font-size:13px;margin-top:12px">同じ鍵から生成した3回分です。3つの値の間に、たどれる関係はありません。<br>（サインイン先のサービスは、受け取った証明を自分の登録済みの鍵と突き合わせて本人を確認します。）</p>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <section class="sec">
+    <div class="isec-h">
+      <span>What changes</span>
+      <b><span class="nb">保有を減らし、</span><span class="nb">証明を増やす。</span></b>
+    </div>
+    <p class="lead">漏洩のほとんどは、本来保有する必要のなかったデータから起きます。Seal はそのデータを式から消します——サーバーから、ログから、AI エージェントのコンテキストから。</p>
+    <div class="ba">
+      <div class="card fig"><div class="cbody before">
+        <h4>Seal なしでは</h4>
+        <svg class="dg" viewBox="0 0 380 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seal なし：鍵が端末からサーバーへ送られ、サーバーが鍵を保管している図">
+  <g transform="translate(18,52)">
+    <rect x="0" y="0" width="65" height="70" rx="4" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <line x1="12" y1="14" x2="26" y2="14" stroke="#5c6156" stroke-width="1"/>
+    <line x1="12" y1="20" x2="38" y2="20" stroke="#5c6156" stroke-width="1" opacity=".5"/>
+    <g transform="translate(19,34)">
+      <circle cx="6" cy="8" r="5" fill="none" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="11" y1="8" x2="23" y2="8" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="19" y1="8" x2="19" y2="12" stroke="#c25438" stroke-width="1.5"/>
+    </g>
+    <text x="32.5" y="86" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#5c6156">端末</text>
+  </g>
+  <g transform="translate(93,87)">
+    <line x1="0" y1="0" x2="108" y2="0" stroke="#c7ccc2" stroke-width="1.2"/>
+    <circle cx="108" cy="0" r="2.6" fill="#5c6156"/>
+    <text x="54" y="-16" text-anchor="middle" font-family="Space Mono,monospace" font-size="8" letter-spacing="1" fill="#c25438">鍵を送信</text>
+    <g class="sv-travel"><g transform="translate(0,-8)">
+      <circle cx="6" cy="8" r="4.5" fill="#fff" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="10.5" y1="8" x2="20" y2="8" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="17" y1="8" x2="17" y2="11" stroke="#c25438" stroke-width="1.5"/>
+    </g></g>
+  </g>
+  <g transform="translate(223,38)">
+    <ellipse cx="55" cy="8" rx="52" ry="6" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <path d="M3 8 L3 80" stroke="#5c6156" stroke-width="1.4" fill="none"/>
+    <path d="M107 8 L107 80" stroke="#5c6156" stroke-width="1.4" fill="none"/>
+    <ellipse cx="55" cy="80" rx="52" ry="6" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <g class="sv-glow" transform="translate(12,22)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(34,25)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(56,22)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(78,25)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(18,42)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(42,45)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(68,42)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(30,62)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g><g class="sv-glow" transform="translate(58,62)"><circle cx="4" cy="4" r="2.5" fill="none" stroke="#c25438" stroke-width="1.2"/><line x1="6" y1="4" x2="12" y2="4" stroke="#c25438" stroke-width="1.2"/></g>
+    <text x="55" y="104" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#5c6156">サーバー</text>
+  </g>
+</svg>
+        <ul>
+          <li>API キーが AI エージェントのコンテキストに置かれ、ログやプロンプトインジェクションで露出する。</li>
+          <li>サーバーが利用者の秘密を保管する。漏洩のたびに全員分が流出する。</li>
+          <li>サインインの記録が、同じ利用者のものとして突き合わせられる。</li>
+        </ul>
+      </div></div>
+      <div class="card fig after"><div class="cbody">
+        <h4>Seal を使うと</h4>
+        <svg class="dg" viewBox="0 0 380 168" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Seal あり：鍵は端末に残り、証明だけがサーバーへ送られる図">
+  <g transform="translate(18,52)">
+    <rect x="0" y="0" width="65" height="70" rx="4" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <line x1="12" y1="14" x2="26" y2="14" stroke="#5c6156" stroke-width="1"/>
+    <line x1="12" y1="20" x2="38" y2="20" stroke="#5c6156" stroke-width="1" opacity=".5"/>
+    <g transform="translate(19,34)">
+      <circle cx="6" cy="8" r="5" fill="none" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="11" y1="8" x2="23" y2="8" stroke="#c25438" stroke-width="1.5"/>
+      <line x1="19" y1="8" x2="19" y2="12" stroke="#c25438" stroke-width="1.5"/>
+    </g>
+    <text x="32.5" y="86" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#5c6156">端末</text>
+    <text x="32.5" y="99" text-anchor="middle" font-family="Space Mono,monospace" font-size="7.5" letter-spacing=".5" fill="#c25438">鍵はここに残る</text>
+  </g>
+  <g transform="translate(93,87)">
+    <line x1="0" y1="0" x2="108" y2="0" stroke="#c7ccc2" stroke-width="1.2"/>
+    <circle cx="108" cy="0" r="2.6" fill="#6f9c00"/>
+    <text x="54" y="-16" text-anchor="middle" font-family="Space Mono,monospace" font-size="8" letter-spacing="1" fill="#6f9c00">証明を送信</text>
+    <g class="sv-travel"><g transform="translate(0,-8)">
+      <circle cx="8" cy="8" r="6.5" fill="rgba(168,224,16,.20)" stroke="#6f9c00" stroke-width="1.5"/>
+      <path d="M4.6 8.2 L7 10.6 L11.6 5.6" fill="none" stroke="#6f9c00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g></g>
+  </g>
+  <g transform="translate(223,38)">
+    <ellipse cx="55" cy="8" rx="52" ry="6" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <path d="M3 8 L3 80" stroke="#5c6156" stroke-width="1.4" fill="none"/>
+    <path d="M107 8 L107 80" stroke="#5c6156" stroke-width="1.4" fill="none"/>
+    <ellipse cx="55" cy="80" rx="52" ry="6" fill="#fff" stroke="#5c6156" stroke-width="1.4"/>
+    <g class="sv-pulse" transform="translate(44,32)">
+      <circle cx="11" cy="11" r="10.5" fill="rgba(168,224,16,.16)" stroke="#6f9c00" stroke-width="1.5"/>
+      <path d="M6.6 11.3 L9.8 14.6 L15.8 7.8" fill="none" stroke="#6f9c00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="55" y="72" text-anchor="middle" font-family="Space Mono,monospace" font-size="7.5" letter-spacing=".5" fill="#5c6156">鍵は無い</text>
+    <text x="55" y="104" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#5c6156">サーバー</text>
+  </g>
+</svg>
+        <ul>
+          <li>コンテキストに残るのは証明だけ。漏れて困るものがない。</li>
+          <li>サーバーは鍵を保管しない。漏れるとしても、そのセッションの証明だけ。</li>
+          <li>証明はセッションごとに別の値になる。並べても関係がたどれない。</li>
+        </ul>
+        <div class="stat"><span class="sv">0</span><div class="sd"><b>サーバーが保管する鍵の数</b>保管されるのはハッシュだけで、鍵そのものは渡していません。</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="sec alt">
+    <div class="isec-h">
+      <span>How it works</span>
+      <b><span class="nb">challenge → prove → verify。</span><span class="nb">秘密は一度も動きません。</span></b>
+    </div>
+    <div class="seqgrid">
+      <div class="seqhead"><span class="n"></span><div class="lanes"><span class="l1">端末</span><span class="l2">境界</span><span class="l3">サーバー</span></div><div></div></div>
+      <div class="seqrow">
+        <span class="n"><span class="bar"></span><em>01</em></span>
+        <div class="fig"><svg viewBox="0 0 340 56" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="nonce がサーバーから端末へ渡る"><line x1="279" y1="28" x2="70" y2="28" stroke="#5c6156" stroke-width="1.3"/><circle cx="66" cy="28" r="3" fill="#5c6156"/><text x="174" y="17" text-anchor="middle" font-family="Space Mono,monospace" font-size="9.5" letter-spacing=".6" fill="#5c6156">nonce</text></svg></div>
+        <div class="txt"><h5>Challenge</h5><p>サーバーが使い捨ての識別子（<code>nonce</code>）を発行。</p></div>
+      </div>
+      <div class="seqrow">
+        <span class="n"><span class="bar"></span><em>02</em></span>
+        <div class="fig"><svg viewBox="0 0 340 56" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="端末の中だけで証明が生成され、境界を越えるものはない"><rect x="16" y="10" width="92" height="38" rx="5" fill="rgba(168,224,16,.12)" stroke="#6f9c00" stroke-width="1.2"/><g transform="translate(32,22)"><circle cx="6" cy="6" r="4.4" fill="none" stroke="#c25438" stroke-width="1.4"/><line x1="10" y1="6" x2="19" y2="6" stroke="#c25438" stroke-width="1.4"/><line x1="16" y1="6" x2="16" y2="9.4" stroke="#c25438" stroke-width="1.4"/></g><g transform="translate(74,19)"><circle cx="10" cy="10" r="9.4" fill="rgba(168,224,16,.22)" stroke="#6f9c00" stroke-width="1.5"/><path d="M6 10.3 L8.9 13.2 L14.4 6.7" fill="none" stroke="#6f9c00" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g><text x="122" y="33" font-family="Space Mono,monospace" font-size="9" letter-spacing=".4" fill="#9aa093">境界を越えるものは、ありません</text></svg></div>
+        <div class="txt"><h5>Prove</h5><p>端末内で証明（proof）を生成。</p><p class="sub">※ 証明の生成はブラウザ内で完結。秘密鍵は端末から一歩も外に出ません。</p></div>
+      </div>
+      <div class="seqrow">
+        <span class="n"><span class="bar"></span><em>03</em></span>
+        <div class="fig"><svg viewBox="0 0 340 56" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="証明だけが端末からサーバーへ渡り、検証される"><line x1="70" y1="28" x2="270" y2="28" stroke="#6f9c00" stroke-width="1.4"/><g transform="translate(163,21)"><circle cx="7" cy="7" r="6.4" fill="rgba(168,224,16,.22)" stroke="#6f9c00" stroke-width="1.3"/><path d="M4.3 7.2 L6.2 9.2 L10 4.9" fill="none" stroke="#6f9c00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><text x="174" y="17" text-anchor="middle" font-family="Space Mono,monospace" font-size="9.5" letter-spacing=".6" fill="#6f9c00">proof</text><g transform="translate(271,20)"><circle cx="8" cy="8" r="7.6" fill="rgba(168,224,16,.18)" stroke="#6f9c00" stroke-width="1.5"/><path d="M4.9 8.3 L7.2 10.6 L11.5 5.6" fill="none" stroke="#6f9c00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div>
+        <div class="txt"><h5>Verify</h5><p>サーバーが証明を検証し、本人を確認。</p><p class="sub">※ 鍵の受領・保管は一切不要です。</p></div>
+      </div>
+    </div>
+      <p class="seqnote">検証はオフチェーンで行われます（<span class="mono">groth16-bn254-snarkjs</span>）。チェーンには依存しません。</p>
+  </section>
+
+  
+  <!-- CTA -->
+  <section class="cta">
+    <figure class="tech">
+      <div class="pgrid"></div>
+      <div class="tin">
+        <h3><span class="nb">鍵を、AI に渡さない。</span></h3>
+        <p>エージェントが動く場所には、鍵ではなく証明を置きます。導入の形はご相談ください。</p>
+        <div class="btnrow">
+          <a class="btn solid" href="https://tally.so/r/EkBqDX" target="_blank" rel="noopener">エンタープライズ相談</a>
+          <a class="btn ghostd" href="/ja/guides">ドキュメントを読む</a>
+        </div>
+      </div>
+    </figure>
+  </section>
+</div>

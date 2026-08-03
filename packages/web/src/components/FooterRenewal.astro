@@ -1,29 +1,26 @@
 ---
 /**
- * リニューアルのフッター（`Lemma_コンテンツテンプレート_実装指示_v1_2026-07-30.md` §1.2）。
+ * 共通フッター v2（製品ページ移行 実装指示 v2.1 §4 — 全ページに効く）。
  *
- * スレート地＋ライムの環境光、5カラム。モック `lemma_article_mock_v10.html` /
- * `lemma_blog_index_mock_v4.html` / `lemma_brief_index_mock_v5.html` /
- * `lemma_brief_article_mock_v5.html` の `footer.site` の面。
+ * スレート地＋ライムの環境光。上段=ロゴ＋タグライン／右にダッシュボードと
+ * ソーシャル（下辺ヘアライン）、中段=4列（製品／開発者向け／リソース／会社・
+ * 列見出しは Space Mono 9.5px＋13×2px のライムのバー）、下段=© は mono 大文字。
  *
- * **旧 `Footer.astro`（v28 のクリーム＋Sora＋saddle brown）は残してある。**
- * リニューアルは面ごとに出していて、トップページとユースケースページは
- * 今回の範囲外なので、サイト全体を差し替えると範囲外の面が動く。この
- * コンポーネントは今回の4テンプレート（ブログ記事・ブログ一覧・Brief 一覧・
- * Brief 記事）だけが読む。全面がリニューアルに乗ったら `Footer.astro` を
- * これで置き換えて、片方を消す。
+ * §4.2 の判断:
+ *  - 製品列は Lemma API / Trust402 / Seal / CLUBS ↗ / 料金 の5項目。
+ *    プラン3本 (Civic/Critical/Compliance) は製品でないため外す（→ /pricing に集約。
+ *    孤立の扱いは Phase5 の料金整理で判断 = §4.4）。
+ *  - ラベルは「Lemma API」（飛び先 /pillars のタイトルが Lemma API のため。
+ *    Phase1 v2 の「Lemma に変える」記録から差し戻し）。
+ *  - ホワイトペーパーは配布物が存在しないため削除。Trust402 の二重掲載を解消。
+ *  - CLUBS は外部リンクの印つきでフッターのみ（ナビには入れない = §1.6）。
  *
- * ロゴはインライン SVG を複製せず既存の `LemmaOracle` を使う（指示書 §1.2）。
- * 環境光は `inset:0` ＋楕円グラデで、`border-radius:50%` の円は使わない
- * （円は縮小したときに輪郭が出る）。
- *
- * 下段右端の「この記事も、証明付きで配信しています」は**保留**。記事ごとの
- * 証明が実在しないうちは事実でない表示になるため、可否を確定してから足す
- * （検証センター自体は「読む・確かめる」列から辿れる）。
+ * 旧 `Footer.astro` はこのコンポーネントへのディスパッチャになった（v2.1 §4.3:
+ * ナビが新DSなのでフッターだけ旧のままだと上下で質感が食い違う）。
  */
 import type { Locale, Translations } from "../i18n/translations";
 import LemmaOracle from "./LemmaOracle.astro";
-import { SEGMENT_URLS } from "../config/navigation";
+import { DASHBOARD_URL } from "../config/cta";
 
 interface Props {
   locale: Locale;
@@ -32,7 +29,7 @@ interface Props {
   base: string;
 }
 
-const { locale, t, footerT, base } = Astro.props;
+const { locale, footerT, base } = Astro.props;
 const isJa = locale === "ja";
 const L = (path: string) => (base ? `${base}${path}` : path);
 
@@ -40,55 +37,70 @@ const currentPath = Astro.url.pathname;
 const languageSwitchHref = isJa
   ? currentPath.replace(/^\/ja/, "") || "/"
   : `/ja${currentPath}`;
-const languageSwitchLabel = isJa ? "EN" : "日本語";
+const languageSwitchLabel = isJa ? "English" : "日本語";
 
-/**
- * ブランドの2行はサイトの主張そのもので、`footerT.tagline`（「AI のための
- * 信頼インフラ。」）とは別の文。指示書 §1.2 の文面をそのまま持つ。
- */
 const brandLines = isJa
   ? ["AI時代に、何が本物かを証明する。", "発行は一度。検証は、無料で何度でも。"]
   : ["Prove what's real in the age of AI.", "Issue once. Verify free, any number of times."];
 
-/**
- * 「Lemma API」はモックどおり料金の API セクションへ、「5つの証明」は
- * `/pillars` へ送る。`/pillars` が Lemma API の製品ページ（ナビの
- * 「Lemma API」もここ）なので、両方を `/pillars` にすると同じ行が2つ並ぶ。
- */
-const columns = [
+interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+  dot?: boolean;
+}
+
+const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
   {
     heading: isJa ? "製品" : "Products",
     links: [
-      { label: "Lemma", href: L("/pillars") },
+      { label: "Lemma API", href: L("/pillars") },
       { label: "Trust402", href: L("/trust402/") },
       { label: "Seal", href: L("/seal/") },
+      { label: "CLUBS", href: "https://clubs.place", external: true },
+      { label: isJa ? "料金" : "Pricing", href: L("/pricing") },
     ],
   },
   {
-    heading: isJa ? "プラン" : "Plans",
+    heading: isJa ? "開発者向け" : "Developers",
     links: [
-      { label: t.mega.products.civic, href: SEGMENT_URLS.civic[locale] },
-      { label: t.mega.products.critical, href: SEGMENT_URLS.critical[locale] },
-      { label: t.mega.products.compliance, href: SEGMENT_URLS.compliance[locale] },
-      { label: t.mega.products.pricing, href: L("/pricing") },
-    ],
-  },
-  {
-    heading: isJa ? "知る" : "Learn",
-    links: [
-      { label: isJa ? "5つの証明" : "The five proofs", href: L("/pillars") },
-      { label: isJa ? "ユースケース" : "Use cases", href: L("/solutions/use-cases") },
-      { label: isJa ? "ドキュメント" : "Docs", href: L("/guides") },
-      { label: t.mega.resources.glossary, href: L("/glossary") },
-    ],
-  },
-  {
-    heading: isJa ? "読む・確かめる" : "Read & verify",
-    links: [
-      { label: "Critical Brief", href: L("/critical/briefs") },
-      { label: t.mega.resources.blog, href: L("/blog") },
+      { label: isJa ? "ダッシュボード" : "Dashboard", href: DASHBOARD_URL, external: true },
+      { label: isJa ? "仕様書" : "Specs", href: L("/guides") },
       { label: isJa ? "検証センター" : "Verification center", href: L("/verify/") },
-      { label: t.mega.resources.faq, href: L("/faq") },
+      { label: "GitHub", href: "https://github.com/lemmaoracle", external: true },
+      { label: "Smithery", href: "https://smithery.ai/servers/lemmaoracle/lemma", external: true },
+    ],
+  },
+  {
+    heading: isJa ? "リソース" : "Resources",
+    links: [
+      { label: "Critical Brief", href: L("/critical/briefs"), dot: true },
+      { label: isJa ? "ブログ" : "Blog", href: L("/blog") },
+      { label: isJa ? "業界別ソリューション" : "Solutions by industry", href: L("/solutions/use-cases") },
+      { label: isJa ? "用語集" : "Glossary", href: L("/glossary") },
+      { label: "FAQ", href: L("/faq") },
+    ],
+  },
+  {
+    heading: isJa ? "会社" : "Company",
+    links: [
+      {
+        label: isJa ? "運営会社" : "Company",
+        href: isJa ? "https://corp.frame00.com/" : "https://corp.frame00.com/index-en",
+        external: true,
+      },
+      {
+        label: isJa ? "お問い合わせ" : "Contact",
+        href: isJa ? "https://tally.so/r/EkBqDX" : "https://tally.so/r/Pd2Rl5",
+        external: true,
+      },
+      {
+        label: isJa ? "ニュースレター" : "Newsletter",
+        href: isJa ? "https://tally.so/r/EkMj82" : "https://tally.so/r/rjvN2X",
+        external: true,
+      },
+      { label: isJa ? "真正性とは" : "What is authenticity", href: L("/authenticity") },
+      { label: languageSwitchLabel, href: languageSwitchHref },
     ],
   },
 ];
@@ -96,7 +108,7 @@ const columns = [
 
 <footer class="rfooter">
   <div class="rfooter-wrap">
-    <div class="rfooter-top">
+    <div class="rfooter-head">
       <div class="rfooter-brand">
         <a href={base || "/"} class="rfooter-logo" aria-label="Lemma">
           <LemmaOracle class="rfooter-mark" />
@@ -105,24 +117,48 @@ const columns = [
           {brandLines[0]}<br />{brandLines[1]}
         </p>
       </div>
+      <div class="rfooter-actions">
+        <a class="rfooter-dash" href={DASHBOARD_URL} target="_blank" rel="noopener">
+          {isJa ? "ダッシュボード" : "Dashboard"} <span class="rfooter-ext">↗</span>
+        </a>
+        <div class="rfooter-social">
+          <a href="https://x.com/lemmaoracle" target="_blank" rel="noopener" aria-label="X">X</a>
+          <a href="https://github.com/lemmaoracle" target="_blank" rel="noopener" aria-label="GitHub">GH</a>
+          <a href="https://www.linkedin.com/company/lemmaoracle/" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="rfooter-cols">
       {columns.map((col) => (
         <div class="rfooter-col">
           <h4>{col.heading}</h4>
-          {col.links.map((link) => <a href={link.href}>{link.label}</a>)}
+          {col.links.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener" : undefined}
+            >
+              {link.dot && <span class="rfooter-dot">●</span>}
+              {link.label}
+              {link.external && <span class="rfooter-ext">↗</span>}
+            </a>
+          ))}
         </div>
       ))}
     </div>
+
     <div class="rfooter-bottom">
-      <span>© FRAME00, Inc.</span>
-      <a href={L("/terms")}>{footerT.terms}</a>
-      <a href={L("/privacy")}>{footerT.privacy}</a>
-      <a href={languageSwitchHref}>{languageSwitchLabel}</a>
+      <span class="rfooter-copy">© 2026 FRAME00, INC.</span>
+      <span class="rfooter-bottom-links">
+        <a href={L("/privacy")}>{footerT.privacy}</a>
+        <a href={L("/terms")}>{footerT.terms}</a>
+      </span>
     </div>
   </div>
 </footer>
 
 <style>
-  /* トークンの値は記事テンプレート（BlogArticleTemplate）と同じもの。 */
   .rfooter {
     --ok: #a8e010;
     --font-mono: "Space Mono", monospace;
@@ -130,7 +166,7 @@ const columns = [
     position: relative;
     overflow: hidden;
     margin-top: 80px;
-    padding: 56px 0 30px;
+    padding: 52px 0 28px;
     background: linear-gradient(172deg, #3c443d 0%, #333b34 55%, #2e362f 100%);
     font-family: "Space Grotesk", "Noto Sans JP", "Hiragino Sans", sans-serif;
   }
@@ -153,12 +189,18 @@ const columns = [
     margin: 0 auto;
     padding: 0 6vw;
   }
-  .rfooter-top {
-    display: grid;
-    grid-template-columns: minmax(220px, 1.1fr) repeat(4, 1fr);
-    gap: 36px;
-  }
 
+  /* ── 上段: ブランド＋アクション、下辺ヘアライン ── */
+  .rfooter-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+    padding-bottom: 30px;
+    margin-bottom: 34px;
+    border-bottom: 1px solid #4a544b;
+  }
   .rfooter-logo {
     display: inline-flex;
     color: #ebefe6;
@@ -171,13 +213,64 @@ const columns = [
     color: currentColor;
   }
   .rfooter-brand p {
-    margin: 16px 0 0;
+    margin: 14px 0 0;
     font-size: 12.5px;
     line-height: 1.9;
     color: #9ba296;
   }
+  .rfooter-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .rfooter-dash {
+    font-family: "Noto Sans JP", "Space Grotesk", sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f1412;
+    background: var(--ok);
+    border-radius: 6px;
+    padding: 10px 20px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: filter 0.18s;
+  }
+  .rfooter-dash:hover {
+    filter: brightness(1.06);
+  }
+  .rfooter-dash .rfooter-ext {
+    color: inherit;
+  }
+  .rfooter-social {
+    display: flex;
+    gap: 8px;
+  }
+  .rfooter-social a {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: #c3cabb;
+    text-decoration: none;
+    border: 1px solid #4a544b;
+    border-radius: 7px;
+    padding: 7px 11px;
+    transition: 0.15s;
+  }
+  .rfooter-social a:hover {
+    color: #fff;
+    border-color: #8b9285;
+  }
 
+  /* ── 中段: 4列 ── */
+  .rfooter-cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 36px;
+  }
   .rfooter-col h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0 0 14px;
     font-family: var(--font-mono);
     font-size: 9.5px;
@@ -185,6 +278,14 @@ const columns = [
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: #8b9285;
+  }
+  /* 列見出しのライムのバー（節見出しのラベルと同じ部品 = §4.3） */
+  .rfooter-col h4::before {
+    content: "";
+    flex: none;
+    width: 13px;
+    height: 2px;
+    background: var(--ok);
   }
   .rfooter-col a {
     display: block;
@@ -198,38 +299,62 @@ const columns = [
   .rfooter-col a:hover {
     color: #ffffff;
   }
+  .rfooter-dot {
+    color: var(--ok);
+    font-size: 8px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  .rfooter-ext {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    margin-left: 5px;
+    color: #8b9285;
+  }
 
+  /* ── 下段 ── */
   .rfooter-bottom {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
     margin-top: 40px;
     padding-top: 22px;
     border-top: 1px solid #4a544b;
-    font-size: 11.5px;
+  }
+  .rfooter-copy {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: #8b9285;
   }
-  .rfooter-bottom a {
+  .rfooter-bottom-links {
+    display: flex;
+    gap: 20px;
+  }
+  .rfooter-bottom-links a {
+    font-size: 11.5px;
     color: #b6bdb1;
     text-decoration: none;
     transition: color 0.15s;
   }
-  .rfooter-bottom a:hover {
+  .rfooter-bottom-links a:hover {
     color: #fff;
   }
 
-  @media (max-width: 1020px) {
-    .rfooter-top {
+  @media (max-width: 860px) {
+    .rfooter-cols {
       grid-template-columns: 1fr 1fr;
       gap: 28px;
     }
   }
-  @media (max-width: 560px) {
+  @media (max-width: 520px) {
     .rfooter {
       padding: 44px 0 26px;
     }
-    .rfooter-top {
+    .rfooter-cols {
       grid-template-columns: 1fr;
       gap: 26px;
     }
