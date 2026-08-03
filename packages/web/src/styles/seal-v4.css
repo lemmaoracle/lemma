@@ -140,10 +140,10 @@
 @keyframes sealTravel{0%{transform:translateX(-15px);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(105px);opacity:0}}
 @keyframes sealPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
 @keyframes sealGlow{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes rowIn{0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:none}}
-@keyframes badgeIn{0%{opacity:0;transform:scale(.6)}60%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
-@keyframes rowFlash{0%{background:rgba(194,84,56,.22)}100%{background:transparent}}
-@keyframes logIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@keyframes blockFlash{0%,100%{background:rgba(194,84,56,.05)}30%,60%{background:rgba(194,84,56,.16)}}
-@keyframes badgeSlam{0%{opacity:0;transform:scale(1.5)}70%{opacity:1;transform:scale(.96)}100%{opacity:1;transform:none}}
+
+
+
+
+
+
 .sealx{overflow-x:hidden;}

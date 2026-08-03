@@ -14,9 +14,11 @@ interface Props {
   t: Translations["nav"];
   footerT: Translations["footer"];
   base: string;
+  /** Trust402 面などがダッシュボードの飛び先を差し替えるための旧契約 (S1)。 */
+  dashboardUrl?: string;
 }
 
-const { locale, t, footerT, base } = Astro.props;
+const { locale, t, footerT, base, dashboardUrl } = Astro.props;
 ---
 
-<FooterRenewal locale={locale} t={t} footerT={footerT} base={base} />
+<FooterRenewal locale={locale} t={t} footerT={footerT} base={base} dashboardUrl={dashboardUrl} />

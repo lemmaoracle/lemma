@@ -27,9 +27,12 @@ interface Props {
   t: Translations["nav"];
   footerT: Translations["footer"];
   base: string;
+  /** ダッシュボードボタン/リンクの飛び先の差し替え (Trust402 面が使用)。 */
+  dashboardUrl?: string;
 }
 
-const { locale, footerT, base } = Astro.props;
+const { locale, footerT, base, dashboardUrl } = Astro.props;
+const dashHref = dashboardUrl ?? DASHBOARD_URL;
 const isJa = locale === "ja";
 const L = (path: string) => (base ? `${base}${path}` : path);
 
@@ -64,7 +67,7 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
   {
     heading: isJa ? "開発者向け" : "Developers",
     links: [
-      { label: isJa ? "ダッシュボード" : "Dashboard", href: DASHBOARD_URL, external: true },
+      { label: isJa ? "ダッシュボード" : "Dashboard", href: dashHref, external: true },
       { label: isJa ? "仕様書" : "Specs", href: L("/guides") },
       { label: isJa ? "検証センター" : "Verification center", href: L("/verify/") },
       { label: "GitHub", href: "https://github.com/lemmaoracle", external: true },
@@ -85,7 +88,7 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
     heading: isJa ? "会社" : "Company",
     links: [
       {
-        label: isJa ? "運営会社" : "Company",
+        label: isJa ? "運営会社" : "About us",
         href: isJa ? "https://corp.frame00.com/" : "https://corp.frame00.com/index-en",
         external: true,
       },
@@ -118,7 +121,7 @@ const columns: ReadonlyArray<{ heading: string; links: FooterLink[] }> = [
         </p>
       </div>
       <div class="rfooter-actions">
-        <a class="rfooter-dash" href={DASHBOARD_URL} target="_blank" rel="noopener">
+        <a class="rfooter-dash" href={dashHref} target="_blank" rel="noopener">
           {isJa ? "ダッシュボード" : "Dashboard"} <span class="rfooter-ext">↗</span>
         </a>
         <div class="rfooter-social">
