@@ -270,6 +270,7 @@ const faqJsonLd = {
     --lemma-cream: #f3f4f1;
     --lemma-cream-deep: #eceee9;
     --lemma-line: #e1e3dd;
+    --lemma-brown-light: #eef2e4;
 
     --fq-display: var(--font-display);
     --fq-body: "Noto Sans JP", system-ui, sans-serif;
@@ -1058,63 +1059,83 @@ const faqJsonLd = {
     });
   });
 
-  // ─── Sticky jump-nav scroll spy ───
+  // ─── カテゴリはフィルタタブ (1カテゴリずつ表示・縦長解消 2026-08-04) ───
+  // 検索中はタブを無視して全カテゴリを横断し、クリアで元のタブに戻る。
   (function () {
     var pills = document.querySelectorAll(".fq-jump-pill");
     var sections = document.querySelectorAll("[data-section]");
+    var input = document.querySelector("[data-faq-search]");
+    var empty = document.querySelector("[data-faq-empty]");
     if (!pills.length || !sections.length) return;
 
-    var spy = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          var id = e.target.getAttribute("id");
-          pills.forEach(function (p) {
-            p.classList.toggle(
-              "is-active",
-              p.getAttribute("data-jump-target") === id,
-            );
-          });
-        });
-      },
-      { rootMargin: "-30% 0px -60% 0px", threshold: 0 },
-    );
-    sections.forEach(function (s) {
-      spy.observe(s);
-    });
-  })();
+    var activeId = sections[0].getAttribute("id");
 
-  // ─── Client-side search ───
-  (function () {
-    var input = document.querySelector("[data-faq-search]");
-    if (!input) return;
-    var items = document.querySelectorAll("[data-faq-item]");
-    var sections = document.querySelectorAll("[data-section]");
-    var empty = document.querySelector("[data-faq-empty]");
-
-    input.addEventListener("input", function () {
-      var q = input.value.trim().toLowerCase();
+    function applyView() {
+      var q = input ? input.value.trim().toLowerCase() : "";
+      var searching = q.length > 0;
       var anyVisible = false;
-      items.forEach(function (it) {
-        var qText = it.getAttribute("data-faq-q") || "";
-        var match = !q || qText.indexOf(q) !== -1;
-        if (match) {
-          it.removeAttribute("hidden");
-          anyVisible = true;
-        } else {
-          it.setAttribute("hidden", "");
-        }
-      });
       sections.forEach(function (sec) {
-        var visibleItems = sec.querySelectorAll(
-          "[data-faq-item]:not([hidden])",
+        var secVisible = false;
+        sec.querySelectorAll("[data-faq-item]").forEach(function (it) {
+          var qText = it.getAttribute("data-faq-q") || "";
+          var match = !searching || qText.indexOf(q) !== -1;
+          if (match) {
+            it.removeAttribute("hidden");
+            secVisible = true;
+            anyVisible = true;
+          } else {
+            it.setAttribute("hidden", "");
+          }
+        });
+        var show = searching ? secVisible : sec.getAttribute("id") === activeId;
+        sec.style.display = show ? "" : "none";
+      });
+      pills.forEach(function (pl) {
+        pl.classList.toggle(
+          "is-active",
+          !searching && pl.getAttribute("data-jump-target") === activeId,
         );
-        sec.style.display = visibleItems.length ? "" : "none";
       });
       if (empty) {
-        if (q && !anyVisible) empty.removeAttribute("hidden");
+        if (searching && !anyVisible) empty.removeAttribute("hidden");
         else empty.setAttribute("hidden", "");
       }
+    }
+
+    function activate(id, scroll) {
+      var found = false;
+      sections.forEach(function (sec) {
+        if (sec.getAttribute("id") === id) found = true;
+      });
+      if (!found) return;
+      activeId = id;
+      if (input && input.value) input.value = "";
+      applyView();
+      if (scroll) {
+        var target = document.querySelector(".fq-jump");
+        if (target) target.scrollIntoView({ block: "start" });
+      }
+    }
+
+    pills.forEach(function (pl) {
+      pl.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        activate(pl.getAttribute("data-jump-target"), false);
+      });
     });
+
+    // 「目的から探す」カードのアンカーもタブ切替に接続
+    document.querySelectorAll('.fq-router-card[href^="#"]').forEach(function (card) {
+      card.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        activate(card.getAttribute("href").slice(1), true);
+      });
+    });
+
+    if (input) input.addEventListener("input", applyView);
+
+    // ディープリンク (#sec-id) はそのタブを初期表示
+    if (location.hash) activate(location.hash.slice(1), false);
+    applyView();
   })();
 </script>
