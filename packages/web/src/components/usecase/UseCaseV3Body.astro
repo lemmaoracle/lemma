@@ -613,12 +613,17 @@ const bytaskMembers = taskGroupMembers.filter(
 
   {/* フッター上の細い1行 — 仕組み・FAQ・活用シーン全体像をここに集約 */}
   <nav class="ucv-footlinks" aria-label={isJa ? "関連リンク" : "Related links"}>
-    {pillar && (
-      <a href={`${pillarsPath}/${pillar.slug}`}>{C.footHow} — {pillar.title[locale]} →</a>
-    )}
-    <a href={`${base}/pricing/#api`}>{isJa ? "料金" : "Pricing"} →</a>
-    <a href={faqHref}>{C.footFaq} →</a>
-    <a href={ucBridgeHref}>{C.footBridge} →</a>
+    <div class="ucv-footlinks-box">
+      <p class="ucv-footlinks-h">{isJa ? "お問い合わせの前に、確認したい方へ" : "Before you reach out"}</p>
+      <div class="ucv-footlinks-grid">
+        {pillar && (
+          <a href={`${pillarsPath}/${pillar.slug}`}><b>{C.footHow}</b><span>{isJa ? `${pillar.title[locale]} の仕組みと技術詳細` : "How the proof works, in depth"}</span></a>
+        )}
+        <a href={`${base}/pricing/#api`}><b>{isJa ? "料金" : "Pricing"}</b><span>{isJa ? "発行に課金、検証は無料" : "Pay to issue; verification is free"}</span></a>
+        <a href={faqHref}><b>{C.footFaq}</b><span>{isJa ? "セキュリティ・既存システム連携など" : "Security, integrations, and more"}</span></a>
+        <a href={ucBridgeHref}><b>{C.footBridge}</b><span>{isJa ? "業界・業務ごとの活用シーン" : "Use scenarios by industry"}</span></a>
+      </div>
+    </div>
   </nav>
 </main>
 
@@ -829,9 +834,15 @@ const bytaskMembers = taskGroupMembers.filter(
   .ucv-closing-link:hover { color: var(--ok); }
 
   /* ---------- footer 直上の細いリンク行 ---------- */
-  .ucv-footlinks { display: flex; gap: 12px 34px; justify-content: center; align-items: baseline; flex-wrap: wrap; padding: 26px 6vw; border-top: 1px solid var(--line); }
-  .ucv-footlinks a { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
-  .ucv-footlinks a:hover { color: var(--ok-light); }
+  .ucv-footlinks { padding: 34px 6vw 44px; border-top: 1px solid var(--line); }
+  .ucv-footlinks-box { max-width: 880px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px 20px; box-shadow: var(--sh-s); }
+  .ucv-footlinks-h { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--muted); margin: 0 0 12px; }
+  .ucv-footlinks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
+  .ucv-footlinks-grid a { display: block; padding: 8px 0 8px 12px; border-left: 2px solid transparent; transition: 0.15s; }
+  .ucv-footlinks-grid a:hover { border-left-color: var(--ok); background: rgba(168, 224, 16, 0.06); }
+  .ucv-footlinks-grid b { display: block; font-size: 13.5px; font-weight: 600; color: var(--tx); }
+  .ucv-footlinks-grid span { font-size: 11.5px; color: var(--muted); }
+  @media (max-width: 720px) { .ucv-footlinks-grid { grid-template-columns: 1fr; } }
 
   /* ---------- responsive ---------- */
   @media (max-width: 1020px) {
