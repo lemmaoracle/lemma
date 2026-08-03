@@ -1465,3 +1465,49 @@
     padding-bottom: 64px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   カスケードの後始末。
+
+   このファイルはモックの規則順をそのまま保存しているため、狭幅の @media が
+   後段の無条件規則に負ける箇所がある（実測で確認）。該当分だけ末尾で上書きする。
+   - 901〜1020px で 5 カラムのままだった Five proofs グリッド
+   - 900px 以下でヒーローの gap が 56px のままだった
+   - 900px 以下で明るいカード上に暗い罫線が残っていた
+   -------------------------------------------------------------------------- */
+@media (max-width: 1020px) {
+  .pv18 .pfgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pv18 .pfgrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .pv18 .phero {
+    gap: 20px;
+  }
+  .pv18 .regtxt .rt-res {
+    border-top-color: var(--dline);
+  }
+}
+
+/* ライブ数値の取得前・失敗時。既定を OFFLINE にしているのでその見た目を持たせる。 */
+.pv18 .rp-live.offline i {
+  background: #ce9a85;
+}
+
+/* 主 CTA と同様にフォーカスを可視化する（rt-go は div から a になった）。 */
+.pv18 .rt-go:focus-visible,
+.pv18 .btn:focus-visible {
+  outline: 2px solid var(--ok-light);
+  outline-offset: 2px;
+}
+.pv18 .rt-go:hover {
+  background: var(--ok-light);
+  color: #fff;
+}

@@ -879,8 +879,15 @@ const REG = {
           <div class="regpanel">
             <div class="rp-head">
               <span class="rp-t">LEMMA REGISTRY</span>
-              <span class="rp-live" id="pv18-live"
-                ><i></i><span id="pv18-live-label">LIVE</span></span
+              {
+                /*
+                既定は OFFLINE。JS 無効・fetch 失敗・応答待ちのいずれでも
+                「LIVE と表示しているのに数字が無い」状態を作らないため、
+                成功したときだけ LIVE に切り替える。
+              */
+              }
+              <span class="rp-live offline" id="pv18-live"
+                ><i></i><span id="pv18-live-label">{REG.offline}</span></span
               >
               <span class="rp-ep">GET /v1/counters</span>
             </div>
@@ -903,7 +910,7 @@ const REG = {
               <div class="rp-n sm" id="pv18-issued" aria-live="polite">———</div>
               <div class="rp-d">{C.rpIssuedD}</div>
             </div>
-            <div class="rp-err" id="pv18-err" hidden>
+            <div class="rp-err" id="pv18-err">
               {REG.perr}
               <a href={COUNTERS_API_URL} target="_blank" rel="noopener">{C.regRawLink}</a>
             </div>
@@ -1045,7 +1052,10 @@ const REG = {
     // 実在ハッシュのまま（どちらも実際に発行された証明なので説明は成立する）。
     async function refreshSample() {
       try {
-        const r = await fetch(REG.sampleApi, { headers: { accept: "application/json" } });
+        const r = await fetch(REG.sampleApi, {
+          headers: { accept: "application/json" },
+          signal: AbortSignal.timeout(8000),
+        });
         if (!r.ok) return;
         const j = await r.json();
         const h = String(j.docHash || "");
@@ -1061,18 +1071,30 @@ const REG = {
 
     async function load() {
       try {
-        const r = await fetch(REG.api, { headers: { accept: "application/json" } });
+        const r = await fetch(REG.api, {
+          headers: { accept: "application/json" },
+          signal: AbortSignal.timeout(8000),
+        });
         if (!r.ok) throw new Error(String(r.status));
         const j = await r.json();
-        const total = Number(j.verified.count) || 0;
+        // 壊れた応答で 0 や NaN を出さない。`|| 0` は「取得前」と「本当の 0」を
+        // 混ぜてしまうので使わず、数値でなければ OFFLINE 側へ倒す。
+        const total = Number(j?.verified?.count);
+        const issued = Number(j?.issued?.count);
+        if (!Number.isFinite(total) || !Number.isFinite(issued)) {
+          throw new Error("bad payload");
+        }
         $("pv18-verified").textContent = fmt(total);
-        $("pv18-issued").textContent = fmt(j.issued.count);
+        $("pv18-issued").textContent = fmt(issued);
 
         const top = (j.verified.bySource || []).slice(0, 3);
         if (top.length) {
           $("pv18-bars").innerHTML = top
+            .filter(function (x) {
+              return Number.isFinite(Number(x && x.count));
+            })
             .map(function (x) {
-              const p = total ? Math.round((x.count / total) * 100) : 0;
+              const p = total ? Math.round((Number(x.count) / total) * 100) : 0;
               return (
                 '<span class="rb-bar"><span>' +
                 esc(String(x.source).toUpperCase()) +
