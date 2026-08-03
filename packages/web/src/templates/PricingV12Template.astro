@@ -1,0 +1,46 @@
+---
+/**
+ * /ja/pricing/ — エンタープライズ料金 v12（デザイン移行版・JA先行）.
+ *
+ * Renders the site chrome around the curated fragment
+ * (config/pricing-v12.ja.html), injected inside `<main class="prx">`.
+ * 正典モック: lemma_pricing_enterprise_mock_v12.html（事実修正 v1 §4 の
+ * 標準構成3条件・検証チップ標準・§3 発行者表示の注記を反映済み）。
+ * IA は3枚構成 — 本体（このページ）／/pricing/api/／/pricing/trust402/。
+ * 比較表・Option Packs・FAQ は本体から外れる（機能の言明は fit チェックと
+ * サブページに集約）。EN は旧 PricingTemplate のまま。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import body from "../config/pricing-v12.ja.html?raw";
+import "../styles/pricing-v12.css";
+
+export interface PricingV12TemplateProps {
+  locale: Locale;
+  t: Translations;
+  base: string;
+}
+
+const { locale, t, base } = Astro.props as PricingV12TemplateProps;
+
+const metaTitle = "料金 — 自社の条件に合わせた3つの構成プラン | Lemma";
+const metaDescription =
+  "証明する対象とシステム連携の範囲で選べる3つの構成プラン。標準構成は月額5万円から。検証はいつでも無料、生データは預けません。";
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath="/pricing/"
+  ogImage={`https://lemma.frame00.com/og/pricing/${locale}.png`}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+  <main class="prx artpage" set:html={body} />
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>

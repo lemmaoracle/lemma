@@ -1,0 +1,10 @@
+---
+import PricingSubpageV12 from "../../../templates/PricingSubpageV12.astro";
+import { getTranslations } from "../../../i18n/translations";
+
+const locale = "ja";
+const t = getTranslations(locale);
+const base = "/ja";
+---
+
+<PricingSubpageV12 locale={locale} t={t} base={base} kind="api" />

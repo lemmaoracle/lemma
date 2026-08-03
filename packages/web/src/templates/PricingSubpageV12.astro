@@ -1,0 +1,146 @@
+---
+/**
+ * /ja/pricing/api/ ・ /ja/pricing/trust402/ — 料金 IA 3枚化のサブページ.
+ *
+ * 本体 (/ja/pricing/ = PricingV12Template) から開発者・エージェント向けの
+ * 単価情報を分離して受け持つ。中身は既存の canonical コンポーネント
+ * （PricingLemmaApi / PricingTrust402Block — 事実修正 v1 反映済み）を
+ * そのまま使い、旧 PricingTemplate の .pr-page セクションクローム
+ * （必要最小限）を複製してスタンドアロンで描画する。デザイン刷新は
+ * サブページ用モックが出来た段階で行う。
+ */
+import type { Locale, Translations } from "../i18n/translations";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import HubSpotDrawer from "../components/HubSpotDrawer.astro";
+import PricingLemmaApi from "../components/pricing/PricingLemmaApi.astro";
+import PricingTrust402Block from "../components/pricing/PricingTrust402Block.astro";
+
+export interface PricingSubpageV12Props {
+  locale: Locale;
+  t: Translations;
+  base: string;
+  kind: "api" | "t402";
+}
+
+const { locale, t, base, kind } = Astro.props as PricingSubpageV12Props;
+const isApi = kind === "api";
+
+const metaTitle = isApi
+  ? "Lemma の発行単価 — 開発者向け | Lemma"
+  : "Trust402 の料金 — エージェント向け | Lemma";
+const metaDescription = isApi
+  ? "ZK 証明の発行 API の証明クラス別単価。従量課金で、検証は常に無料。testnet の Sandbox から無料で試せます。"
+  : "x402 / MCP エコシステム向け Trust402 の4プラン。Pay と Sell は1つの発行枠を共有。検証は常に無料。";
+const pagePath = isApi ? "/pricing/api/" : "/pricing/trust402/";
+const crumbLabel = isApi ? "開発者向け" : "Trust402";
+---
+
+<Layout
+  locale={locale}
+  title={metaTitle}
+  description={metaDescription}
+  metaType="page"
+  pagePath={pagePath}
+>
+  <Navigation locale={locale} t={t.nav} base={base} />
+  <HubSpotDrawer />
+
+  <main class="pr-page">
+    <div class="pr-container">
+      <nav class="ps-crumb" aria-label="breadcrumb">
+        <a href={`${base}/`}>ホーム</a>
+        <span>/</span>
+        <a href={`${base}/pricing/`}>料金</a>
+        <span>/</span>
+        <span>{crumbLabel}</span>
+      </nav>
+      {isApi ? <PricingLemmaApi locale={locale} /> : <PricingTrust402Block locale={locale} />}
+      <p class="ps-back">
+        <a href={`${base}/pricing/`}>← 料金（構成プラン）へ戻る</a>
+      </p>
+    </div>
+  </main>
+
+  <Footer locale={locale} t={t.nav} footerT={t.footer} base={base} />
+</Layout>
+
+<style>
+  /* 旧 PricingTemplate の .pr-page クロームの最小複製（サブページ独立化のため） */
+  .pr-page {
+    --pr-display: "Sora", "Noto Sans JP", system-ui, sans-serif;
+    --pr-body: "Noto Sans JP", "Sora", system-ui, sans-serif;
+    --pr-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --pr-text-1: #1a1a1a;
+    --pr-text-2: #3a3a3a;
+    --pr-text-3: #5a5a5a;
+    --pr-text-4: #9a9a9a;
+    background: var(--lemma-cream);
+    color: var(--pr-text-2);
+    font-family: var(--pr-body);
+    font-weight: 400;
+    line-height: 1.7;
+    margin-top: 64px;
+    padding-bottom: 96px;
+  }
+  .pr-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .pr-page a { text-decoration: none; color: inherit; }
+
+  .ps-crumb {
+    padding: 28px 0 36px;
+    font-size: 12.5px;
+    color: var(--pr-text-3);
+    display: flex;
+    gap: 8px;
+  }
+  .ps-crumb a:hover { color: var(--accent); }
+  .ps-back { margin-top: 48px; font-size: 14px; }
+  .ps-back a { color: var(--accent); }
+  .ps-back a:hover { text-decoration: underline; }
+
+  :global(.pr-section-eyebrow) {
+    font-family: var(--pr-mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--pr-text-3);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  :global(.pr-section-eyebrow::before) {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+  :global(.pr-section-h2) {
+    font-family: var(--pr-display);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 0 0 22px;
+  }
+  :global(:root[lang="ja"] .pr-section-h2) { line-height: 1.3; }
+  :global(.pr-section-sub) {
+    font-size: 15.5px;
+    line-height: 1.85;
+    color: var(--pr-text-2);
+    margin: 0 0 36px;
+    max-width: 720px;
+  }
+
+  @media (max-width: 720px) {
+    .pr-container { padding: 0 24px; }
+    :global(.pr-section-h2) { font-size: 28px; }
+  }
+</style>

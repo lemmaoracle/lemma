@@ -29,8 +29,9 @@ const trust402SellHref = `${trust402Href}sell/`;
 // the pricing context, so it deep-links to /pricing#api — avoids duplicating
 // the top-level with the same label + destination.
 // The Trust402 Institutional ID plan is an anchored block on /pricing (#t402).
-const apiHref = `${pricingPath}#api`;
-const t402PricingHref = `${pricingPath}#t402`;
+// JA は料金 IA 3枚化（v12）でサブページへ。EN は旧 /pricing のアンカーのまま。
+const apiHref = locale === "ja" ? `${pricingPath}/api/` : `${pricingPath}#api`;
+const t402PricingHref = locale === "ja" ? `${pricingPath}/trust402/` : `${pricingPath}#t402`;
 const plansPrefix = base ? `${base}/plans` : "/plans";
 const TALLY_WHITEPAPER_ID = locale === "ja" ? "xX0VYv" : "7RJXdR";
 // Nav CTA routes to the self-serve Dashboard ("Get Started"), not the
