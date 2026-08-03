@@ -21,15 +21,15 @@ gap_fix: "音声クローンの生成前に、本人の認可を独立検証可�
 
 ## 1. TL;DR
 
-2026 年 7 月 27 日、Consumer Federation of America（CFA）が UCLA ロースクール Information Policy Lab の学生とともに、音声クローンサービス Speechify について連邦取引委員会（FTC）と全米の州司法長官に調査を求める申立てを公表した。申立ての中核は、Speechify が同意確認として提示している仕組みが**自己申告のチェックボックス1つと自由記述の氏名欄**であり、技術的な検証を一切伴わないという指摘である。もう一つの安全策とされる「指定された文章の読み上げ」も、読み上げ内容が指定文と一致するかを検証しておらず、録音済み音声ファイルのアップロードで丸ごと迂回できることが独立テストで確認された。調査と実証による検出は働いた。**効かなかったのは、声の持ち主がその利用を認可した事実を、音声が生成される時点で独立に確かめる層である。**
+2026 年 7 月 27 日、音声クローンサービス **Speechify** について、Consumer Federation of America（CFA）と UCLA ロースクール Information Policy Lab の学生が、連邦取引委員会（FTC）と全米の州司法長官に調査を求める申立てを公表した。申立ての中核は、同意確認として提示されている仕組みが自己申告のチェックボックス1つと自由記述の氏名欄にすぎず、技術的な検証を一切伴わないという指摘である。もう一つの安全策とされる「指定された文章の読み上げ」も、録音済み音声のアップロードで丸ごと迂回できた。独立テストによる検出は働いた。**効かなかったのは、声の持ち主がその利用を認可した事実を、音声が生成される時点で独立に確かめる層である。**
 
 ## 2. 何が起きたか
 
 - 申立ては CFA が UCLA ロースクール Information Policy Lab（UCLA Institute for Technology, Law & Policy のプロジェクト）の学生とともに作成し、宛先は「全米の州司法長官および連邦取引委員会」、日付は 2026 年 7 月 27 日である。
 - 申立て本体には方法論の節があり、著者らは無料版・有料版および Speechify Studio でアカウントを作成して実地にテストしたと明記している。声のクローンについては、非公人と、利用許諾のない公人の双方を対象に試し、いずれにも安全策が働かないことを示している。
-- 同意の確認機構は、自己申告のチェックボックスと氏名を入力するテキスト欄のみであり、声の持ち主の身元を確認する技術的検証も、アップロード者が同意を得たことを確認する検証も行われない。申立ては、氏名欄には偽名でも、クローン対象本人の名前でも入力でき、1 件ごとに別の架空の身元を記入できると指摘する。
+- Speechify Studio における所有権・同意の確認機構は、自己申告のチェックボックスと氏名を入力するテキスト欄のみであり、声の持ち主の身元を確認する技術的検証も、アップロード者が同意を得たことを確認する検証も行われない。申立ては、氏名欄には偽名でも、クローン対象本人の名前でも入力でき、1 件ごとに別の架空の身元を記入できるため、一人の悪意ある利用者が数十の声を、それぞれ別の架空の身元でクローンできると指摘する。
 - アカウント作成時にも身元確認はなく、メールアドレスとパスワードのみで足りる。
-- 生成されるテキストの内容審査も存在せず、著者らのテストでは、実在の詐欺で使われる典型的な台本（未納の配送料 1.45 ドルを口実に決済情報を入力させる運送会社なりすまし、上司になりすまして急な送金を求めるもの）が、警告も制限もなく読み上げられた。
+- 生成されるテキストの内容審査も存在せず、著者らのテストでは、実在の詐欺で使われる典型的な台本（未納の配送料 1.45 ドルを口実に決済情報を入力させる USPS なりすまし、上司になりすまして 100 ドルの Apple ギフトカード 5 枚を購入しコードを送るよう求めるもの）が、警告も制限もなく読み上げられた。
 - 申立ては FTC 法第 5 条(a)、および州の不公正・欺瞞的取引慣行法（UDAP）とデジタル偽造に関する州法の適用を主張し、通信品位法第 230 条が本件の免責にはならないとする節を設けている。
 
 同意の確認は、次の連鎖で成立しないまま通過する。
@@ -56,7 +56,7 @@ gap_fix: "音声クローンの生成前に、本人の認可を独立検証可�
 
 ## 4. なぜ止まらなかったか
 
-この事案の失敗は、安全策が用意されていなかったことではない。用意された安全策のいずれもが、**声の持ち主がその利用を認可したという事実を検証していない**ことにある。チェックボックスは宣言であり、証明ではない。氏名欄は自己申告であり、身元ではない。読み上げ検査は音声の存在を確かめるだけで、その音声の持ち主が誰で、何に同意したかは確かめない。
+この事案の失敗は、安全策が用意されていなかったことではない。用意された安全策のいずれもが宣言を受け取るだけで、**声の持ち主がその利用を認可した事実を独立に確かめる層が無かった**ことにある。チェックボックスは宣言であり、証明ではない。氏名欄は自己申告であり、身元ではない。読み上げ検査は音声の存在を確かめるだけで、その音声の持ち主が誰で、何に同意したかは確かめない。
 
 検出は効いていた。消費者団体と法科大学院が実地にアカウントを作り、非公人と公人の双方でクローンを試し、詐欺台本を読み上げさせ、安全策が名目に過ぎないことを具体的に示したうえで規制当局に申し立てた。効かなかったのはその手前——音声が生成される瞬間に、その生成が本人に認可された範囲に属するかを独立に確かめる層である。
 
@@ -82,7 +82,8 @@ Lemma は音声クローンの品質を判定する製品ではなく、詐欺�
 - **CFA / UCLA Law（一次）**: “Draft Complaint — To: Attorneys General of the United States; Federal Trade Commission”（2026-07-27, PDF）— <https://consumerfed.org/media/iy5hjsp2/speechify-complaint-cfa.pdf>
 - **CFA（一次・プレスリリース）**: “Consumer Federation of America Urges FTC and State Attorneys General to Investigate Speechify Over AI Voice-Cloning Practices”（2026-07-27）— <https://consumerfed.org/news/press-releases/consumer-federation-of-america-urges-ftc-and-state-attorneys-general-to-investigate-speechify-over-ai-voice-cloning-practices/>
 - **CFA（一次・申立て掲載ページ）**: “CFA Complaint Against Speechify for Facilitating AI Voice Cloning Impersonation Scams” — <https://consumerfed.org/news/testimony-comments/cfa-complaint-against-speechify-for-facilitating-ai-voice-cloning-impersonation-scams/>
-- **CFA（背景レポート）**: Ben Winters, “Scamplified”（2025）— <https://consumerfed.org/reports/scamplified/>
+- **CFA（背景レポート・一次）**: Ben Winters, “Scamplified”（2025）— <https://consumerfed.org/reports/scamplified/>
+- **FTC（背景・一次）**: “FTC Data Show People Reported Losing $3.5 Billion to Imposter Scams in 2025”（2026-06）— <https://www.ftc.gov/news-events/news/press-releases/2026/06/ftc-data-show-people-reported-losing-3-point-5-billion-imposter-scams-2025>
 - **FBI / IC3（背景・一次）**: “Federal Bureau of Investigation Internet Crime Report 2025”（PDF）— <https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf>
 
 参照: 事後の検知が証明にならない論点は[「AI 時代のサイバー防衛に残された、最後の層」](https://lemma.frame00.com/ja/blog/detection-is-not-proof/)（Lemma、2026-05）。設計と適用範囲は [Pillar 04 — 規制・属性証明](https://lemma.frame00.com/ja/pillars/regulatory-attribute-proof/) · [Brief 105（JAPRO 肖像・声の実態調査）](https://lemma.frame00.com/ja/critical/briefs/105-japro-likeness-voice-ai-provenance/) · [Brief 053（YouTube 偽の著名人）](https://lemma.frame00.com/ja/critical/briefs/053-youtube-deepfake-likeness-provenance/)
